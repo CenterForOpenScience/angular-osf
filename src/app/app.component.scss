@@ -1,0 +1,42 @@
+.layout-desktop {
+  display: flex;
+  height: 100vh;
+
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    border: 6px solid #24384a;
+    border-radius: 12px;
+    box-sizing: content-box;
+
+    .content-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+  }
+}
+
+.layout-tablet {
+  display: flex;
+  height: 100vh;
+
+  .content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    .content-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+  }
+}
