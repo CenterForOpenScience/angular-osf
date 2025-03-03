@@ -15,6 +15,7 @@ export class AuthService {
   private readonly http: HttpClient = inject(HttpClient);
   private readonly store: Store = inject(Store);
 
+  //TODO: rewrite/refactor methods according to the API
   async login(credentials: LoginCredentials): Promise<void> {
     try {
       const response: AuthResponse = await firstValueFrom(
