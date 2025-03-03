@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SidenavComponent } from '@osf/sidenav/sidenav.component';
+import { SidenavComponent } from '@core/components/sidenav/sidenav.component';
 import { RouterOutlet } from '@angular/router';
-import { HeaderComponent } from '@osf/header/header.component';
-import { MainContentComponent } from '@osf/main-content/main-content.component';
-import { FooterComponent } from '@osf/footer/footer.component';
-import { TopnavComponent } from '@osf/topnav/topnav.component';
+import { HeaderComponent } from '@core/components/header/header.component';
+import { MainContentComponent } from '@core/components/main-content/main-content.component';
+import { FooterComponent } from '@core/components/footer/footer.component';
+import { TopnavComponent } from '@core/components/topnav/topnav.component';
 import { IS_PORTRAIT } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 
