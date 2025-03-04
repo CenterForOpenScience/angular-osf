@@ -9,8 +9,8 @@ import { SetAuthToken, ClearAuth } from '@core/store/auth';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL: string = 'VALID_API_URL';
-  private readonly AUTH_TOKEN_KEY: string = '';
+  private readonly API_URL = 'VALID_API_URL';
+  private readonly AUTH_TOKEN_KEY = '';
 
   private readonly http: HttpClient = inject(HttpClient);
   private readonly store: Store = inject(Store);
@@ -18,7 +18,7 @@ export class AuthService {
   //TODO: rewrite/refactor methods according to the API
   async login(credentials: LoginCredentials): Promise<void> {
     try {
-      const response: AuthResponse = await firstValueFrom(
+      const response = await firstValueFrom(
         this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, credentials),
       );
 
