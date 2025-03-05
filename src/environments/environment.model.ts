@@ -4,5 +4,5 @@ export interface Environment {
   apiHost: string;
   defaultLanguage?: string;
   supportedUiLanguages?: string[];
-  // theme: 'dark' | 'light'; customize theme for PrimeNG
+  theme: 'dark' | 'light'; // customize theme for PrimeNG
 }
