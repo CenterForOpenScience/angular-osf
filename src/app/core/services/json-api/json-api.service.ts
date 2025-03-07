@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import {
@@ -10,7 +10,7 @@ import {
   providedIn: 'root',
 })
 export class JsonApiService {
-  constructor(private http: HttpClient) {}
+  http: HttpClient = inject(HttpClient);
 
   get<T>(url: string): Observable<T> {
     return this.http

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -29,8 +29,9 @@ import { CommonModule } from '@angular/common';
 })
 export class SignUpComponent {
   signUpForm: FormGroup;
+  fb: FormBuilder = inject(FormBuilder);
 
-  constructor(private fb: FormBuilder) {
+  constructor() {
     this.signUpForm = this.fb.group({
       fullName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
