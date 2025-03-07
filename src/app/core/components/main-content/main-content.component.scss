@@ -1,12 +1,6 @@
-:host {
-  min-height: calc(100% - 100px);
-  padding-top: 50px;
-  background: antiquewhite;
+@use "assets/styles/mixins" as mix;
 
-  .content-body {
-    flex: 1;
-  }
-  .main-container {
-    height: 100px;
-  }
+:host {
+  @include mix.flex-column;
+  flex: 1;
 }

@@ -1,0 +1,18 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
+:host {
+  @include mix.flex-column-center;
+  flex: 1;
+
+  .sign-up-container {
+    @include mix.flex-column-center;
+    flex: 1;
+    width: 30rem;
+    border-radius: 0.9rem;
+    margin: 0.5rem 0;
+    justify-content: center;
+    background-color: white;
+    border: 1px solid var.$grey-2;
+  }
+}

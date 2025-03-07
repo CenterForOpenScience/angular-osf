@@ -1,0 +1,22 @@
+@if (!isPortrait()) {
+  <div class="layout-desktop">
+    <osf-sidenav></osf-sidenav>
+    <div class="content-wrapper">
+      <main class="content">
+        <osf-header></osf-header>
+        <osf-main-content></osf-main-content>
+        <osf-footer></osf-footer>
+      </main>
+    </div>
+  </div>
+} @else {
+  <div class="layout-tablet">
+    <div class="content-wrapper">
+      <main class="content">
+        <osf-topnav></osf-topnav>
+        <osf-main-content></osf-main-content>
+        <osf-footer></osf-footer>
+      </main>
+    </div>
+  </div>
+}

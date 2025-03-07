@@ -1,0 +1,40 @@
+@use "assets/styles/mixins" as mix;
+
+.layout-desktop {
+  display: flex;
+  height: 100vh;
+  background-color: #24384a;
+
+  .content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    margin: 6px;
+    background-color: white;
+    border-radius: 1rem;
+
+    .content {
+      @include mix.flex-column;
+      min-height: 100%;
+      background: url("/assets/images/sign-up-background.png") center no-repeat;
+      background-size: cover;
+    }
+  }
+}
+
+.layout-tablet {
+  @include mix.flex-center;
+  height: 100vh;
+
+  .content-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    @include mix.flex-column;
+    width: 100%;
+
+    .content {
+      position: relative;
+      @include mix.flex-column;
+      flex: 1;
+    }
+  }
+}

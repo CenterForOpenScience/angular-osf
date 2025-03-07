@@ -1,0 +1,56 @@
+@use "fonts";
+@use "variables";
+@use "mixins";
+@use "./overrides/button";
+
+@layer base, primeng, reset;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
+
+@layer reset {
+  html,
+  body {
+    font-family: variables.$openSans;
+    font-weight: 400;
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+
+  li {
+    list-style: none;
+  }
+
+  a,
+  a:visited {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  button {
+    color: white;
+  }
+}

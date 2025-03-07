@@ -21,7 +21,8 @@
     "paths": {
       "@osf/*": ["app/*"],
       "@core/*": ["app/core/*"],
-      "@shared/*": ["app/shared/*"]
+      "@shared/*": ["app/shared/*"],
+      "@styles/*": ["assets/styles/*"]
     }
   },
   "angularCompilerOptions": {

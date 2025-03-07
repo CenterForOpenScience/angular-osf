@@ -1,4 +1,50 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
 :host {
-  height: 50px;
-  background: aqua;
+  height: auto;
+  display: block;
+
+  .footer-nav,
+  .footer-secondary-nav {
+    @include mix.flex-center-between;
+    color: var.$dark-blue-1;
+    padding: 0 1.5rem;
+
+    .footer-links,
+    .footer-socials {
+      @include mix.flex-center;
+    }
+
+    .separator {
+      margin: 0 0.5rem;
+    }
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .footer-nav {
+    height: 4.2rem;
+    background-color: var.$bg-blue-3;
+
+    .footer-socials {
+      @include mix.flex-center;
+      gap: 0.5rem;
+    }
+  }
+
+  .footer-secondary-nav {
+    height: 2.6rem;
+    background-color: var.$bg-blue-2;
+
+    .footer-copyright {
+      @include mix.flex-center;
+    }
+  }
 }

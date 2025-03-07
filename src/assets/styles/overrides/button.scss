@@ -1,0 +1,128 @@
+@use "../variables" as var;
+@use "../mixins" as mix;
+
+.p-button {
+  border: none;
+  padding: 0.7rem 1.15rem;
+  font-size: 1rem;
+  background-color: var.$pr-blue-1;
+
+  .p-button-label {
+    font-weight: 700;
+  }
+
+  &:hover {
+    background-color: var.$pr-blue-3;
+  }
+
+  &:disabled {
+    background-color: var.$pr-blue-2;
+  }
+}
+
+.p-button.p-button-success {
+  background-color: var.$green-1;
+
+  &:hover {
+    background-color: var.$green-3;
+  }
+
+  &:disabled {
+    background-color: var.$green-2;
+  }
+}
+
+.p-button.p-button-danger {
+  background-color: var.$red-1;
+
+  &:hover {
+    background-color: var.$red-3;
+  }
+
+  &:disabled {
+    background-color: var.$red-2;
+  }
+}
+
+.p-button.p-button-contrast {
+  background-color: var.$dark-blue-1;
+
+  &:hover {
+    background-color: var.$dark-blue-2;
+  }
+
+  &:disabled {
+    background-color: var.$grey-1;
+  }
+}
+
+.p-button.p-button-secondary {
+  background-color: var.$bg-blue-3;
+  color: var.$pr-blue-1;
+
+  &:hover {
+    background-color: var.$bg-blue-2;
+    color: var.$pr-blue-3;
+  }
+
+  &:disabled {
+    background-color: var.$grey-3;
+    color: var.$pr-blue-2;
+  }
+}
+
+.p-button.p-button-info {
+  color: var.$dark-blue-1;
+  background-color: transparent;
+
+  .p-button-label {
+    font-weight: 400;
+  }
+
+  &:hover {
+    outline: 1px solid var.$grey-2;
+  }
+
+  &:disabled {
+    color: var.$grey-1;
+  }
+}
+
+.btn-icon-text,
+.btn-icon-text-success {
+  .p-button {
+    background-color: transparent;
+    color: var.$pr-blue-1;
+    font-weight: 600;
+    @include mix.flex-center;
+    box-shadow: 0 0 4px 0 var.$grey-outline;
+
+    &:hover {
+      color: var.$pr-blue-3;
+    }
+
+    &:disabled {
+      color: var.$grey-1;
+    }
+  }
+}
+
+.btn-icon-text {
+  .p-button {
+    color: var.$pr-blue-1;
+
+    &:hover {
+      color: var.$pr-blue-3;
+    }
+  }
+}
+
+.btn-icon-text-success {
+  .p-button {
+    color: var.$green-1;
+
+    &:hover {
+      color: var.$green-3;
+    }
+  }
+}

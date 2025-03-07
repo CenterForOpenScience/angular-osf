@@ -1,6 +1,25 @@
-<h2>OSF</h2>
-<ul>
-  <li>Home</li>
-  <li>Search OSF</li>
-  <li>Support</li>
-</ul>
+<img ngSrc="assets/images/logo.svg" alt="OSF Logo" height="36" width="106" />
+<nav class="sidebar-nav">
+  <ul>
+    @for (item of navItems; track item.path) {
+      <li class="nav-item">
+        <a
+          class="nav-link"
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          @if (item.icon) {
+            <img
+              [ngSrc]="item.icon"
+              [alt]="item.label + ' icon'"
+              width="20"
+              height="20"
+            />
+          }
+          <span>{{ item.label }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+</nav>

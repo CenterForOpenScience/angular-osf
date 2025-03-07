@@ -1,0 +1,100 @@
+// Theme Specific Variables
+
+// Fonts
+$openSans: var(--openSans);
+
+// Colors
+// Primary Blue
+$pr-blue-1: var(--pr-blue-1);
+$pr-blue-2: var(--pr-blue-2);
+$pr-blue-3: var(--pr-blue-3);
+
+// Dark Blue
+$dark-blue-1: var(--dark-blue-1);
+$dark-blue-2: var(--dark-blue-2);
+
+// Background Blue
+$bg-blue-2: var(--bg-blue-2);
+$bg-blue-3: var(--bg-blue-3);
+
+// Grey
+$grey-1: var(--grey-1);
+$grey-2: var(--grey-2);
+$grey-3: var(--grey-3);
+$grey-outline: var(--grey-outline);
+
+// Green
+$green-1: var(--green-1);
+$green-2: var(--green-2);
+$green-3: var(--green-3);
+
+// Red
+$red-1: var(--red-1);
+$red-2: var(--red-2);
+$red-3: var(--red-3);
+
+// Yellow
+$yellow-1: var(--yellow-1);
+$yellow-2: var(--yellow-2);
+
+// Additional Colors
+$green-1-alt: var(--green-1-alt);
+$green-2-alt: var(--green-2-alt);
+$blue-1: var(--blue-1);
+$blue-2: var(--blue-2);
+
+// Background Colors
+$green-1-bg: var(--green-1-bg);
+$green-2-bg: var(--green-2-bg);
+$blue-1-bg: var(--blue-1-bg);
+$blue-2-bg: var(--blue-2-bg);
+
+:root {
+  // Fonts
+  --openSans: "Open Sans", sans-serif;
+
+  // Primary Blue Colors
+  --pr-blue-1: #337ab7;
+  --pr-blue-2: #84aed2;
+  --pr-blue-3: #0089ff;
+
+  // Dark Blue Colors
+  --dark-blue-1: #24384a;
+  --dark-blue-2: #384b5c;
+
+  // Background Blue Colors
+  --bg-blue-2: #e6f1fc;
+  --bg-blue-3: #f1f8fd;
+
+  // Grey Colors
+  --grey-1: #8b97a4;
+  --grey-2: #e0e1e2;
+  --grey-3: #eff0f1;
+  --grey-outline: #00000029;
+
+  // Green Colors
+  --green-1: #357935;
+  --green-2: #d7e4d7;
+  --green-3: #26ac26;
+
+  // Red Colors
+  --red-1: #b73333;
+  --red-2: #f1d6d6;
+  --red-3: #e40303;
+
+  // Yellow Colors
+  --yellow-1: #8a6d3a;
+  --yellow-2: #fcf8e3;
+
+  // Additional Colors
+  --green-1-alt: #37b183;
+  --green-2-alt: #35aea9;
+  --blue-1: #3792b1;
+  --blue-2: #3379b7;
+
+  // Background Colors
+  --green-1-bg: #ebf7f3;
+  --green-2-bg: #ebf7f6;
+  --blue-1-bg: #ebf4f7;
+  --blue-2-bg: #ebf2f8;
+}
