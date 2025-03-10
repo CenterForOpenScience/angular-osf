@@ -13,12 +13,12 @@ import { NavItem } from '@osf/shared/entities/nav-item.interface';
 })
 export class SidenavComponent {
   protected readonly navItems: NavItem[] = [
-    { path: '/home', label: 'Home', icon: 'assets/icons/menu/home.svg' },
-    { path: '', label: 'Search OSF', icon: 'assets/icons/menu/search.svg' },
+    { path: '/home', label: 'Home', icon: 'home' },
+    { path: '', label: 'Search OSF', icon: 'search' },
     {
       path: '/support',
       label: 'Support',
-      icon: 'assets/icons/menu/support.svg',
+      icon: 'support',
     },
   ];
 }

@@ -1,6 +1,6 @@
 @use "fonts";
 @use "variables" as var;
-@use "mixins";
+@use "mixins" as mix;
 @use "./overrides/button";
 @use "./overrides/input";
 @use "./overrides/checkbox";
@@ -41,7 +41,7 @@
   h3 {
     font-weight: 700;
     text-transform: capitalize;
-    color: variables.$dark-blue-1;
+    color: var.$dark-blue-1;
   }
 
   li {
@@ -51,11 +51,15 @@
   a,
   a:visited {
     text-decoration: none;
-    color: variables.$pr-blue-1;
+    color: var.$pr-blue-1;
   }
 
   a:hover {
     text-decoration: underline;
+  }
+
+  i {
+    @include mix.flex-center;
   }
 
   button {

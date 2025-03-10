@@ -4,9 +4,12 @@
   <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
     <div class="btn-group">
       <p-button label="Sign up through ORCID" class="form-btn btn-full-width">
+        <!--TODO change img tags to icons(fantasticon)-->
+
+        <!--<i class="osf-icon-orcid"></i>-->
         <img
-          ngSrc="assets/icons/system/orchid.svg"
-          alt="ORCID icon"
+          ngSrc="assets/images/orcid.svg"
+          alt="Orchid icon"
           height="20"
           width="20"
         />
@@ -15,12 +18,7 @@
         label="Sign up through Institution"
         class="form-btn btn-full-width"
       >
-        <img
-          ngSrc="assets/icons/menu/institutions.svg"
-          alt="Institutions icon"
-          height="20"
-          width="20"
-        />
+        <i class="osf-icon-institutions"></i>
       </p-button>
     </div>
 
@@ -36,35 +34,17 @@
           type="text"
           pInputText
           formControlName="fullName"
-          [ngClass]="{
-            'ng-invalid ng-dirty':
-              signUpForm.get('fullName')?.invalid &&
-              signUpForm.get('fullName')?.touched,
-          }"
           placeholder="John Doe"
         />
       </div>
 
       <div class="field">
-        <label
-          for="email"
-          [ngClass]="{
-            'ng-invalid ng-dirty':
-              signUpForm.get('email')?.invalid &&
-              signUpForm.get('email')?.touched,
-          }"
-          >Email</label
-        >
+        <label for="email">Email</label>
         <input
           id="email"
           type="email"
           pInputText
           formControlName="email"
-          [ngClass]="{
-            'ng-invalid ng-dirty':
-              signUpForm.get('email')?.invalid &&
-              signUpForm.get('email')?.touched,
-          }"
           placeholder="email@example.com"
         />
       </div>
@@ -112,8 +92,9 @@
           id="agreeToTerms"
         ></p-checkbox>
         <label for="agreeToTerms">
-          I agree to the <a href="/terms">Terms of Use</a> and
-          <a href="/privacy">Privacy Policy</a>
+          I agree to the
+          <a routerLink="/terms-of-use">Terms of Use</a> and
+          <a routerLink="/privacy-policy">Privacy Policy</a>
         </label>
       </div>
     </div>

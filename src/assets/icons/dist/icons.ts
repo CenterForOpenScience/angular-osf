@@ -3,6 +3,7 @@ export type IconsId =
   | 'website'
   | 'warning'
   | 'upload'
+  | 'twitter'
   | 'trash'
   | 'support'
   | 'supplements'
@@ -20,7 +21,7 @@ export type IconsId =
   | 'papers'
   | 'padlock'
   | 'padlock-unlock'
-  | 'orchid'
+  | 'orcid'
   | 'my-projects'
   | 'minus'
   | 'meetings'
@@ -59,6 +60,7 @@ export type IconsKey =
   | 'Website'
   | 'Warning'
   | 'Upload'
+  | 'Twitter'
   | 'Trash'
   | 'Support'
   | 'Supplements'
@@ -76,7 +78,7 @@ export type IconsKey =
   | 'Papers'
   | 'Padlock'
   | 'PadlockUnlock'
-  | 'Orchid'
+  | 'Orcid'
   | 'MyProjects'
   | 'Minus'
   | 'Meetings'
@@ -115,6 +117,7 @@ export enum Icons {
   Website = 'website',
   Warning = 'warning',
   Upload = 'upload',
+  Twitter = 'twitter',
   Trash = 'trash',
   Support = 'support',
   Supplements = 'supplements',
@@ -132,7 +135,7 @@ export enum Icons {
   Papers = 'papers',
   Padlock = 'padlock',
   PadlockUnlock = 'padlock-unlock',
-  Orchid = 'orchid',
+  Orcid = 'orcid',
   MyProjects = 'my-projects',
   Minus = 'minus',
   Meetings = 'meetings',
@@ -172,54 +175,55 @@ export const ICONS_CODEPOINTS: Record<Icons, string> = {
   [Icons.Website]: '61698',
   [Icons.Warning]: '61699',
   [Icons.Upload]: '61700',
-  [Icons.Trash]: '61701',
-  [Icons.Support]: '61702',
-  [Icons.Supplements]: '61703',
-  [Icons.Sort3]: '61704',
-  [Icons.Sort2]: '61705',
-  [Icons.Sort1]: '61706',
-  [Icons.Settings]: '61707',
-  [Icons.Search]: '61708',
-  [Icons.Quotes]: '61709',
-  [Icons.QuestionMark]: '61710',
-  [Icons.Publish]: '61711',
-  [Icons.Profile]: '61712',
-  [Icons.Plus]: '61713',
-  [Icons.Pdf]: '61714',
-  [Icons.Papers]: '61715',
-  [Icons.Padlock]: '61716',
-  [Icons.PadlockUnlock]: '61717',
-  [Icons.Orchid]: '61718',
-  [Icons.MyProjects]: '61719',
-  [Icons.Minus]: '61720',
-  [Icons.Meetings]: '61721',
-  [Icons.Materials]: '61722',
-  [Icons.List]: '61723',
-  [Icons.Linkedin]: '61724',
-  [Icons.Institutions]: '61725',
-  [Icons.Information]: '61726',
-  [Icons.Image]: '61727',
-  [Icons.Hosting]: '61728',
-  [Icons.Home]: '61729',
-  [Icons.Group]: '61730',
-  [Icons.Github]: '61731',
-  [Icons.Folder]: '61732',
-  [Icons.Filter]: '61733',
-  [Icons.Facebook]: '61734',
-  [Icons.EyeView]: '61735',
-  [Icons.EyeHidden]: '61736',
-  [Icons.Email]: '61737',
-  [Icons.Download]: '61738',
-  [Icons.DoubleArrowLeft]: '61739',
-  [Icons.Dots]: '61740',
-  [Icons.Donate]: '61741',
-  [Icons.Doc]: '61742',
-  [Icons.Design]: '61743',
-  [Icons.Data]: '61744',
-  [Icons.Copy]: '61745',
-  [Icons.Collections]: '61746',
-  [Icons.Collect]: '61747',
-  [Icons.Code]: '61748',
-  [Icons.CalendarSilhouette]: '61749',
-  [Icons.ArrowDown]: '61750',
+  [Icons.Twitter]: '61701',
+  [Icons.Trash]: '61702',
+  [Icons.Support]: '61703',
+  [Icons.Supplements]: '61704',
+  [Icons.Sort3]: '61705',
+  [Icons.Sort2]: '61706',
+  [Icons.Sort1]: '61707',
+  [Icons.Settings]: '61708',
+  [Icons.Search]: '61709',
+  [Icons.Quotes]: '61710',
+  [Icons.QuestionMark]: '61711',
+  [Icons.Publish]: '61712',
+  [Icons.Profile]: '61713',
+  [Icons.Plus]: '61714',
+  [Icons.Pdf]: '61715',
+  [Icons.Papers]: '61716',
+  [Icons.Padlock]: '61717',
+  [Icons.PadlockUnlock]: '61718',
+  [Icons.Orcid]: '61719',
+  [Icons.MyProjects]: '61720',
+  [Icons.Minus]: '61721',
+  [Icons.Meetings]: '61722',
+  [Icons.Materials]: '61723',
+  [Icons.List]: '61724',
+  [Icons.Linkedin]: '61725',
+  [Icons.Institutions]: '61726',
+  [Icons.Information]: '61727',
+  [Icons.Image]: '61728',
+  [Icons.Hosting]: '61729',
+  [Icons.Home]: '61730',
+  [Icons.Group]: '61731',
+  [Icons.Github]: '61732',
+  [Icons.Folder]: '61733',
+  [Icons.Filter]: '61734',
+  [Icons.Facebook]: '61735',
+  [Icons.EyeView]: '61736',
+  [Icons.EyeHidden]: '61737',
+  [Icons.Email]: '61738',
+  [Icons.Download]: '61739',
+  [Icons.DoubleArrowLeft]: '61740',
+  [Icons.Dots]: '61741',
+  [Icons.Donate]: '61742',
+  [Icons.Doc]: '61743',
+  [Icons.Design]: '61744',
+  [Icons.Data]: '61745',
+  [Icons.Copy]: '61746',
+  [Icons.Collections]: '61747',
+  [Icons.Collect]: '61748',
+  [Icons.Code]: '61749',
+  [Icons.CalendarSilhouette]: '61750',
+  [Icons.ArrowDown]: '61751',
 };

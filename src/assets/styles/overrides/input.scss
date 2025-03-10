@@ -33,3 +33,7 @@ p-password.ng-touched.ng-invalid {
 .p-inputtext.ng-dirty.ng-invalid::placeholder {
   color: var.$grey-1;
 }
+
+input:-internal-autofill-selected {
+  background-color: white !important;
+}

@@ -1,18 +1,33 @@
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
 export const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-export const passwordMatchValidator = (
-  control: AbstractControl,
-): ValidationErrors | null => {
-  const password = control.get('password');
-  const confirmPassword = control.get('confirmPassword');
+export function passwordMatchValidator(
+  passwordField = 'password',
+  confirmPasswordField = 'confirmPassword',
+): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const password = control.get(passwordField);
+    const confirmPassword = control.get(confirmPasswordField);
 
-  if (password && confirmPassword && password.value !== confirmPassword.value) {
-    confirmPassword.setErrors({ passwordMismatch: true });
-    return { passwordMismatch: true };
-  }
+    if (!password || !confirmPassword) {
+      return null;
+    }
 
-  return null;
-};
+    if (confirmPassword.errors && !confirmPassword.errors['passwordMismatch']) {
+      return null;
+    }
+
+    if (password.value !== confirmPassword.value) {
+      const error = { passwordMismatch: true };
+      confirmPassword.setErrors(error);
+      return error;
+    } else {
+      const errors = { ...confirmPassword.errors };
+      delete errors['passwordMismatch'];
+      confirmPassword.setErrors(Object.keys(errors).length ? errors : null);
+      return null;
+    }
+  };
+}

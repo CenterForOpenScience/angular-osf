@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +12,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { PASSWORD_REGEX, passwordMatchValidator } from './sign-up.helper';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'osf-sign-up',
@@ -25,14 +26,17 @@ import { PASSWORD_REGEX, passwordMatchValidator } from './sign-up.helper';
     CheckboxModule,
     DividerModule,
     NgOptimizedImage,
+    RouterLink,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',
 })
 export class SignUpComponent implements OnInit {
   signUpForm: FormGroup = new FormGroup({});
+  isFormSubmitted = signal(false);
 
   fb: FormBuilder = inject(FormBuilder);
+  router: Router = inject(Router);
   passwordRegex: RegExp = PASSWORD_REGEX;
 
   ngOnInit(): void {
@@ -52,7 +56,7 @@ export class SignUpComponent implements OnInit {
         agreeToTerms: [false, Validators.requiredTrue],
       },
       {
-        validators: passwordMatchValidator,
+        validators: passwordMatchValidator('password', 'confirmPassword'),
       },
     );
   }
@@ -60,14 +64,8 @@ export class SignUpComponent implements OnInit {
   onSubmit(): void {
     if (this.signUpForm.valid) {
       console.log('Form submitted:', this.signUpForm.value);
-    } else {
-      console.log('Form is invalid');
-      Object.keys(this.signUpForm.controls).forEach((key) => {
-        const control = this.signUpForm.get(key);
-        if (control?.invalid) {
-          control.markAsTouched();
-        }
-      });
+      this.isFormSubmitted.set(true);
+      this.router.navigate(['/home']);
     }
   }
 }

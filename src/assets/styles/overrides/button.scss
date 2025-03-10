@@ -138,6 +138,8 @@
 
 .form-btn {
   .p-button {
+    @include mix.flex-center;
+    gap: 0.7rem;
     color: var.$dark-blue-1;
 
     &:hover {

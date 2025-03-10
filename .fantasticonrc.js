@@ -3,4 +3,5 @@ module.exports = {
   outputDir: 'src/assets/icons/dist',
   normalize: true,
   descent: 45,
+  prefix: 'osf-icon',
 };
