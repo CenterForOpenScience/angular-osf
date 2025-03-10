@@ -58,4 +58,24 @@
   button {
     color: white;
   }
+
+  dl {
+    margin-bottom: 1.7rem;
+    padding: 0;
+  }
+
+  dt {
+    display: inline;
+    font-weight: bold;
+  }
+
+  dd {
+    margin: 0;
+    display: inline;
+
+    &::after {
+      content: "";
+      display: block;
+    }
+  }
 }
