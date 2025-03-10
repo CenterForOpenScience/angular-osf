@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -10,7 +10,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { PASSWORD_REGEX, passwordMatchValidator } from './sign-up.helper';
 
 @Component({
   selector: 'osf-sign-up',
@@ -23,25 +24,40 @@ import { CommonModule } from '@angular/common';
     PasswordModule,
     CheckboxModule,
     DividerModule,
+    NgOptimizedImage,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',
 })
-export class SignUpComponent {
-  signUpForm: FormGroup;
-  fb: FormBuilder = inject(FormBuilder);
+export class SignUpComponent implements OnInit {
+  signUpForm: FormGroup = new FormGroup({});
 
-  constructor() {
-    this.signUpForm = this.fb.group({
-      fullName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', Validators.required],
-      agreeToTerms: [false, Validators.requiredTrue],
-    });
+  fb: FormBuilder = inject(FormBuilder);
+  passwordRegex: RegExp = PASSWORD_REGEX;
+
+  ngOnInit(): void {
+    this.initializeForm();
   }
 
-  onSubmit() {
+  initializeForm(): void {
+    this.signUpForm = this.fb.group(
+      {
+        fullName: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [Validators.required, Validators.pattern(this.passwordRegex)],
+        ],
+        confirmPassword: ['', Validators.required],
+        agreeToTerms: [false, Validators.requiredTrue],
+      },
+      {
+        validators: passwordMatchValidator,
+      },
+    );
+  }
+
+  onSubmit(): void {
     if (this.signUpForm.valid) {
       console.log('Form submitted:', this.signUpForm.value);
     } else {

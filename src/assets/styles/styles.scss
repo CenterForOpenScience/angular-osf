@@ -1,7 +1,10 @@
 @use "fonts";
-@use "variables";
+@use "variables" as var;
 @use "mixins";
 @use "./overrides/button";
+@use "./overrides/input";
+@use "./overrides/checkbox";
+@use "./overrides/divider";
 
 @layer base, primeng, reset;
 
@@ -16,7 +19,7 @@
 @layer reset {
   html,
   body {
-    font-family: variables.$openSans;
+    font-family: var.$openSans;
     font-weight: 400;
     font-size: 14px;
   }

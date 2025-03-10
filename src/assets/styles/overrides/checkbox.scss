@@ -1,0 +1,27 @@
+@use "../variables" as var;
+
+.p-checkbox {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-color: var.$grey-2;
+}
+
+.p-checkbox-box {
+  width: 1.4rem;
+  height: 1.4rem;
+  background: white;
+  border-color: var.$grey-2;
+}
+
+.p-checkbox-checked {
+  .p-checkbox-box {
+    border: 1px solid var.$pr-blue-1;
+    background: var.$pr-blue-1;
+  }
+
+  .p-checkbox-icon {
+    color: white;
+    font-size: 20px;
+    width: 0.7rem;
+  }
+}
