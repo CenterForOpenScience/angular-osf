@@ -29,6 +29,20 @@ export const routes: Routes = [
             (mod) => mod.SupportComponent,
           ),
       },
+      {
+        path: 'terms-of-use',
+        loadComponent: () =>
+          import('./features/terms-of-use/terms-of-use.component').then(
+            (mod) => mod.TermsOfUseComponent,
+          ),
+      },
+      {
+        path: 'privacy-policy',
+        loadComponent: () =>
+          import('./features/privacy-policy/privacy-policy.component').then(
+            (mod) => mod.PrivacyPolicyComponent,
+          ),
+      },
     ],
   },
 ];

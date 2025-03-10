@@ -1,0 +1,29 @@
+@use "assets/styles/variables" as var;
+
+.container {
+  padding: 1.7rem;
+  color: var.$dark-blue-1;
+
+  h1 {
+    margin-bottom: 3.4rem;
+  }
+
+  h2 {
+    margin-bottom: 0.9rem;
+  }
+
+  h4 {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  ul,
+  p {
+    margin-bottom: 1.7rem;
+  }
+
+  li {
+    margin-left: 1.7rem;
+    list-style: initial;
+  }
+}

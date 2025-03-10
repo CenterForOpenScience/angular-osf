@@ -1,0 +1,18 @@
+@use "assets/styles/variables" as var;
+
+.container {
+  padding: 1.7rem;
+  color: var.$dark-blue-1;
+
+  h1 {
+    margin-bottom: 3.4rem;
+  }
+
+  h2 {
+    margin-bottom: 0.9rem;
+  }
+
+  p {
+    margin-bottom: 1.7rem;
+  }
+}
