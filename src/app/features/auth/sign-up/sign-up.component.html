@@ -35,6 +35,7 @@
           pInputText
           formControlName="fullName"
           placeholder="John Doe"
+          autocomplete="full-name"
         />
       </div>
 
@@ -46,6 +47,7 @@
           pInputText
           formControlName="email"
           placeholder="email@example.com"
+          autocomplete="off"
         />
       </div>
 
@@ -56,6 +58,7 @@
           formControlName="password"
           [toggleMask]="true"
           [feedback]="false"
+          autocomplete="new-password"
         ></p-password>
         @if (
           signUpForm.controls["password"].errors &&
@@ -76,6 +79,7 @@
           formControlName="confirmPassword"
           [toggleMask]="true"
           [feedback]="false"
+          autocomplete="new-password"
         ></p-password>
         @if (
           signUpForm.get("confirmPassword")?.errors?.["passwordMismatch"] &&
