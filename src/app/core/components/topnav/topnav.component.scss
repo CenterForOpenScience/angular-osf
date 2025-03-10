@@ -1,5 +1,7 @@
+@use "assets/styles/variables" as var;
+
 :host {
-  background: #24384a;
+  background: var.$dark-blue-1;
   height: 96px;
   color: white;
 }

@@ -38,6 +38,7 @@
   h3 {
     font-weight: 700;
     text-transform: capitalize;
+    color: variables.$dark-blue-1;
   }
 
   li {
@@ -47,7 +48,11 @@
   a,
   a:visited {
     text-decoration: none;
-    color: inherit;
+    color: variables.$pr-blue-1;
+  }
+
+  a:hover {
+    text-decoration: underline;
   }
 
   button {
