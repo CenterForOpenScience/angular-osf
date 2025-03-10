@@ -31,7 +31,7 @@
 
   .footer-nav {
     height: 4.2rem;
-    background-color: var.$bg-blue-3;
+    background-color: transparent;
 
     .footer-socials {
       @include mix.flex-center;
@@ -41,7 +41,7 @@
 
   .footer-secondary-nav {
     height: 2.6rem;
-    background-color: var.$bg-blue-2;
+    background: var.$gradient-3;
 
     .footer-copyright {
       @include mix.flex-center;

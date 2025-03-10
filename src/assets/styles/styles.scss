@@ -2,6 +2,7 @@
 @use "variables";
 @use "mixins";
 @use "./overrides/button";
+@use "./overrides/table";
 
 @layer base, primeng, reset;
 

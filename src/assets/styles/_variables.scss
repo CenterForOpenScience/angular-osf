@@ -49,6 +49,11 @@ $green-2-bg: var(--green-2-bg);
 $blue-1-bg: var(--blue-1-bg);
 $blue-2-bg: var(--blue-2-bg);
 
+// Gradients
+$gradient-1: var(--gradient-1);
+$gradient-2: var(--gradient-2);
+$gradient-3: var(--gradient-3);
+
 :root {
   // Fonts
   --openSans: "Open Sans", sans-serif;
@@ -97,4 +102,28 @@ $blue-2-bg: var(--blue-2-bg);
   --green-2-bg: #ebf7f6;
   --blue-1-bg: #ebf4f7;
   --blue-2-bg: #ebf2f8;
+
+  // Gradients
+  --gradient-1:
+    linear-gradient(
+      90.12deg,
+      rgba(219, 237, 251, 0.5) 0.03%,
+      rgba(239, 244, 252, 0.5) 54.38%,
+      rgba(219, 237, 251, 0.5) 98.07%
+    ),
+    #ffffff;
+  --gradient-2:
+    linear-gradient(
+      90.12deg,
+      rgba(219, 237, 251, 0.5) 0.03%,
+      rgba(239, 244, 252, 0.5) 54.38%,
+      rgba(219, 237, 251, 0.5) 98.07%
+    ),
+    #f3f8fd;
+  --gradient-3: linear-gradient(
+    90.12deg,
+    #dbedfb 0.03%,
+    #eff4fc 54.38%,
+    #dbedfb 98.07%
+  );
 }

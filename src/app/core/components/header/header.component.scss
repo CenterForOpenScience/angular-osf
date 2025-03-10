@@ -1,6 +1,7 @@
 @use "assets/styles/mixins" as mix;
 
 :host {
+  position: absolute;
   height: 4.5rem;
   padding-right: 1rem;
   width: 100%;
