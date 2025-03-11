@@ -33,11 +33,11 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class SignUpComponent implements OnInit {
   signUpForm: FormGroup = new FormGroup({});
+  passwordRegex: RegExp = PASSWORD_REGEX;
   isFormSubmitted = signal(false);
 
   fb: FormBuilder = inject(FormBuilder);
   router: Router = inject(Router);
-  passwordRegex: RegExp = PASSWORD_REGEX;
 
   ngOnInit(): void {
     this.initializeForm();
@@ -56,14 +56,13 @@ export class SignUpComponent implements OnInit {
         agreeToTerms: [false, Validators.requiredTrue],
       },
       {
-        validators: passwordMatchValidator('password', 'confirmPassword'),
+        validators: passwordMatchValidator(),
       },
     );
   }
 
   onSubmit(): void {
     if (this.signUpForm.valid) {
-      console.log('Form submitted:', this.signUpForm.value);
       this.isFormSubmitted.set(true);
       this.router.navigate(['/home']);
     }
