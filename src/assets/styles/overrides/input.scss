@@ -1,0 +1,35 @@
+@use "../variables" as var;
+
+.p-inputtext {
+  color: var.$dark-blue-1;
+  width: 100%;
+  background: white;
+  border-color: var.$grey-2;
+}
+
+.p-password {
+  width: 100%;
+}
+
+label {
+  display: block;
+  color: var.$grey-1;
+  margin-bottom: 0.3rem;
+  font-weight: 400;
+}
+
+.p-inputtext.ng-touched.ng-invalid,
+.p-inputtext.ng-dirty.ng-invalid {
+  border: 1px solid var.$red-1;
+}
+
+p-password.ng-touched.ng-invalid {
+  .p-password-input {
+    border: 1px solid var.$red-1;
+  }
+}
+
+.p-inputtext.ng-touched.ng-invalid::placeholder,
+.p-inputtext.ng-dirty.ng-invalid::placeholder {
+  color: var.$grey-1;
+}

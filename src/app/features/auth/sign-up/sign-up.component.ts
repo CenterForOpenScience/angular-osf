@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -10,7 +10,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { CheckboxModule } from 'primeng/checkbox';
 import { DividerModule } from 'primeng/divider';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { PASSWORD_REGEX, passwordMatchValidator } from './sign-up.helper';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'osf-sign-up',
@@ -23,34 +25,46 @@ import { CommonModule } from '@angular/common';
     PasswordModule,
     CheckboxModule,
     DividerModule,
+    NgOptimizedImage,
+    RouterLink,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',
 })
-export class SignUpComponent {
-  signUpForm: FormGroup;
+export class SignUpComponent implements OnInit {
+  signUpForm: FormGroup = new FormGroup({});
+  passwordRegex: RegExp = PASSWORD_REGEX;
+  isFormSubmitted = signal(false);
 
-  constructor(private fb: FormBuilder) {
-    this.signUpForm = this.fb.group({
-      fullName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      confirmPassword: ['', Validators.required],
-      agreeToTerms: [false, Validators.requiredTrue],
-    });
+  fb: FormBuilder = inject(FormBuilder);
+  router: Router = inject(Router);
+
+  ngOnInit(): void {
+    this.initializeForm();
   }
 
-  onSubmit() {
+  initializeForm(): void {
+    this.signUpForm = this.fb.group(
+      {
+        fullName: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email]],
+        password: [
+          '',
+          [Validators.required, Validators.pattern(this.passwordRegex)],
+        ],
+        confirmPassword: ['', Validators.required],
+        agreeToTerms: [false, Validators.requiredTrue],
+      },
+      {
+        validators: passwordMatchValidator(),
+      },
+    );
+  }
+
+  onSubmit(): void {
     if (this.signUpForm.valid) {
-      console.log('Form submitted:', this.signUpForm.value);
-    } else {
-      console.log('Form is invalid');
-      Object.keys(this.signUpForm.controls).forEach((key) => {
-        const control = this.signUpForm.get(key);
-        if (control?.invalid) {
-          control.markAsTouched();
-        }
-      });
+      this.isFormSubmitted.set(true);
+      this.router.navigate(['/home']);
     }
   }
 }

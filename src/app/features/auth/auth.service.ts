@@ -9,22 +9,25 @@ import { SetAuthToken, ClearAuth } from '@core/store/auth';
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly API_URL = 'VALID_API_URL';
-  private readonly AUTH_TOKEN_KEY = '';
+  readonly #API_URL = 'VALID_API_URL';
+  readonly #AUTH_TOKEN_KEY = '';
 
-  private readonly http: HttpClient = inject(HttpClient);
-  private readonly store: Store = inject(Store);
+  readonly #http: HttpClient = inject(HttpClient);
+  readonly #store: Store = inject(Store);
 
   //TODO: rewrite/refactor methods according to the API
   async login(credentials: LoginCredentials): Promise<void> {
     try {
       const response = await firstValueFrom(
-        this.http.post<AuthResponse>(`${this.API_URL}/auth/login`, credentials),
+        this.#http.post<AuthResponse>(
+          `${this.#API_URL}/auth/login`,
+          credentials,
+        ),
       );
 
       if (response.accessToken) {
-        this.setAuthToken(response.accessToken);
-        this.store.dispatch(new SetAuthToken(response.accessToken));
+        this.#setAuthToken(response.accessToken);
+        this.#store.dispatch(new SetAuthToken(response.accessToken));
       }
     } catch (error) {
       console.error('Login failed:', error);
@@ -33,22 +36,24 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem(this.AUTH_TOKEN_KEY);
-    this.store.dispatch(new ClearAuth());
+    localStorage.removeItem(this.#AUTH_TOKEN_KEY);
+    this.#store.dispatch(new ClearAuth());
   }
 
   getAuthToken(): string | null {
-    return localStorage.getItem(this.AUTH_TOKEN_KEY);
+    return localStorage.getItem(this.#AUTH_TOKEN_KEY);
   }
 
-  private setAuthToken(token: string): void {
-    localStorage.setItem(this.AUTH_TOKEN_KEY, token);
+  #setAuthToken(token: string): void {
+    localStorage.setItem(this.#AUTH_TOKEN_KEY, token);
   }
 
-  private checkInitialAuthState(): void {
-    const token: string | null = this.getAuthToken();
-    if (token) {
-      this.store.dispatch(new SetAuthToken(token));
-    }
-  }
+  // not sure if it's gonna be used, comment out for now
+
+  // #checkInitialAuthState(): void {
+  //   const token: string | null = this.getAuthToken();
+  //   if (token) {
+  //     this.#store.dispatch(new SetAuthToken(token));
+  //   }
+  // }
 }

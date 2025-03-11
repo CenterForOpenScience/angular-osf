@@ -6,6 +6,8 @@
   padding: 0.7rem 1.15rem;
   font-size: 1rem;
   background-color: var.$pr-blue-1;
+  color: var.$white;
+  text-decoration: none;
 
   .p-button-label {
     font-weight: 700;
@@ -89,7 +91,8 @@
 }
 
 .btn-icon-text,
-.btn-icon-text-success {
+.btn-icon-text-success,
+.form-btn {
   .p-button {
     background-color: transparent;
     color: var.$pr-blue-1;
@@ -123,6 +126,28 @@
 
     &:hover {
       color: var.$green-3;
+    }
+  }
+}
+
+.btn-full-width {
+  .p-button {
+    width: 100%;
+  }
+}
+
+.form-btn {
+  .p-button {
+    @include mix.flex-center;
+    gap: 0.7rem;
+    color: var.$dark-blue-1;
+
+    &:hover {
+      color: var.$dark-blue-2;
+    }
+
+    .p-button-label {
+      font-weight: 400;
     }
   }
 }

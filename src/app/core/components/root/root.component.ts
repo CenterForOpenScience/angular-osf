@@ -24,6 +24,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RootComponent {
-  private isPortrait$ = inject(IS_PORTRAIT);
-  isPortrait = toSignal(this.isPortrait$);
+  #isPortrait$ = inject(IS_PORTRAIT);
+  isPortrait = toSignal(this.#isPortrait$);
 }

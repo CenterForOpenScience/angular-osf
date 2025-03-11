@@ -1,5 +1,113 @@
 <section class="sign-up-container">
   <h2>Create A Free Account</h2>
 
-  <form [formGroup]="signUpForm"></form>
+  <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
+    <div class="btn-group">
+      <p-button label="Sign up through ORCID" class="form-btn btn-full-width">
+        <!--TODO change img tags to icons(fantasticon)-->
+
+        <!--<i class="osf-icon-orcid"></i>-->
+        <img
+          ngSrc="assets/images/orcid.svg"
+          alt="Orchid icon"
+          height="20"
+          width="20"
+        />
+      </p-button>
+      <p-button
+        label="Sign up through Institution"
+        class="form-btn btn-full-width"
+      >
+        <i class="osf-icon-institutions"></i>
+      </p-button>
+    </div>
+
+    <p-divider align="center">
+      <span class="divider-text">or</span>
+    </p-divider>
+
+    <div class="form-fields">
+      <div class="field">
+        <label for="fullName">Full Name</label>
+        <input
+          id="fullName"
+          type="text"
+          pInputText
+          formControlName="fullName"
+          placeholder="John Doe"
+          autocomplete="full-name"
+        />
+      </div>
+
+      <div class="field">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          pInputText
+          formControlName="email"
+          placeholder="email@example.com"
+          autocomplete="off"
+        />
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <p-password
+          id="password"
+          formControlName="password"
+          [toggleMask]="true"
+          [feedback]="false"
+          autocomplete="new-password"
+        ></p-password>
+        @if (
+          signUpForm.controls["password"].errors &&
+          signUpForm.get("password")?.touched
+        ) {
+          <small class="text-danger">
+            Your password needs to be at least 8 characters long, include both
+            lower- and upper-case characters, and have at least one number or
+            special character
+          </small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="confirmPassword">Confirm Password</label>
+        <p-password
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          [toggleMask]="true"
+          [feedback]="false"
+          autocomplete="new-password"
+        ></p-password>
+        @if (
+          signUpForm.get("confirmPassword")?.errors?.["passwordMismatch"] &&
+          signUpForm.get("confirmPassword")?.touched
+        ) {
+          <small class="text-danger">Passwords must match</small>
+        }
+      </div>
+
+      <div class="field-checkbox">
+        <p-checkbox
+          formControlName="agreeToTerms"
+          [binary]="true"
+          id="agreeToTerms"
+        ></p-checkbox>
+        <label for="agreeToTerms">
+          I agree to the
+          <a routerLink="/terms-of-use">Terms of Use</a> and
+          <a routerLink="/privacy-policy">Privacy Policy</a>
+        </label>
+      </div>
+    </div>
+
+    <p-button
+      class="btn-full-width"
+      type="submit"
+      label="Sign Up"
+      [disabled]="!signUpForm.valid"
+    ></p-button>
+  </form>
 </section>
