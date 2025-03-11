@@ -4,13 +4,15 @@
 :host {
   @include mix.flex-column-center;
   flex: 1;
+  background: url("/assets/images/sign-up-background.png") center no-repeat;
+  background-size: cover;
 
   .sign-up-container {
     @include mix.flex-column;
     flex: 1;
     color: var.$dark-blue-1;
     width: 32rem;
-    margin: 2rem 0;
+    margin: 6.5rem 0 2rem 0;
     padding: 2rem;
     background: white;
     border-radius: 0.6rem;

@@ -1,3 +1,3 @@
-<a routerLink="/sign-up" class="p-button"> Sign Up </a>
+<a [routerLink]="authButtonLink()" class="p-button">{{ authButtonText() }}</a>
 
 <p-button label="Donate" severity="contrast" />
