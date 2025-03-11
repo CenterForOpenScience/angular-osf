@@ -39,6 +39,7 @@
         width: 2.6rem;
         border-radius: 0.5rem;
         background-color: var.$pr-blue-1;
+        text-decoration: none;
 
         i {
           color: white;
@@ -50,7 +51,7 @@
 
   .footer-secondary-nav {
     height: 2.6rem;
-    background: var.$gradient-3;
+    background: var.$bg-blue-2;
 
     .footer-copyright {
       @include mix.flex-center;

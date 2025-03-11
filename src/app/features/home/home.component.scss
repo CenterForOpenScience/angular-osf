@@ -7,59 +7,38 @@
   align-items: $align;
 }
 
-@mixin button-style(
-  $bg-color: var.$pr-blue-1,
-  $text-color: white,
-  $radius: 8px
-) {
-  font-family: var.$openSans;
-  font-weight: 700;
-  font-size: 1rem;
-  border-radius: $radius;
-  color: $text-color;
-  background-color: $bg-color;
-  border: none;
-  box-shadow: none;
-  cursor: pointer;
-}
-
 :host {
   @include flex-container(column);
 
   .dashboard-header {
     @include flex-container(row, start);
     width: 100%;
-    padding: 100px 24px 48px 24px;
+    padding: 7.14rem 1.71rem 3.43rem 1.71rem;
     background: var.$gradient-1;
 
     .dashboard-title {
-      font-family: var.$openSans;
-      font-size: 24px;
+      font-size: 1.71rem;
       color: var.$dark-blue-1;
       font-weight: 700;
-      margin-left: 12px;
+      margin-left: 0.86rem;
     }
 
-    .create-project-button {
-      @include button-style;
-      width: 164px;
-      height: 44px;
+    p-button {
       margin-left: auto;
     }
   }
 
   .quick-search-container {
     background: white;
-    padding: 24px;
+    padding: 1.71rem;
     width: 100%;
 
     .text-center {
-      font-family: var.$openSans;
       font-size: 1rem;
       font-weight: 400;
       color: var.$dark-blue-1;
       text-align: center;
-      margin-bottom: 48px;
+      margin-bottom: 3.43rem;
 
       a {
         color: var.$pr-blue-1;
@@ -70,23 +49,23 @@
       @include flex-container(row, flex-start, center);
       position: relative;
 
-      img {
+      i {
         position: absolute;
-        left: 12px;
+        left: 0.86rem;
         color: var.$dark-blue-1;
+        font-size: 1.1rem;
       }
 
       .search-input {
         width: 100%;
         background: white;
         border: 1px solid var.$grey-2;
-        border-radius: 8px;
-        font-family: var.$openSans;
+        border-radius: 0.57rem;
         font-size: 1.1rem;
         font-weight: 400;
-        padding-left: 40px;
+        padding-left: 2.86rem;
         color: var.$dark-blue-1;
-        height: 46px;
+        height: 3.29rem;
       }
     }
   }
@@ -94,15 +73,21 @@
   .public-projects-container {
     width: 100%;
     background: var.$gradient-1;
-    height: 204px;
-    padding: 120px 0 48px 24px;
+    height: 14.57rem;
+    padding: 8.57rem 0 3.43rem 1.71rem;
+    display: flex;
+    flex-direction: row;
 
     h1 {
-      font-family: var.$openSans;
-      font-size: 24px;
       color: var.$dark-blue-1;
       font-weight: 700;
       margin: 0;
+    }
+
+    i {
+      color: var.$dark-blue-1;
+      font-size: 2.3rem;
+      margin-right: 0.86rem;
     }
   }
 
@@ -111,18 +96,16 @@
     display: flex;
     flex-direction: row;
     background: white;
-    padding: 24px;
-    column-gap: 24px;
+    padding: 1.71rem;
+    column-gap: 1.71rem;
 
     .news-section {
       display: flex;
       flex-direction: column;
-      row-gap: 12px;
+      row-gap: 0.86rem;
       width: 50%;
 
       h2 {
-        font-family: var.$openSans;
-        font-size: 18px;
         color: var.$dark-blue-1;
         font-weight: 700;
         margin: 0;
@@ -130,26 +113,24 @@
 
       .news-block {
         border: 1px solid var.$grey-2;
-        border-radius: 12px;
-        padding: 24px;
+        border-radius: 0.86rem;
+        padding: 1.71rem;
 
         p {
           margin: 0 0 0 0;
         }
 
         .title {
-          font-family: var.$openSans;
-          font-size: 18px;
+          font-size: 1.29rem;
           color: var.$dark-blue-1;
           font-weight: 700;
         }
 
         .authors {
-          font-family: var.$openSans;
           font-size: 1rem;
           color: var.$dark-blue-1;
           font-weight: 400;
-          margin-top: 24px;
+          margin-top: 1.71rem;
         }
       }
     }
@@ -158,8 +139,8 @@
   .latest-research-container {
     width: 100%;
     background: var.$gradient-2;
-    height: 156px;
-    padding: 48px 48px 48px 24px;
+    height: 11.14rem;
+    padding: 3.43rem 3.43rem 3.43rem 1.71rem;
 
     .content {
       display: flex;
@@ -172,16 +153,12 @@
     }
 
     h1 {
-      font-family: var.$openSans;
-      font-size: 24px;
       color: var.$dark-blue-1;
       font-weight: 700;
       margin: 0;
     }
 
     h2 {
-      font-family: var.$openSans;
-      font-size: 1rem;
       color: var.$dark-blue-1;
       font-weight: 400;
       margin: 0;
@@ -191,16 +168,16 @@
       margin-left: auto;
 
       button {
-        width: 144px;
-        height: 44px;
+        width: 10.29rem;
+        height: 3.14rem;
       }
     }
   }
 
   .hosting-container {
     width: 100%;
-    height: 156px;
-    padding: 48px 48px 48px 24px;
+    height: 11.14rem;
+    padding: 3.43rem 3.43rem 3.43rem 1.71rem;
     background: url("/assets/images/hosting-background.svg") no-repeat center
       center;
     background-size: cover;
@@ -216,16 +193,12 @@
     }
 
     h1 {
-      font-family: var.$openSans;
-      font-size: 24px;
       color: var.$dark-blue-1;
       font-weight: 700;
       margin: 0;
     }
 
     h2 {
-      font-family: var.$openSans;
-      font-size: 1rem;
       color: var.$dark-blue-1;
       font-weight: 400;
       margin: 0;
