@@ -1,0 +1,19 @@
+@use "../variables" as var;
+
+.p-message {
+  border: none;
+  color: white;
+  height: 3rem;
+}
+
+.p-message-success {
+  background-color: var.$green-1;
+}
+
+.p-message-warn {
+  background-color: var.$yellow-1;
+}
+
+.p-message-error {
+  background-color: var.$red-1;
+}

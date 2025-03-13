@@ -20,5 +20,10 @@ export class SidenavComponent {
       label: 'Support',
       icon: 'support',
     },
+    {
+      path: '/donate',
+      label: 'Donate',
+      icon: 'donate',
+    },
   ];
 }

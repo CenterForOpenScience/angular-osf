@@ -4,19 +4,24 @@
 :host {
   @include mix.flex-column-center;
   flex: 1;
-  background: url("/assets/images/sign-up-background.png") center no-repeat;
+  background: url("/assets/images/auth-background.png") center no-repeat;
   background-size: cover;
 
-  .sign-up-container {
+  .sign-up-container,
+  .message-container {
     @include mix.flex-column;
-    flex: 1;
     color: var.$dark-blue-1;
     width: 32rem;
-    margin: 6.5rem 0 2rem 0;
+    margin: 4.5rem 0 2rem 0;
     padding: 2rem;
     background: white;
     border-radius: 0.6rem;
     box-shadow: 0 2px 4px var.$grey-outline;
+
+    p {
+      text-align: center;
+      margin-top: 1rem;
+    }
 
     h2 {
       text-align: center;
@@ -77,5 +82,13 @@
         }
       }
     }
+  }
+
+  .sign-up-container {
+    flex: 1;
+  }
+
+  .message-container {
+    margin-top: 40vh;
   }
 }

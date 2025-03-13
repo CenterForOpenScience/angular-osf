@@ -10,12 +10,6 @@
           [routerLinkActiveOptions]="{ exact: true }"
         >
           @if (item.icon) {
-            <!--            <img-->
-            <!--              [ngSrc]="item.icon"-->
-            <!--              [alt]="item.label + ' icon'"-->
-            <!--              width="20"-->
-            <!--              height="20"-->
-            <!--            />-->
             <i [class]="'osf-icon-' + item.icon"></i>
           }
           <span>{{ item.label }}</span>

@@ -13,6 +13,7 @@ import { DividerModule } from 'primeng/divider';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { PASSWORD_REGEX, passwordMatchValidator } from './sign-up.helper';
 import { Router, RouterLink } from '@angular/router';
+import { PasswordInputHintComponent } from '@shared/components/password-input-hint/password-input-hint.component';
 
 @Component({
   selector: 'osf-sign-up',
@@ -27,6 +28,7 @@ import { Router, RouterLink } from '@angular/router';
     DividerModule,
     NgOptimizedImage,
     RouterLink,
+    PasswordInputHintComponent,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',

@@ -16,6 +16,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'forgot-password',
+        loadComponent: () =>
+          import(
+            './features/auth/forgot-password/forgot-password.component'
+          ).then((mod) => mod.ForgotPasswordComponent),
+      },
+      {
+        path: 'reset-password',
+        loadComponent: () =>
+          import(
+            './features/auth/reset-password/reset-password.component'
+          ).then((mod) => mod.ResetPasswordComponent),
+      },
+      {
         path: 'home',
         loadComponent: () =>
           import('./features/home/home.component').then(
