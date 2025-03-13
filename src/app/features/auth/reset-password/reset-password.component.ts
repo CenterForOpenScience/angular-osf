@@ -1,11 +1,6 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Button } from 'primeng/button';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Password } from 'primeng/password';
 import { RouterLink } from '@angular/router';
 import {
@@ -13,6 +8,7 @@ import {
   passwordMatchValidator,
 } from '../sign-up/sign-up.helper';
 import { PasswordInputHintComponent } from '@shared/components/password-input-hint/password-input-hint.component';
+import { ResetPasswordFormGroupType } from './reset-password-form-group.type';
 
 @Component({
   selector: 'osf-reset-password',
@@ -27,30 +23,22 @@ import { PasswordInputHintComponent } from '@shared/components/password-input-hi
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
 })
-export class ResetPasswordComponent implements OnInit {
-  private fb = inject(FormBuilder);
-  passwordRegex: RegExp = PASSWORD_REGEX;
-  resetPasswordForm: FormGroup = new FormGroup({});
+export class ResetPasswordComponent {
+  #fb = inject(FormBuilder);
+  passwordRegex = PASSWORD_REGEX;
+  resetPasswordForm: ResetPasswordFormGroupType = this.#fb.group(
+    {
+      newPassword: [
+        '',
+        [Validators.required, Validators.pattern(this.passwordRegex)],
+      ],
+      confirmNewPassword: ['', Validators.required],
+    },
+    {
+      validators: passwordMatchValidator(),
+    },
+  );
   isFormSubmitted = signal(false);
-
-  ngOnInit(): void {
-    this.initializeForm();
-  }
-
-  private initializeForm(): void {
-    this.resetPasswordForm = this.fb.group(
-      {
-        password: [
-          '',
-          [Validators.required, Validators.pattern(this.passwordRegex)],
-        ],
-        confirmPassword: ['', Validators.required],
-      },
-      {
-        validators: passwordMatchValidator(),
-      },
-    );
-  }
 
   onSubmit(): void {
     if (this.resetPasswordForm.valid) {

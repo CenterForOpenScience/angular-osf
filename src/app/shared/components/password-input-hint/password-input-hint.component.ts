@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+import { BooleanOrNullOrUndefined } from '@core/helpers/types.helper';
 
 @Component({
   selector: 'osf-password-input-hint',
@@ -7,5 +8,5 @@ import { Component, input } from '@angular/core';
   styleUrl: './password-input-hint.component.scss',
 })
 export class PasswordInputHintComponent {
-  isError = input<boolean | null | undefined>(false);
+  isError = input<BooleanOrNullOrUndefined>(false);
 }
