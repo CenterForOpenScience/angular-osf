@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { SocialIcon } from '@osf/shared/entities/social-icon.interface';
 import { RouterLink } from '@angular/router';
+import { IS_PORTRAIT, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   standalone: true,
@@ -11,6 +13,11 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
+  #isPortrait$ = inject(IS_PORTRAIT);
+  #isXSmall$ = inject(IS_XSMALL);
+  isPortrait = toSignal(this.#isPortrait$);
+  isXSmall = toSignal(this.#isXSmall$);
+
   protected readonly socialIcons: SocialIcon[] = [
     {
       name: 'twitter',

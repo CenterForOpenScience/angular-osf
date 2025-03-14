@@ -1,29 +1,13 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
-import { NavItem } from '@osf/shared/entities/nav-item.interface';
+import { NavMenuComponent } from '@core/components/nav-menu/nav-menu.component';
 
 @Component({
   standalone: true,
   selector: 'osf-sidenav',
-  imports: [RouterLink, RouterLinkActive, NgOptimizedImage],
+  imports: [NgOptimizedImage, NavMenuComponent],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SidenavComponent {
-  protected readonly navItems: NavItem[] = [
-    { path: '/home', label: 'Home', icon: 'home' },
-    { path: '', label: 'Search OSF', icon: 'search' },
-    {
-      path: '/support',
-      label: 'Support',
-      icon: 'support',
-    },
-    {
-      path: '/donate',
-      label: 'Donate',
-      icon: 'donate',
-    },
-  ];
-}
+export class SidenavComponent {}

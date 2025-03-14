@@ -1,20 +1,2 @@
 <img ngSrc="assets/images/logo.svg" alt="OSF Logo" height="36" width="106" />
-<nav class="sidebar-nav">
-  <ul>
-    @for (item of navItems; track item.path) {
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          [routerLink]="item.path"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          @if (item.icon) {
-            <i [class]="'osf-icon-' + item.icon"></i>
-          }
-          <span>{{ item.label }}</span>
-        </a>
-      </li>
-    }
-  </ul>
-</nav>
+<osf-nav-menu />

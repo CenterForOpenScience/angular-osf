@@ -7,6 +7,7 @@
 @use "./overrides/divider";
 @use "./overrides/table";
 @use "./overrides/message";
+@use "./overrides/drawer";
 
 @layer base, primeng, reset;
 

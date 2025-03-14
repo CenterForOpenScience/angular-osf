@@ -1,7 +1,17 @@
 @use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
 
 :host {
-  background: var.$dark-blue-1;
-  height: 96px;
-  color: white;
+  z-index: 2000;
+
+  .nav-container {
+    @include mix.flex-center-between;
+    background: var.$dark-blue-1;
+    padding: 1.8rem;
+    color: white;
+
+    .topnav-icon {
+      font-size: 2.1rem;
+    }
+  }
 }

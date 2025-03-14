@@ -5,6 +5,8 @@ import { Button } from 'primeng/button';
 import { MessageInfo } from './message-info.model';
 import { Message } from 'primeng/message';
 import { ForgotPasswordFormGroupType } from '@osf/features/auth/forgot-password/forgot-password-form-group.type';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'osf-forgot-password',
@@ -15,9 +17,11 @@ import { ForgotPasswordFormGroupType } from '@osf/features/auth/forgot-password/
 })
 export class ForgotPasswordComponent {
   #fb = inject(FormBuilder);
+  #isXSmall$ = inject(IS_XSMALL);
   forgotPasswordForm: ForgotPasswordFormGroupType = this.#fb.group({
     email: ['', [Validators.required, Validators.email]],
   });
+  isXSmall = toSignal(this.#isXSmall$);
   message = signal<MessageInfo | null>(null);
 
   onSubmit(): void {

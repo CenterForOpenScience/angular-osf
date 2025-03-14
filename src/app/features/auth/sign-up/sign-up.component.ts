@@ -14,6 +14,8 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { PASSWORD_REGEX, passwordMatchValidator } from './sign-up.helper';
 import { Router, RouterLink } from '@angular/router';
 import { PasswordInputHintComponent } from '@shared/components/password-input-hint/password-input-hint.component';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'osf-sign-up',
@@ -36,6 +38,8 @@ import { PasswordInputHintComponent } from '@shared/components/password-input-hi
 export class SignUpComponent implements OnInit {
   signUpForm: FormGroup = new FormGroup({});
   passwordRegex: RegExp = PASSWORD_REGEX;
+  #isXSmall$ = inject(IS_XSMALL);
+  isXSmall = toSignal(this.#isXSmall$);
   isFormSubmitted = signal(false);
 
   fb: FormBuilder = inject(FormBuilder);
@@ -66,7 +70,6 @@ export class SignUpComponent implements OnInit {
   onSubmit(): void {
     if (this.signUpForm.valid) {
       this.isFormSubmitted.set(true);
-      this.router.navigate(['/home']);
     }
   }
 }

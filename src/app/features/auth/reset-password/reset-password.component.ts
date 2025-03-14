@@ -9,6 +9,8 @@ import {
 } from '../sign-up/sign-up.helper';
 import { PasswordInputHintComponent } from '@shared/components/password-input-hint/password-input-hint.component';
 import { ResetPasswordFormGroupType } from './reset-password-form-group.type';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'osf-reset-password',
@@ -25,6 +27,7 @@ import { ResetPasswordFormGroupType } from './reset-password-form-group.type';
 })
 export class ResetPasswordComponent {
   #fb = inject(FormBuilder);
+  #isXSmall$ = inject(IS_XSMALL);
   passwordRegex = PASSWORD_REGEX;
   resetPasswordForm: ResetPasswordFormGroupType = this.#fb.group(
     {
@@ -39,6 +42,7 @@ export class ResetPasswordComponent {
     },
   );
   isFormSubmitted = signal(false);
+  isXSmall = toSignal(this.#isXSmall$);
 
   onSubmit(): void {
     if (this.resetPasswordForm.valid) {

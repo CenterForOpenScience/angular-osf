@@ -10,6 +10,11 @@
   align-items: center;
 }
 
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
 @mixin flex-align-center {
   display: flex;
   align-items: center;

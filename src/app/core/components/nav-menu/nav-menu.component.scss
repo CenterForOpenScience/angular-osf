@@ -1,0 +1,27 @@
+@use "assets/styles/variables" as var;
+:host {
+  .nav-menu {
+    width: 100%;
+    max-width: 15rem;
+
+    ul {
+      .nav-link {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding-left: 1rem;
+        width: 100%;
+        height: 3.4rem;
+        gap: 0.5rem;
+        color: var.$white;
+        text-decoration: none;
+      }
+
+      .active {
+        font-weight: 700;
+        background-color: var.$dark-blue-2;
+        border-radius: 0.5rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,15 @@
+@use "../variables" as var;
+
+.p-drawer.p-drawer-active.p-drawer-left {
+  width: 100%;
+  background-color: var.$dark-blue-1;
+  padding-left: 1.8rem;
+}
+
+.p-drawer-header {
+  height: 6.17rem;
+}
+
+.p-drawer-content {
+  padding: 0;
+}

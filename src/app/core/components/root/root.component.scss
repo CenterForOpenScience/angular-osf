@@ -1,39 +1,47 @@
 @use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
 
-.layout-desktop {
-  display: flex;
+:host {
   height: 100vh;
-  background-color: #24384a;
+  display: flex;
 
-  .content-wrapper {
+  .layout-desktop {
+    display: flex;
     flex: 1;
-    overflow-y: auto;
-    margin: 6px;
-    background-color: white;
-    border-radius: 1rem;
+    background-color: var.$dark-blue-1;
 
-    .content {
-      @include mix.flex-column;
-      min-height: 100%;
-      position: relative;
+    .content-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      margin: 6px;
+      background-color: white;
+      border-radius: 1rem;
+
+      .content {
+        @include mix.flex-column;
+        min-height: 100%;
+        position: relative;
+      }
     }
   }
-}
 
-.layout-tablet {
-  @include mix.flex-center;
-  height: 100vh;
-
-  .content-wrapper {
+  .layout-tablet {
+    @include mix.flex-center;
     flex: 1;
-    overflow-y: auto;
-    @include mix.flex-column;
-    width: 100%;
 
-    .content {
-      position: relative;
+    .content-wrapper {
       @include mix.flex-column;
+      width: 100%;
+      height: 100%;
       flex: 1;
+      background-color: white;
+      overflow-y: auto;
+
+      .content {
+        position: relative;
+        @include mix.flex-column;
+        flex: 1;
+      }
     }
   }
 }
