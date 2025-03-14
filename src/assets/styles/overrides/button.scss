@@ -132,7 +132,11 @@
 
 .topnav-btn {
   .p-button {
-    padding: 0.5rem;
+    padding: 0;
+
+    &:hover {
+      background: none;
+    }
   }
 }
 
