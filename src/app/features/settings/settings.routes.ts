@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { SettingsContainerComponent } from '@osf/features/settings/settings-container.component';
+import { developerAppsRoute } from '@osf/features/settings/developer-apps/developer-apps.route';
 
 export const settingsRoutes: Routes = [
   {
@@ -20,13 +21,7 @@ export const settingsRoutes: Routes = [
             (c) => c.AccountSettingsComponent,
           ),
       },
-      {
-        path: 'developer-apps',
-        loadComponent: () =>
-          import('./developer-apps/developer-apps.component').then(
-            (mod) => mod.DeveloperAppsComponent,
-          ),
-      },
+      developerAppsRoute,
     ],
   },
 ];

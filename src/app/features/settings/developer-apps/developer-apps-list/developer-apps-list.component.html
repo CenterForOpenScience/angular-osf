@@ -1,9 +1,4 @@
-<section class="header">
-  <i class="osf-icon-settings"></i>
-  <h1>Developer apps</h1>
-  <p-button>Create Developer App</p-button>
-</section>
-<section class="content">
+<section class="content-container">
   <p>
     Third-party web applications can connect to the OSF on behalf of users via
     the OAuth 2.0 web application flow.
@@ -13,12 +8,14 @@
     @for (developerApp of developerApplications; track $index) {
       <p-card>
         <section class="card-body">
-          <h2>{{ developerApp }}</h2>
+          <a [routerLink]="['1', 'details']">
+            <h2>{{ developerApp }}</h2>
+          </a>
           <p-button
+            label="Delete"
             severity="danger"
             (onClick)="onDeleteDeveloperApp(developerApp)"
-            >Delete</p-button
-          >
+          />
         </section>
       </p-card>
     }

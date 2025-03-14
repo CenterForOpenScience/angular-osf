@@ -1,0 +1,22 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.content-container {
+  margin: 1.7rem;
+  color: var.$dark-blue-1;
+
+  p {
+    margin-bottom: 1.7rem;
+  }
+
+  .applications-container {
+    @include mix.flex-column;
+    gap: 0.85rem;
+
+    p-card {
+      .card-body {
+        @include mix.flex-center-between;
+      }
+    }
+  }
+}
