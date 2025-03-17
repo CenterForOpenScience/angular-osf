@@ -1,17 +1,30 @@
 @use "assets/styles/variables" as var;
 
-@mixin flex-container($direction: row, $justify: flex-start, $align: center) {
-  display: flex;
-  flex-direction: $direction;
-  justify-content: $justify;
-  align-items: $align;
-}
-
 :host {
-  @include flex-container(column);
+  display: flex;
+  flex-direction: column;
 
   .home-container {
     margin-top: 4.5rem;
+  }
+
+  .dashboard-header {
+    display: flex;
+    justify-content: start;
+    width: 100%;
+    padding: 7.14rem 1.71rem 3.43rem 1.71rem;
+    background: var.$gradient-1;
+
+    .dashboard-title {
+      font-size: 1.71rem;
+      color: var.$dark-blue-1;
+      font-weight: 700;
+      margin-left: 0.86rem;
+    }
+
+    p-button {
+      margin-left: auto;
+    }
   }
 
   .quick-search-container {
@@ -28,30 +41,6 @@
 
       a {
         color: var.$pr-blue-1;
-      }
-    }
-
-    .search-container {
-      @include flex-container(row, flex-start, center);
-      position: relative;
-
-      i {
-        position: absolute;
-        left: 0.86rem;
-        color: var.$dark-blue-1;
-        font-size: 1.1rem;
-      }
-
-      .search-input {
-        width: 100%;
-        background: white;
-        border: 1px solid var.$grey-2;
-        border-radius: 0.57rem;
-        font-size: 1.1rem;
-        font-weight: 400;
-        padding-left: 2.86rem;
-        color: var.$dark-blue-1;
-        height: 3.29rem;
       }
     }
   }

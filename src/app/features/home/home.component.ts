@@ -3,12 +3,13 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { TableModule } from 'primeng/table';
 import { Project } from '@osf/features/home/models/project.entity';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 import { IS_PORTRAIT, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Carousel } from 'primeng/carousel';
 
 @Component({
   selector: 'osf-home',
@@ -21,6 +22,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
     RouterLink,
     Button,
     SubHeaderComponent,
+    Carousel,
+    NgOptimizedImage,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

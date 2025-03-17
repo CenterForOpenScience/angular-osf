@@ -1,0 +1,18 @@
+@use "../variables" as var;
+
+.p-carousel {
+  .p-carousel-prev-button,
+  .p-carousel-next-button {
+    display: none;
+  }
+
+  .p-carousel-indicator-active {
+    .p-carousel-indicator-button {
+      background: var.$pr-blue-1;
+    }
+  }
+
+  .p-carousel-indicator-button {
+    background: var.$grey-2;
+  }
+}

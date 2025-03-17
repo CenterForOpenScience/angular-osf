@@ -6,6 +6,7 @@ import { Button } from 'primeng/button';
   imports: [Button],
   templateUrl: './sub-header.component.html',
   styleUrl: './sub-header.component.scss',
+  standalone: true,
 })
 export class SubHeaderComponent {
   showButton = input<boolean>(false);

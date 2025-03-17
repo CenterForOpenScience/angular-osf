@@ -1,0 +1,204 @@
+@use "assets/styles/variables" as var;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  background: var.$white;
+  padding-top: 7.14rem;
+
+  h3 {
+    font-weight: 400;
+    margin-top: 0.86rem;
+  }
+
+  span {
+    color: var.$pr-blue-1;
+  }
+
+  .better-way-container {
+    margin: 0.49rem 0 4.2rem 0.12rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .text-container {
+      display: flex;
+      flex-direction: column;
+      padding-top: 0.63rem;
+      width: 40.29rem;
+    }
+
+    .image-container {
+      display: flex;
+      justify-content: center;
+
+      img {
+        width: 42.07rem;
+        height: 26.86rem;
+      }
+    }
+  }
+
+  .discover-research-container {
+    width: 100%;
+    background: var.$gradient-1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8.57rem 1.71rem 8.57rem 1.71rem;
+    row-gap: 3.43rem;
+
+    .text-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+
+  .supports-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 4.57rem 1.71rem 8.57rem 1.71rem;
+    row-gap: 3.43rem;
+
+    .content-container {
+      display: flex;
+
+      .left-bar {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        row-gap: 1.71rem;
+        padding-right: 3.57rem;
+
+        .info-section {
+          display: flex;
+
+          .icons-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding-left: 0.86rem;
+            padding-right: 0.86rem;
+          }
+
+          .text-wrapper {
+            display: flex;
+            flex-direction: column;
+            row-gap: 0.43rem;
+            padding-top: 0.86rem;
+
+            h3 {
+              margin-top: 0;
+              line-height: 1.71rem;
+              font-weight: 400;
+              text-transform: none;
+            }
+          }
+        }
+      }
+
+      .right-bar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50%;
+
+        iframe {
+          width: 38.36rem;
+          height: 21.57rem;
+          border: none;
+        }
+      }
+    }
+
+    .learn-more-container {
+      display: flex;
+      justify-content: center;
+    }
+  }
+
+  .others-saying-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 2.86rem;
+  }
+
+  .carousel-container {
+    width: 100%;
+    padding-bottom: 8.57rem;
+    flex: 0;
+
+    .slide {
+      position: relative;
+      background: var.$bg-blue-3;
+      height: 28.57rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .user-image {
+        height: 26.57rem;
+        align-self: end;
+      }
+
+      .quote-icon {
+        width: 2.57rem;
+      }
+
+      .content-container {
+        display: flex;
+        flex-direction: column;
+        .text-container {
+          padding-left: 3.43rem;
+          width: 32.79rem;
+
+          .title-container {
+            margin-bottom: 3.43rem;
+          }
+
+          .author {
+            font-weight: 600;
+          }
+        }
+      }
+    }
+  }
+
+  .integrations-title {
+    text-align: center;
+  }
+
+  .integrations-main {
+    display: flex;
+    flex-direction: column;
+    padding-top: 3.43rem;
+    padding-bottom: 8.57rem;
+    row-gap: 1.71rem;
+
+    .integrations-container {
+      display: flex;
+      justify-content: space-between;
+
+      .integrations-bundle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        row-gap: 1.71rem;
+        width: 25%;
+      }
+
+      .integrations-bundle-border {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        row-gap: 1.71rem;
+        width: 25%;
+        border-right: 1px solid var.$grey-2;
+      }
+    }
+  }
+}
