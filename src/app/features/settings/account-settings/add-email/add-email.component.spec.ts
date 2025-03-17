@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SettingsHeaderComponent } from './settings-header.component';
+import { AddEmailComponent } from './add-email.component';
 
-describe('SettingsHeaderComponent', () => {
-  let component: SettingsHeaderComponent;
-  let fixture: ComponentFixture<SettingsHeaderComponent>;
+describe('AddEmailComponent', () => {
+  let component: AddEmailComponent;
+  let fixture: ComponentFixture<AddEmailComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SettingsHeaderComponent],
+      imports: [AddEmailComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SettingsHeaderComponent);
+    fixture = TestBed.createComponent(AddEmailComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,34 +1,38 @@
 @use "assets/styles/variables" as var;
 
-.container {
-  margin-top: 4.5rem;
-  padding: 1.7rem;
-  color: var.$dark-blue-1;
+:host {
+  background-color: white;
 
-  h1 {
-    margin-bottom: 3.4rem;
-  }
+  .container {
+    margin-top: 4.5rem;
+    padding: 1.7rem;
+    color: var.$dark-blue-1;
 
-  h2 {
-    margin-bottom: 0.9rem;
-  }
+    h1 {
+      margin-bottom: 3.4rem;
+    }
 
-  h4 {
-    font-size: 1rem;
-    font-weight: 400;
-  }
+    h2 {
+      margin-bottom: 0.9rem;
+    }
 
-  ul,
-  p {
-    margin-bottom: 1.7rem;
-  }
+    h4 {
+      font-size: 1rem;
+      font-weight: 400;
+    }
 
-  li {
-    margin-left: 1.7rem;
-    list-style: initial;
-  }
+    ul,
+    p {
+      margin-bottom: 1.7rem;
+    }
 
-  a {
-    font-weight: 700;
+    li {
+      margin-left: 1.7rem;
+      list-style: initial;
+    }
+
+    a {
+      font-weight: 700;
+    }
   }
 }

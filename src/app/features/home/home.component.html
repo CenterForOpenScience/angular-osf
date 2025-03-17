@@ -8,114 +8,121 @@
 <!--<p-button label="Default" severity="info"/>-->
 <!--<p-button label="Default" class="btn-icon-text"/>-->
 <!--<p-button label="Default" class="btn-icon-text-success"/>-->
-<div class="dashboard-header">
-  <img
-    ngSrc="assets/icons/system/home.svg"
-    alt="dashboard"
-    width="36"
-    height="36"
+
+<section
+  class="home-container"
+  [class.mobile]="isXSmall()"
+  [class.portrait]="isPortrait()"
+>
+  <osf-sub-header
+    [showButton]="true"
+    [title]="'Dashboard'"
+    [icon]="'home'"
+    [buttonLabel]="'Create New Project'"
   />
-  <span class="dashboard-title">Dashboard</span>
-  <p-button>Create New Project</p-button>
-</div>
 
-<div class="quick-search-container">
-  <p class="text-center">
-    Go to <a routerLink="/myprojects">My Projects</a> to organize your work or
-    <a routerLink="/search">search</a> OSF
-  </p>
+  <div class="quick-search-container">
+    <p class="text-center">
+      Go to <a routerLink="/myprojects">My Projects</a> to organize your work or
+      <a routerLink="/search">search</a> OSF
+    </p>
 
-  <div class="search-container">
+    <div class="search-container">
+      <i class="osf-icon-search"></i>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search in your projects"
+        pInputText
+        [(ngModel)]="searchValue"
+      />
+    </div>
+
+    <p-table
+      [value]="filteredProjects()"
+      [rows]="5"
+      [rowsPerPageOptions]="[2, 5, 10]"
+      [paginator]="true"
+      [resizableColumns]="true"
+      [autoLayout]="true"
+      [scrollable]="true"
+    >
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="title">
+            Title
+            <p-sortIcon field="title" />
+          </th>
+          <th>Contributors</th>
+          <th pSortableColumn="modified">
+            Modified
+            <p-sortIcon field="modified" />
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-project>
+        <tr>
+          <td>{{ project.title }}</td>
+          <td>{{ getContributorsList(project) }}</td>
+          <td>{{ project.dateModified | date: "MMM d, y, h:mm a" }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="public-projects-container">
     <i class="osf-icon-search"></i>
-    <input
-      class="search-input"
-      type="text"
-      placeholder="Search in your projects"
-      pInputText
-      [(ngModel)]="searchValue"
-    />
-  </div>
-
-  <p-table
-    [value]="filteredProjects()"
-    [rows]="5"
-    [rowsPerPageOptions]="[2, 5, 10]"
-    [paginator]="true"
-    [resizableColumns]="true"
-    [autoLayout]="true"
-    [scrollable]="true"
-  >
-    <ng-template #header>
-      <tr>
-        <th pSortableColumn="title">Title <p-sortIcon field="title" /></th>
-        <th>Contributors</th>
-        <th pSortableColumn="modified">
-          Modified <p-sortIcon field="modified" />
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template #body let-project>
-      <tr>
-        <td>{{ project.title }}</td>
-        <td>{{ getContributorsList(project) }}</td>
-        <td>{{ project.dateModified | date: "MMM d, y, h:mm a" }}</td>
-      </tr>
-    </ng-template>
-  </p-table>
-</div>
-
-<div class="public-projects-container">
-  <i class="osf-icon-search"></i>
-  <div class="title-container">
-    <h1>Discover Public Projects</h1>
-  </div>
-</div>
-
-<div class="noteworthy-container">
-  <div class="news-section">
-    <h2>New And Noteworthy</h2>
-    @for (block of noteworthy; track block.title) {
-      <div class="news-block">
-        <p class="title">{{ block.title }}</p>
-        <br />
-        <p class="authors">{{ block.authors }}</p>
-      </div>
-    }
-  </div>
-  <div class="news-section">
-    <h2>Most Popular</h2>
-    @for (block of mostPopular; track block.title) {
-      <div class="news-block">
-        <p class="title">{{ block.title }}</p>
-        <br />
-        <p class="authors">{{ block.authors }}</p>
-      </div>
-    }
-  </div>
-</div>
-
-<div class="latest-research-container">
-  <div class="content">
-    <div class="text-container">
-      <h1>Browse the latest research</h1>
-      <h2>
-        Check out the latest preprints hosted on OSF covering a variety of
-        research areas
-      </h2>
+    <div class="title-container">
+      <h1>Discover Public Projects</h1>
     </div>
-    <p-button label="View Preprints" severity="success" />
   </div>
-</div>
 
-<div class="hosting-container">
-  <div class="content">
-    <div class="text-container">
-      <h1>Hosting a conference or meeting?</h1>
-      <h2>
-        Use the OSF for Meetings service to provide a central location for
-        conference submissions
-      </h2>
+  <div class="noteworthy-container">
+    <div class="news-section">
+      <h2>New And Noteworthy</h2>
+      @for (block of noteworthy; track block.title) {
+        <div class="news-block">
+          <p class="title">{{ block.title }}</p>
+          <br />
+          <p class="authors">{{ block.authors }}</p>
+        </div>
+      }
     </div>
-    <p-button label="View Meetings" severity="success" />
+    <div class="news-section">
+      <h2>Most Popular</h2>
+      @for (block of mostPopular; track block.title) {
+        <div class="news-block">
+          <p class="title">{{ block.title }}</p>
+          <br />
+          <p class="authors">{{ block.authors }}</p>
+        </div>
+      }
+    </div>
   </div>
-</div>
+
+  <div class="latest-research-container">
+    <div class="content">
+      <div class="text-container">
+        <h1>Browse the latest research</h1>
+        <h2>
+          Check out the latest preprints hosted on OSF covering a variety of
+          research areas
+        </h2>
+      </div>
+      <p-button label="View Preprints" severity="success" />
+    </div>
+  </div>
+
+  <div class="hosting-container">
+    <div class="content">
+      <div class="text-container">
+        <h1>Hosting a conference or meeting?</h1>
+        <h2>
+          Use the OSF for Meetings service to provide a central location for
+          conference submissions
+        </h2>
+      </div>
+      <p-button label="View Meetings" severity="success" />
+    </div>
+  </div>
+</section>

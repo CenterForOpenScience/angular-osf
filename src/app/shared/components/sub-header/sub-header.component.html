@@ -1,0 +1,12 @@
+<section class="sub-header">
+  <i [class]="'osf-icon-' + icon()"></i>
+  <h1>{{ title() }}</h1>
+  @if (showButton()) {
+    <div class="btn-container">
+      <p-button
+        [label]="buttonLabel()"
+        (onClick)="buttonClick.emit()"
+      ></p-button>
+    </div>
+  }
+</section>

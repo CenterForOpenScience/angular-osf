@@ -10,22 +10,8 @@
 :host {
   @include flex-container(column);
 
-  .dashboard-header {
-    @include flex-container(row, start);
-    width: 100%;
-    padding: 7.14rem 1.71rem 3.43rem 1.71rem;
-    background: var.$gradient-1;
-
-    .dashboard-title {
-      font-size: 1.71rem;
-      color: var.$dark-blue-1;
-      font-weight: 700;
-      margin-left: 0.86rem;
-    }
-
-    p-button {
-      margin-left: auto;
-    }
+  .home-container {
+    margin-top: 4.5rem;
   }
 
   .quick-search-container {
@@ -206,5 +192,9 @@
       margin-left: auto;
       align-self: center;
     }
+  }
+
+  .portrait {
+    margin-top: 0;
   }
 }

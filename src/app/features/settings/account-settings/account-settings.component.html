@@ -1,1 +1,226 @@
-<p>account-settings works!</p>
+<section class="header">
+  <i class="osf-icon-settings"></i>
+  <h1>Account settings</h1>
+</section>
+
+<section class="content">
+  <section class="account-setting">
+    <h2 class="account-setting-header">Connected Emails</h2>
+
+    <div class="account-settings-description">
+      To merge an existing account with this one or to log in with multiple
+      email addresses, add an alternate email address below. All projects and
+      components will be displayed under the email address listed as primary.
+    </div>
+
+    <div class="account-setting-emails">
+      <div class="account-setting-email">
+        <div class="account-setting-email__title">Primary Email:</div>
+
+        <div class="account-setting-email__value">email&#64;example.com</div>
+      </div>
+
+      <div class="account-setting-email">
+        <div class="account-setting-email__title">Alternate Emails:</div>
+
+        <div class="account-setting-email__value">
+          <div class="account-setting-email--readonly">
+            email&#64;example.com
+          </div>
+
+          <p-button severity="secondary"> Make Primary </p-button>
+
+          <div class="account-setting-email--readonly">
+            email&#64;example.com
+          </div>
+
+          <p-button severity="secondary"> Make Primary </p-button>
+        </div>
+      </div>
+
+      <div class="account-setting-email">
+        <div class="account-setting-email__title">Unconfirmed emails:</div>
+
+        <div class="account-setting-email__value">
+          <div class="account-setting-email--readonly">
+            email&#64;example.com
+          </div>
+
+          <p-button severity="secondary"> Resend Confirmation </p-button>
+        </div>
+      </div>
+    </div>
+
+    <div class="account-setting-action">
+      <p-button (onClick)="addEmail()" size="large"> Add Email </p-button>
+    </div>
+  </section>
+
+  <section class="account-setting">
+    <h2 class="account-settings-header">Default storage location</h2>
+
+    <div class="account-settings-description">
+      This location will be applied to new projects and components. It will not
+      affect existing projects and components.
+    </div>
+
+    <div class="account-setting-content">
+      <p-select
+        styleClass="account-setting-select"
+        size="large"
+        optionLabel="name"
+        [options]="MOCK_COUNTRIES"
+      ></p-select>
+    </div>
+
+    <div class="account-setting-action">
+      <p-button size="large"> Update Location </p-button>
+    </div>
+  </section>
+
+  <section class="account-setting">
+    <h2 class="account-setting-header">Connected identities</h2>
+
+    <div class="account-setting-description">
+      Connected identities allow you to log in to the OSF via a third-party
+      service. You can revoke these identifies.
+    </div>
+
+    <div class="account-setting-content">
+      <div class="account-setting-email--readonly">
+        ORCID: 0000 - 0003 -0199 - 7112 (pending)
+      </div>
+    </div>
+  </section>
+
+  <section class="account-setting">
+    <h2 class="account-setting-header">Affiliated institutions</h2>
+
+    <div class="account-setting-description">
+      Affiliated Institutions connect your OSF account to your institution or
+      organization. Affiliated institutions can be removed from your profile.
+    </div>
+
+    <div class="account-setting-content">
+      <div class="account-setting-email--readonly">Center for Open Science</div>
+    </div>
+  </section>
+
+  <section class="account-setting">
+    <h2 class="account-setting-header">Opt out of SHARE indexing</h2>
+
+    <div class="account-setting-description">
+      By default, OSF users are indexed into SHARE, a free, open dataset of
+      research metadata. This allows SHARE to include your user profile and
+      research in its database, which is used by search engines and other
+      services to make research more discoverable. You can opt out of this
+      indexing by checking the box below. NOTE: Public projects, files,
+      registrations, and preprints will still be indexed in SHARE. <br />
+      <a class="account-setting-link"> Learn more about SHARE </a>
+    </div>
+
+    <div class="account-setting-radio-group">
+      <div class="account-setting-radio-item">
+        <p-radio-button [formControl]="optControl"> </p-radio-button>
+
+        <label for=""> Out of SHARE Indexing </label>
+      </div>
+
+      <div class="account-setting-radio-item">
+        <p-radio-button [formControl]="optControl"> </p-radio-button>
+
+        <label for=""> Opt In To SHARE Indexing </label>
+      </div>
+    </div>
+
+    <div class="account-setting-action">
+      <p-button size="large"> Update </p-button>
+    </div>
+  </section>
+
+  <section class="account-setting">
+    <h2 class="account-setting-header">Change Password</h2>
+
+    <form [formGroup]="passwordForm" class="flex flex-column gap-3">
+      <div class="flex flex-column gap-2">
+        <label for="old-password">Old password</label>
+        <input
+          class=""
+          pInputText
+          id="old-password"
+          aria-describedby="username-help"
+          [formControlName]="AccountSettingsPasswordFormControls.OldPassword"
+        />
+        <small id="old-password-help"
+          >Enter your username to reset your password.</small
+        >
+      </div>
+
+      <div class="flex gap-2">
+        <div class="flex flex-column flex-1 gap-2">
+          <label for="new-password">New password</label>
+          <input
+            pInputText
+            id="new-password"
+            aria-describedby="username-help"
+            [formControlName]="AccountSettingsPasswordFormControls.NewPassword"
+          />
+          <small id="new-password-help"
+            >Enter your username to reset your password.</small
+          >
+        </div>
+
+        <div class="flex flex-column flex-1 gap-2">
+          <label for="confirm-password">Confirm password</label>
+          <input
+            class=""
+            pInputText
+            id="confirm-password"
+            aria-describedby="username-help"
+            [formControlName]="
+              AccountSettingsPasswordFormControls.ConfirmPassword
+            "
+          />
+          <small id="confirm-password-help"
+            >Enter your username to reset your password.</small
+          >
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <section class="account-setting">
+    <h2 class="account-setting-header">Two-factor authentication</h2>
+
+    <div class="account-setting-description">
+      Two-factor authentication protects your OSF account using both your
+      password and email.
+    </div>
+
+    <div class="account-setting-action">
+      <p-button size="large"> Configure </p-button>
+    </div>
+  </section>
+
+  <section class="account-setting">
+    <h2 class="account-setting-header">Deactivate Account</h2>
+
+    <p-message severity="error">
+      Warning: This action cannot be undone once approved.
+    </p-message>
+
+    <div class="account-setting-description">
+      Deactivating your account will remove you from all public projects to
+      which you are a contributor. Your account will no longer be associated
+      with OSF projects, and your work on the OSF will be inaccessible. If this
+      is a secondary account that you want to close, consider merging your
+      accounts.
+    </div>
+
+    <div class="account-setting-action">
+      <p-button (onClick)="deactivateAccount()" size="large">
+        Request deactivation
+      </p-button>
+    </div>
+  </section>
+</section>

@@ -3,8 +3,12 @@
 :host {
   position: absolute;
   height: 4.5rem;
-  padding-right: 1.5rem;
+  padding: 0 1.7rem;
   width: 100%;
-  @include mix.flex-center-right;
+  @include mix.flex-center-between;
   gap: 1rem;
+
+  a {
+    border-radius: 0.42rem;
+  }
 }

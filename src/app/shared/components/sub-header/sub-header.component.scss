@@ -1,0 +1,22 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
+:host {
+  width: 100%;
+
+  .sub-header {
+    @include mix.flex-align-center;
+    gap: 0.7rem;
+    padding: 2.5rem 1.7rem 3rem 1.7rem;
+    width: 100%;
+
+    i {
+      font-size: 2.6rem;
+      color: var.$dark-blue-1;
+    }
+
+    .btn-container {
+      margin-left: auto;
+    }
+  }
+}
