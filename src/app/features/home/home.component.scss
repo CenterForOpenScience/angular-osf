@@ -29,6 +29,25 @@
     }
   }
 
+  .dashboard-header {
+    display: flex;
+    justify-content: start;
+    width: 100%;
+    padding: 7.14rem 1.71rem 3.43rem 1.71rem;
+    background: var.$gradient-1;
+
+    .dashboard-title {
+      font-size: 1.71rem;
+      color: var.$dark-blue-1;
+      font-weight: 700;
+      margin-left: 0.86rem;
+    }
+
+    p-button {
+      margin-left: auto;
+    }
+  }
+
   .quick-search-container {
     background: white;
     padding: 1.71rem;
