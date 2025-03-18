@@ -1,1 +1,93 @@
-<p>developer-application-details works!</p>
+<section class="content-container">
+  <nav class="navigation-bar-container">
+    <a routerLink="/settings/developer-apps">
+      Back to list of developer apps
+    </a>
+  </nav>
+
+  <section class="tittle-container">
+    <h1>{{ developerApp().name + developerAppId() }}</h1>
+    <p-button
+      label="Delete"
+      severity="danger"
+      (click)="onDeleteAppBtnClicked()"
+    />
+  </section>
+
+  <section class="cards-container">
+    <p-card>
+      <section class="card-body">
+        <h2>Client ID</h2>
+        <p>
+          The client ID is the developer app's unique identifier and is safe to
+          share publicly.
+        </p>
+
+        <p-iconfield iconPosition="right">
+          <input
+            type="text"
+            pInputText
+            value="afsdfghbjnkldfghjkl234dxcvb"
+            readonly
+          />
+          <p-inputicon (click)="copyClientId()">
+            <i class="osf-icon-copy"></i>
+          </p-inputicon>
+        </p-iconfield>
+      </section>
+    </p-card>
+
+    <p-card>
+      <section class="card-body">
+        <h2>Client Secret</h2>
+
+        <p>
+          The client secret is available only to you. Keep it private and do not
+          share it.
+        </p>
+
+        <section class="client-secret-container">
+          <p-iconfield iconPosition="right">
+            <input
+              pInputText
+              [value]="
+                isClientSecretVisible() ? clientSecret() : hiddenClientSecret()
+              "
+              readonly
+            />
+            <p-inputicon (click)="copyClientId()">
+              <i class="osf-icon-copy"></i>
+            </p-inputicon>
+          </p-iconfield>
+
+          <p-button
+            [label]="
+              isClientSecretVisible()
+                ? 'Hide client secret'
+                : 'Show client secret'
+            "
+            severity="secondary"
+            (click)="isClientSecretVisible.set(!isClientSecretVisible())"
+          />
+        </section>
+
+        <section class="card-actions">
+          <p-button
+            label="Reset Secret"
+            (click)="onResetClientSecretBtnClicked()"
+          />
+        </section>
+      </section>
+    </p-card>
+
+    <p-card>
+      <section class="card-body">
+        <h2>Edit app</h2>
+
+        <section class="card-actions">
+          <p-button label="Save" [disabled]="true" />
+        </section>
+      </section>
+    </p-card>
+  </section>
+</section>

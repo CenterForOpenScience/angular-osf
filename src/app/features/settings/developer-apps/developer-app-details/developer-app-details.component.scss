@@ -1,0 +1,41 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.content-container {
+  padding: 1.7rem;
+  color: var.$dark-blue-1;
+  background-color: var.$white;
+
+  .navigation-bar-container {
+    margin-bottom: 24px;
+  }
+
+  .tittle-container {
+    @include mix.flex-center-between;
+    margin-bottom: 48px;
+  }
+
+  .cards-container {
+    @include mix.flex-column;
+    gap: 24px;
+
+    .card-body {
+      h2 {
+        margin-bottom: 24px;
+      }
+
+      p {
+        margin-bottom: 12px;
+      }
+
+      .client-secret-container {
+        @include mix.flex-align-center;
+        gap: 12px;
+      }
+
+      .card-actions {
+        @include mix.flex-center-right;
+      }
+    }
+  }
+}

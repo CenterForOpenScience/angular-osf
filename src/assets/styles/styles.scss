@@ -9,6 +9,7 @@
 @use "./overrides/message";
 @use "./overrides/drawer";
 @use "./overrides/card";
+@use "./overrides/iconfield";
 
 @layer base, primeng, reset;
 

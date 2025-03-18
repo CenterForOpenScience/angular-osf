@@ -5,17 +5,20 @@
   </p>
 
   <section class="applications-container">
-    @for (developerApp of developerApplications; track $index) {
+    @for (developerApp of developerApplications(); track $index) {
       <p-card>
-        <section class="card-body">
-          <a [routerLink]="['1', 'details']">
-            <h2>{{ developerApp }}</h2>
+        <section class="card-body" [ngClass]="{ mobile: isXSmall() }">
+          <a [routerLink]="[developerApp.id, 'details']">
+            <h2>{{ developerApp.name }}</h2>
           </a>
-          <p-button
-            label="Delete"
-            severity="danger"
-            (onClick)="onDeleteDeveloperApp(developerApp)"
-          />
+          <section class="button-container">
+            <p-button
+              class="btn-full-width"
+              label="Delete"
+              severity="danger"
+              (onClick)="onDeleteAppBtnClicked(developerApp.id)"
+            />
+          </section>
         </section>
       </p-card>
     }

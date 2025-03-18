@@ -2,8 +2,9 @@
 @use "assets/styles/mixins" as mix;
 
 .content-container {
-  margin: 1.7rem;
+  padding: 1.7rem;
   color: var.$dark-blue-1;
+  background-color: var.$white;
 
   p {
     margin-bottom: 1.7rem;
@@ -15,7 +16,22 @@
 
     p-card {
       .card-body {
-        @include mix.flex-center-between;
+        &.mobile {
+          @include mix.flex-column;
+
+          a {
+            align-self: flex-start;
+          }
+
+          .button-container {
+            align-self: flex-end;
+            width: 50%;
+          }
+        }
+
+        &:not(.mobile) {
+          @include mix.flex-center-between;
+        }
       }
     }
   }
