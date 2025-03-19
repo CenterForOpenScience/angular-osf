@@ -1,0 +1,64 @@
+<form
+  [formGroup]="createAppForm"
+  (ngSubmit)="submitForm()"
+  class="flex flex-column gap-3"
+>
+  <div class="flex flex-column">
+    <label for="app-name">App Name</label>
+    <input
+      pInputText
+      id="app-name"
+      type="text"
+      autocomplete="off"
+      [formControlName]="DeveloperAppFormFormControls.AppName"
+    />
+  </div>
+
+  <div class="flex flex-column">
+    <label for="proj-homepage-url">Project homepage URL</label>
+    <input
+      pInputText
+      id="proj-homepage-url"
+      type="url"
+      autocomplete="off"
+      [formControlName]="DeveloperAppFormFormControls.ProjectHomePageUrl"
+    />
+  </div>
+
+  <div class="flex flex-column">
+    <label for="app-descr">App description (optional)</label>
+    <input
+      pInputText
+      id="app-descr"
+      type="text"
+      autocomplete="off"
+      [formControlName]="DeveloperAppFormFormControls.AppDescription"
+    />
+  </div>
+
+  <div class="flex flex-column">
+    <label for="auth-callback-url">Authorization callback URL</label>
+    <input
+      pInputText
+      type="url"
+      autocomplete="off"
+      id="auth-callback-url"
+      [formControlName]="DeveloperAppFormFormControls.AuthorizationCallbackUrl"
+    />
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      label="Cancel"
+      class="btn-full-width"
+      severity="info"
+      (click)="dialogRef.close()"
+    />
+    <p-button
+      label="Create"
+      type="submit"
+      class="btn-full-width"
+      [disabled]="!createAppForm.valid"
+    />
+  </div>
+</form>
