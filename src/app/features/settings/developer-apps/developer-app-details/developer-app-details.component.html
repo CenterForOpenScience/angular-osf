@@ -1,36 +1,37 @@
-<section class="content-container">
+<section class="content-container" [class.mobile]="isXSmall()">
   <nav class="navigation-bar-container">
     <a routerLink="/settings/developer-apps">
+      <!-- TODO - Add icon -->
       Back to list of developer apps
     </a>
   </nav>
 
-  <section class="tittle-container">
-    <h1>{{ developerApp().name + developerAppId() }}</h1>
+  <section class="tittle-container" [class.mobile]="isXSmall()">
+    <h1>{{ developerApp().appName + developerAppId() }}</h1>
     <p-button
       label="Delete"
+      [class.btn-full-width]="isXSmall()"
       severity="danger"
-      (click)="onDeleteAppBtnClicked()"
+      (click)="deleteApp()"
     />
   </section>
 
-  <section class="cards-container">
+  <section class="cards-container" [class.mobile]="isXSmall()">
     <p-card>
       <section class="card-body">
         <h2>Client ID</h2>
+
         <p>
           The client ID is the developer app's unique identifier and is safe to
           share publicly.
         </p>
 
         <p-iconfield iconPosition="right">
-          <input
-            type="text"
-            pInputText
-            value="afsdfghbjnkldfghjkl234dxcvb"
-            readonly
-          />
-          <p-inputicon (click)="copyClientId()">
+          <input type="text" pInputText [value]="clientId()" readonly />
+          <p-inputicon
+            [cdkCopyToClipboard]="clientId()"
+            (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()"
+          >
             <i class="osf-icon-copy"></i>
           </p-inputicon>
         </p-iconfield>
@@ -46,7 +47,7 @@
           share it.
         </p>
 
-        <section class="client-secret-container">
+        <section class="client-secret-container" [class.mobile]="isXSmall()">
           <p-iconfield iconPosition="right">
             <input
               pInputText
@@ -55,7 +56,10 @@
               "
               readonly
             />
-            <p-inputicon (click)="copyClientId()">
+            <p-inputicon
+              [cdkCopyToClipboard]="clientSecret()"
+              (cdkCopyToClipboardCopied)="clientSecretCopiedToClipboard()"
+            >
               <i class="osf-icon-copy"></i>
             </p-inputicon>
           </p-iconfield>
@@ -74,7 +78,8 @@
         <section class="card-actions">
           <p-button
             label="Reset Secret"
-            (click)="onResetClientSecretBtnClicked()"
+            [class.btn-half-width]="isXSmall()"
+            (click)="resetClientSecret()"
           />
         </section>
       </section>
@@ -84,9 +89,68 @@
       <section class="card-body">
         <h2>Edit app</h2>
 
-        <section class="card-actions">
-          <p-button label="Save" [disabled]="true" />
-        </section>
+        <form
+          [formGroup]="editAppForm"
+          class="flex flex-column gap-3"
+          (ngSubmit)="submitForm()"
+        >
+          <div class="flex flex-column">
+            <label for="app-name">App Name</label>
+            <input
+              id="app-name"
+              type="text"
+              autocomplete="off"
+              pInputText
+              [formControlName]="DeveloperAppFormFormControls.AppName"
+            />
+          </div>
+
+          <div class="flex flex-column">
+            <label for="proj-homepage-url">Project homepage URL</label>
+            <input
+              id="proj-homepage-url"
+              type="url"
+              autocomplete="off"
+              pInputText
+              [formControlName]="
+                DeveloperAppFormFormControls.ProjectHomePageUrl
+              "
+            />
+          </div>
+
+          <div class="flex flex-column">
+            <label for="app-descr">App description (optional)</label>
+            <input
+              id="app-descr"
+              type="text"
+              autocomplete="off"
+              pInputText
+              [formControlName]="DeveloperAppFormFormControls.AppDescription"
+            />
+          </div>
+
+          <div class="flex flex-column">
+            <label for="auth-callback-url">Authorization callback URL</label>
+            <input
+              id="auth-callback-url"
+              type="url"
+              autocomplete="off"
+              pInputText
+              [formControlName]="
+                DeveloperAppFormFormControls.AuthorizationCallbackUrl
+              "
+            />
+          </div>
+
+          <section class="card-actions">
+            <p-button
+              label="Save"
+              type="submit"
+              [class.btn-half-width]="isXSmall()"
+              [disabled]="!editAppForm.dirty || !editAppForm.valid"
+            />
+          </section>
+        </form>
       </section>
     </p-card>
   </section>

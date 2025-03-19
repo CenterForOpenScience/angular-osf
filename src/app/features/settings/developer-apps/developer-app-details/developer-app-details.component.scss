@@ -6,31 +6,47 @@
   color: var.$dark-blue-1;
   background-color: var.$white;
 
+  &.mobile {
+    padding: 1rem;
+  }
+
   .navigation-bar-container {
-    margin-bottom: 24px;
+    margin-bottom: 1.7rem;
   }
 
   .tittle-container {
     @include mix.flex-center-between;
-    margin-bottom: 48px;
+    margin-bottom: 3.4rem;
+
+    &.mobile {
+      @include mix.flex-column;
+      align-items: inherit;
+      gap: 1.7rem;
+    }
   }
 
   .cards-container {
     @include mix.flex-column;
-    gap: 24px;
+    gap: 1.7rem;
 
     .card-body {
       h2 {
-        margin-bottom: 24px;
+        margin-bottom: 1.7rem;
       }
 
       p {
-        margin-bottom: 12px;
+        margin-bottom: 0.85rem;
       }
 
       .client-secret-container {
         @include mix.flex-align-center;
-        gap: 12px;
+        gap: 0.85rem;
+        margin-bottom: 1.7rem;
+
+        &.mobile {
+          @include mix.flex-column;
+          align-items: start;
+        }
       }
 
       .card-actions {
