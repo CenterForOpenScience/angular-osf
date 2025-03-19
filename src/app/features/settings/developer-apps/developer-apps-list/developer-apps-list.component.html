@@ -1,4 +1,4 @@
-<section class="content-container">
+<section class="content-container" [class.mobile]="isXSmall()">
   <p>
     Third-party web applications can connect to the OSF on behalf of users via
     the OAuth 2.0 web application flow.
@@ -7,7 +7,7 @@
   <section class="applications-container">
     @for (developerApp of developerApplications(); track $index) {
       <p-card>
-        <section class="card-body" [ngClass]="{ mobile: isXSmall() }">
+        <section class="card-body" [class.mobile]="isXSmall()">
           <a [routerLink]="[developerApp.id, 'details']">
             <h2>{{ developerApp.name }}</h2>
           </a>

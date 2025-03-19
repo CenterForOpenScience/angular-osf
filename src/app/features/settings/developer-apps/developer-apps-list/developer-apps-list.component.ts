@@ -10,11 +10,10 @@ import { RouterLink } from '@angular/router';
 import { DeveloperApp } from '@osf/features/settings/developer-apps/developer-app.entity';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'osf-developer-applications-list',
-  imports: [Button, Card, RouterLink, NgClass],
+  imports: [Button, Card, RouterLink],
   templateUrl: './developer-apps-list.component.html',
   styleUrl: './developer-apps-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
