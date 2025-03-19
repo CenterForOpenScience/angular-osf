@@ -9,14 +9,14 @@
       <p-card>
         <section class="card-body" [class.mobile]="isXSmall()">
           <a [routerLink]="[developerApp.id, 'details']">
-            <h2>{{ developerApp.name }}</h2>
+            <h2>{{ developerApp.appName }}</h2>
           </a>
           <section class="button-container">
             <p-button
               class="btn-full-width"
               label="Delete"
               severity="danger"
-              (onClick)="onDeleteAppBtnClicked(developerApp.id)"
+              (onClick)="deleteApp(developerApp.id)"
             />
           </section>
         </section>

@@ -7,7 +7,7 @@ import {
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { RouterLink } from '@angular/router';
-import { DeveloperApp } from '@osf/features/settings/developer-apps/developer-app.entity';
+import { DeveloperApp } from '@osf/features/settings/developer-apps/developer-app.entities';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -25,23 +25,21 @@ export class DeveloperAppsListComponent {
   developerApplications = signal<DeveloperApp[]>([
     {
       id: '1',
-      name: 'Developer app name example',
+      appName: 'Developer app name example',
+      projHomePageUrl: 'https://example.com',
+      appDescription: 'Example description',
+      authorizationCallbackUrl: 'https://example.com/callback',
     },
     {
       id: '2',
-      name: 'Developer app name example',
-    },
-    {
-      id: '3',
-      name: 'Developer app name example',
-    },
-    {
-      id: '4',
-      name: 'Developer app name example',
+      appName: 'Developer app name example',
+      projHomePageUrl: 'https://example.com',
+      appDescription: 'Example description',
+      authorizationCallbackUrl: 'https://example.com/callback',
     },
   ]);
 
-  onDeleteAppBtnClicked(developerAppId: string): void {
+  deleteApp(developerAppId: string): void {
     console.log('delete', developerAppId);
     //TODO implement api integration
   }
