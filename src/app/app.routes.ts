@@ -37,6 +37,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'home-logged-out',
+        loadComponent: () =>
+          import('./features/home/logged-out/home-logged-out.component').then(
+            (mod) => mod.HomeLoggedOutComponent,
+          ),
+      },
+      {
         path: 'support',
         loadComponent: () =>
           import('./features/support/support.component').then(
