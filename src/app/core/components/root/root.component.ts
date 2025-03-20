@@ -7,6 +7,7 @@ import { FooterComponent } from '@core/components/footer/footer.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
 import { IS_WEB } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'osf-root',
@@ -18,6 +19,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     MainContentComponent,
     FooterComponent,
     TopnavComponent,
+    ConfirmDialog,
   ],
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss'],

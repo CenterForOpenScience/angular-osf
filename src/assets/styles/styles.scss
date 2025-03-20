@@ -16,6 +16,7 @@
 @use "./overrides/stepper";
 @use "./overrides/radio";
 @use "./overrides/dropdown";
+@use "./overrides/confirmation-dialog";
 
 @layer base, primeng, reset;
 
