@@ -1,4 +1,7 @@
-<div class="addon-card flex flex-1 justify-content-between flex-column p-5">
+<div
+  class="addon-card flex flex-1 justify-content-between flex-column"
+  [class.mobile]="isMobile()"
+>
   <div class="max-h-8rem">
     <img
       alt="Addon card image"
@@ -9,7 +12,7 @@
   <div class="flex flex-column gap-3">
     <h3>{{ card()?.title }}</h3>
     <p-button
-      label="Connect"
+      [label]="cardButtonLabel() || 'Connect'"
       severity="secondary"
       (onClick)="onConnect()"
     ></p-button>

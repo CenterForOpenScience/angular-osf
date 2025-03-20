@@ -6,27 +6,7 @@
 
   .home-container {
     margin-top: 4.5rem;
-    //width: 100%;
     max-width: 100%;
-  }
-
-  .dashboard-header {
-    display: flex;
-    justify-content: start;
-    width: 100%;
-    padding: 7.14rem 1.71rem 3.43rem 1.71rem;
-    background: var.$gradient-1;
-
-    .dashboard-title {
-      font-size: 1.71rem;
-      color: var.$dark-blue-1;
-      font-weight: 700;
-      margin-left: 0.86rem;
-    }
-
-    p-button {
-      margin-left: auto;
-    }
   }
 
   .dashboard-header {
@@ -51,7 +31,6 @@
   .quick-search-container {
     background: white;
     padding: 1.71rem;
-    //max-width: 100vw;
 
     .text-center {
       font-size: 1rem;
@@ -322,7 +301,8 @@
       }
     }
 
-    .latest-research-container {
+    .latest-research-container,
+    .hosting-container {
       display: flex;
       padding: 4rem 1.14rem 4rem 1.14rem;
 
@@ -349,28 +329,7 @@
     }
 
     .hosting-container {
-      display: flex;
-      padding: 4rem 1.14rem 4rem 1.14rem;
-
-      .content {
-        display: flex;
-        flex-direction: column;
-        row-gap: 2rem;
-
-        .text-container {
-          display: flex;
-          flex-direction: column;
-          row-gap: 0.85rem;
-
-          h2 {
-            font-weight: 400;
-            font-size: 1rem;
-          }
-        }
-      }
-
       p-button {
-        margin: 0;
         align-self: start;
       }
     }

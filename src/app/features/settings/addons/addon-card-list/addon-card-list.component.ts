@@ -10,4 +10,5 @@ import { AddonCard } from '@shared/entities/addon-card.interface';
 })
 export class AddonCardListComponent {
   cards = input<AddonCard[]>([]);
+  cardButtonLabel = input<string>('');
 }

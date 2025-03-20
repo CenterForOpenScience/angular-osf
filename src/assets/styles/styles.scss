@@ -15,6 +15,7 @@
 @use "./overrides/panel-menu";
 @use "./overrides/stepper";
 @use "./overrides/radio";
+@use "./overrides/dropdown";
 
 @layer base, primeng, reset;
 

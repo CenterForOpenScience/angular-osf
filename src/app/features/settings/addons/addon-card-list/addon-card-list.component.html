@@ -2,7 +2,7 @@
   @if (cards().length) {
     @for (card of cards(); track card.title) {
       <div class="col-6 lg:col-4">
-        <osf-addon-card [card]="card" />
+        <osf-addon-card [cardButtonLabel]="cardButtonLabel()" [card]="card" />
       </div>
     }
   }

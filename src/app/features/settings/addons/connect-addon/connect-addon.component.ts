@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Button } from 'primeng/button';
@@ -9,17 +9,9 @@ import { Card } from 'primeng/card';
 import { RadioButton } from 'primeng/radiobutton';
 import { FormsModule } from '@angular/forms';
 import { Checkbox } from 'primeng/checkbox';
-
-interface Term {
-  function: string;
-  status: string;
-  type: 'warning' | 'info';
-}
-
-interface Folder {
-  name: string;
-  selected: boolean;
-}
+import { GoogleDriveFolder } from '@shared/entities/google-drive-folder.interface';
+import { AddonTerm } from '@shared/entities/addon-terms.interface';
+import { Divider } from 'primeng/divider';
 
 @Component({
   selector: 'osf-connect-addon',
@@ -36,6 +28,7 @@ interface Folder {
     FormsModule,
     RadioButton,
     Checkbox,
+    Divider,
   ],
   templateUrl: './connect-addon.component.html',
   styleUrl: './connect-addon.component.scss',
@@ -43,7 +36,8 @@ interface Folder {
 })
 export class ConnectAddonComponent {
   radioConfig = '';
-  folders: Folder[] = [
+  selectedFolders = signal<string[]>([]);
+  folders: GoogleDriveFolder[] = [
     { name: 'folder name example', selected: false },
     { name: 'folder name example', selected: false },
     { name: 'folder name example', selected: false },
@@ -51,7 +45,7 @@ export class ConnectAddonComponent {
     { name: 'folder name example', selected: false },
     { name: 'folder name example', selected: false },
   ];
-  terms: Term[] = [
+  terms: AddonTerm[] = [
     {
       function: 'Add / Update Files',
       status: 'You cannot add or update files for figshare within OSF.',
@@ -93,4 +87,11 @@ export class ConnectAddonComponent {
       type: 'warning',
     },
   ];
+
+  toggleFolderSelection(folder: GoogleDriveFolder): void {
+    folder.selected = !folder.selected;
+    this.selectedFolders.set(
+      this.folders.filter((f) => f.selected).map((f) => f.name),
+    );
+  }
 }

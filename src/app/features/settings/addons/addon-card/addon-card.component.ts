@@ -1,7 +1,9 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Button } from 'primeng/button';
 import { AddonCard } from '@shared/entities/addon-card.interface';
 import { Router } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-addon-card',
@@ -11,6 +13,8 @@ import { Router } from '@angular/router';
 })
 export class AddonCardComponent {
   card = input<AddonCard>();
+  cardButtonLabel = input<string>('');
+  isMobile = toSignal(inject(IS_XSMALL));
 
   constructor(private router: Router) {}
 
