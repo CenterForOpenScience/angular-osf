@@ -1,10 +1,10 @@
-<section class="sub-header" [class.mobile]="isMobile()">
+<section class="sub-header" [class.mobile]="isXSmall()">
   <div class="title-icon">
     <i [class]="'osf-icon-' + icon()"></i>
     <h1>{{ title() }}</h1>
   </div>
   @if (showButton()) {
-    <div class="btn-container" [class.btn-full-width]="isMobile()">
+    <div class="btn-container" [class.btn-full-width]="isXSmall()">
       <p-button
         [label]="buttonLabel()"
         (onClick)="buttonClick.emit()"

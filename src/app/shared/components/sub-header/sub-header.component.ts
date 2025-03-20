@@ -16,6 +16,6 @@ export class SubHeaderComponent {
   title = input<string>('');
   icon = input<string>('');
   buttonClick = output<void>();
-  #isMobile$ = inject(IS_XSMALL);
-  isMobile = toSignal(this.#isMobile$);
+  #isXSmall$ = inject(IS_XSMALL);
+  isXSmall = toSignal(this.#isXSmall$);
 }
