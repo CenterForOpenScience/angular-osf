@@ -1,0 +1,36 @@
+.p-confirmdialog {
+  min-height: 212px;
+  width: 450px;
+
+  .p-dialog-header {
+    padding: 24px;
+
+    .p-dialog-title {
+      font-size: 18px;
+      font-weight: 700;
+      text-transform: capitalize;
+    }
+  }
+
+  .p-dialog-content {
+    padding: 0 24px 24px;
+    align-items: start;
+  }
+
+  .p-dialog-footer {
+    padding: 0 24px 24px;
+    justify-content: center;
+
+    p-button {
+      width: 50%;
+
+      .p-confirmdialog-reject-button {
+        width: 100%;
+      }
+
+      .p-confirmdialog-accept-button {
+        width: 100%;
+      }
+    }
+  }
+}
