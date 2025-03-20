@@ -1,5 +1,5 @@
 @if (!isFormSubmitted()) {
-  <section class="sign-up-container" [class.mobile]="isXSmall()">
+  <section class="sign-up-container" [class.mobile]="isMobile()">
     <h2>Create A Free Account</h2>
 
     <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
@@ -109,7 +109,7 @@
     </form>
   </section>
 } @else {
-  <section class="message-container" [class.mobile]="isXSmall()">
+  <section class="message-container" [class.mobile]="isMobile()">
     <h2>Registration successful</h2>
     <p>Check your email to confirm your account</p>
   </section>

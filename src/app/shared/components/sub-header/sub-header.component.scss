@@ -10,6 +10,12 @@
     padding: 2.5rem 1.7rem 3rem 1.7rem;
     width: 100%;
 
+    .title-icon {
+      display: flex;
+      align-items: center;
+      column-gap: 0.8rem;
+    }
+
     i {
       font-size: 2.6rem;
       color: var.$dark-blue-1;
@@ -18,5 +24,13 @@
     .btn-container {
       margin-left: auto;
     }
+  }
+
+  .mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    row-gap: 2.14rem;
+    padding: 2.5rem 1.1rem 2.5rem 1.1rem;
   }
 }

@@ -17,11 +17,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class ForgotPasswordComponent {
   #fb = inject(FormBuilder);
-  #isXSmall$ = inject(IS_XSMALL);
+  #isMobile$ = inject(IS_XSMALL);
   forgotPasswordForm: ForgotPasswordFormGroupType = this.#fb.group({
     email: ['', [Validators.required, Validators.email]],
   });
-  isXSmall = toSignal(this.#isXSmall$);
+  isMobile = toSignal(this.#isMobile$);
   message = signal<MessageInfo | null>(null);
 
   onSubmit(): void {

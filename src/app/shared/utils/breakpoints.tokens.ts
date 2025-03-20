@@ -1,6 +1,7 @@
 import { inject, InjectionToken } from '@angular/core';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Observable, map } from 'rxjs';
+import { BreakpointQueries } from '@shared/utils/breakpoint-queries.enum';
 
 function createBreakpointToken(
   query: string,
@@ -16,9 +17,9 @@ function createBreakpointToken(
   });
 }
 
+export const IS_PORTRAIT = createBreakpointToken(BreakpointQueries.Portrait);
+export const IS_WEB = createBreakpointToken(BreakpointQueries.Desktop);
+export const IS_TABLET = createBreakpointToken(Breakpoints.Tablet);
 export const IS_XSMALL = createBreakpointToken(Breakpoints.XSmall);
 export const IS_SMALL = createBreakpointToken(Breakpoints.Small);
 export const IS_MEDIUM = createBreakpointToken(Breakpoints.Medium);
-export const IS_LARGE = createBreakpointToken(Breakpoints.Large);
-export const IS_XLARGE = createBreakpointToken(Breakpoints.XLarge);
-export const IS_PORTRAIT = createBreakpointToken('(orientation: portrait)');

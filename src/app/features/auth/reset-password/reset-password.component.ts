@@ -27,7 +27,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class ResetPasswordComponent {
   #fb = inject(FormBuilder);
-  #isXSmall$ = inject(IS_XSMALL);
+  #isMobile$ = inject(IS_XSMALL);
   passwordRegex = PASSWORD_REGEX;
   resetPasswordForm: ResetPasswordFormGroupType = this.#fb.group(
     {
@@ -42,7 +42,7 @@ export class ResetPasswordComponent {
     },
   );
   isFormSubmitted = signal(false);
-  isXSmall = toSignal(this.#isXSmall$);
+  isMobile = toSignal(this.#isMobile$);
 
   onSubmit(): void {
     if (this.resetPasswordForm.valid) {

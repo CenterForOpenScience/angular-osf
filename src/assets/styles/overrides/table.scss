@@ -9,14 +9,12 @@
       padding: 24px;
     }
     table {
-      width: 100%;
-      min-width: 50rem;
-
       th,
       td {
         color: var.$dark-blue-1;
         border: none;
         height: 60px;
+        max-width: calc((100vw - 27rem) / 3);
       }
 
       th {
@@ -33,7 +31,6 @@
       td {
         background-color: var.$bg-blue-3;
         border-bottom: 12px solid white;
-        max-width: 450px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
@@ -42,12 +39,8 @@
 
     .p-paginator {
       background: white;
-      padding: 12px 0 0 0;
-
-      button {
-        //height: 24px;
-        //width: 24px;
-      }
+      padding: 0.8rem 0 0 0;
+      row-gap: 0.8rem;
     }
 
     .p-paginator-page {
@@ -121,6 +114,60 @@
 
       span {
         color: var.$dark-blue-1;
+      }
+    }
+  }
+
+  @media (max-width: 1279.99px) {
+    p-table {
+      .p-datatable {
+        padding: 1.71rem 0.85rem 1.71rem 0.85rem;
+      }
+
+      table {
+        th,
+        td {
+          max-width: calc((100vw - 6.85rem - 2px) / 3);
+        }
+      }
+    }
+  }
+
+  @media (max-width: 599.99px) {
+    p-table {
+      .p-datatable {
+        padding: 0.4rem;
+      }
+
+      table {
+        thead {
+          display: none;
+        }
+
+        tr {
+          max-width: calc(100vw - 3.14rem - 2px);
+          display: flex;
+          flex-direction: column;
+          padding: 0.85rem;
+          background: var.$bg-blue-3;
+
+          td {
+            max-width: calc(100vw - 3.14rem - 2px);
+            height: 2rem;
+            line-height: 2rem;
+            padding: 0;
+            border: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+
+        tbody {
+          display: flex;
+          flex-direction: column;
+          row-gap: 0.42rem;
+        }
       }
     }
   }

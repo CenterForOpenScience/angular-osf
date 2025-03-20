@@ -38,8 +38,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 export class SignUpComponent implements OnInit {
   signUpForm: FormGroup = new FormGroup({});
   passwordRegex: RegExp = PASSWORD_REGEX;
-  #isXSmall$ = inject(IS_XSMALL);
-  isXSmall = toSignal(this.#isXSmall$);
+  #isMobile$ = inject(IS_XSMALL);
+  isMobile = toSignal(this.#isMobile$);
   isFormSubmitted = signal(false);
 
   fb: FormBuilder = inject(FormBuilder);

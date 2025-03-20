@@ -5,7 +5,7 @@ import { HeaderComponent } from '@core/components/header/header.component';
 import { MainContentComponent } from '@core/components/main-content/main-content.component';
 import { FooterComponent } from '@core/components/footer/footer.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
-import { IS_PORTRAIT } from '@shared/utils/breakpoints.tokens';
+import { IS_WEB } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -24,6 +24,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RootComponent {
-  #isPortrait$ = inject(IS_PORTRAIT);
-  isPortrait = toSignal(this.#isPortrait$);
+  #isWeb$ = inject(IS_WEB);
+  isWeb = toSignal(this.#isWeb$);
 }

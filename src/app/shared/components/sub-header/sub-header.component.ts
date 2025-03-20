@@ -1,5 +1,7 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { Button } from 'primeng/button';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'osf-sub-header',
@@ -14,4 +16,6 @@ export class SubHeaderComponent {
   title = input<string>('');
   icon = input<string>('');
   buttonClick = output<void>();
+  #isXSmall$ = inject(IS_XSMALL);
+  isXSmall = toSignal(this.#isXSmall$);
 }

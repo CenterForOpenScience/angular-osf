@@ -4,6 +4,7 @@
 :host {
   height: 100vh;
   display: flex;
+  max-width: 100vw;
 
   .layout-desktop {
     display: flex;
@@ -29,6 +30,7 @@
   .layout-tablet {
     @include mix.flex-center;
     flex: 1;
+    max-width: 100vw;
 
     .content-wrapper {
       @include mix.flex-column;
