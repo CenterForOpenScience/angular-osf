@@ -35,9 +35,9 @@ import { Divider } from 'primeng/divider';
   standalone: true,
 })
 export class ConnectAddonComponent {
-  radioConfig = '';
-  selectedFolders = signal<string[]>([]);
-  folders: GoogleDriveFolder[] = [
+  protected radioConfig = '';
+  protected readonly selectedFolders = signal<string[]>([]);
+  protected readonly folders: GoogleDriveFolder[] = [
     { name: 'folder name example', selected: false },
     { name: 'folder name example', selected: false },
     { name: 'folder name example', selected: false },
@@ -45,7 +45,7 @@ export class ConnectAddonComponent {
     { name: 'folder name example', selected: false },
     { name: 'folder name example', selected: false },
   ];
-  terms: AddonTerm[] = [
+  protected readonly terms: AddonTerm[] = [
     {
       function: 'Add / Update Files',
       status: 'You cannot add or update files for figshare within OSF.',

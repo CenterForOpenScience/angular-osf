@@ -44,18 +44,16 @@ interface TabOption {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonsComponent implements OnInit {
-  defaultTabValue = 0;
-  isMobile = toSignal(inject(IS_XSMALL));
-  searchValue = signal('');
-  cards = signal<AddonCard[]>([]);
-  selectedTab = this.defaultTabValue;
-
-  tabOptions: TabOption[] = [
+  protected readonly defaultTabValue = 0;
+  protected readonly isMobile = toSignal(inject(IS_XSMALL));
+  protected readonly searchValue = signal('');
+  protected readonly cards = signal<AddonCard[]>([]);
+  protected readonly selectedTab = this.defaultTabValue;
+  protected readonly tabOptions: TabOption[] = [
     { label: 'All Add-ons', value: 0 },
     { label: 'Connected Add-ons', value: 1 },
   ];
-
-  filteredCards = computed((): AddonCard[] => {
+  protected readonly filteredCards = computed((): AddonCard[] => {
     const searchValue = this.searchValue();
 
     return untracked(() =>
