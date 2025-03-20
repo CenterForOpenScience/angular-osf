@@ -27,10 +27,8 @@ import { noteworthy, mostPopular, projects } from '@osf/features/home/data';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent {
-  #isMedium$ = inject(IS_MEDIUM);
-  #isMobile$ = inject(IS_XSMALL);
-  isMedium = toSignal(this.#isMedium$);
-  isMobile = toSignal(this.#isMobile$);
+  isMedium = toSignal(inject(IS_MEDIUM));
+  isMobile = toSignal(inject(IS_XSMALL));
   projects: Project[] = projects;
   noteworthy = noteworthy;
   mostPopular = mostPopular;

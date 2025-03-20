@@ -22,14 +22,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class HomeLoggedOutComponent {
   searchValue = signal('');
-  #isWeb$ = inject(IS_WEB);
-  #isMedium$ = inject(IS_MEDIUM);
-  #isSmall$ = inject(IS_SMALL);
-  #isXSmall$ = inject(IS_XSMALL);
-  isWeb = toSignal(this.#isWeb$);
-  isMedium = toSignal(this.#isMedium$);
-  isXSmall = toSignal(this.#isXSmall$);
-  isSmall = toSignal(this.#isSmall$);
+  isWeb = toSignal(inject(IS_WEB));
+  isMedium = toSignal(inject(IS_MEDIUM));
+  isSmall = toSignal(inject(IS_SMALL));
+  isXSmall = toSignal(inject(IS_XSMALL));
 
   icons = integrationIcons;
   slides = slides;
