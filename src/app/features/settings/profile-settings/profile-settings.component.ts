@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 
 @Component({
@@ -6,5 +6,6 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
   imports: [SubHeaderComponent],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileSettingsComponent {}

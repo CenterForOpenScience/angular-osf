@@ -12,7 +12,7 @@
     @include mix.flex-column;
     color: var.$dark-blue-1;
     width: 32rem;
-    margin: 4.5rem 0 2rem 0;
+    margin: 4.5rem 0 1.5rem 0;
     padding: 2rem;
     background: white;
     border-radius: 0.6rem;
@@ -89,7 +89,7 @@
   }
 
   .message-container {
-    margin-top: auto;
+    margin: auto;
   }
 
   .mobile {

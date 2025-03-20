@@ -10,4 +10,10 @@
   .p-card-body {
     padding: 1.7rem;
   }
+
+  .addon-card-small {
+    .p-card-body {
+      padding: 0.8rem;
+    }
+  }
 }

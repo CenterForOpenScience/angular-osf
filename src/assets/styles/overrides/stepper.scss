@@ -1,0 +1,12 @@
+@use "../variables" as var;
+@use "../mixins" as mix;
+
+.p-stepper {
+  .p-steppanels {
+    padding: 0;
+  }
+
+  .p-stepper-separator {
+    display: none;
+  }
+}

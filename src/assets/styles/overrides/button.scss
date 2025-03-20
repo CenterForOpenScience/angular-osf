@@ -153,6 +153,7 @@
     @include mix.flex-center;
     gap: 0.7rem;
     color: var.$dark-blue-1;
+    height: 3.125rem;
 
     &:hover {
       color: var.$dark-blue-2;
@@ -161,6 +162,12 @@
     .p-button-label {
       font-weight: 400;
     }
+  }
+}
+
+.p-button-link:hover {
+  .p-button-label {
+    text-decoration: none;
   }
 }
 

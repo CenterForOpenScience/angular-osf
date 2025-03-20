@@ -1,0 +1,49 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
+:host {
+  flex: 1;
+  @include mix.flex-column;
+
+  .stepper-container {
+    background-color: white;
+    flex: 1;
+
+    button {
+      width: 100%;
+    }
+  }
+}
+
+.folders-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 1rem;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+}
+
+.folder-item {
+  padding: 0.5rem;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: #e9ecef;
+  }
+
+  i {
+    color: #6c757d;
+  }
+}
+
+:host ::ng-deep {
+  .p-checkbox {
+    .p-checkbox-box {
+      &.p-highlight {
+        border-color: var(--primary-color);
+        background: var(--primary-color);
+      }
+    }
+  }
+}

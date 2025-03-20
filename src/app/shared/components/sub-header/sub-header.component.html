@@ -1,6 +1,8 @@
 <section class="sub-header" [class.mobile]="isXSmall()">
   <div class="title-icon">
-    <i [class]="'osf-icon-' + icon()"></i>
+    @if (icon()) {
+      <i [class]="'osf-icon-' + icon()"></i>
+    }
     <h1>{{ title() }}</h1>
   </div>
   @if (showButton()) {

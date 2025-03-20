@@ -171,4 +171,18 @@
       }
     }
   }
+
+  tr.background-warning {
+    td {
+      background-color: var.$red-2;
+      white-space: wrap;
+    }
+  }
+
+  tr.background-success {
+    td {
+      background-color: var.$green-2;
+      white-space: wrap;
+    }
+  }
 }

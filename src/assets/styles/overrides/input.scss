@@ -2,15 +2,17 @@
 
 .p-inputtext {
   color: var.$dark-blue-1;
-  width: 100%;
   background: white;
   border-color: var.$grey-2;
-  font-size: 16px;
 }
 
-.p-password {
+.p-password,
+.p-inputtext {
   width: 100%;
+  height: 3.125rem;
   font-size: 16px;
+  border-radius: 0.57rem;
+  box-shadow: none;
 }
 
 label {

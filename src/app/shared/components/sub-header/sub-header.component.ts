@@ -1,4 +1,10 @@
-import { Component, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  inject,
+  output,
+} from '@angular/core';
 import { Button } from 'primeng/button';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -8,7 +14,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   imports: [Button],
   templateUrl: './sub-header.component.html',
   styleUrl: './sub-header.component.scss',
-  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubHeaderComponent {
   showButton = input<boolean>(false);
