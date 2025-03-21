@@ -3,4 +3,10 @@
 
 :host {
   @include mix.flex-column;
+  flex: 1;
+
+  section {
+    @include mix.flex-column;
+    flex: 1;
+  }
 }

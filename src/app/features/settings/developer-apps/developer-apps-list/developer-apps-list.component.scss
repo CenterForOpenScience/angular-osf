@@ -1,41 +1,47 @@
 @use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
-.content-container {
-  padding: 1.7rem;
-  color: var.$dark-blue-1;
-  background-color: var.$white;
+:host {
+  @include mix.flex-column;
+  flex: 1;
 
-  &.mobile {
-    padding: 1rem;
-  }
+  .content-container {
+    flex: 1;
+    padding: 1.7rem;
+    color: var.$dark-blue-1;
+    background-color: var.$white;
 
-  p {
-    margin-bottom: 1.7rem;
-  }
+    &.mobile {
+      padding: 1rem;
+    }
 
-  .applications-container {
-    @include mix.flex-column;
-    gap: 0.85rem;
+    p {
+      margin-bottom: 1.7rem;
+    }
 
-    p-card {
-      .card-body {
-        &.mobile {
-          @include mix.flex-column;
-          gap: 0.85rem;
+    .applications-container {
+      @include mix.flex-column;
+      gap: 0.85rem;
 
-          a {
-            align-self: flex-start;
+      p-card {
+        .card-body {
+          &.mobile {
+            @include mix.flex-column;
+            gap: 0.85rem;
+
+            a {
+              align-self: flex-start;
+            }
+
+            .button-container {
+              align-self: flex-end;
+              width: 50%;
+            }
           }
 
-          .button-container {
-            align-self: flex-end;
-            width: 50%;
+          &:not(.mobile) {
+            @include mix.flex-center-between;
           }
-        }
-
-        &:not(.mobile) {
-          @include mix.flex-center-between;
         }
       }
     }
