@@ -20,7 +20,7 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { CdkCopyToClipboard } from '@angular/cdk/clipboard';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
@@ -31,6 +31,7 @@ import {
 import { linkValidator } from '@core/helpers/link-validator.helper';
 import { ConfirmationService } from 'primeng/api';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'osf-developer-application-details',
@@ -54,8 +55,6 @@ export class DeveloperAppDetailsComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly isXSmall$ = inject(IS_XSMALL);
-  protected readonly DeveloperAppFormFormControls =
-    DeveloperAppFormFormControls;
 
   isXSmall = toSignal(this.isXSmall$);
   developerAppId = signal<string | null>(null);
@@ -70,11 +69,15 @@ export class DeveloperAppDetailsComponent implements OnInit {
   clientSecret = signal<string>(
     'clientsecretclientsecretclientsecretclientsecret',
   );
-  clientId = signal('clientid');
   hiddenClientSecret = computed<string>(() =>
     '*'.repeat(this.clientSecret().length),
   );
+  clientSecretCopiedNotificationVisible = signal<boolean>(false);
 
+  clientId = signal('clientid');
+  clientIdCopiedNotificationVisible = signal<boolean>(false);
+
+  readonly DeveloperAppFormFormControls = DeveloperAppFormFormControls;
   readonly editAppForm: DeveloperAppForm = new FormGroup({
     [DeveloperAppFormFormControls.AppName]: new FormControl(
       this.developerApp().appName,
@@ -146,11 +149,23 @@ export class DeveloperAppDetailsComponent implements OnInit {
   }
 
   clientIdCopiedToClipboard(): void {
-    //TODO maybe show message
+    this.clientIdCopiedNotificationVisible.set(true);
+
+    timer(2500)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.clientIdCopiedNotificationVisible.set(false);
+      });
   }
 
   clientSecretCopiedToClipboard(): void {
-    //TODO maybe show message
+    this.clientSecretCopiedNotificationVisible.set(true);
+
+    timer(2500)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.clientSecretCopiedNotificationVisible.set(false);
+      });
   }
 
   submitForm(): void {

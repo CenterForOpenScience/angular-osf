@@ -26,15 +26,23 @@
           share publicly.
         </p>
 
-        <p-iconfield iconPosition="right">
-          <input type="text" pInputText [value]="clientId()" readonly />
-          <p-inputicon
-            [cdkCopyToClipboard]="clientId()"
-            (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()"
+        <div class="inline-block relative">
+          <span
+            class="copy-notification"
+            [class.visible]="clientIdCopiedNotificationVisible()"
           >
-            <i class="osf-icon-copy"></i>
-          </p-inputicon>
-        </p-iconfield>
+            Copied!
+          </span>
+          <p-iconfield iconPosition="right">
+            <input type="text" pInputText readonly [value]="clientId()" />
+            <p-inputicon
+              [cdkCopyToClipboard]="clientId()"
+              (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()"
+            >
+              <i class="osf-icon-copy"></i>
+            </p-inputicon>
+          </p-iconfield>
+        </div>
       </section>
     </p-card>
 
@@ -48,21 +56,31 @@
         </p>
 
         <section class="client-secret-container" [class.mobile]="isXSmall()">
-          <p-iconfield iconPosition="right">
-            <input
-              pInputText
-              [value]="
-                isClientSecretVisible() ? clientSecret() : hiddenClientSecret()
-              "
-              readonly
-            />
-            <p-inputicon
-              [cdkCopyToClipboard]="clientSecret()"
-              (cdkCopyToClipboardCopied)="clientSecretCopiedToClipboard()"
+          <div class="relative">
+            <span
+              class="copy-notification"
+              [class.visible]="clientSecretCopiedNotificationVisible()"
             >
-              <i class="osf-icon-copy"></i>
-            </p-inputicon>
-          </p-iconfield>
+              Copied!
+            </span>
+            <p-iconfield iconPosition="right">
+              <input
+                pInputText
+                [value]="
+                  isClientSecretVisible()
+                    ? clientSecret()
+                    : hiddenClientSecret()
+                "
+                readonly
+              />
+              <p-inputicon
+                [cdkCopyToClipboard]="clientSecret()"
+                (cdkCopyToClipboardCopied)="clientSecretCopiedToClipboard()"
+              >
+                <i class="osf-icon-copy"></i>
+              </p-inputicon>
+            </p-iconfield>
+          </div>
 
           <p-button
             [label]="
