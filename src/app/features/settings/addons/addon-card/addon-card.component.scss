@@ -1,0 +1,30 @@
+@use "assets/styles/variables" as var;
+
+:host {
+  display: block;
+
+  img {
+    max-height: 8.6rem;
+    max-width: 100%;
+  }
+
+  .addon-card {
+    height: 18.6rem;
+    text-align: center;
+    border: 1px solid var.$grey-2;
+    border-radius: 1rem;
+    padding: 2rem;
+  }
+
+  .mobile {
+    img {
+      max-height: 4.5rem;
+    }
+  }
+
+  .addon-card.mobile {
+    height: 12.5rem;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+}

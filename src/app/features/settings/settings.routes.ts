@@ -22,6 +22,25 @@ export const settingsRoutes: Routes = [
           ),
       },
       developerAppsRoute,
+      {
+        path: 'addons',
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./addons/addons.component').then(
+                (mod) => mod.AddonsComponent,
+              ),
+          },
+          {
+            path: 'connect-addon',
+            loadComponent: () =>
+              import('./addons/connect-addon/connect-addon.component').then(
+                (mod) => mod.ConnectAddonComponent,
+              ),
+          },
+        ],
+      },
     ],
   },
 ];

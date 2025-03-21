@@ -27,17 +27,14 @@
       <a routerLink="/search">search</a> OSF
     </p>
 
-    <div class="input-search">
-      <i class="osf-icon-search"></i>
-      <input
-        type="text"
-        placeholder="Search"
-        pInputText
-        [(ngModel)]="searchValue"
-      />
-    </div>
+    <osf-search-input
+      [searchValue]="searchValue()"
+      (searchValueChange)="searchValue.set($event)"
+      placeholder="Search your projects"
+    />
 
     <p-table
+      class="home-table"
       [value]="filteredProjects()"
       [rows]="5"
       [rowsPerPageOptions]="[2, 5, 10]"

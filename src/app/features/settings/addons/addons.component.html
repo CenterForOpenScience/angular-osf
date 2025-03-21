@@ -1,0 +1,61 @@
+<osf-sub-header [showButton]="false" [title]="'Add-ons'" [icon]="'settings'" />
+<section class="flex-column flex flex-1">
+  <p-tabs [value]="selectedTab" class="flex-1">
+    @if (!isMobile()) {
+      <p-tablist class="pr-5 pl-5">
+        <p-tab [value]="0">All Add-ons</p-tab>
+        <p-tab [value]="1">Connected Add-ons</p-tab>
+      </p-tablist>
+    }
+
+    <p-tabpanels class="p-5 flex-1">
+      @if (isMobile()) {
+        <p-dropdown
+          class="w-full mb-4"
+          [options]="tabOptions"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="selectedTab"
+        ></p-dropdown>
+      }
+      <p-tabpanel [value]="0" class="flex flex-column gap-5">
+        <p>
+          Sync your projects with external services to help stay connected and
+          organized. Select a category and browse the options.
+        </p>
+        <section class="grid">
+          <div class="col-12 md:col-6 lg:col-3">
+            <p-autocomplete
+              placeholder="Addon Type"
+              dropdown
+              class="w-full"
+            ></p-autocomplete>
+          </div>
+          <div class="col-12 md:col-6 lg:col-9">
+            <osf-search-input
+              class="w-full"
+              [searchValue]="searchValue()"
+              (searchValueChange)="searchValue.set($event)"
+              placeholder="Search add-ons"
+            />
+          </div>
+        </section>
+
+        <osf-addon-card-list [cards]="filteredCards()" />
+      </p-tabpanel>
+      <p-tabpanel [value]="1" class="flex flex-column gap-5">
+        <osf-search-input
+          class="flex-1"
+          [searchValue]="searchValue()"
+          (searchValueChange)="searchValue.set($event)"
+          placeholder="Search add-ons"
+        />
+
+        <osf-addon-card-list
+          [cards]="filteredCards()"
+          [cardButtonLabel]="'Configure'"
+        />
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+</section>

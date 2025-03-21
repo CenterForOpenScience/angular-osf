@@ -1,3 +1,12 @@
+@use "assets/styles/mixins" as mix;
+
 :host {
-  margin-top: 4.5rem;
+  @include mix.flex-column;
+  flex: 1;
+
+  .desktop {
+    @include mix.flex-column;
+    margin-top: 4.5rem;
+    flex: 1;
+  }
 }

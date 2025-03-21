@@ -1,0 +1,22 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.p-dropdown {
+  height: 3.125rem;
+  border: 1px solid var(--grey-2);
+  border-radius: 0.57rem;
+  outline: none;
+  font-size: 16px;
+  color: var.$dark-blue-1;
+
+  .p-select-label {
+    @include mix.flex-align-center;
+  }
+
+  .p-select-option {
+    color: var.$dark-blue-1;
+    &.p-select-option-selected.p-focus {
+      background: var.$bg-blue-2;
+    }
+  }
+}

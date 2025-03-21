@@ -8,6 +8,7 @@
       border-radius: 8px;
       padding: 24px;
     }
+
     table {
       th,
       td {
@@ -118,56 +119,102 @@
     }
   }
 
-  @media (max-width: 1279.99px) {
-    p-table {
-      .p-datatable {
-        padding: 1.71rem 0.85rem 1.71rem 0.85rem;
+  .addon-table {
+    tr {
+      &.background-warning td {
+        background-color: var.$red-2;
       }
 
-      table {
-        th,
-        td {
-          max-width: calc((100vw - 6.85rem - 2px) / 3);
-        }
+      &.background-success td {
+        background-color: var.$green-2;
+      }
+    }
+  }
+}
+
+@media (max-width: 1279.99px) {
+  .home-table {
+    .p-datatable {
+      padding: 1.71rem 0.85rem 1.71rem 0.85rem;
+    }
+
+    table {
+      th,
+      td {
+        max-width: calc((100vw - 6.85rem - 2px) / 3);
       }
     }
   }
 
-  @media (max-width: 599.99px) {
-    p-table {
-      .p-datatable {
-        padding: 0.4rem;
+  .addon-table {
+    .p-datatable {
+      padding: 0.85rem;
+      overflow-x: auto;
+    }
+  }
+}
+
+@media (max-width: 599.99px) {
+  .home-table {
+    .p-datatable {
+      padding: 0.4rem;
+    }
+
+    table {
+      thead {
+        display: none;
       }
 
-      table {
-        thead {
-          display: none;
-        }
+      tr {
+        max-width: calc(100vw - 3.14rem - 2px);
+        display: flex;
+        flex-direction: column;
+        padding: 0.85rem;
+        background: var.$bg-blue-3;
 
-        tr {
+        td {
           max-width: calc(100vw - 3.14rem - 2px);
-          display: flex;
-          flex-direction: column;
-          padding: 0.85rem;
-          background: var.$bg-blue-3;
-
-          td {
-            max-width: calc(100vw - 3.14rem - 2px);
-            height: 2rem;
-            line-height: 2rem;
-            padding: 0;
-            border: 0;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-          }
+          height: 2rem;
+          line-height: 2rem;
+          padding: 0;
+          border: 0;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
         }
+      }
 
-        tbody {
-          display: flex;
-          flex-direction: column;
-          row-gap: 0.42rem;
-        }
+      tbody {
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.42rem;
+      }
+    }
+  }
+
+  .addon-table {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+
+    .p-datatable {
+      padding: 0.85rem;
+      width: 100%;
+
+      table {
+        width: 100%;
+        table-layout: auto;
+      }
+
+      td {
+        white-space: wrap;
+        overflow: visible;
+        text-overflow: unset;
+        max-width: max-content;
+      }
+
+      td:nth-child(2) {
+        white-space: nowrap;
       }
     }
   }

@@ -1,0 +1,191 @@
+<osf-sub-header [showButton]="false" [title]="'Connect Add-on'" />
+<section class="stepper-container flex-column flex flex-1 p-5">
+  <p-stepper [value]="1">
+    <p-step-panels>
+      <p-step-panel [value]="1">
+        <ng-template #content let-activateCallback="activateCallback">
+          <section class="flex flex-column gap-2">
+            <h2>Figshare Terms</h2>
+
+            <p-table [value]="terms" class="addon-table">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>Function</th>
+                  <th>Status</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-term>
+                <tr
+                  [ngClass]="{
+                    'background-warning': term.type === 'warning',
+                    'background-success': term.type === 'info',
+                  }"
+                >
+                  <td>{{ term.function }}</td>
+                  <td>{{ term.status }}</td>
+                </tr>
+              </ng-template>
+            </p-table>
+
+            <div class="flex flex-column gap-2 mt-4">
+              <p>
+                • This add-on connects your OSF project to an external service.
+                Use of this service is bound by its terms and conditions. The
+                OSF is not responsible for the service or for your use thereof.
+              </p>
+              <p>
+                • This add-on allows you to store files using an external
+                service. Files added to this add-on are not stored within the
+                OSF.
+              </p>
+            </div>
+
+            <div class="flex align-self-center md:align-self-end gap-4 mt-4">
+              <p-button
+                label="Cancel"
+                [link]="true"
+                severity="info"
+                class="w-10rem btn-full-width"
+                routerLink="/settings/addons"
+              ></p-button>
+              <p-button
+                class="w-10rem btn-full-width"
+                label="Next"
+                (onClick)="activateCallback(2)"
+              ></p-button>
+            </div>
+          </section>
+        </ng-template>
+      </p-step-panel>
+
+      <p-step-panel [value]="2">
+        <ng-template #content let-activateCallback="activateCallback">
+          <section class="flex flex-column gap-5">
+            <h2>Setup new account</h2>
+            <p-card>
+              <h2>Account Name</h2>
+              <p class="mt-3 mb-3">
+                This will distinguish your account from other using the same
+                addon.
+              </p>
+              <p-card class="addon-card-small">Google Drive</p-card>
+            </p-card>
+
+            <div class="flex gap-4 align-self-center md:align-self-end mt-3">
+              <p-button
+                label="Back"
+                severity="info"
+                class="w-10rem btn-full-width"
+                (onClick)="activateCallback(1)"
+              ></p-button>
+              <p-button
+                class="w-10rem btn-full-width"
+                label="Next"
+                (onClick)="activateCallback(2)"
+              ></p-button>
+            </div>
+          </section>
+        </ng-template>
+      </p-step-panel>
+      <!--TODO use this layout in the project settings later-->
+
+      <!--            <p-step-panel [value]="3">-->
+      <!--              <ng-template #content let-activateCallback="activateCallback">-->
+      <!--                <section class="flex flex-column gap-5">-->
+      <!--                  <h2>Configure Google Drive</h2>-->
+      <!--                  <ul class="flex flex-column gap-3 mt-2">-->
+      <!--                    <li-->
+      <!--                      class="flex cursor-pointer"-->
+      <!--                      (click)="radioConfig = 'lorem'"-->
+      <!--                      (keydown.enter)="radioConfig = 'lorem'"-->
+      <!--                      (keydown.space)="radioConfig = 'lorem'; $event.preventDefault()"-->
+      <!--                      tabindex="0"-->
+      <!--                      role="radio"-->
+      <!--                      [attr.aria-checked]="radioConfig === 'lorem'"-->
+      <!--                    >-->
+      <!--                      <p-radio-button-->
+      <!--                        name="lorem"-->
+      <!--                        value="lorem"-->
+      <!--                        [(ngModel)]="radioConfig"-->
+      <!--                        id="lorem1"-->
+      <!--                        (click)="$event.stopPropagation()"-->
+      <!--                      />-->
+      <!--                      <label for="lorem1" class="ml-2 radio-label">Lorem 1</label>-->
+      <!--                    </li>-->
+      <!--                    <li-->
+      <!--                      class="flex cursor-pointer"-->
+      <!--                      (click)="radioConfig = 'lorem2'"-->
+      <!--                      (keydown.enter)="radioConfig = 'lorem2'"-->
+      <!--                      (keydown.space)="radioConfig = 'lorem2'; $event.preventDefault()"-->
+      <!--                      tabindex="0"-->
+      <!--                      role="radio"-->
+      <!--                      [attr.aria-checked]="radioConfig === 'lorem2'"-->
+      <!--                    >-->
+      <!--                      <p-radio-button-->
+      <!--                        name="lorem2"-->
+      <!--                        value="lorem2"-->
+      <!--                        [(ngModel)]="radioConfig"-->
+      <!--                        id="lorem2"-->
+      <!--                        (click)="$event.stopPropagation()"-->
+      <!--                      />-->
+      <!--                      <label for="lorem2" class="ml-2 radio-label">Lorem 2</label>-->
+      <!--                    </li>-->
+      <!--                  </ul>-->
+      <!--                  <div class="flex gap-4 align-self-end mt-3">-->
+      <!--                    <p-button-->
+      <!--                      label="Back"-->
+      <!--                      severity="info"-->
+      <!--                      (onClick)="activateCallback(2)"-->
+      <!--                    ></p-button>-->
+      <!--                    <p-button-->
+      <!--                      [disabled]="!radioConfig"-->
+      <!--                      class="w-10rem btn-full-width"-->
+      <!--                      label="Next"-->
+      <!--                      (onClick)="activateCallback(4)"-->
+      <!--                    ></p-button>-->
+      <!--                  </div>-->
+      <!--                </section>-->
+      <!--              </ng-template>-->
+      <!--            </p-step-panel>-->
+
+      <!--            <p-step-panel [value]="4">-->
+      <!--              <ng-template #content let-activateCallback="activateCallback">-->
+      <!--                <section class="flex flex-column gap-5">-->
+      <!--                  <h2>Configure Google Drive</h2>-->
+
+      <!--                  <div class="folders-list overflow-hidden">-->
+      <!--                    @for (folder of folders; let i = $index; track i) {-->
+      <!--                      <div-->
+      <!--                        class="flex align-items-center p-3 cursor-pointer"-->
+      <!--                        (click)="toggleFolderSelection(folder)"-->
+      <!--                        (keydown.enter)="toggleFolderSelection(folder)"-->
+      <!--                        (keydown.space)="toggleFolderSelection(folder); $event.preventDefault()"-->
+      <!--                        tabindex="0"-->
+      <!--                        role="button"-->
+      <!--                      >-->
+      <!--                        <i class="osf-icon-folder mr-2"></i>-->
+      <!--                        <span>{{ folder.name }}</span>-->
+      <!--                        <p-checkbox class="ml-auto" [(ngModel)]="folder.selected" [binary]="true" (click)="$event.stopPropagation()"></p-checkbox>-->
+      <!--                      </div>-->
+      <!--                      <p-divider class="m-0"/>-->
+      <!--                    }-->
+      <!--                  </div>-->
+
+      <!--                  <div class="flex gap-4 align-self-end mt-3">-->
+      <!--                    <p-button-->
+      <!--                      label="Back"-->
+      <!--                      severity="info"-->
+      <!--                      (onClick)="activateCallback(3)"-->
+      <!--                    ></p-button>-->
+      <!--                    <p-button-->
+      <!--                      [disabled]="!selectedFolders().length"-->
+      <!--                      class="w-10rem btn-full-width"-->
+      <!--                      label="Next"-->
+      <!--                    ></p-button>-->
+      <!--                  </div>-->
+      <!--                </section>-->
+      <!--              </ng-template>-->
+      <!--            </p-step-panel>-->
+    </p-step-panels>
+  </p-stepper>
+</section>

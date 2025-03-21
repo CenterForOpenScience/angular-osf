@@ -1,0 +1,22 @@
+@use "assets/styles/variables" as var;
+
+.p-tablist-tab-list {
+  background: transparent;
+  border: none;
+
+  .p-tab {
+    color: var.$dark-blue-1;
+    border: none;
+  }
+
+  .p-tab-active {
+    background: white;
+    border-top-left-radius: 0.7rem;
+    border-top-right-radius: 0.7rem;
+    border-color: transparent;
+  }
+
+  .p-tablist-active-bar {
+    display: none;
+  }
+}

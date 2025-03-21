@@ -1,6 +1,6 @@
 @use "assets/styles/mixins" as mix;
 
-:host {
+aside {
   @include mix.flex-column;
   gap: 1.8rem;
   width: 19rem;

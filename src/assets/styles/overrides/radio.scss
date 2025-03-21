@@ -1,0 +1,14 @@
+@use "../variables" as var;
+
+.radio-label {
+  color: var.$dark-blue-1;
+}
+
+.p-radiobutton-checked .p-radiobutton-box {
+  border-color: var.$pr-blue-1;
+  background: transparent;
+}
+
+.p-radiobutton-checked .p-radiobutton-box .p-radiobutton-icon {
+  background: var.$pr-blue-1;
+}
