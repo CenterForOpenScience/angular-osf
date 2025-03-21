@@ -48,16 +48,10 @@
   </div>
 
   <div class="flex justify-content-end gap-2">
+    <p-button label="Cancel" severity="info" (click)="dialogRef.close()" />
     <p-button
-      label="Cancel"
-      class="btn-full-width"
-      severity="info"
-      (click)="dialogRef.close()"
-    />
-    <p-button
-      label="Create"
+      label="Create Developer App"
       type="submit"
-      class="btn-full-width"
       [disabled]="!createAppForm.valid"
     />
   </div>
