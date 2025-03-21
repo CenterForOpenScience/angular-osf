@@ -29,6 +29,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { linkValidator } from '@core/helpers/link-validator.helper';
+import { ConfirmationService } from 'primeng/api';
+import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
 
 @Component({
   selector: 'osf-developer-application-details',
@@ -50,6 +52,7 @@ import { linkValidator } from '@core/helpers/link-validator.helper';
 export class DeveloperAppDetailsComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly confirmationService = inject(ConfirmationService);
   private readonly isXSmall$ = inject(IS_XSMALL);
   protected readonly DeveloperAppFormFormControls =
     DeveloperAppFormFormControls;
@@ -107,12 +110,39 @@ export class DeveloperAppDetailsComponent implements OnInit {
   }
 
   deleteApp(): void {
-    //TODO confirmation dialog
-    //TODO integrate API
+    this.confirmationService.confirm({
+      ...defaultConfirmationConfig,
+      message:
+        "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed.",
+      header: `Delete App ${this.developerApp().appName}?`,
+      acceptButtonProps: {
+        ...defaultConfirmationConfig.acceptButtonProps,
+        severity: 'danger',
+        label: 'Delete',
+      },
+      accept: () => {
+        //TODO integrate API
+      },
+    });
   }
 
   resetClientSecret(): void {
-    //TODO integrate API
+    this.confirmationService.confirm({
+      ...defaultConfirmationConfig,
+      message:
+        'Resetting the client secret will render your application unusable until it is updated with the new client secret,' +
+        ' and all users must reauthorize access. Previously issued access tokens will no longer work.' +
+        '<br><br>Are you sure you want to reset the client secret? This cannot be reversed.',
+      header: `Reset Client Secret?`,
+      acceptButtonProps: {
+        ...defaultConfirmationConfig.acceptButtonProps,
+        severity: 'danger',
+        label: 'Reset',
+      },
+      accept: () => {
+        //TODO integrate API
+      },
+    });
   }
 
   clientIdCopiedToClipboard(): void {
