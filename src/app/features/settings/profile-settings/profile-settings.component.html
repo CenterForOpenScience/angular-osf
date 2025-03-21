@@ -3,3 +3,108 @@
   [title]="'Profile Settings'"
   [icon]="'settings'"
 />
+
+<div class="flex-column flex flex-1 w-full">
+  <p-tabs [value]="defaultTabValue" class="flex-1">
+    <p-tablist class="pr-5 pl-5">
+      <p-tab [value]="0">Name</p-tab>
+      <p-tab [value]="1">Social</p-tab>
+      <p-tab [value]="2">Employment</p-tab>
+      <p-tab [value]="3">Education</p-tab>
+    </p-tablist>
+
+    <p-tabpanels class="p-5 flex-1">
+      <p-tabpanel [value]="0" class="flex flex-column gap-4">
+        <div class="border-1 border-round-lg p-4 name-container">
+          <h3 class="font-normal">
+            Your full name is the name that will be displayed in your profile.
+            To control the way your name will appear in citations, you can use
+            the "Auto-fill" button to automatically infer your first name, last
+            name, etc., or edit the fields directly below.
+          </h3>
+          <div class="flex flex-column row-gap-4 mt-4">
+            <div class="flex flex-row column-gap-3 w-full align-items-end">
+              <div class="w-6">
+                <label for="full-name" class="font-light">Full Name</label>
+                <input pInputText id="full-name" class="name-input" />
+              </div>
+              <div class="w-6">
+                <p-button label="Auto-Fill" severity="secondary" />
+              </div>
+            </div>
+
+            <div class="flex flex-row column-gap-3 w-full align-items-end">
+              <div class="w-6">
+                <label for="given-name" class="font-light">Given Name</label>
+                <input pInputText id="given-name" class="name-input" />
+              </div>
+              <div class="w-6">
+                <label for="middle-name" class="font-light"
+                  >Middle Name(S) (Optional)</label
+                >
+                <input pInputText id="middle-name" class="name-input" />
+              </div>
+            </div>
+
+            <div class="flex flex-row column-gap-3 w-full align-items-end">
+              <div class="w-6">
+                <label for="family-name" class="font-light">Family Name</label>
+                <input pInputText id="family-name" class="name-input" />
+              </div>
+              <div class="w-6">
+                <label for="suffix" class="font-light">Suffix (Optional)</label>
+                <input pInputText id="suffix" class="name-input" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="border-1 border-round-lg p-4 name-container">
+          <div class="flex flex-column row-gap-5">
+            <h2>Citation Preview</h2>
+            <div class="flex flex-row styles-container">
+              <div class="flex flex-row column-gap-5">
+                <div class="flex flex-column style-wrapper">
+                  <h3>Style:</h3>
+                  <h3>Citation format:</h3>
+                </div>
+                <div class="flex flex-column style-wrapper">
+                  <h3 class="font-bold">APA</h3>
+                  <h3>Doe, J. T.</h3>
+                </div>
+              </div>
+
+              <div class="flex flex-row column-gap-5">
+                <div class="flex flex-column style-wrapper">
+                  <h3>Style:</h3>
+                  <h3>Citation format:</h3>
+                </div>
+                <div class="flex flex-column style-wrapper">
+                  <h3 class="font-bold">MLA</h3>
+                  <h3>Doe, John T.</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-row align-items-end column-gap-2 ml-auto h-3rem mt-2"
+        >
+          <p-button label="Discard Changes" severity="info" />
+          <div class="wide-m-button">
+            <p-button label="Save" />
+          </div>
+        </div>
+      </p-tabpanel>
+      <p-tabpanel [value]="1" class="flex flex-column gap-5"> </p-tabpanel>
+
+      <p-tabpanel [value]="2" class="flex flex-column gap-5">
+        employment
+      </p-tabpanel>
+
+      <p-tabpanel [value]="3" class="flex flex-column gap-5">
+        education
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+</div>
