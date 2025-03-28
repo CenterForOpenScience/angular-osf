@@ -19,6 +19,15 @@
 
   .p-select-option {
     color: var.$dark-blue-1;
+
+    &:hover {
+      background: var.$bg-blue-3;
+    }
+
+    &.p-select-option-selected {
+      background: var.$bg-blue-2;
+    }
+
     &.p-select-option-selected.p-focus {
       background: var.$bg-blue-2;
     }

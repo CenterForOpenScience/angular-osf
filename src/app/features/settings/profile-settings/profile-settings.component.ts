@@ -75,6 +75,10 @@ export class ProfileSettingsComponent implements OnInit {
   ];
   protected selectedTab = this.defaultTabValue;
 
+  onTabChange(index: number): void {
+    this.selectedTab = index;
+  }
+
   ngOnInit(): void {
     if (!this.userSocialLinks.length) {
       this.addLink();

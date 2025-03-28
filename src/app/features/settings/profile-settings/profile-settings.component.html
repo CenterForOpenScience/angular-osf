@@ -5,7 +5,11 @@
 />
 
 <div class="flex-column flex flex-1 w-full">
-  <p-tabs [value]="selectedTab" class="flex-1">
+  <p-tabs
+    [value]="selectedTab"
+    (valueChange)="onTabChange(+$event)"
+    class="flex-1"
+  >
     @if (!isMobile()) {
       <p-tablist class="pr-5 pl-5">
         <p-tab [value]="0">Name</p-tab>
