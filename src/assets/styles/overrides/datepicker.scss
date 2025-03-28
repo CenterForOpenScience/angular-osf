@@ -1,0 +1,55 @@
+@use "../variables" as var;
+@use "../mixins" as mix;
+
+.p-datepicker {
+  width: 100%;
+
+  .p-datepicker-header {
+    .p-button {
+      background: none;
+      color: var.$grey-2;
+      padding: 0;
+    }
+
+    .p-button-icon-only {
+      width: auto;
+    }
+
+    .p-datepicker-title {
+      button {
+        font-size: 16px;
+        padding: 0;
+        color: var.$dark-blue-1;
+      }
+    }
+  }
+
+  .p-datepicker-day:hover {
+    background: var.$bg-blue-3;
+  }
+
+  .p-datepicker-today > .p-datepicker-day {
+    background: none;
+    color: var.$pr-blue-1;
+    font-weight: 700;
+
+    &:hover {
+      background: var.$pr-blue-2;
+      color: white;
+    }
+  }
+
+  .p-datepicker-day-selected {
+    background: var.$pr-blue-1;
+
+    &:hover {
+      background: var.$pr-blue-2;
+      color: white;
+    }
+  }
+
+  .p-datepicker-today > .p-datepicker-day-selected {
+    background: var.$pr-blue-1;
+    color: white;
+  }
+}

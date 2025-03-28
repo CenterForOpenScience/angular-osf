@@ -19,7 +19,8 @@
 @use "./overrides/confirmation-dialog";
 @use "./overrides/input-group-addon";
 @use "./overrides/iconfield";
-
+@use "./overrides/datepicker";
+@use "./overrides/select";
 
 @layer base, primeng, reset;
 

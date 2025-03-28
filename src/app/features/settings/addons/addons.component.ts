@@ -17,11 +17,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
-
-interface TabOption {
-  label: string;
-  value: number;
-}
+import { TabOption } from '@osf/shared/entities/tab-option.interface';
 
 @Component({
   selector: 'osf-addons',
