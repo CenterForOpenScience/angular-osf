@@ -1,0 +1,11 @@
+<osf-sub-header
+  [showButton]="true"
+  [buttonLabel]="'Create Token'"
+  [title]="'Personal Access Tokens'"
+  [icon]="'settings'"
+  (buttonClick)="createToken()"
+/>
+
+<section class="flex-column flex flex-1">
+  <router-outlet />
+</section>

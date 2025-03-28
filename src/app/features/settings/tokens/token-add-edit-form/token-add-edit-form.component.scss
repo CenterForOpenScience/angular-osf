@@ -1,0 +1,12 @@
+@use "assets/styles/variables" as var;
+
+:host {
+  label {
+    font-weight: 700;
+    color: var.$dark-blue-1;
+  }
+
+  h3 {
+    text-transform: none;
+  }
+}

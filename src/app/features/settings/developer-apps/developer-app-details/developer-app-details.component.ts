@@ -32,6 +32,7 @@ import { linkValidator } from '@core/helpers/link-validator.helper';
 import { ConfirmationService } from 'primeng/api';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
 import { timer } from 'rxjs';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'osf-developer-application-details',
@@ -45,6 +46,7 @@ import { timer } from 'rxjs';
     CdkCopyToClipboard,
     FormsModule,
     ReactiveFormsModule,
+    NgClass,
   ],
   templateUrl: './developer-app-details.component.html',
   styleUrl: './developer-app-details.component.scss',

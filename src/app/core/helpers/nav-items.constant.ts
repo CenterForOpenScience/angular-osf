@@ -28,7 +28,7 @@ export const NAV_ITEMS: NavItem[] = [
       },
       {
         path: '/settings/addons',
-        label: 'Addon Accounts',
+        label: 'Configure Addon Accounts',
         useExactMatch: false,
       },
       {
@@ -42,7 +42,7 @@ export const NAV_ITEMS: NavItem[] = [
         useExactMatch: true,
       },
       {
-        path: '/settings/personal-access-tokens',
+        path: '/settings/tokens',
         label: 'Personal Access Tokens',
         useExactMatch: true,
       },

@@ -1,0 +1,26 @@
+<section
+  class="flex flex-column flex-1 gap-5 content-container"
+  [class.mobile]="isXSmall()"
+>
+  <nav>
+    <a routerLink="/settings/tokens">
+      <!-- TODO - Add icon -->
+      <strong><</strong> Back to list of personal tokens
+    </a>
+  </nav>
+
+  <div class="flex justify-content-between" [class.mobile]="isXSmall()">
+    <h1>{{ token().tokenName }}</h1>
+    <p-button
+      label="Delete"
+      [class.btn-full-width]="isXSmall()"
+      severity="danger"
+      (click)="deleteToken()"
+    />
+  </div>
+
+  <p-card class="mb-5">
+    <h2 class="mb-5">Edit Token</h2>
+    <osf-token-add-edit-form [isEditMode]="true" [initialValues]="token()" />
+  </p-card>
+</section>

@@ -13,10 +13,10 @@
       <p-tab [value]="3">Education</p-tab>
     </p-tablist>
 
-    <p-tabpanels class="p-5 flex-1">
+    <p-tabpanels class="p-3 sm:p-5 flex-1">
       <!--NAME-->
       <p-tabpanel [value]="0" class="flex flex-column gap-4 flex-1">
-        <div class="border-1 border-round-lg p-4 name-container">
+        <div class="border-1 border-round-lg p-3 sm:p-5 name-container">
           <h3 class="font-normal">
             Your full name is the name that will be displayed in your profile.
             To control the way your name will appear in citations, you can use
@@ -24,45 +24,61 @@
             name, etc., or edit the fields directly below.
           </h3>
           <div class="flex flex-column row-gap-4 mt-4">
-            <div class="flex flex-row column-gap-3 w-full align-items-end">
-              <div class="w-6">
-                <label for="full-name" class="font-light">Full Name</label>
+            <div
+              class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3 w-full mb-3"
+            >
+              <div class="w-full xl:w-6">
+                <label for="full-name" class="font-normal xl:font-light"
+                  >Full Name</label
+                >
                 <input pInputText id="full-name" class="name-input" />
               </div>
-              <div class="w-6 high-m-button">
+              <div class="ml-auto sm:m-0 xl:w-6 high-m-button">
                 <p-button label="Auto-Fill" severity="secondary" />
               </div>
             </div>
 
-            <div class="flex flex-row column-gap-3 w-full align-items-end">
-              <div class="w-6">
-                <label for="given-name" class="font-light">Given Name</label>
+            <div
+              class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3"
+            >
+              <div class="w-full xl:w-6">
+                <label for="given-name" class="font-normal xl:font-light"
+                  >Given Name</label
+                >
                 <input pInputText id="given-name" class="name-input" />
               </div>
-              <div class="w-6">
-                <label for="middle-name" class="font-light"
+              <div class="w-full xl:w-6">
+                <label for="middle-name" class="font-normal xl:font-light"
                   >Middle Name(S) (Optional)</label
                 >
                 <input pInputText id="middle-name" class="name-input" />
               </div>
             </div>
 
-            <div class="flex flex-row column-gap-3 w-full align-items-end">
-              <div class="w-6">
-                <label for="family-name" class="font-light">Family Name</label>
+            <div
+              class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3"
+            >
+              <div class="w-full xl:w-6">
+                <label for="family-name" class="font-normal xl:font-light"
+                  >Family Name</label
+                >
                 <input pInputText id="family-name" class="name-input" />
               </div>
-              <div class="w-6">
-                <label for="suffix" class="font-light">Suffix (Optional)</label>
+              <div class="w-full xl:w-6">
+                <label for="suffix" class="font-normal xl:font-light"
+                  >Suffix (Optional)</label
+                >
                 <input pInputText id="suffix" class="name-input" />
               </div>
             </div>
           </div>
         </div>
-        <div class="border-1 border-round-lg p-4 name-container">
+        <div class="border-1 border-round-lg p-3 sm:p-5 name-container">
           <div class="flex flex-column row-gap-5">
             <h2>Citation Preview</h2>
-            <div class="flex flex-row styles-container">
+            <div
+              class="flex flex-column row-gap-4 sm:flex-row styles-container"
+            >
               <div class="flex flex-row column-gap-5">
                 <div class="flex flex-column style-wrapper">
                   <h3>Style:</h3>
@@ -109,7 +125,7 @@
             ) {
               <div
                 [formGroupName]="index"
-                class="flex flex-column border-1 border-round-lg p-4 name-container row-gap-4"
+                class="flex flex-column border-1 border-round-lg p-3 sm:p-5 name-container row-gap-4"
               >
                 <div class="flex flex-row">
                   <h2>Social Link {{ index + 1 }}</h2>
@@ -122,8 +138,10 @@
                   }
                 </div>
 
-                <div class="flex flex-row column-gap-3 w-full align-items-end">
-                  <div class="w-4">
+                <div
+                  class="flex flex-column row-gap-4 w-full md:flex-row md:align-items-end md:column-gap-3"
+                >
+                  <div class="w-full md:w-4">
                     <p class="font-light mb-1">Social output</p>
                     <p-dropdown
                       formControlName="socialOutput"
@@ -133,7 +151,7 @@
                     ></p-dropdown>
                   </div>
 
-                  <div class="w-8">
+                  <div class="w-full md:w-8">
                     <p class="font-light mb-1">Web Address</p>
                     <p-inputgroup class="addon-input">
                       <p-inputgroup-addon>{{

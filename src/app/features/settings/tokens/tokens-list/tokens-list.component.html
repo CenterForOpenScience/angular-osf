@@ -1,0 +1,29 @@
+<section class="content-container flex-1" [class.mobile]="isXSmall()">
+  <p>
+    Personal access tokens function like ordinary OAuth access tokens. They can
+    be used to authenticate to the API.
+  </p>
+
+  <section class="tokens-container flex-1 flex flex-column">
+    @for (token of tokens(); track $index) {
+      <p-card>
+        <section
+          class="flex align-items-center justify-content-between card-body"
+          [class.mobile]="isXSmall()"
+        >
+          <a [routerLink]="[token.id, 'details']">
+            <h2>{{ token.tokenName }}</h2>
+          </a>
+          <section class="button-container">
+            <p-button
+              class="btn-full-width"
+              label="Delete"
+              severity="danger"
+              (onClick)="deleteApp(token)"
+            />
+          </section>
+        </section>
+      </p-card>
+    }
+  </section>
+</section>

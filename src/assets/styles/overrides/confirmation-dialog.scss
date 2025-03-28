@@ -1,6 +1,9 @@
-.p-confirmdialog {
+@use "../variables" as var;
+
+.p-dialog {
   min-height: 212px;
   width: 450px;
+  margin: 1rem;
 
   .p-dialog-header {
     padding: 24px;
@@ -9,6 +12,13 @@
       font-size: 18px;
       font-weight: 700;
       text-transform: capitalize;
+    }
+
+    &.ng-star-inserted {
+      p-button > button {
+        background: transparent;
+        color: var.$grey-1;
+      }
     }
   }
 

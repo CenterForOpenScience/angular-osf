@@ -14,7 +14,7 @@
     margin-bottom: 1.7rem;
   }
 
-  .tittle-container {
+  .title-container {
     @include mix.flex-center-between;
     margin-bottom: 3.4rem;
 
@@ -63,7 +63,7 @@
         transition: opacity 0.3s ease;
         white-space: nowrap;
         border-radius: 8px;
-        box-shadow: 0px 0px 4px 0px #00000029;
+        box-shadow: 0 0 4px 0 #00000029;
         background: var.$white;
 
         &.visible {

@@ -48,7 +48,7 @@ export class AddonsComponent implements OnInit {
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly searchValue = signal('');
   protected readonly cards = signal<AddonCard[]>([]);
-  protected readonly selectedTab = this.defaultTabValue;
+  protected selectedTab = this.defaultTabValue;
   protected readonly tabOptions: TabOption[] = [
     { label: 'All Add-ons', value: 0 },
     { label: 'Connected Add-ons', value: 1 },

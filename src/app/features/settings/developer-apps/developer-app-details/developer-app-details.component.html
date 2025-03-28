@@ -2,11 +2,11 @@
   <nav class="navigation-bar-container">
     <a routerLink="/settings/developer-apps">
       <!-- TODO - Add icon -->
-      Back to list of developer apps
+      <strong><</strong> Back to list of developer apps
     </a>
   </nav>
 
-  <section class="tittle-container" [class.mobile]="isXSmall()">
+  <section class="title-container" [class.mobile]="isXSmall()">
     <h1>{{ developerApp().appName + developerAppId() }}</h1>
     <p-button
       label="Delete"
@@ -164,7 +164,9 @@
             <p-button
               label="Save"
               type="submit"
-              [class.btn-half-width]="isXSmall()"
+              [ngClass]="
+                isXSmall() ? 'btn-half-width' : 'w-10rem btn-full-width'
+              "
               [disabled]="!editAppForm.dirty || !editAppForm.valid"
             />
           </section>

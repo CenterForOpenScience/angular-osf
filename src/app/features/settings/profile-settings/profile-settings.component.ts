@@ -51,7 +51,7 @@ export class ProfileSettingsComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    if (this.userSocialLinks.length) {
+    if (!this.userSocialLinks.length) {
       this.addLink();
     }
   }
