@@ -16,7 +16,6 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  AVAILABLE_SCOPES,
   PersonalAccessToken,
   TokenForm,
   TokenFormControls,
@@ -24,6 +23,8 @@ import {
 import { CommonModule } from '@angular/common';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Store } from '@ngxs/store';
+import { TokensState } from '@core/store/settings';
 
 @Component({
   selector: 'osf-token-add-edit-form',
@@ -34,12 +35,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class TokenAddEditFormComponent implements OnInit {
   #isXSmall$ = inject(IS_XSMALL);
+  #store = inject(Store);
   isEditMode = input(false);
   initialValues = input<PersonalAccessToken | null>(null);
   protected readonly dialogRef = inject(DynamicDialogRef);
   protected readonly TokenFormControls = TokenFormControls;
-  protected readonly availableScopes = AVAILABLE_SCOPES;
   protected readonly isXSmall = toSignal(this.#isXSmall$);
+  protected readonly tokenScopes = this.#store.selectSignal(
+    TokensState.getScopes,
+  );
 
   readonly tokenForm: TokenForm = new FormGroup({
     [TokenFormControls.TokenName]: new FormControl('', {
