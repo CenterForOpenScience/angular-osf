@@ -5,12 +5,14 @@
   <div class="max-h-8rem">
     <img
       alt="Addon card image"
-      [src]="'assets/images/temp/' + card()!.img + '.png'"
+      [src]="
+        'assets/images/temp/' + card()!.attributes.name.toLowerCase() + '.png'
+      "
     />
   </div>
 
   <div class="flex flex-column gap-3">
-    <h3>{{ card()?.title }}</h3>
+    <h3>{{ card()?.attributes?.name }}</h3>
     <p-button
       [label]="cardButtonLabel() || 'Connect'"
       severity="secondary"

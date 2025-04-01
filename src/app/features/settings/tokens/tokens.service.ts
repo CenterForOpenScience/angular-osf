@@ -3,7 +3,7 @@ import { JsonApiService } from '@core/services/json-api/json-api.service';
 import { Observable } from 'rxjs';
 import { Token, TokenCreateResponse } from './entities/tokens.models';
 import { map } from 'rxjs/operators';
-import { TokenMapper } from '@osf/features/settings/tokens/mappers/token.mapper';
+import { TokenMapper } from '@osf/features/settings/tokens/token.mapper';
 import { Scope } from '@osf/features/settings/tokens/entities/scope.interface';
 
 @Injectable({

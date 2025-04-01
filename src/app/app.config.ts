@@ -10,13 +10,14 @@ import { provideHttpClient } from '@angular/common/http';
 import { ConfirmationService } from 'primeng/api';
 import { AuthState } from '@core/store/auth';
 import { TokensState } from '@core/store/settings';
+import { AddonsState } from '@core/store/settings/addons';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideStore(
-      [AuthState, TokensState],
+      [AuthState, TokensState, AddonsState],
       withNgxsReduxDevtoolsPlugin({ disabled: false }),
     ),
     providePrimeNG({

@@ -1,9 +1,9 @@
 import { Component, inject, input } from '@angular/core';
 import { Button } from 'primeng/button';
-import { AddonCard } from '@shared/entities/addon-card.interface';
 import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { Addon } from '@shared/entities/addons.entities';
 
 @Component({
   selector: 'osf-addon-card',
@@ -12,7 +12,7 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
   styleUrl: './addon-card.component.scss',
 })
 export class AddonCardComponent {
-  card = input<AddonCard>();
+  card = input<Addon>();
   cardButtonLabel = input<string>('');
   isMobile = toSignal(inject(IS_XSMALL));
 

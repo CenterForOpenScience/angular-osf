@@ -10,13 +10,13 @@
 
     <p-tabpanels class="p-5 flex-1">
       @if (isMobile()) {
-        <p-dropdown
+        <p-select
           class="w-full mb-4"
           [options]="tabOptions"
           optionLabel="label"
           optionValue="value"
           [(ngModel)]="selectedTab"
-        ></p-dropdown>
+        ></p-select>
       }
       <p-tabpanel [value]="0" class="flex flex-column gap-5">
         <p>
@@ -25,11 +25,14 @@
         </p>
         <section class="grid">
           <div class="col-12 md:col-6 lg:col-3">
-            <p-autocomplete
+            <p-select
               placeholder="Addon Type"
-              dropdown
+              [options]="categoryOptions"
+              optionLabel="label"
+              optionValue="value"
+              [(ngModel)]="selectedCategory"
               class="w-full"
-            ></p-autocomplete>
+            ></p-select>
           </div>
           <div class="col-12 md:col-6 lg:col-9">
             <osf-search-input
