@@ -16,15 +16,16 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  PersonalAccessToken,
   TokenForm,
   TokenFormControls,
-} from '@osf/features/settings/tokens/tokens.enities';
+} from '@osf/features/settings/tokens/entities/token-form.entities';
 import { CommonModule } from '@angular/common';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngxs/store';
 import { TokensState } from '@core/store/settings';
+import { TokensService } from '@osf/features/settings/tokens/tokens.service';
+import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 
 @Component({
   selector: 'osf-token-add-edit-form',
@@ -36,8 +37,9 @@ import { TokensState } from '@core/store/settings';
 export class TokenAddEditFormComponent implements OnInit {
   #isXSmall$ = inject(IS_XSMALL);
   #store = inject(Store);
+  #tokensService = inject(TokensService);
   isEditMode = input(false);
-  initialValues = input<PersonalAccessToken | null>(null);
+  initialValues = input<Token | null>(null);
   protected readonly dialogRef = inject(DynamicDialogRef);
   protected readonly TokenFormControls = TokenFormControls;
   protected readonly isXSmall = toSignal(this.#isXSmall$);
@@ -59,7 +61,7 @@ export class TokenAddEditFormComponent implements OnInit {
   ngOnInit(): void {
     if (this.initialValues()) {
       this.tokenForm.patchValue({
-        [TokenFormControls.TokenName]: this.initialValues()?.tokenName,
+        [TokenFormControls.TokenName]: this.initialValues()?.name,
         [TokenFormControls.Scopes]: this.initialValues()?.scopes,
       });
     }
@@ -73,7 +75,17 @@ export class TokenAddEditFormComponent implements OnInit {
       return;
     }
 
-    //TODO integrate API
-    this.dialogRef.close();
+    const { tokenName, scopes } = this.tokenForm.value;
+    if (!tokenName || !scopes) return;
+
+    this.#tokensService.createToken(tokenName, scopes).subscribe({
+      next: (token) => {
+        this.dialogRef.close(token);
+      },
+      error: (error) => {
+        console.error('Failed to create token:', error);
+        // TODO: Show error message to user
+      },
+    });
   }
 }

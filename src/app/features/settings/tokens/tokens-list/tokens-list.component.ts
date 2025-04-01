@@ -10,7 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { RouterLink } from '@angular/router';
-import { PersonalAccessToken } from '@osf/features/settings/tokens/tokens.enities';
+import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
 
 @Component({
@@ -25,35 +25,51 @@ export class TokensListComponent {
   #isXSmall$ = inject(IS_XSMALL);
   protected readonly isXSmall = toSignal(this.#isXSmall$);
 
-  tokens = signal<PersonalAccessToken[]>([
+  tokens = signal<Token[]>([
     {
       id: '1',
-      tokenName: 'Token name example 1',
+      name: 'Token name example 1',
+      tokenId: 'token1',
       scopes: ['osf.full_read', 'osf.full_write'],
+      ownerId: 'user1',
+      htmlUrl: 'https://osf.io/settings/tokens/1',
+      apiUrl: 'https://api.osf.io/v2/tokens/1',
     },
     {
       id: '2',
-      tokenName: 'Token name example 2',
+      name: 'Token name example 2',
+      tokenId: 'token2',
       scopes: ['osf.full_read', 'osf.full_write'],
+      ownerId: 'user1',
+      htmlUrl: 'https://osf.io/settings/tokens/2',
+      apiUrl: 'https://api.osf.io/v2/tokens/2',
     },
     {
       id: '3',
-      tokenName: 'Token name example 3',
+      name: 'Token name example 3',
+      tokenId: 'token3',
       scopes: ['osf.full_read', 'osf.full_write'],
+      ownerId: 'user1',
+      htmlUrl: 'https://osf.io/settings/tokens/3',
+      apiUrl: 'https://api.osf.io/v2/tokens/3',
     },
     {
       id: '4',
-      tokenName: 'Token name example 4',
+      name: 'Token name example 4',
+      tokenId: 'token4',
       scopes: ['osf.full_read', 'osf.full_write'],
+      ownerId: 'user1',
+      htmlUrl: 'https://osf.io/settings/tokens/4',
+      apiUrl: 'https://api.osf.io/v2/tokens/4',
     },
   ]);
 
-  deleteApp(token: PersonalAccessToken) {
+  deleteApp(token: Token) {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
       message:
         'Are you sure you want to delete this token? This action cannot be reversed.',
-      header: `Delete Token ${token.tokenName}?`,
+      header: `Delete Token ${token.name}?`,
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',

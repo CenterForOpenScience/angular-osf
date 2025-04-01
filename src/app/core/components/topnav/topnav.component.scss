@@ -2,7 +2,7 @@
 @use "assets/styles/mixins" as mix;
 
 :host {
-  z-index: 2000;
+  z-index: 1300;
 
   .nav-container {
     @include mix.flex-center-between;
