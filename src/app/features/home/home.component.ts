@@ -8,7 +8,6 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { noteworthy, mostPopular } from '@osf/features/home/data';
 import { DashboardService } from '@osf/features/home/dashboard.service';
 
 @Component({
@@ -30,8 +29,8 @@ export class HomeComponent implements OnInit {
   isMobile = toSignal(inject(IS_XSMALL));
   dashboardService: DashboardService = inject(DashboardService);
   projects = signal<Project[]>([]);
-  noteworthy = noteworthy;
-  mostPopular = mostPopular;
+  noteworthy = signal<Project[]>([]);
+  mostPopular = signal<Project[]>([]);
 
   searchValue = signal('');
 
@@ -53,9 +52,31 @@ export class HomeComponent implements OnInit {
       .join(', ');
   }
 
+  getNoteworthyContributorsList(item: Project) {
+    return this.noteworthy()
+      .find((i) => i.id === item.id)
+      ?.bibliographicContributors.map((i) => i.users.familyName)
+      .join(', ');
+  }
+
+  getMostPopularContributorsList(item: Project) {
+    return this.mostPopular()
+      .find((i) => i.id === item.id)
+      ?.bibliographicContributors.map((i) => i.users.familyName)
+      .join(', ');
+  }
+
   ngOnInit() {
     this.dashboardService.getProjects().subscribe((res) => {
       this.projects.set(res);
+    });
+
+    this.dashboardService.getNoteworthy().subscribe((res) => {
+      this.noteworthy.set(res);
+    });
+
+    this.dashboardService.getMostPopular().subscribe((res) => {
+      this.mostPopular.set(res);
     });
   }
 }
