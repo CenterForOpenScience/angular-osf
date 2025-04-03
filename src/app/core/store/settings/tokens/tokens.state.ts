@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { State, Action, StateContext } from '@ngxs/store';
 import { TokensStateModel } from './tokens.models';
 import { TokensService } from '@osf/features/settings/tokens/tokens.service';
 import {
@@ -9,8 +9,6 @@ import {
   DeleteToken,
 } from './tokens.actions';
 import { tap } from 'rxjs';
-import { Scope } from '@osf/features/settings/tokens/entities/scope.interface';
-import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 
 @State<TokensStateModel>({
   name: 'tokens',
@@ -22,16 +20,6 @@ import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 @Injectable()
 export class TokensState {
   tokensService = inject(TokensService);
-
-  @Selector()
-  static getScopes(state: TokensStateModel): Scope[] {
-    return state.scopes;
-  }
-
-  @Selector()
-  static getTokens(state: TokensStateModel): Token[] {
-    return state.tokens;
-  }
 
   @Action(GetScopes)
   getScopes(ctx: StateContext<TokensStateModel>) {

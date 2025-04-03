@@ -17,9 +17,9 @@ import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
 import {
-  AddonsState,
   GetStorageAddons,
   GetCitationAddons,
+  AddonsSelectors,
 } from '@core/store/settings/addons';
 
 import { SelectOption } from '@shared/entities/select-option.interface';
@@ -54,10 +54,10 @@ export class AddonsComponent {
   );
 
   protected readonly storageAddons = this.#store.selectSignal(
-    AddonsState.getStorageAddons,
+    AddonsSelectors.getStorageAddons,
   );
   protected readonly citationAddons = this.#store.selectSignal(
-    AddonsState.getCitationAddons,
+    AddonsSelectors.getCitationAddons,
   );
 
   protected readonly currentAddons = computed(() => {

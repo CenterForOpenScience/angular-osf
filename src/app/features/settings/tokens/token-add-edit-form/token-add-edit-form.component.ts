@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngxs/store';
-import { TokensState } from '@core/store/settings';
+import { TokensSelectors } from '@core/store/settings';
 import { TokensService } from '@osf/features/settings/tokens/tokens.service';
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 
@@ -44,7 +44,7 @@ export class TokenAddEditFormComponent implements OnInit {
   protected readonly TokenFormControls = TokenFormControls;
   protected readonly isXSmall = toSignal(this.#isXSmall$);
   protected readonly tokenScopes = this.#store.selectSignal(
-    TokensState.getScopes,
+    TokensSelectors.getScopes,
   );
 
   readonly tokenForm: TokenForm = new FormGroup({
