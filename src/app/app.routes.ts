@@ -65,6 +65,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'my-projects',
+        loadComponent: () =>
+          import('./features/my-projects/my-projects.component').then(
+            (mod) => mod.MyProjectsComponent,
+          ),
+      },
+      {
         path: 'settings',
         loadChildren: () =>
           import('./features/settings/settings.routes').then(

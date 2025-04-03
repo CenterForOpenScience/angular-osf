@@ -10,6 +10,12 @@ export const NAV_ITEMS: NavItem[] = [
     useExactMatch: true,
   },
   {
+    path: '/my-projects',
+    label: 'My Projects',
+    icon: 'my-projects',
+    useExactMatch: true,
+  },
+  {
     path: '/settings',
     label: 'Settings',
     icon: 'settings',
