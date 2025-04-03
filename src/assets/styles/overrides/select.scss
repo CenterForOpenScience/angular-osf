@@ -13,9 +13,11 @@
     @include mix.flex-align-center;
   }
 
+  .p-select-option.p-select-option-selected {
+  }
   .p-select-option {
     color: var.$dark-blue-1;
-    &.p-select-option-selected.p-focus {
+    &.p-select-option-selected {
       background: var.$bg-blue-2;
     }
   }

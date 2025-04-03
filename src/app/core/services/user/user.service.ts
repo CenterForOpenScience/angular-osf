@@ -9,11 +9,12 @@ import { mapUserUStoUser } from '@core/services/mappers/users/users.mapper';
   providedIn: 'root',
 })
 export class UserService {
+  baseUrl = 'https://api.staging4.osf.io/v2/';
   jsonApiService = inject(JsonApiService);
 
-  getMe(): Observable<User> {
+  getCurrentUser(): Observable<User> {
     return this.jsonApiService
-      .get<UserUS>('https://api.test.osf.io/v2/users/me')
+      .get<UserUS>(this.baseUrl + 'users/me')
       .pipe(map((user) => mapUserUStoUser(user)));
   }
 }

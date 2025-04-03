@@ -1,6 +1,6 @@
 <section class="grid">
   @if (cards().length) {
-    @for (card of cards(); track card.attributes.name) {
+    @for (card of cards(); track card.id) {
       <div class="col-6 lg:col-4">
         <osf-addon-card [cardButtonLabel]="cardButtonLabel()" [card]="card" />
       </div>

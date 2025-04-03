@@ -30,7 +30,8 @@
               [options]="categoryOptions"
               optionLabel="label"
               optionValue="value"
-              [(ngModel)]="selectedCategory"
+              [ngModel]="selectedCategory()"
+              (ngModelChange)="onCategoryChange($event)"
               class="w-full"
             ></p-select>
           </div>

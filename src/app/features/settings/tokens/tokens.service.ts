@@ -35,7 +35,6 @@ export class TokensService {
     scopes: string[],
   ): Observable<Token> {
     const request = TokenMapper.toRequest(name, scopes);
-    console.log(request);
 
     return this.jsonApiService
       .patch<TokenCreateResponse>(this.baseUrl + `tokens/${tokenId}`, request)

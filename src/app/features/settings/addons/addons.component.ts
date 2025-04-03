@@ -3,8 +3,8 @@ import {
   Component,
   computed,
   signal,
-  OnInit,
   inject,
+  effect,
 } from '@angular/core';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
@@ -16,7 +16,11 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { AddonsState, GetAddons } from '@core/store/settings/addons';
+import {
+  AddonsState,
+  GetStorageAddons,
+  GetCitationAddons,
+} from '@core/store/settings/addons';
 
 import { SelectOption } from '@shared/entities/select-option.interface';
 
@@ -40,35 +44,57 @@ import { SelectOption } from '@shared/entities/select-option.interface';
   styleUrl: './addons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddonsComponent implements OnInit {
+export class AddonsComponent {
   #store = inject(Store);
   protected readonly defaultTabValue = 0;
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly searchValue = signal('');
-  protected readonly cards = this.#store.selectSignal(AddonsState.getAddons);
+  protected readonly selectedCategory = signal<string>(
+    'external-storage-services',
+  );
+
+  protected readonly storageAddons = this.#store.selectSignal(
+    AddonsState.getStorageAddons,
+  );
+  protected readonly citationAddons = this.#store.selectSignal(
+    AddonsState.getCitationAddons,
+  );
+
+  protected readonly currentAddons = computed(() => {
+    return this.selectedCategory() === 'external-storage-services'
+      ? this.storageAddons()
+      : this.citationAddons();
+  });
+
+  protected readonly filteredCards = computed(() => {
+    const searchValue = this.searchValue().toLowerCase();
+    return this.currentAddons().filter((card) =>
+      card.externalServiceName.includes(searchValue),
+    );
+  });
   protected readonly tabOptions: SelectOption[] = [
     { label: 'All Add-ons', value: 0 },
     { label: 'Connected Add-ons', value: 1 },
   ];
   protected readonly categoryOptions: SelectOption[] = [
-    { label: 'Additional Storage', value: 'storage' },
-    { label: 'Citation Manager', value: 'citations' },
+    { label: 'Additional Storage', value: 'external-storage-services' },
+    { label: 'Citation Manager', value: 'external-citation-services' },
   ];
   protected selectedTab = this.defaultTabValue;
-  protected selectedCategory = signal<string>('storage');
-  protected readonly filteredCards = computed(() => {
-    const searchValue = this.searchValue().toLowerCase();
-    const selectedCategory = this.selectedCategory();
 
-    return this.cards().filter(
-      (card) =>
-        card.attributes.name.toLowerCase().includes(searchValue) &&
-        (!selectedCategory ||
-          card.attributes.categories.includes(selectedCategory)),
-    );
-  });
+  protected onCategoryChange(value: string): void {
+    this.selectedCategory.set(value);
+  }
 
-  ngOnInit(): void {
-    this.#store.dispatch(GetAddons);
+  constructor() {
+    effect(() => {
+      const category = this.selectedCategory();
+
+      this.#store.dispatch(
+        category === 'external-storage-services'
+          ? GetStorageAddons
+          : GetCitationAddons,
+      );
+    });
   }
 }

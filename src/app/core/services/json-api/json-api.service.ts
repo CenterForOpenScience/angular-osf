@@ -13,8 +13,12 @@ export class JsonApiService {
   http: HttpClient = inject(HttpClient);
 
   get<T>(url: string): Observable<T> {
+    const headers = new HttpHeaders({
+      Authorization: `Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt`,
+    });
+
     return this.http
-      .get<JsonApiResponse<T>>(url)
+      .get<JsonApiResponse<T>>(url, { headers })
       .pipe(map((response) => response.data));
   }
 
