@@ -9,6 +9,13 @@ import { SearchInputComponent } from '@shared/components/search-input/search-inp
 import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DashboardService } from '@osf/features/home/dashboard.service';
+import { Store } from '@ngxs/store';
+import {
+  GetMostPopular,
+  GetNoteworthy,
+  GetProjects,
+  HomeSelectors,
+} from '@core/store/home';
 
 @Component({
   selector: 'osf-home',
@@ -28,9 +35,19 @@ export class HomeComponent implements OnInit {
   isMedium = toSignal(inject(IS_MEDIUM));
   isMobile = toSignal(inject(IS_XSMALL));
   dashboardService: DashboardService = inject(DashboardService);
-  projects = signal<Project[]>([]);
-  noteworthy = signal<Project[]>([]);
-  mostPopular = signal<Project[]>([]);
+  #store = inject(Store);
+
+  protected readonly projects = this.#store.selectSignal(
+    HomeSelectors.getProjects,
+  );
+
+  protected readonly noteworthy = this.#store.selectSignal(
+    HomeSelectors.getNoteworthy,
+  );
+
+  protected readonly mostPopular = this.#store.selectSignal(
+    HomeSelectors.getMostPopular,
+  );
 
   searchValue = signal('');
 
@@ -67,16 +84,8 @@ export class HomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.dashboardService.getProjects().subscribe((res) => {
-      this.projects.set(res);
-    });
-
-    this.dashboardService.getNoteworthy().subscribe((res) => {
-      this.noteworthy.set(res);
-    });
-
-    this.dashboardService.getMostPopular().subscribe((res) => {
-      this.mostPopular.set(res);
-    });
+    this.#store.dispatch(GetProjects);
+    this.#store.dispatch(GetNoteworthy);
+    this.#store.dispatch(GetMostPopular);
   }
 }
