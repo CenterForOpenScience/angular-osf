@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import {
-  ApiData,
+  JsonApiArrayResponse,
   JsonApiResponse,
 } from '@core/services/json-api/json-api.entity';
 
@@ -12,19 +12,53 @@ import {
 export class JsonApiService {
   http: HttpClient = inject(HttpClient);
 
-  get<T>(url: string): Observable<T> {
+  get<T>(url: string, params?: Record<string, unknown>): Observable<T> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      for (const key in params) {
+        const value = params[key];
+
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            httpParams = httpParams.append(`${key}[]`, item); // Handles arrays
+          });
+        } else {
+          httpParams = httpParams.set(key, value as string);
+        }
+      }
+    }
+
     return this.http
       .get<JsonApiResponse<T>>(url)
-      .pipe(map((response) => (response.data as ApiData<T>).attributes));
+      .pipe(map((response) => response.data));
   }
 
-  getArray<T>(url: string): Observable<T[]> {
+  getArray<T>(url: string, params?: Record<string, unknown>): Observable<T[]> {
+    let httpParams = new HttpParams();
+
+    if (params) {
+      for (const key in params) {
+        const value = params[key];
+
+        if (Array.isArray(value)) {
+          value.forEach((item) => {
+            httpParams = httpParams.append(`${key}[]`, item); // Handles arrays
+          });
+        } else {
+          httpParams = httpParams.set(key, value as string);
+        }
+      }
+    }
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer UlO9O9GNKgVzJD7pUeY53jiQTKJ4U2znXVWNvh0KZQruoENuILx0IIYf9LoDz7Duq72EIm`,
+    });
+
     return this.http
-      .get<JsonApiResponse<T>>(url)
-      .pipe(
-        map((response) =>
-          (response.data as ApiData<T>[]).map((item) => item.attributes),
-        ),
-      );
+      .get<
+        JsonApiArrayResponse<T>
+      >(url, { params: httpParams, headers: headers })
+      .pipe(map((response) => response.data));
   }
 }

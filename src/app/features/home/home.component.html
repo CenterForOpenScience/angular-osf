@@ -76,21 +76,23 @@
   <div class="noteworthy-container">
     <div class="news-section">
       <h2>New And Noteworthy</h2>
-      @for (block of noteworthy; track block.title) {
+      @for (project of noteworthy(); track project.id) {
         <div class="news-block">
-          <p class="title">{{ block.title }}</p>
+          <p class="title">{{ project.title }}</p>
           <br />
-          <p class="authors">{{ block.authors }}</p>
+          <p class="authors">by {{ getNoteworthyContributorsList(project) }}</p>
         </div>
       }
     </div>
     <div class="news-section">
       <h2>Most Popular</h2>
-      @for (block of mostPopular; track block.title) {
+      @for (project of mostPopular(); track project.id) {
         <div class="news-block">
-          <p class="title">{{ block.title }}</p>
+          <p class="title">{{ project.title }}</p>
           <br />
-          <p class="authors">{{ block.authors }}</p>
+          <p class="authors">
+            by {{ getMostPopularContributorsList(project) }}
+          </p>
         </div>
       }
     </div>

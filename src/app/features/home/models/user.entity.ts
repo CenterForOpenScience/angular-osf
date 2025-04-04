@@ -1,5 +1,7 @@
 export interface User {
+  familyName: string;
   fullName: string;
   givenName: string;
-  familyName: string;
+  locale: string;
+  timezone: string;
 }

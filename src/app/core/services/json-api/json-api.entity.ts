@@ -1,8 +1,13 @@
 export interface JsonApiResponse<T> {
-  data: ApiData<T> | ApiData<T>[];
+  data: T;
 }
 
-export interface ApiData<T> {
-  id: string | number;
-  attributes: T;
+export interface JsonApiArrayResponse<T> {
+  data: T[];
+}
+
+export interface ApiData<Attributes, Embeds> {
+  id: string;
+  attributes: Attributes;
+  embeds: Embeds;
 }
