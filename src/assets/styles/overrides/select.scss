@@ -18,12 +18,12 @@
 .p-select-option {
   color: var.$dark-blue-1;
 
-  &:hover {
-    background: var.$bg-blue-3;
+  span {
+    white-space: wrap;
   }
 
-  &.p-select-option-selected {
-    background: var.$bg-blue-2;
+  &:hover {
+    background: var.$bg-blue-3;
   }
 
   &.p-select-option-selected {

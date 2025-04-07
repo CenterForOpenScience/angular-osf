@@ -6,7 +6,7 @@
   i {
     position: absolute;
     left: 0.61rem;
-    color: var.$dark-blue-1;
+    color: var.$grey-1;
     font-size: 1.1rem;
   }
 
@@ -14,5 +14,9 @@
     width: 100%;
     padding-left: 2.61rem;
     color: var.$dark-blue-1;
+
+    &::placeholder {
+      color: var.$grey-1;
+    }
   }
 }

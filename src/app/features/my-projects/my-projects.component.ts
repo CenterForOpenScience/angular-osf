@@ -89,10 +89,9 @@ export class MyProjectsComponent implements OnInit {
 
   createProject(): void {
     let dialogWidth = '850px';
+
     if (this.isMobile()) {
-      dialogWidth = '345px';
-    } else if (this.isTablet()) {
-      dialogWidth = '500px';
+      dialogWidth = '95vw';
     }
 
     this.#dialogService.open(AddProjectFormComponent, {

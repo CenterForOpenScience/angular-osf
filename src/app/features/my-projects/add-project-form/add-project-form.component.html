@@ -18,7 +18,6 @@
   <div class="flex flex-column">
     <label for="storage-location">Storage Location</label>
     <p-select
-      [class.mobile]="isMobile()"
       id="storage-location"
       [options]="storageLocations"
       [formControlName]="ProjectFormControls.StorageLocation"
@@ -86,7 +85,6 @@
   <div class="flex flex-column">
     <label for="template">Template (Optional)</label>
     <p-select
-      [class.mobile]="isMobile()"
       id="template"
       [options]="projectTemplateOptions()"
       [formControlName]="ProjectFormControls.Template"
