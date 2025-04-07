@@ -10,12 +10,20 @@
     }
 
     table {
+      tr:hover {
+        background: var.$bg-blue-2;
+
+        td {
+          background: var.$bg-blue-2;
+        }
+      }
+
       th,
       td {
         color: var.$dark-blue-1;
         border: none;
         height: 60px;
-        max-width: calc((100vw - 27rem) / 3);
+        //max-width: calc((100vw - 27rem) / 3);
       }
 
       th {

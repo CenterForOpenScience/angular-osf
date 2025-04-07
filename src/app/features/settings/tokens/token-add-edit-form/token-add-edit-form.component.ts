@@ -33,13 +33,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TokenAddEditFormComponent implements OnInit {
-  #isXSmall$ = inject(IS_XSMALL);
+  protected readonly isMobile = toSignal(inject(IS_XSMALL));
   isEditMode = input(false);
   initialValues = input<PersonalAccessToken | null>(null);
   protected readonly dialogRef = inject(DynamicDialogRef);
   protected readonly TokenFormControls = TokenFormControls;
   protected readonly availableScopes = AVAILABLE_SCOPES;
-  protected readonly isXSmall = toSignal(this.#isXSmall$);
 
   readonly tokenForm: TokenForm = new FormGroup({
     [TokenFormControls.TokenName]: new FormControl('', {

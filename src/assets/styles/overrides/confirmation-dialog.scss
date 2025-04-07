@@ -8,6 +8,12 @@
   .p-dialog-header {
     padding: 24px;
 
+    .p-dialog-header-actions {
+      .p-button {
+        padding-right: 0.2rem;
+      }
+    }
+
     .p-dialog-title {
       font-size: 18px;
       font-weight: 700;
