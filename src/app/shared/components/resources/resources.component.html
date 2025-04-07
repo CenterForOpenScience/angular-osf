@@ -1,0 +1,31 @@
+<div class="flex justify-content-between">
+  <h3>10 000+ results</h3>
+  <div class="sorting-container no-border-dropdown">
+    <h3>Sort by:</h3>
+    <p-dropdown
+      [options]="sortTabOptions"
+      optionLabel="label"
+      optionValue="value"
+      [(ngModel)]="selectedSortTab"
+    ></p-dropdown>
+  </div>
+</div>
+
+<div class="flex column-gap-4">
+  <osf-resource-filters></osf-resource-filters>
+  <p-dataview
+    #dv
+    [value]="filteredResources()"
+    class="resources-container"
+    [rows]="10"
+    [paginator]="true"
+  >
+    <ng-template #list let-items>
+      <div class="resources-list">
+        @for (item of items; track item.id) {
+          <osf-resource-card [item]="item"></osf-resource-card>
+        }
+      </div>
+    </ng-template>
+  </p-dataview>
+</div>

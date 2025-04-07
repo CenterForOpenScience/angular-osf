@@ -20,3 +20,19 @@
     }
   }
 }
+
+.no-border-dropdown {
+  .p-dropdown {
+    border: none;
+    font-size: 1rem;
+
+    .p-select-label {
+      padding: 0;
+    }
+
+    .p-select-overlay {
+      right: 0;
+      left: auto;
+    }
+  }
+}

@@ -1,0 +1,145 @@
+<p-accordion>
+  <p-accordion-panel value="0">
+    <p-accordion-header>Creator</p-accordion-header>
+    <p-accordion-content>
+      <div class="content-body">
+        <p class="m-0">Filter creators by typing their name below</p>
+        <p-autocomplete placeholder="Creator name" class="w-full">
+          [(ngModel)]="creator" [suggestions]="filteredCreators()"
+          (completeMethod)="setCreator($event)"
+        </p-autocomplete>
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+
+  <p-accordion-panel value="1">
+    <p-accordion-header>Date Created</p-accordion-header>
+    <p-accordion-content>
+      <div class="content-body">
+        <p class="m-0">
+          Please select the creation date from the dropdown below
+        </p>
+        <p-autocomplete placeholder="Select date" dropdown class="w-full">
+        </p-autocomplete>
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+
+  <p-accordion-panel value="2">
+    <p-accordion-header>Funder</p-accordion-header>
+    <p-accordion-content>
+      <div class="content-body">
+        <p class="m-0">
+          Please select the funder from the dropdown below or start typing for
+          find it
+        </p>
+        <p-autocomplete placeholder="Select funder" dropdown class="w-full">
+        </p-autocomplete>
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+
+  <p-accordion-panel value="3">
+    <p-accordion-header>Subject</p-accordion-header>
+    <p-accordion-content>
+      <div class="content-body">
+        <p class="m-0">
+          Please select the subject from the dropdown below or start typing for
+          find it
+        </p>
+        <p-autocomplete placeholder="Select subject" dropdown class="w-full">
+        </p-autocomplete>
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+
+  <p-accordion-panel value="4">
+    <p-accordion-header>License</p-accordion-header>
+    <p-accordion-content>
+      <div class="content-body">
+        <p class="m-0">
+          Please select the license from the dropdown below or start typing for
+          find it
+        </p>
+        <p-autocomplete
+          placeholder="Select the license"
+          dropdown
+          class="w-full"
+        >
+        </p-autocomplete>
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+
+  <p-accordion-panel value="5">
+    <p-accordion-header>Resource Type</p-accordion-header>
+    <p-accordion-content>
+      <div class="content-body">
+        <p class="m-0">
+          Please select the resource type from the dropdown below or start
+          typing for find it
+        </p>
+        <p-autocomplete
+          placeholder="Select the resource"
+          dropdown
+          class="w-full"
+        >
+        </p-autocomplete>
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+
+  <p-accordion-panel value="6">
+    <p-accordion-header>Institution</p-accordion-header>
+    <p-accordion-content>
+      <div class="content-body">
+        <p class="m-0">
+          Please select the institution from the dropdown below or start typing
+          for find it
+        </p>
+        <p-autocomplete
+          placeholder="Select the institution"
+          dropdown
+          class="w-full"
+        >
+        </p-autocomplete>
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+
+  <p-accordion-panel value="7">
+    <p-accordion-header>Provider</p-accordion-header>
+    <p-accordion-content>
+      <div class="content-body">
+        <p class="m-0">
+          Please select the provider from the dropdown below or start typing for
+          find it
+        </p>
+        <p-autocomplete
+          placeholder="Select the provider"
+          dropdown
+          class="w-full"
+        >
+        </p-autocomplete>
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+
+  <p-accordion-panel value="8" class="border-none">
+    <p-accordion-header>Part of Collection</p-accordion-header>
+    <p-accordion-content>
+      <div class="content-body">
+        <p class="m-0">
+          Please select the part of collection from the dropdown below or start
+          typing for find it
+        </p>
+        <p-autocomplete
+          placeholder="Select the part of collection"
+          dropdown
+          class="w-full"
+        >
+        </p-autocomplete>
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+</p-accordion>

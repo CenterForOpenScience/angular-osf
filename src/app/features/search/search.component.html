@@ -1,0 +1,97 @@
+<div class="search-container">
+  <img
+    ngSrc="assets/icons/system/question-mark.svg"
+    alt="better-research"
+    height="36"
+    width="36"
+  />
+  <osf-search-input
+    [searchValue]="searchValue()"
+    (searchValueChange)="searchValue.set($event)"
+    placeholder="Enter search term(s) here"
+  />
+</div>
+
+<div class="flex-column flex flex-1 w-full mt-6">
+  <p-tabs
+    [value]="selectedTab"
+    (valueChange)="onTabChange(+$event)"
+    class="flex-1"
+  >
+    @if (!isMobile()) {
+      <p-tablist class="pr-5 pl-5">
+        <p-tab [value]="ResourceTab.All">All</p-tab>
+        <p-tab [value]="ResourceTab.Projects">Projects</p-tab>
+        <p-tab [value]="ResourceTab.Registrations">Registrations</p-tab>
+        <p-tab [value]="ResourceTab.Preprints">Preprints</p-tab>
+        <p-tab [value]="ResourceTab.Files">Files</p-tab>
+        <p-tab [value]="ResourceTab.Users">Users</p-tab>
+      </p-tablist>
+    }
+
+    <p-tabpanels class="p-3 sm:p-5 flex-1">
+      <!--All-->
+      <p-tabpanel
+        [value]="ResourceTab.All"
+        class="flex flex-column gap-4 flex-1"
+      >
+        <osf-resources
+          [selectedTab]="ResourceTab.All"
+          [searchedResources]="searchedResources()"
+        >
+        </osf-resources>
+      </p-tabpanel>
+
+      <!--Projects-->
+      <p-tabpanel [value]="ResourceTab.Projects" class="flex flex-column gap-5">
+        <osf-resources
+          [selectedTab]="ResourceTab.Projects"
+          [searchedResources]="searchedResources()"
+        >
+        </osf-resources>
+      </p-tabpanel>
+
+      <!--Registrations-->
+      <p-tabpanel
+        [value]="ResourceTab.Registrations"
+        class="flex flex-column gap-5"
+      >
+        <osf-resources
+          [selectedTab]="ResourceTab.Registrations"
+          [searchedResources]="searchedResources()"
+        >
+        </osf-resources>
+      </p-tabpanel>
+
+      <!--Preprints-->
+      <p-tabpanel
+        [value]="ResourceTab.Preprints"
+        class="flex flex-column gap-5"
+      >
+        <osf-resources
+          [selectedTab]="ResourceTab.Preprints"
+          [searchedResources]="searchedResources()"
+        >
+        </osf-resources>
+      </p-tabpanel>
+
+      <!--Files-->
+      <p-tabpanel [value]="ResourceTab.Files" class="flex flex-column gap-5">
+        <osf-resources
+          [selectedTab]="ResourceTab.Files"
+          [searchedResources]="searchedResources()"
+        >
+        </osf-resources>
+      </p-tabpanel>
+
+      <!--Users-->
+      <p-tabpanel [value]="ResourceTab.Users" class="flex flex-column gap-5">
+        <osf-resources
+          [selectedTab]="ResourceTab.Users"
+          [searchedResources]="searchedResources()"
+        >
+        </osf-resources>
+      </p-tabpanel>
+    </p-tabpanels>
+  </p-tabs>
+</div>

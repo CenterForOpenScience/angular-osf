@@ -1,0 +1,15 @@
+@use "assets/styles/variables" as var;
+
+:host {
+  .search-container {
+    margin: 6.2rem 1.7rem 0.4rem 1.7rem;
+    position: relative;
+
+    img {
+      position: absolute;
+      right: 0.3rem;
+      top: 0.3rem;
+      z-index: 1;
+    }
+  }
+}

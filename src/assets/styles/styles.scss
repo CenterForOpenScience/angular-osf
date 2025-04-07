@@ -21,6 +21,8 @@
 @use "./overrides/iconfield";
 @use "./overrides/datepicker";
 @use "./overrides/select";
+@use "./overrides/accordion";
+@use "./overrides/paginator";
 
 @layer base, primeng, reset;
 
