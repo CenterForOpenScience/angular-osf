@@ -13,12 +13,20 @@ import { UserSocialLink } from '@osf/features/settings/profile-settings/entities
 import {
   FormArray,
   FormBuilder,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { socials } from '@osf/features/settings/profile-settings/data';
+import { Checkbox } from 'primeng/checkbox';
+import { DatePicker } from 'primeng/datepicker';
+import { UserPosition } from '@osf/features/settings/profile-settings/entities/user-position.entity';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
+import { TabOption } from '@osf/shared/entities/tab-option.interface';
+import { Select } from 'primeng/select';
 
 @Component({
   selector: 'osf-profile-settings',
@@ -35,6 +43,10 @@ import { socials } from '@osf/features/settings/profile-settings/data';
     ReactiveFormsModule,
     InputGroup,
     InputGroupAddon,
+    Checkbox,
+    DatePicker,
+    Select,
+    FormsModule,
   ],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
@@ -46,16 +58,38 @@ export class ProfileSettingsComponent implements OnInit {
   socials = socials;
 
   userSocialLinks: UserSocialLink[] = [];
+  userPositions: UserPosition[] = [];
   socialLinksForm = this.#fb.group({
     links: this.#fb.array([]),
   });
+
+  employmentForm = this.#fb.group({
+    positions: this.#fb.array([]),
+  });
+  protected readonly isMobile = toSignal(inject(IS_XSMALL));
+  protected readonly tabOptions: TabOption[] = [
+    { label: 'Name', value: 0 },
+    { label: 'Social', value: 1 },
+    { label: 'Employment', value: 2 },
+    { label: 'Education', value: 3 },
+  ];
+  protected selectedTab = this.defaultTabValue;
+
+  onTabChange(index: number): void {
+    this.selectedTab = index;
+  }
 
   ngOnInit(): void {
     if (!this.userSocialLinks.length) {
       this.addLink();
     }
+
+    if (!this.userPositions.length) {
+      this.addPosition();
+    }
   }
 
+  // Social links methods
   get links(): FormArray {
     return this.socialLinksForm.get('links') as FormArray;
   }
@@ -79,5 +113,31 @@ export class ProfileSettingsComponent implements OnInit {
 
   getPlaceholder(index: number): string {
     return this.links.at(index).get('socialOutput')?.value.placeholder;
+  }
+
+  // Employment methods
+  get positions(): FormArray {
+    return this.employmentForm.get('positions') as FormArray;
+  }
+
+  addPosition(): void {
+    const positionGroup = this.#fb.group({
+      jobTitle: ['', Validators.required],
+      department: [''],
+      institution: ['', Validators.required],
+      startDate: [null, Validators.required],
+      endDate: [null, Validators.required],
+      presentlyEmployed: [false],
+    });
+
+    this.positions.push(positionGroup);
+  }
+
+  removePosition(index: number): void {
+    this.positions.removeAt(index);
+  }
+
+  handleSavePositions(): void {
+    // TODO: Implement save positions
   }
 }

@@ -43,6 +43,13 @@ export const settingsRoutes: Routes = [
         ],
       },
       tokensAppsRoute,
+      {
+        path: 'notifications',
+        loadComponent: () =>
+          import('./notifications/notifications.component').then(
+            (mod) => mod.NotificationsComponent,
+          ),
+      },
     ],
   },
 ];

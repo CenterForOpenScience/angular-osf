@@ -1,0 +1,76 @@
+<osf-sub-header
+  [showButton]="false"
+  [title]="'Notifications'"
+  [icon]="'settings'"
+/>
+
+<section class="flex flex-column xl:p-4 md:p-3 p-2 bg-white flex-1 gap-4">
+  <section class="notification-item flex flex-column gap-4">
+    <h2>Configure Email Preferences</h2>
+
+    <div class="flex flex-column gap-3">
+      <div class="flex gap-2">
+        <p-checkbox inputId="v1"> </p-checkbox>
+
+        <div class="flex flex-column gap-1">
+          <label for="v1" class="mb-0 font-bold notification-item-label">
+            Open Science Framework General
+          </label>
+
+          <div class="notification-item-description">
+            Receive general notifications about the OSF every 2-3 weeks.
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <p-checkbox inputId="v2"> </p-checkbox>
+
+        <div class="flex flex-column gap-1">
+          <label for="v2" class="mb-0 font-bold notification-item-label">
+            Open Science Framework Help
+          </label>
+
+          <div class="notification-item-description">
+            Receive helpful tips on how to make the most of the OSF, up to once
+            per week.
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-content-end">
+        <p-button [disabled]="true" label="Save" size="large"> </p-button>
+      </div>
+    </div>
+  </section>
+
+  <section class="notification-item flex flex-column gap-4">
+    <h2>Configure Notification Preferences</h2>
+
+    <div>
+      Note: Transactional and administrative service emails will still be sent.
+    </div>
+
+    <section class="notification-configuration">
+      <div>Replies to your comments</div>
+
+      <p-dropdown class="dropdown"> </p-dropdown>
+
+      <div>Comments added</div>
+
+      <p-dropdown class="dropdown"> </p-dropdown>
+
+      <div>Files updated</div>
+
+      <p-dropdown class="dropdown"> </p-dropdown>
+
+      <div>Mentions added</div>
+
+      <p-dropdown class="dropdown"> </p-dropdown>
+
+      <div>Preprint submissions updated</div>
+
+      <p-dropdown class="dropdown"> </p-dropdown>
+    </section>
+  </section>
+</section>

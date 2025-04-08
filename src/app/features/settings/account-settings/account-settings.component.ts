@@ -13,6 +13,7 @@ import { Message } from 'primeng/message';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AddEmailComponent } from '@osf/features/settings/account-settings/add-email/add-email.component';
 import { DeactivateAccountComponent } from '@osf/features/settings/account-settings/deactivate-account/deactivate-account/deactivate-account.component';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 
 @Component({
   selector: 'osf-account-settings',
@@ -23,6 +24,7 @@ import { DeactivateAccountComponent } from '@osf/features/settings/account-setti
     ReactiveFormsModule,
     InputText,
     Message,
+    SubHeaderComponent,
   ],
   providers: [DialogService],
   templateUrl: './account-settings.component.html',
