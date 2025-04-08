@@ -25,3 +25,9 @@
     width: 0.7rem;
   }
 }
+
+.affiliation-checkbox {
+  .p-checkbox-box {
+    border-color: var.$pr-blue-1;
+  }
+}

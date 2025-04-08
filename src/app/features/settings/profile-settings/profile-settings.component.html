@@ -23,6 +23,7 @@
       @if (isMobile()) {
         <p-select
           class="w-full mb-4"
+          [class.mobile]="isMobile()"
           [options]="tabOptions"
           optionLabel="label"
           optionValue="value"

@@ -1,0 +1,11 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+:host {
+  @include mix.flex-column;
+  flex: 1;
+
+  .desktop {
+    margin-top: 4.5rem;
+  }
+}

@@ -14,6 +14,8 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AddEmailComponent } from '@osf/features/settings/account-settings/add-email/add-email.component';
 import { DeactivateAccountComponent } from '@osf/features/settings/account-settings/deactivate-account/deactivate-account/deactivate-account.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-account-settings',
@@ -32,6 +34,7 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSettingsComponent {
+  protected readonly isMobile = toSignal(inject(IS_XSMALL));
   readonly passwordForm: AccountSettingsPasswordForm = new FormGroup({
     [AccountSettingsPasswordFormControls.OldPassword]: new FormControl('', {
       nonNullable: true,

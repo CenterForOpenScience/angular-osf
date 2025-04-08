@@ -1,0 +1,194 @@
+<section [class.desktop]="isDesktop()" class="flex flex-column flex-1">
+  <osf-sub-header
+    [showButton]="true"
+    [buttonLabel]="'Create Project'"
+    [title]="'My Projects'"
+    [icon]="'my-projects'"
+    (buttonClick)="createProject()"
+  />
+
+  <div class="flex-column flex flex-1 w-full">
+    <p-tabs
+      [value]="selectedTab"
+      (valueChange)="onTabChange(+$event)"
+      class="flex-1"
+    >
+      @if (!isMobile()) {
+        <p-tablist class="pr-5 pl-5">
+          <p-tab [value]="0">My Projects</p-tab>
+          <p-tab [value]="1">My Registrations</p-tab>
+          <p-tab [value]="2">My Preprints</p-tab>
+          <p-tab [value]="3">Bookmarks</p-tab>
+        </p-tablist>
+      }
+
+      <p-tabpanels class="p-3 sm:p-5 flex-1">
+        @if (isMobile()) {
+          <p-select
+            class="w-full mb-4"
+            [class.mobile]="isMobile()"
+            [options]="tabOptions"
+            optionLabel="label"
+            optionValue="value"
+            [(ngModel)]="selectedTab"
+          ></p-select>
+        }
+        <!--My projects-->
+        <p-tabpanel [value]="0" class="flex flex-column gap-4 flex-1">
+          <osf-search-input
+            class="w-full"
+            [searchValue]="searchValue()"
+            (searchValueChange)="searchValue.set($event)"
+            placeholder="Filter by title, description, and tags"
+          />
+
+          <p-table
+            class="my-projects-table"
+            [value]="filteredProjects()"
+            [rows]="5"
+            [rowsPerPageOptions]="[2, 5, 10]"
+            [paginator]="true"
+            [resizableColumns]="true"
+            [autoLayout]="true"
+            [scrollable]="true"
+          >
+            <ng-template #header>
+              <tr>
+                <th pSortableColumn="title">
+                  Title
+                  <p-sortIcon field="title" />
+                </th>
+                <th>Contributors</th>
+                <th pSortableColumn="modified">
+                  Modified
+                  <p-sortIcon field="modified" />
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-project>
+              <tr>
+                <td>
+                  <p class="flex align-items-center gap-2">
+                    <i
+                      [ngClass]="
+                        project.public
+                          ? 'osf-icon-padlock-unlock'
+                          : 'osf-icon-padlock'
+                      "
+                    ></i>
+                    <span>{{ project.title }}</span>
+                  </p>
+                </td>
+                <td>{{ getContributorsList(project) }}</td>
+                <td>{{ project.dateModified | date: "MMM d, y, h:mm a" }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabpanel>
+
+        <!--My registrations-->
+        <p-tabpanel [value]="1" class="flex flex-column gap-4 flex-1">
+          <osf-search-input
+            class="w-full"
+            [searchValue]="searchValue()"
+            (searchValueChange)="searchValue.set($event)"
+            placeholder="Filter by title, description, and tags"
+          />
+
+          <p-table
+            class="my-projects-table"
+            [value]="filteredProjects()"
+            [rows]="5"
+            [rowsPerPageOptions]="[2, 5, 10]"
+            [paginator]="true"
+            [resizableColumns]="true"
+            [autoLayout]="true"
+            [scrollable]="true"
+          >
+            <ng-template #header>
+              <tr>
+                <th pSortableColumn="title">
+                  Title
+                  <p-sortIcon field="title" />
+                </th>
+                <th>Contributors</th>
+                <th pSortableColumn="modified">
+                  Modified
+                  <p-sortIcon field="modified" />
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-project>
+              <tr>
+                <td>
+                  <p class="flex align-items-center gap-2">
+                    <i
+                      [ngClass]="
+                        !project.public
+                          ? 'osf-icon-padlock-unlock'
+                          : 'osf-icon-padlock'
+                      "
+                    ></i>
+                    <span>{{ project.title }}</span>
+                  </p>
+                </td>
+                <td>{{ getContributorsList(project) }}</td>
+                <td>{{ project.dateModified | date: "MMM d, y, h:mm a" }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabpanel>
+
+        <!--My preprints-->
+        <p-tabpanel [value]="2" class="flex flex-column gap-4 flex-1">
+          <osf-search-input
+            class="w-full"
+            [searchValue]="searchValue()"
+            (searchValueChange)="searchValue.set($event)"
+            placeholder="Filter by title, description, and tags"
+          />
+
+          <p-table
+            class="my-projects-table"
+            [value]="filteredProjects()"
+            [rows]="5"
+            [rowsPerPageOptions]="[2, 5, 10]"
+            [paginator]="true"
+            [resizableColumns]="true"
+            [autoLayout]="true"
+            [scrollable]="true"
+          >
+            <ng-template #header>
+              <tr>
+                <th pSortableColumn="title">
+                  Title
+                  <p-sortIcon field="title" />
+                </th>
+                <th>Contributors</th>
+                <th pSortableColumn="modified">
+                  Modified
+                  <p-sortIcon field="modified" />
+                </th>
+              </tr>
+            </ng-template>
+            <ng-template #body let-project>
+              <tr>
+                <td>{{ project.title }}</td>
+                <td>{{ getContributorsList(project) }}</td>
+                <td>{{ project.dateModified | date: "MMM d, y, h:mm a" }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabpanel>
+
+        <!--Bookmarks-->
+        <p-tabpanel [value]="3" class="flex flex-column gap-4 flex-1">
+          <p>
+            You don't have any bookmarks. Click the bookmark icon on projects or
+            registrations to add them here.
+          </p>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</section>

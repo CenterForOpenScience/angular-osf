@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { provideStates } from '@ngxs/store';
+import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
 
 export const routes: Routes = [
   {
@@ -65,11 +67,26 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'my-projects',
+        loadComponent: () =>
+          import('./features/my-projects/my-projects.component').then(
+            (mod) => mod.MyProjectsComponent,
+          ),
+      },
+      {
         path: 'settings',
         loadChildren: () =>
           import('./features/settings/settings.routes').then(
             (mod) => mod.settingsRoutes,
           ),
+      },
+      {
+        path: 'search',
+        loadComponent: () =>
+          import('./features/search/search.component').then(
+            (mod) => mod.SearchComponent,
+          ),
+        providers: [provideStates([ResourceFiltersState])],
       },
     ],
   },

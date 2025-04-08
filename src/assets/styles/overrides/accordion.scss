@@ -1,0 +1,61 @@
+@use "assets/styles/variables" as var;
+
+.p-accordion {
+  display: flex;
+  flex-direction: column;
+
+  .p-accordionheader {
+    height: 5.1rem;
+    color: var.$dark-blue-1;
+    font-weight: 700;
+    padding: 0;
+    display: flex;
+
+    .p-iconwrapper {
+      transform: rotate(180deg);
+
+      svg {
+        color: var.$grey-1;
+      }
+    }
+  }
+
+  .p-accordioncontent-content {
+    padding: 0;
+  }
+}
+
+.accordion-auto-height {
+  .p-accordion {
+    .p-accordionheader {
+      height: auto;
+    }
+    .p-accordionpanel {
+      border: none;
+    }
+    .p-accordioncontent-content {
+      padding: 1.2rem 0 0 0;
+    }
+  }
+}
+
+.resource {
+  .p-accordion {
+    .p-accordionheader {
+      .p-iconwrapper {
+        transform: rotate(180deg);
+        background: var.$bg-blue-3;
+        height: 2.3rem;
+        min-width: 2.3rem;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        svg {
+          color: var.$pr-blue-1;
+        }
+      }
+    }
+  }
+}

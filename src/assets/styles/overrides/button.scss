@@ -74,6 +74,14 @@
   }
 }
 
+.secondary-transparent {
+  .p-button.p-button-secondary {
+    padding: 0;
+    background-color: transparent;
+    font-weight: 600;
+  }
+}
+
 .p-button.p-button-info {
   color: var.$dark-blue-1;
   background-color: transparent;
@@ -143,6 +151,7 @@
 
 .btn-full-width {
   width: 100%;
+
   .p-button {
     width: 100%;
   }
@@ -150,6 +159,7 @@
 
 .btn-half-width {
   width: 50%;
+
   .p-button {
     width: 100%;
   }

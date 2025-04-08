@@ -1,0 +1,114 @@
+<form
+  [formGroup]="projectForm"
+  (ngSubmit)="submitForm()"
+  class="flex flex-column gap-4"
+>
+  <!-- Title -->
+  <div class="flex flex-column">
+    <label for="project-title">Title</label>
+    <input
+      pInputText
+      id="project-title"
+      type="text"
+      [formControlName]="ProjectFormControls.Title"
+    />
+  </div>
+
+  <!-- Storage Location -->
+  <div class="flex flex-column">
+    <label for="storage-location">Storage Location</label>
+    <p-select
+      id="storage-location"
+      [options]="storageLocations"
+      [formControlName]="ProjectFormControls.StorageLocation"
+    ></p-select>
+  </div>
+
+  <!-- Affiliations -->
+  <div class="flex flex-column gap-2">
+    <div class="relative">
+      <h3 class="font-normal mb-2">Affiliation</h3>
+      <div class="flex gap-4 absolute top-0 right-0">
+        <p-button
+          class="secondary-transparent"
+          type="button"
+          severity="secondary"
+          (click)="selectAllAffiliations()"
+          (keydown.enter)="selectAllAffiliations()"
+        >
+          Select All
+        </p-button>
+        <p-button
+          class="secondary-transparent"
+          type="button"
+          severity="secondary"
+          (click)="removeAllAffiliations()"
+          (keydown.enter)="removeAllAffiliations()"
+        >
+          Remove All
+        </p-button>
+      </div>
+    </div>
+
+    <div class="flex gap-2" role="group" aria-label="Affiliations">
+      @for (affiliation of affiliations; track affiliation.value) {
+        <div class="flex align-items-center relative gap-2">
+          <p-checkbox
+            class="absolute top-0 affiliation-checkbox"
+            [value]="affiliation.value"
+            [formControlName]="ProjectFormControls.Affiliations"
+            [inputId]="affiliation.value"
+          />
+          <img
+            ngSrc="assets/images/сos-shield.svg"
+            alt="OSF Logo"
+            height="44"
+            width="44"
+          />
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Description -->
+  <div class="flex flex-column">
+    <label for="description">Description (Optional)</label>
+    <textarea
+      pTextarea
+      id="description"
+      [formControlName]="ProjectFormControls.Description"
+      [rows]="5"
+    ></textarea>
+  </div>
+
+  <!-- Template -->
+  <div class="flex flex-column">
+    <label for="template">Template (Optional)</label>
+    <p-select
+      id="template"
+      [options]="projectTemplateOptions()"
+      [formControlName]="ProjectFormControls.Template"
+      [placeholder]="'Select template or start typing to find one'"
+      [filter]="true"
+      styleClass="w-full"
+      appendTo="body"
+      [showClear]="hasTemplateSelected()"
+    ></p-select>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      class="w-12rem btn-full-width"
+      label="Cancel"
+      severity="info"
+      (click)="dialogRef.close()"
+    />
+    <p-button
+      class="w-12rem btn-full-width"
+      label="Create Project"
+      type="submit"
+      [disabled]="!projectForm.valid"
+    />
+  </div>
+</form>

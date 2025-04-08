@@ -1,0 +1,132 @@
+<div class="resource accordion-auto-height">
+  <p-accordion>
+    <p-accordion-panel value="0">
+      <p-accordion-header class="flex flex-row column-gap-3 align-items-start">
+        <div class="flex flex-column row-gap-3">
+          <p class="type">{{ ResourceType[item().resourceType] }}</p>
+
+          <div class="flex align-items-center column-gap-1">
+            @if (item().resourceType === ResourceType.File) {
+              <h2>{{ item().fileName }}</h2>
+            } @else {
+              <h2>{{ item().title }}</h2>
+            }
+            @if (item().orcid) {
+              <a [href]="item().orcid" class="orcid-icon">
+                <img
+                  ngSrc="assets/icons/system/orchid.svg"
+                  width="16"
+                  height="16"
+                  alt="orcid"
+                />
+              </a>
+            }
+          </div>
+
+          @if (item().creators?.length) {
+            <div>
+              @for (
+                creator of item().creators!.slice(0, 4);
+                track creator.id;
+                let i = $index
+              ) {
+                <a [href]="creator.id" target="_blank">{{ creator.name }}</a>
+                @if (i < item().creators!.length - 1 && i < 3) {
+                  <a>, </a>
+                }
+              }
+              @if (item().creators!.length > 4) {
+                and {{ item().creators!.length - 4 }} more
+              }
+            </div>
+          }
+
+          @if (item().from) {
+            <div>
+              <p class="inline mr-1">From:</p>
+              <a class="inline" [href]="item().from?.id">{{
+                item().from?.name
+              }}</a>
+            </div>
+          }
+
+          <p class="date">
+            Date created: {{ item().dateCreated | date: "MMMM d, y" }} | Date
+            modified: {{ item().dateModified | date: "MMMM d, y" }}
+          </p>
+
+          @if (item().resourceType === ResourceType.Registration) {
+            <div class="flex column-gap-5 mt-1">
+              <a class="icon-container" [href]="item().id + '/resources'">
+                <i class="osf-icon-data text-4xl"></i>
+                <p>Data</p>
+              </a>
+              <a class="icon-container" [href]="item().id + '/resources'">
+                <i class="osf-icon-code text-4xl"></i>
+                <p>Analytic Code</p>
+              </a>
+              <a class="icon-container" [href]="item().id + '/resources'">
+                <i class="osf-icon-materials text-4xl"></i>
+                <p>Materials</p>
+              </a>
+              <a class="icon-container" [href]="item().id + '/resources'">
+                <i class="osf-icon-papers text-4xl"></i>
+                <p>Papers</p>
+              </a>
+              <a class="icon-container" [href]="item().id + '/resources'">
+                <i class="osf-icon-supplements text-4xl"></i>
+                <p>Supplements</p>
+              </a>
+            </div>
+          }
+        </div>
+      </p-accordion-header>
+      <p-accordion-content>
+        <div class="content flex flex-column row-gap-3">
+          @if (item().description) {
+            <p class="description">Description: {{ item().description }}</p>
+          }
+
+          @if (item().publisher) {
+            <span>
+              <p>Registration provider:</p>
+              <a [href]="item().publisher?.id">{{ item().publisher?.name }}</a>
+            </span>
+          }
+
+          @if (item().registrationTemplate) {
+            <p class="description">
+              Registration Template: {{ item().registrationTemplate }}
+            </p>
+          }
+
+          @if (item().provider) {
+            <span>
+              <p>Provider:</p>
+              <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
+            </span>
+          }
+
+          @if (item().conflictOfInterestResponse) {
+            <p class="description">
+              Conflict of Interest response:
+              {{ item().conflictOfInterestResponse }}
+            </p>
+          }
+
+          <span>
+            <p>URL:</p>
+            <a [href]="item().id">{{ item().id }}</a>
+          </span>
+
+          @if (item().doi) {
+            <span>
+              <p>DOI:</p>
+              <a [href]="item().doi">{{ item().doi }}</a>
+            </span>
+          }
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
+  </p-accordion>
+</div>

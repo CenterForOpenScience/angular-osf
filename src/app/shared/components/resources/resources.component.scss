@@ -1,0 +1,30 @@
+@use "assets/styles/variables" as var;
+
+:host {
+  h3 {
+    color: var.$pr-blue-1;
+  }
+
+  .sorting-container {
+    display: flex;
+    align-items: center;
+
+    h3 {
+      color: var.$dark-blue-1;
+      font-weight: 400;
+      text-wrap: nowrap;
+      margin-right: 0.5rem;
+    }
+  }
+
+  .resources-container {
+    width: 70%;
+
+    .resources-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.85rem;
+    }
+  }
+}

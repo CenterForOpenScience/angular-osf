@@ -8,28 +8,41 @@
   outline: none;
   font-size: 16px;
   color: var.$dark-blue-1;
+}
 
-  .p-select-label {
-    @include mix.flex-align-center;
+.p-select-label {
+  @include mix.flex-align-center;
+  width: 100%;
+}
+
+.p-select-option {
+  color: var.$dark-blue-1;
+
+  span {
+    white-space: wrap;
+  }
+
+  &:hover {
+    background: var.$bg-blue-3;
+  }
+
+  &.p-select-option-selected {
+    background: var.$bg-blue-2;
+  }
+}
+
+.p-select-header {
+  width: 100%;
+
+  .p-iconfield {
     width: 100%;
+  }
+}
+
+.p-select.mobile {
+  .p-select-label {
     justify-content: center;
     padding-left: 2.6rem;
     font-weight: 700;
-  }
-
-  .p-select-option {
-    color: var.$dark-blue-1;
-
-    &:hover {
-      background: var.$bg-blue-3;
-    }
-
-    &.p-select-option-selected {
-      background: var.$bg-blue-2;
-    }
-
-    &.p-select-option-selected.p-focus {
-      background: var.$bg-blue-2;
-    }
   }
 }

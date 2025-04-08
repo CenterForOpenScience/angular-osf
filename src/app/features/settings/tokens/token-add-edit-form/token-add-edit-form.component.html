@@ -44,15 +44,20 @@
   <div class="flex justify-content-end gap-2">
     @if (isEditMode()) {
       <p-button
-        [class.w-10rem.btn-full-width]="!isXSmall()"
-        [ngClass]="isXSmall() ? 'btn-half-width' : 'w-10rem btn-full-width'"
+        [ngClass]="isMobile() ? 'btn-half-width' : 'w-10rem btn-full-width'"
         label="Save"
         type="submit"
         [disabled]="!tokenForm.valid"
       />
     } @else {
-      <p-button label="Cancel" severity="info" (click)="dialogRef.close()" />
       <p-button
+        class="w-12rem btn-full-width"
+        label="Cancel"
+        severity="info"
+        (click)="dialogRef.close()"
+      />
+      <p-button
+        class="w-12rem btn-full-width"
         label="Create Token"
         type="submit"
         [disabled]="!tokenForm.valid"

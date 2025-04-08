@@ -32,10 +32,11 @@ import {
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  isMedium = toSignal(inject(IS_MEDIUM));
-  isMobile = toSignal(inject(IS_XSMALL));
-  dashboardService: DashboardService = inject(DashboardService);
   #store = inject(Store);
+  protected readonly isMedium = toSignal(inject(IS_MEDIUM));
+  protected readonly isMobile = toSignal(inject(IS_XSMALL));
+  protected readonly dashboardService: DashboardService =
+    inject(DashboardService);
 
   protected readonly projects = this.#store.selectSignal(
     HomeSelectors.getProjects,

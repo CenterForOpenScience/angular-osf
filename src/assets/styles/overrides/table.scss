@@ -10,12 +10,20 @@
     }
 
     table {
+      tr:hover {
+        background: var.$bg-blue-2;
+
+        td {
+          background: var.$bg-blue-2;
+        }
+      }
+
       th,
       td {
         color: var.$dark-blue-1;
         border: none;
         height: 60px;
-        max-width: calc((100vw - 27rem) / 3);
+        //max-width: calc((100vw - 27rem) / 3);
       }
 
       th {
@@ -35,86 +43,6 @@
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-      }
-    }
-
-    .p-paginator {
-      background: white;
-      padding: 0.8rem 0 0 0;
-      row-gap: 0.8rem;
-    }
-
-    .p-paginator-page {
-      color: var.$dark-blue-1;
-      border-radius: 4px;
-      background: white;
-
-      &:hover {
-        background: var.$bg-blue-2;
-      }
-    }
-
-    .p-paginator-page-selected {
-      color: white;
-      border-radius: 4px;
-      background: var.$pr-blue-1;
-
-      &:hover {
-        background: var.$pr-blue-1;
-      }
-    }
-
-    .p-paginator-next,
-    .p-paginator-last,
-    .p-paginator-first,
-    .p-paginator-prev {
-      color: var.$grey-1;
-      border-radius: 4px;
-    }
-
-    .p-paginator-next:hover,
-    .p-paginator-last:hover,
-    .p-paginator-first:hover,
-    .p-paginator-prev:hover {
-      color: var.$dark-blue-1;
-    }
-
-    .p-paginator-next:not(.p-disabled):hover,
-    .p-paginator-last:not(.p-disabled):hover,
-    .p-paginator-first:not(.p-disabled):hover,
-    .p-paginator-prev:not(.p-disabled):hover {
-      background: white;
-    }
-
-    .p-select-overlay {
-      background: white;
-      border: 1px solid var.$grey-2;
-      color: var.$dark-blue-1;
-    }
-
-    .p-select-option {
-      &.p-select-option-selected {
-        background-color: white;
-        color: var.$dark-blue-1;
-
-        &:hover {
-          background: var.$bg-blue-3;
-          color: var.$dark-blue-1;
-        }
-      }
-
-      &:not(.p-select-option-selected):not(.p-disabled).p-focus {
-        background: var.$bg-blue-3;
-        color: var.$dark-blue-1;
-      }
-    }
-
-    p-select {
-      background: white;
-      border: 1px solid var.$grey-2;
-
-      span {
-        color: var.$dark-blue-1;
       }
     }
   }
@@ -138,18 +66,51 @@
       padding: 1.71rem 0.85rem 1.71rem 0.85rem;
     }
 
-    table {
-      th,
-      td {
-        max-width: calc((100vw - 6.85rem - 2px) / 3);
-      }
-    }
+    //table {
+    //  th,
+    //  td {
+    //    max-width: calc((100vw - 6.85rem - 2px) / 3);
+    //  }
+    //}
   }
 
-  .addon-table {
+  .addon-table,
+  .my-projects-table {
     .p-datatable {
       padding: 0.85rem;
       overflow-x: auto;
+    }
+  }
+
+  .my-projects-table,
+  .home-table {
+    .p-datatable {
+      overflow-x: auto;
+    }
+
+    td {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      max-width: calc((100vw - 6.85rem - 2px) / 3);
+
+      p {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        overflow: hidden;
+
+        i {
+          flex-shrink: 0;
+        }
+
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
     }
   }
 }
@@ -215,6 +176,42 @@
 
       td:nth-child(2) {
         white-space: nowrap;
+      }
+    }
+  }
+
+  .my-projects-table {
+    .p-datatable {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      min-width: 100%;
+    }
+
+    td {
+      white-space: normal;
+      max-width: none;
+      min-width: 50vw;
+
+      p {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin: 0;
+        overflow: visible;
+
+        i {
+          flex-shrink: 0;
+        }
+
+        span {
+          overflow: visible;
+          text-overflow: unset;
+          white-space: normal;
+        }
       }
     }
   }

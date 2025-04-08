@@ -1,0 +1,68 @@
+@use "../../../../../assets/styles/variables" as var;
+
+.resource {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var.$grey-2;
+  border-radius: 8px;
+  padding: 1.7rem;
+  row-gap: 0.85rem;
+
+  h2 {
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  a {
+    font-weight: bold;
+    display: inline;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .orcid-icon {
+    height: 16px;
+  }
+
+  .type {
+    width: fit-content;
+    background: var.$grey-3;
+    font-weight: bold;
+    padding: 4px 12px 4px 12px;
+    border-radius: 4px;
+  }
+
+  p {
+    color: var.$dark-blue-1;
+    font-weight: 400;
+    display: inline;
+  }
+
+  .icon-container {
+    color: var.$dark-blue-1;
+    display: flex;
+    align-items: center;
+    column-gap: 0.3rem;
+
+    &:hover {
+      text-decoration: none;
+      color: var.$pr-blue-1;
+    }
+  }
+
+  .description {
+    display: block;
+    line-height: 2rem;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    border-top: 1px solid var.$grey-2;
+    padding-top: 1rem;
+  }
+}
