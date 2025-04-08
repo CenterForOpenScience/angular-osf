@@ -13,6 +13,7 @@ export function mapProjectUStoProject(dataItem: ProjectItem): Project {
       permission: item.attributes.permission,
       unregisteredContributor: item.attributes.unregistered_contributor,
       users: {
+        id: item.embeds.users.data.id,
         familyName: item.embeds.users.data.attributes.family_name,
         fullName: item.embeds.users.data.attributes.full_name,
         givenName: item.embeds.users.data.attributes.given_name,

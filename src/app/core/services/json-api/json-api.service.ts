@@ -11,18 +11,28 @@ import {
 })
 export class JsonApiService {
   http: HttpClient = inject(HttpClient);
+  #headers = new HttpHeaders({
+    Authorization: 'ENTER_VALID_TOKEN',
+  });
 
-  get<T>(url: string): Observable<T> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt`,
-    });
-
+  get<T>(url: string, params?: Record<string, unknown>): Observable<T> {
     return this.http
-      .get<JsonApiResponse<T>>(url, { headers })
+      .get<
+        JsonApiResponse<T>
+      >(url, { params: this.buildHttpParams(params), headers: this.#headers })
       .pipe(map((response) => response.data));
   }
 
   getArray<T>(url: string, params?: Record<string, unknown>): Observable<T[]> {
+    return this.http
+      .get<JsonApiArrayResponse<T>>(url, {
+        params: this.buildHttpParams(params),
+        headers: this.#headers,
+      })
+      .pipe(map((response) => response.data));
+  }
+
+  private buildHttpParams(params?: Record<string, unknown>): HttpParams {
     let httpParams = new HttpParams();
 
     if (params) {
@@ -31,7 +41,7 @@ export class JsonApiService {
 
         if (Array.isArray(value)) {
           value.forEach((item) => {
-            httpParams = httpParams.append(`${key}[]`, item); // Handles arrays
+            httpParams = httpParams.append(`${key}[]`, item);
           });
         } else {
           httpParams = httpParams.set(key, value as string);
@@ -39,44 +49,22 @@ export class JsonApiService {
       }
     }
 
-    const headers = new HttpHeaders({
-      Authorization: `Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt`,
-    });
-
-    return this.http
-      .get<
-        JsonApiArrayResponse<T>
-      >(url, { params: httpParams, headers: headers })
-      .pipe(map((response) => response.data));
+    return httpParams;
   }
 
   post<T>(url: string, body: unknown): Observable<T> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt`,
-    });
-
     return this.http
-      .post<JsonApiResponse<T>>(url, body, { headers })
+      .post<JsonApiResponse<T>>(url, body, { headers: this.#headers })
       .pipe(map((response) => response.data));
   }
 
   patch<T>(url: string, body: unknown): Observable<T> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt`,
-    });
-
     return this.http
-      .patch<JsonApiResponse<T>>(url, body, { headers })
+      .patch<JsonApiResponse<T>>(url, body, { headers: this.#headers })
       .pipe(map((response) => response.data));
   }
 
   delete(url: string): Observable<void> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt`,
-    });
-
-    return this.http.delete<void>(url, { headers });
+    return this.http.delete<void>(url, { headers: this.#headers });
   }
 }
