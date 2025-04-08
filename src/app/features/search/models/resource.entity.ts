@@ -21,4 +21,6 @@ export interface Resource {
   publicRegistrations?: number;
   publicPreprints?: number;
   orcid?: string;
+  employment?: string;
+  education?: string;
 }

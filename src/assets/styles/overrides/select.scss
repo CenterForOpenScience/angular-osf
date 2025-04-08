@@ -46,3 +46,11 @@
     font-weight: 700;
   }
 }
+
+.no-border-dropdown {
+  .p-select-option {
+    span {
+      white-space: nowrap;
+    }
+  }
+}

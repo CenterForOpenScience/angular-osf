@@ -8,7 +8,11 @@
   padding: 1.7rem;
   row-gap: 0.85rem;
 
-  h2 {
+  .title {
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.7rem;
+    color: var.$dark-blue-1;
     &:hover {
       text-decoration: underline;
     }

@@ -287,7 +287,7 @@ export const resources: Resource[] = [
     },
     conflictOfInterestResponse: 'Author asserted no Conflict of Interest',
     license: 'No License',
-    doi: 'Keberadaan suatu organisme pada suatu tempat dipengaruhi oleh faktor lingkungan dan makanan. Ketersediaan makanan dengan kualitas yang cocok dan kuantitas yang ukup bagi suatu organisme akan meningkatkan populasi cepat. Sebaliknya jika keadaan tersebut tidak mendukung maka akan dipastikan bahwa organisme tersebut akan menurun. Sedangkan faktor abiotik meliputi suhu, kelembaban, cahaya, curah hujan, dan angin. Suhu mempengaruhi aktivitas serangga serta perkembangannya. Serangga juga tertarik pada gelombang cahaya tertentu. Serangga ada yang menerima intensitas cahaya yang tinggi dan aktif pada siang hari (diurnal) dan serangga ada yang aktif menerima intensitas cahaya rendah pada malam hari (nokturnal). Metode yang digunakan yaitu metode Light trap. Hail yang didapatkan bahwa komponen lingkungan (biotik dan abiotik) akan mempengaruhi kelimpahan dan keanekaragaman spesies pada suatu tempat sehingga tingginya kelimpahan individu tiap jenis dapat dipakai untuk menilai kualitas suatu habitat. Sehingga tidak semua serangga yang aktif pada siang hari tidak dapat aktif di malam hari karena efek adanya sinar tergantung sepenuhnya pada kondisi temperature dan kelembaban disekitar.',
+    doi: 'https://doi.org/10.31234/osf.io/7mgkd',
   },
   {
     id: 'https://osf.io/cegxv',
@@ -314,5 +314,7 @@ export const resources: Resource[] = [
     publicRegistrations: 6,
     publicPreprints: 3,
     orcid: 'https://orcid.org/0000-0003-2697-7146',
+    employment: 'University of Turku',
+    education: 'University of Turku',
   },
 ];
