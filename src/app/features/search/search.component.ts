@@ -76,7 +76,7 @@ export class SearchComponent {
           })
           .toLowerCase()
           .includes(search) ||
-        resource.from?.name.toLowerCase(),
+        resource.from?.name.toLowerCase().includes(search),
     );
   });
 

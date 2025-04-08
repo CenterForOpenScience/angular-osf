@@ -7,9 +7,9 @@
 
           <div class="flex align-items-center column-gap-1">
             @if (item().resourceType === ResourceType.File) {
-              <h2>{{ item().fileName }}</h2>
+              <a class="title" [href]="item().id">{{ item().fileName }}</a>
             } @else {
-              <h2>{{ item().title }}</h2>
+              <a class="title" [href]="item().id">{{ item().title }}</a>
             }
             @if (item().orcid) {
               <a [href]="item().orcid" class="orcid-icon">
@@ -36,7 +36,9 @@
                 }
               }
               @if (item().creators!.length > 4) {
-                <p class="inline">and {{ item().creators!.length - 4 }} more</p>
+                <p class="inline">
+                  &nbsp;and {{ item().creators!.length - 4 }} more
+                </p>
               }
             </div>
           }
@@ -50,10 +52,12 @@
             </div>
           }
 
-          <p class="date">
-            Date created: {{ item().dateCreated | date: "MMMM d, y" }} | Date
-            modified: {{ item().dateModified | date: "MMMM d, y" }}
-          </p>
+          @if (item().dateCreated && item().dateModified) {
+            <p class="date">
+              Date created: {{ item().dateCreated | date: "MMMM d, y" }} | Date
+              modified: {{ item().dateModified | date: "MMMM d, y" }}
+            </p>
+          }
 
           @if (item().resourceType === ResourceType.Registration) {
             <div class="flex column-gap-5 mt-1">
@@ -102,7 +106,7 @@
 
           @if (item().provider) {
             <span>
-              <p>Provider:</p>
+              <p>Provider:&nbsp;</p>
               <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
             </span>
           }
@@ -114,16 +118,32 @@
             </p>
           }
 
-          <span>
-            <p>URL:</p>
-            <a [href]="item().id">{{ item().id }}</a>
-          </span>
+          @if (item().resourceType !== ResourceType.User) {
+            <span>
+              <p>URL:&nbsp;</p>
+              <a [href]="item().id">{{ item().id }}</a>
+            </span>
+          }
 
           @if (item().doi) {
             <span>
-              <p>DOI:</p>
+              <p>DOI:&nbsp;</p>
               <a [href]="item().doi">{{ item().doi }}</a>
             </span>
+          }
+
+          @if (item().resourceType === ResourceType.User) {
+            <p>Public projects: {{ item().publicProjects }}</p>
+            <p>Public registrations: {{ item().publicRegistrations }}</p>
+            <p>Public preprints: {{ item().publicPreprints }}</p>
+          }
+
+          @if (item().employment) {
+            <p>Employment: {{ item().employment }}</p>
+          }
+
+          @if (item().education) {
+            <p>Education: {{ item().education }}</p>
           }
         </div>
       </p-accordion-content>
