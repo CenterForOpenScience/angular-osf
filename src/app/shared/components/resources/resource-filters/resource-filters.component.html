@@ -2,13 +2,7 @@
   <p-accordion-panel value="0">
     <p-accordion-header>Creator</p-accordion-header>
     <p-accordion-content>
-      <div class="content-body">
-        <p class="m-0">Filter creators by typing their name below</p>
-        <p-autocomplete placeholder="Creator name" class="w-full">
-          [(ngModel)]="creator" [suggestions]="filteredCreators()"
-          (completeMethod)="setCreator($event)"
-        </p-autocomplete>
-      </div>
+      <osf-creators-filter></osf-creators-filter>
     </p-accordion-content>
   </p-accordion-panel>
 

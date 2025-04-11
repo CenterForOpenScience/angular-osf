@@ -7,4 +7,5 @@ export interface ApiData<Attributes, Embeds> {
   id: string;
   attributes: Attributes;
   embeds: Embeds;
+  type: string;
 }

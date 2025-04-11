@@ -11,13 +11,14 @@ import { ConfirmationService } from 'primeng/api';
 import { AuthState } from '@core/store/auth';
 import { HomeState } from '@core/store/home';
 import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
+import { SearchState } from '@osf/features/search/store';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideStore(
-      [AuthState, HomeState, ResourceFiltersState],
+      [AuthState, HomeState, ResourceFiltersState, SearchState],
       withNgxsReduxDevtoolsPlugin({ disabled: false }),
     ),
     providePrimeNG({

@@ -10,6 +10,10 @@
   color: var.$dark-blue-1;
 }
 
+.p-select-overlay {
+  min-width: 100%;
+}
+
 .p-select-label {
   @include mix.flex-align-center;
   width: 100%;
@@ -51,6 +55,20 @@
   .p-select-option {
     span {
       white-space: nowrap;
+    }
+  }
+}
+
+.filter {
+  .p-select {
+    //.p-select-dropdown {
+    //  display: none;
+    //}
+
+    .p-select-label {
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var.$dark-blue-1;
     }
   }
 }

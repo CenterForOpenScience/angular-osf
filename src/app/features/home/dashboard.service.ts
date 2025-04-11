@@ -14,7 +14,7 @@ export class DashboardService {
   jsonApiService = inject(JsonApiService);
 
   getProjects(): Observable<Project[]> {
-    const userId = 'ENTER_VALID_USER_ID';
+    const userId = 'k9p2t';
     const params = {
       'embed[]': ['bibliographic_contributors', 'parent', 'root'],
       page: 1,
@@ -31,7 +31,7 @@ export class DashboardService {
   getNoteworthy(): Observable<Project[]> {
     const projectId = 'pf5z9';
     const params = {
-      embed: 'bibliographic_contributors',
+      'embed[]': 'bibliographic_contributors',
       'page[size]': 5,
     };
 
@@ -45,7 +45,7 @@ export class DashboardService {
   getMostPopular(): Observable<Project[]> {
     const projectId = 'kvw3y';
     const params = {
-      embed: 'bibliographic_contributors',
+      'embed[]': 'bibliographic_contributors',
       'page[size]': 5,
     };
 

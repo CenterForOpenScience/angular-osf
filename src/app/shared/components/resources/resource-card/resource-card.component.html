@@ -3,7 +3,11 @@
     <p-accordion-panel value="0">
       <p-accordion-header class="flex flex-row column-gap-3 align-items-start">
         <div class="flex flex-column row-gap-3">
-          <p class="type">{{ ResourceType[item().resourceType] }}</p>
+          @if (item().resourceType === ResourceType.Agent) {
+            <p class="type">User</p>
+          } @else {
+            <p class="type">{{ ResourceType[item().resourceType] }}</p>
+          }
 
           <div class="flex align-items-center column-gap-1">
             @if (item().resourceType === ResourceType.File) {
@@ -43,7 +47,7 @@
             </div>
           }
 
-          @if (item().from) {
+          @if (item().from?.id) {
             <div>
               <p class="inline mr-1">From:</p>
               <a class="inline" [href]="item().from?.id">{{
@@ -91,10 +95,17 @@
             <p class="description">Description: {{ item().description }}</p>
           }
 
-          @if (item().publisher) {
+          @if (item().provider?.id) {
             <span>
-              <p>Registration provider:</p>
-              <a [href]="item().publisher?.id">{{ item().publisher?.name }}</a>
+              <p>Registration provider:&nbsp;</p>
+              <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
+            </span>
+          }
+
+          @if (item().license?.id) {
+            <span>
+              <p>License:&nbsp;</p>
+              <a [href]="item().license?.id">{{ item().license?.name }}</a>
             </span>
           }
 
@@ -104,21 +115,24 @@
             </p>
           }
 
-          @if (item().provider) {
+          @if (item().provider?.id) {
             <span>
               <p>Provider:&nbsp;</p>
               <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
             </span>
           }
 
-          @if (item().conflictOfInterestResponse) {
+          @if (
+            item().conflictOfInterestResponse &&
+            item().conflictOfInterestResponse === "no-conflict-of-interest"
+          ) {
             <p class="description">
-              Conflict of Interest response:
-              {{ item().conflictOfInterestResponse }}
+              Conflict of Interest response: Author asserted no Conflict of
+              Interest
             </p>
           }
 
-          @if (item().resourceType !== ResourceType.User) {
+          @if (item().resourceType !== ResourceType.Agent) {
             <span>
               <p>URL:&nbsp;</p>
               <a [href]="item().id">{{ item().id }}</a>
@@ -132,7 +146,7 @@
             </span>
           }
 
-          @if (item().resourceType === ResourceType.User) {
+          @if (item().resourceType === ResourceType.Agent) {
             <p>Public projects: {{ item().publicProjects }}</p>
             <p>Public registrations: {{ item().publicRegistrations }}</p>
             <p>Public preprints: {{ item().publicPreprints }}</p>

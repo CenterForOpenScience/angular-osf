@@ -57,7 +57,7 @@ export class ResourcesComponent {
         case ResourceTab.Files:
           return resources.resourceType === ResourceType.File;
         case ResourceTab.Users:
-          return resources.resourceType === ResourceType.User;
+          return resources.resourceType === ResourceType.Agent;
         default:
           return true;
       }

@@ -1,0 +1,16 @@
+<form [formGroup]="creatorsGroup">
+  <div class="content-body filter">
+    <p class="m-0">Filter creators by typing their name below</p>
+    <p-select
+      id="creator"
+      [options]="creatorsOptions()"
+      formControlName="creator"
+      [placeholder]="'Creator name'"
+      [editable]="true"
+      [loading]="true"
+      styleClass="w-full"
+      appendTo="body"
+      (onChange)="setCreator($event)"
+    ></p-select>
+  </div>
+</form>

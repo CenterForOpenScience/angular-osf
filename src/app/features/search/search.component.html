@@ -37,7 +37,7 @@
       >
         <osf-resources
           [selectedTab]="ResourceTab.All"
-          [searchedResources]="searchedResources()"
+          [searchedResources]="resources() ?? []"
         >
         </osf-resources>
       </p-tabpanel>
@@ -46,7 +46,7 @@
       <p-tabpanel [value]="ResourceTab.Projects" class="flex flex-column gap-5">
         <osf-resources
           [selectedTab]="ResourceTab.Projects"
-          [searchedResources]="searchedResources()"
+          [searchedResources]="resources() ?? []"
         >
         </osf-resources>
       </p-tabpanel>
@@ -58,7 +58,7 @@
       >
         <osf-resources
           [selectedTab]="ResourceTab.Registrations"
-          [searchedResources]="searchedResources()"
+          [searchedResources]="resources() ?? []"
         >
         </osf-resources>
       </p-tabpanel>
@@ -70,7 +70,7 @@
       >
         <osf-resources
           [selectedTab]="ResourceTab.Preprints"
-          [searchedResources]="searchedResources()"
+          [searchedResources]="resources() ?? []"
         >
         </osf-resources>
       </p-tabpanel>
@@ -79,7 +79,7 @@
       <p-tabpanel [value]="ResourceTab.Files" class="flex flex-column gap-5">
         <osf-resources
           [selectedTab]="ResourceTab.Files"
-          [searchedResources]="searchedResources()"
+          [searchedResources]="resources() ?? []"
         >
         </osf-resources>
       </p-tabpanel>
@@ -88,7 +88,7 @@
       <p-tabpanel [value]="ResourceTab.Users" class="flex flex-column gap-5">
         <osf-resources
           [selectedTab]="ResourceTab.Users"
-          [searchedResources]="searchedResources()"
+          [searchedResources]="resources() ?? []"
         >
         </osf-resources>
       </p-tabpanel>

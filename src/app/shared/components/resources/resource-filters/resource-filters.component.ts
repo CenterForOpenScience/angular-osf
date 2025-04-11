@@ -1,23 +1,13 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  model,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import {
   Accordion,
   AccordionContent,
   AccordionHeader,
   AccordionPanel,
 } from 'primeng/accordion';
-import {
-  AutoComplete,
-  AutoCompleteCompleteEvent,
-  AutoCompleteModule,
-} from 'primeng/autocomplete';
-import { Store } from '@ngxs/store';
-import { SetCreator } from '@shared/components/resources/resource-filters/store/resource-filters.actions';
+import { AutoComplete, AutoCompleteModule } from 'primeng/autocomplete';
+import { ReactiveFormsModule } from '@angular/forms';
+import { CreatorsFilterComponent } from '@shared/components/resources/resource-filters/filters/creators/creators-filter.component';
 
 @Component({
   selector: 'osf-resource-filters',
@@ -28,23 +18,11 @@ import { SetCreator } from '@shared/components/resources/resource-filters/store/
     AccordionPanel,
     AutoComplete,
     AutoCompleteModule,
+    ReactiveFormsModule,
+    CreatorsFilterComponent,
   ],
   templateUrl: './resource-filters.component.html',
   styleUrl: './resource-filters.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ResourceFiltersComponent {
-  readonly #store = inject(Store);
-
-  creator = model<string>('');
-  creators: string[] = [];
-  filteredCreators = computed(() => {
-    return this.creators.filter((creator) =>
-      creator.toLowerCase().includes(this.creator().toLowerCase()),
-    );
-  });
-
-  setCreator(event: AutoCompleteCompleteEvent) {
-    this.#store.dispatch(new SetCreator(event.query));
-  }
-}
+export class ResourceFiltersComponent {}

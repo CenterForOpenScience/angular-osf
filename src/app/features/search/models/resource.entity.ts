@@ -11,11 +11,10 @@ export interface Resource {
   title?: string;
   description?: string;
   from?: LinkItem;
-  license?: string;
-  publisher?: LinkItem;
+  license?: LinkItem;
+  provider?: LinkItem;
   registrationTemplate?: string;
   doi?: string;
-  provider?: LinkItem;
   conflictOfInterestResponse?: string;
   publicProjects?: number;
   publicRegistrations?: number;

@@ -5,5 +5,5 @@ export enum ResourceType {
   Registration,
   Preprint,
   ProjectComponent,
-  User,
+  Agent,
 }

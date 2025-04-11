@@ -8,7 +8,8 @@ export class JsonApiService {
   http: HttpClient = inject(HttpClient);
 
   get<T>(url: string, params?: Record<string, unknown>): Observable<T> {
-    const token = 'ENTER_VALID_PAT';
+    const token =
+      'UlO9O9GNKgVzJD7pUeY53jiQTKJ4U2znXVWNvh0KZQruoENuILx0IIYf9LoDz7Duq72EIm';
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
       Accept: 'application/vnd.api+json',

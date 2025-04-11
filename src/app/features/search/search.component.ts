@@ -1,8 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
+  effect,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
@@ -18,8 +19,9 @@ import { TableModule } from 'primeng/table';
 import { DataViewModule } from 'primeng/dataview';
 import { ResourcesComponent } from '@shared/components/resources/resources.component';
 import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
-import { Resource } from '@osf/features/search/models/resource.entity';
-import { resources } from '@osf/features/search/data';
+import { Store } from '@ngxs/store';
+import { GetResources, SearchSelectors } from '@osf/features/search/store';
+import { ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-search',
@@ -44,45 +46,33 @@ import { resources } from '@osf/features/search/data';
   styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent {
-  protected searchValue = signal('');
-  protected selectedTab = 0;
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
+export class SearchComponent implements OnInit {
+  readonly #store = inject(Store);
 
-  protected readonly resources = signal<Resource[]>(resources);
-  protected readonly searchedResources = computed(() => {
-    const search = this.searchValue().toLowerCase();
-    return this.resources().filter(
-      (resource: Resource) =>
-        resource.title?.toLowerCase().includes(search) ||
-        resource.fileName?.toLowerCase().includes(search) ||
-        resource.description?.toLowerCase().includes(search) ||
-        resource.creators
-          ?.map((p) => p.name.toLowerCase())
-          .some((name) => name.includes(search)) ||
-        resource.dateCreated
-          ?.toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          })
-          .toLowerCase()
-          .includes(search) ||
-        resource.dateModified
-          ?.toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric',
-          })
-          .toLowerCase()
-          .includes(search) ||
-        resource.from?.name.toLowerCase().includes(search),
-    );
-  });
+  protected searchValue = signal('');
+  protected readonly isMobile = toSignal(inject(IS_XSMALL));
+  protected readonly resources = this.#store.selectSignal(
+    SearchSelectors.getResources,
+  );
+  protected readonly creatorsFilter = this.#store.selectSignal(
+    ResourceFiltersSelectors.getCreator,
+  );
+
+  protected selectedTab = 0;
+  protected readonly ResourceTab = ResourceTab;
+
+  constructor() {
+    effect(() => {
+      this.creatorsFilter();
+      this.#store.dispatch(GetResources);
+    });
+  }
+
+  ngOnInit() {
+    this.#store.dispatch(GetResources);
+  }
 
   onTabChange(index: number): void {
     this.selectedTab = index;
   }
-
-  protected readonly ResourceTab = ResourceTab;
 }

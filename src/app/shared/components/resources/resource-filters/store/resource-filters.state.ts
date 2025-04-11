@@ -12,6 +12,7 @@ import {
   SetSubject,
 } from '@shared/components/resources/resource-filters/store/resource-filters.actions';
 import { ResourceType } from '@osf/features/search/models/resource-type.enum';
+import { Injectable } from '@angular/core';
 
 @State<ResourceFiltersStateModel>({
   name: 'resourceFilters',
@@ -27,6 +28,7 @@ import { ResourceType } from '@osf/features/search/models/resource-type.enum';
     partOfCollection: '',
   },
 })
+@Injectable()
 export class ResourceFiltersState {
   @Action(SetCreator)
   setCreator(ctx: StateContext<ResourceFiltersStateModel>, action: SetCreator) {
