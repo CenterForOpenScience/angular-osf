@@ -5,6 +5,7 @@ import { Project } from '@osf/features/home/models/project.entity';
 import { mapProjectUStoProject } from '@osf/features/home/mappers/dashboard.mapper';
 import { ProjectItem } from '@osf/features/home/models/raw-models/ProjectItem.entity';
 import { environment } from '../../../environments/environment';
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 
 @Injectable({
   providedIn: 'root',
@@ -21,11 +22,10 @@ export class DashboardService {
     };
 
     return this.jsonApiService
-      .getArray<ProjectItem>(
-        `${environment.apiUrl}/sparse/users/${userId}/nodes/`,
-        params,
-      )
-      .pipe(map((projects) => projects.map(mapProjectUStoProject)));
+      .get<
+        JsonApiResponse<ProjectItem[], null>
+      >(`${environment.apiUrl}/sparse/users/${userId}/nodes/`, params)
+      .pipe(map((response) => response.data.map(mapProjectUStoProject)));
   }
 
   getNoteworthy(): Observable<Project[]> {
@@ -36,11 +36,10 @@ export class DashboardService {
     };
 
     return this.jsonApiService
-      .getArray<ProjectItem>(
-        `${environment.apiUrl}/nodes/${projectId}/linked_nodes`,
-        params,
-      )
-      .pipe(map((projects) => projects.map(mapProjectUStoProject)));
+      .get<
+        JsonApiResponse<ProjectItem[], null>
+      >(`${environment.apiUrl}/nodes/${projectId}/linked_nodes`, params)
+      .pipe(map((response) => response.data.map(mapProjectUStoProject)));
   }
 
   getMostPopular(): Observable<Project[]> {
@@ -51,10 +50,9 @@ export class DashboardService {
     };
 
     return this.jsonApiService
-      .getArray<ProjectItem>(
-        `${environment.apiUrl}/nodes/${projectId}/linked_nodes`,
-        params,
-      )
-      .pipe(map((projects) => projects.map(mapProjectUStoProject)));
+      .get<
+        JsonApiResponse<ProjectItem[], null>
+      >(`${environment.apiUrl}/nodes/${projectId}/linked_nodes`, params)
+      .pipe(map((response) => response.data.map(mapProjectUStoProject)));
   }
 }
