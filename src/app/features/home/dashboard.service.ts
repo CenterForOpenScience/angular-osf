@@ -16,7 +16,7 @@ export class DashboardService {
   getProjects(): Observable<Project[]> {
     const userId = 'ENTER_VALID_USER_ID';
     const params = {
-      embed: ['bibliographic_contributors', 'parent', 'root'],
+      'embed[]': ['bibliographic_contributors', 'parent', 'root'],
       page: 1,
       sort: '-last_logged',
     };
