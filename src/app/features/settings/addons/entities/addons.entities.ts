@@ -97,6 +97,27 @@ export interface AuthorizedAddon {
   externalServiceName: string;
 }
 
+export interface IncludedAddonData {
+  type: string;
+  id: string;
+  attributes: Record<string, unknown>;
+  relationships?: Record<
+    string,
+    {
+      links: {
+        related: string;
+      };
+      data?: {
+        type: string;
+        id: string;
+      };
+    }
+  >;
+  links?: {
+    self: string;
+  };
+}
+
 export interface UserReference {
   type: string;
   id: string;

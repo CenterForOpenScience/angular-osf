@@ -6,11 +6,13 @@ import {
   AddonResponse,
   AuthorizedAddon,
   AuthorizedAddonResponse,
+  IncludedAddonData,
   UserReference,
 } from '@osf/features/settings/addons/entities/addons.entities';
 import { AddonMapper } from '@osf/features/settings/addons/addon.mapper';
 import { Store } from '@ngxs/store';
 import { UserState } from '@core/store/user';
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +25,12 @@ export class AddonsService {
 
   getAddons(addonType: string): Observable<Addon[]> {
     return this.jsonApiService
-      .getDataArray<AddonResponse>(
-        this.baseUrl + `external-${addonType}-services`,
-      )
+      .get<
+        JsonApiResponse<AddonResponse[], null>
+      >(this.baseUrl + `external-${addonType}-services`)
       .pipe(
         map((response) => {
-          return response.map((item) => AddonMapper.fromResponse(item));
+          return response.data.map((item) => AddonMapper.fromResponse(item));
         }),
       );
   }
@@ -37,18 +39,18 @@ export class AddonsService {
     const userUri = `https://staging4.osf.io/${this.currentUser()!.id}`;
     const params = { 'filter[user_uri]': userUri };
 
-    return this.jsonApiService.getDataArray<UserReference>(
-      this.baseUrl + 'user-references',
-      params,
-    );
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<UserReference[], null>
+      >(this.baseUrl + 'user-references', params)
+      .pipe(map((response) => response.data));
   }
 
   getAuthorizedAddons(addonType: string): Observable<AuthorizedAddon[]> {
     return this.jsonApiService
-      .getFullArrayResponse<AuthorizedAddonResponse>(
-        this.baseUrl +
-          `user-references/3873149c-9fb7-4444-bbb9-138d9f358a85/authorized_${addonType}_accounts?include=external-${addonType}-service`,
-      )
+      .get<
+        JsonApiResponse<AuthorizedAddonResponse[], IncludedAddonData[]>
+      >(this.baseUrl + `user-references/3873149c-9fb7-4444-bbb9-138d9f358a85/authorized_${addonType}_accounts?include=external-${addonType}-service`)
       .pipe(
         map((response) => {
           return response.data.map((item) =>

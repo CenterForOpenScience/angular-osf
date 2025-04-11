@@ -1,45 +1,22 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import {
-  JsonApiArrayResponse,
-  JsonApiResponse,
-} from '@core/services/json-api/json-api.entity';
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 
 @Injectable({
   providedIn: 'root',
 })
 export class JsonApiService {
   http: HttpClient = inject(HttpClient);
-  #headers = new HttpHeaders({
-    Authorization: 'ENTER_VALID_PAT',
+  readonly #token =
+    'Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt';
+  readonly #headers = new HttpHeaders({
+    Authorization: this.#token,
+    Accept: 'application/vnd.api+json',
   });
 
-  getData<T>(url: string, params?: Record<string, unknown>): Observable<T> {
-    return this.http
-      .get<
-        JsonApiResponse<T>
-      >(url, { params: this.buildHttpParams(params), headers: this.#headers })
-      .pipe(map((response) => response.data));
-  }
-
-  getDataArray<T>(
-    url: string,
-    params?: Record<string, unknown>,
-  ): Observable<T[]> {
-    return this.http
-      .get<JsonApiArrayResponse<T>>(url, {
-        params: this.buildHttpParams(params),
-        headers: this.#headers,
-      })
-      .pipe(map((response) => response.data));
-  }
-
-  getFullArrayResponse<T>(
-    url: string,
-    params?: Record<string, unknown>,
-  ): Observable<JsonApiArrayResponse<T>> {
-    return this.http.get<JsonApiArrayResponse<T>>(url, {
+  get<T>(url: string, params?: Record<string, unknown>): Observable<T> {
+    return this.http.get<T>(url, {
       params: this.buildHttpParams(params),
       headers: this.#headers,
     });
@@ -54,7 +31,7 @@ export class JsonApiService {
 
         if (Array.isArray(value)) {
           value.forEach((item) => {
-            httpParams = httpParams.append(`${key}[]`, item);
+            httpParams = httpParams.append(`${key}`, item);
           });
         } else {
           httpParams = httpParams.set(key, value as string);
@@ -67,13 +44,13 @@ export class JsonApiService {
 
   post<T>(url: string, body: unknown): Observable<T> {
     return this.http
-      .post<JsonApiResponse<T>>(url, body, { headers: this.#headers })
+      .post<JsonApiResponse<T, null>>(url, body, { headers: this.#headers })
       .pipe(map((response) => response.data));
   }
 
   patch<T>(url: string, body: unknown): Observable<T> {
     return this.http
-      .patch<JsonApiResponse<T>>(url, body, { headers: this.#headers })
+      .patch<JsonApiResponse<T, null>>(url, body, { headers: this.#headers })
       .pipe(map((response) => response.data));
   }
 

@@ -3,8 +3,8 @@ import {
   AddonResponse,
   AuthorizedAddon,
   AuthorizedAddonResponse,
+  IncludedAddonData,
 } from '@osf/features/settings/addons/entities/addons.entities';
-import { IncludedData } from '@core/services/json-api/json-api.entity';
 
 export class AddonMapper {
   static fromResponse(response: AddonResponse): Addon {
@@ -21,12 +21,11 @@ export class AddonMapper {
 
   static fromAuthorizedAddonResponse(
     response: AuthorizedAddonResponse,
-    included?: IncludedData[],
+    included?: IncludedAddonData[],
   ): AuthorizedAddon {
     const externalStorageServiceId =
       response.relationships.external_storage_service.data.id;
 
-    // Look for both storage and citation services
     const matchingService = included?.find(
       (item) =>
         (item.type === 'external-storage-services' ||

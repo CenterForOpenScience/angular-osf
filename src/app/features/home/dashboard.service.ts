@@ -5,6 +5,7 @@ import { Project } from '@osf/features/home/models/project.entity';
 import { mapProjectUStoProject } from '@osf/features/home/mappers/dashboard.mapper';
 import { ProjectItem } from '@osf/features/home/models/raw-models/ProjectItem.entity';
 import { environment } from '../../../environments/environment';
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 
 @Injectable({
   providedIn: 'root',
@@ -13,19 +14,18 @@ export class DashboardService {
   jsonApiService = inject(JsonApiService);
 
   getProjects(): Observable<Project[]> {
-    const userId = '8bxwv';
+    const userId = 'ENTER_VALID_USER_ID';
     const params = {
-      embed: ['bibliographic_contributors', 'parent', 'root'],
+      'embed[]': ['bibliographic_contributors', 'parent', 'root'],
       page: 1,
       sort: '-last_logged',
     };
 
     return this.jsonApiService
-      .getDataArray<ProjectItem>(
-        `${environment.apiUrl}/sparse/users/${userId}/nodes/`,
-        params,
-      )
-      .pipe(map((projects) => projects.map(mapProjectUStoProject)));
+      .get<
+        JsonApiResponse<ProjectItem[], null>
+      >(`${environment.apiUrl}/sparse/users/${userId}/nodes/`, params)
+      .pipe(map((response) => response.data.map(mapProjectUStoProject)));
   }
 
   getNoteworthy(): Observable<Project[]> {
@@ -36,11 +36,10 @@ export class DashboardService {
     };
 
     return this.jsonApiService
-      .getDataArray<ProjectItem>(
-        `${environment.apiUrl}/nodes/${projectId}/linked_nodes`,
-        params,
-      )
-      .pipe(map((projects) => projects.map(mapProjectUStoProject)));
+      .get<
+        JsonApiResponse<ProjectItem[], null>
+      >(`${environment.apiUrl}/nodes/${projectId}/linked_nodes`, params)
+      .pipe(map((response) => response.data.map(mapProjectUStoProject)));
   }
 
   getMostPopular(): Observable<Project[]> {
@@ -51,10 +50,9 @@ export class DashboardService {
     };
 
     return this.jsonApiService
-      .getDataArray<ProjectItem>(
-        `${environment.apiUrl}/nodes/${projectId}/linked_nodes`,
-        params,
-      )
-      .pipe(map((projects) => projects.map(mapProjectUStoProject)));
+      .get<
+        JsonApiResponse<ProjectItem[], null>
+      >(`${environment.apiUrl}/nodes/${projectId}/linked_nodes`, params)
+      .pipe(map((response) => response.data.map(mapProjectUStoProject)));
   }
 }

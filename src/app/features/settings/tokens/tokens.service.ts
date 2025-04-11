@@ -9,6 +9,7 @@ import {
 import { map } from 'rxjs/operators';
 import { TokenMapper } from '@osf/features/settings/tokens/token.mapper';
 import { Scope } from '@osf/features/settings/tokens/entities/scope.interface';
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 
 @Injectable({
   providedIn: 'root',
@@ -18,16 +19,18 @@ export class TokensService {
   baseUrl = 'https://api.staging4.osf.io/v2/';
 
   getScopes(): Observable<Scope[]> {
-    return this.jsonApiService.getDataArray<Scope>(this.baseUrl + 'scopes');
+    return this.jsonApiService
+      .get<JsonApiResponse<Scope[], null>>(this.baseUrl + 'scopes')
+      .pipe(map((responses) => responses.data));
   }
 
   getTokens(): Observable<Token[]> {
     return this.jsonApiService
-      .getDataArray<TokenGetResponse>(this.baseUrl + 'tokens')
+      .get<JsonApiResponse<TokenGetResponse[], null>>(this.baseUrl + 'tokens')
       .pipe(
         map((responses) => {
           console.log(responses);
-          return responses.map((response) =>
+          return responses.data.map((response) =>
             TokenMapper.fromGetResponse(response),
           );
         }),
@@ -36,8 +39,10 @@ export class TokensService {
 
   getTokenById(tokenId: string): Observable<Token> {
     return this.jsonApiService
-      .getData<TokenGetResponse>(this.baseUrl + `tokens/${tokenId}`)
-      .pipe(map((response) => TokenMapper.fromGetResponse(response)));
+      .get<
+        JsonApiResponse<TokenGetResponse, null>
+      >(this.baseUrl + `tokens/${tokenId}`)
+      .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 
   createToken(name: string, scopes: string[]): Observable<Token> {
