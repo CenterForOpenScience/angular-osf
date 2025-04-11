@@ -13,6 +13,10 @@
 .p-select-label {
   @include mix.flex-align-center;
   width: 100%;
+
+  &::placeholder {
+    color: var.$grey-1;
+  }
 }
 
 .p-select-option {

@@ -1,5 +1,3 @@
-import { Scope } from '@osf/features/settings/tokens/entities/scope.interface';
-
 // API Request Model
 export interface TokenCreateRequest {
   data: {
@@ -13,58 +11,32 @@ export interface TokenCreateRequest {
 
 // API Response Model
 export interface TokenCreateResponse {
-  data: {
-    id: string;
-    type: 'tokens';
-    attributes: {
-      name: string;
-      token_id: string;
-    };
-    relationships: {
-      scopes: {
-        links: {
-          related: {
-            href: string;
-            meta: Record<string, unknown>;
-          };
-        };
-      };
-      owner: {
-        links: {
-          related: {
-            href: string;
-            meta: Record<string, unknown>;
-          };
-        };
-        data: {
-          id: string;
-          type: string;
-        };
-      };
-    };
-    embeds: {
-      scopes: {
-        data: Scope[];
-        meta: {
-          total: number;
-          per_page: number;
-        };
-        links: {
-          self: string;
-          first: string | null;
-          last: string | null;
-          prev: string | null;
-          next: string | null;
-        };
-      };
-    };
-    links: {
-      html: string;
-      self: string;
-    };
+  id: string;
+  type: 'tokens';
+  attributes: {
+    name: string;
+    token_id: string;
+    scopes: string;
+    owner: string;
   };
-  meta: {
-    version: string;
+  links: {
+    html: string;
+    self: string;
+  };
+}
+
+// API Response Model for GET request
+export interface TokenGetResponse {
+  id: string;
+  type: 'tokens';
+  attributes: {
+    name: string;
+    scopes: string;
+    owner: string;
+  };
+  links: {
+    html: string;
+    self: string;
   };
 }
 

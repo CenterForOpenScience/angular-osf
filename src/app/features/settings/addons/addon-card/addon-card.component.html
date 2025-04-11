@@ -3,10 +3,12 @@
   [class.mobile]="isMobile()"
 >
   <div class="max-h-8rem">
-    <img
-      alt="Addon card image"
-      [src]="'assets/images/addons/' + card()!.externalServiceName + '.svg'"
-    />
+    @if (card()!.externalServiceName) {
+      <img
+        alt="Addon card image"
+        [src]="'assets/images/addons/' + card()!.externalServiceName + '.svg'"
+      />
+    }
   </div>
 
   <div class="flex flex-column gap-3">

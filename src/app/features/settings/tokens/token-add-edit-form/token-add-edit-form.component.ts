@@ -5,7 +5,7 @@ import {
   input,
   OnInit,
 } from '@angular/core';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 import { Checkbox } from 'primeng/checkbox';
@@ -23,9 +23,16 @@ import { CommonModule } from '@angular/common';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngxs/store';
-import { TokensSelectors } from '@core/store/settings';
-import { TokensService } from '@osf/features/settings/tokens/tokens.service';
+import {
+  TokensSelectors,
+  CreateToken,
+  UpdateToken,
+  GetTokens,
+} from '@core/store/settings';
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
+import { map } from 'rxjs';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TokenCreatedDialogComponent } from '@osf/features/settings/tokens/token-created-dialog/token-created-dialog.component';
 
 @Component({
   selector: 'osf-token-add-edit-form',
@@ -35,14 +42,18 @@ import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TokenAddEditFormComponent implements OnInit {
-  #isXSmall$ = inject(IS_XSMALL);
   #store = inject(Store);
-  #tokensService = inject(TokensService);
+  #route = inject(ActivatedRoute);
+  #router = inject(Router);
+  #dialogService = inject(DialogService);
   isEditMode = input(false);
   initialValues = input<Token | null>(null);
+  protected readonly tokenId = toSignal(
+    this.#route.params.pipe(map((params) => params['id'])),
+  );
   protected readonly dialogRef = inject(DynamicDialogRef);
   protected readonly TokenFormControls = TokenFormControls;
-  protected readonly isXSmall = toSignal(this.#isXSmall$);
+  protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly tokenScopes = this.#store.selectSignal(
     TokensSelectors.getScopes,
   );
@@ -59,6 +70,7 @@ export class TokenAddEditFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    this.#store.dispatch(GetTokens);
     if (this.initialValues()) {
       this.tokenForm.patchValue({
         [TokenFormControls.TokenName]: this.initialValues()?.name,
@@ -67,7 +79,7 @@ export class TokenAddEditFormComponent implements OnInit {
     }
   }
 
-  submitForm(): void {
+  handleSubmitForm(): void {
     if (!this.tokenForm.valid) {
       this.tokenForm.markAllAsTouched();
       this.tokenForm.get(TokenFormControls.TokenName)?.markAsDirty();
@@ -78,13 +90,42 @@ export class TokenAddEditFormComponent implements OnInit {
     const { tokenName, scopes } = this.tokenForm.value;
     if (!tokenName || !scopes) return;
 
-    this.#tokensService.createToken(tokenName, scopes).subscribe({
-      next: (token) => {
-        this.dialogRef.close(token);
-      },
-      error: (error) => {
-        console.error('Failed to create token:', error);
-        // TODO: Show error message to user
+    if (!this.isEditMode()) {
+      this.#store.dispatch(new CreateToken(tokenName, scopes)).subscribe({
+        complete: () => {
+          const tokens = this.#store.selectSnapshot(TokensSelectors.getTokens);
+          const newToken = tokens[0];
+          this.dialogRef.close();
+          this.#showTokenCreatedDialog(newToken.name, newToken.tokenId);
+        },
+      });
+    } else {
+      this.#store
+        .dispatch(new UpdateToken(this.tokenId(), tokenName, scopes))
+        .subscribe({
+          complete: () => {
+            this.#router.navigate(['settings/tokens']);
+          },
+        });
+    }
+  }
+
+  #showTokenCreatedDialog(tokenName: string, tokenValue: string) {
+    let dialogWidth = '500px';
+
+    if (this.isMobile()) {
+      dialogWidth = '345px';
+    }
+
+    this.#dialogService.open(TokenCreatedDialogComponent, {
+      width: dialogWidth,
+      header: 'Token Successfully Created',
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        tokenName,
+        tokenValue,
       },
     });
   }

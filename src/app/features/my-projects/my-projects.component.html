@@ -48,9 +48,11 @@
             [rows]="5"
             [rowsPerPageOptions]="[2, 5, 10]"
             [paginator]="true"
+            paginatorDropdownAppendTo="body"
             [resizableColumns]="true"
             [autoLayout]="true"
             [scrollable]="true"
+            [sortMode]="'single'"
           >
             <ng-template #header>
               <tr>
@@ -59,9 +61,9 @@
                   <p-sortIcon field="title" />
                 </th>
                 <th>Contributors</th>
-                <th pSortableColumn="modified">
+                <th pSortableColumn="dateModified">
                   Modified
-                  <p-sortIcon field="modified" />
+                  <p-sortIcon field="dateModified" />
                 </th>
               </tr>
             </ng-template>
@@ -98,12 +100,14 @@
           <p-table
             class="my-projects-table"
             [value]="filteredProjects()"
-            [rows]="5"
+            [rows]="2"
             [rowsPerPageOptions]="[2, 5, 10]"
             [paginator]="true"
+            paginatorDropdownAppendTo="body"
             [resizableColumns]="true"
             [autoLayout]="true"
             [scrollable]="true"
+            [sortMode]="'single'"
           >
             <ng-template #header>
               <tr>
@@ -112,9 +116,9 @@
                   <p-sortIcon field="title" />
                 </th>
                 <th>Contributors</th>
-                <th pSortableColumn="modified">
+                <th pSortableColumn="dateModified">
                   Modified
-                  <p-sortIcon field="modified" />
+                  <p-sortIcon field="dateModified" />
                 </th>
               </tr>
             </ng-template>
@@ -154,9 +158,11 @@
             [rows]="5"
             [rowsPerPageOptions]="[2, 5, 10]"
             [paginator]="true"
+            paginatorDropdownAppendTo="body"
             [resizableColumns]="true"
             [autoLayout]="true"
             [scrollable]="true"
+            [sortMode]="'single'"
           >
             <ng-template #header>
               <tr>
@@ -165,9 +171,9 @@
                   <p-sortIcon field="title" />
                 </th>
                 <th>Contributors</th>
-                <th pSortableColumn="modified">
+                <th pSortableColumn="dateModified">
                   Modified
-                  <p-sortIcon field="modified" />
+                  <p-sortIcon field="dateModified" />
                 </th>
               </tr>
             </ng-template>

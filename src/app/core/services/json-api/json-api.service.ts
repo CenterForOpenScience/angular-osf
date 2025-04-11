@@ -12,10 +12,10 @@ import {
 export class JsonApiService {
   http: HttpClient = inject(HttpClient);
   #headers = new HttpHeaders({
-    Authorization: 'ENTER_VALID_TOKEN',
+    Authorization: 'ENTER_VALID_PAT',
   });
 
-  get<T>(url: string, params?: Record<string, unknown>): Observable<T> {
+  getData<T>(url: string, params?: Record<string, unknown>): Observable<T> {
     return this.http
       .get<
         JsonApiResponse<T>
@@ -23,13 +23,26 @@ export class JsonApiService {
       .pipe(map((response) => response.data));
   }
 
-  getArray<T>(url: string, params?: Record<string, unknown>): Observable<T[]> {
+  getDataArray<T>(
+    url: string,
+    params?: Record<string, unknown>,
+  ): Observable<T[]> {
     return this.http
       .get<JsonApiArrayResponse<T>>(url, {
         params: this.buildHttpParams(params),
         headers: this.#headers,
       })
       .pipe(map((response) => response.data));
+  }
+
+  getFullArrayResponse<T>(
+    url: string,
+    params?: Record<string, unknown>,
+  ): Observable<JsonApiArrayResponse<T>> {
+    return this.http.get<JsonApiArrayResponse<T>>(url, {
+      params: this.buildHttpParams(params),
+      headers: this.#headers,
+    });
   }
 
   private buildHttpParams(params?: Record<string, unknown>): HttpParams {

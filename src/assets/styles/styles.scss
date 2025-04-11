@@ -105,4 +105,33 @@
       display: block;
     }
   }
+
+  .copy-notification {
+    position: absolute;
+    top: -45px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    border-radius: 8px;
+    box-shadow: 0 0 4px 0 #00000029;
+    background: var.$white;
+
+    &.visible {
+      opacity: 1;
+    }
+
+    &:after {
+      content: "";
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px 5px 0;
+      border-style: solid;
+      border-color: var.$grey-1 transparent transparent;
+    }
+  }
 }

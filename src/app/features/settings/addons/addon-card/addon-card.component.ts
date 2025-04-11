@@ -3,7 +3,10 @@ import { Button } from 'primeng/button';
 import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { Addon } from '@shared/entities/addons.entities';
+import {
+  Addon,
+  AuthorizedAddon,
+} from '@osf/features/settings/addons/entities/addons.entities';
 
 @Component({
   selector: 'osf-addon-card',
@@ -12,13 +15,18 @@ import { Addon } from '@shared/entities/addons.entities';
   styleUrl: './addon-card.component.scss',
 })
 export class AddonCardComponent {
-  card = input<Addon>();
+  card = input<Addon | AuthorizedAddon>();
   cardButtonLabel = input<string>('');
   isMobile = toSignal(inject(IS_XSMALL));
 
   constructor(private router: Router) {}
 
   onConnect(): void {
-    this.router.navigate(['/settings/addons/connect-addon']);
+    const addon = this.card();
+    if (addon) {
+      this.router.navigate(['/settings/addons/connect-addon'], {
+        state: { addon },
+      });
+    }
   }
 }

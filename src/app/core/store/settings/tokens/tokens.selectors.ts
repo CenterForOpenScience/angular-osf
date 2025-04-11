@@ -14,4 +14,11 @@ export class TokensSelectors {
   static getTokens(state: TokensStateModel): Token[] {
     return state.tokens;
   }
+
+  @Selector([TokensState])
+  static getTokenById(
+    state: TokensStateModel,
+  ): (id: string) => Token | undefined {
+    return (id: string) => state.tokens.find((token) => token.id === id);
+  }
 }

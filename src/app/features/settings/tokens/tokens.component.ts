@@ -9,9 +9,10 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { GetScopes } from '@core/store/settings';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'osf-tokens',
@@ -26,8 +27,16 @@ export class TokensComponent implements OnInit {
   #isXSmall$ = inject(IS_XSMALL);
   #isMedium$ = inject(IS_MEDIUM);
   #store = inject(Store);
+  #router = inject(Router);
+
   protected readonly isXSmall = toSignal(this.#isXSmall$);
   protected readonly isMedium = toSignal(this.#isMedium$);
+  protected readonly isBaseRoute = toSignal(
+    this.#router.events.pipe(
+      map(() => this.#router.url === '/settings/tokens'),
+    ),
+    { initialValue: this.#router.url === '/settings/tokens' },
+  );
 
   createToken(): void {
     let dialogWidth = '850px';

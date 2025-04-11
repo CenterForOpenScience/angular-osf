@@ -4,6 +4,38 @@
   background: white;
   padding: 0.8rem 0 0 0;
   row-gap: 0.8rem;
+
+  .p-select-overlay {
+    background: white;
+    border: 1px solid var.$grey-2;
+    color: var.$dark-blue-1;
+  }
+
+  .p-select-option {
+    &.p-select-option-selected {
+      background-color: white;
+      color: var.$dark-blue-1;
+
+      &:hover {
+        background: var.$bg-blue-3;
+        color: var.$dark-blue-1;
+      }
+    }
+
+    &:not(.p-select-option-selected):not(.p-disabled).p-focus {
+      background: var.$bg-blue-3;
+      color: var.$dark-blue-1;
+    }
+  }
+
+  p-select {
+    background: white;
+    border: 1px solid var.$grey-2;
+
+    span {
+      color: var.$dark-blue-1;
+    }
+  }
 }
 
 .p-paginator-page {
@@ -46,36 +78,4 @@
 .p-paginator-first:not(.p-disabled):hover,
 .p-paginator-prev:not(.p-disabled):hover {
   background: white;
-}
-
-.p-select-overlay {
-  background: white;
-  border: 1px solid var.$grey-2;
-  color: var.$dark-blue-1;
-}
-
-.p-select-option {
-  &.p-select-option-selected {
-    background-color: white;
-    color: var.$dark-blue-1;
-
-    &:hover {
-      background: var.$bg-blue-3;
-      color: var.$dark-blue-1;
-    }
-  }
-
-  &:not(.p-select-option-selected):not(.p-disabled).p-focus {
-    background: var.$bg-blue-3;
-    color: var.$dark-blue-1;
-  }
-}
-
-p-select {
-  background: white;
-  border: 1px solid var.$grey-2;
-
-  span {
-    color: var.$dark-blue-1;
-  }
 }

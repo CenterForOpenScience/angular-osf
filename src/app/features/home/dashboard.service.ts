@@ -13,7 +13,7 @@ export class DashboardService {
   jsonApiService = inject(JsonApiService);
 
   getProjects(): Observable<Project[]> {
-    const userId = 'ENTER_VALID_USER_ID';
+    const userId = '8bxwv';
     const params = {
       embed: ['bibliographic_contributors', 'parent', 'root'],
       page: 1,
@@ -21,7 +21,7 @@ export class DashboardService {
     };
 
     return this.jsonApiService
-      .getArray<ProjectItem>(
+      .getDataArray<ProjectItem>(
         `${environment.apiUrl}/sparse/users/${userId}/nodes/`,
         params,
       )
@@ -36,7 +36,7 @@ export class DashboardService {
     };
 
     return this.jsonApiService
-      .getArray<ProjectItem>(
+      .getDataArray<ProjectItem>(
         `${environment.apiUrl}/nodes/${projectId}/linked_nodes`,
         params,
       )
@@ -51,7 +51,7 @@ export class DashboardService {
     };
 
     return this.jsonApiService
-      .getArray<ProjectItem>(
+      .getDataArray<ProjectItem>(
         `${environment.apiUrl}/nodes/${projectId}/linked_nodes`,
         params,
       )

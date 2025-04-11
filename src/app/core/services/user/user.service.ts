@@ -14,7 +14,7 @@ export class UserService {
 
   getCurrentUser(): Observable<User> {
     return this.jsonApiService
-      .get<UserUS>(this.baseUrl + 'users/me')
+      .getData<UserUS>(this.baseUrl + 'users/me')
       .pipe(map((user) => mapUserUStoUser(user)));
   }
 }

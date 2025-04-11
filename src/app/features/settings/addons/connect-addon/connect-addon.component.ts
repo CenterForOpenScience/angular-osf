@@ -3,15 +3,20 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { Card } from 'primeng/card';
 import { RadioButton } from 'primeng/radiobutton';
 import { FormsModule } from '@angular/forms';
 import { Checkbox } from 'primeng/checkbox';
 import { GoogleDriveFolder } from '@shared/entities/google-drive-folder.interface';
-import { AddonTerm } from '@shared/entities/addon-terms.interface';
+import { AddonTerm } from '@osf/features/settings/addons/entities/addon-terms.interface';
 import { Divider } from 'primeng/divider';
+import { ADDON_TERMS_MESSAGES } from '../utils/addon-terms.const';
+import {
+  Addon,
+  AuthorizedAddon,
+} from '@osf/features/settings/addons/entities/addons.entities';
 
 @Component({
   selector: 'osf-connect-addon',
@@ -45,48 +50,96 @@ export class ConnectAddonComponent {
     { name: 'folder name example', selected: false },
     { name: 'folder name example', selected: false },
   ];
-  protected readonly terms: AddonTerm[] = [
-    {
-      function: 'Add / Update Files',
-      status: 'You cannot add or update files for figshare within OSF.',
-      type: 'warning',
-    },
-    {
-      function: 'Delete files',
-      status: 'You cannot delete files for figshare within OSF.',
-      type: 'warning',
-    },
-    {
-      function: 'Forking',
-      status:
-        'Only the user who first authorized the figshare add-on within source project can transfer its authorization to a forked project or component.',
-      type: 'info',
-    },
-    {
-      function: 'Logs',
-      status:
-        'OSF tracks changes you make to your figshare content within OSF, but not changes made directly within figshare.',
-      type: 'info',
-    },
-    {
-      function: 'Permissions',
-      status:
-        'The OSF does not change permissions for linked figshare files. Privacy changes made to an OSF project or component will not affect those set in figshare.',
-      type: 'info',
-    },
-    {
-      function: 'Registering',
-      status:
-        'figshare content will be registered, but version history will not be copied to the registration.',
-      type: 'info',
-    },
-    {
-      function: 'View/Download File Versions',
-      status:
-        'figshare files can be viewed/downloaded in OSF, but version history is not supported.',
-      type: 'warning',
-    },
-  ];
+  protected readonly terms = signal<AddonTerm[]>([]);
+
+  constructor(private router: Router) {
+    const addon = this.router.getCurrentNavigation()?.extras.state?.[
+      'addon'
+    ] as Addon | AuthorizedAddon;
+    if (!addon) return;
+
+    const supportedFeatures =
+      'supportedFeatures' in addon ? addon.supportedFeatures : [];
+    const provider =
+      addon.displayName || addon.externalServiceName || 'provider';
+
+    const terms: AddonTerm[] = [
+      {
+        function: ADDON_TERMS_MESSAGES.labels['add-update-files'],
+        status: this.getTermMessage(
+          'add-update-files',
+          supportedFeatures,
+          provider,
+        ),
+        type: this.getTermType('add-update-files', supportedFeatures),
+      },
+      {
+        function: ADDON_TERMS_MESSAGES.labels['delete-files'],
+        status: this.getTermMessage(
+          'delete-files',
+          supportedFeatures,
+          provider,
+        ),
+        type: this.getTermType('delete-files', supportedFeatures),
+      },
+      {
+        function: ADDON_TERMS_MESSAGES.labels['forking'],
+        status: this.getTermMessage('forking', supportedFeatures, provider),
+        type: this.getTermType('forking', supportedFeatures),
+      },
+      {
+        function: ADDON_TERMS_MESSAGES.labels['logs'],
+        status: this.getTermMessage('logs', supportedFeatures, provider),
+        type: this.getTermType('logs', supportedFeatures),
+      },
+      {
+        function: ADDON_TERMS_MESSAGES.labels['permissions'],
+        status: this.getTermMessage('permissions', supportedFeatures, provider),
+        type: this.getTermType('permissions', supportedFeatures),
+      },
+      {
+        function: ADDON_TERMS_MESSAGES.labels['registering'],
+        status: this.getTermMessage('registering', supportedFeatures, provider),
+        type: this.getTermType('registering', supportedFeatures),
+      },
+      {
+        function: ADDON_TERMS_MESSAGES.labels['file-versions'],
+        status: this.getTermMessage(
+          'file-versions',
+          supportedFeatures,
+          provider,
+        ),
+        type: this.getTermType('file-versions', supportedFeatures),
+      },
+    ];
+
+    this.terms.set(terms);
+  }
+
+  private getTermMessage(
+    term: string,
+    supportedFeatures: string[],
+    provider: string,
+  ): string {
+    const feature = term.toUpperCase().replace(/-/g, '_');
+    const hasFeature = supportedFeatures.includes(feature);
+
+    const messageKey = `${term}-${hasFeature ? 'true' : 'false'}`;
+    const message =
+      ADDON_TERMS_MESSAGES.storage[
+        messageKey as keyof typeof ADDON_TERMS_MESSAGES.storage
+      ];
+
+    return message ? message.replace(/{provider}/g, provider) : '';
+  }
+
+  private getTermType(
+    term: string,
+    supportedFeatures: string[],
+  ): 'warning' | 'info' {
+    const feature = term.toUpperCase().replace(/-/g, '_');
+    return supportedFeatures.includes(feature) ? 'info' : 'warning';
+  }
 
   toggleFolderSelection(folder: GoogleDriveFolder): void {
     folder.selected = !folder.selected;
