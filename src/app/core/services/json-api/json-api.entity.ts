@@ -1,9 +1,6 @@
-export interface JsonApiResponse<T> {
-  data: T;
-}
-
-export interface JsonApiArrayResponse<T> {
-  data: T[];
+export interface JsonApiResponse<Data, Included> {
+  data: Data;
+  included: Included;
 }
 
 export interface ApiData<Attributes, Embeds> {

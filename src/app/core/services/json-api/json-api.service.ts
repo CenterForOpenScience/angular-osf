@@ -1,11 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import {
-  JsonApiArrayResponse,
-  JsonApiResponse,
-} from '@core/services/json-api/json-api.entity';
-
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
@@ -13,22 +8,16 @@ export class JsonApiService {
   http: HttpClient = inject(HttpClient);
 
   get<T>(url: string, params?: Record<string, unknown>): Observable<T> {
-    return this.http
-      .get<JsonApiResponse<T>>(url, { params: this.buildHttpParams(params) })
-      .pipe(map((response) => response.data));
-  }
-
-  getArray<T>(url: string, params?: Record<string, unknown>): Observable<T[]> {
+    const token = 'ENTER_VALID_PAT';
     const headers = new HttpHeaders({
-      Authorization: 'ENTER_VALID_PAT',
+      Authorization: `Bearer ${token}`,
+      Accept: 'application/vnd.api+json',
     });
 
-    return this.http
-      .get<JsonApiArrayResponse<T>>(url, {
-        params: this.buildHttpParams(params),
-        headers: headers,
-      })
-      .pipe(map((response) => response.data));
+    return this.http.get<T>(url, {
+      params: this.buildHttpParams(params),
+      headers: headers,
+    });
   }
 
   private buildHttpParams(params?: Record<string, unknown>): HttpParams {
@@ -40,7 +29,7 @@ export class JsonApiService {
 
         if (Array.isArray(value)) {
           value.forEach((item) => {
-            httpParams = httpParams.append(`${key}[]`, item); // Handles arrays
+            httpParams = httpParams.append(`${key}`, item); // Handles arrays
           });
         } else {
           httpParams = httpParams.set(key, value as string);
