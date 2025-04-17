@@ -30,7 +30,7 @@ export class TokensListComponent implements OnInit {
 
   tokens = this.#store.selectSignal(TokensSelectors.getTokens);
 
-  deleteApp(token: Token) {
+  deleteToken(token: Token) {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
       message:

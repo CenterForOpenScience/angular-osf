@@ -1,10 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { State, Action, StateContext, Selector } from '@ngxs/store';
+import { State, Action, StateContext } from '@ngxs/store';
 import { UserStateModel } from './user.models';
 import { GetCurrentUser, SetCurrentUser } from './user.actions';
 import { UserService } from '@core/services/user/user.service';
 import { tap } from 'rxjs';
-import { User } from '@core/services/user/user.entity';
 
 @State<UserStateModel>({
   name: 'user',
@@ -15,11 +14,6 @@ import { User } from '@core/services/user/user.entity';
 @Injectable()
 export class UserState {
   private userService = inject(UserService);
-
-  @Selector([UserState])
-  static getCurrentUser(state: UserStateModel): User | null {
-    return state.currentUser;
-  }
 
   @Action(GetCurrentUser)
   getCurrentUser(ctx: StateContext<UserStateModel>) {

@@ -20,9 +20,12 @@ import {
   GetStorageAddons,
   GetCitationAddons,
   AddonsSelectors,
+  GetAuthorizedStorageAddons,
+  GetAuthorizedCitationAddons,
+  GetAddonsUserReference,
 } from '@core/store/settings/addons';
-
 import { SelectOption } from '@shared/entities/select-option.interface';
+import { UserSelectors } from '@core/store/user/user.selectors';
 
 @Component({
   selector: 'osf-addons',
@@ -52,26 +55,60 @@ export class AddonsComponent {
   protected readonly selectedCategory = signal<string>(
     'external-storage-services',
   );
-
+  protected readonly selectedTab = signal<number>(this.defaultTabValue);
+  protected readonly currentUser = this.#store.selectSignal(
+    UserSelectors.getCurrentUser,
+  );
+  protected readonly addonsUserReference = this.#store.selectSignal(
+    AddonsSelectors.getAddonUserReference,
+  );
   protected readonly storageAddons = this.#store.selectSignal(
     AddonsSelectors.getStorageAddons,
   );
   protected readonly citationAddons = this.#store.selectSignal(
     AddonsSelectors.getCitationAddons,
   );
+  protected readonly authorizedStorageAddons = this.#store.selectSignal(
+    AddonsSelectors.getAuthorizedStorageAddons,
+  );
+  protected readonly authorizedCitationAddons = this.#store.selectSignal(
+    AddonsSelectors.getAuthorizedCitationAddons,
+  );
+  protected readonly allAuthorizedAddons = computed(() => {
+    const authorizedAddons = [
+      ...this.authorizedStorageAddons(),
+      ...this.authorizedCitationAddons(),
+    ];
 
-  protected readonly currentAddons = computed(() => {
-    return this.selectedCategory() === 'external-storage-services'
-      ? this.storageAddons()
-      : this.citationAddons();
+    const searchValue = this.searchValue().toLowerCase();
+    return authorizedAddons.filter((card) =>
+      card.displayName.includes(searchValue),
+    );
   });
 
-  protected readonly filteredCards = computed(() => {
+  protected readonly userReferenceId = computed(() => {
+    return this.addonsUserReference()[0]?.id;
+  });
+
+  protected readonly currentAction = computed(() =>
+    this.selectedCategory() === 'external-storage-services'
+      ? GetStorageAddons
+      : GetCitationAddons,
+  );
+
+  protected readonly currentAddonsState = computed(() =>
+    this.selectedCategory() === 'external-storage-services'
+      ? this.storageAddons()
+      : this.citationAddons(),
+  );
+
+  protected readonly filteredAddonCards = computed(() => {
     const searchValue = this.searchValue().toLowerCase();
-    return this.currentAddons().filter((card) =>
+    return this.currentAddonsState().filter((card) =>
       card.externalServiceName.includes(searchValue),
     );
   });
+
   protected readonly tabOptions: SelectOption[] = [
     { label: 'All Add-ons', value: 0 },
     { label: 'Connected Add-ons', value: 1 },
@@ -80,7 +117,6 @@ export class AddonsComponent {
     { label: 'Additional Storage', value: 'external-storage-services' },
     { label: 'Citation Manager', value: 'external-citation-services' },
   ];
-  protected selectedTab = this.defaultTabValue;
 
   protected onCategoryChange(value: string): void {
     this.selectedCategory.set(value);
@@ -88,13 +124,34 @@ export class AddonsComponent {
 
   constructor() {
     effect(() => {
-      const category = this.selectedCategory();
-
-      this.#store.dispatch(
-        category === 'external-storage-services'
-          ? GetStorageAddons
-          : GetCitationAddons,
-      );
+      // Only proceed if we have the current user
+      if (this.currentUser()) {
+        this.#store.dispatch(GetAddonsUserReference);
+      }
     });
+
+    effect(() => {
+      const isStorageCategory =
+        this.selectedCategory() === 'external-storage-services';
+
+      // Only proceed if we have both current user and user reference
+      if (this.currentUser() && this.userReferenceId()) {
+        this.#loadAddonsIfNeeded(isStorageCategory, this.userReferenceId());
+      }
+    });
+  }
+
+  #loadAddonsIfNeeded(
+    isStorageCategory: boolean,
+    userReferenceId: string,
+  ): void {
+    const action = this.currentAction();
+    const addons = this.currentAddonsState();
+
+    if (!addons?.length) {
+      this.#store.dispatch(action);
+      this.#store.dispatch(new GetAuthorizedStorageAddons(userReferenceId));
+      this.#store.dispatch(new GetAuthorizedCitationAddons(userReferenceId));
+    }
   }
 }

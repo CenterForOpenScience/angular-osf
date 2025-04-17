@@ -29,7 +29,6 @@ export class TokensService {
       .get<JsonApiResponse<TokenGetResponse[], null>>(this.baseUrl + 'tokens')
       .pipe(
         map((responses) => {
-          console.log(responses);
           return responses.data.map((response) =>
             TokenMapper.fromGetResponse(response),
           );

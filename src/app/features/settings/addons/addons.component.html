@@ -1,6 +1,6 @@
 <osf-sub-header [showButton]="false" [title]="'Add-ons'" [icon]="'settings'" />
 <section class="flex-column flex flex-1">
-  <p-tabs [value]="selectedTab" class="flex-1">
+  <p-tabs [value]="selectedTab()" class="flex-1">
     @if (!isMobile()) {
       <p-tablist class="pr-5 pl-5">
         <p-tab [value]="0">All Add-ons</p-tab>
@@ -15,7 +15,8 @@
           [options]="tabOptions"
           optionLabel="label"
           optionValue="value"
-          [(ngModel)]="selectedTab"
+          [ngModel]="selectedTab()"
+          (ngModelChange)="selectedTab.set($event)"
         ></p-select>
       }
       <p-tabpanel [value]="0" class="flex flex-column gap-5">
@@ -45,7 +46,10 @@
           </div>
         </section>
 
-        <osf-addon-card-list [cards]="filteredCards()" />
+        <osf-addon-card-list
+          [cards]="filteredAddonCards()"
+          [showDangerButton]="false"
+        />
       </p-tabpanel>
       <p-tabpanel [value]="1" class="flex flex-column gap-5">
         <osf-search-input
@@ -56,8 +60,9 @@
         />
 
         <osf-addon-card-list
-          [cards]="filteredCards()"
-          [cardButtonLabel]="'Configure'"
+          [cards]="allAuthorizedAddons()"
+          [cardButtonLabel]="'Reconnect'"
+          [showDangerButton]="true"
         />
       </p-tabpanel>
     </p-tabpanels>

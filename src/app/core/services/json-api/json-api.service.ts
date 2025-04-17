@@ -13,6 +13,7 @@ export class JsonApiService {
   readonly #headers = new HttpHeaders({
     Authorization: this.#token,
     Accept: 'application/vnd.api+json',
+    'Content-Type': 'application/vnd.api+json',
   });
 
   get<T>(url: string, params?: Record<string, unknown>): Observable<T> {

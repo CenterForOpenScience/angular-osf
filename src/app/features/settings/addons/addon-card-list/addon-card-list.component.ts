@@ -12,6 +12,7 @@ import {
   styleUrl: './addon-card-list.component.scss',
 })
 export class AddonCardListComponent {
-  cards = input<Addon[] | AuthorizedAddon[]>([]);
+  cards = input<(Addon | AuthorizedAddon)[]>([]);
   cardButtonLabel = input<string>('');
+  showDangerButton = input<boolean>(false);
 }

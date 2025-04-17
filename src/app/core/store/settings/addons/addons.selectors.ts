@@ -23,4 +23,14 @@ export class AddonsSelectors {
   static getAuthorizedCitationAddons(state: AddonsStateModel) {
     return state.authorizedCitationAddons;
   }
+
+  @Selector([AddonsState])
+  static getAddonUserReference(state: AddonsStateModel) {
+    return state.addonsUserReference;
+  }
+
+  @Selector([AddonsState])
+  static getCreatedOrUpdatedStorageAddon(state: AddonsStateModel) {
+    return state.createdUpdatedAuthorizedAddon;
+  }
 }

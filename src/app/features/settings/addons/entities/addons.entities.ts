@@ -1,4 +1,4 @@
-export interface AddonResponse {
+export interface AddonGetResponse {
   type: string;
   id: string;
   attributes: {
@@ -25,7 +25,7 @@ export interface AddonResponse {
   };
 }
 
-export interface AuthorizedAddonResponse {
+export interface AuthorizedAddonGetResponse {
   type: string;
   id: string;
   attributes: {
@@ -57,7 +57,16 @@ export interface AuthorizedAddonResponse {
         related: string;
       };
     };
-    external_storage_service: {
+    external_storage_service?: {
+      links: {
+        related: string;
+      };
+      data: {
+        type: string;
+        id: string;
+      };
+    };
+    external_citation_service?: {
       links: {
         related: string;
       };
@@ -75,11 +84,12 @@ export interface AuthorizedAddonResponse {
 export interface Addon {
   type: string;
   id: string;
-  authUri: string;
+  authUrl: string;
   displayName: string;
   externalServiceName: string;
   supportedFeatures: string[];
   credentialsFormat: string;
+  providerName: string;
 }
 
 export interface AuthorizedAddon {
@@ -95,6 +105,9 @@ export interface AuthorizedAddon {
   accountOwnerId: string;
   externalStorageServiceId: string;
   externalServiceName: string;
+  supportedFeatures: string[];
+  providerName: string;
+  credentialsFormat: string;
 }
 
 export interface IncludedAddonData {
@@ -143,6 +156,84 @@ export interface UserReference {
     configured_resources: {
       links: {
         related: string;
+      };
+    };
+  };
+  links: {
+    self: string;
+  };
+}
+
+export interface AddonRequest {
+  data: {
+    id?: string;
+    attributes: {
+      display_name: string;
+      authorized_capabilities: string[];
+      api_base_url: string;
+      credentials: Record<string, unknown>;
+      initiate_oauth: boolean;
+      auth_url: string | null;
+      credentials_available: boolean;
+    };
+    relationships: {
+      account_owner: {
+        data: {
+          type: 'user-references';
+          id: string;
+        };
+      };
+      external_storage_service?: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+      external_citation_service?: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+    };
+    type: string;
+  };
+}
+
+export interface AddonResponse {
+  type: string;
+  id: string;
+  attributes: {
+    display_name: string;
+    api_base_url: string;
+    auth_url: string;
+    authorized_capabilities: string[];
+    authorized_operation_names: string[];
+    default_root_folder: string;
+    credentials_available: boolean;
+  };
+  relationships: {
+    account_owner: {
+      links: {
+        related: string;
+      };
+      data: {
+        type: 'user-references';
+        id: string;
+      };
+    };
+    authorized_operations: {
+      links: {
+        related: string;
+      };
+    };
+    external_storage_service: {
+      links: {
+        related: string;
+      };
+      data: {
+        type: string;
+        id: string;
       };
     };
   };
