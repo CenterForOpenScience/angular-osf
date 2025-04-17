@@ -131,20 +131,14 @@ export class AddonsComponent {
     });
 
     effect(() => {
-      const isStorageCategory =
-        this.selectedCategory() === 'external-storage-services';
-
       // Only proceed if we have both current user and user reference
       if (this.currentUser() && this.userReferenceId()) {
-        this.#loadAddonsIfNeeded(isStorageCategory, this.userReferenceId());
+        this.#loadAddonsIfNeeded(this.userReferenceId());
       }
     });
   }
 
-  #loadAddonsIfNeeded(
-    isStorageCategory: boolean,
-    userReferenceId: string,
-  ): void {
+  #loadAddonsIfNeeded(userReferenceId: string): void {
     const action = this.currentAction();
     const addons = this.currentAddonsState();
 
