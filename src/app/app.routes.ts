@@ -11,6 +11,11 @@ export const routes: Routes = [
       ),
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'home',
+      },
+      {
         path: 'sign-up',
         loadComponent: () =>
           import('./features/auth/sign-up/sign-up.component').then(

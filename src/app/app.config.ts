@@ -11,6 +11,7 @@ import { ConfirmationService } from 'primeng/api';
 import { AuthState } from '@core/store/auth';
 import { HomeState } from '@core/store/home';
 import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
+import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -34,6 +35,10 @@ export const appConfig: ApplicationConfig = {
     }),
     provideAnimations(),
     provideHttpClient(),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: true,
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
     ConfirmationService,
   ],
 };
