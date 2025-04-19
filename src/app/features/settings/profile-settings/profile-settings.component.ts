@@ -27,6 +27,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
 import { TabOption } from '@osf/shared/entities/tab-option.interface';
 import { Select } from 'primeng/select';
+import { EducationComponent } from '@osf/features/settings/profile-settings/education/education.component';
 
 @Component({
   selector: 'osf-profile-settings',
@@ -47,23 +48,24 @@ import { Select } from 'primeng/select';
     DatePicker,
     Select,
     FormsModule,
+    EducationComponent,
   ],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileSettingsComponent implements OnInit {
-  defaultTabValue = 0;
-  #fb: FormBuilder = inject(FormBuilder);
-  socials = socials;
+  protected defaultTabValue = 0;
+  readonly #fb = inject(FormBuilder);
+  readonly socials = socials;
 
-  userSocialLinks: UserSocialLink[] = [];
-  userPositions: UserPosition[] = [];
-  socialLinksForm = this.#fb.group({
+  readonly userSocialLinks: UserSocialLink[] = [];
+  readonly userPositions: UserPosition[] = [];
+  readonly socialLinksForm = this.#fb.group({
     links: this.#fb.array([]),
   });
 
-  employmentForm = this.#fb.group({
+  readonly employmentForm = this.#fb.group({
     positions: this.#fb.array([]),
   });
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
