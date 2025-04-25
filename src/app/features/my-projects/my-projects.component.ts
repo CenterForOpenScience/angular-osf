@@ -22,6 +22,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { AddProjectFormComponent } from './add-project-form/add-project-form.component';
 import { GetProjects, HomeSelectors } from '@core/store/home';
 import { Store } from '@ngxs/store';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'osf-my-projects',
@@ -40,6 +41,7 @@ import { Store } from '@ngxs/store';
     DatePipe,
     TableModule,
     NgClass,
+    RouterOutlet,
   ],
   templateUrl: './my-projects.component.html',
   styleUrl: './my-projects.component.scss',
@@ -47,8 +49,9 @@ import { Store } from '@ngxs/store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProjectsComponent implements OnInit {
-  #dialogService = inject(DialogService);
-  #store = inject(Store);
+  readonly #dialogService = inject(DialogService);
+  readonly #store = inject(Store);
+  readonly #router = inject(Router);
   defaultTabValue = 0;
   protected readonly isDesktop = toSignal(inject(IS_WEB));
   protected readonly isTablet = toSignal(inject(IS_MEDIUM));
@@ -64,6 +67,7 @@ export class MyProjectsComponent implements OnInit {
     HomeSelectors.getProjects,
   );
   protected selectedTab = this.defaultTabValue;
+  readonly activeProject = signal<Project | null>(null);
 
   filteredProjects = computed(() => {
     const search = this.searchValue().toLowerCase();
@@ -102,6 +106,11 @@ export class MyProjectsComponent implements OnInit {
       modal: true,
       closable: true,
     });
+  }
+
+  navigateToProject(project: Project): void {
+    this.activeProject.set(project);
+    this.#router.navigate(['/my-projects', project.id]);
   }
 
   ngOnInit() {

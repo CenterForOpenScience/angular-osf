@@ -1,0 +1,49 @@
+@use "assets/styles/variables" as var;
+
+.files-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var.$grey-2;
+  border-radius: 8px;
+  padding: 0 12px;
+
+  &-row {
+    color: var.$dark-blue-1;
+    display: grid;
+    align-items: center;
+    grid-template-columns: 3fr 1fr 1fr 1fr 0.5fr;
+    grid-template-rows: 38px;
+    border-bottom: 1px solid var.$grey-2;
+  }
+
+  &-row:last-child {
+    border-bottom: none;
+  }
+}
+
+.sorting-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid var.$grey-2;
+  border-radius: 8px;
+  padding: 12px;
+  height: 44px;
+}
+
+.outline-button {
+  font-weight: 600;
+  display: flex;
+  gap: 8px;
+  border: 1px solid var.$grey-2;
+  padding: 12px;
+  border-radius: 8px;
+  height: 44px;
+
+  &.blue {
+    color: var.$pr-blue-1;
+  }
+
+  &.green {
+    color: var.$green-1;
+  }
+}

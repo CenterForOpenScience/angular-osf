@@ -38,7 +38,7 @@
           <osf-search-input
             class="w-full"
             [searchValue]="searchValue()"
-            (searchValueChange)="searchValue.set($event)"
+            (searchValueChange)="searchValue.set($any($event))"
             placeholder="Filter by title, description, and tags"
           />
 
@@ -68,7 +68,7 @@
               </tr>
             </ng-template>
             <ng-template #body let-project>
-              <tr>
+              <tr (click)="navigateToProject(project)">
                 <td>
                   <p class="flex align-items-center gap-2">
                     <i

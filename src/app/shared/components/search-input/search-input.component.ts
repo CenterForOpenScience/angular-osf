@@ -17,7 +17,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class SearchInputComponent {
   placeholder = input<string>('');
-  searchValue = model.required<string>();
+  searchValue = model<string>();
 
   onSearchChange(value: string): void {
     this.searchValue.set(value);
