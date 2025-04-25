@@ -38,7 +38,7 @@ import { Menu } from 'primeng/menu';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectFilesComponent {
-  @HostBinding('class') classes = 'flex flex-column flex-1 gap-4 w-full h-full';
+  @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
   protected readonly files = signal(FILES);
   protected readonly folderOpened = signal(false);
   protected readonly selectFile = signal<FileItem | null>(null);

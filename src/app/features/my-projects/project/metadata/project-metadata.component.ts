@@ -12,6 +12,6 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectMetadataComponent {
-  @HostBinding('class') classes = 'flex flex-1 flex-column gap-4 w-full h-full';
+  @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
   protected readonly metadataTemplates = metadataTemplates;
 }

@@ -1,6 +1,13 @@
-import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostBinding,
+  inject,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { IS_WEB } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-project',
@@ -10,5 +17,6 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectComponent {
-  @HostBinding('class') classes = 'flex flex-1 flex-column gap-4 w-full h-full';
+  protected readonly isDesktop = toSignal(inject(IS_WEB));
+  @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 }

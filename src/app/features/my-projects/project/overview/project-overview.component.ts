@@ -11,5 +11,5 @@ import { NgOptimizedImage } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectOverviewComponent {
-  @HostBinding('class') classes = 'flex flex-column gap-4 w-full h-full';
+  @HostBinding('class') classes = 'flex flex-column w-full h-full';
 }
