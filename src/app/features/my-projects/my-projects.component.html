@@ -9,8 +9,8 @@
 
   <div class="flex-column flex flex-1 w-full">
     <p-tabs
-      [value]="selectedTab"
-      (valueChange)="onTabChange(+$event)"
+      [value]="selectedTab()"
+      (valueChange)="selectedTab.set(+$event)"
       class="flex-1"
     >
       @if (!isMobile()) {
@@ -30,7 +30,8 @@
             [options]="tabOptions"
             optionLabel="label"
             optionValue="value"
-            [(ngModel)]="selectedTab"
+            [ngModel]="selectedTab()"
+            (ngModelChange)="selectedTab.set($event)"
           ></p-select>
         }
         <!--My projects-->
@@ -93,7 +94,7 @@
           <osf-search-input
             class="w-full"
             [searchValue]="searchValue()"
-            (searchValueChange)="searchValue.set($event)"
+            (searchValueChange)="searchValue.set($event || '')"
             placeholder="Filter by title, description, and tags"
           />
 
@@ -148,7 +149,7 @@
           <osf-search-input
             class="w-full"
             [searchValue]="searchValue()"
-            (searchValueChange)="searchValue.set($event)"
+            (searchValueChange)="searchValue.set($event || '')"
             placeholder="Filter by title, description, and tags"
           />
 

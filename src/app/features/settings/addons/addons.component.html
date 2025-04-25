@@ -40,7 +40,7 @@
             <osf-search-input
               class="w-full"
               [searchValue]="searchValue()"
-              (searchValueChange)="searchValue.set($event)"
+              (searchValueChange)="searchValue.set($event || '')"
               placeholder="Search add-ons"
             />
           </div>
@@ -55,7 +55,7 @@
         <osf-search-input
           class="flex-1"
           [searchValue]="searchValue()"
-          (searchValueChange)="searchValue.set($event)"
+          (searchValueChange)="searchValue.set($event || '')"
           placeholder="Search add-ons"
         />
 

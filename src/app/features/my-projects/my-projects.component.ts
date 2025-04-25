@@ -52,7 +52,7 @@ export class MyProjectsComponent implements OnInit {
   readonly #dialogService = inject(DialogService);
   readonly #store = inject(Store);
   readonly #router = inject(Router);
-  defaultTabValue = 0;
+  protected readonly defaultTabValue = 0;
   protected readonly isDesktop = toSignal(inject(IS_WEB));
   protected readonly isTablet = toSignal(inject(IS_MEDIUM));
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
@@ -66,7 +66,7 @@ export class MyProjectsComponent implements OnInit {
   protected readonly projects = this.#store.selectSignal(
     HomeSelectors.getProjects,
   );
-  protected selectedTab = this.defaultTabValue;
+  protected readonly selectedTab = signal<number>(this.defaultTabValue);
   readonly activeProject = signal<Project | null>(null);
 
   filteredProjects = computed(() => {
@@ -85,10 +85,6 @@ export class MyProjectsComponent implements OnInit {
       .find((i) => i.id === item.id)
       ?.bibliographicContributors.map((i) => i.users.familyName)
       .join(', ');
-  }
-
-  onTabChange(index: number): void {
-    this.selectedTab = index;
   }
 
   createProject(): void {

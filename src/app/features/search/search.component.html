@@ -7,7 +7,7 @@
   />
   <osf-search-input
     [searchValue]="searchValue()"
-    (searchValueChange)="searchValue.set($event)"
+    (searchValueChange)="searchValue.set($event || '')"
     placeholder="Enter search term(s) here"
   />
 </div>

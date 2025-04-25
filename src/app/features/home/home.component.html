@@ -29,7 +29,7 @@
 
     <osf-search-input
       [searchValue]="searchValue()"
-      (searchValueChange)="searchValue.set($event)"
+      (searchValueChange)="searchValue.set($event || '')"
       placeholder="Search your projects"
     />
 

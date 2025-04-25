@@ -24,6 +24,7 @@
 @use "./overrides/select";
 @use "./overrides/accordion";
 @use "./overrides/paginator";
+@use "./overrides/tag";
 
 @layer base, primeng, reset;
 

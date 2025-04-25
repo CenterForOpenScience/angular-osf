@@ -118,9 +118,15 @@ export const routes: Routes = [
                 './features/my-projects/project/files/file-detail/file-detail.component'
               ).then((mod) => mod.FileDetailComponent),
           },
+          {
+            path: 'registrations',
+            loadComponent: () =>
+              import(
+                '@osf/features/my-projects/project/registrations/registrations.component'
+              ).then((mod) => mod.RegistrationsComponent),
+          },
         ],
       },
-
       {
         path: 'settings',
         loadChildren: () =>
