@@ -4,7 +4,7 @@ export interface ResourceItem {
   '@id': string;
   accessService: MetadataField[];
   affiliation: MetadataField[];
-  creator: Creator[];
+  creator: ResourceCreator[];
   conformsTo: ConformsTo[];
   dateCopyrighted: { '@value': string }[];
   dateCreated: { '@value': string }[];
@@ -26,9 +26,14 @@ export interface ResourceItem {
   isPartOfCollection: IsPartOfCollection[];
   rights: MetadataField[];
   statedConflictOfInterest: { '@id': string }[];
+  hasDataResource: MetadataField[];
+  hasAnalyticCodeResource: MetadataField[];
+  hasMaterialsResource: MetadataField[];
+  hasPapersResource: MetadataField[];
+  hasSupplementalResource: MetadataField[];
 }
 
-export interface Creator extends MetadataField {
+export interface ResourceCreator extends MetadataField {
   affiliation: MetadataField[];
   sameAs: { '@id': string }[];
 }
@@ -43,7 +48,7 @@ export interface QualifiedAttribution {
 }
 
 export interface isPartOf extends MetadataField {
-  creator: Creator[];
+  creator: ResourceCreator[];
   dateCopyright: { '@value': string }[];
   dateCreated: { '@value': string }[];
   publisher: MetadataField[];

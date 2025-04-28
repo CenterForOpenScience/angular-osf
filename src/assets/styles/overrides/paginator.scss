@@ -79,3 +79,50 @@
 .p-paginator-prev:not(.p-disabled):hover {
   background: white;
 }
+
+.p-select-overlay {
+  background: white;
+  border: 1px solid var.$grey-2;
+  color: var.$dark-blue-1;
+}
+
+.p-select-option {
+  &.p-select-option-selected {
+    background-color: var.$bg-blue-2;
+    color: var.$dark-blue-1;
+
+    &:hover {
+      background: var.$bg-blue-3;
+      color: var.$dark-blue-1;
+    }
+  }
+
+  &:not(.p-select-option-selected):not(.p-disabled).p-focus {
+    background: var.$bg-blue-3;
+    color: var.$dark-blue-1;
+  }
+}
+
+p-select {
+  background: white;
+  border: 1px solid var.$grey-2;
+
+  span {
+    color: var.$dark-blue-1;
+  }
+}
+
+.resources-container {
+  .p-paginator {
+    .p-paginator-pages,
+    .p-paginator-last,
+    .p-paginator-prev {
+      display: none;
+    }
+    .p-paginator-first,
+    .p-paginator-next,
+    .p-paginator-prev {
+      opacity: 1 !important;
+    }
+  }
+}

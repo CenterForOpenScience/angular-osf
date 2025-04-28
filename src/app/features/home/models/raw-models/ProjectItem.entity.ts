@@ -13,10 +13,12 @@ export type ProjectItem = ApiData<
       ApiData<
         BibliographicContributorUS,
         {
-          users: JsonApiResponse<ApiData<UserUS, null>, null>;
-        }
+          users: JsonApiResponse<ApiData<UserUS, null, null>, null>;
+        },
+        null
       >[],
       null
     >;
-  }
+  },
+  null
 >;

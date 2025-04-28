@@ -1,0 +1,30 @@
+import { ProviderIndexValueSearch } from '@shared/components/resources/resource-filters/models/provider/provider-index-value-search.entity';
+import { ProviderFilter } from '@shared/components/resources/resource-filters/models/provider/provider-filter.entity';
+import { ProviderIndexCardFilter } from '@shared/components/resources/resource-filters/models/provider/provider-index-card-filter.entity';
+
+export function MapProviders(
+  items: ProviderIndexValueSearch[],
+): ProviderFilter[] {
+  const providers: ProviderFilter[] = [];
+
+  if (!items) {
+    return [];
+  }
+
+  for (const item of items) {
+    if (item.type === 'search-result') {
+      const indexCard = items.find(
+        (p) => p.id === item.relationships.indexCard.data.id,
+      );
+      providers.push({
+        id: (indexCard as ProviderIndexCardFilter).attributes
+          .resourceMetadata?.['@id'],
+        label: (indexCard as ProviderIndexCardFilter).attributes
+          .resourceMetadata?.name?.[0]?.['@value'],
+        count: item.attributes.cardSearchResultCount,
+      });
+    }
+  }
+
+  return providers;
+}

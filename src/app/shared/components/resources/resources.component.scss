@@ -17,6 +17,13 @@
     }
   }
 
+  .filters-container {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    row-gap: 0.8rem;
+  }
+
   .resources-container {
     width: 70%;
 
@@ -25,6 +32,21 @@
       display: flex;
       flex-direction: column;
       row-gap: 0.85rem;
+    }
+
+    .switch-icon {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .icon-disabled {
+      opacity: 0.5;
+      cursor: none;
+    }
+
+    .icon-active {
+      fill: var.$grey-1;
     }
   }
 }

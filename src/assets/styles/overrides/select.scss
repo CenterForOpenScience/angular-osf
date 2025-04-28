@@ -8,10 +8,10 @@
   outline: none;
   font-size: 16px;
   color: var.$dark-blue-1;
-}
 
-.p-select-overlay {
-  min-width: 100%;
+  .p-placeholder {
+    color: var.$grey-1;
+  }
 }
 
 .p-select-label {
@@ -61,18 +61,45 @@
       white-space: nowrap;
     }
   }
+
+  .p-select {
+    border: none;
+    font-size: 1rem;
+    box-shadow: none;
+    height: 2rem;
+
+    .p-select-label {
+      padding: 0;
+      font-weight: 700;
+    }
+
+    .p-select-overlay {
+      position: absolute;
+      right: 0;
+      left: auto;
+    }
+  }
 }
 
 .filter {
   .p-select {
-    //.p-select-dropdown {
-    //  display: none;
-    //}
-
     .p-select-label {
       font-size: 1.2rem;
       font-weight: 400;
       color: var.$dark-blue-1;
+      padding-right: 0.5rem;
+    }
+
+    .p-select-clear-icon {
+      right: 1rem;
+    }
+  }
+}
+
+.dropdown-filter {
+  .p-select {
+    .p-select-clear-icon {
+      right: 2.2rem;
     }
   }
 }

@@ -3,15 +3,15 @@ import {
   Component,
   effect,
   inject,
-  OnInit,
   signal,
+  untracked,
 } from '@angular/core';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { NgOptimizedImage } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AccordionModule } from 'primeng/accordion';
@@ -20,8 +20,16 @@ import { DataViewModule } from 'primeng/dataview';
 import { ResourcesComponent } from '@shared/components/resources/resources.component';
 import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
 import { Store } from '@ngxs/store';
-import { GetResources, SearchSelectors } from '@osf/features/search/store';
+import {
+  GetResources,
+  SearchSelectors,
+  SetResourceTab,
+  SetSearchText,
+} from '@osf/features/search/store';
 import { ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
+import { debounceTime } from 'rxjs';
+import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'osf-search',
@@ -41,38 +49,107 @@ import { ResourceFiltersSelectors } from '@shared/components/resources/resource-
     TableModule,
     DataViewModule,
     ResourcesComponent,
+    Button,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent {
   readonly #store = inject(Store);
 
   protected searchValue = signal('');
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly resources = this.#store.selectSignal(
-    SearchSelectors.getResources,
-  );
+
   protected readonly creatorsFilter = this.#store.selectSignal(
     ResourceFiltersSelectors.getCreator,
   );
+  protected readonly dateCreatedFilter = this.#store.selectSignal(
+    ResourceFiltersSelectors.getDateCreated,
+  );
+  protected readonly funderFilter = this.#store.selectSignal(
+    ResourceFiltersSelectors.getFunder,
+  );
+  protected readonly subjectFilter = this.#store.selectSignal(
+    ResourceFiltersSelectors.getSubject,
+  );
+  protected readonly licenseFilter = this.#store.selectSignal(
+    ResourceFiltersSelectors.getLicense,
+  );
+  protected readonly resourceTypeFilter = this.#store.selectSignal(
+    ResourceFiltersSelectors.getResourceType,
+  );
+  protected readonly institutionFilter = this.#store.selectSignal(
+    ResourceFiltersSelectors.getInstitution,
+  );
+  protected readonly providerFilter = this.#store.selectSignal(
+    ResourceFiltersSelectors.getProvider,
+  );
+  protected readonly partOfCollectionFilter = this.#store.selectSignal(
+    ResourceFiltersSelectors.getPartOfCollection,
+  );
+  protected searchStoreValue = this.#store.selectSignal(
+    SearchSelectors.getSearchText,
+  );
+  protected resourcesTabStoreValue = this.#store.selectSignal(
+    SearchSelectors.getResourceTab,
+  );
+  protected sortByStoreValue = this.#store.selectSignal(
+    SearchSelectors.getSortBy,
+  );
 
-  protected selectedTab = 0;
+  protected selectedTab: ResourceTab = ResourceTab.All;
   protected readonly ResourceTab = ResourceTab;
+  protected currentStep = 0;
 
   constructor() {
     effect(() => {
       this.creatorsFilter();
+      this.dateCreatedFilter();
+      this.funderFilter();
+      this.subjectFilter();
+      this.licenseFilter();
+      this.resourceTypeFilter();
+      this.institutionFilter();
+      this.providerFilter();
+      this.partOfCollectionFilter();
+      this.searchStoreValue();
+      this.resourcesTabStoreValue();
+      this.sortByStoreValue();
       this.#store.dispatch(GetResources);
+    });
+
+    // put search value in store and update resources, filters
+    toObservable(this.searchValue)
+      .pipe(debounceTime(500))
+      .subscribe((searchText) => {
+        this.#store.dispatch(new SetSearchText(searchText));
+        this.#store.dispatch(GetAllOptions);
+      });
+
+    // sync search with query parameters if search is empty and parameters are not
+    effect(() => {
+      const storeValue = this.searchStoreValue();
+      const currentInput = untracked(() => this.searchValue());
+
+      if (storeValue && currentInput !== storeValue) {
+        this.searchValue.set(storeValue);
+      }
+    });
+
+    // sync resource tabs with query parameters
+    effect(() => {
+      if (
+        !this.selectedTab &&
+        this.selectedTab !== this.resourcesTabStoreValue()
+      ) {
+        this.selectedTab = this.resourcesTabStoreValue();
+      }
     });
   }
 
-  ngOnInit() {
-    this.#store.dispatch(GetResources);
-  }
-
-  onTabChange(index: number): void {
+  onTabChange(index: ResourceTab): void {
+    this.#store.dispatch(new SetResourceTab(index));
     this.selectedTab = index;
   }
 }

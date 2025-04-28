@@ -20,22 +20,3 @@
     }
   }
 }
-
-.no-border-dropdown {
-  .p-dropdown {
-    border: none;
-    font-size: 1rem;
-    box-shadow: none;
-    height: 2rem;
-
-    .p-select-label {
-      padding: 0;
-      font-weight: 700;
-    }
-
-    .p-select-overlay {
-      right: 0;
-      left: auto;
-    }
-  }
-}

@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { provideStates } from '@ngxs/store';
 import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
+import { ResourceFiltersOptionsState } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.state';
 
 export const routes: Routes = [
   {
@@ -140,7 +141,9 @@ export const routes: Routes = [
           import('./features/search/search.component').then(
             (mod) => mod.SearchComponent,
           ),
-        providers: [provideStates([ResourceFiltersState])],
+        providers: [
+          provideStates([ResourceFiltersState, ResourceFiltersOptionsState]),
+        ],
       },
     ],
   },

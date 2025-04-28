@@ -59,3 +59,20 @@
     }
   }
 }
+
+.filters {
+  .p-accordion {
+    .p-accordioncontent-content {
+      padding-bottom: 1.5rem;
+      .content-body {
+        display: flex;
+        flex-direction: column;
+        row-gap: 1.5rem;
+
+        p {
+          font-weight: 300;
+        }
+      }
+    }
+  }
+}

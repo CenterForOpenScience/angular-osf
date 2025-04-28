@@ -41,12 +41,10 @@ export function MapResources(rawItem: ResourceItem): Resource {
     registrationTemplate: rawItem?.conformsTo?.[0]?.title?.[0]?.['@value'],
     doi: rawItem?.identifier?.[0]?.['@value'],
     conflictOfInterestResponse: rawItem?.statedConflictOfInterest?.[0]?.['@id'],
+    hasDataResource: !!rawItem?.hasDataResource,
+    hasAnalyticCodeResource: !!rawItem?.hasAnalyticCodeResource,
+    hasMaterialsResource: !!rawItem?.hasMaterialsResource,
+    hasPapersResource: !!rawItem?.hasPapersResource,
+    hasSupplementalResource: !!rawItem?.hasSupplementalResource,
   };
 }
-
-// publicProjects?: number;
-// publicRegistrations?: number;
-// publicPreprints?: number;
-// orcid?: string;
-// employment?: string;
-// education?: string;

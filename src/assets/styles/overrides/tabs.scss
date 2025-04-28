@@ -1,5 +1,15 @@
 @use "assets/styles/variables" as var;
 
+.p-tab {
+  padding: 1rem 1.7rem 1rem 1.7rem;
+
+  &:not(.p-tab-active):hover {
+    background: var.$white-60;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+}
+
 .p-tabpanels {
   padding: 1.71rem;
 }
@@ -22,5 +32,11 @@
 
   .p-tablist-active-bar {
     display: none;
+  }
+}
+
+.resources-tab-panel {
+  .p-tabpanels {
+    padding: 0 !important;
   }
 }

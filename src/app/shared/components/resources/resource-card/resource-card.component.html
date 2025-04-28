@@ -1,22 +1,26 @@
 <div class="resource accordion-auto-height">
-  <p-accordion>
+  <p-accordion (onOpen)="onOpen()">
     <p-accordion-panel value="0">
       <p-accordion-header class="flex flex-row column-gap-3 align-items-start">
         <div class="flex flex-column row-gap-3">
-          @if (item().resourceType === ResourceType.Agent) {
+          @if (
+            item()?.resourceType && item()?.resourceType === ResourceType.Agent
+          ) {
             <p class="type">User</p>
-          } @else {
-            <p class="type">{{ ResourceType[item().resourceType] }}</p>
+          } @else if (item()?.resourceType) {
+            <p class="type">{{ ResourceType[item()?.resourceType!] }}</p>
           }
 
           <div class="flex align-items-center column-gap-1">
-            @if (item().resourceType === ResourceType.File) {
-              <a class="title" [href]="item().id">{{ item().fileName }}</a>
-            } @else {
-              <a class="title" [href]="item().id">{{ item().title }}</a>
+            @if (
+              item()?.resourceType === ResourceType.File && item()?.fileName
+            ) {
+              <a class="title" [href]="item()?.id">{{ item()?.fileName }}</a>
+            } @else if (item()?.title && item()?.title) {
+              <a class="title" [href]="item()?.id">{{ item()?.title }}</a>
             }
-            @if (item().orcid) {
-              <a [href]="item().orcid" class="orcid-icon">
+            @if (item()?.orcid) {
+              <a [href]="item()?.orcid" class="orcid-icon">
                 <img
                   ngSrc="assets/icons/system/orchid.svg"
                   width="16"
@@ -27,62 +31,82 @@
             }
           </div>
 
-          @if (item().creators?.length) {
+          @if (item()?.creators?.length) {
             <div>
               @for (
-                creator of item().creators!.slice(0, 4);
+                creator of item()?.creators!.slice(0, 4);
                 track creator.id;
                 let i = $index
               ) {
                 <a [href]="creator.id" target="_blank">{{ creator.name }}</a>
-                @if (i < item().creators!.length - 1 && i < 3) {
+                @if (i < (item()?.creators)!.length - 1 && i < 3) {
                   <a>, </a>
                 }
               }
-              @if (item().creators!.length > 4) {
+              @if ((item()?.creators)!.length > 4) {
                 <p class="inline">
-                  &nbsp;and {{ item().creators!.length - 4 }} more
+                  &nbsp;and {{ (item()?.creators)!.length - 4 }} more
                 </p>
               }
             </div>
           }
 
-          @if (item().from?.id) {
+          @if (item()?.from?.id && item()?.from?.name) {
             <div>
               <p class="inline mr-1">From:</p>
-              <a class="inline" [href]="item().from?.id">{{
-                item().from?.name
+              <a class="inline" [href]="item()?.from?.id">{{
+                item()?.from?.name
               }}</a>
             </div>
           }
 
-          @if (item().dateCreated && item().dateModified) {
+          @if (item()?.dateCreated && item()?.dateModified) {
             <p class="date">
-              Date created: {{ item().dateCreated | date: "MMMM d, y" }} | Date
-              modified: {{ item().dateModified | date: "MMMM d, y" }}
+              Date created: {{ item()?.dateCreated | date: "MMMM d, y" }} | Date
+              modified: {{ item()?.dateModified | date: "MMMM d, y" }}
             </p>
           }
 
-          @if (item().resourceType === ResourceType.Registration) {
+          @if (item()?.resourceType === ResourceType.Registration) {
             <div class="flex column-gap-5 mt-1">
-              <a class="icon-container" [href]="item().id + '/resources'">
-                <i class="osf-icon-data text-4xl"></i>
+              <a class="icon-container" [href]="item()?.id + '/resources'">
+                @if (item()?.hasDataResource) {
+                  <i class="osf-icon-data-colored text-4xl"></i>
+                } @else {
+                  <i class="osf-icon-data text-4xl"></i>
+                }
                 <p>Data</p>
               </a>
-              <a class="icon-container" [href]="item().id + '/resources'">
-                <i class="osf-icon-code text-4xl"></i>
+              <a class="icon-container" [href]="item()?.id + '/resources'">
+                @if (item()?.hasAnalyticCodeResource) {
+                  <i class="osf-icon-code-colored text-4xl"></i>
+                } @else {
+                  <i class="osf-icon-code text-4xl"></i>
+                }
                 <p>Analytic Code</p>
               </a>
-              <a class="icon-container" [href]="item().id + '/resources'">
-                <i class="osf-icon-materials text-4xl"></i>
+              <a class="icon-container" [href]="item()?.id + '/resources'">
+                @if (item()?.hasMaterialsResource) {
+                  <i class="osf-icon-materials-colored text-4xl"></i>
+                } @else {
+                  <i class="osf-icon-materials text-4xl"></i>
+                }
                 <p>Materials</p>
               </a>
-              <a class="icon-container" [href]="item().id + '/resources'">
-                <i class="osf-icon-papers text-4xl"></i>
+              <a class="icon-container" [href]="item()?.id + '/resources'">
+                @if (item()?.hasPapersResource) {
+                  <i class="osf-icon-papers-colored text-4xl"></i>
+                } @else {
+                  <i class="osf-icon-papers text-4xl"></i>
+                }
                 <p>Papers</p>
               </a>
-              <a class="icon-container" [href]="item().id + '/resources'">
-                <i class="osf-icon-supplements text-4xl"></i>
+              <a class="icon-container" [href]="item()?.id + '/resources'">
+                @if (item()?.hasPapersResource) {
+                  <i class="osf-icon-supplements-colored text-4xl"></i>
+                } @else {
+                  <i class="osf-icon-supplements text-4xl"></i>
+                }
                 <p>Supplements</p>
               </a>
             </div>
@@ -91,40 +115,40 @@
       </p-accordion-header>
       <p-accordion-content>
         <div class="content flex flex-column row-gap-3">
-          @if (item().description) {
-            <p class="description">Description: {{ item().description }}</p>
+          @if (item()?.description) {
+            <p class="description">Description: {{ item()?.description }}</p>
           }
 
-          @if (item().provider?.id) {
+          @if (item()?.provider?.id) {
             <span>
               <p>Registration provider:&nbsp;</p>
-              <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
+              <a [href]="item()?.provider?.id">{{ item()?.provider?.name }}</a>
             </span>
           }
 
-          @if (item().license?.id) {
+          @if (item()?.license?.id) {
             <span>
               <p>License:&nbsp;</p>
-              <a [href]="item().license?.id">{{ item().license?.name }}</a>
+              <a [href]="item()?.license?.id">{{ item()?.license?.name }}</a>
             </span>
           }
 
-          @if (item().registrationTemplate) {
+          @if (item()?.registrationTemplate) {
             <p class="description">
-              Registration Template: {{ item().registrationTemplate }}
+              Registration Template: {{ item()?.registrationTemplate }}
             </p>
           }
 
-          @if (item().provider?.id) {
+          @if (item()?.provider?.id) {
             <span>
               <p>Provider:&nbsp;</p>
-              <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
+              <a [href]="item()?.provider?.id">{{ item()?.provider?.name }}</a>
             </span>
           }
 
           @if (
-            item().conflictOfInterestResponse &&
-            item().conflictOfInterestResponse === "no-conflict-of-interest"
+            item()?.conflictOfInterestResponse &&
+            item()?.conflictOfInterestResponse === "no-conflict-of-interest"
           ) {
             <p class="description">
               Conflict of Interest response: Author asserted no Conflict of
@@ -132,32 +156,40 @@
             </p>
           }
 
-          @if (item().resourceType !== ResourceType.Agent) {
+          @if (item()?.resourceType !== ResourceType.Agent && item()?.id) {
             <span>
               <p>URL:&nbsp;</p>
-              <a [href]="item().id">{{ item().id }}</a>
+              <a [href]="item()?.id">{{ item()?.id }}</a>
             </span>
           }
 
-          @if (item().doi) {
+          @if (item()?.doi) {
             <span>
               <p>DOI:&nbsp;</p>
-              <a [href]="item().doi">{{ item().doi }}</a>
+              <a [href]="item()?.doi">{{ item()?.doi }}</a>
             </span>
           }
 
-          @if (item().resourceType === ResourceType.Agent) {
-            <p>Public projects: {{ item().publicProjects }}</p>
-            <p>Public registrations: {{ item().publicRegistrations }}</p>
-            <p>Public preprints: {{ item().publicPreprints }}</p>
+          @if (item()?.resourceType === ResourceType.Agent) {
+            @if (loading) {
+              <p-skeleton width="8rem" height="19px" />
+              <p-skeleton width="10rem" height="19px" />
+              <p-skeleton width="9rem" height="19px" />
+            } @else {
+              <p>Public projects: {{ item()?.publicProjects ?? 0 }}</p>
+              <p>
+                Public registrations: {{ item()?.publicRegistrations ?? 0 }}
+              </p>
+              <p>Public preprints: {{ item()?.publicPreprints ?? 0 }}</p>
+            }
           }
 
-          @if (item().employment) {
-            <p>Employment: {{ item().employment }}</p>
+          @if (item()?.employment) {
+            <p>Employment: {{ item()?.employment }}</p>
           }
 
-          @if (item().education) {
-            <p>Education: {{ item().education }}</p>
+          @if (item()?.education) {
+            <p>Education: {{ item()?.education }}</p>
           }
         </div>
       </p-accordion-content>

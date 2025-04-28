@@ -1,46 +1,68 @@
-import { ResourceType } from '@osf/features/search/models/resource-type.enum';
-
 export class SetCreator {
   static readonly type = '[Resource Filters] Set Creator';
-  constructor(public payload: string) {}
+  constructor(
+    public name: string,
+    public id: string,
+  ) {}
 }
 
 export class SetDateCreated {
   static readonly type = '[Resource Filters] Set DateCreated';
-  constructor(public payload: Date) {}
+  constructor(public date: string) {}
 }
 
 export class SetFunder {
   static readonly type = '[Resource Filters] Set Funder';
-  constructor(public payload: string) {}
+  constructor(
+    public funder: string,
+    public id: string,
+  ) {}
 }
 
 export class SetSubject {
   static readonly type = '[Resource Filters] Set Subject';
-  constructor(public payload: string) {}
+  constructor(
+    public subject: string,
+    public id: string,
+  ) {}
 }
 
 export class SetLicense {
   static readonly type = '[Resource Filters] Set License';
-  constructor(public payload: string) {}
+  constructor(
+    public license: string,
+    public id: string,
+  ) {}
 }
 
 export class SetResourceType {
   static readonly type = '[Resource Filters] Set Resource Type';
-  constructor(public payload: ResourceType) {}
+  constructor(
+    public resourceType: string,
+    public id: string,
+  ) {}
 }
 
 export class SetInstitution {
   static readonly type = '[Resource Filters] Set Institution';
-  constructor(public payload: string) {}
+  constructor(
+    public institution: string,
+    public id: string,
+  ) {}
 }
 
 export class SetProvider {
   static readonly type = '[Resource Filters] Set Provider';
-  constructor(public payload: string) {}
+  constructor(
+    public provider: string,
+    public id: string,
+  ) {}
 }
 
 export class SetPartOfCollection {
   static readonly type = '[Resource Filters] Set PartOfCollection';
-  constructor(public payload: string) {}
+  constructor(
+    public partOfCollection: string,
+    public id: string,
+  ) {}
 }

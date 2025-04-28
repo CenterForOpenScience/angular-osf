@@ -1,51 +1,74 @@
 import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
 import { Selector } from '@ngxs/store';
-import { ResourceFiltersStateModel } from '@shared/components/resources/resource-filters/store/resource-filters.model';
-import { ResourceType } from '@osf/features/search/models/resource-type.enum';
+import {
+  ResourceFilterLabel,
+  ResourceFiltersStateModel,
+} from '@shared/components/resources/resource-filters/store/resource-filters.model';
 
 export class ResourceFiltersSelectors {
   @Selector([ResourceFiltersState])
-  static getCreator(state: ResourceFiltersStateModel): string {
+  static getAllFilters(
+    state: ResourceFiltersStateModel,
+  ): ResourceFiltersStateModel {
+    return {
+      creator: state.creator,
+      dateCreated: state.dateCreated,
+      funder: state.funder,
+      subject: state.subject,
+      license: state.license,
+      resourceType: state.resourceType,
+      institution: state.institution,
+      provider: state.provider,
+      partOfCollection: state.partOfCollection,
+    };
+  }
+
+  @Selector([ResourceFiltersState])
+  static getCreator(state: ResourceFiltersStateModel): ResourceFilterLabel {
     return state.creator;
   }
 
   @Selector([ResourceFiltersState])
-  static getDateCreated(state: ResourceFiltersStateModel): Date {
+  static getDateCreated(state: ResourceFiltersStateModel): ResourceFilterLabel {
     return state.dateCreated;
   }
 
   @Selector([ResourceFiltersState])
-  static getFunder(state: ResourceFiltersStateModel): string {
+  static getFunder(state: ResourceFiltersStateModel): ResourceFilterLabel {
     return state.funder;
   }
 
   @Selector([ResourceFiltersState])
-  static getSubject(state: ResourceFiltersStateModel): string {
+  static getSubject(state: ResourceFiltersStateModel): ResourceFilterLabel {
     return state.subject;
   }
 
   @Selector([ResourceFiltersState])
-  static getLicense(state: ResourceFiltersStateModel): string {
+  static getLicense(state: ResourceFiltersStateModel): ResourceFilterLabel {
     return state.license;
   }
 
   @Selector([ResourceFiltersState])
-  static getResourceType(state: ResourceFiltersStateModel): ResourceType {
+  static getResourceType(
+    state: ResourceFiltersStateModel,
+  ): ResourceFilterLabel {
     return state.resourceType;
   }
 
   @Selector([ResourceFiltersState])
-  static getInstitution(state: ResourceFiltersStateModel): string {
+  static getInstitution(state: ResourceFiltersStateModel): ResourceFilterLabel {
     return state.institution;
   }
 
   @Selector([ResourceFiltersState])
-  static getProvider(state: ResourceFiltersStateModel): string {
+  static getProvider(state: ResourceFiltersStateModel): ResourceFilterLabel {
     return state.provider;
   }
 
   @Selector([ResourceFiltersState])
-  static getPartOfCollection(state: ResourceFiltersStateModel): string {
+  static getPartOfCollection(
+    state: ResourceFiltersStateModel,
+  ): ResourceFilterLabel {
     return state.partOfCollection;
   }
 }

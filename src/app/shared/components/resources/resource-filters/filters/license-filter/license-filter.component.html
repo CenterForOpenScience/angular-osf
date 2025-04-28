@@ -1,0 +1,20 @@
+<div class="content-body filter dropdown-filter">
+  <p class="m-0">
+    Please select the license from the dropdown below or start typing for find
+    it
+  </p>
+  <p-select
+    id="license"
+    [options]="licensesOptions()"
+    [(ngModel)]="inputText"
+    [placeholder]="'Select license'"
+    [editable]="true"
+    optionLabel="labelCount"
+    optionValue="label"
+    styleClass="w-full"
+    appendTo="body"
+    (onChange)="setLicenses($event)"
+    [showClear]="!!inputText()"
+    [loading]="loading()"
+  ></p-select>
+</div>

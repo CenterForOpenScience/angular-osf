@@ -2,8 +2,13 @@
   <img
     ngSrc="assets/icons/system/question-mark.svg"
     alt="better-research"
+    tabindex="0"
+    role="button"
     height="36"
     width="36"
+    (click)="currentStep = 1"
+    (keydown.enter)="currentStep = 1"
+    class="cursor-pointer"
   />
   <osf-search-input
     [searchValue]="searchValue()"
@@ -12,7 +17,7 @@
   />
 </div>
 
-<div class="flex-column flex flex-1 w-full mt-6">
+<div class="flex-column flex flex-1 w-full mt-6 resources-tab-panel">
   <p-tabs
     [value]="selectedTab"
     (valueChange)="onTabChange(+$event)"
@@ -30,68 +35,87 @@
     }
 
     <p-tabpanels class="p-3 sm:p-5 flex-1">
-      <!--All-->
       <p-tabpanel
         [value]="ResourceTab.All"
         class="flex flex-column gap-4 flex-1"
       >
-        <osf-resources
-          [selectedTab]="ResourceTab.All"
-          [searchedResources]="resources() ?? []"
-        >
-        </osf-resources>
       </p-tabpanel>
-
-      <!--Projects-->
       <p-tabpanel [value]="ResourceTab.Projects" class="flex flex-column gap-5">
-        <osf-resources
-          [selectedTab]="ResourceTab.Projects"
-          [searchedResources]="resources() ?? []"
-        >
-        </osf-resources>
       </p-tabpanel>
-
-      <!--Registrations-->
       <p-tabpanel
         [value]="ResourceTab.Registrations"
         class="flex flex-column gap-5"
-      >
-        <osf-resources
-          [selectedTab]="ResourceTab.Registrations"
-          [searchedResources]="resources() ?? []"
-        >
-        </osf-resources>
-      </p-tabpanel>
-
-      <!--Preprints-->
+      ></p-tabpanel>
       <p-tabpanel
         [value]="ResourceTab.Preprints"
         class="flex flex-column gap-5"
-      >
-        <osf-resources
-          [selectedTab]="ResourceTab.Preprints"
-          [searchedResources]="resources() ?? []"
-        >
-        </osf-resources>
-      </p-tabpanel>
-
-      <!--Files-->
+      ></p-tabpanel>
       <p-tabpanel [value]="ResourceTab.Files" class="flex flex-column gap-5">
-        <osf-resources
-          [selectedTab]="ResourceTab.Files"
-          [searchedResources]="resources() ?? []"
-        >
-        </osf-resources>
       </p-tabpanel>
-
-      <!--Users-->
       <p-tabpanel [value]="ResourceTab.Users" class="flex flex-column gap-5">
-        <osf-resources
-          [selectedTab]="ResourceTab.Users"
-          [searchedResources]="resources() ?? []"
-        >
-        </osf-resources>
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>
+
+  <div class="resources">
+    <osf-resources [selectedTab]="selectedTab"> </osf-resources>
+
+    @if (currentStep === 1) {
+      <div class="stepper first-stepper">
+        <h3>Improved OSF Search</h3>
+        <p>
+          Enter any term in the search box and filter by specific object types.
+          More information is available on our help guides.
+        </p>
+        <div class="flex align-items-center mt-4">
+          <p>1 of 3</p>
+          <div class="flex column-gap-3 ml-auto wide-button">
+            <p-button
+              (click)="currentStep = 0"
+              label="Skip"
+              severity="secondary"
+            />
+            <p-button (click)="currentStep = currentStep + 1">Next</p-button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (currentStep === 2) {
+      <div class="stepper second-stepper">
+        <h3>Refine Your Search</h3>
+        <p>
+          Narrow the source, discipline, and more. For example, find content
+          supported by a specific funder or view only datasets.
+        </p>
+        <div class="flex align-items-center mt-4">
+          <p>2 of 3</p>
+          <div class="flex column-gap-3 ml-auto wide-button">
+            <p-button
+              (click)="currentStep = 0"
+              label="Skip"
+              severity="secondary"
+            />
+            <p-button (click)="currentStep = currentStep + 1">Next</p-button>
+          </div>
+        </div>
+      </div>
+    }
+
+    @if (currentStep === 3) {
+      <div class="stepper third-stepper">
+        <h3>Add Metadata</h3>
+        <p>
+          Remember to add metadata and resources to your own work on OSF to make
+          it more discoverable! Learn more in our help guides.
+        </p>
+        <div class="flex align-items-center mt-4">
+          <p>3 of 3</p>
+          <div class="flex column-gap-3 ml-auto wide-button">
+            <p-button (click)="currentStep = currentStep + 1">Done</p-button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>

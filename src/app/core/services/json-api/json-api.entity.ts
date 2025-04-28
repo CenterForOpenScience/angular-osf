@@ -3,9 +3,10 @@ export interface JsonApiResponse<Data, Included> {
   included?: Included;
 }
 
-export interface ApiData<Attributes, Embeds> {
+export interface ApiData<Attributes, Embeds, Relationships> {
   id: string;
   attributes: Attributes;
   embeds: Embeds;
   type: string;
+  relationships: Relationships;
 }

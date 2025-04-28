@@ -55,6 +55,9 @@ $gradient-1: var(--gradient-1);
 $gradient-2: var(--gradient-2);
 $gradient-3: var(--gradient-3);
 
+// Opacity Colors
+$white-60: var(--white-60);
+
 :root {
   // Fonts
   --openSans: "Open Sans", sans-serif;
@@ -104,6 +107,9 @@ $gradient-3: var(--gradient-3);
   --green-2-bg: #ebf7f6;
   --blue-1-bg: #ebf4f7;
   --blue-2-bg: #ebf2f8;
+
+  // Opacity Colors
+  --white-60: rgba(256, 256, 256, 0.6);
 
   // Gradients
   --gradient-1:

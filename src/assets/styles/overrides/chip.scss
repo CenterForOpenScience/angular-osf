@@ -1,0 +1,29 @@
+@use "assets/styles/variables" as var;
+
+.p-chip {
+  height: fit-content;
+  width: fit-content;
+  background: var.$bg-blue-3;
+  border-radius: 4px;
+  padding: 4px 12px 4px 12px;
+
+  &:hover {
+    cursor: pointer;
+    background: var.$bg-blue-2;
+    color: var.$pr-blue-3;
+    i {
+      color: var.$pr-blue-1;
+    }
+  }
+
+  .p-chip-label {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.7rem;
+  }
+
+  .p-chip-remove-icon {
+    display: flex;
+    margin-left: 12px;
+  }
+}

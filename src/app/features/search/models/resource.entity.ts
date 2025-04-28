@@ -22,4 +22,9 @@ export interface Resource {
   orcid?: string;
   employment?: string;
   education?: string;
+  hasDataResource: boolean;
+  hasAnalyticCodeResource: boolean;
+  hasMaterialsResource: boolean;
+  hasPapersResource: boolean;
+  hasSupplementalResource: boolean;
 }

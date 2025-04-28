@@ -1,0 +1,20 @@
+<div class="content-body filter dropdown-filter">
+  <p class="m-0">
+    Please select the provider from the dropdown below or start typing for find
+    it
+  </p>
+  <p-select
+    id="provider"
+    [options]="providersOptions()"
+    [(ngModel)]="inputText"
+    [placeholder]="'Select provider'"
+    [editable]="true"
+    optionLabel="labelCount"
+    optionValue="label"
+    styleClass="w-full"
+    appendTo="body"
+    (onChange)="setProviders($event)"
+    [showClear]="!!inputText()"
+    [loading]="loading()"
+  ></p-select>
+</div>

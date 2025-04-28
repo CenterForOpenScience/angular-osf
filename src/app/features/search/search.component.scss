@@ -12,4 +12,40 @@
       z-index: 1;
     }
   }
+
+  .resources {
+    position: relative;
+    background: white;
+    padding: 2rem;
+  }
+
+  .stepper {
+    position: absolute;
+    padding: 1.7rem;
+    width: 32rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.7rem;
+    background: white;
+    border: 1px solid var.$grey-2;
+    border-radius: 12px;
+    h3 {
+      font-size: 1.3rem;
+    }
+  }
+
+  .first-stepper {
+    top: 2rem;
+    left: 1.7rem;
+  }
+
+  .second-stepper {
+    top: calc(2rem + 42px);
+    left: calc(1.5rem + 30%);
+  }
+
+  .third-stepper {
+    top: calc(5rem + 42px);
+    left: calc(0.4rem + 30%);
+  }
 }

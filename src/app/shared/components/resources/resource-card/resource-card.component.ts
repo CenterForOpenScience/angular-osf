@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  model,
+} from '@angular/core';
 import {
   Accordion,
   AccordionContent,
@@ -8,6 +13,9 @@ import {
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { ResourceType } from '@osf/features/search/models/resource-type.enum';
 import { Resource } from '@osf/features/search/models/resource.entity';
+import { ResourceCardService } from '@shared/components/resources/resource-card/resource-card.service';
+import { finalize } from 'rxjs';
+import { Skeleton } from 'primeng/skeleton';
 
 @Component({
   selector: 'osf-resource-card',
@@ -18,13 +26,47 @@ import { Resource } from '@osf/features/search/models/resource.entity';
     AccordionPanel,
     DatePipe,
     NgOptimizedImage,
+    Skeleton,
   ],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResourceCardComponent {
-  item = input.required<Resource>();
+  item = model<Resource | undefined>(undefined);
+  readonly #resourceCardService = inject(ResourceCardService);
+  loading = false;
+  dataIsLoaded = false;
 
   protected readonly ResourceType = ResourceType;
+
+  onOpen() {
+    if (this.item() && !this.dataIsLoaded) {
+      const userIri = this.item()?.id.split('/').pop();
+      if (userIri) {
+        this.loading = true;
+        this.#resourceCardService
+          .getUserRelatedCounts(userIri)
+          .pipe(
+            finalize(() => {
+              this.loading = false;
+              this.dataIsLoaded = true;
+            }),
+          )
+          .subscribe((res) => {
+            this.item.update(
+              (current) =>
+                ({
+                  ...current,
+                  publicProjects: res.projects,
+                  publicPreprints: res.preprints,
+                  publicRegistrations: res.registrations,
+                  education: res.education,
+                  employment: res.employment,
+                }) as Resource,
+            );
+          });
+      }
+    }
+  }
 }
