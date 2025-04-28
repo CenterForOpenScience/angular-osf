@@ -1,0 +1,8 @@
+@use "assets/styles/variables" as var;
+
+.metadata {
+  border: 1px solid var(--grey-2);
+  border-radius: 12px;
+  flex-basis: 550px;
+  height: 188px;
+}

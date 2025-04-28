@@ -2,19 +2,25 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  signal,
+  computed,
 } from '@angular/core';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { PersonalAccessToken } from '@osf/features/settings/tokens/tokens.enities';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
 import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { map, switchMap, of } from 'rxjs';
+import { Store } from '@ngxs/store';
+import { TokensSelectors } from '@core/store/settings/tokens/tokens.selectors';
+import {
+  DeleteToken,
+  GetTokenById,
+} from '@core/store/settings/tokens/tokens.actions';
 
 @Component({
   selector: 'osf-token-details',
@@ -27,11 +33,32 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 export class TokenDetailsComponent {
   #confirmationService = inject(ConfirmationService);
   #isXSmall$ = inject(IS_XSMALL);
-  readonly token = signal<PersonalAccessToken>({
-    id: '1',
-    tokenName: 'Token name example',
-    scopes: ['osf.full_read', 'osf.full_write'],
+  #route = inject(ActivatedRoute);
+  #router = inject(Router);
+  #store = inject(Store);
+
+  readonly tokenId = toSignal(
+    this.#route.params.pipe(
+      map((params) => params['id']),
+      switchMap((tokenId) => {
+        const token = this.#store.selectSnapshot(TokensSelectors.getTokenById)(
+          tokenId,
+        );
+        if (!token) {
+          this.#store.dispatch(new GetTokenById(tokenId));
+        }
+        return of(tokenId);
+      }),
+    ),
+  );
+
+  readonly token = computed(() => {
+    const id = this.tokenId();
+    if (!id) return null;
+    const token = this.#store.selectSignal(TokensSelectors.getTokenById)();
+    return token(id) ?? null;
   });
+
   protected readonly isXSmall = toSignal(this.#isXSmall$);
 
   deleteToken(): void {
@@ -39,14 +66,18 @@ export class TokenDetailsComponent {
       ...defaultConfirmationConfig,
       message:
         'Are you sure you want to delete this token? This action cannot be reversed.',
-      header: `Delete Token ${this.token().tokenName}?`,
+      header: `Delete Token ${this.token()?.name}?`,
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
         label: 'Delete',
       },
       accept: () => {
-        //TODO integrate API
+        this.#store.dispatch(new DeleteToken(this.tokenId())).subscribe({
+          next: () => {
+            this.#router.navigate(['settings/tokens']);
+          },
+        });
       },
     });
   }

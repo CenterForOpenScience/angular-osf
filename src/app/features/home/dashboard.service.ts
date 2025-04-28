@@ -14,7 +14,7 @@ export class DashboardService {
   jsonApiService = inject(JsonApiService);
 
   getProjects(): Observable<Project[]> {
-    const userId = 'k9p2t';
+    const userId = '8bxwv';
     const params = {
       'embed[]': ['bibliographic_contributors', 'parent', 'root'],
       page: 1,

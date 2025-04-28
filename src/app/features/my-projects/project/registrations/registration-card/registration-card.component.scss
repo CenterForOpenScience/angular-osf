@@ -1,0 +1,26 @@
+@use "../../../../../../assets/styles/mixins" as mix;
+
+:host {
+  .icon-container {
+    color: black;
+    @include mix.flex-align-center;
+    gap: 0.8rem;
+
+    h3 {
+      white-space: nowrap;
+    }
+  }
+}
+.mobile {
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+//.mobile-btns {
+//  p-button {
+//    width: 100%;
+//   button {
+//     width: 100%;
+//   }
+//  }
+//}

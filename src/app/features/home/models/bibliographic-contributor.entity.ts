@@ -1,4 +1,4 @@
-import {User} from '@core/services/user/user.entity';
+import { User } from '@core/services/user/user.entity';
 
 export interface BibliographicContributor {
   id: string;

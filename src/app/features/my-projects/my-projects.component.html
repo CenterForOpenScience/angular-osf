@@ -9,8 +9,8 @@
 
   <div class="flex-column flex flex-1 w-full">
     <p-tabs
-      [value]="selectedTab"
-      (valueChange)="onTabChange(+$event)"
+      [value]="selectedTab()"
+      (valueChange)="selectedTab.set(+$event)"
       class="flex-1"
     >
       @if (!isMobile()) {
@@ -30,7 +30,8 @@
             [options]="tabOptions"
             optionLabel="label"
             optionValue="value"
-            [(ngModel)]="selectedTab"
+            [ngModel]="selectedTab()"
+            (ngModelChange)="selectedTab.set($event)"
           ></p-select>
         }
         <!--My projects-->
@@ -38,7 +39,7 @@
           <osf-search-input
             class="w-full"
             [searchValue]="searchValue()"
-            (searchValueChange)="searchValue.set($event)"
+            (searchValueChange)="searchValue.set($any($event))"
             placeholder="Filter by title, description, and tags"
           />
 
@@ -48,9 +49,11 @@
             [rows]="5"
             [rowsPerPageOptions]="[2, 5, 10]"
             [paginator]="true"
+            paginatorDropdownAppendTo="body"
             [resizableColumns]="true"
             [autoLayout]="true"
             [scrollable]="true"
+            [sortMode]="'single'"
           >
             <ng-template #header>
               <tr>
@@ -59,14 +62,14 @@
                   <p-sortIcon field="title" />
                 </th>
                 <th>Contributors</th>
-                <th pSortableColumn="modified">
+                <th pSortableColumn="dateModified">
                   Modified
-                  <p-sortIcon field="modified" />
+                  <p-sortIcon field="dateModified" />
                 </th>
               </tr>
             </ng-template>
             <ng-template #body let-project>
-              <tr>
+              <tr (click)="navigateToProject(project)">
                 <td>
                   <p class="flex align-items-center gap-2">
                     <i
@@ -91,19 +94,21 @@
           <osf-search-input
             class="w-full"
             [searchValue]="searchValue()"
-            (searchValueChange)="searchValue.set($event)"
+            (searchValueChange)="searchValue.set($event || '')"
             placeholder="Filter by title, description, and tags"
           />
 
           <p-table
             class="my-projects-table"
             [value]="filteredProjects()"
-            [rows]="5"
+            [rows]="2"
             [rowsPerPageOptions]="[2, 5, 10]"
             [paginator]="true"
+            paginatorDropdownAppendTo="body"
             [resizableColumns]="true"
             [autoLayout]="true"
             [scrollable]="true"
+            [sortMode]="'single'"
           >
             <ng-template #header>
               <tr>
@@ -112,9 +117,9 @@
                   <p-sortIcon field="title" />
                 </th>
                 <th>Contributors</th>
-                <th pSortableColumn="modified">
+                <th pSortableColumn="dateModified">
                   Modified
-                  <p-sortIcon field="modified" />
+                  <p-sortIcon field="dateModified" />
                 </th>
               </tr>
             </ng-template>
@@ -144,7 +149,7 @@
           <osf-search-input
             class="w-full"
             [searchValue]="searchValue()"
-            (searchValueChange)="searchValue.set($event)"
+            (searchValueChange)="searchValue.set($event || '')"
             placeholder="Filter by title, description, and tags"
           />
 
@@ -154,9 +159,11 @@
             [rows]="5"
             [rowsPerPageOptions]="[2, 5, 10]"
             [paginator]="true"
+            paginatorDropdownAppendTo="body"
             [resizableColumns]="true"
             [autoLayout]="true"
             [scrollable]="true"
+            [sortMode]="'single'"
           >
             <ng-template #header>
               <tr>
@@ -165,9 +172,9 @@
                   <p-sortIcon field="title" />
                 </th>
                 <th>Contributors</th>
-                <th pSortableColumn="modified">
+                <th pSortableColumn="dateModified">
                   Modified
-                  <p-sortIcon field="modified" />
+                  <p-sortIcon field="dateModified" />
                 </th>
               </tr>
             </ng-template>

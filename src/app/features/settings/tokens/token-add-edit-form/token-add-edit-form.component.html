@@ -1,6 +1,6 @@
 <form
   [formGroup]="tokenForm"
-  (ngSubmit)="submitForm()"
+  (ngSubmit)="handleSubmitForm()"
   class="flex flex-column gap-4"
 >
   <div class="flex flex-column">
@@ -23,18 +23,18 @@
     </div>
 
     <div class="flex flex-column gap-4">
-      @for (scope of availableScopes; track scope.name) {
+      @for (scope of tokenScopes(); track scope.id) {
         <div class="flex align-items-start gap-2">
           <p-checkbox
-            [value]="scope.name"
+            [value]="scope.id"
             [formControlName]="TokenFormControls.Scopes"
-            [inputId]="scope.name"
+            [inputId]="scope.id"
           />
           <div class="flex flex-column gap-1">
-            <label [for]="scope.name" class="scope-name">
-              <h3>{{ scope.name }}</h3>
+            <label [for]="scope.id" class="scope-name">
+              <h3>{{ scope.id }}</h3>
             </label>
-            <span>{{ scope.description }}</span>
+            <span>{{ scope.attributes.description }}</span>
           </div>
         </div>
       }

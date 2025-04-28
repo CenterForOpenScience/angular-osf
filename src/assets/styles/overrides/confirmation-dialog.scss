@@ -1,5 +1,9 @@
 @use "../variables" as var;
 
+.p-dialog-mask {
+  z-index: 2103 !important;
+}
+
 .p-dialog {
   min-height: 212px;
   width: 450px;

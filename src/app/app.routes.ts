@@ -11,6 +11,11 @@ export const routes: Routes = [
       ),
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'home',
+      },
+      {
         path: 'sign-up',
         loadComponent: () =>
           import('./features/auth/sign-up/sign-up.component').then(
@@ -72,6 +77,55 @@ export const routes: Routes = [
           import('./features/my-projects/my-projects.component').then(
             (mod) => mod.MyProjectsComponent,
           ),
+      },
+      {
+        path: 'my-projects/:id',
+        loadComponent: () =>
+          import('./features/my-projects/project/project.component').then(
+            (mod) => mod.ProjectComponent,
+          ),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            redirectTo: 'overview',
+          },
+          {
+            path: 'overview',
+            loadComponent: () =>
+              import(
+                './features/my-projects/project/overview/project-overview.component'
+              ).then((mod) => mod.ProjectOverviewComponent),
+          },
+          {
+            path: 'metadata',
+            loadComponent: () =>
+              import(
+                './features/my-projects/project/metadata/project-metadata.component'
+              ).then((mod) => mod.ProjectMetadataComponent),
+          },
+          {
+            path: 'files',
+            loadComponent: () =>
+              import(
+                './features/my-projects/project/files/project-files.component'
+              ).then((mod) => mod.ProjectFilesComponent),
+          },
+          {
+            path: 'files/:fileId',
+            loadComponent: () =>
+              import(
+                './features/my-projects/project/files/file-detail/file-detail.component'
+              ).then((mod) => mod.FileDetailComponent),
+          },
+          {
+            path: 'registrations',
+            loadComponent: () =>
+              import(
+                '@osf/features/my-projects/project/registrations/registrations.component'
+              ).then((mod) => mod.RegistrationsComponent),
+          },
+        ],
       },
       {
         path: 'settings',

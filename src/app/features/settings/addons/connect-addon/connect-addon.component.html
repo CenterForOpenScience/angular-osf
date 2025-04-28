@@ -1,13 +1,13 @@
 <osf-sub-header [showButton]="false" [title]="'Connect Add-on'" />
 <section class="stepper-container flex-column flex flex-1 p-5">
-  <p-stepper [value]="1">
+  <p-stepper [value]="!isAuthorized() ? 1 : 2">
     <p-step-panels>
       <p-step-panel [value]="1">
         <ng-template #content let-activateCallback="activateCallback">
           <section class="flex flex-column gap-2">
-            <h2>Figshare Terms</h2>
+            <h2>{{ addon()?.providerName }} Terms</h2>
 
-            <p-table [value]="terms" class="addon-table">
+            <p-table [value]="terms()" class="addon-table">
               <ng-template pTemplate="header">
                 <tr>
                   <th>Function</th>
@@ -19,6 +19,7 @@
                   [ngClass]="{
                     'background-warning': term.type === 'warning',
                     'background-success': term.type === 'info',
+                    'background-danger': term.type === 'danger',
                   }"
                 >
                   <td>{{ term.function }}</td>
@@ -60,31 +61,183 @@
 
       <p-step-panel [value]="2">
         <ng-template #content let-activateCallback="activateCallback">
-          <section class="flex flex-column gap-5">
-            <h2>Setup new account</h2>
+          <form
+            [formGroup]="addonForm"
+            (ngSubmit)="handleConnectStorageAddon()"
+            class="flex flex-column gap-5"
+          >
+            <h2>
+              {{ isAuthorized() ? "Reconnect Account" : "Setup new account" }}
+            </h2>
             <p-card>
-              <h2>Account Name</h2>
-              <p class="mt-3 mb-3">
+              @if (
+                addon()?.credentialsFormat ===
+                credentialsFormat.ACCESS_SECRET_KEYS
+              ) {
+                <h2 class="mb-2">Access Key</h2>
+                <input
+                  class="mb-5"
+                  pInputText
+                  placeholder="Access Key"
+                  [formControlName]="formControls.AccessKey"
+                />
+                <h2 class="mb-2">Secret Key</h2>
+                <input
+                  class="mb-5"
+                  pInputText
+                  placeholder="Secret Key"
+                  [formControlName]="formControls.SecretKey"
+                />
+              }
+
+              @if (
+                addon()?.credentialsFormat ===
+                credentialsFormat.DATAVERSE_API_TOKEN
+              ) {
+                <h2 class="mb-2">Host Url</h2>
+                <p class="mb-2">
+                  Please include the protocol (http:// or https://) in the URL.
+                </p>
+                <input
+                  class="mb-4"
+                  pInputText
+                  [formControlName]="formControls.HostUrl"
+                />
+                <h2 class="mb-2">Personal Access Token</h2>
+                <input
+                  class="mb-4"
+                  pInputText
+                  placeholder="Personal Access Token"
+                  [formControlName]="formControls.PersonalAccessToken"
+                />
+              }
+
+              @if (
+                addon()?.credentialsFormat ===
+                credentialsFormat.USERNAME_PASSWORD
+              ) {
+                <h2 class="mb-2">Host Url</h2>
+                <p class="mb-2">
+                  Please include the protocol (http:// or https://) in the URL.
+                </p>
+                <input
+                  class="mb-4"
+                  pInputText
+                  [formControlName]="formControls.HostUrl"
+                />
+                <h2 class="mb-2">Username</h2>
+                <input
+                  class="mb-4"
+                  pInputText
+                  placeholder="Username"
+                  [formControlName]="formControls.Username"
+                />
+                <h2 class="mb-2">Password</h2>
+                <p class="mb-2">These credentials will be encrypted</p>
+                <div class="mb-4">
+                  <p-password
+                    [feedback]="false"
+                    [toggleMask]="true"
+                    [formControlName]="formControls.Password"
+                  />
+                </div>
+              }
+
+              @if (
+                addon()?.credentialsFormat === credentialsFormat.REPO_TOKEN
+              ) {
+                <h2 class="mb-2">Access Key</h2>
+                <input
+                  class="mb-4"
+                  pInputText
+                  placeholder="Access Key"
+                  [formControlName]="formControls.AccessKey"
+                />
+                <h2 class="mb-2">Secret Key</h2>
+                <input
+                  class="mb-4"
+                  pInputText
+                  placeholder="Secret Key"
+                  [formControlName]="formControls.SecretKey"
+                />
+              }
+
+              <h2 class="mb-2">Account Name</h2>
+              <p class="mb-2">
                 This will distinguish your account from other using the same
                 addon.
               </p>
-              <p-card class="addon-card-small">Google Drive</p-card>
+              <input pInputText [formControlName]="formControls.AccountName" />
             </p-card>
 
             <div class="flex gap-4 align-self-center md:align-self-end mt-3">
+              @if (!isAuthorized()) {
+                <p-button
+                  label="Back"
+                  severity="info"
+                  class="w-10rem btn-full-width"
+                  (onClick)="activateCallback(1)"
+                  [disabled]="isConnecting()"
+                ></p-button>
+
+                <p-button
+                  class="w-10rem btn-full-width"
+                  [label]="'Authorize'"
+                  type="submit"
+                  [disabled]="
+                    !addonForm.valid ||
+                    !this.userReference().length ||
+                    isConnecting()
+                  "
+                ></p-button>
+              } @else {
+                <p-button
+                  label="Cancel"
+                  severity="info"
+                  class="w-10rem btn-full-width"
+                  routerLink="/settings/addons"
+                  [disabled]="isConnecting()"
+                ></p-button>
+
+                <p-button
+                  class="w-10rem btn-full-width"
+                  [label]="'Reconnect'"
+                  [link]="true"
+                  (onClick)="handleConnectStorageAddon()"
+                  [disabled]="
+                    !addonForm.valid ||
+                    !this.userReference().length ||
+                    isConnecting()
+                  "
+                ></p-button>
+              }
+            </div>
+          </form>
+        </ng-template>
+      </p-step-panel>
+
+      <p-step-panel [value]="3">
+        <ng-template #content>
+          <div class="flex flex-column gap-4">
+            <div class="flex justify-content-between">
+              <h2 class="align-self-center inline-block">Setup new account</h2>
               <p-button
                 label="Back"
                 severity="info"
-                class="w-10rem btn-full-width"
-                (onClick)="activateCallback(1)"
-              ></p-button>
-              <p-button
-                class="w-10rem btn-full-width"
-                label="Connect"
-                (onClick)="activateCallback(2)"
+                class="w-7rem btn-full-width"
+                routerLink="/settings/addons"
               ></p-button>
             </div>
-          </section>
+
+            <p>
+              Complete the OAuth process in the new window before returning to
+              this page. If you do not see a new window, please click the Start
+              Oauth link below.
+            </p>
+            <a [href]="addonAuthUrl()" target="_blank" rel="noopener noreferrer"
+              >Start OAuth</a
+            >
+          </div>
         </ng-template>
       </p-step-panel>
       <!--TODO use this layout in the project settings later-->

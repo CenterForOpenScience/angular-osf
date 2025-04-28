@@ -1,23 +1,25 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
+
 @Injectable({
   providedIn: 'root',
 })
 export class JsonApiService {
   http: HttpClient = inject(HttpClient);
+  readonly #token =
+    'Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt';
+  readonly #headers = new HttpHeaders({
+    Authorization: this.#token,
+    Accept: 'application/vnd.api+json',
+    'Content-Type': 'application/vnd.api+json',
+  });
 
   get<T>(url: string, params?: Record<string, unknown>): Observable<T> {
-    const token =
-      'UlO9O9GNKgVzJD7pUeY53jiQTKJ4U2znXVWNvh0KZQruoENuILx0IIYf9LoDz7Duq72EIm';
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.api+json',
-    });
-
     return this.http.get<T>(url, {
       params: this.buildHttpParams(params),
-      headers: headers,
+      headers: this.#headers,
     });
   }
 
@@ -30,7 +32,7 @@ export class JsonApiService {
 
         if (Array.isArray(value)) {
           value.forEach((item) => {
-            httpParams = httpParams.append(`${key}`, item); // Handles arrays
+            httpParams = httpParams.append(`${key}`, item);
           });
         } else {
           httpParams = httpParams.set(key, value as string);
@@ -39,5 +41,21 @@ export class JsonApiService {
     }
 
     return httpParams;
+  }
+
+  post<T>(url: string, body: unknown): Observable<T> {
+    return this.http
+      .post<JsonApiResponse<T, null>>(url, body, { headers: this.#headers })
+      .pipe(map((response) => response.data));
+  }
+
+  patch<T>(url: string, body: unknown): Observable<T> {
+    return this.http
+      .patch<JsonApiResponse<T, null>>(url, body, { headers: this.#headers })
+      .pipe(map((response) => response.data));
+  }
+
+  delete(url: string): Observable<void> {
+    return this.http.delete<void>(url, { headers: this.#headers });
   }
 }

@@ -8,19 +8,20 @@
       <strong><</strong> Back to list of personal tokens
     </a>
   </nav>
+  @if (token()) {
+    <div class="flex justify-content-between" [class.mobile]="isXSmall()">
+      <h1>{{ token()?.name }}</h1>
+      <p-button
+        label="Delete"
+        [class.btn-full-width]="isXSmall()"
+        severity="danger"
+        (click)="deleteToken()"
+      />
+    </div>
 
-  <div class="flex justify-content-between" [class.mobile]="isXSmall()">
-    <h1>{{ token().tokenName }}</h1>
-    <p-button
-      label="Delete"
-      [class.btn-full-width]="isXSmall()"
-      severity="danger"
-      (click)="deleteToken()"
-    />
-  </div>
-
-  <p-card class="mb-5">
-    <h2 class="mb-5">Edit Token</h2>
-    <osf-token-add-edit-form [isEditMode]="true" [initialValues]="token()" />
-  </p-card>
+    <p-card class="mb-5">
+      <h2 class="mb-5">Edit Token</h2>
+      <osf-token-add-edit-form [isEditMode]="true" [initialValues]="token()!" />
+    </p-card>
+  }
 </section>

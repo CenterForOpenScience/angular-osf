@@ -29,7 +29,7 @@
 
     <osf-search-input
       [searchValue]="searchValue()"
-      (searchValueChange)="searchValue.set($event)"
+      (searchValueChange)="searchValue.set($event || '')"
       placeholder="Search your projects"
     />
 
@@ -70,31 +70,6 @@
     <i class="osf-icon-search"></i>
     <div class="title-container">
       <h1>Discover Public Projects</h1>
-    </div>
-  </div>
-
-  <div class="noteworthy-container">
-    <div class="news-section">
-      <h2>New And Noteworthy</h2>
-      @for (project of noteworthy(); track project.id) {
-        <div class="news-block">
-          <p class="title">{{ project.title }}</p>
-          <br />
-          <p class="authors">by {{ getNoteworthyContributorsList(project) }}</p>
-        </div>
-      }
-    </div>
-    <div class="news-section">
-      <h2>Most Popular</h2>
-      @for (project of mostPopular(); track project.id) {
-        <div class="news-block">
-          <p class="title">{{ project.title }}</p>
-          <br />
-          <p class="authors">
-            by {{ getMostPopularContributorsList(project) }}
-          </p>
-        </div>
-      }
     </div>
   </div>
 

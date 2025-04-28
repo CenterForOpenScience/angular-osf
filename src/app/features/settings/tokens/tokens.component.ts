@@ -2,14 +2,17 @@ import {
   ChangeDetectionStrategy,
   Component,
   inject,
-  signal,
+  OnInit,
 } from '@angular/core';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router } from '@angular/router';
+import { Store } from '@ngxs/store';
+import { GetScopes } from '@core/store/settings';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'osf-tokens',
@@ -19,13 +22,21 @@ import { RouterOutlet } from '@angular/router';
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TokensComponent {
+export class TokensComponent implements OnInit {
   #dialogService = inject(DialogService);
   #isXSmall$ = inject(IS_XSMALL);
   #isMedium$ = inject(IS_MEDIUM);
-  tokenValue = signal<string>('');
+  #store = inject(Store);
+  #router = inject(Router);
+
   protected readonly isXSmall = toSignal(this.#isXSmall$);
   protected readonly isMedium = toSignal(this.#isMedium$);
+  protected readonly isBaseRoute = toSignal(
+    this.#router.events.pipe(
+      map(() => this.#router.url === '/settings/tokens'),
+    ),
+    { initialValue: this.#router.url === '/settings/tokens' },
+  );
 
   createToken(): void {
     let dialogWidth = '850px';
@@ -45,7 +56,7 @@ export class TokensComponent {
     });
   }
 
-  onTokenCreated(): void {
-    this.tokenValue.set('asdkDh3bhHfEqhndsdk#fo90jNbvt8dd5%1jFkc42kIop');
+  ngOnInit() {
+    this.#store.dispatch(GetScopes);
   }
 }

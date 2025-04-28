@@ -1,0 +1,40 @@
+<osf-sub-header title="Add community metadata record" />
+
+<section class="flex flex-column bg-white flex-1 h-full p-5 gap-4">
+  <section class="flex flex-column gap-2">
+    <h2>Select a Metadata Template</h2>
+
+    <div>
+      OSF has partnered with<a class="font-bold"> CEDAR </a>to provide more ways
+      to annotate your research with domain or community-specific metadata
+      records. If you would like to request the addition of a new metadata
+      template, contact us at <a class="font-bold">support&#64;osf.io. </a>
+    </div>
+  </section>
+
+  <div class="flex gap-2 flex-wrap">
+    @for (meta of metadataTemplates; track meta.title) {
+      <div class="flex flex-column gap-4 metadata p-4 align-items-center">
+        <div class="flex flex-row gap-4">
+          <h2>{{ meta.title }}</h2>
+        </div>
+
+        <div class="flex flex-column">
+          <p>{{ meta.description }}</p>
+        </div>
+
+        <p-button severity="secondary"> Select </p-button>
+      </div>
+    }
+  </div>
+
+  <div class="flex justify-content-end flex-0 mt-auto">
+    <p-button
+      label="Cancel"
+      [link]="true"
+      severity="info"
+      class="w-10rem btn-full-width"
+    ></p-button>
+    <p-button class="w-10rem btn-full-width" label="Next"></p-button>
+  </div>
+</section>

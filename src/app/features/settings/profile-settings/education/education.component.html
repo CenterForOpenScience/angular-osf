@@ -1,0 +1,130 @@
+<form [formGroup]="educationForm">
+  <div formArrayName="educations" class="flex flex-column row-gap-4">
+    @for (
+      education of educations.controls;
+      track education.value;
+      let index = $index
+    ) {
+      <div
+        [formGroupName]="index"
+        class="flex flex-column border-1 border-round-lg p-4 name-container row-gap-4"
+      >
+        <div class="flex flex-row">
+          <h2>Education {{ index + 1 }}</h2>
+          @if (index !== 0) {
+            <div class="ml-auto remove-button">
+              <p-button class="ml-auto" (click)="removeEducation(index)"
+                >Remove
+              </p-button>
+            </div>
+          }
+        </div>
+
+        <div class="flex flex-column row-gap-4">
+          <div class="w-full">
+            <label for="education-inst-{{ index }}" class="mb-1"
+              >Institution</label
+            >
+            <input
+              pInputText
+              [id]="'education-inst-' + index"
+              class="w-full"
+              [formControlName]="educationFormControls.Institution"
+            />
+          </div>
+
+          <div
+            class="flex w-full column-gap-3 row-gap-4 flex-wrap lg:flex-nowrap"
+          >
+            <div class="w-full lg:w-6">
+              <label for="department-{{ index }}" class="mb-1"
+                >Department</label
+              >
+              <input
+                pInputText
+                [id]="'department-' + index"
+                class="w-full"
+                [formControlName]="educationFormControls.Department"
+              />
+            </div>
+            <div class="w-full lg:w-6">
+              <label for="degree-{{ index }}" class="mb-1">Degree</label>
+              <input
+                pInputText
+                [id]="'degree-' + index"
+                class="w-full"
+                [formControlName]="educationFormControls.Degree"
+              />
+            </div>
+          </div>
+
+          <div
+            class="flex gap-5 flex-column align-items-start md:flex-row md:align-items-end lg:align-items-center lg:gap-3"
+          >
+            <div
+              class="w-full md:w-6 flex column-gap-3 row-gap-4 flex-wrap lg:flex-nowrap"
+            >
+              <div class="w-full lg:w-6">
+                <label for="start-date-{{ index }}" class="mb-1"
+                  >Start Date</label
+                >
+                <p-datepicker
+                  [id]="'start-date-' + index"
+                  [formControlName]="educationFormControls.StartDate"
+                  dateFormat="mm/dd/yy"
+                  [iconDisplay]="'input'"
+                  [showIcon]="true"
+                ></p-datepicker>
+              </div>
+              <div class="w-full lg:w-6">
+                <label for="end-date-{{ index }}" class="mb-1">End Date</label>
+                <p-datepicker
+                  [id]="'end-date-' + index"
+                  [formControlName]="educationFormControls.EndDate"
+                  dateFormat="mm/dd/yy"
+                  [iconDisplay]="'input'"
+                  [showIcon]="true"
+                ></p-datepicker>
+              </div>
+            </div>
+
+            <div
+              class="flex align-items-center w-full md:w-6 md:mb-3 lg:mb-0 lg:mt-4"
+            >
+              <p-checkbox
+                [binary]="true"
+                [formControlName]="educationFormControls.onGoing"
+                [inputId]="'ongoing-' + index"
+                name="ongoing"
+              ></p-checkbox>
+              <label [for]="'ongoing-' + index" class="ml-2 mb-0 cursor-pointer"
+                >Ongoing</label
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</form>
+
+<p-button
+  label="Add One More"
+  severity="secondary"
+  class="ml-auto w-6 btn-full-width md:w-auto"
+  (click)="addEducation()"
+/>
+
+<div
+  class="flex justify-content-between align-items-end column-gap-2 md:ml-auto h-3rem mt-2"
+>
+  <p-button
+    class="w-6 btn-full-width md:w-auto"
+    label="Discard Changes"
+    severity="info"
+    disabled="true"
+  />
+  <div class="w-6 btn-full-width md:w-auto wide-m-button">
+    <p-button label="Save" disabled="true" (click)="saveEducation()" />
+  </div>
+</div>

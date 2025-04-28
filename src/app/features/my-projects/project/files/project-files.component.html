@@ -1,0 +1,128 @@
+<!--@if (!selectFile()) {-->
+<!--  <osf-sub-header title="Files" />-->
+
+<!--  <div class="table-container bg-white p-4 h-full">-->
+
+@if (!selectFile()) {
+  <osf-sub-header title="Files"></osf-sub-header>
+
+  <div class="flex flex-column bg-white gap-4 h-full flex-1 p-4">
+    <div class="flex flex-grow-0 w-30rem">
+      <p-floatlabel class="w-full md:w-56" variant="in">
+        <p-select
+          inputId="in_label"
+          [options]="['Storage Location: United State', 'Another Storage']"
+          styleClass="w-full"
+          variant="filled"
+        />
+        <label for="in_label">OSF Storage</label>
+      </p-floatlabel>
+    </div>
+
+    <div class="flex gap-4">
+      <osf-search-input class="w-30rem" placeholder="Search your projects" />
+
+      <div class="sorting-container no-border-dropdown">
+        <p-dropdown
+          placeholder="Sort by name: A-Z"
+          optionLabel="label"
+          optionValue="value"
+        ></p-dropdown>
+      </div>
+
+      <div class="flex gap-2 ml-auto">
+        <div class="outline-button blue">
+          <i class="osf-icon-download"> </i>
+
+          <span>Download As Zip</span>
+        </div>
+
+        <div class="outline-button green">
+          <i class="osf-icon-plus"> </i>
+
+          <span>Create Folder</span>
+        </div>
+
+        <div class="outline-button green">
+          <i class="osf-icon-upload"> </i>
+
+          <span>Upload File</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="files-table">
+      @for (file of files(); track file.downloads) {
+        <div class="files-table-row">
+          <div class="files-table-cell flex gap-2">
+            @if (file.downloadType && file.type !== "folder") {
+              @if (file.downloadType === "doc") {
+                <i style="color: #337ab7" class="osf-icon-doc"></i>
+              } @else {
+                <i style="color: #b73333" class="osf-icon-pdf"></i>
+              }
+            } @else {
+              <i class="osf-icon-folder"></i>
+            }
+
+            <div>
+              {{ file.name }}
+            </div>
+          </div>
+          <div class="files-table-cell">{{ file.downloads }} Downloads</div>
+
+          <div class="files-table-cell">
+            {{ file.size }}
+          </div>
+          <div class="files-table-cell">
+            {{ file.modifiedAt | date: "MMM d, y hh:mm a" }}
+          </div>
+          <div class="files-table-cell">
+            <p-button
+              class="btn-icon-text"
+              size="small"
+              styleClass="w-2rem h-2rem"
+              severity="secondary"
+              icon="pi pi-ellipsis-v"
+              (click)="
+                $event.preventDefault(); $event.stopImmediatePropagation()
+              "
+            ></p-button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<!--    <p-table [value]="files()">-->
+<!--      <ng-template #body let-file>-->
+<!--        <tr>-->
+<!--          <td (click)="navigateToFile(file)">{{ file.name }}</td>-->
+<!--          <td>{{ file.downloads }} Downloads</td>-->
+<!--          <td>{{ file.size }}</td>-->
+<!--          <td>{{ file.modifiedAt | date: "MMM d, y hh:mm a" }}</td>-->
+<!--          <td>-->
+<!--            <p-menu-->
+<!--              #menu-->
+<!--              [popup]="true"-->
+<!--              [model]="[-->
+<!--                { label: 'Download', icon: 'pi pi-download' },-->
+<!--                { label: 'Copy', icon: 'pi pi-copy' },-->
+<!--                { label: 'Move', icon: 'pi pi-directions' },-->
+<!--                { label: 'Rename', icon: 'pi pi-pencil' },-->
+<!--                { label: 'Delete', icon: 'pi pi-trash' },-->
+<!--              ]"-->
+<!--            />-->
+
+<!--            <p-button-->
+<!--              size="small"-->
+<!--              severity="secondary"-->
+<!--              class="btn-icon-text"-->
+<!--              icon="pi pi-ellipsis-v"-->
+<!--              (click)="menu.toggle($event)"-->
+<!--            ></p-button>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      </ng-template>-->
+<!--    </p-table>-->

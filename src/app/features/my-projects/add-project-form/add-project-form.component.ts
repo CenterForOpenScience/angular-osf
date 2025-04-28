@@ -22,7 +22,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Store } from '@ngxs/store';
-import { HomeSelectors } from '@core/store/home';
+import { HomeSelectors } from 'src/app/features/home/store';
 
 enum ProjectFormControls {
   Title = 'title',

@@ -1,20 +1,79 @@
 <div
-  class="addon-card flex flex-1 justify-content-between flex-column"
+  class="addon-card flex flex-1 gap-4 flex-column"
   [class.mobile]="isMobile()"
 >
   <div class="max-h-8rem">
-    <img
-      alt="Addon card image"
-      [src]="'assets/images/temp/' + card()!.img + '.png'"
-    />
+    @if (card()!.externalServiceName) {
+      <img
+        alt="Addon card image"
+        [src]="'assets/images/addons/' + card()!.externalServiceName + '.svg'"
+      />
+    }
   </div>
 
   <div class="flex flex-column gap-3">
-    <h3>{{ card()?.title }}</h3>
-    <p-button
-      [label]="cardButtonLabel() || 'Connect'"
-      severity="secondary"
-      (onClick)="onConnect()"
-    ></p-button>
+    <h3>{{ card()?.displayName }}</h3>
+
+    <div
+      class="flex justify-content-center align-items-center md:gap-5 md:mt-3 btn-container"
+    >
+      @if (showDangerButton()) {
+        <p-button
+          [label]="'Disable'"
+          severity="danger"
+          (onClick)="showDisableDialog()"
+          [ngClass]="isMobile() ? 'w-8rem btn-full-width' : ''"
+        ></p-button>
+      }
+
+      <p-button
+        [label]="cardButtonLabel() || 'Connect'"
+        severity="secondary"
+        (onClick)="onConnectAddon()"
+        [ngClass]="isMobile() ? 'w-8rem btn-full-width' : ''"
+      ></p-button>
+    </div>
   </div>
 </div>
+
+<p-dialog
+  [visible]="isDialogVisible()"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="false"
+  [closeOnEscape]="!isDisabling()"
+  (onHide)="hideDialog()"
+>
+  <ng-template pTemplate="header">
+    <div class="flex align-items-center justify-content-between w-full">
+      <span class="text-xl font-bold">Disable Account</span>
+      <button
+        type="button"
+        class="p-dialog-header-icon"
+        (click)="hideDialog()"
+        [disabled]="isDisabling()"
+      >
+        <i class="osf-icon-close"></i>
+      </button>
+    </div>
+  </ng-template>
+  <p>
+    Are you sure you want to disable this account? All projects connected to
+    this account will be affected.
+  </p>
+  <div class="flex justify-content-end gap-4 mt-5">
+    <p-button
+      label="Cancel"
+      severity="secondary"
+      (onClick)="hideDialog()"
+      [disabled]="isDisabling()"
+    ></p-button>
+    <p-button
+      label="Disable"
+      severity="danger"
+      (onClick)="onDisableAddon()"
+      [disabled]="isDisabling()"
+    ></p-button>
+  </div>
+</p-dialog>

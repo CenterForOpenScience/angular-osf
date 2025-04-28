@@ -50,11 +50,19 @@
   .addon-table {
     tr {
       &.background-warning td {
-        background-color: var.$red-2;
+        background-color: var.$yellow-2;
       }
 
       &.background-success td {
         background-color: var.$green-2;
+      }
+
+      &.background-danger td {
+        background-color: var.$red-2;
+      }
+
+      td {
+        white-space: wrap;
       }
     }
   }

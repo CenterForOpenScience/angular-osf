@@ -1,4 +1,4 @@
-import {BibliographicContributor} from '@osf/features/home/models/bibliographic-contributor.entity';
+import { BibliographicContributor } from '@osf/features/home/models/bibliographic-contributor.entity';
 
 export interface Project {
   id: string;

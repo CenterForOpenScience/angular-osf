@@ -1,6 +1,9 @@
 import { Component, input } from '@angular/core';
 import { AddonCardComponent } from '@osf/features/settings/addons/addon-card/addon-card.component';
-import { AddonCard } from '@shared/entities/addon-card.interface';
+import {
+  Addon,
+  AuthorizedAddon,
+} from '@osf/features/settings/addons/entities/addons.entities';
 
 @Component({
   selector: 'osf-addon-card-list',
@@ -9,6 +12,7 @@ import { AddonCard } from '@shared/entities/addon-card.interface';
   styleUrl: './addon-card-list.component.scss',
 })
 export class AddonCardListComponent {
-  cards = input<AddonCard[]>([]);
+  cards = input<(Addon | AuthorizedAddon)[]>([]);
   cardButtonLabel = input<string>('');
+  showDangerButton = input<boolean>(false);
 }

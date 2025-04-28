@@ -1,0 +1,76 @@
+<osf-sub-header title="filename.doc" />
+
+<div class="flex gap-4 bg-white flex-column h-full flex-1 p-4">
+  <a
+    [routerLink]="['/my-projects/project/files']"
+    class="flex align-items-center gap-2 back-navigation font-semibold"
+  >
+    <i class="pi pi-angle-left text-base"></i>
+    Back to list of files
+  </a>
+
+  <div class="flex sm:flex-column lg:flex-row gap-4 flex-1">
+    <div style="background: #d9d9d9" class="flex flex-1 border-round-md"></div>
+    <div class="flex flex-column gap-4 flex-1">
+      <div class="metadata p-4 flex flex-column gap-5">
+        <div class="flex justify-content-between">
+          <h2>File Metadata</h2>
+
+          <p-button severity="secondary"> Edit</p-button>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>Title</h3>
+
+          <span>filename.doc</span>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>Description</h3>
+
+          <div>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua
+          </div>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>Resource Type</h3>
+
+          <span>Lorem ipsum</span>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>Resource Language</h3>
+
+          <span>English</span>
+        </div>
+      </div>
+
+      <div class="metadata p-4 flex flex-column gap-5">
+        <div class="flex justify-content-between">
+          <h2>Project Metadata</h2>
+
+          <p-button severity="secondary"> Edit</p-button>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>Contributors</h3>
+
+          <a href="" class="font-bold">John Doe</a>
+          <a href="" class="font-bold">Jeremy Wolfve</a>
+          <a href="" class="font-bold">Ava Mitra</a>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>Description</h3>
+
+          <div>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

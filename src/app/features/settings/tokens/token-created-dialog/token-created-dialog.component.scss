@@ -1,0 +1,12 @@
+@use "assets/styles/variables" as var;
+
+:host {
+  h3 {
+    color: var.$red-1;
+    text-transform: none;
+  }
+
+  input {
+    text-overflow: ellipsis;
+  }
+}

@@ -10,12 +10,7 @@ import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DashboardService } from '@osf/features/home/dashboard.service';
 import { Store } from '@ngxs/store';
-import {
-  GetMostPopular,
-  GetNoteworthy,
-  GetProjects,
-  HomeSelectors,
-} from '@core/store/home';
+import { GetProjects, HomeSelectors } from 'src/app/features/home/store';
 
 @Component({
   selector: 'osf-home',
@@ -42,14 +37,6 @@ export class HomeComponent implements OnInit {
     HomeSelectors.getProjects,
   );
 
-  protected readonly noteworthy = this.#store.selectSignal(
-    HomeSelectors.getNoteworthy,
-  );
-
-  protected readonly mostPopular = this.#store.selectSignal(
-    HomeSelectors.getMostPopular,
-  );
-
   searchValue = signal('');
 
   filteredProjects = computed(() => {
@@ -70,23 +57,7 @@ export class HomeComponent implements OnInit {
       .join(', ');
   }
 
-  getNoteworthyContributorsList(item: Project) {
-    return this.noteworthy()
-      .find((i) => i.id === item.id)
-      ?.bibliographicContributors.map((i) => i.users.familyName)
-      .join(', ');
-  }
-
-  getMostPopularContributorsList(item: Project) {
-    return this.mostPopular()
-      .find((i) => i.id === item.id)
-      ?.bibliographicContributors.map((i) => i.users.familyName)
-      .join(', ');
-  }
-
   ngOnInit() {
     this.#store.dispatch(GetProjects);
-    this.#store.dispatch(GetNoteworthy);
-    this.#store.dispatch(GetMostPopular);
   }
 }

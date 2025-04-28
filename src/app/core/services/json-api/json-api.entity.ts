@@ -1,6 +1,6 @@
 export interface JsonApiResponse<Data, Included> {
   data: Data;
-  included: Included;
+  included?: Included;
 }
 
 export interface ApiData<Attributes, Embeds> {

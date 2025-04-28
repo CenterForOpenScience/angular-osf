@@ -3,7 +3,10 @@ import { UserUS } from '@core/services/json-api/underscore-entites/user/user-us.
 
 export function mapUserUStoUser(user: UserUS): User {
   return {
-    fullName: user.full_name,
-    givenName: user.given_name,
+    id: user.id,
+    fullName: user.attributes.full_name,
+    givenName: user.attributes.given_name,
+    familyName: user.attributes.family_name,
+    email: user.attributes.email,
   };
 }
