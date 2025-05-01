@@ -1,10 +1,10 @@
 <div class="flex flex-column gap-4 flex-1">
   <osf-search-input
-    [placeholder]="searchPlaceholder"
-    [searchValue]="searchValue"
+    [placeholder]="searchPlaceholder()"
+    [searchValue]="searchValue()"
     (searchValueChange)="onSearchChange($event)"
   />
-  @if (isLoading) {
+  @if (isLoading()) {
     <p-table class="my-projects-table loading" [value]="[1, 2, 3, 4, 5]">
       <ng-template #header>
         <tr>
@@ -30,12 +30,12 @@
   } @else {
     <p-table
       class="my-projects-table"
-      [value]="items"
-      [rows]="tableParams.rows"
-      [first]="tableParams.firstRowIndex"
-      [rowsPerPageOptions]="tableParams.rowsPerPageOptions"
+      [value]="items()"
+      [rows]="tableParams().rows"
+      [first]="tableParams().firstRowIndex"
+      [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
       [paginator]="true"
-      [totalRecords]="tableParams.totalRecords"
+      [totalRecords]="tableParams().totalRecords"
       paginatorDropdownAppendTo="body"
       [resizableColumns]="true"
       [autoLayout]="true"
@@ -45,7 +45,7 @@
       [lazyLoadOnInit]="true"
       (onPage)="onPageChange($event)"
       (onSort)="onSort($event)"
-      [sortField]="sortColumn"
+      [sortField]="sortColumn()"
       [customSort]="true"
     >
       <ng-template #header>

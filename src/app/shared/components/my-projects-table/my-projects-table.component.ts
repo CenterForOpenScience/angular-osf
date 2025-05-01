@@ -1,9 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  Input,
-  Output,
-  EventEmitter,
+  input,
+  output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule, TablePageEvent } from 'primeng/table';
@@ -23,18 +22,18 @@ import { Skeleton } from 'primeng/skeleton';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProjectsTableComponent {
-  @Input() items: MyProjectsItem[] = [];
-  @Input() tableParams!: TableParameters;
-  @Input() searchValue = '';
-  @Input() sortColumn?: string;
-  @Input() sortOrder: SortOrder = SortOrder.Asc;
-  @Input() isLoading = false;
-  @Input() searchPlaceholder = 'Filter by title, description, and tags';
+  items = input<MyProjectsItem[]>([]);
+  tableParams = input.required<TableParameters>();
+  searchValue = input<string>('');
+  sortColumn = input<string | undefined>(undefined);
+  sortOrder = input<SortOrder>(SortOrder.Asc);
+  isLoading = input<boolean>(false);
+  searchPlaceholder = input<string>('Filter by title, description, and tags');
 
-  @Output() searchValueChange = new EventEmitter<string>();
-  @Output() pageChange = new EventEmitter<TablePageEvent>();
-  @Output() sort = new EventEmitter<SortEvent>();
-  @Output() itemClick = new EventEmitter<MyProjectsItem>();
+  searchValueChange = output<string>();
+  pageChange = output<TablePageEvent>();
+  sort = output<SortEvent>();
+  itemClick = output<MyProjectsItem>();
 
   protected onSearchChange(value: string | undefined): void {
     this.searchValueChange.emit(value ?? '');
