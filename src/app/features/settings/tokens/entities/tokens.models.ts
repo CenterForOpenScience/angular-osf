@@ -19,10 +19,6 @@ export interface TokenCreateResponse {
     scopes: string;
     owner: string;
   };
-  links: {
-    html: string;
-    self: string;
-  };
 }
 
 // API Response Model for GET request
@@ -34,10 +30,6 @@ export interface TokenGetResponse {
     scopes: string;
     owner: string;
   };
-  links: {
-    html: string;
-    self: string;
-  };
 }
 
 // Domain Models
@@ -47,6 +39,4 @@ export interface Token {
   tokenId: string;
   scopes: string[];
   ownerId: string;
-  htmlUrl: string;
-  apiUrl: string;
 }

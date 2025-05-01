@@ -8,7 +8,7 @@ import Aura from '@primeng/themes/aura';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient } from '@angular/common/http';
 import { ConfirmationService } from 'primeng/api';
-import { STATES } from '@core/helpers/ngxs-states.constant';
+import { STATES } from '@core/constants/ngxs-states.constant';
 import { provideServiceWorker } from '@angular/service-worker';
 
 export const appConfig: ApplicationConfig = {

@@ -25,8 +25,6 @@ export class TokenMapper {
       tokenId: response.attributes.token_id,
       scopes: response.attributes.scopes.split(' '),
       ownerId: response.attributes.owner,
-      htmlUrl: response.links.html,
-      apiUrl: response.links.self,
     };
   }
 
@@ -37,8 +35,6 @@ export class TokenMapper {
       tokenId: response.id,
       scopes: response.attributes.scopes.split(' '),
       ownerId: response.attributes.owner,
-      htmlUrl: response.links.html,
-      apiUrl: response.links.self,
     };
   }
 }

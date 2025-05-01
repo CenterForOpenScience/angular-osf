@@ -10,6 +10,7 @@ export class JsonApiService {
   http: HttpClient = inject(HttpClient);
   readonly #token =
     'Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt';
+  // OBJoUomBgbUuDgQo5JoaSKNya6XaYcd0ojAX1XOLmWi6J2arQPzByxyEi81fHE60drQUWv
   readonly #headers = new HttpHeaders({
     Authorization: this.#token,
     Accept: 'application/vnd.api+json',

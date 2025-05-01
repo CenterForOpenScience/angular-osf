@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NAV_ITEMS } from '@osf/core/helpers/nav-items.constant';
+import { NAV_ITEMS } from '@core/constants/nav-items.constant';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { MenuItem } from 'primeng/api';
 

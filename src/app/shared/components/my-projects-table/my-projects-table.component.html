@@ -1,0 +1,86 @@
+<div class="flex flex-column gap-4 flex-1">
+  <osf-search-input
+    [placeholder]="searchPlaceholder"
+    [searchValue]="searchValue"
+    (searchValueChange)="onSearchChange($event)"
+  />
+  @if (isLoading) {
+    <p-table class="my-projects-table loading" [value]="[1, 2, 3, 4, 5]">
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="title">
+            Title
+            <p-sortIcon field="title" />
+          </th>
+          <th>Contributors</th>
+          <th pSortableColumn="dateModified">
+            Modified
+            <p-sortIcon field="dateModified" />
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-item>
+        <tr class="loading-row">
+          <td colspan="3">
+            <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  } @else {
+    <p-table
+      class="my-projects-table"
+      [value]="items"
+      [rows]="tableParams.rows"
+      [first]="tableParams.firstRowIndex"
+      [rowsPerPageOptions]="tableParams.rowsPerPageOptions"
+      [paginator]="true"
+      [totalRecords]="tableParams.totalRecords"
+      paginatorDropdownAppendTo="body"
+      [resizableColumns]="true"
+      [autoLayout]="true"
+      [scrollable]="true"
+      [sortMode]="'single'"
+      [lazy]="true"
+      [lazyLoadOnInit]="true"
+      (onPage)="onPageChange($event)"
+      (onSort)="onSort($event)"
+      [sortField]="sortColumn"
+      [customSort]="true"
+    >
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="title">
+            Title
+            <p-sortIcon field="title" />
+          </th>
+          <th>Contributors</th>
+          <th pSortableColumn="dateModified">
+            Modified
+            <p-sortIcon field="dateModified" />
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-item>
+        <tr (click)="onItemClick(item)">
+          <td>
+            <p class="flex align-items-center gap-2">
+              <i
+                [ngClass]="
+                  item.isPublic ? 'osf-icon-padlock-unlock' : 'osf-icon-padlock'
+                "
+              ></i>
+              <span>{{ item.title }}</span>
+            </p>
+          </td>
+          <td>
+            @for (contributor of item.contributors; track contributor) {
+              {{ contributor.fullName }}{{ $last ? "" : ", " }}
+            }
+          </td>
+          <td>{{ item.dateModified | date: "MMM d, y, h:mm a" }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  }
+</div>

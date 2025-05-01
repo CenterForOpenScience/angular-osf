@@ -11,17 +11,11 @@ export interface AddonGetResponse {
   };
   relationships: {
     addon_imp: {
-      links: {
-        related: string;
-      };
       data: {
         type: string;
         id: string;
       };
     };
-  };
-  links: {
-    self: string;
   };
 }
 
@@ -39,45 +33,23 @@ export interface AuthorizedAddonGetResponse {
   };
   relationships: {
     account_owner: {
-      links: {
-        related: string;
-      };
       data: {
         type: string;
         id: string;
       };
     };
-    authorized_operations: {
-      links: {
-        related: string;
-      };
-    };
-    configured_storage_addons: {
-      links: {
-        related: string;
-      };
-    };
     external_storage_service?: {
-      links: {
-        related: string;
-      };
       data: {
         type: string;
         id: string;
       };
     };
     external_citation_service?: {
-      links: {
-        related: string;
-      };
       data: {
         type: string;
         id: string;
       };
     };
-  };
-  links: {
-    self: string;
   };
 }
 
@@ -117,18 +89,12 @@ export interface IncludedAddonData {
   relationships?: Record<
     string,
     {
-      links: {
-        related: string;
-      };
       data?: {
         type: string;
         id: string;
       };
     }
   >;
-  links?: {
-    self: string;
-  };
 }
 
 export interface UserReference {
@@ -136,31 +102,6 @@ export interface UserReference {
   id: string;
   attributes: {
     user_uri: string;
-  };
-  relationships: {
-    authorized_storage_accounts: {
-      links: {
-        related: string;
-      };
-    };
-    authorized_citation_accounts: {
-      links: {
-        related: string;
-      };
-    };
-    authorized_computing_accounts: {
-      links: {
-        related: string;
-      };
-    };
-    configured_resources: {
-      links: {
-        related: string;
-      };
-    };
-  };
-  links: {
-    self: string;
   };
 }
 
@@ -214,30 +155,16 @@ export interface AddonResponse {
   };
   relationships: {
     account_owner: {
-      links: {
-        related: string;
-      };
       data: {
         type: 'user-references';
         id: string;
       };
     };
-    authorized_operations: {
-      links: {
-        related: string;
-      };
-    };
     external_storage_service: {
-      links: {
-        related: string;
-      };
       data: {
         type: string;
         id: string;
       };
     };
-  };
-  links: {
-    self: string;
   };
 }

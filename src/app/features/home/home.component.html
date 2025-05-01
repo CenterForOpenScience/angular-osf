@@ -27,43 +27,19 @@
       <a routerLink="/search">search</a> OSF
     </p>
 
-    <osf-search-input
+    <osf-my-projects-table
+      [items]="filteredProjects()"
+      [tableParams]="tableParams()"
       [searchValue]="searchValue()"
-      (searchValueChange)="searchValue.set($event || '')"
-      placeholder="Search your projects"
+      [sortColumn]="sortColumn()"
+      [sortOrder]="sortOrder()"
+      [isLoading]="isLoading()"
+      [searchPlaceholder]="'Search project'"
+      (searchValueChange)="onSearchChange($event)"
+      (pageChange)="onPageChange($event)"
+      (sort)="onSort($event)"
+      (itemClick)="navigateToProject($event)"
     />
-
-    <p-table
-      class="home-table"
-      [value]="filteredProjects()"
-      [rows]="5"
-      [rowsPerPageOptions]="[2, 5, 10]"
-      [paginator]="true"
-      [resizableColumns]="true"
-      [autoLayout]="true"
-      [scrollable]="true"
-    >
-      <ng-template #header>
-        <tr>
-          <th pSortableColumn="title">
-            Title
-            <p-sortIcon field="title" />
-          </th>
-          <th>Contributors</th>
-          <th pSortableColumn="modified">
-            Modified
-            <p-sortIcon field="modified" />
-          </th>
-        </tr>
-      </ng-template>
-      <ng-template #body let-project>
-        <tr>
-          <td>{{ project.title }}</td>
-          <td>{{ getContributorsList(project) }}</td>
-          <td>{{ project.dateModified | date: "MMM d, y, h:mm a" }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
   </div>
 
   <div class="public-projects-container">

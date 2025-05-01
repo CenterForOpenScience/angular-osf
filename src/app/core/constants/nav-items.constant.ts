@@ -1,4 +1,4 @@
-import { NavItem } from '@osf/shared/entities/nav-item.interface';
+import { NavItem } from '@shared/entities/nav-item.interface';
 
 export const NAV_ITEMS: NavItem[] = [
   { path: '/home', label: 'Home', icon: 'home', useExactMatch: true },

@@ -47,6 +47,21 @@
     }
   }
 
+  .my-projects-table {
+    &.loading {
+      table {
+        tr.loading-row {
+          td {
+            background: transparent;
+            border: none;
+            padding: 0;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+
   .addon-table {
     tr {
       &.background-warning td {

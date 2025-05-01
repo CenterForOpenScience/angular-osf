@@ -42,7 +42,9 @@ export class AddonsService {
     if (!currentUser) throw new Error('Current user not found');
 
     const userUri = `https://staging4.osf.io/${currentUser.id}`;
-    const params = { 'filter[user_uri]': userUri };
+    const params = {
+      'filter[user_uri]': userUri,
+    };
 
     return this.#jsonApiService
       .get<
@@ -55,10 +57,13 @@ export class AddonsService {
     addonType: string,
     referenceId: string,
   ): Observable<AuthorizedAddon[]> {
+    const params = {
+      [`fields[external-${addonType}-services]`]: 'external_service_name',
+    };
     return this.#jsonApiService
       .get<
         JsonApiResponse<AuthorizedAddonGetResponse[], IncludedAddonData[]>
-      >(this.#baseUrl + `user-references/${referenceId}/authorized_${addonType}_accounts?include=external-${addonType}-service`)
+      >(this.#baseUrl + `user-references/${referenceId}/authorized_${addonType}_accounts?include=external-${addonType}-service`, params)
       .pipe(
         map((response) => {
           return response.data.map((item) =>
