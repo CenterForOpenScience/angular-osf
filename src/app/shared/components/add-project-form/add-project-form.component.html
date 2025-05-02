@@ -25,50 +25,52 @@
   </div>
 
   <!-- Affiliations -->
-  <div class="flex flex-column gap-2">
-    <div class="relative">
-      <h3 class="font-normal mb-2">Affiliation</h3>
-      <div class="flex gap-4 absolute top-0 right-0">
-        <p-button
-          class="secondary-transparent"
-          type="button"
-          severity="secondary"
-          (click)="selectAllAffiliations()"
-          (keydown.enter)="selectAllAffiliations()"
-        >
-          Select All
-        </p-button>
-        <p-button
-          class="secondary-transparent"
-          type="button"
-          severity="secondary"
-          (click)="removeAllAffiliations()"
-          (keydown.enter)="removeAllAffiliations()"
-        >
-          Remove All
-        </p-button>
+  @if (affiliations().length) {
+    <div class="flex flex-column gap-2">
+      <div class="relative">
+        <h3 class="font-normal mb-2">Affiliation</h3>
+        <div class="flex gap-4 absolute top-0 right-0">
+          <p-button
+            class="secondary-transparent"
+            type="button"
+            severity="secondary"
+            (click)="selectAllAffiliations()"
+            (keydown.enter)="selectAllAffiliations()"
+          >
+            Select All
+          </p-button>
+          <p-button
+            class="secondary-transparent"
+            type="button"
+            severity="secondary"
+            (click)="removeAllAffiliations()"
+            (keydown.enter)="removeAllAffiliations()"
+          >
+            Remove All
+          </p-button>
+        </div>
+      </div>
+
+      <div class="flex gap-2" role="group" aria-label="Affiliations">
+        @for (affiliation of affiliations(); track affiliation.id) {
+          <div class="flex align-items-center relative gap-2">
+            <p-checkbox
+              class="absolute top-0 affiliation-checkbox"
+              [value]="affiliation.id"
+              [formControlName]="ProjectFormControls.Affiliations"
+              [inputId]="affiliation.id"
+            />
+            <img
+              ngSrc="{{ affiliation.assets.logo }}"
+              alt="OSF Logo"
+              height="44"
+              width="44"
+            />
+          </div>
+        }
       </div>
     </div>
-
-    <div class="flex gap-2" role="group" aria-label="Affiliations">
-      @for (affiliation of affiliations; track affiliation.value) {
-        <div class="flex align-items-center relative gap-2">
-          <p-checkbox
-            class="absolute top-0 affiliation-checkbox"
-            [value]="affiliation.value"
-            [formControlName]="ProjectFormControls.Affiliations"
-            [inputId]="affiliation.value"
-          />
-          <img
-            ngSrc="assets/images/сos-shield.svg"
-            alt="OSF Logo"
-            height="44"
-            width="44"
-          />
-        </div>
-      }
-    </div>
-  </div>
+  }
 
   <!-- Description -->
   <div class="flex flex-column">
@@ -103,12 +105,14 @@
       label="Cancel"
       severity="info"
       (click)="dialogRef.close()"
+      [disabled]="isSubmitting()"
     />
     <p-button
       class="w-12rem btn-full-width"
       label="Create Project"
       type="submit"
-      [disabled]="!projectForm.valid"
+      [disabled]="!projectForm.valid || isSubmitting()"
+      [loading]="isSubmitting()"
     />
   </div>
 </form>

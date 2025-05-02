@@ -49,7 +49,7 @@ export class AddonsService {
     return this.#jsonApiService
       .get<
         JsonApiResponse<UserReference[], null>
-      >(this.#baseUrl + 'user-references', params)
+      >(this.#baseUrl + 'user-references/', params)
       .pipe(map((response) => response.data));
   }
 
@@ -63,7 +63,7 @@ export class AddonsService {
     return this.#jsonApiService
       .get<
         JsonApiResponse<AuthorizedAddonGetResponse[], IncludedAddonData[]>
-      >(this.#baseUrl + `user-references/${referenceId}/authorized_${addonType}_accounts?include=external-${addonType}-service`, params)
+      >(this.#baseUrl + `user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
       .pipe(
         map((response) => {
           return response.data.map((item) =>
@@ -78,7 +78,7 @@ export class AddonsService {
     addonType: string,
   ): Observable<AddonResponse> {
     return this.#jsonApiService.post<AddonResponse>(
-      this.#baseUrl + `authorized-${addonType}-accounts`,
+      this.#baseUrl + `authorized-${addonType}-accounts/`,
       addonRequestPayload,
     );
   }
@@ -89,14 +89,14 @@ export class AddonsService {
     addonId: string,
   ): Observable<AddonResponse> {
     return this.#jsonApiService.patch<AddonResponse>(
-      this.#baseUrl + `authorized-${addonType}-accounts/${addonId}`,
+      this.#baseUrl + `authorized-${addonType}-accounts/${addonId}/`,
       addonRequestPayload,
     );
   }
 
   deleteAuthorizedAddon(id: string, addonType: string): Observable<void> {
     return this.#jsonApiService.delete(
-      this.#baseUrl + `authorized-${addonType}-accounts/${id}`,
+      this.#baseUrl + `authorized-${addonType}-accounts/${id}/`,
     );
   }
 }

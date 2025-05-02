@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   signal,
+  OnInit,
 } from '@angular/core';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {
@@ -22,23 +23,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Store } from '@ngxs/store';
-import { MyProjectsSelectors } from '@core/store/my-projects';
-
-enum ProjectFormControls {
-  Title = 'title',
-  StorageLocation = 'storageLocation',
-  Affiliations = 'affiliations',
-  Description = 'description',
-  Template = 'template',
-}
-
-interface ProjectForm {
-  [ProjectFormControls.Title]: FormControl<string>;
-  [ProjectFormControls.StorageLocation]: FormControl<string>;
-  [ProjectFormControls.Affiliations]: FormControl<string[]>;
-  [ProjectFormControls.Description]: FormControl<string>;
-  [ProjectFormControls.Template]: FormControl<string>;
-}
+import { STORAGE_LOCATIONS } from '@core/constants/storage-locations.constant';
+import {
+  CreateProject,
+  GetMyProjects,
+  MyProjectsSelectors,
+} from '@core/store/my-projects';
+import { InstitutionsSelectors } from '@core/store/institutions';
+import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
+import { ProjectForm } from '@shared/entities/create-project-form.interface';
+import { ProjectFormControls } from '@osf/shared/entities/create-project-form-controls.enum';
 
 @Component({
   selector: 'osf-add-project-form',
@@ -58,7 +52,7 @@ interface ProjectForm {
   styleUrl: './add-project-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddProjectFormComponent {
+export class AddProjectFormComponent implements OnInit {
   #store = inject(Store);
   protected readonly projects = this.#store.selectSignal(
     MyProjectsSelectors.getProjects,
@@ -67,23 +61,18 @@ export class AddProjectFormComponent {
   protected readonly dialogRef = inject(DynamicDialogRef);
   protected readonly ProjectFormControls = ProjectFormControls;
   protected readonly hasTemplateSelected = signal(false);
+  protected readonly isSubmitting = signal(false);
 
-  protected readonly storageLocations = [
-    { label: 'United States', value: 'us' },
-    { label: 'Canada - Montréal', value: 'ca' },
-    { label: 'Germany - Frankfurt', value: 'de-1' },
-  ];
+  protected readonly storageLocations = STORAGE_LOCATIONS;
 
-  protected readonly affiliations = [
-    { label: 'Affiliation 1', value: 'aff1' },
-    { label: 'Affiliation 2', value: 'aff2' },
-    { label: 'Affiliation 3', value: 'aff3' },
-  ];
+  protected readonly affiliations = this.#store.selectSignal(
+    InstitutionsSelectors.getUserInstitutions,
+  );
 
   protected projectTemplateOptions = computed(() => {
     return this.projects().map((project) => ({
       label: project.title,
-      value: project.title,
+      value: project.id,
     }));
   });
 
@@ -115,8 +104,14 @@ export class AddProjectFormComponent {
       });
   }
 
+  ngOnInit(): void {
+    this.#store.dispatch(
+      new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}),
+    );
+  }
+
   selectAllAffiliations(): void {
-    const allAffiliationValues = this.affiliations.map((aff) => aff.value);
+    const allAffiliationValues = this.affiliations().map((aff) => aff.id);
     this.projectForm
       .get(ProjectFormControls.Affiliations)
       ?.setValue(allAffiliationValues);
@@ -132,7 +127,30 @@ export class AddProjectFormComponent {
       return;
     }
 
-    // TODO: Integrate with API
-    this.dialogRef.close();
+    const formValue = this.projectForm.getRawValue();
+    this.isSubmitting.set(true);
+
+    this.#store
+      .dispatch(
+        new CreateProject(
+          formValue.title,
+          formValue.description,
+          formValue.template,
+          formValue.storageLocation,
+          formValue.affiliations,
+        ),
+      )
+      .subscribe({
+        next: () => {
+          this.#store.dispatch(
+            new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}),
+          );
+          this.dialogRef.close();
+        },
+        error: (error) => {
+          console.error('Failed to create project:', error);
+          this.isSubmitting.set(false);
+        },
+      });
   }
 }
