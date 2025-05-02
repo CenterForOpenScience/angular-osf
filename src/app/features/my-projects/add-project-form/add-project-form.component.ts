@@ -22,7 +22,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Store } from '@ngxs/store';
-import { HomeSelectors } from 'src/app/features/home/store';
+import { MyProjectsSelectors } from '@core/store/my-projects';
 
 enum ProjectFormControls {
   Title = 'title',
@@ -61,7 +61,7 @@ interface ProjectForm {
 export class AddProjectFormComponent {
   #store = inject(Store);
   protected readonly projects = this.#store.selectSignal(
-    HomeSelectors.getProjects,
+    MyProjectsSelectors.getProjects,
   );
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly dialogRef = inject(DynamicDialogRef);

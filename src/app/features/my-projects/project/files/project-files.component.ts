@@ -18,7 +18,6 @@ import { SearchInputComponent } from '@shared/components/search-input/search-inp
 import { DropdownModule } from 'primeng/dropdown';
 import { Button } from 'primeng/button';
 import { DatePipe } from '@angular/common';
-import { Menu } from 'primeng/menu';
 
 @Component({
   selector: 'osf-project-files',
@@ -31,7 +30,6 @@ import { Menu } from 'primeng/menu';
     DropdownModule,
     Button,
     DatePipe,
-    Menu,
   ],
   templateUrl: './project-files.component.html',
   styleUrl: './project-files.component.scss',
