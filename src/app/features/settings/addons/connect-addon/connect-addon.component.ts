@@ -13,7 +13,6 @@ import { TableModule } from 'primeng/table';
 import { RouterLink, Router } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { Card } from 'primeng/card';
-import { RadioButton } from 'primeng/radiobutton';
 import {
   FormsModule,
   FormBuilder,
@@ -21,8 +20,6 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Checkbox } from 'primeng/checkbox';
-import { Divider } from 'primeng/divider';
 import { ADDON_TERMS as addonTerms } from '../utils/addon-terms.const';
 import {
   Addon,
@@ -58,9 +55,6 @@ import { AddonTerm } from '@osf/features/settings/addons/entities/addon-terms.in
     Card,
     FormsModule,
     ReactiveFormsModule,
-    RadioButton,
-    Checkbox,
-    Divider,
     InputText,
     Password,
   ],
