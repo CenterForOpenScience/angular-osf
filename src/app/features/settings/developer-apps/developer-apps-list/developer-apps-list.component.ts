@@ -12,10 +12,11 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
 import { ConfirmationService } from 'primeng/api';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-developer-applications-list',
-  imports: [Button, Card, RouterLink],
+  imports: [Button, Card, RouterLink, TranslateModule],
   templateUrl: './developer-apps-list.component.html',
   styleUrl: './developer-apps-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

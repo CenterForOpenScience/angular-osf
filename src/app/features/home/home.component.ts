@@ -30,11 +30,18 @@ import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.e
 import { GetUserInstitutions } from '@osf/core/store/institutions';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-home',
   standalone: true,
-  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent],
+  imports: [
+    RouterLink,
+    Button,
+    SubHeaderComponent,
+    MyProjectsTableComponent,
+    TranslatePipe,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   providers: [DialogService],

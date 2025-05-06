@@ -12,11 +12,19 @@ import {
   IS_XSMALL,
 } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-home-logged-out',
   standalone: true,
-  imports: [CarouselModule, FormsModule, Button, InputText, NgOptimizedImage],
+  imports: [
+    CarouselModule,
+    FormsModule,
+    Button,
+    InputText,
+    NgOptimizedImage,
+    TranslatePipe,
+  ],
   templateUrl: './home-logged-out.component.html',
   styleUrl: './home-logged-out.component.scss',
 })

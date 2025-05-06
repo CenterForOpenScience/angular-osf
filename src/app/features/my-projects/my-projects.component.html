@@ -1,8 +1,8 @@
 <section [class.desktop]="isDesktop()" class="flex flex-column flex-1">
   <osf-sub-header
     [showButton]="true"
-    [buttonLabel]="'Create Project'"
-    [title]="'My Projects'"
+    [buttonLabel]="'my-projects.header.create-project' | translate"
+    [title]="'my-projects.header.title' | translate"
     [icon]="'my-projects'"
     (buttonClick)="createProject()"
   />
@@ -15,10 +15,18 @@
     >
       @if (!isMobile()) {
         <p-tablist class="pr-5 pl-5">
-          <p-tab [value]="0">My Projects</p-tab>
-          <p-tab [value]="1">My Registrations</p-tab>
-          <p-tab [value]="2">My Preprints</p-tab>
-          <p-tab [value]="3">Bookmarks</p-tab>
+          <p-tab [value]="0">{{
+            "my-projects.tabs.my-projects" | translate
+          }}</p-tab>
+          <p-tab [value]="1">{{
+            "my-projects.tabs.my-registrations" | translate
+          }}</p-tab>
+          <p-tab [value]="2">{{
+            "my-projects.tabs.my-preprints" | translate
+          }}</p-tab>
+          <p-tab [value]="3">{{
+            "my-projects.tabs.bookmarks" | translate
+          }}</p-tab>
         </p-tablist>
       }
 
@@ -85,10 +93,7 @@
         <!--Bookmarks-->
         <p-tabpanel [value]="3" class="flex flex-column gap-4 flex-1">
           @if (!bookmarks().length && !isLoading()) {
-            <p>
-              You don't have any bookmarks. Click the bookmark icon on projects
-              or registrations to add them here.
-            </p>
+            <p>{{ "my-projects.bookmarks.empty-state" | translate }}</p>
           } @else {
             <osf-my-projects-table
               [items]="bookmarks()"

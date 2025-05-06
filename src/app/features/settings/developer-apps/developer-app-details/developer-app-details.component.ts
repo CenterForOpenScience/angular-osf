@@ -33,6 +33,7 @@ import { ConfirmationService } from 'primeng/api';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
 import { timer } from 'rxjs';
 import { NgClass } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-developer-application-details',
@@ -47,6 +48,7 @@ import { NgClass } from '@angular/common';
     FormsModule,
     ReactiveFormsModule,
     NgClass,
+    TranslateModule,
   ],
   templateUrl: './developer-app-details.component.html',
   styleUrl: './developer-app-details.component.scss',
@@ -187,5 +189,11 @@ export class DeveloperAppDetailsComponent implements OnInit {
     }
 
     //TODO integrate API
+  }
+
+  getClientSecretButtonLabel(): string {
+    return this.isClientSecretVisible()
+      ? 'settings.developer-apps.details.client-secret.hide'
+      : 'settings.developer-apps.details.client-secret.show';
   }
 }

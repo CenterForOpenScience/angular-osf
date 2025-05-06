@@ -21,10 +21,18 @@ import {
   DeleteToken,
   GetTokenById,
 } from '@core/store/settings/tokens/tokens.actions';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-token-details',
-  imports: [Button, Card, FormsModule, RouterLink, TokenAddEditFormComponent],
+  imports: [
+    Button,
+    Card,
+    FormsModule,
+    RouterLink,
+    TokenAddEditFormComponent,
+    TranslatePipe,
+  ],
   providers: [DialogService, DynamicDialogRef],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './token-details.component.html',

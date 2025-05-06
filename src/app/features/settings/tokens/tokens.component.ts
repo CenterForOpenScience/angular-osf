@@ -13,10 +13,12 @@ import { RouterOutlet, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { GetScopes } from '@core/store/settings';
 import { map } from 'rxjs';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-tokens',
-  imports: [SubHeaderComponent, RouterOutlet],
+  standalone: true,
+  imports: [SubHeaderComponent, RouterOutlet, TranslatePipe],
   templateUrl: './tokens.component.html',
   styleUrl: './tokens.component.scss',
   providers: [DialogService],

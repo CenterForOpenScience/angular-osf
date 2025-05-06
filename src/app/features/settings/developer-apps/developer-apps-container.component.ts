@@ -5,10 +5,11 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { CreateDeveloperAppComponent } from '@osf/features/settings/developer-apps/create-developer-app/create-developer-app.component';
 import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-developer-apps',
-  imports: [RouterOutlet, SubHeaderComponent],
+  imports: [RouterOutlet, SubHeaderComponent, TranslateModule],
   templateUrl: './developer-apps-container.component.html',
   styleUrl: './developer-apps-container.component.scss',
   providers: [DialogService],
@@ -16,6 +17,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 })
 export class DeveloperAppsContainerComponent {
   private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
   isXSmall$ = inject(IS_XSMALL);
   isMedium$ = inject(IS_MEDIUM);
   isXSmall = toSignal(this.isXSmall$);
@@ -32,7 +34,9 @@ export class DeveloperAppsContainerComponent {
     this.dialogService.open(CreateDeveloperAppComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: 'Create Developer App',
+      header: this.translateService.instant(
+        'settings.developer-apps.form.createTitle',
+      ),
       closeOnEscape: true,
       modal: true,
       closable: true,

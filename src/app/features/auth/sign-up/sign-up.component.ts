@@ -16,6 +16,7 @@ import { Router, RouterLink } from '@angular/router';
 import { PasswordInputHintComponent } from '@shared/components/password-input-hint/password-input-hint.component';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-sign-up',
@@ -31,6 +32,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     NgOptimizedImage,
     RouterLink,
     PasswordInputHintComponent,
+    TranslateModule,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',

@@ -1,0 +1,270 @@
+{
+  "auth": {
+    "common": {
+      "email": "Email",
+      "email-placeholder": "email@example.com",
+      "password": {
+        "new": "New Password",
+        "confirm": "Confirm New Password",
+        "mismatch": "Passwords must match",
+        "requirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number or special character"
+      }
+    },
+    "forgot-password": {
+      "title": "Forgot Your Password?",
+      "description": "Enter your email address and we'll send a link to reset your password",
+      "submit": "Reset Password",
+      "messages": {
+        "success": "Thanks. Check your email to reset your password.",
+        "error": "Email not found."
+      }
+    },
+    "reset-password": {
+      "title": "Reset Password",
+      "submit": "Reset Password",
+      "success": {
+        "title": "Thank You!",
+        "message": "You have successfully reset your password",
+        "back-to-signin": "Back to Sign In"
+      }
+    },
+    "sign-up": {
+      "title": "Create A Free Account",
+      "social": {
+        "orcid": "Sign up through ORCID",
+        "institution": "Sign up through Institution"
+      },
+      "divider": "or",
+      "form": {
+        "full-name": "Full Name",
+        "full-name-placeholder": "John Doe",
+        "submit": "Sign Up",
+        "terms": {
+          "agree": "I agree to the",
+          "terms-of-use": "Terms of Use",
+          "and": "and",
+          "privacy-policy": "Privacy Policy"
+        }
+      },
+      "success": {
+        "title": "Registration successful",
+        "message": "Check your email to confirm your account"
+      }
+    }
+  },
+  "home": {
+    "logged-in": {
+      "dashboard": {
+        "title": "Dashboard",
+        "create-project": "Create New Project",
+        "quick-search": {
+          "go-to": "Go to",
+          "my-projects": "My Projects",
+          "to-organize": "to organize your work or",
+          "search": "search",
+          "osf": "OSF",
+          "search-placeholder": "Search your projects"
+        }
+      },
+      "public-projects": {
+        "title": "Discover Public Projects"
+      },
+      "latest-research": {
+        "title": "Browse the latest research",
+        "subtitle": "Check out the latest preprints hosted on OSF covering a variety of research areas",
+        "button": "View Preprints"
+      },
+      "hosting": {
+        "title": "Hosting a conference or meeting?",
+        "subtitle": "Use the OSF for Meetings service to provide a central location for conference submissions",
+        "button": "View Meetings"
+      }
+    },
+    "logged-out": {
+      "hero": {
+        "title": "There's a <span class='highlight'>better way</span> to manage your research",
+        "subtitle": "OSF is a free, open platform to support your research and enable collaboration",
+        "sign-up": "Sign Up"
+      },
+      "discover": {
+        "title": "<span class='highlight'>Discover</span> Public Research",
+        "subtitle": "Discover projects, data, materials, and collaborators on OSF that might be helpful to your own research",
+        "search-placeholder": "Search"
+      },
+      "support": {
+        "title": "How OSF <span class='highlight'>Supports</span> your research",
+        "sections": {
+          "search": {
+            "title": "Search And Discover",
+            "description": "Find papers, data, and materials to inspire your next research project. Search public projects to build on the work of others and find new collaborators"
+          },
+          "design": {
+            "title": "Design Your Study",
+            "description": "Start a project and add collaborators, giving them access to protocols and other research materials. Built-in version control tracks the evolution of your study"
+          },
+          "collect": {
+            "title": "Collect and Analyze Data",
+            "description": "Store data, code, and other materials in OSF Storage, or connect your Dropbox or other third-party account. Every file gets a unique, persistent URL for citing and sharing"
+          },
+          "publish": {
+            "title": "Publish Your Reports",
+            "description": "Share papers in OSF Preprints or a community-based preprint provider, so others can find and cite your work. Track impact with metrics like downloads and view counts"
+          }
+        },
+        "learn-more": "Learn More"
+      },
+      "testimonials": {
+        "title": "What others are <span class='highlight'>saying</span>",
+        "slides": {
+          "patricia": {
+            "quote": "OSF is a game changer for those wanting to effectively share their research process in the spirit of collaboration.",
+            "facility": "Research Services Librarian | University of Toronto"
+          },
+          "maya": {
+            "quote": "OSF is indispensable in helping me create reproducible research pipelines from preregistration through data collection and analysis. Its versatility makes it my one-stop shop for projects. The Dropbox integration effortlessly transforms my existing local workflow to public repository.",
+            "facility": "Department of Epidemiology Harvard University"
+          },
+          "philip": {
+            "quote": "Because SocArXiv is a not-for-profit organization, researchers can be assured that they are sharing their research in an environment where access, inclusivity, and preservation, rather than profit, will remain at the heart of the mission. A great benefit of partnering with OSF is that this application is a free public good.",
+            "facility": "SocArXiv papers"
+          }
+        }
+      },
+      "integrations": {
+        "title": "OSF <span class='highlight'>integrations</span> make your workflow more efficient",
+        "categories": {
+          "authentication": "Authentication",
+          "discovery": "Discovery",
+          "references": "References",
+          "storage": "Storage"
+        }
+      }
+    }
+  },
+  "my-projects": {
+    "header": {
+      "title": "My Projects",
+      "create-project": "Create Project"
+    },
+    "tabs": {
+      "my-projects": "My Projects",
+      "my-registrations": "My Registrations",
+      "my-preprints": "My Preprints",
+      "bookmarks": "Bookmarks"
+    },
+    "bookmarks": {
+      "empty-state": "You don't have any bookmarks. Click the bookmark icon on projects or registrations to add them here."
+    },
+    "table": {
+      "columns": {
+        "title": "Title",
+        "contributors": "Contributors",
+        "modified": "Modified"
+      },
+      "search-placeholder": "Filter by title, description, and tags"
+    },
+    "create-project": {
+      "title": "Title",
+      "storage-location": "Storage Location",
+      "affiliation": {
+        "title": "Affiliation",
+        "select-all": "Select All",
+        "remove-all": "Remove All"
+      },
+      "description": {
+        "label": "Description (Optional)"
+      },
+      "template": {
+        "label": "Template (Optional)",
+        "placeholder": "Select template or start typing to find one"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create Project"
+      }
+    }
+  },
+  "settings": {
+    "developer-apps": {
+      "header": {
+        "title": "Developer apps",
+        "create-button": "Create Developer App"
+      },
+      "list": {
+        "description": "Third-party web applications can connect to the OSF on behalf of users via the OAuth 2.0 web application flow.",
+        "delete-button": "Delete"
+      },
+      "form": {
+        "editTitle": "Edit app",
+        "createTitle": "Create Developer App",
+        "app-name": "App Name",
+        "homepage-url": "Project homepage URL",
+        "description": "App description (optional)",
+        "callback-url": "Authorization callback URL",
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create Developer App",
+          "save": "Save"
+        }
+      },
+      "messages": {
+        "copied": "Copied!"
+      },
+      "details": {
+        "navigation": {
+          "back": "Back to list of developer apps"
+        },
+        "client-id": {
+          "title": "Client ID",
+          "description": "The client ID is the developer app's unique identifier and is safe to share publicly."
+        },
+        "client-secret": {
+          "title": "Client Secret",
+          "description": "The client secret is available only to you. Keep it private and do not share it.",
+          "show": "Show client secret",
+          "hide": "Hide client secret",
+          "reset": "Reset Secret"
+        }
+      }
+    },
+    "tokens": {
+      "header": {
+        "title": "Personal Access Tokens",
+        "create-button": "Create Token"
+      },
+      "list": {
+        "description": "Personal access tokens function like ordinary OAuth access tokens. They can be used to authenticate to the API.",
+        "delete-button": "Delete"
+      },
+      "form": {
+        "editTitle": "Edit token",
+        "createTitle": "Create Token",
+        "token-name": "Token Name",
+        "scopes": {
+          "title": "Scopes",
+          "description": "Scopes limit access for personal access tokens."
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create Token",
+          "save": "Save"
+        }
+      },
+      "details": {
+        "navigation": {
+          "back": "Back to list of personal tokens"
+        },
+        "title": "Edit Token",
+        "delete-button": "Delete"
+      },
+      "created-dialog": {
+        "title": "Token Successfully Created",
+        "success-message": "Token <strong>{{tokenName}}</strong> successfully created.",
+        "warning-message": "This token will never expire. This token should never be shared with others. If it is accidentally revealed publicly, it should be deactivated immediately.",
+        "copy-notification": "Copied!",
+        "token-warning": "This is the only time your token will be displayed.",
+        "close-button": "Close"
+      }
+    }
+  }
+}

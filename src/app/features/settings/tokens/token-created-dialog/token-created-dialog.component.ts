@@ -14,10 +14,19 @@ import { InputText } from 'primeng/inputtext';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-token-created-dialog',
-  imports: [Button, InputText, IconField, InputIcon, ClipboardModule],
+  standalone: true,
+  imports: [
+    Button,
+    InputText,
+    IconField,
+    InputIcon,
+    ClipboardModule,
+    TranslatePipe,
+  ],
   templateUrl: './token-created-dialog.component.html',
   styleUrl: './token-created-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

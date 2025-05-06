@@ -14,10 +14,12 @@ import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
 import { Store } from '@ngxs/store';
 import { DeleteToken, GetTokens, TokensSelectors } from '@core/store/settings';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-tokens-list',
-  imports: [Button, Card, RouterLink],
+  standalone: true,
+  imports: [Button, Card, RouterLink, TranslatePipe],
   templateUrl: './tokens-list.component.html',
   styleUrl: './tokens-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

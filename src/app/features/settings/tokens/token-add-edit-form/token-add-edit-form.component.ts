@@ -33,10 +33,19 @@ import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 import { map } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TokenCreatedDialogComponent } from '@osf/features/settings/tokens/token-created-dialog/token-created-dialog.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-token-add-edit-form',
-  imports: [Button, InputText, ReactiveFormsModule, CommonModule, Checkbox],
+  standalone: true,
+  imports: [
+    Button,
+    InputText,
+    ReactiveFormsModule,
+    CommonModule,
+    Checkbox,
+    TranslatePipe,
+  ],
   templateUrl: './token-add-edit-form.component.html',
   styleUrl: './token-add-edit-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -2,14 +2,15 @@
   <nav class="navigation-bar-container">
     <a routerLink="/settings/developer-apps">
       <!-- TODO - Add icon -->
-      <strong><</strong> Back to list of developer apps
+      <strong><</strong>
+      {{ "settings.developer-apps.details.navigation.back" | translate }}
     </a>
   </nav>
 
   <section class="title-container" [class.mobile]="isXSmall()">
     <h1>{{ developerApp().appName + developerAppId() }}</h1>
     <p-button
-      label="Delete"
+      [label]="'settings.developer-apps.list.delete-button' | translate"
       [class.btn-full-width]="isXSmall()"
       severity="danger"
       (click)="deleteApp()"
@@ -19,11 +20,14 @@
   <section class="cards-container" [class.mobile]="isXSmall()">
     <p-card>
       <section class="card-body">
-        <h2>Client ID</h2>
+        <h2>
+          {{ "settings.developer-apps.details.client-id.title" | translate }}
+        </h2>
 
         <p>
-          The client ID is the developer app's unique identifier and is safe to
-          share publicly.
+          {{
+            "settings.developer-apps.details.client-id.description" | translate
+          }}
         </p>
 
         <div class="inline-block relative">
@@ -31,7 +35,7 @@
             class="copy-notification"
             [class.visible]="clientIdCopiedNotificationVisible()"
           >
-            Copied!
+            {{ "settings.developer-apps.messages.copied" | translate }}
           </span>
           <p-iconfield iconPosition="right">
             <input type="text" pInputText readonly [value]="clientId()" />
@@ -48,11 +52,17 @@
 
     <p-card>
       <section class="card-body">
-        <h2>Client Secret</h2>
+        <h2>
+          {{
+            "settings.developer-apps.details.client-secret.title" | translate
+          }}
+        </h2>
 
         <p>
-          The client secret is available only to you. Keep it private and do not
-          share it.
+          {{
+            "settings.developer-apps.details.client-secret.description"
+              | translate
+          }}
         </p>
 
         <section class="client-secret-container" [class.mobile]="isXSmall()">
@@ -61,7 +71,7 @@
               class="copy-notification"
               [class.visible]="clientSecretCopiedNotificationVisible()"
             >
-              Copied!
+              {{ "settings.developer-apps.messages.copied" | translate }}
             </span>
             <p-iconfield iconPosition="right">
               <input
@@ -85,8 +95,10 @@
           <p-button
             [label]="
               isClientSecretVisible()
-                ? 'Hide client secret'
-                : 'Show client secret'
+                ? ('settings.developer-apps.details.client-secret.hide'
+                  | translate)
+                : ('settings.developer-apps.details.client-secret.show'
+                  | translate)
             "
             severity="secondary"
             (click)="isClientSecretVisible.set(!isClientSecretVisible())"
@@ -95,7 +107,9 @@
 
         <section class="card-actions">
           <p-button
-            label="Reset Secret"
+            [label]="
+              'settings.developer-apps.details.client-secret.reset' | translate
+            "
             [class.btn-half-width]="isXSmall()"
             (click)="resetClientSecret()"
           />
@@ -105,7 +119,7 @@
 
     <p-card>
       <section class="card-body">
-        <h2>Edit app</h2>
+        <h2>{{ "settings.developer-apps.form.editTitle" | translate }}</h2>
 
         <form
           [formGroup]="editAppForm"
@@ -113,7 +127,9 @@
           (ngSubmit)="submitForm()"
         >
           <div class="flex flex-column">
-            <label for="app-name">App Name</label>
+            <label for="app-name">{{
+              "settings.developer-apps.form.app-name" | translate
+            }}</label>
             <input
               id="app-name"
               type="text"
@@ -124,7 +140,9 @@
           </div>
 
           <div class="flex flex-column">
-            <label for="proj-homepage-url">Project homepage URL</label>
+            <label for="proj-homepage-url">{{
+              "settings.developer-apps.form.homepage-url" | translate
+            }}</label>
             <input
               id="proj-homepage-url"
               type="url"
@@ -137,7 +155,9 @@
           </div>
 
           <div class="flex flex-column">
-            <label for="app-descr">App description (optional)</label>
+            <label for="app-descr">{{
+              "settings.developer-apps.form.description" | translate
+            }}</label>
             <input
               id="app-descr"
               type="text"
@@ -148,7 +168,9 @@
           </div>
 
           <div class="flex flex-column">
-            <label for="auth-callback-url">Authorization callback URL</label>
+            <label for="auth-callback-url">{{
+              "settings.developer-apps.form.callback-url" | translate
+            }}</label>
             <input
               id="auth-callback-url"
               type="url"
@@ -162,7 +184,7 @@
 
           <section class="card-actions">
             <p-button
-              label="Save"
+              [label]="'settings.developer-apps.form.buttons.save' | translate"
               type="submit"
               [ngClass]="
                 isXSmall() ? 'btn-half-width' : 'w-10rem btn-full-width'
