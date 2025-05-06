@@ -2,7 +2,7 @@
 
 :host {
   .search-container {
-    margin: 6.2rem 1.7rem 0.4rem 1.7rem;
+    margin: 3.4rem 1.7rem 0.4rem 1.7rem;
     position: relative;
 
     img {
@@ -47,5 +47,25 @@
   .third-stepper {
     top: calc(5rem + 42px);
     left: calc(0.4rem + 30%);
+  }
+
+  @media (max-width: 1000px) {
+    .search-container {
+      margin: 3.4rem 2.5rem 0.4rem 2.5rem;
+    }
+
+    .resources {
+      padding: 2.5rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .search-container {
+      margin: 2.5rem 1.1rem 2.5rem 1.1rem;
+    }
+
+    .resources {
+      padding: 1.1rem;
+    }
   }
 }

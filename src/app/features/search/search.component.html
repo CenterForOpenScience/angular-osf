@@ -1,4 +1,7 @@
-<div class="search-container">
+<div
+  class="search-container"
+  [class]="!isMyProfilePage() ? 'mt-6 xl:mt-8' : 'mt-5 xl:mt-6'"
+>
   <img
     ngSrc="assets/icons/colored/question-mark.svg"
     alt="better-research"
@@ -17,20 +20,22 @@
   />
 </div>
 
-<div class="flex-column flex flex-1 w-full mt-6 resources-tab-panel">
+<div class="flex-column flex flex-1 w-full resources-tab-panel">
   <p-tabs
     [value]="selectedTab"
     (valueChange)="onTabChange(+$event)"
     class="flex-1"
   >
     @if (!isMobile()) {
-      <p-tablist class="pr-5 pl-5">
+      <p-tablist>
         <p-tab [value]="ResourceTab.All">All</p-tab>
         <p-tab [value]="ResourceTab.Projects">Projects</p-tab>
         <p-tab [value]="ResourceTab.Registrations">Registrations</p-tab>
         <p-tab [value]="ResourceTab.Preprints">Preprints</p-tab>
         <p-tab [value]="ResourceTab.Files">Files</p-tab>
-        <p-tab [value]="ResourceTab.Users">Users</p-tab>
+        @if (!isMyProfilePage()) {
+          <p-tab [value]="ResourceTab.Users">Users</p-tab>
+        }
       </p-tablist>
     }
 
@@ -52,13 +57,15 @@
       ></p-tabpanel>
       <p-tabpanel [value]="ResourceTab.Files" class="flex flex-column gap-5">
       </p-tabpanel>
-      <p-tabpanel [value]="ResourceTab.Users" class="flex flex-column gap-5">
-      </p-tabpanel>
+      @if (!isMyProfilePage()) {
+        <p-tabpanel [value]="ResourceTab.Users" class="flex flex-column gap-5">
+        </p-tabpanel>
+      }
     </p-tabpanels>
   </p-tabs>
 
   <div class="resources">
-    <osf-resources [selectedTab]="selectedTab"> </osf-resources>
+    <osf-resources-wrapper></osf-resources-wrapper>
 
     @if (currentStep === 1) {
       <div class="stepper first-stepper">

@@ -66,4 +66,13 @@ export class ResourceFiltersOptionsSelectors {
   ): PartOfCollectionFilter[] {
     return state.partOfCollection;
   }
+
+  @Selector([ResourceFiltersOptionsState])
+  static getAllOptions(
+    state: ResourceFiltersOptionsStateModel,
+  ): ResourceFiltersOptionsStateModel {
+    return {
+      ...state,
+    };
+  }
 }

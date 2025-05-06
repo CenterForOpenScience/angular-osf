@@ -145,6 +145,16 @@ export const routes: Routes = [
           provideStates([ResourceFiltersState, ResourceFiltersOptionsState]),
         ],
       },
+      {
+        path: 'my-profile',
+        loadComponent: () =>
+          import('./features/my-profile/my-profile.component').then(
+            (mod) => mod.MyProfileComponent,
+          ),
+        providers: [
+          provideStates([ResourceFiltersState, ResourceFiltersOptionsState]),
+        ],
+      },
     ],
   },
 ];
