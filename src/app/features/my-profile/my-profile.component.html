@@ -94,7 +94,7 @@
     <h2 class="mb-3">Employment</h2>
     <p-accordion>
       @for (employment of currentUser()?.employment; track $index) {
-        <p-accordion-panel value="{{ $index }}">
+        <p-accordion-panel value="{{ $index }}" class="accordion-panel">
           <p-accordion-header>
             <div class="title-date">
               <p>{{ employment.institution }}</p>
@@ -118,7 +118,7 @@
     <h2 class="mb-3">Education</h2>
     <p-accordion>
       @for (education of currentUser()?.education; track $index) {
-        <p-accordion-panel value="{{ $index }}">
+        <p-accordion-panel value="{{ $index }}" class="accordion-panel">
           <p-accordion-header>
             <div class="title-date">
               <p>{{ education.institution }}</p>
@@ -143,3 +143,5 @@
     </p-accordion>
   </div>
 </div>
+
+<osf-search></osf-search>

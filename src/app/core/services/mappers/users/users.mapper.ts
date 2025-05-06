@@ -10,6 +10,7 @@ export function mapUserUStoUser(user: UserUS): User {
     email: user.attributes.email,
     dateRegistered: new Date(user.attributes.date_registered),
     link: user.links.html,
+    iri: user.links.iri,
     socials: user.attributes.social,
     employment: user.attributes.employment?.map((emp) => ({
       title: emp.title,

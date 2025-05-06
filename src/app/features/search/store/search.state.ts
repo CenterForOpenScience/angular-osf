@@ -5,6 +5,8 @@ import { Action, State, StateContext, Store } from '@ngxs/store';
 import {
   GetResources,
   GetResourcesByLink,
+  ResetSearchState,
+  SetIsMyProfile,
   SetResourceTab,
   SetSearchText,
   SetSortBy,
@@ -13,22 +15,13 @@ import { tap } from 'rxjs';
 import { ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
 import { addFiltersParams } from '@shared/components/resources/resource-filters/utils/add-filters-params.helper';
 import { SearchSelectors } from '@osf/features/search/store/search.selectors';
-import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
 import { getResourceTypes } from '@osf/features/search/utils/helpers/get-resource-types.helper';
+import { searchStateDefaults } from '@osf/features/search/utils/data';
 
 @Injectable()
 @State<SearchStateModel>({
   name: 'search',
-  defaults: {
-    resources: [],
-    resourcesCount: 0,
-    searchText: '',
-    sortBy: '-relevance',
-    resourceTab: ResourceTab.All,
-    first: '',
-    next: '',
-    previous: '',
-  },
+  defaults: searchStateDefaults,
 })
 export class SearchState {
   searchService = inject(SearchService);
@@ -89,5 +82,15 @@ export class SearchState {
   @Action(SetResourceTab)
   setResourceTab(ctx: StateContext<SearchStateModel>, action: SetResourceTab) {
     ctx.patchState({ resourceTab: action.resourceTab });
+  }
+
+  @Action(SetIsMyProfile)
+  setIsMyProfile(ctx: StateContext<SearchStateModel>, action: SetIsMyProfile) {
+    ctx.patchState({ isMyProfile: action.isMyProfile });
+  }
+
+  @Action(ResetSearchState)
+  resetState(ctx: StateContext<SearchStateModel>) {
+    ctx.patchState(searchStateDefaults);
   }
 }

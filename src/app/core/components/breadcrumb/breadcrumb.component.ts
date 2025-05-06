@@ -13,8 +13,11 @@ export class BreadcrumbComponent {
   #destroyRef = inject(DestroyRef);
   protected readonly url = signal(this.#router.url);
   protected readonly parsedUrl = computed(() => {
-    const cleanUrl = this.url().split('?')[0].split('#')[0];
-    return cleanUrl.replace('-', ' ').split('/').filter(Boolean);
+    return this.url()
+      .split('?')[0]
+      .split('/')
+      .filter(Boolean)
+      .map((segment) => segment.replace(/-/g, ' '));
   });
 
   constructor() {

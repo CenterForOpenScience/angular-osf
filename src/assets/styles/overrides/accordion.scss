@@ -109,11 +109,17 @@
         color: var.$pr-blue-1;
       }
     }
+  }
 
-    @media (max-width: 600px) {
-      .p-accordion {
-        row-gap: 1.7rem;
-      }
+  @media (max-width: 1000px) {
+    .p-accordion {
+      row-gap: 0.5rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .p-accordion {
+      row-gap: 1.7rem;
     }
   }
 }

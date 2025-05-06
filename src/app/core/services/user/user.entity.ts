@@ -6,6 +6,7 @@ export interface User {
   email?: string;
   dateRegistered: Date;
   link?: string;
+  iri?: string;
   socials?: {
     orcid?: string;
     github?: string;

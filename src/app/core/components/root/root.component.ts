@@ -5,9 +5,10 @@ import { HeaderComponent } from '@core/components/header/header.component';
 import { MainContentComponent } from '@core/components/main-content/main-content.component';
 import { FooterComponent } from '@core/components/footer/footer.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
-import { IS_WEB } from '@shared/utils/breakpoints.tokens';
+import { IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { BreadcrumbComponent } from '@core/components/breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'osf-root',
@@ -20,12 +21,13 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
     FooterComponent,
     TopnavComponent,
     ConfirmDialog,
+    BreadcrumbComponent,
   ],
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RootComponent {
-  #isWeb$ = inject(IS_WEB);
-  isWeb = toSignal(this.#isWeb$);
+  isWeb = toSignal(inject(IS_WEB));
+  isMobile = toSignal(inject(IS_XSMALL));
 }

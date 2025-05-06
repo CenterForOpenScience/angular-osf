@@ -3,6 +3,7 @@ import {
   Component,
   effect,
   inject,
+  OnDestroy,
   signal,
   untracked,
 } from '@angular/core';
@@ -17,19 +18,23 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AccordionModule } from 'primeng/accordion';
 import { TableModule } from 'primeng/table';
 import { DataViewModule } from 'primeng/dataview';
-import { ResourcesComponent } from '@shared/components/resources/resources.component';
 import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
 import { Store } from '@ngxs/store';
 import {
   GetResources,
+  ResetSearchState,
   SearchSelectors,
   SetResourceTab,
   SetSearchText,
 } from '@osf/features/search/store';
-import { ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
+import {
+  ResetFiltersState,
+  ResourceFiltersSelectors,
+} from '@shared/components/resources/resource-filters/store';
 import { debounceTime } from 'rxjs';
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { Button } from 'primeng/button';
+import { ResourcesWrapperComponent } from '@shared/components/resources/resources-wrapper/resources-wrapper.component';
 
 @Component({
   selector: 'osf-search',
@@ -48,14 +53,14 @@ import { Button } from 'primeng/button';
     AccordionModule,
     TableModule,
     DataViewModule,
-    ResourcesComponent,
     Button,
+    ResourcesWrapperComponent,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent {
+export class SearchComponent implements OnDestroy {
   readonly #store = inject(Store);
 
   protected searchValue = signal('');
@@ -97,6 +102,9 @@ export class SearchComponent {
   protected sortByStoreValue = this.#store.selectSignal(
     SearchSelectors.getSortBy,
   );
+  readonly isMyProfilePage = this.#store.selectSignal(
+    SearchSelectors.getIsMyProfile,
+  );
 
   protected selectedTab: ResourceTab = ResourceTab.All;
   protected readonly ResourceTab = ResourceTab;
@@ -137,12 +145,9 @@ export class SearchComponent {
       }
     });
 
-    // sync resource tabs with query parameters
+    // sync resource tabs with store
     effect(() => {
-      if (
-        !this.selectedTab &&
-        this.selectedTab !== this.resourcesTabStoreValue()
-      ) {
+      if (this.selectedTab !== this.resourcesTabStoreValue()) {
         this.selectedTab = this.resourcesTabStoreValue();
       }
     });
@@ -151,5 +156,11 @@ export class SearchComponent {
   onTabChange(index: ResourceTab): void {
     this.#store.dispatch(new SetResourceTab(index));
     this.selectedTab = index;
+    this.#store.dispatch(GetAllOptions);
+  }
+
+  ngOnDestroy(): void {
+    this.#store.dispatch(ResetFiltersState);
+    this.#store.dispatch(ResetSearchState);
   }
 }

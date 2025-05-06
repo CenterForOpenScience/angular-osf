@@ -31,3 +31,13 @@ export class SetResourceTab {
 
   constructor(public resourceTab: ResourceTab) {}
 }
+
+export class SetIsMyProfile {
+  static readonly type = '[Search] Set IsMyProfile';
+
+  constructor(public isMyProfile: boolean) {}
+}
+
+export class ResetSearchState {
+  static readonly type = '[Search] Reset State';
+}
