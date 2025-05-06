@@ -4,6 +4,7 @@ import { AddonsState } from '@core/store/settings/addons';
 import { UserState } from '@core/store/user';
 import { MyProjectsState } from '@core/store/my-projects';
 import { SearchState } from '@osf/features/search/store';
+import { DeveloperAppsState } from '@osf/features/settings/developer-apps/store';
 
 export const STATES = [
   AuthState,
@@ -12,4 +13,5 @@ export const STATES = [
   UserState,
   SearchState,
   MyProjectsState,
+  DeveloperAppsState,
 ];

@@ -1,18 +1,10 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { StringOrNull } from '@core/helpers/types.helper';
 
-export interface DeveloperApp {
-  id: string;
-  appName: string;
-  projHomePageUrl: string;
-  appDescription: StringOrNull;
-  authorizationCallbackUrl: string;
-}
-
 export enum DeveloperAppFormFormControls {
-  AppName = 'appName',
+  AppName = 'name',
+  AppDescription = 'description',
   ProjectHomePageUrl = 'projHomePageUrl',
-  AppDescription = 'appDescription',
   AuthorizationCallbackUrl = 'authorizationCallbackUrl',
 }
 

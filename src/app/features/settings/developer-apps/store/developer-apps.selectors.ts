@@ -1,0 +1,19 @@
+import { Selector } from '@ngxs/store';
+import { DeveloperAppsStateModel } from '@osf/features/settings/developer-apps/store/developer-apps.state-model';
+import { DeveloperAppsState } from '@osf/features/settings/developer-apps/store/developer-apps.state';
+import { DeveloperApp } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
+
+export class DeveloperAppsSelectors {
+  @Selector([DeveloperAppsState])
+  static getDeveloperApps(state: DeveloperAppsStateModel): DeveloperApp[] {
+    return state.developerApps;
+  }
+
+  @Selector([DeveloperAppsState])
+  static getDeveloperAppDetails(
+    state: DeveloperAppsStateModel,
+  ): (clientId: string) => DeveloperApp | undefined {
+    return (clientId: string) =>
+      state.developerApps.find((app) => app.clientId === clientId);
+  }
+}
