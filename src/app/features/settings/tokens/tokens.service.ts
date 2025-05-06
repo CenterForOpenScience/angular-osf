@@ -20,13 +20,13 @@ export class TokensService {
 
   getScopes(): Observable<Scope[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<Scope[], null>>(this.baseUrl + 'scopes')
+      .get<JsonApiResponse<Scope[], null>>(this.baseUrl + 'scopes/')
       .pipe(map((responses) => responses.data));
   }
 
   getTokens(): Observable<Token[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<TokenGetResponse[], null>>(this.baseUrl + 'tokens')
+      .get<JsonApiResponse<TokenGetResponse[], null>>(this.baseUrl + 'tokens/')
       .pipe(
         map((responses) => {
           return responses.data.map((response) =>
@@ -40,7 +40,7 @@ export class TokensService {
     return this.jsonApiService
       .get<
         JsonApiResponse<TokenGetResponse, null>
-      >(this.baseUrl + `tokens/${tokenId}`)
+      >(this.baseUrl + `tokens/${tokenId}/`)
       .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 
@@ -60,11 +60,11 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.jsonApiService
-      .patch<TokenCreateResponse>(this.baseUrl + `tokens/${tokenId}`, request)
+      .patch<TokenCreateResponse>(this.baseUrl + `tokens/${tokenId}/`, request)
       .pipe(map((response) => TokenMapper.fromCreateResponse(response)));
   }
 
   deleteToken(tokenId: string): Observable<void> {
-    return this.jsonApiService.delete(this.baseUrl + `tokens/${tokenId}`);
+    return this.jsonApiService.delete(this.baseUrl + `tokens/${tokenId}/`);
   }
 }

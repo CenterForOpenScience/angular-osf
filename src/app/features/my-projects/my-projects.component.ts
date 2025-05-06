@@ -19,7 +19,7 @@ import { TabOption } from '@shared/entities/tab-option.interface';
 import { TablePageEvent } from 'primeng/table';
 import type { SortEvent } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { AddProjectFormComponent } from './add-project-form/add-project-form.component';
+import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
 import { Store } from '@ngxs/store';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -40,6 +40,7 @@ import { SortOrder } from '@shared/utils/sort-order.enum';
 import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
 import { QueryParams } from '@osf/shared/entities/query-params.interface';
 import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
+import { GetUserInstitutions } from '@core/store/institutions';
 
 @Component({
   selector: 'osf-my-projects',
@@ -130,6 +131,7 @@ export class MyProjectsComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.#store.dispatch(new GetUserInstitutions());
     this.#store.dispatch(new GetBookmarksCollectionId());
   }
 
@@ -263,32 +265,6 @@ export class MyProjectsComponent implements OnInit {
         this.isLoading.set(false);
       },
     });
-
-    // switch (this.selectedTab()) {
-    //   case 0:
-    //     this.#store.dispatch(new GetMyProjects(pageNumber, pageSize, filters));
-    //     break;
-    //   case 1:
-    //     this.#store.dispatch(
-    //       new GetMyRegistrations(pageNumber, pageSize, filters),
-    //     );
-    //     break;
-    //   case 2:
-    //     this.#store.dispatch(new GetMyPreprints(pageNumber, pageSize, filters));
-    //     break;
-    //   case 3:
-    //     if (this.bookmarksCollectionId()) {
-    //       this.#store.dispatch(
-    //         new GetMyBookmarks(
-    //           this.bookmarksCollectionId(),
-    //           pageNumber,
-    //           pageSize,
-    //           filters,
-    //         ),
-    //       );
-    //     }
-    //     break;
-    // }
   }
 
   #createFilters(params: QueryParams): MyProjectsSearchFilters {

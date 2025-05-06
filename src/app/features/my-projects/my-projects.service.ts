@@ -8,10 +8,12 @@ import {
   MyProjectsItemGetResponse,
   MyProjectsJsonApiResponse,
   SparseCollectionsResponse,
+  MyProjectsItem,
 } from '@osf/features/my-projects/entities/my-projects.entities';
 import { map } from 'rxjs/operators';
 import { SortOrder } from '@shared/utils/sort-order.enum';
 import { EndpointType } from '@osf/features/my-projects/entities/my-projects.types';
+import { CreateProjectPayload } from './entities/create-project.entities';
 
 @Injectable({
   providedIn: 'root',
@@ -56,7 +58,7 @@ export class MyProjectsService {
     } else {
       params['sort'] = '-date_modified';
     }
-
+    // const url = this.#baseUrl + endpoint + '/';
     const url = endpoint.startsWith('collections/')
       ? this.#baseUrl + endpoint
       : this.#baseUrl + 'users/me/' + endpoint;
@@ -87,7 +89,7 @@ export class MyProjectsService {
     };
 
     return this.#jsonApiService
-      .get<SparseCollectionsResponse>(this.#baseUrl + 'collections', params)
+      .get<SparseCollectionsResponse>(this.#baseUrl + 'collections/', params)
       .pipe(
         map((response) => {
           const bookmarksCollection = response.data.find(
@@ -123,10 +125,60 @@ export class MyProjectsService {
     pageSize?: number,
   ): Observable<MyProjectsItemResponse> {
     return this.#getMyItems(
-      `collections/${collectionId}/linked_nodes`,
+      `collections/${collectionId}/linked_nodes/`,
       filters,
       pageNumber,
       pageSize,
     );
+  }
+
+  createProject(
+    title: string,
+    description: string,
+    templateFrom: string,
+    region: string,
+    affiliations: string[],
+  ): Observable<MyProjectsItem> {
+    const payload: CreateProjectPayload = {
+      data: {
+        type: 'nodes',
+        attributes: {
+          title,
+          ...(description && { description }),
+          category: 'project',
+          ...(templateFrom && { template_from: templateFrom }),
+        },
+        relationships: {
+          region: {
+            data: {
+              type: 'regions',
+              id: region,
+            },
+          },
+          ...(affiliations.length > 0 && {
+            affiliated_institutions: {
+              data: affiliations.map((id) => ({
+                type: 'institutions',
+                id,
+              })),
+            },
+          }),
+        },
+      },
+    };
+
+    const params: Record<string, unknown> = {
+      'embed[]': ['bibliographic_contributors'],
+      'fields[nodes]': 'title,date_modified,public,bibliographic_contributors',
+      'fields[users]': 'family_name,full_name,given_name,middle_name',
+    };
+
+    return this.#jsonApiService
+      .post<MyProjectsItemGetResponse>(
+        `${this.#baseUrl}nodes/`,
+        payload,
+        params,
+      )
+      .pipe(map((response) => MyProjectsMapper.fromResponse(response)));
   }
 }

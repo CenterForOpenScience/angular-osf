@@ -47,3 +47,15 @@ export class GetBookmarksCollectionId {
 export class ClearMyProjects {
   static readonly type = '[My Projects] Clear Projects';
 }
+
+export class CreateProject {
+  static readonly type = '[MyProjects] Create Project';
+
+  constructor(
+    public title: string,
+    public description: string,
+    public templateFrom: string,
+    public region: string,
+    public affiliations: string[],
+  ) {}
+}

@@ -3,11 +3,12 @@ import { SocialIcon } from '@osf/shared/entities/social-icon.interface';
 import { RouterLink } from '@angular/router';
 import { IS_PORTRAIT, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'osf-footer',
-  imports: [RouterLink],
+  imports: [RouterLink, NgOptimizedImage],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +21,7 @@ export class FooterComponent {
 
   protected readonly socialIcons: SocialIcon[] = [
     {
-      name: 'twitter',
+      name: 'x',
       url: '#',
       ariaLabel: 'X (formerly Twitter)',
     },

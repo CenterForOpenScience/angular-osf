@@ -48,6 +48,10 @@
   }
 
   .my-projects-table {
+    tr:not(.loading-row) {
+      cursor: pointer;
+    }
+
     &.loading {
       table {
         tr.loading-row {
@@ -56,6 +60,14 @@
             border: none;
             padding: 0;
             width: 100%;
+          }
+        }
+
+        tr:hover {
+          background: inherit;
+
+          td {
+            background: inherit;
           }
         }
       }

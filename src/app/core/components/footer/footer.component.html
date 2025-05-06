@@ -11,12 +11,13 @@
 
       <div class="footer-socials">
         @for (icon of socialIcons; track icon.name) {
-          <a
-            class="icon-link"
-            [href]="icon.url"
-            [attr.aria-label]="icon.ariaLabel"
-          >
-            <i [class]="'osf-icon-' + icon.name"></i>
+          <a [href]="icon.url" [attr.aria-label]="icon.ariaLabel">
+            <img
+              alt="social media icon"
+              width="37"
+              height="37"
+              [ngSrc]="'assets/icons/socials/' + icon.name + '.svg'"
+            />
           </a>
         }
       </div>

@@ -5,6 +5,7 @@ import { UserState } from '@core/store/user';
 import { MyProjectsState } from '@core/store/my-projects';
 import { SearchState } from '@osf/features/search/store';
 import { DeveloperAppsState } from '@osf/features/settings/developer-apps/store';
+import { InstitutionsState } from '@core/store/institutions';
 
 export const STATES = [
   AuthState,
@@ -13,5 +14,6 @@ export const STATES = [
   UserState,
   SearchState,
   MyProjectsState,
+  InstitutionsState,
   DeveloperAppsState,
 ];
