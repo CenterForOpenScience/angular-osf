@@ -1,5 +1,13 @@
 :host {
   display: flex;
   flex-direction: column;
-  row-gap: 0.4rem;
+  gap: 0.4rem;
+
+  @media (max-width: 1200px) {
+    flex-direction: row;
+  }
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
 }

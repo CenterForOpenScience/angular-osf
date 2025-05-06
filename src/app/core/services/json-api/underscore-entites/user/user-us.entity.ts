@@ -15,7 +15,12 @@ export interface UserUS {
     middle_names?: string;
     suffix?: string;
     social: Social;
+    date_registered: string;
   };
   relationships: Record<string, unknown>;
-  links: Record<string, string>;
+  links: {
+    html: string;
+    profile_image: string;
+    iri: string;
+  };
 }

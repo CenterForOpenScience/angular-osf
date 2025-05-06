@@ -1,2 +1,11 @@
 <osf-breadcrumb />
-<a [routerLink]="authButtonLink()" class="p-button">{{ authButtonText() }}</a>
+<!--<a [routerLink]="authButtonLink()" class="p-button">{{ authButtonText() }}</a>-->
+
+<div class="dropdown-button ml-auto" style="min-width: 7rem">
+  <p-button (click)="menu.toggle($event)">
+    {{ currentUser()?.fullName }}
+    <i class="pi pi-chevron-down"></i>
+  </p-button>
+
+  <p-menu #menu [model]="items" popup></p-menu>
+</div>

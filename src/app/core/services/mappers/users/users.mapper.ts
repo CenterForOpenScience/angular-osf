@@ -11,8 +11,11 @@ export function mapUserUStoUser(user: UserUS): User {
     suffix: user.attributes.suffix,
     familyName: user.attributes.family_name,
     email: user.attributes.email,
+    dateRegistered: new Date(user.attributes.date_registered),
+    link: user.links.html,
     education: user.attributes.education,
     employment: user.attributes.employment,
+    iri: user.links.iri,
     social: user.attributes.social,
   };
 }
@@ -22,6 +25,7 @@ export function mapUserToUserUS(user: Partial<User> | User): Partial<UserUS> {
     id: user.id,
     type: 'user',
     attributes: {
+      date_registered: new Date(user.dateRegistered ?? ''),
       full_name: user.fullName || '',
       given_name: user.givenName || '',
       family_name: user.familyName || '',

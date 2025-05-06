@@ -8,6 +8,7 @@ import {
   GetMyBookmarks,
   GetBookmarksCollectionId,
   ClearMyProjects,
+  CreateProject,
 } from './my-projects.actions';
 import { MyProjectsService } from '@osf/features/my-projects/my-projects.service';
 import { tap } from 'rxjs';
@@ -123,5 +124,29 @@ export class MyProjectsState {
       totalPreprints: 0,
       totalBookmarks: 0,
     });
+  }
+
+  @Action(CreateProject)
+  createProject(
+    ctx: StateContext<MyProjectsStateModel>,
+    action: CreateProject,
+  ) {
+    return this.myProjectsService
+      .createProject(
+        action.title,
+        action.description,
+        action.templateFrom,
+        action.region,
+        action.affiliations,
+      )
+      .pipe(
+        tap((project) => {
+          const state = ctx.getState();
+          ctx.patchState({
+            projects: [project, ...state.projects],
+            totalProjects: state.totalProjects + 1,
+          });
+        }),
+      );
   }
 }

@@ -62,13 +62,25 @@
 
           @if (item()?.dateCreated && item()?.dateModified) {
             <p class="date">
-              Date created: {{ item()?.dateCreated | date: "MMMM d, y" }} | Date
-              modified: {{ item()?.dateModified | date: "MMMM d, y" }}
+              @if (!isSmall()) {
+                Date created: {{ item()?.dateCreated | date: "MMMM d, y" }} |
+                Date modified: {{ item()?.dateModified | date: "MMMM d, y" }}
+              } @else {
+                <div class="flex flex-column row-gap-1">
+                  <p>
+                    Date created: {{ item()?.dateCreated | date: "MMMM d, y" }}
+                  </p>
+                  <p>
+                    Date modified:
+                    {{ item()?.dateModified | date: "MMMM d, y" }}
+                  </p>
+                </div>
+              }
             </p>
           }
 
           @if (item()?.resourceType === ResourceType.Registration) {
-            <div class="flex column-gap-5 mt-1">
+            <div class="flex column-gap-5 row-gap-3 mt-1 flex-wrap">
               <a class="icon-container" [href]="item()?.id + '/resources'">
                 @if (item()?.hasDataResource) {
                   <i class="osf-icon-data-colored text-4xl"></i>
@@ -114,7 +126,7 @@
         </div>
       </p-accordion-header>
       <p-accordion-content>
-        <div class="content flex flex-column row-gap-3">
+        <div class="content">
           @if (item()?.description) {
             <p class="description">Description: {{ item()?.description }}</p>
           }

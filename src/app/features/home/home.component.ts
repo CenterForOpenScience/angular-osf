@@ -27,6 +27,9 @@ import {
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
 import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
+import { GetUserInstitutions } from '@osf/core/store/institutions';
+import { DialogService } from 'primeng/dynamicdialog';
+import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
 
 @Component({
   selector: 'osf-home',
@@ -34,18 +37,23 @@ import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.e
   imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
+  providers: [DialogService],
 })
 export class HomeComponent implements OnInit {
   readonly #destroyRef = inject(DestroyRef);
   readonly #store = inject(Store);
   readonly #router = inject(Router);
   readonly #route = inject(ActivatedRoute);
+  readonly #dialogService = inject(DialogService);
+  readonly #isXSmall$ = inject(IS_XSMALL);
+  readonly #isMedium$ = inject(IS_MEDIUM);
   readonly #searchSubject = new Subject<string>();
 
   protected readonly isLoading = signal(false);
+  protected readonly isSubmitting = signal(false);
 
-  protected readonly isMedium = toSignal(inject(IS_MEDIUM));
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
+  protected readonly isMedium = toSignal(this.#isMedium$);
+  protected readonly isMobile = toSignal(this.#isXSmall$);
 
   protected readonly activeProject = signal<MyProjectsItem | null>(null);
   protected readonly searchValue = signal('');
@@ -77,6 +85,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.#setupQueryParamsSubscription();
+    this.#store.dispatch(new GetUserInstitutions());
   }
 
   #setupQueryParamsSubscription(): void {
@@ -213,5 +222,23 @@ export class HomeComponent implements OnInit {
   protected navigateToProject(project: MyProjectsItem): void {
     this.activeProject.set(project);
     this.#router.navigate(['/my-projects', project.id]);
+  }
+
+  protected createProject(): void {
+    const dialogWidth = this.isMobile() ? '95vw' : '850px';
+    this.isSubmitting.set(true);
+
+    const dialogRef = this.#dialogService.open(AddProjectFormComponent, {
+      width: dialogWidth,
+      focusOnShow: false,
+      header: 'Create Project',
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+    });
+
+    dialogRef.onClose.subscribe(() => {
+      this.isSubmitting.set(false);
+    });
   }
 }

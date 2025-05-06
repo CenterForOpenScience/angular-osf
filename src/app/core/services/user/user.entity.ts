@@ -13,4 +13,16 @@ export interface User {
   education: Education[];
   employment: Employment[];
   social: Social;
+  dateRegistered: Date;
+  link?: string;
+  iri?: string;
+  socials?: {
+    orcid?: string;
+    github?: string;
+    scholar?: string;
+    twitter?: string;
+    linkedIn?: string;
+    impactStory?: string;
+    researcherId?: string;
+  };
 }
