@@ -1,6 +1,6 @@
 export interface Education {
   degree: string;
-  endYear: string | null;
+  endYear: number | null;
   ongoing: boolean;
   endMonth: number | null;
   startYear: number;

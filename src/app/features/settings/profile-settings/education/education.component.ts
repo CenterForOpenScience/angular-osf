@@ -97,7 +97,7 @@ export class EducationComponent {
       endMonth: education.ongoing
         ? null
         : this.setupDates('', education.endDate).endMonth,
-      ongoing: !education.ongoing,
+      ongoing: education.ongoing,
     })) satisfies Education[];
 
     this.#store.dispatch(
@@ -111,7 +111,7 @@ export class EducationComponent {
   ): {
     startYear: number;
     startMonth: number;
-    endYear: string | null;
+    endYear: number | null;
     endMonth: number | null;
   } {
     const start = new Date(startDate);
@@ -119,7 +119,7 @@ export class EducationComponent {
     return {
       startYear: start.getFullYear(),
       startMonth: start.getMonth() + 1,
-      endYear: end ? end.getFullYear().toString() : null,
+      endYear: end ? end.getFullYear() : null,
       endMonth: end ? end.getMonth() + 1 : null,
     };
   }
