@@ -7,7 +7,7 @@
 
   @if (developerApp()) {
     <section class="title-container" [class.mobile]="isXSmall()">
-      <h1>{{ developerApp()?.name + clientId() }}</h1>
+      <h1>{{ developerApp()?.name }}</h1>
       <p-button
         label="Delete"
         [class.btn-full-width]="isXSmall()"

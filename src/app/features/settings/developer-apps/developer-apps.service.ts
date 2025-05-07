@@ -32,7 +32,7 @@ export class DeveloperApplicationsService {
     return this.jsonApiService
       .get<
         JsonApiResponse<DeveloperAppGetResponse, null>
-      >(this.baseUrl + clientId)
+      >(this.baseUrl + clientId + '/')
       .pipe(
         map((response) => DeveloperAppMapper.fromGetResponse(response.data)),
       );
@@ -55,19 +55,19 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toUpdateRequest(developerAppUpdate);
 
     return this.jsonApiService
-      .patch<DeveloperAppGetResponse>(this.baseUrl + clientId, request)
+      .patch<DeveloperAppGetResponse>(this.baseUrl + clientId + '/', request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response)));
   }
 
   resetClientSecret(clientId: string) {
-    const request = DeveloperAppMapper.toResetSecretRequest();
+    const request = DeveloperAppMapper.toResetSecretRequest(clientId);
 
     return this.jsonApiService
-      .patch<DeveloperAppGetResponse>(this.baseUrl + clientId, request)
+      .patch<DeveloperAppGetResponse>(this.baseUrl + clientId + '/', request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response)));
   }
 
   deleteApplication(clientId: string): Observable<void> {
-    return this.jsonApiService.delete(this.baseUrl + clientId);
+    return this.jsonApiService.delete(this.baseUrl + clientId + '/');
   }
 }

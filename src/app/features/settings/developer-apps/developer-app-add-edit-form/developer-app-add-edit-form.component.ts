@@ -111,6 +111,7 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
         .dispatch(
           new UpdateDeveloperApp(this.initialValues()!.clientId, {
             ...this.appForm.value,
+            id: this.initialValues()!.id,
           } as DeveloperAppCreateUpdate),
         )
         .subscribe({

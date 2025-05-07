@@ -12,6 +12,7 @@ export interface DeveloperApp {
 }
 
 export interface DeveloperAppCreateUpdate {
+  id?: string;
   name: string;
   description: StringOrNull;
   projHomePageUrl: string;
@@ -33,6 +34,7 @@ export interface DeveloperAppCreateRequest {
 
 export interface DeveloperAppUpdateRequest {
   data: {
+    id: string;
     type: 'applications';
     attributes: {
       name: string;

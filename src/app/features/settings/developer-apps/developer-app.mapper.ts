@@ -28,6 +28,7 @@ export class DeveloperAppMapper {
   ): DeveloperAppUpdateRequest {
     return {
       data: {
+        id: developerUpdate.id!,
         attributes: {
           name: developerUpdate.name,
           description: developerUpdate.description,
@@ -39,9 +40,10 @@ export class DeveloperAppMapper {
     };
   }
 
-  static toResetSecretRequest() {
+  static toResetSecretRequest(clientId: string) {
     return {
       data: {
+        id: clientId,
         type: 'applications',
         attributes: {
           client_secret: null,

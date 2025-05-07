@@ -22,26 +22,7 @@ import {
 @State<DeveloperAppsStateModel>({
   name: 'developerApps',
   defaults: {
-    developerApps: [
-      {
-        id: '1',
-        name: 'Developer app name example',
-        projHomePageUrl: 'https://example.com',
-        description: 'Example description',
-        authorizationCallbackUrl: 'https://example.com/callback',
-        clientId: 'clientId',
-        clientSecret: 'clientSecret',
-      },
-      {
-        id: '2',
-        name: 'Developer app name example',
-        projHomePageUrl: 'https://example.com',
-        description: 'Example description',
-        authorizationCallbackUrl: 'https://example.com/callback',
-        clientId: 'clientId',
-        clientSecret: 'clientSecret',
-      },
-    ],
+    developerApps: [],
   },
 })
 @Injectable()
