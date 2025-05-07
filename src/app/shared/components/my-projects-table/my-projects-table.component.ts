@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   input,
   output,
 } from '@angular/core';
@@ -13,7 +12,7 @@ import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.e
 import { TableParameters } from '@shared/entities/table-parameters.interface';
 import { SortOrder } from '@shared/utils/sort-order.enum';
 import { Skeleton } from 'primeng/skeleton';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-my-projects-table',
@@ -30,16 +29,13 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProjectsTableComponent {
-  #translateService = inject(TranslateService);
   items = input<MyProjectsItem[]>([]);
   tableParams = input.required<TableParameters>();
   searchValue = input<string>('');
   sortColumn = input<string | undefined>(undefined);
   sortOrder = input<SortOrder>(SortOrder.Asc);
   isLoading = input<boolean>(false);
-  searchPlaceholder = input<string>(
-    this.#translateService.instant('my-projects.table.search-placeholder'),
-  );
+  searchPlaceholder = input<string>('my-projects.table.search-placeholder');
 
   searchValueChange = output<string>();
   pageChange = output<TablePageEvent>();

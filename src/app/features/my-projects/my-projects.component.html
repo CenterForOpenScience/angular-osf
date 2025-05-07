@@ -40,7 +40,14 @@
             optionValue="value"
             [ngModel]="selectedTab()"
             (ngModelChange)="selectedTab.set($event)"
-          ></p-select>
+          >
+            <ng-template #selectedItem let-selectedOption>
+              {{ selectedOption.label | translate }}
+            </ng-template>
+            <ng-template #item let-item>
+              {{ item.label | translate }}
+            </ng-template>
+          </p-select>
         }
         <!--My projects-->
         <p-tabpanel [value]="0" class="flex flex-column gap-4 flex-1">

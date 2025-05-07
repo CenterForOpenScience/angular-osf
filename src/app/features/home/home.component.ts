@@ -30,7 +30,7 @@ import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.e
 import { GetUserInstitutions } from '@osf/features/institutions/store';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-home',
@@ -51,6 +51,7 @@ export class HomeComponent implements OnInit {
   readonly #store = inject(Store);
   readonly #router = inject(Router);
   readonly #route = inject(ActivatedRoute);
+  readonly #translateService = inject(TranslateService);
   readonly #dialogService = inject(DialogService);
   readonly #isXSmall$ = inject(IS_XSMALL);
   readonly #isMedium$ = inject(IS_MEDIUM);
@@ -238,7 +239,7 @@ export class HomeComponent implements OnInit {
     const dialogRef = this.#dialogService.open(AddProjectFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: 'Create Project',
+      header: this.#translateService.instant('my-projects.add-project.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,

@@ -33,7 +33,7 @@ import {
   TokensSelectors,
   UpdateToken,
 } from '@osf/features/settings/tokens/store';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-token-add-edit-form',
@@ -54,6 +54,8 @@ export class TokenAddEditFormComponent implements OnInit {
   #route = inject(ActivatedRoute);
   #router = inject(Router);
   #dialogService = inject(DialogService);
+  #translateService = inject(TranslateService);
+
   isEditMode = input(false);
   initialValues = input<Token | null>(null);
   protected readonly tokenId = toSignal(
@@ -127,7 +129,9 @@ export class TokenAddEditFormComponent implements OnInit {
 
     this.#dialogService.open(TokenCreatedDialogComponent, {
       width: dialogWidth,
-      header: 'Token Successfully Created',
+      header: this.#translateService.instant(
+        'settings.tokens.created-dialog.title',
+      ),
       closeOnEscape: true,
       modal: true,
       closable: true,

@@ -12,11 +12,18 @@ import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { Store } from '@ngxs/store';
 import { UserSelectors } from '@core/store/user/user.selectors';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   standalone: true,
   selector: 'osf-header',
-  imports: [RouterLink, BreadcrumbComponent, MenuModule, ButtonModule],
+  imports: [
+    BreadcrumbComponent,
+    MenuModule,
+    ButtonModule,
+    TranslatePipe,
+    RouterLink,
+  ],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,17 +35,19 @@ export class HeaderComponent {
 
   items = [
     {
-      label: 'My profile',
+      label: 'navigation.my-profile',
       command: () => this.#router.navigate(['my-profile']),
     },
-    { label: 'Settings', command: () => console.log('Settings') },
-    { label: 'Log out', command: () => console.log('Log out') },
+    { label: 'navigation.settings', command: () => console.log('Settings') },
+    { label: 'navigation.log-out', command: () => console.log('Log out') },
   ];
 
   #currentUrl = toSignal(this.#router.events.pipe(map(() => this.#router.url)));
 
   protected readonly authButtonText = computed(() =>
-    this.#currentUrl()?.includes('sign-up') ? 'Sign In' : 'Sign Up',
+    this.#currentUrl()?.includes('sign-up')
+      ? 'navigation.sign-in'
+      : 'navigation.sign-up',
   );
 
   protected readonly authButtonLink = computed(() =>

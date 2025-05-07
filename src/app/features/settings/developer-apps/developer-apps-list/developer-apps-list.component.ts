@@ -20,7 +20,7 @@ import {
 } from '@osf/features/settings/developer-apps/store';
 import { DeveloperApp } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
 import { Skeleton } from 'primeng/skeleton';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-developer-applications-list',
@@ -32,6 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
 export class DeveloperAppsListComponent implements OnInit {
   #store = inject(Store);
   #confirmationService = inject(ConfirmationService);
+  #translateService = inject(TranslateService);
 
   protected readonly isLoading = signal(false);
   protected readonly isXSmall = toSignal(inject(IS_XSMALL));
@@ -42,13 +43,19 @@ export class DeveloperAppsListComponent implements OnInit {
   deleteApp(developerApp: DeveloperApp): void {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message:
-        "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed.",
-      header: `Delete App ${developerApp.name}?`,
+      message: this.#translateService.instant(
+        'settings.developer-apps.confirmation.delete.message',
+      ),
+      header: this.#translateService.instant(
+        'settings.developer-apps.confirmation.delete.title',
+        { name: developerApp.name },
+      ),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: 'Delete',
+        label: this.#translateService.instant(
+          'settings.developer-apps.list.delete-button',
+        ),
       },
       accept: () => {
         this.#store.dispatch(new DeleteDeveloperApp(developerApp.clientId));

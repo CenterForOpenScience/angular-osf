@@ -22,7 +22,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
 import { Store } from '@ngxs/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   GetMyProjects,
   MyProjectsSelectors,
@@ -69,6 +69,7 @@ export class MyProjectsComponent implements OnInit {
   readonly #store = inject(Store);
   readonly #router = inject(Router);
   readonly #route = inject(ActivatedRoute);
+  readonly #translateService = inject(TranslateService);
   readonly #searchSubject = new Subject<string>();
 
   protected readonly defaultTabValue = 0;
@@ -77,10 +78,22 @@ export class MyProjectsComponent implements OnInit {
   protected readonly isTablet = toSignal(inject(IS_MEDIUM));
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly tabOptions: TabOption[] = [
-    { label: 'my-projects.tabs.my-projects', value: 0 },
-    { label: 'my-projects.tabs.my-registrations', value: 1 },
-    { label: 'my-projects.tabs.my-preprints', value: 2 },
-    { label: 'my-projects.tabs.bookmarks', value: 3 },
+    {
+      label: 'my-projects.tabs.my-projects',
+      value: 0,
+    },
+    {
+      label: 'my-projects.tabs.my-registrations',
+      value: 1,
+    },
+    {
+      label: 'my-projects.tabs.my-preprints',
+      value: 2,
+    },
+    {
+      label: 'my-projects.tabs.bookmarks',
+      value: 3,
+    },
   ];
 
   protected readonly queryParams = toSignal(this.#route.queryParams);
@@ -371,7 +384,7 @@ export class MyProjectsComponent implements OnInit {
     this.#dialogService.open(AddProjectFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: 'Create Project',
+      header: this.#translateService.instant('my-projects.add-project.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,

@@ -16,7 +16,7 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import {
   GetStorageAddons,
   GetCitationAddons,
@@ -50,7 +50,6 @@ import { UserSelectors } from '@core/store/user/user.selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonsComponent {
-  #translateService = inject(TranslateService);
   #store = inject(Store);
   protected readonly defaultTabValue = 0;
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
@@ -114,19 +113,24 @@ export class AddonsComponent {
 
   protected readonly tabOptions: SelectOption[] = [
     {
-      label: this.#translateService.instant('settings.addons.tabs.all-addons'),
+      label: 'settings.addons.tabs.all-addons',
       value: 0,
     },
     {
-      label: this.#translateService.instant(
-        'settings.addons.tabs.connected-addons',
-      ),
+      label: 'settings.addons.tabs.connected-addons',
       value: 1,
     },
   ];
+
   protected readonly categoryOptions: SelectOption[] = [
-    { label: 'Additional Storage', value: 'external-storage-services' },
-    { label: 'Citation Manager', value: 'external-citation-services' },
+    {
+      label: 'settings.addons.categories.additional-service',
+      value: 'external-storage-services',
+    },
+    {
+      label: 'settings.addons.categories.citation-manager',
+      value: 'external-citation-services',
+    },
   ];
 
   protected onCategoryChange(value: string): void {

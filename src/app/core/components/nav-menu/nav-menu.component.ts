@@ -15,10 +15,11 @@ import { MenuItem } from 'primeng/api';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { NavItem } from '@shared/entities/nav-item.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-nav-menu',
-  imports: [RouterLinkActive, RouterLink, PanelMenuModule],
+  imports: [RouterLinkActive, RouterLink, PanelMenuModule, TranslatePipe],
   templateUrl: './nav-menu.component.html',
   styleUrl: './nav-menu.component.scss',
 })

@@ -13,6 +13,7 @@ import { TableModule } from 'primeng/table';
 import { RouterLink, Router } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { Card } from 'primeng/card';
+import { TranslatePipe } from '@ngx-translate/core';
 import {
   FormsModule,
   FormBuilder,
@@ -57,10 +58,10 @@ import { AddonTerm } from '@osf/features/settings/addons/entities/addon-terms.in
     ReactiveFormsModule,
     InputText,
     Password,
+    TranslatePipe,
   ],
   templateUrl: './connect-addon.component.html',
   styleUrl: './connect-addon.component.scss',
-  standalone: true,
 })
 export class ConnectAddonComponent {
   protected readonly stepper = viewChild(Stepper);

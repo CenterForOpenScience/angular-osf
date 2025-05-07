@@ -10,7 +10,7 @@
     <section class="title-container" [class.mobile]="isXSmall()">
       <h1>{{ developerApp()?.name }}</h1>
       <p-button
-        label="'settings.developer-apps.list.delete-button' | translate"
+        [label]="'settings.developer-apps.list.delete-button' | translate"
         [class.btn-full-width]="isXSmall()"
         severity="danger"
         (click)="deleteApp()"
@@ -109,7 +109,7 @@
           <section class="card-actions">
             <p-button
               [label]="
-                'settings.developer-apps.details.client-secret.reset'
+                'settings.developer-apps.details.client-secret.reset-secret'
                   | translate
               "
               [class.btn-half-width]="isXSmall()"
@@ -121,7 +121,7 @@
 
       <p-card>
         <section class="card-body">
-          <h2>{{ "settings.developer-apps.form.editTitle" | translate }}</h2>
+          <h2>{{ "settings.developer-apps.form.edit-title" | translate }}</h2>
           <osf-developer-app-add-edit-form
             [isEditMode]="true"
             [initialValues]="developerApp()!"
