@@ -34,7 +34,7 @@ import {
   AddonsSelectors,
   CreateAuthorizedAddon,
   UpdateAuthorizedAddon,
-} from '@core/store/settings/addons';
+} from '@osf/features/settings/addons/store';
 import {
   AddonForm,
   AddonFormControls,

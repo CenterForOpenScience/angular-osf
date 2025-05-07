@@ -1,0 +1,124 @@
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  input,
+  OnInit,
+} from '@angular/core';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Button } from 'primeng/button';
+import { InputText } from 'primeng/inputtext';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  DeveloperAppForm,
+  DeveloperAppFormFormControls,
+} from '@osf/features/settings/developer-apps/entities/developer-app-form.entities';
+import { linkValidator } from '@core/helpers/link-validator.helper';
+import { Store } from '@ngxs/store';
+import { Router } from '@angular/router';
+import {
+  DeveloperApp,
+  DeveloperAppCreateUpdate,
+} from '@osf/features/settings/developer-apps/entities/developer-apps.models';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { NgClass } from '@angular/common';
+import {
+  CreateDeveloperApp,
+  UpdateDeveloperApp,
+} from '@osf/features/settings/developer-apps/store';
+
+@Component({
+  selector: 'osf-developer-app-add-edit-form',
+  imports: [Button, InputText, ReactiveFormsModule, NgClass],
+  templateUrl: './developer-app-add-edit-form.component.html',
+  styleUrl: './developer-app-add-edit-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class DeveloperAppAddEditFormComponent implements OnInit {
+  #store = inject(Store);
+  #router = inject(Router);
+  readonly isEditMode = input(false);
+  readonly initialValues = input<DeveloperApp | null>(null);
+
+  protected readonly isMobile = toSignal(inject(IS_XSMALL));
+  protected readonly dialogRef = inject(DynamicDialogRef);
+  protected readonly DeveloperAppFormFormControls =
+    DeveloperAppFormFormControls;
+  protected readonly appForm: DeveloperAppForm = new FormGroup({
+    [DeveloperAppFormFormControls.AppName]: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required],
+    }),
+    [DeveloperAppFormFormControls.ProjectHomePageUrl]: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, linkValidator()],
+    }),
+    [DeveloperAppFormFormControls.AppDescription]: new FormControl('', {
+      nonNullable: false,
+    }),
+    [DeveloperAppFormFormControls.AuthorizationCallbackUrl]: new FormControl(
+      '',
+      {
+        nonNullable: true,
+        validators: [Validators.required, linkValidator()],
+      },
+    ),
+  });
+
+  ngOnInit(): void {
+    if (this.initialValues()) {
+      this.appForm.patchValue({
+        [DeveloperAppFormFormControls.AppName]: this.initialValues()?.name,
+        [DeveloperAppFormFormControls.AppDescription]:
+          this.initialValues()?.description,
+        [DeveloperAppFormFormControls.ProjectHomePageUrl]:
+          this.initialValues()?.projHomePageUrl,
+        [DeveloperAppFormFormControls.AuthorizationCallbackUrl]:
+          this.initialValues()?.authorizationCallbackUrl,
+      });
+    }
+  }
+
+  handleSubmitForm(): void {
+    if (!this.appForm.valid) {
+      this.appForm.markAllAsTouched();
+      Object.values(this.appForm.controls).forEach((control) =>
+        control.markAsDirty(),
+      );
+      return;
+    }
+
+    if (!this.isEditMode()) {
+      this.#store
+        .dispatch(
+          new CreateDeveloperApp({
+            ...this.appForm.value,
+          } as DeveloperAppCreateUpdate),
+        )
+        .subscribe({
+          complete: () => {
+            this.dialogRef.close();
+          },
+        });
+    } else {
+      this.#store
+        .dispatch(
+          new UpdateDeveloperApp(this.initialValues()!.clientId, {
+            ...this.appForm.value,
+            id: this.initialValues()!.id,
+          } as DeveloperAppCreateUpdate),
+        )
+        .subscribe({
+          complete: () => {
+            this.#router.navigate(['settings/applications']);
+          },
+        });
+    }
+  }
+}

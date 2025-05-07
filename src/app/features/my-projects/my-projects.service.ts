@@ -14,12 +14,12 @@ import { map } from 'rxjs/operators';
 import { SortOrder } from '@shared/utils/sort-order.enum';
 import { EndpointType } from '@osf/features/my-projects/entities/my-projects.types';
 import { CreateProjectPayload } from './entities/create-project.entities';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MyProjectsService {
-  #baseUrl = 'https://api.staging4.osf.io/v2/';
   #jsonApiService = inject(JsonApiService);
   #sortFieldMap: Record<string, string> = {
     title: 'title',
@@ -58,10 +58,10 @@ export class MyProjectsService {
     } else {
       params['sort'] = '-date_modified';
     }
-    // const url = this.#baseUrl + endpoint + '/';
-    const url = endpoint.startsWith('collections/')
-      ? this.#baseUrl + endpoint
-      : this.#baseUrl + 'users/me/' + endpoint;
+    const url = environment.apiUrl + '/' + endpoint + '/';
+    // const url = endpoint.startsWith('collections/')
+    //   ? environment.apiUrl + '/' + endpoint
+    //   : environment.apiUrl + '/users/me/' + endpoint;
 
     return this.#jsonApiService
       .get<MyProjectsJsonApiResponse>(url, params)
@@ -89,7 +89,10 @@ export class MyProjectsService {
     };
 
     return this.#jsonApiService
-      .get<SparseCollectionsResponse>(this.#baseUrl + 'collections/', params)
+      .get<SparseCollectionsResponse>(
+        environment.apiUrl + '/collections/',
+        params,
+      )
       .pipe(
         map((response) => {
           const bookmarksCollection = response.data.find(
@@ -175,7 +178,7 @@ export class MyProjectsService {
 
     return this.#jsonApiService
       .post<MyProjectsItemGetResponse>(
-        `${this.#baseUrl}nodes/`,
+        `${environment.apiUrl}/nodes/`,
         payload,
         params,
       )

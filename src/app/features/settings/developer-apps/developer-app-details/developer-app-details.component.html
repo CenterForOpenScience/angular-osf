@@ -1,199 +1,133 @@
 <section class="content-container" [class.mobile]="isXSmall()">
   <nav class="navigation-bar-container">
     <a routerLink="/settings/developer-apps">
-      <!-- TODO - Add icon -->
-      <strong><</strong>
+      <i class="osf-icon-arrow-left inline"></i>
       {{ "settings.developer-apps.details.navigation.back" | translate }}
     </a>
   </nav>
 
-  <section class="title-container" [class.mobile]="isXSmall()">
-    <h1>{{ developerApp().appName + developerAppId() }}</h1>
-    <p-button
-      [label]="'settings.developer-apps.list.delete-button' | translate"
-      [class.btn-full-width]="isXSmall()"
-      severity="danger"
-      (click)="deleteApp()"
-    />
-  </section>
+  @if (developerApp()) {
+    <section class="title-container" [class.mobile]="isXSmall()">
+      <h1>{{ developerApp()?.name }}</h1>
+      <p-button
+        label="'settings.developer-apps.list.delete-button' | translate"
+        [class.btn-full-width]="isXSmall()"
+        severity="danger"
+        (click)="deleteApp()"
+      />
+    </section>
 
-  <section class="cards-container" [class.mobile]="isXSmall()">
-    <p-card>
-      <section class="card-body">
-        <h2>
-          {{ "settings.developer-apps.details.client-id.title" | translate }}
-        </h2>
+    <section class="cards-container" [class.mobile]="isXSmall()">
+      <p-card>
+        <section class="card-body">
+          <h2>
+            {{ "settings.developer-apps.details.client-id.title" | translate }}
+          </h2>
 
-        <p>
-          {{
-            "settings.developer-apps.details.client-id.description" | translate
-          }}
-        </p>
+          <p>
+            {{
+              "settings.developer-apps.details.client-id.description"
+                | translate
+            }}
+          </p>
 
-        <div class="inline-block relative">
-          <span
-            class="copy-notification"
-            [class.visible]="clientIdCopiedNotificationVisible()"
-          >
-            {{ "settings.developer-apps.messages.copied" | translate }}
-          </span>
-          <p-iconfield iconPosition="right">
-            <input type="text" pInputText readonly [value]="clientId()" />
-            <p-inputicon
-              [cdkCopyToClipboard]="clientId()"
-              (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()"
-            >
-              <i class="osf-icon-copy"></i>
-            </p-inputicon>
-          </p-iconfield>
-        </div>
-      </section>
-    </p-card>
-
-    <p-card>
-      <section class="card-body">
-        <h2>
-          {{
-            "settings.developer-apps.details.client-secret.title" | translate
-          }}
-        </h2>
-
-        <p>
-          {{
-            "settings.developer-apps.details.client-secret.description"
-              | translate
-          }}
-        </p>
-
-        <section class="client-secret-container" [class.mobile]="isXSmall()">
-          <div class="relative">
+          <div class="inline-block relative">
             <span
               class="copy-notification"
-              [class.visible]="clientSecretCopiedNotificationVisible()"
+              [class.visible]="clientIdCopiedNotificationVisible()"
             >
               {{ "settings.developer-apps.messages.copied" | translate }}
             </span>
             <p-iconfield iconPosition="right">
-              <input
-                pInputText
-                [value]="
-                  isClientSecretVisible()
-                    ? clientSecret()
-                    : hiddenClientSecret()
-                "
-                readonly
-              />
+              <input type="text" pInputText readonly [value]="clientId()" />
               <p-inputicon
-                [cdkCopyToClipboard]="clientSecret()"
-                (cdkCopyToClipboardCopied)="clientSecretCopiedToClipboard()"
+                [cdkCopyToClipboard]="clientId()"
+                (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()"
               >
                 <i class="osf-icon-copy"></i>
               </p-inputicon>
             </p-iconfield>
           </div>
-
-          <p-button
-            [label]="
-              isClientSecretVisible()
-                ? ('settings.developer-apps.details.client-secret.hide'
-                  | translate)
-                : ('settings.developer-apps.details.client-secret.show'
-                  | translate)
-            "
-            severity="secondary"
-            (click)="isClientSecretVisible.set(!isClientSecretVisible())"
-          />
         </section>
+      </p-card>
 
-        <section class="card-actions">
-          <p-button
-            [label]="
-              'settings.developer-apps.details.client-secret.reset' | translate
-            "
-            [class.btn-half-width]="isXSmall()"
-            (click)="resetClientSecret()"
-          />
-        </section>
-      </section>
-    </p-card>
+      <p-card>
+        <section class="card-body">
+          <h2>
+            {{
+              "settings.developer-apps.details.client-secret.title" | translate
+            }}
+          </h2>
 
-    <p-card>
-      <section class="card-body">
-        <h2>{{ "settings.developer-apps.form.editTitle" | translate }}</h2>
+          <p>
+            {{
+              "settings.developer-apps.details.client-secret.description"
+                | translate
+            }}
+          </p>
 
-        <form
-          [formGroup]="editAppForm"
-          class="flex flex-column gap-3"
-          (ngSubmit)="submitForm()"
-        >
-          <div class="flex flex-column">
-            <label for="app-name">{{
-              "settings.developer-apps.form.app-name" | translate
-            }}</label>
-            <input
-              id="app-name"
-              type="text"
-              autocomplete="off"
-              pInputText
-              [formControlName]="DeveloperAppFormFormControls.AppName"
-            />
-          </div>
+          <section class="client-secret-container" [class.mobile]="isXSmall()">
+            <div class="relative">
+              <span
+                class="copy-notification"
+                [class.visible]="clientSecretCopiedNotificationVisible()"
+              >
+                {{ "settings.developer-apps.messages.copied" | translate }}
+              </span>
+              <p-iconfield iconPosition="right">
+                <input
+                  pInputText
+                  [value]="
+                    isClientSecretVisible()
+                      ? clientSecret()
+                      : hiddenClientSecret()
+                  "
+                  readonly
+                />
+                <p-inputicon
+                  [cdkCopyToClipboard]="clientSecret()"
+                  (cdkCopyToClipboardCopied)="clientSecretCopiedToClipboard()"
+                >
+                  <i class="osf-icon-copy"></i>
+                </p-inputicon>
+              </p-iconfield>
+            </div>
 
-          <div class="flex flex-column">
-            <label for="proj-homepage-url">{{
-              "settings.developer-apps.form.homepage-url" | translate
-            }}</label>
-            <input
-              id="proj-homepage-url"
-              type="url"
-              autocomplete="off"
-              pInputText
-              [formControlName]="
-                DeveloperAppFormFormControls.ProjectHomePageUrl
+            <p-button
+              [label]="
+                isClientSecretVisible()
+                  ? ('settings.developer-apps.details.client-secret.hide'
+                    | translate)
+                  : ('settings.developer-apps.details.client-secret.show'
+                    | translate)
               "
+              severity="secondary"
+              (click)="isClientSecretVisible.set(!isClientSecretVisible())"
             />
-          </div>
-
-          <div class="flex flex-column">
-            <label for="app-descr">{{
-              "settings.developer-apps.form.description" | translate
-            }}</label>
-            <input
-              id="app-descr"
-              type="text"
-              autocomplete="off"
-              pInputText
-              [formControlName]="DeveloperAppFormFormControls.AppDescription"
-            />
-          </div>
-
-          <div class="flex flex-column">
-            <label for="auth-callback-url">{{
-              "settings.developer-apps.form.callback-url" | translate
-            }}</label>
-            <input
-              id="auth-callback-url"
-              type="url"
-              autocomplete="off"
-              pInputText
-              [formControlName]="
-                DeveloperAppFormFormControls.AuthorizationCallbackUrl
-              "
-            />
-          </div>
+          </section>
 
           <section class="card-actions">
             <p-button
-              [label]="'settings.developer-apps.form.buttons.save' | translate"
-              type="submit"
-              [ngClass]="
-                isXSmall() ? 'btn-half-width' : 'w-10rem btn-full-width'
+              [label]="
+                'settings.developer-apps.details.client-secret.reset'
+                  | translate
               "
-              [disabled]="!editAppForm.dirty || !editAppForm.valid"
+              [class.btn-half-width]="isXSmall()"
+              (click)="resetClientSecret()"
             />
           </section>
-        </form>
-      </section>
-    </p-card>
-  </section>
+        </section>
+      </p-card>
+
+      <p-card>
+        <section class="card-body">
+          <h2>{{ "settings.developer-apps.form.editTitle" | translate }}</h2>
+          <osf-developer-app-add-edit-form
+            [isEditMode]="true"
+            [initialValues]="developerApp()!"
+          />
+        </section>
+      </p-card>
+    </section>
+  }
 </section>

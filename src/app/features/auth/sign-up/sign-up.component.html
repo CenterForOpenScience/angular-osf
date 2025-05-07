@@ -8,9 +8,6 @@
           [label]="'auth.sign-up.social.orcid' | translate"
           class="form-btn btn-full-width"
         >
-          <!--TODO change img tags to icons(fantasticon)-->
-
-          <!--<i class="osf-icon-orcid"></i>-->
           <img
             ngSrc="assets/images/orcid.svg"
             alt="Orchid icon"
@@ -27,16 +24,16 @@
       </div>
 
       <p-divider align="center">
-        <span class="divider-text">{{
-          "auth.sign-up.divider" | translate
-        }}</span>
+        <span class="divider-text">
+          {{ "auth.sign-up.divider" | translate }}
+        </span>
       </p-divider>
 
       <div class="form-fields">
         <div class="field">
-          <label for="fullName">{{
-            "auth.sign-up.form.full-name" | translate
-          }}</label>
+          <label for="fullName">
+            {{ "auth.sign-up.form.full-name" | translate }}
+          </label>
           <input
             id="fullName"
             type="text"
@@ -62,9 +59,9 @@
         </div>
 
         <div class="field">
-          <label for="password">{{
-            "auth.common.password.new" | translate
-          }}</label>
+          <label for="password">
+            {{ "auth.common.password.new" | translate }}
+          </label>
           <p-password
             id="password"
             formControlName="password"
@@ -81,9 +78,9 @@
         </div>
 
         <div class="field">
-          <label for="confirmPassword">{{
-            "auth.common.password.confirm" | translate
-          }}</label>
+          <label for="confirmPassword">
+            {{ "auth.common.password.confirm" | translate }}
+          </label>
           <p-password
             id="confirmPassword"
             formControlName="confirmPassword"
@@ -95,9 +92,9 @@
             signUpForm.get("confirmPassword")?.errors?.["passwordMismatch"] &&
             signUpForm.get("confirmPassword")?.touched
           ) {
-            <small class="text-danger">{{
-              "auth.common.password.mismatch" | translate
-            }}</small>
+            <small class="text-danger">
+              {{ "auth.common.password.mismatch" | translate }}
+            </small>
           }
         </div>
 

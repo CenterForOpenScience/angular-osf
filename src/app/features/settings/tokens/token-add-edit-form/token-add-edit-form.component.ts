@@ -23,21 +23,20 @@ import { CommonModule } from '@angular/common';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Store } from '@ngxs/store';
-import {
-  TokensSelectors,
-  CreateToken,
-  UpdateToken,
-  GetTokens,
-} from '@core/store/settings';
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 import { map } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TokenCreatedDialogComponent } from '@osf/features/settings/tokens/token-created-dialog/token-created-dialog.component';
+import {
+  CreateToken,
+  GetTokens,
+  TokensSelectors,
+  UpdateToken,
+} from '@osf/features/settings/tokens/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-token-add-edit-form',
-  standalone: true,
   imports: [
     Button,
     InputText,

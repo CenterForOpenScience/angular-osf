@@ -24,7 +24,7 @@ import {
   GetAuthorizedStorageAddons,
   GetAuthorizedCitationAddons,
   GetAddonsUserReference,
-} from '@core/store/settings/addons';
+} from '@osf/features/settings/addons/store';
 import { SelectOption } from '@shared/entities/select-option.interface';
 import { UserSelectors } from '@core/store/user/user.selectors';
 
