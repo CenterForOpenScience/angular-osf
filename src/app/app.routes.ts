@@ -82,7 +82,7 @@ export const routes: Routes = [
       {
         path: 'my-projects/:id',
         loadComponent: () =>
-          import('./features/my-projects/project/project.component').then(
+          import('@osf/features/project/project.component').then(
             (mod) => mod.ProjectComponent,
           ),
         children: [
@@ -95,35 +95,35 @@ export const routes: Routes = [
             path: 'overview',
             loadComponent: () =>
               import(
-                './features/my-projects/project/overview/project-overview.component'
+                '@osf/features/project/overview/project-overview.component'
               ).then((mod) => mod.ProjectOverviewComponent),
           },
           {
             path: 'metadata',
             loadComponent: () =>
               import(
-                './features/my-projects/project/metadata/project-metadata.component'
+                '@osf/features/project/metadata/project-metadata.component'
               ).then((mod) => mod.ProjectMetadataComponent),
           },
           {
             path: 'files',
             loadComponent: () =>
               import(
-                './features/my-projects/project/files/project-files.component'
+                '@osf/features/project/files/project-files.component'
               ).then((mod) => mod.ProjectFilesComponent),
           },
           {
             path: 'files/:fileId',
             loadComponent: () =>
               import(
-                './features/my-projects/project/files/file-detail/file-detail.component'
+                '@osf/features/project/files/file-detail/file-detail.component'
               ).then((mod) => mod.FileDetailComponent),
           },
           {
             path: 'registrations',
             loadComponent: () =>
               import(
-                '@osf/features/my-projects/project/registrations/registrations.component'
+                '@osf/features/project/registrations/registrations.component'
               ).then((mod) => mod.RegistrationsComponent),
           },
         ],

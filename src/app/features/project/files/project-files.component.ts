@@ -10,7 +10,7 @@ import { TableModule } from 'primeng/table';
 import {
   FileItem,
   FILES,
-} from '@osf/features/my-projects/project/files/project-files.entities';
+} from '@osf/features/project/files/project-files.entities';
 import { Router } from '@angular/router';
 import { Select } from 'primeng/select';
 import { FloatLabel } from 'primeng/floatlabel';

@@ -23,11 +23,11 @@ import {
   MyProjectsSelectors,
   GetMyProjects,
   ClearMyProjects,
-} from '@core/store/my-projects';
+} from '@osf/features/my-projects/store';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
 import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
-import { GetUserInstitutions } from '@osf/core/store/institutions';
+import { GetUserInstitutions } from '@osf/features/institutions/store';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
 

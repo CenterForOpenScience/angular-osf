@@ -28,8 +28,8 @@ import {
   CreateProject,
   GetMyProjects,
   MyProjectsSelectors,
-} from '@core/store/my-projects';
-import { InstitutionsSelectors } from '@core/store/institutions';
+} from '@osf/features/my-projects/store';
+import { InstitutionsSelectors } from '@osf/features/institutions/store';
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
 import { ProjectForm } from '@shared/entities/create-project-form.interface';
 import { ProjectFormControls } from '@osf/shared/entities/create-project-form-controls.enum';

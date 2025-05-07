@@ -1,11 +1,11 @@
 import { AuthState } from '@core/store/auth';
-import { TokensState } from '@core/store/settings';
-import { AddonsState } from '@core/store/settings/addons';
+import { TokensState } from '@osf/features/settings/tokens/store';
+import { AddonsState } from '@osf/features/settings/addons/store';
 import { UserState } from '@core/store/user';
-import { MyProjectsState } from '@core/store/my-projects';
+import { MyProjectsState } from '@osf/features/my-projects/store';
 import { SearchState } from '@osf/features/search/store';
+import { InstitutionsState } from '@osf/features/institutions/store';
 import { DeveloperAppsState } from '@osf/features/settings/developer-apps/store';
-import { InstitutionsState } from '@core/store/institutions';
 
 export const STATES = [
   AuthState,
