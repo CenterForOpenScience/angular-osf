@@ -110,6 +110,8 @@ export class AddProjectFormComponent implements OnInit {
     this.#store.dispatch(
       new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}),
     );
+
+    this.selectAllAffiliations();
   }
 
   selectAllAffiliations(): void {

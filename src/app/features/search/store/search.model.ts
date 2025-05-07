@@ -10,4 +10,5 @@ export interface SearchStateModel {
   first: string;
   next: string;
   previous: string;
+  isMyProfile: boolean;
 }

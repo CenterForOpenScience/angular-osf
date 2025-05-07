@@ -66,3 +66,7 @@ export class SetPartOfCollection {
     public id: string,
   ) {}
 }
+
+export class ResetFiltersState {
+  static readonly type = '[Resource Filters] Reset State';
+}

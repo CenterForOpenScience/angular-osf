@@ -3,6 +3,7 @@ import { Action, State, StateContext } from '@ngxs/store';
 
 import { Injectable } from '@angular/core';
 import {
+  ResetFiltersState,
   SetCreator,
   SetDateCreated,
   SetFunder,
@@ -14,57 +15,12 @@ import {
   SetSubject,
 } from '@shared/components/resources/resource-filters/store/resource-filters.actions';
 import { FilterLabels } from '@shared/components/resources/resource-filters/models/filter-labels';
+import { resourceFiltersDefaults } from '@shared/components/resources/resource-filters/utils/data';
 
 // Store for user selected filters values
 @State<ResourceFiltersStateModel>({
   name: 'resourceFilters',
-  defaults: {
-    creator: {
-      filterName: FilterLabels.creator,
-      label: undefined,
-      value: undefined,
-    },
-    dateCreated: {
-      filterName: FilterLabels.dateCreated,
-      label: undefined,
-      value: undefined,
-    },
-    funder: {
-      filterName: FilterLabels.funder,
-      label: undefined,
-      value: undefined,
-    },
-    subject: {
-      filterName: FilterLabels.subject,
-      label: undefined,
-      value: undefined,
-    },
-    license: {
-      filterName: FilterLabels.license,
-      label: undefined,
-      value: undefined,
-    },
-    resourceType: {
-      filterName: FilterLabels.resourceType,
-      label: undefined,
-      value: undefined,
-    },
-    institution: {
-      filterName: FilterLabels.institution,
-      label: undefined,
-      value: undefined,
-    },
-    provider: {
-      filterName: FilterLabels.provider,
-      label: undefined,
-      value: undefined,
-    },
-    partOfCollection: {
-      filterName: FilterLabels.partOfCollection,
-      label: undefined,
-      value: undefined,
-    },
-  },
+  defaults: resourceFiltersDefaults,
 })
 @Injectable()
 export class ResourceFiltersState {
@@ -180,5 +136,10 @@ export class ResourceFiltersState {
         value: action.id,
       },
     });
+  }
+
+  @Action(ResetFiltersState)
+  resetState(ctx: StateContext<ResourceFiltersStateModel>) {
+    ctx.patchState(resourceFiltersDefaults);
   }
 }

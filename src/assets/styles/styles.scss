@@ -26,7 +26,8 @@
 @use "./overrides/paginator";
 @use "./overrides/chip";
 @use "./overrides/tag";
-
+@use "./overrides/dataview";
+@use "./overrides/menu";
 @layer base, primeng, reset;
 
 @layer base {

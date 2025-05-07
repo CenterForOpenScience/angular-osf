@@ -1,0 +1,179 @@
+@use "../../../assets/styles/variables" as var;
+
+:host {
+  .user-info {
+    width: 100%;
+    padding: 4rem 1.7rem 1.7rem 1.7rem;
+
+    .name-container {
+      display: flex;
+      width: 100%;
+      padding-bottom: 1.7rem;
+    }
+
+    .description-container {
+      display: flex;
+      flex-direction: row;
+      row-gap: 1.7rem;
+
+      .title-date-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+        row-gap: 1.7rem;
+      }
+    }
+
+    .data-wrapper {
+      display: flex;
+      flex-direction: column;
+      width: 50%;
+      row-gap: 1.7rem;
+
+      .user-fields-wrapper {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        column-gap: 1.7rem;
+      }
+    }
+
+    a:hover {
+      cursor: pointer;
+    }
+  }
+
+  .cards {
+    display: flex;
+    padding: 1.7rem;
+    column-gap: 1.7rem;
+    background-color: var.$white;
+
+    .card {
+      border: 1px solid var.$grey-2;
+      border-radius: 12px;
+      padding: 1.7rem;
+      row-gap: 1rem;
+      width: 50%;
+      height: fit-content;
+
+      .title-date {
+        display: flex;
+        flex-direction: row;
+        column-gap: 1.7rem;
+        width: 100%;
+      }
+    }
+  }
+
+  .search-container {
+    margin: 6.2rem 1.7rem 0.4rem 1.7rem;
+    position: relative;
+
+    img {
+      position: absolute;
+      right: 0.3rem;
+      top: 0.3rem;
+      z-index: 1;
+    }
+  }
+
+  .resources {
+    position: relative;
+    background: white;
+    padding: 2rem;
+  }
+
+  .stepper {
+    position: absolute;
+    padding: 1.7rem;
+    width: 32rem;
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.7rem;
+    background: white;
+    border: 1px solid var.$grey-2;
+    border-radius: 12px;
+    h3 {
+      font-size: 1.3rem;
+    }
+  }
+
+  .first-stepper {
+    top: 2rem;
+    left: 1.7rem;
+  }
+
+  .second-stepper {
+    top: calc(2rem + 42px);
+    left: calc(1.5rem + 30%);
+  }
+
+  .third-stepper {
+    top: calc(5rem + 42px);
+    left: calc(0.4rem + 30%);
+  }
+
+  @media (max-width: 1000px) {
+    .user-info {
+      padding: 4.5rem 2.5rem 2.5rem 2.5rem;
+
+      .description-container {
+        flex-direction: column;
+        row-gap: 2.5rem;
+
+        .title-date-wrapper {
+          width: 100%;
+        }
+      }
+
+      .data-wrapper {
+        flex-direction: column;
+        width: 100%;
+        row-gap: 2.5rem;
+      }
+    }
+
+    .cards {
+      flex-direction: column;
+      padding: 1.7rem 2.5rem 1.7rem 2.5rem;
+      row-gap: 1.7rem;
+
+      .card {
+        width: 100%;
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    .user-info {
+      padding: 4.5rem 1.1rem 1.1rem 1.1rem;
+      .data-wrapper {
+        .user-fields-wrapper {
+          flex-direction: column;
+          align-items: start;
+          row-gap: 1.1rem;
+        }
+      }
+    }
+
+    .cards {
+      padding: 1.7rem 1.1rem 1.1rem 1.1rem;
+      .card {
+        padding: 1.1rem;
+        .title-date {
+          flex-direction: column;
+          row-gap: 0.4rem;
+
+          p {
+            margin: 0 !important;
+          }
+        }
+      }
+    }
+  }
+
+  .search-container {
+    margin: 3.5rem 1.7rem 0.4rem 1.7rem;
+  }
+}

@@ -16,6 +16,8 @@ import { Resource } from '@osf/features/search/models/resource.entity';
 import { ResourceCardService } from '@shared/components/resources/resource-card/resource-card.service';
 import { finalize } from 'rxjs';
 import { Skeleton } from 'primeng/skeleton';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-resource-card',
@@ -37,6 +39,7 @@ export class ResourceCardComponent {
   readonly #resourceCardService = inject(ResourceCardService);
   loading = false;
   dataIsLoaded = false;
+  isSmall = toSignal(inject(IS_XSMALL));
 
   protected readonly ResourceType = ResourceType;
 

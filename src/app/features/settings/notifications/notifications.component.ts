@@ -3,10 +3,18 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
 import { Checkbox } from 'primeng/checkbox';
 import { Button } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-notifications',
-  imports: [SubHeaderComponent, Checkbox, Button, DropdownModule],
+  standalone: true,
+  imports: [
+    SubHeaderComponent,
+    Checkbox,
+    Button,
+    DropdownModule,
+    TranslatePipe,
+  ],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

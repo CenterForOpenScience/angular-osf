@@ -265,6 +265,36 @@
         "token-warning": "This is the only time your token will be displayed.",
         "close-button": "Close"
       }
+    },
+    "notifications": {
+      "header": {
+        "title": "Notifications"
+      },
+      "email-preferences": {
+        "title": "Configure Email Preferences",
+        "items": {
+          "general": {
+            "title": "Open Science Framework General",
+            "description": "Receive general notifications about the OSF every 2-3 weeks."
+          },
+          "help": {
+            "title": "Open Science Framework Help",
+            "description": "Receive helpful tips on how to make the most of the OSF, up to once per week."
+          }
+        },
+        "save-button": "Save"
+      },
+      "notification-preferences": {
+        "title": "Configure Notification Preferences",
+        "note": "Note: Transactional and administrative service emails will still be sent.",
+        "items": {
+          "replies": "Replies to your comments",
+          "comments": "Comments added",
+          "files": "Files updated",
+          "mentions": "Mentions added",
+          "preprints": "Preprint submissions updated"
+        }
+      }
     }
   }
 }

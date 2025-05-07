@@ -92,6 +92,7 @@
 
     .p-select-clear-icon {
       right: 1rem;
+      margin-left: 0.5rem;
     }
   }
 }
@@ -100,6 +101,18 @@
   .p-select {
     .p-select-clear-icon {
       right: 2.2rem;
+    }
+  }
+}
+
+.centered-select {
+  .p-select {
+    .p-select-label {
+      justify-content: center;
+    }
+
+    .p-select-option {
+      justify-content: center;
     }
   }
 }
