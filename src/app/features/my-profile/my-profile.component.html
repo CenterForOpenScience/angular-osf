@@ -1,0 +1,147 @@
+<div class="user-info">
+  <div class="name-container wide-button">
+    <h1>{{ currentUser()?.fullName }}</h1>
+    @if (!isMobile()) {
+      <p-button
+        label="Edit Profile"
+        class="ml-auto"
+        (click)="toProfileSettings()"
+      ></p-button>
+    }
+  </div>
+
+  <div class="description-container">
+    <div class="title-date-wrapper wide-button">
+      <h3>
+        {{ currentUser()?.employment?.[0]?.title }},
+        {{ currentUser()?.employment?.[0]?.institution }}
+      </h3>
+      <h3 class="font-normal">
+        Member since: {{ currentUser()?.dateRegistered | date: "MMM d, yyyy" }}
+      </h3>
+    </div>
+
+    <div class="data-wrapper">
+      <div class="user-fields-wrapper">
+        <div class="flex flex-row align-items-center gap-2">
+          <img
+            ngSrc="assets/icons/source/orcid.svg"
+            width="16"
+            height="16"
+            alt="orcid"
+          />
+          <a
+            class="font-bold"
+            [href]="'https://orcid.org/' + currentUser()?.socials?.orcid"
+            >https://orcid.org/{{ currentUser()?.socials?.orcid }}</a
+          >
+        </div>
+
+        <div class="flex flex-row align-items-center gap-2">
+          <img
+            ngSrc="assets/icons/source/cos-shield.svg"
+            width="16"
+            height="16"
+            alt="cos-shield"
+          />
+          <a class="font-bold" [href]="currentUser()?.link">{{
+            currentUser()?.link
+          }}</a>
+        </div>
+      </div>
+
+      <div class="user-fields-wrapper">
+        <div class="flex flex-row align-items-center gap-2">
+          <img
+            ngSrc="assets/icons/source/institution.svg"
+            width="16"
+            height="16"
+            alt="institution"
+          />
+          <h3 class="font-bold">
+            {{ currentUser()?.education?.[0]?.institution }}
+          </h3>
+        </div>
+
+        <div class="flex flex-row align-items-center gap-2">
+          <img
+            ngSrc="assets/icons/source/cos-shield.svg"
+            width="16"
+            height="16"
+            alt="cos-shield"
+          />
+          <h3 class="font-bold">
+            {{ currentUser()?.employment?.[0]?.institution }}
+          </h3>
+        </div>
+      </div>
+
+      @if (isMobile()) {
+        <div class="btn-full-width">
+          <p-button
+            label="Edit Profile"
+            class="ml-auto"
+            (click)="toProfileSettings()"
+          ></p-button>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="cards">
+  <div class="card">
+    <h2 class="mb-3">Employment</h2>
+    <p-accordion>
+      @for (employment of currentUser()?.employment; track $index) {
+        <p-accordion-panel value="{{ $index }}" class="accordion-panel">
+          <p-accordion-header>
+            <div class="title-date">
+              <p>{{ employment.institution }}</p>
+              <p class="font-normal ml-auto mr-5">
+                {{ employment.startDate | date: "MMM yyyy" }} -
+                {{ employment.endDate | date: "MMM yyyy" }}
+              </p>
+            </div>
+          </p-accordion-header>
+          <p-accordion-content>
+            <p>Job title: {{ employment.title }}</p>
+            <p>
+              Department / Institute (optional): {{ employment.institution }}
+            </p>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+  </div>
+  <div class="card">
+    <h2 class="mb-3">Education</h2>
+    <p-accordion>
+      @for (education of currentUser()?.education; track $index) {
+        <p-accordion-panel value="{{ $index }}" class="accordion-panel">
+          <p-accordion-header>
+            <div class="title-date">
+              <p>{{ education.institution }}</p>
+              <p class="font-normal ml-auto mr-5">
+                {{ education.startDate | date: "MMM yyyy" }} -
+                @if (education.ongoing) {
+                  ongoing
+                } @else {
+                  {{ education.endDate | date: "MMM yyyy" }}
+                }
+              </p>
+            </div>
+          </p-accordion-header>
+          <p-accordion-content>
+            <p>Degree: {{ education.degree }}</p>
+            <p>
+              Department / Institute (optional): {{ education.institution }}
+            </p>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+  </div>
+</div>
+
+<osf-search></osf-search>

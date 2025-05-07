@@ -1,8 +1,12 @@
-<div class="breadcrumbs">
-  @for (url of parsedUrl(); track url; let l = $last) {
-    {{ url }}
-    @if (!l) {
-      /
+@if (parsedUrl()[0] !== "home") {
+  <div class="breadcrumbs flex column-gap-2">
+    <i class="osf-icon-home"></i>
+    <p>/</p>
+    @for (url of parsedUrl(); track url; let l = $last) {
+      {{ url }}
+      @if (!l) {
+        /
+      }
     }
-  }
-</div>
+  </div>
+}

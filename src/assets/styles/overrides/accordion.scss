@@ -76,3 +76,50 @@
     }
   }
 }
+
+.card {
+  .p-accordion {
+    .p-accordioncontent-content {
+      display: flex;
+      flex-direction: column;
+      row-gap: 1rem;
+      padding: 0.4rem 0 0.1rem 0;
+      border: none;
+    }
+
+    .p-accordionpanel {
+      border: none;
+    }
+
+    .p-accordionheader {
+      height: 3.5rem;
+    }
+
+    .p-iconwrapper {
+      transform: rotate(180deg);
+      background: var.$bg-blue-3;
+      height: 2.3rem;
+      min-width: 2.3rem;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      svg {
+        color: var.$pr-blue-1;
+      }
+    }
+  }
+
+  @media (max-width: 1000px) {
+    .p-accordion {
+      row-gap: 0.5rem;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .p-accordion {
+      row-gap: 1.7rem;
+    }
+  }
+}

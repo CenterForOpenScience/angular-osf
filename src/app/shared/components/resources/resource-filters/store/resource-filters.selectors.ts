@@ -11,15 +11,7 @@ export class ResourceFiltersSelectors {
     state: ResourceFiltersStateModel,
   ): ResourceFiltersStateModel {
     return {
-      creator: state.creator,
-      dateCreated: state.dateCreated,
-      funder: state.funder,
-      subject: state.subject,
-      license: state.license,
-      resourceType: state.resourceType,
-      institution: state.institution,
-      provider: state.provider,
-      partOfCollection: state.partOfCollection,
+      ...state,
     };
   }
 

@@ -16,6 +16,7 @@ import { Chip } from 'primeng/chip';
 import { PrimeTemplate } from 'primeng/api';
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { FilterType } from '@shared/components/resources/resource-filters/models/filter-type.enum';
+import { SearchSelectors } from '@osf/features/search/store';
 
 @Component({
   selector: 'osf-filter-chips',
@@ -29,6 +30,10 @@ export class FilterChipsComponent {
 
   protected filters = this.#store.selectSignal(
     ResourceFiltersSelectors.getAllFilters,
+  );
+
+  readonly isMyProfilePage = this.#store.selectSignal(
+    SearchSelectors.getIsMyProfile,
   );
 
   clearFilter(filter: FilterType) {

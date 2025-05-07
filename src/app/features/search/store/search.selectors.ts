@@ -44,4 +44,9 @@ export class SearchSelectors {
   static getPrevious(state: SearchStateModel): string {
     return state.previous;
   }
+
+  @Selector([SearchState])
+  static getIsMyProfile(state: SearchStateModel): boolean {
+    return state.isMyProfile;
+  }
 }

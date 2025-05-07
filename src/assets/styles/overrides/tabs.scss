@@ -39,4 +39,13 @@
   .p-tabpanels {
     padding: 0 !important;
   }
+  .p-tablist {
+    padding: 3.4rem 1.7rem 0 1.7rem;
+  }
+
+  @media (max-width: 1000px) {
+    .p-tablist {
+      padding: 2rem 2.5rem 0 2.5rem;
+    }
+  }
 }
