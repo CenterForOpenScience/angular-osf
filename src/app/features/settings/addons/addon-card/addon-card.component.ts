@@ -3,6 +3,7 @@ import { Button } from 'primeng/button';
 import { Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { TranslatePipe } from '@ngx-translate/core';
 import {
   Addon,
   AuthorizedAddon,
@@ -14,7 +15,7 @@ import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'osf-addon-card',
-  imports: [Button, NgClass, DialogModule],
+  imports: [Button, NgClass, DialogModule, TranslatePipe],
   templateUrl: './addon-card.component.html',
   styleUrl: './addon-card.component.scss',
   standalone: true,

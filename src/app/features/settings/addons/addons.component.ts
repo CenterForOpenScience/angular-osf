@@ -16,6 +16,7 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { Store } from '@ngxs/store';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import {
   GetStorageAddons,
   GetCitationAddons,
@@ -42,12 +43,14 @@ import { UserSelectors } from '@core/store/user/user.selectors';
     AddonCardListComponent,
     SelectModule,
     FormsModule,
+    TranslatePipe,
   ],
   templateUrl: './addons.component.html',
   styleUrl: './addons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonsComponent {
+  #translateService = inject(TranslateService);
   #store = inject(Store);
   protected readonly defaultTabValue = 0;
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
@@ -110,8 +113,16 @@ export class AddonsComponent {
   });
 
   protected readonly tabOptions: SelectOption[] = [
-    { label: 'All Add-ons', value: 0 },
-    { label: 'Connected Add-ons', value: 1 },
+    {
+      label: this.#translateService.instant('settings.addons.tabs.all-addons'),
+      value: 0,
+    },
+    {
+      label: this.#translateService.instant(
+        'settings.addons.tabs.connected-addons',
+      ),
+      value: 1,
+    },
   ];
   protected readonly categoryOptions: SelectOption[] = [
     { label: 'Additional Storage', value: 'external-storage-services' },
