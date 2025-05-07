@@ -9,7 +9,7 @@ import {
 } from '@osf/features/settings/addons/entities/addons.entities';
 import { NgClass } from '@angular/common';
 import { Store } from '@ngxs/store';
-import { DeleteAuthorizedAddon } from '@core/store/settings/addons';
+import { DeleteAuthorizedAddon } from '@osf/features/settings/addons/store';
 import { DialogModule } from 'primeng/dialog';
 
 @Component({

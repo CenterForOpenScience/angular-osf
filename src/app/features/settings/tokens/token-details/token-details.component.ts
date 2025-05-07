@@ -16,11 +16,11 @@ import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-a
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { map, switchMap, of } from 'rxjs';
 import { Store } from '@ngxs/store';
-import { TokensSelectors } from '@core/store/settings/tokens/tokens.selectors';
+import { TokensSelectors } from '@osf/features/settings/tokens/store/tokens.selectors';
 import {
   DeleteToken,
   GetTokenById,
-} from '@core/store/settings/tokens/tokens.actions';
+} from '@osf/features/settings/tokens/store/tokens.actions';
 
 @Component({
   selector: 'osf-token-details',

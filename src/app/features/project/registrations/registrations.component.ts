@@ -8,12 +8,12 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { TabOption } from '@shared/entities/tab-option.interface';
-import { RegistrationCardComponent } from '@osf/features/my-projects/project/registrations/registration-card/registration-card.component';
+import { RegistrationCardComponent } from '@osf/features/project/registrations/registration-card/registration-card.component';
 import { Select } from 'primeng/select';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { FormsModule } from '@angular/forms';
-import { RegistrationCard } from '@osf/features/my-projects/project/registrations/registration-card/registration-card.interface';
+import { RegistrationCard } from '@osf/features/project/registrations/registration-card/registration-card.interface';
 
 @Component({
   selector: 'osf-registrations',

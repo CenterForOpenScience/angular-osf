@@ -13,7 +13,11 @@ import { RouterLink } from '@angular/router';
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
 import { Store } from '@ngxs/store';
-import { DeleteToken, GetTokens, TokensSelectors } from '@core/store/settings';
+import {
+  DeleteToken,
+  GetTokens,
+  TokensSelectors,
+} from '@osf/features/settings/tokens/store';
 
 @Component({
   selector: 'osf-tokens-list',

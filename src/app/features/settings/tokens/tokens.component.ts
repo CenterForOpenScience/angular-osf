@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
 import { RouterOutlet, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
-import { GetScopes } from '@core/store/settings';
+import { GetScopes } from '@osf/features/settings/tokens/store';
 import { map } from 'rxjs';
 
 @Component({

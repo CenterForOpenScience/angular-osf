@@ -48,7 +48,11 @@ export class NavMenuComponent {
 
   #convertToMenuItem(item: NavItem): MenuItem {
     const currentUrl = this.#router.url;
-    const isExpanded = item.isCollapsible && currentUrl.startsWith(item.path);
+    const isExpanded =
+      item.isCollapsible &&
+      (currentUrl.startsWith(item.path) ||
+        (item.items?.some((subItem) => currentUrl.startsWith(subItem.path)) ??
+          false));
 
     return {
       label: item.label,

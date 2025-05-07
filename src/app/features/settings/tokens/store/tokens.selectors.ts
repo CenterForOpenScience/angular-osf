@@ -2,7 +2,7 @@ import { Selector } from '@ngxs/store';
 import { TokensStateModel } from './tokens.models';
 import { Scope } from '@osf/features/settings/tokens/entities/scope.interface';
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
-import { TokensState } from '@core/store/settings';
+import { TokensState } from '@osf/features/settings/tokens/store/tokens.state';
 
 export class TokensSelectors {
   @Selector([TokensState])
