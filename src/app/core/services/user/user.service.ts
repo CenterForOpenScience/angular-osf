@@ -1,10 +1,14 @@
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { User } from '@core/services/user/user.entity';
-import { UserUS } from '@core/services/json-api/underscore-entites/user/user-us.entity';
-import { mapUserUStoUser } from '@core/services/mappers/users/users.mapper';
+import {
+  User,
+  UserGetResponse,
+  UserSettings,
+  UserSettingsGetResponse,
+} from '@core/services/user/user.models';
 import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
+import { UserMapper } from '@core/services/user/users.mapper';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +19,19 @@ export class UserService {
 
   getCurrentUser(): Observable<User> {
     return this.jsonApiService
-      .get<JsonApiResponse<UserUS, null>>(this.baseUrl + 'users/me')
-      .pipe(map((user) => mapUserUStoUser(user.data)));
+      .get<JsonApiResponse<UserGetResponse, null>>(this.baseUrl + 'users/me/')
+      .pipe(map((user) => UserMapper.fromUserGetResponse(user.data)));
+  }
+
+  getCurrentUserSettings(): Observable<UserSettings> {
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<UserSettingsGetResponse, null>
+      >(this.baseUrl + 'users/me/settings/')
+      .pipe(
+        map((response) =>
+          UserMapper.fromUserSettingsGetResponse(response.data),
+        ),
+      );
   }
 }

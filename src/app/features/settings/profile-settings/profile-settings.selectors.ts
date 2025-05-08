@@ -3,7 +3,7 @@ import { ProfileSettingsState } from '@osf/features/settings/profile-settings/pr
 import { Education } from '@osf/features/settings/profile-settings/education/educations.entities';
 import { ProfileSettingsStateModel } from '@osf/features/settings/profile-settings/profile-settings.entities';
 import { Employment } from '@osf/features/settings/profile-settings/employment/employment.entities';
-import { User } from '@core/services/user/user.entity';
+import { User } from '@core/services/user/user.models';
 import { Social } from '@osf/features/settings/profile-settings/social/social.entities';
 
 export class ProfileSettingsSelectors {

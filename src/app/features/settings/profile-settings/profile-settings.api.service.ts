@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { JsonApiService } from '@core/services/json-api/json-api.service';
 import { JsonApiResponse } from '@osf/core/services/json-api/json-api.entity';
-import { UserUS } from '@core/services/json-api/underscore-entites/user/user-us.entity';
 import {
   ProfileSettingsStateModel,
   ProfileSettingsUpdate,
 } from '@osf/features/settings/profile-settings/profile-settings.entities';
+import { UserGetResponse } from '@core/services/user/user.models';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ export class ProfileSettingsApiService {
     data: ProfileSettingsUpdate,
   ) {
     const patchedData = { [key]: data };
-    return this.#jsonApiService.patch<JsonApiResponse<UserUS, null>>(
+    return this.#jsonApiService.patch<JsonApiResponse<UserGetResponse, null>>(
       `${this.#baseUrl}users/${userId}/`,
       { data: { type: 'users', id: userId, attributes: patchedData } },
     );

@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
-import { UserStateModel } from '@core/store/user/user.models';
-import { User } from '@core/services/user/user.entity';
+import { UserStateModel } from '@core/store/user/user.state-model';
+import { User, UserSettings } from '@core/services/user/user.models';
 import { UserState } from '@core/store/user/user.state';
 import { ProfileSettingsStateModel } from '@osf/features/settings/profile-settings/profile-settings.entities';
 import { Social } from '@osf/features/settings/profile-settings/social/social.entities';
@@ -27,5 +27,10 @@ export class UserSelectors {
         familyName: state.currentUser?.familyName ?? '',
       },
     } satisfies ProfileSettingsStateModel;
+  }
+
+  @Selector([UserState])
+  static getCurrentUserSettings(state: UserStateModel): UserSettings | null {
+    return state.currentUserSettings;
   }
 }
