@@ -30,7 +30,7 @@ import {
   GetMyPreprints,
   GetBookmarksCollectionId,
   GetMyBookmarks,
-} from '@core/store/my-projects';
+} from '@osf/features/my-projects/store';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
 import { TableParameters } from '@shared/entities/table-parameters.interface';
@@ -40,7 +40,7 @@ import { SortOrder } from '@shared/utils/sort-order.enum';
 import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
 import { QueryParams } from '@osf/shared/entities/query-params.interface';
 import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
-import { GetUserInstitutions } from '@core/store/institutions';
+import { GetUserInstitutions } from '@osf/features/institutions/store';
 
 @Component({
   selector: 'osf-my-projects',

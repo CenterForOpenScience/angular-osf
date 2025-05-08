@@ -1,177 +1,117 @@
 <section class="content-container" [class.mobile]="isXSmall()">
   <nav class="navigation-bar-container">
     <a routerLink="/settings/developer-apps">
-      <!-- TODO - Add icon -->
-      <strong><</strong> Back to list of developer apps
+      <i class="osf-icon-arrow-left inline"></i> Back to list of developer apps
     </a>
   </nav>
 
-  <section class="title-container" [class.mobile]="isXSmall()">
-    <h1>{{ developerApp().appName + developerAppId() }}</h1>
-    <p-button
-      label="Delete"
-      [class.btn-full-width]="isXSmall()"
-      severity="danger"
-      (click)="deleteApp()"
-    />
-  </section>
+  @if (developerApp()) {
+    <section class="title-container" [class.mobile]="isXSmall()">
+      <h1>{{ developerApp()?.name }}</h1>
+      <p-button
+        label="Delete"
+        [class.btn-full-width]="isXSmall()"
+        severity="danger"
+        (click)="deleteApp()"
+      />
+    </section>
 
-  <section class="cards-container" [class.mobile]="isXSmall()">
-    <p-card>
-      <section class="card-body">
-        <h2>Client ID</h2>
+    <section class="cards-container" [class.mobile]="isXSmall()">
+      <p-card>
+        <section class="card-body">
+          <h2>Client ID</h2>
 
-        <p>
-          The client ID is the developer app's unique identifier and is safe to
-          share publicly.
-        </p>
+          <p>
+            The client ID is the developer app's unique identifier and is safe
+            to share publicly.
+          </p>
 
-        <div class="inline-block relative">
-          <span
-            class="copy-notification"
-            [class.visible]="clientIdCopiedNotificationVisible()"
-          >
-            Copied!
-          </span>
-          <p-iconfield iconPosition="right">
-            <input type="text" pInputText readonly [value]="clientId()" />
-            <p-inputicon
-              [cdkCopyToClipboard]="clientId()"
-              (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()"
-            >
-              <i class="osf-icon-copy"></i>
-            </p-inputicon>
-          </p-iconfield>
-        </div>
-      </section>
-    </p-card>
-
-    <p-card>
-      <section class="card-body">
-        <h2>Client Secret</h2>
-
-        <p>
-          The client secret is available only to you. Keep it private and do not
-          share it.
-        </p>
-
-        <section class="client-secret-container" [class.mobile]="isXSmall()">
-          <div class="relative">
+          <div class="inline-block relative">
             <span
               class="copy-notification"
-              [class.visible]="clientSecretCopiedNotificationVisible()"
+              [class.visible]="clientIdCopiedNotificationVisible()"
             >
               Copied!
             </span>
             <p-iconfield iconPosition="right">
-              <input
-                pInputText
-                [value]="
-                  isClientSecretVisible()
-                    ? clientSecret()
-                    : hiddenClientSecret()
-                "
-                readonly
-              />
+              <input type="text" pInputText readonly [value]="clientId()" />
               <p-inputicon
-                [cdkCopyToClipboard]="clientSecret()"
-                (cdkCopyToClipboardCopied)="clientSecretCopiedToClipboard()"
+                [cdkCopyToClipboard]="clientId()"
+                (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()"
               >
                 <i class="osf-icon-copy"></i>
               </p-inputicon>
             </p-iconfield>
           </div>
-
-          <p-button
-            [label]="
-              isClientSecretVisible()
-                ? 'Hide client secret'
-                : 'Show client secret'
-            "
-            severity="secondary"
-            (click)="isClientSecretVisible.set(!isClientSecretVisible())"
-          />
         </section>
+      </p-card>
 
-        <section class="card-actions">
-          <p-button
-            label="Reset Secret"
-            [class.btn-half-width]="isXSmall()"
-            (click)="resetClientSecret()"
-          />
-        </section>
-      </section>
-    </p-card>
+      <p-card>
+        <section class="card-body">
+          <h2>Client Secret</h2>
 
-    <p-card>
-      <section class="card-body">
-        <h2>Edit app</h2>
+          <p>
+            The client secret is available only to you. Keep it private and do
+            not share it.
+          </p>
 
-        <form
-          [formGroup]="editAppForm"
-          class="flex flex-column gap-3"
-          (ngSubmit)="submitForm()"
-        >
-          <div class="flex flex-column">
-            <label for="app-name">App Name</label>
-            <input
-              id="app-name"
-              type="text"
-              autocomplete="off"
-              pInputText
-              [formControlName]="DeveloperAppFormFormControls.AppName"
-            />
-          </div>
+          <section class="client-secret-container" [class.mobile]="isXSmall()">
+            <div class="relative">
+              <span
+                class="copy-notification"
+                [class.visible]="clientSecretCopiedNotificationVisible()"
+              >
+                Copied!
+              </span>
+              <p-iconfield iconPosition="right">
+                <input
+                  pInputText
+                  [value]="
+                    isClientSecretVisible()
+                      ? clientSecret()
+                      : hiddenClientSecret()
+                  "
+                  readonly
+                />
+                <p-inputicon
+                  [cdkCopyToClipboard]="clientSecret()"
+                  (cdkCopyToClipboardCopied)="clientSecretCopiedToClipboard()"
+                >
+                  <i class="osf-icon-copy"></i>
+                </p-inputicon>
+              </p-iconfield>
+            </div>
 
-          <div class="flex flex-column">
-            <label for="proj-homepage-url">Project homepage URL</label>
-            <input
-              id="proj-homepage-url"
-              type="url"
-              autocomplete="off"
-              pInputText
-              [formControlName]="
-                DeveloperAppFormFormControls.ProjectHomePageUrl
+            <p-button
+              [label]="
+                isClientSecretVisible()
+                  ? 'Hide client secret'
+                  : 'Show client secret'
               "
+              severity="secondary"
+              (click)="isClientSecretVisible.set(!isClientSecretVisible())"
             />
-          </div>
-
-          <div class="flex flex-column">
-            <label for="app-descr">App description (optional)</label>
-            <input
-              id="app-descr"
-              type="text"
-              autocomplete="off"
-              pInputText
-              [formControlName]="DeveloperAppFormFormControls.AppDescription"
-            />
-          </div>
-
-          <div class="flex flex-column">
-            <label for="auth-callback-url">Authorization callback URL</label>
-            <input
-              id="auth-callback-url"
-              type="url"
-              autocomplete="off"
-              pInputText
-              [formControlName]="
-                DeveloperAppFormFormControls.AuthorizationCallbackUrl
-              "
-            />
-          </div>
+          </section>
 
           <section class="card-actions">
             <p-button
-              label="Save"
-              type="submit"
-              [ngClass]="
-                isXSmall() ? 'btn-half-width' : 'w-10rem btn-full-width'
-              "
-              [disabled]="!editAppForm.dirty || !editAppForm.valid"
+              label="Reset Secret"
+              [class.btn-half-width]="isXSmall()"
+              (click)="resetClientSecret()"
             />
           </section>
-        </form>
-      </section>
-    </p-card>
-  </section>
+        </section>
+      </p-card>
+
+      <p-card>
+        <section class="card-body">
+          <h2>Edit App</h2>
+          <osf-developer-app-add-edit-form
+            [isEditMode]="true"
+            [initialValues]="developerApp()!"
+          />
+        </section>
+      </p-card>
+    </section>
+  }
 </section>

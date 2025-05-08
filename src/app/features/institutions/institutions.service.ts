@@ -18,6 +18,7 @@ export class InstitutionsService {
 
   getUserInstitutions(): Observable<Institution[]> {
     const url = this.#baseUrl + 'users/me/institutions/';
+    // const url = this.#baseUrl + 'users/26c59/institutions/';
     return this.#jsonApiService
       .get<JsonApiResponse<UserInstitutionGetResponse[], null>>(url)
       .pipe(

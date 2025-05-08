@@ -7,7 +7,7 @@ export function linkValidator(): ValidatorFn {
       return null;
     }
 
-    const urlPattern = /^(https?):\/\/.+/i;
+    const urlPattern = /^(https):\/\/.+/i;
 
     const isValid = urlPattern.test(value);
 

@@ -1,4 +1,5 @@
 import { NavItem } from '@shared/entities/nav-item.interface';
+import { MenuItem } from 'primeng/api';
 
 export const NAV_ITEMS: NavItem[] = [
   { path: '/home', label: 'Home', icon: 'home', useExactMatch: true },
@@ -59,5 +60,19 @@ export const NAV_ITEMS: NavItem[] = [
     label: 'Donate',
     icon: 'donate',
     useExactMatch: true,
+  },
+];
+
+export const PROJECT_MENU_ITEMS: MenuItem[] = [
+  {
+    label: 'Project details',
+    icon: 'osf-icon-my-projects',
+    expanded: true,
+    items: [
+      { label: 'Overview', routerLink: 'overview' },
+      { label: 'Metadata', routerLink: 'metadata' },
+      { label: 'Files', routerLink: 'files' },
+      { label: 'Registrations', routerLink: 'registrations' },
+    ],
   },
 ];

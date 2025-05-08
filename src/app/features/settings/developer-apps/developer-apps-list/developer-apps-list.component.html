@@ -8,8 +8,8 @@
     @for (developerApp of developerApplications(); track $index) {
       <p-card>
         <section class="card-body" [class.mobile]="isXSmall()">
-          <a [routerLink]="[developerApp.id, 'details']">
-            <h2>{{ developerApp.appName }}</h2>
+          <a [routerLink]="[developerApp.clientId, 'details']">
+            <h2>{{ developerApp.name }}</h2>
           </a>
           <section class="button-container">
             <p-button
@@ -21,6 +21,17 @@
           </section>
         </section>
       </p-card>
+    }
+
+    @if (isLoading()) {
+      @for (_ of [1, 2, 3]; track $index) {
+        <p-card>
+          <section class="card-body" [class.mobile]="isXSmall()">
+            <p-skeleton width="20rem" height="2rem"> </p-skeleton>
+            <p-skeleton width="6rem" height="3rem"> </p-skeleton>
+          </section>
+        </p-card>
+      }
     }
   </section>
 </section>
