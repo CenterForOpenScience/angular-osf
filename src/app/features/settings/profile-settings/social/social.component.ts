@@ -27,6 +27,7 @@ import {
 import { Store } from '@ngxs/store';
 import { UpdateProfileSettingsSocialLinks } from '@osf/features/settings/profile-settings/profile-settings.actions';
 import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-social',
@@ -37,6 +38,7 @@ import { ProfileSettingsSelectors } from '@osf/features/settings/profile-setting
     InputGroupAddon,
     InputText,
     ReactiveFormsModule,
+    TranslatePipe,
   ],
   templateUrl: './social.component.html',
   styleUrl: './social.component.scss',

@@ -405,6 +405,62 @@
           "message": "Are you sure you want to disable this account? All projects connected to this account will be affected."
         }
       }
+    },
+    "profileSettings": {
+      "title": "Profile Settings",
+      "tabs": {
+        "name": "Name",
+        "social": "Social",
+        "employment": "Employment",
+        "education": "Education"
+      },
+      "name": {
+        "description": "Your full name is the name that will be displayed in your profile. To control the way your name will appear in citations, you can use the \"Auto-fill\" button to automatically infer your first name, last name, etc., or edit the fields directly below.",
+        "fullName": "Full Name",
+        "autoFill": "Auto-Fill",
+        "givenName": "Given Name",
+        "middleNames": "Middle Name(S) (Optional)",
+        "familyName": "Family Name",
+        "suffix": "Suffix (Optional)",
+        "citationPreview": {
+          "title": "Citation Preview",
+          "style": "Style:",
+          "citationFormat": "Citation format:"
+        }
+      },
+      "social": {
+        "title": "Social Link {{index}}",
+        "remove": "Remove",
+        "socialOutput": "Social output",
+        "webAddress": "Web Address",
+        "addMore": "Add One More"
+      },
+      "employment": {
+        "title": "Position {{index}}",
+        "remove": "Remove",
+        "jobTitle": "Job Title",
+        "department": "Department / Institute (Optional)",
+        "institution": "Institution / Employer",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "presentlyEmployed": "Presently employed",
+        "addPosition": "Add Position"
+      },
+      "education": {
+        "title": "Education {{index}}",
+        "remove": "Remove",
+        "institution": "Institution",
+        "department": "Department",
+        "degree": "Degree",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "ongoing": "Ongoing",
+        "addMore": "Add One More"
+      },
+      "common": {
+        "discardChanges": "Discard Changes",
+        "save": "Save"
+      }
     }
   },
   "footer": {

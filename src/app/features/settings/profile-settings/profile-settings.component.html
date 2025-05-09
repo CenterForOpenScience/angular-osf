@@ -1,6 +1,6 @@
 <osf-sub-header
   [showButton]="false"
-  [title]="'Profile Settings'"
+  [title]="'settings.profileSettings.title' | translate"
   [icon]="'settings'"
 />
 
@@ -12,10 +12,18 @@
   >
     @if (!isMobile()) {
       <p-tablist class="pr-5 pl-5">
-        <p-tab [value]="0">Name</p-tab>
-        <p-tab [value]="1">Social</p-tab>
-        <p-tab [value]="2">Employment</p-tab>
-        <p-tab [value]="3">Education</p-tab>
+        <p-tab [value]="0">{{
+          "settings.profileSettings.tabs.name" | translate
+        }}</p-tab>
+        <p-tab [value]="1">{{
+          "settings.profileSettings.tabs.social" | translate
+        }}</p-tab>
+        <p-tab [value]="2">{{
+          "settings.profileSettings.tabs.employment" | translate
+        }}</p-tab>
+        <p-tab [value]="3">{{
+          "settings.profileSettings.tabs.education" | translate
+        }}</p-tab>
       </p-tablist>
     }
 

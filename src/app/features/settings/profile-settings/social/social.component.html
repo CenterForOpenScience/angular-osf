@@ -7,11 +7,16 @@
           class="flex flex-column border-1 border-round-lg p-3 sm:p-5 name-container row-gap-4"
         >
           <div class="flex flex-row">
-            <h2>Social Link {{ index + 1 }}</h2>
+            <h2>
+              {{
+                "settings.profileSettings.social.title"
+                  | translate: { index: index + 1 }
+              }}
+            </h2>
             @if (index !== 0) {
               <div class="ml-auto remove-button">
-                <p-button class="ml-auto" (click)="removeLink(index)"
-                  >Remove
+                <p-button class="ml-auto" (click)="removeLink(index)">
+                  {{ "settings.profileSettings.social.remove" | translate }}
                 </p-button>
               </div>
             }
@@ -21,7 +26,9 @@
             class="flex flex-column row-gap-4 w-full md:flex-row md:align-items-end md:column-gap-3"
           >
             <div class="w-full md:w-4">
-              <p class="font-light mb-1">Social output</p>
+              <p class="font-light mb-1">
+                {{ "settings.profileSettings.social.socialOutput" | translate }}
+              </p>
               <p-dropdown
                 formControlName="socialOutput"
                 [options]="socials"
@@ -31,7 +38,9 @@
             </div>
 
             <div class="w-full md:w-8">
-              <p class="font-light mb-1">Web Address</p>
+              <p class="font-light mb-1">
+                {{ "settings.profileSettings.social.webAddress" | translate }}
+              </p>
               <p-inputgroup class="addon-input">
                 <p-inputgroup-addon>{{ getDomain(index) }} </p-inputgroup-addon>
                 <input
@@ -49,7 +58,7 @@
 </form>
 
 <p-button
-  label="Add One More"
+  [label]="'settings.profileSettings.social.addMore' | translate"
   severity="secondary"
   class="ml-auto w-6 btn-full-width md:w-auto"
   (click)="addLink()"
@@ -60,11 +69,14 @@
 >
   <p-button
     class="w-6 btn-full-width md:w-auto"
-    label="Discard Changes"
+    [label]="'settings.profileSettings.common.discardChanges' | translate"
     severity="info"
     disabled="true"
   />
   <div class="w-6 btn-full-width md:w-auto wide-m-button">
-    <p-button label="Save" (onClick)="saveSocialLinks()" />
+    <p-button
+      [label]="'settings.profileSettings.common.save' | translate"
+      (onClick)="saveSocialLinks()"
+    />
   </div>
 </div>

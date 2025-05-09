@@ -22,10 +22,18 @@ import {
   EmploymentForm,
 } from '@osf/features/settings/profile-settings/employment/employment.entities';
 import { UpdateProfileSettingsEmployment } from '@osf/features/settings/profile-settings/profile-settings.actions';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-employment',
-  imports: [Button, Checkbox, DatePicker, InputText, ReactiveFormsModule],
+  imports: [
+    Button,
+    Checkbox,
+    DatePicker,
+    InputText,
+    ReactiveFormsModule,
+    TranslatePipe,
+  ],
   templateUrl: './employment.component.html',
   styleUrl: './employment.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -11,6 +11,7 @@ import { EducationComponent } from '@osf/features/settings/profile-settings/educ
 import { EmploymentComponent } from '@osf/features/settings/profile-settings/employment/employment.component';
 import { NameComponent } from '@osf/features/settings/profile-settings/name/name.component';
 import { SocialComponent } from '@osf/features/settings/profile-settings/social/social.component';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-profile-settings',
@@ -29,6 +30,7 @@ import { SocialComponent } from '@osf/features/settings/profile-settings/social/
     EmploymentComponent,
     NameComponent,
     SocialComponent,
+    TranslatePipe,
   ],
   templateUrl: './profile-settings.component.html',
   styleUrl: './profile-settings.component.scss',
