@@ -4,6 +4,7 @@ import { UserStateModel } from './user.models';
 import { GetCurrentUser, SetCurrentUser } from './user.actions';
 import { UserService } from '@core/services/user/user.service';
 import { tap } from 'rxjs';
+import { SetupProfileSettings } from '@osf/features/settings/profile-settings/profile-settings.actions';
 
 @State<UserStateModel>({
   name: 'user',
@@ -20,6 +21,7 @@ export class UserState {
     return this.userService.getCurrentUser().pipe(
       tap((user) => {
         ctx.dispatch(new SetCurrentUser(user));
+        ctx.dispatch(new SetupProfileSettings());
       }),
     );
   }

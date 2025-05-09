@@ -62,6 +62,12 @@ export class JsonApiService {
       .pipe(map((response) => response.data));
   }
 
+  put<T>(url: string, body: unknown): Observable<T> {
+    return this.http
+      .put<JsonApiResponse<T, null>>(url, body, { headers: this.#headers })
+      .pipe(map((response) => response.data));
+  }
+
   delete(url: string): Observable<void> {
     return this.http.delete<void>(url, { headers: this.#headers });
   }
