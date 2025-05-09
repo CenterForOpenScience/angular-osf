@@ -2,21 +2,21 @@ export const slides = [
   {
     img: 'assets/images/carousel1.png',
     name: 'Patricia Ayala',
-    title: 'home.logged-out.testimonials.slides.patricia.quote',
+    title: 'home.loggedOut.testimonials.slides.patricia.quote',
     author: 'Patricia Ayala',
     facility: 'home.logged-out.testimonials.slides.patricia.facility',
   },
   {
     img: 'assets/images/carousel2.png',
     name: 'Maya Mathur',
-    title: 'home.logged-out.testimonials.slides.maya.quote',
+    title: 'home.loggedOut.testimonials.slides.maya.quote',
     author: 'Maya Mathur',
     facility: 'home.logged-out.testimonials.slides.maya.facility',
   },
   {
     img: 'assets/images/carousel3.png',
     name: 'Philip Cohen',
-    title: 'home.logged-out.testimonials.slides.philip.quote',
+    title: 'home.loggedOut.testimonials.slides.philip.quote',
     author: 'Philip Cohen',
     facility: 'home.logged-out.testimonials.slides.philip.facility',
   },
@@ -24,7 +24,7 @@ export const slides = [
 
 export const integrationIcons = [
   {
-    title: 'home.logged-out.integrations.categories.authentication',
+    title: 'home.loggedOut.integrations.categories.authentication',
     first: {
       path: 'assets/icons/socials/integrations/incommon.png',
       height: '36',
@@ -37,7 +37,7 @@ export const integrationIcons = [
     },
   },
   {
-    title: 'home.logged-out.integrations.categories.discovery',
+    title: 'home.loggedOut.integrations.categories.discovery',
     first: {
       path: 'assets/icons/socials/integrations/google-scholar.png',
       height: '36',
@@ -50,7 +50,7 @@ export const integrationIcons = [
     },
   },
   {
-    title: 'home.logged-out.integrations.categories.references',
+    title: 'home.loggedOut.integrations.categories.references',
     first: {
       path: 'assets/icons/socials/integrations/mendeley.png',
       height: '42',
@@ -63,7 +63,7 @@ export const integrationIcons = [
     },
   },
   {
-    title: 'home.logged-out.integrations.categories.storage',
+    title: 'home.loggedOut.integrations.categories.storage',
     first: {
       path: 'assets/icons/socials/integrations/dropbox.png',
       height: '34',
