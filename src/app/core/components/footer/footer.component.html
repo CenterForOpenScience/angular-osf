@@ -2,16 +2,23 @@
   <div class="footer-content">
     <div class="footer-nav">
       <div class="footer-links">
-        <a href="#">Center for Open Science</a>
+        <a href="#">{{ "footer.links.centerForOpenScience" | translate }}</a>
         <span class="separator">|</span>
-        <a href="#">Reproducibility Project: Psychology</a>
+        <a href="#">{{
+          "footer.links.reproducibilityProjectPsychology" | translate
+        }}</a>
         <span class="separator">|</span>
-        <a href="#">Reproducibility Project: Cancer Biology</a>
+        <a href="#">{{
+          "footer.links.reproducibilityProjectCancerBiology" | translate
+        }}</a>
       </div>
 
       <div class="footer-socials">
         @for (icon of socialIcons; track icon.name) {
-          <a [href]="icon.url" [attr.aria-label]="icon.ariaLabel">
+          <a
+            [href]="icon.url"
+            [attr.aria-label]="'footer.socials.' + icon.name | translate"
+          >
             <img
               alt="social media icon"
               width="37"
@@ -25,18 +32,22 @@
 
     <div class="footer-secondary-nav">
       <div class="footer-links">
-        <a routerLink="/terms-of-use">Terms of Use</a>
+        <a routerLink="/terms-of-use">{{
+          "footer.links.termsOfUse" | translate
+        }}</a>
         <span class="separator">|</span>
-        <a routerLink="/privacy-policy">Privacy Policy</a>
+        <a routerLink="/privacy-policy">{{
+          "footer.links.privacyPolicy" | translate
+        }}</a>
         <span class="separator">|</span>
-        <a href="#">Status</a>
+        <a href="#">{{ "footer.links.status" | translate }}</a>
         <span class="separator">|</span>
-        <a href="#">API</a>
+        <a href="#">{{ "footer.links.api" | translate }}</a>
         <span class="separator">|</span>
-        <a href="#">TOP Guidelines</a>
+        <a href="#">{{ "footer.links.topGuidelines" | translate }}</a>
       </div>
 
-      <div class="footer-copyright">Copyright © 2011-2025</div>
+      <div class="footer-copyright">{{ "footer.copyright" | translate }}</div>
     </div>
   </div>
 </footer>

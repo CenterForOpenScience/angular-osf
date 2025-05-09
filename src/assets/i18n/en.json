@@ -406,5 +406,24 @@
         }
       }
     }
+  },
+  "footer": {
+    "links": {
+      "centerForOpenScience": "Center for Open Science",
+      "reproducibilityProjectPsychology": "Reproducibility Project: Psychology",
+      "reproducibilityProjectCancerBiology": "Reproducibility Project: Cancer Biology",
+      "termsOfUse": "Terms of Use",
+      "privacyPolicy": "Privacy Policy",
+      "status": "Status",
+      "api": "API",
+      "topGuidelines": "TOP Guidelines"
+    },
+    "socials": {
+      "x": "X (formerly Twitter)",
+      "facebook": "Facebook",
+      "group": "Group",
+      "github": "GitHub"
+    },
+    "copyright": "Copyright © 2011-2025"
   }
 }
