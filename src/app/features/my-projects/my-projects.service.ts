@@ -1,20 +1,24 @@
-import { inject, Injectable } from '@angular/core';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
 import { Observable } from 'rxjs';
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
-import { MyProjectsMapper } from '@osf/features/my-projects/mappers/my-projects.mapper';
+import { map } from 'rxjs/operators';
+
+import { inject, Injectable } from '@angular/core';
+
+import { JsonApiService } from '@core/services/json-api/json-api.service';
 import {
-  MyProjectsItemResponse,
+  MyProjectsItem,
   MyProjectsItemGetResponse,
+  MyProjectsItemResponse,
   MyProjectsJsonApiResponse,
   SparseCollectionsResponse,
-  MyProjectsItem,
 } from '@osf/features/my-projects/entities/my-projects.entities';
-import { map } from 'rxjs/operators';
-import { SortOrder } from '@shared/utils/sort-order.enum';
 import { EndpointType } from '@osf/features/my-projects/entities/my-projects.types';
-import { CreateProjectPayload } from './entities/create-project.entities';
+import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
+import { MyProjectsMapper } from '@osf/features/my-projects/mappers/my-projects.mapper';
+import { SortOrder } from '@shared/utils/sort-order.enum';
+
 import { environment } from '../../../environments/environment';
+
+import { CreateProjectPayload } from './entities/create-project.entities';
 
 @Injectable({
   providedIn: 'root',

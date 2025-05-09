@@ -1,7 +1,10 @@
-import { inject, Injectable } from '@angular/core';
-import { SearchService } from '@osf/features/search/search.service';
-import { SearchStateModel } from '@osf/features/search/store/search.model';
 import { Action, State, StateContext, Store } from '@ngxs/store';
+
+import { tap } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
+
+import { SearchService } from '@osf/features/search/search.service';
 import {
   GetResources,
   GetResourcesByLink,
@@ -11,12 +14,12 @@ import {
   SetSearchText,
   SetSortBy,
 } from '@osf/features/search/store/search.actions';
-import { tap } from 'rxjs';
+import { SearchStateModel } from '@osf/features/search/store/search.model';
+import { SearchSelectors } from '@osf/features/search/store/search.selectors';
+import { searchStateDefaults } from '@osf/features/search/utils/data';
+import { getResourceTypes } from '@osf/features/search/utils/helpers/get-resource-types.helper';
 import { ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
 import { addFiltersParams } from '@shared/components/resources/resource-filters/utils/add-filters-params.helper';
-import { SearchSelectors } from '@osf/features/search/store/search.selectors';
-import { getResourceTypes } from '@osf/features/search/utils/helpers/get-resource-types.helper';
-import { searchStateDefaults } from '@osf/features/search/utils/data';
 
 @Injectable()
 @State<SearchStateModel>({

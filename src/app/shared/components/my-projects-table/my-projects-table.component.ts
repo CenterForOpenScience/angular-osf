@@ -1,18 +1,21 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { SortEvent } from 'primeng/api';
+import { Skeleton } from 'primeng/skeleton';
+import { TableModule, TablePageEvent } from 'primeng/table';
+
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   input,
   output,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { TableModule, TablePageEvent } from 'primeng/table';
-import { SortEvent } from 'primeng/api';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
+
 import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
+import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { TableParameters } from '@shared/entities/table-parameters.interface';
 import { SortOrder } from '@shared/utils/sort-order.enum';
-import { Skeleton } from 'primeng/skeleton';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-my-projects-table',

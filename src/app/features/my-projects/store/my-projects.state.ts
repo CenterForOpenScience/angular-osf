@@ -1,17 +1,21 @@
+import { Action, State, StateContext } from '@ngxs/store';
+
+import { tap } from 'rxjs';
+
 import { inject, Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
-import { MyProjectsStateModel } from './my-projects.model';
+
+import { MyProjectsService } from '@osf/features/my-projects/my-projects.service';
+
 import {
-  GetMyProjects,
-  GetMyRegistrations,
-  GetMyPreprints,
-  GetMyBookmarks,
-  GetBookmarksCollectionId,
   ClearMyProjects,
   CreateProject,
+  GetBookmarksCollectionId,
+  GetMyBookmarks,
+  GetMyPreprints,
+  GetMyProjects,
+  GetMyRegistrations,
 } from './my-projects.actions';
-import { MyProjectsService } from '@osf/features/my-projects/my-projects.service';
-import { tap } from 'rxjs';
+import { MyProjectsStateModel } from './my-projects.model';
 
 @State<MyProjectsStateModel>({
   name: 'myProjects',

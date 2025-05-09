@@ -1,3 +1,13 @@
+import { Store } from '@ngxs/store';
+
+import { AccordionModule } from 'primeng/accordion';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
+import { Select } from 'primeng/select';
+import { TableModule } from 'primeng/table';
+
+import { NgOptimizedImage } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,16 +18,8 @@ import {
   untracked,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IS_XSMALL, IS_WEB } from '@shared/utils/breakpoints.tokens';
-import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ResourceFiltersComponent } from '@shared/components/resources/resource-filters/resource-filters.component';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { AccordionModule } from 'primeng/accordion';
-import { TableModule } from 'primeng/table';
-import { DataViewModule } from 'primeng/dataview';
-import { ResourceCardComponent } from '@shared/components/resources/resource-card/resource-card.component';
-import { Store } from '@ngxs/store';
+
 import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
 import {
   GetResourcesByLink,
@@ -26,10 +28,11 @@ import {
   SetSortBy,
 } from '@osf/features/search/store';
 import { FilterChipsComponent } from '@shared/components/resources/filter-chips/filter-chips.component';
-import { ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
-import { Select } from 'primeng/select';
-import { NgOptimizedImage } from '@angular/common';
+import { ResourceCardComponent } from '@shared/components/resources/resource-card/resource-card.component';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
+import { ResourceFiltersComponent } from '@shared/components/resources/resource-filters/resource-filters.component';
+import { ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
+import { IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-resources',

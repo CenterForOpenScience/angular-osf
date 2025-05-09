@@ -1,5 +1,6 @@
-import { NavItem } from '@shared/entities/nav-item.interface';
 import { MenuItem } from 'primeng/api';
+
+import { NavItem } from '@shared/entities/nav-item.interface';
 
 export const NAV_ITEMS: NavItem[] = [
   {

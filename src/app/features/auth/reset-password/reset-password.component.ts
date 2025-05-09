@@ -1,17 +1,22 @@
-import { Component, inject, signal } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Password } from 'primeng/password';
+
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+
+import { PasswordInputHintComponent } from '@shared/components/password-input-hint/password-input-hint.component';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+
 import {
   PASSWORD_REGEX,
   passwordMatchValidator,
 } from '../sign-up/sign-up.helper';
-import { PasswordInputHintComponent } from '@shared/components/password-input-hint/password-input-hint.component';
+
 import { ResetPasswordFormGroupType } from './reset-password-form-group.type';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-reset-password',

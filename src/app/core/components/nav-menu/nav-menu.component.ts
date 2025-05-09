@@ -1,21 +1,25 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { MenuItem } from 'primeng/api';
+import { PanelMenuModule } from 'primeng/panelmenu';
+
+import { filter, map } from 'rxjs';
+
 import { Component, computed, inject, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
   RouterLink,
   RouterLinkActive,
-  Router,
-  NavigationEnd,
-  ActivatedRoute,
 } from '@angular/router';
+
 import {
   NAV_ITEMS,
   PROJECT_MENU_ITEMS,
 } from '@core/constants/nav-items.constant';
-import { PanelMenuModule } from 'primeng/panelmenu';
-import { MenuItem } from 'primeng/api';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { filter, map } from 'rxjs';
 import { NavItem } from '@shared/entities/nav-item.interface';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-nav-menu',

@@ -1,18 +1,22 @@
-import { Component, inject, signal } from '@angular/core';
-import { CarouselModule } from 'primeng/carousel';
-import { FormsModule } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
+import { CarouselModule } from 'primeng/carousel';
 import { InputText } from 'primeng/inputtext';
+
 import { NgOptimizedImage } from '@angular/common';
-import { slides, integrationIcons } from './data';
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+
 import {
   IS_MEDIUM,
   IS_SMALL,
   IS_WEB,
   IS_XSMALL,
 } from '@shared/utils/breakpoints.tokens';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { TranslatePipe } from '@ngx-translate/core';
+
+import { integrationIcons, slides } from './data';
 
 @Component({
   selector: 'osf-home-logged-out',

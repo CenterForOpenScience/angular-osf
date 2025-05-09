@@ -1,3 +1,10 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+import { InputText } from 'primeng/inputtext';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,14 +12,11 @@ import {
   HostBinding,
   inject,
 } from '@angular/core';
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Store } from '@ngxs/store';
-import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
+
 import { NameForm } from '@osf/features/settings/profile-settings/name/name.entities';
 import { UpdateProfileSettingsUser } from '@osf/features/settings/profile-settings/profile-settings.actions';
-import { TranslatePipe } from '@ngx-translate/core';
+import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
 
 @Component({
   selector: 'osf-name',

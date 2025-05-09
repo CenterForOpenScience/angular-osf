@@ -1,16 +1,20 @@
-import { inject, Injectable } from '@angular/core';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { inject, Injectable } from '@angular/core';
+
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
+import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { Scope } from '@osf/features/settings/tokens/entities/scope.interface';
+import { TokenMapper } from '@osf/features/settings/tokens/token.mapper';
+
+import { environment } from '../../../../environments/environment';
+
 import {
   Token,
   TokenCreateResponse,
   TokenGetResponse,
 } from './entities/tokens.models';
-import { map } from 'rxjs/operators';
-import { TokenMapper } from '@osf/features/settings/tokens/token.mapper';
-import { Scope } from '@osf/features/settings/tokens/entities/scope.interface';
-import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
-import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

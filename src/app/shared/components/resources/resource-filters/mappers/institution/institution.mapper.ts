@@ -1,6 +1,6 @@
-import { InstitutionIndexValueSearch } from '@shared/components/resources/resource-filters/models/institution/institution-index-value-search.entity';
-import { InstitutionIndexCardFilter } from '@shared/components/resources/resource-filters/models/institution/institution-index-card-filter.entity';
 import { InstitutionFilter } from '@shared/components/resources/resource-filters/models/institution/institution-filter.entity';
+import { InstitutionIndexCardFilter } from '@shared/components/resources/resource-filters/models/institution/institution-index-card-filter.entity';
+import { InstitutionIndexValueSearch } from '@shared/components/resources/resource-filters/models/institution/institution-index-value-search.entity';
 
 export function MapInstitutions(
   items: InstitutionIndexValueSearch[],

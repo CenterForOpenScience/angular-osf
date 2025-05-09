@@ -1,6 +1,7 @@
 import { Selector } from '@ngxs/store';
-import { AuthState } from './auth.state';
+
 import { AuthStateModel } from './auth.model';
+import { AuthState } from './auth.state';
 
 export class AuthSelectors {
   @Selector([AuthState])

@@ -1,9 +1,13 @@
-import { inject, Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
-import { InstitutionsStateModel } from './institutions.model';
-import { GetUserInstitutions } from './institutions.actions';
-import { InstitutionsService } from '@osf/features/institutions/institutions.service';
+import { Action, State, StateContext } from '@ngxs/store';
+
 import { tap } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
+
+import { InstitutionsService } from '@osf/features/institutions/institutions.service';
+
+import { GetUserInstitutions } from './institutions.actions';
+import { InstitutionsStateModel } from './institutions.model';
 
 @State<InstitutionsStateModel>({
   name: 'institutions',

@@ -1,19 +1,23 @@
+import { Action, State, StateContext } from '@ngxs/store';
+
+import { Observable, switchMap, tap } from 'rxjs';
+
 import { inject, Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
+
 import { AddonsService } from '@osf/features/settings/addons/addons.service';
+import { AddonResponse } from '@osf/features/settings/addons/entities/addons.entities';
+
 import {
+  CreateAuthorizedAddon,
+  DeleteAuthorizedAddon,
+  GetAddonsUserReference,
+  GetAuthorizedCitationAddons,
+  GetAuthorizedStorageAddons,
   GetCitationAddons,
   GetStorageAddons,
-  GetAuthorizedStorageAddons,
-  GetAuthorizedCitationAddons,
-  GetAddonsUserReference,
-  DeleteAuthorizedAddon,
-  CreateAuthorizedAddon,
   UpdateAuthorizedAddon,
 } from './addons.actions';
-import { Observable, switchMap, tap } from 'rxjs';
 import { AddonsStateModel } from './addons.models';
-import { AddonResponse } from '@osf/features/settings/addons/entities/addons.entities';
 
 @State<AddonsStateModel>({
   name: 'addons',

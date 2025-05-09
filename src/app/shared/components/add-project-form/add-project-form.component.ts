@@ -1,39 +1,43 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DropdownModule } from 'primeng/dropdown';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputTextModule } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
+import { Textarea } from 'primeng/textarea';
+
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
-  signal,
   OnInit,
+  signal,
 } from '@angular/core';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { DropdownModule } from 'primeng/dropdown';
-import { CheckboxModule } from 'primeng/checkbox';
-import { Select } from 'primeng/select';
-import { Textarea } from 'primeng/textarea';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Store } from '@ngxs/store';
+
+import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
 import { STORAGE_LOCATIONS } from '@core/constants/storage-locations.constant';
+import { InstitutionsSelectors } from '@osf/features/institutions/store';
 import {
   CreateProject,
   GetMyProjects,
   MyProjectsSelectors,
 } from '@osf/features/my-projects/store';
-import { InstitutionsSelectors } from '@osf/features/institutions/store';
-import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
-import { ProjectForm } from '@shared/entities/create-project-form.interface';
 import { ProjectFormControls } from '@osf/shared/entities/create-project-form-controls.enum';
-import { TranslatePipe } from '@ngx-translate/core';
+import { ProjectForm } from '@shared/entities/create-project-form.interface';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-add-project-form',

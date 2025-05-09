@@ -2,6 +2,9 @@
 const eslint = require("@eslint/js");
 const tseslint = require("typescript-eslint");
 const angular = require("angular-eslint");
+const pluginImport = require("eslint-plugin-import");
+const pluginSimpleImportSort = require("eslint-plugin-simple-import-sort");
+const pluginUnusedImports = require("eslint-plugin-unused-imports");
 
 module.exports = tseslint.config(
   {
@@ -13,6 +16,11 @@ module.exports = tseslint.config(
       ...angular.configs.tsRecommended,
     ],
     processor: angular.processInlineTemplates,
+    plugins: {
+      import: pluginImport,
+      "simple-import-sort": pluginSimpleImportSort,
+      "unused-imports": pluginUnusedImports,
+    },
     rules: {
       "@typescript-eslint/no-unused-vars": "warn",
       "@angular-eslint/directive-selector": [
@@ -31,6 +39,44 @@ module.exports = tseslint.config(
           style: "kebab-case",
         },
       ],
+      "import/first": "error",
+      "import/no-duplicates": "warn",
+      "import/newline-after-import": "warn",
+      "simple-import-sort/imports": [
+        "warn",
+        {
+          groups: [
+            // NGXS packages
+            ["^@ngxs"],
+
+            // NGX packages (ngx-... or @ngx/...)
+            ["^ngx-", "^@ngx"],
+
+            // Third-party packages (primeng)
+            ["^primeng"],
+
+            // RxJS packages (rxjs or @rxjs/...)
+            ["^rxjs", "^rxjs/operators"],
+
+            // Angular packages
+            ["^@angular"],
+
+            // Internal aliases (customize as needed)
+            ["^@core/", "^@osf/", "^@shared/"],
+
+            // Side effect imports
+            ["^\\u0000"],
+
+            // Parent imports
+            ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+
+            // Sibling and current directory imports
+            ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
+          ],
+        },
+      ],
+      "simple-import-sort/exports": "warn",
+      "unused-imports/no-unused-imports": "warn",
     },
   },
   {
@@ -40,5 +86,5 @@ module.exports = tseslint.config(
       ...angular.configs.templateAccessibility,
     ],
     rules: {},
-  }
+  },
 );

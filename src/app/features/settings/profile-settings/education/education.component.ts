@@ -1,3 +1,12 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
+import { DatePicker } from 'primeng/datepicker';
+import { InputText } from 'primeng/inputtext';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,18 +15,13 @@ import {
   inject,
 } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { DatePicker } from 'primeng/datepicker';
-import { Checkbox } from 'primeng/checkbox';
+
 import {
   Education,
   EducationForm,
 } from '@osf/features/settings/profile-settings/education/educations.entities';
-import { Store } from '@ngxs/store';
 import { UpdateProfileSettingsEducation } from '@osf/features/settings/profile-settings/profile-settings.actions';
 import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-education',

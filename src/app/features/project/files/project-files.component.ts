@@ -1,3 +1,10 @@
+import { Button } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { FloatLabel } from 'primeng/floatlabel';
+import { Select } from 'primeng/select';
+import { TableModule } from 'primeng/table';
+
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,19 +12,14 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { TableModule } from 'primeng/table';
+import { Router } from '@angular/router';
+
 import {
   FileItem,
   FILES,
 } from '@osf/features/project/files/project-files.entities';
-import { Router } from '@angular/router';
-import { DropdownModule } from 'primeng/dropdown';
-import { DatePipe } from '@angular/common';
-import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
-import { FloatLabel } from 'primeng/floatlabel';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 
 @Component({
   selector: 'osf-project-files',

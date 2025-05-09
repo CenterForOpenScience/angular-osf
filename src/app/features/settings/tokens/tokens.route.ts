@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+
 import { TokensComponent } from '@osf/features/settings/tokens/tokens.component';
 
 export const tokensAppsRoute: Route = {

@@ -1,5 +1,5 @@
-import { CreatorItem } from '@shared/components/resources/resource-filters/models/creator/creator-item.entity';
 import { Creator } from '@shared/components/resources/resource-filters/models/creator/creator.entity';
+import { CreatorItem } from '@shared/components/resources/resource-filters/models/creator/creator-item.entity';
 
 export function MapCreators(rawItem: CreatorItem): Creator {
   return {

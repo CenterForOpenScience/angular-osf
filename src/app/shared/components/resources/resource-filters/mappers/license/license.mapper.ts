@@ -1,6 +1,6 @@
-import { LicenseIndexValueSearch } from '@shared/components/resources/resource-filters/models/license/license-index-value-search.entity';
-import { LicenseIndexCardFilter } from '@shared/components/resources/resource-filters/models/license/license-index-card-filter.entity';
 import { LicenseFilter } from '@shared/components/resources/resource-filters/models/license/license-filter.entity';
+import { LicenseIndexCardFilter } from '@shared/components/resources/resource-filters/models/license/license-index-card-filter.entity';
+import { LicenseIndexValueSearch } from '@shared/components/resources/resource-filters/models/license/license-index-value-search.entity';
 
 export function MapLicenses(items: LicenseIndexValueSearch[]): LicenseFilter[] {
   const licenses: LicenseFilter[] = [];

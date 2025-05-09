@@ -1,6 +1,8 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { BooleanOrNullOrUndefined } from '@core/helpers/types.helper';
 import { TranslatePipe } from '@ngx-translate/core';
+
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
+import { BooleanOrNullOrUndefined } from '@core/helpers/types.helper';
 
 @Component({
   selector: 'osf-password-input-hint',

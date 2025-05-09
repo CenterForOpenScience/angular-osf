@@ -1,3 +1,18 @@
+import { Store } from '@ngxs/store';
+
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+import { ConfirmationService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
+
+import { map, of, switchMap, timer } from 'rxjs';
+
+import { CdkCopyToClipboard } from '@angular/cdk/clipboard';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,29 +21,19 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { InputText } from 'primeng/inputtext';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { CdkCopyToClipboard } from '@angular/cdk/clipboard';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ConfirmationService } from 'primeng/api';
-import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
-import { map, of, switchMap, timer } from 'rxjs';
-import { Store } from '@ngxs/store';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
+import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/developer-app-add-edit-form/developer-app-add-edit-form.component';
 import {
   DeleteDeveloperApp,
   DeveloperAppsSelectors,
   GetDeveloperAppDetails,
   ResetClientSecret,
 } from '@osf/features/settings/developer-apps/store';
-import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/developer-app-add-edit-form/developer-app-add-edit-form.component';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-developer-application-details',

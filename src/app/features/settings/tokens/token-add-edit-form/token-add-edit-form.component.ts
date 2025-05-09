@@ -1,3 +1,15 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputText } from 'primeng/inputtext';
+
+import { map } from 'rxjs';
+
+import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,35 +17,28 @@ import {
   input,
   OnInit,
 } from '@angular/core';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
-import { Checkbox } from 'primeng/checkbox';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import {
   TokenForm,
   TokenFormControls,
 } from '@osf/features/settings/tokens/entities/token-form.entities';
-import { CommonModule } from '@angular/common';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Store } from '@ngxs/store';
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
-import { map } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
-import { TokenCreatedDialogComponent } from '@osf/features/settings/tokens/token-created-dialog/token-created-dialog.component';
 import {
   CreateToken,
   GetTokens,
   TokensSelectors,
   UpdateToken,
 } from '@osf/features/settings/tokens/store';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TokenCreatedDialogComponent } from '@osf/features/settings/tokens/token-created-dialog/token-created-dialog.component';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-token-add-edit-form',

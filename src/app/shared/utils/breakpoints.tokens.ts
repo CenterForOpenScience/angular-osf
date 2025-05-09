@@ -1,6 +1,8 @@
-import { inject, InjectionToken } from '@angular/core';
+import { map, Observable } from 'rxjs';
+
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Observable, map } from 'rxjs';
+import { inject, InjectionToken } from '@angular/core';
+
 import { BreakpointQueries } from '@shared/utils/breakpoint-queries.enum';
 
 function createBreakpointToken(

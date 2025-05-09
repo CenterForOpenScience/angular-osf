@@ -1,6 +1,8 @@
 import { Selector } from '@ngxs/store';
-import { MyProjectsStateModel } from './my-projects.model';
+
 import { MyProjectsState } from '@osf/features/my-projects/store/my-projects.state';
+
+import { MyProjectsStateModel } from './my-projects.model';
 
 export class MyProjectsSelectors {
   @Selector([MyProjectsState])

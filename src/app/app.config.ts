@@ -1,21 +1,27 @@
+import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
+import { provideStore } from '@ngxs/store';
+
+import { TranslateModule } from '@ngx-translate/core';
+
+import { ConfirmationService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
+
+import { provideHttpClient } from '@angular/common/http';
 import {
   ApplicationConfig,
   importProvidersFrom,
   provideZoneChangeDetection,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
-import { provideStore } from '@ngxs/store';
-import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
-import { ConfirmationService } from 'primeng/api';
-import { STATES } from '@core/constants/ngxs-states.constant';
+import { provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
+
+import { STATES } from '@core/constants/ngxs-states.constant';
 import { provideTranslation } from '@core/helpers/i18n.helper';
-import { TranslateModule } from '@ngx-translate/core';
+
+import { routes } from './app.routes';
+
+import Aura from '@primeng/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [

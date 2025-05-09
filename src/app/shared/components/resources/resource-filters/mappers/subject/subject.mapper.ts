@@ -1,6 +1,6 @@
+import { IndexCardFilter } from '@shared/components/resources/resource-filters/models/index-card-filter.entity';
 import { IndexValueSearch } from '@shared/components/resources/resource-filters/models/index-value-search.entity';
 import { SubjectFilter } from '@shared/components/resources/resource-filters/models/subject/subject-filter.entity';
-import { IndexCardFilter } from '@shared/components/resources/resource-filters/models/index-card-filter.entity';
 
 export function MapSubject(items: IndexValueSearch[]): SubjectFilter[] {
   const subjects: SubjectFilter[] = [];

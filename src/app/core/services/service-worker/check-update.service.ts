@@ -1,7 +1,8 @@
+import { BehaviorSubject, concat, first, interval } from 'rxjs';
+
 import { ApplicationRef, inject, Injectable } from '@angular/core';
-import { SwUpdate, VersionEvent } from '@angular/service-worker';
-import { interval, BehaviorSubject, first, concat } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SwUpdate, VersionEvent } from '@angular/service-worker';
 
 @Injectable({ providedIn: 'root' })
 export class NewVersionCheckerService {

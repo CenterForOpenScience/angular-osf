@@ -1,3 +1,16 @@
+import { Store } from '@ngxs/store';
+
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+import type { SortEvent } from 'primeng/api';
+import { DropdownModule } from 'primeng/dropdown';
+import { DialogService } from 'primeng/dynamicdialog';
+import { Select } from 'primeng/select';
+import { TablePageEvent } from 'primeng/table';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,40 +21,32 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { DropdownModule } from 'primeng/dropdown';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { Select } from 'primeng/select';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
-import { TabOption } from '@shared/entities/tab-option.interface';
-import { TablePageEvent } from 'primeng/table';
-import type { SortEvent } from 'primeng/api';
-import { DialogService } from 'primeng/dynamicdialog';
-import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
-import { Store } from '@ngxs/store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import {
-  GetMyProjects,
-  MyProjectsSelectors,
-  ClearMyProjects,
-  GetMyRegistrations,
-  GetMyPreprints,
-  GetBookmarksCollectionId,
-  GetMyBookmarks,
-} from '@osf/features/my-projects/store';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
-import { TableParameters } from '@shared/entities/table-parameters.interface';
+
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
 import { parseQueryFilterParams } from '@core/helpers/http.helper';
-import { SortOrder } from '@shared/utils/sort-order.enum';
-import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
-import { QueryParams } from '@osf/shared/entities/query-params.interface';
-import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
 import { GetUserInstitutions } from '@osf/features/institutions/store';
+import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
+import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
+import {
+  ClearMyProjects,
+  GetBookmarksCollectionId,
+  GetMyBookmarks,
+  GetMyPreprints,
+  GetMyProjects,
+  GetMyRegistrations,
+  MyProjectsSelectors,
+} from '@osf/features/my-projects/store';
+import { QueryParams } from '@osf/shared/entities/query-params.interface';
+import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
+import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { TabOption } from '@shared/entities/tab-option.interface';
+import { TableParameters } from '@shared/entities/table-parameters.interface';
+import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { SortOrder } from '@shared/utils/sort-order.enum';
 
 @Component({
   selector: 'osf-my-projects',

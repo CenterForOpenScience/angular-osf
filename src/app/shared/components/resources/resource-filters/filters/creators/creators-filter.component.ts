@@ -1,3 +1,9 @@
+import { Store } from '@ngxs/store';
+
+import { Select, SelectChangeEvent } from 'primeng/select';
+
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,20 +14,18 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import { Select, SelectChangeEvent } from 'primeng/select';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Store } from '@ngxs/store';
-import {
-  ResourceFiltersSelectors,
-  SetCreator,
-} from '@shared/components/resources/resource-filters/store';
+
 import {
   GetAllOptions,
   GetCreatorsOptions,
 } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
-import { toObservable } from '@angular/core/rxjs-interop';
+import {
+  ResourceFiltersSelectors,
+  SetCreator,
+} from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-creators-filter',

@@ -1,3 +1,12 @@
+import { Store } from '@ngxs/store';
+
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+import { ConfirmationService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { Skeleton } from 'primeng/skeleton';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,22 +14,17 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { ConfirmationService } from 'primeng/api';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
 import { RouterLink } from '@angular/router';
+
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
-import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
-import { Store } from '@ngxs/store';
 import {
   DeleteToken,
   GetTokens,
   TokensSelectors,
 } from '@osf/features/settings/tokens/store';
-import { Skeleton } from 'primeng/skeleton';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-tokens-list',

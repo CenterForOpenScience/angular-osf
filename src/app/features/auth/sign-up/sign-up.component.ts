@@ -1,22 +1,26 @@
+import { TranslateModule } from '@ngx-translate/core';
+
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { DividerModule } from 'primeng/divider';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
+
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
-  Validators,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DividerModule } from 'primeng/divider';
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { PASSWORD_REGEX, passwordMatchValidator } from './sign-up.helper';
 import { Router, RouterLink } from '@angular/router';
+
 import { PasswordInputHintComponent } from '@shared/components/password-input-hint/password-input-hint.component';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { TranslateModule } from '@ngx-translate/core';
+
+import { PASSWORD_REGEX, passwordMatchValidator } from './sign-up.helper';
 
 @Component({
   selector: 'osf-sign-up',

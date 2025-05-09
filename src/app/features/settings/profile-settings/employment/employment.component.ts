@@ -1,3 +1,12 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
+import { DatePicker } from 'primeng/datepicker';
+import { InputText } from 'primeng/inputtext';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,24 +14,19 @@ import {
   HostBinding,
   inject,
 } from '@angular/core';
-import { Button } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
-import { DatePicker } from 'primeng/datepicker';
-import { InputText } from 'primeng/inputtext';
 import {
   FormArray,
   FormBuilder,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Store } from '@ngxs/store';
-import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
+
 import {
   Employment,
   EmploymentForm,
 } from '@osf/features/settings/profile-settings/employment/employment.entities';
 import { UpdateProfileSettingsEmployment } from '@osf/features/settings/profile-settings/profile-settings.actions';
-import { TranslatePipe } from '@ngx-translate/core';
+import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
 
 @Component({
   selector: 'osf-employment',

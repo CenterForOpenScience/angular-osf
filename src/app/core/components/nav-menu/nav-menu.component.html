@@ -13,6 +13,7 @@
           item.label === 'navigation.settings' ||
           item.label === 'navigation.myProjects'
         "
+        (click)="goToLink()"
       >
         @if (item.icon) {
           <i [class]="item.icon" class="nav-icon"></i>

@@ -1,41 +1,45 @@
-import { inject, Injectable } from '@angular/core';
+import { Store } from '@ngxs/store';
+
 import { map, Observable } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
+
 import {
   ApiData,
   JsonApiResponse,
 } from '@core/services/json-api/json-api.entity';
-import { environment } from '../../../../../environments/environment';
-import { CreatorItem } from '@shared/components/resources/resource-filters/models/creator/creator-item.entity';
 import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { MapCreators } from '@shared/components/resources/resource-filters/mappers/creators/creators.mappers';
-import { Creator } from '@shared/components/resources/resource-filters/models/creator/creator.entity';
-import { IndexValueSearch } from '@shared/components/resources/resource-filters/models/index-value-search.entity';
-import { MapDateCreated } from '@shared/components/resources/resource-filters/mappers/dateCreated/date-created.mapper';
-import { DateCreated } from '@shared/components/resources/resource-filters/models/dateCreated/date-created.entity';
-import { SubjectFilter } from '@shared/components/resources/resource-filters/models/subject/subject-filter.entity';
-import { MapSubject } from '@shared/components/resources/resource-filters/mappers/subject/subject.mapper';
-import { FunderIndexValueSearch } from '@shared/components/resources/resource-filters/models/funder/funder-index-value-search.entity';
-import { FunderFilter } from '@shared/components/resources/resource-filters/models/funder/funder-filter.entity';
-import { MapFunders } from '@shared/components/resources/resource-filters/mappers/funder/funder.mapper';
-import { LicenseFilter } from '@shared/components/resources/resource-filters/models/license/license-filter.entity';
-import { LicenseIndexValueSearch } from '@shared/components/resources/resource-filters/models/license/license-index-value-search.entity';
-import { MapLicenses } from '@shared/components/resources/resource-filters/mappers/license/license.mapper';
-import { ResourceTypeIndexValueSearch } from '@shared/components/resources/resource-filters/models/resource-type/resource-type-index-value-search.entity';
-import { ResourceTypeFilter } from '@shared/components/resources/resource-filters/models/resource-type/resource-type.entity';
-import { MapResourceType } from '@shared/components/resources/resource-filters/mappers/resource-type/resource-type.mapper';
-import { ProviderFilter } from '@shared/components/resources/resource-filters/models/provider/provider-filter.entity';
-import { MapProviders } from '@shared/components/resources/resource-filters/mappers/provider/provider.mapper';
-import { ProviderIndexValueSearch } from '@shared/components/resources/resource-filters/models/provider/provider-index-value-search.entity';
-import { PartOfCollectionFilter } from '@shared/components/resources/resource-filters/models/part-of-collection/part-of-collection-filter.entity';
-import { MapPartOfCollections } from '@shared/components/resources/resource-filters/mappers/part-of-collection/part-of-collection.mapper';
-import { PartOfCollectionIndexValueSearch } from '@shared/components/resources/resource-filters/models/part-of-collection/part-of-collection-index-value-search.entity';
-import { Store } from '@ngxs/store';
-import { addFiltersParams } from '@shared/components/resources/resource-filters/utils/add-filters-params.helper';
-import { ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
 import { SearchSelectors } from '@osf/features/search/store';
 import { getResourceTypes } from '@osf/features/search/utils/helpers/get-resource-types.helper';
-import { InstitutionIndexValueSearch } from '@shared/components/resources/resource-filters/models/institution/institution-index-value-search.entity';
+import { MapCreators } from '@shared/components/resources/resource-filters/mappers/creators/creators.mappers';
+import { MapDateCreated } from '@shared/components/resources/resource-filters/mappers/dateCreated/date-created.mapper';
+import { MapFunders } from '@shared/components/resources/resource-filters/mappers/funder/funder.mapper';
 import { MapInstitutions } from '@shared/components/resources/resource-filters/mappers/institution/institution.mapper';
+import { MapLicenses } from '@shared/components/resources/resource-filters/mappers/license/license.mapper';
+import { MapPartOfCollections } from '@shared/components/resources/resource-filters/mappers/part-of-collection/part-of-collection.mapper';
+import { MapProviders } from '@shared/components/resources/resource-filters/mappers/provider/provider.mapper';
+import { MapResourceType } from '@shared/components/resources/resource-filters/mappers/resource-type/resource-type.mapper';
+import { MapSubject } from '@shared/components/resources/resource-filters/mappers/subject/subject.mapper';
+import { Creator } from '@shared/components/resources/resource-filters/models/creator/creator.entity';
+import { CreatorItem } from '@shared/components/resources/resource-filters/models/creator/creator-item.entity';
+import { DateCreated } from '@shared/components/resources/resource-filters/models/dateCreated/date-created.entity';
+import { FunderFilter } from '@shared/components/resources/resource-filters/models/funder/funder-filter.entity';
+import { FunderIndexValueSearch } from '@shared/components/resources/resource-filters/models/funder/funder-index-value-search.entity';
+import { IndexValueSearch } from '@shared/components/resources/resource-filters/models/index-value-search.entity';
+import { InstitutionIndexValueSearch } from '@shared/components/resources/resource-filters/models/institution/institution-index-value-search.entity';
+import { LicenseFilter } from '@shared/components/resources/resource-filters/models/license/license-filter.entity';
+import { LicenseIndexValueSearch } from '@shared/components/resources/resource-filters/models/license/license-index-value-search.entity';
+import { PartOfCollectionFilter } from '@shared/components/resources/resource-filters/models/part-of-collection/part-of-collection-filter.entity';
+import { PartOfCollectionIndexValueSearch } from '@shared/components/resources/resource-filters/models/part-of-collection/part-of-collection-index-value-search.entity';
+import { ProviderFilter } from '@shared/components/resources/resource-filters/models/provider/provider-filter.entity';
+import { ProviderIndexValueSearch } from '@shared/components/resources/resource-filters/models/provider/provider-index-value-search.entity';
+import { ResourceTypeFilter } from '@shared/components/resources/resource-filters/models/resource-type/resource-type.entity';
+import { ResourceTypeIndexValueSearch } from '@shared/components/resources/resource-filters/models/resource-type/resource-type-index-value-search.entity';
+import { SubjectFilter } from '@shared/components/resources/resource-filters/models/subject/subject-filter.entity';
+import { ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
+import { addFiltersParams } from '@shared/components/resources/resource-filters/utils/add-filters-params.helper';
+
+import { environment } from '../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

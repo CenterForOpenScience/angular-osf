@@ -1,8 +1,9 @@
 import { Action, State, StateContext, Store } from '@ngxs/store';
-import { inject, Injectable } from '@angular/core';
+
 import { tap } from 'rxjs';
-import { ResourceFiltersOptionsStateModel } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.model';
-import { ResourceFiltersService } from '@shared/components/resources/resource-filters/resource-filters.service';
+
+import { inject, Injectable } from '@angular/core';
+
 import {
   GetAllOptions,
   GetCreatorsOptions,
@@ -15,6 +16,8 @@ import {
   GetResourceTypesOptions,
   GetSubjectsOptions,
 } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
+import { ResourceFiltersOptionsStateModel } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.model';
+import { ResourceFiltersService } from '@shared/components/resources/resource-filters/resource-filters.service';
 
 @State<ResourceFiltersOptionsStateModel>({
   name: 'resourceFiltersOptions',

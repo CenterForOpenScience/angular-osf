@@ -1,17 +1,21 @@
+import { Action, State, StateContext, Store } from '@ngxs/store';
+
+import { of, tap } from 'rxjs';
+
 import { inject, Injectable } from '@angular/core';
-import { State, Action, StateContext, Store } from '@ngxs/store';
-import { TokensStateModel } from './tokens.models';
-import { TokensService } from '@osf/features/settings/tokens/tokens.service';
-import {
-  GetScopes,
-  GetTokens,
-  GetTokenById,
-  UpdateToken,
-  DeleteToken,
-  CreateToken,
-} from './tokens.actions';
-import { tap, of } from 'rxjs';
+
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
+import { TokensService } from '@osf/features/settings/tokens/tokens.service';
+
+import {
+  CreateToken,
+  DeleteToken,
+  GetScopes,
+  GetTokenById,
+  GetTokens,
+  UpdateToken,
+} from './tokens.actions';
+import { TokensStateModel } from './tokens.models';
 
 @State<TokensStateModel>({
   name: 'tokens',

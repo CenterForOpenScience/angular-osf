@@ -1,3 +1,15 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { InputText } from 'primeng/inputtext';
+import { Password } from 'primeng/password';
+import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
+import { TableModule } from 'primeng/table';
+
+import { NgClass } from '@angular/common';
 import {
   Component,
   computed,
@@ -6,41 +18,34 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
-import { Button } from 'primeng/button';
-import { TableModule } from 'primeng/table';
-import { RouterLink, Router } from '@angular/router';
-import { NgClass } from '@angular/common';
-import { Card } from 'primeng/card';
-import { TranslatePipe } from '@ngx-translate/core';
 import {
-  FormsModule,
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ADDON_TERMS as addonTerms } from '../utils/addon-terms.const';
-import {
-  Addon,
-  AuthorizedAddon,
-  AddonRequest,
-} from '@osf/features/settings/addons/entities/addons.entities';
-import { CredentialsFormat } from '@osf/features/settings/addons/entities/credentials-format.enum';
-import { InputText } from 'primeng/inputtext';
-import { Password } from 'primeng/password';
-import { Store } from '@ngxs/store';
-import {
-  AddonsSelectors,
-  CreateAuthorizedAddon,
-  UpdateAuthorizedAddon,
-} from '@osf/features/settings/addons/store';
+import { Router, RouterLink } from '@angular/router';
+
 import {
   AddonForm,
   AddonFormControls,
 } from '@osf/features/settings/addons/entities/addon-form.entities';
 import { AddonTerm } from '@osf/features/settings/addons/entities/addon-terms.interface';
+import {
+  Addon,
+  AddonRequest,
+  AuthorizedAddon,
+} from '@osf/features/settings/addons/entities/addons.entities';
+import { CredentialsFormat } from '@osf/features/settings/addons/entities/credentials-format.enum';
+import {
+  AddonsSelectors,
+  CreateAuthorizedAddon,
+  UpdateAuthorizedAddon,
+} from '@osf/features/settings/addons/store';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+
+import { ADDON_TERMS as addonTerms } from '../utils/addon-terms.const';
 
 @Component({
   selector: 'osf-connect-addon',

@@ -1,10 +1,11 @@
 import { Action, State, StateContext, Store } from '@ngxs/store';
-import {
-  PROFILE_SETTINGS_INITIAL_STATE,
-  PROFILE_SETTINGS_STATE_NAME,
-  ProfileSettingsStateModel,
-} from '@osf/features/settings/profile-settings/profile-settings.entities';
+
+import { tap } from 'rxjs';
+
 import { inject, Injectable } from '@angular/core';
+
+import { UserSelectors } from '@core/store/user/user.selectors';
+import { mapNameToDto } from '@osf/features/settings/profile-settings/name/name.entities';
 import {
   SetupProfileSettings,
   UpdateProfileSettingsEducation,
@@ -12,12 +13,14 @@ import {
   UpdateProfileSettingsSocialLinks,
   UpdateProfileSettingsUser,
 } from '@osf/features/settings/profile-settings/profile-settings.actions';
-import { UserSelectors } from '@core/store/user/user.selectors';
 import { ProfileSettingsApiService } from '@osf/features/settings/profile-settings/profile-settings.api.service';
-import { tap } from 'rxjs';
-import { removeNullable } from '@shared/utils/remove-nullable.const';
-import { mapNameToDto } from '@osf/features/settings/profile-settings/name/name.entities';
+import {
+  PROFILE_SETTINGS_INITIAL_STATE,
+  PROFILE_SETTINGS_STATE_NAME,
+  ProfileSettingsStateModel,
+} from '@osf/features/settings/profile-settings/profile-settings.entities';
 import { Social } from '@osf/features/settings/profile-settings/social/social.entities';
+import { removeNullable } from '@shared/utils/remove-nullable.const';
 
 @State<ProfileSettingsStateModel>({
   name: PROFILE_SETTINGS_STATE_NAME,

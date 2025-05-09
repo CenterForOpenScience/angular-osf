@@ -1,8 +1,8 @@
 import {
   DeveloperApp,
   DeveloperAppCreateRequest,
-  DeveloperAppGetResponse,
   DeveloperAppCreateUpdate,
+  DeveloperAppGetResponse,
   DeveloperAppUpdateRequest,
 } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
 

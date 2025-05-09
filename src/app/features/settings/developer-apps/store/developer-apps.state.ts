@@ -1,7 +1,19 @@
+import { Action, State, StateContext } from '@ngxs/store';
+import {
+  insertItem,
+  patch,
+  removeItem,
+  updateItem,
+} from '@ngxs/store/operators';
+
+import { of, tap } from 'rxjs';
+
 import { inject, Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
-import { tap, of } from 'rxjs';
+
+import { DeveloperApplicationsService } from '@osf/features/settings/developer-apps/developer-apps.service';
+import { DeveloperApp } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
 import { DeveloperAppsStateModel } from '@osf/features/settings/developer-apps/store/developer-apps.state-model';
+
 import {
   CreateDeveloperApp,
   DeleteDeveloperApp,
@@ -10,14 +22,6 @@ import {
   ResetClientSecret,
   UpdateDeveloperApp,
 } from './developer-apps.actions';
-import { DeveloperApplicationsService } from '@osf/features/settings/developer-apps/developer-apps.service';
-import { DeveloperApp } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
-import {
-  insertItem,
-  patch,
-  removeItem,
-  updateItem,
-} from '@ngxs/store/operators';
 
 @State<DeveloperAppsStateModel>({
   name: 'developerApps',

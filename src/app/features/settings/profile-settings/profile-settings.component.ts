@@ -1,17 +1,20 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
-import { TabOption } from '@osf/shared/entities/tab-option.interface';
 import { Select } from 'primeng/select';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { EducationComponent } from '@osf/features/settings/profile-settings/education/education.component';
 import { EmploymentComponent } from '@osf/features/settings/profile-settings/employment/employment.component';
 import { NameComponent } from '@osf/features/settings/profile-settings/name/name.component';
 import { SocialComponent } from '@osf/features/settings/profile-settings/social/social.component';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TabOption } from '@osf/shared/entities/tab-option.interface';
+import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 
 @Component({
   selector: 'osf-profile-settings',

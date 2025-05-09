@@ -1,7 +1,8 @@
-import { ResourceFiltersStateModel } from '@shared/components/resources/resource-filters/store/resource-filters.model';
 import { Action, State, StateContext } from '@ngxs/store';
 
 import { Injectable } from '@angular/core';
+
+import { FilterLabels } from '@shared/components/resources/resource-filters/models/filter-labels';
 import {
   ResetFiltersState,
   SetCreator,
@@ -14,7 +15,7 @@ import {
   SetResourceType,
   SetSubject,
 } from '@shared/components/resources/resource-filters/store/resource-filters.actions';
-import { FilterLabels } from '@shared/components/resources/resource-filters/models/filter-labels';
+import { ResourceFiltersStateModel } from '@shared/components/resources/resource-filters/store/resource-filters.model';
 import { resourceFiltersDefaults } from '@shared/components/resources/resource-filters/utils/data';
 
 // Store for user selected filters values

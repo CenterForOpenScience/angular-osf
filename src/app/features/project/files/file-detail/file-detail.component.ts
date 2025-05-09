@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { RouterLink } from '@angular/router';
 import { Button } from 'primeng/button';
+
+import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 
 @Component({
   selector: 'osf-file-detail',

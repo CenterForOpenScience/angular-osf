@@ -1,36 +1,41 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
+import { SortEvent } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { DialogService } from 'primeng/dynamicdialog';
+import { TablePageEvent } from 'primeng/table';
+
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+
 import {
   Component,
+  computed,
   DestroyRef,
+  effect,
   inject,
   OnInit,
   signal,
-  computed,
-  effect,
 } from '@angular/core';
-import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { Button } from 'primeng/button';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Store } from '@ngxs/store';
-import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
-import { TableParameters } from '@shared/entities/table-parameters.interface';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
-import { SortOrder } from '@shared/utils/sort-order.enum';
-import { TablePageEvent } from 'primeng/table';
-import { SortEvent } from 'primeng/api';
-import {
-  MyProjectsSelectors,
-  GetMyProjects,
-  ClearMyProjects,
-} from '@osf/features/my-projects/store';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
-import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
 import { GetUserInstitutions } from '@osf/features/institutions/store';
-import { DialogService } from 'primeng/dynamicdialog';
+import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
+import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
+import {
+  ClearMyProjects,
+  GetMyProjects,
+  MyProjectsSelectors,
+} from '@osf/features/my-projects/store';
 import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { TableParameters } from '@shared/entities/table-parameters.interface';
+import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { SortOrder } from '@shared/utils/sort-order.enum';
 
 @Component({
   selector: 'osf-home',

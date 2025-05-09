@@ -1,15 +1,18 @@
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { Tag } from 'primeng/tag';
+
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   input,
 } from '@angular/core';
-import { Card } from 'primeng/card';
-import { RegistrationCard } from './registration-card.interface';
-import { Button } from 'primeng/button';
-import { Tag } from 'primeng/tag';
 import { toSignal } from '@angular/core/rxjs-interop';
+
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+
+import { RegistrationCard } from './registration-card.interface';
 
 @Component({
   selector: 'osf-registration-card',

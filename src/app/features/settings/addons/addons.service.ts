@@ -1,20 +1,24 @@
-import { inject, Injectable } from '@angular/core';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { Store } from '@ngxs/store';
+
 import { map, Observable } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
+
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
+import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { UserSelectors } from '@core/store/user/user.selectors';
+import { AddonMapper } from '@osf/features/settings/addons/addon.mapper';
 import {
   Addon,
   AddonGetResponse,
+  AddonRequest,
+  AddonResponse,
   AuthorizedAddon,
   AuthorizedAddonGetResponse,
   IncludedAddonData,
-  AddonRequest,
   UserReference,
-  AddonResponse,
 } from '@osf/features/settings/addons/entities/addons.entities';
-import { AddonMapper } from '@osf/features/settings/addons/addon.mapper';
-import { Store } from '@ngxs/store';
-import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
-import { UserSelectors } from '@core/store/user/user.selectors';
+
 import { environment } from '../../../../environments/environment';
 
 @Injectable({

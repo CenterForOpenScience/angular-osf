@@ -1,7 +1,7 @@
+import { LinkItem } from '@osf/features/search/models/link-item.entity';
 import { ResourceItem } from '@osf/features/search/models/raw-models/resource-response.model';
 import { Resource } from '@osf/features/search/models/resource.entity';
 import { ResourceType } from '@osf/features/search/models/resource-type.enum';
-import { LinkItem } from '@osf/features/search/models/link-item.entity';
 
 export function MapResources(rawItem: ResourceItem): Resource {
   return {

@@ -1,23 +1,26 @@
 import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  model,
-} from '@angular/core';
-import {
   Accordion,
   AccordionContent,
   AccordionHeader,
   AccordionPanel,
 } from 'primeng/accordion';
-import { DatePipe, NgOptimizedImage } from '@angular/common';
-import { ResourceType } from '@osf/features/search/models/resource-type.enum';
-import { Resource } from '@osf/features/search/models/resource.entity';
-import { ResourceCardService } from '@shared/components/resources/resource-card/resource-card.service';
-import { finalize } from 'rxjs';
 import { Skeleton } from 'primeng/skeleton';
+
+import { finalize } from 'rxjs';
+
+import { DatePipe, NgOptimizedImage } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  model,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+
+import { Resource } from '@osf/features/search/models/resource.entity';
+import { ResourceType } from '@osf/features/search/models/resource-type.enum';
 import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
+import { ResourceCardService } from '@shared/components/resources/resource-card/resource-card.service';
 
 @Component({
   selector: 'osf-resource-card',

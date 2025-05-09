@@ -1,13 +1,15 @@
-import { inject, Injectable } from '@angular/core';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
 import { map, Observable } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
+
 import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
+import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { DeveloperAppMapper } from '@osf/features/settings/developer-apps/developer-app.mapper';
 import {
   DeveloperApp,
-  DeveloperAppGetResponse,
   DeveloperAppCreateUpdate,
+  DeveloperAppGetResponse,
 } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
-import { DeveloperAppMapper } from '@osf/features/settings/developer-apps/developer-app.mapper';
 
 @Injectable({
   providedIn: 'root',

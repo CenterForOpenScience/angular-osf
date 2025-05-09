@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { Button } from 'primeng/button';
 import { Drawer } from 'primeng/drawer';
+
 import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+
 import { NavMenuComponent } from '@core/components/nav-menu/nav-menu.component';
 
 @Component({

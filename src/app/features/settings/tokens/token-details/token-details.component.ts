@@ -1,27 +1,32 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
+import { ConfirmationService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { map, of, switchMap } from 'rxjs';
+
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   computed,
+  inject,
 } from '@angular/core';
-import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
-import { FormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService } from 'primeng/api';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
-import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { map, switchMap, of } from 'rxjs';
-import { Store } from '@ngxs/store';
-import { TokensSelectors } from '@osf/features/settings/tokens/store/tokens.selectors';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import {
   DeleteToken,
   GetTokenById,
 } from '@osf/features/settings/tokens/store/tokens.actions';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TokensSelectors } from '@osf/features/settings/tokens/store/tokens.selectors';
+import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
+import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-token-details',

@@ -1,3 +1,13 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputGroup } from 'primeng/inputgroup';
+import { InputGroupAddon } from 'primeng/inputgroupaddon';
+import { InputText } from 'primeng/inputtext';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,29 +15,23 @@ import {
   HostBinding,
   inject,
 } from '@angular/core';
-import { Button } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddon } from 'primeng/inputgroupaddon';
-import { InputText } from 'primeng/inputtext';
 import {
   FormArray,
   FormBuilder,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+
 import { socials } from '@osf/features/settings/profile-settings/data';
 import { UserSocialLink } from '@osf/features/settings/profile-settings/entities/user-social-link.entity';
+import { UpdateProfileSettingsSocialLinks } from '@osf/features/settings/profile-settings/profile-settings.actions';
+import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
 import {
   Social,
   SOCIAL_KEYS,
   SocialLinksForm,
   SocialLinksKeys,
 } from '@osf/features/settings/profile-settings/social/social.entities';
-import { Store } from '@ngxs/store';
-import { UpdateProfileSettingsSocialLinks } from '@osf/features/settings/profile-settings/profile-settings.actions';
-import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-social',

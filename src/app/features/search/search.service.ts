@@ -1,10 +1,13 @@
-import { inject, Injectable } from '@angular/core';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
 import { map, Observable } from 'rxjs';
-import { environment } from '../../../environments/environment';
+
+import { inject, Injectable } from '@angular/core';
+
+import { JsonApiService } from '@core/services/json-api/json-api.service';
 import { MapResources } from '@osf/features/search/mappers/search.mapper';
 import { IndexCardSearch } from '@osf/features/search/models/raw-models/index-card-search.model';
 import { ResourcesData } from '@osf/features/search/models/resources-data.entity';
+
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

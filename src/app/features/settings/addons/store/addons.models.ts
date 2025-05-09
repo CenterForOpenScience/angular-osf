@@ -1,7 +1,7 @@
 import {
   Addon,
-  AuthorizedAddon,
   AddonResponse,
+  AuthorizedAddon,
   UserReference,
 } from '@osf/features/settings/addons/entities/addons.entities';
 

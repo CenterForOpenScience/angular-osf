@@ -1,3 +1,12 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputText } from 'primeng/inputtext';
+
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,34 +14,29 @@ import {
   input,
   OnInit,
 } from '@angular/core';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+
+import { linkValidator } from '@core/helpers/link-validator.helper';
 import {
   DeveloperAppForm,
   DeveloperAppFormFormControls,
 } from '@osf/features/settings/developer-apps/entities/developer-app-form.entities';
-import { linkValidator } from '@core/helpers/link-validator.helper';
-import { Store } from '@ngxs/store';
-import { Router } from '@angular/router';
 import {
   DeveloperApp,
   DeveloperAppCreateUpdate,
 } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { NgClass } from '@angular/common';
 import {
   CreateDeveloperApp,
   UpdateDeveloperApp,
 } from '@osf/features/settings/developer-apps/store';
-import { TranslatePipe } from '@ngx-translate/core';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-developer-app-add-edit-form',

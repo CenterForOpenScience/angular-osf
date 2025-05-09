@@ -1,7 +1,9 @@
-import { Routes } from '@angular/router';
 import { provideStates } from '@ngxs/store';
-import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
+
+import { Routes } from '@angular/router';
+
 import { ResourceFiltersOptionsState } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.state';
+import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
 
 export const routes: Routes = [
   {

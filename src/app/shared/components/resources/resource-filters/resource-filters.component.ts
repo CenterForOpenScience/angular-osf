@@ -1,9 +1,5 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-} from '@angular/core';
+import { Store } from '@ngxs/store';
+
 import {
   Accordion,
   AccordionContent,
@@ -11,19 +7,26 @@ import {
   AccordionPanel,
 } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+
+import { SearchSelectors } from '@osf/features/search/store';
 import { CreatorsFilterComponent } from '@shared/components/resources/resource-filters/filters/creators/creators-filter.component';
 import { DateCreatedFilterComponent } from '@shared/components/resources/resource-filters/filters/date-created/date-created-filter.component';
-import { SubjectFilterComponent } from '@shared/components/resources/resource-filters/filters/subject/subject-filter.component';
 import { FunderFilterComponent } from '@shared/components/resources/resource-filters/filters/funder/funder-filter.component';
-import { LicenseFilterComponent } from '@shared/components/resources/resource-filters/filters/license-filter/license-filter.component';
-import { ResourceTypeFilterComponent } from '@shared/components/resources/resource-filters/filters/resource-type-filter/resource-type-filter.component';
-import { ProviderFilterComponent } from '@shared/components/resources/resource-filters/filters/provider-filter/provider-filter.component';
-import { PartOfCollectionFilterComponent } from '@shared/components/resources/resource-filters/filters/part-of-collection-filter/part-of-collection-filter.component';
-import { Store } from '@ngxs/store';
-import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
 import { InstitutionFilterComponent } from '@shared/components/resources/resource-filters/filters/institution-filter/institution-filter.component';
-import { SearchSelectors } from '@osf/features/search/store';
+import { LicenseFilterComponent } from '@shared/components/resources/resource-filters/filters/license-filter/license-filter.component';
+import { PartOfCollectionFilterComponent } from '@shared/components/resources/resource-filters/filters/part-of-collection-filter/part-of-collection-filter.component';
+import { ProviderFilterComponent } from '@shared/components/resources/resource-filters/filters/provider-filter/provider-filter.component';
+import { ResourceTypeFilterComponent } from '@shared/components/resources/resource-filters/filters/resource-type-filter/resource-type-filter.component';
+import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
+import { SubjectFilterComponent } from '@shared/components/resources/resource-filters/filters/subject/subject-filter.component';
 
 @Component({
   selector: 'osf-resource-filters',

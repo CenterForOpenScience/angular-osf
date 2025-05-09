@@ -1,12 +1,16 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { DialogService } from 'primeng/dynamicdialog';
-import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
-import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/developer-app-add-edit-form/developer-app-add-edit-form.component';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+import { DialogService } from 'primeng/dynamicdialog';
+
+import { map } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { Router, RouterOutlet } from '@angular/router';
+
+import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/developer-app-add-edit-form/developer-app-add-edit-form.component';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-developer-apps',

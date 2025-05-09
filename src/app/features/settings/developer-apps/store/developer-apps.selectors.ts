@@ -1,7 +1,8 @@
 import { Selector } from '@ngxs/store';
-import { DeveloperAppsStateModel } from '@osf/features/settings/developer-apps/store/developer-apps.state-model';
-import { DeveloperAppsState } from '@osf/features/settings/developer-apps/store/developer-apps.state';
+
 import { DeveloperApp } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
+import { DeveloperAppsState } from '@osf/features/settings/developer-apps/store/developer-apps.state';
+import { DeveloperAppsStateModel } from '@osf/features/settings/developer-apps/store/developer-apps.state-model';
 
 export class DeveloperAppsSelectors {
   @Selector([DeveloperAppsState])

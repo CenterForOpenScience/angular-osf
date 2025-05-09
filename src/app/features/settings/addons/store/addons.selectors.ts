@@ -1,7 +1,9 @@
 import { Selector } from '@ngxs/store';
-import { AddonsStateModel } from './addons.models';
+
 import { Addon } from '@osf/features/settings/addons/entities/addons.entities';
 import { AddonsState } from '@osf/features/settings/addons/store/addons.state';
+
+import { AddonsStateModel } from './addons.models';
 
 export class AddonsSelectors {
   @Selector([AddonsState])

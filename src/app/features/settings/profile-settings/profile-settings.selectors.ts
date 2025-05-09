@@ -1,9 +1,10 @@
 import { Selector } from '@ngxs/store';
-import { ProfileSettingsState } from '@osf/features/settings/profile-settings/profile-settings.state';
-import { Education } from '@osf/features/settings/profile-settings/education/educations.entities';
-import { ProfileSettingsStateModel } from '@osf/features/settings/profile-settings/profile-settings.entities';
-import { Employment } from '@osf/features/settings/profile-settings/employment/employment.entities';
+
 import { User } from '@core/services/user/user.models';
+import { Education } from '@osf/features/settings/profile-settings/education/educations.entities';
+import { Employment } from '@osf/features/settings/profile-settings/employment/employment.entities';
+import { ProfileSettingsStateModel } from '@osf/features/settings/profile-settings/profile-settings.entities';
+import { ProfileSettingsState } from '@osf/features/settings/profile-settings/profile-settings.state';
 import { Social } from '@osf/features/settings/profile-settings/social/social.entities';
 
 export class ProfileSettingsSelectors {
