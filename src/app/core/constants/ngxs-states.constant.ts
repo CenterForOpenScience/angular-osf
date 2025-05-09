@@ -1,5 +1,5 @@
 import { AuthState } from '@core/store/auth';
-import { UserState } from '@core/store/user';
+import { UserState } from '@core/store/user/user.state';
 import { InstitutionsState } from '@osf/features/institutions/store';
 import { MyProjectsState } from '@osf/features/my-projects/store';
 import { SearchState } from '@osf/features/search/store';

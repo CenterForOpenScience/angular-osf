@@ -8,7 +8,8 @@ import {
 } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { GetCurrentUser } from '@core/store/user';
+import { GetCurrentUser } from '@core/store/user/user.actions';
+
 
 @Component({
   selector: 'osf-root',
@@ -20,6 +21,7 @@ import { GetCurrentUser } from '@core/store/user';
 })
 export class AppComponent implements OnInit {
   #store = inject(Store);
+  title = 'osf';
 
   ngOnInit(): void {
     this.#store.dispatch(GetCurrentUser);

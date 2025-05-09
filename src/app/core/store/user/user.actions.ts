@@ -1,11 +1,15 @@
-import { User } from '@core/services/user/user.entity';
+import { UserSettings } from '@core/services/user/user.models';
 
 export class GetCurrentUser {
   static readonly type = '[User] Get Current User';
 }
 
-export class SetCurrentUser {
-  static readonly type = '[User] Set Current User';
+export class GetCurrentUserSettings {
+  static readonly type = '[User] Get Current User Settings';
+}
 
-  constructor(public user: User) {}
+export class UpdateUserSettings {
+  static readonly type = '[User] Update User Settings';
+
+  constructor(public userId: string, public updatedUserSettings: UserSettings) {}
 }
