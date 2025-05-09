@@ -239,7 +239,7 @@ export class HomeComponent implements OnInit {
     const dialogRef = this.#dialogService.open(AddProjectFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: this.#translateService.instant('my-projects.add-project.title'),
+      header: this.#translateService.instant('myProjects.header.createProject'),
       closeOnEscape: true,
       modal: true,
       closable: true,
