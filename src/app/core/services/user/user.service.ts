@@ -1,5 +1,8 @@
-import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
+
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 import { JsonApiService } from '@core/services/json-api/json-api.service';
 import {
   User,
@@ -7,7 +10,6 @@ import {
   UserSettings,
   UserSettingsGetResponse,
 } from '@core/services/user/user.models';
-import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 import { UserMapper } from '@core/services/user/users.mapper';
 
 @Injectable({
@@ -32,6 +34,25 @@ export class UserService {
         map((response) =>
           UserMapper.fromUserSettingsGetResponse(response.data),
         ),
+      );
+  }
+
+  updateUserSettings(
+    userId: string,
+    userSettings: UserSettings,
+  ): Observable<UserSettings> {
+    const request = UserMapper.toUpdateUserSettingsRequest(
+      userId,
+      userSettings,
+    );
+
+    return this.jsonApiService
+      .patch<UserSettingsGetResponse>(
+        this.baseUrl + `users/${userId}/settings/`,
+        request,
+      )
+      .pipe(
+        map((response) => UserMapper.fromUserSettingsGetResponse(response)),
       );
   }
 }

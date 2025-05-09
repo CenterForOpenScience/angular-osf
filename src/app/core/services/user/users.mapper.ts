@@ -3,6 +3,7 @@ import {
   UserGetResponse,
   UserSettings,
   UserSettingsGetResponse,
+  UserSettingsUpdateRequest,
 } from '@core/services/user/user.models';
 
 export class UserMapper {
@@ -32,6 +33,22 @@ export class UserMapper {
         userSettingsResponse.attributes.subscribe_osf_general_email,
       subscribeOsfHelpEmail:
         userSettingsResponse.attributes.subscribe_osf_help_email,
+    };
+  }
+
+  static toUpdateUserSettingsRequest(
+    userId: string,
+    userSettings: UserSettings,
+  ): UserSettingsUpdateRequest {
+    return {
+      data: {
+        id: userId,
+        type: 'user_settings',
+        attributes: {
+          subscribe_osf_general_email: userSettings.subscribeOsfGeneralEmail,
+          subscribe_osf_help_email: userSettings.subscribeOsfHelpEmail,
+        },
+      },
     };
   }
 }

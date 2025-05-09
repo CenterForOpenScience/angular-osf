@@ -1,7 +1,15 @@
+import { UserSettings } from '@core/services/user/user.models';
+
 export class GetCurrentUser {
   static readonly type = '[User] Get Current User';
 }
 
 export class GetCurrentUserSettings {
   static readonly type = '[User] Get Current User Settings';
+}
+
+export class UpdateUserSettings {
+  static readonly type = '[User] Update User Settings';
+
+  constructor(public userId: string, public updatedUserSettings: UserSettings) {}
 }

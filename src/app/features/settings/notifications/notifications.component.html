@@ -8,9 +8,14 @@
   <section class="notification-item flex flex-column gap-4">
     <h2>{{ "settings.notifications.emailPreferences.title" | translate }}</h2>
 
-    <div class="flex flex-column gap-3">
+    <form [formGroup]="emailPreferencesForm"
+          class="flex flex-column gap-3"
+          (submit)="emailPreferencesFormSubmit()">
       <div class="flex gap-2">
-        <p-checkbox inputId="v1"> </p-checkbox>
+        <p-checkbox [formControlName]="EmailPreferencesFormControls.SubscribeOsfGeneralEmail"
+                    inputId="v1"
+                    binary="true">
+        </p-checkbox>
 
         <div class="flex flex-column gap-1">
           <label for="v1" class="mb-0 font-bold notification-item-label">
@@ -30,7 +35,10 @@
       </div>
 
       <div class="flex gap-2">
-        <p-checkbox inputId="v2"> </p-checkbox>
+        <p-checkbox [formControlName]="EmailPreferencesFormControls.SubscribeOsfHelpEmail"
+                    inputId="v2"
+                    binary="true">
+        </p-checkbox>
 
         <div class="flex flex-column gap-1">
           <label for="v2" class="mb-0 font-bold notification-item-label">
@@ -51,7 +59,8 @@
 
       <div class="flex justify-content-end">
         <p-button
-          [disabled]="true"
+          [disabled]="!emailPreferencesForm.dirty"
+          type="submit"
           [label]="
             'settings.notifications.emailPreferences.saveButton' | translate
           "
@@ -59,7 +68,7 @@
         >
         </p-button>
       </div>
-    </div>
+    </form>
   </section>
 
   <section class="notification-item flex flex-column gap-4">

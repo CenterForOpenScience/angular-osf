@@ -59,9 +59,20 @@ export interface UserGetResponse {
 
 export interface UserSettingsGetResponse {
   id: string;
-  type: string;
+  type: "user_settings";
   attributes: {
     subscribe_osf_general_email: boolean;
     subscribe_osf_help_email: boolean;
   };
+}
+
+export interface UserSettingsUpdateRequest {
+  data: {
+    id: string;
+    type: "user_settings";
+    attributes: {
+      subscribe_osf_general_email: boolean;
+      subscribe_osf_help_email: boolean;
+    };
+  }
 }
