@@ -6,11 +6,11 @@
 >
   <div class="better-way-container">
     <div class="text-container">
-      <h1 [innerHTML]="'home.logged-out.hero.title' | translate"></h1>
-      <h3 [innerHTML]="'home.logged-out.hero.subtitle' | translate"></h3>
+      <h1 [innerHTML]="'home.loggedOut.hero.title' | translate"></h1>
+      <h3 [innerHTML]="'home.loggedOut.hero.subtitle' | translate"></h3>
       <div class="mt-5">
         <p-button
-          [label]="'home.logged-out.hero.sign-up' | translate"
+          [label]="'home.loggedOut.hero.signUp' | translate"
           severity="success"
           class="wide-button"
           [class.btn-full-width]="isXSmall() || isSmall() || isMedium()"
@@ -29,17 +29,15 @@
 
   <div class="discover-research-container">
     <div class="text-container">
-      <h1 [innerHTML]="'home.logged-out.discover.title' | translate"></h1>
-      <h3>{{ "home.logged-out.discover.subtitle" | translate }}</h3>
+      <h1 [innerHTML]="'home.loggedOut.discover.title' | translate"></h1>
+      <h3>{{ "home.loggedOut.discover.subtitle" | translate }}</h3>
     </div>
 
     <div class="input-search">
       <i class="osf-icon-search"></i>
       <input
         type="text"
-        [placeholder]="
-          'home.logged-out.discover.search-placeholder' | translate
-        "
+        [placeholder]="'home.loggedOut.discover.searchPlaceholder' | translate"
         pInputText
         [(ngModel)]="searchValue"
       />
@@ -47,7 +45,7 @@
   </div>
 
   <div class="supports-container">
-    <h1 [innerHTML]="'home.logged-out.support.title' | translate"></h1>
+    <h1 [innerHTML]="'home.loggedOut.support.title' | translate"></h1>
     <div class="content-container">
       <div class="left-bar">
         <div class="info-section">
@@ -67,12 +65,11 @@
           </div>
           <div class="text-wrapper">
             <h2>
-              {{ "home.logged-out.support.sections.search.title" | translate }}
+              {{ "home.loggedOut.support.sections.search.title" | translate }}
             </h2>
             <h3>
               {{
-                "home.logged-out.support.sections.search.description"
-                  | translate
+                "home.loggedOut.support.sections.search.description" | translate
               }}
             </h3>
           </div>
@@ -95,12 +92,11 @@
           </div>
           <div class="text-wrapper">
             <h2>
-              {{ "home.logged-out.support.sections.design.title" | translate }}
+              {{ "home.loggedOut.support.sections.design.title" | translate }}
             </h2>
             <h3>
               {{
-                "home.logged-out.support.sections.design.description"
-                  | translate
+                "home.loggedOut.support.sections.design.description" | translate
               }}
             </h3>
           </div>
@@ -123,11 +119,11 @@
           </div>
           <div class="text-wrapper">
             <h2>
-              {{ "home.logged-out.support.sections.collect.title" | translate }}
+              {{ "home.loggedOut.support.sections.collect.title" | translate }}
             </h2>
             <h3>
               {{
-                "home.logged-out.support.sections.collect.description"
+                "home.loggedOut.support.sections.collect.description"
                   | translate
               }}
             </h3>
@@ -145,11 +141,11 @@
           </div>
           <div class="text-wrapper">
             <h2>
-              {{ "home.logged-out.support.sections.publish.title" | translate }}
+              {{ "home.loggedOut.support.sections.publish.title" | translate }}
             </h2>
             <h3>
               {{
-                "home.logged-out.support.sections.publish.description"
+                "home.loggedOut.support.sections.publish.description"
                   | translate
               }}
             </h3>
@@ -169,14 +165,14 @@
 
     <div class="learn-more-container">
       <p-button
-        [label]="'home.logged-out.support.learn-more' | translate"
+        [label]="'home.loggedOut.support.learnMore' | translate"
         class="learn-more"
       />
     </div>
   </div>
 
   <div class="others-saying-container">
-    <h1 [innerHTML]="'home.logged-out.testimonials.title' | translate"></h1>
+    <h1 [innerHTML]="'home.loggedOut.testimonials.title' | translate"></h1>
   </div>
 
   <div class="carousel-container">
@@ -207,7 +203,7 @@
 
   <h1
     class="integrations-title"
-    [innerHTML]="'home.logged-out.integrations.title' | translate"
+    [innerHTML]="'home.loggedOut.integrations.title' | translate"
   ></h1>
 
   @if (isMedium() || isWeb()) {
@@ -216,28 +212,26 @@
         <div class="integrations-bundle">
           <h3>
             {{
-              "home.logged-out.integrations.categories.authentication"
+              "home.loggedOut.integrations.categories.authentication"
                 | translate
             }}
           </h3>
         </div>
         <div class="integrations-bundle">
           <h3>
-            {{
-              "home.logged-out.integrations.categories.discovery" | translate
-            }}
+            {{ "home.loggedOut.integrations.categories.discovery" | translate }}
           </h3>
         </div>
         <div class="integrations-bundle">
           <h3>
             {{
-              "home.logged-out.integrations.categories.references" | translate
+              "home.loggedOut.integrations.categories.references" | translate
             }}
           </h3>
         </div>
         <div class="integrations-bundle">
           <h3>
-            {{ "home.logged-out.integrations.categories.storage" | translate }}
+            {{ "home.loggedOut.integrations.categories.storage" | translate }}
           </h3>
         </div>
       </div>
@@ -309,7 +303,7 @@
       <div class="integrations-bundle">
         <h3>
           {{
-            "home.logged-out.integrations.categories.authentication" | translate
+            "home.loggedOut.integrations.categories.authentication" | translate
           }}
         </h3>
         <img
@@ -328,7 +322,7 @@
 
       <div class="integrations-bundle">
         <h3>
-          {{ "home.logged-out.integrations.categories.discovery" | translate }}
+          {{ "home.loggedOut.integrations.categories.discovery" | translate }}
         </h3>
         <img
           ngSrc="assets/icons/socials/integrations/google-scholar.png"
@@ -346,7 +340,7 @@
 
       <div class="integrations-bundle">
         <h3>
-          {{ "home.logged-out.integrations.categories.references" | translate }}
+          {{ "home.loggedOut.integrations.categories.references" | translate }}
         </h3>
         <img
           ngSrc="assets/icons/socials/integrations/mendeley.png"
@@ -364,7 +358,7 @@
 
       <div class="integrations-bundle">
         <h3>
-          {{ "home.logged-out.integrations.categories.storage" | translate }}
+          {{ "home.loggedOut.integrations.categories.storage" | translate }}
         </h3>
         <img
           ngSrc="assets/icons/socials/integrations/dropbox.png"

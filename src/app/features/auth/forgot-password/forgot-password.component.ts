@@ -30,12 +30,12 @@ export class ForgotPasswordComponent {
     if (this.forgotPasswordForm.valid) {
       this.message.set({
         severity: 'success',
-        content: 'auth.forgot-password.messages.success',
+        content: 'auth.forgotPassword.messages.success',
       });
 
       // this.message.set({
       //   severity: 'error',
-      //   content: 'auth.forgot-password.messages.error'
+      //   content: 'auth.forgotPassword.messages.error'
       // });
     }
   }

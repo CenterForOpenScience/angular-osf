@@ -5,23 +5,23 @@
 >
   <osf-sub-header
     [showButton]="true"
-    [title]="'home.logged-in.dashboard.title' | translate"
+    [title]="'home.loggedIn.dashboard.title' | translate"
     [icon]="'home'"
-    [buttonLabel]="'home.logged-in.dashboard.create-project' | translate"
+    [buttonLabel]="'home.loggedIn.dashboard.createProject' | translate"
     (buttonClick)="createProject()"
   />
 
   <div class="quick-search-container">
     <p class="text-center">
-      {{ "home.logged-in.dashboard.quick-search.go-to" | translate }}
+      {{ "home.loggedIn.dashboard.quickSearch.goTo" | translate }}
       <a routerLink="/my-projects">
-        {{ "home.logged-in.dashboard.quick-search.my-projects" | translate }}
+        {{ "home.loggedIn.dashboard.quickSearch.myProjects" | translate }}
       </a>
-      {{ "home.logged-in.dashboard.quick-search.to-organize" | translate }}
+      {{ "home.loggedIn.dashboard.quickSearch.toOrganize" | translate }}
       <a routerLink="/search">
-        {{ "home.logged-in.dashboard.quick-search.search" | translate }}
+        {{ "home.loggedIn.dashboard.quickSearch.search" | translate }}
       </a>
-      {{ "home.logged-in.dashboard.quick-search.osf" | translate }}
+      {{ "home.loggedIn.dashboard.quickSearch.osf" | translate }}
     </p>
 
     <osf-my-projects-table
@@ -32,7 +32,7 @@
       [sortOrder]="sortOrder()"
       [isLoading]="isLoading()"
       [searchPlaceholder]="
-        'home.logged-in.dashboard.quick-search.search-placeholder' | translate
+        'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate
       "
       (searchValueChange)="onSearchChange($event)"
       (pageChange)="onPageChange($event)"
@@ -44,18 +44,18 @@
   <div class="public-projects-container">
     <i class="osf-icon-search"></i>
     <div class="title-container">
-      <h1>{{ "home.logged-in.public-projects.title" | translate }}</h1>
+      <h1>{{ "home.loggedIn.publicProjects.title" | translate }}</h1>
     </div>
   </div>
 
   <div class="latest-research-container">
     <div class="content">
       <div class="text-container">
-        <h1>{{ "home.logged-in.latest-research.title" | translate }}</h1>
-        <h2>{{ "home.logged-in.latest-research.subtitle" | translate }}</h2>
+        <h1>{{ "home.loggedIn.latestResearch.title" | translate }}</h1>
+        <h2>{{ "home.loggedIn.latestResearch.subtitle" | translate }}</h2>
       </div>
       <p-button
-        [label]="'home.logged-in.latest-research.button' | translate"
+        [label]="'home.loggedIn.latestResearch.button' | translate"
         severity="success"
       />
     </div>
@@ -64,11 +64,11 @@
   <div class="hosting-container">
     <div class="content">
       <div class="text-container">
-        <h1>{{ "home.logged-in.hosting.title" | translate }}</h1>
-        <h2>{{ "home.logged-in.hosting.subtitle" | translate }}</h2>
+        <h1>{{ "home.loggedIn.hosting.title" | translate }}</h1>
+        <h2>{{ "home.loggedIn.hosting.subtitle" | translate }}</h2>
       </div>
       <p-button
-        [label]="'home.logged-in.hosting.button' | translate"
+        [label]="'home.loggedIn.hosting.button' | translate"
         severity="success"
       />
     </div>

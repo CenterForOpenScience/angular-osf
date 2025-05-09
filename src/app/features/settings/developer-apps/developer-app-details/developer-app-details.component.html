@@ -2,7 +2,7 @@
   <nav class="navigation-bar-container">
     <a routerLink="/settings/developer-apps">
       <i class="osf-icon-arrow-left inline"></i>
-      {{ "settings.developer-apps.details.navigation.back" | translate }}
+      {{ "settings.developerApps.details.navigation.back" | translate }}
     </a>
   </nav>
 
@@ -10,7 +10,7 @@
     <section class="title-container" [class.mobile]="isXSmall()">
       <h1>{{ developerApp()?.name }}</h1>
       <p-button
-        [label]="'settings.developer-apps.list.delete-button' | translate"
+        [label]="'settings.developerApps.list.deleteButton' | translate"
         [class.btn-full-width]="isXSmall()"
         severity="danger"
         (click)="deleteApp()"
@@ -21,13 +21,12 @@
       <p-card>
         <section class="card-body">
           <h2>
-            {{ "settings.developer-apps.details.client-id.title" | translate }}
+            {{ "settings.developerApps.details.clientId.title" | translate }}
           </h2>
 
           <p>
             {{
-              "settings.developer-apps.details.client-id.description"
-                | translate
+              "settings.developerApps.details.clientId.description" | translate
             }}
           </p>
 
@@ -36,7 +35,7 @@
               class="copy-notification"
               [class.visible]="clientIdCopiedNotificationVisible()"
             >
-              {{ "settings.developer-apps.messages.copied" | translate }}
+              {{ "settings.developerApps.messages.copied" | translate }}
             </span>
             <p-iconfield iconPosition="right">
               <input type="text" pInputText readonly [value]="clientId()" />
@@ -55,13 +54,13 @@
         <section class="card-body">
           <h2>
             {{
-              "settings.developer-apps.details.client-secret.title" | translate
+              "settings.developerApps.details.clientSecret.title" | translate
             }}
           </h2>
 
           <p>
             {{
-              "settings.developer-apps.details.client-secret.description"
+              "settings.developerApps.details.clientSecret.description"
                 | translate
             }}
           </p>
@@ -72,7 +71,7 @@
                 class="copy-notification"
                 [class.visible]="clientSecretCopiedNotificationVisible()"
               >
-                {{ "settings.developer-apps.messages.copied" | translate }}
+                {{ "settings.developerApps.messages.copied" | translate }}
               </span>
               <p-iconfield iconPosition="right">
                 <input
@@ -96,9 +95,9 @@
             <p-button
               [label]="
                 isClientSecretVisible()
-                  ? ('settings.developer-apps.details.client-secret.hide'
+                  ? ('settings.developerApps.details.clientSecret.hide'
                     | translate)
-                  : ('settings.developer-apps.details.client-secret.show'
+                  : ('settings.developerApps.details.clientSecret.show'
                     | translate)
               "
               severity="secondary"
@@ -109,7 +108,7 @@
           <section class="card-actions">
             <p-button
               [label]="
-                'settings.developer-apps.details.client-secret.reset-secret'
+                'settings.developerApps.details.clientSecret.resetSecret'
                   | translate
               "
               [class.btn-half-width]="isXSmall()"
@@ -121,7 +120,7 @@
 
       <p-card>
         <section class="card-body">
-          <h2>{{ "settings.developer-apps.form.edit-title" | translate }}</h2>
+          <h2>{{ "settings.developerApps.form.editTitle" | translate }}</h2>
           <osf-developer-app-add-edit-form
             [isEditMode]="true"
             [initialValues]="developerApp()!"

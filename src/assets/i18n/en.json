@@ -1,21 +1,21 @@
 {
   "navigation": {
-    "my-profile": "My profile",
+    "myProfile": "My profile",
     "settings": "Settings",
-    "log-out": "Log out",
-    "sign-in": "Sign in",
-    "sign-up": "Sign Up",
+    "logOut": "Log out",
+    "signIn": "Sign in",
+    "signUp": "Sign Up",
     "home": "Home",
-    "search-osf": "Search OSF",
+    "searchOsf": "Search OSF",
     "support": "Support",
-    "my-projects": "My Projects",
+    "myProjects": "My Projects",
     "donate": "Donate",
-    "profile-settings": "Profile Settings",
-    "account-settings": "Account Settings",
-    "configure-addon-accounts": "Configure Addon Accounts",
+    "profileSettings": "Profile Settings",
+    "accountSettings": "Account Settings",
+    "configureAddonAccounts": "Configure Addon Accounts",
     "notifications": "Notifications",
-    "developer-apps": "Developer Apps",
-    "personal-access-tokens": "Personal Access Tokens",
+    "developerApps": "Developer Apps",
+    "personalAccessTokens": "Personal Access Tokens",
     "project": {
       "details": "Project details",
       "overview": "Overview",
@@ -27,7 +27,7 @@
   "auth": {
     "common": {
       "email": "Email",
-      "email-placeholder": "email@example.com",
+      "emailPlaceholder": "email@example.com",
       "password": {
         "new": "New Password",
         "confirm": "Confirm New Password",
@@ -35,7 +35,7 @@
         "requirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number or special character"
       }
     },
-    "forgot-password": {
+    "forgotPassword": {
       "title": "Forgot Your Password?",
       "description": "Enter your email address and we'll send a link to reset your password",
       "submit": "Reset Password",
@@ -44,16 +44,16 @@
         "error": "Email not found."
       }
     },
-    "reset-password": {
+    "resetPassword": {
       "title": "Reset Password",
       "submit": "Reset Password",
       "success": {
         "title": "Thank You!",
         "message": "You have successfully reset your password",
-        "back-to-signin": "Back to Sign In"
+        "backToSignin": "Back to Sign In"
       }
     },
-    "sign-up": {
+    "signUp": {
       "title": "Create A Free Account",
       "social": {
         "orcid": "Sign up through ORCID",
@@ -61,14 +61,14 @@
       },
       "divider": "or",
       "form": {
-        "full-name": "Full Name",
-        "full-name-placeholder": "John Doe",
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "John Doe",
         "submit": "Sign Up",
         "terms": {
           "agree": "I agree to the",
-          "terms-of-use": "Terms of Use",
+          "termsOfUse": "Terms of Use",
           "and": "and",
-          "privacy-policy": "Privacy Policy"
+          "privacyPolicy": "Privacy Policy"
         }
       },
       "success": {
@@ -78,23 +78,23 @@
     }
   },
   "home": {
-    "logged-in": {
+    "loggedIn": {
       "dashboard": {
         "title": "Dashboard",
-        "create-project": "Create New Project",
-        "quick-search": {
-          "go-to": "Go to",
-          "my-projects": "My Projects",
-          "to-organize": "to organize your work or",
+        "createProject": "Create New Project",
+        "quickSearch": {
+          "goTo": "Go to",
+          "myProjects": "My Projects",
+          "toOrganize": "to organize your work or",
           "search": "search",
           "osf": "OSF",
-          "search-placeholder": "Search your projects"
+          "searchPlaceholder": "Search your projects"
         }
       },
-      "public-projects": {
+      "publicProjects": {
         "title": "Discover Public Projects"
       },
-      "latest-research": {
+      "latestResearch": {
         "title": "Browse the latest research",
         "subtitle": "Check out the latest preprints hosted on OSF covering a variety of research areas",
         "button": "View Preprints"
@@ -105,16 +105,16 @@
         "button": "View Meetings"
       }
     },
-    "logged-out": {
+    "loggedOut": {
       "hero": {
         "title": "There's a <span class='highlight'>better way</span> to manage your research",
         "subtitle": "OSF is a free, open platform to support your research and enable collaboration",
-        "sign-up": "Sign Up"
+        "signUp": "Sign Up"
       },
       "discover": {
         "title": "<span class='highlight'>Discover</span> Public Research",
         "subtitle": "Discover projects, data, materials, and collaborators on OSF that might be helpful to your own research",
-        "search-placeholder": "Search"
+        "searchPlaceholder": "Search"
       },
       "support": {
         "title": "How OSF <span class='highlight'>Supports</span> your research",
@@ -136,7 +136,7 @@
             "description": "Share papers in OSF Preprints or a community-based preprint provider, so others can find and cite your work. Track impact with metrics like downloads and view counts"
           }
         },
-        "learn-more": "Learn More"
+        "learnMore": "Learn More"
       },
       "testimonials": {
         "title": "What others are <span class='highlight'>saying</span>",
@@ -166,19 +166,19 @@
       }
     }
   },
-  "my-projects": {
+  "myProjects": {
     "header": {
       "title": "My Projects",
-      "create-project": "Create Project"
+      "createProject": "Create Project"
     },
     "tabs": {
-      "my-projects": "My Projects",
-      "my-registrations": "My Registrations",
-      "my-preprints": "My Preprints",
+      "myProjects": "My Projects",
+      "myRegistrations": "My Registrations",
+      "myPreprints": "My Preprints",
       "bookmarks": "Bookmarks"
     },
     "bookmarks": {
-      "empty-state": "You don't have any bookmarks. Click the bookmark icon on projects or registrations to add them here."
+      "emptyState": "You don't have any bookmarks. Click the bookmark icon on projects or registrations to add them here."
     },
     "table": {
       "columns": {
@@ -186,15 +186,15 @@
         "contributors": "Contributors",
         "modified": "Modified"
       },
-      "search-placeholder": "Filter by title, description, and tags"
+      "searchPlaceholder": "Filter by title, description, and tags"
     },
-    "create-project": {
+    "createProject": {
       "title": "Title",
-      "storage-location": "Storage Location",
+      "storageLocation": "Storage Location",
       "affiliation": {
         "title": "Affiliation",
-        "select-all": "Select All",
-        "remove-all": "Remove All"
+        "selectAll": "Select All",
+        "removeAll": "Remove All"
       },
       "description": {
         "label": "Description (Optional)"
@@ -210,22 +210,22 @@
     }
   },
   "settings": {
-    "developer-apps": {
+    "developerApps": {
       "header": {
         "title": "Developer apps",
-        "create-button": "Create Developer App"
+        "createButton": "Create Developer App"
       },
       "list": {
         "description": "Third-party web applications can connect to the OSF on behalf of users via the OAuth 2.0 web application flow.",
-        "delete-button": "Delete"
+        "deleteButton": "Delete"
       },
       "form": {
-        "edit-title": "Edit app",
-        "create-title": "Create Developer App",
-        "app-name": "App Name",
-        "homepage-url": "Project homepage URL",
+        "editTitle": "Edit app",
+        "createTitle": "Create Developer App",
+        "appName": "App Name",
+        "homepageUrl": "Project homepage URL",
         "description": "App description (optional)",
-        "callback-url": "Authorization callback URL",
+        "callbackUrl": "Authorization callback URL",
         "buttons": {
           "cancel": "Cancel",
           "create": "Create Developer App",
@@ -239,16 +239,16 @@
         "navigation": {
           "back": "Back to list of developer apps"
         },
-        "client-id": {
+        "clientId": {
           "title": "Client ID",
           "description": "The client ID is the developer app's unique identifier and is safe to share publicly."
         },
-        "client-secret": {
+        "clientSecret": {
           "title": "Client Secret",
           "description": "The client secret is available only to you. Keep it private and do not share it.",
           "show": "Show client secret",
           "hide": "Hide client secret",
-          "reset-secret": "Reset Secret",
+          "resetSecret": "Reset Secret",
           "reset": "Reset"
         }
       },
@@ -257,7 +257,7 @@
           "title": "Delete App {{name}}?",
           "message": "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed."
         },
-        "reset-secret": {
+        "resetSecret": {
           "title": "Reset Client Secret?",
           "message": "Resetting the client secret will render your application unusable until it is updated with the new client secret, and all users must reauthorize access. Previously issued access tokens will no longer work.<br><br>Are you sure you want to reset the client secret? This cannot be reversed."
         }
@@ -266,16 +266,16 @@
     "tokens": {
       "header": {
         "title": "Personal Access Tokens",
-        "create-button": "Create Token"
+        "createButton": "Create Token"
       },
       "list": {
         "description": "Personal access tokens function like ordinary OAuth access tokens. They can be used to authenticate to the API.",
-        "delete-button": "Delete"
+        "deleteButton": "Delete"
       },
       "form": {
-        "edit-title": "Edit token",
-        "create-title": "Create Personal Access Token",
-        "token-name": "Token Name",
+        "editTitle": "Edit token",
+        "createTitle": "Create Personal Access Token",
+        "tokenName": "Token Name",
         "scopes": {
           "title": "Scopes",
           "description": "Scopes limit access for personal access tokens."
@@ -291,7 +291,7 @@
           "back": "Back to list of personal tokens"
         },
         "title": "Edit Token",
-        "delete-button": "Delete"
+        "deleteButton": "Delete"
       },
       "confirmation": {
         "delete": {
@@ -299,20 +299,20 @@
           "message": "Are you sure you want to delete this token? This action cannot be reversed."
         }
       },
-      "created-dialog": {
+      "createdDialog": {
         "title": "Token Successfully Created",
-        "success-message": "Token <strong>{{tokenName}}</strong> successfully created.",
-        "warning-message": "This token will never expire. This token should never be shared with others. If it is accidentally revealed publicly, it should be deactivated immediately.",
-        "copy-notification": "Copied!",
-        "token-warning": "This is the only time your token will be displayed.",
-        "close-button": "Close"
+        "successMessage": "Token <strong>{{tokenName}}</strong> successfully created.",
+        "warningMessage": "This token will never expire. This token should never be shared with others. If it is accidentally revealed publicly, it should be deactivated immediately.",
+        "copyNotification": "Copied!",
+        "tokenWarning": "This is the only time your token will be displayed.",
+        "closeButton": "Close"
       }
     },
     "notifications": {
       "header": {
         "title": "Notifications"
       },
-      "email-preferences": {
+      "emailPreferences": {
         "title": "Configure Email Preferences",
         "items": {
           "general": {
@@ -324,9 +324,9 @@
             "description": "Receive helpful tips on how to make the most of the OSF, up to once per week."
           }
         },
-        "save-button": "Save"
+        "saveButton": "Save"
       },
-      "notification-preferences": {
+      "notificationPreferences": {
         "title": "Configure Notification Preferences",
         "note": "Note: Transactional and administrative service emails will still be sent.",
         "items": {
@@ -344,43 +344,43 @@
       },
       "description": "Sync your projects with external services to help stay connected and organized. Select a category and browse the options.",
       "tabs": {
-        "all-addons": "All Add-ons",
-        "connected-addons": "Connected Add-ons"
+        "allAddons": "All Add-ons",
+        "connectedAddons": "Connected Add-ons"
       },
       "filters": {
-        "addon-type": "Addon Type",
+        "addonType": "Addon Type",
         "search": "Search add-ons"
       },
       "categories": {
-        "additional-service": "Additional Storage",
-        "citation-manager": "Citation Manager"
+        "additionalService": "Additional Storage",
+        "citationManager": "Citation Manager"
       },
-      "connect-addon": {
+      "connectAddon": {
         "title": "Connect Add-on",
         "terms": "Terms",
         "table": {
           "function": "Function",
           "status": "Status"
         },
-        "terms-description": "• This add-on connects your OSF project to an external service. Use of this service is bound by its terms and conditions. The OSF is not responsible for the service or for your use thereof.",
-        "storage-description": "• This add-on allows you to store files using an external service. Files added to this add-on are not stored within the OSF.",
-        "reconnect-account": "Reconnect Account",
-        "setup-new-account": "Setup new account",
-        "start-oauth": "Start OAuth",
-        "oauth-description": "Complete the OAuth process in the new window before returning to this page. If you do not see a new window, please click the Start OAuth link below."
+        "termsDescription": "• This add-on connects your OSF project to an external service. Use of this service is bound by its terms and conditions. The OSF is not responsible for the service or for your use thereof.",
+        "storageDescription": "• This add-on allows you to store files using an external service. Files added to this add-on are not stored within the OSF.",
+        "reconnectAccount": "Reconnect Account",
+        "setupNewAccount": "Setup new account",
+        "startOauth": "Start OAuth",
+        "oauthDescription": "Complete the OAuth process in the new window before returning to this page. If you do not see a new window, please click the Start OAuth link below."
       },
       "form": {
         "fields": {
-          "host-url": "Host URL",
-          "host-url-description": "Please include the protocol (http:// or https://) in the URL.",
-          "personal-access-token": "Personal Access Token",
+          "hostUrl": "Host URL",
+          "hostUrlDescription": "Please include the protocol (http:// or https://) in the URL.",
+          "personalAccessToken": "Personal Access Token",
           "username": "Username",
           "password": "Password",
-          "password-description": "These credentials will be encrypted",
-          "access-key": "Access Key",
-          "secret-key": "Secret Key",
-          "account-name": "Account Name",
-          "account-name-description": "This will distinguish your account from other using the same addon."
+          "passwordDescription": "These credentials will be encrypted",
+          "accessKey": "Access Key",
+          "secretKey": "Secret Key",
+          "accountName": "Account Name",
+          "accountNameDescription": "This will distinguish your account from other using the same addon."
         },
         "buttons": {
           "cancel": "Cancel",
@@ -390,17 +390,17 @@
           "reconnect": "Reconnect",
           "authorize": "Authorize",
           "disable": "Disable",
-          "start-oauth": "Start OAuth"
+          "startOauth": "Start OAuth"
         }
       },
       "messages": {
-        "connect-success": "Successfully connected to {{serviceName}}",
-        "connect-error": "Failed to connect to {{serviceName}}",
-        "update-success": "Successfully updated {{serviceName}} configuration",
-        "update-error": "Failed to update {{serviceName}} configuration",
-        "delete-success": "Successfully disconnected from {{serviceName}}",
-        "delete-error": "Failed to disconnect from {{serviceName}}",
-        "delete-confirmation": {
+        "connectSuccess": "Successfully connected to {{serviceName}}",
+        "connectError": "Failed to connect to {{serviceName}}",
+        "updateSuccess": "Successfully updated {{serviceName}} configuration",
+        "updateError": "Failed to update {{serviceName}} configuration",
+        "deleteSuccess": "Successfully disconnected from {{serviceName}}",
+        "deleteError": "Failed to disconnect from {{serviceName}}",
+        "deleteConfirmation": {
           "title": "Disable Account?",
           "message": "Are you sure you want to disable this account? All projects connected to this account will be affected."
         }

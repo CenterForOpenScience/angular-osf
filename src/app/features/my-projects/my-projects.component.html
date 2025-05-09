@@ -1,8 +1,8 @@
 <section [class.desktop]="isDesktop()" class="flex flex-column flex-1">
   <osf-sub-header
     [showButton]="true"
-    [buttonLabel]="'my-projects.header.create-project' | translate"
-    [title]="'my-projects.header.title' | translate"
+    [buttonLabel]="'myProjects.header.createProject' | translate"
+    [title]="'myProjects.header.title' | translate"
     [icon]="'my-projects'"
     (buttonClick)="createProject()"
   />
@@ -16,16 +16,16 @@
       @if (!isMobile()) {
         <p-tablist class="pr-5 pl-5">
           <p-tab [value]="0">{{
-            "my-projects.tabs.my-projects" | translate
+            "myProjects.tabs.myProjects" | translate
           }}</p-tab>
           <p-tab [value]="1">{{
-            "my-projects.tabs.my-registrations" | translate
+            "myProjects.tabs.myRegistrations" | translate
           }}</p-tab>
           <p-tab [value]="2">{{
-            "my-projects.tabs.my-preprints" | translate
+            "myProjects.tabs.myPreprints" | translate
           }}</p-tab>
           <p-tab [value]="3">{{
-            "my-projects.tabs.bookmarks" | translate
+            "myProjects.tabs.bookmarks" | translate
           }}</p-tab>
         </p-tablist>
       }
@@ -100,7 +100,7 @@
         <!--Bookmarks-->
         <p-tabpanel [value]="3" class="flex flex-column gap-4 flex-1">
           @if (!bookmarks().length && !isLoading()) {
-            <p>{{ "my-projects.bookmarks.empty-state" | translate }}</p>
+            <p>{{ "myProjects.bookmarks.emptyState" | translate }}</p>
           } @else {
             <osf-my-projects-table
               [items]="bookmarks()"

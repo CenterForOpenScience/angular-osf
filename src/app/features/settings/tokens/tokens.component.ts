@@ -53,7 +53,7 @@ export class TokensComponent implements OnInit {
       width: dialogWidth,
       focusOnShow: false,
       header: this.#translateService.instant(
-        'settings.tokens.form.create-title',
+        'settings.tokens.form.createTitle',
       ),
       closeOnEscape: true,
       modal: true,

@@ -10,7 +10,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     path: '/search',
-    label: 'navigation.search-osf',
+    label: 'navigation.searchOsf',
     icon: 'search',
     useExactMatch: true,
   },
@@ -22,7 +22,7 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     path: '/my-projects',
-    label: 'navigation.my-projects',
+    label: 'navigation.myProjects',
     icon: 'my-projects',
     useExactMatch: true,
   },
@@ -35,17 +35,17 @@ export const NAV_ITEMS: NavItem[] = [
     items: [
       {
         path: '/settings/profile-settings',
-        label: 'navigation.profile-settings',
+        label: 'navigation.profileSettings',
         useExactMatch: true,
       },
       {
         path: '/settings/account-settings',
-        label: 'navigation.account-settings',
+        label: 'navigation.accountSettings',
         useExactMatch: true,
       },
       {
         path: '/settings/addons',
-        label: 'navigation.configure-addon-accounts',
+        label: 'navigation.configureAddonAccounts',
         useExactMatch: false,
       },
       {
@@ -55,12 +55,12 @@ export const NAV_ITEMS: NavItem[] = [
       },
       {
         path: '/settings/developer-apps',
-        label: 'navigation.developer-apps',
+        label: 'navigation.developerApps',
         useExactMatch: true,
       },
       {
         path: '/settings/tokens',
-        label: 'navigation.personal-access-tokens',
+        label: 'navigation.personalAccessTokens',
         useExactMatch: true,
       },
     ],

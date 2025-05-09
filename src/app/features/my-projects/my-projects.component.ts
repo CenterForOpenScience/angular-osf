@@ -79,19 +79,19 @@ export class MyProjectsComponent implements OnInit {
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly tabOptions: TabOption[] = [
     {
-      label: 'my-projects.tabs.my-projects',
+      label: 'myProjects.tabs.myProjects',
       value: 0,
     },
     {
-      label: 'my-projects.tabs.my-registrations',
+      label: 'myProjects.tabs.myRegistrations',
       value: 1,
     },
     {
-      label: 'my-projects.tabs.my-preprints',
+      label: 'myProjects.tabs.myPreprints',
       value: 2,
     },
     {
-      label: 'my-projects.tabs.bookmarks',
+      label: 'myProjects.tabs.bookmarks',
       value: 3,
     },
   ];
@@ -384,7 +384,7 @@ export class MyProjectsComponent implements OnInit {
     this.#dialogService.open(AddProjectFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: this.#translateService.instant('my-projects.add-project.title'),
+      header: this.#translateService.instant('myProjects.header.createProject'),
       closeOnEscape: true,
       modal: true,
       closable: true,

@@ -99,17 +99,17 @@ export class DeveloperAppDetailsComponent {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
       message: this.#translateService.instant(
-        'settings.developer-apps.confirmation.delete.message',
+        'settings.developerApps.confirmation.delete.message',
       ),
       header: this.#translateService.instant(
-        'settings.developer-apps.confirmation.delete.title',
+        'settings.developerApps.confirmation.delete.title',
         { name: this.developerApp()?.name },
       ),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
         label: this.#translateService.instant(
-          'settings.developer-apps.list.delete-button',
+          'settings.developerApps.list.deleteButton',
         ),
       },
       accept: () => {
@@ -128,16 +128,16 @@ export class DeveloperAppDetailsComponent {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
       message: this.#translateService.instant(
-        'settings.developer-apps.confirmation.reset-secret.message',
+        'settings.developerApps.confirmation.resetSecret.message',
       ),
       header: this.#translateService.instant(
-        'settings.developer-apps.confirmation.reset-secret.title',
+        'settings.developerApps.confirmation.resetSecret.title',
       ),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
         label: this.#translateService.instant(
-          'settings.developer-apps.details.client-secret.reset',
+          'settings.developerApps.details.clientSecret.reset',
         ),
       },
       accept: () => {

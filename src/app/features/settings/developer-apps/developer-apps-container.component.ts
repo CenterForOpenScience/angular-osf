@@ -42,7 +42,7 @@ export class DeveloperAppsContainerComponent {
       width: dialogWidth,
       focusOnShow: false,
       header: this.#translateService.instant(
-        'settings.developer-apps.form.create-title',
+        'settings.developerApps.form.createTitle',
       ),
       closeOnEscape: true,
       modal: true,

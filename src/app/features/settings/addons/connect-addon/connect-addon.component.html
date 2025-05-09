@@ -1,6 +1,6 @@
 <osf-sub-header
   [showButton]="false"
-  [title]="'settings.addons.connect-addon.title' | translate"
+  [title]="'settings.addons.connectAddon.title' | translate"
 />
 <section class="stepper-container flex-column flex flex-1 p-5">
   <p-stepper [value]="!isAuthorized() ? 1 : 2">
@@ -10,7 +10,7 @@
           <section class="flex flex-column gap-2">
             <h2>
               {{ addon()?.providerName }}
-              {{ "settings.addons.connect-addon.terms" | translate }}
+              {{ "settings.addons.connectAddon.terms" | translate }}
             </h2>
 
             <p-table [value]="terms()" class="addon-table">
@@ -18,12 +18,12 @@
                 <tr>
                   <th>
                     {{
-                      "settings.addons.connect-addon.table.function" | translate
+                      "settings.addons.connectAddon.table.function" | translate
                     }}
                   </th>
                   <th>
                     {{
-                      "settings.addons.connect-addon.table.status" | translate
+                      "settings.addons.connectAddon.table.status" | translate
                     }}
                   </th>
                 </tr>
@@ -45,13 +45,12 @@
             <div class="flex flex-column gap-2 mt-4">
               <p>
                 {{
-                  "settings.addons.connect-addon.terms-description" | translate
+                  "settings.addons.connectAddon.termsDescription" | translate
                 }}
               </p>
               <p>
                 {{
-                  "settings.addons.connect-addon.storage-description"
-                    | translate
+                  "settings.addons.connectAddon.storageDescription" | translate
                 }}
               </p>
             </div>
@@ -83,10 +82,9 @@
             <h2>
               {{
                 isAuthorized()
-                  ? ("settings.addons.connect-addon.reconnect-account"
+                  ? ("settings.addons.connectAddon.reconnectAccount"
                     | translate)
-                  : ("settings.addons.connect-addon.setup-new-account"
-                    | translate)
+                  : ("settings.addons.connectAddon.setupNewAccount" | translate)
               }}
             </h2>
             <p-card>
@@ -95,24 +93,24 @@
                 credentialsFormat.ACCESS_SECRET_KEYS
               ) {
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.access-key" | translate }}
+                  {{ "settings.addons.form.fields.accessKey" | translate }}
                 </h2>
                 <input
                   class="mb-5"
                   pInputText
                   [placeholder]="
-                    'settings.addons.form.fields.access-key' | translate
+                    'settings.addons.form.fields.accessKey' | translate
                   "
                   [formControlName]="formControls.AccessKey"
                 />
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.secret-key" | translate }}
+                  {{ "settings.addons.form.fields.secretKey" | translate }}
                 </h2>
                 <input
                   class="mb-5"
                   pInputText
                   [placeholder]="
-                    'settings.addons.form.fields.secret-key' | translate
+                    'settings.addons.form.fields.secretKey' | translate
                   "
                   [formControlName]="formControls.SecretKey"
                 />
@@ -123,12 +121,11 @@
                 credentialsFormat.DATAVERSE_API_TOKEN
               ) {
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.host-url" | translate }}
+                  {{ "settings.addons.form.fields.hostUrl" | translate }}
                 </h2>
                 <p class="mb-2">
                   {{
-                    "settings.addons.form.fields.host-url-description"
-                      | translate
+                    "settings.addons.form.fields.hostUrlDescription" | translate
                   }}
                 </p>
                 <input
@@ -138,7 +135,7 @@
                 />
                 <h2 class="mb-2">
                   {{
-                    "settings.addons.form.fields.personal-access-token"
+                    "settings.addons.form.fields.personalAccessToken"
                       | translate
                   }}
                 </h2>
@@ -146,7 +143,7 @@
                   class="mb-4"
                   pInputText
                   [placeholder]="
-                    'settings.addons.form.fields.personal-access-token'
+                    'settings.addons.form.fields.personalAccessToken'
                       | translate
                   "
                   [formControlName]="formControls.PersonalAccessToken"
@@ -158,12 +155,11 @@
                 credentialsFormat.USERNAME_PASSWORD
               ) {
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.host-url" | translate }}
+                  {{ "settings.addons.form.fields.hostUrl" | translate }}
                 </h2>
                 <p class="mb-2">
                   {{
-                    "settings.addons.form.fields.host-url-description"
-                      | translate
+                    "settings.addons.form.fields.hostUrlDescription" | translate
                   }}
                 </p>
                 <input
@@ -187,7 +183,7 @@
                 </h2>
                 <p class="mb-2">
                   {{
-                    "settings.addons.form.fields.password-description"
+                    "settings.addons.form.fields.passwordDescription"
                       | translate
                   }}
                 </p>
@@ -204,35 +200,35 @@
                 addon()?.credentialsFormat === credentialsFormat.REPO_TOKEN
               ) {
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.access-key" | translate }}
+                  {{ "settings.addons.form.fields.accessKey" | translate }}
                 </h2>
                 <input
                   class="mb-4"
                   pInputText
                   [placeholder]="
-                    'settings.addons.form.fields.access-key' | translate
+                    'settings.addons.form.fields.accessKey' | translate
                   "
                   [formControlName]="formControls.AccessKey"
                 />
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.secret-key" | translate }}
+                  {{ "settings.addons.form.fields.secretKey" | translate }}
                 </h2>
                 <input
                   class="mb-4"
                   pInputText
                   [placeholder]="
-                    'settings.addons.form.fields.secret-key' | translate
+                    'settings.addons.form.fields.secretKey' | translate
                   "
                   [formControlName]="formControls.SecretKey"
                 />
               }
 
               <h2 class="mb-2">
-                {{ "settings.addons.form.fields.account-name" | translate }}
+                {{ "settings.addons.form.fields.accountName" | translate }}
               </h2>
               <p class="mb-2">
                 {{
-                  "settings.addons.form.fields.account-name-description"
+                  "settings.addons.form.fields.accountNameDescription"
                     | translate
                 }}
               </p>
@@ -290,9 +286,7 @@
           <div class="flex flex-column gap-4">
             <div class="flex justify-content-between">
               <h2 class="align-self-center inline-block">
-                {{
-                  "settings.addons.connect-addon.setup-new-account" | translate
-                }}
+                {{ "settings.addons.connectAddon.setupNewAccount" | translate }}
               </h2>
               <p-button
                 [label]="'settings.addons.form.buttons.back' | translate"
@@ -303,16 +297,14 @@
             </div>
 
             <p>
-              {{
-                "settings.addons.connect-addon.oauth-description" | translate
-              }}
+              {{ "settings.addons.connectAddon.oauthDescription" | translate }}
             </p>
             <a
               [href]="addonAuthUrl()"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {{ "settings.addons.connect-addon.start-oauth" | translate }}
+              {{ "settings.addons.connectAddon.startOauth" | translate }}
             </a>
           </div>
         </ng-template>

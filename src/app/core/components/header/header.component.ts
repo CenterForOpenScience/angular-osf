@@ -35,19 +35,19 @@ export class HeaderComponent {
 
   items = [
     {
-      label: 'navigation.my-profile',
+      label: 'navigation.myProfile',
       command: () => this.#router.navigate(['my-profile']),
     },
     { label: 'navigation.settings', command: () => console.log('Settings') },
-    { label: 'navigation.log-out', command: () => console.log('Log out') },
+    { label: 'navigation.logOut', command: () => console.log('Log out') },
   ];
 
   #currentUrl = toSignal(this.#router.events.pipe(map(() => this.#router.url)));
 
   protected readonly authButtonText = computed(() =>
     this.#currentUrl()?.includes('sign-up')
-      ? 'navigation.sign-in'
-      : 'navigation.sign-up',
+      ? 'navigation.signIn'
+      : 'navigation.signUp',
   );
 
   protected readonly authButtonLink = computed(() =>

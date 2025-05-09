@@ -8,10 +8,10 @@
     @if (!isMobile()) {
       <p-tablist class="pr-5 pl-5">
         <p-tab [value]="0">
-          {{ "settings.addons.tabs.all-addons" | translate }}
+          {{ "settings.addons.tabs.allAddons" | translate }}
         </p-tab>
         <p-tab [value]="1">
-          {{ "settings.addons.tabs.connected-addons" | translate }}
+          {{ "settings.addons.tabs.connectedAddons" | translate }}
         </p-tab>
       </p-tablist>
     }
@@ -40,7 +40,7 @@
         <section class="grid">
           <div class="col-12 md:col-6 lg:col-3">
             <p-select
-              [placeholder]="'settings.addons.filters.addon-type' | translate"
+              [placeholder]="'settings.addons.filters.addonType' | translate"
               [options]="categoryOptions"
               optionValue="value"
               [ngModel]="selectedCategory()"

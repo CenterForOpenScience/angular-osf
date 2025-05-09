@@ -35,7 +35,7 @@ export class MyProjectsTableComponent {
   sortColumn = input<string | undefined>(undefined);
   sortOrder = input<SortOrder>(SortOrder.Asc);
   isLoading = input<boolean>(false);
-  searchPlaceholder = input<string>('my-projects.table.search-placeholder');
+  searchPlaceholder = input<string>('myProjects.table.searchPlaceholder');
 
   searchValueChange = output<string>();
   pageChange = output<TablePageEvent>();

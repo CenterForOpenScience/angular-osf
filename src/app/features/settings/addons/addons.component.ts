@@ -113,22 +113,22 @@ export class AddonsComponent {
 
   protected readonly tabOptions: SelectOption[] = [
     {
-      label: 'settings.addons.tabs.all-addons',
+      label: 'settings.addons.tabs.allAddons',
       value: 0,
     },
     {
-      label: 'settings.addons.tabs.connected-addons',
+      label: 'settings.addons.tabs.connectedAddons',
       value: 1,
     },
   ];
 
   protected readonly categoryOptions: SelectOption[] = [
     {
-      label: 'settings.addons.categories.additional-service',
+      label: 'settings.addons.categories.additionalService',
       value: 'external-storage-services',
     },
     {
-      label: 'settings.addons.categories.citation-manager',
+      label: 'settings.addons.categories.citationManager',
       value: 'external-citation-services',
     },
   ];

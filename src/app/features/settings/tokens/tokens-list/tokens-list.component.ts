@@ -53,7 +53,7 @@ export class TokensListComponent implements OnInit {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
         label: this.#translateService.instant(
-          'settings.tokens.list.delete-button',
+          'settings.tokens.list.deleteButton',
         ),
       },
       accept: () => {

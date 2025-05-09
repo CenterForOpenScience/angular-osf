@@ -1,11 +1,11 @@
 @if (!isFormSubmitted()) {
   <section class="sign-up-container" [class.mobile]="isMobile()">
-    <h2>{{ "auth.sign-up.title" | translate }}</h2>
+    <h2>{{ "auth.signUp.title" | translate }}</h2>
 
     <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
       <div class="btn-group">
         <p-button
-          [label]="'auth.sign-up.social.orcid' | translate"
+          [label]="'auth.signUp.social.orcid' | translate"
           class="form-btn btn-full-width"
         >
           <img
@@ -16,7 +16,7 @@
           />
         </p-button>
         <p-button
-          [label]="'auth.sign-up.social.institution' | translate"
+          [label]="'auth.signUp.social.institution' | translate"
           class="form-btn btn-full-width"
         >
           <i class="osf-icon-institutions"></i>
@@ -25,23 +25,21 @@
 
       <p-divider align="center">
         <span class="divider-text">
-          {{ "auth.sign-up.divider" | translate }}
+          {{ "auth.signUp.divider" | translate }}
         </span>
       </p-divider>
 
       <div class="form-fields">
         <div class="field">
           <label for="fullName">
-            {{ "auth.sign-up.form.full-name" | translate }}
+            {{ "auth.signUp.form.fullName" | translate }}
           </label>
           <input
             id="fullName"
             type="text"
             pInputText
             formControlName="fullName"
-            [placeholder]="
-              'auth.sign-up.form.full-name-placeholder' | translate
-            "
+            [placeholder]="'auth.signUp.form.fullNamePlaceholder' | translate"
             autocomplete="full-name"
           />
         </div>
@@ -53,7 +51,7 @@
             type="email"
             pInputText
             formControlName="email"
-            [placeholder]="'auth.common.email-placeholder' | translate"
+            [placeholder]="'auth.common.emailPlaceholder' | translate"
             autocomplete="off"
           />
         </div>
@@ -105,13 +103,13 @@
             id="agreeToTerms"
           ></p-checkbox>
           <label for="agreeToTerms">
-            {{ "auth.sign-up.form.terms.agree" | translate }}
+            {{ "auth.signUp.form.terms.agree" | translate }}
             <a routerLink="/terms-of-use">{{
-              "auth.sign-up.form.terms.terms-of-use" | translate
+              "auth.signUp.form.terms.termsOfUse" | translate
             }}</a>
-            {{ "auth.sign-up.form.terms.and" | translate }}
+            {{ "auth.signUp.form.terms.and" | translate }}
             <a routerLink="/privacy-policy">{{
-              "auth.sign-up.form.terms.privacy-policy" | translate
+              "auth.signUp.form.terms.privacyPolicy" | translate
             }}</a>
           </label>
         </div>
@@ -120,14 +118,14 @@
       <p-button
         class="btn-full-width"
         type="submit"
-        [label]="'auth.sign-up.form.submit' | translate"
+        [label]="'auth.signUp.form.submit' | translate"
         [disabled]="!signUpForm.valid"
       ></p-button>
     </form>
   </section>
 } @else {
   <section class="message-container" [class.mobile]="isMobile()">
-    <h2>{{ "auth.sign-up.success.title" | translate }}</h2>
-    <p>{{ "auth.sign-up.success.message" | translate }}</p>
+    <h2>{{ "auth.signUp.success.title" | translate }}</h2>
+    <p>{{ "auth.signUp.success.message" | translate }}</p>
   </section>
 }

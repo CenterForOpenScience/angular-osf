@@ -1,6 +1,6 @@
 <section class="content-container" [class.mobile]="isXSmall()">
   <p>
-    {{ "settings.developer-apps.list.description" | translate }}
+    {{ "settings.developerApps.list.description" | translate }}
   </p>
 
   <section class="applications-container">
@@ -13,7 +13,7 @@
           <section class="button-container">
             <p-button
               class="btn-full-width"
-              [label]="'settings.developer-apps.list.delete-button' | translate"
+              [label]="'settings.developerApps.list.deleteButton' | translate"
               severity="danger"
               (onClick)="deleteApp(developerApp)"
             />
