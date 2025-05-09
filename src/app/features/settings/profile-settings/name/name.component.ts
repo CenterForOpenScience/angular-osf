@@ -12,10 +12,11 @@ import { Store } from '@ngxs/store';
 import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
 import { NameForm } from '@osf/features/settings/profile-settings/name/name.entities';
 import { UpdateProfileSettingsUser } from '@osf/features/settings/profile-settings/profile-settings.actions';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-name',
-  imports: [Button, InputText, ReactiveFormsModule],
+  imports: [Button, InputText, ReactiveFormsModule, TranslatePipe],
   templateUrl: './name.component.html',
   styleUrl: './name.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

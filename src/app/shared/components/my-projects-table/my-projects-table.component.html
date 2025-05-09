@@ -1,6 +1,6 @@
 <div class="flex flex-column flex-1">
   <osf-search-input
-    [placeholder]="searchPlaceholder()"
+    [placeholder]="searchPlaceholder() | translate"
     [searchValue]="searchValue()"
     (searchValueChange)="onSearchChange($event)"
   />
@@ -9,12 +9,12 @@
       <ng-template #header>
         <tr>
           <th pSortableColumn="title">
-            Title
+            {{ "myProjects.table.columns.title" | translate }}
             <p-sortIcon field="title" />
           </th>
-          <th>Contributors</th>
+          <th>{{ "myProjects.table.columns.contributors" | translate }}</th>
           <th pSortableColumn="dateModified">
-            Modified
+            {{ "myProjects.table.columns.modified" | translate }}
             <p-sortIcon field="dateModified" />
           </th>
         </tr>
@@ -51,12 +51,12 @@
       <ng-template #header>
         <tr>
           <th pSortableColumn="title">
-            Title
+            {{ "myProjects.table.columns.title" | translate }}
             <p-sortIcon field="title" />
           </th>
-          <th>Contributors</th>
+          <th>{{ "myProjects.table.columns.contributors" | translate }}</th>
           <th pSortableColumn="dateModified">
-            Modified
+            {{ "myProjects.table.columns.modified" | translate }}
             <p-sortIcon field="dateModified" />
           </th>
         </tr>

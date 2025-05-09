@@ -1,7 +1,8 @@
 <section class="content-container" [class.mobile]="isXSmall()">
   <nav class="navigation-bar-container">
     <a routerLink="/settings/developer-apps">
-      <i class="osf-icon-arrow-left inline"></i> Back to list of developer apps
+      <i class="osf-icon-arrow-left inline"></i>
+      {{ "settings.developerApps.details.navigation.back" | translate }}
     </a>
   </nav>
 
@@ -9,7 +10,7 @@
     <section class="title-container" [class.mobile]="isXSmall()">
       <h1>{{ developerApp()?.name }}</h1>
       <p-button
-        label="Delete"
+        [label]="'settings.developerApps.list.deleteButton' | translate"
         [class.btn-full-width]="isXSmall()"
         severity="danger"
         (click)="deleteApp()"
@@ -19,11 +20,14 @@
     <section class="cards-container" [class.mobile]="isXSmall()">
       <p-card>
         <section class="card-body">
-          <h2>Client ID</h2>
+          <h2>
+            {{ "settings.developerApps.details.clientId.title" | translate }}
+          </h2>
 
           <p>
-            The client ID is the developer app's unique identifier and is safe
-            to share publicly.
+            {{
+              "settings.developerApps.details.clientId.description" | translate
+            }}
           </p>
 
           <div class="inline-block relative">
@@ -31,7 +35,7 @@
               class="copy-notification"
               [class.visible]="clientIdCopiedNotificationVisible()"
             >
-              Copied!
+              {{ "settings.developerApps.messages.copied" | translate }}
             </span>
             <p-iconfield iconPosition="right">
               <input type="text" pInputText readonly [value]="clientId()" />
@@ -48,11 +52,17 @@
 
       <p-card>
         <section class="card-body">
-          <h2>Client Secret</h2>
+          <h2>
+            {{
+              "settings.developerApps.details.clientSecret.title" | translate
+            }}
+          </h2>
 
           <p>
-            The client secret is available only to you. Keep it private and do
-            not share it.
+            {{
+              "settings.developerApps.details.clientSecret.description"
+                | translate
+            }}
           </p>
 
           <section class="client-secret-container" [class.mobile]="isXSmall()">
@@ -61,7 +71,7 @@
                 class="copy-notification"
                 [class.visible]="clientSecretCopiedNotificationVisible()"
               >
-                Copied!
+                {{ "settings.developerApps.messages.copied" | translate }}
               </span>
               <p-iconfield iconPosition="right">
                 <input
@@ -85,8 +95,10 @@
             <p-button
               [label]="
                 isClientSecretVisible()
-                  ? 'Hide client secret'
-                  : 'Show client secret'
+                  ? ('settings.developerApps.details.clientSecret.hide'
+                    | translate)
+                  : ('settings.developerApps.details.clientSecret.show'
+                    | translate)
               "
               severity="secondary"
               (click)="isClientSecretVisible.set(!isClientSecretVisible())"
@@ -95,7 +107,10 @@
 
           <section class="card-actions">
             <p-button
-              label="Reset Secret"
+              [label]="
+                'settings.developerApps.details.clientSecret.resetSecret'
+                  | translate
+              "
               [class.btn-half-width]="isXSmall()"
               (click)="resetClientSecret()"
             />
@@ -105,7 +120,7 @@
 
       <p-card>
         <section class="card-body">
-          <h2>Edit App</h2>
+          <h2>{{ "settings.developerApps.form.editTitle" | translate }}</h2>
           <osf-developer-app-add-edit-form
             [isEditMode]="true"
             [initialValues]="developerApp()!"

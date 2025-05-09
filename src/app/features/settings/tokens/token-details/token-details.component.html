@@ -4,14 +4,15 @@
 >
   <nav>
     <a routerLink="/settings/tokens">
-      <i class="osf-icon-arrow-left inline"></i> Back to list of personal tokens
+      <i class="osf-icon-arrow-left inline"></i>
+      {{ "settings.tokens.details.navigation.back" | translate }}
     </a>
   </nav>
   @if (token()) {
     <div class="flex justify-content-between" [class.mobile]="isXSmall()">
       <h1>{{ token()?.name }}</h1>
       <p-button
-        label="Delete"
+        [label]="'settings.tokens.details.deleteButton' | translate"
         [class.btn-full-width]="isXSmall()"
         severity="danger"
         (click)="deleteToken()"
@@ -19,7 +20,7 @@
     </div>
 
     <p-card class="mb-5">
-      <h2 class="mb-5">Edit Token</h2>
+      <h2 class="mb-5">{{ "settings.tokens.details.title" | translate }}</h2>
       <osf-token-add-edit-form [isEditMode]="true" [initialValues]="token()!" />
     </p-card>
   }

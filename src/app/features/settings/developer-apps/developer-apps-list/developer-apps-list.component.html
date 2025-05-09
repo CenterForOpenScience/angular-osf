@@ -1,7 +1,6 @@
 <section class="content-container" [class.mobile]="isXSmall()">
   <p>
-    Third-party web applications can connect to the OSF on behalf of users via
-    the OAuth 2.0 web application flow.
+    {{ "settings.developerApps.list.description" | translate }}
   </p>
 
   <section class="applications-container">
@@ -14,7 +13,7 @@
           <section class="button-container">
             <p-button
               class="btn-full-width"
-              label="Delete"
+              [label]="'settings.developerApps.list.deleteButton' | translate"
               severity="danger"
               (onClick)="deleteApp(developerApp)"
             />

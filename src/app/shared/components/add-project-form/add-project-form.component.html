@@ -5,7 +5,9 @@
 >
   <!-- Title -->
   <div class="flex flex-column">
-    <label for="project-title">Title</label>
+    <label for="project-title">
+      {{ "myProjects.createProject.title" | translate }}
+    </label>
     <input
       pInputText
       id="project-title"
@@ -16,7 +18,9 @@
 
   <!-- Storage Location -->
   <div class="flex flex-column">
-    <label for="storage-location">Storage Location</label>
+    <label for="storage-location">
+      {{ "myProjects.createProject.storageLocation" | translate }}
+    </label>
     <p-select
       id="storage-location"
       [options]="storageLocations"
@@ -28,7 +32,9 @@
   @if (affiliations().length) {
     <div class="flex flex-column gap-2">
       <div class="relative">
-        <h3 class="font-normal mb-2">Affiliation</h3>
+        <h3 class="font-normal mb-2">
+          {{ "myProjects.createProject.affiliation.title" | translate }}
+        </h3>
         <div class="flex gap-4 absolute top-0 right-0">
           <p-button
             class="secondary-transparent"
@@ -37,7 +43,7 @@
             (click)="selectAllAffiliations()"
             (keydown.enter)="selectAllAffiliations()"
           >
-            Select All
+            {{ "myProjects.createProject.affiliation.selectAll" | translate }}
           </p-button>
           <p-button
             class="secondary-transparent"
@@ -46,7 +52,7 @@
             (click)="removeAllAffiliations()"
             (keydown.enter)="removeAllAffiliations()"
           >
-            Remove All
+            {{ "myProjects.createProject.affiliation.removeAll" | translate }}
           </p-button>
         </div>
       </div>
@@ -74,7 +80,9 @@
 
   <!-- Description -->
   <div class="flex flex-column">
-    <label for="description">Description (Optional)</label>
+    <label for="description">
+      {{ "myProjects.createProject.description.label" | translate }}
+    </label>
     <textarea
       pTextarea
       id="description"
@@ -85,12 +93,16 @@
 
   <!-- Template -->
   <div class="flex flex-column">
-    <label for="template">Template (Optional)</label>
+    <label for="template">
+      {{ "myProjects.createProject.template.label" | translate }}
+    </label>
     <p-select
       id="template"
       [options]="projectTemplateOptions()"
       [formControlName]="ProjectFormControls.Template"
-      [placeholder]="'Select template or start typing to find one'"
+      [placeholder]="
+        'myProjects.createProject.template.placeholder' | translate
+      "
       [filter]="true"
       styleClass="w-full"
       appendTo="body"
@@ -102,14 +114,14 @@
   <div class="flex justify-content-end gap-2">
     <p-button
       class="w-12rem btn-full-width"
-      label="Cancel"
+      [label]="'myProjects.createProject.actions.cancel' | translate"
       severity="info"
       (click)="dialogRef.close()"
       [disabled]="isSubmitting()"
     />
     <p-button
       class="w-12rem btn-full-width"
-      label="Create Project"
+      [label]="'myProjects.createProject.actions.create' | translate"
       type="submit"
       [disabled]="!projectForm.valid || isSubmitting()"
       [loading]="isSubmitting()"

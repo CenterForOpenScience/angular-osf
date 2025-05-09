@@ -32,10 +32,11 @@ import {
   CreateDeveloperApp,
   UpdateDeveloperApp,
 } from '@osf/features/settings/developer-apps/store';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-developer-app-add-edit-form',
-  imports: [Button, InputText, ReactiveFormsModule, NgClass],
+  imports: [Button, InputText, ReactiveFormsModule, NgClass, TranslatePipe],
   templateUrl: './developer-app-add-edit-form.component.html',
   styleUrl: './developer-app-add-edit-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

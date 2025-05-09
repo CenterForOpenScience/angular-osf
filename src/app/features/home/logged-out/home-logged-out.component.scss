@@ -11,10 +11,6 @@
       margin-top: 0.86rem;
     }
 
-    span {
-      color: var.$pr-blue-1;
-    }
-
     .better-way-container {
       margin: 8.5rem 2.5rem 8.5rem 2.5rem;
       display: flex;
@@ -147,7 +143,9 @@
         }
 
         .quote-icon {
-          width: 2.57rem;
+          font-size: 2rem;
+          width: 4rem;
+          color: var.$pr-blue-1;
         }
 
         .content-container {

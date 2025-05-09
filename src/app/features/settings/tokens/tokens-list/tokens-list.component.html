@@ -1,7 +1,6 @@
 <section class="content-container flex-1" [class.mobile]="isXSmall()">
   <p>
-    Personal access tokens function like ordinary OAuth access tokens. They can
-    be used to authenticate to the API.
+    {{ "settings.tokens.list.description" | translate }}
   </p>
 
   <section class="tokens-container flex-1 flex flex-column">
@@ -17,7 +16,7 @@
           <section class="button-container">
             <p-button
               class="btn-full-width"
-              label="Delete"
+              [label]="'settings.tokens.list.deleteButton' | translate"
               severity="danger"
               (onClick)="deleteToken(token)"
             />

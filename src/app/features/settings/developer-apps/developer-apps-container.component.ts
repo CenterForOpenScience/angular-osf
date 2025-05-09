@@ -6,10 +6,11 @@ import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/developer-app-add-edit-form/developer-app-add-edit-form.component';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-developer-apps',
-  imports: [RouterOutlet, SubHeaderComponent],
+  imports: [RouterOutlet, SubHeaderComponent, TranslateModule],
   templateUrl: './developer-apps-container.component.html',
   styleUrl: './developer-apps-container.component.scss',
   providers: [DialogService],
@@ -20,6 +21,7 @@ export class DeveloperAppsContainerComponent {
   #router = inject(Router);
   #isXSmall = toSignal(inject(IS_XSMALL));
   #isMedium = toSignal(inject(IS_MEDIUM));
+  #translateService = inject(TranslateService);
 
   protected readonly isBaseRoute = toSignal(
     this.#router.events.pipe(
@@ -39,7 +41,9 @@ export class DeveloperAppsContainerComponent {
     this.#dialogService.open(DeveloperAppAddEditFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: 'Create Developer App',
+      header: this.#translateService.instant(
+        'settings.developerApps.form.createTitle',
+      ),
       closeOnEscape: true,
       modal: true,
       closable: true,

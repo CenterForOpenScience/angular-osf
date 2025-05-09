@@ -28,6 +28,7 @@ import {
 } from '@osf/features/settings/developer-apps/store';
 import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/developer-app-add-edit-form/developer-app-add-edit-form.component';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-developer-application-details',
@@ -42,6 +43,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
     FormsModule,
     ReactiveFormsModule,
     DeveloperAppAddEditFormComponent,
+    TranslateModule,
   ],
   templateUrl: './developer-app-details.component.html',
   styleUrl: './developer-app-details.component.scss',
@@ -54,6 +56,7 @@ export class DeveloperAppDetailsComponent {
   #activatedRoute = inject(ActivatedRoute);
   #router = inject(Router);
   #store = inject(Store);
+  #translateService = inject(TranslateService);
 
   protected readonly isXSmall = toSignal(inject(IS_XSMALL));
 
@@ -95,13 +98,19 @@ export class DeveloperAppDetailsComponent {
   deleteApp(): void {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message:
-        "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed.",
-      header: `Delete App ${this.developerApp()?.name}?`,
+      message: this.#translateService.instant(
+        'settings.developerApps.confirmation.delete.message',
+      ),
+      header: this.#translateService.instant(
+        'settings.developerApps.confirmation.delete.title',
+        { name: this.developerApp()?.name },
+      ),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: 'Delete',
+        label: this.#translateService.instant(
+          'settings.developerApps.list.deleteButton',
+        ),
       },
       accept: () => {
         this.#store
@@ -118,15 +127,18 @@ export class DeveloperAppDetailsComponent {
   resetClientSecret(): void {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message:
-        'Resetting the client secret will render your application unusable until it is updated with the new client secret,' +
-        ' and all users must reauthorize access. Previously issued access tokens will no longer work.' +
-        '<br><br>Are you sure you want to reset the client secret? This cannot be reversed.',
-      header: `Reset Client Secret?`,
+      message: this.#translateService.instant(
+        'settings.developerApps.confirmation.resetSecret.message',
+      ),
+      header: this.#translateService.instant(
+        'settings.developerApps.confirmation.resetSecret.title',
+      ),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: 'Reset',
+        label: this.#translateService.instant(
+          'settings.developerApps.details.clientSecret.reset',
+        ),
       },
       accept: () => {
         this.#store.dispatch(new ResetClientSecret(this.clientId()));

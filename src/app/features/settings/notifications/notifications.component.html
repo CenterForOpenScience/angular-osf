@@ -1,12 +1,12 @@
 <osf-sub-header
   [showButton]="false"
-  [title]="'Notifications'"
+  [title]="'settings.notifications.header.title' | translate"
   [icon]="'settings'"
 />
 
 <section class="flex flex-column xl:p-4 md:p-3 p-2 bg-white flex-1 gap-4">
   <section class="notification-item flex flex-column gap-4">
-    <h2>Configure Email Preferences</h2>
+    <h2>{{ "settings.notifications.emailPreferences.title" | translate }}</h2>
 
     <div class="flex flex-column gap-3">
       <div class="flex gap-2">
@@ -14,11 +14,17 @@
 
         <div class="flex flex-column gap-1">
           <label for="v1" class="mb-0 font-bold notification-item-label">
-            Open Science Framework General
+            {{
+              "settings.notifications.emailPreferences.items.general.title"
+                | translate
+            }}
           </label>
 
           <div class="notification-item-description">
-            Receive general notifications about the OSF every 2-3 weeks.
+            {{
+              "settings.notifications.emailPreferences.items.general.description"
+                | translate
+            }}
           </div>
         </div>
       </div>
@@ -28,48 +34,82 @@
 
         <div class="flex flex-column gap-1">
           <label for="v2" class="mb-0 font-bold notification-item-label">
-            Open Science Framework Help
+            {{
+              "settings.notifications.emailPreferences.items.help.title"
+                | translate
+            }}
           </label>
 
           <div class="notification-item-description">
-            Receive helpful tips on how to make the most of the OSF, up to once
-            per week.
+            {{
+              "settings.notifications.emailPreferences.items.help.description"
+                | translate
+            }}
           </div>
         </div>
       </div>
 
       <div class="flex justify-content-end">
-        <p-button [disabled]="true" label="Save" size="large"> </p-button>
+        <p-button
+          [disabled]="true"
+          [label]="
+            'settings.notifications.emailPreferences.saveButton' | translate
+          "
+          size="large"
+        >
+        </p-button>
       </div>
     </div>
   </section>
 
   <section class="notification-item flex flex-column gap-4">
-    <h2>Configure Notification Preferences</h2>
+    <h2>
+      {{ "settings.notifications.notificationPreferences.title" | translate }}
+    </h2>
 
     <div>
-      Note: Transactional and administrative service emails will still be sent.
+      {{ "settings.notifications.notificationPreferences.note" | translate }}
     </div>
 
     <section class="notification-configuration">
-      <div>Replies to your comments</div>
-
+      <div>
+        {{
+          "settings.notifications.notificationPreferences.items.replies"
+            | translate
+        }}
+      </div>
       <p-dropdown class="dropdown"> </p-dropdown>
 
-      <div>Comments added</div>
-
+      <div>
+        {{
+          "settings.notifications.notificationPreferences.items.comments"
+            | translate
+        }}
+      </div>
       <p-dropdown class="dropdown"> </p-dropdown>
 
-      <div>Files updated</div>
-
+      <div>
+        {{
+          "settings.notifications.notificationPreferences.items.files"
+            | translate
+        }}
+      </div>
       <p-dropdown class="dropdown"> </p-dropdown>
 
-      <div>Mentions added</div>
-
+      <div>
+        {{
+          "settings.notifications.notificationPreferences.items.mentions"
+            | translate
+        }}
+      </div>
       <p-dropdown class="dropdown"> </p-dropdown>
 
-      <div>Preprint submissions updated</div>
-
+      <div>
+        {{
+          "settings.notifications.notificationPreferences.items.preprints"
+            | translate
+        }}
+      </div>
       <p-dropdown class="dropdown"> </p-dropdown>
     </section>
   </section>

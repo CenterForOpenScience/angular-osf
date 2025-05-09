@@ -33,6 +33,7 @@ import { InstitutionsSelectors } from '@osf/features/institutions/store';
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
 import { ProjectForm } from '@shared/entities/create-project-form.interface';
 import { ProjectFormControls } from '@osf/shared/entities/create-project-form-controls.enum';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-add-project-form',
@@ -47,6 +48,7 @@ import { ProjectFormControls } from '@osf/shared/entities/create-project-form-co
     Select,
     Textarea,
     NgOptimizedImage,
+    TranslatePipe,
   ],
   templateUrl: './add-project-form.component.html',
   styleUrl: './add-project-form.component.scss',

@@ -17,10 +17,18 @@ import {
 import { Store } from '@ngxs/store';
 import { UpdateProfileSettingsEducation } from '@osf/features/settings/profile-settings/profile-settings.actions';
 import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-education',
-  imports: [ReactiveFormsModule, Button, InputText, DatePicker, Checkbox],
+  imports: [
+    ReactiveFormsModule,
+    Button,
+    InputText,
+    DatePicker,
+    Checkbox,
+    TranslatePipe,
+  ],
   templateUrl: './education.component.html',
   styleUrl: './education.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

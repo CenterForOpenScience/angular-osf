@@ -13,10 +13,12 @@ import { RouterOutlet, Router } from '@angular/router';
 import { Store } from '@ngxs/store';
 import { GetScopes } from '@osf/features/settings/tokens/store';
 import { map } from 'rxjs';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-tokens',
-  imports: [SubHeaderComponent, RouterOutlet],
+  standalone: true,
+  imports: [SubHeaderComponent, RouterOutlet, TranslatePipe],
   templateUrl: './tokens.component.html',
   styleUrl: './tokens.component.scss',
   providers: [DialogService],
@@ -28,6 +30,7 @@ export class TokensComponent implements OnInit {
   #isMedium$ = inject(IS_MEDIUM);
   #store = inject(Store);
   #router = inject(Router);
+  #translateService = inject(TranslateService);
 
   protected readonly isXSmall = toSignal(this.#isXSmall$);
   protected readonly isMedium = toSignal(this.#isMedium$);
@@ -49,7 +52,9 @@ export class TokensComponent implements OnInit {
     this.#dialogService.open(TokenAddEditFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: 'Create Personal Access Token',
+      header: this.#translateService.instant(
+        'settings.tokens.form.createTitle',
+      ),
       closeOnEscape: true,
       modal: true,
       closable: true,

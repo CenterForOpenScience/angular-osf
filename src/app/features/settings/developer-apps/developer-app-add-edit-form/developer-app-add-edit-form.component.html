@@ -4,7 +4,9 @@
   class="flex flex-column gap-3"
 >
   <div class="flex flex-column">
-    <label for="app-name">App Name</label>
+    <label for="app-name">
+      {{ "settings.developerApps.form.appName" | translate }}
+    </label>
     <input
       pInputText
       id="app-name"
@@ -15,7 +17,9 @@
   </div>
 
   <div class="flex flex-column">
-    <label for="proj-homepage-url">Project homepage URL</label>
+    <label for="proj-homepage-url">
+      {{ "settings.developerApps.form.homepageUrl" | translate }}
+    </label>
     <input
       pInputText
       id="proj-homepage-url"
@@ -26,7 +30,9 @@
   </div>
 
   <div class="flex flex-column">
-    <label for="app-descr">App description (optional)</label>
+    <label for="app-descr">
+      {{ "settings.developerApps.form.description" | translate }}
+    </label>
     <input
       pInputText
       id="app-descr"
@@ -37,7 +43,9 @@
   </div>
 
   <div class="flex flex-column">
-    <label for="auth-callback-url">Authorization callback URL</label>
+    <label for="auth-callback-url">
+      {{ "settings.developerApps.form.callbackUrl" | translate }}
+    </label>
     <input
       pInputText
       type="url"
@@ -51,19 +59,19 @@
     @if (isEditMode()) {
       <p-button
         [ngClass]="isMobile() ? 'btn-half-width' : 'w-10rem btn-full-width'"
-        label="Save"
+        [label]="'settings.developerApps.form.buttons.save' | translate"
         type="submit"
         [disabled]="!appForm.dirty || !appForm.valid"
       />
     } @else {
       <p-button
         class="w-12rem btn-full-width"
-        label="Cancel"
+        [label]="'settings.developerApps.form.buttons.cancel' | translate"
         severity="info"
         (click)="dialogRef.close()"
       />
       <p-button
-        label="Create Developer App"
+        [label]="'settings.developerApps.form.buttons.create' | translate"
         type="submit"
         [disabled]="!appForm.valid"
       />

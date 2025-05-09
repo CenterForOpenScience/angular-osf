@@ -6,14 +6,11 @@
 >
   <div class="better-way-container">
     <div class="text-container">
-      <h1>There’s a <span>better way</span> to manage your research</h1>
-      <h3>
-        OSF is a free, open platform to support your research and enable
-        collaboration
-      </h3>
+      <h1 [innerHTML]="'home.loggedOut.hero.title' | translate"></h1>
+      <h3 [innerHTML]="'home.loggedOut.hero.subtitle' | translate"></h3>
       <div class="mt-5">
         <p-button
-          label="Sign Up"
+          [label]="'home.loggedOut.hero.signUp' | translate"
           severity="success"
           class="wide-button"
           [class.btn-full-width]="isXSmall() || isSmall() || isMedium()"
@@ -32,18 +29,15 @@
 
   <div class="discover-research-container">
     <div class="text-container">
-      <h1><span>Discover</span> Public Research</h1>
-      <h3>
-        Discover projects, data, materials, and collaborators on OSF that might
-        be helpful to your own research
-      </h3>
+      <h1 [innerHTML]="'home.loggedOut.discover.title' | translate"></h1>
+      <h3>{{ "home.loggedOut.discover.subtitle" | translate }}</h3>
     </div>
 
     <div class="input-search">
       <i class="osf-icon-search"></i>
       <input
         type="text"
-        placeholder="Search"
+        [placeholder]="'home.loggedOut.discover.searchPlaceholder' | translate"
         pInputText
         [(ngModel)]="searchValue"
       />
@@ -51,30 +45,32 @@
   </div>
 
   <div class="supports-container">
-    <h1>How OSF <span>Supports</span> your research</h1>
+    <h1 [innerHTML]="'home.loggedOut.support.title' | translate"></h1>
     <div class="content-container">
       <div class="left-bar">
         <div class="info-section">
           <div class="icons-wrapper">
             <img
-              ngSrc="assets/icons/content/search.svg"
+              ngSrc="assets/icons/colored/search.svg"
               alt="search icon"
               width="48"
               height="48"
             />
             <img
-              ngSrc="assets/icons/system/arrow%20down.svg"
+              ngSrc="assets/icons/source/arrow-down.svg"
               alt="search icon"
               width="16"
               height="16"
             />
           </div>
           <div class="text-wrapper">
-            <h2>Search And Discover</h2>
+            <h2>
+              {{ "home.loggedOut.support.sections.search.title" | translate }}
+            </h2>
             <h3>
-              Find papers, data, and materials to inspire your next research
-              project. Search public projects to build on the work of others and
-              find new collaborators
+              {{
+                "home.loggedOut.support.sections.search.description" | translate
+              }}
             </h3>
           </div>
         </div>
@@ -82,24 +78,26 @@
         <div class="info-section">
           <div class="icons-wrapper">
             <img
-              ngSrc="assets/icons/content/design.svg"
+              ngSrc="assets/icons/colored/design.svg"
               alt="search icon"
               width="48"
               height="48"
             />
             <img
-              ngSrc="assets/icons/system/arrow%20down.svg"
+              ngSrc="assets/icons/source/arrow-down.svg"
               alt="search icon"
               width="16"
               height="16"
             />
           </div>
           <div class="text-wrapper">
-            <h2>Design Your Study</h2>
+            <h2>
+              {{ "home.loggedOut.support.sections.design.title" | translate }}
+            </h2>
             <h3>
-              Start a project and add collaborators, giving them access to
-              protocols and other research materials. Built-in version control
-              tracks the evolution of your study
+              {{
+                "home.loggedOut.support.sections.design.description" | translate
+              }}
             </h3>
           </div>
         </div>
@@ -107,24 +105,27 @@
         <div class="info-section">
           <div class="icons-wrapper">
             <img
-              ngSrc="assets/icons/content/collect.svg"
+              ngSrc="assets/icons/colored/collect.svg"
               alt="search icon"
               width="48"
               height="48"
             />
             <img
-              ngSrc="assets/icons/system/arrow%20down.svg"
+              ngSrc="assets/icons/source/arrow-down.svg"
               alt="search icon"
               width="16"
               height="16"
             />
           </div>
           <div class="text-wrapper">
-            <h2>Collect and Analyze Data</h2>
+            <h2>
+              {{ "home.loggedOut.support.sections.collect.title" | translate }}
+            </h2>
             <h3>
-              Store data, code, and other materials in OSF Storage, or connect
-              your Dropbox or other third-party account. Every file gets a
-              unique, persistent URL for citing and sharing
+              {{
+                "home.loggedOut.support.sections.collect.description"
+                  | translate
+              }}
             </h3>
           </div>
         </div>
@@ -132,18 +133,21 @@
         <div class="info-section">
           <div class="icons-wrapper">
             <img
-              ngSrc="assets/icons/content/publish.svg"
+              ngSrc="assets/icons/source/arrow-down.svg"
               alt="search icon"
               width="48"
               height="48"
             />
           </div>
           <div class="text-wrapper">
-            <h2>Publish Your Reports</h2>
+            <h2>
+              {{ "home.loggedOut.support.sections.publish.title" | translate }}
+            </h2>
             <h3>
-              Share papers in OSF Preprints or a community-based preprint
-              provider, so others can find and cite your work. Track impact with
-              metrics like downloads and view counts
+              {{
+                "home.loggedOut.support.sections.publish.description"
+                  | translate
+              }}
             </h3>
           </div>
         </div>
@@ -160,12 +164,15 @@
     </div>
 
     <div class="learn-more-container">
-      <p-button label="Learn More" class="learn-more" />
+      <p-button
+        [label]="'home.loggedOut.support.learnMore' | translate"
+        class="learn-more"
+      />
     </div>
   </div>
 
   <div class="others-saying-container">
-    <h1>What others are <span>saying</span></h1>
+    <h1 [innerHTML]="'home.loggedOut.testimonials.title' | translate"></h1>
   </div>
 
   <div class="carousel-container">
@@ -179,19 +186,13 @@
       <ng-template let-slide #item>
         <div class="slide">
           <div class="content-container">
-            <img
-              ngSrc="assets/icons/content/quotes.svg"
-              class="quote-icon"
-              alt="search icon"
-              width="36"
-              height="36"
-            />
+            <i class="osf-icon-quotes quote-icon"></i>
             <div class="text-container">
               <div class="title-container">
-                <h2>{{ slide.title }}</h2>
+                <h2>{{ slide.title | translate }}</h2>
               </div>
               <h3 class="author">{{ slide.author }}</h3>
-              <h3>{{ slide.facility }}</h3>
+              <h3>{{ slide.facility | translate }}</h3>
             </div>
           </div>
           <img src="{{ slide.img }}" class="user-image" [alt]="slide.name" />
@@ -200,24 +201,38 @@
     </p-carousel>
   </div>
 
-  <h1 class="integrations-title">
-    OSF <span>integrations</span> make your workflow more efficient
-  </h1>
+  <h1
+    class="integrations-title"
+    [innerHTML]="'home.loggedOut.integrations.title' | translate"
+  ></h1>
 
   @if (isMedium() || isWeb()) {
     <div class="integrations-main">
       <div class="integrations-container">
         <div class="integrations-bundle">
-          <h3>Authentication</h3>
+          <h3>
+            {{
+              "home.loggedOut.integrations.categories.authentication"
+                | translate
+            }}
+          </h3>
         </div>
         <div class="integrations-bundle">
-          <h3>Discovery</h3>
+          <h3>
+            {{ "home.loggedOut.integrations.categories.discovery" | translate }}
+          </h3>
         </div>
         <div class="integrations-bundle">
-          <h3>References</h3>
+          <h3>
+            {{
+              "home.loggedOut.integrations.categories.references" | translate
+            }}
+          </h3>
         </div>
         <div class="integrations-bundle">
-          <h3>Storage</h3>
+          <h3>
+            {{ "home.loggedOut.integrations.categories.storage" | translate }}
+          </h3>
         </div>
       </div>
 
@@ -270,7 +285,7 @@
         <div class="integrations-bundle">
           <img
             ngSrc="assets/icons/socials/integrations/dropbox.png"
-            alt="gropbox"
+            alt="dropbox"
             height="34"
             width="175"
           />
@@ -286,7 +301,11 @@
   } @else if (isSmall()) {
     <div class="integrations-main-small">
       <div class="integrations-bundle">
-        <h3>Authentication</h3>
+        <h3>
+          {{
+            "home.loggedOut.integrations.categories.authentication" | translate
+          }}
+        </h3>
         <img
           ngSrc="assets/icons/socials/integrations/incommon.png"
           alt="incommon"
@@ -302,7 +321,9 @@
       </div>
 
       <div class="integrations-bundle">
-        <h3>Discovery</h3>
+        <h3>
+          {{ "home.loggedOut.integrations.categories.discovery" | translate }}
+        </h3>
         <img
           ngSrc="assets/icons/socials/integrations/google-scholar.png"
           alt="google-scholar"
@@ -318,7 +339,9 @@
       </div>
 
       <div class="integrations-bundle">
-        <h3>References</h3>
+        <h3>
+          {{ "home.loggedOut.integrations.categories.references" | translate }}
+        </h3>
         <img
           ngSrc="assets/icons/socials/integrations/mendeley.png"
           alt="mendeley"
@@ -334,10 +357,12 @@
       </div>
 
       <div class="integrations-bundle">
-        <h3>Storage</h3>
+        <h3>
+          {{ "home.loggedOut.integrations.categories.storage" | translate }}
+        </h3>
         <img
           ngSrc="assets/icons/socials/integrations/dropbox.png"
-          alt="gropbox"
+          alt="dropbox"
           height="34"
           width="175"
         />
@@ -360,7 +385,7 @@
       >
         <ng-template let-icon #item>
           <div class="slide">
-            <h3>{{ icon.title }}</h3>
+            <h3>{{ icon.title | translate }}</h3>
             <img
               ngSrc="{{ icon.first.path }}"
               class="quote-icon"

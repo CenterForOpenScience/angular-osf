@@ -6,7 +6,7 @@
     (visibleChange)="isDrawerVisible.set($event)"
     [closable]="false"
   >
-    <osf-nav-menu />
+    <osf-nav-menu (closeMenu)="toggleMenuVisibility()" />
   </p-drawer>
   <p-button
     class="topnav-btn"

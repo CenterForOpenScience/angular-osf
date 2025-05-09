@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, inject, output } from '@angular/core';
 import {
   RouterLink,
   RouterLinkActive,
@@ -15,10 +15,11 @@ import { MenuItem } from 'primeng/api';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { NavItem } from '@shared/entities/nav-item.interface';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'osf-nav-menu',
-  imports: [RouterLinkActive, RouterLink, PanelMenuModule],
+  imports: [RouterLinkActive, RouterLink, PanelMenuModule, TranslatePipe],
   templateUrl: './nav-menu.component.html',
   styleUrl: './nav-menu.component.scss',
 })
@@ -30,6 +31,8 @@ export class NavMenuComponent {
   protected readonly mainMenuItems = this.navItems.map((item) =>
     this.#convertToMenuItem(item),
   );
+
+  closeMenu = output<void>();
 
   protected readonly currentRoute = toSignal(
     this.#router.events.pipe(
@@ -69,5 +72,9 @@ export class NavMenuComponent {
       this.#route.firstChild?.firstChild?.snapshot.url[0]?.path || 'overview';
 
     return { projectId, section };
+  }
+
+  goToLink() {
+    this.closeMenu.emit();
   }
 }

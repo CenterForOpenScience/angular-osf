@@ -2,62 +2,72 @@ import { NavItem } from '@shared/entities/nav-item.interface';
 import { MenuItem } from 'primeng/api';
 
 export const NAV_ITEMS: NavItem[] = [
-  { path: '/home', label: 'Home', icon: 'home', useExactMatch: true },
-  { path: '/search', label: 'Search OSF', icon: 'search', useExactMatch: true },
+  {
+    path: '/home',
+    label: 'navigation.home',
+    icon: 'home',
+    useExactMatch: true,
+  },
+  {
+    path: '/search',
+    label: 'navigation.searchOsf',
+    icon: 'search',
+    useExactMatch: true,
+  },
   {
     path: '/support',
-    label: 'Support',
+    label: 'navigation.support',
     icon: 'support',
     useExactMatch: true,
   },
   {
     path: '/my-projects',
-    label: 'My Projects',
+    label: 'navigation.myProjects',
     icon: 'my-projects',
     useExactMatch: true,
   },
   {
     path: '/settings',
-    label: 'Settings',
+    label: 'navigation.settings',
     icon: 'settings',
     isCollapsible: true,
     useExactMatch: true,
     items: [
       {
         path: '/settings/profile-settings',
-        label: 'Profile Settings',
+        label: 'navigation.profileSettings',
         useExactMatch: true,
       },
       {
         path: '/settings/account-settings',
-        label: 'Account Settings',
+        label: 'navigation.accountSettings',
         useExactMatch: true,
       },
       {
         path: '/settings/addons',
-        label: 'Configure Addon Accounts',
+        label: 'navigation.configureAddonAccounts',
         useExactMatch: false,
       },
       {
         path: '/settings/notifications',
-        label: 'Notifications',
+        label: 'navigation.notifications',
         useExactMatch: true,
       },
       {
         path: '/settings/developer-apps',
-        label: 'Developer Apps',
+        label: 'navigation.developerApps',
         useExactMatch: true,
       },
       {
         path: '/settings/tokens',
-        label: 'Personal Access Tokens',
+        label: 'navigation.personalAccessTokens',
         useExactMatch: true,
       },
     ],
   },
   {
     path: '/donate',
-    label: 'Donate',
+    label: 'navigation.donate',
     icon: 'donate',
     useExactMatch: true,
   },
@@ -65,14 +75,17 @@ export const NAV_ITEMS: NavItem[] = [
 
 export const PROJECT_MENU_ITEMS: MenuItem[] = [
   {
-    label: 'Project details',
+    label: 'navigation.project.details',
     icon: 'osf-icon-my-projects',
     expanded: true,
     items: [
-      { label: 'Overview', routerLink: 'overview' },
-      { label: 'Metadata', routerLink: 'metadata' },
-      { label: 'Files', routerLink: 'files' },
-      { label: 'Registrations', routerLink: 'registrations' },
+      { label: 'navigation.project.overview', routerLink: 'overview' },
+      { label: 'navigation.project.metadata', routerLink: 'metadata' },
+      { label: 'navigation.project.files', routerLink: 'files' },
+      {
+        label: 'navigation.project.registrations',
+        routerLink: 'registrations',
+      },
     ],
   },
 ];

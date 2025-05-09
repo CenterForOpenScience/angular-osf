@@ -1,9 +1,6 @@
 <div class="border-1 border-round-lg p-3 sm:p-5 name-container">
   <h3 class="font-normal">
-    Your full name is the name that will be displayed in your profile. To
-    control the way your name will appear in citations, you can use the
-    "Auto-fill" button to automatically infer your first name, last name, etc.,
-    or edit the fields directly below.
+    {{ "settings.profileSettings.name.description" | translate }}
   </h3>
   <form [formGroup]="form" class="flex flex-column row-gap-2 md:row-gap-4 mt-4">
     <div
@@ -11,7 +8,7 @@
     >
       <div class="w-full xl:w-6">
         <label for="full-name" class="font-normal xl:font-light">
-          Full Name
+          {{ "settings.profileSettings.name.fullName" | translate }}
         </label>
 
         <input
@@ -23,7 +20,10 @@
       </div>
 
       <div class="ml-auto sm:m-0 xl:w-6 high-m-button">
-        <p-button label="Auto-Fill" severity="secondary" />
+        <p-button
+          [label]="'settings.profileSettings.name.autoFill' | translate"
+          severity="secondary"
+        />
       </div>
     </div>
 
@@ -31,9 +31,9 @@
       class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3"
     >
       <div class="w-full xl:w-6">
-        <label for="given-name" class="font-normal xl:font-light"
-          >Given Name</label
-        >
+        <label for="given-name" class="font-normal xl:font-light">
+          {{ "settings.profileSettings.name.givenName" | translate }}
+        </label>
 
         <input
           formControlName="givenName"
@@ -45,7 +45,7 @@
 
       <div class="w-full xl:w-6">
         <label for="middle-name" class="font-normal xl:font-light">
-          Middle Name(S) (Optional)
+          {{ "settings.profileSettings.name.middleNames" | translate }}
         </label>
 
         <input
@@ -61,9 +61,9 @@
       class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3"
     >
       <div class="w-full xl:w-6">
-        <label for="family-name" class="font-normal xl:font-light"
-          >Family Name</label
-        >
+        <label for="family-name" class="font-normal xl:font-light">
+          {{ "settings.profileSettings.name.familyName" | translate }}
+        </label>
         <input
           formControlName="familyName"
           pInputText
@@ -72,9 +72,9 @@
         />
       </div>
       <div class="w-full xl:w-6">
-        <label for="suffix" class="font-normal xl:font-light"
-          >Suffix (Optional)</label
-        >
+        <label for="suffix" class="font-normal xl:font-light">
+          {{ "settings.profileSettings.name.suffix" | translate }}
+        </label>
         <input
           formControlName="suffix"
           pInputText
@@ -87,12 +87,23 @@
 </div>
 <div class="border-1 border-round-lg p-3 sm:p-5 name-container">
   <div class="flex flex-column row-gap-5">
-    <h2>Citation Preview</h2>
+    <h2>
+      {{ "settings.profileSettings.name.citationPreview.title" | translate }}
+    </h2>
     <div class="flex flex-column row-gap-4 sm:flex-row styles-container">
       <div class="flex flex-row column-gap-5">
         <div class="flex flex-column style-wrapper">
-          <h3>Style:</h3>
-          <h3>Citation format:</h3>
+          <h3>
+            {{
+              "settings.profileSettings.name.citationPreview.style" | translate
+            }}
+          </h3>
+          <h3>
+            {{
+              "settings.profileSettings.name.citationPreview.citationFormat"
+                | translate
+            }}
+          </h3>
         </div>
         <div class="flex flex-column style-wrapper">
           <h3 class="font-bold">APA</h3>
@@ -102,8 +113,17 @@
 
       <div class="flex column-gap-5">
         <div class="flex flex-column style-wrapper">
-          <h3>Style:</h3>
-          <h3>Citation format:</h3>
+          <h3>
+            {{
+              "settings.profileSettings.name.citationPreview.style" | translate
+            }}
+          </h3>
+          <h3>
+            {{
+              "settings.profileSettings.name.citationPreview.citationFormat"
+                | translate
+            }}
+          </h3>
         </div>
         <div class="flex flex-column style-wrapper">
           <h3 class="font-bold">MLA</h3>
@@ -120,10 +140,13 @@
   <p-button
     disabled="true"
     class="w-6 btn-full-width md:w-auto"
-    label="Discard Changes"
+    [label]="'settings.profileSettings.common.discardChanges' | translate"
     severity="info"
   />
   <div class="w-6 btn-full-width md:w-auto wide-m-button">
-    <p-button (onClick)="saveChanges()" label="Save" />
+    <p-button
+      (onClick)="saveChanges()"
+      [label]="'settings.profileSettings.common.save' | translate"
+    />
   </div>
 </div>

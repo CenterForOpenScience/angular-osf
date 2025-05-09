@@ -1,17 +1,31 @@
-<osf-sub-header [showButton]="false" [title]="'Connect Add-on'" />
+<osf-sub-header
+  [showButton]="false"
+  [title]="'settings.addons.connectAddon.title' | translate"
+/>
 <section class="stepper-container flex-column flex flex-1 p-5">
   <p-stepper [value]="!isAuthorized() ? 1 : 2">
     <p-step-panels>
       <p-step-panel [value]="1">
         <ng-template #content let-activateCallback="activateCallback">
           <section class="flex flex-column gap-2">
-            <h2>{{ addon()?.providerName }} Terms</h2>
+            <h2>
+              {{ addon()?.providerName }}
+              {{ "settings.addons.connectAddon.terms" | translate }}
+            </h2>
 
             <p-table [value]="terms()" class="addon-table">
               <ng-template pTemplate="header">
                 <tr>
-                  <th>Function</th>
-                  <th>Status</th>
+                  <th>
+                    {{
+                      "settings.addons.connectAddon.table.function" | translate
+                    }}
+                  </th>
+                  <th>
+                    {{
+                      "settings.addons.connectAddon.table.status" | translate
+                    }}
+                  </th>
                 </tr>
               </ng-template>
               <ng-template pTemplate="body" let-term>
@@ -30,28 +44,27 @@
 
             <div class="flex flex-column gap-2 mt-4">
               <p>
-                • This add-on connects your OSF project to an external service.
-                Use of this service is bound by its terms and conditions. The
-                OSF is not responsible for the service or for your use thereof.
+                {{
+                  "settings.addons.connectAddon.termsDescription" | translate
+                }}
               </p>
               <p>
-                • This add-on allows you to store files using an external
-                service. Files added to this add-on are not stored within the
-                OSF.
+                {{
+                  "settings.addons.connectAddon.storageDescription" | translate
+                }}
               </p>
             </div>
 
-            <div class="flex align-self-center md:align-self-end gap-4 mt-4">
+            <div class="flex gap-4 align-self-center md:align-self-end mt-3">
               <p-button
-                label="Cancel"
-                [link]="true"
+                [label]="'settings.addons.form.buttons.cancel' | translate"
                 severity="info"
                 class="w-10rem btn-full-width"
                 routerLink="/settings/addons"
               ></p-button>
               <p-button
+                [label]="'settings.addons.form.buttons.next' | translate"
                 class="w-10rem btn-full-width"
-                label="Next"
                 (onClick)="activateCallback(2)"
               ></p-button>
             </div>
@@ -67,25 +80,38 @@
             class="flex flex-column gap-5"
           >
             <h2>
-              {{ isAuthorized() ? "Reconnect Account" : "Setup new account" }}
+              {{
+                isAuthorized()
+                  ? ("settings.addons.connectAddon.reconnectAccount"
+                    | translate)
+                  : ("settings.addons.connectAddon.setupNewAccount" | translate)
+              }}
             </h2>
             <p-card>
               @if (
                 addon()?.credentialsFormat ===
                 credentialsFormat.ACCESS_SECRET_KEYS
               ) {
-                <h2 class="mb-2">Access Key</h2>
+                <h2 class="mb-2">
+                  {{ "settings.addons.form.fields.accessKey" | translate }}
+                </h2>
                 <input
                   class="mb-5"
                   pInputText
-                  placeholder="Access Key"
+                  [placeholder]="
+                    'settings.addons.form.fields.accessKey' | translate
+                  "
                   [formControlName]="formControls.AccessKey"
                 />
-                <h2 class="mb-2">Secret Key</h2>
+                <h2 class="mb-2">
+                  {{ "settings.addons.form.fields.secretKey" | translate }}
+                </h2>
                 <input
                   class="mb-5"
                   pInputText
-                  placeholder="Secret Key"
+                  [placeholder]="
+                    'settings.addons.form.fields.secretKey' | translate
+                  "
                   [formControlName]="formControls.SecretKey"
                 />
               }
@@ -94,20 +120,32 @@
                 addon()?.credentialsFormat ===
                 credentialsFormat.DATAVERSE_API_TOKEN
               ) {
-                <h2 class="mb-2">Host Url</h2>
+                <h2 class="mb-2">
+                  {{ "settings.addons.form.fields.hostUrl" | translate }}
+                </h2>
                 <p class="mb-2">
-                  Please include the protocol (http:// or https://) in the URL.
+                  {{
+                    "settings.addons.form.fields.hostUrlDescription" | translate
+                  }}
                 </p>
                 <input
                   class="mb-4"
                   pInputText
                   [formControlName]="formControls.HostUrl"
                 />
-                <h2 class="mb-2">Personal Access Token</h2>
+                <h2 class="mb-2">
+                  {{
+                    "settings.addons.form.fields.personalAccessToken"
+                      | translate
+                  }}
+                </h2>
                 <input
                   class="mb-4"
                   pInputText
-                  placeholder="Personal Access Token"
+                  [placeholder]="
+                    'settings.addons.form.fields.personalAccessToken'
+                      | translate
+                  "
                   [formControlName]="formControls.PersonalAccessToken"
                 />
               }
@@ -116,24 +154,39 @@
                 addon()?.credentialsFormat ===
                 credentialsFormat.USERNAME_PASSWORD
               ) {
-                <h2 class="mb-2">Host Url</h2>
+                <h2 class="mb-2">
+                  {{ "settings.addons.form.fields.hostUrl" | translate }}
+                </h2>
                 <p class="mb-2">
-                  Please include the protocol (http:// or https://) in the URL.
+                  {{
+                    "settings.addons.form.fields.hostUrlDescription" | translate
+                  }}
                 </p>
                 <input
                   class="mb-4"
                   pInputText
                   [formControlName]="formControls.HostUrl"
                 />
-                <h2 class="mb-2">Username</h2>
+                <h2 class="mb-2">
+                  {{ "settings.addons.form.fields.username" | translate }}
+                </h2>
                 <input
                   class="mb-4"
                   pInputText
-                  placeholder="Username"
+                  [placeholder]="
+                    'settings.addons.form.fields.username' | translate
+                  "
                   [formControlName]="formControls.Username"
                 />
-                <h2 class="mb-2">Password</h2>
-                <p class="mb-2">These credentials will be encrypted</p>
+                <h2 class="mb-2">
+                  {{ "settings.addons.form.fields.password" | translate }}
+                </h2>
+                <p class="mb-2">
+                  {{
+                    "settings.addons.form.fields.passwordDescription"
+                      | translate
+                  }}
+                </p>
                 <div class="mb-4">
                   <p-password
                     [feedback]="false"
@@ -146,26 +199,38 @@
               @if (
                 addon()?.credentialsFormat === credentialsFormat.REPO_TOKEN
               ) {
-                <h2 class="mb-2">Access Key</h2>
+                <h2 class="mb-2">
+                  {{ "settings.addons.form.fields.accessKey" | translate }}
+                </h2>
                 <input
                   class="mb-4"
                   pInputText
-                  placeholder="Access Key"
+                  [placeholder]="
+                    'settings.addons.form.fields.accessKey' | translate
+                  "
                   [formControlName]="formControls.AccessKey"
                 />
-                <h2 class="mb-2">Secret Key</h2>
+                <h2 class="mb-2">
+                  {{ "settings.addons.form.fields.secretKey" | translate }}
+                </h2>
                 <input
                   class="mb-4"
                   pInputText
-                  placeholder="Secret Key"
+                  [placeholder]="
+                    'settings.addons.form.fields.secretKey' | translate
+                  "
                   [formControlName]="formControls.SecretKey"
                 />
               }
 
-              <h2 class="mb-2">Account Name</h2>
+              <h2 class="mb-2">
+                {{ "settings.addons.form.fields.accountName" | translate }}
+              </h2>
               <p class="mb-2">
-                This will distinguish your account from other using the same
-                addon.
+                {{
+                  "settings.addons.form.fields.accountNameDescription"
+                    | translate
+                }}
               </p>
               <input pInputText [formControlName]="formControls.AccountName" />
             </p-card>
@@ -173,7 +238,7 @@
             <div class="flex gap-4 align-self-center md:align-self-end mt-3">
               @if (!isAuthorized()) {
                 <p-button
-                  label="Back"
+                  [label]="'settings.addons.form.buttons.back' | translate"
                   severity="info"
                   class="w-10rem btn-full-width"
                   (onClick)="activateCallback(1)"
@@ -182,7 +247,7 @@
 
                 <p-button
                   class="w-10rem btn-full-width"
-                  [label]="'Authorize'"
+                  [label]="'settings.addons.form.buttons.authorize' | translate"
                   type="submit"
                   [disabled]="
                     !addonForm.valid ||
@@ -192,7 +257,7 @@
                 ></p-button>
               } @else {
                 <p-button
-                  label="Cancel"
+                  [label]="'settings.addons.form.buttons.cancel' | translate"
                   severity="info"
                   class="w-10rem btn-full-width"
                   routerLink="/settings/addons"
@@ -201,7 +266,7 @@
 
                 <p-button
                   class="w-10rem btn-full-width"
-                  [label]="'Reconnect'"
+                  [label]="'settings.addons.form.buttons.reconnect' | translate"
                   [link]="true"
                   (onClick)="handleConnectStorageAddon()"
                   [disabled]="
@@ -220,9 +285,11 @@
         <ng-template #content>
           <div class="flex flex-column gap-4">
             <div class="flex justify-content-between">
-              <h2 class="align-self-center inline-block">Setup new account</h2>
+              <h2 class="align-self-center inline-block">
+                {{ "settings.addons.connectAddon.setupNewAccount" | translate }}
+              </h2>
               <p-button
-                label="Back"
+                [label]="'settings.addons.form.buttons.back' | translate"
                 severity="info"
                 class="w-7rem btn-full-width"
                 routerLink="/settings/addons"
@@ -230,13 +297,15 @@
             </div>
 
             <p>
-              Complete the OAuth process in the new window before returning to
-              this page. If you do not see a new window, please click the Start
-              Oauth link below.
+              {{ "settings.addons.connectAddon.oauthDescription" | translate }}
             </p>
-            <a [href]="addonAuthUrl()" target="_blank" rel="noopener noreferrer"
-              >Start OAuth</a
+            <a
+              [href]="addonAuthUrl()"
+              target="_blank"
+              rel="noopener noreferrer"
             >
+              {{ "settings.addons.connectAddon.startOauth" | translate }}
+            </a>
           </div>
         </ng-template>
       </p-step-panel>

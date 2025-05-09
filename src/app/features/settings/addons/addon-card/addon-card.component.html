@@ -19,7 +19,7 @@
     >
       @if (showDangerButton()) {
         <p-button
-          [label]="'Disable'"
+          [label]="'settings.addons.form.buttons.disable' | translate"
           severity="danger"
           (onClick)="showDisableDialog()"
           [ngClass]="isMobile() ? 'w-8rem btn-full-width' : ''"
@@ -27,7 +27,10 @@
       }
 
       <p-button
-        [label]="cardButtonLabel() || 'Connect'"
+        [label]="
+          cardButtonLabel() ||
+          ('settings.addons.form.buttons.connect' | translate)
+        "
         severity="secondary"
         (onClick)="onConnectAddon()"
         [ngClass]="isMobile() ? 'w-8rem btn-full-width' : ''"
@@ -47,7 +50,9 @@
 >
   <ng-template pTemplate="header">
     <div class="flex align-items-center justify-content-between w-full">
-      <span class="text-xl font-bold">Disable Account</span>
+      <span class="text-xl font-bold">
+        {{ "settings.addons.messages.deleteConfirmation.title" | translate }}
+      </span>
       <button
         type="button"
         class="p-dialog-header-icon"
@@ -59,18 +64,17 @@
     </div>
   </ng-template>
   <p>
-    Are you sure you want to disable this account? All projects connected to
-    this account will be affected.
+    {{ "settings.addons.messages.deleteConfirmation.message" | translate }}
   </p>
   <div class="flex justify-content-end gap-4 mt-5">
     <p-button
-      label="Cancel"
+      [label]="'settings.addons.form.buttons.cancel' | translate"
       severity="secondary"
       (onClick)="hideDialog()"
       [disabled]="isDisabling()"
     ></p-button>
     <p-button
-      label="Disable"
+      [label]="'settings.addons.form.buttons.disable' | translate"
       severity="danger"
       (onClick)="onDisableAddon()"
       [disabled]="isDisabling()"
