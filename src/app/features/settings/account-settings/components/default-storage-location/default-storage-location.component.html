@@ -1,0 +1,22 @@
+<section class="account-setting">
+  <h2 class="account-settings-header">Default storage location</h2>
+
+  <div class="account-settings-description">
+    This location will be applied to new projects and components. It will not affect existing projects and components.
+  </div>
+
+  <div class="account-setting-content">
+    <p-select
+      styleClass="account-setting-select"
+      size="large"
+      optionLabel="name"
+      [options]="regions()"
+      [class.mobile]="isMobile()"
+      [(ngModel)]="selectedRegion"
+    ></p-select>
+  </div>
+
+  <div class="account-setting-action">
+    <p-button size="large" (click)="updateLocation()"> Update Location </p-button>
+  </div>
+</section>

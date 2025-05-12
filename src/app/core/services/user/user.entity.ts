@@ -25,4 +25,6 @@ export interface User {
     impactStory?: string;
     researcherId?: string;
   };
+  defaultRegionId: string;
+  allowIndexing: boolean | undefined;
 }

@@ -4,20 +4,22 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { SortEvent } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, take } from 'rxjs';
 
 import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
+import { ConfirmEmailComponent } from '@osf/features/home/components/confirm-email/confirm-email.component';
 import { GetUserInstitutions } from '@osf/features/institutions/store';
 import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
 import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
 import { ClearMyProjects, GetMyProjects, MyProjectsSelectors } from '@osf/features/my-projects/store';
+import { AccountSettingsService } from '@osf/features/settings/account-settings/services/account-settings.service';
 import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
 import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
@@ -43,6 +45,7 @@ export class HomeComponent implements OnInit {
   readonly #isXSmall$ = inject(IS_XSMALL);
   readonly #isMedium$ = inject(IS_MEDIUM);
   readonly #searchSubject = new Subject<string>();
+  readonly #accountSettingsServer = inject(AccountSettingsService);
 
   protected readonly isLoading = signal(false);
   protected readonly isSubmitting = signal(false);
@@ -66,6 +69,9 @@ export class HomeComponent implements OnInit {
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
 
+  dialogRef: DynamicDialogRef | null = null;
+  emailAddress = '';
+
   constructor() {
     this.#setupSearchSubscription();
     this.#setupTotalRecordsEffect();
@@ -75,6 +81,38 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.#setupQueryParamsSubscription();
     this.#store.dispatch(new GetUserInstitutions());
+
+    // Check for userId and emailId route parameters
+    this.#route.params.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((params) => {
+      const userId = params['userId'];
+      const emailId = params['emailId'];
+
+      if (userId && emailId) {
+        this.#accountSettingsServer
+          .getEmail(emailId, userId)
+          .pipe(take(1))
+          .subscribe((email) => {
+            this.emailAddress = email.emailAddress;
+            this.addAlternateEmail();
+          });
+      }
+    });
+  }
+
+  addAlternateEmail() {
+    this.dialogRef = this.#dialogService.open(ConfirmEmailComponent, {
+      width: '448px',
+      focusOnShow: false,
+      header: 'Add alternative email',
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        emailAddress: this.emailAddress,
+        userId: this.#route.snapshot.params['userId'],
+        emailId: this.#route.snapshot.params['emailId'],
+      },
+    });
   }
 
   #setupQueryParamsSubscription(): void {

@@ -16,5 +16,7 @@ export function mapUserUStoUser(user: UserUS): User {
     employment: user.attributes.employment,
     iri: user.links.iri,
     social: user.attributes.social,
+    defaultRegionId: user.relationships?.default_region?.data?.id,
+    allowIndexing: user.attributes?.allow_indexing,
   };
 }

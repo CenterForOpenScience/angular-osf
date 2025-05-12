@@ -85,7 +85,11 @@
     &-email {
       display: flex;
       gap: 2rem;
-      align-items: center;
+      align-items: start;
+
+      &__title {
+        min-width: 10rem;
+      }
 
       &--readonly {
         display: flex;
@@ -93,6 +97,12 @@
         border: 1px solid var.$grey-2;
         padding: 0.285rem 0.85rem;
         border-radius: 0.285rem;
+
+        i {
+          color: var.$dark-blue-1;
+          font-size: 0.7rem;
+          margin-left: 0.7rem;
+        }
       }
 
       &__value {

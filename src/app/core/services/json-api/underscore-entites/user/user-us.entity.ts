@@ -16,8 +16,15 @@ export interface UserUS {
     suffix?: string;
     social: Social;
     date_registered: string;
+    allow_indexing?: boolean;
   };
-  relationships: Record<string, unknown>;
+  relationships: {
+    default_region: {
+      data: {
+        id: string;
+      };
+    };
+  };
   links: {
     html: string;
     profile_image: string;

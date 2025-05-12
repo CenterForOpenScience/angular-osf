@@ -28,6 +28,9 @@
 @use "./overrides/tag";
 @use "./overrides/dataview";
 @use "./overrides/menu";
+@use "./overrides/spinner";
+@use "./overrides/password";
+
 @layer base, primeng, reset;
 
 @layer base {

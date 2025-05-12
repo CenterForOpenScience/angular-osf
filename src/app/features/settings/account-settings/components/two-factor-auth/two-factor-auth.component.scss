@@ -1,0 +1,16 @@
+@use "../../account-settings.component.scss" as account-settings;
+@use "assets/styles/variables" as var;
+
+:host {
+  @extend .account-setting;
+
+  h3,
+  p {
+    font-weight: 400;
+    text-transform: none;
+  }
+
+  .token {
+    color: var.$red-1;
+  }
+}

@@ -1,0 +1,25 @@
+<section class="account-setting">
+  <h2 class="account-setting-header">Connected identities</h2>
+
+  <div class="account-setting-description">
+    Connected identities allow you to log in to the OSF via a third-party service. You can revoke these identifies.
+  </div>
+
+  <div class="account-setting-content">
+    @for (identity of externalIdentities(); track identity.id) {
+      <div class="account-setting-email--readonly">
+        {{ identity.id }}: {{ identity.externalId }} ({{ identity.status }})
+        <i
+          class="osf-icon-close"
+          tabindex="0"
+          (click)="deleteExternalIdentity(identity.id)"
+          (keydown.enter)="deleteExternalIdentity(identity.id)"
+        >
+        </i>
+      </div>
+    }
+    @if (!externalIdentities().length) {
+      You have not authorized any external services to log in to the OSF.
+    }
+  </div>
+</section>

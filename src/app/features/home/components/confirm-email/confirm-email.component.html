@@ -1,0 +1,14 @@
+<div class="flex flex-column gap-6">
+  <h3 class="font-normal">
+    Would you like to add
+    <p class="inline font-bold">{{ config.data.emailAddress }}</p>
+    to your account?
+  </h3>
+  <div class="flex gap-2">
+    <p-button class="w-full" styleClass="w-full" (click)="dialogRef.close()" [text]="true" severity="secondary">
+      Do not add email
+    </p-button>
+
+    <p-button class="w-full" styleClass="w-full" (click)="verifyEmail()"> Add Email </p-button>
+  </div>
+</div>

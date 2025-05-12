@@ -38,7 +38,9 @@ export const routes: Routes = [
       {
         path: 'home-logged-out',
         loadComponent: () =>
-          import('./features/home/logged-out/home-logged-out.component').then((mod) => mod.HomeLoggedOutComponent),
+          import('@osf/features/home/components/logged-out/home-logged-out.component').then(
+            (mod) => mod.HomeLoggedOutComponent
+          ),
       },
       {
         path: 'support',
@@ -116,6 +118,10 @@ export const routes: Routes = [
         path: 'my-profile',
         loadComponent: () => import('./features/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
         providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState])],
+      },
+      {
+        path: 'confirm/:userId/:emailId',
+        loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
       },
     ],
   },
