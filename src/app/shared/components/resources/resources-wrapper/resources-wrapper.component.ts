@@ -1,3 +1,7 @@
+import { Store } from '@ngxs/store';
+
+import { take } from 'rxjs';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,6 +10,16 @@ import {
   OnInit,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
+import {
+  SearchSelectors,
+  SetResourceTab,
+  SetSearchText,
+  SetSortBy,
+} from '@osf/features/search/store';
+import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
+import { FilterLabels } from '@shared/components/resources/resource-filters/models/filter-labels';
 import {
   ResourceFilterLabel,
   ResourceFiltersSelectors,
@@ -19,17 +33,6 @@ import {
   SetResourceType,
   SetSubject,
 } from '@shared/components/resources/resource-filters/store';
-import {
-  SearchSelectors,
-  SetResourceTab,
-  SetSearchText,
-  SetSortBy,
-} from '@osf/features/search/store';
-import { Store } from '@ngxs/store';
-import { take } from 'rxjs';
-import { FilterLabels } from '@shared/components/resources/resource-filters/models/filter-labels';
-import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
-import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
 import { ResourcesComponent } from '@shared/components/resources/resources.component';
 
 @Component({

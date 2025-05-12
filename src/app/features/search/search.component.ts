@@ -1,3 +1,16 @@
+import { Store } from '@ngxs/store';
+
+import { AccordionModule } from 'primeng/accordion';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { Button } from 'primeng/button';
+import { DataViewModule } from 'primeng/dataview';
+import { DropdownModule } from 'primeng/dropdown';
+import { TableModule } from 'primeng/table';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+
+import { debounceTime } from 'rxjs';
+
+import { NgOptimizedImage } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,19 +20,10 @@ import {
   signal,
   untracked,
 } from '@angular/core';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { DropdownModule } from 'primeng/dropdown';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
-import { NgOptimizedImage } from '@angular/common';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { AccordionModule } from 'primeng/accordion';
-import { TableModule } from 'primeng/table';
-import { DataViewModule } from 'primeng/dataview';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
-import { Store } from '@ngxs/store';
 import {
   GetResources,
   ResetSearchState,
@@ -27,14 +31,14 @@ import {
   SetResourceTab,
   SetSearchText,
 } from '@osf/features/search/store';
+import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import {
   ResetFiltersState,
   ResourceFiltersSelectors,
 } from '@shared/components/resources/resource-filters/store';
-import { debounceTime } from 'rxjs';
-import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
-import { Button } from 'primeng/button';
 import { ResourcesWrapperComponent } from '@shared/components/resources/resources-wrapper/resources-wrapper.component';
+import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-search',

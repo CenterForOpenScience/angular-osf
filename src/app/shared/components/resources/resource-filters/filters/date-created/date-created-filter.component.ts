@@ -1,3 +1,7 @@
+import { Store } from '@ngxs/store';
+
+import { Select, SelectChangeEvent } from 'primeng/select';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,14 +12,13 @@ import {
   untracked,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Select, SelectChangeEvent } from 'primeng/select';
-import { Store } from '@ngxs/store';
+
+import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
+import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
 import {
   ResourceFiltersSelectors,
   SetDateCreated,
 } from '@shared/components/resources/resource-filters/store';
-import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
-import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
 
 @Component({
   selector: 'osf-date-created-filter',

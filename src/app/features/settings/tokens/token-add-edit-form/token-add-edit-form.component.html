@@ -4,7 +4,9 @@
   class="flex flex-column gap-4"
 >
   <div class="flex flex-column">
-    <label for="token-name">Token Name</label>
+    <label for="token-name">{{
+      "settings.tokens.form.tokenName" | translate
+    }}</label>
     <input
       pInputText
       id="token-name"
@@ -16,9 +18,11 @@
 
   <div class="flex flex-column gap-4">
     <div class="flex flex-column gap-2">
-      <h3 class="scope-label">Scopes</h3>
+      <h3 class="scope-label">
+        {{ "settings.tokens.form.scopes.title" | translate }}
+      </h3>
       <p class="scope-description">
-        Scopes limit access for personal access tokens.
+        {{ "settings.tokens.form.scopes.description" | translate }}
       </p>
     </div>
 
@@ -45,20 +49,20 @@
     @if (isEditMode()) {
       <p-button
         [ngClass]="isMobile() ? 'btn-half-width' : 'w-10rem btn-full-width'"
-        label="Save"
+        [label]="'settings.tokens.form.buttons.save' | translate"
         type="submit"
         [disabled]="!tokenForm.valid"
       />
     } @else {
       <p-button
         class="w-12rem btn-full-width"
-        label="Cancel"
+        [label]="'settings.tokens.form.buttons.cancel' | translate"
         severity="info"
         (click)="dialogRef.close()"
       />
       <p-button
         class="w-12rem btn-full-width"
-        label="Create Token"
+        [label]="'settings.tokens.form.buttons.create' | translate"
         type="submit"
         [disabled]="!tokenForm.valid"
       />

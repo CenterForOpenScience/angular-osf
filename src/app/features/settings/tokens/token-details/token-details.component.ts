@@ -1,30 +1,43 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
+import { ConfirmationService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { map, of, switchMap } from 'rxjs';
+
 import {
   ChangeDetectionStrategy,
   Component,
-  inject,
   computed,
+  inject,
 } from '@angular/core';
-import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
-import { FormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService } from 'primeng/api';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
-import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { map, switchMap, of } from 'rxjs';
-import { Store } from '@ngxs/store';
-import { TokensSelectors } from '@core/store/settings/tokens/tokens.selectors';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import {
   DeleteToken,
   GetTokenById,
-} from '@core/store/settings/tokens/tokens.actions';
+} from '@osf/features/settings/tokens/store/tokens.actions';
+import { TokensSelectors } from '@osf/features/settings/tokens/store/tokens.selectors';
+import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
+import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-token-details',
-  imports: [Button, Card, FormsModule, RouterLink, TokenAddEditFormComponent],
+  imports: [
+    Button,
+    Card,
+    FormsModule,
+    RouterLink,
+    TokenAddEditFormComponent,
+    TranslatePipe,
+  ],
   providers: [DialogService, DynamicDialogRef],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './token-details.component.html',
@@ -36,6 +49,7 @@ export class TokenDetailsComponent {
   #route = inject(ActivatedRoute);
   #router = inject(Router);
   #store = inject(Store);
+  #translateService = inject(TranslateService);
 
   readonly tokenId = toSignal(
     this.#route.params.pipe(
@@ -64,13 +78,19 @@ export class TokenDetailsComponent {
   deleteToken(): void {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message:
-        'Are you sure you want to delete this token? This action cannot be reversed.',
-      header: `Delete Token ${this.token()?.name}?`,
+      message: this.#translateService.instant(
+        'settings.tokens.confirmation.delete.message',
+      ),
+      header: this.#translateService.instant(
+        'settings.tokens.confirmation.delete.title',
+        { name: this.token()?.name },
+      ),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: 'Delete',
+        label: this.#translateService.instant(
+          'settings.tokens.list.deleteButton',
+        ),
       },
       accept: () => {
         this.#store.dispatch(new DeleteToken(this.tokenId())).subscribe({

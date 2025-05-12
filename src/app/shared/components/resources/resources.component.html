@@ -140,8 +140,8 @@
                 height="13"
                 viewBox="0 0 10 10"
                 class="switch-icon"
-                (click)="switchPage(next() ?? first())"
-                (keydown.enter)="switchPage(next() ?? first())"
+                (click)="switchPage(!next() ? first() : next())"
+                (keydown.enter)="switchPage(!next() ? first() : next())"
               >
                 <path
                   d="M7.70715 5.7063C8.09762 5.31584 8.09762 4.68173 7.70715 4.29127L3.70871 0.292933C3.42132 0.00555328 2.99336 -0.0787866 2.61851 0.0773983C2.24365 0.233583 2 0.595932 2 1.00201V8.99868C2 9.40164 2.24365 9.76711 2.61851 9.92329C2.99336 10.0795 3.42132 9.99201 3.70871 9.70776L7.70715 5.70942V5.7063Z"

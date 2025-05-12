@@ -1,6 +1,6 @@
-import { FunderIndexValueSearch } from '@shared/components/resources/resource-filters/models/funder/funder-index-value-search.entity';
 import { FunderFilter } from '@shared/components/resources/resource-filters/models/funder/funder-filter.entity';
 import { FunderIndexCardFilter } from '@shared/components/resources/resource-filters/models/funder/funder-index-card-filter.entity';
+import { FunderIndexValueSearch } from '@shared/components/resources/resource-filters/models/funder/funder-index-value-search.entity';
 
 export function MapFunders(items: FunderIndexValueSearch[]): FunderFilter[] {
   const funders: FunderFilter[] = [];

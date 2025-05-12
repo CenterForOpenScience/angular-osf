@@ -1,7 +1,9 @@
+import { Action, State, StateContext } from '@ngxs/store';
+
 import { Injectable } from '@angular/core';
-import { State, Action, StateContext } from '@ngxs/store';
+
+import { ClearAuth, SetAuthToken } from './auth.actions';
 import { AuthStateModel } from './auth.model';
-import { SetAuthToken, ClearAuth } from './auth.actions';
 
 @State<AuthStateModel>({
   name: 'auth',

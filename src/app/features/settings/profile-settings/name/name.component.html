@@ -1,0 +1,152 @@
+<div class="border-1 border-round-lg p-3 sm:p-5 name-container">
+  <h3 class="font-normal">
+    {{ "settings.profileSettings.name.description" | translate }}
+  </h3>
+  <form [formGroup]="form" class="flex flex-column row-gap-2 md:row-gap-4 mt-4">
+    <div
+      class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3 w-full md:0 md:mb-3"
+    >
+      <div class="w-full xl:w-6">
+        <label for="full-name" class="font-normal xl:font-light">
+          {{ "settings.profileSettings.name.fullName" | translate }}
+        </label>
+
+        <input
+          formControlName="fullName"
+          pInputText
+          id="full-name"
+          class="name-input"
+        />
+      </div>
+
+      <div class="ml-auto sm:m-0 xl:w-6 high-m-button">
+        <p-button
+          [label]="'settings.profileSettings.name.autoFill' | translate"
+          severity="secondary"
+        />
+      </div>
+    </div>
+
+    <div
+      class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3"
+    >
+      <div class="w-full xl:w-6">
+        <label for="given-name" class="font-normal xl:font-light">
+          {{ "settings.profileSettings.name.givenName" | translate }}
+        </label>
+
+        <input
+          formControlName="givenName"
+          pInputText
+          id="given-name"
+          class="name-input"
+        />
+      </div>
+
+      <div class="w-full xl:w-6">
+        <label for="middle-name" class="font-normal xl:font-light">
+          {{ "settings.profileSettings.name.middleNames" | translate }}
+        </label>
+
+        <input
+          formControlName="middleNames"
+          pInputText
+          id="middle-name"
+          class="name-input"
+        />
+      </div>
+    </div>
+
+    <div
+      class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3"
+    >
+      <div class="w-full xl:w-6">
+        <label for="family-name" class="font-normal xl:font-light">
+          {{ "settings.profileSettings.name.familyName" | translate }}
+        </label>
+        <input
+          formControlName="familyName"
+          pInputText
+          id="family-name"
+          class="name-input"
+        />
+      </div>
+      <div class="w-full xl:w-6">
+        <label for="suffix" class="font-normal xl:font-light">
+          {{ "settings.profileSettings.name.suffix" | translate }}
+        </label>
+        <input
+          formControlName="suffix"
+          pInputText
+          id="suffix"
+          class="name-input"
+        />
+      </div>
+    </div>
+  </form>
+</div>
+<div class="border-1 border-round-lg p-3 sm:p-5 name-container">
+  <div class="flex flex-column row-gap-5">
+    <h2>
+      {{ "settings.profileSettings.name.citationPreview.title" | translate }}
+    </h2>
+    <div class="flex flex-column row-gap-4 sm:flex-row styles-container">
+      <div class="flex flex-row column-gap-5">
+        <div class="flex flex-column style-wrapper">
+          <h3>
+            {{
+              "settings.profileSettings.name.citationPreview.style" | translate
+            }}
+          </h3>
+          <h3>
+            {{
+              "settings.profileSettings.name.citationPreview.citationFormat"
+                | translate
+            }}
+          </h3>
+        </div>
+        <div class="flex flex-column style-wrapper">
+          <h3 class="font-bold">APA</h3>
+          <h3>Doe, J. T.</h3>
+        </div>
+      </div>
+
+      <div class="flex column-gap-5">
+        <div class="flex flex-column style-wrapper">
+          <h3>
+            {{
+              "settings.profileSettings.name.citationPreview.style" | translate
+            }}
+          </h3>
+          <h3>
+            {{
+              "settings.profileSettings.name.citationPreview.citationFormat"
+                | translate
+            }}
+          </h3>
+        </div>
+        <div class="flex flex-column style-wrapper">
+          <h3 class="font-bold">MLA</h3>
+          <h3>Doe, John T.</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="flex justify-content-between align-items-end column-gap-2 md:ml-auto h-3rem mt-2"
+>
+  <p-button
+    disabled="true"
+    class="w-6 btn-full-width md:w-auto"
+    [label]="'settings.profileSettings.common.discardChanges' | translate"
+    severity="info"
+  />
+  <div class="w-6 btn-full-width md:w-auto wide-m-button">
+    <p-button
+      (onClick)="saveChanges()"
+      [label]="'settings.profileSettings.common.save' | translate"
+    />
+  </div>
+</div>

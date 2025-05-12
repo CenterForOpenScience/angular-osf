@@ -1,14 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { SocialIcon } from '@osf/shared/entities/social-icon.interface';
-import { RouterLink } from '@angular/router';
-import { IS_PORTRAIT, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { TranslateModule } from '@ngx-translate/core';
+
 import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+
+import { SocialIcon } from '@osf/shared/entities/social-icon.interface';
+import { IS_PORTRAIT, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   standalone: true,
   selector: 'osf-footer',
-  imports: [RouterLink, NgOptimizedImage],
+  imports: [RouterLink, NgOptimizedImage, TranslateModule],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

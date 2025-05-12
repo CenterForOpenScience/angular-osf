@@ -1,38 +1,39 @@
+import { Store } from '@ngxs/store';
+
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+import { ConfirmationService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
+
+import { map, of, switchMap, timer } from 'rxjs';
+
+import { CdkCopyToClipboard } from '@angular/cdk/clipboard';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
   inject,
-  OnInit,
   signal,
 } from '@angular/core';
-import {
-  DeveloperApp,
-  DeveloperAppFormFormControls,
-  DeveloperAppForm,
-} from '@osf/features/settings/developer-apps/developer-app.entities';
-import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { InputText } from 'primeng/inputtext';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { CdkCopyToClipboard } from '@angular/cdk/clipboard';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
+import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/developer-app-add-edit-form/developer-app-add-edit-form.component';
 import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { linkValidator } from '@core/helpers/link-validator.helper';
-import { ConfirmationService } from 'primeng/api';
+  DeleteDeveloperApp,
+  DeveloperAppsSelectors,
+  GetDeveloperAppDetails,
+  ResetClientSecret,
+} from '@osf/features/settings/developer-apps/store';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
-import { timer } from 'rxjs';
-import { NgClass } from '@angular/common';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-developer-application-details',
@@ -46,106 +47,106 @@ import { NgClass } from '@angular/common';
     CdkCopyToClipboard,
     FormsModule,
     ReactiveFormsModule,
-    NgClass,
+    DeveloperAppAddEditFormComponent,
+    TranslateModule,
   ],
   templateUrl: './developer-app-details.component.html',
   styleUrl: './developer-app-details.component.scss',
+  providers: [DialogService, DynamicDialogRef],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DeveloperAppDetailsComponent implements OnInit {
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly confirmationService = inject(ConfirmationService);
-  private readonly isXSmall$ = inject(IS_XSMALL);
+export class DeveloperAppDetailsComponent {
+  #destroyRef = inject(DestroyRef);
+  #confirmationService = inject(ConfirmationService);
+  #activatedRoute = inject(ActivatedRoute);
+  #router = inject(Router);
+  #store = inject(Store);
+  #translateService = inject(TranslateService);
 
-  isXSmall = toSignal(this.isXSmall$);
-  developerAppId = signal<string | null>(null);
-  developerApp = signal<DeveloperApp>({
-    id: '1',
-    appName: 'Example name',
-    projHomePageUrl: 'https://example.com',
-    appDescription: 'Example description',
-    authorizationCallbackUrl: 'https://example.com/callback',
-  });
-  isClientSecretVisible = signal(false);
-  clientSecret = signal<string>(
-    'clientsecretclientsecretclientsecretclientsecret',
+  protected readonly isXSmall = toSignal(inject(IS_XSMALL));
+
+  readonly clientId = toSignal(
+    this.#activatedRoute.params.pipe(
+      map((params) => params['id']),
+      switchMap((clientId) => {
+        const app = this.#store.selectSnapshot(
+          DeveloperAppsSelectors.getDeveloperAppDetails,
+        )(clientId);
+        if (!app) {
+          this.#store.dispatch(new GetDeveloperAppDetails(clientId));
+        }
+        return of(clientId);
+      }),
+    ),
   );
-  hiddenClientSecret = computed<string>(() =>
+
+  readonly developerApp = computed(() => {
+    const id = this.clientId();
+    if (!id) return null;
+    const app = this.#store.selectSignal(
+      DeveloperAppsSelectors.getDeveloperAppDetails,
+    )();
+    return app(id) ?? null;
+  });
+
+  protected readonly isClientSecretVisible = signal(false);
+  protected readonly clientSecret = computed<string>(
+    () => this.developerApp()?.clientSecret ?? '',
+  );
+  protected readonly hiddenClientSecret = computed<string>(() =>
     '*'.repeat(this.clientSecret().length),
   );
-  clientSecretCopiedNotificationVisible = signal<boolean>(false);
-
-  clientId = signal('clientid');
-  clientIdCopiedNotificationVisible = signal<boolean>(false);
-
-  readonly DeveloperAppFormFormControls = DeveloperAppFormFormControls;
-  readonly editAppForm: DeveloperAppForm = new FormGroup({
-    [DeveloperAppFormFormControls.AppName]: new FormControl(
-      this.developerApp().appName,
-      {
-        nonNullable: true,
-        validators: [Validators.required],
-      },
-    ),
-    [DeveloperAppFormFormControls.ProjectHomePageUrl]: new FormControl(
-      this.developerApp().projHomePageUrl,
-      {
-        nonNullable: true,
-        validators: [Validators.required, linkValidator()],
-      },
-    ),
-    [DeveloperAppFormFormControls.AppDescription]: new FormControl(
-      this.developerApp().appDescription,
-      {
-        nonNullable: false,
-      },
-    ),
-    [DeveloperAppFormFormControls.AuthorizationCallbackUrl]: new FormControl(
-      this.developerApp().authorizationCallbackUrl,
-      {
-        nonNullable: true,
-        validators: [Validators.required, linkValidator()],
-      },
-    ),
-  });
-
-  ngOnInit(): void {
-    this.developerAppId.set(this.activatedRoute.snapshot.params['id']);
-  }
+  protected readonly clientSecretCopiedNotificationVisible =
+    signal<boolean>(false);
+  protected readonly clientIdCopiedNotificationVisible = signal<boolean>(false);
 
   deleteApp(): void {
-    this.confirmationService.confirm({
+    this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message:
-        "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed.",
-      header: `Delete App ${this.developerApp().appName}?`,
+      message: this.#translateService.instant(
+        'settings.developerApps.confirmation.delete.message',
+      ),
+      header: this.#translateService.instant(
+        'settings.developerApps.confirmation.delete.title',
+        { name: this.developerApp()?.name },
+      ),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: 'Delete',
+        label: this.#translateService.instant(
+          'settings.developerApps.list.deleteButton',
+        ),
       },
       accept: () => {
-        //TODO integrate API
+        this.#store
+          .dispatch(new DeleteDeveloperApp(this.clientId()))
+          .subscribe({
+            complete: () => {
+              this.#router.navigate(['settings/developer-apps']);
+            },
+          });
       },
     });
   }
 
   resetClientSecret(): void {
-    this.confirmationService.confirm({
+    this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message:
-        'Resetting the client secret will render your application unusable until it is updated with the new client secret,' +
-        ' and all users must reauthorize access. Previously issued access tokens will no longer work.' +
-        '<br><br>Are you sure you want to reset the client secret? This cannot be reversed.',
-      header: `Reset Client Secret?`,
+      message: this.#translateService.instant(
+        'settings.developerApps.confirmation.resetSecret.message',
+      ),
+      header: this.#translateService.instant(
+        'settings.developerApps.confirmation.resetSecret.title',
+      ),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: 'Reset',
+        label: this.#translateService.instant(
+          'settings.developerApps.details.clientSecret.reset',
+        ),
       },
       accept: () => {
-        //TODO integrate API
+        this.#store.dispatch(new ResetClientSecret(this.clientId()));
       },
     });
   }
@@ -154,7 +155,7 @@ export class DeveloperAppDetailsComponent implements OnInit {
     this.clientIdCopiedNotificationVisible.set(true);
 
     timer(2500)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {
         this.clientIdCopiedNotificationVisible.set(false);
       });
@@ -164,28 +165,9 @@ export class DeveloperAppDetailsComponent implements OnInit {
     this.clientSecretCopiedNotificationVisible.set(true);
 
     timer(2500)
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe(() => {
         this.clientSecretCopiedNotificationVisible.set(false);
       });
-  }
-
-  submitForm(): void {
-    if (!this.editAppForm.valid) {
-      this.editAppForm.markAllAsTouched();
-      this.editAppForm.get(DeveloperAppFormFormControls.AppName)?.markAsDirty();
-      this.editAppForm
-        .get(DeveloperAppFormFormControls.ProjectHomePageUrl)
-        ?.markAsDirty();
-      this.editAppForm
-        .get(DeveloperAppFormFormControls.AppDescription)
-        ?.markAsDirty();
-      this.editAppForm
-        .get(DeveloperAppFormFormControls.AuthorizationCallbackUrl)
-        ?.markAsDirty();
-      return;
-    }
-
-    //TODO integrate API
   }
 }

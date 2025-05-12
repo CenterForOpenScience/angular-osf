@@ -1,12 +1,13 @@
 <div class="flex flex-column gap-4">
   <div class="flex flex-column gap-2">
+    <p
+      [innerHTML]="
+        'settings.tokens.createdDialog.successMessage'
+          | translate: { tokenName: tokenName() }
+      "
+    ></p>
     <p>
-      Token <strong>{{ tokenName() }}</strong> successfully created.
-    </p>
-    <p>
-      This token will never expire. This token should never be shared with
-      others. If it is accidentally revealed publicly, it should be deactivated
-      immediately.
+      {{ "settings.tokens.createdDialog.warningMessage" | translate }}
     </p>
   </div>
 
@@ -17,7 +18,7 @@
           class="copy-notification"
           [class.visible]="tokenCopiedNotificationVisible()"
         >
-          Copied!
+          {{ "settings.tokens.createdDialog.copyNotification" | translate }}
         </span>
         <p-iconfield class="w-full" iconPosition="right">
           <input pInputText [value]="tokenId()" readonly #tokenInput />
@@ -30,13 +31,13 @@
         </p-iconfield>
       </div>
     </div>
-    <h3>This is the only time your token will be displayed.</h3>
+    <h3>{{ "settings.tokens.createdDialog.tokenWarning" | translate }}</h3>
   </div>
 
   <div class="flex justify-content-end">
     <p-button
       class="w-12rem btn-full-width"
-      label="Close"
+      [label]="'settings.tokens.createdDialog.closeButton' | translate"
       (onClick)="dialogRef.close()"
     ></p-button>
   </div>

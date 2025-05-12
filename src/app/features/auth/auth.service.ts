@@ -1,9 +1,13 @@
-import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Store } from '@ngxs/store';
+
 import { firstValueFrom } from 'rxjs';
-import { LoginCredentials, AuthResponse } from './auth.entity';
-import { SetAuthToken, ClearAuth } from '@core/store/auth';
+
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
+import { ClearAuth, SetAuthToken } from '@core/store/auth';
+
+import { AuthResponse, LoginCredentials } from './auth.entity';
 
 @Injectable({
   providedIn: 'root',

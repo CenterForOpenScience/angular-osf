@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { SettingsContainerComponent } from '@osf/features/settings/settings-container.component';
+
 import { developerAppsRoute } from '@osf/features/settings/developer-apps/developer-apps.route';
+import { SettingsContainerComponent } from '@osf/features/settings/settings-container.component';
 import { tokensAppsRoute } from '@osf/features/settings/tokens/tokens.route';
 
 export const settingsRoutes: Routes = [

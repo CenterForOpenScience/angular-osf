@@ -1,6 +1,8 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
 import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 
 @Injectable({
@@ -9,7 +11,7 @@ import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 export class JsonApiService {
   http: HttpClient = inject(HttpClient);
   readonly #token =
-    'Bearer UlO9O9GNKgVzJD7pUeY53jiQTKJ4U2znXVWNvh0KZQruoENuILx0IIYf9LoDz7Duq72EIm';
+    'Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt';
   readonly #headers = new HttpHeaders({
     Authorization: this.#token,
     Accept: 'application/vnd.api+json',
@@ -59,6 +61,12 @@ export class JsonApiService {
   patch<T>(url: string, body: unknown): Observable<T> {
     return this.http
       .patch<JsonApiResponse<T, null>>(url, body, { headers: this.#headers })
+      .pipe(map((response) => response.data));
+  }
+
+  put<T>(url: string, body: unknown): Observable<T> {
+    return this.http
+      .put<JsonApiResponse<T, null>>(url, body, { headers: this.#headers })
       .pipe(map((response) => response.data));
   }
 

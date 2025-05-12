@@ -1,10 +1,18 @@
-<osf-sub-header [showButton]="false" [title]="'Add-ons'" [icon]="'settings'" />
+<osf-sub-header
+  [showButton]="false"
+  [title]="'settings.addons.header.title' | translate"
+  [icon]="'settings'"
+/>
 <section class="flex-column flex flex-1">
   <p-tabs [value]="selectedTab()" class="flex-1">
     @if (!isMobile()) {
       <p-tablist class="pr-5 pl-5">
-        <p-tab [value]="0">All Add-ons</p-tab>
-        <p-tab [value]="1">Connected Add-ons</p-tab>
+        <p-tab [value]="0">
+          {{ "settings.addons.tabs.allAddons" | translate }}
+        </p-tab>
+        <p-tab [value]="1">
+          {{ "settings.addons.tabs.connectedAddons" | translate }}
+        </p-tab>
       </p-tablist>
     }
 
@@ -13,35 +21,46 @@
         <p-select
           class="w-full mb-4"
           [options]="tabOptions"
-          optionLabel="label"
           optionValue="value"
           [ngModel]="selectedTab()"
           (ngModelChange)="selectedTab.set($event)"
-        ></p-select>
+        >
+          <ng-template #selectedItem let-selectedOption>
+            {{ selectedOption.label | translate }}
+          </ng-template>
+          <ng-template #item let-item>
+            {{ item.label | translate }}
+          </ng-template>
+        </p-select>
       }
       <p-tabpanel [value]="0" class="flex flex-column gap-5">
         <p>
-          Sync your projects with external services to help stay connected and
-          organized. Select a category and browse the options.
+          {{ "settings.addons.description" | translate }}
         </p>
         <section class="grid">
           <div class="col-12 md:col-6 lg:col-3">
             <p-select
-              placeholder="Addon Type"
+              [placeholder]="'settings.addons.filters.addonType' | translate"
               [options]="categoryOptions"
-              optionLabel="label"
               optionValue="value"
               [ngModel]="selectedCategory()"
               (ngModelChange)="onCategoryChange($event)"
               class="w-full"
-            ></p-select>
+            >
+              <ng-template #selectedItem let-selectedOption>
+                {{ selectedOption.label | translate }}
+              </ng-template>
+              <ng-template #item let-item>
+                {{ item.label | translate }}
+              </ng-template>
+            </p-select>
           </div>
           <div class="col-12 md:col-6 lg:col-9">
             <osf-search-input
               class="w-full"
               [searchValue]="searchValue()"
               (searchValueChange)="searchValue.set($event || '')"
-              placeholder="Search add-ons"
+              [placeholder]="'settings.addons.filters.search' | translate"
             />
           </div>
         </section>
@@ -56,12 +75,14 @@
           class="flex-1"
           [searchValue]="searchValue()"
           (searchValueChange)="searchValue.set($event || '')"
-          placeholder="Search add-ons"
+          [placeholder]="'settings.addons.filters.search' | translate"
         />
 
         <osf-addon-card-list
           [cards]="allAuthorizedAddons()"
-          [cardButtonLabel]="'Reconnect'"
+          [cardButtonLabel]="
+            'settings.addons.form.buttons.reconnect' | translate
+          "
           [showDangerButton]="true"
         />
       </p-tabpanel>

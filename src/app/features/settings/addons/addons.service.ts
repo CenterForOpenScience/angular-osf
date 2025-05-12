@@ -1,27 +1,31 @@
-import { inject, Injectable } from '@angular/core';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { Store } from '@ngxs/store';
+
 import { map, Observable } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
+
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
+import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { UserSelectors } from '@core/store/user/user.selectors';
+import { AddonMapper } from '@osf/features/settings/addons/addon.mapper';
 import {
   Addon,
   AddonGetResponse,
+  AddonRequest,
+  AddonResponse,
   AuthorizedAddon,
   AuthorizedAddonGetResponse,
   IncludedAddonData,
-  AddonRequest,
   UserReference,
-  AddonResponse,
 } from '@osf/features/settings/addons/entities/addons.entities';
-import { AddonMapper } from '@osf/features/settings/addons/addon.mapper';
-import { Store } from '@ngxs/store';
-import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
-import { UserSelectors } from '@core/store/user/user.selectors';
+
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AddonsService {
   #store = inject(Store);
-  #baseUrl = 'https://addons.staging4.osf.io/v1/';
   #jsonApiService = inject(JsonApiService);
   #currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
 
@@ -29,7 +33,7 @@ export class AddonsService {
     return this.#jsonApiService
       .get<
         JsonApiResponse<AddonGetResponse[], null>
-      >(this.#baseUrl + `external-${addonType}-services`)
+      >(`${environment.addonsApiUrl}/external-${addonType}-services`)
       .pipe(
         map((response) => {
           return response.data.map((item) => AddonMapper.fromResponse(item));
@@ -49,7 +53,7 @@ export class AddonsService {
     return this.#jsonApiService
       .get<
         JsonApiResponse<UserReference[], null>
-      >(this.#baseUrl + 'user-references/', params)
+      >(environment.addonsApiUrl + '/user-references/', params)
       .pipe(map((response) => response.data));
   }
 
@@ -63,7 +67,7 @@ export class AddonsService {
     return this.#jsonApiService
       .get<
         JsonApiResponse<AuthorizedAddonGetResponse[], IncludedAddonData[]>
-      >(this.#baseUrl + `user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
+      >(`${environment.addonsApiUrl}/user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
       .pipe(
         map((response) => {
           return response.data.map((item) =>
@@ -78,7 +82,7 @@ export class AddonsService {
     addonType: string,
   ): Observable<AddonResponse> {
     return this.#jsonApiService.post<AddonResponse>(
-      this.#baseUrl + `authorized-${addonType}-accounts/`,
+      `${environment.addonsApiUrl}/authorized-${addonType}-accounts/`,
       addonRequestPayload,
     );
   }
@@ -89,14 +93,14 @@ export class AddonsService {
     addonId: string,
   ): Observable<AddonResponse> {
     return this.#jsonApiService.patch<AddonResponse>(
-      this.#baseUrl + `authorized-${addonType}-accounts/${addonId}/`,
+      `${environment.addonsApiUrl}/authorized-${addonType}-accounts/${addonId}/`,
       addonRequestPayload,
     );
   }
 
   deleteAuthorizedAddon(id: string, addonType: string): Observable<void> {
     return this.#jsonApiService.delete(
-      this.#baseUrl + `authorized-${addonType}-accounts/${id}/`,
+      `${environment.addonsApiUrl}/authorized-${addonType}-accounts/${id}/`,
     );
   }
 }

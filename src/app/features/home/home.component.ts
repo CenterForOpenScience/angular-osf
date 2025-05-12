@@ -1,40 +1,52 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
+import { SortEvent } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { DialogService } from 'primeng/dynamicdialog';
+import { TablePageEvent } from 'primeng/table';
+
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+
 import {
   Component,
+  computed,
   DestroyRef,
+  effect,
   inject,
   OnInit,
   signal,
-  computed,
-  effect,
 } from '@angular/core';
-import { RouterLink, ActivatedRoute, Router } from '@angular/router';
-import { Button } from 'primeng/button';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Store } from '@ngxs/store';
-import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
-import { TableParameters } from '@shared/entities/table-parameters.interface';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
-import { SortOrder } from '@shared/utils/sort-order.enum';
-import { TablePageEvent } from 'primeng/table';
-import { SortEvent } from 'primeng/api';
-import {
-  MyProjectsSelectors,
-  GetMyProjects,
-  ClearMyProjects,
-} from '@core/store/my-projects';
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
+import { GetUserInstitutions } from '@osf/features/institutions/store';
 import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
-import { GetUserInstitutions } from '@osf/core/store/institutions';
-import { DialogService } from 'primeng/dynamicdialog';
+import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
+import {
+  ClearMyProjects,
+  GetMyProjects,
+  MyProjectsSelectors,
+} from '@osf/features/my-projects/store';
 import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
+import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { TableParameters } from '@shared/entities/table-parameters.interface';
+import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { SortOrder } from '@shared/utils/sort-order.enum';
 
 @Component({
   selector: 'osf-home',
   standalone: true,
-  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent],
+  imports: [
+    RouterLink,
+    Button,
+    SubHeaderComponent,
+    MyProjectsTableComponent,
+    TranslatePipe,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   providers: [DialogService],
@@ -44,6 +56,7 @@ export class HomeComponent implements OnInit {
   readonly #store = inject(Store);
   readonly #router = inject(Router);
   readonly #route = inject(ActivatedRoute);
+  readonly #translateService = inject(TranslateService);
   readonly #dialogService = inject(DialogService);
   readonly #isXSmall$ = inject(IS_XSMALL);
   readonly #isMedium$ = inject(IS_MEDIUM);
@@ -231,7 +244,7 @@ export class HomeComponent implements OnInit {
     const dialogRef = this.#dialogService.open(AddProjectFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: 'Create Project',
+      header: this.#translateService.instant('myProjects.header.createProject'),
       closeOnEscape: true,
       modal: true,
       closable: true,

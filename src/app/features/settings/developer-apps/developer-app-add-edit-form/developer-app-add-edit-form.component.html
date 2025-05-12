@@ -1,0 +1,80 @@
+<form
+  [formGroup]="appForm"
+  (ngSubmit)="handleSubmitForm()"
+  class="flex flex-column gap-3"
+>
+  <div class="flex flex-column">
+    <label for="app-name">
+      {{ "settings.developerApps.form.appName" | translate }}
+    </label>
+    <input
+      pInputText
+      id="app-name"
+      type="text"
+      autocomplete="off"
+      [formControlName]="DeveloperAppFormFormControls.AppName"
+    />
+  </div>
+
+  <div class="flex flex-column">
+    <label for="proj-homepage-url">
+      {{ "settings.developerApps.form.homepageUrl" | translate }}
+    </label>
+    <input
+      pInputText
+      id="proj-homepage-url"
+      type="url"
+      autocomplete="off"
+      [formControlName]="DeveloperAppFormFormControls.ProjectHomePageUrl"
+    />
+  </div>
+
+  <div class="flex flex-column">
+    <label for="app-descr">
+      {{ "settings.developerApps.form.description" | translate }}
+    </label>
+    <input
+      pInputText
+      id="app-descr"
+      type="text"
+      autocomplete="off"
+      [formControlName]="DeveloperAppFormFormControls.AppDescription"
+    />
+  </div>
+
+  <div class="flex flex-column">
+    <label for="auth-callback-url">
+      {{ "settings.developerApps.form.callbackUrl" | translate }}
+    </label>
+    <input
+      pInputText
+      type="url"
+      autocomplete="off"
+      id="auth-callback-url"
+      [formControlName]="DeveloperAppFormFormControls.AuthorizationCallbackUrl"
+    />
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    @if (isEditMode()) {
+      <p-button
+        [ngClass]="isMobile() ? 'btn-half-width' : 'w-10rem btn-full-width'"
+        [label]="'settings.developerApps.form.buttons.save' | translate"
+        type="submit"
+        [disabled]="!appForm.dirty || !appForm.valid"
+      />
+    } @else {
+      <p-button
+        class="w-12rem btn-full-width"
+        [label]="'settings.developerApps.form.buttons.cancel' | translate"
+        severity="info"
+        (click)="dialogRef.close()"
+      />
+      <p-button
+        [label]="'settings.developerApps.form.buttons.create' | translate"
+        type="submit"
+        [disabled]="!appForm.valid"
+      />
+    }
+  </div>
+</form>

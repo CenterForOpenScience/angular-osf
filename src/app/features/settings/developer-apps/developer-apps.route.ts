@@ -1,4 +1,5 @@
 import { Route } from '@angular/router';
+
 import { DeveloperAppsContainerComponent } from '@osf/features/settings/developer-apps/developer-apps-container.component';
 
 export const developerAppsRoute: Route = {

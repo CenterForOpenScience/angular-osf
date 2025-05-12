@@ -1,7 +1,7 @@
 <osf-sub-header
-  [showButton]="true"
-  [buttonLabel]="'Create Developer App'"
-  [title]="'Developer apps'"
+  [showButton]="isBaseRoute()"
+  [buttonLabel]="'settings.developerApps.header.createButton' | translate"
+  [title]="'settings.developerApps.header.title' | translate"
   [icon]="'settings'"
   (buttonClick)="createDeveloperApp()"
 />

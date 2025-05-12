@@ -1,5 +1,5 @@
-import { ResourceType } from '@osf/features/search/models/resource-type.enum';
 import { LinkItem } from '@osf/features/search/models/link-item.entity';
+import { ResourceType } from '@osf/features/search/models/resource-type.enum';
 
 export interface Resource {
   id: string;

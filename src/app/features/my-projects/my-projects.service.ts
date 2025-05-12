@@ -1,25 +1,29 @@
-import { inject, Injectable } from '@angular/core';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
 import { Observable } from 'rxjs';
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
-import { MyProjectsMapper } from '@osf/features/my-projects/mappers/my-projects.mapper';
+import { map } from 'rxjs/operators';
+
+import { inject, Injectable } from '@angular/core';
+
+import { JsonApiService } from '@core/services/json-api/json-api.service';
 import {
-  MyProjectsItemResponse,
+  MyProjectsItem,
   MyProjectsItemGetResponse,
+  MyProjectsItemResponse,
   MyProjectsJsonApiResponse,
   SparseCollectionsResponse,
-  MyProjectsItem,
 } from '@osf/features/my-projects/entities/my-projects.entities';
-import { map } from 'rxjs/operators';
-import { SortOrder } from '@shared/utils/sort-order.enum';
 import { EndpointType } from '@osf/features/my-projects/entities/my-projects.types';
+import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
+import { MyProjectsMapper } from '@osf/features/my-projects/mappers/my-projects.mapper';
+import { SortOrder } from '@shared/utils/sort-order.enum';
+
+import { environment } from '../../../environments/environment';
+
 import { CreateProjectPayload } from './entities/create-project.entities';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MyProjectsService {
-  #baseUrl = 'https://api.staging4.osf.io/v2/';
   #jsonApiService = inject(JsonApiService);
   #sortFieldMap: Record<string, string> = {
     title: 'title',
@@ -58,10 +62,10 @@ export class MyProjectsService {
     } else {
       params['sort'] = '-date_modified';
     }
-    // const url = this.#baseUrl + endpoint + '/';
-    const url = endpoint.startsWith('collections/')
-      ? this.#baseUrl + endpoint
-      : this.#baseUrl + 'users/me/' + endpoint;
+    const url = environment.apiUrl + '/' + endpoint + '/';
+    // const url = endpoint.startsWith('collections/')
+    //   ? environment.apiUrl + '/' + endpoint
+    //   : environment.apiUrl + '/users/me/' + endpoint;
 
     return this.#jsonApiService
       .get<MyProjectsJsonApiResponse>(url, params)
@@ -89,7 +93,10 @@ export class MyProjectsService {
     };
 
     return this.#jsonApiService
-      .get<SparseCollectionsResponse>(this.#baseUrl + 'collections/', params)
+      .get<SparseCollectionsResponse>(
+        environment.apiUrl + '/collections/',
+        params,
+      )
       .pipe(
         map((response) => {
           const bookmarksCollection = response.data.find(
@@ -175,7 +182,7 @@ export class MyProjectsService {
 
     return this.#jsonApiService
       .post<MyProjectsItemGetResponse>(
-        `${this.#baseUrl}nodes/`,
+        `${environment.apiUrl}/nodes/`,
         payload,
         params,
       )

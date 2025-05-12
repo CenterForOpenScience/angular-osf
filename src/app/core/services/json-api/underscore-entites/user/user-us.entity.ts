@@ -1,3 +1,7 @@
+import { Education } from '@osf/features/settings/profile-settings/education/educations.entities';
+import { Employment } from '@osf/features/settings/profile-settings/employment/employment.entities';
+import { Social } from '@osf/features/settings/profile-settings/social/social.entities';
+
 export interface UserUS {
   id: string;
   type: string;
@@ -5,37 +9,13 @@ export interface UserUS {
     full_name: string;
     given_name: string;
     family_name: string;
-    email: string;
+    email?: string;
+    employment: Employment[];
+    education: Education[];
+    middle_names?: string;
+    suffix?: string;
+    social: Social;
     date_registered: string;
-    social: {
-      orcid: string;
-      github: string;
-      scholar: string;
-      twitter: string;
-      linkedIn: string;
-      impactStory: string;
-      researcherId: string;
-    };
-    employment: {
-      title: string;
-      endYear: number;
-      ongoing: boolean;
-      endMonth: number;
-      startYear: number;
-      department: string;
-      startMonth: number;
-      institution: string;
-    }[];
-    education: {
-      degree: string;
-      department: string;
-      institution: string;
-      startYear: number;
-      startMonth: number;
-      endYear: number;
-      endMonth: number;
-      ongoing: boolean;
-    }[];
   };
   relationships: Record<string, unknown>;
   links: {

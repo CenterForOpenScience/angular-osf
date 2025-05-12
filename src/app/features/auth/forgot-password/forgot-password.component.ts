@@ -1,17 +1,22 @@
-import { Component, inject, signal } from '@angular/core';
-import { InputText } from 'primeng/inputtext';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
-import { MessageInfo } from './message-info.model';
+import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
+
+import { Component, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+
 import { ForgotPasswordFormGroupType } from '@osf/features/auth/forgot-password/forgot-password-form-group.type';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { toSignal } from '@angular/core/rxjs-interop';
+
+import { MessageInfo } from './message-info.model';
 
 @Component({
   selector: 'osf-forgot-password',
   standalone: true,
-  imports: [InputText, ReactiveFormsModule, Button, Message],
+  imports: [InputText, ReactiveFormsModule, Button, Message, TranslatePipe],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss',
 })
@@ -29,12 +34,12 @@ export class ForgotPasswordComponent {
     if (this.forgotPasswordForm.valid) {
       this.message.set({
         severity: 'success',
-        content: 'Thanks. Check your email to reset your password.',
+        content: 'auth.forgotPassword.messages.success',
       });
 
       // this.message.set({
       //   severity: 'error',
-      //   content: 'Email not found.',
+      //   content: 'auth.forgotPassword.messages.error'
       // });
     }
   }

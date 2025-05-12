@@ -1,4 +1,5 @@
 import { Component, input } from '@angular/core';
+
 import { AddonCardComponent } from '@osf/features/settings/addons/addon-card/addon-card.component';
 import {
   Addon,

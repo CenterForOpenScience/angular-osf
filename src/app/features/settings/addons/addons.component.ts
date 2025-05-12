@@ -1,31 +1,36 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { SelectModule } from 'primeng/select';
+import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  signal,
-  inject,
   effect,
+  inject,
+  signal,
 } from '@angular/core';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { AddonCardListComponent } from '@osf/features/settings/addons/addon-card-list/addon-card-list.component';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { SelectModule } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
-import { Store } from '@ngxs/store';
-import {
-  GetStorageAddons,
-  GetCitationAddons,
-  AddonsSelectors,
-  GetAuthorizedStorageAddons,
-  GetAuthorizedCitationAddons,
-  GetAddonsUserReference,
-} from '@core/store/settings/addons';
-import { SelectOption } from '@shared/entities/select-option.interface';
+
 import { UserSelectors } from '@core/store/user/user.selectors';
+import { AddonCardListComponent } from '@osf/features/settings/addons/addon-card-list/addon-card-list.component';
+import {
+  AddonsSelectors,
+  GetAddonsUserReference,
+  GetAuthorizedCitationAddons,
+  GetAuthorizedStorageAddons,
+  GetCitationAddons,
+  GetStorageAddons,
+} from '@osf/features/settings/addons/store';
+import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { SelectOption } from '@shared/entities/select-option.interface';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-addons',
@@ -42,6 +47,7 @@ import { UserSelectors } from '@core/store/user/user.selectors';
     AddonCardListComponent,
     SelectModule,
     FormsModule,
+    TranslatePipe,
   ],
   templateUrl: './addons.component.html',
   styleUrl: './addons.component.scss',
@@ -110,12 +116,25 @@ export class AddonsComponent {
   });
 
   protected readonly tabOptions: SelectOption[] = [
-    { label: 'All Add-ons', value: 0 },
-    { label: 'Connected Add-ons', value: 1 },
+    {
+      label: 'settings.addons.tabs.allAddons',
+      value: 0,
+    },
+    {
+      label: 'settings.addons.tabs.connectedAddons',
+      value: 1,
+    },
   ];
+
   protected readonly categoryOptions: SelectOption[] = [
-    { label: 'Additional Storage', value: 'external-storage-services' },
-    { label: 'Citation Manager', value: 'external-citation-services' },
+    {
+      label: 'settings.addons.categories.additionalService',
+      value: 'external-storage-services',
+    },
+    {
+      label: 'settings.addons.categories.citationManager',
+      value: 'external-citation-services',
+    },
   ];
 
   protected onCategoryChange(value: string): void {

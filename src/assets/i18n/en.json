@@ -1,0 +1,485 @@
+{
+  "navigation": {
+    "myProfile": "My profile",
+    "settings": "Settings",
+    "logOut": "Log out",
+    "signIn": "Sign in",
+    "signUp": "Sign Up",
+    "home": "Home",
+    "searchOsf": "Search OSF",
+    "support": "Support",
+    "myProjects": "My Projects",
+    "donate": "Donate",
+    "profileSettings": "Profile Settings",
+    "accountSettings": "Account Settings",
+    "configureAddonAccounts": "Configure Addon Accounts",
+    "notifications": "Notifications",
+    "developerApps": "Developer Apps",
+    "personalAccessTokens": "Personal Access Tokens",
+    "project": {
+      "details": "Project details",
+      "overview": "Overview",
+      "metadata": "Metadata",
+      "files": "Files",
+      "registrations": "Registrations"
+    }
+  },
+  "auth": {
+    "common": {
+      "email": "Email",
+      "emailPlaceholder": "email@example.com",
+      "password": {
+        "new": "New Password",
+        "confirm": "Confirm New Password",
+        "mismatch": "Passwords must match",
+        "requirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number or special character"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot Your Password?",
+      "description": "Enter your email address and we'll send a link to reset your password",
+      "submit": "Reset Password",
+      "messages": {
+        "success": "Thanks. Check your email to reset your password.",
+        "error": "Email not found."
+      }
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "submit": "Reset Password",
+      "success": {
+        "title": "Thank You!",
+        "message": "You have successfully reset your password",
+        "backToSignin": "Back to Sign In"
+      }
+    },
+    "signUp": {
+      "title": "Create A Free Account",
+      "social": {
+        "orcid": "Sign up through ORCID",
+        "institution": "Sign up through Institution"
+      },
+      "divider": "or",
+      "form": {
+        "fullName": "Full Name",
+        "fullNamePlaceholder": "John Doe",
+        "submit": "Sign Up",
+        "terms": {
+          "agree": "I agree to the",
+          "termsOfUse": "Terms of Use",
+          "and": "and",
+          "privacyPolicy": "Privacy Policy"
+        }
+      },
+      "success": {
+        "title": "Registration successful",
+        "message": "Check your email to confirm your account"
+      }
+    }
+  },
+  "home": {
+    "loggedIn": {
+      "dashboard": {
+        "title": "Dashboard",
+        "createProject": "Create New Project",
+        "quickSearch": {
+          "goTo": "Go to",
+          "myProjects": "My Projects",
+          "toOrganize": "to organize your work or",
+          "search": "search",
+          "osf": "OSF",
+          "searchPlaceholder": "Search your projects"
+        }
+      },
+      "publicProjects": {
+        "title": "Discover Public Projects"
+      },
+      "latestResearch": {
+        "title": "Browse the latest research",
+        "subtitle": "Check out the latest preprints hosted on OSF covering a variety of research areas",
+        "button": "View Preprints"
+      },
+      "hosting": {
+        "title": "Hosting a conference or meeting?",
+        "subtitle": "Use the OSF for Meetings service to provide a central location for conference submissions",
+        "button": "View Meetings"
+      }
+    },
+    "loggedOut": {
+      "hero": {
+        "title": "There's a <span class='highlight'>better way</span> to manage your research",
+        "subtitle": "OSF is a free, open platform to support your research and enable collaboration",
+        "signUp": "Sign Up"
+      },
+      "discover": {
+        "title": "<span class='highlight'>Discover</span> Public Research",
+        "subtitle": "Discover projects, data, materials, and collaborators on OSF that might be helpful to your own research",
+        "searchPlaceholder": "Search"
+      },
+      "support": {
+        "title": "How OSF <span class='highlight'>Supports</span> your research",
+        "sections": {
+          "search": {
+            "title": "Search And Discover",
+            "description": "Find papers, data, and materials to inspire your next research project. Search public projects to build on the work of others and find new collaborators"
+          },
+          "design": {
+            "title": "Design Your Study",
+            "description": "Start a project and add collaborators, giving them access to protocols and other research materials. Built-in version control tracks the evolution of your study"
+          },
+          "collect": {
+            "title": "Collect and Analyze Data",
+            "description": "Store data, code, and other materials in OSF Storage, or connect your Dropbox or other third-party account. Every file gets a unique, persistent URL for citing and sharing"
+          },
+          "publish": {
+            "title": "Publish Your Reports",
+            "description": "Share papers in OSF Preprints or a community-based preprint provider, so others can find and cite your work. Track impact with metrics like downloads and view counts"
+          }
+        },
+        "learnMore": "Learn More"
+      },
+      "testimonials": {
+        "title": "What others are <span class='highlight'>saying</span>",
+        "slides": {
+          "patricia": {
+            "quote": "OSF is a game changer for those wanting to effectively share their research process in the spirit of collaboration.",
+            "facility": "Research Services Librarian | University of Toronto"
+          },
+          "maya": {
+            "quote": "OSF is indispensable in helping me create reproducible research pipelines from preregistration through data collection and analysis. Its versatility makes it my one-stop shop for projects. The Dropbox integration effortlessly transforms my existing local workflow to public repository.",
+            "facility": "Department of Epidemiology Harvard University"
+          },
+          "philip": {
+            "quote": "Because SocArXiv is a not-for-profit organization, researchers can be assured that they are sharing their research in an environment where access, inclusivity, and preservation, rather than profit, will remain at the heart of the mission. A great benefit of partnering with OSF is that this application is a free public good.",
+            "facility": "SocArXiv papers"
+          }
+        }
+      },
+      "integrations": {
+        "title": "OSF <span class='highlight'>integrations</span> make your workflow more efficient",
+        "categories": {
+          "authentication": "Authentication",
+          "discovery": "Discovery",
+          "references": "References",
+          "storage": "Storage"
+        }
+      }
+    }
+  },
+  "myProjects": {
+    "header": {
+      "title": "My Projects",
+      "createProject": "Create Project"
+    },
+    "tabs": {
+      "myProjects": "My Projects",
+      "myRegistrations": "My Registrations",
+      "myPreprints": "My Preprints",
+      "bookmarks": "Bookmarks"
+    },
+    "bookmarks": {
+      "emptyState": "You don't have any bookmarks. Click the bookmark icon on projects or registrations to add them here."
+    },
+    "table": {
+      "columns": {
+        "title": "Title",
+        "contributors": "Contributors",
+        "modified": "Modified"
+      },
+      "searchPlaceholder": "Filter by title, description, and tags"
+    },
+    "createProject": {
+      "title": "Title",
+      "storageLocation": "Storage Location",
+      "affiliation": {
+        "title": "Affiliation",
+        "selectAll": "Select All",
+        "removeAll": "Remove All"
+      },
+      "description": {
+        "label": "Description (Optional)"
+      },
+      "template": {
+        "label": "Template (Optional)",
+        "placeholder": "Select template or start typing to find one"
+      },
+      "actions": {
+        "cancel": "Cancel",
+        "create": "Create Project"
+      }
+    }
+  },
+  "settings": {
+    "developerApps": {
+      "header": {
+        "title": "Developer apps",
+        "createButton": "Create Developer App"
+      },
+      "list": {
+        "description": "Third-party web applications can connect to the OSF on behalf of users via the OAuth 2.0 web application flow.",
+        "deleteButton": "Delete"
+      },
+      "form": {
+        "editTitle": "Edit app",
+        "createTitle": "Create Developer App",
+        "appName": "App Name",
+        "homepageUrl": "Project homepage URL",
+        "description": "App description (optional)",
+        "callbackUrl": "Authorization callback URL",
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create Developer App",
+          "save": "Save"
+        }
+      },
+      "messages": {
+        "copied": "Copied!"
+      },
+      "details": {
+        "navigation": {
+          "back": "Back to list of developer apps"
+        },
+        "clientId": {
+          "title": "Client ID",
+          "description": "The client ID is the developer app's unique identifier and is safe to share publicly."
+        },
+        "clientSecret": {
+          "title": "Client Secret",
+          "description": "The client secret is available only to you. Keep it private and do not share it.",
+          "show": "Show client secret",
+          "hide": "Hide client secret",
+          "resetSecret": "Reset Secret",
+          "reset": "Reset"
+        }
+      },
+      "confirmation": {
+        "delete": {
+          "title": "Delete App {{name}}?",
+          "message": "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed."
+        },
+        "resetSecret": {
+          "title": "Reset Client Secret?",
+          "message": "Resetting the client secret will render your application unusable until it is updated with the new client secret, and all users must reauthorize access. Previously issued access tokens will no longer work.<br><br>Are you sure you want to reset the client secret? This cannot be reversed."
+        }
+      }
+    },
+    "tokens": {
+      "header": {
+        "title": "Personal Access Tokens",
+        "createButton": "Create Token"
+      },
+      "list": {
+        "description": "Personal access tokens function like ordinary OAuth access tokens. They can be used to authenticate to the API.",
+        "deleteButton": "Delete"
+      },
+      "form": {
+        "editTitle": "Edit token",
+        "createTitle": "Create Personal Access Token",
+        "tokenName": "Token Name",
+        "scopes": {
+          "title": "Scopes",
+          "description": "Scopes limit access for personal access tokens."
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create Token",
+          "save": "Save"
+        }
+      },
+      "details": {
+        "navigation": {
+          "back": "Back to list of personal tokens"
+        },
+        "title": "Edit Token",
+        "deleteButton": "Delete"
+      },
+      "confirmation": {
+        "delete": {
+          "title": "Delete Token {{name}}?",
+          "message": "Are you sure you want to delete this token? This action cannot be reversed."
+        }
+      },
+      "createdDialog": {
+        "title": "Token Successfully Created",
+        "successMessage": "Token <strong>{{tokenName}}</strong> successfully created.",
+        "warningMessage": "This token will never expire. This token should never be shared with others. If it is accidentally revealed publicly, it should be deactivated immediately.",
+        "copyNotification": "Copied!",
+        "tokenWarning": "This is the only time your token will be displayed.",
+        "closeButton": "Close"
+      }
+    },
+    "notifications": {
+      "header": {
+        "title": "Notifications"
+      },
+      "emailPreferences": {
+        "title": "Configure Email Preferences",
+        "items": {
+          "general": {
+            "title": "Open Science Framework General",
+            "description": "Receive general notifications about the OSF every 2-3 weeks."
+          },
+          "help": {
+            "title": "Open Science Framework Help",
+            "description": "Receive helpful tips on how to make the most of the OSF, up to once per week."
+          }
+        },
+        "saveButton": "Save"
+      },
+      "notificationPreferences": {
+        "title": "Configure Notification Preferences",
+        "note": "Note: Transactional and administrative service emails will still be sent.",
+        "items": {
+          "replies": "Replies to your comments",
+          "comments": "Comments added",
+          "files": "Files updated",
+          "mentions": "Mentions added",
+          "preprints": "Preprint submissions updated"
+        }
+      }
+    },
+    "addons": {
+      "header": {
+        "title": "Add-ons"
+      },
+      "description": "Sync your projects with external services to help stay connected and organized. Select a category and browse the options.",
+      "tabs": {
+        "allAddons": "All Add-ons",
+        "connectedAddons": "Connected Add-ons"
+      },
+      "filters": {
+        "addonType": "Addon Type",
+        "search": "Search add-ons"
+      },
+      "categories": {
+        "additionalService": "Additional Storage",
+        "citationManager": "Citation Manager"
+      },
+      "connectAddon": {
+        "title": "Connect Add-on",
+        "terms": "Terms",
+        "table": {
+          "function": "Function",
+          "status": "Status"
+        },
+        "termsDescription": "• This add-on connects your OSF project to an external service. Use of this service is bound by its terms and conditions. The OSF is not responsible for the service or for your use thereof.",
+        "storageDescription": "• This add-on allows you to store files using an external service. Files added to this add-on are not stored within the OSF.",
+        "reconnectAccount": "Reconnect Account",
+        "setupNewAccount": "Setup new account",
+        "startOauth": "Start OAuth",
+        "oauthDescription": "Complete the OAuth process in the new window before returning to this page. If you do not see a new window, please click the Start OAuth link below."
+      },
+      "form": {
+        "fields": {
+          "hostUrl": "Host URL",
+          "hostUrlDescription": "Please include the protocol (http:// or https://) in the URL.",
+          "personalAccessToken": "Personal Access Token",
+          "username": "Username",
+          "password": "Password",
+          "passwordDescription": "These credentials will be encrypted",
+          "accessKey": "Access Key",
+          "secretKey": "Secret Key",
+          "accountName": "Account Name",
+          "accountNameDescription": "This will distinguish your account from other using the same addon."
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "next": "Next",
+          "back": "Back",
+          "connect": "Connect",
+          "reconnect": "Reconnect",
+          "authorize": "Authorize",
+          "disable": "Disable",
+          "startOauth": "Start OAuth"
+        }
+      },
+      "messages": {
+        "connectSuccess": "Successfully connected to {{serviceName}}",
+        "connectError": "Failed to connect to {{serviceName}}",
+        "updateSuccess": "Successfully updated {{serviceName}} configuration",
+        "updateError": "Failed to update {{serviceName}} configuration",
+        "deleteSuccess": "Successfully disconnected from {{serviceName}}",
+        "deleteError": "Failed to disconnect from {{serviceName}}",
+        "deleteConfirmation": {
+          "title": "Disable Account?",
+          "message": "Are you sure you want to disable this account? All projects connected to this account will be affected."
+        }
+      }
+    },
+    "profileSettings": {
+      "title": "Profile Settings",
+      "tabs": {
+        "name": "Name",
+        "social": "Social",
+        "employment": "Employment",
+        "education": "Education"
+      },
+      "name": {
+        "description": "Your full name is the name that will be displayed in your profile. To control the way your name will appear in citations, you can use the \"Auto-fill\" button to automatically infer your first name, last name, etc., or edit the fields directly below.",
+        "fullName": "Full Name",
+        "autoFill": "Auto-Fill",
+        "givenName": "Given Name",
+        "middleNames": "Middle Name(S) (Optional)",
+        "familyName": "Family Name",
+        "suffix": "Suffix (Optional)",
+        "citationPreview": {
+          "title": "Citation Preview",
+          "style": "Style:",
+          "citationFormat": "Citation format:"
+        }
+      },
+      "social": {
+        "title": "Social Link {{index}}",
+        "remove": "Remove",
+        "socialOutput": "Social output",
+        "webAddress": "Web Address",
+        "addMore": "Add One More"
+      },
+      "employment": {
+        "title": "Position {{index}}",
+        "remove": "Remove",
+        "jobTitle": "Job Title",
+        "department": "Department / Institute (Optional)",
+        "institution": "Institution / Employer",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "presentlyEmployed": "Presently employed",
+        "addPosition": "Add Position"
+      },
+      "education": {
+        "title": "Education {{index}}",
+        "remove": "Remove",
+        "institution": "Institution",
+        "department": "Department",
+        "degree": "Degree",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "ongoing": "Ongoing",
+        "addMore": "Add One More"
+      },
+      "common": {
+        "discardChanges": "Discard Changes",
+        "save": "Save"
+      }
+    }
+  },
+  "footer": {
+    "links": {
+      "centerForOpenScience": "Center for Open Science",
+      "reproducibilityProjectPsychology": "Reproducibility Project: Psychology",
+      "reproducibilityProjectCancerBiology": "Reproducibility Project: Cancer Biology",
+      "termsOfUse": "Terms of Use",
+      "privacyPolicy": "Privacy Policy",
+      "status": "Status",
+      "api": "API",
+      "topGuidelines": "TOP Guidelines"
+    },
+    "socials": {
+      "x": "X (formerly Twitter)",
+      "facebook": "Facebook",
+      "group": "Group",
+      "github": "GitHub"
+    },
+    "copyright": "Copyright © 2011-2025"
+  }
+}

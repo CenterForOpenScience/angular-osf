@@ -1,20 +1,22 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Button } from 'primeng/button';
-import { Select } from 'primeng/select';
-import { MOCK_COUNTRIES } from '@osf/features/settings/account-settings/account-settings.const';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputText } from 'primeng/inputtext';
+import { Message } from 'primeng/message';
 import { RadioButton } from 'primeng/radiobutton';
+import { Select } from 'primeng/select';
+
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+
 import {
   AccountSettingsPasswordForm,
   AccountSettingsPasswordFormControls,
 } from '@osf/features/settings/account-settings/account.settings.entities';
-import { InputText } from 'primeng/inputtext';
-import { Message } from 'primeng/message';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { MOCK_COUNTRIES } from '@osf/features/settings/account-settings/account-settings.const';
 import { AddEmailComponent } from '@osf/features/settings/account-settings/add-email/add-email.component';
 import { DeactivateAccountComponent } from '@osf/features/settings/account-settings/deactivate-account/deactivate-account/deactivate-account.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({

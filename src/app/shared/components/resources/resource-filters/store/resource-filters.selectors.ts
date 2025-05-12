@@ -1,9 +1,10 @@
-import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
 import { Selector } from '@ngxs/store';
+
 import {
   ResourceFilterLabel,
   ResourceFiltersStateModel,
 } from '@shared/components/resources/resource-filters/store/resource-filters.model';
+import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
 
 export class ResourceFiltersSelectors {
   @Selector([ResourceFiltersState])

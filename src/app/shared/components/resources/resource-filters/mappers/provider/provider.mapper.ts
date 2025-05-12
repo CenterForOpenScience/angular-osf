@@ -1,6 +1,6 @@
-import { ProviderIndexValueSearch } from '@shared/components/resources/resource-filters/models/provider/provider-index-value-search.entity';
 import { ProviderFilter } from '@shared/components/resources/resource-filters/models/provider/provider-filter.entity';
 import { ProviderIndexCardFilter } from '@shared/components/resources/resource-filters/models/provider/provider-index-card-filter.entity';
+import { ProviderIndexValueSearch } from '@shared/components/resources/resource-filters/models/provider/provider-index-value-search.entity';
 
 export function MapProviders(
   items: ProviderIndexValueSearch[],

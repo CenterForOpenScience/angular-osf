@@ -1,6 +1,6 @@
-import { PartOfCollectionIndexValueSearch } from '@shared/components/resources/resource-filters/models/part-of-collection/part-of-collection-index-value-search.entity';
 import { PartOfCollectionFilter } from '@shared/components/resources/resource-filters/models/part-of-collection/part-of-collection-filter.entity';
 import { PartOfCollectionIndexCardFilter } from '@shared/components/resources/resource-filters/models/part-of-collection/part-of-collection-index-card-filter.entity';
+import { PartOfCollectionIndexValueSearch } from '@shared/components/resources/resource-filters/models/part-of-collection/part-of-collection-index-value-search.entity';
 
 export function MapPartOfCollections(
   items: PartOfCollectionIndexValueSearch[],

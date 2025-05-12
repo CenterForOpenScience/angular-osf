@@ -1,23 +1,34 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { InputText } from 'primeng/inputtext';
+
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   inject,
   input,
   signal,
   viewChild,
-  afterNextRender,
-  ElementRef,
 } from '@angular/core';
-import { Button } from 'primeng/button';
-import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
-import { InputText } from 'primeng/inputtext';
-import { IconField } from 'primeng/iconfield';
-import { InputIcon } from 'primeng/inputicon';
-import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @Component({
   selector: 'osf-token-created-dialog',
-  imports: [Button, InputText, IconField, InputIcon, ClipboardModule],
+  standalone: true,
+  imports: [
+    Button,
+    InputText,
+    IconField,
+    InputIcon,
+    ClipboardModule,
+    TranslatePipe,
+  ],
   templateUrl: './token-created-dialog.component.html',
   styleUrl: './token-created-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

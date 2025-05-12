@@ -1,22 +1,29 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
+import { DialogService } from 'primeng/dynamicdialog';
+
+import { map } from 'rxjs';
+
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   OnInit,
 } from '@angular/core';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { DialogService } from 'primeng/dynamicdialog';
-import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Router, RouterOutlet } from '@angular/router';
+
+import { GetScopes } from '@osf/features/settings/tokens/store';
 import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
-import { RouterOutlet, Router } from '@angular/router';
-import { Store } from '@ngxs/store';
-import { GetScopes } from '@core/store/settings';
-import { map } from 'rxjs';
+import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-tokens',
-  imports: [SubHeaderComponent, RouterOutlet],
+  standalone: true,
+  imports: [SubHeaderComponent, RouterOutlet, TranslatePipe],
   templateUrl: './tokens.component.html',
   styleUrl: './tokens.component.scss',
   providers: [DialogService],
@@ -28,6 +35,7 @@ export class TokensComponent implements OnInit {
   #isMedium$ = inject(IS_MEDIUM);
   #store = inject(Store);
   #router = inject(Router);
+  #translateService = inject(TranslateService);
 
   protected readonly isXSmall = toSignal(this.#isXSmall$);
   protected readonly isMedium = toSignal(this.#isMedium$);
@@ -49,7 +57,9 @@ export class TokensComponent implements OnInit {
     this.#dialogService.open(TokenAddEditFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: 'Create Personal Access Token',
+      header: this.#translateService.instant(
+        'settings.tokens.form.createTitle',
+      ),
       closeOnEscape: true,
       modal: true,
       closable: true,

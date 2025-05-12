@@ -5,16 +5,23 @@
 >
   <osf-sub-header
     [showButton]="true"
-    [title]="'Dashboard'"
+    [title]="'home.loggedIn.dashboard.title' | translate"
     [icon]="'home'"
-    [buttonLabel]="'Create New Project'"
+    [buttonLabel]="'home.loggedIn.dashboard.createProject' | translate"
     (buttonClick)="createProject()"
   />
 
   <div class="quick-search-container">
     <p class="text-center">
-      Go to <a routerLink="/myprojects">My Projects</a> to organize your work or
-      <a routerLink="/search">search</a> OSF
+      {{ "home.loggedIn.dashboard.quickSearch.goTo" | translate }}
+      <a routerLink="/my-projects">
+        {{ "home.loggedIn.dashboard.quickSearch.myProjects" | translate }}
+      </a>
+      {{ "home.loggedIn.dashboard.quickSearch.toOrganize" | translate }}
+      <a routerLink="/search">
+        {{ "home.loggedIn.dashboard.quickSearch.search" | translate }}
+      </a>
+      {{ "home.loggedIn.dashboard.quickSearch.osf" | translate }}
     </p>
 
     <osf-my-projects-table
@@ -24,7 +31,9 @@
       [sortColumn]="sortColumn()"
       [sortOrder]="sortOrder()"
       [isLoading]="isLoading()"
-      [searchPlaceholder]="'Search project'"
+      [searchPlaceholder]="
+        'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate
+      "
       (searchValueChange)="onSearchChange($event)"
       (pageChange)="onPageChange($event)"
       (sort)="onSort($event)"
@@ -35,33 +44,33 @@
   <div class="public-projects-container">
     <i class="osf-icon-search"></i>
     <div class="title-container">
-      <h1>Discover Public Projects</h1>
+      <h1>{{ "home.loggedIn.publicProjects.title" | translate }}</h1>
     </div>
   </div>
 
   <div class="latest-research-container">
     <div class="content">
       <div class="text-container">
-        <h1>Browse the latest research</h1>
-        <h2>
-          Check out the latest preprints hosted on OSF covering a variety of
-          research areas
-        </h2>
+        <h1>{{ "home.loggedIn.latestResearch.title" | translate }}</h1>
+        <h2>{{ "home.loggedIn.latestResearch.subtitle" | translate }}</h2>
       </div>
-      <p-button label="View Preprints" severity="success" />
+      <p-button
+        [label]="'home.loggedIn.latestResearch.button' | translate"
+        severity="success"
+      />
     </div>
   </div>
 
   <div class="hosting-container">
     <div class="content">
       <div class="text-container">
-        <h1>Hosting a conference or meeting?</h1>
-        <h2>
-          Use the OSF for Meetings service to provide a central location for
-          conference submissions
-        </h2>
+        <h1>{{ "home.loggedIn.hosting.title" | translate }}</h1>
+        <h2>{{ "home.loggedIn.hosting.subtitle" | translate }}</h2>
       </div>
-      <p-button label="View Meetings" severity="success" />
+      <p-button
+        [label]="'home.loggedIn.hosting.button' | translate"
+        severity="success"
+      />
     </div>
   </div>
 </section>

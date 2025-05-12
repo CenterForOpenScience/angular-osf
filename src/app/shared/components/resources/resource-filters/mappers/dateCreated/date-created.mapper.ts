@@ -1,6 +1,6 @@
 import { DateCreated } from '@shared/components/resources/resource-filters/models/dateCreated/date-created.entity';
-import { IndexValueSearch } from '@shared/components/resources/resource-filters/models/index-value-search.entity';
 import { IndexCardFilter } from '@shared/components/resources/resource-filters/models/index-card-filter.entity';
+import { IndexValueSearch } from '@shared/components/resources/resource-filters/models/index-value-search.entity';
 
 export function MapDateCreated(items: IndexValueSearch[]): DateCreated[] {
   const datesCreated: DateCreated[] = [];

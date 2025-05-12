@@ -1,4 +1,5 @@
 import { Params } from '@angular/router';
+
 import { SortOrder } from '@shared/utils/sort-order.enum';
 
 export const parseQueryFilterParams = (

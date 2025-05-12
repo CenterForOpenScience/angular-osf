@@ -1,15 +1,27 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
-import { routes } from './app.routes';
-import { provideStore } from '@ngxs/store';
 import { withNgxsReduxDevtoolsPlugin } from '@ngxs/devtools-plugin';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeng/themes/aura';
-import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideHttpClient } from '@angular/common/http';
+import { provideStore } from '@ngxs/store';
+
+import { TranslateModule } from '@ngx-translate/core';
+
 import { ConfirmationService } from 'primeng/api';
-import { STATES } from '@core/constants/ngxs-states.constant';
+import { providePrimeNG } from 'primeng/config';
+
+import { provideHttpClient } from '@angular/common/http';
+import {
+  ApplicationConfig,
+  importProvidersFrom,
+  provideZoneChangeDetection,
+} from '@angular/core';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
+
+import { STATES } from '@core/constants/ngxs-states.constant';
+import { provideTranslation } from '@core/helpers/i18n.helper';
+
+import { routes } from './app.routes';
+
+import Aura from '@primeng/themes/aura';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -35,5 +47,6 @@ export const appConfig: ApplicationConfig = {
       registrationStrategy: 'registerWhenStable:30000',
     }),
     ConfirmationService,
+    importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
   ],
 };

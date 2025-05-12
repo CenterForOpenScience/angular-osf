@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { InputText } from 'primeng/inputtext';
+
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'osf-add-email',

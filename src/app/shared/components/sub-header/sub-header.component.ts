@@ -1,13 +1,15 @@
+import { Button } from 'primeng/button';
+
 import {
   ChangeDetectionStrategy,
   Component,
-  input,
   inject,
+  input,
   output,
 } from '@angular/core';
-import { Button } from 'primeng/button';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { toSignal } from '@angular/core/rxjs-interop';
+
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-sub-header',

@@ -1,6 +1,6 @@
-import { ResourceTypeIndexValueSearch } from '@shared/components/resources/resource-filters/models/resource-type/resource-type-index-value-search.entity';
 import { ResourceTypeFilter } from '@shared/components/resources/resource-filters/models/resource-type/resource-type.entity';
 import { ResourceTypeIndexCardFilter } from '@shared/components/resources/resource-filters/models/resource-type/resource-type-index-card-filter.entity';
+import { ResourceTypeIndexValueSearch } from '@shared/components/resources/resource-filters/models/resource-type/resource-type-index-value-search.entity';
 
 export function MapResourceType(
   items: ResourceTypeIndexValueSearch[],

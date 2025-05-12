@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { Button } from 'primeng/button';
+
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'osf-deactivate-account',

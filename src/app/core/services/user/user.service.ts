@@ -1,10 +1,12 @@
-import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
+
+import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { User } from '@core/services/user/user.entity';
 import { UserUS } from '@core/services/json-api/underscore-entites/user/user-us.entity';
 import { mapUserUStoUser } from '@core/services/mappers/users/users.mapper';
-import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
+import { User } from '@core/services/user/user.entity';
 
 @Injectable({
   providedIn: 'root',

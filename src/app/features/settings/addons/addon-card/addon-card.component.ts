@@ -1,20 +1,25 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
-import { Router } from '@angular/router';
+import { DialogModule } from 'primeng/dialog';
+
+import { NgClass } from '@angular/common';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { Router } from '@angular/router';
+
 import {
   Addon,
   AuthorizedAddon,
 } from '@osf/features/settings/addons/entities/addons.entities';
-import { NgClass } from '@angular/common';
-import { Store } from '@ngxs/store';
-import { DeleteAuthorizedAddon } from '@core/store/settings/addons';
-import { DialogModule } from 'primeng/dialog';
+import { DeleteAuthorizedAddon } from '@osf/features/settings/addons/store';
+import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-addon-card',
-  imports: [Button, NgClass, DialogModule],
+  imports: [Button, NgClass, DialogModule, TranslatePipe],
   templateUrl: './addon-card.component.html',
   styleUrl: './addon-card.component.scss',
   standalone: true,
