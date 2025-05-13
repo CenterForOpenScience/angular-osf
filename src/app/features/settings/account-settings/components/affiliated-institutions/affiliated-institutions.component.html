@@ -1,11 +1,15 @@
 <section class="account-setting">
-  <h2 class="account-setting-header">Affiliated institutions</h2>
+  <h2 class="account-setting-header">{{ 'settings.accountSettings.affiliatedInstitutions.title' | translate }}</h2>
 
   <div class="account-setting-description">
-    Affiliated Institutions connect your OSF account to your institution or organization. Affiliated institutions can be
-    removed from your profile.
+    {{ 'settings.accountSettings.affiliatedInstitutions.description' | translate }}
   </div>
 
+  @if (institutions().length === 0) {
+    <div class="account-setting-description">
+      {{ 'settings.accountSettings.affiliatedInstitutions.noInstitutions' | translate }}
+    </div>
+  }
   @for (institution of institutions(); track institution.id) {
     <div class="account-setting-content">
       <div class="account-setting-email--readonly">

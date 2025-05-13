@@ -6,7 +6,6 @@ import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentUser } from '@core/store/user';
 import { InstitutionsService } from '@osf/features/institutions/institutions.service';
-import { AccountSettingsService } from '@osf/features/settings/account-settings/services/account-settings.service';
 import {
   AddEmail,
   CancelDeactivationRequest,
@@ -29,6 +28,8 @@ import {
   VerifyEmail,
 } from '@osf/features/settings/account-settings/store/account-settings.actions';
 import { AccountSettingsStateModel } from '@osf/features/settings/account-settings/store/account-settings.model';
+
+import { AccountSettingsService } from '../services';
 
 @Injectable()
 @State<AccountSettingsStateModel>({

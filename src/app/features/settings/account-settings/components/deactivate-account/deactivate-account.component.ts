@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
@@ -13,7 +15,7 @@ import { AccountSettingsSelectors } from '@osf/features/settings/account-setting
 
 @Component({
   selector: 'osf-deactivate-account',
-  imports: [Button, Message, NgOptimizedImage],
+  imports: [Button, Message, NgOptimizedImage, TranslatePipe],
   templateUrl: './deactivate-account.component.html',
   styleUrl: './deactivate-account.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,13 +24,14 @@ export class DeactivateAccountComponent {
   #store = inject(Store);
   dialogRef: DynamicDialogRef | null = null;
   readonly #dialogService = inject(DialogService);
+  readonly #translateService = inject(TranslateService);
   protected accountSettings = this.#store.selectSignal(AccountSettingsSelectors.getAccountSettings);
 
   deactivateAccount() {
     this.dialogRef = this.#dialogService.open(DeactivationWarningComponent, {
       width: '552px',
       focusOnShow: false,
-      header: 'Deactivate account',
+      header: this.#translateService.instant('settings.accountSettings.deactivateAccount.dialog.deactivate.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,
@@ -39,7 +42,7 @@ export class DeactivateAccountComponent {
     this.dialogRef = this.#dialogService.open(CancelDeactivationComponent, {
       width: '552px',
       focusOnShow: false,
-      header: 'Undo deactivation request?',
+      header: this.#translateService.instant('settings.accountSettings.deactivateAccount.dialog.undo.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,

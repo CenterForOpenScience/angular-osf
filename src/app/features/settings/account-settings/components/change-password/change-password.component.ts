@@ -1,3 +1,5 @@
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { Password } from 'primeng/password';
 
@@ -17,17 +19,19 @@ import {
   AccountSettingsPasswordForm,
   AccountSettingsPasswordFormControls,
 } from '@osf/features/settings/account-settings/account.settings.entities';
-import { AccountSettingsService } from '@osf/features/settings/account-settings/services/account-settings.service';
+
+import { AccountSettingsService } from '../../services';
 
 @Component({
   selector: 'osf-change-password',
-  imports: [ReactiveFormsModule, Password, CommonModule, Button],
+  imports: [ReactiveFormsModule, Password, CommonModule, Button, TranslatePipe],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangePasswordComponent implements OnInit {
   readonly #accountSettingsService = inject(AccountSettingsService);
+  readonly #translateService = inject(TranslateService);
   readonly passwordForm: AccountSettingsPasswordForm = new FormGroup({
     [AccountSettingsPasswordFormControls.OldPassword]: new FormControl('', {
       nonNullable: true,
@@ -108,7 +112,9 @@ export class ChangePasswordComponent implements OnInit {
           if (error.error?.errors?.[0]?.detail) {
             this.errorMessage.set(error.error.errors[0].detail);
           } else {
-            this.errorMessage.set('Failed to update password. Please try again.');
+            this.errorMessage.set(
+              this.#translateService.instant('settings.accountSettings.changePassword.messages.error')
+            );
           }
         },
       });

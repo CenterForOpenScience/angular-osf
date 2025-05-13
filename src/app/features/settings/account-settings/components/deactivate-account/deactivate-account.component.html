@@ -1,30 +1,33 @@
 <section class="account-setting">
-  <h2 class="account-setting-header">Deactivate Account</h2>
+  <h2 class="account-setting-header">{{ 'settings.accountSettings.deactivateAccount.title' | translate }}</h2>
 
   <div class="warning-message">
     <p-message severity="error">
       <img ngSrc="./assets/icons/source/warning-sign.svg" class="mr-2" height="16" width="16" alt="waring-action" />
-      Warning: This action cannot be undone once approved.
+      {{ 'settings.accountSettings.deactivateAccount.warning.title' | translate }}
     </p-message>
   </div>
 
   <div class="account-setting-description">
-    Deactivating your account will remove you from all public projects to which you are a contributor. Your account will
-    no longer be associated with OSF projects, and your work on the OSF will be inaccessible.
+    {{ 'settings.accountSettings.deactivateAccount.description.main' | translate }}
   </div>
 
   <div class="account-setting-description">
-    If this is a secondary account that you want to close, consider <a class="font-normal">merging your accounts</a>
+    {{ 'settings.accountSettings.deactivateAccount.description.secondary' | translate }}
   </div>
 
   @if (accountSettings()?.deactivationRequested) {
-    <p class="font-bold">Your account is currently pending deactivation.</p>
+    <p class="font-bold">{{ 'settings.accountSettings.deactivateAccount.pendingDeactivation' | translate }}</p>
     <div class="account-setting-action">
-      <p-button (click)="cancelDeactivation()"> Undo deactivation request </p-button>
+      <p-button (click)="cancelDeactivation()">
+        {{ 'settings.accountSettings.deactivateAccount.actions.undoDeactivation' | translate }}
+      </p-button>
     </div>
   } @else {
     <div class="account-setting-action">
-      <p-button (click)="deactivateAccount()" size="large"> Request deactivation </p-button>
+      <p-button (click)="deactivateAccount()" size="large">
+        {{ 'settings.accountSettings.deactivateAccount.actions.requestDeactivation' | translate }}
+      </p-button>
     </div>
   }
 </section>

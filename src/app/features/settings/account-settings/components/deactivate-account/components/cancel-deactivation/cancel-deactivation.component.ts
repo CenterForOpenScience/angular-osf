@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -9,7 +11,7 @@ import { CancelDeactivationRequest } from '@osf/features/settings/account-settin
 
 @Component({
   selector: 'osf-cancel-deactivation',
-  imports: [Button],
+  imports: [Button, TranslatePipe],
   templateUrl: './cancel-deactivation.component.html',
   styleUrl: './cancel-deactivation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

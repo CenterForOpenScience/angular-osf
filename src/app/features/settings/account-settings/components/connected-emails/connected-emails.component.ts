@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ProgressSpinner } from 'primeng/progressspinner';
@@ -17,7 +19,7 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-connected-emails',
-  imports: [Button, ProgressSpinner, Skeleton],
+  imports: [Button, ProgressSpinner, Skeleton, TranslatePipe],
   templateUrl: './connected-emails.component.html',
   styleUrl: './connected-emails.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,6 +28,7 @@ export class ConnectedEmailsComponent {
   readonly #store = inject(Store);
   readonly #accountSettingsService = inject(AccountSettingsService);
   readonly #dialogService = inject(DialogService);
+  readonly #translateService = inject(TranslateService);
   readonly isMobile = toSignal(inject(IS_XSMALL));
 
   protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
@@ -48,7 +51,7 @@ export class ConnectedEmailsComponent {
     this.dialogRef = this.#dialogService.open(AddEmailComponent, {
       width: '448px',
       focusOnShow: false,
-      header: 'Add alternative email',
+      header: this.#translateService.instant('settings.accountSettings.connectedEmails.dialog.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,

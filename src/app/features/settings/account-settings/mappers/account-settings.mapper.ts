@@ -1,5 +1,5 @@
 import { ApiData } from '@core/services/json-api/json-api.entity';
-import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-entities/account-settings.entity';
+import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-models/account-settings.model';
 import { AccountSettingsResponse } from '@osf/features/settings/account-settings/models/responses/get-account-settings-response.entity';
 
 export function MapAccountSettings(data: ApiData<AccountSettingsResponse, null, null>): AccountSettings {

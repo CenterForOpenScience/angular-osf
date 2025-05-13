@@ -10,24 +10,21 @@ import { mapUserUStoUser } from '@core/services/mappers/users/users.mapper';
 import { User } from '@core/services/user/user.entity';
 import { UserSelectors } from '@core/store/user/user.selectors';
 import { ApiData, JsonApiResponse } from '@osf/core/services/json-api/json-api.entity';
-import { MapAccountSettings } from '@osf/features/settings/account-settings/mappers/account-settings.mapper';
-import { MapEmail, MapEmails } from '@osf/features/settings/account-settings/mappers/emails.mapper';
-import { MapExternalIdentities } from '@osf/features/settings/account-settings/mappers/external-identities.mapper';
-import { MapRegions } from '@osf/features/settings/account-settings/mappers/regions.mapper';
-import { AccountEmail } from '@osf/features/settings/account-settings/models/osf-entities/account-email.entity';
-import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-entities/account-settings.entity';
-import { ExternalIdentity } from '@osf/features/settings/account-settings/models/osf-entities/external-institution.entity';
-import { Region } from '@osf/features/settings/account-settings/models/osf-entities/region.entity';
-import { GetAccountSettingsResponse } from '@osf/features/settings/account-settings/models/responses/get-account-settings-response.entity';
-import { GetEmailResponse } from '@osf/features/settings/account-settings/models/responses/get-email-response.entity';
-import { GetRegionsResponse } from '@osf/features/settings/account-settings/models/responses/get-regions-response.entity';
-import {
-  AccountEmailResponse,
-  ListEmailsResponse,
-} from '@osf/features/settings/account-settings/models/responses/list-emails.entity';
-import { ListIdentitiesResponse } from '@osf/features/settings/account-settings/models/responses/list-identities-response.entity';
 
 import { environment } from '../../../../../environments/environment';
+import { MapAccountSettings, MapEmail, MapEmails, MapExternalIdentities, MapRegions } from '../mappers';
+import {
+  AccountEmail,
+  AccountEmailResponse,
+  AccountSettings,
+  ExternalIdentity,
+  GetAccountSettingsResponse,
+  GetEmailResponse,
+  GetRegionsResponse,
+  ListEmailsResponse,
+  ListIdentitiesResponse,
+  Region,
+} from '../models';
 
 @Injectable({
   providedIn: 'root',

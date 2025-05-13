@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -9,7 +11,7 @@ import { DeactivateAccount } from '@osf/features/settings/account-settings/store
 
 @Component({
   selector: 'osf-deactivation-warning',
-  imports: [Button],
+  imports: [Button, TranslatePipe],
   templateUrl: './deactivation-warning.component.html',
   styleUrl: './deactivation-warning.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

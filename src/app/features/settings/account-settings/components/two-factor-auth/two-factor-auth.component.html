@@ -1,30 +1,30 @@
 @if (this.accountSettings()) {
   <section class="account-setting">
-    <h2 class="account-setting-header">Two-factor authentication</h2>
+    <h2 class="account-setting-header">{{ 'settings.accountSettings.twoFactorAuth.title' | translate }}</h2>
 
     @if (accountSettings()?.twoFactorEnabled && !accountSettings()?.twoFactorConfirmed) {
-      <h3>
-        By using two-factor authentication, you will protect your OSF account with both your password and your mobile
-        phone.
+      <h3 class="account-setting-description">
+        {{ 'settings.accountSettings.twoFactorAuth.description.enabled' | translate }}
       </h3>
-      <h3 class="font-bold">
-        Important: If you lose access to your mobile device, you will not be able to log in to your OSF account.
+      <h3 class="account-setting-description font-bold">
+        {{ 'settings.accountSettings.twoFactorAuth.description.warning' | translate }}
       </h3>
-      <h3>
-        To use, you must install an appropriate application on your mobile device. Google Authenticator is a popular
-        choice and is available for both Android and iOS.
+      <h3 class="account-setting-description">
+        {{ 'settings.accountSettings.twoFactorAuth.description.setup' | translate }}
       </h3>
-      <h3>
-        Once verified, your device will display a six-digit code that must be entered during the login process. This
-        code changes every few seconds, which means that unauthorized users will not be able to log in to you account,
-        even if they know your password.
+      <h3 class="account-setting-description">
+        {{ 'settings.accountSettings.twoFactorAuth.description.verification' | translate }}
       </h3>
-      <h3>
-        Scan the image below, or enter the secret key <span class="token">{{ accountSettings()?.secret }}</span> into
-        your authentication device.
-      </h3>
+      <h3
+        class="account-setting-description"
+        [innerHTML]="
+          'settings.accountSettings.twoFactorAuth.description.scan' | translate: { secret: accountSettings()?.secret }
+        "
+      ></h3>
       <qrcode [qrdata]="qrCodeLink()" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
-      <h3 class="font-bold" id="verification-code-help">Enter your verification code:</h3>
+      <h3 class="account-setting-description font-bold" id="verification-code-help">
+        {{ 'settings.accountSettings.twoFactorAuth.verification.label' | translate }}
+      </h3>
       <input
         [formControl]="verificationCode"
         pInputText
@@ -36,26 +36,36 @@
       }
 
       <div class="flex gap-2">
-        <p-button (click)="enableTwoFactor()" [disabled]="verificationCode.invalid"> Enable </p-button>
+        <p-button (click)="enableTwoFactor()" [disabled]="verificationCode.invalid">
+          {{ 'settings.accountSettings.common.buttons.enable' | translate }}
+        </p-button>
 
-        <p-button (click)="disableTwoFactor()" severity="secondary"> Cancel </p-button>
+        <p-button (click)="disableTwoFactor()" severity="secondary">
+          {{ 'settings.accountSettings.common.buttons.cancel' | translate }}
+        </p-button>
       </div>
     } @else if (accountSettings()?.twoFactorEnabled && accountSettings()?.twoFactorConfirmed) {
       <div class="account-setting-description">
-        By using two-factor authentication, you will protect your OSF account with both your password and your mobile
-        phone.
+        {{ 'settings.accountSettings.twoFactorAuth.description.enabled' | translate }}
       </div>
 
       <div>
-        <p-button size="large" label="Disable" severity="danger" (click)="openDisableDialog()"></p-button>
+        <p-button
+          size="large"
+          [label]="'settings.accountSettings.common.buttons.disable' | translate"
+          severity="danger"
+          (click)="openDisableDialog()"
+        ></p-button>
       </div>
     } @else {
       <div class="account-setting-description">
-        Two-factor authentication protects your OSF account using both your password and email.
+        {{ 'settings.accountSettings.twoFactorAuth.description.disabled' | translate }}
       </div>
 
       <div class="account-setting-action">
-        <p-button size="large" (click)="configureTwoFactorAuth()"> Configure </p-button>
+        <p-button size="large" (click)="configureTwoFactorAuth()">
+          {{ 'settings.accountSettings.common.buttons.configure' | translate }}
+        </p-button>
       </div>
     }
   </section>

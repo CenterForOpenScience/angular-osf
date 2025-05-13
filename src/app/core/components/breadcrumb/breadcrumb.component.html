@@ -1,4 +1,4 @@
-@if (parsedUrl()[0] !== 'home') {
+@if (!parsedUrl()[0].includes('home')) {
   <div class="breadcrumbs flex column-gap-2">
     <i class="osf-icon-home"></i>
     <p>/</p>

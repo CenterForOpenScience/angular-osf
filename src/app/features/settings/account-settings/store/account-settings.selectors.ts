@@ -1,10 +1,10 @@
 import { Selector } from '@ngxs/store';
 
 import { Institution } from '@osf/features/institutions/entities/institutions.models';
-import { AccountEmail } from '@osf/features/settings/account-settings/models/osf-entities/account-email.entity';
-import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-entities/account-settings.entity';
-import { ExternalIdentity } from '@osf/features/settings/account-settings/models/osf-entities/external-institution.entity';
-import { Region } from '@osf/features/settings/account-settings/models/osf-entities/region.entity';
+import { AccountEmail } from '@osf/features/settings/account-settings/models/osf-models/account-email.model';
+import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-models/account-settings.model';
+import { ExternalIdentity } from '@osf/features/settings/account-settings/models/osf-models/external-institution.model';
+import { Region } from '@osf/features/settings/account-settings/models/osf-models/region.model';
 import { AccountSettingsStateModel } from '@osf/features/settings/account-settings/store/account-settings.model';
 import { AccountSettingsState } from '@osf/features/settings/account-settings/store/account-settings.state';
 

@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -9,7 +11,7 @@ import { DisableTwoFactorAuth } from '@osf/features/settings/account-settings/st
 
 @Component({
   selector: 'osf-verify-two-factor',
-  imports: [Button],
+  imports: [Button, TranslatePipe],
   templateUrl: './verify-two-factor.component.html',
   styleUrl: './verify-two-factor.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

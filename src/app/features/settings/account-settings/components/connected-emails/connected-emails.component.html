@@ -1,14 +1,15 @@
 <section class="account-setting">
-  <h2 class="account-setting-header">Connected Emails</h2>
+  <h2 class="account-setting-header">{{ 'settings.accountSettings.connectedEmails.title' | translate }}</h2>
 
   <div class="account-settings-description">
-    To merge an existing account with this one or to log in with multiple email addresses, add an alternate email
-    address below. All projects and components will be displayed under the email address listed as primary.
+    {{ 'settings.accountSettings.connectedEmails.description' | translate }}
   </div>
 
   <div class="account-setting-emails">
     <div class="account-setting-email-center">
-      <div class="account-setting-email__title">Primary Email:</div>
+      <div class="account-setting-email__title">
+        {{ 'settings.accountSettings.connectedEmails.primaryEmail' | translate }}
+      </div>
 
       @if (isEmailsLoading()) {
         <p-skeleton width="9rem" height="2.7rem" />
@@ -18,7 +19,9 @@
     </div>
 
     <div class="account-setting-email">
-      <div class="account-setting-email__title">Alternate Emails:</div>
+      <div class="account-setting-email__title">
+        {{ 'settings.accountSettings.connectedEmails.alternateEmails' | translate }}
+      </div>
 
       <div class="account-setting-email__container">
         @if (isEmailsLoading()) {
@@ -47,7 +50,9 @@
                 }
               </div>
 
-              <p-button severity="secondary" (click)="makePrimary(email.id)"> Make Primary </p-button>
+              <p-button severity="secondary" (click)="makePrimary(email.id)">
+                {{ 'settings.accountSettings.connectedEmails.buttons.makePrimary' | translate }}
+              </p-button>
             </div>
           }
         }
@@ -55,7 +60,9 @@
     </div>
 
     <div class="account-setting-email">
-      <div class="account-setting-email__title">Unconfirmed emails:</div>
+      <div class="account-setting-email__title">
+        {{ 'settings.accountSettings.connectedEmails.unconfirmedEmails' | translate }}
+      </div>
 
       <div class="account-setting-email__container">
         @if (isEmailsLoading()) {
@@ -86,9 +93,9 @@
 
               <p-button severity="secondary" (click)="resendConfirmation(email.id)">
                 @if (isMobile()) {
-                  Resend
+                  {{ 'settings.accountSettings.connectedEmails.buttons.resend' | translate }}
                 } @else {
-                  Resend confirmation
+                  {{ 'settings.accountSettings.connectedEmails.buttons.resendConfirmation' | translate }}
                 }
               </p-button>
             </div>
@@ -99,6 +106,8 @@
   </div>
 
   <div class="account-setting-action">
-    <p-button (onClick)="addEmail()" size="large"> Add Email </p-button>
+    <p-button (onClick)="addEmail()" size="large">
+      {{ 'settings.accountSettings.connectedEmails.buttons.addEmail' | translate }}
+    </p-button>
   </div>
 </section>

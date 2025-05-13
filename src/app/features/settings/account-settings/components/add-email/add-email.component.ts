@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
@@ -11,7 +13,7 @@ import { AddEmail } from '@osf/features/settings/account-settings/store/account-
 
 @Component({
   selector: 'osf-add-email',
-  imports: [InputText, ReactiveFormsModule, Button],
+  imports: [InputText, ReactiveFormsModule, Button, TranslatePipe],
   templateUrl: './add-email.component.html',
   styleUrl: './add-email.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

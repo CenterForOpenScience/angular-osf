@@ -1,7 +1,5 @@
+@use "../../../../account-settings.component.scss" as account-settings;
+
 :host {
-  h3,
-  p {
-    text-transform: none;
-    font-weight: normal;
-  }
+  @extend .account-setting;
 }

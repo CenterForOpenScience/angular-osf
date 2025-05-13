@@ -4,13 +4,8 @@
 :host {
   @extend .account-setting;
 
-  h3,
-  p {
-    font-weight: 400;
-    text-transform: none;
-  }
-
-  .token {
+  ::ng-deep .token {
     color: var.$red-1;
+    display: inline;
   }
 }

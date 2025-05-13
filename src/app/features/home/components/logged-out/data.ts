@@ -4,21 +4,21 @@ export const slides = [
     name: 'Patricia Ayala',
     title: 'home.loggedOut.testimonials.slides.patricia.quote',
     author: 'Patricia Ayala',
-    facility: 'home.logged-out.testimonials.slides.patricia.facility',
+    facility: 'home.loggedOut.testimonials.slides.patricia.facility',
   },
   {
     img: 'assets/images/carousel2.png',
     name: 'Maya Mathur',
     title: 'home.loggedOut.testimonials.slides.maya.quote',
     author: 'Maya Mathur',
-    facility: 'home.logged-out.testimonials.slides.maya.facility',
+    facility: 'home.loggedOut.testimonials.slides.maya.facility',
   },
   {
     img: 'assets/images/carousel3.png',
     name: 'Philip Cohen',
     title: 'home.loggedOut.testimonials.slides.philip.quote',
     author: 'Philip Cohen',
-    facility: 'home.logged-out.testimonials.slides.philip.facility',
+    facility: 'home.loggedOut.testimonials.slides.philip.facility',
   },
 ];
 

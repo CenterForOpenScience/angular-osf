@@ -1,5 +1,5 @@
 import { ApiData } from '@core/services/json-api/json-api.entity';
-import { Region } from '@osf/features/settings/account-settings/models/osf-entities/region.entity';
+import { Region } from '@osf/features/settings/account-settings/models/osf-models/region.model';
 
 export function MapRegions(data: ApiData<{ name: string }, null, null>[]): Region[] {
   const regions: Region[] = [];

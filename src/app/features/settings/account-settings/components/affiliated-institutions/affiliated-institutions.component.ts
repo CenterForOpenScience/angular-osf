@@ -1,5 +1,9 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { UserSelectors } from '@core/store/user/user.selectors';
@@ -8,7 +12,7 @@ import { AccountSettingsSelectors } from '@osf/features/settings/account-setting
 
 @Component({
   selector: 'osf-affiliated-institutions',
-  imports: [],
+  imports: [Button, TranslatePipe],
   templateUrl: './affiliated-institutions.component.html',
   styleUrl: './affiliated-institutions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
