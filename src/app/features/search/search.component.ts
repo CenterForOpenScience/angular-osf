@@ -8,7 +8,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import { debounceTime } from 'rxjs';
+import { debounceTime, skip } from 'rxjs';
 
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, signal, untracked } from '@angular/core';
@@ -96,7 +96,7 @@ export class SearchComponent implements OnDestroy {
 
     // put search value in store and update resources, filters
     toObservable(this.searchValue)
-      .pipe(debounceTime(500))
+      .pipe(skip(1), debounceTime(500))
       .subscribe((searchText) => {
         this.#store.dispatch(new SetSearchText(searchText));
         this.#store.dispatch(GetAllOptions);
