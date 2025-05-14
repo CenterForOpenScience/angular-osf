@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -11,7 +13,7 @@ import { VerifyEmail } from '@osf/features/settings/account-settings/store/accou
 
 @Component({
   selector: 'osf-confirm-email',
-  imports: [Button, FormsModule],
+  imports: [Button, FormsModule, TranslateModule],
   templateUrl: './confirm-email.component.html',
   styleUrl: './confirm-email.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

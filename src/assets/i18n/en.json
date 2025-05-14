@@ -164,6 +164,15 @@
           "storage": "Storage"
         }
       }
+    },
+    "confirmEmail": {
+      "title": "Add alternative email",
+      "description": "Would you like to add ",
+      "description2": " to your account?",
+      "buttons": {
+        "doNotAdd": "Do not add email",
+        "addEmail": "Add email"
+      }
     }
   },
   "myProjects": {

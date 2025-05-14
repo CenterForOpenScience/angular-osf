@@ -103,7 +103,7 @@ export class HomeComponent implements OnInit {
     this.dialogRef = this.#dialogService.open(ConfirmEmailComponent, {
       width: '448px',
       focusOnShow: false,
-      header: 'Add alternative email',
+      header: this.#translateService.instant('home.confirmEmail.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,
