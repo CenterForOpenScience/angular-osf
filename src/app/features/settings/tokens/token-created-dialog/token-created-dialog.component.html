@@ -1,37 +1,26 @@
 <div class="flex flex-column gap-4">
   <div class="flex flex-column gap-2">
-    <p
-      [innerHTML]="
-        'settings.tokens.createdDialog.successMessage'
-          | translate: { tokenName: tokenName() }
-      "
-    ></p>
+    <p [innerHTML]="'settings.tokens.createdDialog.successMessage' | translate: { tokenName: tokenName() }"></p>
     <p>
-      {{ "settings.tokens.createdDialog.warningMessage" | translate }}
+      {{ 'settings.tokens.createdDialog.warningMessage' | translate }}
     </p>
   </div>
 
   <div class="flex flex-column gap-2">
     <div class="p-inputgroup">
       <div class="inline-block relative w-full">
-        <span
-          class="copy-notification"
-          [class.visible]="tokenCopiedNotificationVisible()"
-        >
-          {{ "settings.tokens.createdDialog.copyNotification" | translate }}
+        <span class="copy-notification" [class.visible]="tokenCopiedNotificationVisible()">
+          {{ 'settings.tokens.createdDialog.copyNotification' | translate }}
         </span>
         <p-iconfield class="w-full" iconPosition="right">
           <input pInputText [value]="tokenId()" readonly #tokenInput />
-          <p-inputicon
-            [cdkCopyToClipboard]="tokenId()"
-            (cdkCopyToClipboardCopied)="tokenCopiedToClipboard()"
-          >
+          <p-inputicon [cdkCopyToClipboard]="tokenId()" (cdkCopyToClipboardCopied)="tokenCopiedToClipboard()">
             <i class="osf-icon-copy"></i>
           </p-inputicon>
         </p-iconfield>
       </div>
     </div>
-    <h3>{{ "settings.tokens.createdDialog.tokenWarning" | translate }}</h3>
+    <h3>{{ 'settings.tokens.createdDialog.tokenWarning' | translate }}</h3>
   </div>
 
   <div class="flex justify-content-end">

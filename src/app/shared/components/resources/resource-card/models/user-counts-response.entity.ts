@@ -1,7 +1,4 @@
-import {
-  ApiData,
-  JsonApiResponse,
-} from '@core/services/json-api/json-api.entity';
+import { ApiData, JsonApiResponse } from '@core/services/json-api/json-api.entity';
 
 export type UserCountsResponse = JsonApiResponse<
   ApiData<

@@ -1,39 +1,23 @@
-<form
-  [formGroup]="tokenForm"
-  (ngSubmit)="handleSubmitForm()"
-  class="flex flex-column gap-4"
->
+<form [formGroup]="tokenForm" (ngSubmit)="handleSubmitForm()" class="flex flex-column gap-4">
   <div class="flex flex-column">
-    <label for="token-name">{{
-      "settings.tokens.form.tokenName" | translate
-    }}</label>
-    <input
-      pInputText
-      id="token-name"
-      type="text"
-      autocomplete="off"
-      [formControlName]="TokenFormControls.TokenName"
-    />
+    <label for="token-name">{{ 'settings.tokens.form.tokenName' | translate }}</label>
+    <input pInputText id="token-name" type="text" autocomplete="off" [formControlName]="TokenFormControls.TokenName" />
   </div>
 
   <div class="flex flex-column gap-4">
     <div class="flex flex-column gap-2">
       <h3 class="scope-label">
-        {{ "settings.tokens.form.scopes.title" | translate }}
+        {{ 'settings.tokens.form.scopes.title' | translate }}
       </h3>
       <p class="scope-description">
-        {{ "settings.tokens.form.scopes.description" | translate }}
+        {{ 'settings.tokens.form.scopes.description' | translate }}
       </p>
     </div>
 
     <div class="flex flex-column gap-4">
       @for (scope of tokenScopes(); track scope.id) {
         <div class="flex align-items-start gap-2">
-          <p-checkbox
-            [value]="scope.id"
-            [formControlName]="TokenFormControls.Scopes"
-            [inputId]="scope.id"
-          />
+          <p-checkbox [value]="scope.id" [formControlName]="TokenFormControls.Scopes" [inputId]="scope.id" />
           <div class="flex flex-column gap-1">
             <label [for]="scope.id" class="scope-name">
               <h3>{{ scope.id }}</h3>

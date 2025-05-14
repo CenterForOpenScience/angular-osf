@@ -39,10 +39,7 @@ export class ResourceFiltersOptionsState {
   readonly #resourceFiltersService = inject(ResourceFiltersService);
 
   @Action(GetCreatorsOptions)
-  getProjects(
-    ctx: StateContext<ResourceFiltersOptionsStateModel>,
-    action: GetCreatorsOptions,
-  ) {
+  getProjects(ctx: StateContext<ResourceFiltersOptionsStateModel>, action: GetCreatorsOptions) {
     if (!action.searchName) {
       ctx.patchState({ creators: [] });
       return [];
@@ -51,7 +48,7 @@ export class ResourceFiltersOptionsState {
     return this.#resourceFiltersService.getCreators(action.searchName).pipe(
       tap((creators) => {
         ctx.patchState({ creators: creators });
-      }),
+      })
     );
   }
 
@@ -60,7 +57,7 @@ export class ResourceFiltersOptionsState {
     return this.#resourceFiltersService.getDates().pipe(
       tap((datesCreated) => {
         ctx.patchState({ datesCreated: datesCreated });
-      }),
+      })
     );
   }
 
@@ -69,7 +66,7 @@ export class ResourceFiltersOptionsState {
     return this.#resourceFiltersService.getFunders().pipe(
       tap((funders) => {
         ctx.patchState({ funders: funders });
-      }),
+      })
     );
   }
 
@@ -78,7 +75,7 @@ export class ResourceFiltersOptionsState {
     return this.#resourceFiltersService.getSubjects().pipe(
       tap((subjects) => {
         ctx.patchState({ subjects: subjects });
-      }),
+      })
     );
   }
 
@@ -87,7 +84,7 @@ export class ResourceFiltersOptionsState {
     return this.#resourceFiltersService.getLicenses().pipe(
       tap((licenses) => {
         ctx.patchState({ licenses: licenses });
-      }),
+      })
     );
   }
 
@@ -96,7 +93,7 @@ export class ResourceFiltersOptionsState {
     return this.#resourceFiltersService.getResourceTypes().pipe(
       tap((resourceTypes) => {
         ctx.patchState({ resourceTypes: resourceTypes });
-      }),
+      })
     );
   }
 
@@ -105,7 +102,7 @@ export class ResourceFiltersOptionsState {
     return this.#resourceFiltersService.getInstitutions().pipe(
       tap((institutions) => {
         ctx.patchState({ institutions: institutions });
-      }),
+      })
     );
   }
 
@@ -114,7 +111,7 @@ export class ResourceFiltersOptionsState {
     return this.#resourceFiltersService.getProviders().pipe(
       tap((providers) => {
         ctx.patchState({ providers: providers });
-      }),
+      })
     );
   }
   @Action(GetPartOfCollectionOptions)
@@ -122,7 +119,7 @@ export class ResourceFiltersOptionsState {
     return this.#resourceFiltersService.getPartOtCollections().pipe(
       tap((partOfCollection) => {
         ctx.patchState({ partOfCollection: partOfCollection });
-      }),
+      })
     );
   }
 

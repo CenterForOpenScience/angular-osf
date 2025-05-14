@@ -27,7 +27,7 @@ export class UpdateDeveloperApp {
 
   constructor(
     public clientId: string,
-    public developerAppUpdate: DeveloperAppCreateUpdate,
+    public developerAppUpdate: DeveloperAppCreateUpdate
   ) {}
 }
 

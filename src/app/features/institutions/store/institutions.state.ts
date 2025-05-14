@@ -26,7 +26,7 @@ export class InstitutionsState {
         ctx.patchState({
           userInstitutions: institutions,
         });
-      }),
+      })
     );
   }
 }

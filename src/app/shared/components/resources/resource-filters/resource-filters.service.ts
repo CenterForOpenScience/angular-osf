@@ -4,10 +4,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import {
-  ApiData,
-  JsonApiResponse,
-} from '@core/services/json-api/json-api.entity';
+import { ApiData, JsonApiResponse } from '@core/services/json-api/json-api.entity';
 import { JsonApiService } from '@core/services/json-api/json-api.service';
 import { SearchSelectors } from '@osf/features/search/store';
 import { getResourceTypes } from '@osf/features/search/utils/helpers/get-resource-types.helper';
@@ -49,26 +46,19 @@ export class ResourceFiltersService {
   #store = inject(Store);
 
   #getFilterParams(): Record<string, string> {
-    return addFiltersParams(
-      this.#store.selectSignal(ResourceFiltersSelectors.getAllFilters)(),
-    );
+    return addFiltersParams(this.#store.selectSignal(ResourceFiltersSelectors.getAllFilters)());
   }
 
   #getParams(): Record<string, string> {
     const params: Record<string, string> = {};
-    const resourceTab = this.#store.selectSnapshot(
-      SearchSelectors.getResourceTab,
-    );
+    const resourceTab = this.#store.selectSnapshot(SearchSelectors.getResourceTab);
     const resourceTypes = getResourceTypes(resourceTab);
-    const searchText = this.#store.selectSnapshot(
-      SearchSelectors.getSearchText,
-    );
+    const searchText = this.#store.selectSnapshot(SearchSelectors.getSearchText);
     const sort = this.#store.selectSnapshot(SearchSelectors.getSortBy);
 
     params['cardSearchFilter[resourceType]'] = resourceTypes;
     params['cardSearchFilter[accessService]'] = 'https://staging4.osf.io/';
-    params['cardSearchText[*,creator.name,isContainedBy.creator.name]'] =
-      searchText;
+    params['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = searchText;
     params['page[size]'] = '10';
     params['sort'] = sort;
     return params;
@@ -88,22 +78,15 @@ export class ResourceFiltersService {
 
     return this.#jsonApiService
       .get<
-        JsonApiResponse<
-          null,
-          ApiData<{ resourceMetadata: CreatorItem }, null, null>[]
-        >
+        JsonApiResponse<null, ApiData<{ resourceMetadata: CreatorItem }, null, null>[]>
       >(`${environment.shareDomainUrl}/index-value-search`, fullParams)
       .pipe(
         map((response) => {
-          const included = (response?.included ?? []) as ApiData<
-            { resourceMetadata: CreatorItem },
-            null,
-            null
-          >[];
+          const included = (response?.included ?? []) as ApiData<{ resourceMetadata: CreatorItem }, null, null>[];
           return included
             .filter((item) => item.type === 'index-card')
             .map((item) => MapCreators(item.attributes.resourceMetadata));
-        }),
+        })
       );
   }
 
@@ -119,9 +102,7 @@ export class ResourceFiltersService {
     };
 
     return this.#jsonApiService
-      .get<
-        JsonApiResponse<null, IndexValueSearch[]>
-      >(`${environment.shareDomainUrl}/index-value-search`, fullParams)
+      .get<JsonApiResponse<null, IndexValueSearch[]>>(`${environment.shareDomainUrl}/index-value-search`, fullParams)
       .pipe(map((response) => MapDateCreated(response?.included ?? [])));
   }
 
@@ -155,9 +136,7 @@ export class ResourceFiltersService {
     };
 
     return this.#jsonApiService
-      .get<
-        JsonApiResponse<null, IndexValueSearch[]>
-      >(`${environment.shareDomainUrl}/index-value-search`, fullParams)
+      .get<JsonApiResponse<null, IndexValueSearch[]>>(`${environment.shareDomainUrl}/index-value-search`, fullParams)
       .pipe(map((response) => MapSubject(response?.included ?? [])));
   }
 

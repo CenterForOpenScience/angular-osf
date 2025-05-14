@@ -1,5 +1,5 @@
 {
-  "editor.formatOnSave": false,
+  "editor.formatOnSave": true,
   "eslint.format.enable": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.stylelint": "explicit",
@@ -9,5 +9,5 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "scss.lint.unknownAtRules": "ignore",
-  "eslint.validate": ["json"],
+  "eslint.validate": ["json"]
 }

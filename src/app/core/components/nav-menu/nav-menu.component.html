@@ -5,14 +5,10 @@
         [routerLink]="item.routerLink"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{
-          exact:
-            item.label !== 'navigation.myProjects' ? item.useExactMatch : true,
+          exact: item.label !== 'navigation.myProjects' ? item.useExactMatch : true,
         }"
         class="nav-link flex"
-        [class.mt-5]="
-          item.label === 'navigation.settings' ||
-          item.label === 'navigation.myProjects'
-        "
+        [class.mt-5]="item.label === 'navigation.settings' || item.label === 'navigation.myProjects'"
         (click)="goToLink()"
       >
         @if (item.icon) {
@@ -20,23 +16,16 @@
         }
         <span>{{ item.label | translate }}</span>
         @if (item.items) {
-          <i
-            [class]="item.expanded ? 'osf-icon-arrow-down' : 'osf-icon-arrow'"
-            class="nav-icon ml-auto pt-1"
-          ></i>
+          <i [class]="item.expanded ? 'osf-icon-arrow-down' : 'osf-icon-arrow'" class="nav-icon ml-auto pt-1"></i>
         }
       </a>
 
-      @if (item.label === "navigation.myProjects" && isProjectRoute()) {
+      @if (item.label === 'navigation.myProjects' && isProjectRoute()) {
         <div class="ml-4">
           <p-panelMenu [model]="myProjectMenuItems" [multiple]="false">
             <ng-template #item let-item>
               <a
-                [routerLink]="
-                  item.routerLink
-                    ? ['/my-projects', currentProjectId(), item.routerLink]
-                    : null
-                "
+                [routerLink]="item.routerLink ? ['/my-projects', currentProjectId(), item.routerLink] : null"
                 [routerLinkActive]="item.routerLink ? 'active' : ''"
                 [routerLinkActiveOptions]="{ exact: true }"
                 class="nav-link flex"
@@ -47,9 +36,7 @@
                 <span>{{ item.label | translate }}</span>
                 @if (item.items) {
                   <i
-                    [class]="
-                      item.expanded ? 'osf-icon-arrow-down' : 'osf-icon-arrow'
-                    "
+                    [class]="item.expanded ? 'osf-icon-arrow-down' : 'osf-icon-arrow'"
                     class="nav-icon ml-auto pt-1"
                   ></i>
                 }

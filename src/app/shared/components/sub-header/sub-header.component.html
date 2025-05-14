@@ -7,10 +7,7 @@
   </div>
   @if (showButton()) {
     <div class="btn-container" [class.btn-full-width]="isXSmall()">
-      <p-button
-        [label]="buttonLabel()"
-        (onClick)="buttonClick.emit()"
-      ></p-button>
+      <p-button [label]="buttonLabel()" (onClick)="buttonClick.emit()"></p-button>
     </div>
   }
 </section>

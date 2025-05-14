@@ -25,7 +25,7 @@ export class CreateAuthorizedAddon {
 
   constructor(
     public payload: AddonRequest,
-    public addonType: string,
+    public addonType: string
   ) {}
 }
 
@@ -35,7 +35,7 @@ export class UpdateAuthorizedAddon {
   constructor(
     public payload: AddonRequest,
     public addonType: string,
-    public addonId: string,
+    public addonId: string
   ) {}
 }
 
@@ -48,6 +48,6 @@ export class DeleteAuthorizedAddon {
 
   constructor(
     public payload: string,
-    public addonType: string,
+    public addonType: string
   ) {}
 }

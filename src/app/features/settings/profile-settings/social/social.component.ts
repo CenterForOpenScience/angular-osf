@@ -8,19 +8,8 @@ import { InputGroup } from 'primeng/inputgroup';
 import { InputGroupAddon } from 'primeng/inputgroupaddon';
 import { InputText } from 'primeng/inputtext';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  HostBinding,
-  inject,
-} from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
+import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { socials } from '@osf/features/settings/profile-settings/data';
 import { UserSocialLink } from '@osf/features/settings/profile-settings/entities/user-social-link.entity';
@@ -35,15 +24,7 @@ import {
 
 @Component({
   selector: 'osf-social',
-  imports: [
-    Button,
-    DropdownModule,
-    InputGroup,
-    InputGroupAddon,
-    InputText,
-    ReactiveFormsModule,
-    TranslatePipe,
-  ],
+  imports: [Button, DropdownModule, InputGroup, InputGroupAddon, InputText, ReactiveFormsModule, TranslatePipe],
   templateUrl: './social.component.html',
   styleUrl: './social.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,9 +34,7 @@ export class SocialComponent {
   readonly userSocialLinks: UserSocialLink[] = [];
   protected readonly socials = socials;
   readonly #store = inject(Store);
-  readonly socialLinks = this.#store.selectSignal(
-    ProfileSettingsSelectors.socialLinks,
-  );
+  readonly socialLinks = this.#store.selectSignal(ProfileSettingsSelectors.socialLinks);
   readonly #fb = inject(FormBuilder);
   readonly socialLinksForm = this.#fb.group({
     links: this.#fb.array<SocialLinksForm>([]),
@@ -71,10 +50,7 @@ export class SocialComponent {
         console.log(socialLink);
 
         const socialLinkGroup = this.#fb.group({
-          socialOutput: [
-            this.socials.find((social) => social.key === socialLinksKey),
-            Validators.required,
-          ],
+          socialOutput: [this.socials.find((social) => social.key === socialLinksKey), Validators.required],
           webAddress: [socialLink, Validators.required],
         });
 
@@ -114,17 +90,13 @@ export class SocialComponent {
     const mappedLinks = links.map((link) => {
       const key = link.socialOutput.key as SocialLinksKeys;
 
-      const value = SOCIAL_KEYS.includes(key)
-        ? [link.webAddress]
-        : link.webAddress;
+      const value = SOCIAL_KEYS.includes(key) ? [link.webAddress] : link.webAddress;
 
       return {
         [key]: value,
       };
     }) satisfies Partial<Social>[];
 
-    this.#store.dispatch(
-      new UpdateProfileSettingsSocialLinks({ socialLinks: mappedLinks }),
-    );
+    this.#store.dispatch(new UpdateProfileSettingsSocialLinks({ socialLinks: mappedLinks }));
   }
 }

@@ -3,26 +3,16 @@
 <form [formGroup]="employmentForm">
   <div formArrayName="positions" class="flex flex-column row-gap-4">
     @if (havePositions) {
-      @for (
-        position of positions.controls;
-        track position.value;
-        let index = $index
-      ) {
-        <div
-          [formGroupName]="index"
-          class="flex flex-column border-1 border-round-lg p-4 name-container row-gap-4"
-        >
+      @for (position of positions.controls; track position.value; let index = $index) {
+        <div [formGroupName]="index" class="flex flex-column border-1 border-round-lg p-4 name-container row-gap-4">
           <div class="flex flex-row">
             <h2>
-              {{
-                "settings.profileSettings.employment.title"
-                  | translate: { index: index + 1 }
-              }}
+              {{ 'settings.profileSettings.employment.title' | translate: { index: index + 1 } }}
             </h2>
             @if (index !== 0) {
               <div class="ml-auto remove-button">
                 <p-button class="ml-auto" (click)="removePosition(index)">
-                  {{ "settings.profileSettings.employment.remove" | translate }}
+                  {{ 'settings.profileSettings.employment.remove' | translate }}
                 </p-button>
               </div>
             }
@@ -31,60 +21,33 @@
           <div class="flex flex-column row-gap-4">
             <div class="w-full">
               <label for="job-title-{{ index }}" class="mb-1">
-                {{ "settings.profileSettings.employment.jobTitle" | translate }}
+                {{ 'settings.profileSettings.employment.jobTitle' | translate }}
               </label>
-              <input
-                pInputText
-                [id]="'job-title-' + index"
-                class="w-full"
-                formControlName="title"
-              />
+              <input pInputText [id]="'job-title-' + index" class="w-full" formControlName="title" />
             </div>
 
-            <div
-              class="flex w-full column-gap-3 row-gap-4 flex-wrap lg:flex-nowrap"
-            >
+            <div class="flex w-full column-gap-3 row-gap-4 flex-wrap lg:flex-nowrap">
               <div class="w-full lg:w-6">
                 <label for="department-{{ index }}" class="mb-1">
-                  {{
-                    "settings.profileSettings.employment.department" | translate
-                  }}
+                  {{ 'settings.profileSettings.employment.department' | translate }}
                 </label>
-                <input
-                  pInputText
-                  [id]="'department-' + index"
-                  class="w-full"
-                  formControlName="department"
-                />
+                <input pInputText [id]="'department-' + index" class="w-full" formControlName="department" />
               </div>
               <div class="w-full lg:w-6">
                 <label for="institution-{{ index }}" class="mb-1">
-                  {{
-                    "settings.profileSettings.employment.institution"
-                      | translate
-                  }}
+                  {{ 'settings.profileSettings.employment.institution' | translate }}
                 </label>
-                <input
-                  pInputText
-                  [id]="'institution-' + index"
-                  class="w-full"
-                  formControlName="institution"
-                />
+                <input pInputText [id]="'institution-' + index" class="w-full" formControlName="institution" />
               </div>
             </div>
 
             <div
               class="flex gap-5 flex-column align-items-start md:flex-row md:align-items-end lg:align-items-center lg:gap-3"
             >
-              <div
-                class="w-full md:w-6 flex column-gap-3 row-gap-4 flex-wrap lg:flex-nowrap"
-              >
+              <div class="w-full md:w-6 flex column-gap-3 row-gap-4 flex-wrap lg:flex-nowrap">
                 <div class="w-full lg:w-6">
                   <label for="start-date-{{ index }}" class="mb-1">
-                    {{
-                      "settings.profileSettings.employment.startDate"
-                        | translate
-                    }}
+                    {{ 'settings.profileSettings.employment.startDate' | translate }}
                   </label>
                   <p-datepicker
                     [id]="'start-date-' + index"
@@ -96,9 +59,7 @@
                 </div>
                 <div class="w-full lg:w-6">
                   <label for="end-date-{{ index }}" class="mb-1">
-                    {{
-                      "settings.profileSettings.employment.endDate" | translate
-                    }}
+                    {{ 'settings.profileSettings.employment.endDate' | translate }}
                   </label>
                   <p-datepicker
                     [id]="'end-date-' + index"
@@ -110,23 +71,15 @@
                 </div>
               </div>
 
-              <div
-                class="flex align-items-center w-full md:w-6 md:mb-3 lg:mb-0 lg:mt-4"
-              >
+              <div class="flex align-items-center w-full md:w-6 md:mb-3 lg:mb-0 lg:mt-4">
                 <p-checkbox
                   [binary]="true"
                   formControlName="ongoing"
                   [inputId]="'presently-employed-' + index"
                   name="presently-employed"
                 ></p-checkbox>
-                <label
-                  [for]="'presently-employed-' + index"
-                  class="ml-2 mb-0 cursor-pointer"
-                >
-                  {{
-                    "settings.profileSettings.employment.presentlyEmployed"
-                      | translate
-                  }}
+                <label [for]="'presently-employed-' + index" class="ml-2 mb-0 cursor-pointer">
+                  {{ 'settings.profileSettings.employment.presentlyEmployed' | translate }}
                 </label>
               </div>
             </div>
@@ -144,9 +97,7 @@
   (click)="addPosition()"
 />
 
-<div
-  class="flex justify-content-between align-items-end column-gap-2 md:ml-auto h-3rem mt-2"
->
+<div class="flex justify-content-between align-items-end column-gap-2 md:ml-auto h-3rem mt-2">
   <p-button
     class="w-6 btn-full-width md:w-auto"
     [label]="'settings.profileSettings.common.discardChanges' | translate"
@@ -154,9 +105,6 @@
     disabled="true"
   />
   <div class="w-6 btn-full-width md:w-auto wide-m-button">
-    <p-button
-      [label]="'settings.profileSettings.common.save' | translate"
-      (onClick)="handleSavePositions()"
-    />
+    <p-button [label]="'settings.profileSettings.common.save' | translate" (onClick)="handleSavePositions()" />
   </div>
 </div>

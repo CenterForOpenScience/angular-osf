@@ -12,16 +12,12 @@ export const settingsRoutes: Routes = [
       {
         path: 'profile-settings',
         loadComponent: () =>
-          import('./profile-settings/profile-settings.component').then(
-            (c) => c.ProfileSettingsComponent,
-          ),
+          import('./profile-settings/profile-settings.component').then((c) => c.ProfileSettingsComponent),
       },
       {
         path: 'account-settings',
         loadComponent: () =>
-          import('./account-settings/account-settings.component').then(
-            (c) => c.AccountSettingsComponent,
-          ),
+          import('./account-settings/account-settings.component').then((c) => c.AccountSettingsComponent),
       },
       developerAppsRoute,
       {
@@ -29,17 +25,12 @@ export const settingsRoutes: Routes = [
         children: [
           {
             path: '',
-            loadComponent: () =>
-              import('./addons/addons.component').then(
-                (mod) => mod.AddonsComponent,
-              ),
+            loadComponent: () => import('./addons/addons.component').then((mod) => mod.AddonsComponent),
           },
           {
             path: 'connect-addon',
             loadComponent: () =>
-              import('./addons/connect-addon/connect-addon.component').then(
-                (mod) => mod.ConnectAddonComponent,
-              ),
+              import('./addons/connect-addon/connect-addon.component').then((mod) => mod.ConnectAddonComponent),
           },
         ],
       },
@@ -47,9 +38,7 @@ export const settingsRoutes: Routes = [
       {
         path: 'notifications',
         loadComponent: () =>
-          import('./notifications/notifications.component').then(
-            (mod) => mod.NotificationsComponent,
-          ),
+          import('./notifications/notifications.component').then((mod) => mod.NotificationsComponent),
       },
     ],
   },

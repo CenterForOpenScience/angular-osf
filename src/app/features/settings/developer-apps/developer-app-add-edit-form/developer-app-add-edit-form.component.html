@@ -1,11 +1,7 @@
-<form
-  [formGroup]="appForm"
-  (ngSubmit)="handleSubmitForm()"
-  class="flex flex-column gap-3"
->
+<form [formGroup]="appForm" (ngSubmit)="handleSubmitForm()" class="flex flex-column gap-3">
   <div class="flex flex-column">
     <label for="app-name">
-      {{ "settings.developerApps.form.appName" | translate }}
+      {{ 'settings.developerApps.form.appName' | translate }}
     </label>
     <input
       pInputText
@@ -18,7 +14,7 @@
 
   <div class="flex flex-column">
     <label for="proj-homepage-url">
-      {{ "settings.developerApps.form.homepageUrl" | translate }}
+      {{ 'settings.developerApps.form.homepageUrl' | translate }}
     </label>
     <input
       pInputText
@@ -31,7 +27,7 @@
 
   <div class="flex flex-column">
     <label for="app-descr">
-      {{ "settings.developerApps.form.description" | translate }}
+      {{ 'settings.developerApps.form.description' | translate }}
     </label>
     <input
       pInputText
@@ -44,7 +40,7 @@
 
   <div class="flex flex-column">
     <label for="auth-callback-url">
-      {{ "settings.developerApps.form.callbackUrl" | translate }}
+      {{ 'settings.developerApps.form.callbackUrl' | translate }}
     </label>
     <input
       pInputText

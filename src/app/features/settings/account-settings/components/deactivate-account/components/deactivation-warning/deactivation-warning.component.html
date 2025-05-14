@@ -1,0 +1,29 @@
+<div class="flex flex-column gap-6">
+  <div class="flex flex-column gap-3">
+    <h3 class="account-setting-description">
+      {{ 'settings.accountSettings.deactivateAccount.warning.confirm' | translate }}
+    </h3>
+    <h3 class="account-setting-description">
+      {{ 'settings.accountSettings.deactivateAccount.warning.description' | translate }}
+    </h3>
+  </div>
+
+  <div class="flex gap-2">
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      (click)="dialogRef.close()"
+      [label]="'settings.accountSettings.common.buttons.cancel' | translate"
+      [text]="true"
+      severity="info"
+    ></p-button>
+
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      severity="danger"
+      (click)="deactivateAccount()"
+      [label]="'settings.accountSettings.common.buttons.configure' | translate"
+    ></p-button>
+  </div>
+</div>

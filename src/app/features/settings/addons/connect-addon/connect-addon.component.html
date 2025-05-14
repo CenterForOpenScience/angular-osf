@@ -1,7 +1,4 @@
-<osf-sub-header
-  [showButton]="false"
-  [title]="'settings.addons.connectAddon.title' | translate"
-/>
+<osf-sub-header [showButton]="false" [title]="'settings.addons.connectAddon.title' | translate" />
 <section class="stepper-container flex-column flex flex-1 p-5">
   <p-stepper [value]="!isAuthorized() ? 1 : 2">
     <p-step-panels>
@@ -10,21 +7,17 @@
           <section class="flex flex-column gap-2">
             <h2>
               {{ addon()?.providerName }}
-              {{ "settings.addons.connectAddon.terms" | translate }}
+              {{ 'settings.addons.connectAddon.terms' | translate }}
             </h2>
 
             <p-table [value]="terms()" class="addon-table">
               <ng-template pTemplate="header">
                 <tr>
                   <th>
-                    {{
-                      "settings.addons.connectAddon.table.function" | translate
-                    }}
+                    {{ 'settings.addons.connectAddon.table.function' | translate }}
                   </th>
                   <th>
-                    {{
-                      "settings.addons.connectAddon.table.status" | translate
-                    }}
+                    {{ 'settings.addons.connectAddon.table.status' | translate }}
                   </th>
                 </tr>
               </ng-template>
@@ -44,14 +37,10 @@
 
             <div class="flex flex-column gap-2 mt-4">
               <p>
-                {{
-                  "settings.addons.connectAddon.termsDescription" | translate
-                }}
+                {{ 'settings.addons.connectAddon.termsDescription' | translate }}
               </p>
               <p>
-                {{
-                  "settings.addons.connectAddon.storageDescription" | translate
-                }}
+                {{ 'settings.addons.connectAddon.storageDescription' | translate }}
               </p>
             </div>
 
@@ -74,163 +63,109 @@
 
       <p-step-panel [value]="2">
         <ng-template #content let-activateCallback="activateCallback">
-          <form
-            [formGroup]="addonForm"
-            (ngSubmit)="handleConnectStorageAddon()"
-            class="flex flex-column gap-5"
-          >
+          <form [formGroup]="addonForm" (ngSubmit)="handleConnectStorageAddon()" class="flex flex-column gap-5">
             <h2>
               {{
                 isAuthorized()
-                  ? ("settings.addons.connectAddon.reconnectAccount"
-                    | translate)
-                  : ("settings.addons.connectAddon.setupNewAccount" | translate)
+                  ? ('settings.addons.connectAddon.reconnectAccount' | translate)
+                  : ('settings.addons.connectAddon.setupNewAccount' | translate)
               }}
             </h2>
             <p-card>
-              @if (
-                addon()?.credentialsFormat ===
-                credentialsFormat.ACCESS_SECRET_KEYS
-              ) {
+              @if (addon()?.credentialsFormat === credentialsFormat.ACCESS_SECRET_KEYS) {
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.accessKey" | translate }}
+                  {{ 'settings.addons.form.fields.accessKey' | translate }}
                 </h2>
                 <input
                   class="mb-5"
                   pInputText
-                  [placeholder]="
-                    'settings.addons.form.fields.accessKey' | translate
-                  "
+                  [placeholder]="'settings.addons.form.fields.accessKey' | translate"
                   [formControlName]="formControls.AccessKey"
                 />
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.secretKey" | translate }}
+                  {{ 'settings.addons.form.fields.secretKey' | translate }}
                 </h2>
                 <input
                   class="mb-5"
                   pInputText
-                  [placeholder]="
-                    'settings.addons.form.fields.secretKey' | translate
-                  "
+                  [placeholder]="'settings.addons.form.fields.secretKey' | translate"
                   [formControlName]="formControls.SecretKey"
                 />
               }
 
-              @if (
-                addon()?.credentialsFormat ===
-                credentialsFormat.DATAVERSE_API_TOKEN
-              ) {
+              @if (addon()?.credentialsFormat === credentialsFormat.DATAVERSE_API_TOKEN) {
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.hostUrl" | translate }}
+                  {{ 'settings.addons.form.fields.hostUrl' | translate }}
                 </h2>
                 <p class="mb-2">
-                  {{
-                    "settings.addons.form.fields.hostUrlDescription" | translate
-                  }}
+                  {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
                 </p>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [formControlName]="formControls.HostUrl"
-                />
+                <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
                 <h2 class="mb-2">
-                  {{
-                    "settings.addons.form.fields.personalAccessToken"
-                      | translate
-                  }}
+                  {{ 'settings.addons.form.fields.personalAccessToken' | translate }}
                 </h2>
                 <input
                   class="mb-4"
                   pInputText
-                  [placeholder]="
-                    'settings.addons.form.fields.personalAccessToken'
-                      | translate
-                  "
+                  [placeholder]="'settings.addons.form.fields.personalAccessToken' | translate"
                   [formControlName]="formControls.PersonalAccessToken"
                 />
               }
 
-              @if (
-                addon()?.credentialsFormat ===
-                credentialsFormat.USERNAME_PASSWORD
-              ) {
+              @if (addon()?.credentialsFormat === credentialsFormat.USERNAME_PASSWORD) {
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.hostUrl" | translate }}
+                  {{ 'settings.addons.form.fields.hostUrl' | translate }}
                 </h2>
                 <p class="mb-2">
-                  {{
-                    "settings.addons.form.fields.hostUrlDescription" | translate
-                  }}
+                  {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
                 </p>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [formControlName]="formControls.HostUrl"
-                />
+                <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.username" | translate }}
+                  {{ 'settings.addons.form.fields.username' | translate }}
                 </h2>
                 <input
                   class="mb-4"
                   pInputText
-                  [placeholder]="
-                    'settings.addons.form.fields.username' | translate
-                  "
+                  [placeholder]="'settings.addons.form.fields.username' | translate"
                   [formControlName]="formControls.Username"
                 />
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.password" | translate }}
+                  {{ 'settings.addons.form.fields.password' | translate }}
                 </h2>
                 <p class="mb-2">
-                  {{
-                    "settings.addons.form.fields.passwordDescription"
-                      | translate
-                  }}
+                  {{ 'settings.addons.form.fields.passwordDescription' | translate }}
                 </p>
                 <div class="mb-4">
-                  <p-password
-                    [feedback]="false"
-                    [toggleMask]="true"
-                    [formControlName]="formControls.Password"
-                  />
+                  <p-password [feedback]="false" [toggleMask]="true" [formControlName]="formControls.Password" />
                 </div>
               }
 
-              @if (
-                addon()?.credentialsFormat === credentialsFormat.REPO_TOKEN
-              ) {
+              @if (addon()?.credentialsFormat === credentialsFormat.REPO_TOKEN) {
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.accessKey" | translate }}
+                  {{ 'settings.addons.form.fields.accessKey' | translate }}
                 </h2>
                 <input
                   class="mb-4"
                   pInputText
-                  [placeholder]="
-                    'settings.addons.form.fields.accessKey' | translate
-                  "
+                  [placeholder]="'settings.addons.form.fields.accessKey' | translate"
                   [formControlName]="formControls.AccessKey"
                 />
                 <h2 class="mb-2">
-                  {{ "settings.addons.form.fields.secretKey" | translate }}
+                  {{ 'settings.addons.form.fields.secretKey' | translate }}
                 </h2>
                 <input
                   class="mb-4"
                   pInputText
-                  [placeholder]="
-                    'settings.addons.form.fields.secretKey' | translate
-                  "
+                  [placeholder]="'settings.addons.form.fields.secretKey' | translate"
                   [formControlName]="formControls.SecretKey"
                 />
               }
 
               <h2 class="mb-2">
-                {{ "settings.addons.form.fields.accountName" | translate }}
+                {{ 'settings.addons.form.fields.accountName' | translate }}
               </h2>
               <p class="mb-2">
-                {{
-                  "settings.addons.form.fields.accountNameDescription"
-                    | translate
-                }}
+                {{ 'settings.addons.form.fields.accountNameDescription' | translate }}
               </p>
               <input pInputText [formControlName]="formControls.AccountName" />
             </p-card>
@@ -249,11 +184,7 @@
                   class="w-10rem btn-full-width"
                   [label]="'settings.addons.form.buttons.authorize' | translate"
                   type="submit"
-                  [disabled]="
-                    !addonForm.valid ||
-                    !this.userReference().length ||
-                    isConnecting()
-                  "
+                  [disabled]="!addonForm.valid || !this.userReference().length || isConnecting()"
                 ></p-button>
               } @else {
                 <p-button
@@ -269,11 +200,7 @@
                   [label]="'settings.addons.form.buttons.reconnect' | translate"
                   [link]="true"
                   (onClick)="handleConnectStorageAddon()"
-                  [disabled]="
-                    !addonForm.valid ||
-                    !this.userReference().length ||
-                    isConnecting()
-                  "
+                  [disabled]="!addonForm.valid || !this.userReference().length || isConnecting()"
                 ></p-button>
               }
             </div>
@@ -286,7 +213,7 @@
           <div class="flex flex-column gap-4">
             <div class="flex justify-content-between">
               <h2 class="align-self-center inline-block">
-                {{ "settings.addons.connectAddon.setupNewAccount" | translate }}
+                {{ 'settings.addons.connectAddon.setupNewAccount' | translate }}
               </h2>
               <p-button
                 [label]="'settings.addons.form.buttons.back' | translate"
@@ -297,14 +224,10 @@
             </div>
 
             <p>
-              {{ "settings.addons.connectAddon.oauthDescription" | translate }}
+              {{ 'settings.addons.connectAddon.oauthDescription' | translate }}
             </p>
-            <a
-              [href]="addonAuthUrl()"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {{ "settings.addons.connectAddon.startOauth" | translate }}
+            <a [href]="addonAuthUrl()" target="_blank" rel="noopener noreferrer">
+              {{ 'settings.addons.connectAddon.startOauth' | translate }}
             </a>
           </div>
         </ng-template>

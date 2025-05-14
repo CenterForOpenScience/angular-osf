@@ -164,6 +164,15 @@
           "storage": "Storage"
         }
       }
+    },
+    "confirmEmail": {
+      "title": "Add alternative email",
+      "description": "Would you like to add ",
+      "description2": " to your account?",
+      "buttons": {
+        "doNotAdd": "Do not add email",
+        "addEmail": "Add email"
+      }
     }
   },
   "myProjects": {
@@ -460,6 +469,158 @@
       "common": {
         "discardChanges": "Discard Changes",
         "save": "Save"
+      }
+    },
+    "accountSettings": {
+      "common": {
+        "buttons": {
+          "cancel": "Cancel",
+          "configure": "Configure",
+          "disable": "Disable",
+          "enable": "Enable",
+          "undo": "Undo",
+          "request": "Request"
+        }
+      },
+      "deactivateAccount": {
+        "title": "Deactivate Account",
+        "warning": {
+          "title": "Warning: This action cannot be undone once approved.",
+          "confirm": "Are you sure you want to request account deactivation?",
+          "description": "An OSF administrator will review your request. If accepted, you will NOT be able to reactivate your account."
+        },
+        "description": {
+          "main": "Deactivating your account will remove you from all public projects to which you are a contributor. Your account will no longer be associated with OSF projects, and your work on the OSF will be inaccessible.",
+          "secondary": "If this is a secondary account that you want to close, consider merging your accounts"
+        },
+        "pendingDeactivation": "Your account is currently pending deactivation.",
+        "actions": {
+          "undoDeactivation": "Undo deactivation request",
+          "requestDeactivation": "Request deactivation"
+        },
+        "dialog": {
+          "deactivate": {
+            "title": "Deactivate account"
+          },
+          "undo": {
+            "title": "Undo deactivation request?"
+          }
+        }
+      },
+      "affiliatedInstitutions": {
+        "title": "Affiliated Institutions",
+        "description": "Connect your account to institutions to access institutional features and services.",
+        "noInstitutions": "You have no affiliations."
+      },
+      "addEmail": {
+        "title": "Add alternative email",
+        "description": "Add an alternative email address to your account.",
+        "form": {
+          "email": "Email",
+          "emailPlaceholder": "email@example.com"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "add": "Add"
+        },
+        "messages": {
+          "success": "Alternative email added successfully",
+          "error": "Failed to add alternative email"
+        }
+      },
+      "changePassword": {
+        "title": "Change Password",
+        "form": {
+          "oldPassword": "Old password",
+          "newPassword": "New password",
+          "confirmPassword": "Confirm password",
+          "passwordRequirements": "Your password needs to be at least 8 characters long, include both lower- and upper-case characters, and have at least one number or special character"
+        },
+        "validation": {
+          "oldPasswordRequired": "Old password is required",
+          "newPasswordRequired": "New password is required",
+          "confirmPasswordRequired": "Please confirm your password",
+          "passwordsDoNotMatch": "Passwords do not match",
+          "sameAsOldPassword": "New password must be different from old password"
+        },
+        "buttons": {
+          "update": "Update"
+        },
+        "messages": {
+          "error": "Failed to update password. Please try again."
+        }
+      },
+      "connectedEmails": {
+        "title": "Connected Emails",
+        "description": "To merge an existing account with this one or to log in with multiple email addresses, add an alternate email address below. All projects and components will be displayed under the email address listed as primary.",
+        "primaryEmail": "Primary Email:",
+        "alternateEmails": "Alternate Emails:",
+        "unconfirmedEmails": "Unconfirmed emails:",
+        "buttons": {
+          "makePrimary": "Make Primary",
+          "resend": "Resend",
+          "resendConfirmation": "Resend confirmation",
+          "addEmail": "Add Email"
+        },
+        "dialog": {
+          "title": "Add alternative email"
+        }
+      },
+      "connectedIdentities": {
+        "title": "Connected identities",
+        "description": "Connected identities allow you to log in to the OSF via a third-party service. You can revoke these identifies.",
+        "noIdentities": "You have not authorized any external services to log in to the OSF."
+      },
+      "defaultStorageLocation": {
+        "title": "Default storage location",
+        "description": "This location will be applied to new projects and components. It will not affect existing projects and components.",
+        "buttons": {
+          "update": "Update Location"
+        }
+      },
+      "shareIndexing": {
+        "title": "Opt out of SHARE indexing",
+        "description": "By default, OSF users are indexed into SHARE, a free, open dataset of research metadata. This allows SHARE to include your user profile and research in its database, which is used by search engines and other services to make research more discoverable. You can opt out of this indexing by checking the box below. NOTE: Public projects, files, registrations, and preprints will still be indexed in SHARE.",
+        "learnMore": "Learn more about SHARE",
+        "options": {
+          "optOut": "Out of SHARE Indexing",
+          "optIn": "Opt In To SHARE Indexing"
+        },
+        "buttons": {
+          "update": "Update"
+        }
+      },
+      "twoFactorAuth": {
+        "title": "Two-factor authentication",
+        "description": {
+          "enabled": "By using two-factor authentication, you will protect your OSF account with both your password and your mobile phone.",
+          "warning": "Important: If you lose access to your mobile device, you will not be able to log in to your OSF account.",
+          "setup": "To use, you must install an appropriate application on your mobile device. Google Authenticator is a popular choice and is available for both Android and iOS.",
+          "verification": "Once verified, your device will display a six-digit code that must be entered during the login process. This code changes every few seconds, which means that unauthorized users will not be able to log in to you account, even if they know your password.",
+          "scan": "Scan the image below, or enter the secret key <p class='token'>{{secret}}</p> into your authentication device.",
+          "disabled": "Two-factor authentication protects your OSF account using both your password and email."
+        },
+        "verification": {
+          "label": "Enter your verification code:",
+          "error": "Verification code is invalid. Please try again."
+        },
+        "dialog": {
+          "configure": {
+            "title": "Configure"
+          },
+          "disable": {
+            "title": "Disable"
+          }
+        },
+        "configure": {
+          "description": {
+            "main": "Configuring two-factor authentication will not immediately activate this feature for your account.",
+            "steps": "You will need to follow the steps that appear below to complete the activation of two-factor authentication for your account."
+          }
+        },
+        "verify": {
+          "title": "Are you sure you want to disable two-factor authentication?"
+        }
       }
     }
   },

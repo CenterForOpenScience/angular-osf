@@ -8,25 +8,12 @@ import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
 import { NgOptimizedImage } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
-import {
-  GetResourcesByLink,
-  SearchSelectors,
-  SetResourceTab,
-  SetSortBy,
-} from '@osf/features/search/store';
+import { GetResourcesByLink, SearchSelectors, SetResourceTab, SetSortBy } from '@osf/features/search/store';
 import { FilterChipsComponent } from '@shared/components/resources/filter-chips/filter-chips.component';
 import { ResourceCardComponent } from '@shared/components/resources/resource-card/resource-card.component';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
@@ -71,12 +58,8 @@ export class ResourcesComponent {
   isFiltersOpen = signal(false);
   isSortingOpen = signal(false);
 
-  protected filters = this.#store.selectSignal(
-    ResourceFiltersSelectors.getAllFilters,
-  );
-  protected filtersOptions = this.#store.selectSignal(
-    ResourceFiltersOptionsSelectors.getAllOptions,
-  );
+  protected filters = this.#store.selectSignal(ResourceFiltersSelectors.getAllFilters);
+  protected filtersOptions = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getAllOptions);
   protected isAnyFilterSelected = computed(() => {
     return (
       this.filters().creator.value ||

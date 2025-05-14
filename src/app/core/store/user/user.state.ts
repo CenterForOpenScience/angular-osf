@@ -26,7 +26,7 @@ export class UserState {
       tap((user) => {
         ctx.dispatch(new SetCurrentUser(user));
         ctx.dispatch(new SetupProfileSettings());
-      }),
+      })
     );
   }
 

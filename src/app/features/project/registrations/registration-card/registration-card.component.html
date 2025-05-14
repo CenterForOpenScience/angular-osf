@@ -3,29 +3,26 @@
     <p-card>
       <div class="flex gap-3 flex-column">
         <div class="flex gap-2 w-full">
-          @if (registrationData()?.status === "withdrawn") {
+          @if (registrationData()?.status === 'withdrawn') {
             <i class="osf-icon-padlock"></i>
           }
 
-          @if (registrationData()?.status === "in_progress") {
+          @if (registrationData()?.status === 'in_progress') {
             <i class="osf-icon-padlock-unlock"></i>
           }
 
           <h2 class="align-self-center">{{ registrationData()?.title }}</h2>
 
-          @if (registrationData()?.status === "in_progress") {
+          @if (registrationData()?.status === 'in_progress') {
             <p-tag class="ml-3" severity="warn" value="Update In Progress" />
           }
 
-          @if (registrationData()?.status === "withdrawn") {
+          @if (registrationData()?.status === 'withdrawn') {
             <p-tag class="ml-3" severity="secondary" value="Withdrawn" />
           }
         </div>
 
-        <div
-          [class.mobile]="isMobile()"
-          class="flex sm:flex-column lg:flex-row justify-content-between gap-5"
-        >
+        <div [class.mobile]="isMobile()" class="flex sm:flex-column lg:flex-row justify-content-between gap-5">
           <div class="flex gap-3 flex-column w-full">
             <div class="flex gap-2 mt-1">
               <strong>Registration template:</strong>
@@ -50,10 +47,7 @@
             <div class="flex gap-2">
               <strong>Contributors:</strong>
               <span class="contributors">
-                @for (
-                  contributor of registrationData()?.contributors;
-                  track contributor.name
-                ) {
+                @for (contributor of registrationData()?.contributors; track contributor.name) {
                   <a [href]="contributor.link">{{ contributor.name }}</a>
                   @if (!$last) {
                     <span>, </span>
@@ -68,17 +62,9 @@
             </div>
 
             <div class="flex gap-2 mt-1">
-              @if (registrationData()?.status === "draft") {
-                <p-button
-                  severity="primary"
-                  label="Review"
-                  [class.btn-full-width]="isMobile()"
-                ></p-button>
-                <p-button
-                  severity="secondary"
-                  label="Edit"
-                  [class.btn-full-width]="isMobile()"
-                ></p-button>
+              @if (registrationData()?.status === 'draft') {
+                <p-button severity="primary" label="Review" [class.btn-full-width]="isMobile()"></p-button>
+                <p-button severity="secondary" label="Edit" [class.btn-full-width]="isMobile()"></p-button>
                 <p-button
                   severity="danger"
                   label="Delete"
@@ -87,14 +73,14 @@
                 ></p-button>
               } @else {
                 <p-button severity="primary" label="View"></p-button>
-                @if (registrationData()?.status === "in_progress") {
+                @if (registrationData()?.status === 'in_progress') {
                   <p-button severity="secondary" label="Update"></p-button>
                 }
               }
             </div>
           </div>
 
-          @if (registrationData()?.status !== "draft") {
+          @if (registrationData()?.status !== 'draft') {
             <div class="flex flex-column gap-3 pr-4 w-auto">
               <h3 class="mb-2">Open Resources</h3>
 

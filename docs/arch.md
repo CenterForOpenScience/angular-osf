@@ -56,3 +56,4 @@ ng generate component feature-name/components/new-component
 | ✨ **Directive** | `ng g d shared/directives/highlight` |
 
 
+```

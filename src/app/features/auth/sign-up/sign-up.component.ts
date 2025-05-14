@@ -9,12 +9,7 @@ import { PasswordModule } from 'primeng/password';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { PasswordInputHintComponent } from '@shared/components/password-input-hint/password-input-hint.component';
@@ -60,16 +55,13 @@ export class SignUpComponent implements OnInit {
       {
         fullName: ['', Validators.required],
         email: ['', [Validators.required, Validators.email]],
-        password: [
-          '',
-          [Validators.required, Validators.pattern(this.passwordRegex)],
-        ],
+        password: ['', [Validators.required, Validators.pattern(this.passwordRegex)]],
         confirmPassword: ['', Validators.required],
         agreeToTerms: [false, Validators.requiredTrue],
       },
       {
         validators: passwordMatchValidator(),
-      },
+      }
     );
   }
 

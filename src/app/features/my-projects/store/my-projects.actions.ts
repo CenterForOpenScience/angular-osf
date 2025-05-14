@@ -6,7 +6,7 @@ export class GetMyProjects {
   constructor(
     public pageNumber: number,
     public pageSize: number,
-    public filters: MyProjectsSearchFilters,
+    public filters: MyProjectsSearchFilters
   ) {}
 }
 
@@ -16,7 +16,7 @@ export class GetMyRegistrations {
   constructor(
     public pageNumber: number,
     public pageSize: number,
-    public filters: MyProjectsSearchFilters,
+    public filters: MyProjectsSearchFilters
   ) {}
 }
 
@@ -26,7 +26,7 @@ export class GetMyPreprints {
   constructor(
     public pageNumber: number,
     public pageSize: number,
-    public filters: MyProjectsSearchFilters,
+    public filters: MyProjectsSearchFilters
   ) {}
 }
 
@@ -36,7 +36,7 @@ export class GetMyBookmarks {
     public bookmarksId: string,
     public pageNumber: number,
     public pageSize: number,
-    public filters: MyProjectsSearchFilters,
+    public filters: MyProjectsSearchFilters
   ) {}
 }
 
@@ -56,6 +56,6 @@ export class CreateProject {
     public description: string,
     public templateFrom: string,
     public region: string,
-    public affiliations: string[],
+    public affiliations: string[]
   ) {}
 }

@@ -11,12 +11,9 @@ export function MapDateCreated(items: IndexValueSearch[]): DateCreated[] {
 
   for (const item of items) {
     if (item.type === 'search-result') {
-      const indexCard = items.find(
-        (p) => p.id === item.relationships.indexCard.data.id,
-      );
+      const indexCard = items.find((p) => p.id === item.relationships.indexCard.data.id);
       datesCreated.push({
-        value: (indexCard as IndexCardFilter).attributes.resourceMetadata
-          .displayLabel[0]['@value'],
+        value: (indexCard as IndexCardFilter).attributes.resourceMetadata.displayLabel[0]['@value'],
         count: item.attributes.cardSearchResultCount,
       });
     }

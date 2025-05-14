@@ -7,18 +7,9 @@ import { filter, map } from 'rxjs';
 
 import { Component, computed, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  ActivatedRoute,
-  NavigationEnd,
-  Router,
-  RouterLink,
-  RouterLinkActive,
-} from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
-import {
-  NAV_ITEMS,
-  PROJECT_MENU_ITEMS,
-} from '@core/constants/nav-items.constant';
+import { NAV_ITEMS, PROJECT_MENU_ITEMS } from '@core/constants/nav-items.constant';
 import { NavItem } from '@shared/entities/nav-item.interface';
 
 @Component({
@@ -32,25 +23,21 @@ export class NavMenuComponent {
   readonly #route = inject(ActivatedRoute);
   protected readonly navItems = NAV_ITEMS;
   protected readonly myProjectMenuItems = PROJECT_MENU_ITEMS;
-  protected readonly mainMenuItems = this.navItems.map((item) =>
-    this.#convertToMenuItem(item),
-  );
+  protected readonly mainMenuItems = this.navItems.map((item) => this.#convertToMenuItem(item));
 
   closeMenu = output<void>();
 
   protected readonly currentRoute = toSignal(
     this.#router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-      map(() => this.#getRouteInfo()),
+      map(() => this.#getRouteInfo())
     ),
     {
       initialValue: this.#getRouteInfo(),
-    },
+    }
   );
 
-  protected readonly currentProjectId = computed(
-    () => this.currentRoute().projectId,
-  );
+  protected readonly currentProjectId = computed(() => this.currentRoute().projectId);
   protected readonly isProjectRoute = computed(() => !!this.currentProjectId());
 
   #convertToMenuItem(item: NavItem): MenuItem {
@@ -58,8 +45,7 @@ export class NavMenuComponent {
     const isExpanded =
       item.isCollapsible &&
       (currentUrl.startsWith(item.path) ||
-        (item.items?.some((subItem) => currentUrl.startsWith(subItem.path)) ??
-          false));
+        (item.items?.some((subItem) => currentUrl.startsWith(subItem.path)) ?? false));
 
     return {
       label: item.label,
@@ -72,8 +58,7 @@ export class NavMenuComponent {
 
   #getRouteInfo() {
     const projectId = this.#route.firstChild?.snapshot.params['id'] || null;
-    const section =
-      this.#route.firstChild?.firstChild?.snapshot.url[0]?.path || 'overview';
+    const section = this.#route.firstChild?.firstChild?.snapshot.url[0]?.path || 'overview';
 
     return { projectId, section };
   }

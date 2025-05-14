@@ -10,39 +10,15 @@ import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { TableModule } from 'primeng/table';
 
 import { NgClass } from '@angular/common';
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  viewChild,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { Component, computed, effect, inject, signal, viewChild } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import {
-  AddonForm,
-  AddonFormControls,
-} from '@osf/features/settings/addons/entities/addon-form.entities';
+import { AddonForm, AddonFormControls } from '@osf/features/settings/addons/entities/addon-form.entities';
 import { AddonTerm } from '@osf/features/settings/addons/entities/addon-terms.interface';
-import {
-  Addon,
-  AddonRequest,
-  AuthorizedAddon,
-} from '@osf/features/settings/addons/entities/addons.entities';
+import { Addon, AddonRequest, AuthorizedAddon } from '@osf/features/settings/addons/entities/addons.entities';
 import { CredentialsFormat } from '@osf/features/settings/addons/entities/credentials-format.enum';
-import {
-  AddonsSelectors,
-  CreateAuthorizedAddon,
-  UpdateAuthorizedAddon,
-} from '@osf/features/settings/addons/store';
+import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@osf/features/settings/addons/store';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 
 import { ADDON_TERMS as addonTerms } from '../utils/addon-terms.const';
@@ -87,21 +63,14 @@ export class ConnectAddonComponent {
   protected readonly addon = signal<Addon | AuthorizedAddon | null>(null);
   protected readonly addonAuthUrl = signal<string>('/settings/addons');
   protected readonly formControls = AddonFormControls;
-  protected readonly userReference = this.#store.selectSignal(
-    AddonsSelectors.getAddonUserReference,
-  );
-  protected createdAddon = this.#store.selectSignal(
-    AddonsSelectors.getCreatedOrUpdatedStorageAddon,
-  );
+  protected readonly userReference = this.#store.selectSignal(AddonsSelectors.getAddonUserReference);
+  protected createdAddon = this.#store.selectSignal(AddonsSelectors.getCreatedOrUpdatedStorageAddon);
   protected readonly isConnecting = signal(false);
   protected isAuthorized = computed(() => {
     //check if the addon is already authorized
     const addon = this.addon();
     if (addon) {
-      return (
-        addon.type === 'authorized-storage-accounts' ||
-        addon.type === 'authorized-citation-accounts'
-      );
+      return addon.type === 'authorized-storage-accounts' || addon.type === 'authorized-citation-accounts';
     }
     return false;
   });
@@ -109,8 +78,7 @@ export class ConnectAddonComponent {
     //get the addon type string based on the addon type property
     const addon = this.addon();
     if (addon) {
-      return addon.type === 'external-storage-services' ||
-        addon.type === 'authorized-storage-accounts'
+      return addon.type === 'external-storage-services' || addon.type === 'authorized-storage-accounts'
         ? 'storage'
         : 'citation';
     }
@@ -147,11 +115,7 @@ export class ConnectAddonComponent {
       .dispatch(
         !this.isAuthorized()
           ? new CreateAuthorizedAddon(request, this.addonTypeString())
-          : new UpdateAuthorizedAddon(
-              request,
-              this.addonTypeString(),
-              this.addon()!.id,
-            ),
+          : new UpdateAuthorizedAddon(request, this.addonTypeString(), this.addon()!.id)
       )
       .subscribe({
         complete: () => {
@@ -174,54 +138,26 @@ export class ConnectAddonComponent {
 
     if (addon) {
       const formControls: Partial<AddonForm> = {
-        [AddonFormControls.AccountName]: this.#fb.control<string>(
-          addon.displayName || '',
-          Validators.required,
-        ),
+        [AddonFormControls.AccountName]: this.#fb.control<string>(addon.displayName || '', Validators.required),
       };
 
       switch (addon.credentialsFormat) {
         case CredentialsFormat.ACCESS_SECRET_KEYS:
-          formControls[AddonFormControls.AccessKey] = this.#fb.control<string>(
-            '',
-            Validators.required,
-          );
-          formControls[AddonFormControls.SecretKey] = this.#fb.control<string>(
-            '',
-            Validators.required,
-          );
+          formControls[AddonFormControls.AccessKey] = this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.SecretKey] = this.#fb.control<string>('', Validators.required);
           break;
         case CredentialsFormat.DATAVERSE_API_TOKEN:
-          formControls[AddonFormControls.HostUrl] = this.#fb.control<string>(
-            '',
-            Validators.required,
-          );
-          formControls[AddonFormControls.PersonalAccessToken] =
-            this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.HostUrl] = this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.PersonalAccessToken] = this.#fb.control<string>('', Validators.required);
           break;
         case CredentialsFormat.USERNAME_PASSWORD:
-          formControls[AddonFormControls.HostUrl] = this.#fb.control<string>(
-            '',
-            Validators.required,
-          );
-          formControls[AddonFormControls.Username] = this.#fb.control<string>(
-            '',
-            Validators.required,
-          );
-          formControls[AddonFormControls.Password] = this.#fb.control<string>(
-            '',
-            Validators.required,
-          );
+          formControls[AddonFormControls.HostUrl] = this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.Username] = this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.Password] = this.#fb.control<string>('', Validators.required);
           break;
         case CredentialsFormat.REPO_TOKEN:
-          formControls[AddonFormControls.AccessKey] = this.#fb.control<string>(
-            '',
-            Validators.required,
-          );
-          formControls[AddonFormControls.SecretKey] = this.#fb.control<string>(
-            '',
-            Validators.required,
-          );
+          formControls[AddonFormControls.AccessKey] = this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.SecretKey] = this.#fb.control<string>('', Validators.required);
           break;
       }
       return this.#fb.group(formControls as AddonForm);
@@ -235,8 +171,7 @@ export class ConnectAddonComponent {
     const addon = this.addon()!;
     const credentials: Record<string, unknown> = {};
     const initiateOAuth =
-      addon.credentialsFormat === CredentialsFormat.OAUTH2 ||
-      addon.credentialsFormat === CredentialsFormat.OAUTH;
+      addon.credentialsFormat === CredentialsFormat.OAUTH2 || addon.credentialsFormat === CredentialsFormat.OAUTH;
 
     switch (addon.credentialsFormat) {
       case CredentialsFormat.ACCESS_SECRET_KEYS:
@@ -244,8 +179,7 @@ export class ConnectAddonComponent {
         credentials['secret_key'] = formValue[AddonFormControls.SecretKey];
         break;
       case CredentialsFormat.DATAVERSE_API_TOKEN:
-        credentials['personal_access_token'] =
-          formValue[AddonFormControls.PersonalAccessToken];
+        credentials['personal_access_token'] = formValue[AddonFormControls.PersonalAccessToken];
         break;
       case CredentialsFormat.USERNAME_PASSWORD:
         credentials['username'] = formValue[AddonFormControls.Username];
@@ -290,18 +224,14 @@ export class ConnectAddonComponent {
       [`external_${this.addonTypeString()}_service`]: {
         data: {
           type: `external-${this.addonTypeString()}-services`,
-          id: this.isAuthorized()
-            ? (addon as AuthorizedAddon).externalStorageServiceId
-            : (addon as Addon).id, //check if addon is already authorized and set relationship ID accordingly
+          id: this.isAuthorized() ? (addon as AuthorizedAddon).externalStorageServiceId : (addon as Addon).id, //check if addon is already authorized and set relationship ID accordingly
         },
       },
     };
   }
 
   #getTerms(): AddonTerm[] {
-    const addon = this.#router.getCurrentNavigation()?.extras.state?.[
-      'addon'
-    ] as Addon | AuthorizedAddon;
+    const addon = this.#router.getCurrentNavigation()?.extras.state?.['addon'] as Addon | AuthorizedAddon;
     if (!addon) {
       this.#router.navigate(['/settings/addons']);
     }
@@ -311,16 +241,12 @@ export class ConnectAddonComponent {
     const provider = addon.providerName;
     const isCitationService = addon.type === 'external-citation-services';
 
-    const relevantTerms = isCitationService
-      ? addonTerms.filter((term) => term.citation)
-      : addonTerms;
+    const relevantTerms = isCitationService ? addonTerms.filter((term) => term.citation) : addonTerms;
 
     return relevantTerms.map((term) => {
       const feature = term.supportedFeature;
       const hasFeature = supportedFeatures.includes(feature);
-      const hasPartialFeature = supportedFeatures.includes(
-        `${feature}_PARTIAL`,
-      );
+      const hasPartialFeature = supportedFeatures.includes(`${feature}_PARTIAL`);
 
       let message: string;
       let type: 'warning' | 'info' | 'danger';

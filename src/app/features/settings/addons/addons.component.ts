@@ -6,14 +6,7 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SelectModule } from 'primeng/select';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
@@ -58,38 +51,19 @@ export class AddonsComponent {
   protected readonly defaultTabValue = 0;
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly searchValue = signal('');
-  protected readonly selectedCategory = signal<string>(
-    'external-storage-services',
-  );
+  protected readonly selectedCategory = signal<string>('external-storage-services');
   protected readonly selectedTab = signal<number>(this.defaultTabValue);
-  protected readonly currentUser = this.#store.selectSignal(
-    UserSelectors.getCurrentUser,
-  );
-  protected readonly addonsUserReference = this.#store.selectSignal(
-    AddonsSelectors.getAddonUserReference,
-  );
-  protected readonly storageAddons = this.#store.selectSignal(
-    AddonsSelectors.getStorageAddons,
-  );
-  protected readonly citationAddons = this.#store.selectSignal(
-    AddonsSelectors.getCitationAddons,
-  );
-  protected readonly authorizedStorageAddons = this.#store.selectSignal(
-    AddonsSelectors.getAuthorizedStorageAddons,
-  );
-  protected readonly authorizedCitationAddons = this.#store.selectSignal(
-    AddonsSelectors.getAuthorizedCitationAddons,
-  );
+  protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
+  protected readonly addonsUserReference = this.#store.selectSignal(AddonsSelectors.getAddonUserReference);
+  protected readonly storageAddons = this.#store.selectSignal(AddonsSelectors.getStorageAddons);
+  protected readonly citationAddons = this.#store.selectSignal(AddonsSelectors.getCitationAddons);
+  protected readonly authorizedStorageAddons = this.#store.selectSignal(AddonsSelectors.getAuthorizedStorageAddons);
+  protected readonly authorizedCitationAddons = this.#store.selectSignal(AddonsSelectors.getAuthorizedCitationAddons);
   protected readonly allAuthorizedAddons = computed(() => {
-    const authorizedAddons = [
-      ...this.authorizedStorageAddons(),
-      ...this.authorizedCitationAddons(),
-    ];
+    const authorizedAddons = [...this.authorizedStorageAddons(), ...this.authorizedCitationAddons()];
 
     const searchValue = this.searchValue().toLowerCase();
-    return authorizedAddons.filter((card) =>
-      card.displayName.includes(searchValue),
-    );
+    return authorizedAddons.filter((card) => card.displayName.includes(searchValue));
   });
 
   protected readonly userReferenceId = computed(() => {
@@ -97,22 +71,16 @@ export class AddonsComponent {
   });
 
   protected readonly currentAction = computed(() =>
-    this.selectedCategory() === 'external-storage-services'
-      ? GetStorageAddons
-      : GetCitationAddons,
+    this.selectedCategory() === 'external-storage-services' ? GetStorageAddons : GetCitationAddons
   );
 
   protected readonly currentAddonsState = computed(() =>
-    this.selectedCategory() === 'external-storage-services'
-      ? this.storageAddons()
-      : this.citationAddons(),
+    this.selectedCategory() === 'external-storage-services' ? this.storageAddons() : this.citationAddons()
   );
 
   protected readonly filteredAddonCards = computed(() => {
     const searchValue = this.searchValue().toLowerCase();
-    return this.currentAddonsState().filter((card) =>
-      card.externalServiceName.includes(searchValue),
-    );
+    return this.currentAddonsState().filter((card) => card.externalServiceName.includes(searchValue));
   });
 
   protected readonly tabOptions: SelectOption[] = [

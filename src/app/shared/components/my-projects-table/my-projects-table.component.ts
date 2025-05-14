@@ -5,12 +5,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
@@ -20,13 +15,7 @@ import { SortOrder } from '@shared/utils/sort-order.enum';
 @Component({
   selector: 'osf-my-projects-table',
   standalone: true,
-  imports: [
-    CommonModule,
-    TableModule,
-    SearchInputComponent,
-    Skeleton,
-    TranslatePipe,
-  ],
+  imports: [CommonModule, TableModule, SearchInputComponent, Skeleton, TranslatePipe],
   templateUrl: './my-projects-table.component.html',
   styleUrl: './my-projects-table.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

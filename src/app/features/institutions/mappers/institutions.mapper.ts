@@ -1,7 +1,4 @@
-import {
-  Institution,
-  UserInstitutionGetResponse,
-} from '../entities/institutions.models';
+import { Institution, UserInstitutionGetResponse } from '../entities/institutions.models';
 
 export class InstitutionsMapper {
   static fromResponse(response: UserInstitutionGetResponse): Institution {
@@ -14,8 +11,7 @@ export class InstitutionsMapper {
       rorIri: response.attributes.ror_iri,
       iris: response.attributes.iris,
       assets: response.attributes.assets,
-      institutionalRequestAccessEnabled:
-        response.attributes.institutional_request_access_enabled,
+      institutionalRequestAccessEnabled: response.attributes.institutional_request_access_enabled,
       logoPath: response.attributes.logo_path,
     };
   }

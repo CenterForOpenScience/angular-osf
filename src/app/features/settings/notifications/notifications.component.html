@@ -1,12 +1,8 @@
-<osf-sub-header
-  [showButton]="false"
-  [title]="'settings.notifications.header.title' | translate"
-  [icon]="'settings'"
-/>
+<osf-sub-header [showButton]="false" [title]="'settings.notifications.header.title' | translate" [icon]="'settings'" />
 
 <section class="flex flex-column xl:p-4 md:p-3 p-2 bg-white flex-1 gap-4">
   <section class="notification-item flex flex-column gap-4">
-    <h2>{{ "settings.notifications.emailPreferences.title" | translate }}</h2>
+    <h2>{{ 'settings.notifications.emailPreferences.title' | translate }}</h2>
 
     <div class="flex flex-column gap-3">
       <div class="flex gap-2">
@@ -14,17 +10,11 @@
 
         <div class="flex flex-column gap-1">
           <label for="v1" class="mb-0 font-bold notification-item-label">
-            {{
-              "settings.notifications.emailPreferences.items.general.title"
-                | translate
-            }}
+            {{ 'settings.notifications.emailPreferences.items.general.title' | translate }}
           </label>
 
           <div class="notification-item-description">
-            {{
-              "settings.notifications.emailPreferences.items.general.description"
-                | translate
-            }}
+            {{ 'settings.notifications.emailPreferences.items.general.description' | translate }}
           </div>
         </div>
       </div>
@@ -34,17 +24,11 @@
 
         <div class="flex flex-column gap-1">
           <label for="v2" class="mb-0 font-bold notification-item-label">
-            {{
-              "settings.notifications.emailPreferences.items.help.title"
-                | translate
-            }}
+            {{ 'settings.notifications.emailPreferences.items.help.title' | translate }}
           </label>
 
           <div class="notification-item-description">
-            {{
-              "settings.notifications.emailPreferences.items.help.description"
-                | translate
-            }}
+            {{ 'settings.notifications.emailPreferences.items.help.description' | translate }}
           </div>
         </div>
       </div>
@@ -52,9 +36,7 @@
       <div class="flex justify-content-end">
         <p-button
           [disabled]="true"
-          [label]="
-            'settings.notifications.emailPreferences.saveButton' | translate
-          "
+          [label]="'settings.notifications.emailPreferences.saveButton' | translate"
           size="large"
         >
         </p-button>
@@ -64,51 +46,36 @@
 
   <section class="notification-item flex flex-column gap-4">
     <h2>
-      {{ "settings.notifications.notificationPreferences.title" | translate }}
+      {{ 'settings.notifications.notificationPreferences.title' | translate }}
     </h2>
 
     <div>
-      {{ "settings.notifications.notificationPreferences.note" | translate }}
+      {{ 'settings.notifications.notificationPreferences.note' | translate }}
     </div>
 
     <section class="notification-configuration">
       <div>
-        {{
-          "settings.notifications.notificationPreferences.items.replies"
-            | translate
-        }}
+        {{ 'settings.notifications.notificationPreferences.items.replies' | translate }}
       </div>
       <p-dropdown class="dropdown"> </p-dropdown>
 
       <div>
-        {{
-          "settings.notifications.notificationPreferences.items.comments"
-            | translate
-        }}
+        {{ 'settings.notifications.notificationPreferences.items.comments' | translate }}
       </div>
       <p-dropdown class="dropdown"> </p-dropdown>
 
       <div>
-        {{
-          "settings.notifications.notificationPreferences.items.files"
-            | translate
-        }}
+        {{ 'settings.notifications.notificationPreferences.items.files' | translate }}
       </div>
       <p-dropdown class="dropdown"> </p-dropdown>
 
       <div>
-        {{
-          "settings.notifications.notificationPreferences.items.mentions"
-            | translate
-        }}
+        {{ 'settings.notifications.notificationPreferences.items.mentions' | translate }}
       </div>
       <p-dropdown class="dropdown"> </p-dropdown>
 
       <div>
-        {{
-          "settings.notifications.notificationPreferences.items.preprints"
-            | translate
-        }}
+        {{ 'settings.notifications.notificationPreferences.items.preprints' | translate }}
       </div>
       <p-dropdown class="dropdown"> </p-dropdown>
     </section>

@@ -28,10 +28,8 @@ export class DeveloperAppsContainerComponent {
   #translateService = inject(TranslateService);
 
   protected readonly isBaseRoute = toSignal(
-    this.#router.events.pipe(
-      map(() => this.#router.url === '/settings/developer-apps'),
-    ),
-    { initialValue: this.#router.url === '/settings/developer-apps' },
+    this.#router.events.pipe(map(() => this.#router.url === '/settings/developer-apps')),
+    { initialValue: this.#router.url === '/settings/developer-apps' }
   );
 
   createDeveloperApp(): void {
@@ -45,9 +43,7 @@ export class DeveloperAppsContainerComponent {
     this.#dialogService.open(DeveloperAppAddEditFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: this.#translateService.instant(
-        'settings.developerApps.form.createTitle',
-      ),
+      header: this.#translateService.instant('settings.developerApps.form.createTitle'),
       closeOnEscape: true,
       modal: true,
       closable: true,

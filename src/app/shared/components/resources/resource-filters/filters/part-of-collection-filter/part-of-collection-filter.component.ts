@@ -2,23 +2,12 @@ import { Store } from '@ngxs/store';
 
 import { Select, SelectChangeEvent } from 'primeng/select';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
-import {
-  ResourceFiltersSelectors,
-  SetPartOfCollection,
-} from '@shared/components/resources/resource-filters/store';
+import { ResourceFiltersSelectors, SetPartOfCollection } from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-part-of-collection-filter',
@@ -30,12 +19,8 @@ import {
 export class PartOfCollectionFilterComponent {
   readonly #store = inject(Store);
 
-  protected availablePartOfCollections = this.#store.selectSignal(
-    ResourceFiltersOptionsSelectors.getPartOfCollection,
-  );
-  protected partOfCollectionState = this.#store.selectSignal(
-    ResourceFiltersSelectors.getPartOfCollection,
-  );
+  protected availablePartOfCollections = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getPartOfCollection);
+  protected partOfCollectionState = this.#store.selectSignal(ResourceFiltersSelectors.getPartOfCollection);
   protected inputText = signal<string | null>(null);
   protected partOfCollectionsOptions = computed(() => {
     return this.availablePartOfCollections().map((partOfCollection) => ({
@@ -62,9 +47,7 @@ export class PartOfCollectionFilterComponent {
 
   setPartOfCollections(event: SelectChangeEvent): void {
     if ((event.originalEvent as PointerEvent).pointerId && event.value) {
-      const part = this.partOfCollectionsOptions().find((p) =>
-        p.label.includes(event.value),
-      );
+      const part = this.partOfCollectionsOptions().find((p) => p.label.includes(event.value));
       if (part) {
         this.#store.dispatch(new SetPartOfCollection(part.label, part.id));
         this.#store.dispatch(GetAllOptions);

@@ -7,12 +7,7 @@ import { MenuModule } from 'primeng/menu';
 
 import { map } from 'rxjs';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
@@ -44,12 +39,8 @@ export class HeaderComponent {
   #currentUrl = toSignal(this.#router.events.pipe(map(() => this.#router.url)));
 
   protected readonly authButtonText = computed(() =>
-    this.#currentUrl()?.includes('sign-up')
-      ? 'navigation.signIn'
-      : 'navigation.signUp',
+    this.#currentUrl()?.includes('sign-up') ? 'navigation.signIn' : 'navigation.signUp'
   );
 
-  protected readonly authButtonLink = computed(() =>
-    this.#currentUrl()?.includes('sign-up') ? '/login' : '/sign-up',
-  );
+  protected readonly authButtonLink = computed(() => (this.#currentUrl()?.includes('sign-up') ? '/login' : '/sign-up'));
 }

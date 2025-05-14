@@ -5,16 +5,12 @@ import { inject, InjectionToken } from '@angular/core';
 
 import { BreakpointQueries } from '@shared/utils/breakpoint-queries.enum';
 
-function createBreakpointToken(
-  query: string,
-): InjectionToken<Observable<boolean>> {
+function createBreakpointToken(query: string): InjectionToken<Observable<boolean>> {
   return new InjectionToken<Observable<boolean>>(`Breakpoint ${query}`, {
     providedIn: 'root',
     factory: () => {
       const breakpointObserver = inject(BreakpointObserver);
-      return breakpointObserver
-        .observe([query])
-        .pipe(map((result) => result.matches));
+      return breakpointObserver.observe([query]).pipe(map((result) => result.matches));
     },
   });
 }

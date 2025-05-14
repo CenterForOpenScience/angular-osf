@@ -1,15 +1,12 @@
 <section class="content-container flex-1" [class.mobile]="isXSmall()">
   <p>
-    {{ "settings.tokens.list.description" | translate }}
+    {{ 'settings.tokens.list.description' | translate }}
   </p>
 
   <section class="tokens-container flex-1 flex flex-column">
     @for (token of tokens(); track $index) {
       <p-card>
-        <section
-          class="flex align-items-center justify-content-between card-body"
-          [class.mobile]="isXSmall()"
-        >
+        <section class="flex align-items-center justify-content-between card-body" [class.mobile]="isXSmall()">
           <a [routerLink]="[token.id, 'details']">
             <h2>{{ token.name }}</h2>
           </a>
@@ -28,10 +25,7 @@
     @if (isLoading()) {
       @for (_ of [1, 2, 3]; track $index) {
         <p-card>
-          <section
-            class="flex align-items-center justify-content-between card-body"
-            [class.mobile]="isXSmall()"
-          >
+          <section class="flex align-items-center justify-content-between card-body" [class.mobile]="isXSmall()">
             <p-skeleton width="20rem" height="2rem"></p-skeleton>
             <p-skeleton width="6rem" height="3rem"></p-skeleton>
           </section>

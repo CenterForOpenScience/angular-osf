@@ -21,12 +21,10 @@ export class BreadcrumbComponent {
   });
 
   constructor() {
-    this.#router.events
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe((event) => {
-        if (event instanceof NavigationEnd) {
-          this.url.set(this.#router.url);
-        }
-      });
+    this.#router.events.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.url.set(this.#router.url);
+      }
+    });
   }
 }

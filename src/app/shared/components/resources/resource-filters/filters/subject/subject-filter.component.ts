@@ -2,23 +2,12 @@ import { Store } from '@ngxs/store';
 
 import { Select, SelectChangeEvent } from 'primeng/select';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
-import {
-  ResourceFiltersSelectors,
-  SetSubject,
-} from '@shared/components/resources/resource-filters/store';
+import { ResourceFiltersSelectors, SetSubject } from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-subject-filter',
@@ -30,12 +19,8 @@ import {
 export class SubjectFilterComponent {
   readonly #store = inject(Store);
 
-  protected availableSubjects = this.#store.selectSignal(
-    ResourceFiltersOptionsSelectors.getSubjects,
-  );
-  protected subjectState = this.#store.selectSignal(
-    ResourceFiltersSelectors.getSubject,
-  );
+  protected availableSubjects = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getSubjects);
+  protected subjectState = this.#store.selectSignal(ResourceFiltersSelectors.getSubject);
   protected inputText = signal<string | null>(null);
   protected subjectsOptions = computed(() => {
     if (this.inputText() !== null) {
@@ -73,9 +58,7 @@ export class SubjectFilterComponent {
 
   setSubject(event: SelectChangeEvent): void {
     if ((event.originalEvent as PointerEvent).pointerId && event.value) {
-      const subject = this.subjectsOptions().find((p) =>
-        p.label.includes(event.value),
-      );
+      const subject = this.subjectsOptions().find((p) => p.label.includes(event.value));
       if (subject) {
         this.#store.dispatch(new SetSubject(subject.label, subject.id));
         this.#store.dispatch(GetAllOptions);

@@ -1,11 +1,6 @@
 import { InputText } from 'primeng/inputtext';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  input,
-  model,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({

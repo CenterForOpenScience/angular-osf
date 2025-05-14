@@ -8,18 +8,10 @@ import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import { debounceTime } from 'rxjs';
+import { debounceTime, skip } from 'rxjs';
 
 import { NgOptimizedImage } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  OnDestroy,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, signal, untracked } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -32,10 +24,7 @@ import {
   SetSearchText,
 } from '@osf/features/search/store';
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
-import {
-  ResetFiltersState,
-  ResourceFiltersSelectors,
-} from '@shared/components/resources/resource-filters/store';
+import { ResetFiltersState, ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
 import { ResourcesWrapperComponent } from '@shared/components/resources/resources-wrapper/resources-wrapper.component';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
@@ -70,45 +59,19 @@ export class SearchComponent implements OnDestroy {
   protected searchValue = signal('');
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
 
-  protected readonly creatorsFilter = this.#store.selectSignal(
-    ResourceFiltersSelectors.getCreator,
-  );
-  protected readonly dateCreatedFilter = this.#store.selectSignal(
-    ResourceFiltersSelectors.getDateCreated,
-  );
-  protected readonly funderFilter = this.#store.selectSignal(
-    ResourceFiltersSelectors.getFunder,
-  );
-  protected readonly subjectFilter = this.#store.selectSignal(
-    ResourceFiltersSelectors.getSubject,
-  );
-  protected readonly licenseFilter = this.#store.selectSignal(
-    ResourceFiltersSelectors.getLicense,
-  );
-  protected readonly resourceTypeFilter = this.#store.selectSignal(
-    ResourceFiltersSelectors.getResourceType,
-  );
-  protected readonly institutionFilter = this.#store.selectSignal(
-    ResourceFiltersSelectors.getInstitution,
-  );
-  protected readonly providerFilter = this.#store.selectSignal(
-    ResourceFiltersSelectors.getProvider,
-  );
-  protected readonly partOfCollectionFilter = this.#store.selectSignal(
-    ResourceFiltersSelectors.getPartOfCollection,
-  );
-  protected searchStoreValue = this.#store.selectSignal(
-    SearchSelectors.getSearchText,
-  );
-  protected resourcesTabStoreValue = this.#store.selectSignal(
-    SearchSelectors.getResourceTab,
-  );
-  protected sortByStoreValue = this.#store.selectSignal(
-    SearchSelectors.getSortBy,
-  );
-  readonly isMyProfilePage = this.#store.selectSignal(
-    SearchSelectors.getIsMyProfile,
-  );
+  protected readonly creatorsFilter = this.#store.selectSignal(ResourceFiltersSelectors.getCreator);
+  protected readonly dateCreatedFilter = this.#store.selectSignal(ResourceFiltersSelectors.getDateCreated);
+  protected readonly funderFilter = this.#store.selectSignal(ResourceFiltersSelectors.getFunder);
+  protected readonly subjectFilter = this.#store.selectSignal(ResourceFiltersSelectors.getSubject);
+  protected readonly licenseFilter = this.#store.selectSignal(ResourceFiltersSelectors.getLicense);
+  protected readonly resourceTypeFilter = this.#store.selectSignal(ResourceFiltersSelectors.getResourceType);
+  protected readonly institutionFilter = this.#store.selectSignal(ResourceFiltersSelectors.getInstitution);
+  protected readonly providerFilter = this.#store.selectSignal(ResourceFiltersSelectors.getProvider);
+  protected readonly partOfCollectionFilter = this.#store.selectSignal(ResourceFiltersSelectors.getPartOfCollection);
+  protected searchStoreValue = this.#store.selectSignal(SearchSelectors.getSearchText);
+  protected resourcesTabStoreValue = this.#store.selectSignal(SearchSelectors.getResourceTab);
+  protected sortByStoreValue = this.#store.selectSignal(SearchSelectors.getSortBy);
+  readonly isMyProfilePage = this.#store.selectSignal(SearchSelectors.getIsMyProfile);
 
   protected selectedTab: ResourceTab = ResourceTab.All;
   protected readonly ResourceTab = ResourceTab;
@@ -133,7 +96,7 @@ export class SearchComponent implements OnDestroy {
 
     // put search value in store and update resources, filters
     toObservable(this.searchValue)
-      .pipe(debounceTime(500))
+      .pipe(skip(1), debounceTime(500))
       .subscribe((searchText) => {
         this.#store.dispatch(new SetSearchText(searchText));
         this.#store.dispatch(GetAllOptions);

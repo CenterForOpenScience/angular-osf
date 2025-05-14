@@ -4,14 +4,7 @@ import { AccordionModule } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 
 import { DatePipe, NgOptimizedImage } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  inject,
-  OnDestroy,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -30,15 +23,7 @@ import { SearchComponent } from '../search/search.component';
 @Component({
   selector: 'osf-my-profile',
   standalone: true,
-  imports: [
-    Button,
-    DatePipe,
-    NgOptimizedImage,
-    AccordionModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SearchComponent,
-  ],
+  imports: [Button, DatePipe, NgOptimizedImage, AccordionModule, FormsModule, ReactiveFormsModule, SearchComponent],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -62,12 +47,7 @@ export class MyProfileComponent implements OnDestroy {
     this.#store.dispatch(new SetIsMyProfile(true));
 
     effect(() => {
-      this.#store.dispatch(
-        new SetCreator(
-          this.currentUser()?.fullName ?? '',
-          this.currentUser()?.iri ?? '',
-        ),
-      );
+      this.#store.dispatch(new SetCreator(this.currentUser()?.fullName ?? '', this.currentUser()?.iri ?? ''));
     });
   }
 

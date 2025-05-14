@@ -1,0 +1,25 @@
+<section class="account-setting">
+  <h2 class="account-setting-header">{{ 'settings.accountSettings.connectedIdentities.title' | translate }}</h2>
+
+  <div class="account-setting-description">
+    {{ 'settings.accountSettings.connectedIdentities.description' | translate }}
+  </div>
+
+  <div class="account-setting-content">
+    @for (identity of externalIdentities(); track identity.id) {
+      <div class="account-setting-email--readonly">
+        {{ identity.id }}: {{ identity.externalId }} ({{ identity.status }})
+        <i
+          class="osf-icon-close"
+          tabindex="0"
+          (click)="deleteExternalIdentity(identity.id)"
+          (keydown.enter)="deleteExternalIdentity(identity.id)"
+        >
+        </i>
+      </div>
+    }
+    @if (!externalIdentities().length) {
+      <div>{{ 'settings.accountSettings.connectedIdentities.noIdentities' | translate }}</div>
+    }
+  </div>
+</section>

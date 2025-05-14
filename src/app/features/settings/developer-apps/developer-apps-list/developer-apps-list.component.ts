@@ -7,13 +7,7 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
@@ -40,26 +34,19 @@ export class DeveloperAppsListComponent implements OnInit {
 
   protected readonly isLoading = signal(false);
   protected readonly isXSmall = toSignal(inject(IS_XSMALL));
-  readonly developerApplications = this.#store.selectSignal(
-    DeveloperAppsSelectors.getDeveloperApps,
-  );
+  readonly developerApplications = this.#store.selectSignal(DeveloperAppsSelectors.getDeveloperApps);
 
   deleteApp(developerApp: DeveloperApp): void {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message: this.#translateService.instant(
-        'settings.developerApps.confirmation.delete.message',
-      ),
-      header: this.#translateService.instant(
-        'settings.developerApps.confirmation.delete.title',
-        { name: developerApp.name },
-      ),
+      message: this.#translateService.instant('settings.developerApps.confirmation.delete.message'),
+      header: this.#translateService.instant('settings.developerApps.confirmation.delete.title', {
+        name: developerApp.name,
+      }),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: this.#translateService.instant(
-          'settings.developerApps.list.deleteButton',
-        ),
+        label: this.#translateService.instant('settings.developerApps.list.deleteButton'),
       },
       accept: () => {
         this.#store.dispatch(new DeleteDeveloperApp(developerApp.clientId));

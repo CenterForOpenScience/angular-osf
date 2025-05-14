@@ -23,11 +23,7 @@
       <osf-search-input class="w-30rem" placeholder="Search your projects" />
 
       <div class="sorting-container no-border-dropdown">
-        <p-dropdown
-          placeholder="Sort by name: A-Z"
-          optionLabel="label"
-          optionValue="value"
-        ></p-dropdown>
+        <p-dropdown placeholder="Sort by name: A-Z" optionLabel="label" optionValue="value"></p-dropdown>
       </div>
 
       <div class="flex gap-2 ml-auto">
@@ -55,8 +51,8 @@
       @for (file of files(); track file.downloads) {
         <div class="files-table-row">
           <div class="files-table-cell flex gap-2">
-            @if (file.downloadType && file.type !== "folder") {
-              @if (file.downloadType === "doc") {
+            @if (file.downloadType && file.type !== 'folder') {
+              @if (file.downloadType === 'doc') {
                 <i style="color: #337ab7" class="osf-icon-doc"></i>
               } @else {
                 <i style="color: #b73333" class="osf-icon-pdf"></i>
@@ -75,7 +71,7 @@
             {{ file.size }}
           </div>
           <div class="files-table-cell">
-            {{ file.modifiedAt | date: "MMM d, y hh:mm a" }}
+            {{ file.modifiedAt | date: 'MMM d, y hh:mm a' }}
           </div>
           <div class="files-table-cell">
             <p-button
@@ -84,9 +80,7 @@
               styleClass="w-2rem h-2rem"
               severity="secondary"
               icon="pi pi-ellipsis-v"
-              (click)="
-                $event.preventDefault(); $event.stopImmediatePropagation()
-              "
+              (click)="$event.preventDefault(); $event.stopImmediatePropagation()"
             ></p-button>
           </div>
         </div>

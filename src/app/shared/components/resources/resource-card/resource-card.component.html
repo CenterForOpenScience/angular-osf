@@ -3,50 +3,35 @@
     <p-accordion-panel value="0">
       <p-accordion-header class="flex flex-row column-gap-3 align-items-start">
         <div class="flex flex-column row-gap-3">
-          @if (
-            item()?.resourceType && item()?.resourceType === ResourceType.Agent
-          ) {
+          @if (item()?.resourceType && item()?.resourceType === ResourceType.Agent) {
             <p class="type">User</p>
           } @else if (item()?.resourceType) {
             <p class="type">{{ ResourceType[item()?.resourceType!] }}</p>
           }
 
           <div class="flex align-items-center column-gap-1">
-            @if (
-              item()?.resourceType === ResourceType.File && item()?.fileName
-            ) {
+            @if (item()?.resourceType === ResourceType.File && item()?.fileName) {
               <a class="title" [href]="item()?.id">{{ item()?.fileName }}</a>
             } @else if (item()?.title && item()?.title) {
               <a class="title" [href]="item()?.id">{{ item()?.title }}</a>
             }
             @if (item()?.orcid) {
               <a [href]="item()?.orcid" class="orcid-icon">
-                <img
-                  ngSrc="assets/icons/system/orchid.svg"
-                  width="16"
-                  height="16"
-                  alt="orcid"
-                />
+                <img ngSrc="assets/icons/system/orchid.svg" width="16" height="16" alt="orcid" />
               </a>
             }
           </div>
 
           @if (item()?.creators?.length) {
             <div>
-              @for (
-                creator of item()?.creators!.slice(0, 4);
-                track creator.id;
-                let i = $index
-              ) {
+              @for (creator of item()?.creators!.slice(0, 4); track creator.id; let i = $index) {
                 <a [href]="creator.id" target="_blank">{{ creator.name }}</a>
                 @if (i < (item()?.creators)!.length - 1 && i < 3) {
                   <a>, </a>
                 }
               }
               @if ((item()?.creators)!.length > 4) {
-                <p class="inline">
-                  &nbsp;and {{ (item()?.creators)!.length - 4 }} more
-                </p>
+                <p class="inline">&nbsp;and {{ (item()?.creators)!.length - 4 }} more</p>
               }
             </div>
           }
@@ -54,25 +39,21 @@
           @if (item()?.from?.id && item()?.from?.name) {
             <div>
               <p class="inline mr-1">From:</p>
-              <a class="inline" [href]="item()?.from?.id">{{
-                item()?.from?.name
-              }}</a>
+              <a class="inline" [href]="item()?.from?.id">{{ item()?.from?.name }}</a>
             </div>
           }
 
           @if (item()?.dateCreated && item()?.dateModified) {
             <p class="date">
               @if (!isSmall()) {
-                Date created: {{ item()?.dateCreated | date: "MMMM d, y" }} |
-                Date modified: {{ item()?.dateModified | date: "MMMM d, y" }}
+                Date created: {{ item()?.dateCreated | date: 'MMMM d, y' }} | Date modified:
+                {{ item()?.dateModified | date: 'MMMM d, y' }}
               } @else {
                 <div class="flex flex-column row-gap-1">
-                  <p>
-                    Date created: {{ item()?.dateCreated | date: "MMMM d, y" }}
-                  </p>
+                  <p>Date created: {{ item()?.dateCreated | date: 'MMMM d, y' }}</p>
                   <p>
                     Date modified:
-                    {{ item()?.dateModified | date: "MMMM d, y" }}
+                    {{ item()?.dateModified | date: 'MMMM d, y' }}
                   </p>
                 </div>
               }
@@ -146,9 +127,7 @@
           }
 
           @if (item()?.registrationTemplate) {
-            <p class="description">
-              Registration Template: {{ item()?.registrationTemplate }}
-            </p>
+            <p class="description">Registration Template: {{ item()?.registrationTemplate }}</p>
           }
 
           @if (item()?.provider?.id) {
@@ -158,14 +137,8 @@
             </span>
           }
 
-          @if (
-            item()?.conflictOfInterestResponse &&
-            item()?.conflictOfInterestResponse === "no-conflict-of-interest"
-          ) {
-            <p class="description">
-              Conflict of Interest response: Author asserted no Conflict of
-              Interest
-            </p>
+          @if (item()?.conflictOfInterestResponse && item()?.conflictOfInterestResponse === 'no-conflict-of-interest') {
+            <p class="description">Conflict of Interest response: Author asserted no Conflict of Interest</p>
           }
 
           @if (item()?.resourceType !== ResourceType.Agent && item()?.id) {
@@ -189,9 +162,7 @@
               <p-skeleton width="9rem" height="19px" />
             } @else {
               <p>Public projects: {{ item()?.publicProjects ?? 0 }}</p>
-              <p>
-                Public registrations: {{ item()?.publicRegistrations ?? 0 }}
-              </p>
+              <p>Public registrations: {{ item()?.publicRegistrations ?? 0 }}</p>
               <p>Public preprints: {{ item()?.publicPreprints ?? 0 }}</p>
             }
           }

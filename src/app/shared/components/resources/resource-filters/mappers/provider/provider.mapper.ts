@@ -2,9 +2,7 @@ import { ProviderFilter } from '@shared/components/resources/resource-filters/mo
 import { ProviderIndexCardFilter } from '@shared/components/resources/resource-filters/models/provider/provider-index-card-filter.entity';
 import { ProviderIndexValueSearch } from '@shared/components/resources/resource-filters/models/provider/provider-index-value-search.entity';
 
-export function MapProviders(
-  items: ProviderIndexValueSearch[],
-): ProviderFilter[] {
+export function MapProviders(items: ProviderIndexValueSearch[]): ProviderFilter[] {
   const providers: ProviderFilter[] = [];
 
   if (!items) {
@@ -13,14 +11,10 @@ export function MapProviders(
 
   for (const item of items) {
     if (item.type === 'search-result') {
-      const indexCard = items.find(
-        (p) => p.id === item.relationships.indexCard.data.id,
-      );
+      const indexCard = items.find((p) => p.id === item.relationships.indexCard.data.id);
       providers.push({
-        id: (indexCard as ProviderIndexCardFilter).attributes
-          .resourceMetadata?.['@id'],
-        label: (indexCard as ProviderIndexCardFilter).attributes
-          .resourceMetadata?.name?.[0]?.['@value'],
+        id: (indexCard as ProviderIndexCardFilter).attributes.resourceMetadata?.['@id'],
+        label: (indexCard as ProviderIndexCardFilter).attributes.resourceMetadata?.name?.[0]?.['@value'],
         count: item.attributes.cardSearchResultCount,
       });
     }

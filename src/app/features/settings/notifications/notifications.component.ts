@@ -11,13 +11,7 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
 @Component({
   selector: 'osf-notifications',
   standalone: true,
-  imports: [
-    SubHeaderComponent,
-    Checkbox,
-    Button,
-    DropdownModule,
-    TranslatePipe,
-  ],
+  imports: [SubHeaderComponent, Checkbox, Button, DropdownModule, TranslatePipe],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -7,9 +7,7 @@ import {
 } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
 
 export class DeveloperAppMapper {
-  static toCreateRequest(
-    developerCreate: DeveloperAppCreateUpdate,
-  ): DeveloperAppCreateRequest {
+  static toCreateRequest(developerCreate: DeveloperAppCreateUpdate): DeveloperAppCreateRequest {
     return {
       data: {
         attributes: {
@@ -23,9 +21,7 @@ export class DeveloperAppMapper {
     };
   }
 
-  static toUpdateRequest(
-    developerUpdate: DeveloperAppCreateUpdate,
-  ): DeveloperAppUpdateRequest {
+  static toUpdateRequest(developerUpdate: DeveloperAppCreateUpdate): DeveloperAppUpdateRequest {
     return {
       data: {
         id: developerUpdate.id!,

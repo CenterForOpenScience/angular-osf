@@ -1,7 +1,4 @@
-<div
-  class="search-container"
-  [class]="!isMyProfilePage() ? 'mt-6 xl:mt-8' : 'mt-5 xl:mt-6'"
->
+<div class="search-container" [class]="!isMyProfilePage() ? 'mt-6 xl:mt-8' : 'mt-5 xl:mt-6'">
   <img
     ngSrc="assets/icons/colored/question-mark.svg"
     alt="better-research"
@@ -21,11 +18,7 @@
 </div>
 
 <div class="flex-column flex flex-1 w-full resources-tab-panel">
-  <p-tabs
-    [value]="selectedTab"
-    (valueChange)="onTabChange(+$event)"
-    class="flex-1"
-  >
+  <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1">
     @if (!isMobile()) {
       <p-tablist>
         <p-tab [value]="ResourceTab.All">All</p-tab>
@@ -40,26 +33,13 @@
     }
 
     <p-tabpanels class="p-3 sm:p-5 flex-1">
-      <p-tabpanel
-        [value]="ResourceTab.All"
-        class="flex flex-column gap-4 flex-1"
-      >
-      </p-tabpanel>
-      <p-tabpanel [value]="ResourceTab.Projects" class="flex flex-column gap-5">
-      </p-tabpanel>
-      <p-tabpanel
-        [value]="ResourceTab.Registrations"
-        class="flex flex-column gap-5"
-      ></p-tabpanel>
-      <p-tabpanel
-        [value]="ResourceTab.Preprints"
-        class="flex flex-column gap-5"
-      ></p-tabpanel>
-      <p-tabpanel [value]="ResourceTab.Files" class="flex flex-column gap-5">
-      </p-tabpanel>
+      <p-tabpanel [value]="ResourceTab.All" class="flex flex-column gap-4 flex-1"> </p-tabpanel>
+      <p-tabpanel [value]="ResourceTab.Projects" class="flex flex-column gap-5"> </p-tabpanel>
+      <p-tabpanel [value]="ResourceTab.Registrations" class="flex flex-column gap-5"></p-tabpanel>
+      <p-tabpanel [value]="ResourceTab.Preprints" class="flex flex-column gap-5"></p-tabpanel>
+      <p-tabpanel [value]="ResourceTab.Files" class="flex flex-column gap-5"> </p-tabpanel>
       @if (!isMyProfilePage()) {
-        <p-tabpanel [value]="ResourceTab.Users" class="flex flex-column gap-5">
-        </p-tabpanel>
+        <p-tabpanel [value]="ResourceTab.Users" class="flex flex-column gap-5"> </p-tabpanel>
       }
     </p-tabpanels>
   </p-tabs>
@@ -71,17 +51,13 @@
       <div class="stepper first-stepper">
         <h3>Improved OSF Search</h3>
         <p>
-          Enter any term in the search box and filter by specific object types.
-          More information is available on our help guides.
+          Enter any term in the search box and filter by specific object types. More information is available on our
+          help guides.
         </p>
         <div class="flex align-items-center mt-4">
           <p>1 of 3</p>
           <div class="flex column-gap-3 ml-auto wide-button">
-            <p-button
-              (click)="currentStep = 0"
-              label="Skip"
-              severity="secondary"
-            />
+            <p-button (click)="currentStep = 0" label="Skip" severity="secondary" />
             <p-button (click)="currentStep = currentStep + 1">Next</p-button>
           </div>
         </div>
@@ -92,17 +68,13 @@
       <div class="stepper second-stepper">
         <h3>Refine Your Search</h3>
         <p>
-          Narrow the source, discipline, and more. For example, find content
-          supported by a specific funder or view only datasets.
+          Narrow the source, discipline, and more. For example, find content supported by a specific funder or view only
+          datasets.
         </p>
         <div class="flex align-items-center mt-4">
           <p>2 of 3</p>
           <div class="flex column-gap-3 ml-auto wide-button">
-            <p-button
-              (click)="currentStep = 0"
-              label="Skip"
-              severity="secondary"
-            />
+            <p-button (click)="currentStep = 0" label="Skip" severity="secondary" />
             <p-button (click)="currentStep = currentStep + 1">Next</p-button>
           </div>
         </div>
@@ -113,8 +85,8 @@
       <div class="stepper third-stepper">
         <h3>Add Metadata</h3>
         <p>
-          Remember to add metadata and resources to your own work on OSF to make
-          it more discoverable! Learn more in our help guides.
+          Remember to add metadata and resources to your own work on OSF to make it more discoverable! Learn more in our
+          help guides.
         </p>
         <div class="flex align-items-center mt-4">
           <p>3 of 3</p>

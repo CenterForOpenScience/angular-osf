@@ -7,37 +7,16 @@ import { Checkbox } from 'primeng/checkbox';
 import { DatePicker } from 'primeng/datepicker';
 import { InputText } from 'primeng/inputtext';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  HostBinding,
-  inject,
-} from '@angular/core';
-import {
-  FormArray,
-  FormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
+import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import {
-  Employment,
-  EmploymentForm,
-} from '@osf/features/settings/profile-settings/employment/employment.entities';
+import { Employment, EmploymentForm } from '@osf/features/settings/profile-settings/employment/employment.entities';
 import { UpdateProfileSettingsEmployment } from '@osf/features/settings/profile-settings/profile-settings.actions';
 import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
 
 @Component({
   selector: 'osf-employment',
-  imports: [
-    Button,
-    Checkbox,
-    DatePicker,
-    InputText,
-    ReactiveFormsModule,
-    TranslatePipe,
-  ],
+  imports: [Button, Checkbox, DatePicker, InputText, ReactiveFormsModule, TranslatePipe],
   templateUrl: './employment.component.html',
   styleUrl: './employment.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,9 +24,7 @@ import { ProfileSettingsSelectors } from '@osf/features/settings/profile-setting
 export class EmploymentComponent {
   @HostBinding('class') classes = 'flex flex-column gap-5';
   readonly #store = inject(Store);
-  readonly employment = this.#store.selectSignal(
-    ProfileSettingsSelectors.employment,
-  );
+  readonly employment = this.#store.selectSignal(ProfileSettingsSelectors.employment);
   readonly #fb = inject(FormBuilder);
   readonly employmentForm = this.#fb.group({
     positions: this.#fb.array<EmploymentForm>([]),
@@ -111,23 +88,17 @@ export class EmploymentComponent {
       institution: employment.institution,
       startYear: this.setupDates(employment.startDate, null).startYear,
       startMonth: this.setupDates(employment.startDate, null).startMonth,
-      endYear: employment.ongoing
-        ? null
-        : this.setupDates('', employment.endDate).endYear,
-      endMonth: employment.ongoing
-        ? null
-        : this.setupDates('', employment.endDate).endMonth,
+      endYear: employment.ongoing ? null : this.setupDates('', employment.endDate).endYear,
+      endMonth: employment.ongoing ? null : this.setupDates('', employment.endDate).endMonth,
       ongoing: !employment.ongoing,
     })) satisfies Employment[];
 
-    this.#store.dispatch(
-      new UpdateProfileSettingsEmployment({ employment: formattedEmployments }),
-    );
+    this.#store.dispatch(new UpdateProfileSettingsEmployment({ employment: formattedEmployments }));
   }
 
   private setupDates(
     startDate: Date | string,
-    endDate: Date | string | null,
+    endDate: Date | string | null
   ): {
     startYear: string | number;
     startMonth: number;

@@ -31,13 +31,11 @@ export class AddonsService {
 
   getAddons(addonType: string): Observable<Addon[]> {
     return this.#jsonApiService
-      .get<
-        JsonApiResponse<AddonGetResponse[], null>
-      >(`${environment.addonsApiUrl}/external-${addonType}-services`)
+      .get<JsonApiResponse<AddonGetResponse[], null>>(`${environment.addonsApiUrl}/external-${addonType}-services`)
       .pipe(
         map((response) => {
           return response.data.map((item) => AddonMapper.fromResponse(item));
-        }),
+        })
       );
   }
 
@@ -51,16 +49,11 @@ export class AddonsService {
     };
 
     return this.#jsonApiService
-      .get<
-        JsonApiResponse<UserReference[], null>
-      >(environment.addonsApiUrl + '/user-references/', params)
+      .get<JsonApiResponse<UserReference[], null>>(environment.addonsApiUrl + '/user-references/', params)
       .pipe(map((response) => response.data));
   }
 
-  getAuthorizedAddons(
-    addonType: string,
-    referenceId: string,
-  ): Observable<AuthorizedAddon[]> {
+  getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAddon[]> {
     const params = {
       [`fields[external-${addonType}-services]`]: 'external_service_name',
     };
@@ -70,37 +63,30 @@ export class AddonsService {
       >(`${environment.addonsApiUrl}/user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
       .pipe(
         map((response) => {
-          return response.data.map((item) =>
-            AddonMapper.fromAuthorizedAddonResponse(item, response.included),
-          );
-        }),
+          return response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included));
+        })
       );
   }
 
-  createAuthorizedAddon(
-    addonRequestPayload: AddonRequest,
-    addonType: string,
-  ): Observable<AddonResponse> {
+  createAuthorizedAddon(addonRequestPayload: AddonRequest, addonType: string): Observable<AddonResponse> {
     return this.#jsonApiService.post<AddonResponse>(
       `${environment.addonsApiUrl}/authorized-${addonType}-accounts/`,
-      addonRequestPayload,
+      addonRequestPayload
     );
   }
 
   updateAuthorizedAddon(
     addonRequestPayload: AddonRequest,
     addonType: string,
-    addonId: string,
+    addonId: string
   ): Observable<AddonResponse> {
     return this.#jsonApiService.patch<AddonResponse>(
       `${environment.addonsApiUrl}/authorized-${addonType}-accounts/${addonId}/`,
-      addonRequestPayload,
+      addonRequestPayload
     );
   }
 
   deleteAuthorizedAddon(id: string, addonType: string): Observable<void> {
-    return this.#jsonApiService.delete(
-      `${environment.addonsApiUrl}/authorized-${addonType}-accounts/${id}/`,
-    );
+    return this.#jsonApiService.delete(`${environment.addonsApiUrl}/authorized-${addonType}-accounts/${id}/`);
   }
 }

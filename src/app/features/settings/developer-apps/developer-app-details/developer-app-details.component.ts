@@ -13,14 +13,7 @@ import { InputText } from 'primeng/inputtext';
 import { map, of, switchMap, timer } from 'rxjs';
 
 import { CdkCopyToClipboard } from '@angular/cdk/clipboard';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -69,62 +62,46 @@ export class DeveloperAppDetailsComponent {
     this.#activatedRoute.params.pipe(
       map((params) => params['id']),
       switchMap((clientId) => {
-        const app = this.#store.selectSnapshot(
-          DeveloperAppsSelectors.getDeveloperAppDetails,
-        )(clientId);
+        const app = this.#store.selectSnapshot(DeveloperAppsSelectors.getDeveloperAppDetails)(clientId);
         if (!app) {
           this.#store.dispatch(new GetDeveloperAppDetails(clientId));
         }
         return of(clientId);
-      }),
-    ),
+      })
+    )
   );
 
   readonly developerApp = computed(() => {
     const id = this.clientId();
     if (!id) return null;
-    const app = this.#store.selectSignal(
-      DeveloperAppsSelectors.getDeveloperAppDetails,
-    )();
+    const app = this.#store.selectSignal(DeveloperAppsSelectors.getDeveloperAppDetails)();
     return app(id) ?? null;
   });
 
   protected readonly isClientSecretVisible = signal(false);
-  protected readonly clientSecret = computed<string>(
-    () => this.developerApp()?.clientSecret ?? '',
-  );
-  protected readonly hiddenClientSecret = computed<string>(() =>
-    '*'.repeat(this.clientSecret().length),
-  );
-  protected readonly clientSecretCopiedNotificationVisible =
-    signal<boolean>(false);
+  protected readonly clientSecret = computed<string>(() => this.developerApp()?.clientSecret ?? '');
+  protected readonly hiddenClientSecret = computed<string>(() => '*'.repeat(this.clientSecret().length));
+  protected readonly clientSecretCopiedNotificationVisible = signal<boolean>(false);
   protected readonly clientIdCopiedNotificationVisible = signal<boolean>(false);
 
   deleteApp(): void {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message: this.#translateService.instant(
-        'settings.developerApps.confirmation.delete.message',
-      ),
-      header: this.#translateService.instant(
-        'settings.developerApps.confirmation.delete.title',
-        { name: this.developerApp()?.name },
-      ),
+      message: this.#translateService.instant('settings.developerApps.confirmation.delete.message'),
+      header: this.#translateService.instant('settings.developerApps.confirmation.delete.title', {
+        name: this.developerApp()?.name,
+      }),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: this.#translateService.instant(
-          'settings.developerApps.list.deleteButton',
-        ),
+        label: this.#translateService.instant('settings.developerApps.list.deleteButton'),
       },
       accept: () => {
-        this.#store
-          .dispatch(new DeleteDeveloperApp(this.clientId()))
-          .subscribe({
-            complete: () => {
-              this.#router.navigate(['settings/developer-apps']);
-            },
-          });
+        this.#store.dispatch(new DeleteDeveloperApp(this.clientId())).subscribe({
+          complete: () => {
+            this.#router.navigate(['settings/developer-apps']);
+          },
+        });
       },
     });
   }
@@ -132,18 +109,12 @@ export class DeveloperAppDetailsComponent {
   resetClientSecret(): void {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message: this.#translateService.instant(
-        'settings.developerApps.confirmation.resetSecret.message',
-      ),
-      header: this.#translateService.instant(
-        'settings.developerApps.confirmation.resetSecret.title',
-      ),
+      message: this.#translateService.instant('settings.developerApps.confirmation.resetSecret.message'),
+      header: this.#translateService.instant('settings.developerApps.confirmation.resetSecret.title'),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: this.#translateService.instant(
-          'settings.developerApps.details.clientSecret.reset',
-        ),
+        label: this.#translateService.instant('settings.developerApps.details.clientSecret.reset'),
       },
       accept: () => {
         this.#store.dispatch(new ResetClientSecret(this.clientId()));

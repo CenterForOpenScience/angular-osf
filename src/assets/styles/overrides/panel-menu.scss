@@ -36,8 +36,7 @@
     background-color: transparent;
   }
 
-  .p-panelmenu-header:not(.p-disabled):focus-visible
-    .p-panelmenu-header-content,
+  .p-panelmenu-header:not(.p-disabled):focus-visible .p-panelmenu-header-content,
   .p-panelmenu-item.p-focus > .p-panelmenu-item-content {
     background-color: var.$dark-blue-2;
     border-radius: 0.5rem;

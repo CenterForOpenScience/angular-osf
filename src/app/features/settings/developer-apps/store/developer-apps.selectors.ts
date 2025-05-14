@@ -11,10 +11,7 @@ export class DeveloperAppsSelectors {
   }
 
   @Selector([DeveloperAppsState])
-  static getDeveloperAppDetails(
-    state: DeveloperAppsStateModel,
-  ): (clientId: string) => DeveloperApp | undefined {
-    return (clientId: string) =>
-      state.developerApps.find((app) => app.clientId === clientId);
+  static getDeveloperAppDetails(state: DeveloperAppsStateModel): (clientId: string) => DeveloperApp | undefined {
+    return (clientId: string) => state.developerApps.find((app) => app.clientId === clientId);
   }
 }

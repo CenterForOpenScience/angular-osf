@@ -2,23 +2,12 @@ import { Store } from '@ngxs/store';
 
 import { Select, SelectChangeEvent } from 'primeng/select';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
-import {
-  ResourceFiltersSelectors,
-  SetInstitution,
-} from '@shared/components/resources/resource-filters/store';
+import { ResourceFiltersSelectors, SetInstitution } from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-institution-filter',
@@ -30,20 +19,14 @@ import {
 export class InstitutionFilterComponent {
   readonly #store = inject(Store);
 
-  protected institutionState = this.#store.selectSignal(
-    ResourceFiltersSelectors.getInstitution,
-  );
-  protected availableInstitutions = this.#store.selectSignal(
-    ResourceFiltersOptionsSelectors.getInstitutions,
-  );
+  protected institutionState = this.#store.selectSignal(ResourceFiltersSelectors.getInstitution);
+  protected availableInstitutions = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getInstitutions);
   protected inputText = signal<string | null>(null);
   protected institutionsOptions = computed(() => {
     if (this.inputText() !== null) {
       const search = this.inputText()!.toLowerCase();
       return this.availableInstitutions()
-        .filter((institution) =>
-          institution.label.toLowerCase().includes(search),
-        )
+        .filter((institution) => institution.label.toLowerCase().includes(search))
         .map((institution) => ({
           labelCount: institution.label + ' (' + institution.count + ')',
           label: institution.label,
@@ -77,13 +60,9 @@ export class InstitutionFilterComponent {
 
   setInstitutions(event: SelectChangeEvent): void {
     if ((event.originalEvent as PointerEvent).pointerId && event.value) {
-      const institution = this.institutionsOptions()?.find((institution) =>
-        institution.label.includes(event.value),
-      );
+      const institution = this.institutionsOptions()?.find((institution) => institution.label.includes(event.value));
       if (institution) {
-        this.#store.dispatch(
-          new SetInstitution(institution.label, institution.id),
-        );
+        this.#store.dispatch(new SetInstitution(institution.label, institution.id));
         this.#store.dispatch(GetAllOptions);
       }
     } else {

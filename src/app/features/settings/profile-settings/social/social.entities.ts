@@ -16,12 +16,7 @@ export interface Social {
 
 export type SocialLinksKeys = keyof Social;
 
-export const SOCIAL_KEYS: SocialLinksKeys[] = [
-  'github',
-  'twitter',
-  'linkedIn',
-  'profileWebsites',
-];
+export const SOCIAL_KEYS: SocialLinksKeys[] = ['github', 'twitter', 'linkedIn', 'profileWebsites'];
 
 export interface SocialLinksEntity {
   id: number;

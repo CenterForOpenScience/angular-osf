@@ -5,13 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  HostBinding,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 import { NameForm } from '@osf/features/settings/profile-settings/name/name.entities';
@@ -53,8 +47,7 @@ export class NameComponent {
   }
 
   saveChanges() {
-    const { fullName, givenName, middleNames, familyName, suffix } =
-      this.form.getRawValue();
+    const { fullName, givenName, middleNames, familyName, suffix } = this.form.getRawValue();
     this.#store.dispatch(
       new UpdateProfileSettingsUser({
         user: {
@@ -64,7 +57,7 @@ export class NameComponent {
           familyName,
           suffix,
         },
-      }),
+      })
     );
   }
 }

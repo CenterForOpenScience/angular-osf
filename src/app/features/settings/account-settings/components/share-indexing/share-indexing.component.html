@@ -1,0 +1,26 @@
+<section class="account-setting">
+  <h2 class="account-setting-header">{{ 'settings.accountSettings.shareIndexing.title' | translate }}</h2>
+
+  <div class="account-setting-description">
+    {{ 'settings.accountSettings.shareIndexing.description' | translate }} <br />
+    <a class="account-setting-link">{{ 'settings.accountSettings.shareIndexing.learnMore' | translate }}</a>
+  </div>
+
+  <div class="account-setting-radio-group">
+    <div class="account-setting-radio-item">
+      <p-radio-button name="optOut" value="0" inputId="indexing1" [(ngModel)]="indexing"> </p-radio-button>
+      <label for="indexing1">{{ 'settings.accountSettings.shareIndexing.options.optOut' | translate }}</label>
+    </div>
+
+    <div class="account-setting-radio-item">
+      <p-radio-button name="optIn" value="1" inputId="indexing2" [(ngModel)]="indexing"> </p-radio-button>
+      <label for="indexing2">{{ 'settings.accountSettings.shareIndexing.options.optIn' | translate }}</label>
+    </div>
+  </div>
+
+  <div class="account-setting-action">
+    <p-button size="large" (click)="updateIndexing()">{{
+      'settings.accountSettings.shareIndexing.buttons.update' | translate
+    }}</p-button>
+  </div>
+</section>

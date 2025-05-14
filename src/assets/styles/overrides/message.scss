@@ -17,3 +17,17 @@
 .p-message-error {
   background-color: var.$red-1;
 }
+
+.warning-message {
+  .p-message {
+    width: fit-content;
+    height: fit-content;
+    color: var.$red-1;
+    background: var.$red-2;
+    padding: 1.7rem;
+
+    .p-message-text {
+      font-weight: 700;
+    }
+  }
+}
