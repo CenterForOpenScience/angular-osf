@@ -1,13 +1,20 @@
 <section class="sub-header" [class.mobile]="isXSmall()">
-  <div class="title-icon">
-    @if (icon()) {
-      <i [class]="'osf-icon-' + icon()"></i>
-    }
-    <h1>{{ title() }}</h1>
-  </div>
-  @if (showButton()) {
-    <div class="btn-container" [class.btn-full-width]="isXSmall()">
-      <p-button [label]="buttonLabel()" (onClick)="buttonClick.emit()"></p-button>
+  <div class="title-row" [class.mobile]="isXSmall()">
+    <div class="title-icon">
+      @if (icon()) {
+        <i [class]="'osf-icon-' + icon()"></i>
+      }
+      <h1>{{ title() }}</h1>
     </div>
+    @if (showButton()) {
+      <div class="btn-container" [class.btn-full-width]="isXSmall()">
+        <p-button [label]="buttonLabel()" (onClick)="buttonClick.emit()"></p-button>
+      </div>
+    }
+  </div>
+  @if (description()) {
+    <section>
+      <p>{{ description() }}</p>
+    </section>
   }
 </section>
