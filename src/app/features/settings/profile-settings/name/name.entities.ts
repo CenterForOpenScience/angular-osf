@@ -1,6 +1,6 @@
 import { FormControl } from '@angular/forms';
 
-import { User } from '@core/services/user/user.entity';
+import { User } from '@core/services/user/user.models';
 
 export interface Name {
   fullName: string;
