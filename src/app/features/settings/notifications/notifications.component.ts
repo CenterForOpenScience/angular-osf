@@ -15,7 +15,7 @@ import { UserSelectors } from '@core/store/user/user.selectors';
 import {
   EmailPreferencesForm,
   EmailPreferencesFormControls,
-} from '@osf/features/settings/notifications/notifications-form.entities';
+} from '@osf/features/settings/notifications/models/notifications-form.models';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 
 @Component({
