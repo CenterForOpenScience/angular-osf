@@ -22,12 +22,7 @@ export class AuthService {
   //TODO: rewrite/refactor methods according to the API
   async login(credentials: LoginCredentials): Promise<void> {
     try {
-      const response = await firstValueFrom(
-        this.#http.post<AuthResponse>(
-          `${this.#API_URL}/auth/login`,
-          credentials,
-        ),
-      );
+      const response = await firstValueFrom(this.#http.post<AuthResponse>(`${this.#API_URL}/auth/login`, credentials));
 
       if (response.accessToken) {
         this.#setAuthToken(response.accessToken);

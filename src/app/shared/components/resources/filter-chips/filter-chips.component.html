@@ -1,5 +1,5 @@
 @if (filters().creator.value && !isMyProfilePage()) {
-  @let creator = filters().creator.filterName + ": " + filters().creator.label;
+  @let creator = filters().creator.filterName + ': ' + filters().creator.label;
   <p-chip [label]="creator" [removable]="true">
     <ng-template pTemplate="removeicon">
       <i
@@ -14,8 +14,7 @@
 }
 
 @if (filters().dateCreated.value) {
-  @let dateCreated =
-    filters().dateCreated.filterName + ": " + filters().dateCreated.label;
+  @let dateCreated = filters().dateCreated.filterName + ': ' + filters().dateCreated.label;
   <p-chip [label]="dateCreated" [removable]="true">
     <ng-template pTemplate="removeicon">
       <i
@@ -30,7 +29,7 @@
 }
 
 @if (filters().funder.value) {
-  @let funder = filters().funder.filterName + ": " + filters().funder.label;
+  @let funder = filters().funder.filterName + ': ' + filters().funder.label;
   <p-chip [label]="funder" [removable]="true">
     <ng-template pTemplate="removeicon">
       <i
@@ -45,7 +44,7 @@
 }
 
 @if (filters().subject.value) {
-  @let subject = filters().subject.filterName + ": " + filters().subject.label;
+  @let subject = filters().subject.filterName + ': ' + filters().subject.label;
   <p-chip [label]="subject" [removable]="true">
     <ng-template pTemplate="removeicon">
       <i
@@ -60,7 +59,7 @@
 }
 
 @if (filters().license.value) {
-  @let license = filters().license.filterName + ": " + filters().license.label;
+  @let license = filters().license.filterName + ': ' + filters().license.label;
   <p-chip [label]="license" [removable]="true">
     <ng-template pTemplate="removeicon">
       <i
@@ -75,8 +74,7 @@
 }
 
 @if (filters().resourceType.value) {
-  @let resourceType =
-    filters().resourceType.filterName + ": " + filters().resourceType.label;
+  @let resourceType = filters().resourceType.filterName + ': ' + filters().resourceType.label;
   <p-chip [label]="resourceType" [removable]="true">
     <ng-template pTemplate="removeicon">
       <i
@@ -91,8 +89,7 @@
 }
 
 @if (filters().institution.value) {
-  @let institution =
-    filters().institution.filterName + ": " + filters().institution.label;
+  @let institution = filters().institution.filterName + ': ' + filters().institution.label;
   <p-chip [label]="institution" [removable]="true">
     <ng-template pTemplate="removeicon">
       <i
@@ -107,8 +104,7 @@
 }
 
 @if (filters().provider.value) {
-  @let provider =
-    filters().provider.filterName + ": " + filters().provider.label;
+  @let provider = filters().provider.filterName + ': ' + filters().provider.label;
   <p-chip [label]="provider" [removable]="true">
     <ng-template pTemplate="removeicon">
       <i
@@ -123,10 +119,7 @@
 }
 
 @if (filters().partOfCollection.value) {
-  @let partOfCollection =
-    filters().partOfCollection.filterName +
-    ": " +
-    filters().partOfCollection.label;
+  @let partOfCollection = filters().partOfCollection.filterName + ': ' + filters().partOfCollection.label;
   <p-chip [label]="partOfCollection" [removable]="true">
     <ng-template pTemplate="removeicon">
       <i

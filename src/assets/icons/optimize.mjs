@@ -15,7 +15,6 @@ const removeFillAttribute = (svgString) => {
 fs.promises
   .readdir(path.join(__dirname, sourceDirectory))
   .then((files) => {
-
     files.forEach((file) => {
       if (file.endsWith('.svg')) {
         console.log(file);

@@ -7,14 +7,9 @@ import { ConfirmationService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
 import { provideHttpClient } from '@angular/common/http';
-import {
-  ApplicationConfig,
-  importProvidersFrom,
-  provideZoneChangeDetection,
-} from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
-import { provideServiceWorker } from '@angular/service-worker';
 
 import { STATES } from '@core/constants/ngxs-states.constant';
 import { provideTranslation } from '@core/helpers/i18n.helper';
@@ -42,10 +37,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideAnimations(),
     provideHttpClient(),
-    provideServiceWorker('ngsw-worker.js', {
-      enabled: true,
-      registrationStrategy: 'registerWhenStable:30000',
-    }),
     ConfirmationService,
     importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
   ],

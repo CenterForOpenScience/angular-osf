@@ -2,23 +2,12 @@ import { Store } from '@ngxs/store';
 
 import { Select, SelectChangeEvent } from 'primeng/select';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
-import {
-  ResourceFiltersSelectors,
-  SetLicense,
-} from '@shared/components/resources/resource-filters/store';
+import { ResourceFiltersSelectors, SetLicense } from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-license-filter',
@@ -30,12 +19,8 @@ import {
 export class LicenseFilterComponent {
   readonly #store = inject(Store);
 
-  protected availableLicenses = this.#store.selectSignal(
-    ResourceFiltersOptionsSelectors.getLicenses,
-  );
-  protected licenseState = this.#store.selectSignal(
-    ResourceFiltersSelectors.getLicense,
-  );
+  protected availableLicenses = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getLicenses);
+  protected licenseState = this.#store.selectSignal(ResourceFiltersSelectors.getLicense);
   protected inputText = signal<string | null>(null);
   protected licensesOptions = computed(() => {
     if (this.inputText() !== null) {
@@ -73,9 +58,7 @@ export class LicenseFilterComponent {
 
   setLicenses(event: SelectChangeEvent): void {
     if ((event.originalEvent as PointerEvent).pointerId && event.value) {
-      const license = this.licensesOptions().find((license) =>
-        license.label.includes(event.value),
-      );
+      const license = this.licensesOptions().find((license) => license.label.includes(event.value));
       if (license) {
         this.#store.dispatch(new SetLicense(license.label, license.id));
         this.#store.dispatch(GetAllOptions);

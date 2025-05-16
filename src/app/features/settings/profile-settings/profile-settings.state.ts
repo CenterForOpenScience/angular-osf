@@ -34,9 +34,7 @@ export class ProfileSettingsState {
   @Action(SetupProfileSettings)
   setupProfileSettings(ctx: StateContext<ProfileSettingsStateModel>): void {
     const state = ctx.getState();
-    const profileSettings = this.#store.selectSnapshot(
-      UserSelectors.getProfileSettings,
-    );
+    const profileSettings = this.#store.selectSnapshot(UserSelectors.getProfileSettings);
 
     ctx.patchState({
       ...state,
@@ -47,7 +45,7 @@ export class ProfileSettingsState {
   @Action(UpdateProfileSettingsEmployment)
   updateProfileSettingsEmployment(
     ctx: StateContext<ProfileSettingsStateModel>,
-    { payload }: UpdateProfileSettingsEmployment,
+    { payload }: UpdateProfileSettingsEmployment
   ) {
     const state = ctx.getState();
     const userId = state.user.id;
@@ -60,22 +58,20 @@ export class ProfileSettingsState {
       return removeNullable(item);
     });
 
-    return this.#profileSettingsService
-      .patchUserSettings(userId, 'employment', withoutNulls)
-      .pipe(
-        tap((response) => {
-          ctx.patchState({
-            ...state,
-            employment: response.data.attributes.employment,
-          });
-        }),
-      );
+    return this.#profileSettingsService.patchUserSettings(userId, 'employment', withoutNulls).pipe(
+      tap((response) => {
+        ctx.patchState({
+          ...state,
+          employment: response.data.attributes.employment,
+        });
+      })
+    );
   }
 
   @Action(UpdateProfileSettingsEducation)
   updateProfileSettingsEducation(
     ctx: StateContext<ProfileSettingsStateModel>,
-    { payload }: UpdateProfileSettingsEducation,
+    { payload }: UpdateProfileSettingsEducation
   ) {
     const state = ctx.getState();
     const userId = state.user.id;
@@ -88,23 +84,18 @@ export class ProfileSettingsState {
       return removeNullable(item);
     });
 
-    return this.#profileSettingsService
-      .patchUserSettings(userId, 'education', withoutNulls)
-      .pipe(
-        tap((response) => {
-          ctx.patchState({
-            ...state,
-            education: response.data.attributes.education,
-          });
-        }),
-      );
+    return this.#profileSettingsService.patchUserSettings(userId, 'education', withoutNulls).pipe(
+      tap((response) => {
+        ctx.patchState({
+          ...state,
+          education: response.data.attributes.education,
+        });
+      })
+    );
   }
 
   @Action(UpdateProfileSettingsUser)
-  updateProfileSettingsUser(
-    ctx: StateContext<ProfileSettingsStateModel>,
-    { payload }: UpdateProfileSettingsUser,
-  ) {
+  updateProfileSettingsUser(ctx: StateContext<ProfileSettingsStateModel>, { payload }: UpdateProfileSettingsUser) {
     const state = ctx.getState();
     const userId = state.user.id;
 
@@ -114,22 +105,20 @@ export class ProfileSettingsState {
 
     const withoutNulls = mapNameToDto(removeNullable(payload.user));
 
-    return this.#profileSettingsService
-      .patchUserSettings(userId, 'user', withoutNulls)
-      .pipe(
-        tap((response) => {
-          ctx.patchState({
-            ...state,
-            user: response.data.attributes,
-          });
-        }),
-      );
+    return this.#profileSettingsService.patchUserSettings(userId, 'user', withoutNulls).pipe(
+      tap((response) => {
+        ctx.patchState({
+          ...state,
+          user: response.data.attributes,
+        });
+      })
+    );
   }
 
   @Action(UpdateProfileSettingsSocialLinks)
   updateProfileSettingsSocialLinks(
     ctx: StateContext<ProfileSettingsStateModel>,
-    { payload }: UpdateProfileSettingsSocialLinks,
+    { payload }: UpdateProfileSettingsSocialLinks
   ) {
     const state = ctx.getState();
     const userId = state.user.id;
@@ -147,15 +136,13 @@ export class ProfileSettingsState {
       };
     });
 
-    return this.#profileSettingsService
-      .patchUserSettings(userId, 'social', social)
-      .pipe(
-        tap((response) => {
-          ctx.patchState({
-            ...state,
-            social: response.data.attributes.social,
-          });
-        }),
-      );
+    return this.#profileSettingsService.patchUserSettings(userId, 'social', social).pipe(
+      tap((response) => {
+        ctx.patchState({
+          ...state,
+          social: response.data.attributes.social,
+        });
+      })
+    );
   }
 }

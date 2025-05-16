@@ -7,14 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
 import { TokensService } from '@osf/features/settings/tokens/tokens.service';
 
-import {
-  CreateToken,
-  DeleteToken,
-  GetScopes,
-  GetTokenById,
-  GetTokens,
-  UpdateToken,
-} from './tokens.actions';
+import { CreateToken, DeleteToken, GetScopes, GetTokenById, GetTokens, UpdateToken } from './tokens.actions';
 import { TokensStateModel } from './tokens.models';
 
 @State<TokensStateModel>({
@@ -34,7 +27,7 @@ export class TokensState {
     return this.tokensService.getScopes().pipe(
       tap((scopes) => {
         ctx.patchState({ scopes });
-      }),
+      })
     );
   }
 
@@ -43,16 +36,14 @@ export class TokensState {
     return this.tokensService.getTokens().pipe(
       tap((tokens) => {
         ctx.patchState({ tokens });
-      }),
+      })
     );
   }
 
   @Action(GetTokenById)
   getTokenById(ctx: StateContext<TokensStateModel>, action: GetTokenById) {
     const state = ctx.getState();
-    const tokenFromState = state.tokens.find(
-      (token: Token) => token.id === action.tokenId,
-    );
+    const tokenFromState = state.tokens.find((token: Token) => token.id === action.tokenId);
 
     if (tokenFromState) {
       return of(tokenFromState);
@@ -62,23 +53,19 @@ export class TokensState {
       tap((token) => {
         const updatedTokens = [...state.tokens, token];
         ctx.patchState({ tokens: updatedTokens });
-      }),
+      })
     );
   }
 
   @Action(UpdateToken)
   updateToken(ctx: StateContext<TokensStateModel>, action: UpdateToken) {
-    return this.tokensService
-      .updateToken(action.tokenId, action.name, action.scopes)
-      .pipe(
-        tap((updatedToken) => {
-          const state = ctx.getState();
-          const updatedTokens = state.tokens.map((token: Token) =>
-            token.id === action.tokenId ? updatedToken : token,
-          );
-          ctx.patchState({ tokens: updatedTokens });
-        }),
-      );
+    return this.tokensService.updateToken(action.tokenId, action.name, action.scopes).pipe(
+      tap((updatedToken) => {
+        const state = ctx.getState();
+        const updatedTokens = state.tokens.map((token: Token) => (token.id === action.tokenId ? updatedToken : token));
+        ctx.patchState({ tokens: updatedTokens });
+      })
+    );
   }
 
   @Action(DeleteToken)
@@ -86,11 +73,9 @@ export class TokensState {
     return this.tokensService.deleteToken(action.tokenId).pipe(
       tap(() => {
         const state = ctx.getState();
-        const updatedTokens = state.tokens.filter(
-          (token: Token) => token.id !== action.tokenId,
-        );
+        const updatedTokens = state.tokens.filter((token: Token) => token.id !== action.tokenId);
         ctx.patchState({ tokens: updatedTokens });
-      }),
+      })
     );
   }
 
@@ -103,7 +88,7 @@ export class TokensState {
         ctx.patchState({ tokens: updatedTokens });
 
         return newToken;
-      }),
+      })
     );
   }
 }

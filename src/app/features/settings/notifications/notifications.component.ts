@@ -6,14 +6,7 @@ import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { DropdownModule } from 'primeng/dropdown';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  HostBinding,
-  inject,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UserSettings } from '@core/services/user/user.models';
@@ -28,14 +21,7 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
 @Component({
   selector: 'osf-notifications',
   standalone: true,
-  imports: [
-    SubHeaderComponent,
-    Checkbox,
-    Button,
-    DropdownModule,
-    TranslatePipe,
-    ReactiveFormsModule,
-  ],
+  imports: [SubHeaderComponent, Checkbox, Button, DropdownModule, TranslatePipe, ReactiveFormsModule],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,27 +32,14 @@ export class NotificationsComponent implements OnInit {
   readonly #store = inject(Store);
   readonly #fb = inject(FormBuilder);
 
-  readonly #currentUser = this.#store.selectSignal(
-    UserSelectors.getCurrentUser,
-  );
-  readonly #userSettings = this.#store.selectSignal(
-    UserSelectors.getCurrentUserSettings,
-  );
+  readonly #currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
+  readonly #userSettings = this.#store.selectSignal(UserSelectors.getCurrentUserSettings);
 
-  protected readonly EmailPreferencesFormControls =
-    EmailPreferencesFormControls;
-  protected readonly emailPreferencesForm: EmailPreferencesForm = new FormGroup(
-    {
-      [EmailPreferencesFormControls.SubscribeOsfGeneralEmail]: this.#fb.control(
-        false,
-        { nonNullable: true },
-      ),
-      [EmailPreferencesFormControls.SubscribeOsfHelpEmail]: this.#fb.control(
-        false,
-        { nonNullable: true },
-      ),
-    },
-  );
+  protected readonly EmailPreferencesFormControls = EmailPreferencesFormControls;
+  protected readonly emailPreferencesForm: EmailPreferencesForm = new FormGroup({
+    [EmailPreferencesFormControls.SubscribeOsfGeneralEmail]: this.#fb.control(false, { nonNullable: true }),
+    [EmailPreferencesFormControls.SubscribeOsfHelpEmail]: this.#fb.control(false, { nonNullable: true }),
+  });
 
   constructor() {
     effect(() => {
@@ -81,7 +54,7 @@ export class NotificationsComponent implements OnInit {
   }
 
   emailPreferencesFormSubmit(): void {
-    if(!this.#currentUser()) {
+    if (!this.#currentUser()) {
       return;
     }
 
@@ -91,10 +64,8 @@ export class NotificationsComponent implements OnInit {
 
   private updateEmailPreferencesForm() {
     this.emailPreferencesForm.patchValue({
-      [EmailPreferencesFormControls.SubscribeOsfGeneralEmail]:
-        this.#userSettings()?.subscribeOsfGeneralEmail,
-      [EmailPreferencesFormControls.SubscribeOsfHelpEmail]:
-        this.#userSettings()?.subscribeOsfHelpEmail,
+      [EmailPreferencesFormControls.SubscribeOsfGeneralEmail]: this.#userSettings()?.subscribeOsfGeneralEmail,
+      [EmailPreferencesFormControls.SubscribeOsfHelpEmail]: this.#userSettings()?.subscribeOsfHelpEmail,
     });
   }
 }

@@ -1,0 +1,27 @@
+<section class="account-setting">
+  <h2 class="account-setting-header">{{ 'settings.accountSettings.affiliatedInstitutions.title' | translate }}</h2>
+
+  <div class="account-setting-description">
+    {{ 'settings.accountSettings.affiliatedInstitutions.description' | translate }}
+  </div>
+
+  @if (institutions().length === 0) {
+    <div class="account-setting-description">
+      {{ 'settings.accountSettings.affiliatedInstitutions.noInstitutions' | translate }}
+    </div>
+  }
+  @for (institution of institutions(); track institution.id) {
+    <div class="account-setting-content">
+      <div class="account-setting-email--readonly">
+        <div class="account-setting-email--readonly--address">{{ institution.name }}</div>
+        <i
+          class="osf-icon-close"
+          tabindex="0"
+          (click)="deleteInstitution(institution.id)"
+          (keydown.enter)="deleteInstitution(institution.id)"
+        >
+        </i>
+      </div>
+    </div>
+  }
+</section>

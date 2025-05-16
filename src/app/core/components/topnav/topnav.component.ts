@@ -7,7 +7,6 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { NavMenuComponent } from '@core/components/nav-menu/nav-menu.component';
 
 @Component({
-  standalone: true,
   selector: 'osf-topnav',
   imports: [Button, Drawer, NgOptimizedImage, NavMenuComponent],
   templateUrl: './topnav.component.html',

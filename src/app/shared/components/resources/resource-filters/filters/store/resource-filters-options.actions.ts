@@ -33,8 +33,7 @@ export class GetProvidersOptions {
 }
 
 export class GetPartOfCollectionOptions {
-  static readonly type =
-    '[Resource Filters Options] Get Part Of Collection Options';
+  static readonly type = '[Resource Filters Options] Get Part Of Collection Options';
 }
 
 export class GetAllOptions {

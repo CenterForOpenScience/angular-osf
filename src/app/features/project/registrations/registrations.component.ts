@@ -2,12 +2,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Select } from 'primeng/select';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
@@ -58,8 +53,7 @@ export class RegistrationsComponent {
         { name: 'Crystal Shackleford', link: '#' },
         { name: 'ALLON VISHKIN', link: '#' },
       ],
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       status: 'draft',
     },
     {
@@ -73,8 +67,7 @@ export class RegistrationsComponent {
         { name: 'Crystal Shackleford', link: '#' },
         { name: 'ALLON VISHKIN', link: '#' },
       ],
-      description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
+      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt',
       status: 'draft',
     },
   ];
@@ -104,8 +97,7 @@ export class RegistrationsComponent {
         { name: 'Crystal Shackleford', link: '#' },
         { name: 'Michael Pasek', link: '#' },
       ],
-      description:
-        'Lorem consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
+      description: 'Lorem consectetur adipiscing elit, sed do eiusmod tempor incididunt.',
       status: 'withdrawn',
     },
   ];

@@ -9,20 +9,12 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { map, of, switchMap } from 'rxjs';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import {
-  DeleteToken,
-  GetTokenById,
-} from '@osf/features/settings/tokens/store/tokens.actions';
+import { DeleteToken, GetTokenById } from '@osf/features/settings/tokens/store/tokens.actions';
 import { TokensSelectors } from '@osf/features/settings/tokens/store/tokens.selectors';
 import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
@@ -30,14 +22,7 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-token-details',
-  imports: [
-    Button,
-    Card,
-    FormsModule,
-    RouterLink,
-    TokenAddEditFormComponent,
-    TranslatePipe,
-  ],
+  imports: [Button, Card, FormsModule, RouterLink, TokenAddEditFormComponent, TranslatePipe],
   providers: [DialogService, DynamicDialogRef],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './token-details.component.html',
@@ -55,15 +40,13 @@ export class TokenDetailsComponent {
     this.#route.params.pipe(
       map((params) => params['id']),
       switchMap((tokenId) => {
-        const token = this.#store.selectSnapshot(TokensSelectors.getTokenById)(
-          tokenId,
-        );
+        const token = this.#store.selectSnapshot(TokensSelectors.getTokenById)(tokenId);
         if (!token) {
           this.#store.dispatch(new GetTokenById(tokenId));
         }
         return of(tokenId);
-      }),
-    ),
+      })
+    )
   );
 
   readonly token = computed(() => {
@@ -78,19 +61,12 @@ export class TokenDetailsComponent {
   deleteToken(): void {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message: this.#translateService.instant(
-        'settings.tokens.confirmation.delete.message',
-      ),
-      header: this.#translateService.instant(
-        'settings.tokens.confirmation.delete.title',
-        { name: this.token()?.name },
-      ),
+      message: this.#translateService.instant('settings.tokens.confirmation.delete.message'),
+      header: this.#translateService.instant('settings.tokens.confirmation.delete.title', { name: this.token()?.name }),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: this.#translateService.instant(
-          'settings.tokens.list.deleteButton',
-        ),
+        label: this.#translateService.instant('settings.tokens.list.deleteButton'),
       },
       accept: () => {
         this.#store.dispatch(new DeleteToken(this.tokenId())).subscribe({

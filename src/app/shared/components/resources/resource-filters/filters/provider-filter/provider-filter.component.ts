@@ -2,23 +2,12 @@ import { Store } from '@ngxs/store';
 
 import { Select, SelectChangeEvent } from 'primeng/select';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
-import {
-  ResourceFiltersSelectors,
-  SetProvider,
-} from '@shared/components/resources/resource-filters/store';
+import { ResourceFiltersSelectors, SetProvider } from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-provider-filter',
@@ -30,12 +19,8 @@ import {
 export class ProviderFilterComponent {
   readonly #store = inject(Store);
 
-  protected availableProviders = this.#store.selectSignal(
-    ResourceFiltersOptionsSelectors.getProviders,
-  );
-  protected providerState = this.#store.selectSignal(
-    ResourceFiltersSelectors.getProvider,
-  );
+  protected availableProviders = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getProviders);
+  protected providerState = this.#store.selectSignal(ResourceFiltersSelectors.getProvider);
   protected inputText = signal<string | null>(null);
   protected providersOptions = computed(() => {
     if (this.inputText() !== null) {
@@ -73,9 +58,7 @@ export class ProviderFilterComponent {
 
   setProviders(event: SelectChangeEvent): void {
     if ((event.originalEvent as PointerEvent).pointerId && event.value) {
-      const provider = this.providersOptions().find((p) =>
-        p.label.includes(event.value),
-      );
+      const provider = this.providersOptions().find((p) => p.label.includes(event.value));
       if (provider) {
         this.#store.dispatch(new SetProvider(provider.label, provider.id));
         this.#store.dispatch(GetAllOptions);

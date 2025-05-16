@@ -11,15 +11,10 @@ export function MapLicenses(items: LicenseIndexValueSearch[]): LicenseFilter[] {
 
   for (const item of items) {
     if (item.type === 'search-result') {
-      const indexCard = items.find(
-        (p) => p.id === item.relationships.indexCard.data.id,
-      );
+      const indexCard = items.find((p) => p.id === item.relationships.indexCard.data.id);
       licenses.push({
-        id: (indexCard as LicenseIndexCardFilter).attributes.resourceMetadata?.[
-          '@id'
-        ],
-        label: (indexCard as LicenseIndexCardFilter).attributes.resourceMetadata
-          ?.name?.[0]?.['@value'],
+        id: (indexCard as LicenseIndexCardFilter).attributes.resourceMetadata?.['@id'],
+        label: (indexCard as LicenseIndexCardFilter).attributes.resourceMetadata?.name?.[0]?.['@value'],
         count: item.attributes.cardSearchResultCount,
       });
     }

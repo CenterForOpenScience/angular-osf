@@ -1,12 +1,6 @@
 import { Button } from 'primeng/button';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  output,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';

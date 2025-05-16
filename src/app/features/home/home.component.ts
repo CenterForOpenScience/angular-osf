@@ -4,32 +4,22 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { SortEvent } from 'primeng/api';
 import { Button } from 'primeng/button';
-import { DialogService } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject, take } from 'rxjs';
 
-import {
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
+import { ConfirmEmailComponent } from '@osf/features/home/components/confirm-email/confirm-email.component';
 import { GetUserInstitutions } from '@osf/features/institutions/store';
 import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
 import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
-import {
-  ClearMyProjects,
-  GetMyProjects,
-  MyProjectsSelectors,
-} from '@osf/features/my-projects/store';
+import { ClearMyProjects, GetMyProjects, MyProjectsSelectors } from '@osf/features/my-projects/store';
+import { AccountSettingsService } from '@osf/features/settings/account-settings/services/account-settings.service';
 import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
 import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
@@ -39,14 +29,7 @@ import { SortOrder } from '@shared/utils/sort-order.enum';
 
 @Component({
   selector: 'osf-home',
-  standalone: true,
-  imports: [
-    RouterLink,
-    Button,
-    SubHeaderComponent,
-    MyProjectsTableComponent,
-    TranslatePipe,
-  ],
+  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent, TranslatePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   providers: [DialogService],
@@ -61,6 +44,7 @@ export class HomeComponent implements OnInit {
   readonly #isXSmall$ = inject(IS_XSMALL);
   readonly #isMedium$ = inject(IS_MEDIUM);
   readonly #searchSubject = new Subject<string>();
+  readonly #accountSettingsServer = inject(AccountSettingsService);
 
   protected readonly isLoading = signal(false);
   protected readonly isSubmitting = signal(false);
@@ -76,19 +60,16 @@ export class HomeComponent implements OnInit {
     ...MY_PROJECTS_TABLE_PARAMS,
   });
 
-  protected readonly projects = this.#store.selectSignal(
-    MyProjectsSelectors.getProjects,
-  );
-  protected readonly totalProjectsCount = this.#store.selectSignal(
-    MyProjectsSelectors.getTotalProjectsCount,
-  );
+  protected readonly projects = this.#store.selectSignal(MyProjectsSelectors.getProjects);
+  protected readonly totalProjectsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalProjectsCount);
 
   protected readonly filteredProjects = computed(() => {
     const search = this.searchValue().toLowerCase();
-    return this.projects().filter((project) =>
-      project.title.toLowerCase().includes(search),
-    );
+    return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
+
+  dialogRef: DynamicDialogRef | null = null;
+  emailAddress = '';
 
   constructor() {
     this.#setupSearchSubscription();
@@ -99,44 +80,70 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.#setupQueryParamsSubscription();
     this.#store.dispatch(new GetUserInstitutions());
+
+    // Check for userId and emailId route parameters
+    this.#route.params.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((params) => {
+      const userId = params['userId'];
+      const emailId = params['emailId'];
+
+      if (userId && emailId) {
+        this.#accountSettingsServer
+          .getEmail(emailId, userId)
+          .pipe(take(1))
+          .subscribe((email) => {
+            this.emailAddress = email.emailAddress;
+            this.addAlternateEmail();
+          });
+      }
+    });
+  }
+
+  addAlternateEmail() {
+    this.dialogRef = this.#dialogService.open(ConfirmEmailComponent, {
+      width: '448px',
+      focusOnShow: false,
+      header: this.#translateService.instant('home.confirmEmail.title'),
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        emailAddress: this.emailAddress,
+        userId: this.#route.snapshot.params['userId'],
+        emailId: this.#route.snapshot.params['emailId'],
+      },
+    });
   }
 
   #setupQueryParamsSubscription(): void {
-    this.#route.queryParams
-      .pipe(takeUntilDestroyed(this.#destroyRef))
-      .subscribe((params) => {
-        const page = Number(params['page']) || 1;
-        const rows = Number(params['rows']) || MY_PROJECTS_TABLE_PARAMS.rows;
-        const sortField = params['sortField'];
-        const sortOrder = params['sortOrder'] as SortOrder;
-        const search = params['search'] || '';
+    this.#route.queryParams.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((params) => {
+      const page = Number(params['page']) || 1;
+      const rows = Number(params['rows']) || MY_PROJECTS_TABLE_PARAMS.rows;
+      const sortField = params['sortField'];
+      const sortOrder = params['sortOrder'] as SortOrder;
+      const search = params['search'] || '';
 
-        this.tableParams.update((current) => ({
-          ...current,
-          firstRowIndex: (page - 1) * rows,
-          rows,
-        }));
+      this.tableParams.update((current) => ({
+        ...current,
+        firstRowIndex: (page - 1) * rows,
+        rows,
+      }));
 
-        if (sortField) {
-          this.sortColumn.set(sortField);
-          this.sortOrder.set(sortOrder || SortOrder.Asc);
-        }
+      if (sortField) {
+        this.sortColumn.set(sortField);
+        this.sortOrder.set(sortOrder || SortOrder.Asc);
+      }
 
-        if (search) {
-          this.searchValue.set(search);
-        }
+      if (search) {
+        this.searchValue.set(search);
+      }
 
-        this.#fetchProjects();
-      });
+      this.#fetchProjects();
+    });
   }
 
   #setupSearchSubscription(): void {
     this.#searchSubject
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.#destroyRef),
-      )
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.#destroyRef))
       .subscribe((searchValue) => {
         this.#handleSearch(searchValue);
       });
@@ -161,9 +168,7 @@ export class HomeComponent implements OnInit {
   #fetchProjects(): void {
     this.isLoading.set(true);
     const filters = this.#createFilters();
-    const page =
-      Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) +
-      1;
+    const page = Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
     this.#store
       .dispatch(new GetMyProjects(page, this.tableParams().rows, filters))
       .pipe(takeUntilDestroyed(this.#destroyRef))
@@ -192,9 +197,7 @@ export class HomeComponent implements OnInit {
   }
 
   #updateQueryParams(): void {
-    const page =
-      Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) +
-      1;
+    const page = Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
     const queryParams = {
       page,
       rows: this.tableParams().rows,

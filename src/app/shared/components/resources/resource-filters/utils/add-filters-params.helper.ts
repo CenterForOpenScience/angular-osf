@@ -1,8 +1,6 @@
 import { ResourceFiltersStateModel } from '@shared/components/resources/resource-filters/store';
 
-export function addFiltersParams(
-  filters: ResourceFiltersStateModel,
-): Record<string, string> {
+export function addFiltersParams(filters: ResourceFiltersStateModel): Record<string, string> {
   const params: Record<string, string> = {};
 
   if (filters.creator.value) {
@@ -30,8 +28,7 @@ export function addFiltersParams(
     params['cardSearchFilter[publisher][]'] = filters.provider.value;
   }
   if (filters.partOfCollection.value) {
-    params['cardSearchFilter[isPartOfCollection][]'] =
-      filters.partOfCollection.value;
+    params['cardSearchFilter[isPartOfCollection][]'] = filters.partOfCollection.value;
   }
 
   return params;

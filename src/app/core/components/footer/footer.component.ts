@@ -9,7 +9,6 @@ import { SocialIcon } from '@osf/shared/entities/social-icon.interface';
 import { IS_PORTRAIT, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
-  standalone: true,
   selector: 'osf-footer',
   imports: [RouterLink, NgOptimizedImage, TranslateModule],
   templateUrl: './footer.component.html',

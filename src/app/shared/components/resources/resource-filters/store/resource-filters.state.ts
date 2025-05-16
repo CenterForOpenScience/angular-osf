@@ -37,10 +37,7 @@ export class ResourceFiltersState {
   }
 
   @Action(SetDateCreated)
-  setDateCreated(
-    ctx: StateContext<ResourceFiltersStateModel>,
-    action: SetDateCreated,
-  ) {
+  setDateCreated(ctx: StateContext<ResourceFiltersStateModel>, action: SetDateCreated) {
     ctx.patchState({
       dateCreated: {
         filterName: FilterLabels.dateCreated,
@@ -84,10 +81,7 @@ export class ResourceFiltersState {
   }
 
   @Action(SetResourceType)
-  setResourceType(
-    ctx: StateContext<ResourceFiltersStateModel>,
-    action: SetResourceType,
-  ) {
+  setResourceType(ctx: StateContext<ResourceFiltersStateModel>, action: SetResourceType) {
     ctx.patchState({
       resourceType: {
         filterName: FilterLabels.resourceType,
@@ -98,10 +92,7 @@ export class ResourceFiltersState {
   }
 
   @Action(SetInstitution)
-  setInstitution(
-    ctx: StateContext<ResourceFiltersStateModel>,
-    action: SetInstitution,
-  ) {
+  setInstitution(ctx: StateContext<ResourceFiltersStateModel>, action: SetInstitution) {
     ctx.patchState({
       institution: {
         filterName: FilterLabels.institution,
@@ -112,10 +103,7 @@ export class ResourceFiltersState {
   }
 
   @Action(SetProvider)
-  setProvider(
-    ctx: StateContext<ResourceFiltersStateModel>,
-    action: SetProvider,
-  ) {
+  setProvider(ctx: StateContext<ResourceFiltersStateModel>, action: SetProvider) {
     ctx.patchState({
       provider: {
         filterName: FilterLabels.provider,
@@ -126,10 +114,7 @@ export class ResourceFiltersState {
   }
 
   @Action(SetPartOfCollection)
-  setPartOfCollection(
-    ctx: StateContext<ResourceFiltersStateModel>,
-    action: SetPartOfCollection,
-  ) {
+  setPartOfCollection(ctx: StateContext<ResourceFiltersStateModel>, action: SetPartOfCollection) {
     ctx.patchState({
       partOfCollection: {
         filterName: FilterLabels.partOfCollection,

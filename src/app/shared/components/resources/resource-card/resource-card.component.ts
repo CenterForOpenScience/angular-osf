@@ -1,20 +1,10 @@
-import {
-  Accordion,
-  AccordionContent,
-  AccordionHeader,
-  AccordionPanel,
-} from 'primeng/accordion';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Skeleton } from 'primeng/skeleton';
 
 import { finalize } from 'rxjs';
 
 import { DatePipe, NgOptimizedImage } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  model,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { Resource } from '@osf/features/search/models/resource.entity';
@@ -24,15 +14,7 @@ import { ResourceCardService } from '@shared/components/resources/resource-card/
 
 @Component({
   selector: 'osf-resource-card',
-  imports: [
-    Accordion,
-    AccordionContent,
-    AccordionHeader,
-    AccordionPanel,
-    DatePipe,
-    NgOptimizedImage,
-    Skeleton,
-  ],
+  imports: [Accordion, AccordionContent, AccordionHeader, AccordionPanel, DatePipe, NgOptimizedImage, Skeleton],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,7 +39,7 @@ export class ResourceCardComponent {
             finalize(() => {
               this.loading = false;
               this.dataIsLoaded = true;
-            }),
+            })
           )
           .subscribe((res) => {
             this.item.update(
@@ -69,7 +51,7 @@ export class ResourceCardComponent {
                   publicRegistrations: res.registrations,
                   education: res.education,
                   employment: res.employment,
-                }) as Resource,
+                }) as Resource
             );
           });
       }

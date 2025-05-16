@@ -15,7 +15,6 @@ import { MessageInfo } from './message-info.model';
 
 @Component({
   selector: 'osf-forgot-password',
-  standalone: true,
   imports: [InputText, ReactiveFormsModule, Button, Message, TranslatePipe],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss',

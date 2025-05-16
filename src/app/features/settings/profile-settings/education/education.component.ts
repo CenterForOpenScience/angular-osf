@@ -7,32 +7,16 @@ import { Checkbox } from 'primeng/checkbox';
 import { DatePicker } from 'primeng/datepicker';
 import { InputText } from 'primeng/inputtext';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  effect,
-  HostBinding,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
-import {
-  Education,
-  EducationForm,
-} from '@osf/features/settings/profile-settings/education/educations.entities';
+import { Education, EducationForm } from '@osf/features/settings/profile-settings/education/educations.entities';
 import { UpdateProfileSettingsEducation } from '@osf/features/settings/profile-settings/profile-settings.actions';
 import { ProfileSettingsSelectors } from '@osf/features/settings/profile-settings/profile-settings.selectors';
 
 @Component({
   selector: 'osf-education',
-  imports: [
-    ReactiveFormsModule,
-    Button,
-    InputText,
-    DatePicker,
-    Checkbox,
-    TranslatePipe,
-  ],
+  imports: [ReactiveFormsModule, Button, InputText, DatePicker, Checkbox, TranslatePipe],
   templateUrl: './education.component.html',
   styleUrl: './education.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,9 +28,7 @@ export class EducationComponent {
     educations: this.#fb.array<EducationForm>([]),
   });
   readonly #store = inject(Store);
-  readonly educationItems = this.#store.selectSignal(
-    ProfileSettingsSelectors.educations,
-  );
+  readonly educationItems = this.#store.selectSignal(ProfileSettingsSelectors.educations);
 
   constructor() {
     effect(() => {
@@ -58,9 +40,7 @@ export class EducationComponent {
             institution: [education.institution],
             department: [education.department],
             degree: [education.degree],
-            startDate: [
-              new Date(+education.startYear, education.startMonth - 1),
-            ],
+            startDate: [new Date(+education.startYear, education.startMonth - 1)],
             endDate: education.ongoing
               ? ''
               : education.endYear && education.endMonth
@@ -103,23 +83,17 @@ export class EducationComponent {
       degree: education.degree,
       startYear: this.setupDates(education.startDate, null).startYear,
       startMonth: this.setupDates(education.startDate, null).startMonth,
-      endYear: education.ongoing
-        ? null
-        : this.setupDates('', education.endDate).endYear,
-      endMonth: education.ongoing
-        ? null
-        : this.setupDates('', education.endDate).endMonth,
+      endYear: education.ongoing ? null : this.setupDates('', education.endDate).endYear,
+      endMonth: education.ongoing ? null : this.setupDates('', education.endDate).endMonth,
       ongoing: education.ongoing,
     })) satisfies Education[];
 
-    this.#store.dispatch(
-      new UpdateProfileSettingsEducation({ education: formattedEducation }),
-    );
+    this.#store.dispatch(new UpdateProfileSettingsEducation({ education: formattedEducation }));
   }
 
   private setupDates(
     startDate: Date | string,
-    endDate: Date | null,
+    endDate: Date | null
   ): {
     startYear: number;
     startMonth: number;

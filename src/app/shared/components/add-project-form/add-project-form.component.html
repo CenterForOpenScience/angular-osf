@@ -1,25 +1,16 @@
-<form
-  [formGroup]="projectForm"
-  (ngSubmit)="submitForm()"
-  class="flex flex-column gap-4"
->
+<form [formGroup]="projectForm" (ngSubmit)="submitForm()" class="flex flex-column gap-4">
   <!-- Title -->
   <div class="flex flex-column">
     <label for="project-title">
-      {{ "myProjects.createProject.title" | translate }}
+      {{ 'myProjects.createProject.title' | translate }}
     </label>
-    <input
-      pInputText
-      id="project-title"
-      type="text"
-      [formControlName]="ProjectFormControls.Title"
-    />
+    <input pInputText id="project-title" type="text" [formControlName]="ProjectFormControls.Title" />
   </div>
 
   <!-- Storage Location -->
   <div class="flex flex-column">
     <label for="storage-location">
-      {{ "myProjects.createProject.storageLocation" | translate }}
+      {{ 'myProjects.createProject.storageLocation' | translate }}
     </label>
     <p-select
       id="storage-location"
@@ -33,7 +24,7 @@
     <div class="flex flex-column gap-2">
       <div class="relative">
         <h3 class="font-normal mb-2">
-          {{ "myProjects.createProject.affiliation.title" | translate }}
+          {{ 'myProjects.createProject.affiliation.title' | translate }}
         </h3>
         <div class="flex gap-4 absolute top-0 right-0">
           <p-button
@@ -43,7 +34,7 @@
             (click)="selectAllAffiliations()"
             (keydown.enter)="selectAllAffiliations()"
           >
-            {{ "myProjects.createProject.affiliation.selectAll" | translate }}
+            {{ 'myProjects.createProject.affiliation.selectAll' | translate }}
           </p-button>
           <p-button
             class="secondary-transparent"
@@ -52,7 +43,7 @@
             (click)="removeAllAffiliations()"
             (keydown.enter)="removeAllAffiliations()"
           >
-            {{ "myProjects.createProject.affiliation.removeAll" | translate }}
+            {{ 'myProjects.createProject.affiliation.removeAll' | translate }}
           </p-button>
         </div>
       </div>
@@ -66,12 +57,7 @@
               [formControlName]="ProjectFormControls.Affiliations"
               [inputId]="affiliation.id"
             />
-            <img
-              ngSrc="{{ affiliation.assets.logo }}"
-              alt="OSF Logo"
-              height="44"
-              width="44"
-            />
+            <img ngSrc="{{ affiliation.assets.logo }}" alt="OSF Logo" height="44" width="44" />
           </div>
         }
       </div>
@@ -81,28 +67,21 @@
   <!-- Description -->
   <div class="flex flex-column">
     <label for="description">
-      {{ "myProjects.createProject.description.label" | translate }}
+      {{ 'myProjects.createProject.description.label' | translate }}
     </label>
-    <textarea
-      pTextarea
-      id="description"
-      [formControlName]="ProjectFormControls.Description"
-      [rows]="5"
-    ></textarea>
+    <textarea pTextarea id="description" [formControlName]="ProjectFormControls.Description" [rows]="5"></textarea>
   </div>
 
   <!-- Template -->
   <div class="flex flex-column">
     <label for="template">
-      {{ "myProjects.createProject.template.label" | translate }}
+      {{ 'myProjects.createProject.template.label' | translate }}
     </label>
     <p-select
       id="template"
       [options]="projectTemplateOptions()"
       [formControlName]="ProjectFormControls.Template"
-      [placeholder]="
-        'myProjects.createProject.template.placeholder' | translate
-      "
+      [placeholder]="'myProjects.createProject.template.placeholder' | translate"
       [filter]="true"
       styleClass="w-full"
       appendTo="body"

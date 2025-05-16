@@ -8,26 +8,21 @@
         >
           <div class="flex flex-row">
             <h2>
-              {{
-                "settings.profileSettings.social.title"
-                  | translate: { index: index + 1 }
-              }}
+              {{ 'settings.profileSettings.social.title' | translate: { index: index + 1 } }}
             </h2>
             @if (index !== 0) {
               <div class="ml-auto remove-button">
                 <p-button class="ml-auto" (click)="removeLink(index)">
-                  {{ "settings.profileSettings.social.remove" | translate }}
+                  {{ 'settings.profileSettings.social.remove' | translate }}
                 </p-button>
               </div>
             }
           </div>
 
-          <div
-            class="flex flex-column row-gap-4 w-full md:flex-row md:align-items-end md:column-gap-3"
-          >
+          <div class="flex flex-column row-gap-4 w-full md:flex-row md:align-items-end md:column-gap-3">
             <div class="w-full md:w-4">
               <p class="font-light mb-1">
-                {{ "settings.profileSettings.social.socialOutput" | translate }}
+                {{ 'settings.profileSettings.social.socialOutput' | translate }}
               </p>
               <p-dropdown
                 formControlName="socialOutput"
@@ -39,15 +34,11 @@
 
             <div class="w-full md:w-8">
               <p class="font-light mb-1">
-                {{ "settings.profileSettings.social.webAddress" | translate }}
+                {{ 'settings.profileSettings.social.webAddress' | translate }}
               </p>
               <p-inputgroup class="addon-input">
                 <p-inputgroup-addon>{{ getDomain(index) }} </p-inputgroup-addon>
-                <input
-                  pInputText
-                  placeholder="{{ getPlaceholder(index) }}"
-                  formControlName="webAddress"
-                />
+                <input pInputText placeholder="{{ getPlaceholder(index) }}" formControlName="webAddress" />
               </p-inputgroup>
             </div>
           </div>
@@ -64,9 +55,7 @@
   (click)="addLink()"
 />
 
-<div
-  class="flex justify-content-between align-items-end column-gap-2 md:ml-auto h-3rem mt-2"
->
+<div class="flex justify-content-between align-items-end column-gap-2 md:ml-auto h-3rem mt-2">
   <p-button
     class="w-6 btn-full-width md:w-auto"
     [label]="'settings.profileSettings.common.discardChanges' | translate"
@@ -74,9 +63,6 @@
     disabled="true"
   />
   <div class="w-6 btn-full-width md:w-auto wide-m-button">
-    <p-button
-      [label]="'settings.profileSettings.common.save' | translate"
-      (onClick)="saveSocialLinks()"
-    />
+    <p-button [label]="'settings.profileSettings.common.save' | translate" (onClick)="saveSocialLinks()" />
   </div>
 </div>

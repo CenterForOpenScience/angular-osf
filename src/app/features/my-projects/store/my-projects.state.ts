@@ -37,71 +37,51 @@ export class MyProjectsState {
 
   @Action(GetMyProjects)
   getProjects(ctx: StateContext<MyProjectsStateModel>, action: GetMyProjects) {
-    return this.myProjectsService
-      .getMyProjects(action.filters, action.pageNumber, action.pageSize)
-      .pipe(
-        tap((res) => {
-          ctx.patchState({
-            projects: res.data,
-            totalProjects: res.links.meta.total,
-          });
-        }),
-      );
+    return this.myProjectsService.getMyProjects(action.filters, action.pageNumber, action.pageSize).pipe(
+      tap((res) => {
+        ctx.patchState({
+          projects: res.data,
+          totalProjects: res.links.meta.total,
+        });
+      })
+    );
   }
 
   @Action(GetMyRegistrations)
-  getRegistrations(
-    ctx: StateContext<MyProjectsStateModel>,
-    action: GetMyRegistrations,
-  ) {
-    return this.myProjectsService
-      .getMyRegistrations(action.filters, action.pageNumber, action.pageSize)
-      .pipe(
-        tap((res) => {
-          ctx.patchState({
-            registrations: res.data,
-            totalRegistrations: res.links.meta.total,
-          });
-        }),
-      );
+  getRegistrations(ctx: StateContext<MyProjectsStateModel>, action: GetMyRegistrations) {
+    return this.myProjectsService.getMyRegistrations(action.filters, action.pageNumber, action.pageSize).pipe(
+      tap((res) => {
+        ctx.patchState({
+          registrations: res.data,
+          totalRegistrations: res.links.meta.total,
+        });
+      })
+    );
   }
 
   @Action(GetMyPreprints)
-  getPreprints(
-    ctx: StateContext<MyProjectsStateModel>,
-    action: GetMyPreprints,
-  ) {
-    return this.myProjectsService
-      .getMyPreprints(action.filters, action.pageNumber, action.pageSize)
-      .pipe(
-        tap((res) => {
-          ctx.patchState({
-            preprints: res.data,
-            totalPreprints: res.links.meta.total,
-          });
-        }),
-      );
+  getPreprints(ctx: StateContext<MyProjectsStateModel>, action: GetMyPreprints) {
+    return this.myProjectsService.getMyPreprints(action.filters, action.pageNumber, action.pageSize).pipe(
+      tap((res) => {
+        ctx.patchState({
+          preprints: res.data,
+          totalPreprints: res.links.meta.total,
+        });
+      })
+    );
   }
 
   @Action(GetMyBookmarks)
-  getBookmarks(
-    ctx: StateContext<MyProjectsStateModel>,
-    action: GetMyBookmarks,
-  ) {
+  getBookmarks(ctx: StateContext<MyProjectsStateModel>, action: GetMyBookmarks) {
     return this.myProjectsService
-      .getMyBookmarks(
-        action.bookmarksId,
-        action.filters,
-        action.pageNumber,
-        action.pageSize,
-      )
+      .getMyBookmarks(action.bookmarksId, action.filters, action.pageNumber, action.pageSize)
       .pipe(
         tap((res) => {
           ctx.patchState({
             bookmarks: res.data,
             totalBookmarks: res.links.meta.total,
           });
-        }),
+        })
       );
   }
 
@@ -112,7 +92,7 @@ export class MyProjectsState {
         ctx.patchState({
           bookmarksId: res,
         });
-      }),
+      })
     );
   }
 
@@ -131,18 +111,9 @@ export class MyProjectsState {
   }
 
   @Action(CreateProject)
-  createProject(
-    ctx: StateContext<MyProjectsStateModel>,
-    action: CreateProject,
-  ) {
+  createProject(ctx: StateContext<MyProjectsStateModel>, action: CreateProject) {
     return this.myProjectsService
-      .createProject(
-        action.title,
-        action.description,
-        action.templateFrom,
-        action.region,
-        action.affiliations,
-      )
+      .createProject(action.title, action.description, action.templateFrom, action.region, action.affiliations)
       .pipe(
         tap((project) => {
           const state = ctx.getState();
@@ -150,7 +121,7 @@ export class MyProjectsState {
             projects: [project, ...state.projects],
             totalProjects: state.totalProjects + 1,
           });
-        }),
+        })
       );
   }
 }

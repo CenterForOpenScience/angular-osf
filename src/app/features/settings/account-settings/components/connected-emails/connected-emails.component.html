@@ -1,0 +1,113 @@
+<section class="account-setting">
+  <h2 class="account-setting-header">{{ 'settings.accountSettings.connectedEmails.title' | translate }}</h2>
+
+  <div class="account-settings-description">
+    {{ 'settings.accountSettings.connectedEmails.description' | translate }}
+  </div>
+
+  <div class="account-setting-emails">
+    <div class="account-setting-email-center">
+      <div class="account-setting-email__title">
+        {{ 'settings.accountSettings.connectedEmails.primaryEmail' | translate }}
+      </div>
+
+      @if (isEmailsLoading()) {
+        <p-skeleton width="9rem" height="2.7rem" />
+      } @else {
+        <div class="account-setting-email__value">{{ primaryEmail()?.emailAddress }}</div>
+      }
+    </div>
+
+    <div class="account-setting-email">
+      <div class="account-setting-email__title">
+        {{ 'settings.accountSettings.connectedEmails.alternateEmails' | translate }}
+      </div>
+
+      <div class="account-setting-email__container">
+        @if (isEmailsLoading()) {
+          <p-skeleton width="19rem" height="38px" />
+        } @else {
+          @for (email of confirmedEmails(); track email.id) {
+            <div class="account-setting-email__value">
+              <div class="account-setting-email--readonly">
+                <div class="account-setting-email--readonly--address">{{ email.emailAddress }}</div>
+                @if (!deletingEmailIds().has(email.id)) {
+                  <i
+                    class="osf-icon-close"
+                    tabindex="0"
+                    (click)="deleteEmail(email.id)"
+                    (keydown.enter)="deleteEmail(email.id)"
+                  >
+                  </i>
+                }
+                @if (deletingEmailIds().has(email.id)) {
+                  <p-progress-spinner
+                    strokeWidth="5"
+                    fill="transparent"
+                    animationDuration=".5s"
+                    [style]="{ width: '0.7rem', height: '0.7rem', marginLeft: '0.7rem' }"
+                  />
+                }
+              </div>
+
+              <p-button severity="secondary" (click)="makePrimary(email.id)">
+                {{ 'settings.accountSettings.connectedEmails.buttons.makePrimary' | translate }}
+              </p-button>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="account-setting-email">
+      <div class="account-setting-email__title">
+        {{ 'settings.accountSettings.connectedEmails.unconfirmedEmails' | translate }}
+      </div>
+
+      <div class="account-setting-email__container">
+        @if (isEmailsLoading()) {
+          <p-skeleton width="19rem" height="38px" />
+        } @else {
+          @for (email of unconfirmedEmails(); track email.id) {
+            <div class="account-setting-email__value">
+              <div class="account-setting-email--readonly">
+                <div class="account-setting-email--readonly--address">{{ email.emailAddress }}</div>
+
+                @if (!deletingEmailIds().has(email.id)) {
+                  <i
+                    class="osf-icon-close"
+                    tabindex="0"
+                    (click)="deleteEmail(email.id)"
+                    (keydown.enter)="deleteEmail(email.id)"
+                  ></i>
+                }
+                @if (deletingEmailIds().has(email.id)) {
+                  <p-progress-spinner
+                    strokeWidth="5"
+                    fill="transparent"
+                    animationDuration=".5s"
+                    [style]="{ width: '0.7rem', height: '0.7rem', marginLeft: '0.7rem' }"
+                  />
+                }
+              </div>
+
+              <p-button severity="secondary" (click)="resendConfirmation(email.id)">
+                @if (isMobile()) {
+                  {{ 'settings.accountSettings.connectedEmails.buttons.resend' | translate }}
+                } @else {
+                  {{ 'settings.accountSettings.connectedEmails.buttons.resendConfirmation' | translate }}
+                }
+              </p-button>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="account-setting-action">
+    <p-button (onClick)="addEmail()" size="large">
+      {{ 'settings.accountSettings.connectedEmails.buttons.addEmail' | translate }}
+    </p-button>
+  </div>
+</section>

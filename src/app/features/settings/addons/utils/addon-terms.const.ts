@@ -45,8 +45,7 @@ export const ADDON_TERMS: Term[] = [
     supportedFeature: 'LOGS',
     storage: {
       true: 'OSF tracks changes you make to your {provider} content within OSF, but not changes made directly within {provider}.',
-      false:
-        'OSF does not keep track of changes made using {provider} directly.',
+      false: 'OSF does not keep track of changes made using {provider} directly.',
     },
   },
   {
@@ -77,8 +76,7 @@ export const ADDON_TERMS: Term[] = [
     supportedFeature: 'FILE_VERSIONS',
     storage: {
       true: '{provider} files and their versions can be viewed/downloaded in OSF.',
-      false:
-        '{provider} files can be viewed/downloaded in OSF, but version history is not supported.',
+      false: '{provider} files can be viewed/downloaded in OSF, but version history is not supported.',
     },
   },
 ];

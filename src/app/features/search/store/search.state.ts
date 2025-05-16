@@ -32,35 +32,26 @@ export class SearchState {
 
   @Action(GetResources)
   getResources(ctx: StateContext<SearchStateModel>) {
-    const filters = this.store.selectSnapshot(
-      ResourceFiltersSelectors.getAllFilters,
-    );
+    const filters = this.store.selectSnapshot(ResourceFiltersSelectors.getAllFilters);
     const filtersParams = addFiltersParams(filters);
     const searchText = this.store.selectSnapshot(SearchSelectors.getSearchText);
     const sortBy = this.store.selectSnapshot(SearchSelectors.getSortBy);
-    const resourceTab = this.store.selectSnapshot(
-      SearchSelectors.getResourceTab,
-    );
+    const resourceTab = this.store.selectSnapshot(SearchSelectors.getResourceTab);
     const resourceTypes = getResourceTypes(resourceTab);
 
-    return this.searchService
-      .getResources(filtersParams, searchText, sortBy, resourceTypes)
-      .pipe(
-        tap((response) => {
-          ctx.patchState({ resources: response.resources });
-          ctx.patchState({ resourcesCount: response.count });
-          ctx.patchState({ first: response.first });
-          ctx.patchState({ next: response.next });
-          ctx.patchState({ previous: response.previous });
-        }),
-      );
+    return this.searchService.getResources(filtersParams, searchText, sortBy, resourceTypes).pipe(
+      tap((response) => {
+        ctx.patchState({ resources: response.resources });
+        ctx.patchState({ resourcesCount: response.count });
+        ctx.patchState({ first: response.first });
+        ctx.patchState({ next: response.next });
+        ctx.patchState({ previous: response.previous });
+      })
+    );
   }
 
   @Action(GetResourcesByLink)
-  getResourcesByLink(
-    ctx: StateContext<SearchStateModel>,
-    action: GetResourcesByLink,
-  ) {
+  getResourcesByLink(ctx: StateContext<SearchStateModel>, action: GetResourcesByLink) {
     return this.searchService.getResourcesByLink(action.link).pipe(
       tap((response) => {
         ctx.patchState({ resources: response.resources });
@@ -68,7 +59,7 @@ export class SearchState {
         ctx.patchState({ first: response.first });
         ctx.patchState({ next: response.next });
         ctx.patchState({ previous: response.previous });
-      }),
+      })
     );
   }
 

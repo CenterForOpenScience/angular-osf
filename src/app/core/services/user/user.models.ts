@@ -26,6 +26,8 @@ export interface User {
     impactStory?: string;
     researcherId?: string;
   };
+  defaultRegionId: string;
+  allowIndexing: boolean | undefined;
 }
 
 export interface UserSettings {
@@ -48,8 +50,15 @@ export interface UserGetResponse {
     suffix?: string;
     social: Social;
     date_registered: string;
+    allow_indexing?: boolean;
   };
-  relationships: Record<string, unknown>;
+  relationships: {
+    default_region: {
+      data: {
+        id: string;
+      };
+    };
+  };
   links: {
     html: string;
     profile_image: string;
@@ -59,7 +68,7 @@ export interface UserGetResponse {
 
 export interface UserSettingsGetResponse {
   id: string;
-  type: "user_settings";
+  type: 'user_settings';
   attributes: {
     subscribe_osf_general_email: boolean;
     subscribe_osf_help_email: boolean;
@@ -69,10 +78,10 @@ export interface UserSettingsGetResponse {
 export interface UserSettingsUpdateRequest {
   data: {
     id: string;
-    type: "user_settings";
+    type: 'user_settings';
     attributes: {
       subscribe_osf_general_email: boolean;
       subscribe_osf_help_email: boolean;
     };
-  }
+  };
 }

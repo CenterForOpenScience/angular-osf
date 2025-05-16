@@ -20,15 +20,7 @@ import {
 
 @Component({
   selector: 'osf-token-created-dialog',
-  standalone: true,
-  imports: [
-    Button,
-    InputText,
-    IconField,
-    InputIcon,
-    ClipboardModule,
-    TranslatePipe,
-  ],
+  imports: [Button, InputText, IconField, InputIcon, ClipboardModule, TranslatePipe],
   templateUrl: './token-created-dialog.component.html',
   styleUrl: './token-created-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

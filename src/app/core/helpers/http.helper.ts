@@ -3,7 +3,7 @@ import { Params } from '@angular/router';
 import { SortOrder } from '@shared/utils/sort-order.enum';
 
 export const parseQueryFilterParams = (
-  params: Params,
+  params: Params
 ): {
   page: number;
   size: number;
@@ -15,8 +15,7 @@ export const parseQueryFilterParams = (
   const size = parseInt(params['size'], 10);
   const search = params['search'];
   const sortColumn = params['sortColumn'];
-  const sortOrder =
-    params['sortOrder'] === 'desc' ? SortOrder.Desc : SortOrder.Asc;
+  const sortOrder = params['sortOrder'] === 'desc' ? SortOrder.Desc : SortOrder.Asc;
 
   return {
     page,

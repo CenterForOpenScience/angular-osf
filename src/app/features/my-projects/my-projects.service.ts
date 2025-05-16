@@ -34,12 +34,11 @@ export class MyProjectsService {
     endpoint: EndpointType,
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
-    pageSize?: number,
+    pageSize?: number
   ): Observable<MyProjectsItemResponse> {
     const params: Record<string, unknown> = {
       'embed[]': ['bibliographic_contributors'],
-      [`fields[${endpoint}]`]:
-        'title,date_modified,public,bibliographic_contributors',
+      [`fields[${endpoint}]`]: 'title,date_modified,public,bibliographic_contributors',
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
 
@@ -67,22 +66,18 @@ export class MyProjectsService {
     //   ? environment.apiUrl + '/' + endpoint
     //   : environment.apiUrl + '/users/me/' + endpoint;
 
-    return this.#jsonApiService
-      .get<MyProjectsJsonApiResponse>(url, params)
-      .pipe(
-        map((response: MyProjectsJsonApiResponse) => ({
-          data: response.data.map((item: MyProjectsItemGetResponse) =>
-            MyProjectsMapper.fromResponse(item),
-          ),
-          links: response.links,
-        })),
-      );
+    return this.#jsonApiService.get<MyProjectsJsonApiResponse>(url, params).pipe(
+      map((response: MyProjectsJsonApiResponse) => ({
+        data: response.data.map((item: MyProjectsItemGetResponse) => MyProjectsMapper.fromResponse(item)),
+        links: response.links,
+      }))
+    );
   }
 
   getMyProjects(
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
-    pageSize?: number,
+    pageSize?: number
   ): Observable<MyProjectsItemResponse> {
     return this.#getMyItems('nodes', filters, pageNumber, pageSize);
   }
@@ -92,27 +87,20 @@ export class MyProjectsService {
       'fields[collections]': 'title,bookmarks',
     };
 
-    return this.#jsonApiService
-      .get<SparseCollectionsResponse>(
-        environment.apiUrl + '/collections/',
-        params,
-      )
-      .pipe(
-        map((response) => {
-          const bookmarksCollection = response.data.find(
-            (collection) =>
-              collection.attributes.title === 'Bookmarks' &&
-              collection.attributes.bookmarks,
-          );
-          return bookmarksCollection?.id ?? '';
-        }),
-      );
+    return this.#jsonApiService.get<SparseCollectionsResponse>(environment.apiUrl + '/collections/', params).pipe(
+      map((response) => {
+        const bookmarksCollection = response.data.find(
+          (collection) => collection.attributes.title === 'Bookmarks' && collection.attributes.bookmarks
+        );
+        return bookmarksCollection?.id ?? '';
+      })
+    );
   }
 
   getMyRegistrations(
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
-    pageSize?: number,
+    pageSize?: number
   ): Observable<MyProjectsItemResponse> {
     return this.#getMyItems('registrations', filters, pageNumber, pageSize);
   }
@@ -120,7 +108,7 @@ export class MyProjectsService {
   getMyPreprints(
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
-    pageSize?: number,
+    pageSize?: number
   ): Observable<MyProjectsItemResponse> {
     return this.#getMyItems('preprints', filters, pageNumber, pageSize);
   }
@@ -129,14 +117,9 @@ export class MyProjectsService {
     collectionId: string,
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
-    pageSize?: number,
+    pageSize?: number
   ): Observable<MyProjectsItemResponse> {
-    return this.#getMyItems(
-      `collections/${collectionId}/linked_nodes/`,
-      filters,
-      pageNumber,
-      pageSize,
-    );
+    return this.#getMyItems(`collections/${collectionId}/linked_nodes/`, filters, pageNumber, pageSize);
   }
 
   createProject(
@@ -144,7 +127,7 @@ export class MyProjectsService {
     description: string,
     templateFrom: string,
     region: string,
-    affiliations: string[],
+    affiliations: string[]
   ): Observable<MyProjectsItem> {
     const payload: CreateProjectPayload = {
       data: {
@@ -181,11 +164,7 @@ export class MyProjectsService {
     };
 
     return this.#jsonApiService
-      .post<MyProjectsItemGetResponse>(
-        `${environment.apiUrl}/nodes/`,
-        payload,
-        params,
-      )
+      .post<MyProjectsItemGetResponse>(`${environment.apiUrl}/nodes/`, payload, params)
       .pipe(map((response) => MyProjectsMapper.fromResponse(response)));
   }
 }

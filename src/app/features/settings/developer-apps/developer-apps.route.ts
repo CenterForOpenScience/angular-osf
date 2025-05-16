@@ -9,16 +9,12 @@ export const developerAppsRoute: Route = {
     {
       path: '',
       loadComponent: () =>
-        import('./developer-apps-list/developer-apps-list.component').then(
-          (c) => c.DeveloperAppsListComponent,
-        ),
+        import('./developer-apps-list/developer-apps-list.component').then((c) => c.DeveloperAppsListComponent),
     },
     {
       path: ':id/details',
       loadComponent: () =>
-        import('./developer-app-details/developer-app-details.component').then(
-          (c) => c.DeveloperAppDetailsComponent,
-        ),
+        import('./developer-app-details/developer-app-details.component').then((c) => c.DeveloperAppDetailsComponent),
     },
   ],
 };

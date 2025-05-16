@@ -2,23 +2,16 @@
   <div class="footer-content">
     <div class="footer-nav">
       <div class="footer-links">
-        <a href="#">{{ "footer.links.centerForOpenScience" | translate }}</a>
+        <a href="#">{{ 'footer.links.centerForOpenScience' | translate }}</a>
         <span class="separator">|</span>
-        <a href="#">{{
-          "footer.links.reproducibilityProjectPsychology" | translate
-        }}</a>
+        <a href="#">{{ 'footer.links.reproducibilityProjectPsychology' | translate }}</a>
         <span class="separator">|</span>
-        <a href="#">{{
-          "footer.links.reproducibilityProjectCancerBiology" | translate
-        }}</a>
+        <a href="#">{{ 'footer.links.reproducibilityProjectCancerBiology' | translate }}</a>
       </div>
 
       <div class="footer-socials">
         @for (icon of socialIcons; track icon.name) {
-          <a
-            [href]="icon.url"
-            [attr.aria-label]="'footer.socials.' + icon.name | translate"
-          >
+          <a [href]="icon.url" [attr.aria-label]="'footer.socials.' + icon.name | translate">
             <img
               alt="social media icon"
               width="37"
@@ -32,22 +25,18 @@
 
     <div class="footer-secondary-nav">
       <div class="footer-links">
-        <a routerLink="/terms-of-use">{{
-          "footer.links.termsOfUse" | translate
-        }}</a>
+        <a routerLink="/terms-of-use">{{ 'footer.links.termsOfUse' | translate }}</a>
         <span class="separator">|</span>
-        <a routerLink="/privacy-policy">{{
-          "footer.links.privacyPolicy" | translate
-        }}</a>
+        <a routerLink="/privacy-policy">{{ 'footer.links.privacyPolicy' | translate }}</a>
         <span class="separator">|</span>
-        <a href="#">{{ "footer.links.status" | translate }}</a>
+        <a href="#">{{ 'footer.links.status' | translate }}</a>
         <span class="separator">|</span>
-        <a href="#">{{ "footer.links.api" | translate }}</a>
+        <a href="#">{{ 'footer.links.api' | translate }}</a>
         <span class="separator">|</span>
-        <a href="#">{{ "footer.links.topGuidelines" | translate }}</a>
+        <a href="#">{{ 'footer.links.topGuidelines' | translate }}</a>
       </div>
 
-      <div class="footer-copyright">{{ "footer.copyright" | translate }}</div>
+      <div class="footer-copyright">{{ 'footer.copyright' | translate }}</div>
     </div>
   </div>
 </footer>

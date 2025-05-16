@@ -2,7 +2,7 @@
   <nav class="navigation-bar-container">
     <a routerLink="/settings/developer-apps">
       <i class="osf-icon-arrow-left inline"></i>
-      {{ "settings.developerApps.details.navigation.back" | translate }}
+      {{ 'settings.developerApps.details.navigation.back' | translate }}
     </a>
   </nav>
 
@@ -21,28 +21,20 @@
       <p-card>
         <section class="card-body">
           <h2>
-            {{ "settings.developerApps.details.clientId.title" | translate }}
+            {{ 'settings.developerApps.details.clientId.title' | translate }}
           </h2>
 
           <p>
-            {{
-              "settings.developerApps.details.clientId.description" | translate
-            }}
+            {{ 'settings.developerApps.details.clientId.description' | translate }}
           </p>
 
           <div class="inline-block relative">
-            <span
-              class="copy-notification"
-              [class.visible]="clientIdCopiedNotificationVisible()"
-            >
-              {{ "settings.developerApps.messages.copied" | translate }}
+            <span class="copy-notification" [class.visible]="clientIdCopiedNotificationVisible()">
+              {{ 'settings.developerApps.messages.copied' | translate }}
             </span>
             <p-iconfield iconPosition="right">
               <input type="text" pInputText readonly [value]="clientId()" />
-              <p-inputicon
-                [cdkCopyToClipboard]="clientId()"
-                (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()"
-              >
+              <p-inputicon [cdkCopyToClipboard]="clientId()" (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()">
                 <i class="osf-icon-copy"></i>
               </p-inputicon>
             </p-iconfield>
@@ -53,36 +45,20 @@
       <p-card>
         <section class="card-body">
           <h2>
-            {{
-              "settings.developerApps.details.clientSecret.title" | translate
-            }}
+            {{ 'settings.developerApps.details.clientSecret.title' | translate }}
           </h2>
 
           <p>
-            {{
-              "settings.developerApps.details.clientSecret.description"
-                | translate
-            }}
+            {{ 'settings.developerApps.details.clientSecret.description' | translate }}
           </p>
 
           <section class="client-secret-container" [class.mobile]="isXSmall()">
             <div class="relative">
-              <span
-                class="copy-notification"
-                [class.visible]="clientSecretCopiedNotificationVisible()"
-              >
-                {{ "settings.developerApps.messages.copied" | translate }}
+              <span class="copy-notification" [class.visible]="clientSecretCopiedNotificationVisible()">
+                {{ 'settings.developerApps.messages.copied' | translate }}
               </span>
               <p-iconfield iconPosition="right">
-                <input
-                  pInputText
-                  [value]="
-                    isClientSecretVisible()
-                      ? clientSecret()
-                      : hiddenClientSecret()
-                  "
-                  readonly
-                />
+                <input pInputText [value]="isClientSecretVisible() ? clientSecret() : hiddenClientSecret()" readonly />
                 <p-inputicon
                   [cdkCopyToClipboard]="clientSecret()"
                   (cdkCopyToClipboardCopied)="clientSecretCopiedToClipboard()"
@@ -95,10 +71,8 @@
             <p-button
               [label]="
                 isClientSecretVisible()
-                  ? ('settings.developerApps.details.clientSecret.hide'
-                    | translate)
-                  : ('settings.developerApps.details.clientSecret.show'
-                    | translate)
+                  ? ('settings.developerApps.details.clientSecret.hide' | translate)
+                  : ('settings.developerApps.details.clientSecret.show' | translate)
               "
               severity="secondary"
               (click)="isClientSecretVisible.set(!isClientSecretVisible())"
@@ -107,10 +81,7 @@
 
           <section class="card-actions">
             <p-button
-              [label]="
-                'settings.developerApps.details.clientSecret.resetSecret'
-                  | translate
-              "
+              [label]="'settings.developerApps.details.clientSecret.resetSecret' | translate"
               [class.btn-half-width]="isXSmall()"
               (click)="resetClientSecret()"
             />
@@ -120,11 +91,8 @@
 
       <p-card>
         <section class="card-body">
-          <h2>{{ "settings.developerApps.form.editTitle" | translate }}</h2>
-          <osf-developer-app-add-edit-form
-            [isEditMode]="true"
-            [initialValues]="developerApp()!"
-          />
+          <h2>{{ 'settings.developerApps.form.editTitle' | translate }}</h2>
+          <osf-developer-app-add-edit-form [isEditMode]="true" [initialValues]="developerApp()!" />
         </section>
       </p-card>
     </section>

@@ -2,12 +2,12 @@ import { Action, State, StateContext } from '@ngxs/store';
 
 import { tap } from 'rxjs';
 
-import { inject,Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
 import { UserService } from '@core/services/user/user.service';
 import { SetupProfileSettings } from '@osf/features/settings/profile-settings/profile-settings.actions';
 
-import { GetCurrentUser, GetCurrentUserSettings, UpdateUserSettings } from './user.actions';
+import { GetCurrentUser, GetCurrentUserSettings, SetCurrentUser, UpdateUserSettings } from './user.actions';
 import { UserStateModel } from './user.state-model';
 
 @State<UserStateModel>({
@@ -29,8 +29,15 @@ export class UserState {
           currentUser: user,
         });
         ctx.dispatch(new SetupProfileSettings());
-      }),
+      })
     );
+  }
+
+  @Action(SetCurrentUser)
+  setCurrentUser(ctx: StateContext<UserStateModel>, action: SetCurrentUser) {
+    ctx.patchState({
+      currentUser: action.user,
+    });
   }
 
   @Action(GetCurrentUserSettings)
@@ -40,7 +47,7 @@ export class UserState {
         ctx.patchState({
           currentUserSettings: userSettings,
         });
-      }),
+      })
     );
   }
 
@@ -51,7 +58,7 @@ export class UserState {
         ctx.patchState({
           currentUserSettings: userSettings,
         });
-      }),
+      })
     );
   }
 }

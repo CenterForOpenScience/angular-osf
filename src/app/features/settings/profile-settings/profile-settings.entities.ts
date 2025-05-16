@@ -12,11 +12,7 @@ export interface ProfileSettingsStateModel {
   user: Partial<User>;
 }
 
-export type ProfileSettingsUpdate =
-  | Partial<Employment>[]
-  | Partial<Education>[]
-  | Partial<Social>
-  | Partial<User>;
+export type ProfileSettingsUpdate = Partial<Employment>[] | Partial<Education>[] | Partial<Social> | Partial<User>;
 
 export const PROFILE_SETTINGS_INITIAL_STATE: ProfileSettingsStateModel = {
   employment: [],

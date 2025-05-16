@@ -8,25 +8,13 @@
   />
 
   <div class="flex-column flex flex-1 w-full">
-    <p-tabs
-      [value]="selectedTab()"
-      (valueChange)="onTabChange(+$event)"
-      class="flex-1"
-    >
+    <p-tabs [value]="selectedTab()" (valueChange)="onTabChange(+$event)" class="flex-1">
       @if (!isMobile()) {
         <p-tablist class="pr-5 pl-5">
-          <p-tab [value]="0">{{
-            "myProjects.tabs.myProjects" | translate
-          }}</p-tab>
-          <p-tab [value]="1">{{
-            "myProjects.tabs.myRegistrations" | translate
-          }}</p-tab>
-          <p-tab [value]="2">{{
-            "myProjects.tabs.myPreprints" | translate
-          }}</p-tab>
-          <p-tab [value]="3">{{
-            "myProjects.tabs.bookmarks" | translate
-          }}</p-tab>
+          <p-tab [value]="0">{{ 'myProjects.tabs.myProjects' | translate }}</p-tab>
+          <p-tab [value]="1">{{ 'myProjects.tabs.myRegistrations' | translate }}</p-tab>
+          <p-tab [value]="2">{{ 'myProjects.tabs.myPreprints' | translate }}</p-tab>
+          <p-tab [value]="3">{{ 'myProjects.tabs.bookmarks' | translate }}</p-tab>
         </p-tablist>
       }
 
@@ -100,7 +88,7 @@
         <!--Bookmarks-->
         <p-tabpanel [value]="3" class="flex flex-column gap-4 flex-1">
           @if (!bookmarks().length && !isLoading()) {
-            <p>{{ "myProjects.bookmarks.emptyState" | translate }}</p>
+            <p>{{ 'myProjects.bookmarks.emptyState' | translate }}</p>
           } @else {
             <osf-my-projects-table
               [items]="bookmarks()"

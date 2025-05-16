@@ -1,38 +1,27 @@
 @if (!isFormSubmitted()) {
   <section class="sign-up-container" [class.mobile]="isMobile()">
-    <h2>{{ "auth.signUp.title" | translate }}</h2>
+    <h2>{{ 'auth.signUp.title' | translate }}</h2>
 
     <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
       <div class="btn-group">
-        <p-button
-          [label]="'auth.signUp.social.orcid' | translate"
-          class="form-btn btn-full-width"
-        >
-          <img
-            ngSrc="assets/images/orcid.svg"
-            alt="Orchid icon"
-            height="20"
-            width="20"
-          />
+        <p-button [label]="'auth.signUp.social.orcid' | translate" class="form-btn btn-full-width">
+          <img ngSrc="assets/images/orcid.svg" alt="Orchid icon" height="20" width="20" />
         </p-button>
-        <p-button
-          [label]="'auth.signUp.social.institution' | translate"
-          class="form-btn btn-full-width"
-        >
+        <p-button [label]="'auth.signUp.social.institution' | translate" class="form-btn btn-full-width">
           <i class="osf-icon-institutions"></i>
         </p-button>
       </div>
 
       <p-divider align="center">
         <span class="divider-text">
-          {{ "auth.signUp.divider" | translate }}
+          {{ 'auth.signUp.divider' | translate }}
         </span>
       </p-divider>
 
       <div class="form-fields">
         <div class="field">
           <label for="fullName">
-            {{ "auth.signUp.form.fullName" | translate }}
+            {{ 'auth.signUp.form.fullName' | translate }}
           </label>
           <input
             id="fullName"
@@ -45,7 +34,7 @@
         </div>
 
         <div class="field">
-          <label for="email">{{ "auth.common.email" | translate }}</label>
+          <label for="email">{{ 'auth.common.email' | translate }}</label>
           <input
             id="email"
             type="email"
@@ -58,7 +47,7 @@
 
         <div class="field">
           <label for="password">
-            {{ "auth.common.password.new" | translate }}
+            {{ 'auth.common.password.new' | translate }}
           </label>
           <p-password
             id="password"
@@ -68,16 +57,13 @@
             autocomplete="new-password"
           ></p-password>
           <osf-password-input-hint
-            [isError]="
-              signUpForm.controls['password'].errors &&
-              signUpForm.get('password')?.touched
-            "
+            [isError]="signUpForm.controls['password'].errors && signUpForm.get('password')?.touched"
           />
         </div>
 
         <div class="field">
           <label for="confirmPassword">
-            {{ "auth.common.password.confirm" | translate }}
+            {{ 'auth.common.password.confirm' | translate }}
           </label>
           <p-password
             id="confirmPassword"
@@ -87,30 +73,22 @@
             autocomplete="new-password"
           ></p-password>
           @if (
-            signUpForm.get("confirmPassword")?.errors?.["passwordMismatch"] &&
-            signUpForm.get("confirmPassword")?.touched
+            signUpForm.get('confirmPassword')?.errors?.['passwordMismatch'] &&
+            signUpForm.get('confirmPassword')?.touched
           ) {
             <small class="text-danger">
-              {{ "auth.common.password.mismatch" | translate }}
+              {{ 'auth.common.password.mismatch' | translate }}
             </small>
           }
         </div>
 
         <div class="field-checkbox">
-          <p-checkbox
-            formControlName="agreeToTerms"
-            [binary]="true"
-            id="agreeToTerms"
-          ></p-checkbox>
+          <p-checkbox formControlName="agreeToTerms" [binary]="true" id="agreeToTerms"></p-checkbox>
           <label for="agreeToTerms">
-            {{ "auth.signUp.form.terms.agree" | translate }}
-            <a routerLink="/terms-of-use">{{
-              "auth.signUp.form.terms.termsOfUse" | translate
-            }}</a>
-            {{ "auth.signUp.form.terms.and" | translate }}
-            <a routerLink="/privacy-policy">{{
-              "auth.signUp.form.terms.privacyPolicy" | translate
-            }}</a>
+            {{ 'auth.signUp.form.terms.agree' | translate }}
+            <a routerLink="/terms-of-use">{{ 'auth.signUp.form.terms.termsOfUse' | translate }}</a>
+            {{ 'auth.signUp.form.terms.and' | translate }}
+            <a routerLink="/privacy-policy">{{ 'auth.signUp.form.terms.privacyPolicy' | translate }}</a>
           </label>
         </div>
       </div>
@@ -125,7 +103,7 @@
   </section>
 } @else {
   <section class="message-container" [class.mobile]="isMobile()">
-    <h2>{{ "auth.signUp.success.title" | translate }}</h2>
-    <p>{{ "auth.signUp.success.message" | translate }}</p>
+    <h2>{{ 'auth.signUp.success.title' | translate }}</h2>
+    <p>{{ 'auth.signUp.success.message' | translate }}</p>
   </section>
 }

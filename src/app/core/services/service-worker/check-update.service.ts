@@ -29,21 +29,17 @@ export class NewVersionCheckerService {
   }
 
   private promptOnUpdateAvailable(): void {
-    this.swUpdate.versionUpdates
-      .pipe(takeUntilDestroyed())
-      .subscribe((event: VersionEvent) => {
-        console.info('Current version is', event);
+    this.swUpdate.versionUpdates.pipe(takeUntilDestroyed()).subscribe((event: VersionEvent) => {
+      console.info('Current version is', event);
 
-        if (event.type !== 'NO_NEW_VERSION_DETECTED') {
-          this.isNewVersionAvailable.next(true);
-        }
-      });
+      if (event.type !== 'NO_NEW_VERSION_DETECTED') {
+        this.isNewVersionAvailable.next(true);
+      }
+    });
   }
 
   private checkForUpdateAfterInterval(updateInterval: number) {
-    const appIsStable$ = this.appRef.isStable.pipe(
-      first((isStable) => isStable === true),
-    );
+    const appIsStable$ = this.appRef.isStable.pipe(first((isStable) => isStable === true));
     const everyInterval$ = interval(updateInterval);
     const everyIntervalOnceAppIsStable$ = concat(appIsStable$, everyInterval$);
 

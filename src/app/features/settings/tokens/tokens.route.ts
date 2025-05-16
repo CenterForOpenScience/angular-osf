@@ -8,17 +8,11 @@ export const tokensAppsRoute: Route = {
   children: [
     {
       path: '',
-      loadComponent: () =>
-        import('./tokens-list/tokens-list.component').then(
-          (c) => c.TokensListComponent,
-        ),
+      loadComponent: () => import('./tokens-list/tokens-list.component').then((c) => c.TokensListComponent),
     },
     {
       path: ':id/details',
-      loadComponent: () =>
-        import('./token-details/token-details.component').then(
-          (c) => c.TokenDetailsComponent,
-        ),
+      loadComponent: () => import('./token-details/token-details.component').then((c) => c.TokenDetailsComponent),
     },
   ],
 };

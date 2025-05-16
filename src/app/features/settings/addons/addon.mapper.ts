@@ -22,31 +22,26 @@ export class AddonMapper {
 
   static fromAuthorizedAddonResponse(
     response: AuthorizedAddonGetResponse,
-    included?: IncludedAddonData[],
+    included?: IncludedAddonData[]
   ): AuthorizedAddon {
     // Handle both storage and citation service relationships
     const externalServiceData =
-      response.relationships?.external_storage_service?.data ||
-      response.relationships?.external_citation_service?.data;
+      response.relationships?.external_storage_service?.data || response.relationships?.external_citation_service?.data;
 
     const externalServiceId = externalServiceData?.id;
 
     // Find the matching service in the included data
     const matchingService = included?.find(
       (item) =>
-        (item.type === 'external-storage-services' ||
-          item.type === 'external-citation-services') &&
-        item.id === externalServiceId,
+        (item.type === 'external-storage-services' || item.type === 'external-citation-services') &&
+        item.id === externalServiceId
     )?.attributes;
 
     // Extract the relevant properties from the matching service
-    const externalServiceName =
-      (matchingService?.['external_service_name'] as string) || '';
+    const externalServiceName = (matchingService?.['external_service_name'] as string) || '';
     const displayName = (matchingService?.['display_name'] as string) || '';
-    const credentialsFormat =
-      (matchingService?.['credentials_format'] as string) || '';
-    const supportedFeatures =
-      (matchingService?.['supported_features'] as string[]) || [];
+    const credentialsFormat = (matchingService?.['credentials_format'] as string) || '';
+    const supportedFeatures = (matchingService?.['supported_features'] as string[]) || [];
 
     return {
       type: response.type,

@@ -31,13 +31,9 @@ import {
 export class FilterChipsComponent {
   readonly #store = inject(Store);
 
-  protected filters = this.#store.selectSignal(
-    ResourceFiltersSelectors.getAllFilters,
-  );
+  protected filters = this.#store.selectSignal(ResourceFiltersSelectors.getAllFilters);
 
-  readonly isMyProfilePage = this.#store.selectSignal(
-    SearchSelectors.getIsMyProfile,
-  );
+  readonly isMyProfilePage = this.#store.selectSignal(SearchSelectors.getIsMyProfile);
 
   clearFilter(filter: FilterType) {
     switch (filter) {

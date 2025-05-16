@@ -8,9 +8,7 @@ import { ResourceFiltersState } from '@shared/components/resources/resource-filt
 
 export class ResourceFiltersSelectors {
   @Selector([ResourceFiltersState])
-  static getAllFilters(
-    state: ResourceFiltersStateModel,
-  ): ResourceFiltersStateModel {
+  static getAllFilters(state: ResourceFiltersStateModel): ResourceFiltersStateModel {
     return {
       ...state,
     };
@@ -42,9 +40,7 @@ export class ResourceFiltersSelectors {
   }
 
   @Selector([ResourceFiltersState])
-  static getResourceType(
-    state: ResourceFiltersStateModel,
-  ): ResourceFilterLabel {
+  static getResourceType(state: ResourceFiltersStateModel): ResourceFilterLabel {
     return state.resourceType;
   }
 
@@ -59,9 +55,7 @@ export class ResourceFiltersSelectors {
   }
 
   @Selector([ResourceFiltersState])
-  static getPartOfCollection(
-    state: ResourceFiltersStateModel,
-  ): ResourceFilterLabel {
+  static getPartOfCollection(state: ResourceFiltersStateModel): ResourceFilterLabel {
     return state.partOfCollection;
   }
 }

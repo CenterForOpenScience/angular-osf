@@ -1,3 +1,6 @@
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MockPipe, MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NotificationsComponent } from './notifications.component';
@@ -8,7 +11,8 @@ describe('NotificationsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotificationsComponent],
+      imports: [NotificationsComponent, MockPipe(TranslatePipe)],
+      providers: [MockProvider(TranslateService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NotificationsComponent);

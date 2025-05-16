@@ -19,9 +19,7 @@ export class ResourceFiltersOptionsSelectors {
   }
 
   @Selector([ResourceFiltersOptionsState])
-  static getDatesCreated(
-    state: ResourceFiltersOptionsStateModel,
-  ): DateCreated[] {
+  static getDatesCreated(state: ResourceFiltersOptionsStateModel): DateCreated[] {
     return state.datesCreated;
   }
 
@@ -41,37 +39,27 @@ export class ResourceFiltersOptionsSelectors {
   }
 
   @Selector([ResourceFiltersOptionsState])
-  static getResourceTypes(
-    state: ResourceFiltersOptionsStateModel,
-  ): ResourceTypeFilter[] {
+  static getResourceTypes(state: ResourceFiltersOptionsStateModel): ResourceTypeFilter[] {
     return state.resourceTypes;
   }
 
   @Selector([ResourceFiltersOptionsState])
-  static getInstitutions(
-    state: ResourceFiltersOptionsStateModel,
-  ): InstitutionFilter[] {
+  static getInstitutions(state: ResourceFiltersOptionsStateModel): InstitutionFilter[] {
     return state.institutions;
   }
 
   @Selector([ResourceFiltersOptionsState])
-  static getProviders(
-    state: ResourceFiltersOptionsStateModel,
-  ): ProviderFilter[] {
+  static getProviders(state: ResourceFiltersOptionsStateModel): ProviderFilter[] {
     return state.providers;
   }
 
   @Selector([ResourceFiltersOptionsState])
-  static getPartOfCollection(
-    state: ResourceFiltersOptionsStateModel,
-  ): PartOfCollectionFilter[] {
+  static getPartOfCollection(state: ResourceFiltersOptionsStateModel): PartOfCollectionFilter[] {
     return state.partOfCollection;
   }
 
   @Selector([ResourceFiltersOptionsState])
-  static getAllOptions(
-    state: ResourceFiltersOptionsStateModel,
-  ): ResourceFiltersOptionsStateModel {
+  static getAllOptions(state: ResourceFiltersOptionsStateModel): ResourceFiltersOptionsStateModel {
     return {
       ...state,
     };

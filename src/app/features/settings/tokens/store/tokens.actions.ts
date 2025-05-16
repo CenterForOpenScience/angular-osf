@@ -16,7 +16,7 @@ export class UpdateToken {
   constructor(
     public tokenId: string,
     public name: string,
-    public scopes: string[],
+    public scopes: string[]
   ) {}
 }
 
@@ -29,6 +29,6 @@ export class CreateToken {
   static readonly type = '[Tokens] Create Token';
   constructor(
     public name: string,
-    public scopes: string[],
+    public scopes: string[]
   ) {}
 }

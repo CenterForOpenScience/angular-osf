@@ -1,29 +1,13 @@
-<osf-sub-header
-  [showButton]="false"
-  [title]="'settings.profileSettings.title' | translate"
-  [icon]="'settings'"
-/>
+<osf-sub-header [showButton]="false" [title]="'settings.profileSettings.title' | translate" [icon]="'settings'" />
 
 <div class="flex-column flex flex-1 w-full">
-  <p-tabs
-    [value]="selectedTab"
-    (valueChange)="onTabChange(+$event)"
-    class="flex-1"
-  >
+  <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1">
     @if (!isMobile()) {
       <p-tablist class="pr-5 pl-5">
-        <p-tab [value]="0">{{
-          "settings.profileSettings.tabs.name" | translate
-        }}</p-tab>
-        <p-tab [value]="1">{{
-          "settings.profileSettings.tabs.social" | translate
-        }}</p-tab>
-        <p-tab [value]="2">{{
-          "settings.profileSettings.tabs.employment" | translate
-        }}</p-tab>
-        <p-tab [value]="3">{{
-          "settings.profileSettings.tabs.education" | translate
-        }}</p-tab>
+        <p-tab [value]="0">{{ 'settings.profileSettings.tabs.name' | translate }}</p-tab>
+        <p-tab [value]="1">{{ 'settings.profileSettings.tabs.social' | translate }}</p-tab>
+        <p-tab [value]="2">{{ 'settings.profileSettings.tabs.employment' | translate }}</p-tab>
+        <p-tab [value]="3">{{ 'settings.profileSettings.tabs.education' | translate }}</p-tab>
       </p-tablist>
     }
 

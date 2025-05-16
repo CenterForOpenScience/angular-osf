@@ -10,10 +10,7 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
-import {
-  Addon,
-  AuthorizedAddon,
-} from '@osf/features/settings/addons/entities/addons.entities';
+import { Addon, AuthorizedAddon } from '@osf/features/settings/addons/entities/addons.entities';
 import { DeleteAuthorizedAddon } from '@osf/features/settings/addons/store';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
@@ -22,7 +19,6 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
   imports: [Button, NgClass, DialogModule, TranslatePipe],
   templateUrl: './addon-card.component.html',
   styleUrl: './addon-card.component.scss',
-  standalone: true,
 })
 export class AddonCardComponent {
   #router = inject(Router);
@@ -36,9 +32,7 @@ export class AddonCardComponent {
   protected readonly addonTypeString = computed(() => {
     const addon = this.card();
     if (addon) {
-      return addon.type === 'authorized-storage-accounts'
-        ? 'storage'
-        : 'citation';
+      return addon.type === 'authorized-storage-accounts' ? 'storage' : 'citation';
     }
     return '';
   });
@@ -66,17 +60,15 @@ export class AddonCardComponent {
     const addonId = this.card()?.id;
     if (addonId) {
       this.isDisabling.set(true);
-      this.#store
-        .dispatch(new DeleteAuthorizedAddon(addonId, this.addonTypeString()))
-        .subscribe({
-          complete: () => {
-            this.isDisabling.set(false);
-            this.isDialogVisible.set(false);
-          },
-          error: () => {
-            this.isDisabling.set(false);
-          },
-        });
+      this.#store.dispatch(new DeleteAuthorizedAddon(addonId, this.addonTypeString())).subscribe({
+        complete: () => {
+          this.isDisabling.set(false);
+          this.isDialogVisible.set(false);
+        },
+        error: () => {
+          this.isDisabling.set(false);
+        },
+      });
     }
   }
 }

@@ -10,46 +10,20 @@ import { InputText } from 'primeng/inputtext';
 import { map } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  TokenForm,
-  TokenFormControls,
-} from '@osf/features/settings/tokens/entities/token-form.entities';
+import { TokenForm, TokenFormControls } from '@osf/features/settings/tokens/entities/token-form.entities';
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
-import {
-  CreateToken,
-  GetTokens,
-  TokensSelectors,
-  UpdateToken,
-} from '@osf/features/settings/tokens/store';
+import { CreateToken, GetTokens, TokensSelectors, UpdateToken } from '@osf/features/settings/tokens/store';
 import { TokenCreatedDialogComponent } from '@osf/features/settings/tokens/token-created-dialog/token-created-dialog.component';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-token-add-edit-form',
-  imports: [
-    Button,
-    InputText,
-    ReactiveFormsModule,
-    CommonModule,
-    Checkbox,
-    TranslatePipe,
-  ],
+  imports: [Button, InputText, ReactiveFormsModule, CommonModule, Checkbox, TranslatePipe],
   templateUrl: './token-add-edit-form.component.html',
   styleUrl: './token-add-edit-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -63,15 +37,11 @@ export class TokenAddEditFormComponent implements OnInit {
 
   isEditMode = input(false);
   initialValues = input<Token | null>(null);
-  protected readonly tokenId = toSignal(
-    this.#route.params.pipe(map((params) => params['id'])),
-  );
+  protected readonly tokenId = toSignal(this.#route.params.pipe(map((params) => params['id'])));
   protected readonly dialogRef = inject(DynamicDialogRef);
   protected readonly TokenFormControls = TokenFormControls;
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly tokenScopes = this.#store.selectSignal(
-    TokensSelectors.getScopes,
-  );
+  protected readonly tokenScopes = this.#store.selectSignal(TokensSelectors.getScopes);
 
   readonly tokenForm: TokenForm = new FormGroup({
     [TokenFormControls.TokenName]: new FormControl('', {
@@ -115,13 +85,11 @@ export class TokenAddEditFormComponent implements OnInit {
         },
       });
     } else {
-      this.#store
-        .dispatch(new UpdateToken(this.tokenId(), tokenName, scopes))
-        .subscribe({
-          complete: () => {
-            this.#router.navigate(['settings/tokens']);
-          },
-        });
+      this.#store.dispatch(new UpdateToken(this.tokenId(), tokenName, scopes)).subscribe({
+        complete: () => {
+          this.#router.navigate(['settings/tokens']);
+        },
+      });
     }
   }
 
@@ -134,9 +102,7 @@ export class TokenAddEditFormComponent implements OnInit {
 
     this.#dialogService.open(TokenCreatedDialogComponent, {
       width: dialogWidth,
-      header: this.#translateService.instant(
-        'settings.tokens.created-dialog.title',
-      ),
+      header: this.#translateService.instant('settings.tokens.created-dialog.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,

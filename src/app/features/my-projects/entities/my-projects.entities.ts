@@ -60,8 +60,7 @@ export interface MyProjectsItemResponse {
   };
 }
 
-export interface MyProjectsJsonApiResponse
-  extends JsonApiResponse<MyProjectsItemGetResponse[], null> {
+export interface MyProjectsJsonApiResponse extends JsonApiResponse<MyProjectsItemGetResponse[], null> {
   links: {
     meta: {
       total: number;

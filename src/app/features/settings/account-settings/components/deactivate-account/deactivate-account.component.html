@@ -1,0 +1,33 @@
+<section class="account-setting">
+  <h2 class="account-setting-header">{{ 'settings.accountSettings.deactivateAccount.title' | translate }}</h2>
+
+  <div class="warning-message">
+    <p-message severity="error">
+      <img ngSrc="./assets/icons/source/warning-sign.svg" class="mr-2" height="16" width="16" alt="waring-action" />
+      {{ 'settings.accountSettings.deactivateAccount.warning.title' | translate }}
+    </p-message>
+  </div>
+
+  <div class="account-setting-description">
+    {{ 'settings.accountSettings.deactivateAccount.description.main' | translate }}
+  </div>
+
+  <div class="account-setting-description">
+    {{ 'settings.accountSettings.deactivateAccount.description.secondary' | translate }}
+  </div>
+
+  @if (accountSettings()?.deactivationRequested) {
+    <p class="font-bold">{{ 'settings.accountSettings.deactivateAccount.pendingDeactivation' | translate }}</p>
+    <div class="account-setting-action">
+      <p-button (click)="cancelDeactivation()">
+        {{ 'settings.accountSettings.deactivateAccount.actions.undoDeactivation' | translate }}
+      </p-button>
+    </div>
+  } @else {
+    <div class="account-setting-action">
+      <p-button (click)="deactivateAccount()" size="large">
+        {{ 'settings.accountSettings.deactivateAccount.actions.requestDeactivation' | translate }}
+      </p-button>
+    </div>
+  }
+</section>

@@ -22,24 +22,19 @@ export class UserMapper {
       employment: user.attributes.employment,
       iri: user.links.iri,
       social: user.attributes.social,
+      defaultRegionId: user.relationships?.default_region?.data?.id,
+      allowIndexing: user.attributes?.allow_indexing,
     };
   }
 
-  static fromUserSettingsGetResponse(
-    userSettingsResponse: UserSettingsGetResponse,
-  ): UserSettings {
+  static fromUserSettingsGetResponse(userSettingsResponse: UserSettingsGetResponse): UserSettings {
     return {
-      subscribeOsfGeneralEmail:
-        userSettingsResponse.attributes.subscribe_osf_general_email,
-      subscribeOsfHelpEmail:
-        userSettingsResponse.attributes.subscribe_osf_help_email,
+      subscribeOsfGeneralEmail: userSettingsResponse.attributes.subscribe_osf_general_email,
+      subscribeOsfHelpEmail: userSettingsResponse.attributes.subscribe_osf_help_email,
     };
   }
 
-  static toUpdateUserSettingsRequest(
-    userId: string,
-    userSettings: UserSettings,
-  ): UserSettingsUpdateRequest {
+  static toUpdateUserSettingsRequest(userId: string, userSettings: UserSettings): UserSettingsUpdateRequest {
     return {
       data: {
         id: userId,

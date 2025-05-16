@@ -22,6 +22,7 @@ short-description – a brief description of the change.
 # 📌 Available Types (type)
 
 ### We use the following types to categorize changes:
+
 ```bash
 | Type --- Purpose
 | feat --- Adding a new feature
@@ -40,6 +41,7 @@ short-description – a brief description of the change.
 # 📝 Branch Naming Examples
 
 ### Here are some examples of branch names:
+
 ```bash
 * feat/1234-add-user-authentication
 * fix/5678-fix-login-bug
@@ -48,9 +50,11 @@ short-description – a brief description of the change.
 * test/8765-add-e2e-tests-for-dashboard
 
 ```
+
 # 🛠 Example of Creating a Branch:
 
 ### To create a new branch, use the following command:
+
 ```bash
 git checkout -b feat/1234-add-user-authentication
 
@@ -58,11 +62,11 @@ git checkout -b feat/1234-add-user-authentication
 
 # 🏆 Best Practices
 
-* ✅ Use short and clear descriptions in branch names. 
-* ✅ Follow a consistent style across all branches for better project structure.
-* ✅ Avoid redundant words, e.g., fix/1234-fix-bug (the word "fix" is redundant).
-* ✅ Use kebab-case (- instead of _ or CamelCase).
-* ✅ If there is no issue ID, omit it, e.g., docs/update-contributing-guide.
+- ✅ Use short and clear descriptions in branch names.
+- ✅ Follow a consistent style across all branches for better project structure.
+- ✅ Avoid redundant words, e.g., fix/1234-fix-bug (the word "fix" is redundant).
+- ✅ Use kebab-case (- instead of \_ or CamelCase).
+- ✅ If there is no issue ID, omit it, e.g., docs/update-contributing-guide.
 
 # 🔗 Additional Resources
 
@@ -126,4 +130,3 @@ Angular Commit Guidelines: https://github.com/angular/angular/blob/main/CONTRIBU
 Git Flow: https://nvie.com/posts/a-successful-git-branching-model/
 
 This branch naming and commit message strategy ensures better traceability and improves commit history readability. 🚀
-

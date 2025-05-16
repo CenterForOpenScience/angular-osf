@@ -11,15 +11,10 @@ export function MapFunders(items: FunderIndexValueSearch[]): FunderFilter[] {
 
   for (const item of items) {
     if (item.type === 'search-result') {
-      const indexCard = items.find(
-        (p) => p.id === item.relationships.indexCard.data.id,
-      );
+      const indexCard = items.find((p) => p.id === item.relationships.indexCard.data.id);
       funders.push({
-        id: (indexCard as FunderIndexCardFilter).attributes.resourceMetadata?.[
-          '@id'
-        ],
-        label: (indexCard as FunderIndexCardFilter).attributes.resourceMetadata
-          ?.name?.[0]?.['@value'],
+        id: (indexCard as FunderIndexCardFilter).attributes.resourceMetadata?.['@id'],
+        label: (indexCard as FunderIndexCardFilter).attributes.resourceMetadata?.name?.[0]?.['@value'],
         count: item.attributes.cardSearchResultCount,
       });
     }

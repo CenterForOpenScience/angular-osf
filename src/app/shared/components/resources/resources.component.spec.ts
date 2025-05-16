@@ -1,22 +1,120 @@
+import { Store } from '@ngxs/store';
+
+import { MockComponents, MockProvider } from 'ng-mocks';
+
+import { BehaviorSubject } from 'rxjs';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
+import { GetResourcesByLink, SearchSelectors } from '@osf/features/search/store';
+import { IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+
+import { FilterChipsComponent } from './filter-chips/filter-chips.component';
+import { ResourceCardComponent } from './resource-card/resource-card.component';
+import { ResourceFiltersOptionsSelectors } from './resource-filters/filters/store/resource-filters-options.selectors';
+import { ResourceFiltersComponent } from './resource-filters/resource-filters.component';
+import { ResourceFiltersSelectors } from './resource-filters/store';
 import { ResourcesComponent } from './resources.component';
 
 describe('ResourcesComponent', () => {
   let component: ResourcesComponent;
   let fixture: ComponentFixture<ResourcesComponent>;
+  let store: jest.Mocked<Store>;
+  let isWebSubject: BehaviorSubject<boolean>;
+  let isMobileSubject: BehaviorSubject<boolean>;
+
+  const mockStore = {
+    selectSignal: jest.fn(),
+    dispatch: jest.fn(),
+  };
 
   beforeEach(async () => {
+    isWebSubject = new BehaviorSubject<boolean>(true);
+    isMobileSubject = new BehaviorSubject<boolean>(false);
+
+    mockStore.selectSignal.mockImplementation((selector) => {
+      if (selector === SearchSelectors.getResourceTab) return () => ResourceTab.All;
+      if (selector === SearchSelectors.getResourcesCount) return () => 100;
+      if (selector === SearchSelectors.getResources) return () => [];
+      if (selector === SearchSelectors.getSortBy) return () => '-relevance';
+      if (selector === SearchSelectors.getFirst) return () => 'first-link';
+      if (selector === SearchSelectors.getNext) return () => 'next-link';
+      if (selector === SearchSelectors.getPrevious) return () => 'prev-link';
+      if (selector === SearchSelectors.getIsMyProfile) return () => false;
+      if (selector === ResourceFiltersSelectors.getAllFilters)
+        return () => ({
+          creator: { value: '' },
+          dateCreated: { value: '' },
+          funder: { value: '' },
+          subject: { value: '' },
+          license: { value: '' },
+          resourceType: { value: '' },
+          institution: { value: '' },
+          provider: { value: '' },
+          partOfCollection: { value: '' },
+        });
+      if (selector === ResourceFiltersOptionsSelectors.getAllOptions)
+        return () => ({
+          datesCreated: [],
+          creators: [],
+          funders: [],
+          subjects: [],
+          licenses: [],
+          resourceTypes: [],
+          institutions: [],
+          providers: [],
+          partOfCollection: [],
+        });
+      return () => null;
+    });
+
     await TestBed.configureTestingModule({
-      imports: [ResourcesComponent],
+      imports: [
+        ResourcesComponent,
+        ...MockComponents(ResourceFiltersComponent, ResourceCardComponent, FilterChipsComponent),
+      ],
+      providers: [
+        MockProvider(Store, mockStore),
+        MockProvider(IS_WEB, isWebSubject),
+        MockProvider(IS_XSMALL, isMobileSubject),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ResourcesComponent);
     component = fixture.componentInstance;
+    store = TestBed.inject(Store) as jest.Mocked<Store>;
     fixture.detectChanges();
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should switch page and dispatch to store', () => {
+    const link = 'next-page-link';
+    component.switchPage(link);
+
+    expect(store.dispatch).toHaveBeenCalledWith(new GetResourcesByLink(link));
+  });
+
+  it('should show mobile layout when isMobile is true', () => {
+    isMobileSubject.next(true);
+    fixture.detectChanges();
+
+    const mobileSelect = fixture.nativeElement.querySelector('p-select');
+    expect(mobileSelect).toBeTruthy();
+  });
+
+  it('should show web layout when isWeb is true', () => {
+    isWebSubject.next(true);
+    fixture.detectChanges();
+
+    const webSortSelect = fixture.nativeElement.querySelector('.sorting-container p-select');
+    expect(webSortSelect).toBeTruthy();
   });
 });

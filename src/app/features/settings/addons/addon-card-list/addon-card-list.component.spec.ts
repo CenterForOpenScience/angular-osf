@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { AddonCardComponent } from '../addon-card/addon-card.component';
 
 import { AddonCardListComponent } from './addon-card-list.component';
 
@@ -8,7 +12,7 @@ describe('AddonCardListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddonCardListComponent],
+      imports: [AddonCardListComponent, MockComponent(AddonCardComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddonCardListComponent);

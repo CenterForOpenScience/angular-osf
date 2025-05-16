@@ -22,10 +22,7 @@ import {
   GetCreatorsOptions,
 } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
-import {
-  ResourceFiltersSelectors,
-  SetCreator,
-} from '@shared/components/resources/resource-filters/store';
+import { ResourceFiltersSelectors, SetCreator } from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-creators-filter',
@@ -37,9 +34,7 @@ import {
 export class CreatorsFilterComponent implements OnDestroy {
   readonly #store = inject(Store);
 
-  protected searchCreatorsResults = this.#store.selectSignal(
-    ResourceFiltersOptionsSelectors.getCreators,
-  );
+  protected searchCreatorsResults = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getCreators);
   protected creatorsOptions = computed(() => {
     return this.searchCreatorsResults().map((creator) => ({
       label: creator.name,
@@ -47,20 +42,14 @@ export class CreatorsFilterComponent implements OnDestroy {
     }));
   });
   protected creatorsLoading = signal<boolean>(false);
-  protected creatorState = this.#store.selectSignal(
-    ResourceFiltersSelectors.getCreator,
-  );
+  protected creatorState = this.#store.selectSignal(ResourceFiltersSelectors.getCreator);
   readonly #unsubscribe = new Subject<void>();
   protected creatorsInput = signal<string | null>(null);
   protected initialization = true;
 
   constructor() {
     toObservable(this.creatorsInput)
-      .pipe(
-        debounceTime(500),
-        distinctUntilChanged(),
-        takeUntil(this.#unsubscribe),
-      )
+      .pipe(debounceTime(500), distinctUntilChanged(), takeUntil(this.#unsubscribe))
       .subscribe((searchText) => {
         if (!this.initialization) {
           if (searchText) {
@@ -94,9 +83,7 @@ export class CreatorsFilterComponent implements OnDestroy {
 
   setCreator(event: SelectChangeEvent): void {
     if ((event.originalEvent as PointerEvent).pointerId && event.value) {
-      const creator = this.creatorsOptions().find((p) =>
-        p.label.includes(event.value),
-      );
+      const creator = this.creatorsOptions().find((p) => p.label.includes(event.value));
       if (creator) {
         this.#store.dispatch(new SetCreator(creator.label, creator.id));
         this.#store.dispatch(GetAllOptions);

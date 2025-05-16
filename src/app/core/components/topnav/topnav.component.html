@@ -8,14 +8,7 @@
   >
     <osf-nav-menu (closeMenu)="toggleMenuVisibility()" />
   </p-drawer>
-  <p-button
-    class="topnav-btn"
-    severity="contrast"
-    (onClick)="toggleMenuVisibility()"
-  >
-    <i
-      [class]="!isDrawerVisible() ? 'osf-icon-menu' : 'osf-icon-close'"
-      class="topnav-icon"
-    ></i>
+  <p-button class="topnav-btn" severity="contrast" (onClick)="toggleMenuVisibility()">
+    <i [class]="!isDrawerVisible() ? 'osf-icon-menu' : 'osf-icon-close'" class="topnav-icon"></i>
   </p-button>
 </section>

@@ -114,34 +114,16 @@ export class MyProjectsComponent implements OnInit {
     firstRowIndex: 0,
   });
 
-  protected readonly projects = this.#store.selectSignal(
-    MyProjectsSelectors.getProjects,
-  );
-  protected readonly registrations = this.#store.selectSignal(
-    MyProjectsSelectors.getRegistrations,
-  );
-  protected readonly preprints = this.#store.selectSignal(
-    MyProjectsSelectors.getPreprints,
-  );
-  protected readonly bookmarks = this.#store.selectSignal(
-    MyProjectsSelectors.getBookmarks,
-  );
-  protected readonly totalProjectsCount = this.#store.selectSignal(
-    MyProjectsSelectors.getTotalProjectsCount,
-  );
-  protected readonly totalRegistrationsCount = this.#store.selectSignal(
-    MyProjectsSelectors.getTotalRegistrationsCount,
-  );
-  protected readonly totalPreprintsCount = this.#store.selectSignal(
-    MyProjectsSelectors.getTotalPreprintsCount,
-  );
-  protected readonly totalBookmarksCount = this.#store.selectSignal(
-    MyProjectsSelectors.getTotalBookmarksCount,
-  );
+  protected readonly projects = this.#store.selectSignal(MyProjectsSelectors.getProjects);
+  protected readonly registrations = this.#store.selectSignal(MyProjectsSelectors.getRegistrations);
+  protected readonly preprints = this.#store.selectSignal(MyProjectsSelectors.getPreprints);
+  protected readonly bookmarks = this.#store.selectSignal(MyProjectsSelectors.getBookmarks);
+  protected readonly totalProjectsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalProjectsCount);
+  protected readonly totalRegistrationsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalRegistrationsCount);
+  protected readonly totalPreprintsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalPreprintsCount);
+  protected readonly totalBookmarksCount = this.#store.selectSignal(MyProjectsSelectors.getTotalBookmarksCount);
 
-  protected readonly bookmarksCollectionId = this.#store.selectSignal(
-    MyProjectsSelectors.getBookmarksCollectionId,
-  );
+  protected readonly bookmarksCollectionId = this.#store.selectSignal(MyProjectsSelectors.getBookmarksCollectionId);
 
   constructor() {
     this.#setupQueryParamsEffect();
@@ -163,11 +145,7 @@ export class MyProjectsComponent implements OnInit {
 
   #setupSearchSubscription(): void {
     this.#searchSubject
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        takeUntilDestroyed(this.#destroyRef),
-      )
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.#destroyRef))
       .subscribe((searchValue) => {
         this.#handleSearch(searchValue);
       });
@@ -202,8 +180,7 @@ export class MyProjectsComponent implements OnInit {
       const params = this.queryParams();
       if (!params) return;
 
-      const { page, size, search, sortColumn, sortOrder } =
-        parseQueryFilterParams(params);
+      const { page, size, search, sortColumn, sortOrder } = parseQueryFilterParams(params);
 
       this.#updateComponentState({ page, size, search, sortColumn, sortOrder });
       this.#fetchDataForCurrentTab({
@@ -249,29 +226,18 @@ export class MyProjectsComponent implements OnInit {
     let action$;
     switch (this.selectedTab()) {
       case 0:
-        action$ = this.#store.dispatch(
-          new GetMyProjects(pageNumber, pageSize, filters),
-        );
+        action$ = this.#store.dispatch(new GetMyProjects(pageNumber, pageSize, filters));
         break;
       case 1:
-        action$ = this.#store.dispatch(
-          new GetMyRegistrations(pageNumber, pageSize, filters),
-        );
+        action$ = this.#store.dispatch(new GetMyRegistrations(pageNumber, pageSize, filters));
         break;
       case 2:
-        action$ = this.#store.dispatch(
-          new GetMyPreprints(pageNumber, pageSize, filters),
-        );
+        action$ = this.#store.dispatch(new GetMyPreprints(pageNumber, pageSize, filters));
         break;
       case 3:
         if (this.bookmarksCollectionId()) {
           action$ = this.#store.dispatch(
-            new GetMyBookmarks(
-              this.bookmarksCollectionId(),
-              pageNumber,
-              pageSize,
-              filters,
-            ),
+            new GetMyBookmarks(this.bookmarksCollectionId(), pageNumber, pageSize, filters)
           );
         }
         break;
@@ -302,8 +268,7 @@ export class MyProjectsComponent implements OnInit {
       search: searchValue,
       page: 1,
       sortColumn: currentParams['sortColumn'],
-      sortOrder:
-        currentParams['sortOrder'] === 'desc' ? SortOrder.Desc : SortOrder.Asc,
+      sortOrder: currentParams['sortOrder'] === 'desc' ? SortOrder.Desc : SortOrder.Asc,
     });
   }
 
@@ -328,8 +293,7 @@ export class MyProjectsComponent implements OnInit {
     if ('sortColumn' in updates) {
       if (updates.sortColumn) {
         queryParams['sortColumn'] = updates.sortColumn;
-        queryParams['sortOrder'] =
-          updates.sortOrder === SortOrder.Desc ? 'desc' : 'asc';
+        queryParams['sortOrder'] = updates.sortOrder === SortOrder.Desc ? 'desc' : 'asc';
       }
     } else if (currentParams['sortColumn']) {
       queryParams['sortColumn'] = currentParams['sortColumn'];
@@ -355,8 +319,7 @@ export class MyProjectsComponent implements OnInit {
       page,
       size: event.rows,
       sortColumn: currentParams['sortColumn'],
-      sortOrder:
-        currentParams['sortOrder'] === 'desc' ? SortOrder.Desc : SortOrder.Asc,
+      sortOrder: currentParams['sortOrder'] === 'desc' ? SortOrder.Desc : SortOrder.Asc,
     });
   }
 

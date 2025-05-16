@@ -1,11 +1,8 @@
-<section
-  class="flex flex-column flex-1 gap-5 content-container"
-  [class.mobile]="isXSmall()"
->
+<section class="flex flex-column flex-1 gap-5 content-container" [class.mobile]="isXSmall()">
   <nav>
     <a routerLink="/settings/tokens">
       <i class="osf-icon-arrow-left inline"></i>
-      {{ "settings.tokens.details.navigation.back" | translate }}
+      {{ 'settings.tokens.details.navigation.back' | translate }}
     </a>
   </nav>
   @if (token()) {
@@ -20,7 +17,7 @@
     </div>
 
     <p-card class="mb-5">
-      <h2 class="mb-5">{{ "settings.tokens.details.title" | translate }}</h2>
+      <h2 class="mb-5">{{ 'settings.tokens.details.title' | translate }}</h2>
       <osf-token-add-edit-form [isEditMode]="true" [initialValues]="token()!" />
     </p-card>
   }

@@ -2,23 +2,12 @@ import { Store } from '@ngxs/store';
 
 import { Select, SelectChangeEvent } from 'primeng/select';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
-import {
-  ResourceFiltersSelectors,
-  SetFunder,
-} from '@shared/components/resources/resource-filters/store';
+import { ResourceFiltersSelectors, SetFunder } from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-funder-filter',
@@ -30,12 +19,8 @@ import {
 export class FunderFilterComponent {
   readonly #store = inject(Store);
 
-  protected funderState = this.#store.selectSignal(
-    ResourceFiltersSelectors.getFunder,
-  );
-  protected availableFunders = this.#store.selectSignal(
-    ResourceFiltersOptionsSelectors.getFunders,
-  );
+  protected funderState = this.#store.selectSignal(ResourceFiltersSelectors.getFunder);
+  protected availableFunders = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getFunders);
   protected inputText = signal<string | null>(null);
   protected fundersOptions = computed(() => {
     if (this.inputText() !== null) {
@@ -75,9 +60,7 @@ export class FunderFilterComponent {
 
   setFunders(event: SelectChangeEvent): void {
     if ((event.originalEvent as PointerEvent).pointerId && event.value) {
-      const funder = this.fundersOptions()?.find((funder) =>
-        funder.label.includes(event.value),
-      );
+      const funder = this.fundersOptions()?.find((funder) => funder.label.includes(event.value));
       if (funder) {
         this.#store.dispatch(new SetFunder(funder.label, funder.id));
         this.#store.dispatch(GetAllOptions);

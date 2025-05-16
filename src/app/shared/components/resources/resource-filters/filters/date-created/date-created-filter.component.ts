@@ -2,23 +2,12 @@ import { Store } from '@ngxs/store';
 
 import { Select, SelectChangeEvent } from 'primeng/select';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
 import { ResourceFiltersOptionsSelectors } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.selectors';
-import {
-  ResourceFiltersSelectors,
-  SetDateCreated,
-} from '@shared/components/resources/resource-filters/store';
+import { ResourceFiltersSelectors, SetDateCreated } from '@shared/components/resources/resource-filters/store';
 
 @Component({
   selector: 'osf-date-created-filter',
@@ -30,12 +19,8 @@ import {
 export class DateCreatedFilterComponent {
   readonly #store = inject(Store);
 
-  protected availableDates = this.#store.selectSignal(
-    ResourceFiltersOptionsSelectors.getDatesCreated,
-  );
-  protected dateCreatedState = this.#store.selectSignal(
-    ResourceFiltersSelectors.getDateCreated,
-  );
+  protected availableDates = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getDatesCreated);
+  protected dateCreatedState = this.#store.selectSignal(ResourceFiltersSelectors.getDateCreated);
   protected inputDate = signal<string | null>(null);
   protected datesOptions = computed(() => {
     return this.availableDates().map((date) => ({

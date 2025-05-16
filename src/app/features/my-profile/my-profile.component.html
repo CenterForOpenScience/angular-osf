@@ -2,11 +2,7 @@
   <div class="name-container wide-button">
     <h1>{{ currentUser()?.fullName }}</h1>
     @if (!isMobile()) {
-      <p-button
-        label="Edit Profile"
-        class="ml-auto"
-        (click)="toProfileSettings()"
-      ></p-button>
+      <p-button label="Edit Profile" class="ml-auto" (click)="toProfileSettings()"></p-button>
     }
   </div>
 
@@ -16,60 +12,34 @@
         {{ currentUser()?.employment?.[0]?.title }},
         {{ currentUser()?.employment?.[0]?.institution }}
       </h3>
-      <h3 class="font-normal">
-        Member since: {{ currentUser()?.dateRegistered | date: "MMM d, yyyy" }}
-      </h3>
+      <h3 class="font-normal">Member since: {{ currentUser()?.dateRegistered | date: 'MMM d, yyyy' }}</h3>
     </div>
 
     <div class="data-wrapper">
       <div class="user-fields-wrapper">
         <div class="flex flex-row align-items-center gap-2">
-          <img
-            ngSrc="assets/icons/source/orcid.svg"
-            width="16"
-            height="16"
-            alt="orcid"
-          />
-          <a
-            class="font-bold"
-            [href]="'https://orcid.org/' + currentUser()?.socials?.orcid"
+          <img ngSrc="assets/icons/source/orcid.svg" width="16" height="16" alt="orcid" />
+          <a class="font-bold" [href]="'https://orcid.org/' + currentUser()?.socials?.orcid"
             >https://orcid.org/{{ currentUser()?.socials?.orcid }}</a
           >
         </div>
 
         <div class="flex flex-row align-items-center gap-2">
-          <img
-            ngSrc="assets/icons/source/cos-shield.svg"
-            width="16"
-            height="16"
-            alt="cos-shield"
-          />
-          <a class="font-bold" [href]="currentUser()?.link">{{
-            currentUser()?.link
-          }}</a>
+          <img ngSrc="assets/icons/source/cos-shield.svg" width="16" height="16" alt="cos-shield" />
+          <a class="font-bold" [href]="currentUser()?.link">{{ currentUser()?.link }}</a>
         </div>
       </div>
 
       <div class="user-fields-wrapper">
         <div class="flex flex-row align-items-center gap-2">
-          <img
-            ngSrc="assets/icons/source/institution.svg"
-            width="16"
-            height="16"
-            alt="institution"
-          />
+          <img ngSrc="assets/icons/source/institution.svg" width="16" height="16" alt="institution" />
           <h3 class="font-bold">
             {{ currentUser()?.education?.[0]?.institution }}
           </h3>
         </div>
 
         <div class="flex flex-row align-items-center gap-2">
-          <img
-            ngSrc="assets/icons/source/cos-shield.svg"
-            width="16"
-            height="16"
-            alt="cos-shield"
-          />
+          <img ngSrc="assets/icons/source/cos-shield.svg" width="16" height="16" alt="cos-shield" />
           <h3 class="font-bold">
             {{ currentUser()?.employment?.[0]?.institution }}
           </h3>
@@ -78,11 +48,7 @@
 
       @if (isMobile()) {
         <div class="btn-full-width">
-          <p-button
-            label="Edit Profile"
-            class="ml-auto"
-            (click)="toProfileSettings()"
-          ></p-button>
+          <p-button label="Edit Profile" class="ml-auto" (click)="toProfileSettings()"></p-button>
         </div>
       }
     </div>
@@ -106,9 +72,7 @@
           </p-accordion-header>
           <p-accordion-content>
             <p>Job title: {{ employment.title }}</p>
-            <p>
-              Department / Institute (optional): {{ employment.institution }}
-            </p>
+            <p>Department / Institute (optional): {{ employment.institution }}</p>
           </p-accordion-content>
         </p-accordion-panel>
       }
@@ -134,9 +98,7 @@
           </p-accordion-header>
           <p-accordion-content>
             <p>Degree: {{ education.degree }}</p>
-            <p>
-              Department / Institute (optional): {{ education.institution }}
-            </p>
+            <p>Department / Institute (optional): {{ education.institution }}</p>
           </p-accordion-content>
         </p-accordion-panel>
       }

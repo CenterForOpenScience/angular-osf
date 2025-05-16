@@ -6,22 +6,15 @@ import { ResourceType } from '@osf/features/search/models/resource-type.enum';
 export function MapResources(rawItem: ResourceItem): Resource {
   return {
     id: rawItem['@id'],
-    resourceType:
-      ResourceType[
-        rawItem?.resourceType[0]['@id'] as keyof typeof ResourceType
-      ],
-    dateCreated: rawItem?.dateCreated?.[0]?.['@value']
-      ? new Date(rawItem?.dateCreated?.[0]?.['@value'])
-      : undefined,
-    dateModified: rawItem?.dateModified?.[0]?.['@value']
-      ? new Date(rawItem?.dateModified?.[0]?.['@value'])
-      : undefined,
+    resourceType: ResourceType[rawItem?.resourceType[0]['@id'] as keyof typeof ResourceType],
+    dateCreated: rawItem?.dateCreated?.[0]?.['@value'] ? new Date(rawItem?.dateCreated?.[0]?.['@value']) : undefined,
+    dateModified: rawItem?.dateModified?.[0]?.['@value'] ? new Date(rawItem?.dateModified?.[0]?.['@value']) : undefined,
     creators: (rawItem?.creator ?? []).map(
       (creator) =>
         ({
           id: creator?.['@id'],
           name: creator?.name?.[0]?.['@value'],
-        }) as LinkItem,
+        }) as LinkItem
     ),
     fileName: rawItem?.fileName?.[0]?.['@value'],
     title: rawItem?.title?.[0]?.['@value'] ?? rawItem?.name?.[0]?.['@value'],

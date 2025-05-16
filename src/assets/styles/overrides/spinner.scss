@@ -1,0 +1,5 @@
+@use "assets/styles/variables" as var;
+
+.p-progressspinner-circle {
+  stroke: var.$pr-blue-1 !important;
+}

@@ -7,20 +7,9 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
 
 import { NgClass } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  OnInit,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { linkValidator } from '@core/helpers/link-validator.helper';
@@ -32,10 +21,7 @@ import {
   DeveloperApp,
   DeveloperAppCreateUpdate,
 } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
-import {
-  CreateDeveloperApp,
-  UpdateDeveloperApp,
-} from '@osf/features/settings/developer-apps/store';
+import { CreateDeveloperApp, UpdateDeveloperApp } from '@osf/features/settings/developer-apps/store';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
@@ -53,8 +39,7 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
 
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly DeveloperAppFormFormControls =
-    DeveloperAppFormFormControls;
+  protected readonly DeveloperAppFormFormControls = DeveloperAppFormFormControls;
   protected readonly appForm: DeveloperAppForm = new FormGroup({
     [DeveloperAppFormFormControls.AppName]: new FormControl('', {
       nonNullable: true,
@@ -67,25 +52,19 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
     [DeveloperAppFormFormControls.AppDescription]: new FormControl('', {
       nonNullable: false,
     }),
-    [DeveloperAppFormFormControls.AuthorizationCallbackUrl]: new FormControl(
-      '',
-      {
-        nonNullable: true,
-        validators: [Validators.required, linkValidator()],
-      },
-    ),
+    [DeveloperAppFormFormControls.AuthorizationCallbackUrl]: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, linkValidator()],
+    }),
   });
 
   ngOnInit(): void {
     if (this.initialValues()) {
       this.appForm.patchValue({
         [DeveloperAppFormFormControls.AppName]: this.initialValues()?.name,
-        [DeveloperAppFormFormControls.AppDescription]:
-          this.initialValues()?.description,
-        [DeveloperAppFormFormControls.ProjectHomePageUrl]:
-          this.initialValues()?.projHomePageUrl,
-        [DeveloperAppFormFormControls.AuthorizationCallbackUrl]:
-          this.initialValues()?.authorizationCallbackUrl,
+        [DeveloperAppFormFormControls.AppDescription]: this.initialValues()?.description,
+        [DeveloperAppFormFormControls.ProjectHomePageUrl]: this.initialValues()?.projHomePageUrl,
+        [DeveloperAppFormFormControls.AuthorizationCallbackUrl]: this.initialValues()?.authorizationCallbackUrl,
       });
     }
   }
@@ -93,9 +72,7 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
   handleSubmitForm(): void {
     if (!this.appForm.valid) {
       this.appForm.markAllAsTouched();
-      Object.values(this.appForm.controls).forEach((control) =>
-        control.markAsDirty(),
-      );
+      Object.values(this.appForm.controls).forEach((control) => control.markAsDirty());
       return;
     }
 
@@ -104,7 +81,7 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
         .dispatch(
           new CreateDeveloperApp({
             ...this.appForm.value,
-          } as DeveloperAppCreateUpdate),
+          } as DeveloperAppCreateUpdate)
         )
         .subscribe({
           complete: () => {
@@ -117,7 +94,7 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
           new UpdateDeveloperApp(this.initialValues()!.clientId, {
             ...this.appForm.value,
             id: this.initialValues()!.id,
-          } as DeveloperAppCreateUpdate),
+          } as DeveloperAppCreateUpdate)
         )
         .subscribe({
           complete: () => {

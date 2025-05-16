@@ -1,19 +1,9 @@
 import { Store } from '@ngxs/store';
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionHeader,
-  AccordionPanel,
-} from 'primeng/accordion';
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { SearchSelectors } from '@osf/features/search/store';
@@ -63,48 +53,46 @@ export class ResourceFiltersComponent {
   readonly funderOptionsCount = computed(() =>
     this.#store
       .selectSignal(ResourceFiltersOptionsSelectors.getFunders)()
-      .reduce((acc, item) => acc + item.count, 0),
+      .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly subjectOptionsCount = computed(() =>
     this.#store
       .selectSignal(ResourceFiltersOptionsSelectors.getSubjects)()
-      .reduce((acc, item) => acc + item.count, 0),
+      .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly licenseOptionsCount = computed(() =>
     this.#store
       .selectSignal(ResourceFiltersOptionsSelectors.getLicenses)()
-      .reduce((acc, item) => acc + item.count, 0),
+      .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly resourceTypeOptionsCount = computed(() =>
     this.#store
       .selectSignal(ResourceFiltersOptionsSelectors.getResourceTypes)()
-      .reduce((acc, item) => acc + item.count, 0),
+      .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly institutionOptionsCount = computed(() =>
     this.#store
       .selectSignal(ResourceFiltersOptionsSelectors.getInstitutions)()
-      .reduce((acc, item) => acc + item.count, 0),
+      .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly providerOptionsCount = computed(() =>
     this.#store
       .selectSignal(ResourceFiltersOptionsSelectors.getProviders)()
-      .reduce((acc, item) => acc + item.count, 0),
+      .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly partOfCollectionOptionsCount = computed(() =>
     this.#store
       .selectSignal(ResourceFiltersOptionsSelectors.getPartOfCollection)()
-      .reduce((acc, item) => acc + item.count, 0),
+      .reduce((acc, item) => acc + item.count, 0)
   );
 
-  readonly isMyProfilePage = this.#store.selectSignal(
-    SearchSelectors.getIsMyProfile,
-  );
+  readonly isMyProfilePage = this.#store.selectSignal(SearchSelectors.getIsMyProfile);
 
   readonly anyOptionsCount = computed(() => {
     return (

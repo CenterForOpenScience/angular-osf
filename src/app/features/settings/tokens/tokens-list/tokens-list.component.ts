@@ -7,22 +7,12 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
-import {
-  DeleteToken,
-  GetTokens,
-  TokensSelectors,
-} from '@osf/features/settings/tokens/store';
+import { DeleteToken, GetTokens, TokensSelectors } from '@osf/features/settings/tokens/store';
 import { defaultConfirmationConfig } from '@shared/helpers/default-confirmation-config.helper';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
@@ -46,19 +36,12 @@ export class TokensListComponent implements OnInit {
   deleteToken(token: Token) {
     this.#confirmationService.confirm({
       ...defaultConfirmationConfig,
-      message: this.#translateService.instant(
-        'settings.tokens.confirmation.delete.message',
-      ),
-      header: this.#translateService.instant(
-        'settings.tokens.confirmation.delete.title',
-        { name: token.name },
-      ),
+      message: this.#translateService.instant('settings.tokens.confirmation.delete.message'),
+      header: this.#translateService.instant('settings.tokens.confirmation.delete.title', { name: token.name }),
       acceptButtonProps: {
         ...defaultConfirmationConfig.acceptButtonProps,
         severity: 'danger',
-        label: this.#translateService.instant(
-          'settings.tokens.list.deleteButton',
-        ),
+        label: this.#translateService.instant('settings.tokens.list.deleteButton'),
       },
       accept: () => {
         this.#store.dispatch(new DeleteToken(token.id));
