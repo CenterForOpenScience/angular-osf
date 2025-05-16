@@ -14,7 +14,6 @@ import { GetCurrentUser } from '@core/store/user/user.actions';
 })
 export class AppComponent implements OnInit {
   #store = inject(Store);
-  title = 'osf';
 
   ngOnInit(): void {
     this.#store.dispatch(GetCurrentUser);
