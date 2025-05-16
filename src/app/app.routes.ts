@@ -57,6 +57,27 @@ export const routes: Routes = [
           import('./features/privacy-policy/privacy-policy.component').then((mod) => mod.PrivacyPolicyComponent),
       },
       {
+        path: 'meetings',
+        loadComponent: () => import('./features/meetings/meetings.component').then((mod) => mod.MeetingsComponent),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('@osf/features/meetings/meetings-landing/meetings-landing.component').then(
+                (mod) => mod.MeetingsLandingComponent
+              ),
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('@osf/features/meetings/meeting-details/meeting-details.component').then(
+                (mod) => mod.MeetingDetailsComponent
+              ),
+          },
+        ],
+      },
+      {
         path: 'my-projects',
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
