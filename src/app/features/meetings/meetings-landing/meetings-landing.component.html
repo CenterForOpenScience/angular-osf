@@ -2,3 +2,97 @@
                 [icon]="'meetings'"
                 description="A free poster and presentation sharing service for academic meetings and conferences"
 />
+
+<section class="flex-1 flex flex-column gap-4 bg-white h-full p-4"
+         [class.mobile]="isXSmall()">
+  <section class="flex lg:flex-row flex-column gap-3 w-full">
+    <p-card class="lg:w-6 w-12">
+      <div class="flex flex-column align-items-center justify-content-center gap-4">
+        <img src="assets/icons/colored/conference-organizers.svg"
+             alt="Conference organizers"
+             class="w-8rem h-8rem"/>
+        <div>
+          <h2 class="text-center">For Conference Organizers</h2>
+          <p class="mt-2">
+            Register your event to broaden its impact. Events get a dedicated page, an easy submission process, and
+            persistent links.
+          </p>
+        </div>
+        <p-button label="Register"/>
+      </div>
+    </p-card>
+
+    <p-card class="lg:w-6 w-12">
+      <div class="flex flex-column align-items-center justify-content-center gap-4">
+        <img src="assets/icons/colored/conference-participants.svg"
+             alt="Conference participants"
+             class="w-8rem h-8rem"/>
+        <div>
+          <h2 class="text-center">For Conference Participants</h2>
+          <p class="mt-2">
+            Share your posters and presentations along with any supporting data and materials. Get persistent links and
+            usage analytics.
+          </p>
+        </div>
+        <p-button label="Uplaod"/>
+      </div>
+    </p-card>
+  </section>
+
+  <section class="pt-4">
+    <p>Only conferences with at least five submissions are displayed.</p>
+  </section>
+
+  <osf-search-input
+    class="w-full"
+    [searchValue]="searchValue()"
+    (searchValueChange)="searchValue.set($event || '')"
+    [placeholder]="'Search meetings'"
+  />
+
+  <p-card>
+    <p>Table goes there</p>
+  </p-card>
+
+  <section class="flex lg:flex-row flex-column gap-3 w-full mt-2">
+    <p-card class="lg:w-4 w-12">
+      <div class="flex flex-column align-items-center justify-content-center gap-4">
+        <img src="assets/icons/colored/discover.svg"
+             alt="Discover"
+             class="w-8rem h-8rem"/>
+        <h2>Discover</h2>
+        <p>Explore posters and presentations from events long after they're over.</p>
+      </div>
+    </p-card>
+
+    <p-card class="lg:w-4 w-12">
+      <div class="flex flex-column align-items-center justify-content-center gap-4">
+        <img src="assets/icons/colored/share.svg"
+             alt="Share"
+             class="w-8rem h-8rem"/>
+        <h2>Share</h2>
+        <p>Get persistent links to your content and increase your impact. </p>
+      </div>
+    </p-card>
+
+    <p-card class="lg:w-4 w-12">
+      <div class="flex flex-column align-items-center justify-content-center gap-4">
+        <img src="assets/icons/colored/enhance.svg"
+             alt="Enhance"
+             class="w-8rem h-8rem"/>
+        <h2>Enhance</h2>
+        <p>Add supplementary data and materials to your submission to make your work more transparent.</p>
+      </div>
+    </p-card>
+  </section>
+
+  <section class="mt-2">
+    <h2 class="text-2xl text-center">Who uses OSF Meetings?</h2>
+
+    <img src="assets/icons/colored/APS.svg" alt="APS">
+    <img src="assets/icons/colored/BITSS.svg" alt="BITSS">
+    <img src="assets/icons/colored/NRAO.svg" alt="NRAO">
+    <img src="assets/icons/colored/SPSP.svg" alt="SPSP">
+  </section>
+</section>
+
