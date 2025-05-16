@@ -16,15 +16,6 @@ export interface User {
   dateRegistered: Date;
   link?: string;
   iri?: string;
-  socials?: {
-    orcid?: string;
-    github?: string;
-    scholar?: string;
-    twitter?: string;
-    linkedIn?: string;
-    impactStory?: string;
-    researcherId?: string;
-  };
   defaultRegionId: string;
   allowIndexing: boolean | undefined;
 }

@@ -56,4 +56,8 @@ export class MyProfileComponent implements OnDestroy {
     this.#store.dispatch(ResetSearchState);
     this.#store.dispatch(new SetIsMyProfile(false));
   }
+
+  protected createDate(year: number | string, month: number): Date {
+    return new Date(+year, month - 1);
+  }
 }
