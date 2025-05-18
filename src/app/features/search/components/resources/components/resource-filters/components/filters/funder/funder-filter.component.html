@@ -1,0 +1,17 @@
+<div class="content-body filter dropdown-filter">
+  <p class="m-0">Please select the funder from the dropdown below or start typing for find it</p>
+  <p-select
+    id="funder"
+    [options]="fundersOptions()"
+    [(ngModel)]="inputText"
+    [placeholder]="'Select funder'"
+    [editable]="true"
+    optionLabel="labelCount"
+    optionValue="label"
+    styleClass="w-full"
+    appendTo="body"
+    (onChange)="setFunders($event)"
+    [showClear]="!!inputText()"
+    [loading]="loading()"
+  ></p-select>
+</div>

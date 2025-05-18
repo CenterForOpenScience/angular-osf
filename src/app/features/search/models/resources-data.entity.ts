@@ -1,4 +1,4 @@
-import { Resource } from '@osf/features/search/models/resource.entity';
+import { Resource } from '@shared/entities/resource-card/resource.entity';
 
 export interface ResourcesData {
   resources: Resource[];

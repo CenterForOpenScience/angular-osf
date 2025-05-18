@@ -15,7 +15,8 @@ import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, signal, 
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
+import { GetAllOptions } from '@osf/features/search/components/resources/components/resource-filters/components/filters/store/resource-filters-options.actions';
+import { ResourcesWrapperComponent } from '@osf/features/search/components/resources/components/resources-wrapper/resources-wrapper.component';
 import {
   GetResources,
   ResetSearchState,
@@ -23,11 +24,14 @@ import {
   SetResourceTab,
   SetSearchText,
 } from '@osf/features/search/store';
-import { GetAllOptions } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.actions';
-import { ResetFiltersState, ResourceFiltersSelectors } from '@shared/components/resources/resource-filters/store';
-import { ResourcesWrapperComponent } from '@shared/components/resources/resources-wrapper/resources-wrapper.component';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
+import { ResourceTab } from '@shared/entities/resource-card/resource-tab.enum';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+
+import {
+  ResetFiltersState,
+  ResourceFiltersSelectors,
+} from 'src/app/features/search/components/resources/components/resource-filters/store';
 
 @Component({
   selector: 'osf-search',

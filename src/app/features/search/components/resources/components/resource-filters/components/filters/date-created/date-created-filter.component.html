@@ -1,0 +1,13 @@
+<div class="content-body filter dropdown-filter">
+  <p class="m-0">Please select the creation date from the dropdown below</p>
+  <p-select
+    id="dateCreated"
+    [options]="datesOptions()"
+    [(ngModel)]="inputDate"
+    [placeholder]="'Select date'"
+    styleClass="w-full"
+    appendTo="body"
+    (onChange)="setDateCreated($event)"
+    [showClear]="!!inputDate"
+  ></p-select>
+</div>
