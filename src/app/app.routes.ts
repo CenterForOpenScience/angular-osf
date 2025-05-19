@@ -64,14 +64,14 @@ export const routes: Routes = [
             path: '',
             pathMatch: 'full',
             loadComponent: () =>
-              import('@osf/features/meetings/meetings-landing/meetings-landing.component').then(
+              import('@osf/features/meetings/pages/meetings-landing/meetings-landing.component').then(
                 (mod) => mod.MeetingsLandingComponent
               ),
           },
           {
             path: ':id',
             loadComponent: () =>
-              import('@osf/features/meetings/meeting-details/meeting-details.component').then(
+              import('@osf/features/meetings/pages/meeting-details/meeting-details.component').then(
                 (mod) => mod.MeetingDetailsComponent
               ),
           },
