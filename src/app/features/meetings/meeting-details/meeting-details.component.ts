@@ -40,8 +40,8 @@ export class MeetingDetailsComponent {
       return '';
     }
 
-    return `${this.meeting().location} | ${this.#datePipe.transform(this.meeting().startDate, 'MMM D, YYYY')}
-    - ${this.#datePipe.transform(this.meeting().endDate, 'MMM D, YYYY')}`;
+    return `${this.meeting().location} | ${this.#datePipe.transform(this.meeting().startDate, 'MMM d, y')}
+    - ${this.#datePipe.transform(this.meeting().endDate, 'MMM d, y')}`;
   });
 
   onPageChange(tablePageEvent: TablePageEvent) {
