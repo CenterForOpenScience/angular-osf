@@ -1,4 +1,8 @@
+import { TranslateModule } from '@ngx-translate/core';
+import { MockModule } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterModule } from '@angular/router';
 
 import { MeetingDetailsComponent } from './meeting-details.component';
 
@@ -8,7 +12,7 @@ describe('MeetingDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MeetingDetailsComponent],
+      imports: [MeetingDetailsComponent, MockModule(TranslateModule), MockModule(RouterModule)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MeetingDetailsComponent);

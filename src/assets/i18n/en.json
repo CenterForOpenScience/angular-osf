@@ -625,6 +625,62 @@
       }
     }
   },
+  "meetings": {
+    "landing": {
+      "title": "Meetings",
+      "description": "A free poster and presentation sharing service for academic meetings and conferences",
+      "conferenceOrganizers": {
+        "title": "For Conference Organizers",
+        "description": "Register your event to broaden its impact. Events get a dedicated page, an easy submission process, and persistent links.",
+        "button": "Register"
+      },
+      "conferenceParticipants": {
+        "title": "For Conference Participants",
+        "description": "Share your posters and presentations along with any supporting data and materials. Get persistent links and usage analytics.",
+        "button": "Upload"
+      },
+      "submissionsNote": "Only conferences with at least five submissions are displayed.",
+      "searchPlaceholder": "Search meetings",
+      "table": {
+        "columns": {
+          "title": "Title",
+          "submissions": "Submissions",
+          "location": "Location",
+          "date": "Date"
+        }
+      },
+      "features": {
+        "discover": {
+          "title": "Discover",
+          "description": "Explore posters and presentations from events long after they're over."
+        },
+        "share": {
+          "title": "Share",
+          "description": "Get persistent links to your content and increase your impact."
+        },
+        "enhance": {
+          "title": "Enhance",
+          "description": "Add supplementary data and materials to your submission to make your work more transparent."
+        }
+      },
+      "users": {
+        "title": "Who uses OSF Meetings?"
+      }
+    },
+    "details": {
+      "searchPlaceholder": "Search",
+      "table": {
+        "columns": {
+          "title": "Title",
+          "author": "Author",
+          "category": "Category",
+          "dateCreated": "Date Created",
+          "downloads": "Downloads"
+        }
+      },
+      "downloadButton": "Download"
+    }
+  },
   "footer": {
     "links": {
       "centerForOpenScience": "Center for Open Science",
