@@ -234,3 +234,13 @@
     color: var.$grey-1;
   }
 }
+
+.bg-primary-blue-second {
+  background-color: var.$pr-blue-2;
+}
+
+.button-shadow-none {
+  .p-button {
+    box-shadow: none;
+  }
+}

@@ -251,3 +251,27 @@
     }
   }
 }
+
+.view-only-table {
+  .p-datatable {
+    padding: 2px;
+
+    td,
+    th {
+      background-color: transparent;
+      border-bottom: 1px solid var.$grey-2;
+    }
+
+    tr {
+      &:hover {
+        background: transparent;
+      }
+
+      &:last-of-type {
+        td {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}

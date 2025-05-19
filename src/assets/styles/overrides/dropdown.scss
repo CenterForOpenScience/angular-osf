@@ -19,4 +19,13 @@
       background: var.$bg-blue-2;
     }
   }
+
+  &.accordion-dropdown {
+    border: none;
+    box-shadow: none;
+    min-width: 170px;
+    width: max-content;
+    max-width: 300px;
+    font-size: 1rem;
+  }
 }

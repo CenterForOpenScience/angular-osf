@@ -1,3 +1,4 @@
+export * from './view-only-table/view-only-table.component';
 export { AddProjectFormComponent } from './add-project-form/add-project-form.component';
 export { BarChartComponent } from './bar-chart/bar-chart.component';
 export { LineChartComponent } from './line-chart/line-chart.component';
