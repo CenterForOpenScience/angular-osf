@@ -8,8 +8,8 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { MEETING_SUBMISSIONS_TABLE_PARAMS } from '@osf/features/meetings/constants/meeting-submissions-table.constants';
-import { Meeting, MeetingSubmission } from '@osf/features/meetings/models/meetings.models';
+import { MEETING_SUBMISSIONS_TABLE_PARAMS } from '@osf/features/meetings/constants';
+import { Meeting, MeetingSubmission } from '@osf/features/meetings/models';
 import { testMeeting, testSubmissions } from '@osf/features/meetings/test-data';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
@@ -20,6 +20,7 @@ import { TableParameters } from '@shared/entities/table-parameters.interface';
   imports: [SubHeaderComponent, SearchInputComponent, DatePipe, TableModule, Button, RouterLink, TranslatePipe],
   templateUrl: './meeting-details.component.html',
   styleUrl: './meeting-details.component.scss',
+  providers: [DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MeetingDetailsComponent {

@@ -10,8 +10,8 @@ import { ChangeDetectionStrategy, Component, HostBinding, inject, signal } from 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
-import { MEETINGS_TABLE_PARAMS } from '@osf/features/meetings/constants/meetings-table.constants';
-import { Meeting } from '@osf/features/meetings/models/meetings.models';
+import { MEETINGS_TABLE_PARAMS } from '@osf/features/meetings/constants';
+import { Meeting } from '@osf/features/meetings/models';
 import { testMeetings } from '@osf/features/meetings/test-data';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
