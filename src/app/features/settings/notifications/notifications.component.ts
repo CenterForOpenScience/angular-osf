@@ -16,6 +16,10 @@ import {
   EmailPreferencesForm,
   EmailPreferencesFormControls,
 } from '@osf/features/settings/notifications/models/notifications-form.models';
+import {
+  GetAllGlobalNotificationSubscriptions,
+  NotificationSubscriptionSelectors,
+} from '@osf/features/settings/notifications/store';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 
 @Component({
@@ -35,6 +39,9 @@ export class NotificationsComponent implements OnInit {
   readonly #currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
   readonly #userSettings = this.#store.selectSignal(UserSelectors.getCurrentUserSettings);
 
+  readonly #notificationSubscriptions = this.#store.selectSignal(
+    NotificationSubscriptionSelectors.getAllGlobalNotificationSubscriptions
+  );
   protected readonly EmailPreferencesFormControls = EmailPreferencesFormControls;
   protected readonly emailPreferencesForm: EmailPreferencesForm = new FormGroup({
     [EmailPreferencesFormControls.SubscribeOsfGeneralEmail]: this.#fb.control(false, { nonNullable: true }),
@@ -47,10 +54,17 @@ export class NotificationsComponent implements OnInit {
         this.updateEmailPreferencesForm();
       }
     });
+
+    effect(() => {
+      if (this.#notificationSubscriptions()) {
+        //[RN] TODO: set form
+      }
+    });
   }
 
   ngOnInit(): void {
     this.#store.dispatch(new GetCurrentUserSettings());
+    this.#store.dispatch(new GetAllGlobalNotificationSubscriptions());
   }
 
   emailPreferencesFormSubmit(): void {
