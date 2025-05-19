@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 
 import { MEETINGS_TABLE_PARAMS } from '@osf/features/meetings/constants/meetings-table.constants';
 import { Meeting } from '@osf/features/meetings/models/meetings.models';
+import { testMeetings } from '@osf/features/meetings/test-data';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 import { TableParameters } from '@shared/entities/table-parameters.interface';
@@ -35,39 +36,14 @@ export class MeetingsLandingComponent {
     ...MEETINGS_TABLE_PARAMS,
     firstRowIndex: 0,
   });
-  meetings = signal<Meeting[]>([
-    {
-      id: '123',
-      title: 'Lorem ipsum dolor sit amet',
-      submissionsCount: 18,
-      location: 'Virtual',
-      startDate: new Date(),
-      endDate: new Date(),
-    },
-    {
-      id: '124',
-      title: 'Lorem ipsum dolor sit amet',
-      submissionsCount: 10,
-      location: 'Virtual',
-      startDate: new Date(),
-      endDate: new Date(),
-    },
-    {
-      id: '125',
-      title: 'Lorem ipsum dolor sit amet',
-      submissionsCount: 24,
-      location: 'Irving, Texas',
-      startDate: new Date(),
-      endDate: new Date(),
-    },
-  ]);
+  meetings = signal<Meeting[]>(testMeetings);
 
   onPageChange(tablePageEvent: TablePageEvent) {
-    //TODO romchik
+    // [RNi] TODO: implement paging logic and handle event while integrating API
   }
 
   onSort(sortEvent: SortEvent) {
-    //TODO romchik
+    // [RNi] TODO: implement sorting logic and handle event while integrating API
   }
 
   navigateToMeeting(meeting: Meeting): void {
