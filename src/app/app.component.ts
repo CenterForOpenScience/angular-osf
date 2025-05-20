@@ -3,7 +3,7 @@ import { Store } from '@ngxs/store';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
-import { GetCurrentUser } from '@core/store/user/user.actions';
+import { GetCurrentUser } from '@core/store/user';
 
 @Component({
   selector: 'osf-root',

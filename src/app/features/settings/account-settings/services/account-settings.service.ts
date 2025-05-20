@@ -5,9 +5,8 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { User, UserGetResponse } from '@core/services/user/user.models';
-import { UserMapper } from '@core/services/user/users.mapper';
-import { UserSelectors } from '@core/store/user/user.selectors';
+import { User, UserGetResponse, UserMapper } from '@core/services/user';
+import { UserSelectors } from '@core/store/user';
 import { ApiData, JsonApiResponse } from '@osf/core/services/json-api/json-api.entity';
 
 import { environment } from '../../../../../environments/environment';

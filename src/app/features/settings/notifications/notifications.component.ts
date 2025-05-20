@@ -10,7 +10,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { UserSettings } from '@core/services/user/user.models';
+import { UserSettings } from '@core/services/user';
 import { GetCurrentUserSettings, UpdateUserSettings, UserSelectors } from '@core/store/user';
 import { SUBSCRIPTION_EVENTS } from '@osf/features/settings/notifications/constants';
 import { SubscriptionEvent, SubscriptionFrequency } from '@osf/features/settings/notifications/enums';

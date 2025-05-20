@@ -4,8 +4,8 @@ import { inject, Injectable } from '@angular/core';
 
 import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { UserMapper } from '@core/services/user/user.mapper';
 import { User, UserGetResponse, UserSettings, UserSettingsGetResponse } from '@core/services/user/user.models';
-import { UserMapper } from '@core/services/user/users.mapper';
 
 @Injectable({
   providedIn: 'root',

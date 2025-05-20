@@ -1,4 +1,4 @@
-import { User } from '@core/services/user/user.models';
+import { User } from '@core/services/user';
 import { Education } from '@osf/features/settings/profile-settings/education/educations.entities';
 import { Employment } from '@osf/features/settings/profile-settings/employment/employment.entities';
 import { Social } from '@osf/features/settings/profile-settings/social/social.entities';

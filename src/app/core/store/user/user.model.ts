@@ -1,4 +1,4 @@
-import { User, UserSettings } from '@core/services/user/user.models';
+import { User, UserSettings } from '@core/services/user';
 import { AsyncStateModel } from '@shared/models/store';
 
 export interface UserStateModel {

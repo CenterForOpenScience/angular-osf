@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { User, UserSettings } from '@core/services/user/user.models';
+import { User, UserSettings } from '@core/services/user';
 import { UserState, UserStateModel } from '@core/store/user';
 import { ProfileSettingsStateModel } from '@osf/features/settings/profile-settings/profile-settings.entities';
 import { Social } from '@osf/features/settings/profile-settings/social/social.entities';
