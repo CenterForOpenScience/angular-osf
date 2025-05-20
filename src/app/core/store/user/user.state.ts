@@ -54,9 +54,9 @@ export class UserState {
   @Action(UpdateUserSettings)
   updateUserSettings(ctx: StateContext<UserStateModel>, action: UpdateUserSettings) {
     return this.userService.updateUserSettings(action.userId, action.updatedUserSettings).pipe(
-      tap((userSettings) => {
+      tap(() => {
         ctx.patchState({
-          currentUserSettings: userSettings,
+          currentUserSettings: action.updatedUserSettings,
         });
       })
     );
