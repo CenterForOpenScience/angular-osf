@@ -108,6 +108,14 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/project/settings/settings.component').then((mod) => mod.SettingsComponent),
           },
+          {
+            path: 'contributors',
+            loadComponent: () =>
+              import('@osf/features/project/contributors/contributors.component').then(
+                (mod) => mod.ContributorsComponent
+              ),
+          },
+          {
             path: 'analytics',
             loadComponent: () =>
               import('@osf/features/project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),

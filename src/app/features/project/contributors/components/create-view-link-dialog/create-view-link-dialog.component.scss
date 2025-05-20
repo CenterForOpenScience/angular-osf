@@ -1,0 +1,7 @@
+@use "assets/styles/variables" as var;
+
+:host {
+  .break-line {
+    border: 1px solid var.$grey-3;
+  }
+}

@@ -23,6 +23,7 @@
       "files": "Files",
       "registrations": "Registrations",
       "settings": "Settings",
+      "contributors": "Contributors",
       "analytics": "Analytics"
     }
   },
@@ -273,6 +274,42 @@
         "topReferrers": "Top referrers",
         "popularPages": "Popular pages",
         "visits": "Visits"
+      }
+    },
+    "contributors": {
+      "addContributor": "Add Contributor",
+      "searchPlaceholder": "Search contributors",
+      "permissionFilter": "Filter by permission",
+      "bibliographyFilter": "Bibliography",
+      "permissions": {
+        "administrator": "Administrator",
+        "readAndWrite": "Read + Write",
+        "read": "Read"
+      },
+      "bibliography": {
+        "bibliographic": "Bibliographic",
+        "nonBibliographic": "Non-Bibliographic"
+      },
+      "table": {
+        "headers": {
+          "name": "Name",
+          "permissions": "Permissions",
+          "contributor": "Bibliographic Contributor",
+          "curator": "Curator",
+          "employment": "Employment history",
+          "education": "Education history"
+        }
+      },
+      "viewOnly": "View-only links",
+      "createLink": "Create a link to share this project so those who have the link can view—but not edit—the project.",
+      "createButton": "Create",
+      "addDialog": {
+        "placeholder": "Search by name or user information",
+        "cancel": "Cancel",
+        "next": "Next"
+      },
+      "createLinkDialog": {
+        "dialogTitle": "Create a new link to share your project"
       }
     }
   },

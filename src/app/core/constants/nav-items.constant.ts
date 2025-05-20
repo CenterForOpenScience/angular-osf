@@ -94,6 +94,7 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
         label: 'navigation.project.settings',
         routerLink: 'settings',
       },
+      { label: 'navigation.project.contributors', routerLink: 'contributors' },
       { label: 'navigation.project.analytics', routerLink: 'analytics' },
     ],
   },

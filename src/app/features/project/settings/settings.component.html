@@ -65,12 +65,15 @@
         <p class="font-italic">Storage location cannot be changed after project is created.</p>
       </p-card>
 
-      <p-card>
+      <p-card class="flex flex-column">
         <h3 class="text-xl pb-2">{{ 'myProjects.settings.viewOnlyLinks' | translate }}</h3>
 
         <p>{{ 'myProjects.settings.viewOnlySubtitle' | translate }}</p>
 
-        <osf-view-only-table [tableData]="tableData"></osf-view-only-table>
+        <div class="mt-4">
+          <osf-view-only-table [tableData]="tableData"></osf-view-only-table>
+        </div>
+
       </p-card>
 
       <p-card>
