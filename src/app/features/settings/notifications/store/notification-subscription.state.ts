@@ -11,12 +11,16 @@ import {
   GetAllGlobalNotificationSubscriptions,
   UpdateNotificationSubscription,
 } from '@osf/features/settings/notifications/store/notification-subscription.actions';
-import { NotificationSubscriptionStateModel } from '@osf/features/settings/notifications/store/notification-subscription.state-model';
+import { NotificationSubscriptionModel } from '@osf/features/settings/notifications/store/notification-subscription.model';
 
-@State<NotificationSubscriptionStateModel>({
+@State<NotificationSubscriptionModel>({
   name: 'notificationSubscriptions',
   defaults: {
-    notificationSubscriptions: [],
+    notificationSubscriptions: {
+      data: [],
+      isLoading: false,
+      error: '',
+    },
   },
 })
 @Injectable()
@@ -24,27 +28,35 @@ export class NotificationSubscriptionState {
   #notificationSubscriptionService = inject(NotificationSubscriptionService);
 
   @Action(GetAllGlobalNotificationSubscriptions)
-  getAllGlobalNotificationSubscriptions(ctx: StateContext<NotificationSubscriptionStateModel>) {
+  getAllGlobalNotificationSubscriptions(ctx: StateContext<NotificationSubscriptionModel>) {
+    ctx.setState(patch({ notificationSubscriptions: patch({ isLoading: true }) }));
+
     return this.#notificationSubscriptionService.getAllGlobalNotificationSubscriptions().pipe(
       tap((notificationSubscriptions) => {
-        ctx.setState(patch({ notificationSubscriptions }));
+        ctx.setState(
+          patch({
+            notificationSubscriptions: patch({
+              data: notificationSubscriptions,
+              isLoading: false,
+            }),
+          })
+        );
       })
     );
   }
 
   @Action(UpdateNotificationSubscription)
   updateNotificationSubscription(
-    ctx: StateContext<NotificationSubscriptionStateModel>,
+    ctx: StateContext<NotificationSubscriptionModel>,
     action: UpdateNotificationSubscription
   ) {
     return this.#notificationSubscriptionService.updateSubscription(action.payload.id, action.payload.frequency).pipe(
       tap((updatedSubscription) => {
         ctx.setState(
           patch({
-            notificationSubscriptions: updateItem<NotificationSubscription>(
-              (app) => app.id === action.payload.id,
-              updatedSubscription
-            ),
+            notificationSubscriptions: patch({
+              data: updateItem<NotificationSubscription>((app) => app.id === action.payload.id, updatedSubscription),
+            }),
           })
         );
       })

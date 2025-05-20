@@ -1,9 +1,8 @@
-<osf-sub-header
-  [showButton]="false"
-  [title]="'settings.notifications.header.title' | translate"
-  [icon]="'settings'"/>
+<osf-sub-header [showButton]="false"
+                [title]="'settings.notifications.header.title' | translate"
+                [icon]="'settings'"/>
 
-<div class="flex flex-column xl:p-4 md:p-3 p-2 bg-white flex-1 gap-4">
+<div class="flex flex-column p-2 bg-white flex-1 gap-4 md:p-3 xl:p-4">
   @if (!isEmailPreferencesLoading()) {
     <section class="notification-item flex flex-column gap-4">
       <h2>{{ "settings.notifications.emailPreferences.title" | translate }}</h2>
@@ -77,10 +76,8 @@
       <p>{{ "settings.notifications.notificationPreferences.note" | translate }}</p>
 
       <section class="notification-configuration" [formGroup]="notificationSubscriptionsForm">
-        @for (subscriptionEvent of subscriptionItems; track $index) {
-          <div>
-            {{ subscriptionEvent.labelKey | translate }}
-          </div>
+        @for (subscriptionEvent of SUBSCRIPTION_EVENTS; track $index) {
+          <p>{{ subscriptionEvent.labelKey | translate }}</p>
           <p-dropdown [formControlName]="subscriptionEvent.event" class="dropdown"
                       [options]="subscriptionFrequencyOptions"
                       optionLabel="label"

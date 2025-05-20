@@ -12,6 +12,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angul
 
 import { UserSettings } from '@core/services/user/user.models';
 import { GetCurrentUserSettings, UpdateUserSettings, UserSelectors } from '@core/store/user';
+import { SUBSCRIPTION_EVENTS } from '@osf/features/settings/notifications/constants';
 import { SubscriptionEvent, SubscriptionFrequency } from '@osf/features/settings/notifications/enums';
 import { EmailPreferencesForm, EmailPreferencesFormControls } from '@osf/features/settings/notifications/models';
 import {
@@ -36,56 +37,31 @@ export class NotificationsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   private currentUser = select(UserSelectors.getCurrentUser);
-  private userSettings = select(UserSelectors.getCurrentUserSettings);
+  private emailPreferences = select(UserSelectors.getCurrentUserSettings);
   private notificationSubscriptions = select(NotificationSubscriptionSelectors.getAllGlobalNotificationSubscriptions);
 
-  protected isEmailPreferencesLoading = signal(false);
-  protected isNotificationSubscriptionsLoading = signal(false);
-  protected isSubmittingEmailPreferences = signal(false);
+  protected isEmailPreferencesLoading = select(UserSelectors.isUserSettingsLoading);
+  protected isSubmittingEmailPreferences = select(UserSelectors.isUserSettingsSubmitting);
+
+  protected isNotificationSubscriptionsLoading = select(NotificationSubscriptionSelectors.isLoading);
+  protected loadingEvents = signal<SubscriptionEvent[]>([]);
+
   protected EmailPreferencesFormControls = EmailPreferencesFormControls;
   protected emailPreferencesForm: EmailPreferencesForm = new FormGroup({
     [EmailPreferencesFormControls.SubscribeOsfGeneralEmail]: this.fb.control(false, { nonNullable: true }),
     [EmailPreferencesFormControls.SubscribeOsfHelpEmail]: this.fb.control(false, { nonNullable: true }),
   });
 
+  protected readonly SUBSCRIPTION_EVENTS = SUBSCRIPTION_EVENTS;
   protected subscriptionFrequencyOptions = Object.entries(SubscriptionFrequency).map(([key, value]) => ({
     label: key,
     value,
   }));
-
-  protected subscriptionItems: {
-    event: SubscriptionEvent;
-    labelKey: string;
-  }[] = [
-    {
-      event: SubscriptionEvent.GlobalCommentReplies,
-      labelKey: 'settings.notifications.notificationPreferences.items.replies',
-    },
-    {
-      event: SubscriptionEvent.GlobalComments,
-      labelKey: 'settings.notifications.notificationPreferences.items.comments',
-    },
-    {
-      event: SubscriptionEvent.GlobalFileUpdated,
-      labelKey: 'settings.notifications.notificationPreferences.items.files',
-    },
-    {
-      event: SubscriptionEvent.GlobalMentions,
-      labelKey: 'settings.notifications.notificationPreferences.items.mentions',
-    },
-    {
-      event: SubscriptionEvent.GlobalReviews,
-      labelKey: 'settings.notifications.notificationPreferences.items.preprints',
-    },
-  ];
-
-  protected loadingEvents = signal<SubscriptionEvent[]>([]);
-
   protected notificationSubscriptionsForm = this.fb.group(
-    this.subscriptionItems.reduce(
-      (ctrls, { event }) => {
-        ctrls[event] = this.fb.control<SubscriptionFrequency>(SubscriptionFrequency.Never, { nonNullable: true });
-        return ctrls;
+    SUBSCRIPTION_EVENTS.reduce(
+      (control, { event }) => {
+        control[event] = this.fb.control<SubscriptionFrequency>(SubscriptionFrequency.Never, { nonNullable: true });
+        return control;
       },
       {} as Record<string, FormControl<SubscriptionFrequency>>
     )
@@ -93,7 +69,7 @@ export class NotificationsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      if (this.userSettings()) {
+      if (this.emailPreferences()) {
         this.updateEmailPreferencesForm();
       }
     });
@@ -107,18 +83,11 @@ export class NotificationsComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.notificationSubscriptions().length) {
-      this.isNotificationSubscriptionsLoading.set(true);
-      this.store.dispatch(new GetAllGlobalNotificationSubscriptions()).subscribe({
-        complete: () => this.isNotificationSubscriptionsLoading.set(false),
-      });
+      this.store.dispatch(new GetAllGlobalNotificationSubscriptions());
     }
 
-    if (!this.userSettings()) {
-      this.isEmailPreferencesLoading.set(true);
-
-      this.store.dispatch(new GetCurrentUserSettings()).subscribe({
-        complete: () => this.isEmailPreferencesLoading.set(false),
-      });
+    if (!this.emailPreferences()) {
+      this.store.dispatch(new GetCurrentUserSettings());
     }
   }
 
@@ -128,10 +97,7 @@ export class NotificationsComponent implements OnInit {
     }
 
     const formValue = this.emailPreferencesForm.value as UserSettings;
-    this.isSubmittingEmailPreferences.set(true);
-    this.store.dispatch(new UpdateUserSettings(this.currentUser()!.id, formValue)).subscribe({
-      complete: () => this.isSubmittingEmailPreferences.set(false),
-    });
+    this.store.dispatch(new UpdateUserSettings(this.currentUser()!.id, formValue));
   }
 
   onSubscriptionChange(event: SubscriptionEvent, frequency: SubscriptionFrequency) {
@@ -140,7 +106,6 @@ export class NotificationsComponent implements OnInit {
     const id = `${user.id}_${event}`;
 
     this.loadingEvents.update((list) => [...list, event]);
-
     this.store.dispatch(new UpdateNotificationSubscription({ id, frequency })).subscribe({
       complete: () => {
         this.loadingEvents.update((list) => list.filter((item) => item !== event));
@@ -150,8 +115,8 @@ export class NotificationsComponent implements OnInit {
 
   private updateEmailPreferencesForm() {
     this.emailPreferencesForm.patchValue({
-      [EmailPreferencesFormControls.SubscribeOsfGeneralEmail]: this.userSettings()?.subscribeOsfGeneralEmail,
-      [EmailPreferencesFormControls.SubscribeOsfHelpEmail]: this.userSettings()?.subscribeOsfHelpEmail,
+      [EmailPreferencesFormControls.SubscribeOsfGeneralEmail]: this.emailPreferences()?.subscribeOsfGeneralEmail,
+      [EmailPreferencesFormControls.SubscribeOsfHelpEmail]: this.emailPreferences()?.subscribeOsfHelpEmail,
     });
   }
 

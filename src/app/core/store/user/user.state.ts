@@ -1,4 +1,5 @@
 import { Action, State, StateContext } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
 
 import { tap } from 'rxjs';
 
@@ -8,13 +9,18 @@ import { UserService } from '@core/services/user/user.service';
 import { SetupProfileSettings } from '@osf/features/settings/profile-settings/profile-settings.actions';
 
 import { GetCurrentUser, GetCurrentUserSettings, SetCurrentUser, UpdateUserSettings } from './user.actions';
-import { UserStateModel } from './user.state-model';
+import { UserStateModel } from './user.model';
 
 @State<UserStateModel>({
   name: 'user',
   defaults: {
     currentUser: null,
-    currentUserSettings: null,
+    currentUserSettings: {
+      data: null,
+      isLoading: false,
+      isSubmitting: false,
+      error: '',
+    },
   },
 })
 @Injectable()
@@ -42,22 +48,36 @@ export class UserState {
 
   @Action(GetCurrentUserSettings)
   getCurrentUserSettings(ctx: StateContext<UserStateModel>) {
+    ctx.setState(patch({ currentUserSettings: patch({ isLoading: true }) }));
+
     return this.userService.getCurrentUserSettings().pipe(
       tap((userSettings) => {
-        ctx.patchState({
-          currentUserSettings: userSettings,
-        });
+        ctx.setState(
+          patch({
+            currentUserSettings: patch({
+              data: userSettings,
+              isLoading: false,
+            }),
+          })
+        );
       })
     );
   }
 
   @Action(UpdateUserSettings)
   updateUserSettings(ctx: StateContext<UserStateModel>, action: UpdateUserSettings) {
+    ctx.setState(patch({ currentUserSettings: patch({ isSubmitting: true }) }));
+
     return this.userService.updateUserSettings(action.userId, action.updatedUserSettings).pipe(
       tap(() => {
-        ctx.patchState({
-          currentUserSettings: action.updatedUserSettings,
-        });
+        ctx.setState(
+          patch({
+            currentUserSettings: patch({
+              data: action.updatedUserSettings,
+              isSubmitting: false,
+            }),
+          })
+        );
       })
     );
   }
