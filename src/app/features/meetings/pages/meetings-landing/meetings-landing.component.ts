@@ -1,7 +1,6 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { SortEvent } from 'primeng/api';
-import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
@@ -20,7 +19,7 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-meetings-landing',
-  imports: [SubHeaderComponent, Card, SearchInputComponent, Button, DatePipe, TableModule, TranslatePipe],
+  imports: [SubHeaderComponent, Card, SearchInputComponent, DatePipe, TableModule, TranslatePipe],
   templateUrl: './meetings-landing.component.html',
   styleUrl: './meetings-landing.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

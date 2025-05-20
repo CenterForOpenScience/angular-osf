@@ -4,40 +4,7 @@
 
 <section class="flex-1 flex flex-column bg-white p-4"
          [class.mobile]="isXSmall()">
-  <section class="flex lg:flex-row flex-column gap-3 w-full">
-    <p-card class="lg:w-6 w-12">
-      <div class="flex flex-column align-items-center justify-content-center gap-4">
-        <img src="../../../../../assets/icons/colored/conference-organizers.svg"
-             alt="Conference organizers"
-             class="w-8rem h-8rem"/>
-        <div>
-          <h2 class="text-center">{{ 'meetings.landing.conferenceOrganizers.title' | translate }}</h2>
-          <p class="mt-2 text-center">
-            {{ 'meetings.landing.conferenceOrganizers.description' | translate }}
-          </p>
-        </div>
-        <p-button [label]="'meetings.landing.conferenceOrganizers.button' | translate"/>
-      </div>
-    </p-card>
-
-    <p-card class="lg:w-6 w-12">
-      <div class="flex flex-column align-items-center justify-content-center gap-4">
-        <img src="../../../../../assets/icons/colored/conference-participants.svg"
-             alt="Conference participants"
-             class="w-8rem h-8rem"
-        />
-        <div>
-          <h2 class="text-center">{{ 'meetings.landing.conferenceParticipants.title' | translate }}</h2>
-          <p class="mt-2 text-center">
-            {{ 'meetings.landing.conferenceParticipants.description' | translate }}
-          </p>
-        </div>
-        <p-button [label]="'meetings.landing.conferenceParticipants.button' | translate"/>
-      </div>
-    </p-card>
-  </section>
-
-  <section class="mt-6">
+  <section class="mt-2">
     <p>{{ 'meetings.landing.submissionsNote' | translate }}</p>
   </section>
 
