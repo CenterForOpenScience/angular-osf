@@ -1,0 +1,209 @@
+<h1 class="title">Contributors</h1>
+
+<section class="contributors w-full">
+  <p-button [label]="'project.contributors.addContributor' | translate" (click)="addContributor()"></p-button>
+
+  <div class="filters-container" [class.flex-wrap]="!isWeb()">
+    <div class="search" [class.w-full]="!isWeb()">
+      <osf-search-input
+        [searchValue]="searchValue()"
+        (searchValueChange)="searchValue.set($event || '')"
+        [placeholder]="'project.contributors.searchPlaceholder' | translate"
+      />
+    </div>
+    <div class="contributors-filter-container" [class.w-full]="!isWeb()" [class.flex-wrap]="isMobile()">
+      <div class="w-full md:w-6 grey-placeholder">
+        <p-select
+          [placeholder]="'project.contributors.permissionFilter' | translate"
+          [options]="permissionsOptions"
+          optionValue="value"
+          [ngModel]="selectedPermission()"
+          (ngModelChange)="onPermissionChange($event)"
+          class="w-full"
+        >
+          <ng-template #selectedItem let-selectedOption>
+            {{ selectedOption.label | translate }}
+          </ng-template>
+          <ng-template #item let-item>
+            {{ item.label | translate }}
+          </ng-template>
+        </p-select>
+      </div>
+      <div class="w-full md:w-6 grey-placeholder">
+        <p-select
+          [placeholder]="'project.contributors.bibliographyFilter' | translate"
+          [options]="bibliographyOptions"
+          optionValue="value"
+          [ngModel]="selectedBibliography()"
+          (ngModelChange)="onBibliographyChange($event)"
+          class="w-full"
+        >
+          <ng-template #selectedItem let-selectedOption>
+            {{ selectedOption.label | translate }}
+          </ng-template>
+          <ng-template #item let-item>
+            {{ item.label | translate }}
+          </ng-template>
+        </p-select>
+      </div>
+    </div>
+  </div>
+
+  <p-table
+    [value]="items()"
+    [rows]="tableParams().rows"
+    [first]="tableParams().firstRowIndex"
+    [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
+    [totalRecords]="tableParams().totalRecords"
+    [resizableColumns]="true"
+    [autoLayout]="true"
+    [scrollable]="true"
+    [sortMode]="'single'"
+    [lazy]="true"
+    [lazyLoadOnInit]="true"
+    (onPage)="onPageChange($event)"
+    [customSort]="true"
+    class="view-only-table"
+  >
+    <ng-template #header>
+      <tr>
+        <th>{{ 'project.contributors.table.headers.name' | translate }}</th>
+        <th>
+          <div class="flex align-items-center">
+            <span>{{ 'project.contributors.table.headers.permissions' | translate }}</span>
+            <i class="osf-icon-information blue-icon ml-1" [pTooltip]="permissionsTooltip" tooltipPosition="right"></i>
+            <ng-template #permissionsTooltip>
+              <div class="flex flex-column row-gap-3">
+                <h2>Permission Information</h2>
+
+                <div class="inside-list">
+                  <p class="font-bold">Read</p>
+                  <ul class="font-normal ml-4">
+                    <li>View project content and comment</li>
+                  </ul>
+                </div>
+
+                <div class="inside-list">
+                  <p class="font-bold">Read + Write</p>
+                  <ul class="font-normal ml-4">
+                    <li>Read privileges</li>
+                    <li>Add and configure components</li>
+                    <li>Add and edit content</li>
+                  </ul>
+                </div>
+
+                <div class="inside-list">
+                  <p class="font-bold">Administrator</p>
+                  <ul class="font-normal ml-4">
+                    <li>Read and write privileges</li>
+                    <li>Manage contributor</li>
+                    <li>Delete and register project</li>
+                    <li>Public private settings</li>
+                  </ul>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center justify-content-center">
+            <span>{{ 'project.contributors.table.headers.contributor' | translate }}</span>
+            <i class="osf-icon-information blue-icon ml-1" [pTooltip]="contributorTooltip" tooltipPosition="right"></i>
+            <ng-template #contributorTooltip>
+              <div class="flex flex-column row-gap-3">
+                <h2>Bibliographic Contributor Information</h2>
+
+                <span
+                  >Only bibliographic contributors will be displayed in the Contributors list and in project citations.
+                  Non-bibliographic contributors can read and modify the project as normal.</span
+                >
+              </div>
+            </ng-template>
+          </div>
+        </th>
+        <th>
+          <div class="flex align-items-center justify-content-center">
+            <span>{{ 'project.contributors.table.headers.curator' | translate }}</span>
+            <i class="osf-icon-information blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="right"></i>
+            <ng-template #curatorTooltip>
+              <div class="flex flex-column row-gap-3">
+                <h2>Curator Information</h2>
+
+                <span>An administrator designated by your affiliated institution to curate your project</span>
+              </div>
+            </ng-template>
+          </div>
+        </th>
+        <th>{{ 'project.contributors.table.headers.employment' | translate }}</th>
+        <th>{{ 'project.contributors.table.headers.education' | translate }}</th>
+        <th></th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-item>
+      <tr>
+        <td>
+          <p class="flex align-items-center gap-2">
+            <span>{{ item.name }}</span>
+          </p>
+        </td>
+        <td class="select-font-normal" style="width: 2.5rem">
+          <div class="no-border-dropdown">
+            <p-select
+              [placeholder]="'project.contributors.permissionFilter' | translate"
+              [options]="permissionsOptions"
+              optionValue="value"
+              appendTo="body"
+              [ngModel]="item.permissions"
+              (ngModelChange)="onItemPermissionChange($event)"
+            >
+              <ng-template #selectedItem let-selectedOption>
+                <p>{{ selectedOption.label | translate }}</p>
+              </ng-template>
+              <ng-template #item let-item>
+                <p>{{ item.label | translate }}</p>
+              </ng-template>
+            </p-select>
+          </div>
+        </td>
+        <td>
+          <div class="flex align-items-center justify-content-center">
+            <p-checkbox variant="filled" binary="true" [(ngModel)]="item.bibliographicContributor"></p-checkbox>
+          </div>
+        </td>
+        <td>
+          <div class="flex align-items-center justify-content-center">
+            <p-checkbox variant="filled" binary="true" [(ngModel)]="item.curator"></p-checkbox>
+          </div>
+        </td>
+        <td>
+          @if (item.employmentHistory) {
+            <a [href]="item.employmentHistory">Show employment history</a>
+          } @else {
+            <span>No employment history</span>
+          }
+        </td>
+        <td>
+          <div class="flex column-gap-2">
+            @if (item.educationHistory) {
+              <a [href]="item.educationHistory">Show education history</a>
+            } @else {
+              <span>No education history</span>
+            }
+          </div>
+        </td>
+        <td><i class="osf-icon-trash red-icon"></i></td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <div class="flex flex-column row-gap-4 mt-6">
+    <h2>{{ 'project.contributors.viewOnly' | translate }}</h2>
+    <p>{{ 'project.contributors.createLink' | translate }}</p>
+    <p-button
+      class="w-10rem"
+      [label]="'project.contributors.createButton' | translate"
+      (click)="createViewLink()"
+    ></p-button>
+    <osf-view-only-table [tableData]="tableData"></osf-view-only-table>
+  </div>
+</section>

@@ -57,6 +57,27 @@ export const routes: Routes = [
           import('./features/privacy-policy/privacy-policy.component').then((mod) => mod.PrivacyPolicyComponent),
       },
       {
+        path: 'meetings',
+        loadComponent: () => import('./features/meetings/meetings.component').then((mod) => mod.MeetingsComponent),
+        children: [
+          {
+            path: '',
+            pathMatch: 'full',
+            loadComponent: () =>
+              import('@osf/features/meetings/pages/meetings-landing/meetings-landing.component').then(
+                (mod) => mod.MeetingsLandingComponent
+              ),
+          },
+          {
+            path: ':id',
+            loadComponent: () =>
+              import('@osf/features/meetings/pages/meeting-details/meeting-details.component').then(
+                (mod) => mod.MeetingDetailsComponent
+              ),
+          },
+        ],
+      },
+      {
         path: 'my-projects',
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
@@ -104,9 +125,26 @@ export const routes: Routes = [
               ),
           },
           {
+            path: 'settings',
+            loadComponent: () =>
+              import('./features/project/settings/settings.component').then((mod) => mod.SettingsComponent),
+          },
+          {
+            path: 'contributors',
+            loadComponent: () =>
+              import('@osf/features/project/contributors/contributors.component').then(
+                (mod) => mod.ContributorsComponent
+              ),
+          },
+          {
             path: 'analytics',
             loadComponent: () =>
               import('@osf/features/project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
+          },
+          {
+            path: 'settings',
+            loadComponent: () =>
+              import('./features/project/settings/settings.component').then((mod) => mod.SettingsComponent),
           },
         ],
       },

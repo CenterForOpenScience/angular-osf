@@ -1,0 +1,16 @@
+<p-card>
+  <h3 class="text-xl pb-4">{{ 'myProjects.settings.accessRequests' | translate }}</h3>
+
+  <div class="flex align-items-center w-full">
+    <p-checkbox
+      ariaLabel="Checkbox for access request"
+      [binary]="true"
+      [formControl]="formControl()"
+      id="accessRequest"
+      name="ongoing"
+    ></p-checkbox>
+    <label class="input-label ml-2" for="accessRequest">
+      {{ 'myProjects.settings.accessRequestsText' | translate }}
+    </label>
+  </div>
+</p-card>

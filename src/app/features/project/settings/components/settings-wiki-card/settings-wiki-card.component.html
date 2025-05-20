@@ -1,0 +1,28 @@
+<p-card>
+  <h3 class="text-xl pb-4">{{ 'myProjects.settings.wiki' | translate }}</h3>
+
+  <div class="flex align-items-center w-full">
+    <p-checkbox
+      ariaLabel="Checkbox for wiki"
+      [binary]="true"
+      [formControl]="formControl()"
+      id="wiki"
+      name="ongoing"
+    ></p-checkbox>
+
+    <label class="input-label ml-2" for="wiki">
+      {{ 'myProjects.settings.wikiText' | translate }}
+    </label>
+  </div>
+
+  <h3 class="text-xl py-4">{{ 'myProjects.settings.wikiConfigureTitle' | translate }}</h3>
+
+  <p class="pb-4">{{ 'myProjects.settings.wikiConfigureText' | translate }}</p>
+
+  <osf-project-detail-setting-accordion [title]="'Project name example'" [rightControls]="rightControls()">
+    <div class="flex align-items-baseline gap-2">
+      <i class="pi pi-minus text-sm icon-space"></i>
+      <span>Sub text</span>
+    </div>
+  </osf-project-detail-setting-accordion>
+</p-card>
