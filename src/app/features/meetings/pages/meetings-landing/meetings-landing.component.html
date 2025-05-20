@@ -1,52 +1,57 @@
-<osf-sub-header [title]="'meetings.landing.title' | translate"
-                [icon]="'meetings'"
-                [description]="'meetings.landing.description' | translate"/>
+<osf-sub-header
+  [title]="'meetings.landing.title' | translate"
+  [icon]="'meetings'"
+  [description]="'meetings.landing.description' | translate"
+/>
 
-<section class="flex-1 flex flex-column bg-white p-4"
-         [class.mobile]="isXSmall()">
+<section class="flex-1 flex flex-column bg-white p-4" [class.mobile]="isXSmall()">
   <section class="mt-2">
     <p>{{ 'meetings.landing.submissionsNote' | translate }}</p>
   </section>
 
-  <osf-search-input class="w-full mt-4"
-                    [searchValue]="searchValue()"
-                    (searchValueChange)="searchValue.set($event || '')"
-                    [placeholder]="'meetings.landing.searchPlaceholder' | translate"/>
+  <osf-search-input
+    class="w-full mt-4"
+    [searchValue]="searchValue()"
+    (searchValueChange)="searchValue.set($event || '')"
+    [placeholder]="'meetings.landing.searchPlaceholder' | translate"
+  />
 
-  <p-table [value]="meetings()"
-           [rows]="tableParams().rows"
-           [first]="tableParams().firstRowIndex"
-           [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
-           [paginator]="true"
-           [totalRecords]="tableParams().totalRecords"
-           paginatorDropdownAppendTo="body"
-           [resizableColumns]="true"
-           [autoLayout]="true"
-           [scrollable]="true"
-           [sortMode]="'single'"
-           [lazy]="true"
-           [lazyLoadOnInit]="true"
-           (onPage)="onPageChange($event)"
-           (onSort)="onSort($event)"
-           [sortField]="sortColumn()"
-           [customSort]="true">
+  <p-table
+    [value]="meetings()"
+    [rows]="tableParams().rows"
+    [first]="tableParams().firstRowIndex"
+    [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
+    [paginator]="true"
+    [totalRecords]="tableParams().totalRecords"
+    paginatorDropdownAppendTo="body"
+    [resizableColumns]="true"
+    [autoLayout]="true"
+    [scrollable]="true"
+    [sortMode]="'single'"
+    [lazy]="true"
+    [lazyLoadOnInit]="true"
+    (onPage)="onPageChange($event)"
+    (onSort)="onSort($event)"
+    [sortField]="sortColumn()"
+    [customSort]="true"
+  >
     <ng-template #header>
       <tr>
         <th pSortableColumn="title">
           {{ 'meetings.landing.table.columns.title' | translate }}
-          <p-sortIcon field="title"/>
+          <p-sortIcon field="title" />
         </th>
         <th pSortableColumn="submissionsCount">
           {{ 'meetings.landing.table.columns.submissions' | translate }}
-          <p-sortIcon field="submissionsCount"/>
+          <p-sortIcon field="submissionsCount" />
         </th>
         <th pSortableColumn="location">
           {{ 'meetings.landing.table.columns.location' | translate }}
-          <p-sortIcon field="location"/>
+          <p-sortIcon field="location" />
         </th>
         <th pSortableColumn="startDate">
           {{ 'meetings.landing.table.columns.date' | translate }}
-          <p-sortIcon field="startDate"/>
+          <p-sortIcon field="startDate" />
         </th>
       </tr>
     </ng-template>
@@ -63,9 +68,7 @@
   <section class="flex lg:flex-row flex-column gap-3 w-full mt-6">
     <p-card class="lg:w-4 w-12">
       <div class="flex flex-column align-items-center justify-content-center gap-4 lg:h-18rem">
-        <img src="../../../../../assets/icons/colored/discover.svg"
-             alt="Discover"
-             class="w-8rem h-8rem"/>
+        <img src="../../../../../assets/icons/colored/discover.svg" alt="Discover" class="w-8rem h-8rem" />
         <h2>{{ 'meetings.landing.features.discover.title' | translate }}</h2>
         <p class="text-center">{{ 'meetings.landing.features.discover.description' | translate }}</p>
       </div>
@@ -73,9 +76,7 @@
 
     <p-card class="lg:w-4 w-12 h-18rem">
       <div class="flex flex-column align-items-center justify-content-center gap-4 lg:h-18rem">
-        <img src="../../../../../assets/icons/colored/share.svg"
-             alt="Share"
-             class="w-8rem h-8rem"/>
+        <img src="../../../../../assets/icons/colored/share.svg" alt="Share" class="w-8rem h-8rem" />
         <h2>{{ 'meetings.landing.features.share.title' | translate }}</h2>
         <p class="text-center">{{ 'meetings.landing.features.share.description' | translate }}</p>
       </div>
@@ -83,9 +84,7 @@
 
     <p-card class="lg:w-4 w-12">
       <div class="flex flex-column align-items-center justify-content-center gap-4 lg:h-18rem">
-        <img src="../../../../../assets/icons/colored/enhance.svg"
-             alt="Enhance"
-             class="w-8rem h-8rem"/>
+        <img src="../../../../../assets/icons/colored/enhance.svg" alt="Enhance" class="w-8rem h-8rem" />
         <h2>{{ 'meetings.landing.features.enhance.title' | translate }}</h2>
         <p class="text-center">{{ 'meetings.landing.features.enhance.description' | translate }}</p>
       </div>
@@ -96,18 +95,10 @@
     <h2 class="text-2xl text-center">{{ 'meetings.landing.users.title' | translate }}</h2>
 
     <section class="flex flex-row justify-content-center align-items-start gap-7 flex-wrap">
-      <img src="assets/icons/colored/aps.svg"
-           alt="APS"
-           height="90"/>
-      <img src="assets/icons/colored/bitss.svg"
-           alt="BITSS"
-           height="90"/>
-      <img src="assets/icons/colored/nrao.svg"
-           alt="NRAO"
-           height="90"/>
-      <img src="assets/icons/colored/spsp.svg"
-           alt="SPSP"
-           height="90"/>
+      <img src="assets/icons/colored/aps.svg" alt="APS" height="90" />
+      <img src="assets/icons/colored/bitss.svg" alt="BITSS" height="90" />
+      <img src="assets/icons/colored/nrao.svg" alt="NRAO" height="90" />
+      <img src="assets/icons/colored/spsp.svg" alt="SPSP" height="90" />
     </section>
   </section>
 </section>

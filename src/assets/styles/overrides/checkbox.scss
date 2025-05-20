@@ -9,7 +9,7 @@
 .p-checkbox-box {
   width: 1.4rem;
   height: 1.4rem;
-  background: white;
+  background: var.$white;
   border-color: var.$grey-2;
 }
 
@@ -20,7 +20,7 @@
   }
 
   .p-checkbox-icon {
-    color: white;
+    color: var.$white;
     font-size: 1.4rem;
     width: 0.7rem;
   }

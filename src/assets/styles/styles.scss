@@ -1,7 +1,11 @@
 @use "primeicons/primeicons.css";
+
 @use "fonts";
 @use "variables" as var;
 @use "mixins" as mix;
+@use "common";
+@use "base";
+
 @use "./overrides/button";
 @use "./overrides/input";
 @use "./overrides/checkbox";
@@ -30,125 +34,4 @@
 @use "./overrides/menu";
 @use "./overrides/spinner";
 @use "./overrides/password";
-@use "./common";
-
-@layer base, primeng, reset;
-
-@layer base {
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-}
-
-@layer reset {
-  html,
-  body {
-    font-family: var.$openSans;
-    font-weight: 400;
-    font-size: 14px;
-    max-height: 100vh;
-    max-width: 100vw;
-  }
-
-  h1 {
-    font-size: 1.7rem;
-  }
-
-  h2 {
-    font-size: 1.3rem;
-  }
-
-  h3 {
-    font-size: 1rem;
-  }
-
-  h1,
-  h2,
-  h3 {
-    font-weight: 700;
-    text-transform: capitalize;
-    color: var.$dark-blue-1;
-  }
-
-  li {
-    list-style: none;
-  }
-
-  a,
-  a:visited {
-    text-decoration: none;
-    color: var.$pr-blue-1;
-  }
-
-  a:hover {
-    text-decoration: underline;
-  }
-
-  i {
-    @include mix.flex-center;
-  }
-
-  button {
-    color: white;
-  }
-
-  dl {
-    margin-bottom: 1.7rem;
-    padding: 0;
-  }
-
-  dt {
-    display: inline;
-    font-weight: bold;
-  }
-
-  dd {
-    margin: 0;
-    display: inline;
-
-    &::after {
-      content: "";
-      display: block;
-    }
-  }
-
-  .copy-notification {
-    position: absolute;
-    top: -45px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    white-space: nowrap;
-    border-radius: 8px;
-    box-shadow: 0 0 4px 0 #00000029;
-    background: var.$white;
-
-    &.visible {
-      opacity: 1;
-    }
-
-    &:after {
-      content: "";
-      position: absolute;
-      bottom: -5px;
-      left: 50%;
-      transform: translateX(-50%);
-      border-width: 5px 5px 0;
-      border-style: solid;
-      border-color: var.$grey-1 transparent transparent;
-    }
-  }
-
-  i,
-  svg {
-    outline: none;
-  }
-}
-
-.highlight {
-  color: var.$pr-blue-1;
-}
+@use "./overrides/tooltip";

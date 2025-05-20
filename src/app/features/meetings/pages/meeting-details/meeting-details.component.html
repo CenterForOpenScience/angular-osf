@@ -1,70 +1,74 @@
-<osf-sub-header [title]="meeting().title"
-                [description]="pageDescription()"/>
+<osf-sub-header [title]="meeting().title" [description]="pageDescription()" />
 
 <section class="flex-1 flex flex-column bg-white p-4">
-    <osf-search-input class="w-full mt-4"
-                      [searchValue]="searchValue()"
-                      (searchValueChange)="searchValue.set($event || '')"
-                      [placeholder]="'meetings.details.searchPlaceholder' | translate"/>
+  <osf-search-input
+    class="w-full mt-4"
+    [searchValue]="searchValue()"
+    (searchValueChange)="searchValue.set($event || '')"
+    [placeholder]="'meetings.details.searchPlaceholder' | translate"
+  />
 
-    <p-table [value]="meetingSubmissions()"
-             [rows]="tableParams().rows"
-             [first]="tableParams().firstRowIndex"
-             [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
-             [paginator]="true"
-             [totalRecords]="tableParams().totalRecords"
-             paginatorDropdownAppendTo="body"
-             [resizableColumns]="true"
-             [autoLayout]="true"
-             [scrollable]="true"
-             [sortMode]="'single'"
-             [lazy]="true"
-             [lazyLoadOnInit]="true"
-             (onPage)="onPageChange($event)"
-             (onSort)="onSort($event)"
-             [sortField]="sortColumn()"
-             [customSort]="true">
-        <ng-template #header>
-            <tr>
-                <th pSortableColumn="title">
-                    {{ 'meetings.details.table.columns.title' | translate }}
-                    <p-sortIcon field="title"/>
-                </th>
-                <th pSortableColumn="authorName">
-                    {{ 'meetings.details.table.columns.author' | translate }}
-                    <p-sortIcon field="authorName"/>
-                </th>
-                <th pSortableColumn="meetingCategory">
-                    {{ 'meetings.details.table.columns.category' | translate }}
-                    <p-sortIcon field="meetingCategory"/>
-                </th>
-                <th pSortableColumn="dateCreated">
-                    {{ 'meetings.details.table.columns.dateCreated' | translate }}
-                    <p-sortIcon field="dateCreated"/>
-                </th>
-                <th pSortableColumn="downloadCount">
-                    {{ 'meetings.details.table.columns.downloads' | translate }}
-                    <p-sortIcon field="downloadCount"/>
-                </th>
-            </tr>
-        </ng-template>
-        <ng-template #body let-item>
-            <tr class="cursor-pointer"
-                [routerLink]="['/my-projects', item.id, 'overview']">
-                <td>{{ item.title }}</td>
-                <td>{{ item.authorName }}</td>
-                <td>{{ item.meetingCategory }}</td>
-                <td>{{ item.dateCreated | date: 'MMM d, y, h:mm a' }}</td>
-                <td>
-                    <p-button [label]="'meetings.details.downloadButton' | translate"
-                              icon="pi pi-download"
-                              class="mr-1"
-                              severity="secondary"
-                              [raised]="true"
-                              (click)="downloadSubmission($event, item)"/>
-                    {{ item.downloadCount }}
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+  <p-table
+    [value]="meetingSubmissions()"
+    [rows]="tableParams().rows"
+    [first]="tableParams().firstRowIndex"
+    [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
+    [paginator]="true"
+    [totalRecords]="tableParams().totalRecords"
+    paginatorDropdownAppendTo="body"
+    [resizableColumns]="true"
+    [autoLayout]="true"
+    [scrollable]="true"
+    [sortMode]="'single'"
+    [lazy]="true"
+    [lazyLoadOnInit]="true"
+    (onPage)="onPageChange($event)"
+    (onSort)="onSort($event)"
+    [sortField]="sortColumn()"
+    [customSort]="true"
+  >
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="title">
+          {{ 'meetings.details.table.columns.title' | translate }}
+          <p-sortIcon field="title" />
+        </th>
+        <th pSortableColumn="authorName">
+          {{ 'meetings.details.table.columns.author' | translate }}
+          <p-sortIcon field="authorName" />
+        </th>
+        <th pSortableColumn="meetingCategory">
+          {{ 'meetings.details.table.columns.category' | translate }}
+          <p-sortIcon field="meetingCategory" />
+        </th>
+        <th pSortableColumn="dateCreated">
+          {{ 'meetings.details.table.columns.dateCreated' | translate }}
+          <p-sortIcon field="dateCreated" />
+        </th>
+        <th pSortableColumn="downloadCount">
+          {{ 'meetings.details.table.columns.downloads' | translate }}
+          <p-sortIcon field="downloadCount" />
+        </th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-item>
+      <tr class="cursor-pointer" [routerLink]="['/my-projects', item.id, 'overview']">
+        <td>{{ item.title }}</td>
+        <td>{{ item.authorName }}</td>
+        <td>{{ item.meetingCategory }}</td>
+        <td>{{ item.dateCreated | date: 'MMM d, y, h:mm a' }}</td>
+        <td>
+          <p-button
+            [label]="'meetings.details.downloadButton' | translate"
+            icon="pi pi-download"
+            class="mr-1"
+            severity="secondary"
+            [raised]="true"
+            (click)="downloadSubmission($event, item)"
+          />
+          {{ item.downloadCount }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
 </section>

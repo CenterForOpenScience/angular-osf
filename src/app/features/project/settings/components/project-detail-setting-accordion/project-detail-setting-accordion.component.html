@@ -1,0 +1,56 @@
+<div
+  class="flex justify-between align-items-center mb-2 w-full border-bottom-1 border-gray-300 gap-2 flex-column sm:flex-row sm:gap-4"
+>
+  <div class="flex align-items-center gap-2 cursor-pointer w-full sm:w-5">
+    <p-button
+      role="button"
+      [ariaLabel]="'Toggle ' + title()"
+      class="btn-icon-text form-btn button-shadow-none"
+      (click)="toggle()"
+    >
+      <i class="pi" [ngClass]="{ 'pi-plus': !expanded(), 'pi-minus': expanded() }"></i>
+    </p-button>
+
+    <span class="font-medium text-color">{{ title() }}</span>
+  </div>
+
+  @if (rightControls().length > 0) {
+    <div class="flex flex-wrap gap-2 align-items-center w-full sm:gap-4 sm:w-7">
+      @for (control of rightControls(); track control.value) {
+        <div class="flex align-items-center gap-2">
+          @if (control.label) {
+            <span class="font-medium text-color">
+              {{ control.label }}
+            </span>
+          }
+
+          @switch (control.type) {
+            @case ('dropdown') {
+              <p-dropdown
+                class="accordion-dropdown"
+                [options]="control.options"
+                [(ngModel)]="control.value"
+                (onChange)="control.onChange?.(control.value)"
+              />
+            }
+            @case ('text') {
+              <span class="text-sm text-color">
+                {{ control.value }}
+              </span>
+            }
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+@if (expanded()) {
+  <div
+    class="mt-2 pl-5 border-bottom-1 border-gray-300"
+    [attr.id]="'accordion-content-' + (title() | lowercase).replace(' ', '-')"
+    [attr.aria-labelledby]="'accordion-label-' + (title() | lowercase).replace(' ', '-')"
+  >
+    <ng-content></ng-content>
+  </div>
+}

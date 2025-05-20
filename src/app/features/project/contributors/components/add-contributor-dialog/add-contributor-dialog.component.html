@@ -1,0 +1,25 @@
+<div class="flex flex-column gap-6">
+  <osf-search-input
+    [searchValue]="searchValue()"
+    (searchValueChange)="searchValue.set($event || '')"
+    [placeholder]="'project.contributors.addDialog.placeholder' | translate"
+  />
+
+  <div class="flex gap-2">
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      (click)="dialogRef.close()"
+      [text]="true"
+      severity="info"
+      [label]="'project.contributors.addDialog.cancel' | translate"
+    ></p-button>
+
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      (click)="addContributor()"
+      [label]="'project.contributors.addDialog.next' | translate"
+    ></p-button>
+  </div>
+</div>

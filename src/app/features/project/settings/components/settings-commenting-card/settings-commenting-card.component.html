@@ -1,0 +1,27 @@
+<p-card>
+  <h3 class="text-xl pb-4">{{ 'myProjects.settings.commenting' | translate }}</h3>
+
+  <div class="flex flex-column gap-3">
+    <div class="flex gap-3">
+      <p-radio-button
+        [ariaLabel]="'Select ' + 'myProjects.settings.contributorsCanPost' | translate"
+        name="contributorsCanPost"
+        value="0"
+        [(ngModel)]="commenting"
+      ></p-radio-button>
+      <p>{{ 'myProjects.settings.contributorsCanPost' | translate }}</p>
+    </div>
+
+    <div class="flex gap-3">
+      <p-radio-button
+        [ariaLabel]="'Select ' + 'myProjects.settings.osfUserCanPost' | translate"
+        name="osfUserCanPost"
+        value="1"
+        [(ngModel)]="commenting"
+      >
+      </p-radio-button>
+
+      <p>{{ 'myProjects.settings.osfUserCanPost' | translate }}</p>
+    </div>
+  </div>
+</p-card>

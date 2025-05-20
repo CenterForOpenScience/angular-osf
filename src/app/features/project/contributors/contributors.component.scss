@@ -1,0 +1,49 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+:host {
+  .title {
+    padding: 1.5rem 3.4rem 3.4rem 1.7rem;
+  }
+
+  .header {
+    //@include mix.flex-center;
+    text-align: center;
+  }
+
+  .contributors {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.7rem;
+    padding: 1.7rem;
+    background: var.$white;
+
+    .filters-container {
+      display: flex;
+      gap: 0.8rem;
+
+      .search {
+        width: 60%;
+      }
+      .contributors-filter-container {
+        display: flex;
+        gap: 0.8rem;
+        width: 40%;
+      }
+    }
+
+    .red-icon {
+      color: var.$red-1;
+      cursor: pointer;
+    }
+
+    .blue-icon {
+      color: var.$pr-blue-1;
+      cursor: pointer;
+    }
+  }
+
+  li {
+    list-style: inside;
+  }
+}
