@@ -17,7 +17,6 @@ import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-tokens',
-  standalone: true,
   imports: [SubHeaderComponent, RouterOutlet, TranslatePipe],
   templateUrl: './tokens.component.html',
   styleUrl: './tokens.component.scss',

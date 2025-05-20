@@ -30,6 +30,7 @@
 @use "./overrides/menu";
 @use "./overrides/spinner";
 @use "./overrides/password";
+@use "./common";
 
 @layer base, primeng, reset;
 

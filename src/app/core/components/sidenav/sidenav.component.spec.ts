@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { NavMenuComponent } from '../nav-menu/nav-menu.component';
 
 import { SidenavComponent } from './sidenav.component';
 
@@ -8,7 +12,7 @@ describe('SidenavDComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SidenavComponent],
+      imports: [SidenavComponent, MockComponent(NavMenuComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SidenavComponent);

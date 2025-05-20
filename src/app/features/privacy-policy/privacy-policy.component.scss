@@ -1,7 +1,7 @@
 @use "assets/styles/variables" as var;
 
 :host {
-  background-color: white;
+  background-color: var.$white;
 
   .container {
     margin-top: 4.5rem;

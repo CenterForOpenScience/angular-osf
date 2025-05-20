@@ -10,6 +10,11 @@ export const settingsRoutes: Routes = [
     component: SettingsContainerComponent,
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'profile-settings',
+      },
+      {
         path: 'profile-settings',
         loadComponent: () =>
           import('./profile-settings/profile-settings.component').then((c) => c.ProfileSettingsComponent),

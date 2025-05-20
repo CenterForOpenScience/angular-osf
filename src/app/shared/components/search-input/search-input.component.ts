@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'osf-search-input',
-  standalone: true,
   imports: [InputText, FormsModule],
   templateUrl: './search-input.component.html',
   styleUrl: './search-input.component.scss',

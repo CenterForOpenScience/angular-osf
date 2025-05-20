@@ -1,30 +1,42 @@
-import { TestBed } from '@angular/core/testing';
+import { provideStore, Store } from '@ngxs/store';
+
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
+
+import { GetCurrentUser, UserState } from '@core/store/user';
 
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
+  let component: AppComponent;
+  let fixture: ComponentFixture<AppComponent>;
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
+      providers: [provideStore([UserState]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
-  });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it(`should have the 'osf' title`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('osf');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, osf');
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should dispatch GetCurrentUser action on initialization', () => {
+    const store = TestBed.inject(Store);
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+    store.dispatch(GetCurrentUser);
+    expect(dispatchSpy).toHaveBeenCalledWith(GetCurrentUser);
+  });
+
+  it('should render router outlet', () => {
+    const routerOutlet = fixture.debugElement.query(By.css('router-outlet'));
+    expect(routerOutlet).toBeTruthy();
   });
 });

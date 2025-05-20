@@ -1,0 +1,15 @@
+<div class="kpi-container p-4 flex flex-column align-items-center">
+  <p class="title">{{ title() | translate }}</p>
+
+  @if (isLoading()) {
+    <p-skeleton class="value-skeleton" width="2.5rem" height="3rem" />
+  } @else {
+    <p class="value">{{ value() }}</p>
+  }
+
+  @if (showButton()) {
+    <div>
+      <p-button severity="secondary">{{ buttonLabel() | translate }}</p-button>
+    </div>
+  }
+</div>

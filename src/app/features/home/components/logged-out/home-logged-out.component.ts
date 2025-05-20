@@ -15,7 +15,6 @@ import { integrationIcons, slides } from './data';
 
 @Component({
   selector: 'osf-home-logged-out',
-  standalone: true,
   imports: [CarouselModule, FormsModule, Button, InputText, NgOptimizedImage, TranslatePipe],
   templateUrl: './home-logged-out.component.html',
   styleUrl: './home-logged-out.component.scss',

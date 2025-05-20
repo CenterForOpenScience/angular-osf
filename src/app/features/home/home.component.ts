@@ -29,7 +29,6 @@ import { SortOrder } from '@shared/utils/sort-order.enum';
 
 @Component({
   selector: 'osf-home',
-  standalone: true,
   imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent, TranslatePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',

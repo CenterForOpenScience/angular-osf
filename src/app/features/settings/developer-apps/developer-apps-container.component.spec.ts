@@ -1,3 +1,6 @@
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MockPipe, MockProvider } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeveloperAppsContainerComponent } from './developer-apps-container.component';
@@ -8,7 +11,8 @@ describe('DeveloperAppsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeveloperAppsContainerComponent],
+      imports: [DeveloperAppsContainerComponent, MockPipe(TranslatePipe)],
+      providers: [MockProvider(TranslateService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeveloperAppsContainerComponent);

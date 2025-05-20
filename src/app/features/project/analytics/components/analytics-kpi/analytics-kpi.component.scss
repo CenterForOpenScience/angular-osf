@@ -1,0 +1,26 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+:host {
+  width: 100%;
+}
+
+.kpi-container {
+  border: 1px solid var.$grey-2;
+  border-radius: 12px;
+  color: var.$dark-blue-1;
+  width: 100%;
+  height: 100%;
+  min-height: 180px;
+
+  .value {
+    color: var.$blue-1;
+    font-size: 2.285rem;
+    font-weight: 700;
+    margin: 1rem 0 1.7rem;
+  }
+
+  .value-skeleton {
+    margin: 1rem 0 1.7rem;
+  }
+}

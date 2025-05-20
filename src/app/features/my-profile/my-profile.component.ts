@@ -22,7 +22,6 @@ import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'osf-my-profile',
-  standalone: true,
   imports: [Button, DatePipe, NgOptimizedImage, AccordionModule, FormsModule, ReactiveFormsModule, SearchComponent],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.scss',

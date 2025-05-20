@@ -29,7 +29,7 @@
   }
 
   .quick-search-container {
-    background: white;
+    background: var.$white;
     padding: 2rem;
 
     .text-center {
@@ -70,7 +70,7 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    background: white;
+    background: var.$white;
     padding: 1.71rem;
     column-gap: 1.71rem;
 

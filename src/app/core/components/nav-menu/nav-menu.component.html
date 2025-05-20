@@ -9,7 +9,7 @@
         }"
         class="nav-link flex"
         [class.mt-5]="item.label === 'navigation.settings' || item.label === 'navigation.myProjects'"
-        (click)="goToLink()"
+        (click)="goToLink(item)"
       >
         @if (item.icon) {
           <i [class]="item.icon" class="nav-icon"></i>
@@ -29,6 +29,7 @@
                 [routerLinkActive]="item.routerLink ? 'active' : ''"
                 [routerLinkActiveOptions]="{ exact: true }"
                 class="nav-link flex"
+                (click)="goToLink(item)"
               >
                 @if (item.icon) {
                   <i [class]="item.icon" class="nav-icon"></i>

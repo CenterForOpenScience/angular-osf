@@ -1,10 +1,14 @@
-import { NgxsModule } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
 
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { MockComponent } from 'ng-mocks';
+
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 
 import { UserState } from '@osf/core/store/user';
+
+import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
 import { HeaderComponent } from './header.component';
 
@@ -14,8 +18,8 @@ describe('HeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent, NgxsModule.forRoot([UserState])],
-      providers: [provideRouter([]), provideHttpClient(withFetch())],
+      imports: [HeaderComponent, MockComponent(BreadcrumbComponent)],
+      providers: [provideStore([UserState]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);
