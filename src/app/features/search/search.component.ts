@@ -4,7 +4,6 @@ import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Button } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { TableModule } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
@@ -37,7 +36,6 @@ import {
   selector: 'osf-search',
   imports: [
     SearchInputComponent,
-    DropdownModule,
     ReactiveFormsModule,
     Tab,
     TabList,

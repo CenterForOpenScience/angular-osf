@@ -11,12 +11,12 @@
 
           <div class="flex align-items-center column-gap-1">
             @if (item()?.resourceType === ResourceType.File && item()?.fileName) {
-              <a class="title" [href]="item()?.id">{{ item()?.fileName }}</a>
+              <a class="title">{{ item()?.fileName }}</a>
             } @else if (item()?.title && item()?.title) {
-              <a class="title" [href]="item()?.id">{{ item()?.title }}</a>
+              <a class="title">{{ item()?.title }}</a>
             }
             @if (item()?.orcid) {
-              <a [href]="item()?.orcid" class="orcid-icon">
+              <a class="orcid-icon">
                 <img ngSrc="assets/icons/system/orchid.svg" width="16" height="16" alt="orcid" />
               </a>
             }
@@ -25,7 +25,7 @@
           @if (item()?.creators?.length) {
             <div>
               @for (creator of item()?.creators!.slice(0, 4); track creator.id; let i = $index) {
-                <a [href]="creator.id" target="_blank">{{ creator.name }}</a>
+                <a target="_blank">{{ creator.name }}</a>
                 @if (i < (item()?.creators)!.length - 1 && i < 3) {
                   <a>, </a>
                 }
@@ -39,7 +39,7 @@
           @if (item()?.from?.id && item()?.from?.name) {
             <div>
               <p class="inline mr-1">From:</p>
-              <a class="inline" [href]="item()?.from?.id">{{ item()?.from?.name }}</a>
+              <a class="inline">{{ item()?.from?.name }}</a>
             </div>
           }
 
@@ -62,7 +62,7 @@
 
           @if (item()?.resourceType === ResourceType.Registration) {
             <div class="flex column-gap-5 row-gap-3 mt-1 flex-wrap">
-              <a class="icon-container" [href]="item()?.id + '/resources'">
+              <a class="icon-container">
                 @if (item()?.hasDataResource) {
                   <i class="osf-icon-data-colored text-4xl"></i>
                 } @else {
@@ -70,7 +70,7 @@
                 }
                 <p>Data</p>
               </a>
-              <a class="icon-container" [href]="item()?.id + '/resources'">
+              <a class="icon-container">
                 @if (item()?.hasAnalyticCodeResource) {
                   <i class="osf-icon-code-colored text-4xl"></i>
                 } @else {
@@ -78,7 +78,7 @@
                 }
                 <p>Analytic Code</p>
               </a>
-              <a class="icon-container" [href]="item()?.id + '/resources'">
+              <a class="icon-container">
                 @if (item()?.hasMaterialsResource) {
                   <i class="osf-icon-materials-colored text-4xl"></i>
                 } @else {
@@ -86,7 +86,7 @@
                 }
                 <p>Materials</p>
               </a>
-              <a class="icon-container" [href]="item()?.id + '/resources'">
+              <a class="icon-container">
                 @if (item()?.hasPapersResource) {
                   <i class="osf-icon-papers-colored text-4xl"></i>
                 } @else {
@@ -94,7 +94,7 @@
                 }
                 <p>Papers</p>
               </a>
-              <a class="icon-container" [href]="item()?.id + '/resources'">
+              <a class="icon-container">
                 @if (item()?.hasPapersResource) {
                   <i class="osf-icon-supplements-colored text-4xl"></i>
                 } @else {
@@ -115,7 +115,7 @@
           @if (item()?.provider?.id) {
             <span>
               <p>Registration provider:&nbsp;</p>
-              <a [href]="item()?.provider?.id">{{ item()?.provider?.name }}</a>
+              <a>{{ item()?.provider?.name }}</a>
             </span>
           }
 
@@ -133,7 +133,7 @@
           @if (item()?.provider?.id) {
             <span>
               <p>Provider:&nbsp;</p>
-              <a [href]="item()?.provider?.id">{{ item()?.provider?.name }}</a>
+              <a>{{ item()?.provider?.name }}</a>
             </span>
           }
 
@@ -144,7 +144,7 @@
           @if (item()?.resourceType !== ResourceType.Agent && item()?.id) {
             <span>
               <p>URL:&nbsp;</p>
-              <a [href]="item()?.id">{{ item()?.id }}</a>
+              <a>{{ item()?.id }}</a>
             </span>
           }
 

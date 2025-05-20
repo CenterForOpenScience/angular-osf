@@ -1,5 +1,5 @@
 import { Button } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 
 import { LowerCasePipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
@@ -9,7 +9,7 @@ import { RightControl } from '@osf/features/project/settings/models/right-contro
 
 @Component({
   selector: 'osf-project-detail-setting-accordion',
-  imports: [NgClass, DropdownModule, FormsModule, Button, LowerCasePipe],
+  imports: [NgClass, SelectModule, FormsModule, Button, LowerCasePipe],
   templateUrl: './project-detail-setting-accordion.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

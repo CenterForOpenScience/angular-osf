@@ -35,7 +35,7 @@
 
     &:hover {
       background: var.$pr-blue-2;
-      color: white;
+      color: var.$white;
     }
   }
 
@@ -44,12 +44,12 @@
 
     &:hover {
       background: var.$pr-blue-2;
-      color: white;
+      color: var.$white;
     }
   }
 
   .p-datepicker-today > .p-datepicker-day-selected {
     background: var.$pr-blue-1;
-    color: white;
+    color: var.$white;
   }
 }

@@ -1,5 +1,5 @@
 import { Button } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
@@ -21,7 +21,7 @@ type RightControl =
 
 @Component({
   selector: 'osf-accordion-table',
-  imports: [NgClass, DropdownModule, FormsModule, Button],
+  imports: [NgClass, SelectModule, FormsModule, Button],
   templateUrl: './accordion-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

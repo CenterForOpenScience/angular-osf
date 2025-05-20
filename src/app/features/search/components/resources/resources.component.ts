@@ -3,7 +3,6 @@ import { Store } from '@ngxs/store';
 import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DataViewModule } from 'primeng/dataview';
-import { DropdownModule } from 'primeng/dropdown';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
@@ -25,7 +24,6 @@ import { ResourceFiltersSelectors } from 'src/app/features/search/components/res
 @Component({
   selector: 'osf-resources',
   imports: [
-    DropdownModule,
     FormsModule,
     ResourceFiltersComponent,
     ReactiveFormsModule,
