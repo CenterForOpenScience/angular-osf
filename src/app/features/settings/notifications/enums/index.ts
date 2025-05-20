@@ -1,1 +1,2 @@
-export * from './notification-subscription.enums';
+export * from './subscription-event.enum';
+export * from './subscription-frequency.enum';

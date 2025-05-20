@@ -5,9 +5,3 @@ export enum SubscriptionEvent {
   GlobalMentions = 'global_mentions',
   GlobalReviews = 'global_reviews',
 }
-
-export enum SubscriptionFrequency {
-  None = 'none',
-  Daily = 'daily',
-  Instant = 'instant',
-}
