@@ -29,6 +29,12 @@ export const NAV_ITEMS: NavItem[] = [
     useExactMatch: true,
   },
   {
+    path: '/meetings',
+    label: 'navigation.meetings',
+    icon: 'meetings',
+    useExactMatch: true,
+  },
+  {
     path: '/settings',
     label: 'navigation.settings',
     icon: 'settings',

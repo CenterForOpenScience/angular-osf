@@ -8,6 +8,7 @@
     "home": "Home",
     "searchOsf": "Search OSF",
     "support": "Support",
+    "meetings": "Meetings",
     "myProjects": "My Projects",
     "donate": "Donate",
     "profileSettings": "Profile Settings",
@@ -645,6 +646,52 @@
           "title": "Are you sure you want to disable two-factor authentication?"
         }
       }
+    }
+  },
+  "meetings": {
+    "landing": {
+      "title": "Meetings",
+      "description": "A free poster and presentation sharing service for academic meetings and conferences",
+      "submissionsNote": "Only conferences with at least five submissions are displayed.",
+      "searchPlaceholder": "Search meetings",
+      "table": {
+        "columns": {
+          "title": "Title",
+          "submissions": "Submissions",
+          "location": "Location",
+          "date": "Date"
+        }
+      },
+      "features": {
+        "discover": {
+          "title": "Discover",
+          "description": "Explore posters and presentations from events long after they're over."
+        },
+        "share": {
+          "title": "Share",
+          "description": "Get persistent links to your content and increase your impact."
+        },
+        "enhance": {
+          "title": "Enhance",
+          "description": "Add supplementary data and materials to your submission to make your work more transparent."
+        }
+      },
+      "users": {
+        "title": "Who uses OSF Meetings?"
+      }
+    },
+    "details": {
+      "searchPlaceholder": "Search",
+      "table": {
+        "columns": {
+          "title": "Title",
+          "author": "Author",
+          "category": "Category",
+          "dateCreated": "Date Created",
+          "downloads": "Downloads"
+        }
+      },
+      "downloadButton": "Download"
     }
   },
   "footer": {
