@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 
 import { ProjectMetadataComponent } from './project-metadata.component';
 
@@ -8,7 +12,7 @@ describe('ProjectMetadataComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectMetadataComponent],
+      imports: [ProjectMetadataComponent, MockComponent(SubHeaderComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProjectMetadataComponent);

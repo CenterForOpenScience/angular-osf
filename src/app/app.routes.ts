@@ -103,6 +103,11 @@ export const routes: Routes = [
                 (mod) => mod.RegistrationsComponent
               ),
           },
+          {
+            path: 'analytics',
+            loadComponent: () =>
+              import('@osf/features/project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
+          },
         ],
       },
       {

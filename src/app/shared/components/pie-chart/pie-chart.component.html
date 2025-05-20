@@ -1,0 +1,9 @@
+<h4 class="chart-title">{{ title() | translate }}</h4>
+
+@if (isLoading()) {
+  <osf-loading-spinner></osf-loading-spinner>
+} @else {
+  <div class="flex align-items-center justify-content-center w-full h-full">
+    <p-chart class="chart" type="pie" responsive="true" [data]="data()" [options]="options()"></p-chart>
+  </div>
+}

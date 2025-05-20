@@ -63,7 +63,9 @@ export class NavMenuComponent {
     return { projectId, section };
   }
 
-  goToLink() {
-    this.closeMenu.emit();
+  goToLink(item: MenuItem) {
+    if (!item.items) {
+      this.closeMenu.emit();
+    }
   }
 }

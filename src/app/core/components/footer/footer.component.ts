@@ -24,22 +24,22 @@ export class FooterComponent {
   protected readonly socialIcons: SocialIcon[] = [
     {
       name: 'x',
-      url: '#',
+      url: 'https://x.com/OSFramework',
       ariaLabel: 'X (formerly Twitter)',
     },
     {
       name: 'facebook',
-      url: '#',
+      url: 'https://www.facebook.com/CenterForOpenScience/',
       ariaLabel: 'Facebook',
     },
     {
       name: 'group',
-      url: '#',
+      url: 'https://groups.google.com/g/openscienceframework',
       ariaLabel: 'Group',
     },
     {
       name: 'github',
-      url: '#',
+      url: 'https://github.com/centerforopenscience',
       ariaLabel: 'GitHub',
     },
   ];

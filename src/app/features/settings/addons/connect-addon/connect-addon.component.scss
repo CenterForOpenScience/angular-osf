@@ -6,7 +6,7 @@
   @include mix.flex-column;
 
   .stepper-container {
-    background-color: white;
+    background-color: var.$white;
     flex: 1;
 
     button {

@@ -11,12 +11,15 @@ module.exports = {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',
       {
-        tsconfig: '<rootDir>/tsconfig.json',
+        tsconfig: '<rootDir>/tsconfig.spec.json',
         stringifyContentPathRegex: '\\.(html|svg)$',
+        useESM: true,
       },
     ],
   },
-  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
+  transformIgnorePatterns: [
+    'node_modules/(?!.*\\.mjs$|@ngxs|@angular|@ngrx|parse5|entities|chart.js)'
+  ],
   testEnvironment: 'jsdom',
   moduleFileExtensions: ['ts', 'js', 'html', 'json', 'mjs'],
   coverageDirectory: 'coverage',
@@ -27,4 +30,5 @@ module.exports = {
     '!src/app/**/index.ts',
     '!src/app/**/public-api.ts',
   ],
+  extensionsToTreatAsEsm: ['.ts'],
 };

@@ -21,7 +21,8 @@
       "overview": "Overview",
       "metadata": "Metadata",
       "files": "Files",
-      "registrations": "Registrations"
+      "registrations": "Registrations",
+      "analytics": "Analytics"
     }
   },
   "auth": {
@@ -215,6 +216,28 @@
       "actions": {
         "cancel": "Cancel",
         "create": "Create Project"
+      }
+    }
+  },
+  "project": {
+    "analytics": {
+      "kpi": {
+        "forks": "Forks",
+        "linksToThisProject": "Links to this project",
+        "templateCopies": "Template copies",
+        "viewForks": "View forks",
+        "viewLinks": "View links"
+      },
+      "charts": {
+        "showAnalytics": "Show analytics for date range:",
+        "pastWeek": "Past week",
+        "pastMonth": "Past month",
+        "pastTwoWeeks": "Past two weeks",
+        "uniqueVisits": "Unique visits",
+        "timeOfDayOfVisits": "Time of day of visits",
+        "topReferrers": "Top referrers",
+        "popularPages": "Popular pages",
+        "visits": "Visits"
       }
     }
   },

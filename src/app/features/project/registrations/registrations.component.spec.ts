@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 
 import { RegistrationsComponent } from './registrations.component';
 
@@ -8,7 +12,7 @@ describe('RegistrationsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RegistrationsComponent],
+      imports: [RegistrationsComponent, MockComponent(SubHeaderComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RegistrationsComponent);

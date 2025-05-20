@@ -1,4 +1,8 @@
+import { MockComponent } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
 
 import { ProjectOverviewComponent } from './project-overview.component';
 
@@ -8,7 +12,7 @@ describe('ProjectOverviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectOverviewComponent],
+      imports: [ProjectOverviewComponent, MockComponent(SubHeaderComponent)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProjectOverviewComponent);

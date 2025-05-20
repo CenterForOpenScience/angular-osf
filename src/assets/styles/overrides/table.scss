@@ -27,7 +27,7 @@
       }
 
       th {
-        background-color: white;
+        background-color: var.$white;
         font-weight: 700;
         padding-top: 0;
 
@@ -39,7 +39,7 @@
 
       td {
         background-color: var.$bg-blue-3;
-        border-bottom: 12px solid white;
+        border-bottom: 12px solid var.$white;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
