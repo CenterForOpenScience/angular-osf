@@ -1,7 +1,6 @@
 import { Selector } from '@ngxs/store';
 
 import { MyProfileResourceFiltersOptionsStateModel } from '@osf/features/my-profile/components/resources/components/resource-filters/components/filters/store/my-profile-resource-filters-options.model';
-import { Creator } from '@shared/entities/filters/creator/creator.entity';
 import { DateCreated } from '@shared/entities/filters/dateCreated/date-created.entity';
 import { FunderFilter } from '@shared/entities/filters/funder/funder-filter.entity';
 import { InstitutionFilter } from '@shared/entities/filters/institution/institution-filter.entity';
@@ -14,11 +13,6 @@ import { SubjectFilter } from '@shared/entities/filters/subject/subject-filter.e
 import { MyProfileResourceFiltersOptionsState } from './my-profile-resource-filters-options.state';
 
 export class MyProfileResourceFiltersOptionsSelectors {
-  @Selector([MyProfileResourceFiltersOptionsState])
-  static getCreators(state: MyProfileResourceFiltersOptionsStateModel): Creator[] {
-    return state.creators;
-  }
-
   @Selector([MyProfileResourceFiltersOptionsState])
   static getDatesCreated(state: MyProfileResourceFiltersOptionsStateModel): DateCreated[] {
     return state.datesCreated;

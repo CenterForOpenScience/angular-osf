@@ -3,12 +3,13 @@ import { Store } from '@ngxs/store';
 import { Button } from 'primeng/button';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import { debounceTime } from 'rxjs';
+import { debounceTime, skip } from 'rxjs';
 
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
+import { UserSelectors } from '@core/store/user/user.selectors';
 import { GetAllOptions } from '@osf/features/my-profile/components/resources/components/resource-filters/components/filters/store/my-profile-resource-filters-options.actions';
 import { MyProfileResourceFiltersSelectors } from '@osf/features/my-profile/components/resources/components/resource-filters/store/my-profile-resource-filters.selectors';
 import { MyProfileResourcesComponent } from '@osf/features/my-profile/components/resources/my-profile-resources.component';
@@ -41,7 +42,6 @@ export class MyProfileSearchComponent {
   protected searchValue = signal('');
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
 
-  protected readonly creatorsFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getCreator);
   protected readonly dateCreatedFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getDateCreated);
   protected readonly funderFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getFunder);
   protected readonly subjectFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getSubject);
@@ -56,14 +56,22 @@ export class MyProfileSearchComponent {
   protected resourcesTabStoreValue = this.#store.selectSignal(MyProfileSelectors.getResourceTab);
   protected sortByStoreValue = this.#store.selectSignal(MyProfileSelectors.getSortBy);
   readonly isMyProfilePage = this.#store.selectSignal(MyProfileSelectors.getIsMyProfile);
+  readonly currentUser = this.#store.select(UserSelectors.getCurrentUser);
 
   protected selectedTab: ResourceTab = ResourceTab.All;
   protected readonly ResourceTab = ResourceTab;
   protected currentStep = 0;
+  private skipInitializationEffects = 0;
 
   constructor() {
+    this.currentUser.subscribe((user) => {
+      if (user?.id) {
+        this.#store.dispatch(GetAllOptions);
+        this.#store.dispatch(GetResources);
+      }
+    });
+
     effect(() => {
-      this.creatorsFilter();
       this.dateCreatedFilter();
       this.funderFilter();
       this.subjectFilter();
@@ -75,13 +83,15 @@ export class MyProfileSearchComponent {
       this.searchStoreValue();
       this.resourcesTabStoreValue();
       this.sortByStoreValue();
-      console.log('get resources triggered');
-      this.#store.dispatch(GetResources);
+      if (this.skipInitializationEffects > 0) {
+        this.#store.dispatch(GetResources);
+      }
+      this.skipInitializationEffects += 1;
     });
 
     // put search value in store and update resources, filters
     toObservable(this.searchValue)
-      .pipe(debounceTime(500))
+      .pipe(skip(1), debounceTime(500))
       .subscribe((searchText) => {
         this.#store.dispatch(new SetSearchText(searchText));
         this.#store.dispatch(GetAllOptions);

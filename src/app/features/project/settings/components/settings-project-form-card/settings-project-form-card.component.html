@@ -1,0 +1,49 @@
+<p-card>
+  <h3 class="text-xl pb-4">{{ 'myProjects.settings.project' | translate }}</h3>
+
+  <form [formGroup]="formGroup()" (ngSubmit)="submitForm.emit()" class="flex flex-column gap-4">
+    <div class="flex flex-column">
+      <label class="input-label" for="project-title">
+        {{ 'myProjects.createProject.title' | translate }}
+      </label>
+      <input
+        pInputText
+        id="project-title"
+        type="text"
+        aria-required="true"
+        aria-describedby="project-title"
+        [formControlName]="ProjectFormControls.Title"
+      />
+    </div>
+
+    <div class="flex flex-column">
+      <label class="input-label" for="description">
+        {{ 'myProjects.createProject.description.label' | translate }}
+      </label>
+      <textarea pTextarea id="description" [formControlName]="ProjectFormControls.Description" [rows]="5"></textarea>
+    </div>
+
+    <div class="flex flex-0 gap-2 justify-content-between sm:justify-content-end">
+      <p-button
+        type="button"
+        [label]="'settings.accountSettings.common.buttons.cancel' | translate"
+        (onClick)="resetForm.emit()"
+        severity="info"
+        class="w-10rem btn-full-width"
+      ></p-button>
+      <p-button
+        type="submit"
+        class="w-10rem btn-full-width bg-primary-blue-second"
+        [label]="'myProjects.settings.saveChanges' | translate"
+      ></p-button>
+    </div>
+
+    <div class="flex justify-content-end w-full flex-0 border-top-1 pt-4 border-gray-300">
+      <p-button
+        severity="danger"
+        [label]="'myProjects.settings.deleteProject' | translate"
+        class="btn-full-width sm:w-10rem md:ml-auto"
+      ></p-button>
+    </div>
+  </form>
+</p-card>

@@ -13,7 +13,9 @@
             @if (item()?.resourceType === ResourceType.File && item()?.fileName) {
               <a class="title" [href]="item()?.id">{{ item()?.fileName }}</a>
             } @else if (item()?.title && item()?.title) {
-              <a class="title" [href]="item()?.id">{{ item()?.title }}</a>
+              @let id = item()?.id;
+              @let url = id ? '/my-projects/' + id.split('/')?.pop() + '/overview' : '';
+              <a class="title" [routerLink]="url">{{ item()?.title }}</a>
             }
             @if (item()?.orcid) {
               <a [href]="item()?.orcid" class="orcid-icon">

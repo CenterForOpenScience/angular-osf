@@ -1,0 +1,27 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+:host {
+  @include mix.flex-column;
+  flex: 1;
+}
+
+.icon-space {
+  padding: 0.7rem 1.1rem;
+
+  @media (max-width: 575px) {
+    padding: 0.8rem 0.75rem;
+  }
+}
+
+.input-label {
+  color: var.$dark-blue-1;
+  margin-bottom: 0;
+}
+
+.delete-icon {
+  &:before {
+    color: var.$red-3;
+    cursor: pointer;
+  }
+}

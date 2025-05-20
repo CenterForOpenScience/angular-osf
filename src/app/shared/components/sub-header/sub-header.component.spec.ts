@@ -1,3 +1,6 @@
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SubHeaderComponent } from './sub-header.component';
@@ -8,7 +11,7 @@ describe('SubHeaderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SubHeaderComponent],
+      imports: [SubHeaderComponent, MockPipe(TranslatePipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SubHeaderComponent);

@@ -17,7 +17,6 @@ import { ResetPasswordFormGroupType } from './reset-password-form-group.type';
 
 @Component({
   selector: 'osf-reset-password',
-  standalone: true,
   imports: [Button, Password, ReactiveFormsModule, RouterLink, PasswordInputHintComponent, TranslateModule],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',

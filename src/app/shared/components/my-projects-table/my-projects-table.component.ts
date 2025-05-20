@@ -14,7 +14,6 @@ import { SortOrder } from '@shared/utils/sort-order.enum';
 
 @Component({
   selector: 'osf-my-projects-table',
-  standalone: true,
   imports: [CommonModule, TableModule, SearchInputComponent, Skeleton, TranslatePipe],
   templateUrl: './my-projects-table.component.html',
   styleUrl: './my-projects-table.component.scss',

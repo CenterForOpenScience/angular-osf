@@ -14,7 +14,7 @@
     width: 32rem;
     margin: 4.5rem 0 1.5rem 0;
     padding: 2rem;
-    background: white;
+    background: var.$white;
     border-radius: 0.6rem;
     box-shadow: 0 2px 4px var.$grey-outline;
 
@@ -32,7 +32,7 @@
       flex: 1;
 
       .divider-text {
-        background: white;
+        background: var.$white;
       }
 
       .btn-group {

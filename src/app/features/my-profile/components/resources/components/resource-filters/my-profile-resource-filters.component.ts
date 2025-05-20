@@ -99,8 +99,7 @@ export class MyProfileResourceFiltersComponent {
       this.resourceTypeOptionsCount() > 0 ||
       this.institutionOptionsCount() > 0 ||
       this.providerOptionsCount() > 0 ||
-      this.partOfCollectionOptionsCount() > 0 ||
-      !this.isMyProfilePage()
+      this.partOfCollectionOptionsCount() > 0
     );
   });
 }

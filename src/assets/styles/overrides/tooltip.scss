@@ -1,0 +1,15 @@
+@use "assets/styles/variables" as var;
+
+.p-tooltip-text {
+  display: flex !important;
+  background: var.$white;
+  color: var.$dark-blue-1;
+  min-width: 22rem;
+  border: 1px solid var.$grey-3;
+  padding: 1rem;
+}
+
+.p-tooltip-arrow {
+  border-right-color: var.$white;
+  border: 1px solid var.$grey-3;
+}

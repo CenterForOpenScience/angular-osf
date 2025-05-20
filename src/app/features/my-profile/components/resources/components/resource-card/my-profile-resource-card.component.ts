@@ -6,15 +6,27 @@ import { finalize } from 'rxjs';
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 
 import { ResourceCardService } from '@osf/features/search/components/resources/components/resource-card/services/resource-card.service';
 import { Resource } from '@shared/entities/resource-card/resource.entity';
 import { ResourceType } from '@shared/entities/resource-card/resource-type.enum';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
+import { environment } from '../../../../../../../environments/environment';
+
 @Component({
   selector: 'osf-my-profile-resource-card',
-  imports: [Accordion, AccordionContent, AccordionHeader, AccordionPanel, DatePipe, NgOptimizedImage, Skeleton],
+  imports: [
+    Accordion,
+    AccordionContent,
+    AccordionHeader,
+    AccordionPanel,
+    DatePipe,
+    NgOptimizedImage,
+    Skeleton,
+    RouterLink,
+  ],
   templateUrl: './my-profile-resource-card.component.html',
   styleUrl: './my-profile-resource-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,4 +69,6 @@ export class MyProfileResourceCardComponent {
       }
     }
   }
+
+  protected readonly environment = environment;
 }

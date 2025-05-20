@@ -53,7 +53,6 @@ export class MyProfileResourcesComponent {
   protected filtersOptions = this.#store.selectSignal(MyProfileResourceFiltersOptionsSelectors.getAllOptions);
   protected isAnyFilterSelected = computed(() => {
     return (
-      this.filters().creator.value ||
       this.filters().dateCreated.value ||
       this.filters().funder.value ||
       this.filters().subject.value ||
@@ -67,7 +66,6 @@ export class MyProfileResourcesComponent {
   protected isAnyFilterOptions = computed(() => {
     return (
       this.filtersOptions().datesCreated.length > 0 ||
-      this.filtersOptions().creators.length > 0 ||
       this.filtersOptions().funders.length > 0 ||
       this.filtersOptions().subjects.length > 0 ||
       this.filtersOptions().licenses.length > 0 ||

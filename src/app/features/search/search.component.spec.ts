@@ -1,4 +1,6 @@
-import { NgxsModule, Store } from '@ngxs/store';
+import { provideStore, Store } from '@ngxs/store';
+
+import { MockComponents } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
@@ -14,7 +16,6 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 import { SearchComponent } from './search.component';
 import { SearchState } from './store';
 
-import { MockComponent } from 'ng-mocks';
 import { ResourceFiltersState } from 'src/app/features/search/components/resources/components/resource-filters/store';
 
 describe('SearchComponent', () => {
@@ -24,22 +25,14 @@ describe('SearchComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchComponent, NgxsModule.forRoot([SearchState, ResourceFiltersState])],
+      imports: [SearchComponent, ...MockComponents(SearchInputComponent, ResourcesWrapperComponent)],
       providers: [
+        provideStore([SearchState, ResourceFiltersState]),
         provideHttpClient(withFetch()),
         provideHttpClientTesting(),
         { provide: IS_XSMALL, useValue: of(false) },
       ],
-    })
-      .overrideComponent(SearchComponent, {
-        remove: {
-          imports: [SearchInputComponent, ResourcesWrapperComponent],
-        },
-        add: {
-          imports: [MockComponent(SearchInputComponent), MockComponent(ResourcesWrapperComponent)],
-        },
-      })
-      .compileComponents();
+    }).compileComponents();
 
     store = TestBed.inject(Store);
     jest.spyOn(store, 'selectSignal').mockReturnValue(signal(''));

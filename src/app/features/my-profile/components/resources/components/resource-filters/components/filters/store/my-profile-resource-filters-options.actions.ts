@@ -1,9 +1,3 @@
-export class GetCreatorsOptions {
-  static readonly type = '[My Profile Resource Filters Options] Get Creators';
-
-  constructor(public searchName: string) {}
-}
-
 export class GetDatesCreatedOptions {
   static readonly type = '[My Profile Resource Filters Options] Get Dates Created';
 }

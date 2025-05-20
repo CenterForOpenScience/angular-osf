@@ -30,6 +30,8 @@
 @use "./overrides/menu";
 @use "./overrides/spinner";
 @use "./overrides/password";
+@use "./common";
+@use "./overrides/tooltip";
 
 @layer base, primeng, reset;
 
@@ -73,6 +75,12 @@
 
   li {
     list-style: none;
+  }
+
+  .inside-list {
+    li {
+      list-style: inside;
+    }
   }
 
   a,

@@ -19,7 +19,6 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
   imports: [Button, NgClass, DialogModule, TranslatePipe],
   templateUrl: './addon-card.component.html',
   styleUrl: './addon-card.component.scss',
-  standalone: true,
 })
 export class AddonCardComponent {
   #router = inject(Router);

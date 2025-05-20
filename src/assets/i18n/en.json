@@ -1,6 +1,7 @@
 {
   "navigation": {
     "profile": "Profile",
+    "myProfile": "My profile",
     "settings": "Settings",
     "logOut": "Log out",
     "signIn": "Sign in",
@@ -8,6 +9,7 @@
     "home": "Home",
     "searchOsf": "Search OSF",
     "support": "Support",
+    "meetings": "Meetings",
     "myProjects": "My Projects",
     "donate": "Donate",
     "profileSettings": "Profile Settings",
@@ -21,7 +23,10 @@
       "overview": "Overview",
       "metadata": "Metadata",
       "files": "Files",
-      "registrations": "Registrations"
+      "registrations": "Registrations",
+      "settings": "Settings",
+      "contributors": "Contributors",
+      "analytics": "Analytics"
     }
   },
   "auth": {
@@ -215,6 +220,97 @@
       "actions": {
         "cancel": "Cancel",
         "create": "Create Project"
+      }
+    },
+    "settings": {
+      "project": "Project",
+      "saveChanges": "Save Changes",
+      "deleteProject": "Delete Project",
+      "viewOnlyLinks": "View-only Links",
+      "viewOnlySubtitle": "Create a link to share this project so those who have the link can view—but not edit—the project.",
+      "viewOnlyTable": {
+        "linkName": "Link Name",
+        "sharedComponents": "Shared Components",
+        "createdDate": "Created date",
+        "createdBy": "Created By",
+        "anonymous": "Anonymous"
+      },
+      "accessRequests": "Access Requests",
+      "accessRequestsText": "Allow users to request access to this project",
+      "wiki": "Wiki",
+      "wikiText": "Enable the wiki In [Dashboard] New and Noteworthy.",
+      "wikiConfigureTitle": "Configure",
+      "wikiConfigureText": "Create a link to share this project so those who have the link can view—but not edit—the project.",
+      "commenting": "Commenting",
+      "contributorsCanPost": "Only contributors can post comments",
+      "osfUserCanPost": "When the project is public, any OSF user can post comments",
+      "emailNotifications": "Email Notifications",
+      "emailNotificationsText": "These notification settings only apply to you. They do NOT affect any other contributor on this project.",
+      "redirectLink": "Redirect Link",
+      "redirectLinkText": "Redirect visitors from your project page to an external webpage",
+      "projectAffiliation": "Project Affiliation / Branding",
+      "projectsCanBeAffiliated": "Projects can be affiliated with institutions that have created OSF for Institutions accounts. This allows:",
+      "institutionalLogos": "institutional logos to be displayed on public projects",
+      "publicProjectsToBeDiscoverable": "public projects to be discoverable on specific institutional landing pages",
+      "singleSignInToTHeOSF": "single sign-in to the OSF with institutional credentials",
+      "faq": "FAQ"
+    }
+  },
+  "project": {
+    "analytics": {
+      "kpi": {
+        "forks": "Forks",
+        "linksToThisProject": "Links to this project",
+        "templateCopies": "Template copies",
+        "viewForks": "View forks",
+        "viewLinks": "View links"
+      },
+      "charts": {
+        "showAnalytics": "Show analytics for date range:",
+        "pastWeek": "Past week",
+        "pastMonth": "Past month",
+        "pastTwoWeeks": "Past two weeks",
+        "uniqueVisits": "Unique visits",
+        "timeOfDayOfVisits": "Time of day of visits",
+        "topReferrers": "Top referrers",
+        "popularPages": "Popular pages",
+        "visits": "Visits"
+      }
+    },
+    "contributors": {
+      "addContributor": "Add Contributor",
+      "searchPlaceholder": "Search contributors",
+      "permissionFilter": "Filter by permission",
+      "bibliographyFilter": "Bibliography",
+      "permissions": {
+        "administrator": "Administrator",
+        "readAndWrite": "Read + Write",
+        "read": "Read"
+      },
+      "bibliography": {
+        "bibliographic": "Bibliographic",
+        "nonBibliographic": "Non-Bibliographic"
+      },
+      "table": {
+        "headers": {
+          "name": "Name",
+          "permissions": "Permissions",
+          "contributor": "Bibliographic Contributor",
+          "curator": "Curator",
+          "employment": "Employment history",
+          "education": "Education history"
+        }
+      },
+      "viewOnly": "View-only links",
+      "createLink": "Create a link to share this project so those who have the link can view—but not edit—the project.",
+      "createButton": "Create",
+      "addDialog": {
+        "placeholder": "Search by name or user information",
+        "cancel": "Cancel",
+        "next": "Next"
+      },
+      "createLinkDialog": {
+        "dialogTitle": "Create a new link to share your project"
       }
     }
   },
@@ -622,6 +718,52 @@
           "title": "Are you sure you want to disable two-factor authentication?"
         }
       }
+    }
+  },
+  "meetings": {
+    "landing": {
+      "title": "Meetings",
+      "description": "A free poster and presentation sharing service for academic meetings and conferences",
+      "submissionsNote": "Only conferences with at least five submissions are displayed.",
+      "searchPlaceholder": "Search meetings",
+      "table": {
+        "columns": {
+          "title": "Title",
+          "submissions": "Submissions",
+          "location": "Location",
+          "date": "Date"
+        }
+      },
+      "features": {
+        "discover": {
+          "title": "Discover",
+          "description": "Explore posters and presentations from events long after they're over."
+        },
+        "share": {
+          "title": "Share",
+          "description": "Get persistent links to your content and increase your impact."
+        },
+        "enhance": {
+          "title": "Enhance",
+          "description": "Add supplementary data and materials to your submission to make your work more transparent."
+        }
+      },
+      "users": {
+        "title": "Who uses OSF Meetings?"
+      }
+    },
+    "details": {
+      "searchPlaceholder": "Search",
+      "table": {
+        "columns": {
+          "title": "Title",
+          "author": "Author",
+          "category": "Category",
+          "dateCreated": "Date Created",
+          "downloads": "Downloads"
+        }
+      },
+      "downloadButton": "Download"
     }
   },
   "footer": {

@@ -1,14 +1,19 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MockPipe, MockProvider } from 'ng-mocks';
+
 import { Confirmation, ConfirmationService } from 'primeng/api';
 
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
 import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
+import { DeleteToken } from '@osf/features/settings/tokens/store';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 import { TokensListComponent } from './tokens-list.component';
@@ -16,9 +21,9 @@ import { TokensListComponent } from './tokens-list.component';
 describe('TokensListComponent', () => {
   let component: TokensListComponent;
   let fixture: ComponentFixture<TokensListComponent>;
-  let store: jasmine.SpyObj<Store>;
-  let confirmationService: jasmine.SpyObj<ConfirmationService>;
-  let isXSmall$: BehaviorSubject<boolean>;
+  let store: Partial<Store>;
+  let confirmationService: Partial<ConfirmationService>;
+  let isXSmallSubject: BehaviorSubject<boolean>;
 
   const mockTokens: Token[] = [
     {
@@ -38,18 +43,24 @@ describe('TokensListComponent', () => {
   ];
 
   beforeEach(async () => {
-    store = jasmine.createSpyObj('Store', ['dispatch', 'selectSignal']);
-    confirmationService = jasmine.createSpyObj('ConfirmationService', ['confirm']);
-    isXSmall$ = new BehaviorSubject<boolean>(false);
+    store = {
+      dispatch: jest.fn().mockReturnValue(of(undefined)),
+      selectSignal: jest.fn().mockReturnValue(signal(mockTokens)),
+    };
 
-    store.selectSignal.and.returnValue(signal(mockTokens));
+    confirmationService = {
+      confirm: jest.fn(),
+    };
+
+    isXSmallSubject = new BehaviorSubject<boolean>(false);
 
     await TestBed.configureTestingModule({
-      imports: [TokensListComponent],
+      imports: [TokensListComponent, MockPipe(TranslatePipe)],
       providers: [
-        { provide: Store, useValue: store },
-        { provide: ConfirmationService, useValue: confirmationService },
-        { provide: IS_XSMALL, useValue: isXSmall$ },
+        MockProvider(TranslateService),
+        MockProvider(Store, store),
+        MockProvider(ConfirmationService, confirmationService),
+        MockProvider(IS_XSMALL, isXSmallSubject),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -72,9 +83,19 @@ describe('TokensListComponent', () => {
   });
 
   it('should not load tokens on init if they already exist', () => {
-    store.selectSignal.and.returnValue(signal(mockTokens));
     component.ngOnInit();
     expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should display tokens in the list', () => {
+    const tokenElements = fixture.debugElement.queryAll(By.css('p-card'));
+    expect(tokenElements.length).toBe(mockTokens.length);
+  });
+
+  it('should show token names in the list', () => {
+    const tokenNames = fixture.debugElement.queryAll(By.css('h2'));
+    expect(tokenNames[0].nativeElement.textContent).toBe(mockTokens[0].name);
+    expect(tokenNames[1].nativeElement.textContent).toBe(mockTokens[1].name);
   });
 
   it('should show confirmation dialog when deleting token', () => {
@@ -85,19 +106,32 @@ describe('TokensListComponent', () => {
 
   it('should dispatch delete action when confirmation is accepted', () => {
     const token = mockTokens[0];
-    confirmationService.confirm.and.callFake((config: Confirmation) => {
+    (confirmationService.confirm as jest.Mock).mockImplementation((config: Confirmation) => {
       if (config.accept) {
         config.accept();
       }
       return confirmationService;
     });
     component.deleteToken(token);
-    expect(store.dispatch).toHaveBeenCalled();
+    expect(store.dispatch).toHaveBeenCalledWith(new DeleteToken(token.id));
   });
 
-  it('should update isXSmall signal when breakpoint changes', () => {
-    isXSmall$.next(true);
+  it('should not dispatch delete action when confirmation is rejected', () => {
+    const token = mockTokens[0];
+    (confirmationService.confirm as jest.Mock).mockImplementation((config: Confirmation) => {
+      if (config.reject) {
+        config.reject();
+      }
+      return confirmationService;
+    });
+    component.deleteToken(token);
+    expect(store.dispatch).not.toHaveBeenCalledWith(new DeleteToken(token.id));
+  });
+
+  it('should apply mobile class when in mobile view', () => {
+    isXSmallSubject.next(true);
     fixture.detectChanges();
-    expect(component['isXSmall']()).toBeTrue();
+    const contentContainer = fixture.debugElement.query(By.css('.content-container'));
+    expect(contentContainer.nativeElement.classList.contains('mobile')).toBe(true);
   });
 });

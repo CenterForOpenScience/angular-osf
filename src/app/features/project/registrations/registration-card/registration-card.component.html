@@ -48,7 +48,7 @@
               <strong>Contributors:</strong>
               <span class="contributors">
                 @for (contributor of registrationData()?.contributors; track contributor.name) {
-                  <a [href]="contributor.link">{{ contributor.name }}</a>
+                  <a [href]="">{{ contributor.name }}</a>
                   @if (!$last) {
                     <span>, </span>
                   }
@@ -85,23 +85,23 @@
               <h3 class="mb-2">Open Resources</h3>
 
               <div class="icon-links flex flex-wrap lg:flex-column gap-3">
-                <a class="icon-container" [href]="'#'">
+                <a class="icon-container" [href]="">
                   <i class="osf-icon-data text-4xl"></i>
                   <h3>Data</h3>
                 </a>
-                <a class="icon-container" [href]="'#'">
+                <a class="icon-container" [href]="">
                   <i class="osf-icon-code text-4xl"></i>
                   <h3>Analytic Code</h3>
                 </a>
-                <a class="icon-container" [href]="'#'">
+                <a class="icon-container" [href]="">
                   <i class="osf-icon-materials text-4xl"></i>
                   <h3>Materials</h3>
                 </a>
-                <a class="icon-container" [href]="'#'">
+                <a class="icon-container" [href]="">
                   <i class="osf-icon-papers text-4xl"></i>
                   <h3>Papers</h3>
                 </a>
-                <a class="icon-container" [href]="'#'">
+                <a class="icon-container" [href]="">
                   <i class="osf-icon-supplements text-4xl"></i>
                   <h3>Supplements</h3>
                 </a>

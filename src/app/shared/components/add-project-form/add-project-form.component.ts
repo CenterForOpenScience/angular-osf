@@ -25,7 +25,6 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-add-project-form',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

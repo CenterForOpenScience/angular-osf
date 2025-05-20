@@ -15,7 +15,6 @@ import { BreadcrumbComponent } from '@core/components/breadcrumb/breadcrumb.comp
 import { UserSelectors } from '@core/store/user/user.selectors';
 
 @Component({
-  standalone: true,
   selector: 'osf-header',
   imports: [BreadcrumbComponent, MenuModule, ButtonModule, TranslatePipe],
   templateUrl: './header.component.html',

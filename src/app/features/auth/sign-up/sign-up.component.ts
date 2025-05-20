@@ -19,7 +19,6 @@ import { PASSWORD_REGEX, passwordMatchValidator } from './sign-up.helper';
 
 @Component({
   selector: 'osf-sign-up',
-  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,

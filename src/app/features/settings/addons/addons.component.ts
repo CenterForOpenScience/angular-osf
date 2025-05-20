@@ -27,7 +27,6 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-addons',
-  standalone: true,
   imports: [
     SubHeaderComponent,
     TabList,

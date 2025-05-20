@@ -1,4 +1,3 @@
-import { Creator } from '@shared/entities/filters/creator/creator.entity';
 import { DateCreated } from '@shared/entities/filters/dateCreated/date-created.entity';
 import { FunderFilter } from '@shared/entities/filters/funder/funder-filter.entity';
 import { InstitutionFilter } from '@shared/entities/filters/institution/institution-filter.entity';
@@ -9,7 +8,6 @@ import { ResourceTypeFilter } from '@shared/entities/filters/resource-type/resou
 import { SubjectFilter } from '@shared/entities/filters/subject/subject-filter.entity';
 
 export interface MyProfileResourceFiltersOptionsStateModel {
-  creators: Creator[];
   datesCreated: DateCreated[];
   funders: FunderFilter[];
   subjects: SubjectFilter[];

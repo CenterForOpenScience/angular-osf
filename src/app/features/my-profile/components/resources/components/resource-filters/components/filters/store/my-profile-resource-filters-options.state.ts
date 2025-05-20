@@ -6,7 +6,6 @@ import { inject, Injectable } from '@angular/core';
 
 import {
   GetAllOptions,
-  GetCreatorsOptions,
   GetDatesCreatedOptions,
   GetFundersOptions,
   GetInstitutionsOptions,
@@ -23,7 +22,6 @@ import { ResourceFiltersOptionsStateModel } from '@osf/features/search/component
 @State<MyProfileResourceFiltersOptionsStateModel>({
   name: 'myProfileResourceFiltersOptions',
   defaults: {
-    creators: [],
     datesCreated: [],
     funders: [],
     subjects: [],
@@ -38,20 +36,6 @@ import { ResourceFiltersOptionsStateModel } from '@osf/features/search/component
 export class MyProfileResourceFiltersOptionsState {
   readonly #store = inject(Store);
   readonly #filtersOptionsService = inject(MyProfileFiltersOptionsService);
-
-  @Action(GetCreatorsOptions)
-  getCreators(ctx: StateContext<ResourceFiltersOptionsStateModel>, action: GetCreatorsOptions) {
-    if (!action.searchName) {
-      ctx.patchState({ creators: [] });
-      return [];
-    }
-
-    return this.#filtersOptionsService.getCreators(action.searchName).pipe(
-      tap((creators) => {
-        ctx.patchState({ creators: creators });
-      })
-    );
-  }
 
   @Action(GetDatesCreatedOptions)
   getDatesCreated(ctx: StateContext<ResourceFiltersOptionsStateModel>) {

@@ -52,7 +52,7 @@ module.exports = tseslint.config(
             ['^@ngxs'],
 
             // NGX packages (ngx-... or @ngx/...)
-            ['^ngx-', '^@ngx'],
+            ['^ngx-', '^@ngx', '^ng-'],
 
             // Third-party packages (primeng)
             ['^primeng'],

@@ -1,6 +1,6 @@
-import { NgxsModule } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
 
-import { TranslateModule, TranslateStore } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -17,8 +17,13 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeComponent, NgxsModule.forRoot([MyProjectsState]), TranslateModule.forRoot()],
-      providers: [provideRouter([]), provideHttpClient(withFetch()), provideHttpClientTesting(), TranslateStore],
+      imports: [HomeComponent, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(withFetch()),
+        provideHttpClientTesting(),
+        provideStore([MyProjectsState]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeComponent);

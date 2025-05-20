@@ -1,4 +1,15 @@
+import { provideStore } from '@ngxs/store';
+
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MockPipe, MockProvider, MockProviders } from 'ng-mocks';
+
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { AccountSettingsState } from '@osf/features/settings/account-settings/store/account-settings.state';
 
 import { VerifyTwoFactorComponent } from './verify-two-factor.component';
 
@@ -8,7 +19,14 @@ describe('VerifyTwoFactorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [VerifyTwoFactorComponent],
+      imports: [VerifyTwoFactorComponent, MockPipe(TranslatePipe)],
+      providers: [
+        provideStore([AccountSettingsState]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        MockProvider(TranslateService),
+        MockProviders(DynamicDialogRef, DynamicDialogConfig),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(VerifyTwoFactorComponent);

@@ -1,10 +1,14 @@
-import { NgxsModule } from '@ngxs/store';
+import { provideStore } from '@ngxs/store';
+
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { ConfirmationService } from 'primeng/api';
 
 import { of } from 'rxjs';
 
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
@@ -18,11 +22,14 @@ describe('DeveloperAppDetailsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeveloperAppDetailsComponent, NgxsModule.forRoot([DeveloperAppsState])],
+      imports: [DeveloperAppDetailsComponent, MockPipe(TranslatePipe)],
       providers: [
         ConfirmationService,
-        provideHttpClient(withFetch()),
-        { provide: ActivatedRoute, useValue: { params: of({}) } },
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideStore([DeveloperAppsState]),
+        MockProvider(TranslateService),
+        MockProvider(ActivatedRoute, { params: of({}) }),
       ],
     }).compileComponents();
 

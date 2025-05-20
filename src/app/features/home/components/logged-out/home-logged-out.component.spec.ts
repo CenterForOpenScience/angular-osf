@@ -1,3 +1,6 @@
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeLoggedOutComponent } from './home-logged-out.component';
@@ -8,7 +11,7 @@ describe('LoggedOutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HomeLoggedOutComponent],
+      imports: [HomeLoggedOutComponent, MockPipe(TranslatePipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HomeLoggedOutComponent);

@@ -15,7 +15,6 @@ import { RegistrationCard } from './registration-card.interface';
   templateUrl: './registration-card.component.html',
   styleUrl: './registration-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
 })
 export class RegistrationCardComponent {
   protected readonly isMobile = toSignal(inject(IS_XSMALL));

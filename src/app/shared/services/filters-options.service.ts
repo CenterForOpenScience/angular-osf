@@ -38,25 +38,6 @@ import { environment } from '../../../environments/environment';
 export class FiltersOptionsService {
   #jsonApiService = inject(JsonApiService);
 
-  // #getFilterParams(): Record<string, string> {
-  //   return addFiltersParams(this.#store.selectSignal(ResourceFiltersSelectors.getAllFilters)());
-  // }
-  //
-  // #getParams(): Record<string, string> {
-  //   const params: Record<string, string> = {};
-  //   const resourceTab = this.#store.selectSnapshot(SearchSelectors.getResourceTab);
-  //   const resourceTypes = getResourceTypes(resourceTab);
-  //   const searchText = this.#store.selectSnapshot(SearchSelectors.getSearchText);
-  //   const sort = this.#store.selectSnapshot(SearchSelectors.getSortBy);
-  //
-  //   params['cardSearchFilter[resourceType]'] = resourceTypes;
-  //   params['cardSearchFilter[accessService]'] = 'https://staging4.osf.io/';
-  //   params['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = searchText;
-  //   params['page[size]'] = '10';
-  //   params['sort'] = sort;
-  //   return params;
-  // }
-
   getCreators(
     valueSearchText: string,
     params: Record<string, string>,

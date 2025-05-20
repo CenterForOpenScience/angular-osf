@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { UserSelectors } from '@core/store/user/user.selectors';
 import { MyProfileResourceFiltersSelectors } from '@osf/features/my-profile/components/resources/components/resource-filters/store/my-profile-resource-filters.selectors';
 import { MyProfileSelectors } from '@osf/features/my-profile/store/my-profile.selectors';
-import { Creator } from '@shared/entities/filters/creator/creator.entity';
 import { DateCreated } from '@shared/entities/filters/dateCreated/date-created.entity';
 import { FunderFilter } from '@shared/entities/filters/funder/funder-filter.entity';
 import { LicenseFilter } from '@shared/entities/filters/license/license-filter.entity';
@@ -35,17 +35,15 @@ export class MyProfileFiltersOptionsService {
     const resourceTypes = getResourceTypes(resourceTab);
     const searchText = this.#store.selectSnapshot(MyProfileSelectors.getSearchText);
     const sort = this.#store.selectSnapshot(MyProfileSelectors.getSortBy);
+    const user = this.#store.selectSnapshot(UserSelectors.getCurrentUser);
 
     params['cardSearchFilter[resourceType]'] = resourceTypes;
     params['cardSearchFilter[accessService]'] = 'https://staging4.osf.io/';
     params['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = searchText;
     params['page[size]'] = '10';
     params['sort'] = sort;
+    params['cardSearchFilter[creator][]'] = user?.id ?? '';
     return params;
-  }
-
-  getCreators(valueSearchText: string): Observable<Creator[]> {
-    return this.#filtersOptions.getCreators(valueSearchText, this.#getParams(), this.#getFilterParams());
   }
 
   getDates(): Observable<DateCreated[]> {

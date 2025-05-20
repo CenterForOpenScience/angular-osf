@@ -1,19 +1,19 @@
 @use "assets/styles/variables" as var;
 
 .p-paginator {
-  background: white;
+  background: var.$white;
   padding: 0.8rem 0 0 0;
   row-gap: 0.8rem;
 
   .p-select-overlay {
-    background: white;
+    background: var.$white;
     border: 1px solid var.$grey-2;
     color: var.$dark-blue-1;
   }
 
   .p-select-option {
     &.p-select-option-selected {
-      background-color: white;
+      background-color: var.$white;
       color: var.$dark-blue-1;
 
       &:hover {
@@ -29,7 +29,7 @@
   }
 
   p-select {
-    background: white;
+    background: var.$white;
     border: 1px solid var.$grey-2;
 
     span {
@@ -41,7 +41,7 @@
 .p-paginator-page {
   color: var.$dark-blue-1;
   border-radius: 4px;
-  background: white;
+  background: var.$white;
 
   &:hover {
     background: var.$bg-blue-2;
@@ -49,7 +49,7 @@
 }
 
 .p-paginator-page-selected {
-  color: white;
+  color: var.$white;
   border-radius: 4px;
   background: var.$pr-blue-1;
 
@@ -77,11 +77,11 @@
 .p-paginator-last:not(.p-disabled):hover,
 .p-paginator-first:not(.p-disabled):hover,
 .p-paginator-prev:not(.p-disabled):hover {
-  background: white;
+  background: var.$white;
 }
 
 .p-select-overlay {
-  background: white;
+  background: var.$white;
   border: 1px solid var.$grey-2;
   color: var.$dark-blue-1;
 }
@@ -104,8 +104,12 @@
 }
 
 p-select {
-  background: white;
+  background: var.$white;
   border: 1px solid var.$grey-2;
+
+  &.p-disabled .p-select-label {
+    color: var.$grey-1;
+  }
 
   span {
     color: var.$dark-blue-1;

@@ -81,6 +81,16 @@
   }
 }
 
+.select-font-normal {
+  .no-border-dropdown {
+    .p-select {
+      .p-select-label {
+        font-weight: 400;
+      }
+    }
+  }
+}
+
 .filter {
   .p-select {
     .p-select-label {
@@ -114,5 +124,11 @@
     .p-select-option {
       justify-content: center;
     }
+  }
+}
+
+.grey-placeholder {
+  .p-select .p-placeholder span {
+    color: var.$grey-1;
   }
 }

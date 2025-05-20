@@ -14,7 +14,6 @@ import { IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-root',
-  standalone: true,
   imports: [
     CommonModule,
     SidenavComponent,
