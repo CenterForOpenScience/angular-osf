@@ -1,4 +1,4 @@
-<osf-sub-header [title]="meeting().title" [description]="pageDescription()" />
+<osf-sub-header [title]="meeting().title" [description]="pageDescription()"/>
 
 <section class="flex-1 flex flex-column bg-white p-4">
   <osf-search-input
@@ -9,6 +9,7 @@
   />
 
   <p-table
+    class="mt-4"
     [value]="meetingSubmissions()"
     [rows]="tableParams().rows"
     [first]="tableParams().firstRowIndex"
@@ -31,23 +32,23 @@
       <tr>
         <th pSortableColumn="title">
           {{ 'meetings.details.table.columns.title' | translate }}
-          <p-sortIcon field="title" />
+          <p-sortIcon field="title"/>
         </th>
         <th pSortableColumn="authorName">
           {{ 'meetings.details.table.columns.author' | translate }}
-          <p-sortIcon field="authorName" />
+          <p-sortIcon field="authorName"/>
         </th>
         <th pSortableColumn="meetingCategory">
           {{ 'meetings.details.table.columns.category' | translate }}
-          <p-sortIcon field="meetingCategory" />
+          <p-sortIcon field="meetingCategory"/>
         </th>
         <th pSortableColumn="dateCreated">
           {{ 'meetings.details.table.columns.dateCreated' | translate }}
-          <p-sortIcon field="dateCreated" />
+          <p-sortIcon field="dateCreated"/>
         </th>
         <th pSortableColumn="downloadCount">
           {{ 'meetings.details.table.columns.downloads' | translate }}
-          <p-sortIcon field="downloadCount" />
+          <p-sortIcon field="downloadCount"/>
         </th>
       </tr>
     </ng-template>
