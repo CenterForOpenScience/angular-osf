@@ -29,6 +29,12 @@ export const NAV_ITEMS: NavItem[] = [
     useExactMatch: true,
   },
   {
+    path: '/my-profile',
+    label: 'navigation.profile',
+    icon: 'profile',
+    useExactMatch: true,
+  },
+  {
     path: '/meetings',
     label: 'navigation.meetings',
     icon: 'meetings',

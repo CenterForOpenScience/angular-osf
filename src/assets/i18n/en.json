@@ -1,5 +1,6 @@
 {
   "navigation": {
+    "profile": "Profile",
     "myProfile": "My profile",
     "settings": "Settings",
     "logOut": "Log out",

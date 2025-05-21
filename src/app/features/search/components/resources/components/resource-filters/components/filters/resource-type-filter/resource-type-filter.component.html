@@ -1,0 +1,17 @@
+<div class="content-body filter dropdown-filter">
+  <p class="m-0">Please select the resourceType from the dropdown below or start typing for find it</p>
+  <p-select
+    id="resourceType"
+    [options]="resourceTypesOptions()"
+    [(ngModel)]="inputText"
+    [placeholder]="'Select resource type'"
+    [editable]="true"
+    optionLabel="labelCount"
+    optionValue="label"
+    styleClass="w-full"
+    appendTo="body"
+    (onChange)="setResourceTypes($event)"
+    [showClear]="!!inputText()"
+    [loading]="loading()"
+  ></p-select>
+</div>
