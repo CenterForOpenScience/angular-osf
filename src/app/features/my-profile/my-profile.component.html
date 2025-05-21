@@ -17,12 +17,14 @@
 
     <div class="data-wrapper">
       <div class="user-fields-wrapper">
-        <div class="flex flex-row align-items-center gap-2">
-          <img ngSrc="assets/icons/source/orcid.svg" width="16" height="16" alt="orcid" />
-          <a class="font-bold" [href]="'https://orcid.org/' + currentUser()?.socials?.orcid"
-            >https://orcid.org/{{ currentUser()?.socials?.orcid }}</a
-          >
-        </div>
+        @if (currentUser()?.social?.orcid) {
+          <div class="flex flex-row align-items-center gap-2">
+            <img ngSrc="assets/icons/colored/orchid.svg" width="16" height="16" alt="orcid" />
+            <a class="font-bold" [href]="'https://orcid.org/' + currentUser()?.social?.orcid"
+              >https://orcid.org/{{ currentUser()?.social?.orcid }}</a
+            >
+          </div>
+        }
 
         <div class="flex flex-row align-items-center gap-2">
           <img ngSrc="assets/icons/source/cos-shield.svg" width="16" height="16" alt="cos-shield" />
@@ -46,6 +48,59 @@
         </div>
       </div>
 
+      <div class="flex flex-wrap gap-3 align-items-center">
+        @if (currentUser()?.social?.github) {
+          <a [href]="currentUser()?.social?.github"
+            ><img ngSrc="assets/icons/socials/github2.svg" width="24" height="24" alt="github"
+          /></a>
+        }
+        @if (currentUser()?.social?.scholar) {
+          <a [href]="currentUser()?.social?.scholar"
+            ><img ngSrc="assets/icons/socials/scholar.svg" width="24" height="24" alt="scholar"
+          /></a>
+        }
+        @if (currentUser()?.social?.twitter) {
+          <a [href]="currentUser()?.social?.twitter"
+            ><img ngSrc="assets/icons/socials/twitter.svg" width="24" height="24" alt="twitter"
+          /></a>
+        }
+        @if (currentUser()?.social?.linkedIn) {
+          <a [href]="currentUser()?.social?.linkedIn"
+            ><img ngSrc="assets/icons/socials/linkedin2.svg" width="24" height="24" alt="linkedin"
+          /></a>
+        }
+        @if (currentUser()?.social?.impactStory) {
+          <a [href]="currentUser()?.social?.impactStory"
+            ><img ngSrc="assets/icons/socials/impactstory.png" width="24" height="24" alt="impactstory"
+          /></a>
+        }
+        @if (currentUser()?.social?.baiduScholar) {
+          <a [href]="currentUser()?.social?.baiduScholar"
+            ><img ngSrc="assets/icons/socials/baidu.png" width="24" height="24" alt="baidu"
+          /></a>
+        }
+        @if (currentUser()?.social?.researchGate) {
+          <a [href]="currentUser()?.social?.researchGate"
+            ><img ngSrc="assets/icons/socials/researchGate.svg" width="24" height="24" alt="researchGate"
+          /></a>
+        }
+        @if (currentUser()?.social?.researcherId) {
+          <a [href]="currentUser()?.social?.researcherId"
+            ><img ngSrc="assets/icons/socials/researcherID.png" width="24" height="24" alt="researchId"
+          /></a>
+        }
+        @if (currentUser()?.social?.ssrn) {
+          <a [href]="currentUser()?.social?.researcherId"
+            ><img ngSrc="assets/icons/socials/ssrn.svg" width="24" height="24" alt="ssrn"
+          /></a>
+        }
+        @if (currentUser()?.social?.academiaProfileID) {
+          <a [href]="currentUser()?.social?.academiaProfileID"
+            ><img ngSrc="assets/icons/socials/academia.svg" width="24" height="24" alt="ssrn"
+          /></a>
+        }
+      </div>
+
       @if (isMobile()) {
         <div class="btn-full-width">
           <p-button label="Edit Profile" class="ml-auto" (click)="toProfileSettings()"></p-button>
@@ -65,8 +120,12 @@
             <div class="title-date">
               <p>{{ employment.institution }}</p>
               <p class="font-normal ml-auto mr-5">
-                <!--                {{ employment.startDate | date: "MMM yyyy" }} - -->
-                <!--                {{ employment.endDate | date: "MMM yyyy" }}-->
+                {{ createDate(employment.startYear, employment.startMonth) | date: 'MMM yyyy' }} -
+                @if (employment.ongoing) {
+                  ongoing
+                } @else {
+                  {{ createDate(employment.endYear!, employment.endMonth!) | date: 'MMM yyyy' }}
+                }
               </p>
             </div>
           </p-accordion-header>
@@ -87,12 +146,12 @@
             <div class="title-date">
               <p>{{ education.institution }}</p>
               <p class="font-normal ml-auto mr-5">
-                <!--                {{ education.startDate | date: "MMM yyyy" }} - -->
-                <!--                @if (education.ongoing) {-->
-                <!--                  ongoing-->
-                <!--                } @else {-->
-                <!--                  {{ education.endDate | date: "MMM yyyy" }}-->
-                <!--                }-->
+                {{ createDate(education.startYear, education.startMonth) | date: 'MMM yyyy' }} -
+                @if (education.ongoing) {
+                  ongoing
+                } @else {
+                  {{ createDate(education.endYear!, education.endMonth!) | date: 'MMM yyyy' }}
+                }
               </p>
             </div>
           </p-accordion-header>
@@ -106,4 +165,4 @@
   </div>
 </div>
 
-<osf-search></osf-search>
+<osf-my-profile-search></osf-my-profile-search>

@@ -29,6 +29,12 @@ export const NAV_ITEMS: NavItem[] = [
     useExactMatch: true,
   },
   {
+    path: '/my-profile',
+    label: 'navigation.profile',
+    icon: 'profile',
+    useExactMatch: true,
+  },
+  {
     path: '/meetings',
     label: 'navigation.meetings',
     icon: 'meetings',
@@ -95,10 +101,6 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
       {
         label: 'navigation.project.registrations',
         routerLink: 'registrations',
-      },
-      {
-        label: 'navigation.project.settings',
-        routerLink: 'settings',
       },
       { label: 'navigation.project.contributors', routerLink: 'contributors' },
       { label: 'navigation.project.analytics', routerLink: 'analytics' },

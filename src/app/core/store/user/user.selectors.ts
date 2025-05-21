@@ -1,8 +1,7 @@
 import { Selector } from '@ngxs/store';
 
-import { User } from '@core/services/user/user.entity';
-import { UserStateModel } from '@core/store/user/user.models';
-import { UserState } from '@core/store/user/user.state';
+import { User, UserSettings } from '@core/services/user';
+import { UserState, UserStateModel } from '@core/store/user';
 import { ProfileSettingsStateModel } from '@osf/features/settings/profile-settings/profile-settings.entities';
 import { Social } from '@osf/features/settings/profile-settings/social/social.entities';
 
@@ -28,5 +27,20 @@ export class UserSelectors {
         familyName: state.currentUser?.familyName ?? '',
       },
     } satisfies ProfileSettingsStateModel;
+  }
+
+  @Selector([UserState])
+  static getCurrentUserSettings(state: UserStateModel): UserSettings | null {
+    return state.currentUserSettings.data;
+  }
+
+  @Selector([UserState])
+  static isUserSettingsLoading(state: UserStateModel): boolean {
+    return state.currentUserSettings.isLoading;
+  }
+
+  @Selector([UserState])
+  static isUserSettingsSubmitting(state: UserStateModel): boolean {
+    return state.currentUserSettings.isSubmitting!;
   }
 }

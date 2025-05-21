@@ -1,5 +1,4 @@
 import { Button } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
@@ -14,16 +13,7 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
 
 @Component({
   selector: 'osf-project-files',
-  imports: [
-    TableModule,
-    DropdownModule,
-    Button,
-    DatePipe,
-    Select,
-    FloatLabel,
-    SubHeaderComponent,
-    SearchInputComponent,
-  ],
+  imports: [TableModule, Button, DatePipe, Select, FloatLabel, SubHeaderComponent, SearchInputComponent],
   templateUrl: './project-files.component.html',
   styleUrl: './project-files.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

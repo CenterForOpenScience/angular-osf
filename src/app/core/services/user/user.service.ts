@@ -4,9 +4,8 @@ import { inject, Injectable } from '@angular/core';
 
 import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { UserUS } from '@core/services/json-api/underscore-entites/user/user-us.entity';
-import { mapUserUStoUser } from '@core/services/mappers/users/users.mapper';
-import { User } from '@core/services/user/user.entity';
+import { UserMapper } from '@core/services/user/user.mapper';
+import { User, UserGetResponse, UserSettings, UserSettingsGetResponse } from '@core/services/user/user.models';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +16,21 @@ export class UserService {
 
   getCurrentUser(): Observable<User> {
     return this.jsonApiService
-      .get<JsonApiResponse<UserUS, null>>(this.baseUrl + 'users/me')
-      .pipe(map((user) => mapUserUStoUser(user.data)));
+      .get<JsonApiResponse<UserGetResponse, null>>(this.baseUrl + 'users/me/')
+      .pipe(map((user) => UserMapper.fromUserGetResponse(user.data)));
+  }
+
+  getCurrentUserSettings(): Observable<UserSettings> {
+    return this.jsonApiService
+      .get<JsonApiResponse<UserSettingsGetResponse, null>>(this.baseUrl + 'users/me/settings/')
+      .pipe(map((response) => UserMapper.fromUserSettingsGetResponse(response.data)));
+  }
+
+  updateUserSettings(userId: string, userSettings: UserSettings): Observable<UserSettings> {
+    const request = UserMapper.toUpdateUserSettingsRequest(userId, userSettings);
+
+    return this.jsonApiService
+      .patch<UserSettingsGetResponse>(this.baseUrl + `users/${userId}/settings/`, request)
+      .pipe(map((response) => UserMapper.fromUserSettingsGetResponse(response)));
   }
 }

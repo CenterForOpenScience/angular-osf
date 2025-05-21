@@ -5,10 +5,8 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { UserUS } from '@core/services/json-api/underscore-entites/user/user-us.entity';
-import { mapUserUStoUser } from '@core/services/mappers/users/users.mapper';
-import { User } from '@core/services/user/user.entity';
-import { UserSelectors } from '@core/store/user/user.selectors';
+import { User, UserGetResponse, UserMapper } from '@core/services/user';
+import { UserSelectors } from '@core/store/user';
 import { ApiData, JsonApiResponse } from '@osf/core/services/json-api/json-api.entity';
 
 import { environment } from '../../../../../environments/environment';
@@ -154,8 +152,8 @@ export class AccountSettingsService {
     };
 
     return this.#jsonApiService
-      .patch<UserUS>(`${environment.apiUrl}/users/${this.#currentUser()?.id}`, body)
-      .pipe(map((user) => mapUserUStoUser(user)));
+      .patch<UserGetResponse>(`${environment.apiUrl}/users/${this.#currentUser()?.id}`, body)
+      .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 
   updateIndexing(allowIndexing: boolean): Observable<User> {
@@ -171,8 +169,8 @@ export class AccountSettingsService {
     };
 
     return this.#jsonApiService
-      .patch<UserUS>(`${environment.apiUrl}/users/${this.#currentUser()?.id}`, body)
-      .pipe(map((user) => mapUserUStoUser(user)));
+      .patch<UserGetResponse>(`${environment.apiUrl}/users/${this.#currentUser()?.id}`, body)
+      .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 
   updatePassword(oldPassword: string, newPassword: string): Observable<void> {

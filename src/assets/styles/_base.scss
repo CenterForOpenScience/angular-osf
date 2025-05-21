@@ -1,0 +1,96 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+@layer reset, base, primeng;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+}
+
+@layer reset {
+  html,
+  body {
+    font-family: var.$openSans;
+    font-weight: 400;
+    font-size: var.$base-font-size;
+    max-height: 100vh;
+    max-width: 100vw;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  h2 {
+    font-size: 1.3rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 700;
+    text-transform: capitalize;
+    color: var.$dark-blue-1;
+  }
+
+  li {
+    list-style: none;
+  }
+
+  .inside-list {
+    li {
+      list-style: inside;
+    }
+  }
+
+  a,
+  a:visited {
+    text-decoration: none;
+    color: var.$pr-blue-1;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  i {
+    @include mix.flex-center;
+  }
+
+  button {
+    color: var.$white;
+  }
+
+  dl {
+    margin-bottom: 1.7rem;
+    padding: 0;
+  }
+
+  dt {
+    display: inline;
+    font-weight: bold;
+  }
+
+  dd {
+    margin: 0;
+    display: inline;
+
+    &::after {
+      content: "";
+      display: block;
+    }
+  }
+
+  i,
+  svg {
+    outline: none;
+  }
+}

@@ -1,9 +1,9 @@
 import { Selector } from '@ngxs/store';
 
-import { Resource } from '@osf/features/search/models/resource.entity';
-import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
 import { SearchStateModel } from '@osf/features/search/store/search.model';
 import { SearchState } from '@osf/features/search/store/search.state';
+import { Resource } from '@shared/entities/resource-card/resource.entity';
+import { ResourceTab } from '@shared/entities/resource-card/resource-tab.enum';
 
 export class SearchSelectors {
   @Selector([SearchState])

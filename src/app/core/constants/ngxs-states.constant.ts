@@ -6,10 +6,10 @@ import { MyProjectsState } from '@osf/features/my-projects/store';
 import { AnalyticsState } from '@osf/features/project/analytics/store';
 import { ProjectOverviewState } from '@osf/features/project/overview/store';
 import { WikiState } from '@osf/features/project/wiki/store/wiki.state';
-import { SearchState } from '@osf/features/search/store';
 import { AccountSettingsState } from '@osf/features/settings/account-settings/store/account-settings.state';
 import { AddonsState } from '@osf/features/settings/addons/store';
 import { DeveloperAppsState } from '@osf/features/settings/developer-apps/store';
+import { NotificationSubscriptionState } from '@osf/features/settings/notifications/store';
 import { ProfileSettingsState } from '@osf/features/settings/profile-settings/profile-settings.state';
 import { TokensState } from '@osf/features/settings/tokens/store';
 
@@ -18,13 +18,13 @@ export const STATES = [
   TokensState,
   AddonsState,
   UserState,
-  SearchState,
   MyProjectsState,
   InstitutionsState,
   ProfileSettingsState,
   DeveloperAppsState,
   AccountSettingsState,
   AnalyticsState,
+  NotificationSubscriptionState,
   ProjectOverviewState,
   CollectionsState,
   WikiState,

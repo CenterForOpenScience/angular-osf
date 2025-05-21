@@ -4,7 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
@@ -30,7 +29,6 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
     ReactiveFormsModule,
     ButtonModule,
     InputTextModule,
-    DropdownModule,
     CheckboxModule,
     Select,
     Textarea,

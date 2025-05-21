@@ -3,7 +3,6 @@ import { Store } from '@ngxs/store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import type { SortEvent } from 'primeng/api';
-import { DropdownModule } from 'primeng/dropdown';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Select } from 'primeng/select';
 import { TablePageEvent } from 'primeng/table';
@@ -52,7 +51,6 @@ import { SortOrder } from '@shared/utils/sort-order.enum';
   selector: 'osf-my-projects',
   imports: [
     SubHeaderComponent,
-    DropdownModule,
     FormsModule,
     Select,
     Tab,

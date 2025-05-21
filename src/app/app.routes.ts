@@ -2,8 +2,12 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { ResourceFiltersOptionsState } from '@shared/components/resources/resource-filters/filters/store/resource-filters-options.state';
-import { ResourceFiltersState } from '@shared/components/resources/resource-filters/store/resource-filters.state';
+import { MyProfileResourceFiltersOptionsState } from '@osf/features/my-profile/components/resources/components/resource-filters/components/filters/store/my-profile-resource-filters-options.state';
+import { MyProfileResourceFiltersState } from '@osf/features/my-profile/components/resources/components/resource-filters/store/my-profile-resource-filters.state';
+import { MyProfileState } from '@osf/features/my-profile/store';
+import { ResourceFiltersOptionsState } from '@osf/features/search/components/resources/components/resource-filters/components/filters/store/resource-filters-options.state';
+import { ResourceFiltersState } from '@osf/features/search/components/resources/components/resource-filters/store/resource-filters.state';
+import { SearchState } from '@osf/features/search/store';
 
 export const routes: Routes = [
   {
@@ -155,12 +159,14 @@ export const routes: Routes = [
       {
         path: 'search',
         loadComponent: () => import('./features/search/search.component').then((mod) => mod.SearchComponent),
-        providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState])],
+        providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState, SearchState])],
       },
       {
         path: 'my-profile',
         loadComponent: () => import('./features/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
-        providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState])],
+        providers: [
+          provideStates([MyProfileResourceFiltersState, MyProfileResourceFiltersOptionsState, MyProfileState]),
+        ],
       },
       {
         path: 'confirm/:userId/:emailId',

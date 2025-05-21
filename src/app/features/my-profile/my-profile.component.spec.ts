@@ -14,7 +14,6 @@ import { Router } from '@angular/router';
 
 import { SearchComponent } from '@osf/features/search/search.component';
 import { ResetSearchState, SetIsMyProfile } from '@osf/features/search/store';
-import { ResetFiltersState } from '@osf/shared/components/resources/resource-filters/store/resource-filters.actions';
 import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
 
 import { MyProfileComponent } from './my-profile.component';

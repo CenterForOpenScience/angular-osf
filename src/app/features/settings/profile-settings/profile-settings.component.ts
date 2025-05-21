@@ -1,6 +1,5 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { DropdownModule } from 'primeng/dropdown';
 import { Select } from 'primeng/select';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
@@ -25,7 +24,6 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
     Tab,
     TabPanel,
     TabPanels,
-    DropdownModule,
     ReactiveFormsModule,
     Select,
     FormsModule,

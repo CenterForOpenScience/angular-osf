@@ -1,83 +1,108 @@
 <osf-sub-header [showButton]="false" [title]="'settings.notifications.header.title' | translate" [icon]="'settings'" />
 
-<section class="flex flex-column xl:p-4 md:p-3 p-2 bg-white flex-1 gap-4">
-  <section class="notification-item flex flex-column gap-4">
-    <h2>{{ 'settings.notifications.emailPreferences.title' | translate }}</h2>
+<div class="flex flex-column p-2 bg-white flex-1 gap-4 md:p-3 xl:p-4">
+  @if (!isEmailPreferencesLoading()) {
+    <section class="notification-item flex flex-column gap-4">
+      <h2>{{ 'settings.notifications.emailPreferences.title' | translate }}</h2>
 
-    <div class="flex flex-column gap-3">
-      <div class="flex gap-2">
-        <p-checkbox inputId="v1"> </p-checkbox>
+      <form [formGroup]="emailPreferencesForm" class="flex flex-column gap-3" (submit)="emailPreferencesFormSubmit()">
+        <div class="flex gap-2">
+          <p-checkbox
+            [formControlName]="EmailPreferencesFormControls.SubscribeOsfGeneralEmail"
+            inputId="v1"
+            binary="true"
+          />
 
-        <div class="flex flex-column gap-1">
-          <label for="v1" class="mb-0 font-bold notification-item-label">
-            {{ 'settings.notifications.emailPreferences.items.general.title' | translate }}
-          </label>
+          <div class="flex flex-column gap-1">
+            <label for="v1" class="mb-0 font-bold notification-item-label">
+              {{ 'settings.notifications.emailPreferences.items.general.title' | translate }}
+            </label>
 
-          <div class="notification-item-description">
-            {{ 'settings.notifications.emailPreferences.items.general.description' | translate }}
+            <div class="notification-item-description">
+              {{ 'settings.notifications.emailPreferences.items.general.description' | translate }}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="flex gap-2">
-        <p-checkbox inputId="v2"> </p-checkbox>
+        <div class="flex gap-2">
+          <p-checkbox
+            [formControlName]="EmailPreferencesFormControls.SubscribeOsfHelpEmail"
+            inputId="v2"
+            binary="true"
+          />
 
-        <div class="flex flex-column gap-1">
-          <label for="v2" class="mb-0 font-bold notification-item-label">
-            {{ 'settings.notifications.emailPreferences.items.help.title' | translate }}
-          </label>
+          <div class="flex flex-column gap-1">
+            <label for="v2" class="mb-0 font-bold notification-item-label">
+              {{ 'settings.notifications.emailPreferences.items.help.title' | translate }}
+            </label>
 
-          <div class="notification-item-description">
-            {{ 'settings.notifications.emailPreferences.items.help.description' | translate }}
+            <div class="notification-item-description">
+              {{ 'settings.notifications.emailPreferences.items.help.description' | translate }}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="flex justify-content-end">
-        <p-button
-          [disabled]="true"
-          [label]="'settings.notifications.emailPreferences.saveButton' | translate"
-          size="large"
-        >
-        </p-button>
-      </div>
-    </div>
-  </section>
-
-  <section class="notification-item flex flex-column gap-4">
-    <h2>
-      {{ 'settings.notifications.notificationPreferences.title' | translate }}
-    </h2>
-
-    <div>
-      {{ 'settings.notifications.notificationPreferences.note' | translate }}
-    </div>
-
-    <section class="notification-configuration">
-      <div>
-        {{ 'settings.notifications.notificationPreferences.items.replies' | translate }}
-      </div>
-      <p-dropdown class="dropdown"> </p-dropdown>
-
-      <div>
-        {{ 'settings.notifications.notificationPreferences.items.comments' | translate }}
-      </div>
-      <p-dropdown class="dropdown"> </p-dropdown>
-
-      <div>
-        {{ 'settings.notifications.notificationPreferences.items.files' | translate }}
-      </div>
-      <p-dropdown class="dropdown"> </p-dropdown>
-
-      <div>
-        {{ 'settings.notifications.notificationPreferences.items.mentions' | translate }}
-      </div>
-      <p-dropdown class="dropdown"> </p-dropdown>
-
-      <div>
-        {{ 'settings.notifications.notificationPreferences.items.preprints' | translate }}
-      </div>
-      <p-dropdown class="dropdown"> </p-dropdown>
+        <div class="flex justify-content-end">
+          <p-button
+            [disabled]="!emailPreferencesForm.dirty"
+            type="submit"
+            [label]="'settings.notifications.emailPreferences.saveButton' | translate"
+            size="large"
+            [loading]="isSubmittingEmailPreferences()"
+          />
+        </div>
+      </form>
     </section>
-  </section>
-</section>
+  } @else {
+    <div class="notification-item flex flex-column gap-4">
+      <p-skeleton width="20rem" height="2rem"></p-skeleton>
+
+      <div class="flex flex-column gap-3">
+        @for (_ of [1, 2]; track $index) {
+          <div class="flex gap-2">
+            <p-skeleton width="2rem" height="2rem"></p-skeleton>
+            <p-skeleton width="30rem" height="3rem"></p-skeleton>
+          </div>
+        }
+      </div>
+      <div class="flex justify-content-end">
+        <p-skeleton width="6rem" height="3rem"></p-skeleton>
+      </div>
+    </div>
+  }
+
+  @if (!isNotificationSubscriptionsLoading()) {
+    <section class="notification-item flex flex-column gap-4">
+      <h2>{{ 'settings.notifications.notificationPreferences.title' | translate }}</h2>
+
+      <p>{{ 'settings.notifications.notificationPreferences.note' | translate }}</p>
+
+      <section class="notification-configuration" [formGroup]="notificationSubscriptionsForm">
+        @for (subscriptionEvent of SUBSCRIPTION_EVENTS; track $index) {
+          <p>{{ subscriptionEvent.labelKey | translate }}</p>
+          <p-select
+            [formControlName]="subscriptionEvent.event"
+            class="dropdown"
+            [options]="subscriptionFrequencyOptions"
+            optionLabel="label"
+            [loading]="loadingEvents().includes(subscriptionEvent.event)"
+            optionValue="value"
+            (onChange)="onSubscriptionChange(subscriptionEvent.event, $event.value)"
+          />
+        }
+      </section>
+    </section>
+  } @else {
+    <section class="notification-item flex flex-column gap-4">
+      <p-skeleton width="20rem" height="2rem"></p-skeleton>
+      <p-skeleton width="30rem" height="1rem"></p-skeleton>
+
+      <section class="notification-configuration">
+        @for (_ of [1, 2, 3, 4, 5]; track $index) {
+          <p-skeleton width="20rem" height="2rem"></p-skeleton>
+          <p-skeleton class="dropdown" height="3rem"></p-skeleton>
+        }
+      </section>
+    </section>
+  }
+</div>

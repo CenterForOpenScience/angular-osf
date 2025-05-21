@@ -1,7 +1,7 @@
 <form [formGroup]="socialLinksForm">
   <div formArrayName="links" class="flex flex-column row-gap-4 social">
     @if (socialLinks()) {
-      @for (link of links.controls; track link.value.id; let index = $index) {
+      @for (link of links.controls; track index; let index = $index) {
         <div
           [formGroupName]="index"
           class="flex flex-column border-1 border-round-lg p-3 sm:p-5 name-container row-gap-4"
@@ -24,12 +24,12 @@
               <p class="font-light mb-1">
                 {{ 'settings.profileSettings.social.socialOutput' | translate }}
               </p>
-              <p-dropdown
+              <p-select
                 formControlName="socialOutput"
                 [options]="socials"
                 optionLabel="label"
                 class="w-full"
-              ></p-dropdown>
+              ></p-select>
             </div>
 
             <div class="w-full md:w-8">

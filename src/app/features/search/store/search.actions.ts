@@ -1,4 +1,4 @@
-import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
+import { ResourceTab } from '@shared/entities/resource-card/resource-tab.enum';
 
 export class GetResources {
   static readonly type = '[Search] Get Resources';

@@ -1,5 +1,5 @@
-import { Resource } from '@osf/features/search/models/resource.entity';
-import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
+import { Resource } from '@shared/entities/resource-card/resource.entity';
+import { ResourceTab } from '@shared/entities/resource-card/resource-tab.enum';
 
 export interface SearchStateModel {
   resources: Resource[];
