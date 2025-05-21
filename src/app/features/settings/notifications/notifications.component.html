@@ -78,12 +78,12 @@
       <section class="notification-configuration" [formGroup]="notificationSubscriptionsForm">
         @for (subscriptionEvent of SUBSCRIPTION_EVENTS; track $index) {
           <p>{{ subscriptionEvent.labelKey | translate }}</p>
-          <p-dropdown [formControlName]="subscriptionEvent.event" class="dropdown"
-                      [options]="subscriptionFrequencyOptions"
-                      optionLabel="label"
-                      [loading]="loadingEvents().includes(subscriptionEvent.event)"
-                      optionValue="value"
-                      (onChange)="onSubscriptionChange(subscriptionEvent.event, $event.value)"/>
+          <p-select [formControlName]="subscriptionEvent.event" class="dropdown"
+                    [options]="subscriptionFrequencyOptions"
+                    optionLabel="label"
+                    [loading]="loadingEvents().includes(subscriptionEvent.event)"
+                    optionValue="value"
+                    (onChange)="onSubscriptionChange(subscriptionEvent.event, $event.value)"/>
         }
       </section>
     </section>

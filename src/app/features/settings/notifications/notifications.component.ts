@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
-import { DropdownModule } from 'primeng/dropdown';
+import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit, signal } from '@angular/core';
@@ -24,8 +24,7 @@ import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.com
 
 @Component({
   selector: 'osf-notifications',
-  standalone: true,
-  imports: [SubHeaderComponent, Checkbox, Button, DropdownModule, TranslatePipe, ReactiveFormsModule, Skeleton],
+  imports: [SubHeaderComponent, Checkbox, Button, TranslatePipe, ReactiveFormsModule, Skeleton, Select],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
