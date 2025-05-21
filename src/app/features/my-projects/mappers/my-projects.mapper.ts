@@ -1,4 +1,4 @@
-import { MyProjectsItem, MyProjectsItemGetResponse } from '@osf/features/my-projects/entities/my-projects.entities';
+import { MyProjectsItem, MyProjectsItemGetResponse } from '@osf/features/my-projects/models/my-projects.models';
 
 export class MyProjectsMapper {
   static fromResponse(response: MyProjectsItemGetResponse): MyProjectsItem {

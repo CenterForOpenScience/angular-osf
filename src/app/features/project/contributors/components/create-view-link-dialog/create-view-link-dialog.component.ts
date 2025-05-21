@@ -8,11 +8,9 @@ import { InputText } from 'primeng/inputtext';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { SearchInputComponent } from '@osf/shared';
-
 @Component({
   selector: 'osf-create-view-link-dialog',
-  imports: [Button, SearchInputComponent, TranslatePipe, InputText, ReactiveFormsModule, FormsModule, Checkbox],
+  imports: [Button, TranslatePipe, InputText, ReactiveFormsModule, FormsModule, Checkbox],
   templateUrl: './create-view-link-dialog.component.html',
   styleUrl: './create-view-link-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

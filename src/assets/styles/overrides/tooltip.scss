@@ -13,3 +13,13 @@
   border-right-color: var.$white;
   border: 1px solid var.$grey-3;
 }
+
+.p-tooltip.p-tooltip-bottom {
+  .p-tooltip-text {
+    min-width: auto;
+  }
+
+  .p-tooltip-arrow {
+    border: none;
+  }
+}

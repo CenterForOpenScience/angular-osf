@@ -1,217 +1,377 @@
-<div class="flex justify-content-between">
-  <osf-sub-header title="Lorem Ipsum Dolor Sit Amet" />
-</div>
+@let project = currentProject();
 
-<div class="lg:flex-row flex md:flex-column sm:flex-column gap-4 bg-white h-full p-4">
-  <div class="flex flex-column gap-4 left-section">
-    <div class="wiki flex flex-column p-4 gap-5">
-      <h2>Wiki</h2>
+@if (!isProjectLoading() && project) {
+  <div class="flex justify-content-between">
+    <osf-sub-header [title]="project.title" />
+  </div>
 
-      <div class="wiki-description">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt ....
+  <div class="pl-5 pb-5 pr-4 flex align-items-center justify-content-between">
+    <div class="flex gap-3 align-items-start">
+      <div class="flex gap-1" [class.inactive]="isPublic()">
+        <i class="osf-icon-padlock"></i>
+        <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
       </div>
 
-      <a class="wiki-link font-bold"> Read more </a>
-    </div>
+      <p-toggleswitch [ngModel]="isPublic()" (onChange)="handleToggleProjectPublicity()" />
 
-    <div class="component flex flex-column p-4 gap-5">
-      <h2>Components</h2>
-
-      <div class="flex flex-column gap-5">
-        <div class="component-title flex flex-column p-2 gap-3">
-          <h2 class="flex gap-2">
-            <i class="osf-icon osf-icon-padlock"></i>
-            Component Name Example
-          </h2>
-
-          <div class="component-name flex flex-column gap-2">
-            <a class="font-bold">Michael Pasek</a>
-
-            <div class="component-description">
-              Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-              labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in eprehenderit i...
-            </div>
-          </div>
-        </div>
-
-        <div class="component-title flex flex-column p-2 gap-3">
-          <h2 class="flex gap-2">
-            <i class="osf-icon osf-icon-padlock-unlock"></i>
-            Component Name Example
-          </h2>
-
-          <div class="component-name flex flex-column gap-2">
-            <a class="font-bold">Michael Pasek</a>
-
-            <div class="component-description">
-              Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-              labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in eprehenderit i...
-            </div>
-          </div>
-        </div>
+      <div class="flex gap-2" [class.inactive]="!isPublic()">
+        <i class="osf-icon-padlock-unlock"></i>
+        <p class="font-bold">{{ 'project.overview.header.publicProject' | translate }}</p>
       </div>
     </div>
 
-    <div class="linked-projects flex flex-column p-4 gap-4">
-      <h2>Linked Projects</h2>
+    <div class="flex gap-2">
+      @if (project.storage) {
+        <p class="align-self-center font-bold mr-2 storage">{{ project.storage.storageUsage }} KB</p>
+      }
 
-      <div class="linked-projects-project p-2 flex flex-column gap-5">
-        <h2>Name Example</h2>
-        <div class="flex gap-2">
-          <span>Contributors:</span>
-          <a class="font-semibold">Michael Pasek</a>
-        </div>
+      <p-button
+        [pTooltip]="'project.overview.tooltips.viewOnlyLinks' | translate"
+        tooltipPosition="bottom"
+        [routerLink]="['/my-projects', project.id, 'settings']"
+      >
+        <span>{{ project.viewOnlyLinksCount }}</span>
+        <i class="osf-icon-link overview-icon"></i>
+      </p-button>
 
-        <div class="flex">
-          Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-          labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in eprehenderit i...
-        </div>
-      </div>
-    </div>
+      <p-button
+        (click)="forkActionMenu.toggle($event)"
+        [pTooltip]="'project.overview.tooltips.duplicate' | translate"
+        tooltipPosition="bottom"
+      >
+        <span>{{ project.forksCount }}</span>
+        <i class="osf-icon-duplicate overview-icon"></i>
+        <p-menu appendTo="body" #forkActionMenu [model]="forkActionItems" popup>
+          <ng-template #item let-item>
+            <a class="p-menu-item-link">
+              {{ item.label | translate }}
+            </a>
+          </ng-template>
+        </p-menu>
+      </p-button>
 
-    <div class="activities p-4 flex flex-column gap-3">
-      <h2>Recent Activity</h2>
+      <p-button
+        [pTooltip]="'project.overview.tooltips.bookmarks' | translate"
+        tooltipPosition="bottom"
+        class="bookmark-btn"
+        (onClick)="toggleBookmark()"
+        [loading]="isBookmarksLoading() || isBookmarksSubmitting()"
+      >
+        @if (!isBookmarksLoading() && !isBookmarksSubmitting()) {
+          <i class="overview-icon" [ngClass]="isBookmarked() ? 'osf-icon-bookmark-fill' : 'osf-icon-bookmark'"></i>
+        }
+      </p-button>
 
-      <div class="activities-activity flex justify-content-between align-items-center">
-        <div>
-          <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
-          <a class="font-bold">Project name example</a>
-        </div>
-
-        <div>Feb 5, 2025 04:37 AM</div>
-      </div>
-
-      <div class="activities-activity flex justify-content-between align-items-center">
-        <div>
-          <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
-          <a class="font-bold">Project name example</a>
-        </div>
-
-        <div>Feb 5, 2025 04:37 AM</div>
-      </div>
-
-      <div class="activities-activity flex justify-content-between align-items-center">
-        <div>
-          <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
-          <a class="font-bold">Project name example</a>
-        </div>
-
-        <div>Feb 5, 2025 04:37 AM</div>
-      </div>
+      <p-button
+        (click)="socialsActionMenu.toggle($event)"
+        [pTooltip]="'project.overview.tooltips.share' | translate"
+        tooltipPosition="bottom"
+      >
+        <span>{{ socialsActionItems.length }}</span>
+        <i class="osf-icon-share overview-icon"></i>
+        <p-menu appendTo="body" #socialsActionMenu [model]="socialsActionItems" popup>
+          <ng-template #item let-item>
+            <a class="p-menu-item-link">
+              <img height="15" width="15" [ngSrc]="'assets/icons/socials/' + item.icon + '.svg'" alt="social-icon" />
+              {{ item.label | translate }}
+            </a>
+          </ng-template>
+        </p-menu>
+      </p-button>
     </div>
   </div>
 
-  <div class="flex flex-column right-section p-4">
-    <div class="metadata flex flex-column gap-5">
-      <div class="metadata-header flex justify-content-between">
-        <h2>Metadata</h2>
-
-        <p-button severity="secondary"> Edit</p-button>
+  <div class="lg:flex-row flex md:flex-column sm:flex-column gap-4 bg-white h-full p-4">
+    <div class="flex flex-column gap-4 left-section">
+      <div class="wiki flex flex-column p-4 gap-4">
+        <h2>{{ 'project.overview.wiki.title' | translate }}</h2>
+        @if (isWikiLoading()) {
+          <p-skeleton width="100%" height="5rem" />
+        } @else {
+          @if (wikiContent()) {
+            <osf-truncated-text [text]="wikiContent()" />
+          } @else {
+            <div [innerHtml]="'project.overview.wiki.noWikiMessage' | translate"></div>
+          }
+        }
       </div>
 
-      <div class="flex flex-column gap-2">
-        <h3>Contributors</h3>
+      <div class="component flex flex-column p-2 pb-4 gap-4">
+        <div class="flex align-items-center pt-3 pl-3 pr-3 justify-content-between">
+          <h2>{{ 'project.overview.components.title' | translate }}</h2>
 
-        <div class="flex gap-2 line-height-2">
-          <a class="font-bold">John Doe,</a>
-          <a class="font-bold">Jeremy Wolfe,</a>
-          <a class="font-bold">Ava Mitra</a>
-        </div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Description</h3>
-
-        <div class="line-height-2">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-          est laborum.
-        </div>
-
-        <a href="" class="font-bold"> Read More </a>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Supplements</h3>
-
-        <div>
-          Has supplemental materials for
-          <a class="font-bold"> Testimony Before the Federal Spending Oversight Subcommittee, October 18, 2017</a>
-          on OSF Preprints
-        </div>
-      </div>
-
-      <div class="flex justify-content-between">
-        <div class="flex flex-column gap-2">
-          <h3>Date Created</h3>
-          <div>Jan 6, 2025 04:37 AM</div>
-        </div>
-
-        <div class="flex flex-column gap-2">
-          <h3>Date Updated</h3>
-          <div>Jan 6, 2025 04:37 AM</div>
-        </div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>License</h3>
-
-        <div>No License</div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Publication DOI</h3>
-
-        <div>No Publication DOI</div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Affiliated Institutions</h3>
-
-        <div class="flex gap-2">
-          <img
-            alt="Center of Open Science"
-            ngSrc="../../../../assets/images/project/center-for-os.png"
-            width="155"
-            height="45"
-          />
-
-          <img
-            alt="Center of Open Science"
-            ngSrc="../../../../assets/images/project/arnold-ven.png"
-            width="145"
-            height="45"
+          <p-button
+            (onClick)="handleAddComponent()"
+            severity="secondary"
+            [label]="'project.overview.components.addComponentButton' | translate"
           />
         </div>
-      </div>
 
-      <div class="flex flex-column gap-2">
-        <h3>Subjects</h3>
+        <div class="component-container pl-3 pr-3 flex flex-column gap-5">
+          @if (isComponentsLoading()) {
+            <p-skeleton width="100%" height="7rem" />
+          } @else {
+            @if (components().length) {
+              @for (component of components(); track component.id) {
+                <div class="component-wrapper flex flex-column p-3 gap-3">
+                  <div class="flex justify-content-between align-items-center">
+                    <h2 class="flex gap-2">
+                      <i [ngClass]="component.public ? 'osf-icon-padlock-unlock' : 'osf-icon-padlock'"></i>
+                      <a class="component-title" [href]="'my-projects/' + component.id">{{ component.title }}</a>
+                    </h2>
+                    <div>
+                      <p-button class="btn-icon" (click)="componentActionMenu.toggle($event)">
+                        <i class="osf-icon-dots"></i>
+                      </p-button>
 
-        <div class="flex gap-2">
-          <div class="subject">Subject name example</div>
-          <div class="subject">example</div>
+                      <p-menu appendTo="body" #componentActionMenu [model]="componentActionItems(component.id)" popup>
+                        <ng-template #item let-item>
+                          <a class="p-menu-item-link">{{ item.label | translate }}</a>
+                        </ng-template>
+                      </p-menu>
+                    </div>
+                  </div>
+
+                  <div class="component-name flex flex-column gap-2">
+                    @for (contributor of component.contributors; track contributor.id) {
+                      <div>
+                        <a class="font-bold"> {{ contributor.fullName }}</a>
+                        <span>{{ $last ? '' : ',' }}</span>
+                      </div>
+                    }
+
+                    <div class="component-description">
+                      <osf-truncated-text [text]="component.description" />
+                    </div>
+                  </div>
+                </div>
+              }
+            } @else {
+              <div [innerHtml]="'project.overview.components.noComponentsMessage' | translate"></div>
+            }
+          }
         </div>
       </div>
 
-      <div class="flex flex-column gap-2">
-        <h3>Tags</h3>
+      <div class="linked-project flex flex-column p-2 pb-4 gap-4">
+        <div class="flex align-items-center pt-3 pl-3 pr-3 justify-content-between">
+          <h2>{{ 'project.overview.linkedProjects.title' | translate }}</h2>
+          <p-button severity="secondary" [label]="'project.overview.components.linkProjectsButton' | translate" />
+        </div>
+        <div class="linked-project-container pl-3 pr-3 flex flex-column gap-5">
+          @if (isLinkedProjectsLoading()) {
+            <p-skeleton width="100%" height="7rem" />
+          } @else {
+            @if (linkedProjects().length) {
+              @for (linkedProject of linkedProjects(); track linkedProject.id) {
+                <div class="linked-project-wrapper flex flex-column p-3 gap-3">
+                  <div class="flex justify-content-between align-items-center">
+                    <h2 class="flex gap-2">
+                      <i [ngClass]="linkedProject.public ? 'osf-icon-padlock-unlock' : 'osf-icon-padlock'"></i>
+                      <a class="linked-project-title" [href]="'my-projects/' + linkedProject.id">{{
+                        linkedProject.title
+                      }}</a>
+                    </h2>
+                    <div>
+                      <p-button class="btn-icon" (click)="componentActionMenu.toggle($event)">
+                        <i class="osf-icon-dots"></i>
+                      </p-button>
 
-        <div class="flex gap-2">
-          <div class="subject">tag1</div>
-          <div class="subject">tag2</div>
-          <div class="subject">tag3</div>
-          <div class="subject">tag4</div>
+                      <p-menu
+                        appendTo="body"
+                        #componentActionMenu
+                        [model]="componentActionItems(linkedProject.id)"
+                        popup
+                      >
+                        <ng-template #item let-item>
+                          <a class="p-menu-item-link">{{ item.label | translate }}</a>
+                        </ng-template>
+                      </p-menu>
+                    </div>
+                  </div>
+
+                  <div class="component-name flex flex-column gap-2">
+                    @for (contributor of linkedProject.contributors; track contributor.id) {
+                      <div>
+                        <a class="font-bold"> {{ contributor.fullName }}</a>
+                        <span>{{ $last ? '' : ',' }}</span>
+                      </div>
+                    }
+                    <div class="component-description">
+                      <osf-truncated-text [text]="linkedProject.description" />
+                    </div>
+                  </div>
+                </div>
+              }
+            } @else {
+              <div [innerHtml]="'project.overview.linkedProjects.noLinkedProjectsMessage' | translate"></div>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="activities p-4 flex flex-column gap-3">
+        <h2>{{ 'project.overview.recentActivity.title' | translate }}</h2>
+
+        <div class="activities-activity flex justify-content-between align-items-center">
+          <div>
+            <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
+            <a class="font-bold">Project name example</a>
+          </div>
+
+          <div>Feb 5, 2025 04:37 AM</div>
+        </div>
+
+        <div class="activities-activity flex justify-content-between align-items-center">
+          <div>
+            <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
+            <a class="font-bold">Project name example</a>
+          </div>
+
+          <div>Feb 5, 2025 04:37 AM</div>
+        </div>
+
+        <div class="activities-activity flex justify-content-between align-items-center">
+          <div>
+            <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
+            <a class="font-bold">Project name example</a>
+          </div>
+
+          <div>Feb 5, 2025 04:37 AM</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-column right-section p-4">
+      <div class="metadata flex flex-column gap-5">
+        <div class="metadata-header flex align-items-center justify-content-between">
+          <h2>{{ 'project.overview.metadata.title' | translate }}</h2>
+
+          <p-button
+            [routerLink]="'../metadata'"
+            severity="secondary"
+            [label]="'project.overview.metadata.editButton' | translate"
+          ></p-button>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.overview.metadata.contributors' | translate }}</h3>
+
+          <div class="flex gap-1 line-height-2">
+            @for (contributor of project.contributors; track contributor.id) {
+              <div>
+                <a class="font-bold"> {{ contributor.fullName }}</a>
+                <span>{{ $last ? '' : ',' }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.overview.metadata.description' | translate }}</h3>
+
+          <osf-truncated-text
+            [maxVisibleLines]="3"
+            [text]="project.description ? project.description : ('project.overview.metadata.noDescription' | translate)"
+          />
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.overview.metadata.supplements' | translate }}</h3>
+
+          @if (project.supplements?.length) {
+            @for (supplement of project.supplements; track supplement.id) {
+              <p>
+                {{ 'project.overview.metadata.supplementsText1' | translate }}
+                <a class="font-bold" target="_blank" href="{{ supplement.url }}">{{
+                  supplement.title + ', ' + (supplement.dateCreated | date: 'MMMM d, y')
+                }}</a>
+                {{ 'project.overview.metadata.supplementsText2' | translate }}
+              </p>
+            }
+          } @else {
+            <p>{{ 'project.overview.metadata.noSupplements' | translate }}</p>
+          }
+        </div>
+
+        <div class="flex gap-4 lg:gap-2 lg:justify-content-between">
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.overview.metadata.dateCreated' | translate }}</h3>
+            <p>{{ project.dateCreated | date: 'MMM d, y, h:mm a' }}</p>
+          </div>
+
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.overview.metadata.dateUpdated' | translate }}</h3>
+            <p>{{ project.dateModified | date: 'MMM d, y, h:mm a' }}</p>
+          </div>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.overview.metadata.licence' | translate }}</h3>
+
+          <div>{{ project.license?.name ?? ('project.overview.metadata.noLicense' | translate) }}</div>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.overview.metadata.publication' | translate }}</h3>
+
+          @if (project.identifiers?.length) {
+            @for (identifier of project.identifiers; track identifier.id) {
+              @if (identifier.category === 'doi') {
+                <p>
+                  {{ identifier.value }}
+                </p>
+              }
+            }
+          } @else {
+            <p>{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
+          }
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h3>
+
+          <div class="flex gap-2">
+            @if (project.affiliatedInstitutions?.length) {
+              @for (institution of project.affiliatedInstitutions; track institution.id) {
+                <img alt="institution logo" [src]="institution.logo" height="45" />
+              }
+            } @else {
+              <p>{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.overview.metadata.subjects' | translate }}</h3>
+
+          <div class="flex gap-2">
+            @if (project.subjects.length) {
+              @for (subject of project.subjects; track subject.id) {
+                <p-tag [value]="subject.text" severity="info" />
+              }
+            } @else {
+              <p>{{ 'project.overview.metadata.noSubjects' | translate }}</p>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.overview.metadata.tags' | translate }}</h3>
+
+          @if (project.tags.length) {
+            <div class="flex gap-2">
+              @for (tag of project.tags; track tag) {
+                <p-tag [value]="tag" severity="info" />
+              }
+            </div>
+          } @else {
+            <p>{{ 'project.overview.metadata.noTags' | translate }}</p>
+          }
         </div>
       </div>
     </div>
   </div>
-</div>
+} @else {
+  <osf-loading-spinner />
+}

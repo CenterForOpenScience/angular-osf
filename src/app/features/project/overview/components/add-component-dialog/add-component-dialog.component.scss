@@ -1,0 +1,6 @@
+@use "/assets/styles/variables" as var;
+
+.affiliation-label {
+  text-transform: none;
+  color: var.$grey-1;
+}

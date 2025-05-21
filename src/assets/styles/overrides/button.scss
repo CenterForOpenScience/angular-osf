@@ -101,7 +101,8 @@
 
 .btn-icon-text,
 .btn-icon-text-success,
-.form-btn {
+.form-btn,
+.btn-icon {
   .p-button {
     background-color: transparent;
     color: var.$pr-blue-1;
@@ -125,6 +126,22 @@
 
     &:hover {
       color: var.$pr-blue-3;
+    }
+  }
+}
+
+.btn-icon {
+  .p-button {
+    background-color: transparent;
+    color: var.$dark-blue-1;
+    padding: 0.7rem;
+
+    &:hover {
+      color: var.$pr-blue-1;
+    }
+
+    &:disabled {
+      color: var.$grey-1;
     }
   }
 }
@@ -232,6 +249,15 @@
   }
   i {
     color: var.$grey-1;
+  }
+}
+
+.bookmark-btn {
+  .p-button {
+    .p-button-icon {
+      height: 21px;
+      width: 21px;
+    }
   }
 }
 

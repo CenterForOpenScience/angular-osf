@@ -1,4 +1,4 @@
-@use "../../../../assets/styles/variables" as var;
+@use "/assets/styles/variables" as var;
 
 .desktop {
   margin-top: 4.5rem;
@@ -6,35 +6,62 @@
 
 .wiki,
 .component,
-.linked-projects,
+.linked-project,
 .activities {
-  border: 1px solid var(--grey-2);
+  border: 1px solid var.$grey-2;
   border-radius: 12px;
-  color: var(--dark-blue-1);
+  color: var.$dark-blue-1;
 
   &-description {
     line-height: 24px;
   }
 }
 
+.overview-icon {
+  font-size: 1.5rem;
+}
+
+.storage {
+  color: var.$pr-blue-1;
+  font-size: 1.7rem;
+}
+
 .component {
-  &-title {
-    border: 1px solid var(--grey-2);
+  &-container {
+    overflow-y: auto;
+    max-height: 21rem;
+  }
+
+  &-wrapper {
+    border: 1px solid var.$grey-2;
     border-radius: 12px;
+  }
+
+  &-title {
+    color: var.$dark-blue-1;
   }
 }
 
-.linked-projects {
-  &-project {
-    border: 1px solid var(--grey-2);
+.linked-project {
+  &-container {
+    overflow-y: auto;
+    max-height: 21rem;
+  }
+
+  &-wrapper {
+    border: 1px solid var.$grey-2;
     border-radius: 12px;
+  }
+
+  &-title {
+    color: var.$dark-blue-1;
   }
 }
 
 .activities {
   &-activity {
     height: 35px;
-    border-bottom: 1px solid var(--grey-2);
+    border-bottom: 1px solid var.$grey-2;
   }
 }
 
@@ -44,17 +71,14 @@
 
 .right-section {
   flex: 1;
-  border: 1px solid var(--grey-2);
+  border: 1px solid var.$grey-2;
   border-radius: 12px;
-}
-
-.subject {
-  background: var(--bg-blue-3);
-  border-radius: 4px;
-  padding: 4px 12px;
-  line-height: 24px;
 }
 
 .metadata {
   color: var.$dark-blue-1;
+}
+
+.inactive {
+  color: var.$grey-1;
 }

@@ -1,0 +1,24 @@
+@use "assets/styles/variables" as var;
+
+.text-content {
+  max-height: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  line-clamp: var(--line-clamp);
+  line-height: 1.7;
+  -webkit-line-clamp: var(--line-clamp);
+  -webkit-box-orient: vertical;
+
+  &.expanded {
+    display: block;
+    max-height: none;
+    text-overflow: initial;
+    -webkit-line-clamp: initial;
+    line-clamp: initial;
+  }
+}
+
+.read-more-link {
+  cursor: pointer;
+}

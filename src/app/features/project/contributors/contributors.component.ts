@@ -7,7 +7,6 @@ import { Select } from 'primeng/select';
 import { TableModule, TablePageEvent } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
 
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -30,7 +29,6 @@ import { IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
     Select,
     TranslatePipe,
     FormsModule,
-    DatePipe,
     TableModule,
     ViewOnlyTableComponent,
     Tooltip,

@@ -1,4 +1,4 @@
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
+import { MyProjectsSearchFilters } from '@osf/features/my-projects/models/my-projects-search-filters.models';
 
 export class GetMyProjects {
   static readonly type = '[My Projects] Get Projects';
@@ -32,16 +32,13 @@ export class GetMyPreprints {
 
 export class GetMyBookmarks {
   static readonly type = '[My Projects] Get Bookmarks';
+
   constructor(
     public bookmarksId: string,
     public pageNumber: number,
     public pageSize: number,
     public filters: MyProjectsSearchFilters
   ) {}
-}
-
-export class GetBookmarksCollectionId {
-  static readonly type = '[My Projects] Get Bookmarks Collection Id';
 }
 
 export class ClearMyProjects {

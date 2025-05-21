@@ -6,6 +6,7 @@ export type IconsId =
   | 'trash'
   | 'support'
   | 'supplements'
+  | 'sort'
   | 'sort-desc'
   | 'sort-asc'
   | 'sort-asc-grey'
@@ -33,6 +34,7 @@ export type IconsId =
   | 'link'
   | 'last'
   | 'institutions'
+  | 'institution'
   | 'information'
   | 'image'
   | 'home'
@@ -53,6 +55,7 @@ export type IconsId =
   | 'diagram'
   | 'data'
   | 'customize'
+  | 'cos-shield'
   | 'copy'
   | 'contact'
   | 'collections'
@@ -76,6 +79,7 @@ export type IconsKey =
   | 'Trash'
   | 'Support'
   | 'Supplements'
+  | 'Sort'
   | 'SortDesc'
   | 'SortAsc'
   | 'SortAscGrey'
@@ -103,6 +107,7 @@ export type IconsKey =
   | 'Link'
   | 'Last'
   | 'Institutions'
+  | 'Institution'
   | 'Information'
   | 'Image'
   | 'Home'
@@ -123,6 +128,7 @@ export type IconsKey =
   | 'Diagram'
   | 'Data'
   | 'Customize'
+  | 'CosShield'
   | 'Copy'
   | 'Contact'
   | 'Collections'
@@ -146,6 +152,7 @@ export enum Icons {
   Trash = 'trash',
   Support = 'support',
   Supplements = 'supplements',
+  Sort = 'sort',
   SortDesc = 'sort-desc',
   SortAsc = 'sort-asc',
   SortAscGrey = 'sort-asc-grey',
@@ -173,6 +180,7 @@ export enum Icons {
   Link = 'link',
   Last = 'last',
   Institutions = 'institutions',
+  Institution = 'institution',
   Information = 'information',
   Image = 'image',
   Home = 'home',
@@ -193,6 +201,7 @@ export enum Icons {
   Diagram = 'diagram',
   Data = 'data',
   Customize = 'customize',
+  CosShield = 'cos-shield',
   Copy = 'copy',
   Contact = 'contact',
   Collections = 'collections',
@@ -217,65 +226,68 @@ export const ICONS_CODEPOINTS: Record<Icons, string> = {
   [Icons.Trash]: '61701',
   [Icons.Support]: '61702',
   [Icons.Supplements]: '61703',
-  [Icons.SortDesc]: '61704',
-  [Icons.SortAsc]: '61705',
-  [Icons.SortAscGrey]: '61706',
-  [Icons.Share]: '61707',
-  [Icons.Settings]: '61708',
-  [Icons.Search]: '61709',
-  [Icons.Search2]: '61710',
-  [Icons.Rejected]: '61711',
-  [Icons.Registries]: '61712',
-  [Icons.Quotes]: '61713',
-  [Icons.Profile]: '61714',
-  [Icons.Preprints]: '61715',
-  [Icons.Plus]: '61716',
-  [Icons.Pending]: '61717',
-  [Icons.Pdf]: '61718',
-  [Icons.Papers]: '61719',
-  [Icons.Padlock]: '61720',
-  [Icons.PadlockUnlock]: '61721',
-  [Icons.MyProjects]: '61722',
-  [Icons.Minus]: '61723',
-  [Icons.Menu]: '61724',
-  [Icons.Meetings]: '61725',
-  [Icons.Materials]: '61726',
-  [Icons.List]: '61727',
-  [Icons.Link]: '61728',
-  [Icons.Last]: '61729',
-  [Icons.Institutions]: '61730',
-  [Icons.Information]: '61731',
-  [Icons.Image]: '61732',
-  [Icons.Home]: '61733',
-  [Icons.Home2]: '61734',
-  [Icons.Help]: '61735',
-  [Icons.Folder]: '61736',
-  [Icons.First]: '61737',
-  [Icons.Filter]: '61738',
-  [Icons.EyeView]: '61739',
-  [Icons.EyeHidden]: '61740',
-  [Icons.Email]: '61741',
-  [Icons.Duplicate]: '61742',
-  [Icons.Download]: '61743',
-  [Icons.DoubleArrowLeft]: '61744',
-  [Icons.Dots]: '61745',
-  [Icons.Donate]: '61746',
-  [Icons.Doc]: '61747',
-  [Icons.Diagram]: '61748',
-  [Icons.Data]: '61749',
-  [Icons.Customize]: '61750',
-  [Icons.Copy]: '61751',
-  [Icons.Contact]: '61752',
-  [Icons.Collections]: '61753',
-  [Icons.Code]: '61754',
-  [Icons.Close]: '61755',
-  [Icons.ChevronRight]: '61756',
-  [Icons.ChevronLeft]: '61757',
-  [Icons.CalendarSilhouette]: '61758',
-  [Icons.Bookmark]: '61759',
-  [Icons.BookmarkFill]: '61760',
-  [Icons.Arrow]: '61761',
-  [Icons.ArrowLeft]: '61762',
-  [Icons.ArrowDown]: '61763',
-  [Icons.Accepted]: '61764',
+  [Icons.Sort]: '61704',
+  [Icons.SortDesc]: '61705',
+  [Icons.SortAsc]: '61706',
+  [Icons.SortAscGrey]: '61707',
+  [Icons.Share]: '61708',
+  [Icons.Settings]: '61709',
+  [Icons.Search]: '61710',
+  [Icons.Search2]: '61711',
+  [Icons.Rejected]: '61712',
+  [Icons.Registries]: '61713',
+  [Icons.Quotes]: '61714',
+  [Icons.Profile]: '61715',
+  [Icons.Preprints]: '61716',
+  [Icons.Plus]: '61717',
+  [Icons.Pending]: '61718',
+  [Icons.Pdf]: '61719',
+  [Icons.Papers]: '61720',
+  [Icons.Padlock]: '61721',
+  [Icons.PadlockUnlock]: '61722',
+  [Icons.MyProjects]: '61723',
+  [Icons.Minus]: '61724',
+  [Icons.Menu]: '61725',
+  [Icons.Meetings]: '61726',
+  [Icons.Materials]: '61727',
+  [Icons.List]: '61728',
+  [Icons.Link]: '61729',
+  [Icons.Last]: '61730',
+  [Icons.Institutions]: '61731',
+  [Icons.Institution]: '61732',
+  [Icons.Information]: '61733',
+  [Icons.Image]: '61734',
+  [Icons.Home]: '61735',
+  [Icons.Home2]: '61736',
+  [Icons.Help]: '61737',
+  [Icons.Folder]: '61738',
+  [Icons.First]: '61739',
+  [Icons.Filter]: '61740',
+  [Icons.EyeView]: '61741',
+  [Icons.EyeHidden]: '61742',
+  [Icons.Email]: '61743',
+  [Icons.Duplicate]: '61744',
+  [Icons.Download]: '61745',
+  [Icons.DoubleArrowLeft]: '61746',
+  [Icons.Dots]: '61747',
+  [Icons.Donate]: '61748',
+  [Icons.Doc]: '61749',
+  [Icons.Diagram]: '61750',
+  [Icons.Data]: '61751',
+  [Icons.Customize]: '61752',
+  [Icons.CosShield]: '61753',
+  [Icons.Copy]: '61754',
+  [Icons.Contact]: '61755',
+  [Icons.Collections]: '61756',
+  [Icons.Code]: '61757',
+  [Icons.Close]: '61758',
+  [Icons.ChevronRight]: '61759',
+  [Icons.ChevronLeft]: '61760',
+  [Icons.CalendarSilhouette]: '61761',
+  [Icons.Bookmark]: '61762',
+  [Icons.BookmarkFill]: '61763',
+  [Icons.Arrow]: '61764',
+  [Icons.ArrowLeft]: '61765',
+  [Icons.ArrowDown]: '61766',
+  [Icons.Accepted]: '61767',
 };

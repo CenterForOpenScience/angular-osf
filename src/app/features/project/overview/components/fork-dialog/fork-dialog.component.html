@@ -1,0 +1,19 @@
+<p>
+  {{ 'project.overview.dialog.fork.message' | translate }}
+</p>
+
+<div class="flex mt-6 gap-3 justify-content-between">
+  <p-button
+    [label]="'project.overview.dialog.fork.cancelButton' | translate"
+    severity="info"
+    (click)="dialogRef.close(false)"
+    [disabled]="isSubmitting()"
+    class="btn-half-width"
+  />
+  <p-button
+    [label]="'project.overview.dialog.fork.confirmButton' | translate"
+    (click)="handleForkConfirm()"
+    [loading]="isSubmitting()"
+    class="btn-half-width"
+  />
+</div>

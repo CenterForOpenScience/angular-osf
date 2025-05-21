@@ -1,0 +1,24 @@
+<div class="dialog-container">
+  <p>
+    {{ 'project.overview.dialog.duplicate.message1' | translate }}
+  </p>
+  <p>
+    {{ 'project.overview.dialog.duplicate.message2' | translate }}
+  </p>
+
+  <div class="flex mt-6 gap-3 justify-content-between">
+    <p-button
+      [label]="'project.overview.dialog.duplicate.cancelButton' | translate"
+      severity="info"
+      (click)="dialogRef.close(false)"
+      [disabled]="isSubmitting()"
+      class="btn-half-width"
+    />
+    <p-button
+      [label]="'project.overview.dialog.duplicate.confirmButton' | translate"
+      (click)="handleDuplicateConfirm()"
+      [loading]="isSubmitting()"
+      class="btn-half-width"
+    />
+  </div>
+</div>
