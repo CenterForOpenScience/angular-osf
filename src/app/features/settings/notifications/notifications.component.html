@@ -1,53 +1,55 @@
-<osf-sub-header [showButton]="false"
-                [title]="'settings.notifications.header.title' | translate"
-                [icon]="'settings'"/>
+<osf-sub-header [showButton]="false" [title]="'settings.notifications.header.title' | translate" [icon]="'settings'" />
 
 <div class="flex flex-column p-2 bg-white flex-1 gap-4 md:p-3 xl:p-4">
   @if (!isEmailPreferencesLoading()) {
     <section class="notification-item flex flex-column gap-4">
-      <h2>{{ "settings.notifications.emailPreferences.title" | translate }}</h2>
+      <h2>{{ 'settings.notifications.emailPreferences.title' | translate }}</h2>
 
-      <form [formGroup]="emailPreferencesForm"
-            class="flex flex-column gap-3"
-            (submit)="emailPreferencesFormSubmit()">
+      <form [formGroup]="emailPreferencesForm" class="flex flex-column gap-3" (submit)="emailPreferencesFormSubmit()">
         <div class="flex gap-2">
-          <p-checkbox [formControlName]="EmailPreferencesFormControls.SubscribeOsfGeneralEmail"
-                      inputId="v1"
-                      binary="true"/>
+          <p-checkbox
+            [formControlName]="EmailPreferencesFormControls.SubscribeOsfGeneralEmail"
+            inputId="v1"
+            binary="true"
+          />
 
           <div class="flex flex-column gap-1">
             <label for="v1" class="mb-0 font-bold notification-item-label">
-              {{ "settings.notifications.emailPreferences.items.general.title"| translate }}
+              {{ 'settings.notifications.emailPreferences.items.general.title' | translate }}
             </label>
 
             <div class="notification-item-description">
-              {{ "settings.notifications.emailPreferences.items.general.description"| translate }}
+              {{ 'settings.notifications.emailPreferences.items.general.description' | translate }}
             </div>
           </div>
         </div>
 
         <div class="flex gap-2">
-          <p-checkbox [formControlName]="EmailPreferencesFormControls.SubscribeOsfHelpEmail"
-                      inputId="v2"
-                      binary="true"/>
+          <p-checkbox
+            [formControlName]="EmailPreferencesFormControls.SubscribeOsfHelpEmail"
+            inputId="v2"
+            binary="true"
+          />
 
           <div class="flex flex-column gap-1">
             <label for="v2" class="mb-0 font-bold notification-item-label">
-              {{ "settings.notifications.emailPreferences.items.help.title"| translate }}
+              {{ 'settings.notifications.emailPreferences.items.help.title' | translate }}
             </label>
 
             <div class="notification-item-description">
-              {{ "settings.notifications.emailPreferences.items.help.description"| translate }}
+              {{ 'settings.notifications.emailPreferences.items.help.description' | translate }}
             </div>
           </div>
         </div>
 
         <div class="flex justify-content-end">
-          <p-button [disabled]="!emailPreferencesForm.dirty"
-                    type="submit"
-                    [label]="'settings.notifications.emailPreferences.saveButton' | translate"
-                    size="large"
-                    [loading]="isSubmittingEmailPreferences()"/>
+          <p-button
+            [disabled]="!emailPreferencesForm.dirty"
+            type="submit"
+            [label]="'settings.notifications.emailPreferences.saveButton' | translate"
+            size="large"
+            [loading]="isSubmittingEmailPreferences()"
+          />
         </div>
       </form>
     </section>
@@ -71,19 +73,22 @@
 
   @if (!isNotificationSubscriptionsLoading()) {
     <section class="notification-item flex flex-column gap-4">
-      <h2>{{ "settings.notifications.notificationPreferences.title" | translate }}</h2>
+      <h2>{{ 'settings.notifications.notificationPreferences.title' | translate }}</h2>
 
-      <p>{{ "settings.notifications.notificationPreferences.note" | translate }}</p>
+      <p>{{ 'settings.notifications.notificationPreferences.note' | translate }}</p>
 
       <section class="notification-configuration" [formGroup]="notificationSubscriptionsForm">
         @for (subscriptionEvent of SUBSCRIPTION_EVENTS; track $index) {
           <p>{{ subscriptionEvent.labelKey | translate }}</p>
-          <p-select [formControlName]="subscriptionEvent.event" class="dropdown"
-                    [options]="subscriptionFrequencyOptions"
-                    optionLabel="label"
-                    [loading]="loadingEvents().includes(subscriptionEvent.event)"
-                    optionValue="value"
-                    (onChange)="onSubscriptionChange(subscriptionEvent.event, $event.value)"/>
+          <p-select
+            [formControlName]="subscriptionEvent.event"
+            class="dropdown"
+            [options]="subscriptionFrequencyOptions"
+            optionLabel="label"
+            [loading]="loadingEvents().includes(subscriptionEvent.event)"
+            optionValue="value"
+            (onChange)="onSubscriptionChange(subscriptionEvent.event, $event.value)"
+          />
         }
       </section>
     </section>
