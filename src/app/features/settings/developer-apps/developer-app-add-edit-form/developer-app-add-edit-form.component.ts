@@ -98,7 +98,7 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
         )
         .subscribe({
           complete: () => {
-            this.#router.navigate(['settings/applications']);
+            this.#router.navigate(['settings/developer-apps']);
           },
         });
     }
