@@ -371,6 +371,30 @@
           "cancelButton": "Cancel",
           "message": "<ul><li>&#8226; Public forks and registrations of this project will remain public.</li><li>&#8226; Search engines (including Google's cache) or others may have accessed files, wiki pages, or analytics while this project was public.</li><li>&#8226; The project will automatically be removed from any collections. Any pending requests will be cancelled.</li></ul><br/>"
         },
+        "toast": {
+          "makePublic": {
+            "success": "Project has been made public successfully"
+          },
+          "makePrivate": {
+            "success": "Project has been made private successfully"
+          },
+          "addComponent": {
+            "success": "Component has been created successfully"
+          },
+          "deleteComponent": {
+            "success": "Component has been deleted successfully"
+          },
+          "fork": {
+            "success": "Project has been forked successfully"
+          },
+          "duplicate": {
+            "success": "Project has been duplicated successfully"
+          },
+          "bookmark": {
+            "add": "Project has been added to bookmarks",
+            "remove": "Project has been removed from bookmarks"
+          }
+        },
         "addComponent": {
           "header": "Create New Component",
           "confirmButton": "Create",

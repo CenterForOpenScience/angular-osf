@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { ButtonModule } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -56,6 +56,14 @@ export class ProjectOverviewComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
+  protected actions = createDispatchMap({
+    getProject: GetProjectById,
+    getBookmarksId: GetBookmarksCollectionId,
+    getHomeWiki: GetHomeWiki,
+    getComponents: GetComponents,
+    getLinkedProjects: GetLinkedProjects,
+  });
+
   protected currentProject = select(ProjectOverviewSelectors.getProject);
   protected isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
 
@@ -66,11 +74,11 @@ export class ProjectOverviewComponent implements OnInit {
   ngOnInit(): void {
     const projectId = this.route.parent?.snapshot.params['id'];
     if (projectId) {
-      this.store.dispatch(new GetProjectById(projectId));
-      this.store.dispatch(new GetBookmarksCollectionId());
-      this.store.dispatch(new GetHomeWiki(projectId));
-      this.store.dispatch(new GetComponents(projectId));
-      this.store.dispatch(new GetLinkedProjects(projectId));
+      this.actions.getProject(projectId);
+      this.actions.getBookmarksId();
+      this.actions.getHomeWiki(projectId);
+      this.actions.getComponents(projectId);
+      this.actions.getLinkedProjects(projectId);
     }
   }
 

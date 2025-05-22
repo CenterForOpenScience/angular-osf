@@ -1,15 +1,14 @@
 import { select, Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { tap } from 'rxjs';
-
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { ForkProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-fork-dialog',
@@ -20,6 +19,8 @@ import { ForkProject, ProjectOverviewSelectors } from '@osf/features/project/ove
 })
 export class ForkDialogComponent {
   private store = inject(Store);
+  private translateService = inject(TranslateService);
+  private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
   protected isSubmitting = select(ProjectOverviewSelectors.getForkProjectSubmitting);
 
@@ -27,9 +28,11 @@ export class ForkDialogComponent {
     const project = this.store.selectSnapshot(ProjectOverviewSelectors.getProject);
     if (!project) return;
 
-    this.store
-      .dispatch(new ForkProject(project.id))
-      .pipe(tap(() => this.dialogRef.close()))
-      .subscribe();
+    this.store.dispatch(new ForkProject(project.id)).subscribe({
+      next: () => {
+        this.dialogRef.close();
+        this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.fork.success'));
+      },
+    });
   }
 }

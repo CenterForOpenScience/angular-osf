@@ -9,7 +9,7 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NgClass, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -25,6 +25,7 @@ import {
   TogglePublicityDialogComponent,
 } from '@osf/features/project/overview/components';
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-overview-toolbar',
@@ -37,22 +38,14 @@ export class OverviewToolbarComponent {
   private store = inject(Store);
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
+  private toastService = inject(ToastService);
   protected currentProject = select(ProjectOverviewSelectors.getProject);
   protected isBookmarksLoading = select(MyProjectsSelectors.getBookmarksLoading);
   protected isBookmarksSubmitting = select(CollectionsSelectors.getBookmarksCollectionIdSubmitting);
   protected isPublic = signal(false);
   protected bookmarksCollectionId = select(CollectionsSelectors.getBookmarksCollectionId);
   protected bookmarkedProjects = select(MyProjectsSelectors.getBookmarks);
-  protected isBookmarked = computed(() => {
-    const project = this.currentProject();
-    const bookmarks = this.bookmarkedProjects();
-
-    if (!project || !bookmarks?.length) {
-      return false;
-    }
-
-    return bookmarks.some((bookmark) => bookmark.id === project.id);
-  });
+  protected isBookmarked = signal(false);
 
   protected readonly forkActionItems = [
     {
@@ -107,6 +100,18 @@ export class OverviewToolbarComponent {
         this.isPublic.set(project.isPublic);
       }
     });
+
+    effect(() => {
+      const project = this.currentProject();
+      const bookmarks = this.bookmarkedProjects();
+
+      if (!project || !bookmarks?.length) {
+        this.isBookmarked.set(false);
+        return;
+      }
+
+      this.isBookmarked.set(bookmarks.some((bookmark) => bookmark.id === project.id));
+    });
   }
 
   private handleForkProject(): void {
@@ -117,14 +122,6 @@ export class OverviewToolbarComponent {
       modal: true,
       closable: true,
     });
-    // .onClose.subscribe((result: boolean) => {
-    //   if (result) {
-    //     const projectId = this.projectId();
-    //     if (projectId) {
-    //       this.store.dispatch(new GetProjectById(projectId));
-    //     }
-    //   }
-    // });
   }
 
   private handleDuplicateProject(): void {
@@ -166,16 +163,20 @@ export class OverviewToolbarComponent {
 
     if (!project || !bookmarksId) return;
 
-    if (this.isBookmarked()) {
+    const newBookmarkState = !this.isBookmarked();
+
+    if (!newBookmarkState) {
       this.store.dispatch(new RemoveProjectFromBookmarks(bookmarksId, project.id)).subscribe({
-        complete: () => {
-          this.store.dispatch(new GetMyBookmarks(bookmarksId, 1, 100, {}));
+        next: () => {
+          this.isBookmarked.set(newBookmarkState);
+          this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.bookmark.remove'));
         },
       });
     } else {
       this.store.dispatch(new AddProjectToBookmarks(bookmarksId, project.id)).subscribe({
-        complete: () => {
-          this.store.dispatch(new GetMyBookmarks(bookmarksId, 1, 100, {}));
+        next: () => {
+          this.isBookmarked.set(newBookmarkState);
+          this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.bookmark.add'));
         },
       });
     }

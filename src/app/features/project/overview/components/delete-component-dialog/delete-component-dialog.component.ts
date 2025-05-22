@@ -1,17 +1,16 @@
 import { select, Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
 
-import { switchMap, tap } from 'rxjs';
-
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { DeleteComponent, GetComponents, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ToastService } from '@shared/services';
 import { ScientistsNames } from '@shared/utils/scientists.const';
 
 @Component({
@@ -24,6 +23,8 @@ import { ScientistsNames } from '@shared/utils/scientists.const';
 export class DeleteComponentDialogComponent {
   private store = inject(Store);
   private dialogConfig = inject(DynamicDialogConfig);
+  private translateService = inject(TranslateService);
+  private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
   private componentId = signal(this.dialogConfig.data.componentId);
   protected scientistNames = ScientistsNames;
@@ -49,12 +50,14 @@ export class DeleteComponentDialogComponent {
 
     if (!componentId || !project) return;
 
-    this.store
-      .dispatch(new DeleteComponent(componentId))
-      .pipe(
-        tap(() => this.dialogRef.close()),
-        switchMap(() => this.store.dispatch(new GetComponents(project.id)))
-      )
-      .subscribe();
+    this.store.dispatch(new DeleteComponent(componentId)).subscribe({
+      next: () => {
+        this.dialogRef.close();
+        this.store.dispatch(new GetComponents(project.id));
+        this.toastService.showSuccess(
+          this.translateService.instant('project.overview.dialog.toast.deleteComponent.success')
+        );
+      },
+    });
   }
 }

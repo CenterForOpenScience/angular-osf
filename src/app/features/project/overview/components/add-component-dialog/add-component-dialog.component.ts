@@ -1,6 +1,6 @@
 import { select, Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -9,8 +9,6 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
-
-import { switchMap, tap } from 'rxjs';
 
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
@@ -22,6 +20,7 @@ import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { CreateComponent, GetComponents } from '@osf/features/project/overview/store/project-overview.actions';
 import { ComponentForm } from '@shared/entities/create-component-form.interface';
 import { ComponentFormControls } from '@shared/entities/create-component-form-controls.enum';
+import { ToastService } from '@shared/services';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
@@ -44,6 +43,8 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 })
 export class AddComponentDialogComponent implements OnInit {
   private store = inject(Store);
+  private translateService = inject(TranslateService);
+  private toastService = inject(ToastService);
   protected isMobile = toSignal(inject(IS_XSMALL));
   protected dialogRef = inject(DynamicDialogRef);
   protected ComponentFormControls = ComponentFormControls;
@@ -128,10 +129,14 @@ export class AddComponentDialogComponent implements OnInit {
           formValue.addContributors
         )
       )
-      .pipe(
-        tap(() => this.dialogRef.close()),
-        switchMap(() => this.store.dispatch(new GetComponents(project.id)))
-      )
-      .subscribe();
+      .subscribe({
+        next: () => {
+          this.dialogRef.close();
+          this.store.dispatch(new GetComponents(project.id));
+          this.toastService.showSuccess(
+            this.translateService.instant('project.overview.dialog.toast.addComponent.success')
+          );
+        },
+      });
   }
 }
