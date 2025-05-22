@@ -1,15 +1,14 @@
 import { select, Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { tap } from 'rxjs';
-
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
 import { ProjectOverviewSelectors, UpdateProjectPublicStatus } from '@osf/features/project/overview/store';
+import { ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-toggle-publicity-dialog',
@@ -21,6 +20,8 @@ import { ProjectOverviewSelectors, UpdateProjectPublicStatus } from '@osf/featur
 export class TogglePublicityDialogComponent {
   private store = inject(Store);
   private dialogConfig = inject(DynamicDialogConfig);
+  private translateService = inject(TranslateService);
+  private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
   protected isSubmitting = select(ProjectOverviewSelectors.getUpdatePublicStatusSubmitting);
   private newPublicStatus = signal(this.dialogConfig.data.newPublicStatus);
@@ -33,9 +34,17 @@ export class TogglePublicityDialogComponent {
   });
 
   toggleProjectPublicity() {
-    this.store
-      .dispatch(new UpdateProjectPublicStatus(this.projectId(), this.newPublicStatus()))
-      .pipe(tap(() => this.dialogRef.close()))
-      .subscribe();
+    this.store.dispatch(new UpdateProjectPublicStatus(this.projectId(), this.newPublicStatus())).subscribe({
+      next: () => {
+        this.dialogRef.close();
+        this.toastService.showSuccess(
+          this.translateService.instant(
+            this.newPublicStatus()
+              ? 'project.overview.dialog.toast.makePublic.success'
+              : 'project.overview.dialog.toast.makePrivate.success'
+          )
+        );
+      },
+    });
   }
 }
