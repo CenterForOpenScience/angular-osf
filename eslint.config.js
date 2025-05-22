@@ -55,7 +55,7 @@ module.exports = tseslint.config(
             ['^ngx-', '^@ngx', '^ng-'],
 
             // Third-party packages (primeng)
-            ['^primeng'],
+            ['^@primeng', '^primeng'],
 
             // RxJS packages (rxjs or @rxjs/...)
             ['^rxjs', '^rxjs/operators'],

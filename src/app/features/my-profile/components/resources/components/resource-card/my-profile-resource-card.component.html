@@ -13,8 +13,7 @@
             @if (item()?.resourceType === ResourceType.File && item()?.fileName) {
               <a class="title" [href]="item()?.id">{{ item()?.fileName }}</a>
             } @else if (item()?.title && item()?.title) {
-              @let id = item()?.id;
-              @let url = id ? '/my-projects/' + id.split('/')?.pop() + '/overview' : '';
+              @let url = item()?.id ? '/my-projects/' + item()?.id?.split('/')?.pop() + '/overview' : '';
               <a class="title" [routerLink]="url">{{ item()?.title }}</a>
             }
             @if (item()?.orcid) {

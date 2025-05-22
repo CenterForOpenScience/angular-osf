@@ -1,7 +1,8 @@
+@use "sass:math";
 @use "assets/styles/variables" as var;
 
 @function rem($px) {
-  @return ($px / var.$base-font-size) * 1rem;
+  @return math.div($px, var.$base-font-size) * 1rem;
 }
 
 @mixin flex-center {

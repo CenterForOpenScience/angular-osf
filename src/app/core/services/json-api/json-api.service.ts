@@ -1,6 +1,6 @@
 import { map, Observable } from 'rxjs';
 
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
@@ -10,19 +10,10 @@ import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
 })
 export class JsonApiService {
   http: HttpClient = inject(HttpClient);
-  readonly #token = 'Bearer 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt';
-  // OBJoUomBgbUuDgQo5JoaSKNya6XaYcd0ojAX1XOLmWi6J2arQPzByxyEi81fHE60drQUWv
-  // UlO9O9GNKgVzJD7pUeY53jiQTKJ4U2znXVWNvh0KZQruoENuILx0IIYf9LoDz7Duq72EIm
-  readonly #headers = new HttpHeaders({
-    Authorization: this.#token,
-    Accept: 'application/vnd.api+json',
-    'Content-Type': 'application/vnd.api+json',
-  });
 
   get<T>(url: string, params?: Record<string, unknown>): Observable<T> {
     return this.http.get<T>(url, {
       params: this.buildHttpParams(params),
-      headers: this.#headers,
     });
   }
 
@@ -49,25 +40,20 @@ export class JsonApiService {
   post<T>(url: string, body: unknown, params?: Record<string, unknown>): Observable<T> {
     return this.http
       .post<JsonApiResponse<T, null>>(url, body, {
-        headers: this.#headers,
         params: this.buildHttpParams(params),
       })
       .pipe(map((response) => response.data));
   }
 
   patch<T>(url: string, body: unknown): Observable<T> {
-    return this.http
-      .patch<JsonApiResponse<T, null>>(url, body, { headers: this.#headers })
-      .pipe(map((response) => response.data));
+    return this.http.patch<JsonApiResponse<T, null>>(url, body).pipe(map((response) => response.data));
   }
 
   put<T>(url: string, body: unknown): Observable<T> {
-    return this.http
-      .put<JsonApiResponse<T, null>>(url, body, { headers: this.#headers })
-      .pipe(map((response) => response.data));
+    return this.http.put<JsonApiResponse<T, null>>(url, body).pipe(map((response) => response.data));
   }
 
   delete(url: string, body?: unknown): Observable<void> {
-    return this.http.delete<void>(url, { headers: this.#headers, body: body });
+    return this.http.delete<void>(url, { body: body });
   }
 }

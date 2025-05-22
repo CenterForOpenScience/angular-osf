@@ -18,7 +18,6 @@ import { ResourceTab } from '@shared/entities/resource-card/resource-tab.enum';
 
 @Component({
   selector: 'osf-my-profile',
-  standalone: true,
   imports: [
     Button,
     DatePipe,

@@ -7,5 +7,5 @@ export { PasswordInputHintComponent } from './password-input-hint/password-input
 export { PieChartComponent } from './pie-chart/pie-chart.component';
 export { SearchInputComponent } from './search-input/search-input.component';
 export { SubHeaderComponent } from './sub-header/sub-header.component';
-export * from './view-only-table/view-only-table.component';
+export { ToastComponent } from './toast/toast.component';
 export * from './view-only-table/view-only-table.component';
