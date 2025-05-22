@@ -17,6 +17,15 @@
         }
       }
 
+      tr.loading-row {
+        td {
+          background: transparent;
+          border: none;
+          padding: 0;
+          width: 100%;
+        }
+      }
+
       th,
       td {
         color: var.$dark-blue-1;

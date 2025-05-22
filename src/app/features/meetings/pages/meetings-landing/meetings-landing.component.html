@@ -12,13 +12,12 @@
   <osf-search-input
     class="w-full mt-4"
     [searchValue]="searchValue()"
-    (searchValueChange)="searchValue.set($event || '')"
+    (searchValueChange)="onSearchChange($event || '')"
     [placeholder]="'meetings.landing.searchPlaceholder' | translate"
   />
-
   <p-table
     class="mt-4"
-    [value]="meetings()"
+    [value]="isMeetingsLoading() ? skeletonData : meetings()"
     [rows]="tableParams().rows"
     [first]="tableParams().firstRowIndex"
     [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
@@ -34,13 +33,15 @@
     (onPage)="onPageChange($event)"
     (onSort)="onSort($event)"
     [sortField]="sortColumn()"
+    [sortOrder]="sortOrder() === 0 ? 1 : -1"
     [customSort]="true"
+    [resetPageOnSort]="false"
   >
     <ng-template #header>
       <tr>
-        <th pSortableColumn="title">
+        <th pSortableColumn="name">
           {{ 'meetings.landing.table.columns.title' | translate }}
-          <p-sortIcon field="title" />
+          <p-sortIcon field="name" />
         </th>
         <th pSortableColumn="submissionsCount">
           {{ 'meetings.landing.table.columns.submissions' | translate }}
@@ -57,35 +58,43 @@
       </tr>
     </ng-template>
     <ng-template #body let-item>
-      <tr class="cursor-pointer" (click)="navigateToMeeting(item)">
-        <td>{{ item.title }}</td>
-        <td>{{ item.submissionsCount }}</td>
-        <td>{{ item.location }}</td>
-        <td>{{ item.startDate | date: 'MMM d, y, h:mm a' }}</td>
-      </tr>
+      @if (item !== 1) {
+        <tr class="cursor-pointer" (click)="navigateToMeeting(item)">
+          <td>{{ item.name }}</td>
+          <td>{{ item.submissionsCount }}</td>
+          <td>{{ item.location }}</td>
+          <td>{{ item.startDate | date: 'MMM d, y, h:mm a' }}</td>
+        </tr>
+      } @else {
+        <tr class="loading-row">
+          <td colspan="4">
+            <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+          </td>
+        </tr>
+      }
     </ng-template>
   </p-table>
 
-  <section class="flex lg:flex-row flex-column gap-3 w-full mt-6">
-    <p-card class="lg:w-4 w-12">
+  <section class="flex flex-column gap-3 w-full mt-6 lg:flex-row">
+    <p-card class="w-12 lg:w-4">
       <div class="flex flex-column align-items-center justify-content-center gap-4 lg:h-18rem">
-        <img src="../../../../../assets/icons/colored/discover.svg" alt="Discover" class="w-8rem h-8rem" />
+        <img src="assets/icons/colored/discover.svg" alt="Discover" class="w-8rem h-8rem" />
         <h2>{{ 'meetings.landing.features.discover.title' | translate }}</h2>
         <p class="text-center">{{ 'meetings.landing.features.discover.description' | translate }}</p>
       </div>
     </p-card>
 
-    <p-card class="lg:w-4 w-12 h-18rem">
+    <p-card class="w-12 lg:w-4">
       <div class="flex flex-column align-items-center justify-content-center gap-4 lg:h-18rem">
-        <img src="../../../../../assets/icons/colored/share.svg" alt="Share" class="w-8rem h-8rem" />
+        <img src="assets/icons/colored/share.svg" alt="Share" class="w-8rem h-8rem" />
         <h2>{{ 'meetings.landing.features.share.title' | translate }}</h2>
         <p class="text-center">{{ 'meetings.landing.features.share.description' | translate }}</p>
       </div>
     </p-card>
 
-    <p-card class="lg:w-4 w-12">
+    <p-card class="w-12 lg:w-4">
       <div class="flex flex-column align-items-center justify-content-center gap-4 lg:h-18rem">
-        <img src="../../../../../assets/icons/colored/enhance.svg" alt="Enhance" class="w-8rem h-8rem" />
+        <img src="assets/icons/colored/enhance.svg" alt="Enhance" class="w-8rem h-8rem" />
         <h2>{{ 'meetings.landing.features.enhance.title' | translate }}</h2>
         <p class="text-center">{{ 'meetings.landing.features.enhance.description' | translate }}</p>
       </div>

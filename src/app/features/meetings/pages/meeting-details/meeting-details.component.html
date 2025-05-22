@@ -1,16 +1,18 @@
-<osf-sub-header [title]="meeting().title" [description]="pageDescription()" />
+@if (meeting()) {
+  <osf-sub-header [title]="meeting()!.name" [description]="pageDescription()" />
+}
 
 <section class="flex-1 flex flex-column bg-white p-4">
   <osf-search-input
     class="w-full mt-4"
     [searchValue]="searchValue()"
-    (searchValueChange)="searchValue.set($event || '')"
+    (searchValueChange)="onSearchChange($event || '')"
     [placeholder]="'meetings.details.searchPlaceholder' | translate"
   />
 
   <p-table
     class="mt-4"
-    [value]="meetingSubmissions()"
+    [value]="isMeetingSubmissionsLoading() ? skeletonData : meetingSubmissions()"
     [rows]="tableParams().rows"
     [first]="tableParams().firstRowIndex"
     [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
@@ -26,7 +28,9 @@
     (onPage)="onPageChange($event)"
     (onSort)="onSort($event)"
     [sortField]="sortColumn()"
+    [sortOrder]="sortOrder() === 0 ? 1 : -1"
     [customSort]="true"
+    [resetPageOnSort]="false"
   >
     <ng-template #header>
       <tr>
@@ -53,23 +57,35 @@
       </tr>
     </ng-template>
     <ng-template #body let-item>
-      <tr class="cursor-pointer" [routerLink]="['/my-projects', item.id, 'overview']">
-        <td>{{ item.title }}</td>
-        <td>{{ item.authorName }}</td>
-        <td>{{ item.meetingCategory }}</td>
-        <td>{{ item.dateCreated | date: 'MMM d, y, h:mm a' }}</td>
-        <td>
-          <p-button
-            [label]="'meetings.details.downloadButton' | translate"
-            icon="pi pi-download"
-            class="mr-1"
-            severity="secondary"
-            [raised]="true"
-            (click)="downloadSubmission($event, item)"
-          />
-          {{ item.downloadCount }}
-        </td>
-      </tr>
+      @if (item !== 1) {
+        <tr class="cursor-pointer" [routerLink]="['/my-projects', item.id, 'overview']">
+          <td>{{ item.title }}</td>
+          <td>{{ item.authorName }}</td>
+          <td>{{ item.meetingCategory }}</td>
+          <td>{{ item.dateCreated | date: 'MMM d, y, h:mm a' }}</td>
+          <td>
+            @if (item.downloadCount) {
+              <p-button
+                [label]="'meetings.details.downloadButton' | translate"
+                icon="pi pi-download"
+                class="mr-1"
+                severity="secondary"
+                [raised]="true"
+                (click)="downloadSubmission($event, item)"
+              />
+              {{ item.downloadCount }}
+            } @else {
+              -
+            }
+          </td>
+        </tr>
+      } @else {
+        <tr class="loading-row">
+          <td colspan="5">
+            <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+          </td>
+        </tr>
+      }
     </ng-template>
   </p-table>
 </section>
