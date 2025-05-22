@@ -6,6 +6,7 @@ import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ForkProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { ToastService } from '@shared/services';
@@ -28,11 +29,14 @@ export class ForkDialogComponent {
     const project = this.store.selectSnapshot(ProjectOverviewSelectors.getProject);
     if (!project) return;
 
-    this.store.dispatch(new ForkProject(project.id)).subscribe({
-      next: () => {
-        this.dialogRef.close();
-        this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.fork.success'));
-      },
-    });
+    this.store
+      .dispatch(new ForkProject(project.id))
+      .pipe(takeUntilDestroyed())
+      .subscribe({
+        next: () => {
+          this.dialogRef.close();
+          this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.fork.success'));
+        },
+      });
   }
 }

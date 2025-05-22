@@ -7,6 +7,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
 
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { DeleteComponent, GetComponents, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
@@ -50,14 +51,17 @@ export class DeleteComponentDialogComponent {
 
     if (!componentId || !project) return;
 
-    this.store.dispatch(new DeleteComponent(componentId)).subscribe({
-      next: () => {
-        this.dialogRef.close();
-        this.store.dispatch(new GetComponents(project.id));
-        this.toastService.showSuccess(
-          this.translateService.instant('project.overview.dialog.toast.deleteComponent.success')
-        );
-      },
-    });
+    this.store
+      .dispatch(new DeleteComponent(componentId))
+      .pipe(takeUntilDestroyed())
+      .subscribe({
+        next: () => {
+          this.dialogRef.close();
+          this.store.dispatch(new GetComponents(project.id));
+          this.toastService.showSuccess(
+            this.translateService.instant('project.overview.dialog.toast.deleteComponent.success')
+          );
+        },
+      });
   }
 }

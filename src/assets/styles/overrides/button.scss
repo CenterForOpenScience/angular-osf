@@ -254,14 +254,14 @@
 }
 
 .overview-btn {
-  width: 5.7rem;
+  width: mix.rem(80px);
 }
 
 .bookmark-btn {
   .p-button {
     .p-button-icon {
-      height: 21px;
-      width: 21px;
+      height: mix.rem(21px);
+      width: mix.rem(21px);
     }
   }
 }

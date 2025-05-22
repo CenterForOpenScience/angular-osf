@@ -19,28 +19,30 @@ import {
 } from './project-overview.actions';
 import { ProjectOverviewStateModel } from './project-overview.model';
 
+const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
+  project: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  components: {
+    data: [],
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  linkedProjects: {
+    data: [],
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+};
+
 @State<ProjectOverviewStateModel>({
   name: 'projectOverview',
-  defaults: {
-    project: {
-      data: null,
-      isLoading: false,
-      isSubmitting: false,
-      error: null,
-    },
-    components: {
-      data: [],
-      isLoading: false,
-      isSubmitting: false,
-      error: null,
-    },
-    linkedProjects: {
-      data: [],
-      isLoading: false,
-      isSubmitting: false,
-      error: null,
-    },
-  },
+  defaults: PROJECT_OVERVIEW_DEFAULTS,
 })
 @Injectable()
 export class ProjectOverviewState {
@@ -72,24 +74,7 @@ export class ProjectOverviewState {
 
   @Action(ClearProjectOverview)
   clearProjectOverview(ctx: StateContext<ProjectOverviewStateModel>) {
-    ctx.patchState({
-      project: {
-        data: null,
-        isLoading: false,
-        error: null,
-      },
-      components: {
-        data: [],
-        isLoading: false,
-        isSubmitting: false,
-        error: null,
-      },
-      linkedProjects: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-    });
+    ctx.patchState(PROJECT_OVERVIEW_DEFAULTS);
   }
 
   @Action(UpdateProjectPublicStatus)

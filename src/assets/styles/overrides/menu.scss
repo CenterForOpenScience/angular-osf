@@ -1,4 +1,5 @@
 @use "../variables" as var;
+@use "../mixins" as mix;
 
 .p-menu-item-content {
   a {
@@ -16,6 +17,6 @@
 }
 
 .p-menu {
-  margin-top: 0.5rem;
+  margin-top: mix.rem(7px);
   min-width: fit-content;
 }

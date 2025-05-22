@@ -10,6 +10,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { NgClass, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -24,6 +25,7 @@ import {
   ForkDialogComponent,
   TogglePublicityDialogComponent,
 } from '@osf/features/project/overview/components';
+import { SOCIAL_ACTION_ITEMS } from '@osf/features/project/overview/helpers/social-actions.constants';
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { ToastService } from '@shared/services';
 
@@ -39,14 +41,14 @@ export class OverviewToolbarComponent {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
+  protected isPublic = signal(false);
+  protected isBookmarked = signal(false);
   protected currentProject = select(ProjectOverviewSelectors.getProject);
   protected isBookmarksLoading = select(MyProjectsSelectors.getBookmarksLoading);
   protected isBookmarksSubmitting = select(CollectionsSelectors.getBookmarksCollectionIdSubmitting);
-  protected isPublic = signal(false);
   protected bookmarksCollectionId = select(CollectionsSelectors.getBookmarksCollectionId);
   protected bookmarkedProjects = select(MyProjectsSelectors.getBookmarks);
-  protected isBookmarked = signal(false);
-
+  protected readonly socialsActionItems = SOCIAL_ACTION_ITEMS;
   protected readonly forkActionItems = [
     {
       label: 'project.overview.actions.forkProject',
@@ -61,25 +63,6 @@ export class OverviewToolbarComponent {
       command: () => {
         //TODO: RNa redirect to duplication page
       },
-    },
-  ];
-
-  protected readonly socialsActionItems = [
-    {
-      label: 'project.overview.actions.socials.email',
-      icon: 'email',
-    },
-    {
-      label: 'project.overview.actions.socials.x',
-      icon: 'x',
-    },
-    {
-      label: 'project.overview.actions.socials.linkedIn',
-      icon: 'linkedin',
-    },
-    {
-      label: 'project.overview.actions.socials.facebook',
-      icon: 'facebook',
     },
   ];
 
@@ -166,19 +149,27 @@ export class OverviewToolbarComponent {
     const newBookmarkState = !this.isBookmarked();
 
     if (!newBookmarkState) {
-      this.store.dispatch(new RemoveProjectFromBookmarks(bookmarksId, project.id)).subscribe({
-        next: () => {
-          this.isBookmarked.set(newBookmarkState);
-          this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.bookmark.remove'));
-        },
-      });
+      this.store
+        .dispatch(new RemoveProjectFromBookmarks(bookmarksId, project.id))
+        .pipe(takeUntilDestroyed())
+        .subscribe({
+          next: () => {
+            this.isBookmarked.set(newBookmarkState);
+            this.toastService.showSuccess(
+              this.translateService.instant('project.overview.dialog.toast.bookmark.remove')
+            );
+          },
+        });
     } else {
-      this.store.dispatch(new AddProjectToBookmarks(bookmarksId, project.id)).subscribe({
-        next: () => {
-          this.isBookmarked.set(newBookmarkState);
-          this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.bookmark.add'));
-        },
-      });
+      this.store
+        .dispatch(new AddProjectToBookmarks(bookmarksId, project.id))
+        .pipe(takeUntilDestroyed())
+        .subscribe({
+          next: () => {
+            this.isBookmarked.set(newBookmarkState);
+            this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.bookmark.add'));
+          },
+        });
     }
   }
 }

@@ -14,7 +14,7 @@ import { LinkedProjectsComponent } from '@osf/features/project/overview/componen
 import { OverviewComponentsComponent } from '@osf/features/project/overview/components/overview-components/overview-components.component';
 import { OverviewMetadataComponent } from '@osf/features/project/overview/components/overview-metadata/overview-metadata.component';
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components/overview-toolbar/overview-toolbar.component';
-import { OverviewWikiComponent } from '@osf/features/project/overview/components/project-wiki/overview-wiki.component';
+import { OverviewWikiComponent } from '@osf/features/project/overview/components/overview-wiki/overview-wiki.component';
 import { RecentActivityComponent } from '@osf/features/project/overview/components/recent-activity/recent-activity.component';
 import { ClearWiki, GetHomeWiki } from '@osf/features/project/wiki/store';
 import { LoadingSpinnerComponent } from '@shared/components';
