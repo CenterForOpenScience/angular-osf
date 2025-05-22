@@ -5,7 +5,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { DuplicateProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { ToastService } from '@shared/services';
@@ -22,17 +23,23 @@ export class DuplicateDialogComponent {
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
+  protected destroyRef = inject(DestroyRef);
   protected isSubmitting = select(ProjectOverviewSelectors.getDuplicateProjectSubmitting);
 
   protected handleDuplicateConfirm(): void {
     const project = this.store.selectSnapshot(ProjectOverviewSelectors.getProject);
     if (!project) return;
 
-    this.store.dispatch(new DuplicateProject(project.id, project.title)).subscribe({
-      next: () => {
-        this.dialogRef.close();
-        this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.duplicate.success'));
-      },
-    });
+    this.store
+      .dispatch(new DuplicateProject(project.id, project.title))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.dialogRef.close();
+          this.toastService.showSuccess(
+            this.translateService.instant('project.overview.dialog.toast.duplicate.success')
+          );
+        },
+      });
   }
 }

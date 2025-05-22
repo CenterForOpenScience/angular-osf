@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
@@ -27,6 +27,7 @@ export class DeleteComponentDialogComponent {
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
+  protected destroyRef = inject(DestroyRef);
   private componentId = signal(this.dialogConfig.data.componentId);
   protected scientistNames = ScientistsNames;
   protected currentProject = select(ProjectOverviewSelectors.getProject);
@@ -53,7 +54,7 @@ export class DeleteComponentDialogComponent {
 
     this.store
       .dispatch(new DeleteComponent(componentId))
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.dialogRef.close();

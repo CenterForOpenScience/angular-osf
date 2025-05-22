@@ -1,4 +1,4 @@
-import { createDispatchMap, select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { ButtonModule } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject, On
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { GetBookmarksCollectionId } from '@osf/features/collections/store';
+import { ClearCollections, GetBookmarksCollectionId } from '@osf/features/collections/store';
 import { LinkedProjectsComponent } from '@osf/features/project/overview/components/linked-projects/linked-projects.component';
 import { OverviewComponentsComponent } from '@osf/features/project/overview/components/overview-components/overview-components.component';
 import { OverviewMetadataComponent } from '@osf/features/project/overview/components/overview-metadata/overview-metadata.component';
@@ -52,7 +52,6 @@ import { ProjectOverviewSelectors } from './store/project-overview.selectors';
 export class ProjectOverviewComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
-  private store = inject(Store);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
 
@@ -62,6 +61,9 @@ export class ProjectOverviewComponent implements OnInit {
     getHomeWiki: GetHomeWiki,
     getComponents: GetComponents,
     getLinkedProjects: GetLinkedProjects,
+    clearProjectOverview: ClearProjectOverview,
+    clearWiki: ClearWiki,
+    clearCollections: ClearCollections,
   });
 
   protected currentProject = select(ProjectOverviewSelectors.getProject);
@@ -84,8 +86,9 @@ export class ProjectOverviewComponent implements OnInit {
 
   private setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.store.dispatch(new ClearProjectOverview());
-      this.store.dispatch(new ClearWiki());
+      this.actions.clearProjectOverview();
+      this.actions.clearWiki();
+      this.actions.clearCollections();
     });
   }
 }

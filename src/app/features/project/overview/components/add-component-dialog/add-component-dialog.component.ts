@@ -11,7 +11,7 @@ import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -47,6 +47,7 @@ export class AddComponentDialogComponent implements OnInit {
   private toastService = inject(ToastService);
   protected isMobile = toSignal(inject(IS_XSMALL));
   protected dialogRef = inject(DynamicDialogRef);
+  protected destroyRef = inject(DestroyRef);
   protected ComponentFormControls = ComponentFormControls;
   protected storageLocations = STORAGE_LOCATIONS;
   protected isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
@@ -129,7 +130,7 @@ export class AddComponentDialogComponent implements OnInit {
           formValue.addContributors
         )
       )
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.dialogRef.close();

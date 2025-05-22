@@ -9,7 +9,7 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NgClass, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -41,6 +41,7 @@ export class OverviewToolbarComponent {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
+  protected destroyRef = inject(DestroyRef);
   protected isPublic = signal(false);
   protected isBookmarked = signal(false);
   protected currentProject = select(ProjectOverviewSelectors.getProject);
@@ -151,7 +152,7 @@ export class OverviewToolbarComponent {
     if (!newBookmarkState) {
       this.store
         .dispatch(new RemoveProjectFromBookmarks(bookmarksId, project.id))
-        .pipe(takeUntilDestroyed())
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.isBookmarked.set(newBookmarkState);
@@ -163,7 +164,7 @@ export class OverviewToolbarComponent {
     } else {
       this.store
         .dispatch(new AddProjectToBookmarks(bookmarksId, project.id))
-        .pipe(takeUntilDestroyed())
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.isBookmarked.set(newBookmarkState);

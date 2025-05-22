@@ -6,19 +6,26 @@ import { Injectable } from '@angular/core';
 
 import { CollectionsService } from '../services/collections.service';
 
-import { AddProjectToBookmarks, GetBookmarksCollectionId, RemoveProjectFromBookmarks } from './collections.actions';
+import {
+  AddProjectToBookmarks,
+  ClearCollections,
+  GetBookmarksCollectionId,
+  RemoveProjectFromBookmarks,
+} from './collections.actions';
 import { CollectionsStateModel } from './collections.model';
+
+const COLLECTIONS_DEFAULTS: CollectionsStateModel = {
+  bookmarksId: {
+    data: '',
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+};
 
 @State<CollectionsStateModel>({
   name: 'collections',
-  defaults: {
-    bookmarksId: {
-      data: '',
-      isLoading: false,
-      isSubmitting: false,
-      error: null,
-    },
-  },
+  defaults: COLLECTIONS_DEFAULTS,
 })
 @Injectable()
 export class CollectionsState {
@@ -92,6 +99,11 @@ export class CollectionsState {
       }),
       catchError((error) => this.handleError(ctx, 'bookmarksId', error))
     );
+  }
+
+  @Action(ClearCollections)
+  clearCollections(ctx: StateContext<CollectionsStateModel>) {
+    ctx.patchState(COLLECTIONS_DEFAULTS);
   }
 
   private handleError(ctx: StateContext<CollectionsStateModel>, section: keyof CollectionsStateModel, error: Error) {

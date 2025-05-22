@@ -5,7 +5,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ProjectOverviewSelectors, UpdateProjectPublicStatus } from '@osf/features/project/overview/store';
 import { ToastService } from '@shared/services';
@@ -23,6 +24,7 @@ export class TogglePublicityDialogComponent {
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
+  protected destroyRef = inject(DestroyRef);
   protected isSubmitting = select(ProjectOverviewSelectors.getUpdatePublicStatusSubmitting);
   private newPublicStatus = signal(this.dialogConfig.data.newPublicStatus);
   private projectId = signal(this.dialogConfig.data.projectId);
@@ -34,17 +36,20 @@ export class TogglePublicityDialogComponent {
   });
 
   toggleProjectPublicity() {
-    this.store.dispatch(new UpdateProjectPublicStatus(this.projectId(), this.newPublicStatus())).subscribe({
-      next: () => {
-        this.dialogRef.close();
-        this.toastService.showSuccess(
-          this.translateService.instant(
-            this.newPublicStatus()
-              ? 'project.overview.dialog.toast.makePublic.success'
-              : 'project.overview.dialog.toast.makePrivate.success'
-          )
-        );
-      },
-    });
+    this.store
+      .dispatch(new UpdateProjectPublicStatus(this.projectId(), this.newPublicStatus()))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.dialogRef.close();
+          this.toastService.showSuccess(
+            this.translateService.instant(
+              this.newPublicStatus()
+                ? 'project.overview.dialog.toast.makePublic.success'
+                : 'project.overview.dialog.toast.makePrivate.success'
+            )
+          );
+        },
+      });
   }
 }

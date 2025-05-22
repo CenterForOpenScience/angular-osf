@@ -19,3 +19,7 @@ export class RemoveProjectFromBookmarks {
     public projectId: string
   ) {}
 }
+
+export class ClearCollections {
+  static readonly type = '[Collections] Clear Collections';
+}

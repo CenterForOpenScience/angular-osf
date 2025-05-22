@@ -5,7 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ForkProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
@@ -23,6 +23,7 @@ export class ForkDialogComponent {
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
+  protected destroyRef = inject(DestroyRef);
   protected isSubmitting = select(ProjectOverviewSelectors.getForkProjectSubmitting);
 
   protected handleForkConfirm(): void {
@@ -31,7 +32,7 @@ export class ForkDialogComponent {
 
     this.store
       .dispatch(new ForkProject(project.id))
-      .pipe(takeUntilDestroyed())
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.dialogRef.close();
