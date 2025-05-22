@@ -1,17 +1,13 @@
+.p-toast-message-content {
+  align-items: center;
+}
+
 .p-toast-message-icon {
   display: none;
 }
 
-.p-toast-summary {
-  --p-toast-summary-font-weight: 700;
-}
-
 .p-toast-detail {
   display: none;
-}
-
-.p-toast-close-button {
-  margin: -10% 0 0 0;
 }
 
 .p-toast-message-success {
