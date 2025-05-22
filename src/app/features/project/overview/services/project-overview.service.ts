@@ -72,7 +72,7 @@ export class ProjectOverviewService {
         attributes: {
           template_from: projectId,
           category: 'project',
-          title: 'Template from ' + title,
+          title: 'Templated from ' + title,
         },
       },
     };

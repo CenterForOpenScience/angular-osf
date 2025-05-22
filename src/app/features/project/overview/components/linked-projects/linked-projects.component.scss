@@ -1,0 +1,25 @@
+@use "/assets/styles/variables" as var;
+
+.linked-project {
+  border: 1px solid var.$grey-2;
+  border-radius: 12px;
+  color: var.$dark-blue-1;
+
+  &-description {
+    line-height: 24px;
+  }
+
+  &-container {
+    overflow-y: auto;
+    max-height: 21rem;
+  }
+
+  &-wrapper {
+    border: 1px solid var.$grey-2;
+    border-radius: 12px;
+  }
+
+  &-title {
+    color: var.$dark-blue-1;
+  }
+}

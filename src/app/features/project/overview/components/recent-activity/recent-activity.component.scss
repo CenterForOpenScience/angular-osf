@@ -1,0 +1,15 @@
+@use "/assets/styles/variables" as var;
+
+.activities {
+  border: 1px solid var.$grey-2;
+  border-radius: 12px;
+  color: var.$dark-blue-1;
+
+  &-activity {
+    height: 35px;
+    border-bottom: 1px solid var.$grey-2;
+  }
+  &-description {
+    line-height: 24px;
+  }
+}

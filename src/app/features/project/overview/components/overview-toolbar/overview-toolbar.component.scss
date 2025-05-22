@@ -1,0 +1,14 @@
+@use "/assets/styles/variables" as var;
+
+.inactive {
+  color: var.$grey-1;
+}
+
+.storage {
+  color: var.$pr-blue-1;
+  font-size: 1.7rem;
+}
+
+.overview-icon {
+  font-size: 1.5rem;
+}

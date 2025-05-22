@@ -1,0 +1,95 @@
+@let project = currentProject();
+
+@if (project) {
+  <div
+    class="pl-3 pb-5 pr-3 flex flex-column gap-5 sm:pl-5 sm:pr-5 lg:flex-row lg:align-items-center lg:justify-content-between"
+  >
+    <div class="flex gap-3 align-items-start">
+      <div class="flex gap-1" [class.inactive]="isPublic()">
+        <i class="osf-icon-padlock"></i>
+        <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
+      </div>
+
+      <p-toggleswitch [ngModel]="isPublic()" (onChange)="handleToggleProjectPublicity()" />
+
+      <div class="flex gap-2" [class.inactive]="!isPublic()">
+        <i class="osf-icon-padlock-unlock"></i>
+        <p class="font-bold">{{ 'project.overview.header.publicProject' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="flex">
+      <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row-reverse lg:flex-row">
+        @if (project.storage) {
+          <p class="font-bold mr-2 ml-0 mt-2 sm:ml-2 sm:mt-0 sm:align-self-center storage">
+            {{ project.storage.storageUsage }} KB
+          </p>
+        }
+
+        <div class="flex gap-2 justify-content-start">
+          <p-button
+            class="flex overview-btn"
+            [pTooltip]="'project.overview.tooltips.viewOnlyLinks' | translate"
+            tooltipPosition="bottom"
+            [routerLink]="['/my-projects', project.id, 'settings']"
+          >
+            <span>{{ project.viewOnlyLinksCount }}</span>
+            <i class="osf-icon-link overview-icon"></i>
+          </p-button>
+
+          <p-button
+            class="flex overview-btn"
+            (click)="forkActionMenu.toggle($event)"
+            [pTooltip]="'project.overview.tooltips.duplicate' | translate"
+            tooltipPosition="bottom"
+          >
+            <span>{{ project.forksCount }}</span>
+            <i class="osf-icon-duplicate overview-icon"></i>
+            <p-menu appendTo="body" #forkActionMenu [model]="forkActionItems" popup>
+              <ng-template #item let-item>
+                <a class="p-menu-item-link">
+                  {{ item.label | translate }}
+                </a>
+              </ng-template>
+            </p-menu>
+          </p-button>
+
+          <p-button
+            [pTooltip]="'project.overview.tooltips.bookmarks' | translate"
+            tooltipPosition="bottom"
+            class="flex overview-btn bookmark-btn"
+            (onClick)="toggleBookmark()"
+            [loading]="isBookmarksLoading() || isBookmarksSubmitting()"
+          >
+            @if (!isBookmarksLoading() && !isBookmarksSubmitting()) {
+              <i class="overview-icon" [ngClass]="isBookmarked() ? 'osf-icon-bookmark-fill' : 'osf-icon-bookmark'"></i>
+            }
+          </p-button>
+
+          <p-button
+            class="flex overview-btn"
+            (click)="socialsActionMenu.toggle($event)"
+            [pTooltip]="'project.overview.tooltips.share' | translate"
+            tooltipPosition="bottom"
+          >
+            <span>{{ socialsActionItems.length }}</span>
+            <i class="osf-icon-share overview-icon"></i>
+            <p-menu appendTo="body" #socialsActionMenu [model]="socialsActionItems" popup>
+              <ng-template #item let-item>
+                <a class="p-menu-item-link">
+                  <img
+                    height="15"
+                    width="15"
+                    [ngSrc]="'assets/icons/socials/' + item.icon + '.svg'"
+                    alt="social-icon"
+                  />
+                  {{ item.label | translate }}
+                </a>
+              </ng-template>
+            </p-menu>
+          </p-button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

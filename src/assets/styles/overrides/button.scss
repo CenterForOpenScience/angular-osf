@@ -2,6 +2,7 @@
 @use "../mixins" as mix;
 
 .p-button {
+  flex: 1;
   border: none;
   padding: 0.7rem 1.15rem;
   font-size: 1rem;
@@ -250,6 +251,10 @@
   i {
     color: var.$grey-1;
   }
+}
+
+.overview-btn {
+  width: 5.7rem;
 }
 
 .bookmark-btn {

@@ -1,0 +1,56 @@
+<div class="component flex flex-column p-2 pb-4 gap-4">
+  <div class="flex align-items-center pt-3 pl-3 pr-3 justify-content-between">
+    <h2>{{ 'project.overview.components.title' | translate }}</h2>
+
+    <p-button
+      (onClick)="handleAddComponent()"
+      severity="secondary"
+      [label]="'project.overview.components.addComponentButton' | translate"
+    />
+  </div>
+
+  <div class="component-container pl-3 pr-3 flex flex-column gap-5">
+    @if (isComponentsLoading()) {
+      <p-skeleton width="100%" height="7rem" />
+    } @else {
+      @if (components().length) {
+        @for (component of components(); track component.id) {
+          <div class="component-wrapper flex flex-column p-3 gap-3">
+            <div class="flex justify-content-between align-items-center">
+              <h2 class="flex gap-2">
+                <i [ngClass]="component.public ? 'osf-icon-padlock-unlock' : 'osf-icon-padlock'"></i>
+                <a class="component-title" [href]="'my-projects/' + component.id">{{ component.title }}</a>
+              </h2>
+              <div>
+                <p-button class="btn-icon" (click)="componentActionMenu.toggle($event)">
+                  <i class="osf-icon-dots"></i>
+                </p-button>
+
+                <p-menu appendTo="body" #componentActionMenu [model]="componentActionItems(component.id)" popup>
+                  <ng-template #item let-item>
+                    <a class="p-menu-item-link">{{ item.label | translate }}</a>
+                  </ng-template>
+                </p-menu>
+              </div>
+            </div>
+
+            <div class="component-name flex flex-column gap-2">
+              @for (contributor of component.contributors; track contributor.id) {
+                <div>
+                  <a class="font-bold"> {{ contributor.fullName }}</a>
+                  <span>{{ $last ? '' : ',' }}</span>
+                </div>
+              }
+
+              <div class="component-description">
+                <osf-truncated-text [text]="component.description" />
+              </div>
+            </div>
+          </div>
+        }
+      } @else {
+        <div [innerHtml]="'project.overview.components.noComponentsMessage' | translate"></div>
+      }
+    }
+  </div>
+</div>
