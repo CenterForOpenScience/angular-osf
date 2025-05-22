@@ -1,0 +1,12 @@
+import { ToastModule } from 'primeng/toast';
+
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
+@Component({
+  selector: 'osf-toast',
+  imports: [ToastModule],
+  templateUrl: './toast.component.html',
+  styleUrl: './toast.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ToastComponent {}

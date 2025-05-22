@@ -1,31 +1,7 @@
 <osf-sub-header [title]="'navigation.project.analytics' | translate"></osf-sub-header>
 
 <section class="flex flex-column bg-white flex-1 h-full p-5 gap-4">
-  <div class="flex flex-column sm:flex-row sm:justify-content-between gap-3 sm:gap-4">
-    <osf-analytics-kpi
-      [isLoading]="isRelatedCountsLoading()"
-      [title]="'project.analytics.kpi.forks'"
-      [value]="relatedCounts()?.forksCount"
-      [showButton]="true"
-      [buttonLabel]="'project.analytics.kpi.viewForks'"
-    ></osf-analytics-kpi>
-
-    <osf-analytics-kpi
-      [isLoading]="isRelatedCountsLoading()"
-      [title]="'project.analytics.kpi.linksToThisProject'"
-      [value]="relatedCounts()?.linksToCount"
-      [showButton]="true"
-      [buttonLabel]="'project.analytics.kpi.viewLinks'"
-    ></osf-analytics-kpi>
-
-    <osf-analytics-kpi
-      [isLoading]="isRelatedCountsLoading()"
-      [title]="'project.analytics.kpi.templateCopies'"
-      [value]="relatedCounts()?.templateCount"
-    ></osf-analytics-kpi>
-  </div>
-
-  <div class="flex align-items-center justify-content-end mt-6">
+  <div class="flex align-items-center justify-content-end">
     <label class="date-range-label" for="date-range">{{ 'project.analytics.charts.showAnalytics' | translate }}</label>
 
     <p-select
@@ -47,7 +23,7 @@
     </p-select>
   </div>
 
-  <div class="flex flex-column xl:flex-row flex-wrap gap-4" [class]="{ disabled: isMetricsError() }">
+  <div class="flex flex-column flex-wrap gap-4 xl:flex-row" [class]="{ disabled: isMetricsError() }">
     <osf-line-chart
       class="chart xl-half-width"
       [isLoading]="isMetricsLoading()"
@@ -81,5 +57,29 @@
       [labels]="popularPagesLabels"
       [datasets]="popularPagesDataset"
     ></osf-bar-chart>
+  </div>
+
+  <div class="flex flex-column gap-3 mt-6 sm:flex-row sm:justify-content-between sm:gap-4">
+    <osf-analytics-kpi
+      [isLoading]="isRelatedCountsLoading()"
+      [title]="'project.analytics.kpi.forks'"
+      [value]="relatedCounts()?.forksCount"
+      [showButton]="true"
+      [buttonLabel]="'project.analytics.kpi.viewForks'"
+    ></osf-analytics-kpi>
+
+    <osf-analytics-kpi
+      [isLoading]="isRelatedCountsLoading()"
+      [title]="'project.analytics.kpi.linksToThisProject'"
+      [value]="relatedCounts()?.linksToCount"
+      [showButton]="true"
+      [buttonLabel]="'project.analytics.kpi.viewLinks'"
+    ></osf-analytics-kpi>
+
+    <osf-analytics-kpi
+      [isLoading]="isRelatedCountsLoading()"
+      [title]="'project.analytics.kpi.templateCopies'"
+      [value]="relatedCounts()?.templateCount"
+    ></osf-analytics-kpi>
   </div>
 </section>

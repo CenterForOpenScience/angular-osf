@@ -3,7 +3,7 @@ import { provideStore } from '@ngxs/store';
 
 import { TranslateModule } from '@ngx-translate/core';
 
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
 import { provideHttpClient } from '@angular/common/http';
@@ -38,6 +38,7 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideHttpClient(),
     ConfirmationService,
+    MessageService,
     importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
   ],
 };

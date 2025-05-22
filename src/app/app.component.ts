@@ -5,9 +5,11 @@ import { RouterOutlet } from '@angular/router';
 
 import { GetCurrentUser } from '@core/store/user';
 
+import { ToastComponent } from './shared';
+
 @Component({
   selector: 'osf-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ToastComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
