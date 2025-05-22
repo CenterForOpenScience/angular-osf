@@ -59,10 +59,10 @@ export class MyProjectsService {
     } else {
       params['sort'] = '-date_modified';
     }
-    const url = environment.apiUrl + '/' + endpoint + '/';
-    // const url = endpoint.startsWith('collections/')
-    //   ? environment.apiUrl + '/' + endpoint
-    //   : environment.apiUrl + '/users/me/' + endpoint;
+    // const url = environment.apiUrl + '/' + endpoint + '/';
+    const url = endpoint.startsWith('collections/')
+      ? environment.apiUrl + '/' + endpoint
+      : environment.apiUrl + '/users/me/' + endpoint;
 
     return this.#jsonApiService.get<MyProjectsJsonApiResponse>(url, params).pipe(
       map((response: MyProjectsJsonApiResponse) => ({

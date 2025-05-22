@@ -37,6 +37,7 @@ import { ProjectOverviewStateModel } from './project-overview.model';
     linkedProjects: {
       data: [],
       isLoading: false,
+      isSubmitting: false,
       error: null,
     },
   },
@@ -285,6 +286,7 @@ export class ProjectOverviewState {
       [section]: {
         ...ctx.getState()[section],
         isLoading: false,
+        isSubmitting: false,
         error: error.message,
       },
     });

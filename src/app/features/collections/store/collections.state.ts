@@ -99,6 +99,7 @@ export class CollectionsState {
       [section]: {
         ...ctx.getState()[section],
         isLoading: false,
+        isSubmitting: false,
         error: error.message,
       },
     });
