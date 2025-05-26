@@ -6,15 +6,16 @@ import { BehaviorSubject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceTab } from '@osf/features/search/models/resource-tab.enum';
-import { GetResourcesByLink, SearchSelectors } from '@osf/features/search/store';
-import { IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { ResourceTab } from '@osf/shared/enums';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
 
-import { FilterChipsComponent } from './filter-chips/filter-chips.component';
-import { ResourceCardComponent } from './resource-card/resource-card.component';
-import { ResourceFiltersOptionsSelectors } from './resource-filters/filters/store/resource-filters-options.selectors';
-import { ResourceFiltersComponent } from './resource-filters/resource-filters.component';
-import { ResourceFiltersSelectors } from './resource-filters/store';
+import { GetResourcesByLink, SearchSelectors } from '../../store';
+import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
+import { ResourceFiltersOptionsSelectors } from '../filters/store';
+import { ResourceCardComponent } from '../resource-card/resource-card.component';
+import { ResourceFiltersComponent } from '../resource-filters/resource-filters.component';
+import { ResourceFiltersSelectors } from '../resource-filters/store';
+
 import { ResourcesComponent } from './resources.component';
 
 describe('ResourcesComponent', () => {

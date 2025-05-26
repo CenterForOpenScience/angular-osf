@@ -1,5 +1,4 @@
-import { Scope } from '@osf/features/settings/tokens/entities/scope.interface';
-import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
+import { Scope, Token } from '../models';
 
 export interface TokensStateModel {
   scopes: Scope[];

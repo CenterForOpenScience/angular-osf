@@ -15,13 +15,13 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { STORAGE_LOCATIONS } from '@core/constants/storage-locations.constant';
-import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { CreateComponent, GetComponents } from '@osf/features/project/overview/store/project-overview.actions';
-import { ComponentForm } from '@shared/entities/create-component-form.interface';
-import { ComponentFormControls } from '@shared/entities/create-component-form-controls.enum';
-import { ToastService } from '@shared/services';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { STORAGE_LOCATIONS } from '@osf/core/constants';
+import { ComponentFormControls } from '@osf/shared/enums';
+import { ComponentForm } from '@osf/shared/models';
+import { ToastService } from '@osf/shared/services';
+import { IS_XSMALL } from '@osf/shared/utils';
+
+import { CreateComponent, GetComponents, ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-add-component-dialog',

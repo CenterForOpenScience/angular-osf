@@ -6,13 +6,12 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserSelectors } from '@core/store/user/user.selectors';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { UserSelectors } from '@osf/core/store/user';
+import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
+import { IS_XSMALL } from '@osf/shared/utils';
 
-import { AddonCardListComponent } from './addon-card-list/addon-card-list.component';
 import { AddonsComponent } from './addons.component';
+import { AddonCardListComponent } from './components';
 import { AddonsSelectors } from './store';
 
 describe('AddonsComponent', () => {

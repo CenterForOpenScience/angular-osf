@@ -4,8 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { DeleteExternalIdentity } from '@osf/features/settings/account-settings/store/account-settings.actions';
-import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store/account-settings.selectors';
+import { AccountSettingsSelectors, DeleteExternalIdentity } from '../../store';
 
 @Component({
   selector: 'osf-connected-identities',

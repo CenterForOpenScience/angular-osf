@@ -5,7 +5,7 @@ import { RouterOutlet } from '@angular/router';
 
 import { GetCurrentUser } from '@core/store/user';
 
-import { ToastComponent } from './shared';
+import { ToastComponent } from './shared/components';
 
 @Component({
   selector: 'osf-root',

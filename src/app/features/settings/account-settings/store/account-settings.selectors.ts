@@ -1,12 +1,11 @@
 import { Selector } from '@ngxs/store';
 
-import { Institution } from '@osf/features/institutions/entities/institutions.models';
-import { AccountEmail } from '@osf/features/settings/account-settings/models/osf-models/account-email.model';
-import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-models/account-settings.model';
-import { ExternalIdentity } from '@osf/features/settings/account-settings/models/osf-models/external-institution.model';
-import { Region } from '@osf/features/settings/account-settings/models/osf-models/region.model';
-import { AccountSettingsStateModel } from '@osf/features/settings/account-settings/store/account-settings.model';
-import { AccountSettingsState } from '@osf/features/settings/account-settings/store/account-settings.state';
+import { Institution } from '@osf/features/institutions/models';
+
+import { AccountEmail, AccountSettings, ExternalIdentity, Region } from '../models';
+
+import { AccountSettingsStateModel } from './account-settings.model';
+import { AccountSettingsState } from './account-settings.state';
 
 export class AccountSettingsSelectors {
   @Selector([AccountSettingsState])

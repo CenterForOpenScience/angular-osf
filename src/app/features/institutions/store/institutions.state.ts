@@ -4,7 +4,7 @@ import { tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { InstitutionsService } from '@osf/features/institutions/institutions.service';
+import { InstitutionsService } from '../services';
 
 import { GetUserInstitutions } from './institutions.actions';
 import { InstitutionsStateModel } from './institutions.model';

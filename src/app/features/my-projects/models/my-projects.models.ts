@@ -1,4 +1,4 @@
-import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
+import { JsonApiResponse } from '@osf/core/models';
 
 export interface MyProjectsItemGetResponse {
   id: string;

@@ -10,10 +10,11 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 
-import { GetScopes } from '@osf/features/settings/tokens/store';
-import { TokenAddEditFormComponent } from '@osf/features/settings/tokens/token-add-edit-form/token-add-edit-form.component';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { IS_MEDIUM, IS_XSMALL } from '@osf/shared/utils';
+
+import { TokenAddEditFormComponent } from './components';
+import { GetScopes } from './store';
 
 @Component({
   selector: 'osf-tokens',

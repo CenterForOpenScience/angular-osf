@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 
-import { developerAppsRoute } from '@osf/features/settings/developer-apps/developer-apps.route';
-import { SettingsContainerComponent } from '@osf/features/settings/settings-container.component';
-import { tokensAppsRoute } from '@osf/features/settings/tokens/tokens.route';
+import { developerAppsRoute } from './developer-apps/developer-apps.route';
+import { tokensAppsRoute } from './tokens/tokens.route';
+import { SettingsContainerComponent } from './settings-container.component';
 
 export const settingsRoutes: Routes = [
   {
@@ -35,7 +35,7 @@ export const settingsRoutes: Routes = [
           {
             path: 'connect-addon',
             loadComponent: () =>
-              import('./addons/connect-addon/connect-addon.component').then((mod) => mod.ConnectAddonComponent),
+              import('./addons/pages/connect-addon/connect-addon.component').then((mod) => mod.ConnectAddonComponent),
           },
         ],
       },

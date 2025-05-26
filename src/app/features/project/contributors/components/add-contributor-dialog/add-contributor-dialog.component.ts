@@ -5,7 +5,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
-import { SearchInputComponent } from '@osf/shared';
+import { SearchInputComponent } from '@osf/shared/components';
 
 @Component({
   selector: 'osf-add-contributor-dialog',

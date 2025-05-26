@@ -1,4 +1,4 @@
-import { DeveloperApp } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
+import { DeveloperApp } from '../models';
 
 export interface DeveloperAppsStateModel {
   developerApps: DeveloperApp[];

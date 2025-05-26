@@ -2,8 +2,8 @@ import { Selector } from '@ngxs/store';
 
 import { MyProfileStateModel } from '@osf/features/my-profile/store/my-profile.model';
 import { MyProfileState } from '@osf/features/my-profile/store/my-profile.state';
-import { Resource } from '@shared/entities/resource-card/resource.entity';
-import { ResourceTab } from '@shared/entities/resource-card/resource-tab.enum';
+import { ResourceTab } from '@osf/shared/enums/resource-tab.enum';
+import { Resource } from '@osf/shared/models/resource-card/resource.model';
 
 export class MyProfileSelectors {
   @Selector([MyProfileState])

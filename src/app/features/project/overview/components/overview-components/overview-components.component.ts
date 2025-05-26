@@ -12,10 +12,12 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
-import { AddComponentDialogComponent, DeleteComponentDialogComponent } from '@osf/features/project/overview/components';
-import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { TruncatedTextComponent } from '@shared/components/truncated-text/truncated-text.component';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { TruncatedTextComponent } from '@osf/shared/components';
+import { IS_XSMALL } from '@osf/shared/utils';
+
+import { ProjectOverviewSelectors } from '../../store';
+import { AddComponentDialogComponent } from '../add-component-dialog/add-component-dialog.component';
+import { DeleteComponentDialogComponent } from '../delete-component-dialog/delete-component-dialog.component';
 
 @Component({
   selector: 'osf-project-components',

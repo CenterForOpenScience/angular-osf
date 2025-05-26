@@ -12,8 +12,8 @@ import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideZoneChange
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
-import { STATES } from '@core/constants/ngxs-states.constant';
-import { provideTranslation } from '@core/helpers/i18n.helper';
+import { STATES } from '@core/constants';
+import { provideTranslation } from '@core/helpers';
 
 import { GlobalErrorHandler } from './core/handlers';
 import { authInterceptor, errorInterceptor } from './core/interceptors';

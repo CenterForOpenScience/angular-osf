@@ -5,8 +5,9 @@ import { tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { UserService } from '@core/services/user/user.service';
-import { SetupProfileSettings } from '@osf/features/settings/profile-settings/profile-settings.actions';
+import { SetupProfileSettings } from '@osf/features/settings/profile-settings/store/profile-settings.actions';
+
+import { UserService } from '../../services';
 
 import { GetCurrentUser, GetCurrentUserSettings, SetCurrentUser, UpdateUserSettings } from './user.actions';
 import { UserStateModel } from './user.model';

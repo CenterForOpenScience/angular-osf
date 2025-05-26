@@ -23,17 +23,16 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { parseQueryFilterParams } from '@core/helpers/http.helper';
+import { parseQueryFilterParams } from '@core/helpers';
 import { MEETINGS_TABLE_PARAMS } from '@osf/features/meetings/constants';
 import { Meeting } from '@osf/features/meetings/models';
 import { GetAllMeetings, MeetingsSelectors } from '@osf/features/meetings/store';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { QueryParams } from '@shared/entities/query-params.interface';
-import { TableParameters } from '@shared/entities/table-parameters.interface';
+import { SortOrder } from '@shared/enums';
+import { QueryParams, TableParameters } from '@shared/models';
 import { SearchFilters } from '@shared/models/filters';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { SortOrder } from '@shared/utils/sort-order.enum';
 
 @Component({
   selector: 'osf-meetings-landing',

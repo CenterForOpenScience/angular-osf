@@ -10,7 +10,7 @@ import { HeaderComponent } from '@core/components/header/header.component';
 import { MainContentComponent } from '@core/components/main-content/main-content.component';
 import { SidenavComponent } from '@core/components/sidenav/sidenav.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
-import { IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { IS_WEB, IS_XSMALL } from '@shared/utils';
 
 @Component({
   selector: 'osf-root',

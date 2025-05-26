@@ -11,8 +11,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { DeleteComponent, GetComponents, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ScientistsNames } from '@osf/shared/constants';
 import { ToastService } from '@shared/services';
-import { ScientistsNames } from '@shared/utils/scientists.const';
 
 @Component({
   selector: 'osf-delete-component-dialog',

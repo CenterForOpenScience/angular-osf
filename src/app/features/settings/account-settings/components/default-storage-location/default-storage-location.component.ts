@@ -9,11 +9,11 @@ import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@ang
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { UserSelectors } from '@core/store/user/user.selectors';
-import { Region } from '@osf/features/settings/account-settings/models/osf-models/region.model';
-import { UpdateRegion } from '@osf/features/settings/account-settings/store/account-settings.actions';
-import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store/account-settings.selectors';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { UserSelectors } from '@osf/core/store/user';
+import { IS_XSMALL } from '@osf/shared/utils';
+
+import { Region } from '../../models';
+import { AccountSettingsSelectors, UpdateRegion } from '../../store';
 
 @Component({
   selector: 'osf-default-storage-location',

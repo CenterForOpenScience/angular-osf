@@ -8,8 +8,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-models/account-settings.model';
-import { EnableTwoFactorAuth } from '@osf/features/settings/account-settings/store/account-settings.actions';
+import { AccountSettings } from '@osf/features/settings/account-settings/models';
+import { EnableTwoFactorAuth } from '@osf/features/settings/account-settings/store';
 
 @Component({
   selector: 'osf-configure-two-factor',

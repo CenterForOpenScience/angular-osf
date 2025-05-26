@@ -7,13 +7,11 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { EducationComponent } from '@osf/features/settings/profile-settings/education/education.component';
-import { EmploymentComponent } from '@osf/features/settings/profile-settings/employment/employment.component';
-import { NameComponent } from '@osf/features/settings/profile-settings/name/name.component';
-import { SocialComponent } from '@osf/features/settings/profile-settings/social/social.component';
-import { TabOption } from '@osf/shared/entities/tab-option.interface';
-import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { TabOption } from '@osf/shared/models';
+import { IS_XSMALL } from '@osf/shared/utils';
+
+import { EducationComponent, EmploymentComponent, NameComponent, SocialComponent } from './components';
 
 @Component({
   selector: 'osf-profile-settings',

@@ -2,8 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@osf/core/services/json-api/json-api.entity';
-import { JsonApiService } from '@osf/core/services/json-api/json-api.service';
+import { JsonApiResponse } from '@osf/core/models';
+import { JsonApiService } from '@osf/core/services';
 
 import { AnalyticsMetricsMapper, RelatedCountsMapper } from '../mappers';
 import { AnalyticsMetricsGetResponse, AnalyticsMetricsModel, RelatedCountsGetResponse } from '../models';

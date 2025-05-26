@@ -10,17 +10,18 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { UserSettings } from '@core/services/user';
-import { GetCurrentUserSettings, UpdateUserSettings, UserSelectors } from '@core/store/user';
-import { SUBSCRIPTION_EVENTS } from '@osf/features/settings/notifications/constants';
-import { SubscriptionEvent, SubscriptionFrequency } from '@osf/features/settings/notifications/enums';
-import { EmailPreferencesForm, EmailPreferencesFormControls } from '@osf/features/settings/notifications/models';
+import { UserSettings } from '@osf/core/models';
+import { GetCurrentUserSettings, UpdateUserSettings, UserSelectors } from '@osf/core/store/user';
+import { SubHeaderComponent } from '@osf/shared/components';
+
+import { SUBSCRIPTION_EVENTS } from './constants';
+import { SubscriptionEvent, SubscriptionFrequency } from './enums';
+import { EmailPreferencesForm, EmailPreferencesFormControls } from './models';
 import {
   GetAllGlobalNotificationSubscriptions,
   NotificationSubscriptionSelectors,
   UpdateNotificationSubscription,
-} from '@osf/features/settings/notifications/store';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+} from './store';
 
 @Component({
   selector: 'osf-notifications',

@@ -2,8 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse, JsonApiResponseWithPaging } from '@core/services/json-api/json-api.entity';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { JsonApiService } from '@core/services';
+import { JsonApiResponse, JsonApiResponseWithPaging } from '@osf/core/models';
 import { MeetingsMapper } from '@osf/features/meetings/mappers';
 import {
   MeetingGetResponse,
@@ -12,7 +12,7 @@ import {
   MeetingsWithPaging,
 } from '@osf/features/meetings/models';
 import { searchPreferencesToJsonApiQueryParams } from '@shared/helpers/search-pref-to-json-api-query-params.helper';
-import { SearchFilters } from '@shared/models/filters';
+import { SearchFilters } from '@shared/models/filters/search-filters.model';
 
 @Injectable({
   providedIn: 'root',

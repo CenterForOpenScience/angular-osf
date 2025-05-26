@@ -5,7 +5,10 @@ import { finalize, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentUser } from '@core/store/user';
-import { InstitutionsService } from '@osf/features/institutions/institutions.service';
+import { InstitutionsService } from '@osf/features/institutions/services';
+
+import { AccountSettingsService } from '../services';
+
 import {
   AddEmail,
   CancelDeactivationRequest,
@@ -26,10 +29,8 @@ import {
   UpdateIndexing,
   UpdateRegion,
   VerifyEmail,
-} from '@osf/features/settings/account-settings/store/account-settings.actions';
-import { AccountSettingsStateModel } from '@osf/features/settings/account-settings/store/account-settings.model';
-
-import { AccountSettingsService } from '../services';
+} from './account-settings.actions';
+import { AccountSettingsStateModel } from './account-settings.model';
 
 @Injectable()
 @State<AccountSettingsStateModel>({

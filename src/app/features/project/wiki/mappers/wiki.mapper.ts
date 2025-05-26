@@ -1,4 +1,4 @@
-import { HomeWiki, HomeWikiGetResponse } from '../models/wiki.model';
+import { HomeWiki, HomeWikiGetResponse } from '../models';
 
 export class WikiMapper {
   static fromGetHomeWikiResponse(response: HomeWikiGetResponse): HomeWiki {

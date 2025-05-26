@@ -9,8 +9,8 @@ import { BehaviorSubject, of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
-import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { IS_MEDIUM, IS_XSMALL } from '@osf/shared/utils';
 
 import { TokensComponent } from './tokens.component';
 

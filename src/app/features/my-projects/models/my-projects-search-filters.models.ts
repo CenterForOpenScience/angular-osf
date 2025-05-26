@@ -1,4 +1,4 @@
-import { SortOrder } from '@shared/utils/sort-order.enum';
+import { SortOrder } from '@osf/shared/enums';
 
 export type SearchField = 'tags' | 'title' | 'description';
 

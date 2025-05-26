@@ -7,7 +7,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccountSettingsState } from '../../store/account-settings.state';
+import { AccountSettingsState } from '../../store';
 
 import { ChangePasswordComponent } from './change-password.component';
 

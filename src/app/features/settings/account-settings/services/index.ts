@@ -1,1 +1,1 @@
-export * from './account-settings.service';
+export { AccountSettingsService } from './account-settings.service';

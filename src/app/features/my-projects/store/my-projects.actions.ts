@@ -1,4 +1,4 @@
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/models/my-projects-search-filters.models';
+import { MyProjectsSearchFilters } from '../models';
 
 export class GetMyProjects {
   static readonly type = '[My Projects] Get Projects';

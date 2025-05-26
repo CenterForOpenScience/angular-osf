@@ -2,12 +2,12 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { MyProfileResourceFiltersOptionsState } from '@osf/features/my-profile/components/resources/components/resource-filters/components/filters/store/my-profile-resource-filters-options.state';
-import { MyProfileResourceFiltersState } from '@osf/features/my-profile/components/resources/components/resource-filters/store/my-profile-resource-filters.state';
-import { MyProfileState } from '@osf/features/my-profile/store';
-import { ResourceFiltersOptionsState } from '@osf/features/search/components/resources/components/resource-filters/components/filters/store/resource-filters-options.state';
-import { ResourceFiltersState } from '@osf/features/search/components/resources/components/resource-filters/store/resource-filters.state';
-import { SearchState } from '@osf/features/search/store';
+import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
+import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
+import { MyProfileState } from './features/my-profile/store';
+import { ResourceFiltersOptionsState } from './features/search/components/filters/store';
+import { ResourceFiltersState } from './features/search/components/resource-filters/store';
+import { SearchState } from './features/search/store';
 
 export const routes: Routes = [
   {
@@ -21,19 +21,22 @@ export const routes: Routes = [
       },
       {
         path: 'sign-up',
-        loadComponent: () => import('./features/auth/sign-up/sign-up.component').then((mod) => mod.SignUpComponent),
+        loadComponent: () =>
+          import('./features/auth/pages/sign-up/sign-up.component').then((mod) => mod.SignUpComponent),
       },
       {
         path: 'forgot-password',
         loadComponent: () =>
-          import('./features/auth/forgot-password/forgot-password.component').then(
+          import('./features/auth/pages/forgot-password/forgot-password.component').then(
             (mod) => mod.ForgotPasswordComponent
           ),
       },
       {
         path: 'reset-password',
         loadComponent: () =>
-          import('./features/auth/reset-password/reset-password.component').then((mod) => mod.ResetPasswordComponent),
+          import('./features/auth/pages/reset-password/reset-password.component').then(
+            (mod) => mod.ResetPasswordComponent
+          ),
       },
       {
         path: 'home',
@@ -42,7 +45,7 @@ export const routes: Routes = [
       {
         path: 'home-logged-out',
         loadComponent: () =>
-          import('@osf/features/home/components/logged-out/home-logged-out.component').then(
+          import('@osf/features/home/pages/home-logged-out/home-logged-out.component').then(
             (mod) => mod.HomeLoggedOutComponent
           ),
       },
@@ -53,12 +56,12 @@ export const routes: Routes = [
       {
         path: 'terms-of-use',
         loadComponent: () =>
-          import('./features/terms-of-use/terms-of-use.component').then((mod) => mod.TermsOfUseComponent),
+          import('./features/static/terms-of-use/terms-of-use.component').then((mod) => mod.TermsOfUseComponent),
       },
       {
         path: 'privacy-policy',
         loadComponent: () =>
-          import('./features/privacy-policy/privacy-policy.component').then((mod) => mod.PrivacyPolicyComponent),
+          import('./features/static/privacy-policy/privacy-policy.component').then((mod) => mod.PrivacyPolicyComponent),
       },
       {
         path: 'meetings',
@@ -117,7 +120,7 @@ export const routes: Routes = [
           {
             path: 'files/:fileId',
             loadComponent: () =>
-              import('@osf/features/project/files/file-detail/file-detail.component').then(
+              import('@osf/features/project/files/components/file-detail/file-detail.component').then(
                 (mod) => mod.FileDetailComponent
               ),
           },
@@ -173,5 +176,9 @@ export const routes: Routes = [
         loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
       },
     ],
+  },
+  {
+    path: '**',
+    redirectTo: 'home',
   },
 ];

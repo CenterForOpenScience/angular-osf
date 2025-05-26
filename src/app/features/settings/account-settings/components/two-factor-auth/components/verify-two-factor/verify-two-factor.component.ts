@@ -7,7 +7,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { DisableTwoFactorAuth } from '@osf/features/settings/account-settings/store/account-settings.actions';
+import { DisableTwoFactorAuth } from '@osf/features/settings/account-settings/store';
 
 @Component({
   selector: 'osf-verify-two-factor',

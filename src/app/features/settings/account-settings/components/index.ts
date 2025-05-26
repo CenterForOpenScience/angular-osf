@@ -1,9 +1,9 @@
-export * from './add-email/add-email.component';
-export * from './affiliated-institutions/affiliated-institutions.component';
-export * from './change-password/change-password.component';
-export * from './connected-emails/connected-emails.component';
-export * from './connected-identities/connected-identities.component';
-export * from './deactivate-account/deactivate-account.component';
-export * from './default-storage-location/default-storage-location.component';
-export * from './share-indexing/share-indexing.component';
-export * from './two-factor-auth/two-factor-auth.component';
+export { AddEmailComponent } from './add-email/add-email.component';
+export { AffiliatedInstitutionsComponent } from './affiliated-institutions/affiliated-institutions.component';
+export { ChangePasswordComponent } from './change-password/change-password.component';
+export { ConnectedEmailsComponent } from './connected-emails/connected-emails.component';
+export { ConnectedIdentitiesComponent } from './connected-identities/connected-identities.component';
+export { DeactivateAccountComponent } from './deactivate-account/deactivate-account.component';
+export { DefaultStorageLocationComponent } from './default-storage-location/default-storage-location.component';
+export { ShareIndexingComponent } from './share-indexing/share-indexing.component';
+export { TwoFactorAuthComponent } from './two-factor-auth/two-factor-auth.component';

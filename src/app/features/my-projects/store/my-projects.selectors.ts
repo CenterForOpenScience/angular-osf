@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { MyProjectsItem } from '@osf/features/my-projects/models/my-projects.models';
+import { MyProjectsItem } from '../models/my-projects.models';
 
 import { MyProjectsStateModel } from './my-projects.model';
 import { MyProjectsState } from './my-projects.state';

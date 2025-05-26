@@ -2,35 +2,40 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ApiData, JsonApiResponse } from '@core/services/json-api/json-api.entity';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { Creator } from '@shared/entities/filters/creator/creator.entity';
-import { CreatorItem } from '@shared/entities/filters/creator/creator-item.entity';
-import { DateCreated } from '@shared/entities/filters/dateCreated/date-created.entity';
-import { FunderFilter } from '@shared/entities/filters/funder/funder-filter.entity';
-import { FunderIndexValueSearch } from '@shared/entities/filters/funder/funder-index-value-search.entity';
-import { IndexValueSearch } from '@shared/entities/filters/index-value-search.entity';
-import { InstitutionIndexValueSearch } from '@shared/entities/filters/institution/institution-index-value-search.entity';
-import { LicenseFilter } from '@shared/entities/filters/license/license-filter.entity';
-import { LicenseIndexValueSearch } from '@shared/entities/filters/license/license-index-value-search.entity';
-import { PartOfCollectionFilter } from '@shared/entities/filters/part-of-collection/part-of-collection-filter.entity';
-import { PartOfCollectionIndexValueSearch } from '@shared/entities/filters/part-of-collection/part-of-collection-index-value-search.entity';
-import { ProviderFilter } from '@shared/entities/filters/provider/provider-filter.entity';
-import { ProviderIndexValueSearch } from '@shared/entities/filters/provider/provider-index-value-search.entity';
-import { ResourceTypeFilter } from '@shared/entities/filters/resource-type/resource-type.entity';
-import { ResourceTypeIndexValueSearch } from '@shared/entities/filters/resource-type/resource-type-index-value-search.entity';
-import { SubjectFilter } from '@shared/entities/filters/subject/subject-filter.entity';
-import { MapCreators } from '@shared/helpers/mappers/filters/creators/creators.mappers';
-import { MapDateCreated } from '@shared/helpers/mappers/filters/dateCreated/date-created.mapper';
-import { MapFunders } from '@shared/helpers/mappers/filters/funder/funder.mapper';
-import { MapInstitutions } from '@shared/helpers/mappers/filters/institution/institution.mapper';
-import { MapLicenses } from '@shared/helpers/mappers/filters/license/license.mapper';
-import { MapPartOfCollections } from '@shared/helpers/mappers/filters/part-of-collection/part-of-collection.mapper';
-import { MapProviders } from '@shared/helpers/mappers/filters/provider/provider.mapper';
-import { MapResourceType } from '@shared/helpers/mappers/filters/resource-type/resource-type.mapper';
-import { MapSubject } from '@shared/helpers/mappers/filters/subject/subject.mapper';
+import { ApiData, JsonApiResponse } from '@osf/core/models';
+import { JsonApiService } from '@osf/core/services';
 
-import { environment } from '../../../environments/environment';
+import {
+  MapCreators,
+  MapDateCreated,
+  MapFunders,
+  MapInstitutions,
+  MapLicenses,
+  MapPartOfCollections,
+  MapProviders,
+  MapResourceType,
+  MapSubject,
+} from '../mappers';
+import {
+  Creator,
+  CreatorItem,
+  DateCreated,
+  FunderFilter,
+  FunderIndexValueSearch,
+  IndexValueSearch,
+  InstitutionIndexValueSearch,
+  LicenseFilter,
+  LicenseIndexValueSearch,
+  PartOfCollectionFilter,
+  PartOfCollectionIndexValueSearch,
+  ProviderFilter,
+  ProviderIndexValueSearch,
+  ResourceTypeFilter,
+  ResourceTypeIndexValueSearch,
+  SubjectFilter,
+} from '../models';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

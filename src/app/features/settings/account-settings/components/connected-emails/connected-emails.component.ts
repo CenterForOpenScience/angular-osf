@@ -10,12 +10,12 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { UserSelectors } from '@core/store/user/user.selectors';
-import { AddEmailComponent } from '@osf/features/settings/account-settings/components';
-import { AccountSettingsService } from '@osf/features/settings/account-settings/services/account-settings.service';
-import { DeleteEmail } from '@osf/features/settings/account-settings/store/account-settings.actions';
-import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store/account-settings.selectors';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { UserSelectors } from '@osf/core/store/user';
+import { IS_XSMALL } from '@osf/shared/utils';
+
+import { AccountSettingsService } from '../../services';
+import { AccountSettingsSelectors, DeleteEmail } from '../../store';
+import { AddEmailComponent } from '../add-email/add-email.component';
 
 @Component({
   selector: 'osf-connected-emails',

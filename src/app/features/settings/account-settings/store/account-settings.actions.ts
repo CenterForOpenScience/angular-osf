@@ -1,4 +1,4 @@
-import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-models/account-settings.model';
+import { AccountSettings } from '../models';
 
 export class GetEmails {
   static readonly type = '[AccountSettings] Get Emails';

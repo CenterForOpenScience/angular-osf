@@ -9,15 +9,15 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 
-import { UserSelectors } from '@core/store/user/user.selectors';
-import { GetAllOptions } from '@osf/features/my-profile/components/resources/components/resource-filters/components/filters/store/my-profile-resource-filters-options.actions';
-import { MyProfileResourceFiltersSelectors } from '@osf/features/my-profile/components/resources/components/resource-filters/store/my-profile-resource-filters.selectors';
-import { MyProfileResourcesComponent } from '@osf/features/my-profile/components/resources/my-profile-resources.component';
-import { GetResources, SetResourceTab, SetSearchText } from '@osf/features/my-profile/store/my-profile.actions';
-import { MyProfileSelectors } from '@osf/features/my-profile/store/my-profile.selectors';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { ResourceTab } from '@shared/entities/resource-card/resource-tab.enum';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { UserSelectors } from '@osf/core/store/user';
+import { SearchInputComponent } from '@osf/shared/components';
+import { ResourceTab } from '@osf/shared/enums';
+import { IS_XSMALL } from '@osf/shared/utils';
+
+import { GetResources, MyProfileSelectors, SetResourceTab, SetSearchText } from '../../store';
+import { GetAllOptions } from '../filters/store';
+import { MyProfileResourceFiltersSelectors } from '../my-profile-resource-filters/store';
+import { MyProfileResourcesComponent } from '../my-profile-resources/my-profile-resources.component';
 
 @Component({
   selector: 'osf-my-profile-search',

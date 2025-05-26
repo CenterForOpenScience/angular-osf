@@ -1,9 +1,4 @@
-import {
-  ComponentGetResponse,
-  ComponentOverview,
-  ProjectOverview,
-  ProjectOverviewGetResponse,
-} from '../models/project-overview.models';
+import { ComponentGetResponse, ComponentOverview, ProjectOverview, ProjectOverviewGetResponse } from '../models';
 
 export class ProjectOverviewMapper {
   static fromGetProjectResponse(response: ProjectOverviewGetResponse): ProjectOverview {

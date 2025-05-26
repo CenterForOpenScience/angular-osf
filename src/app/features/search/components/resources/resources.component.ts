@@ -11,15 +11,15 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, u
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { FilterChipsComponent } from '@osf/features/search/components/resources/components/filter-chips/filter-chips.component';
-import { ResourceCardComponent } from '@osf/features/search/components/resources/components/resource-card/resource-card.component';
-import { ResourceFiltersOptionsSelectors } from '@osf/features/search/components/resources/components/resource-filters/components/filters/store/resource-filters-options.selectors';
-import { ResourceFiltersComponent } from '@osf/features/search/components/resources/components/resource-filters/resource-filters.component';
-import { GetResourcesByLink, SearchSelectors, SetResourceTab, SetSortBy } from '@osf/features/search/store';
-import { ResourceTab } from '@shared/entities/resource-card/resource-tab.enum';
-import { IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { ResourceTab } from '@osf/shared/enums';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
 
-import { ResourceFiltersSelectors } from 'src/app/features/search/components/resources/components/resource-filters/store';
+import { GetResourcesByLink, SearchSelectors, SetResourceTab, SetSortBy } from '../../store';
+import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
+import { ResourceFiltersOptionsSelectors } from '../filters/store';
+import { ResourceCardComponent } from '../resource-card/resource-card.component';
+import { ResourceFiltersComponent } from '../resource-filters/resource-filters.component';
+import { ResourceFiltersSelectors } from '../resource-filters/store';
 
 @Component({
   selector: 'osf-resources',

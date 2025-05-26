@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { VerifyEmail } from '@osf/features/settings/account-settings/store/account-settings.actions';
+import { VerifyEmail } from '@osf/features/settings/account-settings/store';
 
 @Component({
   selector: 'osf-confirm-email',

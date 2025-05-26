@@ -1,339 +1,53 @@
 @use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
 
 :host {
   display: flex;
   flex-direction: column;
 
   .home-container {
-    margin-top: 4.5rem;
     max-width: 100%;
   }
 
-  .dashboard-header {
-    display: flex;
-    justify-content: start;
-    width: 100%;
-    padding: 7.14rem 1.71rem 3.43rem 1.71rem;
-    background: var.$gradient-1;
-
-    .dashboard-title {
-      font-size: 1.71rem;
-      color: var.$dark-blue-1;
-      font-weight: 700;
-      margin-left: 0.86rem;
-    }
-
-    p-button {
-      margin-left: auto;
-    }
-  }
-
   .quick-search-container {
-    background: var.$white;
-    padding: 2rem;
+    background-color: var.$white;
+    padding: mix.rem(24px) mix.rem(16px);
 
     .text-center {
-      font-size: 1rem;
-      font-weight: 400;
       color: var.$dark-blue-1;
-      text-align: center;
-      margin-bottom: 3.43rem;
-
-      a {
-        color: var.$pr-blue-1;
-      }
     }
   }
 
   .public-projects-container {
-    width: 100%;
-    background: var.$gradient-1;
-    height: 14.57rem;
-    padding: 8.57rem 0 3.43rem 1.71rem;
-    display: flex;
-    flex-direction: row;
+    background-color: var.$gradient-1;
+    padding: mix.rem(48px) mix.rem(16px) mix.rem(24px);
 
-    h1 {
+    .osf-icon-search {
       color: var.$dark-blue-1;
-      font-weight: 700;
-      margin: 0;
-    }
-
-    i {
-      color: var.$dark-blue-1;
-      font-size: 2.3rem;
-      margin-right: 0.86rem;
-    }
-  }
-
-  .noteworthy-container {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    background: var.$white;
-    padding: 1.71rem;
-    column-gap: 1.71rem;
-
-    .news-section {
-      display: flex;
-      flex-direction: column;
-      row-gap: 0.86rem;
-      width: 50%;
-
-      h2 {
-        color: var.$dark-blue-1;
-        font-weight: 700;
-        margin: 0;
-      }
-
-      .news-block {
-        border: 1px solid var.$grey-2;
-        border-radius: 0.86rem;
-        padding: 1.71rem;
-
-        p {
-          margin: 0 0 0 0;
-        }
-
-        .title {
-          font-size: 1.29rem;
-          color: var.$dark-blue-1;
-          font-weight: 700;
-        }
-
-        .authors {
-          font-size: 1rem;
-          color: var.$dark-blue-1;
-          font-weight: 400;
-          margin-top: 1.71rem;
-        }
-      }
+      font-size: mix.rem(32px);
+      margin-right: mix.rem(12px);
     }
   }
 
   .latest-research-container {
-    width: 100%;
-    background: var.$bg-blue-3;
-    padding: 3.43rem 3.43rem 3.43rem 1.71rem;
-
-    .content {
-      display: flex;
-      flex-direction: row;
-
-      .text-container {
-        display: flex;
-        flex-direction: column;
-      }
-    }
-
-    h1 {
-      color: var.$dark-blue-1;
-      font-weight: 700;
-      margin: 0;
-    }
-
-    h2 {
-      color: var.$dark-blue-1;
-      font-weight: 400;
-      margin: 0;
-    }
-
-    p-button {
-      margin-left: auto;
-
-      button {
-        width: 10.29rem;
-        height: 3.14rem;
-      }
-    }
+    background-color: var.$bg-blue-3;
+    row-gap: mix.rem(24px);
+    padding: mix.rem(48px) mix.rem(16px);
   }
 
   .hosting-container {
-    width: 100%;
-    padding: 3.43rem 3.43rem 3.43rem 1.71rem;
     background-color: var.$bg-blue-2;
-
-    .content {
-      display: flex;
-      flex-direction: row;
-
-      .text-container {
-        display: flex;
-        flex-direction: column;
-      }
-    }
-
-    h1 {
-      color: var.$dark-blue-1;
-      font-weight: 700;
-      margin: 0;
-    }
-
-    h2 {
-      color: var.$dark-blue-1;
-      font-weight: 400;
-      margin: 0;
-    }
-
-    p-button {
-      margin-left: auto;
-      align-self: center;
-    }
+    row-gap: mix.rem(24px);
+    padding: mix.rem(48px) mix.rem(16px);
   }
 
-  .portrait {
-    margin-top: 0;
+  .web {
+    margin-top: 4.5rem;
   }
 
-  .tablet {
-    margin: 0;
-
+  .medium {
     .quick-search-container {
-      padding-left: 2.57rem;
-      padding-right: 2.57rem;
-
-      .text-center {
-        margin-bottom: 1.71rem;
-
-        a {
-          font-weight: 700;
-        }
-      }
-    }
-
-    .noteworthy-container {
-      display: flex;
-      flex-direction: column;
-      padding: 2.57rem;
-      column-gap: 0.85rem;
-
-      .news-section {
-        width: 100%;
-        padding-top: 1.71rem;
-
-        h2 {
-          padding-bottom: 0.85rem;
-        }
-      }
-    }
-
-    .latest-research-container {
-      display: flex;
-      padding: 4rem 2.58rem 4rem 2.58rem;
-
-      .content {
-        display: flex;
-        flex-direction: column;
-        row-gap: 2rem;
-
-        .text-container {
-          display: flex;
-          flex-direction: column;
-          row-gap: 0.85rem;
-
-          h2 {
-            font-weight: 400;
-            font-size: 1rem;
-          }
-        }
-      }
-
-      p-button {
-        margin: 0;
-      }
-    }
-
-    .hosting-container {
-      display: flex;
-      padding: 4rem 2.58rem 4rem 2.58rem;
-
-      .content {
-        display: flex;
-        flex-direction: column;
-        row-gap: 2rem;
-
-        .text-container {
-          display: flex;
-          flex-direction: column;
-          row-gap: 0.85rem;
-
-          h2 {
-            font-weight: 400;
-            font-size: 1rem;
-          }
-        }
-      }
-
-      p-button {
-        margin: 0;
-        align-self: start;
-      }
-    }
-  }
-
-  .mobile {
-    margin: 0;
-
-    .quick-search-container {
-      padding: 1.71rem 1.14rem 1.71rem 1.14rem;
-
-      .text-center {
-        padding: 0 2.5rem 0 2.5rem;
-        margin-bottom: 1.71rem;
-      }
-    }
-
-    .noteworthy-container {
-      display: flex;
-      flex-direction: column;
-      padding: 1.14rem;
-      column-gap: 0.85rem;
-
-      .news-section {
-        width: 100%;
-        padding-bottom: 1.14rem;
-
-        .news-block {
-          padding: 1.14rem;
-        }
-
-        h2 {
-          padding-bottom: 0.85rem;
-        }
-      }
-    }
-
-    .latest-research-container,
-    .hosting-container {
-      display: flex;
-      padding: 4rem 1.14rem 4rem 1.14rem;
-
-      .content {
-        display: flex;
-        flex-direction: column;
-        row-gap: 2rem;
-
-        .text-container {
-          display: flex;
-          flex-direction: column;
-          row-gap: 0.85rem;
-
-          h2 {
-            font-weight: 400;
-            font-size: 1rem;
-          }
-        }
-      }
-
-      p-button {
-        margin: 0;
-      }
-    }
-
-    .hosting-container {
-      p-button {
-        align-self: start;
-      }
+      padding: mix.rem(12px) mix.rem(36px) mix.rem(24px);
     }
   }
 }

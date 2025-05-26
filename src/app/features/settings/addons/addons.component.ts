@@ -10,8 +10,12 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { UserSelectors } from '@core/store/user/user.selectors';
-import { AddonCardListComponent } from '@osf/features/settings/addons/addon-card-list/addon-card-list.component';
+import { UserSelectors } from '@osf/core/store/user';
+import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
+import { SelectOption } from '@osf/shared/models';
+import { IS_XSMALL } from '@osf/shared/utils';
+
+import { AddonCardListComponent } from './components';
 import {
   AddonsSelectors,
   GetAddonsUserReference,
@@ -19,11 +23,7 @@ import {
   GetAuthorizedStorageAddons,
   GetCitationAddons,
   GetStorageAddons,
-} from '@osf/features/settings/addons/store';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { SelectOption } from '@shared/entities/select-option.interface';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+} from './store';
 
 @Component({
   selector: 'osf-addons',

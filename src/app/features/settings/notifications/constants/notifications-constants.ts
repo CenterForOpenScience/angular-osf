@@ -1,4 +1,4 @@
-import { SubscriptionEvent } from '@osf/features/settings/notifications/enums';
+import { SubscriptionEvent } from '../enums';
 
 export const SUBSCRIPTION_EVENTS: {
   event: SubscriptionEvent;

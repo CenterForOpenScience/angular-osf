@@ -3,16 +3,12 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { JsonApiService } from '@osf/core/services';
 
-import { environment } from '../../../../../environments/environment';
-import { ProjectOverviewMapper } from '../mappers/project-overview.mapper';
-import {
-  ComponentGetResponse,
-  ComponentOverview,
-  ProjectOverview,
-  ProjectOverviewJsonApiResponse,
-} from '../models/project-overview.models';
+import { ProjectOverviewMapper } from '../mappers';
+import { ComponentGetResponse, ComponentOverview, ProjectOverview, ProjectOverviewJsonApiResponse } from '../models';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

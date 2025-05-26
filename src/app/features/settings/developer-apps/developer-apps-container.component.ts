@@ -8,9 +8,10 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 
-import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/developer-app-add-edit-form/developer-app-add-edit-form.component';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { IS_MEDIUM, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { IS_MEDIUM, IS_XSMALL } from '@osf/shared/utils';
+
+import { DeveloperAppAddEditFormComponent } from './components';
 
 @Component({
   selector: 'osf-developer-apps',

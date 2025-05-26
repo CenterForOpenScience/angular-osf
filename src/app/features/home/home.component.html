@@ -1,4 +1,4 @@
-<section class="home-container" [class.tablet]="isMedium()" [class.mobile]="isMobile()">
+<section class="home-container" [class.medium]="isMedium()" [class.web]="isWeb()">
   <osf-sub-header
     [showButton]="true"
     [title]="'home.loggedIn.dashboard.title' | translate"
@@ -8,7 +8,7 @@
   />
 
   <div class="quick-search-container">
-    <p class="text-center">
+    <p class="text-center m-b-24">
       {{ 'home.loggedIn.dashboard.quickSearch.goTo' | translate }}
       <a routerLink="/my-projects">
         {{ 'home.loggedIn.dashboard.quickSearch.myProjects' | translate }}
@@ -35,30 +35,26 @@
     />
   </div>
 
-  <div class="public-projects-container">
+  <div class="public-projects-container flex flex-row">
     <i class="osf-icon-search"></i>
-    <div class="title-container">
-      <h1>{{ 'home.loggedIn.publicProjects.title' | translate }}</h1>
-    </div>
+    <h1>{{ 'home.loggedIn.publicProjects.title' | translate }}</h1>
   </div>
 
-  <div class="latest-research-container">
-    <div class="content">
-      <div class="text-container">
-        <h1>{{ 'home.loggedIn.latestResearch.title' | translate }}</h1>
-        <h2>{{ 'home.loggedIn.latestResearch.subtitle' | translate }}</h2>
-      </div>
-      <p-button [label]="'home.loggedIn.latestResearch.button' | translate" severity="success" />
+  <div class="latest-research-container flex flex-column">
+    <div>
+      <h1>{{ 'home.loggedIn.latestResearch.title' | translate }}</h1>
+      <p class="m-t-12">{{ 'home.loggedIn.latestResearch.subtitle' | translate }}</p>
     </div>
+
+    <p-button [label]="'home.loggedIn.latestResearch.button' | translate" severity="success" />
   </div>
 
-  <div class="hosting-container">
-    <div class="content">
-      <div class="text-container">
-        <h1>{{ 'home.loggedIn.hosting.title' | translate }}</h1>
-        <h2>{{ 'home.loggedIn.hosting.subtitle' | translate }}</h2>
-      </div>
-      <p-button [label]="'home.loggedIn.hosting.button' | translate" severity="success" />
+  <div class="hosting-container flex flex-column">
+    <div class="text-container">
+      <h1>{{ 'home.loggedIn.hosting.title' | translate }}</h1>
+      <p class="m-t-12">{{ 'home.loggedIn.hosting.subtitle' | translate }}</p>
     </div>
+
+    <p-button [label]="'home.loggedIn.hosting.button' | translate" severity="success" />
   </div>
 </section>

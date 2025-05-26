@@ -4,11 +4,12 @@ import { map, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { WikiMapper } from '@osf/features/project/wiki/mappers/wiki.mapper';
+import { JsonApiService } from '@osf/core/services';
 
-import { environment } from '../../../../../environments/environment';
-import { HomeWikiJsonApiResponse } from '../models/wiki.model';
+import { WikiMapper } from '../mappers';
+import { HomeWikiJsonApiResponse } from '../models';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

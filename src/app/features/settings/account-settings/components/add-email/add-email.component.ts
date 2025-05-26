@@ -9,7 +9,7 @@ import { InputText } from 'primeng/inputtext';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { AddEmail } from '@osf/features/settings/account-settings/store/account-settings.actions';
+import { AddEmail } from '../../store';
 
 @Component({
   selector: 'osf-add-email',

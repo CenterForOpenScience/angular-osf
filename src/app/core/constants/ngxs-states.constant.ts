@@ -11,7 +11,7 @@ import { AccountSettingsState } from '@osf/features/settings/account-settings/st
 import { AddonsState } from '@osf/features/settings/addons/store';
 import { DeveloperAppsState } from '@osf/features/settings/developer-apps/store';
 import { NotificationSubscriptionState } from '@osf/features/settings/notifications/store';
-import { ProfileSettingsState } from '@osf/features/settings/profile-settings/profile-settings.state';
+import { ProfileSettingsState } from '@osf/features/settings/profile-settings/store/profile-settings.state';
 import { TokensState } from '@osf/features/settings/tokens/store';
 
 export const STATES = [

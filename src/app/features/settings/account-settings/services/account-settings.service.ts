@@ -4,12 +4,10 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { User, UserGetResponse, UserMapper } from '@core/services/user';
-import { UserSelectors } from '@core/store/user';
-import { ApiData, JsonApiResponse } from '@osf/core/services/json-api/json-api.entity';
+import { ApiData, JsonApiResponse, User, UserGetResponse, UserMapper } from '@osf/core/models';
+import { JsonApiService } from '@osf/core/services';
+import { UserSelectors } from '@osf/core/store/user';
 
-import { environment } from '../../../../../environments/environment';
 import { MapAccountSettings, MapEmail, MapEmails, MapExternalIdentities, MapRegions } from '../mappers';
 import {
   AccountEmail,
@@ -23,6 +21,8 @@ import {
   ListIdentitiesResponse,
   Region,
 } from '../models';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { TruncatedTextComponent } from '@shared/components/truncated-text/truncated-text.component';
+import { TruncatedTextComponent } from '@shared/components';
 
 @Component({
   selector: 'osf-overview-metadata',

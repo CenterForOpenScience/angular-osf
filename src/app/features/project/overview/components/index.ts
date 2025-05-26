@@ -1,5 +1,11 @@
-export * from './add-component-dialog/add-component-dialog.component';
-export * from './delete-component-dialog/delete-component-dialog.component';
-export * from './duplicate-dialog/duplicate-dialog.component';
-export * from './fork-dialog/fork-dialog.component';
-export * from './toggle-publicity-dialog/toggle-publicity-dialog.component';
+export { AddComponentDialogComponent } from './add-component-dialog/add-component-dialog.component';
+export { DeleteComponentDialogComponent } from './delete-component-dialog/delete-component-dialog.component';
+export { DuplicateDialogComponent } from './duplicate-dialog/duplicate-dialog.component';
+export { ForkDialogComponent } from './fork-dialog/fork-dialog.component';
+export { LinkedProjectsComponent } from './linked-projects/linked-projects.component';
+export { OverviewComponentsComponent } from './overview-components/overview-components.component';
+export { OverviewMetadataComponent } from './overview-metadata/overview-metadata.component';
+export { OverviewToolbarComponent } from './overview-toolbar/overview-toolbar.component';
+export { OverviewWikiComponent } from './overview-wiki/overview-wiki.component';
+export { RecentActivityComponent } from './recent-activity/recent-activity.component';
+export { TogglePublicityDialogComponent } from './toggle-publicity-dialog/toggle-publicity-dialog.component';

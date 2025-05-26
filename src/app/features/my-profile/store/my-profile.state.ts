@@ -5,7 +5,6 @@ import { tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { UserSelectors } from '@core/store/user/user.selectors';
-import { MyProfileResourceFiltersSelectors } from '@osf/features/my-profile/components/resources/components/resource-filters/store/my-profile-resource-filters.selectors';
 import {
   GetResources,
   GetResourcesByLink,
@@ -17,9 +16,10 @@ import {
   SetSortBy,
 } from '@osf/features/my-profile/store';
 import { searchStateDefaults } from '@osf/features/search/utils/data';
-import { SearchService } from '@shared/services/search.service';
-import { addFiltersParams } from '@shared/utils/add-filters-params.helper';
-import { getResourceTypes } from '@shared/utils/get-resource-types.helper';
+import { SearchService } from '@osf/shared/services';
+import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
+
+import { MyProfileResourceFiltersSelectors } from '../components/my-profile-resource-filters/store';
 
 @Injectable()
 @State<MyProfileStateModel>({

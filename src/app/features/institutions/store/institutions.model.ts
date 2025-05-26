@@ -1,4 +1,4 @@
-import { Institution } from '@osf/features/institutions/entities/institutions.models';
+import { Institution } from '../models';
 
 export interface InstitutionsStateModel {
   userInstitutions: Institution[];

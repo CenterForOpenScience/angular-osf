@@ -1,4 +1,4 @@
-import { ResourceTab } from '@shared/entities/resource-card/resource-tab.enum';
+import { ResourceTab } from '@osf/shared/enums';
 
 export function getResourceTypes(resourceTab: ResourceTab): string {
   switch (resourceTab) {

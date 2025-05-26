@@ -5,19 +5,7 @@ import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-type RightControl =
-  | {
-      type: 'dropdown';
-      label?: string;
-      value: string;
-      options: { label: string; value: string }[];
-      onChange?: (value: string) => void;
-    }
-  | {
-      type: 'text';
-      label?: string;
-      value: string;
-    };
+import { RightControl } from '../../models';
 
 @Component({
   selector: 'osf-accordion-table',

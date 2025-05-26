@@ -1,4 +1,4 @@
-import { JsonApiResponseWithPaging } from '@core/services/json-api/json-api.entity';
+import { JsonApiResponseWithPaging } from '@core/models';
 import {
   MeetingGetResponse,
   MeetingSubmissionGetResponse,

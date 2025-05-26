@@ -11,6 +11,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
+import { SubHeaderComponent } from '@osf/shared/components';
+import { ProjectFormControls, ShareIndexingEnum } from '@osf/shared/enums';
+import { ProjectForm } from '@osf/shared/models';
+import { IS_WEB } from '@osf/shared/utils';
+
 import {
   ProjectDetailSettingAccordionComponent,
   SettingsAccessRequestsCardComponent,
@@ -19,15 +24,9 @@ import {
   SettingsStorageLocationCardComponent,
   SettingsViewOnlyLinksCardComponent,
   SettingsWikiCardComponent,
-} from '@osf/features/project/settings/components';
-import { mockSettingsData } from '@osf/features/project/settings/mock-data';
-import { LinkTableModel } from '@osf/features/project/settings/models';
-import { RightControl } from '@osf/features/project/settings/models/right-control.model';
-import { ShareIndexingEnum } from '@osf/features/settings/account-settings/components/share-indexing/enums/share-indexing.enum';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { ProjectForm } from '@shared/entities/create-project-form.interface';
-import { ProjectFormControls } from '@shared/entities/create-project-form-controls.enum';
-import { IS_WEB } from '@shared/utils/breakpoints.tokens';
+} from './components';
+import { mockSettingsData } from './mock-data';
+import { LinkTableModel, RightControl } from './models';
 
 @Component({
   selector: 'osf-settings',

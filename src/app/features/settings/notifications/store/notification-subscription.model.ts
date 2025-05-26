@@ -1,5 +1,6 @@
-import { NotificationSubscription } from '@osf/features/settings/notifications/models';
-import { AsyncStateModel } from '@shared/models/store';
+import { AsyncStateModel } from '@osf/shared/models';
+
+import { NotificationSubscription } from '../models';
 
 export interface NotificationSubscriptionModel {
   notificationSubscriptions: AsyncStateModel<NotificationSubscription[]>;

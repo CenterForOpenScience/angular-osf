@@ -8,9 +8,9 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { MyProjectsItem } from '@osf/features/my-projects/models/my-projects.models';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
+import { TableParameters } from '@osf/shared/models/table-parameters.model';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { TableParameters } from '@shared/entities/table-parameters.interface';
-import { SortOrder } from '@shared/utils/sort-order.enum';
 
 @Component({
   selector: 'osf-my-projects-table',

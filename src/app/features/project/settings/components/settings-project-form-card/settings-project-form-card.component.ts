@@ -8,7 +8,7 @@ import { Textarea } from 'primeng/textarea';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ProjectFormControls } from '@shared/entities/create-project-form-controls.enum';
+import { ProjectFormControls } from '@osf/shared/enums';
 
 @Component({
   selector: 'osf-settings-project-form-card',

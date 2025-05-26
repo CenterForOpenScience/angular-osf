@@ -10,7 +10,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { NAV_ITEMS, PROJECT_MENU_ITEMS } from '@core/constants/nav-items.constant';
-import { NavItem } from '@shared/entities/nav-item.interface';
+import { NavItem } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-nav-menu',

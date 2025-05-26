@@ -3,8 +3,8 @@ import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TableParameters } from '@osf/shared/entities/table-parameters.interface';
-import { SortOrder } from '@osf/shared/utils/sort-order.enum';
+import { SortOrder } from '@osf/shared/enums/sort-order.enum';
+import { TableParameters } from '@osf/shared/models/table-parameters.model';
 
 import { MyProjectsTableComponent } from './my-projects-table.component';
 

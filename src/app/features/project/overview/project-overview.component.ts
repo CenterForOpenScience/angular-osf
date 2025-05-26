@@ -10,23 +10,25 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ClearCollections, GetBookmarksCollectionId } from '@osf/features/collections/store';
-import { LinkedProjectsComponent } from '@osf/features/project/overview/components/linked-projects/linked-projects.component';
-import { OverviewComponentsComponent } from '@osf/features/project/overview/components/overview-components/overview-components.component';
-import { OverviewMetadataComponent } from '@osf/features/project/overview/components/overview-metadata/overview-metadata.component';
-import { OverviewToolbarComponent } from '@osf/features/project/overview/components/overview-toolbar/overview-toolbar.component';
-import { OverviewWikiComponent } from '@osf/features/project/overview/components/overview-wiki/overview-wiki.component';
-import { RecentActivityComponent } from '@osf/features/project/overview/components/recent-activity/recent-activity.component';
-import { ClearWiki, GetHomeWiki } from '@osf/features/project/wiki/store';
-import { LoadingSpinnerComponent } from '@shared/components';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 
+import { ClearWiki, GetHomeWiki } from '../wiki/store';
+
+import {
+  LinkedProjectsComponent,
+  OverviewComponentsComponent,
+  OverviewMetadataComponent,
+  OverviewToolbarComponent,
+  OverviewWikiComponent,
+  RecentActivityComponent,
+} from './components';
 import {
   ClearProjectOverview,
   GetComponents,
   GetLinkedProjects,
   GetProjectById,
-} from './store/project-overview.actions';
-import { ProjectOverviewSelectors } from './store/project-overview.selectors';
+  ProjectOverviewSelectors,
+} from './store';
 
 @Component({
   selector: 'osf-project-overview',

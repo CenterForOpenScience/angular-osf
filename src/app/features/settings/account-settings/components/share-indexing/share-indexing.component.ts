@@ -8,9 +8,10 @@ import { RadioButton } from 'primeng/radiobutton';
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { UserSelectors } from '@core/store/user/user.selectors';
-import { ShareIndexingEnum } from '@osf/features/settings/account-settings/components/share-indexing/enums/share-indexing.enum';
-import { UpdateIndexing } from '@osf/features/settings/account-settings/store/account-settings.actions';
+import { UserSelectors } from '@osf/core/store/user';
+import { ShareIndexingEnum } from '@osf/shared/enums';
+
+import { UpdateIndexing } from '../../store';
 
 @Component({
   selector: 'osf-share-indexing',

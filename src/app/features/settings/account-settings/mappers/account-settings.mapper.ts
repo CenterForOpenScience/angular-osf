@@ -1,6 +1,6 @@
-import { ApiData } from '@core/services/json-api/json-api.entity';
-import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-models/account-settings.model';
-import { AccountSettingsResponse } from '@osf/features/settings/account-settings/models/responses/get-account-settings-response.entity';
+import { ApiData } from '@osf/core/models';
+
+import { AccountSettings, AccountSettingsResponse } from '../models';
 
 export function MapAccountSettings(data: ApiData<AccountSettingsResponse, null, null>): AccountSettings {
   return {

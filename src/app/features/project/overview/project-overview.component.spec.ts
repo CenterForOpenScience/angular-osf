@@ -2,7 +2,7 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { SubHeaderComponent } from '@osf/shared/components';
 
 import { ProjectOverviewComponent } from './project-overview.component';
 

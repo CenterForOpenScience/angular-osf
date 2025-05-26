@@ -6,13 +6,10 @@ import { BehaviorSubject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { EducationComponent } from '@osf/features/settings/profile-settings/education/education.component';
-import { EmploymentComponent } from '@osf/features/settings/profile-settings/employment/employment.component';
-import { NameComponent } from '@osf/features/settings/profile-settings/name/name.component';
-import { SocialComponent } from '@osf/features/settings/profile-settings/social/social.component';
-import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { IS_XSMALL } from '@osf/shared/utils';
 
+import { EducationComponent, EmploymentComponent, NameComponent, SocialComponent } from './components';
 import { ProfileSettingsComponent } from './profile-settings.component';
 
 describe('ProfileSettingsComponent', () => {

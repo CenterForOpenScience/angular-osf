@@ -2,8 +2,9 @@ import { Button } from 'primeng/button';
 
 import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 
-import { metadataTemplates } from '@osf/features/project/metadata/metadata';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { SubHeaderComponent } from '@osf/shared/components';
+
+import { metadataTemplates } from './models';
 
 @Component({
   selector: 'osf-project-metadata',

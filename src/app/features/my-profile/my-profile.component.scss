@@ -1,4 +1,5 @@
-@use "../../../assets/styles/variables" as var;
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
 
 :host {
   .user-info {
@@ -35,6 +36,10 @@
         flex-direction: row;
         align-items: center;
         column-gap: 1.7rem;
+
+        .osf-icon-institution {
+          font-size: mix.rem(16px);
+        }
       }
     }
 

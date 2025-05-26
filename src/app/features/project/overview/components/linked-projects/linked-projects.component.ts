@@ -9,8 +9,9 @@ import { Skeleton } from 'primeng/skeleton';
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { TruncatedTextComponent } from '@shared/components/truncated-text/truncated-text.component';
+import { TruncatedTextComponent } from '@osf/shared/components';
+
+import { ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-linked-projects',

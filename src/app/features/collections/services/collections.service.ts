@@ -2,10 +2,11 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { SparseCollectionsResponse } from '@osf/features/collections/models/collections.models';
+import { JsonApiService } from '@osf/core/services';
 
-import { environment } from '../../../../environments/environment';
+import { SparseCollectionsResponse } from '../models';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',

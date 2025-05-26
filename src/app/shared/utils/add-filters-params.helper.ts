@@ -1,4 +1,4 @@
-import { ResourceFiltersStateModel } from '@osf/features/search/components/resources/components/resource-filters/store';
+import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
 
 export function addFiltersParams(filters: ResourceFiltersStateModel): Record<string, string> {
   const params: Record<string, string> = {};

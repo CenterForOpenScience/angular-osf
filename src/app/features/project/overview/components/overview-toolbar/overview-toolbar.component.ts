@@ -20,14 +20,13 @@ import {
   RemoveProjectFromBookmarks,
 } from '@osf/features/collections/store';
 import { GetMyBookmarks, MyProjectsSelectors } from '@osf/features/my-projects/store';
-import {
-  DuplicateDialogComponent,
-  ForkDialogComponent,
-  TogglePublicityDialogComponent,
-} from '@osf/features/project/overview/components';
-import { SOCIAL_ACTION_ITEMS } from '@osf/features/project/overview/helpers/social-actions.constants';
-import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services';
+
+import { SOCIAL_ACTION_ITEMS } from '../../constants';
+import { ProjectOverviewSelectors } from '../../store';
+import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
+import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';
+import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggle-publicity-dialog.component';
 
 @Component({
   selector: 'osf-overview-toolbar',

@@ -1,5 +1,6 @@
-import { ComponentOverview, ProjectOverview } from '@osf/features/project/overview/models/project-overview.models';
-import { AsyncStateModel } from '@osf/shared/models/store';
+import { AsyncStateModel } from '@osf/shared/models';
+
+import { ComponentOverview, ProjectOverview } from '../models';
 
 export interface ProjectOverviewStateModel {
   project: AsyncStateModel<ProjectOverview | null>;

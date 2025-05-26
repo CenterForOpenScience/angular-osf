@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 
-import { DeveloperAppsContainerComponent } from '@osf/features/settings/developer-apps/developer-apps-container.component';
+import { DeveloperAppsContainerComponent } from './developer-apps-container.component';
 
 export const developerAppsRoute: Route = {
   path: 'developer-apps',
@@ -9,12 +9,14 @@ export const developerAppsRoute: Route = {
     {
       path: '',
       loadComponent: () =>
-        import('./developer-apps-list/developer-apps-list.component').then((c) => c.DeveloperAppsListComponent),
+        import('./pages/developer-apps-list/developer-apps-list.component').then((c) => c.DeveloperAppsListComponent),
     },
     {
       path: ':id/details',
       loadComponent: () =>
-        import('./developer-app-details/developer-app-details.component').then((c) => c.DeveloperAppDetailsComponent),
+        import('./pages/developer-app-details/developer-app-details.component').then(
+          (c) => c.DeveloperAppDetailsComponent
+        ),
     },
   ],
 };

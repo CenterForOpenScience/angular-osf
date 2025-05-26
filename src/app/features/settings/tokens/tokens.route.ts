@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
 
-import { TokensComponent } from '@osf/features/settings/tokens/tokens.component';
+import { TokensComponent } from './tokens.component';
 
 export const tokensAppsRoute: Route = {
   path: 'tokens',
@@ -8,11 +8,11 @@ export const tokensAppsRoute: Route = {
   children: [
     {
       path: '',
-      loadComponent: () => import('./tokens-list/tokens-list.component').then((c) => c.TokensListComponent),
+      loadComponent: () => import('./pages/tokens-list/tokens-list.component').then((c) => c.TokensListComponent),
     },
     {
       path: ':id/details',
-      loadComponent: () => import('./token-details/token-details.component').then((c) => c.TokenDetailsComponent),
+      loadComponent: () => import('./pages/token-details/token-details.component').then((c) => c.TokenDetailsComponent),
     },
   ],
 };

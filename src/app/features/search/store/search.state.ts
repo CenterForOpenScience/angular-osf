@@ -4,6 +4,12 @@ import { tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { SearchService } from '@osf/shared/services';
+import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
+
+import { ResourceFiltersSelectors } from '../components/resource-filters/store';
+import { searchStateDefaults } from '../utils/data';
+
 import {
   GetResources,
   GetResourcesByLink,
@@ -12,15 +18,9 @@ import {
   SetResourceTab,
   SetSearchText,
   SetSortBy,
-} from '@osf/features/search/store/search.actions';
-import { SearchStateModel } from '@osf/features/search/store/search.model';
-import { SearchSelectors } from '@osf/features/search/store/search.selectors';
-import { searchStateDefaults } from '@osf/features/search/utils/data';
-import { SearchService } from '@shared/services/search.service';
-import { addFiltersParams } from '@shared/utils/add-filters-params.helper';
-import { getResourceTypes } from '@shared/utils/get-resource-types.helper';
-
-import { ResourceFiltersSelectors } from 'src/app/features/search/components/resources/components/resource-filters/store';
+} from './search.actions';
+import { SearchStateModel } from './search.model';
+import { SearchSelectors } from './search.selectors';
 
 @Injectable()
 @State<SearchStateModel>({

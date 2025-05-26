@@ -4,7 +4,7 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { MyProjectsService } from '@osf/features/my-projects/my-projects.service';
+import { MyProjectsService } from '../services';
 
 import {
   ClearMyProjects,

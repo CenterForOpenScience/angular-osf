@@ -15,11 +15,7 @@ import {
   Validators,
 } from '@angular/forms';
 
-import {
-  AccountSettingsPasswordForm,
-  AccountSettingsPasswordFormControls,
-} from '@osf/features/settings/account-settings/account.settings.entities';
-
+import { AccountSettingsPasswordForm, AccountSettingsPasswordFormControls } from '../../models';
 import { AccountSettingsService } from '../../services';
 
 @Component({

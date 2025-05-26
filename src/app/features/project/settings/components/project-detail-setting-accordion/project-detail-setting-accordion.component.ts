@@ -5,7 +5,7 @@ import { LowerCasePipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { RightControl } from '@osf/features/project/settings/models/right-control.model';
+import { RightControl } from '../../models';
 
 @Component({
   selector: 'osf-project-detail-setting-accordion',

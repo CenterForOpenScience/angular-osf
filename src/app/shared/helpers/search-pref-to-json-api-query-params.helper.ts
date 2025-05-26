@@ -1,5 +1,5 @@
+import { SortOrder } from '@shared/enums';
 import { SearchFilters } from '@shared/models/filters';
-import { SortOrder } from '@shared/utils/sort-order.enum';
 
 export function searchPreferencesToJsonApiQueryParams(
   params: Record<string, unknown>,

@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
-import { IS_WEB } from '@shared/utils/breakpoints.tokens';
+import { IS_WEB } from '@osf/shared/utils';
 
 import { SettingsContainerComponent } from './settings-container.component';
 

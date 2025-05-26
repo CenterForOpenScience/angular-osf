@@ -1,6 +1,6 @@
-import { ApiData } from '@core/services/json-api/json-api.entity';
-import { AccountEmail } from '@osf/features/settings/account-settings/models/osf-models/account-email.model';
-import { AccountEmailResponse } from '@osf/features/settings/account-settings/models/responses/list-emails.entity';
+import { ApiData } from '@osf/core/models';
+
+import { AccountEmail, AccountEmailResponse } from '../models';
 
 export function MapEmails(emails: ApiData<AccountEmailResponse, null, null>[]): AccountEmail[] {
   const accountEmails: AccountEmail[] = [];

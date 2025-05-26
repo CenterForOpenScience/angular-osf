@@ -1,4 +1,4 @@
-import { DeveloperAppCreateUpdate } from '@osf/features/settings/developer-apps/entities/developer-apps.models';
+import { DeveloperAppCreateUpdate } from '../models';
 
 export class GetDeveloperApps {
   static readonly type = '[Developer Apps] Get All';

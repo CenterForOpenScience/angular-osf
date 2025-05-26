@@ -1,9 +1,4 @@
-import {
-  Addon,
-  AddonResponse,
-  AuthorizedAddon,
-  UserReference,
-} from '@osf/features/settings/addons/entities/addons.entities';
+import { Addon, AddonResponse, AuthorizedAddon, UserReference } from '../models';
 
 export interface AddonsStateModel {
   storageAddons: Addon[];

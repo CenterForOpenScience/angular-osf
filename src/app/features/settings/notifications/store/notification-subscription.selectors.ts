@@ -1,10 +1,9 @@
 import { Selector } from '@ngxs/store';
 
-import { NotificationSubscription } from '@osf/features/settings/notifications/models';
-import {
-  NotificationSubscriptionModel,
-  NotificationSubscriptionState,
-} from '@osf/features/settings/notifications/store';
+import { NotificationSubscription } from '../models';
+
+import { NotificationSubscriptionModel } from './notification-subscription.model';
+import { NotificationSubscriptionState } from './notification-subscription.state';
 
 export class NotificationSubscriptionSelectors {
   @Selector([NotificationSubscriptionState])

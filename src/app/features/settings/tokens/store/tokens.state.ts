@@ -4,8 +4,8 @@ import { of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { Token } from '@osf/features/settings/tokens/entities/tokens.models';
-import { TokensService } from '@osf/features/settings/tokens/tokens.service';
+import { Token } from '../models';
+import { TokensService } from '../services';
 
 import { CreateToken, DeleteToken, GetScopes, GetTokenById, GetTokens, UpdateToken } from './tokens.actions';
 import { TokensStateModel } from './tokens.models';

@@ -2,14 +2,12 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/services/json-api/json-api.entity';
-import { JsonApiService } from '@core/services/json-api/json-api.service';
-import { SubscriptionFrequency } from '@osf/features/settings/notifications/enums';
-import { NotificationSubscriptionMapper } from '@osf/features/settings/notifications/mappers';
-import {
-  NotificationSubscription,
-  NotificationSubscriptionGetResponse,
-} from '@osf/features/settings/notifications/models';
+import { JsonApiResponse } from '@osf/core/models';
+import { JsonApiService } from '@osf/core/services';
+
+import { SubscriptionFrequency } from '../enums';
+import { NotificationSubscriptionMapper } from '../mappers';
+import { NotificationSubscription, NotificationSubscriptionGetResponse } from '../models';
 
 @Injectable({
   providedIn: 'root',

@@ -1,9 +1,9 @@
-import { SubscriptionEvent, SubscriptionFrequency } from '@osf/features/settings/notifications/enums';
+import { SubscriptionEvent, SubscriptionFrequency } from '../enums';
 import {
   NotificationSubscription,
   NotificationSubscriptionGetResponse,
   NotificationSubscriptionUpdateRequest,
-} from '@osf/features/settings/notifications/models';
+} from '../models';
 
 export class NotificationSubscriptionMapper {
   static fromGetResponse(response: NotificationSubscriptionGetResponse): NotificationSubscription {

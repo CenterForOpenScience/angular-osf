@@ -1,4 +1,4 @@
-import { AddonRequest } from '@osf/features/settings/addons/entities/addons.entities';
+import { AddonRequest } from '../models';
 
 export class GetStorageAddons {
   static readonly type = '[Addons] Get Storage Addons';

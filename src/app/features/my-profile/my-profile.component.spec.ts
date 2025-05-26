@@ -12,11 +12,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
-import { SearchComponent } from '@osf/features/search/search.component';
-import { ResetSearchState, SetIsMyProfile } from '@osf/features/search/store';
-import { IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
+import { IS_XSMALL } from '@osf/shared/utils';
+
+import { ResetFiltersState } from '../search/components/resource-filters/store';
+import { SearchComponent } from '../search/search.component';
+import { ResetSearchState } from '../search/store';
 
 import { MyProfileComponent } from './my-profile.component';
+import { SetIsMyProfile } from './store';
 
 describe('MyProfileComponent', () => {
   let component: MyProfileComponent;

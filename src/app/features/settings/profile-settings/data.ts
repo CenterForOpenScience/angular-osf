@@ -1,6 +1,6 @@
-import { SocialLinksEntity } from '@osf/features/settings/profile-settings/social/social.entities';
+import { SocialLinksModel } from './models';
 
-export const socials: SocialLinksEntity[] = [
+export const socials: SocialLinksModel[] = [
   {
     id: 0,
     label: 'ResearcherID',

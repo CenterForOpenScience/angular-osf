@@ -9,14 +9,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourcesWrapperComponent } from '@osf/features/search/components/resources/components/resources-wrapper/resources-wrapper.component';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { SearchInputComponent } from '@osf/shared/components';
+import { IS_XSMALL } from '@osf/shared/utils';
 
+import { ResourceFiltersState } from './components/resource-filters/store';
+import { ResourcesWrapperComponent } from './components';
 import { SearchComponent } from './search.component';
 import { SearchState } from './store';
-
-import { ResourceFiltersState } from 'src/app/features/search/components/resources/components/resource-filters/store';
 
 describe('SearchComponent', () => {
   let component: SearchComponent;

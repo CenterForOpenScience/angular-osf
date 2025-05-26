@@ -6,7 +6,10 @@ import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/cor
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { UserSelectors } from '@core/store/user/user.selectors';
+import { UserSelectors } from '@osf/core/store/user';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { IS_XSMALL } from '@osf/shared/utils';
+
 import {
   AffiliatedInstitutionsComponent,
   ChangePasswordComponent,
@@ -16,16 +19,8 @@ import {
   DefaultStorageLocationComponent,
   ShareIndexingComponent,
   TwoFactorAuthComponent,
-} from '@osf/features/settings/account-settings/components';
-import {
-  GetAccountSettings,
-  GetEmails,
-  GetExternalIdentities,
-  GetRegions,
-  GetUserInstitutions,
-} from '@osf/features/settings/account-settings/store/account-settings.actions';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+} from './components';
+import { GetAccountSettings, GetEmails, GetExternalIdentities, GetRegions, GetUserInstitutions } from './store';
 
 @Component({
   selector: 'osf-account-settings',

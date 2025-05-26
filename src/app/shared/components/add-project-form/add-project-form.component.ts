@@ -18,8 +18,9 @@ import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.cons
 import { STORAGE_LOCATIONS } from '@core/constants/storage-locations.constant';
 import { InstitutionsSelectors } from '@osf/features/institutions/store';
 import { CreateProject, GetMyProjects, MyProjectsSelectors } from '@osf/features/my-projects/store';
-import { ProjectFormControls } from '@osf/shared/entities/create-project-form-controls.enum';
-import { ProjectForm } from '@shared/entities/create-project-form.interface';
+import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
+import { ProjectForm } from '@osf/shared/models/create-project-form.model';
+import { CustomValidators } from '@osf/shared/utils';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
@@ -62,7 +63,7 @@ export class AddProjectFormComponent implements OnInit {
   readonly projectForm = new FormGroup<ProjectForm>({
     [ProjectFormControls.Title]: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required],
+      validators: [CustomValidators.requiredTrimmed()],
     }),
     [ProjectFormControls.StorageLocation]: new FormControl('us', {
       nonNullable: true,

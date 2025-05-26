@@ -1,42 +1,52 @@
-<footer [class.portrait]="isPortrait()" [class.mobile]="isXSmall()">
-  <div class="footer-content">
-    <div class="footer-nav">
-      <div class="footer-links">
+<footer class="footer flex flex-column">
+  <div class="footer-nav flex flex-column-reverse xl:flex-row xl:justify-content-between">
+    <div class="footer-links flex flex-wrap justify-content-center align-items-center">
+      <div class="flex justify-content-center">
         <a href="https://cos.io/">{{ 'footer.links.centerForOpenScience' | translate }}</a>
         <span class="separator">|</span>
+      </div>
+
+      <div class="flex justify-content-center">
         <a>{{ 'footer.links.reproducibilityProjectPsychology' | translate }}</a>
         <span class="separator">|</span>
-        <a>{{ 'footer.links.reproducibilityProjectCancerBiology' | translate }}</a>
       </div>
 
-      <div class="footer-socials">
-        @for (icon of socialIcons; track icon.name) {
-          <a [href]="icon.url" [attr.aria-label]="'footer.socials.' + icon.name | translate">
-            <img
-              alt="social media icon"
-              width="37"
-              height="37"
-              [ngSrc]="'assets/icons/socials/' + icon.name + '.svg'"
-            />
-          </a>
-        }
-      </div>
+      <a>{{ 'footer.links.reproducibilityProjectCancerBiology' | translate }}</a>
     </div>
 
-    <div class="footer-secondary-nav">
-      <div class="footer-links">
-        <a routerLink="/terms-of-use">{{ 'footer.links.termsOfUse' | translate }}</a>
-        <span class="separator">|</span>
-        <a routerLink="/privacy-policy">{{ 'footer.links.privacyPolicy' | translate }}</a>
-        <span class="separator">|</span>
-        <a href="https://status.cos.io/">{{ 'footer.links.status' | translate }}</a>
-        <span class="separator">|</span>
-        <a href="https://developer.osf.io/">{{ 'footer.links.api' | translate }}</a>
-        <span class="separator">|</span>
-        <a href="https://www.cos.io/initiatives/top-guidelines">{{ 'footer.links.topGuidelines' | translate }}</a>
-      </div>
-
-      <div class="footer-copyright">{{ 'footer.copyright' | translate }}</div>
+    <div class="footer-socials flex justify-content-center align-items-center" [class]="isWeb() ? 'm-y-12' : 'm-y-24'">
+      @for (icon of socialIcons; track icon.name) {
+        <a [href]="icon.url" [attr.aria-label]="'footer.socials.' + icon.name | translate">
+          <img width="37" height="37" [ngSrc]="'assets/icons/socials/' + icon.name + '.svg'" alt="Social" />
+        </a>
+      }
     </div>
+  </div>
+
+  <div
+    class="footer-secondary-nav flex flex-column justify-content-center align-items-center md:flex-row md:justify-content-between"
+    [class.m-t-24]="!isWeb()"
+  >
+    <div class="footer-links flex flex-wrap justify-content-center m-t-4">
+      <a routerLink="/terms-of-use">{{ 'footer.links.termsOfUse' | translate }}</a>
+
+      <span class="separator">|</span>
+
+      <a routerLink="/privacy-policy">{{ 'footer.links.privacyPolicy' | translate }}</a>
+
+      <span class="separator">|</span>
+
+      <a href="https://status.cos.io/">{{ 'footer.links.status' | translate }}</a>
+
+      <span class="separator">|</span>
+
+      <a href="https://developer.osf.io/">{{ 'footer.links.api' | translate }}</a>
+
+      <span class="separator">|</span>
+
+      <a href="https://www.cos.io/initiatives/top-guidelines">{{ 'footer.links.topGuidelines' | translate }}</a>
+    </div>
+
+    <div class="flex justify-content-center m-y-12">{{ 'footer.copyright' | translate }}</div>
   </div>
 </footer>

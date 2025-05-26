@@ -7,9 +7,9 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { FileItem, FILES } from '@osf/features/project/files/project-files.entities';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
+
+import { FileItem, FILES } from './model';
 
 @Component({
   selector: 'osf-project-files',

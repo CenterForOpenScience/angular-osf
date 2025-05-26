@@ -1,4 +1,4 @@
-import { SubscriptionEvent, SubscriptionFrequency } from '@osf/features/settings/notifications/enums';
+import { SubscriptionEvent, SubscriptionFrequency } from '../enums';
 
 //domain models
 export interface NotificationSubscription {

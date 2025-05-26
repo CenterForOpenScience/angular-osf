@@ -8,7 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { UserState } from '@osf/core/store/user';
-import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { SubHeaderComponent } from '@osf/shared/components';
 
 import { AccountSettingsComponent } from './account-settings.component';
 

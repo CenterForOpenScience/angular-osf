@@ -4,8 +4,9 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { LinkTableModel } from '@osf/features/project/settings/models';
 import { ViewOnlyTableComponent } from '@shared/components';
+
+import { LinkTableModel } from '../../models';
 
 @Component({
   selector: 'osf-settings-view-only-links-card',

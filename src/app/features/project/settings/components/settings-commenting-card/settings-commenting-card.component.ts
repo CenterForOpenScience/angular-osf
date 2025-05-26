@@ -6,7 +6,7 @@ import { RadioButton } from 'primeng/radiobutton';
 import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { ShareIndexingEnum } from '@osf/features/settings/account-settings/components/share-indexing/enums/share-indexing.enum';
+import { ShareIndexingEnum } from '@osf/shared/enums';
 
 @Component({
   selector: 'osf-settings-commenting-card',

@@ -4,7 +4,7 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { WikiService } from '../services/wiki.service';
+import { WikiService } from '../services';
 
 import { ClearWiki, GetHomeWiki } from './wiki.actions';
 import { WikiStateModel } from './wiki.model';

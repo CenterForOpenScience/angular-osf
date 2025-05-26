@@ -1,4 +1,4 @@
-import { Institution, UserInstitutionGetResponse } from '../entities/institutions.models';
+import { Institution, UserInstitutionGetResponse } from '../models';
 
 export class InstitutionsMapper {
   static fromResponse(response: UserInstitutionGetResponse): Institution {

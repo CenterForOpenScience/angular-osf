@@ -24,12 +24,17 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
-import { parseQueryFilterParams } from '@core/helpers/http.helper';
-import { CollectionsSelectors, GetBookmarksCollectionId } from '@osf/features/collections/store';
-import { GetUserInstitutions } from '@osf/features/institutions/store';
-import { MyProjectsItem } from '@osf/features/my-projects/models/my-projects.models';
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/models/my-projects-search-filters.models';
+import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
+import { parseQueryFilterParams } from '@osf/core/helpers';
+import { AddProjectFormComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
+import { SortOrder } from '@osf/shared/enums';
+import { QueryParams, TableParameters, TabOption } from '@osf/shared/models';
+import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+
+import { CollectionsSelectors, GetBookmarksCollectionId } from '../collections/store';
+import { GetUserInstitutions } from '../institutions/store';
+
+import { MyProjectsItem, MyProjectsSearchFilters } from './models';
 import {
   ClearMyProjects,
   GetMyBookmarks,
@@ -37,15 +42,7 @@ import {
   GetMyProjects,
   GetMyRegistrations,
   MyProjectsSelectors,
-} from '@osf/features/my-projects/store';
-import { QueryParams } from '@osf/shared/entities/query-params.interface';
-import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
-import { MyProjectsTableComponent } from '@shared/components/my-projects-table/my-projects-table.component';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { TabOption } from '@shared/entities/tab-option.interface';
-import { TableParameters } from '@shared/entities/table-parameters.interface';
-import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
-import { SortOrder } from '@shared/utils/sort-order.enum';
+} from './store';
 
 @Component({
   selector: 'osf-my-projects',

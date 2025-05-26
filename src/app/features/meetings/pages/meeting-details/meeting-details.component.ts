@@ -30,10 +30,9 @@ import { MeetingSubmission } from '@osf/features/meetings/models';
 import { GetMeetingById, GetMeetingSubmissions, MeetingsSelectors } from '@osf/features/meetings/store';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { QueryParams } from '@shared/entities/query-params.interface';
-import { TableParameters } from '@shared/entities/table-parameters.interface';
+import { SortOrder } from '@shared/enums';
+import { QueryParams, TableParameters } from '@shared/models';
 import { SearchFilters } from '@shared/models/filters';
-import { SortOrder } from '@shared/utils/sort-order.enum';
 
 @Component({
   selector: 'osf-meeting-details',

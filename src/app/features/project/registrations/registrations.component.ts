@@ -6,11 +6,12 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { RegistrationCardComponent } from '@osf/features/project/registrations/registration-card/registration-card.component';
-import { RegistrationCard } from '@osf/features/project/registrations/registration-card/registration-card.interface';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
-import { TabOption } from '@shared/entities/tab-option.interface';
-import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { TabOption } from '@osf/shared/models';
+import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+
+import { RegistrationCardComponent } from './components';
+import { RegistrationCard } from './models';
 
 @Component({
   selector: 'osf-registrations',

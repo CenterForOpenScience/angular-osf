@@ -1,9 +1,50 @@
 @use "sass:math";
+@use "sass:meta";
 @use "assets/styles/variables" as var;
 
 @function rem($px) {
   @return math.div($px, var.$base-font-size) * 1rem;
 }
+
+@mixin spacing-utils($property, $short) {
+  $directions: (
+    "t": "top",
+    "r": "right",
+    "b": "bottom",
+    "l": "left",
+    "x": (
+      "left",
+      "right",
+    ),
+    "y": (
+      "top",
+      "bottom",
+    ),
+  );
+
+  @for $i from 2 through 48 {
+    @if $i % 2 == 0 {
+      $value: $i * 1px;
+
+      @each $key, $dir in $directions {
+        $class: #{$short}-#{$key}-#{$i};
+
+        .#{$class} {
+          @if meta.type-of($dir) == list {
+            @each $d in $dir {
+              #{$property}-#{$d}: rem($value);
+            }
+          } @else {
+            #{$property}-#{$dir}: rem($value);
+          }
+        }
+      }
+    }
+  }
+}
+
+@include spacing-utils(margin, m);
+@include spacing-utils(padding, p);
 
 @mixin flex-center {
   display: flex;

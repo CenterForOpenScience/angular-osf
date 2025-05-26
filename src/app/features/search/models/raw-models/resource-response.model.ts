@@ -1,4 +1,4 @@
-import { MetadataField } from '@shared/entities/metadata-field.inteface';
+import { MetadataField } from '@osf/shared/models';
 
 export interface ResourceItem {
   '@id': string;

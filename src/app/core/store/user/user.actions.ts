@@ -1,4 +1,4 @@
-import { User, UserSettings } from '@core/services/user';
+import { User, UserSettings } from '../../models';
 
 export class GetCurrentUser {
   static readonly type = '[User] Get Current User';

@@ -11,7 +11,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserState } from '@osf/core/store/user';
 
-import { AccountSettingsState } from '../../store/account-settings.state';
+import { AccountSettingsState } from '../../store';
 
 import { ConnectedEmailsComponent } from './connected-emails.component';
 

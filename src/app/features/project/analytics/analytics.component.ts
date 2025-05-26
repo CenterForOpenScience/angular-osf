@@ -12,15 +12,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { BarChartComponent, LineChartComponent, PieChartComponent } from '@osf/shared/components';
-import { SubHeaderComponent } from '@osf/shared/components/sub-header/sub-header.component';
+import { BarChartComponent, LineChartComponent, PieChartComponent, SubHeaderComponent } from '@osf/shared/components';
 import { DatasetInput } from '@osf/shared/models';
 
-import { AnalyticsKpiComponent } from './components/analytics-kpi/analytics-kpi.component';
-import { DATE_RANGE_OPTIONS } from './constants/analytics-constants';
-import { AnalyticsSelectors } from './store/analytics.selectors';
+import { AnalyticsKpiComponent } from './components';
+import { DATE_RANGE_OPTIONS } from './constants';
 import { DateRangeOption } from './models';
-import { GetMetrics, GetRelatedCounts } from './store';
+import { AnalyticsSelectors, GetMetrics, GetRelatedCounts } from './store';
 import { analyticsData } from './test-data';
 
 @Component({

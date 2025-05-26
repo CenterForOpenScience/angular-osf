@@ -10,19 +10,13 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { UserSelectors } from '@core/store/user/user.selectors';
-import {
-  ConfigureTwoFactorComponent,
-  VerifyTwoFactorComponent,
-} from '@osf/features/settings/account-settings/components/two-factor-auth/components';
-import { AccountSettings } from '@osf/features/settings/account-settings/models/osf-models/account-settings.model';
-import {
-  DisableTwoFactorAuth,
-  SetAccountSettings,
-} from '@osf/features/settings/account-settings/store/account-settings.actions';
-import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store/account-settings.selectors';
+import { UserSelectors } from '@osf/core/store/user';
 
+import { AccountSettings } from '../../models';
 import { AccountSettingsService } from '../../services';
+import { AccountSettingsSelectors, DisableTwoFactorAuth, SetAccountSettings } from '../../store';
+
+import { ConfigureTwoFactorComponent, VerifyTwoFactorComponent } from './components';
 
 import { QRCodeComponent } from 'angularx-qrcode';
 

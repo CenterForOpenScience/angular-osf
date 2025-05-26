@@ -1,7 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { WikiStateModel } from '@osf/features/project/wiki/store/wiki.model';
-
+import { WikiStateModel } from './wiki.model';
 import { WikiState } from './wiki.state';
 
 export class WikiSelectors {
