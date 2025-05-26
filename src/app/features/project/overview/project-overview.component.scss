@@ -1,41 +1,7 @@
-@use "../../../../assets/styles/variables" as var;
+@use "/assets/styles/variables" as var;
 
 .desktop {
   margin-top: 4.5rem;
-}
-
-.wiki,
-.component,
-.linked-projects,
-.activities {
-  border: 1px solid var(--grey-2);
-  border-radius: 12px;
-  color: var(--dark-blue-1);
-
-  &-description {
-    line-height: 24px;
-  }
-}
-
-.component {
-  &-title {
-    border: 1px solid var(--grey-2);
-    border-radius: 12px;
-  }
-}
-
-.linked-projects {
-  &-project {
-    border: 1px solid var(--grey-2);
-    border-radius: 12px;
-  }
-}
-
-.activities {
-  &-activity {
-    height: 35px;
-    border-bottom: 1px solid var(--grey-2);
-  }
 }
 
 .left-section {
@@ -44,17 +10,6 @@
 
 .right-section {
   flex: 1;
-  border: 1px solid var(--grey-2);
+  border: 1px solid var.$grey-2;
   border-radius: 12px;
-}
-
-.subject {
-  background: var(--bg-blue-3);
-  border-radius: 4px;
-  padding: 4px 12px;
-  line-height: 24px;
-}
-
-.metadata {
-  color: var.$dark-blue-1;
 }

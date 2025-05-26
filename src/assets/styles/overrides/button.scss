@@ -2,6 +2,7 @@
 @use "../mixins" as mix;
 
 .p-button {
+  flex: 1;
   border: none;
   padding: 0.7rem 1.15rem;
   font-size: 1rem;
@@ -101,7 +102,8 @@
 
 .btn-icon-text,
 .btn-icon-text-success,
-.form-btn {
+.form-btn,
+.btn-icon {
   .p-button {
     background-color: transparent;
     color: var.$pr-blue-1;
@@ -125,6 +127,22 @@
 
     &:hover {
       color: var.$pr-blue-3;
+    }
+  }
+}
+
+.btn-icon {
+  .p-button {
+    background-color: transparent;
+    color: var.$dark-blue-1;
+    padding: 0.7rem;
+
+    &:hover {
+      color: var.$pr-blue-1;
+    }
+
+    &:disabled {
+      color: var.$grey-1;
     }
   }
 }
@@ -232,6 +250,19 @@
   }
   i {
     color: var.$grey-1;
+  }
+}
+
+.overview-btn {
+  width: mix.rem(80px);
+}
+
+.bookmark-btn {
+  .p-button {
+    .p-button-icon {
+      height: mix.rem(21px);
+      width: mix.rem(21px);
+    }
   }
 }
 

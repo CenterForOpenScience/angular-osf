@@ -1,0 +1,24 @@
+<div class="flex flex-column gap-3">
+  <div
+    #textContent
+    [innerHTML]="text()"
+    class="text-content"
+    [class.expanded]="isTextExpanded()"
+    [style.--line-clamp]="maxVisibleLines()"
+  ></div>
+
+  @if (hasOverflowingText()) {
+    <a
+      class="read-more-link font-bold"
+      (click)="toggleTextExpansion()"
+      (keydown.enter)="toggleTextExpansion()"
+      (keydown.space)="toggleTextExpansion()"
+      role="button"
+      tabindex="0"
+      [attr.aria-expanded]="isTextExpanded()"
+      [attr.aria-controls]="'text-content'"
+    >
+      {{ isTextExpanded() ? ('truncatedText.hide' | translate) : ('truncatedText.readMore' | translate) }}
+    </a>
+  }
+</div>

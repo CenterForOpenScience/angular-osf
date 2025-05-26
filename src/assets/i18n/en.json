@@ -312,6 +312,151 @@
       "createLinkDialog": {
         "dialogTitle": "Create a new link to share your project"
       }
+    },
+    "overview": {
+      "header": {
+        "privateProject": "Private Project",
+        "publicProject": "Public Project"
+      },
+      "wiki": {
+        "title": "Wiki",
+        "noWikiMessage": "<em>Add important information, links, or images here to describe your project.</em>"
+      },
+      "components": {
+        "title": "Components",
+        "addComponentButton": "Add Component",
+        "linkProjectsButton": "Link Projects",
+        "noComponentsMessage": "<em>Add components to organize your project.</em>"
+      },
+      "linkedProjects": {
+        "title": "Linked Projects",
+        "noLinkedProjectsMessage": "<em>Link your project.</em>"
+      },
+      "recentActivity": {
+        "title": "Recent Activity"
+      },
+      "metadata": {
+        "title": "Metadata",
+        "contributors": "Contributors",
+        "description": "Description",
+        "supplements": "Supplements",
+        "supplementsText1": "Has supplemental materials for",
+        "supplementsText2": "on OSF Preprints",
+        "dateCreated": "Date Created",
+        "dateUpdated": "Date Updated",
+        "licence": "License",
+        "publication": "Publication DOI",
+        "subjects": "Subjects",
+        "tags": "Tags",
+        "affiliatedInstitutions": "Affiliated Institutions",
+        "noDescription": "No description",
+        "noLicense": "No License",
+        "noPublicationDoi": "No Publication DOI",
+        "noSubjects": "No subjects",
+        "noTags": "No tags",
+        "noSupplements": "No supplements",
+        "noAffiliatedInstitutions": "No affiliated institutions",
+        "editButton": "Edit"
+      },
+      "dialog": {
+        "makePublic": {
+          "header": "Make Project Public",
+          "confirmButton": "Make Public",
+          "cancelButton": "Cancel",
+          "message": "Please review your projects, components, and add-ons for sensitive or restricted information before making them public. <br/> <br/> Once they are made public, you should assume they will always be public. You can return them to private later, but search engines (including Google's cache) or others may access files, wiki pages, or analytics before you do. <br/> <br/>"
+        },
+        "makePrivate": {
+          "header": "Make Project Private",
+          "confirmButton": "Make Private",
+          "cancelButton": "Cancel",
+          "message": "<ul><li>&#8226; Public forks and registrations of this project will remain public.</li><li>&#8226; Search engines (including Google's cache) or others may have accessed files, wiki pages, or analytics while this project was public.</li><li>&#8226; The project will automatically be removed from any collections. Any pending requests will be cancelled.</li></ul><br/>"
+        },
+        "toast": {
+          "makePublic": {
+            "success": "Project has been made public successfully"
+          },
+          "makePrivate": {
+            "success": "Project has been made private successfully"
+          },
+          "addComponent": {
+            "success": "Component has been created successfully"
+          },
+          "deleteComponent": {
+            "success": "Component has been deleted successfully"
+          },
+          "fork": {
+            "success": "Project has been forked successfully"
+          },
+          "duplicate": {
+            "success": "Project has been duplicated successfully"
+          },
+          "bookmark": {
+            "add": "Project has been added to bookmarks",
+            "remove": "Project has been removed from bookmarks"
+          }
+        },
+        "addComponent": {
+          "header": "Create New Component",
+          "confirmButton": "Create",
+          "cancelButton": "Cancel",
+          "title": "Title",
+          "description": "Description (Optional)",
+          "storageLocation": "Storage Location",
+          "affiliation": {
+            "title": "Affiliation",
+            "selectAll": "Select All",
+            "removeAll": "Remove All"
+          },
+          "addContributors": "Add Contributors from",
+          "addTags": "Add Tags from",
+          "contributorsMessage": "admins will have read access to this component.",
+          "license": {
+            "title": "License",
+            "description": "This component will inherit the same license as",
+            "learnMore": "Learn More"
+          }
+        },
+        "deleteComponent": {
+          "header": "Are you sure you want to delete this component?",
+          "confirmButton": "Delete",
+          "cancelButton": "Cancel",
+          "message": "It will no longer be available to other contributors on the project.",
+          "confirmation": "Type the following to continue:"
+        },
+        "fork": {
+          "header": "Fork This Project",
+          "confirmButton": "Fork",
+          "cancelButton": "Cancel",
+          "message": "Are you sure you want to fork this project?"
+        },
+        "duplicate": {
+          "header": "Duplicate Template",
+          "confirmButton": "Create",
+          "cancelButton": "Cancel",
+          "message1": "Are you sure you want to create a new project using this project as a template?",
+          "message2": "Any add-ons configured for this project will not be authenticated in the new project."
+        }
+      },
+      "actions": {
+        "manageContributors": "Manage Contributors",
+        "settings": "Settings",
+        "delete": "Delete",
+        "forkProject": "Fork this project",
+        "duplicateProject": "Duplicate this project",
+        "viewDuplication": "View forks",
+        "socials": {
+          "email": "Email",
+          "x": "X",
+          "linkedIn": "LinkedIn",
+          "facebook": "Facebook"
+        }
+      },
+      "tooltips": {
+        "viewOnlyLinks": "View only links",
+        "bookmarks": "Bookmarks",
+        "duplicate": "Duplicate",
+        "share": "Share"
+      }
     }
   },
   "settings": {
@@ -765,6 +910,10 @@
       },
       "downloadButton": "Download"
     }
+  },
+  "truncatedText": {
+    "readMore": "Read more",
+    "hide": "Hide"
   },
   "footer": {
     "links": {

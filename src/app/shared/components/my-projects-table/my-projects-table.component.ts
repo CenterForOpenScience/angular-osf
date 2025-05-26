@@ -7,7 +7,7 @@ import { TableModule, TablePageEvent } from 'primeng/table';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
+import { MyProjectsItem } from '@osf/features/my-projects/models/my-projects.models';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { TableParameters } from '@shared/entities/table-parameters.interface';
 import { SortOrder } from '@shared/utils/sort-order.enum';

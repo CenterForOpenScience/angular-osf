@@ -1,0 +1,135 @@
+<form [formGroup]="componentForm" (ngSubmit)="submitForm()" class="flex flex-column gap-4">
+  <div class="flex flex-column">
+    <label for="component-title">
+      {{ 'project.overview.dialog.addComponent.title' | translate }}
+    </label>
+    <input pInputText id="component-title" type="text" [formControlName]="ComponentFormControls.Title" />
+  </div>
+
+  @if (currentProject()?.affiliatedInstitutions?.length) {
+    <div class="flex flex-column gap-2">
+      <div class="relative">
+        <h3 class="font-normal affiliation-label mb-2">
+          {{ 'project.overview.dialog.addComponent.affiliation.title' | translate }}
+        </h3>
+        <div class="flex gap-4 absolute top-0 right-0">
+          <p-button
+            class="secondary-transparent"
+            type="button"
+            severity="secondary"
+            (click)="selectAllAffiliations()"
+            (keydown.enter)="selectAllAffiliations()"
+          >
+            {{ 'project.overview.dialog.addComponent.affiliation.selectAll' | translate }}
+          </p-button>
+          <p-button
+            class="secondary-transparent"
+            type="button"
+            severity="secondary"
+            (click)="removeAllAffiliations()"
+            (keydown.enter)="removeAllAffiliations()"
+          >
+            {{ 'project.overview.dialog.addComponent.affiliation.removeAll' | translate }}
+          </p-button>
+        </div>
+      </div>
+
+      <div class="flex gap-2" role="group" aria-label="Affiliations">
+        @for (affiliation of currentProject()?.affiliatedInstitutions; track affiliation.id) {
+          <div class="flex align-items-center relative gap-2">
+            <p-checkbox
+              class="absolute top-0 affiliation-checkbox"
+              [value]="affiliation.id"
+              [formControlName]="ComponentFormControls.Affiliations"
+              [inputId]="affiliation.id"
+              [name]="'affiliations'"
+            />
+            <img ngSrc="{{ affiliation.logo }}" alt="OSF Logo" height="44" width="44" />
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <div class="flex flex-column">
+    <label for="storage-location">
+      {{ 'project.overview.dialog.addComponent.storageLocation' | translate }}
+    </label>
+    <p-select
+      id="storage-location"
+      [options]="storageLocations"
+      [formControlName]="ComponentFormControls.StorageLocation"
+    ></p-select>
+  </div>
+
+  <div
+    class="cursor-pointer flex align-items-start gap-2"
+    (click)="toggleAddContributors()"
+    (keydown.enter)="toggleAddContributors()"
+    tabindex="0"
+    role="checkbox"
+    [attr.aria-checked]="componentForm.get(ComponentFormControls.AddContributors)?.value"
+  >
+    <p-checkbox [formControlName]="ComponentFormControls.AddContributors" [binary]="true"></p-checkbox>
+    <div>
+      <p>
+        {{ ('project.overview.dialog.addComponent.addContributors' | translate) + ' ' + currentProject()?.title }}
+      </p>
+      <small>{{
+        currentProject()?.title + ' ' + ('project.overview.dialog.addComponent.contributorsMessage' | translate)
+      }}</small>
+    </div>
+  </div>
+
+  <!-- Add Tags -->
+  <div
+    class="cursor-pointer flex align-items-start gap-2"
+    (click)="toggleAddTags()"
+    (keydown.enter)="toggleAddTags()"
+    tabindex="0"
+    role="checkbox"
+    [attr.aria-checked]="componentForm.get(ComponentFormControls.AddTags)?.value"
+  >
+    <p-checkbox [formControlName]="ComponentFormControls.AddTags" [binary]="true"></p-checkbox>
+    <p>
+      {{ ('project.overview.dialog.addComponent.addTags' | translate) + ' ' + currentProject()?.title }}
+    </p>
+  </div>
+
+  <!-- License Info -->
+  <div class="flex flex-column">
+    <label for="license">{{ 'project.overview.dialog.addComponent.license.title' | translate }}</label>
+    <p class="pt-1" id="license">
+      {{
+        ('project.overview.dialog.addComponent.license.description' | translate) + ' ' + currentProject()?.title + '.'
+      }}
+      <a href="https://help.osf.io/article/288-license-your-project" target="_blank">
+        {{ 'project.overview.dialog.addComponent.license.learnMore' | translate }}
+      </a>
+    </p>
+  </div>
+
+  <div class="flex flex-column">
+    <label for="description">
+      {{ 'project.overview.dialog.addComponent.description' | translate }}
+    </label>
+    <textarea pTextarea id="description" [formControlName]="ComponentFormControls.Description" [rows]="5"></textarea>
+  </div>
+
+  <div class="flex justify-content-end gap-3">
+    <p-button
+      class="w-12rem btn-full-width"
+      [label]="'project.overview.dialog.addComponent.cancelButton' | translate"
+      severity="info"
+      (click)="dialogRef.close()"
+      [disabled]="isSubmitting()"
+    />
+    <p-button
+      class="w-12rem btn-full-width"
+      [label]="'project.overview.dialog.addComponent.confirmButton' | translate"
+      type="submit"
+      [disabled]="!componentForm.valid || isSubmitting()"
+      [loading]="isSubmitting()"
+    />
+  </div>
+</form>

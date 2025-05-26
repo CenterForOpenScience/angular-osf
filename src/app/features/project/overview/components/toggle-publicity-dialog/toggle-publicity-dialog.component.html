@@ -1,0 +1,23 @@
+<div class="dialog-container">
+  <div [innerHTML]="messageKey() | translate"></div>
+  <div class="flex mt-6 gap-3 justify-content-between">
+    <p-button
+      [label]="'project.overview.dialog.makePublic.cancelButton' | translate"
+      severity="info"
+      (click)="dialogRef.close()"
+      class="btn-half-width"
+      [disabled]="isSubmitting()"
+    />
+    <p-button
+      [label]="
+        isCurrentlyPublic()
+          ? ('project.overview.dialog.makePrivate.confirmButton' | translate)
+          : ('project.overview.dialog.makePublic.confirmButton' | translate)
+      "
+      (click)="toggleProjectPublicity()"
+      class="btn-half-width"
+      [disabled]="isSubmitting()"
+      [loading]="isSubmitting()"
+    />
+  </div>
+</div>

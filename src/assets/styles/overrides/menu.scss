@@ -1,17 +1,15 @@
 @use "../variables" as var;
-
-.p-menu-overlay {
-  top: 2rem !important;
-  left: 0 !important;
-}
+@use "../mixins" as mix;
 
 .p-menu-item-content {
   a {
     color: var.$dark-blue-2;
   }
+
   a:hover {
     text-decoration: none;
   }
+
   &:hover {
     text-decoration: none;
     background: var.$bg-blue-3;
@@ -19,6 +17,6 @@
 }
 
 .p-menu {
-  min-width: 7rem;
-  width: 100%;
+  margin-top: mix.rem(7px);
+  min-width: fit-content;
 }

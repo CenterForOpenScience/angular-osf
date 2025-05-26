@@ -1,0 +1,26 @@
+@use "/assets/styles/variables" as var;
+@use "/assets/styles/mixins" as mix;
+
+.component {
+  border: 1px solid var.$grey-2;
+  border-radius: mix.rem(12px);
+  color: var.$dark-blue-1;
+
+  &-description {
+    border-radius: mix.rem(24px);
+  }
+
+  &-container {
+    overflow-y: auto;
+    max-height: mix.rem(335px);
+  }
+
+  &-wrapper {
+    border: 1px solid var.$grey-2;
+    border-radius: mix.rem(12px);
+  }
+
+  &-title {
+    color: var.$dark-blue-1;
+  }
+}

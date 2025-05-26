@@ -37,7 +37,7 @@ export class JsonApiService {
     return httpParams;
   }
 
-  post<T>(url: string, body: unknown, params?: Record<string, unknown>): Observable<T> {
+  post<T>(url: string, body?: unknown, params?: Record<string, unknown>): Observable<T> {
     return this.http
       .post<JsonApiResponse<T, null>>(url, body, {
         params: this.buildHttpParams(params),

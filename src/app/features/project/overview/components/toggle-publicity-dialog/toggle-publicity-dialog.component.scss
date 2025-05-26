@@ -1,0 +1,5 @@
+@use "assets/styles/mixins" as mix;
+
+.dialog-container {
+  line-height: mix.rem(24px);
+}

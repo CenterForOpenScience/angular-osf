@@ -4,21 +4,19 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services/json-api/json-api.service';
+import { MyProjectsMapper } from '@osf/features/my-projects/mappers/my-projects.mapper';
+import { CreateProjectPayload } from '@osf/features/my-projects/models/create-project.model';
 import {
   MyProjectsItem,
   MyProjectsItemGetResponse,
   MyProjectsItemResponse,
   MyProjectsJsonApiResponse,
-  SparseCollectionsResponse,
-} from '@osf/features/my-projects/entities/my-projects.entities';
-import { EndpointType } from '@osf/features/my-projects/entities/my-projects.types';
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
-import { MyProjectsMapper } from '@osf/features/my-projects/mappers/my-projects.mapper';
+} from '@osf/features/my-projects/models/my-projects.models';
+import { EndpointType } from '@osf/features/my-projects/models/my-projects-endpoint.type';
+import { MyProjectsSearchFilters } from '@osf/features/my-projects/models/my-projects-search-filters.models';
 import { SortOrder } from '@shared/utils/sort-order.enum';
 
 import { environment } from '../../../environments/environment';
-
-import { CreateProjectPayload } from './entities/create-project.entities';
 
 @Injectable({
   providedIn: 'root',
@@ -61,10 +59,10 @@ export class MyProjectsService {
     } else {
       params['sort'] = '-date_modified';
     }
-    const url = environment.apiUrl + '/' + endpoint + '/';
-    // const url = endpoint.startsWith('collections/')
-    //   ? environment.apiUrl + '/' + endpoint
-    //   : environment.apiUrl + '/users/me/' + endpoint;
+    // const url = environment.apiUrl + '/' + endpoint + '/';
+    const url = endpoint.startsWith('collections/')
+      ? environment.apiUrl + '/' + endpoint
+      : environment.apiUrl + '/users/me/' + endpoint;
 
     return this.#jsonApiService.get<MyProjectsJsonApiResponse>(url, params).pipe(
       map((response: MyProjectsJsonApiResponse) => ({
@@ -80,21 +78,6 @@ export class MyProjectsService {
     pageSize?: number
   ): Observable<MyProjectsItemResponse> {
     return this.#getMyItems('nodes', filters, pageNumber, pageSize);
-  }
-
-  getBookmarksCollectionId(): Observable<string> {
-    const params: Record<string, unknown> = {
-      'fields[collections]': 'title,bookmarks',
-    };
-
-    return this.#jsonApiService.get<SparseCollectionsResponse>(environment.apiUrl + '/collections/', params).pipe(
-      map((response) => {
-        const bookmarksCollection = response.data.find(
-          (collection) => collection.attributes.title === 'Bookmarks' && collection.attributes.bookmarks
-        );
-        return bookmarksCollection?.id ?? '';
-      })
-    );
   }
 
   getMyRegistrations(

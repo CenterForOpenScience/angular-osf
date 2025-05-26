@@ -26,12 +26,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
 import { parseQueryFilterParams } from '@core/helpers/http.helper';
+import { CollectionsSelectors, GetBookmarksCollectionId } from '@osf/features/collections/store';
 import { GetUserInstitutions } from '@osf/features/institutions/store';
-import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
+import { MyProjectsItem } from '@osf/features/my-projects/models/my-projects.models';
+import { MyProjectsSearchFilters } from '@osf/features/my-projects/models/my-projects-search-filters.models';
 import {
   ClearMyProjects,
-  GetBookmarksCollectionId,
   GetMyBookmarks,
   GetMyPreprints,
   GetMyProjects,
@@ -116,12 +116,12 @@ export class MyProjectsComponent implements OnInit {
   protected readonly registrations = this.#store.selectSignal(MyProjectsSelectors.getRegistrations);
   protected readonly preprints = this.#store.selectSignal(MyProjectsSelectors.getPreprints);
   protected readonly bookmarks = this.#store.selectSignal(MyProjectsSelectors.getBookmarks);
-  protected readonly totalProjectsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalProjectsCount);
-  protected readonly totalRegistrationsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalRegistrationsCount);
-  protected readonly totalPreprintsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalPreprintsCount);
-  protected readonly totalBookmarksCount = this.#store.selectSignal(MyProjectsSelectors.getTotalBookmarksCount);
+  protected readonly totalProjectsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalProjects);
+  protected readonly totalRegistrationsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalRegistrations);
+  protected readonly totalPreprintsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalPreprints);
+  protected readonly totalBookmarksCount = this.#store.selectSignal(MyProjectsSelectors.getTotalBookmarks);
 
-  protected readonly bookmarksCollectionId = this.#store.selectSignal(MyProjectsSelectors.getBookmarksCollectionId);
+  protected readonly bookmarksCollectionId = this.#store.selectSignal(CollectionsSelectors.getBookmarksCollectionId);
 
   constructor() {
     this.#setupQueryParamsEffect();

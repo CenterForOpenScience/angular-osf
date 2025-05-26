@@ -1,0 +1,12 @@
+@use "/assets/styles/variables" as var;
+@use "/assets/styles/mixins" as mix;
+
+.wiki {
+  border: 1px solid var.$grey-2;
+  border-radius: mix.rem(12px);
+  color: var.$dark-blue-1;
+
+  &-description {
+    line-height: mix.rem(24px);
+  }
+}

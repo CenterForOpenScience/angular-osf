@@ -1,217 +1,24 @@
-<div class="flex justify-content-between">
-  <osf-sub-header title="Lorem Ipsum Dolor Sit Amet" />
-</div>
+@let project = currentProject();
 
-<div class="lg:flex-row flex md:flex-column sm:flex-column gap-4 bg-white h-full p-4">
-  <div class="flex flex-column gap-4 left-section">
-    <div class="wiki flex flex-column p-4 gap-5">
-      <h2>Wiki</h2>
-
-      <div class="wiki-description">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt ....
-      </div>
-
-      <a class="wiki-link font-bold"> Read more </a>
-    </div>
-
-    <div class="component flex flex-column p-4 gap-5">
-      <h2>Components</h2>
-
-      <div class="flex flex-column gap-5">
-        <div class="component-title flex flex-column p-2 gap-3">
-          <h2 class="flex gap-2">
-            <i class="osf-icon osf-icon-padlock"></i>
-            Component Name Example
-          </h2>
-
-          <div class="component-name flex flex-column gap-2">
-            <a class="font-bold">Michael Pasek</a>
-
-            <div class="component-description">
-              Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-              labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in eprehenderit i...
-            </div>
-          </div>
-        </div>
-
-        <div class="component-title flex flex-column p-2 gap-3">
-          <h2 class="flex gap-2">
-            <i class="osf-icon osf-icon-padlock-unlock"></i>
-            Component Name Example
-          </h2>
-
-          <div class="component-name flex flex-column gap-2">
-            <a class="font-bold">Michael Pasek</a>
-
-            <div class="component-description">
-              Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-              labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-              aliquip ex ea commodo consequat. Duis aute irure dolor in eprehenderit i...
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="linked-projects flex flex-column p-4 gap-4">
-      <h2>Linked Projects</h2>
-
-      <div class="linked-projects-project p-2 flex flex-column gap-5">
-        <h2>Name Example</h2>
-        <div class="flex gap-2">
-          <span>Contributors:</span>
-          <a class="font-semibold">Michael Pasek</a>
-        </div>
-
-        <div class="flex">
-          Description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-          labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in eprehenderit i...
-        </div>
-      </div>
-    </div>
-
-    <div class="activities p-4 flex flex-column gap-3">
-      <h2>Recent Activity</h2>
-
-      <div class="activities-activity flex justify-content-between align-items-center">
-        <div>
-          <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
-          <a class="font-bold">Project name example</a>
-        </div>
-
-        <div>Feb 5, 2025 04:37 AM</div>
-      </div>
-
-      <div class="activities-activity flex justify-content-between align-items-center">
-        <div>
-          <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
-          <a class="font-bold">Project name example</a>
-        </div>
-
-        <div>Feb 5, 2025 04:37 AM</div>
-      </div>
-
-      <div class="activities-activity flex justify-content-between align-items-center">
-        <div>
-          <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
-          <a class="font-bold">Project name example</a>
-        </div>
-
-        <div>Feb 5, 2025 04:37 AM</div>
-      </div>
-    </div>
+@if (!isProjectLoading() && project) {
+  <div class="flex justify-content-between">
+    <osf-sub-header [title]="project.title" />
   </div>
 
-  <div class="flex flex-column right-section p-4">
-    <div class="metadata flex flex-column gap-5">
-      <div class="metadata-header flex justify-content-between">
-        <h2>Metadata</h2>
+  <osf-overview-toolbar />
 
-        <p-button severity="secondary"> Edit</p-button>
-      </div>
+  <div class="flex gap-4 bg-white h-full p-3 flex-column-reverse sm:p-4 lg:flex-row">
+    <div class="flex flex-column gap-4 left-section">
+      <osf-project-wiki />
+      <osf-project-components />
+      <osf-linked-projects />
+      <osf-recent-activity />
+    </div>
 
-      <div class="flex flex-column gap-2">
-        <h3>Contributors</h3>
-
-        <div class="flex gap-2 line-height-2">
-          <a class="font-bold">John Doe,</a>
-          <a class="font-bold">Jeremy Wolfe,</a>
-          <a class="font-bold">Ava Mitra</a>
-        </div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Description</h3>
-
-        <div class="line-height-2">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
-          magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
-          est laborum.
-        </div>
-
-        <a href="" class="font-bold"> Read More </a>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Supplements</h3>
-
-        <div>
-          Has supplemental materials for
-          <a class="font-bold"> Testimony Before the Federal Spending Oversight Subcommittee, October 18, 2017</a>
-          on OSF Preprints
-        </div>
-      </div>
-
-      <div class="flex justify-content-between">
-        <div class="flex flex-column gap-2">
-          <h3>Date Created</h3>
-          <div>Jan 6, 2025 04:37 AM</div>
-        </div>
-
-        <div class="flex flex-column gap-2">
-          <h3>Date Updated</h3>
-          <div>Jan 6, 2025 04:37 AM</div>
-        </div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>License</h3>
-
-        <div>No License</div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Publication DOI</h3>
-
-        <div>No Publication DOI</div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Affiliated Institutions</h3>
-
-        <div class="flex gap-2">
-          <img
-            alt="Center of Open Science"
-            ngSrc="../../../../assets/images/project/center-for-os.png"
-            width="155"
-            height="45"
-          />
-
-          <img
-            alt="Center of Open Science"
-            ngSrc="../../../../assets/images/project/arnold-ven.png"
-            width="145"
-            height="45"
-          />
-        </div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Subjects</h3>
-
-        <div class="flex gap-2">
-          <div class="subject">Subject name example</div>
-          <div class="subject">example</div>
-        </div>
-      </div>
-
-      <div class="flex flex-column gap-2">
-        <h3>Tags</h3>
-
-        <div class="flex gap-2">
-          <div class="subject">tag1</div>
-          <div class="subject">tag2</div>
-          <div class="subject">tag3</div>
-          <div class="subject">tag4</div>
-        </div>
-      </div>
+    <div class="flex flex-column right-section p-4">
+      <osf-overview-metadata />
     </div>
   </div>
-</div>
+} @else {
+  <osf-loading-spinner />
+}

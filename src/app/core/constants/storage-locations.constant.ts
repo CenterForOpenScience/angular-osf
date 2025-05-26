@@ -1,4 +1,4 @@
-import { StorageLocation } from '@osf/features/my-projects/entities/storage-location.interface';
+import { StorageLocation } from '@osf/features/my-projects/models/storage-location.model';
 
 export const STORAGE_LOCATIONS: StorageLocation[] = [
   { label: 'United States', value: 'us' },

@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -16,8 +16,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
 import { ConfirmEmailComponent } from '@osf/features/home/components/confirm-email/confirm-email.component';
 import { GetUserInstitutions } from '@osf/features/institutions/store';
-import { MyProjectsItem } from '@osf/features/my-projects/entities/my-projects.entities';
-import { MyProjectsSearchFilters } from '@osf/features/my-projects/entities/my-projects-search-filters.models';
+import { MyProjectsItem } from '@osf/features/my-projects/models/my-projects.models';
+import { MyProjectsSearchFilters } from '@osf/features/my-projects/models/my-projects-search-filters.models';
 import { ClearMyProjects, GetMyProjects, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { AccountSettingsService } from '@osf/features/settings/account-settings/services/account-settings.service';
 import { AddProjectFormComponent } from '@shared/components/add-project-form/add-project-form.component';
@@ -60,8 +60,8 @@ export class HomeComponent implements OnInit {
     ...MY_PROJECTS_TABLE_PARAMS,
   });
 
-  protected readonly projects = this.#store.selectSignal(MyProjectsSelectors.getProjects);
-  protected readonly totalProjectsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalProjectsCount);
+  protected readonly projects = select(MyProjectsSelectors.getProjects);
+  protected readonly totalProjectsCount = select(MyProjectsSelectors.getTotalProjects);
 
   protected readonly filteredProjects = computed(() => {
     const search = this.searchValue().toLowerCase();

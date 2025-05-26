@@ -1,52 +1,53 @@
 import { Selector } from '@ngxs/store';
 
-import { MyProjectsState } from '@osf/features/my-projects/store/my-projects.state';
+import { MyProjectsItem } from '@osf/features/my-projects/models/my-projects.models';
 
 import { MyProjectsStateModel } from './my-projects.model';
+import { MyProjectsState } from './my-projects.state';
 
 export class MyProjectsSelectors {
   @Selector([MyProjectsState])
-  static getProjects(state: MyProjectsStateModel) {
-    return state.projects;
+  static getProjects(state: MyProjectsStateModel): MyProjectsItem[] {
+    return state.projects.data;
   }
 
   @Selector([MyProjectsState])
-  static getRegistrations(state: MyProjectsStateModel) {
-    return state.registrations;
+  static getRegistrations(state: MyProjectsStateModel): MyProjectsItem[] {
+    return state.registrations.data;
   }
 
   @Selector([MyProjectsState])
-  static getPreprints(state: MyProjectsStateModel) {
-    return state.preprints;
+  static getPreprints(state: MyProjectsStateModel): MyProjectsItem[] {
+    return state.preprints.data;
   }
 
   @Selector([MyProjectsState])
-  static getBookmarks(state: MyProjectsStateModel) {
-    return state.bookmarks;
+  static getBookmarks(state: MyProjectsStateModel): MyProjectsItem[] {
+    return state.bookmarks.data;
   }
 
   @Selector([MyProjectsState])
-  static getTotalProjectsCount(state: MyProjectsStateModel) {
+  static getTotalProjects(state: MyProjectsStateModel): number {
     return state.totalProjects;
   }
 
   @Selector([MyProjectsState])
-  static getTotalRegistrationsCount(state: MyProjectsStateModel) {
+  static getTotalRegistrations(state: MyProjectsStateModel): number {
     return state.totalRegistrations;
   }
 
   @Selector([MyProjectsState])
-  static getTotalPreprintsCount(state: MyProjectsStateModel) {
+  static getTotalPreprints(state: MyProjectsStateModel): number {
     return state.totalPreprints;
   }
 
   @Selector([MyProjectsState])
-  static getTotalBookmarksCount(state: MyProjectsStateModel) {
+  static getTotalBookmarks(state: MyProjectsStateModel): number {
     return state.totalBookmarks;
   }
 
   @Selector([MyProjectsState])
-  static getBookmarksCollectionId(state: MyProjectsStateModel) {
-    return state.bookmarksId;
+  static getBookmarksLoading(state: MyProjectsStateModel): boolean {
+    return state.bookmarks.isLoading;
   }
 }

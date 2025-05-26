@@ -1,0 +1,15 @@
+@use "/assets/styles/variables" as var;
+@use "/assets/styles/mixins" as mix;
+
+.inactive {
+  color: var.$grey-1;
+}
+
+.storage {
+  color: var.$pr-blue-1;
+  font-size: mix.rem(24px);
+}
+
+.overview-icon {
+  font-size: mix.rem(21px);
+}

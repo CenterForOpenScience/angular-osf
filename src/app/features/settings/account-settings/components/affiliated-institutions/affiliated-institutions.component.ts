@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -16,13 +16,13 @@ import { AccountSettingsSelectors } from '@osf/features/settings/account-setting
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AffiliatedInstitutionsComponent {
-  readonly #store = inject(Store);
-  institutions = this.#store.selectSignal(AccountSettingsSelectors.getUserInstitutions);
-  currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
+  private readonly store = inject(Store);
+  protected institutions = select(AccountSettingsSelectors.getUserInstitutions);
+  protected currentUser = select(UserSelectors.getCurrentUser);
 
   deleteInstitution(id: string) {
     if (this.currentUser()?.id) {
-      this.#store.dispatch(new DeleteUserInstitution(id, this.currentUser()!.id));
+      this.store.dispatch(new DeleteUserInstitution(id, this.currentUser()!.id));
     }
   }
 }

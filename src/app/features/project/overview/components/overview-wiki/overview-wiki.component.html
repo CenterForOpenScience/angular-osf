@@ -1,0 +1,12 @@
+<div class="wiki flex flex-column p-4 gap-4">
+  <h2>{{ 'project.overview.wiki.title' | translate }}</h2>
+  @if (isWikiLoading()) {
+    <p-skeleton width="100%" height="5rem" />
+  } @else {
+    @if (wikiContent()) {
+      <osf-truncated-text [text]="wikiContent()" />
+    } @else {
+      <div [innerHtml]="'project.overview.wiki.noWikiMessage' | translate"></div>
+    }
+  }
+</div>
