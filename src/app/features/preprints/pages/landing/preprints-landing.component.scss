@@ -1,0 +1,14 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
+.subheader {
+  color: var.$dark-blue-1;
+
+  a {
+    font-weight: 700;
+  }
+}
+
+.blue-dark-gradient {
+  background: url("/assets/images/dark-blue-gradient.png") center;
+}

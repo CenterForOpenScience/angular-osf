@@ -160,6 +160,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/settings/settings.routes').then((mod) => mod.settingsRoutes),
       },
       {
+        path: 'preprints',
+        loadChildren: () =>
+          import('./features/preprints/constants/preprints.routes').then((mod) => mod.preprintsRoutes),
+      },
+      {
         path: 'search',
         loadComponent: () => import('./features/search/search.component').then((mod) => mod.SearchComponent),
         providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState, SearchState])],

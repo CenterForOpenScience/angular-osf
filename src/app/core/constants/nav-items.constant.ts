@@ -29,6 +29,12 @@ export const NAV_ITEMS: NavItem[] = [
     useExactMatch: true,
   },
   {
+    path: '/preprints',
+    label: 'navigation.preprints',
+    icon: 'preprints',
+    useExactMatch: true,
+  },
+  {
     path: '/my-profile',
     label: 'navigation.profile',
     icon: 'profile',

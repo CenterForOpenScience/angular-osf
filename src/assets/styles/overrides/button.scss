@@ -200,6 +200,13 @@
   }
 }
 
+.p-button-link {
+  a {
+    color: var.$white;
+    text-decoration: none;
+  }
+}
+
 .p-button-link:hover {
   .p-button-label {
     text-decoration: none;
@@ -243,11 +250,13 @@
   display: flex;
   flex-direction: column;
   justify-content: end;
+
   .p-button {
     background: transparent;
     color: var.$dark-blue-2;
     padding: 0;
   }
+
   i {
     color: var.$grey-1;
   }
