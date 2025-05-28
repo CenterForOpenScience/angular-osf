@@ -1,13 +1,21 @@
+import { createDispatchMap, select } from '@ngxs/store';
+
 import { Button } from 'primeng/button';
 
-import { ChangeDetectionStrategy, Component, HostBinding, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import {
-  AdvisoryGroupComponent,
+  AdvisoryBoardComponent,
   BrowseBySubjectsComponent,
   PreprintServicesComponent,
 } from '@osf/features/preprints/components';
+import { BrandService } from '@osf/features/preprints/services';
+import {
+  GetPreprintProviderById,
+  GetPreprintProvidersToAdvertise,
+  PreprintsSelectors,
+} from '@osf/features/preprints/store';
 import { SearchInputComponent } from '@shared/components';
 
 @Component({
@@ -16,7 +24,7 @@ import { SearchInputComponent } from '@shared/components';
     Button,
     SearchInputComponent,
     RouterLink,
-    AdvisoryGroupComponent,
+    AdvisoryBoardComponent,
     PreprintServicesComponent,
     BrowseBySubjectsComponent,
   ],
@@ -24,12 +32,34 @@ import { SearchInputComponent } from '@shared/components';
   styleUrl: './preprints-landing.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintsLandingComponent {
+export class PreprintsLandingComponent implements OnInit {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
+  private readonly actions = createDispatchMap({
+    getPreprintProviderById: GetPreprintProviderById,
+    getPreprintProvidersToAdvertise: GetPreprintProvidersToAdvertise,
+  });
+
+  osfPreprintProvider = select(PreprintsSelectors.getPreprintProviderDetails);
+  preprintProvidersToAdvertise = select(PreprintsSelectors.getPreprintProvidersToAdvertise);
 
   addPreprint() {
     // [RNi] TODO: Implement the logic to add a preprint.
   }
 
   searchValue = signal<string>('');
+
+  constructor() {
+    effect(() => {
+      const provider = this.osfPreprintProvider();
+
+      if (provider) {
+        BrandService.applyBranding(provider.brand);
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.actions.getPreprintProviderById('osf');
+    this.actions.getPreprintProvidersToAdvertise();
+  }
 }

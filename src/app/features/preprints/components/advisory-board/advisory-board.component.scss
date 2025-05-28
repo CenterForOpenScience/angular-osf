@@ -1,0 +1,10 @@
+@use "assets/styles/variables" as var;
+
+.advisory-board-section {
+  background: var(--preprints-branding-hero-background-image-url);
+
+  &.osf-preprint-service {
+    background-image: none;
+    background-color: var(--preprints-branding-primary-color);
+  }
+}

@@ -130,4 +130,10 @@ $white-60: var(--white-60);
     ),
     #f3f8fd;
   --gradient-3: linear-gradient(90.12deg, #dbedfb 0.03%, #eff4fc 54.38%, #dbedfb 98.07%);
+
+  --preprints-branding-primary-color: var(--pr-blue-1);
+  --preprints-branding-secondary-color: var(--pr-blue-1);
+  --preprints-branding-hero-logo-image-url: none;
+  --preprints-branding-hero-background-image-url: none;
+  --preprints-branding-top-nav-image-url: none;
 }

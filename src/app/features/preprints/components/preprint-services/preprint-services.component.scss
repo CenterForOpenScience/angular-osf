@@ -1,3 +1,12 @@
 .services-background-image {
   background: url("/assets/images/preprints/preprints-services-background.png") center;
 }
+
+.preprint-provider-grid-item {
+  display: block;
+  width: 140px;
+  height: 70px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

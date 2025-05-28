@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
+import { PreprintProviderToAdvertise } from '@osf/features/preprints/models';
 
 @Component({
   selector: 'osf-preprint-services',
@@ -7,4 +9,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './preprint-services.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintServicesComponent {}
+export class PreprintServicesComponent {
+  preprintProvidersToAdvertise = input.required<PreprintProviderToAdvertise[]>();
+}

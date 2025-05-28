@@ -4,5 +4,14 @@
     Leading preprint service providers use this open source infrastructure to support their communities.
   </p>
 
-  <section class="grid mt-6"></section>
+  <section class="grid justify-content-center align-items-center gap-3 mt-6">
+    @for (preprintProvider of preprintProvidersToAdvertise(); track preprintProvider.id) {
+      <!-- [Rni] TODO: add link to preprint provider page -->
+      <a
+        class="preprint-provider-grid-item"
+        [style.background-image]="'url(' + preprintProvider.whiteWideImageUrl + ')'"
+        [title]="preprintProvider.name"
+      ></a>
+    }
+  </section>
 </section>

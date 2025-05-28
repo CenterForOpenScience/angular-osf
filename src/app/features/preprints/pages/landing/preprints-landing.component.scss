@@ -1,11 +1,15 @@
 @use "assets/styles/mixins" as mix;
 @use "assets/styles/variables" as var;
 
+a {
+  font-weight: 700;
+}
+
 .subheader {
   color: var.$dark-blue-1;
 
-  a {
-    font-weight: 700;
+  .provider-description {
+    line-height: 24px;
   }
 }
 
