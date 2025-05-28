@@ -5,8 +5,8 @@ import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CredentialsFormat } from '../../enums';
-import { Addon } from '../../models';
+import { CredentialsFormat } from '../../../../features/settings/addons/enums';
+import { Addon } from '../../../../features/settings/addons/models';
 
 import { AddonCardComponent } from './addon-card.component';
 

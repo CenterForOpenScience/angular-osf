@@ -153,6 +153,11 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./features/project/settings/settings.component').then((mod) => mod.SettingsComponent),
           },
+          {
+            path: 'addons',
+            loadComponent: () =>
+              import('./features/project/addons/addons.component').then((mod) => mod.AddonsComponent),
+          },
         ],
       },
       {

@@ -108,6 +108,10 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
         label: 'navigation.project.settings',
         routerLink: 'settings',
       },
+      {
+        label: 'navigation.project.addons',
+        routerLink: 'addons',
+      },
     ],
   },
 ];
