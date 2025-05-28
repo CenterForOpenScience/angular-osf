@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 
-import { Addon, AuthorizedAddon } from '../../models';
-import { AddonCardComponent } from '../addon-card/addon-card.component';
+import { Addon, AuthorizedAddon } from '@osf/features/settings/addons/models';
+import { AddonCardComponent } from '@shared/components/addons';
 
 @Component({
   selector: 'osf-addon-card-list',

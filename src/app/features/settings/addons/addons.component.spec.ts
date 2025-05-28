@@ -9,9 +9,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserSelectors } from '@osf/core/store/user';
 import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
 import { IS_XSMALL } from '@osf/shared/utils';
+import { AddonCardListComponent } from '@shared/components/addons';
 
 import { AddonsComponent } from './addons.component';
-import { AddonCardListComponent } from './components';
 import { AddonsSelectors } from './store';
 
 describe('AddonsComponent', () => {

@@ -26,7 +26,8 @@
       "registrations": "Registrations",
       "settings": "Settings",
       "contributors": "Contributors",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "addons": "Add-ons"
     }
   },
   "auth": {

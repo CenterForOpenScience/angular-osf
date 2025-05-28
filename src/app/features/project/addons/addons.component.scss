@@ -1,0 +1,11 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
+:host {
+  @include mix.flex-column;
+  flex: 1;
+
+  .tabs-container {
+    @include mix.flex-column;
+  }
+}

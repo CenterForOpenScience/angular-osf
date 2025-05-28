@@ -2,20 +2,14 @@ import { Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { SelectModule } from 'primeng/select';
+import { Select } from 'primeng/select';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { UserSelectors } from '@osf/core/store/user';
-import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
-import { SelectOption } from '@osf/shared/models';
-import { IS_XSMALL } from '@osf/shared/utils';
-import { AddonCardListComponent } from '@shared/components/addons';
-
+import { UserSelectors } from '@core/store/user';
 import {
   AddonsSelectors,
   GetAddonsUserReference,
@@ -23,23 +17,26 @@ import {
   GetAuthorizedStorageAddons,
   GetCitationAddons,
   GetStorageAddons,
-} from './store';
+} from '@osf/features/settings/addons/store';
+import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
+import { AddonCardListComponent } from '@shared/components/addons';
+import { SelectOption } from '@shared/models';
+import { IS_XSMALL } from '@shared/utils';
 
 @Component({
   selector: 'osf-addons',
   imports: [
+    AddonCardListComponent,
+    SearchInputComponent,
+    Select,
     SubHeaderComponent,
-    TabList,
-    Tabs,
     Tab,
+    TabList,
     TabPanel,
     TabPanels,
-    SearchInputComponent,
-    AutoCompleteModule,
-    AddonCardListComponent,
-    SelectModule,
-    FormsModule,
+    Tabs,
     TranslatePipe,
+    FormsModule,
   ],
   templateUrl: './addons.component.html',
   styleUrl: './addons.component.scss',
