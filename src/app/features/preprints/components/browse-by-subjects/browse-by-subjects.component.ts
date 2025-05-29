@@ -5,6 +5,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { RouterLink } from '@angular/router';
 
 import { Subject } from '@osf/features/preprints/models';
+import { ResourceTab } from '@shared/enums';
 
 import { environment } from 'src/environments/environment';
 
@@ -19,7 +20,7 @@ export class BrowseBySubjectsComponent {
   subjects = input.required<Subject[]>();
   linksToSearchPageForSubject = computed(() => {
     return this.subjects().map((subject) => ({
-      resourceTab: 3,
+      resourceTab: ResourceTab.Preprints,
       activeFilters: JSON.stringify([
         {
           filterName: 'Subject',
