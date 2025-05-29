@@ -3,8 +3,8 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, effect, HostBinding, OnInit, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 
 import {
   AdvisoryBoardComponent,
@@ -19,6 +19,7 @@ import {
   PreprintsSelectors,
 } from '@osf/features/preprints/store';
 import { SearchInputComponent } from '@shared/components';
+import { ResourceTab } from '@shared/enums';
 
 @Component({
   selector: 'osf-overview',
@@ -37,6 +38,7 @@ import { SearchInputComponent } from '@shared/components';
 })
 export class PreprintsLandingComponent implements OnInit {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
+  private readonly router = inject(Router);
   private readonly OSF_PROVIDER_ID = 'osf';
   private readonly actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
@@ -54,8 +56,6 @@ export class PreprintsLandingComponent implements OnInit {
     // [RNi] TODO: Implement the logic to add a preprint.
   }
 
-  searchValue = signal<string>('');
-
   constructor() {
     effect(() => {
       const provider = this.osfPreprintProvider();
@@ -70,5 +70,11 @@ export class PreprintsLandingComponent implements OnInit {
     this.actions.getPreprintProviderById(this.OSF_PROVIDER_ID);
     this.actions.getPreprintProvidersToAdvertise();
     this.actions.getHighlightedSubjectsByProviderId(this.OSF_PROVIDER_ID);
+  }
+
+  redirectToSearchPageWithValue(searchValue: string) {
+    this.router.navigate(['/search'], {
+      queryParams: { search: searchValue, resourceTab: ResourceTab.Preprints },
+    });
   }
 }

@@ -7,5 +7,6 @@
     pInputText
     [ngModel]="searchValue()"
     (ngModelChange)="onSearchChange($event)"
+    (keydown.enter)="onEnterClicked()"
   />
 </div>

@@ -24,7 +24,12 @@
     <a routerLink="/preprints">Powered by OSF Preprints</a>
   </div>
 
-  <osf-search-input class="w-full" [searchValue]="searchValue()" [placeholder]="'Search Preprints'" />
+  <osf-search-input
+    class="w-full"
+    [searchValue]="''"
+    [placeholder]="'Search Preprints'"
+    (triggerSearch)="redirectToSearchPageWithValue($event)"
+  />
 
   <!-- [Rni] TODO: add link to an example preprint -->
   <a class="font-bold">Show an example</a>
