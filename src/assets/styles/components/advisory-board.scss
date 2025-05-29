@@ -1,12 +1,14 @@
+@use "assets/styles/mixins" as mix;
+
 .advisory-board-section {
   h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.7rem;
+    font-size: mix.rem(24px);
+    margin-bottom: mix.rem(10px);
   }
 
   ul {
-    margin-left: 1.5rem;
-    line-height: 1.7rem;
+    margin-left: mix.rem(24px);
+    line-height: mix.rem(24px);
 
     li {
       list-style: disc;
