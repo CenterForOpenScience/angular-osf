@@ -29,6 +29,12 @@ export interface PreprintProviderToAdvertise {
   whiteWideImageUrl: string;
 }
 
+export interface Subject {
+  id: string;
+  text: string;
+  taxonomy_name: string;
+}
+
 //api models
 export interface PreprintProviderDetailsGetResponse {
   id: string;
@@ -62,5 +68,14 @@ export interface BrandGetResponse {
     topnav_logo_image: string;
     primary_color: string;
     secondary_color: string;
+  };
+}
+
+export interface SubjectGetResponse {
+  id: string;
+  type: 'subjects';
+  attributes: {
+    text: string;
+    taxonomy_name: string;
   };
 }

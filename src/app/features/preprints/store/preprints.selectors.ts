@@ -17,4 +17,14 @@ export class PreprintsSelectors {
   static getPreprintProvidersToAdvertise(state: PreprintsStateModel) {
     return state.preprintProvidersToAdvertise.data;
   }
+
+  @Selector([PreprintsState])
+  static getHighlightedSubjectsForProvider(state: PreprintsStateModel) {
+    return state.highlightedSubjectsForProvider.data;
+  }
+
+  @Selector([PreprintsState])
+  static areSubjectsLoading(state: PreprintsStateModel) {
+    return state.highlightedSubjectsForProvider.isLoading;
+  }
 }

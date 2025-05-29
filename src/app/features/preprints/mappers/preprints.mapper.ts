@@ -2,6 +2,8 @@ import {
   PreprintProviderDetails,
   PreprintProviderDetailsGetResponse,
   PreprintProviderToAdvertise,
+  Subject,
+  SubjectGetResponse,
 } from '@osf/features/preprints/models';
 
 export class PreprintsMapper {
@@ -38,5 +40,13 @@ export class PreprintsMapper {
         name: item.attributes.name,
         whiteWideImageUrl: item.attributes.assets.wide_white,
       }));
+  }
+
+  static fromSubjectsGetResponse(response: SubjectGetResponse[]): Subject[] {
+    return response.map((subject) => ({
+      id: subject.id,
+      text: subject.attributes.text,
+      taxonomy_name: subject.attributes.taxonomy_name,
+    }));
   }
 }

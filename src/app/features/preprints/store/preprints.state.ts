@@ -7,6 +7,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { PreprintsService } from '@osf/features/preprints/services';
 import {
+  GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   GetPreprintProvidersToAdvertise,
 } from '@osf/features/preprints/store/preprints.actions';
@@ -21,6 +22,11 @@ import { PreprintsStateModel } from '@osf/features/preprints/store/preprints.mod
       error: null,
     },
     preprintProvidersToAdvertise: {
+      data: [],
+      isLoading: false,
+      error: null,
+    },
+    highlightedSubjectsForProvider: {
       data: [],
       isLoading: false,
       error: null,
@@ -58,6 +64,27 @@ export class PreprintsState {
         ctx.setState(
           patch({
             preprintProvidersToAdvertise: patch({
+              data: data,
+              isLoading: false,
+            }),
+          })
+        );
+      })
+    );
+  }
+
+  @Action(GetHighlightedSubjectsByProviderId)
+  getHighlightedSubjectsByProviderId(
+    ctx: StateContext<PreprintsStateModel>,
+    action: GetHighlightedSubjectsByProviderId
+  ) {
+    ctx.setState(patch({ highlightedSubjectsForProvider: patch({ isLoading: true }) }));
+
+    return this.#preprintsService.getHighlightedSubjectsByProviderId(action.providerId).pipe(
+      tap((data) => {
+        ctx.setState(
+          patch({
+            highlightedSubjectsForProvider: patch({
               data: data,
               isLoading: false,
             }),

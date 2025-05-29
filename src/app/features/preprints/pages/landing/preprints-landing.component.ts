@@ -12,6 +12,7 @@ import {
 } from '@osf/features/preprints/components';
 import { BrandService } from '@osf/features/preprints/services';
 import {
+  GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   GetPreprintProvidersToAdvertise,
   PreprintsSelectors,
@@ -34,13 +35,17 @@ import { SearchInputComponent } from '@shared/components';
 })
 export class PreprintsLandingComponent implements OnInit {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
+  private readonly OSF_PROVIDER_ID = 'osf';
   private readonly actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     getPreprintProvidersToAdvertise: GetPreprintProvidersToAdvertise,
+    getHighlightedSubjectsByProviderId: GetHighlightedSubjectsByProviderId,
   });
 
   osfPreprintProvider = select(PreprintsSelectors.getPreprintProviderDetails);
   preprintProvidersToAdvertise = select(PreprintsSelectors.getPreprintProvidersToAdvertise);
+  highlightedSubjectsByProviderId = select(PreprintsSelectors.getHighlightedSubjectsForProvider);
+  areSubjectsLoading = select(PreprintsSelectors.areSubjectsLoading);
 
   addPreprint() {
     // [RNi] TODO: Implement the logic to add a preprint.
@@ -59,7 +64,8 @@ export class PreprintsLandingComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.actions.getPreprintProviderById('osf');
+    this.actions.getPreprintProviderById(this.OSF_PROVIDER_ID);
     this.actions.getPreprintProvidersToAdvertise();
+    this.actions.getHighlightedSubjectsByProviderId(this.OSF_PROVIDER_ID);
   }
 }

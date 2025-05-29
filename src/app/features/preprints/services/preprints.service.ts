@@ -9,6 +9,8 @@ import {
   PreprintProviderDetails,
   PreprintProviderDetailsGetResponse,
   PreprintProviderToAdvertise,
+  Subject,
+  SubjectGetResponse,
 } from '@osf/features/preprints/models';
 
 import { environment } from 'src/environments/environment';
@@ -38,6 +40,18 @@ export class PreprintsService {
       .pipe(
         map((response) => {
           return PreprintsMapper.fromPreprintProvidersToAdvertiseGetResponse(response.data);
+        })
+      );
+  }
+
+  getHighlightedSubjectsByProviderId(providerId: string): Observable<Subject[]> {
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<SubjectGetResponse[], null>
+      >(`${this.baseUrl}${providerId}/subjects/highlighted/?page[size]=20`)
+      .pipe(
+        map((response) => {
+          return PreprintsMapper.fromSubjectsGetResponse(response.data);
         })
       );
   }

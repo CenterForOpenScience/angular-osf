@@ -25,7 +25,7 @@
   <a class="font-bold">Show an example</a>
 </section>
 
-<osf-browse-by-subjects />
+<osf-browse-by-subjects [subjects]="highlightedSubjectsByProviderId()" [isLoading]="areSubjectsLoading()" />
 
 <osf-preprint-services [preprintProvidersToAdvertise]="preprintProvidersToAdvertise()" />
 

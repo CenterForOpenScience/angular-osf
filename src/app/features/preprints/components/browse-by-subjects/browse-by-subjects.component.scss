@@ -1,0 +1,7 @@
+@use "assets/styles/variables" as var;
+
+.provider-subject {
+  a {
+    color: var.$dark-blue-1;
+  }
+}
