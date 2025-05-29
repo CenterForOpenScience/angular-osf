@@ -2,12 +2,12 @@
   <div class="flex flex-column align-items-start gap-4 md:flex-row">
     <div class="flex align-items-center gap-2">
       <i class="osf-icon-preprints text-5xl"></i>
-      <h1>Preprints</h1>
+      <h1>{{ 'preprints.title' | translate }}</h1>
     </div>
     <p-button
       class="ml-auto w-full md:w-auto"
       styleClass="w-full md:w-auto"
-      [label]="'Add a Preprint'"
+      [label]="'preprints.addPreprint' | translate"
       (click)="addPreprint()"
     />
   </div>
@@ -21,18 +21,18 @@
     } @else {
       <div [innerHTML]="osfPreprintProvider()!.descriptionHtml"></div>
     }
-    <a routerLink="/preprints">Powered by OSF Preprints</a>
+    <a routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
   </div>
 
   <osf-search-input
     class="w-full"
     [searchValue]="''"
-    [placeholder]="'Search Preprints'"
+    [placeholder]="'preprints.landing.searchPlaceholder' | translate"
     (triggerSearch)="redirectToSearchPageWithValue($event)"
   />
 
   <!-- [Rni] TODO: add link to an example preprint -->
-  <a class="font-bold">Show an example</a>
+  <a class="font-bold">{{ 'preprints.showExample' | translate }}</a>
 </section>
 
 <osf-browse-by-subjects [subjects]="highlightedSubjectsByProviderId()" [isLoading]="areSubjectsLoading()" />
@@ -49,18 +49,21 @@
   class="blue-dark-gradient py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4 lg:flex-row lg:align-items-center lg:justify-content-between"
 >
   <div>
-    <h2 class="text-2xl">Create your own branded preprint servers backed by the OSF?</h2>
+    <h2 class="text-2xl">{{ 'preprints.createServer.title' | translate }}</h2>
     <p class="mt-2">
-      Check out the
-      <a class="font-bold" href="https://github.com/CenterForOpenScience/ember-osf-web" target="_blank"
-        >open source code</a
-      >
-      and our <a class="font-bold" href="https://www.cos.io/product-roadmap" target="_blank">public roadmap</a>. Input
-      welcome!
+      {{ 'preprints.createServer.description' | translate }}
+      <a class="font-bold" href="https://github.com/CenterForOpenScience/ember-osf-web" target="_blank">{{
+        'preprints.createServer.openSourceCode' | translate
+      }}</a>
+      {{ 'preprints.createServer.and' | translate }}
+      <a class="font-bold" href="https://www.cos.io/product-roadmap" target="_blank">{{
+        'preprints.createServer.publicRoadmap' | translate
+      }}</a
+      >. {{ 'preprints.createServer.inputWelcome' | translate }}
     </p>
   </div>
 
   <p-button severity="success" link="true">
-    <a href="mailto:support@osf.io"> Contact us </a>
+    <a href="mailto:support@osf.io">{{ 'preprints.createServer.contactUs' | translate }}</a>
   </p-button>
 </section>

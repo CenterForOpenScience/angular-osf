@@ -1,5 +1,5 @@
 <section class="py-5 px-3 flex flex-column bg-white gap-6 md:py-6 md:px-4">
-  <h2 class="text-2xl">Browse By Subjects</h2>
+  <h2 class="text-2xl">{{ 'preprints.browseBySubjects.title' | translate }}</h2>
   <section class="grid">
     @if (isLoading()) {
       @for (_ of skeletonArray; track $index) {

@@ -1,3 +1,5 @@
+import { TranslateModule } from '@ngx-translate/core';
+
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
@@ -11,7 +13,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-browse-by-subjects',
-  imports: [Card, RouterLink, Skeleton],
+  imports: [Card, RouterLink, Skeleton, TranslateModule],
   templateUrl: './browse-by-subjects.component.html',
   styleUrl: './browse-by-subjects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

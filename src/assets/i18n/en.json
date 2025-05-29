@@ -912,6 +912,29 @@
       "downloadButton": "Download"
     }
   },
+  "preprints": {
+    "title": "Preprints",
+    "addPreprint": "Add a Preprint",
+    "poweredBy": "Powered by OSF Preprints",
+    "searchPlaceholder": "Search Preprints",
+    "showExample": "Show an example",
+    "browseBySubjects": {
+      "title": "Browse By Subjects"
+    },
+    "services": {
+      "title": "Preprint Services",
+      "description": "Leading preprint service providers use this open source infrastructure to support their communities."
+    },
+    "createServer": {
+      "title": "Create your own branded preprint servers backed by the OSF?",
+      "description": "Check out the",
+      "openSourceCode": "open source code",
+      "and": "and",
+      "publicRoadmap": "public roadmap",
+      "inputWelcome": "Input welcome!",
+      "contactUs": "Contact us"
+    }
+  },
   "truncatedText": {
     "readMore": "Read more",
     "hide": "Hide"
