@@ -1,6 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
 import { Button } from 'primeng/button';
+import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, effect, HostBinding, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
@@ -28,6 +29,7 @@ import { SearchInputComponent } from '@shared/components';
     AdvisoryBoardComponent,
     PreprintServicesComponent,
     BrowseBySubjectsComponent,
+    Skeleton,
   ],
   templateUrl: './preprints-landing.component.html',
   styleUrl: './preprints-landing.component.scss',
@@ -43,6 +45,7 @@ export class PreprintsLandingComponent implements OnInit {
   });
 
   osfPreprintProvider = select(PreprintsSelectors.getPreprintProviderDetails);
+  isPreprintProviderLoading = select(PreprintsSelectors.isPreprintProviderDetailsLoading);
   preprintProvidersToAdvertise = select(PreprintsSelectors.getPreprintProvidersToAdvertise);
   highlightedSubjectsByProviderId = select(PreprintsSelectors.getHighlightedSubjectsForProvider);
   areSubjectsLoading = select(PreprintsSelectors.areSubjectsLoading);

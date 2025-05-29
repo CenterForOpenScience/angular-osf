@@ -13,7 +13,12 @@
   </div>
 
   <div class="provider-description">
-    @if (osfPreprintProvider()) {
+    @if (isPreprintProviderLoading()) {
+      <div class="flex flex-column gap-2">
+        <p-skeleton width="40%" height="1.5rem"></p-skeleton>
+        <p-skeleton width="70%" height="1.5rem"></p-skeleton>
+      </div>
+    } @else {
       <div [innerHTML]="osfPreprintProvider()!.descriptionHtml"></div>
     }
     <a routerLink="/preprints">Powered by OSF Preprints</a>
