@@ -2,7 +2,30 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.0.
 
-## Development server
+## Installation
+
+To set up this project, you'll need [Bun](https://bun.sh/) as your package manager.
+
+### 1. Install Bun
+
+On macOS or Linux, install Bun using Homebrew:
+
+```
+brew tap oven-sh/bun
+brew install bun
+```
+
+### 2. Install dependencies
+
+Run the following command in the project root to install all dependencies:
+
+```
+bun install
+```
+
+---
+
+## Development Server
 
 To start a local development server, run:
 
