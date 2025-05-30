@@ -14,7 +14,9 @@
         <p-card class="col-12 p-1 md:col-6 md:p-2">
           <div class="provider-subject">
             <h3 class="text-center">
-              <a routerLink="/search" [queryParams]="linksToSearchPageForSubject()[$index]">{{ subject.text }}</a>
+              <a class="subject-link" routerLink="/search" [queryParams]="linksToSearchPageForSubject()[$index]">{{
+                subject.text
+              }}</a>
             </h3>
           </div>
         </p-card>

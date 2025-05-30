@@ -21,7 +21,7 @@
     } @else {
       <div [innerHTML]="osfPreprintProvider()!.descriptionHtml"></div>
     }
-    <a routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
+    <a class="font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
   </div>
 
   <osf-search-input

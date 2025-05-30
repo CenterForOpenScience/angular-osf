@@ -1,2 +1,2 @@
-export * from './brand.service';
-export * from './preprints.service';
+export { BrandService } from './brand.service';
+export { PreprintsService } from './preprints.service';
