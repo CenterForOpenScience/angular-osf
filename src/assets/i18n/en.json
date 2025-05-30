@@ -254,7 +254,33 @@
       "institutionalLogos": "institutional logos to be displayed on public projects",
       "publicProjectsToBeDiscoverable": "public projects to be discoverable on specific institutional landing pages",
       "singleSignInToTHeOSF": "single sign-in to the OSF with institutional credentials",
-      "faq": "FAQ"
+      "faq": "FAQ",
+      "contributorsOption": "Contributors (with write access)",
+      "anyoneOption": "Anyone with link",
+      "whoCanEdit": "Who can edit:",
+      "url": "url",
+      "label": "label",
+      "redirectUrlPlaceholder": "Send people who visit your OSF project page to this link instead",
+      "redirectLabelPlaceholder": "Optional",
+      "invalidUrl": "Please enter a valid URL, such as: https://example.com",
+      "disabledForWiki": "This feature is disabled for wikis of private projects.",
+      "enabledForWiki": "This feature is enabled for wikis of private projects.",
+      "delete": {
+        "title": "Delete Link {{name}}?",
+        "message": "Are you sure you want to delete this view only link?"
+      },
+      "descriptions": {
+        "comments": {
+          "instant": "You'll be notified immediately when someone adds a comment.",
+          "daily": "You'll receive a daily summary of comments.",
+          "none": "You won't receive comment notifications."
+        },
+        "file_updated": {
+          "instant": "You'll be notified immediately when files are updated.",
+          "daily": "You'll receive a daily summary of file updates.",
+          "none": "You won't receive file update notifications."
+        }
+      }
     }
   },
   "project": {

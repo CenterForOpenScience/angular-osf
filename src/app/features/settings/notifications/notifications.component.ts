@@ -13,9 +13,9 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angul
 import { UserSettings } from '@osf/core/models';
 import { GetCurrentUserSettings, UpdateUserSettings, UserSelectors } from '@osf/core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components';
+import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 
 import { SUBSCRIPTION_EVENTS } from './constants';
-import { SubscriptionEvent, SubscriptionFrequency } from './enums';
 import { EmailPreferencesForm, EmailPreferencesFormControls } from './models';
 import {
   GetAllGlobalNotificationSubscriptions,

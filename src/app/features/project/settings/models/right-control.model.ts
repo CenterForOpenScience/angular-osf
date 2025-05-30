@@ -1,13 +1,10 @@
-export type RightControl =
-  | {
-      type: 'dropdown';
-      label?: string;
-      value: string;
-      options: { label: string; value: string }[];
-      onChange?: (value: string) => void;
-    }
-  | {
-      type: 'text';
-      label?: string;
-      value: string;
-    };
+import { SubscriptionEvent } from '@shared/enums';
+import { SelectOption } from '@shared/models';
+
+export interface RightControl {
+  type: 'dropdown';
+  label?: string;
+  value: boolean | string;
+  options: SelectOption[];
+  event?: SubscriptionEvent;
+}

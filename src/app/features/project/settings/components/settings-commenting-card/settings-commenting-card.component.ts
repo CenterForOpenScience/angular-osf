@@ -3,10 +3,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Card } from 'primeng/card';
 import { RadioButton } from 'primeng/radiobutton';
 
-import { ChangeDetectionStrategy, Component, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-import { ShareIndexingEnum } from '@osf/shared/enums';
 
 @Component({
   selector: 'osf-settings-commenting-card',
@@ -16,5 +14,6 @@ import { ShareIndexingEnum } from '@osf/shared/enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsCommentingCardComponent {
-  commenting = model<ShareIndexingEnum>();
+  anyoneCanComment = input.required<boolean>();
+  readonly anyoneCanCommentChange = output<boolean>();
 }

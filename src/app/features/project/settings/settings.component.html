@@ -1,64 +1,50 @@
-<section [class.desktop]="isDesktop()" class="flex flex-column flex-1">
+<section class="flex flex-column flex-1">
   <osf-sub-header [title]="'navigation.project.settings' | translate" />
 
   <div class="flex-column flex flex-1 w-full">
-    <p-tabpanels role="tablist" class="flex flex-column gap-4 flex-1 w-full bg-white" [class.mobile]="!isDesktop()">
+    <p-tabpanels role="tablist" class="flex flex-column gap-4 flex-1 w-full bg-white">
       <osf-settings-project-form-card
+        (submitForm)="submitForm($event)"
+        (deleteProject)="deleteProject()"
         [formGroup]="projectForm"
-        (submitForm)="submitForm()"
-        (resetForm)="resetForm()"
-      ></osf-settings-project-form-card>
+        [projectDetails]="projectDetails()"
+      />
 
       <osf-settings-storage-location-card
         [location]="'United States'"
         [locationText]="'Storage location cannot be changed after project is created.'"
       ></osf-settings-storage-location-card>
 
-      <osf-settings-view-only-links-card [tableData]="tableData"></osf-settings-view-only-links-card>
+      <osf-settings-view-only-links-card (deleteTableItem)="deleteLinkItem($event)" [tableData]="viewOnlyLinks()" />
 
-      <osf-settings-access-requests-card [formControl]="accessRequest"></osf-settings-access-requests-card>
+      <osf-settings-access-requests-card
+        (accessRequestChange)="onAccessRequestChange($event)"
+        [accessRequest]="accessRequest()"
+      />
 
       <osf-settings-wiki-card
-        [formControl]="wiki"
-        [rightControls]="rightControls['wiki']"
-        [accessOptions]="accessOptions"
-        (accessChange)="onAccessChange($event)"
-      ></osf-settings-wiki-card>
+        (wikiChangeEmit)="onWikiRequestChange($event)"
+        (anyoneCanEditWikiEmitValue)="onAnyoneCanEditWikiRequestChange($event)"
+        [wikiEnabled]="wikiEnabled()"
+        [anyoneCanEditWiki]="anyoneCanEditWiki()"
+        [title]="title()"
+      />
 
-      <osf-settings-commenting-card [(commenting)]="commenting"></osf-settings-commenting-card>
+      <osf-settings-commenting-card
+        (anyoneCanCommentChange)="onAnyoneCanCommentRequestChange($event)"
+        [anyoneCanComment]="anyoneCanComment()"
+      />
 
-      <p-card>
-        <h3 class="text-xl pb-4">{{ 'myProjects.settings.emailNotifications' | translate }}</h3>
+      <osf-project-setting-notifications
+        (notificationEmitValue)="onNotificationRequestChange($event)"
+        [title]="title()"
+        [notifications]="notifications()"
+      />
 
-        <p class="pb-4">{{ 'myProjects.settings.emailNotificationsText' | translate }}</p>
-
-        <osf-project-detail-setting-accordion
-          [title]="'Project name example'"
-          [rightControls]="rightControls['notifications']"
-        >
-          <div class="flex align-items-baseline gap-2">
-            <i class="pi pi-minus text-sm icon-space"></i>
-            <span>Sub text</span>
-          </div>
-        </osf-project-detail-setting-accordion>
-      </p-card>
-
-      <p-card>
-        <h3 class="text-xl pb-4">{{ 'myProjects.settings.redirectLink' | translate }}</h3>
-
-        <div class="flex align-items-center w-full">
-          <p-checkbox
-            ariaLabel="Checkbox for redirect link"
-            [binary]="true"
-            [formControl]="redirectLink"
-            id="redirectLink"
-            name="ongoing"
-          ></p-checkbox>
-          <label for="redirectLink" class="input-label ml-2">
-            {{ 'myProjects.settings.redirectLinkText' | translate }}
-          </label>
-        </div>
-      </p-card>
+      <osf-settings-redirect-link
+        (redirectUrlDataChange)="onRedirectUrlDataRequestChange($event)"
+        [redirectUrlDataInput]="redirectUrlData()"
+      />
 
       <p-card>
         <h3 class="text-xl pb-4">{{ 'myProjects.settings.projectAffiliation' | translate }}</h3>
@@ -70,27 +56,34 @@
           <li class="list-disc">{{ 'myProjects.settings.publicProjectsToBeDiscoverable' | translate }}</li>
           <li class="list-disc">{{ 'myProjects.settings.singleSignInToTHeOSF' | translate }}</li>
           <li class="list-disc">
-            <a routerLink="#">{{ 'myProjects.settings.faq' | translate }}</a>
+            <a href="https://help.osf.io/article/406-faqs-home-page" target="_blank">{{
+              'myProjects.settings.faq' | translate
+            }}</a>
           </li>
         </ol>
 
-        <div class="flex flex-column gap-3 w-full mt-5">
-          @for (affiliation of affiliations; track $index) {
-            <div
-              class="flex justify-content-between align-items-center w-full border-bottom-1 border-gray-300 pb-2 pr-2 sm:pr-4"
-            >
-              <div class="flex align-items-center gap-3">
-                <img ngSrc="assets/icons/colored/cos-shield.svg" alt="cos-shield" width="44" height="44" />
+        @if (affiliations.length > 0) {
+          <div class="flex flex-column gap-3 w-full mt-5">
+            @for (affiliation of affiliations; track $index) {
+              <div
+                class="flex justify-content-between align-items-center w-full border-bottom-1 border-gray-300 pb-2 pr-2 sm:pr-4"
+              >
+                <div class="flex align-items-center gap-3">
+                  <img ngSrc="assets/images/cos-shield.svg" alt="cos-shield" width="44" height="44" />
 
-                <p>{{ affiliation.name }}</p>
+                  <p>{{ affiliation }}</p>
+                </div>
+
+                <p-button
+                  ariaLabel="Delete affiliation"
+                  class="btn-icon-text form-btn icon-copy-btn button-shadow-none"
+                >
+                  <i class="osf-icon-trash delete-icon"></i>
+                </p-button>
               </div>
-
-              <p-button ariaLabel="Delete affiliation" class="btn-icon-text form-btn icon-copy-btn button-shadow-none">
-                <i class="osf-icon-trash delete-icon"></i>
-              </p-button>
-            </div>
-          }
-        </div>
+            }
+          </div>
+        }
       </p-card>
     </p-tabpanels>
   </div>

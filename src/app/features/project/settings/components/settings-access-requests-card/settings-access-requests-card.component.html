@@ -5,7 +5,8 @@
     <p-checkbox
       ariaLabel="Checkbox for access request"
       [binary]="true"
-      [formControl]="formControl()"
+      [ngModel]="accessRequest()"
+      (ngModelChange)="accessRequestChange.emit($event)"
       id="accessRequest"
       name="ongoing"
     ></p-checkbox>

@@ -1,4 +1,5 @@
-import { SubscriptionEvent, SubscriptionFrequency } from '../enums';
+import { SubscriptionEvent, SubscriptionFrequency, SubscriptionType } from '@shared/enums';
+
 import {
   NotificationSubscription,
   NotificationSubscriptionGetResponse,
@@ -14,14 +15,20 @@ export class NotificationSubscriptionMapper {
     };
   }
 
-  static toUpdateRequest(id: string, frequency: SubscriptionFrequency): NotificationSubscriptionUpdateRequest {
+  static toUpdateRequest(
+    id: string,
+    frequency: SubscriptionFrequency,
+    isNodeSubscription?: boolean
+  ): NotificationSubscriptionUpdateRequest {
+    const baseAttributes = {
+      frequency: frequency,
+    };
+
     return {
       data: {
-        id: id,
-        attributes: {
-          frequency: frequency,
-        },
-        type: 'subscription',
+        type: isNodeSubscription ? SubscriptionType.Node : SubscriptionType.Global,
+        attributes: baseAttributes,
+        ...(isNodeSubscription ? {} : { id }),
       },
     };
   }

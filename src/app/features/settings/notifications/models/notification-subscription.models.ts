@@ -1,4 +1,4 @@
-import { SubscriptionEvent, SubscriptionFrequency } from '../enums';
+import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 
 //domain models
 export interface NotificationSubscription {
@@ -10,7 +10,7 @@ export interface NotificationSubscription {
 //api models
 export interface NotificationSubscriptionGetResponse {
   id: string;
-  type: 'subscription';
+  type: 'subscription' | 'user-provider-subscription';
   attributes: {
     event_name: string;
     frequency: string;
@@ -19,8 +19,8 @@ export interface NotificationSubscriptionGetResponse {
 
 export interface NotificationSubscriptionUpdateRequest {
   data: {
-    id: string;
-    type: 'subscription';
+    id?: string;
+    type: 'subscription' | 'user-provider-subscription';
     attributes: {
       frequency: SubscriptionFrequency;
     };

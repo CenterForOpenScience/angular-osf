@@ -1,4 +1,4 @@
-import { SubscriptionEvent } from '../enums';
+import { SubscriptionEvent } from '@shared/enums';
 
 export const SUBSCRIPTION_EVENTS: {
   event: SubscriptionEvent;

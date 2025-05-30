@@ -7,8 +7,8 @@ export const authInterceptor: HttpInterceptorFn = (
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
   const authToken = 'UlO9O9GNKgVzJD7pUeY53jiQTKJ4U2znXVWNvh0KZQruoENuILx0IIYf9LoDz7Duq72EIm';
-  // OBJoUomBgbUuDgQo5JoaSKNya6XaYcd0ojAX1XOLmWi6J2arQPzByxyEi81fHE60drQUWv
-  // UlO9O9GNKgVzJD7pUeY53jiQTKJ4U2znXVWNvh0KZQruoENuILx0IIYf9LoDz7Duq72EIm kyrylo
+  // '2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt';
+  //   'OBJoUomBgbUuDgQo5JoaSKNya6XaYcd0ojAX1XOLmWi6J2arQPzByxyEi81fHE60drQUWv';
 
   if (authToken) {
     const authReq = req.clone({
