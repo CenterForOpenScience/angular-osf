@@ -1,7 +1,8 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { tap } from 'rxjs';
+import { tap, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -51,7 +52,8 @@ export class PreprintsState {
             }),
           })
         );
-      })
+      }),
+      catchError((error) => this.handleError(ctx, 'preprintProviderDetails', error))
     );
   }
 
@@ -69,7 +71,8 @@ export class PreprintsState {
             }),
           })
         );
-      })
+      }),
+      catchError((error) => this.handleError(ctx, 'preprintProvidersToAdvertise', error))
     );
   }
 
@@ -90,7 +93,19 @@ export class PreprintsState {
             }),
           })
         );
-      })
+      }),
+      catchError((error) => this.handleError(ctx, 'highlightedSubjectsForProvider', error))
     );
+  }
+
+  private handleError(ctx: StateContext<PreprintsStateModel>, section: keyof PreprintsStateModel, error: Error) {
+    ctx.patchState({
+      [section]: {
+        ...ctx.getState()[section],
+        isLoading: false,
+        error: error.message,
+      },
+    });
+    return throwError(() => error);
   }
 }
