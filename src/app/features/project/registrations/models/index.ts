@@ -1,1 +1,1 @@
-export * from './registration-card.interface';
+export * from './registrations.model';

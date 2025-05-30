@@ -483,6 +483,19 @@
         "duplicate": "Duplicate",
         "share": "Share"
       }
+    },
+    "registrations": {
+      "addRegistration": "Add a Registration",
+      "emptyState": "There have been no completed registrations of this project.",
+      "card": {
+        "registrationTemplate": "Registration template:",
+        "registry": "Registry:",
+        "registered": "Registered:",
+        "lastUpdated": "Last Updated:",
+        "contributors": "Contributors:",
+        "description": "Description:",
+        "openResources": "Open Resources"
+      }
     }
   },
   "settings": {
@@ -959,5 +972,14 @@
       "github": "GitHub"
     },
     "copyright": "Copyright © 2011-2025"
+  },
+  "shared": {
+    "resources": {
+      "data": "Data",
+      "analyticCode": "Analytic Code",
+      "materials": "Materials",
+      "papers": "Papers",
+      "supplements": "Supplements"
+    }
   }
 }
