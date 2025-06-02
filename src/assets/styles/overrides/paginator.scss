@@ -131,3 +131,9 @@ p-select {
     }
   }
 }
+
+.collections-paginator {
+  .p-paginator {
+    justify-content: end;
+  }
+}

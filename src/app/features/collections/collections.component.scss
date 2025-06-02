@@ -1,0 +1,48 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+:host {
+  border: 2px solid var.$white;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-top: mix.rem(64px);
+  background: #013b5c;
+
+  .collections-sub-header {
+    margin: mix.rem(48px) mix.rem(28px);
+
+    .collections-icon {
+      font-size: mix.rem(42px);
+    }
+
+    @media (max-width: 575px) {
+      margin-bottom: mix.rem(20px);
+    }
+  }
+
+  .search-input-container {
+    margin: 0 mix.rem(28px) mix.rem(48px) mix.rem(28px);
+    position: relative;
+
+    img {
+      position: absolute;
+      right: mix.rem(4px);
+      top: mix.rem(4px);
+      z-index: 1;
+    }
+  }
+
+  .content-container {
+    background: var.$white;
+    padding: mix.rem(28px);
+  }
+
+  @media (min-width: 576px) and (max-width: 1199px) {
+    margin-top: mix.rem(36px);
+  }
+
+  @media (max-width: 575px) {
+    margin-top: 0;
+  }
+}

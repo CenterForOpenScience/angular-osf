@@ -25,6 +25,7 @@
     "meetings": "Meetings",
     "myProjects": "My Projects",
     "preprints": "Preprints",
+    "collections": "Collections",
     "donate": "Donate",
     "profileSettings": "Profile Settings",
     "accountSettings": "Account Settings",
@@ -552,6 +553,83 @@
         "description": "Description:",
         "openResources": "Open Resources"
       }
+    }
+  },
+  "collections": {
+    "buttons": {
+      "addToCollection": "Add to Collection"
+    },
+    "searchInput": {
+      "placeholder": "Enter search term(s) here"
+    },
+    "filters": {
+      "programArea": {
+        "label": "Program Area",
+        "placeholder": "Select program areas",
+        "description": "Please select the program area from the dropdown below or start typing to find it"
+      },
+      "status": {
+        "label": "Status",
+        "placeholder": "Select status",
+        "description": "Please select the status from the dropdown below or start typing to find it"
+      },
+      "collectedType": {
+        "label": "Collected Type",
+        "placeholder": "Select collected types",
+        "description": "Please select the collected type from the dropdown below or start typing to find it"
+      },
+      "dataType": {
+        "label": "Data Type",
+        "placeholder": "Select data types",
+        "description": "Please select the data type from the dropdown below or start typing to find it"
+      },
+      "disease": {
+        "label": "Disease",
+        "placeholder": "Select diseases",
+        "description": "Please select the disease from the dropdown below or start typing to find it"
+      },
+      "gradeLevels": {
+        "label": "Grade Levels",
+        "placeholder": "Select grade levels",
+        "description": "Please select the grade level from the dropdown below or start typing to find it"
+      },
+      "issue": {
+        "label": "Issue",
+        "placeholder": "Select issues",
+        "description": "Please select the issue from the dropdown below or start typing to find it"
+      },
+      "reviewsState": {
+        "label": "Reviews State",
+        "placeholder": "Select reviews states",
+        "description": "Please select the reviews state from the dropdown below or start typing to find it"
+      },
+      "schoolType": {
+        "label": "School Type",
+        "placeholder": "Select school types",
+        "description": "Please select the school type from the dropdown below or start typing to find it"
+      },
+      "studyDesign": {
+        "label": "Study Design",
+        "placeholder": "Select study designs",
+        "description": "Please select the study design from the dropdown below or start typing to find it"
+      },
+      "volume": {
+        "label": "Volume",
+        "placeholder": "Select volumes",
+        "description": "Please select the volume from the dropdown below or start typing to find it"
+      },
+      "sort": {
+        "label": "Sort by:"
+      }
+    },
+    "searchResults": {
+      "noResults": "0 results",
+      "10000Results": "10,000+ results",
+      "results": "results"
+    },
+    "common": {
+      "dateCreated": "Date Created:",
+      "dateModified": "Date Modified:"
     }
   },
   "settings": {

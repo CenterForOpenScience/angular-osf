@@ -1,0 +1,34 @@
+@use "../variables" as var;
+@use "../mixins" as mix;
+
+.p-multiselect {
+  border-color: var(--p-multiselect-border-color);
+}
+
+.p-multiselect-header {
+  .p-inputtext {
+    height: mix.rem(38px);
+  }
+}
+
+.p-multiselect-option {
+  color: var.$dark-blue-1;
+
+  span {
+    white-space: wrap;
+  }
+
+  &:hover {
+    background: var.$bg-blue-3;
+  }
+
+  &.p-multiselect-option-selected {
+    background: var.$bg-blue-2;
+  }
+}
+
+.p-multiselect-filter-container {
+  .p-iconfield {
+    display: flex;
+  }
+}

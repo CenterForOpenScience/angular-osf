@@ -65,6 +65,10 @@ export const routes: Routes = [
           import('./features/static/privacy-policy/privacy-policy.component').then((mod) => mod.PrivacyPolicyComponent),
       },
       {
+        path: 'collections',
+        loadChildren: () => import('./features/collections/collections.routes').then((mod) => mod.collectionsRoutes),
+      },
+      {
         path: 'meetings',
         loadComponent: () => import('./features/meetings/meetings.component').then((mod) => mod.MeetingsComponent),
         children: [

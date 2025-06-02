@@ -289,6 +289,18 @@
   }
 }
 
+.collections-heading-btn {
+  .p-button {
+    --p-button-primary-color: #008b7b;
+    background-color: var(--p-button-primary-color);
+    color: var.$white;
+
+    @media (max-width: 575px) {
+      width: 100%;
+    }
+  }
+}
+
 .secondary-add-btn .p-button.p-button-secondary {
   --p-button-secondary-color: var(--dark-blue-1);
 }

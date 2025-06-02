@@ -1,0 +1,21 @@
+<div class="mb-4 mt-4 flex gap-3 flex-wrap">
+  @if (activeFilters().programArea.length) {
+    @for (filter of activeFilters().programArea; track filter) {
+      <p-chip [label]="filter" [removable]="true" (onRemove)="onRemoveProgramAreaFilter(filter)">
+        <ng-template pTemplate="removeicon">
+          <i class="osf-icon-close text-xs font-bold text-align-center" tabindex="0" role="button"></i>
+        </ng-template>
+      </p-chip>
+    }
+  }
+
+  @if (activeFilters().collectedType.length) {
+    @for (filter of activeFilters().collectedType; track filter) {
+      <p-chip [label]="filter" [removable]="true" (onRemove)="onRemoveCollectedTypeFilter(filter)">
+        <ng-template pTemplate="removeicon">
+          <i class="osf-icon-close text-xs font-bold text-align-center" tabindex="0" role="button"></i>
+        </ng-template>
+      </p-chip>
+    }
+  }
+</div>
