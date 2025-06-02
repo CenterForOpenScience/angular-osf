@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -20,8 +20,9 @@ import {
 } from '@osf/features/settings/addons/store';
 import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { AddonCardListComponent } from '@shared/components/addons';
-import { SelectOption } from '@shared/models';
 import { IS_XSMALL } from '@shared/utils';
+
+import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS, AddonCategoryValue, AddonTabValue } from './addons.constants';
 
 @Component({
   selector: 'osf-addons',
@@ -43,17 +44,18 @@ import { IS_XSMALL } from '@shared/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonsComponent {
+  protected readonly AddonTabValue = AddonTabValue;
   #store = inject(Store);
-  protected readonly defaultTabValue = 0;
+  protected readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly searchValue = signal('');
-  protected readonly selectedCategory = signal<string>('external-storage-services');
+  protected readonly selectedCategory = signal<string>(AddonCategoryValue.EXTERNAL_STORAGE_SERVICES);
   protected readonly selectedTab = signal<number>(this.defaultTabValue);
-  protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
-  protected readonly addonsUserReference = this.#store.selectSignal(AddonsSelectors.getAddonUserReference);
-  protected readonly storageAddons = this.#store.selectSignal(AddonsSelectors.getStorageAddons);
-  protected readonly citationAddons = this.#store.selectSignal(AddonsSelectors.getCitationAddons);
-  protected readonly authorizedStorageAddons = this.#store.selectSignal(AddonsSelectors.getAuthorizedStorageAddons);
+  protected readonly currentUser = select(UserSelectors.getCurrentUser);
+  protected readonly addonsUserReference = select(AddonsSelectors.getAddonUserReference);
+  protected readonly storageAddons = select(AddonsSelectors.getStorageAddons);
+  protected readonly citationAddons = select(AddonsSelectors.getCitationAddons);
+  protected readonly authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
   protected readonly authorizedCitationAddons = this.#store.selectSignal(AddonsSelectors.getAuthorizedCitationAddons);
   protected readonly allAuthorizedAddons = computed(() => {
     const authorizedAddons = [...this.authorizedStorageAddons(), ...this.authorizedCitationAddons()];
@@ -67,11 +69,13 @@ export class AddonsComponent {
   });
 
   protected readonly currentAction = computed(() =>
-    this.selectedCategory() === 'external-storage-services' ? GetStorageAddons : GetCitationAddons
+    this.selectedCategory() === AddonCategoryValue.EXTERNAL_STORAGE_SERVICES ? GetStorageAddons : GetCitationAddons
   );
 
   protected readonly currentAddonsState = computed(() =>
-    this.selectedCategory() === 'external-storage-services' ? this.storageAddons() : this.citationAddons()
+    this.selectedCategory() === AddonCategoryValue.EXTERNAL_STORAGE_SERVICES
+      ? this.storageAddons()
+      : this.citationAddons()
   );
 
   protected readonly filteredAddonCards = computed(() => {
@@ -79,27 +83,8 @@ export class AddonsComponent {
     return this.currentAddonsState().filter((card) => card.externalServiceName.includes(searchValue));
   });
 
-  protected readonly tabOptions: SelectOption[] = [
-    {
-      label: 'settings.addons.tabs.allAddons',
-      value: 0,
-    },
-    {
-      label: 'settings.addons.tabs.connectedAddons',
-      value: 1,
-    },
-  ];
-
-  protected readonly categoryOptions: SelectOption[] = [
-    {
-      label: 'settings.addons.categories.additionalService',
-      value: 'external-storage-services',
-    },
-    {
-      label: 'settings.addons.categories.citationManager',
-      value: 'external-citation-services',
-    },
-  ];
+  protected readonly tabOptions = ADDON_TAB_OPTIONS;
+  protected readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
 
   protected onCategoryChange(value: string): void {
     this.selectedCategory.set(value);

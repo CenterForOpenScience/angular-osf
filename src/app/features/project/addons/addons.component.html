@@ -1,35 +1,31 @@
 <osf-sub-header [showButton]="false" [title]="'settings.addons.header.title' | translate" [icon]="'settings'" />
 <section class="flex-column flex flex-1">
-  <p-tabs [value]="selectedTab()" class="flex-1">
-    @if (!isMobile()) {
-      <p-tablist class="pr-5 pl-5">
-        <p-tab [value]="0">
-          {{ 'settings.addons.tabs.allAddons' | translate }}
-        </p-tab>
-        <p-tab [value]="1">
-          {{ 'settings.addons.tabs.connectedAddons' | translate }}
-        </p-tab>
-      </p-tablist>
-    }
+  <p-tabs [value]="selectedTab()" class="hidden md:flex md:flex-1">
+    <p-tablist class="pr-5 pl-5">
+      <p-tab [value]="AddonTabValue.ALL_ADDONS">
+        {{ 'settings.addons.tabs.allAddons' | translate }}
+      </p-tab>
+      <p-tab [value]="AddonTabValue.CONNECTED_ADDONS">
+        {{ 'settings.addons.tabs.connectedAddons' | translate }}
+      </p-tab>
+    </p-tablist>
 
     <p-tabpanels class="p-3 sm:p-5 flex-1">
-      @if (isMobile()) {
-        <p-select
-          class="w-full mb-4"
-          [options]="tabOptions"
-          optionValue="value"
-          [ngModel]="selectedTab()"
-          (ngModelChange)="selectedTab.set($event)"
-        >
-          <ng-template #selectedItem let-selectedOption>
-            {{ selectedOption.label | translate }}
-          </ng-template>
-          <ng-template #item let-item>
-            {{ item.label | translate }}
-          </ng-template>
-        </p-select>
-      }
-      <p-tabpanel [value]="0" class="flex flex-column gap-5">
+      <p-select
+        class="w-full mb-4 md:hidden"
+        [options]="tabOptions"
+        optionValue="value"
+        [ngModel]="selectedTab()"
+        (ngModelChange)="selectedTab.set($event)"
+      >
+        <ng-template #selectedItem let-selectedOption>
+          {{ selectedOption.label | translate }}
+        </ng-template>
+        <ng-template #item let-item>
+          {{ item.label | translate }}
+        </ng-template>
+      </p-select>
+      <p-tabpanel [value]="AddonTabValue.ALL_ADDONS" class="flex flex-column gap-5">
         <p>
           {{ 'settings.addons.description' | translate }}
         </p>
@@ -63,7 +59,7 @@
 
         <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
       </p-tabpanel>
-      <p-tabpanel [value]="1" class="flex flex-column gap-5">
+      <p-tabpanel [value]="AddonTabValue.CONNECTED_ADDONS" class="flex flex-column gap-5">
         <osf-search-input
           class="flex-1"
           [searchValue]="searchValue()"

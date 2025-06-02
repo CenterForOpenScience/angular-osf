@@ -4,8 +4,4 @@
 :host {
   @include mix.flex-column;
   flex: 1;
-
-  .tabs-container {
-    @include mix.flex-column;
-  }
 }

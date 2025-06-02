@@ -10,10 +10,9 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
+import { Addon, AuthorizedAddon } from '@osf/features/settings/addons/models';
+import { DeleteAuthorizedAddon } from '@osf/features/settings/addons/store';
 import { IS_XSMALL } from '@shared/utils';
-
-import { Addon, AuthorizedAddon } from '../../../../features/settings/addons/models';
-import { DeleteAuthorizedAddon } from '../../../../features/settings/addons/store';
 
 @Component({
   selector: 'osf-addon-card',
