@@ -10,7 +10,7 @@
     padding: 0 mix.rem(20px);
     display: flex;
     flex-direction: column;
-    row-gap: 0.8rem;
+    gap: mix.rem(12px);
     height: fit-content;
   }
 }

@@ -3,8 +3,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { CollectionSearchResultCard } from '@osf/features/collections/models/collection-search-result-card.models';
-import { SUBMISSION_ATTRIBUTES } from '@osf/features/collections/utils/submission-attributes.const';
+import { CollectionSearchResultCard } from '@osf/features/collections/models';
+import { SUBMISSION_ATTRIBUTES } from '@osf/features/collections/utils';
 
 @Component({
   selector: 'osf-collections-search-result-card',

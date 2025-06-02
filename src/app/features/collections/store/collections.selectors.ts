@@ -1,6 +1,8 @@
 import { Selector } from '@ngxs/store';
 
-import { CollectionsFilters, CollectionsStateModel } from './collections.model';
+import { CollectionsFilters } from '@osf/features/collections/models';
+
+import { CollectionsStateModel } from './collections.model';
 import { CollectionsState } from './collections.state';
 
 export class CollectionsSelectors {

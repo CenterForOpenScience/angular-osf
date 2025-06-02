@@ -9,23 +9,24 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { CollectionsFilterChipsComponent } from '@osf/features/collections/components/collections-filter-chips/collections-filter-chips.component';
-import { CollectionsFiltersComponent } from '@osf/features/collections/components/collections-filters/collections-filters.component';
-import { CollectionsSearchResultsComponent } from '@osf/features/collections/components/collections-search-results/collections-search-results.component';
+import { CollectionsFilterChipsComponent, CollectionsFiltersComponent } from '@osf/features/collections/components';
 import { CollectionsSelectors } from '@osf/features/collections/store';
 import { SORT_OPTIONS } from '@osf/features/collections/utils/sort-options.const';
 import { IS_WEB } from '@shared/utils';
 
+import { CollectionsSearchResultsComponent } from '../collections-search-results';
+
 @Component({
   selector: 'osf-collections-main-content',
+  standalone: true,
   imports: [
     NgOptimizedImage,
     Select,
     FormsModule,
+    TranslatePipe,
+    CollectionsFilterChipsComponent,
     CollectionsFiltersComponent,
     CollectionsSearchResultsComponent,
-    CollectionsFilterChipsComponent,
-    TranslatePipe,
   ],
   templateUrl: './collections-main-content.component.html',
   styleUrl: './collections-main-content.component.scss',

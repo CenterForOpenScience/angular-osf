@@ -1,5 +1,5 @@
-<section class="flex flex-column flex-1">
-  <div class="collections-sub-header flex justify-content-between flex-column gap-4 sm:gap-0 sm:flex-row">
+<section class="collections flex flex-column flex-1 mt-0 sm:mt-5 xl:mt-7">
+  <div class="collections-sub-header flex justify-content-between flex-column gap-4 mb-4 sm:mb-6 sm:gap-0 sm:flex-row">
     <div class="flex gap-3">
       <i class="collections-icon text-white osf-icon-collections"></i>
       <h1 class="flex align-items-center text-white">Collection Title</h1>
@@ -17,6 +17,8 @@
       height="36"
       width="36"
       class="cursor-pointer"
+      (click)="openHelpDialog()"
+      (keydown.enter)="openHelpDialog()"
     />
     <osf-search-input [control]="searchControl" [placeholder]="'collections.searchInput.placeholder' | translate" />
   </div>

@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { PrimeTemplate } from 'primeng/api';
 import { Chip } from 'primeng/chip';
@@ -16,16 +16,18 @@ import { CollectionsSelectors, SetCollectedTypeFilters, SetProgramAreaFilters } 
 })
 export class CollectionsFilterChipsComponent {
   protected activeFilters = select(CollectionsSelectors.getAllFilters);
-
-  constructor(private store: Store) {}
+  protected actions = createDispatchMap({
+    setProgramAreaFilters: SetProgramAreaFilters,
+    setCollectedTypeFilters: SetCollectedTypeFilters,
+  });
 
   protected onRemoveProgramAreaFilter(removedFilter: string): void {
     const currentFilters = this.activeFilters().programArea.filter((filter) => filter !== removedFilter);
-    this.store.dispatch(new SetProgramAreaFilters(currentFilters));
+    this.actions.setProgramAreaFilters(currentFilters);
   }
 
   protected onRemoveCollectedTypeFilter(removedFilter: string): void {
     const currentFilters = this.activeFilters().collectedType.filter((filter) => filter !== removedFilter);
-    this.store.dispatch(new SetCollectedTypeFilters(currentFilters));
+    this.actions.setCollectedTypeFilters(currentFilters);
   }
 }

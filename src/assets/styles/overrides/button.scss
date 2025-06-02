@@ -283,7 +283,7 @@
   .p-button {
     box-shadow: none;
 
-    @media (max-width: 575px) {
+    @media (max-width: var.$breakpoint-sm) {
       padding: 0;
     }
   }
@@ -295,7 +295,7 @@
     background-color: var(--p-button-primary-color);
     color: var.$white;
 
-    @media (max-width: 575px) {
+    @media (max-width: var.$breakpoint-sm) {
       width: 100%;
     }
   }

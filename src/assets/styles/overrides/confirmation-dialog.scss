@@ -1,12 +1,13 @@
 @use "../variables" as var;
+@use "../mixins" as mix;
 
 .p-dialog-mask {
   z-index: 2103 !important;
 }
 
 .p-dialog {
-  min-height: 212px;
-  width: 450px;
+  min-height: mix.rem(224px);
+  width: mix.rem(550px);
   margin: 1rem;
 
   .p-dialog-header {
