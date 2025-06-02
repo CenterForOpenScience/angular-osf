@@ -34,3 +34,61 @@
     </div>
   </div>
 </div>
+
+<p-dialog
+  [header]="'project.files.detail.editDialog.title' | translate"
+  [modal]="true"
+  [(visible)]="editFileMetadataVisible"
+  [style]="{ width: '25rem' }"
+>
+  <form [formGroup]="fileMetadataForm" (ngSubmit)="setFileMetadata()" class="flex flex-column gap-3">
+    <div class="flex flex-column gap-1">
+      <p>{{ 'project.files.detail.fileMetadata.fields.title' | translate }}</p>
+      <input pInputText id="title" formControlName="title" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <p>{{ 'project.files.detail.fileMetadata.fields.description' | translate }}</p>
+      <input pInputText id="description" formControlName="description" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <p>{{ 'project.files.detail.fileMetadata.fields.resourceType' | translate }}</p>
+      <p-select
+        class="w-full"
+        [options]="resourceTypes"
+        optionValue="value"
+        optionLabel="value"
+        appendTo="body"
+        formControlName="resourceType"
+        [showClear]="true"
+      ></p-select>
+    </div>
+    <div class="flex flex-column gap-1">
+      <p>{{ 'project.files.detail.fileMetadata.fields.resourceLanguage' | translate }}</p>
+      <p-select
+        class="w-full"
+        [options]="languages"
+        optionValue="value"
+        optionLabel="label"
+        appendTo="body"
+        formControlName="resourceLanguage"
+        [showClear]="true"
+      ></p-select>
+    </div>
+
+    <div class="flex btn-full-width gap-2">
+      <p-button
+        [label]="'project.files.detail.editDialog.buttons.cancel' | translate"
+        severity="info"
+        class="w-full"
+        (click)="editFileMetadataVisible = false"
+        type="button"
+      />
+      <p-button
+        [label]="'project.files.detail.editDialog.buttons.save' | translate"
+        class="w-full"
+        type="submit"
+        [disabled]="!fileMetadataForm.valid"
+      />
+    </div>
+  </form>
+</p-dialog>
