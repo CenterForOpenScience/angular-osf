@@ -1,73 +1,262 @@
-<osf-sub-header title="filename.doc" />
+<osf-sub-header [isLoading]="file().isLoading" title="{{ file().data?.name }}" />
 
 <div class="flex gap-4 bg-white flex-column h-full flex-1 p-4">
-  <a [routerLink]="['/my-projects/project/files']" class="flex align-items-center gap-2 back-navigation font-semibold">
+  <div class="flex align-items-center gap-2 back-navigation font-semibold">
     <i class="pi pi-angle-left text-base"></i>
-    Back to list of files
-  </a>
+    <a [routerLink]="['../']" class="font-semibold">
+      {{ 'project.files.detail.backToList' | translate }}
+    </a>
+  </div>
 
   <div class="flex xs:flex-column sm:flex-column lg:flex-row gap-4 flex-1">
-    <div style="background: #d9d9d9" class="flex flex-1 border-round-md"></div>
+    @if (safeLink) {
+      <iframe
+        [src]="safeLink"
+        (load)="isIframeLoading = false"
+        [hidden]="isIframeLoading"
+        width="60%"
+        title="Rendering of document"
+        scrolling="yes"
+        marginheight="0"
+        frameborder="0"
+        allowfullscreen=""
+      ></iframe>
+    }
+    @if (isIframeLoading) {
+      <div style="width: 60%; height: 100%">
+        <osf-loading-spinner></osf-loading-spinner>
+      </div>
+    }
+
     <div class="flex flex-column gap-4 flex-1">
-      <div class="metadata p-4 flex flex-column gap-5">
+      <div class="metadata p-4 flex flex-column gap-3">
         <div class="flex justify-content-between">
-          <h2>File Metadata</h2>
+          <h2>{{ 'project.files.detail.fileMetadata.title' | translate }}</h2>
 
-          <p-button severity="secondary"> Edit</p-button>
-        </div>
-
-        <div class="flex flex-column gap-2">
-          <h3>Title</h3>
-
-          <span>filename.doc</span>
-        </div>
-
-        <div class="flex flex-column gap-2">
-          <h3>Description</h3>
-
-          <div>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua
+          <div class="flex gap-2">
+            <p-button severity="secondary"><i class="osf-icon-download p-1"></i></p-button>
+            <p-button severity="secondary" (click)="editFileMetadataVisible = true">{{
+              'project.files.detail.fileMetadata.edit' | translate
+            }}</p-button>
           </div>
         </div>
 
         <div class="flex flex-column gap-2">
-          <h3>Resource Type</h3>
+          <h3>{{ 'project.files.detail.fileMetadata.fields.title' | translate }}</h3>
 
-          <span>Lorem ipsum</span>
+          @if (fileMetadata().isLoading) {
+            <p-skeleton width="3rem" height="19px"></p-skeleton>
+          } @else {
+            <span>{{ fileMetadata().data?.title }}</span>
+          }
         </div>
 
-        <div class="flex flex-column gap-2">
-          <h3>Resource Language</h3>
+        @if (fileMetadata().data?.description) {
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.files.detail.fileMetadata.fields.description' | translate }}</h3>
 
-          <span>English</span>
-        </div>
+            @if (fileMetadata().isLoading) {
+              <p-skeleton width="6rem" height="19px"></p-skeleton>
+            } @else {
+              <div>
+                {{ fileMetadata().data?.description }}
+              </div>
+            }
+          </div>
+        }
+
+        @if (fileMetadata().data?.resourceTypeGeneral) {
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.files.detail.fileMetadata.fields.resourceType' | translate }}</h3>
+
+            @if (fileMetadata().isLoading) {
+              <p-skeleton width="7.5rem" height="19px"></p-skeleton>
+            } @else {
+              <div>
+                <span>{{ fileMetadata().data?.resourceTypeGeneral }}</span>
+              </div>
+            }
+          </div>
+        }
+
+        @if (fileMetadata().data?.language) {
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.files.detail.fileMetadata.fields.resourceLanguage' | translate }}</h3>
+
+            @if (fileMetadata().isLoading) {
+              <p-skeleton width="10rem" height="19px"></p-skeleton>
+            } @else {
+              <div>
+                <span>{{ fileMetadata().data?.language }}</span>
+              </div>
+            }
+          </div>
+        }
       </div>
 
       <div class="metadata p-4 flex flex-column gap-5">
         <div class="flex justify-content-between">
-          <h2>Project Metadata</h2>
-
-          <p-button severity="secondary"> Edit</p-button>
+          <h2>{{ 'project.files.detail.projectMetadata.title' | translate }}</h2>
         </div>
 
-        <div class="flex flex-column gap-2">
-          <h3>Contributors</h3>
-
-          <a href="" class="font-bold">John Doe</a>
-          <a href="" class="font-bold">Jeremy Wolfve</a>
-          <a href="" class="font-bold">Ava Mitra</a>
-        </div>
-
-        <div class="flex flex-column gap-2">
-          <h3>Description</h3>
-
-          <div>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-            dolore magna aliqua
+        @for (funder of projectMetadata()?.funders; track $index) {
+          <div class="flex flex-column gap-2">
+            @if (funder.funderName) {
+              <div class="flex flex-column gap-1">
+                <h3>{{ 'project.files.detail.projectMetadata.fields.funder' | translate }}</h3>
+                <span>{{ funder.funderName }}</span>
+              </div>
+            }
+            @if (funder.awardTitle) {
+              <div class="flex flex-column gap-1">
+                <h3>{{ 'project.files.detail.projectMetadata.fields.awardTitle' | translate }}</h3>
+                <span>{{ funder.awardTitle }}</span>
+              </div>
+            }
+            @if (funder.awardTitle) {
+              <div class="flex flex-column gap-1">
+                <h3>{{ 'project.files.detail.projectMetadata.fields.awardNumber' | translate }}</h3>
+                <span>{{ funder.awardTitle }}</span>
+              </div>
+            }
+            @if (funder.awardUri) {
+              <div class="flex flex-column gap-1">
+                <h3>{{ 'project.files.detail.projectMetadata.fields.awardUri' | translate }}</h3>
+                <span>{{ funder.awardUri }}</span>
+              </div>
+            }
           </div>
+        }
+
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.files.detail.projectMetadata.fields.title' | translate }}</h3>
+
+          <span>{{ projectMetadata()?.title }}</span>
         </div>
+
+        @if (projectMetadata()?.description) {
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.files.detail.projectMetadata.fields.description' | translate }}</h3>
+
+            <div>
+              {{ projectMetadata()?.description }}
+            </div>
+          </div>
+        }
+
+        @if (projectMetadata()?.resourceTypeGeneral) {
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.files.detail.projectMetadata.fields.resourceType' | translate }}</h3>
+
+            <div>
+              {{ projectMetadata()?.resourceTypeGeneral }}
+            </div>
+          </div>
+        }
+
+        @if (projectMetadata()?.language) {
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.files.detail.projectMetadata.fields.resourceLanguage' | translate }}</h3>
+
+            <div>
+              {{ projectMetadata()?.language }}
+            </div>
+          </div>
+        }
+
+        @if (projectMetadata()?.dateCreated) {
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.files.detail.projectMetadata.fields.dateCreated' | translate }}</h3>
+
+            <div>
+              {{ projectMetadata()?.dateCreated | date: 'MMMM d, y' }}
+            </div>
+          </div>
+        }
+
+        @if (projectMetadata()?.dateModified) {
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.files.detail.projectMetadata.fields.dateModified' | translate }}</h3>
+
+            <div>
+              {{ projectMetadata()?.dateModified | date: 'MMMM d, y' }}
+            </div>
+          </div>
+        }
+
+        @if (contributors()?.length) {
+          <div class="flex flex-column gap-2">
+            <h3>{{ 'project.files.detail.projectMetadata.fields.contributors' | translate }}</h3>
+
+            <div class="flex flex-wrap">
+              @for (contributor of contributors(); track $index) {
+                <a [href]="contributor.id" class="font-bold">{{ contributor.name }}</a>
+                @if (!$last) {
+                  <span>,&nbsp;</span>
+                }
+              }
+            </div>
+          </div>
+        }
       </div>
     </div>
   </div>
 </div>
+
+<p-dialog
+  [header]="'project.files.detail.editDialog.title' | translate"
+  [modal]="true"
+  [(visible)]="editFileMetadataVisible"
+  [style]="{ width: '25rem' }"
+>
+  <form [formGroup]="fileMetadataForm" (ngSubmit)="setFileMetadata()" class="flex flex-column gap-3">
+    <div class="flex flex-column gap-1">
+      <p>{{ 'project.files.detail.fileMetadata.fields.title' | translate }}</p>
+      <input pInputText id="title" formControlName="title" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <p>{{ 'project.files.detail.fileMetadata.fields.description' | translate }}</p>
+      <input pInputText id="description" formControlName="description" />
+    </div>
+    <div class="flex flex-column gap-1">
+      <p>{{ 'project.files.detail.fileMetadata.fields.resourceType' | translate }}</p>
+      <p-select
+        class="w-full"
+        [options]="resourceTypes"
+        optionValue="value"
+        optionLabel="value"
+        appendTo="body"
+        formControlName="resourceType"
+        [showClear]="true"
+      ></p-select>
+    </div>
+    <div class="flex flex-column gap-1">
+      <p>{{ 'project.files.detail.fileMetadata.fields.resourceLanguage' | translate }}</p>
+      <p-select
+        class="w-full"
+        [options]="languages"
+        optionValue="value"
+        optionLabel="label"
+        appendTo="body"
+        formControlName="resourceLanguage"
+        [showClear]="true"
+      ></p-select>
+    </div>
+
+    <div class="flex btn-full-width gap-2">
+      <p-button
+        [label]="'project.files.detail.editDialog.buttons.cancel' | translate"
+        severity="info"
+        class="w-full"
+        (click)="editFileMetadataVisible = false"
+        type="button"
+      />
+      <p-button
+        [label]="'project.files.detail.editDialog.buttons.save' | translate"
+        class="w-full"
+        type="submit"
+        [disabled]="!fileMetadataForm.valid"
+      />
+    </div>
+  </form>
+</p-dialog>

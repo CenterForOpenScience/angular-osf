@@ -12,10 +12,11 @@ export interface JsonApiResponseWithPaging<Data, Included> extends JsonApiRespon
   };
 }
 
-export interface ApiData<Attributes, Embeds, Relationships> {
+export interface ApiData<Attributes, Embeds, Relationships, Links> {
   id: string;
   attributes: Attributes;
   embeds: Embeds;
   type: string;
   relationships: Relationships;
+  links: Links;
 }

@@ -1,6 +1,6 @@
 import { map, Observable } from 'rxjs';
 
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiResponse } from '@osf/core/models';
@@ -49,8 +49,23 @@ export class JsonApiService {
     return this.http.patch<JsonApiResponse<T, null>>(url, body).pipe(map((response) => response.data));
   }
 
-  put<T>(url: string, body: unknown): Observable<T> {
-    return this.http.put<JsonApiResponse<T, null>>(url, body).pipe(map((response) => response.data));
+  put<T>(url: string, body: unknown, params?: Record<string, unknown>): Observable<T> {
+    return this.http
+      .put<JsonApiResponse<T, null>>(url, body, { params: this.buildHttpParams(params) })
+      .pipe(map((response) => response.data));
+  }
+
+  putFile<T>(
+    url: string,
+    file: File,
+    params?: Record<string, string>
+  ): Observable<HttpEvent<JsonApiResponse<T, null>>> {
+    return this.http.put<JsonApiResponse<T, null>>(url, file, {
+      params: params,
+      reportProgress: true,
+      observe: 'events',
+      responseType: 'json' as const,
+    });
   }
 
   delete(url: string, body?: unknown): Observable<void> {

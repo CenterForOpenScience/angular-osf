@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TextInputComponent } from './text-input.component';
+import { MoveFileDialogComponent } from './move-file-dialog.component';
 
-describe('TextInputComponent', () => {
-  let component: TextInputComponent;
-  let fixture: ComponentFixture<TextInputComponent>;
+describe('MoveFileDialogComponent', () => {
+  let component: MoveFileDialogComponent;
+  let fixture: ComponentFixture<MoveFileDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TextInputComponent],
+      imports: [MoveFileDialogComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TextInputComponent);
+    fixture = TestBed.createComponent(MoveFileDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

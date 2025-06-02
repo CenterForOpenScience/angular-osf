@@ -2,7 +2,7 @@ import { ApiData } from '@osf/core/models';
 
 import { AccountEmail, AccountEmailResponse } from '../models';
 
-export function MapEmails(emails: ApiData<AccountEmailResponse, null, null>[]): AccountEmail[] {
+export function MapEmails(emails: ApiData<AccountEmailResponse, null, null, null>[]): AccountEmail[] {
   const accountEmails: AccountEmail[] = [];
   emails.forEach((email) => {
     accountEmails.push(MapEmail(email));
@@ -10,7 +10,7 @@ export function MapEmails(emails: ApiData<AccountEmailResponse, null, null>[]): 
   return accountEmails;
 }
 
-export function MapEmail(email: ApiData<AccountEmailResponse, null, null>): AccountEmail {
+export function MapEmail(email: ApiData<AccountEmailResponse, null, null, null>): AccountEmail {
   return {
     id: email.id,
     emailAddress: email.attributes.email_address,

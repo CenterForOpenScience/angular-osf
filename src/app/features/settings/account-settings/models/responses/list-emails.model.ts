@@ -1,6 +1,6 @@
 import { ApiData, JsonApiResponse } from '@osf/core/models';
 
-export type ListEmailsResponse = JsonApiResponse<ApiData<AccountEmailResponse, null, null>[], null>;
+export type ListEmailsResponse = JsonApiResponse<ApiData<AccountEmailResponse, null, null, null>[], null>;
 
 export interface AccountEmailResponse {
   email_address: string;

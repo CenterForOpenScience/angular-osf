@@ -4,7 +4,11 @@
       @if (icon()) {
         <i [class]="'osf-icon-' + icon()"></i>
       }
-      <h1>{{ title() }}</h1>
+      @if (isLoading()) {
+        <p-skeleton width="12rem" height="37px"></p-skeleton>
+      } @else {
+        <h1>{{ title() }}</h1>
+      }
     </div>
     @if (showButton()) {
       <div class="btn-container" [class.btn-full-width]="isXSmall()">

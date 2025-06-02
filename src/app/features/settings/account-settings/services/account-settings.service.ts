@@ -81,7 +81,7 @@ export class AccountSettingsService {
 
     return this.#jsonApiService
       .post<
-        ApiData<AccountEmailResponse, null, null>
+        ApiData<AccountEmailResponse, null, null, null>
       >(`${environment.apiUrl}/users/${this.#currentUser()?.id}/settings/emails/`, body)
       .pipe(map((response) => MapEmail(response)));
   }
@@ -105,7 +105,7 @@ export class AccountSettingsService {
 
     return this.#jsonApiService
       .patch<
-        ApiData<AccountEmailResponse, null, null>
+        ApiData<AccountEmailResponse, null, null, null>
       >(`${environment.apiUrl}/users/${userId}/settings/emails/${emailId}/`, body)
       .pipe(map((response) => MapEmail(response)));
   }
@@ -123,7 +123,7 @@ export class AccountSettingsService {
 
     return this.#jsonApiService
       .patch<
-        ApiData<AccountEmailResponse, null, null>
+        ApiData<AccountEmailResponse, null, null, null>
       >(`${environment.apiUrl}/users/${this.#currentUser()?.id}/settings/emails/${emailId}/`, body)
       .pipe(map((response) => MapEmail(response)));
   }
