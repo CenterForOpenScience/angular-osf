@@ -31,7 +31,6 @@ p-table {
       color: var.$dark-blue-1;
       border: none;
       height: mix.rem(65px);
-      //max-width: calc((100vw - 27rem) / 3);
     }
 
     th {
@@ -41,7 +40,7 @@ p-table {
 
       .p-sortable-column-icon {
         color: var.$grey-1;
-        margin-left: 6px;
+        margin-left: mix.rem(8px);
       }
     }
 
@@ -107,13 +106,6 @@ p-table {
     .p-datatable {
       padding: 1.71rem 0.85rem 1.71rem 0.85rem;
     }
-
-    //table {
-    //  th,
-    //  td {
-    //    max-width: calc((100vw - 6.85rem - 2px) / 3);
-    //  }
-    //}
   }
 
   .addon-table,
