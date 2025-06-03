@@ -101,7 +101,7 @@ export class MoveFileDialogComponent {
       path = '/';
     }
 
-    this.dispatch.setFilesIsLoading(true);
+    this.isFilesUpdating.set(true);
     this.projectFilesService
       .moveFile(this.config.data.file.links.move, path, this.config.data.projectId, this.config.data.action)
       .pipe(
@@ -110,9 +110,11 @@ export class MoveFileDialogComponent {
         finalize(() => {
           this.dispatch.setCurrentFolder(this.currentFolder());
           this.dispatch.setMoveFileCurrentFolder(undefined);
+          this.isFilesUpdating.set(false);
         })
       )
       .subscribe((file) => {
+        this.dialogRef.close();
         if (file.id) {
           const filesLink = this.currentFolder()?.relationships.filesLink;
           if (filesLink) {
@@ -122,6 +124,5 @@ export class MoveFileDialogComponent {
           }
         }
       });
-    this.dialogRef.close();
   }
 }
