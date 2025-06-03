@@ -7,9 +7,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
+import { CollectionsHelpDialogComponent, CollectionsMainContentComponent } from '@osf/features/collections/components';
 import { SearchInputComponent } from '@shared/components';
-
-import { CollectionsHelpDialogComponent, CollectionsMainContentComponent } from './components';
 
 @Component({
   selector: 'osf-collections',

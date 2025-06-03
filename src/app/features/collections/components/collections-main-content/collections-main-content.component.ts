@@ -9,12 +9,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { CollectionsFilterChipsComponent, CollectionsFiltersComponent } from '@osf/features/collections/components';
 import { CollectionsSelectors } from '@osf/features/collections/store';
-import { SORT_OPTIONS } from '@osf/features/collections/utils/sort-options.const';
+import { SORT_OPTIONS } from '@osf/features/collections/utils';
 import { IS_WEB } from '@shared/utils';
 
-import { CollectionsSearchResultsComponent } from '../collections-search-results';
+import { CollectionsFilterChipsComponent } from '../collections-filter-chips/collections-filter-chips.component';
+import { CollectionsFiltersComponent } from '../collections-filters/collections-filters.component';
+import { CollectionsSearchResultsComponent } from '../collections-search-results/collections-search-results.component';
 
 @Component({
   selector: 'osf-collections-main-content',

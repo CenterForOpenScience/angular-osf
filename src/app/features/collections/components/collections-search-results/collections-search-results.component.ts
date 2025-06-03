@@ -3,9 +3,10 @@ import { Paginator } from 'primeng/paginator';
 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { CollectionsSearchResultCardComponent } from '@osf/features/collections/components';
 import { CollectionSearchResultCard } from '@osf/features/collections/models';
 import { SEARCH_RESULT_CARDS_DATA } from '@osf/features/collections/utils';
+
+import { CollectionsSearchResultCardComponent } from '../collections-search-result-card/collections-search-result-card.component';
 
 @Component({
   selector: 'osf-collections-search-results',
