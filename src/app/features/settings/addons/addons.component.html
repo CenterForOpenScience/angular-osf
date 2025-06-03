@@ -54,8 +54,7 @@
           <div class="col-12 md:col-6 lg:col-9">
             <osf-search-input
               class="w-full"
-              [searchValue]="searchValue()"
-              (searchValueChange)="searchValue.set($event || '')"
+              [control]="searchControl"
               [placeholder]="'settings.addons.filters.search' | translate"
             />
           </div>
@@ -66,8 +65,7 @@
       <p-tabpanel [value]="1" class="flex flex-column gap-5">
         <osf-search-input
           class="flex-1"
-          [searchValue]="searchValue()"
-          (searchValueChange)="searchValue.set($event || '')"
+          [control]="searchControl"
           [placeholder]="'settings.addons.filters.search' | translate"
         />
 

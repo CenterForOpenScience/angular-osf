@@ -2,8 +2,8 @@ import { Selector } from '@ngxs/store';
 
 import { UserState, UserStateModel } from '@core/store/user';
 import { User, UserSettings } from '@osf/core/models';
-import { Social } from '@osf/features/settings/profile-settings/models/social.model';
-import { ProfileSettingsStateModel } from '@osf/features/settings/profile-settings/store/profile-settings.model';
+import { ProfileSettingsStateModel } from '@osf/features/settings/profile-settings/store';
+import { Social } from '@osf/shared/models';
 
 export class UserSelectors {
   @Selector([UserState])

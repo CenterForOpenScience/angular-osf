@@ -10,11 +10,7 @@
     (keydown.enter)="currentStep = 1"
     class="cursor-pointer"
   />
-  <osf-search-input
-    [searchValue]="searchValue()"
-    (searchValueChange)="searchValue.set($event || '')"
-    placeholder="Enter search term(s) here"
-  />
+  <osf-search-input [control]="searchControl" placeholder="Enter search term(s) here" />
 </div>
 
 <div class="flex-column flex flex-1 w-full resources-tab-panel">

@@ -9,13 +9,17 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "lint": "eslint . --ext .ts,.html",
-    "format": "prettier --write \"src/**/*.{ts,html,scss}\"",
-    "prettier:check": "prettier --check \"src/**/*.{ts,html,scss}\"",
+    "lint": "ng lint",
+    "lint:fix": "ng lint --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:format": "npm run lint:fix && npm run format",
     "icons:optimize": "node src/assets/icons/optimize.mjs",
     "icons:generate": "fantasticon -c .fantasticonrc.js",
     "icons:build": "bun run icons:optimize && bun run icons:generate",
-    "prepare": "husky"
+    "prepare": "husky",
+    "ngxs:actions": "ng generate @ngxs/store:actions --name --path",
+    "ngxs:store": "ng generate @ngxs/store:store --name --path"
   },
   "private": true,
   "dependencies": {

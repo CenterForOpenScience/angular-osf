@@ -1,0 +1,28 @@
+<p-accordion>
+  @for (employment of employment(); track $index) {
+    <p-accordion-panel value="{{ $index }}" class="accordion-panel">
+      <p-accordion-header>
+        <div class="flex flex-row w-full">
+          <p>{{ employment.institution }}</p>
+
+          <p class="font-normal ml-auto mr-5">
+            {{ employment.startMonth | monthYear: +employment.startYear }} -
+            @if (employment.ongoing) {
+              {{ 'settings.profileSettings.education.ongoing' | translate }}
+            } @else {
+              {{ employment.endMonth | monthYear: employment.endYear }}
+            }
+          </p>
+        </div>
+      </p-accordion-header>
+
+      <p-accordion-content>
+        <p>{{ 'settings.profileSettings.employment.jobTitle' | translate }}: {{ employment.title }}</p>
+        <p>
+          {{ 'settings.profileSettings.employment.department' | translate }}:
+          {{ employment.institution }}
+        </p>
+      </p-accordion-content>
+    </p-accordion-panel>
+  }
+</p-accordion>

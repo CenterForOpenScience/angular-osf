@@ -8,7 +8,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
@@ -49,7 +49,8 @@ export class AddonsComponent {
   #store = inject(Store);
   protected readonly defaultTabValue = 0;
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly searchValue = signal('');
+  protected readonly searchControl = new FormControl<string>('');
+
   protected readonly selectedCategory = signal<string>('external-storage-services');
   protected readonly selectedTab = signal<number>(this.defaultTabValue);
   protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
@@ -61,7 +62,7 @@ export class AddonsComponent {
   protected readonly allAuthorizedAddons = computed(() => {
     const authorizedAddons = [...this.authorizedStorageAddons(), ...this.authorizedCitationAddons()];
 
-    const searchValue = this.searchValue().toLowerCase();
+    const searchValue = this.searchControl.value?.toLowerCase() ?? '';
     return authorizedAddons.filter((card) => card.displayName.includes(searchValue));
   });
 
@@ -78,7 +79,7 @@ export class AddonsComponent {
   );
 
   protected readonly filteredAddonCards = computed(() => {
-    const searchValue = this.searchValue().toLowerCase();
+    const searchValue = this.searchControl.value?.toLowerCase() ?? '';
     return this.currentAddonsState().filter((card) => card.externalServiceName.includes(searchValue));
   });
 

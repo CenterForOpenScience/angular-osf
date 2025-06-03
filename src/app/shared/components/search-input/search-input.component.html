@@ -1,11 +1,11 @@
 <div class="search-container flex align-items-center">
-  <i class="osf-icon-search pl-1"></i>
+  <i class="osf-icon-search"></i>
   <input
     class="search-input"
     type="text"
     [placeholder]="placeholder()"
     pInputText
-    [ngModel]="searchValue()"
-    (ngModelChange)="onSearchChange($event)"
+    [formControl]="control()"
+    (keydown.enter)="onEnterClicked()"
   />
 </div>

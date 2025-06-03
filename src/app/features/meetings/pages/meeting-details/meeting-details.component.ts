@@ -7,7 +7,7 @@ import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, map, of, Subject, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, of, switchMap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -22,6 +22,7 @@ import {
   untracked,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { parseQueryFilterParams } from '@core/helpers/http.helper';
@@ -62,10 +63,10 @@ export class MeetingDetailsComponent {
     getMeetingSubmissions: GetMeetingSubmissions,
     getMeetingById: GetMeetingById,
   });
-  private readonly searchSubject = new Subject<string>();
+
+  searchControl = new FormControl<string>('');
 
   queryParams = toSignal(this.route.queryParams);
-  searchValue = signal('');
   sortColumn = signal('');
   sortOrder = signal<SortOrder>(SortOrder.Asc);
   currentPage = signal(1);
@@ -124,11 +125,6 @@ export class MeetingDetailsComponent {
     window.open(item.downloadLink, '_blank');
   }
 
-  onSearchChange(value: string): void {
-    this.searchValue.set(value);
-    this.searchSubject.next(value);
-  }
-
   onPageChange(event: TablePageEvent): void {
     const page = Math.floor(event.first / event.rows) + 1;
 
@@ -163,11 +159,11 @@ export class MeetingDetailsComponent {
   }
 
   private setupSearchSubscription(): void {
-    this.searchSubject
+    this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchValue) => {
+      .subscribe((searchControl) => {
         this.updateQueryParams({
-          search: searchValue,
+          search: searchControl ?? '',
           page: 1,
         });
       });
@@ -216,7 +212,7 @@ export class MeetingDetailsComponent {
     untracked(() => {
       this.currentPage.set(params.page);
       this.currentPageSize.set(params.size);
-      this.searchValue.set(params.search);
+      this.searchControl.setValue(params.search);
       this.sortColumn.set(params.sortColumn);
       this.sortOrder.set(params.sortOrder);
 

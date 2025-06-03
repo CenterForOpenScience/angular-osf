@@ -11,8 +11,10 @@ import { SelectModule } from 'primeng/select';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { Social } from '@osf/shared/models';
+
 import { socials } from '../../data';
-import { Social, SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys, UserSocialLink } from '../../models';
+import { SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys, UserSocialLink } from '../../models';
 import { ProfileSettingsSelectors, UpdateProfileSettingsSocialLinks } from '../../store';
 
 @Component({

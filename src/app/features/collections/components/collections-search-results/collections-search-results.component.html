@@ -1,0 +1,13 @@
+<p-dataview [value]="searchResults" class="w-full" [rows]="10">
+  <ng-template #list let-items>
+    <div class="flex flex-column gap-3">
+      @if (items.length) {
+        @for (item of items; track item.id) {
+          <osf-collections-search-result-card [cardItem]="item"></osf-collections-search-result-card>
+        }
+
+        <p-paginator class="collections-paginator" />
+      }
+    </div>
+  </ng-template>
+</p-dataview>

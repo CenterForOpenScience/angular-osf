@@ -2,11 +2,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Card } from 'primeng/card';
 
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
+import { PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@osf/features/project/settings/models';
 import { ViewOnlyTableComponent } from '@shared/components';
-
-import { LinkTableModel } from '../../models';
 
 @Component({
   selector: 'osf-settings-view-only-links-card',
@@ -16,5 +15,6 @@ import { LinkTableModel } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsViewOnlyLinksCardComponent {
-  tableData = input.required<LinkTableModel[]>();
+  deleteTableItem = output<ViewOnlyLinkModel>();
+  tableData = input.required<PaginatedViewOnlyLinksModel>();
 }

@@ -112,56 +112,15 @@
 
 <div class="cards">
   <div class="card">
-    <h2 class="mb-3">Employment</h2>
-    <p-accordion>
-      @for (employment of currentUser()?.employment; track $index) {
-        <p-accordion-panel value="{{ $index }}" class="accordion-panel">
-          <p-accordion-header>
-            <div class="title-date">
-              <p>{{ employment.institution }}</p>
-              <p class="font-normal ml-auto mr-5">
-                {{ createDate(employment.startYear, employment.startMonth) | date: 'MMM yyyy' }} -
-                @if (employment.ongoing) {
-                  ongoing
-                } @else {
-                  {{ createDate(employment.endYear!, employment.endMonth!) | date: 'MMM yyyy' }}
-                }
-              </p>
-            </div>
-          </p-accordion-header>
-          <p-accordion-content>
-            <p>Job title: {{ employment.title }}</p>
-            <p>Department / Institute (optional): {{ employment.institution }}</p>
-          </p-accordion-content>
-        </p-accordion-panel>
-      }
-    </p-accordion>
+    <h2 class="mb-3">{{ 'settings.profileSettings.tabs.employment' | translate }}</h2>
+
+    <osf-employment-history [employment]="currentUser()?.employment"></osf-employment-history>
   </div>
+
   <div class="card">
-    <h2 class="mb-3">Education</h2>
-    <p-accordion>
-      @for (education of currentUser()?.education; track $index) {
-        <p-accordion-panel value="{{ $index }}" class="accordion-panel">
-          <p-accordion-header>
-            <div class="title-date">
-              <p>{{ education.institution }}</p>
-              <p class="font-normal ml-auto mr-5">
-                {{ createDate(education.startYear, education.startMonth) | date: 'MMM yyyy' }} -
-                @if (education.ongoing) {
-                  ongoing
-                } @else {
-                  {{ createDate(education.endYear!, education.endMonth!) | date: 'MMM yyyy' }}
-                }
-              </p>
-            </div>
-          </p-accordion-header>
-          <p-accordion-content>
-            <p>Degree: {{ education.degree }}</p>
-            <p>Department / Institute (optional): {{ education.institution }}</p>
-          </p-accordion-content>
-        </p-accordion-panel>
-      }
-    </p-accordion>
+    <h2 class="mb-3">{{ 'settings.profileSettings.tabs.education' | translate }}</h2>
+
+    <osf-education-history [education]="currentUser()?.education"></osf-education-history>
   </div>
 </div>
 

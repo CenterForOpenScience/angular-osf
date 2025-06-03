@@ -1,0 +1,43 @@
+<div class="filters">
+  <p-accordion>
+    <p-accordion-panel value="0">
+      <p-accordion-header>{{ 'collections.filters.programArea.label' | translate }}</p-accordion-header>
+      <p-accordion-content>
+        <div class="content-body filter dropdown-filter">
+          <p>{{ 'collections.filters.programArea.description' | translate }}</p>
+          <p-multi-select
+            id="program-area"
+            [options]="programAreaFilterOptions"
+            [ngModel]="selectedProgramAreaFilters()"
+            [placeholder]="'collections.filters.programArea.placeholder' | translate"
+            appendTo="body"
+            (onChange)="setProgramAreaFilters($event)"
+            (onClear)="clearProgramAreaFilters()"
+            [maxSelectedLabels]="1"
+            [showClear]="selectedProgramAreaFilters().length"
+          ></p-multi-select>
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
+
+    <p-accordion-panel value="1">
+      <p-accordion-header>{{ 'collections.filters.collectedType.label' | translate }}</p-accordion-header>
+      <p-accordion-content>
+        <div class="content-body filter dropdown-filter">
+          <p>{{ 'collections.filters.collectedType.description' | translate }}</p>
+          <p-multi-select
+            id="collected-type"
+            [options]="collectedTypeFilterOptions"
+            [ngModel]="selectedCollectedTypeFilters()"
+            [placeholder]="'collections.filters.collectedType.placeholder' | translate"
+            appendTo="body"
+            [maxSelectedLabels]="1"
+            (onChange)="setCollectedTypeFilters($event)"
+            (onClear)="clearCollectedTypeFilters()"
+            [showClear]="selectedCollectedTypeFilters().length"
+          ></p-multi-select>
+        </div>
+      </p-accordion-content>
+    </p-accordion-panel>
+  </p-accordion>
+</div>

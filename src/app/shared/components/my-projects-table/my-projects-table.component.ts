@@ -6,6 +6,7 @@ import { TableModule, TablePageEvent } from 'primeng/table';
 
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 import { MyProjectsItem } from '@osf/features/my-projects/models/my-projects.models';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
@@ -22,20 +23,15 @@ import { SearchInputComponent } from '@shared/components/search-input/search-inp
 export class MyProjectsTableComponent {
   items = input<MyProjectsItem[]>([]);
   tableParams = input.required<TableParameters>();
-  searchValue = input<string>('');
+  searchControl = input<FormControl>(new FormControl(''));
   sortColumn = input<string | undefined>(undefined);
   sortOrder = input<SortOrder>(SortOrder.Asc);
   isLoading = input<boolean>(false);
   searchPlaceholder = input<string>('myProjects.table.searchPlaceholder');
 
-  searchValueChange = output<string>();
   pageChange = output<TablePageEvent>();
   sort = output<SortEvent>();
   itemClick = output<MyProjectsItem>();
-
-  protected onSearchChange(value: string | undefined): void {
-    this.searchValueChange.emit(value ?? '');
-  }
 
   protected onPageChange(event: TablePageEvent): void {
     this.pageChange.emit(event);

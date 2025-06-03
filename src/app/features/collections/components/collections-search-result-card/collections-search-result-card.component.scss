@@ -1,0 +1,30 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+:host {
+  width: 100%;
+  flex: 1;
+
+  .card {
+    border: 1px solid var.$grey-2;
+    border-radius: mix.rem(8px);
+
+    .card-title {
+      font-size: mix.rem(18px);
+    }
+
+    .card-description {
+      display: -webkit-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-clamp: 2;
+      line-height: mix.rem(28px);
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .separator {
+      margin: 0 mix.rem(6px);
+    }
+  }
+}

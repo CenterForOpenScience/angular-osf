@@ -1,12 +1,5 @@
 @use "assets/styles/variables" as var;
 
-.delete-icon {
-  &:before {
-    color: var.$red-3;
-    cursor: pointer;
-  }
-}
-
 .icon-copy-btn {
   right: 1.5rem;
   top: 50%;

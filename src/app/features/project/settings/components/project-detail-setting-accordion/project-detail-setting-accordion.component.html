@@ -14,31 +14,30 @@
     <span class="font-medium text-color">{{ title() }}</span>
   </div>
 
-  @if (rightControls().length > 0) {
+  @if (rightControls()) {
     <div class="flex flex-wrap gap-2 align-items-center w-full sm:gap-4 sm:w-7">
-      @for (control of rightControls(); track control.value) {
+      @for (control of rightControls(); let index = $index; track control.value) {
         <div class="flex align-items-center gap-2">
           @if (control.label) {
             <span class="font-medium text-color">
-              {{ control.label }}
+              {{ control.label | translate }}
             </span>
           }
 
-          @switch (control.type) {
-            @case ('dropdown') {
-              <p-select
-                class="accordion-dropdown"
-                [options]="control.options"
-                [(ngModel)]="control.value"
-                (onChange)="control.onChange?.(control.value)"
-              />
-            }
-            @case ('text') {
-              <span class="text-sm text-color">
-                {{ control.value }}
-              </span>
-            }
-          }
+          <p-select
+            class="accordion-dropdown"
+            [options]="control.options"
+            [(ngModel)]="control.value"
+            (ngModelChange)="emitValueChange.emit({ index: index, value: control.value })"
+          >
+            <ng-template let-item pTemplate="item">
+              <span>{{ item.label | translate }}</span>
+            </ng-template>
+
+            <ng-template let-item pTemplate="selectedItem">
+              {{ item.label | translate }}
+            </ng-template>
+          </p-select>
         </div>
       }
     </div>
@@ -48,8 +47,8 @@
 @if (expanded()) {
   <div
     class="mt-2 pl-5 border-bottom-1 border-gray-300"
-    [attr.id]="'accordion-content-' + (title() | lowercase).replace(' ', '-')"
-    [attr.aria-labelledby]="'accordion-label-' + (title() | lowercase).replace(' ', '-')"
+    [attr.id]="'accordion-content-' + title()"
+    [attr.aria-labelledby]="'accordion-label-' + title()"
   >
     <ng-content></ng-content>
   </div>

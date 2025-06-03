@@ -11,8 +11,7 @@
 
   <osf-search-input
     class="w-full mt-4"
-    [searchValue]="searchValue()"
-    (searchValueChange)="onSearchChange($event || '')"
+    [control]="searchControl"
     [placeholder]="'meetings.landing.searchPlaceholder' | translate"
   />
   <p-table

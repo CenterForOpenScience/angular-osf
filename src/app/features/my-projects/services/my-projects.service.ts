@@ -4,7 +4,9 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@osf/core/services';
+import { SparseCollectionsResponse } from '@osf/features/collections/models';
 import { SortOrder } from '@osf/shared/enums';
+import { NodeResponseModel, UpdateNodeRequestModel } from '@shared/models';
 
 import { MyProjectsMapper } from '../mappers';
 import {
@@ -23,13 +25,15 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class MyProjectsService {
-  #jsonApiService = inject(JsonApiService);
-  #sortFieldMap: Record<string, string> = {
+  private apiUrl = environment.apiUrl;
+  private sortFieldMap: Record<string, string> = {
     title: 'title',
     dateModified: 'date_modified',
   };
 
-  #getMyItems(
+  private readonly jsonApiService = inject(JsonApiService);
+
+  private getMyItems(
     endpoint: EndpointType,
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
@@ -53,8 +57,8 @@ export class MyProjectsService {
       params['page[size]'] = pageSize;
     }
 
-    if (filters?.sortColumn && this.#sortFieldMap[filters.sortColumn]) {
-      const apiField = this.#sortFieldMap[filters.sortColumn];
+    if (filters?.sortColumn && this.sortFieldMap[filters.sortColumn]) {
+      const apiField = this.sortFieldMap[filters.sortColumn];
       const sortPrefix = filters.sortOrder === SortOrder.Desc ? '-' : '';
       params['sort'] = `${sortPrefix}${apiField}`;
     } else {
@@ -65,7 +69,7 @@ export class MyProjectsService {
       ? environment.apiUrl + '/' + endpoint
       : environment.apiUrl + '/users/me/' + endpoint;
 
-    return this.#jsonApiService.get<MyProjectsJsonApiResponse>(url, params).pipe(
+    return this.jsonApiService.get<MyProjectsJsonApiResponse>(url, params).pipe(
       map((response: MyProjectsJsonApiResponse) => ({
         data: response.data.map((item: MyProjectsItemGetResponse) => MyProjectsMapper.fromResponse(item)),
         links: response.links,
@@ -78,7 +82,22 @@ export class MyProjectsService {
     pageNumber?: number,
     pageSize?: number
   ): Observable<MyProjectsItemResponse> {
-    return this.#getMyItems('nodes', filters, pageNumber, pageSize);
+    return this.getMyItems('nodes', filters, pageNumber, pageSize);
+  }
+
+  getBookmarksCollectionId(): Observable<string> {
+    const params: Record<string, unknown> = {
+      'fields[collections]': 'title,bookmarks',
+    };
+
+    return this.jsonApiService.get<SparseCollectionsResponse>(environment.apiUrl + '/collections/', params).pipe(
+      map((response) => {
+        const bookmarksCollection = response.data.find(
+          (collection) => collection.attributes.title === 'Bookmarks' && collection.attributes.bookmarks
+        );
+        return bookmarksCollection?.id ?? '';
+      })
+    );
   }
 
   getMyRegistrations(
@@ -86,7 +105,7 @@ export class MyProjectsService {
     pageNumber?: number,
     pageSize?: number
   ): Observable<MyProjectsItemResponse> {
-    return this.#getMyItems('registrations', filters, pageNumber, pageSize);
+    return this.getMyItems('registrations', filters, pageNumber, pageSize);
   }
 
   getMyPreprints(
@@ -94,7 +113,7 @@ export class MyProjectsService {
     pageNumber?: number,
     pageSize?: number
   ): Observable<MyProjectsItemResponse> {
-    return this.#getMyItems('preprints', filters, pageNumber, pageSize);
+    return this.getMyItems('preprints', filters, pageNumber, pageSize);
   }
 
   getMyBookmarks(
@@ -103,7 +122,7 @@ export class MyProjectsService {
     pageNumber?: number,
     pageSize?: number
   ): Observable<MyProjectsItemResponse> {
-    return this.#getMyItems(`collections/${collectionId}/linked_nodes/`, filters, pageNumber, pageSize);
+    return this.getMyItems(`collections/${collectionId}/linked_nodes/`, filters, pageNumber, pageSize);
   }
 
   createProject(
@@ -147,8 +166,16 @@ export class MyProjectsService {
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .post<MyProjectsItemGetResponse>(`${environment.apiUrl}/nodes/`, payload, params)
       .pipe(map((response) => MyProjectsMapper.fromResponse(response)));
+  }
+
+  getProjectById(projectId: string): Observable<NodeResponseModel> {
+    return this.jsonApiService.get(`${this.apiUrl}/nodes/${projectId}`);
+  }
+
+  updateProjectById(model: UpdateNodeRequestModel): Observable<NodeResponseModel> {
+    return this.jsonApiService.patch(`${this.apiUrl}/nodes/${model?.data?.id}`, model);
   }
 }

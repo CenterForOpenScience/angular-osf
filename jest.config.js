@@ -17,9 +17,7 @@ module.exports = {
       },
     ],
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!.*\\.mjs$|@ngxs|@angular|@ngrx|parse5|entities|chart.js)'
-  ],
+  transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$|@ngxs|@angular|@ngrx|parse5|entities|chart.js)'],
   testEnvironment: 'jsdom',
   moduleFileExtensions: ['ts', 'js', 'html', 'json', 'mjs'],
   coverageDirectory: 'coverage',

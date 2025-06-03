@@ -6,8 +6,9 @@ import { inject, Injectable } from '@angular/core';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { removeNullable } from '@osf/shared/constants';
+import { Social } from '@osf/shared/models';
 
-import { mapNameToDto, Social } from '../models';
+import { mapNameToDto } from '../models';
 import { ProfileSettingsApiService } from '../services';
 
 import {

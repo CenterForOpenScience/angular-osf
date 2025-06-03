@@ -7,10 +7,11 @@ import { Button } from 'primeng/button';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, Subject, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, take } from 'rxjs';
 
 import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
@@ -41,7 +42,6 @@ export class HomeComponent implements OnInit {
   readonly #route = inject(ActivatedRoute);
   readonly #translateService = inject(TranslateService);
   readonly #dialogService = inject(DialogService);
-  readonly #searchSubject = new Subject<string>();
   readonly #accountSettingsServer = inject(AccountSettingsService);
 
   protected readonly isLoading = signal(false);
@@ -50,8 +50,8 @@ export class HomeComponent implements OnInit {
   protected readonly isMedium = toSignal(inject(IS_MEDIUM));
   readonly isWeb = toSignal(inject(IS_WEB));
 
+  protected readonly searchControl = new FormControl<string>('');
   protected readonly activeProject = signal<MyProjectsItem | null>(null);
-  protected readonly searchValue = signal('');
   protected readonly sortColumn = signal<string | undefined>(undefined);
   protected readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
   protected readonly tableParams = signal<TableParameters>({
@@ -62,7 +62,7 @@ export class HomeComponent implements OnInit {
   protected readonly totalProjectsCount = select(MyProjectsSelectors.getTotalProjects);
 
   protected readonly filteredProjects = computed(() => {
-    const search = this.searchValue().toLowerCase();
+    const search = this.searchControl.value?.toLowerCase() ?? '';
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
 
@@ -132,7 +132,7 @@ export class HomeComponent implements OnInit {
       }
 
       if (search) {
-        this.searchValue.set(search);
+        this.searchControl.setValue(search);
       }
 
       this.#fetchProjects();
@@ -140,10 +140,10 @@ export class HomeComponent implements OnInit {
   }
 
   #setupSearchSubscription(): void {
-    this.#searchSubject
+    this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.#destroyRef))
-      .subscribe((searchValue) => {
-        this.#handleSearch(searchValue);
+      .subscribe(() => {
+        this.#updateQueryParams();
       });
   }
 
@@ -182,16 +182,11 @@ export class HomeComponent implements OnInit {
 
   #createFilters(): MyProjectsSearchFilters {
     return {
-      searchValue: this.searchValue(),
+      searchValue: this.searchControl.value ?? '',
       searchFields: ['title'],
       sortColumn: this.sortColumn(),
       sortOrder: this.sortOrder(),
     };
-  }
-
-  #handleSearch(searchValue: string): void {
-    this.searchValue.set(searchValue);
-    this.#updateQueryParams();
   }
 
   #updateQueryParams(): void {
@@ -199,7 +194,7 @@ export class HomeComponent implements OnInit {
     const queryParams = {
       page,
       rows: this.tableParams().rows,
-      search: this.searchValue() || undefined,
+      search: this.searchControl.value || undefined,
       sortField: this.sortColumn() || undefined,
       sortOrder: this.sortOrder() || undefined,
     };
@@ -211,17 +206,13 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  protected onSearchChange(value: string): void {
-    this.searchValue.set(value);
-    this.#searchSubject.next(value);
-  }
-
   protected onPageChange(event: TablePageEvent): void {
     this.tableParams.update((current) => ({
       ...current,
       rows: event.rows,
       firstRowIndex: event.first,
     }));
+
     this.#updateQueryParams();
   }
 

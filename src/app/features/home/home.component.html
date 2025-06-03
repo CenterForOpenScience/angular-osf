@@ -23,12 +23,11 @@
     <osf-my-projects-table
       [items]="filteredProjects()"
       [tableParams]="tableParams()"
-      [searchValue]="searchValue()"
+      [searchControl]="searchControl"
       [sortColumn]="sortColumn()"
       [sortOrder]="sortOrder()"
       [isLoading]="isLoading()"
       [searchPlaceholder]="'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate"
-      (searchValueChange)="onSearchChange($event)"
       (pageChange)="onPageChange($event)"
       (sort)="onSort($event)"
       (itemClick)="navigateToProject($event)"

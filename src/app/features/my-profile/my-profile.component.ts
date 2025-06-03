@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { AccordionModule } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 
@@ -10,6 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
+import { EducationHistoryComponent, EmploymentHistoryComponent } from '@osf/shared/components';
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/utils';
 
@@ -24,11 +27,14 @@ import { SetIsMyProfile } from './store';
   imports: [
     Button,
     DatePipe,
+    TranslatePipe,
     NgOptimizedImage,
     AccordionModule,
     FormsModule,
     ReactiveFormsModule,
     MyProfileSearchComponent,
+    EducationHistoryComponent,
+    EmploymentHistoryComponent,
   ],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.scss',
@@ -61,9 +67,5 @@ export class MyProfileComponent implements OnDestroy {
     this.#store.dispatch(ResetFiltersState);
     this.#store.dispatch(ResetSearchState);
     this.#store.dispatch(new SetIsMyProfile(false));
-  }
-
-  protected createDate(year: number | string, month: number): Date {
-    return new Date(+year, month - 1);
   }
 }

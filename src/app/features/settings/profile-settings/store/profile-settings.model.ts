@@ -1,6 +1,5 @@
 import { User } from '@osf/core/models';
-
-import { Education, Employment, Social } from '../models';
+import { Education, Employment, Social } from '@osf/shared/models';
 
 export const PROFILE_SETTINGS_STATE_NAME = 'profileSettings';
 

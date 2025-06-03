@@ -1,0 +1,19 @@
+<label [for]="inputId">{{ label() | translate }}</label>
+<input
+  [id]="inputId"
+  pInputText
+  [type]="type()"
+  [formControl]="control()"
+  [attr.aria-describedby]="helpText() ? helpId : null"
+  [minLength]="minLength()"
+  [maxLength]="maxLength()"
+  [placeholder]="placeholder() | translate"
+/>
+
+@if (control().invalid && (control().touched || control().dirty)) {
+  <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+    {{ getErrorMessage().key | translate: getErrorMessage().params }}
+  </p-message>
+}
+
+<small [id]="helpId">{{ helpText() | translate }}</small>

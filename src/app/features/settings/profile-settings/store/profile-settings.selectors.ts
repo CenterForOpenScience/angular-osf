@@ -1,8 +1,7 @@
 import { Selector } from '@ngxs/store';
 
 import { User } from '@osf/core/models';
-
-import { Education, Employment, Social } from '../models';
+import { Education, Employment, Social } from '@osf/shared/models';
 
 import { ProfileSettingsStateModel } from './profile-settings.model';
 import { ProfileSettingsState } from './profile-settings.state';

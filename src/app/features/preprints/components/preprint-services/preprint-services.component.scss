@@ -1,0 +1,14 @@
+@use "assets/styles/mixins" as mix;
+
+.services-background-image {
+  background: url("/assets/images/preprints/preprints-services-background.png") center;
+}
+
+.preprint-provider-grid-item {
+  display: block;
+  width: mix.rem(140px);
+  height: mix.rem(70px);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}

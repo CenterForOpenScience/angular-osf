@@ -10,7 +10,9 @@ import { InputText } from 'primeng/inputtext';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { Employment, EmploymentForm } from '../../models';
+import { Employment } from '@osf/shared/models';
+
+import { EmploymentForm } from '../../models';
 import { ProfileSettingsSelectors, UpdateProfileSettingsEmployment } from '../../store';
 
 @Component({

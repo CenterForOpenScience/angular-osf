@@ -7,7 +7,7 @@ import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -21,18 +21,19 @@ import {
   untracked,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { parseQueryFilterParams } from '@core/helpers';
 import { MEETINGS_TABLE_PARAMS } from '@osf/features/meetings/constants';
 import { Meeting } from '@osf/features/meetings/models';
 import { GetAllMeetings, MeetingsSelectors } from '@osf/features/meetings/store';
+import { IS_XSMALL } from '@osf/shared/utils';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
 import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
 import { SortOrder } from '@shared/enums';
 import { QueryParams, TableParameters } from '@shared/models';
 import { SearchFilters } from '@shared/models/filters';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
   selector: 'osf-meetings-landing',
@@ -48,10 +49,10 @@ export class MeetingsLandingComponent {
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly actions = createDispatchMap({ getMeetings: GetAllMeetings });
-  private readonly searchSubject = new Subject<string>();
+
+  searchControl = new FormControl<string>('');
 
   queryParams = toSignal(this.route.queryParams);
-  searchValue = signal('');
   sortColumn = signal('');
   sortOrder = signal<SortOrder>(SortOrder.Asc);
   currentPage = signal(1);
@@ -74,11 +75,6 @@ export class MeetingsLandingComponent {
 
   navigateToMeeting(meeting: Meeting): void {
     this.router.navigate(['/meetings', meeting.id]);
-  }
-
-  onSearchChange(value: string): void {
-    this.searchValue.set(value);
-    this.searchSubject.next(value);
   }
 
   onPageChange(event: TablePageEvent): void {
@@ -113,11 +109,11 @@ export class MeetingsLandingComponent {
   }
 
   private setupSearchSubscription(): void {
-    this.searchSubject
+    this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchValue) => {
+      .subscribe((searchControl) => {
         this.updateQueryParams({
-          search: searchValue,
+          search: searchControl ?? '',
           page: 1,
         });
       });
@@ -166,7 +162,7 @@ export class MeetingsLandingComponent {
     untracked(() => {
       this.currentPage.set(params.page);
       this.currentPageSize.set(params.size);
-      this.searchValue.set(params.search);
+      this.searchControl.setValue(params.search);
       this.sortColumn.set(params.sortColumn);
       this.sortOrder.set(params.sortOrder);
 

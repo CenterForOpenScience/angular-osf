@@ -1,0 +1,13 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.blue-icon {
+  margin-top: mix.rem(2px);
+  cursor: pointer;
+}
+
+.inside-list {
+  li {
+    list-style: inside;
+  }
+}

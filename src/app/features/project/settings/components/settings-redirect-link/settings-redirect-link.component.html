@@ -1,0 +1,71 @@
+<p-card>
+  <h3 class="text-xl pb-4">{{ 'myProjects.settings.redirectLink' | translate }}</h3>
+
+  <div class="flex align-items-center w-full">
+    <p-checkbox
+      ariaLabel="Checkbox for redirect link"
+      [binary]="true"
+      [(ngModel)]="redirectLink"
+      (ngModelChange)="onToggleRedirectLink($event)"
+      id="redirectLink"
+      name="ongoing"
+    ></p-checkbox>
+
+    <label for="redirectLink" class="input-label ml-2">
+      {{ 'myProjects.settings.redirectLinkText' | translate }}
+    </label>
+  </div>
+
+  @if (redirectLink()) {
+    <div class="mt-3 flex flex-column gap-3">
+      <div class="flex flex-column">
+        <label class="input-label" for="link-url">
+          {{ 'myProjects.settings.url' | translate | uppercase }}
+        </label>
+        <input
+          type="text"
+          pInputText
+          id="link-url"
+          aria-required="true"
+          aria-describedby="link-url"
+          class="mt-2 w-full"
+          placeholder="{{ 'myProjects.settings.redirectUrlPlaceholder' | translate }}"
+          [(ngModel)]="redirectUrlData().url"
+          #urlInput="ngModel"
+          pattern="https?://.+"
+        />
+
+        @if (urlInput.invalid && urlInput.touched) {
+          <small class="text-red-500 mt-1">
+            {{ 'myProjects.settings.invalidUrl' | translate }}
+          </small>
+        }
+      </div>
+
+      <div class="flex flex-column">
+        <label class="input-label" for="link-label">
+          {{ 'myProjects.settings.label' | translate | titlecase }}
+        </label>
+
+        <input
+          type="text"
+          pInputText
+          id="link-label"
+          aria-required="true"
+          aria-describedby="link-label"
+          class="mt-2 w-full"
+          placeholder="{{ 'myProjects.settings.redirectLabelPlaceholder' | translate }}"
+          [(ngModel)]="redirectUrlData().label"
+        />
+      </div>
+    </div>
+
+    <div class="flex justify-content-end w-full flex-0 pt-4">
+      <p-button
+        (click)="emitIfChecked()"
+        [label]="'settings.developerApps.form.buttons.save' | translate"
+        class="w-10rem btn-full-width bg-primary-blue-second"
+      ></p-button>
+    </div>
+  }
+</p-card>

@@ -60,3 +60,21 @@
     border-color: var.$grey-1 transparent transparent;
   }
 }
+
+// ------------------------- Red icon -------------------------
+.red-icon {
+  color: var.$red-1;
+
+  &:hover {
+    color: var.$red-3;
+  }
+}
+
+// ------------------------- Blue icon -------------------------
+.blue-icon {
+  color: var.$pr-blue-1;
+
+  &:hover {
+    color: var.$pr-blue-3;
+  }
+}

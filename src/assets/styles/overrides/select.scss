@@ -2,11 +2,11 @@
 @use "assets/styles/mixins" as mix;
 
 .p-select {
-  height: 3.125rem;
+  height: mix.rem(44px);
   border: 1px solid var(--grey-2);
-  border-radius: 0.57rem;
+  border-radius: mix.rem(8px);
   outline: none;
-  font-size: 16px;
+  font-size: mix.rem(16px);
   color: var.$dark-blue-1;
 
   .p-placeholder {
@@ -77,7 +77,7 @@
 
   .p-select {
     border: none;
-    font-size: 1rem;
+    font-size: mix.rem(14px);
     box-shadow: none;
     height: 2rem;
 
@@ -95,7 +95,9 @@
 }
 
 .select-font-normal {
-  .no-border-dropdown {
+  &.no-border-dropdown {
+    --p-icon-size: 0.875rem;
+
     .p-select {
       .p-select-label {
         font-weight: 400;

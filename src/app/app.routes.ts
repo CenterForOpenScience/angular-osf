@@ -5,6 +5,7 @@ import { Routes } from '@angular/router';
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
 import { MyProfileState } from './features/my-profile/store';
+import { ContributorsState } from './features/project/contributors/store';
 import { ResourceFiltersOptionsState } from './features/search/components/filters/store';
 import { ResourceFiltersState } from './features/search/components/resource-filters/store';
 import { SearchState } from './features/search/store';
@@ -62,6 +63,10 @@ export const routes: Routes = [
         path: 'privacy-policy',
         loadComponent: () =>
           import('./features/static/privacy-policy/privacy-policy.component').then((mod) => mod.PrivacyPolicyComponent),
+      },
+      {
+        path: 'collections',
+        loadChildren: () => import('./features/collections/collections.routes').then((mod) => mod.collectionsRoutes),
       },
       {
         path: 'meetings',
@@ -142,6 +147,7 @@ export const routes: Routes = [
               import('@osf/features/project/contributors/contributors.component').then(
                 (mod) => mod.ContributorsComponent
               ),
+            providers: [provideStates([ContributorsState])],
           },
           {
             path: 'analytics',
@@ -163,6 +169,11 @@ export const routes: Routes = [
       {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.routes').then((mod) => mod.settingsRoutes),
+      },
+      {
+        path: 'preprints',
+        loadChildren: () =>
+          import('./features/preprints/constants/preprints.routes').then((mod) => mod.preprintsRoutes),
       },
       {
         path: 'search',

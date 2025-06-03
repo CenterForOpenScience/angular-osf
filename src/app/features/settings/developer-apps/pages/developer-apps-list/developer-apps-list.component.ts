@@ -11,8 +11,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { defaultConfirmationConfig } from '@osf/shared/helpers';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { defaultConfirmationConfig, IS_XSMALL } from '@osf/shared/utils';
 
 import { DeveloperApp } from '../../models';
 import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperApps } from '../../store';

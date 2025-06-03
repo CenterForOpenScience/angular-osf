@@ -1,6 +1,6 @@
 @use "../variables" as var;
 
-.p-message {
+.p-message:not(.p-message-simple) {
   border: none;
   color: var.$white;
   height: 3rem;
@@ -14,7 +14,7 @@
   background-color: var.$yellow-1;
 }
 
-.p-message-error {
+.p-message-error:not(.p-message-simple) {
   background-color: var.$red-1;
 }
 
@@ -30,4 +30,8 @@
       font-weight: 700;
     }
   }
+}
+
+.p-message-simple {
+  --p-message-text-font-weight: 400;
 }

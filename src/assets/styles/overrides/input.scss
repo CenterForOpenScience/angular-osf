@@ -1,4 +1,5 @@
 @use "../variables" as var;
+@use "../mixins" as mix;
 
 .p-inputtext {
   color: var.$dark-blue-1;
@@ -8,17 +9,17 @@
 
 .p-password,
 .p-inputtext {
-  width: 100%;
-  height: 3.125rem;
-  font-size: 16px;
-  border-radius: 0.57rem;
   box-shadow: none;
+  border-radius: mix.rem(8px);
+  font-size: mix.rem(16px);
+  height: mix.rem(44px);
+  width: 100%;
 }
 
 label {
   display: block;
-  color: var.$grey-1;
-  margin-bottom: 0.3rem;
+  color: var.$dark-blue-1;
+  margin-bottom: mix.rem(4px);
   font-weight: 400;
 }
 

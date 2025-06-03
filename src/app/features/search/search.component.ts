@@ -10,9 +10,9 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { debounceTime, skip } from 'rxjs';
 
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, signal, untracked } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnDestroy, untracked } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SearchInputComponent } from '@osf/shared/components';
 import { ResourceTab } from '@osf/shared/enums';
@@ -49,8 +49,10 @@ import { GetResources, ResetSearchState, SearchSelectors, SetResourceTab, SetSea
 export class SearchComponent implements OnDestroy {
   readonly #store = inject(Store);
 
-  protected searchValue = signal('');
+  protected searchControl = new FormControl('');
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
+
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly creatorsFilter = this.#store.selectSignal(ResourceFiltersSelectors.getCreator);
   protected readonly dateCreatedFilter = this.#store.selectSignal(ResourceFiltersSelectors.getDateCreated);
@@ -87,21 +89,20 @@ export class SearchComponent implements OnDestroy {
       this.#store.dispatch(GetResources);
     });
 
-    // put search value in store and update resources, filters
-    toObservable(this.searchValue)
-      .pipe(skip(1), debounceTime(500))
+    this.searchControl.valueChanges
+      .pipe(skip(1), debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchText) => {
-        this.#store.dispatch(new SetSearchText(searchText));
+        this.#store.dispatch(new SetSearchText(searchText ?? ''));
         this.#store.dispatch(GetAllOptions);
       });
 
     // sync search with query parameters if search is empty and parameters are not
     effect(() => {
       const storeValue = this.searchStoreValue();
-      const currentInput = untracked(() => this.searchValue());
+      const currentInput = untracked(() => this.searchControl.value);
 
       if (storeValue && currentInput !== storeValue) {
-        this.searchValue.set(storeValue);
+        this.searchControl.setValue(storeValue);
       }
     });
 

@@ -1,9 +1,5 @@
 <div class="flex flex-column flex-1 row-gap-4">
-  <osf-search-input
-    [placeholder]="searchPlaceholder() | translate"
-    [searchValue]="searchValue()"
-    (searchValueChange)="onSearchChange($event)"
-  />
+  <osf-search-input [placeholder]="searchPlaceholder() | translate" [control]="searchControl()" />
   @if (isLoading()) {
     <p-table class="my-projects-table loading" [value]="[1, 2, 3, 4, 5]">
       <ng-template #header>

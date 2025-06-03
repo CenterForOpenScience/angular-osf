@@ -6,8 +6,9 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { debounceTime, skip } from 'rxjs';
 
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, signal, untracked } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, untracked } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { SearchInputComponent } from '@osf/shared/components';
@@ -39,8 +40,10 @@ import { MyProfileResourcesComponent } from '../my-profile-resources/my-profile-
 export class MyProfileSearchComponent {
   readonly #store = inject(Store);
 
-  protected searchValue = signal('');
+  protected searchControl = new FormControl<string>('');
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
+
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly dateCreatedFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getDateCreated);
   protected readonly funderFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getFunder);
@@ -89,21 +92,20 @@ export class MyProfileSearchComponent {
       this.skipInitializationEffects += 1;
     });
 
-    // put search value in store and update resources, filters
-    toObservable(this.searchValue)
-      .pipe(skip(1), debounceTime(500))
+    this.searchControl.valueChanges
+      .pipe(skip(1), debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchText) => {
-        this.#store.dispatch(new SetSearchText(searchText));
+        this.#store.dispatch(new SetSearchText(searchText ?? ''));
         this.#store.dispatch(GetAllOptions);
       });
 
     // sync search with query parameters if search is empty and parameters are not
     effect(() => {
       const storeValue = this.searchStoreValue();
-      const currentInput = untracked(() => this.searchValue());
+      const currentInput = untracked(() => this.searchControl.value);
 
       if (storeValue && currentInput !== storeValue) {
-        this.searchValue.set(storeValue);
+        this.searchControl.setValue(storeValue);
       }
     });
 

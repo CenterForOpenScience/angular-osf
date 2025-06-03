@@ -6,10 +6,10 @@ import { TableModule } from 'primeng/table';
 
 import { Clipboard } from '@angular/cdk/clipboard';
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { LinkTableModel } from '@osf/features/project/settings/models';
+import { PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@osf/features/project/settings/models';
 
 @Component({
   selector: 'osf-view-only-table',
@@ -19,7 +19,8 @@ import { LinkTableModel } from '@osf/features/project/settings/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ViewOnlyTableComponent {
-  tableData = input.required<LinkTableModel[]>();
+  deleteLink = output<ViewOnlyLinkModel>();
+  tableData = input.required<PaginatedViewOnlyLinksModel>();
 
   readonly #clipboard = inject(Clipboard);
 

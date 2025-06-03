@@ -18,8 +18,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { defaultConfirmationConfig } from '@osf/shared/helpers';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { defaultConfirmationConfig, IS_XSMALL } from '@osf/shared/utils';
 
 import { DeveloperAppAddEditFormComponent } from '../../components';
 import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, ResetClientSecret } from '../../store';

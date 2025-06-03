@@ -10,7 +10,9 @@ import { NotificationSubscriptionService } from '../services';
 
 import {
   GetAllGlobalNotificationSubscriptions,
+  GetNotificationSubscriptionsByNodeId,
   UpdateNotificationSubscription,
+  UpdateNotificationSubscriptionForNodeId,
 } from './notification-subscription.actions';
 import { NotificationSubscriptionModel } from './notification-subscription.model';
 
@@ -18,6 +20,11 @@ import { NotificationSubscriptionModel } from './notification-subscription.model
   name: 'notificationSubscriptions',
   defaults: {
     notificationSubscriptions: {
+      data: [],
+      isLoading: false,
+      error: '',
+    },
+    notificationSubscriptionsByNodeId: {
       data: [],
       isLoading: false,
       error: '',
@@ -46,6 +53,25 @@ export class NotificationSubscriptionState {
     );
   }
 
+  @Action(GetNotificationSubscriptionsByNodeId)
+  getNotificationSubscriptionsByNodeId(
+    ctx: StateContext<NotificationSubscriptionModel>,
+    action: GetNotificationSubscriptionsByNodeId
+  ) {
+    return this.#notificationSubscriptionService.getAllGlobalNotificationSubscriptions(action.nodeId).pipe(
+      tap((notificationSubscriptions) => {
+        ctx.setState(
+          patch({
+            notificationSubscriptionsByNodeId: patch({
+              data: notificationSubscriptions,
+              isLoading: false,
+            }),
+          })
+        );
+      })
+    );
+  }
+
   @Action(UpdateNotificationSubscription)
   updateNotificationSubscription(
     ctx: StateContext<NotificationSubscriptionModel>,
@@ -57,10 +83,34 @@ export class NotificationSubscriptionState {
           patch({
             notificationSubscriptions: patch({
               data: updateItem<NotificationSubscription>((app) => app.id === action.payload.id, updatedSubscription),
+              error: null,
+              isLoading: false,
             }),
           })
         );
       })
     );
+  }
+
+  @Action(UpdateNotificationSubscriptionForNodeId)
+  updateNotificationSubscriptionForNodeId(
+    ctx: StateContext<NotificationSubscriptionModel>,
+    action: UpdateNotificationSubscription
+  ) {
+    return this.#notificationSubscriptionService
+      .updateSubscription(action.payload.id, action.payload.frequency, true)
+      .pipe(
+        tap((updatedSubscription) => {
+          ctx.setState(
+            patch({
+              notificationSubscriptionsByNodeId: patch({
+                data: updateItem<NotificationSubscription>((app) => app.id === action.payload.id, updatedSubscription),
+                error: null,
+                isLoading: false,
+              }),
+            })
+          );
+        })
+      );
   }
 }

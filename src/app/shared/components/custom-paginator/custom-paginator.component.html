@@ -1,0 +1,7 @@
+<p-paginator
+  (onPageChange)="pageChanged.emit($event)"
+  [showFirstLastIcon]="showFirstLastIcon()"
+  [rows]="rows()"
+  [first]="first()"
+  [totalRecords]="totalCount()"
+/>

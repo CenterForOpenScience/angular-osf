@@ -1,0 +1,29 @@
+<section class="collections flex flex-column flex-1 mt-0 sm:mt-5 xl:mt-7">
+  <div class="collections-sub-header flex justify-content-between flex-column gap-4 mb-4 sm:mb-6 sm:gap-0 sm:flex-row">
+    <div class="flex gap-3">
+      <i class="collections-icon text-white osf-icon-collections"></i>
+      <h1 class="flex align-items-center text-white">Collection Title</h1>
+    </div>
+
+    <p-button class="collections-heading-btn" [label]="'collections.buttons.addToCollection' | translate" />
+  </div>
+
+  <div class="search-input-container">
+    <img
+      ngSrc="assets/icons/colored/question-mark.svg"
+      alt="better-research"
+      tabindex="0"
+      role="button"
+      height="36"
+      width="36"
+      class="cursor-pointer"
+      (click)="openHelpDialog()"
+      (keydown.enter)="openHelpDialog()"
+    />
+    <osf-search-input [control]="searchControl" [placeholder]="'collections.searchInput.placeholder' | translate" />
+  </div>
+
+  <div class="content-container flex-1">
+    <osf-collections-main-content />
+  </div>
+</section>

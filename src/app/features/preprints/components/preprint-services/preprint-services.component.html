@@ -1,0 +1,17 @@
+<section class="services-background-image py-5 px-3 text-white md:py-6 md:px-4">
+  <h2 class="text-2xl text-white">{{ 'preprints.services.title' | translate }}</h2>
+  <p class="mt-4">
+    {{ 'preprints.services.description' | translate }}
+  </p>
+
+  <section class="grid justify-content-center align-items-center gap-3 mt-6">
+    @for (preprintProvider of preprintProvidersToAdvertise(); track preprintProvider.id) {
+      <!-- [Rni] TODO: add link to preprint provider page -->
+      <a
+        class="preprint-provider-grid-item"
+        [style.background-image]="'url(' + preprintProvider.whiteWideImageUrl + ')'"
+        [title]="preprintProvider.name"
+      ></a>
+    }
+  </section>
+</section>

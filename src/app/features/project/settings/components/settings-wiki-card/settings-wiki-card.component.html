@@ -5,7 +5,8 @@
     <p-checkbox
       ariaLabel="Checkbox for wiki"
       [binary]="true"
-      [formControl]="formControl()"
+      [ngModel]="wikiEnabled()"
+      (ngModelChange)="wikiChangeEmit.emit(wikiEnabled())"
       id="wiki"
       name="ongoing"
     ></p-checkbox>
@@ -19,10 +20,16 @@
 
   <p class="pb-4">{{ 'myProjects.settings.wikiConfigureText' | translate }}</p>
 
-  <osf-project-detail-setting-accordion [title]="'Project name example'" [rightControls]="rightControls()">
+  <osf-project-detail-setting-accordion
+    (emitValueChange)="changeEmittedValue($event)"
+    [title]="title()"
+    [rightControls]="allAccordionData"
+  >
     <div class="flex align-items-baseline gap-2">
       <i class="pi pi-minus text-sm icon-space"></i>
-      <span>Sub text</span>
+      <span>{{
+        'myProjects.settings.' + (anyoneCanEditWiki() ? 'enabledForWiki' : 'disabledForWiki') | translate
+      }}</span>
     </div>
   </osf-project-detail-setting-accordion>
 </p-card>

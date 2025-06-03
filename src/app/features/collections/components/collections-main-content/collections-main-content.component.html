@@ -1,0 +1,74 @@
+<div class="flex justify-content-between align-items-center mb-4 column-gap-3">
+  <div class="flex flex-1 flex-column gap-7 results-count-heading">
+    @if (searchCount() > 10000) {
+      <h3 class="highlight">{{ 'collections.searchResults.10000results' | translate }}</h3>
+    } @else if (searchCount() > 0) {
+      <h3 class="highlight">{{ searchCount() }} {{ 'collections.searchResults.results' | translate }}</h3>
+    } @else {
+      <h3 class="highlight">{{ 'collections.searchResults.noResults' | translate }}</h3>
+    }
+  </div>
+
+  <div class="flex align-items-center gap-2 no-border-dropdown">
+    @if (isWeb()) {
+      <h3 class="font-normal">{{ 'collections.filters.sort.label' | translate }}</h3>
+      <p-select [options]="sortOptions" optionLabel="label" optionValue="value" [(ngModel)]="selectedSort"></p-select>
+    } @else {
+      <img
+        ngSrc="assets/icons/colored/filter.svg"
+        tabindex="0"
+        role="button"
+        alt="filter by"
+        width="44"
+        height="44"
+        (keydown.enter)="openFilters()"
+        (click)="openFilters()"
+      />
+
+      <img
+        ngSrc="assets/icons/colored/sort.svg"
+        tabindex="0"
+        role="button"
+        alt="sort by"
+        width="44"
+        height="44"
+        class="ml-2"
+        (keydown.enter)="openSorting()"
+        (click)="openSorting()"
+      />
+    }
+  </div>
+</div>
+
+@if (isFiltersOpen()) {
+  <div class="pb-5">
+    <osf-collections-filters />
+  </div>
+} @else if (isSortingOpen()) {
+  <div class="flex flex-column pb-5 gap-3">
+    @for (option of sortOptions; track option.value) {
+      <div
+        class="sort-card"
+        tabindex="0"
+        role="button"
+        [class]="{ 'card-selected': selectedSort() === option.value }"
+        (click)="selectSort(option.value)"
+        (keydown.enter)="selectSort(option.value)"
+      >
+        {{ option.label }}
+      </div>
+    }
+  </div>
+} @else {
+  @if (isAnyFilterSelected()) {
+    <osf-collections-filter-chips />
+  }
+}
+
+<div class="flex column-gap-4 filters-resources-web">
+  @if (isWeb()) {
+    <osf-collections-filters />
+  }
+
+  <osf-collections-search-results />
+</div>

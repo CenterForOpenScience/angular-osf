@@ -1,8 +1,14 @@
+import {
+  ViewOnlyLinkCreatorModel,
+  ViewOnlyLinkNodeModel,
+} from '@osf/features/project/settings/models/view-only-link.model';
+
 export interface LinkTableModel {
-  linkName: string;
+  id: string;
   sharedComponents: string;
   createdDate: string | Date;
-  createdBy: string;
+  createdBy: ViewOnlyLinkCreatorModel;
+  nodes: ViewOnlyLinkNodeModel[];
   anonymous: boolean;
   link: string;
 }

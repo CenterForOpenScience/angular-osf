@@ -4,7 +4,7 @@
 :host {
   .user-info {
     width: 100%;
-    padding: 4rem 1.7rem 1.7rem 1.7rem;
+    padding: mix.rem(48px) mix.rem(24px) mix.rem(24px);
 
     .name-container {
       display: flex;
@@ -15,13 +15,13 @@
     .description-container {
       display: flex;
       flex-direction: row;
-      row-gap: 1.7rem;
+      row-gap: mix.rem(24px);
 
       .title-date-wrapper {
         display: flex;
         flex-direction: column;
         width: 50%;
-        row-gap: 1.7rem;
+        row-gap: mix.rem(24px);
       }
     }
 
@@ -29,13 +29,13 @@
       display: flex;
       flex-direction: column;
       width: 50%;
-      row-gap: 1.7rem;
+      row-gap: mix.rem(24px);
 
       .user-fields-wrapper {
         display: flex;
         flex-direction: row;
         align-items: center;
-        column-gap: 1.7rem;
+        column-gap: mix.rem(24px);
 
         .osf-icon-institution {
           font-size: mix.rem(16px);
@@ -50,29 +50,22 @@
 
   .cards {
     display: flex;
-    padding: 1.7rem;
-    column-gap: 1.7rem;
+    padding: mix.rem(24px);
+    column-gap: mix.rem(24px);
     background-color: var.$white;
 
     .card {
       border: 1px solid var.$grey-2;
-      border-radius: 12px;
-      padding: 1.7rem;
+      border-radius: mix.rem(12px);
+      padding: mix.rem(24px);
       row-gap: 1rem;
       width: 50%;
       height: fit-content;
-
-      .title-date {
-        display: flex;
-        flex-direction: row;
-        column-gap: 1.7rem;
-        width: 100%;
-      }
     }
   }
 
   .search-container {
-    margin: 6.2rem 1.7rem 0.4rem 1.7rem;
+    margin: 6.2rem mix.rem(24px) 0.4rem mix.rem(24px);
     position: relative;
 
     img {
@@ -91,11 +84,11 @@
 
   .stepper {
     position: absolute;
-    padding: 1.7rem;
+    padding: mix.rem(24px);
     width: 32rem;
     display: flex;
     flex-direction: column;
-    row-gap: 1.7rem;
+    row-gap: mix.rem(24px);
     background: var.$white;
     border: 1px solid var.$grey-2;
     border-radius: 12px;
@@ -107,7 +100,7 @@
 
   .first-stepper {
     top: 2rem;
-    left: 1.7rem;
+    left: mix.rem(24px);
   }
 
   .second-stepper {
@@ -142,8 +135,8 @@
 
     .cards {
       flex-direction: column;
-      padding: 1.7rem 2.5rem 1.7rem 2.5rem;
-      row-gap: 1.7rem;
+      padding: mix.rem(24px) 2.5rem mix.rem(24px) 2.5rem;
+      row-gap: mix.rem(24px);
 
       .card {
         width: 100%;
@@ -151,7 +144,7 @@
     }
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: var.$breakpoint-sm) {
     .user-info {
       padding: 4.5rem 1.1rem 1.1rem 1.1rem;
       .data-wrapper {
@@ -164,22 +157,15 @@
     }
 
     .cards {
-      padding: 1.7rem 1.1rem 1.1rem 1.1rem;
+      padding: mix.rem(24px) 1.1rem 1.1rem 1.1rem;
+
       .card {
         padding: 1.1rem;
-        .title-date {
-          flex-direction: column;
-          row-gap: 0.4rem;
-
-          p {
-            margin: 0 !important;
-          }
-        }
       }
     }
   }
 
   .search-container {
-    margin: 3.5rem 1.7rem 0.4rem 1.7rem;
+    margin: 3.5rem mix.rem(24px) 0.4rem mix.rem(24px);
   }
 }

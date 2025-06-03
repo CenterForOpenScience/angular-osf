@@ -1,0 +1,40 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+:host {
+  --collection-bg-color: #013b5c;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  .collections {
+    background: var(--collection-bg-color);
+    border: 2px solid var.$white;
+    border-top: none;
+
+    .collections-sub-header {
+      margin: mix.rem(48px) mix.rem(28px);
+
+      .collections-icon {
+        font-size: mix.rem(42px);
+      }
+    }
+
+    .search-input-container {
+      margin: 0 mix.rem(28px) mix.rem(48px) mix.rem(28px);
+      position: relative;
+
+      img {
+        position: absolute;
+        right: mix.rem(4px);
+        top: mix.rem(4px);
+        z-index: 1;
+      }
+    }
+
+    .content-container {
+      background: var.$white;
+      padding: mix.rem(28px);
+    }
+  }
+}

@@ -4,4 +4,5 @@ import { NotificationSubscription } from '../models';
 
 export interface NotificationSubscriptionModel {
   notificationSubscriptions: AsyncStateModel<NotificationSubscription[]>;
+  notificationSubscriptionsByNodeId: AsyncStateModel<NotificationSubscription[]>;
 }

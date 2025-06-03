@@ -3,5 +3,5 @@
 
   <p class="pb-4">{{ 'myProjects.settings.viewOnlySubtitle' | translate }}</p>
 
-  <osf-view-only-table [tableData]="tableData()"></osf-view-only-table>
+  <osf-view-only-table (deleteLink)="deleteTableItem.emit($event)" [tableData]="tableData()"></osf-view-only-table>
 </p-card>

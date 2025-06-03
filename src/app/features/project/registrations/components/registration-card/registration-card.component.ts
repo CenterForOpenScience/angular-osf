@@ -1,23 +1,21 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
 
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { IS_XSMALL } from '@shared/utils';
-
-import { RegistrationCard } from '../../models';
+import { RegistrationModel, RegistrationStatus } from '../../models';
 
 @Component({
   selector: 'osf-registration-card',
-  imports: [Card, Button, Tag],
+  imports: [Card, Button, Tag, TranslatePipe],
   templateUrl: './registration-card.component.html',
   styleUrl: './registration-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationCardComponent {
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
-
-  registrationData = input<RegistrationCard>();
+  readonly RegistrationStatus = RegistrationStatus;
+  readonly registrationData = input.required<RegistrationModel>();
 }

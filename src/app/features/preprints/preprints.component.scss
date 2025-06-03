@@ -1,0 +1,7 @@
+@use "assets/styles/mixins" as mix;
+
+.desktop {
+  @include mix.flex-column;
+  flex: 1;
+  margin-top: mix.rem(70px);
+}

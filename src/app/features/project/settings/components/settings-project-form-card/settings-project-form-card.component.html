@@ -1,7 +1,7 @@
 <p-card>
   <h3 class="text-xl pb-4">{{ 'myProjects.settings.project' | translate }}</h3>
 
-  <form [formGroup]="formGroup()" (ngSubmit)="submitForm.emit()" class="flex flex-column gap-4">
+  <form [formGroup]="formGroup()" (ngSubmit)="submitForm.emit(formGroup().value)" class="flex flex-column gap-4">
     <div class="flex flex-column">
       <label class="input-label" for="project-title">
         {{ 'myProjects.createProject.title' | translate }}
@@ -34,7 +34,7 @@
       <p-button
         type="button"
         [label]="'settings.accountSettings.common.buttons.cancel' | translate"
-        (onClick)="resetForm.emit()"
+        (onClick)="resetForm()"
         severity="info"
         class="w-10rem btn-full-width"
       ></p-button>
@@ -47,6 +47,7 @@
 
     <div class="flex justify-content-end w-full flex-0 border-top-1 pt-4 border-gray-300">
       <p-button
+        (click)="deleteProject.emit()"
         severity="danger"
         [label]="'myProjects.settings.deleteProject' | translate"
         class="btn-full-width sm:w-10rem md:ml-auto"

@@ -1,9 +1,10 @@
 @use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
 
 .p-paginator {
   background: var.$white;
-  padding: 0.8rem 0 0 0;
-  row-gap: 0.8rem;
+  padding: mix.rem(12px) 0 0 0;
+  row-gap: mix.rem(12px);
 
   .p-select-overlay {
     background: var.$white;
@@ -128,5 +129,11 @@ p-select {
     .p-paginator-prev {
       opacity: 1 !important;
     }
+  }
+}
+
+.collections-paginator {
+  .p-paginator {
+    justify-content: end;
   }
 }

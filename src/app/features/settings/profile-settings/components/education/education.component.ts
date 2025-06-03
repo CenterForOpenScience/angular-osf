@@ -10,7 +10,9 @@ import { InputText } from 'primeng/inputtext';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
-import { Education, EducationForm } from '../../models';
+import { Education } from '@osf/shared/models';
+
+import { EducationForm } from '../../models';
 import { ProfileSettingsSelectors, UpdateProfileSettingsEducation } from '../../store';
 
 @Component({

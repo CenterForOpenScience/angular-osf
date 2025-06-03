@@ -1,0 +1,7 @@
+@if (htmlContent()) {
+  <section
+    [ngClass]="{ 'osf-preprint-service': isLandingPage() }"
+    class="advisory-board-section py-5 px-3 flex flex-column md:py-6 md:px-4"
+    [innerHTML]="htmlContent()"
+  ></section>
+}

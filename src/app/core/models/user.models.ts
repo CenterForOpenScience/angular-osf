@@ -1,8 +1,5 @@
-import { Education } from '@osf/features/settings/profile-settings/models/educations.model';
-import { Employment } from '@osf/features/settings/profile-settings/models/employment.model';
-import { Social } from '@osf/features/settings/profile-settings/models/social.model';
+import { Education, Employment, Social } from '@osf/shared/models';
 
-//Domain models
 export interface User {
   id: string;
   fullName: string;

@@ -8,7 +8,7 @@ import { Select } from 'primeng/select';
 import { TablePageEvent } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -21,7 +21,7 @@ import {
   untracked,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
@@ -70,7 +70,6 @@ export class MyProjectsComponent implements OnInit {
   readonly #router = inject(Router);
   readonly #route = inject(ActivatedRoute);
   readonly #translateService = inject(TranslateService);
-  readonly #searchSubject = new Subject<string>();
 
   protected readonly defaultTabValue = 0;
   protected readonly isLoading = signal(false);
@@ -96,10 +95,11 @@ export class MyProjectsComponent implements OnInit {
     },
   ];
 
+  protected readonly searchControl = new FormControl<string>('');
+
   protected readonly queryParams = toSignal(this.#route.queryParams);
   protected readonly currentPage = signal(1);
   protected readonly currentPageSize = signal(MY_PROJECTS_TABLE_PARAMS.rows);
-  protected readonly searchValue = signal('');
   protected readonly selectedTab = signal(this.defaultTabValue);
   protected readonly activeProject = signal<MyProjectsItem | null>(null);
   protected readonly sortColumn = signal<string | undefined>(undefined);
@@ -139,10 +139,10 @@ export class MyProjectsComponent implements OnInit {
   }
 
   #setupSearchSubscription(): void {
-    this.#searchSubject
+    this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.#destroyRef))
       .subscribe((searchValue) => {
-        this.#handleSearch(searchValue);
+        this.#handleSearch(searchValue ?? '');
       });
   }
 
@@ -194,7 +194,7 @@ export class MyProjectsComponent implements OnInit {
 
       this.currentPage.set(params.page ?? 1);
       this.currentPageSize.set(size);
-      this.searchValue.set(params.search || '');
+      this.searchControl.setValue(params.search || '');
       this.sortColumn.set(params.sortColumn);
       this.sortOrder.set(params.sortOrder ?? SortOrder.Asc);
 
@@ -299,11 +299,6 @@ export class MyProjectsComponent implements OnInit {
       relativeTo: this.#route,
       queryParams,
     });
-  }
-
-  protected onSearchChange(value: string): void {
-    this.searchValue.set(value);
-    this.#searchSubject.next(value);
   }
 
   protected onPageChange(event: TablePageEvent): void {

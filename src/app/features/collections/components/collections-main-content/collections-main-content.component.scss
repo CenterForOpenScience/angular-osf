@@ -1,0 +1,16 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.sort-card {
+  @include mix.flex-center;
+  width: 100%;
+  height: mix.rem(48px);
+  border: 1px solid var.$grey-2;
+  border-radius: mix.rem(12px);
+  padding: 0 mix.rem(28px);
+  cursor: pointer;
+}
+
+.card-selected {
+  background: var.$bg-blue-2;
+}

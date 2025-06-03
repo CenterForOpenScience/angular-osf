@@ -14,8 +14,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { defaultConfirmationConfig } from '@osf/shared/helpers';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { defaultConfirmationConfig, IS_XSMALL } from '@osf/shared/utils';
 
 import { TokenAddEditFormComponent } from '../../components';
 import { DeleteToken, GetTokenById, TokensSelectors } from '../../store';

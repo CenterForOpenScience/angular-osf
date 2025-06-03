@@ -1,0 +1,15 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.advisory-board-section {
+  background: var(--preprints-branding-hero-background-image-url);
+
+  &.osf-preprint-service {
+    background-image: none;
+    background-color: var(--preprints-branding-primary-color);
+  }
+}
+
+.m-b-lg {
+  margin-bottom: mix.rem(24px);
+}

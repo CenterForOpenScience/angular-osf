@@ -1,19 +1,20 @@
 @use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
 
 .search-container {
   position: relative;
 
-  i {
+  .osf-icon-search {
     position: absolute;
-    left: 0.61rem;
+    left: mix.rem(12px);
     color: var.$grey-1;
-    font-size: 1.1rem;
+    font-size: mix.rem(16px);
   }
 
   .search-input {
-    width: 100%;
-    padding-left: 2.61rem;
     color: var.$dark-blue-1;
+    padding-left: mix.rem(40px);
+    width: 100%;
 
     &::placeholder {
       color: var.$grey-1;

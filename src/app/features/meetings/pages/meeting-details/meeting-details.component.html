@@ -5,8 +5,7 @@
 <section class="flex-1 flex flex-column bg-white p-4">
   <osf-search-input
     class="w-full mt-4"
-    [searchValue]="searchValue()"
-    (searchValueChange)="onSearchChange($event || '')"
+    [control]="searchControl"
     [placeholder]="'meetings.details.searchPlaceholder' | translate"
   />
 

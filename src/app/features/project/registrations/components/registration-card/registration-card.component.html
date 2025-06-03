@@ -1,115 +1,108 @@
-@if (registrationData()) {
-  <section class="registration-card">
-    <p-card>
-      <div class="flex gap-3 flex-column">
-        <div class="flex gap-2 w-full">
-          @if (registrationData()?.status === 'withdrawn') {
-            <i class="osf-icon-padlock"></i>
-          }
+<section class="registration-card">
+  <p-card>
+    <div class="flex gap-3 flex-column">
+      <div class="flex flex-wrap gap-2 w-full">
+        @if (registrationData().status === RegistrationStatus.WITHDRAWN) {
+          <i class="osf-icon-padlock"></i>
+        }
 
-          @if (registrationData()?.status === 'in_progress') {
-            <i class="osf-icon-padlock-unlock"></i>
-          }
+        @if (registrationData().status === RegistrationStatus.IN_PROGRESS) {
+          <i class="osf-icon-padlock-unlock"></i>
+        }
 
-          <h2 class="align-self-center">{{ registrationData()?.title }}</h2>
+        <h2 class="align-self-center">{{ registrationData().title }}</h2>
 
-          @if (registrationData()?.status === 'in_progress') {
-            <p-tag class="ml-3" severity="warn" value="Update In Progress" />
-          }
+        @if (registrationData().status === RegistrationStatus.IN_PROGRESS) {
+          <p-tag severity="warn" value="Update In Progress" />
+        }
 
-          @if (registrationData()?.status === 'withdrawn') {
-            <p-tag class="ml-3" severity="secondary" value="Withdrawn" />
-          }
-        </div>
+        @if (registrationData().status === RegistrationStatus.WITHDRAWN) {
+          <p-tag severity="secondary" value="Withdrawn" />
+        }
+      </div>
 
-        <div [class.mobile]="isMobile()" class="flex sm:flex-column lg:flex-row justify-content-between gap-5">
-          <div class="flex gap-3 flex-column w-full">
-            <div class="flex gap-2 mt-1">
-              <strong>Registration template:</strong>
-              <span>{{ registrationData()?.template }}</span>
-            </div>
-
-            <div class="flex gap-2">
-              <strong>Registry:</strong>
-              <span>{{ registrationData()?.registry }}</span>
-            </div>
-
-            <div class="flex gap-2">
-              <strong>Registered:</strong>
-              <span>{{ registrationData()?.registeredDate }}</span>
-            </div>
-
-            <div class="flex gap-2">
-              <strong>Last Updated:</strong>
-              <span>{{ registrationData()?.lastUpdated }}</span>
-            </div>
-
-            <div class="flex gap-2">
-              <strong>Contributors:</strong>
-              <span class="contributors">
-                @for (contributor of registrationData()?.contributors; track contributor.name) {
-                  <a [href]="">{{ contributor.name }}</a>
-                  @if (!$last) {
-                    <span>, </span>
-                  }
-                }
-              </span>
-            </div>
-
-            <div class="flex gap-2">
-              <strong>Description:</strong>
-              <p>{{ registrationData()?.description }}</p>
-            </div>
-
-            <div class="flex gap-2 mt-1">
-              @if (registrationData()?.status === 'draft') {
-                <p-button severity="primary" label="Review" [class.btn-full-width]="isMobile()"></p-button>
-                <p-button severity="secondary" label="Edit" [class.btn-full-width]="isMobile()"></p-button>
-                <p-button
-                  severity="danger"
-                  label="Delete"
-                  class="md:ml-auto"
-                  [class.btn-full-width]="isMobile()"
-                ></p-button>
-              } @else {
-                <p-button severity="primary" label="View"></p-button>
-                @if (registrationData()?.status === 'in_progress') {
-                  <p-button severity="secondary" label="Update"></p-button>
-                }
-              }
-            </div>
+      <div class="flex flex-wrap flex-column lg:flex-nowrap lg:flex-row justify-content-between gap-5">
+        <div class="flex gap-3 flex-column w-full">
+          <div class="flex gap-2 mt-1">
+            <strong>{{ 'project.registrations.card.registrationTemplate' | translate }}</strong>
+            <span>{{ registrationData().registrationSupplement }}</span>
           </div>
 
-          @if (registrationData()?.status !== 'draft') {
-            <div class="flex flex-column gap-3 pr-4 w-auto">
-              <h3 class="mb-2">Open Resources</h3>
+          <div class="flex gap-2">
+            <strong>{{ 'project.registrations.card.registry' | translate }}</strong>
+            <span>{{ registrationData().registry }}</span>
+          </div>
 
-              <div class="icon-links flex flex-wrap lg:flex-column gap-3">
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-data text-4xl"></i>
-                  <h3>Data</h3>
-                </a>
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-code text-4xl"></i>
-                  <h3>Analytic Code</h3>
-                </a>
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-materials text-4xl"></i>
-                  <h3>Materials</h3>
-                </a>
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-papers text-4xl"></i>
-                  <h3>Papers</h3>
-                </a>
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-supplements text-4xl"></i>
-                  <h3>Supplements</h3>
-                </a>
-              </div>
-            </div>
-          }
+          <div class="flex gap-2">
+            <strong>{{ 'project.registrations.card.registered' | translate }}</strong>
+            <span>{{ registrationData().dateRegistered }}</span>
+          </div>
+
+          <div class="flex gap-2">
+            <strong>{{ 'project.registrations.card.lastUpdated' | translate }}</strong>
+            <span>{{ registrationData().dateModified }}</span>
+          </div>
+
+          <div class="flex gap-2">
+            <strong>{{ 'project.overview.metadata.contributors' | translate }}:</strong>
+            <span class="contributors">
+              @for (contributor of registrationData().contributors; track contributor.name) {
+                <a [href]="">{{ contributor.name }}</a>
+                @if (!$last) {
+                  <span>, </span>
+                }
+              }
+            </span>
+          </div>
+
+          <div class="flex gap-2">
+            <strong>{{ 'project.registrations.card.description' | translate }}</strong>
+            <p>{{ registrationData().description }}</p>
+          </div>
+
+          <div class="flex gap-2 mt-1">
+            @if (registrationData().status === RegistrationStatus.DRAFT) {
+              <p-button severity="primary" label="Review"></p-button>
+              <p-button severity="secondary" label="Edit"></p-button>
+              <p-button severity="danger" label="Delete" class="md:ml-auto"></p-button>
+            } @else {
+              <p-button severity="primary" label="View"></p-button>
+              @if (registrationData().status === RegistrationStatus.IN_PROGRESS) {
+                <p-button severity="secondary" label="Update"></p-button>
+              }
+            }
+          </div>
         </div>
+
+        @if (registrationData().status !== RegistrationStatus.DRAFT) {
+          <div class="flex flex-column gap-3 w-auto">
+            <h3 class="mb-2">{{ 'project.registrations.card.openResources' | translate }}</h3>
+
+            <div class="icon-links flex flex-wrap lg:flex-column gap-3">
+              <a class="icon-container" [href]="">
+                <i class="osf-icon-data text-4xl"></i>
+                <h3>{{ 'shared.resources.data' | translate }}</h3>
+              </a>
+              <a class="icon-container" [href]="">
+                <i class="osf-icon-code text-4xl"></i>
+                <h3>{{ 'shared.resources.analyticCode' | translate }}</h3>
+              </a>
+              <a class="icon-container" [href]="">
+                <i class="osf-icon-materials text-4xl"></i>
+                <h3>{{ 'shared.resources.materials' | translate }}</h3>
+              </a>
+              <a class="icon-container" [href]="">
+                <i class="osf-icon-papers text-4xl"></i>
+                <h3>{{ 'shared.resources.papers' | translate }}</h3>
+              </a>
+              <a class="icon-container" [href]="">
+                <i class="osf-icon-supplements text-4xl"></i>
+                <h3>{{ 'shared.resources.supplements' | translate }}</h3>
+              </a>
+            </div>
+          </div>
+        }
       </div>
-    </p-card>
-  </section>
-}
+    </div>
+  </p-card>
+</section>
