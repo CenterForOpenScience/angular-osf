@@ -99,7 +99,6 @@ export class MyProfileSearchComponent {
         this.#store.dispatch(GetAllOptions);
       });
 
-    // sync search with query parameters if search is empty and parameters are not
     effect(() => {
       const storeValue = this.searchStoreValue();
       const currentInput = untracked(() => this.searchControl.value);
@@ -109,7 +108,6 @@ export class MyProfileSearchComponent {
       }
     });
 
-    // sync resource tabs with store
     effect(() => {
       if (this.selectedTab !== this.resourcesTabStoreValue()) {
         this.selectedTab = this.resourcesTabStoreValue();

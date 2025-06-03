@@ -21,5 +21,5 @@ export type IndexCardSearch = JsonApiResponse<
       };
     };
   },
-  ApiData<{ resourceMetadata: ResourceItem }, null, null>[]
+  ApiData<{ resourceMetadata: ResourceItem }, null, null, null>[]
 >;

@@ -1,0 +1,116 @@
+import { OsfFile, PatchFileMetadata } from '@osf/features/project/files/models';
+
+export class GetRootFolderFiles {
+  static readonly type = '[Project Files] Get Root Folder Files';
+
+  constructor(public projectId: string) {}
+}
+
+export class GetFiles {
+  static readonly type = '[Project Files] Get Files';
+
+  constructor(public filesLink: string) {}
+}
+
+export class SetFilesIsLoading {
+  static readonly type = '[Project Files] Set Files Loading';
+
+  constructor(public isLoading: boolean) {}
+}
+
+export class GetFileTarget {
+  static readonly type = '[Project Files] Get File Target';
+
+  constructor(public fileGuid: string) {}
+}
+
+export class GetFileMetadata {
+  static readonly type = '[Project Files] Get File Metadata';
+
+  constructor(public fileGuid: string) {}
+}
+
+export class GetFileProjectMetadata {
+  static readonly type = '[Project Files] Get File Project Metadata';
+
+  constructor(public projectId: string) {}
+}
+
+export class GetMoveFileRootFiles {
+  static readonly type = '[Project Files] Get Move File Root Files';
+
+  constructor(public projectId: string) {}
+}
+
+export class GetMoveFileFiles {
+  static readonly type = '[Project Files] Get Move File Files';
+
+  constructor(public filesLink: string) {}
+}
+
+export class SetCurrentFolder {
+  static readonly type = '[Project Files] Set Current Folder';
+
+  constructor(public folder?: OsfFile) {}
+}
+
+export class SetMoveFileCurrentFolder {
+  static readonly type = '[Project Files] Set Move File Files';
+
+  constructor(public folder?: OsfFile) {}
+}
+
+export class CreateFolder {
+  static readonly type = '[Project Files] Create folder';
+
+  constructor(
+    public projectId: string,
+    public folderName: string,
+    public parentFolderId?: string
+  ) {}
+}
+
+export class DeleteEntry {
+  static readonly type = '[Project Files] Delete entry';
+
+  constructor(
+    public projectId: string,
+    public link: string
+  ) {}
+}
+export class RenameEntry {
+  static readonly type = '[Project Files] Rename entry';
+
+  constructor(
+    public projectId: string,
+    public link: string,
+    public name: string
+  ) {}
+}
+
+export class SetSearch {
+  static readonly type = '[Project Files] Set Search';
+
+  constructor(public search: string) {}
+}
+
+export class SetSort {
+  static readonly type = '[Project Files] Set Sort';
+
+  constructor(public sort: string) {}
+}
+
+export class GetFileProjectContributors {
+  static readonly type = '[Project Files] Get Projects Contributors';
+
+  constructor(public projectId: string) {}
+}
+
+export class SetFileMetadata {
+  static readonly type = '[Project Files] Set File Metadata';
+
+  constructor(
+    public payload: PatchFileMetadata,
+    public fileGuid: string
+  ) {}
+}

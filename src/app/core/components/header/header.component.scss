@@ -1,14 +1,9 @@
 @use "assets/styles/mixins" as mix;
 
-:host {
+.header {
   position: absolute;
-  height: 4rem;
-  padding: 0 1.7rem;
-  width: 100%;
-  @include mix.flex-center-between;
   gap: 1rem;
-
-  a {
-    border-radius: 0.42rem;
-  }
+  padding: mix.rem(12px) mix.rem(24px);
+  height: mix.rem(52px);
+  width: 100%;
 }

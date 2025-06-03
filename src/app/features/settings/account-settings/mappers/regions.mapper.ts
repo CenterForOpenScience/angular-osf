@@ -2,7 +2,7 @@ import { ApiData } from '@osf/core/models';
 
 import { Region } from '../models';
 
-export function MapRegions(data: ApiData<{ name: string }, null, null>[]): Region[] {
+export function MapRegions(data: ApiData<{ name: string }, null, null, null>[]): Region[] {
   const regions: Region[] = [];
   for (const region of data) {
     regions.push(MapRegion(region));
@@ -11,7 +11,7 @@ export function MapRegions(data: ApiData<{ name: string }, null, null>[]): Regio
   return regions;
 }
 
-export function MapRegion(data: ApiData<{ name: string }, null, null>): Region {
+export function MapRegion(data: ApiData<{ name: string }, null, null, null>): Region {
   return {
     id: data.id,
     name: data.attributes.name,

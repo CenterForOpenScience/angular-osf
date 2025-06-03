@@ -96,7 +96,6 @@ export class SearchComponent implements OnDestroy {
         this.#store.dispatch(GetAllOptions);
       });
 
-    // sync search with query parameters if search is empty and parameters are not
     effect(() => {
       const storeValue = this.searchStoreValue();
       const currentInput = untracked(() => this.searchControl.value);
@@ -106,7 +105,6 @@ export class SearchComponent implements OnDestroy {
       }
     });
 
-    // sync resource tabs with store
     effect(() => {
       if (this.selectedTab !== this.resourcesTabStoreValue()) {
         this.selectedTab = this.resourcesTabStoreValue();

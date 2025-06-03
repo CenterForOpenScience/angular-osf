@@ -13,5 +13,5 @@ import { IS_WEB } from '@shared/utils';
 })
 export class PreprintsComponent {
   protected readonly isDesktop = toSignal(inject(IS_WEB));
-  @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
+  @HostBinding('class') classes = 'flex flex-1 flex-column w-full';
 }

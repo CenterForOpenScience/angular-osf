@@ -25,7 +25,8 @@
 
   <div class="flex flex-column flex-wrap gap-4 xl:flex-row" [class]="{ disabled: isMetricsError() }">
     <osf-line-chart
-      class="chart xl-half-width"
+      class="chart"
+      [class.xl-half-width]="IS_X_LARGE()"
       [isLoading]="isMetricsLoading()"
       [title]="'project.analytics.charts.uniqueVisits'"
       [labels]="visitsLabels"
@@ -33,7 +34,8 @@
     ></osf-line-chart>
 
     <osf-bar-chart
-      class="chart xl-half-width"
+      class="chart"
+      [class.xl-half-width]="IS_X_LARGE()"
       [isLoading]="isMetricsLoading()"
       [title]="'project.analytics.charts.timeOfDayOfVisits'"
       [labels]="totalVisitsLabels"
@@ -42,7 +44,8 @@
     ></osf-bar-chart>
 
     <osf-pie-chart
-      class="chart xl-half-width"
+      class="chart"
+      [class.xl-half-width]="IS_X_LARGE()"
       [isLoading]="isMetricsLoading()"
       [title]="'project.analytics.charts.topReferrers'"
       [labels]="topReferrersLabels"
@@ -51,7 +54,8 @@
     ></osf-pie-chart>
 
     <osf-bar-chart
-      class="chart xl-half-width"
+      class="chart"
+      [class.xl-half-width]="IS_X_LARGE()"
       [isLoading]="isMetricsLoading()"
       [title]="'project.analytics.charts.popularPages'"
       [labels]="popularPagesLabels"

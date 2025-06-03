@@ -61,11 +61,11 @@ export class FiltersOptionsService {
 
     return this.#jsonApiService
       .get<
-        JsonApiResponse<null, ApiData<{ resourceMetadata: CreatorItem }, null, null>[]>
+        JsonApiResponse<null, ApiData<{ resourceMetadata: CreatorItem }, null, null, null>[]>
       >(`${environment.shareDomainUrl}/index-value-search`, fullParams)
       .pipe(
         map((response) => {
-          const included = (response?.included ?? []) as ApiData<{ resourceMetadata: CreatorItem }, null, null>[];
+          const included = (response?.included ?? []) as ApiData<{ resourceMetadata: CreatorItem }, null, null, null>[];
           return included
             .filter((item) => item.type === 'index-card')
             .map((item) => MapCreators(item.attributes.resourceMetadata));

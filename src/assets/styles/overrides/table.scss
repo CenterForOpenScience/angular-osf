@@ -1,22 +1,66 @@
 @use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
 
-@layer reset {
-  p-table {
-    .p-datatable {
-      border: 1px solid var.$grey-2;
-      border-radius: 8px;
-      padding: 24px;
+p-table {
+  .p-datatable {
+    border: 1px solid var.$grey-2;
+    border-radius: mix.rem(8px);
+    padding: mix.rem(12px) mix.rem(24px) mix.rem(24px) mix.rem(24px);
+  }
+
+  table {
+    tr:hover {
+      background: var.$bg-blue-2;
+
+      td {
+        background: var.$bg-blue-2;
+      }
     }
 
-    table {
-      tr:hover {
-        background: var.$bg-blue-2;
-
-        td {
-          background: var.$bg-blue-2;
-        }
+    tr.loading-row {
+      td {
+        background: transparent;
+        border: none;
+        padding: 0;
+        width: 100%;
       }
+    }
 
+    th,
+    td {
+      color: var.$dark-blue-1;
+      border: none;
+      height: mix.rem(65px);
+    }
+
+    th {
+      background-color: var.$white;
+      font-weight: 700;
+      padding-top: 0;
+
+      .p-sortable-column-icon {
+        color: var.$grey-1;
+        margin-left: mix.rem(8px);
+      }
+    }
+
+    td {
+      background-color: var.$bg-blue-3;
+      border-bottom: mix.rem(12px) solid var.$white;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.my-projects-table {
+  tr:not(.loading-row) {
+    cursor: pointer;
+  }
+
+  &.loading {
+    table {
       tr.loading-row {
         td {
           background: transparent;
@@ -26,79 +70,33 @@
         }
       }
 
-      th,
-      td {
-        color: var.$dark-blue-1;
-        border: none;
-        height: 60px;
-        //max-width: calc((100vw - 27rem) / 3);
-      }
+      tr:hover {
+        background: inherit;
 
-      th {
-        background-color: var.$white;
-        font-weight: 700;
-        padding-top: 0;
-
-        .p-sortable-column-icon {
-          color: var.$grey-1;
-          margin-left: 6px;
-        }
-      }
-
-      td {
-        background-color: var.$bg-blue-3;
-        border-bottom: 12px solid var.$white;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-      }
-    }
-  }
-
-  .my-projects-table {
-    tr:not(.loading-row) {
-      cursor: pointer;
-    }
-
-    &.loading {
-      table {
-        tr.loading-row {
-          td {
-            background: transparent;
-            border: none;
-            padding: 0;
-            width: 100%;
-          }
-        }
-
-        tr:hover {
+        td {
           background: inherit;
-
-          td {
-            background: inherit;
-          }
         }
       }
     }
   }
+}
 
-  .addon-table {
-    tr {
-      &.background-warning td {
-        background-color: var.$yellow-2;
-      }
+.addon-table {
+  tr {
+    &.background-warning td {
+      background-color: var.$yellow-2;
+    }
 
-      &.background-success td {
-        background-color: var.$green-2;
-      }
+    &.background-success td {
+      background-color: var.$green-2;
+    }
 
-      &.background-danger td {
-        background-color: var.$red-2;
-      }
+    &.background-danger td {
+      background-color: var.$red-2;
+    }
 
-      td {
-        white-space: wrap;
-      }
+    td {
+      white-space: wrap;
     }
   }
 }
@@ -108,19 +106,12 @@
     .p-datatable {
       padding: 1.71rem 0.85rem 1.71rem 0.85rem;
     }
-
-    //table {
-    //  th,
-    //  td {
-    //    max-width: calc((100vw - 6.85rem - 2px) / 3);
-    //  }
-    //}
   }
 
   .addon-table,
   .my-projects-table {
     .p-datatable {
-      padding: 0.85rem;
+      padding: mix.rem(16px);
       overflow-x: auto;
     }
   }
@@ -173,7 +164,7 @@
         max-width: calc(100vw - 3.14rem - 2px);
         display: flex;
         flex-direction: column;
-        padding: 0.85rem;
+        padding: mix.rem(16px);
         background: var.$bg-blue-3;
 
         td {
@@ -202,7 +193,7 @@
     display: block;
 
     .p-datatable {
-      padding: 0.85rem;
+      padding: mix.rem(16px);
       width: 100%;
 
       table {

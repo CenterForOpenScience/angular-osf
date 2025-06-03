@@ -16,9 +16,7 @@
   filter: grayscale(1);
 }
 
-@media (min-width: 1200px) {
-  .xl-half-width {
-    flex-basis: calc(50% - 0.75rem);
-    max-width: calc(50% - 0.75rem);
-  }
+.xl-half-width {
+  flex-basis: calc(50% - 0.75rem);
+  max-width: calc(50% - 0.75rem);
 }

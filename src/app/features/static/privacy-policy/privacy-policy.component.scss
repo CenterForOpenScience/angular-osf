@@ -1,33 +1,26 @@
 @use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
 
 :host {
   background-color: var.$white;
 
   .container {
-    margin-top: 4.5rem;
-    padding: 1.7rem;
-    color: var.$dark-blue-1;
-
-    h1 {
-      margin-bottom: 3.4rem;
-    }
-
     h2 {
-      margin-bottom: 0.9rem;
+      margin-bottom: mix.rem(12px);
     }
 
     h4 {
-      font-size: 1rem;
+      font-size: mix.rem(14px);
       font-weight: 400;
     }
 
     ul,
     p {
-      margin-bottom: 1.7rem;
+      margin-bottom: mix.rem(24px);
     }
 
     li {
-      margin-left: 1.7rem;
+      margin-left: mix.rem(24px);
       list-style: initial;
     }
 

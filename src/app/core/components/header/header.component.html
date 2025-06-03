@@ -1,15 +1,16 @@
-<osf-breadcrumb />
-<!--<a [routerLink]="authButtonLink()" class="p-button">{{ authButtonText() | translate }}</a>-->
+<header class="header flex align-items-center justify-content-between">
+  <osf-breadcrumb />
 
-<div class="dropdown-button ml-auto">
-  <p-button (click)="menu.toggle($event)">
-    {{ currentUser()?.fullName }}
-    <i class="pi pi-chevron-down"></i>
-  </p-button>
+  <div class="dropdown-button ml-auto">
+    <p-button (click)="menu.toggle($event)">
+      {{ currentUser()?.fullName }}
+      <i class="pi pi-chevron-down"></i>
+    </p-button>
 
-  <p-menu appendTo="body" #menu [model]="items" popup>
-    <ng-template #item let-item>
-      <a class="p-menu-item-link">{{ item.label | translate }}</a>
-    </ng-template>
-  </p-menu>
-</div>
+    <p-menu appendTo="body" #menu [model]="items" popup>
+      <ng-template #item let-item>
+        <a class="p-menu-item-link">{{ item.label | translate }}</a>
+      </ng-template>
+    </p-menu>
+  </div>
+</header>

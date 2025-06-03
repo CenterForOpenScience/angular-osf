@@ -1,6 +1,7 @@
-<div class="user-info">
+<div class="user-info xl:mt-6">
   <div class="name-container wide-button">
     <h1>{{ currentUser()?.fullName }}</h1>
+
     @if (!isMobile()) {
       <p-button label="Edit Profile" class="ml-auto" (click)="toProfileSettings()"></p-button>
     }
@@ -12,6 +13,7 @@
         {{ currentUser()?.employment?.[0]?.title }},
         {{ currentUser()?.employment?.[0]?.institution }}
       </h3>
+
       <h3 class="font-normal">Member since: {{ currentUser()?.dateRegistered | date: 'MMM d, yyyy' }}</h3>
     </div>
 
@@ -50,54 +52,54 @@
 
       <div class="flex flex-wrap gap-3 align-items-center">
         @if (currentUser()?.social?.github) {
-          <a [href]="currentUser()?.social?.github"
-            ><img ngSrc="assets/icons/socials/github2.svg" width="24" height="24" alt="github"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.github">
+            <img ngSrc="assets/icons/socials/github2.svg" width="24" height="24" alt="github" />
+          </a>
         }
         @if (currentUser()?.social?.scholar) {
-          <a [href]="currentUser()?.social?.scholar"
-            ><img ngSrc="assets/icons/socials/scholar.svg" width="24" height="24" alt="scholar"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.scholar">
+            <img ngSrc="assets/icons/socials/scholar.svg" width="24" height="24" alt="scholar" />
+          </a>
         }
         @if (currentUser()?.social?.twitter) {
-          <a [href]="currentUser()?.social?.twitter"
-            ><img ngSrc="assets/icons/socials/twitter.svg" width="24" height="24" alt="twitter"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.twitter">
+            <img ngSrc="assets/icons/socials/twitter.svg" width="24" height="24" alt="twitter" />
+          </a>
         }
         @if (currentUser()?.social?.linkedIn) {
-          <a [href]="currentUser()?.social?.linkedIn"
-            ><img ngSrc="assets/icons/socials/linkedin2.svg" width="24" height="24" alt="linkedin"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.linkedIn">
+            <img ngSrc="assets/icons/socials/linkedin2.svg" width="24" height="24" alt="linkedin" />
+          </a>
         }
         @if (currentUser()?.social?.impactStory) {
-          <a [href]="currentUser()?.social?.impactStory"
-            ><img ngSrc="assets/icons/socials/impactstory.png" width="24" height="24" alt="impactstory"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.impactStory">
+            <img ngSrc="assets/icons/socials/impactstory.png" width="24" height="24" alt="impactstory" />
+          </a>
         }
         @if (currentUser()?.social?.baiduScholar) {
-          <a [href]="currentUser()?.social?.baiduScholar"
-            ><img ngSrc="assets/icons/socials/baidu.png" width="24" height="24" alt="baidu"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.baiduScholar">
+            <img ngSrc="assets/icons/socials/baidu.png" width="24" height="24" alt="baidu" />
+          </a>
         }
         @if (currentUser()?.social?.researchGate) {
-          <a [href]="currentUser()?.social?.researchGate"
-            ><img ngSrc="assets/icons/socials/researchGate.svg" width="24" height="24" alt="researchGate"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.researchGate">
+            <img ngSrc="assets/icons/socials/researchGate.svg" width="24" height="24" alt="researchGate" />
+          </a>
         }
         @if (currentUser()?.social?.researcherId) {
-          <a [href]="currentUser()?.social?.researcherId"
-            ><img ngSrc="assets/icons/socials/researcherID.png" width="24" height="24" alt="researchId"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.researcherId">
+            <img ngSrc="assets/icons/socials/researcherID.png" width="24" height="24" alt="researchId" />
+          </a>
         }
         @if (currentUser()?.social?.ssrn) {
-          <a [href]="currentUser()?.social?.researcherId"
-            ><img ngSrc="assets/icons/socials/ssrn.svg" width="24" height="24" alt="ssrn"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.researcherId">
+            <img ngSrc="assets/icons/socials/ssrn.svg" width="24" height="24" alt="ssrn" />
+          </a>
         }
         @if (currentUser()?.social?.academiaProfileID) {
-          <a [href]="currentUser()?.social?.academiaProfileID"
-            ><img ngSrc="assets/icons/socials/academia.svg" width="24" height="24" alt="ssrn"
-          /></a>
+          <a class="cursor-pointer" [href]="currentUser()?.social?.academiaProfileID">
+            <img ngSrc="assets/icons/socials/academia.svg" width="24" height="24" alt="academia" />
+          </a>
         }
       </div>
 
@@ -110,14 +112,14 @@
   </div>
 </div>
 
-<div class="cards">
-  <div class="card">
+<div class="cards flex flex-column gap-4 py-4 px-3 md:px-5 xl:flex-row xl:px-4">
+  <div class="card w-full p-3 md:p-4 xl:w-6">
     <h2 class="mb-3">{{ 'settings.profileSettings.tabs.employment' | translate }}</h2>
 
     <osf-employment-history [employment]="currentUser()?.employment"></osf-employment-history>
   </div>
 
-  <div class="card">
+  <div class="card w-full p-3 md:p-4 xl:w-6">
     <h2 class="mb-3">{{ 'settings.profileSettings.tabs.education' | translate }}</h2>
 
     <osf-education-history [education]="currentUser()?.education"></osf-education-history>

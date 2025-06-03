@@ -1,6 +1,6 @@
 import { ApiData } from '@osf/core/models';
 
-export type GetAccountSettingsResponse = ApiData<AccountSettingsResponse, null, null>;
+export type GetAccountSettingsResponse = ApiData<AccountSettingsResponse, null, null, null>;
 
 export interface AccountSettingsResponse {
   two_factor_enabled: boolean;

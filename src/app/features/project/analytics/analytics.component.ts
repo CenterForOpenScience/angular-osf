@@ -14,6 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { BarChartComponent, LineChartComponent, PieChartComponent, SubHeaderComponent } from '@osf/shared/components';
 import { DatasetInput } from '@osf/shared/models';
+import { IS_WEB } from '@osf/shared/utils';
 
 import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
@@ -42,6 +43,8 @@ import { analyticsData } from './test-data';
 export class AnalyticsComponent implements OnInit {
   protected rangeOptions = DATE_RANGE_OPTIONS;
   protected selectedRange = signal(DATE_RANGE_OPTIONS[0]);
+
+  protected readonly IS_X_LARGE = toSignal(inject(IS_WEB));
 
   private readonly datePipe = inject(DatePipe);
   private readonly route = inject(ActivatedRoute);

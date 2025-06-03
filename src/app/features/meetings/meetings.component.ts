@@ -1,8 +1,5 @@
-import { ChangeDetectionStrategy, Component, HostBinding, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-
-import { IS_WEB } from '@shared/utils';
 
 @Component({
   selector: 'osf-meetings',
@@ -12,6 +9,5 @@ import { IS_WEB } from '@shared/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MeetingsComponent {
-  protected readonly isDesktop = toSignal(inject(IS_WEB));
-  @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
+  @HostBinding('class') classes = 'flex flex-1 flex-column w-full';
 }

@@ -3,14 +3,14 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterOutlet } from '@angular/router';
 
 import { BreadcrumbComponent } from '@core/components/breadcrumb/breadcrumb.component';
 import { FooterComponent } from '@core/components/footer/footer.component';
 import { HeaderComponent } from '@core/components/header/header.component';
-import { MainContentComponent } from '@core/components/main-content/main-content.component';
 import { SidenavComponent } from '@core/components/sidenav/sidenav.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
-import { IS_WEB, IS_XSMALL } from '@shared/utils';
+import { IS_MEDIUM, IS_WEB } from '@shared/utils';
 
 @Component({
   selector: 'osf-root',
@@ -18,11 +18,11 @@ import { IS_WEB, IS_XSMALL } from '@shared/utils';
     CommonModule,
     SidenavComponent,
     HeaderComponent,
-    MainContentComponent,
     FooterComponent,
     TopnavComponent,
     ConfirmDialog,
     BreadcrumbComponent,
+    RouterOutlet,
   ],
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss'],
@@ -30,5 +30,5 @@ import { IS_WEB, IS_XSMALL } from '@shared/utils';
 })
 export class RootComponent {
   isWeb = toSignal(inject(IS_WEB));
-  isMobile = toSignal(inject(IS_XSMALL));
+  isMedium = toSignal(inject(IS_MEDIUM));
 }

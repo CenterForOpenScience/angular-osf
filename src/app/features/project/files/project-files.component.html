@@ -1,122 +1,313 @@
-<!--@if (!selectFile()) {-->
-<!--  <osf-sub-header title="Files" />-->
+<osf-sub-header [title]="'project.files.title' | translate"></osf-sub-header>
 
-<!--  <div class="table-container bg-white p-4 h-full">-->
+<div class="flex flex-column bg-white gap-4 h-full flex-1 p-4">
+  <div class="flex flex-grow-0 w-full sm:w-30rem">
+    <p-floatlabel class="w-full md:w-56" variant="in">
+      <p-select
+        inputId="in_label"
+        [options]="['Storage Location: United State', 'Another Storage']"
+        styleClass="w-full"
+        variant="filled"
+      />
+      <label for="in_label">{{ 'project.files.storageLocation' | translate }}</label>
+    </p-floatlabel>
+  </div>
 
-@if (!selectFile()) {
-  <osf-sub-header title="Files"></osf-sub-header>
+  <div class="flex flex-column gap-4 md:justify-content-between md:flex-row md:flex-wrap">
+    <div class="flex flex-column gap-2 w-full sm:flex-row md:w-max">
+      <osf-search-input
+        [control]="searchControl"
+        class="w-full sm:w-9 xl:w-30rem"
+        [placeholder]="'project.files.searchPlaceholder' | translate"
+      />
 
-  <div class="flex flex-column bg-white gap-4 h-full flex-1 p-4">
-    <div class="flex flex-grow-0 w-30rem">
-      <p-floatlabel class="w-full md:w-56" variant="in">
-        <p-select
-          inputId="in_label"
-          [options]="['Storage Location: United State', 'Another Storage']"
-          styleClass="w-full"
-          variant="filled"
+      <div class="sm:w-3 md:w-max">
+        <div class="sorting-container no-border-dropdown select-font-normal">
+          <p-select
+            [options]="sortOptions"
+            [formControl]="sortControl"
+            [placeholder]="'project.files.sort.placeholder' | translate"
+            optionLabel="label"
+            optionValue="value"
+          >
+            <ng-template #selectedItem let-selectedOption>
+              {{ selectedOption.label | translate }}
+            </ng-template>
+            <ng-template #item let-item>
+              {{ item.label | translate }}
+            </ng-template></p-select
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-column w-full gap-2 sm:flex-row md:w-max">
+      <div class="btn-full-width">
+        @let id = currentFolder()?.id ?? '';
+        @let rootFolder = !currentFolder()?.relationships?.parentFolderLink;
+        <p-button [disabled]="fileIsUploading" class="no-padding-button" (click)="downloadFolder(id, rootFolder)">
+          <div class="outline-button w-full md:w-max blue">
+            <i class="osf-icon-download"> </i>
+            <span>{{ 'project.files.actions.downloadAsZip' | translate }}</span>
+          </div>
+        </p-button>
+      </div>
+
+      <div class="btn-full-width">
+        <p-button [disabled]="fileIsUploading" class="no-padding-button" (click)="createFolderVisible = true">
+          <div class="outline-button w-full md:w-max green">
+            <i class="osf-icon-plus"> </i>
+            <span>{{ 'project.files.actions.createFolder' | translate }}</span>
+          </div>
+        </p-button>
+      </div>
+
+      <div class="btn-full-width">
+        <p-button [disabled]="fileIsUploading" class="no-padding-button" (click)="fileInput.click()">
+          <div class="outline-button w-full md:w-max green">
+            <i class="osf-icon-upload"> </i>
+            <span>{{ 'project.files.actions.uploadFile' | translate }}</span>
+          </div>
+        </p-button>
+      </div>
+
+      <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
+    </div>
+  </div>
+
+  <div class="absolute">
+    <p-dialog
+      [header]="'project.files.dialogs.uploadFile.title' | translate"
+      [modal]="true"
+      [(visible)]="fileIsUploading"
+      class="upload-dialog"
+    >
+      <div class="flex flex-column align-items-center justify-content-center gap-3 w-full">
+        <span class="p-text-secondary filename">{{ fileName() }}</span>
+        <div class="w-6">
+          <osf-loading-spinner></osf-loading-spinner>
+        </div>
+        <p>{{ progress() }} %</p>
+      </div>
+    </p-dialog>
+
+    <p-dialog
+      [header]="'project.files.dialogs.createFolder.title' | translate"
+      [modal]="true"
+      [(visible)]="createFolderVisible"
+      class="action-dialog"
+    >
+      <div class="flex flex-column items-center mb-4">
+        <label for="folderName" class="font-semibold w-24">{{
+          'project.files.dialogs.createFolder.folderName' | translate
+        }}</label>
+        <div [formGroup]="folderForm">
+          <input
+            pInputText
+            formControlName="name"
+            id="folderName"
+            class="flex-auto"
+            autocomplete="off"
+            [placeholder]="'project.files.dialogs.createFolder.folderNamePlaceholder' | translate"
+          />
+        </div>
+      </div>
+      <div class="flex justify-content-end gap-2">
+        @if (!isFolderCreating) {
+          <p-button
+            [label]="'common.buttons.cancel' | translate"
+            severity="secondary"
+            (click)="createFolderVisible = false"
+          />
+          <p-button [label]="'common.buttons.save' | translate" (click)="createFolder()" />
+        } @else {
+          <div class="spinner-container">
+            <osf-loading-spinner></osf-loading-spinner>
+          </div>
+        }
+      </div>
+    </p-dialog>
+
+    <p-dialog
+      [header]="'project.files.dialogs.renameFile.title' | translate"
+      [modal]="true"
+      [(visible)]="renameFileVisible"
+      class="action-dialog"
+    >
+      <div class="flex flex-column items-center mb-4">
+        <label for="folderName" class="font-semibold w-24">{{
+          'project.files.dialogs.renameFile.renameLabel' | translate
+        }}</label>
+        <div [formGroup]="renameForm">
+          <input pInputText formControlName="name" id="folderName" class="flex-auto" autocomplete="off" />
+        </div>
+      </div>
+      <div class="flex justify-content-end gap-2">
+        <p-button
+          [label]="'common.buttons.cancel' | translate"
+          severity="secondary"
+          (click)="createFolderVisible = false"
         />
-        <label for="in_label">OSF Storage</label>
-      </p-floatlabel>
-    </div>
-
-    <div class="flex gap-4">
-      <osf-search-input class="w-30rem" placeholder="Search your projects" />
-
-      <div class="sorting-container no-border-dropdown">
-        <p-select placeholder="Sort by name: A-Z" optionLabel="label" optionValue="value"></p-select>
+        <p-button [label]="'common.buttons.save' | translate" (click)="renameEntry()" />
       </div>
+    </p-dialog>
+  </div>
 
-      <div class="flex gap-2 ml-auto">
-        <div class="outline-button blue">
-          <i class="osf-icon-download"> </i>
-
-          <span>Download As Zip</span>
-        </div>
-
-        <div class="outline-button green">
-          <i class="osf-icon-plus"> </i>
-
-          <span>Create Folder</span>
-        </div>
-
-        <div class="outline-button green">
-          <i class="osf-icon-upload"> </i>
-
-          <span>Upload File</span>
-        </div>
-      </div>
+  @if (files().isLoading || isFilesUpdating()) {
+    <div class="w-8rem ml-auto mr-auto">
+      <osf-loading-spinner></osf-loading-spinner>
     </div>
-
+  } @else {
     <div class="files-table">
-      @for (file of files(); track file.downloads) {
+      @if (currentFolder()?.relationships?.parentFolderLink) {
         <div class="files-table-row">
-          <div class="files-table-cell flex gap-2">
-            @if (file.downloadType && file.type !== 'folder') {
-              @if (file.downloadType === 'doc') {
-                <i style="color: #337ab7" class="osf-icon-doc"></i>
-              } @else {
-                <i style="color: #b73333" class="osf-icon-pdf"></i>
-              }
-            } @else {
+          <div class="flex gap-2">
+            <div
+              tabindex="0"
+              (click)="openParentFolder()"
+              (keydown.enter)="openParentFolder()"
+              class="parent-folder-link"
+            >
+              <i class="osf-icon-arrow-left"></i>
               <i class="osf-icon-folder"></i>
-            }
-
-            <div>
-              {{ file.name }}
+              {{ currentFolder()?.name ?? '' }}
             </div>
           </div>
-          <div class="files-table-cell">{{ file.downloads }} Downloads</div>
+
+          <div class="files-table-cell"></div>
+          <div class="files-table-cell"></div>
+          <div class="files-table-cell"></div>
+          <div class="files-table-cell"></div>
+        </div>
+      }
+      @for (file of files().data; track $index) {
+        <div class="files-table-row">
+          <div class="flex gap-2 table-cell" [class.pl-6]="currentFolder()?.relationships?.parentFolderLink">
+            @if (file.kind !== 'folder') {
+              <div class="flex gap-2 min-w-0">
+                <i class="blue-icon" class="osf-icon-doc icon-link"></i>
+                <a class="flex min-w-0" [routerLink]="[file.guid]">
+                  <div class="filename-link min-w-0">{{ file?.name ?? '' }}</div>
+                </a>
+              </div>
+            } @else {
+              <i class="osf-icon-folder"></i>
+              <div
+                tabindex="0"
+                (click)="openFolder(file)"
+                (keydown.enter)="openFolder(file)"
+                class="table-cell filename-link min-w-0"
+              >
+                {{ file?.name ?? '' }}
+              </div>
+            }
+          </div>
 
           <div class="files-table-cell">
-            {{ file.size }}
+            {{ file.kind === 'file' ? file.extra.downloads + ' ' + ('common.labels.downloads' | translate) : '' }}
+          </div>
+
+          <div class="files-table-cell">
+            {{ file.size | fileSize }}
           </div>
           <div class="files-table-cell">
-            {{ file.modifiedAt | date: 'MMM d, y hh:mm a' }}
+            {{ file.dateModified | date: 'MMM d, y hh:mm a' }}
           </div>
-          <div class="files-table-cell">
+          <div class="relative ml-auto">
+            <p-menu #menu [model]="items" popup appendTo="body">
+              {{ 'project.files.menu.download' | translate }}
+              <ng-template #item let-item>
+                @switch (item.label) {
+                  @case (FileMenuItems.Download) {
+                    @if (file.kind === 'file') {
+                      <a
+                        role="button"
+                        tabindex="0"
+                        class="p-menu-item-link"
+                        (click)="downloadFile(file.links.download)"
+                        (keydown.enter)="downloadFile(file.links.download)"
+                      >
+                        {{ 'common.buttons.download' | translate }}
+                      </a>
+                    } @else {
+                      <a
+                        role="button"
+                        tabindex="0"
+                        class="p-menu-item-link"
+                        (click)="downloadFolder(file.id, false)"
+                        (keydown.enter)="downloadFolder(file.id, false)"
+                      >
+                        {{ 'common.buttons.download' | translate }}
+                      </a>
+                    }
+                  }
+                  @case (FileMenuItems.Copy) {
+                    <a
+                      role="button"
+                      tabindex="0"
+                      class="p-menu-item-link"
+                      (click)="moveFile(file, 'copy')"
+                      (keydown.enter)="moveFile(file, 'copy')"
+                    >
+                      {{ 'common.buttons.copy' | translate }}
+                    </a>
+                  }
+                  @case (FileMenuItems.Move) {
+                    <a
+                      role="button"
+                      tabindex="0"
+                      class="p-menu-item-link"
+                      (click)="moveFile(file, 'move')"
+                      (keydown.enter)="moveFile(file, 'move')"
+                    >
+                      {{ 'common.buttons.move' | translate }}
+                    </a>
+                  }
+                  @case (FileMenuItems.Rename) {
+                    <a
+                      role="button"
+                      tabindex="0"
+                      class="p-menu-item-link"
+                      (click)="
+                        renameFileVisible = true;
+                        selectedFileIndex = $index;
+                        renameForm.get('name')!.setValue(file.name)
+                      "
+                      (keydown.enter)="renameFileVisible = true; selectedFileIndex = $index"
+                    >
+                      {{ 'common.buttons.rename' | translate }}
+                    </a>
+                  }
+                  @case (FileMenuItems.Delete) {
+                    <a
+                      role="button"
+                      tabindex="0"
+                      class="p-menu-item-link"
+                      (click)="deleteEntry(file.links.delete)"
+                      (keydown.enter)="deleteEntry(file.links.delete)"
+                    >
+                      {{ 'common.buttons.delete' | translate }}
+                    </a>
+                  }
+                }
+              </ng-template>
+            </p-menu>
+
             <p-button
-              class="btn-icon-text"
               size="small"
-              styleClass="w-2rem h-2rem"
               severity="secondary"
+              class="btn-icon-text"
               icon="pi pi-ellipsis-v"
-              (click)="$event.preventDefault(); $event.stopImmediatePropagation()"
+              (click)="menu.toggle($event)"
             ></p-button>
           </div>
         </div>
       }
+      @if (!files().data.length) {
+        <div class="flex justify-content-center p-4">
+          <h3 class="font-normal text-no-transform">{{ 'project.files.emptyState' | translate }}</h3>
+        </div>
+      }
     </div>
-  </div>
-}
-
-<!--    <p-table [value]="files()">-->
-<!--      <ng-template #body let-file>-->
-<!--        <tr>-->
-<!--          <td (click)="navigateToFile(file)">{{ file.name }}</td>-->
-<!--          <td>{{ file.downloads }} Downloads</td>-->
-<!--          <td>{{ file.size }}</td>-->
-<!--          <td>{{ file.modifiedAt | date: "MMM d, y hh:mm a" }}</td>-->
-<!--          <td>-->
-<!--            <p-menu-->
-<!--              #menu-->
-<!--              [popup]="true"-->
-<!--              [model]="[-->
-<!--                { label: 'Download', icon: 'pi pi-download' },-->
-<!--                { label: 'Copy', icon: 'pi pi-copy' },-->
-<!--                { label: 'Move', icon: 'pi pi-directions' },-->
-<!--                { label: 'Rename', icon: 'pi pi-pencil' },-->
-<!--                { label: 'Delete', icon: 'pi pi-trash' },-->
-<!--              ]"-->
-<!--            />-->
-
-<!--            <p-button-->
-<!--              size="small"-->
-<!--              severity="secondary"-->
-<!--              class="btn-icon-text"-->
-<!--              icon="pi pi-ellipsis-v"-->
-<!--              (click)="menu.toggle($event)"-->
-<!--            ></p-button>-->
-<!--          </td>-->
-<!--        </tr>-->
-<!--      </ng-template>-->
-<!--    </p-table>-->
+  }
+</div>

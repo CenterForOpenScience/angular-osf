@@ -1,20 +1,24 @@
-<section class="sub-header" [class.mobile]="isXSmall()">
-  <div class="title-row" [class.mobile]="isXSmall()">
-    <div class="title-icon">
+<section class="sub-header flex flex-column gap-4 w-full py-5 px-3 md:px-5 md:pb-6 xl:py-6 xl:px-4">
+  <div class="flex flex-column gap-4 md:flex-row">
+    <div class="flex align-items-center gap-3">
       @if (icon()) {
-        <i [class]="'osf-icon-' + icon()"></i>
+        <i class="title-icon" [class]="'osf-icon-' + icon()"></i>
       }
-      <h1>{{ title() }}</h1>
+
+      @if (isLoading()) {
+        <p-skeleton width="12rem" height="37px"></p-skeleton>
+      } @else {
+        <h1>{{ title() }}</h1>
+      }
     </div>
     @if (showButton()) {
-      <div class="btn-container" [class.btn-full-width]="isXSmall()">
-        <p-button [label]="buttonLabel()" (onClick)="buttonClick.emit()"></p-button>
+      <div class="ml-auto w-full md:w-auto">
+        <p-button class="w-full" styleClass="w-full" [label]="buttonLabel()" (onClick)="buttonClick.emit()"></p-button>
       </div>
     }
   </div>
+
   @if (description()) {
-    <section>
-      <p>{{ description() }}</p>
-    </section>
+    <p>{{ description() }}</p>
   }
 </section>

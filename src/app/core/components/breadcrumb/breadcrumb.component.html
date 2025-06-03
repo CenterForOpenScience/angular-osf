@@ -1,5 +1,5 @@
 @if (!parsedUrl()[0].includes('home') && !parsedUrl()[0].includes('confirm')) {
-  <div class="breadcrumbs flex column-gap-2">
+  <div class="breadcrumbs flex gap-2 md:p-5 md:pb-0 xl:p-0">
     <i class="osf-icon-home"></i>
     <p>/</p>
     @for (url of parsedUrl(); track url; let l = $last) {

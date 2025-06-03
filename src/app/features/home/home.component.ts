@@ -18,7 +18,7 @@ import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
 import { AddProjectFormComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
 import { SortOrder } from '@osf/shared/enums';
 import { TableParameters } from '@osf/shared/models';
-import { IS_MEDIUM, IS_WEB } from '@osf/shared/utils';
+import { IS_MEDIUM } from '@osf/shared/utils';
 
 import { GetUserInstitutions } from '../institutions/store';
 import { MyProjectsSearchFilters } from '../my-projects/models';
@@ -48,7 +48,6 @@ export class HomeComponent implements OnInit {
   protected readonly isSubmitting = signal(false);
 
   protected readonly isMedium = toSignal(inject(IS_MEDIUM));
-  readonly isWeb = toSignal(inject(IS_WEB));
 
   protected readonly searchControl = new FormControl<string>('');
   protected readonly activeProject = signal<MyProjectsItem | null>(null);

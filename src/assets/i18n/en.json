@@ -6,10 +6,17 @@
       "add": "Add",
       "cancel": "Cancel",
       "save": "Save",
-      "close": "Close"
+      "close": "Close",
+      "download": "Download",
+      "copy": "Copy",
+      "move": "Move",
+      "rename": "Rename"
     },
     "search": {
       "noResultsFound": "No results found."
+    },
+    "labels": {
+      "downloads": "Downloads"
     }
   },
   "navigation": {
@@ -298,6 +305,9 @@
       }
     }
   },
+  "myProfile": {
+    "editProfile": "Edit Profile"
+  },
   "project": {
     "analytics": {
       "kpi": {
@@ -553,6 +563,132 @@
         "lastUpdated": "Last Updated:",
         "description": "Description:",
         "openResources": "Open Resources"
+      }
+    },
+    "files": {
+      "title": "Files",
+      "storageLocation": "OSF Storage",
+      "searchPlaceholder": "Search your projects",
+      "sort": {
+        "placeholder": "Sort",
+        "nameAZ": "Name: A-Z",
+        "nameZA": "Name: Z-A",
+        "lastModifiedOldest": "Last modified: oldest to newest",
+        "lastModifiedNewest": "Last modified: newest to oldest"
+      },
+      "actions": {
+        "downloadAsZip": "Download As Zip",
+        "createFolder": "Create Folder",
+        "uploadFile": "Upload File"
+      },
+      "dialogs": {
+        "uploadFile": {
+          "title": "Upload file"
+        },
+        "createFolder": {
+          "title": "Create folder",
+          "folderName": "New folder name",
+          "folderNamePlaceholder": "Please enter a folder name"
+        },
+        "renameFile": {
+          "title": "Rename file",
+          "renameLabel": "Please rename the file"
+        },
+        "moveFile": "Cannot move to the same folder"
+      },
+      "emptyState": "This folder is empty",
+      "detail": {
+        "backToList": "Back to list of files",
+        "fileMetadata": {
+          "title": "File Metadata",
+          "edit": "Edit",
+          "fields": {
+            "title": "Title",
+            "description": "Description",
+            "resourceType": "Resource Type",
+            "resourceLanguage": "Resource Language"
+          }
+        },
+        "projectMetadata": {
+          "title": "Project Metadata",
+          "edit": "Edit",
+          "fields": {
+            "funder": "Funder",
+            "awardTitle": "Award title",
+            "awardNumber": "Award number",
+            "awardUri": "Award URI",
+            "title": "Title",
+            "description": "Description",
+            "resourceType": "Resource type",
+            "resourceLanguage": "Resource language",
+            "dateCreated": "Date created",
+            "dateModified": "Date modified",
+            "contributors": "Contributors"
+          }
+        }
+      }
+    },
+    "files": {
+      "title": "Files",
+      "storageLocation": "OSF Storage",
+      "searchPlaceholder": "Search your projects",
+      "sort": {
+        "placeholder": "Sort",
+        "nameAZ": "Name: A-Z",
+        "nameZA": "Name: Z-A",
+        "lastModifiedOldest": "Last modified: oldest to newest",
+        "lastModifiedNewest": "Last modified: newest to oldest"
+      },
+      "actions": {
+        "downloadAsZip": "Download As Zip",
+        "createFolder": "Create Folder",
+        "uploadFile": "Upload File"
+      },
+      "dialogs": {
+        "uploadFile": {
+          "title": "Upload file"
+        },
+        "createFolder": {
+          "title": "Create folder",
+          "folderName": "New folder name",
+          "folderNamePlaceholder": "Please enter a folder name"
+        },
+        "renameFile": {
+          "title": "Rename file",
+          "renameLabel": "Please rename the file"
+        },
+        "moveFile": "Cannot move to the same folder"
+      },
+      "emptyState": "This folder is empty",
+      "detail": {
+        "backToList": "Back to list of files",
+        "fileMetadata": {
+          "title": "File Metadata",
+          "edit": "Edit",
+          "fields": {
+            "title": "Title",
+            "description": "Description",
+            "resourceType": "Resource Type",
+            "resourceLanguage": "Resource Language"
+          }
+        },
+        "projectMetadata": {
+          "title": "Project Metadata",
+          "edit": "Edit",
+          "fields": {
+            "funder": "Funder",
+            "awardTitle": "Award title",
+            "awardNumber": "Award number",
+            "awardUri": "Award URI",
+            "title": "Title",
+            "description": "Description",
+            "resourceType": "Resource type",
+            "resourceLanguage": "Resource language",
+            "dateCreated": "Date created",
+            "dateModified": "Date modified",
+            "contributors": "Contributors"
+          }
+        }
       }
     }
   },

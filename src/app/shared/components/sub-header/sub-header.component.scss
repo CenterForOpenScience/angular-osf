@@ -3,42 +3,12 @@
 
 :host {
   width: 100%;
+}
 
-  .sub-header {
-    @include mix.flex-column;
-    gap: 1.75rem;
-    padding: 2.5rem 1.7rem 3rem 1.7rem;
-    width: 100%;
-    color: var.$dark-blue-1;
+.sub-header {
+  color: var.$dark-blue-1;
+}
 
-    .title-row {
-      @include mix.flex-align-center;
-      gap: 0.7rem;
-
-      &.mobile {
-        @include mix.flex-column;
-        align-items: start;
-        row-gap: 2.14rem;
-      }
-
-      .title-icon {
-        display: flex;
-        align-items: center;
-        column-gap: 0.8rem;
-
-        i {
-          font-size: 2.6rem;
-          color: var.$dark-blue-1;
-        }
-      }
-
-      .btn-container {
-        margin-left: auto;
-      }
-    }
-
-    &.mobile {
-      padding: 2.5rem 1.1rem 2.5rem 1.1rem;
-    }
-  }
+.title-icon {
+  font-size: mix.rem(36px);
 }

@@ -2,6 +2,8 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { ProjectFilesState } from '@osf/features/project/files/store/project-files.state';
+
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
 import { MyProfileState } from './features/my-profile/store';
@@ -121,9 +123,10 @@ export const routes: Routes = [
             path: 'files',
             loadComponent: () =>
               import('@osf/features/project/files/project-files.component').then((mod) => mod.ProjectFilesComponent),
+            providers: [provideStates([ProjectFilesState])],
           },
           {
-            path: 'files/:fileId',
+            path: 'files/:fileGuid',
             loadComponent: () =>
               import('@osf/features/project/files/components/file-detail/file-detail.component').then(
                 (mod) => mod.FileDetailComponent

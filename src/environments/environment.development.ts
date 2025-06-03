@@ -4,4 +4,5 @@ export const environment = {
   apiDomainUrl: 'https://api.staging4.osf.io',
   shareDomainUrl: 'https://staging-share.osf.io/trove',
   addonsApiUrl: 'https://addons.staging4.osf.io/v1',
+  fileApiUrl: 'https://files.us.staging4.osf.io/v1',
 };

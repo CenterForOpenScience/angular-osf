@@ -1,14 +1,14 @@
-<div class="search-container" [class]="!isMyProfilePage() ? 'mt-6 xl:mt-8' : 'mt-5 xl:mt-6'">
+<div class="search-container mt-5 mx-3 md:mx-4 xl:mt-6">
   <img
+    class="cursor-pointer"
     ngSrc="assets/icons/colored/question-mark.svg"
-    alt="better-research"
     tabindex="0"
     role="button"
     height="36"
     width="36"
+    alt="better-research"
     (click)="currentStep = 1"
     (keydown.enter)="currentStep = 1"
-    class="cursor-pointer"
   />
   <osf-search-input [control]="searchControl" placeholder="Enter search term(s) here" />
 </div>
@@ -25,7 +25,7 @@
       </p-tablist>
     }
 
-    <p-tabpanels class="p-3 sm:p-5 flex-1">
+    <p-tabpanels class="p-3 flex-1 sm:p-5">
       <p-tabpanel [value]="ResourceTab.All" class="flex flex-column gap-4 flex-1"> </p-tabpanel>
       <p-tabpanel [value]="ResourceTab.Projects" class="flex flex-column gap-5"> </p-tabpanel>
       <p-tabpanel [value]="ResourceTab.Registrations" class="flex flex-column gap-5"></p-tabpanel>
@@ -34,12 +34,12 @@
     </p-tabpanels>
   </p-tabs>
 
-  <div class="resources">
+  <div class="resources py-4 px-3 md:px-5 xl:px-4">
     <osf-my-profile-resources></osf-my-profile-resources>
 
     @if (currentStep === 1) {
       <div class="stepper first-stepper">
-        <h3>Improved OSF Search</h3>
+        <h3 stepper-title>Improved OSF Search</h3>
         <p>
           Enter any term in the search box and filter by specific object types. More information is available on our
           help guides.
@@ -56,7 +56,7 @@
 
     @if (currentStep === 2) {
       <div class="stepper second-stepper">
-        <h3>Refine Your Search</h3>
+        <h3 stepper-title>Refine Your Search</h3>
         <p>
           Narrow the source, discipline, and more. For example, find content supported by a specific funder or view only
           datasets.
@@ -73,7 +73,7 @@
 
     @if (currentStep === 3) {
       <div class="stepper third-stepper">
-        <h3>Add Metadata</h3>
+        <h3 stepper-title>Add Metadata</h3>
         <p>
           Remember to add metadata and resources to your own work on OSF to make it more discoverable! Learn more in our
           help guides.

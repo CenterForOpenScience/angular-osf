@@ -304,3 +304,8 @@
 .secondary-add-btn .p-button.p-button-secondary {
   --p-button-secondary-color: var(--dark-blue-1);
 }
+
+.no-padding-button .p-button {
+  background: var.$white;
+  padding: 0;
+}

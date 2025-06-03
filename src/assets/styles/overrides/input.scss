@@ -81,12 +81,4 @@ p-password.ng-touched.ng-invalid {
     border-top-left-radius: 0;
     border-left-style: none;
   }
-
-  @media (max-width: 300px) {
-    .p-inputtext {
-      border: 1px solid var.$grey-2;
-      border-bottom-left-radius: 8px;
-      border-top-left-radius: 8px;
-    }
-  }
 }

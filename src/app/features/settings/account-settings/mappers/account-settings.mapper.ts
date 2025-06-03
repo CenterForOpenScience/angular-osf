@@ -2,7 +2,7 @@ import { ApiData } from '@osf/core/models';
 
 import { AccountSettings, AccountSettingsResponse } from '../models';
 
-export function MapAccountSettings(data: ApiData<AccountSettingsResponse, null, null>): AccountSettings {
+export function MapAccountSettings(data: ApiData<AccountSettingsResponse, null, null, null>): AccountSettings {
   return {
     twoFactorEnabled: data.attributes.two_factor_enabled,
     twoFactorConfirmed: data.attributes.two_factor_confirmed,

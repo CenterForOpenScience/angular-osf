@@ -1,0 +1,94 @@
+@use "assets/styles/variables" as var;
+@use "/assets/styles/mixins" as mix;
+
+:host {
+  @include mix.flex-column;
+  flex: 1;
+  gap: mix.rem(24px);
+
+  .files-table {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var.$grey-2;
+    border-radius: mix.rem(8px);
+    padding: 0 mix.rem(12px);
+
+    &-row {
+      color: var.$dark-blue-1;
+      display: flex;
+      align-items: center;
+      min-height: mix.rem(38px);
+      border-bottom: 1px solid var.$grey-2;
+    }
+
+    .table-cell {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    &-row:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .filename-link {
+    cursor: pointer;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    max-width: 100%;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .parent-folder-link {
+    cursor: pointer;
+    display: flex;
+    gap: mix.rem(5px);
+  }
+
+  .sorting-container {
+    display: flex;
+    align-items: center;
+    border: 1px solid var.$grey-2;
+    border-radius: mix.rem(8px);
+    padding: mix.rem(12px);
+    height: mix.rem(44px);
+  }
+
+  .outline-button {
+    font-weight: 600;
+    display: flex;
+    gap: mix.rem(8px);
+    border: 1px solid var.$grey-2;
+    padding: mix.rem(12px);
+    border-radius: mix.rem(8px);
+    height: mix.rem(44px);
+
+    &.blue {
+      color: var.$pr-blue-1;
+    }
+
+    &.green {
+      color: var.$green-1;
+    }
+  }
+
+  .filename {
+    overflow-wrap: anywhere;
+  }
+
+  .spinner-container {
+    width: mix.rem(38px);
+  }
+
+  .disabled-icon {
+    color: var.$grey-1;
+  }
+}

@@ -14,6 +14,7 @@
 @layer reset {
   html,
   body {
+    color: var.$dark-blue-1;
     font-family: var.$openSans;
     font-weight: 400;
     font-size: var.$base-font-size;
@@ -26,11 +27,11 @@
   }
 
   h1 {
-    font-size: 1.7rem;
+    font-size: mix.rem(24px);
   }
 
   h2 {
-    font-size: 1.3rem;
+    font-size: mix.rem(18px);
   }
 
   h3 {

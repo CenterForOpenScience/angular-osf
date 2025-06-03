@@ -104,7 +104,6 @@ export class ChangePasswordComponent implements OnInit {
           });
         },
         error: (error: HttpErrorResponse) => {
-          console.error(error);
           if (error.error?.errors?.[0]?.detail) {
             this.errorMessage.set(error.error.errors[0].detail);
           } else {

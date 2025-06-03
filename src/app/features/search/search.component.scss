@@ -1,71 +1,49 @@
 @use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
 
-:host {
-  .search-container {
-    margin: 3.4rem 1.7rem 0.4rem 1.7rem;
-    position: relative;
+.search-container {
+  position: relative;
 
-    img {
-      position: absolute;
-      right: 0.3rem;
-      top: 0.3rem;
-      z-index: 1;
-    }
-  }
-
-  .resources {
-    position: relative;
-    background: var.$white;
-    padding: 2rem;
-  }
-
-  .stepper {
+  img {
     position: absolute;
-    padding: 1.7rem;
-    width: 32rem;
-    display: flex;
-    flex-direction: column;
-    row-gap: 1.7rem;
-    background: var.$white;
-    border: 1px solid var.$grey-2;
-    border-radius: 12px;
-    h3 {
-      font-size: 1.3rem;
-    }
+    right: mix.rem(4px);
+    top: mix.rem(4px);
+    z-index: 1;
   }
+}
 
-  .first-stepper {
-    top: 2rem;
-    left: 1.7rem;
+.resources {
+  position: relative;
+  background: var.$white;
+}
+
+.stepper {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var.$white;
+  border: 1px solid var.$grey-2;
+  border-radius: 12px;
+  row-gap: mix.rem(24px);
+  padding: mix.rem(24px);
+  width: 32rem;
+
+  .stepper-title {
+    font-size: mix.rem(18px);
   }
+}
 
-  .second-stepper {
-    top: calc(2rem + 42px);
-    left: calc(1.5rem + 30%);
-  }
+.first-stepper {
+  top: 2rem;
+  left: mix.rem(24px);
+}
 
-  .third-stepper {
-    top: calc(5rem + 42px);
-    left: calc(0.4rem + 30%);
-  }
+.second-stepper {
+  top: calc(2rem + 42px);
+  left: calc(1.5rem + 30%);
+}
 
-  @media (max-width: 1000px) {
-    .search-container {
-      margin: 3.4rem 2.5rem 0.4rem 2.5rem;
-    }
-
-    .resources {
-      padding: 2.5rem;
-    }
-  }
-
-  @media (max-width: 600px) {
-    .search-container {
-      margin: 2.5rem 1.1rem 2.5rem 1.1rem;
-    }
-
-    .resources {
-      padding: 1.1rem;
-    }
-  }
+.third-stepper {
+  top: calc(5rem + 42px);
+  left: calc(0.4rem + 30%);
 }

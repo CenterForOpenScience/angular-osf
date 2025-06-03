@@ -35,7 +35,8 @@ export type UserCountsResponse = JsonApiResponse<
           };
         };
       };
-    }
+    },
+    null
   >,
   null
 >;
