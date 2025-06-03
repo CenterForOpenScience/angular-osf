@@ -6,10 +6,17 @@
       "add": "Add",
       "cancel": "Cancel",
       "save": "Save",
-      "close": "Close"
+      "close": "Close",
+      "download": "Download",
+      "copy": "Copy",
+      "move": "Move",
+      "rename": "Rename"
     },
     "search": {
       "noResultsFound": "No results found."
+    },
+    "labels": {
+      "downloads": "Downloads"
     }
   },
   "navigation": {
@@ -551,7 +558,7 @@
         "lastUpdated": "Last Updated:",
         "description": "Description:",
         "openResources": "Open Resources"
-		}
+      }
     },
     "files": {
       "title": "Files",
@@ -576,29 +583,15 @@
         "createFolder": {
           "title": "Create folder",
           "folderName": "New folder name",
-          "folderNamePlaceholder": "Please enter a folder name",
-          "buttons": {
-            "cancel": "Cancel",
-            "save": "Save"
-          }
+          "folderNamePlaceholder": "Please enter a folder name"
         },
         "renameFile": {
           "title": "Rename file",
-          "renameLabel": "Please rename the file",
-          "buttons": {
-            "cancel": "Cancel",
-            "save": "Save"
-          }
-        }
+          "renameLabel": "Please rename the file"
+        },
+        "moveFile": "Cannot move to the same folder"
       },
       "emptyState": "This folder is empty",
-      "menu": {
-        "download": "Download",
-        "copy": "Copy",
-        "move": "Move",
-        "rename": "Rename",
-        "delete": "Delete"
-      },
       "detail": {
         "backToList": "Back to list of files",
         "fileMetadata": {
@@ -626,13 +619,6 @@
             "dateCreated": "Date created",
             "dateModified": "Date modified",
             "contributors": "Contributors"
-          }
-        },
-        "editDialog": {
-          "title": "Edit File Metadata",
-          "buttons": {
-            "cancel": "Cancel",
-            "save": "Save"
           }
         }
       }

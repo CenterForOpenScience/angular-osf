@@ -15,28 +15,39 @@ import { debounceTime, filter, finalize, forkJoin, skip } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import { HttpEventType } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, inject, signal, ViewChild } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { FormControl, FormsModule } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  ElementRef,
+  HostBinding,
+  inject,
+  signal,
+  ViewChild,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MoveFileDialogComponent } from '@osf/features/project/files/components';
-import { FileMenuItems, FilesSorting, OsfFile } from '@osf/features/project/files/models';
-import { ProjectFilesService } from '@osf/features/project/files/services/project-files.service';
+import { FileMenuItems, OsfFile } from '@osf/features/project/files/models';
+import { ProjectFilesService } from '@osf/features/project/files/services';
 import {
   CreateFolder,
   DeleteEntry,
   GetFiles,
   GetRootFolderFiles,
+  ProjectFilesSelectors,
   RenameEntry,
   SetCurrentFolder,
   SetMoveFileCurrentFolder,
   SetSearch,
   SetSort,
-} from '@osf/features/project/files/store/project-files.actions';
-import { ProjectFilesSelectors } from '@osf/features/project/files/store/project-files.selectors';
+} from '@osf/features/project/files/store';
 import { LoadingSpinnerComponent, SearchInputComponent, SubHeaderComponent } from '@shared/components';
-import { formatFileSize } from '@shared/utils/format-file-size.helper';
+import { FileSizePipe } from '@shared/pipes';
+
+import { FILE_MENU_ITEMS, FILE_SORT_OPTIONS } from './constants';
 
 @Component({
   selector: 'osf-project-files',
@@ -52,9 +63,11 @@ import { formatFileSize } from '@shared/utils/format-file-size.helper';
     Dialog,
     InputText,
     FormsModule,
+    ReactiveFormsModule,
     Menu,
     TranslatePipe,
     RouterLink,
+    FileSizePipe,
   ],
   templateUrl: './project-files.component.html',
   styleUrl: './project-files.component.scss',
@@ -69,6 +82,7 @@ export class ProjectFilesComponent {
   readonly projectFilesService = inject(ProjectFilesService);
   readonly router = inject(Router);
   readonly activeRoute = inject(ActivatedRoute);
+  destroyRef = inject(DestroyRef);
 
   protected readonly files = select(ProjectFilesSelectors.getFiles);
   protected readonly currentFolder = select(ProjectFilesSelectors.getCurrentFolder);
@@ -76,10 +90,19 @@ export class ProjectFilesComponent {
   protected readonly projectId = signal<string>('');
   protected readonly progress = signal(0);
   protected readonly fileName = signal('');
-  protected readonly newFolderName = signal('');
   protected readonly isFilesUpdating = signal<boolean>(false);
-  protected readonly renamedEntry = signal('');
   protected readonly searchControl = new FormControl<string>('');
+  protected readonly sortControl = new FormControl(FILE_SORT_OPTIONS[0].value);
+  protected readonly folderForm = new FormGroup<{
+    name: FormControl<string>;
+  }>({
+    name: new FormControl('', { nonNullable: true }),
+  });
+  protected readonly renameForm = new FormGroup<{
+    name: FormControl<string>;
+  }>({
+    name: new FormControl('', { nonNullable: true }),
+  });
 
   dialogRef: DynamicDialogRef | null = null;
   readonly #dialogService = inject(DialogService);
@@ -88,45 +111,17 @@ export class ProjectFilesComponent {
   isFolderCreating = false;
   selectedFileIndex = -1;
 
-  // dialogs
   createFolderVisible = false;
   renameFileVisible = false;
 
-  items = [
-    { label: FileMenuItems.Download },
-    { label: FileMenuItems.Copy },
-    { label: FileMenuItems.Move },
-    { label: FileMenuItems.Delete },
-    { label: FileMenuItems.Rename },
-  ];
+  items = FILE_MENU_ITEMS;
+  sortOptions = FILE_SORT_OPTIONS;
 
-  sortOptions = [
-    {
-      value: FilesSorting.NameAZ,
-      label: 'Name: A-Z',
-    },
-    {
-      value: FilesSorting.NameZA,
-      label: 'Name: Z-A',
-    },
-    {
-      value: FilesSorting.LastModifiedOldest,
-      label: 'Last modified: oldest to newest',
-    },
-    {
-      value: FilesSorting.LastModifiedNewest,
-      label: 'Last modified: newest to oldest',
-    },
-  ];
-
-  #defaultSortValue = this.sortOptions[0].value;
-  protected readonly sortValue = signal(this.#defaultSortValue);
   readonly isBatching = signal(false);
 
   protected readonly FileMenuItems = FileMenuItems;
 
   constructor() {
-    // get root folder files
     this.activeRoute.parent?.params.subscribe((params) => {
       if (params['id']) {
         this.projectId.set(params['id']);
@@ -134,25 +129,26 @@ export class ProjectFilesComponent {
       }
     });
 
-    // put search value in store and update resources, filters
     this.searchControl.valueChanges
       .pipe(
-        skip(1), //skip default value from the store
+        skip(1),
+        takeUntilDestroyed(this.destroyRef),
         debounceTime(500),
-        filter(() => !this.isBatching()) // only run if not in batch mode
+        filter(() => !this.isBatching())
       )
       .subscribe((searchText) => {
         this.store.dispatch(new SetSearch(searchText ?? ''));
         this.updateFilesList();
       });
 
-    toObservable(this.sortValue)
+    this.sortControl.valueChanges
       .pipe(
-        skip(1), //skip default value from the store
-        filter(() => !this.isBatching()) // only run if not in batch mode
+        skip(1),
+        takeUntilDestroyed(this.destroyRef),
+        filter(() => !this.isBatching())
       )
       .subscribe((sort) => {
-        this.store.dispatch(new SetSort(sort));
+        this.store.dispatch(new SetSort(sort ?? ''));
         this.updateFilesList();
       });
   }
@@ -167,6 +163,7 @@ export class ProjectFilesComponent {
     this.projectFilesService
       .uploadFile(file, this.projectId(), this.currentFolder())
       .pipe(
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.fileIsUploading = false;
           this.fileName.set('');
@@ -196,13 +193,15 @@ export class ProjectFilesComponent {
     forkJoin([
       this.store.dispatch(new SetCurrentFolder(file)),
       this.store.dispatch(new SetSearch('')),
-      this.store.dispatch(new SetSort(this.#defaultSortValue)),
-    ]).subscribe(() => {
-      this.searchControl.setValue('');
-      this.sortValue.set(this.#defaultSortValue);
-      this.isBatching.set(false);
-      this.updateFilesList();
-    });
+      this.store.dispatch(new SetSort(FILE_SORT_OPTIONS[0].value)),
+    ])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.searchControl.setValue('');
+        this.sortControl.setValue(FILE_SORT_OPTIONS[0].value);
+        this.isBatching.set(false);
+        this.updateFilesList();
+      });
   }
 
   openParentFolder() {
@@ -217,51 +216,57 @@ export class ProjectFilesComponent {
       forkJoin([
         this.store.dispatch(new SetCurrentFolder(folder)),
         this.store.dispatch(new SetSearch('')),
-        this.store.dispatch(new SetSort(this.#defaultSortValue)),
-      ]).subscribe(() => {
-        this.searchControl.setValue('');
-        this.sortValue.set(this.#defaultSortValue);
-        this.isBatching.set(false);
-        this.updateFilesList();
-      });
+        this.store.dispatch(new SetSort(FILE_SORT_OPTIONS[0].value)),
+      ])
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          this.searchControl.setValue('');
+          this.sortControl.setValue(FILE_SORT_OPTIONS[0].value);
+          this.isBatching.set(false);
+          this.updateFilesList();
+        });
     });
   }
 
   createFolder(): void {
     this.isFolderCreating = true;
-    if (this.newFolderName()) {
+    const folderName = this.folderForm.getRawValue().name;
+    if (folderName.trim()) {
       this.store
-        .dispatch(
-          new CreateFolder(this.projectId(), this.newFolderName(), this.currentFolder()?.relationships?.parentFolderId)
-        )
+        .dispatch(new CreateFolder(this.projectId(), folderName, this.currentFolder()?.relationships?.parentFolderId))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           this.createFolderVisible = false;
           this.isFolderCreating = false;
-          this.newFolderName.set('');
+          this.folderForm.reset();
         });
     }
   }
 
   deleteEntry(link: string): void {
     this.isFilesUpdating.set(true);
-    this.store.dispatch(new DeleteEntry(this.projectId(), link)).subscribe(() => {
-      this.isFilesUpdating.set(false);
-    });
+    this.store
+      .dispatch(new DeleteEntry(this.projectId(), link))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.isFilesUpdating.set(false);
+      });
   }
 
   renameEntry(): void {
     this.renameFileVisible = false;
     this.isFilesUpdating.set(true);
     const link = this.files().data[this.selectedFileIndex].links.upload;
-    if (this.renamedEntry()) {
+    const newName = this.renameForm.getRawValue().name;
+    if (newName.trim()) {
       this.store
-        .dispatch(new RenameEntry(this.projectId(), link, this.renamedEntry()))
+        .dispatch(new RenameEntry(this.projectId(), link, newName))
         .pipe(
+          takeUntilDestroyed(this.destroyRef),
           finalize(() => {
             this.isFilesUpdating.set(false);
-
             this.selectedFileIndex = -1;
-            this.renamedEntry.set('');
+            this.renameForm.reset();
           })
         )
         .subscribe();
@@ -301,33 +306,37 @@ export class ProjectFilesComponent {
     document.body.appendChild(iframe);
   }
 
-  protected readonly formatFileSize = formatFileSize;
-
   moveFile(file: OsfFile, action: string): void {
-    this.store.dispatch(new SetMoveFileCurrentFolder(this.currentFolder())).subscribe(() => {
-      const header = action === 'move' ? 'Move file' : 'Copy file';
-      this.dialogRef = this.#dialogService.open(MoveFileDialogComponent, {
-        width: '552px',
-        focusOnShow: false,
-        header: header,
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
-        data: {
-          file: file,
-          projectId: this.projectId(),
-          action: action,
-        },
+    this.store
+      .dispatch(new SetMoveFileCurrentFolder(this.currentFolder()))
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        const header = action === 'move' ? 'Move file' : 'Copy file';
+        this.dialogRef = this.#dialogService.open(MoveFileDialogComponent, {
+          width: '552px',
+          focusOnShow: false,
+          header: header,
+          closeOnEscape: true,
+          modal: true,
+          closable: true,
+          data: {
+            file: file,
+            projectId: this.projectId(),
+            action: action,
+          },
+        });
       });
-    });
   }
 
   updateFilesList(): void {
     const currentFolder = this.currentFolder();
     if (currentFolder?.relationships.filesLink) {
-      this.store.dispatch(new GetFiles(currentFolder?.relationships.filesLink)).subscribe(() => {
-        this.isFilesUpdating.set(false);
-      });
+      this.store
+        .dispatch(new GetFiles(currentFolder?.relationships.filesLink))
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          this.isFilesUpdating.set(false);
+        });
     } else {
       this.store.dispatch(new GetRootFolderFiles(this.projectId()));
     }

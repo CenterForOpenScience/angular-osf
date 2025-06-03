@@ -1,8 +1,10 @@
-import { OsfFile } from '@osf/features/project/files/models';
-import { FileProvider } from '@osf/features/project/files/models/data/file-provider.const';
-import { OsfFileCustomMetadata } from '@osf/features/project/files/models/osf-models/file-custom-metafata.model';
-import { OsfFileProjectContributor } from '@osf/features/project/files/models/osf-models/file-project-contributor.model';
-import { OsfProjectMetadata } from '@osf/features/project/files/models/osf-models/project-custom-metadata.model';
+import {
+  FileProvider,
+  OsfFile,
+  OsfFileCustomMetadata,
+  OsfFileProjectContributor,
+  OsfProjectMetadata,
+} from '@osf/features/project/files/models';
 import { AsyncStateModel } from '@shared/models/store';
 
 export interface ProjectFilesStateModel {

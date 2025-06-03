@@ -1,5 +1,4 @@
-import { OsfFile } from '@osf/features/project/files/models';
-import { PatchFileMetadata } from '@osf/features/project/files/models/requests/patch-file-metadata.mode';
+import { OsfFile, PatchFileMetadata } from '@osf/features/project/files/models';
 
 export class GetRootFolderFiles {
   static readonly type = '[Project Files] Get Root Folder Files';

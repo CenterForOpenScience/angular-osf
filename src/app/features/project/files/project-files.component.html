@@ -25,8 +25,7 @@
         <div class="sorting-container no-border-dropdown select-font-normal">
           <p-select
             [options]="sortOptions"
-            [ngModel]="sortValue()"
-            (ngModelChange)="sortValue.set($event || '')"
+            [formControl]="sortControl"
             [placeholder]="'project.files.sort.placeholder' | translate"
             optionLabel="label"
             optionValue="value"
@@ -72,7 +71,7 @@
         </p-button>
       </div>
 
-      <input #fileInput type="file" style="display: none" (change)="onFileSelected($event)" />
+      <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
     </div>
   </div>
 
@@ -81,7 +80,7 @@
       [header]="'project.files.dialogs.uploadFile.title' | translate"
       [modal]="true"
       [(visible)]="fileIsUploading"
-      [style]="{ width: '30rem' }"
+      class="upload-dialog"
     >
       <div class="flex flex-column align-items-center justify-content-center gap-3 w-full">
         <span class="p-text-secondary filename">{{ fileName() }}</span>
@@ -96,29 +95,31 @@
       [header]="'project.files.dialogs.createFolder.title' | translate"
       [modal]="true"
       [(visible)]="createFolderVisible"
-      [style]="{ width: '45rem' }"
+      class="action-dialog"
     >
       <div class="flex flex-column items-center mb-4">
         <label for="folderName" class="font-semibold w-24">{{
           'project.files.dialogs.createFolder.folderName' | translate
         }}</label>
-        <input
-          pInputText
-          [(ngModel)]="newFolderName"
-          id="folderName"
-          class="flex-auto"
-          autocomplete="off"
-          [placeholder]="'project.files.dialogs.createFolder.folderNamePlaceholder' | translate"
-        />
+        <div [formGroup]="folderForm">
+          <input
+            pInputText
+            formControlName="name"
+            id="folderName"
+            class="flex-auto"
+            autocomplete="off"
+            [placeholder]="'project.files.dialogs.createFolder.folderNamePlaceholder' | translate"
+          />
+        </div>
       </div>
       <div class="flex justify-content-end gap-2">
         @if (!isFolderCreating) {
           <p-button
-            [label]="'project.files.dialogs.createFolder.buttons.cancel' | translate"
+            [label]="'common.buttons.cancel' | translate"
             severity="secondary"
             (click)="createFolderVisible = false"
           />
-          <p-button [label]="'project.files.dialogs.createFolder.buttons.save' | translate" (click)="createFolder()" />
+          <p-button [label]="'common.buttons.save' | translate" (click)="createFolder()" />
         } @else {
           <div class="spinner-container">
             <osf-loading-spinner></osf-loading-spinner>
@@ -131,21 +132,23 @@
       [header]="'project.files.dialogs.renameFile.title' | translate"
       [modal]="true"
       [(visible)]="renameFileVisible"
-      [style]="{ width: '45rem' }"
+      class="action-dialog"
     >
       <div class="flex flex-column items-center mb-4">
         <label for="folderName" class="font-semibold w-24">{{
           'project.files.dialogs.renameFile.renameLabel' | translate
         }}</label>
-        <input pInputText [(ngModel)]="renamedEntry" id="folderName" class="flex-auto" autocomplete="off" />
+        <div [formGroup]="renameForm">
+          <input pInputText formControlName="name" id="folderName" class="flex-auto" autocomplete="off" />
+        </div>
       </div>
       <div class="flex justify-content-end gap-2">
         <p-button
-          [label]="'project.files.dialogs.renameFile.buttons.cancel' | translate"
+          [label]="'common.buttons.cancel' | translate"
           severity="secondary"
           (click)="createFolderVisible = false"
         />
-        <p-button [label]="'project.files.dialogs.renameFile.buttons.save' | translate" (click)="renameEntry()" />
+        <p-button [label]="'common.buttons.save' | translate" (click)="renameEntry()" />
       </div>
     </p-dialog>
   </div>
@@ -179,26 +182,33 @@
       }
       @for (file of files().data; track $index) {
         <div class="files-table-row">
-          <div class="flex gap-2" [class.pl-6]="currentFolder()?.relationships?.parentFolderLink">
+          <div class="flex gap-2 table-cell" [class.pl-6]="currentFolder()?.relationships?.parentFolderLink">
             @if (file.kind !== 'folder') {
-              <div class="flex gap-2">
+              <div class="flex gap-2 min-w-0">
                 <i style="color: #337ab7" class="osf-icon-doc icon-link"></i>
-                <a class="flex" [routerLink]="[file.guid]">
-                  <div class="filename-link">{{ file?.name ?? '' }}</div>
+                <a class="flex min-w-0" [routerLink]="[file.guid]">
+                  <div class="filename-link min-w-0">{{ file?.name ?? '' }}</div>
                 </a>
               </div>
             } @else {
               <i class="osf-icon-folder"></i>
-              <div tabindex="0" (click)="openFolder(file)" (keydown.enter)="openFolder(file)" class="filename-link">
+              <div
+                tabindex="0"
+                (click)="openFolder(file)"
+                (keydown.enter)="openFolder(file)"
+                class="table-cell filename-link min-w-0"
+              >
                 {{ file?.name ?? '' }}
               </div>
             }
           </div>
 
-          <div class="files-table-cell">{{ file.kind === 'file' ? file.extra.downloads + ' Downloads' : '' }}</div>
+          <div class="files-table-cell">
+            {{ file.kind === 'file' ? file.extra.downloads + ' ' + ('common.labels.downloads' | translate) : '' }}
+          </div>
 
           <div class="files-table-cell">
-            {{ file.size ? formatFileSize(file.size) : '' }}
+            {{ file.size | fileSize }}
           </div>
           <div class="files-table-cell">
             {{ file.dateModified | date: 'MMM d, y hh:mm a' }}
@@ -217,7 +227,7 @@
                         (click)="downloadFile(file.links.download)"
                         (keydown.enter)="downloadFile(file.links.download)"
                       >
-                        {{ 'project.files.menu.download' | translate }}
+                        {{ 'common.buttons.download' | translate }}
                       </a>
                     } @else {
                       <a
@@ -227,7 +237,7 @@
                         (click)="downloadFolder(file.id, false)"
                         (keydown.enter)="downloadFolder(file.id, false)"
                       >
-                        {{ 'project.files.menu.download' | translate }}
+                        {{ 'common.buttons.download' | translate }}
                       </a>
                     }
                   }
@@ -239,7 +249,7 @@
                       (click)="moveFile(file, 'copy')"
                       (keydown.enter)="moveFile(file, 'copy')"
                     >
-                      {{ 'project.files.menu.copy' | translate }}
+                      {{ 'common.buttons.copy' | translate }}
                     </a>
                   }
                   @case (FileMenuItems.Move) {
@@ -250,7 +260,7 @@
                       (click)="moveFile(file, 'move')"
                       (keydown.enter)="moveFile(file, 'move')"
                     >
-                      {{ 'project.files.menu.move' | translate }}
+                      {{ 'common.buttons.move' | translate }}
                     </a>
                   }
                   @case (FileMenuItems.Rename) {
@@ -258,10 +268,14 @@
                       role="button"
                       tabindex="0"
                       class="p-menu-item-link"
-                      (click)="renameFileVisible = true; selectedFileIndex = $index; renamedEntry.set(file.name)"
+                      (click)="
+                        renameFileVisible = true;
+                        selectedFileIndex = $index;
+                        renameForm.get('name')!.setValue(file.name)
+                      "
                       (keydown.enter)="renameFileVisible = true; selectedFileIndex = $index"
                     >
-                      {{ 'project.files.menu.rename' | translate }}
+                      {{ 'common.buttons.rename' | translate }}
                     </a>
                   }
                   @case (FileMenuItems.Delete) {
@@ -272,7 +286,7 @@
                       (click)="deleteEntry(file.links.delete)"
                       (keydown.enter)="deleteEntry(file.links.delete)"
                     >
-                      {{ 'project.files.menu.delete' | translate }}
+                      {{ 'common.buttons.delete' | translate }}
                     </a>
                   }
                 }

@@ -24,10 +24,11 @@ import {
   OsfFileProjectContributor,
   PatchFileMetadata,
 } from '@osf/features/project/files/models';
-import { ProjectFilesSelectors } from '@osf/features/project/files/store/project-files.selectors';
+import { ProjectFilesSelectors } from '@osf/features/project/files/store';
 
-import { environment } from '../../../../../environments/environment';
 import { MapFile, MapFileCustomMetadata, MapFiles } from '../mappers';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -87,8 +88,6 @@ export class ProjectFilesService {
       kind: 'folder',
       name: folderName,
     };
-
-    console.log();
 
     const link = `${environment.fileApiUrl}/resources/${projectId}/providers/${this.provider()}/${parentFolderId ? parentFolderId + '/' : ''}`;
 

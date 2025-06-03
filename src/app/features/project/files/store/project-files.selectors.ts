@@ -1,7 +1,7 @@
 import { Selector } from '@ngxs/store';
 
 import { OsfFile } from '@osf/features/project/files/models';
-import { OsfFileCustomMetadata } from '@osf/features/project/files/models/osf-models/file-custom-metafata.model';
+import { OsfFileCustomMetadata } from '@osf/features/project/files/models/osf-models/file-custom-metadata.model';
 import { OsfFileProjectContributor } from '@osf/features/project/files/models/osf-models/file-project-contributor.model';
 import { OsfProjectMetadata } from '@osf/features/project/files/models/osf-models/project-custom-metadata.model';
 import { AsyncStateModel } from '@shared/models';

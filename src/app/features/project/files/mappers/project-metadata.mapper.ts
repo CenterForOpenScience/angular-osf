@@ -1,7 +1,8 @@
-import { GetProjectCustomMetadataResponse } from '@osf/features/project/files/models/responses/get-project-custom-metadata-response.model';
-import { GetProjectShortInfoResponse } from '@osf/features/project/files/models/responses/get-project-short-info-response.model';
-
-import { OsfProjectMetadata } from '../models/osf-models/project-custom-metadata.model';
+import {
+  GetProjectCustomMetadataResponse,
+  GetProjectShortInfoResponse,
+  OsfProjectMetadata,
+} from '@osf/features/project/files/models';
 
 export function MapProjectMetadata(
   shortInfo: GetProjectShortInfoResponse,

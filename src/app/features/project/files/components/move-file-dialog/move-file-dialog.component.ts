@@ -1,30 +1,33 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
+
+import { TranslateModule } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Tooltip } from 'primeng/tooltip';
 
-import { finalize } from 'rxjs';
+import { finalize, take } from 'rxjs';
 
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { OsfFile } from '@osf/features/project/files/models';
-import { ProjectFilesService } from '@osf/features/project/files/services/project-files.service';
+import { ProjectFilesService } from '@osf/features/project/files/services';
 import {
   GetFiles,
   GetMoveFileFiles,
   GetRootFolderFiles,
+  ProjectFilesSelectors,
   SetCurrentFolder,
   SetFilesIsLoading,
   SetMoveFileCurrentFolder,
-} from '@osf/features/project/files/store/project-files.actions';
-import { ProjectFilesSelectors } from '@osf/features/project/files/store/project-files.selectors';
+} from '@osf/features/project/files/store';
 import { LoadingSpinnerComponent } from '@shared/components';
 
 @Component({
   selector: 'osf-move-file-dialog',
-  imports: [Button, LoadingSpinnerComponent, NgOptimizedImage, Tooltip],
+  imports: [Button, LoadingSpinnerComponent, NgOptimizedImage, Tooltip, TranslateModule],
   templateUrl: './move-file-dialog.component.html',
   styleUrl: './move-file-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +37,7 @@ export class MoveFileDialogComponent {
   dialogRef = inject(DynamicDialogRef);
   projectFilesService = inject(ProjectFilesService);
   config = inject(DynamicDialogConfig);
+  destroyRef = inject(DestroyRef);
 
   protected readonly files = select(ProjectFilesSelectors.getMoveFileFiles);
   protected readonly currentFolder = select(ProjectFilesSelectors.getMoveFileCurrentFolder);
@@ -42,18 +46,27 @@ export class MoveFileDialogComponent {
     return this.currentFolder()?.id === this.config.data.file.relationships.parentFolderId;
   });
 
+  protected readonly dispatch = createDispatchMap({
+    getMoveFileFiles: GetMoveFileFiles,
+    setMoveFileCurrentFolder: SetMoveFileCurrentFolder,
+    setFilesIsLoading: SetFilesIsLoading,
+    setCurrentFolder: SetCurrentFolder,
+    getFiles: GetFiles,
+    getRootFolderFiles: GetRootFolderFiles,
+  });
+
   constructor() {
     const filesLink = this.currentFolder()?.relationships.filesLink;
     if (filesLink) {
-      this.store.dispatch(new GetMoveFileFiles(filesLink));
+      this.dispatch.getMoveFileFiles(filesLink);
     }
   }
 
   openFolder(file: OsfFile) {
     if (file.kind !== 'folder') return;
 
-    this.store.dispatch(new GetMoveFileFiles(file.relationships.filesLink));
-    this.store.dispatch(new SetMoveFileCurrentFolder(file));
+    this.dispatch.getMoveFileFiles(file.relationships.filesLink);
+    this.dispatch.setMoveFileCurrentFolder(file);
   }
 
   openParentFolder() {
@@ -65,19 +78,20 @@ export class MoveFileDialogComponent {
     this.projectFilesService
       .getFolder(currentFolder.relationships.parentFolderLink)
       .pipe(
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.isFilesUpdating.set(false);
         })
       )
       .subscribe((folder) => {
-        this.store.dispatch(new SetMoveFileCurrentFolder(folder));
-        this.store.dispatch(new GetMoveFileFiles(folder.relationships.filesLink));
+        this.dispatch.setMoveFileCurrentFolder(folder);
+        this.dispatch.getMoveFileFiles(folder.relationships.filesLink);
       });
   }
 
   moveFile(): void {
     let path = this.currentFolder()?.path;
-    console.log(this.currentFolder());
 
     if (!path) {
       throw new Error('Path is not specified!.');
@@ -87,23 +101,24 @@ export class MoveFileDialogComponent {
       path = '/';
     }
 
-    this.store.dispatch(new SetFilesIsLoading(true));
+    this.dispatch.setFilesIsLoading(true);
     this.projectFilesService
       .moveFile(this.config.data.file.links.move, path, this.config.data.projectId, this.config.data.action)
       .pipe(
+        take(1),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => {
-          this.store.dispatch(new SetCurrentFolder(this.currentFolder()));
-          this.store.dispatch(new SetMoveFileCurrentFolder(undefined));
+          this.dispatch.setCurrentFolder(this.currentFolder());
+          this.dispatch.setMoveFileCurrentFolder(undefined);
         })
       )
       .subscribe((file) => {
         if (file.id) {
           const filesLink = this.currentFolder()?.relationships.filesLink;
-          console.log(this.currentFolder());
           if (filesLink) {
-            this.store.dispatch(new GetFiles(filesLink));
+            this.dispatch.getFiles(filesLink);
           } else {
-            this.store.dispatch(new GetRootFolderFiles(this.config.data.projectId));
+            this.dispatch.getRootFolderFiles(this.config.data.projectId);
           }
         }
       });

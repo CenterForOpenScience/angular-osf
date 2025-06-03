@@ -1,6 +1,5 @@
 import { ApiData } from '@osf/core/models';
-import { OsfFileCustomMetadata } from '@osf/features/project/files/models/osf-models/file-custom-metafata.model';
-import { FileCustomMetadata } from '@osf/features/project/files/models/responses/get-file-metadata-reponse.model';
+import { FileCustomMetadata, OsfFileCustomMetadata } from '@osf/features/project/files/models';
 
 export function MapFileCustomMetadata(data: ApiData<FileCustomMetadata, null, null, null>): OsfFileCustomMetadata {
   return {

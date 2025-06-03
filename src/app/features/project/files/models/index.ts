@@ -1,5 +1,5 @@
 // OSF Models
-export * from './osf-models/file-custom-metafata.model';
+export * from './osf-models/file-custom-metadata.model';
 export * from './osf-models/file-project-contributor.model';
 export * from './osf-models/file-system-entry.model';
 export * from './osf-models/file-target.model';
@@ -16,7 +16,7 @@ export * from './responses/get-project-custom-metadata-response.model';
 export * from './responses/get-project-short-info-response.model';
 
 // Request Models
-export * from './requests/patch-file-metadata.mode';
+export * from './requests/patch-file-metadata.model';
 
 // Constants
 export * from './data/file-menu-items.const';
