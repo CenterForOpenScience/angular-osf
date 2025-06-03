@@ -1,4 +1,4 @@
-import { AddonRequest } from '../models';
+import { AddonRequest } from '@shared/models';
 
 export class GetStorageAddons {
   static readonly type = '[Addons] Get Storage Addons';

@@ -1,3 +1,4 @@
+export * from './addons';
 export * from './charts';
 export * from './create-component-form.model';
 export * from './create-project-form.model';

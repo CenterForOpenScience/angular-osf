@@ -4,11 +4,10 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
-import { UserSelectors } from '@osf/core/store/user';
-
-import { AddonMapper } from '../mappers';
+import { JsonApiResponse } from '@core/models';
+import { JsonApiService } from '@core/services';
+import { UserSelectors } from '@core/store/user';
+import { AddonMapper } from '@osf/features/settings/addons/mappers';
 import {
   Addon,
   AddonGetResponse,
@@ -18,9 +17,9 @@ import {
   AuthorizedAddonGetResponse,
   IncludedAddonData,
   UserReference,
-} from '../models';
+} from '@shared/models';
 
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

@@ -11,11 +11,11 @@ import { RegistrationsState } from '@osf/features/project/registrations/store';
 import { SettingsState } from '@osf/features/project/settings/store';
 import { WikiState } from '@osf/features/project/wiki/store/wiki.state';
 import { AccountSettingsState } from '@osf/features/settings/account-settings/store/account-settings.state';
-import { AddonsState } from '@osf/features/settings/addons/store';
 import { DeveloperAppsState } from '@osf/features/settings/developer-apps/store';
 import { NotificationSubscriptionState } from '@osf/features/settings/notifications/store';
 import { ProfileSettingsState } from '@osf/features/settings/profile-settings/store/profile-settings.state';
 import { TokensState } from '@osf/features/settings/tokens/store';
+import { AddonsState } from '@shared/stores/addons';
 
 export const STATES = [
   AuthState,

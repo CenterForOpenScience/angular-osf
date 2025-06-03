@@ -4,8 +4,8 @@ import { Observable, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { AddonResponse } from '../models';
-import { AddonsService } from '../services';
+import { AddonResponse } from '@shared/models';
+import { AddonsService } from '@shared/services';
 
 import {
   CreateAuthorizedAddon,

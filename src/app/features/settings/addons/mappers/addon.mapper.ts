@@ -1,4 +1,10 @@
-import { Addon, AddonGetResponse, AuthorizedAddon, AuthorizedAddonGetResponse, IncludedAddonData } from '../models';
+import {
+  Addon,
+  AddonGetResponse,
+  AuthorizedAddon,
+  AuthorizedAddonGetResponse,
+  IncludedAddonData,
+} from '@shared/models';
 
 export class AddonMapper {
   static fromResponse(response: AddonGetResponse): Addon {

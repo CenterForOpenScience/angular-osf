@@ -15,7 +15,6 @@ import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components
 import { SelectOption } from '@osf/shared/models';
 import { IS_XSMALL } from '@osf/shared/utils';
 import { AddonCardListComponent } from '@shared/components/addons';
-
 import {
   AddonsSelectors,
   GetAddonsUserReference,
@@ -23,7 +22,7 @@ import {
   GetAuthorizedStorageAddons,
   GetCitationAddons,
   GetStorageAddons,
-} from './store';
+} from '@shared/stores/addons';
 
 @Component({
   selector: 'osf-addons',

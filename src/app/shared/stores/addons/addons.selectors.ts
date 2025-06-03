@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { Addon } from '../models';
+import { Addon } from '@shared/models';
 
 import { AddonsStateModel } from './addons.models';
 import { AddonsState } from './addons.state';

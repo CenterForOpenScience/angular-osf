@@ -1,4 +1,4 @@
-import { Addon, AddonResponse, AuthorizedAddon, UserReference } from '../models';
+import { Addon, AddonResponse, AuthorizedAddon, UserReference } from '@shared/models';
 
 export interface AddonsStateModel {
   storageAddons: Addon[];

@@ -10,8 +10,8 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
-import { Addon, AuthorizedAddon } from '@osf/features/settings/addons/models';
-import { DeleteAuthorizedAddon } from '@osf/features/settings/addons/store';
+import { Addon, AuthorizedAddon } from '@shared/models';
+import { DeleteAuthorizedAddon } from '@shared/stores/addons';
 import { IS_XSMALL } from '@shared/utils';
 
 @Component({

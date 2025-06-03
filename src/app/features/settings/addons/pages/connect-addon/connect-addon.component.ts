@@ -15,11 +15,11 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router, RouterLink } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
+import { Addon, AddonForm, AddonFormControls, AddonRequest, AddonTerm, AuthorizedAddon } from '@shared/models';
+import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
 
 import { ADDON_TERMS as addonTerms } from '../../constants';
 import { CredentialsFormat } from '../../enums';
-import { Addon, AddonForm, AddonFormControls, AddonRequest, AddonTerm, AuthorizedAddon } from '../../models';
-import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '../../store';
 
 @Component({
   selector: 'osf-connect-addon',
