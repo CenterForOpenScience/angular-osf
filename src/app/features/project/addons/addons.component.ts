@@ -7,7 +7,7 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
 import {
@@ -38,6 +38,7 @@ import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS, AddonCategoryValue, AddonTab
     Tabs,
     TranslatePipe,
     FormsModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './addons.component.html',
   styleUrl: './addons.component.scss',
@@ -48,7 +49,7 @@ export class AddonsComponent {
   #store = inject(Store);
   protected readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly searchValue = signal('');
+  protected readonly searchValue = new FormControl('');
   protected readonly selectedCategory = signal<string>(AddonCategoryValue.EXTERNAL_STORAGE_SERVICES);
   protected readonly selectedTab = signal<number>(this.defaultTabValue);
   protected readonly currentUser = select(UserSelectors.getCurrentUser);
@@ -60,7 +61,7 @@ export class AddonsComponent {
   protected readonly allAuthorizedAddons = computed(() => {
     const authorizedAddons = [...this.authorizedStorageAddons(), ...this.authorizedCitationAddons()];
 
-    const searchValue = this.searchValue().toLowerCase();
+    const searchValue = this.searchValue.value?.toLowerCase() ?? '';
     return authorizedAddons.filter((card) => card.displayName.includes(searchValue));
   });
 
@@ -79,7 +80,7 @@ export class AddonsComponent {
   );
 
   protected readonly filteredAddonCards = computed(() => {
-    const searchValue = this.searchValue().toLowerCase();
+    const searchValue = this.searchValue.value?.toLowerCase() ?? '';
     return this.currentAddonsState().filter((card) => card.externalServiceName.includes(searchValue));
   });
 
