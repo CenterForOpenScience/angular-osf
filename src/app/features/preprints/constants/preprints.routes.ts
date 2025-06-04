@@ -19,6 +19,13 @@ export const preprintsRoutes: Routes = [
             (c) => c.PreprintsLandingComponent
           ),
       },
+      {
+        path: 'overview/:providerId',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/preprint-provider-overview/preprint-provider-overview.component').then(
+            (c) => c.PreprintProviderOverviewComponent
+          ),
+      },
     ],
   },
 ];

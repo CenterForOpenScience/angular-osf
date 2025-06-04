@@ -18,6 +18,7 @@ export class PreprintsMapper {
       domain: response.attributes.domain,
       footerLinksHtml: response.attributes.footer_links,
       preprintWord: response.attributes.preprint_word,
+      allowSubmissions: response.attributes.allow_submissions,
       brand: {
         id: brandRaw.id,
         name: brandRaw.attributes.name,

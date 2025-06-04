@@ -20,6 +20,7 @@ export interface PreprintProviderDetails {
   domain: string;
   footerLinksHtml: string;
   preprintWord: string;
+  allowSubmissions: boolean;
   brand: Brand;
 }
 
@@ -51,6 +52,7 @@ export interface PreprintProviderDetailsGetResponse {
     assets: {
       wide_white: string;
     };
+    allow_submissions: boolean;
   };
   embeds?: {
     brand: {

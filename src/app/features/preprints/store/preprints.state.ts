@@ -88,7 +88,7 @@ export class PreprintsState {
         ctx.setState(
           patch({
             highlightedSubjectsForProvider: patch({
-              data: [...ctx.getState().highlightedSubjectsForProvider.data, ...subjects],
+              data: subjects,
               isLoading: false,
             }),
           })

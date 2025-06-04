@@ -1228,7 +1228,7 @@
   },
   "preprints": {
     "title": "Preprints",
-    "addPreprint": "Add a Preprint",
+    "addPreprint": "Add a {{preprintWord}}",
     "poweredBy": "Powered by OSF Preprints",
     "searchPlaceholder": "Search Preprints",
     "showExample": "Show an example",

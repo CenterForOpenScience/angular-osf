@@ -1,0 +1,8 @@
+<osf-preprint-provider-hero
+  [preprintProvider]="preprintProvider()"
+  [isPreprintProviderLoading]="isPreprintProviderLoading()"
+/>
+
+<osf-browse-by-subjects [subjects]="highlightedSubjectsByProviderId()" [isLoading]="areSubjectsLoading()" />
+
+<osf-advisory-board [htmlContent]="preprintProvider()?.advisoryBoardHtml" [brand]="preprintProvider()?.brand" />

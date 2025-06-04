@@ -1,0 +1,44 @@
+@use "assets/styles/mixins" as mix;
+
+.preprints-hero-container {
+  background-color: var(--preprints-branding-secondary-color);
+
+  background-image: var(--preprints-branding-hero-background-image-url);
+
+  color: var(--preprints-branding-primary-color);
+
+  .preprint-provider-name {
+    color: var(--preprints-branding-primary-color);
+  }
+
+  .provider-description {
+    line-height: mix.rem(24px);
+  }
+
+  a {
+    color: var(--preprints-branding-primary-color);
+  }
+
+  .preprints-branding-button {
+    .p-button {
+      color: var(--preprints-branding-secondary-color);
+      background-color: var(--preprints-branding-primary-color);
+    }
+  }
+}
+
+.advisory-board-section {
+  h2 {
+    font-size: mix.rem(24px);
+    margin-bottom: mix.rem(10px);
+  }
+
+  ul {
+    margin-left: mix.rem(24px);
+    line-height: mix.rem(24px);
+
+    li {
+      list-style: disc;
+    }
+  }
+}

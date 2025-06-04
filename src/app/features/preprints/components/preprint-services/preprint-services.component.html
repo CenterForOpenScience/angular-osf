@@ -9,6 +9,7 @@
       <!-- [Rni] TODO: add link to preprint provider page -->
       <a
         class="preprint-provider-grid-item"
+        [routerLink]="[preprintProvider.id]"
         [style.background-image]="'url(' + preprintProvider.whiteWideImageUrl + ')'"
         [title]="preprintProvider.name"
       ></a>

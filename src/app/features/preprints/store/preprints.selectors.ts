@@ -20,9 +20,8 @@ export class PreprintsSelectors {
   }
 
   @Selector([PreprintsState])
-  static getHighlightedSubjectsForProvider(providerId: string) {
-    return (state: { preprints: PreprintsStateModel }) =>
-      state.preprints.highlightedSubjectsForProvider.data.filter((subj) => subj.preprintProviderId === providerId);
+  static getHighlightedSubjectsForProvider(state: PreprintsStateModel) {
+    return state.highlightedSubjectsForProvider.data;
   }
 
   @Selector([PreprintsState])
