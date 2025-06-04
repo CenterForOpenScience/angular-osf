@@ -53,10 +53,10 @@ export class PreprintsLandingComponent implements OnInit {
     getHighlightedSubjectsByProviderId: GetHighlightedSubjectsByProviderId,
   });
 
-  osfPreprintProvider = select(PreprintsSelectors.getPreprintProviderDetails);
+  osfPreprintProvider = select(PreprintsSelectors.getPreprintProviderDetails(this.OSF_PROVIDER_ID));
   isPreprintProviderLoading = select(PreprintsSelectors.isPreprintProviderDetailsLoading);
   preprintProvidersToAdvertise = select(PreprintsSelectors.getPreprintProvidersToAdvertise);
-  highlightedSubjectsByProviderId = select(PreprintsSelectors.getHighlightedSubjectsForProvider);
+  highlightedSubjectsByProviderId = select(PreprintsSelectors.getHighlightedSubjectsForProvider(this.OSF_PROVIDER_ID));
   areSubjectsLoading = select(PreprintsSelectors.areSubjectsLoading);
 
   addPreprint() {

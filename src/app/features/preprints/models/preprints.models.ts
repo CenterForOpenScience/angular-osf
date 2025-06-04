@@ -33,6 +33,7 @@ export interface Subject {
   id: string;
   text: string;
   taxonomy_name: string;
+  preprintProviderId: string;
 }
 
 //api models

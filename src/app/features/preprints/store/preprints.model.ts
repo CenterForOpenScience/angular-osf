@@ -2,7 +2,7 @@ import { PreprintProviderDetails, PreprintProviderToAdvertise, Subject } from '@
 import { AsyncStateModel } from '@shared/models';
 
 export interface PreprintsStateModel {
-  preprintProviderDetails: AsyncStateModel<PreprintProviderDetails | null>;
+  preprintProvidersDetails: AsyncStateModel<PreprintProviderDetails[]>;
   preprintProvidersToAdvertise: AsyncStateModel<PreprintProviderToAdvertise[]>;
   highlightedSubjectsForProvider: AsyncStateModel<Subject[]>;
 }

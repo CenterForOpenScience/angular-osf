@@ -51,7 +51,7 @@ export class PreprintsService {
       >(`${this.baseUrl}${providerId}/subjects/highlighted/?page[size]=20`)
       .pipe(
         map((response) => {
-          return PreprintsMapper.fromSubjectsGetResponse(response.data);
+          return PreprintsMapper.fromSubjectsGetResponse(providerId, response.data);
         })
       );
   }

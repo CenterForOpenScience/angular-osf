@@ -1,5 +1,5 @@
 import { Action, State, StateContext } from '@ngxs/store';
-import { patch } from '@ngxs/store/operators';
+import { insertItem, patch } from '@ngxs/store/operators';
 
 import { tap, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -17,8 +17,8 @@ import { PreprintsStateModel } from '@osf/features/preprints/store/preprints.mod
 @State<PreprintsStateModel>({
   name: 'preprints',
   defaults: {
-    preprintProviderDetails: {
-      data: null,
+    preprintProvidersDetails: {
+      data: [],
       isLoading: false,
       error: null,
     },
@@ -40,20 +40,20 @@ export class PreprintsState {
 
   @Action(GetPreprintProviderById)
   getPreprintProviderById(ctx: StateContext<PreprintsStateModel>, action: GetPreprintProviderById) {
-    ctx.setState(patch({ preprintProviderDetails: patch({ isLoading: true }) }));
+    ctx.setState(patch({ preprintProvidersDetails: patch({ isLoading: true }) }));
 
     return this.#preprintsService.getPreprintProviderById(action.id).pipe(
       tap((data) => {
         ctx.setState(
           patch({
-            preprintProviderDetails: patch({
-              data: data,
+            preprintProvidersDetails: patch({
+              data: insertItem(data),
               isLoading: false,
             }),
           })
         );
       }),
-      catchError((error) => this.handleError(ctx, 'preprintProviderDetails', error))
+      catchError((error) => this.handleError(ctx, 'preprintProvidersDetails', error))
     );
   }
 
@@ -84,11 +84,11 @@ export class PreprintsState {
     ctx.setState(patch({ highlightedSubjectsForProvider: patch({ isLoading: true }) }));
 
     return this.#preprintsService.getHighlightedSubjectsByProviderId(action.providerId).pipe(
-      tap((data) => {
+      tap((subjects) => {
         ctx.setState(
           patch({
             highlightedSubjectsForProvider: patch({
-              data: data,
+              data: [...ctx.getState().highlightedSubjectsForProvider.data, ...subjects],
               isLoading: false,
             }),
           })
