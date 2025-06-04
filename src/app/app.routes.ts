@@ -191,7 +191,7 @@ export const routes: Routes = [
         ],
       },
       {
-        path: 'confirm/:userId/:emailId',
+        path: 'confirm/:userId/:token',
         loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
       },
     ],
