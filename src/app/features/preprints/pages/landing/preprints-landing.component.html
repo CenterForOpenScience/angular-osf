@@ -5,7 +5,7 @@
       <h1>{{ 'preprints.title' | translate }}</h1>
     </div>
     @if (isPreprintProviderLoading()) {
-      <p-skeleton class="ml-auto" width="8rem" height="2rem"></p-skeleton>
+      <p-skeleton class="ml-auto w-full md:w-auto" height="2rem" />
     } @else {
       <p-button
         class="ml-auto w-full md:w-auto"
@@ -19,11 +19,11 @@
   <div class="provider-description">
     @if (isPreprintProviderLoading()) {
       <div class="flex flex-column gap-2">
-        <p-skeleton width="40%" height="1.5rem"></p-skeleton>
-        <p-skeleton width="70%" height="1.5rem"></p-skeleton>
+        <p-skeleton width="40%" height="1.5rem" />
+        <p-skeleton width="70%" height="1.5rem" />
       </div>
     } @else {
-      <div [innerHTML]="osfPreprintProvider()!.descriptionHtml"></div>
+      <div [innerHTML]="osfPreprintProvider()?.descriptionHtml"></div>
     }
     <a class="font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
   </div>
