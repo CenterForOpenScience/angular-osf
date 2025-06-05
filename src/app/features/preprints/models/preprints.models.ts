@@ -22,6 +22,7 @@ export interface PreprintProviderDetails {
   preprintWord: string;
   allowSubmissions: boolean;
   brand: Brand;
+  lastFetched?: number;
 }
 
 export interface PreprintProviderToAdvertise {

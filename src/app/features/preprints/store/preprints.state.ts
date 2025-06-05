@@ -1,7 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
-import { insertItem, patch } from '@ngxs/store/operators';
+import { insertItem, patch, updateItem } from '@ngxs/store/operators';
 
-import { tap, throwError } from 'rxjs';
+import { of, tap, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
@@ -37,17 +37,31 @@ import { PreprintsStateModel } from '@osf/features/preprints/store/preprints.mod
 @Injectable()
 export class PreprintsState {
   #preprintsService = inject(PreprintsService);
+  private readonly REFRESH_INTERVAL = 5 * 60 * 1000;
 
   @Action(GetPreprintProviderById)
   getPreprintProviderById(ctx: StateContext<PreprintsStateModel>, action: GetPreprintProviderById) {
+    const state = ctx.getState();
+    const cachedData = state.preprintProvidersDetails.data.find((p) => p.id === action.id);
+    const shouldRefresh = this.shouldRefresh(cachedData?.lastFetched);
+
+    if (cachedData && !shouldRefresh) {
+      return of(cachedData);
+    }
+
     ctx.setState(patch({ preprintProvidersDetails: patch({ isLoading: true }) }));
 
     return this.#preprintsService.getPreprintProviderById(action.id).pipe(
-      tap((data) => {
+      tap((preprintProvider) => {
+        const exists = state.preprintProvidersDetails.data.some((p) => p.id === preprintProvider.id);
+        preprintProvider.lastFetched = Date.now();
+
         ctx.setState(
           patch({
             preprintProvidersDetails: patch({
-              data: insertItem(data),
+              data: exists
+                ? insertItem(preprintProvider)
+                : updateItem((p) => p.id === preprintProvider.id, preprintProvider),
               isLoading: false,
             }),
           })
@@ -96,6 +110,14 @@ export class PreprintsState {
       }),
       catchError((error) => this.handleError(ctx, 'highlightedSubjectsForProvider', error))
     );
+  }
+
+  private shouldRefresh(lastFetched: number | undefined): boolean {
+    if (!lastFetched) {
+      return true;
+    }
+
+    return Date.now() - lastFetched > this.REFRESH_INTERVAL;
   }
 
   private handleError(ctx: StateContext<PreprintsStateModel>, section: keyof PreprintsStateModel, error: Error) {
