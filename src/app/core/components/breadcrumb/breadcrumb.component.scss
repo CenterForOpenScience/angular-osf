@@ -1,7 +1,7 @@
 @use "assets/styles/variables" as var;
 
 .breadcrumbs {
-  color: var.$dark-blue-1;
+  color: var(--header-color, var.$dark-blue-1);
   font-weight: 600;
   text-transform: capitalize;
 }
