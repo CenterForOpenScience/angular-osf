@@ -28,6 +28,8 @@
 }
 
 .advisory-board-section {
+  background: var(--preprints-branding-hero-background-image-url);
+
   h2 {
     font-size: mix.rem(24px);
     margin-bottom: mix.rem(10px);
@@ -40,5 +42,14 @@
     li {
       list-style: disc;
     }
+  }
+
+  &.osf-preprint-service {
+    background-image: none;
+    background-color: var(--preprints-branding-primary-color);
+  }
+
+  .m-b-lg {
+    margin-bottom: mix.rem(24px);
   }
 }
