@@ -60,8 +60,8 @@ export class PreprintsState {
           patch({
             preprintProvidersDetails: patch({
               data: exists
-                ? insertItem(preprintProvider)
-                : updateItem((p) => p.id === preprintProvider.id, preprintProvider),
+                ? updateItem((p) => p.id === preprintProvider.id, preprintProvider)
+                : insertItem(preprintProvider),
               isLoading: false,
             }),
           })
