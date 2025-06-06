@@ -1,0 +1,71 @@
+<section class="preprints-hero-container py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4">
+  <div class="flex flex-column align-items-start gap-4 md:flex-row">
+    <div class="flex align-items-center gap-2">
+      @if (isPreprintProviderLoading()) {
+        <p-skeleton width="3rem" height="1.5rem" />
+        <p-skeleton width="12rem" height="1.5rem" />
+      } @else {
+        <img
+          class="preprint-provider-hero-logo"
+          alt="Provider Logo"
+          height="40"
+          [src]="preprintProvider()!.brand.heroLogoImageUrl"
+        />
+        <h1 class="preprint-provider-name">{{ preprintProvider()!.name }}</h1>
+      }
+    </div>
+
+    @if (isPreprintProviderLoading()) {
+      <p-skeleton class="ml-auto" width="8rem" height="2rem" />
+    } @else if (preprintProvider()!.allowSubmissions) {
+      <p-button
+        class="ml-auto w-full md:w-auto preprints-branding-button"
+        styleClass="w-full md:w-auto"
+        [label]="'preprints.addPreprint' | translate: { preprintWord: preprintProvider()!.preprintWord }"
+        (click)="addPreprint()"
+      />
+    }
+  </div>
+
+  <div class="provider-description">
+    @if (isPreprintProviderLoading()) {
+      <div class="flex flex-column gap-2">
+        <p-skeleton width="40%" height="1.5rem"></p-skeleton>
+        <p-skeleton width="70%" height="1.5rem"></p-skeleton>
+
+        <p-skeleton width="10%" height="1rem"></p-skeleton>
+      </div>
+    } @else {
+      <div [innerHTML]="preprintProvider()!.descriptionHtml | decodeHtml"></div>
+      <a class="link font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
+    }
+  </div>
+
+  <div class="search-input-container">
+    <img
+      ngSrc="assets/icons/colored/question-mark.svg"
+      alt="preprints help"
+      tabindex="0"
+      role="button"
+      height="36"
+      width="36"
+      class="cursor-pointer"
+      (click)="openHelpDialog()"
+      (keydown.enter)="openHelpDialog()"
+    />
+
+    <osf-search-input
+      class="w-full"
+      [control]="searchControl"
+      [placeholder]="'preprints.searchPlaceholder' | translate"
+      (triggerSearch)="redirectToDiscoverPageWithValue()"
+    />
+  </div>
+
+  <!-- [Rni] TODO: add link to an example preprint -->
+  @if (isPreprintProviderLoading()) {
+    <p-skeleton width="10%" height="1rem" />
+  } @else {
+    <a class="link font-bold">{{ 'preprints.showExample' | translate }}</a>
+  }
+</section>

@@ -4,13 +4,14 @@ import { PreprintsState, PreprintsStateModel } from '@osf/features/preprints/sto
 
 export class PreprintsSelectors {
   @Selector([PreprintsState])
-  static getPreprintProviderDetails(state: PreprintsStateModel) {
-    return state.preprintProviderDetails.data;
+  static getPreprintProviderDetails(providerId: string) {
+    return (state: { preprints: PreprintsStateModel }) =>
+      state.preprints.preprintProvidersDetails.data.find((provider) => provider.id.includes(providerId));
   }
 
   @Selector([PreprintsState])
   static isPreprintProviderDetailsLoading(state: PreprintsStateModel) {
-    return state.preprintProviderDetails.isLoading;
+    return state.preprintProvidersDetails.isLoading;
   }
 
   @Selector([PreprintsState])

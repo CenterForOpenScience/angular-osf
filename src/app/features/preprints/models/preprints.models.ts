@@ -20,7 +20,9 @@ export interface PreprintProviderDetails {
   domain: string;
   footerLinksHtml: string;
   preprintWord: string;
+  allowSubmissions: boolean;
   brand: Brand;
+  lastFetched?: number;
 }
 
 export interface PreprintProviderToAdvertise {
@@ -33,6 +35,7 @@ export interface Subject {
   id: string;
   text: string;
   taxonomy_name: string;
+  preprintProviderId: string;
 }
 
 //api models
@@ -50,6 +53,7 @@ export interface PreprintProviderDetailsGetResponse {
     assets: {
       wide_white: string;
     };
+    allow_submissions: boolean;
   };
   embeds?: {
     brand: {

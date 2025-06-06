@@ -1230,7 +1230,7 @@
   },
   "preprints": {
     "title": "Preprints",
-    "addPreprint": "Add a Preprint",
+    "addPreprint": "Add a {{preprintWord}}",
     "poweredBy": "Powered by OSF Preprints",
     "searchPlaceholder": "Search Preprints",
     "showExample": "Show an example",
@@ -1249,6 +1249,11 @@
       "publicRoadmap": "public roadmap",
       "inputWelcome": "Input welcome!",
       "contactUs": "Contact us"
+    },
+    "helpDialog": {
+      "header": "Search help",
+      "message": "OSF Search provides a powerful discovery tool to help you find data, papers, analysis plans, and more content across the research lifecycle. OSF Preprints has some specialized filters, which you can learn more about on our",
+      "linkText": "help guides"
     }
   },
   "truncatedText": {

@@ -245,7 +245,7 @@
   }
 }
 
-.dropdown-button {
+.header-dropdown-button {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -253,7 +253,7 @@
 
   .p-button {
     background: transparent;
-    color: var.$dark-blue-2;
+    color: var(--header-color, var.$dark-blue-1);
     padding: 0;
   }
 
