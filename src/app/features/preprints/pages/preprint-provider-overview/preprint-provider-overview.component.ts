@@ -2,7 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, effect, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
@@ -14,6 +14,7 @@ import {
   GetPreprintProviderById,
   PreprintsSelectors,
 } from '@osf/features/preprints/store';
+import { HeaderStyleService } from '@shared/services';
 
 @Component({
   selector: 'osf-provider-overview',
@@ -22,7 +23,7 @@ import {
   styleUrl: './preprint-provider-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintProviderOverviewComponent implements OnInit {
+export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
 
@@ -42,6 +43,11 @@ export class PreprintProviderOverviewComponent implements OnInit {
 
       if (provider) {
         BrandService.applyBranding(provider.brand);
+        HeaderStyleService.applyHeaderStyles(
+          provider.brand.primaryColor,
+          provider.brand.secondaryColor,
+          provider.brand.heroBackgroundImageUrl
+        );
       }
     });
   }
@@ -49,5 +55,10 @@ export class PreprintProviderOverviewComponent implements OnInit {
   ngOnInit() {
     this.actions.getPreprintProviderById(this.providerId());
     this.actions.getHighlightedSubjectsByProviderId(this.providerId());
+  }
+
+  ngOnDestroy() {
+    HeaderStyleService.resetToDefaults();
+    BrandService.resetBranding();
   }
 }
