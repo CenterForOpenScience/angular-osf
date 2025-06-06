@@ -7,6 +7,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { AdvisoryBoardComponent, BrowseBySubjectsComponent } from '@osf/features/preprints/components';
+import { PreprintProviderFooterComponent } from '@osf/features/preprints/components/preprint-provider-footer/preprint-provider-footer.component';
 import { PreprintProviderHeroComponent } from '@osf/features/preprints/components/preprint-provider-hero/preprint-provider-hero.component';
 import { BrandService } from '@osf/features/preprints/services';
 import {
@@ -18,7 +19,12 @@ import { HeaderStyleService } from '@shared/services';
 
 @Component({
   selector: 'osf-provider-overview',
-  imports: [AdvisoryBoardComponent, BrowseBySubjectsComponent, PreprintProviderHeroComponent],
+  imports: [
+    AdvisoryBoardComponent,
+    BrowseBySubjectsComponent,
+    PreprintProviderHeroComponent,
+    PreprintProviderFooterComponent,
+  ],
   templateUrl: './preprint-provider-overview.component.html',
   styleUrl: './preprint-provider-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
