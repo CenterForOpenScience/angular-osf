@@ -13,10 +13,11 @@ import { PreprintsHelpDialogComponent } from '@osf/features/preprints/components
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { SearchInputComponent } from '@shared/components';
 import { ResourceTab } from '@shared/enums';
+import { DecodeHtmlPipe } from '@shared/pipes';
 
 @Component({
   selector: 'osf-preprint-provider-hero',
-  imports: [Button, RouterLink, SearchInputComponent, Skeleton, TranslatePipe, NgOptimizedImage],
+  imports: [Button, RouterLink, SearchInputComponent, Skeleton, TranslatePipe, NgOptimizedImage, DecodeHtmlPipe],
   templateUrl: './preprint-provider-hero.component.html',
   styleUrl: './preprint-provider-hero.component.scss',
   providers: [DialogService],
