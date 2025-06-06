@@ -3,6 +3,10 @@
   [isPreprintProviderLoading]="isPreprintProviderLoading()"
 />
 
-<osf-browse-by-subjects [subjects]="highlightedSubjectsByProviderId()" [isLoading]="areSubjectsLoading()" />
+<osf-browse-by-subjects
+  [subjects]="highlightedSubjectsByProviderId()"
+  [areSubjectsLoading]="areSubjectsLoading()"
+  [isProviderLoading]="isPreprintProviderLoading()"
+/>
 
 <osf-advisory-board [htmlContent]="preprintProvider()?.advisoryBoardHtml" [brand]="preprintProvider()?.brand" />

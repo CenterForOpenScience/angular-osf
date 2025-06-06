@@ -43,7 +43,11 @@
   }
 </section>
 
-<osf-browse-by-subjects [subjects]="highlightedSubjectsByProviderId()" [isLoading]="areSubjectsLoading()" />
+<osf-browse-by-subjects
+  [subjects]="highlightedSubjectsByProviderId()"
+  [areSubjectsLoading]="areSubjectsLoading()"
+  [isProviderLoading]="isPreprintProviderLoading()"
+/>
 
 <osf-preprint-services [preprintProvidersToAdvertise]="preprintProvidersToAdvertise()" />
 

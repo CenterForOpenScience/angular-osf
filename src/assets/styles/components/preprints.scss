@@ -53,3 +53,19 @@
     margin-bottom: mix.rem(24px);
   }
 }
+
+.browse-by-subjects-container {
+  .provider-subject {
+    .p-button.p-button-secondary {
+      color: var(--preprints-branding-secondary-color);
+      background-color: var(--preprints-branding-primary-color);
+      border: 1px solid var(--preprints-branding-secondary-color);
+
+      &:hover {
+        color: var(--preprints-branding-primary-color);
+        border: 1px solid var(--preprints-branding-primary-color);
+        background-color: var(--preprints-branding-secondary-color);
+      }
+    }
+  }
+}
