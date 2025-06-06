@@ -32,11 +32,13 @@
 
   h2 {
     font-size: mix.rem(24px);
+    margin-top: mix.rem(20px);
     margin-bottom: mix.rem(10px);
   }
 
   ul {
     margin-left: mix.rem(24px);
+    margin-bottom: mix.rem(10px);
     line-height: mix.rem(24px);
 
     li {
@@ -44,13 +46,36 @@
     }
   }
 
+  .preprint-advisory-list {
+    flex-direction: row;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: mix.rem(24px);
+
+    .preprint-advisory-list-column {
+      width: 50%;
+
+      li {
+        list-style: none;
+        font-size: 16px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .preprint-advisory-list {
+      flex-direction: column;
+
+      .preprint-advisory-list-column {
+        width: 100%;
+      }
+    }
+  }
+
   &.osf-preprint-service {
     background-image: none;
     background-color: var(--preprints-branding-primary-color);
-  }
-
-  .m-b-lg {
-    margin-bottom: mix.rem(24px);
   }
 }
 
