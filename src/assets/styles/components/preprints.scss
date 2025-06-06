@@ -97,6 +97,10 @@
 .preprints-footer-section {
   padding-top: mix.rem(10px);
 
+  a {
+    font-weight: bold;
+  }
+
   p {
     margin-bottom: mix.rem(10px);
   }

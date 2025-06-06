@@ -34,5 +34,6 @@ export class BrowseBySubjectsComponent {
   });
   areSubjectsLoading = input.required<boolean>();
   isProviderLoading = input.required<boolean>();
+  isLandingPage = input<boolean>(false);
   skeletonArray = Array.from({ length: 6 }, (_, i) => i + 1);
 }

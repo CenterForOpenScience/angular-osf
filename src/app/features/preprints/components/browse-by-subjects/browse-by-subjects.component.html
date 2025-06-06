@@ -12,7 +12,7 @@
           styleClass="w-full p-4"
           [label]="subject.text"
           severity="secondary"
-          routerLink="/search"
+          [routerLink]="isLandingPage() ? '/search' : 'discover'"
           [queryParams]="linksToSearchPageForSubject()[$index]"
         />
       }
