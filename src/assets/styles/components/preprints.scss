@@ -2,7 +2,6 @@
 
 .preprints-hero-container {
   background-color: var(--preprints-branding-secondary-color);
-
   background-image: var(--preprints-branding-hero-background-image-url);
 
   color: var(--preprints-branding-primary-color);
@@ -27,7 +26,7 @@
   }
 }
 
-.advisory-board-section {
+.preprints-advisory-board-section {
   background: var(--preprints-branding-hero-background-image-url);
 
   h2 {
@@ -79,7 +78,7 @@
   }
 }
 
-.browse-by-subjects-container {
+.preprints-browse-by-subjects-section {
   .provider-subject {
     .p-button.p-button-secondary {
       color: var(--preprints-branding-secondary-color);
