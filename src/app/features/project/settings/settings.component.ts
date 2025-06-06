@@ -1,4 +1,4 @@
-import { createDispatchMap, select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -45,6 +45,7 @@ import {
   NotificationSubscriptionSelectors,
   UpdateNotificationSubscriptionForNodeId,
 } from '@osf/features/settings/notifications/store';
+import { ToastService } from '@osf/shared/services';
 import { defaultConfirmationConfig } from '@osf/shared/utils';
 import { SubHeaderComponent } from '@shared/components';
 import { ProjectFormControls, SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
@@ -76,9 +77,9 @@ import { UpdateNodeRequestModel } from '@shared/models';
 })
 export class SettingsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly store = inject(Store);
   private readonly translateService = inject(TranslateService);
   private readonly confirmationService = inject(ConfirmationService);
+  private readonly toastService = inject(ToastService);
 
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
@@ -86,12 +87,17 @@ export class SettingsComponent implements OnInit {
   protected notifications = select(NotificationSubscriptionSelectors.getNotificationSubscriptionsByNodeId);
   protected projectDetails = select(SettingsSelectors.getProjectDetails);
   protected viewOnlyLinks = select(SettingsSelectors.getViewOnlyLinks);
+  protected isViewOnlyLinksLoading = select(SettingsSelectors.isViewOnlyLinksLoading);
 
   protected actions = createDispatchMap({
     getSettings: GetProjectSettings,
     getNotifications: GetNotificationSubscriptionsByNodeId,
     getProjectDetails: GetProjectDetails,
     getViewOnlyLinks: GetViewOnlyLinksTable,
+    updateProjectDetails: UpdateProjectDetails,
+    updateProjectSettings: UpdateProjectSettings,
+    updateNotificationSubscriptionForNodeId: UpdateNotificationSubscriptionForNodeId,
+    deleteViewOnlyLink: DeleteViewOnlyLink,
   });
 
   projectForm = new FormGroup({
@@ -124,6 +130,7 @@ export class SettingsComponent implements OnInit {
 
   submitForm({ title, description }: ProjectDetailsModel): void {
     const current = this.projectDetails().attributes;
+
     if (title === current.title && description === current.description) return;
 
     const model: UpdateNodeRequestModel = {
@@ -133,7 +140,11 @@ export class SettingsComponent implements OnInit {
         attributes: { title, description },
       },
     } as UpdateNodeRequestModel;
-    this.store.dispatch(new UpdateProjectDetails(model)).subscribe();
+
+    this.actions.updateProjectDetails(model).subscribe(() => {
+      const message = this.translateService.instant('myProjects.settings.updateProjectDetailsMessage');
+      this.toastService.showSuccess(message);
+    });
   }
 
   onAccessRequestChange(newValue: boolean): void {
@@ -165,7 +176,7 @@ export class SettingsComponent implements OnInit {
     const id = `${'n5str'}_${data.event}`;
     const frequency = data.frequency;
 
-    this.store.dispatch(new UpdateNotificationSubscriptionForNodeId({ id, frequency })).subscribe();
+    this.actions.updateNotificationSubscriptionForNodeId({ id, frequency }).subscribe();
   }
 
   deleteLinkItem(link: ViewOnlyLinkModel): void {
@@ -181,7 +192,7 @@ export class SettingsComponent implements OnInit {
         label: this.translateService.instant('settings.developerApps.list.deleteButton'),
       },
       accept: () => {
-        this.store.dispatch(new DeleteViewOnlyLink(this.projectId(), link.id)).subscribe();
+        this.actions.deleteViewOnlyLink(this.projectId(), link.id).subscribe();
       },
     });
   }
@@ -216,7 +227,10 @@ export class SettingsComponent implements OnInit {
       attributes: { ...payload },
     } as ProjectSettingsData;
 
-    this.store.dispatch(new UpdateProjectSettings(model)).subscribe();
+    this.actions.updateProjectSettings(model).subscribe(() => {
+      const message = this.translateService.instant('myProjects.settings.updateProjectSettingsMessage');
+      this.toastService.showSuccess(message);
+    });
   }
 
   private setupEffects(): void {

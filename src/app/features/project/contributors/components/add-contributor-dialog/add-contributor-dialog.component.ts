@@ -9,7 +9,7 @@ import { PaginatorState } from 'primeng/paginator';
 
 import { debounceTime, distinctUntilChanged, filter, switchMap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
@@ -17,7 +17,7 @@ import { CustomPaginatorComponent, LoadingSpinnerComponent, SearchInputComponent
 
 import { AddContributorType, AddDialogState } from '../../enums';
 import { ContributorAddModel, ContributorDialogAddModel } from '../../models';
-import { ContributorsSelectors, SearchUsers } from '../../store';
+import { ClearUsers, ContributorsSelectors, SearchUsers } from '../../store';
 import { AddContributorItemComponent } from '../add-contributor-item/add-contributor-item.component';
 
 @Component({
@@ -36,7 +36,7 @@ import { AddContributorItemComponent } from '../add-contributor-item/add-contrib
   styleUrl: './add-contributor-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddContributorDialogComponent implements OnInit {
+export class AddContributorDialogComponent implements OnInit, OnDestroy {
   protected dialogRef = inject(DynamicDialogRef);
   private readonly destroyRef = inject(DestroyRef);
   readonly config = inject(DynamicDialogConfig);
@@ -53,7 +53,7 @@ export class AddContributorDialogComponent implements OnInit {
   protected selectedUsers = signal<ContributorAddModel[]>([]);
   protected searchControl = new FormControl<string>('');
 
-  protected actions = createDispatchMap({ searchUsers: SearchUsers });
+  protected actions = createDispatchMap({ searchUsers: SearchUsers, clearUsers: ClearUsers });
 
   get isSearchState() {
     return this.currentState() === AddDialogState.Search;
@@ -62,6 +62,10 @@ export class AddContributorDialogComponent implements OnInit {
   ngOnInit(): void {
     this.setSearchSubscription();
     this.selectedUsers.set([]);
+  }
+
+  ngOnDestroy(): void {
+    this.actions.clearUsers();
   }
 
   addContributor(): void {

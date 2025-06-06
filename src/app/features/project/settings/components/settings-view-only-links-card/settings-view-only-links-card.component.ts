@@ -15,6 +15,7 @@ import { ViewOnlyTableComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SettingsViewOnlyLinksCardComponent {
-  deleteTableItem = output<ViewOnlyLinkModel>();
+  isLoading = input(false);
   tableData = input.required<PaginatedViewOnlyLinksModel>();
+  deleteTableItem = output<ViewOnlyLinkModel>();
 }

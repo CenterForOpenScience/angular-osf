@@ -26,6 +26,11 @@
     font-size: mix.rem(14px);
   }
 
+  i {
+    @include mix.flex-center;
+    font-size: mix.rem(16px);
+  }
+
   h1 {
     font-size: mix.rem(24px);
   }
@@ -58,10 +63,6 @@
 
   a:hover {
     text-decoration: underline;
-  }
-
-  i {
-    @include mix.flex-center;
   }
 
   dl {

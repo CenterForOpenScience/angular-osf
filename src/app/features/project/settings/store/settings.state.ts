@@ -141,6 +141,12 @@ export class SettingsState {
 
   @Action(GetViewOnlyLinksTable)
   getViewOnlyLinksTable(ctx: StateContext<SettingsStateModel>, action: GetViewOnlyLinksTable) {
+    const state = ctx.getState();
+
+    ctx.patchState({
+      viewOnlyLinks: { ...state.viewOnlyLinks, isLoading: true, error: null },
+    });
+
     return this.viewOnlyLinksService.getViewOnlyLinksData(action.projectId).pipe(
       map((response) => response),
       tap((links) => {

@@ -30,4 +30,8 @@ export class SettingsProjectFormCardComponent {
   resetForm(): void {
     this.formGroup().patchValue({ ...this.projectDetails().attributes });
   }
+
+  submit() {
+    this.submitForm.emit(this.formGroup().value);
+  }
 }

@@ -5,13 +5,13 @@
   z-index: 1300;
 
   .nav-container {
-    @include mix.flex-center-between;
     background: var.$dark-blue-1;
-    padding: 1.8rem 1.6rem;
+    padding: mix.rem(28px) mix.rem(24px);
     color: var.$white;
 
-    .topnav-icon {
-      font-size: 2.1rem;
+    .topnav-btn {
+      height: mix.rem(36px);
+      width: mix.rem(36px);
     }
   }
 }

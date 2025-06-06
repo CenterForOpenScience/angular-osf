@@ -24,6 +24,7 @@
     } @else {
       @if (isAnyFilterOptions()) {
         <img
+          class="custom-dark-hover cursor-pointer"
           ngSrc="assets/icons/colored/filter.svg"
           tabindex="0"
           role="button"
@@ -35,13 +36,13 @@
         />
       }
       <img
+        class="custom-dark-hover cursor-pointer ml-2"
         ngSrc="assets/icons/colored/sort.svg"
         tabindex="0"
         role="button"
         alt="sort by"
         width="44"
         height="44"
-        class="ml-2"
         (keydown.enter)="openSorting()"
         (click)="openSorting()"
       />
@@ -96,7 +97,7 @@
                   tabindex="0"
                   role="button"
                   viewBox="0 0 10 10"
-                  class="switch-icon"
+                  class="switch-icon custom-dark-hover"
                   (click)="switchPage(first())"
                   (keydown.enter)="switchPage(first())"
                 >

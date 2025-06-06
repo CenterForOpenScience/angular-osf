@@ -1,7 +1,7 @@
 <p-card>
   <h3 class="text-xl pb-4">{{ 'myProjects.settings.project' | translate }}</h3>
 
-  <form [formGroup]="formGroup()" (ngSubmit)="submitForm.emit(formGroup().value)" class="flex flex-column gap-4">
+  <form [formGroup]="formGroup()" (ngSubmit)="submit()" class="flex flex-column gap-4">
     <div class="flex flex-column">
       <label class="input-label" for="project-title">
         {{ 'myProjects.createProject.title' | translate }}
@@ -38,6 +38,7 @@
         severity="info"
         class="w-10rem btn-full-width"
       ></p-button>
+
       <p-button
         type="submit"
         class="w-10rem btn-full-width bg-primary-blue-second"

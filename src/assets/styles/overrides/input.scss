@@ -5,6 +5,10 @@
   color: var.$dark-blue-1;
   background: var.$white;
   border-color: var.$grey-2;
+
+  &:enabled:hover {
+    border-color: var.$pr-blue-1;
+  }
 }
 
 .p-password,

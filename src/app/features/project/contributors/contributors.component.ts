@@ -91,6 +91,7 @@ export class ContributorsComponent implements OnInit {
   protected initialContributors = select(ContributorsSelectors.getContributors);
   protected contributors = signal([]);
   protected readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  protected readonly isViewOnlyLinksLoading = select(SettingsSelectors.isViewOnlyLinksLoading);
 
   protected actions = createDispatchMap({
     getViewOnlyLinks: GetViewOnlyLinksTable,

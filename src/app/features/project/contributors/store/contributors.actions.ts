@@ -59,3 +59,7 @@ export class SearchUsers {
     public page: number
   ) {}
 }
+
+export class ClearUsers {
+  static readonly type = '[Contributors] Clear Users';
+}
