@@ -41,12 +41,26 @@
     }
   </div>
 
-  <osf-search-input
-    class="w-full"
-    [control]="searchControl"
-    [placeholder]="'preprints.searchPlaceholder' | translate"
-    (triggerSearch)="redirectToDiscoverPageWithValue()"
-  />
+  <div class="search-input-container">
+    <img
+      ngSrc="assets/icons/colored/question-mark.svg"
+      alt="preprints help"
+      tabindex="0"
+      role="button"
+      height="36"
+      width="36"
+      class="cursor-pointer"
+      (click)="openHelpDialog()"
+      (keydown.enter)="openHelpDialog()"
+    />
+
+    <osf-search-input
+      class="w-full"
+      [control]="searchControl"
+      [placeholder]="'preprints.searchPlaceholder' | translate"
+      (triggerSearch)="redirectToDiscoverPageWithValue()"
+    />
+  </div>
 
   <!-- [Rni] TODO: add link to an example preprint -->
   @if (isPreprintProviderLoading()) {
