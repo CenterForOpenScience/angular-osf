@@ -8,7 +8,7 @@ import { Resource } from '@osf/shared/models/resource-card/resource.model';
 export class MyProfileSelectors {
   @Selector([MyProfileState])
   static getResources(state: MyProfileStateModel): Resource[] {
-    return state.resources;
+    return state.resources.data;
   }
 
   @Selector([MyProfileState])

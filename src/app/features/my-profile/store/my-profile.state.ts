@@ -46,7 +46,7 @@ export class MyProfileState {
 
     return this.searchService.getResources(filtersParams, searchText, sortBy, resourceTypes).pipe(
       tap((response) => {
-        ctx.patchState({ resources: response.resources });
+        ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
         ctx.patchState({ resourcesCount: response.count });
         ctx.patchState({ first: response.first });
         ctx.patchState({ next: response.next });
@@ -59,7 +59,7 @@ export class MyProfileState {
   getResourcesByLink(ctx: StateContext<MyProfileStateModel>, action: GetResourcesByLink) {
     return this.searchService.getResourcesByLink(action.link).pipe(
       tap((response) => {
-        ctx.patchState({ resources: response.resources });
+        ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
         ctx.patchState({ resourcesCount: response.count });
         ctx.patchState({ first: response.first });
         ctx.patchState({ next: response.next });

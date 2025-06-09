@@ -9,7 +9,7 @@ import { SearchState } from './search.state';
 export class SearchSelectors {
   @Selector([SearchState])
   static getResources(state: SearchStateModel): Resource[] {
-    return state.resources;
+    return state.resources.data;
   }
 
   @Selector([SearchState])
