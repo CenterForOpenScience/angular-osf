@@ -1,5 +1,5 @@
 <div class="flex flex-column gap-6">
-  @if (!verifyingEmail) {
+  @if (!verifyingEmail()) {
     <h3 class="font-normal description">
       {{ 'home.confirmEmail.description' | translate }}
       <p class="inline font-bold">{{ config.data.emailAddress }}</p>

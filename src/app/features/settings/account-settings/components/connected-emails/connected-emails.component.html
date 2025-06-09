@@ -41,22 +41,12 @@
                   </i>
                 }
                 @if (deletingEmailIds().has(email.id)) {
-                  <p-progress-spinner
-                    strokeWidth="5"
-                    fill="transparent"
-                    animationDuration=".5s"
-                    [style]="{ width: '0.7rem', height: '0.7rem', marginLeft: '0.7rem' }"
-                  />
+                  <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--sm" />
                 }
               </div>
 
               @if (makingPrimaryIds().has(email.id)) {
-                <p-progress-spinner
-                  strokeWidth="5"
-                  fill="transparent"
-                  animationDuration=".5s"
-                  [style]="{ width: '1rem', height: '1rem' }"
-                />
+                <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--md" />
               } @else {
                 <p-button
                   [label]="'settings.accountSettings.connectedEmails.buttons.makePrimary' | translate"
@@ -95,22 +85,12 @@
                   ></i>
                 }
                 @if (deletingEmailIds().has(email.id)) {
-                  <p-progress-spinner
-                    strokeWidth="5"
-                    fill="transparent"
-                    animationDuration=".5s"
-                    [style]="{ width: '0.7rem', height: '0.7rem', marginLeft: '0.7rem' }"
-                  />
+                  <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--sm" />
                 }
               </div>
 
               @if (resendingEmailIds().has(email.id)) {
-                <p-progress-spinner
-                  strokeWidth="5"
-                  fill="transparent"
-                  animationDuration=".5s"
-                  [style]="{ width: '1rem', height: '1rem' }"
-                />
+                <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--md" />
               } @else {
                 <p-button
                   [label]="

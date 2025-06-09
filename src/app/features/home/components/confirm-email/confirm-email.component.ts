@@ -5,7 +5,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { finalize } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -26,7 +26,8 @@ export class ConfirmEmailComponent {
   readonly #router = inject(Router);
   readonly #accountSettingsService = inject(AccountSettingsService);
   readonly #destroyRef = inject(DestroyRef);
-  verifyingEmail = false;
+
+  verifyingEmail = signal(false);
 
   closeDialog() {
     this.#router.navigate(['/home']);
@@ -34,12 +35,12 @@ export class ConfirmEmailComponent {
   }
 
   verifyEmail() {
-    this.verifyingEmail = true;
+    this.verifyingEmail.set(true);
     this.#accountSettingsService
       .confirmEmail(this.config.data.userId, this.config.data.token)
       .pipe(
         takeUntilDestroyed(this.#destroyRef),
-        finalize(() => (this.verifyingEmail = false))
+        finalize(() => this.verifyingEmail.set(false))
       )
       .subscribe({
         next: () => {
