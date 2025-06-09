@@ -4,7 +4,7 @@ import { map, of } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AdvisoryBoardComponent, BrowseBySubjectsComponent } from '@osf/features/preprints/components';
 import { PreprintProviderFooterComponent } from '@osf/features/preprints/components/preprint-provider-footer/preprint-provider-footer.component';
@@ -31,6 +31,7 @@ import { HeaderStyleHelper } from '@shared/utils';
 })
 export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
 
   private actions = createDispatchMap({
@@ -66,5 +67,12 @@ export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     HeaderStyleHelper.resetToDefaults();
     BrandService.resetBranding();
+  }
+
+  redirectToDiscoverPageWithValue(searchValue: string) {
+    this.router.navigate(['discover'], {
+      relativeTo: this.route,
+      queryParams: { search: searchValue },
+    });
   }
 }

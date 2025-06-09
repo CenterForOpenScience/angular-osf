@@ -56,9 +56,8 @@
 
     <osf-search-input
       class="w-full"
-      [control]="searchControl"
       [placeholder]="'preprints.searchPlaceholder' | translate"
-      (triggerSearch)="redirectToDiscoverPageWithValue()"
+      (triggerSearch)="onTriggerSearch($event)"
     />
   </div>
 
