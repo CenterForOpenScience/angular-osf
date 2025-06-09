@@ -15,7 +15,7 @@ import {
   GetPreprintProviderById,
   PreprintsSelectors,
 } from '@osf/features/preprints/store';
-import { HeaderStyleService } from '@shared/services';
+import { HeaderStyleHelper } from '@shared/services';
 
 @Component({
   selector: 'osf-provider-overview',
@@ -49,7 +49,7 @@ export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
 
       if (provider) {
         BrandService.applyBranding(provider.brand);
-        HeaderStyleService.applyHeaderStyles(
+        HeaderStyleHelper.applyHeaderStyles(
           provider.brand.primaryColor,
           provider.brand.secondaryColor,
           provider.brand.heroBackgroundImageUrl
@@ -64,7 +64,7 @@ export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    HeaderStyleService.resetToDefaults();
+    HeaderStyleHelper.resetToDefaults();
     BrandService.resetBranding();
   }
 }

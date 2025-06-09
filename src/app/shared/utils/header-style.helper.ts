@@ -1,4 +1,4 @@
-export class HeaderStyleService {
+export class HeaderStyleHelper {
   static applyHeaderStyles(textColor: string, backgroundColor?: string, backgroundImageUrl?: string) {
     const root = document.documentElement;
 
