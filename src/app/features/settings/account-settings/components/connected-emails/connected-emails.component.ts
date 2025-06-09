@@ -16,7 +16,7 @@ import { UserSelectors } from '@osf/core/store/user';
 import { IS_XSMALL } from '@osf/shared/utils';
 
 import { AccountSettingsService } from '../../services';
-import { AccountSettingsSelectors, DeleteEmail, GetEmails } from '../../store';
+import { AccountSettingsSelectors, DeleteEmail, MakePrimary } from '../../store';
 import { AddEmailComponent } from '../add-email/add-email.component';
 
 @Component({
@@ -85,18 +85,14 @@ export class ConnectedEmailsComponent {
     if (this.currentUser()?.id) {
       this.makingPrimaryIds.set(new Set([...this.makingPrimaryIds(), emailId]));
 
-      this.#accountSettingsService
-        .makePrimary(emailId)
-        .pipe(
-          finalize(() => {
-            const currentIds = this.makingPrimaryIds();
-            const updatedIds = new Set([...currentIds].filter((id) => id !== emailId));
-            this.makingPrimaryIds.set(updatedIds);
-            this.#store.dispatch(GetEmails);
-          }),
-          takeUntilDestroyed(this.#destroyRef)
-        )
-        .subscribe();
+      this.#store
+        .dispatch(new MakePrimary(emailId))
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe(() => {
+          const currentIds = this.makingPrimaryIds();
+          const updatedIds = new Set([...currentIds].filter((id) => id !== emailId));
+          this.makingPrimaryIds.set(updatedIds);
+        });
     }
   }
 

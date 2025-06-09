@@ -108,7 +108,7 @@ export class AccountSettingsState {
 
   @Action(MakePrimary)
   makePrimary(ctx: StateContext<AccountSettingsStateModel>, action: MakePrimary) {
-    return this.#accountSettingsService.makePrimary(action.userId).pipe(
+    return this.#accountSettingsService.makePrimary(action.emailId).pipe(
       tap((email) => {
         if (email.verified) {
           ctx.dispatch(GetEmails);

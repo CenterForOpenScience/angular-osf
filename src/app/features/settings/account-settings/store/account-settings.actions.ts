@@ -28,7 +28,7 @@ export class VerifyEmail {
 export class MakePrimary {
   static readonly type = '[AccountSettings] Make Primary';
 
-  constructor(public userId: string) {}
+  constructor(public emailId: string) {}
 }
 
 export class GetRegions {
