@@ -1,4 +1,5 @@
 @use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
 
 .preprints-hero-container {
   background-color: var(--preprints-branding-secondary-color);
@@ -62,7 +63,7 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: var.$breakpoint-md) {
     .preprint-advisory-list {
       flex-direction: column;
 
