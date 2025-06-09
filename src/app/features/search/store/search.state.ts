@@ -4,6 +4,7 @@ import { BehaviorSubject, EMPTY, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { GetResourcesRequestTypeEnum } from '@osf/features/search/enums/get-resources-request-type.enum';
 import { SearchService } from '@osf/shared/services';
 import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
 
@@ -30,7 +31,7 @@ import { SearchSelectors } from './search.selectors';
 export class SearchState implements NgxsOnInit {
   searchService = inject(SearchService);
   store = inject(Store);
-  loadRequests = new BehaviorSubject<boolean | null>(null);
+  loadRequests = new BehaviorSubject<{ type: GetResourcesRequestTypeEnum; link?: string } | null>(null);
 
   ngxsOnInit(ctx: StateContext<SearchStateModel>): void {
     this.loadRequests
@@ -39,22 +40,38 @@ export class SearchState implements NgxsOnInit {
           if (!query) return EMPTY;
           const state = ctx.getState();
           ctx.patchState({ resources: { ...state.resources, isLoading: true } });
-          const filters = this.store.selectSnapshot(ResourceFiltersSelectors.getAllFilters);
-          const filtersParams = addFiltersParams(filters);
-          const searchText = this.store.selectSnapshot(SearchSelectors.getSearchText);
-          const sortBy = this.store.selectSnapshot(SearchSelectors.getSortBy);
-          const resourceTab = this.store.selectSnapshot(SearchSelectors.getResourceTab);
-          const resourceTypes = getResourceTypes(resourceTab);
+          if (query.type === GetResourcesRequestTypeEnum.GetResources) {
+            const filters = this.store.selectSnapshot(ResourceFiltersSelectors.getAllFilters);
+            const filtersParams = addFiltersParams(filters);
+            const searchText = this.store.selectSnapshot(SearchSelectors.getSearchText);
+            const sortBy = this.store.selectSnapshot(SearchSelectors.getSortBy);
+            const resourceTab = this.store.selectSnapshot(SearchSelectors.getResourceTab);
+            const resourceTypes = getResourceTypes(resourceTab);
 
-          return this.searchService.getResources(filtersParams, searchText, sortBy, resourceTypes).pipe(
-            tap((response) => {
-              ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
-              ctx.patchState({ resourcesCount: response.count });
-              ctx.patchState({ first: response.first });
-              ctx.patchState({ next: response.next });
-              ctx.patchState({ previous: response.previous });
-            })
-          );
+            return this.searchService.getResources(filtersParams, searchText, sortBy, resourceTypes).pipe(
+              tap((response) => {
+                ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
+                ctx.patchState({ resourcesCount: response.count });
+                ctx.patchState({ first: response.first });
+                ctx.patchState({ next: response.next });
+                ctx.patchState({ previous: response.previous });
+              })
+            );
+          } else if (query.type === GetResourcesRequestTypeEnum.GetResourcesByLink) {
+            if (query.link) {
+              return this.searchService.getResourcesByLink(query.link!).pipe(
+                tap((response) => {
+                  ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
+                  ctx.patchState({ resourcesCount: response.count });
+                  ctx.patchState({ first: response.first });
+                  ctx.patchState({ next: response.next });
+                  ctx.patchState({ previous: response.previous });
+                })
+              );
+            }
+            return EMPTY;
+          }
+          return EMPTY;
         })
       )
       .subscribe();
@@ -62,20 +79,17 @@ export class SearchState implements NgxsOnInit {
 
   @Action(GetResources)
   getResources() {
-    this.loadRequests.next(true);
+    this.loadRequests.next({
+      type: GetResourcesRequestTypeEnum.GetResources,
+    });
   }
 
   @Action(GetResourcesByLink)
   getResourcesByLink(ctx: StateContext<SearchStateModel>, action: GetResourcesByLink) {
-    return this.searchService.getResourcesByLink(action.link).pipe(
-      tap((response) => {
-        ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
-        ctx.patchState({ resourcesCount: response.count });
-        ctx.patchState({ first: response.first });
-        ctx.patchState({ next: response.next });
-        ctx.patchState({ previous: response.previous });
-      })
-    );
+    this.loadRequests.next({
+      type: GetResourcesRequestTypeEnum.GetResourcesByLink,
+      link: action.link,
+    });
   }
 
   @Action(SetSearchText)
