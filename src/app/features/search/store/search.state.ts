@@ -1,4 +1,4 @@
-import { Action, State, StateContext, Store } from '@ngxs/store';
+import { Action, NgxsOnInit, State, StateContext, Store } from '@ngxs/store';
 
 import { BehaviorSubject, EMPTY, switchMap, tap } from 'rxjs';
 
@@ -27,7 +27,7 @@ import { SearchSelectors } from './search.selectors';
   name: 'search',
   defaults: searchStateDefaults,
 })
-export class SearchState {
+export class SearchState implements NgxsOnInit {
   searchService = inject(SearchService);
   store = inject(Store);
   loadRequests = new BehaviorSubject<boolean | null>(null);
