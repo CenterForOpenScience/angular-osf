@@ -15,7 +15,7 @@ import {
   GetPreprintProviderById,
   PreprintsSelectors,
 } from '@osf/features/preprints/store';
-import { HeaderStyleHelper } from '@shared/services';
+import { HeaderStyleHelper } from '@shared/utils';
 
 @Component({
   selector: 'osf-provider-overview',
