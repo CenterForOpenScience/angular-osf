@@ -8,6 +8,7 @@ import { ContributorsService } from '../services';
 
 import {
   AddContributor,
+  ClearUsers,
   DeleteContributor,
   GetAllContributors,
   SearchUsers,
@@ -181,6 +182,11 @@ export class ContributorsState {
       }),
       catchError((error) => this.handleError(ctx, 'users', error))
     );
+  }
+
+  @Action(ClearUsers)
+  clearUsers(ctx: StateContext<ContributorsStateModel>) {
+    ctx.patchState({ users: { data: [], isLoading: false, error: null, totalCount: 0 } });
   }
 
   private handleError(ctx: StateContext<ContributorsStateModel>, section: 'contributorsList' | 'users', error: Error) {

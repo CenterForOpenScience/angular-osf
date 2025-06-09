@@ -18,6 +18,20 @@
       color: var.$dark-blue-1;
       text-align: center;
     }
+
+    .social-link {
+      background-color: var.$pr-blue-1;
+      border-radius: mix.rem(6px);
+      color: var.$white;
+      padding: mix.rem(6px);
+      width: mix.rem(36px);
+      height: mix.rem(36px);
+
+      &:hover {
+        background-color: var.$pr-blue-3;
+        text-decoration: none;
+      }
+    }
   }
 
   .footer-links {

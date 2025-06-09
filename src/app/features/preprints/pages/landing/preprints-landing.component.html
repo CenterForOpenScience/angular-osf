@@ -4,22 +4,26 @@
       <i class="osf-icon-preprints text-5xl"></i>
       <h1>{{ 'preprints.title' | translate }}</h1>
     </div>
-    <p-button
-      class="ml-auto w-full md:w-auto"
-      styleClass="w-full md:w-auto"
-      [label]="'preprints.addPreprint' | translate"
-      (click)="addPreprint()"
-    />
+    @if (isPreprintProviderLoading()) {
+      <p-skeleton class="ml-auto w-full md:w-auto" height="2rem" />
+    } @else {
+      <p-button
+        class="ml-auto w-full md:w-auto"
+        styleClass="w-full md:w-auto"
+        [label]="'preprints.addPreprint' | translate: { preprintWord: osfPreprintProvider()?.preprintWord }"
+        (click)="addPreprint()"
+      />
+    }
   </div>
 
   <div class="provider-description">
     @if (isPreprintProviderLoading()) {
       <div class="flex flex-column gap-2">
-        <p-skeleton width="40%" height="1.5rem"></p-skeleton>
-        <p-skeleton width="70%" height="1.5rem"></p-skeleton>
+        <p-skeleton width="40%" height="1.5rem" />
+        <p-skeleton width="70%" height="1.5rem" />
       </div>
     } @else {
-      <div [innerHTML]="osfPreprintProvider()!.descriptionHtml"></div>
+      <div [innerHTML]="osfPreprintProvider()?.descriptionHtml"></div>
     }
     <a class="font-bold" routerLink="/preprints">{{ 'preprints.poweredBy' | translate }}</a>
   </div>
@@ -32,10 +36,19 @@
   />
 
   <!-- [Rni] TODO: add link to an example preprint -->
-  <a class="font-bold">{{ 'preprints.showExample' | translate }}</a>
+  @if (isPreprintProviderLoading()) {
+    <p-skeleton width="10%" height="1rem" />
+  } @else {
+    <a class="font-bold">{{ 'preprints.showExample' | translate }}</a>
+  }
 </section>
 
-<osf-browse-by-subjects [subjects]="highlightedSubjectsByProviderId()" [isLoading]="areSubjectsLoading()" />
+<osf-browse-by-subjects
+  [subjects]="highlightedSubjectsByProviderId()"
+  [areSubjectsLoading]="areSubjectsLoading()"
+  [isProviderLoading]="isPreprintProviderLoading()"
+  [isLandingPage]="true"
+/>
 
 <osf-preprint-services [preprintProvidersToAdvertise]="preprintProvidersToAdvertise()" />
 

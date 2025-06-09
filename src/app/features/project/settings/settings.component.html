@@ -15,7 +15,11 @@
         [locationText]="'Storage location cannot be changed after project is created.'"
       ></osf-settings-storage-location-card>
 
-      <osf-settings-view-only-links-card (deleteTableItem)="deleteLinkItem($event)" [tableData]="viewOnlyLinks()" />
+      <osf-settings-view-only-links-card
+        [tableData]="viewOnlyLinks()"
+        [isLoading]="isViewOnlyLinksLoading()"
+        (deleteTableItem)="deleteLinkItem($event)"
+      />
 
       <osf-settings-access-requests-card
         (accessRequestChange)="onAccessRequestChange($event)"

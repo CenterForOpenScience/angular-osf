@@ -1,5 +1,6 @@
-<section class="nav-container">
+<section class="nav-container flex align-items-center justify-content-between">
   <img ngSrc="assets/images/logo.svg" alt="OSF Logo" height="36" width="106" />
+
   <p-drawer
     [modal]="true"
     [visible]="isDrawerVisible()"
@@ -8,7 +9,12 @@
   >
     <osf-nav-menu (closeMenu)="toggleMenuVisibility()" />
   </p-drawer>
-  <p-button class="topnav-btn" severity="contrast" (onClick)="toggleMenuVisibility()">
-    <i [class]="!isDrawerVisible() ? 'osf-icon-menu' : 'osf-icon-close'" class="topnav-icon"></i>
+
+  <p-button
+    class="topnav-btn custom-light-hover flex"
+    [icon]="isDrawerVisible() ? 'fas fa-close fa-2xl' : 'fas fa-bars fa-2xl'"
+    severity="contrast"
+    (onClick)="toggleMenuVisibility()"
+  >
   </p-button>
 </section>

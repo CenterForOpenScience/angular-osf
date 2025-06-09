@@ -30,3 +30,7 @@
   --p-toast-error-background: var(--red-1);
   --p-toast-error-close-button-hover-background: var(--red-2);
 }
+
+.p-toast-close-button {
+  top: 3px;
+}

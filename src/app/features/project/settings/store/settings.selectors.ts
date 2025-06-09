@@ -18,4 +18,9 @@ export class SettingsSelectors {
   static getViewOnlyLinks(state: SettingsStateModel) {
     return state.viewOnlyLinks.data;
   }
+
+  @Selector([SettingsState])
+  static isViewOnlyLinksLoading(state: SettingsStateModel) {
+    return state.viewOnlyLinks.isLoading;
+  }
 }

@@ -1,0 +1,108 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
+.preprints-hero-container {
+  background-color: var(--preprints-branding-secondary-color);
+  background-image: var(--preprints-branding-hero-background-image-url);
+
+  color: var(--preprints-branding-primary-color);
+
+  .preprint-provider-name {
+    color: var(--preprints-branding-primary-color);
+  }
+
+  .provider-description {
+    line-height: mix.rem(24px);
+  }
+
+  a {
+    color: var(--preprints-branding-primary-color);
+  }
+
+  .preprints-branding-button {
+    .p-button {
+      color: var(--preprints-branding-secondary-color);
+      background-color: var(--preprints-branding-primary-color);
+    }
+  }
+}
+
+.preprints-advisory-board-section {
+  background: var(--preprints-branding-hero-background-image-url);
+
+  h2 {
+    font-size: mix.rem(24px);
+    margin-top: mix.rem(20px);
+    margin-bottom: mix.rem(10px);
+  }
+
+  ul {
+    margin-left: mix.rem(24px);
+    margin-bottom: mix.rem(10px);
+    line-height: mix.rem(24px);
+
+    li {
+      list-style: disc;
+    }
+  }
+
+  .preprint-advisory-list {
+    flex-direction: row;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-top: mix.rem(24px);
+
+    .preprint-advisory-list-column {
+      width: 50%;
+
+      li {
+        list-style: none;
+        font-size: 16px;
+      }
+    }
+  }
+
+  @media (max-width: var.$breakpoint-md) {
+    .preprint-advisory-list {
+      flex-direction: column;
+
+      .preprint-advisory-list-column {
+        width: 100%;
+      }
+    }
+  }
+
+  &.osf-preprint-service {
+    background-image: none;
+    background-color: var(--preprints-branding-primary-color);
+  }
+}
+
+.preprints-browse-by-subjects-section {
+  .provider-subject {
+    .p-button.p-button-secondary {
+      color: var(--preprints-branding-secondary-color);
+      background-color: var(--preprints-branding-primary-color);
+      border: 1px solid var(--preprints-branding-secondary-color);
+
+      &:hover {
+        color: var(--preprints-branding-primary-color);
+        border: 1px solid var(--preprints-branding-primary-color);
+        background-color: var(--preprints-branding-secondary-color);
+      }
+    }
+  }
+}
+
+.preprints-footer-section {
+  padding-top: mix.rem(10px);
+
+  a {
+    font-weight: bold;
+  }
+
+  p {
+    margin-bottom: mix.rem(10px);
+  }
+}

@@ -10,10 +10,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BreadcrumbComponent } from '@core/components/breadcrumb/breadcrumb.component';
 import { FooterComponent } from '@core/components/footer/footer.component';
 import { HeaderComponent } from '@core/components/header/header.component';
-import { MainContentComponent } from '@core/components/main-content/main-content.component';
-import { SidenavComponent } from '@core/components/sidenav/sidenav.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
-import { IS_WEB, IS_XSMALL } from '@osf/shared/utils/breakpoints.tokens';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+
+import { SidenavComponent } from '../sidenav/sidenav.component';
 
 import { RootComponent } from './root.component';
 
@@ -31,13 +31,12 @@ describe('RootComponent', () => {
       imports: [
         RootComponent,
         ...MockComponents(
-          SidenavComponent,
           HeaderComponent,
-          MainContentComponent,
           FooterComponent,
           TopnavComponent,
           ConfirmDialog,
-          BreadcrumbComponent
+          BreadcrumbComponent,
+          SidenavComponent
         ),
       ],
       providers: [

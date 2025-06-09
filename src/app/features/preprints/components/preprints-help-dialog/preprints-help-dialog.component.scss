@@ -1,0 +1,7 @@
+@use "assets/styles/variables" as var;
+
+.dialog-content {
+  border-top: 1px solid var.$grey-2;
+  border-bottom: 1px solid var.$grey-2;
+  line-height: 2;
+}

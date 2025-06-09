@@ -7,16 +7,19 @@
         [routerLinkActiveOptions]="{
           exact: item.label !== 'navigation.myProjects' ? item.useExactMatch : true,
         }"
-        class="nav-link flex"
+        class="nav-link flex align-items-center"
         [class.mt-5]="item.label === 'navigation.settings' || item.label === 'navigation.myProjects'"
         (click)="goToLink(item)"
       >
         @if (item.icon) {
-          <i [class]="item.icon" class="nav-icon"></i>
+          <osf-icon [iconClass]="`nav-icon ${item.icon}`"></osf-icon>
         }
         <span>{{ item.label | translate }}</span>
         @if (item.items) {
-          <i [class]="item.expanded ? 'osf-icon-arrow-down' : 'osf-icon-arrow'" class="nav-icon ml-auto pt-1"></i>
+          <osf-icon
+            class="ml-auto pt-1"
+            [iconClass]="item.expanded ? `fas fa-chevron-down fa-sm` : `fas fa-chevron-right fa-sm`"
+          ></osf-icon>
         }
       </a>
 
@@ -28,18 +31,18 @@
                 [routerLink]="item.routerLink ? ['/my-projects', currentProjectId(), item.routerLink] : null"
                 [routerLinkActive]="item.routerLink ? 'active' : ''"
                 [routerLinkActiveOptions]="{ exact: true }"
-                class="nav-link flex"
+                class="nav-link flex align-items-center"
                 (click)="goToLink(item)"
               >
                 @if (item.icon) {
-                  <i [class]="item.icon" class="nav-icon"></i>
+                  <osf-icon [iconClass]="`nav-icon ${item.icon}`"></osf-icon>
                 }
                 <span>{{ item.label | translate }}</span>
                 @if (item.items) {
-                  <i
-                    [class]="item.expanded ? 'osf-icon-arrow-down' : 'osf-icon-arrow'"
-                    class="nav-icon ml-auto pt-1"
-                  ></i>
+                  <osf-icon
+                    class="ml-auto pt-1"
+                    [iconClass]="item.expanded ? `fas fa-chevron-down fa-sm` : `fas fa-chevron-right fa-sm`"
+                  ></osf-icon>
                 }
               </a>
             </ng-template>

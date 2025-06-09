@@ -1,8 +1,8 @@
 import { ResourceTab } from '@osf/shared/enums';
-import { Resource } from '@osf/shared/models';
+import { AsyncStateModel, Resource } from '@osf/shared/models';
 
 export interface SearchStateModel {
-  resources: Resource[];
+  resources: AsyncStateModel<Resource[]>;
   resourcesCount: number;
   searchText: string;
   sortBy: string;

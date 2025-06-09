@@ -15,4 +15,7 @@ export const InputLimits = {
     minLength: 8,
     maxLength: 128,
   },
+  requestAccessComment: {
+    maxLength: 250,
+  },
 };

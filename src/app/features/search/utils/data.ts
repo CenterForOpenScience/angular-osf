@@ -1,7 +1,11 @@
 import { ResourceTab } from '@osf/shared/enums/resource-tab.enum';
 
 export const searchStateDefaults = {
-  resources: [],
+  resources: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
   resourcesCount: 0,
   searchText: '',
   sortBy: '-relevance',

@@ -18,6 +18,7 @@ export class PreprintsMapper {
       domain: response.attributes.domain,
       footerLinksHtml: response.attributes.footer_links,
       preprintWord: response.attributes.preprint_word,
+      allowSubmissions: response.attributes.allow_submissions,
       brand: {
         id: brandRaw.id,
         name: brandRaw.attributes.name,
@@ -42,11 +43,12 @@ export class PreprintsMapper {
       }));
   }
 
-  static fromSubjectsGetResponse(response: SubjectGetResponse[]): Subject[] {
+  static fromSubjectsGetResponse(providerId: string, response: SubjectGetResponse[]): Subject[] {
     return response.map((subject) => ({
       id: subject.id,
       text: subject.attributes.text,
       taxonomy_name: subject.attributes.taxonomy_name,
+      preprintProviderId: providerId,
     }));
   }
 }

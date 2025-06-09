@@ -6,9 +6,9 @@
 
   <section class="grid justify-content-center align-items-center gap-3 mt-6">
     @for (preprintProvider of preprintProvidersToAdvertise(); track preprintProvider.id) {
-      <!-- [Rni] TODO: add link to preprint provider page -->
       <a
         class="preprint-provider-grid-item"
+        [routerLink]="[preprintProvider.id]"
         [style.background-image]="'url(' + preprintProvider.whiteWideImageUrl + ')'"
         [title]="preprintProvider.name"
       ></a>

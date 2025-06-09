@@ -1,0 +1,12 @@
+@use "assets/styles/mixins" as mix;
+
+.search-input-container {
+  position: relative;
+
+  img {
+    position: absolute;
+    right: mix.rem(4px);
+    top: mix.rem(4px);
+    z-index: 1;
+  }
+}

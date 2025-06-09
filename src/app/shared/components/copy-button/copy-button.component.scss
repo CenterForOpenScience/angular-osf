@@ -1,0 +1,13 @@
+@use "assets/styles/variables" as var;
+
+:host {
+  display: flex;
+}
+
+.icon-copy-btn {
+  cursor: pointer;
+
+  &:hover {
+    color: var.$dark-blue-2;
+  }
+}

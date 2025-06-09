@@ -3,21 +3,17 @@
     <div class="footer-links flex flex-wrap justify-content-center align-items-center">
       <div class="flex justify-content-center">
         <a href="https://cos.io/">{{ 'footer.links.centerForOpenScience' | translate }}</a>
-        <span class="separator">|</span>
       </div>
-
-      <div class="flex justify-content-center">
-        <a>{{ 'footer.links.reproducibilityProjectPsychology' | translate }}</a>
-        <span class="separator">|</span>
-      </div>
-
-      <a>{{ 'footer.links.reproducibilityProjectCancerBiology' | translate }}</a>
     </div>
 
     <div class="footer-socials flex justify-content-center align-items-center" [class]="isWeb() ? 'm-y-12' : 'm-y-24'">
       @for (icon of socialIcons; track icon.name) {
-        <a [href]="icon.url" [attr.aria-label]="'footer.socials.' + icon.name | translate">
-          <img width="37" height="37" [ngSrc]="'assets/icons/socials/' + icon.name + '.svg'" alt="Social" />
+        <a
+          class="social-link flex align-items-center justify-content-center"
+          [href]="icon.url"
+          [attr.aria-label]="'footer.socials.' + icon.name | translate"
+        >
+          <osf-icon [iconClass]="`${icon.iconName} fa-2xl`"></osf-icon>
         </a>
       }
     </div>

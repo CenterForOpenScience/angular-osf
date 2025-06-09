@@ -48,7 +48,7 @@ export class AddUnregisteredContributorDialogComponent {
   }
 
   addRegistered() {
-    const data: ContributorDialogAddModel = { data: [], type: AddContributorType.Unregistered };
+    const data: ContributorDialogAddModel = { data: [], type: AddContributorType.Registered };
     this.dialogRef.close(data);
   }
 

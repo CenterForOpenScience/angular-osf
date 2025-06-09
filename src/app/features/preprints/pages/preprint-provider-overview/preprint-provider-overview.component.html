@@ -1,0 +1,14 @@
+<osf-preprint-provider-hero
+  [preprintProvider]="preprintProvider()"
+  [isPreprintProviderLoading]="isPreprintProviderLoading()"
+/>
+
+<osf-browse-by-subjects
+  [subjects]="highlightedSubjectsByProviderId()"
+  [areSubjectsLoading]="areSubjectsLoading()"
+  [isProviderLoading]="isPreprintProviderLoading()"
+/>
+
+<osf-advisory-board [htmlContent]="preprintProvider()?.advisoryBoardHtml" [brand]="preprintProvider()?.brand" />
+
+<osf-preprint-provider-footer [footerHtml]="preprintProvider()?.footerLinksHtml" />

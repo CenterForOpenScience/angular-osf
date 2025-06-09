@@ -302,7 +302,9 @@
           "daily": "You'll receive a daily summary of file updates.",
           "none": "You won't receive file update notifications."
         }
-      }
+      },
+      "updateProjectDetailsMessage": "Successfully updated project details.",
+      "updateProjectSettingsMessage": "Successfully updated project settings."
     }
   },
   "myProfile": {
@@ -1235,7 +1237,7 @@
   },
   "preprints": {
     "title": "Preprints",
-    "addPreprint": "Add a Preprint",
+    "addPreprint": "Add a {{preprintWord}}",
     "poweredBy": "Powered by OSF Preprints",
     "searchPlaceholder": "Search Preprints",
     "showExample": "Show an example",
@@ -1254,6 +1256,11 @@
       "publicRoadmap": "public roadmap",
       "inputWelcome": "Input welcome!",
       "contactUs": "Contact us"
+    },
+    "helpDialog": {
+      "header": "Search help",
+      "message": "OSF Search provides a powerful discovery tool to help you find data, papers, analysis plans, and more content across the research lifecycle. OSF Preprints has some specialized filters, which you can learn more about on our",
+      "linkText": "help guides"
     }
   },
   "truncatedText": {
@@ -1275,7 +1282,10 @@
       "x": "X (formerly Twitter)",
       "facebook": "Facebook",
       "group": "Group",
-      "github": "GitHub"
+      "github": "GitHub",
+      "linkedin": "Linkedin",
+      "bluesky": "Bluesky",
+      "mastodon": "Mastodon"
     },
     "copyright": "Copyright © 2011-2025"
   },
@@ -1287,6 +1297,23 @@
       "papers": "Papers",
       "supplements": "Supplements"
     }
+  },
+  "pageNotFound": {
+    "title": "Page not found",
+    "message": "The page you were looking for is either doesn't exist, was deleted, or the URL may be incorrect. If this should not have occurred and the issue persists, please report it to"
+  },
+  "forbiddenPage": {
+    "title": "You Don't Have Permission To Perform This Action",
+    "message": "If this should not have occurred and the issue persists, please report it to"
+  },
+  "requestAccess": {
+    "title": "You Need Permission",
+    "message": "Ask for access, or switch to an account with permission.",
+    "helpMessage": "If this should not have occurred, please contact",
+    "requestAccess": "Request Access",
+    "switchAccount": "Switch Account",
+    "commentLabel": "Comment (Optional)",
+    "requestedSuccessMessage": "Your request for access has been sent."
   },
   "validation": {
     "required": "The field is required.",

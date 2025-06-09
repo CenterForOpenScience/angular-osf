@@ -74,6 +74,12 @@
           <td>{{ item.dateModified | date: 'MMM d, y, h:mm a' }}</td>
         </tr>
       </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="3" class="text-center">{{ 'project.contributors.table.emptyMessage' | translate }}</td>
+        </tr>
+      </ng-template>
     </p-table>
   }
 </div>

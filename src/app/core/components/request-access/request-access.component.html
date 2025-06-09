@@ -1,0 +1,42 @@
+<section class="container text-center flex flex-column flex-1 my-7 mx-3 p-3 md:p-4">
+  <h2>{{ 'requestAccess.title' | translate }}</h2>
+
+  <p class="mt-4">{{ 'requestAccess.message' | translate }}</p>
+
+  <div class="flex flex-column text-left mt-4">
+    <label class="font-bold" for="comment">
+      {{ 'requestAccess.commentLabel' | translate }}
+    </label>
+
+    <textarea
+      class="comment-input"
+      pTextarea
+      id="comment"
+      [rows]="3"
+      [maxLength]="commentLimit"
+      [(ngModel)]="comment"
+    ></textarea>
+  </div>
+
+  <div class="flex align-items-center gap-3 mt-6">
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      [label]="'requestAccess.requestAccess' | translate"
+      (click)="requestAccess()"
+    ></p-button>
+
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      severity="secondary"
+      [label]="'requestAccess.switchAccount' | translate"
+      (click)="switchAccount()"
+    ></p-button>
+  </div>
+
+  <p class="mt-4">
+    <span>{{ 'requestAccess.helpMessage' | translate }}</span>
+    <a class="ml-1 font-bold" href="mailto:support@osf.io">support&#64;osf.io</a>
+  </p>
+</section>

@@ -7,8 +7,8 @@
     (buttonClick)="createProject()"
   />
 
-  <div class="quick-search-container">
-    <p class="text-center m-b-24">
+  <div class="quick-search-container py-4 px-3 md:px-4">
+    <p class="text-center mb-4 xl:mb-6">
       {{ 'home.loggedIn.dashboard.quickSearch.goTo' | translate }}
       <a routerLink="/my-projects">
         {{ 'home.loggedIn.dashboard.quickSearch.myProjects' | translate }}
@@ -34,12 +34,12 @@
     />
   </div>
 
-  <div class="public-projects-container flex flex-row">
+  <div class="public-projects-container flex flex-row pt-6 pb-4 px-3 md:px-4 xl:py-6">
     <i class="osf-icon-search"></i>
     <h1>{{ 'home.loggedIn.publicProjects.title' | translate }}</h1>
   </div>
 
-  <div class="latest-research-container flex flex-column">
+  <div class="latest-research-container flex flex-column py-6 px-3 md:px-4">
     <div>
       <h1>{{ 'home.loggedIn.latestResearch.title' | translate }}</h1>
       <p class="m-t-12">{{ 'home.loggedIn.latestResearch.subtitle' | translate }}</p>
@@ -48,7 +48,7 @@
     <p-button [label]="'home.loggedIn.latestResearch.button' | translate" severity="success" />
   </div>
 
-  <div class="hosting-container flex flex-column">
+  <div class="hosting-container flex flex-column py-6 px-3 md:px-4">
     <div class="text-container">
       <h1>{{ 'home.loggedIn.hosting.title' | translate }}</h1>
       <p class="m-t-12">{{ 'home.loggedIn.hosting.subtitle' | translate }}</p>

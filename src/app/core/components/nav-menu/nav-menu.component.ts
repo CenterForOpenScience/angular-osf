@@ -10,11 +10,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { NAV_ITEMS, PROJECT_MENU_ITEMS } from '@core/constants/nav-items.constant';
+import { IconComponent } from '@osf/shared/components';
 import { NavItem } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-nav-menu',
-  imports: [RouterLinkActive, RouterLink, PanelMenuModule, TranslatePipe],
+  imports: [RouterLinkActive, RouterLink, PanelMenuModule, TranslatePipe, IconComponent],
   templateUrl: './nav-menu.component.html',
   styleUrl: './nav-menu.component.scss',
 })

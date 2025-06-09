@@ -1,6 +1,6 @@
 import { select, Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -21,7 +21,6 @@ import { ToastService } from '@shared/services';
 export class TogglePublicityDialogComponent {
   private store = inject(Store);
   private dialogConfig = inject(DynamicDialogConfig);
-  private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
   protected destroyRef = inject(DestroyRef);
@@ -43,11 +42,9 @@ export class TogglePublicityDialogComponent {
         next: () => {
           this.dialogRef.close();
           this.toastService.showSuccess(
-            this.translateService.instant(
-              this.newPublicStatus()
-                ? 'project.overview.dialog.toast.makePublic.success'
-                : 'project.overview.dialog.toast.makePrivate.success'
-            )
+            this.newPublicStatus()
+              ? 'project.overview.dialog.toast.makePublic.success'
+              : 'project.overview.dialog.toast.makePrivate.success'
           );
         },
       });

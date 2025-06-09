@@ -1,6 +1,6 @@
 import { TranslateModule } from '@ngx-translate/core';
 
-import { Card } from 'primeng/card';
+import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-browse-by-subjects',
-  imports: [Card, RouterLink, Skeleton, TranslateModule],
+  imports: [RouterLink, Skeleton, TranslateModule, Button],
   templateUrl: './browse-by-subjects.component.html',
   styleUrl: './browse-by-subjects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +32,8 @@ export class BrowseBySubjectsComponent {
       ]),
     }));
   });
-  isLoading = input.required<boolean>();
-  skeletonArray = Array.from({ length: 10 }, (_, i) => i + 1);
+  areSubjectsLoading = input.required<boolean>();
+  isProviderLoading = input.required<boolean>();
+  isLandingPage = input<boolean>(false);
+  skeletonArray = Array.from({ length: 6 }, (_, i) => i + 1);
 }
