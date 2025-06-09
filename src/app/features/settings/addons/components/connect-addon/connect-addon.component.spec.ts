@@ -50,10 +50,10 @@ describe('ConnectAddonComponent', () => {
         provideNoopAnimations(),
         MockProvider(Store, {
           selectSignal: jest.fn().mockImplementation((selector) => {
-            if (selector === AddonsSelectors.getAddonUserReference) {
+            if (selector === AddonsSelectors.getAddonsUserReference) {
               return () => [{ id: 'test-user-id' }];
             }
-            if (selector === AddonsSelectors.getCreatedOrUpdatedStorageAddon) {
+            if (selector === AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon) {
               return () => null;
             }
             return () => null;

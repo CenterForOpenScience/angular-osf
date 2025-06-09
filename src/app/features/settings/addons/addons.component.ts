@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -11,17 +11,21 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
-import { SelectOption } from '@osf/shared/models';
+import { LoadingSpinnerComponent, SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
 import { IS_XSMALL } from '@osf/shared/utils';
 import { AddonCardListComponent } from '@shared/components/addons';
+import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
+import { AddonCategory, AddonTabValue } from '@shared/enums';
 import {
   AddonsSelectors,
+  CreateAuthorizedAddon,
+  DeleteAuthorizedAddon,
   GetAddonsUserReference,
   GetAuthorizedCitationAddons,
   GetAuthorizedStorageAddons,
   GetCitationAddons,
   GetStorageAddons,
+  UpdateAuthorizedAddon,
 } from '@shared/stores/addons';
 
 @Component({
@@ -39,25 +43,48 @@ import {
     SelectModule,
     FormsModule,
     TranslatePipe,
+    LoadingSpinnerComponent,
   ],
   templateUrl: './addons.component.html',
   styleUrl: './addons.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonsComponent {
-  #store = inject(Store);
-  protected readonly defaultTabValue = 0;
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly searchControl = new FormControl<string>('');
+  private store = inject(Store);
+  protected readonly tabOptions = ADDON_TAB_OPTIONS;
+  protected readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
+  protected isMobile = toSignal(inject(IS_XSMALL));
+  protected AddonTabValue = AddonTabValue;
+  protected defaultTabValue = AddonTabValue.ALL_ADDONS;
+  protected searchControl = new FormControl<string>('');
+  protected selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
+  protected selectedTab = signal<number>(this.defaultTabValue);
 
-  protected readonly selectedCategory = signal<string>('external-storage-services');
-  protected readonly selectedTab = signal<number>(this.defaultTabValue);
-  protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
-  protected readonly addonsUserReference = this.#store.selectSignal(AddonsSelectors.getAddonUserReference);
-  protected readonly storageAddons = this.#store.selectSignal(AddonsSelectors.getStorageAddons);
-  protected readonly citationAddons = this.#store.selectSignal(AddonsSelectors.getCitationAddons);
-  protected readonly authorizedStorageAddons = this.#store.selectSignal(AddonsSelectors.getAuthorizedStorageAddons);
-  protected readonly authorizedCitationAddons = this.#store.selectSignal(AddonsSelectors.getAuthorizedCitationAddons);
+  protected currentUser = select(UserSelectors.getCurrentUser);
+  protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
+  protected storageAddons = select(AddonsSelectors.getStorageAddons);
+  protected citationAddons = select(AddonsSelectors.getCitationAddons);
+  protected authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
+  protected authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
+
+  protected isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
+  protected isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
+  protected isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+  protected isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
+  protected isAddonsLoading = computed(() => {
+    return this.isStorageAddonsLoading() || this.isCitationAddonsLoading();
+  });
+  protected actions = createDispatchMap({
+    getStorageAddons: GetStorageAddons,
+    getCitationAddons: GetCitationAddons,
+    getAuthorizedStorageAddons: GetAuthorizedStorageAddons,
+    getAuthorizedCitationAddons: GetAuthorizedCitationAddons,
+    createAuthorizedAddon: CreateAuthorizedAddon,
+    updateAuthorizedAddon: UpdateAuthorizedAddon,
+    getAddonsUserReference: GetAddonsUserReference,
+    deleteAuthorizedAddon: DeleteAuthorizedAddon,
+  });
+
   protected readonly allAuthorizedAddons = computed(() => {
     const authorizedAddons = [...this.authorizedStorageAddons(), ...this.authorizedCitationAddons()];
 
@@ -70,39 +97,19 @@ export class AddonsComponent {
   });
 
   protected readonly currentAction = computed(() =>
-    this.selectedCategory() === 'external-storage-services' ? GetStorageAddons : GetCitationAddons
+    this.selectedCategory() === AddonCategory.EXTERNAL_STORAGE_SERVICES
+      ? this.actions.getStorageAddons
+      : this.actions.getCitationAddons
   );
 
   protected readonly currentAddonsState = computed(() =>
-    this.selectedCategory() === 'external-storage-services' ? this.storageAddons() : this.citationAddons()
+    this.selectedCategory() === AddonCategory.EXTERNAL_STORAGE_SERVICES ? this.storageAddons() : this.citationAddons()
   );
 
   protected readonly filteredAddonCards = computed(() => {
     const searchValue = this.searchControl.value?.toLowerCase() ?? '';
     return this.currentAddonsState().filter((card) => card.externalServiceName.includes(searchValue));
   });
-
-  protected readonly tabOptions: SelectOption[] = [
-    {
-      label: 'settings.addons.tabs.allAddons',
-      value: 0,
-    },
-    {
-      label: 'settings.addons.tabs.connectedAddons',
-      value: 1,
-    },
-  ];
-
-  protected readonly categoryOptions: SelectOption[] = [
-    {
-      label: 'settings.addons.categories.additionalService',
-      value: 'external-storage-services',
-    },
-    {
-      label: 'settings.addons.categories.citationManager',
-      value: 'external-citation-services',
-    },
-  ];
 
   protected onCategoryChange(value: string): void {
     this.selectedCategory.set(value);
@@ -112,26 +119,32 @@ export class AddonsComponent {
     effect(() => {
       // Only proceed if we have the current user
       if (this.currentUser()) {
-        this.#store.dispatch(GetAddonsUserReference);
+        this.store.dispatch(GetAddonsUserReference);
+      }
+    });
+
+    effect(() => {
+      // Only proceed if we have the current user
+      if (this.currentUser() && this.userReferenceId()) {
+        const action = this.currentAction();
+        const addons = this.currentAddonsState();
+
+        if (!addons?.length) {
+          action();
+        }
       }
     });
 
     effect(() => {
       // Only proceed if we have both current user and user reference
       if (this.currentUser() && this.userReferenceId()) {
-        this.#loadAddonsIfNeeded(this.userReferenceId());
+        this.fetchAllAuthorizedAddons(this.userReferenceId());
       }
     });
   }
 
-  #loadAddonsIfNeeded(userReferenceId: string): void {
-    const action = this.currentAction();
-    const addons = this.currentAddonsState();
-
-    if (!addons?.length) {
-      this.#store.dispatch(action);
-      this.#store.dispatch(new GetAuthorizedStorageAddons(userReferenceId));
-      this.#store.dispatch(new GetAuthorizedCitationAddons(userReferenceId));
-    }
+  private fetchAllAuthorizedAddons(userReferenceId: string): void {
+    this.actions.getAuthorizedStorageAddons(userReferenceId);
+    this.actions.getAuthorizedCitationAddons(userReferenceId);
   }
 }

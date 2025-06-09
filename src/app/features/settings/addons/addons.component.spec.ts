@@ -27,7 +27,7 @@ describe('AddonsComponent', () => {
             if (selector === UserSelectors.getCurrentUser) {
               return () => ({ id: 'test-user-id' });
             }
-            if (selector === AddonsSelectors.getAddonUserReference) {
+            if (selector === AddonsSelectors.getAddonsUserReference) {
               return () => [{ id: 'test-reference-id' }];
             }
             if (selector === AddonsSelectors.getStorageAddons) {

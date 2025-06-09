@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { JsonApiResponse } from '@core/models';
 import { JsonApiService } from '@core/services';
 import { UserSelectors } from '@core/store/user';
-import { AddonMapper } from '@osf/features/settings/addons/mappers';
+import { AddonMapper } from '@osf/shared/mappers';
 import {
   Addon,
   AddonGetResponse,
@@ -15,7 +15,10 @@ import {
   AddonResponse,
   AuthorizedAddon,
   AuthorizedAddonGetResponse,
+  ConfiguredAddon,
+  ConfiguredAddonGetResponse,
   IncludedAddonData,
+  ResourceReference,
   UserReference,
 } from '@shared/models';
 
@@ -53,6 +56,17 @@ export class AddonsService {
       .pipe(map((response) => response.data));
   }
 
+  getAddonsResourceReference(resourceId: string): Observable<ResourceReference[]> {
+    const resourceUri = `https://staging4.osf.io/${resourceId}`;
+    const params = {
+      'filter[resource_uri]': resourceUri,
+    };
+
+    return this.#jsonApiService
+      .get<JsonApiResponse<ResourceReference[], null>>(environment.addonsApiUrl + '/resource-references/', params)
+      .pipe(map((response) => response.data));
+  }
+
   getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAddon[]> {
     const params = {
       [`fields[external-${addonType}-services]`]: 'external_service_name',
@@ -64,6 +78,18 @@ export class AddonsService {
       .pipe(
         map((response) => {
           return response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included));
+        })
+      );
+  }
+
+  getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddon[]> {
+    return this.#jsonApiService
+      .get<
+        JsonApiResponse<ConfiguredAddonGetResponse[], null>
+      >(`${environment.addonsApiUrl}/resource-references/${referenceId}/configured_${addonType}_accounts/`)
+      .pipe(
+        map((response) => {
+          return response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item));
         })
       );
   }

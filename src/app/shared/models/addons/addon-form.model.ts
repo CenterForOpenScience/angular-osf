@@ -1,14 +1,6 @@
 import { FormControl } from '@angular/forms';
 
-export enum AddonFormControls {
-  AccessKey = 'accessKey',
-  SecretKey = 'secretKey',
-  HostUrl = 'hostUrl',
-  Username = 'username',
-  Password = 'password',
-  PersonalAccessToken = 'personalAccessToken',
-  AccountName = 'accountName',
-}
+import { AddonFormControls } from '@shared/enums';
 
 export interface AddonForm {
   [AddonFormControls.AccessKey]?: FormControl<string | null>;

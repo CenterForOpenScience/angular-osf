@@ -5,5 +5,7 @@
         <osf-addon-card [cardButtonLabel]="cardButtonLabel()" [card]="card" [showDangerButton]="showDangerButton()" />
       </div>
     }
+  } @else {
+    <p class="p-2">{{ 'settings.addons.messages.noAddons' | translate }}</p>
   }
 </section>

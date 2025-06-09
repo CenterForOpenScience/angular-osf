@@ -10,7 +10,7 @@ import { Component, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
-import { Addon, AuthorizedAddon } from '@shared/models';
+import { Addon, AuthorizedAddon, ConfiguredAddon } from '@shared/models';
 import { DeleteAuthorizedAddon } from '@shared/stores/addons';
 import { IS_XSMALL } from '@shared/utils';
 
@@ -21,9 +21,9 @@ import { IS_XSMALL } from '@shared/utils';
   styleUrl: './addon-card.component.scss',
 })
 export class AddonCardComponent {
-  #router = inject(Router);
-  #store = inject(Store);
-  readonly card = input<Addon | AuthorizedAddon | null>(null);
+  private router = inject(Router);
+  private store = inject(Store);
+  readonly card = input<Addon | AuthorizedAddon | ConfiguredAddon | null>(null);
   readonly cardButtonLabel = input<string>('');
   readonly showDangerButton = input<boolean>(false);
   protected isDialogVisible = signal(false);
@@ -40,7 +40,9 @@ export class AddonCardComponent {
   onConnectAddon(): void {
     const addon = this.card();
     if (addon) {
-      this.#router.navigate(['/settings/addons/connect-addon'], {
+      const currentUrl = this.router.url;
+      const baseUrl = currentUrl.split('/addons')[0];
+      this.router.navigate([`${baseUrl}/addons/connect-addon`], {
         state: { addon },
       });
     }
@@ -60,7 +62,7 @@ export class AddonCardComponent {
     const addonId = this.card()?.id;
     if (addonId) {
       this.isDisabling.set(true);
-      this.#store.dispatch(new DeleteAuthorizedAddon(addonId, this.addonTypeString())).subscribe({
+      this.store.dispatch(new DeleteAuthorizedAddon(addonId, this.addonTypeString())).subscribe({
         complete: () => {
           this.isDisabling.set(false);
           this.isDialogVisible.set(false);

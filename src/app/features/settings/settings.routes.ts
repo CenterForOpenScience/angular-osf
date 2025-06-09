@@ -35,7 +35,9 @@ export const settingsRoutes: Routes = [
           {
             path: 'connect-addon',
             loadComponent: () =>
-              import('./addons/pages/connect-addon/connect-addon.component').then((mod) => mod.ConnectAddonComponent),
+              import('@osf/features/settings/addons/components/connect-addon/connect-addon.component').then(
+                (mod) => mod.ConnectAddonComponent
+              ),
           },
         ],
       },

@@ -927,10 +927,13 @@
           "function": "Function",
           "status": "Status"
         },
+        "configure": "Configure ",
         "termsDescription": "• This add-on connects your OSF project to an external service. Use of this service is bound by its terms and conditions. The OSF is not responsible for the service or for your use thereof.",
         "storageDescription": "• This add-on allows you to store files using an external service. Files added to this add-on are not stored within the OSF.",
         "reconnectAccount": "Reconnect Account",
         "setupNewAccount": "Setup new account",
+        "chooseExistingAccount": "Choose existing account",
+        "loginToOrSelectAccount": "Login to {{addonName}} or select an account",
         "startOauth": "Start OAuth",
         "oauthDescription": "Complete the OAuth process in the new window before returning to this page. If you do not see a new window, please click the Start OAuth link below."
       },
@@ -950,12 +953,15 @@
         "buttons": {
           "cancel": "Cancel",
           "next": "Next",
+          "acceptingTerms": "Accepting...",
           "back": "Back",
           "connect": "Connect",
           "reconnect": "Reconnect",
           "authorize": "Authorize",
           "disable": "Disable",
-          "startOauth": "Start OAuth"
+          "startOauth": "Start OAuth",
+          "newAccount": "Setup New Account",
+          "existingAccount": "Choose Existing Account"
         }
       },
       "messages": {
@@ -968,7 +974,8 @@
         "deleteConfirmation": {
           "title": "Disable Account?",
           "message": "Are you sure you want to disable this account? All projects connected to this account will be affected."
-        }
+        },
+        "noAddons": "No results found."
       }
     },
     "profileSettings": {

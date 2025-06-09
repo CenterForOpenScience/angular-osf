@@ -8,23 +8,28 @@ import { Social } from '@osf/shared/models';
 export class UserSelectors {
   @Selector([UserState])
   static getCurrentUser(state: UserStateModel): User | null {
-    return state.currentUser;
+    return state.currentUser.data;
+  }
+
+  @Selector([UserState])
+  static getCurrentUserLoading(state: UserStateModel): boolean {
+    return state.currentUser.isLoading;
   }
 
   @Selector([UserState])
   static getProfileSettings(state: UserStateModel): ProfileSettingsStateModel {
     return {
-      education: state.currentUser?.education ?? [],
-      employment: state.currentUser?.employment ?? [],
-      social: state.currentUser?.social ?? ({} as Social),
+      education: state.currentUser.data?.education ?? [],
+      employment: state.currentUser.data?.employment ?? [],
+      social: state.currentUser.data?.social ?? ({} as Social),
       user: {
-        middleNames: state.currentUser?.middleNames ?? '',
-        suffix: state.currentUser?.suffix ?? '',
-        id: state.currentUser?.id ?? '',
-        fullName: state.currentUser?.fullName ?? '',
-        email: state.currentUser?.email ?? '',
-        givenName: state.currentUser?.givenName ?? '',
-        familyName: state.currentUser?.familyName ?? '',
+        middleNames: state.currentUser.data?.middleNames ?? '',
+        suffix: state.currentUser.data?.suffix ?? '',
+        id: state.currentUser.data?.id ?? '',
+        fullName: state.currentUser.data?.fullName ?? '',
+        email: state.currentUser.data?.email ?? '',
+        givenName: state.currentUser.data?.givenName ?? '',
+        familyName: state.currentUser.data?.familyName ?? '',
       },
     } satisfies ProfileSettingsStateModel;
   }

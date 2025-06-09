@@ -53,6 +53,19 @@ export interface AuthorizedAddonGetResponse {
   };
 }
 
+export interface ConfiguredAddonGetResponse {
+  type: string;
+  id: string;
+  attributes: {
+    display_name: string;
+    external_service_name: string;
+    root_folder: string;
+    connected_capabilities: string[];
+    connected_operation_names: string[];
+    current_user_is_owner: boolean;
+  };
+}
+
 export interface Addon {
   type: string;
   id: string;
@@ -82,6 +95,17 @@ export interface AuthorizedAddon {
   credentialsFormat: string;
 }
 
+export interface ConfiguredAddon {
+  type: string;
+  id: string;
+  displayName: string;
+  externalServiceName: string;
+  rootFolder: string;
+  connectedCapabilities: string[];
+  connectedOperationNames: string[];
+  currentUserIsOwner: boolean;
+}
+
 export interface IncludedAddonData {
   type: string;
   id: string;
@@ -102,6 +126,14 @@ export interface UserReference {
   id: string;
   attributes: {
     user_uri: string;
+  };
+}
+
+export interface ResourceReference {
+  type: string;
+  id: string;
+  attributes: {
+    resource_uri: string;
   };
 }
 

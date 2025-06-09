@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -15,11 +15,10 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router, RouterLink } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { Addon, AddonForm, AddonFormControls, AddonRequest, AddonTerm, AuthorizedAddon } from '@shared/models';
+import { ADDON_TERMS as addonTerms } from '@osf/shared/constants';
+import { AddonFormControls, CredentialsFormat } from '@osf/shared/enums';
+import { Addon, AddonForm, AddonRequest, AddonTerm, AuthorizedAddon } from '@shared/models';
 import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
-
-import { ADDON_TERMS as addonTerms } from '../../constants';
-import { CredentialsFormat } from '../../enums';
 
 @Component({
   selector: 'osf-connect-addon',
@@ -44,26 +43,16 @@ import { CredentialsFormat } from '../../enums';
 })
 export class ConnectAddonComponent {
   protected readonly stepper = viewChild(Stepper);
-  // protected readonly selectedFolders = signal<string[]>([]);
-  // protected readonly folders: GoogleDriveFolder[] = [
-  //   { name: 'folder name example', selected: false },
-  //   { name: 'folder name example', selected: false },
-  //   { name: 'folder name example', selected: false },
-  //   { name: 'folder name example', selected: false },
-  //   { name: 'folder name example', selected: false },
-  //   { name: 'folder name example', selected: false },
-  // ];
-  #router = inject(Router);
-  #store = inject(Store);
-  #fb = inject(FormBuilder);
-  protected readonly credentialsFormat = CredentialsFormat;
-  protected readonly terms = signal<AddonTerm[]>([]);
-  protected readonly addon = signal<Addon | AuthorizedAddon | null>(null);
-  protected readonly addonAuthUrl = signal<string>('/settings/addons');
-  protected readonly formControls = AddonFormControls;
-  protected readonly userReference = this.#store.selectSignal(AddonsSelectors.getAddonUserReference);
-  protected createdAddon = this.#store.selectSignal(AddonsSelectors.getCreatedOrUpdatedStorageAddon);
-  protected readonly isConnecting = signal(false);
+  private router = inject(Router);
+  private store = inject(Store);
+  private fb = inject(FormBuilder);
+  protected credentialsFormat = CredentialsFormat;
+  protected terms = signal<AddonTerm[]>([]);
+  protected addon = signal<Addon | AuthorizedAddon | null>(null);
+  protected addonAuthUrl = signal<string>('/settings/addons');
+  protected formControls = AddonFormControls;
+  protected userReference = select(AddonsSelectors.getAddonsUserReference);
+  protected createdAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
   protected isAuthorized = computed(() => {
     //check if the addon is already authorized
     const addon = this.addon();
@@ -72,7 +61,7 @@ export class ConnectAddonComponent {
     }
     return false;
   });
-  protected readonly addonTypeString = computed(() => {
+  protected addonTypeString = computed(() => {
     //get the addon type string based on the addon type property
     const addon = this.addon();
     if (addon) {
@@ -83,11 +72,12 @@ export class ConnectAddonComponent {
     return '';
   });
   protected addonForm: FormGroup<AddonForm>;
+  protected isConnecting = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
 
   constructor() {
-    const terms = this.#getTerms();
+    const terms = this.getTerms();
     this.terms.set(terms);
-    this.addonForm = this.#initializeForm();
+    this.addonForm = this.initializeForm();
 
     effect(() => {
       if (this.isAuthorized()) {
@@ -96,20 +86,12 @@ export class ConnectAddonComponent {
     });
   }
 
-  // toggleFolderSelection(folder: GoogleDriveFolder): void {
-  //   folder.selected = !folder.selected;
-  //   this.selectedFolders.set(
-  //     this.folders.filter((f) => f.selected).map((f) => f.name),
-  //   );
-  // }
-
-  handleConnectStorageAddon() {
+  handleConnectStorageAddon(): void {
     if (!this.addon() || !this.addonForm.valid) return;
 
-    this.isConnecting.set(true);
-    const request = this.#generateRequestPayload();
+    const request = this.generateRequestPayload();
 
-    this.#store
+    this.store
       .dispatch(
         !this.isAuthorized()
           ? new CreateAuthorizedAddon(request, this.addonTypeString())
@@ -123,48 +105,44 @@ export class ConnectAddonComponent {
             window.open(createdAddon.attributes.auth_url, '_blank');
             this.stepper()?.value.set(3);
           }
-          this.isConnecting.set(false);
-        },
-        error: () => {
-          this.isConnecting.set(false);
         },
       });
   }
 
-  #initializeForm(): FormGroup<AddonForm> {
+  private initializeForm(): FormGroup<AddonForm> {
     const addon = this.addon();
 
     if (addon) {
       const formControls: Partial<AddonForm> = {
-        [AddonFormControls.AccountName]: this.#fb.control<string>(addon.displayName || '', Validators.required),
+        [AddonFormControls.AccountName]: this.fb.control<string>(addon.displayName || '', Validators.required),
       };
 
       switch (addon.credentialsFormat) {
         case CredentialsFormat.ACCESS_SECRET_KEYS:
-          formControls[AddonFormControls.AccessKey] = this.#fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.SecretKey] = this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.AccessKey] = this.fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.SecretKey] = this.fb.control<string>('', Validators.required);
           break;
         case CredentialsFormat.DATAVERSE_API_TOKEN:
-          formControls[AddonFormControls.HostUrl] = this.#fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.PersonalAccessToken] = this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.HostUrl] = this.fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.PersonalAccessToken] = this.fb.control<string>('', Validators.required);
           break;
         case CredentialsFormat.USERNAME_PASSWORD:
-          formControls[AddonFormControls.HostUrl] = this.#fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.Username] = this.#fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.Password] = this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.HostUrl] = this.fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.Username] = this.fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.Password] = this.fb.control<string>('', Validators.required);
           break;
         case CredentialsFormat.REPO_TOKEN:
-          formControls[AddonFormControls.AccessKey] = this.#fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.SecretKey] = this.#fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.AccessKey] = this.fb.control<string>('', Validators.required);
+          formControls[AddonFormControls.SecretKey] = this.fb.control<string>('', Validators.required);
           break;
       }
-      return this.#fb.group(formControls as AddonForm);
+      return this.fb.group(formControls as AddonForm);
     }
 
     return new FormGroup({} as AddonForm);
   }
 
-  #generateRequestPayload(): AddonRequest {
+  private generateRequestPayload(): AddonRequest {
     const formValue = this.addonForm.value;
     const addon = this.addon()!;
     const credentials: Record<string, unknown> = {};
@@ -208,7 +186,7 @@ export class ConnectAddonComponent {
               id: this.userReference()[0].id || '',
             },
           },
-          ...this.#getServiceRelationship(addon),
+          ...this.getServiceRelationship(addon),
         },
         type: `authorized-${this.addonTypeString()}-accounts`,
       },
@@ -217,7 +195,7 @@ export class ConnectAddonComponent {
     return requestPayload;
   }
 
-  #getServiceRelationship(addon: Addon | AuthorizedAddon) {
+  private getServiceRelationship(addon: Addon | AuthorizedAddon) {
     return {
       [`external_${this.addonTypeString()}_service`]: {
         data: {
@@ -228,10 +206,10 @@ export class ConnectAddonComponent {
     };
   }
 
-  #getTerms(): AddonTerm[] {
-    const addon = this.#router.getCurrentNavigation()?.extras.state?.['addon'] as Addon | AuthorizedAddon;
+  private getTerms(): AddonTerm[] {
+    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as Addon | AuthorizedAddon;
     if (!addon) {
-      this.#router.navigate(['/settings/addons']);
+      this.router.navigate(['/settings/addons']);
     }
 
     this.addon.set(addon);

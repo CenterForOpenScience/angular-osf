@@ -20,6 +20,18 @@ export class GetAuthorizedCitationAddons {
   constructor(public referenceId: string) {}
 }
 
+export class GetConfiguredStorageAddons {
+  static readonly type = '[Addons] Get Configured Storage Addons';
+
+  constructor(public referenceId: string) {}
+}
+
+export class GetConfiguredCitationAddons {
+  static readonly type = '[Addons] Get Configured Citation Addons';
+
+  constructor(public referenceId: string) {}
+}
+
 export class CreateAuthorizedAddon {
   static readonly type = '[Addons] Create Storage Addon';
 
@@ -41,6 +53,12 @@ export class UpdateAuthorizedAddon {
 
 export class GetAddonsUserReference {
   static readonly type = '[Addons] Get Addons User Reference';
+}
+
+export class GetAddonsResourceReference {
+  static readonly type = '[Addons] Get Addons Resource Reference';
+
+  constructor(public resourceId: string) {}
 }
 
 export class DeleteAuthorizedAddon {

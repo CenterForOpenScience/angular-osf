@@ -29,7 +29,7 @@
           </ng-template>
         </p-select>
       }
-      <p-tabpanel [value]="0" class="flex flex-column gap-5">
+      <p-tabpanel [value]="AddonTabValue.ALL_ADDONS" class="flex flex-column gap-5">
         <p>
           {{ 'settings.addons.description' | translate }}
         </p>
@@ -60,9 +60,13 @@
           </div>
         </section>
 
-        <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
+        @if (!isAddonsLoading()) {
+          <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
+        } @else {
+          <osf-loading-spinner />
+        }
       </p-tabpanel>
-      <p-tabpanel [value]="1" class="flex flex-column gap-5">
+      <p-tabpanel [value]="AddonTabValue.CONNECTED_ADDONS" class="flex flex-column gap-5">
         <osf-search-input
           class="flex-1"
           [control]="searchControl"

@@ -1,15 +1,4 @@
-export interface Term {
-  label: string;
-  supportedFeature: string;
-  storage: {
-    true: string;
-    false: string;
-  };
-  citation?: {
-    partial?: string;
-    false?: string;
-  };
-}
+import { Term } from '@shared/models';
 
 export const ADDON_TERMS: Term[] = [
   {

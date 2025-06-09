@@ -15,7 +15,11 @@ import { UserStateModel } from './user.model';
 @State<UserStateModel>({
   name: 'user',
   defaults: {
-    currentUser: null,
+    currentUser: {
+      data: null,
+      isLoading: false,
+      error: null,
+    },
     currentUserSettings: {
       data: null,
       isLoading: false,
@@ -30,10 +34,21 @@ export class UserState {
 
   @Action(GetCurrentUser)
   getCurrentUser(ctx: StateContext<UserStateModel>) {
+    ctx.patchState({
+      currentUser: {
+        ...ctx.getState().currentUser,
+        isLoading: true,
+      },
+    });
+
     return this.userService.getCurrentUser().pipe(
       tap((user) => {
         ctx.patchState({
-          currentUser: user,
+          currentUser: {
+            data: user,
+            isLoading: false,
+            error: null,
+          },
         });
         ctx.dispatch(new SetupProfileSettings());
       })
@@ -43,7 +58,11 @@ export class UserState {
   @Action(SetCurrentUser)
   setCurrentUser(ctx: StateContext<UserStateModel>, action: SetCurrentUser) {
     ctx.patchState({
-      currentUser: action.user,
+      currentUser: {
+        data: action.user,
+        isLoading: false,
+        error: null,
+      },
     });
   }
 

@@ -55,8 +55,13 @@
             />
           </div>
         </section>
-
-        <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
+        @if (!isAddonsLoading()) {
+          <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
+        } @else {
+          <div class="mt-8">
+            <osf-loading-spinner />
+          </div>
+        }
       </p-tabpanel>
       <p-tabpanel [value]="AddonTabValue.CONNECTED_ADDONS" class="flex flex-column gap-5">
         <osf-search-input
@@ -65,11 +70,17 @@
           [placeholder]="'settings.addons.filters.search' | translate"
         />
 
-        <osf-addon-card-list
-          [cards]="allAuthorizedAddons()"
-          [cardButtonLabel]="'settings.addons.form.buttons.reconnect' | translate"
-          [showDangerButton]="true"
-        />
+        @if (!isAddonsLoading()) {
+          <osf-addon-card-list
+            [cards]="allConfiguredAddons()"
+            [cardButtonLabel]="'settings.addons.form.buttons.reconnect' | translate"
+            [showDangerButton]="true"
+          />
+        } @else {
+          <div class="mt-8">
+            <osf-loading-spinner />
+          </div>
+        }
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>

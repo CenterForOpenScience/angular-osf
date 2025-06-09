@@ -30,11 +30,6 @@ export class ProjectOverviewSelectors {
   }
 
   @Selector([ProjectOverviewState])
-  static getComponentsError(state: ProjectOverviewStateModel) {
-    return state.components.error;
-  }
-
-  @Selector([ProjectOverviewState])
   static getLinkedProjects(state: ProjectOverviewStateModel) {
     return state.linkedProjects.data;
   }

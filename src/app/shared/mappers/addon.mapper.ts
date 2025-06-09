@@ -3,6 +3,8 @@ import {
   AddonGetResponse,
   AuthorizedAddon,
   AuthorizedAddonGetResponse,
+  ConfiguredAddon,
+  ConfiguredAddonGetResponse,
   IncludedAddonData,
 } from '@shared/models';
 
@@ -59,6 +61,19 @@ export class AddonMapper {
       supportedFeatures,
       credentialsFormat,
       providerName: displayName,
+    };
+  }
+
+  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponse): ConfiguredAddon {
+    return {
+      type: response.type,
+      id: response.id,
+      displayName: response.attributes.display_name,
+      externalServiceName: response.attributes.external_service_name,
+      rootFolder: response.attributes.root_folder,
+      connectedCapabilities: response.attributes.connected_capabilities,
+      connectedOperationNames: response.attributes.connected_operation_names,
+      currentUserIsOwner: response.attributes.current_user_is_owner,
     };
   }
 }

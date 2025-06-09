@@ -1,10 +1,21 @@
-import { Addon, AddonResponse, AuthorizedAddon, UserReference } from '@shared/models';
+import {
+  Addon,
+  AddonResponse,
+  AuthorizedAddon,
+  ConfiguredAddon,
+  ResourceReference,
+  UserReference,
+} from '@shared/models';
+import { AsyncStateModel } from '@shared/models/store';
 
 export interface AddonsStateModel {
-  storageAddons: Addon[];
-  citationAddons: Addon[];
-  authorizedStorageAddons: AuthorizedAddon[];
-  authorizedCitationAddons: AuthorizedAddon[];
-  addonsUserReference: UserReference[];
-  createdUpdatedAuthorizedAddon: AddonResponse | null;
+  storageAddons: AsyncStateModel<Addon[]>;
+  citationAddons: AsyncStateModel<Addon[]>;
+  authorizedStorageAddons: AsyncStateModel<AuthorizedAddon[]>;
+  authorizedCitationAddons: AsyncStateModel<AuthorizedAddon[]>;
+  configuredStorageAddons: AsyncStateModel<ConfiguredAddon[]>;
+  configuredCitationAddons: AsyncStateModel<ConfiguredAddon[]>;
+  addonsUserReference: AsyncStateModel<UserReference[]>;
+  addonsResourceReference: AsyncStateModel<ResourceReference[]>;
+  createdUpdatedAuthorizedAddon: AsyncStateModel<AddonResponse | null>;
 }
