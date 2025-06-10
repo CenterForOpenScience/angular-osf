@@ -2,7 +2,8 @@ import { Action, State, StateContext } from '@ngxs/store';
 
 import { Injectable } from '@angular/core';
 
-import { FilterLabelsModel, resourceFiltersDefaultsModel } from '@osf/shared/models';
+import { FilterLabelsModel } from '@osf/shared/models';
+import { resourceFiltersDefaults } from '@shared/constants';
 
 import {
   ResetFiltersState,
@@ -21,7 +22,7 @@ import { ResourceFiltersStateModel } from './resource-filters.model';
 // Store for user selected filters values
 @State<ResourceFiltersStateModel>({
   name: 'resourceFilters',
-  defaults: resourceFiltersDefaultsModel,
+  defaults: resourceFiltersDefaults,
 })
 @Injectable()
 export class ResourceFiltersState {
@@ -126,6 +127,6 @@ export class ResourceFiltersState {
 
   @Action(ResetFiltersState)
   resetState(ctx: StateContext<ResourceFiltersStateModel>) {
-    ctx.patchState(resourceFiltersDefaultsModel);
+    ctx.patchState(resourceFiltersDefaults);
   }
 }

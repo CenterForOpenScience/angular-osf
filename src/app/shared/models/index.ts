@@ -10,7 +10,6 @@ export * from './node-response.model';
 export * from './paginated-data.model';
 export * from './query-params.model';
 export * from './resource-card';
-export * from './resource-filters-defaults.model';
 export * from './select-option.model';
 export * from './social-icon.model';
 export * from './store';

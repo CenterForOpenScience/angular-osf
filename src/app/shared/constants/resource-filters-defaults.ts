@@ -1,6 +1,6 @@
-import { FilterLabelsModel } from './filter-labels.model';
+import { FilterLabelsModel } from '@shared/models';
 
-export const resourceFiltersDefaultsModel = {
+export const resourceFiltersDefaults = {
   creator: {
     filterName: FilterLabelsModel.creator,
     label: undefined,
