@@ -5,6 +5,9 @@ import { InstitutionsState } from '@osf/features/institutions/store';
 import { MeetingsState } from '@osf/features/meetings/store';
 import { MyProjectsState } from '@osf/features/my-projects/store';
 import { PreprintsState } from '@osf/features/preprints/store/preprints';
+import { PreprintsResourcesFiltersState } from '@osf/features/preprints/store/preprints-resources-filters';
+import { PreprintsResourcesFiltersOptionsState } from '@osf/features/preprints/store/preprints-resources-filters-options';
+import { PreprintsSearchState } from '@osf/features/preprints/store/preprints-search';
 import { AnalyticsState } from '@osf/features/project/analytics/store';
 import { ProjectOverviewState } from '@osf/features/project/overview/store';
 import { RegistrationsState } from '@osf/features/project/registrations/store';
@@ -36,4 +39,7 @@ export const STATES = [
   MeetingsState,
   RegistrationsState,
   PreprintsState,
+  PreprintsSearchState,
+  PreprintsResourcesFiltersState,
+  PreprintsResourcesFiltersOptionsState,
 ];
