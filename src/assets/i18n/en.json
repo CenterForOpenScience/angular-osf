@@ -195,12 +195,9 @@
     },
     "confirmEmail": {
       "title": "Add alternative email",
-      "description": "Would you like to add ",
-      "description2": " to your account?",
-      "buttons": {
-        "doNotAdd": "Do not add email",
-        "addEmail": "Add email"
-      }
+      "description": "Do you want to add ",
+      "description2": "to your profile ?",
+      "goToEmails": "Add email"
     }
   },
   "myProjects": {
@@ -1290,6 +1287,23 @@
       "papers": "Papers",
       "supplements": "Supplements"
     }
+  },
+  "pageNotFound": {
+    "title": "Page not found",
+    "message": "The page you were looking for is either doesn't exist, was deleted, or the URL may be incorrect. If this should not have occurred and the issue persists, please report it to"
+  },
+  "forbiddenPage": {
+    "title": "You Don't Have Permission To Perform This Action",
+    "message": "If this should not have occurred and the issue persists, please report it to"
+  },
+  "requestAccess": {
+    "title": "You Need Permission",
+    "message": "Ask for access, or switch to an account with permission.",
+    "helpMessage": "If this should not have occurred, please contact",
+    "requestAccess": "Request Access",
+    "switchAccount": "Switch Account",
+    "commentLabel": "Comment (Optional)",
+    "requestedSuccessMessage": "Your request for access has been sent."
   },
   "validation": {
     "required": "The field is required.",

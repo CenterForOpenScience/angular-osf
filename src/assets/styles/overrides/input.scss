@@ -65,10 +65,14 @@ p-password.ng-touched.ng-invalid {
 .p-textarea,
 .p-textarea:enabled:focus {
   border-color: var.$grey-2;
-  font-size: 16px;
-  border-radius: 0.57rem;
+  font-size: mix.rem(16px);
+  border-radius: mix.rem(8px);
   box-shadow: none;
   resize: none;
+
+  &:enabled:hover {
+    border-color: var.$pr-blue-1;
+  }
 }
 
 .addon-input {

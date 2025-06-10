@@ -24,6 +24,6 @@ export class CopyButtonComponent {
 
   copy(): void {
     this.clipboard.copy(this.copyItem());
-    this.toastService.showSuccess('Copied');
+    this.toastService.showSuccess('settings.developerApps.messages.copied');
   }
 }

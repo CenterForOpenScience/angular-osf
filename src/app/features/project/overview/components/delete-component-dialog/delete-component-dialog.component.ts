@@ -1,6 +1,6 @@
 import { select, Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -24,7 +24,6 @@ import { ToastService } from '@shared/services';
 export class DeleteComponentDialogComponent {
   private store = inject(Store);
   private dialogConfig = inject(DynamicDialogConfig);
-  private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
   protected destroyRef = inject(DestroyRef);
@@ -59,9 +58,7 @@ export class DeleteComponentDialogComponent {
         next: () => {
           this.dialogRef.close();
           this.store.dispatch(new GetComponents(project.id));
-          this.toastService.showSuccess(
-            this.translateService.instant('project.overview.dialog.toast.deleteComponent.success')
-          );
+          this.toastService.showSuccess('project.overview.dialog.toast.deleteComponent.success');
         },
       });
   }

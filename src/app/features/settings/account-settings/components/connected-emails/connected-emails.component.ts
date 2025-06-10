@@ -7,14 +7,16 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { IS_XSMALL } from '@osf/shared/utils';
 
 import { AccountSettingsService } from '../../services';
-import { AccountSettingsSelectors, DeleteEmail } from '../../store';
+import { AccountSettingsSelectors, DeleteEmail, MakePrimary } from '../../store';
 import { AddEmailComponent } from '../add-email/add-email.component';
 
 @Component({
@@ -30,10 +32,13 @@ export class ConnectedEmailsComponent {
   readonly #dialogService = inject(DialogService);
   readonly #translateService = inject(TranslateService);
   readonly isMobile = toSignal(inject(IS_XSMALL));
+  readonly #destroyRef = inject(DestroyRef);
 
   protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
   protected readonly emails = this.#store.selectSignal(AccountSettingsSelectors.getEmails);
   protected readonly deletingEmailIds = signal<Set<string>>(new Set());
+  protected readonly resendingEmailIds = signal<Set<string>>(new Set());
+  protected readonly makingPrimaryIds = signal<Set<string>>(new Set());
   protected readonly unconfirmedEmails = computed(() => {
     return this.emails().filter((email) => !email.confirmed && !email.primary);
   });
@@ -60,13 +65,34 @@ export class ConnectedEmailsComponent {
 
   resendConfirmation(emailId: string) {
     if (this.currentUser()?.id) {
-      this.#accountSettingsService.resendConfirmation(emailId, this.currentUser()!.id).subscribe();
+      this.resendingEmailIds.set(new Set([...this.resendingEmailIds(), emailId]));
+
+      this.#accountSettingsService
+        .resendConfirmation(emailId, this.currentUser()!.id)
+        .pipe(
+          finalize(() => {
+            const currentIds = this.resendingEmailIds();
+            const updatedIds = new Set([...currentIds].filter((id) => id !== emailId));
+            this.resendingEmailIds.set(updatedIds);
+          }),
+          takeUntilDestroyed(this.#destroyRef)
+        )
+        .subscribe();
     }
   }
 
   makePrimary(emailId: string) {
     if (this.currentUser()?.id) {
-      this.#accountSettingsService.makePrimary(emailId).subscribe();
+      this.makingPrimaryIds.set(new Set([...this.makingPrimaryIds(), emailId]));
+
+      this.#store
+        .dispatch(new MakePrimary(emailId))
+        .pipe(takeUntilDestroyed(this.#destroyRef))
+        .subscribe(() => {
+          const currentIds = this.makingPrimaryIds();
+          const updatedIds = new Set([...currentIds].filter((id) => id !== emailId));
+          this.makingPrimaryIds.set(updatedIds);
+        });
     }
   }
 

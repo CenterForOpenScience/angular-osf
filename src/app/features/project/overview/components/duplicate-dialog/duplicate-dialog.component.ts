@@ -1,6 +1,6 @@
 import { select, Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -20,7 +20,6 @@ import { ToastService } from '@shared/services';
 })
 export class DuplicateDialogComponent {
   private store = inject(Store);
-  private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
   protected destroyRef = inject(DestroyRef);
@@ -36,9 +35,7 @@ export class DuplicateDialogComponent {
       .subscribe({
         next: () => {
           this.dialogRef.close();
-          this.toastService.showSuccess(
-            this.translateService.instant('project.overview.dialog.toast.duplicate.success')
-          );
+          this.toastService.showSuccess('project.overview.dialog.toast.duplicate.success');
         },
       });
   }

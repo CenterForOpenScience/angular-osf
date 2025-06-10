@@ -65,6 +65,7 @@
         (click)="emitIfChecked()"
         [label]="'settings.developerApps.form.buttons.save' | translate"
         class="w-10rem btn-full-width bg-primary-blue-second"
+        [disabled]="!redirectUrlData().url || !redirectUrlData().url.trim()"
       ></p-button>
     </div>
   }

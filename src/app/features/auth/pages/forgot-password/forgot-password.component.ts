@@ -5,10 +5,7 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 
 import { Component, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
-import { IS_XSMALL } from '@shared/utils';
 
 import { ForgotPasswordFormGroupType, MessageInfo } from '../../models';
 
@@ -20,15 +17,13 @@ import { ForgotPasswordFormGroupType, MessageInfo } from '../../models';
 })
 export class ForgotPasswordComponent {
   #fb = inject(FormBuilder);
-  #isMobile$ = inject(IS_XSMALL);
   forgotPasswordForm: ForgotPasswordFormGroupType = this.#fb.group({
     email: ['', [Validators.required, Validators.email]],
   });
-  isMobile = toSignal(this.#isMobile$);
   message = signal<MessageInfo | null>(null);
 
   onSubmit(): void {
-    // TODO: Implement password reset logic
+    // [NS] TODO: Implement password reset logic
     if (this.forgotPasswordForm.valid) {
       this.message.set({
         severity: 'success',

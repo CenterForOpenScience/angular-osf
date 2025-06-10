@@ -1,70 +1,72 @@
-<p-table [value]="isLoading() ? skeletonData : tableData().items" class="view-only-table">
-  <ng-template #header>
-    <tr>
-      <th>
-        {{ 'myProjects.settings.viewOnlyTable.linkName' | translate }}
-      </th>
-      <th>
-        {{ 'myProjects.settings.viewOnlyTable.sharedComponents' | translate }}
-      </th>
-
-      <th>
-        {{ 'myProjects.settings.viewOnlyTable.createdDate' | translate }}
-      </th>
-
-      <th>
-        {{ 'myProjects.settings.viewOnlyTable.createdBy' | translate }}
-      </th>
-
-      <th>
-        {{ 'myProjects.settings.viewOnlyTable.anonymous' | translate }}
-      </th>
-
-      <th></th>
-    </tr>
-  </ng-template>
-
-  <ng-template #body let-item>
-    @if (item.id) {
+@if (isLoading() || tableData().items.length) {
+  <p-table [value]="isLoading() ? skeletonData : tableData().items" class="view-only-table">
+    <ng-template #header>
       <tr>
-        <td>
-          <div class="flex align-items-center gap-2">
-            <span class="w-3 min-w-max">{{ item.name }}</span>
+        <th>
+          {{ 'myProjects.settings.viewOnlyTable.linkName' | translate }}
+        </th>
+        <th>
+          {{ 'myProjects.settings.viewOnlyTable.sharedComponents' | translate }}
+        </th>
 
-            <div class="relative flex align-items-center">
-              <input
-                [id]="item.link"
-                [attr.aria-label]="'Link for ' + item.link"
-                pInputText
-                class="h-auto text-base w-max py-2 pl-3 pr-5"
-                type="text"
-                [value]="item.link"
-              />
+        <th>
+          {{ 'myProjects.settings.viewOnlyTable.createdDate' | translate }}
+        </th>
 
-              <osf-copy-button class="icon-copy-btn absolute" [copyItem]="item.link"></osf-copy-button>
+        <th>
+          {{ 'myProjects.settings.viewOnlyTable.createdBy' | translate }}
+        </th>
+
+        <th>
+          {{ 'myProjects.settings.viewOnlyTable.anonymous' | translate }}
+        </th>
+
+        <th></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-item>
+      @if (item.id) {
+        <tr>
+          <td>
+            <div class="flex align-items-center gap-2">
+              <span class="w-3 min-w-max">{{ item.name }}</span>
+
+              <div class="relative flex align-items-center">
+                <input
+                  [id]="item.link"
+                  [attr.aria-label]="'Link for ' + item.link"
+                  pInputText
+                  class="h-auto text-base w-max py-2 pl-3 pr-5"
+                  type="text"
+                  [value]="item.link"
+                />
+
+                <osf-copy-button class="icon-copy-btn absolute" [copyItem]="item.link"></osf-copy-button>
+              </div>
             </div>
-          </div>
-        </td>
-        <td>{{ item.sharedComponents }}</td>
-        <td>{{ item.dateCreated | date: 'MMM d, y h:mm a' }}</td>
-        <td>{{ item.creator.fullName }}</td>
-        <td>{{ item.anonymous ? 'Yes' : 'No' }}</td>
-        <td>
-          <p-button
-            ariaLabel="Delete link"
-            class="btn-icon-text form-btn icon-copy-btn button-shadow-none"
-            (click)="deleteLink.emit(item)"
-          >
-            <i class="osf-icon-trash red-icon"></i>
-          </p-button>
-        </td>
-      </tr>
-    } @else {
-      <tr class="loading-row">
-        <td colspan="7">
-          <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
-        </td>
-      </tr>
-    }
-  </ng-template>
-</p-table>
+          </td>
+          <td>{{ item.sharedComponents }}</td>
+          <td>{{ item.dateCreated | date: 'MMM d, y h:mm a' }}</td>
+          <td>{{ item.creator.fullName }}</td>
+          <td>{{ item.anonymous ? 'Yes' : 'No' }}</td>
+          <td>
+            <p-button
+              ariaLabel="Delete link"
+              class="btn-icon-text form-btn icon-copy-btn button-shadow-none"
+              (click)="deleteLink.emit(item)"
+            >
+              <i class="osf-icon-trash red-icon"></i>
+            </p-button>
+          </td>
+        </tr>
+      } @else {
+        <tr class="loading-row">
+          <td colspan="7">
+            <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+          </td>
+        </tr>
+      }
+    </ng-template>
+  </p-table>
+}

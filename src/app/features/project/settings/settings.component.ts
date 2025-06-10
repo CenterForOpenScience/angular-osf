@@ -12,7 +12,7 @@ import { map, of } from 'rxjs';
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import {
@@ -45,8 +45,8 @@ import {
   NotificationSubscriptionSelectors,
   UpdateNotificationSubscriptionForNodeId,
 } from '@osf/features/settings/notifications/store';
-import { ToastService } from '@osf/shared/services';
-import { defaultConfirmationConfig } from '@osf/shared/utils';
+import { LoaderService, ToastService } from '@osf/shared/services';
+import { CustomValidators, defaultConfirmationConfig } from '@osf/shared/utils';
 import { SubHeaderComponent } from '@shared/components';
 import { ProjectFormControls, SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 import { UpdateNodeRequestModel } from '@shared/models';
@@ -80,6 +80,7 @@ export class SettingsComponent implements OnInit {
   private readonly translateService = inject(TranslateService);
   private readonly confirmationService = inject(ConfirmationService);
   private readonly toastService = inject(ToastService);
+  private readonly loaderService = inject(LoaderService);
 
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
@@ -101,7 +102,7 @@ export class SettingsComponent implements OnInit {
   });
 
   projectForm = new FormGroup({
-    [ProjectFormControls.Title]: new FormControl('', Validators.required),
+    [ProjectFormControls.Title]: new FormControl('', CustomValidators.requiredTrimmed()),
     [ProjectFormControls.Description]: new FormControl(''),
   });
 
@@ -141,9 +142,11 @@ export class SettingsComponent implements OnInit {
       },
     } as UpdateNodeRequestModel;
 
+    this.loaderService.show();
+
     this.actions.updateProjectDetails(model).subscribe(() => {
-      const message = this.translateService.instant('myProjects.settings.updateProjectDetailsMessage');
-      this.toastService.showSuccess(message);
+      this.toastService.showSuccess('myProjects.settings.updateProjectDetailsMessage');
+      this.loaderService.hide();
     });
   }
 
@@ -227,9 +230,11 @@ export class SettingsComponent implements OnInit {
       attributes: { ...payload },
     } as ProjectSettingsData;
 
+    this.loaderService.show();
+
     this.actions.updateProjectSettings(model).subscribe(() => {
-      const message = this.translateService.instant('myProjects.settings.updateProjectSettingsMessage');
-      this.toastService.showSuccess(message);
+      this.toastService.showSuccess('myProjects.settings.updateProjectSettingsMessage');
+      this.loaderService.hide();
     });
   }
 

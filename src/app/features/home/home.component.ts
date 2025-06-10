@@ -42,7 +42,7 @@ export class HomeComponent implements OnInit {
   readonly #route = inject(ActivatedRoute);
   readonly #translateService = inject(TranslateService);
   readonly #dialogService = inject(DialogService);
-  readonly #accountSettingsServer = inject(AccountSettingsService);
+  readonly #accountSettingsService = inject(AccountSettingsService);
 
   protected readonly isLoading = signal(false);
   protected readonly isSubmitting = signal(false);
@@ -78,36 +78,38 @@ export class HomeComponent implements OnInit {
     this.#setupQueryParamsSubscription();
     this.#store.dispatch(new GetUserInstitutions());
 
-    // Check for userId and emailId route parameters
     this.#route.params.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((params) => {
       const userId = params['userId'];
-      const emailId = params['emailId'];
+      const token = params['token'];
 
-      if (userId && emailId) {
-        this.#accountSettingsServer
-          .getEmail(emailId, userId)
+      if (userId && token) {
+        this.#accountSettingsService
+          .getEmail(token, userId)
           .pipe(take(1))
           .subscribe((email) => {
             this.emailAddress = email.emailAddress;
-            this.addAlternateEmail();
+            this.addAlternateEmail(token);
           });
       }
     });
   }
 
-  addAlternateEmail() {
-    this.dialogRef = this.#dialogService.open(ConfirmEmailComponent, {
-      width: '448px',
-      focusOnShow: false,
-      header: this.#translateService.instant('home.confirmEmail.title'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        emailAddress: this.emailAddress,
-        userId: this.#route.snapshot.params['userId'],
-        emailId: this.#route.snapshot.params['emailId'],
-      },
+  addAlternateEmail(token: string) {
+    this.#translateService.get('home.confirmEmail.title').subscribe((title) => {
+      this.dialogRef = this.#dialogService.open(ConfirmEmailComponent, {
+        width: '448px',
+        focusOnShow: false,
+        header: title,
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: {
+          emailAddress: this.emailAddress,
+          userId: this.#route.snapshot.params['userId'],
+          emailId: this.#route.snapshot.params['emailId'],
+          token: token,
+        },
+      });
     });
   }
 

@@ -41,18 +41,21 @@
                   </i>
                 }
                 @if (deletingEmailIds().has(email.id)) {
-                  <p-progress-spinner
-                    strokeWidth="5"
-                    fill="transparent"
-                    animationDuration=".5s"
-                    [style]="{ width: '0.7rem', height: '0.7rem', marginLeft: '0.7rem' }"
-                  />
+                  <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--sm" />
                 }
               </div>
 
-              <p-button severity="secondary" (click)="makePrimary(email.id)">
-                {{ 'settings.accountSettings.connectedEmails.buttons.makePrimary' | translate }}
-              </p-button>
+              @if (makingPrimaryIds().has(email.id)) {
+                <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--md" />
+              } @else {
+                <p-button
+                  [label]="'settings.accountSettings.connectedEmails.buttons.makePrimary' | translate"
+                  severity="secondary"
+                  (click)="makePrimary(email.id)"
+                  [disabled]="makingPrimaryIds().size > 0"
+                >
+                </p-button>
+              }
             </div>
           }
         }
@@ -82,22 +85,25 @@
                   ></i>
                 }
                 @if (deletingEmailIds().has(email.id)) {
-                  <p-progress-spinner
-                    strokeWidth="5"
-                    fill="transparent"
-                    animationDuration=".5s"
-                    [style]="{ width: '0.7rem', height: '0.7rem', marginLeft: '0.7rem' }"
-                  />
+                  <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--sm" />
                 }
               </div>
 
-              <p-button severity="secondary" (click)="resendConfirmation(email.id)">
-                @if (isMobile()) {
-                  {{ 'settings.accountSettings.connectedEmails.buttons.resend' | translate }}
-                } @else {
-                  {{ 'settings.accountSettings.connectedEmails.buttons.resendConfirmation' | translate }}
-                }
-              </p-button>
+              @if (resendingEmailIds().has(email.id)) {
+                <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--md" />
+              } @else {
+                <p-button
+                  [label]="
+                    (isMobile()
+                      ? 'settings.accountSettings.connectedEmails.buttons.resend'
+                      : 'settings.accountSettings.connectedEmails.buttons.resendConfirmation'
+                    ) | translate
+                  "
+                  severity="secondary"
+                  (click)="resendConfirmation(email.id)"
+                >
+                </p-button>
+              }
             </div>
           }
         }

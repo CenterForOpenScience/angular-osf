@@ -4,6 +4,19 @@
 :host {
   @extend .account-setting;
 
+  .icon {
+    &--sm {
+      width: 0.7rem;
+      height: 0.7rem;
+      margin-left: 0.7rem;
+    }
+
+    &--md {
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
   .account-setting {
     &-emails {
       display: flex;

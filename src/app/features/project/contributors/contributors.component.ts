@@ -161,11 +161,7 @@ export class ContributorsComponent implements OnInit {
     );
 
     forkJoin(updateRequests).subscribe(() => {
-      const successMessage = this.translateService.instant(
-        'project.contributors.toastMessages.multipleUpdateSuccessMessage'
-      );
-
-      this.toastService.showSuccess(successMessage);
+      this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
     });
   }
 
@@ -217,11 +213,7 @@ export class ContributorsComponent implements OnInit {
           const addRequests = res.data.map((payload) => this.actions.addContributor(this.projectId(), payload));
 
           forkJoin(addRequests).subscribe(() => {
-            const successMessage = this.translateService.instant(
-              'project.contributors.toastMessages.multipleAddSuccessMessage'
-            );
-
-            this.toastService.showSuccess(successMessage);
+            this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
           });
         }
       });
@@ -245,13 +237,12 @@ export class ContributorsComponent implements OnInit {
         if (res.type === AddContributorType.Registered) {
           this.openAddContributorDialog();
         } else {
-          const successMessage = this.translateService.instant('project.contributors.toastMessages.addSuccessMessage', {
-            name: res.data[0].fullName,
-          });
+          const successMessage = this.translateService.instant('project.contributors.toastMessages.addSuccessMessage');
+          const params = { name: res.data[0].fullName };
 
-          this.actions
-            .addContributor(this.projectId(), res.data[0])
-            .subscribe({ next: () => this.toastService.showSuccess(successMessage) });
+          this.actions.addContributor(this.projectId(), res.data[0]).subscribe({
+            next: () => this.toastService.showSuccess(successMessage, params),
+          });
         }
       });
   }
@@ -269,14 +260,15 @@ export class ContributorsComponent implements OnInit {
         label: this.translateService.instant('common.buttons.remove'),
       },
       accept: () => {
-        const successMessage = this.translateService.instant('project.contributors.removeDialog.successMessage', {
-          name: contributor.fullName,
-        });
-
         this.actions
           .deleteContributor(this.projectId(), contributor.userId)
           .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({ next: () => this.toastService.showSuccess(successMessage) });
+          .subscribe({
+            next: () =>
+              this.toastService.showSuccess('project.contributors.removeDialog.successMessage', {
+                name: contributor.fullName,
+              }),
+          });
       },
     });
   }

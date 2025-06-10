@@ -7,21 +7,11 @@
   background: var(--gradient-3);
 }
 
-.forgot-password-container {
+.container {
   position: relative;
   background: var.$white;
   border-radius: mix.rem(12px);
   box-shadow: 0 2px 4px var.$grey-outline;
-  @include mix.flex-column;
   color: var.$dark-blue-1;
-  flex: 1;
-  gap: mix.rem(24px);
   max-width: mix.rem(448px);
-
-  .message-container {
-    width: 100%;
-    position: absolute;
-    bottom: -4.5rem;
-    left: 0;
-  }
 }

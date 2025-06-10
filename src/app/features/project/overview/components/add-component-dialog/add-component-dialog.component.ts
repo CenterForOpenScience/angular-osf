@@ -1,6 +1,6 @@
 import { select, Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -43,7 +43,6 @@ import { CreateComponent, GetComponents, ProjectOverviewSelectors } from '../../
 })
 export class AddComponentDialogComponent implements OnInit {
   private store = inject(Store);
-  private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   protected isMobile = toSignal(inject(IS_XSMALL));
   protected dialogRef = inject(DynamicDialogRef);
@@ -135,9 +134,7 @@ export class AddComponentDialogComponent implements OnInit {
         next: () => {
           this.dialogRef.close();
           this.store.dispatch(new GetComponents(project.id));
-          this.toastService.showSuccess(
-            this.translateService.instant('project.overview.dialog.toast.addComponent.success')
-          );
+          this.toastService.showSuccess('project.overview.dialog.toast.addComponent.success');
         },
       });
   }

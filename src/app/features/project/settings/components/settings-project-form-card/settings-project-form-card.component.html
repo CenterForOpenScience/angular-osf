@@ -43,6 +43,7 @@
         type="submit"
         class="w-10rem btn-full-width bg-primary-blue-second"
         [label]="'myProjects.settings.saveChanges' | translate"
+        [disabled]="formGroup().invalid"
       ></p-button>
     </div>
 

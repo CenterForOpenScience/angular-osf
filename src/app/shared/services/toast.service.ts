@@ -8,8 +8,8 @@ import { inject, Injectable } from '@angular/core';
 export class ToastService {
   private messageService = inject(MessageService);
 
-  showSuccess(summary: string) {
-    this.messageService.add({ severity: 'success', summary });
+  showSuccess(summary: string, params?: unknown) {
+    this.messageService.add({ severity: 'success', summary, data: { translationParams: params } });
   }
 
   showWarn(summary: string) {

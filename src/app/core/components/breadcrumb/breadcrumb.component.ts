@@ -1,7 +1,10 @@
-import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router } from '@angular/router';
+import { filter, map, startWith } from 'rxjs';
 
+import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+
+import { RouteData } from '@osf/core/models';
 import { IconComponent } from '@osf/shared/components';
 
 @Component({
@@ -11,22 +14,44 @@ import { IconComponent } from '@osf/shared/components';
   styleUrl: './breadcrumb.component.scss',
 })
 export class BreadcrumbComponent {
-  #router = inject(Router);
-  #destroyRef = inject(DestroyRef);
-  protected readonly url = signal(this.#router.url);
-  protected readonly parsedUrl = computed(() => {
-    return this.url()
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  protected readonly url = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.router.url),
+      startWith(this.router.url)
+    ),
+    { initialValue: this.router.url }
+  );
+
+  protected readonly routeData = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.getCurrentRouteData()),
+      startWith(this.getCurrentRouteData())
+    ),
+    { initialValue: { skipBreadcrumbs: false } as RouteData }
+  );
+
+  protected readonly showBreadcrumb = computed(() => this.routeData()?.skipBreadcrumbs !== true);
+
+  protected readonly parsedUrl = computed(() =>
+    this.url()
       .split('?')[0]
       .split('/')
       .filter(Boolean)
-      .map((segment) => segment.replace(/-/g, ' '));
-  });
+      .map((segment) => segment.replace(/-/g, ' '))
+  );
 
-  constructor() {
-    this.#router.events.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.url.set(this.#router.url);
-      }
-    });
+  private getCurrentRouteData(): RouteData {
+    let currentRoute = this.route;
+
+    while (currentRoute.firstChild) {
+      currentRoute = currentRoute.firstChild;
+    }
+
+    return currentRoute.snapshot.data as RouteData;
   }
 }

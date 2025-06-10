@@ -3,13 +3,16 @@ import { catchError } from 'rxjs/operators';
 
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { Router } from '@angular/router';
 
-import { ToastService } from '@osf/shared/services';
+import { LoaderService, ToastService } from '@osf/shared/services';
 
-import { ERROR_MESSAGES } from '../constants/error-messages';
+import { ERROR_MESSAGES } from '../constants';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService);
+  const loaderService = inject(LoaderService);
+  const router = inject(Router);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -25,6 +28,18 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         }
       }
 
+      if (error.status === 403) {
+        if (error.url?.includes('v2/nodes/')) {
+          const match = error.url.match(/\/nodes\/([^/]+)/);
+          const id = match ? match[1] : null;
+
+          router.navigate([`/request-access/${id}`]);
+        } else {
+          router.navigate(['/forbidden']);
+        }
+      }
+
+      loaderService.hide();
       toastService.showError(errorMessage);
 
       return throwError(() => error);

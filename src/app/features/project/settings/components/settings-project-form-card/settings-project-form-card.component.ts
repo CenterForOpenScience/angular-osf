@@ -32,6 +32,10 @@ export class SettingsProjectFormCardComponent {
   }
 
   submit() {
+    if (this.formGroup().invalid) {
+      return;
+    }
+
     this.submitForm.emit(this.formGroup().value);
   }
 }

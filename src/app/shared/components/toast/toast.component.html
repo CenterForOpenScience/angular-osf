@@ -1,1 +1,5 @@
-<p-toast position="top-right" [baseZIndex]="2302" [preventOpenDuplicates]="true" />
+<p-toast position="top-right" [baseZIndex]="2302" [preventOpenDuplicates]="true">
+  <ng-template let-message pTemplate="message">
+    <div class="font-medium w-full">{{ message.summary | translate: message.data?.translationParams }}</div>
+  </ng-template>
+</p-toast>

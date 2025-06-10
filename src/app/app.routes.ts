@@ -44,6 +44,7 @@ export const routes: Routes = [
       {
         path: 'home',
         loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
+        data: { skipBreadcrumbs: true },
       },
       {
         path: 'home-logged-out',
@@ -191,13 +192,28 @@ export const routes: Routes = [
         ],
       },
       {
-        path: 'confirm/:userId/:emailId',
+        path: 'confirm/:userId/:token',
         loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
+        data: { skipBreadcrumbs: true },
+      },
+      {
+        path: 'forbidden',
+        loadComponent: () =>
+          import('./core/components/forbidden-page/forbidden-page.component').then((mod) => mod.ForbiddenPageComponent),
+        data: { skipBreadcrumbs: true },
+      },
+      {
+        path: 'request-access/:projectId',
+        loadComponent: () =>
+          import('./core/components/request-access/request-access.component').then((mod) => mod.RequestAccessComponent),
+        data: { skipBreadcrumbs: true },
+      },
+      {
+        path: '**',
+        loadComponent: () =>
+          import('./core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
+        data: { skipBreadcrumbs: true },
       },
     ],
-  },
-  {
-    path: '**',
-    redirectTo: 'home',
   },
 ];

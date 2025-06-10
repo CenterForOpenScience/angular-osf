@@ -155,9 +155,7 @@ export class OverviewToolbarComponent {
         .subscribe({
           next: () => {
             this.isBookmarked.set(newBookmarkState);
-            this.toastService.showSuccess(
-              this.translateService.instant('project.overview.dialog.toast.bookmark.remove')
-            );
+            this.toastService.showSuccess('project.overview.dialog.toast.bookmark.remove');
           },
         });
     } else {
@@ -167,7 +165,7 @@ export class OverviewToolbarComponent {
         .subscribe({
           next: () => {
             this.isBookmarked.set(newBookmarkState);
-            this.toastService.showSuccess(this.translateService.instant('project.overview.dialog.toast.bookmark.add'));
+            this.toastService.showSuccess('project.overview.dialog.toast.bookmark.add');
           },
         });
     }
