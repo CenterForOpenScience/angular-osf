@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { PreprintsState, PreprintsStateModel } from '@osf/features/preprints/store';
+import { PreprintsState, PreprintsStateModel } from '@osf/features/preprints/store/preprints/index';
 
 export class PreprintsSelectors {
   @Selector([PreprintsState])

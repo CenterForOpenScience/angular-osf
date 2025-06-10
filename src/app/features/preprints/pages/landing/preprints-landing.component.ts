@@ -20,7 +20,7 @@ import {
   GetPreprintProviderById,
   GetPreprintProvidersToAdvertise,
   PreprintsSelectors,
-} from '@osf/features/preprints/store';
+} from '@osf/features/preprints/store/preprints';
 import { SearchInputComponent } from '@shared/components';
 import { ResourceTab } from '@shared/enums';
 

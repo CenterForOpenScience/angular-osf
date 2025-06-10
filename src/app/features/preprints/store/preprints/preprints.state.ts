@@ -11,8 +11,9 @@ import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   GetPreprintProvidersToAdvertise,
-} from '@osf/features/preprints/store/preprints.actions';
-import { PreprintsStateModel } from '@osf/features/preprints/store/preprints.model';
+} from '@osf/features/preprints/store/preprints/preprints.actions';
+
+import { PreprintsStateModel } from './';
 
 @State<PreprintsStateModel>({
   name: 'preprints',

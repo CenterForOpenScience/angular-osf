@@ -14,7 +14,7 @@ import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   PreprintsSelectors,
-} from '@osf/features/preprints/store';
+} from '@osf/features/preprints/store/preprints';
 import { HeaderStyleHelper } from '@shared/utils';
 
 @Component({

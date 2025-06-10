@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { PreprintProviderHeroComponent } from '@osf/features/preprints/components/preprint-provider-hero/preprint-provider-hero.component';
 import { BrandService } from '@osf/features/preprints/services';
-import { GetPreprintProviderById, PreprintsSelectors } from '@osf/features/preprints/store';
+import { GetPreprintProviderById, PreprintsSelectors } from '@osf/features/preprints/store/preprints';
 import { HeaderStyleHelper } from '@shared/utils';
 
 @Component({

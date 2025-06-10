@@ -4,7 +4,7 @@ import { CollectionsState } from '@osf/features/collections/store';
 import { InstitutionsState } from '@osf/features/institutions/store';
 import { MeetingsState } from '@osf/features/meetings/store';
 import { MyProjectsState } from '@osf/features/my-projects/store';
-import { PreprintsState } from '@osf/features/preprints/store';
+import { PreprintsState } from '@osf/features/preprints/store/preprints';
 import { AnalyticsState } from '@osf/features/project/analytics/store';
 import { ProjectOverviewState } from '@osf/features/project/overview/store';
 import { RegistrationsState } from '@osf/features/project/registrations/store';
