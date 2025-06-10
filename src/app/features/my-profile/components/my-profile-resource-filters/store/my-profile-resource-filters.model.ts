@@ -1,3 +1,5 @@
+import { ResourceFilterLabel } from '@shared/models';
+
 export interface MyProfileResourceFiltersStateModel {
   creator: ResourceFilterLabel;
   dateCreated: ResourceFilterLabel;
@@ -8,10 +10,4 @@ export interface MyProfileResourceFiltersStateModel {
   institution: ResourceFilterLabel;
   provider: ResourceFilterLabel;
   partOfCollection: ResourceFilterLabel;
-}
-
-export interface ResourceFilterLabel {
-  filterName: string;
-  label?: string;
-  value?: string;
 }

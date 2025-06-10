@@ -1,3 +1,5 @@
+import { ResourceFilterLabel } from '@osf/shared/models';
+
 export interface ResourceFiltersStateModel {
   creator: ResourceFilterLabel;
   dateCreated: ResourceFilterLabel;
@@ -8,10 +10,4 @@ export interface ResourceFiltersStateModel {
   institution: ResourceFilterLabel;
   provider: ResourceFilterLabel;
   partOfCollection: ResourceFilterLabel;
-}
-
-export interface ResourceFilterLabel {
-  filterName: string;
-  label?: string;
-  value?: string;
 }

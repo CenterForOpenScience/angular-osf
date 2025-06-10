@@ -7,6 +7,7 @@ export * from './institution';
 export * from './license';
 export * from './part-of-collection';
 export * from './provider';
+export * from './resource-filter-label';
 export * from './resource-type';
 export * from './search-filters.model';
 export * from './search-result-count.model';
