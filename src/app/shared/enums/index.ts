@@ -2,6 +2,7 @@ export * from './breakpoint-queries.enum';
 export * from './create-component-form-controls.enum';
 export * from './create-project-form-controls.enum';
 export * from './filter-type.enum';
+export * from './get-resources-request-type.enum';
 export * from './resource-tab.enum';
 export * from './resource-type.enum';
 export * from './share-indexing.enum';
