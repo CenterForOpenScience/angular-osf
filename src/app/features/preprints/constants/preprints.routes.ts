@@ -26,6 +26,13 @@ export const preprintsRoutes: Routes = [
             (c) => c.PreprintProviderOverviewComponent
           ),
       },
+      {
+        path: 'overview/:providerId/discover',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/preprint-provider-discover/preprint-provider-discover.component').then(
+            (c) => c.PreprintProviderDiscoverComponent
+          ),
+      },
     ],
   },
 ];
