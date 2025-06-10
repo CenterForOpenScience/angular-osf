@@ -5,13 +5,13 @@ import { take } from 'rxjs';
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ResourcesComponent } from '@osf/features/search/components';
 import { ResourceTab } from '@osf/shared/enums';
-import { FilterLabelsModel } from '@osf/shared/models';
+import { FilterLabelsModel, ResourceFilterLabel } from '@osf/shared/models';
 
 import { SearchSelectors, SetResourceTab, SetSearchText, SetSortBy } from '../../store';
 import { GetAllOptions } from '../filters/store';
 import {
-  ResourceFilterLabel,
   ResourceFiltersSelectors,
   SetCreator,
   SetDateCreated,
@@ -23,7 +23,6 @@ import {
   SetResourceType,
   SetSubject,
 } from '../resource-filters/store';
-import { ResourcesComponent } from '../resources/resources.component';
 
 @Component({
   selector: 'osf-resources-wrapper',
