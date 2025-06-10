@@ -1,0 +1,60 @@
+import { createDispatchMap, select } from '@ngxs/store';
+
+import { Chip } from 'primeng/chip';
+
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+
+import {
+  PreprintsResourcesFiltersSelectors,
+  SetProvider,
+} from '@osf/features/preprints/store/preprints-resources-filters';
+import { GetAllOptions } from '@osf/features/preprints/store/preprints-resources-filters-options';
+import {
+  SetCreator,
+  SetDateCreated,
+  SetLicense,
+  SetSubject,
+} from '@osf/features/search/components/resource-filters/store';
+import { FilterType } from '@osf/shared/enums';
+
+@Component({
+  selector: 'osf-preprints-filter-chips',
+  imports: [Chip],
+  templateUrl: './preprints-filter-chips.component.html',
+  styleUrl: './preprints-filter-chips.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class PreprintsFilterChipsComponent {
+  protected readonly FilterType = FilterType;
+  private readonly actions = createDispatchMap({
+    setCreator: SetCreator,
+    setDateCreated: SetDateCreated,
+    setSubject: SetSubject,
+    setLicense: SetLicense,
+    setProvider: SetProvider,
+    getAllOptions: GetAllOptions,
+  });
+
+  filters = select(PreprintsResourcesFiltersSelectors.getAllFilters);
+
+  clearFilter(filter: FilterType) {
+    switch (filter) {
+      case FilterType.Creator:
+        this.actions.setCreator('', '');
+        break;
+      case FilterType.DateCreated:
+        this.actions.setDateCreated('');
+        break;
+      case FilterType.Subject:
+        this.actions.setSubject('', '');
+        break;
+      case FilterType.License:
+        this.actions.setLicense('', '');
+        break;
+      case FilterType.Provider:
+        this.actions.setProvider('', '');
+        break;
+    }
+    this.actions.getAllOptions();
+  }
+}
