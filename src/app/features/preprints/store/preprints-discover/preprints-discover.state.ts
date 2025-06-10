@@ -4,34 +4,44 @@ import { BehaviorSubject, EMPTY, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
 import {
   GetResources,
   GetResourcesByLink,
-  PreprintsSearchSelectors,
   ResetState,
   SetSearchText,
   SetSortBy,
-} from '@osf/features/preprints/store/preprints-search';
+} from '@osf/features/preprints/store/preprints-discover/preprints-discover.actions';
+import { PreprintsDiscoverStateModel } from '@osf/features/preprints/store/preprints-discover/preprints-discover.model';
+import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover/preprints-discover.selectors';
+import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
 import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
-import { SearchService } from '@osf/shared/services';
-import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
-import { searchStateDefaults } from '@shared/constants';
 import { GetResourcesRequestTypeEnum, ResourceTab } from '@shared/enums';
+import { SearchService } from '@shared/services';
+import { addFiltersParams, getResourceTypes } from '@shared/utils';
 
-import { PreprintsSearchStateModel } from './preprints-search.model';
-
-@Injectable()
-@State<PreprintsSearchStateModel>({
-  name: 'preprintsSearch',
-  defaults: searchStateDefaults,
+@State<PreprintsDiscoverStateModel>({
+  name: 'preprintsDiscover',
+  defaults: {
+    resources: {
+      data: [],
+      isLoading: false,
+      error: null,
+    },
+    resourcesCount: 0,
+    searchText: '',
+    sortBy: '-relevance',
+    first: '',
+    next: '',
+    previous: '',
+  },
 })
-export class PreprintsSearchState implements NgxsOnInit {
+@Injectable()
+export class PreprintsDiscoverState implements NgxsOnInit {
   searchService = inject(SearchService);
   store = inject(Store);
   loadRequests = new BehaviorSubject<{ type: GetResourcesRequestTypeEnum; link?: string } | null>(null);
 
-  ngxsOnInit(ctx: StateContext<PreprintsSearchStateModel>): void {
+  ngxsOnInit(ctx: StateContext<PreprintsDiscoverStateModel>): void {
     this.loadRequests
       .pipe(
         switchMap((query) => {
@@ -41,8 +51,8 @@ export class PreprintsSearchState implements NgxsOnInit {
           if (query.type === GetResourcesRequestTypeEnum.GetResources) {
             const filters = this.store.selectSnapshot(PreprintsResourcesFiltersSelectors.getAllFilters);
             const filtersParams = addFiltersParams(filters as ResourceFiltersStateModel);
-            const searchText = this.store.selectSnapshot(PreprintsSearchSelectors.getSearchText);
-            const sortBy = this.store.selectSnapshot(PreprintsSearchSelectors.getSortBy);
+            const searchText = this.store.selectSnapshot(PreprintsDiscoverSelectors.getSearchText);
+            const sortBy = this.store.selectSnapshot(PreprintsDiscoverSelectors.getSortBy);
             const resourceTab = ResourceTab.Preprints;
             const resourceTypes = getResourceTypes(resourceTab);
 
@@ -89,7 +99,7 @@ export class PreprintsSearchState implements NgxsOnInit {
   }
 
   @Action(GetResourcesByLink)
-  getResourcesByLink(ctx: StateContext<PreprintsSearchStateModel>, action: GetResourcesByLink) {
+  getResourcesByLink(ctx: StateContext<PreprintsDiscoverStateModel>, action: GetResourcesByLink) {
     this.loadRequests.next({
       type: GetResourcesRequestTypeEnum.GetResourcesByLink,
       link: action.link,
@@ -97,17 +107,29 @@ export class PreprintsSearchState implements NgxsOnInit {
   }
 
   @Action(SetSearchText)
-  setSearchText(ctx: StateContext<PreprintsSearchStateModel>, action: SetSearchText) {
+  setSearchText(ctx: StateContext<PreprintsDiscoverStateModel>, action: SetSearchText) {
     ctx.patchState({ searchText: action.searchText });
   }
 
   @Action(SetSortBy)
-  setSortBy(ctx: StateContext<PreprintsSearchStateModel>, action: SetSortBy) {
+  setSortBy(ctx: StateContext<PreprintsDiscoverStateModel>, action: SetSortBy) {
     ctx.patchState({ sortBy: action.sortBy });
   }
 
   @Action(ResetState)
-  resetState(ctx: StateContext<PreprintsSearchStateModel>) {
-    ctx.patchState(searchStateDefaults);
+  resetState(ctx: StateContext<PreprintsDiscoverStateModel>) {
+    ctx.patchState({
+      resources: {
+        data: [],
+        isLoading: false,
+        error: null,
+      },
+      resourcesCount: 0,
+      searchText: '',
+      sortBy: '-relevance',
+      first: '',
+      next: '',
+      previous: '',
+    });
   }
 }

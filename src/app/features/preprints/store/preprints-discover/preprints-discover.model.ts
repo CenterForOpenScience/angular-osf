@@ -1,6 +1,6 @@
-import { AsyncStateModel, Resource } from '@osf/shared/models';
+import { AsyncStateModel, Resource } from '@shared/models';
 
-export interface PreprintsSearchStateModel {
+export interface PreprintsDiscoverStateModel {
   resources: AsyncStateModel<Resource[]>;
   resourcesCount: number;
   searchText: string;
