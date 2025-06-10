@@ -1,4 +1,4 @@
-import { ResourceTab } from '@osf/shared/enums/resource-tab.enum';
+import { ResourceTab } from '@shared/enums';
 
 export const searchStateDefaults = {
   resources: {

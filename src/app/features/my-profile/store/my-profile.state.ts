@@ -15,9 +15,9 @@ import {
   SetSearchText,
   SetSortBy,
 } from '@osf/features/my-profile/store';
-import { searchStateDefaults } from '@osf/features/search/utils/data';
 import { SearchService } from '@osf/shared/services';
 import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
+import { searchStateDefaults } from '@shared/constants';
 
 import { MyProfileResourceFiltersSelectors } from '../components/my-profile-resource-filters/store';
 

@@ -6,10 +6,10 @@ import { inject, Injectable } from '@angular/core';
 
 import { SearchService } from '@osf/shared/services';
 import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
+import { searchStateDefaults } from '@shared/constants';
 import { GetResourcesRequestTypeEnum } from '@shared/enums';
 
 import { ResourceFiltersSelectors } from '../components/resource-filters/store';
-import { searchStateDefaults } from '../utils/data';
 
 import {
   GetResources,
