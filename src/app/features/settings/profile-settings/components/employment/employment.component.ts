@@ -81,7 +81,6 @@ export class EmploymentComponent {
 
   handleSavePositions(): void {
     const employments = this.positions.value as EmploymentForm[];
-    console.log(employments);
 
     const formattedEmployments = employments.map((employment) => ({
       title: employment.title,

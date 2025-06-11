@@ -1,20 +1,23 @@
-<div class="addon-card flex flex-1 gap-4 flex-column" [class.mobile]="isMobile()">
+<div class="addon-card flex flex-column flex-1 gap-3 p-4 text-center">
   <div class="max-h-8rem">
     @if (card()!.externalServiceName) {
-      <img alt="Addon card image" [src]="'assets/images/addons/' + card()!.externalServiceName + '.svg'" />
+      <img
+        class="addon-image"
+        [src]="'assets/images/addons/' + card()!.externalServiceName + '.svg'"
+        alt="Addon card image"
+      />
     }
   </div>
 
-  <div class="flex flex-column gap-3">
+  <div class="flex flex-column gap-4">
     <h3>{{ card()?.displayName }}</h3>
 
-    <div class="flex justify-content-center align-items-center md:gap-5 md:mt-3 btn-container">
+    <div class="flex flex-column justify-content-center align-items-center gap-3 md:flex-row md:gap-4">
       @if (showDangerButton()) {
         <p-button
           [label]="'settings.addons.form.buttons.disable' | translate"
           severity="danger"
           (onClick)="showDisableDialog()"
-          [ngClass]="isMobile() ? 'w-8rem btn-full-width' : ''"
         ></p-button>
       }
 
@@ -22,46 +25,7 @@
         [label]="cardButtonLabel() || ('settings.addons.form.buttons.connect' | translate)"
         severity="secondary"
         (onClick)="onConnectAddon()"
-        [ngClass]="isMobile() ? 'w-8rem btn-full-width' : ''"
       ></p-button>
     </div>
   </div>
 </div>
-
-<p-dialog
-  [visible]="isDialogVisible()"
-  [modal]="true"
-  [draggable]="false"
-  [resizable]="false"
-  [closable]="false"
-  [closeOnEscape]="!isDisabling()"
-  (onHide)="hideDialog()"
->
-  <ng-template pTemplate="header">
-    <div class="flex align-items-center justify-content-between w-full">
-      <span class="text-xl font-bold">
-        {{ 'settings.addons.messages.deleteConfirmation.title' | translate }}
-      </span>
-      <button type="button" class="p-dialog-header-icon" (click)="hideDialog()" [disabled]="isDisabling()">
-        <i class="osf-icon-close"></i>
-      </button>
-    </div>
-  </ng-template>
-  <p>
-    {{ 'settings.addons.messages.deleteConfirmation.message' | translate }}
-  </p>
-  <div class="flex justify-content-end gap-4 mt-5">
-    <p-button
-      [label]="'settings.addons.form.buttons.cancel' | translate"
-      severity="secondary"
-      (onClick)="hideDialog()"
-      [disabled]="isDisabling()"
-    ></p-button>
-    <p-button
-      [label]="'settings.addons.form.buttons.disable' | translate"
-      severity="danger"
-      (onClick)="onDisableAddon()"
-      [disabled]="isDisabling()"
-    ></p-button>
-  </div>
-</p-dialog>

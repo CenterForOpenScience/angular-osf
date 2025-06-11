@@ -12,6 +12,9 @@
     .topnav-btn {
       height: mix.rem(36px);
       width: mix.rem(36px);
+
+      --p-button-contrast-background: transparent;
+      --p-button-contrast-border-color: transparent;
     }
   }
 }

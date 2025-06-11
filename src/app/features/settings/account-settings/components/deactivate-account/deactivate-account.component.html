@@ -19,15 +19,18 @@
   @if (accountSettings()?.deactivationRequested) {
     <p class="font-bold">{{ 'settings.accountSettings.deactivateAccount.pendingDeactivation' | translate }}</p>
     <div class="account-setting-action">
-      <p-button (click)="cancelDeactivation()">
-        {{ 'settings.accountSettings.deactivateAccount.actions.undoDeactivation' | translate }}
+      <p-button
+        [label]="'settings.accountSettings.deactivateAccount.actions.undoDeactivation' | translate"
+        (click)="cancelDeactivation()"
+      >
       </p-button>
     </div>
   } @else {
     <div class="account-setting-action">
-      <p-button (click)="deactivateAccount()" size="large">
-        {{ 'settings.accountSettings.deactivateAccount.actions.requestDeactivation' | translate }}
-      </p-button>
+      <p-button
+        [label]="'settings.accountSettings.deactivateAccount.actions.requestDeactivation' | translate"
+        (click)="deactivateAccount()"
+      ></p-button>
     </div>
   }
 </section>

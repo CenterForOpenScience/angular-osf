@@ -112,8 +112,9 @@
   </div>
 
   <div class="account-setting-action">
-    <p-button (onClick)="addEmail()" size="large">
-      {{ 'settings.accountSettings.connectedEmails.buttons.addEmail' | translate }}
-    </p-button>
+    <p-button
+      (onClick)="addEmail()"
+      [label]="'settings.accountSettings.connectedEmails.buttons.addEmail' | translate"
+    />
   </div>
 </section>

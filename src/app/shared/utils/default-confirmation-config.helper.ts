@@ -8,7 +8,6 @@ export const defaultConfirmationConfig: Confirmation = {
   rejectButtonProps: {
     label: 'Cancel',
     severity: 'info',
-    outlined: true,
   },
   acceptButtonProps: {
     label: 'Confirm',

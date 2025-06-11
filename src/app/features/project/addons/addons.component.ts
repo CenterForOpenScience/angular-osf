@@ -18,7 +18,7 @@ import {
   GetCitationAddons,
   GetStorageAddons,
 } from '@osf/features/settings/addons/store';
-import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
+import { LoadingSpinnerComponent, SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { AddonCardListComponent } from '@shared/components/addons';
 import { IS_XSMALL } from '@shared/utils';
 
@@ -38,6 +38,7 @@ import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS, AddonCategoryValue, AddonTab
     Tabs,
     TranslatePipe,
     FormsModule,
+    LoadingSpinnerComponent,
   ],
   templateUrl: './addons.component.html',
   styleUrl: './addons.component.scss',

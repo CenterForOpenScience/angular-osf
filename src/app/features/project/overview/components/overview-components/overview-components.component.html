@@ -22,8 +22,13 @@
                 <a class="component-title" [href]="'my-projects/' + component.id">{{ component.title }}</a>
               </h2>
               <div>
-                <p-button class="btn-icon" (click)="componentActionMenu.toggle($event)">
-                  <i class="osf-icon-dots"></i>
+                <p-button
+                  severity="contrast"
+                  icon="fas fa-ellipsis-vertical"
+                  raised
+                  variant="outlined"
+                  (click)="componentActionMenu.toggle($event)"
+                >
                 </p-button>
 
                 <p-menu appendTo="body" #componentActionMenu [model]="componentActionItems(component.id)" popup>

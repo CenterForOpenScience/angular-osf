@@ -56,7 +56,11 @@
           </div>
         </section>
 
-        <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
+        @if (filteredAddonCards().length) {
+          <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
+        } @else {
+          <osf-loading-spinner></osf-loading-spinner>
+        }
       </p-tabpanel>
       <p-tabpanel [value]="AddonTabValue.CONNECTED_ADDONS" class="flex flex-column gap-5">
         <osf-search-input
@@ -65,11 +69,15 @@
           [placeholder]="'settings.addons.filters.search' | translate"
         />
 
-        <osf-addon-card-list
-          [cards]="allAuthorizedAddons()"
-          [cardButtonLabel]="'settings.addons.form.buttons.reconnect' | translate"
-          [showDangerButton]="true"
-        />
+        @if (allAuthorizedAddons().length) {
+          <osf-addon-card-list
+            [cards]="allAuthorizedAddons()"
+            [cardButtonLabel]="'settings.addons.form.buttons.reconnect' | translate"
+            [showDangerButton]="true"
+          />
+        } @else {
+          <osf-loading-spinner></osf-loading-spinner>
+        }
       </p-tabpanel>
     </p-tabpanels>
   </p-tabs>

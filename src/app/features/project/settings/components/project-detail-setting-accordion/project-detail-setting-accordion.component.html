@@ -2,12 +2,7 @@
   class="flex justify-between align-items-center mb-2 w-full border-bottom-1 border-gray-300 gap-2 flex-column sm:flex-row sm:gap-4"
 >
   <div class="flex align-items-center gap-2 cursor-pointer w-full sm:w-5">
-    <p-button
-      role="button"
-      [ariaLabel]="'Toggle ' + title()"
-      class="btn-icon-text form-btn button-shadow-none"
-      (click)="toggle()"
-    >
+    <p-button variant="text" severity="contrast" [ariaLabel]="'Toggle ' + title()" (click)="toggle()">
       <i class="pi" [ngClass]="{ 'pi-plus': !expanded(), 'pi-minus': expanded() }"></i>
     </p-button>
 

@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
+import { LoadingSpinnerComponent, SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
 import { SelectOption } from '@osf/shared/models';
 import { IS_XSMALL } from '@osf/shared/utils';
 import { AddonCardListComponent } from '@shared/components/addons';
@@ -40,6 +40,7 @@ import {
     SelectModule,
     FormsModule,
     TranslatePipe,
+    LoadingSpinnerComponent,
   ],
   templateUrl: './addons.component.html',
   styleUrl: './addons.component.scss',
@@ -111,14 +112,12 @@ export class AddonsComponent {
 
   constructor() {
     effect(() => {
-      // Only proceed if we have the current user
       if (this.currentUser()) {
         this.#store.dispatch(GetAddonsUserReference);
       }
     });
 
     effect(() => {
-      // Only proceed if we have both current user and user reference
       if (this.currentUser() && this.userReferenceId()) {
         this.#loadAddonsIfNeeded(this.userReferenceId());
       }

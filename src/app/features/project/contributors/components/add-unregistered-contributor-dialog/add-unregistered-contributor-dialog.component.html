@@ -24,8 +24,12 @@
   <p class="mt-4">{{ 'project.contributors.addDialog.unregisteredContributorNotification' | translate }}</p>
 
   <div class="flex justify-content-end mt-4">
-    <p-button class="secondary-add-btn" severity="secondary" (click)="addRegistered()">
-      {{ 'project.contributors.addDialog.addRegisteredContributor' | translate }}
+    <p-button
+      class="secondary-add-btn"
+      severity="secondary"
+      [label]="'project.contributors.addDialog.addRegisteredContributor' | translate"
+      (click)="addRegistered()"
+    >
     </p-button>
   </div>
 

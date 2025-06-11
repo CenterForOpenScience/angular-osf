@@ -6,15 +6,19 @@
       <h3 class="account-setting-description">
         {{ 'settings.accountSettings.twoFactorAuth.description.enabled' | translate }}
       </h3>
+
       <h3 class="account-setting-description font-bold">
         {{ 'settings.accountSettings.twoFactorAuth.description.warning' | translate }}
       </h3>
+
       <h3 class="account-setting-description">
         {{ 'settings.accountSettings.twoFactorAuth.description.setup' | translate }}
       </h3>
+
       <h3 class="account-setting-description">
         {{ 'settings.accountSettings.twoFactorAuth.description.verification' | translate }}
       </h3>
+
       <h3
         class="account-setting-description"
         [innerHTML]="
@@ -25,6 +29,7 @@
       <h3 class="account-setting-description font-bold" id="verification-code-help">
         {{ 'settings.accountSettings.twoFactorAuth.verification.label' | translate }}
       </h3>
+
       <input
         [formControl]="verificationCode"
         pInputText
@@ -36,12 +41,18 @@
       }
 
       <div class="flex gap-2">
-        <p-button (click)="enableTwoFactor()" [disabled]="verificationCode.invalid">
-          {{ 'settings.accountSettings.common.buttons.enable' | translate }}
+        <p-button
+          [label]="'settings.accountSettings.common.buttons.enable' | translate"
+          (click)="enableTwoFactor()"
+          [disabled]="verificationCode.invalid"
+        >
         </p-button>
 
-        <p-button (click)="disableTwoFactor()" severity="secondary">
-          {{ 'settings.accountSettings.common.buttons.cancel' | translate }}
+        <p-button
+          [label]="'settings.accountSettings.common.buttons.cancel' | translate"
+          (click)="disableTwoFactor()"
+          severity="secondary"
+        >
         </p-button>
       </div>
     } @else if (accountSettings()?.twoFactorEnabled && accountSettings()?.twoFactorConfirmed) {
@@ -51,7 +62,6 @@
 
       <div>
         <p-button
-          size="large"
           [label]="'settings.accountSettings.common.buttons.disable' | translate"
           severity="danger"
           (click)="openDisableDialog()"
@@ -63,8 +73,10 @@
       </div>
 
       <div class="account-setting-action">
-        <p-button size="large" (click)="configureTwoFactorAuth()">
-          {{ 'settings.accountSettings.common.buttons.configure' | translate }}
+        <p-button
+          [label]="'settings.accountSettings.common.buttons.configure' | translate"
+          (click)="configureTwoFactorAuth()"
+        >
         </p-button>
       </div>
     }

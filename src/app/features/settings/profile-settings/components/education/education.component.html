@@ -10,8 +10,11 @@
             </h2>
             @if (index !== 0) {
               <div class="ml-auto remove-button">
-                <p-button class="ml-auto" (click)="removeEducation(index)">
-                  {{ 'settings.profileSettings.education.remove' | translate }}
+                <p-button
+                  class="ml-auto"
+                  [label]="'settings.profileSettings.education.remove' | translate"
+                  (click)="removeEducation(index)"
+                >
                 </p-button>
               </div>
             }

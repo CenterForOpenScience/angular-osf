@@ -1,40 +1,17 @@
 @use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
 
 :host {
   display: block;
 
-  img {
+  .addon-card {
+    border: 1px solid var.$grey-2;
+    border-radius: mix.rem(12px);
+  }
+
+  .addon-image {
     height: 7rem;
     max-width: 60%;
-  }
-
-  .addon-card {
-    text-align: center;
-    border: 1px solid var.$grey-2;
-    border-radius: 1rem;
-    padding: 2rem;
-  }
-
-  .mobile {
-    img {
-      max-height: 4rem;
-    }
-
-    .btn-container {
-      flex-direction: column-reverse;
-      gap: 1rem;
-    }
-  }
-
-  .addon-card.mobile {
-    gap: 0.5rem;
-    padding: 1rem;
-  }
-
-  .p-dialog-header-icon {
-    background-color: transparent;
-    color: var.$grey-1;
-    border: none;
-    height: 1.1rem;
+    object-fit: contain;
   }
 }
