@@ -8,13 +8,10 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, u
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import {
-  MyProfileFilterChipsComponent,
-  MyProfileResourceCardComponent,
-  MyProfileResourceFiltersComponent,
-} from '@osf/features/my-profile/components';
+import { MyProfileFilterChipsComponent, MyProfileResourceFiltersComponent } from '@osf/features/my-profile/components';
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { ResourceCardComponent } from '@shared/components/resource-card/resource-card.component';
 import { searchSortingOptions } from '@shared/constants';
 
 import { GetResourcesByLink, MyProfileSelectors, SetResourceTab, SetSortBy } from '../../store';
@@ -27,10 +24,10 @@ import { MyProfileResourceFiltersSelectors } from '../my-profile-resource-filter
     DataView,
     MyProfileFilterChipsComponent,
     NgOptimizedImage,
-    MyProfileResourceCardComponent,
     MyProfileResourceFiltersComponent,
     Select,
     FormsModule,
+    ResourceCardComponent,
   ],
   templateUrl: './my-profile-resources.component.html',
   styleUrl: './my-profile-resources.component.scss',

@@ -11,6 +11,7 @@ export { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
 export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.component';
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';
+export { ResourceCardComponent } from './resource-card/resource-card.component';
 export { SearchInputComponent } from './search-input/search-input.component';
 export { SubHeaderComponent } from './sub-header/sub-header.component';
 export { TextInputComponent } from './text-input/text-input.component';

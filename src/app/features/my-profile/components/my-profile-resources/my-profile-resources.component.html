@@ -80,12 +80,12 @@
       <osf-my-profile-resource-filters></osf-my-profile-resource-filters>
     }
 
-    <p-dataview [value]="resources()" class="resources-container" [rows]="10">
+    <p-dataView [value]="resources()" class="resources-container" [rows]="10">
       <ng-template #list let-items>
         <div class="resources-list">
           @if (items.length > 0) {
             @for (item of items; track item.id) {
-              <osf-my-profile-resource-card [item]="item"></osf-my-profile-resource-card>
+              <osf-resource-card [item]="item" />
             }
 
             <div class="flex column-gap-4 w-full justify-content-center pt-5">
@@ -144,6 +144,6 @@
           }
         </div>
       </ng-template>
-    </p-dataview>
+    </p-dataView>
   </div>
 }

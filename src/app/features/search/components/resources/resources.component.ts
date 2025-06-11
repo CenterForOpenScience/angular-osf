@@ -11,9 +11,10 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, u
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { FilterChipsComponent, ResourceCardComponent, ResourceFiltersComponent } from '@osf/features/search/components';
+import { FilterChipsComponent, ResourceFiltersComponent } from '@osf/features/search/components';
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { ResourceCardComponent } from '@shared/components';
 import { searchSortingOptions } from '@shared/constants';
 
 import { GetResourcesByLink, SearchSelectors, SetResourceTab, SetSortBy } from '../../store';
@@ -30,10 +31,10 @@ import { ResourceFiltersSelectors } from '../resource-filters/store';
     AccordionModule,
     TableModule,
     DataViewModule,
-    ResourceCardComponent,
     FilterChipsComponent,
     Select,
     NgOptimizedImage,
+    ResourceCardComponent,
   ],
   templateUrl: './resources.component.html',
   styleUrl: './resources.component.scss',
