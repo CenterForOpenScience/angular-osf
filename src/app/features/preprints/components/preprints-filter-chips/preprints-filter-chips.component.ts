@@ -1,25 +1,24 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { PrimeTemplate } from 'primeng/api';
 import { Chip } from 'primeng/chip';
 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import {
   PreprintsResourcesFiltersSelectors,
-  SetProvider,
-} from '@osf/features/preprints/store/preprints-resources-filters';
-import { GetAllOptions } from '@osf/features/preprints/store/preprints-resources-filters-options';
-import {
   SetCreator,
   SetDateCreated,
   SetLicense,
+  SetProvider,
   SetSubject,
-} from '@osf/features/search/components/resource-filters/store';
+} from '@osf/features/preprints/store/preprints-resources-filters';
+import { GetAllOptions } from '@osf/features/preprints/store/preprints-resources-filters-options';
 import { FilterType } from '@osf/shared/enums';
 
 @Component({
   selector: 'osf-preprints-filter-chips',
-  imports: [Chip],
+  imports: [Chip, PrimeTemplate],
   templateUrl: './preprints-filter-chips.component.html',
   styleUrl: './preprints-filter-chips.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
