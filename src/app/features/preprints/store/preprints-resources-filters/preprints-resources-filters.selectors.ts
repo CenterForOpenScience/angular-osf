@@ -14,6 +14,11 @@ export class PreprintsResourcesFiltersSelectors {
   }
 
   @Selector([PreprintsResourcesFiltersState])
+  static isAnyFilterSelected(state: PreprintsResourcesFiltersStateModel): boolean {
+    return Boolean(state.dateCreated.value || state.subject.value || state.license.value || state.provider.value);
+  }
+
+  @Selector([PreprintsResourcesFiltersState])
   static getCreator(state: PreprintsResourcesFiltersStateModel): ResourceFilterLabel {
     return state.creator;
   }

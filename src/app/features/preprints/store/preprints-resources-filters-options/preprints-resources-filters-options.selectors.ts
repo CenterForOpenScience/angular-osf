@@ -7,6 +7,16 @@ import { PreprintsResourcesFiltersOptionsState } from './preprints-resources-fil
 
 export class PreprintsResourcesFiltersOptionsSelectors {
   @Selector([PreprintsResourcesFiltersOptionsState])
+  static isAnyFilterOptions(state: PreprintsResourceFiltersOptionsStateModel): boolean {
+    return (
+      state.datesCreated.length > 0 ||
+      state.subjects.length > 0 ||
+      state.licenses.length > 0 ||
+      state.providers.length > 0
+    );
+  }
+
+  @Selector([PreprintsResourcesFiltersOptionsState])
   static getCreators(state: PreprintsResourceFiltersOptionsStateModel): Creator[] {
     return state.creators;
   }
