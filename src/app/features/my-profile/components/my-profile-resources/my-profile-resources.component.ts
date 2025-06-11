@@ -8,14 +8,17 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, u
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
+import {
+  MyProfileFilterChipsComponent,
+  MyProfileResourceCardComponent,
+  MyProfileResourceFiltersComponent,
+} from '@osf/features/my-profile/components';
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { searchSortingOptions } from '@shared/constants';
 
 import { GetResourcesByLink, MyProfileSelectors, SetResourceTab, SetSortBy } from '../../store';
 import { MyProfileResourceFiltersOptionsSelectors } from '../filters/store';
-import { MyProfileFilterChipsComponent } from '../my-profile-filter-chips/my-profile-filter-chips.component';
-import { MyProfileResourceCardComponent } from '../my-profile-resource-card/my-profile-resource-card.component';
-import { MyProfileResourceFiltersComponent } from '../my-profile-resource-filters/my-profile-resource-filters.component';
 import { MyProfileResourceFiltersSelectors } from '../my-profile-resource-filters/store';
 
 @Component({
@@ -35,6 +38,7 @@ import { MyProfileResourceFiltersSelectors } from '../my-profile-resource-filter
 })
 export class MyProfileResourcesComponent {
   readonly #store = inject(Store);
+  protected readonly searchSortingOptions = searchSortingOptions;
 
   selectedTabStore = this.#store.selectSignal(MyProfileSelectors.getResourceTab);
   searchCount = this.#store.selectSignal(MyProfileSelectors.getResourcesCount);
@@ -79,13 +83,6 @@ export class MyProfileResourcesComponent {
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
 
   protected selectedSort = signal('');
-  protected readonly sortTabOptions = [
-    { label: 'Relevance', value: '-relevance' },
-    { label: 'Date created (newest)', value: '-dateCreated' },
-    { label: 'Date created (oldest)', value: 'dateCreated' },
-    { label: 'Date modified (newest)', value: '-dateModified' },
-    { label: 'Date modified (oldest)', value: 'dateModified' },
-  ];
 
   protected selectedTab = signal(ResourceTab.All);
   protected readonly tabsOptions = [
