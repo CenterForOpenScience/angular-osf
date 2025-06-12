@@ -39,7 +39,7 @@ export class ResourceCardComponent {
   dataIsLoaded = false;
 
   onOpen() {
-    if (!this.item() || this.dataIsLoaded) {
+    if (!this.item() || this.dataIsLoaded || this.item().resourceType !== ResourceType.Agent) {
       return;
     }
 
