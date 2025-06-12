@@ -4,11 +4,13 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 
-import { PreprintsDateCreatedFilterComponent } from '@osf/features/preprints/components';
-import { PreprintsCreatorsFilterComponent } from '@osf/features/preprints/components/filters/preprints-creators/preprints-creators-filter.component';
-import { PreprintsInstitutionFilterComponent } from '@osf/features/preprints/components/filters/preprints-institution-filter/preprints-institution-filter.component';
-import { PreprintsLicenseFilterComponent } from '@osf/features/preprints/components/filters/preprints-license-filter/preprints-license-filter.component';
-import { PreprintsSubjectFilterComponent } from '@osf/features/preprints/components/filters/preprints-subject/preprints-subject-filter.component';
+import {
+  PreprintsCreatorsFilterComponent,
+  PreprintsDateCreatedFilterComponent,
+  PreprintsInstitutionFilterComponent,
+  PreprintsLicenseFilterComponent,
+  PreprintsSubjectFilterComponent,
+} from '@osf/features/preprints/components';
 import { PreprintsResourcesFiltersOptionsSelectors } from '@osf/features/preprints/store/preprints-resources-filters-options';
 
 @Component({
