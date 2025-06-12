@@ -4,7 +4,7 @@ import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
 
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
@@ -37,6 +37,8 @@ import { IS_WEB, IS_XSMALL } from '@shared/utils';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintsResourcesComponent {
+  @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
+
   private readonly actions = createDispatchMap({ setSortBy: SetSortBy, getResourcesByLink: GetResourcesByLink });
   searchSortingOptions = searchSortingOptions;
 
