@@ -21,7 +21,13 @@ import { PreprintsResourcesComponent } from '@osf/features/preprints/components'
 import { PreprintProviderHeroComponent } from '@osf/features/preprints/components/preprint-provider-hero/preprint-provider-hero.component';
 import { BrandService } from '@osf/features/preprints/services';
 import { GetPreprintProviderById, PreprintsSelectors } from '@osf/features/preprints/store/preprints';
-import { GetResources, ResetState, SetSearchText, SetSortBy } from '@osf/features/preprints/store/preprints-discover';
+import {
+  GetResources,
+  ResetState,
+  SetProviderIri,
+  SetSearchText,
+  SetSortBy,
+} from '@osf/features/preprints/store/preprints-discover';
 import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover/preprints-discover.selectors';
 import {
   PreprintsResourcesFiltersSelectors,
@@ -49,7 +55,7 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-
+  private initAfterIniReceived = false;
   private providerId = toSignal(
     this.activatedRoute.params.pipe(map((params) => params['providerId'])) ?? of(undefined)
   );
@@ -68,6 +74,7 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
     getResources: GetResources,
     resetFiltersState: ResetFiltersState,
     resetDiscoverState: ResetState,
+    setProviderIri: SetProviderIri,
   });
 
   searchControl = new FormControl('');
@@ -89,6 +96,14 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
       const provider = this.preprintProvider();
 
       if (provider) {
+        this.actions.setProviderIri(provider.iri);
+
+        if (!this.initAfterIniReceived) {
+          this.initAfterIniReceived = true;
+          this.actions.getResources();
+          this.actions.getAllOptions();
+        }
+
         BrandService.applyBranding(provider.brand);
         HeaderStyleHelper.applyHeaderStyles(
           provider.brand.primaryColor,

@@ -27,6 +27,11 @@ export class PreprintsDiscoverSelectors {
   }
 
   @Selector([PreprintsDiscoverState])
+  static getIri(state: PreprintsDiscoverStateModel): string {
+    return state.providerIri;
+  }
+
+  @Selector([PreprintsDiscoverState])
   static getFirst(state: PreprintsDiscoverStateModel): string {
     return state.first;
   }

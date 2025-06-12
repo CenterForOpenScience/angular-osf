@@ -20,6 +20,12 @@ export class SetSortBy {
   constructor(public sortBy: string) {}
 }
 
+export class SetProviderIri {
+  static readonly type = '[Preprints Discover] Set Provider Iri';
+
+  constructor(public providerIri: string) {}
+}
+
 export class ResetState {
   static readonly type = '[Preprints Discover] Reset State';
 }

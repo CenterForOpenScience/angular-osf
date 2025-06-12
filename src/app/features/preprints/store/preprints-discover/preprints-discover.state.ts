@@ -8,6 +8,7 @@ import {
   GetResources,
   GetResourcesByLink,
   ResetState,
+  SetProviderIri,
   SetSearchText,
   SetSortBy,
 } from '@osf/features/preprints/store/preprints-discover/preprints-discover.actions';
@@ -27,6 +28,7 @@ import { addFiltersParams, getResourceTypes } from '@shared/utils';
       isLoading: false,
       error: null,
     },
+    providerIri: '',
     resourcesCount: 0,
     searchText: '',
     sortBy: '-relevance',
@@ -55,6 +57,9 @@ export class PreprintsDiscoverState implements NgxsOnInit {
             const sortBy = this.store.selectSnapshot(PreprintsDiscoverSelectors.getSortBy);
             const resourceTab = ResourceTab.Preprints;
             const resourceTypes = getResourceTypes(resourceTab);
+            filtersParams['cardSearchFilter[publisher][]'] = this.store.selectSnapshot(
+              PreprintsDiscoverSelectors.getIri
+            );
 
             return this.searchService.getResources(filtersParams, searchText, sortBy, resourceTypes).pipe(
               tap((response) => {
@@ -93,6 +98,9 @@ export class PreprintsDiscoverState implements NgxsOnInit {
 
   @Action(GetResources)
   getResources() {
+    if (!this.store.selectSnapshot(PreprintsDiscoverSelectors.getIri)) {
+      return;
+    }
     this.loadRequests.next({
       type: GetResourcesRequestTypeEnum.GetResources,
     });
@@ -116,6 +124,11 @@ export class PreprintsDiscoverState implements NgxsOnInit {
     ctx.patchState({ sortBy: action.sortBy });
   }
 
+  @Action(SetProviderIri)
+  setProviderIri(ctx: StateContext<PreprintsDiscoverStateModel>, action: SetProviderIri) {
+    ctx.patchState({ providerIri: action.providerIri });
+  }
+
   @Action(ResetState)
   resetState(ctx: StateContext<PreprintsDiscoverStateModel>) {
     ctx.patchState({
@@ -124,6 +137,7 @@ export class PreprintsDiscoverState implements NgxsOnInit {
         isLoading: false,
         error: null,
       },
+      providerIri: '',
       resourcesCount: 0,
       searchText: '',
       sortBy: '-relevance',

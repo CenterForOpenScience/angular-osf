@@ -40,6 +40,7 @@ export class PreprintsFiltersOptionsService {
     params['cardSearchFilter[resourceType]'] = resourceTypes;
     params['cardSearchFilter[accessService]'] = 'https://staging4.osf.io/';
     params['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = searchText;
+    params['cardSearchFilter[publisher][]'] = this.store.selectSnapshot(PreprintsDiscoverSelectors.getIri);
     params['page[size]'] = '10';
     params['sort'] = sort;
     return params;

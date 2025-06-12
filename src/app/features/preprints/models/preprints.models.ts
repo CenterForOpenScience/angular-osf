@@ -23,6 +23,7 @@ export interface PreprintProviderDetails {
   allowSubmissions: boolean;
   brand: Brand;
   lastFetched?: number;
+  iri: string;
 }
 
 export interface PreprintProviderToAdvertise {
@@ -59,6 +60,9 @@ export interface PreprintProviderDetailsGetResponse {
     brand: {
       data: BrandGetResponse;
     };
+  };
+  links: {
+    iri: string;
   };
 }
 

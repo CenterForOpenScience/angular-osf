@@ -5,6 +5,7 @@ import { tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { PreprintsFiltersOptionsService } from '@osf/features/preprints/services';
+import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover';
 
 import {
   GetAllOptions,
@@ -94,6 +95,9 @@ export class PreprintsResourcesFiltersOptionsState {
 
   @Action(GetAllOptions)
   getAllOptions() {
+    if (!this.store.selectSnapshot(PreprintsDiscoverSelectors.getIri)) {
+      return;
+    }
     this.store.dispatch(GetDatesCreatedOptions);
     this.store.dispatch(GetSubjectsOptions);
     this.store.dispatch(GetLicensesOptions);

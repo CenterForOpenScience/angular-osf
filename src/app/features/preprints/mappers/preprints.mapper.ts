@@ -28,6 +28,7 @@ export class PreprintsMapper {
         primaryColor: brandRaw.attributes.primary_color,
         secondaryColor: brandRaw.attributes.secondary_color,
       },
+      iri: response.links.iri,
     };
   }
 
