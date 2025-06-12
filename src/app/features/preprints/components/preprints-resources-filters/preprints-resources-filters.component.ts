@@ -66,6 +66,11 @@ export class PreprintsResourcesFiltersComponent {
   });
 
   anyOptionsCount = computed(() => {
-    return this.datesOptionsCount() > 0;
+    return (
+      this.datesOptionsCount() > 0 ||
+      this.subjectOptionsCount() > 0 ||
+      this.licenseOptionsCount() > 0 ||
+      this.institutionOptionsCount() > 0
+    );
   });
 }
