@@ -7,11 +7,16 @@ import { SelectChangeEvent } from 'primeng/select';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import {
+  PreprintsResourcesFiltersSelectors,
+  SetCreator,
+} from '@osf/features/preprints/store/preprints-resources-filters';
+import {
+  GetAllOptions,
+  PreprintsResourcesFiltersOptionsSelectors,
+} from '@osf/features/preprints/store/preprints-resources-filters-options';
 import { mockStore } from '@osf/shared/mocks';
 import { Creator } from '@osf/shared/models';
-
-import { ResourceFiltersSelectors, SetCreator } from '../../resource-filters/store';
-import { GetAllOptions, ResourceFiltersOptionsSelectors } from '../store';
 
 import { PreprintsCreatorsFilterComponent } from './preprints-creators-filter.component';
 
@@ -29,11 +34,11 @@ describe('CreatorsFilterComponent', () => {
 
   beforeEach(async () => {
     store.selectSignal.mockImplementation((selector) => {
-      if (selector === ResourceFiltersOptionsSelectors.getCreators) {
+      if (selector === PreprintsResourcesFiltersOptionsSelectors.getCreators) {
         return signal(mockCreators);
       }
 
-      if (selector === ResourceFiltersSelectors.getCreator) {
+      if (selector === PreprintsResourcesFiltersSelectors.getCreator) {
         return signal({ label: '', value: '' });
       }
 

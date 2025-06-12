@@ -6,8 +6,8 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceFiltersSelectors } from '../../resource-filters/store';
-import { ResourceFiltersOptionsSelectors } from '../store';
+import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
+import { PreprintsResourcesFiltersOptionsSelectors } from '@osf/features/preprints/store/preprints-resources-filters-options';
 
 import { PreprintsSubjectFilterComponent } from './preprints-subject-filter.component';
 
@@ -23,10 +23,10 @@ describe('SubjectFilterComponent', () => {
 
   const mockStore = {
     selectSignal: jest.fn().mockImplementation((selector) => {
-      if (selector === ResourceFiltersOptionsSelectors.getSubjects) {
+      if (selector === PreprintsResourcesFiltersOptionsSelectors.getSubjects) {
         return () => mockSubjects;
       }
-      if (selector === ResourceFiltersSelectors.getSubject) {
+      if (selector === PreprintsResourcesFiltersSelectors.getSubject) {
         return () => ({ label: '', id: '' });
       }
       return () => null;

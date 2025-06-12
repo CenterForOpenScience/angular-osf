@@ -7,10 +7,15 @@ import { SelectChangeEvent } from 'primeng/select';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import {
+  PreprintsResourcesFiltersSelectors,
+  SetLicense,
+} from '@osf/features/preprints/store/preprints-resources-filters';
+import {
+  GetAllOptions,
+  PreprintsResourcesFiltersOptionsSelectors,
+} from '@osf/features/preprints/store/preprints-resources-filters-options';
 import { LicenseFilter } from '@osf/shared/models';
-
-import { ResourceFiltersSelectors, SetLicense } from '../../resource-filters/store';
-import { GetAllOptions, ResourceFiltersOptionsSelectors } from '../store';
 
 import { PreprintsLicenseFilterComponent } from './preprints-license-filter.component';
 
@@ -31,10 +36,10 @@ describe('LicenseFilterComponent', () => {
 
   beforeEach(async () => {
     mockStore.selectSignal.mockImplementation((selector) => {
-      if (selector === ResourceFiltersOptionsSelectors.getLicenses) {
+      if (selector === PreprintsResourcesFiltersOptionsSelectors.getLicenses) {
         return signal(mockLicenses);
       }
-      if (selector === ResourceFiltersSelectors.getLicense) {
+      if (selector === PreprintsResourcesFiltersSelectors.getLicense) {
         return signal({ label: '', value: '' });
       }
       return signal(null);
