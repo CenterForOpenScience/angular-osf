@@ -7,7 +7,14 @@ import { inject, Injectable } from '@angular/core';
 import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover';
 import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
 import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
-import { Creator, DateCreated, LicenseFilter, ProviderFilter, SubjectFilter } from '@osf/shared/models';
+import {
+  Creator,
+  DateCreated,
+  LicenseFilter,
+  ProviderFilter,
+  ResourceTypeFilter,
+  SubjectFilter,
+} from '@osf/shared/models';
 import { FiltersOptionsService } from '@osf/shared/services';
 import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
 import { ResourceTab } from '@shared/enums';
@@ -48,6 +55,10 @@ export class PreprintsFiltersOptionsService {
 
   getSubjects(): Observable<SubjectFilter[]> {
     return this.filtersOptions.getSubjects(this.getParams(), this.getFilterParams());
+  }
+
+  getInstitutions(): Observable<ResourceTypeFilter[]> {
+    return this.filtersOptions.getInstitutions(this.getParams(), this.getFilterParams());
   }
 
   getLicenses(): Observable<LicenseFilter[]> {

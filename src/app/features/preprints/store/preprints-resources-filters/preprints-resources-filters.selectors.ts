@@ -34,6 +34,11 @@ export class PreprintsResourcesFiltersSelectors {
   }
 
   @Selector([PreprintsResourcesFiltersState])
+  static getInstitution(state: PreprintsResourcesFiltersStateModel): ResourceFilterLabel {
+    return state.institution;
+  }
+
+  @Selector([PreprintsResourcesFiltersState])
   static getLicense(state: PreprintsResourcesFiltersStateModel): ResourceFilterLabel {
     return state.license;
   }

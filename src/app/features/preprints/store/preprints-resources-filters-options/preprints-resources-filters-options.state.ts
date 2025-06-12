@@ -10,6 +10,7 @@ import {
   GetAllOptions,
   GetCreatorsOptions,
   GetDatesCreatedOptions,
+  GetInstitutionsOptions,
   GetLicensesOptions,
   GetProvidersOptions,
   GetSubjectsOptions,
@@ -24,6 +25,7 @@ import { PreprintsResourceFiltersOptionsStateModel } from './preprints-resources
     subjects: [],
     licenses: [],
     providers: [],
+    institutions: [],
   },
 })
 @Injectable()
@@ -59,6 +61,15 @@ export class PreprintsResourcesFiltersOptionsState {
     return this.resourceFiltersService.getSubjects().pipe(
       tap((subjects) => {
         ctx.patchState({ subjects: subjects });
+      })
+    );
+  }
+
+  @Action(GetInstitutionsOptions)
+  getInstitutions(ctx: StateContext<PreprintsResourceFiltersOptionsStateModel>) {
+    return this.resourceFiltersService.getInstitutions().pipe(
+      tap((institutions) => {
+        ctx.patchState({ institutions: institutions });
       })
     );
   }

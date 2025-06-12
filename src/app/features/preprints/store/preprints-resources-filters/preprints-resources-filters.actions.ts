@@ -22,6 +22,15 @@ export class SetSubject {
   ) {}
 }
 
+export class SetInstitution {
+  static readonly type = '[Preprints Resource Filters] Set Institution';
+
+  constructor(
+    public institution: string,
+    public id: string
+  ) {}
+}
+
 export class SetLicense {
   static readonly type = '[Preprints Resource Filters] Set License';
 

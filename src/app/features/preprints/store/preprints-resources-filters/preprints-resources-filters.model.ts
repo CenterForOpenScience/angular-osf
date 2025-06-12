@@ -6,4 +6,5 @@ export interface PreprintsResourcesFiltersStateModel {
   subject: ResourceFilterLabel;
   license: ResourceFilterLabel;
   provider: ResourceFilterLabel;
+  institution: ResourceFilterLabel;
 }

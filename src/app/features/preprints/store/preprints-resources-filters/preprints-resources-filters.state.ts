@@ -9,6 +9,7 @@ import {
   ResetFiltersState,
   SetCreator,
   SetDateCreated,
+  SetInstitution,
   SetLicense,
   SetProvider,
   SetSubject,
@@ -49,6 +50,17 @@ export class PreprintsResourcesFiltersState {
       subject: {
         filterName: FilterLabelsModel.subject,
         label: action.subject,
+        value: action.id,
+      },
+    });
+  }
+
+  @Action(SetInstitution)
+  setInstitution(ctx: StateContext<PreprintsResourcesFiltersStateModel>, action: SetInstitution) {
+    ctx.patchState({
+      institution: {
+        filterName: FilterLabelsModel.institution,
+        label: action.institution,
         value: action.id,
       },
     });
