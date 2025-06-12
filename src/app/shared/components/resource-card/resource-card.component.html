@@ -11,10 +11,9 @@
 
           <div class="flex align-items-center column-gap-1">
             @if (item().resourceType === ResourceType.File && item().fileName) {
-              <a class="title" [href]="item().id">{{ item().fileName }}</a>
-            } @else if (item().title && item().title) {
-              @let url = item().id ? '/my-projects/' + item().id.split('/').pop() + '/overview' : '';
-              <a class="title" [routerLink]="url">{{ item().title }}</a>
+              <a class="title">{{ item().fileName }}</a>
+            } @else {
+              <a class="title">{{ item().title }}</a>
             }
             @if (item().orcid) {
               <a [href]="item().orcid" class="orcid-icon">
