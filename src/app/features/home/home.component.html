@@ -45,7 +45,7 @@
       <p class="m-t-12">{{ 'home.loggedIn.latestResearch.subtitle' | translate }}</p>
     </div>
 
-    <p-button [label]="'home.loggedIn.latestResearch.button' | translate" severity="success" />
+    <p-button routerLink="/preprints" [label]="'home.loggedIn.latestResearch.button' | translate" severity="success" />
   </div>
 
   <div class="hosting-container flex flex-column py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between">
@@ -54,6 +54,6 @@
       <p class="m-t-12">{{ 'home.loggedIn.hosting.subtitle' | translate }}</p>
     </div>
 
-    <p-button [label]="'home.loggedIn.hosting.button' | translate" severity="success" />
+    <p-button routerLink="/meetings" [label]="'home.loggedIn.hosting.button' | translate" severity="success" />
   </div>
 </section>
