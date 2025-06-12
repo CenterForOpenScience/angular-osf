@@ -11,7 +11,6 @@ import {
   SetDateCreated,
   SetInstitution,
   SetLicense,
-  SetProvider,
   SetSubject,
 } from '@osf/features/preprints/store/preprints-resources-filters';
 import { GetAllOptions } from '@osf/features/preprints/store/preprints-resources-filters-options';
@@ -32,7 +31,6 @@ export class PreprintsFilterChipsComponent {
     setSubject: SetSubject,
     setInstitution: SetInstitution,
     setLicense: SetLicense,
-    setProvider: SetProvider,
     getAllOptions: GetAllOptions,
   });
 
@@ -54,9 +52,6 @@ export class PreprintsFilterChipsComponent {
         break;
       case FilterType.License:
         this.actions.setLicense('', '');
-        break;
-      case FilterType.Provider:
-        this.actions.setProvider('', '');
         break;
     }
     this.actions.getAllOptions();
