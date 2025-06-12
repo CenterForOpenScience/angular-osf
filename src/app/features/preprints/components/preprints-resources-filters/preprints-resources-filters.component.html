@@ -1,0 +1,48 @@
+@if (anyOptionsCount()) {
+  <div class="filters">
+    <p-accordion>
+      <p-accordion-panel value="0">
+        <p-accordion-header>Creator</p-accordion-header>
+        <p-accordion-content>
+          <osf-preprints-creators-filter />
+        </p-accordion-content>
+      </p-accordion-panel>
+
+      @if (datesOptionsCount() > 0) {
+        <p-accordion-panel value="1">
+          <p-accordion-header>Date Created</p-accordion-header>
+          <p-accordion-content>
+            <osf-preprints-date-created-filter />
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (subjectOptionsCount() > 0) {
+        <p-accordion-panel value="3">
+          <p-accordion-header>Subject</p-accordion-header>
+          <p-accordion-content>
+            <osf-preprints-subject-filter />
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (licenseOptionsCount() > 0) {
+        <p-accordion-panel value="4">
+          <p-accordion-header>License</p-accordion-header>
+          <p-accordion-content>
+            <osf-preprints-license-filter />
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (institutionOptionsCount() > 0) {
+        <p-accordion-panel value="6">
+          <p-accordion-header>Institution</p-accordion-header>
+          <p-accordion-content>
+            <osf-preprints-institution-filter />
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+  </div>
+}

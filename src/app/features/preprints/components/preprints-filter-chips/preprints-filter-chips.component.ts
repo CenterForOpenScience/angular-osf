@@ -9,6 +9,7 @@ import {
   PreprintsResourcesFiltersSelectors,
   SetCreator,
   SetDateCreated,
+  SetInstitution,
   SetLicense,
   SetProvider,
   SetSubject,
@@ -29,6 +30,7 @@ export class PreprintsFilterChipsComponent {
     setCreator: SetCreator,
     setDateCreated: SetDateCreated,
     setSubject: SetSubject,
+    setInstitution: SetInstitution,
     setLicense: SetLicense,
     setProvider: SetProvider,
     getAllOptions: GetAllOptions,
@@ -46,6 +48,9 @@ export class PreprintsFilterChipsComponent {
         break;
       case FilterType.Subject:
         this.actions.setSubject('', '');
+        break;
+      case FilterType.Institution:
+        this.actions.setInstitution('', '');
         break;
       case FilterType.License:
         this.actions.setLicense('', '');

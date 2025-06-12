@@ -1,6 +1,13 @@
 import { Selector } from '@ngxs/store';
 
-import { Creator, DateCreated, LicenseFilter, ProviderFilter, SubjectFilter } from '@osf/shared/models';
+import {
+  Creator,
+  DateCreated,
+  InstitutionFilter,
+  LicenseFilter,
+  ProviderFilter,
+  SubjectFilter,
+} from '@osf/shared/models';
 
 import { PreprintsResourceFiltersOptionsStateModel } from './preprints-resources-filters-options.model';
 import { PreprintsResourcesFiltersOptionsState } from './preprints-resources-filters-options.state';
@@ -29,6 +36,11 @@ export class PreprintsResourcesFiltersOptionsSelectors {
   @Selector([PreprintsResourcesFiltersOptionsState])
   static getSubjects(state: PreprintsResourceFiltersOptionsStateModel): SubjectFilter[] {
     return state.subjects;
+  }
+
+  @Selector([PreprintsResourcesFiltersOptionsState])
+  static getInstitutions(state: PreprintsResourceFiltersOptionsStateModel): InstitutionFilter[] {
+    return state.institutions;
   }
 
   @Selector([PreprintsResourcesFiltersOptionsState])

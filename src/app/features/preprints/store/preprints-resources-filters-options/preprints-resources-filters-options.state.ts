@@ -98,5 +98,6 @@ export class PreprintsResourcesFiltersOptionsState {
     this.store.dispatch(GetSubjectsOptions);
     this.store.dispatch(GetLicensesOptions);
     this.store.dispatch(GetProvidersOptions);
+    this.store.dispatch(GetInstitutionsOptions);
   }
 }
