@@ -1,0 +1,62 @@
+<div class="flex flex-column">
+  <form [formGroup]="moderatorForm">
+    <osf-text-input
+      [control]="moderatorForm.controls['fullName']"
+      [label]="'auth.signUp.form.fullName'"
+      [placeholder]="'auth.signUp.form.fullNamePlaceholder'"
+      [maxLength]="inputLimits.fullName.maxLength"
+      [minLength]="inputLimits.fullName.minLength"
+    >
+    </osf-text-input>
+
+    <osf-text-input
+      class="block m-t-12"
+      [control]="moderatorForm.controls['email']"
+      [label]="'auth.common.email'"
+      [placeholder]="'auth.common.emailPlaceholder'"
+      [type]="'email'"
+      [maxLength]="inputLimits.email.maxLength"
+      [minLength]="inputLimits.email.minLength"
+    >
+    </osf-text-input>
+
+    <div class="mt-4">
+      <osf-form-select
+        [control]="moderatorForm.controls['permission']"
+        [options]="permissionsOptions"
+        [label]="'moderation.selectPermission'"
+        [fullWidth]="true"
+      ></osf-form-select>
+    </div>
+  </form>
+
+  <div class="flex justify-content-end mt-4">
+    <p-button
+      class="secondary-add-btn"
+      severity="secondary"
+      [label]="'moderation.searchModerator' | translate"
+      (click)="searchModerator()"
+    >
+    </p-button>
+  </div>
+
+  <div class="flex gap-2 mt-6">
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      (click)="dialogRef.close()"
+      severity="info"
+      [label]="'common.buttons.cancel' | translate"
+    >
+    </p-button>
+
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      (click)="submit()"
+      [label]="'common.buttons.add' | translate"
+      [disabled]="moderatorForm.invalid"
+    >
+    </p-button>
+  </div>
+</div>

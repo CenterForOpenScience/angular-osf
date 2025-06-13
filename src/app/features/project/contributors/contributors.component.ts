@@ -15,7 +15,12 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { SearchInputComponent, ViewOnlyTableComponent } from '@osf/shared/components';
+import {
+  EducationHistoryDialogComponent,
+  EmploymentHistoryDialogComponent,
+  SearchInputComponent,
+  ViewOnlyTableComponent,
+} from '@osf/shared/components';
 import { SelectOption } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import { defaultConfirmationConfig, findChangedItems } from '@osf/shared/utils';
@@ -32,8 +37,6 @@ import {
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
-  ContributorEducationHistoryComponent,
-  ContributorEmploymentHistoryComponent,
   ContributorsListComponent,
   CreateViewLinkDialogComponent,
 } from './components';
@@ -166,7 +169,7 @@ export class ContributorsComponent implements OnInit {
   }
 
   openEmploymentHistory(contributor: ContributorModel) {
-    this.dialogService.open(ContributorEmploymentHistoryComponent, {
+    this.dialogService.open(EmploymentHistoryDialogComponent, {
       width: '552px',
       data: contributor.employment,
       focusOnShow: false,
@@ -178,7 +181,7 @@ export class ContributorsComponent implements OnInit {
   }
 
   openEducationHistory(contributor: ContributorModel) {
-    this.dialogService.open(ContributorEducationHistoryComponent, {
+    this.dialogService.open(EducationHistoryDialogComponent, {
       width: '552px',
       data: contributor.education,
       focusOnShow: false,

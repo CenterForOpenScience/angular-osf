@@ -1,0 +1,17 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.label {
+  color: var.$dark-blue-1;
+  margin: 0;
+  cursor: pointer;
+}
+
+.users-list {
+  height: 30vh;
+  overflow: auto;
+}
+
+.border-divider {
+  border-bottom: 1px solid var.$grey-2;
+}

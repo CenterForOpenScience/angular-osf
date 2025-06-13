@@ -10,9 +10,11 @@
       "download": "Download",
       "copy": "Copy",
       "move": "Move",
-      "rename": "Rename"
+      "rename": "Rename",
+      "next": "Next"
     },
     "search": {
+      "title": "Search",
       "noResultsFound": "No results found."
     },
     "labels": {
@@ -33,6 +35,7 @@
     "myProjects": "My Projects",
     "preprints": "Preprints",
     "collections": "Collections",
+    "moderation": "Moderation",
     "donate": "Donate",
     "profileSettings": "Profile Settings",
     "accountSettings": "Account Settings",
@@ -626,69 +629,6 @@
           }
         }
       }
-    },
-    "files": {
-      "title": "Files",
-      "storageLocation": "OSF Storage",
-      "searchPlaceholder": "Search your projects",
-      "sort": {
-        "placeholder": "Sort",
-        "nameAZ": "Name: A-Z",
-        "nameZA": "Name: Z-A",
-        "lastModifiedOldest": "Last modified: oldest to newest",
-        "lastModifiedNewest": "Last modified: newest to oldest"
-      },
-      "actions": {
-        "downloadAsZip": "Download As Zip",
-        "createFolder": "Create Folder",
-        "uploadFile": "Upload File"
-      },
-      "dialogs": {
-        "uploadFile": {
-          "title": "Upload file"
-        },
-        "createFolder": {
-          "title": "Create folder",
-          "folderName": "New folder name",
-          "folderNamePlaceholder": "Please enter a folder name"
-        },
-        "renameFile": {
-          "title": "Rename file",
-          "renameLabel": "Please rename the file"
-        },
-        "moveFile": "Cannot move to the same folder"
-      },
-      "emptyState": "This folder is empty",
-      "detail": {
-        "backToList": "Back to list of files",
-        "fileMetadata": {
-          "title": "File Metadata",
-          "edit": "Edit",
-          "fields": {
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource Type",
-            "resourceLanguage": "Resource Language"
-          }
-        },
-        "projectMetadata": {
-          "title": "Project Metadata",
-          "edit": "Edit",
-          "fields": {
-            "funder": "Funder",
-            "awardTitle": "Award title",
-            "awardNumber": "Award number",
-            "awardUri": "Award URI",
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource type",
-            "resourceLanguage": "Resource language",
-            "dateCreated": "Date created",
-            "dateModified": "Date modified",
-            "contributors": "Contributors"
-          }
-        }
-      }
     }
   },
   "collections": {
@@ -771,6 +711,43 @@
     "common": {
       "dateCreated": "Date Created:",
       "dateModified": "Date Modified:"
+    }
+  },
+  "moderation": {
+    "allItems": "All Items",
+    "moderators": "Moderators",
+    "settings": "Settings",
+    "settingsMessage": "To configure your notification preferences visit your",
+    "userSettings": "User settings",
+    "addModerator": "Add moderator",
+    "inviteModerator": "Invite moderator",
+    "searchModerator": "Search moderator",
+    "selectPermission": "Select permission",
+    "moderatorPermissions": {
+      "administrator": "Administrator",
+      "moderator": "Moderator"
+    },
+    "removeDialog": {
+      "title": "Remove moderator",
+      "message": "Are you sure you want to remove <b>{{name}}</b> moderator?"
+    },
+    "toastMessages": {
+      "addSuccessMessage": "Moderator {{name}} successfully added.",
+      "multipleAddSuccessMessage": "Moderators successfully added.",
+      "updateSuccessMessage": "Moderator {{name}} updated.",
+      "deleteSuccessMessage": "Moderator {{name}} successfully removed."
+    },
+    "submissionReviewStatus": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "submissionReview": {
+      "submitted": "Submitted",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "by": "by"
     }
   },
   "settings": {

@@ -7,4 +7,5 @@ export * from './resource-tab.enum';
 export * from './resource-type.enum';
 export * from './share-indexing.enum';
 export * from './sort-order.enum';
+export * from './sort-type.enum';
 export * from './subscriptions';

@@ -9,13 +9,13 @@ import { EducationHistoryComponent } from '@osf/shared/components';
 import { Education } from '@osf/shared/models';
 
 @Component({
-  selector: 'osf-contributor-education-history',
+  selector: 'osf-education-history-dialog',
   imports: [Button, TranslatePipe, EducationHistoryComponent],
-  templateUrl: './contributor-education-history.component.html',
-  styleUrl: './contributor-education-history.component.scss',
+  templateUrl: './education-history-dialog.component.html',
+  styleUrl: './education-history-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContributorEducationHistoryComponent {
+export class EducationHistoryDialogComponent {
   protected dialogRef = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
   protected readonly educationHistory = signal<Education[]>([]);

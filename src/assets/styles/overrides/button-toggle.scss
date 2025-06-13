@@ -1,0 +1,25 @@
+@use "assets/styles/mixins" as mix;
+
+.review-state-select {
+  --p-togglebutton-color: var(--dark-blue-1);
+  --p-togglebutton-background: transparent;
+  --p-togglebutton-border-color: transparent;
+  --p-togglebutton-checked-background: transparent;
+  --p-togglebutton-checked-border-color: transparent;
+  --p-togglebutton-content-checked-shadow: 0 0 4px 0 var(--grey-outline);
+  --p-togglebutton-content-padding: 0.625rem 0.75rem;
+  --p-togglebutton-hover-background: transparent;
+
+  .p-togglebutton {
+    font-size: mix.rem(14px);
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &.p-togglebutton-checked {
+      opacity: 1;
+    }
+  }
+}

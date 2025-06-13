@@ -99,21 +99,12 @@
         </td>
         <td>
           <div class="no-border-dropdown select-font-normal">
-            <p-select
-              [placeholder]="'project.contributors.permissionFilter' | translate"
+            <osf-select
               [options]="permissionsOptions"
-              optionValue="value"
-              appendTo="body"
-              [(ngModel)]="contributor.permission"
-            >
-              <ng-template #selectedItem let-selectedOption>
-                <p>{{ selectedOption.label | translate }}</p>
-              </ng-template>
-
-              <ng-template #item let-item>
-                <p>{{ item.label | translate }}</p>
-              </ng-template>
-            </p-select>
+              [placeholder]="'project.contributors.permissionFilter'"
+              [appendTo]="'body'"
+              [(selectedValue)]="contributor.permission"
+            ></osf-select>
           </div>
         </td>
         <td>
@@ -127,7 +118,7 @@
           </div>
         </td>
         <td>
-          @if (contributor.employment) {
+          @if (contributor.employment?.length) {
             <a
               class="font-bold cursor-pointer"
               tabindex="0"
@@ -142,7 +133,7 @@
         </td>
         <td>
           <div class="flex column-gap-2">
-            @if (contributor.education) {
+            @if (contributor.education?.length) {
               <a
                 class="font-bold cursor-pointer"
                 tabindex="0"

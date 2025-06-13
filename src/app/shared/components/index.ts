@@ -3,7 +3,10 @@ export { BarChartComponent } from './bar-chart/bar-chart.component';
 export { CopyButtonComponent } from './copy-button/copy-button.component';
 export { CustomPaginatorComponent } from './custom-paginator/custom-paginator.component';
 export { EducationHistoryComponent } from './education-history/education-history.component';
+export { EducationHistoryDialogComponent } from './education-history-dialog/education-history-dialog.component';
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';
+export { EmploymentHistoryDialogComponent } from './employment-history-dialog/employment-history-dialog.component';
+export { FormSelectComponent } from './form-select/form-select.component';
 export { FullScreenLoaderComponent } from './full-screen-loader/full-screen-loader.component';
 export { IconComponent } from './icon/icon.component';
 export { LineChartComponent } from './line-chart/line-chart.component';
@@ -13,6 +16,7 @@ export { PasswordInputHintComponent } from './password-input-hint/password-input
 export { PieChartComponent } from './pie-chart/pie-chart.component';
 export { ResourceCardComponent } from './resource-card/resource-card.component';
 export { SearchInputComponent } from './search-input/search-input.component';
+export { SelectComponent } from './select/select.component';
 export { SubHeaderComponent } from './sub-header/sub-header.component';
 export { TextInputComponent } from './text-input/text-input.component';
 export { ToastComponent } from './toast/toast.component';

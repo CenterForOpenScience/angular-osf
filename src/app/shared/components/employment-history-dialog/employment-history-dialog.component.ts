@@ -9,13 +9,13 @@ import { EmploymentHistoryComponent } from '@osf/shared/components';
 import { Employment } from '@osf/shared/models';
 
 @Component({
-  selector: 'osf-contributor-employment-history',
+  selector: 'osf-employment-history-dialog',
   imports: [Button, TranslatePipe, EmploymentHistoryComponent],
-  templateUrl: './contributor-employment-history.component.html',
-  styleUrl: './contributor-employment-history.component.scss',
+  templateUrl: './employment-history-dialog.component.html',
+  styleUrl: './employment-history-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContributorEmploymentHistoryComponent {
+export class EmploymentHistoryDialogComponent {
   private readonly config = inject(DynamicDialogConfig);
   protected dialogRef = inject(DynamicDialogRef);
   protected readonly employmentHistory = signal<Employment[]>([]);

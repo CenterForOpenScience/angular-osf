@@ -58,7 +58,7 @@
       styleClass="w-full"
       (click)="dialogRef.close()"
       severity="info"
-      [label]="'project.contributors.addDialog.cancel' | translate"
+      [label]="'common.buttons.cancel' | translate"
     >
     </p-button>
 
@@ -66,7 +66,7 @@
       class="w-full"
       styleClass="w-full"
       (click)="addContributor()"
-      [label]="'project.contributors.addDialog.next' | translate"
+      [label]="'common.buttons.next' | translate"
       [disabled]="!selectedUsers().length"
     >
     </p-button>

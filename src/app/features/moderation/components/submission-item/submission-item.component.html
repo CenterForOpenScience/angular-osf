@@ -1,0 +1,16 @@
+<div class="submission-item p-3">
+  <div class="flex align-items-center">
+    <osf-icon
+      [class]="reviewStatusIcon[selectedIcon].value"
+      [iconClass]="reviewStatusIcon[selectedIcon].icon"
+    ></osf-icon>
+    <span class="ml-2 font-bold">{{ submission().name }}</span>
+  </div>
+
+  <p class="flex gap-1 mt-2">
+    <span class="capitalize">{{ 'moderation.submissionReview.submitted' | translate }}</span>
+    <span>{{ submission().dateSubmitted }}</span>
+    <span>{{ 'moderation.submissionReview.by' | translate }}</span>
+    <span>{{ submission().submittedBy }}</span>
+  </p>
+</div>
