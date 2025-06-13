@@ -195,7 +195,6 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
     const paramMap = this.activatedRoute.snapshot.queryParamMap;
     const currentParams = { ...this.activatedRoute.snapshot.queryParams };
 
-    // Read existing parameters
     const currentFiltersRaw = paramMap.get('activeFilters');
 
     let filters: ResourceFilterLabel[] = [];
@@ -210,7 +209,6 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
 
     const hasValue = !!filterValue?.value;
 
-    // Update activeFilters array
     if (!hasValue && index !== -1) {
       filters.splice(index, 1);
     } else if (hasValue && filterValue?.label) {
@@ -233,7 +231,6 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
       delete currentParams['activeFilters'];
     }
 
-    // Navigation
     this.router.navigate([], {
       relativeTo: this.activatedRoute,
       queryParams: currentParams,

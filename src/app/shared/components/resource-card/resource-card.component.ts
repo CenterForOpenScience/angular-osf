@@ -6,7 +6,6 @@ import { finalize } from 'rxjs';
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
 
 import { ResourceType } from '@shared/enums';
 import { Resource } from '@shared/models';
@@ -15,16 +14,7 @@ import { IS_XSMALL } from '@shared/utils';
 
 @Component({
   selector: 'osf-resource-card',
-  imports: [
-    Accordion,
-    AccordionContent,
-    AccordionHeader,
-    AccordionPanel,
-    DatePipe,
-    NgOptimizedImage,
-    Skeleton,
-    RouterLink,
-  ],
+  imports: [Accordion, AccordionContent, AccordionHeader, AccordionPanel, DatePipe, NgOptimizedImage, Skeleton],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
