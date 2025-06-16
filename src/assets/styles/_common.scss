@@ -94,3 +94,8 @@
 .custom-light-hover:hover:not(:disabled) {
   filter: opacity(80%);
 }
+
+// ------------------------- Universal custom hover state -------------------------
+.grey-border-color {
+  border-color: var(--grey-2);
+}

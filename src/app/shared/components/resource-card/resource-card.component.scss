@@ -1,0 +1,91 @@
+@use "assets/styles/variables" as var;
+
+.resource {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var.$grey-2;
+  border-radius: 8px;
+  padding: 1.7rem;
+  row-gap: 0.85rem;
+
+  .title {
+    font-weight: 700;
+    font-size: 1.4rem;
+    line-height: 1.7rem;
+    color: var.$dark-blue-1;
+    padding-bottom: 4px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  span {
+    display: inline;
+  }
+
+  a {
+    font-weight: bold;
+    display: inline;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .orcid-icon {
+    height: 16px;
+  }
+
+  .type {
+    width: fit-content;
+    background: var.$grey-3;
+    font-weight: bold;
+    padding: 4px 12px 4px 12px;
+    border-radius: 4px;
+  }
+
+  p {
+    color: var.$dark-blue-1;
+    font-weight: 400;
+    display: inline;
+    overflow: hidden;
+    white-space: wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .icon-container {
+    color: var.$dark-blue-1;
+    display: flex;
+    align-items: center;
+    column-gap: 0.3rem;
+
+    &:hover {
+      text-decoration: none;
+      color: var.$pr-blue-1;
+    }
+  }
+
+  .description {
+    line-height: 2rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1.7rem;
+    border-top: 1px solid var.$grey-2;
+    padding-top: 1rem;
+  }
+}

@@ -32,9 +32,12 @@
 
     @if (!isInitialState()) {
       <div class="flex justify-content-end mt-4">
-        <p-button class="secondary-add-btn" severity="secondary" (click)="addUnregistered()">
-          {{ 'project.contributors.addDialog.addUnregisteredContributor' | translate }}
-        </p-button>
+        <p-button
+          class="secondary-add-btn"
+          severity="secondary"
+          [label]="'project.contributors.addDialog.addUnregisteredContributor' | translate"
+          (click)="addUnregistered()"
+        />
       </div>
     }
   } @else {
@@ -54,9 +57,8 @@
       class="w-full"
       styleClass="w-full"
       (click)="dialogRef.close()"
-      [text]="true"
       severity="info"
-      [label]="'project.contributors.addDialog.cancel' | translate"
+      [label]="'common.buttons.cancel' | translate"
     >
     </p-button>
 
@@ -64,7 +66,7 @@
       class="w-full"
       styleClass="w-full"
       (click)="addContributor()"
-      [label]="'project.contributors.addDialog.next' | translate"
+      [label]="'common.buttons.next' | translate"
       [disabled]="!selectedUsers().length"
     >
     </p-button>

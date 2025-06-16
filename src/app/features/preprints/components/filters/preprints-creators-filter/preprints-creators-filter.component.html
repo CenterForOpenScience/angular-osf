@@ -1,0 +1,16 @@
+<div class="content-body filter dropdown-filter">
+  <p class="m-0">Filter creators by typing their name below</p>
+  <p-select
+    id="creator"
+    [options]="creatorsOptions()"
+    optionLabel="label"
+    optionValue="label"
+    [(ngModel)]="creatorsInput"
+    [placeholder]="'Creator name'"
+    [editable]="true"
+    styleClass="w-full"
+    appendTo="body"
+    (onChange)="setCreator($event)"
+    [showClear]="!!creatorsInput()"
+  ></p-select>
+</div>

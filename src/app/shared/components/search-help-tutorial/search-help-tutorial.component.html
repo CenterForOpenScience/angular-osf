@@ -1,0 +1,22 @@
+@for (step of steps(); track $index) {
+  @if (currentStep() === $index + 1) {
+    <div class="stepper" [ngStyle]="getStepPosition(step)">
+      <h3 class="stepper-title">{{ step.title | translate }}</h3>
+
+      <p>{{ step.description | translate }}</p>
+
+      <div class="flex align-items-center mt-4">
+        <p>{{ 'searchHelpTutorial.stepCount' | translate: { current: $index + 1, total: steps().length } }}</p>
+
+        <div class="flex column-gap-3 ml-auto">
+          @if ($index + 1 !== steps().length) {
+            <p-button [label]="'common.buttons.skip' | translate" severity="secondary" (click)="skip()" />
+            <p-button [label]="'common.buttons.next' | translate" (click)="nextStep()"></p-button>
+          } @else {
+            <p-button [label]="'common.buttons.done' | translate" (click)="nextStep()"></p-button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+}

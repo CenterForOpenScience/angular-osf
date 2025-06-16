@@ -8,11 +8,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { ResourceCardComponent } from '@shared/components/resource-card/resource-card.component';
 
 import { GetResourcesByLink, SearchSelectors } from '../../store';
 import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
 import { ResourceFiltersOptionsSelectors } from '../filters/store';
-import { ResourceCardComponent } from '../resource-card/resource-card.component';
 import { ResourceFiltersComponent } from '../resource-filters/resource-filters.component';
 import { ResourceFiltersSelectors } from '../resource-filters/store';
 

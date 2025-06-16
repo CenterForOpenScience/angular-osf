@@ -1,17 +1,17 @@
 import { Store } from '@ngxs/store';
 
-import { Button } from 'primeng/button';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 import { debounceTime, skip } from 'rxjs';
 
-import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal, untracked } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { SearchInputComponent } from '@osf/shared/components';
+import { SearchHelpTutorialComponent, SearchInputComponent } from '@osf/shared/components';
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/utils';
 
@@ -23,15 +23,13 @@ import { MyProfileResourcesComponent } from '../my-profile-resources/my-profile-
 @Component({
   selector: 'osf-my-profile-search',
   imports: [
-    Button,
-    NgOptimizedImage,
+    TranslatePipe,
     SearchInputComponent,
     Tab,
     TabList,
-    TabPanel,
-    TabPanels,
     Tabs,
     MyProfileResourcesComponent,
+    SearchHelpTutorialComponent,
   ],
   templateUrl: './my-profile-search.component.html',
   styleUrl: './my-profile-search.component.scss',
@@ -63,7 +61,7 @@ export class MyProfileSearchComponent {
 
   protected selectedTab: ResourceTab = ResourceTab.All;
   protected readonly ResourceTab = ResourceTab;
-  protected currentStep = 0;
+  protected currentStep = signal(0);
   private skipInitializationEffects = 0;
 
   constructor() {
@@ -119,5 +117,9 @@ export class MyProfileSearchComponent {
     this.#store.dispatch(new SetResourceTab(index));
     this.selectedTab = index;
     this.#store.dispatch(GetAllOptions);
+  }
+
+  showTutorial() {
+    this.currentStep.set(1);
   }
 }

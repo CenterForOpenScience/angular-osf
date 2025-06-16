@@ -1,8 +1,8 @@
 import { Selector } from '@ngxs/store';
 
 import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
+import { ResourceFilterLabel } from '@shared/models';
 
-import { ResourceFilterLabel } from './my-profile-resource-filters.model';
 import { MyProfileResourceFiltersState } from './my-profile-resource-filters.state';
 
 export class MyProfileResourceFiltersSelectors {

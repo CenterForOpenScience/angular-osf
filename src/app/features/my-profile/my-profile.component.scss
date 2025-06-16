@@ -1,48 +1,6 @@
 @use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
-.user-info {
-  width: 100%;
-  padding: mix.rem(48px) mix.rem(24px) mix.rem(24px);
-
-  .name-container {
-    display: flex;
-    width: 100%;
-    padding-bottom: 1.7rem;
-  }
-
-  .description-container {
-    display: flex;
-    flex-direction: row;
-    row-gap: mix.rem(24px);
-
-    .title-date-wrapper {
-      display: flex;
-      flex-direction: column;
-      width: 50%;
-      row-gap: mix.rem(24px);
-    }
-  }
-
-  .data-wrapper {
-    display: flex;
-    flex-direction: column;
-    width: 50%;
-    row-gap: mix.rem(24px);
-
-    .user-fields-wrapper {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      column-gap: mix.rem(24px);
-
-      .osf-icon-institution {
-        font-size: mix.rem(16px);
-      }
-    }
-  }
-}
-
 .cards {
   background-color: var.$white;
 }
@@ -50,35 +8,4 @@
 .card {
   border: 1px solid var.$grey-2;
   border-radius: mix.rem(12px);
-}
-
-@media (max-width: 1000px) {
-  .user-info {
-    .description-container {
-      flex-direction: column;
-      row-gap: 2.5rem;
-
-      .title-date-wrapper {
-        width: 100%;
-      }
-    }
-
-    .data-wrapper {
-      flex-direction: column;
-      width: 100%;
-      row-gap: 2.5rem;
-    }
-  }
-}
-
-@media (max-width: var.$breakpoint-sm) {
-  .user-info {
-    .data-wrapper {
-      .user-fields-wrapper {
-        flex-direction: column;
-        align-items: start;
-        row-gap: 1.1rem;
-      }
-    }
-  }
 }

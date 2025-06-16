@@ -4,11 +4,10 @@
 .search-container {
   position: relative;
 
-  .osf-icon-search {
+  .search-icon {
     position: absolute;
     left: mix.rem(12px);
     color: var.$grey-1;
-    font-size: mix.rem(16px);
   }
 
   .search-input {
@@ -19,5 +18,10 @@
     &::placeholder {
       color: var.$grey-1;
     }
+  }
+
+  .help-icon {
+    position: absolute;
+    right: mix.rem(6px);
   }
 }

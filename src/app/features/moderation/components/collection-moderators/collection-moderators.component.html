@@ -1,0 +1,25 @@
+<div class="flex flex-column gap-4 md:flex-row md:gap-6">
+  <div class="md:w-8">
+    <osf-search-input [control]="searchControl" [placeholder]="'common.search.title' | translate" />
+  </div>
+
+  <div class="ml-auto w-full md:w-4">
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      [label]="'moderation.addModerator' | translate"
+      (click)="openAddModeratorDialog()"
+    ></p-button>
+  </div>
+</div>
+
+<div class="block w-full my-5">
+  <osf-collection-moderators-list
+    [items]="moderators()"
+    [isLoading]="isModeratorsLoading()"
+    (update)="updateModerator($event)"
+    (remove)="removeModerator($event)"
+    (showEducationHistory)="openEducationHistory($event)"
+    (showEmploymentHistory)="openEmploymentHistory($event)"
+  ></osf-collection-moderators-list>
+</div>

@@ -1,7 +1,7 @@
 <div class="centered-select flex justify-content-between align-items-start pb-3 column-gap-3">
   <div class="flex flex-1 flex-column row-gap-7">
     @if (isMobile()) {
-      <p-select [(ngModel)]="selectedTab" [options]="tabsOptions" optionLabel="label" optionValue="value"> </p-select>
+      <p-select [(ngModel)]="selectedTab" [options]="tabsOptions" optionLabel="label" optionValue="value" />
     }
     @if (searchCount() > 10000) {
       <h3>10 000+ results</h3>
@@ -16,7 +16,7 @@
     @if (isWeb()) {
       <h3>Sort by:</h3>
       <p-select
-        [options]="sortTabOptions"
+        [options]="searchSortingOptions"
         optionLabel="label"
         optionValue="value"
         [(ngModel)]="selectedSort"
@@ -56,7 +56,7 @@
   </div>
 } @else if (isSortingOpen()) {
   <div class="flex flex-column p-5 pt-1 row-gap-3">
-    @for (option of sortTabOptions; track option.value) {
+    @for (option of searchSortingOptions; track option.value) {
       <div
         class="sort-card"
         tabindex="0"
@@ -81,12 +81,12 @@
       <osf-resource-filters></osf-resource-filters>
     }
 
-    <p-dataview [value]="resources()" class="resources-container" [rows]="10">
+    <p-dataView [value]="resources()" class="resources-container" [rows]="10">
       <ng-template #list let-items>
         <div class="resources-list">
           @if (items.length > 0) {
             @for (item of items; track item.id) {
-              <osf-resource-card [item]="item"></osf-resource-card>
+              <osf-resource-card [item]="item" />
             }
 
             <div class="flex column-gap-4 w-full justify-content-center pt-5">
@@ -145,6 +145,6 @@
           }
         </div>
       </ng-template>
-    </p-dataview>
+    </p-dataView>
   </div>
 }

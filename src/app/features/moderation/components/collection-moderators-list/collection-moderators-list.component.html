@@ -1,0 +1,99 @@
+<p-table
+  [value]="isLoading() ? skeletonData : items()"
+  [rows]="tableParams().rows"
+  [first]="tableParams().firstRowIndex"
+  [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
+  [totalRecords]="tableParams().totalRecords"
+  [resizableColumns]="true"
+  [autoLayout]="true"
+  [scrollable]="true"
+  [sortMode]="'single'"
+  [lazy]="true"
+  [lazyLoadOnInit]="true"
+  [customSort]="true"
+  class="view-only-table"
+>
+  <ng-template #header>
+    <tr>
+      <th>{{ 'project.contributors.table.headers.name' | translate }}</th>
+      <th>
+        <div class="flex align-items-center">
+          <span>{{ 'project.contributors.table.headers.permissions' | translate }}</span>
+        </div>
+      </th>
+
+      <th>{{ 'project.contributors.table.headers.employment' | translate }}</th>
+      <th>{{ 'project.contributors.table.headers.education' | translate }}</th>
+      <th></th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-item>
+    @if (item.id) {
+      <tr>
+        <td>
+          <p class="flex align-items-center gap-2">
+            <span>{{ item.fullName }}</span>
+          </p>
+        </td>
+        <td>
+          <div class="no-border-dropdown select-font-normal">
+            <osf-select
+              [options]="permissionsOptions"
+              [placeholder]="'project.contributors.permissionFilter'"
+              [appendTo]="'body'"
+              [(selectedValue)]="item.permission"
+              (changeValue)="updatePermission(item)"
+            ></osf-select>
+          </div>
+        </td>
+        <td>
+          @if (item.employment?.length) {
+            <a
+              class="font-bold cursor-pointer"
+              tabindex="0"
+              (click)="openEmploymentHistory(item)"
+              (keydown.enter)="openEmploymentHistory(item)"
+            >
+              {{ 'project.contributors.employment.show' | translate }}
+            </a>
+          } @else {
+            <span>{{ 'project.contributors.employment.none' | translate }}</span>
+          }
+        </td>
+        <td>
+          <div class="flex column-gap-2">
+            @if (item.education?.length) {
+              <a
+                class="font-bold cursor-pointer"
+                tabindex="0"
+                (click)="openEducationHistory(item)"
+                (keydown.enter)="openEducationHistory(item)"
+              >
+                {{ 'project.contributors.education.show' | translate }}
+              </a>
+            } @else {
+              <span>{{ 'project.contributors.education.none' | translate }}</span>
+            }
+          </div>
+        </td>
+        <td>
+          <p-button variant="text" [severity]="'danger'" icon="fas fa-trash" (click)="removeModerator(item)">
+          </p-button>
+        </td>
+      </tr>
+    } @else {
+      <tr class="loading-row">
+        <td colspan="5">
+          <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+        </td>
+      </tr>
+    }
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="5" class="text-center">{{ 'common.search.noResultsFound' | translate }}</td>
+    </tr>
+  </ng-template>
+</p-table>

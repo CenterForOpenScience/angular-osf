@@ -78,9 +78,7 @@ export class AccountSettingsState {
     return this.#accountSettingsService.addEmail(action.email).pipe(
       tap((email) => {
         if (email.emailAddress && !email.confirmed) {
-          ctx.patchState({
-            emails: [email, ...ctx.getState().emails],
-          });
+          ctx.dispatch(GetEmails);
         }
       })
     );
@@ -91,11 +89,7 @@ export class AccountSettingsState {
     return this.#accountSettingsService.deleteEmail(action.email).pipe(
       tap({
         next: () => {
-          const state = ctx.getState();
-          ctx.setState({
-            ...state,
-            emails: state.emails.filter((email) => email.id !== action.email),
-          });
+          ctx.dispatch(GetEmails);
         },
       })
     );
@@ -106,7 +100,7 @@ export class AccountSettingsState {
     return this.#accountSettingsService.verifyEmail(action.userId, action.emailId).pipe(
       tap((email) => {
         if (email.verified) {
-          ctx.dispatch(new GetEmails());
+          ctx.dispatch(GetEmails);
         }
       })
     );
@@ -114,10 +108,10 @@ export class AccountSettingsState {
 
   @Action(MakePrimary)
   makePrimary(ctx: StateContext<AccountSettingsStateModel>, action: MakePrimary) {
-    return this.#accountSettingsService.makePrimary(action.userId).pipe(
+    return this.#accountSettingsService.makePrimary(action.emailId).pipe(
       tap((email) => {
         if (email.verified) {
-          ctx.dispatch(new GetEmails());
+          ctx.dispatch(GetEmails);
         }
       })
     );

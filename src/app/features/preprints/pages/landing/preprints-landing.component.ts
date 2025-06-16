@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
+import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -20,7 +21,7 @@ import {
   GetPreprintProviderById,
   GetPreprintProvidersToAdvertise,
   PreprintsSelectors,
-} from '@osf/features/preprints/store';
+} from '@osf/features/preprints/store/preprints';
 import { SearchInputComponent } from '@shared/components';
 import { ResourceTab } from '@shared/enums';
 
@@ -35,6 +36,7 @@ import { ResourceTab } from '@shared/enums';
     BrowseBySubjectsComponent,
     Skeleton,
     TranslateModule,
+    TitleCasePipe,
   ],
   templateUrl: './preprints-landing.component.html',
   styleUrl: './preprints-landing.component.scss',
@@ -58,10 +60,6 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
   preprintProvidersToAdvertise = select(PreprintsSelectors.getPreprintProvidersToAdvertise);
   highlightedSubjectsByProviderId = select(PreprintsSelectors.getHighlightedSubjectsForProvider);
   areSubjectsLoading = select(PreprintsSelectors.areSubjectsLoading);
-
-  addPreprint() {
-    // [RNi] TODO: Implement the logic to add a preprint.
-  }
 
   constructor() {
     effect(() => {

@@ -42,34 +42,39 @@
     </div>
 
     <div class="flex flex-column w-full gap-2 sm:flex-row md:w-max">
-      <div class="btn-full-width">
-        @let id = currentFolder()?.id ?? '';
-        @let rootFolder = !currentFolder()?.relationships?.parentFolderLink;
-        <p-button [disabled]="fileIsUploading" class="no-padding-button" (click)="downloadFolder(id, rootFolder)">
-          <div class="outline-button w-full md:w-max blue">
-            <i class="osf-icon-download"> </i>
-            <span>{{ 'project.files.actions.downloadAsZip' | translate }}</span>
-          </div>
-        </p-button>
-      </div>
+      @let id = currentFolder()?.id ?? '';
+      @let rootFolder = !currentFolder()?.relationships?.parentFolderLink;
+      <p-button
+        [disabled]="fileIsUploading"
+        outlined
+        raised
+        (click)="downloadFolder(id, rootFolder)"
+        [icon]="'fas fa-download'"
+        [label]="'project.files.actions.downloadAsZip' | translate"
+      >
+      </p-button>
 
-      <div class="btn-full-width">
-        <p-button [disabled]="fileIsUploading" class="no-padding-button" (click)="createFolderVisible = true">
-          <div class="outline-button w-full md:w-max green">
-            <i class="osf-icon-plus"> </i>
-            <span>{{ 'project.files.actions.createFolder' | translate }}</span>
-          </div>
-        </p-button>
-      </div>
+      <p-button
+        [disabled]="fileIsUploading"
+        outlined
+        raised
+        severity="success"
+        [icon]="'fas fa-plus'"
+        [label]="'project.files.actions.createFolder' | translate"
+        (click)="createFolderVisible = true"
+      >
+      </p-button>
 
-      <div class="btn-full-width">
-        <p-button [disabled]="fileIsUploading" class="no-padding-button" (click)="fileInput.click()">
-          <div class="outline-button w-full md:w-max green">
-            <i class="osf-icon-upload"> </i>
-            <span>{{ 'project.files.actions.uploadFile' | translate }}</span>
-          </div>
-        </p-button>
-      </div>
+      <p-button
+        [disabled]="fileIsUploading"
+        outlined
+        raised
+        severity="success"
+        [icon]="'fas fa-upload'"
+        [label]="'project.files.actions.uploadFile' | translate"
+        (click)="fileInput.click()"
+      >
+      </p-button>
 
       <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
     </div>

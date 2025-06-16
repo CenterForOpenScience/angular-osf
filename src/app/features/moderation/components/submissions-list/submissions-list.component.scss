@@ -1,0 +1,11 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.submission-container {
+  border: 1px solid var(--grey-2);
+  border-radius: mix.rem(8px);
+}
+
+.submission-item:not(:last-child) {
+  border-bottom: 1px solid var(--grey-2);
+}

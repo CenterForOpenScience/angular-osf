@@ -15,6 +15,12 @@
     line-height: mix.rem(24px);
   }
 
+  .search-container {
+    .search-input:hover {
+      border-color: var(--preprints-branding-primary-color);
+    }
+  }
+
   a {
     color: var(--preprints-branding-primary-color);
   }
@@ -23,6 +29,7 @@
     .p-button {
       color: var(--preprints-branding-secondary-color);
       background-color: var(--preprints-branding-primary-color);
+      border-color: var(--preprints-branding-secondary-color);
     }
   }
 }

@@ -8,7 +8,7 @@ import { PreprintsMapper } from '@osf/features/preprints/mappers';
 import {
   PreprintProviderDetails,
   PreprintProviderDetailsGetResponse,
-  PreprintProviderToAdvertise,
+  PreprintProviderShortInfo,
   Subject,
   SubjectGetResponse,
 } from '@osf/features/preprints/models';
@@ -32,14 +32,28 @@ export class PreprintsService {
       );
   }
 
-  getPreprintProvidersToAdvertise(): Observable<PreprintProviderToAdvertise[]> {
+  getPreprintProvidersToAdvertise(): Observable<PreprintProviderShortInfo[]> {
     return this.jsonApiService
       .get<
         JsonApiResponse<PreprintProviderDetailsGetResponse[], null>
       >(`${this.baseUrl}?filter[advertise_on_discover_page]=true&reload=true`)
       .pipe(
         map((response) => {
-          return PreprintsMapper.fromPreprintProvidersToAdvertiseGetResponse(response.data);
+          return PreprintsMapper.toPreprintProviderShortInfoFromGetResponse(
+            response.data.filter((item) => !item.id.includes('osf'))
+          );
+        })
+      );
+  }
+
+  getPreprintProvidersAllowingSubmissions(): Observable<PreprintProviderShortInfo[]> {
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<PreprintProviderDetailsGetResponse[], null>
+      >(`${this.baseUrl}?filter[allow_submissions]=true`)
+      .pipe(
+        map((response) => {
+          return PreprintsMapper.toPreprintProviderShortInfoFromGetResponse(response.data);
         })
       );
   }

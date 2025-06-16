@@ -3,7 +3,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
@@ -12,7 +11,7 @@ import { SearchInputComponent } from '@shared/components';
 
 @Component({
   selector: 'osf-collections',
-  imports: [NgOptimizedImage, SearchInputComponent, TranslatePipe, Button, CollectionsMainContentComponent],
+  imports: [SearchInputComponent, TranslatePipe, Button, CollectionsMainContentComponent],
   templateUrl: './collections.component.html',
   styleUrl: './collections.component.scss',
   providers: [DialogService],

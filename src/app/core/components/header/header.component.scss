@@ -8,4 +8,15 @@
   width: 100%;
   background-color: var(--header-background-color);
   background-image: var(--header-background-image-url);
+
+  .header-dropdown-button {
+    --p-button-text-contrast-color: var(--header-color, var(--dark-blue-1));
+    --p-button-text-contrast-hover-background: transparent;
+    --p-button-text-contrast-active-background: transparent;
+
+    &:hover,
+    &:active {
+      --p-button-text-contrast-color: var(--dark-blue-2);
+    }
+  }
 }

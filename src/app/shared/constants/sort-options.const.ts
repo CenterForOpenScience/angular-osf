@@ -1,0 +1,21 @@
+import { SortType } from '../enums';
+import { SelectOption } from '../models';
+
+export const ALL_SORT_OPTIONS: SelectOption[] = [
+  {
+    value: SortType.NameAZ,
+    label: 'project.files.sort.nameAZ',
+  },
+  {
+    value: SortType.NameZA,
+    label: 'project.files.sort.nameZA',
+  },
+  {
+    value: SortType.LastModifiedOldest,
+    label: 'project.files.sort.lastModifiedOldest',
+  },
+  {
+    value: SortType.LastModifiedNewest,
+    label: 'project.files.sort.lastModifiedNewest',
+  },
+];

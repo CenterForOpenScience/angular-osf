@@ -1,0 +1,30 @@
+<div class="flex justify-content-between align-items-center">
+  <div class="flex gap-3">
+    <p-selectbutton
+      class="review-state-select"
+      [options]="submissionReviewOptions"
+      [ngModel]="selectedReviewOption"
+      (ngModelChange)="changeReviewStatus($event)"
+      optionLabel="label"
+      optionValue="value"
+    >
+      <ng-template #item let-item>
+        <osf-icon [iconClass]="item.icon" [class]="item.value"></osf-icon>
+        <p>{{ totalCount }}</p>
+        <p>{{ item.label | translate }}</p>
+      </ng-template>
+    </p-selectbutton>
+  </div>
+
+  <div class="col-4">
+    <osf-select
+      [options]="sortOptions"
+      [placeholder]="'project.files.sort.placeholder' | translate"
+      [fullWidth]="true"
+      [(selectedValue)]="selectedSortOption"
+      (changeValue)="changeSort($event)"
+    ></osf-select>
+  </div>
+</div>
+
+<osf-submissions-list></osf-submissions-list>

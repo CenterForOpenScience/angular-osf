@@ -5,10 +5,7 @@ export interface JsonApiResponse<Data, Included> {
 
 export interface JsonApiResponseWithPaging<Data, Included> extends JsonApiResponse<Data, Included> {
   links: {
-    meta: {
-      total: number;
-      per_page: number;
-    };
+    meta: MetaJsonApi;
   };
 }
 
@@ -19,4 +16,18 @@ export interface ApiData<Attributes, Embeds, Relationships, Links> {
   type: string;
   relationships: Relationships;
   links: Links;
+}
+
+export interface MetaJsonApi {
+  total: number;
+  per_page: number;
+  version?: string;
+}
+
+export interface PaginationLinksJsonApi {
+  self?: string;
+  first?: string | null;
+  last?: string | null;
+  prev?: string | null;
+  next?: string | null;
 }

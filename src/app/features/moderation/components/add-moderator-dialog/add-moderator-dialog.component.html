@@ -1,0 +1,62 @@
+<div class="flex flex-column">
+  <osf-search-input
+    [control]="searchControl"
+    [placeholder]="'project.contributors.addDialog.placeholder' | translate"
+  />
+
+  <div class="flex flex-column gap-3" [class.users-list]="!isInitialState()" [class.mt-4]="!isInitialState()">
+    @if (isLoading()) {
+      <osf-loading-spinner class="mt-3"></osf-loading-spinner>
+    } @else {
+      @for (item of users(); track $index) {
+        <div class="border-divider flex p-b-12">
+          <p-checkbox variant="filled" [value]="item" [inputId]="item.id" [(ngModel)]="selectedUsers"></p-checkbox>
+          <label class="label ml-2" [for]="item.id">{{ item.fullName }}</label>
+        </div>
+      }
+
+      @if (!totalUsersCount() && !isInitialState()) {
+        <div class="no-items">{{ 'common.search.noResultsFound' | translate }}</div>
+      }
+    }
+  </div>
+
+  @if (totalUsersCount() > rows()) {
+    <osf-custom-paginator
+      class="mt-2"
+      [first]="first()"
+      [rows]="rows()"
+      [totalCount]="totalUsersCount()"
+      (pageChanged)="pageChanged($event)"
+    ></osf-custom-paginator>
+  }
+
+  <div class="flex justify-content-end mt-4">
+    <p-button
+      class="secondary-add-btn"
+      severity="secondary"
+      [label]="'moderation.inviteModerator' | translate"
+      (click)="inviteModerator()"
+    />
+  </div>
+
+  <div class="flex gap-2 mt-6">
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      (click)="dialogRef.close()"
+      severity="info"
+      [label]="'common.buttons.cancel' | translate"
+    >
+    </p-button>
+
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      (click)="addModerator()"
+      [label]="'common.buttons.add' | translate"
+      [disabled]="!selectedUsers().length"
+    >
+    </p-button>
+  </div>
+</div>

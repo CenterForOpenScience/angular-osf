@@ -1,11 +1,26 @@
 <div class="search-container flex align-items-center">
-  <i class="osf-icon-search"></i>
+  <osf-icon class="search-icon" [iconClass]="'fas fa-magnifying-glass'"></osf-icon>
+
   <input
     class="search-input"
     type="text"
     [placeholder]="placeholder()"
     pInputText
     [formControl]="control()"
-    (keydown.enter)="onEnterClicked()"
+    (keydown.enter)="enterClicked()"
   />
+
+  @if (showHelpIcon()) {
+    <img
+      class="help-icon custom-dark-hover cursor-pointer"
+      ngSrc="assets/icons/colored/question-mark.svg"
+      tabindex="0"
+      role="button"
+      height="36"
+      width="36"
+      alt="Info icon"
+      (click)="helpClicked.emit()"
+      (keydown.enter)="helpClicked.emit()"
+    />
+  }
 </div>

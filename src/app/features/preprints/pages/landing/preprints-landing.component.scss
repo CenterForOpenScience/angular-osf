@@ -12,3 +12,11 @@
 .blue-dark-gradient {
   background: url("/assets/images/dark-blue-gradient.png") center;
 }
+
+.link-button {
+  a,
+  a:hover {
+    color: var(--p-button-success-color);
+    text-decoration: none;
+  }
+}

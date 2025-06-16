@@ -3,7 +3,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { PreprintProviderToAdvertise } from '@osf/features/preprints/models';
+import { PreprintProviderShortInfo } from '@osf/features/preprints/models';
 
 @Component({
   selector: 'osf-preprint-services',
@@ -13,5 +13,5 @@ import { PreprintProviderToAdvertise } from '@osf/features/preprints/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintServicesComponent {
-  preprintProvidersToAdvertise = input.required<PreprintProviderToAdvertise[]>();
+  preprintProvidersToAdvertise = input.required<PreprintProviderShortInfo[]>();
 }

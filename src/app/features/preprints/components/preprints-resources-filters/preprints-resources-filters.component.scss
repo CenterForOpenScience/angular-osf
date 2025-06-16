@@ -1,0 +1,16 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+:host {
+  width: 30%;
+
+  .filters {
+    border: 1px solid var.$grey-2;
+    border-radius: mix.rem(12px);
+    padding: 0 mix.rem(24px) 0 mix.rem(24px);
+    display: flex;
+    flex-direction: column;
+    row-gap: mix.rem(12px);
+    height: fit-content;
+  }
+}

@@ -31,19 +31,19 @@
             class="secondary-transparent"
             type="button"
             severity="secondary"
+            [label]="'myProjects.createProject.affiliation.selectAll' | translate"
             (click)="selectAllAffiliations()"
             (keydown.enter)="selectAllAffiliations()"
           >
-            {{ 'myProjects.createProject.affiliation.selectAll' | translate }}
           </p-button>
           <p-button
             class="secondary-transparent"
             type="button"
             severity="secondary"
+            [label]="'myProjects.createProject.affiliation.removeAll' | translate"
             (click)="removeAllAffiliations()"
             (keydown.enter)="removeAllAffiliations()"
           >
-            {{ 'myProjects.createProject.affiliation.removeAll' | translate }}
           </p-button>
         </div>
       </div>

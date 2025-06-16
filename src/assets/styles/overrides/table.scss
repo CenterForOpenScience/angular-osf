@@ -101,7 +101,7 @@ p-table {
   }
 }
 
-@media (max-width: 1279.99px) {
+@media (max-width: var.$breakpoint-xl) {
   .home-table {
     .p-datatable {
       padding: 1.71rem 0.85rem 1.71rem 0.85rem;
@@ -149,7 +149,7 @@ p-table {
   }
 }
 
-@media (max-width: 599.99px) {
+@media (max-width: var.$breakpoint-sm) {
   .home-table {
     .p-datatable {
       padding: 0.4rem;

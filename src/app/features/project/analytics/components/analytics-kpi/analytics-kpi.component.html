@@ -9,7 +9,7 @@
 
   @if (showButton()) {
     <div>
-      <p-button severity="secondary">{{ buttonLabel() | translate }}</p-button>
+      <p-button severity="secondary" [label]="buttonLabel() | translate"> </p-button>
     </div>
   }
 </div>

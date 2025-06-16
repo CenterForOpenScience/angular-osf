@@ -3,7 +3,8 @@ import { Action, NgxsOnInit, State, StateContext, Store } from '@ngxs/store';
 import { inject, Injectable } from '@angular/core';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { FilterLabelsModel, resourceFiltersDefaultsModel } from '@osf/shared/models';
+import { FilterLabelsModel } from '@osf/shared/models';
+import { resourceFiltersDefaults } from '@shared/constants';
 
 import {
   SetCreator,
@@ -21,7 +22,7 @@ import { MyProfileResourceFiltersStateModel } from './my-profile-resource-filter
 // Store for user selected filters values
 @State<MyProfileResourceFiltersStateModel>({
   name: 'myProfileResourceFilters',
-  defaults: resourceFiltersDefaultsModel,
+  defaults: resourceFiltersDefaults,
 })
 @Injectable()
 export class MyProfileResourceFiltersState implements NgxsOnInit {
@@ -41,6 +42,7 @@ export class MyProfileResourceFiltersState implements NgxsOnInit {
       }
     });
   }
+
   @Action(SetCreator)
   setCreator(ctx: StateContext<MyProfileResourceFiltersStateModel>, action: SetCreator) {
     ctx.patchState({

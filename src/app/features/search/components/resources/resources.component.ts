@@ -11,14 +11,14 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, u
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { FilterChipsComponent, ResourceFiltersComponent } from '@osf/features/search/components';
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { ResourceCardComponent } from '@shared/components';
+import { searchSortingOptions } from '@shared/constants';
 
 import { GetResourcesByLink, SearchSelectors, SetResourceTab, SetSortBy } from '../../store';
-import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
 import { ResourceFiltersOptionsSelectors } from '../filters/store';
-import { ResourceCardComponent } from '../resource-card/resource-card.component';
-import { ResourceFiltersComponent } from '../resource-filters/resource-filters.component';
 import { ResourceFiltersSelectors } from '../resource-filters/store';
 
 @Component({
@@ -31,10 +31,10 @@ import { ResourceFiltersSelectors } from '../resource-filters/store';
     AccordionModule,
     TableModule,
     DataViewModule,
-    ResourceCardComponent,
     FilterChipsComponent,
     Select,
     NgOptimizedImage,
+    ResourceCardComponent,
   ],
   templateUrl: './resources.component.html',
   styleUrl: './resources.component.scss',
@@ -42,6 +42,7 @@ import { ResourceFiltersSelectors } from '../resource-filters/store';
 })
 export class ResourcesComponent {
   readonly #store = inject(Store);
+  protected readonly searchSortingOptions = searchSortingOptions;
 
   selectedTabStore = this.#store.selectSignal(SearchSelectors.getResourceTab);
   searchCount = this.#store.selectSignal(SearchSelectors.getResourcesCount);
@@ -90,13 +91,6 @@ export class ResourcesComponent {
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
 
   protected selectedSort = signal('');
-  protected readonly sortTabOptions = [
-    { label: 'Relevance', value: '-relevance' },
-    { label: 'Date created (newest)', value: '-dateCreated' },
-    { label: 'Date created (oldest)', value: 'dateCreated' },
-    { label: 'Date modified (newest)', value: '-dateModified' },
-    { label: 'Date modified (oldest)', value: 'dateModified' },
-  ];
 
   protected selectedTab = signal(ResourceTab.All);
   protected readonly tabsOptions = [

@@ -32,7 +32,20 @@ export const NAV_ITEMS: NavItem[] = [
     path: '/preprints',
     label: 'navigation.preprints',
     icon: 'preprints',
-    useExactMatch: true,
+    isCollapsible: true,
+    useExactMatch: false,
+    items: [
+      {
+        path: '/preprints',
+        label: 'navigation.preprintsSubRoutes.overview',
+        useExactMatch: false,
+      },
+      {
+        path: '/my-preprints',
+        label: 'navigation.preprintsSubRoutes.myPreprints',
+        useExactMatch: true,
+      },
+    ],
   },
   {
     path: '/my-profile',

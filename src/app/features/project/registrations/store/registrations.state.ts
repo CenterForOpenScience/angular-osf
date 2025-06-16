@@ -33,7 +33,6 @@ export class RegistrationsState {
 
     return this.#registrationsService.getRegistrations(action.projectId).pipe(
       tap((registrations) => {
-        console.log('Fetched registrations:', registrations);
         const state = ctx.getState();
         ctx.setState({
           ...state,

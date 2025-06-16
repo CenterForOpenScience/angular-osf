@@ -10,8 +10,8 @@
       <p-button
         class="ml-auto w-full md:w-auto"
         styleClass="w-full md:w-auto"
-        [label]="'preprints.addPreprint' | translate: { preprintWord: osfPreprintProvider()?.preprintWord }"
-        (click)="addPreprint()"
+        [label]="'preprints.addPreprint' | translate: { preprintWord: osfPreprintProvider()?.preprintWord } | titlecase"
+        routerLink="/preprints/select"
       />
     }
   </div>
@@ -31,7 +31,7 @@
   <osf-search-input
     class="w-full"
     [control]="searchControl"
-    [placeholder]="'preprints.searchPlaceholder' | translate"
+    [placeholder]="'preprints.searchPlaceholder' | translate: { preprintWord: 'preprint' } | titlecase"
     (triggerSearch)="redirectToSearchPageWithValue()"
   />
 
@@ -76,7 +76,7 @@
     </p>
   </div>
 
-  <p-button severity="success" link="true">
+  <p-button severity="success" class="link-button">
     <a href="mailto:support@osf.io">{{ 'preprints.createServer.contactUs' | translate }}</a>
   </p-button>
 </section>

@@ -92,6 +92,19 @@ export class AccountSettingsService {
     );
   }
 
+  confirmEmail(userId: string, token: string): Observable<unknown> {
+    const body = {
+      data: {
+        attributes: {
+          uid: userId,
+          token: token,
+          destination: 'doesnotmatter',
+        },
+      },
+    };
+    return this.#jsonApiService.post(`${environment.apiUrl}/users/${userId}/confirm/`, body);
+  }
+
   verifyEmail(userId: string, emailId: string): Observable<AccountEmail> {
     const body = {
       data: {

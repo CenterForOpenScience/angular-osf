@@ -1,22 +1,32 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { AccordionModule } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { Button } from 'primeng/button';
 import { DataViewModule } from 'primeng/dataview';
 import { TableModule } from 'primeng/table';
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 import { debounceTime, skip } from 'rxjs';
 
-import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnDestroy, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  OnDestroy,
+  signal,
+  untracked,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { SearchInputComponent } from '@osf/shared/components';
+import { SearchHelpTutorialComponent, SearchInputComponent } from '@osf/shared/components';
+import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceTab } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { IS_SMALL } from '@osf/shared/utils';
 
 import { GetAllOptions } from './components/filters/store';
 import { ResetFiltersState, ResourceFiltersSelectors } from './components/resource-filters/store';
@@ -30,17 +40,15 @@ import { GetResources, ResetSearchState, SearchSelectors, SetResourceTab, SetSea
     ReactiveFormsModule,
     Tab,
     TabList,
-    TabPanel,
-    TabPanels,
     Tabs,
-    NgOptimizedImage,
+    TranslatePipe,
     AutoCompleteModule,
     FormsModule,
     AccordionModule,
     TableModule,
     DataViewModule,
-    Button,
     ResourcesWrapperComponent,
+    SearchHelpTutorialComponent,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
@@ -50,7 +58,7 @@ export class SearchComponent implements OnDestroy {
   readonly #store = inject(Store);
 
   protected searchControl = new FormControl('');
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
+  protected readonly isSmall = toSignal(inject(IS_SMALL));
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -66,11 +74,11 @@ export class SearchComponent implements OnDestroy {
   protected searchStoreValue = this.#store.selectSignal(SearchSelectors.getSearchText);
   protected resourcesTabStoreValue = this.#store.selectSignal(SearchSelectors.getResourceTab);
   protected sortByStoreValue = this.#store.selectSignal(SearchSelectors.getSortBy);
-  readonly isMyProfilePage = this.#store.selectSignal(SearchSelectors.getIsMyProfile);
 
+  protected readonly resourceTabOptions = SEARCH_TAB_OPTIONS;
   protected selectedTab: ResourceTab = ResourceTab.All;
-  protected readonly ResourceTab = ResourceTab;
-  protected currentStep = 0;
+
+  protected currentStep = signal(0);
 
   constructor() {
     effect(() => {
@@ -89,13 +97,6 @@ export class SearchComponent implements OnDestroy {
       this.#store.dispatch(GetResources);
     });
 
-    this.searchControl.valueChanges
-      .pipe(skip(1), debounceTime(500), takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchText) => {
-        this.#store.dispatch(new SetSearchText(searchText ?? ''));
-        this.#store.dispatch(GetAllOptions);
-      });
-
     effect(() => {
       const storeValue = this.searchStoreValue();
       const currentInput = untracked(() => this.searchControl.value);
@@ -110,6 +111,13 @@ export class SearchComponent implements OnDestroy {
         this.selectedTab = this.resourcesTabStoreValue();
       }
     });
+
+    this.setSearchSubscription();
+  }
+
+  ngOnDestroy(): void {
+    this.#store.dispatch(ResetFiltersState);
+    this.#store.dispatch(ResetSearchState);
   }
 
   onTabChange(index: ResourceTab): void {
@@ -118,8 +126,17 @@ export class SearchComponent implements OnDestroy {
     this.#store.dispatch(GetAllOptions);
   }
 
-  ngOnDestroy(): void {
-    this.#store.dispatch(ResetFiltersState);
-    this.#store.dispatch(ResetSearchState);
+  showTutorial() {
+    this.currentStep.set(1);
+  }
+
+  private setSearchSubscription() {
+    this.searchControl.valueChanges
+      .pipe(skip(1), debounceTime(500), takeUntilDestroyed(this.destroyRef))
+      .subscribe((searchText) => {
+        console.log(searchText);
+        this.#store.dispatch(new SetSearchText(searchText ?? ''));
+        this.#store.dispatch(GetAllOptions);
+      });
   }
 }

@@ -17,7 +17,7 @@
     color: var.$dark-blue-1;
   }
 
-  @media (max-width: 576px) {
+  @media (max-width: var.$breakpoint-sm) {
     padding: 12px;
   }
 }
@@ -33,7 +33,7 @@
     width: 50%;
   }
 
-  @media (max-width: 576px) {
+  @media (max-width: var.$breakpoint-sm) {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(10, 1fr);
     grid-row-gap: 0;

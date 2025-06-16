@@ -4,10 +4,10 @@
 
     <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
       <div class="btn-group">
-        <p-button [label]="'auth.signUp.social.orcid' | translate" class="form-btn btn-full-width">
+        <p-button [label]="'auth.signUp.social.orcid' | translate" class="btn-icon-text btn-full-width">
           <img ngSrc="assets/images/orcid.svg" alt="Orchid icon" height="20" width="20" />
         </p-button>
-        <p-button [label]="'auth.signUp.social.institution' | translate" class="form-btn btn-full-width">
+        <p-button [label]="'auth.signUp.social.institution' | translate" class="btn-icon-text btn-full-width">
           <i class="osf-icon-institutions"></i>
         </p-button>
       </div>
@@ -29,7 +29,6 @@
             pInputText
             formControlName="fullName"
             [placeholder]="'auth.signUp.form.fullNamePlaceholder' | translate"
-            autocomplete="full-name"
           />
         </div>
 

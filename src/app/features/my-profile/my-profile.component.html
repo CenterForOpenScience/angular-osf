@@ -1,30 +1,30 @@
-<div class="user-info xl:mt-6">
-  <div class="name-container wide-button">
+<div class="py-5 px-3 md:p-5 xl:p-4 xl:mt-6">
+  <div class="flex align-items-center">
     <h1>{{ currentUser()?.fullName }}</h1>
 
-    @if (!isMobile()) {
-      <p-button label="Edit Profile" class="ml-auto" (click)="toProfileSettings()"></p-button>
+    @if (isMedium()) {
+      <p-button class="ml-auto" [label]="'myProfile.editProfile' | translate" (click)="toProfileSettings()"></p-button>
     }
   </div>
 
-  <div class="description-container">
-    <div class="title-date-wrapper wide-button">
-      <h3>
+  <div class="flex flex-column gap-4 mt-4 md:gap-5 xl:flex-row xl:justify-content-between">
+    <div class="flex flex-column gap-3 xl:gap-4">
+      <p class="font-bold">
         {{ currentUser()?.employment?.[0]?.title }},
         {{ currentUser()?.employment?.[0]?.institution }}
-      </h3>
+      </p>
 
-      <h3 class="font-normal">Member since: {{ currentUser()?.dateRegistered | date: 'MMM d, yyyy' }}</h3>
+      <p class="font-normal">Member since: {{ currentUser()?.dateRegistered | date: 'MMM d, yyyy' }}</p>
     </div>
 
-    <div class="data-wrapper">
-      <div class="user-fields-wrapper">
+    <div class="flex flex-column gap-4">
+      <div class="flex flex-column gap-3 md:flex-row xl:gap-4">
         @if (currentUser()?.social?.orcid) {
           <div class="flex flex-row align-items-center gap-2">
             <img ngSrc="assets/icons/colored/orchid.svg" width="16" height="16" alt="orcid" />
-            <a class="font-bold" [href]="'https://orcid.org/' + currentUser()?.social?.orcid"
-              >https://orcid.org/{{ currentUser()?.social?.orcid }}</a
-            >
+            <a class="font-bold" [href]="'https://orcid.org/' + currentUser()?.social?.orcid">
+              https://orcid.org/{{ currentUser()?.social?.orcid }}
+            </a>
           </div>
         }
 
@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <div class="user-fields-wrapper">
+      <div class="flex flex-column gap-3 md:flex-row xl:gap-4">
         <div class="flex flex-row align-items-center gap-2">
           <i class="osf-icon-institution"></i>
           <h3 class="font-bold">
@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap gap-3 align-items-center">
+      <div class="flex flex-wrap align-items-center gap-3">
         @if (currentUser()?.social?.github) {
           <a class="cursor-pointer" [href]="currentUser()?.social?.github">
             <img ngSrc="assets/icons/socials/github2.svg" width="24" height="24" alt="github" />
@@ -103,9 +103,13 @@
         }
       </div>
 
-      @if (isMobile()) {
+      @if (!isMedium()) {
         <div class="btn-full-width">
-          <p-button label="Edit Profile" class="ml-auto" (click)="toProfileSettings()"></p-button>
+          <p-button
+            class="ml-auto"
+            [label]="'myProfile.editProfile' | translate"
+            (click)="toProfileSettings()"
+          ></p-button>
         </div>
       }
     </div>

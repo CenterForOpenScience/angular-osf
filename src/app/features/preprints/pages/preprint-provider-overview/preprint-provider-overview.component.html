@@ -1,6 +1,7 @@
 <osf-preprint-provider-hero
   [preprintProvider]="preprintProvider()"
   [isPreprintProviderLoading]="isPreprintProviderLoading()"
+  (triggerSearch)="redirectToDiscoverPageWithValue($event)"
 />
 
 <osf-browse-by-subjects

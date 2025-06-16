@@ -1,53 +1,10 @@
 @use "assets/styles/variables" as var;
-@use "assets/styles/mixins" as mix;
 
 :host {
   height: 100%;
 }
 
-.search-container {
-  position: relative;
-
-  img {
-    position: absolute;
-    top: mix.rem(4px);
-    right: mix.rem(4px);
-    z-index: 1;
-  }
-}
-
 .resources {
   position: relative;
   background: var.$white;
-}
-
-.stepper {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  background: var.$white;
-  border: 1px solid var.$grey-2;
-  border-radius: 12px;
-  row-gap: mix.rem(24px);
-  padding: mix.rem(24px);
-  width: 32rem;
-
-  .stepper-title {
-    font-size: mix.rem(18px);
-  }
-}
-
-.first-stepper {
-  top: 2rem;
-  left: mix.rem(24px);
-}
-
-.second-stepper {
-  top: calc(2rem + 42px);
-  left: calc(1.5rem + 30%);
-}
-
-.third-stepper {
-  top: calc(5rem + 42px);
-  left: calc(0.4rem + 30%);
 }

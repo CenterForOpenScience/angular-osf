@@ -9,18 +9,12 @@
   </div>
 
   <div class="search-input-container">
-    <img
-      ngSrc="assets/icons/colored/question-mark.svg"
-      alt="better-research"
-      tabindex="0"
-      role="button"
-      height="36"
-      width="36"
-      class="cursor-pointer"
-      (click)="openHelpDialog()"
-      (keydown.enter)="openHelpDialog()"
+    <osf-search-input
+      [control]="searchControl"
+      [showHelpIcon]="true"
+      [placeholder]="'collections.searchInput.placeholder' | translate"
+      (helpClicked)="openHelpDialog()"
     />
-    <osf-search-input [control]="searchControl" [placeholder]="'collections.searchInput.placeholder' | translate" />
   </div>
 
   <div class="content-container flex-1">

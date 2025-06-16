@@ -12,10 +12,24 @@
       "move": "Move",
       "rename": "Rename",
       "confirm": "Confirm",
-      "disconnect": "Disconnect"
+      "disconnect": "Disconnect",
+      "next": "Next",
+      "skip": "Skip",
+      "done": "Done",
+      "select": "Select",
+      "deselect": "Deselect"
     },
     "search": {
-      "noResultsFound": "No results found."
+      "title": "Search",
+      "noResultsFound": "No results found.",
+      "tabs": {
+        "all": "All",
+        "preprints": "Preprints",
+        "registrations": "Registrations",
+        "projects": "Projects",
+        "files": "Files",
+        "users": "Users"
+      }
     },
     "labels": {
       "downloads": "Downloads"
@@ -34,7 +48,12 @@
     "meetings": "Meetings",
     "myProjects": "My Projects",
     "preprints": "Preprints",
+    "preprintsSubRoutes": {
+      "overview": "Overview",
+      "myPreprints": "My Preprints"
+    },
     "collections": "Collections",
+    "moderation": "Moderation",
     "donate": "Donate",
     "profileSettings": "Profile Settings",
     "accountSettings": "Account Settings",
@@ -197,12 +216,9 @@
     },
     "confirmEmail": {
       "title": "Add alternative email",
-      "description": "Would you like to add ",
-      "description2": " to your account?",
-      "buttons": {
-        "doNotAdd": "Do not add email",
-        "addEmail": "Add email"
-      }
+      "description": "Do you want to add ",
+      "description2": "to your profile ?",
+      "goToEmails": "Add email"
     }
   },
   "myProjects": {
@@ -715,6 +731,43 @@
       "dateModified": "Date Modified:"
     }
   },
+  "moderation": {
+    "allItems": "All Items",
+    "moderators": "Moderators",
+    "settings": "Settings",
+    "settingsMessage": "To configure your notification preferences visit your",
+    "userSettings": "User settings",
+    "addModerator": "Add moderator",
+    "inviteModerator": "Invite moderator",
+    "searchModerator": "Search moderator",
+    "selectPermission": "Select permission",
+    "moderatorPermissions": {
+      "administrator": "Administrator",
+      "moderator": "Moderator"
+    },
+    "removeDialog": {
+      "title": "Remove moderator",
+      "message": "Are you sure you want to remove <b>{{name}}</b> moderator?"
+    },
+    "toastMessages": {
+      "addSuccessMessage": "Moderator {{name}} successfully added.",
+      "multipleAddSuccessMessage": "Moderators successfully added.",
+      "updateSuccessMessage": "Moderator {{name}} updated.",
+      "deleteSuccessMessage": "Moderator {{name}} successfully removed."
+    },
+    "submissionReviewStatus": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "submissionReview": {
+      "submitted": "Submitted",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "by": "by"
+    }
+  },
   "settings": {
     "developerApps": {
       "header": {
@@ -1190,7 +1243,7 @@
     "title": "Preprints",
     "addPreprint": "Add a {{preprintWord}}",
     "poweredBy": "Powered by OSF Preprints",
-    "searchPlaceholder": "Search Preprints",
+    "searchPlaceholder": "Search {{preprintWord}}...",
     "showExample": "Show an example",
     "browseBySubjects": {
       "title": "Browse By Subjects"
@@ -1212,6 +1265,13 @@
       "header": "Search help",
       "message": "OSF Search provides a powerful discovery tool to help you find data, papers, analysis plans, and more content across the research lifecycle. OSF Preprints has some specialized filters, which you can learn more about on our",
       "linkText": "help guides"
+    },
+    "selectService": {
+      "title": "Add A Preprint",
+      "sectionTitle": "Select a preprint service",
+      "description": "A preprint is a version of a scholarly or scientific paper that is posted online before it has undergone formal peer review and published in a scientific journal.",
+      "learnMore": "Learn more",
+      "providerLogoImageAlt": "Provider Logo"
     }
   },
   "truncatedText": {
@@ -1272,5 +1332,20 @@
     "maxLength": "The field must be at most {{length}} characters.",
     "minLength": "The field must be at least {{length}} characters.",
     "invalidInput": "Invalid input."
+  },
+  "searchHelpTutorial": {
+    "step1": {
+      "title": "Improved OSF Search",
+      "description": "Enter any term in the search box and filter by specific object types. More information is available on our help guides."
+    },
+    "step2": {
+      "title": "Refine Your Search",
+      "description": "Narrow the source, discipline, and more. For example, find content supported by a specific funder or view only datasets."
+    },
+    "step3": {
+      "title": "Add Metadata",
+      "description": "Remember to add metadata and resources to your own work on OSF to make it more discoverable! Learn more in our help guides."
+    },
+    "stepCount": "{{current}} of {{total}}"
   }
 }

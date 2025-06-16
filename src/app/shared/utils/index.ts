@@ -1,6 +1,7 @@
 export { HeaderStyleHelper } from '../utils/header-style.helper';
 export * from './add-filters-params.helper';
 export * from './breakpoints.tokens';
+export { BrowserTabHelper } from './browser-tab.helper';
 export * from './custom-form-validators.helper';
 export * from './default-confirmation-config.helper';
 export * from './find-changed-items.helper';

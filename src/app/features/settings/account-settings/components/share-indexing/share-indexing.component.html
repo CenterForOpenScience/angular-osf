@@ -19,8 +19,9 @@
   </div>
 
   <div class="account-setting-action">
-    <p-button size="large" (click)="updateIndexing()">{{
-      'settings.accountSettings.shareIndexing.buttons.update' | translate
-    }}</p-button>
+    <p-button
+      [label]="'settings.accountSettings.shareIndexing.buttons.update' | translate"
+      (click)="updateIndexing()"
+    ></p-button>
   </div>
 </section>

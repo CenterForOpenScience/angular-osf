@@ -7,6 +7,7 @@
 @use "base";
 
 @use "./overrides/button";
+@use "./overrides/button-toggle";
 @use "./overrides/input";
 @use "./overrides/checkbox";
 @use "./overrides/divider";
@@ -36,7 +37,6 @@
 @use "./overrides/toggleswitch";
 @use "./overrides/tooltip";
 @use "./overrides/toast";
-@use "./overrides/primeflex-override";
 @use "./overrides/multiselect";
 @use "components/preprints";
 @use "components/addons";
