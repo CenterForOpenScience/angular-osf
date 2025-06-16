@@ -1,7 +1,7 @@
-import { MyProjectsItem, MyProjectsItemGetResponse } from '../models';
+import { MyProjectsItem, MyProjectsItemGetResponseJsonApi } from '../models';
 
 export class MyProjectsMapper {
-  static fromResponse(response: MyProjectsItemGetResponse): MyProjectsItem {
+  static fromResponse(response: MyProjectsItemGetResponseJsonApi): MyProjectsItem {
     return {
       id: response.id,
       type: response.type,

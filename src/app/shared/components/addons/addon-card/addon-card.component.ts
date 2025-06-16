@@ -32,9 +32,19 @@ export class AddonCardComponent {
   protected readonly addonTypeString = computed(() => {
     const addon = this.card();
     if (addon) {
-      return addon.type === 'authorized-storage-accounts' ? 'storage' : 'citation';
+      return addon.type === 'authorized-storage-accounts' || addon.type === 'configured-storage-addons'
+        ? 'storage'
+        : 'citation';
     }
     return '';
+  });
+  protected readonly isConfiguredAddon = computed(() => {
+    const addon = this.card();
+    if (addon) {
+      return addon.type === 'configured-storage-addons' || addon.type === 'configured-citation-addons';
+    }
+
+    return false;
   });
 
   onConnectAddon(): void {
@@ -43,6 +53,17 @@ export class AddonCardComponent {
       const currentUrl = this.router.url;
       const baseUrl = currentUrl.split('/addons')[0];
       this.router.navigate([`${baseUrl}/addons/connect-addon`], {
+        state: { addon },
+      });
+    }
+  }
+
+  onConfigureAddon(): void {
+    const addon = this.card();
+    if (addon) {
+      const currentUrl = this.router.url;
+      const baseUrl = currentUrl.split('/addons')[0];
+      this.router.navigate([`${baseUrl}/addons/configure-addon`], {
         state: { addon },
       });
     }

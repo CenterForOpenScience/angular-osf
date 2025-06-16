@@ -1,7 +1,7 @@
-import { Token, TokenCreateRequest, TokenCreateResponse, TokenGetResponse } from '../models';
+import { Token, TokenCreateRequestJsonApi, TokenCreateResponseJsonApi, TokenGetResponseJsonApi } from '../models';
 
 export class TokenMapper {
-  static toRequest(name: string, scopes: string[]): TokenCreateRequest {
+  static toRequest(name: string, scopes: string[]): TokenCreateRequestJsonApi {
     return {
       data: {
         attributes: {
@@ -13,7 +13,7 @@ export class TokenMapper {
     };
   }
 
-  static fromCreateResponse(response: TokenCreateResponse): Token {
+  static fromCreateResponse(response: TokenCreateResponseJsonApi): Token {
     return {
       id: response.id,
       name: response.attributes.name,
@@ -23,7 +23,7 @@ export class TokenMapper {
     };
   }
 
-  static fromGetResponse(response: TokenGetResponse): Token {
+  static fromGetResponse(response: TokenGetResponseJsonApi): Token {
     return {
       id: response.id,
       name: response.attributes.name,

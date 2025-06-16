@@ -100,17 +100,15 @@
       <p-step-panel [value]="AddonStepperValue.CHOOSE_ACCOUNT">
         <ng-template #content let-activateCallback="activateCallback">
           <section class="flex flex-column gap-5">
-            <h2 class="pt-2">
-              {{ 'settings.addons.connectAddon.chooseExistingAccount' | translate }} {{ addon()?.displayName }}
-            </h2>
+            <h2 class="pt-2">{{ 'settings.addons.connectAddon.chooseExistingAccount' | translate }}</h2>
             <ul class="flex flex-column gap-3 mt-2">
               @for (account of currentAuthorizedAddonAccounts(); track account.id) {
                 <li class="flex cursor-pointer" tabindex="0">
                   <p-radiobutton
-                    [(ngModel)]="chosenAccount"
-                    [value]="account.displayName"
+                    [ngModel]="chosenAccountId()"
+                    [value]="account.id"
                     [inputId]="account.id"
-                    (click)="$event.stopPropagation()"
+                    (ngModelChange)="chosenAccountId.set($event)"
                   ></p-radiobutton>
                   <label [for]="account.id" class="ml-2 radio-label">{{ account.displayName }}</label>
                 </li>
@@ -125,8 +123,84 @@
               ></p-button>
               <p-button
                 class="w-10rem btn-full-width"
+                [disabled]="!chosenAccountId()"
                 [label]="'settings.addons.form.buttons.next' | translate"
-                (onClick)="activateCallback(4)"
+                (onClick)="handleConfirmAccountConnection()"
+              ></p-button>
+            </div>
+          </section>
+        </ng-template>
+      </p-step-panel>
+
+      <p-step-panel [value]="AddonStepperValue.CONFIGURE_ROOT_FOLDER">
+        <ng-template #content let-activateCallback="activateCallback">
+          <section class="flex flex-column gap-5">
+            <h2 class="pt-2">{{ 'settings.addons.connectAddon.configure' | translate }} {{ addon()?.displayName }}</h2>
+
+            <p-card>
+              <h3 class="mb-2">
+                {{ 'settings.addons.form.fields.accountName' | translate }}
+              </h3>
+
+              <input
+                [ngModel]="chosenAccountName()"
+                name="accountName"
+                pInputText
+                (ngModelChange)="chosenAccountName.set($event)"
+              />
+            </p-card>
+
+            <div class="folders-table flex flex-column">
+              <div class="folders-table-heading flex justify-content-between">
+                <h3>Folder Name</h3>
+                <h3>Select</h3>
+              </div>
+
+              @if (!operationInvocation()?.operationResult?.length) {
+                <p class="text-center">
+                  {{ 'settings.addons.configureAddon.noFolders' | translate }}
+                </p>
+              } @else {
+                @for (folder of operationInvocation()?.operationResult; track folder.itemId) {
+                  @if (folder.canBeRoot) {
+                    <div class="folders-table-row">
+                      <div class="flex gap-2 flex-1">
+                        @if (folder.itemId !== '/') {
+                          <i tabindex="0" class="osf-icon-arrow-left"></i>
+                        }
+                        <div tabindex="0" class="cursor-pointer flex gap-2">
+                          <i class="osf-icon-folder"></i>
+                          {{ folder.itemName }}
+                        </div>
+
+                        <p-radiobutton
+                          class="ml-auto pr-3"
+                          [ngModel]="chosenRootFolderId()"
+                          [value]="folder.itemId"
+                          [inputId]="folder.itemId"
+                          (ngModelChange)="chosenRootFolderId.set($event)"
+                        ></p-radiobutton>
+                      </div>
+                    </div>
+                  }
+                }
+              }
+            </div>
+
+            <div class="flex gap-4 align-self-end">
+              <p-button
+                class="w-10rem btn-full-width"
+                [label]="'settings.addons.form.buttons.back' | translate"
+                severity="info"
+                [disabled]="isAddonConnecting()"
+                (onClick)="activateCallback(AddonStepperValue.CHOOSE_ACCOUNT)"
+              ></p-button>
+              <p-button
+                class="w-10rem btn-full-width"
+                [disabled]="!chosenRootFolderId()"
+                [loading]="isAddonConnecting()"
+                [label]="'common.buttons.save' | translate"
+                (click)="handleCreateConfiguredAddon()"
               ></p-button>
             </div>
           </section>
@@ -135,7 +209,7 @@
 
       <p-step-panel [value]="AddonStepperValue.SETUP_NEW_ACCOUNT">
         <ng-template #content let-activateCallback="activateCallback">
-          <form [formGroup]="addonForm" (ngSubmit)="handleConnectAddon()" class="flex flex-column gap-5">
+          <form [formGroup]="addonForm" (ngSubmit)="handleCreateAuthorizedAddon()" class="flex flex-column gap-5">
             <h2>{{ 'settings.addons.connectAddon.setupNewAccount' | translate }}</h2>
             <p-card>
               @if (addon()?.credentialsFormat === credentialsFormat.ACCESS_SECRET_KEYS) {
@@ -237,7 +311,6 @@
             </p-card>
 
             <div class="flex gap-4 align-self-center md:align-self-end mt-3">
-              <!--              @if (!isAuthorized()) {-->
               <p-button
                 [label]="'settings.addons.form.buttons.back' | translate"
                 severity="info"
@@ -252,23 +325,6 @@
                 type="submit"
                 [disabled]="!addonForm.valid || !this.addonsUserReference().length || isAddonConnecting()"
               ></p-button>
-              <!--              } @else {-->
-              <!--                <p-button-->
-              <!--                  [label]="'settings.addons.form.buttons.cancel' | translate"-->
-              <!--                  severity="info"-->
-              <!--                  class="w-10rem btn-full-width"-->
-              <!--                  [routerLink]="[baseUrl() + '/addons']"-->
-              <!--                  [disabled]="isAddonConnecting()"-->
-              <!--                ></p-button>-->
-
-              <!--                <p-button-->
-              <!--                  class="w-10rem btn-full-width"-->
-              <!--                  [label]="'settings.addons.form.buttons.reconnect' | translate"-->
-              <!--                  [link]="true"-->
-              <!--                  (onClick)="handleConnectAddon()"-->
-              <!--                  [disabled]="!addonForm.valid || !this.addonsUserReference().length || isAddonConnecting()"-->
-              <!--                ></p-button>-->
-              <!--              }-->
             </div>
           </form>
         </ng-template>

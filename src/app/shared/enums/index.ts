@@ -9,7 +9,6 @@ export * from './filter-type.enum';
 export * from './profile-addons-stepper.enum';
 export * from './resource-tab.enum';
 export * from './resource-type.enum';
-export * from './settings-addons-stepper.enum';
 export * from './share-indexing.enum';
 export * from './sort-order.enum';
 export * from './subscriptions';

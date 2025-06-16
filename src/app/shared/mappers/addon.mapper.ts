@@ -1,15 +1,18 @@
 import {
   Addon,
-  AddonGetResponse,
+  AddonGetResponseJsonApi,
   AuthorizedAddon,
-  AuthorizedAddonGetResponse,
+  AuthorizedAddonGetResponseJsonApi,
   ConfiguredAddon,
-  ConfiguredAddonGetResponse,
+  ConfiguredAddonGetResponseJsonApi,
   IncludedAddonData,
+  OperationInvocation,
+  OperationInvocationResponseJsonApi,
+  StorageItemResponse,
 } from '@shared/models';
 
 export class AddonMapper {
-  static fromResponse(response: AddonGetResponse): Addon {
+  static fromResponse(response: AddonGetResponseJsonApi): Addon {
     return {
       type: response.type,
       id: response.id,
@@ -23,7 +26,7 @@ export class AddonMapper {
   }
 
   static fromAuthorizedAddonResponse(
-    response: AuthorizedAddonGetResponse,
+    response: AuthorizedAddonGetResponseJsonApi,
     included?: IncludedAddonData[]
   ): AuthorizedAddon {
     // Handle both storage and citation service relationships
@@ -64,16 +67,53 @@ export class AddonMapper {
     };
   }
 
-  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponse): ConfiguredAddon {
+  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredAddon {
     return {
       type: response.type,
       id: response.id,
       displayName: response.attributes.display_name,
       externalServiceName: response.attributes.external_service_name,
-      rootFolder: response.attributes.root_folder,
+      selectedFolderId: response.attributes.root_folder,
       connectedCapabilities: response.attributes.connected_capabilities,
       connectedOperationNames: response.attributes.connected_operation_names,
       currentUserIsOwner: response.attributes.current_user_is_owner,
+      baseAccountId: response.relationships.base_account.data.id,
+      baseAccountType: response.relationships.base_account.data.type,
+    };
+  }
+
+  static fromOperationInvocationResponse(response: OperationInvocationResponseJsonApi): OperationInvocation {
+    const operationResult = response.attributes.operation_result;
+    const isOperationResult = 'items' in operationResult && 'total_count' in operationResult;
+
+    const mappedOperationResult = isOperationResult
+      ? operationResult.items.map((item: StorageItemResponse) => ({
+          itemId: item.item_id,
+          itemName: item.item_name,
+          itemType: item.item_type,
+          canBeRoot: item.can_be_root,
+          mayContainRootCandidates: item.may_contain_root_candidates,
+        }))
+      : [
+          {
+            itemId: operationResult.item_id,
+            itemName: operationResult.item_name,
+            itemType: operationResult.item_type,
+            canBeRoot: operationResult.can_be_root,
+            mayContainRootCandidates: operationResult.may_contain_root_candidates,
+          },
+        ];
+    return {
+      type: response.type,
+      id: response.id,
+      invocationStatus: response.attributes.invocation_status,
+      operationName: response.attributes.operation_name,
+      operationKwargs: {
+        itemId: response.attributes.operation_kwargs.item_id,
+        itemType: response.attributes.operation_kwargs.item_type,
+      },
+      itemCount: isOperationResult ? operationResult.total_count : 0,
+      operationResult: mappedOperationResult,
     };
   }
 }

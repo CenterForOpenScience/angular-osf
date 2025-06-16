@@ -58,7 +58,7 @@
         @if (!isAddonsLoading()) {
           <osf-addon-card-list [cards]="filteredAddonCards()" [showDangerButton]="false" />
         } @else {
-          <div class="mt-8">
+          <div class="mt-8 pt-5">
             <osf-loading-spinner />
           </div>
         }
@@ -70,14 +70,13 @@
           [placeholder]="'settings.addons.filters.search' | translate"
         />
 
-        @if (!isAddonsLoading()) {
+        @if (!isConfiguredAddonsLoading()) {
           <osf-addon-card-list
             [cards]="allConfiguredAddons()"
-            [cardButtonLabel]="'settings.addons.form.buttons.reconnect' | translate"
-            [showDangerButton]="true"
+            [cardButtonLabel]="'settings.addons.connectAddon.configure' | translate"
           />
         } @else {
-          <div class="mt-8">
+          <div class="mt-8 pt-8">
             <osf-loading-spinner />
           </div>
         }

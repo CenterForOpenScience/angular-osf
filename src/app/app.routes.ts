@@ -175,8 +175,15 @@ export const routes: Routes = [
                 path: 'connect-addon',
                 loadComponent: () =>
                   import(
-                    './features/project/addons/components/connect-configure-addon/connect-configure-addon.component'
-                  ).then((mod) => mod.ConnectConfigureAddonComponent),
+                    '@osf/features/project/addons/components/connect-configured-addon/connect-configured-addon.component'
+                  ).then((mod) => mod.ConnectConfiguredAddonComponent),
+              },
+              {
+                path: 'configure-addon',
+                loadComponent: () =>
+                  import('@osf/features/project/addons/components/configure-addon/configure-addon.component').then(
+                    (mod) => mod.ConfigureAddonComponent
+                  ),
               },
             ],
           },

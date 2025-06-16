@@ -21,7 +21,7 @@
       <p-button
         [label]="cardButtonLabel() || ('settings.addons.form.buttons.connect' | translate)"
         severity="secondary"
-        (onClick)="onConnectAddon()"
+        (onClick)="!isConfiguredAddon() ? onConnectAddon() : onConfigureAddon()"
         [ngClass]="isMobile() ? 'w-8rem btn-full-width' : ''"
       ></p-button>
     </div>

@@ -10,7 +10,9 @@
       "download": "Download",
       "copy": "Copy",
       "move": "Move",
-      "rename": "Rename"
+      "rename": "Rename",
+      "confirm": "Confirm",
+      "disconnect": "Disconnect"
     },
     "search": {
       "noResultsFound": "No results found."
@@ -629,69 +631,6 @@
           }
         }
       }
-    },
-    "files": {
-      "title": "Files",
-      "storageLocation": "OSF Storage",
-      "searchPlaceholder": "Search your projects",
-      "sort": {
-        "placeholder": "Sort",
-        "nameAZ": "Name: A-Z",
-        "nameZA": "Name: Z-A",
-        "lastModifiedOldest": "Last modified: oldest to newest",
-        "lastModifiedNewest": "Last modified: newest to oldest"
-      },
-      "actions": {
-        "downloadAsZip": "Download As Zip",
-        "createFolder": "Create Folder",
-        "uploadFile": "Upload File"
-      },
-      "dialogs": {
-        "uploadFile": {
-          "title": "Upload file"
-        },
-        "createFolder": {
-          "title": "Create folder",
-          "folderName": "New folder name",
-          "folderNamePlaceholder": "Please enter a folder name"
-        },
-        "renameFile": {
-          "title": "Rename file",
-          "renameLabel": "Please rename the file"
-        },
-        "moveFile": "Cannot move to the same folder"
-      },
-      "emptyState": "This folder is empty",
-      "detail": {
-        "backToList": "Back to list of files",
-        "fileMetadata": {
-          "title": "File Metadata",
-          "edit": "Edit",
-          "fields": {
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource Type",
-            "resourceLanguage": "Resource Language"
-          }
-        },
-        "projectMetadata": {
-          "title": "Project Metadata",
-          "edit": "Edit",
-          "fields": {
-            "funder": "Funder",
-            "awardTitle": "Award title",
-            "awardNumber": "Award number",
-            "awardUri": "Award URI",
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource type",
-            "resourceLanguage": "Resource language",
-            "dateCreated": "Date created",
-            "dateModified": "Date modified",
-            "contributors": "Contributors"
-          }
-        }
-      }
     }
   },
   "collections": {
@@ -922,6 +861,16 @@
         "additionalService": "Additional Storage",
         "citationManager": "Citation Manager"
       },
+      "configureAddon": {
+        "title": "Configure Add-on",
+        "noFolders": "No folders",
+        "disconnect": "Disconnect {{addonName}}",
+        "disconnectMessage": "You are about to disconnect the following addon from the project:",
+        "account": "Account:",
+        "selectedFolder": "Selected folder:",
+        "connectedAccount": "Connected to account:",
+        "home": "Home"
+      },
       "connectAddon": {
         "title": "Connect Add-on",
         "terms": "Terms",
@@ -929,7 +878,9 @@
           "function": "Function",
           "status": "Status"
         },
-        "configure": "Configure ",
+        "confirmAccount": "Confirm account",
+        "connectAccount": "Connect following account: {{accountName}}",
+        "configure": "Configure",
         "termsDescription": "• This add-on connects your OSF project to an external service. Use of this service is bound by its terms and conditions. The OSF is not responsible for the service or for your use thereof.",
         "storageDescription": "• This add-on allows you to store files using an external service. Files added to this add-on are not stored within the OSF.",
         "reconnectAccount": "Reconnect Account",

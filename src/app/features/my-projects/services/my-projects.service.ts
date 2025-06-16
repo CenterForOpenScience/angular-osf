@@ -10,12 +10,12 @@ import { NodeResponseModel, UpdateNodeRequestModel } from '@shared/models';
 
 import { MyProjectsMapper } from '../mappers';
 import {
-  CreateProjectPayload,
+  CreateProjectPayloadJsoApi,
   EndpointType,
   MyProjectsItem,
-  MyProjectsItemGetResponse,
-  MyProjectsItemResponse,
-  MyProjectsJsonApiResponse,
+  MyProjectsItemGetResponseJsonApi,
+  MyProjectsItemResponseJsonApi,
+  MyProjectsResponseJsonApi,
   MyProjectsSearchFilters,
 } from '../models';
 
@@ -38,7 +38,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponse> {
+  ): Observable<MyProjectsItemResponseJsonApi> {
     const params: Record<string, unknown> = {
       'embed[]': ['bibliographic_contributors'],
       [`fields[${endpoint}]`]: 'title,date_modified,public,bibliographic_contributors',
@@ -69,9 +69,9 @@ export class MyProjectsService {
       ? environment.apiUrl + '/' + endpoint
       : environment.apiUrl + '/users/me/' + endpoint;
 
-    return this.jsonApiService.get<MyProjectsJsonApiResponse>(url, params).pipe(
-      map((response: MyProjectsJsonApiResponse) => ({
-        data: response.data.map((item: MyProjectsItemGetResponse) => MyProjectsMapper.fromResponse(item)),
+    return this.jsonApiService.get<MyProjectsResponseJsonApi>(url, params).pipe(
+      map((response: MyProjectsResponseJsonApi) => ({
+        data: response.data.map((item: MyProjectsItemGetResponseJsonApi) => MyProjectsMapper.fromResponse(item)),
         links: response.links,
       }))
     );
@@ -81,7 +81,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponse> {
+  ): Observable<MyProjectsItemResponseJsonApi> {
     return this.getMyItems('nodes', filters, pageNumber, pageSize);
   }
 
@@ -104,7 +104,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponse> {
+  ): Observable<MyProjectsItemResponseJsonApi> {
     return this.getMyItems('registrations', filters, pageNumber, pageSize);
   }
 
@@ -112,7 +112,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponse> {
+  ): Observable<MyProjectsItemResponseJsonApi> {
     return this.getMyItems('preprints', filters, pageNumber, pageSize);
   }
 
@@ -121,7 +121,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponse> {
+  ): Observable<MyProjectsItemResponseJsonApi> {
     return this.getMyItems(`collections/${collectionId}/linked_nodes/`, filters, pageNumber, pageSize);
   }
 
@@ -132,7 +132,7 @@ export class MyProjectsService {
     region: string,
     affiliations: string[]
   ): Observable<MyProjectsItem> {
-    const payload: CreateProjectPayload = {
+    const payload: CreateProjectPayloadJsoApi = {
       data: {
         type: 'nodes',
         attributes: {
@@ -167,7 +167,7 @@ export class MyProjectsService {
     };
 
     return this.jsonApiService
-      .post<MyProjectsItemGetResponse>(`${environment.apiUrl}/nodes/`, payload, params)
+      .post<MyProjectsItemGetResponseJsonApi>(`${environment.apiUrl}/nodes/`, payload, params)
       .pipe(map((response) => MyProjectsMapper.fromResponse(response)));
   }
 

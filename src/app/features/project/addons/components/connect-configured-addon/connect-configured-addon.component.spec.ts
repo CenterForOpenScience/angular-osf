@@ -10,16 +10,15 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Navigation, Router, UrlTree } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
+import { CredentialsFormat } from '@shared/enums';
+import { Addon } from '@shared/models';
 import { AddonsSelectors } from '@shared/stores/addons';
 
-import { CredentialsFormat } from '../../enums';
-import { Addon } from '../../models';
-
-import { ConnectConfigureAddonComponent } from './connect-configure-addon.component';
+import { ConnectConfiguredAddonComponent } from './connect-configured-addon.component';
 
 describe('ConnectAddonComponent', () => {
-  let component: ConnectConfigureAddonComponent;
-  let fixture: ComponentFixture<ConnectConfigureAddonComponent>;
+  let component: ConnectConfiguredAddonComponent;
+  let fixture: ComponentFixture<ConnectConfiguredAddonComponent>;
 
   const mockAddon: Addon = {
     id: 'test-addon-id',
@@ -45,7 +44,7 @@ describe('ConnectAddonComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ConnectConfigureAddonComponent, MockComponent(SubHeaderComponent), MockPipe(TranslatePipe)],
+      imports: [ConnectConfiguredAddonComponent, MockComponent(SubHeaderComponent), MockPipe(TranslatePipe)],
       providers: [
         provideNoopAnimations(),
         MockProvider(Store, {
@@ -69,7 +68,7 @@ describe('ConnectAddonComponent', () => {
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ConnectConfigureAddonComponent);
+    fixture = TestBed.createComponent(ConnectConfiguredAddonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

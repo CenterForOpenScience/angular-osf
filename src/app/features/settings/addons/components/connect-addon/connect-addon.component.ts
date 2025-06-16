@@ -17,7 +17,7 @@ import { Router, RouterLink } from '@angular/router';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ADDON_TERMS as addonTerms } from '@osf/shared/constants';
 import { AddonFormControls, CredentialsFormat } from '@osf/shared/enums';
-import { Addon, AddonForm, AddonRequest, AddonTerm, AuthorizedAddon } from '@shared/models';
+import { Addon, AddonForm, AddonTerm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
 
 @Component({
@@ -142,7 +142,7 @@ export class ConnectAddonComponent {
     return new FormGroup({} as AddonForm);
   }
 
-  private generateRequestPayload(): AddonRequest {
+  private generateRequestPayload(): AuthorizedAddonRequestJsonApi {
     const formValue = this.addonForm.value;
     const addon = this.addon()!;
     const credentials: Record<string, unknown> = {};
@@ -167,7 +167,7 @@ export class ConnectAddonComponent {
         break;
     }
 
-    const requestPayload: AddonRequest = {
+    const requestPayload: AuthorizedAddonRequestJsonApi = {
       data: {
         id: addon.id || '',
         attributes: {

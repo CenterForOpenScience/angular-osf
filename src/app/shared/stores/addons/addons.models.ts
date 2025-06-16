@@ -1,10 +1,12 @@
 import {
   Addon,
-  AddonResponse,
   AuthorizedAddon,
+  AuthorizedAddonResponseJsonApi,
   ConfiguredAddon,
-  ResourceReference,
-  UserReference,
+  ConfiguredAddonResponseJsonApi,
+  OperationInvocation,
+  ResourceReferenceJsonApi,
+  UserReferenceJsonApi,
 } from '@shared/models';
 import { AsyncStateModel } from '@shared/models/store';
 
@@ -15,7 +17,10 @@ export interface AddonsStateModel {
   authorizedCitationAddons: AsyncStateModel<AuthorizedAddon[]>;
   configuredStorageAddons: AsyncStateModel<ConfiguredAddon[]>;
   configuredCitationAddons: AsyncStateModel<ConfiguredAddon[]>;
-  addonsUserReference: AsyncStateModel<UserReference[]>;
-  addonsResourceReference: AsyncStateModel<ResourceReference[]>;
-  createdUpdatedAuthorizedAddon: AsyncStateModel<AddonResponse | null>;
+  addonsUserReference: AsyncStateModel<UserReferenceJsonApi[]>;
+  addonsResourceReference: AsyncStateModel<ResourceReferenceJsonApi[]>;
+  createdUpdatedAuthorizedAddon: AsyncStateModel<AuthorizedAddonResponseJsonApi | null>;
+  createdUpdatedConfiguredAddon: AsyncStateModel<ConfiguredAddonResponseJsonApi | null>;
+  operationInvocation: AsyncStateModel<OperationInvocation | null>;
+  selectedFolderOperationInvocation: AsyncStateModel<OperationInvocation | null>;
 }

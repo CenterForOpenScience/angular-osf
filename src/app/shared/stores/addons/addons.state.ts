@@ -7,8 +7,12 @@ import { inject, Injectable } from '@angular/core';
 import { AddonsService } from '@shared/services';
 
 import {
+  ClearConfiguredAddons,
+  CreateAddonOperationInvocation,
   CreateAuthorizedAddon,
+  CreateConfiguredAddon,
   DeleteAuthorizedAddon,
+  DeleteConfiguredAddon,
   GetAddonsResourceReference,
   GetAddonsUserReference,
   GetAuthorizedCitationAddons,
@@ -18,6 +22,7 @@ import {
   GetConfiguredStorageAddons,
   GetStorageAddons,
   UpdateAuthorizedAddon,
+  UpdateConfiguredAddon,
 } from './addons.actions';
 import { AddonsStateModel } from './addons.models';
 
@@ -65,6 +70,24 @@ const ADDONS_DEFAULTS: AddonsStateModel = {
     error: null,
   },
   createdUpdatedAuthorizedAddon: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  createdUpdatedConfiguredAddon: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  operationInvocation: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  selectedFolderOperationInvocation: {
     data: null,
     isLoading: false,
     isSubmitting: false,
@@ -290,6 +313,39 @@ export class AddonsState {
     );
   }
 
+  @Action(CreateConfiguredAddon)
+  createConfiguredAddon(ctx: StateContext<AddonsStateModel>, action: CreateConfiguredAddon) {
+    const state = ctx.getState();
+    ctx.patchState({
+      createdUpdatedConfiguredAddon: {
+        ...state.createdUpdatedConfiguredAddon,
+        isSubmitting: true,
+      },
+    });
+
+    return this.addonsService.createConfiguredAddon(action.payload, action.addonType).pipe(
+      tap((addon) => {
+        ctx.patchState({
+          createdUpdatedConfiguredAddon: {
+            data: addon,
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+        });
+        // const referenceId = state.addonsResourceReference.data[0]?.id;
+        // if (referenceId) {
+        //   ctx.dispatch(
+        //     action.addonType === 'storage'
+        //       ? new GetConfiguredStorageAddons(referenceId)
+        //       : new GetConfiguredCitationAddons(referenceId)
+        //   );
+        // }
+      }),
+      catchError((error) => this.handleError(ctx, 'createdUpdatedConfiguredAddon', error))
+    );
+  }
+
   @Action(GetAddonsUserReference)
   getAddonsUserReference(ctx: StateContext<AddonsStateModel>) {
     const state = ctx.getState();
@@ -311,6 +367,45 @@ export class AddonsState {
         });
       }),
       catchError((error) => this.handleError(ctx, 'addonsUserReference', error))
+    );
+  }
+
+  @Action(UpdateConfiguredAddon)
+  updateConfiguredAddon(ctx: StateContext<AddonsStateModel>, action: UpdateConfiguredAddon) {
+    const state = ctx.getState();
+    ctx.patchState({
+      createdUpdatedConfiguredAddon: {
+        ...state.createdUpdatedConfiguredAddon,
+        isSubmitting: true,
+      },
+    });
+
+    return this.addonsService.updateConfiguredAddon(action.payload, action.addonType, action.addonId).pipe(
+      tap((addon) => {
+        ctx.patchState({
+          createdUpdatedConfiguredAddon: {
+            data: addon,
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+          selectedFolderOperationInvocation: {
+            data: null,
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+        });
+        const referenceId = state.addonsResourceReference.data[0]?.id;
+        if (referenceId) {
+          ctx.dispatch(
+            action.addonType === 'storage'
+              ? new GetConfiguredStorageAddons(referenceId)
+              : new GetConfiguredCitationAddons(referenceId)
+          );
+        }
+      }),
+      catchError((error) => this.handleError(ctx, 'createdUpdatedAuthorizedAddon', error))
     );
   }
 
@@ -349,7 +444,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.deleteAuthorizedAddon(action.payload, action.addonType).pipe(
+    return this.addonsService.deleteAuthorizedAddon(action.id, action.addonType).pipe(
       switchMap(() => {
         const referenceId = state.addonsUserReference.data[0]?.id;
         if (referenceId) {
@@ -363,11 +458,98 @@ export class AddonsState {
     );
   }
 
-  private handleError(ctx: StateContext<AddonsStateModel>, section: keyof AddonsStateModel, error: Error) {
+  @Action(DeleteConfiguredAddon)
+  deleteConfiguredAddon(ctx: StateContext<AddonsStateModel>, action: DeleteConfiguredAddon) {
+    const state = ctx.getState();
+
+    ctx.patchState({
+      createdUpdatedConfiguredAddon: {
+        ...state.createdUpdatedConfiguredAddon,
+        isSubmitting: true,
+      },
+    });
+
+    return this.addonsService.deleteConfiguredAddon(action.id, action.addonType).pipe(
+      switchMap(() => {
+        ctx.patchState({
+          createdUpdatedConfiguredAddon: {
+            ...state.createdUpdatedConfiguredAddon,
+            isSubmitting: false,
+          },
+        });
+        const referenceId = state.addonsResourceReference.data[0]?.id;
+        if (referenceId) {
+          return action.addonType === 'configured-storage-addons'
+            ? ctx.dispatch(new GetConfiguredStorageAddons(referenceId))
+            : ctx.dispatch(new GetConfiguredCitationAddons(referenceId));
+        }
+        return [];
+      }),
+      catchError((error) => this.handleError(ctx, 'createdUpdatedConfiguredAddon', error))
+    );
+  }
+
+  @Action(CreateAddonOperationInvocation)
+  createAddonOperationInvocation(ctx: StateContext<AddonsStateModel>, action: CreateAddonOperationInvocation) {
     const state = ctx.getState();
     ctx.patchState({
+      operationInvocation: {
+        ...state.operationInvocation,
+        isSubmitting: true,
+      },
+    });
+
+    return this.addonsService.createAddonOperationInvocation(action.payload).pipe(
+      tap((response) => {
+        ctx.patchState({
+          operationInvocation: {
+            data: response,
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+        });
+
+        if (response.operationName === 'get_item_info' && response.operationResult[0]?.itemName) {
+          ctx.patchState({
+            selectedFolderOperationInvocation: {
+              data: response,
+              isLoading: false,
+              isSubmitting: false,
+              error: null,
+            },
+          });
+        }
+      }),
+      catchError((error) => this.handleError(ctx, 'operationInvocation', error))
+    );
+  }
+
+  @Action(ClearConfiguredAddons)
+  clearConfiguredAddons(ctx: StateContext<AddonsStateModel>) {
+    ctx.patchState({
+      configuredStorageAddons: {
+        data: [],
+        isLoading: false,
+        error: null,
+      },
+      configuredCitationAddons: {
+        data: [],
+        isLoading: false,
+        error: null,
+      },
+      addonsResourceReference: {
+        data: [],
+        isLoading: false,
+        error: null,
+      },
+    });
+  }
+
+  private handleError(ctx: StateContext<AddonsStateModel>, section: keyof AddonsStateModel, error: Error) {
+    ctx.patchState({
       [section]: {
-        ...state[section],
+        ...ctx.getState()[section],
         isLoading: false,
         isSubmitting: false,
         error: error.message,

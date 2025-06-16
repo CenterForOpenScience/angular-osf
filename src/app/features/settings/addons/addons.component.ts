@@ -6,6 +6,8 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SelectModule } from 'primeng/select';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
@@ -57,6 +59,7 @@ export class AddonsComponent {
   protected AddonTabValue = AddonTabValue;
   protected defaultTabValue = AddonTabValue.ALL_ADDONS;
   protected searchControl = new FormControl<string>('');
+  protected searchValue = signal<string>('');
   protected selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
   protected selectedTab = signal<number>(this.defaultTabValue);
 
@@ -67,13 +70,30 @@ export class AddonsComponent {
   protected authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
   protected authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
 
+  protected isCurrentUserLoading = select(UserSelectors.getCurrentUserLoading);
+  protected isUserReferenceLoading = select(AddonsSelectors.getAddonsUserReferenceLoading);
   protected isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
   protected isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
   protected isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
   protected isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
+
   protected isAddonsLoading = computed(() => {
-    return this.isStorageAddonsLoading() || this.isCitationAddonsLoading();
+    return (
+      this.isStorageAddonsLoading() ||
+      this.isCitationAddonsLoading() ||
+      this.isUserReferenceLoading() ||
+      this.isCurrentUserLoading()
+    );
   });
+  protected isAuthorizedAddonsLoading = computed(() => {
+    return (
+      this.isAuthorizedStorageAddonsLoading() ||
+      this.isAuthorizedCitationAddonsLoading() ||
+      this.isUserReferenceLoading() ||
+      this.isCurrentUserLoading()
+    );
+  });
+
   protected actions = createDispatchMap({
     getStorageAddons: GetStorageAddons,
     getCitationAddons: GetCitationAddons,
@@ -88,7 +108,7 @@ export class AddonsComponent {
   protected readonly allAuthorizedAddons = computed(() => {
     const authorizedAddons = [...this.authorizedStorageAddons(), ...this.authorizedCitationAddons()];
 
-    const searchValue = this.searchControl.value?.toLowerCase() ?? '';
+    const searchValue = this.searchValue().toLowerCase();
     return authorizedAddons.filter((card) => card.displayName.includes(searchValue));
   });
 
@@ -107,8 +127,8 @@ export class AddonsComponent {
   );
 
   protected readonly filteredAddonCards = computed(() => {
-    const searchValue = this.searchControl.value?.toLowerCase() ?? '';
-    return this.currentAddonsState().filter((card) => card.externalServiceName.includes(searchValue));
+    const searchValue = this.searchValue().toLowerCase();
+    return this.currentAddonsState().filter((card) => card.externalServiceName.toLowerCase().includes(searchValue));
   });
 
   protected onCategoryChange(value: string): void {
@@ -140,6 +160,10 @@ export class AddonsComponent {
       if (this.currentUser() && this.userReferenceId()) {
         this.fetchAllAuthorizedAddons(this.userReferenceId());
       }
+    });
+
+    this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
+      this.searchValue.set(value ?? '');
     });
   }
 

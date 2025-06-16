@@ -5,7 +5,18 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Select } from 'primeng/select';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -17,6 +28,7 @@ import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
 import {
   AddonsSelectors,
+  ClearConfiguredAddons,
   DeleteAuthorizedAddon,
   GetAddonsResourceReference,
   GetAddonsUserReference,
@@ -49,12 +61,14 @@ import { IS_XSMALL } from '@shared/utils';
 })
 export class AddonsComponent implements OnInit {
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
   protected readonly tabOptions = ADDON_TAB_OPTIONS;
   protected readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
   protected isMobile = toSignal(inject(IS_XSMALL));
   protected AddonTabValue = AddonTabValue;
   protected defaultTabValue = AddonTabValue.ALL_ADDONS;
   protected searchControl = new FormControl<string>('');
+  protected searchValue = signal<string>('');
   protected selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
   protected selectedTab = signal<number>(this.defaultTabValue);
 
@@ -78,6 +92,14 @@ export class AddonsComponent implements OnInit {
       this.isStorageAddonsLoading() ||
       this.isCitationAddonsLoading() ||
       this.isUserReferenceLoading() ||
+      // this.isResourceReferenceLoading() ||
+      this.isCurrentUserLoading()
+    );
+  });
+  protected isConfiguredAddonsLoading = computed(() => {
+    return (
+      this.isConfiguredStorageAddonsLoading() ||
+      this.isConfiguredCitationAddonsLoading() ||
       this.isResourceReferenceLoading() ||
       this.isCurrentUserLoading()
     );
@@ -91,6 +113,7 @@ export class AddonsComponent implements OnInit {
     getAddonsUserReference: GetAddonsUserReference,
     getAddonsResourceReference: GetAddonsResourceReference,
     deleteAuthorizedAddon: DeleteAuthorizedAddon,
+    clearConfiguredAddons: ClearConfiguredAddons,
   });
 
   protected readonly userReferenceId = computed(() => {
@@ -100,8 +123,8 @@ export class AddonsComponent implements OnInit {
   protected allConfiguredAddons = computed(() => {
     const authorizedAddons = [...this.configuredStorageAddons(), ...this.configuredCitationAddons()];
 
-    const searchValue = this.searchControl.value?.toLowerCase() ?? '';
-    return authorizedAddons.filter((card) => card.displayName.includes(searchValue));
+    const searchValue = this.searchValue().toLowerCase();
+    return authorizedAddons.filter((card) => card.displayName.toLowerCase().includes(searchValue));
   });
 
   protected resourceReferenceId = computed(() => {
@@ -119,7 +142,7 @@ export class AddonsComponent implements OnInit {
   );
 
   protected filteredAddonCards = computed(() => {
-    const searchValue = this.searchControl.value?.toLowerCase() ?? '';
+    const searchValue = this.searchValue().toLowerCase();
     return this.currentAddonsState().filter(
       (card) =>
         card.externalServiceName.toLowerCase().includes(searchValue) ||
@@ -139,7 +162,7 @@ export class AddonsComponent implements OnInit {
     });
 
     effect(() => {
-      if (this.currentUser() && this.userReferenceId()) {
+      if (this.currentUser()) {
         const action = this.currentAction();
         const addons = this.currentAddonsState();
 
@@ -155,12 +178,22 @@ export class AddonsComponent implements OnInit {
         this.fetchAllConfiguredAddons(resourceReferenceId);
       }
     });
+
+    this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
+      this.searchValue.set(value ?? '');
+    });
+
+    effect(() => {
+      this.destroyRef.onDestroy(() => {
+        this.actions.clearConfiguredAddons();
+      });
+    });
   }
 
   ngOnInit(): void {
     const projectId = this.route.parent?.parent?.snapshot.params['id'];
 
-    if (projectId && !this.addonsResourceReference()) {
+    if (projectId && !this.addonsResourceReference().length) {
       this.actions.getAddonsResourceReference(projectId);
     }
   }

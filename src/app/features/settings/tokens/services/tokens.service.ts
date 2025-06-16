@@ -7,7 +7,7 @@ import { JsonApiResponse } from '@osf/core/models';
 import { JsonApiService } from '@osf/core/services';
 
 import { TokenMapper } from '../mappers';
-import { Scope, Token, TokenCreateResponse, TokenGetResponse } from '../models';
+import { Scope, Token, TokenCreateResponseJsonApi, TokenGetResponseJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -24,16 +24,18 @@ export class TokensService {
   }
 
   getTokens(): Observable<Token[]> {
-    return this.#jsonApiService.get<JsonApiResponse<TokenGetResponse[], null>>(environment.apiUrl + '/tokens/').pipe(
-      map((responses) => {
-        return responses.data.map((response) => TokenMapper.fromGetResponse(response));
-      })
-    );
+    return this.#jsonApiService
+      .get<JsonApiResponse<TokenGetResponseJsonApi[], null>>(environment.apiUrl + '/tokens/')
+      .pipe(
+        map((responses) => {
+          return responses.data.map((response) => TokenMapper.fromGetResponse(response));
+        })
+      );
   }
 
   getTokenById(tokenId: string): Observable<Token> {
     return this.#jsonApiService
-      .get<JsonApiResponse<TokenGetResponse, null>>(`${environment.apiUrl}/tokens/${tokenId}/`)
+      .get<JsonApiResponse<TokenGetResponseJsonApi, null>>(`${environment.apiUrl}/tokens/${tokenId}/`)
       .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 
@@ -41,7 +43,7 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.#jsonApiService
-      .post<TokenCreateResponse>(environment.apiUrl + '/tokens/', request)
+      .post<TokenCreateResponseJsonApi>(environment.apiUrl + '/tokens/', request)
       .pipe(map((response) => TokenMapper.fromCreateResponse(response)));
   }
 
@@ -49,7 +51,7 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.#jsonApiService
-      .patch<TokenCreateResponse>(`${environment.apiUrl}/tokens/${tokenId}/`, request)
+      .patch<TokenCreateResponseJsonApi>(`${environment.apiUrl}/tokens/${tokenId}/`, request)
       .pipe(map((response) => TokenMapper.fromCreateResponse(response)));
   }
 

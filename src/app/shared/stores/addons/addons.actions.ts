@@ -1,4 +1,8 @@
-import { AddonRequest } from '@shared/models';
+import {
+  AuthorizedAddonRequestJsonApi,
+  ConfiguredAddonRequestJsonApi,
+  OperationInvocationRequestJsonApi,
+} from '@shared/models';
 
 export class GetStorageAddons {
   static readonly type = '[Addons] Get Storage Addons';
@@ -33,19 +37,38 @@ export class GetConfiguredCitationAddons {
 }
 
 export class CreateAuthorizedAddon {
-  static readonly type = '[Addons] Create Storage Addon';
+  static readonly type = '[Addons] Create Authorized Addon';
 
   constructor(
-    public payload: AddonRequest,
+    public payload: AuthorizedAddonRequestJsonApi,
     public addonType: string
   ) {}
 }
 
 export class UpdateAuthorizedAddon {
-  static readonly type = '[Addons] Update Storage Addon';
+  static readonly type = '[Addons] Update Authorized Addon';
 
   constructor(
-    public payload: AddonRequest,
+    public payload: AuthorizedAddonRequestJsonApi,
+    public addonType: string,
+    public addonId: string
+  ) {}
+}
+
+export class CreateConfiguredAddon {
+  static readonly type = '[Addons] Create Configured Addon';
+
+  constructor(
+    public payload: ConfiguredAddonRequestJsonApi,
+    public addonType: string
+  ) {}
+}
+
+export class UpdateConfiguredAddon {
+  static readonly type = '[Addons] Update Configured Addon';
+
+  constructor(
+    public payload: ConfiguredAddonRequestJsonApi,
     public addonType: string,
     public addonId: string
   ) {}
@@ -65,7 +88,26 @@ export class DeleteAuthorizedAddon {
   static readonly type = '[Addons] Delete Authorized Addon';
 
   constructor(
-    public payload: string,
+    public id: string,
     public addonType: string
   ) {}
+}
+
+export class DeleteConfiguredAddon {
+  static readonly type = '[Addons] Delete Configured Addon';
+
+  constructor(
+    public id: string,
+    public addonType: string
+  ) {}
+}
+
+export class CreateAddonOperationInvocation {
+  static readonly type = '[Addons] Create Addon Operation Invocation';
+
+  constructor(public payload: OperationInvocationRequestJsonApi) {}
+}
+
+export class ClearConfiguredAddons {
+  static readonly type = '[Addons] Clear Configured Addons';
 }

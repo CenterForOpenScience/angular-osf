@@ -10,10 +10,9 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Navigation, Router, UrlTree } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
+import { CredentialsFormat } from '@shared/enums';
+import { Addon } from '@shared/models';
 import { AddonsSelectors } from '@shared/stores/addons';
-
-import { CredentialsFormat } from '../../enums';
-import { Addon } from '../../models';
 
 import { ConnectAddonComponent } from './connect-addon.component';
 

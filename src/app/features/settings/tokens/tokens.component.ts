@@ -40,12 +40,7 @@ export class TokensComponent implements OnInit {
   );
 
   createToken(): void {
-    let dialogWidth = '850px';
-    if (this.isXSmall()) {
-      dialogWidth = '345px';
-    } else if (this.isMedium()) {
-      dialogWidth = '500px';
-    }
+    const dialogWidth = this.isXSmall() ? '95vw' : '800px';
 
     this.#dialogService.open(TokenAddEditFormComponent, {
       width: dialogWidth,

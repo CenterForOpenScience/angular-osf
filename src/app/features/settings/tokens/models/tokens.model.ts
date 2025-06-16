@@ -1,5 +1,5 @@
 // API Request Model
-export interface TokenCreateRequest {
+export interface TokenCreateRequestJsonApi {
   data: {
     attributes: {
       name: string;
@@ -10,7 +10,7 @@ export interface TokenCreateRequest {
 }
 
 // API Response Model
-export interface TokenCreateResponse {
+export interface TokenCreateResponseJsonApi {
   id: string;
   type: 'tokens';
   attributes: {
@@ -22,7 +22,7 @@ export interface TokenCreateResponse {
 }
 
 // API Response Model for GET request
-export interface TokenGetResponse {
+export interface TokenGetResponseJsonApi {
   id: string;
   type: 'tokens';
   attributes: {

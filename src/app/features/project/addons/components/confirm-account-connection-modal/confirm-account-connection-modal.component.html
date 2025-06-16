@@ -1,0 +1,17 @@
+<p>{{ dialogMessage }}</p>
+<br />
+<div class="flex pt-5 justify-content-between gap-3">
+  <p-button
+    class="btn-full-width"
+    [label]="'common.buttons.cancel' | translate"
+    severity="info"
+    (click)="dialogRef.close()"
+    [disabled]="isSubmitting()"
+  />
+  <p-button
+    class="btn-full-width"
+    [label]="'common.buttons.confirm' | translate"
+    (onClick)="handleConnectAddonAccount()"
+    [loading]="isSubmitting()"
+  />
+</div>

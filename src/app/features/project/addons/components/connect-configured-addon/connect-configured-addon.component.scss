@@ -14,8 +14,17 @@
     }
   }
 
-  .folders-list {
-    border: 1px solid var.$grey-2;
-    border-radius: 0.57rem;
+  .filename-link {
+    cursor: pointer;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    max-width: 100%;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }

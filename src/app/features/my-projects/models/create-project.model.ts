@@ -1,4 +1,4 @@
-export interface CreateProjectPayload {
+export interface CreateProjectPayloadJsoApi {
   data: {
     type: 'nodes';
     attributes: {

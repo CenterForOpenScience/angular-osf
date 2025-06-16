@@ -2,11 +2,13 @@ import { Selector } from '@ngxs/store';
 
 import {
   Addon,
-  AddonResponse,
   AuthorizedAddon,
+  AuthorizedAddonResponseJsonApi,
   ConfiguredAddon,
-  ResourceReference,
-  UserReference,
+  ConfiguredAddonResponseJsonApi,
+  OperationInvocation,
+  ResourceReferenceJsonApi,
+  UserReferenceJsonApi,
 } from '@shared/models';
 
 import { AddonsStateModel } from './addons.models';
@@ -74,7 +76,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAddonsUserReference(state: AddonsStateModel): UserReference[] {
+  static getAddonsUserReference(state: AddonsStateModel): UserReferenceJsonApi[] {
     return state.addonsUserReference.data;
   }
 
@@ -84,7 +86,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAddonsResourceReference(state: AddonsStateModel): ResourceReference[] {
+  static getAddonsResourceReference(state: AddonsStateModel): ResourceReferenceJsonApi[] {
     return state.addonsResourceReference.data;
   }
 
@@ -94,12 +96,47 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AddonResponse | null {
+  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AuthorizedAddonResponseJsonApi | null {
     return state.createdUpdatedAuthorizedAddon.data;
   }
 
   @Selector([AddonsState])
   static getCreatedOrUpdatedStorageAddonSubmitting(state: AddonsStateModel): boolean {
     return state.createdUpdatedAuthorizedAddon.isSubmitting || false;
+  }
+
+  @Selector([AddonsState])
+  static getCreatedOrUpdatedConfiguredAddon(state: AddonsStateModel): ConfiguredAddonResponseJsonApi | null {
+    return state.createdUpdatedConfiguredAddon.data;
+  }
+
+  @Selector([AddonsState])
+  static getCreatedOrUpdatedConfiguredAddonSubmitting(state: AddonsStateModel): boolean {
+    return state.createdUpdatedConfiguredAddon.isSubmitting || false;
+  }
+
+  @Selector([AddonsState])
+  static getOperationInvocation(state: AddonsStateModel): OperationInvocation | null {
+    return state.operationInvocation.data;
+  }
+
+  @Selector([AddonsState])
+  static getOperationInvocationSubmitting(state: AddonsStateModel): boolean {
+    return state.operationInvocation.isSubmitting || false;
+  }
+
+  @Selector([AddonsState])
+  static getSelectedFolderOperationInvocation(state: AddonsStateModel): OperationInvocation | null {
+    return state.selectedFolderOperationInvocation.data;
+  }
+
+  @Selector([AddonsState])
+  static getSelectedFolderName(state: AddonsStateModel): string {
+    return state.selectedFolderOperationInvocation.data?.operationResult[0].itemName || '';
+  }
+
+  @Selector([AddonsState])
+  static getDeleteStorageAddonSubmitting(state: AddonsStateModel): boolean {
+    return state.createdUpdatedConfiguredAddon.isSubmitting || false;
   }
 }

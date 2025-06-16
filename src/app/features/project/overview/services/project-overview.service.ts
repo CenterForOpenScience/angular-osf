@@ -6,7 +6,12 @@ import { inject, Injectable } from '@angular/core';
 import { JsonApiService } from '@osf/core/services';
 
 import { ProjectOverviewMapper } from '../mappers';
-import { ComponentGetResponse, ComponentOverview, ProjectOverview, ProjectOverviewJsonApiResponse } from '../models';
+import {
+  ComponentGetResponseJsoApi,
+  ComponentOverview,
+  ProjectOverview,
+  ProjectOverviewResponseJsoApi,
+} from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -33,7 +38,7 @@ export class ProjectOverviewService {
     };
 
     return this.#jsonApiService
-      .get<ProjectOverviewJsonApiResponse>(`${environment.apiUrl}/nodes/${projectId}/`, params)
+      .get<ProjectOverviewResponseJsoApi>(`${environment.apiUrl}/nodes/${projectId}/`, params)
       .pipe(map((response) => ProjectOverviewMapper.fromGetProjectResponse(response.data)));
   }
 
@@ -123,7 +128,7 @@ export class ProjectOverviewService {
     };
 
     return this.#jsonApiService
-      .get<{ data: ComponentGetResponse[] }>(`${environment.apiUrl}/nodes/${projectId}/children`, params)
+      .get<{ data: ComponentGetResponseJsoApi[] }>(`${environment.apiUrl}/nodes/${projectId}/children`, params)
       .pipe(map((response) => response.data.map((item) => ProjectOverviewMapper.fromGetComponentResponse(item))));
   }
 
@@ -134,7 +139,7 @@ export class ProjectOverviewService {
     };
 
     return this.#jsonApiService
-      .get<{ data: ComponentGetResponse[] }>(`${environment.apiUrl}/nodes/${projectId}/linked_nodes`, params)
+      .get<{ data: ComponentGetResponseJsoApi[] }>(`${environment.apiUrl}/nodes/${projectId}/linked_nodes`, params)
       .pipe(map((response) => response.data.map((item) => ProjectOverviewMapper.fromGetComponentResponse(item))));
   }
 }

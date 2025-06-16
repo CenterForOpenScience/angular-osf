@@ -1,4 +1,4 @@
-export interface AddonGetResponse {
+export interface AddonGetResponseJsonApi {
   type: string;
   id: string;
   attributes: {
@@ -19,7 +19,7 @@ export interface AddonGetResponse {
   };
 }
 
-export interface AuthorizedAddonGetResponse {
+export interface AuthorizedAddonGetResponseJsonApi {
   type: string;
   id: string;
   attributes: {
@@ -53,7 +53,7 @@ export interface AuthorizedAddonGetResponse {
   };
 }
 
-export interface ConfiguredAddonGetResponse {
+export interface ConfiguredAddonGetResponseJsonApi {
   type: string;
   id: string;
   attributes: {
@@ -63,6 +63,14 @@ export interface ConfiguredAddonGetResponse {
     connected_capabilities: string[];
     connected_operation_names: string[];
     current_user_is_owner: boolean;
+  };
+  relationships: {
+    base_account: {
+      data: {
+        type: string;
+        id: string;
+      };
+    };
   };
 }
 
@@ -100,10 +108,12 @@ export interface ConfiguredAddon {
   id: string;
   displayName: string;
   externalServiceName: string;
-  rootFolder: string;
+  selectedFolderId: string;
   connectedCapabilities: string[];
   connectedOperationNames: string[];
   currentUserIsOwner: boolean;
+  baseAccountId: string;
+  baseAccountType: string;
 }
 
 export interface IncludedAddonData {
@@ -121,7 +131,7 @@ export interface IncludedAddonData {
   >;
 }
 
-export interface UserReference {
+export interface UserReferenceJsonApi {
   type: string;
   id: string;
   attributes: {
@@ -129,7 +139,7 @@ export interface UserReference {
   };
 }
 
-export interface ResourceReference {
+export interface ResourceReferenceJsonApi {
   type: string;
   id: string;
   attributes: {
@@ -137,7 +147,7 @@ export interface ResourceReference {
   };
 }
 
-export interface AddonRequest {
+export interface AuthorizedAddonRequestJsonApi {
   data: {
     id?: string;
     attributes: {
@@ -173,7 +183,7 @@ export interface AddonRequest {
   };
 }
 
-export interface AddonResponse {
+export interface AuthorizedAddonResponseJsonApi {
   type: string;
   id: string;
   attributes: {
@@ -197,6 +207,91 @@ export interface AddonResponse {
         type: string;
         id: string;
       };
+    };
+  };
+}
+
+export interface ConfiguredAddonRequestJsonApi {
+  data: {
+    attributes: {
+      authorized_resource_uri: string;
+      display_name: string;
+      connected_capabilities: string[];
+      connected_operation_names: string[];
+      root_folder: string;
+      external_service_name: string;
+    };
+    relationships: {
+      external_storage_service?: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+      external_citation_service?: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+      base_account: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+      authorized_resource?: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+      account_owner: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+    };
+    type: string;
+    id?: string;
+  };
+}
+
+export interface ConfiguredAddonResponseJsonApi {
+  data: {
+    type: string;
+    id: string;
+    attributes: {
+      display_name: string;
+      root_folder: string;
+      connected_capabilities: string[];
+      connected_operation_names: string[];
+      current_user_is_owner: boolean;
+      external_service_name: string;
+    };
+    relationships: {
+      base_account: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+      authorized_resource: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+      external_storage_service: {
+        data: {
+          type: string;
+          id: string;
+        };
+      };
+    };
+    links: {
+      self: string;
     };
   };
 }

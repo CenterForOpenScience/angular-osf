@@ -4,6 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
+import { DialogService } from 'primeng/dynamicdialog';
 import { InputText } from 'primeng/inputtext';
 import { Password } from 'primeng/password';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -13,24 +14,33 @@ import { TableModule } from 'primeng/table';
 import { NgClass } from '@angular/common';
 import { Component, computed, inject, signal, viewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { ConfirmAccountConnectionModalComponent } from '@osf/features/project/addons/components';
 import { AddonConfigMap } from '@osf/features/project/addons/utils';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ADDON_TERMS as addonTerms } from '@osf/shared/constants';
 import { AddonFormControls, CredentialsFormat, ProjectAddonsStepperValue } from '@osf/shared/enums';
-import { SettingsAddonsStepperValue } from '@shared/enums/settings-addons-stepper.enum';
-import { Addon, AddonForm, AddonRequest, AddonTerm, AuthorizedAddon } from '@shared/models';
+import {
+  Addon,
+  AddonForm,
+  AddonTerm,
+  AuthorizedAddon,
+  AuthorizedAddonRequestJsonApi,
+  ConfiguredAddonRequestJsonApi,
+} from '@shared/models';
 import {
   AddonsSelectors,
   CreateAuthorizedAddon,
+  CreateConfiguredAddon,
   GetAuthorizedCitationAddons,
   GetAuthorizedStorageAddons,
   UpdateAuthorizedAddon,
+  UpdateConfiguredAddon,
 } from '@shared/stores/addons';
 
 @Component({
-  selector: 'osf-connect-configure-addon',
+  selector: 'osf-connect-configured-addon',
   imports: [
     SubHeaderComponent,
     StepPanel,
@@ -48,13 +58,15 @@ import {
     TranslatePipe,
     RadioButtonModule,
   ],
-  templateUrl: './connect-configure-addon.component.html',
-  providers: [RadioButtonModule],
-  styleUrl: './connect-configure-addon.component.scss',
+  templateUrl: './connect-configured-addon.component.html',
+  providers: [RadioButtonModule, DialogService],
+  styleUrl: './connect-configured-addon.component.scss',
 })
-export class ConnectConfigureAddonComponent {
+export class ConnectConfiguredAddonComponent {
   private translateService = inject(TranslateService);
+  private dialogService = inject(DialogService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private fb = inject(FormBuilder);
   protected stepper = viewChild(Stepper);
   protected AddonStepperValue = ProjectAddonsStepperValue;
@@ -64,21 +76,27 @@ export class ConnectConfigureAddonComponent {
   protected addon = signal<Addon | AuthorizedAddon | null>(null);
   protected addonAuthUrl = signal<string>('/settings/addons');
   protected currentAuthorizedAddonAccounts = signal<AuthorizedAddon[]>([]);
-  protected chosenAccount = '';
+  protected chosenAccountId = signal('');
+  protected chosenAccountName = signal('');
+  protected chosenRootFolderId = signal('');
 
   protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
-  protected createdAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
+  protected createdAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
+  protected createdConfiguredAddon = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddon);
   protected authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
   protected authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
+  protected operationInvocation = select(AddonsSelectors.getOperationInvocation);
 
   protected isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
   protected isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
-  protected isAddonConnecting = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
+  protected isAddonConnecting = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting);
 
   protected actions = createDispatchMap({
     getAuthorizedStorageAddons: GetAuthorizedStorageAddons,
     getAuthorizedCitationAddons: GetAuthorizedCitationAddons,
     createAuthorizedAddon: CreateAuthorizedAddon,
+    createConfiguredAddon: CreateConfiguredAddon,
+    updateConfiguredAddon: UpdateConfiguredAddon,
     updateAuthorizedAddon: UpdateAuthorizedAddon,
   });
 
@@ -92,20 +110,19 @@ export class ConnectConfigureAddonComponent {
     });
   });
 
-  // protected isAuthorized = computed(() => {
-  //   //check if the addon is already authorized
-  //   const addon = this.addon();
-  //   if (addon) {
-  //     return addon.type === 'authorized-storage-accounts' || addon.type === 'authorized-citation-accounts';
-  //   }
-  //   return false;
-  // });
+  protected resourceUri = computed(() => {
+    const id = this.route.parent?.parent?.snapshot.params['id'];
+
+    return `https://staging4.osf.io/${id}`;
+  });
 
   protected addonTypeString = computed(() => {
-    //get the addon type string based on the addon type property
     const addon = this.addon();
+
     if (addon) {
-      return addon.type === 'external-storage-services' || addon.type === 'authorized-storage-accounts'
+      return addon.type === 'external-storage-services' ||
+        addon.type === 'authorized-storage-accounts' ||
+        addon.type === 'configured-storage-addons'
         ? 'storage'
         : 'citation';
     }
@@ -119,25 +136,69 @@ export class ConnectConfigureAddonComponent {
   });
 
   constructor() {
-    const terms = this.getTerms();
+    const terms = this.getAddonTerms();
     this.terms.set(terms);
     this.addonForm = this.initializeForm();
   }
 
-  protected handleConnectAddon(): void {
+  protected handleCreateConfiguredAddon() {
+    if (!this.addon()) return;
+
+    const payload = this.generateConfiguredAddonRequestPayload();
+
+    this.actions.createConfiguredAddon(payload, this.addonTypeString()).subscribe({
+      complete: () => {
+        const createdAddon = this.createdConfiguredAddon();
+        if (createdAddon) {
+          this.router.navigate([`${this.baseUrl()}/addons`]);
+        }
+      },
+    });
+  }
+
+  protected handleCreateAuthorizedAddon(): void {
     if (!this.addon() || !this.addonForm.valid) return;
 
-    const request = this.generateRequestPayload();
+    const payload = this.generateAuthorizedAddonRequestPayload();
 
-    this.actions.createAuthorizedAddon(request, this.addonTypeString()).subscribe({
+    this.actions.createAuthorizedAddon(payload, this.addonTypeString()).subscribe({
       complete: () => {
-        const createdAddon = this.createdAddon();
+        const createdAddon = this.createdAuthorizedAddon();
         if (createdAddon) {
           this.addonAuthUrl.set(createdAddon.attributes.auth_url);
           window.open(createdAddon.attributes.auth_url, '_blank');
-          this.stepper()?.value.set(SettingsAddonsStepperValue.AUTH);
+          this.stepper()?.value.set(ProjectAddonsStepperValue.AUTH);
         }
       },
+    });
+  }
+
+  protected handleConfirmAccountConnection(): void {
+    const selectedAccount = this.currentAuthorizedAddonAccounts().find(
+      (account) => account.id === this.chosenAccountId()
+    );
+
+    if (!selectedAccount) return;
+
+    const dialogRef = this.dialogService.open(ConfirmAccountConnectionModalComponent, {
+      focusOnShow: false,
+      header: this.translateService.instant('settings.addons.connectAddon.confirmAccount'),
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        message: this.translateService.instant('settings.addons.connectAddon.connectAccount', {
+          accountName: selectedAccount.displayName,
+        }),
+        selectedAccount,
+      },
+    });
+
+    dialogRef.onClose.subscribe((result) => {
+      if (result?.success) {
+        this.stepper()?.value.set(ProjectAddonsStepperValue.CONFIGURE_ROOT_FOLDER);
+        this.chosenAccountName.set(selectedAccount.displayName);
+      }
     });
   }
 
@@ -187,14 +248,14 @@ export class ConnectConfigureAddonComponent {
   }
 
   private initializeForm(): FormGroup<AddonForm> {
-    const addon = this.addon();
+    const currentAddon = this.addon();
 
-    if (addon) {
+    if (currentAddon) {
       const formControls: Partial<AddonForm> = {
-        [AddonFormControls.AccountName]: this.fb.control<string>(addon.displayName || '', Validators.required),
+        [AddonFormControls.AccountName]: this.fb.control<string>(currentAddon.displayName || '', Validators.required),
       };
 
-      switch (addon.credentialsFormat) {
+      switch (currentAddon.credentialsFormat) {
         case CredentialsFormat.ACCESS_SECRET_KEYS:
           formControls[AddonFormControls.AccessKey] = this.fb.control<string>('', Validators.required);
           formControls[AddonFormControls.SecretKey] = this.fb.control<string>('', Validators.required);
@@ -219,14 +280,15 @@ export class ConnectConfigureAddonComponent {
     return new FormGroup({} as AddonForm);
   }
 
-  private generateRequestPayload(): AddonRequest {
+  private generateAuthorizedAddonRequestPayload(): AuthorizedAddonRequestJsonApi {
     const formValue = this.addonForm.value;
-    const addon = this.addon()!;
+    const currentAddon = this.addon()!;
     const credentials: Record<string, unknown> = {};
     const initiateOAuth =
-      addon.credentialsFormat === CredentialsFormat.OAUTH2 || addon.credentialsFormat === CredentialsFormat.OAUTH;
+      currentAddon.credentialsFormat === CredentialsFormat.OAUTH2 ||
+      currentAddon.credentialsFormat === CredentialsFormat.OAUTH;
 
-    switch (addon.credentialsFormat) {
+    switch (currentAddon.credentialsFormat) {
       case CredentialsFormat.ACCESS_SECRET_KEYS:
         credentials['access_key'] = formValue[AddonFormControls.AccessKey];
         credentials['secret_key'] = formValue[AddonFormControls.SecretKey];
@@ -244,9 +306,9 @@ export class ConnectConfigureAddonComponent {
         break;
     }
 
-    const requestPayload: AddonRequest = {
+    const requestPayload: AuthorizedAddonRequestJsonApi = {
       data: {
-        id: addon.id || '',
+        id: currentAddon.id || '',
         attributes: {
           api_base_url: formValue[AddonFormControls.HostUrl] || '',
           display_name: formValue[AddonFormControls.AccountName] || '',
@@ -263,9 +325,47 @@ export class ConnectConfigureAddonComponent {
               id: this.addonsUserReference()[0].id || '',
             },
           },
-          ...this.getServiceRelationship(addon),
+          ...this.getServiceRelationship(currentAddon),
         },
         type: `authorized-${this.addonTypeString()}-accounts`,
+      },
+    };
+
+    return requestPayload;
+  }
+
+  private generateConfiguredAddonRequestPayload(): ConfiguredAddonRequestJsonApi {
+    const currentAddon = this.addon()!;
+    const selectedAccount = this.currentAuthorizedAddonAccounts().find(
+      (account) => account.id === this.chosenAccountId()
+    );
+
+    const requestPayload: ConfiguredAddonRequestJsonApi = {
+      data: {
+        type: `configured-${this.addonTypeString()}-addons`,
+        attributes: {
+          authorized_resource_uri: this.resourceUri(),
+          display_name: selectedAccount!.displayName,
+          root_folder: this.chosenRootFolderId(),
+          connected_capabilities: ['UPDATE', 'ACCESS'],
+          connected_operation_names: ['list_child_items', 'list_root_items', 'get_item_info'],
+          external_service_name: currentAddon.externalServiceName,
+        },
+        relationships: {
+          account_owner: {
+            data: {
+              type: 'user-references',
+              id: this.addonsUserReference()[0].id || '',
+            },
+          },
+          base_account: {
+            data: {
+              type: 'authorized-storage-accounts',
+              id: selectedAccount!.id,
+            },
+          },
+          ...this.getServiceRelationship(currentAddon),
+        },
       },
     };
 
@@ -288,10 +388,11 @@ export class ConnectConfigureAddonComponent {
     };
   }
 
-  private getTerms(): AddonTerm[] {
+  private getAddonTerms(): AddonTerm[] {
     const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as Addon | AuthorizedAddon;
     if (!addon) {
       this.router.navigate([`${this.baseUrl()}/addons`]);
+      return [];
     }
 
     this.addon.set(addon);

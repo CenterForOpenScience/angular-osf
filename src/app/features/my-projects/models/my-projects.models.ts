@@ -1,6 +1,6 @@
 import { JsonApiResponse } from '@osf/core/models';
 
-export interface MyProjectsItemGetResponse {
+export interface MyProjectsItemGetResponseJsonApi {
   id: string;
   type: string;
   attributes: {
@@ -50,7 +50,7 @@ export interface MyProjectsItem {
   contributors: MyProjectsContributor[];
 }
 
-export interface MyProjectsItemResponse {
+export interface MyProjectsItemResponseJsonApi {
   data: MyProjectsItem[];
   links: {
     meta: {
@@ -60,7 +60,7 @@ export interface MyProjectsItemResponse {
   };
 }
 
-export interface MyProjectsJsonApiResponse extends JsonApiResponse<MyProjectsItemGetResponse[], null> {
+export interface MyProjectsResponseJsonApi extends JsonApiResponse<MyProjectsItemGetResponseJsonApi[], null> {
   links: {
     meta: {
       total: number;
