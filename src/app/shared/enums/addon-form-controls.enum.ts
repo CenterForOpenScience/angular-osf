@@ -6,4 +6,5 @@ export enum AddonFormControls {
   Password = 'password',
   PersonalAccessToken = 'personalAccessToken',
   AccountName = 'accountName',
+  ApiToken = 'apiToken',
 }

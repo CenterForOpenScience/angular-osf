@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { JsonApiResponse } from '@core/models';
 import { JsonApiService } from '@core/services';
 import { UserSelectors } from '@core/store/user';
-import { AddonMapper } from '@osf/shared/mappers';
+import { AddonMapper } from '@shared/mappers';
 import {
   Addon,
   AddonGetResponseJsonApi,
@@ -27,7 +27,7 @@ import {
 } from '@shared/models';
 import { OperationInvocationResponseJsonApi } from '@shared/models/addons/operation-invocation.models';
 
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',

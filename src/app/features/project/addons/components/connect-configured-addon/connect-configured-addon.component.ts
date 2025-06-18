@@ -3,34 +3,30 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
-import { DialogService } from 'primeng/dynamicdialog';
-import { InputText } from 'primeng/inputtext';
-import { Password } from 'primeng/password';
+import { DialogModule } from 'primeng/dialog';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { TableModule } from 'primeng/table';
 
-import { NgClass } from '@angular/common';
 import { Component, computed, inject, signal, viewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { ConfirmAccountConnectionModalComponent } from '@osf/features/project/addons/components';
-import { AddonConfigMap } from '@osf/features/project/addons/utils';
+import { OperationNames } from '@osf/features/project/addons/enums';
+import { AddonConfigMap, RESOURCE_BASE_URI } from '@osf/features/project/addons/utils';
 import { SubHeaderComponent } from '@osf/shared/components';
-import { ADDON_TERMS as addonTerms } from '@osf/shared/constants';
-import { AddonFormControls, CredentialsFormat, ProjectAddonsStepperValue } from '@osf/shared/enums';
-import {
-  Addon,
-  AddonForm,
-  AddonTerm,
-  AuthorizedAddon,
-  AuthorizedAddonRequestJsonApi,
-  ConfiguredAddonRequestJsonApi,
-} from '@shared/models';
+import { ProjectAddonsStepperValue } from '@osf/shared/enums';
+import { AddonSetupAccountFormComponent } from '@shared/components/addons';
+import { AddonTermsComponent } from '@shared/components/addons/addon-terms/addon-terms.component';
+import { FolderSelectorComponent } from '@shared/components/addons/folder-selector/folder-selector.component';
+import { Addon, AddonTerm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
+import { AddonOperationInvocationService, ToastService } from '@shared/services';
+import { AddonDialogService } from '@shared/services/addons/addon-dialog.service';
+import { AddonFormService } from '@shared/services/addons/addon-form.service';
 import {
   AddonsSelectors,
+  CreateAddonOperationInvocation,
   CreateAuthorizedAddon,
   CreateConfiguredAddon,
   GetAuthorizedCitationAddons,
@@ -49,36 +45,39 @@ import {
     Button,
     TableModule,
     RouterLink,
-    NgClass,
-    Card,
     FormsModule,
     ReactiveFormsModule,
-    InputText,
-    Password,
     TranslatePipe,
     RadioButtonModule,
+    FolderSelectorComponent,
+    AddonTermsComponent,
+    AddonSetupAccountFormComponent,
+    DialogModule,
+    DynamicDialogModule,
   ],
   templateUrl: './connect-configured-addon.component.html',
-  providers: [RadioButtonModule, DialogService],
+  providers: [RadioButtonModule, DialogService, AddonDialogService],
   styleUrl: './connect-configured-addon.component.scss',
 })
 export class ConnectConfiguredAddonComponent {
   private translateService = inject(TranslateService);
-  private dialogService = inject(DialogService);
+  private toastService = inject(ToastService);
+  private addonDialogService = inject(AddonDialogService);
+  private addonFormService = inject(AddonFormService);
+  private operationInvocationService = inject(AddonOperationInvocationService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private fb = inject(FormBuilder);
-  protected stepper = viewChild(Stepper);
-  protected AddonStepperValue = ProjectAddonsStepperValue;
-  protected credentialsFormat = CredentialsFormat;
-  protected formControls = AddonFormControls;
+  protected readonly resourceBaseUri = RESOURCE_BASE_URI;
+  protected readonly AddonStepperValue = ProjectAddonsStepperValue;
+  protected readonly stepper = viewChild(Stepper);
+  protected accountNameControl = new FormControl('');
   protected terms = signal<AddonTerm[]>([]);
   protected addon = signal<Addon | AuthorizedAddon | null>(null);
   protected addonAuthUrl = signal<string>('/settings/addons');
   protected currentAuthorizedAddonAccounts = signal<AuthorizedAddon[]>([]);
   protected chosenAccountId = signal('');
   protected chosenAccountName = signal('');
-  protected chosenRootFolderId = signal('');
+  protected selectedRootFolderId = signal('');
 
   protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
   protected createdAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
@@ -89,7 +88,7 @@ export class ConnectConfiguredAddonComponent {
 
   protected isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
   protected isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
-  protected isAddonConnecting = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting);
+  protected isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
 
   protected actions = createDispatchMap({
     getAuthorizedStorageAddons: GetAuthorizedStorageAddons,
@@ -98,6 +97,7 @@ export class ConnectConfiguredAddonComponent {
     createConfiguredAddon: CreateConfiguredAddon,
     updateConfiguredAddon: UpdateConfiguredAddon,
     updateAuthorizedAddon: UpdateAuthorizedAddon,
+    createAddonOperationInvocation: CreateAddonOperationInvocation,
   });
 
   protected readonly userReferenceId = computed(() => {
@@ -113,7 +113,7 @@ export class ConnectConfiguredAddonComponent {
   protected resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
 
-    return `https://staging4.osf.io/${id}`;
+    return `${this.resourceBaseUri}${id}`;
   });
 
   protected addonTypeString = computed(() => {
@@ -128,7 +128,6 @@ export class ConnectConfiguredAddonComponent {
     }
     return '';
   });
-  protected addonForm: FormGroup<AddonForm>;
 
   protected readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
@@ -136,30 +135,45 @@ export class ConnectConfiguredAddonComponent {
   });
 
   constructor() {
-    const terms = this.getAddonTerms();
-    this.terms.set(terms);
-    this.addonForm = this.initializeForm();
+    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as Addon | AuthorizedAddon;
+    if (!addon) {
+      this.router.navigate([`${this.baseUrl()}/addons`]);
+    }
+    this.addon.set(addon);
   }
 
   protected handleCreateConfiguredAddon() {
-    if (!this.addon()) return;
+    const addon = this.addon();
+    const selectedAccount = this.currentAuthorizedAddonAccounts().find(
+      (account) => account.id === this.chosenAccountId()
+    );
+    if (!addon || !selectedAccount) return;
 
-    const payload = this.generateConfiguredAddonRequestPayload();
+    const payload = this.addonFormService.generateConfiguredAddonCreatePayload(
+      addon,
+      selectedAccount,
+      this.userReferenceId(),
+      this.resourceUri(),
+      this.accountNameControl.value || '',
+      this.selectedRootFolderId(),
+      this.addonTypeString()
+    );
 
     this.actions.createConfiguredAddon(payload, this.addonTypeString()).subscribe({
       complete: () => {
         const createdAddon = this.createdConfiguredAddon();
         if (createdAddon) {
           this.router.navigate([`${this.baseUrl()}/addons`]);
+          this.toastService.showSuccess('settings.addons.toast.createSuccess', {
+            addonName: addon.externalServiceName,
+          });
         }
       },
     });
   }
 
-  protected handleCreateAuthorizedAddon(): void {
-    if (!this.addon() || !this.addonForm.valid) return;
-
-    const payload = this.generateAuthorizedAddonRequestPayload();
+  protected handleCreateAuthorizedAddon(payload: AuthorizedAddonRequestJsonApi): void {
+    if (!this.addon()) return;
 
     this.actions.createAuthorizedAddon(payload, this.addonTypeString()).subscribe({
       complete: () => {
@@ -180,36 +194,47 @@ export class ConnectConfiguredAddonComponent {
 
     if (!selectedAccount) return;
 
-    const dialogRef = this.dialogService.open(ConfirmAccountConnectionModalComponent, {
-      focusOnShow: false,
-      header: this.translateService.instant('settings.addons.connectAddon.confirmAccount'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        message: this.translateService.instant('settings.addons.connectAddon.connectAccount', {
-          accountName: selectedAccount.displayName,
-        }),
-        selectedAccount,
-      },
-    });
+    const dialogRef = this.addonDialogService.openConfirmAccountConnectionDialog(selectedAccount);
 
-    dialogRef.onClose.subscribe((result) => {
+    dialogRef.subscribe((result) => {
       if (result?.success) {
         this.stepper()?.value.set(ProjectAddonsStepperValue.CONFIGURE_ROOT_FOLDER);
         this.chosenAccountName.set(selectedAccount.displayName);
+        this.accountNameControl.setValue(selectedAccount.displayName);
       }
     });
   }
 
   protected handleAuthorizedAccountsPresenceCheck() {
+    const requiredData = this.getDataForAccountCheck();
+    if (!requiredData) return;
+
+    const { addonType, referenceId, currentAddon } = requiredData;
+    const addonConfig = this.getAddonConfig(addonType, referenceId);
+
+    if (!addonConfig) return;
+
+    addonConfig.getAddons().subscribe({
+      complete: () => {
+        this.processAuthorizedAddons(addonConfig, currentAddon);
+      },
+    });
+  }
+
+  private getDataForAccountCheck() {
     const addonType = this.addonTypeString();
     const referenceId = this.userReferenceId();
     const currentAddon = this.addon();
 
-    if (!addonType || !referenceId || !currentAddon) return;
+    if (!addonType || !referenceId || !currentAddon) {
+      return null;
+    }
 
-    const addonConfig: AddonConfigMap = {
+    return { addonType, referenceId, currentAddon };
+  }
+
+  private getAddonConfig(addonType: string, referenceId: string) {
+    const addonConfigMap: AddonConfigMap = {
       storage: {
         getAddons: () => this.actions.getAuthorizedStorageAddons(referenceId),
         getAuthorizedAddons: () => this.authorizedStorageAddons(),
@@ -220,217 +245,48 @@ export class ConnectConfiguredAddonComponent {
       },
     };
 
-    const selectedConfig = addonConfig[addonType];
-    if (!selectedConfig) return;
-
-    selectedConfig.getAddons().subscribe({
-      complete: () => {
-        const authorizedAddons = selectedConfig.getAuthorizedAddons();
-        const hasMatchingAddon = authorizedAddons.some(
-          (addon) => addon.externalServiceName === currentAddon.externalServiceName
-        );
-
-        if (hasMatchingAddon && authorizedAddons.length) {
-          const addonAccounts = authorizedAddons.filter(
-            (addon) => addon.externalServiceName === currentAddon.externalServiceName
-          );
-
-          this.currentAuthorizedAddonAccounts.set(addonAccounts);
-        }
-
-        const nextStep = hasMatchingAddon
-          ? ProjectAddonsStepperValue.CHOOSE_CONNECTION
-          : ProjectAddonsStepperValue.SETUP_NEW_ACCOUNT;
-
-        this.stepper()?.value.set(nextStep);
-      },
-    });
+    return addonConfigMap[addonType] || null;
   }
 
-  private initializeForm(): FormGroup<AddonForm> {
-    const currentAddon = this.addon();
+  private processAuthorizedAddons(
+    addonConfig: AddonConfigMap[keyof AddonConfigMap],
+    currentAddon: Addon | AuthorizedAddon
+  ) {
+    const authorizedAddons = addonConfig.getAuthorizedAddons();
+    const matchingAddons = this.findMatchingAddons(authorizedAddons, currentAddon);
 
-    if (currentAddon) {
-      const formControls: Partial<AddonForm> = {
-        [AddonFormControls.AccountName]: this.fb.control<string>(currentAddon.displayName || '', Validators.required),
-      };
-
-      switch (currentAddon.credentialsFormat) {
-        case CredentialsFormat.ACCESS_SECRET_KEYS:
-          formControls[AddonFormControls.AccessKey] = this.fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.SecretKey] = this.fb.control<string>('', Validators.required);
-          break;
-        case CredentialsFormat.DATAVERSE_API_TOKEN:
-          formControls[AddonFormControls.HostUrl] = this.fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.PersonalAccessToken] = this.fb.control<string>('', Validators.required);
-          break;
-        case CredentialsFormat.USERNAME_PASSWORD:
-          formControls[AddonFormControls.HostUrl] = this.fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.Username] = this.fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.Password] = this.fb.control<string>('', Validators.required);
-          break;
-        case CredentialsFormat.REPO_TOKEN:
-          formControls[AddonFormControls.AccessKey] = this.fb.control<string>('', Validators.required);
-          formControls[AddonFormControls.SecretKey] = this.fb.control<string>('', Validators.required);
-          break;
-      }
-      return this.fb.group(formControls as AddonForm);
+    if (matchingAddons.length > 0) {
+      this.currentAuthorizedAddonAccounts.set(matchingAddons);
     }
 
-    return new FormGroup({} as AddonForm);
+    const nextStep =
+      matchingAddons.length > 0
+        ? ProjectAddonsStepperValue.CHOOSE_CONNECTION
+        : ProjectAddonsStepperValue.SETUP_NEW_ACCOUNT;
+
+    this.stepper()?.value.set(nextStep);
   }
 
-  private generateAuthorizedAddonRequestPayload(): AuthorizedAddonRequestJsonApi {
-    const formValue = this.addonForm.value;
-    const currentAddon = this.addon()!;
-    const credentials: Record<string, unknown> = {};
-    const initiateOAuth =
-      currentAddon.credentialsFormat === CredentialsFormat.OAUTH2 ||
-      currentAddon.credentialsFormat === CredentialsFormat.OAUTH;
-
-    switch (currentAddon.credentialsFormat) {
-      case CredentialsFormat.ACCESS_SECRET_KEYS:
-        credentials['access_key'] = formValue[AddonFormControls.AccessKey];
-        credentials['secret_key'] = formValue[AddonFormControls.SecretKey];
-        break;
-      case CredentialsFormat.DATAVERSE_API_TOKEN:
-        credentials['personal_access_token'] = formValue[AddonFormControls.PersonalAccessToken];
-        break;
-      case CredentialsFormat.USERNAME_PASSWORD:
-        credentials['username'] = formValue[AddonFormControls.Username];
-        credentials['password'] = formValue[AddonFormControls.Password];
-        break;
-      case CredentialsFormat.REPO_TOKEN:
-        credentials['access_key'] = formValue[AddonFormControls.AccessKey];
-        credentials['secret_key'] = formValue[AddonFormControls.SecretKey];
-        break;
-    }
-
-    const requestPayload: AuthorizedAddonRequestJsonApi = {
-      data: {
-        id: currentAddon.id || '',
-        attributes: {
-          api_base_url: formValue[AddonFormControls.HostUrl] || '',
-          display_name: formValue[AddonFormControls.AccountName] || '',
-          authorized_capabilities: ['ACCESS', 'UPDATE'],
-          credentials,
-          initiate_oauth: initiateOAuth,
-          auth_url: null,
-          credentials_available: false,
-        },
-        relationships: {
-          account_owner: {
-            data: {
-              type: 'user-references',
-              id: this.addonsUserReference()[0].id || '',
-            },
-          },
-          ...this.getServiceRelationship(currentAddon),
-        },
-        type: `authorized-${this.addonTypeString()}-accounts`,
-      },
-    };
-
-    return requestPayload;
+  private findMatchingAddons(
+    authorizedAddons: AuthorizedAddon[],
+    currentAddon: Addon | AuthorizedAddon
+  ): AuthorizedAddon[] {
+    return authorizedAddons.filter((addon) => addon.externalServiceName === currentAddon.externalServiceName);
   }
 
-  private generateConfiguredAddonRequestPayload(): ConfiguredAddonRequestJsonApi {
-    const currentAddon = this.addon()!;
+  protected handleCreateOperationInvocation(operationName: OperationNames, itemId: string): void {
     const selectedAccount = this.currentAuthorizedAddonAccounts().find(
       (account) => account.id === this.chosenAccountId()
     );
 
-    const requestPayload: ConfiguredAddonRequestJsonApi = {
-      data: {
-        type: `configured-${this.addonTypeString()}-addons`,
-        attributes: {
-          authorized_resource_uri: this.resourceUri(),
-          display_name: selectedAccount!.displayName,
-          root_folder: this.chosenRootFolderId(),
-          connected_capabilities: ['UPDATE', 'ACCESS'],
-          connected_operation_names: ['list_child_items', 'list_root_items', 'get_item_info'],
-          external_service_name: currentAddon.externalServiceName,
-        },
-        relationships: {
-          account_owner: {
-            data: {
-              type: 'user-references',
-              id: this.addonsUserReference()[0].id || '',
-            },
-          },
-          base_account: {
-            data: {
-              type: 'authorized-storage-accounts',
-              id: selectedAccount!.id,
-            },
-          },
-          ...this.getServiceRelationship(currentAddon),
-        },
-      },
-    };
+    if (!selectedAccount) return;
 
-    return requestPayload;
-  }
+    const payload = this.operationInvocationService.createInitialOperationInvocationPayload(
+      operationName,
+      selectedAccount,
+      itemId
+    );
 
-  private getServiceRelationship(addon: Addon | AuthorizedAddon) {
-    const isAuthorizedAddon =
-      addon.type === 'authorized-storage-accounts' || addon.type === 'authorized-citation-accounts';
-    const addonId = isAuthorizedAddon ? (addon as AuthorizedAddon).externalStorageServiceId : (addon as Addon).id;
-    const addonType = this.addonTypeString();
-
-    return {
-      [`external_${addonType}_service`]: {
-        data: {
-          type: `external-${addonType}-services`,
-          id: addonId,
-        },
-      },
-    };
-  }
-
-  private getAddonTerms(): AddonTerm[] {
-    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as Addon | AuthorizedAddon;
-    if (!addon) {
-      this.router.navigate([`${this.baseUrl()}/addons`]);
-      return [];
-    }
-
-    this.addon.set(addon);
-    const supportedFeatures = addon.supportedFeatures;
-    const provider = addon.providerName;
-    const isCitationService = addon.type === 'external-citation-services';
-
-    const relevantTerms = isCitationService ? addonTerms.filter((term) => term.citation) : addonTerms;
-
-    return relevantTerms.map((term) => {
-      const feature = term.supportedFeature;
-      const hasFeature = supportedFeatures.includes(feature);
-      const hasPartialFeature = supportedFeatures.includes(`${feature}_PARTIAL`);
-
-      let message: string;
-      let type: 'warning' | 'info' | 'danger';
-
-      if (isCitationService && term.citation) {
-        if (hasPartialFeature && term.citation.partial) {
-          message = term.citation.partial;
-          type = 'warning';
-        } else if (!hasFeature && term.citation.false) {
-          message = term.citation.false;
-          type = 'danger';
-        } else {
-          message = term.storage[hasFeature ? 'true' : 'false'];
-          type = hasFeature ? 'info' : 'danger';
-        }
-      } else {
-        message = term.storage[hasFeature ? 'true' : 'false'];
-        type = hasFeature ? 'info' : hasPartialFeature ? 'warning' : 'danger';
-      }
-
-      return {
-        function: term.label,
-        status: message.replace(/{provider}/g, provider),
-        type,
-      };
-    });
+    this.actions.createAddonOperationInvocation(payload);
   }
 }

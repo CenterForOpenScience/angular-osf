@@ -914,9 +914,15 @@
         "additionalService": "Additional Storage",
         "citationManager": "Citation Manager"
       },
+      "toast": {
+        "updateSuccess": "Successfully updated {{addonName}} add-on configuration",
+        "createSuccess": "Successfully connected to the {{addonName}} add-on",
+        "disconnectSuccess": "Successfully disconnected from the {{addonName}} account"
+      },
       "configureAddon": {
         "title": "Configure Add-on",
         "noFolders": "No folders",
+        "noFolderSelected": "No selected folder",
         "disconnect": "Disconnect {{addonName}}",
         "disconnectMessage": "You are about to disconnect the following addon from the project:",
         "account": "Account:",
@@ -953,6 +959,7 @@
           "passwordDescription": "These credentials will be encrypted",
           "accessKey": "Access Key",
           "secretKey": "Secret Key",
+          "apiToken": "API Token",
           "accountName": "Account Name",
           "accountNameDescription": "This will distinguish your account from other using the same addon."
         },

@@ -1,5 +1,4 @@
 @use "assets/styles/mixins" as mix;
-@use "assets/styles/variables" as var;
 
 :host {
   @include mix.flex-column;

@@ -137,14 +137,12 @@ export class AddonsComponent {
 
   constructor() {
     effect(() => {
-      // Only proceed if we have the current user
       if (this.currentUser()) {
         this.store.dispatch(GetAddonsUserReference);
       }
     });
 
     effect(() => {
-      // Only proceed if we have the current user
       if (this.currentUser() && this.userReferenceId()) {
         const action = this.currentAction();
         const addons = this.currentAddonsState();

@@ -11,30 +11,7 @@
             </h2>
 
             <div class="mt-4">
-              <p-table [value]="terms()" class="addon-table">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>
-                      {{ 'settings.addons.connectAddon.table.function' | translate }}
-                    </th>
-                    <th>
-                      {{ 'settings.addons.connectAddon.table.status' | translate }}
-                    </th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-term>
-                  <tr
-                    [ngClass]="{
-                      'background-warning': term.type === 'warning',
-                      'background-success': term.type === 'info',
-                      'background-danger': term.type === 'danger',
-                    }"
-                  >
-                    <td>{{ term.function }}</td>
-                    <td>{{ term.status }}</td>
-                  </tr>
-                </ng-template>
-              </p-table>
+              <osf-addon-terms [addon]="addon()" />
             </div>
 
             <div class="flex flex-column gap-2 mt-4">
@@ -81,7 +58,7 @@
               ></p-button>
             </div>
 
-            <div class="flex mt-3 gap-4">
+            <div class="flex mt-3 gap-4 justify-content-end">
               <p-button
                 [label]="'settings.addons.form.buttons.existingAccount' | translate"
                 (click)="activateCallback(AddonStepperValue.CHOOSE_ACCOUNT)"
@@ -136,197 +113,36 @@
         <ng-template #content let-activateCallback="activateCallback">
           <section class="flex flex-column gap-5">
             <h2 class="pt-2">{{ 'settings.addons.connectAddon.configure' | translate }} {{ addon()?.displayName }}</h2>
-
-            <p-card>
-              <h3 class="mb-2">
-                {{ 'settings.addons.form.fields.accountName' | translate }}
-              </h3>
-
-              <input
-                [ngModel]="chosenAccountName()"
-                name="accountName"
-                pInputText
-                (ngModelChange)="chosenAccountName.set($event)"
-              />
-            </p-card>
-
-            <div class="folders-table flex flex-column">
-              <div class="folders-table-heading flex justify-content-between">
-                <h3>Folder Name</h3>
-                <h3>Select</h3>
-              </div>
-
-              @if (!operationInvocation()?.operationResult?.length) {
-                <p class="text-center">
-                  {{ 'settings.addons.configureAddon.noFolders' | translate }}
-                </p>
-              } @else {
-                @for (folder of operationInvocation()?.operationResult; track folder.itemId) {
-                  @if (folder.canBeRoot) {
-                    <div class="folders-table-row">
-                      <div class="flex gap-2 flex-1">
-                        @if (folder.itemId !== '/') {
-                          <i tabindex="0" class="osf-icon-arrow-left"></i>
-                        }
-                        <div tabindex="0" class="cursor-pointer flex gap-2">
-                          <i class="osf-icon-folder"></i>
-                          {{ folder.itemName }}
-                        </div>
-
-                        <p-radiobutton
-                          class="ml-auto pr-3"
-                          [ngModel]="chosenRootFolderId()"
-                          [value]="folder.itemId"
-                          [inputId]="folder.itemId"
-                          (ngModelChange)="chosenRootFolderId.set($event)"
-                        ></p-radiobutton>
-                      </div>
-                    </div>
-                  }
-                }
-              }
-            </div>
-
-            <div class="flex gap-4 align-self-end">
-              <p-button
-                class="w-10rem btn-full-width"
-                [label]="'settings.addons.form.buttons.back' | translate"
-                severity="info"
-                [disabled]="isAddonConnecting()"
-                (onClick)="activateCallback(AddonStepperValue.CHOOSE_ACCOUNT)"
-              ></p-button>
-              <p-button
-                class="w-10rem btn-full-width"
-                [disabled]="!chosenRootFolderId()"
-                [loading]="isAddonConnecting()"
-                [label]="'common.buttons.save' | translate"
-                (click)="handleCreateConfiguredAddon()"
-              ></p-button>
-            </div>
+            <osf-folder-selector
+              [accountName]="chosenAccountName()"
+              [operationInvocationResult]="operationInvocation()?.operationResult || []"
+              [accountNameControl]="accountNameControl"
+              [isCreateMode]="true"
+              [(selectedRootFolderId)]="selectedRootFolderId"
+              (operationInvoke)="handleCreateOperationInvocation($event.operationName, $event.itemId)"
+              (save)="handleCreateConfiguredAddon()"
+              (cancelSelection)="activateCallback(AddonStepperValue.CHOOSE_ACCOUNT)"
+            />
           </section>
         </ng-template>
       </p-step-panel>
 
       <p-step-panel [value]="AddonStepperValue.SETUP_NEW_ACCOUNT">
         <ng-template #content let-activateCallback="activateCallback">
-          <form [formGroup]="addonForm" (ngSubmit)="handleCreateAuthorizedAddon()" class="flex flex-column gap-5">
+          <section class="flex flex-column gap-5">
             <h2>{{ 'settings.addons.connectAddon.setupNewAccount' | translate }}</h2>
-            <p-card>
-              @if (addon()?.credentialsFormat === credentialsFormat.ACCESS_SECRET_KEYS) {
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.accessKey' | translate }}
-                </h2>
-                <input
-                  class="mb-5"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.accessKey' | translate"
-                  [formControlName]="formControls.AccessKey"
-                />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.secretKey' | translate }}
-                </h2>
-                <input
-                  class="mb-5"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.secretKey' | translate"
-                  [formControlName]="formControls.SecretKey"
-                />
-              }
 
-              @if (addon()?.credentialsFormat === credentialsFormat.DATAVERSE_API_TOKEN) {
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.hostUrl' | translate }}
-                </h2>
-                <p class="mb-2">
-                  {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
-                </p>
-                <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.personalAccessToken' | translate }}
-                </h2>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.personalAccessToken' | translate"
-                  [formControlName]="formControls.PersonalAccessToken"
-                />
-              }
-
-              @if (addon()?.credentialsFormat === credentialsFormat.USERNAME_PASSWORD) {
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.hostUrl' | translate }}
-                </h2>
-                <p class="mb-2">
-                  {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
-                </p>
-                <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.username' | translate }}
-                </h2>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.username' | translate"
-                  [formControlName]="formControls.Username"
-                />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.password' | translate }}
-                </h2>
-                <p class="mb-2">
-                  {{ 'settings.addons.form.fields.passwordDescription' | translate }}
-                </p>
-                <div class="mb-4">
-                  <p-password [feedback]="false" [toggleMask]="true" [formControlName]="formControls.Password" />
-                </div>
-              }
-
-              @if (addon()?.credentialsFormat === credentialsFormat.REPO_TOKEN) {
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.accessKey' | translate }}
-                </h2>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.accessKey' | translate"
-                  [formControlName]="formControls.AccessKey"
-                />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.secretKey' | translate }}
-                </h2>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.secretKey' | translate"
-                  [formControlName]="formControls.SecretKey"
-                />
-              }
-
-              <h2 class="mb-2">
-                {{ 'settings.addons.form.fields.accountName' | translate }}
-              </h2>
-              <p class="mb-2">
-                {{ 'settings.addons.form.fields.accountNameDescription' | translate }}
-              </p>
-              <input pInputText [formControlName]="formControls.AccountName" />
-            </p-card>
-
-            <div class="flex gap-4 align-self-center md:align-self-end mt-3">
-              <p-button
-                [label]="'settings.addons.form.buttons.back' | translate"
-                severity="info"
-                class="w-10rem btn-full-width"
-                (onClick)="activateCallback(AddonStepperValue.TERMS)"
-                [disabled]="isAddonConnecting()"
-              ></p-button>
-
-              <p-button
-                class="w-10rem btn-full-width"
-                [label]="'settings.addons.form.buttons.authorize' | translate"
-                type="submit"
-                [disabled]="!addonForm.valid || !this.addonsUserReference().length || isAddonConnecting()"
-              ></p-button>
-            </div>
-          </form>
+            @if (addon() && userReferenceId() && addonTypeString()) {
+              <osf-addon-setup-account-form
+                [addon]="addon()!"
+                [userReferenceId]="userReferenceId()!"
+                [addonTypeString]="addonTypeString()"
+                [isSubmitting]="isCreatingAuthorizedAddon()"
+                (formSubmit)="handleCreateAuthorizedAddon($event)"
+                (backClick)="activateCallback(AddonStepperValue.TERMS)"
+              />
+            }
+          </section>
         </ng-template>
       </p-step-panel>
 

@@ -1,6 +1,6 @@
 <osf-sub-header [showButton]="false" [title]="'settings.addons.configureAddon.title' | translate" />
 
-<section class="flex flex-column flex-1 bg-white h-full gap-4 sm:p-3 md:p-5">
+<section class="flex flex-column flex-1 bg-white h-full gap-4 p-3 md:p-5">
   @if (!isEditMode()) {
     <div class="flex flex-column gap-4">
       <div class="flex justify-content-between">
@@ -14,7 +14,7 @@
         ></p-button>
       </div>
 
-      @if (selectedFolderName()) {
+      @if (selectedFolder()) {
         <div class="flex flex-column flex-1">
           <p-card>
             <div class="flex justify-content-between">
@@ -26,14 +26,12 @@
               <div class="flex gap-2">
                 <p-button
                   icon="fas fa-pencil"
-                  [text]="true"
                   severity="info"
                   (click)="toggleEditMode()"
                   (keydown.enter)="toggleEditMode()"
                 ></p-button>
                 <p-button
                   icon="fas fa-trash red-icon"
-                  [text]="true"
                   severity="info"
                   (click)="handleDisconnectAccount()"
                   (keydown.enter)="handleDisconnectAccount()"
@@ -43,7 +41,7 @@
 
             <p class="font-normal mt-2">
               {{ 'settings.addons.configureAddon.selectedFolder' | translate }}
-              <span class="font-bold">{{ selectedFolderName() }}</span>
+              <span class="font-bold">{{ selectedFolder()?.itemName }}</span>
             </p>
           </p-card>
         </div>
@@ -54,7 +52,7 @@
   } @else {
     <section class="flex flex-column gap-5">
       <div class="flex justify-content-between">
-        <h2 class="pt-2">
+        <h2 class="align-self-center">
           {{ 'settings.addons.connectAddon.configure' | translate }} {{ addon()?.externalServiceName }}
         </h2>
         <p-button
@@ -64,119 +62,15 @@
           (keydown.enter)="toggleEditMode()"
         ></p-button>
       </div>
-      <div>
-        <p-breadcrumb
-          class="p-0 max-w-full"
-          [model]="breadcrumbItems()"
-          [home]="homeBreadcrumb"
-          (onItemClick)="handleCreateOperationInvocation($event.item.state?.['operationName']!, $event.item.id!)"
-        >
-          <ng-template #home let-home>
-            <p-button
-              severity="info"
-              [link]="true"
-              [label]="home.label"
-              (click)="handleCreateOperationInvocation(home.state.operationName, home.id)"
-            ></p-button>
-          </ng-template>
-          <ng-template #item let-item>
-            <p-button
-              severity="info"
-              [link]="true"
-              [label]="item.label"
-              (click)="handleCreateOperationInvocation(item.state.operationName, item.id)"
-            ></p-button>
-          </ng-template>
-        </p-breadcrumb>
-        <p-card>
-          <p>
-            {{ 'settings.addons.configureAddon.selectedFolder' | translate }}
-            <span class="font-bold">{{ selectedFolderName() }}</span>
-          </p>
-          <h3 class="mt-4 mb-2">
-            {{ 'settings.addons.form.fields.accountName' | translate }}
-          </h3>
-
-          <input [formControl]="accountNameControl" name="accountName" pInputText />
-        </p-card>
-      </div>
-
-      @if (isOperationInvocationSubmitting()) {
-        <p-skeleton width="100%" height="7.5rem" borderRadius="16" />
-      } @else {
-        <div class="folders-table flex flex-column">
-          <div class="folders-table-heading flex justify-content-between">
-            <h3>Folder Name</h3>
-            <h3>Select</h3>
-          </div>
-          @if (operationInvocation()?.operationResult?.length) {
-            @for (folder of operationInvocation()?.operationResult; track folder.itemId) {
-              @let operationName =
-                folder.mayContainRootCandidates ? OperationNames.LIST_CHILD_ITEMS : OperationNames.GET_ITEM_INFO;
-              @let itemId = folder.itemId || '/';
-              <div class="folders-table-row relative">
-                <div class="flex gap-2 flex-1">
-                  <div tabindex="0" class="flex gap-2">
-                    <i class="osf-icon-folder"></i>
-                    <a
-                      tabindex="0"
-                      class="cursor-pointer"
-                      (keydown.enter)="
-                        handleCreateOperationInvocation(
-                          operationName,
-                          itemId,
-                          folder.itemName,
-                          folder.mayContainRootCandidates
-                        )
-                      "
-                      (click)="
-                        handleCreateOperationInvocation(
-                          operationName,
-                          itemId,
-                          folder.itemName,
-                          folder.mayContainRootCandidates
-                        )
-                      "
-                    >
-                      {{ folder.itemName }}</a
-                    >
-                  </div>
-                  @if (folder.canBeRoot) {
-                    <p-radiobutton
-                      class="ml-auto pr-3"
-                      [ngModel]="chosenRootFolderId()"
-                      [value]="folder.itemId"
-                      [inputId]="folder.itemId"
-                      (ngModelChange)="chosenRootFolderId.set($event)"
-                    ></p-radiobutton>
-                  }
-                </div>
-              </div>
-            }
-          } @else {
-            <div class="flex justify-content-center py-4">
-              <p>{{ 'settings.addons.configureAddon.noFolders' | translate }}</p>
-            </div>
-          }
-        </div>
-      }
-
-      <div class="flex gap-4 align-self-end">
-        <p-button
-          class="w-10rem btn-full-width"
-          [label]="'settings.addons.form.buttons.cancel' | translate"
-          severity="info"
-          [disabled]="isAddonUpdateSubmitting()"
-          (click)="toggleEditMode()"
-        ></p-button>
-        <p-button
-          class="w-10rem btn-full-width"
-          [disabled]="!chosenRootFolderId() || !accountNameControl.dirty"
-          [loading]="isAddonUpdateSubmitting()"
-          [label]="'common.buttons.save' | translate"
-          (click)="handleUpdateAddonConfiguration()"
-        ></p-button>
-      </div>
+      <osf-folder-selector
+        [accountName]="addon()?.displayName || ''"
+        [operationInvocationResult]="operationInvocation()?.operationResult || []"
+        [accountNameControl]="accountNameControl"
+        (operationInvoke)="handleCreateOperationInvocation($event.operationName, $event.itemId)"
+        [(selectedRootFolderId)]="selectedRootFolderId"
+        (save)="handleUpdateAddonConfiguration()"
+        (cancelSelection)="toggleEditMode()"
+      />
     </section>
   }
 </section>

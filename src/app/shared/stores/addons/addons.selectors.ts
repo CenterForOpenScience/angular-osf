@@ -8,6 +8,7 @@ import {
   ConfiguredAddonResponseJsonApi,
   OperationInvocation,
   ResourceReferenceJsonApi,
+  StorageItem,
   UserReferenceJsonApi,
 } from '@shared/models';
 
@@ -131,8 +132,8 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getSelectedFolderName(state: AddonsStateModel): string {
-    return state.selectedFolderOperationInvocation.data?.operationResult[0].itemName || '';
+  static getSelectedFolder(state: AddonsStateModel): StorageItem | null {
+    return state.selectedFolderOperationInvocation.data?.operationResult[0] || null;
   }
 
   @Selector([AddonsState])

@@ -1,8 +1,8 @@
 <osf-sub-header [showButton]="false" [title]="'settings.addons.connectAddon.title' | translate" />
 <section class="stepper-container flex-column flex flex-1 p-5">
-  <p-stepper [value]="!isAuthorized() ? 1 : 2">
+  <p-stepper [value]="!isAuthorized() ? ProjectAddonsStepperValue.TERMS : ProjectAddonsStepperValue.SETUP_NEW_ACCOUNT">
     <p-step-panels>
-      <p-step-panel [value]="1">
+      <p-step-panel [value]="ProjectAddonsStepperValue.TERMS">
         <ng-template #content let-activateCallback="activateCallback">
           <section class="flex flex-column gap-2">
             <h2>
@@ -11,30 +11,7 @@
             </h2>
 
             <div class="mt-4">
-              <p-table [value]="terms()" class="addon-table">
-                <ng-template pTemplate="header">
-                  <tr>
-                    <th>
-                      {{ 'settings.addons.connectAddon.table.function' | translate }}
-                    </th>
-                    <th>
-                      {{ 'settings.addons.connectAddon.table.status' | translate }}
-                    </th>
-                  </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-term>
-                  <tr
-                    [ngClass]="{
-                      'background-warning': term.type === 'warning',
-                      'background-success': term.type === 'info',
-                      'background-danger': term.type === 'danger',
-                    }"
-                  >
-                    <td>{{ term.function }}</td>
-                    <td>{{ term.status }}</td>
-                  </tr>
-                </ng-template>
-              </p-table>
+              <osf-addon-terms [addon]="addon()" />
             </div>
 
             <div class="flex flex-column gap-2 mt-4">
@@ -56,161 +33,30 @@
               <p-button
                 [label]="'settings.addons.form.buttons.next' | translate"
                 class="w-10rem btn-full-width"
-                (onClick)="activateCallback(2)"
+                (onClick)="activateCallback(ProjectAddonsStepperValue.SETUP_NEW_ACCOUNT)"
               ></p-button>
             </div>
           </section>
         </ng-template>
       </p-step-panel>
 
-      <p-step-panel [value]="2">
+      <p-step-panel [value]="ProjectAddonsStepperValue.SETUP_NEW_ACCOUNT">
         <ng-template #content let-activateCallback="activateCallback">
-          <form [formGroup]="addonForm" (ngSubmit)="handleConnectStorageAddon()" class="flex flex-column gap-5">
-            <h2>
-              {{
-                isAuthorized()
-                  ? ('settings.addons.connectAddon.reconnectAccount' | translate)
-                  : ('settings.addons.connectAddon.setupNewAccount' | translate)
-              }}
-            </h2>
-            <p-card>
-              @if (addon()?.credentialsFormat === credentialsFormat.ACCESS_SECRET_KEYS) {
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.accessKey' | translate }}
-                </h2>
-                <input
-                  class="mb-5"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.accessKey' | translate"
-                  [formControlName]="formControls.AccessKey"
-                />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.secretKey' | translate }}
-                </h2>
-                <input
-                  class="mb-5"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.secretKey' | translate"
-                  [formControlName]="formControls.SecretKey"
-                />
-              }
-
-              @if (addon()?.credentialsFormat === credentialsFormat.DATAVERSE_API_TOKEN) {
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.hostUrl' | translate }}
-                </h2>
-                <p class="mb-2">
-                  {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
-                </p>
-                <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.personalAccessToken' | translate }}
-                </h2>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.personalAccessToken' | translate"
-                  [formControlName]="formControls.PersonalAccessToken"
-                />
-              }
-
-              @if (addon()?.credentialsFormat === credentialsFormat.USERNAME_PASSWORD) {
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.hostUrl' | translate }}
-                </h2>
-                <p class="mb-2">
-                  {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
-                </p>
-                <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.username' | translate }}
-                </h2>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.username' | translate"
-                  [formControlName]="formControls.Username"
-                />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.password' | translate }}
-                </h2>
-                <p class="mb-2">
-                  {{ 'settings.addons.form.fields.passwordDescription' | translate }}
-                </p>
-                <div class="mb-4">
-                  <p-password [feedback]="false" [toggleMask]="true" [formControlName]="formControls.Password" />
-                </div>
-              }
-
-              @if (addon()?.credentialsFormat === credentialsFormat.REPO_TOKEN) {
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.accessKey' | translate }}
-                </h2>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.accessKey' | translate"
-                  [formControlName]="formControls.AccessKey"
-                />
-                <h2 class="mb-2">
-                  {{ 'settings.addons.form.fields.secretKey' | translate }}
-                </h2>
-                <input
-                  class="mb-4"
-                  pInputText
-                  [placeholder]="'settings.addons.form.fields.secretKey' | translate"
-                  [formControlName]="formControls.SecretKey"
-                />
-              }
-
-              <h2 class="mb-2">
-                {{ 'settings.addons.form.fields.accountName' | translate }}
-              </h2>
-              <p class="mb-2">
-                {{ 'settings.addons.form.fields.accountNameDescription' | translate }}
-              </p>
-              <input pInputText [formControlName]="formControls.AccountName" />
-            </p-card>
-
-            <div class="flex gap-4 align-self-center md:align-self-end mt-3">
-              @if (!isAuthorized()) {
-                <p-button
-                  [label]="'settings.addons.form.buttons.back' | translate"
-                  severity="info"
-                  class="w-10rem btn-full-width"
-                  (onClick)="activateCallback(1)"
-                  [disabled]="isConnecting()"
-                ></p-button>
-
-                <p-button
-                  class="w-10rem btn-full-width"
-                  [label]="'settings.addons.form.buttons.authorize' | translate"
-                  type="submit"
-                  [disabled]="!addonForm.valid || !this.userReference().length || isConnecting()"
-                ></p-button>
-              } @else {
-                <p-button
-                  [label]="'settings.addons.form.buttons.cancel' | translate"
-                  severity="info"
-                  class="w-10rem btn-full-width"
-                  routerLink="/settings/addons"
-                  [disabled]="isConnecting()"
-                ></p-button>
-
-                <p-button
-                  class="w-10rem btn-full-width"
-                  [label]="'settings.addons.form.buttons.reconnect' | translate"
-                  [link]="true"
-                  (onClick)="handleConnectStorageAddon()"
-                  [disabled]="!addonForm.valid || !this.userReference().length || isConnecting()"
-                ></p-button>
-              }
-            </div>
-          </form>
+          @if (addon() && userReferenceId() && addonTypeString()) {
+            <osf-addon-setup-account-form
+              [addon]="addon()!"
+              [userReferenceId]="userReferenceId()!"
+              [addonTypeString]="addonTypeString()"
+              [isSubmitting]="isCreatingAuthorizedAddon()"
+              [isAuthorized]="isAuthorized()"
+              (formSubmit)="handleConnectAuthorizedAddon($event)"
+              (backClick)="activateCallback(ProjectAddonsStepperValue.TERMS)"
+            />
+          }
         </ng-template>
       </p-step-panel>
 
-      <p-step-panel [value]="3">
+      <p-step-panel [value]="ProjectAddonsStepperValue.AUTH">
         <ng-template #content>
           <div class="flex flex-column gap-4">
             <div class="flex justify-content-between">
@@ -234,105 +80,6 @@
           </div>
         </ng-template>
       </p-step-panel>
-      <!--TODO use this layout in the project settings later-->
-
-      <!--            <p-step-panel [value]="3">-->
-      <!--              <ng-template #content let-activateCallback="activateCallback">-->
-      <!--                <section class="flex flex-column gap-5">-->
-      <!--                  <h2>Configure Google Drive</h2>-->
-      <!--                  <ul class="flex flex-column gap-3 mt-2">-->
-      <!--                    <li-->
-      <!--                      class="flex cursor-pointer"-->
-      <!--                      (click)="radioConfig = 'lorem'"-->
-      <!--                      (keydown.enter)="radioConfig = 'lorem'"-->
-      <!--                      (keydown.space)="radioConfig = 'lorem'; $event.preventDefault()"-->
-      <!--                      tabindex="0"-->
-      <!--                      role="radio"-->
-      <!--                      [attr.aria-checked]="radioConfig === 'lorem'"-->
-      <!--                    >-->
-      <!--                      <p-radio-button-->
-      <!--                        name="lorem"-->
-      <!--                        value="lorem"-->
-      <!--                        [(ngModel)]="radioConfig"-->
-      <!--                        id="lorem1"-->
-      <!--                        (click)="$event.stopPropagation()"-->
-      <!--                      />-->
-      <!--                      <label for="lorem1" class="ml-2 radio-label">Lorem 1</label>-->
-      <!--                    </li>-->
-      <!--                    <li-->
-      <!--                      class="flex cursor-pointer"-->
-      <!--                      (click)="radioConfig = 'lorem2'"-->
-      <!--                      (keydown.enter)="radioConfig = 'lorem2'"-->
-      <!--                      (keydown.space)="radioConfig = 'lorem2'; $event.preventDefault()"-->
-      <!--                      tabindex="0"-->
-      <!--                      role="radio"-->
-      <!--                      [attr.aria-checked]="radioConfig === 'lorem2'"-->
-      <!--                    >-->
-      <!--                      <p-radio-button-->
-      <!--                        name="lorem2"-->
-      <!--                        value="lorem2"-->
-      <!--                        [(ngModel)]="radioConfig"-->
-      <!--                        id="lorem2"-->
-      <!--                        (click)="$event.stopPropagation()"-->
-      <!--                      />-->
-      <!--                      <label for="lorem2" class="ml-2 radio-label">Lorem 2</label>-->
-      <!--                    </li>-->
-      <!--                  </ul>-->
-      <!--                  <div class="flex gap-4 align-self-end mt-3">-->
-      <!--                    <p-button-->
-      <!--                      label="Back"-->
-      <!--                      severity="info"-->
-      <!--                      (onClick)="activateCallback(2)"-->
-      <!--                    ></p-button>-->
-      <!--                    <p-button-->
-      <!--                      [disabled]="!radioConfig"-->
-      <!--                      class="w-10rem btn-full-width"-->
-      <!--                      label="Next"-->
-      <!--                      (onClick)="activateCallback(4)"-->
-      <!--                    ></p-button>-->
-      <!--                  </div>-->
-      <!--                </section>-->
-      <!--              </ng-template>-->
-      <!--            </p-step-panel>-->
-
-      <!--            <p-step-panel [value]="4">-->
-      <!--              <ng-template #content let-activateCallback="activateCallback">-->
-      <!--                <section class="flex flex-column gap-5">-->
-      <!--                  <h2>Configure Google Drive</h2>-->
-
-      <!--                  <div class="folders-list overflow-hidden">-->
-      <!--                    @for (folder of folders; let i = $index; track i) {-->
-      <!--                      <div-->
-      <!--                        class="flex align-items-center p-3 cursor-pointer"-->
-      <!--                        (click)="toggleFolderSelection(folder)"-->
-      <!--                        (keydown.enter)="toggleFolderSelection(folder)"-->
-      <!--                        (keydown.space)="toggleFolderSelection(folder); $event.preventDefault()"-->
-      <!--                        tabindex="0"-->
-      <!--                        role="button"-->
-      <!--                      >-->
-      <!--                        <i class="osf-icon-folder mr-2"></i>-->
-      <!--                        <span>{{ folder.name }}</span>-->
-      <!--                        <p-checkbox class="ml-auto" [(ngModel)]="folder.selected" [binary]="true" (click)="$event.stopPropagation()"></p-checkbox>-->
-      <!--                      </div>-->
-      <!--                      <p-divider class="m-0"/>-->
-      <!--                    }-->
-      <!--                  </div>-->
-
-      <!--                  <div class="flex gap-4 align-self-end mt-3">-->
-      <!--                    <p-button-->
-      <!--                      label="Back"-->
-      <!--                      severity="info"-->
-      <!--                      (onClick)="activateCallback(3)"-->
-      <!--                    ></p-button>-->
-      <!--                    <p-button-->
-      <!--                      [disabled]="!selectedFolders().length"-->
-      <!--                      class="w-10rem btn-full-width"-->
-      <!--                      label="Next"-->
-      <!--                    ></p-button>-->
-      <!--                  </div>-->
-      <!--                </section>-->
-      <!--              </ng-template>-->
-      <!--            </p-step-panel>-->
     </p-step-panels>
   </p-stepper>
 </section>

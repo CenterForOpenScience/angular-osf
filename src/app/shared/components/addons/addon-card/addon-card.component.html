@@ -1,12 +1,16 @@
-<div class="addon-card flex flex-1 gap-4 flex-column" [class.mobile]="isMobile()">
-  <div class="max-h-8rem">
+<div class="addon-card flex flex-1 gap-4 flex-column p-5" [class.mobile]="isMobile()">
+  <div class="max-h-8rem flex justify-content-center align-items-center">
     @if (card()!.externalServiceName) {
-      <img alt="Addon card image" [src]="'assets/images/addons/' + card()!.externalServiceName + '.svg'" />
+      <img
+        class="addon-image"
+        alt="Addon card image"
+        [src]="'assets/images/addons/' + card()!.externalServiceName + '.svg'"
+      />
     }
   </div>
 
   <div class="flex flex-column gap-3">
-    <h3>{{ card()?.displayName }}</h3>
+    <h3 class="text-center">{{ card()?.displayName }}</h3>
 
     <div class="flex justify-content-center align-items-center md:gap-5 md:mt-3 btn-container">
       @if (showDangerButton()) {

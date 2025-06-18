@@ -1,5 +1,6 @@
+@use "assets/styles/mixins" as mix;
+
 :host {
-  display: flex;
-  flex-direction: column;
+  @include mix.flex-column;
   flex: 1;
 }

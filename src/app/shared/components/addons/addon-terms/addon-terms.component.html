@@ -1,0 +1,24 @@
+<p-table [value]="terms()" class="addon-table">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>
+        {{ 'settings.addons.connectAddon.table.function' | translate }}
+      </th>
+      <th>
+        {{ 'settings.addons.connectAddon.table.status' | translate }}
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-term>
+    <tr
+      [ngClass]="{
+        'background-warning': term.type === 'warning',
+        'background-success': term.type === 'info',
+        'background-danger': term.type === 'danger',
+      }"
+    >
+      <td>{{ term.function }}</td>
+      <td>{{ term.status }}</td>
+    </tr>
+  </ng-template>
+</p-table>

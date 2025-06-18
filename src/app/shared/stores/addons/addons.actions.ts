@@ -111,3 +111,7 @@ export class CreateAddonOperationInvocation {
 export class ClearConfiguredAddons {
   static readonly type = '[Addons] Clear Configured Addons';
 }
+
+export class ClearOperationInvocations {
+  static readonly type = '[Addons] Clear Operation Invocations';
+}

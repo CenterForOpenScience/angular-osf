@@ -62,11 +62,11 @@ import { IS_XSMALL } from '@shared/utils';
 export class AddonsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+  protected isMobile = toSignal(inject(IS_XSMALL));
   protected readonly tabOptions = ADDON_TAB_OPTIONS;
   protected readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
-  protected isMobile = toSignal(inject(IS_XSMALL));
-  protected AddonTabValue = AddonTabValue;
-  protected defaultTabValue = AddonTabValue.ALL_ADDONS;
+  protected readonly AddonTabValue = AddonTabValue;
+  protected readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
   protected searchControl = new FormControl<string>('');
   protected searchValue = signal<string>('');
   protected selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
@@ -92,7 +92,6 @@ export class AddonsComponent implements OnInit {
       this.isStorageAddonsLoading() ||
       this.isCitationAddonsLoading() ||
       this.isUserReferenceLoading() ||
-      // this.isResourceReferenceLoading() ||
       this.isCurrentUserLoading()
     );
   });

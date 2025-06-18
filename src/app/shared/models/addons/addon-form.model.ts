@@ -10,4 +10,5 @@ export interface AddonForm {
   [AddonFormControls.Password]?: FormControl<string | null>;
   [AddonFormControls.PersonalAccessToken]?: FormControl<string | null>;
   [AddonFormControls.AccountName]: FormControl<string | null>;
+  [AddonFormControls.ApiToken]?: FormControl<string | null>;
 }

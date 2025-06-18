@@ -1,25 +1,37 @@
 import { createDispatchMap, select, Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
-import { MenuItem } from 'primeng/api';
 import { BreadcrumbModule } from 'primeng/breadcrumb';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
-import { InputText } from 'primeng/inputtext';
-import { RadioButton } from 'primeng/radiobutton';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { DisconnectAddonModalComponent } from '@osf/features/project/addons/components';
 import { OperationNames } from '@osf/features/project/addons/enums';
 import { SubHeaderComponent } from '@shared/components';
-import { ConfiguredAddon, ConfiguredAddonRequestJsonApi, OperationInvocationRequestJsonApi } from '@shared/models';
-import { AddonsSelectors, CreateAddonOperationInvocation, UpdateConfiguredAddon } from '@shared/stores/addons';
+import { FolderSelectorComponent } from '@shared/components/addons/folder-selector/folder-selector.component';
+import { ConfiguredAddon } from '@shared/models';
+import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
+import {
+  AddonsSelectors,
+  ClearOperationInvocations,
+  CreateAddonOperationInvocation,
+  UpdateConfiguredAddon,
+} from '@shared/stores/addons';
 
 @Component({
   selector: 'osf-configure-addon',
@@ -29,36 +41,35 @@ import { AddonsSelectors, CreateAddonOperationInvocation, UpdateConfiguredAddon 
     Button,
     RouterLink,
     Card,
-    InputText,
-    RadioButton,
     ReactiveFormsModule,
     FormsModule,
     Skeleton,
     BreadcrumbModule,
+    FolderSelectorComponent,
   ],
   templateUrl: './configure-addon.component.html',
   styleUrl: './configure-addon.component.scss',
-  providers: [DialogService],
+  providers: [DialogService, AddonDialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfigureAddonComponent implements OnInit {
-  private readonly dialogService = inject(DialogService);
-  private readonly translateService = inject(TranslateService);
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
-  private readonly store = inject(Store);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private store = inject(Store);
+  private destroyRef = inject(DestroyRef);
+  private toastService = inject(ToastService);
+  private addonDialogService = inject(AddonDialogService);
+  private addonFormService = inject(AddonFormService);
+  private operationInvocationService = inject(AddonOperationInvocationService);
 
-  protected readonly OperationNames = OperationNames;
   protected accountNameControl = new FormControl('');
   protected addon = signal<ConfiguredAddon | null>(null);
   protected isEditMode = signal<boolean>(false);
-  protected chosenRootFolderId = signal('');
+  protected selectedRootFolderId = signal('');
   protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
   protected operationInvocation = select(AddonsSelectors.getOperationInvocation);
-  protected selectedFolderName = select(AddonsSelectors.getSelectedFolderName);
-
-  protected isOperationInvocationSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
-  protected isAddonUpdateSubmitting = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting);
+  protected selectedFolderOperationInvocation = select(AddonsSelectors.getSelectedFolderOperationInvocation);
+  protected selectedFolder = select(AddonsSelectors.getSelectedFolder);
 
   protected readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
@@ -75,18 +86,17 @@ export class ConfigureAddonComponent implements OnInit {
   protected readonly actions = createDispatchMap({
     createAddonOperationInvocation: CreateAddonOperationInvocation,
     updateConfiguredAddon: UpdateConfiguredAddon,
+    clearOperationInvocations: ClearOperationInvocations,
   });
-  protected breadcrumbItems = signal<MenuItem[]>([]);
-  protected homeBreadcrumb: MenuItem = {
-    id: '/',
-    label: this.translateService.instant('settings.addons.configureAddon.home'),
-    state: {
-      operationName: OperationNames.LIST_ROOT_ITEMS,
-    },
-  };
 
   constructor() {
     this.initializeAddon();
+
+    effect(() => {
+      this.destroyRef.onDestroy(() => {
+        this.actions.clearOperationInvocations();
+      });
+    });
   }
 
   private initializeAddon(): void {
@@ -94,83 +104,24 @@ export class ConfigureAddonComponent implements OnInit {
 
     if (addon) {
       this.addon.set(addon);
+      this.selectedRootFolderId.set(addon.selectedFolderId);
       this.accountNameControl.setValue(addon.displayName);
-      this.chosenRootFolderId.set(addon.selectedFolderId);
     } else {
       this.router.navigate([`${this.baseUrl()}/addons`]);
     }
   }
 
-  protected handleCreateOperationInvocation(
-    operationName: OperationNames,
-    folderId: string,
-    folderName?: string,
-    mayContainRootCandidates?: boolean
-  ): void {
+  protected handleCreateOperationInvocation(operationName: OperationNames, folderId: string): void {
     const addon = this.addon();
     if (!addon) return;
 
-    const operationKwargs = this.getOperationKwargs(operationName, folderId);
+    const payload = this.operationInvocationService.createOperationInvocationPayload(addon, operationName, folderId);
 
-    const payload: OperationInvocationRequestJsonApi = {
-      data: {
-        type: 'addon-operation-invocations',
-        attributes: {
-          invocation_status: null,
-          operation_name: operationName,
-          operation_kwargs: operationKwargs,
-          operation_result: {},
-          created: null,
-          modified: null,
-        },
-        relationships: {
-          thru_addon: {
-            data: {
-              type: addon.type,
-              id: addon.id,
-            },
-          },
-        },
-      },
-    };
-
-    this.actions.createAddonOperationInvocation(payload).subscribe({
-      complete: () => {
-        this.handleBreadcrumbUpdate(operationName, folderId, folderName, mayContainRootCandidates);
-      },
-    });
-  }
-
-  private handleBreadcrumbUpdate(
-    operationName: OperationNames,
-    folderId: string,
-    folderName?: string,
-    mayContainRootCandidates?: boolean
-  ): void {
-    if (operationName === OperationNames.LIST_ROOT_ITEMS) {
-      this.breadcrumbItems.set([]);
-      return;
-    }
-
-    if (folderName) {
-      const breadcrumbs = [...this.breadcrumbItems()];
-
-      if (mayContainRootCandidates) {
-        const item = {
-          id: folderId,
-          label: folderName,
-          state: {
-            operationName: mayContainRootCandidates ? OperationNames.LIST_CHILD_ITEMS : OperationNames.GET_ITEM_INFO,
-          },
-        };
-
-        this.breadcrumbItems.set([...breadcrumbs, { ...item }]);
-      }
-    }
+    this.actions.createAddonOperationInvocation(payload);
   }
 
   ngOnInit(): void {
-    this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.chosenRootFolderId());
+    this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.selectedRootFolderId());
   }
 
   protected handleDisconnectAccount(): void {
@@ -181,29 +132,20 @@ export class ConfigureAddonComponent implements OnInit {
   }
 
   private openDisconnectDialog(addon: ConfiguredAddon): void {
-    const dialogRef = this.dialogService.open(DisconnectAddonModalComponent, {
-      focusOnShow: false,
-      header: this.translateService.instant('settings.addons.configureAddon.disconnect', {
-        addonName: addon.externalServiceName,
-      }),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        message: this.translateService.instant('settings.addons.configureAddon.disconnectMessage'),
-        addon,
-      },
-    });
+    const dialogRef = this.addonDialogService.openDisconnectDialog(addon);
 
-    dialogRef.onClose.subscribe((result) => {
+    dialogRef.subscribe((result) => {
       if (result?.success) {
         this.router.navigate([`${this.baseUrl()}/addons`]);
+        this.toastService.showSuccess('settings.addons.toast.disconnectSuccess', {
+          addonName: this.addon()?.displayName,
+        });
       }
     });
   }
 
   protected toggleEditMode(): void {
-    const operationResult = this.operationInvocation()?.operationResult[0];
+    const operationResult = this.selectedFolderOperationInvocation()?.operationResult[0];
     const hasRootCandidates = operationResult?.mayContainRootCandidates ?? false;
     const itemId = operationResult?.itemId || '/';
 
@@ -218,60 +160,22 @@ export class ConfigureAddonComponent implements OnInit {
     const currentAddon = this.addon();
     if (!currentAddon) return;
 
-    const payload = this.generateUpdatePayload(currentAddon);
+    const payload = this.addonFormService.generateConfiguredAddonUpdatePayload(
+      currentAddon,
+      this.addonsUserReference()[0].id || '',
+      this.resourceUri(),
+      this.accountNameControl.value || '',
+      this.selectedRootFolderId() || '',
+      this.addonTypeString()
+    );
 
     this.store.dispatch(new UpdateConfiguredAddon(payload, this.addonTypeString(), currentAddon.id)).subscribe({
-      complete: () => this.router.navigate([`${this.baseUrl()}/addons`]),
-    });
-  }
-
-  private generateUpdatePayload(addon: ConfiguredAddon): ConfiguredAddonRequestJsonApi {
-    const addonType = this.addonTypeString();
-
-    const updatePayload = {
-      data: {
-        id: addon.id,
-        type: `configured-${addonType}-addons`,
-        attributes: {
-          authorized_resource_uri: this.resourceUri(),
-          display_name: this.accountNameControl.value || '',
-          root_folder: this.chosenRootFolderId(),
-          connected_capabilities: ['UPDATE', 'ACCESS'],
-          connected_operation_names: ['list_child_items', 'list_root_items', 'get_item_info'],
-          external_service_name: addon.externalServiceName,
-        },
-        relationships: {
-          account_owner: {
-            data: {
-              type: 'user-references',
-              id: this.addonsUserReference()[0].id || '',
-            },
-          },
-          base_account: {
-            data: {
-              type: addon.baseAccountType,
-              id: addon.baseAccountId,
-            },
-          },
-          [`external_${addonType}_service`]: {
-            data: {
-              type: `external-${addonType}-services`,
-              id: addon.externalServiceName,
-            },
-          },
-        },
+      complete: () => {
+        this.router.navigate([`${this.baseUrl()}/addons`]);
+        this.toastService.showSuccess('settings.addons.toast.updateSuccess', {
+          addonName: currentAddon.externalServiceName,
+        });
       },
-    };
-
-    return updatePayload;
-  }
-
-  private getOperationKwargs(operationName: OperationNames, folderId: string): Record<string, unknown> {
-    const baseKwargs = operationName !== OperationNames.LIST_ROOT_ITEMS ? { item_id: folderId } : {};
-
-    return {
-      ...baseKwargs,
-      ...(operationName === OperationNames.LIST_CHILD_ITEMS && { item_type: 'FOLDER' }),
-    };
+    });
   }
 }

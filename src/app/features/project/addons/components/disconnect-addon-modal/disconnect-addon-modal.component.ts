@@ -23,7 +23,7 @@ export class DisconnectAddonModalComponent {
   protected addon = this.dialogConfig.data.addon;
   protected dialogMessage = this.dialogConfig.data.message || '';
   protected isSubmitting = select(AddonsSelectors.getDeleteStorageAddonSubmitting);
-  protected selectedFolderName = select(AddonsSelectors.getSelectedFolderName);
+  protected selectedFolder = select(AddonsSelectors.getSelectedFolder);
 
   protected handleDisconnectAddonAccount(): void {
     if (!this.addon) return;

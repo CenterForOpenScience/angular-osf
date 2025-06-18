@@ -1,4 +1,4 @@
-export { AddonsService } from './addons.service';
+export * from './addons';
 export { FiltersOptionsService } from './filters-options.service';
 export { LoaderService } from './loader.service';
 export { ResourceCardService } from './resource-card.service';

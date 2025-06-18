@@ -8,7 +8,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { OperationInvocationRequestJsonApi } from '@shared/models';
+import { OperationNames } from '@osf/features/project/addons/enums';
+import { AddonOperationInvocationService } from '@shared/services';
 import { AddonsSelectors, CreateAddonOperationInvocation } from '@shared/stores/addons';
 
 @Component({
@@ -21,6 +22,7 @@ import { AddonsSelectors, CreateAddonOperationInvocation } from '@shared/stores/
 export class ConfirmAccountConnectionModalComponent {
   private dialogConfig = inject(DynamicDialogConfig);
   private store = inject(Store);
+  private operationInvocationService = inject(AddonOperationInvocationService);
   protected dialogRef = inject(DynamicDialogRef);
   protected dialogMessage = this.dialogConfig.data.message || '';
   protected isSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
@@ -29,27 +31,10 @@ export class ConfirmAccountConnectionModalComponent {
     const selectedAccount = this.dialogConfig.data.selectedAccount;
     if (!selectedAccount) return;
 
-    const payload: OperationInvocationRequestJsonApi = {
-      data: {
-        type: 'addon-operation-invocations',
-        attributes: {
-          invocation_status: null,
-          operation_name: 'list_root_items',
-          operation_kwargs: {},
-          operation_result: {},
-          created: null,
-          modified: null,
-        },
-        relationships: {
-          thru_account: {
-            data: {
-              type: selectedAccount.type,
-              id: selectedAccount.id,
-            },
-          },
-        },
-      },
-    };
+    const payload = this.operationInvocationService.createInitialOperationInvocationPayload(
+      OperationNames.LIST_ROOT_ITEMS,
+      selectedAccount
+    );
 
     this.store.dispatch(new CreateAddonOperationInvocation(payload)).subscribe({
       complete: () => {

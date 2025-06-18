@@ -8,6 +8,7 @@ import { AddonsService } from '@shared/services';
 
 import {
   ClearConfiguredAddons,
+  ClearOperationInvocations,
   CreateAddonOperationInvocation,
   CreateAuthorizedAddon,
   CreateConfiguredAddon,
@@ -540,6 +541,22 @@ export class AddonsState {
       },
       addonsResourceReference: {
         data: [],
+        isLoading: false,
+        error: null,
+      },
+    });
+  }
+
+  @Action(ClearOperationInvocations)
+  clearOperationInvocations(ctx: StateContext<AddonsStateModel>) {
+    ctx.patchState({
+      operationInvocation: {
+        data: null,
+        isLoading: false,
+        error: null,
+      },
+      selectedFolderOperationInvocation: {
+        data: null,
         isLoading: false,
         error: null,
       },

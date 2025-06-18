@@ -1,0 +1,133 @@
+<form [formGroup]="addonForm()" (ngSubmit)="handleSubmit()" class="flex flex-column gap-5">
+  <p-card>
+    @if (isAccessSecretKeysFormat()) {
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.accessKey' | translate }}
+      </h2>
+      <input
+        class="mb-5"
+        pInputText
+        [placeholder]="'settings.addons.form.fields.accessKey' | translate"
+        [formControlName]="formControls.AccessKey"
+      />
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.secretKey' | translate }}
+      </h2>
+      <input
+        class="mb-5"
+        pInputText
+        [placeholder]="'settings.addons.form.fields.secretKey' | translate"
+        [formControlName]="formControls.SecretKey"
+      />
+    }
+
+    @if (isDataverseApiTokenFormat()) {
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.hostUrl' | translate }}
+      </h2>
+      <p class="mb-2">
+        {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
+      </p>
+      <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.apiToken' | translate }}
+      </h2>
+      <input
+        class="mb-4"
+        pInputText
+        [placeholder]="'settings.addons.form.fields.apiToken' | translate"
+        [formControlName]="formControls.ApiToken"
+      />
+    }
+
+    @if (isUsernamePasswordFormat()) {
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.hostUrl' | translate }}
+      </h2>
+      <p class="mb-2">
+        {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
+      </p>
+      <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.username' | translate }}
+      </h2>
+      <input
+        class="mb-4"
+        pInputText
+        [placeholder]="'settings.addons.form.fields.username' | translate"
+        [formControlName]="formControls.Username"
+      />
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.password' | translate }}
+      </h2>
+      <p class="mb-2">
+        {{ 'settings.addons.form.fields.passwordDescription' | translate }}
+      </p>
+      <div class="mb-4">
+        <p-password [feedback]="false" [toggleMask]="true" [formControlName]="formControls.Password" />
+      </div>
+    }
+
+    @if (isRepoTokenFormat()) {
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.hostUrl' | translate }}
+      </h2>
+      <p class="mb-2">
+        {{ 'settings.addons.form.fields.hostUrlDescription' | translate }}
+      </p>
+      <input class="mb-4" pInputText [formControlName]="formControls.HostUrl" />
+      <h2 class="mb-2">
+        {{ 'settings.addons.form.fields.personalAccessToken' | translate }}
+      </h2>
+      <input
+        class="mb-4"
+        pInputText
+        [placeholder]="'settings.addons.form.fields.personalAccessToken' | translate"
+        [formControlName]="formControls.PersonalAccessToken"
+      />
+    }
+
+    <h2 class="mb-2">
+      {{ 'settings.addons.form.fields.accountName' | translate }}
+    </h2>
+    <p class="mb-2">
+      {{ 'settings.addons.form.fields.accountNameDescription' | translate }}
+    </p>
+    <input pInputText [formControlName]="formControls.AccountName" />
+  </p-card>
+
+  <div class="flex gap-4 justify-content-end align-self-center md:align-self-end mt-3">
+    @if (!isAuthorized()) {
+      <p-button
+        [label]="'settings.addons.form.buttons.back' | translate"
+        severity="info"
+        class="w-10rem btn-full-width"
+        (onClick)="handleBack()"
+        [disabled]="isSubmitting()"
+      ></p-button>
+
+      <p-button
+        class="w-10rem btn-full-width"
+        [label]="'settings.addons.form.buttons.authorize' | translate"
+        type="submit"
+        [disabled]="!isFormValid() || isSubmitting()"
+        [loading]="isSubmitting()"
+      ></p-button>
+    } @else {
+      <p-button
+        [label]="'settings.addons.form.buttons.cancel' | translate"
+        severity="info"
+        class="w-10rem btn-full-width"
+        routerLink="/settings/addons"
+        [disabled]="isSubmitting()"
+      ></p-button>
+
+      <p-button
+        class="w-10rem btn-full-width"
+        [label]="'settings.addons.form.buttons.reconnect' | translate"
+        type="submit"
+        [disabled]="!isFormValid() || isSubmitting()"
+      ></p-button>
+    }
+  </div>
+</form>
