@@ -5,7 +5,7 @@ import { MockProvider } from 'ng-mocks';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { mockStore } from '@osf/shared/mocks';
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { FunderFilter } from '@osf/shared/models';
 
 import { ResourceFiltersSelectors } from '../../resource-filters/store';
@@ -17,7 +17,7 @@ describe('FunderFilterComponent', () => {
   let component: FunderFilterComponent;
   let fixture: ComponentFixture<FunderFilterComponent>;
 
-  const store = mockStore;
+  const store = MOCK_STORE;
 
   const mockFunders: FunderFilter[] = [
     { id: '1', label: 'National Science Foundation', count: 25 },

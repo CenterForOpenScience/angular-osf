@@ -7,6 +7,7 @@ import { SelectChangeEvent } from 'primeng/select';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { ProviderFilter } from '@osf/shared/models';
 
 import { ResourceFiltersSelectors, SetProvider } from '../../resource-filters/store';
@@ -18,10 +19,7 @@ describe('ProviderFilterComponent', () => {
   let component: ProviderFilterComponent;
   let fixture: ComponentFixture<ProviderFilterComponent>;
 
-  const mockStore = {
-    selectSignal: jest.fn(),
-    dispatch: jest.fn(),
-  };
+  const mockStore = MOCK_STORE;
 
   const mockProviders: ProviderFilter[] = [
     { id: '1', label: 'Provider 1', count: 5 },

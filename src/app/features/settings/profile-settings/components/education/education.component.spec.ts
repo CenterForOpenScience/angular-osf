@@ -10,7 +10,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { mockStore } from '@shared/mocks';
+import { MOCK_STORE } from '@shared/mocks';
 
 import { EducationComponent } from './education.component';
 
@@ -19,7 +19,7 @@ describe('EducationComponent', () => {
   let fixture: ComponentFixture<EducationComponent>;
 
   beforeEach(async () => {
-    const store = mockStore;
+    const store = MOCK_STORE;
     store.selectSignal.mockImplementation(() => {
       return signal([]);
     });

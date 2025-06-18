@@ -1,12 +1,15 @@
-import { provideStore } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 
-import { MockComponent } from 'ng-mocks';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
 
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserState } from '@osf/core/store/user';
+import { UserSelectors } from '@osf/core/store/user';
+import { MOCK_STORE, MOCK_USER } from '@osf/shared/mocks';
 
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
@@ -17,9 +20,14 @@ describe('HeaderComponent', () => {
   let fixture: ComponentFixture<HeaderComponent>;
 
   beforeEach(async () => {
+    MOCK_STORE.selectSignal.mockImplementation((selector) => {
+      if (selector === UserSelectors.getCurrentUser) return () => signal(MOCK_USER);
+      return () => null;
+    });
+
     await TestBed.configureTestingModule({
-      imports: [HeaderComponent, MockComponent(BreadcrumbComponent)],
-      providers: [provideStore([UserState]), provideHttpClient(), provideHttpClientTesting()],
+      imports: [HeaderComponent, MockComponent(BreadcrumbComponent), MockPipe(TranslatePipe)],
+      providers: [MockProvider(Store, MOCK_STORE), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HeaderComponent);

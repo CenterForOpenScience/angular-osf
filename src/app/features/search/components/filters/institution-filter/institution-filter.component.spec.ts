@@ -7,7 +7,7 @@ import { SelectChangeEvent } from 'primeng/select';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { mockStore } from '@osf/shared/mocks';
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { InstitutionFilter } from '@osf/shared/models';
 
 import { ResourceFiltersSelectors, SetInstitution } from '../../resource-filters/store';
@@ -19,7 +19,7 @@ describe('InstitutionFilterComponent', () => {
   let component: InstitutionFilterComponent;
   let fixture: ComponentFixture<InstitutionFilterComponent>;
 
-  const store = mockStore;
+  const store = MOCK_STORE;
 
   const mockInstitutions: InstitutionFilter[] = [
     { id: '1', label: 'Harvard University', count: 15 },

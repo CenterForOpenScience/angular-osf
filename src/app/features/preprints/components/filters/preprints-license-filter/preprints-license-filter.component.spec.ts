@@ -15,6 +15,7 @@ import {
   GetAllOptions,
   PreprintsResourcesFiltersOptionsSelectors,
 } from '@osf/features/preprints/store/preprints-resources-filters-options';
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { LicenseFilter } from '@osf/shared/models';
 
 import { PreprintsLicenseFilterComponent } from './preprints-license-filter.component';
@@ -23,10 +24,7 @@ describe('LicenseFilterComponent', () => {
   let component: PreprintsLicenseFilterComponent;
   let fixture: ComponentFixture<PreprintsLicenseFilterComponent>;
 
-  const mockStore = {
-    selectSignal: jest.fn(),
-    dispatch: jest.fn(),
-  };
+  const mockStore = MOCK_STORE;
 
   const mockLicenses: LicenseFilter[] = [
     { id: '1', label: 'MIT License', count: 10 },

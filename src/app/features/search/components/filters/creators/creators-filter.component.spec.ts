@@ -7,7 +7,7 @@ import { SelectChangeEvent } from 'primeng/select';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { mockStore } from '@osf/shared/mocks';
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { Creator } from '@osf/shared/models';
 
 import { ResourceFiltersSelectors, SetCreator } from '../../resource-filters/store';
@@ -19,7 +19,7 @@ describe('CreatorsFilterComponent', () => {
   let component: CreatorsFilterComponent;
   let fixture: ComponentFixture<CreatorsFilterComponent>;
 
-  const store = mockStore;
+  const store = MOCK_STORE;
 
   const mockCreators: Creator[] = [
     { id: '1', name: 'John Doe' },

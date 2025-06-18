@@ -15,7 +15,7 @@ import {
   GetAllOptions,
   PreprintsResourcesFiltersOptionsSelectors,
 } from '@osf/features/preprints/store/preprints-resources-filters-options';
-import { mockStore } from '@osf/shared/mocks';
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { Creator } from '@osf/shared/models';
 
 import { PreprintsCreatorsFilterComponent } from './preprints-creators-filter.component';
@@ -24,7 +24,7 @@ describe('CreatorsFilterComponent', () => {
   let component: PreprintsCreatorsFilterComponent;
   let fixture: ComponentFixture<PreprintsCreatorsFilterComponent>;
 
-  const store = mockStore;
+  let store: Store;
 
   const mockCreators: Creator[] = [
     { id: '1', name: 'John Doe' },
@@ -33,7 +33,7 @@ describe('CreatorsFilterComponent', () => {
   ];
 
   beforeEach(async () => {
-    store.selectSignal.mockImplementation((selector) => {
+    MOCK_STORE.selectSignal.mockImplementation((selector) => {
       if (selector === PreprintsResourcesFiltersOptionsSelectors.getCreators) {
         return signal(mockCreators);
       }
@@ -47,9 +47,10 @@ describe('CreatorsFilterComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [PreprintsCreatorsFilterComponent],
-      providers: [MockProvider(Store, store)],
+      providers: [MockProvider(Store, MOCK_STORE)],
     }).compileComponents();
 
+    store = TestBed.inject(Store);
     fixture = TestBed.createComponent(PreprintsCreatorsFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

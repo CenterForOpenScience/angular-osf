@@ -6,6 +6,7 @@ module.exports = {
     '^@core/(.*)$': '<rootDir>/src/app/core/$1',
     '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',
     '^@styles/(.*)$': '<rootDir>/assets/styles/$1',
+    '^src/environments/environment$': '<rootDir>/src/environments/environment.ts',
   },
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [

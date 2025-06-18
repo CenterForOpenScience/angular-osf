@@ -15,7 +15,7 @@ import {
   GetAllOptions,
   PreprintsResourcesFiltersOptionsSelectors,
 } from '@osf/features/preprints/store/preprints-resources-filters-options';
-import { mockStore } from '@osf/shared/mocks';
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { InstitutionFilter } from '@osf/shared/models';
 
 import { PreprintsInstitutionFilterComponent } from './preprints-institution-filter.component';
@@ -24,7 +24,7 @@ describe('InstitutionFilterComponent', () => {
   let component: PreprintsInstitutionFilterComponent;
   let fixture: ComponentFixture<PreprintsInstitutionFilterComponent>;
 
-  const store = mockStore;
+  const store = MOCK_STORE;
 
   const mockInstitutions: InstitutionFilter[] = [
     { id: '1', label: 'Harvard University', count: 15 },

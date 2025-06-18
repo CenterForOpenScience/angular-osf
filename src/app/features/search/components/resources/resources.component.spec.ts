@@ -7,6 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceTab } from '@osf/shared/enums';
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
 import { ResourceCardComponent } from '@shared/components/resource-card/resource-card.component';
 
@@ -25,10 +26,7 @@ describe('ResourcesComponent', () => {
   let isWebSubject: BehaviorSubject<boolean>;
   let isMobileSubject: BehaviorSubject<boolean>;
 
-  const mockStore = {
-    selectSignal: jest.fn(),
-    dispatch: jest.fn(),
-  };
+  const mockStore = MOCK_STORE;
 
   beforeEach(async () => {
     isWebSubject = new BehaviorSubject<boolean>(true);

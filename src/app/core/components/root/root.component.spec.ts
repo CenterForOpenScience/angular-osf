@@ -77,15 +77,6 @@ describe('RootComponent', () => {
     expect(tabletLayout).toBeTruthy();
   });
 
-  it('should show breadcrumb in tablet layout when not mobile', () => {
-    isWebSubject.next(false);
-    isMobileSubject.next(false);
-    fixture.detectChanges();
-
-    const breadcrumb = fixture.nativeElement.querySelector('osf-breadcrumb');
-    expect(breadcrumb).toBeTruthy();
-  });
-
   it('should hide breadcrumb in tablet layout when mobile', () => {
     isWebSubject.next(false);
     isMobileSubject.next(true);

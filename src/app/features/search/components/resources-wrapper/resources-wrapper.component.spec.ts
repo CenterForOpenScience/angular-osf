@@ -8,6 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ResourceTab } from '@osf/shared/enums';
+import { MOCK_STORE } from '@osf/shared/mocks';
 
 import { SearchSelectors } from '../../store';
 import { GetAllOptions } from '../filters/store';
@@ -21,10 +22,7 @@ describe('ResourcesWrapperComponent', () => {
   let fixture: ComponentFixture<ResourcesWrapperComponent>;
   let store: jest.Mocked<Store>;
 
-  const mockStore = {
-    selectSignal: jest.fn(),
-    dispatch: jest.fn(),
-  };
+  const mockStore = MOCK_STORE;
 
   const mockRouter = {
     navigate: jest.fn(),

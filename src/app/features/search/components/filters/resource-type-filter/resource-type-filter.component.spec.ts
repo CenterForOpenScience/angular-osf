@@ -5,6 +5,8 @@ import { MockProvider } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
+import { MOCK_STORE } from '@osf/shared/mocks';
+
 import { ResourceFiltersSelectors } from '../../resource-filters/store';
 import { ResourceFiltersOptionsSelectors } from '../store';
 
@@ -14,10 +16,7 @@ describe('ResourceTypeFilterComponent', () => {
   let component: ResourceTypeFilterComponent;
   let fixture: ComponentFixture<ResourceTypeFilterComponent>;
 
-  const mockStore = {
-    selectSignal: jest.fn(),
-    dispatch: jest.fn(),
-  };
+  const mockStore = MOCK_STORE;
 
   const mockResourceTypes = [
     { id: '1', label: 'Article', count: 10 },

@@ -40,8 +40,8 @@ describe('MyProjectsComponent', () => {
         MockProvider(DialogService),
         MockProvider(ActivatedRoute, { queryParams: of({}) }),
         MockProvider(IS_XSMALL, isXSmallSubject),
-        MockProvider(IS_MEDIUM, isXSmallSubject),
-        MockProvider(IS_WEB, isXSmallSubject),
+        MockProvider(IS_MEDIUM, isMediumSubject),
+        MockProvider(IS_WEB, isWebSubject),
       ],
     }).compileComponents();
 

@@ -7,6 +7,7 @@ import { SelectChangeEvent } from 'primeng/select';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { PartOfCollectionFilter } from '@osf/shared/models';
 
 import { ResourceFiltersSelectors, SetPartOfCollection } from '../../resource-filters/store';
@@ -18,10 +19,7 @@ describe('PartOfCollectionFilterComponent', () => {
   let component: PartOfCollectionFilterComponent;
   let fixture: ComponentFixture<PartOfCollectionFilterComponent>;
 
-  const mockStore = {
-    selectSignal: jest.fn(),
-    dispatch: jest.fn(),
-  };
+  const mockStore = MOCK_STORE;
 
   const mockCollections: PartOfCollectionFilter[] = [
     { id: '1', label: 'Collection 1', count: 5 },

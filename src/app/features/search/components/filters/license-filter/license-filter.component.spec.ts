@@ -7,6 +7,7 @@ import { SelectChangeEvent } from 'primeng/select';
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { LicenseFilter } from '@osf/shared/models';
 
 import { ResourceFiltersSelectors, SetLicense } from '../../resource-filters/store';
@@ -18,10 +19,7 @@ describe('LicenseFilterComponent', () => {
   let component: LicenseFilterComponent;
   let fixture: ComponentFixture<LicenseFilterComponent>;
 
-  const mockStore = {
-    selectSignal: jest.fn(),
-    dispatch: jest.fn(),
-  };
+  const mockStore = MOCK_STORE;
 
   const mockLicenses: LicenseFilter[] = [
     { id: '1', label: 'MIT License', count: 10 },

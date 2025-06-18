@@ -8,7 +8,7 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
-import { mockStore } from '@osf/shared/mocks';
+import { MOCK_STORE } from '@osf/shared/mocks';
 import { DateCreated } from '@osf/shared/models';
 
 import { ResourceFiltersSelectors, SetDateCreated } from '../../resource-filters/store';
@@ -20,7 +20,7 @@ describe('DateCreatedFilterComponent', () => {
   let component: DateCreatedFilterComponent;
   let fixture: ComponentFixture<DateCreatedFilterComponent>;
 
-  const store = mockStore;
+  const store = MOCK_STORE;
 
   const mockDates: DateCreated[] = [
     { value: '2024', count: 150 },
