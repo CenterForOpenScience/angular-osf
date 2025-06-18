@@ -1,0 +1,46 @@
+<p-panel class="edit-section">
+  <ng-template #header>
+    <div class="flex align-items-center justify-content-between w-full">
+      <h2 class="mr-2">{{ 'project.wiki.edit' | translate }}</h2>
+      <div class="ml-auto flex">
+        <p-button
+          [label]="'common.buttons.save' | translate"
+          severity="success"
+          class="mr-2"
+          [disabled]="!currentContent()"
+          (click)="save()"
+          [loading]="isSaving()"
+        ></p-button>
+        <p-button [label]="'common.buttons.revert' | translate" severity="danger" (click)="revert()"></p-button>
+      </div>
+    </div>
+  </ng-template>
+
+  <div class="mt-3 h-full">
+    <md-editor
+      id="md-editor"
+      [(ngModel)]="content"
+      [options]="options"
+      (onEditorLoaded)="onEditorLoaded($event)"
+      (onPreviewDomChanged)="onPreviewDomChanged($event)"
+      height="100%"
+    >
+      <slot custom-btns>
+        <button class="btn btn-sm btn-default" title="Undo" (click)="undo()">
+          <i class="fas fa-rotate-left"></i>
+        </button>
+        <button class="btn btn-sm btn-default" title="Redo" (click)="redo()">
+          <i class="fas fa-rotate-right"></i>
+        </button>
+        <div class="btn-group">
+          <button class="btn btn-sm btn-default" title="Horizontal rule <hr>" (click)="doHorizontalRule()">
+            <i class="fas fa-grip-lines"></i>
+          </button>
+        </div>
+        <button class="btn btn-sm btn-default" title="Wiki syntax help" (click)="openSyntaxHelpDialog()">
+          <i class="fas fa-question"></i>
+        </button>
+      </slot>
+    </md-editor>
+  </div>
+</p-panel>

@@ -1,0 +1,97 @@
+#md-editor,
+.editor-view-mode {
+  .md-editor-container {
+    .btn-group {
+      position: relative;
+      display: inline-flex;
+      vertical-align: middle;
+
+      .btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        transition: all 0.1s ease-in-out;
+        background-color: var(--white);
+
+        &:hover {
+          background-color: var(--grey-2);
+        }
+      }
+    }
+
+    &.md-editor-resizable {
+      margin-bottom: 0;
+    }
+
+    .tool-bar {
+      position: relative;
+      padding-right: 40px;
+      background-color: var(--white);
+
+      .hide-split {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
+
+    h1,
+    h2 {
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-bottom: 10px;
+    }
+
+    blockquote {
+      padding: 10px 20px;
+      margin: 0 0 20px;
+      font-size: 17.5px;
+      border-left: 5px solid #eee;
+    }
+
+    hr {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      border: 0;
+      border-top: 1px solid #eee;
+    }
+
+    ul,
+    ol {
+      margin-top: 0;
+      margin-bottom: 10px;
+      margin-block-start: 1em;
+      margin-block-end: 1em;
+      padding-inline-start: 40px;
+
+      li {
+        list-style: initial;
+      }
+    }
+
+    ol {
+      li {
+        list-style-type: decimal;
+      }
+    }
+  }
+  .md-footer {
+    display: none;
+  }
+}
+
+.compare-view {
+  white-space: pre-wrap;
+
+  .added {
+    background-color: var(--green-2);
+  }
+
+  .removed {
+    background-color: var(--red-2);
+  }
+}

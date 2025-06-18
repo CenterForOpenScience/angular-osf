@@ -8,14 +8,25 @@
       @if (isLoading()) {
         <p-skeleton width="12rem" height="37px"></p-skeleton>
       } @else {
-        <h1>{{ title() }}</h1>
+        <h1 class="flex align-items-center">
+          {{ title() }}
+          @if (tooltip()) {
+            <i
+              class="fas fa-circle-info ml-1 blue-icon cursor-pointer"
+              [pTooltip]="tooltip()"
+              tooltipPosition="right"
+            ></i>
+          }
+        </h1>
       }
     </div>
+
     @if (showButton()) {
       <div class="ml-auto w-full md:w-auto">
         <p-button class="w-full" styleClass="w-full" [label]="buttonLabel()" (onClick)="buttonClick.emit()"></p-button>
       </div>
     }
+    <ng-content #subContent></ng-content>
   </div>
 
   @if (description()) {

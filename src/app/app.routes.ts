@@ -159,9 +159,8 @@ export const routes: Routes = [
               import('@osf/features/project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
           },
           {
-            path: 'settings',
-            loadComponent: () =>
-              import('./features/project/settings/settings.component').then((mod) => mod.SettingsComponent),
+            path: 'wiki',
+            loadComponent: () => import('@osf/features/project/wiki/wiki.component').then((mod) => mod.WikiComponent),
           },
           {
             path: 'addons',

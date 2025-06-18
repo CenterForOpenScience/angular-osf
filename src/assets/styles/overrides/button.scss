@@ -1,9 +1,20 @@
 @use "../variables" as var;
 @use "../mixins" as mix;
 
+:root {
+  --p-button-padding-x: 1rem;
+  --p-button-padding-y: 0.5625rem;
+
+  --p-button-label-font-weight: 700;
+
+  --p-button-raised-shadow: 0 0 4px 0 var(--grey-outline);
+}
+
 .p-button {
-  font-size: 0.875rem;
-  line-height: 1.5rem;
+  &:not(.p-button-icon-only) {
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+  }
 
   &.p-button-info {
     --p-button-label-font-weight: 400;
@@ -20,39 +31,8 @@
   }
 }
 
-.btn-icon-text,
-.btn-icon {
-  .p-button {
-    background-color: transparent;
-    color: var.$pr-blue-1;
-    font-weight: 600;
-    @include mix.flex-center;
-    box-shadow: 0 0 4px 0 var.$grey-outline;
-    border: none;
-
-    &:hover {
-      color: var.$pr-blue-3;
-    }
-
-    &:disabled {
-      color: var.$grey-1;
-    }
-  }
-}
-
-.btn-icon {
-  .p-button {
-    color: var.$dark-blue-1;
-    padding: 0.7rem;
-
-    &:hover {
-      color: var.$pr-blue-1;
-    }
-
-    &:disabled {
-      color: var.$grey-1;
-    }
-  }
+.btn-icon-only .p-button {
+  padding: mix.rem(13px) mix.rem(20px);
 }
 
 .btn-full-width {
@@ -63,11 +43,11 @@
   }
 }
 
-:root {
-  --p-button-padding-x: 1rem;
-  --p-button-padding-y: 0.5625rem;
+.danger-icon-btn {
+  --p-button-text-danger-hover-background: transparent;
+  --p-button-text-danger-active-background: transparent;
 
-  --p-button-label-font-weight: 700;
-
-  --p-button-raised-shadow: 0 0 4px 0 var(--grey-outline);
+  &:hover {
+    --p-button-text-danger-color: var(--red-3);
+  }
 }

@@ -212,6 +212,11 @@ export class SettingsState {
   @Action(CreateViewOnlyLink)
   createViewOnlyLink(ctx: StateContext<SettingsStateModel>, action: CreateViewOnlyLink) {
     const state = ctx.getState();
+
+    ctx.patchState({
+      viewOnlyLinks: { ...state.viewOnlyLinks, isLoading: true, error: null },
+    });
+
     return this.viewOnlyLinksService.createViewOnlyLink(action.projectId, action.payload).pipe(
       tap((data: PaginatedViewOnlyLinksModel) => {
         ctx.patchState({
@@ -231,6 +236,12 @@ export class SettingsState {
 
   @Action(DeleteViewOnlyLink)
   deleteViewOnlyLink(ctx: StateContext<SettingsStateModel>, action: DeleteViewOnlyLink) {
+    const state = ctx.getState();
+
+    ctx.patchState({
+      viewOnlyLinks: { ...state.viewOnlyLinks, isLoading: true, error: null },
+    });
+
     return this.viewOnlyLinksService.deleteLink(action.projectId, action.linkId).pipe(
       tap(() => {
         ctx.setState(

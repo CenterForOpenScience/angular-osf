@@ -1,0 +1,57 @@
+<osf-sub-header [title]="'navigation.project.wiki' | translate" [tooltip]="'project.wiki.tooltip' | translate">
+  <p-buttongroup class="ml-auto">
+    <p-button
+      [label]="'project.wiki.view' | translate"
+      [variant]="wikiModes().view ? undefined : 'outlined'"
+      (onClick)="toggleMode(WikiModes.View)"
+    />
+    <p-button
+      [label]="'project.wiki.edit' | translate"
+      [variant]="wikiModes().edit ? undefined : 'outlined'"
+      (onClick)="toggleMode(WikiModes.Edit)"
+    />
+    <p-button
+      [label]="'project.wiki.compare' | translate"
+      [variant]="wikiModes().compare ? undefined : 'outlined'"
+      (onClick)="toggleMode(WikiModes.Compare)"
+    />
+  </p-buttongroup>
+</osf-sub-header>
+
+<section class="flex flex-column lg:flex-row bg-white flex-1 h-full p-5 gap-4 w-full overflow-auto wiki-page">
+  <osf-wiki-list
+    [list]="wikiList()"
+    [projectId]="projectId()"
+    [isLoading]="isWikiListLoading()"
+    [componentsList]="componentsWikiList()"
+    [currentWikiId]="currentWikiId()"
+    (createWiki)="onCreateWiki()"
+    (deleteWiki)="onDeleteWiki()"
+  ></osf-wiki-list>
+  @if (wikiModes().view) {
+    <osf-view-section
+      [versions]="wikiVersions()"
+      [previewContent]="previewContent()"
+      [versionContent]="versionContent()"
+      [isLoading]="isWikiVersionLoading()"
+      (selectVersion)="onSelectVersion($event)"
+    ></osf-view-section>
+  }
+  @if (wikiModes().edit) {
+    <osf-edit-section
+      [currentContent]="previewContent()"
+      (contentChange)="updateWikiPreviewContent($event)"
+      [isSaving]="isWikiVersionSubmitting()"
+      (saveContent)="onSaveContent($event)"
+    ></osf-edit-section>
+  }
+  @if (wikiModes().compare) {
+    <osf-compare-section
+      [versions]="wikiVersions()"
+      [previewContent]="previewContent()"
+      [versionContent]="compareVersionContent()"
+      [isLoading]="isWikiVersionLoading()"
+      (selectVersion)="onSelectCompareVersion($event)"
+    ></osf-compare-section>
+  }
+</section>

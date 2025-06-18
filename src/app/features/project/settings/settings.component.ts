@@ -1,8 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
-import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { TabPanels } from 'primeng/tabs';
@@ -45,8 +44,8 @@ import {
   NotificationSubscriptionSelectors,
   UpdateNotificationSubscriptionForNodeId,
 } from '@osf/features/settings/notifications/store';
-import { LoaderService, ToastService } from '@osf/shared/services';
-import { CustomValidators, defaultConfirmationConfig } from '@osf/shared/utils';
+import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
+import { CustomValidators } from '@osf/shared/utils';
 import { SubHeaderComponent } from '@shared/components';
 import { ProjectFormControls, SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 import { UpdateNodeRequestModel } from '@shared/models';
@@ -77,8 +76,7 @@ import { UpdateNodeRequestModel } from '@shared/models';
 })
 export class SettingsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly translateService = inject(TranslateService);
-  private readonly confirmationService = inject(ConfirmationService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
   private readonly loaderService = inject(LoaderService);
 
@@ -183,18 +181,11 @@ export class SettingsComponent implements OnInit {
   }
 
   deleteLinkItem(link: ViewOnlyLinkModel): void {
-    this.confirmationService.confirm({
-      ...defaultConfirmationConfig,
-      message: this.translateService.instant('myProjects.settings.delete.message'),
-      header: this.translateService.instant('myProjects.settings.delete.title', {
-        name: link.name,
-      }),
-      acceptButtonProps: {
-        ...defaultConfirmationConfig.acceptButtonProps,
-        severity: 'danger',
-        label: this.translateService.instant('settings.developerApps.list.deleteButton'),
-      },
-      accept: () => {
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'myProjects.settings.delete.title',
+      headerParams: { name: link.name },
+      messageKey: 'myProjects.settings.delete.message',
+      onConfirm: () => {
         this.actions.deleteViewOnlyLink(this.projectId(), link.id).subscribe();
       },
     });

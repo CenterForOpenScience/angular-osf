@@ -1,0 +1,18 @@
+<form [formGroup]="addWikiForm" (ngSubmit)="submitForm()">
+  <osf-text-input
+    [control]="addWikiForm.controls['name']"
+    [placeholder]="'project.wiki.addNewWikiPlaceholder'"
+    [maxLength]="inputLimits.fullName.maxLength"
+  >
+  </osf-text-input>
+
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button [label]="'common.buttons.cancel' | translate" severity="info" (click)="dialogRef.close()" />
+    <p-button
+      [label]="'common.buttons.add' | translate"
+      type="submit"
+      [loading]="isSubmitting()"
+      [disabled]="addWikiForm.invalid"
+    />
+  </div>
+</form>

@@ -1,8 +1,7 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
-import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
@@ -11,48 +10,32 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@ang
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { defaultConfirmationConfig, IS_XSMALL } from '@osf/shared/utils';
+import { CustomConfirmationService } from '@osf/shared/services';
+import { IS_XSMALL } from '@osf/shared/utils';
 
 import { Token } from '../../models';
 import { DeleteToken, GetTokens, TokensSelectors } from '../../store';
 
 @Component({
   selector: 'osf-tokens-list',
-  imports: [Button, Card, RouterLink, Skeleton, TranslateModule],
+  imports: [Button, Card, RouterLink, Skeleton, TranslatePipe],
   templateUrl: './tokens-list.component.html',
   styleUrl: './tokens-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TokensListComponent implements OnInit {
-  #store = inject(Store);
-  #confirmationService = inject(ConfirmationService);
-  #translateService = inject(TranslateService);
+  actions = createDispatchMap({ getTokens: GetTokens, deleteToken: DeleteToken });
+  customConfirmationService = inject(CustomConfirmationService);
 
   protected readonly isLoading = signal(false);
   protected readonly isXSmall = toSignal(inject(IS_XSMALL));
 
-  tokens = this.#store.selectSignal(TokensSelectors.getTokens);
-
-  deleteToken(token: Token) {
-    this.#confirmationService.confirm({
-      ...defaultConfirmationConfig,
-      message: this.#translateService.instant('settings.tokens.confirmation.delete.message'),
-      header: this.#translateService.instant('settings.tokens.confirmation.delete.title', { name: token.name }),
-      acceptButtonProps: {
-        ...defaultConfirmationConfig.acceptButtonProps,
-        severity: 'danger',
-        label: this.#translateService.instant('settings.tokens.list.deleteButton'),
-      },
-      accept: () => {
-        this.#store.dispatch(new DeleteToken(token.id));
-      },
-    });
-  }
+  tokens = select(TokensSelectors.getTokens);
 
   ngOnInit(): void {
     if (!this.tokens().length) {
       this.isLoading.set(true);
-      this.#store.dispatch(GetTokens).subscribe({
+      this.actions.getTokens().subscribe({
         complete: () => {
           this.isLoading.set(false);
         },
@@ -61,5 +44,14 @@ export class TokensListComponent implements OnInit {
         },
       });
     }
+  }
+
+  deleteToken(token: Token) {
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'settings.tokens.confirmation.delete.title',
+      headerParams: { name: token.name },
+      messageKey: 'settings.tokens.confirmation.delete.message',
+      onConfirm: () => this.actions.deleteToken(token.id),
+    });
   }
 }

@@ -16,8 +16,13 @@
                 <a class="linked-project-title" [href]="'my-projects/' + linkedProject.id">{{ linkedProject.title }}</a>
               </h2>
               <div>
-                <p-button class="btn-icon" (click)="componentActionMenu.toggle($event)">
-                  <i class="osf-icon-dots"></i>
+                <p-button
+                  severity="contrast"
+                  variant="text"
+                  raised
+                  icon="fas fa-ellipsis-v"
+                  (click)="componentActionMenu.toggle($event)"
+                >
                 </p-button>
 
                 <p-menu appendTo="body" #componentActionMenu popup>

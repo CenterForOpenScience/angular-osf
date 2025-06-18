@@ -1,0 +1,9 @@
+:host {
+  flex: 1 1 25%;
+  min-width: 25%;
+
+  md-editor {
+    display: block;
+    height: 100%;
+  }
+}

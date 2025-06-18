@@ -1,9 +1,8 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
 .icon-copy-btn {
   top: 50%;
-  right: mix.rem(16px);
+  right: mix.rem(6px);
   transform: translateY(-50%);
   width: mix.rem(24px);
   z-index: 1;

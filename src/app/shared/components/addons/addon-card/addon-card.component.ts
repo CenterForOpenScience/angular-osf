@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -6,13 +6,12 @@ import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
 import { NgClass } from '@angular/common';
-import { Component, computed, inject, input, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Addon, AuthorizedAddon, ConfiguredAddon } from '@shared/models';
+import { CustomConfirmationService, LoaderService } from '@osf/shared/services';
+import { Addon, AuthorizedAddon } from '@shared/models';
 import { DeleteAuthorizedAddon } from '@shared/stores/addons';
-import { IS_XSMALL } from '@shared/utils';
 
 @Component({
   selector: 'osf-addon-card',
@@ -21,14 +20,15 @@ import { IS_XSMALL } from '@shared/utils';
   styleUrl: './addon-card.component.scss',
 })
 export class AddonCardComponent {
-  private router = inject(Router);
-  private store = inject(Store);
-  readonly card = input<Addon | AuthorizedAddon | ConfiguredAddon | null>(null);
+  private readonly router = inject(Router);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly loaderService = inject(LoaderService);
+  private readonly actions = createDispatchMap({ deleteAuthorizedAddon: DeleteAuthorizedAddon });
+
+  readonly card = input<Addon | AuthorizedAddon | null>(null);
   readonly cardButtonLabel = input<string>('');
   readonly showDangerButton = input<boolean>(false);
-  protected isDialogVisible = signal(false);
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly isDisabling = signal(false);
+
   protected readonly addonTypeString = computed(() => {
     const addon = this.card();
     if (addon) {
@@ -70,27 +70,22 @@ export class AddonCardComponent {
   }
 
   showDisableDialog(): void {
-    this.isDialogVisible.set(true);
-  }
-
-  hideDialog(): void {
-    if (!this.isDisabling()) {
-      this.isDialogVisible.set(false);
-    }
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'settings.addons.messages.deleteConfirmation.title',
+      messageKey: 'settings.addons.messages.deleteConfirmation.message',
+      acceptLabelKey: 'settings.addons.form.buttons.disable',
+      onConfirm: () => this.onDisableAddon(),
+    });
   }
 
   onDisableAddon(): void {
     const addonId = this.card()?.id;
+
     if (addonId) {
-      this.isDisabling.set(true);
-      this.store.dispatch(new DeleteAuthorizedAddon(addonId, this.addonTypeString())).subscribe({
-        complete: () => {
-          this.isDisabling.set(false);
-          this.isDialogVisible.set(false);
-        },
-        error: () => {
-          this.isDisabling.set(false);
-        },
+      this.loaderService.show();
+      this.actions.deleteAuthorizedAddon(addonId, this.addonTypeString()).subscribe({
+        complete: () => this.loaderService.hide(),
+        error: () => this.loaderService.hide(),
       });
     }
   }

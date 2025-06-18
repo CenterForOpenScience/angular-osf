@@ -1,0 +1,22 @@
+:host {
+  display: flex;
+}
+.wiki-list {
+  width: auto;
+
+  &-expanded {
+    min-width: 300px;
+    width: 300px;
+  }
+
+  .active {
+    background-color: var(--pr-blue-1);
+    color: var(--white);
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .wiki-list {
+    width: 100%;
+  }
+}

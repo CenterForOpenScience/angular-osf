@@ -57,12 +57,7 @@
 }
 
 <div class="flex gap-2 ml-auto">
-  <p-button
-    (click)="dialogRef.close()"
-    [text]="true"
-    severity="info"
-    [label]="'common.buttons.cancel' | translate"
-  ></p-button>
+  <p-button (click)="dialogRef.close()" text severity="info" [label]="'common.buttons.cancel' | translate"></p-button>
 
   @if (this.config.data.action === 'move') {
     <p-button

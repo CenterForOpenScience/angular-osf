@@ -52,9 +52,10 @@
           <td>{{ item.anonymous ? 'Yes' : 'No' }}</td>
           <td>
             <p-button
-              ariaLabel="Delete link"
-              icon="osf-icon-trash"
-              class="btn-icon-text icon-copy-btn"
+              class="danger-icon-btn"
+              icon="fas fa-trash"
+              severity="danger"
+              text
               (click)="deleteLink.emit(item)"
             >
             </p-button>

@@ -1,11 +1,12 @@
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
+import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'osf-sub-header',
-  imports: [Button, Skeleton],
+  imports: [Button, Tooltip, Skeleton],
   templateUrl: './sub-header.component.html',
   styleUrl: './sub-header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,6 +16,7 @@ export class SubHeaderComponent {
   buttonLabel = input<string>('');
   title = input<string>('');
   icon = input<string>('');
+  tooltip = input<string>('');
   description = input<string>('');
   isLoading = input<boolean>(false);
   buttonClick = output<void>();

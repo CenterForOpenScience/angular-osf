@@ -18,7 +18,6 @@ import { LANGUAGES, RESOURCE_TYPES } from '../../constants/files-details.constan
 
 @Component({
   selector: 'osf-file-metadata',
-  standalone: true,
   imports: [Button, Dialog, InputText, Select, FormsModule, ReactiveFormsModule, Skeleton, TranslateModule],
   templateUrl: './file-metadata.component.html',
   styleUrl: './file-metadata.component.scss',

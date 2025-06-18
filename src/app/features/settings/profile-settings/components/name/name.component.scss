@@ -6,10 +6,6 @@
     border: 1px solid var.$grey-2;
     border-radius: 8px;
 
-    h3 {
-      text-transform: none;
-    }
-
     label {
       font-weight: 300;
       color: var.$dark-blue-1;
@@ -23,10 +19,6 @@
 
     .styles-container {
       column-gap: 8.5rem;
-
-      h3 {
-        font-weight: 400;
-      }
 
       .style-wrapper {
         row-gap: 0.85rem;

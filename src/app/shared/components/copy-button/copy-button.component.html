@@ -1,3 +1,9 @@
-<p-button class="icon-copy-btn btn-icon-text" ariaLabel="Copy" [pTooltip]="tooltip() | translate" (click)="copy()">
-  <i class="osf-icon-copy"></i>
+<p-button
+  class="copy-icon-btn"
+  severity="contrast"
+  icon="fas fa-clone"
+  text
+  [pTooltip]="tooltip() | translate"
+  (click)="copy()"
+>
 </p-button>

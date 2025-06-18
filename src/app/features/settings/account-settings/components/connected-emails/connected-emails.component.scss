@@ -3,109 +3,109 @@
 
 :host {
   @extend .account-setting;
+}
 
-  .icon {
-    &--sm {
-      width: 0.7rem;
-      height: 0.7rem;
-      margin-left: 0.7rem;
-    }
-
-    &--md {
-      width: 1rem;
-      height: 1rem;
-    }
+.icon {
+  &--sm {
+    width: 0.7rem;
+    height: 0.7rem;
+    margin-left: 0.7rem;
   }
 
-  .account-setting {
-    &-emails {
-      display: flex;
-      flex-direction: column;
-      gap: 1.7rem;
-    }
+  &--md {
+    width: 1rem;
+    height: 1rem;
+  }
+}
 
-    &-email {
+.account-setting {
+  &-emails {
+    display: flex;
+    flex-direction: column;
+    gap: 1.7rem;
+  }
+
+  &-email {
+    display: flex;
+    gap: 2rem;
+    align-items: start;
+
+    &-center {
       display: flex;
       gap: 2rem;
-      align-items: start;
-
-      &-center {
-        display: flex;
-        gap: 2rem;
-        align-items: center;
-      }
-
-      &__title {
-        min-width: 10rem;
-        min-height: 2.8rem;
-        display: flex;
-        align-items: center;
-      }
-
-      &__container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-      }
-
-      &--readonly {
-        display: flex;
-        align-items: center;
-        border: 1px solid var.$grey-2;
-        padding: 0.285rem 0.85rem;
-        border-radius: 0.285rem;
-        min-height: 2.8rem;
-
-        &--address {
-          max-width: 14rem;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        i {
-          color: var.$dark-blue-1;
-          font-size: 0.7rem;
-          margin-left: 0.7rem;
-          cursor: pointer;
-          font-weight: 400;
-        }
-      }
-
-      &__value {
-        display: flex;
-        align-items: center;
-        gap: 0.428rem;
-        min-height: 2.8rem;
-      }
+      align-items: center;
     }
-  }
 
-  @media (max-width: var.$breakpoint-sm) {
-    .account-setting-email {
+    &__title {
+      min-width: 10rem;
+      min-height: 2.8rem;
+      display: flex;
+      align-items: center;
+    }
+
+    &__container {
+      display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 2rem;
+    }
 
-      &__title {
-        min-height: 2rem;
+    &--readonly {
+      display: flex;
+      align-items: center;
+      border: 1px solid var.$grey-2;
+      padding: 0.285rem 0.85rem;
+      border-radius: 0.285rem;
+      min-height: 2.8rem;
+
+      &--address {
+        max-width: 14rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
-      &__container {
-        gap: 0.7rem;
-      }
-
-      &__value {
-        min-height: 2rem;
+      i {
+        color: var.$dark-blue-1;
+        font-size: 0.7rem;
+        margin-left: 0.7rem;
+        cursor: pointer;
+        font-weight: 400;
       }
     }
-  }
 
-  @media (max-width: 410px) {
-    .account-setting-email {
-      &__value {
-        min-height: 2rem;
-        flex-wrap: wrap;
-      }
+    &__value {
+      display: flex;
+      align-items: center;
+      gap: 0.428rem;
+      min-height: 2.8rem;
+    }
+  }
+}
+
+@media (max-width: var.$breakpoint-sm) {
+  .account-setting-email {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    &__title {
+      min-height: 2rem;
+    }
+
+    &__container {
+      gap: 0.7rem;
+    }
+
+    &__value {
+      min-height: 2rem;
+    }
+  }
+}
+
+@media (max-width: 410px) {
+  .account-setting-email {
+    &__value {
+      min-height: 2rem;
+      flex-wrap: wrap;
     }
   }
 }

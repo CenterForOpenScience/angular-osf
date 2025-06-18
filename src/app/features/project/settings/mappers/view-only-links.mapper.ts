@@ -10,8 +10,8 @@ export class ViewOnlyLinksMapper {
       name: item.attributes.name,
       anonymous: item.attributes.anonymous,
       creator: {
-        fullName: item.relationships.creator.data?.id ?? '',
-        url: item.relationships.creator.links.related.href,
+        id: item.embeds.creator.data.id,
+        fullName: item.embeds.creator.data.attributes.full_name ?? '',
       },
       nodes: [],
     }));
@@ -36,8 +36,8 @@ export class ViewOnlyLinksMapper {
       name: item.attributes.name,
       anonymous: item.attributes.anonymous,
       creator: {
-        fullName: item.relationships.creator.data?.id ?? '',
-        url: item.relationships.creator.links.related.href,
+        id: item.embeds.creator.data.id,
+        fullName: item.embeds.creator.data.attributes.full_name ?? '',
       },
       nodes: [],
     };

@@ -19,7 +19,6 @@ import { CollectionsSearchResultsComponent } from '../collections-search-results
 
 @Component({
   selector: 'osf-collections-main-content',
-  standalone: true,
   imports: [
     NgOptimizedImage,
     Select,

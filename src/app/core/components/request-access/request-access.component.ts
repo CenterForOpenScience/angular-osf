@@ -5,6 +5,7 @@ import { Textarea } from 'primeng/textarea';
 
 import { map, of } from 'rxjs';
 
+import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -35,10 +36,17 @@ export class RequestAccessComponent {
 
   requestAccess() {
     this.loaderService.show();
-    this.requestAccessService.requestAccessToProject(this.projectId(), this.comment()).subscribe(() => {
-      this.loaderService.hide();
-      this.router.navigate(['/']);
-      this.toastService.showSuccess('requestAccess.requestedSuccessMessage');
+    this.requestAccessService.requestAccessToProject(this.projectId(), this.comment()).subscribe({
+      next: () => {
+        this.loaderService.hide();
+        this.router.navigate(['/']);
+        this.toastService.showSuccess('requestAccess.requestedSuccessMessage');
+      },
+      error: (error: HttpErrorResponse) => {
+        if (error.status === 409) {
+          this.toastService.showError('requestAccess.alreadyRequestedMessage');
+        }
+      },
     });
   }
 

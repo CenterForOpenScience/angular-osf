@@ -16,16 +16,19 @@ export class ViewOnlyLinksService {
   private readonly jsonApiService = inject(JsonApiService);
 
   getViewOnlyLinksData(projectId: string): Observable<PaginatedViewOnlyLinksModel> {
+    const params: Record<string, unknown> = { embed: 'creator' };
+
     return this.jsonApiService
-      .get<ViewOnlyLinksResponseModel>(`${environment.apiUrl}/nodes/${projectId}/view_only_links`)
+      .get<ViewOnlyLinksResponseModel>(`${environment.apiUrl}/nodes/${projectId}/view_only_links`, params)
       .pipe(map((response) => ViewOnlyLinksMapper.fromResponse(response, projectId)));
   }
 
   createViewOnlyLink(projectId: string, payload: ViewOnlyLink): Observable<PaginatedViewOnlyLinksModel> {
+    const data = { data: { ...payload } };
+    const params: Record<string, unknown> = { embed: 'creator' };
+
     return this.jsonApiService
-      .post<ViewOnlyLink>(`${environment.apiUrl}/nodes/${projectId}/view_only_links/`, {
-        data: { ...payload },
-      })
+      .post<ViewOnlyLink>(`${environment.apiUrl}/nodes/${projectId}/view_only_links/`, data, params)
       .pipe(map((response) => ViewOnlyLinksMapper.fromSingleResponse(response, projectId)));
   }
 

@@ -13,6 +13,7 @@
       "rename": "Rename",
       "confirm": "Confirm",
       "disconnect": "Disconnect",
+      "revert": "Revert",
       "next": "Next",
       "skip": "Skip",
       "done": "Done",
@@ -33,6 +34,10 @@
     },
     "labels": {
       "downloads": "Downloads"
+    },
+    "deleteConfirmation": {
+      "header": "Delete",
+      "message": "Are you sure you want to proceed?"
     }
   },
   "navigation": {
@@ -66,6 +71,7 @@
       "overview": "Overview",
       "metadata": "Metadata",
       "files": "Files",
+      "wiki": "Wiki",
       "registrations": "Registrations",
       "settings": "Settings",
       "contributors": "Contributors",
@@ -571,6 +577,37 @@
         "bookmarks": "Bookmarks",
         "duplicate": "Duplicate",
         "share": "Share"
+      }
+    },
+    "wiki": {
+      "addNewWiki": "Add new wiki page",
+      "deleteWiki": "Delete wiki page",
+      "deleteWikiMessage": "Are you sure you want to delete this wiki page?",
+      "addNewWikiPlaceholder": "New wiki name",
+      "addWikiSuccess": "Wiki page has been added successfully",
+      "tooltip": "This page is currently connected to the collaborative wiki. All edits made will be visible to contributors with write permission in real time. Changes will be stored but not published until you click the \"Save\" button.",
+      "view": "View",
+      "edit": "Edit",
+      "compare": "Compare",
+      "version": {
+        "title": "Version",
+        "preview": "Preview",
+        "current": "Current",
+        "successSaved": "Wiki version has been saved successfully",
+        "noContent": "Add important information, links, or images here to describe your project."
+      },
+      "list": {
+        "header": "Project Wiki Pages",
+        "componentsHeader": "Components Wiki Pages"
+      },
+      "syntaxHelp": {
+        "header": "Wiki Syntax Help",
+        "startMsg": "The wiki uses the",
+        "endMsg": "syntax. For more information and examples, go to our",
+        "links": {
+          "markdown": "Markdown",
+          "guide": "Guides"
+        }
       }
     },
     "registrations": {
@@ -1131,7 +1168,7 @@
         "description": "To merge an existing account with this one or to log in with multiple email addresses, add an alternate email address below. All projects and components will be displayed under the email address listed as primary.",
         "primaryEmail": "Primary Email:",
         "alternateEmails": "Alternate Emails:",
-        "unconfirmedEmails": "Unconfirmed emails:",
+        "unconfirmedEmails": "Unconfirmed Emails:",
         "buttons": {
           "makePrimary": "Make Primary",
           "resend": "Resend",
@@ -1140,6 +1177,10 @@
         },
         "dialog": {
           "title": "Add alternative email"
+        },
+        "deleteDialog": {
+          "header": "Delete email",
+          "message": "Are you sure you want to delete <b>{{name}}</b> email?"
         }
       },
       "connectedIdentities": {
@@ -1331,7 +1372,8 @@
     "requestAccess": "Request Access",
     "switchAccount": "Switch Account",
     "commentLabel": "Comment (Optional)",
-    "requestedSuccessMessage": "Your request for access has been sent."
+    "requestedSuccessMessage": "Your request for access has been sent.",
+    "alreadyRequestedMessage": "You already requested access."
   },
   "validation": {
     "required": "The field is required.",

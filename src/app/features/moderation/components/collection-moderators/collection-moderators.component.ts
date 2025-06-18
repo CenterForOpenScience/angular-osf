@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
@@ -13,8 +12,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 
 import { EducationHistoryComponent, EmploymentHistoryComponent, SearchInputComponent } from '@osf/shared/components';
-import { LoaderService, ToastService } from '@osf/shared/services';
-import { defaultConfirmationConfig } from '@osf/shared/utils';
+import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
 import { AddModeratorType } from '../../enums';
 import { ModeratorDialogAddModel, ModeratorModel } from '../../models';
@@ -43,7 +41,7 @@ export class CollectionModeratorsComponent implements OnInit {
 
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
-  private readonly confirmationService = inject(ConfirmationService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly dialogService = inject(DialogService);
   private readonly toastService = inject(ToastService);
   private readonly loaderService = inject(LoaderService);
@@ -141,18 +139,12 @@ export class CollectionModeratorsComponent implements OnInit {
   }
 
   removeModerator(moderator: ModeratorModel) {
-    this.confirmationService.confirm({
-      ...defaultConfirmationConfig,
-      header: this.translateService.instant('moderation.removeDialog.title'),
-      message: this.translateService.instant('moderation.removeDialog.message', {
-        name: moderator.fullName,
-      }),
-      acceptButtonProps: {
-        ...defaultConfirmationConfig.acceptButtonProps,
-        severity: 'danger',
-        label: this.translateService.instant('common.buttons.remove'),
-      },
-      accept: () => {
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'moderation.removeDialog.title',
+      messageParams: { name: moderator.fullName },
+      messageKey: 'moderation.removeDialog.message',
+      acceptLabelKey: 'common.buttons.remove',
+      onConfirm: () => {
         this.toastService.showSuccess('moderation.toastMessages.deleteSuccessMessage', { name: moderator.fullName });
       },
     });

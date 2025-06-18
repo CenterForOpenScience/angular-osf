@@ -1,3 +1,5 @@
+import { UserGetResponse } from '@osf/core/models';
+
 export interface ViewOnlyLinksResponseModel {
   data: ViewOnlyLink[];
   links: PaginationLinks;
@@ -14,6 +16,11 @@ export interface ViewOnlyLink {
     date_created: string;
     anonymous: boolean;
     name: string;
+  };
+  embeds: {
+    creator: {
+      data: UserGetResponse;
+    };
   };
   relationships: {
     creator: {

@@ -9,7 +9,6 @@ import { ProjectFilesSelectors } from '@osf/features/project/files/store';
 
 @Component({
   selector: 'osf-project-metadata',
-  standalone: true,
   imports: [DatePipe, TranslateModule],
   templateUrl: './project-metadata.component.html',
   styleUrl: './project-metadata.component.scss',

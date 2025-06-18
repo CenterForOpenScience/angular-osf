@@ -1,9 +1,9 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService } from 'primeng/dynamicdialog';
 import { ProgressSpinner } from 'primeng/progressspinner';
 import { Skeleton } from 'primeng/skeleton';
 
@@ -13,8 +13,10 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signa
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { CustomConfirmationService } from '@osf/shared/services';
+import { IS_SMALL } from '@osf/shared/utils';
 
+import { AccountEmail } from '../../models';
 import { AccountSettingsService } from '../../services';
 import { AccountSettingsSelectors, DeleteEmail, MakePrimary } from '../../store';
 import { AddEmailComponent } from '../add-email/add-email.component';
@@ -27,18 +29,27 @@ import { AddEmailComponent } from '../add-email/add-email.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConnectedEmailsComponent {
-  readonly #store = inject(Store);
-  readonly #accountSettingsService = inject(AccountSettingsService);
-  readonly #dialogService = inject(DialogService);
-  readonly #translateService = inject(TranslateService);
-  readonly isMobile = toSignal(inject(IS_XSMALL));
-  readonly #destroyRef = inject(DestroyRef);
+  readonly isSmall = toSignal(inject(IS_SMALL));
 
-  protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
-  protected readonly emails = this.#store.selectSignal(AccountSettingsSelectors.getEmails);
+  private readonly accountSettingsService = inject(AccountSettingsService);
+  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
+
+  protected readonly currentUser = select(UserSelectors.getCurrentUser);
+  protected readonly emails = select(AccountSettingsSelectors.getEmails);
+  protected readonly isEmailsLoading = select(AccountSettingsSelectors.isEmailsLoading);
+
+  private readonly actions = createDispatchMap({
+    deleteEmail: DeleteEmail,
+    makePrimary: MakePrimary,
+  });
+
   protected readonly deletingEmailIds = signal<Set<string>>(new Set());
   protected readonly resendingEmailIds = signal<Set<string>>(new Set());
   protected readonly makingPrimaryIds = signal<Set<string>>(new Set());
+
   protected readonly unconfirmedEmails = computed(() => {
     return this.emails().filter((email) => !email.confirmed && !email.primary);
   });
@@ -48,15 +59,12 @@ export class ConnectedEmailsComponent {
   protected readonly primaryEmail = computed(() => {
     return this.emails().find((email) => email.primary);
   });
-  protected readonly isEmailsLoading = this.#store.selectSignal(AccountSettingsSelectors.isEmailsLoading);
-
-  dialogRef: DynamicDialogRef | null = null;
 
   addEmail() {
-    this.dialogRef = this.#dialogService.open(AddEmailComponent, {
+    this.dialogService.open(AddEmailComponent, {
       width: '448px',
       focusOnShow: false,
-      header: this.#translateService.instant('settings.accountSettings.connectedEmails.dialog.title'),
+      header: this.translateService.instant('settings.accountSettings.connectedEmails.dialog.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,
@@ -67,7 +75,7 @@ export class ConnectedEmailsComponent {
     if (this.currentUser()?.id) {
       this.resendingEmailIds.set(new Set([...this.resendingEmailIds(), emailId]));
 
-      this.#accountSettingsService
+      this.accountSettingsService
         .resendConfirmation(emailId, this.currentUser()!.id)
         .pipe(
           finalize(() => {
@@ -75,7 +83,7 @@ export class ConnectedEmailsComponent {
             const updatedIds = new Set([...currentIds].filter((id) => id !== emailId));
             this.resendingEmailIds.set(updatedIds);
           }),
-          takeUntilDestroyed(this.#destroyRef)
+          takeUntilDestroyed(this.destroyRef)
         )
         .subscribe();
     }
@@ -85,9 +93,9 @@ export class ConnectedEmailsComponent {
     if (this.currentUser()?.id) {
       this.makingPrimaryIds.set(new Set([...this.makingPrimaryIds(), emailId]));
 
-      this.#store
-        .dispatch(new MakePrimary(emailId))
-        .pipe(takeUntilDestroyed(this.#destroyRef))
+      this.actions
+        .makePrimary(emailId)
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
           const currentIds = this.makingPrimaryIds();
           const updatedIds = new Set([...currentIds].filter((id) => id !== emailId));
@@ -96,12 +104,21 @@ export class ConnectedEmailsComponent {
     }
   }
 
-  deleteEmail(emailId: string) {
+  openConfirmDeleteEmail(email: AccountEmail) {
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'settings.accountSettings.connectedEmails.deleteDialog.header',
+      messageParams: { name: email.emailAddress },
+      messageKey: 'settings.accountSettings.connectedEmails.deleteDialog.message',
+      onConfirm: () => this.deleteEmails(email.id),
+    });
+  }
+
+  deleteEmails(emailId: string) {
     const currentDeletingIds = this.deletingEmailIds();
     currentDeletingIds.add(emailId);
     this.deletingEmailIds.set(currentDeletingIds);
 
-    this.#store.dispatch(new DeleteEmail(emailId)).subscribe({
+    this.actions.deleteEmail(emailId).subscribe({
       complete: () => {
         const updatedDeletingIds = this.deletingEmailIds();
         updatedDeletingIds.delete(emailId);

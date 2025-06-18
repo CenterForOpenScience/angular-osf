@@ -1,5 +1,28 @@
 import { JsonApiResponse } from '@osf/core/models';
 
+export enum WikiModes {
+  View = 'view',
+  Edit = 'edit',
+  Compare = 'compare',
+}
+export interface Wiki {
+  id: string;
+  name: string;
+  kind: string;
+}
+
+export interface WikiVersion {
+  id: string;
+  createdAt: string;
+  createdBy: string;
+}
+
+export interface ComponentWiki {
+  id: string;
+  title: string;
+  list: Wiki[];
+}
+
 export interface HomeWiki {
   id: string;
   name: string;
@@ -20,6 +43,58 @@ export interface HomeWikiGetResponse {
   };
 }
 
+export interface WikiGetResponse {
+  id: string;
+  type: string;
+  attributes: {
+    name: string;
+    kind: string;
+  };
+}
+
+export interface ComponentsWikiGetResponse {
+  id: string;
+  type: string;
+  attributes: {
+    title: string;
+  };
+  embeds: {
+    wikis: {
+      data: WikiGetResponse[];
+    };
+  };
+}
+
+export interface WikiVersionJsonApi {
+  id: string;
+  type: string;
+  attributes: {
+    date_created: string;
+  };
+  embeds: {
+    user: {
+      data: {
+        id: string;
+        attributes: {
+          full_name: string;
+        };
+      };
+    };
+  };
+}
+
 export interface HomeWikiJsonApiResponse extends JsonApiResponse<HomeWikiGetResponse[], null> {
   data: HomeWikiGetResponse[];
+}
+
+export interface WikiJsonApiResponse extends JsonApiResponse<WikiGetResponse[], null> {
+  data: WikiGetResponse[];
+}
+
+export interface ComponentsWikiJsonApiResponse extends JsonApiResponse<ComponentsWikiGetResponse[], null> {
+  data: ComponentsWikiGetResponse[];
+}
+
+export interface WikiVersionJsonApiResponse extends JsonApiResponse<WikiVersionJsonApi[], null> {
+  data: WikiVersionJsonApi[];
 }

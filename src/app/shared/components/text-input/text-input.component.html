@@ -1,4 +1,6 @@
-<label [for]="inputId">{{ label() | translate }}</label>
+@if (label()) {
+  <label [for]="inputId">{{ label() | translate }}</label>
+}
 <input
   [id]="inputId"
   pInputText

@@ -19,7 +19,7 @@
       <th>
         <div class="flex align-items-center">
           <span>{{ 'project.contributors.table.headers.permissions' | translate }}</span>
-          <i class="osf-icon-information blue-icon ml-1" [pTooltip]="permissionsTooltip" tooltipPosition="top"></i>
+          <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="permissionsTooltip" tooltipPosition="top"></i>
           <ng-template #permissionsTooltip>
             <div class="flex flex-column row-gap-3">
               <h2>{{ 'project.contributors.permissionInfo.title' | translate }}</h2>
@@ -57,7 +57,7 @@
       <th>
         <div class="flex align-items-center justify-content-center">
           <span>{{ 'project.contributors.table.headers.contributor' | translate }}</span>
-          <i class="osf-icon-information blue-icon ml-1" [pTooltip]="contributorTooltip" tooltipPosition="top"></i>
+          <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="contributorTooltip" tooltipPosition="top"></i>
           <ng-template #contributorTooltip>
             <div class="flex flex-column row-gap-3">
               <h2>{{ 'project.contributors.bibliographicContributorInfo.heading' | translate }}</h2>
@@ -73,7 +73,7 @@
       <th>
         <div class="flex align-items-center justify-content-center">
           <span>{{ 'project.contributors.table.headers.curator' | translate }}</span>
-          <i class="osf-icon-information blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
+          <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
           <ng-template #curatorTooltip>
             <div class="flex flex-column row-gap-3">
               <h2>{{ 'project.contributors.curatorInfo.heading' | translate }}</h2>
@@ -148,7 +148,13 @@
           </div>
         </td>
         <td>
-          <p-button variant="text" [severity]="'danger'" icon="fas fa-trash" (click)="removeContributor(contributor)">
+          <p-button
+            class="danger-icon-btn"
+            icon="fas fa-trash"
+            severity="danger"
+            text
+            (click)="removeContributor(contributor)"
+          >
           </p-button>
         </td>
       </tr>

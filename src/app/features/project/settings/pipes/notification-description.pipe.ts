@@ -6,7 +6,6 @@ import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 
 @Pipe({
   name: 'notificationDescription',
-  standalone: true,
 })
 export class NotificationDescriptionPipe implements PipeTransform {
   constructor(private translate: TranslateService) {}

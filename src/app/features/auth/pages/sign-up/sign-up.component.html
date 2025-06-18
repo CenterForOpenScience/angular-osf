@@ -4,11 +4,17 @@
 
     <form [formGroup]="signUpForm" (ngSubmit)="onSubmit()">
       <div class="btn-group">
-        <p-button [label]="'auth.signUp.social.orcid' | translate" class="btn-icon-text btn-full-width">
+        <p-button class="btn-full-width" [label]="'auth.signUp.social.orcid' | translate" variant="text" raised>
           <img ngSrc="assets/images/orcid.svg" alt="Orchid icon" height="20" width="20" />
         </p-button>
-        <p-button [label]="'auth.signUp.social.institution' | translate" class="btn-icon-text btn-full-width">
-          <i class="osf-icon-institutions"></i>
+
+        <p-button
+          class="btn-full-width"
+          [label]="'auth.signUp.social.institution' | translate"
+          variant="text"
+          raised
+          icon="fas fa-landmark fa-lg"
+        >
         </p-button>
       </div>
 

@@ -1,6 +1,6 @@
 export interface ViewOnlyLinkCreatorModel {
+  id: string;
   fullName: string;
-  url: string;
 }
 
 export interface ViewOnlyLinkNodeModel {

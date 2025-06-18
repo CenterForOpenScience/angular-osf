@@ -35,8 +35,8 @@
                   <i
                     class="osf-icon-close"
                     tabindex="0"
-                    (click)="deleteEmail(email.id)"
-                    (keydown.enter)="deleteEmail(email.id)"
+                    (click)="openConfirmDeleteEmail(email)"
+                    (keydown.enter)="openConfirmDeleteEmail(email)"
                   >
                   </i>
                 }
@@ -80,8 +80,8 @@
                   <i
                     class="osf-icon-close"
                     tabindex="0"
-                    (click)="deleteEmail(email.id)"
-                    (keydown.enter)="deleteEmail(email.id)"
+                    (click)="openConfirmDeleteEmail(email)"
+                    (keydown.enter)="openConfirmDeleteEmail(email)"
                   ></i>
                 }
                 @if (deletingEmailIds().has(email.id)) {
@@ -94,9 +94,9 @@
               } @else {
                 <p-button
                   [label]="
-                    (isMobile()
-                      ? 'settings.accountSettings.connectedEmails.buttons.resend'
-                      : 'settings.accountSettings.connectedEmails.buttons.resendConfirmation'
+                    (isSmall()
+                      ? 'settings.accountSettings.connectedEmails.buttons.resendConfirmation'
+                      : 'settings.accountSettings.connectedEmails.buttons.resend'
                     ) | translate
                   "
                   severity="secondary"

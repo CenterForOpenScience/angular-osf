@@ -1,55 +1,104 @@
 @use "../variables" as var;
 @use "../mixins" as mix;
+.nav-menu {
+  .p-panelmenu {
+    gap: mix.rem(4px);
 
-.p-panelmenu {
-  gap: mix.rem(4px);
+    .nav-link {
+      color: var.$white;
+      gap: mix.rem(8px);
+      text-decoration: none;
+      padding: mix.rem(12px);
+      width: 100%;
 
-  .nav-link {
-    color: var.$white;
-    gap: mix.rem(8px);
-    text-decoration: none;
-    padding: mix.rem(12px);
-    width: 100%;
-
-    .nav-icon {
-      font-size: mix.rem(20px);
-    }
-  }
-
-  .p-panelmenu-panel {
-    padding: 0;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-
-    .p-panelmenu-header-link {
-      display: none;
-    }
-  }
-
-  .p-panelmenu-header:not(.p-disabled) .p-panelmenu-header-content:hover,
-  .p-panelmenu-item:not(.p-disabled) > .p-panelmenu-item-content:hover {
-    background-color: transparent;
-  }
-
-  .p-panelmenu-header:not(.p-disabled):focus-visible .p-panelmenu-header-content,
-  .p-panelmenu-item.p-focus > .p-panelmenu-item-content {
-    background-color: var.$dark-blue-2;
-    border-radius: mix.rem(8px);
-  }
-
-  .p-panelmenu-submenu {
-    padding: 0;
-    margin-left: mix.rem(24px);
-    margin-top: mix.rem(8px);
-
-    .p-panelmenu-item {
-      border-left: 1px solid var.$grey-2;
-      padding: 0 0 mix.rem(4px) mix.rem(8px);
-
-      .nav-link {
-        height: mix.rem(40px);
+      .nav-icon {
+        font-size: mix.rem(20px);
       }
+    }
+
+    .p-panelmenu-panel {
+      padding: 0;
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+
+      .p-panelmenu-header-link {
+        display: none;
+      }
+    }
+
+    .p-panelmenu-header:not(.p-disabled) .p-panelmenu-header-content:hover,
+    .p-panelmenu-item:not(.p-disabled) > .p-panelmenu-item-content:hover {
+      background-color: transparent;
+    }
+
+    .p-panelmenu-header:not(.p-disabled):focus-visible .p-panelmenu-header-content,
+    .p-panelmenu-item.p-focus > .p-panelmenu-item-content {
+      background-color: var.$dark-blue-2;
+      border-radius: mix.rem(8px);
+    }
+
+    .p-panelmenu-submenu {
+      padding: 0;
+      margin-left: mix.rem(24px);
+      margin-top: mix.rem(8px);
+
+      .p-panelmenu-item {
+        border-left: 1px solid var.$grey-2;
+        padding: 0 0 mix.rem(4px) mix.rem(8px);
+
+        .nav-link {
+          height: mix.rem(40px);
+        }
+      }
+    }
+  }
+}
+
+.wiki-page {
+  .view-panel {
+    height: 100%;
+  }
+  p-panel,
+  .p-panel {
+    height: 100%;
+  }
+
+  .p-panel {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .p-panel-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .p-panel-content-container {
+    display: flex;
+    flex-direction: column;
+
+    flex: 1;
+  }
+
+  .wiki-list {
+    .p-panelmenu {
+      flex: 1;
+    }
+
+    .p-panelmenu-header-label {
+      font-weight: bold;
+      font-size: 1rem;
+    }
+  }
+
+  .edit-section {
+    display: block;
+    min-height: 300px;
+
+    .md-editor-container {
+      border-radius: var(--p-panel-border-radius);
     }
   }
 }

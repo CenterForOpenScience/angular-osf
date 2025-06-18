@@ -1,13 +1,16 @@
-@use "assets/styles/variables" as var;
-
 :host {
   display: flex;
 }
 
-.icon-copy-btn {
-  cursor: pointer;
+.copy-icon-btn {
+  --p-button-padding-y: 0.125rem;
+  --p-button-text-contrast-color: var(--dark-blue-1);
+  --p-button-contrast-focus-ring-color: var(--dark-blue-1);
+  --p-button-text-contrast-active-background: transparent;
+  --p-button-text-contrast-hover-background: transparent;
+  --p-button-icon-only-width: 1.5rem;
 
   &:hover {
-    color: var.$dark-blue-2;
+    --p-button-text-contrast-color: var(--dark-blue-2);
   }
 }

@@ -1,7 +1,8 @@
 <div class="border-1 border-round-lg p-3 sm:p-5 name-container">
-  <h3 class="font-normal">
+  <p>
     {{ 'settings.profileSettings.name.description' | translate }}
-  </h3>
+  </p>
+
   <form [formGroup]="form" class="flex flex-column row-gap-2 md:row-gap-4 mt-4">
     <div class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3 w-full md:0 md:mb-3">
       <div class="w-full xl:w-6">
@@ -17,7 +18,7 @@
       </div>
     </div>
 
-    <div class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3">
+    <div class="flex flex-column row-gap-3 xl:flex-row xl:align-items-end xl:column-gap-3">
       <div class="w-full xl:w-6">
         <label for="given-name" class="font-normal xl:font-light">
           {{ 'settings.profileSettings.name.givenName' | translate }}
@@ -35,7 +36,7 @@
       </div>
     </div>
 
-    <div class="flex flex-column row-gap-2 xl:flex-row xl:align-items-end xl:column-gap-3">
+    <div class="flex flex-column row-gap-3 xl:flex-row xl:align-items-end xl:column-gap-3">
       <div class="w-full xl:w-6">
         <label for="family-name" class="font-normal xl:font-light">
           {{ 'settings.profileSettings.name.familyName' | translate }}
@@ -59,31 +60,31 @@
     <div class="flex flex-column row-gap-4 sm:flex-row styles-container">
       <div class="flex flex-row column-gap-5">
         <div class="flex flex-column style-wrapper">
-          <h3>
+          <p>
             {{ 'settings.profileSettings.name.citationPreview.style' | translate }}
-          </h3>
-          <h3>
+          </p>
+          <p>
             {{ 'settings.profileSettings.name.citationPreview.citationFormat' | translate }}
-          </h3>
+          </p>
         </div>
         <div class="flex flex-column style-wrapper">
-          <h3 class="font-bold">APA</h3>
-          <h3>Doe, J. T.</h3>
+          <p class="font-bold">APA</p>
+          <p>Doe, J. T.</p>
         </div>
       </div>
 
       <div class="flex column-gap-5">
         <div class="flex flex-column style-wrapper">
-          <h3>
+          <p>
             {{ 'settings.profileSettings.name.citationPreview.style' | translate }}
-          </h3>
-          <h3>
+          </p>
+          <p>
             {{ 'settings.profileSettings.name.citationPreview.citationFormat' | translate }}
-          </h3>
+          </p>
         </div>
         <div class="flex flex-column style-wrapper">
-          <h3 class="font-bold">MLA</h3>
-          <h3>Doe, John T.</h3>
+          <p class="font-bold">MLA</p>
+          <p>Doe, John T.</p>
         </div>
       </div>
     </div>

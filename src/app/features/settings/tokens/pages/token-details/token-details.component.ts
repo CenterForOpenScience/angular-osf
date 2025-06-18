@@ -1,8 +1,7 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
-import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -14,7 +13,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { defaultConfirmationConfig, IS_XSMALL } from '@osf/shared/utils';
+import { CustomConfirmationService } from '@osf/shared/services';
+import { IS_XSMALL } from '@osf/shared/utils';
 
 import { TokenAddEditFormComponent } from '../../components';
 import { DeleteToken, GetTokenById, TokensSelectors } from '../../store';
@@ -28,21 +28,25 @@ import { DeleteToken, GetTokenById, TokensSelectors } from '../../store';
   styleUrls: ['./token-details.component.scss'],
 })
 export class TokenDetailsComponent {
-  #confirmationService = inject(ConfirmationService);
-  #isXSmall$ = inject(IS_XSMALL);
-  #route = inject(ActivatedRoute);
-  #router = inject(Router);
-  #store = inject(Store);
-  #translateService = inject(TranslateService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly store = inject(Store);
+
+  private readonly actions = createDispatchMap({ getTokenById: GetTokenById, deleteToken: DeleteToken });
+
+  protected readonly isXSmall = toSignal(inject(IS_XSMALL));
 
   readonly tokenId = toSignal(
-    this.#route.params.pipe(
+    this.route.params.pipe(
       map((params) => params['id']),
       switchMap((tokenId) => {
-        const token = this.#store.selectSnapshot(TokensSelectors.getTokenById)(tokenId);
+        const token = this.store.selectSnapshot(TokensSelectors.getTokenById)(tokenId);
+
         if (!token) {
-          this.#store.dispatch(new GetTokenById(tokenId));
+          this.actions.getTokenById(tokenId);
         }
+
         return of(tokenId);
       })
     )
@@ -51,26 +55,20 @@ export class TokenDetailsComponent {
   readonly token = computed(() => {
     const id = this.tokenId();
     if (!id) return null;
-    const token = this.#store.selectSignal(TokensSelectors.getTokenById)();
+
+    const token = this.store.selectSignal(TokensSelectors.getTokenById)();
     return token(id) ?? null;
   });
 
-  protected readonly isXSmall = toSignal(this.#isXSmall$);
-
   deleteToken(): void {
-    this.#confirmationService.confirm({
-      ...defaultConfirmationConfig,
-      message: this.#translateService.instant('settings.tokens.confirmation.delete.message'),
-      header: this.#translateService.instant('settings.tokens.confirmation.delete.title', { name: this.token()?.name }),
-      acceptButtonProps: {
-        ...defaultConfirmationConfig.acceptButtonProps,
-        severity: 'danger',
-        label: this.#translateService.instant('settings.tokens.list.deleteButton'),
-      },
-      accept: () => {
-        this.#store.dispatch(new DeleteToken(this.tokenId())).subscribe({
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'settings.tokens.confirmation.delete.title',
+      headerParams: { name: this.token()?.name },
+      messageKey: 'settings.tokens.confirmation.delete.message',
+      onConfirm: () => {
+        this.actions.deleteToken(this.tokenId()).subscribe({
           next: () => {
-            this.#router.navigate(['settings/tokens']);
+            this.router.navigate(['settings/tokens']);
           },
         });
       },
