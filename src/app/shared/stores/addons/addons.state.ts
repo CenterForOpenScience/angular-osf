@@ -334,14 +334,6 @@ export class AddonsState {
             error: null,
           },
         });
-        // const referenceId = state.addonsResourceReference.data[0]?.id;
-        // if (referenceId) {
-        //   ctx.dispatch(
-        //     action.addonType === 'storage'
-        //       ? new GetConfiguredStorageAddons(referenceId)
-        //       : new GetConfiguredCitationAddons(referenceId)
-        //   );
-        // }
       }),
       catchError((error) => this.handleError(ctx, 'createdUpdatedConfiguredAddon', error))
     );

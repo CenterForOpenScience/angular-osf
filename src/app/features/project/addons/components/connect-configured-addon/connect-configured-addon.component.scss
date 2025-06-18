@@ -8,23 +8,5 @@
   .stepper-container {
     background-color: var.$white;
     flex: 1;
-
-    button {
-      width: 100%;
-    }
-  }
-
-  .filename-link {
-    cursor: pointer;
-    display: block;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 0;
-    max-width: 100%;
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 }

@@ -964,6 +964,8 @@
         "disconnectMessage": "You are about to disconnect the following addon from the project:",
         "account": "Account:",
         "selectedFolder": "Selected folder:",
+        "folderName": "Folder name:",
+        "selectFolder": "Select",
         "connectedAccount": "Connected to account:",
         "home": "Home"
       },

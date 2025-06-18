@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -18,17 +18,19 @@ import { AddonsSelectors, DeleteConfiguredAddon } from '@shared/stores/addons';
 })
 export class DisconnectAddonModalComponent {
   private dialogConfig = inject(DynamicDialogConfig);
-  private store = inject(Store);
   protected dialogRef = inject(DynamicDialogRef);
   protected addon = this.dialogConfig.data.addon;
   protected dialogMessage = this.dialogConfig.data.message || '';
   protected isSubmitting = select(AddonsSelectors.getDeleteStorageAddonSubmitting);
   protected selectedFolder = select(AddonsSelectors.getSelectedFolder);
+  protected actions = createDispatchMap({
+    deleteConfiguredAddon: DeleteConfiguredAddon,
+  });
 
   protected handleDisconnectAddonAccount(): void {
     if (!this.addon) return;
 
-    this.store.dispatch(new DeleteConfiguredAddon(this.addon.id, this.addon.type)).subscribe({
+    this.actions.deleteConfiguredAddon(this.addon.id, this.addon.type).subscribe({
       complete: () => {
         this.dialogRef.close({ success: true });
       },

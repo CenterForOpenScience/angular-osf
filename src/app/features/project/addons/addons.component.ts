@@ -17,7 +17,6 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -37,7 +36,6 @@ import {
   GetConfiguredStorageAddons,
   GetStorageAddons,
 } from '@shared/stores/addons';
-import { IS_XSMALL } from '@shared/utils';
 
 @Component({
   selector: 'osf-addons',
@@ -62,7 +60,6 @@ import { IS_XSMALL } from '@shared/utils';
 export class AddonsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
-  protected isMobile = toSignal(inject(IS_XSMALL));
   protected readonly tabOptions = ADDON_TAB_OPTIONS;
   protected readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
   protected readonly AddonTabValue = AddonTabValue;

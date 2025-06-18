@@ -1,4 +1,4 @@
-import { createDispatchMap, select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -8,13 +8,11 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { FormControl, FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { LoadingSpinnerComponent, SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/utils';
 import { AddonCardListComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
@@ -52,10 +50,8 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonsComponent {
-  private store = inject(Store);
   protected readonly tabOptions = ADDON_TAB_OPTIONS;
   protected readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
-  protected isMobile = toSignal(inject(IS_XSMALL));
   protected AddonTabValue = AddonTabValue;
   protected defaultTabValue = AddonTabValue.ALL_ADDONS;
   protected searchControl = new FormControl<string>('');
@@ -138,7 +134,7 @@ export class AddonsComponent {
   constructor() {
     effect(() => {
       if (this.currentUser()) {
-        this.store.dispatch(GetAddonsUserReference);
+        this.actions.getAddonsUserReference();
       }
     });
 
@@ -154,7 +150,6 @@ export class AddonsComponent {
     });
 
     effect(() => {
-      // Only proceed if we have both current user and user reference
       if (this.currentUser() && this.userReferenceId()) {
         this.fetchAllAuthorizedAddons(this.userReferenceId());
       }

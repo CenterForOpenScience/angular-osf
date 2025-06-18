@@ -10,6 +10,7 @@ import {
   ConfiguredAddon,
   ConfiguredAddonRequestJsonApi,
 } from '@shared/models';
+import { isAuthorizedAddon } from '@shared/utils';
 
 @Injectable({
   providedIn: 'root',
@@ -107,9 +108,7 @@ export class AddonFormService {
   }
 
   private getAddonServiceId(addon: Addon | AuthorizedAddon): string {
-    const isAuthorizedAddon =
-      addon.type === 'authorized-storage-accounts' || addon.type === 'authorized-citation-accounts';
-    return isAuthorizedAddon ? (addon as AuthorizedAddon).externalStorageServiceId : (addon as Addon).id;
+    return isAuthorizedAddon(addon) ? (addon as AuthorizedAddon).externalStorageServiceId : (addon as Addon).id;
   }
 
   generateConfiguredAddonCreatePayload(

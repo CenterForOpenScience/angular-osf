@@ -8,7 +8,7 @@ import {
   IncludedAddonData,
   OperationInvocation,
   OperationInvocationResponseJsonApi,
-  StorageItemResponse,
+  StorageItemResponseJsonApi,
 } from '@shared/models';
 
 export class AddonMapper {
@@ -29,20 +29,17 @@ export class AddonMapper {
     response: AuthorizedAddonGetResponseJsonApi,
     included?: IncludedAddonData[]
   ): AuthorizedAddon {
-    // Handle both storage and citation service relationships
     const externalServiceData =
       response.relationships?.external_storage_service?.data || response.relationships?.external_citation_service?.data;
 
     const externalServiceId = externalServiceData?.id;
 
-    // Find the matching service in the included data
     const matchingService = included?.find(
       (item) =>
         (item.type === 'external-storage-services' || item.type === 'external-citation-services') &&
         item.id === externalServiceId
     )?.attributes;
 
-    // Extract the relevant properties from the matching service
     const externalServiceName = (matchingService?.['external_service_name'] as string) || '';
     const displayName = (matchingService?.['display_name'] as string) || '';
     const credentialsFormat = (matchingService?.['credentials_format'] as string) || '';
@@ -87,7 +84,7 @@ export class AddonMapper {
     const isOperationResult = 'items' in operationResult && 'total_count' in operationResult;
 
     const mappedOperationResult = isOperationResult
-      ? operationResult.items.map((item: StorageItemResponse) => ({
+      ? operationResult.items.map((item: StorageItemResponseJsonApi) => ({
           itemId: item.item_id,
           itemName: item.item_name,
           itemType: item.item_type,

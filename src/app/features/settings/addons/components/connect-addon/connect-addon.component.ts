@@ -15,6 +15,7 @@ import { ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { AddonSetupAccountFormComponent, AddonTermsComponent } from '@shared/components/addons';
 import { Addon, AddonTerm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
+import { getAddonTypeString, isAuthorizedAddon } from '@shared/utils';
 
 @Component({
   selector: 'osf-connect-addon',
@@ -47,20 +48,10 @@ export class ConnectAddonComponent {
   protected createdAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
   protected isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
   protected isAuthorized = computed(() => {
-    const addon = this.addon();
-    if (addon) {
-      return addon.type === 'authorized-storage-accounts' || addon.type === 'authorized-citation-accounts';
-    }
-    return false;
+    return isAuthorizedAddon(this.addon());
   });
   protected addonTypeString = computed(() => {
-    const addon = this.addon();
-    if (addon) {
-      return addon.type === 'external-storage-services' || addon.type === 'authorized-storage-accounts'
-        ? 'storage'
-        : 'citation';
-    }
-    return '';
+    return getAddonTypeString(this.addon());
   });
 
   protected actions = createDispatchMap({
@@ -85,7 +76,7 @@ export class ConnectAddonComponent {
 
     effect(() => {
       if (this.isAuthorized()) {
-        this.stepper()?.value.set(ProjectAddonsStepperValue.SETUP_NEW_ACCOUNT); //if the addon is already authorized, we skip terms table page
+        this.stepper()?.value.set(ProjectAddonsStepperValue.SETUP_NEW_ACCOUNT);
       }
     });
   }

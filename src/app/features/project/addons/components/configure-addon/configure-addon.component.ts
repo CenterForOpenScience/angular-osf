@@ -1,4 +1,4 @@
-import { createDispatchMap, select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -32,6 +32,9 @@ import {
   CreateAddonOperationInvocation,
   UpdateConfiguredAddon,
 } from '@shared/stores/addons';
+import { getAddonTypeString } from '@shared/utils';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-configure-addon',
@@ -55,7 +58,6 @@ import {
 export class ConfigureAddonComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  private store = inject(Store);
   private destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
   private addonDialogService = inject(AddonDialogService);
@@ -77,11 +79,10 @@ export class ConfigureAddonComponent implements OnInit {
   });
   protected readonly resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
-    return `https://staging4.osf.io/${id}`;
+    return `${environment.baseResourceUri}${id}`;
   });
   protected readonly addonTypeString = computed(() => {
-    const addon = this.addon();
-    return addon?.type === 'configured-storage-addons' ? 'storage' : 'citation';
+    return getAddonTypeString(this.addon());
   });
   protected readonly actions = createDispatchMap({
     createAddonOperationInvocation: CreateAddonOperationInvocation,
@@ -169,7 +170,7 @@ export class ConfigureAddonComponent implements OnInit {
       this.addonTypeString()
     );
 
-    this.store.dispatch(new UpdateConfiguredAddon(payload, this.addonTypeString(), currentAddon.id)).subscribe({
+    this.actions.updateConfiguredAddon(payload, this.addonTypeString(), currentAddon.id).subscribe({
       complete: () => {
         this.router.navigate([`${this.baseUrl()}/addons`]);
         this.toastService.showSuccess('settings.addons.toast.updateSuccess', {

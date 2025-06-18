@@ -14,16 +14,16 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { OperationNames } from '@osf/features/project/addons/enums';
-import { AddonConfigMap, RESOURCE_BASE_URI } from '@osf/features/project/addons/utils';
+import { AddonConfigMap } from '@osf/features/project/addons/utils';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ProjectAddonsStepperValue } from '@osf/shared/enums';
-import { AddonSetupAccountFormComponent } from '@shared/components/addons';
-import { AddonTermsComponent } from '@shared/components/addons/addon-terms/addon-terms.component';
-import { FolderSelectorComponent } from '@shared/components/addons/folder-selector/folder-selector.component';
+import {
+  AddonSetupAccountFormComponent,
+  AddonTermsComponent,
+  FolderSelectorComponent,
+} from '@shared/components/addons';
 import { Addon, AddonTerm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
-import { AddonOperationInvocationService, ToastService } from '@shared/services';
-import { AddonDialogService } from '@shared/services/addons/addon-dialog.service';
-import { AddonFormService } from '@shared/services/addons/addon-form.service';
+import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {
   AddonsSelectors,
   CreateAddonOperationInvocation,
@@ -34,6 +34,9 @@ import {
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
 } from '@shared/stores/addons';
+import { getAddonTypeString } from '@shared/utils';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-connect-configured-addon',
@@ -67,7 +70,6 @@ export class ConnectConfiguredAddonComponent {
   private operationInvocationService = inject(AddonOperationInvocationService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  protected readonly resourceBaseUri = RESOURCE_BASE_URI;
   protected readonly AddonStepperValue = ProjectAddonsStepperValue;
   protected readonly stepper = viewChild(Stepper);
   protected accountNameControl = new FormControl('');
@@ -113,20 +115,11 @@ export class ConnectConfiguredAddonComponent {
   protected resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
 
-    return `${this.resourceBaseUri}${id}`;
+    return `${environment.baseResourceUri}${id}`;
   });
 
   protected addonTypeString = computed(() => {
-    const addon = this.addon();
-
-    if (addon) {
-      return addon.type === 'external-storage-services' ||
-        addon.type === 'authorized-storage-accounts' ||
-        addon.type === 'configured-storage-addons'
-        ? 'storage'
-        : 'citation';
-    }
-    return '';
+    return getAddonTypeString(this.addon());
   });
 
   protected readonly baseUrl = computed(() => {

@@ -1,4 +1,4 @@
-<osf-sub-header [showButton]="false" [title]="'settings.addons.configureAddon.title' | translate" />
+<osf-sub-header [title]="'settings.addons.configureAddon.title' | translate" />
 
 <section class="flex flex-column flex-1 bg-white h-full gap-4 p-3 md:p-5">
   @if (!isEditMode()) {
@@ -26,13 +26,14 @@
               <div class="flex gap-2">
                 <p-button
                   icon="fas fa-pencil"
-                  severity="info"
+                  text
                   (click)="toggleEditMode()"
                   (keydown.enter)="toggleEditMode()"
                 ></p-button>
                 <p-button
-                  icon="fas fa-trash red-icon"
-                  severity="info"
+                  icon="fas fa-trash"
+                  severity="danger"
+                  text
                   (click)="handleDisconnectAccount()"
                   (keydown.enter)="handleDisconnectAccount()"
                 ></p-button>

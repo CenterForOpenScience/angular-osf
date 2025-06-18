@@ -3,7 +3,6 @@ import { createDispatchMap } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 
 import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
@@ -11,10 +10,11 @@ import { Router } from '@angular/router';
 import { CustomConfirmationService, LoaderService } from '@osf/shared/services';
 import { Addon, AuthorizedAddon, ConfiguredAddon } from '@shared/models';
 import { DeleteAuthorizedAddon } from '@shared/stores/addons';
+import { getAddonTypeString, isConfiguredAddon } from '@shared/utils';
 
 @Component({
   selector: 'osf-addon-card',
-  imports: [Button, DialogModule, TranslatePipe],
+  imports: [Button, TranslatePipe],
   templateUrl: './addon-card.component.html',
   styleUrl: './addon-card.component.scss',
 })
@@ -29,21 +29,10 @@ export class AddonCardComponent {
   readonly showDangerButton = input<boolean>(false);
 
   protected readonly addonTypeString = computed(() => {
-    const addon = this.card();
-    if (addon) {
-      return addon.type === 'authorized-storage-accounts' || addon.type === 'configured-storage-addons'
-        ? 'storage'
-        : 'citation';
-    }
-    return '';
+    return getAddonTypeString(this.card());
   });
   protected readonly isConfiguredAddon = computed(() => {
-    const addon = this.card();
-    if (addon) {
-      return addon.type === 'configured-storage-addons' || addon.type === 'configured-citation-addons';
-    }
-
-    return false;
+    return isConfiguredAddon(this.card());
   });
 
   onConnectAddon(): void {

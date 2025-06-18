@@ -1,4 +1,4 @@
-export interface StorageItemResponse {
+export interface StorageItemResponseJsonApi {
   item_id?: string;
   item_name?: string;
   item_type?: string;
@@ -7,7 +7,7 @@ export interface StorageItemResponse {
 }
 
 export interface OperationResult {
-  items: StorageItemResponse[];
+  items: StorageItemResponseJsonApi[];
   total_count: number;
 }
 
@@ -44,8 +44,8 @@ export interface OperationInvocationResponseJsonApi {
   id: string;
   attributes: {
     invocation_status: string;
-    operation_kwargs: StorageItemResponse;
-    operation_result: OperationResult | StorageItemResponse;
+    operation_kwargs: StorageItemResponseJsonApi;
+    operation_result: OperationResult | StorageItemResponseJsonApi;
     created: string;
     modified: string;
     operation_name: string;

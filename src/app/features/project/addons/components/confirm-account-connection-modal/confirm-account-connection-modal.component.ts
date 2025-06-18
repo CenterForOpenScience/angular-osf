@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -21,11 +21,14 @@ import { AddonsSelectors, CreateAddonOperationInvocation } from '@shared/stores/
 })
 export class ConfirmAccountConnectionModalComponent {
   private dialogConfig = inject(DynamicDialogConfig);
-  private store = inject(Store);
   private operationInvocationService = inject(AddonOperationInvocationService);
   protected dialogRef = inject(DynamicDialogRef);
   protected dialogMessage = this.dialogConfig.data.message || '';
   protected isSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
+
+  protected actions = createDispatchMap({
+    createAddonOperationInvocation: CreateAddonOperationInvocation,
+  });
 
   protected handleConnectAddonAccount(): void {
     const selectedAccount = this.dialogConfig.data.selectedAccount;
@@ -36,7 +39,7 @@ export class ConfirmAccountConnectionModalComponent {
       selectedAccount
     );
 
-    this.store.dispatch(new CreateAddonOperationInvocation(payload)).subscribe({
+    this.actions.createAddonOperationInvocation(payload).subscribe({
       complete: () => {
         this.dialogRef.close({ success: true });
       },

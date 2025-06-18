@@ -164,27 +164,8 @@ export const routes: Routes = [
           },
           {
             path: 'addons',
-            children: [
-              {
-                path: '',
-                loadComponent: () =>
-                  import('./features/project/addons/addons.component').then((mod) => mod.AddonsComponent),
-              },
-              {
-                path: 'connect-addon',
-                loadComponent: () =>
-                  import(
-                    '@osf/features/project/addons/components/connect-configured-addon/connect-configured-addon.component'
-                  ).then((mod) => mod.ConnectConfiguredAddonComponent),
-              },
-              {
-                path: 'configure-addon',
-                loadComponent: () =>
-                  import('@osf/features/project/addons/components/configure-addon/configure-addon.component').then(
-                    (mod) => mod.ConfigureAddonComponent
-                  ),
-              },
-            ],
+            loadChildren: () =>
+              import('./features/project/addons/constants/addons.routes').then((mod) => mod.addonsRoutes),
           },
         ],
       },

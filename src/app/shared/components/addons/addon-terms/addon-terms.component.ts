@@ -3,11 +3,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { TableModule } from 'primeng/table';
 
 import { NgClass } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, computed, input } from '@angular/core';
 
 import { ADDON_TERMS as addonTerms } from '@shared/constants';
 import { Addon, AddonTerm, AuthorizedAddon } from '@shared/models';
+import { isCitationAddon } from '@shared/utils';
 
 @Component({
   selector: 'osf-addon-terms',
@@ -17,7 +17,6 @@ import { Addon, AddonTerm, AuthorizedAddon } from '@shared/models';
   styleUrls: ['./addon-terms.component.scss'],
 })
 export class AddonTermsComponent {
-  private router = inject(Router);
   addon = input<Addon | AuthorizedAddon | null>(null);
   protected terms = computed(() => {
     const addon = this.addon();
@@ -30,7 +29,7 @@ export class AddonTermsComponent {
   private getAddonTerms(addon: Addon | AuthorizedAddon): AddonTerm[] {
     const supportedFeatures = addon.supportedFeatures;
     const provider = addon.providerName;
-    const isCitationService = addon.type === 'external-citation-services';
+    const isCitationService = isCitationAddon(addon);
 
     const relevantTerms = isCitationService ? addonTerms.filter((term) => term.citation) : addonTerms;
 

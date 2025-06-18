@@ -36,8 +36,8 @@
   } @else {
     <div class="folders-table flex flex-column">
       <div class="folders-table-heading flex justify-content-between">
-        <h3>Folder Name</h3>
-        <h3>Select</h3>
+        <h3>{{ 'settings.addons.configureAddon.folderName' | translate }}</h3>
+        <h3>{{ 'settings.addons.configureAddon.selectFolder' | translate }}</h3>
       </div>
       @if (operationInvocationResult().length) {
         @for (folder of operationInvocationResult(); track folder.itemId) {
