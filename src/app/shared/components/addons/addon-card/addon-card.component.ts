@@ -5,17 +5,16 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 
-import { NgClass } from '@angular/common';
 import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { CustomConfirmationService, LoaderService } from '@osf/shared/services';
-import { Addon, AuthorizedAddon } from '@shared/models';
+import { Addon, AuthorizedAddon, ConfiguredAddon } from '@shared/models';
 import { DeleteAuthorizedAddon } from '@shared/stores/addons';
 
 @Component({
   selector: 'osf-addon-card',
-  imports: [Button, NgClass, DialogModule, TranslatePipe],
+  imports: [Button, DialogModule, TranslatePipe],
   templateUrl: './addon-card.component.html',
   styleUrl: './addon-card.component.scss',
 })
@@ -25,7 +24,7 @@ export class AddonCardComponent {
   private readonly loaderService = inject(LoaderService);
   private readonly actions = createDispatchMap({ deleteAuthorizedAddon: DeleteAuthorizedAddon });
 
-  readonly card = input<Addon | AuthorizedAddon | null>(null);
+  readonly card = input<Addon | AuthorizedAddon | ConfiguredAddon | null>(null);
   readonly cardButtonLabel = input<string>('');
   readonly showDangerButton = input<boolean>(false);
 

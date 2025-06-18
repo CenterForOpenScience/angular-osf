@@ -107,6 +107,8 @@ export class FolderSelectorComponent implements OnInit {
       operationName,
       itemId,
     });
+
+    this.trimBreadcrumbs(itemId);
   }
 
   protected handleSave(): void {
@@ -145,6 +147,17 @@ export class FolderSelectorComponent implements OnInit {
       };
 
       this.breadcrumbItems.set([...breadcrumbs, item]);
+    }
+  }
+
+  private trimBreadcrumbs(itemId: string): void {
+    const currentBreadcrumbs = this.breadcrumbItems();
+
+    const targetIndex = currentBreadcrumbs.findIndex((item) => item.id === itemId);
+
+    if (targetIndex !== -1) {
+      const trimmedBreadcrumbs = currentBreadcrumbs.slice(0, targetIndex + 1);
+      this.breadcrumbItems.set(trimmedBreadcrumbs);
     }
   }
 }
