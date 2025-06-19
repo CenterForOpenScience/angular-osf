@@ -1,5 +1,7 @@
 import { Store } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
@@ -35,6 +37,7 @@ import { GetAccountSettings, GetEmails, GetExternalIdentities, GetRegions, GetUs
     TwoFactorAuthComponent,
     DeactivateAccountComponent,
     AffiliatedInstitutionsComponent,
+    TranslatePipe,
   ],
   providers: [DialogService],
   templateUrl: './account-settings.component.html',

@@ -3,7 +3,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { AutoCompleteModule } from 'primeng/autocomplete';
-import { SelectModule } from 'primeng/select';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -11,8 +10,14 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { FormControl, FormsModule } from '@angular/forms';
 
+import { Primitive } from '@osf/core/helpers';
 import { UserSelectors } from '@osf/core/store/user';
-import { LoadingSpinnerComponent, SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
+import {
+  LoadingSpinnerComponent,
+  SearchInputComponent,
+  SelectComponent,
+  SubHeaderComponent,
+} from '@osf/shared/components';
 import { AddonCardListComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
@@ -40,7 +45,7 @@ import {
     SearchInputComponent,
     AutoCompleteModule,
     AddonCardListComponent,
-    SelectModule,
+    SelectComponent,
     FormsModule,
     TranslatePipe,
     LoadingSpinnerComponent,
@@ -127,8 +132,10 @@ export class AddonsComponent {
     return this.currentAddonsState().filter((card) => card.externalServiceName.toLowerCase().includes(searchValue));
   });
 
-  protected onCategoryChange(value: string): void {
-    this.selectedCategory.set(value);
+  protected onCategoryChange(value: Primitive): void {
+    if (typeof value === 'string') {
+      this.selectedCategory.set(value);
+    }
   }
 
   constructor() {

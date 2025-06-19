@@ -11,41 +11,25 @@
     </p-tablist>
 
     <p-tabpanels class="flex-1 p-3 sm:p-5">
-      <p-select
-        class="w-full font-bold mb-4 md:hidden"
+      <osf-select
+        class="font-bold md:hidden"
         [options]="tabOptions"
-        optionValue="value"
-        [ngModel]="selectedTab()"
-        (ngModelChange)="selectedTab.set($event)"
-      >
-        <ng-template #selectedItem let-selectedOption>
-          {{ selectedOption.label | translate }}
-        </ng-template>
-        <ng-template #item let-item>
-          {{ item.label | translate }}
-        </ng-template>
-      </p-select>
-      <p-tabpanel [value]="AddonTabValue.ALL_ADDONS" class="flex flex-column gap-5">
+        [(selectedValue)]="selectedTab"
+        [fullWidth]="true"
+      />
+      <p-tabpanel [value]="AddonTabValue.ALL_ADDONS" class="flex flex-column mt-4 gap-5">
         <p>
           {{ 'settings.addons.description' | translate }}
         </p>
         <section class="grid">
           <div class="col-12 md:col-6 lg:col-3">
-            <p-select
-              [placeholder]="'settings.addons.filters.addonType' | translate"
+            <osf-select
+              [placeholder]="'settings.addons.filters.addonType'"
               [options]="categoryOptions"
-              optionValue="value"
-              [ngModel]="selectedCategory()"
-              (ngModelChange)="onCategoryChange($event)"
-              class="w-full"
-            >
-              <ng-template #selectedItem let-selectedOption>
-                {{ selectedOption.label | translate }}
-              </ng-template>
-              <ng-template #item let-item>
-                {{ item.label | translate }}
-              </ng-template>
-            </p-select>
+              [(selectedValue)]="selectedCategory"
+              (changeValue)="onCategoryChange($event)"
+              [fullWidth]="true"
+            />
           </div>
           <div class="col-12 md:col-6 lg:col-9">
             <osf-search-input

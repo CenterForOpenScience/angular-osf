@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Select } from 'primeng/select';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -21,7 +20,8 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { LoadingSpinnerComponent, SearchInputComponent, SubHeaderComponent } from '@shared/components';
+import { Primitive } from '@osf/core/helpers';
+import { LoadingSpinnerComponent, SearchInputComponent, SelectComponent, SubHeaderComponent } from '@shared/components';
 import { AddonCardListComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';
@@ -42,7 +42,7 @@ import {
   imports: [
     AddonCardListComponent,
     SearchInputComponent,
-    Select,
+    SelectComponent,
     SubHeaderComponent,
     Tab,
     TabList,
@@ -146,8 +146,10 @@ export class AddonsComponent implements OnInit {
     );
   });
 
-  protected onCategoryChange(value: string): void {
-    this.selectedCategory.set(value);
+  protected onCategoryChange(value: Primitive): void {
+    if (typeof value === 'string') {
+      this.selectedCategory.set(value);
+    }
   }
 
   constructor() {
