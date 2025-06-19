@@ -115,10 +115,8 @@ export const routes: Routes = [
           },
           {
             path: 'metadata',
-            loadComponent: () =>
-              import('@osf/features/project/metadata/project-metadata.component').then(
-                (mod) => mod.ProjectMetadataComponent
-              ),
+            loadChildren: () =>
+              import('@osf/features/project/metadata/project-metadata.routes').then((mod) => mod.projectMetadataRoutes),
           },
           {
             path: 'files',

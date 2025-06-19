@@ -11,6 +11,7 @@
     cursor: pointer;
     background: var.$bg-blue-2;
     color: var.$pr-blue-3;
+
     i {
       color: var.$pr-blue-1;
     }
@@ -26,4 +27,8 @@
     display: flex;
     margin-left: 12px;
   }
+}
+
+.tag-chips {
+  --p-inputchips-focus-border-color: var(--p-surface-300);
 }

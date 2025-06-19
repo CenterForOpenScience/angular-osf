@@ -29,6 +29,8 @@ export class ProjectOverviewMapper {
           }
         : undefined,
       license: response.embeds.license?.data?.attributes,
+      doi: response.attributes.doi,
+      publicationDoi: response.attributes.publication_doi,
       analyticsKey: response.attributes.analytics_key,
       currentUserCanComment: response.attributes.current_user_can_comment,
       currentUserPermissions: response.attributes.current_user_permissions,

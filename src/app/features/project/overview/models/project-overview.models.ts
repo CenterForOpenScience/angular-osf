@@ -72,6 +72,8 @@ export interface ProjectOverview {
     text: string;
     url: string;
   };
+  doi?: string;
+  publicationDoi?: string;
   storage?: {
     id: string;
     type: string;
@@ -139,6 +141,8 @@ export interface ProjectOverviewGetResponseJsoApi {
       copyright_holders: string[];
       year: string;
     };
+    doi?: string;
+    publication_doi?: string;
     analytics_key: string;
     current_user_can_comment: boolean;
     current_user_permissions: string[];

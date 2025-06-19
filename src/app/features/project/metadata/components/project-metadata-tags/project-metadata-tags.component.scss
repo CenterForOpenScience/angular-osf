@@ -1,0 +1,183 @@
+.removable-chip {
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+
+  &::after {
+    content: " ×";
+    font-weight: bold;
+    margin-left: 4px;
+  }
+}
+
+.tags-input-container {
+  position: relative;
+}
+
+.tags-input-field {
+  &:focus-within {
+    border-color: var(--p-primary-color) !important;
+    box-shadow: 0 0 0 1px var(--p-primary-color);
+  }
+}
+
+.tag-input {
+  min-width: 120px;
+  background: transparent;
+  font-size: 0.875rem;
+
+  &::placeholder {
+    color: var(--p-text-muted-color);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.suggestions-dropdown {
+  position: absolute;
+  z-index: 1000;
+  margin-top: 0.25rem;
+  width: 100%;
+  border: 1px solid var(--p-border-color);
+  border-radius: 4px;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.suggestion-item {
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover,
+  &:focus {
+    background-color: #f3f4f6;
+  }
+}
+
+::ng-deep .p-chips {
+  .p-chips-multiple-container {
+    min-height: 80px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--p-border-color);
+    background: var(--p-surface-0);
+
+    &:focus-within {
+      border-color: var(--p-primary-color);
+      box-shadow: 0 0 0 1px var(--p-primary-color);
+    }
+  }
+
+  .p-chips-token {
+    background: var(--p-primary-50);
+    color: var(--p-primary-700);
+    border: 1px solid var(--p-primary-200);
+    border-radius: 16px;
+    padding: 4px 8px;
+    margin: 2px;
+    font-size: 0.875rem;
+
+    .p-chips-token-label {
+      padding: 0 4px;
+    }
+
+    .p-chips-token-icon {
+      margin-left: 4px;
+      width: auto;
+      height: auto;
+      background: none;
+      border: none;
+      color: var(--p-primary-600);
+      font-size: 12px;
+
+      &:hover {
+        color: var(--p-red-600);
+      }
+    }
+  }
+
+  .p-chips-input-token {
+    flex: 1;
+
+    input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 4px;
+      font-size: 0.875rem;
+      width: 100%;
+
+      &::placeholder {
+        color: var(--p-text-muted-color);
+      }
+    }
+  }
+}
+
+::ng-deep .tag-autocomplete {
+  .p-autocomplete-multiple-container {
+    min-height: 80px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid var(--p-border-color);
+    background: var(--p-surface-0);
+
+    &:focus-within {
+      border-color: var(--p-primary-color);
+      box-shadow: 0 0 0 1px var(--p-primary-color);
+    }
+  }
+
+  .p-autocomplete-token {
+    background: var(--p-primary-50);
+    color: var(--p-primary-700);
+    border: 1px solid var(--p-primary-200);
+    border-radius: 16px;
+    padding: 4px 8px;
+    margin: 2px;
+    font-size: 0.875rem;
+
+    .p-autocomplete-token-label {
+      padding: 0 4px;
+    }
+
+    .p-autocomplete-token-icon {
+      margin-left: 4px;
+      width: auto;
+      height: auto;
+      background: none;
+      border: none;
+      color: var(--p-primary-600);
+      font-size: 12px;
+
+      &:hover {
+        color: var(--p-red-600);
+      }
+    }
+  }
+
+  .p-autocomplete-input-token {
+    flex: 1;
+
+    input {
+      border: none;
+      outline: none;
+      background: transparent;
+      padding: 4px;
+      font-size: 0.875rem;
+      width: 100%;
+
+      &::placeholder {
+        color: var(--p-text-muted-color);
+      }
+    }
+  }
+}

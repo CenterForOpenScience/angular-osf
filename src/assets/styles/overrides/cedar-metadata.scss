@@ -1,0 +1,118 @@
+@use "assets/styles/mixins" as mix;
+
+cedar-embeddable-editor,
+cedar-embeddable-metadata-editor {
+  .template-card {
+    margin: 0;
+    padding: 0 1.5rem;
+    max-width: 100%;
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: var(--openSans);
+    font-size: 1rem;
+  }
+
+  app-cedar-static-rich-text > p > div,
+  app-cedar-component-header > div,
+  .info-box {
+    color: var(--dark-blue-1) !important;
+  }
+
+  .template-header > .template-label,
+  app-cedar-component-header > .flex-container {
+    display: flex;
+    align-items: center;
+    font-size: mix.rem(18px);
+    font-weight: 700;
+
+    .mat-icon.icon-questionmark {
+      color: var(--pr-blue-1);
+    }
+  }
+
+  .mat-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  app-cedar-component-renderer {
+    app-cedar-multi-pager {
+      display: flex;
+      flex-direction: row-reverse;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--bg-blue-3);
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1rem 0;
+
+      .info-box {
+        border: none;
+        background: transparent;
+        padding: 0;
+        margin: 0;
+
+        .multiinfo-index {
+          background: var(--pr-blue-1);
+          font-weight: 700;
+        }
+      }
+
+      .pager-container {
+        margin-top: 0;
+      }
+    }
+  }
+
+  app-cedar-multi-pager {
+    .aligned-up {
+      margin: -10px -7px 0 0;
+    }
+  }
+
+  .mat-expansion-panel {
+    border-color: var(--grey-2);
+    border-radius: 8px !important;
+    margin-bottom: 1rem;
+
+    &-header .mat-expansion-indicator {
+      transform: rotate(180deg);
+      display: flex;
+      align-items: center;
+      background-color: var(--bg-blue-3);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      position: relative;
+
+      &::after {
+        position: absolute;
+        left: 35%;
+        top: 30%;
+        padding: 4px;
+        color: var(--pr-blue-1);
+      }
+    }
+  }
+
+  .mat-form-field-appearance-outline {
+    .mat-form-field-outline {
+      color: var(--grey-2);
+      border-radius: 8px;
+      border-width: 2px;
+    }
+
+    .mat-form-field-infix {
+      padding-bottom: 13px !important;
+      border-top: 0;
+
+      input {
+        padding-top: 13px;
+      }
+    }
+  }
+}

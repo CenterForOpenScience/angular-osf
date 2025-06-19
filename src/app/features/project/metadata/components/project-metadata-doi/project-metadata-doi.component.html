@@ -1,0 +1,31 @@
+<p-card>
+  <div class="flex justify-content-between align-items-center">
+    <h3 class="text-lg font-semibold m-0">{{ 'project.overview.metadata.doi' | translate }}</h3>
+
+    @if (currentProject()?.doi) {
+      <p-button
+        severity="secondary"
+        [label]="'project.overview.metadata.editButton' | translate"
+        (click)="onEditDoi()"
+      ></p-button>
+    } @else {
+      <p-button
+        severity="secondary"
+        [label]="'project.overview.metadata.createDoi' | translate"
+        (click)="onCreateDoi()"
+      ></p-button>
+    }
+  </div>
+
+  @if (currentProject()?.doi) {
+    <div class="pt-4">
+      <p class="m-0">{{ currentProject()?.doi }}</p>
+    </div>
+  } @else {
+    <div class="pt-4">
+      <p class="text-color-secondary m-0">{{ 'project.overview.metadata.noDoi' | translate }}</p>
+    </div>
+  }
+</p-card>
+
+<p-confirmDialog></p-confirmDialog>

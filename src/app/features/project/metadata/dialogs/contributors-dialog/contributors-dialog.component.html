@@ -1,0 +1,67 @@
+<div class="contributors-dialog flex flex-column gap-4 p-4">
+  <!-- Header with Add Contributor Button -->
+  <div class="flex justify-content-between align-items-center">
+    <h3>{{ 'project.metadata.contributors.title' | translate }}</h3>
+    <p-button
+      [label]="'project.contributors.addContributor' | translate"
+      [disabled]="isContributorsLoading()"
+      (click)="openAddContributorDialog()"
+      size="small"
+    ></p-button>
+  </div>
+
+  <!-- Search and Filters -->
+  <div class="filters-container flex flex-column gap-3">
+    <osf-search-input [control]="searchControl" [placeholder]="'project.contributors.searchPlaceholder' | translate" />
+  </div>
+
+  <!-- Simplified Contributors List -->
+  <div class="contributors-list-container">
+    @if (isContributorsLoading()) {
+      <div class="flex flex-column gap-2">
+        @for (item of [1, 2, 3]; track item) {
+          <div class="flex align-items-center justify-content-between p-3 border-1 surface-border border-round">
+            <div class="flex align-items-center gap-3 flex-1">
+              <p-skeleton width="150px" height="1.5rem"></p-skeleton>
+              <p-skeleton width="100px" height="1.5rem"></p-skeleton>
+            </div>
+            <p-skeleton width="40px" height="2rem"></p-skeleton>
+          </div>
+        }
+      </div>
+    } @else {
+      @if (contributors().length === 0) {
+        <div class="text-center p-4 text-500">
+          {{ 'project.contributors.table.emptyMessage' | translate }}
+        </div>
+      } @else {
+        <div class="flex flex-column gap-2">
+          @for (contributor of contributors(); track contributor.id) {
+            <div class="flex align-items-center justify-content-between p-3 border-1 surface-border border-round">
+              <div class="flex align-items-center gap-3 flex-1">
+                <div class="flex flex-column">
+                  <span class="font-semibold">{{ contributor.fullName }}</span>
+                  <span class="text-sm text-500">{{ contributor.permission | translate }}</span>
+                </div>
+              </div>
+              <p-button
+                variant="text"
+                severity="danger"
+                icon="fas fa-trash"
+                size="small"
+                (click)="removeContributor(contributor)"
+                [pTooltip]="'common.buttons.delete' | translate"
+              ></p-button>
+            </div>
+          }
+        </div>
+      }
+    }
+  </div>
+
+  <!-- Dialog Footer -->
+  <div class="flex justify-content-end gap-2 pt-3 border-top-1 surface-border">
+    <p-button [label]="'common.buttons.cancel' | translate" severity="secondary" (click)="onClose()"></p-button>
+    <p-button [label]="'common.buttons.save' | translate" (click)="onSave()"></p-button>
+  </div>
+</div>

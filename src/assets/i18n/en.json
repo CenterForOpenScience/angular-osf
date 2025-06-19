@@ -4,8 +4,10 @@
       "delete": "Delete",
       "remove": "Remove",
       "add": "Add",
+      "addMore": "Add More",
       "cancel": "Cancel",
       "save": "Save",
+      "create": "Create",
       "close": "Close",
       "download": "Download",
       "copy": "Copy",
@@ -477,7 +479,40 @@
         "noTags": "No tags",
         "noSupplements": "No supplements",
         "noAffiliatedInstitutions": "No affiliated institutions",
-        "editButton": "Edit"
+        "editButton": "Edit",
+        "addButton": "Add",
+        "resourceInformation": "Resource Information",
+        "resourceType": "Resource type",
+        "resourceLanguage": "Resource language",
+        "fundingSupport": "Funding/Support Information",
+        "noResourceInformation": "No resource information available",
+        "notSpecified": "Not specified",
+        "editLabel": "Edit",
+        "loading": "Loading metadata...",
+        "placeholders": {
+          "edit": "Edit description here",
+          "add": "Add description here"
+        },
+        "publicationDoi": {
+          "label": "Publication DOI"
+        },
+        "license": {
+          "dialog": {
+            "header": "Edit Licence",
+            "chooseLicense": {
+              "label": "Choose License",
+              "placeholder": "Select license"
+            },
+            "copyrightHolders": {
+              "label": "Copyright Holders",
+              "placeholder": "Enter copyright holders"
+            },
+            "statementOfPurpose": {
+              "label": "Statement of Purpose",
+              "placeholder": "Enter statement of purpose"
+            }
+          }
+        }
       },
       "dialog": {
         "makePublic": {
@@ -683,6 +718,116 @@
             "contributors": "Contributors"
           }
         }
+      }
+    },
+    "metadata": {
+      "description": {
+        "updated": "Description updated successfully",
+        "dialog": {
+          "header": "Edit Description",
+          "label": "Description",
+          "placeholder": "Enter description here",
+          "clickToRemove": "Click to remove",
+          "addSubjects": "Add subjects...",
+          "expandOrCollapse": "Expand or collapse "
+        }
+      },
+      "resourceInformation": {
+        "updated": "Resource information updated successfully",
+        "dialog": {
+          "header": "Edit Resource Information",
+          "resourceType": {
+            "label": "Resource Type",
+            "placeholder": "Select resource type"
+          },
+          "resourceLanguage": {
+            "label": "Resource Language",
+            "placeholder": "Select resource language"
+          }
+        }
+      },
+      "license": {
+        "dialog": {
+          "header": "Edit Licence",
+          "chooseLicense": {
+            "label": "Choose License",
+            "placeholder": "Select license"
+          },
+          "year": {
+            "label": "Year",
+            "placeholder": "Enter year"
+          },
+          "copyrightHolders": {
+            "label": "Copyright Holders",
+            "placeholder": "Enter copyright holders"
+          },
+          "statementOfPurpose": {
+            "label": "Statement of Purpose",
+            "placeholder": "Enter statement of purpose"
+          },
+          "licenseTextPlaceholder": "License text will appear here when you select a license"
+        },
+        "updated": "License updated successfully",
+        "updateFailed": "Failed to update license"
+      },
+      "publicationDoi": {
+        "dialog": {
+          "header": "Edit Publication DOI",
+          "label": "Publication DOI",
+          "placeholder": "Enter publication DOI"
+        }
+      },
+      "addMetadata": {
+        "title": "Add community metadata record",
+        "selectTemplate": "Select a Metadata Template",
+        "cedarInfo": "OSF has partnered with <a target='_blank' href='https://metadatacenter.org/'>CEDAR</a> to provide more ways to annotate your research with domain or community-specific metadata records. If you would like to request the addition of a new metadata template, contact us at <a>support@osf.io</a>.",
+        "cancel": "Cancel",
+        "next": "Next",
+        "select": "Select",
+        "selected": "Selected",
+        "publish": "Publish",
+        "changeTemplate": "Change template",
+        "publishedText": "This metadata has a status of 'Published' and is publicly viewable.",
+        "notPublishedText": "This metadata has a status of 'Published' and is publicly viewable.",
+        "youAlreadyAddedText": "You have already added a record for this template",
+        "youAlreadyAdded": "Already Added"
+      },
+      "funding": {
+        "updated": "Funding information updated successfully",
+        "dialog": {
+          "header": "Edit Funding/Support Information",
+          "funderName": "Funder Name",
+          "funderIdentifier": "Funder Identifier",
+          "awardTitle": "Award Title",
+          "awardUri": "Award URI",
+          "awardNumber": "Award Number",
+          "selectFunder": "Select a funder",
+          "autoPopulated": "Auto-populated from selection",
+          "loadingFunders": "Loading funders...",
+          "description": "Add funding and support information for this project."
+        }
+      },
+      "affiliatedInstitutions": {
+        "updated": "Affiliated institutions updated successfully",
+        "dialog": {
+          "header": "Edit Affiliated Institutions",
+          "noInstitutions": "No institutions available"
+        }
+      },
+      "doi": {
+        "created": "DOI created successfully",
+        "dialog": {
+          "header": "Edit DOI",
+          "label": "DOI",
+          "placeholder": "Enter DOI",
+          "createConfirm": {
+            "header": "Create DOI",
+            "message": "Are you sure you want to create a DOI for this project? A DOI is persistent and will always resolve this page."
+          }
+        }
+      },
+      "addCommunityMetadataRecord": {
+        "title": "Add community metadata record"
       }
     }
   },

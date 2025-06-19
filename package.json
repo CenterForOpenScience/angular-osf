@@ -40,6 +40,7 @@
     "@ngxs/logger-plugin": "^19.0.0",
     "@ngxs/store": "^19.0.0",
     "@primeng/themes": "^19.0.9",
+    "cedar-embeddable-editor": "^1.5.0",
     "ace-builds": "^1.42.0",
     "chart.js": "^4.4.9",
     "diff": "^8.0.2",
