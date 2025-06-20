@@ -86,13 +86,15 @@
   </div>
 
   <osf-files-tree
+    [currentFolder]="currentFolder()"
     [files]="files()"
     [isLoading]="isFilesLoading()"
     [actions]="filesTreeActions"
-    [readonly]="false"
+    [viewOnly]="false"
     [projectId]="projectId()"
     [provider]="provider()"
     (folderIsOpening)="folderIsOpening($event)"
+    (entryFileClicked)="navigateToFile($event)"
   >
   </osf-files-tree>
 </div>

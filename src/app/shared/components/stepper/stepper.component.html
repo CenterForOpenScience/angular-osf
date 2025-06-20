@@ -1,0 +1,21 @@
+<div class="stepper-container">
+  <div class="stepper-circles-lines-row">
+    @for (step of steps(); track step.value; let i = $index) {
+      <button class="step-circle" [class.active]="i <= this.currentStep()" (click)="onStepClick(i)">
+        @if (i < this.currentStep()) {
+          <osf-icon iconClass="fas fa-check" />
+        } @else {
+          <span>{{ i + 1 }}</span>
+        }
+      </button>
+      @if (i < steps().length - 1) {
+        <div class="step-line" [class.active]="i <= this.currentStep()"></div>
+      }
+    }
+  </div>
+  <div class="stepper-labels-row">
+    @for (step of steps(); track step.value) {
+      <div class="step-label">{{ step.label | translate }}</div>
+    }
+  </div>
+</div>

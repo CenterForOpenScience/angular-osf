@@ -56,6 +56,13 @@ export const preprintsRoutes: Routes = [
             (c) => c.SelectPreprintServiceComponent
           ),
       },
+      {
+        path: ':providerId/submit',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/submit-preprint-stepper/submit-preprint-stepper.component').then(
+            (c) => c.SubmitPreprintStepperComponent
+          ),
+      },
     ],
   },
 ];

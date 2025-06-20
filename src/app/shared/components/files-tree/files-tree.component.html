@@ -9,8 +9,8 @@
       styleClass="w-full md:w-[30rem]"
       class="tree-table"
       (onNodeDrop)="dropNode($event)"
-      [draggableNodes]="!readonly()"
-      [droppableNodes]="!readonly()"
+      [draggableNodes]="!viewOnly()"
+      [droppableNodes]="!viewOnly()"
       draggableScope="self"
       droppableScope="self"
     >
@@ -28,8 +28,8 @@
         } @else {
           <div
             class="files-table-row"
-            [class.files-table-readonly]="readonly()"
-            [class.files-table-editable]="!readonly()"
+            [class.files-table-readonly]="viewOnly()"
+            [class.files-table-editable]="!viewOnly()"
           >
             <div
               class="flex gap-2 table-cell"
@@ -62,7 +62,7 @@
             <div class="files-table-cell">
               {{ file.dateModified | date: 'MMM d, y hh:mm a' }}
             </div>
-            @if (!readonly()) {
+            @if (!viewOnly()) {
               <div class="relative ml-auto">
                 <osf-file-menu (action)="onFileMenuAction($event, file)"></osf-file-menu>
               </div>

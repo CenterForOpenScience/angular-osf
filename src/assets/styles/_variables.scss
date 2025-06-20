@@ -137,6 +137,15 @@ $white-60: var(--white-60);
     #f3f8fd;
   --gradient-3: linear-gradient(90.12deg, #dbedfb 0.03%, #eff4fc 54.38%, #dbedfb 98.07%);
 
+  --stepper-step-background: var(--white);
+  --stepper-active-step-background: var(--pr-blue-1);
+  --stepper-step-color: var(--dark-blue-1);
+  --stepper-active-step-color: var(--white);
+  --stepper-space-line-color: var(--white);
+  --stepper-active-space-line-color: var(--pr-blue-1);
+  --stepper-step-border-color: var(--white);
+  --stepper-active-step-border-color: var(--pr-blue-1);
+
   --header-color: none;
   --header-background-color: none;
   --header-background-image-url: none;

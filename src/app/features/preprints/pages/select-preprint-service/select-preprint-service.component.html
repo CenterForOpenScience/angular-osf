@@ -58,6 +58,10 @@
     }
   </section>
   <section class="m-t-48 flex flex-row justify-content-end">
-    <p-button [label]="'common.buttons.next' | translate" (click)="nextStep()" [disabled]="!selectedProviderId()" />
+    <p-button
+      [label]="'common.buttons.next' | translate"
+      [routerLink]="['/preprints', selectedProviderId(), 'submit']"
+      [disabled]="!selectedProviderId()"
+    />
   </section>
 </section>

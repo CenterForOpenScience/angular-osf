@@ -9,6 +9,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { PreprintProviderShortInfo } from '@osf/features/preprints/models';
 import { GetPreprintProvidersAllowingSubmissions, PreprintsSelectors } from '@osf/features/preprints/store/preprints';
@@ -18,7 +19,7 @@ import { DecodeHtmlPipe } from '@shared/pipes';
 
 @Component({
   selector: 'osf-select-preprint-service',
-  imports: [SubHeaderComponent, Card, Button, NgClass, Tooltip, DecodeHtmlPipe, Skeleton, TranslatePipe],
+  imports: [SubHeaderComponent, Card, Button, NgClass, Tooltip, DecodeHtmlPipe, Skeleton, TranslatePipe, RouterLink],
   templateUrl: './select-preprint-service.component.html',
   styleUrl: './select-preprint-service.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -47,9 +48,5 @@ export class SelectPreprintServiceComponent implements OnInit {
     }
 
     this.actions.setSelectedPreprintProviderId(provider.id);
-  }
-
-  nextStep() {
-    //[RNi] TODO: redirect to first step of submitting preprint
   }
 }

@@ -51,6 +51,17 @@ export interface FileRelationshipsResponse {
       };
     };
   };
+  root_folder: {
+    links: {
+      related: {
+        href: string;
+      };
+    };
+    data: {
+      id: string;
+      type: string;
+    };
+  };
 }
 
 export interface FileLinks {

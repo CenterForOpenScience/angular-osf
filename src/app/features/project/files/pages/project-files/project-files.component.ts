@@ -16,7 +16,7 @@ import { HttpEventType } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { CreateFolderDialogComponent } from '@osf/features/project/files/components';
 import { FilesTreeActions } from '@osf/features/project/files/models';
@@ -42,6 +42,7 @@ import {
   SearchInputComponent,
   SubHeaderComponent,
 } from '@shared/components';
+import { OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 @Component({
@@ -74,6 +75,7 @@ export class ProjectFilesComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
+  private readonly router = inject(Router);
   private readonly actions = createDispatchMap({
     createFolder: CreateFolder,
     deleteEntry: DeleteEntry,
@@ -230,5 +232,9 @@ export class ProjectFilesComponent {
       this.searchControl.setValue('');
       this.sortControl.setValue(ALL_SORT_OPTIONS[0].value);
     }
+  }
+
+  navigateToFile(file: OsfFile) {
+    this.router.navigate([file.guid], { relativeTo: this.activeRoute });
   }
 }
