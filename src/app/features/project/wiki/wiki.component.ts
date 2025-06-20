@@ -93,7 +93,6 @@ export class WikiComponent {
   protected wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
 
   constructor() {
-    this.actions.getWikiContent(this.projectId());
     this.actions
       .getWikiList(this.projectId())
       .pipe(

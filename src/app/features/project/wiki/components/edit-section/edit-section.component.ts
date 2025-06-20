@@ -2,17 +2,20 @@ import { LMarkdownEditorModule, MdEditorOption } from 'ngx-markdown-editor';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
 import { DialogService } from 'primeng/dynamicdialog';
 import { PanelModule } from 'primeng/panel';
 
-import { ChangeDetectionStrategy, Component, inject, input, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+
+import 'ace-builds/src-noconflict/ext-language_tools';
 
 import { WikiSyntaxHelpDialogComponent } from '../wiki-syntax-help-dialog/wiki-syntax-help-dialog.component';
 
 @Component({
   selector: 'osf-edit-section',
-  imports: [PanelModule, Button, TranslatePipe, FormsModule, LMarkdownEditorModule],
+  imports: [PanelModule, Button, TranslatePipe, FormsModule, LMarkdownEditorModule, Checkbox],
   templateUrl: './edit-section.component.html',
   styleUrl: './edit-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,10 +23,10 @@ import { WikiSyntaxHelpDialogComponent } from '../wiki-syntax-help-dialog/wiki-s
 })
 export class EditSectionComponent implements OnInit {
   readonly currentContent = input.required<string>();
+  readonly versionContent = input.required<string>();
   readonly isSaving = input<boolean>(false);
   readonly contentChange = output<string>();
   readonly saveContent = output<string>();
-  private htmlContent = '';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private editorInstance: any;
   content = '';
@@ -41,6 +44,18 @@ export class EditSectionComponent implements OnInit {
     hideIcons: [''],
   };
 
+  autoCompleteEnabled = false;
+
+  constructor() {
+    effect(() => {
+      const versionContent = this.versionContent();
+      if (!this.initialContent) {
+        this.content = versionContent;
+        this.initialContent = versionContent;
+      }
+    });
+  }
+
   ngOnInit(): void {
     this.content = this.currentContent();
     this.initialContent = this.currentContent();
@@ -50,15 +65,20 @@ export class EditSectionComponent implements OnInit {
   onEditorLoaded(editor: any) {
     this.editorInstance = editor;
     editor.setShowPrintMargin(false);
+    const langTools = ace.require('ace/ext/language_tools');
+    editor.setOptions({
+      enableBasicAutocompletion: this.autoCompleteEnabled,
+      enableLiveAutocompletion: this.autoCompleteEnabled,
+      enableSnippets: [langTools.snippetCompleter],
+    });
   }
 
-  onPreviewDomChanged(event: HTMLElement) {
-    this.htmlContent = event.innerHTML;
-    this.contentChange.emit(event.innerHTML);
+  onPreviewDomChanged() {
+    this.contentChange.emit(this.editorInstance?.getValue());
   }
 
   save() {
-    this.saveContent.emit(this.htmlContent);
+    this.saveContent.emit(this.editorInstance?.getValue());
   }
 
   revert() {
@@ -84,5 +104,15 @@ export class EditSectionComponent implements OnInit {
       header: this.translateService.instant('project.wiki.syntaxHelp.header'),
       modal: true,
     });
+  }
+
+  toggleAutocomplete() {
+    if (this.editorInstance) {
+      this.autoCompleteEnabled = !this.autoCompleteEnabled;
+      this.editorInstance.setOptions({
+        enableBasicAutocompletion: this.autoCompleteEnabled,
+        enableLiveAutocompletion: this.autoCompleteEnabled,
+      });
+    }
   }
 }

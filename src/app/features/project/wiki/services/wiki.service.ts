@@ -67,8 +67,7 @@ export class WikiService {
             return of('');
           }
           return this.#http.get(downloadLink, { responseType: 'text' });
-        }),
-        map((content) => (content ? content.replace(/\n/g, '<br>') : ''))
+        })
       );
   }
 

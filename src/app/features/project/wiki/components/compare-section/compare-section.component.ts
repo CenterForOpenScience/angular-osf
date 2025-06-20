@@ -10,7 +10,6 @@ import { FormsModule } from '@angular/forms';
 import { WikiVersion } from '../../models';
 
 import * as Diff from 'diff';
-import TurndownService from 'turndown';
 
 @Component({
   selector: 'osf-compare-section',
@@ -39,10 +38,7 @@ export class CompareSectionComponent {
   ]);
 
   content = computed(() => {
-    const changes = Diff.diffWords(
-      this.convertHtmlToMarkdown(this.versionContent()),
-      this.convertHtmlToMarkdown(this.previewContent())
-    );
+    const changes = Diff.diffWords(this.versionContent(), this.previewContent());
     return changes
       .map((change) => {
         if (change.added) {
@@ -60,18 +56,6 @@ export class CompareSectionComponent {
       this.selectedVersion = this.versions()[0].id;
       this.selectVersion.emit(this.selectedVersion);
     });
-  }
-  convertHtmlToMarkdown(html: string): string {
-    const turndownService = new TurndownService({
-      headingStyle: 'atx',
-      emDelimiter: '*',
-      strongDelimiter: '**',
-      hr: '---',
-      linkStyle: 'inlined',
-      bulletListMarker: '-',
-      codeBlockStyle: 'indented',
-    });
-    return turndownService.turndown(html);
   }
   onVersionChange(versionId: string): void {
     this.selectedVersion = versionId;

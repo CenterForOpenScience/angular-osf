@@ -1,6 +1,5 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { SafeHtmlPipe } from 'primeng/menu';
 import { PanelModule } from 'primeng/panel';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
@@ -8,11 +7,13 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { MarkdownComponent } from '@osf/shared/components';
+
 import { WikiVersion } from '../../models';
 
 @Component({
   selector: 'osf-view-section',
-  imports: [PanelModule, Select, FormsModule, TranslatePipe, SafeHtmlPipe, Skeleton],
+  imports: [PanelModule, Select, FormsModule, TranslatePipe, Skeleton, MarkdownComponent],
   templateUrl: './view-section.component.html',
   styleUrl: './view-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

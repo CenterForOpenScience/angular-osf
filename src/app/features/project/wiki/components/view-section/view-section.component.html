@@ -22,7 +22,7 @@
     <p-panel class="view-panel" showHeader="false">
       <div class="editor-view-mode mt-3">
         @if (content()) {
-          <div class="md-editor-container" [innerHTML]="content() | safeHtml"></div>
+          <osf-markdown [markdownText]="content()"></osf-markdown>
         } @else {
           <p class="font-italic">{{ 'project.wiki.version.noContent' | translate }}</p>
         }

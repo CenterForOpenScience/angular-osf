@@ -22,7 +22,7 @@
       [(ngModel)]="content"
       [options]="options"
       (onEditorLoaded)="onEditorLoaded($event)"
-      (onPreviewDomChanged)="onPreviewDomChanged($event)"
+      (onPreviewDomChanged)="onPreviewDomChanged()"
       height="100%"
     >
       <slot custom-btns>
@@ -32,10 +32,19 @@
         <button class="btn btn-sm btn-default" title="Redo" (click)="redo()">
           <i class="fas fa-rotate-right"></i>
         </button>
-        <div class="btn-group">
-          <button class="btn btn-sm btn-default" title="Horizontal rule <hr>" (click)="doHorizontalRule()">
-            <i class="fas fa-grip-lines"></i>
-          </button>
+        <button class="btn btn-sm btn-default" title="Horizontal rule <hr>" (click)="doHorizontalRule()">
+          <i class="fas fa-grip-lines"></i>
+        </button>
+        <div class="btn btn-sm btn-default flex align-items-center">
+          <p-checkbox
+            inputId="autoComplete"
+            [value]="autoCompleteEnabled"
+            size="small"
+            variant="outlined"
+            binary
+            (onChange)="toggleAutocomplete()"
+          />
+          <label for="autoComplete" class="ml-2 mb-0"> Autocomplete </label>
         </div>
         <button class="btn btn-sm btn-default" title="Wiki syntax help" (click)="openSyntaxHelpDialog()">
           <i class="fas fa-question"></i>

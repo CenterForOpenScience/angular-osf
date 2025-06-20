@@ -14,6 +14,7 @@ import { AfterViewInit, Component, ElementRef, input, signal, viewChild } from '
 })
 export class TruncatedTextComponent implements AfterViewInit {
   readonly text = input('');
+  readonly hasContent = input<boolean>(false);
   readonly maxVisibleLines = input(3);
   protected readonly contentElement = viewChild<ElementRef>('textContent');
   protected isTextExpanded = signal(false);

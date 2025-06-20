@@ -11,6 +11,7 @@ export { FullScreenLoaderComponent } from './full-screen-loader/full-screen-load
 export { IconComponent } from './icon/icon.component';
 export { LineChartComponent } from './line-chart/line-chart.component';
 export { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+export { MarkdownComponent } from './markdown/markdown.component';
 export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.component';
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';

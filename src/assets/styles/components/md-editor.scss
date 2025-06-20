@@ -28,12 +28,30 @@
       position: relative;
       padding-right: 40px;
       background-color: var(--white);
+      line-height: 1;
 
       .hide-split {
         position: absolute;
         right: 0;
         top: 0;
       }
+    }
+
+    .p-checkbox-sm,
+    .p-checkbox-sm .p-checkbox-box {
+      width: var(--p-checkbox-sm-width);
+      height: var(--p-checkbox-sm-height);
+    }
+
+    .p-checkbox-checked {
+      .p-checkbox-icon {
+        color: var(--dark-blue-1);
+      }
+    }
+
+    .p-checkbox-box {
+      border: 1px solid var(--dark-blue-1);
+      background: transparent;
     }
 
     h1,

@@ -1,11 +1,17 @@
 <div class="flex flex-column gap-3">
-  <div
-    #textContent
-    [innerHTML]="text()"
-    class="text-content"
-    [class.expanded]="isTextExpanded()"
-    [style.--line-clamp]="maxVisibleLines()"
-  ></div>
+  @if (hasContent()) {
+    <div #textContent class="text-content" [class.expanded]="isTextExpanded()" [style.--line-clamp]="maxVisibleLines()">
+      <ng-content></ng-content>
+    </div>
+  } @else {
+    <div
+      #textContent
+      [innerHTML]="text()"
+      class="text-content"
+      [class.expanded]="isTextExpanded()"
+      [style.--line-clamp]="maxVisibleLines()"
+    ></div>
+  }
 
   @if (hasOverflowingText()) {
     <a
