@@ -85,4 +85,14 @@ export class CollectionsSelectors {
   static getAllFiltersOptions(state: CollectionsStateModel): CollectionsFilters {
     return state.filtersOptions;
   }
+
+  @Selector([CollectionsState])
+  static getCollectionProvider(state: CollectionsStateModel) {
+    return state.collectionProvider.data;
+  }
+
+  @Selector([CollectionsState])
+  static getCollectionProviderLoading(state: CollectionsStateModel) {
+    return state.collectionProvider.isLoading;
+  }
 }

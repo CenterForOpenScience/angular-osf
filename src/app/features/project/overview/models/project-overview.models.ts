@@ -255,6 +255,6 @@ export interface ProjectOverviewGetResponseJsoApi {
   };
 }
 
-export interface ProjectOverviewResponseJsoApi extends JsonApiResponse<ProjectOverviewGetResponseJsoApi, null> {
+export interface ProjectOverviewResponseJsonApi extends JsonApiResponse<ProjectOverviewGetResponseJsoApi, null> {
   data: ProjectOverviewGetResponseJsoApi;
 }

@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@osf/core/services';
-import { SparseCollectionsResponse } from '@osf/features/collections/models';
+import { SparseCollectionsResponseJsonApi } from '@osf/features/collections/models';
 import { SortOrder } from '@osf/shared/enums';
 import { NodeResponseModel, UpdateNodeRequestModel } from '@shared/models';
 
@@ -90,7 +90,7 @@ export class MyProjectsService {
       'fields[collections]': 'title,bookmarks',
     };
 
-    return this.jsonApiService.get<SparseCollectionsResponse>(environment.apiUrl + '/collections/', params).pipe(
+    return this.jsonApiService.get<SparseCollectionsResponseJsonApi>(environment.apiUrl + '/collections/', params).pipe(
       map((response) => {
         const bookmarksCollection = response.data.find(
           (collection) => collection.attributes.title === 'Bookmarks' && collection.attributes.bookmarks

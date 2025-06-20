@@ -10,6 +10,7 @@ import {
   AddProjectToBookmarks,
   ClearCollections,
   GetBookmarksCollectionId,
+  GetCollectionProvider,
   RemoveProjectFromBookmarks,
   SetCollectedTypeFilters,
   SetDataTypeFilters,
@@ -48,6 +49,11 @@ const COLLECTIONS_DEFAULTS: CollectionsStateModel = {
   },
   filters: FILTERS_DEFAULTS,
   filtersOptions: FILTERS_DEFAULTS,
+  collectionProvider: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
 };
 
 @State<CollectionsStateModel>({
@@ -57,6 +63,29 @@ const COLLECTIONS_DEFAULTS: CollectionsStateModel = {
 @Injectable()
 export class CollectionsState {
   constructor(private collectionsService: CollectionsService) {}
+
+  @Action(GetCollectionProvider)
+  getCollectionProvider(ctx: StateContext<CollectionsStateModel>, action: GetCollectionProvider) {
+    const state = ctx.getState();
+    ctx.patchState({
+      collectionProvider: {
+        ...state.collectionProvider,
+        isLoading: true,
+      },
+    });
+
+    return this.collectionsService.getCollectionProvider(action.collectionName).pipe(
+      tap((res) => {
+        ctx.patchState({
+          collectionProvider: {
+            data: res,
+            isLoading: false,
+            error: null,
+          },
+        });
+      })
+    );
+  }
 
   @Action(GetBookmarksCollectionId)
   getBookmarksCollectionId(ctx: StateContext<CollectionsStateModel>) {
@@ -133,7 +162,6 @@ export class CollectionsState {
     ctx.patchState(COLLECTIONS_DEFAULTS);
   }
 
-  // Filter Actions
   @Action(SetProgramAreaFilters)
   setProgramAreaFilters(ctx: StateContext<CollectionsStateModel>, action: SetProgramAreaFilters) {
     const state = ctx.getState();
