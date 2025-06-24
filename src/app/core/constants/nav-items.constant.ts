@@ -29,6 +29,20 @@ export const NAV_ITEMS: NavItem[] = [
     useExactMatch: true,
   },
   {
+    path: '/registries',
+    label: 'navigation.registries',
+    icon: 'registries',
+    isCollapsible: true,
+    useExactMatch: false,
+    items: [
+      {
+        path: '/registries',
+        label: 'navigation.registriesSubRoutes.overview',
+        useExactMatch: false,
+      },
+    ],
+  },
+  {
     path: '/preprints',
     label: 'navigation.preprints',
     icon: 'preprints',

@@ -55,6 +55,10 @@
     "support": "Support",
     "meetings": "Meetings",
     "myProjects": "My Projects",
+    "registries": "Registries",
+    "registriesSubRoutes": {
+      "overview": "Overview"
+    },
     "preprints": "Preprints",
     "preprintsSubRoutes": {
       "overview": "Overview",
@@ -1381,6 +1385,19 @@
       "learnMore": "Learn more",
       "providerLogoImageAlt": "Provider Logo"
     }
+  },
+  "registries": {
+    "title": "Registries",
+    "addRegistration": "Add a Registration",
+    "description": "The open registries network",
+    "searchPlaceholder": "Search Registrations",
+    "services": {
+      "title": "Registry Services",
+      "description": "Leading registry service providers use this open source infrastructure to support their communities.",
+      "contactUs": "Contact Us"
+    },
+    "browse": "Browse Registrations",
+    "seeMore": "See more"
   },
   "truncatedText": {
     "readMore": "Read more",

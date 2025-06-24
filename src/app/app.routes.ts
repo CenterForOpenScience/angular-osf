@@ -205,6 +205,11 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: 'registries',
+        loadChildren: () =>
+          import('./features/registries/constants/registries.routes').then((mod) => mod.registriesRoutes),
+      },
+      {
         path: '**',
         loadComponent: () =>
           import('./core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
