@@ -5,7 +5,7 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { RegistryServiceIcons } from '@shared/constants/registry-services-icons.const';
+import { RegistryServiceIcons } from '@shared/constants';
 
 @Component({
   selector: 'osf-registry-services',

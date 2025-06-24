@@ -5,8 +5,7 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { GetRegistries } from '@osf/features/registries/store/registries.actions';
-import { RegistriesStateModel } from '@osf/features/registries/store/registries.model';
+import { GetRegistries, RegistriesStateModel } from '@osf/features/registries/store';
 import { ResourceTab } from '@shared/enums';
 import { SearchService } from '@shared/services';
 import { getResourceTypes } from '@shared/utils';

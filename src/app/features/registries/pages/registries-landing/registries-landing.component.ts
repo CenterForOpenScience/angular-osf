@@ -6,24 +6,28 @@ import { Button } from 'primeng/button';
 
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 
-import { RegistryServicesComponent } from '@osf/features/registries/components/registry-services/registry-services.component';
-import { GetRegistries } from '@osf/features/registries/store/registries.actions';
-import { RegistriesSelectors } from '@osf/features/registries/store/registries.selectors';
-import { LoadingSpinnerComponent, ResourceCardComponent, SearchInputComponent } from '@shared/components';
+import { RegistryServicesComponent } from '@osf/features/registries/components';
+import { GetRegistries, RegistriesSelectors } from '@osf/features/registries/store';
+import {
+  LoadingSpinnerComponent,
+  ResourceCardComponent,
+  SearchInputComponent,
+  SubHeaderComponent,
+} from '@shared/components';
 import { ResourceTab } from '@shared/enums';
 
 @Component({
   selector: 'osf-registries-landing',
   imports: [
     Button,
-    RouterLink,
     TranslatePipe,
     SearchInputComponent,
     RegistryServicesComponent,
     ResourceCardComponent,
     LoadingSpinnerComponent,
+    SubHeaderComponent,
   ],
   templateUrl: './registries-landing.component.html',
   styleUrl: './registries-landing.component.scss',

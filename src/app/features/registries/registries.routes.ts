@@ -3,7 +3,7 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { RegistriesComponent } from '@osf/features/registries/registries.component';
-import { RegistriesState } from '@osf/features/registries/store/registries.state';
+import { RegistriesState } from '@osf/features/registries/store';
 
 export const registriesRoutes: Routes = [
   {
@@ -18,10 +18,7 @@ export const registriesRoutes: Routes = [
       },
       {
         path: 'overview',
-        loadComponent: () =>
-          import('@osf/features/registries/pages/registries-landing/registries-landing.component').then(
-            (c) => c.RegistriesLandingComponent
-          ),
+        loadComponent: () => import('@osf/features/registries/pages').then((c) => c.RegistriesLandingComponent),
       },
     ],
   },

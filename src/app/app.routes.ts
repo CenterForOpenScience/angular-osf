@@ -206,8 +206,7 @@ export const routes: Routes = [
       },
       {
         path: 'registries',
-        loadChildren: () =>
-          import('./features/registries/constants/registries.routes').then((mod) => mod.registriesRoutes),
+        loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
       },
       {
         path: '**',

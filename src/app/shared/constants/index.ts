@@ -4,6 +4,7 @@ export * from './addons-tab-options.const';
 export * from './input-limits.const';
 export * from './input-validation-messages.const';
 export * from './meetings-table.constants';
+export * from './registry-services-icons.const';
 export * from './remove-nullable.const';
 export * from './resource-filters-defaults';
 export * from './resource-languages.const';
