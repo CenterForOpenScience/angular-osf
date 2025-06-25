@@ -10,18 +10,25 @@ import {
   AddProjectToBookmarks,
   ClearCollections,
   GetBookmarksCollectionId,
+  GetCollectionDetails,
   GetCollectionProvider,
+  GetCollectionSubmissions,
   RemoveProjectFromBookmarks,
+  SetAllFilters,
   SetCollectedTypeFilters,
   SetDataTypeFilters,
   SetDiseaseFilters,
   SetGradeLevelsFilters,
   SetIssueFilters,
+  SetPageNumber,
   SetProgramAreaFilters,
   SetReviewsStateFilters,
   SetSchoolTypeFilters,
+  SetSearchValue,
+  SetSortBy,
   SetStatusFilters,
   SetStudyDesignFilters,
+  SetTotalSubmissions,
   SetVolumeFilters,
 } from './collections.actions';
 import { CollectionsStateModel } from './collections.model';
@@ -47,13 +54,29 @@ const COLLECTIONS_DEFAULTS: CollectionsStateModel = {
     isSubmitting: false,
     error: null,
   },
-  filters: FILTERS_DEFAULTS,
+  currentFilters: FILTERS_DEFAULTS,
   filtersOptions: FILTERS_DEFAULTS,
   collectionProvider: {
     data: null,
     isLoading: false,
     error: null,
   },
+  collectionDetails: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  collectionSubmissions: {
+    data: [],
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  totalSubmissions: 0,
+  sortBy: 'relevance',
+  searchText: '',
+  page: '1',
 };
 
 @State<CollectionsStateModel>({
@@ -87,6 +110,39 @@ export class CollectionsState {
     );
   }
 
+  @Action(GetCollectionDetails)
+  getCollectionDetails(ctx: StateContext<CollectionsStateModel>, action: GetCollectionDetails) {
+    const state = ctx.getState();
+
+    ctx.patchState({
+      collectionDetails: {
+        ...state.collectionDetails,
+        isLoading: true,
+      },
+    });
+
+    return this.collectionsService.getCollectionDetails(action.collectionId).pipe(
+      tap((res) => {
+        ctx.patchState({
+          collectionDetails: {
+            data: res,
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+        });
+
+        ctx.patchState({
+          filtersOptions: {
+            ...state.filtersOptions,
+            ...res.filters,
+          },
+        });
+      }),
+      catchError((error) => this.handleError(ctx, ['collectionDetails'], error))
+    );
+  }
+
   @Action(GetBookmarksCollectionId)
   getBookmarksCollectionId(ctx: StateContext<CollectionsStateModel>) {
     const state = ctx.getState();
@@ -107,7 +163,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
+      catchError((error) => this.handleError(ctx, ['bookmarksId'], error))
     );
   }
 
@@ -130,7 +186,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
+      catchError((error) => this.handleError(ctx, ['bookmarksId'], error))
     );
   }
 
@@ -153,7 +209,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
+      catchError((error) => this.handleError(ctx, ['bookmarksId'], error))
     );
   }
 
@@ -162,12 +218,24 @@ export class CollectionsState {
     ctx.patchState(COLLECTIONS_DEFAULTS);
   }
 
+  @Action(SetAllFilters)
+  setAllFilters(ctx: StateContext<CollectionsStateModel>, action: SetAllFilters) {
+    const state = ctx.getState();
+    ctx.patchState({
+      currentFilters: {
+        ...state.currentFilters,
+        ...action.filters,
+      },
+      page: '1',
+    });
+  }
+
   @Action(SetProgramAreaFilters)
   setProgramAreaFilters(ctx: StateContext<CollectionsStateModel>, action: SetProgramAreaFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         programArea: action.programAreaFilters,
       },
     });
@@ -177,8 +245,8 @@ export class CollectionsState {
   setCollectedTypesFilters(ctx: StateContext<CollectionsStateModel>, action: SetCollectedTypeFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         collectedType: action.collectedTypeFilters,
       },
     });
@@ -188,8 +256,8 @@ export class CollectionsState {
   setStatusFilters(ctx: StateContext<CollectionsStateModel>, action: SetStatusFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         status: action.statusFilters,
       },
     });
@@ -199,8 +267,8 @@ export class CollectionsState {
   setDataTypeFilters(ctx: StateContext<CollectionsStateModel>, action: SetDataTypeFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         dataType: action.dataTypeFilters,
       },
     });
@@ -210,8 +278,8 @@ export class CollectionsState {
   setDiseaseFilters(ctx: StateContext<CollectionsStateModel>, action: SetDiseaseFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         disease: action.diseaseFilters,
       },
     });
@@ -221,8 +289,8 @@ export class CollectionsState {
   setGradeLevelsFilters(ctx: StateContext<CollectionsStateModel>, action: SetGradeLevelsFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         gradeLevels: action.gradeLevelsFilters,
       },
     });
@@ -232,8 +300,8 @@ export class CollectionsState {
   setIssueFilters(ctx: StateContext<CollectionsStateModel>, action: SetIssueFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         issue: action.issueFilters,
       },
     });
@@ -243,8 +311,8 @@ export class CollectionsState {
   setReviewsStateFilters(ctx: StateContext<CollectionsStateModel>, action: SetReviewsStateFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         reviewsState: action.reviewsStateFilters,
       },
     });
@@ -254,8 +322,8 @@ export class CollectionsState {
   setSchoolTypeFilters(ctx: StateContext<CollectionsStateModel>, action: SetSchoolTypeFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         schoolType: action.schoolTypeFilters,
       },
     });
@@ -265,8 +333,8 @@ export class CollectionsState {
   setStudyDesignFilters(ctx: StateContext<CollectionsStateModel>, action: SetStudyDesignFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         studyDesign: action.studyDesignFilters,
       },
     });
@@ -276,22 +344,87 @@ export class CollectionsState {
   setVolumeFilters(ctx: StateContext<CollectionsStateModel>, action: SetVolumeFilters) {
     const state = ctx.getState();
     ctx.patchState({
-      filters: {
-        ...state.filters,
+      currentFilters: {
+        ...state.currentFilters,
         volume: action.volumeFilters,
       },
     });
   }
 
-  private handleError(ctx: StateContext<CollectionsStateModel>, section: keyof CollectionsStateModel, error: Error) {
+  @Action(SetSortBy)
+  setSortBy(ctx: StateContext<CollectionsStateModel>, action: SetSortBy) {
     ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        isSubmitting: false,
-        error: error.message,
+      sortBy: action.sortValue,
+    });
+  }
+
+  @Action(SetSearchValue)
+  setSearchValue(ctx: StateContext<CollectionsStateModel>, action: SetSearchValue) {
+    ctx.patchState({
+      searchText: action.searchValue,
+      page: '1',
+    });
+  }
+
+  @Action(SetPageNumber)
+  setPageNumber(ctx: StateContext<CollectionsStateModel>, action: SetPageNumber) {
+    ctx.patchState({
+      page: action.page,
+    });
+  }
+
+  @Action(SetTotalSubmissions)
+  setTotalSubmissions(ctx: StateContext<CollectionsStateModel>, action: SetTotalSubmissions) {
+    ctx.patchState({
+      totalSubmissions: action.totalCount,
+    });
+  }
+
+  @Action(GetCollectionSubmissions)
+  getCollectionSubmission(ctx: StateContext<CollectionsStateModel>, action: GetCollectionSubmissions) {
+    const state = ctx.getState();
+    ctx.patchState({
+      collectionSubmissions: {
+        ...state.collectionSubmissions,
+        isLoading: true,
       },
     });
+
+    return this.collectionsService
+      .getCollectionSubmissions(action.providerId, action.searchText, action.activeFilters, action.page, action.sort)
+      .pipe(
+        tap((res) => {
+          ctx.patchState({
+            collectionSubmissions: {
+              data: res,
+              isLoading: false,
+              error: null,
+            },
+          });
+        }),
+        catchError((error) => this.handleError(ctx, ['collectionSubmissions'], error))
+      );
+  }
+
+  private handleError(
+    ctx: StateContext<CollectionsStateModel>,
+    sections: (keyof CollectionsStateModel)[],
+    error: Error
+  ) {
+    const state = ctx.getState();
+    sections.forEach((section) => {
+      if (section !== 'sortBy' && section !== 'searchText' && section !== 'page' && section !== 'totalSubmissions') {
+        ctx.patchState({
+          [section]: {
+            ...state[section],
+            isLoading: false,
+            isSubmitting: false,
+            error: error.message,
+          },
+        });
+      }
+    });
+
     return throwError(() => error);
   }
 }

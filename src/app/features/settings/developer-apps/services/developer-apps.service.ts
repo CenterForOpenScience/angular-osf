@@ -35,8 +35,8 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toCreateRequest(developerAppCreate);
 
     return this.jsonApiService
-      .post<DeveloperAppGetResponse>(this.baseUrl, request)
-      .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response)));
+      .post<JsonApiResponse<DeveloperAppGetResponse, null>>(this.baseUrl, request)
+      .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response.data)));
   }
 
   updateApp(clientId: string, developerAppUpdate: DeveloperAppCreateUpdate): Observable<DeveloperApp> {

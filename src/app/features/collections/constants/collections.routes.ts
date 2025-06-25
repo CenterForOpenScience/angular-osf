@@ -4,7 +4,7 @@ import { Routes } from '@angular/router';
 
 import { CollectionsComponent } from '@osf/features/collections/collections.component';
 
-import { ModerationState } from '../moderation/store';
+import { ModerationState } from '../../moderation/store';
 
 export const collectionsRoutes: Routes = [
   {

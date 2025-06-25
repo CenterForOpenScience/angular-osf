@@ -38,11 +38,9 @@ export class JsonApiService {
   }
 
   post<T>(url: string, body?: unknown, params?: Record<string, unknown>): Observable<T> {
-    return this.http
-      .post<JsonApiResponse<T, null>>(url, body, {
-        params: this.buildHttpParams(params),
-      })
-      .pipe(map((response) => response.data));
+    return this.http.post<T>(url, body, {
+      params: this.buildHttpParams(params),
+    });
   }
 
   patch<T>(url: string, body: unknown): Observable<T> {

@@ -4,7 +4,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from '@shared/components';
 
 @Component({
   selector: 'osf-search-input',

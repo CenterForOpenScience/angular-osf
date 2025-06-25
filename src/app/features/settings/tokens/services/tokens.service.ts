@@ -43,8 +43,8 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.#jsonApiService
-      .post<TokenCreateResponseJsonApi>(environment.apiUrl + '/tokens/', request)
-      .pipe(map((response) => TokenMapper.fromCreateResponse(response)));
+      .post<JsonApiResponse<TokenCreateResponseJsonApi, null>>(environment.apiUrl + '/tokens/', request)
+      .pipe(map((response) => TokenMapper.fromCreateResponse(response.data)));
   }
 
   updateToken(tokenId: string, name: string, scopes: string[]): Observable<Token> {

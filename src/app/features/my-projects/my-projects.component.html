@@ -37,7 +37,7 @@
             </ng-template>
           </p-select>
         }
-        <!--My projects-->
+
         <p-tabpanel [value]="0" class="flex flex-column gap-4 flex-1">
           <osf-my-projects-table
             [items]="projects()"
@@ -52,7 +52,6 @@
           />
         </p-tabpanel>
 
-        <!--My registrations-->
         <p-tabpanel [value]="1" class="flex flex-column gap-4 flex-1">
           <osf-my-projects-table
             [items]="registrations()"
@@ -67,7 +66,6 @@
           />
         </p-tabpanel>
 
-        <!--My preprints-->
         <p-tabpanel [value]="2" class="flex flex-column gap-4 flex-1">
           <osf-my-projects-table
             [items]="preprints()"
@@ -82,7 +80,6 @@
           />
         </p-tabpanel>
 
-        <!--Bookmarks-->
         <p-tabpanel [value]="3" class="flex flex-column gap-4 flex-1">
           @if (!bookmarks().length && !isLoading()) {
             <p>{{ 'myProjects.bookmarks.emptyState' | translate }}</p>

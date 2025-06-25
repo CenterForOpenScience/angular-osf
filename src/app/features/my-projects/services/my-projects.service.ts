@@ -3,6 +3,7 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { JsonApiResponse } from '@core/models';
 import { JsonApiService } from '@osf/core/services';
 import { SparseCollectionsResponseJsonApi } from '@osf/features/collections/models';
 import { SortOrder } from '@osf/shared/enums';
@@ -167,8 +168,8 @@ export class MyProjectsService {
     };
 
     return this.jsonApiService
-      .post<MyProjectsItemGetResponseJsonApi>(`${environment.apiUrl}/nodes/`, payload, params)
-      .pipe(map((response) => MyProjectsMapper.fromResponse(response)));
+      .post<JsonApiResponse<MyProjectsItemGetResponseJsonApi, null>>(`${environment.apiUrl}/nodes/`, payload, params)
+      .pipe(map((response) => MyProjectsMapper.fromResponse(response.data)));
   }
 
   getProjectById(projectId: string): Observable<NodeResponseModel> {

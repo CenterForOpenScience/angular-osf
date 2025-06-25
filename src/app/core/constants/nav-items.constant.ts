@@ -57,7 +57,7 @@ export const NAV_ITEMS: NavItem[] = [
     path: '/collections',
     label: 'navigation.collections',
     icon: 'collections',
-    useExactMatch: true,
+    useExactMatch: false,
   },
   {
     path: '/meetings',

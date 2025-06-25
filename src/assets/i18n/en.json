@@ -761,11 +761,14 @@
     "searchResults": {
       "noResults": "0 results",
       "10000Results": "10,000+ results",
-      "results": "results"
+      "results": "results",
+      "noResultsFound": "No results found",
+      "noResultsFoundMessage": "Try broadening your search terms"
     },
     "common": {
       "dateCreated": "Date Created:",
-      "dateModified": "Date Modified:"
+      "dateModified": "Date Modified:",
+      "by": "by"
     }
   },
   "moderation": {

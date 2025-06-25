@@ -1,7 +1,15 @@
+import { CollectionsFilters } from '@osf/features/collections/models';
+
 export class GetCollectionProvider {
   static readonly type = '[Collections] Get Collection Provider';
 
   constructor(public collectionName: string) {}
+}
+
+export class GetCollectionDetails {
+  static readonly type = '[Collections] Get Collection Details';
+
+  constructor(public collectionId: string) {}
 }
 
 export class GetBookmarksCollectionId {
@@ -94,4 +102,46 @@ export class SetVolumeFilters {
   static readonly type = '[Collections] Set Volume Filters';
 
   constructor(public volumeFilters: string[]) {}
+}
+
+export class SetSortBy {
+  static readonly type = '[Collections] Set Sort By';
+
+  constructor(public sortValue: string) {}
+}
+
+export class SetTotalSubmissions {
+  static readonly type = '[Collections] Set Total Submission';
+
+  constructor(public totalCount: number) {}
+}
+
+export class SetPageNumber {
+  static readonly type = '[Collections] Set Page Number';
+
+  constructor(public page: string) {}
+}
+
+export class SetSearchValue {
+  static readonly type = '[Collections] Set Search Value';
+
+  constructor(public searchValue: string) {}
+}
+
+export class SetAllFilters {
+  static readonly type = '[Collections] Set All Filters';
+
+  constructor(public filters: Partial<CollectionsFilters>) {}
+}
+
+export class GetCollectionSubmissions {
+  static readonly type = '[Collections] Get Collection Submissions';
+
+  constructor(
+    public providerId: string,
+    public searchText: string,
+    public activeFilters: Record<string, string[]>,
+    public page: string,
+    public sort: string
+  ) {}
 }

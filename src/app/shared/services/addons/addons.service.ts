@@ -106,10 +106,11 @@ export class AddonsService {
     addonRequestPayload: AuthorizedAddonRequestJsonApi,
     addonType: string
   ): Observable<AuthorizedAddonResponseJsonApi> {
-    return this.jsonApiService.post<AuthorizedAddonResponseJsonApi>(
-      `${environment.addonsApiUrl}/authorized-${addonType}-accounts/`,
-      addonRequestPayload
-    );
+    return this.jsonApiService
+      .post<
+        JsonApiResponse<AuthorizedAddonResponseJsonApi, null>
+      >(`${environment.addonsApiUrl}/authorized-${addonType}-accounts/`, addonRequestPayload)
+      .pipe(map((response) => response.data));
   }
 
   updateAuthorizedAddon(
@@ -127,10 +128,11 @@ export class AddonsService {
     addonRequestPayload: ConfiguredAddonRequestJsonApi,
     addonType: string
   ): Observable<ConfiguredAddonResponseJsonApi> {
-    return this.jsonApiService.post<ConfiguredAddonResponseJsonApi>(
-      `${environment.addonsApiUrl}/configured-${addonType}-addons/`,
-      addonRequestPayload
-    );
+    return this.jsonApiService
+      .post<
+        JsonApiResponse<ConfiguredAddonResponseJsonApi, null>
+      >(`${environment.addonsApiUrl}/configured-${addonType}-addons/`, addonRequestPayload)
+      .pipe(map((response) => response.data));
   }
 
   updateConfiguredAddon(
@@ -148,13 +150,12 @@ export class AddonsService {
     invocationRequestPayload: OperationInvocationRequestJsonApi
   ): Observable<OperationInvocation> {
     return this.jsonApiService
-      .post<OperationInvocationResponseJsonApi>(
-        `${environment.addonsApiUrl}/addon-operation-invocations/`,
-        invocationRequestPayload
-      )
+      .post<
+        JsonApiResponse<OperationInvocationResponseJsonApi, null>
+      >(`${environment.addonsApiUrl}/addon-operation-invocations/`, invocationRequestPayload)
       .pipe(
         map((response) => {
-          return AddonMapper.fromOperationInvocationResponse(response);
+          return AddonMapper.fromOperationInvocationResponse(response.data);
         })
       );
   }
