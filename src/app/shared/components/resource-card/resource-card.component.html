@@ -13,7 +13,13 @@
             @if (item().resourceType === ResourceType.File && item().fileName) {
               <a class="title">{{ item().fileName }}</a>
             } @else {
-              <a class="title">{{ item().title }}</a>
+              <a
+                tabindex="0"
+                class="title"
+                (click)="$event.stopPropagation(); redirectToResource(item())"
+                (keydown.enter)="$event.stopPropagation(); redirectToResource(item())"
+                >{{ item().title }}</a
+              >
             }
             @if (item().orcid) {
               <a [href]="item().orcid" class="orcid-icon">
