@@ -149,6 +149,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
       },
       {
+        path: 'registries/my-registrations/:registrationId',
+        loadChildren: () => import('./features/registry/registry.routes').then((mod) => mod.registryRoutes),
+      },
+      {
         path: '**',
         loadComponent: () =>
           import('./core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
