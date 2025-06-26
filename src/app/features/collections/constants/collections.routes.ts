@@ -11,12 +11,21 @@ export const collectionsRoutes: Routes = [
     path: '',
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('@osf/core/components/page-not-found/page-not-found.component').then(
+            (mod) => mod.PageNotFoundComponent
+          ),
+        data: { skipBreadcrumbs: true },
+      },
+      {
         path: ':id',
         pathMatch: 'full',
         component: CollectionsComponent,
       },
       {
-        path: 'moderation',
+        path: ':id/moderation',
         loadComponent: () =>
           import('@osf/features/moderation/pages/collection-moderation/collection-moderation.component').then(
             (m) => m.CollectionModerationComponent

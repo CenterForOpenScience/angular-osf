@@ -1,5 +1,5 @@
 <nav class="nav-menu">
-  <p-panelMenu [model]="mainMenuItems" [multiple]="false">
+  <p-panelMenu [model]="mainMenuItems()" [multiple]="false">
     <ng-template #item let-item>
       <a
         [routerLink]="item.routerLink"

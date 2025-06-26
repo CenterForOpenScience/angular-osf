@@ -20,29 +20,37 @@ import { NavItem } from '@osf/shared/models';
   styleUrl: './nav-menu.component.scss',
 })
 export class NavMenuComponent {
-  readonly #router = inject(Router);
-  readonly #route = inject(ActivatedRoute);
+  readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
   protected readonly navItems = NAV_ITEMS;
   protected readonly myProjectMenuItems = PROJECT_MENU_ITEMS;
-  protected readonly mainMenuItems = this.navItems.map((item) => this.#convertToMenuItem(item));
 
   closeMenu = output<void>();
 
   protected readonly currentRoute = toSignal(
-    this.#router.events.pipe(
+    this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-      map(() => this.#getRouteInfo())
+      map(() => this.getRouteInfo())
     ),
     {
-      initialValue: this.#getRouteInfo(),
+      initialValue: this.getRouteInfo(),
     }
   );
 
   protected readonly currentProjectId = computed(() => this.currentRoute().projectId);
   protected readonly isProjectRoute = computed(() => !!this.currentProjectId());
+  protected readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
 
-  #convertToMenuItem(item: NavItem): MenuItem {
-    const currentUrl = this.#router.url;
+  protected readonly mainMenuItems = computed(() => {
+    const filteredItems = this.isCollectionsRoute()
+      ? this.navItems
+      : this.navItems.filter((item) => item.path !== '/collections');
+
+    return filteredItems.map((item) => this.convertToMenuItem(item));
+  });
+
+  private convertToMenuItem(item: NavItem): MenuItem {
+    const currentUrl = this.router.url;
     const isExpanded =
       item.isCollapsible &&
       (currentUrl.startsWith(item.path) ||
@@ -53,15 +61,24 @@ export class NavMenuComponent {
       icon: item.icon ? `osf-icon-${item.icon}` : '',
       expanded: isExpanded,
       routerLink: item.isCollapsible ? undefined : item.path,
-      items: item.items?.map((subItem) => this.#convertToMenuItem(subItem)),
+      items: item.items?.map((subItem) => this.convertToMenuItem(subItem)),
     };
   }
 
-  #getRouteInfo() {
-    const projectId = this.#route.firstChild?.snapshot.params['id'] || null;
-    const section = this.#route.firstChild?.firstChild?.snapshot.url[0]?.path || 'overview';
+  private getRouteInfo() {
+    const url = this.router.url;
+    const urlSegments = url.split('/').filter((segment) => segment);
 
-    return { projectId, section };
+    const projectId = this.route.firstChild?.snapshot.params['id'] || null;
+    const section = this.route.firstChild?.firstChild?.snapshot.url[0]?.path || 'overview';
+
+    const isCollectionsWithId = urlSegments[0] === 'collections' && urlSegments[1] && urlSegments[1] !== '';
+
+    return {
+      projectId,
+      section,
+      isCollectionsWithId,
+    };
   }
 
   goToLink(item: MenuItem) {
