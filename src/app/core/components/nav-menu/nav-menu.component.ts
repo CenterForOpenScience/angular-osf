@@ -9,7 +9,7 @@ import { Component, computed, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
-import { NAV_ITEMS, PROJECT_MENU_ITEMS } from '@core/constants';
+import { NAV_ITEMS, PROJECT_MENU_ITEMS, REGISTRATION_MENU_ITEMS } from '@core/constants';
 import { IconComponent } from '@osf/shared/components';
 import { NavItem } from '@osf/shared/models';
 
@@ -24,6 +24,7 @@ export class NavMenuComponent {
   private readonly route = inject(ActivatedRoute);
   protected readonly navItems = NAV_ITEMS;
   protected readonly myProjectMenuItems = PROJECT_MENU_ITEMS;
+  protected readonly registrationMenuItems = REGISTRATION_MENU_ITEMS;
   protected readonly mainMenuItems = this.navItems.map((item) => this.convertToMenuItem(item));
 
   closeMenu = output<void>();
@@ -40,6 +41,13 @@ export class NavMenuComponent {
 
   protected readonly currentProjectId = computed(() => this.currentRoute().projectId);
   protected readonly isProjectRoute = computed(() => !!this.currentProjectId());
+  protected readonly isRegistryRoute = computed(() => {
+    const segments = this.currentRoute().segments;
+    if (segments && segments.length > 0) {
+      return segments[0] === 'registries' && segments[1] === 'my-registrations' && !!segments[2];
+    }
+    return false;
+  });
 
   convertToMenuItem(item: NavItem): MenuItem {
     const currentUrl = this.router.url;
@@ -60,8 +68,9 @@ export class NavMenuComponent {
   getRouteInfo() {
     const projectId = this.route.firstChild?.snapshot.params['id'] || null;
     const section = this.route.firstChild?.firstChild?.snapshot.url[0]?.path || 'overview';
+    const segments = this.route.firstChild?.snapshot.url.map((s) => s.path);
 
-    return { projectId, section };
+    return { projectId, section, segments };
   }
 
   goToLink(item: MenuItem) {

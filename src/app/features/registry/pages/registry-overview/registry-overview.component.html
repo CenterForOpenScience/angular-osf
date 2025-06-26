@@ -1,0 +1,18 @@
+@if (!isRegistryLoading()) {
+  <div class="flex justify-content-between align-items-center">
+    <osf-sub-header [title]="registry()!.title" />
+
+    <div class="pr-3 sm:pr-5">
+      <osf-overview-toolbar
+        [currentResource]="toolbarResource()"
+        [visibilityToggle]="false"
+        [showViewOnlyLinks]="false"
+      />
+    </div>
+  </div>
+  <div class="flex bg-white flex-1">
+    <div>chinazas</div>
+  </div>
+} @else {
+  <osf-loading-spinner />
+}

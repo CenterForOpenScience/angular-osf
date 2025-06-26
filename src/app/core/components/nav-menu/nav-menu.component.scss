@@ -9,4 +9,8 @@
     border-radius: mix.rem(8px);
     font-weight: 700;
   }
+
+  ::ng-deep li[aria-label="navigation.registriesSubRoutes.registryDetails"] {
+    border-left-color: transparent !important;
+  }
 }

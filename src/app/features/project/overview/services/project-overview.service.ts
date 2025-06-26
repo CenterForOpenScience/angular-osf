@@ -56,14 +56,14 @@ export class ProjectOverviewService {
     return this.#jsonApiService.patch<void>(`${environment.apiUrl}/nodes/${projectId}/`, payload);
   }
 
-  forkProject(projectId: string): Observable<void> {
+  forkResource(projectId: string, resourceType: string): Observable<void> {
     const payload = {
       data: {
-        type: 'nodes',
+        type: resourceType,
       },
     };
 
-    return this.#jsonApiService.post<void>(`${environment.apiUrl}/nodes/${projectId}/forks/`, payload);
+    return this.#jsonApiService.post<void>(`${environment.apiUrl}/${resourceType}/${projectId}/forks/`, payload);
   }
 
   duplicateProject(projectId: string, title: string): Observable<void> {

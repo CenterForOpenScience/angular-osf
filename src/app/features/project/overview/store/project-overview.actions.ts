@@ -1,3 +1,5 @@
+import { ResourceType } from '@shared/enums';
+
 export class GetProjectById {
   static readonly type = '[Project Overview] Get Project By Id';
 
@@ -13,10 +15,13 @@ export class UpdateProjectPublicStatus {
   ) {}
 }
 
-export class ForkProject {
-  static readonly type = '[Project Overview] Fork Project';
+export class ForkResource {
+  static readonly type = '[Project Overview] Fork Resource';
 
-  constructor(public projectId: string) {}
+  constructor(
+    public projectId: string,
+    public resourceType: ResourceType
+  ) {}
 }
 
 export class DuplicateProject {

@@ -59,7 +59,9 @@
     "myProjects": "My Projects",
     "registries": "Registries",
     "registriesSubRoutes": {
-      "overview": "Overview"
+      "overview": "Overview",
+      "myRegistrations": "My Registrations",
+      "registryDetails": "Registry Details"
     },
     "preprints": "Preprints",
     "preprintsSubRoutes": {
@@ -86,6 +88,17 @@
       "contributors": "Contributors",
       "analytics": "Analytics",
       "addons": "Add-ons"
+    },
+    "registration": {
+      "details": "Registry details",
+      "overview": "Overview",
+      "metadata": "Metadata",
+      "files": "Files",
+      "resources": "Resources",
+      "wiki": "Wiki",
+      "components": "Components",
+      "links": "Links",
+      "analytics": "Analytics"
     },
     "institutions": "Institutions"
   },
@@ -603,6 +616,8 @@
         "settings": "Settings",
         "delete": "Delete",
         "forkProject": "Fork this project",
+        "forkRegistry": "Fork this registry",
+        "forkResource": "Fork this resource",
         "duplicateProject": "Duplicate this project",
         "viewDuplication": "View forks",
         "socials": {
