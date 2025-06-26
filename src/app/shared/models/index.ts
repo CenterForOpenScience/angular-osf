@@ -26,6 +26,7 @@ export * from './social-icon.model';
 export * from './store';
 export * from './tab-option.model';
 export * from './table-parameters.model';
+export * from './toolbar-resource.model';
 export * from './tooltip-position.model';
 export * from './tutorial-step.model';
 export * from './update-node-request.model';

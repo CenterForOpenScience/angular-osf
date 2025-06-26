@@ -1,16 +1,18 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, EMPTY, tap, throwError } from 'rxjs';
 
 import { Injectable } from '@angular/core';
+
+import { ResourceType } from '@shared/enums';
 
 import { CollectionsService } from '../services';
 
 import {
-  AddProjectToBookmarks,
+  AddResourceToBookmarks,
   ClearCollections,
   GetBookmarksCollectionId,
-  RemoveProjectFromBookmarks,
+  RemoveResourceFromBookmarks,
   SetCollectedTypeFilters,
   SetDataTypeFilters,
   SetDiseaseFilters,
@@ -82,8 +84,8 @@ export class CollectionsState {
     );
   }
 
-  @Action(AddProjectToBookmarks)
-  addProjectToBookmarks(ctx: StateContext<CollectionsStateModel>, action: AddProjectToBookmarks) {
+  @Action(AddResourceToBookmarks)
+  addResourceToBookmarks(ctx: StateContext<CollectionsStateModel>, action: AddResourceToBookmarks) {
     const state = ctx.getState();
     ctx.patchState({
       bookmarksId: {
@@ -92,21 +94,38 @@ export class CollectionsState {
       },
     });
 
-    return this.collectionsService.addProjectToBookmarks(action.bookmarksId, action.projectId).pipe(
-      tap(() => {
-        ctx.patchState({
-          bookmarksId: {
-            ...state.bookmarksId,
-            isSubmitting: false,
-          },
-        });
-      }),
-      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
-    );
+    switch (action.resourceType) {
+      case ResourceType.Project:
+        return this.collectionsService.addProjectToBookmarks(action.bookmarksId, action.resourceId).pipe(
+          tap(() => {
+            ctx.patchState({
+              bookmarksId: {
+                ...state.bookmarksId,
+                isSubmitting: false,
+              },
+            });
+          }),
+          catchError((error) => this.handleError(ctx, 'bookmarksId', error))
+        );
+      case ResourceType.Registration:
+        return this.collectionsService.addRegistrationToBookmarks(action.bookmarksId, action.resourceId).pipe(
+          tap(() => {
+            ctx.patchState({
+              bookmarksId: {
+                ...state.bookmarksId,
+                isSubmitting: false,
+              },
+            });
+          }),
+          catchError((error) => this.handleError(ctx, 'bookmarksId', error))
+        );
+      default:
+        return EMPTY;
+    }
   }
 
-  @Action(RemoveProjectFromBookmarks)
-  removeProjectFromBookmarks(ctx: StateContext<CollectionsStateModel>, action: RemoveProjectFromBookmarks) {
+  @Action(RemoveResourceFromBookmarks)
+  removeResourceFromBookmarks(ctx: StateContext<CollectionsStateModel>, action: RemoveResourceFromBookmarks) {
     const state = ctx.getState();
     ctx.patchState({
       bookmarksId: {
@@ -115,17 +134,34 @@ export class CollectionsState {
       },
     });
 
-    return this.collectionsService.removeProjectFromBookmarks(action.bookmarksId, action.projectId).pipe(
-      tap(() => {
-        ctx.patchState({
-          bookmarksId: {
-            ...state.bookmarksId,
-            isSubmitting: false,
-          },
-        });
-      }),
-      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
-    );
+    switch (action.resourceType) {
+      case ResourceType.Project:
+        return this.collectionsService.removeProjectFromBookmarks(action.bookmarksId, action.resourceId).pipe(
+          tap(() => {
+            ctx.patchState({
+              bookmarksId: {
+                ...state.bookmarksId,
+                isSubmitting: false,
+              },
+            });
+          }),
+          catchError((error) => this.handleError(ctx, 'bookmarksId', error))
+        );
+      case ResourceType.Registration:
+        return this.collectionsService.removeRegistrationFromBookmarks(action.bookmarksId, action.resourceId).pipe(
+          tap(() => {
+            ctx.patchState({
+              bookmarksId: {
+                ...state.bookmarksId,
+                isSubmitting: false,
+              },
+            });
+          }),
+          catchError((error) => this.handleError(ctx, 'bookmarksId', error))
+        );
+      default:
+        return EMPTY;
+    }
   }
 
   @Action(ClearCollections)

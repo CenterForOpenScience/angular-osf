@@ -27,7 +27,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
 import { parseQueryFilterParams } from '@osf/core/helpers';
 import { AddProjectFormComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
-import { SortOrder } from '@osf/shared/enums';
+import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { QueryParams, TableParameters, TabOption } from '@osf/shared/models';
 import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@osf/shared/utils';
 
@@ -232,7 +232,7 @@ export class MyProjectsComponent implements OnInit {
       case 3:
         if (this.bookmarksCollectionId()) {
           action$ = this.#store.dispatch(
-            new GetMyBookmarks(this.bookmarksCollectionId(), pageNumber, pageSize, filters)
+            new GetMyBookmarks(this.bookmarksCollectionId(), pageNumber, pageSize, filters, ResourceType.Null)
           );
         }
         break;

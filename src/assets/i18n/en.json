@@ -602,6 +602,8 @@
         "settings": "Settings",
         "delete": "Delete",
         "forkProject": "Fork this project",
+        "forkRegistry": "Fork this registry",
+        "forkResource": "Fork this resource",
         "duplicateProject": "Duplicate this project",
         "viewDuplication": "View forks",
         "socials": {

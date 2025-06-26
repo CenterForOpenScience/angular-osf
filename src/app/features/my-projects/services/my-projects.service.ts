@@ -1,11 +1,11 @@
-import { Observable } from 'rxjs';
+import { EMPTY, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@osf/core/services';
 import { SparseCollectionsResponse } from '@osf/features/collections/models';
-import { SortOrder } from '@osf/shared/enums';
+import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { NodeResponseModel, UpdateNodeRequestModel } from '@shared/models';
 
 import { MyProjectsMapper } from '../mappers';
@@ -37,13 +37,17 @@ export class MyProjectsService {
     endpoint: EndpointType,
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
-    pageSize?: number
+    pageSize?: number,
+    fields?: string
   ): Observable<MyProjectsItemResponseJsonApi> {
     const params: Record<string, unknown> = {
       'embed[]': ['bibliographic_contributors'],
-      [`fields[${endpoint}]`]: 'title,date_modified,public,bibliographic_contributors',
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
+
+    if (fields) {
+      params[`fields[${fields}]`] = 'title,date_modified,public,bibliographic_contributors';
+    }
 
     if (filters?.searchValue && filters.searchFields?.length) {
       params[`filter[${filters.searchFields.join(',')}]`] = filters.searchValue;
@@ -82,7 +86,7 @@ export class MyProjectsService {
     pageNumber?: number,
     pageSize?: number
   ): Observable<MyProjectsItemResponseJsonApi> {
-    return this.getMyItems('nodes', filters, pageNumber, pageSize);
+    return this.getMyItems('nodes', filters, pageNumber, pageSize, 'nodes');
   }
 
   getBookmarksCollectionId(): Observable<string> {
@@ -105,7 +109,7 @@ export class MyProjectsService {
     pageNumber?: number,
     pageSize?: number
   ): Observable<MyProjectsItemResponseJsonApi> {
-    return this.getMyItems('registrations', filters, pageNumber, pageSize);
+    return this.getMyItems('registrations', filters, pageNumber, pageSize, 'registrations');
   }
 
   getMyPreprints(
@@ -113,16 +117,38 @@ export class MyProjectsService {
     pageNumber?: number,
     pageSize?: number
   ): Observable<MyProjectsItemResponseJsonApi> {
-    return this.getMyItems('preprints', filters, pageNumber, pageSize);
+    return this.getMyItems('preprints', filters, pageNumber, pageSize, 'preprints');
   }
 
   getMyBookmarks(
     collectionId: string,
+    resourceType: ResourceType,
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
   ): Observable<MyProjectsItemResponseJsonApi> {
-    return this.getMyItems(`collections/${collectionId}/linked_nodes/`, filters, pageNumber, pageSize);
+    switch (resourceType) {
+      case ResourceType.Project:
+        return this.getMyItems(`collections/${collectionId}/linked_nodes/`, filters, pageNumber, pageSize, 'nodes');
+      case ResourceType.Registration:
+        return this.getMyItems(
+          `collections/${collectionId}/linked_registrations/`,
+          filters,
+          pageNumber,
+          pageSize,
+          'registrations'
+        );
+      case ResourceType.Preprint:
+        return this.getMyItems(
+          `collections/${collectionId}/linked_preprints/`,
+          filters,
+          pageNumber,
+          pageSize,
+          'preprints'
+        );
+      default:
+        return EMPTY;
+    }
   }
 
   createProject(
