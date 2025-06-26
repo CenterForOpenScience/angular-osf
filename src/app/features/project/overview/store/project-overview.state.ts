@@ -4,6 +4,8 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ResourceType } from '@shared/enums';
+
 import { ProjectOverviewService } from '../services';
 
 import {
@@ -11,7 +13,7 @@ import {
   CreateComponent,
   DeleteComponent,
   DuplicateProject,
-  ForkProject,
+  ForkResource,
   GetComponents,
   GetLinkedProjects,
   GetProjectById,
@@ -107,8 +109,8 @@ export class ProjectOverviewState {
     return;
   }
 
-  @Action(ForkProject)
-  forkProject(ctx: StateContext<ProjectOverviewStateModel>, action: ForkProject) {
+  @Action(ForkResource)
+  forkResource(ctx: StateContext<ProjectOverviewStateModel>, action: ForkResource) {
     const state = ctx.getState();
     ctx.patchState({
       project: {
@@ -117,7 +119,20 @@ export class ProjectOverviewState {
       },
     });
 
-    return this.projectOverviewService.forkProject(action.projectId).pipe(
+    let resourceType = '';
+    switch (action.resourceType) {
+      case ResourceType.Project:
+        resourceType = 'nodes';
+        break;
+      case ResourceType.Registration:
+        resourceType = 'registrations';
+        break;
+      case ResourceType.Preprint:
+        resourceType = 'preprints';
+        break;
+    }
+
+    return this.projectOverviewService.forkResource(action.projectId, resourceType).pipe(
       tap(() => {
         ctx.patchState({
           project: {

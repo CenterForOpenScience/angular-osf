@@ -1,3 +1,6 @@
+import { RegistryOverview } from '@osf/features/registry/models';
+import { AsyncStateModel } from '@shared/models';
+
 export interface RegistryOverviewStateModel {
-  data: string;
+  registry: AsyncStateModel<RegistryOverview | null>;
 }

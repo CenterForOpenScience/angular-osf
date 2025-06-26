@@ -5,12 +5,13 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { TagModule } from 'primeng/tag';
 
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ClearCollections, GetBookmarksCollectionId } from '@osf/features/collections/store';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
+import { ResourceType } from '@shared/enums';
 
 import { ClearWiki, GetHomeWiki } from '../wiki/store';
 
@@ -70,6 +71,19 @@ export class ProjectOverviewComponent implements OnInit {
 
   protected currentProject = select(ProjectOverviewSelectors.getProject);
   protected isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
+  protected currentResource = computed(() => {
+    if (this.currentProject()) {
+      return {
+        id: this.currentProject()!.id,
+        isPublic: this.currentProject()!.isPublic,
+        storage: this.currentProject()!.storage,
+        viewOnlyLinksCount: this.currentProject()!.viewOnlyLinksCount,
+        forksCount: this.currentProject()!.forksCount,
+        resourceType: ResourceType.Project,
+      };
+    }
+    return null;
+  });
 
   constructor() {
     this.setupCleanup();
