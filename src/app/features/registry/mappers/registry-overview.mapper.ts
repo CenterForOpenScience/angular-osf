@@ -13,14 +13,14 @@ export function MapRegistryOverview(data: RegistryOverviewData): RegistryOvervie
     associatedProject: data.relationships?.registered_form?.data?.id,
     doi: data.attributes?.doi,
     tags: data.attributes?.tags,
-    contributors: data.embeds.bibliographic_contributors.data.map((contributor) => ({
-      id: contributor.embeds.users.data.id,
-      familyName: contributor.embeds.users.data.attributes.family_name,
-      fullName: contributor.embeds.users.data.attributes.full_name,
-      givenName: contributor.embeds.users.data.attributes.given_name,
-      middleName: contributor.embeds.users.data.attributes.middle_names,
-      type: contributor.embeds.users.data.type,
+    contributors: data.embeds?.bibliographic_contributors?.data.map((contributor) => ({
+      id: contributor?.embeds?.users?.data?.id,
+      familyName: contributor?.embeds?.users?.data?.attributes?.family_name,
+      fullName: contributor?.embeds?.users?.data?.attributes?.full_name,
+      givenName: contributor?.embeds?.users?.data?.attributes?.given_name,
+      middleName: contributor?.embeds?.users?.data?.attributes?.middle_names,
+      type: contributor?.embeds?.users?.data?.type,
     })),
-    citation: data.relationships.citation.data.id,
+    citation: data.relationships?.citation?.data?.id,
   } as RegistryOverview;
 }
