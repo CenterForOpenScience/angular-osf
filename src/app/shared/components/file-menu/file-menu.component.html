@@ -1,0 +1,23 @@
+<div>
+  <p-button
+    class="menu-btn"
+    size="small"
+    severity="contrast"
+    variant="text"
+    [raised]="true"
+    icon="fas fa-ellipsis-v"
+    (click)="menu.toggle($event)"
+  ></p-button>
+
+  <p-tieredMenu #menu [model]="menuItems" appendTo="body" popup>
+    <ng-template #item let-item let-hasSubmenu="hasSubmenu">
+      <a pRipple class="p-tieredmenu-item-link">
+        <span [class]="item.icon" class="p-tieredmenu-item-icon"></span>
+        <span class="ml-2">{{ item.label | translate }}</span>
+        @if (hasSubmenu) {
+          <i class="pi pi-angle-right ml-auto"></i>
+        }
+      </a>
+    </ng-template>
+  </p-tieredMenu>
+</div>

@@ -4,13 +4,18 @@
       "delete": "Delete",
       "remove": "Remove",
       "add": "Add",
+      "edit": "Edit",
+      "addMore": "Add More",
       "cancel": "Cancel",
       "save": "Save",
+      "create": "Create",
       "close": "Close",
       "download": "Download",
       "copy": "Copy",
       "move": "Move",
       "rename": "Rename",
+      "share": "Share",
+      "embed": "Embed",
       "confirm": "Confirm",
       "disconnect": "Disconnect",
       "revert": "Revert",
@@ -52,6 +57,10 @@
     "support": "Support",
     "meetings": "Meetings",
     "myProjects": "My Projects",
+    "registries": "Registries",
+    "registriesSubRoutes": {
+      "overview": "Overview"
+    },
     "preprints": "Preprints",
     "preprintsSubRoutes": {
       "overview": "Overview",
@@ -77,7 +86,8 @@
       "contributors": "Contributors",
       "analytics": "Analytics",
       "addons": "Add-ons"
-    }
+    },
+    "institutions": "Institutions"
   },
   "auth": {
     "common": {
@@ -477,7 +487,37 @@
         "noTags": "No tags",
         "noSupplements": "No supplements",
         "noAffiliatedInstitutions": "No affiliated institutions",
-        "editButton": "Edit"
+        "resourceInformation": "Resource Information",
+        "resourceType": "Resource type",
+        "resourceLanguage": "Resource language",
+        "fundingSupport": "Funding/Support Information",
+        "noResourceInformation": "No resource information available",
+        "notSpecified": "Not specified",
+        "loading": "Loading metadata...",
+        "placeholders": {
+          "edit": "Edit description here",
+          "add": "Add description here"
+        },
+        "publicationDoi": {
+          "label": "Publication DOI"
+        },
+        "license": {
+          "dialog": {
+            "header": "Edit Licence",
+            "chooseLicense": {
+              "label": "Choose License",
+              "placeholder": "Select license"
+            },
+            "copyrightHolders": {
+              "label": "Copyright Holders",
+              "placeholder": "Enter copyright holders"
+            },
+            "statementOfPurpose": {
+              "label": "Statement of Purpose",
+              "placeholder": "Enter statement of purpose"
+            }
+          }
+        }
       },
       "dialog": {
         "makePublic": {
@@ -649,13 +689,43 @@
         },
         "renameFile": {
           "title": "Rename file",
+          "newName": "New name",
+          "enterNewName": "Enter new name",
           "renameLabel": "Please rename the file"
         },
-        "moveFile": "Cannot move to the same folder"
+        "moveFile": {
+          "cannotMove": "Cannot move to the same folder",
+          "title": "Move file",
+          "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
+          "storage": "OSF Storage",
+          "pathError": "Path is not specified!"
+        },
+        "copyFile": {
+          "title": "Copy file"
+        },
+        "deleteFile": {
+          "title": "Delete File",
+          "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
+        }
       },
       "emptyState": "This folder is empty",
       "detail": {
         "backToList": "Back to list of files",
+        "tabs": {
+          "details": "Details",
+          "revisions": "Revisions",
+          "keywords": "Keywords"
+        },
+        "actions": {
+          "addCommunityMetadata": "Add community Metadata",
+          "copyDynamicIframe": "Copy dynamic JS iFrame",
+          "copyStaticIframe": "Copy static HTML iFrame",
+          "share": {
+            "email": "Email",
+            "x": "X",
+            "facebook": "Facebook"
+          }
+        },
         "fileMetadata": {
           "title": "File Metadata",
           "edit": "Edit",
@@ -682,7 +752,141 @@
             "dateModified": "Date modified",
             "contributors": "Contributors"
           }
+        },
+        "toast": {
+          "copiedToClipboard": "Copied to clipboard"
+        },
+        "keywords": {
+          "title": "Keywords"
+        },
+        "revisions": {
+          "title": "Revisions",
+          "actions": {
+            "copyMd5": "Copy MD5",
+            "copySha2": "Copy SHA-2",
+            "download": "Download"
+          },
+          "tooltips": {
+            "md5": "MD5 is an algorithm used to verify data integrity",
+            "sha2": "SHA-2 is a cryptographic hash function designed by the NSA used to verify data integrity."
+          }
         }
+      }
+    },
+    "metadata": {
+      "addSubjects": "Add subjects...",
+      "description": {
+        "updated": "Description updated successfully",
+        "dialog": {
+          "header": "Edit Description",
+          "label": "Description",
+          "placeholder": "Enter description here",
+          "clickToRemove": "Click to remove",
+          "expandOrCollapse": "Expand or collapse "
+        }
+      },
+      "resourceInformation": {
+        "updated": "Resource information updated successfully",
+        "dialog": {
+          "header": "Edit Resource Information",
+          "resourceType": {
+            "label": "Resource Type",
+            "placeholder": "Select resource type"
+          },
+          "resourceLanguage": {
+            "label": "Resource Language",
+            "placeholder": "Select resource language"
+          }
+        }
+      },
+      "license": {
+        "dialog": {
+          "header": "Edit Licence",
+          "chooseLicense": {
+            "label": "Choose License",
+            "placeholder": "Select license"
+          },
+          "year": {
+            "label": "Year",
+            "placeholder": "Enter year"
+          },
+          "copyrightHolders": {
+            "label": "Copyright Holders",
+            "placeholder": "Enter copyright holders"
+          },
+          "statementOfPurpose": {
+            "label": "Statement of Purpose",
+            "placeholder": "Enter statement of purpose"
+          },
+          "licenseTextPlaceholder": "License text will appear here when you select a license"
+        },
+        "updated": "License updated successfully",
+        "updateFailed": "Failed to update license"
+      },
+      "publicationDoi": {
+        "dialog": {
+          "header": "Edit Publication DOI",
+          "label": "Publication DOI",
+          "placeholder": "Enter publication DOI"
+        }
+      },
+      "addMetadata": {
+        "title": "Add community metadata record",
+        "selectTemplate": "Select a Metadata Template",
+        "cedarInfo": "OSF has partnered with <a target='_blank' href='https://metadatacenter.org/'>CEDAR</a> to provide more ways to annotate your research with domain or community-specific metadata records. If you would like to request the addition of a new metadata template, contact us at <a>support@osf.io</a>.",
+        "select": "Select",
+        "selected": "Selected",
+        "publish": "Publish",
+        "changeTemplate": "Change template",
+        "publishedText": "This metadata has a status of 'Published' and is publicly viewable.",
+        "notPublishedText": "This metadata has a status of 'Published' and is publicly viewable.",
+        "youAlreadyAddedText": "You have already added a record for this template",
+        "youAlreadyAdded": "Already Added",
+        "loadingCedar": "Loading CEDAR record...",
+        "recordCreatedSuccessfully": "Record created successfully",
+        "recordUpdatedSuccessfully": "Record updated successfully"
+      },
+      "funding": {
+        "updated": "Funding information updated successfully",
+        "dialog": {
+          "header": "Edit Funding/Support Information",
+          "funderName": "Funder Name",
+          "funderIdentifier": "Funder Identifier",
+          "awardTitle": "Award Title",
+          "awardUri": "Award URI",
+          "awardNumber": "Award Number",
+          "selectFunder": "Select a funder",
+          "autoPopulated": "Auto-populated from selection",
+          "loadingFunders": "Loading funders...",
+          "description": "Add funding and support information for this project."
+        }
+      },
+      "affiliatedInstitutions": {
+        "updated": "Affiliated institutions updated successfully",
+        "loadingInstitutions": "Loading institutions...",
+        "dialog": {
+          "header": "Edit Affiliated Institutions",
+          "noInstitutions": "No institutions available"
+        }
+      },
+      "doi": {
+        "created": "DOI created successfully",
+        "dialog": {
+          "header": "Edit DOI",
+          "label": "DOI",
+          "placeholder": "Enter DOI",
+          "createConfirm": {
+            "header": "Create DOI",
+            "message": "Are you sure you want to create a DOI for this project? A DOI is persistent and will always resolve this page."
+          }
+        }
+      },
+      "addCommunityMetadataRecord": {
+        "title": "Add community metadata record"
+      },
+      "contributors": {
+        "editContributors": "Edit contributors",
+        "updateSucceed": "Contributors successfully updated."
       }
     }
   },
@@ -905,6 +1109,11 @@
         "copyNotification": "Copied!",
         "tokenWarning": "This is the only time your token will be displayed.",
         "closeButton": "Close"
+      },
+      "toastMessage": {
+        "successDelete": "Token successfully deleted.",
+        "successCreate": "Token successfully created.",
+        "successEdit": "Token successfully updated."
       }
     },
     "notifications": {
@@ -1328,6 +1537,19 @@
       "providerLogoImageAlt": "Provider Logo"
     }
   },
+  "registries": {
+    "title": "Registries",
+    "addRegistration": "Add a Registration",
+    "description": "The open registries network",
+    "searchPlaceholder": "Search Registrations",
+    "services": {
+      "title": "Registry Services",
+      "description": "Leading registry service providers use this open source infrastructure to support their communities.",
+      "contactUs": "Contact Us"
+    },
+    "browse": "Browse Registrations",
+    "seeMore": "See more"
+  },
   "truncatedText": {
     "readMore": "Read more",
     "hide": "Hide"
@@ -1402,5 +1624,10 @@
       "description": "Remember to add metadata and resources to your own work on OSF to make it more discoverable! Learn more in our help guides."
     },
     "stepCount": "{{current}} of {{total}}"
+  },
+  "institutions": {
+    "title": "Institutions",
+    "description": "OSF Institutions enhances transparency and increases the visibility of research outputs, accelerating discovery and reuse. Institutional members focus on generating and sharing research, and let OSF Institutions handle the infrastructure. <br /> <a href='https://www.cos.io/products/osf-institutions' target='_blank'>Read more</a>",
+    "searchInstitutions": "Search institutions"
   }
 }

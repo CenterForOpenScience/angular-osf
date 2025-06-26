@@ -1,0 +1,55 @@
+@use "../variables" as var;
+@use "../mixins" as mix;
+
+.files-table {
+  .p-tree {
+    padding: 0;
+
+    .p-tree-node-toggle-button {
+      display: none;
+    }
+
+    .p-tree-node-droppoint {
+      display: none;
+    }
+
+    p-treenode:last-child {
+      .file-tables-row {
+        border-bottom: none;
+      }
+    }
+
+    .p-tree-node-dragover {
+      .files-table-row {
+        background: var.$bg-blue-3;
+      }
+    }
+
+    .p-tree-root-children {
+      padding: 0;
+      padding-block: 0;
+      gap: 0;
+
+      p-treenode:last-child {
+        .files-table-row {
+          border: none;
+        }
+      }
+    }
+
+    .p-tree-root {
+      overflow: hidden;
+    }
+
+    .p-tree-node-content {
+      border-radius: unset;
+      padding: unset;
+      gap: unset;
+      display: unset;
+    }
+
+    .p-tree-empty-message {
+      display: none;
+    }
+  }
+}

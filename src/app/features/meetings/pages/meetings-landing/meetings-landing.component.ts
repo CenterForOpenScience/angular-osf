@@ -25,12 +25,11 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { parseQueryFilterParams } from '@core/helpers';
-import { MEETINGS_TABLE_PARAMS } from '@osf/features/meetings/constants';
 import { Meeting } from '@osf/features/meetings/models';
 import { GetAllMeetings, MeetingsSelectors } from '@osf/features/meetings/store';
 import { IS_XSMALL } from '@osf/shared/utils';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
+import { TABLE_PARAMS } from '@shared/constants';
 import { SortOrder } from '@shared/enums';
 import { QueryParams, TableParameters } from '@shared/models';
 import { SearchFilters } from '@shared/models/filters';
@@ -56,9 +55,9 @@ export class MeetingsLandingComponent {
   sortColumn = signal('');
   sortOrder = signal<SortOrder>(SortOrder.Asc);
   currentPage = signal(1);
-  currentPageSize = signal(MEETINGS_TABLE_PARAMS.rows);
+  currentPageSize = signal(TABLE_PARAMS.rows);
   tableParams = signal<TableParameters>({
-    ...MEETINGS_TABLE_PARAMS,
+    ...TABLE_PARAMS,
     firstRowIndex: 0,
   });
 

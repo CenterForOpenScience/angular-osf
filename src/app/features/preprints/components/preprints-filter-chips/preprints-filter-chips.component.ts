@@ -1,6 +1,5 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { PrimeTemplate } from 'primeng/api';
 import { Chip } from 'primeng/chip';
 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
@@ -18,7 +17,7 @@ import { FilterType } from '@osf/shared/enums';
 
 @Component({
   selector: 'osf-preprints-filter-chips',
-  imports: [Chip, PrimeTemplate],
+  imports: [Chip],
   templateUrl: './preprints-filter-chips.component.html',
   styleUrl: './preprints-filter-chips.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

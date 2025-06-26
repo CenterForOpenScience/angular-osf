@@ -1,26 +1,8 @@
 @use "../variables" as var;
 
 .p-carousel {
-  .p-carousel-prev-button,
-  .p-carousel-next-button {
-    display: none;
-  }
-
-  .p-carousel-indicator-active {
-    .p-carousel-indicator-button {
-      background: var.$pr-blue-1;
-    }
-  }
-
-  .p-carousel-indicator-button {
-    background: var.$grey-2;
-    width: 1.1rem;
-    height: 1.1rem;
-    border-radius: 50%;
-  }
-
-  .p-carousel-indicator-list {
-    margin-top: 1.7rem;
-    column-gap: 1.7rem;
-  }
+  --p-carousel-indicator-width: 1rem;
+  --p-carousel-indicator-height: 1rem;
+  --p-carousel-indicator-border-radius: 50%;
+  --p-carousel-indicator-list-gap: 1.5rem;
 }

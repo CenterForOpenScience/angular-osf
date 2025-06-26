@@ -7,6 +7,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
 import { ToastService } from '@osf/shared/services';
+import { SeverityType } from '@shared/models';
 
 @Component({
   selector: 'osf-copy-button',
@@ -18,6 +19,8 @@ import { ToastService } from '@osf/shared/services';
 export class CopyButtonComponent {
   copyItem = input<string>('');
   tooltip = input<string>('common.buttons.copy');
+  label = input<string>('');
+  severity = input<SeverityType>('contrast');
 
   private readonly clipboard = inject(Clipboard);
   private readonly toastService = inject(ToastService);

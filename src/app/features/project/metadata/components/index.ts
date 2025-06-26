@@ -1,0 +1,10 @@
+export { CedarTemplateFormComponent } from './cedar-template-form/cedar-template-form.component';
+export { ProjectMetadataAffiliatedInstitutionsComponent } from './project-metadata-affiliated-institutions/project-metadata-affiliated-institutions.component';
+export { ProjectMetadataContributorsComponent } from './project-metadata-contributors/project-metadata-contributors.component';
+export { ProjectMetadataDescriptionComponent } from './project-metadata-description/project-metadata-description.component';
+export { ProjectMetadataFundingComponent } from './project-metadata-funding/project-metadata-funding.component';
+export { ProjectMetadataLicenseComponent } from './project-metadata-license/project-metadata-license.component';
+export { ProjectMetadataPublicationDoiComponent } from './project-metadata-publication-doi/project-metadata-publication-doi.component';
+export { ProjectMetadataResourceInformationComponent } from './project-metadata-resource-information/project-metadata-resource-information.component';
+export { ProjectMetadataSubjectsComponent } from './project-metadata-subjects/project-metadata-subjects.component';
+export { ProjectMetadataTagsComponent } from './project-metadata-tags/project-metadata-tags.component';

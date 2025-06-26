@@ -8,22 +8,18 @@
 
   <div class="flex flex-column gap-2">
     <div class="p-inputgroup">
-      <div class="inline-block relative w-full">
-        <span class="copy-notification" [class.visible]="tokenCopiedNotificationVisible()">
-          {{ 'settings.tokens.createdDialog.copyNotification' | translate }}
-        </span>
-        <p-iconfield class="w-full" iconPosition="right">
-          <input pInputText [value]="tokenId()" readonly #tokenInput />
-          <p-inputicon [cdkCopyToClipboard]="tokenId()" (cdkCopyToClipboardCopied)="tokenCopiedToClipboard()">
-            <i class="osf-icon-copy"></i>
-          </p-inputicon>
-        </p-iconfield>
-      </div>
+      <p-iconfield class="w-full" iconPosition="right">
+        <input class="overflow-ellipsis" pInputText [value]="tokenId()" readonly #tokenInput />
+        <p-inputicon>
+          <osf-copy-button [copyItem]="tokenId()"></osf-copy-button>
+        </p-inputicon>
+      </p-iconfield>
     </div>
-    <h3>{{ 'settings.tokens.createdDialog.tokenWarning' | translate }}</h3>
+
+    <p class="warning font-bold">{{ 'settings.tokens.createdDialog.tokenWarning' | translate }}</p>
   </div>
 
-  <div class="flex justify-content-end">
+  <div class="flex justify-content-end mt-4">
     <p-button
       class="w-12rem btn-full-width"
       [label]="'settings.tokens.createdDialog.closeButton' | translate"

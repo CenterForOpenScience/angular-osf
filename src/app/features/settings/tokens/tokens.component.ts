@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { IS_MEDIUM, IS_XSMALL } from '@osf/shared/utils';
+import { IS_SMALL } from '@osf/shared/utils';
 
 import { TokenAddEditFormComponent } from './components';
 import { GetScopes } from './store';
@@ -25,34 +25,31 @@ import { GetScopes } from './store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TokensComponent implements OnInit {
-  #dialogService = inject(DialogService);
-  #isXSmall$ = inject(IS_XSMALL);
-  #isMedium$ = inject(IS_MEDIUM);
-  #store = inject(Store);
-  #router = inject(Router);
-  #translateService = inject(TranslateService);
+  private readonly dialogService = inject(DialogService);
+  private readonly router = inject(Router);
+  private readonly translateService = inject(TranslateService);
+  private readonly actions = createDispatchMap({ getScopes: GetScopes });
 
-  protected readonly isXSmall = toSignal(this.#isXSmall$);
-  protected readonly isMedium = toSignal(this.#isMedium$);
+  protected readonly isSmall = toSignal(inject(IS_SMALL));
   protected readonly isBaseRoute = toSignal(
-    this.#router.events.pipe(map(() => this.#router.url === '/settings/tokens')),
-    { initialValue: this.#router.url === '/settings/tokens' }
+    this.router.events.pipe(map(() => this.router.url === '/settings/tokens')),
+    { initialValue: this.router.url === '/settings/tokens' }
   );
 
-  createToken(): void {
-    const dialogWidth = this.isXSmall() ? '95vw' : '800px';
+  ngOnInit() {
+    this.actions.getScopes();
+  }
 
-    this.#dialogService.open(TokenAddEditFormComponent, {
+  createToken(): void {
+    const dialogWidth = this.isSmall() ? '800px ' : '95vw';
+
+    this.dialogService.open(TokenAddEditFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: this.#translateService.instant('settings.tokens.form.createTitle'),
+      header: this.translateService.instant('settings.tokens.form.createTitle'),
       closeOnEscape: true,
       modal: true,
       closable: true,
     });
-  }
-
-  ngOnInit() {
-    this.#store.dispatch(GetScopes);
   }
 }

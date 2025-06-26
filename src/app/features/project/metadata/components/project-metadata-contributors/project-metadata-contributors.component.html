@@ -1,0 +1,22 @@
+<p-card class="shadow-2">
+  <div class="flex justify-content-between align-items-center">
+    <h3 class="text-lg font-semibold m-0">{{ 'project.overview.metadata.contributors' | translate }}</h3>
+
+    <p-button
+      (click)="openEditContributorDialog.emit()"
+      severity="secondary"
+      [label]="'common.buttons.edit' | translate"
+    ></p-button>
+  </div>
+
+  @if (currentProject()?.contributors) {
+    <div class="inline-flex gap-1 line-height-2 pt-4">
+      @for (contributor of currentProject()?.contributors; track contributor.id) {
+        <div>
+          <a class="font-bold"> {{ contributor.fullName }}</a>
+          <span>{{ $last ? '' : ',' }}</span>
+        </div>
+      }
+    </div>
+  }
+</p-card>

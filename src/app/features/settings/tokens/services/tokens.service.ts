@@ -6,8 +6,8 @@ import { inject, Injectable } from '@angular/core';
 import { JsonApiResponse } from '@osf/core/models';
 import { JsonApiService } from '@osf/core/services';
 
-import { TokenMapper } from '../mappers';
-import { Scope, Token, TokenCreateResponseJsonApi, TokenGetResponseJsonApi } from '../models';
+import { ScopeMapper, TokenMapper } from '../mappers';
+import { ScopeJsonApi, ScopeModel, TokenCreateResponseJsonApi, TokenGetResponseJsonApi, TokenModel } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -15,47 +15,43 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class TokensService {
-  #jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
 
-  getScopes(): Observable<Scope[]> {
-    return this.#jsonApiService
-      .get<JsonApiResponse<Scope[], null>>(environment.apiUrl + '/scopes/')
-      .pipe(map((responses) => responses.data));
+  getScopes(): Observable<ScopeModel[]> {
+    return this.jsonApiService
+      .get<JsonApiResponse<ScopeJsonApi[], null>>(`${environment.apiUrl}/scopes/`)
+      .pipe(map((responses) => ScopeMapper.fromResponse(responses.data)));
   }
 
-  getTokens(): Observable<Token[]> {
-    return this.#jsonApiService
-      .get<JsonApiResponse<TokenGetResponseJsonApi[], null>>(environment.apiUrl + '/tokens/')
-      .pipe(
-        map((responses) => {
-          return responses.data.map((response) => TokenMapper.fromGetResponse(response));
-        })
-      );
+  getTokens(): Observable<TokenModel[]> {
+    return this.jsonApiService
+      .get<JsonApiResponse<TokenGetResponseJsonApi[], null>>(`${environment.apiUrl}/tokens/`)
+      .pipe(map((responses) => responses.data.map((response) => TokenMapper.fromGetResponse(response))));
   }
 
-  getTokenById(tokenId: string): Observable<Token> {
-    return this.#jsonApiService
+  getTokenById(tokenId: string): Observable<TokenModel> {
+    return this.jsonApiService
       .get<JsonApiResponse<TokenGetResponseJsonApi, null>>(`${environment.apiUrl}/tokens/${tokenId}/`)
       .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 
-  createToken(name: string, scopes: string[]): Observable<Token> {
+  createToken(name: string, scopes: string[]): Observable<TokenModel> {
     const request = TokenMapper.toRequest(name, scopes);
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .post<JsonApiResponse<TokenCreateResponseJsonApi, null>>(environment.apiUrl + '/tokens/', request)
       .pipe(map((response) => TokenMapper.fromCreateResponse(response.data)));
   }
 
-  updateToken(tokenId: string, name: string, scopes: string[]): Observable<Token> {
+  updateToken(tokenId: string, name: string, scopes: string[]): Observable<TokenModel> {
     const request = TokenMapper.toRequest(name, scopes);
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .patch<TokenCreateResponseJsonApi>(`${environment.apiUrl}/tokens/${tokenId}/`, request)
       .pipe(map((response) => TokenMapper.fromCreateResponse(response)));
   }
 
   deleteToken(tokenId: string): Observable<void> {
-    return this.#jsonApiService.delete(`${environment.apiUrl}/tokens/${tokenId}/`);
+    return this.jsonApiService.delete(`${environment.apiUrl}/tokens/${tokenId}/`);
   }
 }

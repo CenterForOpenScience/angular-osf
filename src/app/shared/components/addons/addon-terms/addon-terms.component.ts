@@ -11,7 +11,6 @@ import { isCitationAddon } from '@shared/utils';
 
 @Component({
   selector: 'osf-addon-terms',
-  standalone: true,
   imports: [TranslatePipe, TableModule, NgClass],
   templateUrl: './addon-terms.component.html',
   styleUrls: ['./addon-terms.component.scss'],

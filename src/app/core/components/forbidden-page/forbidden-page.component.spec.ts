@@ -1,3 +1,6 @@
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ForbiddenPageComponent } from './forbidden-page.component';
@@ -8,7 +11,7 @@ describe('ForbiddenPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ForbiddenPageComponent],
+      imports: [ForbiddenPageComponent, MockPipe(TranslatePipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ForbiddenPageComponent);

@@ -1,32 +1,44 @@
 import { Selector } from '@ngxs/store';
 
-import { OsfFile } from '@osf/features/project/files/models';
-import { OsfFileCustomMetadata } from '@osf/features/project/files/models/osf-models/file-custom-metadata.model';
-import { OsfFileProjectContributor } from '@osf/features/project/files/models/osf-models/file-project-contributor.model';
-import { OsfProjectMetadata } from '@osf/features/project/files/models/osf-models/project-custom-metadata.model';
-import { AsyncStateModel } from '@shared/models';
+import {
+  OsfFileCustomMetadata,
+  OsfFileProjectContributor,
+  OsfFileRevision,
+  OsfProjectMetadata,
+} from '@osf/features/project/files/models';
+import { OsfFile } from '@shared/models';
 
 import { ProjectFilesStateModel } from './project-files.model';
 import { ProjectFilesState } from './project-files.state';
 
 export class ProjectFilesSelectors {
   @Selector([ProjectFilesState])
-  static getFiles(state: ProjectFilesStateModel): AsyncStateModel<OsfFile[]> {
-    return state.files;
+  static getFiles(state: ProjectFilesStateModel): OsfFile[] {
+    return state.files.data;
   }
 
   @Selector([ProjectFilesState])
-  static getMoveFileFiles(state: ProjectFilesStateModel): AsyncStateModel<OsfFile[]> {
-    return state.moveFileFiles;
+  static isFilesLoading(state: ProjectFilesStateModel): boolean {
+    return state.files.isLoading;
   }
 
   @Selector([ProjectFilesState])
-  static getCurrentFolder(state: ProjectFilesStateModel): OsfFile | undefined {
+  static getMoveFileFiles(state: ProjectFilesStateModel): OsfFile[] {
+    return state.moveFileFiles.data;
+  }
+
+  @Selector([ProjectFilesState])
+  static isMoveFileFilesLoading(state: ProjectFilesStateModel): boolean {
+    return state.moveFileFiles.isLoading;
+  }
+
+  @Selector([ProjectFilesState])
+  static getCurrentFolder(state: ProjectFilesStateModel): OsfFile | null {
     return state.currentFolder;
   }
 
   @Selector([ProjectFilesState])
-  static getMoveFileCurrentFolder(state: ProjectFilesStateModel): OsfFile | undefined {
+  static getMoveFileCurrentFolder(state: ProjectFilesStateModel): OsfFile | null {
     return state.moveFileCurrentFolder;
   }
 
@@ -36,13 +48,18 @@ export class ProjectFilesSelectors {
   }
 
   @Selector([ProjectFilesState])
-  static getOpenedFile(state: ProjectFilesStateModel): AsyncStateModel<OsfFile | null> {
-    return state.openedFile;
+  static getOpenedFile(state: ProjectFilesStateModel): OsfFile | null {
+    return state.openedFile.data;
   }
 
   @Selector([ProjectFilesState])
-  static getFileCustomMetadata(state: ProjectFilesStateModel): AsyncStateModel<OsfFileCustomMetadata | null> {
-    return state.fileMetadata;
+  static isOpenedFileLoading(state: ProjectFilesStateModel): boolean {
+    return state.openedFile.isLoading;
+  }
+
+  @Selector([ProjectFilesState])
+  static getFileCustomMetadata(state: ProjectFilesStateModel): OsfFileCustomMetadata | null {
+    return state.fileMetadata.data;
   }
 
   @Selector([ProjectFilesState])
@@ -56,7 +73,37 @@ export class ProjectFilesSelectors {
   }
 
   @Selector([ProjectFilesState])
+  static isProjectMetadataLoading(state: ProjectFilesStateModel): boolean {
+    return state.projectMetadata.isLoading;
+  }
+
+  @Selector([ProjectFilesState])
   static getProjectContributors(state: ProjectFilesStateModel): OsfFileProjectContributor[] | null {
     return state.contributors.data;
+  }
+
+  @Selector([ProjectFilesState])
+  static isProjectContributorsLoading(state: ProjectFilesStateModel): boolean {
+    return state.contributors.isLoading;
+  }
+
+  @Selector([ProjectFilesState])
+  static getFileRevisions(state: ProjectFilesStateModel): OsfFileRevision[] | null {
+    return state.fileRevisions.data;
+  }
+
+  @Selector([ProjectFilesState])
+  static isFileRevisionsLoading(state: ProjectFilesStateModel): boolean {
+    return state.fileRevisions.isLoading;
+  }
+
+  @Selector([ProjectFilesState])
+  static getFileTags(state: ProjectFilesStateModel): string[] {
+    return state.tags.data;
+  }
+
+  @Selector([ProjectFilesState])
+  static isFileTagsLoading(state: ProjectFilesStateModel): boolean {
+    return state.tags.isLoading;
   }
 }

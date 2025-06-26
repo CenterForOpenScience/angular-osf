@@ -52,6 +52,15 @@
   }
 }
 
+.select-option-wrap {
+  .p-select-option {
+    white-space: wrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
+}
+
 .p-select-header {
   width: 100%;
 

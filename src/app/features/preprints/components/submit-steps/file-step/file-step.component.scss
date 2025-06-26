@@ -1,0 +1,22 @@
+@use "assets/styles/mixins" as mix;
+
+.file-source-button {
+  --p-button-secondary-border-color: var(--grey-2);
+  --p-button-secondary-background: transparent;
+  --p-button-secondary-hover-background: var(--bg-blue-3);
+  --p-button-padding-y: 0.75rem;
+  --p-button-secondary-color: var(--dark-blue-1);
+  --p-button-secondary-hover-color: var(--dark-blue-1);
+
+  &.active {
+    --p-button-secondary-background: var(--bg-blue-3);
+  }
+}
+
+.file-row {
+  @include mix.flex-center-between;
+  margin-top: mix.rem(48px);
+  padding: mix.rem(6px) mix.rem(12px);
+  border-bottom: 1px solid var(--grey-2);
+  border-top: 1px solid var(--grey-2);
+}

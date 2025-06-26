@@ -1,5 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { Button } from 'primeng/button';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
 
@@ -31,6 +32,7 @@ import { IS_WEB, IS_XSMALL } from '@shared/utils';
     PreprintsFilterChipsComponent,
     DataView,
     ResourceCardComponent,
+    Button,
   ],
   templateUrl: './preprints-resources.component.html',
   styleUrl: './preprints-resources.component.scss',

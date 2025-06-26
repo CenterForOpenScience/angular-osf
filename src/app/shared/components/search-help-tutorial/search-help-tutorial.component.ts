@@ -1,4 +1,4 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
@@ -10,7 +10,7 @@ import { TutorialStep } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-search-help-tutorial',
-  imports: [Button, TranslateModule, CommonModule],
+  imports: [Button, TranslatePipe, CommonModule],
   templateUrl: './search-help-tutorial.component.html',
   styleUrl: './search-help-tutorial.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

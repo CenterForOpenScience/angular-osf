@@ -1,0 +1,21 @@
+<p-card>
+  <div class="flex justify-content-between align-items-center">
+    <h3 class="text-lg font-semibold m-0">{{ 'project.overview.metadata.licence' | translate }}</h3>
+
+    <p-button
+      severity="secondary"
+      [label]="'common.buttons.edit' | translate"
+      (click)="openEditLicenseDialog.emit()"
+    ></p-button>
+  </div>
+
+  @if (currentProject()?.license) {
+    <div class="pt-4">
+      <p class="m-0">{{ currentProject()?.license }}</p>
+    </div>
+  } @else {
+    <div class="pt-4">
+      <p class="text-color-secondary m-0">{{ 'project.overview.metadata.noLicense' | translate }}</p>
+    </div>
+  }
+</p-card>

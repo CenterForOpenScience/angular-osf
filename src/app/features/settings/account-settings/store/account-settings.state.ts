@@ -5,7 +5,7 @@ import { finalize, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentUser } from '@core/store/user';
-import { InstitutionsService } from '@osf/features/institutions/services';
+import { InstitutionsService } from '@shared/services';
 
 import { AccountSettingsService } from '../services';
 

@@ -1,0 +1,49 @@
+<section class="subheader flex flex-column">
+  <div class="flex flex-column align-items-start gap-4">
+    <osf-sub-header
+      [title]="'registries.title' | translate"
+      [icon]="'registries'"
+      [description]="'registries.description' | translate"
+      [showButton]="true"
+      [buttonLabel]="'registries.addRegistration' | translate"
+    />
+
+    <osf-search-input
+      class="w-full py-4 px-4"
+      [control]="searchControl"
+      [placeholder]="'registries.searchPlaceholder' | translate"
+      (triggerSearch)="redirectToSearchPageWithValue()"
+    />
+  </div>
+
+  <osf-registry-services class="mt-4"></osf-registry-services>
+
+  <div class="flex flex-column gap-4 registries flex-1 py-6 px-4">
+    <div class="flex justify-content-between gap-4">
+      <h1>{{ 'registries.browse' | translate }}</h1>
+      <p-button
+        class="hidden sm:block sm:w-auto"
+        styleClass="hidden sm:block sm:w-auto"
+        [label]="'registries.seeMore' | translate"
+        severity="secondary"
+        (click)="redirectToSearchPageRegistrations()"
+      />
+    </div>
+
+    @if (!isRegistriesLoading()) {
+      @for (item of registries(); track item.id) {
+        <osf-resource-card [item]="item" />
+      }
+    } @else {
+      <osf-loading-spinner></osf-loading-spinner>
+    }
+
+    <p-button
+      class="block w-full sm:hidden"
+      styleClass="block w-full sm:hidden"
+      [label]="'registries.seeMore' | translate"
+      severity="secondary"
+      (click)="redirectToSearchPageRegistrations()"
+    />
+  </div>
+</section>

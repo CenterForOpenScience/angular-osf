@@ -1,0 +1,25 @@
+<p-card>
+  <div class="flex justify-content-between align-items-center">
+    <h3 class="text-lg">{{ 'project.overview.metadata.publication' | translate }}</h3>
+
+    <p-button
+      severity="secondary"
+      [label]="'common.buttons.edit' | translate"
+      (click)="openEditPublicationDoiDialog.emit()"
+    ></p-button>
+  </div>
+
+  @if (currentProject()?.identifiers?.length) {
+    <div class="pt-4">
+      @for (identifier of currentProject()!.identifiers!; track identifier.id) {
+        @if (identifier.category === 'doi') {
+          <p>{{ identifier.value }}</p>
+        }
+      }
+    </div>
+  } @else {
+    <div class="pt-4">
+      <p class="text-color-secondary">{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
+    </div>
+  }
+</p-card>

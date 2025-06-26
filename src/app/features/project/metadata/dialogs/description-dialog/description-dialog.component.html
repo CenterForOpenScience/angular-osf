@@ -1,0 +1,15 @@
+<form class="flex flex-column gap-4">
+  <textarea
+    pTextarea
+    id="description"
+    [formControl]="descriptionControl"
+    [rows]="8"
+    [placeholder]="'project.overview.metadata.placeholders.edit' | translate"
+    class="w-full"
+  ></textarea>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button severity="info" [label]="'common.buttons.cancel' | translate" (click)="cancel()" />
+    <p-button (click)="save()" [label]="'common.buttons.save' | translate" [disabled]="descriptionControl.invalid" />
+  </div>
+</form>

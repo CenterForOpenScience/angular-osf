@@ -134,7 +134,6 @@ export class SearchComponent implements OnDestroy {
     this.searchControl.valueChanges
       .pipe(skip(1), debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchText) => {
-        console.log(searchText);
         this.#store.dispatch(new SetSearchText(searchText ?? ''));
         this.#store.dispatch(GetAllOptions);
       });

@@ -20,3 +20,11 @@
   margin-top: mix.rem(7px);
   min-width: fit-content;
 }
+
+.share-menu {
+  .p-menu-list {
+    .p-menu-item {
+      padding: 0.5rem;
+    }
+  }
+}

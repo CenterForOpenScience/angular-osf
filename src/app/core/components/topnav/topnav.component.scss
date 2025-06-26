@@ -1,20 +1,19 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
 :host {
   z-index: 1103;
+}
 
-  .nav-container {
-    background: var.$dark-blue-1;
-    padding: mix.rem(28px) mix.rem(24px);
-    color: var.$white;
+.nav-container {
+  background: var(--dark-blue-1);
+  padding: mix.rem(28px) mix.rem(24px);
+  color: var(--white);
 
-    .topnav-btn {
-      height: mix.rem(36px);
-      width: mix.rem(36px);
+  .topnav-btn {
+    height: mix.rem(36px);
+    width: mix.rem(36px);
 
-      --p-button-contrast-background: transparent;
-      --p-button-contrast-border-color: transparent;
-    }
+    --p-button-contrast-background: transparent;
+    --p-button-contrast-border-color: transparent;
   }
 }

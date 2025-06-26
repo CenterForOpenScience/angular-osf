@@ -1,4 +1,4 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
@@ -30,7 +30,7 @@ import { PASSWORD_REGEX, passwordMatchValidator } from '../../helpers';
     NgOptimizedImage,
     RouterLink,
     PasswordInputHintComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',

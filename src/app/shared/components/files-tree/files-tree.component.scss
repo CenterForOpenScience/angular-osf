@@ -1,0 +1,73 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.files-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var.$grey-2;
+  border-radius: 8px;
+  overflow-x: auto;
+  min-width: 100%;
+
+  &-row {
+    color: var.$dark-blue-1;
+    display: grid;
+    align-items: center;
+    grid-template-rows: mix.rem(44px);
+    border-bottom: 1px solid var.$grey-2;
+    padding: 0 mix.rem(12px);
+    min-width: max-content;
+    cursor: pointer;
+
+    &:hover {
+      background: var.$bg-blue-3;
+    }
+
+    &:active {
+      background: var.$bg-blue-2;
+    }
+
+    .table-cell {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    > .table-cell:first-child {
+      min-width: 0;
+      max-width: 95%;
+    }
+  }
+
+  &-readonly {
+    grid-template-columns:
+      minmax(mix.rem(200px), 35rem) minmax(mix.rem(150px), 0.7fr) minmax(mix.rem(100px), 100px)
+      minmax(mix.rem(150px), 0.5fr);
+  }
+
+  &-editable {
+    grid-template-columns:
+      minmax(mix.rem(200px), 32rem) minmax(mix.rem(150px), 0.7fr) minmax(mix.rem(100px), 100px)
+      minmax(mix.rem(150px), 1fr) minmax(mix.rem(50px), 50px);
+  }
+}
+
+.entry-title {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.blue-text {
+  color: var.$pr-blue-1;
+}
+
+.tree-table {
+  .p-tree {
+    padding: 0;
+  }
+}

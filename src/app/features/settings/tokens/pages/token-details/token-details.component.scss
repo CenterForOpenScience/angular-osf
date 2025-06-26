@@ -1,22 +1,11 @@
 @use "assets/styles/mixins" as mix;
-@use "assets/styles/variables" as var;
 
 :host {
   @include mix.flex-column;
   flex: 1;
+}
 
-  .mobile {
-    flex-direction: column;
-    gap: 1.7rem;
-  }
-
-  .content-container {
-    padding: 1.7rem;
-    color: var.$dark-blue-1;
-    background-color: var.$white;
-
-    &.mobile {
-      padding: 1rem;
-    }
-  }
+.content-container {
+  background-color: var(--white);
+  color: var(--dark-blue-1);
 }

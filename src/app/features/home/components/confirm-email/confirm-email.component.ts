@@ -1,4 +1,4 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -15,7 +15,7 @@ import { LoadingSpinnerComponent } from '@shared/components';
 
 @Component({
   selector: 'osf-confirm-email',
-  imports: [Button, FormsModule, TranslateModule, LoadingSpinnerComponent],
+  imports: [Button, FormsModule, TranslatePipe, LoadingSpinnerComponent],
   templateUrl: './confirm-email.component.html',
   styleUrl: './confirm-email.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

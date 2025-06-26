@@ -1,34 +1,133 @@
-<osf-sub-header title="Add community metadata record" />
+<section class="flex flex-column flex-1">
+  <osf-sub-header
+    [showButton]="true"
+    [buttonLabel]="'project.metadata.addCommunityMetadataRecord.title' | translate"
+    (buttonClick)="openAddRecord()"
+    [title]="'project.overview.metadata.title' | translate"
+  />
 
-<section class="flex flex-column bg-white flex-1 h-full p-5 gap-4">
-  <section class="flex flex-column gap-2">
-    <h2>Select a Metadata Template</h2>
-
-    <div>
-      OSF has partnered with<a class="font-bold">CEDAR</a>to provide more ways to annotate your research with domain or
-      community-specific metadata records. If you would like to request the addition of a new metadata template, contact
-      us at <a class="font-bold">support&#64;osf.io. </a>
+  @if (!tabs().length) {
+    <div class="flex-1 mt-4 md:mt-8 lg:pt-5">
+      <osf-loading-spinner />
     </div>
-  </section>
+  }
 
-  <div class="flex gap-2 flex-wrap">
-    @for (meta of metadataTemplates; track meta.title) {
-      <div class="flex flex-column gap-4 metadata p-4 align-items-center">
-        <div class="flex flex-row gap-4">
-          <h2>{{ meta.title }}</h2>
-        </div>
+  @if (tabs().length) {
+    <p-tabs class="flex-1" [value]="selectedTab()" [lazy]="true" scrollable (valueChange)="onTabChange($event)">
+      <p-tablist class="pr-5 pl-5">
+        @for (item of tabs(); track $index) {
+          <p-tab [value]="item.id">{{ item.label | translate }}</p-tab>
+        }
+      </p-tablist>
 
-        <div class="flex flex-column">
-          <p>{{ meta.description }}</p>
-        </div>
+      <p-tabpanels class="p-3 flex-1 md:p-5 xl:p-4">
+        @for (tab of tabs(); track $index) {
+          <p-tabpanel [value]="tab.id">
+            @if (tab.type === 'project') {
+              @if (highlightedSubjectsLoading() && currentProjectLoading()) {
+                <div class="flex-1 mt-4 md:mt-8 lg:pt-5">
+                  <osf-loading-spinner />
+                </div>
+              } @else {
+                <div class="flex-column flex flex-1 w-full bg-white">
+                  <div class="col-12 lg:col-6 flex flex-column gap-4">
+                    <p-card>
+                      <div class="flex justify-content-between flex-wrap gap-4">
+                        <div class="flex flex-column gap-2 flex-1">
+                          <h3 class="text-lg font-semibold m-0">
+                            {{ 'project.overview.metadata.dateCreated' | translate }}
+                          </h3>
 
-        <p-button severity="secondary" label="Select"> </p-button>
-      </div>
-    }
-  </div>
+                          <p class="m-0 text-color-secondary">
+                            {{ currentProject()?.dateCreated | date: 'MMM d, y, h:mm a' }}
+                          </p>
+                        </div>
 
-  <div class="flex justify-content-end flex-0 mt-auto gap-2">
-    <p-button label="Cancel" severity="info" class="w-10rem btn-full-width"></p-button>
-    <p-button class="w-10rem btn-full-width bg-primary-blue-second" label="Next"></p-button>
-  </div>
+                        <div class="flex flex-column gap-2 flex-1">
+                          <h3 class="text-lg font-semibold m-0">
+                            {{ 'project.overview.metadata.dateUpdated' | translate }}
+                          </h3>
+
+                          <p class="m-0 text-color-secondary">
+                            {{ currentProject()?.dateModified | date: 'MMM d, y, h:mm a' }}
+                          </p>
+                        </div>
+                      </div>
+                    </p-card>
+
+                    <osf-project-metadata-contributors
+                      (openEditContributorDialog)="openEditContributorDialog()"
+                      [currentProject]="currentProject()"
+                    />
+
+                    <osf-project-metadata-description
+                      (openEditDescriptionDialog)="openEditDescriptionDialog()"
+                      [currentProject]="currentProject()"
+                    />
+
+                    <osf-project-metadata-resource-information
+                      (openEditResourceInformationDialog)="openEditResourceInformationDialog()"
+                      [customItemMetadata]="customItemMetadata()"
+                    />
+
+                    <osf-project-metadata-funding
+                      (openEditFundingDialog)="openEditFundingDialog()"
+                      [currentProject]="currentProject()"
+                    />
+
+                    <osf-project-metadata-affiliated-institutions
+                      (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
+                      [currentProject]="currentProject()"
+                    />
+                  </div>
+
+                  <div class="col-12 lg:col-6 flex flex-column gap-4">
+                    <osf-project-metadata-license
+                      (openEditLicenseDialog)="openEditLicenseDialog()"
+                      [currentProject]="currentProject()"
+                    />
+
+                    <osf-project-metadata-publication-doi
+                      (openEditPublicationDoiDialog)="handleEditDoi()"
+                      [currentProject]="currentProject()"
+                    />
+
+                    <osf-project-metadata-tags
+                      (tagsChanged)="onTagsChanged($event)"
+                      [currentProject]="currentProject()"
+                    />
+
+                    <osf-project-metadata-subjects
+                      (subjectsChanged)="onSubjectsChanged($event)"
+                      [currentProject]="currentProject()"
+                      [subjectsList]="highlightedSubjects()"
+                    />
+                  </div>
+                </div>
+              }
+            } @else {
+              <div class="p-6">
+                @if (selectedCedarTemplate() && selectedCedarRecord()) {
+                  <osf-cedar-template-form
+                    [template]="selectedCedarTemplate()!"
+                    [existingRecord]="selectedCedarRecord()!"
+                    [readonly]="cedarFormReadonly()"
+                    [showEditButton]="true"
+                    (emitData)="onCedarFormSubmit($event)"
+                    (changeTemplate)="onCedarFormChangeTemplate()"
+                    (editMode)="onCedarFormEdit()"
+                  />
+                } @else {
+                  <div class="text-center py-8">
+                    <p class="text-lg mb-4">{{ 'project.metadata.addMetadata.loadingCedar' | translate }}</p>
+                    <p class="text-sm text-gray-600">{{ tab.label }}</p>
+                  </div>
+                }
+              </div>
+            }
+          </p-tabpanel>
+        }
+      </p-tabpanels>
+    </p-tabs>
+  }
 </section>

@@ -1,12 +1,7 @@
-@use "assets/styles/variables" as var;
+.p-iconfield {
+  --p-icon-size: 1.5rem;
+}
 
-:host {
-  h3 {
-    color: var.$red-1;
-    text-transform: none;
-  }
-
-  input {
-    text-overflow: ellipsis;
-  }
+.warning {
+  color: var(--red-1);
 }

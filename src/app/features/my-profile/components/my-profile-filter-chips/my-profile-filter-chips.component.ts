@@ -1,6 +1,5 @@
 import { Store } from '@ngxs/store';
 
-import { PrimeTemplate } from 'primeng/api';
 import { Chip } from 'primeng/chip';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
@@ -23,7 +22,7 @@ import {
 
 @Component({
   selector: 'osf-my-profile-filter-chips',
-  imports: [Chip, PrimeTemplate],
+  imports: [Chip],
   templateUrl: './my-profile-filter-chips.component.html',
   styleUrl: './my-profile-filter-chips.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

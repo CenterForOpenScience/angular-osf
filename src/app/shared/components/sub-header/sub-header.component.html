@@ -30,6 +30,6 @@
   </div>
 
   @if (description()) {
-    <p>{{ description() }}</p>
+    <p [innerHtml]="description() | safeHtml"></p>
   }
 </section>

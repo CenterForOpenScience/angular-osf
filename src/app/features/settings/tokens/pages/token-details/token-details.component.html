@@ -1,24 +1,33 @@
-<section class="flex flex-column flex-1 gap-5 content-container" [class.mobile]="isXSmall()">
-  <nav>
-    <a routerLink="/settings/tokens">
-      <i class="osf-icon-arrow-left inline"></i>
+<section class="content-container flex flex-column flex-1 gap-5 py-4 px-3 md:px-5 xl:px-4">
+  <nav class="flex align-items-center gap-2">
+    <osf-icon iconClass="fas fa-chevron-left fa-sm"></osf-icon>
+
+    <a routerLink="/settings/tokens" class="font-semibold">
       {{ 'settings.tokens.details.navigation.back' | translate }}
     </a>
   </nav>
-  @if (token()) {
-    <div class="flex justify-content-between" [class.mobile]="isXSmall()">
-      <h1>{{ token()?.name }}</h1>
-      <p-button
-        [label]="'settings.tokens.details.deleteButton' | translate"
-        [class.btn-full-width]="isXSmall()"
-        severity="danger"
-        (click)="deleteToken()"
-      />
-    </div>
 
-    <p-card class="mb-5">
-      <h2 class="mb-5">{{ 'settings.tokens.details.title' | translate }}</h2>
-      <osf-token-add-edit-form [isEditMode]="true" [initialValues]="token()!" />
-    </p-card>
+  @if (isLoading()) {
+    <osf-loading-spinner></osf-loading-spinner>
+  } @else {
+    @if (token()) {
+      <div class="flex flex-column gap-4 md:flex-row md:align-items-center md:justify-content-between">
+        <h1>{{ token()?.name }}</h1>
+
+        <div class="md:w-auto">
+          <p-button
+            class="btn-full-width"
+            [label]="'settings.tokens.details.deleteButton' | translate"
+            severity="danger"
+            (click)="deleteToken()"
+          />
+        </div>
+      </div>
+
+      <p-card class="mb-5">
+        <h2 class="mb-4">{{ 'settings.tokens.details.title' | translate }}</h2>
+        <osf-token-add-edit-form [isEditMode]="true" [initialValues]="token()!" />
+      </p-card>
+    }
   }
 </section>

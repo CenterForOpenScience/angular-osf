@@ -3,15 +3,13 @@
 
 @layer reset, base, primeng;
 
-@layer base {
+@layer reset {
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-}
 
-@layer reset {
   html,
   body {
     color: var.$dark-blue-1;
@@ -29,6 +27,7 @@
   i {
     @include mix.flex-center;
     font-size: mix.rem(16px);
+    outline: none;
   }
 
   h1 {
@@ -84,9 +83,13 @@
       display: block;
     }
   }
+}
 
-  i,
-  svg {
-    outline: none;
+@layer base {
+  label {
+    display: block;
+    color: var(--dark-blue-1);
+    margin-bottom: mix.rem(4px);
+    font-weight: 400;
   }
 }

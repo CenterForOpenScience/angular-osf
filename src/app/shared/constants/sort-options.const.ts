@@ -1,7 +1,7 @@
 import { SortType } from '../enums';
-import { SelectOption } from '../models';
+import { CustomOption } from '../models';
 
-export const ALL_SORT_OPTIONS: SelectOption[] = [
+export const ALL_SORT_OPTIONS: CustomOption<string>[] = [
   {
     value: SortType.NameAZ,
     label: 'project.files.sort.nameAZ',

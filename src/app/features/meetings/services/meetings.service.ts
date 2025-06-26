@@ -14,38 +14,29 @@ import {
 import { searchPreferencesToJsonApiQueryParams } from '@osf/shared/utils';
 import { SearchFilters } from '@shared/models/filters';
 
+import { meetingSortFieldMap, meetingSubmissionSortFieldMap } from '../constants';
+
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MeetingsService {
-  jsonApiService = inject(JsonApiService);
-  baseUrl = `${environment.apiDomainUrl}/_/meetings/`;
-
-  #meetingSubmissionSortFieldMap: Record<string, string> = {
-    title: 'title',
-    authorName: 'author_name',
-    meetingCategory: 'meeting_category',
-    dateCreated: 'date_created',
-    downloadCount: 'download_count',
-  };
-  #meetingSortFieldMap: Record<string, string> = {
-    name: 'name',
-    submissionsCount: 'submissions_count',
-    location: 'location',
-    startDate: 'start_date',
-  };
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly baseUrl = `${environment.apiDomainUrl}/_/meetings/`;
 
   getAllMeetings(pageNumber: number, pageSize: number, filters: SearchFilters): Observable<MeetingsWithPaging> {
-    const params: Record<string, unknown> = {};
-    searchPreferencesToJsonApiQueryParams(params, pageNumber, pageSize, filters, this.#meetingSortFieldMap);
-
-    return this.jsonApiService.get<JsonApiResponseWithPaging<MeetingGetResponse[], null>>(this.baseUrl, params).pipe(
-      map((response) => {
-        return MeetingsMapper.fromMeetingsGetResponse(response);
-      })
+    const params: Record<string, unknown> = searchPreferencesToJsonApiQueryParams(
+      {},
+      pageNumber,
+      pageSize,
+      filters,
+      meetingSortFieldMap
     );
+
+    return this.jsonApiService
+      .get<JsonApiResponseWithPaging<MeetingGetResponse[], null>>(this.baseUrl, params)
+      .pipe(map((response) => MeetingsMapper.fromMeetingsGetResponse(response)));
   }
 
   getMeetingSubmissions(
@@ -54,25 +45,24 @@ export class MeetingsService {
     pageSize: number,
     filters: SearchFilters
   ): Observable<MeetingSubmissionsWithPaging> {
-    const params: Record<string, unknown> = {};
-    searchPreferencesToJsonApiQueryParams(params, pageNumber, pageSize, filters, this.#meetingSubmissionSortFieldMap);
+    const params: Record<string, unknown> = searchPreferencesToJsonApiQueryParams(
+      {},
+      pageNumber,
+      pageSize,
+      filters,
+      meetingSubmissionSortFieldMap
+    );
 
     return this.jsonApiService
       .get<
         JsonApiResponseWithPaging<MeetingSubmissionGetResponse[], null>
       >(`${this.baseUrl}${meetingId}/submissions/`, params)
-      .pipe(
-        map((response) => {
-          return MeetingsMapper.fromMeetingSubmissionGetResponse(response);
-        })
-      );
+      .pipe(map((response) => MeetingsMapper.fromMeetingSubmissionGetResponse(response)));
   }
 
   getMeetingById(meetingId: string) {
-    return this.jsonApiService.get<JsonApiResponse<MeetingGetResponse, null>>(this.baseUrl + meetingId).pipe(
-      map((response) => {
-        return MeetingsMapper.fromMeetingGetResponse(response.data);
-      })
-    );
+    return this.jsonApiService
+      .get<JsonApiResponse<MeetingGetResponse, null>>(this.baseUrl + meetingId)
+      .pipe(map((response) => MeetingsMapper.fromMeetingGetResponse(response.data)));
   }
 }

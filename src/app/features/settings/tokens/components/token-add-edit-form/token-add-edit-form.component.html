@@ -1,28 +1,33 @@
 <form [formGroup]="tokenForm" (ngSubmit)="handleSubmitForm()" class="flex flex-column gap-4">
   <div class="flex flex-column">
-    <label for="token-name">{{ 'settings.tokens.form.tokenName' | translate }}</label>
-    <input pInputText id="token-name" type="text" autocomplete="off" [formControlName]="TokenFormControls.TokenName" />
+    <osf-text-input
+      [control]="tokenForm.controls[TokenFormControls.TokenName]"
+      [label]="'settings.tokens.form.tokenName'"
+      [maxLength]="inputLimits.maxLength"
+      [minLength]="inputLimits.minLength"
+    >
+    </osf-text-input>
   </div>
 
   <div class="flex flex-column gap-4">
     <div class="flex flex-column gap-2">
-      <h3 class="scope-label">
+      <p class="font-bold">
         {{ 'settings.tokens.form.scopes.title' | translate }}
-      </h3>
-      <p class="scope-description">
+      </p>
+
+      <p>
         {{ 'settings.tokens.form.scopes.description' | translate }}
       </p>
     </div>
 
-    <div class="flex flex-column gap-4">
+    <div class="scope-container flex flex-column gap-4">
       @for (scope of tokenScopes(); track scope.id) {
         <div class="flex align-items-start gap-2">
           <p-checkbox [value]="scope.id" [formControlName]="TokenFormControls.Scopes" [inputId]="scope.id" />
+
           <div class="flex flex-column gap-1">
-            <label [for]="scope.id" class="scope-name">
-              <h3>{{ scope.id }}</h3>
-            </label>
-            <span>{{ scope.attributes.description }}</span>
+            <label [for]="scope.id" class="font-bold">{{ scope.id }}</label>
+            <span>{{ scope.description }}</span>
           </div>
         </div>
       }
@@ -31,12 +36,14 @@
 
   <div class="flex justify-content-end gap-2">
     @if (isEditMode()) {
-      <p-button
-        [ngClass]="isMobile() ? 'btn-half-width' : 'w-10rem btn-full-width'"
-        [label]="'settings.tokens.form.buttons.save' | translate"
-        type="submit"
-        [disabled]="!tokenForm.valid"
-      />
+      <div class="w-6 md:w-auto">
+        <p-button
+          class="btn-full-width"
+          [label]="'settings.tokens.form.buttons.save' | translate"
+          type="submit"
+          [disabled]="!tokenForm.valid"
+        />
+      </div>
     } @else {
       <p-button
         class="w-12rem btn-full-width"
@@ -48,7 +55,8 @@
         class="w-12rem btn-full-width"
         [label]="'settings.tokens.form.buttons.create' | translate"
         type="submit"
-        [disabled]="!tokenForm.valid"
+        [disabled]="!tokenForm.valid || isLoading()"
+        [loading]="isLoading()"
       />
     }
   </div>

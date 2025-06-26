@@ -1,7 +1,8 @@
 <p-button
   class="copy-icon-btn"
-  severity="contrast"
+  [severity]="severity()"
   icon="fas fa-clone"
+  [label]="label()"
   text
   [pTooltip]="tooltip() | translate"
   (click)="copy()"

@@ -1,0 +1,43 @@
+@if (template()) {
+  <div class="cedar-template-form bg-white">
+    @if (readonly()) {
+      <div class="flex justify-content-between p-4">
+        @if (existingRecord()?.attributes?.is_published) {
+          <h3 class="text-lg">{{ 'project.metadata.addMetadata.publishedText' | translate }}</h3>
+        } @else {
+          <h3 class="text-lg text-red-500">{{ 'project.metadata.addMetadata.notPublishedText' | translate }}</h3>
+        }
+        <p-button class="w-10rem btn-full-width" severity="secondary" [label]="'Edit record'" (click)="editModeEmit()">
+        </p-button>
+      </div>
+    }
+
+    <div class="cedar-editor-container">
+      <cedar-embeddable-editor
+        [config]="cedarConfig"
+        [templateObject]="template().attributes.template"
+        [metadata]="formData()"
+        (change)="onCedarChange($event)"
+      ></cedar-embeddable-editor>
+    </div>
+
+    @if (!readonly()) {
+      <div class="flex justify-content-between gap-3 px-4 pt-4 pb-8 sm:justify-content-end">
+        <p-button
+          class="w-10rem btn-full-width"
+          severity="secondary"
+          [label]="'project.metadata.addMetadata.changeTemplate' | translate"
+          (click)="changeTemplate.emit()"
+        >
+        </p-button>
+
+        <p-button
+          class="w-10rem btn-full-width"
+          [label]="'project.metadata.addMetadata.publish' | translate"
+          (click)="onSubmit()"
+        >
+        </p-button>
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,24 @@
+<div class="p-4 flex flex-column gap-2">
+  <h2>{{ 'project.files.detail.keywords.title' | translate }}</h2>
+
+  <div class="flex align-items-center gap-2">
+    <input pInputText class="flex-1" [formControl]="keywordControl" />
+
+    <p-button
+      [label]="'common.buttons.add' | translate"
+      (click)="addTag()"
+      [disabled]="isTagsLoading() || keywordControl.invalid"
+    >
+    </p-button>
+  </div>
+
+  @if (!isTagsLoading()) {
+    <div class="flex flex-wrap gap-1">
+      @for (tag of tags(); track $index) {
+        <p-chip [label]="tag" removeIcon="fas fa-close" removable (onRemove)="deleteTag(tag)"></p-chip>
+      }
+    </div>
+  } @else {
+    <p-skeleton width="100%" height="2rem" />
+  }
+</div>

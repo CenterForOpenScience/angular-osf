@@ -22,7 +22,7 @@
       <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row-reverse lg:flex-row">
         @if (project.storage) {
           <p class="font-bold mr-2 ml-0 mt-2 sm:ml-2 sm:mt-0 sm:align-self-center storage">
-            {{ project.storage.storageUsage }} KB
+            {{ +project.storage.storageUsage | fileSize }}
           </p>
         }
 

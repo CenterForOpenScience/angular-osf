@@ -1,0 +1,56 @@
+<form [formGroup]="fileMetadataForm" (ngSubmit)="setFileMetadata()" class="flex flex-column gap-3 select-option-wrap">
+  <div class="flex flex-column gap-1">
+    <p>{{ 'project.files.detail.fileMetadata.fields.title' | translate }}</p>
+    <input pInputText id="title" [formControl]="titleControl" />
+  </div>
+
+  <div class="flex flex-column gap-1">
+    <p>{{ 'project.files.detail.fileMetadata.fields.description' | translate }}</p>
+    <input pInputText id="description" [formControl]="descriptionControl" />
+  </div>
+
+  <div class="flex flex-column gap-1">
+    <p>{{ 'project.files.detail.fileMetadata.fields.resourceType' | translate }}</p>
+    <p-select
+      class="w-full"
+      [options]="resourceTypes"
+      optionValue="value"
+      optionLabel="value"
+      appendTo="body"
+      [formControl]="resourceTypeControl"
+      [showClear]="true"
+    ></p-select>
+  </div>
+
+  <div class="flex flex-column gap-1">
+    <p>{{ 'project.files.detail.fileMetadata.fields.resourceLanguage' | translate }}</p>
+    <p-select
+      class="w-full"
+      [options]="languages"
+      optionValue="code"
+      optionLabel="name"
+      [formControl]="resourceLanguageControl"
+      [filter]="true"
+      filterBy="name"
+      [showClear]="true"
+      [virtualScroll]="true"
+      [virtualScrollItemSize]="35"
+    ></p-select>
+  </div>
+
+  <div class="flex btn-full-width gap-2">
+    <p-button
+      [label]="'common.buttons.cancel' | translate"
+      severity="info"
+      class="w-full"
+      (click)="cancel()"
+      type="button"
+    />
+    <p-button
+      [label]="'common.buttons.save' | translate"
+      class="w-full"
+      type="submit"
+      [disabled]="!fileMetadataForm.valid"
+    />
+  </div>
+</form>

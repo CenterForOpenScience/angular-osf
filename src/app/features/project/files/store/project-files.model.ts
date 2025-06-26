@@ -1,17 +1,18 @@
 import {
   FileProvider,
-  OsfFile,
   OsfFileCustomMetadata,
   OsfFileProjectContributor,
+  OsfFileRevision,
   OsfProjectMetadata,
 } from '@osf/features/project/files/models';
+import { OsfFile } from '@shared/models';
 import { AsyncStateModel } from '@shared/models/store';
 
 export interface ProjectFilesStateModel {
   files: AsyncStateModel<OsfFile[]>;
   moveFileFiles: AsyncStateModel<OsfFile[]>;
-  currentFolder?: OsfFile;
-  moveFileCurrentFolder?: OsfFile;
+  currentFolder: OsfFile | null;
+  moveFileCurrentFolder: OsfFile | null;
   search: string;
   sort: string;
   provider: (typeof FileProvider)[keyof typeof FileProvider];
@@ -19,4 +20,6 @@ export interface ProjectFilesStateModel {
   fileMetadata: AsyncStateModel<OsfFileCustomMetadata | null>;
   projectMetadata: AsyncStateModel<OsfProjectMetadata | null>;
   contributors: AsyncStateModel<OsfFileProjectContributor[] | null>;
+  fileRevisions: AsyncStateModel<OsfFileRevision[] | null>;
+  tags: AsyncStateModel<string[]>;
 }

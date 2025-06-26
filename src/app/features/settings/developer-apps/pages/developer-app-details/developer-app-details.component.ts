@@ -1,6 +1,6 @@
 import { createDispatchMap, Store } from '@ngxs/store';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
@@ -36,7 +36,7 @@ import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, Res
     FormsModule,
     ReactiveFormsModule,
     DeveloperAppAddEditFormComponent,
-    TranslateModule,
+    TranslatePipe,
   ],
   templateUrl: './developer-app-details.component.html',
   styleUrl: './developer-app-details.component.scss',

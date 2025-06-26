@@ -1,1 +1,1 @@
-export * from './project-files.constants';
+export * from './file-metadata-fields.const';

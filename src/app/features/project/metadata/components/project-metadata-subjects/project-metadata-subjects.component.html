@@ -1,0 +1,106 @@
+<p-card>
+  <div class="flex flex-column gap-3">
+    <h3 class="text-lg m-0">{{ 'project.overview.metadata.subjects' | translate }}</h3>
+
+    <div class="flex flex-column gap-3">
+      <div class="subjects-chips">
+        <div
+          class="flex flex-wrap gap-2 p-3 border-1 border-round surface-border min-h-3rem align-items-center cursor-text"
+          tabindex="0"
+          role="button"
+          [attr.aria-label]="'project.overview.metadata.subjects' | translate"
+          (click)="onInputFocus()"
+          (keydown)="$event.key === 'Enter' && onInputFocus()"
+        >
+          @for (subject of getUniqueSubjects(); track subject.id) {
+            <p-tag
+              [value]="subject.text"
+              severity="info"
+              class="cursor-pointer removable-chip"
+              tabindex="0"
+              role="button"
+              [attr.aria-label]="subject.text"
+              (click)="removeSubject(subject); $event.stopPropagation()"
+              [title]="'project.overview.metadata.clickToRemove' | translate"
+            />
+          }
+
+          @if (getUniqueSubjects().length === 0) {
+            <span class="text-color-secondary">{{ 'project.metadata.addSubjects' | translate }}</span>
+          }
+        </div>
+      </div>
+
+      <osf-search-input [control]="searchControl" class="w-full" [placeholder]="'Search subjects...'" />
+
+      @if (filteredOptions().length > 0) {
+        <div class="bg-white border-1 surface-border border-round max-h-20rem overflow-y-auto">
+          <div class="p-2">
+            @for (option of filteredOptions(); track option.id) {
+              <div class="flex flex-column">
+                <div class="flex align-items-center gap-2 p-2 hover:bg-gray-50 border-round cursor-pointer">
+                  @if (option.children?.length) {
+                    <i
+                      class="pi text-sm cursor-pointer w-1rem"
+                      tabindex="0"
+                      role="button"
+                      [attr.aria-label]="('project.overview.metadata.expandOrCollapse' | translate) + option.label"
+                      [ngClass]="option.expanded ? 'pi-chevron-down' : 'pi-chevron-right'"
+                      (click)="toggleExpand(option, $event)"
+                      (keydown)="$event.key === 'Enter' && toggleExpand(option, $event)"
+                    >
+                    </i>
+                  } @else {
+                    <span class="inline-block w-1rem"></span>
+                  }
+
+                  <p-checkbox
+                    [ngModel]="option.selected"
+                    (ngModelChange)="toggleSelection(option)"
+                    [indeterminate]="option.indeterminate"
+                    [binary]="true"
+                  />
+
+                  <span
+                    class="flex-1 cursor-pointer text-sm"
+                    [ngClass]="{ 'font-medium': (option.level ?? 0) === 0, 'font-normal': (option.level ?? 0) > 0 }"
+                    [style.margin-left.rem]="(option.level || 0) * 1"
+                    tabindex="0"
+                    role="button"
+                    [attr.aria-label]="option.label"
+                    (click)="toggleSelection(option)"
+                    (keydown)="$event.key === 'Enter' && toggleSelection(option)"
+                  >
+                    {{ option.label }}
+                  </span>
+                </div>
+
+                @if (option.expanded && option.children) {
+                  @for (child of option.children; track child.id) {
+                    <div class="flex align-items-center gap-2 p-2 pl-6 hover:bg-gray-50 border-round cursor-pointer">
+                      <span class="inline-block w-1rem"></span>
+
+                      <p-checkbox [ngModel]="child.selected" (ngModelChange)="toggleSelection(child)" [binary]="true" />
+
+                      <span
+                        class="flex-1 cursor-pointer text-sm"
+                        [style.margin-left.rem]="child.level || 0"
+                        tabindex="0"
+                        role="button"
+                        [attr.aria-label]="child.label"
+                        (click)="toggleSelection(child)"
+                        (keydown)="$event.key === 'Enter' && toggleSelection(child)"
+                      >
+                        {{ child.label }}
+                      </span>
+                    </div>
+                  }
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</p-card>

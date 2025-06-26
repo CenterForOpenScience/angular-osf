@@ -9,7 +9,7 @@ import { Component, computed, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
-import { NAV_ITEMS, PROJECT_MENU_ITEMS } from '@core/constants/nav-items.constant';
+import { NAV_ITEMS, PROJECT_MENU_ITEMS } from '@core/constants';
 import { IconComponent } from '@osf/shared/components';
 import { NavItem } from '@osf/shared/models';
 
@@ -20,8 +20,8 @@ import { NavItem } from '@osf/shared/models';
   styleUrl: './nav-menu.component.scss',
 })
 export class NavMenuComponent {
-  readonly router = inject(Router);
-  readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   protected readonly navItems = NAV_ITEMS;
   protected readonly myProjectMenuItems = PROJECT_MENU_ITEMS;
 

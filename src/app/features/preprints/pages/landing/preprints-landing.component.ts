@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
@@ -35,7 +35,7 @@ import { ResourceTab } from '@shared/enums';
     PreprintServicesComponent,
     BrowseBySubjectsComponent,
     Skeleton,
-    TranslateModule,
+    TranslatePipe,
     TitleCasePipe,
   ],
   templateUrl: './preprints-landing.component.html',

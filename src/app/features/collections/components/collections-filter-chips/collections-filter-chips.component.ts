@@ -1,6 +1,5 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { PrimeTemplate } from 'primeng/api';
 import { Chip } from 'primeng/chip';
 
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
@@ -25,7 +24,7 @@ type FilterType = keyof ReturnType<typeof CollectionsSelectors.getAllSelectedFil
 
 @Component({
   selector: 'osf-collections-filter-chips',
-  imports: [Chip, PrimeTemplate],
+  imports: [Chip],
   templateUrl: './collections-filter-chips.component.html',
   styleUrl: './collections-filter-chips.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

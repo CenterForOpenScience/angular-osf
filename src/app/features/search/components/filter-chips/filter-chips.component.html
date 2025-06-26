@@ -1,134 +1,65 @@
 @if (filters().creator.value && !isMyProfilePage()) {
   @let creator = filters().creator.filterName + ': ' + filters().creator.label;
-  <p-chip [label]="creator" [removable]="true">
-    <ng-template pTemplate="removeicon">
-      <i
-        class="osf-icon-close text-xs font-bold text-align-center"
-        tabindex="0"
-        role="button"
-        (click)="clearFilter(FilterType.Creator)"
-        (keydown.enter)="clearFilter(FilterType.Creator)"
-      ></i>
-    </ng-template>
-  </p-chip>
+  <p-chip [label]="creator" removeIcon="fas fa-close" removable (onRemove)="clearFilter(FilterType.Creator)"></p-chip>
 }
 
 @if (filters().dateCreated.value) {
   @let dateCreated = filters().dateCreated.filterName + ': ' + filters().dateCreated.label;
-  <p-chip [label]="dateCreated" [removable]="true">
-    <ng-template pTemplate="removeicon">
-      <i
-        class="osf-icon-close text-xs font-bold text-align-center"
-        tabindex="0"
-        role="button"
-        (click)="clearFilter(FilterType.DateCreated)"
-        (keydown.enter)="clearFilter(FilterType.DateCreated)"
-      ></i>
-    </ng-template>
-  </p-chip>
+  <p-chip
+    [label]="dateCreated"
+    removeIcon="fas fa-close"
+    removable
+    (onRemove)="clearFilter(FilterType.DateCreated)"
+  ></p-chip>
 }
 
 @if (filters().funder.value) {
   @let funder = filters().funder.filterName + ': ' + filters().funder.label;
-  <p-chip [label]="funder" [removable]="true">
-    <ng-template pTemplate="removeicon">
-      <i
-        class="osf-icon-close text-xs font-bold text-align-center"
-        tabindex="0"
-        role="button"
-        (click)="clearFilter(FilterType.Funder)"
-        (keydown.enter)="clearFilter(FilterType.Funder)"
-      ></i>
-    </ng-template>
-  </p-chip>
+
+  <p-chip [label]="funder" removeIcon="fas fa-close" removable (onRemove)="clearFilter(FilterType.Funder)"></p-chip>
 }
 
 @if (filters().subject.value) {
   @let subject = filters().subject.filterName + ': ' + filters().subject.label;
-  <p-chip [label]="subject" [removable]="true">
-    <ng-template pTemplate="removeicon">
-      <i
-        class="osf-icon-close text-xs font-bold text-align-center"
-        tabindex="0"
-        role="button"
-        (click)="clearFilter(FilterType.Subject)"
-        (keydown.enter)="clearFilter(FilterType.Subject)"
-      ></i>
-    </ng-template>
-  </p-chip>
+  <p-chip [label]="subject" removeIcon="fas fa-close" removable (onRemove)="clearFilter(FilterType.Subject)"></p-chip>
 }
 
 @if (filters().license.value) {
   @let license = filters().license.filterName + ': ' + filters().license.label;
-  <p-chip [label]="license" [removable]="true">
-    <ng-template pTemplate="removeicon">
-      <i
-        class="osf-icon-close text-xs font-bold text-align-center"
-        tabindex="0"
-        role="button"
-        (click)="clearFilter(FilterType.License)"
-        (keydown.enter)="clearFilter(FilterType.License)"
-      ></i>
-    </ng-template>
-  </p-chip>
+  <p-chip [label]="license" removeIcon="fas fa-close" removable (onRemove)="clearFilter(FilterType.License)"></p-chip>
 }
 
 @if (filters().resourceType.value) {
   @let resourceType = filters().resourceType.filterName + ': ' + filters().resourceType.label;
-  <p-chip [label]="resourceType" [removable]="true">
-    <ng-template pTemplate="removeicon">
-      <i
-        class="osf-icon-close text-xs font-bold text-align-center"
-        tabindex="0"
-        role="button"
-        (click)="clearFilter(FilterType.ResourceType)"
-        (keydown.enter)="clearFilter(FilterType.ResourceType)"
-      ></i>
-    </ng-template>
-  </p-chip>
+  <p-chip
+    [label]="resourceType"
+    removeIcon="fas fa-close"
+    removable
+    (onRemove)="clearFilter(FilterType.ResourceType)"
+  ></p-chip>
 }
 
 @if (filters().institution.value) {
   @let institution = filters().institution.filterName + ': ' + filters().institution.label;
-  <p-chip [label]="institution" [removable]="true">
-    <ng-template pTemplate="removeicon">
-      <i
-        class="osf-icon-close text-xs font-bold text-align-center"
-        tabindex="0"
-        role="button"
-        (click)="clearFilter(FilterType.Institution)"
-        (keydown.enter)="clearFilter(FilterType.Institution)"
-      ></i>
-    </ng-template>
-  </p-chip>
+  <p-chip
+    [label]="institution"
+    removeIcon="fas fa-close"
+    removable
+    (onRemove)="clearFilter(FilterType.Institution)"
+  ></p-chip>
 }
 
 @if (filters().provider.value) {
   @let provider = filters().provider.filterName + ': ' + filters().provider.label;
-  <p-chip [label]="provider" [removable]="true">
-    <ng-template pTemplate="removeicon">
-      <i
-        class="osf-icon-close text-xs font-bold text-align-center"
-        tabindex="0"
-        role="button"
-        (click)="clearFilter(FilterType.Provider)"
-        (keydown.enter)="clearFilter(FilterType.Provider)"
-      ></i>
-    </ng-template>
-  </p-chip>
+  <p-chip [label]="provider" removeIcon="fas fa-close" removable (onRemove)="clearFilter(FilterType.Provider)"></p-chip>
 }
 
 @if (filters().partOfCollection.value) {
   @let partOfCollection = filters().partOfCollection.filterName + ': ' + filters().partOfCollection.label;
-  <p-chip [label]="partOfCollection" [removable]="true">
-    <ng-template pTemplate="removeicon">
-      <i
-        class="osf-icon-close text-xs font-bold text-align-center"
-        tabindex="0"
-        role="button"
-        (click)="clearFilter(FilterType.PartOfCollection)"
-        (keydown.enter)="clearFilter(FilterType.PartOfCollection)"
-      ></i>
-    </ng-template>
-  </p-chip>
+  <p-chip
+    [label]="partOfCollection"
+    removeIcon="fas fa-close"
+    removable
+    (onRemove)="clearFilter(FilterType.PartOfCollection)"
+  ></p-chip>
 }

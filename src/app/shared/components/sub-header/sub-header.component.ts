@@ -1,4 +1,5 @@
 import { Button } from 'primeng/button';
+import { SafeHtmlPipe } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -6,7 +7,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 
 @Component({
   selector: 'osf-sub-header',
-  imports: [Button, Tooltip, Skeleton],
+  imports: [Button, Tooltip, Skeleton, SafeHtmlPipe],
   templateUrl: './sub-header.component.html',
   styleUrl: './sub-header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

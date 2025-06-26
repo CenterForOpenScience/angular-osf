@@ -1,4 +1,4 @@
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
@@ -15,7 +15,7 @@ import { DeveloperAppAddEditFormComponent } from './components';
 
 @Component({
   selector: 'osf-developer-apps',
-  imports: [RouterOutlet, SubHeaderComponent, TranslateModule],
+  imports: [RouterOutlet, SubHeaderComponent, TranslatePipe],
   templateUrl: './developer-apps-container.component.html',
   styleUrl: './developer-apps-container.component.scss',
   providers: [DialogService],

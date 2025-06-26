@@ -1,0 +1,9 @@
+@use "assets/styles/variables" as var;
+
+.subheader {
+  color: var.$dark-blue-1;
+}
+
+.registries {
+  background: var.$white;
+}

@@ -10,11 +10,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants/my-projects-table.constants';
-import { InstitutionsState } from '@osf/features/institutions/store';
 import { CreateProject, GetMyProjects, MyProjectsState } from '@osf/features/my-projects/store';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 
 import { AddProjectFormComponent } from './add-project-form.component';
+
+import { InstitutionsState } from 'src/app/shared/stores/institutions';
 
 describe('AddProjectFormComponent', () => {
   let component: AddProjectFormComponent;

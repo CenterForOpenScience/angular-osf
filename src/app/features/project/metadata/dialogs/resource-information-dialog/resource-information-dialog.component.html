@@ -1,0 +1,40 @@
+<form [formGroup]="resourceForm" (ngSubmit)="save()" class="flex flex-column gap-4">
+  <div class="flex flex-column gap-2">
+    <label for="resourceType">
+      {{ 'project.files.detail.projectMetadata.fields.resourceType' | translate }}
+    </label>
+
+    <p-select
+      id="resourceType"
+      [formControl]="resourceForm.controls.resourceType"
+      [options]="resourceTypeOptions"
+      optionLabel="label"
+      optionValue="value"
+      [placeholder]="'common.buttons.select' | translate"
+      appendTo="body"
+      class="w-full"
+    />
+  </div>
+
+  <div class="flex flex-column gap-2">
+    <label for="resourceLanguage">
+      {{ 'project.files.detail.projectMetadata.fields.resourceLanguage' | translate }}
+    </label>
+
+    <p-select
+      id="resourceLanguage"
+      [formControl]="resourceForm.controls.resourceLanguage"
+      [options]="languageOptions"
+      optionLabel="label"
+      optionValue="value"
+      [placeholder]="'common.buttons.select' | translate"
+      appendTo="body"
+      class="w-full"
+    />
+  </div>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button severity="info" [label]="'common.buttons.cancel' | translate" (click)="cancel()" />
+    <p-button type="submit" [label]="'common.buttons.save' | translate" [disabled]="resourceForm.invalid" />
+  </div>
+</form>

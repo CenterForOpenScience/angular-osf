@@ -14,7 +14,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@shared/utils';
 
-import { InstitutionsState } from '../institutions/store';
+import { InstitutionsState } from '../../shared/stores/institutions';
 
 import { MyProjectsState } from './store/my-projects.state';
 import { MyProjectsComponent } from './my-projects.component';

@@ -15,14 +15,14 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
+import { MyProjectsItem } from '@osf/features/my-projects/models';
 import { AddProjectFormComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
 import { SortOrder } from '@osf/shared/enums';
 import { TableParameters } from '@osf/shared/models';
 import { IS_MEDIUM } from '@osf/shared/utils';
+import { GetUserInstitutions } from '@shared/stores';
 
-import { GetUserInstitutions } from '../institutions/store';
 import { MyProjectsSearchFilters } from '../my-projects/models';
-import { MyProjectsItem } from '../my-projects/models/my-projects.models';
 import { ClearMyProjects, GetMyProjects, MyProjectsSelectors } from '../my-projects/store';
 import { AccountSettingsService } from '../settings/account-settings/services';
 

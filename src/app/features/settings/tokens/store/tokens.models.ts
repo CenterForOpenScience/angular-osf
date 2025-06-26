@@ -1,6 +1,8 @@
-import { Scope, Token } from '../models';
+import { AsyncStateModel } from '@osf/shared/models';
+
+import { ScopeModel, TokenModel } from '../models';
 
 export interface TokensStateModel {
-  scopes: Scope[];
-  tokens: Token[];
+  scopes: AsyncStateModel<ScopeModel[]>;
+  tokens: AsyncStateModel<TokenModel[]>;
 }

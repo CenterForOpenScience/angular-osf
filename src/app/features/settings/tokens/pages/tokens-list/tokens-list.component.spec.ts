@@ -5,16 +5,14 @@ import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { Confirmation, ConfirmationService } from 'primeng/api';
 
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 
-import { IS_XSMALL } from '@osf/shared/utils';
-
-import { Token } from '../../models';
+import { TokenModel } from '../../models';
 import { DeleteToken } from '../../store';
 
 import { TokensListComponent } from './tokens-list.component';
@@ -24,9 +22,8 @@ describe('TokensListComponent', () => {
   let fixture: ComponentFixture<TokensListComponent>;
   let store: Partial<Store>;
   let confirmationService: Partial<ConfirmationService>;
-  let isXSmallSubject: BehaviorSubject<boolean>;
 
-  const mockTokens: Token[] = [
+  const mockTokens: TokenModel[] = [
     {
       id: '1',
       name: 'Test Token 1',
@@ -53,15 +50,12 @@ describe('TokensListComponent', () => {
       confirm: jest.fn(),
     };
 
-    isXSmallSubject = new BehaviorSubject<boolean>(false);
-
     await TestBed.configureTestingModule({
       imports: [TokensListComponent, MockPipe(TranslatePipe)],
       providers: [
         MockProvider(TranslateService),
         MockProvider(Store, store),
         MockProvider(ConfirmationService, confirmationService),
-        MockProvider(IS_XSMALL, isXSmallSubject),
         {
           provide: ActivatedRoute,
           useValue: {
@@ -127,12 +121,5 @@ describe('TokensListComponent', () => {
     });
     component.deleteToken(token);
     expect(store.dispatch).not.toHaveBeenCalledWith(new DeleteToken(token.id));
-  });
-
-  it('should apply mobile class when in mobile view', () => {
-    isXSmallSubject.next(true);
-    fixture.detectChanges();
-    const contentContainer = fixture.debugElement.query(By.css('.content-container'));
-    expect(contentContainer.nativeElement.classList.contains('mobile')).toBe(true);
   });
 });

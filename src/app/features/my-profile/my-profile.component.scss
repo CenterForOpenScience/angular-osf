@@ -9,3 +9,7 @@
   border: 1px solid var.$grey-2;
   border-radius: mix.rem(12px);
 }
+
+:host {
+  flex: 1;
+}

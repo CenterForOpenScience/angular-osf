@@ -1,15 +1,12 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
-:host {
-  .nav-menu {
-    width: 250px;
-    max-width: 250px;
+.nav-menu {
+  width: 250px;
+  max-width: 250px;
 
-    .active {
-      background-color: var.$dark-blue-2;
-      border-radius: mix.rem(8px);
-      font-weight: 700;
-    }
+  .active {
+    background-color: var(--dark-blue-2);
+    border-radius: mix.rem(8px);
+    font-weight: 700;
   }
 }

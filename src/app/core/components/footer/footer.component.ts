@@ -1,4 +1,4 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -10,7 +10,7 @@ import { IS_WEB } from '@shared/utils';
 
 @Component({
   selector: 'osf-footer',
-  imports: [RouterLink, TranslateModule, IconComponent],
+  imports: [RouterLink, TranslatePipe, IconComponent],
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

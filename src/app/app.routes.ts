@@ -2,12 +2,9 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { ProjectFilesState } from '@osf/features/project/files/store/project-files.state';
-
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
 import { MyProfileState } from './features/my-profile/store';
-import { ContributorsState } from './features/project/contributors/store';
 import { ResourceFiltersOptionsState } from './features/search/components/filters/store';
 import { ResourceFiltersState } from './features/search/components/resource-filters/store';
 import { SearchState } from './features/search/store';
@@ -52,6 +49,7 @@ export const routes: Routes = [
           import('@osf/features/home/pages/home-logged-out/home-logged-out.component').then(
             (mod) => mod.HomeLoggedOutComponent
           ),
+        data: { skipBreadcrumbs: true },
       },
       {
         path: 'support',
@@ -100,75 +98,7 @@ export const routes: Routes = [
       },
       {
         path: 'my-projects/:id',
-        loadComponent: () => import('@osf/features/project/project.component').then((mod) => mod.ProjectComponent),
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            redirectTo: 'overview',
-          },
-          {
-            path: 'overview',
-            loadComponent: () =>
-              import('@osf/features/project/overview/project-overview.component').then(
-                (mod) => mod.ProjectOverviewComponent
-              ),
-          },
-          {
-            path: 'metadata',
-            loadComponent: () =>
-              import('@osf/features/project/metadata/project-metadata.component').then(
-                (mod) => mod.ProjectMetadataComponent
-              ),
-          },
-          {
-            path: 'files',
-            loadComponent: () =>
-              import('@osf/features/project/files/project-files.component').then((mod) => mod.ProjectFilesComponent),
-            providers: [provideStates([ProjectFilesState])],
-          },
-          {
-            path: 'files/:fileGuid',
-            loadComponent: () =>
-              import('@osf/features/project/files/components/file-detail/file-detail.component').then(
-                (mod) => mod.FileDetailComponent
-              ),
-          },
-          {
-            path: 'registrations',
-            loadComponent: () =>
-              import('@osf/features/project/registrations/registrations.component').then(
-                (mod) => mod.RegistrationsComponent
-              ),
-          },
-          {
-            path: 'settings',
-            loadComponent: () =>
-              import('./features/project/settings/settings.component').then((mod) => mod.SettingsComponent),
-          },
-          {
-            path: 'contributors',
-            loadComponent: () =>
-              import('@osf/features/project/contributors/contributors.component').then(
-                (mod) => mod.ContributorsComponent
-              ),
-            providers: [provideStates([ContributorsState])],
-          },
-          {
-            path: 'analytics',
-            loadComponent: () =>
-              import('@osf/features/project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
-          },
-          {
-            path: 'wiki',
-            loadComponent: () => import('@osf/features/project/wiki/wiki.component').then((mod) => mod.WikiComponent),
-          },
-          {
-            path: 'addons',
-            loadChildren: () =>
-              import('./features/project/addons/constants/addons.routes').then((mod) => mod.addonsRoutes),
-          },
-        ],
+        loadChildren: () => import('./features/project/project.routes').then((mod) => mod.projectRoutes),
       },
       {
         path: 'settings',
@@ -192,6 +122,10 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'institutions',
+        loadChildren: () => import('./features/institutions/institutions.routes').then((r) => r.routes),
+      },
+      {
         path: 'confirm/:userId/:token',
         loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
         data: { skipBreadcrumbs: true },
@@ -207,6 +141,10 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./core/components/request-access/request-access.component').then((mod) => mod.RequestAccessComponent),
         data: { skipBreadcrumbs: true },
+      },
+      {
+        path: 'registries',
+        loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
       },
       {
         path: '**',

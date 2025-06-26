@@ -16,11 +16,11 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
 import { STORAGE_LOCATIONS } from '@core/constants/storage-locations.constant';
-import { InstitutionsSelectors } from '@osf/features/institutions/store';
 import { CreateProject, GetMyProjects, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 import { ProjectForm } from '@osf/shared/models/create-project-form.model';
 import { CustomValidators } from '@osf/shared/utils';
+import { InstitutionsSelectors } from '@shared/stores/institutions';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
@@ -125,8 +125,7 @@ export class AddProjectFormComponent implements OnInit {
           this.#store.dispatch(new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}));
           this.dialogRef.close();
         },
-        error: (error) => {
-          console.error('Failed to create project:', error);
+        error: () => {
           this.isSubmitting.set(false);
         },
       });

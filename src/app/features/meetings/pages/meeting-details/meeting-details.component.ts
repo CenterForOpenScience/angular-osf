@@ -29,8 +29,7 @@ import { parseQueryFilterParams } from '@core/helpers/http.helper';
 import { MEETING_SUBMISSIONS_TABLE_PARAMS } from '@osf/features/meetings/constants';
 import { MeetingSubmission } from '@osf/features/meetings/models';
 import { GetMeetingById, GetMeetingSubmissions, MeetingsSelectors } from '@osf/features/meetings/store';
-import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
-import { SubHeaderComponent } from '@shared/components/sub-header/sub-header.component';
+import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { SortOrder } from '@shared/enums';
 import { QueryParams, TableParameters } from '@shared/models';
 import { SearchFilters } from '@shared/models/filters';
@@ -54,6 +53,7 @@ import { SearchFilters } from '@shared/models/filters';
 })
 export class MeetingDetailsComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
+
   private readonly datePipe = inject(DatePipe);
   private readonly store = inject(Store);
   private readonly route = inject(ActivatedRoute);

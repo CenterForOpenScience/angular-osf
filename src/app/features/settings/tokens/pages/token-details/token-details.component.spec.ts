@@ -4,15 +4,13 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { ConfirmationService } from 'primeng/api';
 
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, RouterModule } from '@angular/router';
 
-import { IS_XSMALL } from '@osf/shared/utils';
-
-import { Token } from '../../models';
+import { TokenModel } from '../../models';
 
 import { TokenDetailsComponent } from './token-details.component';
 
@@ -21,9 +19,8 @@ describe('TokenDetailsComponent', () => {
   let fixture: ComponentFixture<TokenDetailsComponent>;
   let store: Partial<Store>;
   let confirmationService: Partial<ConfirmationService>;
-  let isXSmallSubject: BehaviorSubject<boolean>;
 
-  const mockToken: Token = {
+  const mockToken: TokenModel = {
     id: '1',
     name: 'Test Token',
     tokenId: 'token1',
@@ -42,14 +39,12 @@ describe('TokenDetailsComponent', () => {
     confirmationService = {
       confirm: jest.fn(),
     };
-    isXSmallSubject = new BehaviorSubject<boolean>(false);
 
     await TestBed.configureTestingModule({
       imports: [TokenDetailsComponent, TranslateModule.forRoot(), RouterModule.forRoot([])],
       providers: [
         { provide: Store, useValue: store },
         { provide: ConfirmationService, useValue: confirmationService },
-        { provide: IS_XSMALL, useValue: isXSmallSubject },
         {
           provide: ActivatedRoute,
           useValue: {

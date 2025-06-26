@@ -1,0 +1,26 @@
+<section class="flex flex-column services-background-image gap-4 pt-5 pb-4 px-3 text-white md:pt-6 md:px-4">
+  <h2 class="text-2xl text-white">{{ 'registries.services.title' | translate }}</h2>
+  <p>
+    {{ 'registries.services.description' | translate }}
+  </p>
+
+  <section class="flex flex-wrap justify-content-center md:justify-content-between align-items-center gap-3">
+    @for (registryService of registryServices; track $index) {
+      <a
+        class="registry-service-item"
+        [routerLink]="[registryService.id]"
+        [style.background-image]="'url(' + registryService.src + ')'"
+        [title]="registryService.id"
+      ></a>
+    }
+  </section>
+
+  <div class="flex justify-content-center">
+    <p-button
+      class="contact-us-button w-full sm:w-auto"
+      styleClass="w-full sm:w-auto"
+      (click)="openEmail()"
+      [label]="'registries.services.contactUs' | translate"
+    ></p-button>
+  </div>
+</section>

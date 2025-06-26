@@ -23,7 +23,6 @@ export interface UserSettings {
   subscribeOsfHelpEmail: boolean;
 }
 
-// API Request/Response Models
 export interface UserGetResponse {
   id: string;
   type: string;

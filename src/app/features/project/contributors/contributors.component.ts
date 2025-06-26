@@ -20,6 +20,24 @@ import {
   SearchInputComponent,
   ViewOnlyTableComponent,
 } from '@osf/shared/components';
+import {
+  AddContributorDialogComponent,
+  AddUnregisteredContributorDialogComponent,
+  ContributorsListComponent,
+} from '@osf/shared/components/contributors';
+import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/components/contributors/constants';
+import { AddContributorType, ContributorPermission } from '@osf/shared/components/contributors/enums';
+import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/components/contributors/models';
+import {
+  AddContributor,
+  ContributorsSelectors,
+  DeleteContributor,
+  GetAllContributors,
+  UpdateBibliographyFilter,
+  UpdateContributor,
+  UpdatePermissionFilter,
+  UpdateSearchValue,
+} from '@osf/shared/components/contributors/store';
 import { SelectOption } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import { findChangedItems } from '@osf/shared/utils';
@@ -33,25 +51,7 @@ import {
   SettingsSelectors,
 } from '../settings/store';
 
-import {
-  AddContributorDialogComponent,
-  AddUnregisteredContributorDialogComponent,
-  ContributorsListComponent,
-  CreateViewLinkDialogComponent,
-} from './components';
-import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from './constants';
-import { AddContributorType, ContributorPermission } from './enums';
-import { ContributorDialogAddModel, ContributorModel } from './models';
-import {
-  AddContributor,
-  ContributorsSelectors,
-  DeleteContributor,
-  GetAllContributors,
-  UpdateBibliographyFilter,
-  UpdateContributor,
-  UpdatePermissionFilter,
-  UpdateSearchValue,
-} from './store';
+import { CreateViewLinkDialogComponent } from './components';
 
 @Component({
   selector: 'osf-contributors',

@@ -1,0 +1,43 @@
+<section class="preprints-hero-container py-5 px-3 flex flex-column md:py-6 md:px-4">
+  <section class="flex align-items-center gap-2">
+    @if (isPreprintProviderLoading()) {
+      <p-skeleton width="3rem" height="1.5rem" />
+      <p-skeleton width="12rem" height="1.5rem" />
+    } @else {
+      <img
+        class="preprint-provider-hero-logo"
+        alt="Provider Logo"
+        height="40"
+        [src]="preprintProvider()!.brand.heroLogoImageUrl"
+      />
+      <h1 class="preprint-provider-name">{{ 'Add a ' + preprintProvider()!.preprintWord }}</h1>
+    }
+  </section>
+
+  @if (isWeb()) {
+    @if (isPreprintProviderLoading()) {
+      <p-skeleton class="m-t-48" width="50rem" height="5rem" />
+    } @else {
+      <osf-stepper
+        class="m-t-48"
+        [steps]="submitPreprintSteps"
+        [currentStep]="currentStep()"
+        (currentStepChange)="stepChange($event)"
+      />
+    }
+  }
+</section>
+
+<section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
+  @switch (currentStep()) {
+    @case (0) {
+      <osf-title-and-abstract-step (nextClicked)="currentStep.set(currentStep() + 1)" />
+    }
+    @case (1) {
+      <osf-file-step (nextClicked)="currentStep.set(currentStep() + 1)" />
+    }
+    @default {
+      <p>No such step</p>
+    }
+  }
+</section>

@@ -1,0 +1,18 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
+.services-background-image {
+  background: url("/assets/images/preprints/preprints-services-background.png") center;
+}
+
+.registry-service-item {
+  min-width: mix.rem(312px);
+  min-height: mix.rem(120px);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.contact-us-button {
+  --p-button-padding-x: 2rem;
+}

@@ -4,7 +4,7 @@ import { ConfirmationService } from 'primeng/api';
 
 import { inject, Injectable } from '@angular/core';
 
-import { DeleteConfirmationOptions } from '../models';
+import { AcceptConfirmationOptions, DeleteConfirmationOptions } from '../models';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,7 @@ export class CustomConfirmationService {
       closeOnEscape: false,
       acceptButtonProps: {
         label: this.translateService.instant(options.acceptLabelKey || 'common.buttons.delete'),
-        severity: 'danger',
+        severity: options.acceptLabelType || 'danger',
       },
       rejectButtonProps: {
         label: this.translateService.instant('common.buttons.cancel'),
@@ -29,6 +29,28 @@ export class CustomConfirmationService {
       },
       accept: () => {
         options.onConfirm();
+      },
+    });
+  }
+
+  confirmAccept(options: AcceptConfirmationOptions): void {
+    this.confirmationService.confirm({
+      header: this.translateService.instant(options.headerKey, options.headerParams),
+      message: this.translateService.instant(options.messageKey, options.messageParams),
+      closable: true,
+      closeOnEscape: false,
+      acceptButtonProps: {
+        label: this.translateService.instant(options.acceptLabelKey || 'common.buttons.move'),
+      },
+      rejectButtonProps: {
+        label: this.translateService.instant('common.buttons.cancel'),
+        severity: 'info',
+      },
+      accept: () => {
+        options.onConfirm();
+      },
+      reject: () => {
+        options.onReject();
       },
     });
   }

@@ -1,0 +1,61 @@
+@use "assets/styles/mixins" as mix;
+
+.stepper-container {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: fit-content;
+
+  .stepper-circles-lines-row {
+    display: flex;
+    align-items: center;
+    padding: 0 mix.rem(24px);
+
+    .step-circle {
+      width: mix.rem(32px);
+      height: mix.rem(32px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: var(--stepper-step-color);
+      background: var(--stepper-step-background);
+      border: 1px solid var(--stepper-step-border-color);
+      font-size: mix.rem(16px);
+      cursor: pointer;
+
+      &.active {
+        background: var(--stepper-active-step-background);
+        color: var(--stepper-active-step-color);
+        border: 1px solid var(--stepper-active-step-border-color);
+      }
+    }
+
+    .step-line {
+      width: mix.rem(80px);
+      height: mix.rem(2px);
+      margin: 0 mix.rem(8px);
+      background: var(--stepper-space-line-color);
+
+      &.active {
+        background: var(--stepper-active-space-line-color);
+      }
+    }
+  }
+
+  .stepper-labels-row {
+    display: flex;
+    align-items: start;
+    margin-top: mix.rem(10px);
+
+    .step-label {
+      width: mix.rem(80px);
+      text-align: center;
+      margin-right: mix.rem(48px);
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}

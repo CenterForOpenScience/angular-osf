@@ -1,4 +1,8 @@
 export const InputLimits = {
+  name: {
+    minLength: 2,
+    maxLength: 50,
+  },
   fullName: {
     minLength: 2,
     maxLength: 100,

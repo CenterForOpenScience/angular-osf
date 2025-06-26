@@ -88,58 +88,28 @@
               <osf-resource-card [item]="item" />
             }
 
-            <div class="flex column-gap-4 w-full justify-content-center pt-5">
+            <div class="flex column-gap-2 w-full justify-content-center pt-2">
               @if (first() && prev()) {
-                <svg
-                  width="13"
-                  height="13"
-                  tabindex="0"
-                  role="button"
-                  viewBox="0 0 10 10"
-                  class="switch-icon"
-                  (click)="switchPage(first())"
-                  (keydown.enter)="switchPage(first())"
-                >
-                  <path
-                    d="M7.6875 0.193231C7.925 -0.0124607 8.2575 -0.0593271 8.54 0.0786686C8.8225 0.216664 9 0.510881 9 0.833739L9 9.16555C9 9.48841 8.82 9.78262 8.54 9.92062C8.26 10.0586 7.9275 10.0144 7.6875 9.80606L2.8875 5.64015L2.6 5.3902L2.6 9.16555C2.6 9.6264 2.2425 9.99873 1.8 9.99873C1.3575 9.99873 1 9.6264 1 9.16555L1 0.833739C1 0.372886 1.3575 0.000557899 1.8 0.000557899C2.2425 0.000557899 2.6 0.372886 2.6 0.833739L2.6 4.60909L2.8875 4.35914L7.6875 0.193231Z"
-                    fill="#8B97A4"
-                  />
-                </svg>
+                <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(first())"> </p-button>
               }
 
-              <svg
-                [class]="{ 'icon-disabled': !prev(), 'icon-active': prev() }"
-                tabindex="0"
-                role="button"
-                width="13"
-                height="13"
-                viewBox="0 0 10 10"
-                class="switch-icon"
+              <p-button
+                icon="fas fa-angle-left"
+                severity="contrast"
+                text
+                [disabled]="!prev()"
                 (click)="switchPage(prev())"
-                (keydown.enter)="switchPage(prev())"
               >
-                <path
-                  d="M2.29285 4.2937C1.90238 4.68416 1.90238 5.31827 2.29285 5.70873L6.29129 9.70707C6.57868 9.99445 7.00664 10.0788 7.38149 9.9226C7.75635 9.76642 8 9.40407 8 8.99799L8 1.00132C8 0.598365 7.75635 0.232892 7.38149 0.0767078C7.00664 -0.0794773 6.57868 0.00798607 6.29129 0.292242L2.29285 4.29058V4.2937Z"
-                  fill="#8B97A4"
-                />
-              </svg>
+              </p-button>
 
-              <svg
-                [class]="{ 'icon-disabled': !next(), 'icon-active': next() }"
-                tabindex="0"
-                role="button"
-                width="13"
-                height="13"
-                viewBox="0 0 10 10"
-                class="switch-icon"
+              <p-button
+                icon="fas fa-angle-right"
+                severity="contrast"
+                text
+                [disabled]="!next()"
                 (click)="switchPage(!next() ? first() : next())"
-                (keydown.enter)="switchPage(!next() ? first() : next())"
               >
-                <path
-                  d="M7.70715 5.7063C8.09762 5.31584 8.09762 4.68173 7.70715 4.29127L3.70871 0.292933C3.42132 0.00555328 2.99336 -0.0787866 2.61851 0.0773983C2.24365 0.233583 2 0.595932 2 1.00201V8.99868C2 9.40164 2.24365 9.76711 2.61851 9.92329C2.99336 10.0795 3.42132 9.99201 3.70871 9.70776L7.70715 5.70942V5.7063Z"
-                  fill="#8B97A4"
-                />
-              </svg>
+              </p-button>
             </div>
           }
         </div>

@@ -77,6 +77,5 @@ describe('ConnectAddonComponent', () => {
     expect(component).toBeTruthy();
     expect(component['addon']()).toEqual(mockAddon);
     expect(component['terms']().length).toBeGreaterThan(0);
-    expect(component['addonForm']).toBeTruthy();
   });
 });

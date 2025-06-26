@@ -1,0 +1,98 @@
+<osf-sub-header [isLoading]="isFileLoading()" title="{{ file()?.name }}" />
+
+<p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1 ml-auto mr-4">
+  <p-tablist>
+    <p-tab [value]="FileDetailTab.Details">{{ 'project.files.detail.tabs.details' | translate }}</p-tab>
+    <p-tab [value]="FileDetailTab.Revisions">{{ 'project.files.detail.tabs.revisions' | translate }}</p-tab>
+    <p-tab [value]="FileDetailTab.Keywords">{{ 'project.files.detail.tabs.keywords' | translate }}</p-tab>
+  </p-tablist>
+</p-tabs>
+
+<div class="flex gap-4 bg-white flex-column h-full flex-1 p-4 h-full">
+  <div class="flex">
+    <div class="flex align-items-center gap-2 back-navigation font-semibold">
+      <i class="pi pi-angle-left text-base"></i>
+      <a [routerLink]="['../']" class="font-semibold">
+        {{ 'project.files.detail.backToList' | translate }}
+      </a>
+    </div>
+
+    <div class="flex gap-3 ml-auto sm-round-padding-btn">
+      <p-button
+        severity="secondary"
+        [label]="'project.files.detail.actions.addCommunityMetadata' | translate"
+        [routerLink]="['/metadata']"
+      ></p-button>
+
+      @if (file()?.links?.download) {
+        <p-button severity="secondary" (click)="downloadFile(file()?.links?.download!)">
+          <i class="fas fa-download p-1"></i>
+        </p-button>
+      }
+      @if (file()?.links?.render) {
+        <div class="relative">
+          <p-button severity="secondary" (click)="embedMenu.toggle($event)">
+            <i class="fas fa-file-import p-1"></i>
+          </p-button>
+
+          <p-menu appendTo="body" [model]="embedItems" popup #embedMenu>
+            <ng-template #item let-item>
+              <a class="p-menu-item-link">{{ item.label | translate }}</a>
+            </ng-template>
+          </p-menu>
+        </div>
+      }
+      @if (file()?.links?.html) {
+        <div class="relative">
+          <p-button severity="secondary" (click)="shareMenu.toggle($event)">
+            <i class="fas fa-share-nodes p-1"></i>
+          </p-button>
+
+          <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
+            <ng-template #item let-item>
+              <a class="p-menu-item-link">{{ item.label | translate }}</a>
+            </ng-template>
+          </p-menu>
+        </div>
+      }
+      @if (file()) {
+        <p-button severity="danger" (click)="confirmDelete(file()!)">
+          <i class="fas fa-trash p-1"></i>
+        </p-button>
+      }
+    </div>
+  </div>
+
+  <div class="flex flex-column lg:flex-row gap-4 flex-1 h-full">
+    <div class="w-full h-full lg:w-6">
+      @if (safeLink) {
+        <iframe
+          [src]="safeLink"
+          (load)="isIframeLoading = false"
+          [hidden]="isIframeLoading"
+          title="Rendering of document"
+          marginheight="0"
+          frameborder="0"
+          allowfullscreen=""
+          class="full-image"
+          height="100%"
+          width="100%"
+        ></iframe>
+      }
+      @if (isIframeLoading) {
+        <osf-loading-spinner></osf-loading-spinner>
+      }
+    </div>
+
+    <div class="w-full flex flex-column gap-4 flex-1 lg:w-6">
+      @if (selectedTab === FileDetailTab.Revisions) {
+        <osf-file-revisions class="metadata"></osf-file-revisions>
+      } @else if (selectedTab === FileDetailTab.Keywords) {
+        <osf-file-keywords class="metadata"></osf-file-keywords>
+      } @else {
+        <osf-file-metadata class="metadata"></osf-file-metadata>
+        <osf-file-project-metadata class="metadata"></osf-file-project-metadata>
+      }
+    </div>
+  </div>
+</div>

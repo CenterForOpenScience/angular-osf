@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { Institution } from '@osf/features/institutions/models';
+import { Institution } from '@shared/models';
 
 import { AccountEmail, AccountSettings, ExternalIdentity, Region } from '../models';
 

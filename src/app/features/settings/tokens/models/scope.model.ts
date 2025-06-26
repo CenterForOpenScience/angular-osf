@@ -1,10 +1,4 @@
-export interface Scope {
+export interface ScopeModel {
   id: string;
-  type: string;
-  attributes: {
-    description: string;
-  };
-  links: {
-    self: string;
-  };
+  description: string;
 }

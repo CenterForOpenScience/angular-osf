@@ -1,4 +1,4 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Password } from 'primeng/password';
@@ -16,7 +16,7 @@ import { ResetPasswordFormGroupType } from '../../models';
 
 @Component({
   selector: 'osf-reset-password',
-  imports: [Button, Password, ReactiveFormsModule, RouterLink, PasswordInputHintComponent, TranslateModule],
+  imports: [Button, Password, ReactiveFormsModule, RouterLink, PasswordInputHintComponent, TranslatePipe],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
 })

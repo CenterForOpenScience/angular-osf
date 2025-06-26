@@ -1,29 +1,37 @@
-@use "assets/styles/variables" as var;
-
 .p-chip {
-  height: fit-content;
-  width: fit-content;
-  background: var.$bg-blue-3;
-  border-radius: 4px;
-  padding: 4px 12px 4px 12px;
+  --p-chip-background: var(--bg-blue-3);
+  --p-chip-border-radius: 0.25rem;
+  --p-chip-color: var(--dark-blue-1);
+  --p-chip-padding-y: 0.25rem;
+  --p-chip-padding-x: 0.75rem;
+  --p-chip-remove-icon-color: var(--dark-blue-1);
+  --p-chip-remove-icon-font-size: 0.875rem;
+  --p-chip-remove-icon-size: 0.875rem;
+
+  &:has(.p-chip-remove-icon) {
+    padding-inline-end: var(--p-chip-padding-x);
+  }
 
   &:hover {
-    cursor: pointer;
-    background: var.$bg-blue-2;
-    color: var.$pr-blue-3;
-    i {
-      color: var.$pr-blue-1;
+    --p-chip-background: var(--bg-blue-2);
+    --p-chip-color: var(--pr-blue-3);
+
+    .p-chip-remove-icon {
+      --p-chip-remove-icon-color: var(--pr-blue-1);
     }
   }
 
   .p-chip-label {
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.7rem;
+    line-height: 1.5rem;
   }
 
   .p-chip-remove-icon {
     display: flex;
-    margin-left: 12px;
+    align-items: center;
+    margin-top: 2px;
   }
+}
+
+.tag-chips {
+  --p-inputchips-focus-border-color: var(--p-surface-300);
 }

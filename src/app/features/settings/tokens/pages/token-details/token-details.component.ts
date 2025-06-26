@@ -1,4 +1,4 @@
-import { createDispatchMap, Store } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -6,72 +6,54 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { map, of, switchMap } from 'rxjs';
-
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { CustomConfirmationService } from '@osf/shared/services';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { IconComponent, LoadingSpinnerComponent } from '@osf/shared/components';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 import { TokenAddEditFormComponent } from '../../components';
 import { DeleteToken, GetTokenById, TokensSelectors } from '../../store';
 
 @Component({
   selector: 'osf-token-details',
-  imports: [Button, Card, FormsModule, RouterLink, TokenAddEditFormComponent, TranslatePipe],
-  providers: [DialogService, DynamicDialogRef],
+  imports: [Button, Card, RouterLink, TranslatePipe, TokenAddEditFormComponent, IconComponent, LoadingSpinnerComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './token-details.component.html',
   styleUrls: ['./token-details.component.scss'],
+  providers: [DialogService, DynamicDialogRef],
 })
-export class TokenDetailsComponent {
+export class TokenDetailsComponent implements OnInit {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store);
+  private readonly toastService = inject(ToastService);
 
   private readonly actions = createDispatchMap({ getTokenById: GetTokenById, deleteToken: DeleteToken });
 
-  protected readonly isXSmall = toSignal(inject(IS_XSMALL));
+  tokenId = signal(this.route.snapshot.paramMap.get('id') ?? '');
+  token = computed(() => this.store.selectSignal(TokensSelectors.getTokenById)()(this.tokenId()));
+  isLoading = select(TokensSelectors.isTokensLoading);
 
-  readonly tokenId = toSignal(
-    this.route.params.pipe(
-      map((params) => params['id']),
-      switchMap((tokenId) => {
-        const token = this.store.selectSnapshot(TokensSelectors.getTokenById)(tokenId);
-
-        if (!token) {
-          this.actions.getTokenById(tokenId);
-        }
-
-        return of(tokenId);
-      })
-    )
-  );
-
-  readonly token = computed(() => {
-    const id = this.tokenId();
-    if (!id) return null;
-
-    const token = this.store.selectSignal(TokensSelectors.getTokenById)();
-    return token(id) ?? null;
-  });
+  ngOnInit(): void {
+    if (this.tokenId()) {
+      this.actions.getTokenById(this.tokenId());
+    }
+  }
 
   deleteToken(): void {
     this.customConfirmationService.confirmDelete({
       headerKey: 'settings.tokens.confirmation.delete.title',
       headerParams: { name: this.token()?.name },
       messageKey: 'settings.tokens.confirmation.delete.message',
-      onConfirm: () => {
+      onConfirm: () =>
         this.actions.deleteToken(this.tokenId()).subscribe({
           next: () => {
+            this.toastService.showSuccess('settings.tokens.toastMessage.successDelete');
             this.router.navigate(['settings/tokens']);
           },
-        });
-      },
+        }),
     });
   }
 }

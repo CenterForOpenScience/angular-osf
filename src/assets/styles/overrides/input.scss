@@ -2,91 +2,30 @@
 @use "../mixins" as mix;
 
 .p-inputtext {
-  color: var.$dark-blue-1;
-  background: var.$white;
-  border-color: var.$grey-2;
+  --p-inputtext-padding-y: 0.6rem;
+  --p-inputtext-hover-border-color: var(--pr-blue-1);
 
-  &:enabled:hover {
-    border-color: var.$pr-blue-1;
-  }
-}
-
-.p-password,
-.p-inputtext {
-  box-shadow: none;
-  border-radius: mix.rem(8px);
-  font-size: mix.rem(16px);
-  height: mix.rem(44px);
   width: 100%;
-}
 
-label {
-  display: block;
-  color: var.$dark-blue-1;
-  margin-bottom: mix.rem(4px);
-  font-weight: 400;
+  &[readonly] {
+    --p-inputtext-hover-border-color: var(--grey-2);
+    --p-inputtext-border-color: var(--grey-2);
+    --p-inputtext-focus-border-color: var(--grey-2);
+    --p-inputtext-focus-active-color: var(--grey-2);
+  }
 }
 
 .p-inputtext.ng-touched.ng-invalid,
 .p-inputtext.ng-dirty.ng-invalid {
-  border: 1px solid var.$red-1;
+  --p-inputtext-border-color: var(--red-1);
+  --p-inputtext-placeholder-color: var(--red-1);
 }
 
-p-password.ng-touched.ng-invalid {
-  .p-password-input {
-    border: 1px solid var.$red-1;
-  }
-}
+.p-textarea {
+  --p-textarea-shadow: none;
+  --p-textarea-hover-border-color: var(--pr-blue-1);
+  --p-textarea-focus-border-color: var(--pr-blue-1);
+  --p-textarea-active-border-color: var(--pr-blue-1);
 
-.p-inputtext.ng-touched.ng-invalid::placeholder,
-.p-inputtext.ng-dirty.ng-invalid::placeholder {
-  color: var.$grey-1;
-}
-
-.input-search {
-  position: relative;
-  width: 100%;
-  display: flex;
-  align-items: center;
-
-  i {
-    position: absolute;
-    left: 0.86rem;
-    color: var.$dark-blue-1;
-    font-size: 1.1rem;
-  }
-
-  .p-inputtext {
-    height: 3.2rem;
-    padding-left: 2.86rem;
-  }
-}
-
-.p-textarea,
-.p-textarea:enabled:focus {
-  border-color: var.$grey-2;
-  font-size: mix.rem(16px);
-  border-radius: mix.rem(8px);
-  box-shadow: none;
   resize: none;
-
-  &:enabled:hover {
-    border-color: var.$pr-blue-1;
-  }
-}
-
-.addon-input {
-  .p-inputtext {
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
-    border-left-style: none;
-  }
-
-  .p-inputtext.ng-touched.ng-invalid,
-  .p-inputtext.ng-dirty.ng-invalid {
-    border-color: var.$grey-2;
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
-    border-left-style: none;
-  }
 }

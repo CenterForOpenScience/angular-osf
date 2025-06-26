@@ -1,0 +1,100 @@
+<osf-sub-header [title]="'project.files.title' | translate"></osf-sub-header>
+
+<div class="flex flex-column bg-white gap-4 h-full flex-1 p-4 p-dialog-align-center">
+  <div class="flex flex-grow-0 w-full sm:w-30rem">
+    <p-floatlabel class="w-full md:w-56" variant="in">
+      <p-select
+        inputId="in_label"
+        [options]="['Storage Location: United State', 'Another Storage']"
+        styleClass="w-full"
+        variant="filled"
+      />
+      <label for="in_label">{{ 'project.files.storageLocation' | translate }}</label>
+    </p-floatlabel>
+  </div>
+
+  <div class="flex flex-column gap-4 md:justify-content-between md:flex-row md:flex-wrap">
+    <div class="flex flex-column gap-2 w-full sm:flex-row md:w-max">
+      <osf-search-input
+        [control]="searchControl"
+        class="w-full sm:w-9 xl:w-30rem"
+        [placeholder]="'project.files.searchPlaceholder' | translate"
+      />
+
+      <div class="sm:w-3 md:w-max">
+        <osf-form-select
+          [control]="sortControl"
+          [options]="sortOptions"
+          [placeholder]="'project.files.sort.placeholder'"
+          [fullWidth]="true"
+        ></osf-form-select>
+      </div>
+    </div>
+
+    <div class="flex flex-column w-full gap-2 sm:flex-row md:w-max">
+      <p-button
+        [disabled]="fileIsUploading() || isFilesLoading()"
+        outlined
+        raised
+        (click)="downloadFolder()"
+        [icon]="'fas fa-download'"
+        [label]="'project.files.actions.downloadAsZip' | translate"
+      >
+      </p-button>
+
+      <p-button
+        [disabled]="fileIsUploading() || isFilesLoading()"
+        outlined
+        raised
+        severity="success"
+        [icon]="'fas fa-plus'"
+        [label]="'project.files.actions.createFolder' | translate"
+        (click)="createFolder()"
+      >
+      </p-button>
+
+      <p-button
+        [disabled]="fileIsUploading() || isFilesLoading()"
+        outlined
+        raised
+        severity="success"
+        [icon]="'fas fa-upload'"
+        [label]="'project.files.actions.uploadFile' | translate"
+        (click)="fileInput.click()"
+      >
+      </p-button>
+
+      <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
+    </div>
+  </div>
+
+  <div class="absolute">
+    <p-dialog
+      [header]="'project.files.dialogs.uploadFile.title' | translate"
+      [modal]="true"
+      [(visible)]="fileIsUploading"
+      class="upload-dialog"
+    >
+      <div class="flex flex-column align-items-center justify-content-center gap-3 w-full">
+        <span class="p-text-secondary filename">{{ fileName() }}</span>
+        <div class="w-6">
+          <osf-loading-spinner></osf-loading-spinner>
+        </div>
+        <p>{{ progress() }} %</p>
+      </div>
+    </p-dialog>
+  </div>
+
+  <osf-files-tree
+    [currentFolder]="currentFolder()"
+    [files]="files()"
+    [isLoading]="isFilesLoading()"
+    [actions]="filesTreeActions"
+    [viewOnly]="false"
+    [projectId]="projectId()"
+    [provider]="provider()"
+    (folderIsOpening)="folderIsOpening($event)"
+    (entryFileClicked)="navigateToFile($event)"
+  >
+  </osf-files-tree>
+</div>

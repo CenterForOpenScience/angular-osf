@@ -6,14 +6,12 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { CustomConfirmationService } from '@osf/shared/services';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
-import { Token } from '../../models';
+import { TokenModel } from '../../models';
 import { DeleteToken, GetTokens, TokensSelectors } from '../../store';
 
 @Component({
@@ -24,34 +22,27 @@ import { DeleteToken, GetTokens, TokensSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TokensListComponent implements OnInit {
-  actions = createDispatchMap({ getTokens: GetTokens, deleteToken: DeleteToken });
-  customConfirmationService = inject(CustomConfirmationService);
+  private readonly actions = createDispatchMap({ getTokens: GetTokens, deleteToken: DeleteToken });
+  private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly toastService = inject(ToastService);
 
-  protected readonly isLoading = signal(false);
-  protected readonly isXSmall = toSignal(inject(IS_XSMALL));
+  protected readonly isLoading = select(TokensSelectors.isTokensLoading);
 
   tokens = select(TokensSelectors.getTokens);
 
   ngOnInit(): void {
-    if (!this.tokens().length) {
-      this.isLoading.set(true);
-      this.actions.getTokens().subscribe({
-        complete: () => {
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-        },
-      });
-    }
+    this.actions.getTokens();
   }
 
-  deleteToken(token: Token) {
+  deleteToken(token: TokenModel) {
     this.customConfirmationService.confirmDelete({
       headerKey: 'settings.tokens.confirmation.delete.title',
       headerParams: { name: token.name },
       messageKey: 'settings.tokens.confirmation.delete.message',
-      onConfirm: () => this.actions.deleteToken(token.id),
+      onConfirm: () =>
+        this.actions.deleteToken(token.id).subscribe({
+          next: () => this.toastService.showSuccess('settings.tokens.toastMessage.successDelete'),
+        }),
     });
   }
 }

@@ -21,6 +21,7 @@ import {
 } from '@osf/features/collections/store';
 import { GetMyBookmarks, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { ToastService } from '@osf/shared/services';
+import { FileSizePipe } from '@shared/pipes';
 
 import { SOCIAL_ACTION_ITEMS } from '../../constants';
 import { ProjectOverviewSelectors } from '../../store';
@@ -30,7 +31,18 @@ import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggl
 
 @Component({
   selector: 'osf-overview-toolbar',
-  imports: [ToggleSwitch, TranslatePipe, Menu, Button, Tooltip, FormsModule, NgClass, RouterLink, NgOptimizedImage],
+  imports: [
+    ToggleSwitch,
+    TranslatePipe,
+    Menu,
+    Button,
+    Tooltip,
+    FormsModule,
+    NgClass,
+    RouterLink,
+    NgOptimizedImage,
+    FileSizePipe,
+  ],
   templateUrl: './overview-toolbar.component.html',
   styleUrl: './overview-toolbar.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

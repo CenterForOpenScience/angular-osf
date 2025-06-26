@@ -29,12 +29,7 @@ export class PreprintProviderHeroComponent {
   searchControl = input<FormControl>(new FormControl());
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
   isPreprintProviderLoading = input.required<boolean>();
-  addPreprintClicked = output<void>();
   triggerSearch = output<string>();
-
-  addPreprint() {
-    this.addPreprintClicked.emit();
-  }
 
   onTriggerSearch(value: string) {
     this.triggerSearch.emit(value);

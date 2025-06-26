@@ -1,11 +1,4 @@
-@use "assets/styles/variables" as var;
-
-:host {
-  label {
-    color: var.$dark-blue-1;
-  }
-
-  h3 {
-    text-transform: none;
-  }
+.scope-container {
+  height: 40vh;
+  overflow: auto;
 }
