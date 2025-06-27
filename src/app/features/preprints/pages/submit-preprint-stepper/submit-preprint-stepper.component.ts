@@ -20,7 +20,6 @@ import { ActivatedRoute } from '@angular/router';
 import { TitleAndAbstractStepComponent } from '@osf/features/preprints/components';
 import { FileStepComponent } from '@osf/features/preprints/components/submit-steps/file-step/file-step.component';
 import { submitPreprintSteps } from '@osf/features/preprints/constants';
-import { BrandService } from '@osf/features/preprints/services';
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
@@ -31,6 +30,7 @@ import {
   SetSelectedPreprintProviderId,
 } from '@osf/features/preprints/store/submit-preprint';
 import { StepperComponent } from '@shared/components/stepper/stepper.component';
+import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
 
 @Component({

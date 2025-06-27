@@ -1,4 +1,5 @@
 export * from './addons';
+export { BrandService } from './brand.service';
 export { CustomConfirmationService } from './custom-confirmation.service';
 export { FilesService } from './files.service';
 export { FiltersOptionsService } from './filters-options.service';

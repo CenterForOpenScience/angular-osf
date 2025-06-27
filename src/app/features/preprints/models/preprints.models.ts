@@ -1,14 +1,5 @@
 import { StringOrNull } from '@core/helpers';
-
-export interface Brand {
-  id: string;
-  name: string;
-  heroLogoImageUrl: string;
-  heroBackgroundImageUrl: string;
-  topNavLogoImageUrl: string;
-  primaryColor: string;
-  secondaryColor: string;
-}
+import { Brand } from '@osf/shared/models';
 
 export interface PreprintProviderDetails {
   id: string;

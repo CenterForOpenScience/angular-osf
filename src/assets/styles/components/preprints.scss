@@ -2,13 +2,13 @@
 @use "assets/styles/variables" as var;
 
 .preprints-hero-container {
-  background-color: var(--preprints-branding-secondary-color);
-  background-image: var(--preprints-branding-hero-background-image-url);
+  background-color: var(--branding-secondary-color);
+  background-image: var(--branding-hero-background-image-url);
 
-  color: var(--preprints-branding-primary-color);
+  color: var(--branding-primary-color);
 
   .preprint-provider-name {
-    color: var(--preprints-branding-primary-color);
+    color: var(--branding-primary-color);
   }
 
   .provider-description {
@@ -17,25 +17,25 @@
 
   .search-container {
     .search-input:hover {
-      border-color: var(--preprints-branding-primary-color);
+      border-color: var(--branding-primary-color);
     }
   }
 
   a {
-    color: var(--preprints-branding-primary-color);
+    color: var(--branding-primary-color);
   }
 
   .preprints-branding-button {
     .p-button {
-      color: var(--preprints-branding-secondary-color);
-      background-color: var(--preprints-branding-primary-color);
-      border-color: var(--preprints-branding-secondary-color);
+      color: var(--branding-secondary-color);
+      background-color: var(--branding-primary-color);
+      border-color: var(--branding-secondary-color);
     }
   }
 }
 
 .preprints-advisory-board-section {
-  background: var(--preprints-branding-hero-background-image-url);
+  background: var(--branding-hero-background-image-url);
 
   h2 {
     font-size: mix.rem(24px);
@@ -82,21 +82,21 @@
 
   &.osf-preprint-service {
     background-image: none;
-    background-color: var(--preprints-branding-primary-color);
+    background-color: var(--branding-primary-color);
   }
 }
 
 .preprints-browse-by-subjects-section {
   .provider-subject {
     .p-button.p-button-secondary {
-      color: var(--preprints-branding-secondary-color);
-      background-color: var(--preprints-branding-primary-color);
-      border: 1px solid var(--preprints-branding-secondary-color);
+      color: var(--branding-secondary-color);
+      background-color: var(--branding-primary-color);
+      border: 1px solid var(--branding-secondary-color);
 
       &:hover {
-        color: var(--preprints-branding-primary-color);
-        border: 1px solid var(--preprints-branding-primary-color);
-        background-color: var(--preprints-branding-secondary-color);
+        color: var(--branding-primary-color);
+        border: 1px solid var(--branding-primary-color);
+        background-color: var(--branding-secondary-color);
       }
     }
   }
