@@ -1,0 +1,8 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
+.card {
+  @media (max-width: var.$breakpoint-sm) {
+    --p-card-body-padding: 0.75rem;
+  }
+}

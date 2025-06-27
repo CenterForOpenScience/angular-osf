@@ -17,8 +17,11 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { TitleAndAbstractStepComponent } from '@osf/features/preprints/components';
-import { FileStepComponent } from '@osf/features/preprints/components/submit-steps/file-step/file-step.component';
+import {
+  FileStepComponent,
+  MetadataComponent,
+  TitleAndAbstractStepComponent,
+} from '@osf/features/preprints/components';
 import { submitPreprintSteps } from '@osf/features/preprints/constants';
 import { BrandService } from '@osf/features/preprints/services';
 import {
@@ -35,7 +38,7 @@ import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
 
 @Component({
   selector: 'osf-submit-preprint-stepper',
-  imports: [Skeleton, StepperComponent, TitleAndAbstractStepComponent, FileStepComponent],
+  imports: [Skeleton, StepperComponent, TitleAndAbstractStepComponent, FileStepComponent, MetadataComponent],
   templateUrl: './submit-preprint-stepper.component.html',
   styleUrl: './submit-preprint-stepper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -58,7 +61,7 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
 
   preprintProvider = select(PreprintsSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintsSelectors.isPreprintProviderDetailsLoading);
-  currentStep = signal<number>(1);
+  currentStep = signal<number>(2);
   isWeb = toSignal(inject(IS_WEB));
 
   constructor() {

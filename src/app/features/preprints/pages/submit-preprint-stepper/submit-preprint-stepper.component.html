@@ -34,7 +34,13 @@
       <osf-title-and-abstract-step (nextClicked)="currentStep.set(currentStep() + 1)" />
     }
     @case (1) {
-      <osf-file-step (nextClicked)="currentStep.set(currentStep() + 1)" />
+      <osf-file-step
+        (nextClicked)="currentStep.set(currentStep() + 1)"
+        (backClicked)="currentStep.set(currentStep() - 1)"
+      />
+    }
+    @case (2) {
+      <osf-preprint-metadata />
     }
     @default {
       <p>No such step</p>

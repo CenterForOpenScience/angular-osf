@@ -100,6 +100,14 @@ export class FilesService {
     return this.#jsonApiService.putFile<AddFileResponse>(uploadLink, file, params);
   }
 
+  updateFileContent(file: File, link: string) {
+    const params = {
+      kind: 'file',
+    };
+
+    return this.#jsonApiService.put(link, file, params);
+  }
+
   createFolder(resourceId: string, provider: string, folderName: string, folderId?: string): Observable<OsfFile> {
     const params: Record<string, string> = {
       kind: 'folder',
@@ -123,11 +131,11 @@ export class FilesService {
     return this.#jsonApiService.delete(link);
   }
 
-  renameEntry(link: string, name: string) {
+  renameEntry(link: string, name: string, conflict = ''): Observable<OsfFile> {
     const body = {
       action: 'rename',
       rename: name,
-      conflict: '',
+      conflict,
     };
     return this.#jsonApiService.post(link, body);
   }
@@ -238,6 +246,19 @@ export class FilesService {
       .patch<
         ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>
       >(`${environment.apiUrl}/files/${fileGuid}/`, payload)
+      .pipe(map((response) => MapFile(response)));
+  }
+
+  copyFileToAnotherLocation(moveLink: string, provider: string, resourceId: string) {
+    const body = {
+      action: 'copy',
+      conflict: 'replace',
+      path: '/',
+      provider,
+      resource: resourceId,
+    };
+    return this.#jsonApiService
+      .post<ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>>(moveLink, body)
       .pipe(map((response) => MapFile(response)));
   }
 }

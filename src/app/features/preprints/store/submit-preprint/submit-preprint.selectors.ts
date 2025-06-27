@@ -57,4 +57,14 @@ export class SubmitPreprintSelectors {
   static areProjectFilesLoading(state: SubmitPreprintStateModel) {
     return state.projectFiles.isLoading;
   }
+
+  @Selector([SubmitPreprintState])
+  static getContributors(state: SubmitPreprintStateModel) {
+    return state.contributors.data;
+  }
+
+  @Selector([SubmitPreprintState])
+  static areContributorsLoading(state: SubmitPreprintStateModel) {
+    return state.contributors.isLoading;
+  }
 }

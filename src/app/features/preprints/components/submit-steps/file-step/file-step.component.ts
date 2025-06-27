@@ -1,5 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -27,10 +28,12 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { StringOrNull } from '@core/helpers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import {
+  CopyFileFromProject,
   GetAvailableProjects,
   GetPreprintFilesLinks,
   GetProjectFiles,
   GetProjectFilesByLink,
+  ReuploadFile,
   SetSelectedPreprintFileSource,
   SubmitPreprintSelectors,
   UploadFile,
@@ -38,6 +41,7 @@ import {
 import { FilesTreeActions } from '@osf/features/project/files/models';
 import { FilesTreeComponent, IconComponent } from '@shared/components';
 import { OsfFile } from '@shared/models';
+import { defaultConfirmationConfig } from '@shared/utils';
 
 @Component({
   selector: 'osf-file-step',
@@ -59,18 +63,22 @@ import { OsfFile } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileStepComponent implements OnInit {
+  private confirmationService = inject(ConfirmationService);
   private actions = createDispatchMap({
     setSelectedFileSource: SetSelectedPreprintFileSource,
     getPreprintFilesLinks: GetPreprintFilesLinks,
     uploadFile: UploadFile,
+    reuploadFile: ReuploadFile,
     getAvailableProjects: GetAvailableProjects,
     getFilesForSelectedProject: GetProjectFiles,
     getProjectFilesByLink: GetProjectFilesByLink,
+    copyFileFromProject: CopyFileFromProject,
   });
   private destroyRef = inject(DestroyRef);
 
   readonly PreprintFileSource = PreprintFileSource;
 
+  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
   providerId = select(SubmitPreprintSelectors.getSelectedProviderId);
   selectedFileSource = select(SubmitPreprintSelectors.getSelectedFileSource);
   fileUploadLink = select(SubmitPreprintSelectors.getUploadLink);
@@ -82,6 +90,8 @@ export class FileStepComponent implements OnInit {
   areProjectFilesLoading = select(SubmitPreprintSelectors.areProjectFilesLoading);
   selectedProjectId = signal<StringOrNull>(null);
   currentFolder = signal<OsfFile | null>(null);
+
+  versionFileMode = signal<boolean>(false);
 
   projectNameControl = new FormControl<StringOrNull>(null);
 
@@ -99,6 +109,7 @@ export class FileStepComponent implements OnInit {
   };
 
   nextClicked = output<void>();
+  backClicked = output<void>();
 
   isFileSourceSelected = computed(() => {
     return this.selectedFileSource() !== PreprintFileSource.None;
@@ -109,9 +120,12 @@ export class FileStepComponent implements OnInit {
 
     this.projectNameControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        this.selectedProjectId.set(value);
-        this.actions.getAvailableProjects(value);
+      .subscribe((projectNameOrId) => {
+        if (this.selectedProjectId() === projectNameOrId) {
+          return;
+        }
+
+        this.actions.getAvailableProjects(projectNameOrId);
       });
   }
 
@@ -124,10 +138,14 @@ export class FileStepComponent implements OnInit {
   }
 
   backButtonClicked() {
-    //[RNi] TODO: implement logic of going back to the previous step
+    this.backClicked.emit();
   }
 
   nextButtonClicked() {
+    if (!this.createdPreprint()?.primaryFileId) {
+      return;
+    }
+
     this.nextClicked.emit();
   }
 
@@ -136,7 +154,12 @@ export class FileStepComponent implements OnInit {
     const file = input.files?.[0];
     if (!file) return;
 
-    this.actions.uploadFile(file);
+    if (this.versionFileMode()) {
+      this.versionFileMode.set(false);
+      this.actions.reuploadFile(file);
+    } else {
+      this.actions.uploadFile(file);
+    }
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -150,10 +173,28 @@ export class FileStepComponent implements OnInit {
       return;
     }
 
+    this.selectedProjectId.set(event.value);
     this.actions.getFilesForSelectedProject(event.value);
   }
 
   selectProjectFile(file: OsfFile) {
-    //[RNi] TODO: implement logic of linking preprint to that file
+    this.actions.copyFileFromProject(file);
+  }
+
+  versionFile() {
+    this.confirmationService.confirm({
+      ...defaultConfirmationConfig,
+      header: 'Add a new preprint file',
+      message:
+        'This will allow a new version of the preprint file to be uploaded to the preprint. The existing file will be retained as a version of the preprint.',
+      acceptButtonProps: {
+        label: 'Continue',
+        severity: 'danger',
+      },
+      accept: () => {
+        this.versionFileMode.set(true);
+        this.actions.setSelectedFileSource(PreprintFileSource.None);
+      },
+    });
   }
 }
