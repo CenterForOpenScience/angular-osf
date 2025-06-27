@@ -23,7 +23,10 @@
       "skip": "Skip",
       "done": "Done",
       "select": "Select",
-      "deselect": "Deselect"
+      "deselect": "Deselect",
+      "addToCollection": "Add to Collection",
+      "discardChanges": "Discard Changes",
+      "saveAndContinue": "Save and Continue"
     },
     "search": {
       "title": "Search",
@@ -891,9 +894,6 @@
     }
   },
   "collections": {
-    "buttons": {
-      "addToCollection": "Add to Collection"
-    },
     "helpDialog": {
       "header": "Search help",
       "message": "OSF Search provides a powerful discovery tool to help you find data, papers, analysis plans, and more content across the research lifecycle. OSF Collections have some specialized filters, which you can learn more about on our ",
@@ -968,6 +968,21 @@
       "results": "results",
       "noResultsFound": "No results found",
       "noResultsFoundMessage": "Try broadening your search terms"
+    },
+    "addToCollection": {
+      "selectProject": "Select a project",
+      "projectMetadata": "Project Metadata",
+      "projectMetadataMessage": "Updates made in this section will update the project.",
+      "projectContributors": "Project Contributors",
+      "collectionMetadata": "Collection Metadata",
+      "form": {
+        "title": "Title",
+        "description": "Description",
+        "license": "Choose License",
+        "licensePlaceholder": "Select license",
+        "tags": "Tags",
+        "tagsPlaceholder": "Add tags here"
+      }
     },
     "common": {
       "dateCreated": "Date Created:",

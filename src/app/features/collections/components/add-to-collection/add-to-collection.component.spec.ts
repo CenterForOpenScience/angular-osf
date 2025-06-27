@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddToCollectionFormComponent } from './add-to-collection-form.component';
+import { AddToCollectionComponent } from './add-to-collection.component';
 
 describe('AddToCollectionFormComponent', () => {
-  let component: AddToCollectionFormComponent;
-  let fixture: ComponentFixture<AddToCollectionFormComponent>;
+  let component: AddToCollectionComponent;
+  let fixture: ComponentFixture<AddToCollectionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddToCollectionFormComponent],
+      imports: [AddToCollectionComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(AddToCollectionFormComponent);
+    fixture = TestBed.createComponent(AddToCollectionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -5,6 +5,7 @@ import { Chip } from 'primeng/chip';
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 
 import { collectionFilterTypes } from '@osf/features/collections/constants/filter-types.const';
+import { CollectionFilterType } from '@osf/features/collections/models';
 import {
   CollectionsSelectors,
   SetCollectedTypeFilters,
@@ -19,8 +20,6 @@ import {
   SetStudyDesignFilters,
   SetVolumeFilters,
 } from '@osf/features/collections/store';
-
-type FilterType = keyof ReturnType<typeof CollectionsSelectors.getAllSelectedFilters>;
 
 @Component({
   selector: 'osf-collections-filter-chips',
@@ -58,7 +57,7 @@ export class CollectionsFilterChipsComponent {
       .filter((entry) => entry.filters.length);
   });
 
-  protected onRemoveFilter(filterType: FilterType, removedFilter: string): void {
+  protected onRemoveFilter(filterType: CollectionFilterType, removedFilter: string): void {
     const currentFilters = this.activeFilters()[filterType].filter((filter: string) => filter !== removedFilter);
 
     switch (filterType) {

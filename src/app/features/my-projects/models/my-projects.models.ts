@@ -50,7 +50,7 @@ export interface MyProjectsItem {
   contributors: MyProjectsContributor[];
 }
 
-export interface MyProjectsItemResponseJsonApi {
+export interface MyProjectsItemsResponse {
   data: MyProjectsItem[];
   links: {
     meta: {

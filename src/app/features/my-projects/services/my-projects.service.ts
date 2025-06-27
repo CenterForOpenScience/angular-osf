@@ -15,7 +15,7 @@ import {
   EndpointType,
   MyProjectsItem,
   MyProjectsItemGetResponseJsonApi,
-  MyProjectsItemResponseJsonApi,
+  MyProjectsItemsResponse,
   MyProjectsResponseJsonApi,
   MyProjectsSearchFilters,
 } from '../models';
@@ -39,7 +39,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponseJsonApi> {
+  ): Observable<MyProjectsItemsResponse> {
     const params: Record<string, unknown> = {
       'embed[]': ['bibliographic_contributors'],
       [`fields[${endpoint}]`]: 'title,date_modified,public,bibliographic_contributors',
@@ -82,7 +82,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponseJsonApi> {
+  ): Observable<MyProjectsItemsResponse> {
     return this.getMyItems('nodes', filters, pageNumber, pageSize);
   }
 
@@ -105,7 +105,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponseJsonApi> {
+  ): Observable<MyProjectsItemsResponse> {
     return this.getMyItems('registrations', filters, pageNumber, pageSize);
   }
 
@@ -113,7 +113,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponseJsonApi> {
+  ): Observable<MyProjectsItemsResponse> {
     return this.getMyItems('preprints', filters, pageNumber, pageSize);
   }
 
@@ -122,7 +122,7 @@ export class MyProjectsService {
     filters?: MyProjectsSearchFilters,
     pageNumber?: number,
     pageSize?: number
-  ): Observable<MyProjectsItemResponseJsonApi> {
+  ): Observable<MyProjectsItemsResponse> {
     return this.getMyItems(`collections/${collectionId}/linked_nodes/`, filters, pageNumber, pageSize);
   }
 

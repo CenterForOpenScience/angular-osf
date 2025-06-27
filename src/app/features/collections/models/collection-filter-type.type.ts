@@ -1,3 +1,3 @@
-import { CollectionsSelectors } from '@osf/features/collections/store';
+import { CollectionsFilters } from './collections-filters.model';
 
-export type CollectionFilterType = keyof ReturnType<typeof CollectionsSelectors.getAllSelectedFilters>;
+export type CollectionFilterType = keyof CollectionsFilters;

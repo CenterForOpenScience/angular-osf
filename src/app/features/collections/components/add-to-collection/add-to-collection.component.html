@@ -1,0 +1,116 @@
+@if (!isProviderLoading()) {
+  <section class="collections-content flex flex-column flex-1 pt-0 xl:pt-5">
+    <div
+      class="collections-sub-header flex justify-content-between flex-column gap-4 mb-4 sm:mb-6 sm:gap-0 sm:flex-row"
+    >
+      <div class="flex gap-3">
+        <i class="collections-icon text-white osf-icon-collections"></i>
+        <h1 class="flex align-items-center text-white">{{ collectionProvider()?.name }}</h1>
+      </div>
+    </div>
+
+    <div class="content-container flex-1">
+      <p-accordion value="0" class="collections-accordion flex flex-column gap-5">
+        <p-accordion-panel class="p-4" value="0">
+          <p-accordion-header>
+            <h3>{{ 'collections.addToCollection.selectProject' | translate }}</h3>
+          </p-accordion-header>
+          <p-accordion-content>
+            <div class="pt-4 w-6">
+              <osf-select
+                [fullWidth]="true"
+                [placeholder]="'common.buttons.select' | translate"
+                selectedValue=""
+                [options]="[]"
+              />
+            </div>
+          </p-accordion-content>
+        </p-accordion-panel>
+
+        <p-accordion-panel class="p-4" value="1">
+          <p-accordion-header>
+            <h3>{{ 'collections.addToCollection.projectMetadata' | translate }}</h3>
+          </p-accordion-header>
+          <p-accordion-content>
+            <p class="pt-3">{{ 'collections.addToCollection.projectMetadataMessage' | translate }}</p>
+            <form [formGroup]="projectMetadataForm" class="flex flex-column gap-4 pt-4">
+              <div class="flex flex-column">
+                <label for="title">
+                  {{ 'collections.addToCollection.form.title' | translate }}
+                </label>
+                <input pInputText id="title" type="text" [formControlName]="ProjectMetadataFormControls.Title" />
+              </div>
+
+              <div class="flex flex-column">
+                <label for="description">
+                  {{ 'collections.addToCollection.form.description' | translate }}
+                </label>
+                <textarea
+                  pTextarea
+                  id="description"
+                  [formControlName]="ProjectMetadataFormControls.Description"
+                  [rows]="5"
+                ></textarea>
+              </div>
+
+              <div class="flex flex-column">
+                <label for="license">
+                  {{ 'collections.addToCollection.form.license' | translate }}
+                </label>
+                <p-select
+                  [placeholder]="'collections.addToCollection.form.licensePlaceholder' | translate"
+                  id="license"
+                  [options]="[]"
+                  [formControlName]="ProjectMetadataFormControls.License"
+                ></p-select>
+              </div>
+
+              <div class="flex flex-column">
+                <label for="tags">
+                  {{ 'collections.addToCollection.form.tags' | translate }}
+                </label>
+                <input
+                  [placeholder]="'collections.addToCollection.form.tagsPlaceholder' | translate"
+                  pInputText
+                  id="tags"
+                  type="text"
+                  [formControlName]="ProjectMetadataFormControls.Title"
+                />
+              </div>
+
+              <div class="flex justify-content-end gap-3">
+                <p-button severity="info" [label]="'common.buttons.discardChanges' | translate" />
+                <p-button [label]="'common.buttons.saveAndContinue' | translate" [disabled]="true" />
+              </div>
+            </form>
+          </p-accordion-content>
+        </p-accordion-panel>
+
+        <p-accordion-panel class="p-4" value="2">
+          <p-accordion-header>
+            <h3>{{ 'collections.addToCollection.projectContributors' | translate }}</h3>
+          </p-accordion-header>
+          <p-accordion-content>
+            <div class="pt-2 w-6"></div>
+          </p-accordion-content>
+        </p-accordion-panel>
+
+        <p-accordion-panel class="p-4" value="3">
+          <p-accordion-header>
+            <h3>{{ 'collections.addToCollection.collectionMetadata' | translate }}</h3>
+          </p-accordion-header>
+          <p-accordion-content>
+            <div class="pt-2 w-6"></div>
+          </p-accordion-content>
+        </p-accordion-panel>
+      </p-accordion>
+
+      <div class="flex justify-content-end gap-3 mt-4">
+        <p-button severity="info" [label]="'common.buttons.cancel' | translate" [routerLink]="['../']" />
+        <p-button [label]="'common.buttons.addToCollection' | translate" [disabled]="true" />
+      </div>
+    </div>
+  </section>
+} @else {
+  <osf-loading-spinner />
+}

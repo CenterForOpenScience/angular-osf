@@ -104,19 +104,6 @@
   }
 }
 
-p-select {
-  background: var.$white;
-  border: 1px solid var.$grey-2;
-
-  &.p-disabled .p-select-label {
-    color: var.$grey-1;
-  }
-
-  span {
-    color: var.$dark-blue-1;
-  }
-}
-
 .resources-container {
   .p-paginator {
     .p-paginator-pages,
@@ -124,6 +111,7 @@ p-select {
     .p-paginator-prev {
       display: none;
     }
+
     .p-paginator-first,
     .p-paginator-next,
     .p-paginator-prev {

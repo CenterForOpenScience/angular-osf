@@ -1,0 +1,37 @@
+@if (!isProviderLoading()) {
+  <section class="collections-content flex flex-column flex-1 pt-0 xl:pt-5">
+    <div
+      class="collections-sub-header flex justify-content-between flex-column gap-4 mb-4 sm:mb-6 sm:gap-0 sm:flex-row"
+    >
+      <div class="flex gap-3">
+        <i class="collections-icon text-white osf-icon-collections"></i>
+        <h1 class="flex align-items-center text-white">{{ collectionProvider()?.name }}</h1>
+      </div>
+
+      <p-button
+        [routerLink]="['../add']"
+        class="collections-heading-btn"
+        [label]="'common.buttons.addToCollection' | translate"
+      />
+    </div>
+
+    <div class="search-input-container">
+      <osf-search-input
+        [control]="searchControl"
+        [showHelpIcon]="true"
+        [placeholder]="'collections.searchInput.placeholder' | translate"
+        (helpClicked)="openHelpDialog()"
+        (triggerSearch)="onSearchTriggered($event)"
+      />
+      @if (collectionProvider()?.description) {
+        <div class="mt-6" [innerHTML]="collectionProvider()?.description"></div>
+      }
+    </div>
+
+    <div class="content-container flex-1">
+      <osf-collections-main-content />
+    </div>
+  </section>
+} @else {
+  <osf-loading-spinner />
+}
