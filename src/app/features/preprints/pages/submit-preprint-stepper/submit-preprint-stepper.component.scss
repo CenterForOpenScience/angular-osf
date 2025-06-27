@@ -1,13 +1,13 @@
 .preprints-hero-container {
-  --stepper-step-background: var(--preprints-branding-secondary-color);
-  --stepper-active-step-background: var(--preprints-branding-primary-color);
+  --stepper-step-background: var(--branding-secondary-color);
+  --stepper-active-step-background: var(--branding-primary-color);
 
-  --stepper-step-color: var(--preprints-branding-primary-color);
-  --stepper-active-step-color: var(--preprints-branding-secondary-color);
+  --stepper-step-color: var(--branding-primary-color);
+  --stepper-active-step-color: var(--branding-secondary-color);
 
-  --stepper-space-line-color: color-mix(in srgb, var(--preprints-branding-primary-color), transparent 75%);
-  --stepper-active-space-line-color: var(--preprints-branding-primary-color);
+  --stepper-space-line-color: color-mix(in srgb, var(--branding-primary-color), transparent 75%);
+  --stepper-active-space-line-color: var(--branding-primary-color);
 
-  --stepper-step-border-color: color-mix(in srgb, var(--preprints-branding-primary-color), transparent 75%);
-  --stepper-active-step-border-color: var(--preprints-branding-primary-color);
+  --stepper-step-border-color: color-mix(in srgb, var(--branding-primary-color), transparent 75%);
+  --stepper-active-step-border-color: var(--branding-primary-color);
 }

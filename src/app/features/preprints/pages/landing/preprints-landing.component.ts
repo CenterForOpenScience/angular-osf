@@ -15,7 +15,6 @@ import {
   BrowseBySubjectsComponent,
   PreprintServicesComponent,
 } from '@osf/features/preprints/components';
-import { BrandService } from '@osf/features/preprints/services';
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
@@ -24,6 +23,7 @@ import {
 } from '@osf/features/preprints/store/preprints';
 import { SearchInputComponent } from '@shared/components';
 import { ResourceTab } from '@shared/enums';
+import { BrandService } from '@shared/services';
 
 @Component({
   selector: 'osf-overview',
