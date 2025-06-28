@@ -1,0 +1,47 @@
+<p-card class="w-full">
+  <h2 class="mb-2">{{ 'shared.license.title' | translate }}</h2>
+  <p class="mb-1">
+    {{ 'shared.license.description' | translate }}
+  </p>
+  <p>
+    {{ 'shared.license.helpText' | translate }}
+    <a href="https://help.osf.io/article/148-licensing">{{ 'common.links.helpGuide' | translate }}</a
+    >.
+  </p>
+  <p-select
+    [options]="licenses()"
+    [(ngModel)]="selectedLicense"
+    optionLabel="name"
+    (onChange)="onSelectLicense($event.value)"
+    class="w-6 mt-4"
+  />
+  @if (selectedLicense) {
+    <p-divider styleClass="mt-3 mb-3" />
+    @if (selectedLicense.requiredFields.length) {
+      <form [formGroup]="licenseForm" class="flex gap-3 mb-3 w-full">
+        <div class="w-6">
+          <label for="licenseYear"> {{ 'common.labels.year' | translate }} </label>
+          <p-datepicker
+            id="licenseYear"
+            formControlName="year"
+            [maxDate]="currentYear"
+            dataType="string"
+            view="year"
+            dateFormat="yy"
+          />
+        </div>
+        <osf-text-input
+          class="w-6"
+          label="shared.license.copyrightHolders"
+          [control]="licenseForm.controls['copyrightHolders']"
+          [maxLength]="inputLimits.fullName.maxLength"
+        >
+        </osf-text-input>
+      </form>
+    }
+
+    <p class="highlight-block">
+      <osf-truncated-text [text]="selectedLicense.text | interpolate: licenseForm.value" />
+    </p>
+  }
+</p-card>

@@ -103,6 +103,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/project/project.routes').then((mod) => mod.projectRoutes),
       },
       {
+        path: 'registries',
+        loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
+      },
+
+      {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.routes').then((mod) => mod.settingsRoutes),
       },

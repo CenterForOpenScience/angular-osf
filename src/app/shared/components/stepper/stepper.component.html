@@ -1,9 +1,19 @@
 <div class="stepper-container">
   <div class="stepper-circles-lines-row">
     @for (step of steps(); track step.value; let i = $index) {
-      <button class="step-circle" [class.active]="i <= this.currentStep()" (click)="onStepClick(i)">
+      <button
+        class="step-circle"
+        [class.active]="i <= this.currentStep()"
+        [class.invalid]="step.invalid"
+        [class.current]="i === this.currentStep()"
+        (click)="onStepClick(i)"
+      >
         @if (i < this.currentStep()) {
-          <osf-icon iconClass="fas fa-check" />
+          @if (step.invalid) {
+            <osf-icon iconClass="fas fa-exclamation" />
+          } @else {
+            <osf-icon iconClass="fas fa-check" />
+          }
         } @else {
           <span>{{ i + 1 }}</span>
         }

@@ -158,6 +158,9 @@ $white-60: var(--white-60);
   --stepper-active-space-line-color: var(--pr-blue-1);
   --stepper-step-border-color: var(--white);
   --stepper-active-step-border-color: var(--pr-blue-1);
+  --stepper-invalid-step-background: var(--white);
+  --stepper-invalid-step-color: var(--red-1);
+  --stepper-invalid-step-border-color: var(--red-1);
 
   // White labeling
   --header-color: none;

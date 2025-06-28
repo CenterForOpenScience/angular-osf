@@ -2,9 +2,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 
-import { Primitive } from '@core/helpers';
 import { IconComponent } from '@shared/components';
-import { CustomOption } from '@shared/models';
+import { StepOption } from '@shared/models';
 
 @Component({
   selector: 'osf-stepper',
@@ -14,7 +13,7 @@ import { CustomOption } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StepperComponent {
-  steps = input.required<CustomOption<Primitive>[]>();
+  steps = input.required<StepOption[]>();
   currentStep = model.required<number>();
   linear = input<boolean>(true);
 

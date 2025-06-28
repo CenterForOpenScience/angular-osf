@@ -90,6 +90,7 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
   }
 
   stepChange(step: number) {
+    console.log('Current step changed to:', step);
     if (step >= this.currentStep()) {
       return;
     }
