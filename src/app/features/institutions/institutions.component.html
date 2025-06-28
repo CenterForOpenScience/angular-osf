@@ -16,11 +16,13 @@
 
       <div class="py-5 flex flex-column gap-3">
         @for (institution of institutions(); track $index) {
-          <div class="border-1 border-round-xl grey-border-color px-5 py-4 flex align-items-center gap-4">
-            <img [ngSrc]="institution.assets.logo" [alt]="institution.name" width="60" height="60" />
+          <a [routerLink]="[institution.id]">
+            <div class="border-1 border-round-xl grey-border-color px-5 py-4 flex align-items-center gap-4">
+              <img [ngSrc]="institution.assets.logo" [alt]="institution.name" width="60" height="60" />
 
-            <h3 class="text-lg">{{ institution.name }}</h3>
-          </div>
+              <h2>{{ institution.name }}</h2>
+            </div>
+          </a>
         }
       </div>
 

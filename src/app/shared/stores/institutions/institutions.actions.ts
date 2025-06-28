@@ -3,7 +3,7 @@ export class GetUserInstitutions {
 }
 
 export class FetchInstitutions {
-  static readonly type = '[Institutions] Get';
+  static readonly type = '[Institutions] Fetch';
 
   constructor(
     public pageNumber: number,

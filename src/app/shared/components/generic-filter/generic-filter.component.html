@@ -1,0 +1,22 @@
+<div class="content-body filter dropdown-filter pb-4">
+  @if (isLoading()) {
+    <div class="flex justify-content-center align-items-center p-4">
+      <osf-loading-spinner></osf-loading-spinner>
+    </div>
+  } @else {
+    <p-select
+      [id]="filterType()"
+      [options]="filterOptions()"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="selectedValue()"
+      [placeholder]="currentSelectedOption() ? currentSelectedOption()?.label : placeholder()"
+      [editable]="editable()"
+      styleClass="w-full"
+      appendTo="body"
+      [filter]="editable()"
+      (onChange)="onValueChange($event)"
+      [showClear]="!!selectedValue()"
+    ></p-select>
+  }
+</div>

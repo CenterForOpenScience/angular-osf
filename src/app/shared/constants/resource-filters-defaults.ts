@@ -47,3 +47,10 @@ export const resourceFiltersDefaults = {
     value: undefined,
   },
 };
+
+// this.loadRequests.next({
+//   type: GetResourcesRequestTypeEnum.GetResources,
+//   filters: {
+//     institution: response.iris.join(','),
+//   },
+// });

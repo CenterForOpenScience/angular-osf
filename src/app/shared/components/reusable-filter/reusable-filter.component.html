@@ -1,0 +1,28 @@
+@if (hasFilters()) {
+  <div class="border-1 bg-white m-6 grey-border-color px-4 flex flex-column gap-2 border-round-xl">
+    <p-accordion (valueChange)="onAccordionToggle($event)">
+      @for (filter of filters(); track filter.key) {
+        @if (shouldShowFilter(filter)) {
+          <p-accordion-panel [value]="filter.key">
+            <p-accordion-header>{{ filter.label }}</p-accordion-header>
+            <p-accordion-content>
+              @if (filter.description) {
+                <p class="text-sm text-gray-600 mb-3">{{ filter.description }}</p>
+              }
+
+              <osf-generic-filter
+                [options]="getFilterOptions(filter)"
+                [isLoading]="isFilterLoading(filter)"
+                [selectedValue]="getSelectedValue(filter.key)"
+                [placeholder]="getFilterPlaceholder(filter.key)"
+                [editable]="isFilterEditable(filter.key)"
+                [filterType]="filter.key"
+                (valueChanged)="onFilterChanged(filter.key, $event)"
+              />
+            </p-accordion-content>
+          </p-accordion-panel>
+        }
+      }
+    </p-accordion>
+  </div>
+}

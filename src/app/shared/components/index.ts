@@ -10,6 +10,7 @@ export { FileMenuComponent } from './file-menu/file-menu.component';
 export { FilesTreeComponent } from './files-tree/files-tree.component';
 export { FormSelectComponent } from './form-select/form-select.component';
 export { FullScreenLoaderComponent } from './full-screen-loader/full-screen-loader.component';
+export { GenericFilterComponent } from './generic-filter/generic-filter.component';
 export { IconComponent } from './icon/icon.component';
 export { InfoIconComponent } from './info-icon/info-icon.component';
 export { LineChartComponent } from './line-chart/line-chart.component';
@@ -19,6 +20,7 @@ export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';
 export { ResourceCardComponent } from './resource-card/resource-card.component';
+export { ReusableFilterComponent } from './reusable-filter/reusable-filter.component';
 export { SearchHelpTutorialComponent } from './search-help-tutorial/search-help-tutorial.component';
 export { SearchInputComponent } from './search-input/search-input.component';
 export { SelectComponent } from './select/select.component';

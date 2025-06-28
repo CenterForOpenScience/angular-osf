@@ -36,7 +36,7 @@ export class InstitutionsState {
   }
 
   @Action(FetchInstitutions)
-  getInstitutions(ctx: StateContext<InstitutionsStateModel>, action: FetchInstitutions) {
+  fetchInstitutions(ctx: StateContext<InstitutionsStateModel>, action: FetchInstitutions) {
     ctx.patchState({
       institutions: {
         data: [],
