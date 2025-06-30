@@ -1,5 +1,8 @@
-export class GetAdminProjects {
-  static readonly type = '[Projects] Get Admin Projects';
+export class GetProjects {
+  static readonly type = '[Projects] Get Projects';
 
-  constructor(public userId: string) {}
+  constructor(
+    public userId: string,
+    public params?: Record<string, unknown>
+  ) {}
 }

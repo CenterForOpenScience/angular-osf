@@ -99,7 +99,7 @@ export class CollectionsService {
     page = '1',
     sortBy = 'relevance'
   ): Observable<CollectionSubmission[]> {
-    const url = `${environment.apiUrl}/search/collections`;
+    const url = `${environment.apiUrl}/search/collections/`;
     const params: Record<string, string> = {
       page,
       sort: sortBy,

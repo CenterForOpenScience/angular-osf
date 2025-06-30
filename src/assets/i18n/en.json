@@ -26,7 +26,8 @@
       "deselect": "Deselect",
       "addToCollection": "Add to Collection",
       "discardChanges": "Discard Changes",
-      "saveAndContinue": "Save and Continue"
+      "saveAndContinue": "Save and Continue",
+      "clickToEdit": "Click to edit"
     },
     "search": {
       "title": "Search",
@@ -954,6 +955,7 @@
     },
     "addToCollection": {
       "selectProject": "Select a project",
+      "project": "Project",
       "projectMetadata": "Project Metadata",
       "projectMetadataMessage": "Updates made in this section will update the project.",
       "projectContributors": "Project Contributors",
@@ -964,7 +966,9 @@
         "license": "Choose License",
         "licensePlaceholder": "Select license",
         "tags": "Tags",
-        "tagsPlaceholder": "Add tags here"
+        "tagsPlaceholder": "Add tags here",
+        "loadingPlaceholder": "Loading projects...",
+        "noProjectsFound": "No projects found"
       }
     },
     "common": {

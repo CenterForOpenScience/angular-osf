@@ -13,14 +13,15 @@
 
   <div class="flex align-items-center gap-2">
     @if (isWeb()) {
-      <h3 class="font-normal">{{ 'collections.filters.sort.label' | translate }}</h3>
+      <p>{{ 'collections.filters.sort.label' | translate }}</p>
       <p-select
-        class="no-border-dropdown"
+        class="no-border-dropdown font-bold"
         [options]="sortOptions"
         optionLabel="label"
         optionValue="value"
         [ngModel]="selectedSort()"
         (ngModelChange)="handleSortBy($event)"
+        appendTo="body"
       ></p-select>
     } @else {
       <img

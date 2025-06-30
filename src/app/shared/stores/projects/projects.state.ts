@@ -5,13 +5,13 @@ import { catchError, tap, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ProjectsService } from '@shared/services/projects.service';
-import { GetAdminProjects, ProjectsModel } from '@shared/stores';
+import { GetProjects, ProjectsModel } from '@shared/stores';
 
 @State<ProjectsModel>({
   name: 'projects',
   defaults: {
-    adminProjects: {
-      data: null,
+    projects: {
+      data: [],
       isLoading: false,
       error: null,
     },
@@ -21,21 +21,22 @@ import { GetAdminProjects, ProjectsModel } from '@shared/stores';
 export class ProjectsState {
   private readonly projectsService = inject(ProjectsService);
 
-  @Action(GetAdminProjects)
-  getAdminProjects(ctx: StateContext<ProjectsModel>, action: GetAdminProjects) {
+  @Action(GetProjects)
+  getProjects(ctx: StateContext<ProjectsModel>, action: GetProjects) {
+    const state = ctx.getState();
+
     ctx.patchState({
-      adminProjects: {
-        data: null,
+      projects: {
+        ...state.projects,
         isLoading: true,
-        error: null,
       },
     });
 
-    return this.projectsService.getAdminProjects(action.userId).pipe(
+    return this.projectsService.getProjects(action.userId, action.params).pipe(
       tap({
         next: (projects) => {
           ctx.patchState({
-            adminProjects: {
+            projects: {
               data: projects,
               error: null,
               isLoading: false,
@@ -45,8 +46,8 @@ export class ProjectsState {
       }),
       catchError((error) => {
         ctx.patchState({
-          adminProjects: {
-            ...ctx.getState().adminProjects,
+          projects: {
+            ...ctx.getState().projects,
             isLoading: false,
             error,
           },

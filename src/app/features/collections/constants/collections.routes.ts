@@ -11,6 +11,7 @@ import { ModerationState } from '../../moderation/store';
 export const collectionsRoutes: Routes = [
   {
     path: '',
+
     children: [
       {
         path: '',

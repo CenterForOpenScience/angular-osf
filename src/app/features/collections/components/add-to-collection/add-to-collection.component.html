@@ -10,100 +10,258 @@
     </div>
 
     <div class="content-container flex-1">
-      <p-accordion value="0" class="collections-accordion flex flex-column gap-5">
-        <p-accordion-panel class="p-4" value="0">
-          <p-accordion-header>
-            <h3>{{ 'collections.addToCollection.selectProject' | translate }}</h3>
-          </p-accordion-header>
-          <p-accordion-content>
-            <div class="pt-4 w-6">
-              <osf-select
-                [fullWidth]="true"
-                [placeholder]="'common.buttons.select' | translate"
-                selectedValue=""
-                [options]="[]"
-              />
+      <!--      <p-accordion-->
+      <!--        expandIcon="none"-->
+      <!--        collapseIcon="none"-->
+      <!--        [value]="stepperActiveValue()"-->
+      <!--        class="collections-accordion flex flex-column gap-5"-->
+      <!--      >-->
+      <!--        <p-accordion-panel-->
+      <!--          (click)="handleResetSelectedProject()"-->
+      <!--          class="p-4"-->
+      <!--          [value]="AddToCollectionSteps.SelectProject"-->
+      <!--        >-->
+      <!--          <p-accordion-header>-->
+      <!--            <div class="flex flex-column gap-2">-->
+      <!--              <h3>{{ 'collections.addToCollection.selectProject' | translate }}</h3>-->
+      <!--              @if (selectedProject() && !isSelectProjectPanelActive()) {-->
+      <!--                <p class="font-normal">-->
+      <!--                  {{ 'collections.addToCollection.project' | translate }}:-->
+      <!--                  <span class="font-bold">{{ selectedProject()?.title }}</span>-->
+      <!--                </p>-->
+      <!--              }-->
+      <!--            </div>-->
+      <!--          </p-accordion-header>-->
+      <!--          <p-accordion-content>-->
+      <!--            <div class="pt-4 w-6">-->
+      <!--              <p-select-->
+      <!--                class="w-full"-->
+      <!--                [loading]="isAdminProjectsLoading()"-->
+      <!--                [options]="adminProjectsOptions()"-->
+      <!--                [filter]="true"-->
+      <!--                (onFilter)="handleFilterSearch($event)"-->
+      <!--                optionLabel="label"-->
+      <!--                optionValue="value"-->
+      <!--                [appendTo]="'body'"-->
+      <!--                [ngModel]="selectedProject()"-->
+      <!--                [emptyFilterMessage]="filterMessage()"-->
+      <!--                [emptyMessage]="filterMessage()"-->
+      <!--                (onChange)="handleProjectChange($event)"-->
+      <!--                [placeholder]="'common.buttons.select' | translate"-->
+      <!--              >-->
+      <!--                <ng-template #selectedItem let-selectedOption>-->
+      <!--                  {{ selectedOption.label | translate }}-->
+      <!--                </ng-template>-->
+      <!--              </p-select>-->
+      <!--            </div>-->
+      <!--          </p-accordion-content>-->
+      <!--        </p-accordion-panel>-->
+
+      <!--        <p-accordion-panel-->
+      <!--          class="p-4"-->
+      <!--          (click)="stepperActiveValue.set(AddToCollectionSteps.ProjectMetadata)"-->
+      <!--          [value]="AddToCollectionSteps.ProjectMetadata"-->
+      <!--        >-->
+      <!--          <p-accordion-header>-->
+      <!--            <h3>{{ 'collections.addToCollection.projectMetadata' | translate }}</h3>-->
+      <!--          </p-accordion-header>-->
+      <!--          <p-accordion-content>-->
+      <!--            <p class="pt-3">{{ 'collections.addToCollection.projectMetadataMessage' | translate }}</p>-->
+      <!--            <form [formGroup]="projectMetadataForm" class="flex flex-column gap-4 pt-4">-->
+      <!--              <div class="flex flex-column">-->
+      <!--                <label for="title">-->
+      <!--                  {{ 'collections.addToCollection.form.title' | translate }}-->
+      <!--                </label>-->
+      <!--                <input pInputText id="title" type="text" [formControlName]="ProjectMetadataFormControls.Title" />-->
+      <!--              </div>-->
+
+      <!--              <div class="flex flex-column">-->
+      <!--                <label for="description">-->
+      <!--                  {{ 'collections.addToCollection.form.description' | translate }}-->
+      <!--                </label>-->
+      <!--                <textarea-->
+      <!--                  pTextarea-->
+      <!--                  id="description"-->
+      <!--                  [formControlName]="ProjectMetadataFormControls.Description"-->
+      <!--                  [rows]="5"-->
+      <!--                ></textarea>-->
+      <!--              </div>-->
+
+      <!--              <div class="flex flex-column">-->
+      <!--                <label for="license">-->
+      <!--                  {{ 'collections.addToCollection.form.license' | translate }}-->
+      <!--                </label>-->
+      <!--                <p-select-->
+      <!--                  [placeholder]="'collections.addToCollection.form.licensePlaceholder' | translate"-->
+      <!--                  id="license"-->
+      <!--                  [options]="[]"-->
+      <!--                  [formControlName]="ProjectMetadataFormControls.License"-->
+      <!--                ></p-select>-->
+      <!--              </div>-->
+
+      <!--              <div class="flex flex-column">-->
+      <!--                <label for="tags">-->
+      <!--                  {{ 'collections.addToCollection.form.tags' | translate }}-->
+      <!--                </label>-->
+      <!--                <input-->
+      <!--                  [placeholder]="'collections.addToCollection.form.tagsPlaceholder' | translate"-->
+      <!--                  pInputText-->
+      <!--                  id="tags"-->
+      <!--                  type="text"-->
+      <!--                  [formControlName]="ProjectMetadataFormControls.Tags"-->
+      <!--                />-->
+      <!--              </div>-->
+
+      <!--              <div class="flex justify-content-end gap-3">-->
+      <!--                <p-button severity="info" [label]="'common.buttons.discardChanges' | translate" />-->
+      <!--                <p-button [label]="'common.buttons.saveAndContinue' | translate" [disabled]="true" />-->
+      <!--              </div>-->
+      <!--            </form>-->
+      <!--          </p-accordion-content>-->
+      <!--        </p-accordion-panel>-->
+
+      <!--        <p-accordion-panel class="p-4" [value]="AddToCollectionSteps.ProjectContributors">-->
+      <!--          <p-accordion-header>-->
+      <!--            <h3>{{ 'collections.addToCollection.projectContributors' | translate }}</h3>-->
+      <!--          </p-accordion-header>-->
+      <!--          <p-accordion-content>-->
+      <!--            <div class="pt-2 w-6"></div>-->
+      <!--          </p-accordion-content>-->
+      <!--        </p-accordion-panel>-->
+
+      <!--        <p-accordion-panel class="p-4" [value]="AddToCollectionSteps.CollectionMetadata">-->
+      <!--          <p-accordion-header>-->
+      <!--            <h3>{{ 'collections.addToCollection.collectionMetadata' | translate }}</h3>-->
+      <!--          </p-accordion-header>-->
+      <!--          <p-accordion-content>-->
+      <!--            <div class="pt-2 w-6"></div>-->
+      <!--          </p-accordion-content>-->
+      <!--        </p-accordion-panel>-->
+      <!--      </p-accordion>-->
+      @if (!this.isAdminProjectsLoading() && this.adminProjects().length) {
+        <p-stepper class="collection-stepper flex flex-column gap-5" [value]="stepperActiveValue()">
+          <p-step-item class="p-4" [value]="AddToCollectionSteps.SelectProject">
+            <div class="flex flex-column gap-3 w-full">
+              <h3>{{ 'collections.addToCollection.selectProject' | translate }}</h3>
+              @if (selectedProject() && !isSelectProjectPanelActive()) {
+                <p class="font-normal">
+                  {{ 'collections.addToCollection.project' | translate }}:
+                  <span class="font-bold">{{ selectedProject()?.title }}</span>
+                </p>
+                <p-button
+                  class="align-self-end"
+                  (click)="handleResetSelectedProject()"
+                  severity="secondary"
+                  [label]="'common.buttons.clickToEdit' | translate"
+                ></p-button>
+              }
             </div>
-          </p-accordion-content>
-        </p-accordion-panel>
 
-        <p-accordion-panel class="p-4" value="1">
-          <p-accordion-header>
+            <p-step-panel class="p-0">
+              <ng-template class="m-0" #content let-activateCallback="activateCallback">
+                <div class="pt-4 w-6">
+                  <p-select
+                    class="w-full"
+                    [loading]="isAdminProjectsLoading()"
+                    [options]="adminProjectsOptions()"
+                    [filter]="true"
+                    (onFilter)="handleFilterSearch($event)"
+                    optionLabel="label"
+                    optionValue="value"
+                    [appendTo]="'body'"
+                    [emptyFilterMessage]="filterMessage()"
+                    [emptyMessage]="filterMessage()"
+                    (onChange)="handleProjectChange($event)"
+                    [placeholder]="'common.buttons.select' | translate"
+                  >
+                    <ng-template #selectedItem let-selectedOption>
+                      {{ selectedOption.label | translate }}
+                    </ng-template>
+                  </p-select>
+                </div>
+              </ng-template>
+            </p-step-panel>
+          </p-step-item>
+
+          <p-step-item class="p-4" [value]="AddToCollectionSteps.ProjectMetadata">
             <h3>{{ 'collections.addToCollection.projectMetadata' | translate }}</h3>
-          </p-accordion-header>
-          <p-accordion-content>
-            <p class="pt-3">{{ 'collections.addToCollection.projectMetadataMessage' | translate }}</p>
-            <form [formGroup]="projectMetadataForm" class="flex flex-column gap-4 pt-4">
-              <div class="flex flex-column">
-                <label for="title">
-                  {{ 'collections.addToCollection.form.title' | translate }}
-                </label>
-                <input pInputText id="title" type="text" [formControlName]="ProjectMetadataFormControls.Title" />
-              </div>
 
-              <div class="flex flex-column">
-                <label for="description">
-                  {{ 'collections.addToCollection.form.description' | translate }}
-                </label>
-                <textarea
-                  pTextarea
-                  id="description"
-                  [formControlName]="ProjectMetadataFormControls.Description"
-                  [rows]="5"
-                ></textarea>
-              </div>
+            <p-step-panel class="p-0">
+              <ng-template class="m-0" #content let-activateCallback="activateCallback">
+                <p class="pt-3">{{ 'collections.addToCollection.projectMetadataMessage' | translate }}</p>
+                <form [formGroup]="projectMetadataForm" class="flex flex-column gap-4 pt-4">
+                  <div class="flex flex-column">
+                    <label for="title">
+                      {{ 'collections.addToCollection.form.title' | translate }}
+                    </label>
+                    <input pInputText id="title" type="text" [formControlName]="ProjectMetadataFormControls.Title" />
+                  </div>
 
-              <div class="flex flex-column">
-                <label for="license">
-                  {{ 'collections.addToCollection.form.license' | translate }}
-                </label>
-                <p-select
-                  [placeholder]="'collections.addToCollection.form.licensePlaceholder' | translate"
-                  id="license"
-                  [options]="[]"
-                  [formControlName]="ProjectMetadataFormControls.License"
-                ></p-select>
-              </div>
+                  <div class="flex flex-column">
+                    <label for="description">
+                      {{ 'collections.addToCollection.form.description' | translate }}
+                    </label>
+                    <textarea
+                      pTextarea
+                      id="description"
+                      [formControlName]="ProjectMetadataFormControls.Description"
+                      [rows]="5"
+                    ></textarea>
+                  </div>
 
-              <div class="flex flex-column">
-                <label for="tags">
-                  {{ 'collections.addToCollection.form.tags' | translate }}
-                </label>
-                <input
-                  [placeholder]="'collections.addToCollection.form.tagsPlaceholder' | translate"
-                  pInputText
-                  id="tags"
-                  type="text"
-                  [formControlName]="ProjectMetadataFormControls.Title"
-                />
-              </div>
+                  <div class="flex flex-column">
+                    <label for="license">
+                      {{ 'collections.addToCollection.form.license' | translate }}
+                    </label>
+                    <p-select
+                      [placeholder]="'collections.addToCollection.form.licensePlaceholder' | translate"
+                      id="license"
+                      [options]="[]"
+                      [formControlName]="ProjectMetadataFormControls.License"
+                    ></p-select>
+                  </div>
 
-              <div class="flex justify-content-end gap-3">
-                <p-button severity="info" [label]="'common.buttons.discardChanges' | translate" />
-                <p-button [label]="'common.buttons.saveAndContinue' | translate" [disabled]="true" />
-              </div>
-            </form>
-          </p-accordion-content>
-        </p-accordion-panel>
+                  <div class="flex flex-column">
+                    <label for="tags">
+                      {{ 'collections.addToCollection.form.tags' | translate }}
+                    </label>
+                    <input
+                      [placeholder]="'collections.addToCollection.form.tagsPlaceholder' | translate"
+                      pInputText
+                      id="tags"
+                      type="text"
+                      [formControlName]="ProjectMetadataFormControls.Tags"
+                    />
+                  </div>
 
-        <p-accordion-panel class="p-4" value="2">
-          <p-accordion-header>
+                  <div class="flex justify-content-end gap-3">
+                    <p-button severity="info" [label]="'common.buttons.discardChanges' | translate" />
+                    <p-button [label]="'common.buttons.saveAndContinue' | translate" [disabled]="true" />
+                  </div>
+                </form>
+              </ng-template>
+            </p-step-panel>
+          </p-step-item>
+
+          <p-step-item class="p-4" [value]="AddToCollectionSteps.ProjectContributors">
             <h3>{{ 'collections.addToCollection.projectContributors' | translate }}</h3>
-          </p-accordion-header>
-          <p-accordion-content>
-            <div class="pt-2 w-6"></div>
-          </p-accordion-content>
-        </p-accordion-panel>
+            <p-step-panel class="p-0">
+              <ng-template class="m-0" #content let-activateCallback="activateCallback">
+                <div class="pt-2 w-6"></div>
+              </ng-template>
+            </p-step-panel>
+          </p-step-item>
 
-        <p-accordion-panel class="p-4" value="3">
-          <p-accordion-header>
+          <p-step-item class="p-4" [value]="AddToCollectionSteps.CollectionMetadata">
             <h3>{{ 'collections.addToCollection.collectionMetadata' | translate }}</h3>
-          </p-accordion-header>
-          <p-accordion-content>
-            <div class="pt-2 w-6"></div>
-          </p-accordion-content>
-        </p-accordion-panel>
-      </p-accordion>
+            <p-step-panel class="p-0">
+              <ng-template class="m-0" #content let-activateCallback="activateCallback">
+                <div class="pt-2 w-6"></div>
+              </ng-template>
+            </p-step-panel>
+          </p-step-item>
+        </p-stepper>
+      }
 
       <div class="flex justify-content-end gap-3 mt-4">
         <p-button severity="info" [label]="'common.buttons.cancel' | translate" [routerLink]="['../']" />

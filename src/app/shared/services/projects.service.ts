@@ -14,11 +14,7 @@ import { environment } from 'src/environments/environment';
 export class ProjectsService {
   private jsonApiService = inject(JsonApiService);
 
-  getAdminProjects(userId: string): Observable<Project[]> {
-    const params: Record<string, string> = {
-      'filter[current_user_permissions]': 'admin',
-    };
-
+  getProjects(userId: string, params?: Record<string, unknown>): Observable<Project[]> {
     return this.jsonApiService
       .get<ProjectsGetResponseJsonApi>(`${environment.apiUrl}/users/${userId}/nodes/`, params)
       .pipe(map((response) => ProjectsMapper.fromGetProjectsResponse(response)));

@@ -1,23 +1,28 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
-import { Select } from 'primeng/select';
+import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
+import { Step, StepItem, StepPanel, Stepper } from 'primeng/stepper';
 import { Textarea } from 'primeng/textarea';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { ProjectMetadataFormControls } from '@osf/features/collections/enums';
+import { AddToCollectionSteps, ProjectMetadataFormControls } from '@osf/features/collections/enums';
 import { ProjectMetadataForm } from '@osf/features/collections/models';
 import { CollectionsSelectors, GetCollectionDetails, GetCollectionProvider } from '@osf/features/collections/store';
-import { GetAdminProjects } from '@osf/shared/stores';
-import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
+import { GetProjects } from '@osf/shared/stores';
+import { LoadingSpinnerComponent } from '@shared/components';
+import { Project } from '@shared/models/projects';
+import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 import { CustomValidators } from '@shared/utils';
 
 @Component({
@@ -31,31 +36,66 @@ import { CustomValidators } from '@shared/utils';
     AccordionHeader,
     AccordionContent,
     Select,
-    SelectComponent,
     RouterLink,
     InputText,
     ReactiveFormsModule,
     Textarea,
+    FormsModule,
+    Stepper,
+    Step,
+    StepItem,
+    StepPanel,
   ],
   templateUrl: './add-to-collection.component.html',
   styleUrl: './add-to-collection.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddToCollectionComponent {
+export class AddToCollectionComponent implements OnDestroy {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  private translateService = inject(TranslateService);
+  private destroy$ = new Subject<void>();
+  private filterSubject = new Subject<string>();
+
   protected readonly ProjectMetadataFormControls = ProjectMetadataFormControls;
+  protected readonly AddToCollectionSteps = AddToCollectionSteps;
   protected isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
+  protected adminProjects = select(ProjectsSelectors.getProjects);
+  protected isAdminProjectsLoading = select(ProjectsSelectors.getProjectsLoading);
   protected currentUser = select(UserSelectors.getCurrentUser);
   protected providerId = signal<string>('');
+  protected selectedProject = signal<Project | null>(null);
   protected primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
+  protected stepperActiveValue = signal<number>(AddToCollectionSteps.SelectProject);
+  protected isSelectProjectPanelActive = computed(() => {
+    return this.stepperActiveValue() === AddToCollectionSteps.SelectProject;
+  });
+
+  protected filterMessage = computed(() => {
+    const isLoading = this.isAdminProjectsLoading();
+    return isLoading
+      ? this.translateService.instant('collections.addToCollection.form.loadingPlaceholder')
+      : this.translateService.instant('collections.addToCollection.form.noProjectsFound');
+  });
   protected actions = createDispatchMap({
     getCollectionProvider: GetCollectionProvider,
     getCollectionDetails: GetCollectionDetails,
-    getAdminProjects: GetAdminProjects,
+    getAdminProjects: GetProjects,
   });
-  protected projectControl = new FormControl('');
+  protected adminProjectsOptions = computed(() => {
+    const isLoading = this.isAdminProjectsLoading();
+    const projects = this.adminProjects();
+
+    return !projects.length || isLoading
+      ? []
+      : projects.map((project) => {
+          return {
+            label: project.title,
+            value: project,
+          };
+        });
+  });
 
   readonly projectMetadataForm = new FormGroup<ProjectMetadataForm>({
     [ProjectMetadataFormControls.Title]: new FormControl('', {
@@ -76,6 +116,12 @@ export class AddToCollectionComponent {
   constructor() {
     this.initializeProvider();
     this.setupEffects();
+    this.setupFilterDebounce();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private initializeProvider(): void {
@@ -91,17 +137,66 @@ export class AddToCollectionComponent {
 
   private setupEffects(): void {
     effect(() => {
-      const collectionId = this.primaryCollectionId();
-      if (collectionId) {
-        this.actions.getCollectionDetails(collectionId);
-      }
-    });
-
-    effect(() => {
       const currentUser = this.currentUser();
       if (currentUser) {
         this.actions.getAdminProjects(currentUser.id);
       }
     });
+
+    effect(() => {
+      const collectionId = this.primaryCollectionId();
+      if (collectionId) {
+        this.actions.getCollectionDetails(collectionId);
+      }
+    });
+  }
+
+  private setupFilterDebounce(): void {
+    this.filterSubject
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((filterValue) => {
+        this.fetchAdminProjects(filterValue);
+      });
+  }
+
+  private fetchAdminProjects(filterValue: string): void {
+    const currentUser = this.currentUser();
+    if (!currentUser) return;
+
+    const params: Record<string, string> = {
+      'filter[current_user_permissions]': 'admin',
+      'filter[title]': filterValue,
+    };
+
+    this.actions.getAdminProjects(currentUser.id, params);
+  }
+
+  handleFilterSearch($event: SelectFilterEvent) {
+    $event.originalEvent.preventDefault();
+    this.filterSubject.next($event.filter);
+  }
+
+  handleProjectChange($event: SelectChangeEvent) {
+    const project = $event.value;
+
+    if (project) {
+      this.selectedProject.set(project);
+      this.projectMetadataForm.patchValue({
+        [ProjectMetadataFormControls.Title]: project.title,
+        [ProjectMetadataFormControls.Description]: project.description || '',
+        [ProjectMetadataFormControls.License]: project.nodeLicense || '',
+        [ProjectMetadataFormControls.Tags]: project.tags || [],
+      });
+
+      this.stepperActiveValue.set(AddToCollectionSteps.ProjectMetadata);
+    } else {
+      this.handleResetSelectedProject();
+    }
+  }
+
+  handleResetSelectedProject() {
+    this.selectedProject.set(null);
+    this.stepperActiveValue.set(AddToCollectionSteps.SelectProject);
+    // this.projectMetadataForm.reset();
   }
 }
