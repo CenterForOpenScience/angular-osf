@@ -1,18 +1,10 @@
-@use "../variables" as var;
+.p-inputgroup {
+  .p-inputtext {
+    width: auto;
+  }
 
-.p-inputgroupaddon {
-  padding: 0 0 0 12px;
-  color: var.$dark-blue-1;
-  border: 1px solid var.$grey-2;
-  border-right-style: none;
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
-  font-size: 16px;
-  min-width: auto;
-}
-
-@media (max-width: 300px) {
   .p-inputgroupaddon {
-    display: none;
+    --p-inputgroup-addon-color: var(--dark-blue-1);
+    font-size: 1rem;
   }
 }

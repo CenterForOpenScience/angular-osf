@@ -1,9 +1,11 @@
 export { AddEmailComponent } from './add-email/add-email.component';
 export { AffiliatedInstitutionsComponent } from './affiliated-institutions/affiliated-institutions.component';
+export { CancelDeactivationComponent } from './cancel-deactivation/cancel-deactivation.component';
 export { ChangePasswordComponent } from './change-password/change-password.component';
 export { ConnectedEmailsComponent } from './connected-emails/connected-emails.component';
 export { ConnectedIdentitiesComponent } from './connected-identities/connected-identities.component';
 export { DeactivateAccountComponent } from './deactivate-account/deactivate-account.component';
+export { DeactivationWarningComponent } from './deactivation-warning/deactivation-warning.component';
 export { DefaultStorageLocationComponent } from './default-storage-location/default-storage-location.component';
 export { ShareIndexingComponent } from './share-indexing/share-indexing.component';
 export { TwoFactorAuthComponent } from './two-factor-auth/two-factor-auth.component';

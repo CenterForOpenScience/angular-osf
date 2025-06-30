@@ -1,69 +1,61 @@
-<section class="content-container" [class.mobile]="isXSmall()">
-  <nav class="navigation-bar-container">
-    <a routerLink="/settings/developer-apps">
-      <i class="osf-icon-arrow-left inline"></i>
-      {{ 'settings.developerApps.details.navigation.back' | translate }}
+<section class="bg-white py-4 px-3 md:p-5 xl:p-4">
+  <nav class="flex align-items-center gap-2">
+    <osf-icon iconClass="fas fa-chevron-left fa-sm"></osf-icon>
+
+    <a routerLink="/settings/tokens" class="font-semibold">
+      {{ 'settings.tokens.details.navigation.back' | translate }}
     </a>
   </nav>
 
   @if (developerApp()) {
-    <section class="title-container" [class.mobile]="isXSmall()">
+    <section class="flex align-items-center justify-content-between mt-5">
       <h1>{{ developerApp()?.name }}</h1>
+
       <p-button
         [label]="'settings.developerApps.list.deleteButton' | translate"
-        [class.btn-full-width]="isXSmall()"
         severity="danger"
         (click)="deleteApp()"
       />
     </section>
 
-    <section class="cards-container" [class.mobile]="isXSmall()">
-      <p-card>
-        <section class="card-body">
+    <section class="flex flex-column gap-4 mt-4 md:mt-6">
+      <p-card class="no-padding-card">
+        <section class="p-3 md:p-4">
           <h2>
             {{ 'settings.developerApps.details.clientId.title' | translate }}
           </h2>
 
-          <p>
+          <p class="mt-4">
             {{ 'settings.developerApps.details.clientId.description' | translate }}
           </p>
 
-          <div class="inline-block relative">
-            <span class="copy-notification" [class.visible]="clientIdCopiedNotificationVisible()">
-              {{ 'settings.developerApps.messages.copied' | translate }}
-            </span>
+          <div class="mt-3 w-4">
             <p-iconfield iconPosition="right">
               <input type="text" pInputText readonly [value]="clientId()" />
-              <p-inputicon [cdkCopyToClipboard]="clientId()" (cdkCopyToClipboardCopied)="clientIdCopiedToClipboard()">
-                <i class="osf-icon-copy"></i>
+              <p-inputicon>
+                <osf-copy-button [copyItem]="clientId()"></osf-copy-button>
               </p-inputicon>
             </p-iconfield>
           </div>
         </section>
       </p-card>
 
-      <p-card>
-        <section class="card-body">
+      <p-card class="no-padding-card">
+        <section class="p-3 md:p-4">
           <h2>
             {{ 'settings.developerApps.details.clientSecret.title' | translate }}
           </h2>
 
-          <p>
+          <p class="mt-4">
             {{ 'settings.developerApps.details.clientSecret.description' | translate }}
           </p>
 
-          <section class="client-secret-container" [class.mobile]="isXSmall()">
+          <section class="flex flex-column gap-2 mt-3 md:flex-row">
             <div class="relative">
-              <span class="copy-notification" [class.visible]="clientSecretCopiedNotificationVisible()">
-                {{ 'settings.developerApps.messages.copied' | translate }}
-              </span>
               <p-iconfield iconPosition="right">
                 <input pInputText [value]="isClientSecretVisible() ? clientSecret() : hiddenClientSecret()" readonly />
-                <p-inputicon
-                  [cdkCopyToClipboard]="clientSecret()"
-                  (cdkCopyToClipboardCopied)="clientSecretCopiedToClipboard()"
-                >
-                  <i class="osf-icon-copy"></i>
+                <p-inputicon>
+                  <osf-copy-button [copyItem]="clientSecret()"></osf-copy-button>
                 </p-inputicon>
               </p-iconfield>
             </div>
@@ -79,20 +71,19 @@
             />
           </section>
 
-          <section class="card-actions">
+          <section class="flex justify-content-end mt-4">
             <p-button
               [label]="'settings.developerApps.details.clientSecret.resetSecret' | translate"
-              [class.btn-half-width]="isXSmall()"
               (click)="resetClientSecret()"
             />
           </section>
         </section>
       </p-card>
 
-      <p-card>
-        <section class="card-body">
+      <p-card class="no-padding-card">
+        <section class="p-3 md:p-4">
           <h2>{{ 'settings.developerApps.form.editTitle' | translate }}</h2>
-          <osf-developer-app-add-edit-form [isEditMode]="true" [initialValues]="developerApp()!" />
+          <osf-developer-app-add-edit-form class="block mt-4" [isEditMode]="true" [initialValues]="developerApp()!" />
         </section>
       </p-card>
     </section>

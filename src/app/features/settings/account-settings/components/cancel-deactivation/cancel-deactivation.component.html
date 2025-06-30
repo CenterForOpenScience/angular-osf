@@ -3,9 +3,10 @@
     <h3 class="account-setting-description">
       {{ 'settings.accountSettings.deactivateAccount.cancelDeactivation.confirm' | translate }}
     </h3>
-    <h3 class="account-setting-description">
+
+    <p class="account-setting-description">
       {{ 'settings.accountSettings.deactivateAccount.cancelDeactivation.description' | translate }}
-    </h3>
+    </p>
   </div>
 
   <div class="flex gap-2">
@@ -13,7 +14,6 @@
       class="w-full"
       styleClass="w-full"
       (click)="dialogRef.close()"
-      text
       severity="info"
       [label]="'settings.accountSettings.deactivateAccount.cancelDeactivation.buttons.cancel' | translate"
     ></p-button>

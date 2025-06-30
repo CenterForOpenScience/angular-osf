@@ -61,8 +61,8 @@
           <td>{{ item.title }}</td>
           <td>{{ item.authorName }}</td>
           <td>{{ item.meetingCategory }}</td>
-          <td>{{ item.dateCreated | date: 'MMM d, y, h:mm a' }}</td>
-          <td>
+          <td class="w-14rem">{{ item.dateCreated | date: 'MMM d, y, h:mm a' }}</td>
+          <td class="text-center" [class.w-9rem]="!item.downloadCount">
             @if (item.downloadCount) {
               <p-button
                 [label]="'meetings.details.downloadButton' | translate"

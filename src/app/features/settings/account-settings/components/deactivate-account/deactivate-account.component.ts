@@ -1,16 +1,16 @@
-import { Store } from '@ngxs/store';
+import { select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
 import { AccountSettingsSelectors } from '../../store';
-
-import { CancelDeactivationComponent, DeactivationWarningComponent } from './components';
+import { CancelDeactivationComponent } from '../cancel-deactivation/cancel-deactivation.component';
+import { DeactivationWarningComponent } from '../deactivation-warning/deactivation-warning.component';
 
 @Component({
   selector: 'osf-deactivate-account',
@@ -20,17 +20,16 @@ import { CancelDeactivationComponent, DeactivationWarningComponent } from './com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeactivateAccountComponent {
-  #store = inject(Store);
-  dialogRef: DynamicDialogRef | null = null;
-  readonly #dialogService = inject(DialogService);
-  readonly #translateService = inject(TranslateService);
-  protected accountSettings = this.#store.selectSignal(AccountSettingsSelectors.getAccountSettings);
+  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
+
+  protected accountSettings = select(AccountSettingsSelectors.getAccountSettings);
 
   deactivateAccount() {
-    this.dialogRef = this.#dialogService.open(DeactivationWarningComponent, {
+    this.dialogService.open(DeactivationWarningComponent, {
       width: '552px',
       focusOnShow: false,
-      header: this.#translateService.instant('settings.accountSettings.deactivateAccount.dialog.deactivate.title'),
+      header: this.translateService.instant('settings.accountSettings.deactivateAccount.dialog.deactivate.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,
@@ -38,10 +37,10 @@ export class DeactivateAccountComponent {
   }
 
   cancelDeactivation() {
-    this.dialogRef = this.#dialogService.open(CancelDeactivationComponent, {
+    this.dialogService.open(CancelDeactivationComponent, {
       width: '552px',
       focusOnShow: false,
-      header: this.#translateService.instant('settings.accountSettings.deactivateAccount.dialog.undo.title'),
+      header: this.translateService.instant('settings.accountSettings.deactivateAccount.dialog.undo.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,

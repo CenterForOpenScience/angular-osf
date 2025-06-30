@@ -8,8 +8,8 @@
     />
   </div>
 
-  <div class="flex-column flex w-full resources-tab-panel">
-    <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1">
+  <div class="flex-column flex w-full pt-6">
+    <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1 px-3 md:px-5 xl:px-4">
       @if (isSmall()) {
         <p-tablist>
           @for (item of resourceTabOptions; track $index) {

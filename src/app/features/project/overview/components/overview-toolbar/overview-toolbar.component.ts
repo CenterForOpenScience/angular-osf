@@ -8,6 +8,8 @@ import { Menu } from 'primeng/menu';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Tooltip } from 'primeng/tooltip';
 
+import { timer } from 'rxjs';
+
 import { NgClass, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -133,11 +135,16 @@ export class OverviewToolbarComponent {
     const project = this.currentProject();
     if (!project) return;
 
-    const isCurrentlyPublic = this.isPublic();
+    const isCurrentlyPublic = project.isPublic;
     const newPublicStatus = !isCurrentlyPublic;
+
+    timer(100)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.isPublic.set(project.isPublic));
 
     this.dialogService.open(TogglePublicityDialogComponent, {
       focusOnShow: false,
+      width: '40vw',
       header: this.translateService.instant(
         isCurrentlyPublic ? 'project.overview.dialog.makePrivate.header' : 'project.overview.dialog.makePublic.header'
       ),

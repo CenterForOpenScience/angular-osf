@@ -1,19 +1,21 @@
 @use "assets/styles/variables" as var;
-@use "assets/styles/mixins" as mix;
 
 p-table {
+  --p-datatable-header-cell-color: var(--dark-blue-1);
+  --p-datatable-header-cell-hover-background: var(--grey-3);
+  --p-datatable-row-color: var(--dark-blue-1);
+  --p-datatable-column-title-font-weight: 700;
+
   .p-datatable {
-    border: 1px solid var.$grey-2;
-    border-radius: mix.rem(8px);
-    padding: mix.rem(12px) mix.rem(24px) mix.rem(24px) mix.rem(24px);
+    border: 1px solid var(--grey-2);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
   }
 
   table {
     tr:hover {
-      background: var.$bg-blue-2;
-
       td {
-        background: var.$bg-blue-2;
+        background: var(--bg-blue-2);
       }
     }
 
@@ -28,25 +30,18 @@ p-table {
 
     th,
     td {
-      color: var.$dark-blue-1;
       border: none;
-      height: mix.rem(65px);
     }
 
-    th {
-      background-color: var.$white;
-      font-weight: 700;
-      padding-top: 0;
-
-      .p-sortable-column-icon {
-        color: var.$grey-1;
-        margin-left: mix.rem(8px);
-      }
+    .p-sortable-column-icon {
+      color: var(--grey-1);
+      margin-left: 0.6rem;
     }
 
     td {
-      background-color: var.$bg-blue-3;
-      border-bottom: mix.rem(12px) solid var.$white;
+      background-color: var(--bg-blue-3);
+      border-bottom: 0.75rem solid var(--white);
+      height: 4rem;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -58,41 +53,20 @@ p-table {
   tr:not(.loading-row) {
     cursor: pointer;
   }
-
-  &.loading {
-    table {
-      tr.loading-row {
-        td {
-          background: transparent;
-          border: none;
-          padding: 0;
-          width: 100%;
-        }
-      }
-
-      tr:hover {
-        background: inherit;
-
-        td {
-          background: inherit;
-        }
-      }
-    }
-  }
 }
 
 .addon-table {
   tr {
     &.background-warning td {
-      background-color: var.$yellow-2;
+      background-color: var(--yellow-2);
     }
 
     &.background-success td {
-      background-color: var.$green-2;
+      background-color: var(--green-2);
     }
 
     &.background-danger td {
-      background-color: var.$red-2;
+      background-color: var(--red-2);
     }
 
     td {
@@ -101,99 +75,58 @@ p-table {
   }
 }
 
-@media (max-width: var.$breakpoint-xl) {
-  .home-table {
-    .p-datatable {
-      padding: 1.71rem 0.85rem 1.71rem 0.85rem;
-    }
-  }
+.view-only-table {
+  .p-datatable {
+    padding: 0.125rem;
 
-  .addon-table,
-  .my-projects-table {
-    .p-datatable {
-      padding: mix.rem(16px);
-      overflow-x: auto;
-    }
-  }
-
-  .my-projects-table,
-  .home-table {
-    .p-datatable {
-      overflow-x: auto;
+    td,
+    th {
+      background-color: transparent;
+      border-bottom: 1px solid var(--grey-2);
     }
 
-    td {
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      max-width: calc((100vw - 6.85rem - 2px) / 3);
+    tr {
+      &:hover {
+        background: transparent;
+      }
 
-      p {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin: 0;
-        overflow: hidden;
-
-        i {
-          flex-shrink: 0;
-        }
-
-        span {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+      &:last-of-type {
+        td {
+          border-bottom: none;
         }
       }
     }
   }
 }
 
-@media (max-width: var.$breakpoint-sm) {
-  .home-table {
+@media (max-width: var.$breakpoint-xl) {
+  .addon-table,
+  .my-projects-table {
     .p-datatable {
-      padding: 0.4rem;
-    }
-
-    table {
-      thead {
-        display: none;
-      }
-
-      tr {
-        max-width: calc(100vw - 3.14rem - 2px);
-        display: flex;
-        flex-direction: column;
-        padding: mix.rem(16px);
-        background: var.$bg-blue-3;
-
-        td {
-          max-width: calc(100vw - 3.14rem - 2px);
-          height: 2rem;
-          line-height: 2rem;
-          padding: 0;
-          border: 0;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-      }
-
-      tbody {
-        display: flex;
-        flex-direction: column;
-        row-gap: 0.42rem;
-      }
+      padding: 1rem;
+      overflow-x: auto;
     }
   }
 
+  .my-projects-table {
+    .p-datatable {
+      overflow-x: auto;
+    }
+
+    td {
+      max-width: calc((100vw - 6.85rem - 2px) / 3);
+    }
+  }
+}
+
+@media (max-width: var.$breakpoint-sm) {
   .addon-table {
-    width: 100%;
-    overflow-x: auto;
     display: block;
+    overflow-x: auto;
+    width: 100%;
 
     .p-datatable {
-      padding: mix.rem(16px);
+      padding: 1rem;
       width: 100%;
 
       table {
@@ -206,10 +139,6 @@ p-table {
         overflow: visible;
         text-overflow: unset;
         max-width: max-content;
-      }
-
-      td:nth-child(2) {
-        white-space: nowrap;
       }
     }
   }
@@ -229,48 +158,6 @@ p-table {
       white-space: normal;
       max-width: none;
       min-width: 50vw;
-
-      p {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin: 0;
-        overflow: visible;
-
-        i {
-          flex-shrink: 0;
-        }
-
-        span {
-          overflow: visible;
-          text-overflow: unset;
-          white-space: normal;
-        }
-      }
-    }
-  }
-}
-
-.view-only-table {
-  .p-datatable {
-    padding: 2px;
-
-    td,
-    th {
-      background-color: transparent;
-      border-bottom: 1px solid var.$grey-2;
-    }
-
-    tr {
-      &:hover {
-        background: transparent;
-      }
-
-      &:last-of-type {
-        td {
-          border-bottom: none;
-        }
-      }
     }
   }
 }

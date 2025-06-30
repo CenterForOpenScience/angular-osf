@@ -24,7 +24,12 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "allowedCommonJsDependencies": ["qrcode"],
+            "allowedCommonJsDependencies": [
+              "qrcode",
+              "cedar-embeddable-editor",
+              "markdown-it-video",
+              "ace-builds/src-noconflict/ext-language_tools"
+            ],
             "assets": [
               "src/assets",
               {
@@ -58,8 +63,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "3MB",
-                  "maximumError": "4MB"
+                  "maximumWarning": "7MB",
+                  "maximumError": "10MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -68,6 +73,11 @@
                 }
               ],
               "outputHashing": "all"
+            },
+            "analyze-bundle": {
+              "sourceMap": true,
+              "outputHashing": "none",
+              "namedChunks": true
             },
             "development": {
               "optimization": false,

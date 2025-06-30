@@ -1,16 +1,4 @@
-@use "../variables" as var;
-
 .p-divider {
-  color: var.$dark-blue-1;
-  margin: 2rem 0;
-}
-
-.p-divider-content {
-  background: var.$white;
-  padding: 0 1rem;
-  color: var.$dark-blue-1;
-}
-
-.p-divider-horizontal:before {
-  border-block-start: 1px solid var.$grey-2;
+  --p-divider-border-color: var(--grey-2);
+  --p-divider-content-color: var(--dark-blue-1);
 }

@@ -11,10 +11,11 @@
     }
   </div>
 
-  <div class="flex align-items-center gap-2 no-border-dropdown">
+  <div class="flex align-items-center gap-2">
     @if (isWeb()) {
       <h3 class="font-normal">{{ 'collections.filters.sort.label' | translate }}</h3>
       <p-select
+        class="no-border-dropdown"
         [options]="sortOptions"
         optionLabel="label"
         optionValue="value"

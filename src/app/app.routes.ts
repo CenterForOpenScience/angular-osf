@@ -23,6 +23,7 @@ export const routes: Routes = [
         path: 'sign-up',
         loadComponent: () =>
           import('./features/auth/pages/sign-up/sign-up.component').then((mod) => mod.SignUpComponent),
+        data: { skipBreadcrumbs: true },
       },
       {
         path: 'forgot-password',
@@ -30,6 +31,7 @@ export const routes: Routes = [
           import('./features/auth/pages/forgot-password/forgot-password.component').then(
             (mod) => mod.ForgotPasswordComponent
           ),
+        data: { skipBreadcrumbs: true },
       },
       {
         path: 'reset-password',
@@ -37,6 +39,7 @@ export const routes: Routes = [
           import('./features/auth/pages/reset-password/reset-password.component').then(
             (mod) => mod.ResetPasswordComponent
           ),
+        data: { skipBreadcrumbs: true },
       },
       {
         path: 'home',

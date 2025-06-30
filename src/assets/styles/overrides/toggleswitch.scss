@@ -1,19 +1,13 @@
-@use "assets/styles/variables" as var;
-
 .p-toggleswitch {
-  scale: 1.2;
+  --p-toggleswitch-background: var(--grey-1);
+}
 
-  .p-toggleswitch-handle {
-    scale: 1.15;
+.visibility-switch {
+  .p-toggleswitch {
+    scale: 1.2;
+
+    .p-toggleswitch-handle {
+      scale: 1.15;
+    }
   }
-}
-
-.p-toggleswitch:not(.p-disabled) .p-toggleswitch-slider,
-.p-toggleswitch:not(.p-disabled):has(.p-toggleswitch-input:hover) .p-toggleswitch-slider {
-  background: var.$grey-1;
-}
-
-.p-toggleswitch:not(.p-disabled).p-toggleswitch-checked .p-toggleswitch-slider,
-.p-toggleswitch:not(.p-disabled):has(.p-toggleswitch-input:hover).p-toggleswitch-checked .p-toggleswitch-slider {
-  background: var.$pr-blue-1;
 }

@@ -4,7 +4,7 @@
       <p-accordion-panel [value]="filterEntry.value">
         <p-accordion-header>{{ filterEntry.translationKeys.label | translate }}</p-accordion-header>
         <p-accordion-content>
-          <div class="content-body filter dropdown-filter">
+          <div class="content-body">
             <p>{{ filterEntry.translationKeys.description | translate }}</p>
             <p-multi-select
               [id]="filterEntry.key"

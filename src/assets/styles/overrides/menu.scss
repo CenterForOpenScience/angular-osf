@@ -1,30 +1,10 @@
-@use "../variables" as var;
-@use "../mixins" as mix;
-
-.p-menu-item-content {
-  a {
-    color: var.$dark-blue-2;
-  }
-
-  a:hover {
-    text-decoration: none;
-  }
-
-  &:hover {
-    text-decoration: none;
-    background: var.$bg-blue-3;
-  }
+.p-menu {
+  --p-menu-item-color: var(--dark-blue-1);
+  --p-menu-item-focus-color: var(--dark-blue-1);
+  --p-menu-item-focus-background: var(--bg-blue-3);
 }
 
 .p-menu {
-  margin-top: mix.rem(7px);
+  margin-top: 0.6rem;
   min-width: fit-content;
-}
-
-.share-menu {
-  .p-menu-list {
-    .p-menu-item {
-      padding: 0.5rem;
-    }
-  }
 }

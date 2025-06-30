@@ -1,47 +1,28 @@
-@use "assets/styles/variables" as var;
-@use "../mixins" as mix;
-
-.p-tab {
-  padding: mix.rem(12px) mix.rem(24px);
-
-  &:not(.p-tab-active):hover {
-    background: var.$white-60;
-    border-top-left-radius: mix.rem(12px);
-    border-top-right-radius: mix.rem(12px);
-  }
-}
-
-.p-tabpanels {
-  padding: mix.rem(24px);
-}
-
 .p-tablist-tab-list {
-  background: transparent;
-  border: none;
-
-  .p-tab {
-    color: var.$dark-blue-1;
-    border: none;
-  }
-
-  .p-tab-active {
-    background: var.$white;
-    border-top-left-radius: mix.rem(12px);
-    border-top-right-radius: mix.rem(12px);
-    border-color: transparent;
-  }
+  --p-tabs-tablist-background: transparent;
+  --p-tabs-tablist-border-width: 0;
 
   .p-tablist-active-bar {
     display: none;
   }
 }
 
-.resources-tab-panel {
-  .p-tabpanels {
-    padding: 0 !important;
-  }
+.p-tab {
+  --p-tabs-tab-padding: 0.75rem 1.5rem;
+  --p-tabs-tab-active-background: var(--white);
+  --p-tabs-tab-hover-background: var(--white-60);
+  --p-tabs-tab-active-border-color: transparent;
+  --p-tabs-tab-active-color: var(--dark-blue-1);
+  --p-tabs-tab-color: var(--dark-blue-1);
+  --p-tabs-tab-border-width: 0;
 
-  .p-tablist {
-    padding: mix.rem(48px) mix.rem(24px) 0;
+  &:not(.p-tab-active):hover {
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
   }
+}
+
+.p-tab-active {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
 }

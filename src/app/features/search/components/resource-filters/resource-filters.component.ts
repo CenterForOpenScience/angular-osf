@@ -1,7 +1,6 @@
 import { Store } from '@ngxs/store';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
-import { AutoCompleteModule } from 'primeng/autocomplete';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -27,7 +26,6 @@ import { ResourceFiltersOptionsSelectors } from '../filters/store';
     AccordionContent,
     AccordionHeader,
     AccordionPanel,
-    AutoCompleteModule,
     ReactiveFormsModule,
     CreatorsFilterComponent,
     DateCreatedFilterComponent,

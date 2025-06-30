@@ -1,6 +1,3 @@
-@use "assets/styles/mixins" as mix;
-@use "assets/styles/variables" as var;
-
 .p-card {
   border: 1px solid var(--grey-2);
   --p-card-shadow: none;
@@ -10,4 +7,8 @@
 
 .mobile .p-card .p-card-body {
   --p-card-body-padding: 0.85rem;
+}
+
+.no-padding-card {
+  --p-card-body-padding: 0;
 }

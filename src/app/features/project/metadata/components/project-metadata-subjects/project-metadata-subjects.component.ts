@@ -2,7 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Card } from 'primeng/card';
 import { Checkbox } from 'primeng/checkbox';
-import { Tag } from 'primeng/tag';
+import { Chip } from 'primeng/chip';
 
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
@@ -24,7 +24,7 @@ interface SubjectOption {
 
 @Component({
   selector: 'osf-project-metadata-subjects',
-  imports: [Card, Tag, TranslatePipe, FormsModule, Checkbox, NgClass, SearchInputComponent],
+  imports: [Card, Chip, TranslatePipe, FormsModule, Checkbox, NgClass, SearchInputComponent],
   templateUrl: './project-metadata-subjects.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

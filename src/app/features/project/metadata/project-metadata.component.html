@@ -29,14 +29,14 @@
                   <osf-loading-spinner />
                 </div>
               } @else {
-                <div class="flex-column flex flex-1 w-full bg-white">
+                <div class="flex-column flex flex-1 w-full bg-white lg:flex-row">
                   <div class="col-12 lg:col-6 flex flex-column gap-4">
                     <p-card>
                       <div class="flex justify-content-between flex-wrap gap-4">
                         <div class="flex flex-column gap-2 flex-1">
-                          <h3 class="text-lg font-semibold m-0">
+                          <h2>
                             {{ 'project.overview.metadata.dateCreated' | translate }}
-                          </h3>
+                          </h2>
 
                           <p class="m-0 text-color-secondary">
                             {{ currentProject()?.dateCreated | date: 'MMM d, y, h:mm a' }}
@@ -44,9 +44,9 @@
                         </div>
 
                         <div class="flex flex-column gap-2 flex-1">
-                          <h3 class="text-lg font-semibold m-0">
+                          <h2>
                             {{ 'project.overview.metadata.dateUpdated' | translate }}
-                          </h3>
+                          </h2>
 
                           <p class="m-0 text-color-secondary">
                             {{ currentProject()?.dateModified | date: 'MMM d, y, h:mm a' }}

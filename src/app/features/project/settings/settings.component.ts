@@ -4,7 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { TabPanels } from 'primeng/tabs';
 
 import { map, of } from 'rxjs';
 
@@ -55,7 +54,6 @@ import { UpdateNodeRequestModel } from '@shared/models';
   imports: [
     TranslatePipe,
     SubHeaderComponent,
-    TabPanels,
     FormsModule,
     ReactiveFormsModule,
     Card,

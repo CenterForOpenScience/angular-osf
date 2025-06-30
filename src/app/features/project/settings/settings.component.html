@@ -1,89 +1,87 @@
 <section class="flex flex-column flex-1">
   <osf-sub-header [title]="'navigation.project.settings' | translate" />
 
-  <div class="flex-column flex flex-1 w-full">
-    <p-tabpanels role="tablist" class="flex flex-column gap-4 flex-1 w-full bg-white">
-      <osf-settings-project-form-card
-        (submitForm)="submitForm($event)"
-        (deleteProject)="deleteProject()"
-        [formGroup]="projectForm"
-        [projectDetails]="projectDetails()"
-      />
+  <div class="flex flex-column flex-1 w-full bg-white py-4 px-3 md:px-5 xl:px-4">
+    <osf-settings-project-form-card
+      (submitForm)="submitForm($event)"
+      (deleteProject)="deleteProject()"
+      [formGroup]="projectForm"
+      [projectDetails]="projectDetails()"
+    />
 
-      <osf-settings-storage-location-card
-        [location]="'United States'"
-        [locationText]="'Storage location cannot be changed after project is created.'"
-      ></osf-settings-storage-location-card>
+    <osf-settings-storage-location-card
+      [location]="'United States'"
+      [locationText]="'Storage location cannot be changed after project is created.'"
+    ></osf-settings-storage-location-card>
 
-      <osf-settings-view-only-links-card
-        [tableData]="viewOnlyLinks()"
-        [isLoading]="isViewOnlyLinksLoading()"
-        (deleteTableItem)="deleteLinkItem($event)"
-      />
+    <osf-settings-view-only-links-card
+      [tableData]="viewOnlyLinks()"
+      [isLoading]="isViewOnlyLinksLoading()"
+      (deleteTableItem)="deleteLinkItem($event)"
+    />
 
-      <osf-settings-access-requests-card
-        (accessRequestChange)="onAccessRequestChange($event)"
-        [accessRequest]="accessRequest()"
-      />
+    <osf-settings-access-requests-card
+      (accessRequestChange)="onAccessRequestChange($event)"
+      [accessRequest]="accessRequest()"
+    />
 
-      <osf-settings-wiki-card
-        (wikiChangeEmit)="onWikiRequestChange($event)"
-        (anyoneCanEditWikiEmitValue)="onAnyoneCanEditWikiRequestChange($event)"
-        [wikiEnabled]="wikiEnabled()"
-        [anyoneCanEditWiki]="anyoneCanEditWiki()"
-        [title]="title()"
-      />
+    <osf-settings-wiki-card
+      (wikiChangeEmit)="onWikiRequestChange($event)"
+      (anyoneCanEditWikiEmitValue)="onAnyoneCanEditWikiRequestChange($event)"
+      [wikiEnabled]="wikiEnabled()"
+      [anyoneCanEditWiki]="anyoneCanEditWiki()"
+      [title]="title()"
+    />
 
-      <osf-settings-commenting-card
-        (anyoneCanCommentChange)="onAnyoneCanCommentRequestChange($event)"
-        [anyoneCanComment]="anyoneCanComment()"
-      />
+    <osf-settings-commenting-card
+      (anyoneCanCommentChange)="onAnyoneCanCommentRequestChange($event)"
+      [anyoneCanComment]="anyoneCanComment()"
+    />
 
-      <osf-project-setting-notifications
-        (notificationEmitValue)="onNotificationRequestChange($event)"
-        [title]="title()"
-        [notifications]="notifications()"
-      />
+    <osf-project-setting-notifications
+      (notificationEmitValue)="onNotificationRequestChange($event)"
+      [title]="title()"
+      [notifications]="notifications()"
+    />
 
-      <osf-settings-redirect-link
-        (redirectUrlDataChange)="onRedirectUrlDataRequestChange($event)"
-        [redirectUrlDataInput]="redirectUrlData()"
-      />
+    <osf-settings-redirect-link
+      (redirectUrlDataChange)="onRedirectUrlDataRequestChange($event)"
+      [redirectUrlDataInput]="redirectUrlData()"
+    />
 
-      <p-card>
-        <h3 class="text-xl pb-4">{{ 'myProjects.settings.projectAffiliation' | translate }}</h3>
+    <p-card>
+      <h3 class="text-xl pb-4">{{ 'myProjects.settings.projectAffiliation' | translate }}</h3>
 
-        <p>{{ 'myProjects.settings.projectsCanBeAffiliated' | translate }}</p>
+      <p>{{ 'myProjects.settings.projectsCanBeAffiliated' | translate }}</p>
 
-        <ol class="list-disc ml-5" role="list">
-          <li class="list-disc">{{ 'myProjects.settings.institutionalLogos' | translate }}</li>
-          <li class="list-disc">{{ 'myProjects.settings.publicProjectsToBeDiscoverable' | translate }}</li>
-          <li class="list-disc">{{ 'myProjects.settings.singleSignInToTHeOSF' | translate }}</li>
-          <li class="list-disc">
-            <a href="https://help.osf.io/article/406-faqs-home-page" target="_blank">{{
-              'myProjects.settings.faq' | translate
-            }}</a>
-          </li>
-        </ol>
+      <ol class="list-disc ml-5" role="list">
+        <li class="list-disc">{{ 'myProjects.settings.institutionalLogos' | translate }}</li>
+        <li class="list-disc">{{ 'myProjects.settings.publicProjectsToBeDiscoverable' | translate }}</li>
+        <li class="list-disc">{{ 'myProjects.settings.singleSignInToTHeOSF' | translate }}</li>
+        <li class="list-disc">
+          <a href="https://help.osf.io/article/406-faqs-home-page" target="_blank">{{
+            'myProjects.settings.faq' | translate
+          }}</a>
+        </li>
+      </ol>
 
-        @if (affiliations.length > 0) {
-          <div class="flex flex-column gap-3 w-full mt-5">
-            @for (affiliation of affiliations; track $index) {
-              <div
-                class="flex justify-content-between align-items-center w-full border-bottom-1 border-gray-300 pb-2 pr-2 sm:pr-4"
-              >
-                <div class="flex align-items-center gap-3">
-                  <img ngSrc="assets/images/cos-shield.svg" alt="cos-shield" width="44" height="44" />
+      @if (affiliations.length > 0) {
+        <div class="flex flex-column gap-3 w-full mt-5">
+          @for (affiliation of affiliations; track $index) {
+            <div
+              class="flex justify-content-between align-items-center w-full border-bottom-1 border-gray-300 pb-2 pr-2 sm:pr-4"
+            >
+              <div class="flex align-items-center gap-3">
+                <img ngSrc="assets/images/cos-shield.svg" alt="cos-shield" width="44" height="44" />
 
-                  <p>{{ affiliation }}</p>
-                </div>
-
-                <p-button class="danger-icon-btn" icon="fas fa-trash" severity="danger" text></p-button>
+                <p>{{ affiliation }}</p>
               </div>
-            }
-          </div>
-        }
-      </p-card>
-    </p-tabpanels>
+
+              <p-button class="danger-icon-btn" icon="fas fa-trash" severity="danger" text></p-button>
+            </div>
+          }
+        </div>
+      }
+    </p-card>
   </div>
 </section>

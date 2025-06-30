@@ -10,7 +10,7 @@
         <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
       </div>
 
-      <p-toggleswitch [ngModel]="isPublic()" (onChange)="handleToggleProjectPublicity()" />
+      <p-toggleswitch class="visibility-switch" [(ngModel)]="isPublic" (onChange)="handleToggleProjectPublicity()" />
 
       <div class="flex gap-2" [class.inactive]="!isPublic()">
         <i class="osf-icon-padlock-unlock"></i>

@@ -1,7 +1,7 @@
-<div class="resource accordion-auto-height">
+<div class="resource">
   <p-accordion (onOpen)="onOpen()">
     <p-accordion-panel value="0">
-      <p-accordion-header class="flex flex-row column-gap-3 align-items-start">
+      <p-accordion-header class="flex flex-row column-gap-3 align-items-start p-0 pb-4">
         <div class="flex flex-column row-gap-3">
           @if (item().resourceType && item().resourceType === ResourceType.Agent) {
             <p class="type">User</p>

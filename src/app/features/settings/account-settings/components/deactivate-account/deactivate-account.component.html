@@ -1,12 +1,9 @@
 <section class="account-setting">
   <h2 class="account-setting-header">{{ 'settings.accountSettings.deactivateAccount.title' | translate }}</h2>
 
-  <div class="warning-message">
-    <p-message severity="error">
-      <i class="osf-icon-warning-sign mr-2"></i>
-      {{ 'settings.accountSettings.deactivateAccount.warning.title' | translate }}
-    </p-message>
-  </div>
+  <p-message icon="fas fa-circle-exclamation" severity="error">
+    {{ 'settings.accountSettings.deactivateAccount.warning.title' | translate }}
+  </p-message>
 
   <div class="account-setting-description">
     {{ 'settings.accountSettings.deactivateAccount.description.main' | translate }}

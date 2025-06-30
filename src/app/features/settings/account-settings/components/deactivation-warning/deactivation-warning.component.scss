@@ -3,9 +3,3 @@
 :host {
   @extend .account-setting;
 }
-
-.password-help {
-  color: var(--pr-blue-1);
-  font-size: 0.75rem;
-  font-weight: 600;
-}

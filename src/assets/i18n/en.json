@@ -478,7 +478,7 @@
         "supplementsText2": "on OSF Preprints",
         "dateCreated": "Date Created",
         "dateUpdated": "Date Updated",
-        "licence": "License",
+        "license": "License",
         "publication": "Publication DOI",
         "subjects": "Subjects",
         "tags": "Tags",
@@ -503,23 +503,6 @@
         },
         "publicationDoi": {
           "label": "Publication DOI"
-        },
-        "license": {
-          "dialog": {
-            "header": "Edit Licence",
-            "chooseLicense": {
-              "label": "Choose License",
-              "placeholder": "Select license"
-            },
-            "copyrightHolders": {
-              "label": "Copyright Holders",
-              "placeholder": "Enter copyright holders"
-            },
-            "statementOfPurpose": {
-              "label": "Statement of Purpose",
-              "placeholder": "Enter statement of purpose"
-            }
-          }
         }
       },
       "dialog": {
@@ -804,7 +787,7 @@
       },
       "license": {
         "dialog": {
-          "header": "Edit Licence",
+          "header": "Edit License",
           "chooseLicense": {
             "label": "Choose License",
             "placeholder": "Select license"

@@ -3,7 +3,6 @@ import { Store } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { AccordionModule } from 'primeng/accordion';
-import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DataViewModule } from 'primeng/dataview';
 import { TableModule } from 'primeng/table';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
@@ -42,7 +41,6 @@ import { GetResources, ResetSearchState, SearchSelectors, SetResourceTab, SetSea
     TabList,
     Tabs,
     TranslatePipe,
-    AutoCompleteModule,
     FormsModule,
     AccordionModule,
     TableModule,
