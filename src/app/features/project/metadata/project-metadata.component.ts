@@ -2,6 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
+import { TreeNode } from 'primeng/api';
 import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
@@ -9,7 +10,16 @@ import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 import { EMPTY, filter, switchMap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -55,9 +65,17 @@ import {
 } from '@osf/features/project/metadata/store';
 import { ProjectOverviewSubject } from '@osf/features/project/overview/models';
 import { ContributorsSelectors, GetAllContributors } from '@osf/shared/components/contributors/store';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
+import { convertSubjectsToTreeNode } from '@osf/shared/utils/subject-tree.helper';
+import { LoadingSpinnerComponent, SubHeaderComponent, SubjectTreeComponent } from '@shared/components';
 import { CustomConfirmationService, ToastService } from '@shared/services';
-import { GetSubjects, SubjectsSelectors, UpdateProjectSubjects } from '@shared/stores/subjects';
+import {
+  GetChildrenSubjects,
+  GetParentSubjects,
+  GetSubjects,
+  LoadProjectSubjects,
+  SubjectsSelectors,
+  UpdateProjectSubjects,
+} from '@shared/stores/subjects';
 
 @Component({
   selector: 'osf-project-metadata',
@@ -82,6 +100,7 @@ import { GetSubjects, SubjectsSelectors, UpdateProjectSubjects } from '@shared/s
     TabPanels,
     Tabs,
     LoadingSpinnerComponent,
+    SubjectTreeComponent,
   ],
   templateUrl: './project-metadata.component.html',
   styleUrl: './project-metadata.component.scss',
@@ -114,6 +133,9 @@ export class ProjectMetadataComponent implements OnInit {
     getContributors: GetAllContributors,
     getUserInstitutions: GetUserInstitutions,
     getHighlightedSubjects: GetSubjects,
+    loadProjectSubjects: LoadProjectSubjects,
+    getParentSubjects: GetParentSubjects,
+    getChildrenSubjects: GetChildrenSubjects,
     getCedarRecords: GetCedarMetadataRecords,
     getCedarTemplates: GetCedarMetadataTemplates,
     createCedarRecord: CreateCedarMetadataRecord,
@@ -128,9 +150,19 @@ export class ProjectMetadataComponent implements OnInit {
   protected isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   protected highlightedSubjects = select(SubjectsSelectors.getHighlightedSubjects);
   protected highlightedSubjectsLoading = select(SubjectsSelectors.getHighlightedSubjectsLoading);
+  protected parentSubjects = select(SubjectsSelectors.getParentSubjects);
+  protected areParentSubjectsLoading = select(SubjectsSelectors.areParentSubjectsLoading);
   protected currentUser = select(UserSelectors.getCurrentUser);
   protected cedarRecords = select(ProjectMetadataSelectors.getCedarRecords);
   protected cedarTemplates = select(ProjectMetadataSelectors.getCedarTemplates);
+
+  selectedSubjects = computed(() => this.currentProject()?.subjects.map((x) => x.id));
+  subjectsData = computed(() => ({
+    selectedIds: this.currentProject()?.subjects.map((x) => x.id) || [],
+    subjects: this.parentSubjects(),
+  }));
+
+  subjectTree = computed(() => convertSubjectsToTreeNode(this.parentSubjects(), []));
 
   constructor() {
     effect(() => {
@@ -172,6 +204,7 @@ export class ProjectMetadataComponent implements OnInit {
 
     if (projectId) {
       this.actions.getHighlightedSubjects();
+      this.actions.getParentSubjects();
       this.actions.getProject(projectId);
       this.actions.getCustomItemMetadata(projectId);
       this.actions.getContributors(projectId);
@@ -183,6 +216,14 @@ export class ProjectMetadataComponent implements OnInit {
         this.actions.getUserInstitutions(user.id);
       }
     }
+  }
+
+  loadChildren(node: TreeNode) {
+    this.actions.getChildrenSubjects(node.key ?? '', node?.parent?.key);
+  }
+
+  updateSubjects(ids: string[]) {
+    console.log(ids);
   }
 
   private handleRouteBasedTabSelection(): void {

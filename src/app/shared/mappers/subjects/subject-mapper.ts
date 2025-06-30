@@ -1,6 +1,17 @@
-import { NodeSubjectModel, SubjectData } from '@shared/models';
+import { NodeSubjectModel, SubjectData, SubjectModel } from '@shared/models';
 
 export class SubjectMapper {
+  static mapSubjects(subjectData: SubjectData[]): SubjectModel[] {
+    return subjectData.map(
+      (data) =>
+        ({
+          id: data.id,
+          text: data.attributes.text,
+          childrenCount: data.relationships.children.links.related.meta['count'],
+        }) as SubjectModel
+    );
+  }
+
   static mapSubjectsResponse(subjectData: SubjectData[]): NodeSubjectModel[] {
     const subjectMap = new Map<string, NodeSubjectModel>();
     const rootSubjects: NodeSubjectModel[] = [];

@@ -1,5 +1,12 @@
 import { LinkTableModel } from '@osf/features/project/settings/models';
 
+export interface SubjectModel {
+  id: string;
+  text: string;
+  childrenCount: number;
+  children?: SubjectModel[];
+}
+
 export interface NodeSubjectModel {
   id: string;
   text: string;

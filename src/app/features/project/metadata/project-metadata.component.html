@@ -102,6 +102,13 @@
                       [currentProject]="currentProject()"
                       [subjectsList]="highlightedSubjects()"
                     />
+
+                    <osf-subject-tree
+                      [subjectData]="subjectsData()"
+                      [treeData]="subjectTree()"
+                      (itemsSelected)="updateSubjects($event)"
+                      (loadChildren)="loadChildren($event)"
+                    ></osf-subject-tree>
                   </div>
                 </div>
               }

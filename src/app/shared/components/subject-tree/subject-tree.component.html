@@ -1,0 +1,17 @@
+<p-tree
+  [value]="treeData()"
+  selectionMode="checkbox"
+  styleClass="w-full md:w-[30rem]"
+  [loading]="loading()"
+  (onNodeExpand)="onNodeExpand($event)"
+  [(selection)]="selectedTreeSubjects"
+  (selectionChange)="selectionChanged($event)"
+>
+  <!-- <ng-template #togglericon let-active>
+    @if (active) {
+      <i class="fas fa-chevron-up"></i>
+    } @else {
+      <i class="fas fa-chevron-down"></i>
+    }
+  </ng-template> -->
+</p-tree>
