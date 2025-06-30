@@ -1,8 +1,8 @@
 import { Selector } from '@ngxs/store';
 
-import { RegistryOverview } from '@osf/features/registry/models';
-import { RegistryOverviewStateModel } from '@osf/features/registry/store/registry-overview/registry-overview.model';
-import { RegistryOverviewState } from '@osf/features/registry/store/registry-overview/registry-overview.state';
+import { RegistryInstitution, RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
+import { RegistrySchemaBlock } from '@osf/features/registry/models/registry-schema-block.model';
+import { RegistryOverviewState, RegistryOverviewStateModel } from '@osf/features/registry/store/registry-overview';
 
 export class RegistryOverviewSelectors {
   @Selector([RegistryOverviewState])
@@ -13,5 +13,35 @@ export class RegistryOverviewSelectors {
   @Selector([RegistryOverviewState])
   static isRegistryLoading(state: RegistryOverviewStateModel): boolean {
     return state.registry.isLoading;
+  }
+
+  @Selector([RegistryOverviewState])
+  static getSubjects(state: RegistryOverviewStateModel): RegistrySubject[] | null {
+    return state.subjects.data;
+  }
+
+  @Selector([RegistryOverviewState])
+  static isSubjectsLoading(state: RegistryOverviewStateModel): boolean {
+    return state.subjects.isLoading;
+  }
+
+  @Selector([RegistryOverviewState])
+  static getInstitutions(state: RegistryOverviewStateModel): RegistryInstitution[] | null {
+    return state.institutions.data;
+  }
+
+  @Selector([RegistryOverviewState])
+  static isInstitutionsLoading(state: RegistryOverviewStateModel): boolean {
+    return state.institutions.isLoading;
+  }
+
+  @Selector([RegistryOverviewState])
+  static getSchemaBlocks(state: RegistryOverviewStateModel): RegistrySchemaBlock[] | null {
+    return state.schemaBlocks.data;
+  }
+
+  @Selector([RegistryOverviewState])
+  static isSchemaBlocksLoading(state: RegistryOverviewStateModel): boolean {
+    return state.schemaBlocks.isLoading;
   }
 }

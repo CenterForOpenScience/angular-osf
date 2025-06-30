@@ -1,3 +1,5 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Skeleton } from 'primeng/skeleton';
 
@@ -15,7 +17,16 @@ import { IS_XSMALL } from '@shared/utils';
 
 @Component({
   selector: 'osf-resource-card',
-  imports: [Accordion, AccordionContent, AccordionHeader, AccordionPanel, DatePipe, NgOptimizedImage, Skeleton],
+  imports: [
+    Accordion,
+    AccordionContent,
+    AccordionHeader,
+    AccordionPanel,
+    DatePipe,
+    NgOptimizedImage,
+    Skeleton,
+    TranslatePipe,
+  ],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

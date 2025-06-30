@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OverviewMetadataComponent } from './overview-metadata.component';
+import { OverviewMetadataComponent } from './resource-metadata.component';
 
 describe('OverviewMetadataComponent', () => {
   let component: OverviewMetadataComponent;

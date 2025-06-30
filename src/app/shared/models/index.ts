@@ -20,6 +20,7 @@ export * from './node-subject.model';
 export * from './paginated-data.model';
 export * from './query-params.model';
 export * from './resource-card';
+export * from './resource-overview.model';
 export * from './select-option.model';
 export * from './severity.type';
 export * from './social-icon.model';

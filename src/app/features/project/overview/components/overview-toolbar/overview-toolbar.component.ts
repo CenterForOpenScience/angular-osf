@@ -159,12 +159,12 @@ export class OverviewToolbarComponent {
     const resource = this.currentResource();
     if (!resource) return;
 
-    const isCurrentlyPublic = project.isPublic;
+    const isCurrentlyPublic = resource.isPublic;
     const newPublicStatus = !isCurrentlyPublic;
 
     timer(100)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.isPublic.set(project.isPublic));
+      .subscribe(() => this.isPublic.set(resource.isPublic));
 
     this.dialogService.open(TogglePublicityDialogComponent, {
       focusOnShow: false,

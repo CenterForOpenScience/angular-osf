@@ -5,6 +5,7 @@ export * from './input-limits.const';
 export * from './input-validation-messages.const';
 export * from './language.const';
 export * from './meetings-table.constants';
+export * from './osf-resource-types.const';
 export * from './registry-services-icons.const';
 export * from './remove-nullable.const';
 export * from './resource-filters-defaults';

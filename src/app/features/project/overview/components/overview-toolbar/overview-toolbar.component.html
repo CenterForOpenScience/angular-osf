@@ -9,21 +9,14 @@
           <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
         </div>
 
-        <p-toggleswitch [ngModel]="isPublic()" (onChange)="handleToggleProjectPublicity()" />
+        <p-toggleswitch class="visibility-switch" [(ngModel)]="isPublic" (onChange)="handleToggleProjectPublicity()" />
 
         <div class="flex gap-2" [class.inactive]="!isPublic()">
           <i class="osf-icon-padlock-unlock"></i>
           <p class="font-bold">{{ 'project.overview.header.publicProject' | translate }}</p>
         </div>
       </div>
-
-      <p-toggleswitch class="visibility-switch" [(ngModel)]="isPublic" (onChange)="handleToggleProjectPublicity()" />
-
-      <div class="flex gap-2" [class.inactive]="!isPublic()">
-        <i class="osf-icon-padlock-unlock"></i>
-        <p class="font-bold">{{ 'project.overview.header.publicProject' | translate }}</p>
-      </div>
-    </div>
+    }
 
     <div class="flex">
       <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row-reverse lg:flex-row">

@@ -10,15 +10,15 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ClearCollections, GetBookmarksCollectionId } from '@osf/features/collections/store';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
+import { LoadingSpinnerComponent, ResourceMetadataComponent, SubHeaderComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
+import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
 
 import { ClearWiki, GetHomeWiki } from '../wiki/store';
 
 import {
   LinkedProjectsComponent,
   OverviewComponentsComponent,
-  OverviewMetadataComponent,
   OverviewToolbarComponent,
   OverviewWikiComponent,
   RecentActivityComponent,
@@ -46,8 +46,8 @@ import {
     OverviewComponentsComponent,
     LinkedProjectsComponent,
     RecentActivityComponent,
-    OverviewMetadataComponent,
     OverviewToolbarComponent,
+    ResourceMetadataComponent,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,6 +70,13 @@ export class ProjectOverviewComponent implements OnInit {
   });
 
   protected currentProject = select(ProjectOverviewSelectors.getProject);
+  protected resourceOverview = computed(() => {
+    const project = this.currentProject();
+    if (project) {
+      return MapProjectOverview(project);
+    }
+    return null;
+  });
   protected isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   protected currentResource = computed(() => {
     if (this.currentProject()) {

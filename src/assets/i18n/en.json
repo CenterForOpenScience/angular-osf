@@ -1548,6 +1548,21 @@
     "browse": "Browse Registrations",
     "seeMore": "See more"
   },
+  "registry": {
+    "overview": {
+      "public": "Public Registration",
+      "updates": "Updates",
+      "statuses": {
+        "frozen": "This public registration is a frozen, non-editable version of this"
+      },
+      "metadata": {
+        "type": "Registration Type",
+        "registeredDate": "Date registered",
+        "doi": "Registration DOI",
+        "associatedProject": "Associated project"
+      }
+    }
+  },
   "truncatedText": {
     "readMore": "Read more",
     "hide": "Hide"
@@ -1582,6 +1597,37 @@
       "papers": "Papers",
       "supplements": "Supplements"
     }
+  },
+  "resourceCard": {
+    "type": {
+      "user": "User"
+    },
+    "labels": {
+      "from": "From:",
+      "dateCreated": "Date created:",
+      "dateModified": "Date modified:",
+      "description": "Description:",
+      "registrationProvider": "Registration provider:",
+      "license": "License:",
+      "registrationTemplate": "Registration Template:",
+      "provider": "Provider:",
+      "conflictOfInterestResponse": "Conflict of Interest response: Author asserted no Conflict of Interest",
+      "url": "URL:",
+      "doi": "DOI:",
+      "publicProjects": "Public projects:",
+      "publicRegistrations": "Public registrations:",
+      "publicPreprints": "Public preprints:",
+      "employment": "Employment:",
+      "education": "Education:"
+    },
+    "resources": {
+      "data": "Data",
+      "analyticCode": "Analytic Code",
+      "materials": "Materials",
+      "papers": "Papers",
+      "supplements": "Supplements"
+    },
+    "more": "and {{count}} more"
   },
   "pageNotFound": {
     "title": "Page not found",

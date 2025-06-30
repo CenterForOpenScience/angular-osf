@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -8,4 +8,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './registry.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistryComponent {}
+export class RegistryComponent {
+  @HostBinding('class') classes = 'flex-1 flex flex-column';
+}
