@@ -339,7 +339,8 @@
       "enabledForWiki": "This feature is enabled for wikis of private projects.",
       "delete": {
         "title": "Delete Link {{name}}?",
-        "message": "Are you sure you want to delete this view only link?"
+        "message": "Are you sure you want to delete this view only link?",
+        "success": "View only link successfully deleted."
       },
       "descriptions": {
         "comments": {
@@ -889,6 +890,11 @@
         "editContributors": "Edit contributors",
         "updateSucceed": "Contributors successfully updated."
       }
+    },
+    "deleteProject": {
+      "title": "Delete project",
+      "message": "Are you sure you want to delete <b>{{name}}</b> project?",
+      "success": "Project has been successfully deleted."
     }
   },
   "collections": {
@@ -977,8 +983,12 @@
     "allItems": "All Items",
     "moderators": "Moderators",
     "settings": "Settings",
+    "submitted": "Submitted",
+    "pending": "Pending",
     "settingsMessage": "To configure your notification preferences visit your",
     "userSettings": "User settings",
+    "bulkUpload": "Bulk upload",
+    "bulkUploadMessage": "Drag and drop the csv file that has the registration information to upload.",
     "addModerator": "Add moderator",
     "inviteModerator": "Invite moderator",
     "searchModerator": "Search moderator",
@@ -1001,7 +1011,9 @@
       "pending": "Pending",
       "accepted": "Accepted",
       "rejected": "Rejected",
-      "withdrawn": "Withdrawn"
+      "withdrawn": "Withdrawn",
+      "public": "public",
+      "embargo": "embargo"
     },
     "submissionReview": {
       "submitted": "Submitted",

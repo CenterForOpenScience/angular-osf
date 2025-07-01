@@ -7,7 +7,7 @@
   />
 
   @if (institutionsLoading()) {
-    <div class="flex-1 mt-4 md:mt-8 lg:pt-5">
+    <div class="flex-1 bg-white">
       <osf-loading-spinner />
     </div>
   } @else {
@@ -17,18 +17,24 @@
       <div class="py-5 flex flex-column gap-3">
         @for (institution of institutions(); track $index) {
           <div class="border-1 border-round-xl grey-border-color px-5 py-4 flex align-items-center gap-4">
-            <img [ngSrc]="institution.assets.logo" [alt]="institution.name" width="60" height="60" />
+            <img class="image" [ngSrc]="institution.assets.logo" [alt]="institution.name" width="60" height="60" />
 
-            <h3 class="text-lg">{{ institution.name }}</h3>
+            <h2>{{ institution.name }}</h2>
           </div>
+        }
+
+        @if (!institutions().length) {
+          <p class="text-center">{{ 'common.search.noResultsFound' | translate }}</p>
         }
       </div>
 
-      <osf-custom-paginator
-        [first]="first()"
-        [totalCount]="totalInstitutionsCount()"
-        (pageChanged)="onPageChange($event)"
-      ></osf-custom-paginator>
+      @if (totalInstitutionsCount() > 10) {
+        <osf-custom-paginator
+          [first]="first()"
+          [totalCount]="totalInstitutionsCount()"
+          (pageChanged)="onPageChange($event)"
+        ></osf-custom-paginator>
+      }
     </div>
   }
 </section>

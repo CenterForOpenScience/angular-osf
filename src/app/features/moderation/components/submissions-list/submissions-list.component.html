@@ -1,5 +1,5 @@
 <div class="submission-container mt-5">
-  @for (item of pendingSubmissions; track $index) {
+  @for (item of submissions(); track $index) {
     <div class="submission-item">
       <osf-submission-item [submission]="item"></osf-submission-item>
     </div>

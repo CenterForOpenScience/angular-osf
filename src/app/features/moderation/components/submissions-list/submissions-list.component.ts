@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
+import { Submission } from '../../models';
 import { SubmissionItemComponent } from '../submission-item/submission-item.component';
-import { pendingReviews } from '../test-data';
 
 @Component({
   selector: 'osf-submissions-list',
@@ -11,5 +11,5 @@ import { pendingReviews } from '../test-data';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubmissionsListComponent {
-  pendingSubmissions = pendingReviews;
+  submissions = input.required<Submission[]>();
 }

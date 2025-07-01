@@ -1,7 +1,7 @@
 <section class="flex flex-column flex-1">
   <osf-sub-header [title]="'navigation.project.settings' | translate" />
 
-  <div class="flex flex-column flex-1 w-full bg-white py-4 px-3 md:px-5 xl:px-4">
+  <div class="flex flex-column flex-1 gap-4 w-full bg-white py-4 px-3 md:px-5 xl:px-4">
     <osf-settings-project-form-card
       (submitForm)="submitForm($event)"
       (deleteProject)="deleteProject()"
@@ -59,9 +59,9 @@
         <li class="list-disc">{{ 'myProjects.settings.publicProjectsToBeDiscoverable' | translate }}</li>
         <li class="list-disc">{{ 'myProjects.settings.singleSignInToTHeOSF' | translate }}</li>
         <li class="list-disc">
-          <a href="https://help.osf.io/article/406-faqs-home-page" target="_blank">{{
-            'myProjects.settings.faq' | translate
-          }}</a>
+          <a href="https://help.osf.io/article/406-faqs-home-page" target="_blank">
+            {{ 'myProjects.settings.faq' | translate }}
+          </a>
         </li>
       </ol>
 

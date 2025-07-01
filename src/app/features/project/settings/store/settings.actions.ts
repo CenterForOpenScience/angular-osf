@@ -26,7 +26,7 @@ export class UpdateProjectSettings {
 }
 
 export class UpdateProjectDetails {
-  static readonly type = '[Project] Update';
+  static readonly type = '[Settings] Update Project Details';
 
   constructor(public payload: UpdateNodeRequestModel) {}
 }
@@ -47,4 +47,10 @@ export class DeleteViewOnlyLink {
     public projectId: string,
     public linkId: string
   ) {}
+}
+
+export class DeleteProject {
+  static readonly type = '[Settings] Delete Project';
+
+  constructor(public projectId: string) {}
 }

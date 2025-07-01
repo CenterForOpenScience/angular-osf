@@ -10,7 +10,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { timer } from 'rxjs';
 
-import { NgClass, NgOptimizedImage } from '@angular/common';
+import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +23,7 @@ import {
 } from '@osf/features/collections/store';
 import { GetMyBookmarks, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { DuplicateDialogComponent, TogglePublicityDialogComponent } from '@osf/features/project/overview/components';
+import { IconComponent } from '@osf/shared/components';
 import { ToastService } from '@osf/shared/services';
 import { ResourceType } from '@shared/enums';
 import { ToolbarResource } from '@shared/models';
@@ -42,8 +43,8 @@ import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';
     FormsModule,
     NgClass,
     RouterLink,
-    NgOptimizedImage,
     FileSizePipe,
+    IconComponent,
   ],
   templateUrl: './overview-toolbar.component.html',
   styleUrl: './overview-toolbar.component.scss',

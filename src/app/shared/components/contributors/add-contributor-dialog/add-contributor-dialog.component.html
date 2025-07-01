@@ -33,7 +33,7 @@
     @if (!isInitialState()) {
       <div class="flex justify-content-end mt-4">
         <p-button
-          class="secondary-add-btn"
+          class="btn-full-width md:w-auto"
           severity="secondary"
           [label]="'project.contributors.addDialog.addUnregisteredContributor' | translate"
           (click)="addUnregistered()"

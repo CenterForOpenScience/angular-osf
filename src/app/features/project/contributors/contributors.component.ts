@@ -301,7 +301,10 @@ export class ContributorsComponent implements OnInit {
       headerKey: 'myProjects.settings.delete.title',
       headerParams: { name: link.name },
       messageKey: 'myProjects.settings.delete.message',
-      onConfirm: () => this.actions.deleteViewOnlyLink(this.projectId(), link.id),
+      onConfirm: () =>
+        this.actions
+          .deleteViewOnlyLink(this.projectId(), link.id)
+          .subscribe(() => this.toastService.showSuccess('myProjects.settings.delete.success')),
     });
   }
 }
