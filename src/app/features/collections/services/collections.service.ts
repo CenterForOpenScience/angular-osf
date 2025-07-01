@@ -1,6 +1,6 @@
 import { createDispatchMap } from '@ngxs/store';
 
-import { forkJoin, map, Observable, switchMap } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -97,13 +97,16 @@ export class CollectionsService {
     searchText: string,
     activeFilters: Record<string, string[]>,
     page = '1',
-    sortBy = 'relevance'
+    sortBy = ''
   ): Observable<CollectionSubmission[]> {
-    const url = `${environment.apiUrl}/search/collections`;
+    const url = `${environment.apiUrl}/search/collections/`;
     const params: Record<string, string> = {
       page,
-      sort: sortBy,
     };
+
+    if (sortBy) {
+      params['sort'] = sortBy;
+    }
     const payload: CollectionSubmissionsPayloadJsonApi = {
       data: {
         attributes: {
@@ -119,6 +122,10 @@ export class CollectionsService {
       .post<JsonApiResponseWithPaging<CollectionSubmissionJsonApi[], null>>(url, payload, params)
       .pipe(
         switchMap((response) => {
+          if (!response.data.length) {
+            return of([]);
+          }
+
           const contributorUrls = response.data.map(
             (submission) => submission.embeds.guid.data.relationships.bibliographic_contributors.links.related.href
           );

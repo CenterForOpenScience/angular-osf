@@ -39,7 +39,6 @@ export class CollectionsMainContentComponent {
   protected isWeb = toSignal(inject(IS_WEB));
   protected selectedSort = select(CollectionsSelectors.getSortBy);
   protected collectionSubmissions = select(CollectionsSelectors.getCollectionSubmissions);
-  protected isCollectionSubmissionsLoading = select(CollectionsSelectors.getCollectionSubmissionsLoading);
 
   protected isFiltersOpen = signal(false);
   protected isSortingOpen = signal(false);

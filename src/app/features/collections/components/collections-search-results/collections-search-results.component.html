@@ -1,4 +1,4 @@
-<p-dataView [value]="searchResults()" class="w-full" [rows]="10">
+<p-dataView [value]="searchResults()" class="collection-search-results w-full" [rows]="10">
   <ng-template #list let-items>
     <div class="flex flex-column gap-3">
       @if (isLoading()) {

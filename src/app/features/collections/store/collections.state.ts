@@ -22,7 +22,6 @@ import {
   SetIssueFilters,
   SetPageNumber,
   SetProgramAreaFilters,
-  SetReviewsStateFilters,
   SetSchoolTypeFilters,
   SetSearchValue,
   SetSortBy,
@@ -74,7 +73,7 @@ const COLLECTIONS_DEFAULTS: CollectionsStateModel = {
     error: null,
   },
   totalSubmissions: 0,
-  sortBy: 'relevance',
+  sortBy: '',
   searchText: '',
   page: '1',
 };
@@ -303,17 +302,6 @@ export class CollectionsState {
       currentFilters: {
         ...state.currentFilters,
         issue: action.issueFilters,
-      },
-    });
-  }
-
-  @Action(SetReviewsStateFilters)
-  setReviewsStateFilters(ctx: StateContext<CollectionsStateModel>, action: SetReviewsStateFilters) {
-    const state = ctx.getState();
-    ctx.patchState({
-      currentFilters: {
-        ...state.currentFilters,
-        reviewsState: action.reviewsStateFilters,
       },
     });
   }

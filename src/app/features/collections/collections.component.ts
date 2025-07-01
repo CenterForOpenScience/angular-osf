@@ -13,7 +13,7 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CollectionsHelpDialogComponent, CollectionsMainContentComponent } from '@osf/features/collections/components';
-import { CollectionFilters } from '@osf/features/collections/models';
+import { CollectionsFilters } from '@osf/features/collections/models';
 import { CollectionsQuerySyncService } from '@osf/features/collections/services';
 import {
   CollectionsSelectors,
@@ -109,7 +109,7 @@ export class CollectionsComponent {
       const selectedFilters = this.selectedFilters();
       const pageNumber = this.pageNumber();
 
-      if (searchText !== undefined && sortBy && selectedFilters && pageNumber) {
+      if (searchText !== undefined && sortBy !== undefined && selectedFilters && pageNumber) {
         this.querySyncService.syncStoreToUrl(searchText, sortBy, selectedFilters, pageNumber);
       }
     });
@@ -122,14 +122,14 @@ export class CollectionsComponent {
       const providerId = this.providerId();
       const collectionDetails = this.collectionDetails();
 
-      if (searchText !== undefined && sortBy && selectedFilters && pageNumber && providerId && collectionDetails) {
+      if (searchText !== undefined && selectedFilters && pageNumber && providerId && collectionDetails) {
         const activeFilters = this.getActiveFilters(selectedFilters);
         this.actions.getCollectionSubmissions(providerId, searchText, activeFilters, pageNumber, sortBy);
       }
     });
   }
 
-  private getActiveFilters(filters: CollectionFilters): Record<string, string[]> {
+  private getActiveFilters(filters: CollectionsFilters): Record<string, string[]> {
     return Object.entries(filters)
       .filter(([key, value]) => value.length)
       .reduce(

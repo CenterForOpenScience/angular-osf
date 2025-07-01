@@ -18,7 +18,6 @@ import {
   SetGradeLevelsFilters,
   SetIssueFilters,
   SetProgramAreaFilters,
-  SetReviewsStateFilters,
   SetSchoolTypeFilters,
   SetStatusFilters,
   SetStudyDesignFilters,
@@ -46,7 +45,6 @@ export class CollectionsFiltersComponent {
     disease: SetDiseaseFilters,
     gradeLevels: SetGradeLevelsFilters,
     issue: SetIssueFilters,
-    reviewsState: SetReviewsStateFilters,
     schoolType: SetSchoolTypeFilters,
     studyDesign: SetStudyDesignFilters,
     volume: SetVolumeFilters,
@@ -95,9 +93,6 @@ export class CollectionsFiltersComponent {
         break;
       case 'issue':
         this.actions.issue(filters);
-        break;
-      case 'reviewsState':
-        this.actions.reviewsState(filters);
         break;
       case 'schoolType':
         this.actions.schoolType(filters);

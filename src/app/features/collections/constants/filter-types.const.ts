@@ -8,7 +8,6 @@ export const collectionFilterTypes: CollectionFilterType[] = [
   'disease',
   'gradeLevels',
   'issue',
-  'reviewsState',
   'schoolType',
   'studyDesign',
   'volume',

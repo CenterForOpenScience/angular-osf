@@ -80,12 +80,6 @@ export class SetIssueFilters {
   constructor(public issueFilters: string[]) {}
 }
 
-export class SetReviewsStateFilters {
-  static readonly type = '[Collections] Set Reviews State Filters';
-
-  constructor(public reviewsStateFilters: string[]) {}
-}
-
 export class SetSchoolTypeFilters {
   static readonly type = '[Collections] Set School Type Filters';
 
