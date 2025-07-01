@@ -11,11 +11,10 @@
       </p-tablist>
     }
 
-    <p-tabpanels class="p-3 sm:p-5 flex-1">
+    <p-tabpanels class="p-3 flex-1 md:p-5 xl:p-4">
       @if (isMobile()) {
         <p-select
-          class="w-full mb-4"
-          [class.mobile]="isMobile()"
+          class="w-full text-center mb-4"
           [options]="tabOptions"
           optionLabel="label"
           optionValue="value"

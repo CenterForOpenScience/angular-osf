@@ -1,7 +1,7 @@
-<section class="flex flex-column flex-1 xl:mt-6">
+<section class="flex flex-column flex-1 h-full xl:mt-6">
   <osf-sub-header [title]="'navigation.moderation' | translate" />
 
-  <div class="flex-column flex flex-1 w-full">
+  <div class="flex-column flex flex-1 w-full h-full">
     <p-tabs class="flex-1" [value]="selectedTab" [lazy]="true" (valueChange)="onTabChange(+$event)">
       @if (isMedium()) {
         <p-tablist class="pr-5 pl-5">
@@ -13,7 +13,12 @@
 
       <p-tabpanels class="p-3 flex-1 md:p-5 xl:p-4">
         @if (!isMedium()) {
-          <osf-select [options]="tabOptions" [fullWidth]="true" [(selectedValue)]="selectedTab"></osf-select>
+          <osf-select
+            class="block mb-4"
+            [options]="tabOptions"
+            [fullWidth]="true"
+            [(selectedValue)]="selectedTab"
+          ></osf-select>
         }
 
         <p-tabpanel [value]="tabs.AllItems">

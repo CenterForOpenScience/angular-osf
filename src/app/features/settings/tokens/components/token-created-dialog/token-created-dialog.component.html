@@ -9,7 +9,7 @@
   <div class="flex flex-column gap-2">
     <div class="p-inputgroup">
       <p-iconfield class="w-full" iconPosition="right">
-        <input class="overflow-ellipsis" pInputText [value]="tokenId()" readonly #tokenInput />
+        <input class="w-full overflow-ellipsis" pInputText [value]="tokenId()" readonly #tokenInput />
         <p-inputicon>
           <osf-copy-button [copyItem]="tokenId()"></osf-copy-button>
         </p-inputicon>

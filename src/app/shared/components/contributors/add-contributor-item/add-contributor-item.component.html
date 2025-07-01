@@ -1,15 +1,17 @@
 <div>
   <p class="border-divider p-b-12 m-b-12">{{ contributor().fullName }}</p>
 
-  <div class="no-border-dropdown select-font-normal flex align-items-center p-b-12">
+  <div class="flex align-items-center p-b-12">
     <label class="label mr-2" [for]="`${contributor().id}-permission`">
       {{ 'project.contributors.table.headers.permissions' | translate }}:
     </label>
 
     <p-select
+      class="no-border-dropdown"
       [placeholder]="'project.contributors.permissionFilter' | translate"
       [options]="permissionsOptions"
       optionValue="value"
+      appendTo="body"
       [(ngModel)]="contributor().permission"
     >
       <ng-template #selectedItem let-selectedOption>

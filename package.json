@@ -19,7 +19,8 @@
     "icons:build": "npm run icons:optimize && npm run icons:generate",
     "prepare": "husky",
     "ngxs:actions": "ng generate @ngxs/store:actions --name --path",
-    "ngxs:store": "ng generate @ngxs/store:store --name --path"
+    "ngxs:store": "ng generate @ngxs/store:store --name --path",
+    "analyze-bundle": "ng build --configuration=analyze-bundle && source-map-explorer dist/**/*.js --no-border-checks"
   },
   "private": true,
   "dependencies": {
@@ -40,8 +41,8 @@
     "@ngxs/logger-plugin": "^19.0.0",
     "@ngxs/store": "^19.0.0",
     "@primeng/themes": "^19.0.9",
-    "cedar-embeddable-editor": "^1.5.0",
     "ace-builds": "^1.42.0",
+    "cedar-embeddable-editor": "^1.5.0",
     "chart.js": "^4.4.9",
     "diff": "^8.0.2",
     "markdown-it": "^14.1.0",
@@ -79,6 +80,7 @@
     "lint-staged": "^15.4.3",
     "ng-mocks": "^14.13.4",
     "prettier": "3.5.2",
+    "source-map-explorer": "^2.5.3",
     "ts-jest": "^29.3.2",
     "typescript": "~5.7.2",
     "typescript-eslint": "8.23.0"

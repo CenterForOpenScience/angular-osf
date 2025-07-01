@@ -20,6 +20,8 @@ export class SelectComponent {
   selectedValue = model.required<Primitive>();
   placeholder = input<string>('');
   appendTo = input<string | null>(null);
-  changeValue = output<Primitive>();
   fullWidth = input(false);
+  noBorder = input(false);
+
+  changeValue = output<Primitive>();
 }

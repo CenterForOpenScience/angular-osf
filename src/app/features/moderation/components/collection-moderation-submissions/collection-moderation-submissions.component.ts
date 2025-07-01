@@ -12,6 +12,7 @@ import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import { SUBMISSION_REVIEW_OPTIONS } from '../../constants';
 import { SubmissionReviewStatus } from '../../enums';
 import { SubmissionsListComponent } from '../submissions-list/submissions-list.component';
+import { pendingReviews } from '../test-data';
 
 @Component({
   selector: 'osf-collection-moderation-submissions',
@@ -28,6 +29,8 @@ export class CollectionModerationSubmissionsComponent {
   selectedReviewOption = this.submissionReviewOptions[0].value;
 
   totalCount = 5;
+
+  submissions = pendingReviews;
 
   changeReviewStatus(value: SubmissionReviewStatus) {
     console.log(value);

@@ -1,55 +1,38 @@
-@use "../variables" as var;
-@use "../mixins" as mix;
-
 .p-datepicker {
   width: 100%;
+  --p-datepicker-input-icon-color: var(--grey-1);
 
   .p-datepicker-header {
-    .p-button {
-      background: none;
-      color: var.$grey-2;
-      padding: 0;
-    }
-
-    .p-button-icon-only {
-      width: auto;
-    }
-
-    .p-datepicker-title {
-      button {
-        font-size: 16px;
-        padding: 0;
-        color: var.$dark-blue-1;
-      }
-    }
+    --p-button-text-primary-color: var(--grey-1);
+    --p-datepicker-select-month-color: var(--dark-blue-1);
+    --p-datepicker-select-month-padding: 0;
+    --p-datepicker-date-hover-background: var(--bg-blue-3);
+    --p-datepicker-date-hover-color: var(--dark-blue-1);
+    --p-datepicker-select-year-padding: 0;
+    --p-datepicker-select-year-hover-background: var(--bg-blue-3);
+    --p-datepicker-select-year-hover-color: var(--dark-blue-1);
   }
 
-  .p-datepicker-day:hover {
-    background: var.$bg-blue-3;
+  .p-datepicker-title {
+    .p-datepicker-select-month,
+    .p-datepicker-select-year {
+      font-size: 1rem;
+    }
   }
 
   .p-datepicker-today > .p-datepicker-day {
-    background: none;
-    color: var.$pr-blue-1;
+    --p-datepicker-today-background: none;
+    --p-datepicker-today-color: var(--pr-blue-1);
     font-weight: 700;
 
     &:hover {
-      background: var.$pr-blue-2;
-      color: var.$white;
+      --p-datepicker-date-hover-background: var(--pr-blue-2);
+      --p-datepicker-date-hover-color: var(--white);
     }
   }
 
   .p-datepicker-day-selected {
-    background: var.$pr-blue-1;
-
-    &:hover {
-      background: var.$pr-blue-2;
-      color: var.$white;
-    }
-  }
-
-  .p-datepicker-today > .p-datepicker-day-selected {
-    background: var.$pr-blue-1;
-    color: var.$white;
+    --p-datepicker-date-hover-background: var(--pr-blue-2);
+    --p-datepicker-date-hover-color: var(--white);
   }
 }

@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
@@ -43,7 +42,6 @@ import {
     TabPanel,
     TabPanels,
     SearchInputComponent,
-    AutoCompleteModule,
     AddonCardListComponent,
     SelectComponent,
     FormsModule,

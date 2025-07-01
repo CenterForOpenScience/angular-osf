@@ -1,59 +1,32 @@
-@use "assets/styles/variables" as var;
-
 .p-accordion {
-  display: flex;
-  flex-direction: column;
+  --p-accordion-header-color: var(--dark-blue-1);
+  --p-accordion-header-font-weight: 700;
+  --p-accordion-header-padding: 1.5rem 0;
+  --p-accordion-panel-header-color: var(--grey-2);
+  --p-accordion-panel-border-color: var(--grey-2);
+  --p-accordion-content-padding: 0;
 
   .p-accordionheader {
-    height: 5.1rem;
-    color: var.$dark-blue-1;
-    font-weight: 700;
-    padding: 0;
-    display: flex;
-
     .p-iconwrapper {
       transform: rotate(180deg);
-
-      svg {
-        color: var.$grey-1;
-      }
-    }
-  }
-
-  .p-accordioncontent-content {
-    padding: 0;
-  }
-}
-
-.accordion-auto-height {
-  .p-accordion {
-    .p-accordionheader {
-      height: auto;
-    }
-    .p-accordionpanel {
-      border: none;
-    }
-    .p-accordioncontent-content {
-      padding: 1.2rem 0 0 0;
+      color: var(--grey-1);
     }
   }
 }
 
 .resource {
   .p-accordion {
+    --p-accordion-panel-border-width: 0;
+
     .p-accordionheader {
       .p-iconwrapper {
-        transform: rotate(180deg);
-        background: var.$bg-blue-3;
-        height: 2.3rem;
-        min-width: 2.3rem;
+        background: var(--bg-blue-3);
+        height: 2rem;
+        min-width: 2rem;
         border-radius: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
 
         svg {
-          color: var.$pr-blue-1;
+          color: var(--pr-blue-1);
         }
       }
     }
@@ -78,37 +51,26 @@
   }
 }
 
-.card {
-  .p-accordion {
-    .p-accordioncontent-content {
-      display: flex;
-      flex-direction: column;
-      row-gap: 1rem;
-      padding: 0.4rem 0 0.1rem 0;
-      border: none;
-    }
+.card-accordion.p-accordion {
+  --p-accordion-panel-border-width: 0;
+  --p-accordion-header-padding: 0;
 
-    .p-accordionpanel {
-      border: none;
-    }
+  .p-accordioncontent-content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    padding: 0.4rem 0 0.1rem 0;
+    border: none;
+  }
 
-    .p-accordionheader {
-      height: 3.5rem;
-    }
+  .p-iconwrapper {
+    background: var(--bg-blue-3);
+    height: 2rem;
+    min-width: 2rem;
+    border-radius: 50%;
 
-    .p-iconwrapper {
-      transform: rotate(180deg);
-      background: var.$bg-blue-3;
-      height: 2.3rem;
-      min-width: 2.3rem;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      svg {
-        color: var.$pr-blue-1;
-      }
+    svg {
+      color: var(--pr-blue-1);
     }
   }
 }

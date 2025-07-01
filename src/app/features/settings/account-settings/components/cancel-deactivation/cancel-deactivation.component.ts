@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -7,7 +7,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
-import { CancelDeactivationRequest } from '@osf/features/settings/account-settings/store/account-settings.actions';
+import { CancelDeactivationRequest } from '../../store';
 
 @Component({
   selector: 'osf-cancel-deactivation',
@@ -17,11 +17,11 @@ import { CancelDeactivationRequest } from '@osf/features/settings/account-settin
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CancelDeactivationComponent {
-  #store = inject(Store);
+  action = createDispatchMap({ cancelDeactivationRequest: CancelDeactivationRequest });
   dialogRef = inject(DynamicDialogRef);
 
   cancelDeactivation(): void {
-    this.#store.dispatch(CancelDeactivationRequest);
+    this.action.cancelDeactivationRequest();
     this.dialogRef.close();
   }
 }

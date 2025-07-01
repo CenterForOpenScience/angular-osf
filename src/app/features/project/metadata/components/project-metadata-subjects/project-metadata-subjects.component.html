@@ -1,6 +1,6 @@
 <p-card>
   <div class="flex flex-column gap-3">
-    <h3 class="text-lg m-0">{{ 'project.overview.metadata.subjects' | translate }}</h3>
+    <h2>{{ 'project.overview.metadata.subjects' | translate }}</h2>
 
     <div class="flex flex-column gap-3">
       <div class="subjects-chips">
@@ -13,16 +13,12 @@
           (keydown)="$event.key === 'Enter' && onInputFocus()"
         >
           @for (subject of getUniqueSubjects(); track subject.id) {
-            <p-tag
-              [value]="subject.text"
-              severity="info"
-              class="cursor-pointer removable-chip"
-              tabindex="0"
-              role="button"
-              [attr.aria-label]="subject.text"
-              (click)="removeSubject(subject); $event.stopPropagation()"
-              [title]="'project.overview.metadata.clickToRemove' | translate"
-            />
+            <p-chip
+              [label]="subject.text"
+              removeIcon="fas fa-close"
+              removable
+              (onRemove)="removeSubject(subject)"
+            ></p-chip>
           }
 
           @if (getUniqueSubjects().length === 0) {

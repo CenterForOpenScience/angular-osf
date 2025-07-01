@@ -1,4 +1,3 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
 :host {
@@ -11,13 +10,5 @@
 }
 
 .input-label {
-  color: var.$dark-blue-1;
   margin-bottom: 0;
-}
-
-.delete-icon {
-  &:before {
-    color: var.$red-3;
-    cursor: pointer;
-  }
 }

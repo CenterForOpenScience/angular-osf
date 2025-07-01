@@ -11,6 +11,7 @@ import { PaginatedViewOnlyLinksModel, ProjectSettingsModel } from '@osf/features
 import { SettingsService, ViewOnlyLinksService } from '@osf/features/project/settings/services';
 import {
   CreateViewOnlyLink,
+  DeleteProject,
   DeleteViewOnlyLink,
   GetProjectDetails,
   GetProjectSettings,
@@ -259,5 +260,10 @@ export class SettingsState {
       }),
       catchError((error) => this.handleError(ctx, 'viewOnlyLinks', error))
     );
+  }
+
+  @Action(DeleteProject)
+  deleteProject(ctx: StateContext<SettingsStateModel>, action: DeleteProject) {
+    return this.settingsService.deleteProject(action.projectId);
   }
 }

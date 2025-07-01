@@ -9,14 +9,13 @@ import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
 import { InputText } from 'primeng/inputtext';
 
-import { map, of, switchMap, timer } from 'rxjs';
+import { map, of, switchMap } from 'rxjs';
 
-import { CdkCopyToClipboard } from '@angular/cdk/clipboard';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { CopyButtonComponent, IconComponent } from '@osf/shared/components';
 import { CustomConfirmationService } from '@osf/shared/services';
 import { IS_XSMALL } from '@osf/shared/utils';
 
@@ -32,11 +31,10 @@ import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, Res
     InputText,
     IconField,
     InputIcon,
-    CdkCopyToClipboard,
-    FormsModule,
-    ReactiveFormsModule,
     DeveloperAppAddEditFormComponent,
     TranslatePipe,
+    CopyButtonComponent,
+    IconComponent,
   ],
   templateUrl: './developer-app-details.component.html',
   styleUrl: './developer-app-details.component.scss',
@@ -45,7 +43,6 @@ import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, Res
 })
 export class DeveloperAppDetailsComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);
-  private readonly destroyRef = inject(DestroyRef);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store);
@@ -60,8 +57,6 @@ export class DeveloperAppDetailsComponent {
   protected readonly isClientSecretVisible = signal(false);
   protected readonly clientSecret = computed<string>(() => this.developerApp()?.clientSecret ?? '');
   protected readonly hiddenClientSecret = computed<string>(() => '*'.repeat(this.clientSecret().length));
-  protected readonly clientSecretCopiedNotificationVisible = signal<boolean>(false);
-  protected readonly clientIdCopiedNotificationVisible = signal<boolean>(false);
 
   readonly clientId = toSignal(
     this.activatedRoute.params.pipe(
@@ -108,25 +103,5 @@ export class DeveloperAppDetailsComponent {
       acceptLabelKey: 'settings.developerApps.details.clientSecret.reset',
       onConfirm: () => this.actions.resetClientSecret(this.clientId()),
     });
-  }
-
-  clientIdCopiedToClipboard(): void {
-    this.clientIdCopiedNotificationVisible.set(true);
-
-    timer(2500)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.clientIdCopiedNotificationVisible.set(false);
-      });
-  }
-
-  clientSecretCopiedToClipboard(): void {
-    this.clientSecretCopiedNotificationVisible.set(true);
-
-    timer(2500)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.clientSecretCopiedNotificationVisible.set(false);
-      });
   }
 }

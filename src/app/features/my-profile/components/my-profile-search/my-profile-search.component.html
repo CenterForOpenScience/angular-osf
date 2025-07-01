@@ -1,4 +1,4 @@
-<div class="search-container mt-5 mx-3 md:mx-4 xl:mt-6">
+<div class="search-container mt-5 mx-3 md:mx-5 xl:mt-6 xl:mx-4">
   <osf-search-input
     [control]="searchControl"
     [showHelpIcon]="true"
@@ -7,8 +7,8 @@
   />
 </div>
 
-<div class="flex-column flex flex-1 w-full resources-tab-panel">
-  <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1">
+<div class="flex-column flex flex-1 w-full pt-6">
+  <p-tabs class="flex-1 px-4" [value]="selectedTab" (valueChange)="onTabChange(+$event)">
     @if (!isMobile()) {
       <p-tablist>
         <p-tab [value]="ResourceTab.All">All</p-tab>

@@ -3,13 +3,7 @@
     <label for="app-name">
       {{ 'settings.developerApps.form.appName' | translate }}
     </label>
-    <input
-      pInputText
-      id="app-name"
-      type="text"
-      autocomplete="off"
-      [formControlName]="DeveloperAppFormFormControls.AppName"
-    />
+    <input pInputText id="app-name" type="text" [formControlName]="DeveloperAppFormFormControls.AppName" />
   </div>
 
   <div class="flex flex-column">
@@ -20,7 +14,6 @@
       pInputText
       id="proj-homepage-url"
       type="url"
-      autocomplete="off"
       [formControlName]="DeveloperAppFormFormControls.ProjectHomePageUrl"
     />
   </div>
@@ -29,13 +22,7 @@
     <label for="app-descr">
       {{ 'settings.developerApps.form.description' | translate }}
     </label>
-    <input
-      pInputText
-      id="app-descr"
-      type="text"
-      autocomplete="off"
-      [formControlName]="DeveloperAppFormFormControls.AppDescription"
-    />
+    <input pInputText id="app-descr" type="text" [formControlName]="DeveloperAppFormFormControls.AppDescription" />
   </div>
 
   <div class="flex flex-column">
@@ -45,13 +32,12 @@
     <input
       pInputText
       type="url"
-      autocomplete="off"
       id="auth-callback-url"
       [formControlName]="DeveloperAppFormFormControls.AuthorizationCallbackUrl"
     />
   </div>
 
-  <div class="flex justify-content-end gap-2">
+  <div class="flex justify-content-end gap-2 mt-3">
     @if (isEditMode()) {
       <p-button
         [ngClass]="isMobile() ? 'btn-half-width' : 'w-10rem btn-full-width'"

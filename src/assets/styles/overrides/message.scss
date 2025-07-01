@@ -1,35 +1,23 @@
-@use "../variables" as var;
-
 .p-message:not(.p-message-simple) {
-  border: none;
-  color: var.$white;
-  height: 3rem;
-}
+  width: fit-content;
+  height: fit-content;
 
-.p-message-success {
-  background-color: var.$green-1;
-}
+  --p-message-content-padding: 1.5rem;
 
-.p-message-warn {
-  background-color: var.$yellow-1;
-}
+  --p-message-text-font-weight: 700;
+  --p-message-text-font-size: 0.875rem;
 
-.p-message-error:not(.p-message-simple) {
-  background-color: var.$red-1;
-}
+  --p-message-error-color: var(--red-1);
+  --p-message-error-background: var(--red-2);
+  --p-message-error-border-color: var(--red-2);
 
-.warning-message {
-  .p-message {
-    width: fit-content;
-    height: fit-content;
-    color: var.$red-1;
-    background: var.$red-2;
-    padding: 1rem;
+  --p-message-warn-color: var(--yellow-1);
+  --p-message-warn-background: var(--yellow-2);
+  --p-message-warn-border-color: var(--yellow-2);
 
-    .p-message-text {
-      font-weight: 700;
-    }
-  }
+  --p-message-success-color: var(--green-1);
+  --p-message-success-background: var(--green-2);
+  --p-message-success-border-color: var(--green-2);
 }
 
 .p-message-simple {

@@ -47,7 +47,7 @@ import { FetchInstitutions, InstitutionsSelectors } from '@shared/stores';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstitutionsComponent {
-  @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
+  @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);

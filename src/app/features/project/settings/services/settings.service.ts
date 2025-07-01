@@ -28,4 +28,8 @@ export class SettingsService {
       .patch<ProjectSettingsResponseModel>(`${this.baseUrl}/nodes/${model.id}/settings`, { data: model })
       .pipe(map((response) => SettingsMapper.fromResponse(response, model.id)));
   }
+
+  deleteProject(projectId: string): Observable<void> {
+    return this.jsonApiService.delete(`${this.baseUrl}/nodes/${projectId}`);
+  }
 }

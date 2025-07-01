@@ -4,7 +4,7 @@
       @for (link of links.controls; track index; let index = $index) {
         <div
           [formGroupName]="index"
-          class="flex flex-column border-1 border-round-lg p-3 sm:p-5 grey-border-color row-gap-4"
+          class="flex flex-column row-gap-4 border-1 border-round-lg grey-border-color p-3 md:p-4 xl:p-5"
         >
           <div class="flex flex-row">
             <h2>
@@ -36,12 +36,15 @@
             </div>
 
             <div class="w-full md:w-8">
-              <p class="font-light mb-1">
+              <p class="mb-1">
                 {{ 'settings.profileSettings.social.webAddress' | translate }}
               </p>
-              <p-inputgroup class="addon-input">
-                <p-inputgroup-addon>{{ getDomain(index) }} </p-inputgroup-addon>
-                <input pInputText placeholder="{{ getPlaceholder(index) }}" formControlName="webAddress" />
+
+              <p-inputgroup class="addon-input flex-wrap">
+                <p-inputgroup-addon class="border-1 surface-border md:border-0">
+                  {{ getDomain(index) }}
+                </p-inputgroup-addon>
+                <input pInputText [placeholder]="getPlaceholder(index)" formControlName="webAddress" />
               </p-inputgroup>
             </div>
           </div>

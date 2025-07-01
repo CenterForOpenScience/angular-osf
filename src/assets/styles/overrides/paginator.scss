@@ -1,135 +1,21 @@
-@use "assets/styles/variables" as var;
-@use "assets/styles/mixins" as mix;
-
 .p-paginator {
-  background: var.$white;
-  padding: mix.rem(12px) 0 0 0;
-  row-gap: mix.rem(12px);
-
-  .p-select-overlay {
-    background: var.$white;
-    border: 1px solid var.$grey-2;
-    color: var.$dark-blue-1;
-  }
-
-  .p-select-option {
-    &.p-select-option-selected {
-      background-color: var.$white;
-      color: var.$dark-blue-1;
-
-      &:hover {
-        background: var.$bg-blue-3;
-        color: var.$dark-blue-1;
-      }
-    }
-
-    &:not(.p-select-option-selected):not(.p-disabled).p-focus {
-      background: var.$bg-blue-3;
-      color: var.$dark-blue-1;
-    }
-  }
-
-  p-select {
-    background: var.$white;
-    border: 1px solid var.$grey-2;
-
-    span {
-      color: var.$dark-blue-1;
-    }
-  }
-}
-
-.p-paginator-page {
-  color: var.$dark-blue-1;
-  border-radius: 4px;
-  background: var.$white;
-
-  &:hover {
-    background: var.$bg-blue-2;
-  }
-}
-
-.p-paginator-page-selected {
-  color: var.$white;
-  border-radius: 4px;
-  background: var.$pr-blue-1;
-
-  &:hover {
-    background: var.$pr-blue-1;
-  }
+  --p-paginator-gap: 0.75rem;
+  --p-paginator-nav-button-background: var(--white);
+  --p-paginator-nav-button-color: var(--dark-blue-1);
+  --p-paginator-nav-button-border-radius: 0.25rem;
+  --p-paginator-nav-button-selected-background: var(--pr-blue-1);
+  --p-paginator-nav-button-selected-color: var(--white);
+  --p-paginator-nav-button-hover-background: var(--bg-blue-2);
+  --p-paginator-nav-button-hover-color: var(--dark-blue-1);
 }
 
 .p-paginator-next,
 .p-paginator-last,
 .p-paginator-first,
 .p-paginator-prev {
-  color: var.$grey-1;
-  border-radius: 4px;
-}
-
-.p-paginator-next:hover,
-.p-paginator-last:hover,
-.p-paginator-first:hover,
-.p-paginator-prev:hover {
-  color: var.$dark-blue-1;
-}
-
-.p-paginator-next:not(.p-disabled):hover,
-.p-paginator-last:not(.p-disabled):hover,
-.p-paginator-first:not(.p-disabled):hover,
-.p-paginator-prev:not(.p-disabled):hover {
-  background: var.$white;
-}
-
-.p-select-overlay {
-  background: var.$white;
-  border: 1px solid var.$grey-2;
-  color: var.$dark-blue-1;
-}
-
-.p-select-option {
-  &.p-select-option-selected {
-    background-color: var.$bg-blue-2;
-    color: var.$dark-blue-1;
-
-    &:hover {
-      background: var.$bg-blue-3;
-      color: var.$dark-blue-1;
-    }
-  }
-
-  &:not(.p-select-option-selected):not(.p-disabled).p-focus {
-    background: var.$bg-blue-3;
-    color: var.$dark-blue-1;
-  }
-}
-
-p-select {
-  background: var.$white;
-  border: 1px solid var.$grey-2;
-
-  &.p-disabled .p-select-label {
-    color: var.$grey-1;
-  }
-
-  span {
-    color: var.$dark-blue-1;
-  }
-}
-
-.resources-container {
-  .p-paginator {
-    .p-paginator-pages,
-    .p-paginator-last,
-    .p-paginator-prev {
-      display: none;
-    }
-    .p-paginator-first,
-    .p-paginator-next,
-    .p-paginator-prev {
-      opacity: 1 !important;
-    }
-  }
+  --p-paginator-nav-button-color: var(--grey-1);
+  --p-paginator-nav-button-hover-background: transparent;
+  --p-paginator-nav-button-hover-color: var(--dark-blue-1);
 }
 
 .collections-paginator {

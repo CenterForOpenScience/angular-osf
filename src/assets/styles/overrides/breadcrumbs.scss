@@ -1,9 +1,6 @@
-@use "../variables" as var;
-@use "../mixins" as mix;
-
 .folders-breadcrumbs {
   .p-breadcrumb {
-    padding: 0 0 mix.rem(20px) 0;
+    padding: 0 0 1.25rem 0;
   }
 
   .p-breadcrumb-item > a {

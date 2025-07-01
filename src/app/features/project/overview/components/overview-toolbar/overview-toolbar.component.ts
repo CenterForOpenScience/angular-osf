@@ -8,7 +8,9 @@ import { Menu } from 'primeng/menu';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 import { Tooltip } from 'primeng/tooltip';
 
-import { NgClass, NgOptimizedImage } from '@angular/common';
+import { timer } from 'rxjs';
+
+import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +22,7 @@ import {
   RemoveProjectFromBookmarks,
 } from '@osf/features/collections/store';
 import { GetMyBookmarks, MyProjectsSelectors } from '@osf/features/my-projects/store';
+import { IconComponent } from '@osf/shared/components';
 import { ToastService } from '@osf/shared/services';
 import { FileSizePipe } from '@shared/pipes';
 
@@ -40,8 +43,8 @@ import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggl
     FormsModule,
     NgClass,
     RouterLink,
-    NgOptimizedImage,
     FileSizePipe,
+    IconComponent,
   ],
   templateUrl: './overview-toolbar.component.html',
   styleUrl: './overview-toolbar.component.scss',
@@ -133,11 +136,16 @@ export class OverviewToolbarComponent {
     const project = this.currentProject();
     if (!project) return;
 
-    const isCurrentlyPublic = this.isPublic();
+    const isCurrentlyPublic = project.isPublic;
     const newPublicStatus = !isCurrentlyPublic;
+
+    timer(100)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.isPublic.set(project.isPublic));
 
     this.dialogService.open(TogglePublicityDialogComponent, {
       focusOnShow: false,
+      width: '40vw',
       header: this.translateService.instant(
         isCurrentlyPublic ? 'project.overview.dialog.makePrivate.header' : 'project.overview.dialog.makePublic.header'
       ),

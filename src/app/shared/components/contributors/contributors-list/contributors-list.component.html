@@ -98,11 +98,12 @@
           </p>
         </td>
         <td>
-          <div class="no-border-dropdown select-font-normal">
+          <div>
             <osf-select
               [options]="permissionsOptions"
               [placeholder]="'project.contributors.permissionFilter'"
               [appendTo]="'body'"
+              [noBorder]="true"
               [(selectedValue)]="contributor.permission"
             ></osf-select>
           </div>

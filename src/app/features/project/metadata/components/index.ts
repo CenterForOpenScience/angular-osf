@@ -7,4 +7,3 @@ export { ProjectMetadataLicenseComponent } from './project-metadata-license/proj
 export { ProjectMetadataPublicationDoiComponent } from './project-metadata-publication-doi/project-metadata-publication-doi.component';
 export { ProjectMetadataResourceInformationComponent } from './project-metadata-resource-information/project-metadata-resource-information.component';
 export { ProjectMetadataSubjectsComponent } from './project-metadata-subjects/project-metadata-subjects.component';
-export { ProjectMetadataTagsComponent } from './project-metadata-tags/project-metadata-tags.component';

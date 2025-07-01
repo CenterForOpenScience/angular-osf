@@ -1,17 +1,12 @@
-@use "../variables" as var;
-
 .p-drawer.p-drawer-active.p-drawer-left {
-  width: 100%;
-  background-color: var.$dark-blue-1;
-  padding-left: 1.6rem;
+  --p-drawer-background: var(--dark-blue-1);
+  --p-drawer-header-padding: 0;
+  --p-drawer-content-padding: 0;
   border: none;
+  padding-left: 1.5rem;
+  width: 100%;
 }
 
 .p-drawer-header {
-  height: 6.17rem;
-  padding: 0;
-}
-
-.p-drawer-content {
-  padding: 0;
+  height: 5.75rem;
 }

@@ -1,6 +1,6 @@
-<p-accordion>
+<p-accordion class="card-accordion">
   @for (employment of employment(); track $index) {
-    <p-accordion-panel value="{{ $index }}" class="accordion-panel">
+    <p-accordion-panel [value]="$index">
       <p-accordion-header>
         <div class="flex flex-row w-full">
           <p>{{ employment.institution }}</p>

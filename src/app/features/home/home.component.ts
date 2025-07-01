@@ -36,13 +36,13 @@ import { ConfirmEmailComponent } from './components';
   providers: [DialogService],
 })
 export class HomeComponent implements OnInit {
-  readonly #destroyRef = inject(DestroyRef);
-  readonly #store = inject(Store);
-  readonly #router = inject(Router);
-  readonly #route = inject(ActivatedRoute);
-  readonly #translateService = inject(TranslateService);
-  readonly #dialogService = inject(DialogService);
-  readonly #accountSettingsService = inject(AccountSettingsService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly store = inject(Store);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly translateService = inject(TranslateService);
+  private readonly dialogService = inject(DialogService);
+  private readonly accountSettingsService = inject(AccountSettingsService);
 
   protected readonly isLoading = signal(false);
   protected readonly isSubmitting = signal(false);
@@ -69,21 +69,21 @@ export class HomeComponent implements OnInit {
   emailAddress = '';
 
   constructor() {
-    this.#setupSearchSubscription();
-    this.#setupTotalRecordsEffect();
-    this.#setupCleanup();
+    this.setupSearchSubscription();
+    this.setupTotalRecordsEffect();
+    this.setupCleanup();
   }
 
   ngOnInit() {
-    this.#setupQueryParamsSubscription();
-    this.#store.dispatch(new GetUserInstitutions());
+    this.setupQueryParamsSubscription();
+    this.store.dispatch(new GetUserInstitutions());
 
-    this.#route.params.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((params) => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const userId = params['userId'];
       const token = params['token'];
 
       if (userId && token) {
-        this.#accountSettingsService
+        this.accountSettingsService
           .getEmail(token, userId)
           .pipe(take(1))
           .subscribe((email) => {
@@ -95,8 +95,8 @@ export class HomeComponent implements OnInit {
   }
 
   addAlternateEmail(token: string) {
-    this.#translateService.get('home.confirmEmail.title').subscribe((title) => {
-      this.dialogRef = this.#dialogService.open(ConfirmEmailComponent, {
+    this.translateService.get('home.confirmEmail.title').subscribe((title) => {
+      this.dialogRef = this.dialogService.open(ConfirmEmailComponent, {
         width: '448px',
         focusOnShow: false,
         header: title,
@@ -105,16 +105,16 @@ export class HomeComponent implements OnInit {
         closable: true,
         data: {
           emailAddress: this.emailAddress,
-          userId: this.#route.snapshot.params['userId'],
-          emailId: this.#route.snapshot.params['emailId'],
+          userId: this.route.snapshot.params['userId'],
+          emailId: this.route.snapshot.params['emailId'],
           token: token,
         },
       });
     });
   }
 
-  #setupQueryParamsSubscription(): void {
-    this.#route.queryParams.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((params) => {
+  setupQueryParamsSubscription(): void {
+    this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const page = Number(params['page']) || 1;
       const rows = Number(params['rows']) || MY_PROJECTS_TABLE_PARAMS.rows;
       const sortField = params['sortField'];
@@ -136,19 +136,17 @@ export class HomeComponent implements OnInit {
         this.searchControl.setValue(search);
       }
 
-      this.#fetchProjects();
+      this.fetchProjects();
     });
   }
 
-  #setupSearchSubscription(): void {
+  setupSearchSubscription(): void {
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.#destroyRef))
-      .subscribe(() => {
-        this.#updateQueryParams();
-      });
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.updateQueryParams(true));
   }
 
-  #setupTotalRecordsEffect(): void {
+  setupTotalRecordsEffect(): void {
     effect(() => {
       const total = this.totalProjectsCount();
       this.tableParams.update((current) => ({
@@ -158,19 +156,19 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  #setupCleanup(): void {
-    this.#destroyRef.onDestroy(() => {
-      this.#store.dispatch(new ClearMyProjects());
+  setupCleanup(): void {
+    this.destroyRef.onDestroy(() => {
+      this.store.dispatch(new ClearMyProjects());
     });
   }
 
-  #fetchProjects(): void {
+  fetchProjects(): void {
     this.isLoading.set(true);
-    const filters = this.#createFilters();
+    const filters = this.createFilters();
     const page = Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
-    this.#store
+    this.store
       .dispatch(new GetMyProjects(page, this.tableParams().rows, filters))
-      .pipe(takeUntilDestroyed(this.#destroyRef))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         complete: () => {
           this.isLoading.set(false);
@@ -181,7 +179,7 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  #createFilters(): MyProjectsSearchFilters {
+  createFilters(): MyProjectsSearchFilters {
     return {
       searchValue: this.searchControl.value ?? '',
       searchFields: ['title'],
@@ -190,8 +188,8 @@ export class HomeComponent implements OnInit {
     };
   }
 
-  #updateQueryParams(): void {
-    const page = Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
+  updateQueryParams(isSearch = false): void {
+    const page = isSearch ? 1 : Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
     const queryParams = {
       page,
       rows: this.tableParams().rows,
@@ -200,8 +198,8 @@ export class HomeComponent implements OnInit {
       sortOrder: this.sortOrder() || undefined,
     };
 
-    this.#router.navigate([], {
-      relativeTo: this.#route,
+    this.router.navigate([], {
+      relativeTo: this.route,
       queryParams,
       queryParamsHandling: 'merge',
     });
@@ -214,37 +212,37 @@ export class HomeComponent implements OnInit {
       firstRowIndex: event.first,
     }));
 
-    this.#updateQueryParams();
+    this.updateQueryParams();
   }
 
   protected onSort(event: SortEvent): void {
     if (event.field) {
       this.sortColumn.set(event.field);
       this.sortOrder.set(event.order === -1 ? SortOrder.Desc : SortOrder.Asc);
-      this.#updateQueryParams();
+      this.updateQueryParams();
     }
   }
 
   protected navigateToProject(project: MyProjectsItem): void {
     this.activeProject.set(project);
-    this.#router.navigate(['/my-projects', project.id]);
+    this.router.navigate(['/my-projects', project.id]);
   }
 
   protected createProject(): void {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';
     this.isSubmitting.set(true);
 
-    const dialogRef = this.#dialogService.open(AddProjectFormComponent, {
-      width: dialogWidth,
-      focusOnShow: false,
-      header: this.#translateService.instant('myProjects.header.createProject'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
-
-    dialogRef.onClose.subscribe(() => {
-      this.isSubmitting.set(false);
-    });
+    this.dialogService
+      .open(AddProjectFormComponent, {
+        width: dialogWidth,
+        focusOnShow: false,
+        header: this.translateService.instant('myProjects.header.createProject'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+      })
+      .onClose.subscribe(() => {
+        this.isSubmitting.set(false);
+      });
   }
 }
