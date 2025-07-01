@@ -33,6 +33,9 @@ export class PreprintsService {
   private domainToApiFieldMap: Record<string, string> = {
     title: 'title',
     description: 'description',
+    originalPublicationDate: 'original_publication_date',
+    doi: 'doi',
+    customPublicationCitation: 'custom_publication_citation',
   };
 
   getPreprintProviderById(id: string): Observable<PreprintProviderDetails> {

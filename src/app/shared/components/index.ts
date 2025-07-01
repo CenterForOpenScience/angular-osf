@@ -12,6 +12,7 @@ export { FormSelectComponent } from './form-select/form-select.component';
 export { FullScreenLoaderComponent } from './full-screen-loader/full-screen-loader.component';
 export { IconComponent } from './icon/icon.component';
 export { InfoIconComponent } from './info-icon/info-icon.component';
+export { LicenseComponent } from './license/license.component';
 export { LineChartComponent } from './line-chart/line-chart.component';
 export { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 export { MarkdownComponent } from './markdown/markdown.component';

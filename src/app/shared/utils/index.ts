@@ -5,6 +5,7 @@ export * from './breakpoints.tokens';
 export { BrowserTabHelper } from './browser-tab.helper';
 export * from './custom-form-validators.helper';
 export * from './default-confirmation-config.helper';
+export * from './find-changed-fields';
 export * from './find-changed-items.helper';
 export * from './get-resource-types.helper';
 export * from './pie-chart-palette';

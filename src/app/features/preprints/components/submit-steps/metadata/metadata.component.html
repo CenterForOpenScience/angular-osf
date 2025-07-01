@@ -1,0 +1,75 @@
+<h2>Metadata</h2>
+
+<div class="m-t-24">
+  <osf-preprint-contributors />
+</div>
+
+<div class="m-t-24">
+  <osf-license
+    [licenses]="licences()"
+    [selectedLicenseId]="createdPreprint()?.licenseId"
+    [selectedLicenseOptions]="createdPreprint()?.licenseOptions"
+    (createLicense)="createLicense($event)"
+    (selectLicense)="selectLicense($event)"
+  />
+</div>
+
+<p-card styleClass="m-t-24" class="card">
+  <div>
+    <h2>Publication DOI</h2>
+
+    <input id="doi" class="m-t-24" pInputText type="text" [formControl]="metadataForm.controls['doi']" />
+    @let doiControl = metadataForm.controls['doi'];
+    @if (doiControl.errors?.['required'] && (doiControl.touched || doiControl.dirty)) {
+      <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+        {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+      </p-message>
+    }
+    @if (doiControl.errors?.['pattern'] && (doiControl.touched || doiControl.dirty)) {
+      <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small"
+        >Please use a valid DOI format (10.xxxx/xxxxx)
+      </p-message>
+    }
+  </div>
+</p-card>
+
+<p-card styleClass="m-t-24" class="card">
+  <h2>Publication Date (optional)</h2>
+
+  <p-datePicker
+    inputId="publicationDate"
+    class="half-width-datepicker"
+    styleClass="w-full md:w-6 m-t-24"
+    [formControl]="metadataForm.controls['originalPublicationDate']"
+    [iconDisplay]="'input'"
+    [showIcon]="true"
+    [showOnFocus]="true"
+    dateFormat="yy-mm-dd"
+  >
+    <ng-template #inputicon>
+      <osf-icon class="fa fa-calendar" />
+    </ng-template>
+  </p-datePicker>
+</p-card>
+
+<p-card styleClass="m-t-24" class="card">
+  <h2 class="m-b-24">Publication Citation (optional)</h2>
+
+  <osf-text-input
+    [control]="metadataForm.controls['customPublicationCitation']"
+    [maxLength]="inputLimits.citation.maxLength"
+  />
+</p-card>
+
+<section class="m-t-48 flex flex-row justify-content-end align-items-center gap-2">
+  <p-button class="w-6 md:w-6rem" styleClass="w-full" label="Back" severity="info" />
+  <p-button
+    class="w-6 md:w-9rem"
+    styleClass="w-full"
+    label="Next"
+    [pTooltip]="metadataForm.invalid ? 'Fill in \'Required\' fields to continue' : ''"
+    tooltipPosition="top"
+    [disabled]="metadataForm.invalid"
+    (click)="nextButtonClicked()"
+  />
+</section>

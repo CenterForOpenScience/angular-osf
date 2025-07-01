@@ -14,6 +14,8 @@ export * from './id-name.model';
 export * from './institutions';
 export * from './language-code.model';
 export * from './license.model';
+export * from './license.model';
+export * from './licenses-json-api.model';
 export * from './metadata-field.model';
 export * from './nav-item.model';
 export * from './node-response.model';
