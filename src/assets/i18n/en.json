@@ -23,7 +23,8 @@
       "skip": "Skip",
       "done": "Done",
       "select": "Select",
-      "deselect": "Deselect"
+      "deselect": "Deselect",
+      "update": "Update"
     },
     "search": {
       "title": "Search",
@@ -38,7 +39,8 @@
       }
     },
     "labels": {
-      "downloads": "Downloads"
+      "downloads": "Downloads",
+      "public": "Public"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -1572,7 +1574,9 @@
         "registeredDate": "Date registered",
         "doi": "Registration DOI",
         "associatedProject": "Associated project"
-      }
+      },
+      "original": "Original",
+      "last": "Last"
     }
   },
   "truncatedText": {

@@ -7,7 +7,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { TruncatedTextComponent } from '@shared/components';
+import { TruncatedTextComponent } from '@shared/components/truncated-text/truncated-text.component';
 import { OsfResourceTypes } from '@shared/constants';
 import { ResourceOverview } from '@shared/models';
 

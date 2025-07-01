@@ -1,11 +1,9 @@
 @let resource = currentResource();
 
-@if (project) {
-  <div
-    class="pl-3 pb-5 pr-3 flex flex-column gap-5 sm:pl-5 sm:pr-5 lg:flex-row lg:align-items-center lg:justify-content-between"
-  >
+@if (resource) {
+  <div class="flex flex-column gap-5 lg:flex-row lg:align-items-center lg:justify-content-between">
     @if (visibilityToggle()) {
-      <div class="flex gap-3 align-items-start">
+      <div class="flex gap-3 align-items-center">
         <div class="flex gap-1" [class.inactive]="isPublic()">
           <i class="fas fa-lock"></i>
           <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
@@ -34,9 +32,9 @@
               class="flex"
               [pTooltip]="'project.overview.tooltips.viewOnlyLinks' | translate"
               tooltipPosition="bottom"
-              [routerLink]="['/my-projects', project.id, 'settings']"
+              [routerLink]="['/my-projects', resource.id, 'settings']"
             >
-              <span class="font-bold">{{ project.viewOnlyLinksCount }}</span>
+              <span class="font-bold">{{ resource.viewOnlyLinksCount }}</span>
               <i class="fas fa-link text-2xl"></i>
             </p-button>
           }
@@ -75,7 +73,7 @@
             }
           </p-button>
 
-          @if (project.isPublic) {
+          @if (resource.isPublic) {
             <p-button
               class="flex"
               (click)="socialsActionMenu.toggle($event)"

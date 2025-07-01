@@ -8,7 +8,7 @@
       <p-button
         [routerLink]="'../metadata'"
         severity="secondary"
-        [label]="'project.overview.metadata.editButton' | translate"
+        [label]="'common.buttons.edit' | translate"
       ></p-button>
     </div>
 
@@ -91,7 +91,7 @@
     </div>
 
     <div class="flex flex-column gap-2">
-      <h3>{{ 'project.overview.metadata.licence' | translate }}</h3>
+      <h3>{{ 'project.overview.metadata.license' | translate }}</h3>
 
       <div>{{ resource.license?.name ?? ('project.overview.metadata.noLicense' | translate) }}</div>
     </div>

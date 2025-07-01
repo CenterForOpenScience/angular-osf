@@ -3,6 +3,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
+import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, computed, HostBinding, inject } from '@angular/core';
@@ -34,6 +35,7 @@ import { ToolbarResource } from '@shared/models';
     AccordionPanel,
     AccordionHeader,
     ResourceMetadataComponent,
+    Button,
   ],
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
@@ -52,7 +54,7 @@ export class RegistryOverviewComponent {
   protected readonly institutions = select(RegistryOverviewSelectors.getInstitutions);
   protected readonly isInstitutionsLoading = select(RegistryOverviewSelectors.isInstitutionsLoading);
   protected readonly schemaBlocks = select(RegistryOverviewSelectors.getSchemaBlocks);
-  protected readonly isSchemaBlocks = select(RegistryOverviewSelectors.isSchemaBlocksLoading);
+  protected readonly isSchemaBlocksLoading = select(RegistryOverviewSelectors.isSchemaBlocksLoading);
 
   protected readonly resourceOverview = computed(() => {
     const registry = this.registry();

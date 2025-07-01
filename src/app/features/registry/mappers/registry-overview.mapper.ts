@@ -1,6 +1,6 @@
-import { RegistryOverview, RegistryOverviewData } from '@osf/features/registry/models';
+import { RegistryOverview, RegistryOverviewJsonApiData } from '@osf/features/registry/models';
 
-export function MapRegistryOverview(data: RegistryOverviewData): RegistryOverview {
+export function MapRegistryOverview(data: RegistryOverviewJsonApiData): RegistryOverview {
   return {
     id: data.id,
     type: data.type,

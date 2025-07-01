@@ -1,4 +1,4 @@
-@if (!isRegistryLoading() && !isSubjectsLoading() && !isInstitutionsLoading() && !isSchemaBlocks()) {
+@if (!isRegistryLoading() && !isSubjectsLoading() && !isInstitutionsLoading() && !isSchemaBlocksLoading()) {
   <div class="flex justify-content-between align-items-center">
     <osf-sub-header [title]="registry()!.title" />
 
@@ -45,7 +45,7 @@
         <p>{{ 'resourceCard.resources.papers' | translate }}</p>
       </a>
       <a class="icon-container" [href]="registry()?.id + '/resources'">
-        @if (registry()?.hasPapers) {
+        @if (registry()?.hasSupplements) {
           <img src="assets/icons/colored/supplements-colored.svg" alt="supplements-resource" />
         } @else {
           <i class="osf-icon-supplements text-4xl"></i>
@@ -57,27 +57,41 @@
     <div class="flex gap-4">
       <div class="left-section gap-4">
         <!--        TODO: statuses and schema updates-->
-        <div class="flex gap-4 resource accordion-auto-height">
-          <p-accordion class="accordion-border px-4 py-4 flex-1">
+        <div class="flex gap-4 resource">
+          <p-accordion class="accordion-border px-4 py-4 flex-1 no-padding">
             <p-accordion-panel value="0">
               <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
                 <p class="font-bold">{{ 'registry.overview.public' | translate }}</p>
               </p-accordion-header>
               <p-accordion-content>
-                <div class="content">
-                  <p class="font-bold">{{ 'registry.overview.public' | translate }}</p>
+                <div class="content pt-4">
+                  <h2 class="font-normal mb-2">{{ 'common.labels.public' | translate }}</h2>
                   <p>{{ 'registry.overview.statuses.frozen' | translate }}</p>
                 </div>
               </p-accordion-content>
             </p-accordion-panel>
           </p-accordion>
-          <p-accordion class="accordion-border p-4 py-4 flex-1">
+          <p-accordion class="accordion-border p-4 py-4 flex-1 no-padding">
             <p-accordion-panel value="0">
               <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
                 {{ 'registry.overview.updates' | translate }}
               </p-accordion-header>
               <p-accordion-content>
-                <div class="content">Important</div>
+                <div class="flex flex-column gap-2 align-items-center justify-content-center">
+                  <p-button
+                    severity="info"
+                    class="w-full"
+                    styleClass="w-full"
+                    [label]="'registry.overview.original' | translate"
+                  />
+                  <p-button
+                    severity="info"
+                    class="w-full"
+                    styleClass="w-full"
+                    [label]="'registry.overview.last' | translate"
+                  />
+                  <p-button class="w-full" styleClass="w-full" [label]="'common.buttons.update' | translate" />
+                </div>
               </p-accordion-content>
             </p-accordion-panel>
           </p-accordion>
@@ -102,7 +116,7 @@
               <h1 class="pb-4 text-no-transform" [class.mt-4]="$index !== 0">{{ block.value }}</h1>
             } @else if ((block.type === 'subsection-heading' || block.type === 'question-label') && block.value) {
               <h3 class="pb-4 text-no-transform">{{ block.value }}</h3>
-            } @else if (block.value) {
+            } @else if (block.value !== 'select-input-option') {
               <p class="pb-4 text-no-transform">{{ block.value }}</p>
             }
           }
