@@ -70,8 +70,7 @@ export const routes: Routes = [
       },
       {
         path: 'collections',
-        loadChildren: () =>
-          import('./features/collections/constants/collections.routes').then((mod) => mod.collectionsRoutes),
+        loadChildren: () => import('./features/collections/collections.routes').then((mod) => mod.collectionsRoutes),
       },
       {
         path: 'meetings',

@@ -4,7 +4,7 @@ import { Routes } from '@angular/router';
 
 import { CollectionsComponent } from '@osf/features/collections/collections.component';
 
-import { ModerationState } from '../../moderation/store';
+import { ModerationState } from '../moderation/store';
 
 export const collectionsRoutes: Routes = [
   {
@@ -14,9 +14,7 @@ export const collectionsRoutes: Routes = [
         path: '',
         pathMatch: 'full',
         loadComponent: () =>
-          import('@osf/core/components/page-not-found/page-not-found.component').then(
-            (mod) => mod.PageNotFoundComponent
-          ),
+          import('@core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
         data: { skipBreadcrumbs: true },
       },
       {
