@@ -16,6 +16,8 @@ import { CollectionsHelpDialogComponent, CollectionsMainContentComponent } from 
 import { CollectionsFilters } from '@osf/features/collections/models';
 import { CollectionsQuerySyncService } from '@osf/features/collections/services';
 import {
+  ClearCollections,
+  ClearCollectionSubmissions,
   CollectionsSelectors,
   GetCollectionDetails,
   GetCollectionProvider,
@@ -59,6 +61,8 @@ export class CollectionsComponent {
     setSearchValue: SetSearchValue,
     getCollectionSubmissions: GetCollectionSubmissions,
     setPageNumber: SetPageNumber,
+    clearCollections: ClearCollections,
+    clearCollectionsSubmissions: ClearCollectionSubmissions,
   });
 
   constructor() {
@@ -124,8 +128,15 @@ export class CollectionsComponent {
 
       if (searchText !== undefined && selectedFilters && pageNumber && providerId && collectionDetails) {
         const activeFilters = this.getActiveFilters(selectedFilters);
+        this.actions.clearCollectionsSubmissions();
         this.actions.getCollectionSubmissions(providerId, searchText, activeFilters, pageNumber, sortBy);
       }
+    });
+
+    effect(() => {
+      this.destroyRef.onDestroy(() => {
+        this.actions.clearCollections();
+      });
     });
   }
 

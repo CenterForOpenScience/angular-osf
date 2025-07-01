@@ -38,6 +38,10 @@ export class ClearCollections {
   static readonly type = '[Collections] Clear Collections';
 }
 
+export class ClearCollectionSubmissions {
+  static readonly type = '[Collections] Clear Collection Submissions';
+}
+
 export class SetProgramAreaFilters {
   static readonly type = '[Collections] Set Program Area Filters';
 

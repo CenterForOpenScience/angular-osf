@@ -9,6 +9,7 @@ import { CollectionsService } from '../services';
 import {
   AddProjectToBookmarks,
   ClearCollections,
+  ClearCollectionSubmissions,
   GetBookmarksCollectionId,
   GetCollectionDetails,
   GetCollectionProvider,
@@ -215,6 +216,18 @@ export class CollectionsState {
   @Action(ClearCollections)
   clearCollections(ctx: StateContext<CollectionsStateModel>) {
     ctx.patchState(COLLECTIONS_DEFAULTS);
+  }
+
+  @Action(ClearCollectionSubmissions)
+  clearCollectionSubmissions(ctx: StateContext<CollectionsStateModel>) {
+    ctx.patchState({
+      collectionSubmissions: {
+        data: [],
+        isLoading: false,
+        isSubmitting: false,
+        error: null,
+      },
+    });
   }
 
   @Action(SetAllFilters)

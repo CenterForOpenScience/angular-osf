@@ -97,7 +97,7 @@ export class CollectionsService {
     searchText: string,
     activeFilters: Record<string, string[]>,
     page = '1',
-    sortBy = ''
+    sortBy: string
   ): Observable<CollectionSubmission[]> {
     const url = `${environment.apiUrl}/search/collections/`;
     const params: Record<string, string> = {
@@ -107,15 +107,16 @@ export class CollectionsService {
     if (sortBy) {
       params['sort'] = sortBy;
     }
+
     const payload: CollectionSubmissionsPayloadJsonApi = {
       data: {
         attributes: {
           provider: [providerId],
           ...activeFilters,
-          q: searchText,
+          q: searchText ? searchText : '*',
         },
-        type: 'search',
       },
+      type: 'search',
     };
 
     return this.jsonApiService
