@@ -24,7 +24,7 @@ export const socials: SocialLinksModel[] = [
   },
   {
     id: 3,
-    label: 'Twitter',
+    label: 'X',
     address: '@',
     placeholder: 'twitterhandle',
     key: 'twitter',

@@ -11,4 +11,5 @@ export interface MetadataForm {
   doi: FormControl<string>;
   originalPublicationDate: FormControl<Date | null>;
   customPublicationCitation: FormControl<StringOrNull>;
+  tags: FormControl<string[]>;
 }

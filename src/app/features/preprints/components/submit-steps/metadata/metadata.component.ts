@@ -21,7 +21,7 @@ import {
   SubmitPreprintSelectors,
   UpdatePreprint,
 } from '@osf/features/preprints/store/submit-preprint';
-import { IconComponent, LicenseComponent, TextInputComponent } from '@shared/components';
+import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { License, LicenseOptions } from '@shared/models';
 import { CustomValidators, findChangedFields } from '@shared/utils';
@@ -43,6 +43,7 @@ import { ContributorsComponent } from './contributors/contributors.component';
     TextInputComponent,
     Tooltip,
     LicenseComponent,
+    TagsInputComponent,
   ],
   templateUrl: './metadata.component.html',
   styleUrl: './metadata.component.scss',
@@ -62,6 +63,8 @@ export class MetadataComponent implements OnInit {
 
   licences = select(SubmitPreprintSelectors.getLicenses);
   createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
+  isUpdatingPreprint = select(SubmitPreprintSelectors.isPreprintSubmitting);
+
   nextClicked = output<void>();
 
   ngOnInit() {
@@ -83,6 +86,10 @@ export class MetadataComponent implements OnInit {
       customPublicationCitation: new FormControl(this.createdPreprint()?.customPublicationCitation || null, {
         nonNullable: false,
         validators: [Validators.maxLength(this.inputLimits.citation.maxLength)],
+      }),
+      tags: new FormControl(this.createdPreprint()?.tags || [], {
+        nonNullable: true,
+        validators: [],
       }),
     });
   }
@@ -115,5 +122,11 @@ export class MetadataComponent implements OnInit {
 
   selectLicense(license: License) {
     this.actions.saveLicense(license.id);
+  }
+
+  updateTags(updatedTags: string[]) {
+    this.metadataForm.patchValue({
+      tags: updatedTags,
+    });
   }
 }

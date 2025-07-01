@@ -42,7 +42,7 @@ import {
   defaults: {
     selectedProviderId: null,
     createdPreprint: {
-      data: { id: '6s4jg_v1' } as Preprint, // Temporary default value for testing
+      data: null,
       isLoading: false,
       error: null,
       isSubmitting: false,

@@ -36,6 +36,7 @@ export class PreprintsService {
     originalPublicationDate: 'original_publication_date',
     doi: 'doi',
     customPublicationCitation: 'custom_publication_citation',
+    tags: 'tags',
   };
 
   getPreprintProviderById(id: string): Observable<PreprintProviderDetails> {

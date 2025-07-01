@@ -34,6 +34,16 @@
 </p-card>
 
 <p-card styleClass="m-t-24" class="card">
+  <div>
+    <h2>Tags (optional)</h2>
+
+    <div class="m-t-24">
+      <osf-tags-input [tags]="createdPreprint()?.tags || []" (tagsChanged)="updateTags($event)" />
+    </div>
+  </div>
+</p-card>
+
+<p-card styleClass="m-t-24" class="card">
   <h2>Publication Date (optional)</h2>
 
   <p-datePicker
@@ -69,7 +79,8 @@
     label="Next"
     [pTooltip]="metadataForm.invalid ? 'Fill in \'Required\' fields to continue' : ''"
     tooltipPosition="top"
-    [disabled]="metadataForm.invalid"
+    [disabled]="metadataForm.invalid || !createdPreprint()?.licenseId"
+    [loading]="isUpdatingPreprint()"
     (click)="nextButtonClicked()"
   />
 </section>
