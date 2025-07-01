@@ -139,7 +139,7 @@
     <div class="flex flex-column gap-2">
       <h3>{{ 'project.overview.metadata.subjects' | translate }}</h3>
 
-      <div class="flex gap-2">
+      <div class="flex flex-wrap gap-2">
         @if (resource.subjects.length) {
           @for (subject of resource.subjects; track subject.id) {
             <p-tag [value]="subject.text" severity="info" />
@@ -154,7 +154,7 @@
       <h3>{{ 'project.overview.metadata.tags' | translate }}</h3>
 
       @if (resource.tags.length) {
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
           @for (tag of resource.tags; track tag) {
             <p-tag [value]="tag" severity="info" />
           }
