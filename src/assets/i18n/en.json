@@ -912,7 +912,7 @@
         "description": "Please select the status from the dropdown below or start typing to find it"
       },
       "collectedType": {
-        "label": "Collected Type",
+        "label": "Type",
         "placeholder": "Select collected types",
         "description": "Please select the collected type from the dropdown below or start typing to find it"
       },

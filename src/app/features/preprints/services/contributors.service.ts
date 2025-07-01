@@ -30,8 +30,8 @@ export class ContributorsService {
     const contributorData = { data: ContributorsMapper.toContributorAddRequest(data, type) };
 
     return this.jsonApiService
-      .post<ContributorResponse>(baseUrl, contributorData)
-      .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor)));
+      .post<JsonApiResponse<ContributorResponse, null>>(baseUrl, contributorData)
+      .pipe(map((contributor) => ContributorsMapper.fromContributorResponse(contributor.data)));
   }
 
   updateContributor(preprintId: string, data: ContributorModel): Observable<ContributorModel> {
