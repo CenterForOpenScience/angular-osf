@@ -1,0 +1,9 @@
+<osf-sub-header [title]="'registries.new.addNewRegistry' | translate" />
+<osf-stepper
+  class="block ml-4 mb-4"
+  [steps]="steps()"
+  [linear]="false"
+  [currentStep]="currentStep()"
+  (currentStepChange)="stepChange($event)"
+/>
+<router-outlet></router-outlet>

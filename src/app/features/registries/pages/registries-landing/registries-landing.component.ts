@@ -62,4 +62,8 @@ export class RegistriesLandingComponent implements OnInit {
       queryParams: { resourceTab: ResourceTab.Registrations },
     });
   }
+
+  goToCreateRegistration(): void {
+    this.router.navigate(['/registries/new']);
+  }
 }

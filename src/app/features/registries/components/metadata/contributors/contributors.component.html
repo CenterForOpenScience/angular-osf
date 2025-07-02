@@ -1,0 +1,25 @@
+<p-card class="w-full">
+  <h2 class="mb-2">{{ 'project.overview.metadata.contributors' | translate }}</h2>
+  <osf-contributors-list
+    (focusout)="onFocusOut()"
+    class="w-full"
+    [contributors]="contributors()"
+    [isLoading]="isContributorsLoading()"
+    (remove)="removeContributor($event)"
+    (showEducationHistory)="openEducationHistory($event)"
+    (showEmploymentHistory)="openEmploymentHistory($event)"
+  ></osf-contributors-list>
+  <div class="flex justify-content-end mt-3">
+    @if (hasChanges) {
+      <div class="flex gap-2 mr-4">
+        <p-button (click)="cancel()" text severity="info" [label]="'common.buttons.cancel' | translate"> </p-button>
+        <p-button (click)="save()" [label]="'common.buttons.save' | translate"> </p-button>
+      </div>
+    }
+    <p-button
+      [label]="'registries.metadata.addContributors' | translate"
+      type="submit"
+      (click)="openAddContributorDialog()"
+    ></p-button>
+  </div>
+</p-card>

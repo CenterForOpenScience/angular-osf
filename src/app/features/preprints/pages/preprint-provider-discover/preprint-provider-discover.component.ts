@@ -19,7 +19,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { PreprintsResourcesComponent } from '@osf/features/preprints/components';
 import { PreprintProviderHeroComponent } from '@osf/features/preprints/components/preprint-provider-hero/preprint-provider-hero.component';
-import { BrandService } from '@osf/features/preprints/services';
 import { GetPreprintProviderById, PreprintsSelectors } from '@osf/features/preprints/store/preprints';
 import {
   GetResources,
@@ -41,6 +40,7 @@ import {
 } from '@osf/features/preprints/store/preprints-resources-filters';
 import { GetAllOptions } from '@osf/features/preprints/store/preprints-resources-filters-options';
 import { FilterLabelsModel, ResourceFilterLabel } from '@shared/models';
+import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper } from '@shared/utils';
 
 @Component({

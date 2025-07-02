@@ -1,0 +1,16 @@
+.result-count {
+  color: var(--pr-blue-1);
+}
+
+.sort-card {
+  &:hover {
+    background-color: var(--grey-3);
+    border-color: var(--pr-blue-1);
+  }
+
+  &.card-selected {
+    background-color: var(--pr-blue-1);
+    color: var(--white);
+    border-color: var(--pr-blue-1);
+  }
+}

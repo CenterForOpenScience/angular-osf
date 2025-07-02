@@ -9,12 +9,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AdvisoryBoardComponent, BrowseBySubjectsComponent } from '@osf/features/preprints/components';
 import { PreprintProviderFooterComponent } from '@osf/features/preprints/components/preprint-provider-footer/preprint-provider-footer.component';
 import { PreprintProviderHeroComponent } from '@osf/features/preprints/components/preprint-provider-hero/preprint-provider-hero.component';
-import { BrandService } from '@osf/features/preprints/services';
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   PreprintsSelectors,
 } from '@osf/features/preprints/store/preprints';
+import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper } from '@shared/utils';
 
 @Component({

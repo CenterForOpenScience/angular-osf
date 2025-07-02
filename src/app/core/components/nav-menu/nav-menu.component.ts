@@ -25,7 +25,6 @@ export class NavMenuComponent {
   protected readonly navItems = NAV_ITEMS;
   protected readonly myProjectMenuItems = PROJECT_MENU_ITEMS;
   protected readonly registrationMenuItems = REGISTRATION_MENU_ITEMS;
-  protected readonly mainMenuItems = this.navItems.map((item) => this.convertToMenuItem(item));
 
   closeMenu = output<void>();
 
@@ -41,15 +40,18 @@ export class NavMenuComponent {
 
   protected readonly currentProjectId = computed(() => this.currentRoute().projectId);
   protected readonly isProjectRoute = computed(() => !!this.currentProjectId());
-  protected readonly isRegistryRoute = computed(() => {
-    const segments = this.currentRoute().segments;
-    if (segments && segments.length > 0) {
-      return segments[0] === 'registries' && segments[1] === 'my-registrations' && !!segments[2];
-    }
-    return false;
+  protected readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
+  protected readonly isRegistryRoute = computed(() => this.currentRoute().isRegistryRoute);
+
+  protected readonly mainMenuItems = computed(() => {
+    const filteredItems = this.isCollectionsRoute()
+      ? this.navItems
+      : this.navItems.filter((item) => item.path !== '/collections');
+
+    return filteredItems.map((item) => this.convertToMenuItem(item));
   });
 
-  convertToMenuItem(item: NavItem): MenuItem {
+  private convertToMenuItem(item: NavItem): MenuItem {
     const currentUrl = this.router.url;
     const isExpanded =
       item.isCollapsible &&
@@ -65,12 +67,23 @@ export class NavMenuComponent {
     };
   }
 
-  getRouteInfo() {
+  private getRouteInfo() {
+    const url = this.router.url;
+    const urlSegments = url.split('/').filter((segment) => segment);
+
     const projectId = this.route.firstChild?.snapshot.params['id'] || null;
     const section = this.route.firstChild?.firstChild?.snapshot.url[0]?.path || 'overview';
-    const segments = this.route.firstChild?.snapshot.url.map((s) => s.path);
 
-    return { projectId, section, segments };
+    const isCollectionsWithId = urlSegments[0] === 'collections' && urlSegments[1] && urlSegments[1] !== '';
+    const isRegistryRoute =
+      urlSegments[0] === 'registries' && urlSegments[1] === 'my-registrations' && !!urlSegments[2];
+
+    return {
+      projectId,
+      section,
+      isCollectionsWithId,
+      isRegistryRoute,
+    };
   }
 
   goToLink(item: MenuItem) {

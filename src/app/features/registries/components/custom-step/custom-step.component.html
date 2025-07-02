@@ -1,0 +1,123 @@
+<section class="flex flex-column bg-white flex-1 h-full p-5 gap-4 w-full">
+  @if (currentPage()) {
+    <h2>{{ currentPage().title }}</h2>
+
+    @let questions = currentPage().questions || [];
+
+    @if (currentPage().sections?.length) {
+      @for (section of currentPage().sections; track section.id) {
+        questions = section.questions;
+        <p-card>
+          <h3 class="mb-2">{{ section.title }}</h3>
+          @if (section.description) {
+            <p class="mb-3">{{ section.description }}</p>
+          }
+          <ng-container *ngTemplateOutlet="questionList"></ng-container>
+        </p-card>
+      }
+    } @else {
+      <ng-container *ngTemplateOutlet="questionList"></ng-container>
+    }
+
+    <ng-template #questionList>
+      @for (question of questions; track question.id) {
+        <p-card>
+          <label [for]="question.groupKey">
+            <h3 class="mb-2">
+              {{ question.displayText }}
+              @if (question.required) {
+                <span class="text-red-500">*</span>
+              }
+            </h3>
+            @if (question.helpText) {
+              <p class="mb-3">{{ question.helpText }}</p>
+            }
+            @if (question.paragraphText) {
+              <p class="mb-3">{{ question.paragraphText }}</p>
+            }
+          </label>
+          @if (question.exampleText) {
+            <p-inplace #inplaceRef styleClass="mb-4">
+              <ng-template #display>
+                <span class="text-primary">{{ 'common.links.showExample' | translate }} </span>
+              </ng-template>
+              <ng-template #content>
+                <div class="p-inplace-display">
+                  <button
+                    class="text-primary border-none cursor-pointer bg-transparent text-sm"
+                    tabindex="0"
+                    role="button"
+                    (click)="inplaceRef.deactivate()"
+                    (keyup.enter)="inplaceRef.deactivate()"
+                    (keyup.space)="inplaceRef.deactivate()"
+                  >
+                    {{ 'common.links.hideExample' | translate }}
+                  </button>
+                </div>
+                <p class="m-0">{{ question.exampleText }}</p>
+              </ng-template>
+            </p-inplace>
+          }
+
+          @switch (question.fieldType) {
+            @case (FieldType.TextArea) {
+              <textarea id="{{ question.groupKey }}" class="w-full" rows="5" cols="30" pTextarea></textarea>
+            }
+            @case (FieldType.Radio) {
+              <div class="flex flex-column gap-2">
+                @for (option of question.options; track option) {
+                  <div class="flex align -items-center gap-2">
+                    <p-radioButton
+                      [inputId]="option.value"
+                      [(ngModel)]="radio"
+                      [name]="question.groupKey || ''"
+                      [value]="option.value"
+                    ></p-radioButton>
+                    <label [for]="option.value" class="ml-2">{{ option.label }}</label>
+                    @if (option.helpText) {
+                      <osf-info-icon [tooltipText]="option.helpText"></osf-info-icon>
+                    }
+                  </div>
+                }
+              </div>
+            }
+            @case (FieldType.Checkbox) {
+              <div class="flex flex-column gap-2">
+                @for (option of question.options; track option) {
+                  <div class="flex align-items-center gap-2">
+                    <p-checkbox
+                      [inputId]="option.value"
+                      [name]="question.groupKey || ''"
+                      [value]="option.value"
+                    ></p-checkbox>
+                    <label [for]="option.value" class="ml-2">{{ option.label }}</label>
+                  </div>
+                }
+              </div>
+            }
+
+            @case (FieldType.Text) {
+              <input
+                id="{{ question.groupKey }}"
+                type="text"
+                class="w-full"
+                [placeholder]="question.exampleText"
+                pInputText
+              />
+            }
+            @case (FieldType.File) {
+              <h3 class="mb-2">Upload File</h3>
+              <p class="mb-1">You may attach up to 5 file(s) to this question. Files cannot total over 5GB in size.</p>
+              <p>
+                Uploaded files will automatically be archived in this registration. They will also be added to a related
+                project that will be created for this registration.
+              </p>
+
+              <p>File input is not implemented yet.</p>
+            }
+          }
+        </p-card>
+      }
+    </ng-template>
+  }
+</section>

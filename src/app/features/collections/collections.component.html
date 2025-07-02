@@ -1,23 +1,33 @@
-<section class="collections flex flex-column flex-1 mt-0 sm:mt-5 xl:mt-7">
-  <div class="collections-sub-header flex justify-content-between flex-column gap-4 mb-4 sm:mb-6 sm:gap-0 sm:flex-row">
-    <div class="flex gap-3">
-      <i class="collections-icon text-white osf-icon-collections"></i>
-      <h1 class="flex align-items-center text-white">Collection Title</h1>
+@if (!isProviderLoading()) {
+  <section class="collections flex flex-column flex-1 pt-0 xl:pt-5">
+    <div
+      class="collections-sub-header flex justify-content-between flex-column gap-4 mb-4 sm:mb-6 sm:gap-0 sm:flex-row"
+    >
+      <div class="flex gap-3">
+        <i class="collections-icon text-white osf-icon-collections"></i>
+        <h1 class="flex align-items-center text-white">{{ collectionProvider()?.name }}</h1>
+      </div>
+
+      <p-button class="collections-heading-btn" [label]="'collections.buttons.addToCollection' | translate" />
     </div>
 
-    <p-button class="collections-heading-btn" [label]="'collections.buttons.addToCollection' | translate" />
-  </div>
+    <div class="search-input-container">
+      <osf-search-input
+        [control]="searchControl"
+        [showHelpIcon]="true"
+        [placeholder]="'collections.searchInput.placeholder' | translate"
+        (helpClicked)="openHelpDialog()"
+        (triggerSearch)="onSearchTriggered($event)"
+      />
+      @if (collectionProvider()?.description) {
+        <div class="mt-6 text-white" [innerHTML]="collectionProvider()?.description"></div>
+      }
+    </div>
 
-  <div class="search-input-container">
-    <osf-search-input
-      [control]="searchControl"
-      [showHelpIcon]="true"
-      [placeholder]="'collections.searchInput.placeholder' | translate"
-      (helpClicked)="openHelpDialog()"
-    />
-  </div>
-
-  <div class="content-container flex-1">
-    <osf-collections-main-content />
-  </div>
-</section>
+    <div class="content-container flex-1">
+      <osf-collections-main-content />
+    </div>
+  </section>
+} @else {
+  <osf-loading-spinner />
+}

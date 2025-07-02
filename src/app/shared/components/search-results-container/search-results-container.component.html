@@ -1,0 +1,129 @@
+<div class="flex justify-content-between align-items-start pb-3 column-gap-3">
+  <div class="flex flex-1 flex-column row-gap-7">
+    <osf-select
+      class="text-center inline-flex md:hidden"
+      [options]="tabsOptions"
+      [fullWidth]="true"
+      [selectedValue]="selectedTab()"
+      (changeValue)="selectTab()"
+    />
+
+    <h3 class="result-count">
+      @if (searchCount() > 10000) {
+        10 000+ {{ 'collections.searchResults.results' | translate }}
+      } @else if (searchCount() > 0) {
+        {{ searchCount() }} {{ 'collections.searchResults.results' | translate }}
+      } @else {
+        0 {{ 'collections.searchResults.results' | translate }}
+      }
+    </h3>
+  </div>
+
+  <div class="flex align-items-center gap-2">
+    <p class="hidden md:block">{{ 'collections.filters.sortBy' | translate }}:</p>
+
+    <p-select
+      class="no-border-dropdown font-bold ml-2 hidden md:inline-flex"
+      [options]="searchSortingOptions"
+      optionLabel="label"
+      optionValue="value"
+      appendTo="body"
+      [ngModel]="selectedSort()"
+      (ngModelChange)="selectSort($event)"
+    ></p-select>
+
+    @if (isAnyFilterOptions()) {
+      <img
+        class="hover:opacity-70 transition-delay-200 transition-ease-in cursor-pointer inline md:hidden"
+        ngSrc="assets/icons/colored/filter.svg"
+        tabindex="0"
+        role="button"
+        alt="filter by"
+        width="44"
+        height="44"
+        (keydown.enter)="openFilters()"
+        (click)="openFilters()"
+      />
+    }
+    <img
+      class="hover:opacity-70 transition-delay-200 transition-ease-in cursor-pointer ml-2 inline md:hidden"
+      ngSrc="assets/icons/colored/sort.svg"
+      tabindex="0"
+      role="button"
+      alt="sort by"
+      width="44"
+      height="44"
+      (keydown.enter)="openSorting()"
+      (click)="openSorting()"
+    />
+  </div>
+</div>
+
+@if (isFiltersOpen()) {
+  <div class="w-full mb-3 md:hidden">
+    <ng-content select="[slot=mobile-filters]"></ng-content>
+  </div>
+} @else if (isSortingOpen()) {
+  <div class="flex flex-column p-5 pt-1 row-gap-3">
+    @for (option of searchSortingOptions; track option.value) {
+      <div
+        class="p-3 grey-border-color bg-white border-round-sm cursor-pointer transition-delay-200 sort-card"
+        tabindex="0"
+        role="button"
+        [class]="{ 'card-selected': selectedSort() === option.value }"
+        (click)="selectSort(option.value)"
+        (keydown.enter)="selectSort(option.value)"
+      >
+        {{ option.label }}
+      </div>
+    }
+  </div>
+} @else {
+  @if (hasSelectedValues()) {
+    <div class="mb-3">
+      <ng-content select="[slot=filter-chips]"></ng-content>
+    </div>
+  }
+}
+
+<div class="flex flex-column gap-3 md:flex-row md:gap-4">
+  <div class="hidden w-3 md:block">
+    <ng-content select="[slot=filters]"></ng-content>
+  </div>
+
+  <p-dataView [value]="resources()" class="flex-1 w-full" [rows]="10">
+    <ng-template #list let-items>
+      <div class="flex flex-column gap-4">
+        @if (items.length > 0) {
+          @for (item of items; track item.id) {
+            <osf-resource-card [item]="item" />
+          }
+
+          <div class="flex column-gap-2 w-full justify-content-center pt-2">
+            @if (first() && prev()) {
+              <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(first())"></p-button>
+            }
+
+            <p-button
+              icon="fas fa-angle-left"
+              severity="contrast"
+              text
+              [disabled]="!prev()"
+              (click)="switchPage(prev())"
+            >
+            </p-button>
+
+            <p-button
+              icon="fas fa-angle-right"
+              severity="contrast"
+              text
+              [disabled]="!next()"
+              (click)="switchPage(!next() ? first() : next())"
+            >
+            </p-button>
+          </div>
+        }
+      </div>
+    </ng-template>
+  </p-dataView>
+</div>

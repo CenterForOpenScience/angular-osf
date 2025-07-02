@@ -30,11 +30,17 @@
 
 <section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
   @switch (currentStep()) {
-    @case (0) {
-      <osf-title-and-abstract-step (nextClicked)="currentStep.set(currentStep() + 1)" />
+    @case (SubmitStepsEnum.TitleAndAbstract) {
+      <osf-title-and-abstract-step (nextClicked)="currentStep.set(SubmitStepsEnum.File)" />
     }
-    @case (1) {
-      <osf-file-step (nextClicked)="currentStep.set(currentStep() + 1)" />
+    @case (SubmitStepsEnum.File) {
+      <osf-file-step
+        (nextClicked)="currentStep.set(SubmitStepsEnum.Metadata)"
+        (backClicked)="currentStep.set(SubmitStepsEnum.TitleAndAbstract)"
+      />
+    }
+    @case (SubmitStepsEnum.Metadata) {
+      <osf-preprint-metadata (nextClicked)="currentStep.set(SubmitStepsEnum.AuthorAssertions)" />
     }
     @default {
       <p>No such step</p>

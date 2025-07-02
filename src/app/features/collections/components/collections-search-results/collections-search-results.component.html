@@ -1,13 +1,30 @@
-<p-dataview [value]="searchResults" class="w-full" [rows]="10">
+<p-dataView [value]="searchResults()" class="collection-search-results w-full" [rows]="10">
   <ng-template #list let-items>
     <div class="flex flex-column gap-3">
-      @if (items.length) {
-        @for (item of items; track item.id) {
-          <osf-collections-search-result-card [cardItem]="item"></osf-collections-search-result-card>
-        }
+      @if (isLoading()) {
+        <p-skeleton width="100%" height="12rem" />
+        <p-skeleton width="100%" height="12rem" />
+        <p-skeleton width="100%" height="12rem" />
+      } @else {
+        @if (items.length) {
+          @for (item of items; track item.id) {
+            <osf-collections-search-result-card [cardItem]="item"></osf-collections-search-result-card>
+          }
 
-        <p-paginator class="collections-paginator" />
+          <osf-custom-paginator
+            class="collections-paginator"
+            [totalCount]="totalSubmissions()"
+            [rows]="10"
+            [first]="firstIndex()"
+            (pageChanged)="onPageChange($event)"
+          />
+        } @else {
+          <h2 class="text-center">
+            {{ 'collections.searchResults.noResultsFound' | translate }}
+          </h2>
+          <p class="text-center">{{ 'collections.searchResults.noResultsFoundMessage' | translate }}</p>
+        }
       }
     </div>
   </ng-template>
-</p-dataview>
+</p-dataView>

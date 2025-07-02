@@ -1,9 +1,11 @@
 <div class="flex justify-content-between align-items-center mb-4 column-gap-3">
   <div class="flex flex-1 flex-column gap-7 results-count-heading">
-    @if (searchCount() > 10000) {
+    @if (collectionSubmissions().length) {
+      <h3 class="highlight">
+        {{ collectionSubmissions().length }} {{ 'collections.searchResults.results' | translate }}
+      </h3>
+    } @else if (collectionSubmissions().length > 10000) {
       <h3 class="highlight">{{ 'collections.searchResults.10000results' | translate }}</h3>
-    } @else if (searchCount() > 0) {
-      <h3 class="highlight">{{ searchCount() }} {{ 'collections.searchResults.results' | translate }}</h3>
     } @else {
       <h3 class="highlight">{{ 'collections.searchResults.noResults' | translate }}</h3>
     }
@@ -11,17 +13,27 @@
 
   <div class="flex align-items-center gap-2">
     @if (isWeb()) {
-      <h3 class="font-normal">{{ 'collections.filters.sort.label' | translate }}</h3>
+      <p>{{ 'collections.filters.sort.label' | translate }}</p>
       <p-select
-        class="no-border-dropdown"
+        class="no-border-dropdown font-bold"
         [options]="sortOptions"
         optionLabel="label"
         optionValue="value"
-        [(ngModel)]="selectedSort"
-      ></p-select>
+        [ngModel]="selectedSort()"
+        (ngModelChange)="handleSortBy($event)"
+        appendTo="body"
+      >
+        <ng-template #selectedItem let-selectedOption>
+          {{ selectedOption.label | translate }}
+        </ng-template>
+        <ng-template #item let-option>
+          {{ option.label | translate }}
+        </ng-template>
+      </p-select>
     } @else {
       <img
         ngSrc="assets/icons/colored/filter.svg"
+        class="custom-dark-hover cursor-pointer"
         tabindex="0"
         role="button"
         alt="filter by"
@@ -38,7 +50,7 @@
         alt="sort by"
         width="44"
         height="44"
-        class="ml-2"
+        class="custom-dark-hover cursor-pointer ml-2"
         (keydown.enter)="openSorting()"
         (click)="openSorting()"
       />
@@ -58,22 +70,26 @@
         tabindex="0"
         role="button"
         [class]="{ 'card-selected': selectedSort() === option.value }"
-        (click)="selectSort(option.value)"
-        (keydown.enter)="selectSort(option.value)"
+        (click)="handleSortBy(option.value)"
+        (keydown.enter)="handleSortBy(option.value)"
       >
-        {{ option.label }}
+        {{ option.label | translate }}
       </div>
     }
   </div>
 } @else {
-  @if (isAnyFilterSelected()) {
+  @if (hasAnySelectedFilters()) {
     <osf-collections-filter-chips />
   }
 }
 
 <div class="flex column-gap-4 filters-resources-web">
   @if (isWeb()) {
-    <osf-collections-filters />
+    @if (!isCollectionLoading()) {
+      <osf-collections-filters />
+    } @else {
+      <p-skeleton width="23.9rem" height="30rem" />
+    }
   }
 
   <osf-collections-search-results />

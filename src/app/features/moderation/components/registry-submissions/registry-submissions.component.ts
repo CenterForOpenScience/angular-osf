@@ -2,6 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { SelectButton } from 'primeng/selectbutton';
 
+import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -16,7 +17,15 @@ import { pubicReviews } from '../test-data';
 
 @Component({
   selector: 'osf-registry-submissions',
-  imports: [SelectButton, TranslatePipe, FormsModule, SelectComponent, SubmissionsListComponent, IconComponent],
+  imports: [
+    SelectButton,
+    TranslatePipe,
+    FormsModule,
+    SelectComponent,
+    SubmissionsListComponent,
+    IconComponent,
+    TitleCasePipe,
+  ],
   templateUrl: './registry-submissions.component.html',
   styleUrl: './registry-submissions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

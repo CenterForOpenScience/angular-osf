@@ -2,6 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { JsonApiResponse } from '@core/models';
 import { JsonApiService } from '@core/services';
 
 import { ViewOnlyLinksMapper } from '../mappers';
@@ -28,8 +29,10 @@ export class ViewOnlyLinksService {
     const params: Record<string, unknown> = { embed: 'creator' };
 
     return this.jsonApiService
-      .post<ViewOnlyLink>(`${environment.apiUrl}/nodes/${projectId}/view_only_links/`, data, params)
-      .pipe(map((response) => ViewOnlyLinksMapper.fromSingleResponse(response, projectId)));
+      .post<
+        JsonApiResponse<ViewOnlyLink, null>
+      >(`${environment.apiUrl}/nodes/${projectId}/view_only_links/`, data, params)
+      .pipe(map((response) => ViewOnlyLinksMapper.fromSingleResponse(response.data, projectId)));
   }
 
   deleteLink(projectId: string, linkId: string): Observable<void> {

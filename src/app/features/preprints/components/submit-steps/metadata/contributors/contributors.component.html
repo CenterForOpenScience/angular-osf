@@ -1,0 +1,32 @@
+<p-card class="w-full">
+  <h2>{{ 'project.overview.metadata.contributors' | translate }}</h2>
+  <div class="warning-message m-t-24 m-b-12">
+    <p-message severity="error">
+      <i class="osf-icon-warning-sign mr-2"></i>
+      Warning: Changing your permissions will prevent you from editing your draft.
+    </p-message>
+  </div>
+  <osf-contributors-list
+    class="w-full"
+    [contributors]="contributors()"
+    [isLoading]="isContributorsLoading()"
+    (remove)="removeContributor($event)"
+    (showEducationHistory)="openEducationHistory($event)"
+    (showEmploymentHistory)="openEmploymentHistory($event)"
+  />
+  <div class="flex justify-content-end mt-3">
+    @if (hasChanges) {
+      <div class="flex gap-2 mr-4">
+        <p-button (click)="cancel()" text severity="info" [label]="'common.buttons.cancel' | translate" />
+        <p-button (click)="save()" [label]="'common.buttons.save' | translate" />
+      </div>
+    }
+    <p-button
+      class="w-full md:w-auto"
+      styleClass="w-full"
+      label="Add Contributor By Search"
+      type="submit"
+      (click)="openAddContributorDialog()"
+    ></p-button>
+  </div>
+</p-card>

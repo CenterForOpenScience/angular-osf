@@ -1,0 +1,37 @@
+<section class="flex flex-column bg-white flex-1 h-full p-5 gap-4 w-full">
+  <section>
+    <h2 class="mb-2">{{ 'registries.metadata.title' | translate }}</h2>
+    <p class="mb-4">{{ 'registries.metadata.description' | translate }}</p>
+    <p-card class="w-full">
+      <form [formGroup]="metadataForm" (ngSubmit)="submitMetadata()" class="flex flex-column gap-4">
+        <osf-text-input
+          label="common.labels.title"
+          [control]="metadataForm.controls['title']"
+          [maxLength]="inputLimits.fullName.maxLength"
+        >
+        </osf-text-input>
+        <div>
+          <label for="project-description-id">{{ 'common.labels.description' | translate }}</label>
+          <textarea
+            id="project-description-id"
+            formControlName="description"
+            class="w-full"
+            rows="5"
+            cols="30"
+            pTextarea
+          ></textarea>
+        </div>
+        <div class="flex justify-content-end"></div>
+      </form>
+    </p-card>
+  </section>
+  <osf-contributors></osf-contributors>
+  <osf-registries-license></osf-registries-license>
+  <osf-registries-subjects></osf-registries-subjects>
+  <osf-registries-tags></osf-registries-tags>
+  <div class="flex justify-content-end">
+    <p-button [label]="'registries.deleteDraft' | translate" severity="danger" (click)="deleteDraft()" class="mr-2">
+    </p-button>
+    <p-button [label]="'common.buttons.next' | translate" type="submit" [disabled]="metadataForm.invalid"></p-button>
+  </div>
+</section>

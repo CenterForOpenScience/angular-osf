@@ -6,7 +6,7 @@ import { catchError, tap, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { InstitutionsService } from '@shared/services';
-import { FetchInstitutions, GetUserInstitutions, InstitutionsStateModel } from '@shared/stores';
+import { FetchInstitutions, FetchUserInstitutions, InstitutionsStateModel } from '@shared/stores';
 
 @State<InstitutionsStateModel>({
   name: 'institutions',
@@ -24,7 +24,7 @@ import { FetchInstitutions, GetUserInstitutions, InstitutionsStateModel } from '
 export class InstitutionsState {
   private readonly institutionsService = inject(InstitutionsService);
 
-  @Action(GetUserInstitutions)
+  @Action(FetchUserInstitutions)
   getUserInstitutions(ctx: StateContext<InstitutionsStateModel>) {
     return this.institutionsService.getUserInstitutions().pipe(
       tap((institutions) => {
@@ -36,7 +36,7 @@ export class InstitutionsState {
   }
 
   @Action(FetchInstitutions)
-  getInstitutions(ctx: StateContext<InstitutionsStateModel>, action: FetchInstitutions) {
+  fetchInstitutions(ctx: StateContext<InstitutionsStateModel>, action: FetchInstitutions) {
     ctx.patchState({
       institutions: {
         data: [],

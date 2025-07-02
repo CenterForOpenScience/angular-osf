@@ -1,0 +1,67 @@
+<p-card class="w-full">
+  <h2 class="mb-2">{{ 'shared.license.title' | translate }}</h2>
+
+  <p class="mb-1">{{ 'shared.license.description' | translate }}</p>
+  <p>
+    {{ 'shared.license.helpText' | translate }}
+    <a href="https://help.osf.io/article/148-licensing">{{ 'common.links.helpGuide' | translate }}</a
+    >.
+  </p>
+
+  <p-select
+    [options]="licenses()"
+    [(ngModel)]="selectedLicense"
+    optionLabel="name"
+    styleClass=""
+    [placeholder]="'shared.license.selectLicense' | translate"
+    (onChange)="onSelectLicense($event.value)"
+    class="mt-4 w-full md:w-6"
+  />
+  @if (selectedLicense()) {
+    <p-divider styleClass="mt-3 mb-3" />
+    @if (selectedLicense()!.requiredFields.length) {
+      <form [formGroup]="licenseForm" class="flex flex-column gap-3 mb-3 w-full md:flex-row">
+        <div class="w-full md:w-6">
+          <label for="licenseYear"> {{ 'common.labels.year' | translate }} </label>
+          <p-datePicker
+            id="licenseYear"
+            formControlName="year"
+            [maxDate]="currentYear"
+            dataType="string"
+            view="year"
+            dateFormat="yy"
+          />
+        </div>
+        <osf-text-input
+          class="w-full md:w-6"
+          label="shared.license.copyrightHolders"
+          [control]="licenseForm.controls['copyrightHolders']"
+          [maxLength]="inputLimits.fullName.maxLength"
+        />
+      </form>
+    }
+
+    <p class="highlight-block">
+      <osf-truncated-text [text]="selectedLicense()!.text | interpolate: licenseForm.value" />
+    </p>
+
+    @if (selectedLicense()!.requiredFields.length) {
+      <section class="m-t-48 flex flex-row justify-content-end align-items-center gap-2">
+        <p-button
+          class="w-6 md:w-6rem"
+          styleClass="w-full"
+          [label]="'common.buttons.cancel' | translate"
+          severity="info"
+          (click)="cancel()"
+        />
+        <p-button
+          class="w-6 md:w-9rem"
+          styleClass="w-full"
+          [label]="'common.buttons.save' | translate"
+          [disabled]="licenseForm.invalid || saveButtonDisabled()"
+          (click)="saveLicense()"
+        />
+      </section>
+    }
+  }
+</p-card>

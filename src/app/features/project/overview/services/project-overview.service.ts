@@ -10,7 +10,7 @@ import {
   ComponentGetResponseJsoApi,
   ComponentOverview,
   ProjectOverview,
-  ProjectOverviewResponseJsoApi,
+  ProjectOverviewResponseJsonApi,
 } from '../models';
 
 import { environment } from 'src/environments/environment';
@@ -38,7 +38,7 @@ export class ProjectOverviewService {
     };
 
     return this.#jsonApiService
-      .get<ProjectOverviewResponseJsoApi>(`${environment.apiUrl}/nodes/${projectId}/`, params)
+      .get<ProjectOverviewResponseJsonApi>(`${environment.apiUrl}/nodes/${projectId}/`, params)
       .pipe(map((response) => ProjectOverviewMapper.fromGetProjectResponse(response.data)));
   }
 

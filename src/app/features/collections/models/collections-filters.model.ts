@@ -6,7 +6,6 @@ export interface CollectionsFilters {
   disease: string[];
   gradeLevels: string[];
   issue: string[];
-  reviewsState: string[];
   schoolType: string[];
   studyDesign: string[];
   volume: string[];

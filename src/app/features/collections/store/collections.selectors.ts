@@ -22,67 +22,62 @@ export class CollectionsSelectors {
   }
 
   @Selector([CollectionsState])
-  static getAllFilters(state: CollectionsStateModel): CollectionsFilters {
-    return state.filters;
-  }
-
-  @Selector([CollectionsState])
-  static getStatusFilters(state: CollectionsStateModel): string[] {
-    return state.filters.status;
-  }
-
-  @Selector([CollectionsState])
-  static getProgramAreaFilters(state: CollectionsStateModel): string[] {
-    return state.filters.programArea;
-  }
-
-  @Selector([CollectionsState])
-  static getCollectedTypeFilters(state: CollectionsStateModel): string[] {
-    return state.filters.collectedType;
-  }
-
-  @Selector([CollectionsState])
-  static getDataTypeFilters(state: CollectionsStateModel): string[] {
-    return state.filters.dataType;
-  }
-
-  @Selector([CollectionsState])
-  static getDiseaseFilters(state: CollectionsStateModel): string[] {
-    return state.filters.disease;
-  }
-
-  @Selector([CollectionsState])
-  static getGradeLevelsFilters(state: CollectionsStateModel): string[] {
-    return state.filters.gradeLevels;
-  }
-
-  @Selector([CollectionsState])
-  static getIssueFilters(state: CollectionsStateModel): string[] {
-    return state.filters.issue;
-  }
-
-  @Selector([CollectionsState])
-  static getReviewsStateFilters(state: CollectionsStateModel): string[] {
-    return state.filters.reviewsState;
-  }
-
-  @Selector([CollectionsState])
-  static getSchoolTypeFilters(state: CollectionsStateModel): string[] {
-    return state.filters.schoolType;
-  }
-
-  @Selector([CollectionsState])
-  static getStudyDesignFilters(state: CollectionsStateModel): string[] {
-    return state.filters.studyDesign;
-  }
-
-  @Selector([CollectionsState])
-  static getVolumeFilters(state: CollectionsStateModel): string[] {
-    return state.filters.volume;
+  static getAllSelectedFilters(state: CollectionsStateModel): CollectionsFilters {
+    return state.currentFilters;
   }
 
   @Selector([CollectionsState])
   static getAllFiltersOptions(state: CollectionsStateModel): CollectionsFilters {
     return state.filtersOptions;
+  }
+
+  @Selector([CollectionsState])
+  static getCollectionProvider(state: CollectionsStateModel) {
+    return state.collectionProvider.data;
+  }
+
+  @Selector([CollectionsState])
+  static getCollectionDetails(state: CollectionsStateModel) {
+    return state.collectionDetails.data;
+  }
+
+  @Selector([CollectionsState])
+  static getCollectionProviderLoading(state: CollectionsStateModel) {
+    return state.collectionProvider.isLoading;
+  }
+
+  @Selector([CollectionsState])
+  static getCollectionDetailsLoading(state: CollectionsStateModel) {
+    return state.collectionDetails.isLoading;
+  }
+
+  @Selector([CollectionsState])
+  static getCollectionSubmissions(state: CollectionsStateModel) {
+    return state.collectionSubmissions.data;
+  }
+
+  @Selector([CollectionsState])
+  static getCollectionSubmissionsLoading(state: CollectionsStateModel) {
+    return state.collectionSubmissions.isLoading;
+  }
+
+  @Selector([CollectionsState])
+  static getSortBy(state: CollectionsStateModel) {
+    return state.sortBy;
+  }
+
+  @Selector([CollectionsState])
+  static getSearchText(state: CollectionsStateModel) {
+    return state.searchText;
+  }
+
+  @Selector([CollectionsState])
+  static getPageNumber(state: CollectionsStateModel) {
+    return state.page;
+  }
+
+  @Selector([CollectionsState])
+  static getTotalSubmissions(state: CollectionsStateModel) {
+    return state.totalSubmissions;
   }
 }

@@ -11,7 +11,7 @@
       <ng-template #item let-item>
         <osf-icon [iconClass]="item.icon" [class]="item.value"></osf-icon>
         <p>{{ totalCount }}</p>
-        <p>{{ item.label | translate }}</p>
+        <p>{{ item.label | translate | titlecase }}</p>
       </ng-template>
     </p-selectbutton>
   </div>

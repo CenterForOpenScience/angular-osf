@@ -1,11 +1,13 @@
 @let item = cardItem();
 
 <div class="card w-full flex flex-column gap-3 p-5">
-  <p class="card-title font-bold">{{ item?.title }}</p>
+  <a [href]="item.nodeUrl">
+    <p class="card-title font-bold">{{ item?.title }}</p>
+  </a>
   <p>
-    by
+    {{ 'collections.common.by' | translate }}
     @for (contributor of item?.contributors; track contributor.id) {
-      <a class="font-bold cursor-pointer">{{ contributor.name }}{{ $last ? '' : ', ' }}</a>
+      <a [href]="contributor.url" class="font-bold cursor-pointer">{{ contributor.name }}{{ $last ? '' : ', ' }}</a>
     }
   </p>
   <p class="card-description">{{ item?.description }}</p>

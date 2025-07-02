@@ -20,7 +20,7 @@ import { AddProjectFormComponent, MyProjectsTableComponent, SubHeaderComponent }
 import { SortOrder } from '@osf/shared/enums';
 import { TableParameters } from '@osf/shared/models';
 import { IS_MEDIUM } from '@osf/shared/utils';
-import { GetUserInstitutions } from '@shared/stores';
+import { FetchUserInstitutions } from '@shared/stores';
 
 import { MyProjectsSearchFilters } from '../my-projects/models';
 import { ClearMyProjects, GetMyProjects, MyProjectsSelectors } from '../my-projects/store';
@@ -76,7 +76,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit() {
     this.setupQueryParamsSubscription();
-    this.store.dispatch(new GetUserInstitutions());
+    this.store.dispatch(new FetchUserInstitutions());
 
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const userId = params['userId'];

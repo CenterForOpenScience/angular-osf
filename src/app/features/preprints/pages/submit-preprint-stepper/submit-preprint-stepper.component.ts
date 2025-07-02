@@ -17,25 +17,25 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { TitleAndAbstractStepComponent } from '@osf/features/preprints/components';
-import { FileStepComponent } from '@osf/features/preprints/components/submit-steps/file-step/file-step.component';
-import { submitPreprintSteps } from '@osf/features/preprints/constants';
-import { BrandService } from '@osf/features/preprints/services';
 import {
-  GetHighlightedSubjectsByProviderId,
-  GetPreprintProviderById,
-  PreprintsSelectors,
-} from '@osf/features/preprints/store/preprints';
+  FileStepComponent,
+  MetadataComponent,
+  TitleAndAbstractStepComponent,
+} from '@osf/features/preprints/components';
+import { submitPreprintSteps } from '@osf/features/preprints/constants';
+import { SubmitSteps } from '@osf/features/preprints/enums';
+import { GetPreprintProviderById, PreprintsSelectors } from '@osf/features/preprints/store/preprints';
 import {
   ResetStateAndDeletePreprint,
   SetSelectedPreprintProviderId,
 } from '@osf/features/preprints/store/submit-preprint';
 import { StepperComponent } from '@shared/components/stepper/stepper.component';
+import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
 
 @Component({
   selector: 'osf-submit-preprint-stepper',
-  imports: [Skeleton, StepperComponent, TitleAndAbstractStepComponent, FileStepComponent],
+  imports: [Skeleton, StepperComponent, TitleAndAbstractStepComponent, FileStepComponent, MetadataComponent],
   templateUrl: './submit-preprint-stepper.component.html',
   styleUrl: './submit-preprint-stepper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,16 +49,16 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
-    getHighlightedSubjectsByProviderId: GetHighlightedSubjectsByProviderId,
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
     resetStateAndDeletePreprint: ResetStateAndDeletePreprint,
   });
 
+  readonly SubmitStepsEnum = SubmitSteps;
   readonly submitPreprintSteps = submitPreprintSteps;
 
   preprintProvider = select(PreprintsSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintsSelectors.isPreprintProviderDetailsLoading);
-  currentStep = signal<number>(1);
+  currentStep = signal<number>(0);
   isWeb = toSignal(inject(IS_WEB));
 
   constructor() {

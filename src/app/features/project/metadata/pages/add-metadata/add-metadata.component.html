@@ -2,7 +2,7 @@
 
 @if (!selectedTemplate) {
   @if (cedarTemplatesLoading()) {
-    <div class="flex-1 mt-4 md:mt-8 lg:pt-5">
+    <div class="flex-1">
       <osf-loading-spinner />
     </div>
   } @else {
@@ -50,18 +50,19 @@
           }
         </div>
 
-        <div class="flex justify-content-end flex-0 mt-auto gap-2">
+        <div class="flex justify-content-end flex-0 gap-2 mt-6">
           <p-button
-            [label]="'common.buttons.cancel' | translate"
-            [link]="true"
-            severity="info"
+            styleClass="w-10rem"
             class="w-10rem"
+            [label]="'common.buttons.cancel' | translate"
+            severity="info"
             (click)="onCancel()"
           ></p-button>
           @if (hasMultiplePages()) {
             <p-button
-              [label]="'common.buttons.next' | translate"
+              styleClass="w-10rem"
               class="w-10rem"
+              [label]="'common.buttons.next' | translate"
               [disabled]="!hasNextPage()"
               (click)="onNext()"
             ></p-button>

@@ -1,0 +1,7 @@
+<p-card>
+  <div class="flex flex-column gap-3">
+    <h2>{{ 'project.overview.metadata.tags' | translate }}</h2>
+
+    <osf-tags-input (tagsChanged)="onTagsChanged($event)" [tags]="[]"></osf-tags-input>
+  </div>
+</p-card>

@@ -6,6 +6,7 @@
       [description]="'registries.description' | translate"
       [showButton]="true"
       [buttonLabel]="'registries.addRegistration' | translate"
+      (buttonClick)="goToCreateRegistration()"
     />
 
     <osf-search-input

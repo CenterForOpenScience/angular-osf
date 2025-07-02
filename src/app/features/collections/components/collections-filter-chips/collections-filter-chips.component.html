@@ -1,23 +1,13 @@
 <div class="mb-4 mt-4 flex gap-3 flex-wrap">
-  @if (activeFilters().programArea.length) {
-    @for (filter of activeFilters().programArea; track filter) {
+  @for (filterEntry of activeFilterEntries(); track filterEntry.key) {
+    @for (filter of filterEntry.filters; track filter) {
       <p-chip
         [label]="filter"
         removeIcon="fas fa-close"
-        removable
-        (onRemove)="onRemoveProgramAreaFilter(filter)"
-      ></p-chip>
-    }
-  }
-
-  @if (activeFilters().collectedType.length) {
-    @for (filter of activeFilters().collectedType; track filter) {
-      <p-chip
-        [label]="filter"
-        removeIcon="fas fa-close"
-        removable
-        (onRemove)="onRemoveProgramAreaFilter(filter)"
-      ></p-chip>
+        [removable]="true"
+        (onRemove)="onRemoveFilter(filterEntry.key, filter)"
+      >
+      </p-chip>
     }
   }
 </div>

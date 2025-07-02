@@ -1,19 +1,20 @@
-import { select } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Select } from 'primeng/select';
+import { Skeleton } from 'primeng/skeleton';
 
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { CollectionsSelectors } from '@osf/features/collections/store';
-import { SORT_OPTIONS } from '@osf/features/collections/utils';
+import { CollectionsFilterChipsComponent } from '@osf/features/collections/components';
+import { collectionsSortOptions } from '@osf/features/collections/constants';
+import { CollectionsSelectors, SetSortBy } from '@osf/features/collections/store';
 import { IS_WEB } from '@shared/utils';
 
-import { CollectionsFilterChipsComponent } from '../collections-filter-chips/collections-filter-chips.component';
 import { CollectionsFiltersComponent } from '../collections-filters/collections-filters.component';
 import { CollectionsSearchResultsComponent } from '../collections-search-results/collections-search-results.component';
 
@@ -27,56 +28,40 @@ import { CollectionsSearchResultsComponent } from '../collections-search-results
     CollectionsFilterChipsComponent,
     CollectionsFiltersComponent,
     CollectionsSearchResultsComponent,
+    Skeleton,
   ],
   templateUrl: './collections-main-content.component.html',
   styleUrl: './collections-main-content.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionsMainContentComponent {
-  protected readonly sortOptions = SORT_OPTIONS;
-  protected selectedSort = signal('-relevance');
-  protected searchCount = signal(3);
-
+  protected readonly sortOptions = collectionsSortOptions;
   protected isWeb = toSignal(inject(IS_WEB));
+  protected selectedSort = select(CollectionsSelectors.getSortBy);
+  protected collectionSubmissions = select(CollectionsSelectors.getCollectionSubmissions);
 
   protected isFiltersOpen = signal(false);
   protected isSortingOpen = signal(false);
 
-  protected filters = select(CollectionsSelectors.getAllFilters);
-  protected filtersOptions = select(CollectionsSelectors.getAllFiltersOptions);
+  protected selectedFilters = select(CollectionsSelectors.getAllSelectedFilters);
+  protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  protected isCollectionDetailsLoading = select(CollectionsSelectors.getCollectionDetailsLoading);
 
-  protected isAnyFilterSelected = computed(() => {
-    const currentFilters = this.filters();
-    return (
-      currentFilters.programArea.length ||
-      currentFilters.status.length ||
-      currentFilters.collectedType.length ||
-      currentFilters.dataType.length ||
-      currentFilters.disease.length ||
-      currentFilters.gradeLevels.length ||
-      currentFilters.issue.length ||
-      currentFilters.reviewsState.length ||
-      currentFilters.schoolType.length ||
-      currentFilters.studyDesign.length ||
-      currentFilters.volume.length
-    );
+  protected isCollectionLoading = computed(() => {
+    return this.isCollectionProviderLoading() || this.isCollectionDetailsLoading();
   });
 
-  protected isAnyFilterOptions = computed(() => {
-    const currentOptions = this.filtersOptions();
-    return (
-      currentOptions.programArea.length ||
-      currentOptions.status.length ||
-      currentOptions.collectedType.length ||
-      currentOptions.dataType.length ||
-      currentOptions.disease.length ||
-      currentOptions.gradeLevels.length ||
-      currentOptions.issue.length ||
-      currentOptions.reviewsState.length ||
-      currentOptions.schoolType.length ||
-      currentOptions.studyDesign.length ||
-      currentOptions.volume.length
-    );
+  protected hasAnySelectedFilters = computed(() => {
+    const currentFilters = this.selectedFilters();
+    const hasSelectedFiltersOptions = Object.values(currentFilters).some((value) => {
+      return value.length;
+    });
+
+    return hasSelectedFiltersOptions;
+  });
+
+  protected actions = createDispatchMap({
+    setSortBy: SetSortBy,
   });
 
   protected openFilters(): void {
@@ -89,8 +74,8 @@ export class CollectionsMainContentComponent {
     this.isFiltersOpen.set(false);
   }
 
-  protected selectSort(value: string): void {
-    this.selectedSort.set(value);
-    this.openSorting();
+  protected handleSortBy(value: string): void {
+    this.actions.setSortBy(value);
+    this.isSortingOpen.set(false);
   }
 }

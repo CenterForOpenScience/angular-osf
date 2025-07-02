@@ -2,9 +2,23 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { Chip } from 'primeng/chip';
 
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 
-import { CollectionsSelectors, SetCollectedTypeFilters, SetProgramAreaFilters } from '@osf/features/collections/store';
+import { collectionFilterTypes } from '@osf/features/collections/constants/filter-types.const';
+import { CollectionFilterType } from '@osf/features/collections/enums';
+import {
+  CollectionsSelectors,
+  SetCollectedTypeFilters,
+  SetDataTypeFilters,
+  SetDiseaseFilters,
+  SetGradeLevelsFilters,
+  SetIssueFilters,
+  SetProgramAreaFilters,
+  SetSchoolTypeFilters,
+  SetStatusFilters,
+  SetStudyDesignFilters,
+  SetVolumeFilters,
+} from '@osf/features/collections/store';
 
 @Component({
   selector: 'osf-collections-filter-chips',
@@ -14,19 +28,67 @@ import { CollectionsSelectors, SetCollectedTypeFilters, SetProgramAreaFilters } 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionsFilterChipsComponent {
-  protected activeFilters = select(CollectionsSelectors.getAllFilters);
+  protected activeFilters = select(CollectionsSelectors.getAllSelectedFilters);
+
+  private readonly filterTypes = collectionFilterTypes;
+
   protected actions = createDispatchMap({
-    setProgramAreaFilters: SetProgramAreaFilters,
-    setCollectedTypeFilters: SetCollectedTypeFilters,
+    programArea: SetProgramAreaFilters,
+    collectedType: SetCollectedTypeFilters,
+    status: SetStatusFilters,
+    dataType: SetDataTypeFilters,
+    disease: SetDiseaseFilters,
+    gradeLevels: SetGradeLevelsFilters,
+    issue: SetIssueFilters,
+    schoolType: SetSchoolTypeFilters,
+    studyDesign: SetStudyDesignFilters,
+    volume: SetVolumeFilters,
   });
 
-  protected onRemoveProgramAreaFilter(removedFilter: string): void {
-    const currentFilters = this.activeFilters().programArea.filter((filter) => filter !== removedFilter);
-    this.actions.setProgramAreaFilters(currentFilters);
-  }
+  protected activeFilterEntries = computed(() => {
+    const filters = this.activeFilters();
+    return this.filterTypes
+      .map((key) => ({
+        key,
+        filters: filters[key] || [],
+      }))
+      .filter((entry) => entry.filters.length);
+  });
 
-  protected onRemoveCollectedTypeFilter(removedFilter: string): void {
-    const currentFilters = this.activeFilters().collectedType.filter((filter) => filter !== removedFilter);
-    this.actions.setCollectedTypeFilters(currentFilters);
+  protected onRemoveFilter(filterType: CollectionFilterType, removedFilter: string): void {
+    const currentFilters = this.activeFilters()[filterType].filter((filter: string) => filter !== removedFilter);
+
+    switch (filterType) {
+      case CollectionFilterType.ProgramArea:
+        this.actions.programArea(currentFilters);
+        break;
+      case CollectionFilterType.CollectedType:
+        this.actions.collectedType(currentFilters);
+        break;
+      case CollectionFilterType.Status:
+        this.actions.status(currentFilters);
+        break;
+      case CollectionFilterType.DataType:
+        this.actions.dataType(currentFilters);
+        break;
+      case CollectionFilterType.Disease:
+        this.actions.disease(currentFilters);
+        break;
+      case CollectionFilterType.GradeLevels:
+        this.actions.gradeLevels(currentFilters);
+        break;
+      case CollectionFilterType.Issue:
+        this.actions.issue(currentFilters);
+        break;
+      case CollectionFilterType.SchoolType:
+        this.actions.schoolType(currentFilters);
+        break;
+      case CollectionFilterType.StudyDesign:
+        this.actions.studyDesign(currentFilters);
+        break;
+      case CollectionFilterType.Volume:
+        this.actions.volume(currentFilters);
+        break;
+    }
   }
 }

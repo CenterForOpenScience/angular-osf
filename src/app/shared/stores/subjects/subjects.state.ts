@@ -4,12 +4,25 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { NodeSubjectModel } from '@shared/models';
+import { SUBJECTS_SERVICE } from '@osf/shared/tokens/subjects.token';
+import { ISubjectsService, NodeSubjectModel, Subject } from '@shared/models';
 import { SubjectsService } from '@shared/services';
-import { GetSubjects, SubjectsModel, UpdateProjectSubjects } from '@shared/stores/subjects';
+
+import { FetchChildrenSubjects, FetchSubjects, GetSubjects, UpdateProjectSubjects } from './subjects.actions';
+import { SubjectsModel } from './subjects.model';
 
 const initialState: SubjectsModel = {
   highlightedSubjects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  subjects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  searchedSubjects: {
     data: [],
     isLoading: false,
     error: null,
@@ -22,7 +35,73 @@ const initialState: SubjectsModel = {
 })
 @Injectable()
 export class SubjectsState {
-  private readonly subjectsService = inject(SubjectsService);
+  private readonly projectSubjectsService = inject(SubjectsService);
+  private readonly subjectsService = inject<ISubjectsService>(SUBJECTS_SERVICE);
+
+  @Action(FetchSubjects)
+  fetchSubjects(ctx: StateContext<SubjectsModel>, { search }: FetchSubjects) {
+    ctx.patchState({
+      subjects: {
+        ...ctx.getState().subjects,
+        isLoading: true,
+        error: null,
+      },
+      searchedSubjects: {
+        ...ctx.getState().searchedSubjects,
+        isLoading: search ? true : false,
+        error: null,
+      },
+    });
+
+    return this.subjectsService.getSubjects(search).pipe(
+      tap((subjects) => {
+        if (search) {
+          ctx.patchState({
+            searchedSubjects: {
+              data: subjects,
+              isLoading: false,
+              error: null,
+            },
+          });
+        } else {
+          ctx.patchState({
+            subjects: {
+              data: subjects,
+              isLoading: false,
+              error: null,
+            },
+          });
+        }
+      }),
+      catchError((error) => this.handleError(ctx, 'subjects', error))
+    );
+  }
+
+  @Action(FetchChildrenSubjects)
+  fetchSubjectsChildren(ctx: StateContext<SubjectsModel>, { parentId }: FetchChildrenSubjects) {
+    ctx.patchState({
+      subjects: {
+        ...ctx.getState().subjects,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.subjectsService.getChildrenSubjects(parentId).pipe(
+      tap((children) => {
+        const state = ctx.getState();
+        const updatedSubjects = this.updateSubjectChildren(state.subjects.data, parentId, children);
+        ctx.patchState({
+          subjects: {
+            data: updatedSubjects,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => this.handleError(ctx, 'subjects', error))
+    );
+  }
 
   @Action(GetSubjects)
   getSubjects(ctx: StateContext<SubjectsModel>) {
@@ -33,7 +112,7 @@ export class SubjectsState {
         error: null,
       },
     });
-    return this.subjectsService.getSubjects().pipe(
+    return this.projectSubjectsService.getSubjects().pipe(
       tap({
         next: (subjects) => {
           ctx.patchState({
@@ -70,7 +149,7 @@ export class SubjectsState {
 
   @Action(UpdateProjectSubjects)
   updateProjectSubjects(ctx: StateContext<SubjectsModel>, action: UpdateProjectSubjects) {
-    return this.subjectsService.updateProjectSubjects(action.projectId, action.subjectIds).pipe(
+    return this.projectSubjectsService.updateProjectSubjects(action.projectId, action.subjectIds).pipe(
       tap({
         next: (result) => {
           const state = ctx.getState();
@@ -106,5 +185,33 @@ export class SubjectsState {
         },
       })
     );
+  }
+
+  private updateSubjectChildren(subjects: Subject[], parentId: string, newChildren: Subject[]): Subject[] {
+    return subjects.map((subject) => {
+      if (subject.id === parentId) {
+        return { ...subject, children: newChildren };
+      }
+
+      if (subject.children && subject.children.length > 0) {
+        return {
+          ...subject,
+          children: this.updateSubjectChildren(subject.children, parentId, newChildren),
+        };
+      }
+
+      return subject;
+    });
+  }
+
+  private handleError(ctx: StateContext<SubjectsModel>, section: keyof SubjectsModel, error: Error) {
+    ctx.patchState({
+      [section]: {
+        ...ctx.getState()[section],
+        isLoading: false,
+        error: error.message,
+      },
+    });
+    return throwError(() => error);
   }
 }

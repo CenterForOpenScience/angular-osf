@@ -4,6 +4,7 @@ import { map, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { JsonApiResponse } from '@core/models';
 import { JsonApiService } from '@osf/core/services';
 
 import { WikiMapper } from '../mappers';
@@ -36,11 +37,13 @@ export class WikiService {
         },
       },
     };
-    return this.#jsonApiService.post<WikiGetResponse>(environment.apiUrl + `/nodes/${projectId}/wikis/`, body).pipe(
-      map((response) => {
-        return WikiMapper.fromCreateWikiResponse(response);
-      })
-    );
+    return this.#jsonApiService
+      .post<JsonApiResponse<WikiGetResponse, null>>(environment.apiUrl + `/nodes/${projectId}/wikis/`, body)
+      .pipe(
+        map((response) => {
+          return WikiMapper.fromCreateWikiResponse(response.data);
+        })
+      );
   }
 
   deleteWiki(wikiId: string): Observable<void> {
@@ -106,11 +109,13 @@ export class WikiService {
         },
       },
     };
-    return this.#jsonApiService.post<WikiGetResponse>(environment.apiUrl + `/wikis/${wikiId}/versions/`, body).pipe(
-      map((response) => {
-        return WikiMapper.fromCreateWikiResponse(response);
-      })
-    );
+    return this.#jsonApiService
+      .post<JsonApiResponse<WikiGetResponse, null>>(environment.apiUrl + `/wikis/${wikiId}/versions/`, body)
+      .pipe(
+        map((response) => {
+          return WikiMapper.fromCreateWikiResponse(response.data);
+        })
+      );
   }
 
   getWikiVersionContent(wikiId: string, versionId: string): Observable<string> {

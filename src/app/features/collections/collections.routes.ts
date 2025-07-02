@@ -2,8 +2,6 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { CollectionsComponent } from '@osf/features/collections/collections.component';
-
 import { ModerationState } from '../moderation/store';
 
 export const collectionsRoutes: Routes = [
@@ -13,10 +11,18 @@ export const collectionsRoutes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: CollectionsComponent,
+        loadComponent: () =>
+          import('@core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
+        data: { skipBreadcrumbs: true },
       },
       {
-        path: 'moderation',
+        path: ':id',
+        pathMatch: 'full',
+        loadComponent: () =>
+          import('@osf/features/collections/collections.component').then((mod) => mod.CollectionsComponent),
+      },
+      {
+        path: ':id/moderation',
         loadComponent: () =>
           import('@osf/features/moderation/pages/collection-moderation/collection-moderation.component').then(
             (m) => m.CollectionModerationComponent

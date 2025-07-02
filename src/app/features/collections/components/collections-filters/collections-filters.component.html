@@ -1,43 +1,25 @@
 <div class="filters">
   <p-accordion>
-    <p-accordion-panel value="0">
-      <p-accordion-header>{{ 'collections.filters.programArea.label' | translate }}</p-accordion-header>
-      <p-accordion-content>
-        <div class="content-body">
-          <p>{{ 'collections.filters.programArea.description' | translate }}</p>
-          <p-multi-select
-            id="program-area"
-            [options]="programAreaFilterOptions"
-            [ngModel]="selectedProgramAreaFilters()"
-            [placeholder]="'collections.filters.programArea.placeholder' | translate"
-            appendTo="body"
-            (onChange)="setProgramAreaFilters($event)"
-            (onClear)="clearProgramAreaFilters()"
-            [maxSelectedLabels]="1"
-            [showClear]="selectedProgramAreaFilters().length"
-          ></p-multi-select>
-        </div>
-      </p-accordion-content>
-    </p-accordion-panel>
-
-    <p-accordion-panel value="1">
-      <p-accordion-header>{{ 'collections.filters.collectedType.label' | translate }}</p-accordion-header>
-      <p-accordion-content>
-        <div class="content-body">
-          <p>{{ 'collections.filters.collectedType.description' | translate }}</p>
-          <p-multi-select
-            id="collected-type"
-            [options]="collectedTypeFilterOptions"
-            [ngModel]="selectedCollectedTypeFilters()"
-            [placeholder]="'collections.filters.collectedType.placeholder' | translate"
-            appendTo="body"
-            [maxSelectedLabels]="1"
-            (onChange)="setCollectedTypeFilters($event)"
-            (onClear)="clearCollectedTypeFilters()"
-            [showClear]="selectedCollectedTypeFilters().length"
-          ></p-multi-select>
-        </div>
-      </p-accordion-content>
-    </p-accordion-panel>
+    @for (filterEntry of availableFilterEntries(); track filterEntry.key) {
+      <p-accordion-panel [value]="filterEntry.value">
+        <p-accordion-header>{{ filterEntry.translationKeys.label | translate }}</p-accordion-header>
+        <p-accordion-content>
+          <div class="content-body filter dropdown-filter">
+            <p>{{ filterEntry.translationKeys.description | translate }}</p>
+            <p-multi-select
+              [id]="filterEntry.key"
+              [options]="filterEntry.options"
+              [ngModel]="filterEntry.selectedFilters"
+              [placeholder]="filterEntry.translationKeys.placeholder | translate"
+              appendTo="body"
+              [maxSelectedLabels]="1"
+              (onChange)="setFilters(filterEntry.key, $event)"
+              (onClear)="clearFilters(filterEntry.key)"
+              [showClear]="filterEntry.selectedFilters.length"
+            ></p-multi-select>
+          </div>
+        </p-accordion-content>
+      </p-accordion-panel>
+    }
   </p-accordion>
 </div>
