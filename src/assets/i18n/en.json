@@ -1013,8 +1013,8 @@
       "accepted": "Accepted",
       "rejected": "Rejected",
       "withdrawn": "Withdrawn",
-      "public": "public",
-      "embargo": "embargo"
+      "public": "Public",
+      "embargo": "Embargo"
     },
     "submissionReview": {
       "submitted": "Submitted",
