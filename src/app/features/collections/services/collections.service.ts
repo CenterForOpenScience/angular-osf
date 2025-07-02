@@ -169,7 +169,7 @@ export class CollectionsService {
       ],
     };
 
-    return this.#jsonApiService.post<void>(url, payload);
+    return this.jsonApiService.post<void>(url, payload);
   }
 
   removeRegistrationFromBookmarks(bookmarksId: string, registryId: string): Observable<void> {
@@ -183,6 +183,6 @@ export class CollectionsService {
       ],
     };
 
-    return this.#jsonApiService.delete(url, payload);
+    return this.jsonApiService.delete(url, payload);
   }
 }

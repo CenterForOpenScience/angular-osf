@@ -151,7 +151,7 @@ export class MyProjectsState {
               totalBookmarks: res.links.meta.total,
             });
           }),
-          catchError((error) => this.handleError(ctx, ['bookmarks', 'totalBookmarks'], error))
+          catchError((error) => this.handleError(ctx, 'bookmarks', error))
         );
     } else {
       return forkJoin({
