@@ -64,7 +64,9 @@ export class RegistryOverviewState {
               error: null,
             },
           });
-          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+          if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
+            ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+          }
         },
       }),
       catchError((error) => this.handleError(ctx, 'registry', error))
@@ -133,7 +135,7 @@ export class RegistryOverviewState {
       },
     });
 
-    return this.registryOverviewService.getSchemaBlocks(action.schemaLink, action.questions).pipe(
+    return this.registryOverviewService.getSchemaBlocks(action.schemaLink).pipe(
       tap({
         next: (schemaBlocks) => {
           ctx.patchState({

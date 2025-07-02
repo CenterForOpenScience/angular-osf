@@ -9,7 +9,6 @@ import {
   GetRegistryOverviewJsonApi,
   GetRegistrySchemaBlockJsonApi,
   GetResourceSubjectsJsonApi,
-  RegistrationQuestions,
   RegistryInstitution,
   RegistryOverview,
   RegistrySchemaBlock,
@@ -24,7 +23,7 @@ import { environment } from 'src/environments/environment';
 export class RegistryOverviewService {
   private jsonApiService = inject(JsonApiService);
 
-  getRegistrationById(id: string): Observable<RegistryOverview> {
+  getRegistrationById(id: string): Observable<RegistryOverview | null> {
     const params = {
       related_counts: 'forks,comments,linked_nodes,linked_registrations,children,wikis',
       'embed[]': [
@@ -73,7 +72,7 @@ export class RegistryOverviewService {
       );
   }
 
-  getSchemaBlocks(schemaLink: string, questions: RegistrationQuestions): Observable<RegistrySchemaBlock[]> {
+  getSchemaBlocks(schemaLink: string): Observable<RegistrySchemaBlock[]> {
     const params = {
       'page[size]': 100,
       page: 1,
@@ -81,6 +80,6 @@ export class RegistryOverviewService {
 
     return this.jsonApiService
       .get<GetRegistrySchemaBlockJsonApi>(`${schemaLink}schema_blocks`, params)
-      .pipe(map((response) => response.data.map((block) => MapRegistrySchemaBlock(block.attributes, questions))));
+      .pipe(map((response) => response.data.map((block) => MapRegistrySchemaBlock(block.attributes))));
   }
 }

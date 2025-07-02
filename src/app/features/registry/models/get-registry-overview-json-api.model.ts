@@ -83,6 +83,15 @@ export interface RegistryOverviewJsonApiEmbed {
       };
     }[];
   };
+  schema_responses: {
+    data: {
+      id: string;
+      attributes: {
+        revision_responses: RegistrationQuestions;
+        updated_response_keys: string[];
+      };
+    }[];
+  };
 }
 
 export interface RegistryOverviewJsonApiRelationships {

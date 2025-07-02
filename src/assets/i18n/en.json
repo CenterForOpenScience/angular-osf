@@ -1653,7 +1653,7 @@
         "associatedProject": "Associated project"
       },
       "original": "Original",
-      "last": "Last"
+      "latest": "Latest"
     }
   },
   "truncatedText": {

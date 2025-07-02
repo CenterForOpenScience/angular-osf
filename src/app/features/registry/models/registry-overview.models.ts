@@ -53,4 +53,9 @@ export interface RegistryOverview {
   questions: RegistrationQuestions;
   registrationSchemaLink: string;
   associatedProjectId: string;
+  schemaResponses: {
+    id: string;
+    revisionResponses: RegistrationQuestions;
+    updatedResponseKeys: string[];
+  }[];
 }
