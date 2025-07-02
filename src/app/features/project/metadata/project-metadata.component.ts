@@ -24,7 +24,6 @@ import {
   ProjectMetadataPublicationDoiComponent,
   ProjectMetadataResourceInformationComponent,
   ProjectMetadataSubjectsComponent,
-  ProjectMetadataTagsComponent,
 } from '@osf/features/project/metadata/components';
 import {
   AffiliatedInstitutionsDialogComponent,
@@ -55,7 +54,7 @@ import {
 } from '@osf/features/project/metadata/store';
 import { ProjectOverviewSubject } from '@osf/features/project/overview/models';
 import { ContributorsSelectors, GetAllContributors } from '@osf/shared/components/contributors/store';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
+import { LoadingSpinnerComponent, SubHeaderComponent, TagsInputComponent } from '@shared/components';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 import { GetSubjects, SubjectsSelectors, UpdateProjectSubjects } from '@shared/stores/subjects';
 
@@ -70,7 +69,6 @@ import { GetSubjects, SubjectsSelectors, UpdateProjectSubjects } from '@shared/s
     ProjectMetadataResourceInformationComponent,
     ProjectMetadataLicenseComponent,
     ProjectMetadataPublicationDoiComponent,
-    ProjectMetadataTagsComponent,
     ProjectMetadataSubjectsComponent,
     ProjectMetadataFundingComponent,
     ProjectMetadataAffiliatedInstitutionsComponent,
@@ -82,6 +80,7 @@ import { GetSubjects, SubjectsSelectors, UpdateProjectSubjects } from '@shared/s
     TabPanels,
     Tabs,
     LoadingSpinnerComponent,
+    TagsInputComponent,
   ],
   templateUrl: './project-metadata.component.html',
   styleUrl: './project-metadata.component.scss',

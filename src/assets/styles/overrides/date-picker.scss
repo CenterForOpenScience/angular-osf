@@ -1,0 +1,7 @@
+@use "assets/styles/mixins" as mix;
+
+.half-width-datepicker {
+  .p-datepicker-panel {
+    min-width: mix.rem(350px) !important;
+  }
+}

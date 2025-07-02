@@ -52,7 +52,7 @@ export class LicenseDialogComponent implements OnInit {
 
       if (currentLicenses) {
         this.licenseOptions = currentLicenses.map((license: License) => ({
-          label: license.attributes.name,
+          label: license.name,
           value: license.id,
         }));
       }
@@ -77,7 +77,7 @@ export class LicenseDialogComponent implements OnInit {
     const selectedLicense = this.licenses().find((license: License) => license.id === licenseId);
 
     if (selectedLicense) {
-      this.selectedLicenseText.set(selectedLicense.attributes.text);
+      this.selectedLicenseText.set(selectedLicense.text);
     } else {
       this.selectedLicenseText.set('');
     }

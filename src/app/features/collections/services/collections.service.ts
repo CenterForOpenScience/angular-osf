@@ -1,6 +1,6 @@
 import { createDispatchMap } from '@ngxs/store';
 
-import { forkJoin, map, Observable, switchMap } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -97,28 +97,36 @@ export class CollectionsService {
     searchText: string,
     activeFilters: Record<string, string[]>,
     page = '1',
-    sortBy = 'relevance'
+    sortBy: string
   ): Observable<CollectionSubmission[]> {
     const url = `${environment.apiUrl}/search/collections/`;
     const params: Record<string, string> = {
       page,
-      sort: sortBy,
     };
+
+    if (sortBy) {
+      params['sort'] = sortBy;
+    }
+
     const payload: CollectionSubmissionsPayloadJsonApi = {
       data: {
         attributes: {
           provider: [providerId],
           ...activeFilters,
-          q: searchText,
+          q: searchText ? searchText : '*',
         },
-        type: 'search',
       },
+      type: 'search',
     };
 
     return this.jsonApiService
       .post<JsonApiResponseWithPaging<CollectionSubmissionJsonApi[], null>>(url, payload, params)
       .pipe(
         switchMap((response) => {
+          if (!response.data.length) {
+            return of([]);
+          }
+
           const contributorUrls = response.data.map(
             (submission) => submission.embeds.guid.data.relationships.bibliographic_contributors.links.related.href
           );

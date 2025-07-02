@@ -1,7 +1,7 @@
 export const collectionsSortOptions = [
-  { label: 'Relevance', value: 'relevance' },
-  { label: 'Date created (newest)', value: '-dateCreated' },
-  { label: 'Date created (oldest)', value: 'dateCreated' },
-  { label: 'Date modified (newest)', value: '-dateModified' },
-  { label: 'Date modified (oldest)', value: 'dateModified' },
+  { label: 'common.sort.relevance', value: '' },
+  { label: 'common.sort.createdNewest', value: '-created' },
+  { label: 'common.sort.createdOldest', value: 'created' },
+  { label: 'common.sort.modifiedNewest', value: '-modified' },
+  { label: 'common.sort.modifiedOldest', value: 'modified' },
 ];

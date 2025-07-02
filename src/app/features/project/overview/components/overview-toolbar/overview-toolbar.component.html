@@ -6,14 +6,14 @@
   >
     <div class="flex gap-3 align-items-start">
       <div class="flex gap-1" [class.inactive]="isPublic()">
-        <i class="osf-icon-padlock"></i>
+        <i class="fas fa-lock"></i>
         <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
       </div>
 
       <p-toggleswitch class="visibility-switch" [(ngModel)]="isPublic" (onChange)="handleToggleProjectPublicity()" />
 
       <div class="flex gap-2" [class.inactive]="!isPublic()">
-        <i class="osf-icon-padlock-unlock"></i>
+        <i class="fas fa-lock-open"></i>
         <p class="font-bold">{{ 'project.overview.header.publicProject' | translate }}</p>
       </div>
     </div>
@@ -28,23 +28,23 @@
 
         <div class="flex gap-2 justify-content-start">
           <p-button
-            class="flex overview-btn"
+            class="flex"
             [pTooltip]="'project.overview.tooltips.viewOnlyLinks' | translate"
             tooltipPosition="bottom"
             [routerLink]="['/my-projects', project.id, 'settings']"
           >
-            <span>{{ project.viewOnlyLinksCount }}</span>
-            <i class="osf-icon-link overview-icon"></i>
+            <span class="font-bold">{{ project.viewOnlyLinksCount }}</span>
+            <i class="fas fa-link text-2xl"></i>
           </p-button>
 
           <p-button
-            class="flex overview-btn"
+            class="flex"
             (click)="forkActionMenu.toggle($event)"
             [pTooltip]="'project.overview.tooltips.duplicate' | translate"
             tooltipPosition="bottom"
           >
-            <span>{{ project.forksCount }}</span>
-            <i class="osf-icon-duplicate overview-icon"></i>
+            <span class="font-bold">{{ project.forksCount }}</span>
+            <i class="fas fa-clone text-2xl"></i>
             <p-menu appendTo="body" #forkActionMenu [model]="forkActionItems" popup>
               <ng-template #item let-item>
                 <a class="p-menu-item-link">
@@ -57,37 +57,36 @@
           <p-button
             [pTooltip]="'project.overview.tooltips.bookmarks' | translate"
             tooltipPosition="bottom"
-            class="flex overview-btn bookmark-btn"
+            class="flex"
             (onClick)="toggleBookmark()"
             [loading]="isBookmarksLoading() || isBookmarksSubmitting()"
           >
             @if (!isBookmarksLoading() && !isBookmarksSubmitting()) {
-              <i class="overview-icon" [ngClass]="isBookmarked() ? 'osf-icon-bookmark-fill' : 'osf-icon-bookmark'"></i>
+              <i class="text-2xl" [ngClass]="isBookmarked() ? 'fas fa-bookmark' : 'far fa-bookmark'"></i>
             }
           </p-button>
 
-          <p-button
-            class="flex overview-btn"
-            (click)="socialsActionMenu.toggle($event)"
-            [pTooltip]="'project.overview.tooltips.share' | translate"
-            tooltipPosition="bottom"
-          >
-            <span>{{ socialsActionItems.length }}</span>
-            <i class="osf-icon-share overview-icon"></i>
-            <p-menu appendTo="body" #socialsActionMenu [model]="socialsActionItems" popup>
-              <ng-template #item let-item>
-                <a class="p-menu-item-link">
-                  <img
-                    height="15"
-                    width="15"
-                    [ngSrc]="'assets/icons/socials/' + item.icon + '.svg'"
-                    alt="social-icon"
-                  />
-                  {{ item.label | translate }}
-                </a>
-              </ng-template>
-            </p-menu>
-          </p-button>
+          @if (project.isPublic) {
+            <p-button
+              class="flex"
+              (click)="socialsActionMenu.toggle($event)"
+              [pTooltip]="'project.overview.tooltips.share' | translate"
+              tooltipPosition="bottom"
+            >
+              <span class="font-bold">{{ socialsActionItems.length }}</span>
+              <i class="fas fa-share-nodes text-2xl"></i>
+              <p-menu appendTo="body" #socialsActionMenu [model]="socialsActionItems" popup>
+                <ng-template #item let-item>
+                  <a class="p-menu-item-link">
+                    <div class="social-link flex align-items-center justify-content-center">
+                      <osf-icon [iconClass]="`${item.icon} fa-sm`"></osf-icon>
+                    </div>
+                    {{ item.label | translate }}
+                  </a>
+                </ng-template>
+              </p-menu>
+            </p-button>
+          }
         </div>
       </div>
     </div>

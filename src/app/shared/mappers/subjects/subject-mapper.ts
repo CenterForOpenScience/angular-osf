@@ -1,4 +1,4 @@
-import { NodeSubjectModel, SubjectData } from '@shared/models';
+import { NodeSubjectModel, Subject, SubjectData, SubjectDataJsonApi, SubjectsResponseJsonApi } from '@shared/models';
 
 export class SubjectMapper {
   static mapSubjectsResponse(subjectData: SubjectData[]): NodeSubjectModel[] {
@@ -94,5 +94,31 @@ export class SubjectMapper {
     };
 
     return sortSubjects(rootSubjects);
+  }
+
+  static fromSubjectsResponseJsonApi(response: SubjectsResponseJsonApi): Subject[] {
+    return response.data.map((data) => {
+      const subject: Subject = {
+        id: data.id,
+        name: data.attributes.text,
+        children: data.relationships.children?.links.related.meta.count > 0 ? [] : undefined,
+        parent: data.embeds?.parent?.data ? this.setSubjectParent(data.embeds.parent.data) : null,
+      };
+
+      return subject;
+    });
+  }
+
+  private static setSubjectParent(data: SubjectDataJsonApi): Subject | null {
+    if (!data) {
+      return null;
+    }
+
+    return {
+      id: data.id,
+      name: data.attributes.text,
+      children: data.relationships?.children?.links?.related?.meta?.count > 0 ? [] : undefined,
+      parent: data.embeds?.parent?.data ? this.setSubjectParent(data.embeds.parent.data) : null,
+    };
   }
 }

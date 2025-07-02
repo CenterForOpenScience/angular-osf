@@ -7,7 +7,7 @@
   />
 
   @if (!tabs().length) {
-    <div class="flex-1 mt-4 md:mt-8 lg:pt-5">
+    <div class="flex-1">
       <osf-loading-spinner />
     </div>
   }
@@ -92,10 +92,16 @@
                       [currentProject]="currentProject()"
                     />
 
-                    <osf-project-metadata-tags
-                      (tagsChanged)="onTagsChanged($event)"
-                      [currentProject]="currentProject()"
-                    />
+                    <p-card>
+                      <div class="flex flex-column gap-3">
+                        <h2>{{ 'project.overview.metadata.tags' | translate }}</h2>
+
+                        <osf-tags-input
+                          (tagsChanged)="onTagsChanged($event)"
+                          [tags]="currentProject()?.tags || []"
+                        ></osf-tags-input>
+                      </div>
+                    </p-card>
 
                     <osf-project-metadata-subjects
                       (subjectsChanged)="onSubjectsChanged($event)"

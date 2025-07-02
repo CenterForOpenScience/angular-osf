@@ -3,7 +3,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 
-import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -11,7 +10,7 @@ import { RightControl } from '@osf/features/project/settings/models';
 
 @Component({
   selector: 'osf-project-detail-setting-accordion',
-  imports: [NgClass, SelectModule, FormsModule, Button, TranslatePipe],
+  imports: [SelectModule, FormsModule, Button, TranslatePipe],
   templateUrl: './project-detail-setting-accordion.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

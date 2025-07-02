@@ -23,7 +23,30 @@ export const SUBMISSION_REVIEW_OPTIONS = [
   },
 ];
 
-export const ReviewStatusIcon: Record<SubmissionReviewStatus, { value: string; icon: string }> = {
+export const SUBMITTED_SUBMISSION_REVIEW_OPTIONS = [
+  {
+    value: SubmissionReviewStatus.Public,
+    icon: 'fas fa-lock',
+    label: 'moderation.submissionReviewStatus.public',
+  },
+  {
+    value: SubmissionReviewStatus.Embargo,
+    icon: 'fas fa-lock-open',
+    label: 'moderation.submissionReviewStatus.embargo',
+  },
+  {
+    value: SubmissionReviewStatus.Rejected,
+    icon: 'fas fa-circle-xmark',
+    label: 'moderation.submissionReviewStatus.rejected',
+  },
+  {
+    value: SubmissionReviewStatus.Withdrawn,
+    icon: 'fas fa-circle-minus',
+    label: 'moderation.submissionReviewStatus.withdrawn',
+  },
+];
+
+export const ReviewStatusIcon: Record<SubmissionReviewStatus | string, { value: string; icon: string }> = {
   [SubmissionReviewStatus.Pending]: {
     value: SubmissionReviewStatus.Pending,
     icon: 'fas fa-hourglass',
@@ -39,5 +62,13 @@ export const ReviewStatusIcon: Record<SubmissionReviewStatus, { value: string; i
   [SubmissionReviewStatus.Withdrawn]: {
     value: SubmissionReviewStatus.Withdrawn,
     icon: 'fas fa-circle-minus',
+  },
+  [SubmissionReviewStatus.Public]: {
+    value: SubmissionReviewStatus.Public,
+    icon: 'fas fa-lock',
+  },
+  [SubmissionReviewStatus.Embargo]: {
+    value: SubmissionReviewStatus.Embargo,
+    icon: 'fas fa-lock-open',
   },
 };

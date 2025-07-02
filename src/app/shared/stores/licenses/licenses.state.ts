@@ -5,7 +5,7 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { LicensesService } from '@core/services/licenses.service';
+import { LicensesService } from '@shared/services';
 
 import { LoadAllLicenses } from './licenses.actions';
 import { LicensesStateModel } from './licenses.model';
@@ -37,10 +37,10 @@ export class LicensesState {
     });
 
     return this.licensesService.getAllLicenses().pipe(
-      tap((response) => {
+      tap((data) => {
         ctx.patchState({
           licenses: {
-            data: response.data,
+            data: data,
             isLoading: false,
             error: null,
           },

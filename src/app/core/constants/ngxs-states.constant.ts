@@ -15,7 +15,6 @@ import { NotificationSubscriptionState } from '@osf/features/settings/notificati
 import { ProfileSettingsState } from '@osf/features/settings/profile-settings/store/profile-settings.state';
 import { AddonsState, InstitutionsState } from '@shared/stores';
 import { LicensesState } from '@shared/stores/licenses';
-import { SubjectsState } from '@shared/stores/subjects';
 
 export const STATES = [
   AuthState,
@@ -35,6 +34,5 @@ export const STATES = [
   MeetingsState,
   RegistrationsState,
   ProjectMetadataState,
-  SubjectsState,
   LicensesState,
 ];

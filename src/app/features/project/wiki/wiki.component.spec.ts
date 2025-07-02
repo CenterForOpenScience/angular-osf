@@ -23,8 +23,6 @@ import { WikiComponent } from './wiki.component';
 describe('WikiComponent', () => {
   let component: WikiComponent;
   let fixture: ComponentFixture<WikiComponent>;
-  let router: Router;
-  let toastService: ToastService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -60,48 +58,10 @@ describe('WikiComponent', () => {
 
     fixture = TestBed.createComponent(WikiComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
-    toastService = TestBed.inject(ToastService);
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
-  // it('should initialize with correct project ID', () => {
-  //   expect(component.projectId()).toBe('123');
-  // });
-
-  // it('should toggle mode', () => {
-  //   const toggleModeSpy = jest.spyOn(component['actions'], 'toggleMode');
-  //   component.toggleMode(WikiModes.Edit);
-  //   expect(toggleModeSpy).toHaveBeenCalledWith(WikiModes.Edit);
-  // });
-
-  // it('should update wiki preview content', () => {
-  //   const updatePreviewSpy = jest.spyOn(component['actions'], 'updateWikiPreviewContent');
-  //   const testContent = 'test content';
-  //   component.updateWikiPreviewContent(testContent);
-  //   expect(updatePreviewSpy).toHaveBeenCalledWith(testContent);
-  // });
-
-  // it('should handle wiki creation', () => {
-  //   const routerSpy = jest.spyOn(router, 'navigate');
-  //   component.onCreateWiki();
-  //   expect(routerSpy).toHaveBeenCalled();
-  // });
-
-  // it('should handle wiki deletion', () => {
-  //   const deleteWikiSpy = jest.spyOn(component['actions'], 'deleteWiki');
-  //   component.onDeleteWiki();
-  //   expect(deleteWikiSpy).toHaveBeenCalled();
-  // });
-
-  // it('should handle content saving', () => {
-  //   const createVersionSpy = jest.spyOn(component['actions'], 'createWikiVersion');
-  //   const testContent = 'test content';
-  //   component.onSaveContent(testContent);
-  //   expect(createVersionSpy).toHaveBeenCalled();
-  // });
 });

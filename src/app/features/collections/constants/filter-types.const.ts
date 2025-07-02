@@ -1,15 +1,14 @@
-import { CollectionFilterType } from '@osf/features/collections/models';
+import { CollectionFilterType } from '@osf/features/collections/enums';
 
 export const collectionFilterTypes: CollectionFilterType[] = [
-  'programArea',
-  'collectedType',
-  'status',
-  'dataType',
-  'disease',
-  'gradeLevels',
-  'issue',
-  'reviewsState',
-  'schoolType',
-  'studyDesign',
-  'volume',
+  CollectionFilterType.ProgramArea,
+  CollectionFilterType.CollectedType,
+  CollectionFilterType.Status,
+  CollectionFilterType.DataType,
+  CollectionFilterType.Disease,
+  CollectionFilterType.GradeLevels,
+  CollectionFilterType.Issue,
+  CollectionFilterType.SchoolType,
+  CollectionFilterType.StudyDesign,
+  CollectionFilterType.Volume,
 ];

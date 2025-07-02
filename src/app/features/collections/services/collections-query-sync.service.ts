@@ -4,6 +4,7 @@ import { effect, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { collectionsSortOptions } from '@osf/features/collections/constants';
 import { queryParamsKeys } from '@osf/features/collections/constants/query-params-keys.const';
 import { CollectionQueryParams, CollectionsFilters } from '@osf/features/collections/models';
 import { CollectionsSelectors, SetAllFilters, SetSearchValue, SetSortBy } from '@osf/features/collections/store';
@@ -17,6 +18,7 @@ export class CollectionsQuerySyncService {
   private readonly queryParams = toSignal(this.route.queryParams);
   private readonly isInitialized = signal(false);
   private readonly pendingFilters = signal<CollectionsFilters | null>(null);
+  private readonly pendingSort = signal<string | null>(null);
 
   private readonly filtersOptions = select(CollectionsSelectors.getAllFiltersOptions);
 
@@ -29,6 +31,7 @@ export class CollectionsQuerySyncService {
 
   constructor() {
     this.setupFilterValidationEffect();
+    this.setupSortValidationEffect();
   }
 
   initializeFromUrl(): void {
@@ -57,6 +60,16 @@ export class CollectionsQuerySyncService {
     });
   }
 
+  private setupSortValidationEffect(): void {
+    effect(() => {
+      const pending = this.pendingSort();
+
+      if (pending !== null && this.isInitialized()) {
+        this.validateAndApplyPendingSort(pending);
+      }
+    });
+  }
+
   private initializeSearchAndSort(): void {
     const params = this.queryParams();
     if (!params) return;
@@ -66,12 +79,33 @@ export class CollectionsQuerySyncService {
     }
 
     if (params['sort']) {
-      this.actions.setSortBy(params['sort']);
+      this.handleSortFromUrl(params['sort']);
     }
 
     if (params['page']) {
       this.actions.setPageNumber(params['page'].toString());
     }
+  }
+
+  private handleSortFromUrl(sortValue: string): void {
+    if (this.isValidSortValue(sortValue)) {
+      this.actions.setSortBy(sortValue);
+    } else {
+      this.pendingSort.set(sortValue);
+    }
+  }
+
+  private validateAndApplyPendingSort(sortValue: string): void {
+    if (this.isValidSortValue(sortValue)) {
+      this.actions.setSortBy(sortValue);
+    } else {
+      this.actions.setSortBy(collectionsSortOptions[0].value);
+    }
+    this.pendingSort.set(null);
+  }
+
+  private isValidSortValue(sortValue: string): boolean {
+    return collectionsSortOptions.some((option) => option.value === sortValue);
   }
 
   private initializeFilters(): void {

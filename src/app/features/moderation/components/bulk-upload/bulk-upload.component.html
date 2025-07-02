@@ -1,0 +1,27 @@
+<div class="card flex justify-center mt-3">
+  <p-fileupload class="w-full" styleClass="w-full" mode="advanced" [accept]="acceptTypes()" [maxFileSize]="maxSize()">
+    <ng-template
+      #header
+      let-files
+      let-chooseCallback="chooseCallback"
+      let-clearCallback="clearCallback"
+      let-uploadCallback="uploadCallback"
+    >
+      <div class="flex flex-column">
+        <h2>{{ 'moderation.bulkUpload' | translate }}</h2>
+
+        <p class="mt-3">{{ 'moderation.bulkUploadMessage' | translate }}</p>
+
+        <p-button
+          class="mt-3"
+          icon="fas fa-upload"
+          raised
+          variant="text"
+          severity="success"
+          [label]="'project.files.dialogs.uploadFile.title' | translate"
+          (click)="chooseCallback()"
+        />
+      </div>
+    </ng-template>
+  </p-fileupload>
+</div>

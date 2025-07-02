@@ -1,0 +1,73 @@
+<osf-sub-header [title]="'registries.new.addNewRegistry' | translate" />
+<section class="flex flex-column lg:flex-row bg-white flex-1 h-full p-5 gap-4 w-full">
+  <p>
+    {{ 'registries.new.infoText1' | translate }}
+    <a href="https://help.osf.io/"> {{ 'common.links.clickHere' | translate }}</a>
+    {{ 'registries.new.infoText2' | translate }}
+  </p>
+</section>
+<section class="flex flex-column bg-white flex-1 h-full p-5 gap-4 w-full">
+  <p-card class="w-full">
+    <h2 class="mb-4">{{ ('registries.new.steps.title' | translate) + '1' }}</h2>
+    <p class="mb-4 text-lg font-bold">{{ 'registries.new.steps.step1' | translate }}</p>
+    <div class="flex gap-2">
+      <p-button
+        class="btn-full-width w-2 font-bold"
+        severity="info"
+        [label]="'common.buttons.yes' | translate"
+        [raised]="fromProject"
+        (click)="toggleFromProject()"
+      />
+      <p-button
+        class="btn-full-width w-2"
+        severity="info"
+        [label]="'common.buttons.no' | translate"
+        [raised]="!fromProject"
+        (click)="toggleFromProject()"
+      />
+    </div>
+  </p-card>
+  <form [formGroup]="draftForm" (ngSubmit)="createDraft()" class="flex flex-column gap-4">
+    @if (fromProject) {
+      <p-card class="w-full">
+        <h2 class="mb-4">{{ ('registries.new.steps.title' | translate) + '2' }}</h2>
+        <p class="mb-3 text-lg font-bold">{{ 'registries.new.steps.step2' | translate }}</p>
+        <p class="mb-4">{{ 'registries.new.steps.step2InfoText' | translate }}</p>
+        <div class="flex">
+          <p-select
+            formControlName="project"
+            [options]="projects()"
+            [placeholder]="'registries.new.selectProject' | translate"
+            optionLabel="title"
+            optionValue="id"
+            (onChange)="onSelectProject($event.value)"
+            class="w-6"
+          />
+        </div>
+      </p-card>
+    }
+    <p-card class="w-full">
+      <h2 class="mb-4">{{ ('registries.new.steps.title' | translate) + (fromProject ? '3' : '2') }}</h2>
+      <p class="mb-4 text-lg font-bold">{{ 'registries.new.steps.step3' | translate }}</p>
+      <div class="flex">
+        <p-select
+          formControlName="provider"
+          [options]="providers()"
+          optionLabel="name"
+          optionValue="id"
+          [loading]="isProvidersLoading()"
+          (onChange)="onSelectProvider($event.value)"
+          class="w-6"
+        />
+      </div>
+    </p-card>
+    <div class="flex justify-content-end">
+      <p-button
+        [label]="'registries.new.createDraft' | translate"
+        [disabled]="draftForm.invalid"
+        type="submit"
+        [loading]="isDraftSubmitting()"
+      />
+    </div>
+  </form>
+</section>

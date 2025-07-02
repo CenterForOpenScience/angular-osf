@@ -9,6 +9,7 @@ import { CollectionsService } from '../services';
 import {
   AddProjectToBookmarks,
   ClearCollections,
+  ClearCollectionSubmissions,
   GetBookmarksCollectionId,
   GetCollectionDetails,
   GetCollectionProvider,
@@ -22,7 +23,6 @@ import {
   SetIssueFilters,
   SetPageNumber,
   SetProgramAreaFilters,
-  SetReviewsStateFilters,
   SetSchoolTypeFilters,
   SetSearchValue,
   SetSortBy,
@@ -74,7 +74,7 @@ const COLLECTIONS_DEFAULTS: CollectionsStateModel = {
     error: null,
   },
   totalSubmissions: 0,
-  sortBy: 'relevance',
+  sortBy: '',
   searchText: '',
   page: '1',
 };
@@ -139,7 +139,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, ['collectionDetails'], error))
+      catchError((error) => this.handleError(ctx, 'collectionDetails', error))
     );
   }
 
@@ -163,7 +163,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, ['bookmarksId'], error))
+      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
     );
   }
 
@@ -186,7 +186,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, ['bookmarksId'], error))
+      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
     );
   }
 
@@ -209,13 +209,25 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, ['bookmarksId'], error))
+      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
     );
   }
 
   @Action(ClearCollections)
   clearCollections(ctx: StateContext<CollectionsStateModel>) {
     ctx.patchState(COLLECTIONS_DEFAULTS);
+  }
+
+  @Action(ClearCollectionSubmissions)
+  clearCollectionSubmissions(ctx: StateContext<CollectionsStateModel>) {
+    ctx.patchState({
+      collectionSubmissions: {
+        data: [],
+        isLoading: false,
+        isSubmitting: false,
+        error: null,
+      },
+    });
   }
 
   @Action(SetAllFilters)
@@ -307,17 +319,6 @@ export class CollectionsState {
     });
   }
 
-  @Action(SetReviewsStateFilters)
-  setReviewsStateFilters(ctx: StateContext<CollectionsStateModel>, action: SetReviewsStateFilters) {
-    const state = ctx.getState();
-    ctx.patchState({
-      currentFilters: {
-        ...state.currentFilters,
-        reviewsState: action.reviewsStateFilters,
-      },
-    });
-  }
-
   @Action(SetSchoolTypeFilters)
   setSchoolTypeFilters(ctx: StateContext<CollectionsStateModel>, action: SetSchoolTypeFilters) {
     const state = ctx.getState();
@@ -402,28 +403,22 @@ export class CollectionsState {
             },
           });
         }),
-        catchError((error) => this.handleError(ctx, ['collectionSubmissions'], error))
+        catchError((error) => this.handleError(ctx, 'collectionSubmissions', error))
       );
   }
 
-  private handleError(
-    ctx: StateContext<CollectionsStateModel>,
-    sections: (keyof CollectionsStateModel)[],
-    error: Error
-  ) {
+  private handleError(ctx: StateContext<CollectionsStateModel>, section: keyof CollectionsStateModel, error: Error) {
     const state = ctx.getState();
-    sections.forEach((section) => {
-      if (section !== 'sortBy' && section !== 'searchText' && section !== 'page' && section !== 'totalSubmissions') {
-        ctx.patchState({
-          [section]: {
-            ...state[section],
-            isLoading: false,
-            isSubmitting: false,
-            error: error.message,
-          },
-        });
-      }
-    });
+    if (section !== 'sortBy' && section !== 'searchText' && section !== 'page' && section !== 'totalSubmissions') {
+      ctx.patchState({
+        [section]: {
+          ...state[section],
+          isLoading: false,
+          isSubmitting: false,
+          error: error.message,
+        },
+      });
+    }
 
     return throwError(() => error);
   }
