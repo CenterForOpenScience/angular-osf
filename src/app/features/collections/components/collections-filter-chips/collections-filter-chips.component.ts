@@ -5,6 +5,7 @@ import { Chip } from 'primeng/chip';
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 
 import { collectionFilterTypes } from '@osf/features/collections/constants/filter-types.const';
+import { CollectionFilterType } from '@osf/features/collections/enums';
 import {
   CollectionsSelectors,
   SetCollectedTypeFilters,
@@ -18,8 +19,6 @@ import {
   SetStudyDesignFilters,
   SetVolumeFilters,
 } from '@osf/features/collections/store';
-
-type FilterType = keyof ReturnType<typeof CollectionsSelectors.getAllSelectedFilters>;
 
 @Component({
   selector: 'osf-collections-filter-chips',
@@ -56,38 +55,38 @@ export class CollectionsFilterChipsComponent {
       .filter((entry) => entry.filters.length);
   });
 
-  protected onRemoveFilter(filterType: FilterType, removedFilter: string): void {
+  protected onRemoveFilter(filterType: CollectionFilterType, removedFilter: string): void {
     const currentFilters = this.activeFilters()[filterType].filter((filter: string) => filter !== removedFilter);
 
     switch (filterType) {
-      case 'programArea':
+      case CollectionFilterType.ProgramArea:
         this.actions.programArea(currentFilters);
         break;
-      case 'collectedType':
+      case CollectionFilterType.CollectedType:
         this.actions.collectedType(currentFilters);
         break;
-      case 'status':
+      case CollectionFilterType.Status:
         this.actions.status(currentFilters);
         break;
-      case 'dataType':
+      case CollectionFilterType.DataType:
         this.actions.dataType(currentFilters);
         break;
-      case 'disease':
+      case CollectionFilterType.Disease:
         this.actions.disease(currentFilters);
         break;
-      case 'gradeLevels':
+      case CollectionFilterType.GradeLevels:
         this.actions.gradeLevels(currentFilters);
         break;
-      case 'issue':
+      case CollectionFilterType.Issue:
         this.actions.issue(currentFilters);
         break;
-      case 'schoolType':
+      case CollectionFilterType.SchoolType:
         this.actions.schoolType(currentFilters);
         break;
-      case 'studyDesign':
+      case CollectionFilterType.StudyDesign:
         this.actions.studyDesign(currentFilters);
         break;
-      case 'volume':
+      case CollectionFilterType.Volume:
         this.actions.volume(currentFilters);
         break;
     }

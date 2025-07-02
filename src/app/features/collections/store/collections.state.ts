@@ -139,7 +139,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, ['collectionDetails'], error))
+      catchError((error) => this.handleError(ctx, 'collectionDetails', error))
     );
   }
 
@@ -163,7 +163,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, ['bookmarksId'], error))
+      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
     );
   }
 
@@ -186,7 +186,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, ['bookmarksId'], error))
+      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
     );
   }
 
@@ -209,7 +209,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, ['bookmarksId'], error))
+      catchError((error) => this.handleError(ctx, 'bookmarksId', error))
     );
   }
 
@@ -403,28 +403,22 @@ export class CollectionsState {
             },
           });
         }),
-        catchError((error) => this.handleError(ctx, ['collectionSubmissions'], error))
+        catchError((error) => this.handleError(ctx, 'collectionSubmissions', error))
       );
   }
 
-  private handleError(
-    ctx: StateContext<CollectionsStateModel>,
-    sections: (keyof CollectionsStateModel)[],
-    error: Error
-  ) {
+  private handleError(ctx: StateContext<CollectionsStateModel>, section: keyof CollectionsStateModel, error: Error) {
     const state = ctx.getState();
-    sections.forEach((section) => {
-      if (section !== 'sortBy' && section !== 'searchText' && section !== 'page' && section !== 'totalSubmissions') {
-        ctx.patchState({
-          [section]: {
-            ...state[section],
-            isLoading: false,
-            isSubmitting: false,
-            error: error.message,
-          },
-        });
-      }
-    });
+    if (section !== 'sortBy' && section !== 'searchText' && section !== 'page' && section !== 'totalSubmissions') {
+      ctx.patchState({
+        [section]: {
+          ...state[section],
+          isLoading: false,
+          isSubmitting: false,
+          error: error.message,
+        },
+      });
+    }
 
     return throwError(() => error);
   }

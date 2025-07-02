@@ -22,7 +22,14 @@
         [ngModel]="selectedSort()"
         (ngModelChange)="handleSortBy($event)"
         appendTo="body"
-      ></p-select>
+      >
+        <ng-template #selectedItem let-selectedOption>
+          {{ selectedOption.label | translate }}
+        </ng-template>
+        <ng-template #item let-option>
+          {{ option.label | translate }}
+        </ng-template>
+      </p-select>
     } @else {
       <img
         ngSrc="assets/icons/colored/filter.svg"
@@ -66,7 +73,7 @@
         (click)="handleSortBy(option.value)"
         (keydown.enter)="handleSortBy(option.value)"
       >
-        {{ option.label }}
+        {{ option.label | translate }}
       </div>
     }
   </div>

@@ -38,6 +38,13 @@
         "users": "Users"
       }
     },
+    "sort": {
+      "relevance": "Relevance",
+      "createdNewest": "Date created (newest)",
+      "createdOldest": "Date created (oldest)",
+      "modifiedNewest": "Date modified (newest)",
+      "modifiedOldest": "Date modified (oldest)"
+    },
     "labels": {
       "downloads": "Downloads",
       "year": "Year"

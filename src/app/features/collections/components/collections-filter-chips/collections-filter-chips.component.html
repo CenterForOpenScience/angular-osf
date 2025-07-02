@@ -1,10 +1,12 @@
 <div class="mb-4 mt-4 flex gap-3 flex-wrap">
   @for (filterEntry of activeFilterEntries(); track filterEntry.key) {
     @for (filter of filterEntry.filters; track filter) {
-      <p-chip [label]="filter" [removable]="true" (onRemove)="onRemoveFilter(filterEntry.key, filter)">
-        <ng-template pTemplate="removeicon">
-          <i class="osf-icon-close text-xs font-bold text-align-center" tabindex="0" role="button"></i>
-        </ng-template>
+      <p-chip
+        [label]="filter"
+        removeIcon="fas fa-close"
+        [removable]="true"
+        (onRemove)="onRemoveFilter(filterEntry.key, filter)"
+      >
       </p-chip>
     }
   }

@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { collectionFilterTypes } from '@osf/features/collections/constants/filter-types.const';
-import { CollectionFilterType } from '@osf/features/collections/models';
+import { CollectionFilterType } from '@osf/features/collections/enums';
 import {
   CollectionsSelectors,
   SetCollectedTypeFilters,
@@ -73,34 +73,34 @@ export class CollectionsFiltersComponent {
     const filters = $event.value;
 
     switch (filterType) {
-      case 'programArea':
+      case CollectionFilterType.ProgramArea:
         this.actions.programArea(filters);
         break;
-      case 'collectedType':
+      case CollectionFilterType.CollectedType:
         this.actions.collectedType(filters);
         break;
-      case 'status':
+      case CollectionFilterType.Status:
         this.actions.status(filters);
         break;
-      case 'dataType':
+      case CollectionFilterType.DataType:
         this.actions.dataType(filters);
         break;
-      case 'disease':
+      case CollectionFilterType.Disease:
         this.actions.disease(filters);
         break;
-      case 'gradeLevels':
+      case CollectionFilterType.GradeLevels:
         this.actions.gradeLevels(filters);
         break;
-      case 'issue':
+      case CollectionFilterType.Issue:
         this.actions.issue(filters);
         break;
-      case 'schoolType':
+      case CollectionFilterType.SchoolType:
         this.actions.schoolType(filters);
         break;
-      case 'studyDesign':
+      case CollectionFilterType.StudyDesign:
         this.actions.studyDesign(filters);
         break;
-      case 'volume':
+      case CollectionFilterType.Volume:
         this.actions.volume(filters);
         break;
     }

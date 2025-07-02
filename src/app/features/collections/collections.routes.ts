@@ -2,8 +2,6 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { CollectionsComponent } from '@osf/features/collections/collections.component';
-
 import { ModerationState } from '../moderation/store';
 
 export const collectionsRoutes: Routes = [
@@ -20,7 +18,8 @@ export const collectionsRoutes: Routes = [
       {
         path: ':id',
         pathMatch: 'full',
-        component: CollectionsComponent,
+        loadComponent: () =>
+          import('@osf/features/collections/collections.component').then((mod) => mod.CollectionsComponent),
       },
       {
         path: ':id/moderation',

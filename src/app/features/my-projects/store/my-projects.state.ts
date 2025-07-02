@@ -70,7 +70,7 @@ export class MyProjectsState {
           totalProjects: res.links.meta.total,
         });
       }),
-      catchError((error) => this.handleError(ctx, ['projects', 'totalProjects'], error))
+      catchError((error) => this.handleError(ctx, 'projects', error))
     );
   }
 
@@ -95,7 +95,7 @@ export class MyProjectsState {
           totalRegistrations: res.links.meta.total,
         });
       }),
-      catchError((error) => this.handleError(ctx, ['registrations', 'totalRegistrations'], error))
+      catchError((error) => this.handleError(ctx, 'registrations', error))
     );
   }
 
@@ -120,7 +120,7 @@ export class MyProjectsState {
           totalPreprints: res.links.meta.total,
         });
       }),
-      catchError((error) => this.handleError(ctx, ['preprints', 'totalPreprints'], error))
+      catchError((error) => this.handleError(ctx, 'preprints', error))
     );
   }
 
@@ -148,7 +148,7 @@ export class MyProjectsState {
             totalBookmarks: res.links.meta.total,
           });
         }),
-        catchError((error) => this.handleError(ctx, ['bookmarks', 'totalBookmarks'], error))
+        catchError((error) => this.handleError(ctx, 'bookmarks', error))
       );
   }
 
@@ -205,23 +205,21 @@ export class MyProjectsState {
             totalProjects: state.totalProjects + 1,
           });
         }),
-        catchError((error) => this.handleError(ctx, ['projects', 'totalProjects'], error))
+        catchError((error) => this.handleError(ctx, 'projects', error))
       );
   }
 
-  private handleError(ctx: StateContext<MyProjectsStateModel>, sections: (keyof MyProjectsStateModel)[], error: Error) {
+  private handleError(ctx: StateContext<MyProjectsStateModel>, section: keyof MyProjectsStateModel, error: Error) {
     const state = ctx.getState();
-    sections.forEach((section) => {
-      if (section === 'projects' || section === 'registrations' || section === 'preprints' || section === 'bookmarks') {
-        ctx.patchState({
-          [section]: {
-            ...state[section],
-            isLoading: false,
-            error: error.message,
-          },
-        });
-      }
-    });
+    if (section === 'projects' || section === 'registrations' || section === 'preprints' || section === 'bookmarks') {
+      ctx.patchState({
+        [section]: {
+          ...state[section],
+          isLoading: false,
+          error: error.message,
+        },
+      });
+    }
 
     return throwError(() => error);
   }
