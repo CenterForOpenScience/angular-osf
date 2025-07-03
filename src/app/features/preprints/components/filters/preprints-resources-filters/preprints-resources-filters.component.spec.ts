@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PreprintsResourcesFiltersComponent } from './preprints-resources-filters.component';
+import { PreprintsResourcesFiltersComponent } from '@osf/features/preprints/components';
 
 describe('PreprintsResourcesFiltersComponent', () => {
   let component: PreprintsResourcesFiltersComponent;

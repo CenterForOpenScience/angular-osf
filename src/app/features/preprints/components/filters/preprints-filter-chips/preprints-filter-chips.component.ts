@@ -13,7 +13,7 @@ import {
   SetSubject,
 } from '@osf/features/preprints/store/preprints-resources-filters';
 import { GetAllOptions } from '@osf/features/preprints/store/preprints-resources-filters-options';
-import { FilterType } from '@osf/shared/enums';
+import { FilterType } from '@shared/enums';
 
 @Component({
   selector: 'osf-preprints-filter-chips',

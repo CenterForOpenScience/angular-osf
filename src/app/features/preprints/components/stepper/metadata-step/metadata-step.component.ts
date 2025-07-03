@@ -45,11 +45,11 @@ import { ContributorsComponent } from './contributors/contributors.component';
     LicenseComponent,
     TagsInputComponent,
   ],
-  templateUrl: './metadata.component.html',
-  styleUrl: './metadata.component.scss',
+  templateUrl: './metadata-step.component.html',
+  styleUrl: './metadata-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MetadataComponent implements OnInit {
+export class MetadataStepComponent implements OnInit {
   private actions = createDispatchMap({
     createPreprint: CreatePreprint,
     updatePreprint: UpdatePreprint,

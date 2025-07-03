@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MetadataComponent } from './metadata.component';
+import { MetadataStepComponent } from './metadata-step.component';
 
 describe('MetadataComponent', () => {
-  let component: MetadataComponent;
-  let fixture: ComponentFixture<MetadataComponent>;
+  let component: MetadataStepComponent;
+  let fixture: ComponentFixture<MetadataStepComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MetadataComponent],
+      imports: [MetadataStepComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MetadataComponent);
+    fixture = TestBed.createComponent(MetadataStepComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

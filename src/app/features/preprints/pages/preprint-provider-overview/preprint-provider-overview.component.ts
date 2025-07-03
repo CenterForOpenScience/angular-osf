@@ -6,9 +6,12 @@ import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit }
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { AdvisoryBoardComponent, BrowseBySubjectsComponent } from '@osf/features/preprints/components';
-import { PreprintProviderFooterComponent } from '@osf/features/preprints/components/preprint-provider-footer/preprint-provider-footer.component';
-import { PreprintProviderHeroComponent } from '@osf/features/preprints/components/preprint-provider-hero/preprint-provider-hero.component';
+import {
+  AdvisoryBoardComponent,
+  BrowseBySubjectsComponent,
+  PreprintProviderFooterComponent,
+  PreprintProviderHeroComponent,
+} from '@osf/features/preprints/components';
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
