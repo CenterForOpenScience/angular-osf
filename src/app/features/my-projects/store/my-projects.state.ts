@@ -1,8 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, forkJoin, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
+
+import { ResourceType } from '@shared/enums';
 
 import { MyProjectsService } from '../services';
 
@@ -135,21 +137,65 @@ export class MyProjectsState {
       },
     });
 
-    return this.myProjectsService
-      .getMyBookmarks(action.bookmarksId, action.filters, action.pageNumber, action.pageSize)
-      .pipe(
-        tap((res) => {
+    if (action.resourceType !== ResourceType.Null) {
+      return this.myProjectsService
+        .getMyBookmarks(action.bookmarksId, action.resourceType, action.filters, action.pageNumber, action.pageSize)
+        .pipe(
+          tap((res) => {
+            ctx.patchState({
+              bookmarks: {
+                data: res.data,
+                isLoading: false,
+                error: null,
+              },
+              totalBookmarks: res.links.meta.total,
+            });
+          }),
+          catchError((error) => this.handleError(ctx, 'bookmarks', error))
+        );
+    } else {
+      return forkJoin({
+        projects: this.myProjectsService.getMyBookmarks(
+          action.bookmarksId,
+          ResourceType.Project,
+          action.filters,
+          action.pageNumber,
+          action.pageSize
+        ),
+        preprints: this.myProjectsService.getMyBookmarks(
+          action.bookmarksId,
+          ResourceType.Preprint,
+          action.filters,
+          action.pageNumber,
+          action.pageSize
+        ),
+        registrations: this.myProjectsService.getMyBookmarks(
+          action.bookmarksId,
+          ResourceType.Registration,
+          action.filters,
+          action.pageNumber,
+          action.pageSize
+        ),
+      }).pipe(
+        tap((results) => {
+          const allData = [...results.projects.data, ...results.preprints.data, ...results.registrations.data];
+          const totalCount =
+            results.projects.links.meta.total +
+            results.preprints.links.meta.total +
+            results.registrations.links.meta.total;
+
           ctx.patchState({
             bookmarks: {
-              data: res.data,
+              data: allData,
               isLoading: false,
               error: null,
             },
-            totalBookmarks: res.links.meta.total,
+            totalBookmarks: totalCount,
           });
         }),
         catchError((error) => this.handleError(ctx, 'bookmarks', error))
       );
+    }
   }
 
   @Action(ClearMyProjects)

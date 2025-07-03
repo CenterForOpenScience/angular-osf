@@ -157,4 +157,32 @@ export class CollectionsService {
       })
     );
   }
+
+  addRegistrationToBookmarks(bookmarksId: string, registryId: string): Observable<void> {
+    const url = `${environment.apiUrl}/collections/${bookmarksId}/relationships/linked_registrations/`;
+    const payload = {
+      data: [
+        {
+          type: 'linked_registrations',
+          id: registryId,
+        },
+      ],
+    };
+
+    return this.jsonApiService.post<void>(url, payload);
+  }
+
+  removeRegistrationFromBookmarks(bookmarksId: string, registryId: string): Observable<void> {
+    const url = `${environment.apiUrl}/collections/${bookmarksId}/relationships/linked_registrations/`;
+    const payload = {
+      data: [
+        {
+          type: 'linked_registrations',
+          id: registryId,
+        },
+      ],
+    };
+
+    return this.jsonApiService.delete(url, payload);
+  }
 }

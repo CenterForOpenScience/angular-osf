@@ -19,7 +19,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { parseQueryFilterParams } from '@core/helpers';
 import {
@@ -41,9 +41,9 @@ import { FetchInstitutions, InstitutionsSelectors } from '@shared/stores';
     NgOptimizedImage,
     CustomPaginatorComponent,
     LoadingSpinnerComponent,
+    RouterLink,
   ],
   templateUrl: './institutions.component.html',
-  styleUrl: './institutions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstitutionsComponent {

@@ -11,26 +11,26 @@ import { Tooltip } from 'primeng/tooltip';
 import { timer } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import {
-  AddProjectToBookmarks,
+  AddResourceToBookmarks,
   CollectionsSelectors,
-  RemoveProjectFromBookmarks,
+  RemoveResourceFromBookmarks,
 } from '@osf/features/collections/store';
 import { GetMyBookmarks, MyProjectsSelectors } from '@osf/features/my-projects/store';
+import { DuplicateDialogComponent, TogglePublicityDialogComponent } from '@osf/features/project/overview/components';
 import { IconComponent } from '@osf/shared/components';
 import { ToastService } from '@osf/shared/services';
+import { ResourceType } from '@shared/enums';
+import { ToolbarResource } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 
 import { SOCIAL_ACTION_ITEMS } from '../../constants';
-import { ProjectOverviewSelectors } from '../../store';
-import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
 import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';
-import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggle-publicity-dialog.component';
 
 @Component({
   selector: 'osf-overview-toolbar',
@@ -58,7 +58,10 @@ export class OverviewToolbarComponent {
   protected destroyRef = inject(DestroyRef);
   protected isPublic = signal(false);
   protected isBookmarked = signal(false);
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
+
+  currentResource = input.required<ToolbarResource | null>();
+  visibilityToggle = input<boolean>(true);
+  showViewOnlyLinks = input<boolean>(true);
   protected isBookmarksLoading = select(MyProjectsSelectors.getBookmarksLoading);
   protected isBookmarksSubmitting = select(CollectionsSelectors.getBookmarksCollectionIdSubmitting);
   protected bookmarksCollectionId = select(CollectionsSelectors.getBookmarksCollectionId);
@@ -66,8 +69,8 @@ export class OverviewToolbarComponent {
   protected readonly socialsActionItems = SOCIAL_ACTION_ITEMS;
   protected readonly forkActionItems = [
     {
-      label: 'project.overview.actions.forkProject',
-      command: () => this.handleForkProject(),
+      label: 'project.overview.actions.forkResource',
+      command: () => this.handleForkResource(),
     },
     {
       label: 'project.overview.actions.duplicateProject',
@@ -80,46 +83,67 @@ export class OverviewToolbarComponent {
       },
     },
   ];
+  protected readonly ResourceType = ResourceType;
 
   constructor() {
     effect(() => {
       const bookmarksId = this.bookmarksCollectionId();
+      const resource = this.currentResource();
 
-      if (!bookmarksId) {
+      if (!bookmarksId || !resource) {
         return;
       }
 
-      this.store.dispatch(new GetMyBookmarks(bookmarksId, 1, 100, {}));
+      this.store.dispatch(new GetMyBookmarks(bookmarksId, 1, 100, {}, resource.resourceType));
     });
 
     effect(() => {
-      const project = this.currentProject();
-      if (project) {
-        this.isPublic.set(project.isPublic);
+      const resource = this.currentResource();
+      if (resource) {
+        this.isPublic.set(resource.isPublic);
       }
     });
 
     effect(() => {
-      const project = this.currentProject();
+      const resource = this.currentResource();
       const bookmarks = this.bookmarkedProjects();
 
-      if (!project || !bookmarks?.length) {
+      if (!resource || !bookmarks?.length) {
         this.isBookmarked.set(false);
         return;
       }
 
-      this.isBookmarked.set(bookmarks.some((bookmark) => bookmark.id === project.id));
+      this.isBookmarked.set(bookmarks.some((bookmark) => bookmark.id === resource.id));
+    });
+
+    effect(() => {
+      const resource = this.currentResource();
+
+      if (resource) {
+        this.forkActionItems[0].label =
+          this.currentResource()?.resourceType === ResourceType.Project
+            ? 'project.overview.actions.forkProject'
+            : this.currentResource()?.resourceType === ResourceType.Registration
+              ? 'project.overview.actions.forkRegistry'
+              : 'project.overview.actions.forkResource';
+      }
     });
   }
 
-  private handleForkProject(): void {
-    this.dialogService.open(ForkDialogComponent, {
-      focusOnShow: false,
-      header: this.translateService.instant('project.overview.dialog.fork.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
+  private handleForkResource(): void {
+    const resource = this.currentResource();
+    if (resource) {
+      this.dialogService.open(ForkDialogComponent, {
+        focusOnShow: false,
+        header: this.translateService.instant('project.overview.dialog.fork.header'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: {
+          resourceId: resource,
+        },
+      });
+    }
   }
 
   private handleDuplicateProject(): void {
@@ -133,15 +157,15 @@ export class OverviewToolbarComponent {
   }
 
   protected handleToggleProjectPublicity(): void {
-    const project = this.currentProject();
-    if (!project) return;
+    const resource = this.currentResource();
+    if (!resource) return;
 
-    const isCurrentlyPublic = project.isPublic;
+    const isCurrentlyPublic = resource.isPublic;
     const newPublicStatus = !isCurrentlyPublic;
 
     timer(100)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.isPublic.set(project.isPublic));
+      .subscribe(() => this.isPublic.set(resource.isPublic));
 
     this.dialogService.open(TogglePublicityDialogComponent, {
       focusOnShow: false,
@@ -153,7 +177,7 @@ export class OverviewToolbarComponent {
       modal: true,
       closable: true,
       data: {
-        projectId: project.id,
+        projectId: resource.id,
         isCurrentlyPublic,
         newPublicStatus,
       },
@@ -161,16 +185,16 @@ export class OverviewToolbarComponent {
   }
 
   protected toggleBookmark(): void {
-    const project = this.currentProject();
+    const resource = this.currentResource();
     const bookmarksId = this.bookmarksCollectionId();
 
-    if (!project || !bookmarksId) return;
+    if (!resource || !bookmarksId) return;
 
     const newBookmarkState = !this.isBookmarked();
 
     if (!newBookmarkState) {
       this.store
-        .dispatch(new RemoveProjectFromBookmarks(bookmarksId, project.id))
+        .dispatch(new RemoveResourceFromBookmarks(bookmarksId, resource.id, resource.resourceType))
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -180,7 +204,7 @@ export class OverviewToolbarComponent {
         });
     } else {
       this.store
-        .dispatch(new AddProjectToBookmarks(bookmarksId, project.id))
+        .dispatch(new AddResourceToBookmarks(bookmarksId, resource.id, resource.resourceType))
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {

@@ -1,3 +1,5 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Skeleton } from 'primeng/skeleton';
 
@@ -6,6 +8,7 @@ import { finalize } from 'rxjs';
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 import { ResourceType } from '@shared/enums';
 import { Resource } from '@shared/models';
@@ -14,7 +17,16 @@ import { IS_XSMALL } from '@shared/utils';
 
 @Component({
   selector: 'osf-resource-card',
-  imports: [Accordion, AccordionContent, AccordionHeader, AccordionPanel, DatePipe, NgOptimizedImage, Skeleton],
+  imports: [
+    Accordion,
+    AccordionContent,
+    AccordionHeader,
+    AccordionPanel,
+    DatePipe,
+    NgOptimizedImage,
+    Skeleton,
+    TranslatePipe,
+  ],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -24,6 +36,7 @@ export class ResourceCardComponent {
   ResourceType = ResourceType;
   isSmall = toSignal(inject(IS_XSMALL));
   item = model.required<Resource>();
+  private readonly router = inject(Router);
 
   isLoading = false;
   dataIsLoaded = false;
@@ -57,6 +70,15 @@ export class ResourceCardComponent {
               }) as Resource
           );
         });
+    }
+  }
+
+  redirectToResource(item: Resource) {
+    // [KP] TODO: handle my registrations and foreign separately
+    if (item.resourceType === ResourceType.Registration) {
+      const parts = item.id.split('/');
+      const uri = parts[parts.length - 1];
+      this.router.navigate(['/registries/my-registrations', uri]);
     }
   }
 }

@@ -12,6 +12,7 @@ import {
   Institution,
   UserInstitutionGetResponse,
 } from '@shared/models';
+import { InstitutionJsonApiModel } from '@shared/models/institutions/institution-json-api.model';
 
 import { environment } from 'src/environments/environment';
 
@@ -51,6 +52,12 @@ export class InstitutionsService {
     return this.jsonApiService
       .get<JsonApiResponse<UserInstitutionGetResponse[], null>>(url)
       .pipe(map((response) => response.data.map((item) => UserInstitutionsMapper.fromResponse(item))));
+  }
+
+  getInstitutionById(institutionId: string): Observable<Institution> {
+    return this.jsonApiService
+      .get<InstitutionJsonApiModel>(`${environment.apiUrl}/institutions/${institutionId}`)
+      .pipe(map((result) => result.data.attributes));
   }
 
   deleteUserInstitution(id: string, userId: string): Observable<void> {

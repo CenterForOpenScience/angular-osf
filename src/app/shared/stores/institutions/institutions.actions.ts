@@ -1,9 +1,9 @@
-export class GetUserInstitutions {
-  static readonly type = '[Institutions] Get User Institutions';
+export class FetchUserInstitutions {
+  static readonly type = '[Institutions] Fetch User Institutions';
 }
 
 export class FetchInstitutions {
-  static readonly type = '[Institutions] Get';
+  static readonly type = '[Institutions] Fetch Institutions';
 
   constructor(
     public pageNumber: number,

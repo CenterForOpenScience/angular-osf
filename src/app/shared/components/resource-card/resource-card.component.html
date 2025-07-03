@@ -4,7 +4,7 @@
       <p-accordion-header class="flex flex-row column-gap-3 align-items-start p-0 pb-4">
         <div class="flex flex-column row-gap-3">
           @if (item().resourceType && item().resourceType === ResourceType.Agent) {
-            <p class="type">User</p>
+            <p class="type">{{ 'resourceCard.type.user' | translate }}</p>
           } @else if (item().resourceType) {
             <p class="type">{{ ResourceType[item().resourceType!] }}</p>
           }
@@ -13,7 +13,13 @@
             @if (item().resourceType === ResourceType.File && item().fileName) {
               <a class="title">{{ item().fileName }}</a>
             } @else {
-              <a class="title">{{ item().title }}</a>
+              <a
+                tabindex="0"
+                class="title"
+                (click)="$event.stopPropagation(); redirectToResource(item())"
+                (keydown.enter)="$event.stopPropagation(); redirectToResource(item())"
+                >{{ item().title }}</a
+              >
             }
             @if (item().orcid) {
               <a [href]="item().orcid" class="orcid-icon">
@@ -31,14 +37,16 @@
                 }
               }
               @if (item().creators!.length > 4) {
-                <p class="inline">&nbsp;and {{ item().creators!.length - 4 }} more</p>
+                <p class="inline">
+                  &nbsp;{{ 'resourceCard.more' | translate: { count: item().creators!.length - 4 } }}
+                </p>
               }
             </div>
           }
 
           @if (item().from?.id && item().from?.name) {
             <div>
-              <p class="inline mr-1">From:</p>
+              <p class="inline mr-1">{{ 'resourceCard.labels.from' | translate }}</p>
               <a class="inline" [href]="item().from?.id">{{ item().from?.name }}</a>
             </div>
           }
@@ -46,13 +54,16 @@
           @if (item().dateCreated && item().dateModified) {
             <p class="date">
               @if (!isSmall()) {
-                Date created: {{ item().dateCreated | date: 'MMMM d, y' }} | Date modified:
+                {{ 'resourceCard.labels.dateCreated' | translate }} {{ item().dateCreated | date: 'MMMM d, y' }} |
+                {{ 'resourceCard.labels.dateModified' | translate }}
                 {{ item().dateModified | date: 'MMMM d, y' }}
               } @else {
                 <div class="flex flex-column row-gap-1">
-                  <p>Date created: {{ item().dateCreated | date: 'MMMM d, y' }}</p>
                   <p>
-                    Date modified:
+                    {{ 'resourceCard.labels.dateCreated' | translate }} {{ item().dateCreated | date: 'MMMM d, y' }}
+                  </p>
+                  <p>
+                    {{ 'resourceCard.labels.dateModified' | translate }}
                     {{ item().dateModified | date: 'MMMM d, y' }}
                   </p>
                 </div>
@@ -64,43 +75,43 @@
             <div class="flex column-gap-5 row-gap-3 mt-1 flex-wrap">
               <a class="icon-container" [href]="item().id + '/resources'">
                 @if (item().hasDataResource) {
-                  <i class="osf-icon-data-colored text-4xl"></i>
+                  <img src="assets/icons/colored/data-colored.svg" alt="data-resource" />
                 } @else {
                   <i class="osf-icon-data text-4xl"></i>
                 }
-                <p>Data</p>
+                <p>{{ 'resourceCard.resources.data' | translate }}</p>
               </a>
               <a class="icon-container" [href]="item().id + '/resources'">
                 @if (item().hasAnalyticCodeResource) {
-                  <i class="osf-icon-code-colored text-4xl"></i>
+                  <img src="assets/icons/colored/code-colored.svg" alt="code-resource" />
                 } @else {
                   <i class="osf-icon-code text-4xl"></i>
                 }
-                <p>Analytic Code</p>
+                <p>{{ 'resourceCard.resources.analyticCode' | translate }}</p>
               </a>
               <a class="icon-container" [href]="item().id + '/resources'">
                 @if (item().hasMaterialsResource) {
-                  <i class="osf-icon-materials-colored text-4xl"></i>
+                  <img src="assets/icons/colored/materials-colored.svg" alt="materials-resource" />
                 } @else {
                   <i class="osf-icon-materials text-4xl"></i>
                 }
-                <p>Materials</p>
+                <p>{{ 'resourceCard.resources.materials' | translate }}</p>
               </a>
               <a class="icon-container" [href]="item().id + '/resources'">
                 @if (item().hasPapersResource) {
-                  <i class="osf-icon-papers-colored text-4xl"></i>
+                  <img src="assets/icons/colored/papers-colored.svg" alt="papers-resource" />
                 } @else {
                   <i class="osf-icon-papers text-4xl"></i>
                 }
-                <p>Papers</p>
+                <p>{{ 'resourceCard.resources.papers' | translate }}</p>
               </a>
               <a class="icon-container" [href]="item().id + '/resources'">
                 @if (item().hasPapersResource) {
-                  <i class="osf-icon-supplements-colored text-4xl"></i>
+                  <img src="assets/icons/colored/supplements-colored.svg" alt="supplements-resource" />
                 } @else {
                   <i class="osf-icon-supplements text-4xl"></i>
                 }
-                <p>Supplements</p>
+                <p>{{ 'resourceCard.resources.supplements' | translate }}</p>
               </a>
             </div>
           }
@@ -109,48 +120,50 @@
       <p-accordion-content>
         <div class="content">
           @if (item().description) {
-            <p class="description">Description: {{ item().description }}</p>
+            <p class="description">{{ 'resourceCard.labels.description' | translate }} {{ item().description }}</p>
           }
 
           @if (item().provider?.id) {
             <span>
-              <p>Registration provider:&nbsp;</p>
+              <p>{{ 'resourceCard.labels.registrationProvider' | translate }}&nbsp;</p>
               <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
             </span>
           }
 
           @if (item().license?.id) {
             <span>
-              <p>License:&nbsp;</p>
+              <p>{{ 'resourceCard.labels.license' | translate }}&nbsp;</p>
               <a [href]="item().license?.id">{{ item().license?.name }}</a>
             </span>
           }
 
           @if (item().registrationTemplate) {
-            <p class="description">Registration Template: {{ item().registrationTemplate }}</p>
+            <p class="description">
+              {{ 'resourceCard.labels.registrationTemplate' | translate }} {{ item().registrationTemplate }}
+            </p>
           }
 
           @if (item().provider?.id) {
             <span>
-              <p>Provider:&nbsp;</p>
+              <p>{{ 'resourceCard.labels.provider' | translate }}&nbsp;</p>
               <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
             </span>
           }
 
           @if (item().conflictOfInterestResponse && item().conflictOfInterestResponse === 'no-conflict-of-interest') {
-            <p class="description">Conflict of Interest response: Author asserted no Conflict of Interest</p>
+            <p class="description">{{ 'resourceCard.labels.conflictOfInterestResponse' | translate }}</p>
           }
 
           @if (item().resourceType !== ResourceType.Agent && item().id) {
             <span>
-              <p>URL:</p>
+              <p>{{ 'resourceCard.labels.url' | translate }}</p>
               <a [href]="item().id">{{ item().id }}</a>
             </span>
           }
 
           @if (item().doi) {
             <span>
-              <p>DOI:&nbsp;</p>
+              <p>{{ 'resourceCard.labels.doi' | translate }}&nbsp;</p>
               <a [href]="item().doi">{{ item().doi }}</a>
             </span>
           }
@@ -161,18 +174,18 @@
               <p-skeleton width="10rem" height="19px" />
               <p-skeleton width="9rem" height="19px" />
             } @else {
-              <p>Public projects: {{ item().publicProjects ?? 0 }}</p>
-              <p>Public registrations: {{ item().publicRegistrations ?? 0 }}</p>
-              <p>Public preprints: {{ item().publicPreprints ?? 0 }}</p>
+              <p>{{ 'resourceCard.labels.publicProjects' | translate }} {{ item().publicProjects ?? 0 }}</p>
+              <p>{{ 'resourceCard.labels.publicRegistrations' | translate }} {{ item().publicRegistrations ?? 0 }}</p>
+              <p>{{ 'resourceCard.labels.publicPreprints' | translate }} {{ item().publicPreprints ?? 0 }}</p>
             }
           }
 
           @if (item().employment) {
-            <p>Employment: {{ item().employment }}</p>
+            <p>{{ 'resourceCard.labels.employment' | translate }} {{ item().employment }}</p>
           }
 
           @if (item().education) {
-            <p>Education: {{ item().education }}</p>
+            <p>{{ 'resourceCard.labels.education' | translate }} {{ item().education }}</p>
           }
         </div>
       </p-accordion-content>

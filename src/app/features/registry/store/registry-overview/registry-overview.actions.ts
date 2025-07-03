@@ -1,0 +1,28 @@
+import { RegistrationQuestions } from '@osf/features/registry/models';
+
+export class GetRegistryById {
+  static readonly type = '[Registry Overview] Get Registry By Id';
+
+  constructor(public id: string) {}
+}
+
+export class GetRegistrySubjects {
+  static readonly type = '[Registry Overview] Get Registry Subjects';
+
+  constructor(public registryId: string) {}
+}
+
+export class GetRegistryInstitutions {
+  static readonly type = '[Registry Overview] Get Registry Institutions';
+
+  constructor(public registryId: string) {}
+}
+
+export class GetSchemaBlocks {
+  static readonly type = '[Registry Overview] Get Schema Blocks';
+
+  constructor(
+    public schemaLink: string,
+    public questions: RegistrationQuestions
+  ) {}
+}

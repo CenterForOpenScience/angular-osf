@@ -27,7 +27,8 @@
       "select": "Select",
       "deselect": "Deselect",
       "yes": "Yes",
-      "no": "No"
+      "no": "No",
+      "update": "Update"
     },
     "search": {
       "title": "Search",
@@ -39,6 +40,17 @@
         "projects": "Projects",
         "files": "Files",
         "users": "Users"
+      },
+      "filterPlaceholders": {
+        "affiliation": "Select institution",
+        "subject": "Select subject",
+        "funder": "Select funder",
+        "rights": "Select license",
+        "publisher": "Select provider",
+        "isPartOfCollection": "Select part of collection",
+        "dateCreated": "Select date",
+        "creator": "Creator name",
+        "resourceType": "Select resource type"
       }
     },
     "sort": {
@@ -50,6 +62,7 @@
     },
     "labels": {
       "downloads": "Downloads",
+      "public": "Public",
       "title": "Title",
       "description": "Description",
       "year": "Year"
@@ -82,7 +95,9 @@
     "myProjects": "My Projects",
     "registries": "Registries",
     "registriesSubRoutes": {
-      "overview": "Overview"
+      "overview": "Overview",
+      "myRegistrations": "My Registrations",
+      "registryDetails": "Registry Details"
     },
     "preprints": "Preprints",
     "preprintsSubRoutes": {
@@ -109,6 +124,17 @@
       "contributors": "Contributors",
       "analytics": "Analytics",
       "addons": "Add-ons"
+    },
+    "registration": {
+      "details": "Registry details",
+      "overview": "Overview",
+      "metadata": "Metadata",
+      "files": "Files",
+      "resources": "Resources",
+      "wiki": "Wiki",
+      "components": "Components",
+      "links": "Links",
+      "analytics": "Analytics"
     },
     "institutions": "Institutions"
   },
@@ -650,6 +676,8 @@
         "settings": "Settings",
         "delete": "Delete",
         "forkProject": "Fork this project",
+        "forkRegistry": "Fork this registry",
+        "forkResource": "Fork this resource",
         "duplicateProject": "Duplicate this project",
         "viewDuplication": "View forks",
         "socials": {
@@ -955,6 +983,9 @@
       "placeholder": "Enter search term(s) here"
     },
     "filters": {
+      "sortBy": "Sort by",
+      "noFiltersAvailable": "No filters available",
+      "noOptionsAvailable": "No options available",
       "programArea": {
         "label": "Program Area",
         "placeholder": "Select program areas",
@@ -1595,6 +1626,36 @@
       "providerLogoImageAlt": "Provider Logo"
     }
   },
+  "registries": {
+    "title": "Registries",
+    "addRegistration": "Add a Registration",
+    "description": "The open registries network",
+    "searchPlaceholder": "Search Registrations",
+    "services": {
+      "title": "Registry Services",
+      "description": "Leading registry service providers use this open source infrastructure to support their communities.",
+      "contactUs": "Contact Us"
+    },
+    "browse": "Browse Registrations",
+    "seeMore": "See more"
+  },
+  "registry": {
+    "overview": {
+      "public": "Public Registration",
+      "updates": "Updates",
+      "statuses": {
+        "frozen": "This public registration is a frozen, non-editable version of this"
+      },
+      "metadata": {
+        "type": "Registration Type",
+        "registeredDate": "Date registered",
+        "doi": "Registration DOI",
+        "associatedProject": "Associated project"
+      },
+      "original": "Original",
+      "last": "Last"
+    }
+  },
   "truncatedText": {
     "readMore": "Read more",
     "hide": "Hide"
@@ -1642,6 +1703,37 @@
       "searchSubjects": "Search subjects",
       "noSubject": "No subjects found"
     }
+  },
+  "resourceCard": {
+    "type": {
+      "user": "User"
+    },
+    "labels": {
+      "from": "From:",
+      "dateCreated": "Date created:",
+      "dateModified": "Date modified:",
+      "description": "Description:",
+      "registrationProvider": "Registration provider:",
+      "license": "License:",
+      "registrationTemplate": "Registration Template:",
+      "provider": "Provider:",
+      "conflictOfInterestResponse": "Conflict of Interest response: Author asserted no Conflict of Interest",
+      "url": "URL:",
+      "doi": "DOI:",
+      "publicProjects": "Public projects:",
+      "publicRegistrations": "Public registrations:",
+      "publicPreprints": "Public preprints:",
+      "employment": "Employment:",
+      "education": "Education:"
+    },
+    "resources": {
+      "data": "Data",
+      "analyticCode": "Analytic Code",
+      "materials": "Materials",
+      "papers": "Papers",
+      "supplements": "Supplements"
+    },
+    "more": "and {{count}} more"
   },
   "pageNotFound": {
     "title": "Page not found",

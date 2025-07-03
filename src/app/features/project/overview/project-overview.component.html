@@ -5,7 +5,9 @@
     <osf-sub-header [title]="project.title" />
   </div>
 
-  <osf-overview-toolbar />
+  <div class="px-3 pb-5 flex flex-column sm:px-5">
+    <osf-overview-toolbar [currentResource]="currentResource()" />
+  </div>
 
   <div class="flex gap-4 bg-white h-full p-3 flex-column-reverse sm:p-4 lg:flex-row">
     <div class="flex flex-column gap-4 left-section">
@@ -16,7 +18,7 @@
     </div>
 
     <div class="flex flex-column right-section p-4">
-      <osf-overview-metadata />
+      <osf-resource-metadata [currentResource]="resourceOverview()" />
     </div>
   </div>
 } @else {

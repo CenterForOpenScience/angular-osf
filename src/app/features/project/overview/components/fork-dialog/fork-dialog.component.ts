@@ -3,12 +3,13 @@ import { select, Store } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ForkProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ForkResource, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ToolbarResource } from '@shared/models';
 import { ToastService } from '@shared/services';
 
 @Component({
@@ -24,13 +25,14 @@ export class ForkDialogComponent {
   protected dialogRef = inject(DynamicDialogRef);
   protected destroyRef = inject(DestroyRef);
   protected isSubmitting = select(ProjectOverviewSelectors.getForkProjectSubmitting);
+  readonly config = inject(DynamicDialogConfig);
 
   protected handleForkConfirm(): void {
-    const project = this.store.selectSnapshot(ProjectOverviewSelectors.getProject);
-    if (!project) return;
+    const resource = this.config.data.resource as ToolbarResource;
+    if (!resource) return;
 
     this.store
-      .dispatch(new ForkProject(project.id))
+      .dispatch(new ForkResource(resource.id, resource.resourceType))
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
