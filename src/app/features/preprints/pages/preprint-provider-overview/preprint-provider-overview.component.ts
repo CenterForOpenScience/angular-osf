@@ -12,8 +12,8 @@ import { PreprintProviderHeroComponent } from '@osf/features/preprints/component
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
-  PreprintsSelectors,
-} from '@osf/features/preprints/store/preprints';
+  PreprintProvidersSelectors,
+} from '@osf/features/preprints/store/preprint-providers';
 import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper } from '@shared/utils';
 
@@ -38,11 +38,11 @@ export class PreprintProviderOverviewComponent implements OnInit, OnDestroy {
     getPreprintProviderById: GetPreprintProviderById,
     getHighlightedSubjectsByProviderId: GetHighlightedSubjectsByProviderId,
   });
-  preprintProvider = select(PreprintsSelectors.getPreprintProviderDetails(this.providerId()));
-  isPreprintProviderLoading = select(PreprintsSelectors.isPreprintProviderDetailsLoading);
+  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
+  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
 
-  highlightedSubjectsByProviderId = select(PreprintsSelectors.getHighlightedSubjectsForProvider);
-  areSubjectsLoading = select(PreprintsSelectors.areSubjectsLoading);
+  highlightedSubjectsByProviderId = select(PreprintProvidersSelectors.getHighlightedSubjectsForProvider);
+  areSubjectsLoading = select(PreprintProvidersSelectors.areSubjectsLoading);
 
   constructor() {
     effect(() => {

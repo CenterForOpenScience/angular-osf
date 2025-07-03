@@ -19,7 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { PreprintsResourcesComponent } from '@osf/features/preprints/components';
 import { PreprintProviderHeroComponent } from '@osf/features/preprints/components/preprint-provider-hero/preprint-provider-hero.component';
-import { GetPreprintProviderById, PreprintsSelectors } from '@osf/features/preprints/store/preprints';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
   GetResources,
   ResetState,
@@ -79,8 +79,8 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
 
   searchControl = new FormControl('');
 
-  preprintProvider = select(PreprintsSelectors.getPreprintProviderDetails(this.providerId()));
-  isPreprintProviderLoading = select(PreprintsSelectors.isPreprintProviderDetailsLoading);
+  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
+  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
 
   creatorSelected = select(PreprintsResourcesFiltersSelectors.getCreator);
   dateCreatedSelected = select(PreprintsResourcesFiltersSelectors.getDateCreated);

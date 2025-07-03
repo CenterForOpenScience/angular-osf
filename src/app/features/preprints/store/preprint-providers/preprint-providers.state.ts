@@ -7,17 +7,17 @@ import { catchError } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { PreprintsService } from '@osf/features/preprints/services';
+
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   GetPreprintProvidersAllowingSubmissions,
   GetPreprintProvidersToAdvertise,
-} from '@osf/features/preprints/store/preprints/preprints.actions';
+} from './preprint-providers.actions';
+import { PreprintProvidersStateModel } from './preprint-providers.model';
 
-import { PreprintsStateModel } from './';
-
-@State<PreprintsStateModel>({
-  name: 'preprints',
+@State<PreprintProvidersStateModel>({
+  name: 'preprintProviders',
   defaults: {
     preprintProvidersDetails: {
       data: [],
@@ -42,12 +42,12 @@ import { PreprintsStateModel } from './';
   },
 })
 @Injectable()
-export class PreprintsState {
+export class PreprintProvidersState {
   #preprintsService = inject(PreprintsService);
   private readonly REFRESH_INTERVAL = 5 * 60 * 1000;
 
   @Action(GetPreprintProviderById)
-  getPreprintProviderById(ctx: StateContext<PreprintsStateModel>, action: GetPreprintProviderById) {
+  getPreprintProviderById(ctx: StateContext<PreprintProvidersStateModel>, action: GetPreprintProviderById) {
     const state = ctx.getState();
     const cachedData = state.preprintProvidersDetails.data.find((p) => p.id === action.id);
     const shouldRefresh = this.shouldRefresh(cachedData?.lastFetched);
@@ -79,7 +79,7 @@ export class PreprintsState {
   }
 
   @Action(GetPreprintProvidersToAdvertise)
-  getPreprintProvidersToAdvertise(ctx: StateContext<PreprintsStateModel>) {
+  getPreprintProvidersToAdvertise(ctx: StateContext<PreprintProvidersStateModel>) {
     ctx.setState(patch({ preprintProvidersToAdvertise: patch({ isLoading: true }) }));
 
     return this.#preprintsService.getPreprintProvidersToAdvertise().pipe(
@@ -98,7 +98,7 @@ export class PreprintsState {
   }
 
   @Action(GetPreprintProvidersAllowingSubmissions)
-  getPreprintProvidersAllowingSubmissions(ctx: StateContext<PreprintsStateModel>) {
+  getPreprintProvidersAllowingSubmissions(ctx: StateContext<PreprintProvidersStateModel>) {
     ctx.setState(patch({ preprintProvidersAllowingSubmissions: patch({ isLoading: true }) }));
 
     return this.#preprintsService.getPreprintProvidersAllowingSubmissions().pipe(
@@ -118,7 +118,7 @@ export class PreprintsState {
 
   @Action(GetHighlightedSubjectsByProviderId)
   getHighlightedSubjectsByProviderId(
-    ctx: StateContext<PreprintsStateModel>,
+    ctx: StateContext<PreprintProvidersStateModel>,
     action: GetHighlightedSubjectsByProviderId
   ) {
     ctx.setState(patch({ highlightedSubjectsForProvider: patch({ isLoading: true }) }));
@@ -146,7 +146,11 @@ export class PreprintsState {
     return Date.now() - lastFetched > this.REFRESH_INTERVAL;
   }
 
-  private handleError(ctx: StateContext<PreprintsStateModel>, section: keyof PreprintsStateModel, error: Error) {
+  private handleError(
+    ctx: StateContext<PreprintProvidersStateModel>,
+    section: keyof PreprintProvidersStateModel,
+    error: Error
+  ) {
     ctx.patchState({
       [section]: {
         ...ctx.getState()[section],
