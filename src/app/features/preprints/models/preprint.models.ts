@@ -24,12 +24,3 @@ export interface PreprintFilesLinks {
   filesLink: string;
   uploadFileLink: string;
 }
-
-export interface SubjectGetResponse {
-  id: string;
-  type: 'subjects';
-  attributes: {
-    text: string;
-    taxonomy_name: string;
-  };
-}
