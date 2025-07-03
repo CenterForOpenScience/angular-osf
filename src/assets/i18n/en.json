@@ -415,7 +415,6 @@
         "step2InfoText": "If your project includes components, you can select which components to include or exclude at the end of the registration."
       },
       "selectProject": "Select your project",
-
       "createDraft": "Create draft",
       "createdSuccessfully": "Draft created successfully"
     },
@@ -1758,7 +1757,8 @@
     "email": "Please enter a valid email address.",
     "maxLength": "The field must be at most {{length}} characters.",
     "minLength": "The field must be at least {{length}} characters.",
-    "invalidInput": "Invalid input."
+    "invalidInput": "Invalid input.",
+    "link": "This field must start with http:// or https:// to be a valid url."
   },
   "searchHelpTutorial": {
     "step1": {

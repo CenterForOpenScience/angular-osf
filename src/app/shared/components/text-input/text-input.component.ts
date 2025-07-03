@@ -43,6 +43,10 @@ export class TextInputComponent {
       return { key: INPUT_VALIDATION_MESSAGES.email };
     }
 
+    if (errors['link']) {
+      return { key: INPUT_VALIDATION_MESSAGES.link };
+    }
+
     if (errors['maxlength'])
       return {
         key: INPUT_VALIDATION_MESSAGES.maxLength,

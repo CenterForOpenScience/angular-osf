@@ -4,4 +4,5 @@ export const INPUT_VALIDATION_MESSAGES = {
   maxLength: 'validation.maxLength',
   minLength: 'validation.minLength',
   invalidInput: 'validation.invalidInput',
+  link: 'validation.link',
 };
