@@ -10,12 +10,16 @@ export type SubjectDataJsonApi = ApiData<
   SubjectAttributesJsonApi,
   SubjectEmbedsJsonApi,
   SubjectRelationshipsJsonApi,
-  null
+  SubjectLinksJsonApi
 >;
 
 interface SubjectAttributesJsonApi {
   text: string;
   taxonomy_name: string;
+}
+
+interface SubjectLinksJsonApi {
+  iri: string;
 }
 
 interface SubjectRelationshipsJsonApi {

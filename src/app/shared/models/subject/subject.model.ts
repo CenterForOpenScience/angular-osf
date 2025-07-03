@@ -4,4 +4,5 @@ export interface Subject {
   children?: Subject[];
   parent?: Subject | null;
   expanded?: boolean;
+  iri?: string;
 }

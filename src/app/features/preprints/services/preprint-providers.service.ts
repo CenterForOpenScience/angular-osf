@@ -7,11 +7,10 @@ import { JsonApiService } from '@core/services';
 import { PreprintProvidersMapper } from '@osf/features/preprints/mappers';
 import {
   PreprintProviderDetails,
-  PreprintProviderDetailsGetResponse,
+  PreprintProviderDetailsJsonApi,
   PreprintProviderShortInfo,
-  Subject,
-  SubjectGetResponse,
 } from '@osf/features/preprints/models';
+import { Subject, SubjectsResponseJsonApi } from '@shared/models';
 
 import { environment } from 'src/environments/environment';
 
@@ -24,7 +23,7 @@ export class PreprintProvidersService {
 
   getPreprintProviderById(id: string): Observable<PreprintProviderDetails> {
     return this.jsonApiService
-      .get<JsonApiResponse<PreprintProviderDetailsGetResponse, null>>(`${this.baseUrl}${id}/?embed=brand`)
+      .get<JsonApiResponse<PreprintProviderDetailsJsonApi, null>>(`${this.baseUrl}${id}/?embed=brand`)
       .pipe(
         map((response) => {
           return PreprintProvidersMapper.fromPreprintProviderDetailsGetResponse(response.data);
@@ -35,7 +34,7 @@ export class PreprintProvidersService {
   getPreprintProvidersToAdvertise(): Observable<PreprintProviderShortInfo[]> {
     return this.jsonApiService
       .get<
-        JsonApiResponse<PreprintProviderDetailsGetResponse[], null>
+        JsonApiResponse<PreprintProviderDetailsJsonApi[], null>
       >(`${this.baseUrl}?filter[advertise_on_discover_page]=true&reload=true`)
       .pipe(
         map((response) => {
@@ -48,9 +47,7 @@ export class PreprintProvidersService {
 
   getPreprintProvidersAllowingSubmissions(): Observable<PreprintProviderShortInfo[]> {
     return this.jsonApiService
-      .get<
-        JsonApiResponse<PreprintProviderDetailsGetResponse[], null>
-      >(`${this.baseUrl}?filter[allow_submissions]=true`)
+      .get<JsonApiResponse<PreprintProviderDetailsJsonApi[], null>>(`${this.baseUrl}?filter[allow_submissions]=true`)
       .pipe(
         map((response) => {
           return PreprintProvidersMapper.toPreprintProviderShortInfoFromGetResponse(response.data);
@@ -60,12 +57,10 @@ export class PreprintProvidersService {
 
   getHighlightedSubjectsByProviderId(providerId: string): Observable<Subject[]> {
     return this.jsonApiService
-      .get<
-        JsonApiResponse<SubjectGetResponse[], null>
-      >(`${this.baseUrl}${providerId}/subjects/highlighted/?page[size]=20`)
+      .get<SubjectsResponseJsonApi>(`${this.baseUrl}${providerId}/subjects/highlighted/?page[size]=20`)
       .pipe(
         map((response) => {
-          return PreprintProvidersMapper.fromSubjectsGetResponse(providerId, response.data);
+          return PreprintProvidersMapper.fromSubjectsGetResponse(response.data);
         })
       );
   }

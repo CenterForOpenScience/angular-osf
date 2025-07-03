@@ -1,13 +1,12 @@
 import {
   PreprintProviderDetails,
-  PreprintProviderDetailsGetResponse,
+  PreprintProviderDetailsJsonApi,
   PreprintProviderShortInfo,
-  Subject,
-  SubjectGetResponse,
 } from '@osf/features/preprints/models';
+import { Subject, SubjectDataJsonApi } from '@shared/models';
 
 export class PreprintProvidersMapper {
-  static fromPreprintProviderDetailsGetResponse(response: PreprintProviderDetailsGetResponse): PreprintProviderDetails {
+  static fromPreprintProviderDetailsGetResponse(response: PreprintProviderDetailsJsonApi): PreprintProviderDetails {
     const brandRaw = response.embeds!.brand.data;
     return {
       id: response.id,
@@ -34,7 +33,7 @@ export class PreprintProvidersMapper {
   }
 
   static toPreprintProviderShortInfoFromGetResponse(
-    response: PreprintProviderDetailsGetResponse[]
+    response: PreprintProviderDetailsJsonApi[]
   ): PreprintProviderShortInfo[] {
     return response.map((item) => ({
       id: item.id,
@@ -45,12 +44,11 @@ export class PreprintProvidersMapper {
     }));
   }
 
-  static fromSubjectsGetResponse(providerId: string, response: SubjectGetResponse[]): Subject[] {
-    return response.map((subject) => ({
+  static fromSubjectsGetResponse(data: SubjectDataJsonApi[]): Subject[] {
+    return data.map((subject) => ({
       id: subject.id,
-      text: subject.attributes.text,
-      taxonomy_name: subject.attributes.taxonomy_name,
-      preprintProviderId: providerId,
+      name: subject.attributes.text,
+      iri: subject.links.iri,
     }));
   }
 }

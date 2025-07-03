@@ -6,10 +6,8 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { Subject } from '@osf/features/preprints/models';
 import { ResourceTab } from '@shared/enums';
-
-import { environment } from 'src/environments/environment';
+import { Subject } from '@shared/models';
 
 @Component({
   selector: 'osf-browse-by-subjects',
@@ -26,8 +24,8 @@ export class BrowseBySubjectsComponent {
       activeFilters: JSON.stringify([
         {
           filterName: 'Subject',
-          label: subject.text,
-          value: `${environment.apiUrl}/subjects/` + subject.id,
+          label: subject.name,
+          value: subject.iri,
         },
       ]),
     }));
