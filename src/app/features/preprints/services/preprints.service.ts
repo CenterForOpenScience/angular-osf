@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
-import { ApiData } from '@osf/core/models';
+import { ApiData, JsonApiResponse } from '@osf/core/models';
 import { PreprintsMapper } from '@osf/features/preprints/mappers';
 import { Preprint, PreprintJsonApi, PreprintsRelationshipsJsonApi } from '@osf/features/preprints/models';
 
@@ -28,11 +28,11 @@ export class PreprintsService {
     const payload = PreprintsMapper.toCreatePayload(title, abstract, providerId);
     return this.jsonApiService
       .post<
-        ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>
+        JsonApiResponse<ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>, null>
       >(`${environment.apiUrl}/preprints/`, payload)
       .pipe(
         map((response) => {
-          return PreprintsMapper.fromPreprintJsonApi(response);
+          return PreprintsMapper.fromPreprintJsonApi(response.data);
         })
       );
   }

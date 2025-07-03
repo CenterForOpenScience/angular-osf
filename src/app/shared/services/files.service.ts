@@ -260,7 +260,9 @@ export class FilesService {
       resource: resourceId,
     };
     return this.#jsonApiService
-      .post<ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>>(moveLink, body)
-      .pipe(map((response) => MapFile(response)));
+      .post<
+        JsonApiResponse<ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>, null>
+      >(moveLink, body)
+      .pipe(map((response) => MapFile(response.data)));
   }
 }
