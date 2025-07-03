@@ -12,8 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { linkValidator } from '@osf/core/helpers';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { CustomValidators, IS_XSMALL } from '@osf/shared/utils';
 
 import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppForm, DeveloperAppFormFormControls } from '../../models';
 import { CreateDeveloperApp, UpdateDeveloperApp } from '../../store';
@@ -41,14 +40,14 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
     }),
     [DeveloperAppFormFormControls.ProjectHomePageUrl]: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, linkValidator()],
+      validators: [Validators.required, CustomValidators.linkValidator()],
     }),
     [DeveloperAppFormFormControls.AppDescription]: new FormControl('', {
       nonNullable: false,
     }),
     [DeveloperAppFormFormControls.AuthorizationCallbackUrl]: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, linkValidator()],
+      validators: [Validators.required, CustomValidators.linkValidator()],
     }),
   });
 
