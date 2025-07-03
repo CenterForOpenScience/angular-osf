@@ -1,4 +1,5 @@
 import { StringOrNull } from '@core/helpers';
+import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { LicenseRecordJsonApi } from '@shared/models';
 
 export interface PreprintJsonApi {
@@ -24,7 +25,13 @@ export interface PreprintJsonApi {
   is_latest_version: boolean;
   has_coi: boolean;
   conflict_of_interest_statement: StringOrNull;
-  has_data_links: boolean;
+  has_data_links: ApplicabilityStatus;
+  data_links: string[];
+  why_no_data: StringOrNull;
+  has_prereg_links: ApplicabilityStatus;
+  why_no_prereg: StringOrNull;
+  prereg_links: string[];
+  prereg_link_info: PreregLinkInfo | null;
 }
 
 export interface PreprintsRelationshipsJsonApi {

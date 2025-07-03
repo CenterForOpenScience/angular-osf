@@ -22,6 +22,15 @@ export class PreprintsService {
     doi: 'doi',
     customPublicationCitation: 'custom_publication_citation',
     tags: 'tags',
+    hasCoi: 'has_coi',
+    coiStatement: 'conflict_of_interest_statement',
+    hasDataLinks: 'has_data_links',
+    dataLinks: 'data_links',
+    whyNoData: 'why_no_data',
+    hasPreregLinks: 'has_prereg_links',
+    preregLinks: 'prereg_links',
+    whyNoPrereg: 'why_no_prereg',
+    preregLinkInfo: 'prereg_link_info',
   };
 
   createPreprint(title: string, abstract: string, providerId: string) {

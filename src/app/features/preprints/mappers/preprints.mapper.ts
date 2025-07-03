@@ -45,6 +45,15 @@ export class PreprintsMapper {
             copyrightHolders: response.attributes.license_record.copyright_holders.join(','),
           }
         : null,
+      hasCoi: response.attributes.has_coi,
+      coiStatement: response.attributes.conflict_of_interest_statement,
+      hasDataLinks: response.attributes.has_data_links,
+      dataLinks: response.attributes.data_links,
+      whyNoData: response.attributes.why_no_data,
+      hasPreregLinks: response.attributes.has_prereg_links,
+      whyNoPrereg: response.attributes.why_no_prereg,
+      preregLinks: response.attributes.prereg_links,
+      preregLinkInfo: response.attributes.prereg_link_info,
     };
   }
 }

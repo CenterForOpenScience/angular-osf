@@ -42,6 +42,9 @@
     @case (SubmitStepsEnum.Metadata) {
       <osf-preprint-metadata (nextClicked)="currentStep.set(SubmitStepsEnum.AuthorAssertions)" />
     }
+    @case (SubmitStepsEnum.AuthorAssertions) {
+      <osf-author-assertions-step (nextClicked)="currentStep.set(SubmitStepsEnum.Supplements)" />
+    }
     @default {
       <p>No such step</p>
     }
