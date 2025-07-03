@@ -1,0 +1,134 @@
+@if (!isRegistryLoading() && !isSubjectsLoading() && !isInstitutionsLoading() && !isSchemaBlocksLoading()) {
+  <div class="flex justify-content-between align-items-center">
+    <osf-sub-header [title]="registry()!.title" />
+
+    <div class="pr-3 sm:pr-5">
+      <osf-overview-toolbar
+        [currentResource]="toolbarResource()"
+        [visibilityToggle]="false"
+        [showViewOnlyLinks]="false"
+      />
+    </div>
+  </div>
+  <div class="flex flex-column bg-white flex-1 p-4">
+    <div class="flex column-gap-5 row-gap-3 mt-1 flex-wrap pb-4">
+      <a class="icon-container" [href]="registry()?.id + '/resources'">
+        @if (registry()?.hasData) {
+          <img src="assets/icons/colored/data-colored.svg" alt="data-resource" />
+        } @else {
+          <i class="osf-icon-data text-4xl"></i>
+        }
+        <p>{{ 'resourceCard.resources.data' | translate }}</p>
+      </a>
+      <a class="icon-container" [href]="registry()?.id + '/resources'">
+        @if (registry()?.hasAnalyticCode) {
+          <img src="assets/icons/colored/code-colored.svg" alt="code-resource" />
+        } @else {
+          <i class="osf-icon-code text-4xl"></i>
+        }
+        <p>{{ 'resourceCard.resources.analyticCode' | translate }}</p>
+      </a>
+      <a class="icon-container" [href]="registry()?.id + '/resources'">
+        @if (registry()?.hasMaterials) {
+          <img src="assets/icons/colored/materials-colored.svg" alt="materials-resource" />
+        } @else {
+          <i class="osf-icon-materials text-4xl"></i>
+        }
+        <p>{{ 'resourceCard.resources.materials' | translate }}</p>
+      </a>
+      <a class="icon-container" [href]="registry()?.id + '/resources'">
+        @if (registry()?.hasPapers) {
+          <img src="assets/icons/colored/papers-colored.svg" alt="papers-resource" />
+        } @else {
+          <i class="osf-icon-papers text-4xl"></i>
+        }
+        <p>{{ 'resourceCard.resources.papers' | translate }}</p>
+      </a>
+      <a class="icon-container" [href]="registry()?.id + '/resources'">
+        @if (registry()?.hasSupplements) {
+          <img src="assets/icons/colored/supplements-colored.svg" alt="supplements-resource" />
+        } @else {
+          <i class="osf-icon-supplements text-4xl"></i>
+        }
+        <p>{{ 'resourceCard.resources.supplements' | translate }}</p>
+      </a>
+    </div>
+
+    <div class="flex gap-4">
+      <div class="left-section gap-4">
+        <!--        TODO: statuses and schema updates-->
+        <div class="flex gap-4 resource">
+          <p-accordion class="accordion-border px-4 py-4 flex-1 no-padding">
+            <p-accordion-panel value="0">
+              <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
+                <p class="font-bold">{{ 'registry.overview.public' | translate }}</p>
+              </p-accordion-header>
+              <p-accordion-content>
+                <div class="content pt-4">
+                  <h2 class="font-normal mb-2">{{ 'common.labels.public' | translate }}</h2>
+                  <p>{{ 'registry.overview.statuses.frozen' | translate }}</p>
+                </div>
+              </p-accordion-content>
+            </p-accordion-panel>
+          </p-accordion>
+          <p-accordion class="accordion-border p-4 py-4 flex-1 no-padding">
+            <p-accordion-panel value="0">
+              <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
+                {{ 'registry.overview.updates' | translate }}
+              </p-accordion-header>
+              <p-accordion-content>
+                <div class="flex flex-column gap-2 align-items-center justify-content-center">
+                  <p-button
+                    severity="info"
+                    class="w-full"
+                    styleClass="w-full"
+                    [label]="'registry.overview.original' | translate"
+                  />
+                  <p-button
+                    severity="info"
+                    class="w-full"
+                    styleClass="w-full"
+                    [label]="'registry.overview.last' | translate"
+                  />
+                  <p-button class="w-full" styleClass="w-full" [label]="'common.buttons.update' | translate" />
+                </div>
+              </p-accordion-content>
+            </p-accordion-panel>
+          </p-accordion>
+        </div>
+        <div class="blocks-section p-4">
+          @for (block of schemaBlocks(); track $index) {
+            @if (block.type === 'file-input' && block.files) {
+              <ul class="flex flex-column gap-4 ml-5">
+                @for (file of block.files; track $index) {
+                  <li class="list-disc">
+                    <a [routerLink]="['/files', file.id]">{{ file.name }}</a>
+                  </li>
+                }
+              </ul>
+            } @else if (block.type === 'multi-select-input' && block.values) {
+              <div class="flex flex-column gap-4 p-4">
+                @for (value of block.values; track $index) {
+                  <p class="text-no-transform">{{ value }}</p>
+                }
+              </div>
+            } @else if (block.type === 'page-heading' && block.value) {
+              <h1 class="pb-4 text-no-transform" [class.mt-4]="$index !== 0">{{ block.value }}</h1>
+            } @else if ((block.type === 'subsection-heading' || block.type === 'question-label') && block.value) {
+              <h3 class="pb-4 text-no-transform">{{ block.value }}</h3>
+            } @else if (block.value !== 'select-input-option') {
+              <p class="pb-4 text-no-transform">{{ block.value }}</p>
+            }
+          }
+        </div>
+      </div>
+      <div class="flex flex-column right-section p-4">
+        <osf-resource-metadata [currentResource]="resourceOverview()" />
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="flex-1">
+    <osf-loading-spinner />
+  </div>
+}

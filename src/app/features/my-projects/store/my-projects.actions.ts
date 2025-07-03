@@ -1,3 +1,5 @@
+import { ResourceType } from '@shared/enums';
+
 import { MyProjectsSearchFilters } from '../models';
 
 export class GetMyProjects {
@@ -37,7 +39,8 @@ export class GetMyBookmarks {
     public bookmarksId: string,
     public pageNumber: number,
     public pageSize: number,
-    public filters: MyProjectsSearchFilters
+    public filters: MyProjectsSearchFilters,
+    public resourceType: ResourceType
   ) {}
 }
 

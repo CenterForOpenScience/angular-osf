@@ -7,7 +7,7 @@
   />
 
   @if (institutionsLoading()) {
-    <div class="flex-1 bg-white">
+    <div class="flex-1 mt-4 md:mt-8 lg:pt-5 bg-white">
       <osf-loading-spinner />
     </div>
   } @else {
@@ -16,11 +16,19 @@
 
       <div class="py-5 flex flex-column gap-3">
         @for (institution of institutions(); track $index) {
-          <div class="border-1 border-round-xl grey-border-color px-5 py-4 flex align-items-center gap-4">
-            <img class="image" [ngSrc]="institution.assets.logo" [alt]="institution.name" width="60" height="60" />
+          <a [routerLink]="[institution.id]">
+            <div class="border-1 border-round-xl grey-border-color px-5 py-4 flex align-items-center gap-4">
+              <img
+                class="fit-contain"
+                [ngSrc]="institution.assets.logo"
+                [alt]="institution.name"
+                width="60"
+                height="60"
+              />
 
-            <h2>{{ institution.name }}</h2>
-          </div>
+              <h2>{{ institution.name }}</h2>
+            </div>
+          </a>
         }
 
         @if (!institutions().length) {

@@ -1,10 +1,14 @@
 import { ApiData, JsonApiResponse } from '@osf/core/models';
+import { AppliedFilter, RelatedPropertyPathAttributes } from '@shared/mappers';
 
 import { ResourceItem } from './resource-response.model';
 
 export type IndexCardSearch = JsonApiResponse<
   {
-    attributes: { totalResultCount: number };
+    attributes: {
+      totalResultCount: number;
+      cardSearchFilter?: AppliedFilter[];
+    };
     relationships: {
       searchResultPage: {
         links: {
@@ -21,5 +25,8 @@ export type IndexCardSearch = JsonApiResponse<
       };
     };
   },
-  ApiData<{ resourceMetadata: ResourceItem }, null, null, null>[]
+  (
+    | ApiData<{ resourceMetadata: ResourceItem }, null, null, null>
+    | ApiData<RelatedPropertyPathAttributes, null, null, null>
+  )[]
 >;

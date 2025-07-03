@@ -40,6 +40,16 @@ export const NAV_ITEMS: NavItem[] = [
         label: 'navigation.registriesSubRoutes.overview',
         useExactMatch: false,
       },
+      {
+        path: '/my-registrations',
+        label: 'navigation.registriesSubRoutes.myRegistrations',
+        useExactMatch: false,
+      },
+      {
+        path: '/registry-overview',
+        label: 'navigation.registriesSubRoutes.registryDetails',
+        useExactMatch: false,
+      },
     ],
   },
   {
@@ -162,6 +172,24 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
         label: 'navigation.project.settings',
         routerLink: 'settings',
       },
+    ],
+  },
+];
+
+export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
+  {
+    label: 'navigation.registration.details',
+    icon: 'osf-icon-my-projects',
+    expanded: true,
+    items: [
+      { label: 'navigation.registration.overview', routerLink: 'overview' },
+      { label: 'navigation.registration.metadata', routerLink: 'metadata' },
+      { label: 'navigation.registration.files', routerLink: 'files' },
+      { label: 'navigation.registration.resources', routerLink: 'resources' },
+      { label: 'navigation.registration.wiki', routerLink: 'wiki' },
+      { label: 'navigation.registration.components', routerLink: 'components' },
+      { label: 'navigation.registration.links', routerLink: 'links' },
+      { label: 'navigation.registration.analytics', routerLink: 'analytics' },
     ],
   },
 ];

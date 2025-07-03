@@ -1,41 +1,43 @@
-@let project = currentProject();
+@let resource = currentResource();
 
-@if (project) {
-  <div
-    class="pl-3 pb-5 pr-3 flex flex-column gap-5 sm:pl-5 sm:pr-5 lg:flex-row lg:align-items-center lg:justify-content-between"
-  >
-    <div class="flex gap-3 align-items-start">
-      <div class="flex gap-1" [class.inactive]="isPublic()">
-        <i class="fas fa-lock"></i>
-        <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
+@if (resource) {
+  <div class="flex flex-column gap-5 lg:flex-row lg:align-items-center lg:justify-content-between">
+    @if (visibilityToggle()) {
+      <div class="flex gap-3 align-items-center">
+        <div class="flex gap-1" [class.inactive]="isPublic()">
+          <i class="fas fa-lock"></i>
+          <p class="font-bold">{{ 'project.overview.header.privateProject' | translate }}</p>
+        </div>
+
+        <p-toggleswitch class="visibility-switch" [(ngModel)]="isPublic" (onChange)="handleToggleProjectPublicity()" />
+
+        <div class="flex gap-2" [class.inactive]="!isPublic()">
+          <i class="fas fa-lock-open"></i>
+          <p class="font-bold">{{ 'project.overview.header.publicProject' | translate }}</p>
+        </div>
       </div>
-
-      <p-toggleswitch class="visibility-switch" [(ngModel)]="isPublic" (onChange)="handleToggleProjectPublicity()" />
-
-      <div class="flex gap-2" [class.inactive]="!isPublic()">
-        <i class="fas fa-lock-open"></i>
-        <p class="font-bold">{{ 'project.overview.header.publicProject' | translate }}</p>
-      </div>
-    </div>
+    }
 
     <div class="flex">
       <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row-reverse lg:flex-row">
-        @if (project.storage) {
+        @if (resource.storage) {
           <p class="font-bold mr-2 ml-0 mt-2 sm:ml-2 sm:mt-0 sm:align-self-center storage">
-            {{ +project.storage.storageUsage | fileSize }}
+            {{ +resource.storage.storageUsage | fileSize }}
           </p>
         }
 
         <div class="flex gap-2 justify-content-start">
-          <p-button
-            class="flex"
-            [pTooltip]="'project.overview.tooltips.viewOnlyLinks' | translate"
-            tooltipPosition="bottom"
-            [routerLink]="['/my-projects', project.id, 'settings']"
-          >
-            <span class="font-bold">{{ project.viewOnlyLinksCount }}</span>
-            <i class="fas fa-link text-2xl"></i>
-          </p-button>
+          @if (showViewOnlyLinks()) {
+            <p-button
+              class="flex"
+              [pTooltip]="'project.overview.tooltips.viewOnlyLinks' | translate"
+              tooltipPosition="bottom"
+              [routerLink]="['/my-projects', resource.id, 'settings']"
+            >
+              <span class="font-bold">{{ resource.viewOnlyLinksCount }}</span>
+              <i class="fas fa-link text-2xl"></i>
+            </p-button>
+          }
 
           <p-button
             class="flex"
@@ -43,13 +45,18 @@
             [pTooltip]="'project.overview.tooltips.duplicate' | translate"
             tooltipPosition="bottom"
           >
-            <span class="font-bold">{{ project.forksCount }}</span>
+            <span class="font-bold">{{ resource.forksCount }}</span>
             <i class="fas fa-clone text-2xl"></i>
             <p-menu appendTo="body" #forkActionMenu [model]="forkActionItems" popup>
               <ng-template #item let-item>
-                <a class="p-menu-item-link">
-                  {{ item.label | translate }}
-                </a>
+                @if (
+                  item.label !== 'project.overview.actions.duplicateProject' ||
+                  currentResource()?.resourceType !== ResourceType.Registration
+                ) {
+                  <a class="p-menu-item-link">
+                    {{ item.label | translate }}
+                  </a>
+                }
               </ng-template>
             </p-menu>
           </p-button>
@@ -66,7 +73,7 @@
             }
           </p-button>
 
-          @if (project.isPublic) {
+          @if (resource.isPublic) {
             <p-button
               class="flex"
               (click)="socialsActionMenu.toggle($event)"

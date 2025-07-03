@@ -39,5 +39,5 @@ export function MapResources(rawItem: ResourceItem): Resource {
     hasMaterialsResource: !!rawItem?.hasMaterialsResource,
     hasPapersResource: !!rawItem?.hasPapersResource,
     hasSupplementalResource: !!rawItem?.hasSupplementalResource,
-  };
+  } as Resource;
 }

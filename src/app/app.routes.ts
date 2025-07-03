@@ -2,6 +2,8 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { RegistryOverviewState } from '@osf/features/registry/store/registry-overview';
+
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
 import { MyProfileState } from './features/my-profile/store';
@@ -152,6 +154,11 @@ export const routes: Routes = [
       {
         path: 'registries',
         loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
+      },
+      {
+        path: 'registries/my-registrations/:registrationId',
+        loadChildren: () => import('./features/registry/registry.routes').then((mod) => mod.registryRoutes),
+        providers: [provideStates([RegistryOverviewState])],
       },
       {
         path: '**',

@@ -9,7 +9,7 @@ import { Component, computed, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
-import { NAV_ITEMS, PROJECT_MENU_ITEMS } from '@core/constants';
+import { NAV_ITEMS, PROJECT_MENU_ITEMS, REGISTRATION_MENU_ITEMS } from '@core/constants';
 import { IconComponent } from '@osf/shared/components';
 import { NavItem } from '@osf/shared/models';
 
@@ -24,6 +24,7 @@ export class NavMenuComponent {
   private readonly route = inject(ActivatedRoute);
   protected readonly navItems = NAV_ITEMS;
   protected readonly myProjectMenuItems = PROJECT_MENU_ITEMS;
+  protected readonly registrationMenuItems = REGISTRATION_MENU_ITEMS;
 
   closeMenu = output<void>();
 
@@ -40,6 +41,7 @@ export class NavMenuComponent {
   protected readonly currentProjectId = computed(() => this.currentRoute().projectId);
   protected readonly isProjectRoute = computed(() => !!this.currentProjectId());
   protected readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
+  protected readonly isRegistryRoute = computed(() => this.currentRoute().isRegistryRoute);
 
   protected readonly mainMenuItems = computed(() => {
     const filteredItems = this.isCollectionsRoute()
@@ -73,11 +75,14 @@ export class NavMenuComponent {
     const section = this.route.firstChild?.firstChild?.snapshot.url[0]?.path || 'overview';
 
     const isCollectionsWithId = urlSegments[0] === 'collections' && urlSegments[1] && urlSegments[1] !== '';
+    const isRegistryRoute =
+      urlSegments[0] === 'registries' && urlSegments[1] === 'my-registrations' && !!urlSegments[2];
 
     return {
       projectId,
       section,
       isCollectionsWithId,
+      isRegistryRoute,
     };
   }
 

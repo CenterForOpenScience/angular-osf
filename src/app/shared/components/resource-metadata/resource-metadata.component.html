@@ -1,0 +1,167 @@
+@let resource = currentResource();
+
+@if (resource) {
+  <div class="metadata flex flex-column gap-5">
+    <div class="metadata-header flex align-items-center justify-content-between">
+      <h2>{{ 'project.overview.metadata.title' | translate }}</h2>
+
+      <p-button
+        [routerLink]="'../metadata'"
+        severity="secondary"
+        [label]="'common.buttons.edit' | translate"
+      ></p-button>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'project.overview.metadata.contributors' | translate }}</h3>
+
+      <div class="flex gap-1 line-height-2">
+        @for (contributor of resource.contributors; track contributor.id) {
+          <div>
+            <a class="font-bold"> {{ contributor.fullName }}</a>
+            <span>{{ $last ? '' : ',' }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'project.overview.metadata.description' | translate }}</h3>
+
+      <osf-truncated-text
+        [maxVisibleLines]="3"
+        [text]="resource.description ? resource.description : ('project.overview.metadata.noDescription' | translate)"
+      />
+    </div>
+
+    @if (resource.type === resourceTypes.Projects) {
+      <div class="flex flex-column gap-2">
+        <h3>{{ 'project.overview.metadata.supplements' | translate }}</h3>
+
+        @if (resource.supplements?.length) {
+          @for (supplement of resource.supplements; track supplement.id) {
+            <p>
+              {{ 'project.overview.metadata.supplementsText1' | translate }}
+              <a class="font-bold" target="_blank" href="{{ supplement.url }}">{{
+                supplement.title + ', ' + (supplement.dateCreated | date: 'MMMM d, y')
+              }}</a>
+              {{ 'project.overview.metadata.supplementsText2' | translate }}
+            </p>
+          }
+        } @else {
+          <p>{{ 'project.overview.metadata.noSupplements' | translate }}</p>
+        }
+      </div>
+    }
+
+    @if (resource.type === resourceTypes.Registrations) {
+      <div class="flex flex-column gap-2">
+        <h3>{{ 'registry.overview.metadata.type' | translate }}</h3>
+        <p>{{ resource.registrationType }}</p>
+      </div>
+
+      @if (resource.associatedProjectId) {
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'registry.overview.metadata.associatedProject' | translate }}</h3>
+          <!--          [KP] TODO: proper link to project-->
+          <a [href]="'https://osf.io/' + resource.associatedProjectId">{{
+            'osf.io/' + resource.associatedProjectId
+          }}</a>
+        </div>
+      }
+    }
+
+    <div class="flex gap-5 lg:gap-2 lg:justify-content-between">
+      <div class="flex flex-column gap-2">
+        <h3>{{ 'project.overview.metadata.dateCreated' | translate }}</h3>
+        <p>{{ resource.dateCreated | date: 'MMM d, y, h:mm a' }}</p>
+      </div>
+
+      @if (resource.type !== resourceTypes.Registrations) {
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'project.overview.metadata.dateUpdated' | translate }}</h3>
+          <p>{{ resource.dateModified | date: 'MMM d, y, h:mm a' }}</p>
+        </div>
+      } @else {
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'registry.overview.metadata.registeredDate' | translate }}</h3>
+          <p>{{ resource.dateRegistered | date: 'MMM d, y, h:mm a' }}</p>
+        </div>
+      }
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'project.overview.metadata.license' | translate }}</h3>
+
+      <div>{{ resource.license?.name ?? ('project.overview.metadata.noLicense' | translate) }}</div>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      @if (resource.type !== resourceTypes.Registrations) {
+        <h3>{{ 'project.overview.metadata.publication' | translate }}</h3>
+      } @else {
+        <h3>{{ 'registry.overview.metadata.doi' | translate }}</h3>
+      }
+
+      @if (resource.identifiers?.length) {
+        @for (identifier of resource.identifiers; track identifier.id) {
+          @if (identifier.category === 'doi') {
+            @if (resource.type !== resourceTypes.Registrations) {
+              <a [href]="'https://doi.org/' + identifier.value">
+                {{ identifier.value }}
+              </a>
+            } @else {
+              <a [href]="'https://doi.org/' + identifier.value">
+                {{ 'https://doi.org/' + identifier.value }}
+              </a>
+            }
+          }
+        }
+      } @else {
+        <p>{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
+      }
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h3>
+
+      <div class="flex gap-2">
+        @if (resource.affiliatedInstitutions?.length) {
+          @for (institution of resource.affiliatedInstitutions; track institution.id) {
+            <img alt="institution logo" [src]="institution.logo" height="45" />
+          }
+        } @else {
+          <p>{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'project.overview.metadata.subjects' | translate }}</h3>
+
+      <div class="flex flex-wrap gap-2">
+        @if (resource.subjects.length) {
+          @for (subject of resource.subjects; track subject.id) {
+            <p-tag [value]="subject.text" severity="info" />
+          }
+        } @else {
+          <p>{{ 'project.overview.metadata.noSubjects' | translate }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="flex flex-column gap-2">
+      <h3>{{ 'project.overview.metadata.tags' | translate }}</h3>
+
+      @if (resource.tags.length) {
+        <div class="flex flex-wrap gap-2">
+          @for (tag of resource.tags; track tag) {
+            <p-tag [value]="tag" severity="info" />
+          }
+        </div>
+      } @else {
+        <p>{{ 'project.overview.metadata.noTags' | translate }}</p>
+      }
+    </div>
+  </div>
+}
