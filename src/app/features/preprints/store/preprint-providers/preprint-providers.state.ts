@@ -6,7 +6,7 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { PreprintsService } from '@osf/features/preprints/services';
+import { PreprintProvidersService } from '@osf/features/preprints/services';
 
 import {
   GetHighlightedSubjectsByProviderId,
@@ -43,7 +43,7 @@ import { PreprintProvidersStateModel } from './preprint-providers.model';
 })
 @Injectable()
 export class PreprintProvidersState {
-  #preprintsService = inject(PreprintsService);
+  private preprintProvidersService = inject(PreprintProvidersService);
   private readonly REFRESH_INTERVAL = 5 * 60 * 1000;
 
   @Action(GetPreprintProviderById)
@@ -58,7 +58,7 @@ export class PreprintProvidersState {
 
     ctx.setState(patch({ preprintProvidersDetails: patch({ isLoading: true }) }));
 
-    return this.#preprintsService.getPreprintProviderById(action.id).pipe(
+    return this.preprintProvidersService.getPreprintProviderById(action.id).pipe(
       tap((preprintProvider) => {
         const exists = state.preprintProvidersDetails.data.some((p) => p.id === preprintProvider.id);
         preprintProvider.lastFetched = Date.now();
@@ -82,7 +82,7 @@ export class PreprintProvidersState {
   getPreprintProvidersToAdvertise(ctx: StateContext<PreprintProvidersStateModel>) {
     ctx.setState(patch({ preprintProvidersToAdvertise: patch({ isLoading: true }) }));
 
-    return this.#preprintsService.getPreprintProvidersToAdvertise().pipe(
+    return this.preprintProvidersService.getPreprintProvidersToAdvertise().pipe(
       tap((data) => {
         ctx.setState(
           patch({
@@ -101,7 +101,7 @@ export class PreprintProvidersState {
   getPreprintProvidersAllowingSubmissions(ctx: StateContext<PreprintProvidersStateModel>) {
     ctx.setState(patch({ preprintProvidersAllowingSubmissions: patch({ isLoading: true }) }));
 
-    return this.#preprintsService.getPreprintProvidersAllowingSubmissions().pipe(
+    return this.preprintProvidersService.getPreprintProvidersAllowingSubmissions().pipe(
       tap((data) => {
         ctx.setState(
           patch({
@@ -123,7 +123,7 @@ export class PreprintProvidersState {
   ) {
     ctx.setState(patch({ highlightedSubjectsForProvider: patch({ isLoading: true }) }));
 
-    return this.#preprintsService.getHighlightedSubjectsByProviderId(action.providerId).pipe(
+    return this.preprintProvidersService.getHighlightedSubjectsByProviderId(action.providerId).pipe(
       tap((subjects) => {
         ctx.setState(
           patch({

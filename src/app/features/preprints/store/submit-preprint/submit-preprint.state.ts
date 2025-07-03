@@ -9,8 +9,12 @@ import { inject, Injectable } from '@angular/core';
 
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
-import { ContributorsService, PreprintsService } from '@osf/features/preprints/services';
-import { LicensesService } from '@osf/features/preprints/services/licenses.service';
+import {
+  PreprintContributorsService,
+  PreprintFilesService,
+  PreprintLicensesService,
+  PreprintsService,
+} from '@osf/features/preprints/services';
 import { OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
@@ -83,9 +87,10 @@ import {
 @Injectable()
 export class SubmitPreprintState {
   private preprintsService = inject(PreprintsService);
+  private preprintFilesService = inject(PreprintFilesService);
   private fileService = inject(FilesService);
-  private contributorsService = inject(ContributorsService);
-  private licensesService = inject(LicensesService);
+  private contributorsService = inject(PreprintContributorsService);
+  private licensesService = inject(PreprintLicensesService);
 
   @Action(SetSelectedPreprintProviderId)
   setSelectedPreprintProviderId(ctx: StateContext<SubmitPreprintStateModel>, action: SetSelectedPreprintProviderId) {
@@ -126,7 +131,7 @@ export class SubmitPreprintState {
     }
     ctx.setState(patch({ preprintFilesLinks: patch({ isLoading: true }) }));
 
-    return this.preprintsService.getPreprintFilesLinks(state.createdPreprint.data.id).pipe(
+    return this.preprintFilesService.getPreprintFilesLinks(state.createdPreprint.data.id).pipe(
       tap((preprintStorage) => {
         ctx.setState(patch({ preprintFilesLinks: patch({ isLoading: false, data: preprintStorage }) }));
       })
@@ -149,7 +154,7 @@ export class SubmitPreprintState {
         const createdFileId = file.id.split('/')[1];
         ctx.dispatch(new GetPreprintFiles());
 
-        return this.preprintsService.updateFileRelationship(state.createdPreprint.data!.id, createdFileId).pipe(
+        return this.preprintFilesService.updateFileRelationship(state.createdPreprint.data!.id, createdFileId).pipe(
           tap((preprint: Preprint) => {
             ctx.patchState({
               createdPreprint: {
@@ -210,7 +215,7 @@ export class SubmitPreprintState {
   getAvailableProjects(ctx: StateContext<SubmitPreprintStateModel>, action: GetAvailableProjects) {
     ctx.setState(patch({ availableProjects: patch({ isLoading: true }) }));
 
-    return this.preprintsService.getAvailableProjects(action.searchTerm).pipe(
+    return this.preprintFilesService.getAvailableProjects(action.searchTerm).pipe(
       tap((projects) => {
         ctx.setState(
           patch({
@@ -229,7 +234,7 @@ export class SubmitPreprintState {
   getProjectFiles(ctx: StateContext<SubmitPreprintStateModel>, action: GetProjectFiles) {
     ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
 
-    return this.preprintsService.getProjectFiles(action.projectId).pipe(
+    return this.preprintFilesService.getProjectFiles(action.projectId).pipe(
       tap((files: OsfFile[]) => {
         ctx.setState(
           patch({
@@ -346,7 +351,7 @@ export class SubmitPreprintState {
 
           const fileIdAfterCopy = file.id.split('/')[1];
 
-          return this.preprintsService.updateFileRelationship(createdPreprintId, fileIdAfterCopy).pipe(
+          return this.preprintFilesService.updateFileRelationship(createdPreprintId, fileIdAfterCopy).pipe(
             tap((preprint: Preprint) => {
               ctx.patchState({
                 createdPreprint: {
