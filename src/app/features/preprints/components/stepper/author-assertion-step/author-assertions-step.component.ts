@@ -13,14 +13,16 @@ import { Tooltip } from 'primeng/tooltip';
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, HostListener, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { StringOrNull } from '@core/helpers';
+import { ArrayInputComponent } from '@osf/features/preprints/components/stepper/author-assertion-step/array-input/array-input.component';
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { SubmitPreprintSelectors, UpdatePreprint } from '@osf/features/preprints/store/submit-preprint';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { ToastService } from '@shared/services';
+import { CustomValidators } from '@shared/utils';
 
 @Component({
   selector: 'osf-author-assertions-step',
@@ -36,6 +38,7 @@ import { ToastService } from '@shared/services';
     Button,
     Tooltip,
     Select,
+    ArrayInputComponent,
   ],
   templateUrl: './author-assertions-step.component.html',
   styleUrl: './author-assertions-step.component.scss',
@@ -47,6 +50,7 @@ export class AuthorAssertionsStepComponent {
     updatePreprint: UpdatePreprint,
   });
 
+  readonly CustomValidators = CustomValidators;
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly inputLimits = formInputLimits;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
@@ -71,6 +75,9 @@ export class AuthorAssertionsStepComponent {
       nonNullable: true,
       validators: [],
     }),
+    dataLinks: new FormArray<FormControl>(
+      this.createdPreprint()!.dataLinks?.map((link) => new FormControl(link)) || []
+    ),
     whyNoData: new FormControl<StringOrNull>(this.createdPreprint()!.whyNoData, {
       nonNullable: false,
       validators: [],
@@ -79,6 +86,9 @@ export class AuthorAssertionsStepComponent {
       nonNullable: true,
       validators: [],
     }),
+    preregLinks: new FormArray<FormControl>(
+      this.createdPreprint()!.preregLinks?.map((link) => new FormControl(link)) || []
+    ),
     whyNoPrereg: new FormControl<StringOrNull>(this.createdPreprint()!.whyNoPrereg, {
       nonNullable: false,
       validators: [],
@@ -189,12 +199,12 @@ export class AuthorAssertionsStepComponent {
 
     const hasDataLinks = formValue.hasDataLinks;
     const whyNoData = formValue.whyNoData || null;
-    const dataLinks: string[] = [];
+    const dataLinks: string[] = formValue.dataLinks || [];
 
     const hasPreregLinks = formValue.hasPreregLinks;
     const whyNoPrereg = formValue.whyNoPrereg || null;
-    const preregLinks: string[] = [];
-    const preregLinkInfo = formValue.preregLinkInfo;
+    const preregLinks: string[] = formValue.preregLinks || [];
+    const preregLinkInfo = formValue.preregLinkInfo || undefined;
 
     this.actions
       .updatePreprint(this.createdPreprint()!.id, {

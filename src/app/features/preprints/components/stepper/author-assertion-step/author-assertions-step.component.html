@@ -124,7 +124,13 @@
         </p-message>
       }
     } @else {
-      <p>implement this list of adding links</p>
+      <div class="m-t-24">
+        <osf-array-input
+          [formArray]="authorAssertionsForm.controls['dataLinks']"
+          inputPlaceholder="Link to data"
+          [validators]="[CustomValidators.linkValidator()]"
+        />
+      </div>
     }
   </div>
 </p-card>
@@ -206,6 +212,14 @@
       optionValue="value"
       [showClear]="false"
     />
+
+    <div class="m-t-24">
+      <osf-array-input
+        [formArray]="authorAssertionsForm.controls['preregLinks']"
+        inputPlaceholder="Link to data"
+        [validators]="[CustomValidators.linkValidator()]"
+      />
+    </div>
   }
 </p-card>
 
