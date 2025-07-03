@@ -17,11 +17,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import {
-  FileStepComponent,
-  MetadataComponent,
-  TitleAndAbstractStepComponent,
-} from '@osf/features/preprints/components';
+import { MetadataComponent, TitleAndAbstractStepComponent } from '@osf/features/preprints/components';
 import { FileStepComponent } from '@osf/features/preprints/components/submit-steps/file-step/file-step.component';
 import { submitPreprintSteps } from '@osf/features/preprints/constants';
 import { SubmitSteps } from '@osf/features/preprints/enums';

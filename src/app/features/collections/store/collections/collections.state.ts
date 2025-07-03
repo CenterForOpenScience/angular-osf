@@ -4,7 +4,7 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { CollectionsService } from '../services';
+import { CollectionsService } from '../../services';
 
 import {
   AddProjectToBookmarks,

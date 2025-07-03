@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { JsonApiResponseWithPaging } from '@core/models';
 import { JsonApiService } from '@osf/core/services';
 import { CollectionsMapper } from '@osf/features/collections/mappers';
-import { SetTotalSubmissions } from '@osf/features/collections/store';
+import { SetTotalSubmissions } from '@osf/features/collections/store/collections';
 
 import {
   CollectionContributor,

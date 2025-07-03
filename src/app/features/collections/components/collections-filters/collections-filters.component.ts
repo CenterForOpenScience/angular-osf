@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { collectionFilterTypes } from '@osf/features/collections/constants/filter-types.const';
-import { CollectionFilterType } from '@osf/features/collections/models';
+import { CollectionFilterType } from '@osf/features/collections/enums';
 import {
   CollectionsSelectors,
   SetCollectedTypeFilters,
@@ -22,7 +22,7 @@ import {
   SetStatusFilters,
   SetStudyDesignFilters,
   SetVolumeFilters,
-} from '@osf/features/collections/store';
+} from '@osf/features/collections/store/collections';
 
 @Component({
   selector: 'osf-collections-filters',

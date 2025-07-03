@@ -32,7 +32,7 @@ import { QueryParams, TableParameters, TabOption } from '@osf/shared/models';
 import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@osf/shared/utils';
 
 import { GetUserInstitutions } from '../../shared/stores/institutions';
-import { CollectionsSelectors, GetBookmarksCollectionId } from '../collections/store';
+import { CollectionsSelectors, GetBookmarksCollectionId } from '../collections/store/collections';
 
 import { MyProjectsItem, MyProjectsSearchFilters } from './models';
 import {

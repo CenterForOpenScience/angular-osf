@@ -4,7 +4,7 @@ import {
   CollectionsFilters,
   CollectionSubmission,
 } from '@osf/features/collections/models';
-import { AsyncStateModel } from '@osf/shared/models/store';
+import { AsyncStateModel } from '@shared/models/store';
 
 export interface CollectionsStateModel {
   bookmarksId: AsyncStateModel<string>;

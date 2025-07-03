@@ -20,7 +20,7 @@ import {
   AddProjectToBookmarks,
   CollectionsSelectors,
   RemoveProjectFromBookmarks,
-} from '@osf/features/collections/store';
+} from '@osf/features/collections/store/collections';
 import { GetMyBookmarks, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { IconComponent } from '@osf/shared/components';
 import { ToastService } from '@osf/shared/services';

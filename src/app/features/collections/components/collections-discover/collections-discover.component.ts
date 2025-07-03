@@ -13,26 +13,28 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CollectionsHelpDialogComponent, CollectionsMainContentComponent } from '@osf/features/collections/components';
-import { CollectionFilters } from '@osf/features/collections/models';
+import { CollectionsFilters } from '@osf/features/collections/models';
 import { CollectionsQuerySyncService } from '@osf/features/collections/services';
 import {
+  ClearCollections,
+  ClearCollectionSubmissions,
   CollectionsSelectors,
   GetCollectionDetails,
   GetCollectionProvider,
   GetCollectionSubmissions,
   SetPageNumber,
   SetSearchValue,
-} from '@osf/features/collections/store';
+} from '@osf/features/collections/store/collections';
 import { LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
 
 @Component({
   selector: 'osf-collections-discover',
   imports: [
+    SearchInputComponent,
+    TranslatePipe,
     Button,
     CollectionsMainContentComponent,
     LoadingSpinnerComponent,
-    SearchInputComponent,
-    TranslatePipe,
     RouterLink,
   ],
   templateUrl: './collections-discover.component.html',
@@ -66,6 +68,8 @@ export class CollectionsDiscoverComponent {
     setSearchValue: SetSearchValue,
     getCollectionSubmissions: GetCollectionSubmissions,
     setPageNumber: SetPageNumber,
+    clearCollections: ClearCollections,
+    clearCollectionsSubmissions: ClearCollectionSubmissions,
   });
 
   constructor() {
@@ -116,7 +120,7 @@ export class CollectionsDiscoverComponent {
       const selectedFilters = this.selectedFilters();
       const pageNumber = this.pageNumber();
 
-      if (searchText !== undefined && sortBy && selectedFilters && pageNumber) {
+      if (searchText !== undefined && sortBy !== undefined && selectedFilters && pageNumber) {
         this.querySyncService.syncStoreToUrl(searchText, sortBy, selectedFilters, pageNumber);
       }
     });
@@ -129,14 +133,21 @@ export class CollectionsDiscoverComponent {
       const providerId = this.providerId();
       const collectionDetails = this.collectionDetails();
 
-      if (searchText !== undefined && sortBy && selectedFilters && pageNumber && providerId && collectionDetails) {
+      if (searchText !== undefined && selectedFilters && pageNumber && providerId && collectionDetails) {
         const activeFilters = this.getActiveFilters(selectedFilters);
+        this.actions.clearCollectionsSubmissions();
         this.actions.getCollectionSubmissions(providerId, searchText, activeFilters, pageNumber, sortBy);
       }
     });
+
+    effect(() => {
+      this.destroyRef.onDestroy(() => {
+        this.actions.clearCollections();
+      });
+    });
   }
 
-  private getActiveFilters(filters: CollectionFilters): Record<string, string[]> {
+  private getActiveFilters(filters: CollectionsFilters): Record<string, string[]> {
     return Object.entries(filters)
       .filter(([key, value]) => value.length)
       .reduce(

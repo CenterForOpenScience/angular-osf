@@ -17,7 +17,7 @@
       <!--        class="collections-accordion flex flex-column gap-5"-->
       <!--      >-->
       <!--        <p-accordion-panel-->
-      <!--          (click)="handleResetSelectedProject()"-->
+      <!--          (click)="handleChooseSelectedProjectStep()"-->
       <!--          class="p-4"-->
       <!--          [value]="AddToCollectionSteps.SelectProject"-->
       <!--        >-->
@@ -138,27 +138,27 @@
       <!--          </p-accordion-content>-->
       <!--        </p-accordion-panel>-->
       <!--      </p-accordion>-->
-      @if (!this.isAdminProjectsLoading() && this.adminProjects().length) {
+      @if (!this.isAdminProjectsLoading()) {
         <p-stepper class="collection-stepper flex flex-column gap-5" [value]="stepperActiveValue()">
           <p-step-item class="p-4" [value]="AddToCollectionSteps.SelectProject">
-            <div class="flex flex-column gap-3 w-full">
-              <h3>{{ 'collections.addToCollection.selectProject' | translate }}</h3>
-              @if (selectedProject() && !isSelectProjectPanelActive()) {
-                <p class="font-normal">
-                  {{ 'collections.addToCollection.project' | translate }}:
-                  <span class="font-bold">{{ selectedProject()?.title }}</span>
-                </p>
-                <p-button
-                  class="align-self-end"
-                  (click)="handleResetSelectedProject()"
-                  severity="secondary"
-                  [label]="'common.buttons.clickToEdit' | translate"
-                ></p-button>
-              }
-            </div>
-
+            <p-step>
+              <div class="flex flex-column gap-4 w-full">
+                <h3>{{ 'collections.addToCollection.selectProject' | translate }}</h3>
+                @if (selectedProject() && stepperActiveValue() !== AddToCollectionSteps.SelectProject) {
+                  <p class="font-normal">
+                    {{ 'collections.addToCollection.project' | translate }}:
+                    <span class="font-bold">{{ selectedProject()?.title }}</span>
+                  </p>
+                  <p-button
+                    (click)="handleChooseSelectedProjectStep()"
+                    severity="secondary"
+                    [label]="'common.buttons.clickToEdit' | translate"
+                  ></p-button>
+                }
+              </div>
+            </p-step>
             <p-step-panel class="p-0">
-              <ng-template class="m-0" #content let-activateCallback="activateCallback">
+              <ng-template class="m-0" #content>
                 <div class="pt-4 w-6">
                   <p-select
                     class="w-full"
@@ -184,20 +184,46 @@
           </p-step-item>
 
           <p-step-item class="p-4" [value]="AddToCollectionSteps.ProjectMetadata">
-            <h3>{{ 'collections.addToCollection.projectMetadata' | translate }}</h3>
+            <p-step [disabled]="!selectedProject()">
+              <div class="flex flex-column gap-4 w-full">
+                <h3>{{ 'collections.addToCollection.projectMetadata' | translate }}</h3>
+                @if (selectedProject() && stepperActiveValue() !== AddToCollectionSteps.ProjectMetadata) {
+                  <div>
+                    <h3>{{ 'collections.addToCollection.form.title' | translate }}</h3>
+                    <p class="mt-3">{{ selectedProject()?.title }}</p>
+                  </div>
+                  <div>
+                    <h3>{{ 'collections.addToCollection.form.description' | translate }}</h3>
+                    <p class="mt-3">{{ selectedProject()?.description }}</p>
+                  </div>
+                  <div>
+                    <h3>{{ 'collections.addToCollection.form.license' | translate }}</h3>
+                    <p class="mt-3">{{ selectedProject()?.description }}</p>
+                  </div>
+                  <div>
+                    <h3>{{ 'collections.addToCollection.form.tags' | translate }}</h3>
+                    <div class="flex mt-3 gap-2">
+                      @for (tag of projectTags(); track tag) {
+                        <p-chip>{{ tag }}</p-chip>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </p-step>
 
             <p-step-panel class="p-0">
-              <ng-template class="m-0" #content let-activateCallback="activateCallback">
+              <ng-template class="m-0" #content>
                 <p class="pt-3">{{ 'collections.addToCollection.projectMetadataMessage' | translate }}</p>
                 <form [formGroup]="projectMetadataForm" class="flex flex-column gap-4 pt-4">
-                  <div class="flex flex-column">
+                  <div class="flex flex-column gap-1">
                     <label for="title">
                       {{ 'collections.addToCollection.form.title' | translate }}
                     </label>
                     <input pInputText id="title" type="text" [formControlName]="ProjectMetadataFormControls.Title" />
                   </div>
 
-                  <div class="flex flex-column">
+                  <div class="flex flex-column gap-1">
                     <label for="description">
                       {{ 'collections.addToCollection.form.description' | translate }}
                     </label>
@@ -209,33 +235,32 @@
                     ></textarea>
                   </div>
 
-                  <div class="flex flex-column">
+                  <div class="flex flex-column gap-1">
                     <label for="license">
-                      {{ 'collections.addToCollection.form.license' | translate }}
+                      {{ 'collections.addToCollection.form.chooseLicense' | translate }}
                     </label>
-                    <p-select
-                      [placeholder]="'collections.addToCollection.form.licensePlaceholder' | translate"
-                      id="license"
-                      [options]="[]"
-                      [formControlName]="ProjectMetadataFormControls.License"
-                    ></p-select>
+                    <!--                    <p-select-->
+                    <!--                      [placeholder]="'collections.addToCollection.form.licensePlaceholder' | translate"-->
+                    <!--                      id="license"-->
+                    <!--                      [options]="[]"-->
+                    <!--                      [formControlName]="ProjectMetadataFormControls.License"-->
+                    <!--                    ></p-select>-->
+                    <osf-license id="license" [licenses]="collectionLicenses()" />
                   </div>
 
-                  <div class="flex flex-column">
+                  <div class="flex flex-column gap-1">
                     <label for="tags">
                       {{ 'collections.addToCollection.form.tags' | translate }}
                     </label>
-                    <input
-                      [placeholder]="'collections.addToCollection.form.tagsPlaceholder' | translate"
-                      pInputText
-                      id="tags"
-                      type="text"
-                      [formControlName]="ProjectMetadataFormControls.Tags"
-                    />
+                    <osf-tags-input [tags]="projectTags()" (tagsChanged)="handleTagsChange($event)" id="tags" />
                   </div>
 
                   <div class="flex justify-content-end gap-3">
-                    <p-button severity="info" [label]="'common.buttons.discardChanges' | translate" />
+                    <p-button
+                      (click)="handleDiscardProjectMetadataFormChanges()"
+                      severity="info"
+                      [label]="'common.buttons.discardChanges' | translate"
+                    />
                     <p-button [label]="'common.buttons.saveAndContinue' | translate" [disabled]="true" />
                   </div>
                 </form>
@@ -244,16 +269,20 @@
           </p-step-item>
 
           <p-step-item class="p-4" [value]="AddToCollectionSteps.ProjectContributors">
-            <h3>{{ 'collections.addToCollection.projectContributors' | translate }}</h3>
+            <p-step>
+              <h3>{{ 'collections.addToCollection.projectContributors' | translate }}</h3>
+            </p-step>
             <p-step-panel class="p-0">
-              <ng-template class="m-0" #content let-activateCallback="activateCallback">
+              <ng-template class="m-0" #content>
                 <div class="pt-2 w-6"></div>
               </ng-template>
             </p-step-panel>
           </p-step-item>
 
           <p-step-item class="p-4" [value]="AddToCollectionSteps.CollectionMetadata">
-            <h3>{{ 'collections.addToCollection.collectionMetadata' | translate }}</h3>
+            <p-step>
+              <h3>{{ 'collections.addToCollection.collectionMetadata' | translate }}</h3>
+            </p-step>
             <p-step-panel class="p-0">
               <ng-template class="m-0" #content let-activateCallback="activateCallback">
                 <div class="pt-2 w-6"></div>

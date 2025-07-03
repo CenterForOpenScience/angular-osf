@@ -1031,7 +1031,8 @@
       "form": {
         "title": "Title",
         "description": "Description",
-        "license": "Choose License",
+        "chooseLicense": "Choose License",
+        "license": "License",
         "licensePlaceholder": "Select license",
         "tags": "Tags",
         "tagsPlaceholder": "Add tags here",

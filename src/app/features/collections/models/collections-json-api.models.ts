@@ -143,8 +143,8 @@ export interface CollectionSubmissionsPayloadJsonApi {
       gradeLevels?: string[];
       q?: string;
     };
-    type: string;
   };
+  type: string;
 }
 
 export interface CollectionContributorJsonApi {

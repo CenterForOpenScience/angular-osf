@@ -4,6 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
+import { Chip } from 'primeng/chip';
 import { InputText } from 'primeng/inputtext';
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 import { Step, StepItem, StepPanel, Stepper } from 'primeng/stepper';
@@ -18,9 +19,14 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserSelectors } from '@core/store/user';
 import { AddToCollectionSteps, ProjectMetadataFormControls } from '@osf/features/collections/enums';
 import { ProjectMetadataForm } from '@osf/features/collections/models';
-import { CollectionsSelectors, GetCollectionDetails, GetCollectionProvider } from '@osf/features/collections/store';
+import { AddToCollectionSelectors, GetCollectionLicenses } from '@osf/features/collections/store/add-to-collection';
+import {
+  CollectionsSelectors,
+  GetCollectionDetails,
+  GetCollectionProvider,
+} from '@osf/features/collections/store/collections';
 import { GetProjects } from '@osf/shared/stores';
-import { LoadingSpinnerComponent } from '@shared/components';
+import { LicenseComponent, LoadingSpinnerComponent, TagsInputComponent } from '@shared/components';
 import { Project } from '@shared/models/projects';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 import { CustomValidators } from '@shared/utils';
@@ -42,9 +48,12 @@ import { CustomValidators } from '@shared/utils';
     Textarea,
     FormsModule,
     Stepper,
-    Step,
     StepItem,
     StepPanel,
+    Step,
+    TagsInputComponent,
+    Chip,
+    LicenseComponent,
   ],
   templateUrl: './add-to-collection.component.html',
   styleUrl: './add-to-collection.component.scss',
@@ -62,15 +71,18 @@ export class AddToCollectionComponent implements OnDestroy {
   protected isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   protected adminProjects = select(ProjectsSelectors.getProjects);
+  protected collectionLicenses = select(AddToCollectionSelectors.getCollectionLicenses);
+  protected isCollectionLicensesLoading = select(AddToCollectionSelectors.getCollectionLicensesLoading);
   protected isAdminProjectsLoading = select(ProjectsSelectors.getProjectsLoading);
   protected currentUser = select(UserSelectors.getCurrentUser);
   protected providerId = signal<string>('');
   protected selectedProject = signal<Project | null>(null);
   protected primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
   protected stepperActiveValue = signal<number>(AddToCollectionSteps.SelectProject);
-  protected isSelectProjectPanelActive = computed(() => {
-    return this.stepperActiveValue() === AddToCollectionSteps.SelectProject;
-  });
+  protected projectTags = signal<string[]>([]);
+  // protected isSelectProjectPanelActive = computed(() => {
+  //   return this.stepperActiveValue() === AddToCollectionSteps.SelectProject;
+  // });
 
   protected filterMessage = computed(() => {
     const isLoading = this.isAdminProjectsLoading();
@@ -82,6 +94,7 @@ export class AddToCollectionComponent implements OnDestroy {
     getCollectionProvider: GetCollectionProvider,
     getCollectionDetails: GetCollectionDetails,
     getAdminProjects: GetProjects,
+    getCollectionLicenses: GetCollectionLicenses,
   });
   protected adminProjectsOptions = computed(() => {
     const isLoading = this.isAdminProjectsLoading();
@@ -180,23 +193,35 @@ export class AddToCollectionComponent implements OnDestroy {
     const project = $event.value;
 
     if (project) {
+      this.actions.getCollectionLicenses(this.providerId());
       this.selectedProject.set(project);
+      const tags = project.tags || [];
+      this.projectTags.set(tags);
       this.projectMetadataForm.patchValue({
         [ProjectMetadataFormControls.Title]: project.title,
         [ProjectMetadataFormControls.Description]: project.description || '',
         [ProjectMetadataFormControls.License]: project.nodeLicense || '',
-        [ProjectMetadataFormControls.Tags]: project.tags || [],
+        [ProjectMetadataFormControls.Tags]: tags,
       });
 
       this.stepperActiveValue.set(AddToCollectionSteps.ProjectMetadata);
     } else {
-      this.handleResetSelectedProject();
+      this.handleChooseSelectedProjectStep();
     }
   }
 
-  handleResetSelectedProject() {
-    this.selectedProject.set(null);
+  handleChooseSelectedProjectStep() {
     this.stepperActiveValue.set(AddToCollectionSteps.SelectProject);
-    // this.projectMetadataForm.reset();
+  }
+
+  handleTagsChange(tags: string[]) {
+    this.projectTags.set(tags);
+    this.projectMetadataForm.get(ProjectMetadataFormControls.Tags)?.setValue(tags);
+  }
+
+  handleDiscardProjectMetadataFormChanges() {
+    this.projectTags.set([]);
+    this.projectMetadataForm.reset();
+    this.stepperActiveValue.set(AddToCollectionSteps.SelectProject);
   }
 }

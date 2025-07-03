@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject, On
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { ClearCollections, GetBookmarksCollectionId } from '@osf/features/collections/store';
+import { ClearCollections, GetBookmarksCollectionId } from '@osf/features/collections/store/collections';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 
 import { ClearWiki, GetHomeWiki } from '../wiki/store';
