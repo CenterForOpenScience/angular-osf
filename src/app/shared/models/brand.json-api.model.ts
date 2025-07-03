@@ -1,4 +1,4 @@
-export interface BrandGetResponse {
+export interface BrandDataJsonApi {
   id: string;
   type: 'brands';
   attributes: {

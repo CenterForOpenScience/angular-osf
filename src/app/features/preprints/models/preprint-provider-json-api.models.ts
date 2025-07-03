@@ -1,5 +1,5 @@
 import { StringOrNull } from '@core/helpers';
-import { BrandGetResponse } from '@shared/models';
+import { BrandDataJsonApi } from '@shared/models';
 
 export interface PreprintProviderDetailsJsonApi {
   id: string;
@@ -21,7 +21,7 @@ export interface PreprintProviderDetailsJsonApi {
   };
   embeds?: {
     brand: {
-      data: BrandGetResponse;
+      data: BrandDataJsonApi;
     };
   };
   links: {
