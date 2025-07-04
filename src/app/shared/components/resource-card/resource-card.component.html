@@ -1,7 +1,7 @@
 <div class="resource">
   <p-accordion (onOpen)="onOpen()">
     <p-accordion-panel value="0">
-      <p-accordion-header class="flex flex-row column-gap-3 align-items-start p-0 pb-4">
+      <p-accordion-header class="flex flex-row column-gap-3 align-items-start p-0">
         <div class="flex flex-column row-gap-3">
           @if (item().resourceType && item().resourceType === ResourceType.Agent) {
             <p class="type">{{ 'resourceCard.type.user' | translate }}</p>
@@ -72,53 +72,21 @@
           }
 
           @if (item().resourceType === ResourceType.Registration) {
-            <div class="flex column-gap-5 row-gap-3 mt-1 flex-wrap">
-              <a class="icon-container" [href]="item().id + '/resources'">
-                @if (item().hasDataResource) {
-                  <img src="assets/icons/colored/data-colored.svg" alt="data-resource" />
-                } @else {
-                  <i class="osf-icon-data text-4xl"></i>
-                }
-                <p>{{ 'resourceCard.resources.data' | translate }}</p>
-              </a>
-              <a class="icon-container" [href]="item().id + '/resources'">
-                @if (item().hasAnalyticCodeResource) {
-                  <img src="assets/icons/colored/code-colored.svg" alt="code-resource" />
-                } @else {
-                  <i class="osf-icon-code text-4xl"></i>
-                }
-                <p>{{ 'resourceCard.resources.analyticCode' | translate }}</p>
-              </a>
-              <a class="icon-container" [href]="item().id + '/resources'">
-                @if (item().hasMaterialsResource) {
-                  <img src="assets/icons/colored/materials-colored.svg" alt="materials-resource" />
-                } @else {
-                  <i class="osf-icon-materials text-4xl"></i>
-                }
-                <p>{{ 'resourceCard.resources.materials' | translate }}</p>
-              </a>
-              <a class="icon-container" [href]="item().id + '/resources'">
-                @if (item().hasPapersResource) {
-                  <img src="assets/icons/colored/papers-colored.svg" alt="papers-resource" />
-                } @else {
-                  <i class="osf-icon-papers text-4xl"></i>
-                }
-                <p>{{ 'resourceCard.resources.papers' | translate }}</p>
-              </a>
-              <a class="icon-container" [href]="item().id + '/resources'">
-                @if (item().hasPapersResource) {
-                  <img src="assets/icons/colored/supplements-colored.svg" alt="supplements-resource" />
-                } @else {
-                  <i class="osf-icon-supplements text-4xl"></i>
-                }
-                <p>{{ 'resourceCard.resources.supplements' | translate }}</p>
-              </a>
-            </div>
+            <osf-data-resources
+              [resourceId]="item().id"
+              [hasData]="item().hasDataResource"
+              [hasAnalyticCode]="item().hasAnalyticCodeResource"
+              [hasMaterials]="item().hasMaterialsResource"
+              [hasPapers]="item().hasPapersResource"
+              [hasSupplements]="item().hasSupplementalResource"
+            ></osf-data-resources>
           }
         </div>
       </p-accordion-header>
       <p-accordion-content>
         <div class="content">
+          <hr class="w-full break-line" />
+
           @if (item().description) {
             <p class="description">{{ 'resourceCard.labels.description' | translate }} {{ item().description }}</p>
           }

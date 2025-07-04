@@ -19,7 +19,7 @@ export class ForkResource {
   static readonly type = '[Project Overview] Fork Resource';
 
   constructor(
-    public projectId: string,
+    public resourceId: string,
     public resourceType: ResourceType
   ) {}
 }

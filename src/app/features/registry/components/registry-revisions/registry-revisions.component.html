@@ -35,6 +35,14 @@
               />
             }
           }
+
+          <!--          [KP] TODO: add links to update pages-->
+          @if (registry()?.revisionStatus === RevisionReviewStates.Approved) {
+            <p-button class="w-full" styleClass="w-full" [label]="'common.buttons.update' | translate" />
+          }
+          @if (registry()?.revisionStatus === RevisionReviewStates.RevisionInProgress) {
+            <p-button class="w-full" styleClass="w-full" [label]="'common.buttons.continueUpdate' | translate" />
+          }
         }
       </div>
     </p-accordion-content>

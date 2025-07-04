@@ -11,6 +11,7 @@ import {
   GetResourceSubjectsJsonApi,
   RegistryInstitution,
   RegistryOverview,
+  RegistryOverviewJsonApiData,
   RegistrySchemaBlock,
   RegistrySubject,
 } from '@osf/features/registry/models';
@@ -81,5 +82,40 @@ export class RegistryOverviewService {
     return this.jsonApiService
       .get<GetRegistrySchemaBlockJsonApi>(`${schemaLink}schema_blocks`, params)
       .pipe(map((response) => response.data.map((block) => MapRegistrySchemaBlock(block.attributes))));
+  }
+
+  withdrawRegistration(registryId: string, justification: string): Observable<RegistryOverview | null> {
+    const payload = {
+      data: {
+        id: registryId,
+        attributes: {
+          withdrawal_justification: justification,
+          pending_withdrawal: true,
+        },
+        relationships: {},
+        type: 'registrations',
+      },
+    };
+
+    return this.jsonApiService
+      .patch<RegistryOverviewJsonApiData>(`${environment.apiUrl}/registrations/${registryId}`, payload)
+      .pipe(map((response) => MapRegistryOverview(response)));
+  }
+
+  makePublic(registryId: string): Observable<RegistryOverview | null> {
+    const payload = {
+      data: {
+        id: registryId,
+        attributes: {
+          public: true,
+        },
+        relationships: {},
+        type: 'registrations',
+      },
+    };
+
+    return this.jsonApiService
+      .patch<RegistryOverviewJsonApiData>(`${environment.apiUrl}/registrations/${registryId}`, payload)
+      .pipe(map((response) => MapRegistryOverview(response)));
   }
 }

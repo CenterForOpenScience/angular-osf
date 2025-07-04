@@ -1,4 +1,5 @@
 import { RegistryOverview, RegistryOverviewJsonApiData } from '@osf/features/registry/models';
+import { MapRegistryStatus } from '@shared/mappers/registry/map-registry-status.mapper';
 
 export function MapRegistryOverview(data: RegistryOverviewJsonApiData): RegistryOverview | null {
   try {
@@ -60,6 +61,8 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
         revisionResponses: schemaResponse.attributes?.revision_responses,
         updatedResponseKeys: schemaResponse.attributes?.updated_response_keys,
       })),
+      status: MapRegistryStatus(data.attributes),
+      revisionStatus: data.attributes.revision_state,
     } as RegistryOverview;
   } catch (error) {
     console.error(error);

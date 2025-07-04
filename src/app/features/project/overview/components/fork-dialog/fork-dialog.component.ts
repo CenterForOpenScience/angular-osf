@@ -5,10 +5,13 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
+import { finalize } from 'rxjs';
+
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ForkResource, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { ResourceType } from '@shared/enums';
 import { ToolbarResource } from '@shared/models';
 import { ToastService } from '@shared/services';
 
@@ -33,12 +36,15 @@ export class ForkDialogComponent {
 
     this.store
       .dispatch(new ForkResource(resource.id, resource.resourceType))
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: () => {
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
           this.dialogRef.close();
           this.toastService.showSuccess('project.overview.dialog.toast.fork.success');
-        },
-      });
+        })
+      )
+      .subscribe();
   }
+
+  protected readonly ResourceType = ResourceType;
 }

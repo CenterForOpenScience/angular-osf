@@ -1,0 +1,42 @@
+<div class="flex column-gap-5 row-gap-3 flex-wrap">
+  <a class="icon-container" [href]="resourceId() + '/resources'">
+    @if (hasData()) {
+      <img src="assets/icons/colored/data-colored.svg" alt="data-resource" />
+    } @else {
+      <i class="osf-icon-data text-4xl"></i>
+    }
+    <p>{{ 'resourceCard.resources.data' | translate }}</p>
+  </a>
+  <a class="icon-container" [href]="resourceId + '/resources'">
+    @if (hasAnalyticCode()) {
+      <img src="assets/icons/colored/code-colored.svg" alt="code-resource" />
+    } @else {
+      <i class="osf-icon-code text-4xl"></i>
+    }
+    <p>{{ 'resourceCard.resources.analyticCode' | translate }}</p>
+  </a>
+  <a class="icon-container" [href]="resourceId + '/resources'">
+    @if (hasMaterials()) {
+      <img src="assets/icons/colored/materials-colored.svg" alt="materials-resource" />
+    } @else {
+      <i class="osf-icon-materials text-4xl"></i>
+    }
+    <p>{{ 'resourceCard.resources.materials' | translate }}</p>
+  </a>
+  <a class="icon-container" [href]="resourceId + '/resources'">
+    @if (hasPapers()) {
+      <img src="assets/icons/colored/papers-colored.svg" alt="papers-resource" />
+    } @else {
+      <i class="osf-icon-papers text-4xl"></i>
+    }
+    <p>{{ 'resourceCard.resources.papers' | translate }}</p>
+  </a>
+  <a class="icon-container" [href]="resourceId + '/resources'">
+    @if (hasSupplements()) {
+      <img src="assets/icons/colored/supplements-colored.svg" alt="supplements-resource" />
+    } @else {
+      <i class="osf-icon-supplements text-4xl"></i>
+    }
+    <p>{{ 'resourceCard.resources.supplements' | translate }}</p>
+  </a>
+</div>

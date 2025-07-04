@@ -6,6 +6,7 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, HostBinding, input, output } from '@angular/core';
 
 import { RegistryOverview } from '@osf/features/registry/models';
+import { RevisionReviewStates } from '@shared/enums';
 
 @Component({
   selector: 'osf-registry-revisions',
@@ -23,4 +24,6 @@ export class RegistryRevisionsComponent {
   emitOpenRevision(index: number) {
     this.openRevision.emit(index);
   }
+
+  protected readonly RevisionReviewStates = RevisionReviewStates;
 }

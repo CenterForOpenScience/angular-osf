@@ -1,8 +1,5 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, signal } from '@angular/core';
@@ -10,7 +7,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { GetBookmarksCollectionId } from '@osf/features/collections/store';
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
-import { RegistryRevisionsComponent } from '@osf/features/registry/components';
+import { RegistryRevisionsComponent, RegistryStatusesComponent } from '@osf/features/registry/components';
 import { MapViewSchemaBlock } from '@osf/features/registry/mappers';
 import { RegistrationQuestions } from '@osf/features/registry/models';
 import {
@@ -19,7 +16,12 @@ import {
   GetRegistrySubjects,
   RegistryOverviewSelectors,
 } from '@osf/features/registry/store/registry-overview';
-import { LoadingSpinnerComponent, ResourceMetadataComponent, SubHeaderComponent } from '@shared/components';
+import {
+  DataResourcesComponent,
+  LoadingSpinnerComponent,
+  ResourceMetadataComponent,
+  SubHeaderComponent,
+} from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { MapRegistryOverview } from '@shared/mappers';
 import { ToolbarResource } from '@shared/models';
@@ -30,14 +32,11 @@ import { ToolbarResource } from '@shared/models';
     SubHeaderComponent,
     OverviewToolbarComponent,
     LoadingSpinnerComponent,
-    TranslatePipe,
     RouterLink,
-    AccordionContent,
-    Accordion,
-    AccordionPanel,
-    AccordionHeader,
     ResourceMetadataComponent,
     RegistryRevisionsComponent,
+    RegistryStatusesComponent,
+    DataResourcesComponent,
   ],
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
