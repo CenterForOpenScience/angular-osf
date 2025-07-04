@@ -39,7 +39,7 @@ export class SubjectsState {
   private readonly subjectsService = inject<ISubjectsService>(SUBJECTS_SERVICE);
 
   @Action(FetchSubjects)
-  fetchSubjects(ctx: StateContext<SubjectsModel>, { search }: FetchSubjects) {
+  fetchSubjects(ctx: StateContext<SubjectsModel>, { providerId, search }: FetchSubjects) {
     ctx.patchState({
       subjects: {
         ...ctx.getState().subjects,
@@ -53,7 +53,7 @@ export class SubjectsState {
       },
     });
 
-    return this.subjectsService.getSubjects(search).pipe(
+    return this.subjectsService.getSubjects(providerId, search).pipe(
       tap((subjects) => {
         if (search) {
           ctx.patchState({

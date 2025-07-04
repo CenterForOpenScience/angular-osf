@@ -50,7 +50,7 @@
       selectionMode="checkbox"
       [selection]="selectedTree()"
       [lazy]="true"
-      [loading]="loading()"
+      [loading]="areSubjectsUpdating() || subjectsLoading()"
       (onNodeExpand)="loadNode($event.node)"
       (onNodeCollapse)="collapseNode($event.node)"
       (onNodeSelect)="selectSubject($event.node.data)"
