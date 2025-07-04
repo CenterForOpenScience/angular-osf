@@ -7,6 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@core/handlers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
 import {
@@ -14,6 +15,7 @@ import {
   PreprintFilesService,
   PreprintLicensesService,
   PreprintsService,
+  PreprintSubjectsService,
 } from '@osf/features/preprints/services';
 import { OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
@@ -25,6 +27,7 @@ import {
   DeleteContributor,
   FetchContributors,
   FetchLicenses,
+  FetchPreprintsSubjects,
   GetAvailableProjects,
   GetPreprintFiles,
   GetPreprintFilesLinks,
@@ -38,51 +41,59 @@ import {
   SubmitPreprintStateModel,
   UpdateContributor,
   UpdatePreprint,
+  UpdatePreprintsSubjects,
   UploadFile,
 } from './';
 
+const DefaultState: SubmitPreprintStateModel = {
+  selectedProviderId: null,
+  createdPreprint: {
+    data: null,
+    isLoading: false,
+    error: null,
+    isSubmitting: false,
+  },
+  fileSource: PreprintFileSource.None,
+  preprintFilesLinks: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  preprintFiles: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  availableProjects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  projectFiles: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  contributors: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  licenses: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  subjects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+};
+
 @State<SubmitPreprintStateModel>({
   name: 'submitPreprint',
-  defaults: {
-    selectedProviderId: null,
-    createdPreprint: {
-      data: null,
-      isLoading: false,
-      error: null,
-      isSubmitting: false,
-    },
-    fileSource: PreprintFileSource.None,
-    preprintFilesLinks: {
-      data: null,
-      isLoading: false,
-      error: null,
-    },
-    preprintFiles: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    availableProjects: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    projectFiles: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    contributors: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    licenses: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-  },
+  defaults: { ...DefaultState },
 })
 @Injectable()
 export class SubmitPreprintState {
@@ -91,6 +102,7 @@ export class SubmitPreprintState {
   private fileService = inject(FilesService);
   private contributorsService = inject(PreprintContributorsService);
   private licensesService = inject(PreprintLicensesService);
+  private subjectsService = inject(PreprintSubjectsService);
 
   @Action(SetSelectedPreprintProviderId)
   setSelectedPreprintProviderId(ctx: StateContext<SubmitPreprintStateModel>, action: SetSelectedPreprintProviderId) {
@@ -281,46 +293,7 @@ export class SubmitPreprintState {
   resetStateAndDeletePreprint(ctx: StateContext<SubmitPreprintStateModel>) {
     const state = ctx.getState();
     const createdPreprintId = state.createdPreprint.data?.id;
-    ctx.setState({
-      selectedProviderId: null,
-      createdPreprint: {
-        data: null,
-        isLoading: false,
-        error: null,
-        isSubmitting: false,
-      },
-      fileSource: PreprintFileSource.None,
-      preprintFilesLinks: {
-        data: null,
-        isLoading: false,
-        error: null,
-      },
-      preprintFiles: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-      availableProjects: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-      projectFiles: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-      contributors: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-      licenses: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-    });
+    ctx.setState({ ...DefaultState });
     if (createdPreprintId) {
       return this.preprintsService.deletePreprint(createdPreprintId);
     }
@@ -476,6 +449,48 @@ export class SubmitPreprintState {
         ctx.setState(patch({ createdPreprint: patch({ isSubmitting: false, data: preprint }) }));
       }),
       catchError((error) => this.handleError(ctx, 'createdPreprint', error))
+    );
+  }
+
+  @Action(FetchPreprintsSubjects)
+  fetchPreprintsSubjects(ctx: StateContext<SubmitPreprintStateModel>) {
+    const createdPreprintId = ctx.getState().createdPreprint.data!.id;
+    if (!createdPreprintId) return EMPTY;
+
+    ctx.setState(patch({ subjects: patch({ isLoading: true }) }));
+
+    return this.subjectsService.getPreprintSubjects(createdPreprintId).pipe(
+      tap((subjects) => {
+        ctx.patchState({
+          subjects: {
+            data: subjects,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'subjects', error))
+    );
+  }
+
+  @Action(UpdatePreprintsSubjects)
+  updatePreprintsSubjects(ctx: StateContext<SubmitPreprintStateModel>, { subjects }: UpdatePreprintsSubjects) {
+    const createdPreprintId = ctx.getState().createdPreprint.data?.id;
+    if (!createdPreprintId) return EMPTY;
+
+    ctx.setState(patch({ subjects: patch({ isLoading: true }) }));
+
+    return this.subjectsService.updatePreprintSubjects(createdPreprintId, subjects).pipe(
+      tap(() => {
+        ctx.patchState({
+          subjects: {
+            data: subjects,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'subjects', error))
     );
   }
 
