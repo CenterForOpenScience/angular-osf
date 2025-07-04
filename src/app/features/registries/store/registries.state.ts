@@ -1,10 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/core/handlers';
 import { ResourceTab } from '@osf/shared/enums';
 import { SearchService } from '@osf/shared/services';
 import { getResourceTypes } from '@osf/shared/utils';
@@ -115,7 +115,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'registries', error))
+      catchError((error) => handleSectionError(ctx, 'registries', error))
     );
   }
 
@@ -203,7 +203,7 @@ export class RegistriesState {
             error: error.message,
           },
         });
-        return this.handleError(ctx, 'draftRegistration', error);
+        return handleSectionError(ctx, 'draftRegistration', error);
       })
     );
   }
@@ -229,7 +229,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'draftRegistration', error))
+      catchError((error) => handleSectionError(ctx, 'draftRegistration', error))
     );
   }
 
@@ -253,7 +253,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'draftRegistration', error))
+      catchError((error) => handleSectionError(ctx, 'draftRegistration', error))
     );
   }
 
@@ -273,7 +273,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'pagesSchema', error))
+      catchError((error) => handleSectionError(ctx, 'pagesSchema', error))
     );
   }
 
@@ -295,7 +295,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'contributorsList', error))
+      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
     );
   }
 
@@ -319,7 +319,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'contributorsList', error))
+      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
     );
   }
 
@@ -345,7 +345,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'contributorsList', error))
+      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
     );
   }
 
@@ -367,7 +367,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'contributorsList', error))
+      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
     );
   }
 
@@ -390,7 +390,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'licenses', error))
+      catchError((error) => handleSectionError(ctx, 'licenses', error))
     );
   }
 
@@ -414,7 +414,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'registrationSubjects', error))
+      catchError((error) => handleSectionError(ctx, 'registrationSubjects', error))
     );
   }
 
@@ -440,18 +440,7 @@ export class RegistriesState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'registrationSubjects', error))
+      catchError((error) => handleSectionError(ctx, 'registrationSubjects', error))
     );
-  }
-
-  private handleError(ctx: StateContext<RegistriesStateModel>, section: keyof RegistriesStateModel, error: Error) {
-    ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
   }
 }
