@@ -1,7 +1,6 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
 import { DatePicker } from 'primeng/datepicker';
 import { Divider } from 'primeng/divider';
 import { Select } from 'primeng/select';
@@ -23,7 +22,6 @@ import { TruncatedTextComponent } from '../truncated-text/truncated-text.compone
 @Component({
   selector: 'osf-license',
   imports: [
-    Card,
     TranslatePipe,
     Select,
     FormsModule,

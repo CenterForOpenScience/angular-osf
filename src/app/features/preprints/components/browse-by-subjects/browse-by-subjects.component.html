@@ -10,7 +10,7 @@
         <p-button
           class="provider-subject col-12 md:col-6"
           styleClass="w-full p-4"
-          [label]="subject.text"
+          [label]="subject.name"
           severity="secondary"
           [routerLink]="isLandingPage() ? '/search' : 'discover'"
           [queryParams]="linksToSearchPageForSubject()[$index]"

@@ -17,22 +17,25 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { MetadataComponent, TitleAndAbstractStepComponent } from '@osf/features/preprints/components';
-import { FileStepComponent } from '@osf/features/preprints/components/submit-steps/file-step/file-step.component';
+import {
+  FileStepComponent,
+  MetadataStepComponent,
+  TitleAndAbstractStepComponent,
+} from '@osf/features/preprints/components';
 import { submitPreprintSteps } from '@osf/features/preprints/constants';
 import { SubmitSteps } from '@osf/features/preprints/enums';
-import { GetPreprintProviderById, PreprintsSelectors } from '@osf/features/preprints/store/preprints';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
   ResetStateAndDeletePreprint,
   SetSelectedPreprintProviderId,
 } from '@osf/features/preprints/store/submit-preprint';
-import { StepperComponent } from '@shared/components/stepper/stepper.component';
+import { StepperComponent } from '@shared/components';
 import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
 
 @Component({
   selector: 'osf-submit-preprint-stepper',
-  imports: [Skeleton, StepperComponent, TitleAndAbstractStepComponent, FileStepComponent, MetadataComponent],
+  imports: [Skeleton, StepperComponent, TitleAndAbstractStepComponent, FileStepComponent, MetadataStepComponent],
   templateUrl: './submit-preprint-stepper.component.html',
   styleUrl: './submit-preprint-stepper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -53,8 +56,8 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
   readonly SubmitStepsEnum = SubmitSteps;
   readonly submitPreprintSteps = submitPreprintSteps;
 
-  preprintProvider = select(PreprintsSelectors.getPreprintProviderDetails(this.providerId()));
-  isPreprintProviderLoading = select(PreprintsSelectors.isPreprintProviderDetailsLoading);
+  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
+  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   currentStep = signal<number>(0);
   isWeb = toSignal(inject(IS_WEB));
 

@@ -19,8 +19,8 @@ import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   GetPreprintProvidersToAdvertise,
-  PreprintsSelectors,
-} from '@osf/features/preprints/store/preprints';
+  PreprintProvidersSelectors,
+} from '@osf/features/preprints/store/preprint-providers';
 import { SearchInputComponent } from '@shared/components';
 import { ResourceTab } from '@shared/enums';
 import { BrandService } from '@shared/services';
@@ -55,11 +55,11 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
     getHighlightedSubjectsByProviderId: GetHighlightedSubjectsByProviderId,
   });
 
-  osfPreprintProvider = select(PreprintsSelectors.getPreprintProviderDetails(this.OSF_PROVIDER_ID));
-  isPreprintProviderLoading = select(PreprintsSelectors.isPreprintProviderDetailsLoading);
-  preprintProvidersToAdvertise = select(PreprintsSelectors.getPreprintProvidersToAdvertise);
-  highlightedSubjectsByProviderId = select(PreprintsSelectors.getHighlightedSubjectsForProvider);
-  areSubjectsLoading = select(PreprintsSelectors.areSubjectsLoading);
+  osfPreprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.OSF_PROVIDER_ID));
+  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
+  preprintProvidersToAdvertise = select(PreprintProvidersSelectors.getPreprintProvidersToAdvertise);
+  highlightedSubjectsByProviderId = select(PreprintProvidersSelectors.getHighlightedSubjectsForProvider);
+  areSubjectsLoading = select(PreprintProvidersSelectors.areSubjectsLoading);
 
   constructor() {
     effect(() => {

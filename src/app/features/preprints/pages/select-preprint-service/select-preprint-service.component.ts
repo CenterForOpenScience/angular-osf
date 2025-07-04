@@ -12,7 +12,10 @@ import { ChangeDetectionStrategy, Component, HostBinding, OnInit } from '@angula
 import { RouterLink } from '@angular/router';
 
 import { PreprintProviderShortInfo } from '@osf/features/preprints/models';
-import { GetPreprintProvidersAllowingSubmissions, PreprintsSelectors } from '@osf/features/preprints/store/preprints';
+import {
+  GetPreprintProvidersAllowingSubmissions,
+  PreprintProvidersSelectors,
+} from '@osf/features/preprints/store/preprint-providers';
 import { SetSelectedPreprintProviderId, SubmitPreprintSelectors } from '@osf/features/preprints/store/submit-preprint';
 import { SubHeaderComponent } from '@shared/components';
 import { DecodeHtmlPipe } from '@shared/pipes';
@@ -32,8 +35,8 @@ export class SelectPreprintServiceComponent implements OnInit {
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
   });
 
-  preprintProvidersAllowingSubmissions = select(PreprintsSelectors.getPreprintProvidersAllowingSubmissions);
-  areProvidersLoading = select(PreprintsSelectors.arePreprintProvidersAllowingSubmissionsLoading);
+  preprintProvidersAllowingSubmissions = select(PreprintProvidersSelectors.getPreprintProvidersAllowingSubmissions);
+  areProvidersLoading = select(PreprintProvidersSelectors.arePreprintProvidersAllowingSubmissionsLoading);
   selectedProviderId = select(SubmitPreprintSelectors.getSelectedProviderId);
   skeletonArray = Array.from({ length: 8 }, (_, i) => i + 1);
 

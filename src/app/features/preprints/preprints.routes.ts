@@ -3,7 +3,7 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { PreprintsComponent } from '@osf/features/preprints/preprints.component';
-import { PreprintsState } from '@osf/features/preprints/store/preprints';
+import { PreprintProvidersState } from '@osf/features/preprints/store/preprint-providers';
 import { PreprintsDiscoverState } from '@osf/features/preprints/store/preprints-discover';
 import { PreprintsResourcesFiltersState } from '@osf/features/preprints/store/preprints-resources-filters';
 import { PreprintsResourcesFiltersOptionsState } from '@osf/features/preprints/store/preprints-resources-filters-options';
@@ -16,7 +16,7 @@ export const preprintsRoutes: Routes = [
     component: PreprintsComponent,
     providers: [
       provideStates([
-        PreprintsState,
+        PreprintProvidersState,
         PreprintsDiscoverState,
         PreprintsResourcesFiltersState,
         PreprintsResourcesFiltersOptionsState,

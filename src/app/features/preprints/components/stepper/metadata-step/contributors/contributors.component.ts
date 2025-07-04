@@ -21,16 +21,16 @@ import {
   SubmitPreprintSelectors,
   UpdateContributor,
 } from '@osf/features/preprints/store/submit-preprint';
-import { EducationHistoryDialogComponent, EmploymentHistoryDialogComponent } from '@osf/shared/components';
+import { EducationHistoryDialogComponent, EmploymentHistoryDialogComponent } from '@shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsListComponent,
-} from '@osf/shared/components/contributors';
-import { AddContributorType } from '@osf/shared/components/contributors/enums';
-import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/components/contributors/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
-import { findChangedItems } from '@osf/shared/utils';
+} from '@shared/components/contributors';
+import { AddContributorType } from '@shared/components/contributors/enums';
+import { ContributorDialogAddModel, ContributorModel } from '@shared/components/contributors/models';
+import { CustomConfirmationService, ToastService } from '@shared/services';
+import { findChangedItems } from '@shared/utils';
 
 @Component({
   selector: 'osf-preprint-contributors',

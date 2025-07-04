@@ -4,7 +4,15 @@
   <osf-preprint-contributors />
 </div>
 
-<div class="m-t-24">
+<p-card class="w-full card" styleClass="m-t-24">
+  <h2 class="mb-2">{{ 'shared.license.title' | translate }}</h2>
+
+  <p class="mb-1">{{ 'shared.license.description' | translate }}</p>
+  <p>
+    {{ 'shared.license.helpText' | translate }}
+    <a href="https://help.osf.io/article/148-licensing">{{ 'common.links.helpGuide' | translate }}</a
+    >.
+  </p>
   <osf-license
     [licenses]="licences()"
     [selectedLicenseId]="createdPreprint()?.licenseId"
@@ -12,7 +20,7 @@
     (createLicense)="createLicense($event)"
     (selectLicense)="selectLicense($event)"
   />
-</div>
+</p-card>
 
 <p-card styleClass="m-t-24" class="card">
   <div>

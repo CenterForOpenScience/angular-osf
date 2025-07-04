@@ -115,8 +115,7 @@ export const routes: Routes = [
       },
       {
         path: 'preprints',
-        loadChildren: () =>
-          import('./features/preprints/constants/preprints.routes').then((mod) => mod.preprintsRoutes),
+        loadChildren: () => import('./features/preprints/preprints.routes').then((mod) => mod.preprintsRoutes),
       },
       {
         path: 'search',

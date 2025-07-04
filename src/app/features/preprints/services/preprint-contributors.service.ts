@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class ContributorsService {
+export class PreprintContributorsService {
   private jsonApiService = inject(JsonApiService);
   private apiUrl = environment.apiUrl;
 
