@@ -13,7 +13,16 @@ import { Tooltip } from 'primeng/tooltip';
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, HostListener, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 
 import { StringOrNull } from '@core/helpers';
 import { ArrayInputComponent } from '@osf/features/preprints/components/stepper/author-assertion-step/array-input/array-input.component';
@@ -58,12 +67,13 @@ export class AuthorAssertionsStepComponent {
     label: key,
     value,
   }));
+  readonly linkValidators = [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()];
 
   createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
   isUpdatingPreprint = select(SubmitPreprintSelectors.isPreprintSubmitting);
 
   readonly authorAssertionsForm = new FormGroup({
-    hasCoi: new FormControl<boolean>(this.createdPreprint()!.hasCoi, {
+    hasCoi: new FormControl<boolean>(this.createdPreprint()!.hasCoi || false, {
       nonNullable: true,
       validators: [],
     }),
@@ -71,10 +81,13 @@ export class AuthorAssertionsStepComponent {
       nonNullable: false,
       validators: [],
     }),
-    hasDataLinks: new FormControl<ApplicabilityStatus>(this.createdPreprint()!.hasDataLinks, {
-      nonNullable: true,
-      validators: [],
-    }),
+    hasDataLinks: new FormControl<ApplicabilityStatus>(
+      this.createdPreprint()!.hasDataLinks || ApplicabilityStatus.NotApplicable,
+      {
+        nonNullable: true,
+        validators: [],
+      }
+    ),
     dataLinks: new FormArray<FormControl>(
       this.createdPreprint()!.dataLinks?.map((link) => new FormControl(link)) || []
     ),
@@ -82,10 +95,13 @@ export class AuthorAssertionsStepComponent {
       nonNullable: false,
       validators: [],
     }),
-    hasPreregLinks: new FormControl<ApplicabilityStatus>(this.createdPreprint()!.hasPreregLinks, {
-      nonNullable: true,
-      validators: [],
-    }),
+    hasPreregLinks: new FormControl<ApplicabilityStatus>(
+      this.createdPreprint()!.hasPreregLinks || ApplicabilityStatus.NotApplicable,
+      {
+        nonNullable: true,
+        validators: [],
+      }
+    ),
     preregLinks: new FormArray<FormControl>(
       this.createdPreprint()!.preregLinks?.map((link) => new FormControl(link)) || []
     ),
@@ -100,13 +116,13 @@ export class AuthorAssertionsStepComponent {
   });
 
   hasCoiValue = toSignal(this.authorAssertionsForm.controls['hasCoi'].valueChanges, {
-    initialValue: this.createdPreprint()!.hasCoi,
+    initialValue: this.createdPreprint()!.hasCoi || false,
   });
   hasDataLinks = toSignal(this.authorAssertionsForm.controls['hasDataLinks'].valueChanges, {
-    initialValue: this.createdPreprint()!.hasDataLinks,
+    initialValue: this.createdPreprint()!.hasDataLinks || ApplicabilityStatus.NotApplicable,
   });
   hasPreregLinks = toSignal(this.authorAssertionsForm.controls['hasPreregLinks'].valueChanges, {
-    initialValue: this.createdPreprint()!.hasPreregLinks,
+    initialValue: this.createdPreprint()!.hasPreregLinks || ApplicabilityStatus.NotApplicable,
   });
 
   nextClicked = output<void>();
@@ -117,12 +133,9 @@ export class AuthorAssertionsStepComponent {
       const coiStatementControl = this.authorAssertionsForm.controls['coiStatement'];
 
       if (hasCoi) {
-        coiStatementControl.setValidators([Validators.required]);
-        coiStatementControl.enable();
+        this.enableAndSetValidators(coiStatementControl, [Validators.required]);
       } else {
-        coiStatementControl.clearValidators();
-        coiStatementControl.setValue(null);
-        coiStatementControl.disable();
+        this.disableAndClearValidators(coiStatementControl);
       }
 
       coiStatementControl.updateValueAndValidity();
@@ -131,57 +144,52 @@ export class AuthorAssertionsStepComponent {
     effect(() => {
       const hasDataLinks = this.hasDataLinks();
       const whyNoDataControl = this.authorAssertionsForm.controls['whyNoData'];
+      const dataLinksControl = this.authorAssertionsForm.controls['dataLinks'];
 
       switch (hasDataLinks) {
         case ApplicabilityStatus.Unavailable:
-          whyNoDataControl.setValidators([Validators.required]);
-          whyNoDataControl.enable();
+          this.enableAndSetValidators(whyNoDataControl, [Validators.required]);
+          this.disableAndClearValidators(dataLinksControl);
           break;
         case ApplicabilityStatus.NotApplicable:
-          whyNoDataControl.clearValidators();
-          whyNoDataControl.setValue(null);
-          whyNoDataControl.disable();
+          this.disableAndClearValidators(whyNoDataControl);
+          this.disableAndClearValidators(dataLinksControl);
           break;
         case ApplicabilityStatus.Applicable:
-          whyNoDataControl.clearValidators();
-          whyNoDataControl.setValue(null);
-          whyNoDataControl.disable();
+          this.disableAndClearValidators(whyNoDataControl);
+          this.addAtLeastOneControl(dataLinksControl);
           break;
       }
       whyNoDataControl.updateValueAndValidity();
+      dataLinksControl.updateValueAndValidity();
     });
 
     effect(() => {
-      const hasDataLinks = this.hasPreregLinks();
+      const hasPreregLinks = this.hasPreregLinks();
       const whyNoPreregControl = this.authorAssertionsForm.controls['whyNoPrereg'];
       const preregLinkInfoControl = this.authorAssertionsForm.controls['preregLinkInfo'];
+      const preregLinksControl = this.authorAssertionsForm.controls['preregLinks'];
 
-      switch (hasDataLinks) {
+      switch (hasPreregLinks) {
         case ApplicabilityStatus.Unavailable:
-          whyNoPreregControl.setValidators([Validators.required]);
-          whyNoPreregControl.enable();
-
-          preregLinkInfoControl.clearValidators();
-          preregLinkInfoControl.setValue(null);
+          this.enableAndSetValidators(whyNoPreregControl, [Validators.required]);
+          this.disableAndClearValidators(preregLinkInfoControl);
+          this.disableAndClearValidators(preregLinksControl);
           break;
         case ApplicabilityStatus.NotApplicable:
-          whyNoPreregControl.clearValidators();
-          whyNoPreregControl.setValue(null);
-          whyNoPreregControl.disable();
-
-          preregLinkInfoControl.clearValidators();
-          preregLinkInfoControl.setValue(null);
+          this.disableAndClearValidators(whyNoPreregControl);
+          this.disableAndClearValidators(preregLinkInfoControl);
+          this.disableAndClearValidators(preregLinksControl);
           break;
         case ApplicabilityStatus.Applicable:
-          whyNoPreregControl.clearValidators();
-          whyNoPreregControl.setValue(null);
-          whyNoPreregControl.disable();
-
-          preregLinkInfoControl.setValidators([Validators.required]);
+          this.disableAndClearValidators(whyNoPreregControl);
+          this.enableAndSetValidators(preregLinkInfoControl, [Validators.required]);
+          this.addAtLeastOneControl(preregLinksControl);
           break;
       }
       whyNoPreregControl.updateValueAndValidity();
       preregLinkInfoControl.updateValueAndValidity();
+      preregLinksControl.updateValueAndValidity();
     });
   }
 
@@ -224,5 +232,34 @@ export class AuthorAssertionsStepComponent {
           this.nextClicked.emit();
         },
       });
+  }
+
+  private disableAndClearValidators(control: AbstractControl) {
+    if (control instanceof FormArray) {
+      while (control.length !== 0) {
+        control.removeAt(0);
+      }
+      return;
+    }
+
+    control.clearValidators();
+    control.setValue(null);
+    control.disable();
+  }
+
+  private enableAndSetValidators(control: AbstractControl, validators: ValidatorFn[]) {
+    control.setValidators(validators);
+    control.enable();
+  }
+
+  private addAtLeastOneControl(formArray: FormArray) {
+    if (formArray.controls.length > 0) return;
+
+    formArray.push(
+      new FormControl('', {
+        nonNullable: true,
+        validators: this.linkValidators,
+      })
+    );
   }
 }

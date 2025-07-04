@@ -1,6 +1,6 @@
 import { Button } from 'primeng/button';
 
-import { ChangeDetectionStrategy, Component, input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormArray, FormControl, ReactiveFormsModule, ValidatorFn } from '@angular/forms';
 
 import { TextInputComponent } from '@shared/components';
@@ -12,17 +12,10 @@ import { TextInputComponent } from '@shared/components';
   styleUrl: './array-input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ArrayInputComponent implements OnInit {
+export class ArrayInputComponent {
   formArray = input.required<FormArray<FormControl>>();
   inputPlaceholder = input.required<string>();
   validators = input.required<ValidatorFn[]>();
-
-  ngOnInit() {
-    const formArray = this.formArray();
-    if (formArray.controls.length === 0) {
-      this.add();
-    }
-  }
 
   add() {
     this.formArray().push(

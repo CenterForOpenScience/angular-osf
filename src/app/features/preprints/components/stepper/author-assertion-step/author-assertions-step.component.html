@@ -128,7 +128,7 @@
         <osf-array-input
           [formArray]="authorAssertionsForm.controls['dataLinks']"
           inputPlaceholder="Link to data"
-          [validators]="[CustomValidators.linkValidator()]"
+          [validators]="linkValidators"
         />
       </div>
     }
@@ -154,7 +154,7 @@
         [value]="ApplicabilityStatus.Applicable"
         [formControl]="authorAssertionsForm.controls['hasPreregLinks']"
       />
-      <label for="available">Available</label>
+      <label for="preregistrationAvailable">Available</label>
     </div>
 
     <div class="flex flex-row gap-2">
@@ -164,7 +164,7 @@
         [value]="ApplicabilityStatus.Unavailable"
         [formControl]="authorAssertionsForm.controls['hasPreregLinks']"
       />
-      <label for="unavailable">No</label>
+      <label for="preregistrationUnavailable">No</label>
     </div>
 
     <div class="flex flex-row gap-2">
@@ -174,7 +174,7 @@
         [value]="ApplicabilityStatus.NotApplicable"
         [formControl]="authorAssertionsForm.controls['hasPreregLinks']"
       />
-      <label for="notApplicable">Not Applicable</label>
+      <label for="preregistrationNotApplicable">Not Applicable</label>
     </div>
   </div>
   @let hasPreregLinks = authorAssertionsForm.value.hasPreregLinks!;
@@ -217,7 +217,7 @@
       <osf-array-input
         [formArray]="authorAssertionsForm.controls['preregLinks']"
         inputPlaceholder="Link to data"
-        [validators]="[CustomValidators.linkValidator()]"
+        [validators]="linkValidators"
       />
     </div>
   }
