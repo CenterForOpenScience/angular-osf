@@ -2,10 +2,10 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +21,7 @@ import { CollectionsSearchResultsComponent } from '../collections-search-results
 @Component({
   selector: 'osf-collections-main-content',
   imports: [
-    NgOptimizedImage,
+    Button,
     Select,
     FormsModule,
     TranslatePipe,

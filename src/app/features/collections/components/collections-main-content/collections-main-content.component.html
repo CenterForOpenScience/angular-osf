@@ -31,29 +31,9 @@
         </ng-template>
       </p-select>
     } @else {
-      <img
-        ngSrc="assets/icons/colored/filter.svg"
-        class="custom-dark-hover cursor-pointer"
-        tabindex="0"
-        role="button"
-        alt="filter by"
-        width="44"
-        height="44"
-        (keydown.enter)="openFilters()"
-        (click)="openFilters()"
-      />
+      <p-button severity="secondary" icon="fas fa-sliders" size="large" (click)="openFilters()"></p-button>
 
-      <img
-        ngSrc="assets/icons/colored/sort.svg"
-        tabindex="0"
-        role="button"
-        alt="sort by"
-        width="44"
-        height="44"
-        class="custom-dark-hover cursor-pointer ml-2"
-        (keydown.enter)="openSorting()"
-        (click)="openSorting()"
-      />
+      <p-button severity="secondary" icon="fas fa-filter" size="large" (click)="openSorting()"></p-button>
     }
   </div>
 </div>

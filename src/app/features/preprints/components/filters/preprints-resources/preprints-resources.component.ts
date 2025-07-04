@@ -4,30 +4,26 @@ import { Button } from 'primeng/button';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
 
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, HostBinding, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { Primitive } from '@core/helpers';
+import { SetSortBy } from '@osf/features/collections/store';
+import { GetResourcesByLink } from '@osf/features/my-profile/store';
 import { PreprintsFilterChipsComponent, PreprintsResourcesFiltersComponent } from '@osf/features/preprints/components';
-import {
-  GetResourcesByLink,
-  PreprintsDiscoverSelectors,
-  SetSortBy,
-} from '@osf/features/preprints/store/preprints-discover';
+import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover';
 import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
 import { PreprintsResourcesFiltersOptionsSelectors } from '@osf/features/preprints/store/preprints-resources-filters-options';
-import { ResourceCardComponent } from '@shared/components';
-import { searchSortingOptions } from '@shared/constants';
-import { IS_WEB, IS_XSMALL } from '@shared/utils';
+import { ResourceCardComponent } from '@osf/shared/components';
+import { searchSortingOptions } from '@osf/shared/constants';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
 
 @Component({
   selector: 'osf-preprints-resources',
   imports: [
     Select,
     FormsModule,
-    NgOptimizedImage,
     PreprintsResourcesFiltersComponent,
     PreprintsFilterChipsComponent,
     DataView,

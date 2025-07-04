@@ -1,4 +1,4 @@
-import { Action, State, StateContext, Store } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 
 import { catchError, of, tap, throwError } from 'rxjs';
 
@@ -28,7 +28,6 @@ import { TokensStateModel } from './tokens.models';
 @Injectable()
 export class TokensState {
   tokensService = inject(TokensService);
-  store = inject(Store);
 
   @Action(GetScopes)
   getScopes(ctx: StateContext<TokensStateModel>) {
