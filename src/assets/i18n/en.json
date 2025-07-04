@@ -28,7 +28,9 @@
       "deselect": "Deselect",
       "yes": "Yes",
       "no": "No",
-      "update": "Update"
+      "update": "Update",
+      "continue update": "Continue update",
+      "withdraw": "Withdraw"
     },
     "search": {
       "title": "Search",
@@ -65,7 +67,9 @@
       "public": "Public",
       "title": "Title",
       "description": "Description",
-      "year": "Year"
+      "year": "Year",
+      "optional": "Optional",
+      "makePublic": "Make Public"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -618,10 +622,12 @@
           "confirmation": "Type the following to continue:"
         },
         "fork": {
-          "header": "Fork This Project",
+          "headerProject": "Fork This Project",
+          "headerRegistry": "Fork This Registry",
           "confirmButton": "Fork",
           "cancelButton": "Cancel",
-          "message": "Are you sure you want to fork this project?"
+          "messageProject": "Are you sure you want to fork this project?",
+          "messageRegistry": "Are you sure you want to fork this registry?"
         },
         "duplicate": {
           "header": "Duplicate Template",
@@ -1627,10 +1633,67 @@
   },
   "registry": {
     "overview": {
-      "public": "Public Registration",
       "updates": "Updates",
+      "withdrawRegistration": "Withdraw registration",
+      "withdrawDescription": "Withdrawing a registration will remove its content from the OSF, but leave basic metadata behind. The title of a withdrawn registration and its contributor list will remain, as will justification or explanation of the withdrawal, should you wish to provide it. Withdrawn registrations will be marked with a \"withdrawn\" tag. This action is irreversible.",
+      "withdrawJustificationLabel": "Please provide your justification for withdrawing this registration.",
+      "makePublicMessage": "Are you sure you want make this registration public ?",
       "statuses": {
-        "frozen": "This public registration is a frozen, non-editable version of this"
+        "pendingRegistrationApproval": {
+          "text": "Pending approval",
+          "short": "Pending registration approval",
+          "long": "This registration is waiting for approval from its contributors."
+        },
+        "pendingEmbargoApproval": {
+          "text": "Pending approval",
+          "short": "Pending embargo approval",
+          "long": "This registration is waiting for approval from its contributors. Once approved, the registration will remain private until the embargo ends."
+        },
+        "pending": {
+          "text": "Pending moderation",
+          "short": "Pending moderator approval",
+          "long": "This registration is awaiting a decision by the registry moderators. An email will notify all registration contributors of the decision."
+        },
+        "accepted": {
+          "text": "Public registration",
+          "short": "Public",
+          "long": "This public registration is a frozen, non-editable version of this."
+        },
+        "embargo": {
+          "text": "Embargoed registration",
+          "short": "Embargoed",
+          "long": "This registration is embargoed. It will remain private until {embargoEndDate}."
+        },
+        "pendingEmbargoTermination": {
+          "text": "Embargoed registration",
+          "short": "Pending embargo termination",
+          "long": "This registration is waiting for approval from its contributors to terminate its embargo and be made public."
+        },
+        "pendingWithdrawRequest": {
+          "text": "Pending withdrawal",
+          "short": "Pending withdraw request",
+          "long": "This registration is waiting for approval to be withdrawn by its contributors."
+        },
+        "pendingWithdraw": {
+          "text": "Pending withdrawal",
+          "short": "Pending withdrawal moderation",
+          "long": "This registration is waiting for approval to be withdrawn by registry moderators."
+        },
+        "unapproved": {
+          "text": "Update pending",
+          "short": "Update pending approval",
+          "long": "This registration has an update that is waiting for approval from its contributors. Updates will be made available once approved."
+        },
+        "inProgress": {
+          "text": "Update in progress",
+          "short": "Updates being made",
+          "long": "This registration is currently being updated by its contributors. Updates will be made available once approved."
+        },
+        "pendingModeration": {
+          "text": "Update pending review",
+          "short": "Update pending moderator approval",
+          "long": "This registration has an update that is waiting for moderation. Updates will be made available once approved."
+        }
       },
       "metadata": {
         "type": "Registration Type",
@@ -1639,7 +1702,7 @@
         "associatedProject": "Associated project"
       },
       "original": "Original",
-      "last": "Last"
+      "latest": "Latest"
     }
   },
   "truncatedText": {

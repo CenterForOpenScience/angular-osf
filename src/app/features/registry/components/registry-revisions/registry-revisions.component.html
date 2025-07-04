@@ -1,0 +1,50 @@
+<p-accordion class="accordion-border p-4 py-4 no-padding w-full">
+  <p-accordion-panel value="0">
+    <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
+      {{ 'registry.overview.updates' | translate }}
+    </p-accordion-header>
+    <p-accordion-content>
+      <div class="flex flex-column gap-2 pt-4 align-items-center justify-content-center">
+        @if (registry() && registry()!.schemaResponses.length > 0) {
+          <p-button
+            severity="info"
+            class="w-full"
+            [class.current-revision]="true"
+            styleClass="w-full"
+            [label]="'registry.overview.original' | translate"
+            (click)="emitOpenRevision(0)"
+          />
+          @for (revision of registry()!.schemaResponses.slice(1); track $index; let last = $last) {
+            @if (last) {
+              <p-button
+                severity="info"
+                class="w-full"
+                [class.current-revision]="selectedRevisionIndex() === $index"
+                styleClass="w-full"
+                [label]="'registry.overview.latest' | translate"
+                (click)="emitOpenRevision($index)"
+              />
+            } @else {
+              <p-button
+                severity="info"
+                class="w-full"
+                [class.current-revision]="selectedRevisionIndex() === $index"
+                styleClass="w-full"
+                [label]="('common.buttons.update' | translate) + ($index + 1)"
+                (click)="emitOpenRevision($index)"
+              />
+            }
+          }
+
+          <!--          [KP] TODO: add links to update pages-->
+          @if (registry()?.revisionStatus === RevisionReviewStates.Approved) {
+            <p-button class="w-full" styleClass="w-full" [label]="'common.buttons.update' | translate" />
+          }
+          @if (registry()?.revisionStatus === RevisionReviewStates.RevisionInProgress) {
+            <p-button class="w-full" styleClass="w-full" [label]="'common.buttons.continueUpdate' | translate" />
+          }
+        }
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+</p-accordion>

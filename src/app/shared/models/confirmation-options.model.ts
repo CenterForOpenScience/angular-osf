@@ -19,7 +19,7 @@ export interface AcceptConfirmationOptions {
   messageParams?: any;
   acceptLabelKey?: string;
   onConfirm: () => void;
-  onReject: () => void;
+  onReject?: () => void;
 }
 
 export interface ContinueConfirmationOptions {

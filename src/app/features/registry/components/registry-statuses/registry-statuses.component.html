@@ -1,0 +1,28 @@
+<p-accordion class="accordion-border px-4 py-4 flex-1 no-padding">
+  <p-accordion-panel value="0">
+    <p-accordion-header class="flex flex-row column-gap-3 align-items-center">
+      <p class="font-bold">{{ 'registry.overview.statuses.' + registry()?.status + '.text' | translate }}</p>
+    </p-accordion-header>
+    <p-accordion-content>
+      <div class="flex flex-column pt-4 gap-2">
+        <h2 class="font-normal">{{ 'registry.overview.statuses.' + registry()?.status + '.short' | translate }}</h2>
+        <p>{{ 'registry.overview.statuses.' + registry()?.status + '.long' | translate }}</p>
+        @if (registry()?.status === RegistryStatus.InProgress && registry()?.status === RegistryStatus.Accepted) {
+          <p-button
+            (click)="openWithdrawDialog()"
+            [label]="'registry.overview.withdrawRegistration' | translate"
+            severity="danger"
+            class="ml-auto"
+          ></p-button>
+        }
+        @if (registry()?.status === RegistryStatus.Embargo) {
+          <p-button
+            (click)="openMakePublicDialog()"
+            [label]="'common.labels.makePublic' | translate"
+            class="ml-auto"
+          ></p-button>
+        }
+      </div>
+    </p-accordion-content>
+  </p-accordion-panel>
+</p-accordion>

@@ -10,6 +10,7 @@ import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
+import { DataResourcesComponent } from '@shared/components/data-resources/data-resources.component';
 import { ResourceType } from '@shared/enums';
 import { Resource } from '@shared/models';
 import { ResourceCardService } from '@shared/services';
@@ -26,6 +27,7 @@ import { IS_XSMALL } from '@shared/utils';
     NgOptimizedImage,
     Skeleton,
     TranslatePipe,
+    DataResourcesComponent,
   ],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',

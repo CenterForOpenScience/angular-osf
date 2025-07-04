@@ -1,4 +1,5 @@
 import { ApiData, JsonApiResponse } from '@core/models';
+import { RegistrationReviewStates, RevisionReviewStates } from '@shared/enums';
 
 export type GetRegistryOverviewJsonApi = JsonApiResponse<RegistryOverviewJsonApiData, null>;
 
@@ -39,6 +40,13 @@ export interface RegistryOverviewJsonApiAttributes {
   has_papers: boolean;
   has_supplements: boolean;
   registration_responses: RegistrationQuestions;
+  pending_embargo_approval: boolean;
+  pending_embargo_termination_approval: boolean;
+  pending_registration_approval: boolean;
+  pending_withdrawal: boolean;
+  revision_state: RevisionReviewStates;
+  review_state: RegistrationReviewStates;
+  embargoed: boolean;
 }
 
 export type RegistrationQuestions = Record<string, string | string[] | { file_id: string; file_name: string }[]>;
@@ -80,6 +88,15 @@ export interface RegistryOverviewJsonApiEmbed {
       attributes: {
         category: string;
         value: string;
+      };
+    }[];
+  };
+  schema_responses: {
+    data: {
+      id: string;
+      attributes: {
+        revision_responses: RegistrationQuestions;
+        updated_response_keys: string[];
       };
     }[];
   };

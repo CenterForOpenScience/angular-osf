@@ -11,6 +11,8 @@ import {
   GetRegistryInstitutions,
   GetRegistrySubjects,
   GetSchemaBlocks,
+  MakePublic,
+  WithdrawRegistration,
 } from '@osf/features/registry/store/registry-overview';
 
 import { RegistryOverviewStateModel } from './registry-overview.model';
@@ -64,7 +66,9 @@ export class RegistryOverviewState {
               error: null,
             },
           });
-          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+          if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
+            ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+          }
         },
       }),
       catchError((error) => this.handleError(ctx, 'registry', error))
@@ -133,7 +137,7 @@ export class RegistryOverviewState {
       },
     });
 
-    return this.registryOverviewService.getSchemaBlocks(action.schemaLink, action.questions).pipe(
+    return this.registryOverviewService.getSchemaBlocks(action.schemaLink).pipe(
       tap({
         next: (schemaBlocks) => {
           ctx.patchState({
@@ -146,6 +150,64 @@ export class RegistryOverviewState {
         },
       }),
       catchError((error) => this.handleError(ctx, 'schemaBlocks', error))
+    );
+  }
+
+  @Action(WithdrawRegistration)
+  withdrawRegistration(ctx: StateContext<RegistryOverviewStateModel>, action: WithdrawRegistration) {
+    const state = ctx.getState();
+    ctx.patchState({
+      registry: {
+        ...state.registry,
+        isLoading: true,
+      },
+    });
+
+    return this.registryOverviewService.withdrawRegistration(action.registryId, action.justification).pipe(
+      tap({
+        next: (registryOverview) => {
+          ctx.patchState({
+            registry: {
+              data: registryOverview,
+              isLoading: false,
+              error: null,
+            },
+          });
+          if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
+            ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+          }
+        },
+      }),
+      catchError((error) => this.handleError(ctx, 'registry', error))
+    );
+  }
+
+  @Action(MakePublic)
+  makePublic(ctx: StateContext<RegistryOverviewStateModel>, action: MakePublic) {
+    const state = ctx.getState();
+    ctx.patchState({
+      registry: {
+        ...state.registry,
+        isLoading: true,
+      },
+    });
+
+    return this.registryOverviewService.makePublic(action.registryId).pipe(
+      tap({
+        next: (registryOverview) => {
+          ctx.patchState({
+            registry: {
+              data: registryOverview,
+              isLoading: false,
+              error: null,
+            },
+          });
+          if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
+            ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+          }
+        },
+      }),
+      catchError((error) => this.handleError(ctx, 'registry', error))
     );
   }
 

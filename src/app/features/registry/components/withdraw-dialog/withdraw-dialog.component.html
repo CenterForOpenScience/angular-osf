@@ -1,0 +1,19 @@
+<div class="flex flex-column gap-4">
+  <p>{{ 'registry.overview.withdrawDescription' | translate }}</p>
+
+  <osf-text-input
+    [control]="form.controls['text']"
+    [label]="'registry.overview.withdrawJustificationLabel' | translate"
+    [placeholder]="'common.labels.optional' | translate"
+  >
+  </osf-text-input>
+
+  <div class="flex justify-content-end gap-2">
+    <p-button [label]="'common.buttons.cancel' | translate" severity="info" (click)="dialogRef.close()"></p-button>
+    <p-button
+      [label]="'common.buttons.withdraw' | translate"
+      severity="danger"
+      (click)="withdrawRegistration()"
+    ></p-button>
+  </div>
+</div>

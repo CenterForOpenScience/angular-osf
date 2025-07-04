@@ -1,5 +1,6 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { RegistrationQuestions, RegistrySubject } from '@osf/features/registry/models';
+import { RegistryStatus, RevisionReviewStates } from '@shared/enums';
 
 export interface RegistryOverview {
   id: string;
@@ -53,4 +54,11 @@ export interface RegistryOverview {
   questions: RegistrationQuestions;
   registrationSchemaLink: string;
   associatedProjectId: string;
+  schemaResponses: {
+    id: string;
+    revisionResponses: RegistrationQuestions;
+    updatedResponseKeys: string[];
+  }[];
+  status: RegistryStatus;
+  revisionStatus: RevisionReviewStates;
 }

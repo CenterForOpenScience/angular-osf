@@ -1,1 +1,1 @@
-export * from './project-overview.service';
+export * from './registry-overview.service';

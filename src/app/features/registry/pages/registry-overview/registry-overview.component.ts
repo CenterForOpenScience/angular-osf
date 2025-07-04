@@ -1,23 +1,27 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-
-import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
-import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, computed, HostBinding, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { GetBookmarksCollectionId } from '@osf/features/collections/store';
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
+import { RegistryRevisionsComponent, RegistryStatusesComponent } from '@osf/features/registry/components';
+import { MapViewSchemaBlock } from '@osf/features/registry/mappers';
+import { RegistrationQuestions } from '@osf/features/registry/models';
 import {
   GetRegistryById,
   GetRegistryInstitutions,
   GetRegistrySubjects,
   RegistryOverviewSelectors,
 } from '@osf/features/registry/store/registry-overview';
-import { LoadingSpinnerComponent, ResourceMetadataComponent, SubHeaderComponent } from '@shared/components';
+import {
+  DataResourcesComponent,
+  LoadingSpinnerComponent,
+  ResourceMetadataComponent,
+  SubHeaderComponent,
+} from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { MapRegistryOverview } from '@shared/mappers';
 import { ToolbarResource } from '@shared/models';
@@ -28,14 +32,11 @@ import { ToolbarResource } from '@shared/models';
     SubHeaderComponent,
     OverviewToolbarComponent,
     LoadingSpinnerComponent,
-    TranslatePipe,
     RouterLink,
-    AccordionContent,
-    Accordion,
-    AccordionPanel,
-    AccordionHeader,
     ResourceMetadataComponent,
-    Button,
+    RegistryRevisionsComponent,
+    RegistryStatusesComponent,
+    DataResourcesComponent,
   ],
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
@@ -65,6 +66,23 @@ export class RegistryOverviewComponent {
     }
     return null;
   });
+  protected readonly mappedSchemaBlocks = computed(() => {
+    const schemaBlocks = this.schemaBlocks();
+    const index = this.selectedRevisionIndex();
+    let questions: RegistrationQuestions | undefined;
+    if (index === 0) {
+      questions = this.registry()?.questions;
+    } else if (this.registry()?.schemaResponses?.length) {
+      questions = this.registry()?.schemaResponses?.[index]?.revisionResponses;
+    }
+
+    if (schemaBlocks?.length && questions) {
+      return schemaBlocks.map((schemaBlock) => MapViewSchemaBlock(schemaBlock, questions));
+    }
+    return [];
+  });
+
+  protected readonly selectedRevisionIndex = signal(0);
 
   protected toolbarResource = computed(() => {
     if (this.registry()) {
@@ -101,5 +119,9 @@ export class RegistryOverviewComponent {
 
   navigateToFile(fileId: string): void {
     this.router.navigate(['/files', fileId]);
+  }
+
+  openRevision(revisionIndex: number): void {
+    this.selectedRevisionIndex.set(revisionIndex);
   }
 }

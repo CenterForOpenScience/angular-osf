@@ -9,9 +9,9 @@ import {
   GetRegistryOverviewJsonApi,
   GetRegistrySchemaBlockJsonApi,
   GetResourceSubjectsJsonApi,
-  RegistrationQuestions,
   RegistryInstitution,
   RegistryOverview,
+  RegistryOverviewJsonApiData,
   RegistrySchemaBlock,
   RegistrySubject,
 } from '@osf/features/registry/models';
@@ -24,7 +24,7 @@ import { environment } from 'src/environments/environment';
 export class RegistryOverviewService {
   private jsonApiService = inject(JsonApiService);
 
-  getRegistrationById(id: string): Observable<RegistryOverview> {
+  getRegistrationById(id: string): Observable<RegistryOverview | null> {
     const params = {
       related_counts: 'forks,comments,linked_nodes,linked_registrations,children,wikis',
       'embed[]': [
@@ -73,7 +73,7 @@ export class RegistryOverviewService {
       );
   }
 
-  getSchemaBlocks(schemaLink: string, questions: RegistrationQuestions): Observable<RegistrySchemaBlock[]> {
+  getSchemaBlocks(schemaLink: string): Observable<RegistrySchemaBlock[]> {
     const params = {
       'page[size]': 100,
       page: 1,
@@ -81,6 +81,41 @@ export class RegistryOverviewService {
 
     return this.jsonApiService
       .get<GetRegistrySchemaBlockJsonApi>(`${schemaLink}schema_blocks`, params)
-      .pipe(map((response) => response.data.map((block) => MapRegistrySchemaBlock(block.attributes, questions))));
+      .pipe(map((response) => response.data.map((block) => MapRegistrySchemaBlock(block.attributes))));
+  }
+
+  withdrawRegistration(registryId: string, justification: string): Observable<RegistryOverview | null> {
+    const payload = {
+      data: {
+        id: registryId,
+        attributes: {
+          withdrawal_justification: justification,
+          pending_withdrawal: true,
+        },
+        relationships: {},
+        type: 'registrations',
+      },
+    };
+
+    return this.jsonApiService
+      .patch<RegistryOverviewJsonApiData>(`${environment.apiUrl}/registrations/${registryId}`, payload)
+      .pipe(map((response) => MapRegistryOverview(response)));
+  }
+
+  makePublic(registryId: string): Observable<RegistryOverview | null> {
+    const payload = {
+      data: {
+        id: registryId,
+        attributes: {
+          public: true,
+        },
+        relationships: {},
+        type: 'registrations',
+      },
+    };
+
+    return this.jsonApiService
+      .patch<RegistryOverviewJsonApiData>(`${environment.apiUrl}/registrations/${registryId}`, payload)
+      .pipe(map((response) => MapRegistryOverview(response)));
   }
 }

@@ -7,4 +7,5 @@ export interface SchemaBlockAttributes {
   display_text: string;
   registration_response_key: string | null;
   required: boolean;
+  schema_block_group_key: string;
 }

@@ -50,7 +50,11 @@ export class CustomConfirmationService {
         options.onConfirm();
       },
       reject: () => {
-        options.onReject();
+        if (options.onReject) {
+          options.onReject();
+        } else {
+          this.confirmationService.close();
+        }
       },
     });
   }

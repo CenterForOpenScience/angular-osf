@@ -1,29 +1,10 @@
 @use "/assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
-.left-section {
-  flex: 3;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
 .accordion-border {
   border: 1px solid var.$grey-2;
   border-radius: mix.rem(12px);
   height: max-content !important;
-}
-
-.blocks-section {
-  border: 1px solid var.$grey-2;
-  border-radius: mix.rem(12px);
-  height: max-content;
-}
-
-.right-section {
-  flex: 1;
-  border: 1px solid var.$grey-2;
-  border-radius: mix.rem(12px);
 }
 
 .no-padding {
