@@ -22,6 +22,7 @@ import {
   MetadataStepComponent,
   TitleAndAbstractStepComponent,
 } from '@osf/features/preprints/components';
+import { AuthorAssertionsStepComponent } from '@osf/features/preprints/components/stepper/author-assertion-step/author-assertions-step.component';
 import { submitPreprintSteps } from '@osf/features/preprints/constants';
 import { SubmitSteps } from '@osf/features/preprints/enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
@@ -35,7 +36,14 @@ import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
 
 @Component({
   selector: 'osf-submit-preprint-stepper',
-  imports: [Skeleton, StepperComponent, TitleAndAbstractStepComponent, FileStepComponent, MetadataStepComponent],
+  imports: [
+    Skeleton,
+    StepperComponent,
+    TitleAndAbstractStepComponent,
+    FileStepComponent,
+    MetadataStepComponent,
+    AuthorAssertionsStepComponent,
+  ],
   templateUrl: './submit-preprint-stepper.component.html',
   styleUrl: './submit-preprint-stepper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

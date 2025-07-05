@@ -3,9 +3,10 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@osf/core/services';
+import { License, LicenseOptions, LicensesResponseJsonApi } from '@osf/shared/models';
 
 import { LicensesMapper } from '../mappers';
-import { License, LicensesResponseJsonApi } from '../models';
+import { LicensePayloadJsonApi, RegistrationDataJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -28,9 +29,7 @@ const data: any = {
   ],
 };
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class LicensesService {
   private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
@@ -48,5 +47,35 @@ export class LicensesService {
           return LicensesMapper.fromLicensesResponse(licenses);
         })
       );
+  }
+
+  updateLicense(registrationId: string, licenseId: string, licenseOptions?: LicenseOptions) {
+    const payload: LicensePayloadJsonApi = {
+      data: {
+        type: 'draft_registrations',
+        id: registrationId,
+        relationships: {
+          license: {
+            data: {
+              id: licenseId,
+              type: 'licenses',
+            },
+          },
+        },
+        attributes: {
+          ...(licenseOptions && {
+            node_license: {
+              copyright_holders: [licenseOptions.copyrightHolders],
+              year: licenseOptions.year,
+            },
+          }),
+        },
+      },
+    };
+
+    return this.jsonApiService.patch<RegistrationDataJsonApi>(
+      `${this.apiUrl}/draft_registrations/${registrationId}/`,
+      payload
+    );
   }
 }

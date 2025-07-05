@@ -9,15 +9,14 @@ import { ResourceTab } from '@osf/shared/enums';
 import { SearchService } from '@osf/shared/services';
 import { getResourceTypes } from '@osf/shared/utils';
 
-import { Project } from '../models';
-import {
-  LicensesService,
-  ProjectsService,
-  ProvidersService,
-  RegistrationSubjectsService,
-  RegistriesService,
-} from '../services';
+import { RegistriesService } from '../services';
 
+import { RegistrationContributorsHandlers } from './handlers/contributors.handlers';
+import { LicensesHandlers } from './handlers/licenses.handlers';
+import { ProjectsHandlers } from './handlers/projects.handlers';
+import { ProvidersHandlers } from './handlers/providers.handlers';
+import { SubjectsHandlers } from './handlers/subjects.handlers';
+import { DefaultState } from './default.state';
 import {
   AddContributor,
   CreateDraft,
@@ -31,54 +30,11 @@ import {
   GetProjects,
   GetProviders,
   GetRegistries,
+  SaveLicense,
   UpdateContributor,
   UpdateRegistrationSubjects,
 } from './registries.actions';
 import { RegistriesStateModel } from './registries.model';
-
-const DefaultState: RegistriesStateModel = {
-  providers: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  projects: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  draftRegistration: {
-    isLoading: false,
-    data: null,
-    isSubmitting: false,
-    error: null,
-  },
-  contributorsList: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  registries: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  licenses: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  registrationSubjects: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  pagesSchema: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-};
 
 @State<RegistriesStateModel>({
   name: 'registries',
@@ -87,11 +43,13 @@ const DefaultState: RegistriesStateModel = {
 @Injectable()
 export class RegistriesState {
   searchService = inject(SearchService);
-  providersService = inject(ProvidersService);
-  projectsService = inject(ProjectsService);
   registriesService = inject(RegistriesService);
-  licensesService = inject(LicensesService);
-  subjectsService = inject(RegistrationSubjectsService);
+
+  providersHandler = inject(ProvidersHandlers);
+  projectsHandler = inject(ProjectsHandlers);
+  licensesHandler = inject(LicensesHandlers);
+  subjectsHandler = inject(SubjectsHandlers);
+  contributorsHandler = inject(RegistrationContributorsHandlers);
 
   @Action(GetRegistries)
   getRegistries(ctx: StateContext<RegistriesStateModel>) {
@@ -120,59 +78,13 @@ export class RegistriesState {
   }
 
   @Action(GetProjects)
-  getProjects({ patchState }: StateContext<RegistriesStateModel>) {
-    patchState({
-      projects: {
-        ...DefaultState.projects,
-        isLoading: true,
-      },
-    });
-    return this.projectsService.getProjects().subscribe({
-      next: (projects: Project[]) => {
-        patchState({
-          projects: {
-            data: projects,
-            isLoading: false,
-            error: null,
-          },
-        });
-      },
-      error: (error) => {
-        patchState({
-          projects: { ...DefaultState.projects, isLoading: false, error },
-        });
-      },
-    });
+  getProjects(ctx: StateContext<RegistriesStateModel>) {
+    return this.projectsHandler.getProjects(ctx);
   }
 
   @Action(GetProviders)
-  getProviders({ patchState }: StateContext<RegistriesStateModel>) {
-    patchState({
-      providers: {
-        ...DefaultState.providers,
-        isLoading: true,
-      },
-    });
-    return this.providersService.getProviders().subscribe({
-      next: (providers) => {
-        patchState({
-          providers: {
-            data: providers,
-            isLoading: false,
-            error: null,
-          },
-        });
-      },
-      error: (error) => {
-        patchState({
-          providers: {
-            ...DefaultState.providers,
-            isLoading: false,
-            error,
-          },
-        });
-      },
-    });
+  getProviders(ctx: StateContext<RegistriesStateModel>) {
+    return this.providersHandler.getProviders(ctx);
   }
 
   @Action(CreateDraft)
@@ -279,143 +191,37 @@ export class RegistriesState {
 
   @Action(FetchContributors)
   fetchContributors(ctx: StateContext<RegistriesStateModel>, action: FetchContributors) {
-    const state = ctx.getState();
-
-    ctx.patchState({
-      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
-    });
-
-    return this.registriesService.getContributors(action.draftId).pipe(
-      tap((contributors) => {
-        ctx.patchState({
-          contributorsList: {
-            ...state.contributorsList,
-            data: contributors,
-            isLoading: false,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
-    );
+    return this.contributorsHandler.fetchContributors(ctx, action);
   }
 
   @Action(AddContributor)
   addContributor(ctx: StateContext<RegistriesStateModel>, action: AddContributor) {
-    const state = ctx.getState();
-
-    ctx.patchState({
-      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
-    });
-
-    return this.registriesService.addContributor(action.draftId, action.contributor).pipe(
-      tap((contributor) => {
-        const currentState = ctx.getState();
-
-        ctx.patchState({
-          contributorsList: {
-            ...currentState.contributorsList,
-            data: [...currentState.contributorsList.data, contributor],
-            isLoading: false,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
-    );
+    return this.contributorsHandler.addContributor(ctx, action);
   }
 
   @Action(UpdateContributor)
   updateContributor(ctx: StateContext<RegistriesStateModel>, action: UpdateContributor) {
-    const state = ctx.getState();
-
-    ctx.patchState({
-      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
-    });
-
-    return this.registriesService.updateContributor(action.draftId, action.contributor).pipe(
-      tap((updatedContributor) => {
-        const currentState = ctx.getState();
-
-        ctx.patchState({
-          contributorsList: {
-            ...currentState.contributorsList,
-            data: currentState.contributorsList.data.map((contributor) =>
-              contributor.id === updatedContributor.id ? updatedContributor : contributor
-            ),
-            isLoading: false,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
-    );
+    return this.contributorsHandler.updateContributor(ctx, action);
   }
 
   @Action(DeleteContributor)
   deleteContributor(ctx: StateContext<RegistriesStateModel>, action: DeleteContributor) {
-    const state = ctx.getState();
-
-    ctx.patchState({
-      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
-    });
-
-    return this.registriesService.deleteContributor(action.draftId, action.contributorId).pipe(
-      tap(() => {
-        ctx.patchState({
-          contributorsList: {
-            ...state.contributorsList,
-            data: state.contributorsList.data.filter((contributor) => contributor.userId !== action.contributorId),
-            isLoading: false,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
-    );
+    return this.contributorsHandler.deleteContributor(ctx, action);
   }
 
   @Action(FetchLicenses)
   fetchLicenses(ctx: StateContext<RegistriesStateModel>) {
-    ctx.patchState({
-      licenses: {
-        ...ctx.getState().licenses,
-        isLoading: true,
-      },
-    });
+    return this.licensesHandler.fetchLicenses(ctx);
+  }
 
-    return this.licensesService.getLicenses().pipe(
-      tap((licenses) => {
-        ctx.patchState({
-          licenses: {
-            data: licenses,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'licenses', error))
-    );
+  @Action(SaveLicense)
+  saveLicense(ctx: StateContext<RegistriesStateModel>, { registrationId, licenseId, licenseOptions }: SaveLicense) {
+    return this.licensesHandler.saveLicense(ctx, { registrationId, licenseId, licenseOptions });
   }
 
   @Action(FetchRegistrationSubjects)
   fetchRegistrationSubjects(ctx: StateContext<RegistriesStateModel>, { registrationId }: FetchRegistrationSubjects) {
-    ctx.patchState({
-      registrationSubjects: {
-        ...ctx.getState().registrationSubjects,
-        isLoading: true,
-        error: null,
-      },
-    });
-
-    return this.subjectsService.getRegistrationSubjects(registrationId).pipe(
-      tap((subjects) => {
-        ctx.patchState({
-          registrationSubjects: {
-            data: subjects,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'registrationSubjects', error))
-    );
+    return this.subjectsHandler.fetchRegistrationSubjects(ctx, { registrationId });
   }
 
   @Action(UpdateRegistrationSubjects)
@@ -423,24 +229,6 @@ export class RegistriesState {
     ctx: StateContext<RegistriesStateModel>,
     { registrationId, subjects }: UpdateRegistrationSubjects
   ) {
-    ctx.patchState({
-      registrationSubjects: {
-        ...ctx.getState().registrationSubjects,
-        isLoading: true,
-        error: null,
-      },
-    });
-    return this.subjectsService.updateRegistrationSubjects(registrationId, subjects).pipe(
-      tap(() => {
-        ctx.patchState({
-          registrationSubjects: {
-            data: subjects,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'registrationSubjects', error))
-    );
+    return this.subjectsHandler.updateRegistrationSubjects(ctx, { registrationId, subjects });
   }
 }

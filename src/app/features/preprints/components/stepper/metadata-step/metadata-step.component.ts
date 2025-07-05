@@ -61,7 +61,7 @@ export class MetadataStepComponent implements OnInit {
   protected inputLimits = formInputLimits;
   protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
-  licences = select(SubmitPreprintSelectors.getLicenses);
+  licenses = select(SubmitPreprintSelectors.getLicenses);
   createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
   isUpdatingPreprint = select(SubmitPreprintSelectors.isPreprintSubmitting);
 

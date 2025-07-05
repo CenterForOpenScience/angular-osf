@@ -22,28 +22,21 @@
         />
       } @else {
         @if (isAnyFilterOptions()) {
-          <img
-            ngSrc="assets/icons/colored/filter.svg"
-            tabindex="0"
-            role="button"
-            alt="filter by"
-            width="44"
-            height="44"
-            (keydown.enter)="switchMobileFiltersSectionVisibility()"
+          <p-button
+            severity="secondary"
+            icon="fas fa-sliders"
+            size="large"
             (click)="switchMobileFiltersSectionVisibility()"
-          />
+          ></p-button>
         }
-        <img
-          ngSrc="assets/icons/colored/sort.svg"
-          tabindex="0"
-          role="button"
-          alt="sort by"
-          width="44"
-          height="44"
+
+        <p-button
           class="ml-2"
-          (keydown.enter)="switchMobileSortingSectionVisibility()"
+          severity="secondary"
+          icon="fas fa-filter"
+          size="large"
           (click)="switchMobileSortingSectionVisibility()"
-        />
+        ></p-button>
       }
     </div>
   </section>

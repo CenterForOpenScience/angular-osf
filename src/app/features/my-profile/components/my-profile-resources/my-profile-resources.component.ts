@@ -4,7 +4,6 @@ import { Button } from 'primeng/button';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
 
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -24,7 +23,6 @@ import { MyProfileResourceFiltersSelectors } from '../my-profile-resource-filter
   imports: [
     DataView,
     MyProfileFilterChipsComponent,
-    NgOptimizedImage,
     MyProfileResourceFiltersComponent,
     Select,
     FormsModule,

@@ -1,4 +1,5 @@
-import { StringOrNull } from '@core/helpers';
+import { BooleanOrNull, StringOrNull } from '@core/helpers';
+import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { LicenseOptions } from '@shared/models';
 
 export interface Preprint {
@@ -18,6 +19,15 @@ export interface Preprint {
   primaryFileId: StringOrNull;
   licenseId: StringOrNull;
   licenseOptions: LicenseOptions | null;
+  hasCoi: BooleanOrNull;
+  coiStatement: StringOrNull;
+  hasDataLinks: ApplicabilityStatus | null;
+  dataLinks: string[];
+  whyNoData: StringOrNull;
+  hasPreregLinks: ApplicabilityStatus | null;
+  whyNoPrereg: StringOrNull;
+  preregLinks: string[];
+  preregLinkInfo: PreregLinkInfo | null;
 }
 
 export interface PreprintFilesLinks {

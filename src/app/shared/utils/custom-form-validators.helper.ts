@@ -25,4 +25,19 @@ export class CustomValidators {
       return isValid ? null : { email: { value: control.value } };
     };
   }
+
+  static linkValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (!value) {
+        return null;
+      }
+
+      const urlPattern = /^(https):\/\/.+/i;
+
+      const isValid = urlPattern.test(value);
+
+      return isValid ? null : { link: true };
+    };
+  }
 }

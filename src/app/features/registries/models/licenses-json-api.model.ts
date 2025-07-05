@@ -1,16 +1,21 @@
-import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '@osf/core/models';
+import { LicenseRecordJsonApi } from '@shared/models';
 
-export interface LicensesResponseJsonApi {
-  data: LicenseDataJsonApi[];
-  meta: MetaJsonApi;
-  links: PaginationLinksJsonApi;
+export interface LicenseRelationshipJsonApi {
+  license: {
+    data: {
+      id: string;
+      type: 'licenses';
+    };
+  };
 }
 
-export type LicenseDataJsonApi = ApiData<LicenseAttributesJsonApi, null, null, null>;
-
-interface LicenseAttributesJsonApi {
-  name: string;
-  required_fields: string[];
-  url: string;
-  text: string;
+export interface LicensePayloadJsonApi {
+  data: {
+    type: 'draft_registrations';
+    id: string;
+    relationships: LicenseRelationshipJsonApi;
+    attributes: {
+      node_license?: LicenseRecordJsonApi;
+    };
+  };
 }

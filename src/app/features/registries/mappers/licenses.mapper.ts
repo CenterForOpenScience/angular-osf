@@ -1,4 +1,4 @@
-import { License, LicensesResponseJsonApi } from '../models';
+import { License, LicensesResponseJsonApi } from '@osf/shared/models';
 
 export class LicensesMapper {
   static fromLicensesResponse(response: LicensesResponseJsonApi): License[] {

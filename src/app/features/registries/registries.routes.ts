@@ -10,7 +10,14 @@ import { SUBJECTS_SERVICE } from '@osf/shared/tokens/subjects.token';
 
 import { ModerationState } from '../moderation/store';
 
-import { RegistrationSubjectsService } from './services';
+import {
+  LicensesHandlers,
+  ProjectsHandlers,
+  ProvidersHandlers,
+  RegistrationContributorsHandlers,
+  SubjectsHandlers,
+} from './store/handlers';
+import { LicensesService, RegistrationContributorsService, RegistrationSubjectsService } from './services';
 
 export const registriesRoutes: Routes = [
   {
@@ -18,6 +25,14 @@ export const registriesRoutes: Routes = [
     component: RegistriesComponent,
     providers: [
       provideStates([RegistriesState, ContributorsState, SubjectsState]),
+      ProvidersHandlers,
+      ProjectsHandlers,
+      LicensesHandlers,
+      RegistrationContributorsHandlers,
+      SubjectsHandlers,
+      RegistrationSubjectsService,
+      RegistrationContributorsService,
+      LicensesService,
       {
         provide: SUBJECTS_SERVICE,
         useClass: RegistrationSubjectsService,

@@ -8,9 +8,7 @@ import { ISubjectsService, Subject, SubjectsResponseJsonApi } from '@osf/shared/
 
 import { environment } from 'src/environments/environment';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class RegistrationSubjectsService implements ISubjectsService {
   private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
