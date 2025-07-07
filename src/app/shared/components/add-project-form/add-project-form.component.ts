@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -15,12 +15,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
-import { STORAGE_LOCATIONS } from '@core/constants/storage-locations.constant';
 import { CreateProject, GetMyProjects, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 import { ProjectForm } from '@osf/shared/models/create-project-form.model';
 import { CustomValidators } from '@osf/shared/utils';
 import { InstitutionsSelectors } from '@shared/stores/institutions';
+import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
 import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
 
 @Component({
@@ -41,17 +41,17 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddProjectFormComponent implements OnInit {
-  #store = inject(Store);
-  protected readonly projects = this.#store.selectSignal(MyProjectsSelectors.getProjects);
+  private store = inject(Store);
+  protected readonly projects = select(MyProjectsSelectors.getProjects);
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly dialogRef = inject(DynamicDialogRef);
   protected readonly ProjectFormControls = ProjectFormControls;
   protected readonly hasTemplateSelected = signal(false);
   protected readonly isSubmitting = signal(false);
 
-  protected readonly storageLocations = STORAGE_LOCATIONS;
+  protected readonly storageLocations = select(RegionsSelectors.getRegions);
 
-  protected readonly affiliations = this.#store.selectSignal(InstitutionsSelectors.getUserInstitutions);
+  protected readonly affiliations = select(InstitutionsSelectors.getUserInstitutions);
 
   protected projectTemplateOptions = computed(() => {
     return this.projects().map((project) => ({
@@ -65,7 +65,7 @@ export class AddProjectFormComponent implements OnInit {
       nonNullable: true,
       validators: [CustomValidators.requiredTrimmed()],
     }),
-    [ProjectFormControls.StorageLocation]: new FormControl('us', {
+    [ProjectFormControls.StorageLocation]: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required],
     }),
@@ -81,13 +81,14 @@ export class AddProjectFormComponent implements OnInit {
   });
 
   constructor() {
+    this.store.dispatch(new FetchRegions());
     this.projectForm.get(ProjectFormControls.Template)?.valueChanges.subscribe((value) => {
       this.hasTemplateSelected.set(!!value);
     });
   }
 
   ngOnInit(): void {
-    this.#store.dispatch(new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}));
+    this.store.dispatch(new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}));
 
     this.selectAllAffiliations();
   }
@@ -110,7 +111,7 @@ export class AddProjectFormComponent implements OnInit {
     const formValue = this.projectForm.getRawValue();
     this.isSubmitting.set(true);
 
-    this.#store
+    this.store
       .dispatch(
         new CreateProject(
           formValue.title,
@@ -122,7 +123,7 @@ export class AddProjectFormComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.#store.dispatch(new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}));
+          this.store.dispatch(new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}));
           this.dialogRef.close();
         },
         error: () => {
