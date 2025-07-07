@@ -105,3 +105,46 @@ export interface NodeResponseModel {
   data: NodeData;
   meta: NodeMeta;
 }
+
+export interface UpdateNodeAttributes {
+  description?: string;
+  tags?: string[];
+  public?: boolean;
+  title?: string;
+}
+
+export interface UpdateNodeData {
+  type: 'nodes';
+  id: string;
+  attributes: UpdateNodeAttributes;
+}
+
+export interface UpdateNodeRequestModel {
+  data: UpdateNodeData;
+}
+
+export interface CreateProjectPayloadJsoApi {
+  data: {
+    type: 'nodes';
+    attributes: {
+      title: string;
+      description?: string;
+      category: 'project';
+      template_from?: string;
+    };
+    relationships: {
+      region: {
+        data: {
+          type: 'regions';
+          id: string;
+        };
+      };
+      affiliated_institutions?: {
+        data: {
+          type: 'institutions';
+          id: string;
+        }[];
+      };
+    };
+  };
+}
