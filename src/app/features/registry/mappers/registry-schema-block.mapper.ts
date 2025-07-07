@@ -1,5 +1,9 @@
-import { RegistrationQuestions, RegistrySchemaBlock, SchemaBlockAttributes } from '@osf/features/registry/models';
-import { ViewSchemaBlock } from '@osf/features/registry/models/view-schema-block.model';
+import {
+  RegistrationQuestions,
+  RegistrySchemaBlock,
+  SchemaBlockAttributes,
+  ViewSchemaBlock,
+} from '@osf/features/registry/models';
 
 export function MapViewSchemaBlock(block: RegistrySchemaBlock, questions: RegistrationQuestions): ViewSchemaBlock {
   const schemaBlock = {

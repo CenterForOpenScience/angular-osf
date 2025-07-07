@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -29,6 +29,9 @@ export class RegistryStatusesComponent {
   private readonly translateService = inject(TranslateService);
   protected readonly RegistryStatus = RegistryStatus;
   protected readonly customConfirmationService = inject(CustomConfirmationService);
+  protected readonly actions = createDispatchMap({
+    makePublic: MakePublic,
+  });
 
   openWithdrawDialog(): void {
     const registry = this.registry();
@@ -54,7 +57,7 @@ export class RegistryStatusesComponent {
         headerKey: 'common.labels.makePublic',
         messageKey: 'registry.overview.makePublicMessage',
         acceptLabelKey: 'common.labels.makePublic',
-        onConfirm: () => this.store.dispatch(new MakePublic(registry.id)),
+        onConfirm: () => this.actions.makePublic(registry.id),
       });
     }
   }

@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -21,9 +21,11 @@ import { TextInputComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WithdrawDialogComponent {
-  private readonly store = inject(Store);
   protected readonly dialogRef = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
+  private readonly actions = createDispatchMap({
+    withdrawRegistration: WithdrawRegistration,
+  });
 
   protected readonly form = new FormGroup({
     text: new FormControl(''),
@@ -32,8 +34,8 @@ export class WithdrawDialogComponent {
   withdrawRegistration(): void {
     const registryId = this.config.data.registryId;
     if (registryId) {
-      this.store
-        .dispatch(new WithdrawRegistration(registryId, this.form.controls.text.value ?? ''))
+      this.actions
+        .withdrawRegistration(registryId, this.form.controls.text.value ?? '')
         .pipe(
           take(1),
           finalize(() => this.dialogRef.close())
