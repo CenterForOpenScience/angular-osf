@@ -1,7 +1,6 @@
 import { StringOrNull } from '@core/helpers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
-import { ContributorAddModel, ContributorModel } from '@shared/components/contributors/models';
 import { LicenseOptions, OsfFile, Subject } from '@shared/models';
 
 export class SetSelectedPreprintProviderId {
@@ -77,28 +76,6 @@ export class GetProjectFilesByLink {
   static readonly type = '[Submit Preprint] Get Project Files By Link';
 
   constructor(public filesLink: string) {}
-}
-
-export class FetchContributors {
-  static readonly type = '[Submit Preprint] Fetch Contributors';
-}
-
-export class AddContributor {
-  static readonly type = '[Submit Preprint] Add Contributor';
-
-  constructor(public contributor: ContributorAddModel) {}
-}
-
-export class UpdateContributor {
-  static readonly type = '[Submit Preprint] Update Contributor';
-
-  constructor(public contributor: ContributorModel) {}
-}
-
-export class DeleteContributor {
-  static readonly type = '[Submit Preprint] Delete Contributor';
-
-  constructor(public userId: string) {}
 }
 
 export class FetchLicenses {

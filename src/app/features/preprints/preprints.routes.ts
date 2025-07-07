@@ -9,7 +9,6 @@ import { PreprintsDiscoverState } from '@osf/features/preprints/store/preprints-
 import { PreprintsResourcesFiltersState } from '@osf/features/preprints/store/preprints-resources-filters';
 import { PreprintsResourcesFiltersOptionsState } from '@osf/features/preprints/store/preprints-resources-filters-options';
 import { SubmitPreprintState } from '@osf/features/preprints/store/submit-preprint';
-import { ContributorsState } from '@shared/components/contributors/store';
 import { SubjectsState } from '@shared/stores';
 import { SUBJECTS_SERVICE } from '@shared/tokens/subjects.token';
 
@@ -24,7 +23,6 @@ export const preprintsRoutes: Routes = [
         PreprintsResourcesFiltersState,
         PreprintsResourcesFiltersOptionsState,
         SubmitPreprintState,
-        ContributorsState,
         SubjectsState,
       ]),
       {
