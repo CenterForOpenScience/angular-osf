@@ -124,6 +124,32 @@ export class UpdatePreprintsSubjects {
   constructor(public subjects: Subject[]) {}
 }
 
+export class DisconnectProject {
+  static readonly type = '[Submit Preprint] Disconnect Preprint Project';
+}
+
+export class ConnectProject {
+  static readonly type = '[Submit Preprint] Connect Preprint Project';
+
+  constructor(public projectId: string) {}
+}
+
+export class FetchPreprintProject {
+  static readonly type = '[Submit Preprint] Fetch Preprint Project';
+}
+
+export class CreateNewProject {
+  static readonly type = '[Submit Preprint] Create Project';
+
+  constructor(
+    public title: string,
+    public description: string,
+    public templateFrom: string,
+    public regionId: string,
+    public affiliationsId: string[]
+  ) {}
+}
+
 export class ResetStateAndDeletePreprint {
   static readonly type = '[Submit Preprint] Reset State And Delete Preprint';
 }

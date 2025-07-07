@@ -16,6 +16,7 @@ export interface Preprint {
   isPublic: boolean;
   version: number;
   isLatestVersion: boolean;
+  nodeId: StringOrNull;
   primaryFileId: StringOrNull;
   licenseId: StringOrNull;
   licenseOptions: LicenseOptions | null;

@@ -1,7 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { insertItem, patch, removeItem, updateItem } from '@ngxs/store/operators';
 
-import { EMPTY, filter, switchMap, tap, throwError } from 'rxjs';
+import { EMPTY, filter, forkJoin, of, switchMap, tap, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { HttpEventType } from '@angular/common/http';
@@ -14,6 +14,7 @@ import {
   PreprintContributorsService,
   PreprintFilesService,
   PreprintLicensesService,
+  PreprintsProjectsService,
   PreprintsService,
   PreprintSubjectsService,
 } from '@osf/features/preprints/services';
@@ -22,11 +23,15 @@ import { FilesService } from '@shared/services';
 
 import {
   AddContributor,
+  ConnectProject,
   CopyFileFromProject,
+  CreateNewProject,
   CreatePreprint,
   DeleteContributor,
+  DisconnectProject,
   FetchContributors,
   FetchLicenses,
+  FetchPreprintProject,
   FetchPreprintsSubjects,
   GetAvailableProjects,
   GetPreprintFiles,
@@ -89,6 +94,11 @@ const DefaultState: SubmitPreprintStateModel = {
     isLoading: false,
     error: null,
   },
+  preprintProject: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
 };
 
 @State<SubmitPreprintStateModel>({
@@ -103,6 +113,7 @@ export class SubmitPreprintState {
   private contributorsService = inject(PreprintContributorsService);
   private licensesService = inject(PreprintLicensesService);
   private subjectsService = inject(PreprintSubjectsService);
+  private preprintProjectsService = inject(PreprintsProjectsService);
 
   @Action(SetSelectedPreprintProviderId)
   setSelectedPreprintProviderId(ctx: StateContext<SubmitPreprintStateModel>, action: SetSelectedPreprintProviderId) {
@@ -227,7 +238,7 @@ export class SubmitPreprintState {
   getAvailableProjects(ctx: StateContext<SubmitPreprintStateModel>, action: GetAvailableProjects) {
     ctx.setState(patch({ availableProjects: patch({ isLoading: true }) }));
 
-    return this.preprintFilesService.getAvailableProjects(action.searchTerm).pipe(
+    return this.preprintProjectsService.getAvailableProjects(action.searchTerm).pipe(
       tap((projects) => {
         ctx.setState(
           patch({
@@ -492,6 +503,114 @@ export class SubmitPreprintState {
       }),
       catchError((error) => handleSectionError(ctx, 'subjects', error))
     );
+  }
+
+  @Action(DisconnectProject)
+  disconnectProject(ctx: StateContext<SubmitPreprintStateModel>) {
+    const createdPreprintId = ctx.getState().createdPreprint.data?.id;
+    if (!createdPreprintId) return EMPTY;
+
+    ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
+
+    return this.preprintProjectsService.removePreprintProjectRelationship(createdPreprintId).pipe(
+      tap(() => {
+        ctx.patchState({
+          createdPreprint: {
+            ...ctx.getState().createdPreprint,
+            data: {
+              ...ctx.getState().createdPreprint.data!,
+              nodeId: null,
+            },
+            isSubmitting: false,
+          },
+          preprintProject: {
+            data: null,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'createdPreprint', error))
+    );
+  }
+
+  @Action(ConnectProject)
+  connectProject(ctx: StateContext<SubmitPreprintStateModel>, { projectId }: ConnectProject) {
+    const createdPreprintId = ctx.getState().createdPreprint.data?.id;
+    if (!createdPreprintId) return EMPTY;
+
+    ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
+
+    return this.preprintProjectsService.updatePreprintProjectRelationship(createdPreprintId, projectId).pipe(
+      tap((preprint) => {
+        ctx.patchState({
+          createdPreprint: {
+            data: preprint,
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'createdPreprint', error))
+    );
+  }
+
+  @Action(FetchPreprintProject)
+  fetchPreprintProject(ctx: StateContext<SubmitPreprintStateModel>) {
+    const preprintProjectId = ctx.getState().createdPreprint.data?.nodeId;
+    if (!preprintProjectId) return EMPTY;
+
+    ctx.setState(patch({ preprintProject: patch({ isLoading: true }) }));
+
+    return this.preprintProjectsService.getProjectById(preprintProjectId).pipe(
+      tap((project) => {
+        ctx.patchState({
+          preprintProject: {
+            data: project,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprintProject', error))
+    );
+  }
+
+  @Action(CreateNewProject)
+  createNewProject(ctx: StateContext<SubmitPreprintStateModel>, action: CreateNewProject) {
+    const createdPreprintId = ctx.getState().createdPreprint.data!.id;
+    ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
+    ctx.setState(patch({ preprintProject: patch({ isLoading: true }) }));
+
+    return this.preprintProjectsService
+      .createProject(action.title, action.description, action.templateFrom, action.regionId, action.affiliationsId)
+      .pipe(
+        switchMap((project) =>
+          forkJoin([
+            of(project),
+            this.preprintProjectsService.updatePreprintProjectRelationship(createdPreprintId, project.id),
+          ])
+        ),
+        tap(([project, preprint]) => {
+          ctx.patchState({
+            createdPreprint: {
+              ...ctx.getState().createdPreprint,
+              data: {
+                ...ctx.getState().createdPreprint.data!,
+                nodeId: preprint.nodeId,
+              },
+              isSubmitting: false,
+            },
+            preprintProject: {
+              data: project,
+              isLoading: false,
+              error: null,
+            },
+          });
+        }),
+        catchError((error) => this.handleError(ctx, 'preprintProject', error))
+      );
   }
 
   private handleError(

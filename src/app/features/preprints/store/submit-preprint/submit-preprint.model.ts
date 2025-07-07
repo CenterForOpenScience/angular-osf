@@ -16,4 +16,5 @@ export interface SubmitPreprintStateModel {
   contributors: AsyncStateModel<ContributorModel[]>;
   licenses: AsyncStateModel<License[]>;
   subjects: AsyncStateModel<Subject[]>;
+  preprintProject: AsyncStateModel<IdName | null>;
 }
