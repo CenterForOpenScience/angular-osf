@@ -2,6 +2,7 @@ export { AddProjectFormComponent } from './add-project-form/add-project-form.com
 export { BarChartComponent } from './bar-chart/bar-chart.component';
 export { CopyButtonComponent } from './copy-button/copy-button.component';
 export { CustomPaginatorComponent } from './custom-paginator/custom-paginator.component';
+export { DataResourcesComponent } from './data-resources/data-resources.component';
 export { EducationHistoryComponent } from './education-history/education-history.component';
 export { EducationHistoryDialogComponent } from './education-history-dialog/education-history-dialog.component';
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';

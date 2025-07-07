@@ -9,7 +9,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@osf/features/project/settings/models';
+import { PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@osf/shared/models';
 
 import { CopyButtonComponent } from '../copy-button/copy-button.component';
 

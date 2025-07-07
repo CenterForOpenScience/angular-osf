@@ -13,14 +13,4 @@ export class SettingsSelectors {
   static getProjectDetails(state: SettingsStateModel) {
     return state.projectDetails.data;
   }
-
-  @Selector([SettingsState])
-  static getViewOnlyLinks(state: SettingsStateModel) {
-    return state.viewOnlyLinks.data;
-  }
-
-  @Selector([SettingsState])
-  static isViewOnlyLinksLoading(state: SettingsStateModel) {
-    return state.viewOnlyLinks.isLoading;
-  }
 }

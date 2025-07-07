@@ -1,10 +1,12 @@
+import { ResourceType } from '@osf/shared/enums';
+
 import { DateRange } from '../enums';
 
 export class GetMetrics {
   static readonly type = '[Analytics] Get Metrics';
 
   constructor(
-    public projectId: string,
+    public resourceId: string,
     public dateRange: DateRange
   ) {}
 }
@@ -12,5 +14,8 @@ export class GetMetrics {
 export class GetRelatedCounts {
   static readonly type = '[Analytics] Get Related Counts';
 
-  constructor(public projectId: string) {}
+  constructor(
+    public resourceId: string,
+    public resourceType: ResourceType | undefined
+  ) {}
 }

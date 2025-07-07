@@ -1,5 +1,6 @@
 export * from './addons';
 export { BrandService } from './brand.service';
+export { ContributorsService } from './contributors.service';
 export { CustomConfirmationService } from './custom-confirmation.service';
 export { FilesService } from './files.service';
 export { FiltersOptionsService } from './filters-options.service';
@@ -11,3 +12,4 @@ export { ResourceCardService } from './resource-card.service';
 export { SearchService } from './search.service';
 export { SubjectsService } from './subjects.service';
 export { ToastService } from './toast.service';
+export { ViewOnlyLinksService } from './view-only-links.service';

@@ -6,4 +6,5 @@ export enum ResourceType {
   Preprint,
   ProjectComponent,
   Agent,
+  DraftRegistration,
 }

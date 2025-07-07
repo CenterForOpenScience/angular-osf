@@ -1,5 +1,4 @@
 import { Action, State, StateContext } from '@ngxs/store';
-import { patch } from '@ngxs/store/operators';
 
 import { map, of, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -7,20 +6,18 @@ import { catchError, tap } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { MyProjectsService } from '@osf/features/my-projects/services';
-import { PaginatedViewOnlyLinksModel, ProjectSettingsModel } from '@osf/features/project/settings/models';
-import { SettingsService, ViewOnlyLinksService } from '@osf/features/project/settings/services';
+import { SettingsService } from '@osf/features/project/settings/services';
 import {
-  CreateViewOnlyLink,
   DeleteProject,
-  DeleteViewOnlyLink,
   GetProjectDetails,
   GetProjectSettings,
-  GetViewOnlyLinksTable,
   UpdateProjectDetails,
   UpdateProjectSettings,
 } from '@osf/features/project/settings/store/settings.actions';
 import { SettingsStateModel } from '@osf/features/project/settings/store/settings.model';
 import { NodeData } from '@shared/models';
+
+import { ProjectSettingsModel } from '../models';
 
 @State<SettingsStateModel>({
   name: 'settings',
@@ -35,18 +32,12 @@ import { NodeData } from '@shared/models';
       isLoading: false,
       error: null,
     },
-    viewOnlyLinks: {
-      data: {} as PaginatedViewOnlyLinksModel,
-      isLoading: false,
-      error: null,
-    },
   },
 })
 @Injectable()
 export class SettingsState {
   private readonly settingsService = inject(SettingsService);
   private readonly myProjectService = inject(MyProjectsService);
-  private readonly viewOnlyLinksService = inject(ViewOnlyLinksService);
 
   private readonly REFRESH_INTERVAL = 5 * 60 * 1000;
 
@@ -140,29 +131,6 @@ export class SettingsState {
     );
   }
 
-  @Action(GetViewOnlyLinksTable)
-  getViewOnlyLinksTable(ctx: StateContext<SettingsStateModel>, action: GetViewOnlyLinksTable) {
-    const state = ctx.getState();
-
-    ctx.patchState({
-      viewOnlyLinks: { ...state.viewOnlyLinks, isLoading: true, error: null },
-    });
-
-    return this.viewOnlyLinksService.getViewOnlyLinksData(action.projectId).pipe(
-      map((response) => response),
-      tap((links) => {
-        ctx.patchState({
-          viewOnlyLinks: {
-            data: links,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => this.handleError(ctx, 'viewOnlyLinks', error))
-    );
-  }
-
   @Action(UpdateProjectDetails)
   updateProjectDetails(ctx: StateContext<SettingsStateModel>, action: UpdateProjectDetails) {
     return this.myProjectService.updateProjectById(action.payload).pipe(
@@ -207,58 +175,6 @@ export class SettingsState {
         });
         return this.handleError(ctx, 'settings', error);
       })
-    );
-  }
-
-  @Action(CreateViewOnlyLink)
-  createViewOnlyLink(ctx: StateContext<SettingsStateModel>, action: CreateViewOnlyLink) {
-    const state = ctx.getState();
-
-    ctx.patchState({
-      viewOnlyLinks: { ...state.viewOnlyLinks, isLoading: true, error: null },
-    });
-
-    return this.viewOnlyLinksService.createViewOnlyLink(action.projectId, action.payload).pipe(
-      tap((data: PaginatedViewOnlyLinksModel) => {
-        ctx.patchState({
-          viewOnlyLinks: {
-            data: {
-              ...state.viewOnlyLinks.data,
-              items: [data.items[0], ...state.viewOnlyLinks.data.items],
-            },
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => this.handleError(ctx, 'viewOnlyLinks', error))
-    );
-  }
-
-  @Action(DeleteViewOnlyLink)
-  deleteViewOnlyLink(ctx: StateContext<SettingsStateModel>, action: DeleteViewOnlyLink) {
-    const state = ctx.getState();
-
-    ctx.patchState({
-      viewOnlyLinks: { ...state.viewOnlyLinks, isLoading: true, error: null },
-    });
-
-    return this.viewOnlyLinksService.deleteLink(action.projectId, action.linkId).pipe(
-      tap(() => {
-        ctx.setState(
-          patch({
-            viewOnlyLinks: {
-              data: {
-                ...ctx.getState().viewOnlyLinks.data,
-                items: ctx.getState().viewOnlyLinks.data.items.filter((item) => item.id !== action.linkId),
-              },
-              isLoading: false,
-              error: null,
-            },
-          })
-        );
-      }),
-      catchError((error) => this.handleError(ctx, 'viewOnlyLinks', error))
     );
   }
 

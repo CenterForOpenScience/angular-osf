@@ -1,148 +1,125 @@
 import { MenuItem } from 'primeng/api';
 
-import { NavItem } from '@osf/shared/models/nav-item.model';
-
-export const NAV_ITEMS: NavItem[] = [
+export const MENU_ITEMS: MenuItem[] = [
   {
-    path: '/home',
+    routerLink: '/home',
     label: 'navigation.home',
-    icon: 'home',
-    useExactMatch: true,
+    icon: 'osf-icon-home',
+    routerLinkActiveOptions: { exact: true },
   },
   {
-    path: '/search',
+    routerLink: '/search',
     label: 'navigation.searchOsf',
-    icon: 'search',
-    useExactMatch: true,
+    icon: 'osf-icon-search',
+    routerLinkActiveOptions: { exact: true },
   },
-  // [NS] TODO: Hidden until development
-  // {
-  //   path: '/support',
-  //   label: 'navigation.support',
-  //   icon: 'support',
-  //   useExactMatch: true,
-  // },
   {
-    path: '/my-projects',
+    routerLink: '/my-projects',
     label: 'navigation.myProjects',
-    icon: 'my-projects',
-    useExactMatch: true,
+    icon: 'osf-icon-my-projects',
+    routerLinkActiveOptions: { exact: true },
   },
   {
-    path: '/registries',
     label: 'navigation.registries',
-    icon: 'registries',
-    isCollapsible: true,
-    useExactMatch: false,
+    icon: 'osf-icon-registries',
+    routerLinkActiveOptions: { exact: true },
     items: [
       {
-        path: '/registries',
+        routerLink: '/registries/overview',
         label: 'navigation.registriesSubRoutes.overview',
-        useExactMatch: false,
+        routerLinkActiveOptions: { exact: true },
       },
       {
-        path: '/my-registrations',
+        routerLink: '/my-registrations',
         label: 'navigation.registriesSubRoutes.myRegistrations',
-        useExactMatch: false,
+        routerLinkActiveOptions: { exact: true },
       },
       {
-        path: '/registry-overview',
+        routerLink: '/registry-overview',
         label: 'navigation.registriesSubRoutes.registryDetails',
-        useExactMatch: false,
+        routerLinkActiveOptions: { exact: true },
       },
     ],
   },
   {
-    path: '/preprints',
+    routerLink: '/preprints',
     label: 'navigation.preprints',
-    icon: 'preprints',
-    isCollapsible: true,
-    useExactMatch: false,
+    icon: 'osf-icon-preprints',
+    routerLinkActiveOptions: { exact: true },
     items: [
       {
-        path: '/preprints',
+        routerLink: '/preprints',
         label: 'navigation.preprintsSubRoutes.overview',
-        useExactMatch: false,
+        routerLinkActiveOptions: { exact: true },
       },
       {
-        path: '/my-preprints',
+        routerLink: '/my-preprints',
         label: 'navigation.preprintsSubRoutes.myPreprints',
-        useExactMatch: true,
+        routerLinkActiveOptions: { exact: true },
       },
     ],
   },
   {
-    path: '/my-profile',
+    routerLink: '/my-profile',
     label: 'navigation.profile',
-    icon: 'profile',
-    useExactMatch: true,
+    icon: 'osf-icon-profile',
+    routerLinkActiveOptions: { exact: true },
   },
   {
-    path: '/institutions',
+    routerLink: '/institutions',
     label: 'navigation.institutions',
-    icon: 'institutions',
-    useExactMatch: true,
+    icon: 'osf-icon-institutions',
+    routerLinkActiveOptions: { exact: true },
   },
-
   {
-    path: '/collections',
+    routerLink: '/collections',
     label: 'navigation.collections',
-    icon: 'collections',
-    useExactMatch: true,
+    icon: 'osf-icon-collections',
+    routerLinkActiveOptions: { exact: true },
   },
   {
-    path: '/meetings',
+    routerLink: '/meetings',
     label: 'navigation.meetings',
-    icon: 'meetings',
-    useExactMatch: true,
+    icon: 'osf-icon-meetings',
+    routerLinkActiveOptions: { exact: false },
   },
   {
-    path: '/settings',
     label: 'navigation.settings',
-    icon: 'settings',
-    isCollapsible: true,
-    useExactMatch: true,
+    icon: 'osf-icon-settings',
+    routerLinkActiveOptions: { exact: true },
     items: [
       {
-        path: '/settings/profile-settings',
+        routerLink: '/settings/profile-settings',
         label: 'navigation.profileSettings',
-        useExactMatch: true,
+        routerLinkActiveOptions: { exact: true },
       },
       {
-        path: '/settings/account-settings',
+        routerLink: '/settings/account-settings',
         label: 'navigation.accountSettings',
-        useExactMatch: true,
+        routerLinkActiveOptions: { exact: true },
       },
       {
-        path: '/settings/addons',
+        routerLink: '/settings/addons',
         label: 'navigation.configureAddonAccounts',
-        useExactMatch: false,
+        routerLinkActiveOptions: { exact: false },
       },
       {
-        path: '/settings/notifications',
+        routerLink: '/settings/notifications',
         label: 'navigation.notifications',
-        useExactMatch: true,
+        routerLinkActiveOptions: { exact: true },
       },
       {
-        path: '/settings/developer-apps',
+        routerLink: '/settings/developer-apps',
         label: 'navigation.developerApps',
-        useExactMatch: true,
+        routerLinkActiveOptions: { exact: false },
       },
       {
-        path: '/settings/tokens',
+        routerLink: '/settings/tokens',
         label: 'navigation.personalAccessTokens',
-        useExactMatch: true,
+        routerLinkActiveOptions: { exact: false },
       },
     ],
   },
-
-  //[NS] TODO: Hidden until development
-  // {
-  //   path: '/donate',
-  //   label: 'navigation.donate',
-  //   icon: 'donate',
-  //   useExactMatch: true,
-  // },
 ];
 
 export const PROJECT_MENU_ITEMS: MenuItem[] = [
@@ -188,6 +165,7 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
       { label: 'navigation.registration.resources', routerLink: 'resources' },
       { label: 'navigation.registration.wiki', routerLink: 'wiki' },
       { label: 'navigation.registration.components', routerLink: 'components' },
+      { label: 'navigation.registration.contributors', routerLink: 'contributors' },
       { label: 'navigation.registration.links', routerLink: 'links' },
       { label: 'navigation.registration.analytics', routerLink: 'analytics' },
     ],

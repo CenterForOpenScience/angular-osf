@@ -1,7 +1,7 @@
 <h2>Metadata</h2>
 
 <div class="m-t-24">
-  <osf-preprint-contributors />
+  <osf-preprint-contributors [preprintId]="createdPreprint()?.id" />
 </div>
 
 <p-card class="w-full card" styleClass="m-t-24">
@@ -14,7 +14,7 @@
     >.
   </p>
   <osf-license
-    [licenses]="licences()"
+    [licenses]="licenses()"
     [selectedLicenseId]="createdPreprint()?.licenseId"
     [selectedLicenseOptions]="createdPreprint()?.licenseOptions"
     (createLicense)="createLicense($event)"

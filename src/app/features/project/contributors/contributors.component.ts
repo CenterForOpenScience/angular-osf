@@ -9,47 +9,43 @@ import { TableModule } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of, switchMap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import {
-  EducationHistoryDialogComponent,
-  EmploymentHistoryDialogComponent,
-  SearchInputComponent,
-  ViewOnlyTableComponent,
-} from '@osf/shared/components';
+import { SearchInputComponent, ViewOnlyTableComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsListComponent,
 } from '@osf/shared/components/contributors';
-import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/components/contributors/constants';
-import { AddContributorType, ContributorPermission } from '@osf/shared/components/contributors/enums';
-import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/components/contributors/models';
+import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
+import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import {
+  ContributorDialogAddModel,
+  ContributorModel,
+  SelectOption,
+  ViewOnlyLinkJsonApi,
+  ViewOnlyLinkModel,
+} from '@osf/shared/models';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
   ContributorsSelectors,
+  CreateViewOnlyLink,
   DeleteContributor,
+  DeleteViewOnlyLink,
+  FetchViewOnlyLinks,
   GetAllContributors,
+  GetResourceDetails,
   UpdateBibliographyFilter,
   UpdateContributor,
   UpdatePermissionFilter,
   UpdateSearchValue,
-} from '@osf/shared/components/contributors/store';
-import { SelectOption } from '@osf/shared/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+  ViewOnlyLinkSelectors,
+} from '@osf/shared/stores';
 import { findChangedItems } from '@osf/shared/utils';
-
-import { ViewOnlyLink, ViewOnlyLinkModel } from '../settings/models';
-import {
-  CreateViewOnlyLink,
-  DeleteViewOnlyLink,
-  GetProjectDetails,
-  GetViewOnlyLinksTable,
-  SettingsSelectors,
-} from '../settings/store';
 
 import { CreateViewLinkDialogComponent } from './components';
 
@@ -80,10 +76,15 @@ export class ContributorsComponent implements OnInit {
   readonly customConfirmationService = inject(CustomConfirmationService);
 
   private readonly route = inject(ActivatedRoute);
-  private readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  private readonly resourceId = toSignal(
+    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+  );
+  readonly resourceType: Signal<ResourceType | undefined> = toSignal(
+    this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
+  );
 
-  protected viewOnlyLinks = select(SettingsSelectors.getViewOnlyLinks);
-  protected projectDetails = select(SettingsSelectors.getProjectDetails);
+  protected viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
+  protected projectDetails = select(ViewOnlyLinkSelectors.getResourceDetails);
 
   protected readonly selectedPermission = signal<ContributorPermission | null>(null);
   protected readonly selectedBibliography = signal<boolean | null>(null);
@@ -93,11 +94,11 @@ export class ContributorsComponent implements OnInit {
   protected initialContributors = select(ContributorsSelectors.getContributors);
   protected contributors = signal([]);
   protected readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  protected readonly isViewOnlyLinksLoading = select(SettingsSelectors.isViewOnlyLinksLoading);
+  protected readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
 
   protected actions = createDispatchMap({
-    getViewOnlyLinks: GetViewOnlyLinksTable,
-    getProjectDetails: GetProjectDetails,
+    getViewOnlyLinks: FetchViewOnlyLinks,
+    getResourceDetails: GetResourceDetails,
     getContributors: GetAllContributors,
     updateSearchValue: UpdateSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
@@ -126,12 +127,12 @@ export class ContributorsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const id = this.projectId();
+    const id = this.resourceId();
 
     if (id) {
-      this.actions.getViewOnlyLinks(id);
-      this.actions.getProjectDetails(id);
-      this.actions.getContributors(this.projectId());
+      this.actions.getViewOnlyLinks(id, this.resourceType());
+      this.actions.getResourceDetails(id, this.resourceType());
+      this.actions.getContributors(id, this.resourceType());
     }
 
     this.setSearchSubscription();
@@ -159,35 +160,11 @@ export class ContributorsComponent implements OnInit {
     const updatedContributors = findChangedItems(this.initialContributors(), this.contributors(), 'id');
 
     const updateRequests = updatedContributors.map((payload) =>
-      this.actions.updateContributor(this.projectId(), payload)
+      this.actions.updateContributor(this.resourceId(), ResourceType.Project, payload)
     );
 
     forkJoin(updateRequests).subscribe(() => {
       this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
-    });
-  }
-
-  openEmploymentHistory(contributor: ContributorModel) {
-    this.dialogService.open(EmploymentHistoryDialogComponent, {
-      width: '552px',
-      data: contributor.employment,
-      focusOnShow: false,
-      header: this.translateService.instant('project.contributors.table.headers.employment'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
-  }
-
-  openEducationHistory(contributor: ContributorModel) {
-    this.dialogService.open(EducationHistoryDialogComponent, {
-      width: '552px',
-      data: contributor.education,
-      focusOnShow: false,
-      header: this.translateService.instant('project.contributors.table.headers.education'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 
@@ -212,7 +189,9 @@ export class ContributorsComponent implements OnInit {
         if (res.type === AddContributorType.Unregistered) {
           this.openAddUnregisteredContributorDialog();
         } else {
-          const addRequests = res.data.map((payload) => this.actions.addContributor(this.projectId(), payload));
+          const addRequests = res.data.map((payload) =>
+            this.actions.addContributor(this.resourceId(), ResourceType.Project, payload)
+          );
 
           forkJoin(addRequests).subscribe(() => {
             this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
@@ -242,7 +221,7 @@ export class ContributorsComponent implements OnInit {
           const successMessage = this.translateService.instant('project.contributors.toastMessages.addSuccessMessage');
           const params = { name: res.data[0].fullName };
 
-          this.actions.addContributor(this.projectId(), res.data[0]).subscribe({
+          this.actions.addContributor(this.resourceId(), ResourceType.Project, res.data[0]).subscribe({
             next: () => this.toastService.showSuccess(successMessage, params),
           });
         }
@@ -257,7 +236,7 @@ export class ContributorsComponent implements OnInit {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteContributor(this.projectId(), contributor.userId)
+          .deleteContributor(this.resourceId(), ResourceType.Project, contributor.userId)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: () =>
@@ -283,17 +262,19 @@ export class ContributorsComponent implements OnInit {
         width: '448px',
         focusOnShow: false,
         header: this.translateService.instant('project.contributors.createLinkDialog.dialogTitle'),
-        data: { sharedComponents, projectId: this.projectId() },
+        data: { sharedComponents, projectId: this.resourceId() },
         closeOnEscape: true,
         modal: true,
         closable: true,
       })
       .onClose.pipe(
         filter((res) => !!res),
-        switchMap((result) => this.actions.createViewOnlyLink(this.projectId(), result as ViewOnlyLink)),
+        switchMap((result) =>
+          this.actions.createViewOnlyLink(this.resourceId(), this.resourceType(), result as ViewOnlyLinkJsonApi)
+        ),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe();
+      .subscribe(() => this.toastService.showSuccess('myProjects.settings.viewOnlyLinkCreated'));
   }
 
   deleteLinkItem(link: ViewOnlyLinkModel): void {
@@ -303,7 +284,7 @@ export class ContributorsComponent implements OnInit {
       messageKey: 'myProjects.settings.delete.message',
       onConfirm: () =>
         this.actions
-          .deleteViewOnlyLink(this.projectId(), link.id)
+          .deleteViewOnlyLink(this.resourceId(), this.resourceType(), link.id)
           .subscribe(() => this.toastService.showSuccess('myProjects.settings.delete.success')),
     });
   }

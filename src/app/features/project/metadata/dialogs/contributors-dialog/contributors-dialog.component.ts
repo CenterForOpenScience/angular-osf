@@ -16,16 +16,16 @@ import { FormControl, FormsModule } from '@angular/forms';
 
 import { SearchInputComponent } from '@osf/shared/components';
 import { AddContributorDialogComponent } from '@osf/shared/components/contributors';
-import { AddContributorType } from '@osf/shared/components/contributors/enums';
-import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/components/contributors/models';
+import { AddContributorType, ResourceType } from '@osf/shared/enums';
+import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
+import { ToastService } from '@osf/shared/services';
 import {
   AddContributor,
   DeleteContributor,
   UpdateBibliographyFilter,
   UpdatePermissionFilter,
   UpdateSearchValue,
-} from '@osf/shared/components/contributors/store';
-import { ToastService } from '@osf/shared/services';
+} from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-contributors-dialog',
@@ -90,7 +90,9 @@ export class ContributorsDialogComponent implements OnInit {
       .onClose.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((res: ContributorDialogAddModel) => {
         if (res?.type === AddContributorType.Registered) {
-          const addRequests = res.data.map((payload) => this.actions.addContributor(this.projectId, payload));
+          const addRequests = res.data.map((payload) =>
+            this.actions.addContributor(this.projectId, ResourceType.Project, payload)
+          );
 
           forkJoin(addRequests).subscribe(() => {
             this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
@@ -102,7 +104,7 @@ export class ContributorsDialogComponent implements OnInit {
 
   removeContributor(contributor: ContributorModel): void {
     this.actions
-      .deleteContributor(this.projectId, contributor.userId)
+      .deleteContributor(this.projectId, ResourceType.Project, contributor.userId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

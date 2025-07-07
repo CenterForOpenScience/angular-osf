@@ -64,9 +64,8 @@
     class="w-full"
     [contributors]="contributors()"
     [isLoading]="isContributorsLoading()"
+    [showCuratorColumn]="true"
     (remove)="removeContributor($event)"
-    (showEducationHistory)="openEducationHistory($event)"
-    (showEmploymentHistory)="openEmploymentHistory($event)"
   ></osf-contributors-list>
 
   @if (hasChanges) {
@@ -75,7 +74,6 @@
         class="w-3"
         styleClass="w-full"
         (click)="cancel()"
-        text
         severity="info"
         [label]="'common.buttons.cancel' | translate"
       >

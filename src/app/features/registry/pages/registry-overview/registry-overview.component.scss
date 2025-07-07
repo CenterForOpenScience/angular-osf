@@ -1,18 +1,6 @@
 @use "/assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
-.icon-container {
-  color: var.$dark-blue-1;
-  display: flex;
-  align-items: center;
-  column-gap: 0.5rem;
-
-  &:hover {
-    text-decoration: none;
-    color: var.$pr-blue-1;
-  }
-}
-
 .left-section {
   flex: 3;
   display: flex;
@@ -40,4 +28,10 @@
 
 .no-padding {
   --p-accordion-header-padding: 0;
+}
+
+.current-revision {
+  --p-button-info-background: var(--bg-blue-3);
+  --p-button-info-hover-background: var(--bg-blue-2);
+  --p-button-info-hover-border-color: transparent;
 }

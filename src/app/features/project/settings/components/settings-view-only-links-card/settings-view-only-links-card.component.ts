@@ -4,7 +4,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@osf/features/project/settings/models';
+import { PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@osf/shared/models';
 import { ViewOnlyTableComponent } from '@shared/components';
 
 @Component({

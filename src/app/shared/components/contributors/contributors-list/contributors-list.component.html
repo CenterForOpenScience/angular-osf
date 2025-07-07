@@ -70,19 +70,21 @@
         </div>
       </th>
 
-      <th>
-        <div class="flex align-items-center justify-content-center">
-          <span>{{ 'project.contributors.table.headers.curator' | translate }}</span>
-          <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
-          <ng-template #curatorTooltip>
-            <div class="flex flex-column row-gap-3">
-              <h2>{{ 'project.contributors.curatorInfo.heading' | translate }}</h2>
+      @if (showCuratorColumn()) {
+        <th>
+          <div class="flex align-items-center justify-content-center">
+            <span>{{ 'project.contributors.table.headers.curator' | translate }}</span>
+            <i class="fas fa-circle-info blue-icon ml-1" [pTooltip]="curatorTooltip" tooltipPosition="top"></i>
+            <ng-template #curatorTooltip>
+              <div class="flex flex-column row-gap-3">
+                <h2>{{ 'project.contributors.curatorInfo.heading' | translate }}</h2>
 
-              <span>{{ 'project.contributors.curatorInfo.description' | translate }}</span>
-            </div>
-          </ng-template>
-        </div>
-      </th>
+                <span>{{ 'project.contributors.curatorInfo.description' | translate }}</span>
+              </div>
+            </ng-template>
+          </div>
+        </th>
+      }
       <th>{{ 'project.contributors.table.headers.employment' | translate }}</th>
       <th>{{ 'project.contributors.table.headers.education' | translate }}</th>
       <th></th>
@@ -113,11 +115,18 @@
             <p-checkbox variant="filled" binary="true" [(ngModel)]="contributor.isBibliographic"></p-checkbox>
           </div>
         </td>
-        <td>
-          <div class="flex align-items-center justify-content-center">
-            <p-checkbox variant="filled" binary="true" [ngModel]="contributor.isCurator" [disabled]="true"></p-checkbox>
-          </div>
-        </td>
+        @if (showCuratorColumn()) {
+          <td>
+            <div class="flex align-items-center justify-content-center">
+              <p-checkbox
+                variant="filled"
+                binary="true"
+                [ngModel]="contributor.isCurator"
+                [disabled]="true"
+              ></p-checkbox>
+            </div>
+          </td>
+        }
         <td>
           @if (contributor.employment?.length) {
             <a

@@ -1,21 +1,23 @@
-import { RegistrationQuestions, RegistrySchemaBlock, SchemaBlockAttributes } from '@osf/features/registry/models';
+import {
+  RegistrationQuestions,
+  RegistrySchemaBlock,
+  SchemaBlockAttributes,
+  ViewSchemaBlock,
+} from '@osf/features/registry/models';
 
-export function MapRegistrySchemaBlock(
-  block: SchemaBlockAttributes,
-  questions: RegistrationQuestions
-): RegistrySchemaBlock {
+export function MapViewSchemaBlock(block: RegistrySchemaBlock, questions: RegistrationQuestions): ViewSchemaBlock {
   const schemaBlock = {
     required: block.required,
-    type: block.block_type,
+    type: block.blockType,
     value: '',
     values: [],
     files: [],
-  } as RegistrySchemaBlock;
+  } as ViewSchemaBlock;
 
-  if (block.display_text) {
-    schemaBlock.value = block.display_text;
-  } else if (block.registration_response_key) {
-    const questionValue = questions[block.registration_response_key];
+  if (block.displayText) {
+    schemaBlock.value = block.displayText;
+  } else if (block.registrationResponseKey) {
+    const questionValue = questions[block.registrationResponseKey];
 
     if (questionValue && Array.isArray(questionValue)) {
       if (schemaBlock.type === 'multi-select-input') {
@@ -32,4 +34,14 @@ export function MapRegistrySchemaBlock(
   }
 
   return schemaBlock;
+}
+
+export function MapRegistrySchemaBlock(block: SchemaBlockAttributes): RegistrySchemaBlock {
+  return {
+    blockType: block.block_type,
+    displayText: block.display_text,
+    registrationResponseKey: block?.registration_response_key,
+    required: block.required,
+    schemaBlockGroupKey: block.schema_block_group_key,
+  };
 }

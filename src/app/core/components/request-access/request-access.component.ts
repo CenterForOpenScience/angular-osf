@@ -27,7 +27,7 @@ export class RequestAccessComponent {
   comment = model('');
 
   private readonly route = inject(ActivatedRoute);
-  private readonly projectId = toSignal(this.route?.params.pipe(map((params) => params['projectId'])) ?? of(undefined));
+  private readonly id = toSignal(this.route?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
   private readonly requestAccessService = inject(RequestAccessService);
   private readonly router = inject(Router);
@@ -36,7 +36,7 @@ export class RequestAccessComponent {
 
   requestAccess() {
     this.loaderService.show();
-    this.requestAccessService.requestAccessToProject(this.projectId(), this.comment()).subscribe({
+    this.requestAccessService.requestAccessToProject(this.id(), this.comment()).subscribe({
       next: () => {
         this.loaderService.hide();
         this.router.navigate(['/']);

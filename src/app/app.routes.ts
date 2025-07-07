@@ -2,8 +2,6 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { RegistryOverviewState } from '@osf/features/registry/store/registry-overview';
-
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
 import { MyProfileState } from './features/my-profile/store';
@@ -20,6 +18,24 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         redirectTo: 'home',
+      },
+      {
+        path: 'home',
+        loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
+        data: { skipBreadcrumbs: true },
+      },
+      {
+        path: 'home-logged-out',
+        loadComponent: () =>
+          import('@osf/features/home/pages/home-logged-out/home-logged-out.component').then(
+            (mod) => mod.HomeLoggedOutComponent
+          ),
+        data: { skipBreadcrumbs: true },
+      },
+      {
+        path: 'confirm/:userId/:token',
+        loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
+        data: { skipBreadcrumbs: true },
       },
       {
         path: 'sign-up',
@@ -44,56 +60,12 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
-        path: 'home',
-        loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
-        data: { skipBreadcrumbs: true },
-      },
-      {
-        path: 'home-logged-out',
-        loadComponent: () =>
-          import('@osf/features/home/pages/home-logged-out/home-logged-out.component').then(
-            (mod) => mod.HomeLoggedOutComponent
-          ),
-        data: { skipBreadcrumbs: true },
-      },
-      {
-        path: 'support',
-        loadComponent: () => import('./features/support/support.component').then((mod) => mod.SupportComponent),
-      },
-      {
-        path: 'terms-of-use',
-        loadComponent: () =>
-          import('./features/static/terms-of-use/terms-of-use.component').then((mod) => mod.TermsOfUseComponent),
-      },
-      {
-        path: 'privacy-policy',
-        loadComponent: () =>
-          import('./features/static/privacy-policy/privacy-policy.component').then((mod) => mod.PrivacyPolicyComponent),
-      },
-      {
         path: 'collections',
         loadChildren: () => import('./features/collections/collections.routes').then((mod) => mod.collectionsRoutes),
       },
       {
         path: 'meetings',
-        loadComponent: () => import('./features/meetings/meetings.component').then((mod) => mod.MeetingsComponent),
-        children: [
-          {
-            path: '',
-            pathMatch: 'full',
-            loadComponent: () =>
-              import('@osf/features/meetings/pages/meetings-landing/meetings-landing.component').then(
-                (mod) => mod.MeetingsLandingComponent
-              ),
-          },
-          {
-            path: ':id',
-            loadComponent: () =>
-              import('@osf/features/meetings/pages/meeting-details/meeting-details.component').then(
-                (mod) => mod.MeetingDetailsComponent
-              ),
-          },
-        ],
+        loadChildren: () => import('./features/meetings/meetings.routes').then((mod) => mod.meetingsRoutes),
       },
       {
         path: 'my-projects',
@@ -104,11 +76,6 @@ export const routes: Routes = [
         path: 'my-projects/:id',
         loadChildren: () => import('./features/project/project.routes').then((mod) => mod.projectRoutes),
       },
-      {
-        path: 'registries',
-        loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
-      },
-
       {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.routes').then((mod) => mod.settingsRoutes),
@@ -134,9 +101,22 @@ export const routes: Routes = [
         loadChildren: () => import('./features/institutions/institutions.routes').then((r) => r.routes),
       },
       {
-        path: 'confirm/:userId/:token',
-        loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
-        data: { skipBreadcrumbs: true },
+        path: 'registries',
+        loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
+      },
+      {
+        path: 'registries/:id',
+        loadChildren: () => import('./features/registry/registry.routes').then((mod) => mod.registryRoutes),
+      },
+      {
+        path: 'terms-of-use',
+        loadComponent: () =>
+          import('./features/static/terms-of-use/terms-of-use.component').then((mod) => mod.TermsOfUseComponent),
+      },
+      {
+        path: 'privacy-policy',
+        loadComponent: () =>
+          import('./features/static/privacy-policy/privacy-policy.component').then((mod) => mod.PrivacyPolicyComponent),
       },
       {
         path: 'forbidden',
@@ -145,19 +125,10 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
-        path: 'request-access/:projectId',
+        path: 'request-access/:id',
         loadComponent: () =>
           import('./core/components/request-access/request-access.component').then((mod) => mod.RequestAccessComponent),
         data: { skipBreadcrumbs: true },
-      },
-      {
-        path: 'registries',
-        loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
-      },
-      {
-        path: 'registries/my-registrations/:registrationId',
-        loadChildren: () => import('./features/registry/registry.routes').then((mod) => mod.registryRoutes),
-        providers: [provideStates([RegistryOverviewState])],
       },
       {
         path: '**',

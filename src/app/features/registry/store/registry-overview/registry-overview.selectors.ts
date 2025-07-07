@@ -1,8 +1,9 @@
 import { Selector } from '@ngxs/store';
 
-import { RegistryInstitution, RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
-import { RegistrySchemaBlock } from '@osf/features/registry/models/registry-schema-block.model';
-import { RegistryOverviewState, RegistryOverviewStateModel } from '@osf/features/registry/store/registry-overview';
+import { RegistryInstitution, RegistryOverview, RegistrySchemaBlock, RegistrySubject } from '../../models';
+
+import { RegistryOverviewStateModel } from './registry-overview.model';
+import { RegistryOverviewState } from './registry-overview.state';
 
 export class RegistryOverviewSelectors {
   @Selector([RegistryOverviewState])

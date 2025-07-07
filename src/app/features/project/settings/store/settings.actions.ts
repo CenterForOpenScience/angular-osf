@@ -1,26 +1,21 @@
-import { ProjectSettingsData, ViewOnlyLink } from '@osf/features/project/settings/models';
 import { UpdateNodeRequestModel } from '@shared/models';
 
+import { ProjectSettingsData } from '../models';
+
 export class GetProjectSettings {
-  static readonly type = '[Settings] Get';
+  static readonly type = '[Settings] Get Project Settings';
 
   constructor(public projectId: string) {}
 }
 
 export class GetProjectDetails {
-  static readonly type = '[Project] Get';
-
-  constructor(public projectId: string) {}
-}
-
-export class GetViewOnlyLinksTable {
-  static readonly type = '[Link] Table Get';
+  static readonly type = '[Project] Get Project Details';
 
   constructor(public projectId: string) {}
 }
 
 export class UpdateProjectSettings {
-  static readonly type = '[Settings] Update';
+  static readonly type = '[Settings] Update Project Settings';
 
   constructor(public payload: ProjectSettingsData) {}
 }
@@ -29,24 +24,6 @@ export class UpdateProjectDetails {
   static readonly type = '[Settings] Update Project Details';
 
   constructor(public payload: UpdateNodeRequestModel) {}
-}
-
-export class CreateViewOnlyLink {
-  static readonly type = '[Link] Create';
-
-  constructor(
-    public projectId: string,
-    public payload: ViewOnlyLink
-  ) {}
-}
-
-export class DeleteViewOnlyLink {
-  static readonly type = '[Link] Delete';
-
-  constructor(
-    public projectId: string,
-    public linkId: string
-  ) {}
 }
 
 export class DeleteProject {

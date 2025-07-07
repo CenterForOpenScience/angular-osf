@@ -1,4 +1,3 @@
-export { PreprintContributorsService } from './preprint-contributors.service';
 export { PreprintFilesService } from './preprint-files.service';
 export { PreprintLicensesService } from './preprint-licenses.service';
 export { PreprintProvidersService } from './preprint-providers.service';

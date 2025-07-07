@@ -59,7 +59,7 @@ export class ProjectOverviewService {
   forkResource(projectId: string, resourceType: string): Observable<void> {
     const payload = {
       data: {
-        type: resourceType,
+        type: 'nodes',
       },
     };
 
