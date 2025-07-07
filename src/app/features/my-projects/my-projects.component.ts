@@ -26,12 +26,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
 import { parseQueryFilterParams } from '@osf/core/helpers';
-import { AddProjectFormComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
+import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
+import { MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { QueryParams, TableParameters, TabOption } from '@osf/shared/models';
-import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { IS_XSMALL } from '@osf/shared/utils';
 
-import { FetchUserInstitutions } from '../../shared/stores/institutions';
 import { CollectionsSelectors, GetBookmarksCollectionId } from '../collections/store';
 
 import { MyProjectsItem, MyProjectsSearchFilters } from './models';
@@ -73,8 +73,6 @@ export class MyProjectsComponent implements OnInit {
 
   protected readonly defaultTabValue = 0;
   protected readonly isLoading = signal(false);
-  protected readonly isDesktop = toSignal(inject(IS_WEB));
-  protected readonly isTablet = toSignal(inject(IS_MEDIUM));
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly tabOptions: TabOption[] = [
     {
@@ -128,7 +126,6 @@ export class MyProjectsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.#store.dispatch(new FetchUserInstitutions());
     this.#store.dispatch(new GetBookmarksCollectionId());
   }
 
@@ -339,7 +336,7 @@ export class MyProjectsComponent implements OnInit {
   protected createProject(): void {
     const dialogWidth = this.isMobile() ? '95vw' : '850px';
 
-    this.#dialogService.open(AddProjectFormComponent, {
+    this.#dialogService.open(CreateProjectDialogComponent, {
       width: dialogWidth,
       focusOnShow: false,
       header: this.#translateService.instant('myProjects.header.createProject'),

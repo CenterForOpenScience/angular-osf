@@ -12,6 +12,11 @@ export class MyProjectsSelectors {
   }
 
   @Selector([MyProjectsState])
+  static isProjectSubmitting(state: MyProjectsStateModel): boolean {
+    return state.projects.isSubmitting || false;
+  }
+
+  @Selector([MyProjectsState])
   static getRegistrations(state: MyProjectsStateModel): MyProjectsItem[] {
     return state.registrations.data;
   }
