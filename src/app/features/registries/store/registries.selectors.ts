@@ -72,4 +72,14 @@ export class RegistriesSelectors {
   static isSubjectsUpdating(state: RegistriesStateModel): boolean {
     return state.registrationSubjects.isLoading;
   }
+
+  @Selector([RegistriesState])
+  static getSelectedTags(state: RegistriesStateModel): string[] {
+    return state.draftRegistration.data?.tags || [];
+  }
+
+  @Selector([RegistriesState])
+  static getStepsValidation(state: RegistriesStateModel): Record<string, { invalid: boolean }> {
+    return state.stepsValidation;
+  }
 }

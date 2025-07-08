@@ -37,4 +37,5 @@ export const DefaultState: RegistriesStateModel = {
     isLoading: false,
     error: null,
   },
+  stepsValidation: {},
 };

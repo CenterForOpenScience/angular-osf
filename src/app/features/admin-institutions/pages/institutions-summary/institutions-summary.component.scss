@@ -1,0 +1,15 @@
+.width-25 {
+  width: calc(25% - 1.5rem);
+
+  @media (max-width: 576px) {
+    width: calc(50% - 0.5rem);
+  }
+}
+
+.width-33 {
+  width: calc(33% - 1rem);
+
+  @media (max-width: 576px) {
+    width: 100%;
+  }
+}

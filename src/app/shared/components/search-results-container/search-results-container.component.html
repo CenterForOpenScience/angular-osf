@@ -33,29 +33,21 @@
     ></p-select>
 
     @if (isAnyFilterOptions()) {
-      <img
-        class="hover:opacity-70 transition-delay-200 transition-ease-in cursor-pointer inline md:hidden"
-        ngSrc="assets/icons/colored/filter.svg"
-        tabindex="0"
-        role="button"
-        alt="filter by"
-        width="44"
-        height="44"
-        (keydown.enter)="openFilters()"
+      <p-button
+        class="block md:hidden"
+        severity="secondary"
+        icon="fas fa-sliders"
+        size="large"
         (click)="openFilters()"
-      />
+      ></p-button>
     }
-    <img
-      class="hover:opacity-70 transition-delay-200 transition-ease-in cursor-pointer ml-2 inline md:hidden"
-      ngSrc="assets/icons/colored/sort.svg"
-      tabindex="0"
-      role="button"
-      alt="sort by"
-      width="44"
-      height="44"
-      (keydown.enter)="openSorting()"
+    <p-button
+      class="ml-2 block md:hidden"
+      severity="secondary"
+      icon="fas fa-filter"
+      size="large"
       (click)="openSorting()"
-    />
+    ></p-button>
   </div>
 </div>
 

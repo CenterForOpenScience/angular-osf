@@ -29,6 +29,7 @@ export { SearchHelpTutorialComponent } from './search-help-tutorial/search-help-
 export { SearchInputComponent } from './search-input/search-input.component';
 export { SearchResultsContainerComponent } from './search-results-container/search-results-container.component';
 export { SelectComponent } from './select/select.component';
+export { StatisticCardComponent } from './statistic-card/statistic-card.component';
 export { StepperComponent } from './stepper/stepper.component';
 export { SubHeaderComponent } from './sub-header/sub-header.component';
 export { SubjectsComponent } from './subjects/subjects.component';

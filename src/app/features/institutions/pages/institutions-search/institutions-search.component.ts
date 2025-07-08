@@ -15,16 +15,16 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
+  FilterChipsComponent,
   LoadingSpinnerComponent,
   ReusableFilterComponent,
   SearchHelpTutorialComponent,
   SearchInputComponent,
-} from '@shared/components';
-import { FilterChipsComponent } from '@shared/components/filter-chips/filter-chips.component';
-import { SearchResultsContainerComponent } from '@shared/components/search-results-container/search-results-container.component';
-import { SEARCH_TAB_OPTIONS } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
-import { DiscoverableFilter } from '@shared/models';
+  SearchResultsContainerComponent,
+} from '@osf/shared/components';
+import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
+import { ResourceTab } from '@osf/shared/enums';
+import { DiscoverableFilter } from '@osf/shared/models';
 import {
   FetchInstitutionById,
   FetchResources,
@@ -36,7 +36,7 @@ import {
   UpdateFilterValue,
   UpdateResourceType,
   UpdateSortBy,
-} from '@shared/stores';
+} from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-institutions-search',

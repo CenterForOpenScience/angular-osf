@@ -1,17 +1,23 @@
-import { RegistrationResponseJsonApi } from '../models';
+import { RegistrationDataJsonApi } from '../models';
 import { Registration } from '../models/registration.model';
 
 export class RegistrationMapper {
-  static fromRegistrationResponse(response: RegistrationResponseJsonApi): Registration {
+  static fromRegistrationResponse(response: RegistrationDataJsonApi): Registration {
     return {
-      id: response.data.id,
-      title: response.data.attributes.title,
-      description: response.data.attributes.description,
-      registrationSchemaId: response.data.relationships.registration_schema?.data?.id || '',
+      id: response.id,
+      title: response.attributes.title,
+      description: response.attributes.description,
+      registrationSchemaId: response.relationships.registration_schema?.data?.id || '',
       license: {
-        id: response.data.relationships.license?.data?.id || '',
-        options: response.data.attributes.node_license,
+        id: response.relationships.license?.data?.id || '',
+        options: response.attributes.node_license
+          ? {
+              year: response.attributes.node_license.year,
+              copyrightHolders: response.attributes.node_license.copyright_holders.join(','),
+            }
+          : null,
       },
+      tags: response.attributes.tags || [],
     };
   }
 }

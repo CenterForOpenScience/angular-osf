@@ -1837,5 +1837,27 @@
     "title": "Institutions",
     "description": "OSF Institutions enhances transparency and increases the visibility of research outputs, accelerating discovery and reuse. Institutional members focus on generating and sharing research, and let OSF Institutions handle the infrastructure. <br /> <a href='https://www.cos.io/products/osf-institutions' target='_blank'>Read more</a>",
     "searchInstitutions": "Search institutions"
+  },
+  "adminInstitutions": {
+    "summary": {
+      "title": "Summary",
+      "totalUsersByDepartment": "Total Users by Department",
+      "publicPrivateProjects": "Public vs Private Projects",
+      "publicEmbargoedRegistrations": "Public vs Embargoed Registrations",
+      "totalOsfObjects": "Total OSF Objects",
+      "topTenLicenses": "Top 10 Licenses",
+      "topTenAddons": "Top 10 Add-ons",
+      "topStorageRegions": "Top Storage Regions",
+      "totalUsers": "Total Users",
+      "totalMonthlyLoggedInUsers": "Total Monthly Logged in Users",
+      "totalMonthlyActiveUsers": "Total Monthly Active Users",
+      "osfPublicAndPrivateProjects": "OSF Public and Private Projects",
+      "osfPublicAndEmbargoedRegistrations": "OSF Public and Embargoed Registrations",
+      "osfPreprints": "OSF Preprints",
+      "totalPublicFileCount": "Total Public File Count",
+      "totalStorageInGb": "Total Storage in GB",
+      "embargoedRegistrations": "Embargoed registrations",
+      "privateProjects": "Private projects"
+    }
   }
 }

@@ -4,7 +4,6 @@ import { Button } from 'primeng/button';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
 
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -18,16 +17,7 @@ import { SelectComponent } from '../select/select.component';
 
 @Component({
   selector: 'osf-search-results-container',
-  imports: [
-    FormsModule,
-    NgOptimizedImage,
-    Button,
-    DataView,
-    Select,
-    ResourceCardComponent,
-    TranslatePipe,
-    SelectComponent,
-  ],
+  imports: [FormsModule, Button, DataView, Select, ResourceCardComponent, TranslatePipe, SelectComponent],
   templateUrl: './search-results-container.component.html',
   styleUrl: './search-results-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

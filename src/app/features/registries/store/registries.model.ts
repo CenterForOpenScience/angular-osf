@@ -11,4 +11,5 @@ export interface RegistriesStateModel {
   licenses: AsyncStateModel<License[]>;
   registrationSubjects: AsyncStateModel<Subject[]>;
   pagesSchema: AsyncStateModel<PageSchema[]>;
+  stepsValidation: Record<string, { invalid: boolean }>;
 }

@@ -6,7 +6,7 @@ import { JsonApiService } from '@osf/core/services';
 import { License, LicenseOptions, LicensesResponseJsonApi } from '@osf/shared/models';
 
 import { LicensesMapper } from '../mappers';
-import { LicensePayloadJsonApi, RegistrationDataJsonApi } from '../models';
+import { RegistrationDataJsonApi, RegistrationPayloadJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -50,7 +50,7 @@ export class LicensesService {
   }
 
   updateLicense(registrationId: string, licenseId: string, licenseOptions?: LicenseOptions) {
-    const payload: LicensePayloadJsonApi = {
+    const payload: RegistrationPayloadJsonApi = {
       data: {
         type: 'draft_registrations',
         id: registrationId,
