@@ -46,7 +46,7 @@
       <osf-author-assertions-step (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.Supplements])" />
     }
     @case (SubmitStepsEnum.Supplements) {
-      <osf-supplements-step (nextClicked)="currentStep.set(SubmitStepsEnum.Review)" />
+      <osf-supplements-step (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.Review])" />
     }
     @default {
       <p>No such step</p>
