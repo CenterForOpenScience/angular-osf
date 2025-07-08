@@ -17,6 +17,7 @@ import {
   DestroyRef,
   HostListener,
   inject,
+  input,
   OnInit,
   output,
   signal,
@@ -26,6 +27,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { StringOrNull } from '@core/helpers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
+import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   CopyFileFromProject,
   GetAvailableProjects,
@@ -77,6 +79,7 @@ export class FileStepComponent implements OnInit {
 
   readonly PreprintFileSource = PreprintFileSource;
 
+  provider = input.required<PreprintProviderDetails | undefined>();
   createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
   providerId = select(SubmitPreprintSelectors.getSelectedProviderId);
   selectedFileSource = select(SubmitPreprintSelectors.getSelectedFileSource);
