@@ -7,6 +7,7 @@ import { map, of } from 'rxjs';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   HostBinding,
   inject,
@@ -71,22 +72,30 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
-  currentStep = signal<StepOption>(submitPreprintSteps[0]);
+  currentStep = signal<StepOption>(submitPreprintSteps[4]);
   isWeb = toSignal(inject(IS_WEB));
 
-  readonly submitPreprintSteps = submitPreprintSteps
-    .map((step) => {
-      if (!this.preprintProvider()?.assertionsEnabled && step.value === SubmitSteps.AuthorAssertions) {
-        return null;
-      }
+  readonly submitPreprintSteps = computed(() => {
+    const provider = this.preprintProvider();
 
-      return step;
-    })
-    .filter((step) => step !== null)
-    .map((step, index) => ({
-      ...step,
-      index,
-    }));
+    if (!provider) {
+      return [];
+    }
+
+    return submitPreprintSteps
+      .map((step) => {
+        if (!provider.assertionsEnabled && step.value === SubmitSteps.AuthorAssertions) {
+          return null;
+        }
+
+        return step;
+      })
+      .filter((step) => step !== null)
+      .map((step, index) => ({
+        ...step,
+        index,
+      }));
+  });
 
   constructor() {
     effect(() => {
@@ -127,11 +136,11 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
 
   moveToNextStep() {
     let nextStepIndex = this.currentStep()?.index + 1;
-    const nextStepValue = this.submitPreprintSteps[nextStepIndex].value;
+    const nextStepValue = this.submitPreprintSteps()[nextStepIndex].value;
     if (nextStepValue === SubmitSteps.AuthorAssertions && !this.preprintProvider()?.assertionsEnabled) {
       nextStepIndex++;
     }
 
-    this.currentStep.set(this.submitPreprintSteps[nextStepIndex]);
+    this.currentStep.set(this.submitPreprintSteps()[nextStepIndex]);
   }
 }
