@@ -7,12 +7,13 @@ import { SelectModule } from 'primeng/select';
 import { map, of } from 'rxjs';
 
 import { CommonModule, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, Signal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { BarChartComponent, LineChartComponent, PieChartComponent, SubHeaderComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
 import { DatasetInput } from '@osf/shared/models';
 import { IS_WEB } from '@osf/shared/utils';
 
@@ -49,10 +50,13 @@ export class AnalyticsComponent implements OnInit {
   private readonly datePipe = inject(DatePipe);
   private readonly route = inject(ActivatedRoute);
 
-  readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  readonly resourceId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  readonly resourceType: Signal<ResourceType | undefined> = toSignal(
+    this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
+  );
 
-  protected analytics = select(AnalyticsSelectors.getMetrics(this.projectId()));
-  protected relatedCounts = select(AnalyticsSelectors.getRelatedCounts(this.projectId()));
+  protected analytics = select(AnalyticsSelectors.getMetrics(this.resourceId()));
+  protected relatedCounts = select(AnalyticsSelectors.getRelatedCounts(this.resourceId()));
 
   protected isMetricsLoading = select(AnalyticsSelectors.isMetricsLoading);
   protected isRelatedCountsLoading = select(AnalyticsSelectors.isRelatedCountsLoading);
@@ -74,14 +78,14 @@ export class AnalyticsComponent implements OnInit {
   protected popularPagesDataset: DatasetInput[] = [];
 
   ngOnInit() {
-    this.actions.getMetrics(this.projectId(), this.selectedRange().value);
-    this.actions.getRelatedCounts(this.projectId());
+    this.actions.getMetrics(this.resourceId(), this.selectedRange().value);
+    this.actions.getRelatedCounts(this.resourceId(), this.resourceType());
     this.setData();
   }
 
   onRangeChange(range: DateRangeOption) {
     this.selectedRange.set(range);
-    this.actions.getMetrics(this.projectId(), range.value);
+    this.actions.getMetrics(this.resourceId(), range.value);
   }
 
   private setData() {

@@ -1,4 +1,3 @@
-export * from './licenses-json-api.model';
 export * from './page-schema.model';
 export * from './project';
 export * from './projects-json-api.model';

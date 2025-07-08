@@ -13,7 +13,7 @@ export class RegistrationSubjectsService implements ISubjectsService {
   private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
 
-  getSubjects(search?: string): Observable<Subject[]> {
+  getSubjects(providerId: string, search?: string): Observable<Subject[]> {
     const params: Record<string, string> = {
       'page[size]': '100',
       sort: 'text',
@@ -26,7 +26,7 @@ export class RegistrationSubjectsService implements ISubjectsService {
       params['embed'] = 'parent';
     }
     return this.jsonApiService
-      .get<SubjectsResponseJsonApi>(`${this.apiUrl}/providers/registrations/osf/subjects/`, params)
+      .get<SubjectsResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerId}/subjects/`, params)
       .pipe(
         map((response) => {
           return SubjectMapper.fromSubjectsResponseJsonApi(response);
@@ -52,8 +52,13 @@ export class RegistrationSubjectsService implements ISubjectsService {
   }
 
   getRegistrationSubjects(draftId: string): Observable<Subject[]> {
+    const params: Record<string, string> = {
+      'page[size]': '100',
+      page: '1',
+    };
+
     return this.jsonApiService
-      .get<SubjectsResponseJsonApi>(`${this.apiUrl}/draft_registrations/${draftId}/subjects/`)
+      .get<SubjectsResponseJsonApi>(`${this.apiUrl}/draft_registrations/${draftId}/subjects/`, params)
       .pipe(
         map((response) => {
           return SubjectMapper.fromSubjectsResponseJsonApi(response);

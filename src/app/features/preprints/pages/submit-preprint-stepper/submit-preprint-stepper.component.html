@@ -29,21 +29,24 @@
 </section>
 
 <section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
-  @switch (currentStep()) {
+  @switch (currentStep().value) {
     @case (SubmitStepsEnum.TitleAndAbstract) {
-      <osf-title-and-abstract-step (nextClicked)="currentStep.set(SubmitStepsEnum.File)" />
+      <osf-title-and-abstract-step (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.File])" />
     }
     @case (SubmitStepsEnum.File) {
       <osf-file-step
-        (nextClicked)="currentStep.set(SubmitStepsEnum.Metadata)"
-        (backClicked)="currentStep.set(SubmitStepsEnum.TitleAndAbstract)"
+        (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.Metadata])"
+        (backClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.TitleAndAbstract])"
       />
     }
     @case (SubmitStepsEnum.Metadata) {
-      <osf-preprint-metadata (nextClicked)="currentStep.set(SubmitStepsEnum.AuthorAssertions)" />
+      <osf-preprint-metadata (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.AuthorAssertions])" />
     }
     @case (SubmitStepsEnum.AuthorAssertions) {
-      <osf-author-assertions-step (nextClicked)="currentStep.set(SubmitStepsEnum.Supplements)" />
+      <osf-author-assertions-step (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.Supplements])" />
+    }
+    @case (SubmitStepsEnum.Supplements) {
+      <osf-supplements-step (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.Review])" />
     }
     @default {
       <p>No such step</p>

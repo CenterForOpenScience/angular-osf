@@ -8,4 +8,9 @@ export class StopPropagationDirective {
   onClick(event: Event): void {
     event.stopPropagation();
   }
+
+  @HostListener('keydown', ['$event'])
+  keyDown(event: Event): void {
+    event.stopPropagation();
+  }
 }

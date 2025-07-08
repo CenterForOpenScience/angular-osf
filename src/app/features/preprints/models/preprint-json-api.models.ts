@@ -36,16 +36,21 @@ export interface PreprintJsonApi {
 
 export interface PreprintsRelationshipsJsonApi {
   primary_file: {
-    links: {
-      related: {
-        href: string;
-      };
+    data: {
+      id: string;
+      type: 'files';
     };
   };
   license: {
     data: {
       id: string;
       type: 'licenses';
+    };
+  };
+  node: {
+    data: {
+      id: string;
+      type: 'nodes';
     };
   };
 }

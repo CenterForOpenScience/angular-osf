@@ -1,8 +1,7 @@
 import { StringOrNull } from '@core/helpers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
-import { ContributorAddModel, ContributorModel } from '@shared/components/contributors/models';
-import { LicenseOptions, OsfFile } from '@shared/models';
+import { LicenseOptions, OsfFile, Subject } from '@shared/models';
 
 export class SetSelectedPreprintProviderId {
   static readonly type = '[Submit Preprint] Set Selected Preprint Provider Id';
@@ -79,28 +78,6 @@ export class GetProjectFilesByLink {
   constructor(public filesLink: string) {}
 }
 
-export class FetchContributors {
-  static readonly type = '[Submit Preprint] Fetch Contributors';
-}
-
-export class AddContributor {
-  static readonly type = '[Submit Preprint] Add Contributor';
-
-  constructor(public contributor: ContributorAddModel) {}
-}
-
-export class UpdateContributor {
-  static readonly type = '[Submit Preprint] Update Contributor';
-
-  constructor(public contributor: ContributorModel) {}
-}
-
-export class DeleteContributor {
-  static readonly type = '[Submit Preprint] Delete Contributor';
-
-  constructor(public userId: string) {}
-}
-
 export class FetchLicenses {
   static readonly type = '[Submit Preprint] Fetch Licenses';
 }
@@ -111,6 +88,42 @@ export class SaveLicense {
   constructor(
     public licenseId: string,
     public licenseOptions?: LicenseOptions
+  ) {}
+}
+
+export class FetchPreprintsSubjects {
+  static readonly type = '[Submit Preprint] Fetch Registration Subjects';
+}
+
+export class UpdatePreprintsSubjects {
+  static readonly type = '[Submit Preprint] Update Registration Subject';
+
+  constructor(public subjects: Subject[]) {}
+}
+
+export class DisconnectProject {
+  static readonly type = '[Submit Preprint] Disconnect Preprint Project';
+}
+
+export class ConnectProject {
+  static readonly type = '[Submit Preprint] Connect Preprint Project';
+
+  constructor(public projectId: string) {}
+}
+
+export class FetchPreprintProject {
+  static readonly type = '[Submit Preprint] Fetch Preprint Project';
+}
+
+export class CreateNewProject {
+  static readonly type = '[Submit Preprint] Create Project';
+
+  constructor(
+    public title: string,
+    public description: string,
+    public templateFrom: string,
+    public regionId: string,
+    public affiliationsId: string[]
   ) {}
 }
 

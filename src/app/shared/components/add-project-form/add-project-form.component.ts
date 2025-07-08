@@ -1,27 +1,21 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, input, OnInit, signal } from '@angular/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants/my-projects-table.constants';
-import { STORAGE_LOCATIONS } from '@core/constants/storage-locations.constant';
-import { CreateProject, GetMyProjects, MyProjectsSelectors } from '@osf/features/my-projects/store';
-import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
-import { ProjectForm } from '@osf/shared/models/create-project-form.model';
-import { CustomValidators } from '@osf/shared/utils';
-import { InstitutionsSelectors } from '@shared/stores/institutions';
-import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
+import { ProjectFormControls } from '@osf/shared/enums';
+import { IdName, ProjectForm } from '@osf/shared/models';
+import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
+import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
 
 @Component({
   selector: 'osf-add-project-form',
@@ -41,93 +35,42 @@ import { IS_XSMALL } from '@shared/utils/breakpoints.tokens';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddProjectFormComponent implements OnInit {
-  #store = inject(Store);
-  protected readonly projects = this.#store.selectSignal(MyProjectsSelectors.getProjects);
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly ProjectFormControls = ProjectFormControls;
-  protected readonly hasTemplateSelected = signal(false);
-  protected readonly isSubmitting = signal(false);
-
-  protected readonly storageLocations = STORAGE_LOCATIONS;
-
-  protected readonly affiliations = this.#store.selectSignal(InstitutionsSelectors.getUserInstitutions);
-
-  protected projectTemplateOptions = computed(() => {
-    return this.projects().map((project) => ({
-      label: project.title,
-      value: project.id,
-    }));
+  private actions = createDispatchMap({
+    fetchUserInstitutions: FetchUserInstitutions,
+    fetchRegions: FetchRegions,
   });
 
-  readonly projectForm = new FormGroup<ProjectForm>({
-    [ProjectFormControls.Title]: new FormControl('', {
-      nonNullable: true,
-      validators: [CustomValidators.requiredTrimmed()],
-    }),
-    [ProjectFormControls.StorageLocation]: new FormControl('us', {
-      nonNullable: true,
-      validators: [Validators.required],
-    }),
-    [ProjectFormControls.Affiliations]: new FormControl<string[]>([], {
-      nonNullable: true,
-    }),
-    [ProjectFormControls.Description]: new FormControl('', {
-      nonNullable: true,
-    }),
-    [ProjectFormControls.Template]: new FormControl('', {
-      nonNullable: true,
-    }),
-  });
+  templates = input.required<IdName[]>();
 
-  constructor() {
-    this.projectForm.get(ProjectFormControls.Template)?.valueChanges.subscribe((value) => {
-      this.hasTemplateSelected.set(!!value);
-    });
-  }
+  ProjectFormControls = ProjectFormControls;
+
+  hasTemplateSelected = signal(false);
+  isSubmitting = signal(false);
+  storageLocations = select(RegionsSelectors.getRegions);
+  areStorageLocationsLoading = select(RegionsSelectors.areRegionsLoading);
+  affiliations = select(InstitutionsSelectors.getUserInstitutions);
+
+  projectForm = input.required<FormGroup<ProjectForm>>();
 
   ngOnInit(): void {
-    this.#store.dispatch(new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}));
+    this.actions.fetchUserInstitutions();
+    this.actions.fetchRegions();
 
     this.selectAllAffiliations();
+
+    this.projectForm()
+      .get(ProjectFormControls.Template)
+      ?.valueChanges.subscribe((value) => {
+        this.hasTemplateSelected.set(!!value);
+      });
   }
 
   selectAllAffiliations(): void {
     const allAffiliationValues = this.affiliations().map((aff) => aff.id);
-    this.projectForm.get(ProjectFormControls.Affiliations)?.setValue(allAffiliationValues);
+    this.projectForm().get(ProjectFormControls.Affiliations)?.setValue(allAffiliationValues);
   }
 
   removeAllAffiliations(): void {
-    this.projectForm.get(ProjectFormControls.Affiliations)?.setValue([]);
-  }
-
-  submitForm(): void {
-    if (!this.projectForm.valid) {
-      this.projectForm.markAllAsTouched();
-      return;
-    }
-
-    const formValue = this.projectForm.getRawValue();
-    this.isSubmitting.set(true);
-
-    this.#store
-      .dispatch(
-        new CreateProject(
-          formValue.title,
-          formValue.description,
-          formValue.template,
-          formValue.storageLocation,
-          formValue.affiliations
-        )
-      )
-      .subscribe({
-        next: () => {
-          this.#store.dispatch(new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}));
-          this.dialogRef.close();
-        },
-        error: () => {
-          this.isSubmitting.set(false);
-        },
-      });
+    this.projectForm().get(ProjectFormControls.Affiliations)?.setValue([]);
   }
 }

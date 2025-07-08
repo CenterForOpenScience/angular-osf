@@ -13,7 +13,6 @@ import {
   SetSortBy,
 } from '@osf/features/preprints/store/preprints-discover/preprints-discover.actions';
 import { PreprintsDiscoverStateModel } from '@osf/features/preprints/store/preprints-discover/preprints-discover.model';
-import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover/preprints-discover.selectors';
 import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
 import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
 import { GetResourcesRequestTypeEnum, ResourceTab } from '@shared/enums';
@@ -53,13 +52,11 @@ export class PreprintsDiscoverState implements NgxsOnInit {
           if (query.type === GetResourcesRequestTypeEnum.GetResources) {
             const filters = this.store.selectSnapshot(PreprintsResourcesFiltersSelectors.getAllFilters);
             const filtersParams = addFiltersParams(filters as ResourceFiltersStateModel);
-            const searchText = this.store.selectSnapshot(PreprintsDiscoverSelectors.getSearchText);
-            const sortBy = this.store.selectSnapshot(PreprintsDiscoverSelectors.getSortBy);
+            const searchText = state.searchText;
+            const sortBy = state.sortBy;
             const resourceTab = ResourceTab.Preprints;
             const resourceTypes = getResourceTypes(resourceTab);
-            filtersParams['cardSearchFilter[publisher][]'] = this.store.selectSnapshot(
-              PreprintsDiscoverSelectors.getIri
-            );
+            filtersParams['cardSearchFilter[publisher][]'] = state.providerIri;
 
             return this.searchService.getResources(filtersParams, searchText, sortBy, resourceTypes).pipe(
               tap((response) => {
@@ -97,8 +94,8 @@ export class PreprintsDiscoverState implements NgxsOnInit {
   }
 
   @Action(GetResources)
-  getResources() {
-    if (!this.store.selectSnapshot(PreprintsDiscoverSelectors.getIri)) {
+  getResources(ctx: StateContext<PreprintsDiscoverStateModel>) {
+    if (!ctx.getState().providerIri) {
       return;
     }
     this.loadRequests.next({

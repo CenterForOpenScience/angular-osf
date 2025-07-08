@@ -1,5 +1,3 @@
-import { LinkTableModel } from '@osf/features/project/settings/models';
-
 export interface NodeSubjectModel {
   id: string;
   text: string;
@@ -67,12 +65,4 @@ export interface SubjectJsonApi {
 export interface UpdateSubjectRequestJsonApi {
   id: string;
   type: 'subjects';
-}
-
-export interface UpdateSubjectResponseJsonApi {
-  data: UpdateSubjectRequestJsonApi[];
-  links: LinkTableModel;
-  meta: {
-    version: string;
-  };
 }

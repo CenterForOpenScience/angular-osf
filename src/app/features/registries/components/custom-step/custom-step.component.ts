@@ -41,7 +41,7 @@ import { RegistriesSelectors } from '../../store';
 })
 export class CustomStepComponent {
   private readonly route = inject(ActivatedRoute);
-  step = signal(this.route.snapshot.params['step'].split('-')[0]);
+  step = signal(this.route.snapshot.params['step']);
   protected readonly pages = select(RegistriesSelectors.getPagesSchema);
   currentPage = computed(() => this.pages()[this.step() - 1]);
   protected readonly FieldType = FieldType;
@@ -50,7 +50,7 @@ export class CustomStepComponent {
 
   constructor() {
     this.route.params.pipe(takeUntilDestroyed()).subscribe((params) => {
-      this.step.set(+params['step'].split('-')[0]);
+      this.step.set(+params['step']);
     });
   }
 }

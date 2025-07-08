@@ -1,6 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import {
@@ -11,7 +12,6 @@ import {
 import { SubjectsComponent } from '@osf/shared/components';
 import { Subject } from '@osf/shared/models';
 import { FetchChildrenSubjects, FetchSubjects } from '@osf/shared/stores';
-import { SubjectsSelectors } from '@osf/shared/stores/subjects/subjects.selectors';
 
 @Component({
   selector: 'osf-registries-subjects',
@@ -21,13 +21,11 @@ import { SubjectsSelectors } from '@osf/shared/stores/subjects/subjects.selector
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistriesSubjectsComponent {
+  control = input.required<FormControl>();
   private readonly route = inject(ActivatedRoute);
   private readonly draftId = this.route.snapshot.params['id'];
+  private readonly OSF_PROVIDER_ID = 'osf';
 
-  protected subjects = select(SubjectsSelectors.getSubjects);
-  protected subjectsLoading = select(SubjectsSelectors.getSubjectsLoading);
-  protected searchedSubjects = select(SubjectsSelectors.getSearchedSubjects);
-  protected isSearching = select(SubjectsSelectors.getSearchedSubjectsLoading);
   protected selectedSubjects = select(RegistriesSelectors.getSelectedSubjects);
   protected isSubjectsUpdating = select(RegistriesSelectors.isSubjectsUpdating);
 
@@ -39,7 +37,7 @@ export class RegistriesSubjectsComponent {
   });
 
   constructor() {
-    this.actions.fetchSubjects();
+    this.actions.fetchSubjects(this.OSF_PROVIDER_ID);
     this.actions.fetchRegistrationSubjects(this.draftId);
   }
 
@@ -52,6 +50,24 @@ export class RegistriesSubjectsComponent {
   }
 
   updateSelectedSubjects(subjects: Subject[]) {
+    this.updateControlState(subjects);
     this.actions.updateRegistrationSubjects(this.draftId, subjects);
+  }
+
+  onFocusOut() {
+    if (this.control()) {
+      this.control().markAsTouched();
+      this.control().markAsDirty();
+      this.control().updateValueAndValidity();
+    }
+  }
+
+  updateControlState(value: Subject[]) {
+    if (this.control()) {
+      this.control().setValue(value);
+      this.control().markAsTouched();
+      this.control().markAsDirty();
+      this.control().updateValueAndValidity();
+    }
   }
 }

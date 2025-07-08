@@ -14,12 +14,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
 import { CustomPaginatorComponent, LoadingSpinnerComponent, SearchInputComponent } from '@osf/shared/components';
+import { AddContributorType, AddDialogState } from '@osf/shared/enums/contributors';
+import { ContributorAddModel, ContributorDialogAddModel } from '@osf/shared/models';
+import { ClearUsers, ContributorsSelectors, SearchUsers } from '@osf/shared/stores';
 
 import { AddContributorItemComponent } from '../add-contributor-item/add-contributor-item.component';
-
-import { AddContributorType, AddDialogState } from './../enums';
-import { ContributorAddModel, ContributorDialogAddModel } from './../models';
-import { ClearUsers, ContributorsSelectors, SearchUsers } from './../store';
 
 @Component({
   selector: 'osf-add-contributor-dialog',

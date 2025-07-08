@@ -7,6 +7,7 @@ export interface Registration {
   registrationSchemaId: string;
   license: {
     id: string;
-    options: LicenseOptions;
+    options: LicenseOptions | null;
   };
+  tags: string[];
 }

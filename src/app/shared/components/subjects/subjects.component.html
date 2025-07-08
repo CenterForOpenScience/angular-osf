@@ -50,12 +50,17 @@
       selectionMode="checkbox"
       [selection]="selectedTree()"
       [lazy]="true"
-      [loading]="loading()"
+      [loading]="areSubjectsUpdating() || subjectsLoading()"
       (onNodeExpand)="loadNode($event.node)"
       (onNodeCollapse)="collapseNode($event.node)"
       (onNodeSelect)="selectSubject($event.node.data)"
       (onNodeUnselect)="removeSubject($event.node.data)"
     >
     </p-tree>
+  }
+  @if (control()?.errors?.['required'] && (control()?.touched || control()?.dirty)) {
+    <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+      {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+    </p-message>
   }
 </p-card>

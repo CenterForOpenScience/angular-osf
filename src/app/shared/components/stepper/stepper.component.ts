@@ -14,15 +14,15 @@ import { StepOption } from '@shared/models';
 })
 export class StepperComponent {
   steps = input.required<StepOption[]>();
-  currentStep = model.required<number>();
+  currentStep = model.required<StepOption>();
   linear = input<boolean>(true);
 
-  onStepClick(step: number) {
-    if (step === this.currentStep()) {
+  onStepClick(step: StepOption) {
+    if (step.index === this.currentStep().index) {
       return;
     }
 
-    if (this.linear() && step > this.currentStep()) {
+    if (this.linear() && step.index > this.currentStep().index) {
       return;
     }
 

@@ -1,0 +1,35 @@
+@if (!showExpandedSection()) {
+  <h2>{{ title() | translate }}</h2>
+}
+
+@if (isLoading()) {
+  <osf-loading-spinner></osf-loading-spinner>
+} @else {
+  <div class="flex flex-column justify-content-between h-full">
+    <div class="flex align-items-center justify-content-center w-full h-full">
+      <p-chart class="mt-4" type="doughnut" responsive="true" [data]="data()" [options]="options()"></p-chart>
+    </div>
+
+    @if (showExpandedSection()) {
+      <div class="resource pt-2 md:pt-4">
+        <p-accordion>
+          <p-accordion-panel value="0">
+            <p-accordion-header class="flex flex-row column-gap-3 align-items-center p-0 pb-4">
+              <h4>{{ title() | translate }}</h4>
+            </p-accordion-header>
+            <p-accordion-content>
+              <div class="content">
+                @for (label of labels(); let i = $index; track i) {
+                  <li class="flex align-items-center mb-2 gap-2">
+                    <div class="w-1rem h-1rem" [style.background-color]="getColor(i)"></div>
+                    <span>{{ label }}</span>
+                  </li>
+                }
+              </div>
+            </p-accordion-content>
+          </p-accordion-panel>
+        </p-accordion>
+      </div>
+    }
+  </div>
+}

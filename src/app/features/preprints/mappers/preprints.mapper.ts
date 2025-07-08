@@ -37,7 +37,8 @@ export class PreprintsMapper {
       isPublic: response.attributes.public,
       version: response.attributes.version,
       isLatestVersion: response.attributes.is_latest_version,
-      primaryFileId: response.relationships.primary_file?.links?.related?.href || null,
+      primaryFileId: response.relationships.primary_file?.data?.id || null,
+      nodeId: response.relationships.node?.data?.id,
       licenseId: response.relationships.license?.data?.id || null,
       licenseOptions: response.attributes.license_record
         ? {

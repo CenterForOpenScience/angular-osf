@@ -26,3 +26,18 @@ export class GetSchemaBlocks {
     public questions: RegistrationQuestions
   ) {}
 }
+
+export class WithdrawRegistration {
+  static readonly type = '[Registry Overview] Withdraw Registration';
+
+  constructor(
+    public registryId: string,
+    public justification: string
+  ) {}
+}
+
+export class MakePublic {
+  static readonly type = '[Registry Overview] Make Public';
+
+  constructor(public registryId: string) {}
+}

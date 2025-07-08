@@ -1,4 +1,3 @@
-import { ContributorModel } from '@osf/shared/components/contributors/models';
 import { AsyncStateModel, License, Resource, Subject } from '@shared/models';
 
 import { PageSchema, Project, Provider } from '../models';
@@ -8,9 +7,9 @@ export interface RegistriesStateModel {
   providers: AsyncStateModel<Provider[]>;
   projects: AsyncStateModel<Project[]>;
   draftRegistration: AsyncStateModel<Registration | null>;
-  contributorsList: AsyncStateModel<ContributorModel[]>;
   registries: AsyncStateModel<Resource[]>;
   licenses: AsyncStateModel<License[]>;
   registrationSubjects: AsyncStateModel<Subject[]>;
   pagesSchema: AsyncStateModel<PageSchema[]>;
+  stepsValidation: Record<string, { invalid: boolean }>;
 }

@@ -234,7 +234,7 @@ export class MyProjectsState {
     ctx.patchState({
       projects: {
         ...state.projects,
-        isLoading: true,
+        isSubmitting: true,
       },
     });
 
@@ -246,6 +246,7 @@ export class MyProjectsState {
             projects: {
               data: [project, ...state.projects.data],
               isLoading: false,
+              isSubmitting: false,
               error: null,
             },
             totalProjects: state.totalProjects + 1,

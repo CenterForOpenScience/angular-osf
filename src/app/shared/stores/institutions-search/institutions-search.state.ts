@@ -1,4 +1,4 @@
-import { Action, NgxsOnInit, State, StateContext, Store } from '@ngxs/store';
+import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { BehaviorSubject, catchError, EMPTY, forkJoin, of, switchMap, tap, throwError } from 'rxjs';
@@ -6,18 +6,20 @@ import { BehaviorSubject, catchError, EMPTY, forkJoin, of, switchMap, tap, throw
 import { inject, Injectable } from '@angular/core';
 
 import { ResourcesData } from '@osf/features/search/models';
-import { GetResourcesRequestTypeEnum, ResourceTab } from '@shared/enums';
-import { Institution } from '@shared/models';
-import { InstitutionsService, SearchService } from '@shared/services';
-import { FetchResources, FetchResourcesByLink, InstitutionsSearchSelectors, UpdateResourceType } from '@shared/stores';
-import { getResourceTypes } from '@shared/utils';
+import { GetResourcesRequestTypeEnum, ResourceTab } from '@osf/shared/enums';
+import { Institution } from '@osf/shared/models';
+import { InstitutionsService, SearchService } from '@osf/shared/services';
+import { getResourceTypes } from '@osf/shared/utils';
 
 import {
   FetchInstitutionById,
+  FetchResources,
+  FetchResourcesByLink,
   LoadFilterOptions,
   LoadFilterOptionsAndSetValues,
   SetFilterValues,
   UpdateFilterValue,
+  UpdateResourceType,
   UpdateSortBy,
 } from './institutions-search.actions';
 import { InstitutionsSearchModel } from './institutions-search.model';
@@ -44,7 +46,6 @@ import { InstitutionsSearchModel } from './institutions-search.model';
 export class InstitutionsSearchState implements NgxsOnInit {
   private readonly institutionsService = inject(InstitutionsService);
   private readonly searchService = inject(SearchService);
-  private readonly store = inject(Store);
 
   private loadRequests = new BehaviorSubject<{ type: GetResourcesRequestTypeEnum; link?: string } | null>(null);
   private filterOptionsRequests = new BehaviorSubject<string | null>(null);
@@ -71,12 +72,12 @@ export class InstitutionsSearchState implements NgxsOnInit {
     const state = ctx.getState();
     ctx.patchState({ resources: { ...state.resources, isLoading: true } });
     const filtersParams: Record<string, string> = {};
-    const searchText = this.store.selectSnapshot(InstitutionsSearchSelectors.getSearchText);
-    const sortBy = this.store.selectSnapshot(InstitutionsSearchSelectors.getSortBy);
-    const resourceTab = this.store.selectSnapshot(InstitutionsSearchSelectors.getResourceType);
+    const searchText = state.searchText;
+    const sortBy = state.sortBy;
+    const resourceTab = state.resourceType;
     const resourceTypes = getResourceTypes(resourceTab);
 
-    filtersParams['cardSearchFilter[affiliation][]'] = this.store.selectSnapshot(InstitutionsSearchSelectors.getIris);
+    filtersParams['cardSearchFilter[affiliation][]'] = state.providerIri;
 
     Object.entries(state.filterValues).forEach(([key, value]) => {
       if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
@@ -148,8 +149,8 @@ export class InstitutionsSearchState implements NgxsOnInit {
   }
 
   @Action(FetchResources)
-  getResources() {
-    if (!this.store.selectSnapshot(InstitutionsSearchSelectors.getIris)) return;
+  getResources(ctx: StateContext<InstitutionsSearchModel>) {
+    if (!ctx.getState().providerIri) return;
     this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
   }
 

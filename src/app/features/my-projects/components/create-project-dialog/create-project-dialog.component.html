@@ -1,0 +1,17 @@
+<osf-add-project-form [templates]="templates()" [projectForm]="projectForm" />
+<div class="flex justify-content-end gap-2 mt-4">
+  <p-button
+    class="w-12rem btn-full-width"
+    [label]="'myProjects.createProject.actions.cancel' | translate"
+    severity="info"
+    (click)="dialogRef.close()"
+    [disabled]="isProjectSubmitting()"
+  />
+  <p-button
+    class="w-12rem btn-full-width"
+    [label]="'myProjects.createProject.actions.create' | translate"
+    [disabled]="!projectForm.valid || isProjectSubmitting()"
+    [loading]="isProjectSubmitting()"
+    (click)="submitForm()"
+  />
+</div>

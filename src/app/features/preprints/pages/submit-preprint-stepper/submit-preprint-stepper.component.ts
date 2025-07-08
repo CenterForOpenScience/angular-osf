@@ -18,11 +18,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import {
+  AuthorAssertionsStepComponent,
   FileStepComponent,
   MetadataStepComponent,
+  SupplementsStepComponent,
   TitleAndAbstractStepComponent,
 } from '@osf/features/preprints/components';
-import { AuthorAssertionsStepComponent } from '@osf/features/preprints/components/stepper/author-assertion-step/author-assertions-step.component';
 import { submitPreprintSteps } from '@osf/features/preprints/constants';
 import { SubmitSteps } from '@osf/features/preprints/enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
@@ -30,6 +31,7 @@ import {
   ResetStateAndDeletePreprint,
   SetSelectedPreprintProviderId,
 } from '@osf/features/preprints/store/submit-preprint';
+import { StepOption } from '@osf/shared/models';
 import { StepperComponent } from '@shared/components';
 import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
@@ -42,6 +44,8 @@ import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
     TitleAndAbstractStepComponent,
     FileStepComponent,
     MetadataStepComponent,
+    AuthorAssertionsStepComponent,
+    SupplementsStepComponent,
     AuthorAssertionsStepComponent,
   ],
   templateUrl: './submit-preprint-stepper.component.html',
@@ -66,7 +70,7 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
-  currentStep = signal<number>(0);
+  currentStep = signal<StepOption>(submitPreprintSteps[0]);
   isWeb = toSignal(inject(IS_WEB));
 
   constructor() {
@@ -97,8 +101,9 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
     this.actions.resetStateAndDeletePreprint();
   }
 
-  stepChange(step: number) {
-    if (step >= this.currentStep()) {
+  stepChange(step: StepOption): void {
+    const currentStepIndex = this.currentStep()?.index ?? 0;
+    if (step.index >= currentStepIndex) {
       return;
     }
 

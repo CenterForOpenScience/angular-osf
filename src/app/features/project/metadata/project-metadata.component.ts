@@ -53,7 +53,8 @@ import {
   UpdateProjectDetails,
 } from '@osf/features/project/metadata/store';
 import { ProjectOverviewSubject } from '@osf/features/project/overview/models';
-import { ContributorsSelectors, GetAllContributors } from '@osf/shared/components/contributors/store';
+import { ResourceType } from '@osf/shared/enums';
+import { ContributorsSelectors, GetAllContributors } from '@osf/shared/stores';
 import { LoadingSpinnerComponent, SubHeaderComponent, TagsInputComponent } from '@shared/components';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 import { GetSubjects, SubjectsSelectors, UpdateProjectSubjects } from '@shared/stores/subjects';
@@ -173,7 +174,7 @@ export class ProjectMetadataComponent implements OnInit {
       this.actions.getHighlightedSubjects();
       this.actions.getProject(projectId);
       this.actions.getCustomItemMetadata(projectId);
-      this.actions.getContributors(projectId);
+      this.actions.getContributors(projectId, ResourceType.Project);
       this.actions.getCedarRecords(projectId);
       this.actions.getCedarTemplates();
 
@@ -250,7 +251,7 @@ export class ProjectMetadataComponent implements OnInit {
   private refreshContributorsData(): void {
     const projectId = this.route.parent?.parent?.snapshot.params['id'];
     if (projectId) {
-      this.actions.getContributors(projectId);
+      this.actions.getContributors(projectId, ResourceType.Project);
     }
   }
 

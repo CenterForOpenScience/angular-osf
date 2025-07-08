@@ -1,9 +1,13 @@
+import { createDispatchMap, select } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Card } from 'primeng/card';
 
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
+import { RegistriesSelectors, UpdateDraft } from '@osf/features/registries/store';
 import { TagsInputComponent } from '@osf/shared/components';
 
 @Component({
@@ -14,7 +18,15 @@ import { TagsInputComponent } from '@osf/shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistriesTagsComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly draftId = this.route.snapshot.params['id'];
+  protected selectedTags = select(RegistriesSelectors.getSelectedTags);
+
+  protected actions = createDispatchMap({
+    updateDraft: UpdateDraft,
+  });
+
   onTagsChanged(tags: string[]): void {
-    console.log('Tags changed:', tags);
+    this.actions.updateDraft(this.draftId, { tags });
   }
 }

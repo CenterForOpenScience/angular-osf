@@ -1,13 +1,11 @@
 <nav class="nav-menu">
-  <p-panelMenu [model]="mainMenuItems()" [multiple]="false">
+  <p-panelMenu [model]="menuItems" [multiple]="false">
     <ng-template #item let-item>
       @if (item.label !== 'navigation.registriesSubRoutes.registryDetails') {
         <a
           [routerLink]="item.routerLink"
           routerLinkActive="active"
-          [routerLinkActiveOptions]="{
-            exact: item.label !== 'navigation.myProjects' ? item.useExactMatch : true,
-          }"
+          [routerLinkActiveOptions]="item.routerLinkActiveOptions"
           class="nav-link flex align-items-center"
           [class.mt-5]="item.label === 'navigation.settings' || item.label === 'navigation.myProjects'"
           (click)="goToLink(item)"
@@ -15,7 +13,9 @@
           @if (item.icon) {
             <osf-icon [iconClass]="`nav-icon ${item.icon}`"></osf-icon>
           }
+
           <span>{{ item.label | translate }}</span>
+
           @if (item.items) {
             <osf-icon
               class="ml-auto pt-1"
@@ -24,12 +24,12 @@
           }
         </a>
 
-        @if (item.label === 'navigation.myProjects' && isProjectRoute()) {
+        @if (item.label === 'navigation.myProjects' && !isRegistryRoute() && isProjectRoute()) {
           <div class="ml-4">
             <p-panelMenu [model]="myProjectMenuItems" [multiple]="false">
               <ng-template #item let-item>
                 <a
-                  [routerLink]="item.routerLink ? ['/my-projects', currentProjectId(), item.routerLink] : null"
+                  [routerLink]="item.routerLink ? ['/my-projects', currentResourceId(), item.routerLink] : null"
                   [routerLinkActive]="item.routerLink ? 'active' : ''"
                   [routerLinkActiveOptions]="{ exact: true }"
                   class="nav-link flex align-items-center"
@@ -56,7 +56,7 @@
         <p-panelMenu [model]="registrationMenuItems" [multiple]="false" class="border-none">
           <ng-template #item let-item>
             <a
-              [routerLink]="item.routerLink ? ['/my-projects', currentProjectId(), item.routerLink] : null"
+              [routerLink]="item.routerLink ? ['/registries', currentResourceId(), item.routerLink] : null"
               [routerLinkActive]="item.routerLink ? 'active' : ''"
               [routerLinkActiveOptions]="{ exact: true }"
               class="nav-link flex align-items-center"

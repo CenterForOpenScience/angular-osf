@@ -1,5 +1,4 @@
-<form [formGroup]="projectForm" (ngSubmit)="submitForm()" class="flex flex-column gap-4">
-  <!-- Title -->
+<form [formGroup]="projectForm()" class="flex flex-column gap-4">
   <div class="flex flex-column">
     <label for="project-title">
       {{ 'myProjects.createProject.title' | translate }}
@@ -7,19 +6,20 @@
     <input pInputText id="project-title" type="text" [formControlName]="ProjectFormControls.Title" />
   </div>
 
-  <!-- Storage Location -->
   <div class="flex flex-column">
     <label for="storage-location">
       {{ 'myProjects.createProject.storageLocation' | translate }}
     </label>
     <p-select
       id="storage-location"
-      [options]="storageLocations"
+      [options]="storageLocations()"
+      optionLabel="name"
+      optionValue="id"
+      [loading]="areStorageLocationsLoading()"
       [formControlName]="ProjectFormControls.StorageLocation"
-    ></p-select>
+    />
   </div>
 
-  <!-- Affiliations -->
   @if (affiliations().length) {
     <div class="flex flex-column gap-2">
       <div class="relative">
@@ -28,21 +28,17 @@
         </h3>
         <div class="flex gap-4 absolute top-0 right-0">
           <p-button
-            class="secondary-transparent"
             severity="secondary"
             [label]="'myProjects.createProject.affiliation.selectAll' | translate"
             (click)="selectAllAffiliations()"
             (keydown.enter)="selectAllAffiliations()"
-          >
-          </p-button>
+          />
           <p-button
-            class="secondary-transparent"
             severity="secondary"
             [label]="'myProjects.createProject.affiliation.removeAll' | translate"
             (click)="removeAllAffiliations()"
             (keydown.enter)="removeAllAffiliations()"
-          >
-          </p-button>
+          />
         </div>
       </div>
 
@@ -62,7 +58,6 @@
     </div>
   }
 
-  <!-- Description -->
   <div class="flex flex-column">
     <label for="description">
       {{ 'myProjects.createProject.description.label' | translate }}
@@ -70,38 +65,21 @@
     <textarea pTextarea id="description" [formControlName]="ProjectFormControls.Description" [rows]="5"></textarea>
   </div>
 
-  <!-- Template -->
   <div class="flex flex-column">
     <label for="template">
       {{ 'myProjects.createProject.template.label' | translate }}
     </label>
     <p-select
       id="template"
-      [options]="projectTemplateOptions()"
+      [options]="templates()"
+      optionValue="id"
+      optionLabel="name"
       [formControlName]="ProjectFormControls.Template"
       [placeholder]="'myProjects.createProject.template.placeholder' | translate"
       [filter]="true"
       styleClass="w-full"
       appendTo="body"
       [showClear]="hasTemplateSelected()"
-    ></p-select>
-  </div>
-
-  <!-- Actions -->
-  <div class="flex justify-content-end gap-2">
-    <p-button
-      class="w-12rem btn-full-width"
-      [label]="'myProjects.createProject.actions.cancel' | translate"
-      severity="info"
-      (click)="dialogRef.close()"
-      [disabled]="isSubmitting()"
-    />
-    <p-button
-      class="w-12rem btn-full-width"
-      [label]="'myProjects.createProject.actions.create' | translate"
-      type="submit"
-      [disabled]="!projectForm.valid || isSubmitting()"
-      [loading]="isSubmitting()"
     />
   </div>
 </form>

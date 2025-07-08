@@ -39,11 +39,6 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getContributors(state: RegistriesStateModel) {
-    return state.contributorsList.data;
-  }
-
-  @Selector([RegistriesState])
   static getRegistries(state: RegistriesStateModel): Resource[] {
     return state.registries.data;
   }
@@ -76,5 +71,15 @@ export class RegistriesSelectors {
   @Selector([RegistriesState])
   static isSubjectsUpdating(state: RegistriesStateModel): boolean {
     return state.registrationSubjects.isLoading;
+  }
+
+  @Selector([RegistriesState])
+  static getSelectedTags(state: RegistriesStateModel): string[] {
+    return state.draftRegistration.data?.tags || [];
+  }
+
+  @Selector([RegistriesState])
+  static getStepsValidation(state: RegistriesStateModel): Record<string, { invalid: boolean }> {
+    return state.stepsValidation;
   }
 }

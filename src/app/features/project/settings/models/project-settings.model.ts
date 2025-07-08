@@ -1,5 +1,3 @@
-import { LinkTableModel } from '@osf/features/project/settings/models';
-
 export interface ProjectSettingsModel {
   id: string;
   attributes: {
@@ -11,6 +9,5 @@ export interface ProjectSettingsModel {
     redirectLinkUrl: string;
     wikiEnabled: boolean;
   };
-  linkTable: LinkTableModel[];
   lastFetched?: number;
 }

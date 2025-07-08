@@ -1,9 +1,7 @@
 <osf-subjects
-  [loading]="subjectsLoading() || isSubjectsUpdating()"
-  [isSearching]="isSearching()"
-  [list]="subjects()"
+  [control]="control()"
+  [areSubjectsUpdating]="isSubjectsUpdating()"
   [selected]="selectedSubjects()"
-  [searchedSubjects]="searchedSubjects()"
   (loadChildren)="getSubjectChildren($event)"
   (searchChanged)="searchSubjects($event)"
   (updateSelection)="updateSelectedSubjects($event)"

@@ -1,7 +1,7 @@
 <h2>Metadata</h2>
 
 <div class="m-t-24">
-  <osf-preprint-contributors />
+  <osf-preprint-contributors [preprintId]="createdPreprint()?.id" />
 </div>
 
 <p-card class="w-full card" styleClass="m-t-24">
@@ -40,6 +40,10 @@
     }
   </div>
 </p-card>
+
+<div class="m-t-24">
+  <osf-preprints-subjects />
+</div>
 
 <p-card styleClass="m-t-24" class="card">
   <div>

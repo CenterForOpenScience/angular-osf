@@ -3,32 +3,36 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputText } from 'primeng/inputtext';
 
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ViewOnlyLinkNodeModel } from '@osf/features/project/settings/models';
+import { TextInputComponent } from '@osf/shared/components';
+import { InputLimits } from '@osf/shared/constants';
+import { ViewOnlyLinkNodeModel } from '@osf/shared/models';
+import { CustomValidators } from '@osf/shared/utils';
 
 @Component({
   selector: 'osf-create-view-link-dialog',
-  imports: [Button, TranslatePipe, InputText, ReactiveFormsModule, FormsModule, Checkbox],
+  imports: [Button, TranslatePipe, ReactiveFormsModule, FormsModule, Checkbox, TextInputComponent],
   templateUrl: './create-view-link-dialog.component.html',
   styleUrl: './create-view-link-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateViewLinkDialogComponent implements OnInit {
+  linkName = new FormControl('', { nonNullable: true, validators: [CustomValidators.requiredTrimmed()] });
+
   readonly dialogRef = inject(DynamicDialogRef);
   protected readonly config = inject(DynamicDialogConfig);
+  inputLimits = InputLimits;
 
-  protected selectedComponents = signal<Record<string, boolean>>({});
-  protected linkName = signal('');
   anonymous = signal(true);
+  protected selectedComponents = signal<Record<string, boolean>>({});
   readonly projectId = signal('');
 
   ngOnInit(): void {
     const data = (this.config.data?.['sharedComponents'] as ViewOnlyLinkNodeModel[]) || [];
-    this.projectId.set(this.config.data?.['projectId']);
+    this.projectId.set(this.config.data?.projectId);
     const initialState = data.reduce(
       (acc, curr) => {
         if (curr.id) {
@@ -45,8 +49,8 @@ export class CreateViewLinkDialogComponent implements OnInit {
     return item.category === 'project' && item.id === this.projectId();
   }
 
-  addContributor(): void {
-    if (!this.linkName()) return;
+  addLink(): void {
+    if (!this.linkName.value) return;
 
     const components = (this.config.data?.['sharedComponents'] as ViewOnlyLinkNodeModel[]) || [];
     const selectedIds = Object.entries(this.selectedComponents()).filter(([component, checked]) => checked);
@@ -62,17 +66,13 @@ export class CreateViewLinkDialogComponent implements OnInit {
 
     const data = {
       attributes: {
-        name: this.linkName(),
+        name: this.linkName.value,
         anonymous: this.anonymous(),
       },
       nodes: selected,
     };
 
     this.dialogRef.close(data);
-  }
-
-  onLinkNameChange(value: string): void {
-    this.linkName.set(value);
   }
 
   onCheckboxToggle(id: string, checked: boolean): void {

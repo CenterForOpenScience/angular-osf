@@ -127,12 +127,9 @@ export class ProjectOverviewState {
       case ResourceType.Registration:
         resourceType = 'registrations';
         break;
-      case ResourceType.Preprint:
-        resourceType = 'preprints';
-        break;
     }
 
-    return this.projectOverviewService.forkResource(action.projectId, resourceType).pipe(
+    return this.projectOverviewService.forkResource(action.resourceId, resourceType).pipe(
       tap(() => {
         ctx.patchState({
           project: {

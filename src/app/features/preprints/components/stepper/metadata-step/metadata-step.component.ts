@@ -12,6 +12,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { ChangeDetectionStrategy, Component, HostListener, OnInit, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { PreprintsSubjectsComponent } from '@osf/features/preprints/components/stepper/metadata-step/preprints-subjects/preprints-subjects.component';
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { MetadataForm, Preprint } from '@osf/features/preprints/models';
 import {
@@ -44,6 +45,7 @@ import { ContributorsComponent } from './contributors/contributors.component';
     Tooltip,
     LicenseComponent,
     TagsInputComponent,
+    PreprintsSubjectsComponent,
   ],
   templateUrl: './metadata-step.component.html',
   styleUrl: './metadata-step.component.scss',

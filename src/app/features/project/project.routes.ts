@@ -2,9 +2,12 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { ContributorsState } from '@osf/shared/components/contributors/store';
+import { ResourceType } from '@osf/shared/enums';
+import { ContributorsState, ViewOnlyLinkState } from '@osf/shared/stores';
 
+import { AnalyticsState } from './analytics/store';
 import { ProjectFilesState } from './files/store';
+import { SettingsState } from './settings/store';
 
 export const projectRoutes: Routes = [
   {
@@ -25,6 +28,7 @@ export const projectRoutes: Routes = [
         path: 'metadata',
         loadChildren: () =>
           import('../project/metadata/project-metadata.routes').then((mod) => mod.projectMetadataRoutes),
+        providers: [provideStates([ContributorsState])],
       },
       {
         path: 'files',
@@ -39,16 +43,20 @@ export const projectRoutes: Routes = [
       {
         path: 'settings',
         loadComponent: () => import('../project/settings/settings.component').then((mod) => mod.SettingsComponent),
+        providers: [provideStates([SettingsState, ViewOnlyLinkState])],
       },
       {
         path: 'contributors',
         loadComponent: () =>
           import('../project/contributors/contributors.component').then((mod) => mod.ContributorsComponent),
-        providers: [provideStates([ContributorsState])],
+        data: { resourceType: ResourceType.Project },
+        providers: [provideStates([ContributorsState, ViewOnlyLinkState])],
       },
       {
         path: 'analytics',
         loadComponent: () => import('../project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
+        data: { resourceType: ResourceType.Project },
+        providers: [provideStates([AnalyticsState])],
       },
       {
         path: 'wiki',

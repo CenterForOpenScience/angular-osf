@@ -2,7 +2,6 @@ import { map, Observable, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { Primitive, StringOrNull } from '@core/helpers';
 import { JsonApiService } from '@core/services';
 import { ApiData, JsonApiResponse } from '@osf/core/models';
 import { PreprintsMapper } from '@osf/features/preprints/mappers';
@@ -12,7 +11,7 @@ import {
   PreprintJsonApi,
   PreprintsRelationshipsJsonApi,
 } from '@osf/features/preprints/models';
-import { GetFileResponse, GetFilesResponse, IdName, NodeData, OsfFile } from '@osf/shared/models';
+import { GetFileResponse, GetFilesResponse, OsfFile } from '@osf/shared/models';
 import { FilesService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
@@ -59,25 +58,6 @@ export class PreprintFilesService {
         };
       })
     );
-  }
-
-  getAvailableProjects(searchTerm: StringOrNull): Observable<IdName[]> {
-    const params: Record<string, Primitive> = {};
-    params['page'] = 1;
-    if (searchTerm) {
-      params['filter[title]'] = searchTerm;
-    }
-
-    return this.jsonApiService
-      .get<JsonApiResponse<NodeData[], null>>(`${environment.apiUrl}/users/me/nodes/`, params)
-      .pipe(
-        map((response) => {
-          return response.data.map((item) => ({
-            id: item.id,
-            name: item.attributes.title,
-          }));
-        })
-      );
   }
 
   getProjectFiles(projectId: string): Observable<OsfFile[]> {

@@ -2,6 +2,7 @@ export { AddProjectFormComponent } from './add-project-form/add-project-form.com
 export { BarChartComponent } from './bar-chart/bar-chart.component';
 export { CopyButtonComponent } from './copy-button/copy-button.component';
 export { CustomPaginatorComponent } from './custom-paginator/custom-paginator.component';
+export { DataResourcesComponent } from './data-resources/data-resources.component';
 export { EducationHistoryComponent } from './education-history/education-history.component';
 export { EducationHistoryDialogComponent } from './education-history-dialog/education-history-dialog.component';
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';
@@ -28,6 +29,7 @@ export { SearchHelpTutorialComponent } from './search-help-tutorial/search-help-
 export { SearchInputComponent } from './search-input/search-input.component';
 export { SearchResultsContainerComponent } from './search-results-container/search-results-container.component';
 export { SelectComponent } from './select/select.component';
+export { StatisticCardComponent } from './statistic-card/statistic-card.component';
 export { StepperComponent } from './stepper/stepper.component';
 export { SubHeaderComponent } from './sub-header/sub-header.component';
 export { SubjectsComponent } from './subjects/subjects.component';

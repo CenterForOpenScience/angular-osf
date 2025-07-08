@@ -17,11 +17,6 @@ export const DefaultState: RegistriesStateModel = {
     isSubmitting: false,
     error: null,
   },
-  contributorsList: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
   registries: {
     data: [],
     isLoading: false,
@@ -42,4 +37,5 @@ export const DefaultState: RegistriesStateModel = {
     isLoading: false,
     error: null,
   },
+  stepsValidation: {},
 };

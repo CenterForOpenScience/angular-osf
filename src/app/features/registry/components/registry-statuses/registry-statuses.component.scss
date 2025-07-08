@@ -1,0 +1,12 @@
+@use "/assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+.accordion-border {
+  border: 1px solid var.$grey-2;
+  border-radius: mix.rem(12px);
+  height: max-content !important;
+}
+
+.no-padding {
+  --p-accordion-header-padding: 0;
+}
