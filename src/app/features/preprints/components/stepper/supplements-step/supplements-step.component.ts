@@ -97,20 +97,11 @@ export class SupplementsStepComponent implements OnInit {
   });
 
   isNextButtonDisabled = computed(() => {
-    if (this.createdPreprint()?.nodeId) {
-      return false;
+    if (this.selectedSupplementOption() === SupplementOptions.CreateNewProject) {
+      return !this.createProjectFormValid();
     }
 
-    switch (this.selectedSupplementOption()) {
-      case SupplementOptions.None:
-        return true;
-      case SupplementOptions.ConnectExistingProject:
-        return !this.createdPreprint()?.nodeId;
-      case SupplementOptions.CreateNewProject:
-        return !this.createProjectFormValid();
-      default:
-        return false;
-    }
+    return false;
   });
 
   constructor() {
