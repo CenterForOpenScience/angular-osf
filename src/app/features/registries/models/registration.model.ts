@@ -10,4 +10,6 @@ export interface Registration {
     options: LicenseOptions | null;
   };
   tags: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  stepsData?: Record<string, any>;
 }

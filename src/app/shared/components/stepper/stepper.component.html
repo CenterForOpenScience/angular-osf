@@ -9,14 +9,14 @@
           [class.current]="i === currentStep().index"
           (click)="onStepClick(step)"
         >
-          @if (i < currentStep().index) {
-            @if (step.invalid) {
-              <osf-icon iconClass="fas fa-exclamation" />
-            } @else {
-              <osf-icon iconClass="fas fa-check" />
-            }
+          @if (step.invalid && i !== currentStep().index) {
+            <osf-icon iconClass="fas fa-exclamation" />
           } @else {
-            <span>{{ i + 1 }}</span>
+            @if (i < currentStep().index) {
+              <osf-icon iconClass="fas fa-check" />
+            } @else {
+              <span>{{ i + 1 }}</span>
+            }
           }
         </button>
         @if (i < steps().length - 1) {

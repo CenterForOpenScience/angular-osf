@@ -21,103 +21,139 @@
 
     <ng-template #questionList>
       @for (question of questions; track question.id) {
-        <p-card>
-          <label [for]="question.groupKey">
-            <h3 class="mb-2">
-              {{ question.displayText }}
-              @if (question.required) {
-                <span class="text-red-500">*</span>
+        <form [formGroup]="stepForm">
+          <p-card>
+            <label [for]="question.groupKey">
+              <h3 class="mb-2">
+                {{ question.displayText }}
+                @if (question.required) {
+                  <span class="text-red-500">*</span>
+                }
+              </h3>
+              @if (question.helpText) {
+                <p class="mb-3">{{ question.helpText }}</p>
               }
-            </h3>
-            @if (question.helpText) {
-              <p class="mb-3">{{ question.helpText }}</p>
+              @if (question.paragraphText) {
+                <p class="mb-3">{{ question.paragraphText }}</p>
+              }
+            </label>
+            @if (question.exampleText) {
+              <p-inplace #inplaceRef styleClass="mb-4">
+                <ng-template #display>
+                  <span class="text-primary">{{ 'common.links.showExample' | translate }} </span>
+                </ng-template>
+                <ng-template #content>
+                  <div class="p-inplace-display">
+                    <button
+                      class="text-primary border-none cursor-pointer bg-transparent text-sm"
+                      tabindex="0"
+                      role="button"
+                      (click)="inplaceRef.deactivate()"
+                      (keyup.enter)="inplaceRef.deactivate()"
+                      (keyup.space)="inplaceRef.deactivate()"
+                    >
+                      {{ 'common.links.hideExample' | translate }}
+                    </button>
+                  </div>
+                  <p class="m-0">{{ question.exampleText }}</p>
+                </ng-template>
+              </p-inplace>
             }
-            @if (question.paragraphText) {
-              <p class="mb-3">{{ question.paragraphText }}</p>
-            }
-          </label>
-          @if (question.exampleText) {
-            <p-inplace #inplaceRef styleClass="mb-4">
-              <ng-template #display>
-                <span class="text-primary">{{ 'common.links.showExample' | translate }} </span>
-              </ng-template>
-              <ng-template #content>
-                <div class="p-inplace-display">
-                  <button
-                    class="text-primary border-none cursor-pointer bg-transparent text-sm"
-                    tabindex="0"
-                    role="button"
-                    (click)="inplaceRef.deactivate()"
-                    (keyup.enter)="inplaceRef.deactivate()"
-                    (keyup.space)="inplaceRef.deactivate()"
-                  >
-                    {{ 'common.links.hideExample' | translate }}
-                  </button>
+
+            @switch (question.fieldType) {
+              @case (FieldType.TextArea) {
+                <textarea
+                  id="{{ question.groupKey }}"
+                  class="w-full"
+                  rows="5"
+                  cols="30"
+                  pTextarea
+                  [formControlName]="question.responseKey!"
+                ></textarea>
+                @if (
+                  stepForm.controls[question.responseKey!].errors?.['required'] &&
+                  (stepForm.controls[question.responseKey!].touched || stepForm.controls[question.responseKey!].dirty)
+                ) {
+                  <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+                    {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+                  </p-message>
+                }
+              }
+              @case (FieldType.Radio) {
+                <div class="flex flex-column gap-2">
+                  @for (option of question.options; track option) {
+                    <div class="flex align -items-center gap-2">
+                      <p-radioButton
+                        [formControlName]="question.responseKey!"
+                        [inputId]="option.value"
+                        [value]="option.value"
+                      ></p-radioButton>
+                      <label [for]="option.value" class="ml-2">{{ option.label }}</label>
+                      @if (option.helpText) {
+                        <osf-info-icon [tooltipText]="option.helpText"></osf-info-icon>
+                      }
+                    </div>
+                  }
                 </div>
-                <p class="m-0">{{ question.exampleText }}</p>
-              </ng-template>
-            </p-inplace>
-          }
+              }
+              @case (FieldType.Checkbox) {
+                <div class="flex flex-column gap-2">
+                  @for (option of question.options; track option) {
+                    <div class="flex align-items-center gap-2">
+                      <p-checkbox
+                        [inputId]="option.value"
+                        [formControlName]="question.responseKey!"
+                        [value]="option.value"
+                      ></p-checkbox>
+                      <label [for]="option.value" class="ml-2">{{ option.label }}</label>
+                    </div>
+                  }
+                </div>
+              }
 
-          @switch (question.fieldType) {
-            @case (FieldType.TextArea) {
-              <textarea id="{{ question.groupKey }}" class="w-full" rows="5" cols="30" pTextarea></textarea>
-            }
-            @case (FieldType.Radio) {
-              <div class="flex flex-column gap-2">
-                @for (option of question.options; track option) {
-                  <div class="flex align -items-center gap-2">
-                    <p-radioButton
-                      [inputId]="option.value"
-                      [(ngModel)]="radio"
-                      [name]="question.groupKey || ''"
-                      [value]="option.value"
-                    ></p-radioButton>
-                    <label [for]="option.value" class="ml-2">{{ option.label }}</label>
-                    @if (option.helpText) {
-                      <osf-info-icon [tooltipText]="option.helpText"></osf-info-icon>
-                    }
-                  </div>
+              @case (FieldType.Text) {
+                <input
+                  [formControlName]="question.responseKey!"
+                  type="text"
+                  class="w-full"
+                  [placeholder]="question.exampleText"
+                  pInputText
+                />
+                @if (
+                  stepForm.controls[question.responseKey!].errors?.['required'] &&
+                  (stepForm.controls[question.responseKey!].touched || stepForm.controls[question.responseKey!].dirty)
+                ) {
+                  <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+                    {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+                  </p-message>
                 }
-              </div>
-            }
-            @case (FieldType.Checkbox) {
-              <div class="flex flex-column gap-2">
-                @for (option of question.options; track option) {
-                  <div class="flex align-items-center gap-2">
-                    <p-checkbox
-                      [inputId]="option.value"
-                      [name]="question.groupKey || ''"
-                      [value]="option.value"
-                    ></p-checkbox>
-                    <label [for]="option.value" class="ml-2">{{ option.label }}</label>
-                  </div>
-                }
-              </div>
-            }
+              }
+              @case (FieldType.File) {
+                <h3 class="mb-2">Upload File</h3>
+                <p class="mb-1">
+                  You may attach up to 5 file(s) to this question. Files cannot total over 5GB in size.
+                </p>
+                <p>
+                  Uploaded files will automatically be archived in this registration. They will also be added to a
+                  related project that will be created for this registration.
+                </p>
 
-            @case (FieldType.Text) {
-              <input
-                id="{{ question.groupKey }}"
-                type="text"
-                class="w-full"
-                [placeholder]="question.exampleText"
-                pInputText
-              />
+                <p>File input is not implemented yet.</p>
+              }
             }
-            @case (FieldType.File) {
-              <h3 class="mb-2">Upload File</h3>
-              <p class="mb-1">You may attach up to 5 file(s) to this question. Files cannot total over 5GB in size.</p>
-              <p>
-                Uploaded files will automatically be archived in this registration. They will also be added to a related
-                project that will be created for this registration.
-              </p>
-
-              <p>File input is not implemented yet.</p>
-            }
-          }
-        </p-card>
+          </p-card>
+        </form>
       }
     </ng-template>
   }
+  <div class="flex justify-content-end">
+    <p-button
+      type="button"
+      [label]="'common.buttons.back' | translate"
+      severity="info"
+      class="mr-2"
+      (click)="goBack()"
+    ></p-button>
+    <p-button type="button" [label]="'common.buttons.next' | translate" (click)="goNext()"></p-button>
+  </div>
 </section>

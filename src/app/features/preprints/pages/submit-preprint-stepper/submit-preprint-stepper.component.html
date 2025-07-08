@@ -52,6 +52,9 @@
     @case (SubmitStepsEnum.Review) {
       <osf-review-step [provider]="preprintProvider()" />
     }
+    @case (SubmitStepsEnum.Supplements) {
+      <osf-supplements-step (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.Review])" />
+    }
     @default {
       <p>No such step</p>
     }
