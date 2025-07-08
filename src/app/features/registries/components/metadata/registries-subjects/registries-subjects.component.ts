@@ -22,6 +22,7 @@ import { FetchChildrenSubjects, FetchSubjects } from '@osf/shared/stores';
 export class RegistriesSubjectsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly draftId = this.route.snapshot.params['id'];
+  private readonly OSF_PROVIDER_ID = 'osf';
 
   protected selectedSubjects = select(RegistriesSelectors.getSelectedSubjects);
   protected isSubjectsUpdating = select(RegistriesSelectors.isSubjectsUpdating);
@@ -34,7 +35,7 @@ export class RegistriesSubjectsComponent {
   });
 
   constructor() {
-    this.actions.fetchSubjects('osf');
+    this.actions.fetchSubjects(this.OSF_PROVIDER_ID);
     this.actions.fetchRegistrationSubjects(this.draftId);
   }
 
