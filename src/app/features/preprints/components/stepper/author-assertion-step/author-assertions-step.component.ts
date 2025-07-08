@@ -26,7 +26,7 @@ import {
 
 import { StringOrNull } from '@core/helpers';
 import { ArrayInputComponent } from '@osf/features/preprints/components/stepper/author-assertion-step/array-input/array-input.component';
-import { formInputLimits } from '@osf/features/preprints/constants';
+import { formInputLimits, preregLinksOptions } from '@osf/features/preprints/constants';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { SubmitPreprintSelectors, UpdatePreprint } from '@osf/features/preprints/store/submit-preprint';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
@@ -63,10 +63,7 @@ export class AuthorAssertionsStepComponent {
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly inputLimits = formInputLimits;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
-  readonly preregLinkOptions = Object.entries(PreregLinkInfo).map(([key, value]) => ({
-    label: key,
-    value,
-  }));
+  readonly preregLinkOptions = preregLinksOptions;
   readonly linkValidators = [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()];
 
   createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
