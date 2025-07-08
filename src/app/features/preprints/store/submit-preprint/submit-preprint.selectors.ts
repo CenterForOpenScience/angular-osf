@@ -64,6 +64,11 @@ export class SubmitPreprintSelectors {
   }
 
   @Selector([SubmitPreprintState])
+  static getPreprintLicense(state: SubmitPreprintStateModel) {
+    return state.licenses.data.find((l) => l.id === state.createdPreprint.data?.licenseId) || null;
+  }
+
+  @Selector([SubmitPreprintState])
   static getSelectedSubjects(state: SubmitPreprintStateModel) {
     return state.subjects.data;
   }

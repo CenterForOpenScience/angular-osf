@@ -18,6 +18,7 @@ export class PreprintProvidersMapper {
       footerLinksHtml: response.attributes.footer_links,
       preprintWord: response.attributes.preprint_word,
       allowSubmissions: response.attributes.allow_submissions,
+      assertionsEnabled: response.attributes.assertions_enabled,
       brand: {
         id: brandRaw.id,
         name: brandRaw.attributes.name,
@@ -29,6 +30,8 @@ export class PreprintProvidersMapper {
       },
       iri: response.links.iri,
       faviconUrl: response.attributes.assets.favicon,
+      squareColorNoTransparentImageUrl: response.attributes.assets?.square_color_no_transparent,
+      reviewsWorkflow: response.attributes.reviews_workflow,
     };
   }
 
