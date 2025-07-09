@@ -300,7 +300,7 @@ export class SubmitPreprintState {
     const state = ctx.getState();
     const createdPreprintId = state.createdPreprint.data?.id;
     ctx.setState({ ...DefaultState });
-    if (createdPreprintId) {
+    if (createdPreprintId && !state.hasBeenSubmitted) {
       return this.preprintsService.deletePreprint(createdPreprintId);
     }
 

@@ -1,7 +1,7 @@
 import { FormControl } from '@angular/forms';
 
 import { StringOrNull } from '@core/helpers';
-import { Subject } from '@shared/models';
+import { SubjectModel } from '@shared/models';
 
 export interface TitleAndAbstractForm {
   title: FormControl<string>;
@@ -9,9 +9,9 @@ export interface TitleAndAbstractForm {
 }
 
 export interface MetadataForm {
-  doi: FormControl<string>;
+  doi: FormControl<StringOrNull>;
   originalPublicationDate: FormControl<Date | null>;
   customPublicationCitation: FormControl<StringOrNull>;
   tags: FormControl<string[]>;
-  subjects: FormControl<Subject[]>;
+  subjects: FormControl<SubjectModel[]>;
 }

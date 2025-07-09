@@ -81,7 +81,7 @@ export class MetadataStepComponent implements OnInit {
   initForm() {
     const publicationDate = this.createdPreprint()?.originalPublicationDate;
     this.metadataForm = new FormGroup<MetadataForm>({
-      doi: new FormControl(this.createdPreprint()?.doi || '', {
+      doi: new FormControl(this.createdPreprint()?.doi || null, {
         nonNullable: true,
         validators: [CustomValidators.requiredTrimmed(), Validators.pattern(this.inputLimits.doi.pattern)],
       }),
