@@ -13,7 +13,6 @@ import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   FetchLicenses,
   FetchPreprintProject,
-  FetchPreprintsSubjects,
   SubmitPreprint,
   SubmitPreprintSelectors,
 } from '@osf/features/preprints/store/submit-preprint';
@@ -21,7 +20,7 @@ import { TruncatedTextComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { Institution } from '@shared/models';
 import { ToastService } from '@shared/services';
-import { ContributorsSelectors, GetAllContributors } from '@shared/stores';
+import { ContributorsSelectors, FetchSelectedSubjects, GetAllContributors, SubjectsSelectors } from '@shared/stores';
 
 @Component({
   selector: 'osf-review-step',
@@ -35,7 +34,7 @@ export class ReviewStepComponent implements OnInit {
   private toastService = inject(ToastService);
   private actions = createDispatchMap({
     getContributors: GetAllContributors,
-    fetchSubjects: FetchPreprintsSubjects,
+    fetchSubjects: FetchSelectedSubjects,
     fetchLicenses: FetchLicenses,
     fetchPreprintProject: FetchPreprintProject,
     submitPreprint: SubmitPreprint,
@@ -47,7 +46,7 @@ export class ReviewStepComponent implements OnInit {
   bibliographicContributors = computed(() => {
     return this.contributors().filter((contributor) => contributor.isBibliographic);
   });
-  subjects = select(SubmitPreprintSelectors.getSelectedSubjects);
+  subjects = select(SubjectsSelectors.getSelectedSubjects);
   affiliatedInstitutions = signal<Institution[]>([]);
   license = select(SubmitPreprintSelectors.getPreprintLicense);
   preprintProject = select(SubmitPreprintSelectors.getPreprintProject);
@@ -57,7 +56,7 @@ export class ReviewStepComponent implements OnInit {
 
   ngOnInit(): void {
     this.actions.getContributors(this.createdPreprint()!.id, ResourceType.Preprint);
-    this.actions.fetchSubjects();
+    this.actions.fetchSubjects(this.createdPreprint()!.id, ResourceType.Preprint);
     this.actions.fetchLicenses();
     this.actions.fetchPreprintProject();
   }

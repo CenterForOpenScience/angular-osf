@@ -6,4 +6,9 @@
     (searchChanged)="searchSubjects($event)"
     (updateSelection)="updateSelectedSubjects($event)"
   ></osf-subjects>
+  @if (control().errors?.['required'] && (control().touched || control().dirty)) {
+    <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+      {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+    </p-message>
+  }
 </p-card>

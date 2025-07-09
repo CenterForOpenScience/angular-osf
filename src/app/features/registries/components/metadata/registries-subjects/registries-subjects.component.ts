@@ -2,6 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 
 import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
