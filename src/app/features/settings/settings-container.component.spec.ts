@@ -1,11 +1,7 @@
-import { MockProvider } from 'ng-mocks';
-
 import { BehaviorSubject } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-
-import { IS_WEB } from '@osf/shared/utils';
 
 import { SettingsContainerComponent } from './settings-container.component';
 
@@ -19,7 +15,7 @@ describe('SettingsContainerComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [SettingsContainerComponent],
-      providers: [MockProvider(IS_WEB, isWebSubject)],
+      providers: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SettingsContainerComponent);

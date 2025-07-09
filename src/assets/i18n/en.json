@@ -1096,7 +1096,9 @@
           "cancel": "Cancel",
           "create": "Create Developer App",
           "save": "Save"
-        }
+        },
+        "createSuccess": "Developer app successfully created.",
+        "updateSuccess": "Developer app successfully updated."
       },
       "messages": {
         "copied": "Copied!"

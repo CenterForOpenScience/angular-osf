@@ -6,12 +6,10 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { CustomConfirmationService } from '@osf/shared/services';
-import { IS_XSMALL } from '@osf/shared/utils';
 
 import { DeveloperApp } from '../../models';
 import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperApps } from '../../store';
@@ -30,22 +28,12 @@ export class DeveloperAppsListComponent implements OnInit {
   });
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
-  protected readonly isLoading = signal(false);
-  protected readonly isXSmall = toSignal(inject(IS_XSMALL));
+  protected readonly isLoading = select(DeveloperAppsSelectors.isLoading);
   readonly developerApplications = select(DeveloperAppsSelectors.getDeveloperApps);
 
   ngOnInit(): void {
     if (!this.developerApplications().length) {
-      this.isLoading.set(true);
-
-      this.actions.getDeveloperApps().subscribe({
-        complete: () => {
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-        },
-      });
+      this.actions.getDeveloperApps();
     }
   }
 

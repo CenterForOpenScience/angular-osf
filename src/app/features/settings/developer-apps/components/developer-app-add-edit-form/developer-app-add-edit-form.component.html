@@ -1,50 +1,48 @@
 <form [formGroup]="appForm" (ngSubmit)="handleSubmitForm()" class="flex flex-column gap-3">
   <div class="flex flex-column">
-    <label for="app-name">
-      {{ 'settings.developerApps.form.appName' | translate }}
-    </label>
-    <input pInputText id="app-name" type="text" [formControlName]="DeveloperAppFormFormControls.AppName" />
+    <osf-text-input
+      [label]="'settings.developerApps.form.appName'"
+      [control]="appForm.controls[DeveloperAppFormFormControls.AppName]"
+      [maxLength]="inputLimits.fullName.maxLength"
+    ></osf-text-input>
   </div>
 
   <div class="flex flex-column">
-    <label for="proj-homepage-url">
-      {{ 'settings.developerApps.form.homepageUrl' | translate }}
-    </label>
-    <input
-      pInputText
-      id="proj-homepage-url"
+    <osf-text-input
+      [label]="'settings.developerApps.form.homepageUrl'"
       type="url"
-      [formControlName]="DeveloperAppFormFormControls.ProjectHomePageUrl"
-    />
+      [control]="appForm.controls[DeveloperAppFormFormControls.ProjectHomePageUrl]"
+      [maxLength]="inputLimits.link.maxLength"
+    ></osf-text-input>
   </div>
 
   <div class="flex flex-column">
-    <label for="app-descr">
-      {{ 'settings.developerApps.form.description' | translate }}
-    </label>
-    <input pInputText id="app-descr" type="text" [formControlName]="DeveloperAppFormFormControls.AppDescription" />
+    <osf-text-input
+      [label]="'settings.developerApps.form.description'"
+      [control]="appForm.controls[DeveloperAppFormFormControls.AppDescription]"
+      [maxLength]="inputLimits.description.maxLength"
+    ></osf-text-input>
   </div>
 
   <div class="flex flex-column">
-    <label for="auth-callback-url">
-      {{ 'settings.developerApps.form.callbackUrl' | translate }}
-    </label>
-    <input
-      pInputText
+    <osf-text-input
+      [label]="'settings.developerApps.form.callbackUrl'"
       type="url"
-      id="auth-callback-url"
-      [formControlName]="DeveloperAppFormFormControls.AuthorizationCallbackUrl"
-    />
+      [control]="appForm.controls[DeveloperAppFormFormControls.AuthorizationCallbackUrl]"
+      [maxLength]="inputLimits.link.maxLength"
+    ></osf-text-input>
   </div>
 
   <div class="flex justify-content-end gap-2 mt-3">
     @if (isEditMode()) {
-      <p-button
-        [ngClass]="isMobile() ? 'btn-half-width' : 'w-10rem btn-full-width'"
-        [label]="'settings.developerApps.form.buttons.save' | translate"
-        type="submit"
-        [disabled]="!appForm.dirty || !appForm.valid"
-      />
+      <div class="w-6 md:w-auto">
+        <p-button
+          class="btn-full-width"
+          [label]="'settings.developerApps.form.buttons.save' | translate"
+          type="submit"
+          [disabled]="!appForm.dirty || !appForm.valid"
+        />
+      </div>
     } @else {
       <p-button
         class="w-12rem btn-full-width"
@@ -55,7 +53,8 @@
       <p-button
         [label]="'settings.developerApps.form.buttons.create' | translate"
         type="submit"
-        [disabled]="!appForm.valid"
+        [disabled]="!appForm.valid || isLoading()"
+        [loading]="isLoading()"
       />
     }
   </div>

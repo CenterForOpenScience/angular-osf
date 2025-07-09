@@ -1,8 +1,9 @@
 import { Selector } from '@ngxs/store';
 
-import { Meeting, MeetingSubmission } from '@osf/features/meetings/models';
-import { MeetingsStateModel } from '@osf/features/meetings/store/meetings.model';
-import { MeetingsState } from '@osf/features/meetings/store/meetings.state';
+import { Meeting, MeetingSubmission } from '../models';
+
+import { MeetingsStateModel } from './meetings.model';
+import { MeetingsState } from './meetings.state';
 
 export class MeetingsSelectors {
   @Selector([MeetingsState])

@@ -160,7 +160,7 @@ export class ContributorsComponent implements OnInit {
     const updatedContributors = findChangedItems(this.initialContributors(), this.contributors(), 'id');
 
     const updateRequests = updatedContributors.map((payload) =>
-      this.actions.updateContributor(this.resourceId(), ResourceType.Project, payload)
+      this.actions.updateContributor(this.resourceId(), this.resourceType(), payload)
     );
 
     forkJoin(updateRequests).subscribe(() => {
@@ -190,7 +190,7 @@ export class ContributorsComponent implements OnInit {
           this.openAddUnregisteredContributorDialog();
         } else {
           const addRequests = res.data.map((payload) =>
-            this.actions.addContributor(this.resourceId(), ResourceType.Project, payload)
+            this.actions.addContributor(this.resourceId(), this.resourceType(), payload)
           );
 
           forkJoin(addRequests).subscribe(() => {
@@ -221,7 +221,7 @@ export class ContributorsComponent implements OnInit {
           const successMessage = this.translateService.instant('project.contributors.toastMessages.addSuccessMessage');
           const params = { name: res.data[0].fullName };
 
-          this.actions.addContributor(this.resourceId(), ResourceType.Project, res.data[0]).subscribe({
+          this.actions.addContributor(this.resourceId(), this.resourceType(), res.data[0]).subscribe({
             next: () => this.toastService.showSuccess(successMessage, params),
           });
         }
@@ -236,7 +236,7 @@ export class ContributorsComponent implements OnInit {
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => {
         this.actions
-          .deleteContributor(this.resourceId(), ResourceType.Project, contributor.userId)
+          .deleteContributor(this.resourceId(), this.resourceType(), contributor.userId)
           .pipe(takeUntilDestroyed(this.destroyRef))
           .subscribe({
             next: () =>

@@ -1,55 +1,77 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputText } from 'primeng/inputtext';
 
-import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, OnInit } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { CustomValidators, IS_XSMALL } from '@osf/shared/utils';
+import { TextInputComponent } from '@osf/shared/components';
+import { InputLimits } from '@osf/shared/constants';
+import { ToastService } from '@osf/shared/services';
+import { CustomValidators } from '@osf/shared/utils';
 
 import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppForm, DeveloperAppFormFormControls } from '../../models';
-import { CreateDeveloperApp, UpdateDeveloperApp } from '../../store';
+import { CreateDeveloperApp, DeveloperAppsSelectors, UpdateDeveloperApp } from '../../store';
 
 @Component({
   selector: 'osf-developer-app-add-edit-form',
-  imports: [Button, InputText, ReactiveFormsModule, NgClass, TranslatePipe],
+  imports: [Button, ReactiveFormsModule, TranslatePipe, TextInputComponent],
   templateUrl: './developer-app-add-edit-form.component.html',
   styleUrl: './developer-app-add-edit-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeveloperAppAddEditFormComponent implements OnInit {
-  #store = inject(Store);
-  #router = inject(Router);
   readonly isEditMode = input(false);
   readonly initialValues = input<DeveloperApp | null>(null);
 
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
+  private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
+  private readonly actions = createDispatchMap({
+    createDeveloperApp: CreateDeveloperApp,
+    updateDeveloperApp: UpdateDeveloperApp,
+  });
+
+  protected readonly inputLimits = InputLimits;
   protected readonly dialogRef = inject(DynamicDialogRef);
+  protected readonly isLoading = select(DeveloperAppsSelectors.isLoading);
+
   protected readonly DeveloperAppFormFormControls = DeveloperAppFormFormControls;
   protected readonly appForm: DeveloperAppForm = new FormGroup({
     [DeveloperAppFormFormControls.AppName]: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required],
+      validators: [CustomValidators.requiredTrimmed(), Validators.maxLength(InputLimits.name.maxLength)],
     }),
     [DeveloperAppFormFormControls.ProjectHomePageUrl]: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, CustomValidators.linkValidator()],
+      validators: [
+        CustomValidators.requiredTrimmed(),
+        CustomValidators.linkValidator(),
+        Validators.maxLength(InputLimits.link.maxLength),
+      ],
     }),
     [DeveloperAppFormFormControls.AppDescription]: new FormControl('', {
       nonNullable: false,
+      validators: [Validators.maxLength(InputLimits.description.maxLength)],
     }),
     [DeveloperAppFormFormControls.AuthorizationCallbackUrl]: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required, CustomValidators.linkValidator()],
+      validators: [
+        CustomValidators.requiredTrimmed(),
+        CustomValidators.linkValidator(),
+        Validators.maxLength(InputLimits.link.maxLength),
+      ],
     }),
   });
+
+  constructor() {
+    effect(() => {
+      return this.isLoading() ? this.appForm.disable() : this.appForm.enable();
+    });
+  }
 
   ngOnInit(): void {
     if (this.initialValues()) {
@@ -70,29 +92,19 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
     }
 
     if (!this.isEditMode()) {
-      this.#store
-        .dispatch(
-          new CreateDeveloperApp({
-            ...this.appForm.value,
-          } as DeveloperAppCreateUpdate)
-        )
-        .subscribe({
-          complete: () => {
-            this.dialogRef.close();
-          },
-        });
+      this.actions.createDeveloperApp({ ...this.appForm.value } as DeveloperAppCreateUpdate).subscribe({
+        next: () => this.toastService.showSuccess('settings.developerApps.form.createSuccess'),
+        complete: () => this.dialogRef.close(),
+      });
     } else {
-      this.#store
-        .dispatch(
-          new UpdateDeveloperApp(this.initialValues()!.clientId, {
-            ...this.appForm.value,
-            id: this.initialValues()!.id,
-          } as DeveloperAppCreateUpdate)
-        )
+      this.actions
+        .updateDeveloperApp(this.initialValues()!.clientId, {
+          ...this.appForm.value,
+          id: this.initialValues()!.id,
+        } as DeveloperAppCreateUpdate)
         .subscribe({
-          complete: () => {
-            this.#router.navigate(['settings/developer-apps']);
-          },
+          next: () => this.toastService.showSuccess('settings.developerApps.form.createSuccess'),
+          complete: () => this.router.navigate(['settings/developer-apps']),
         });
     }
   }

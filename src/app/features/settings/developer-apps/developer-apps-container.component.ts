@@ -9,7 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { IS_MEDIUM, IS_XSMALL } from '@osf/shared/utils';
+import { IS_MEDIUM } from '@osf/shared/utils';
 
 import { DeveloperAppAddEditFormComponent } from './components';
 
@@ -22,29 +22,23 @@ import { DeveloperAppAddEditFormComponent } from './components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeveloperAppsContainerComponent {
-  #dialogService = inject(DialogService);
-  #router = inject(Router);
-  #isXSmall = toSignal(inject(IS_XSMALL));
-  #isMedium = toSignal(inject(IS_MEDIUM));
-  #translateService = inject(TranslateService);
+  private readonly dialogService = inject(DialogService);
+  private readonly router = inject(Router);
+  private readonly isMedium = toSignal(inject(IS_MEDIUM));
+  private readonly translateService = inject(TranslateService);
 
   protected readonly isBaseRoute = toSignal(
-    this.#router.events.pipe(map(() => this.#router.url === '/settings/developer-apps')),
-    { initialValue: this.#router.url === '/settings/developer-apps' }
+    this.router.events.pipe(map(() => this.router.url === '/settings/developer-apps')),
+    { initialValue: this.router.url === '/settings/developer-apps' }
   );
 
   createDeveloperApp(): void {
-    let dialogWidth = '850px';
-    if (this.#isXSmall()) {
-      dialogWidth = '345px';
-    } else if (this.#isMedium()) {
-      dialogWidth = '500px';
-    }
+    const dialogWidth = this.isMedium() ? '500px' : '340px';
 
-    this.#dialogService.open(DeveloperAppAddEditFormComponent, {
+    this.dialogService.open(DeveloperAppAddEditFormComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: this.#translateService.instant('settings.developerApps.form.createTitle'),
+      header: this.translateService.instant('settings.developerApps.form.createTitle'),
       closeOnEscape: true,
       modal: true,
       closable: true,

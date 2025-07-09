@@ -1,9 +1,8 @@
 @use "assets/styles/mixins" as mix;
-@use "assets/styles/variables" as var;
 
 .footer-nav,
 .footer-secondary-nav {
-  color: var.$dark-blue-1;
+  color: var(--dark-blue-1);
   padding: 0 1.5rem;
 
   .separator {
@@ -11,20 +10,20 @@
   }
 
   a {
-    color: var.$dark-blue-1;
+    color: var(--dark-blue-1);
     text-align: center;
   }
 
   .social-link {
-    background-color: var.$pr-blue-1;
+    background-color: var(--pr-blue-1);
     border-radius: mix.rem(6px);
-    color: var.$white;
+    color: var(--white);
     padding: mix.rem(6px);
     width: mix.rem(36px);
     height: mix.rem(36px);
 
     &:hover {
-      background-color: var.$pr-blue-3;
+      background-color: var(--pr-blue-3);
       text-decoration: none;
     }
   }
@@ -35,13 +34,13 @@
 }
 
 .footer-nav {
-  background-color: var.$bg-blue-3;
+  background-color: var(--bg-blue-3);
 
   .footer-socials {
-    gap: mix.rem(8px);
+    gap: 0.5rem;
   }
 }
 
 .footer-secondary-nav {
-  background: var.$bg-blue-2;
+  background: var(--bg-blue-2);
 }

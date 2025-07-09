@@ -3,7 +3,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { SortEvent } from 'primeng/api';
-import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
@@ -27,23 +26,32 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { parseQueryFilterParams } from '@core/helpers';
 import { Meeting } from '@osf/features/meetings/models';
 import { GetAllMeetings, MeetingsSelectors } from '@osf/features/meetings/store';
-import { IS_XSMALL } from '@osf/shared/utils';
 import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { TABLE_PARAMS } from '@shared/constants';
 import { SortOrder } from '@shared/enums';
 import { QueryParams, TableParameters } from '@shared/models';
 import { SearchFilters } from '@shared/models/filters';
 
+import { MeetingsFeatureCardComponent } from '../../components';
+import { MEETINGS_FEATURE_CARDS, PARTNER_ORGANIZATIONS } from '../../constants';
+
 @Component({
   selector: 'osf-meetings-landing',
-  imports: [SubHeaderComponent, Card, SearchInputComponent, DatePipe, TableModule, TranslatePipe, Skeleton],
+  imports: [
+    SubHeaderComponent,
+    SearchInputComponent,
+    MeetingsFeatureCardComponent,
+    DatePipe,
+    TableModule,
+    TranslatePipe,
+    Skeleton,
+  ],
   templateUrl: './meetings-landing.component.html',
   styleUrl: './meetings-landing.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MeetingsLandingComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
-  readonly isXSmall = toSignal(inject(IS_XSMALL));
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -60,6 +68,9 @@ export class MeetingsLandingComponent {
     ...TABLE_PARAMS,
     firstRowIndex: 0,
   });
+
+  partnerOrganizations = PARTNER_ORGANIZATIONS;
+  meetingsFeatureCards = MEETINGS_FEATURE_CARDS;
 
   meetings = select(MeetingsSelectors.getAllMeetings);
   totalMeetingsCount = select(MeetingsSelectors.getMeetingsTotalCount);

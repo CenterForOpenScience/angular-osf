@@ -7,10 +7,7 @@
     @if (isLoading()) {
       @for (_ of [1, 2, 3]; track $index) {
         <p-card>
-          <section class="flex align-items-center justify-content-between">
-            <p-skeleton width="20rem" height="2rem"></p-skeleton>
-            <p-skeleton width="6rem" height="3rem"></p-skeleton>
-          </section>
+          <p-skeleton class="w-full" height="3rem"> </p-skeleton>
         </p-card>
       }
     } @else {

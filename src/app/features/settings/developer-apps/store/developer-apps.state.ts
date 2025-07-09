@@ -1,7 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { insertItem, patch, removeItem, updateItem } from '@ngxs/store/operators';
 
-import { of, tap } from 'rxjs';
+import { catchError, of, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -21,91 +21,130 @@ import { DeveloperAppsStateModel } from './developer-apps.state-model';
 @State<DeveloperAppsStateModel>({
   name: 'developerApps',
   defaults: {
-    developerApps: [],
+    data: [],
+    isLoading: false,
+    error: null,
   },
 })
 @Injectable()
 export class DeveloperAppsState {
-  #developerAppsService = inject(DeveloperApplicationsService);
+  private readonly developerAppsService = inject(DeveloperApplicationsService);
 
   @Action(GetDeveloperApps)
   getDeveloperApps(ctx: StateContext<DeveloperAppsStateModel>) {
-    return this.#developerAppsService.getApplications().pipe(
+    const state = ctx.getState();
+    ctx.patchState({ ...state.data, isLoading: true, error: null });
+
+    return this.developerAppsService.getApplications().pipe(
       tap((developerApps) => {
-        ctx.setState(patch({ developerApps }));
-      })
+        ctx.setState(patch({ data: developerApps, isLoading: false, error: null }));
+      }),
+      catchError((error) => this.handleError(ctx, error))
     );
   }
 
   @Action(GetDeveloperAppDetails)
   getDeveloperAppDetails(ctx: StateContext<DeveloperAppsStateModel>, action: GetDeveloperAppDetails) {
     const state = ctx.getState();
-    const developerAppFromState = state.developerApps.find((app: DeveloperApp) => app.clientId === action.clientId);
+    const developerAppFromState = state.data.find((app: DeveloperApp) => app.clientId === action.clientId);
 
     if (developerAppFromState) {
       return of(developerAppFromState);
     }
 
-    return this.#developerAppsService.getApplicationDetails(action.clientId).pipe(
+    return this.developerAppsService.getApplicationDetails(action.clientId).pipe(
       tap((fetchedApp) => {
         ctx.setState(
           patch({
-            developerApps: insertItem(fetchedApp),
+            data: insertItem<DeveloperApp>(fetchedApp),
+            isLoading: false,
+            error: null,
           })
         );
-      })
+      }),
+      catchError((error) => this.handleError(ctx, error))
     );
   }
 
   @Action(CreateDeveloperApp)
   createDeveloperApp(ctx: StateContext<DeveloperAppsStateModel>, action: CreateDeveloperApp) {
-    return this.#developerAppsService.createApplication(action.developerAppCreate).pipe(
+    const state = ctx.getState();
+    ctx.patchState({ ...state.data, isLoading: true, error: null });
+
+    return this.developerAppsService.createApplication(action.developerAppCreate).pipe(
       tap((newApp) => {
         ctx.setState(
           patch({
-            developerApps: insertItem(newApp, 0),
+            data: insertItem<DeveloperApp>(newApp, 0),
+            isLoading: false,
+            error: null,
           })
         );
-      })
+      }),
+      catchError((error) => this.handleError(ctx, error))
     );
   }
 
   @Action(UpdateDeveloperApp)
   updateDeveloperApp(ctx: StateContext<DeveloperAppsStateModel>, action: UpdateDeveloperApp) {
-    return this.#developerAppsService.updateApp(action.clientId, action.developerAppUpdate).pipe(
+    const state = ctx.getState();
+    ctx.patchState({ ...state.data, isLoading: true, error: null });
+
+    return this.developerAppsService.updateApp(action.clientId, action.developerAppUpdate).pipe(
       tap((updatedApp) => {
         ctx.setState(
           patch({
-            developerApps: updateItem<DeveloperApp>((app) => app.clientId === action.clientId, updatedApp),
+            data: updateItem<DeveloperApp>((app) => app.clientId === action.clientId, updatedApp),
+            isLoading: false,
+            error: null,
           })
         );
-      })
+      }),
+      catchError((error) => this.handleError(ctx, error))
     );
   }
 
   @Action(ResetClientSecret)
   resetClientSecret(ctx: StateContext<DeveloperAppsStateModel>, action: ResetClientSecret) {
-    return this.#developerAppsService.resetClientSecret(action.clientId).pipe(
+    return this.developerAppsService.resetClientSecret(action.clientId).pipe(
       tap((updatedApp) => {
         ctx.setState(
           patch({
-            developerApps: updateItem<DeveloperApp>((app) => app.clientId === action.clientId, updatedApp),
+            data: updateItem<DeveloperApp>((app) => app.clientId === action.clientId, updatedApp),
+            isLoading: false,
+            error: null,
           })
         );
-      })
+      }),
+      catchError((error) => this.handleError(ctx, error))
     );
   }
 
   @Action(DeleteDeveloperApp)
   deleteDeveloperApp(ctx: StateContext<DeveloperAppsStateModel>, action: DeleteDeveloperApp) {
-    return this.#developerAppsService.deleteApplication(action.clientId).pipe(
+    const state = ctx.getState();
+    ctx.patchState({ ...state.data, isLoading: true, error: null });
+
+    return this.developerAppsService.deleteApplication(action.clientId).pipe(
       tap(() => {
         ctx.setState(
           patch({
-            developerApps: removeItem<DeveloperApp>((app) => app.clientId === action.clientId),
+            data: removeItem<DeveloperApp>((app) => app.clientId === action.clientId),
+            isLoading: false,
+            error: null,
           })
         );
-      })
+      }),
+      catchError((error) => this.handleError(ctx, error))
     );
+  }
+
+  private handleError(ctx: StateContext<DeveloperAppsStateModel>, error: Error) {
+    ctx.patchState({
+      ...ctx.getState().data,
+      isLoading: false,
+      error: error.message,
+    });
+    return throwError(() => error);
   }
 }
