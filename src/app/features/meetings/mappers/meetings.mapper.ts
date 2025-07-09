@@ -1,13 +1,16 @@
 import { JsonApiResponseWithPaging } from '@core/models';
+
 import {
-  MeetingGetResponse,
-  MeetingSubmissionGetResponse,
+  MeetingGetResponseJsonApi,
+  MeetingSubmissionGetResponseJsonApi,
   MeetingSubmissionsWithPaging,
   MeetingsWithPaging,
-} from '@osf/features/meetings/models';
+} from '../models';
 
 export class MeetingsMapper {
-  static fromMeetingsGetResponse(response: JsonApiResponseWithPaging<MeetingGetResponse[], null>): MeetingsWithPaging {
+  static fromMeetingsGetResponse(
+    response: JsonApiResponseWithPaging<MeetingGetResponseJsonApi[], null>
+  ): MeetingsWithPaging {
     return {
       data: response.data.map((item) => ({
         id: item.id,
@@ -22,7 +25,7 @@ export class MeetingsMapper {
   }
 
   static fromMeetingSubmissionGetResponse(
-    response: JsonApiResponseWithPaging<MeetingSubmissionGetResponse[], null>
+    response: JsonApiResponseWithPaging<MeetingSubmissionGetResponseJsonApi[], null>
   ): MeetingSubmissionsWithPaging {
     return {
       data: response.data.map((item) => ({
@@ -38,7 +41,7 @@ export class MeetingsMapper {
     };
   }
 
-  static fromMeetingGetResponse(response: MeetingGetResponse) {
+  static fromMeetingGetResponse(response: MeetingGetResponseJsonApi) {
     return {
       id: response.id,
       name: response.attributes.name,

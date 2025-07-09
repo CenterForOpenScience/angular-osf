@@ -1,31 +1,30 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
 :host {
-  background-color: var.$white;
+  background-color: var(--white);
+}
 
-  .container {
-    h2 {
-      margin-bottom: mix.rem(12px);
-    }
+.container {
+  h2 {
+    margin-bottom: mix.rem(12px);
+  }
 
-    h4 {
-      font-size: mix.rem(14px);
-      font-weight: 400;
-    }
+  h4 {
+    font-size: mix.rem(14px);
+    font-weight: 400;
+  }
 
-    ul,
-    p {
-      margin-bottom: mix.rem(24px);
-    }
+  ul,
+  p {
+    margin-bottom: mix.rem(24px);
+  }
 
-    li {
-      margin-left: mix.rem(24px);
-      list-style: initial;
-    }
+  li {
+    margin-left: mix.rem(24px);
+    list-style: initial;
+  }
 
-    a {
-      font-weight: 700;
-    }
+  a {
+    font-weight: 700;
   }
 }

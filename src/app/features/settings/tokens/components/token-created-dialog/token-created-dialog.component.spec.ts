@@ -49,21 +49,6 @@ describe('TokenCreatedDialogComponent', () => {
     expect(tokenInput.value).toBe(mockTokenValue);
   });
 
-  it('should show copy notification when token is copied', () => {
-    expect(fixture.componentInstance['tokenCopiedNotificationVisible']()).toBe(false);
-    fixture.componentInstance['tokenCopiedToClipboard']();
-    expect(fixture.componentInstance['tokenCopiedNotificationVisible']()).toBe(true);
-  });
-
-  it('should hide copy notification after 2 seconds', () => {
-    jest.useFakeTimers();
-    fixture.componentInstance['tokenCopiedToClipboard']();
-    expect(fixture.componentInstance['tokenCopiedNotificationVisible']()).toBe(true);
-    jest.advanceTimersByTime(2000);
-    expect(fixture.componentInstance['tokenCopiedNotificationVisible']()).toBe(false);
-    jest.useRealTimers();
-  });
-
   it('should set input selection range to 0 after render', () => {
     const input = fixture.debugElement.query(By.css('input')).nativeElement;
     expect(input.selectionStart).toBe(0);

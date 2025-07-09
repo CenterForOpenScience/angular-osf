@@ -32,6 +32,7 @@ export class DraftsComponent {
   protected readonly pages = select(RegistriesSelectors.getPagesSchema);
   protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
   protected stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  protected readonly stepsData = select(RegistriesSelectors.getStepsData);
 
   private readonly actions = createDispatchMap({
     getSchemaBlocks: FetchSchemaBlocks,
@@ -101,7 +102,7 @@ export class DraftsComponent {
     }
     effect(() => {
       const registrationSchemaId = this.draftRegistration()?.registrationSchemaId;
-      if (registrationSchemaId) {
+      if (registrationSchemaId && !this.pages().length) {
         this.actions
           .getSchemaBlocks(registrationSchemaId || '')
           .pipe(

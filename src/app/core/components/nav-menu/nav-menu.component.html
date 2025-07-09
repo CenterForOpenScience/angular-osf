@@ -1,13 +1,12 @@
 <nav class="nav-menu">
-  <p-panelMenu [model]="menuItems" [multiple]="false">
+  <p-panelMenu [model]="mainMenuItems()" [multiple]="false">
     <ng-template #item let-item>
-      @if (item.label !== 'navigation.registriesSubRoutes.registryDetails') {
+      @if (item.id !== 'registry-details') {
         <a
           [routerLink]="item.routerLink"
           routerLinkActive="active"
           [routerLinkActiveOptions]="item.routerLinkActiveOptions"
           class="nav-link flex align-items-center"
-          [class.mt-5]="item.label === 'navigation.settings' || item.label === 'navigation.myProjects'"
           (click)="goToLink(item)"
         >
           @if (item.icon) {
@@ -24,7 +23,7 @@
           }
         </a>
 
-        @if (item.label === 'navigation.myProjects' && !isRegistryRoute() && isProjectRoute()) {
+        @if (item.id === 'my-projects' && !isRegistryRoute() && isProjectRoute()) {
           <div class="ml-4">
             <p-panelMenu [model]="myProjectMenuItems" [multiple]="false">
               <ng-template #item let-item>
@@ -52,7 +51,7 @@
         }
       }
 
-      @if (item.label === 'navigation.registriesSubRoutes.registryDetails' && isRegistryRoute()) {
+      @if (item.id === 'registry-details' && isRegistryRoute()) {
         <p-panelMenu [model]="registrationMenuItems" [multiple]="false" class="border-none">
           <ng-template #item let-item>
             <a

@@ -18,6 +18,7 @@ export class RegistrationMapper {
           : null,
       },
       tags: response.attributes.tags || [],
+      stepsData: response.attributes.registration_responses || {},
     };
   }
 }

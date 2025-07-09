@@ -22,4 +22,10 @@ export const InputLimits = {
   requestAccessComment: {
     maxLength: 250,
   },
+  link: {
+    maxLength: 200,
+  },
+  description: {
+    maxLength: 250,
+  },
 };

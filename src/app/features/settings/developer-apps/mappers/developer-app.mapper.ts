@@ -1,13 +1,13 @@
 import {
   DeveloperApp,
-  DeveloperAppCreateRequest,
+  DeveloperAppCreateRequestJsonApi,
   DeveloperAppCreateUpdate,
-  DeveloperAppGetResponse,
-  DeveloperAppUpdateRequest,
+  DeveloperAppGetResponseJsonApi,
+  DeveloperAppUpdateRequestJsonApi,
 } from '../models';
 
 export class DeveloperAppMapper {
-  static toCreateRequest(developerCreate: DeveloperAppCreateUpdate): DeveloperAppCreateRequest {
+  static toCreateRequest(developerCreate: DeveloperAppCreateUpdate): DeveloperAppCreateRequestJsonApi {
     return {
       data: {
         attributes: {
@@ -21,7 +21,7 @@ export class DeveloperAppMapper {
     };
   }
 
-  static toUpdateRequest(developerUpdate: DeveloperAppCreateUpdate): DeveloperAppUpdateRequest {
+  static toUpdateRequest(developerUpdate: DeveloperAppCreateUpdate): DeveloperAppUpdateRequestJsonApi {
     return {
       data: {
         id: developerUpdate.id!,
@@ -48,7 +48,7 @@ export class DeveloperAppMapper {
     };
   }
 
-  static fromGetResponse(response: DeveloperAppGetResponse): DeveloperApp {
+  static fromGetResponse(response: DeveloperAppGetResponseJsonApi): DeveloperApp {
     return {
       id: response.id,
       name: response.attributes.name,

@@ -1,5 +1,5 @@
+import { AsyncStateModel } from '@osf/shared/models';
+
 import { DeveloperApp } from '../models';
 
-export interface DeveloperAppsStateModel {
-  developerApps: DeveloperApp[];
-}
+export type DeveloperAppsStateModel = AsyncStateModel<DeveloperApp[]>;

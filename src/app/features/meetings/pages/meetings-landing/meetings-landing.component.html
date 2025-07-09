@@ -4,7 +4,7 @@
   [description]="'meetings.landing.description' | translate"
 />
 
-<section class="flex-1 flex flex-column bg-white p-4" [class.mobile]="isXSmall()">
+<section class="flex-1 flex flex-column bg-white px-3 md:px-5 xl:px-4">
   <section class="mt-2">
     <p>{{ 'meetings.landing.submissionsNote' | translate }}</p>
   </section>
@@ -14,6 +14,7 @@
     [control]="searchControl"
     [placeholder]="'meetings.landing.searchPlaceholder' | translate"
   />
+
   <p-table
     class="mt-4"
     [value]="isMeetingsLoading() ? skeletonData : meetings()"
@@ -72,42 +73,35 @@
         </tr>
       }
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="4" class="text-center">{{ 'common.search.noResultsFound' | translate }}</td>
+      </tr>
+    </ng-template>
   </p-table>
 
   <section class="flex flex-column gap-3 w-full mt-6 lg:flex-row">
-    <p-card class="w-12 lg:w-4">
-      <div class="flex flex-column align-items-center justify-content-center gap-4 lg:h-18rem">
-        <img src="assets/icons/colored/discover.svg" alt="Discover" class="w-8rem h-8rem" />
-        <h2>{{ 'meetings.landing.features.discover.title' | translate }}</h2>
-        <p class="text-center">{{ 'meetings.landing.features.discover.description' | translate }}</p>
+    @for (card of meetingsFeatureCards; track $index) {
+      <div class="w-12 lg:w-4">
+        <osf-meetings-feature-card
+          [iconSrc]="card.iconSrc"
+          [iconAlt]="card.iconAlt"
+          [titleKey]="card.titleKey"
+          [descriptionKey]="card.descriptionKey"
+        ></osf-meetings-feature-card>
       </div>
-    </p-card>
-
-    <p-card class="w-12 lg:w-4">
-      <div class="flex flex-column align-items-center justify-content-center gap-4 lg:h-18rem">
-        <img src="assets/icons/colored/share.svg" alt="Share" class="w-8rem h-8rem" />
-        <h2>{{ 'meetings.landing.features.share.title' | translate }}</h2>
-        <p class="text-center">{{ 'meetings.landing.features.share.description' | translate }}</p>
-      </div>
-    </p-card>
-
-    <p-card class="w-12 lg:w-4">
-      <div class="flex flex-column align-items-center justify-content-center gap-4 lg:h-18rem">
-        <img src="assets/icons/colored/enhance.svg" alt="Enhance" class="w-8rem h-8rem" />
-        <h2>{{ 'meetings.landing.features.enhance.title' | translate }}</h2>
-        <p class="text-center">{{ 'meetings.landing.features.enhance.description' | translate }}</p>
-      </div>
-    </p-card>
+    }
   </section>
 
   <section class="mt-6 flex flex-column gap-5 justify-content-center align-items-center">
     <h2 class="text-2xl text-center">{{ 'meetings.landing.users.title' | translate }}</h2>
 
     <section class="flex flex-row justify-content-center align-items-start gap-7 flex-wrap">
-      <img src="assets/icons/colored/aps.svg" alt="APS" height="90" />
-      <img src="assets/icons/colored/bitss.svg" alt="BITSS" height="90" />
-      <img src="assets/icons/colored/nrao.svg" alt="NRAO" height="90" />
-      <img src="assets/icons/colored/spsp.svg" alt="SPSP" height="90" />
+      @for (org of partnerOrganizations; track $index) {
+        <a class="custom-light-hover" [href]="org.url">
+          <img [src]="org.imageSrc" [alt]="org.alt" [height]="org.height" />
+        </a>
+      }
     </section>
   </section>
 </section>

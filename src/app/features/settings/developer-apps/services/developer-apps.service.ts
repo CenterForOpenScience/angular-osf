@@ -6,7 +6,7 @@ import { JsonApiResponse } from '@osf/core/models';
 import { JsonApiService } from '@osf/core/services';
 
 import { DeveloperAppMapper } from '../mappers';
-import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppGetResponse } from '../models';
+import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppGetResponseJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -18,16 +18,14 @@ export class DeveloperApplicationsService {
   baseUrl = `${environment.apiUrl}/applications/`;
 
   getApplications(): Observable<DeveloperApp[]> {
-    return this.jsonApiService.get<JsonApiResponse<DeveloperAppGetResponse[], null>>(this.baseUrl).pipe(
-      map((responses) => {
-        return responses.data.map((response) => DeveloperAppMapper.fromGetResponse(response));
-      })
-    );
+    return this.jsonApiService
+      .get<JsonApiResponse<DeveloperAppGetResponseJsonApi[], null>>(this.baseUrl)
+      .pipe(map((responses) => responses.data.map((response) => DeveloperAppMapper.fromGetResponse(response))));
   }
 
   getApplicationDetails(clientId: string): Observable<DeveloperApp> {
     return this.jsonApiService
-      .get<JsonApiResponse<DeveloperAppGetResponse, null>>(this.baseUrl + clientId + '/')
+      .get<JsonApiResponse<DeveloperAppGetResponseJsonApi, null>>(`${this.baseUrl}/${clientId}/`)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response.data)));
   }
 
@@ -35,7 +33,7 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toCreateRequest(developerAppCreate);
 
     return this.jsonApiService
-      .post<JsonApiResponse<DeveloperAppGetResponse, null>>(this.baseUrl, request)
+      .post<JsonApiResponse<DeveloperAppGetResponseJsonApi, null>>(this.baseUrl, request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response.data)));
   }
 
@@ -43,7 +41,7 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toUpdateRequest(developerAppUpdate);
 
     return this.jsonApiService
-      .patch<DeveloperAppGetResponse>(this.baseUrl + clientId + '/', request)
+      .patch<DeveloperAppGetResponseJsonApi>(`${this.baseUrl}/${clientId}/`, request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response)));
   }
 
@@ -51,11 +49,11 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toResetSecretRequest(clientId);
 
     return this.jsonApiService
-      .patch<DeveloperAppGetResponse>(this.baseUrl + clientId + '/', request)
+      .patch<DeveloperAppGetResponseJsonApi>(`${this.baseUrl}/${clientId}/`, request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response)));
   }
 
   deleteApplication(clientId: string): Observable<void> {
-    return this.jsonApiService.delete(this.baseUrl + clientId + '/');
+    return this.jsonApiService.delete(`${this.baseUrl}/${clientId}/`);
   }
 }

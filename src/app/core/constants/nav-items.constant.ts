@@ -5,19 +5,21 @@ export const MENU_ITEMS: MenuItem[] = [
     routerLink: '/home',
     label: 'navigation.home',
     icon: 'osf-icon-home',
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     routerLink: '/search',
     label: 'navigation.searchOsf',
     icon: 'osf-icon-search',
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
+    id: 'my-projects',
     routerLink: '/my-projects',
     label: 'navigation.myProjects',
     icon: 'osf-icon-my-projects',
     routerLinkActiveOptions: { exact: true },
+    styleClass: 'mt-5',
   },
   {
     label: 'navigation.registries',
@@ -35,6 +37,7 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLinkActiveOptions: { exact: true },
       },
       {
+        id: 'registry-details',
         routerLink: '/registry-overview',
         label: 'navigation.registriesSubRoutes.registryDetails',
         routerLinkActiveOptions: { exact: true },
@@ -42,20 +45,19 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
   {
-    routerLink: '/preprints',
     label: 'navigation.preprints',
     icon: 'osf-icon-preprints',
     routerLinkActiveOptions: { exact: true },
     items: [
       {
-        routerLink: '/preprints',
+        routerLink: '/preprints/overview',
         label: 'navigation.preprintsSubRoutes.overview',
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
       {
         routerLink: '/my-preprints',
         label: 'navigation.preprintsSubRoutes.myPreprints',
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
     ],
   },
@@ -63,19 +65,19 @@ export const MENU_ITEMS: MenuItem[] = [
     routerLink: '/my-profile',
     label: 'navigation.profile',
     icon: 'osf-icon-profile',
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     routerLink: '/institutions',
     label: 'navigation.institutions',
     icon: 'osf-icon-institutions',
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     routerLink: '/collections',
     label: 'navigation.collections',
     icon: 'osf-icon-collections',
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     routerLink: '/meetings',
@@ -87,6 +89,7 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'navigation.settings',
     icon: 'osf-icon-settings',
     routerLinkActiveOptions: { exact: true },
+    styleClass: 'mt-5',
     items: [
       {
         routerLink: '/settings/profile-settings',

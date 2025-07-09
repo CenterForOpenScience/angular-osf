@@ -6,8 +6,8 @@ import { JsonApiService } from '@core/services';
 import { JsonApiResponse, JsonApiResponseWithPaging } from '@osf/core/models';
 import { MeetingsMapper } from '@osf/features/meetings/mappers';
 import {
-  MeetingGetResponse,
-  MeetingSubmissionGetResponse,
+  MeetingGetResponseJsonApi,
+  MeetingSubmissionGetResponseJsonApi,
   MeetingSubmissionsWithPaging,
   MeetingsWithPaging,
 } from '@osf/features/meetings/models';
@@ -35,7 +35,7 @@ export class MeetingsService {
     );
 
     return this.jsonApiService
-      .get<JsonApiResponseWithPaging<MeetingGetResponse[], null>>(this.baseUrl, params)
+      .get<JsonApiResponseWithPaging<MeetingGetResponseJsonApi[], null>>(this.baseUrl, params)
       .pipe(map((response) => MeetingsMapper.fromMeetingsGetResponse(response)));
   }
 
@@ -55,14 +55,14 @@ export class MeetingsService {
 
     return this.jsonApiService
       .get<
-        JsonApiResponseWithPaging<MeetingSubmissionGetResponse[], null>
+        JsonApiResponseWithPaging<MeetingSubmissionGetResponseJsonApi[], null>
       >(`${this.baseUrl}${meetingId}/submissions/`, params)
       .pipe(map((response) => MeetingsMapper.fromMeetingSubmissionGetResponse(response)));
   }
 
   getMeetingById(meetingId: string) {
     return this.jsonApiService
-      .get<JsonApiResponse<MeetingGetResponse, null>>(this.baseUrl + meetingId)
+      .get<JsonApiResponse<MeetingGetResponseJsonApi, null>>(this.baseUrl + meetingId)
       .pipe(map((response) => MeetingsMapper.fromMeetingGetResponse(response.data)));
   }
 }

@@ -5,9 +5,10 @@ import { tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { MeetingsService } from '@osf/features/meetings/services';
-import { GetAllMeetings, GetMeetingById, GetMeetingSubmissions } from '@osf/features/meetings/store/meetings.actions';
-import { MeetingsStateModel } from '@osf/features/meetings/store/meetings.model';
+import { MeetingsService } from '../services';
+
+import { GetAllMeetings, GetMeetingById, GetMeetingSubmissions } from './meetings.actions';
+import { MeetingsStateModel } from './meetings.model';
 
 @State<MeetingsStateModel>({
   name: 'meetings',

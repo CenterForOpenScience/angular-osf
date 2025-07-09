@@ -1,49 +1,16 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
 :host {
   @include mix.flex-column;
   flex: 1;
+}
 
-  .content-container {
-    flex: 1;
-    padding: 1.7rem;
-    color: var.$dark-blue-1;
-    background-color: var.$white;
+.content-container {
+  background-color: var(--white);
+}
 
-    &.mobile {
-      padding: 1rem;
-    }
-
-    p {
-      margin-bottom: 1.7rem;
-    }
-
-    .applications-container {
-      @include mix.flex-column;
-      gap: 0.85rem;
-
-      p-card {
-        .card-body {
-          &.mobile {
-            @include mix.flex-column;
-            gap: 0.85rem;
-
-            a {
-              align-self: flex-start;
-            }
-
-            .button-container {
-              align-self: flex-end;
-              width: 50%;
-            }
-          }
-
-          &:not(.mobile) {
-            @include mix.flex-center-between;
-          }
-        }
-      }
-    }
-  }
+.app-link {
+  color: var(--dark-blue-1);
+  font-size: 1.125rem;
+  font-weight: 700;
 }
