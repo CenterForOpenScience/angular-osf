@@ -10,7 +10,7 @@ import {
   PreprintProviderDetailsJsonApi,
   PreprintProviderShortInfo,
 } from '@osf/features/preprints/models';
-import { Subject, SubjectsResponseJsonApi } from '@shared/models';
+import { SubjectModel, SubjectsResponseJsonApi } from '@shared/models';
 
 import { environment } from 'src/environments/environment';
 
@@ -55,7 +55,7 @@ export class PreprintProvidersService {
       );
   }
 
-  getHighlightedSubjectsByProviderId(providerId: string): Observable<Subject[]> {
+  getHighlightedSubjectsByProviderId(providerId: string): Observable<SubjectModel[]> {
     return this.jsonApiService
       .get<SubjectsResponseJsonApi>(`${this.baseUrl}${providerId}/subjects/highlighted/?page[size]=20`)
       .pipe(

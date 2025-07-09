@@ -69,16 +69,6 @@ export class SubmitPreprintSelectors {
   }
 
   @Selector([SubmitPreprintState])
-  static getSelectedSubjects(state: SubmitPreprintStateModel) {
-    return state.subjects.data;
-  }
-
-  @Selector([SubmitPreprintState])
-  static isSubjectsUpdating(state: SubmitPreprintStateModel) {
-    return state.subjects.isLoading;
-  }
-
-  @Selector([SubmitPreprintState])
   static getPreprintProject(state: SubmitPreprintStateModel) {
     return state.preprintProject.data;
   }

@@ -1,7 +1,7 @@
 import { StringOrNull } from '@core/helpers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
-import { LicenseOptions, OsfFile, Subject } from '@shared/models';
+import { LicenseOptions, OsfFile } from '@shared/models';
 
 export class SetSelectedPreprintProviderId {
   static readonly type = '[Submit Preprint] Set Selected Preprint Provider Id';
@@ -95,16 +95,6 @@ export class SaveLicense {
     public licenseId: string,
     public licenseOptions?: LicenseOptions
   ) {}
-}
-
-export class FetchPreprintsSubjects {
-  static readonly type = '[Submit Preprint] Fetch Registration Subjects';
-}
-
-export class UpdatePreprintsSubjects {
-  static readonly type = '[Submit Preprint] Update Registration Subject';
-
-  constructor(public subjects: Subject[]) {}
 }
 
 export class DisconnectProject {

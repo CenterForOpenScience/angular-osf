@@ -1,4 +1,4 @@
-import { AsyncStateModel, License, Resource, Subject } from '@shared/models';
+import { AsyncStateModel, License, Resource } from '@shared/models';
 
 import { PageSchema, Project, Provider } from '../models';
 import { Registration } from '../models/registration.model';
@@ -9,7 +9,6 @@ export interface RegistriesStateModel {
   draftRegistration: AsyncStateModel<Registration | null>;
   registries: AsyncStateModel<Resource[]>;
   licenses: AsyncStateModel<License[]>;
-  registrationSubjects: AsyncStateModel<Subject[]>;
   pagesSchema: AsyncStateModel<PageSchema[]>;
   stepsValidation: Record<string, { invalid: boolean }>;
 }

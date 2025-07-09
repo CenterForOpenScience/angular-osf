@@ -16,12 +16,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
 import { MyProjectsItem } from '@osf/features/my-projects/models';
-import { AddProjectFormComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
+import { MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
 import { SortOrder } from '@osf/shared/enums';
 import { TableParameters } from '@osf/shared/models';
 import { IS_MEDIUM } from '@osf/shared/utils';
 import { FetchUserInstitutions } from '@shared/stores';
 
+import { CreateProjectDialogComponent } from '../my-projects/components';
 import { MyProjectsSearchFilters } from '../my-projects/models';
 import { ClearMyProjects, GetMyProjects, MyProjectsSelectors } from '../my-projects/store';
 import { AccountSettingsService } from '../settings/account-settings/services';
@@ -233,7 +234,7 @@ export class HomeComponent implements OnInit {
     this.isSubmitting.set(true);
 
     this.dialogService
-      .open(AddProjectFormComponent, {
+      .open(CreateProjectDialogComponent, {
         width: dialogWidth,
         focusOnShow: false,
         header: this.translateService.instant('myProjects.header.createProject'),

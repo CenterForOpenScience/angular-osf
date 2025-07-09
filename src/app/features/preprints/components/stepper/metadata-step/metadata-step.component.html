@@ -42,7 +42,7 @@
 </p-card>
 
 <div class="m-t-24">
-  <osf-preprints-subjects [control]="metadataForm.controls['subjects']" />
+  <osf-preprints-subjects [control]="metadataForm.controls['subjects']" [preprintId]="createdPreprint()?.id" />
 </div>
 
 <p-card styleClass="m-t-24" class="card">

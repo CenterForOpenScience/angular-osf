@@ -3,7 +3,7 @@ import {
   PreprintProviderDetailsJsonApi,
   PreprintProviderShortInfo,
 } from '@osf/features/preprints/models';
-import { Subject, SubjectDataJsonApi } from '@shared/models';
+import { SubjectDataJsonApi, SubjectModel } from '@shared/models';
 
 export class PreprintProvidersMapper {
   static fromPreprintProviderDetailsGetResponse(response: PreprintProviderDetailsJsonApi): PreprintProviderDetails {
@@ -47,7 +47,7 @@ export class PreprintProvidersMapper {
     }));
   }
 
-  static fromSubjectsGetResponse(data: SubjectDataJsonApi[]): Subject[] {
+  static fromSubjectsGetResponse(data: SubjectDataJsonApi[]): SubjectModel[] {
     return data.map((subject) => ({
       id: subject.id,
       name: subject.attributes.text,

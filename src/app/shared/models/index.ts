@@ -18,7 +18,6 @@ export * from './license.model';
 export * from './license.model';
 export * from './licenses-json-api.model';
 export * from './metadata-field.model';
-export * from './node-subject.model';
 export * from './nodes/create-project-form.model';
 export * from './nodes/nodes-json-api.model';
 export * from './paginated-data.model';

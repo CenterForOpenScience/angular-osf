@@ -3,7 +3,7 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { ResourceType } from '@osf/shared/enums';
-import { ContributorsState, ViewOnlyLinkState } from '@osf/shared/stores';
+import { ContributorsState, SubjectsState, ViewOnlyLinkState } from '@osf/shared/stores';
 
 import { AnalyticsState } from './analytics/store';
 import { ProjectFilesState } from './files/store';
@@ -28,7 +28,7 @@ export const projectRoutes: Routes = [
         path: 'metadata',
         loadChildren: () =>
           import('../project/metadata/project-metadata.routes').then((mod) => mod.projectMetadataRoutes),
-        providers: [provideStates([ContributorsState])],
+        providers: [provideStates([ContributorsState, SubjectsState])],
       },
       {
         path: 'files',

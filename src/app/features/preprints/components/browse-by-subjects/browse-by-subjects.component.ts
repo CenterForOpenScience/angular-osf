@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { RouterLink } from '@angular/router';
 
 import { ResourceTab } from '@shared/enums';
-import { Subject } from '@shared/models';
+import { SubjectModel } from '@shared/models';
 
 @Component({
   selector: 'osf-browse-by-subjects',
@@ -17,7 +17,7 @@ import { Subject } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BrowseBySubjectsComponent {
-  subjects = input.required<Subject[]>();
+  subjects = input.required<SubjectModel[]>();
   linksToSearchPageForSubject = computed(() => {
     return this.subjects().map((subject) => ({
       resourceTab: ResourceTab.Preprints,

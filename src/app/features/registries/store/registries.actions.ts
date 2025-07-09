@@ -1,4 +1,4 @@
-import { LicenseOptions, Subject } from '@osf/shared/models';
+import { LicenseOptions } from '@osf/shared/models';
 
 import { RegistrationAttributesJsonApi, RegistrationRelationshipsJsonApi } from '../models';
 
@@ -53,19 +53,6 @@ export class SaveLicense {
     public registrationId: string,
     public licenseId: string,
     public licenseOptions?: LicenseOptions
-  ) {}
-}
-
-export class FetchRegistrationSubjects {
-  static readonly type = '[Registries] Fetch Registration Subjects';
-  constructor(public registrationId: string) {}
-}
-
-export class UpdateRegistrationSubjects {
-  static readonly type = '[Registries] Update Registration Subject';
-  constructor(
-    public registrationId: string,
-    public subjects: Subject[]
   ) {}
 }
 

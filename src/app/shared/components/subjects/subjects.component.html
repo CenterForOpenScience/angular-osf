@@ -1,66 +1,68 @@
-<p-card class="w-full">
-  <h2 class="mb-2">{{ 'shared.subjects.title' | translate }}</h2>
-  <p-card class="block text-base mb-3">
-    @if (!selected().length) {
-      <p class="text-500">{{ 'shared.subjects.noSelected' | translate }}</p>
-    } @else {
-      @for (subject of selected(); track subject.id) {
-        <p-chip [label]="subject.name" [removable]="true" class="mb-2 mr-2" (onRemove)="removeSubject(subject)" />
-      }
-    }
-  </p-card>
-  <osf-search-input
-    class="w-full"
-    [control]="searchControl"
-    [placeholder]="'shared.subjects.searchSubjects' | translate"
-  />
-  @if (searchControl.value) {
-    <div class="mt-4 pl-3">
-      @if (isSearching()) {
-        <p-skeleton width="100%" class="flex mb-2" height="1rem" borderRadius="0" />
-        <p-skeleton width="100%" class="flex mb-2" height="1rem" borderRadius="0" />
-        <p-skeleton width="100%" class="flex mb-2" height="1rem" borderRadius="0" />
-        <p-skeleton width="100%" class="flex mb-2" height="1rem" borderRadius="0" />
-      } @else {
-        @if (!searchedList().length) {
-          <p class="text-500">{{ 'shared.subjects.noSubject' | translate }}</p>
-        }
-        @for (subjects of searchedList(); track $index) {
-          <div class="flex mb-2">
-            <p-checkbox
-              [inputId]="'subjects-' + $index"
-              [value]="subjects"
-              (onChange)="selectSearched($event, subjects)"
-            />
-            <label for="subjects-{{ $index }}" class="flex flex-wrap ml-2">
-              @for (item of subjects; track item.id) {
-                <span [class]="$last ? 'font-bold' : ''">{{ item.name }}</span>
-                @if (!$last) {
-                  <span class="mx-1">/</span>
-                }
-              }
-            </label>
-          </div>
-        }
-      }
-    </div>
+<h2 class="mb-2">{{ 'shared.subjects.title' | translate }}</h2>
+
+<p-card class="block text-base mb-3">
+  @if (!selected().length) {
+    <p class="text-500">{{ 'shared.subjects.noSelected' | translate }}</p>
   } @else {
-    <p-tree
-      [value]="subjectsTree()"
-      selectionMode="checkbox"
-      [selection]="selectedTree()"
-      [lazy]="true"
-      [loading]="areSubjectsUpdating() || subjectsLoading()"
-      (onNodeExpand)="loadNode($event.node)"
-      (onNodeCollapse)="collapseNode($event.node)"
-      (onNodeSelect)="selectSubject($event.node.data)"
-      (onNodeUnselect)="removeSubject($event.node.data)"
-    >
-    </p-tree>
-  }
-  @if (control()?.errors?.['required'] && (control()?.touched || control()?.dirty)) {
-    <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-      {{ INPUT_VALIDATION_MESSAGES.required | translate }}
-    </p-message>
+    @for (subject of selected(); track subject.id) {
+      <p-chip
+        class="mb-2 mr-2"
+        [label]="subject.name"
+        [removable]="true"
+        removeIcon="fas fa-close"
+        (onRemove)="removeSubject(subject)"
+      />
+    }
   }
 </p-card>
+
+<osf-search-input
+  class="w-full"
+  [control]="searchControl"
+  [placeholder]="'shared.subjects.searchSubjects' | translate"
+/>
+
+@if (searchControl.value) {
+  <div class="mt-4 pl-3">
+    @if (isSearching()) {
+      <p-skeleton width="100%" class="flex mb-2" height="1rem" borderRadius="0" />
+      <p-skeleton width="100%" class="flex mb-2" height="1rem" borderRadius="0" />
+      <p-skeleton width="100%" class="flex mb-2" height="1rem" borderRadius="0" />
+      <p-skeleton width="100%" class="flex mb-2" height="1rem" borderRadius="0" />
+    } @else {
+      @if (!searchedList().length) {
+        <p class="text-500">{{ 'shared.subjects.noSubject' | translate }}</p>
+      }
+      @for (subjects of searchedList(); track $index) {
+        <div class="flex mb-2">
+          <p-checkbox
+            [inputId]="'subjects-' + $index"
+            [value]="subjects"
+            (onChange)="selectSearched($event, subjects)"
+          />
+          <label for="subjects-{{ $index }}" class="flex flex-wrap ml-2">
+            @for (item of subjects; track item.id) {
+              <span [class]="$last ? 'font-bold' : ''">{{ item.name }}</span>
+              @if (!$last) {
+                <span class="mx-1">/</span>
+              }
+            }
+          </label>
+        </div>
+      }
+    }
+  </div>
+} @else {
+  <p-tree
+    [value]="subjectsTree()"
+    selectionMode="checkbox"
+    [selection]="selectedTree()"
+    [lazy]="true"
+    [loading]="areSubjectsUpdating() || subjectsLoading()"
+    (onNodeExpand)="loadNode($event.node)"
+    (onNodeCollapse)="collapseNode($event.node)"
+    (onNodeSelect)="selectSubject($event.node.data)"
+    (onNodeUnselect)="removeSubject($event.node.data)"
+  >
+  </p-tree>
+}
