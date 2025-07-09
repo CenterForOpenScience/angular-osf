@@ -28,6 +28,12 @@ export class UpdatePreprint {
   ) {}
 }
 
+export class FetchPreprintById {
+  static readonly type = '[Submit Preprint] Get Preprint By Id';
+
+  constructor(public id: string) {}
+}
+
 export class SetSelectedPreprintFileSource {
   static readonly type = '[Submit Preprint] Set Selected Preprint File Source';
 
@@ -125,6 +131,10 @@ export class CreateNewProject {
     public regionId: string,
     public affiliationsId: string[]
   ) {}
+}
+
+export class SubmitPreprint {
+  static readonly type = '[Submit Preprint] Submit Preprint';
 }
 
 export class ResetStateAndDeletePreprint {

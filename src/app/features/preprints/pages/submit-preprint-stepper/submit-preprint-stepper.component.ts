@@ -72,7 +72,7 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
-  currentStep = signal<StepOption>(submitPreprintSteps[4]);
+  currentStep = signal<StepOption>(submitPreprintSteps[0]);
   isWeb = toSignal(inject(IS_WEB));
 
   readonly submitPreprintSteps = computed(() => {

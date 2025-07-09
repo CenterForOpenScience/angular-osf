@@ -27,6 +27,7 @@ import {
   CreatePreprint,
   DisconnectProject,
   FetchLicenses,
+  FetchPreprintById,
   FetchPreprintProject,
   FetchPreprintsSubjects,
   GetAvailableProjects,
@@ -39,6 +40,7 @@ import {
   SaveLicense,
   SetSelectedPreprintFileSource,
   SetSelectedPreprintProviderId,
+  SubmitPreprint,
   SubmitPreprintStateModel,
   UpdatePreprint,
   UpdatePreprintsSubjects,
@@ -130,6 +132,18 @@ export class SubmitPreprintState {
     return this.preprintsService.updatePreprint(action.id, action.payload).pipe(
       tap((preprint) => {
         ctx.setState(patch({ createdPreprint: patch({ isSubmitting: false, data: preprint }) }));
+      }),
+      catchError((error) => this.handleError(ctx, 'createdPreprint', error))
+    );
+  }
+
+  @Action(FetchPreprintById)
+  getPreprintById(ctx: StateContext<SubmitPreprintStateModel>, action: FetchPreprintById) {
+    ctx.setState(patch({ createdPreprint: patch({ isLoading: true }) }));
+
+    return this.preprintsService.getById(action.id).pipe(
+      tap((preprint) => {
+        ctx.setState(patch({ createdPreprint: patch({ isLoading: false, data: preprint }) }));
       }),
       catchError((error) => this.handleError(ctx, 'createdPreprint', error))
     );
@@ -518,6 +532,18 @@ export class SubmitPreprintState {
         }),
         catchError((error) => this.handleError(ctx, 'preprintProject', error))
       );
+  }
+
+  @Action(SubmitPreprint)
+  submitPreprint(ctx: StateContext<SubmitPreprintStateModel>) {
+    const createdPreprintId = ctx.getState().createdPreprint.data!.id;
+    ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
+    return this.preprintsService.submitPreprint(createdPreprintId).pipe(
+      tap(() => {
+        ctx.setState(patch({ createdPreprint: patch({ isSubmitting: false }) }));
+      }),
+      catchError((error) => this.handleError(ctx, 'createdPreprint', error))
+    );
   }
 
   private handleError(
