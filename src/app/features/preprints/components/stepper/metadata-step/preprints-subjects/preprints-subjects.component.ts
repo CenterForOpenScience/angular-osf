@@ -1,6 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, input, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 import {
   FetchPreprintsSubjects,
@@ -22,6 +23,7 @@ export class PreprintsSubjectsComponent implements OnInit {
   private readonly selectedProviderId = select(SubmitPreprintSelectors.getSelectedProviderId);
   protected selectedSubjects = select(SubmitPreprintSelectors.getSelectedSubjects);
   protected isSubjectsUpdating = select(SubmitPreprintSelectors.isSubjectsUpdating);
+  protected control = input.required<FormControl>();
 
   protected actions = createDispatchMap({
     fetchSubjects: FetchSubjects,
@@ -29,6 +31,12 @@ export class PreprintsSubjectsComponent implements OnInit {
     fetchChildrenSubjects: FetchChildrenSubjects,
     updatePreprintsSubjects: UpdatePreprintsSubjects,
   });
+
+  constructor() {
+    effect(() => {
+      this.updateControlState(this.selectedSubjects());
+    });
+  }
 
   ngOnInit(): void {
     this.actions.fetchSubjects(this.selectedProviderId()!);
@@ -44,6 +52,16 @@ export class PreprintsSubjectsComponent implements OnInit {
   }
 
   updateSelectedSubjects(subjects: Subject[]) {
+    this.updateControlState(subjects);
     this.actions.updatePreprintsSubjects(subjects);
+  }
+
+  updateControlState(value: Subject[]) {
+    if (this.control()) {
+      this.control().setValue(value);
+      this.control().markAsTouched();
+      this.control().markAsDirty();
+      this.control().updateValueAndValidity();
+    }
   }
 }

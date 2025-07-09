@@ -93,6 +93,10 @@ export class MetadataStepComponent implements OnInit {
         nonNullable: true,
         validators: [],
       }),
+      subjects: new FormControl([], {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
     });
   }
 

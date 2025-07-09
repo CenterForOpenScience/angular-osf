@@ -55,7 +55,6 @@ export class MetadataComponent implements OnDestroy {
 
   private readonly draftId = this.route.snapshot.params['id'];
   protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
-  protected selectedSubjects = select(RegistriesSelectors.getSelectedSubjects);
 
   protected actions = createDispatchMap({
     deleteDraft: DeleteDraft,
@@ -81,13 +80,6 @@ export class MetadataComponent implements OnDestroy {
       const draft = this.draftRegistration();
       if (draft) {
         this.initForm(draft);
-      }
-    });
-
-    effect(() => {
-      const subjects = this.selectedSubjects();
-      if (subjects) {
-        this.metadataForm.patchValue({ subjects });
       }
     });
   }

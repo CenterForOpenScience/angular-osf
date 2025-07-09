@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
@@ -37,6 +37,10 @@ export class RegistriesSubjectsComponent {
   });
 
   constructor() {
+    effect(() => {
+      this.updateControlState(this.selectedSubjects());
+    });
+
     this.actions.fetchSubjects(this.OSF_PROVIDER_ID);
     this.actions.fetchRegistrationSubjects(this.draftId);
   }
