@@ -14,7 +14,6 @@ import {
   computed,
   DestroyRef,
   effect,
-  HostListener,
   inject,
   OnInit,
   output,
@@ -123,6 +122,7 @@ export class SupplementsStepComponent implements OnInit {
   }
 
   nextClicked = output<void>();
+  backClicked = output<void>();
 
   ngOnInit() {
     this.projectNameControl.valueChanges
@@ -204,12 +204,30 @@ export class SupplementsStepComponent implements OnInit {
       return;
     }
 
+    this.toastService.showSuccess('Preprint saved');
     this.nextClicked.emit();
   }
 
-  @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    $event.preventDefault();
-    return false;
+  backButtonClicked() {
+    const hasData = Object.entries(this.createProjectForm.value).some(([_, value]) => {
+      if (value instanceof Array) {
+        return value.length > 0;
+      }
+      return !!value;
+    });
+
+    if (this.selectedSupplementOption() === SupplementOptions.CreateNewProject && hasData) {
+      this.customConfirmationService.confirmContinue({
+        headerKey: 'Discard changes?',
+        messageKey: 'You have unsaved changes in the project creation form. Are you sure you want to go back?',
+        onConfirm: () => {
+          this.backClicked.emit();
+        },
+        onReject: () => null,
+      });
+      return;
+    }
+
+    this.backClicked.emit();
   }
 }

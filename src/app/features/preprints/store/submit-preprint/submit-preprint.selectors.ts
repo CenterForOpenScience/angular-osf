@@ -87,4 +87,9 @@ export class SubmitPreprintSelectors {
   static isPreprintProjectLoading(state: SubmitPreprintStateModel) {
     return state.preprintProject.isLoading;
   }
+
+  @Selector([SubmitPreprintState])
+  static hasBeenSubmitted(state: SubmitPreprintStateModel) {
+    return state.hasBeenSubmitted;
+  }
 }

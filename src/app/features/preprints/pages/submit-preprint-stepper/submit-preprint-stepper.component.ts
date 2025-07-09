@@ -2,7 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { Skeleton } from 'primeng/skeleton';
 
-import { map, of } from 'rxjs';
+import { map, Observable, of } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -10,6 +10,7 @@ import {
   computed,
   effect,
   HostBinding,
+  HostListener,
   inject,
   OnDestroy,
   OnInit,
@@ -28,10 +29,12 @@ import {
 import { ReviewStepComponent } from '@osf/features/preprints/components/stepper/review-step/review-step.component';
 import { submitPreprintSteps } from '@osf/features/preprints/constants';
 import { SubmitSteps } from '@osf/features/preprints/enums';
+import { CanDeactivateComponent } from '@osf/features/preprints/models/can-deactivate.interface';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
   ResetStateAndDeletePreprint,
   SetSelectedPreprintProviderId,
+  SubmitPreprintSelectors,
 } from '@osf/features/preprints/store/submit-preprint';
 import { StepOption } from '@osf/shared/models';
 import { StepperComponent } from '@shared/components';
@@ -55,7 +58,7 @@ import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
   styleUrl: './submit-preprint-stepper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
+export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDeactivateComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -72,6 +75,7 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
+  hasBeenSubmitted = select(SubmitPreprintSelectors.hasBeenSubmitted);
   currentStep = signal<StepOption>(submitPreprintSteps[0]);
   isWeb = toSignal(inject(IS_WEB));
 
@@ -114,6 +118,10 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
     });
   }
 
+  canDeactivate(): Observable<boolean> | boolean {
+    return this.hasBeenSubmitted();
+  }
+
   ngOnInit() {
     this.actions.getPreprintProviderById(this.providerId());
   }
@@ -135,12 +143,16 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy {
   }
 
   moveToNextStep() {
-    let nextStepIndex = this.currentStep()?.index + 1;
-    const nextStepValue = this.submitPreprintSteps()[nextStepIndex].value;
-    if (nextStepValue === SubmitSteps.AuthorAssertions && !this.preprintProvider()?.assertionsEnabled) {
-      nextStepIndex++;
-    }
+    this.currentStep.set(this.submitPreprintSteps()[this.currentStep()?.index + 1]);
+  }
 
-    this.currentStep.set(this.submitPreprintSteps()[nextStepIndex]);
+  moveToPreviousStep() {
+    this.currentStep.set(this.submitPreprintSteps()[this.currentStep()?.index - 1]);
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
+    $event.preventDefault();
+    return false;
   }
 }

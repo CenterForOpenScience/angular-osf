@@ -6,6 +6,7 @@ import { Tag } from 'primeng/tag';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
@@ -30,7 +31,8 @@ import { ContributorsSelectors, GetAllContributors } from '@shared/stores';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReviewStepComponent implements OnInit {
-  private readonly toastService = inject(ToastService);
+  private router = inject(Router);
+  private toastService = inject(ToastService);
   private actions = createDispatchMap({
     getContributors: GetAllContributors,
     fetchSubjects: FetchPreprintsSubjects,
@@ -63,8 +65,13 @@ export class ReviewStepComponent implements OnInit {
   submitPreprint() {
     this.actions.submitPreprint().subscribe({
       complete: () => {
-        this.toastService.showSuccess('Preprint submitted successfully');
+        this.toastService.showSuccess('Preprint submitted');
+        this.router.navigateByUrl('/preprints');
       },
     });
+  }
+
+  cancelSubmission() {
+    this.router.navigateByUrl('/preprints');
   }
 }

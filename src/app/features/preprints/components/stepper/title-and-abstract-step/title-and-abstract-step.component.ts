@@ -8,7 +8,7 @@ import { Message } from 'primeng/message';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, HostListener, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
@@ -17,6 +17,7 @@ import { TitleAndAbstractForm } from '@osf/features/preprints/models';
 import { CreatePreprint, SubmitPreprintSelectors, UpdatePreprint } from '@osf/features/preprints/store/submit-preprint';
 import { TextInputComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
+import { ToastService } from '@shared/services';
 import { CustomValidators } from '@shared/utils';
 
 @Component({
@@ -37,14 +38,30 @@ import { CustomValidators } from '@shared/utils';
   styleUrl: './title-and-abstract-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TitleAndAbstractStepComponent implements OnInit {
-  protected titleAndAbstractForm!: FormGroup<TitleAndAbstractForm>;
-  protected inputLimits = formInputLimits;
-  protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+export class TitleAndAbstractStepComponent {
+  private toastService = inject(ToastService);
 
   private actions = createDispatchMap({
     createPreprint: CreatePreprint,
     updatePreprint: UpdatePreprint,
+  });
+
+  protected inputLimits = formInputLimits;
+  protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+
+  protected titleAndAbstractForm = new FormGroup<TitleAndAbstractForm>({
+    title: new FormControl('', {
+      nonNullable: true,
+      validators: [CustomValidators.requiredTrimmed(), Validators.maxLength(this.inputLimits.title.maxLength)],
+    }),
+    description: new FormControl('', {
+      nonNullable: true,
+      validators: [
+        CustomValidators.requiredTrimmed(),
+        Validators.minLength(this.inputLimits.abstract.minLength),
+        Validators.maxLength(this.inputLimits.abstract.maxLength),
+      ],
+    }),
   });
 
   createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
@@ -53,24 +70,15 @@ export class TitleAndAbstractStepComponent implements OnInit {
   isUpdatingPreprint = select(SubmitPreprintSelectors.isPreprintSubmitting);
   nextClicked = output<void>();
 
-  ngOnInit() {
-    this.initForm();
-  }
+  constructor() {
+    effect(() => {
+      const createdPreprint = this.createdPreprint();
+      if (!createdPreprint) return;
 
-  initForm() {
-    this.titleAndAbstractForm = new FormGroup<TitleAndAbstractForm>({
-      title: new FormControl(this.createdPreprint()?.title || '', {
-        nonNullable: true,
-        validators: [CustomValidators.requiredTrimmed(), Validators.maxLength(this.inputLimits.title.maxLength)],
-      }),
-      description: new FormControl(this.createdPreprint()?.description || '', {
-        nonNullable: true,
-        validators: [
-          CustomValidators.requiredTrimmed(),
-          Validators.minLength(this.inputLimits.abstract.minLength),
-          Validators.maxLength(this.inputLimits.abstract.maxLength),
-        ],
-      }),
+      this.titleAndAbstractForm.patchValue({
+        title: createdPreprint.title,
+        description: createdPreprint.description,
+      });
     });
   }
 
@@ -85,23 +93,16 @@ export class TitleAndAbstractStepComponent implements OnInit {
       this.actions.updatePreprint(this.createdPreprint()!.id, model).subscribe({
         complete: () => {
           this.nextClicked.emit();
+          this.toastService.showSuccess('Preprint saved');
         },
       });
     } else {
       this.actions.createPreprint(model.title!, model.description!, this.providerId()!).subscribe({
         complete: () => {
           this.nextClicked.emit();
+          this.toastService.showSuccess('Preprint saved');
         },
       });
     }
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    if (this.createdPreprint() || this.titleAndAbstractForm.value) {
-      $event.preventDefault();
-      return false;
-    }
-    return true;
   }
 }

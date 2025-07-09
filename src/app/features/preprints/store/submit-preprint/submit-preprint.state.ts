@@ -91,6 +91,7 @@ const DefaultState: SubmitPreprintStateModel = {
     isLoading: false,
     error: null,
   },
+  hasBeenSubmitted: false,
 };
 
 @State<SubmitPreprintStateModel>({
@@ -540,7 +541,7 @@ export class SubmitPreprintState {
     ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
     return this.preprintsService.submitPreprint(createdPreprintId).pipe(
       tap(() => {
-        ctx.setState(patch({ createdPreprint: patch({ isSubmitting: false }) }));
+        ctx.setState(patch({ createdPreprint: patch({ isSubmitting: false }), hasBeenSubmitted: true }));
       }),
       catchError((error) => this.handleError(ctx, 'createdPreprint', error))
     );

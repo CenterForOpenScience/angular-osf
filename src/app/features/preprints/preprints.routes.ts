@@ -2,6 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { ConfirmLeavingGuard } from '@osf/features/preprints/guards';
 import { PreprintsComponent } from '@osf/features/preprints/preprints.component';
 import { PreprintSubjectsService } from '@osf/features/preprints/services';
 import { PreprintProvidersState } from '@osf/features/preprints/store/preprint-providers';
@@ -71,6 +72,7 @@ export const preprintsRoutes: Routes = [
           import('@osf/features/preprints/pages/submit-preprint-stepper/submit-preprint-stepper.component').then(
             (c) => c.SubmitPreprintStepperComponent
           ),
+        canDeactivate: [ConfirmLeavingGuard],
       },
     ],
   },

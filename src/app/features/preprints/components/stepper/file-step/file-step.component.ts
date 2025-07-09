@@ -15,7 +15,6 @@ import {
   Component,
   computed,
   DestroyRef,
-  HostListener,
   inject,
   input,
   OnInit,
@@ -42,7 +41,7 @@ import {
 import { FilesTreeActions } from '@osf/features/project/files/models';
 import { FilesTreeComponent, IconComponent } from '@shared/components';
 import { OsfFile } from '@shared/models';
-import { CustomConfirmationService } from '@shared/services';
+import { CustomConfirmationService, ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-file-step',
@@ -64,6 +63,7 @@ import { CustomConfirmationService } from '@shared/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileStepComponent implements OnInit {
+  private toastService = inject(ToastService);
   private customConfirmationService = inject(CustomConfirmationService);
   private actions = createDispatchMap({
     setSelectedFileSource: SetSelectedPreprintFileSource,
@@ -148,6 +148,7 @@ export class FileStepComponent implements OnInit {
       return;
     }
 
+    this.toastService.showSuccess('Preprint saved');
     this.nextClicked.emit();
   }
 
@@ -162,12 +163,6 @@ export class FileStepComponent implements OnInit {
     } else {
       this.actions.uploadFile(file);
     }
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    $event.preventDefault();
-    return false;
   }
 
   selectProject(event: SelectChangeEvent) {

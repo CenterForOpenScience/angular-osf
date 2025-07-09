@@ -23,7 +23,7 @@ export class PreprintsSubjectsComponent implements OnInit {
   private readonly selectedProviderId = select(SubmitPreprintSelectors.getSelectedProviderId);
   protected selectedSubjects = select(SubmitPreprintSelectors.getSelectedSubjects);
   protected isSubjectsUpdating = select(SubmitPreprintSelectors.isSubjectsUpdating);
-  protected control = input.required<FormControl>();
+  control = input.required<FormControl>();
 
   protected actions = createDispatchMap({
     fetchSubjects: FetchSubjects,
