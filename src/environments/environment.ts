@@ -10,4 +10,10 @@ export const environment = {
   fileApiUrl: 'https://files.us.staging4.osf.io/v1',
   baseResourceUri: 'https://staging4.osf.io/',
   funderApiUrl: 'https://api.crossref.org/',
+
+  cookieAuth: {
+    enabled: false,
+    csrfCookieName: 'api-csrf',
+    withCredentials: false,
+  },
 };
