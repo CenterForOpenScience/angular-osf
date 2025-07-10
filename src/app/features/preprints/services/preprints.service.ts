@@ -80,22 +80,8 @@ export class PreprintsService {
   }
 
   submitPreprint(preprintId: string) {
-    return this.jsonApiService.post(`${environment.apiUrl}/preprints/${preprintId}/review_actions/`, {
-      data: {
-        type: 'review_actions',
-        attributes: {
-          trigger: 'submit',
-        },
-        relationships: {
-          target: {
-            data: {
-              type: 'preprints',
-              id: preprintId,
-            },
-          },
-        },
-      },
-    });
+    const payload = PreprintsMapper.toSubmitPreprintPayload(preprintId);
+    return this.jsonApiService.post(`${environment.apiUrl}/preprints/${preprintId}/review_actions/`, payload);
   }
 
   private mapPreprintDomainToApiPayload(domainPayload: Partial<Preprint>): Partial<PreprintJsonApi> {

@@ -57,4 +57,23 @@ export class PreprintsMapper {
       preregLinkInfo: response.attributes.prereg_link_info,
     };
   }
+
+  static toSubmitPreprintPayload(preprintId: string) {
+    return {
+      data: {
+        type: 'review_actions',
+        attributes: {
+          trigger: 'submit',
+        },
+        relationships: {
+          target: {
+            data: {
+              type: 'preprints',
+              id: preprintId,
+            },
+          },
+        },
+      },
+    };
+  }
 }
