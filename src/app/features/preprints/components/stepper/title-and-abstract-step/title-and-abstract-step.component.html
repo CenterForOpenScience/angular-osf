@@ -1,17 +1,17 @@
-<h2>Title and Abstract</h2>
+<h2>{{ 'preprints.preprintStepper.titleAndAbstract.title' | translate }}</h2>
 
 <p-card styleClass="m-t-24" class="card">
   <div class="flex flex-column gap-3">
     <div class="flex flex-column">
       <osf-text-input
         [control]="titleAndAbstractForm.controls['title']"
-        label="Title"
+        [label]="'preprints.preprintStepper.titleAndAbstract.titleLabel' | translate"
         [maxLength]="inputLimits.title.maxLength"
       />
     </div>
 
     <div class="flex flex-column">
-      <label for="abstract">Abstract</label>
+      <label for="abstract">{{ 'preprints.preprintStepper.titleAndAbstract.abstractLabel' | translate }}</label>
       <textarea
         pTextarea
         id="abstract"
@@ -26,12 +26,18 @@
       }
       @if (abstractControl.errors?.['minlength'] && (abstractControl.touched || abstractControl.dirty)) {
         <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-          {{ 'Abstract must be at least 20 characters.' | translate }}
+          {{
+            'preprints.preprintStepper.titleAndAbstract.abstractMinLengthError'
+              | translate: { length: inputLimits.abstract.minLength }
+          }}
         </p-message>
       }
       @if (abstractControl.errors?.['maxlength'] && (abstractControl.touched || abstractControl.dirty)) {
         <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-          {{ 'Abstract can not exceed 3000 characters.' | translate }}
+          {{
+            'preprints.preprintStepper.titleAndAbstract.abstractMaxLengthError'
+              | translate: { length: inputLimits.abstract.maxLength }
+          }}
         </p-message>
       }
     </div>
@@ -42,15 +48,17 @@
   <p-button
     class="w-6 md:w-6rem"
     styleClass="w-full"
-    label="Back"
+    [label]="'common.buttons.back' | translate"
     severity="info"
     [routerLink]="['/preprints', 'overview', providerId(), 'discover']"
   />
   <p-button
     class="w-6 md:w-9rem"
     styleClass="w-full"
-    label="Next"
-    [pTooltip]="titleAndAbstractForm.invalid ? 'Fill in \'Required\' fields to continue' : ''"
+    [label]="'common.buttons.next' | translate"
+    [pTooltip]="
+      titleAndAbstractForm.invalid ? ('preprints.preprintStepper.common.validation.fillRequiredFields' | translate) : ''
+    "
     tooltipPosition="top"
     [disabled]="titleAndAbstractForm.invalid"
     [loading]="isUpdatingPreprint()"

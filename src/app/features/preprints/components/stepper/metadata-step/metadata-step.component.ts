@@ -115,7 +115,7 @@ export class MetadataStepComponent implements OnInit {
 
     this.actions.updatePreprint(this.createdPreprint()!.id, changedFields).subscribe({
       complete: () => {
-        this.toastService.showSuccess('Preprint saved');
+        this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
         this.nextClicked.emit();
       },
     });
@@ -146,8 +146,8 @@ export class MetadataStepComponent implements OnInit {
     }
 
     this.customConfirmationService.confirmContinue({
-      headerKey: 'Discard changes?',
-      messageKey: 'You have unsaved changes in the project creation form. Are you sure you want to go back?',
+      headerKey: 'common.discardChanges.header',
+      messageKey: 'common.discardChanges.message',
       onConfirm: () => {
         this.backClicked.emit();
       },

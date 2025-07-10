@@ -4,32 +4,32 @@ import { StepOption } from '@shared/models';
 export const submitPreprintSteps: StepOption[] = [
   {
     index: 0,
-    label: 'Title and Abstract',
+    label: 'preprints.preprintStepper.steps.titleAndAbstract',
     value: SubmitSteps.TitleAndAbstract,
   },
   {
     index: 1,
-    label: 'File',
+    label: 'preprints.preprintStepper.steps.file',
     value: SubmitSteps.File,
   },
   {
     index: 2,
-    label: 'Metadata',
+    label: 'preprints.preprintStepper.steps.metadata',
     value: SubmitSteps.Metadata,
   },
   {
     index: 3,
-    label: 'Author Assertions',
+    label: 'preprints.preprintStepper.steps.authorAssertions',
     value: SubmitSteps.AuthorAssertions,
   },
   {
     index: 4,
-    label: 'Supplements',
+    label: 'preprints.preprintStepper.steps.supplements',
     value: SubmitSteps.Supplements,
   },
   {
     index: 5,
-    label: 'Review',
+    label: 'preprints.preprintStepper.steps.review',
     value: SubmitSteps.Review,
   },
 ];

@@ -6,7 +6,6 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 import { RadioButton } from 'primeng/radiobutton';
-import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -30,6 +29,7 @@ import { formInputLimits, preregLinksOptions } from '@osf/features/preprints/con
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
 import { SubmitPreprintSelectors, UpdatePreprint } from '@osf/features/preprints/store/submit-preprint';
+import { FormSelectComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 import { CustomValidators, findChangedFields } from '@shared/utils';
@@ -47,8 +47,8 @@ import { CustomValidators, findChangedFields } from '@shared/utils';
     NgClass,
     Button,
     Tooltip,
-    Select,
     ArrayInputComponent,
+    FormSelectComponent,
   ],
   templateUrl: './author-assertions-step.component.html',
   styleUrl: './author-assertions-step.component.scss',
@@ -222,7 +222,7 @@ export class AuthorAssertionsStepComponent {
       })
       .subscribe({
         complete: () => {
-          this.toastService.showSuccess('Preprint saved');
+          this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
           this.nextClicked.emit();
         },
       });
@@ -238,8 +238,8 @@ export class AuthorAssertionsStepComponent {
     }
 
     this.confirmationService.confirmContinue({
-      headerKey: 'Discard changes?',
-      messageKey: 'You have unsaved changes in the project creation form. Are you sure you want to go back?',
+      headerKey: 'common.discardChanges.header',
+      messageKey: 'common.discardChanges.message',
       onConfirm: () => {
         this.backClicked.emit();
       },

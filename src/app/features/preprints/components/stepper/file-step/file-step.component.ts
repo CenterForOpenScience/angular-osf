@@ -1,5 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -56,6 +58,7 @@ import { CustomConfirmationService, ToastService } from '@shared/services';
     Select,
     ReactiveFormsModule,
     FilesTreeComponent,
+    TranslatePipe,
   ],
   templateUrl: './file-step.component.html',
   styleUrl: './file-step.component.scss',
@@ -148,7 +151,7 @@ export class FileStepComponent implements OnInit {
       return;
     }
 
-    this.toastService.showSuccess('Preprint saved');
+    this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
     this.nextClicked.emit();
   }
 
@@ -180,9 +183,8 @@ export class FileStepComponent implements OnInit {
 
   versionFile() {
     this.customConfirmationService.confirmContinue({
-      headerKey: 'Add a new preprint file',
-      messageKey:
-        'This will allow a new version of the preprint file to be uploaded to the preprint. The existing file will be retained as a version of the preprint.',
+      headerKey: 'preprints.preprintStepper.file.versionFile.header',
+      messageKey: 'preprints.preprintStepper.file.versionFile.message',
       onConfirm: () => {
         this.versionFileMode.set(true);
         this.actions.setSelectedFileSource(PreprintFileSource.None);

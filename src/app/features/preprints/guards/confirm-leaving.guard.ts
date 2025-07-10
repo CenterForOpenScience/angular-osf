@@ -16,8 +16,8 @@ export const ConfirmLeavingGuard: CanDeactivateFn<SubmitPreprintStepperComponent
   }
 
   confirmationService.confirmContinue({
-    headerKey: 'You have unsaved changes',
-    messageKey: 'Are you sure you want to leave?',
+    headerKey: 'common.discardChanges.header',
+    messageKey: 'common.discardChanges.message',
     onConfirm: () => {
       confirmationResultSubject.next(true);
     },

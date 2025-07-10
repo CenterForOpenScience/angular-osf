@@ -30,7 +30,8 @@
       "no": "No",
       "update": "Update",
       "continue update": "Continue update",
-      "withdraw": "Withdraw"
+      "withdraw": "Withdraw",
+      "submit": "Submit"
     },
     "search": {
       "title": "Search",
@@ -69,10 +70,20 @@
       "description": "Description",
       "year": "Year",
       "optional": "Optional",
-      "makePublic": "Make Public"
+      "makePublic": "Make Public",
+      "yes": "Yes",
+      "no": "No",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "notApplicable": "Not Applicable",
+      "none": "None"
     },
     "deleteConfirmation": {
       "header": "Delete",
+      "message": "Are you sure you want to proceed?"
+    },
+    "discardChanges": {
+      "header": "You Have Unsaved Changes",
       "message": "Are you sure you want to proceed?"
     },
     "links": {
@@ -347,7 +358,7 @@
         "anonymous": "Anonymous"
       },
       "viewOnlyLinkCreated": "View only link successfully created.",
-      "anonymizeContributorList": "Anonymize contributor list for this link (e.g., for blind peer review).",
+      "anonymizeContributorList": "Anonymize contributor list for this link (e.g., for blind peer review).",
       "ensureNoInformation": "Ensure the wiki pages, files, registration forms and add-ons do not contain identifying information.",
       "linkName": "Link name",
       "typeLinkName": "Type link name",
@@ -1600,6 +1611,159 @@
       "description": "A preprint is a version of a scholarly or scientific paper that is posted online before it has undergone formal peer review and published in a scientific journal.",
       "learnMore": "Learn more",
       "providerLogoImageAlt": "Provider Logo"
+    },
+    "preprintStepper": {
+      "steps": {
+        "titleAndAbstract": "Title and Abstract",
+        "file": "File",
+        "metadata": "Metadata",
+        "authorAssertions": "Author Assertions",
+        "supplements": "Supplements",
+        "review": "Review"
+      },
+      "titleAndAbstract": {
+        "title": "Title and Abstract",
+        "titleLabel": "Title",
+        "abstractLabel": "Abstract",
+        "abstractMinLengthError": "Abstract must be at least {{length}} characters.",
+        "abstractMaxLengthError": "Abstract can not exceed {{length}} characters."
+      },
+      "file": {
+        "title": "File",
+        "uploadDescription": "Please Upload your {{preprintWord}}",
+        "note": "Note: You cannot switch options once a file is attached.",
+        "uploadFromComputer": "Upload From Your Computer",
+        "selectFromProject": "Select From existing OSF project",
+        "uploadFileButton": "Upload file",
+        "projectSelection": {
+          "title": "Project Title",
+          "description": "This will make your project public, if it is not already",
+          "subDescription": "The projects and components for which you have admin access are listed below."
+        },
+        "versionFile": {
+          "header": "Add a new preprint file",
+          "message": "This will allow a new version of the preprint file to be uploaded to the preprint. The existing file will be retained as a version of the preprint."
+        },
+        "tooltips": {
+          "computerDisabled": "Start a new preprint to attach a file from your computer.",
+          "projectDisabled": "Start a new preprint to attach a file from your project."
+        }
+      },
+      "metadata": {
+        "title": "Metadata",
+        "publicationDoi": {
+          "title": "Publication DOI",
+          "patternError": "Please use a valid DOI format (10.xxxx/xxxxx)"
+        },
+        "tagsTitle": "Tags (optional)",
+        "publicationDateTitle": "Publication Date (optional)",
+        "publicationCitationTitle": "Publication Citation (optional)"
+      },
+      "authorAssertions": {
+        "title": "Author Assertions",
+        "conflictOfInterest": {
+          "title": "Conflict of Interest",
+          "description": "The Conflict of Interest (COI) assertion is made on behalf of all the authors listed for this preprint. COIs include: financial involvement in any entity such as honoraria, grants, speaking fees, employment, consultancies, stock ownership, expert testimony, and patents or licenses. COIs can also include non-financial interests such as personal or professional relationships or pre-existing beliefs in the subject matter or materials discussed in this preprint.",
+          "noCoiPlaceholder": "Author asserted there is no Conflict of Interest with this preprint."
+        },
+        "publicData": {
+          "title": "Public Data",
+          "description": "Data refers to raw and/or processed information (quantitative or qualitative) used for the analyses, case studies, and/or descriptive interpretation in the preprint. Public data could include data posted to open-access repositories, public archival library collection, or government archive. For data that is available under limited circumstances (e.g., after signing a data sharing agreement), choose the 'No' option and use the comment box to explain how others could access the data.",
+          "notApplicablePlaceholder": "Author asserted there is no data associated with this preprint."
+        },
+        "publicPreregistration": {
+          "title": "Public Preregistration",
+          "description": "A preregistration is a description of the research design and/or analysis plan that is created and registered before researchers collected data or before they have seen/interacted with preexisting data. The description should appear in a public registry (e.g., clinicaltrials.gov, OSF, AEA registry).",
+          "notApplicablePlaceholder": "The author asserts that a preregistration is not applicable because no data collection, extraction, or analysis is reported in the preprint.",
+          "selectType": "Choose one"
+        }
+      },
+      "supplements": {
+        "title": "Supplements (optional)",
+        "description": "Connect an OSF project to share data, code, protocols, or other supplemental materials.",
+        "options": {
+          "connectExisting": "Connect an existing OSF project",
+          "createNew": "Create a new OSF project"
+        },
+        "projectSelection": {
+          "title": "Select Project",
+          "description": "This will make your project public, if it is not already",
+          "subDescription": "The projects and components for which you have admin access are listed below."
+        },
+        "disconnectProject": {
+          "header": "Disconnect supplemental material",
+          "message": "This will disconnect the selected project. You can select new supplemental material or re-add the same supplemental material at a later date."
+        },
+        "successMessages": {
+          "projectConnected": "Project connected",
+          "projectDisconnected": "Project disconnected",
+          "projectCreated": "Project created"
+        },
+        "discardChanges": {
+          "header": "Discard changes?",
+          "message": "You have unsaved changes in the project creation form. Are you sure you want to go back?"
+        }
+      },
+      "review": {
+        "title": "Consent to publish",
+        "consentDescription": "By submitting this preprint you confirm that all contributors agree with sharing it and that you have the right to share this preprint.",
+        "workflowDescription": "{{providerName}} uses {{reviewsWorkflow}}. If your preprint is accepted, it will be assigned a DOI and become publicly accessible via OSF. The preprint file cannot be deleted but it can be updated or modified.",
+        "learnMore": "You can read more about",
+        "moderationPolicies": "OSF preprints moderation policies",
+        "supportCenter": "on the OSF support center.",
+        "sections": {
+          "titleAndAbstract": {
+            "title": "Title and Abstract",
+            "service": "{{preprintWord}} Service"
+          },
+          "metadata": {
+            "title": "Metadata",
+            "contributors": "Contributors",
+            "affiliatedInstitutions": "Affiliated Institutions",
+            "license": "License",
+            "publicationDoi": "Publication DOI",
+            "subjects": "Subjects",
+            "tags": "Tags",
+            "publicationDate": "Publication Date",
+            "publicationCitation": "Publication Citation"
+          },
+          "authorAssertions": {
+            "title": "Author Assertions",
+            "conflictOfInterest": "Conflict of Interest",
+            "publicData": "Public Data",
+            "publicPreregistration": "Public Preregistration",
+            "noCoi": "Author asserted no Conflict of Interest.",
+            "noData": "Author asserted there is no data associated with this preprint.",
+            "noPrereg": "The author asserts that a preregistration is not applicable because no data collection, extraction, or analysis is reported in the preprint."
+          },
+          "supplements": {
+            "title": "Supplements (Optional)",
+            "noSupplements": "Author did not add any supplements for this preprint"
+          }
+        }
+      },
+      "common": {
+        "validation": {
+          "fillRequiredFields": "Fill in 'Required' fields to continue"
+        },
+        "successMessages": {
+          "preprintSaved": "Preprint saved",
+          "preprintSubmitted": "Preprint submitted"
+        },
+        "placeholders": {
+          "linkToData": "Link to data",
+          "describe": "Describe"
+        },
+        "labels": {
+          "title": "Title",
+          "abstract": "Abstract",
+          "preregTypes": {
+            "analysis": "Analysis Plan",
+            "designs": "Study Design",
+            "both": "Both"
+          }
+        }
+      }
     }
   },
   "registries": {

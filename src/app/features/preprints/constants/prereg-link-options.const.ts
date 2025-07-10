@@ -3,15 +3,15 @@ import { SelectOption } from '@shared/models';
 
 export const preregLinksOptions: SelectOption[] = [
   {
-    label: 'Analysis Plan',
+    label: 'preprints.preprintStepper.common.labels.preregTypes.analysis',
     value: PreregLinkInfo.Analysis,
   },
   {
-    label: 'Study Design',
+    label: 'preprints.preprintStepper.common.labels.preregTypes.designs',
     value: PreregLinkInfo.Designs,
   },
   {
-    label: 'Both',
+    label: 'preprints.preprintStepper.common.labels.preregTypes.both',
     value: PreregLinkInfo.Both,
   },
 ];

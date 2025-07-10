@@ -1,5 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
@@ -24,7 +26,7 @@ import { ContributorsSelectors, FetchSelectedSubjects, GetAllContributors, Subje
 
 @Component({
   selector: 'osf-review-step',
-  imports: [Card, TruncatedTextComponent, Tag, DatePipe, Button, TitleCasePipe],
+  imports: [Card, TruncatedTextComponent, Tag, DatePipe, Button, TitleCasePipe, TranslatePipe],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,7 +66,7 @@ export class ReviewStepComponent implements OnInit {
   submitPreprint() {
     this.actions.submitPreprint().subscribe({
       complete: () => {
-        this.toastService.showSuccess('Preprint submitted');
+        this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
         this.router.navigateByUrl('/preprints');
       },
     });

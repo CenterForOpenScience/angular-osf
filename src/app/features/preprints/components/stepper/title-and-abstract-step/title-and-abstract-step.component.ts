@@ -93,14 +93,14 @@ export class TitleAndAbstractStepComponent {
       this.actions.updatePreprint(this.createdPreprint()!.id, model).subscribe({
         complete: () => {
           this.nextClicked.emit();
-          this.toastService.showSuccess('Preprint saved');
+          this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
         },
       });
     } else {
       this.actions.createPreprint(model.title!, model.description!, this.providerId()!).subscribe({
         complete: () => {
           this.nextClicked.emit();
-          this.toastService.showSuccess('Preprint saved');
+          this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
         },
       });
     }
