@@ -65,6 +65,7 @@ export class MetadataStepComponent implements OnInit {
   protected metadataForm!: FormGroup<MetadataForm>;
   protected inputLimits = formInputLimits;
   protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  protected today = new Date();
 
   licenses = select(SubmitPreprintSelectors.getLicenses);
   createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
