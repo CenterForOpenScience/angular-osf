@@ -80,6 +80,7 @@
               "namedChunks": true
             },
             "development": {
+              "baseHref": "/angular_osf/assets/",
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
@@ -101,6 +102,8 @@
             },
             "development": {
               "buildTarget": "osf:build:development",
+              "port": 4300,
+              "host": "0.0.0.0",
               "hmr": false
             }
           },
