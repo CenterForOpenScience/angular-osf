@@ -74,10 +74,19 @@
       </section>
     }
 
-    <section class="flex flex-column gap-2">
+    <section class="license flex flex-column gap-2">
       <h3>{{ 'preprints.preprintStepper.review.sections.metadata.license' | translate }}</h3>
 
-      <div>{{ license()?.name }}</div>
+      <p-accordion>
+        <p-accordion-panel value="0">
+          <p-accordion-header class="p-0 justify-content-start gap-2">
+            <div>{{ license()?.name }}</div>
+          </p-accordion-header>
+          <p-accordion-content>
+            <div>{{ license()!.text | interpolate: licenseOptionsRecord() }}</div>
+          </p-accordion-content>
+        </p-accordion-panel>
+      </p-accordion>
     </section>
 
     <section class="flex flex-column gap-2">
