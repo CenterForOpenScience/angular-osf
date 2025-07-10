@@ -1,4 +1,4 @@
-export enum SubmitSteps {
+export enum PreprintSteps {
   TitleAndAbstract = 0,
   File,
   Metadata,

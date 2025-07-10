@@ -68,6 +68,14 @@ export const preprintsRoutes: Routes = [
           ),
         canDeactivate: [ConfirmLeavingGuard],
       },
+      {
+        path: ':providerId/edit/:preprintId',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/update-preprint-stepper/update-preprint-stepper.component').then(
+            (c) => c.UpdatePreprintStepperComponent
+          ),
+        canDeactivate: [ConfirmLeavingGuard],
+      },
     ],
   },
 ];

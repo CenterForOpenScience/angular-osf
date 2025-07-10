@@ -1,3 +1,4 @@
+export * from './can-deactivate.interface';
 export * from './preprint.models';
 export * from './preprint-json-api.models';
 export * from './preprint-licenses-json-api.models';

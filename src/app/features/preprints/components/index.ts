@@ -16,4 +16,5 @@ export { PreprintsResourcesFiltersComponent } from '@osf/features/preprints/comp
 export { PreprintsSubjectFilterComponent } from '@osf/features/preprints/components/filters/preprints-subject-filter/preprints-subject-filter.component';
 export { FileStepComponent } from '@osf/features/preprints/components/stepper/file-step/file-step.component';
 export { MetadataStepComponent } from '@osf/features/preprints/components/stepper/metadata-step/metadata-step.component';
+export { ReviewStepComponent } from '@osf/features/preprints/components/stepper/review-step/review-step.component';
 export { TitleAndAbstractStepComponent } from '@osf/features/preprints/components/stepper/title-and-abstract-step/title-and-abstract-step.component';

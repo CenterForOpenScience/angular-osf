@@ -83,7 +83,7 @@
       "message": "Are you sure you want to proceed?"
     },
     "discardChanges": {
-      "header": "You Have Unsaved Changes",
+      "header": "You Might Loose Unsaved Changes",
       "message": "Are you sure you want to proceed?"
     },
     "links": {

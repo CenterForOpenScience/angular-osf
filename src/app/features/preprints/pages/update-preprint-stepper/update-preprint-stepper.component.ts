@@ -21,72 +21,64 @@ import { ActivatedRoute } from '@angular/router';
 
 import {
   AuthorAssertionsStepComponent,
-  FileStepComponent,
   MetadataStepComponent,
   ReviewStepComponent,
   SupplementsStepComponent,
   TitleAndAbstractStepComponent,
 } from '@osf/features/preprints/components';
-import { submitPreprintSteps } from '@osf/features/preprints/constants';
+import { updatePreprintSteps } from '@osf/features/preprints/constants';
 import { PreprintSteps } from '@osf/features/preprints/enums';
 import { CanDeactivateComponent } from '@osf/features/preprints/models';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
+  FetchPreprintById,
   ResetStateAndDeletePreprint,
   SetSelectedPreprintProviderId,
   SubmitPreprintSelectors,
 } from '@osf/features/preprints/store/submit-preprint';
-import { StepOption } from '@osf/shared/models';
 import { StepperComponent } from '@shared/components';
+import { StepOption } from '@shared/models';
 import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
 
 @Component({
-  selector: 'osf-submit-preprint-stepper',
+  selector: 'osf-update-preprint-stepper',
   imports: [
+    AuthorAssertionsStepComponent,
     Skeleton,
     StepperComponent,
     TitleAndAbstractStepComponent,
-    FileStepComponent,
     MetadataStepComponent,
-    AuthorAssertionsStepComponent,
     SupplementsStepComponent,
-    AuthorAssertionsStepComponent,
     ReviewStepComponent,
   ],
-  templateUrl: './submit-preprint-stepper.component.html',
-  styleUrl: './submit-preprint-stepper.component.scss',
+  templateUrl: './update-preprint-stepper.component.html',
+  styleUrl: './update-preprint-stepper.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDeactivateComponent {
+export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDeactivateComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
   private readonly route = inject(ActivatedRoute);
 
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
+  private preprintId = toSignal(this.route.params.pipe(map((params) => params['preprintId'])) ?? of(undefined));
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
     resetStateAndDeletePreprint: ResetStateAndDeletePreprint,
+    fetchPreprint: FetchPreprintById,
   });
 
-  readonly SubmitStepsEnum = PreprintSteps;
-
-  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
-  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
-  hasBeenSubmitted = select(SubmitPreprintSelectors.hasBeenSubmitted);
-  currentStep = signal<StepOption>(submitPreprintSteps[0]);
-  isWeb = toSignal(inject(IS_WEB));
-
-  readonly submitPreprintSteps = computed(() => {
+  readonly updateSteps = computed(() => {
     const provider = this.preprintProvider();
 
     if (!provider) {
       return [];
     }
 
-    return submitPreprintSteps
+    return updatePreprintSteps
       .map((step) => {
         if (!provider.assertionsEnabled && step.value === PreprintSteps.AuthorAssertions) {
           return null;
@@ -100,6 +92,14 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
         index,
       }));
   });
+
+  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
+  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
+  hasBeenSubmitted = select(SubmitPreprintSelectors.hasBeenSubmitted);
+  currentStep = signal<StepOption>(updatePreprintSteps[4]);
+  isWeb = toSignal(inject(IS_WEB));
+
+  readonly PreprintSteps = PreprintSteps;
 
   constructor() {
     effect(() => {
@@ -124,6 +124,7 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
 
   ngOnInit() {
     this.actions.getPreprintProviderById(this.providerId());
+    this.actions.fetchPreprint(this.preprintId());
   }
 
   ngOnDestroy() {
@@ -143,11 +144,11 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
   }
 
   moveToNextStep() {
-    this.currentStep.set(this.submitPreprintSteps()[this.currentStep()?.index + 1]);
+    this.currentStep.set(this.updateSteps()[this.currentStep()?.index + 1]);
   }
 
   moveToPreviousStep() {
-    this.currentStep.set(this.submitPreprintSteps()[this.currentStep()?.index - 1]);
+    this.currentStep.set(this.updateSteps()[this.currentStep()?.index - 1]);
   }
 
   @HostListener('window:beforeunload', ['$event'])
