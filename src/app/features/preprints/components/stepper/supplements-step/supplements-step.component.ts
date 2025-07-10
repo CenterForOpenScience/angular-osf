@@ -31,10 +31,10 @@ import {
   ConnectProject,
   CreateNewProject,
   DisconnectProject,
+  FetchAvailableProjects,
   FetchPreprintProject,
-  GetAvailableProjects,
-  SubmitPreprintSelectors,
-} from '@osf/features/preprints/store/submit-preprint';
+  PreprintStepperSelectors,
+} from '@osf/features/preprints/store/preprint-stepper';
 import { AddProjectFormComponent } from '@shared/components';
 import { ProjectFormControls } from '@shared/enums';
 import { ProjectForm } from '@shared/models';
@@ -62,7 +62,7 @@ export class SupplementsStepComponent implements OnInit {
   private customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
   private actions = createDispatchMap({
-    getAvailableProjects: GetAvailableProjects,
+    getAvailableProjects: FetchAvailableProjects,
     connectProject: ConnectProject,
     disconnectProject: DisconnectProject,
     fetchPreprintProject: FetchPreprintProject,
@@ -72,12 +72,12 @@ export class SupplementsStepComponent implements OnInit {
 
   readonly SupplementOptions = SupplementOptions;
 
-  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
-  isPreprintSubmitting = select(SubmitPreprintSelectors.isPreprintSubmitting);
-  availableProjects = select(SubmitPreprintSelectors.getAvailableProjects);
-  areAvailableProjectsLoading = select(SubmitPreprintSelectors.areAvailableProjectsLoading);
-  preprintProject = select(SubmitPreprintSelectors.getPreprintProject);
-  isPreprintProjectLoading = select(SubmitPreprintSelectors.isPreprintProjectLoading);
+  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
+  availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
+  areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
+  preprintProject = select(PreprintStepperSelectors.getPreprintProject);
+  isPreprintProjectLoading = select(PreprintStepperSelectors.isPreprintProjectLoading);
 
   selectedSupplementOption = signal<SupplementOptions>(SupplementOptions.None);
   selectedProjectId = signal<StringOrNull>(null);

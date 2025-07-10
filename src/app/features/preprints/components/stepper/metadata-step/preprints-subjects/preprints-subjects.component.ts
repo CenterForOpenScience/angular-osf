@@ -8,7 +8,7 @@ import { Message } from 'primeng/message';
 import { ChangeDetectionStrategy, Component, effect, input, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { SubmitPreprintSelectors } from '@osf/features/preprints/store/submit-preprint';
+import { PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { SubjectsComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { SubjectModel } from '@osf/shared/models';
@@ -31,7 +31,7 @@ import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 export class PreprintsSubjectsComponent implements OnInit {
   preprintId = input<string>();
 
-  private readonly selectedProviderId = select(SubmitPreprintSelectors.getSelectedProviderId);
+  private readonly selectedProviderId = select(PreprintStepperSelectors.getSelectedProviderId);
   protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   protected isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
   control = input.required<FormControl>();

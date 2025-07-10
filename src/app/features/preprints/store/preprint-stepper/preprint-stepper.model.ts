@@ -4,7 +4,7 @@ import { Preprint, PreprintFilesLinks } from '@osf/features/preprints/models';
 import { AsyncStateModel, IdName, OsfFile } from '@shared/models';
 import { License } from '@shared/models/license.model';
 
-export interface SubmitPreprintStateModel {
+export interface PreprintStepperStateModel {
   selectedProviderId: StringOrNull;
   createdPreprint: AsyncStateModel<Preprint | null>;
   fileSource: PreprintFileSource;

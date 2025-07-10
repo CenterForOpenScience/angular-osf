@@ -40,7 +40,7 @@ export class SetSelectedPreprintFileSource {
   constructor(public fileSource: PreprintFileSource) {}
 }
 
-export class GetPreprintFilesLinks {
+export class FetchPreprintFilesLinks {
   static readonly type = '[Submit Preprint] Get Preprint Files Links';
 }
 
@@ -62,23 +62,23 @@ export class CopyFileFromProject {
   constructor(public file: OsfFile) {}
 }
 
-export class GetPreprintFiles {
+export class FetchPreprintFiles {
   static readonly type = '[Submit Preprint] Get Preprint Files';
 }
 
-export class GetAvailableProjects {
+export class FetchAvailableProjects {
   static readonly type = '[Submit Preprint] Get Available Projects';
 
   constructor(public searchTerm: StringOrNull) {}
 }
 
-export class GetProjectFiles {
+export class FetchProjectFiles {
   static readonly type = '[Submit Preprint] Get Project Files';
 
   constructor(public projectId: string) {}
 }
 
-export class GetProjectFilesByLink {
+export class FetchProjectFilesByLink {
   static readonly type = '[Submit Preprint] Get Project Files By Link';
 
   constructor(public filesLink: string) {}
@@ -127,6 +127,10 @@ export class SubmitPreprint {
   static readonly type = '[Submit Preprint] Submit Preprint';
 }
 
-export class ResetStateAndDeletePreprint {
-  static readonly type = '[Submit Preprint] Reset State And Delete Preprint';
+export class ResetState {
+  static readonly type = '[Submit Preprint] Reset State';
+}
+
+export class DeletePreprint {
+  static readonly type = '[Submit Preprint]  Delete Preprint';
 }

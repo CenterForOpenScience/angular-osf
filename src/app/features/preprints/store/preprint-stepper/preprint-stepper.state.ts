@@ -24,27 +24,28 @@ import {
   CopyFileFromProject,
   CreateNewProject,
   CreatePreprint,
+  DeletePreprint,
   DisconnectProject,
+  FetchAvailableProjects,
   FetchLicenses,
   FetchPreprintById,
+  FetchPreprintFiles,
+  FetchPreprintFilesLinks,
   FetchPreprintProject,
-  GetAvailableProjects,
-  GetPreprintFiles,
-  GetPreprintFilesLinks,
-  GetProjectFiles,
-  GetProjectFilesByLink,
-  ResetStateAndDeletePreprint,
+  FetchProjectFiles,
+  FetchProjectFilesByLink,
+  PreprintStepperStateModel,
+  ResetState,
   ReuploadFile,
   SaveLicense,
   SetSelectedPreprintFileSource,
   SetSelectedPreprintProviderId,
   SubmitPreprint,
-  SubmitPreprintStateModel,
   UpdatePreprint,
   UploadFile,
 } from './';
 
-const DefaultState: SubmitPreprintStateModel = {
+const DefaultState: PreprintStepperStateModel = {
   selectedProviderId: null,
   createdPreprint: {
     data: null,
@@ -86,12 +87,12 @@ const DefaultState: SubmitPreprintStateModel = {
   hasBeenSubmitted: false,
 };
 
-@State<SubmitPreprintStateModel>({
-  name: 'submitPreprint',
+@State<PreprintStepperStateModel>({
+  name: 'preprintStepper',
   defaults: { ...DefaultState },
 })
 @Injectable()
-export class SubmitPreprintState {
+export class PreprintStepperState {
   private preprintsService = inject(PreprintsService);
   private preprintFilesService = inject(PreprintFilesService);
   private fileService = inject(FilesService);
@@ -99,14 +100,14 @@ export class SubmitPreprintState {
   private preprintProjectsService = inject(PreprintsProjectsService);
 
   @Action(SetSelectedPreprintProviderId)
-  setSelectedPreprintProviderId(ctx: StateContext<SubmitPreprintStateModel>, action: SetSelectedPreprintProviderId) {
+  setSelectedPreprintProviderId(ctx: StateContext<PreprintStepperStateModel>, action: SetSelectedPreprintProviderId) {
     ctx.patchState({
       selectedProviderId: action.id,
     });
   }
 
   @Action(CreatePreprint)
-  createPreprint(ctx: StateContext<SubmitPreprintStateModel>, action: CreatePreprint) {
+  createPreprint(ctx: StateContext<PreprintStepperStateModel>, action: CreatePreprint) {
     ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
 
     return this.preprintsService.createPreprint(action.title, action.abstract, action.providerId).pipe(
@@ -118,7 +119,7 @@ export class SubmitPreprintState {
   }
 
   @Action(UpdatePreprint)
-  updatePreprint(ctx: StateContext<SubmitPreprintStateModel>, action: UpdatePreprint) {
+  updatePreprint(ctx: StateContext<PreprintStepperStateModel>, action: UpdatePreprint) {
     ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
 
     return this.preprintsService.updatePreprint(action.id, action.payload).pipe(
@@ -130,7 +131,7 @@ export class SubmitPreprintState {
   }
 
   @Action(FetchPreprintById)
-  getPreprintById(ctx: StateContext<SubmitPreprintStateModel>, action: FetchPreprintById) {
+  getPreprintById(ctx: StateContext<PreprintStepperStateModel>, action: FetchPreprintById) {
     ctx.setState(patch({ createdPreprint: patch({ isLoading: true }) }));
 
     return this.preprintsService.getById(action.id).pipe(
@@ -141,8 +142,8 @@ export class SubmitPreprintState {
     );
   }
 
-  @Action(GetPreprintFilesLinks)
-  getPreprintFilesLinks(ctx: StateContext<SubmitPreprintStateModel>) {
+  @Action(FetchPreprintFilesLinks)
+  getPreprintFilesLinks(ctx: StateContext<PreprintStepperStateModel>) {
     const state = ctx.getState();
     if (!state.createdPreprint.data) {
       return EMPTY;
@@ -157,7 +158,7 @@ export class SubmitPreprintState {
   }
 
   @Action(UploadFile)
-  uploadFile(ctx: StateContext<SubmitPreprintStateModel>, action: UploadFile) {
+  uploadFile(ctx: StateContext<PreprintStepperStateModel>, action: UploadFile) {
     const state = ctx.getState();
     if (!state.preprintFilesLinks.data?.uploadFileLink) {
       return EMPTY;
@@ -170,7 +171,7 @@ export class SubmitPreprintState {
       switchMap((event) => {
         const file = event.body!.data;
         const createdFileId = file.id.split('/')[1];
-        ctx.dispatch(new GetPreprintFiles());
+        ctx.dispatch(new FetchPreprintFiles());
 
         return this.preprintFilesService.updateFileRelationship(state.createdPreprint.data!.id, createdFileId).pipe(
           tap((preprint: Preprint) => {
@@ -191,7 +192,7 @@ export class SubmitPreprintState {
   }
 
   @Action(ReuploadFile)
-  reuploadFile(ctx: StateContext<SubmitPreprintStateModel>, action: ReuploadFile) {
+  reuploadFile(ctx: StateContext<PreprintStepperStateModel>, action: ReuploadFile) {
     const state = ctx.getState();
     const uploadedFile = state.preprintFiles.data[0];
     if (!uploadedFile) return EMPTY;
@@ -201,13 +202,13 @@ export class SubmitPreprintState {
     return this.fileService.updateFileContent(action.file, uploadedFile.links.upload).pipe(
       switchMap(() => this.fileService.renameEntry(uploadedFile.links.upload, action.file.name, 'replace')),
       tap(() => {
-        ctx.dispatch(GetPreprintFiles);
+        ctx.dispatch(FetchPreprintFiles);
       })
     );
   }
 
-  @Action(GetPreprintFiles)
-  getPreprintFiles(ctx: StateContext<SubmitPreprintStateModel>) {
+  @Action(FetchPreprintFiles)
+  getPreprintFiles(ctx: StateContext<PreprintStepperStateModel>) {
     const state = ctx.getState();
     if (!state.preprintFilesLinks.data?.filesLink) {
       return EMPTY;
@@ -229,8 +230,8 @@ export class SubmitPreprintState {
     );
   }
 
-  @Action(GetAvailableProjects)
-  getAvailableProjects(ctx: StateContext<SubmitPreprintStateModel>, action: GetAvailableProjects) {
+  @Action(FetchAvailableProjects)
+  getAvailableProjects(ctx: StateContext<PreprintStepperStateModel>, action: FetchAvailableProjects) {
     ctx.setState(patch({ availableProjects: patch({ isLoading: true }) }));
 
     return this.preprintProjectsService.getAvailableProjects(action.searchTerm).pipe(
@@ -248,8 +249,8 @@ export class SubmitPreprintState {
     );
   }
 
-  @Action(GetProjectFiles)
-  getProjectFiles(ctx: StateContext<SubmitPreprintStateModel>, action: GetProjectFiles) {
+  @Action(FetchProjectFiles)
+  getProjectFiles(ctx: StateContext<PreprintStepperStateModel>, action: FetchProjectFiles) {
     ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
 
     return this.preprintFilesService.getProjectFiles(action.projectId).pipe(
@@ -276,8 +277,8 @@ export class SubmitPreprintState {
     );
   }
 
-  @Action(GetProjectFilesByLink)
-  getProjectFilesByLink(ctx: StateContext<SubmitPreprintStateModel>, action: GetProjectFilesByLink) {
+  @Action(FetchProjectFilesByLink)
+  getProjectFilesByLink(ctx: StateContext<PreprintStepperStateModel>, action: FetchProjectFilesByLink) {
     ctx.setState(patch({ projectFiles: patch({ isLoading: true }) }));
 
     return this.fileService.getFilesWithoutFiltering(action.filesLink).pipe(
@@ -295,27 +296,15 @@ export class SubmitPreprintState {
     );
   }
 
-  @Action(ResetStateAndDeletePreprint)
-  resetStateAndDeletePreprint(ctx: StateContext<SubmitPreprintStateModel>) {
-    const state = ctx.getState();
-    const createdPreprintId = state.createdPreprint.data?.id;
-    ctx.setState({ ...DefaultState });
-    if (createdPreprintId && !state.hasBeenSubmitted) {
-      return this.preprintsService.deletePreprint(createdPreprintId);
-    }
-
-    return EMPTY;
-  }
-
   @Action(SetSelectedPreprintFileSource)
-  setSelectedPreprintFileSource(ctx: StateContext<SubmitPreprintStateModel>, action: SetSelectedPreprintFileSource) {
+  setSelectedPreprintFileSource(ctx: StateContext<PreprintStepperStateModel>, action: SetSelectedPreprintFileSource) {
     ctx.patchState({
       fileSource: action.fileSource,
     });
   }
 
   @Action(CopyFileFromProject)
-  copyFileFromProject(ctx: StateContext<SubmitPreprintStateModel>, action: CopyFileFromProject) {
+  copyFileFromProject(ctx: StateContext<PreprintStepperStateModel>, action: CopyFileFromProject) {
     const createdPreprintId = ctx.getState().createdPreprint.data?.id;
     if (!createdPreprintId) {
       return;
@@ -326,7 +315,7 @@ export class SubmitPreprintState {
       .copyFileToAnotherLocation(action.file.links.move, action.file.provider, createdPreprintId)
       .pipe(
         switchMap((file: OsfFile) => {
-          ctx.dispatch(new GetPreprintFiles());
+          ctx.dispatch(new FetchPreprintFiles());
 
           const fileIdAfterCopy = file.id.split('/')[1];
 
@@ -350,7 +339,7 @@ export class SubmitPreprintState {
   }
 
   @Action(FetchLicenses)
-  fetchLicenses(ctx: StateContext<SubmitPreprintStateModel>) {
+  fetchLicenses(ctx: StateContext<PreprintStepperStateModel>) {
     const providerId = ctx.getState().selectedProviderId;
     if (!providerId) return;
     ctx.setState(patch({ licenses: patch({ isLoading: true }) }));
@@ -364,7 +353,7 @@ export class SubmitPreprintState {
   }
 
   @Action(SaveLicense)
-  saveLicense(ctx: StateContext<SubmitPreprintStateModel>, action: SaveLicense) {
+  saveLicense(ctx: StateContext<PreprintStepperStateModel>, action: SaveLicense) {
     const createdPreprintId = ctx.getState().createdPreprint.data!.id;
     ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
 
@@ -377,7 +366,7 @@ export class SubmitPreprintState {
   }
 
   @Action(DisconnectProject)
-  disconnectProject(ctx: StateContext<SubmitPreprintStateModel>) {
+  disconnectProject(ctx: StateContext<PreprintStepperStateModel>) {
     const createdPreprintId = ctx.getState().createdPreprint.data?.id;
     if (!createdPreprintId) return EMPTY;
 
@@ -406,7 +395,7 @@ export class SubmitPreprintState {
   }
 
   @Action(ConnectProject)
-  connectProject(ctx: StateContext<SubmitPreprintStateModel>, { projectId }: ConnectProject) {
+  connectProject(ctx: StateContext<PreprintStepperStateModel>, { projectId }: ConnectProject) {
     const createdPreprintId = ctx.getState().createdPreprint.data?.id;
     if (!createdPreprintId) return EMPTY;
 
@@ -428,7 +417,7 @@ export class SubmitPreprintState {
   }
 
   @Action(FetchPreprintProject)
-  fetchPreprintProject(ctx: StateContext<SubmitPreprintStateModel>) {
+  fetchPreprintProject(ctx: StateContext<PreprintStepperStateModel>) {
     const preprintProjectId = ctx.getState().createdPreprint.data?.nodeId;
     if (!preprintProjectId) return EMPTY;
 
@@ -449,7 +438,7 @@ export class SubmitPreprintState {
   }
 
   @Action(CreateNewProject)
-  createNewProject(ctx: StateContext<SubmitPreprintStateModel>, action: CreateNewProject) {
+  createNewProject(ctx: StateContext<PreprintStepperStateModel>, action: CreateNewProject) {
     const createdPreprintId = ctx.getState().createdPreprint.data!.id;
     ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
     ctx.setState(patch({ preprintProject: patch({ isLoading: true }) }));
@@ -485,7 +474,7 @@ export class SubmitPreprintState {
   }
 
   @Action(SubmitPreprint)
-  submitPreprint(ctx: StateContext<SubmitPreprintStateModel>) {
+  submitPreprint(ctx: StateContext<PreprintStepperStateModel>) {
     const createdPreprintId = ctx.getState().createdPreprint.data!.id;
     ctx.setState(patch({ createdPreprint: patch({ isSubmitting: true }) }));
     return this.preprintsService.submitPreprint(createdPreprintId).pipe(
@@ -496,9 +485,25 @@ export class SubmitPreprintState {
     );
   }
 
+  @Action(ResetState)
+  resetState(ctx: StateContext<PreprintStepperStateModel>) {
+    ctx.setState({ ...DefaultState });
+    return EMPTY;
+  }
+
+  @Action(DeletePreprint)
+  deletePreprint(ctx: StateContext<PreprintStepperStateModel>) {
+    const state = ctx.getState();
+    const createdPreprintId = state.createdPreprint.data?.id;
+    if (createdPreprintId && !state.hasBeenSubmitted) {
+      return this.preprintsService.deletePreprint(createdPreprintId);
+    }
+    return EMPTY;
+  }
+
   private handleError(
-    ctx: StateContext<SubmitPreprintStateModel>,
-    section: keyof SubmitPreprintStateModel,
+    ctx: StateContext<PreprintStepperStateModel>,
+    section: keyof PreprintStepperStateModel,
     error: Error
   ) {
     ctx.patchState({

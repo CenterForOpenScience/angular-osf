@@ -28,7 +28,7 @@ import { ArrayInputComponent } from '@osf/features/preprints/components/stepper/
 import { formInputLimits, preregLinksOptions } from '@osf/features/preprints/constants';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
-import { SubmitPreprintSelectors, UpdatePreprint } from '@osf/features/preprints/store/submit-preprint';
+import { PreprintStepperSelectors, UpdatePreprint } from '@osf/features/preprints/store/preprint-stepper';
 import { FormSelectComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { CustomConfirmationService, ToastService } from '@shared/services';
@@ -68,8 +68,8 @@ export class AuthorAssertionsStepComponent {
   readonly preregLinkOptions = preregLinksOptions;
   readonly linkValidators = [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()];
 
-  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
-  isUpdatingPreprint = select(SubmitPreprintSelectors.isPreprintSubmitting);
+  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   readonly authorAssertionsForm = new FormGroup({
     hasCoi: new FormControl<boolean>(this.createdPreprint()!.hasCoi || false, {

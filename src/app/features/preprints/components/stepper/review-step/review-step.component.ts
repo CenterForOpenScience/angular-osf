@@ -16,9 +16,9 @@ import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   FetchLicenses,
   FetchPreprintProject,
+  PreprintStepperSelectors,
   SubmitPreprint,
-  SubmitPreprintSelectors,
-} from '@osf/features/preprints/store/submit-preprint';
+} from '@osf/features/preprints/store/preprint-stepper';
 import { TruncatedTextComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { Institution } from '@shared/models';
@@ -57,7 +57,7 @@ export class ReviewStepComponent implements OnInit {
     submitPreprint: SubmitPreprint,
   });
   provider = input.required<PreprintProviderDetails | undefined>();
-  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
+  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
 
   contributors = select(ContributorsSelectors.getContributors);
   bibliographicContributors = computed(() => {
@@ -65,8 +65,8 @@ export class ReviewStepComponent implements OnInit {
   });
   subjects = select(SubjectsSelectors.getSelectedSubjects);
   affiliatedInstitutions = signal<Institution[]>([]);
-  license = select(SubmitPreprintSelectors.getPreprintLicense);
-  preprintProject = select(SubmitPreprintSelectors.getPreprintProject);
+  license = select(PreprintStepperSelectors.getPreprintLicense);
+  preprintProject = select(PreprintStepperSelectors.getPreprintProject);
   licenseOptionsRecord = computed(() => {
     return (this.createdPreprint()?.licenseOptions ?? {}) as Record<string, string>;
   });

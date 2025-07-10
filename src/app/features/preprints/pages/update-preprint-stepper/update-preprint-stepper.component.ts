@@ -32,10 +32,10 @@ import { CanDeactivateComponent } from '@osf/features/preprints/models';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
   FetchPreprintById,
-  ResetStateAndDeletePreprint,
+  PreprintStepperSelectors,
+  ResetState,
   SetSelectedPreprintProviderId,
-  SubmitPreprintSelectors,
-} from '@osf/features/preprints/store/submit-preprint';
+} from '@osf/features/preprints/store/preprint-stepper';
 import { StepperComponent } from '@shared/components';
 import { StepOption } from '@shared/models';
 import { BrandService } from '@shared/services';
@@ -67,7 +67,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
-    resetStateAndDeletePreprint: ResetStateAndDeletePreprint,
+    resetState: ResetState,
     fetchPreprint: FetchPreprintById,
   });
 
@@ -95,7 +95,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
-  hasBeenSubmitted = select(SubmitPreprintSelectors.hasBeenSubmitted);
+  hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
   currentStep = signal<StepOption>(updatePreprintSteps[4]);
   isWeb = toSignal(inject(IS_WEB));
 
@@ -131,7 +131,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
     HeaderStyleHelper.resetToDefaults();
     BrandService.resetBranding();
     BrowserTabHelper.resetToDefaults();
-    this.actions.resetStateAndDeletePreprint();
+    this.actions.resetState();
   }
 
   stepChange(step: StepOption): void {

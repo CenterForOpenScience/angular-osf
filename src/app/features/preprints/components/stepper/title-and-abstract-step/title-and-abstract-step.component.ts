@@ -14,7 +14,11 @@ import { RouterLink } from '@angular/router';
 
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { TitleAndAbstractForm } from '@osf/features/preprints/models';
-import { CreatePreprint, SubmitPreprintSelectors, UpdatePreprint } from '@osf/features/preprints/store/submit-preprint';
+import {
+  CreatePreprint,
+  PreprintStepperSelectors,
+  UpdatePreprint,
+} from '@osf/features/preprints/store/preprint-stepper';
 import { TextInputComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { ToastService } from '@shared/services';
@@ -64,10 +68,10 @@ export class TitleAndAbstractStepComponent {
     }),
   });
 
-  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
-  providerId = select(SubmitPreprintSelectors.getSelectedProviderId);
+  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  providerId = select(PreprintStepperSelectors.getSelectedProviderId);
 
-  isUpdatingPreprint = select(SubmitPreprintSelectors.isPreprintSubmitting);
+  isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
   nextClicked = output<void>();
 
   constructor() {

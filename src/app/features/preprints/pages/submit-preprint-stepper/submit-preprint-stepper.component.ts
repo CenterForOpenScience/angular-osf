@@ -32,10 +32,11 @@ import { PreprintSteps } from '@osf/features/preprints/enums';
 import { CanDeactivateComponent } from '@osf/features/preprints/models';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
-  ResetStateAndDeletePreprint,
+  DeletePreprint,
+  PreprintStepperSelectors,
+  ResetState,
   SetSelectedPreprintProviderId,
-  SubmitPreprintSelectors,
-} from '@osf/features/preprints/store/submit-preprint';
+} from '@osf/features/preprints/store/preprint-stepper';
 import { StepOption } from '@osf/shared/models';
 import { StepperComponent } from '@shared/components';
 import { BrandService } from '@shared/services';
@@ -68,14 +69,15 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
-    resetStateAndDeletePreprint: ResetStateAndDeletePreprint,
+    resetState: ResetState,
+    deletePreprint: DeletePreprint,
   });
 
   readonly SubmitStepsEnum = PreprintSteps;
 
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
-  hasBeenSubmitted = select(SubmitPreprintSelectors.hasBeenSubmitted);
+  hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
   currentStep = signal<StepOption>(submitPreprintSteps[0]);
   isWeb = toSignal(inject(IS_WEB));
 
@@ -130,7 +132,8 @@ export class SubmitPreprintStepperComponent implements OnInit, OnDestroy, CanDea
     HeaderStyleHelper.resetToDefaults();
     BrandService.resetBranding();
     BrowserTabHelper.resetToDefaults();
-    this.actions.resetStateAndDeletePreprint();
+    this.actions.deletePreprint();
+    this.actions.resetState();
   }
 
   stepChange(step: StepOption): void {

@@ -18,10 +18,10 @@ import { MetadataForm, Preprint } from '@osf/features/preprints/models';
 import {
   CreatePreprint,
   FetchLicenses,
+  PreprintStepperSelectors,
   SaveLicense,
-  SubmitPreprintSelectors,
   UpdatePreprint,
-} from '@osf/features/preprints/store/submit-preprint';
+} from '@osf/features/preprints/store/preprint-stepper';
 import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { License, LicenseOptions } from '@shared/models';
@@ -67,9 +67,9 @@ export class MetadataStepComponent implements OnInit {
   protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
   protected today = new Date();
 
-  licenses = select(SubmitPreprintSelectors.getLicenses);
-  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
-  isUpdatingPreprint = select(SubmitPreprintSelectors.isPreprintSubmitting);
+  licenses = select(PreprintStepperSelectors.getLicenses);
+  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   nextClicked = output<void>();
   backClicked = output<void>();
