@@ -10,7 +10,9 @@
         height="40"
         [src]="preprintProvider()!.brand.heroLogoImageUrl"
       />
-      <h1 class="preprint-provider-name">{{ 'Add a ' + preprintProvider()!.preprintWord }}</h1>
+      <h1 class="preprint-provider-name">
+        {{ 'preprints.addPreprint' | translate: { preprintWord: preprintProvider()!.preprintWord } }}
+      </h1>
     }
   </section>
 

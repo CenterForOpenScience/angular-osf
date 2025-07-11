@@ -1,5 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Skeleton } from 'primeng/skeleton';
 
 import { map, Observable, of } from 'rxjs';
@@ -51,6 +53,7 @@ import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
     MetadataStepComponent,
     SupplementsStepComponent,
     ReviewStepComponent,
+    TranslatePipe,
   ],
   templateUrl: './update-preprint-stepper.component.html',
   styleUrl: './update-preprint-stepper.component.scss',

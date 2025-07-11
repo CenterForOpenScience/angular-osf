@@ -1581,6 +1581,7 @@
   "preprints": {
     "title": "Preprints",
     "addPreprint": "Add a {{preprintWord}}",
+    "updatePreprint": "Edit a {{preprintWord}}",
     "poweredBy": "Powered by OSF Preprints",
     "searchPlaceholder": "Search {{preprintWord}}...",
     "showExample": "Show an example",
