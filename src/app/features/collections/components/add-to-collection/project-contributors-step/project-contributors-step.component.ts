@@ -97,15 +97,19 @@ export class ProjectContributorsStepComponent {
     if (this.hasContributorsChanged()) {
       const updatedContributors = findChangedItems(this.initialContributors(), this.projectContributors(), 'id');
 
-      const updateRequests = updatedContributors.map((payload) =>
-        this.actions.updateContributor(this.selectedProject()?.id, ResourceType.Project, payload)
-      );
-
-      forkJoin(updateRequests).subscribe(() => {
-        this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
+      if (!updatedContributors.length) {
         this.initialContributors.set(JSON.parse(JSON.stringify(this.projectContributors())));
         this.contributorsSaved.emit();
-      });
+      } else {
+        const updateRequests = updatedContributors.map((payload) =>
+          this.actions.updateContributor(this.selectedProject()?.id, ResourceType.Project, payload)
+        );
+        forkJoin(updateRequests).subscribe(() => {
+          this.toastService.showSuccess('project.contributors.toastMessages.multipleUpdateSuccessMessage');
+          this.initialContributors.set(JSON.parse(JSON.stringify(this.projectContributors())));
+          this.contributorsSaved.emit();
+        });
+      }
     } else {
       this.contributorsSaved.emit();
     }

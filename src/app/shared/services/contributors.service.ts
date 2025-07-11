@@ -80,7 +80,7 @@ export class ContributorsService {
   }
 
   deleteContributor(resourceType: ResourceType, resourceId: string, userId: string): Observable<void> {
-    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}`;
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${userId}/`;
 
     return this.jsonApiService.delete(baseUrl);
   }
