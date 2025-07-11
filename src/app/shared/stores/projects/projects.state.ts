@@ -4,10 +4,12 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@core/handlers';
+import { ProjectOverviewService } from '@osf/features/project/overview/services';
 import { ProjectsService } from '@shared/services/projects.service';
-import { GetProjects, ProjectsModel } from '@shared/stores';
+import { GetProjects, ProjectsStateModel, SetSelectedProject, UpdateProjectMetadata } from '@shared/stores';
 
-@State<ProjectsModel>({
+@State<ProjectsStateModel>({
   name: 'projects',
   defaults: {
     projects: {
@@ -15,14 +17,21 @@ import { GetProjects, ProjectsModel } from '@shared/stores';
       isLoading: false,
       error: null,
     },
+    selectedProject: {
+      data: null,
+      isLoading: false,
+      isSubmitting: false,
+      error: null,
+    },
   },
 })
 @Injectable()
 export class ProjectsState {
   private readonly projectsService = inject(ProjectsService);
+  private readonly projectOverviewService = inject(ProjectOverviewService);
 
   @Action(GetProjects)
-  getProjects(ctx: StateContext<ProjectsModel>, action: GetProjects) {
+  getProjects(ctx: StateContext<ProjectsStateModel>, action: GetProjects) {
     const state = ctx.getState();
 
     ctx.patchState({
@@ -32,7 +41,7 @@ export class ProjectsState {
       },
     });
 
-    return this.projectsService.getProjects(action.userId, action.params).pipe(
+    return this.projectsService.fetchProjects(action.userId, action.params).pipe(
       tap({
         next: (projects) => {
           ctx.patchState({
@@ -54,6 +63,41 @@ export class ProjectsState {
         });
         return throwError(() => error);
       })
+    );
+  }
+
+  @Action(SetSelectedProject)
+  setSelectedProject(ctx: StateContext<ProjectsStateModel>, action: SetSelectedProject) {
+    const state = ctx.getState();
+    ctx.patchState({
+      selectedProject: {
+        ...state.selectedProject,
+        data: action.project,
+      },
+    });
+  }
+
+  @Action(UpdateProjectMetadata)
+  updateProjectMetadata(ctx: StateContext<ProjectsStateModel>, action: UpdateProjectMetadata) {
+    const state = ctx.getState();
+    ctx.patchState({
+      selectedProject: {
+        ...state.selectedProject,
+        isSubmitting: true,
+      },
+    });
+
+    return this.projectsService.updateProjectMetadata(action.metadata).pipe(
+      tap((project) => {
+        ctx.patchState({
+          selectedProject: {
+            ...state.selectedProject,
+            data: project,
+            isSubmitting: false,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'selectedProject', error))
     );
   }
 }

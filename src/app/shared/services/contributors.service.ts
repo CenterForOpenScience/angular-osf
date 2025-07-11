@@ -70,7 +70,7 @@ export class ContributorsService {
     resourceId: string,
     data: ContributorModel
   ): Observable<ContributorModel> {
-    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${data.userId}`;
+    const baseUrl = `${this.getBaseUrl(resourceType, resourceId)}/${data.userId}/`;
 
     const contributorData = { data: ContributorsMapper.toContributorAddRequest(data) };
 

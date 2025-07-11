@@ -3,4 +3,6 @@ export enum ProjectMetadataFormControls {
   Description = 'description',
   License = 'license',
   Tags = 'tags',
+  LicenseYear = 'licenseYear',
+  CopyrightHolders = 'copyrightHolders',
 }

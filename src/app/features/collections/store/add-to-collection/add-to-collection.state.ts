@@ -1,28 +1,35 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { tap, throwError } from 'rxjs';
+import { tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { CollectionLicensesService } from '@osf/features/collections/services/collection-licenses.service';
+import { handleSectionError } from '@core/handlers';
+import { AddToCollectionService } from '@osf/features/collections/services/add-to-collection.service';
 
-import { GetCollectionLicenses } from './add-to-collection.actions';
+import {
+  ClearAddToCollectionState,
+  CreateCollectionSubmission,
+  GetCollectionLicenses,
+} from './add-to-collection.actions';
 import { AddToCollectionStateModel } from './add-to-collection.model';
+
+const ADD_TO_COLLECTION_DEFAULTS = {
+  collectionLicenses: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+};
 
 @State<AddToCollectionStateModel>({
   name: 'addToCollection',
-  defaults: {
-    collectionLicenses: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-  },
+  defaults: ADD_TO_COLLECTION_DEFAULTS,
 })
 @Injectable()
 export class AddToCollectionState {
-  collectionLicensesService = inject(CollectionLicensesService);
+  addToCollectionService = inject(AddToCollectionService);
 
   @Action(GetCollectionLicenses)
   getCollectionLicenses(ctx: StateContext<AddToCollectionStateModel>, action: GetCollectionLicenses) {
@@ -34,7 +41,7 @@ export class AddToCollectionState {
       },
     });
 
-    return this.collectionLicensesService.fetchCollectionLicenses(action.providerId).pipe(
+    return this.addToCollectionService.fetchCollectionLicenses(action.providerId).pipe(
       tap((licenses) => {
         ctx.patchState({
           collectionLicenses: {
@@ -44,26 +51,17 @@ export class AddToCollectionState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'collectionLicenses', error))
+      catchError((error) => handleSectionError(ctx, 'collectionLicenses', error))
     );
   }
 
-  private handleError(
-    ctx: StateContext<AddToCollectionStateModel>,
-    section: keyof AddToCollectionStateModel,
-    error: Error
-  ) {
-    const state = ctx.getState();
+  @Action(CreateCollectionSubmission)
+  createCollectionSubmission(ctx: StateContext<AddToCollectionStateModel>, action: CreateCollectionSubmission) {
+    return this.addToCollectionService.createCollectionSubmission(action.metadata);
+  }
 
-    ctx.patchState({
-      [section]: {
-        ...state[section],
-        isLoading: false,
-        isSubmitting: false,
-        error: error.message,
-      },
-    });
-
-    return throwError(() => error);
+  @Action(ClearAddToCollectionState)
+  clearAddToCollection(ctx: StateContext<AddToCollectionStateModel>) {
+    ctx.patchState(ADD_TO_COLLECTION_DEFAULTS);
   }
 }

@@ -3,4 +3,5 @@ export enum AddToCollectionSteps {
   ProjectMetadata,
   ProjectContributors,
   CollectionMetadata,
+  Complete,
 }

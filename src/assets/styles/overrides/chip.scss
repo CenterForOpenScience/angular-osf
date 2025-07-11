@@ -31,3 +31,9 @@
     margin-top: 2px;
   }
 }
+
+p-chips.ng-invalid.ng-touched {
+  .p-inputchips-input {
+    border-color: var(--p-inputchips-invalid-border-color);
+  }
+}

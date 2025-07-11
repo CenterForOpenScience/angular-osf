@@ -16,7 +16,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { AddResourceToBookmarks, CollectionsSelectors } from '@osf/features/collections/store/collections';
+import {
+  AddResourceToBookmarks,
+  CollectionsSelectors,
+  RemoveResourceFromBookmarks,
+} from '@osf/features/collections/store/collections';
 import { GetMyBookmarks, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { DuplicateDialogComponent, TogglePublicityDialogComponent } from '@osf/features/project/overview/components';
 import { IconComponent } from '@osf/shared/components';

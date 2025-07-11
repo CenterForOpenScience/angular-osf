@@ -62,6 +62,16 @@ export class CollectionsSelectors {
   }
 
   @Selector([CollectionsState])
+  static getUserCollectionSubmissions(state: CollectionsStateModel) {
+    return state.userCollectionSubmissions.data;
+  }
+
+  @Selector([CollectionsState])
+  static getUserCollectionSubmissionsLoading(state: CollectionsStateModel) {
+    return state.userCollectionSubmissions.isLoading;
+  }
+
+  @Selector([CollectionsState])
   static getSortBy(state: CollectionsStateModel) {
     return state.sortBy;
   }

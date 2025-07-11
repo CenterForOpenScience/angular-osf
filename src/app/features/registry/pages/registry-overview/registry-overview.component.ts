@@ -5,7 +5,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { GetBookmarksCollectionId } from '@osf/features/collections/store';
+import { GetBookmarksCollectionId } from '@osf/features/collections/store/collections';
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
 import {
   DataResourcesComponent,

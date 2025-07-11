@@ -21,7 +21,7 @@ import {
   CollectionsSelectors,
   GetCollectionDetails,
   GetCollectionProvider,
-  GetCollectionSubmissions,
+  SearchCollectionSubmissions,
   SetPageNumber,
   SetSearchValue,
 } from '@osf/features/collections/store/collections';
@@ -66,7 +66,7 @@ export class CollectionsDiscoverComponent {
     getCollectionProvider: GetCollectionProvider,
     getCollectionDetails: GetCollectionDetails,
     setSearchValue: SetSearchValue,
-    getCollectionSubmissions: GetCollectionSubmissions,
+    searchCollectionSubmissions: SearchCollectionSubmissions,
     setPageNumber: SetPageNumber,
     clearCollections: ClearCollections,
     clearCollectionsSubmissions: ClearCollectionSubmissions,
@@ -136,7 +136,7 @@ export class CollectionsDiscoverComponent {
       if (searchText !== undefined && selectedFilters && pageNumber && providerId && collectionDetails) {
         const activeFilters = this.getActiveFilters(selectedFilters);
         this.actions.clearCollectionsSubmissions();
-        this.actions.getCollectionSubmissions(providerId, searchText, activeFilters, pageNumber, sortBy);
+        this.actions.searchCollectionSubmissions(providerId, searchText, activeFilters, pageNumber, sortBy);
       }
     });
 

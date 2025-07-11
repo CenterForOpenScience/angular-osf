@@ -1027,12 +1027,20 @@
       "noResultsFoundMessage": "Try broadening your search terms"
     },
     "addToCollection": {
+      "confirmationDialogHeader": "Add to Collection",
       "selectProject": "Select a project",
       "project": "Project",
       "projectMetadata": "Project Metadata",
       "projectMetadataMessage": "Updates made in this section will update the project.",
       "projectContributors": "Project Contributors",
       "collectionMetadata": "Collection Metadata",
+      "tooltipMessage": "Complete previous step to edit this section",
+      "noDescription": "No description",
+      "noLicense": "No license",
+      "noTags": "No tags",
+      "projectMetadataUpdateSuccess": "Project Metadata successfully updated.",
+      "confirmationDialogMessage": "Once submitted to the collection, the project will be made public. It can later be made private again. A moderator will review your submission before it is included in the collection.",
+      "confirmationDialogToastMessage": "Project has been successfully submitted to the collection",
       "form": {
         "title": "Title",
         "description": "Description",
@@ -1042,7 +1050,8 @@
         "tags": "Tags",
         "tagsPlaceholder": "Add tags here",
         "loadingPlaceholder": "Loading projects...",
-        "noProjectsFound": "No projects found"
+        "noProjectsFound": "No projects found",
+        "fieldRequired": "This field can't be empty"
       }
     },
     "common": {

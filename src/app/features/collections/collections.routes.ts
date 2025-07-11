@@ -4,7 +4,7 @@ import { Routes } from '@angular/router';
 
 import { AddToCollectionState } from '@osf/features/collections/store/add-to-collection';
 import { CollectionsState } from '@osf/features/collections/store/collections';
-import { ProjectsState } from '@shared/stores';
+import { ContributorsState, ProjectsState } from '@shared/stores';
 
 import { ModerationState } from '../moderation/store';
 
@@ -39,7 +39,7 @@ export const collectionsRoutes: Routes = [
           import('@osf/features/collections/components/add-to-collection/add-to-collection.component').then(
             (mod) => mod.AddToCollectionComponent
           ),
-        providers: [provideStates([ProjectsState, CollectionsState, AddToCollectionState])],
+        providers: [provideStates([ProjectsState, CollectionsState, AddToCollectionState, ContributorsState])],
       },
       {
         path: ':id/moderation',
