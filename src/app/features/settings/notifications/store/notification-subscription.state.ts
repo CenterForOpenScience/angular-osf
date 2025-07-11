@@ -33,13 +33,13 @@ import { NotificationSubscriptionModel } from './notification-subscription.model
 })
 @Injectable()
 export class NotificationSubscriptionState {
-  #notificationSubscriptionService = inject(NotificationSubscriptionService);
+  private readonly notificationSubscriptionService = inject(NotificationSubscriptionService);
 
   @Action(GetAllGlobalNotificationSubscriptions)
   getAllGlobalNotificationSubscriptions(ctx: StateContext<NotificationSubscriptionModel>) {
     ctx.setState(patch({ notificationSubscriptions: patch({ isLoading: true }) }));
 
-    return this.#notificationSubscriptionService.getAllGlobalNotificationSubscriptions().pipe(
+    return this.notificationSubscriptionService.getAllGlobalNotificationSubscriptions().pipe(
       tap((notificationSubscriptions) => {
         ctx.setState(
           patch({
@@ -58,7 +58,7 @@ export class NotificationSubscriptionState {
     ctx: StateContext<NotificationSubscriptionModel>,
     action: GetNotificationSubscriptionsByNodeId
   ) {
-    return this.#notificationSubscriptionService.getAllGlobalNotificationSubscriptions(action.nodeId).pipe(
+    return this.notificationSubscriptionService.getAllGlobalNotificationSubscriptions(action.nodeId).pipe(
       tap((notificationSubscriptions) => {
         ctx.setState(
           patch({
@@ -77,7 +77,7 @@ export class NotificationSubscriptionState {
     ctx: StateContext<NotificationSubscriptionModel>,
     action: UpdateNotificationSubscription
   ) {
-    return this.#notificationSubscriptionService.updateSubscription(action.payload.id, action.payload.frequency).pipe(
+    return this.notificationSubscriptionService.updateSubscription(action.payload.id, action.payload.frequency).pipe(
       tap((updatedSubscription) => {
         ctx.setState(
           patch({
@@ -97,7 +97,7 @@ export class NotificationSubscriptionState {
     ctx: StateContext<NotificationSubscriptionModel>,
     action: UpdateNotificationSubscription
   ) {
-    return this.#notificationSubscriptionService
+    return this.notificationSubscriptionService
       .updateSubscription(action.payload.id, action.payload.frequency, true)
       .pipe(
         tap((updatedSubscription) => {

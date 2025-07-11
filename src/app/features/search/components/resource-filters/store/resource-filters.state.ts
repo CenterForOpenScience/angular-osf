@@ -19,7 +19,6 @@ import {
 } from './resource-filters.actions';
 import { ResourceFiltersStateModel } from './resource-filters.model';
 
-// Store for user selected filters values
 @State<ResourceFiltersStateModel>({
   name: 'resourceFilters',
   defaults: resourceFiltersDefaults,

@@ -7,7 +7,7 @@ import { JsonApiService } from '@osf/core/services';
 import { SubscriptionFrequency } from '@shared/enums';
 
 import { NotificationSubscriptionMapper } from '../mappers';
-import { NotificationSubscription, NotificationSubscriptionGetResponse } from '../models';
+import { NotificationSubscription, NotificationSubscriptionGetResponseJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -15,8 +15,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class NotificationSubscriptionService {
-  jsonApiService = inject(JsonApiService);
-  baseUrl = `${environment.apiUrl}/subscriptions/`;
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly baseUrl = `${environment.apiUrl}/subscriptions/`;
 
   getAllGlobalNotificationSubscriptions(nodeId?: string): Observable<NotificationSubscription[]> {
     let params: Record<string, string>;
@@ -32,11 +32,9 @@ export class NotificationSubscriptionService {
     }
 
     return this.jsonApiService
-      .get<JsonApiResponse<NotificationSubscriptionGetResponse[], null>>(this.baseUrl, params)
+      .get<JsonApiResponse<NotificationSubscriptionGetResponseJsonApi[], null>>(this.baseUrl, params)
       .pipe(
-        map((responses) => {
-          return responses.data.map((response) => NotificationSubscriptionMapper.fromGetResponse(response));
-        })
+        map((responses) => responses.data.map((response) => NotificationSubscriptionMapper.fromGetResponse(response)))
       );
   }
 
@@ -48,7 +46,7 @@ export class NotificationSubscriptionService {
     const request = NotificationSubscriptionMapper.toUpdateRequest(id, frequency, isNodeSubscription);
 
     return this.jsonApiService
-      .patch<NotificationSubscriptionGetResponse>(this.baseUrl + id + '/', request)
+      .patch<NotificationSubscriptionGetResponseJsonApi>(`${this.baseUrl}/${id}/`, request)
       .pipe(map((response) => NotificationSubscriptionMapper.fromGetResponse(response)));
   }
 }

@@ -19,18 +19,17 @@ import {
 } from './my-profile-resource-filters.actions';
 import { MyProfileResourceFiltersStateModel } from './my-profile-resource-filters.model';
 
-// Store for user selected filters values
 @State<MyProfileResourceFiltersStateModel>({
   name: 'myProfileResourceFilters',
   defaults: resourceFiltersDefaults,
 })
 @Injectable()
 export class MyProfileResourceFiltersState implements NgxsOnInit {
-  #store = inject(Store);
-  #currentUser = this.#store.select(UserSelectors.getCurrentUser);
+  store = inject(Store);
+  currentUser = this.store.select(UserSelectors.getCurrentUser);
 
   ngxsOnInit(ctx: StateContext<MyProfileResourceFiltersStateModel>) {
-    this.#currentUser.subscribe((user) => {
+    this.currentUser.subscribe((user) => {
       if (user) {
         ctx.patchState({
           creator: {

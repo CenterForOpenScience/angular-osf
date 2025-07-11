@@ -11,11 +11,12 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ProfileSettingsApiService {
-  readonly #jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
 
   patchUserSettings(userId: string, key: keyof ProfileSettingsStateModel, data: ProfileSettingsUpdate) {
     const patchedData = { [key]: data };
-    return this.#jsonApiService.patch<JsonApiResponse<UserGetResponse, null>>(`${environment.apiUrl}users/${userId}/`, {
+
+    return this.jsonApiService.patch<JsonApiResponse<UserGetResponse, null>>(`${environment.apiUrl}/users/${userId}/`, {
       data: { type: 'users', id: userId, attributes: patchedData },
     });
   }

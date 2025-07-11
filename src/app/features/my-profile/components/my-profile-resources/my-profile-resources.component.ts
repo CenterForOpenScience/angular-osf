@@ -1,18 +1,20 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DataView } from 'primeng/dataview';
-import { Select } from 'primeng/select';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { MyProfileFilterChipsComponent, MyProfileResourceFiltersComponent } from '@osf/features/my-profile/components';
+import { SelectComponent } from '@osf/shared/components';
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
 import { ResourceCardComponent } from '@shared/components/resource-card/resource-card.component';
-import { searchSortingOptions } from '@shared/constants';
+import { SEARCH_TAB_OPTIONS, searchSortingOptions } from '@shared/constants';
 
 import { GetResourcesByLink, MyProfileSelectors, SetResourceTab, SetSortBy } from '../../store';
 import { MyProfileResourceFiltersOptionsSelectors } from '../filters/store';
@@ -24,34 +26,40 @@ import { MyProfileResourceFiltersSelectors } from '../my-profile-resource-filter
     DataView,
     MyProfileFilterChipsComponent,
     MyProfileResourceFiltersComponent,
-    Select,
     FormsModule,
     ResourceCardComponent,
     Button,
+    SelectComponent,
+    TranslatePipe,
   ],
   templateUrl: './my-profile-resources.component.html',
   styleUrl: './my-profile-resources.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProfileResourcesComponent {
-  readonly #store = inject(Store);
+  private readonly actions = createDispatchMap({
+    getResourcesByLink: GetResourcesByLink,
+    setResourceTab: SetResourceTab,
+    setSortBy: SetSortBy,
+  });
+
   protected readonly searchSortingOptions = searchSortingOptions;
 
-  selectedTabStore = this.#store.selectSignal(MyProfileSelectors.getResourceTab);
-  searchCount = this.#store.selectSignal(MyProfileSelectors.getResourcesCount);
-  resources = this.#store.selectSignal(MyProfileSelectors.getResources);
-  sortBy = this.#store.selectSignal(MyProfileSelectors.getSortBy);
-  first = this.#store.selectSignal(MyProfileSelectors.getFirst);
-  next = this.#store.selectSignal(MyProfileSelectors.getNext);
-  prev = this.#store.selectSignal(MyProfileSelectors.getPrevious);
+  selectedTabStore = select(MyProfileSelectors.getResourceTab);
+  searchCount = select(MyProfileSelectors.getResourcesCount);
+  resources = select(MyProfileSelectors.getResources);
+  sortBy = select(MyProfileSelectors.getSortBy);
+  first = select(MyProfileSelectors.getFirst);
+  next = select(MyProfileSelectors.getNext);
+  prev = select(MyProfileSelectors.getPrevious);
 
   isWeb = toSignal(inject(IS_WEB));
 
   isFiltersOpen = signal(false);
   isSortingOpen = signal(false);
 
-  protected filters = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getAllFilters);
-  protected filtersOptions = this.#store.selectSignal(MyProfileResourceFiltersOptionsSelectors.getAllOptions);
+  protected filters = select(MyProfileResourceFiltersSelectors.getAllFilters);
+  protected filtersOptions = select(MyProfileResourceFiltersOptionsSelectors.getAllOptions);
   protected isAnyFilterSelected = computed(() => {
     return (
       this.filters().dateCreated.value ||
@@ -81,18 +89,10 @@ export class MyProfileResourcesComponent {
 
   protected selectedSort = signal('');
 
+  protected readonly tabsOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceTab.Users);
   protected selectedTab = signal(ResourceTab.All);
-  protected readonly tabsOptions = [
-    { label: 'All', value: ResourceTab.All },
-    { label: 'Projects', value: ResourceTab.Projects },
-    { label: 'Registrations', value: ResourceTab.Registrations },
-    { label: 'Preprints', value: ResourceTab.Preprints },
-    { label: 'Files', value: ResourceTab.Files },
-    { label: 'Users', value: ResourceTab.Users },
-  ];
 
   constructor() {
-    // if new value for sorting in store, update value in dropdown
     effect(() => {
       const storeValue = this.sortBy();
       const currentInput = untracked(() => this.selectedSort());
@@ -102,13 +102,12 @@ export class MyProfileResourcesComponent {
       }
     });
 
-    // if the sorting was changed, set new value to store
     effect(() => {
       const chosenValue = this.selectedSort();
       const storeValue = untracked(() => this.sortBy());
 
       if (chosenValue !== storeValue) {
-        this.#store.dispatch(new SetSortBy(chosenValue));
+        this.actions.setSortBy(chosenValue);
       }
     });
 
@@ -126,14 +125,13 @@ export class MyProfileResourcesComponent {
       const storeValue = untracked(() => this.selectedTabStore());
 
       if (chosenValue !== storeValue) {
-        this.#store.dispatch(new SetResourceTab(chosenValue));
+        this.actions.setResourceTab(chosenValue);
       }
     });
   }
 
-  // pagination
   switchPage(link: string) {
-    this.#store.dispatch(new GetResourcesByLink(link));
+    this.actions.getResourcesByLink(link);
   }
 
   openFilters() {

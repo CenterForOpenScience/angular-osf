@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -28,13 +28,18 @@ import { QRCodeComponent } from 'angularx-qrcode';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TwoFactorAuthComponent {
-  #store = inject(Store);
+  private readonly actions = createDispatchMap({
+    disableTwoFactorAuth: DisableTwoFactorAuth,
+    setAccountSettings: SetAccountSettings,
+  });
+
+  private readonly dialogService = inject(DialogService);
+  private readonly accountSettingsService = inject(AccountSettingsService);
+  private readonly translateService = inject(TranslateService);
+
+  readonly accountSettings = select(AccountSettingsSelectors.getAccountSettings);
+  readonly currentUser = select(UserSelectors.getCurrentUser);
   dialogRef: DynamicDialogRef | null = null;
-  readonly #dialogService = inject(DialogService);
-  readonly #accountSettingsService = inject(AccountSettingsService);
-  readonly #translateService = inject(TranslateService);
-  readonly accountSettings = this.#store.selectSignal(AccountSettingsSelectors.getAccountSettings);
-  readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
 
   qrCodeLink = computed(() => {
     return `otpauth://totp/OSF:${this.currentUser()?.email}?secret=${this.accountSettings()?.secret}`;
@@ -48,10 +53,10 @@ export class TwoFactorAuthComponent {
   errorMessage = signal('');
 
   configureTwoFactorAuth(): void {
-    this.dialogRef = this.#dialogService.open(ConfigureTwoFactorComponent, {
+    this.dialogRef = this.dialogService.open(ConfigureTwoFactorComponent, {
       width: '520px',
       focusOnShow: false,
-      header: this.#translateService.instant('settings.accountSettings.twoFactorAuth.dialog.configure.title'),
+      header: this.translateService.instant('settings.accountSettings.twoFactorAuth.dialog.configure.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,
@@ -60,10 +65,10 @@ export class TwoFactorAuthComponent {
   }
 
   openDisableDialog() {
-    this.dialogRef = this.#dialogService.open(VerifyTwoFactorComponent, {
+    this.dialogRef = this.dialogService.open(VerifyTwoFactorComponent, {
       width: '520px',
       focusOnShow: false,
-      header: this.#translateService.instant('settings.accountSettings.twoFactorAuth.dialog.disable.title'),
+      header: this.translateService.instant('settings.accountSettings.twoFactorAuth.dialog.disable.title'),
       closeOnEscape: true,
       modal: true,
       closable: true,
@@ -71,16 +76,16 @@ export class TwoFactorAuthComponent {
   }
 
   enableTwoFactor(): void {
-    this.#accountSettingsService.updateSettings({ two_factor_verification: this.verificationCode.value }).subscribe({
+    this.accountSettingsService.updateSettings({ two_factor_verification: this.verificationCode.value }).subscribe({
       next: (response: AccountSettings) => {
-        this.#store.dispatch(new SetAccountSettings(response));
+        this.actions.setAccountSettings(response);
       },
       error: (error: HttpErrorResponse) => {
         if (error.error?.errors?.[0]?.detail) {
           this.errorMessage.set(error.error.errors[0].detail);
         } else {
           this.errorMessage.set(
-            this.#translateService.instant('settings.accountSettings.twoFactorAuth.verification.error')
+            this.translateService.instant('settings.accountSettings.twoFactorAuth.verification.error')
           );
         }
       },
@@ -88,6 +93,6 @@ export class TwoFactorAuthComponent {
   }
 
   disableTwoFactor(): void {
-    this.#store.dispatch(DisableTwoFactorAuth);
+    this.actions.disableTwoFactorAuth();
   }
 }

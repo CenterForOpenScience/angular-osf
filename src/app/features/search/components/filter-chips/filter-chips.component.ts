@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { Chip } from 'primeng/chip';
 
@@ -29,43 +29,42 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FilterChipsComponent {
-  readonly #store = inject(Store);
+  readonly store = inject(Store);
 
-  protected filters = this.#store.selectSignal(ResourceFiltersSelectors.getAllFilters);
-
-  readonly isMyProfilePage = this.#store.selectSignal(SearchSelectors.getIsMyProfile);
+  protected filters = select(ResourceFiltersSelectors.getAllFilters);
+  readonly isMyProfilePage = select(SearchSelectors.getIsMyProfile);
 
   clearFilter(filter: FilterType) {
     switch (filter) {
       case FilterType.Creator:
-        this.#store.dispatch(new SetCreator('', ''));
+        this.store.dispatch(new SetCreator('', ''));
         break;
       case FilterType.DateCreated:
-        this.#store.dispatch(new SetDateCreated(''));
+        this.store.dispatch(new SetDateCreated(''));
         break;
       case FilterType.Funder:
-        this.#store.dispatch(new SetFunder('', ''));
+        this.store.dispatch(new SetFunder('', ''));
         break;
       case FilterType.Subject:
-        this.#store.dispatch(new SetSubject('', ''));
+        this.store.dispatch(new SetSubject('', ''));
         break;
       case FilterType.License:
-        this.#store.dispatch(new SetLicense('', ''));
+        this.store.dispatch(new SetLicense('', ''));
         break;
       case FilterType.ResourceType:
-        this.#store.dispatch(new SetResourceType('', ''));
+        this.store.dispatch(new SetResourceType('', ''));
         break;
       case FilterType.Institution:
-        this.#store.dispatch(new SetInstitution('', ''));
+        this.store.dispatch(new SetInstitution('', ''));
         break;
       case FilterType.Provider:
-        this.#store.dispatch(new SetProvider('', ''));
+        this.store.dispatch(new SetProvider('', ''));
         break;
       case FilterType.PartOfCollection:
-        this.#store.dispatch(new SetPartOfCollection('', ''));
+        this.store.dispatch(new SetPartOfCollection('', ''));
         break;
     }
-    this.#store.dispatch(GetAllOptions);
+    this.store.dispatch(GetAllOptions);
   }
 
   protected readonly FilterType = FilterType;

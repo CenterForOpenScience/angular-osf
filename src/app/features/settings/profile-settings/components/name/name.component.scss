@@ -1,28 +1,25 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
-:host {
-  .name-container {
-    border: 1px solid var.$grey-2;
-    border-radius: 8px;
+.name-container {
+  border: 1px solid var(--grey-2);
+  border-radius: 0.5rem;
 
-    label {
-      font-weight: 300;
-      color: var.$dark-blue-1;
-    }
+  label {
+    font-weight: 300;
+    color: var(--dark-blue-1);
+  }
 
-    .name-input {
-      width: 100%;
-      border: 1px solid var.$grey-2;
-      border-radius: 8px;
-    }
+  .name-input {
+    width: 100%;
+    border: 1px solid (--grey-2);
+    border-radius: 0.5rem;
+  }
 
-    .styles-container {
-      column-gap: 8.5rem;
+  .styles-container {
+    column-gap: 8.5rem;
 
-      .style-wrapper {
-        row-gap: 0.85rem;
-      }
+    .style-wrapper {
+      row-gap: 0.85rem;
     }
   }
 }

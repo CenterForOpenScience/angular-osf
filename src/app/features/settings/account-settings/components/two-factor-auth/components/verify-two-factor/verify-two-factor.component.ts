@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -17,12 +17,13 @@ import { DisableTwoFactorAuth } from '@osf/features/settings/account-settings/st
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class VerifyTwoFactorComponent {
-  #store = inject(Store);
-  dialogRef = inject(DynamicDialogRef);
+  private readonly actions = createDispatchMap({ disableTwoFactorAuth: DisableTwoFactorAuth });
   readonly config = inject(DynamicDialogConfig);
 
+  dialogRef = inject(DynamicDialogRef);
+
   disableTwoFactor() {
-    this.#store.dispatch(DisableTwoFactorAuth);
+    this.actions.disableTwoFactorAuth();
     this.dialogRef.close();
   }
 }

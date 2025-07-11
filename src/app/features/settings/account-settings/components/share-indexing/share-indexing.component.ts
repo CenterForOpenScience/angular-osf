@@ -1,11 +1,11 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { RadioButton } from 'primeng/radiobutton';
 
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, signal } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
@@ -21,16 +21,16 @@ import { UpdateIndexing } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShareIndexingComponent {
-  readonly #store = inject(Store);
+  readonly actions = createDispatchMap({ updateIndexing: UpdateIndexing });
   protected indexing = signal<ShareIndexingEnum>(ShareIndexingEnum.None);
-  protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
+  protected readonly currentUser = select(UserSelectors.getCurrentUser);
 
   updateIndexing = () => {
     if (this.currentUser()?.id) {
       if (this.indexing() === ShareIndexingEnum.OptIn) {
-        this.#store.dispatch(new UpdateIndexing(true));
+        this.actions.updateIndexing(true);
       } else if (this.indexing() === ShareIndexingEnum.OutOf) {
-        this.#store.dispatch(new UpdateIndexing(false));
+        this.actions.updateIndexing(false);
       }
     }
   };

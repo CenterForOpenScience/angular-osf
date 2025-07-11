@@ -1,8 +1,8 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { UserSelectors } from '@osf/core/store/user';
 
@@ -16,13 +16,13 @@ import { AccountSettingsSelectors, DeleteUserInstitution } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AffiliatedInstitutionsComponent {
-  private readonly store = inject(Store);
+  private readonly actions = createDispatchMap({ deleteUserInstitution: DeleteUserInstitution });
   protected institutions = select(AccountSettingsSelectors.getUserInstitutions);
   protected currentUser = select(UserSelectors.getCurrentUser);
 
   deleteInstitution(id: string) {
     if (this.currentUser()?.id) {
-      this.store.dispatch(new DeleteUserInstitution(id, this.currentUser()!.id));
+      this.actions.deleteUserInstitution(id, this.currentUser()!.id);
     }
   }
 }

@@ -52,15 +52,15 @@ export class BarChartComponent implements OnInit {
   protected options = signal<ChartOptions>({});
   protected data = signal<ChartData>({} as ChartData);
 
-  #platformId = inject(PLATFORM_ID);
-  #cd = inject(ChangeDetectorRef);
+  platformId = inject(PLATFORM_ID);
+  cd = inject(ChangeDetectorRef);
 
   ngOnInit() {
     this.initChart();
   }
 
   initChart() {
-    if (isPlatformBrowser(this.#platformId)) {
+    if (isPlatformBrowser(this.platformId)) {
       const documentStyle = getComputedStyle(document.documentElement);
       const textColorSecondary = documentStyle.getPropertyValue('--dark-blue-1');
       const surfaceBorder = documentStyle.getPropertyValue('--grey-2');
@@ -70,7 +70,7 @@ export class BarChartComponent implements OnInit {
       this.setChartData(defaultBackgroundColor, defaultBorderColor);
       this.setChartOptions(textColorSecondary, surfaceBorder);
 
-      this.#cd.markForCheck();
+      this.cd.markForCheck();
     }
   }
 

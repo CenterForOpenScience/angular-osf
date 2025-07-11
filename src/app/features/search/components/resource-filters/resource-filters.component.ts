@@ -42,57 +42,57 @@ import { ResourceFiltersOptionsSelectors } from '../filters/store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResourceFiltersComponent {
-  readonly #store = inject(Store);
+  readonly store = inject(Store);
 
   readonly datesOptionsCount = computed(() => {
-    return this.#store
+    return this.store
       .selectSignal(ResourceFiltersOptionsSelectors.getDatesCreated)()
       .reduce((accumulator, date) => accumulator + date.count, 0);
   });
 
   readonly funderOptionsCount = computed(() =>
-    this.#store
+    this.store
       .selectSignal(ResourceFiltersOptionsSelectors.getFunders)()
       .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly subjectOptionsCount = computed(() =>
-    this.#store
+    this.store
       .selectSignal(ResourceFiltersOptionsSelectors.getSubjects)()
       .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly licenseOptionsCount = computed(() =>
-    this.#store
+    this.store
       .selectSignal(ResourceFiltersOptionsSelectors.getLicenses)()
       .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly resourceTypeOptionsCount = computed(() =>
-    this.#store
+    this.store
       .selectSignal(ResourceFiltersOptionsSelectors.getResourceTypes)()
       .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly institutionOptionsCount = computed(() =>
-    this.#store
+    this.store
       .selectSignal(ResourceFiltersOptionsSelectors.getInstitutions)()
       .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly providerOptionsCount = computed(() =>
-    this.#store
+    this.store
       .selectSignal(ResourceFiltersOptionsSelectors.getProviders)()
       .reduce((acc, item) => acc + item.count, 0)
   );
 
   readonly partOfCollectionOptionsCount = computed(() =>
-    this.#store
+    this.store
       .selectSignal(ResourceFiltersOptionsSelectors.getPartOfCollection)()
       .reduce((acc, item) => acc + item.count, 0)
   );
 
-  readonly isMyProfilePage = this.#store.selectSignal(SearchSelectors.getIsMyProfile);
+  readonly isMyProfilePage = this.store.selectSignal(SearchSelectors.getIsMyProfile);
 
   readonly anyOptionsCount = computed(() => {
     return (

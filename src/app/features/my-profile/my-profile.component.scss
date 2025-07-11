@@ -1,15 +1,12 @@
-@use "assets/styles/variables" as var;
-@use "assets/styles/mixins" as mix;
+:host {
+  flex: 1;
+}
 
 .cards {
-  background-color: var.$white;
+  background-color: var(--white);
 }
 
 .card {
-  border: 1px solid var.$grey-2;
-  border-radius: mix.rem(12px);
-}
-
-:host {
-  flex: 1;
+  border: 1px solid var(--grey-2);
+  border-radius: 0.75rem;
 }

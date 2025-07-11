@@ -2,42 +2,37 @@
 
 <div class="flex-column flex flex-1 w-full">
   <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1">
-    @if (!isMobile()) {
+    @if (isMedium()) {
       <p-tablist class="pr-5 pl-5">
-        <p-tab [value]="0">{{ 'settings.profileSettings.tabs.name' | translate }}</p-tab>
-        <p-tab [value]="1">{{ 'settings.profileSettings.tabs.social' | translate }}</p-tab>
-        <p-tab [value]="2">{{ 'settings.profileSettings.tabs.employment' | translate }}</p-tab>
-        <p-tab [value]="3">{{ 'settings.profileSettings.tabs.education' | translate }}</p-tab>
+        @for (item of tabOptions; track $index) {
+          <p-tab [value]="item.value">{{ item.label | translate }}</p-tab>
+        }
       </p-tablist>
     }
 
     <p-tabpanels class="p-3 flex-1 md:p-5 xl:p-4">
-      @if (isMobile()) {
-        <p-select
-          class="w-full text-center mb-4"
+      @if (!isMedium()) {
+        <osf-select
+          class="block w-full text-center mb-4"
           [options]="tabOptions"
-          optionLabel="label"
-          optionValue="value"
-          [(ngModel)]="selectedTab"
-        ></p-select>
+          [fullWidth]="true"
+          [(selectedValue)]="selectedTab"
+        ></osf-select>
       }
-      <!--NAME-->
-      <p-tabpanel [value]="0" class="">
+
+      <p-tabpanel [value]="tabOption.Name">
         <osf-name />
       </p-tabpanel>
 
-      <!--SOCIAL-->
-      <p-tabpanel [value]="1">
+      <p-tabpanel [value]="tabOption.Social">
         <osf-social />
       </p-tabpanel>
 
-      <!--Employment-->
-      <p-tabpanel [value]="2">
+      <p-tabpanel [value]="tabOption.Employment">
         <osf-employment />
       </p-tabpanel>
 
-      <!--Education-->
-      <p-tabpanel [value]="3">
+      <p-tabpanel [value]="tabOption.Education">
         <osf-education />
       </p-tabpanel>
     </p-tabpanels>

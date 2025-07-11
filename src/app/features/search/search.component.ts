@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -53,25 +53,25 @@ import { GetResources, ResetSearchState, SearchSelectors, SetResourceTab, SetSea
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchComponent implements OnDestroy {
-  readonly #store = inject(Store);
+  readonly store = inject(Store);
 
   protected searchControl = new FormControl('');
   protected readonly isSmall = toSignal(inject(IS_SMALL));
 
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly creatorsFilter = this.#store.selectSignal(ResourceFiltersSelectors.getCreator);
-  protected readonly dateCreatedFilter = this.#store.selectSignal(ResourceFiltersSelectors.getDateCreated);
-  protected readonly funderFilter = this.#store.selectSignal(ResourceFiltersSelectors.getFunder);
-  protected readonly subjectFilter = this.#store.selectSignal(ResourceFiltersSelectors.getSubject);
-  protected readonly licenseFilter = this.#store.selectSignal(ResourceFiltersSelectors.getLicense);
-  protected readonly resourceTypeFilter = this.#store.selectSignal(ResourceFiltersSelectors.getResourceType);
-  protected readonly institutionFilter = this.#store.selectSignal(ResourceFiltersSelectors.getInstitution);
-  protected readonly providerFilter = this.#store.selectSignal(ResourceFiltersSelectors.getProvider);
-  protected readonly partOfCollectionFilter = this.#store.selectSignal(ResourceFiltersSelectors.getPartOfCollection);
-  protected searchStoreValue = this.#store.selectSignal(SearchSelectors.getSearchText);
-  protected resourcesTabStoreValue = this.#store.selectSignal(SearchSelectors.getResourceTab);
-  protected sortByStoreValue = this.#store.selectSignal(SearchSelectors.getSortBy);
+  protected readonly creatorsFilter = select(ResourceFiltersSelectors.getCreator);
+  protected readonly dateCreatedFilter = select(ResourceFiltersSelectors.getDateCreated);
+  protected readonly funderFilter = select(ResourceFiltersSelectors.getFunder);
+  protected readonly subjectFilter = select(ResourceFiltersSelectors.getSubject);
+  protected readonly licenseFilter = select(ResourceFiltersSelectors.getLicense);
+  protected readonly resourceTypeFilter = select(ResourceFiltersSelectors.getResourceType);
+  protected readonly institutionFilter = select(ResourceFiltersSelectors.getInstitution);
+  protected readonly providerFilter = select(ResourceFiltersSelectors.getProvider);
+  protected readonly partOfCollectionFilter = select(ResourceFiltersSelectors.getPartOfCollection);
+  protected searchStoreValue = select(SearchSelectors.getSearchText);
+  protected resourcesTabStoreValue = select(SearchSelectors.getResourceTab);
+  protected sortByStoreValue = select(SearchSelectors.getSortBy);
 
   protected readonly resourceTabOptions = SEARCH_TAB_OPTIONS;
   protected selectedTab: ResourceTab = ResourceTab.All;
@@ -92,7 +92,7 @@ export class SearchComponent implements OnDestroy {
       this.searchStoreValue();
       this.resourcesTabStoreValue();
       this.sortByStoreValue();
-      this.#store.dispatch(GetResources);
+      this.store.dispatch(GetResources);
     });
 
     effect(() => {
@@ -114,14 +114,14 @@ export class SearchComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.#store.dispatch(ResetFiltersState);
-    this.#store.dispatch(ResetSearchState);
+    this.store.dispatch(ResetFiltersState);
+    this.store.dispatch(ResetSearchState);
   }
 
   onTabChange(index: ResourceTab): void {
-    this.#store.dispatch(new SetResourceTab(index));
+    this.store.dispatch(new SetResourceTab(index));
     this.selectedTab = index;
-    this.#store.dispatch(GetAllOptions);
+    this.store.dispatch(GetAllOptions);
   }
 
   showTutorial() {
@@ -132,8 +132,8 @@ export class SearchComponent implements OnDestroy {
     this.searchControl.valueChanges
       .pipe(skip(1), debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchText) => {
-        this.#store.dispatch(new SetSearchText(searchText ?? ''));
-        this.#store.dispatch(GetAllOptions);
+        this.store.dispatch(new SetSearchText(searchText ?? ''));
+        this.store.dispatch(GetAllOptions);
       });
   }
 }

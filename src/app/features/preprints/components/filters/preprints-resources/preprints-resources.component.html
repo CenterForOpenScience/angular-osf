@@ -10,7 +10,7 @@
 
     <div class="sorting-container">
       @if (isWeb()) {
-        <h4>Sort by:</h4>
+        <h4>{{ 'collections.filters.sortBy' | translate }}</h4>
         <p-select
           class="no-border-dropdown font-bold"
           [options]="searchSortingOptions"

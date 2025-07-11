@@ -1,5 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
@@ -29,6 +31,7 @@ import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
     DataView,
     ResourceCardComponent,
     Button,
+    TranslatePipe,
   ],
   templateUrl: './preprints-resources.component.html',
   styleUrl: './preprints-resources.component.scss',

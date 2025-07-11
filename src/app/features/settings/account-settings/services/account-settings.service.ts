@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select } from '@ngxs/store';
 
 import { map, Observable } from 'rxjs';
 
@@ -11,14 +11,14 @@ import { UserSelectors } from '@osf/core/store/user';
 import { MapAccountSettings, MapEmail, MapEmails, MapExternalIdentities, MapRegions } from '../mappers';
 import {
   AccountEmail,
-  AccountEmailResponse,
+  AccountEmailResponseJsonApi,
   AccountSettings,
   ExternalIdentity,
-  GetAccountSettingsResponse,
-  GetEmailResponse,
-  GetRegionsResponse,
-  ListEmailsResponse,
-  ListIdentitiesResponse,
+  GetAccountSettingsResponseJsonApi,
+  GetEmailResponseJsonApi,
+  GetRegionsResponseJsonApi,
+  ListEmailsResponseJsonApi,
+  ListIdentitiesResponseJsonApi,
   Region,
 } from '../models';
 
@@ -28,9 +28,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AccountSettingsService {
-  #store = inject(Store);
-  #jsonApiService = inject(JsonApiService);
-  #currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly currentUser = select(UserSelectors.getCurrentUser);
 
   getEmails(): Observable<AccountEmail[]> {
     const params: Record<string, string> = {
@@ -38,8 +37,8 @@ export class AccountSettingsService {
       'page[size]': '10',
     };
 
-    return this.#jsonApiService
-      .get<ListEmailsResponse>(`${environment.apiUrl}/users/${this.#currentUser()?.id}/settings/emails`, params)
+    return this.jsonApiService
+      .get<ListEmailsResponseJsonApi>(`${environment.apiUrl}/users/${this.currentUser()?.id}/settings/emails`, params)
       .pipe(map((response) => MapEmails(response.data)));
   }
 
@@ -48,8 +47,8 @@ export class AccountSettingsService {
     userId: string,
     params: Record<string, string> | undefined = undefined
   ): Observable<AccountEmail> {
-    return this.#jsonApiService
-      .get<GetEmailResponse>(`${environment.apiUrl}/users/${userId}/settings/emails/${emailId}`, params)
+    return this.jsonApiService
+      .get<GetEmailResponseJsonApi>(`${environment.apiUrl}/users/${userId}/settings/emails/${emailId}`, params)
       .pipe(map((response) => MapEmail(response.data)));
   }
 
@@ -70,7 +69,7 @@ export class AccountSettingsService {
         relationships: {
           user: {
             data: {
-              id: this.#currentUser()?.id,
+              id: this.currentUser()?.id,
               type: 'users',
             },
           },
@@ -79,16 +78,16 @@ export class AccountSettingsService {
       },
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .post<
-        ApiData<AccountEmailResponse, null, null, null>
-      >(`${environment.apiUrl}/users/${this.#currentUser()?.id}/settings/emails/`, body)
+        ApiData<AccountEmailResponseJsonApi, null, null, null>
+      >(`${environment.apiUrl}/users/${this.currentUser()?.id}/settings/emails/`, body)
       .pipe(map((response) => MapEmail(response)));
   }
 
   deleteEmail(emailId: string): Observable<void> {
-    return this.#jsonApiService.delete(
-      `${environment.apiUrl}/users/${this.#currentUser()?.id}/settings/emails/${emailId}`
+    return this.jsonApiService.delete(
+      `${environment.apiUrl}/users/${this.currentUser()?.id}/settings/emails/${emailId}`
     );
   }
 
@@ -102,7 +101,7 @@ export class AccountSettingsService {
         },
       },
     };
-    return this.#jsonApiService.post(`${environment.apiUrl}/users/${userId}/confirm/`, body);
+    return this.jsonApiService.post(`${environment.apiUrl}/users/${userId}/confirm/`, body);
   }
 
   verifyEmail(userId: string, emailId: string): Observable<AccountEmail> {
@@ -116,9 +115,9 @@ export class AccountSettingsService {
       },
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .patch<
-        ApiData<AccountEmailResponse, null, null, null>
+        ApiData<AccountEmailResponseJsonApi, null, null, null>
       >(`${environment.apiUrl}/users/${userId}/settings/emails/${emailId}/`, body)
       .pipe(map((response) => MapEmail(response)));
   }
@@ -134,23 +133,23 @@ export class AccountSettingsService {
       },
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .patch<
-        ApiData<AccountEmailResponse, null, null, null>
-      >(`${environment.apiUrl}/users/${this.#currentUser()?.id}/settings/emails/${emailId}/`, body)
+        ApiData<AccountEmailResponseJsonApi, null, null, null>
+      >(`${environment.apiUrl}/users/${this.currentUser()?.id}/settings/emails/${emailId}/`, body)
       .pipe(map((response) => MapEmail(response)));
   }
 
   getRegions(): Observable<Region[]> {
-    return this.#jsonApiService
-      .get<GetRegionsResponse>(`${environment.apiUrl}/regions/`)
+    return this.jsonApiService
+      .get<GetRegionsResponseJsonApi>(`${environment.apiUrl}/regions/`)
       .pipe(map((response) => MapRegions(response.data)));
   }
 
   updateLocation(locationId: string): Observable<User> {
     const body = {
       data: {
-        id: this.#currentUser()?.id,
+        id: this.currentUser()?.id,
         attributes: {},
         relationships: {
           default_region: {
@@ -164,15 +163,15 @@ export class AccountSettingsService {
       },
     };
 
-    return this.#jsonApiService
-      .patch<UserGetResponse>(`${environment.apiUrl}/users/${this.#currentUser()?.id}`, body)
+    return this.jsonApiService
+      .patch<UserGetResponse>(`${environment.apiUrl}/users/${this.currentUser()?.id}`, body)
       .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 
   updateIndexing(allowIndexing: boolean): Observable<User> {
     const body = {
       data: {
-        id: this.#currentUser()?.id,
+        id: this.currentUser()?.id,
         attributes: {
           allow_indexing: allowIndexing,
         },
@@ -181,8 +180,8 @@ export class AccountSettingsService {
       },
     };
 
-    return this.#jsonApiService
-      .patch<UserGetResponse>(`${environment.apiUrl}/users/${this.#currentUser()?.id}`, body)
+    return this.jsonApiService
+      .patch<UserGetResponse>(`${environment.apiUrl}/users/${this.currentUser()?.id}`, body)
       .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 
@@ -197,7 +196,7 @@ export class AccountSettingsService {
       },
     };
 
-    return this.#jsonApiService.post(`${environment.apiUrl}/users/${this.#currentUser()?.id}/settings/password`, body);
+    return this.jsonApiService.post(`${environment.apiUrl}/users/${this.currentUser()?.id}/settings/password`, body);
   }
 
   getExternalIdentities(): Observable<ExternalIdentity[]> {
@@ -206,35 +205,35 @@ export class AccountSettingsService {
       'page[size]': '10',
     };
 
-    return this.#jsonApiService
-      .get<ListIdentitiesResponse>(`${environment.apiUrl}/users/me/settings/identities/`, params)
+    return this.jsonApiService
+      .get<ListIdentitiesResponseJsonApi>(`${environment.apiUrl}/users/me/settings/identities/`, params)
       .pipe(map((response) => MapExternalIdentities(response.data)));
   }
 
   deleteExternalIdentity(id: string): Observable<void> {
-    return this.#jsonApiService.delete(`${environment.apiUrl}/users/me/settings/identities/${id}`);
+    return this.jsonApiService.delete(`${environment.apiUrl}/users/me/settings/identities/${id}`);
   }
 
   getSettings(): Observable<AccountSettings> {
-    return this.#jsonApiService
+    return this.jsonApiService
       .get<
-        JsonApiResponse<GetAccountSettingsResponse, null>
-      >(`${environment.apiUrl}/users/${this.#currentUser()?.id}/settings`)
+        JsonApiResponse<GetAccountSettingsResponseJsonApi, null>
+      >(`${environment.apiUrl}/users/${this.currentUser()?.id}/settings`)
       .pipe(map((response) => MapAccountSettings(response.data)));
   }
 
   updateSettings(settings: Record<string, string>): Observable<AccountSettings> {
     const body = {
       data: {
-        id: this.#currentUser()?.id,
+        id: this.currentUser()?.id,
         attributes: settings,
         relationships: {},
         type: 'user_settings',
       },
     };
 
-    return this.#jsonApiService
-      .patch<GetAccountSettingsResponse>(`${environment.apiUrl}/users/${this.#currentUser()?.id}/settings`, body)
+    return this.jsonApiService
+      .patch<GetAccountSettingsResponseJsonApi>(`${environment.apiUrl}/users/${this.currentUser()?.id}/settings`, body)
       .pipe(map((response) => MapAccountSettings(response)));
   }
 }

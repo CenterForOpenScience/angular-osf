@@ -1,67 +1,65 @@
 @use "assets/styles/variables" as var;
 
-:host {
+h3 {
+  color: var.$pr-blue-1;
+}
+
+.sorting-container {
+  display: flex;
+  align-items: center;
+
   h3 {
-    color: var.$pr-blue-1;
+    color: var.$dark-blue-1;
+    font-weight: 400;
+    text-wrap: nowrap;
+    margin-right: 0.5rem;
   }
+}
 
-  .sorting-container {
-    display: flex;
-    align-items: center;
+.filter-full-size {
+  flex: 1;
+}
 
-    h3 {
-      color: var.$dark-blue-1;
-      font-weight: 400;
-      text-wrap: nowrap;
-      margin-right: 0.5rem;
-    }
-  }
+.sort-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 44px;
+  border: 1px solid var.$grey-2;
+  border-radius: 12px;
+  padding: 0 1.7rem 0 1.7rem;
+  cursor: pointer;
+}
 
-  .filter-full-size {
+.card-selected {
+  background: var.$bg-blue-2;
+}
+
+.filters-resources-web {
+  .resources-container {
     flex: 1;
-  }
 
-  .sort-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 44px;
-    border: 1px solid var.$grey-2;
-    border-radius: 12px;
-    padding: 0 1.7rem 0 1.7rem;
-    cursor: pointer;
-  }
+    .resources-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.85rem;
+    }
 
-  .card-selected {
-    background: var.$bg-blue-2;
-  }
-
-  .filters-resources-web {
-    .resources-container {
-      flex: 1;
-
-      .resources-list {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        row-gap: 0.85rem;
+    .switch-icon {
+      &:hover {
+        cursor: pointer;
       }
+    }
 
-      .switch-icon {
-        &:hover {
-          cursor: pointer;
-        }
-      }
+    .icon-disabled {
+      opacity: 0.5;
+      cursor: none;
+    }
 
-      .icon-disabled {
-        opacity: 0.5;
-        cursor: none;
-      }
-
-      .icon-active {
-        fill: var.$grey-1;
-      }
+    .icon-active {
+      fill: var.$grey-1;
     }
   }
 }

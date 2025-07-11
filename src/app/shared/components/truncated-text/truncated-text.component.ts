@@ -3,9 +3,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, input, signal, viewChild } from '@angular/core';
 
-// This component displays text with a "show more/less" functionality when content exceeds the specified number of lines.
-// Use line-clamp CSS property for initial truncation and dynamically show/hide content.
-
 @Component({
   selector: 'osf-truncated-text',
   templateUrl: './truncated-text.component.html',
@@ -21,10 +18,10 @@ export class TruncatedTextComponent implements AfterViewInit {
   protected hasOverflowingText = signal(false);
 
   ngAfterViewInit() {
-    this.#checkTextOverflow();
+    this.checkTextOverflow();
   }
 
-  #checkTextOverflow(): void {
+  checkTextOverflow(): void {
     const element = this.contentElement()?.nativeElement;
     if (!element) return;
 

@@ -1,4 +1,4 @@
-import { SocialLinksModel } from './models';
+import { SocialLinksModel } from '../models';
 
 export const socials: SocialLinksModel[] = [
   {

@@ -1,9 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, forkJoin, tap, throwError } from 'rxjs';
+import { catchError, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/core/handlers';
 import { ResourceType } from '@shared/enums';
 
 import { MyProjectsService } from '../services';
@@ -16,40 +17,15 @@ import {
   GetMyProjects,
   GetMyRegistrations,
 } from './my-projects.actions';
-import { MyProjectsStateModel } from './my-projects.model';
+import { MY_PROJECT_STATE_DEFAULTS, MyProjectsStateModel } from './my-projects.model';
 
 @State<MyProjectsStateModel>({
   name: 'myProjects',
-  defaults: {
-    projects: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    registrations: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    preprints: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    bookmarks: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    totalProjects: 0,
-    totalRegistrations: 0,
-    totalPreprints: 0,
-    totalBookmarks: 0,
-  },
+  defaults: MY_PROJECT_STATE_DEFAULTS,
 })
 @Injectable()
 export class MyProjectsState {
-  myProjectsService = inject(MyProjectsService);
+  private readonly myProjectsService = inject(MyProjectsService);
 
   @Action(GetMyProjects)
   getProjects(ctx: StateContext<MyProjectsStateModel>, action: GetMyProjects) {
@@ -72,7 +48,7 @@ export class MyProjectsState {
           totalProjects: res.links.meta.total,
         });
       }),
-      catchError((error) => this.handleError(ctx, 'projects', error))
+      catchError((error) => handleSectionError(ctx, 'projects', error))
     );
   }
 
@@ -97,7 +73,7 @@ export class MyProjectsState {
           totalRegistrations: res.links.meta.total,
         });
       }),
-      catchError((error) => this.handleError(ctx, 'registrations', error))
+      catchError((error) => handleSectionError(ctx, 'registrations', error))
     );
   }
 
@@ -122,7 +98,7 @@ export class MyProjectsState {
           totalPreprints: res.links.meta.total,
         });
       }),
-      catchError((error) => this.handleError(ctx, 'preprints', error))
+      catchError((error) => handleSectionError(ctx, 'preprints', error))
     );
   }
 
@@ -151,7 +127,7 @@ export class MyProjectsState {
               totalBookmarks: res.links.meta.total,
             });
           }),
-          catchError((error) => this.handleError(ctx, 'bookmarks', error))
+          catchError((error) => handleSectionError(ctx, 'bookmarks', error))
         );
     } else {
       return forkJoin({
@@ -193,39 +169,14 @@ export class MyProjectsState {
             totalBookmarks: totalCount,
           });
         }),
-        catchError((error) => this.handleError(ctx, 'bookmarks', error))
+        catchError((error) => handleSectionError(ctx, 'bookmarks', error))
       );
     }
   }
 
   @Action(ClearMyProjects)
   clearMyProjects(ctx: StateContext<MyProjectsStateModel>) {
-    ctx.patchState({
-      projects: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-      registrations: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-      preprints: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-      bookmarks: {
-        data: [],
-        isLoading: false,
-        error: null,
-      },
-      totalProjects: 0,
-      totalRegistrations: 0,
-      totalPreprints: 0,
-      totalBookmarks: 0,
-    });
+    ctx.patchState(MY_PROJECT_STATE_DEFAULTS);
   }
 
   @Action(CreateProject)
@@ -252,22 +203,7 @@ export class MyProjectsState {
             totalProjects: state.totalProjects + 1,
           });
         }),
-        catchError((error) => this.handleError(ctx, 'projects', error))
+        catchError((error) => handleSectionError(ctx, 'projects', error))
       );
-  }
-
-  private handleError(ctx: StateContext<MyProjectsStateModel>, section: keyof MyProjectsStateModel, error: Error) {
-    const state = ctx.getState();
-    if (section === 'projects' || section === 'registrations' || section === 'preprints' || section === 'bookmarks') {
-      ctx.patchState({
-        [section]: {
-          ...state[section],
-          isLoading: false,
-          error: error.message,
-        },
-      });
-    }
-
-    return throwError(() => error);
   }
 }

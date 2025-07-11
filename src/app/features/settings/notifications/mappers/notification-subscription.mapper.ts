@@ -2,12 +2,12 @@ import { SubscriptionEvent, SubscriptionFrequency, SubscriptionType } from '@sha
 
 import {
   NotificationSubscription,
-  NotificationSubscriptionGetResponse,
-  NotificationSubscriptionUpdateRequest,
+  NotificationSubscriptionGetResponseJsonApi,
+  NotificationSubscriptionUpdateRequestJsonApi,
 } from '../models';
 
 export class NotificationSubscriptionMapper {
-  static fromGetResponse(response: NotificationSubscriptionGetResponse): NotificationSubscription {
+  static fromGetResponse(response: NotificationSubscriptionGetResponseJsonApi): NotificationSubscription {
     return {
       id: response.id,
       event: response.attributes.event_name as SubscriptionEvent,
@@ -19,7 +19,7 @@ export class NotificationSubscriptionMapper {
     id: string,
     frequency: SubscriptionFrequency,
     isNodeSubscription?: boolean
-  ): NotificationSubscriptionUpdateRequest {
+  ): NotificationSubscriptionUpdateRequestJsonApi {
     const baseAttributes = {
       frequency: frequency,
     };

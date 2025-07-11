@@ -2,10 +2,11 @@
 <section class="flex-column flex flex-1">
   <p-tabs [value]="selectedTab()" class="flex-1">
     <p-tablist class="pr-5 pl-5 hidden md:flex md:flex-column">
-      <p-tab [value]="0">
+      <p-tab [value]="AddonTabValue.ALL_ADDONS">
         {{ 'settings.addons.tabs.allAddons' | translate }}
       </p-tab>
-      <p-tab [value]="1">
+
+      <p-tab [value]="AddonTabValue.CONNECTED_ADDONS">
         {{ 'settings.addons.tabs.connectedAddons' | translate }}
       </p-tab>
     </p-tablist>
@@ -21,6 +22,7 @@
         <p>
           {{ 'settings.addons.description' | translate }}
         </p>
+
         <section class="grid">
           <div class="col-12 md:col-6 lg:col-3">
             <osf-select
@@ -48,6 +50,7 @@
           </div>
         }
       </p-tabpanel>
+
       <p-tabpanel [value]="AddonTabValue.CONNECTED_ADDONS" class="flex flex-column gap-5">
         <osf-search-input
           class="flex-1"

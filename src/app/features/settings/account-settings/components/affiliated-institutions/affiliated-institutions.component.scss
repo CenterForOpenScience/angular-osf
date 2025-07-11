@@ -3,55 +3,55 @@
 
 :host {
   @extend .account-setting;
+}
 
-  h3,
-  p {
-    font-weight: 400;
-    text-transform: none;
+h3,
+p {
+  font-weight: 400;
+  text-transform: none;
+}
+
+.account-setting {
+  &-emails {
+    display: flex;
+    flex-direction: column;
+    gap: 1.7rem;
   }
 
-  .account-setting {
-    &-emails {
+  &-email {
+    display: flex;
+    gap: 2rem;
+    align-items: start;
+
+    &--readonly {
       display: flex;
-      flex-direction: column;
-      gap: 1.7rem;
+      align-items: center;
+      border: 1px solid var.$grey-2;
+      padding: 0.285rem 0.85rem;
+      border-radius: 0.285rem;
+      min-height: 2.8rem;
+
+      &--address {
+        max-width: 14rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      i {
+        color: var.$dark-blue-1;
+        font-size: 0.7rem;
+        margin-left: 0.7rem;
+        cursor: pointer;
+        font-weight: 400;
+      }
     }
 
-    &-email {
+    &__value {
       display: flex;
-      gap: 2rem;
-      align-items: start;
-
-      &--readonly {
-        display: flex;
-        align-items: center;
-        border: 1px solid var.$grey-2;
-        padding: 0.285rem 0.85rem;
-        border-radius: 0.285rem;
-        min-height: 2.8rem;
-
-        &--address {
-          max-width: 14rem;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        i {
-          color: var.$dark-blue-1;
-          font-size: 0.7rem;
-          margin-left: 0.7rem;
-          cursor: pointer;
-          font-weight: 400;
-        }
-      }
-
-      &__value {
-        display: flex;
-        align-items: center;
-        gap: 0.428rem;
-        min-height: 2.8rem;
-      }
+      align-items: center;
+      gap: 0.428rem;
+      min-height: 2.8rem;
     }
   }
 }

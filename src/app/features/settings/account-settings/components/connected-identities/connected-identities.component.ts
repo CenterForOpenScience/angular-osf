@@ -1,8 +1,8 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { AccountSettingsSelectors, DeleteExternalIdentity } from '../../store';
 
@@ -14,10 +14,10 @@ import { AccountSettingsSelectors, DeleteExternalIdentity } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConnectedIdentitiesComponent {
-  readonly #store = inject(Store);
-  readonly externalIdentities = this.#store.selectSignal(AccountSettingsSelectors.getExternalIdentities);
+  readonly actions = createDispatchMap({ deleteExternalIdentity: DeleteExternalIdentity });
+  readonly externalIdentities = select(AccountSettingsSelectors.getExternalIdentities);
 
   deleteExternalIdentity(id: string): void {
-    this.#store.dispatch(new DeleteExternalIdentity(id));
+    this.actions.deleteExternalIdentity(id);
   }
 }

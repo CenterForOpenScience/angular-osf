@@ -17,8 +17,8 @@ import { CancelDeactivationRequest } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CancelDeactivationComponent {
-  action = createDispatchMap({ cancelDeactivationRequest: CancelDeactivationRequest });
-  dialogRef = inject(DynamicDialogRef);
+  private readonly action = createDispatchMap({ cancelDeactivationRequest: CancelDeactivationRequest });
+  readonly dialogRef = inject(DynamicDialogRef);
 
   cancelDeactivation(): void {
     this.action.cancelDeactivationRequest();

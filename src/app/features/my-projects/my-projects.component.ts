@@ -1,10 +1,9 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import type { SortEvent } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Select } from 'primeng/select';
 import { TablePageEvent } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
@@ -27,13 +26,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
 import { parseQueryFilterParams } from '@osf/core/helpers';
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
-import { MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
+import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
-import { QueryParams, TableParameters, TabOption } from '@osf/shared/models';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { QueryParams, TableParameters } from '@osf/shared/models';
+import { IS_MEDIUM } from '@osf/shared/utils';
 
 import { CollectionsSelectors, GetBookmarksCollectionId } from '../collections/store';
 
+import { MY_PROJECTS_TABS } from './constants';
+import { MyProjectsTab } from './enums';
 import { MyProjectsItem, MyProjectsSearchFilters } from './models';
 import {
   ClearMyProjects,
@@ -49,7 +50,6 @@ import {
   imports: [
     SubHeaderComponent,
     FormsModule,
-    Select,
     Tab,
     TabList,
     TabPanel,
@@ -57,6 +57,7 @@ import {
     Tabs,
     MyProjectsTableComponent,
     TranslatePipe,
+    SelectComponent,
   ],
   templateUrl: './my-projects.component.html',
   styleUrl: './my-projects.component.scss',
@@ -64,41 +65,24 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProjectsComponent implements OnInit {
-  readonly #destroyRef = inject(DestroyRef);
-  readonly #dialogService = inject(DialogService);
-  readonly #store = inject(Store);
-  readonly #router = inject(Router);
-  readonly #route = inject(ActivatedRoute);
-  readonly #translateService = inject(TranslateService);
+  readonly destroyRef = inject(DestroyRef);
+  readonly dialogService = inject(DialogService);
+  readonly store = inject(Store);
+  readonly router = inject(Router);
+  readonly route = inject(ActivatedRoute);
+  readonly translateService = inject(TranslateService);
 
-  protected readonly defaultTabValue = 0;
   protected readonly isLoading = signal(false);
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly tabOptions: TabOption[] = [
-    {
-      label: 'myProjects.tabs.myProjects',
-      value: 0,
-    },
-    {
-      label: 'myProjects.tabs.myRegistrations',
-      value: 1,
-    },
-    {
-      label: 'myProjects.tabs.myPreprints',
-      value: 2,
-    },
-    {
-      label: 'myProjects.tabs.bookmarks',
-      value: 3,
-    },
-  ];
+  protected readonly isTablet = toSignal(inject(IS_MEDIUM));
+  protected readonly tabOptions = MY_PROJECTS_TABS;
+  protected readonly tabOption = MyProjectsTab;
 
   protected readonly searchControl = new FormControl<string>('');
 
-  protected readonly queryParams = toSignal(this.#route.queryParams);
+  protected readonly queryParams = toSignal(this.route.queryParams);
   protected readonly currentPage = signal(1);
   protected readonly currentPageSize = signal(MY_PROJECTS_TABLE_PARAMS.rows);
-  protected readonly selectedTab = signal(this.defaultTabValue);
+  protected readonly selectedTab = signal(MyProjectsTab.Projects);
   protected readonly activeProject = signal<MyProjectsItem | null>(null);
   protected readonly sortColumn = signal<string | undefined>(undefined);
   protected readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
@@ -107,75 +91,75 @@ export class MyProjectsComponent implements OnInit {
     firstRowIndex: 0,
   });
 
-  protected readonly projects = this.#store.selectSignal(MyProjectsSelectors.getProjects);
-  protected readonly registrations = this.#store.selectSignal(MyProjectsSelectors.getRegistrations);
-  protected readonly preprints = this.#store.selectSignal(MyProjectsSelectors.getPreprints);
-  protected readonly bookmarks = this.#store.selectSignal(MyProjectsSelectors.getBookmarks);
-  protected readonly totalProjectsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalProjects);
-  protected readonly totalRegistrationsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalRegistrations);
-  protected readonly totalPreprintsCount = this.#store.selectSignal(MyProjectsSelectors.getTotalPreprints);
-  protected readonly totalBookmarksCount = this.#store.selectSignal(MyProjectsSelectors.getTotalBookmarks);
+  protected readonly projects = select(MyProjectsSelectors.getProjects);
+  protected readonly registrations = select(MyProjectsSelectors.getRegistrations);
+  protected readonly preprints = select(MyProjectsSelectors.getPreprints);
+  protected readonly bookmarks = select(MyProjectsSelectors.getBookmarks);
+  protected readonly totalProjectsCount = select(MyProjectsSelectors.getTotalProjects);
+  protected readonly totalRegistrationsCount = select(MyProjectsSelectors.getTotalRegistrations);
+  protected readonly totalPreprintsCount = select(MyProjectsSelectors.getTotalPreprints);
+  protected readonly totalBookmarksCount = select(MyProjectsSelectors.getTotalBookmarks);
 
-  protected readonly bookmarksCollectionId = this.#store.selectSignal(CollectionsSelectors.getBookmarksCollectionId);
+  protected readonly bookmarksCollectionId = select(CollectionsSelectors.getBookmarksCollectionId);
 
   constructor() {
-    this.#setupQueryParamsEffect();
-    this.#setupSearchSubscription();
-    this.#setupTotalRecordsEffect();
-    this.#setupCleanup();
+    this.setupQueryParamsEffect();
+    this.setupSearchSubscription();
+    this.setupTotalRecordsEffect();
+    this.setupCleanup();
   }
 
   ngOnInit(): void {
-    this.#store.dispatch(new GetBookmarksCollectionId());
+    this.store.dispatch(new GetBookmarksCollectionId());
   }
 
-  #setupCleanup(): void {
-    this.#destroyRef.onDestroy(() => {
-      this.#store.dispatch(new ClearMyProjects());
+  setupCleanup(): void {
+    this.destroyRef.onDestroy(() => {
+      this.store.dispatch(new ClearMyProjects());
     });
   }
 
-  #setupSearchSubscription(): void {
+  setupSearchSubscription(): void {
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.#destroyRef))
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchValue) => {
-        this.#handleSearch(searchValue ?? '');
+        this.handleSearch(searchValue ?? '');
       });
   }
 
-  #setupTotalRecordsEffect(): void {
+  setupTotalRecordsEffect(): void {
     effect(() => {
-      const totalRecords = this.#getTotalRecordsForCurrentTab();
+      const totalRecords = this.getTotalRecordsForCurrentTab();
       untracked(() => {
-        this.#updateTableParams({ totalRecords });
+        this.updateTableParams({ totalRecords });
       });
     });
   }
 
-  #getTotalRecordsForCurrentTab(): number {
+  getTotalRecordsForCurrentTab(): number {
     switch (this.selectedTab()) {
-      case 0:
+      case MyProjectsTab.Projects:
         return this.totalProjectsCount();
-      case 1:
+      case MyProjectsTab.Registrations:
         return this.totalRegistrationsCount();
-      case 2:
+      case MyProjectsTab.Preprints:
         return this.totalPreprintsCount();
-      case 3:
+      case MyProjectsTab.Bookmarks:
         return this.totalBookmarksCount();
       default:
         return 0;
     }
   }
 
-  #setupQueryParamsEffect(): void {
+  setupQueryParamsEffect(): void {
     effect(() => {
       const params = this.queryParams();
       if (!params) return;
 
       const { page, size, search, sortColumn, sortOrder } = parseQueryFilterParams(params);
 
-      this.#updateComponentState({ page, size, search, sortColumn, sortOrder });
-      this.#fetchDataForCurrentTab({
+      this.updateComponentState({ page, size, search, sortColumn, sortOrder });
+      this.fetchDataForCurrentTab({
         page,
         size,
         search,
@@ -185,7 +169,7 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  #updateComponentState(params: QueryParams): void {
+  updateComponentState(params: QueryParams): void {
     untracked(() => {
       const size = params.size || MY_PROJECTS_TABLE_PARAMS.rows;
 
@@ -195,47 +179,47 @@ export class MyProjectsComponent implements OnInit {
       this.sortColumn.set(params.sortColumn);
       this.sortOrder.set(params.sortOrder ?? SortOrder.Asc);
 
-      this.#updateTableParams({
+      this.updateTableParams({
         rows: size,
         firstRowIndex: ((params.page ?? 1) - 1) * size,
       });
     });
   }
 
-  #updateTableParams(updates: Partial<TableParameters>): void {
+  updateTableParams(updates: Partial<TableParameters>): void {
     this.tableParams.update((current) => ({
       ...current,
       ...updates,
     }));
   }
 
-  #fetchDataForCurrentTab(params: QueryParams): void {
+  fetchDataForCurrentTab(params: QueryParams): void {
     this.isLoading.set(true);
-    const filters = this.#createFilters(params);
+    const filters = this.createFilters(params);
     const pageNumber = params.page ?? 1;
     const pageSize = params.size ?? MY_PROJECTS_TABLE_PARAMS.rows;
 
     let action$;
     switch (this.selectedTab()) {
-      case 0:
-        action$ = this.#store.dispatch(new GetMyProjects(pageNumber, pageSize, filters));
+      case MyProjectsTab.Projects:
+        action$ = this.store.dispatch(new GetMyProjects(pageNumber, pageSize, filters));
         break;
-      case 1:
-        action$ = this.#store.dispatch(new GetMyRegistrations(pageNumber, pageSize, filters));
+      case MyProjectsTab.Registrations:
+        action$ = this.store.dispatch(new GetMyRegistrations(pageNumber, pageSize, filters));
         break;
-      case 2:
-        action$ = this.#store.dispatch(new GetMyPreprints(pageNumber, pageSize, filters));
+      case MyProjectsTab.Preprints:
+        action$ = this.store.dispatch(new GetMyPreprints(pageNumber, pageSize, filters));
         break;
-      case 3:
+      case MyProjectsTab.Bookmarks:
         if (this.bookmarksCollectionId()) {
-          action$ = this.#store.dispatch(
+          action$ = this.store.dispatch(
             new GetMyBookmarks(this.bookmarksCollectionId(), pageNumber, pageSize, filters, ResourceType.Null)
           );
         }
         break;
     }
 
-    action$?.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe({
+    action$?.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       complete: () => {
         this.isLoading.set(false);
       },
@@ -245,7 +229,7 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  #createFilters(params: QueryParams): MyProjectsSearchFilters {
+  createFilters(params: QueryParams): MyProjectsSearchFilters {
     return {
       searchValue: params.search || '',
       searchFields: ['title', 'tags', 'description'],
@@ -254,9 +238,9 @@ export class MyProjectsComponent implements OnInit {
     };
   }
 
-  #handleSearch(searchValue: string): void {
+  handleSearch(searchValue: string): void {
     const currentParams = this.queryParams() || {};
-    this.#updateQueryParams({
+    this.updateQueryParams({
       search: searchValue,
       page: 1,
       sortColumn: currentParams['sortColumn'],
@@ -264,7 +248,7 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  #updateQueryParams(updates: Partial<QueryParams>): void {
+  updateQueryParams(updates: Partial<QueryParams>): void {
     const currentParams = this.queryParams() || {};
     const queryParams: Record<string, string> = {};
 
@@ -292,8 +276,8 @@ export class MyProjectsComponent implements OnInit {
       queryParams['sortOrder'] = currentParams['sortOrder'];
     }
 
-    this.#router.navigate([], {
-      relativeTo: this.#route,
+    this.router.navigate([], {
+      relativeTo: this.route,
       queryParams,
     });
   }
@@ -302,7 +286,7 @@ export class MyProjectsComponent implements OnInit {
     const page = Math.floor(event.first / event.rows) + 1;
     const currentParams = this.queryParams() || {};
 
-    this.#updateQueryParams({
+    this.updateQueryParams({
       page,
       size: event.rows,
       sortColumn: currentParams['sortColumn'],
@@ -312,7 +296,7 @@ export class MyProjectsComponent implements OnInit {
 
   protected onSort(event: SortEvent): void {
     if (event.field) {
-      this.#updateQueryParams({
+      this.updateQueryParams({
         sortColumn: event.field,
         sortOrder: event.order === -1 ? SortOrder.Desc : SortOrder.Asc,
       });
@@ -320,11 +304,11 @@ export class MyProjectsComponent implements OnInit {
   }
 
   protected onTabChange(tabIndex: number): void {
-    this.#store.dispatch(new ClearMyProjects());
+    this.store.dispatch(new ClearMyProjects());
     this.selectedTab.set(tabIndex);
     const currentParams = this.queryParams() || {};
 
-    this.#updateQueryParams({
+    this.updateQueryParams({
       page: 1,
       size: currentParams['size'],
       search: '',
@@ -334,12 +318,12 @@ export class MyProjectsComponent implements OnInit {
   }
 
   protected createProject(): void {
-    const dialogWidth = this.isMobile() ? '95vw' : '850px';
+    const dialogWidth = this.isTablet() ? '850px' : '95vw';
 
-    this.#dialogService.open(CreateProjectDialogComponent, {
+    this.dialogService.open(CreateProjectDialogComponent, {
       width: dialogWidth,
       focusOnShow: false,
-      header: this.#translateService.instant('myProjects.header.createProject'),
+      header: this.translateService.instant('myProjects.header.createProject'),
       closeOnEscape: true,
       modal: true,
       closable: true,
@@ -348,6 +332,6 @@ export class MyProjectsComponent implements OnInit {
 
   protected navigateToProject(project: MyProjectsItem): void {
     this.activeProject.set(project);
-    this.#router.navigate(['/my-projects', project.id]);
+    this.router.navigate(['/my-projects', project.id]);
   }
 }

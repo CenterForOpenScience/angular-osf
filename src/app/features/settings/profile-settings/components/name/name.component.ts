@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -21,16 +21,16 @@ import { ProfileSettingsSelectors, UpdateProfileSettingsUser } from '../../store
 export class NameComponent {
   @HostBinding('class') classes = 'flex flex-column gap-4 flex-1';
 
-  readonly #fb = inject(FormBuilder);
-  readonly form = this.#fb.group<NameForm>({
-    fullName: this.#fb.control('', { nonNullable: true }),
-    givenName: this.#fb.control('', { nonNullable: true }),
-    middleNames: this.#fb.control('', { nonNullable: true }),
-    familyName: this.#fb.control('', { nonNullable: true }),
-    suffix: this.#fb.control('', { nonNullable: true }),
+  readonly fb = inject(FormBuilder);
+  readonly form = this.fb.group<NameForm>({
+    fullName: this.fb.control('', { nonNullable: true }),
+    givenName: this.fb.control('', { nonNullable: true }),
+    middleNames: this.fb.control('', { nonNullable: true }),
+    familyName: this.fb.control('', { nonNullable: true }),
+    suffix: this.fb.control('', { nonNullable: true }),
   });
-  readonly #store = inject(Store);
-  readonly nameState = this.#store.selectSignal(ProfileSettingsSelectors.user);
+  readonly store = inject(Store);
+  readonly nameState = select(ProfileSettingsSelectors.user);
 
   constructor() {
     effect(() => {
@@ -47,7 +47,7 @@ export class NameComponent {
 
   saveChanges() {
     const { fullName, givenName, middleNames, familyName, suffix } = this.form.getRawValue();
-    this.#store.dispatch(
+    this.store.dispatch(
       new UpdateProfileSettingsUser({
         user: {
           fullName,

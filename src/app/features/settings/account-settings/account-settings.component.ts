@@ -1,16 +1,14 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, effect } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/utils';
 
 import {
   AffiliatedInstitutionsComponent,
@@ -45,18 +43,23 @@ import { GetAccountSettings, GetEmails, GetExternalIdentities, GetRegions, GetUs
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountSettingsComponent {
-  readonly #store = inject(Store);
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
+  readonly actions = createDispatchMap({
+    getAccountSettings: GetAccountSettings,
+    getEmails: GetEmails,
+    getExternalIdentities: GetExternalIdentities,
+    getRegions: GetRegions,
+    getUserInstitutions: GetUserInstitutions,
+  });
+  protected readonly currentUser = select(UserSelectors.getCurrentUser);
 
   constructor() {
     effect(() => {
       if (this.currentUser()) {
-        this.#store.dispatch(GetAccountSettings);
-        this.#store.dispatch(GetEmails);
-        this.#store.dispatch(GetExternalIdentities);
-        this.#store.dispatch(GetRegions);
-        this.#store.dispatch(GetUserInstitutions);
+        this.actions.getAccountSettings();
+        this.actions.getEmails();
+        this.actions.getExternalIdentities();
+        this.actions.getRegions();
+        this.actions.getUserInstitutions();
       }
     });
   }

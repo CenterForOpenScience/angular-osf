@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -13,7 +13,7 @@ import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angula
 
 import { Social } from '@osf/shared/models';
 
-import { socials } from '../../data';
+import { socials } from '../../constants/data';
 import { SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys, UserSocialLink } from '../../models';
 import { ProfileSettingsSelectors, UpdateProfileSettingsSocialLinks } from '../../store';
 
@@ -26,14 +26,15 @@ import { ProfileSettingsSelectors, UpdateProfileSettingsSocialLinks } from '../.
 })
 export class SocialComponent {
   @HostBinding('class') class = 'flex flex-column gap-5';
-  readonly userSocialLinks: UserSocialLink[] = [];
+
   protected readonly socials = socials;
-  readonly #store = inject(Store);
-  readonly socialLinks = this.#store.selectSignal(ProfileSettingsSelectors.socialLinks);
-  readonly #fb = inject(FormBuilder);
-  readonly socialLinksForm = this.#fb.group({
-    links: this.#fb.array<SocialLinksForm>([]),
-  });
+  readonly userSocialLinks: UserSocialLink[] = [];
+
+  readonly actions = createDispatchMap({ updateProfileSettingsSocialLinks: UpdateProfileSettingsSocialLinks });
+  readonly socialLinks = select(ProfileSettingsSelectors.socialLinks);
+
+  readonly fb = inject(FormBuilder);
+  readonly socialLinksForm = this.fb.group({ links: this.fb.array<SocialLinksForm>([]) });
 
   constructor() {
     effect(() => {
@@ -42,7 +43,7 @@ export class SocialComponent {
       for (const socialLinksKey in socialLinks) {
         const socialLink = socialLinks[socialLinksKey as SocialLinksKeys];
 
-        const socialLinkGroup = this.#fb.group({
+        const socialLinkGroup = this.fb.group({
           socialOutput: [this.socials.find((social) => social.key === socialLinksKey), Validators.required],
           webAddress: [socialLink, Validators.required],
         });
@@ -57,7 +58,7 @@ export class SocialComponent {
   }
 
   addLink(): void {
-    const linkGroup = this.#fb.group({
+    const linkGroup = this.fb.group({
       socialOutput: [this.socials[0], Validators.required],
       webAddress: ['', Validators.required],
     });
@@ -90,6 +91,6 @@ export class SocialComponent {
       };
     }) satisfies Partial<Social>[];
 
-    this.#store.dispatch(new UpdateProfileSettingsSocialLinks({ socialLinks: mappedLinks }));
+    this.actions.updateProfileSettingsSocialLinks({ socialLinks: mappedLinks });
   }
 }

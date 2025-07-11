@@ -1,16 +1,14 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Select } from 'primeng/select';
 
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { IS_XSMALL } from '@osf/shared/utils';
 
 import { Region } from '../../models';
 import { AccountSettingsSelectors, UpdateRegion } from '../../store';
@@ -23,11 +21,10 @@ import { AccountSettingsSelectors, UpdateRegion } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DefaultStorageLocationComponent {
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  readonly #store = inject(Store);
+  readonly actions = createDispatchMap({ updateRegion: UpdateRegion });
 
-  protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
-  protected readonly regions = this.#store.selectSignal(AccountSettingsSelectors.getRegions);
+  protected readonly currentUser = select(UserSelectors.getCurrentUser);
+  protected readonly regions = select(AccountSettingsSelectors.getRegions);
   protected selectedRegion = signal<Region | undefined>(undefined);
 
   constructor() {
@@ -43,7 +40,7 @@ export class DefaultStorageLocationComponent {
 
   updateLocation(): void {
     if (this.selectedRegion()?.id) {
-      this.#store.dispatch(new UpdateRegion(this.selectedRegion()!.id));
+      this.actions.updateRegion(this.selectedRegion()!.id);
     }
   }
 }

@@ -53,15 +53,14 @@ import { AccountSettingsStateModel } from './account-settings.model';
   },
 })
 export class AccountSettingsState {
-  #accountSettingsService = inject(AccountSettingsService);
-  #institutionsService = inject(InstitutionsService);
+  private readonly accountSettingsService = inject(AccountSettingsService);
+  private readonly institutionsService = inject(InstitutionsService);
 
   @Action(GetEmails)
   getEmails(ctx: StateContext<AccountSettingsStateModel>) {
-    ctx.patchState({
-      emailsLoading: true,
-    });
-    return this.#accountSettingsService.getEmails().pipe(
+    ctx.patchState({ emailsLoading: true });
+
+    return this.accountSettingsService.getEmails().pipe(
       tap({
         next: (emails) => {
           ctx.patchState({
@@ -75,7 +74,7 @@ export class AccountSettingsState {
 
   @Action(AddEmail)
   addEmail(ctx: StateContext<AccountSettingsStateModel>, action: AddEmail) {
-    return this.#accountSettingsService.addEmail(action.email).pipe(
+    return this.accountSettingsService.addEmail(action.email).pipe(
       tap((email) => {
         if (email.emailAddress && !email.confirmed) {
           ctx.dispatch(GetEmails);
@@ -86,18 +85,16 @@ export class AccountSettingsState {
 
   @Action(DeleteEmail)
   deleteEmail(ctx: StateContext<AccountSettingsStateModel>, action: DeleteEmail) {
-    return this.#accountSettingsService.deleteEmail(action.email).pipe(
-      tap({
-        next: () => {
-          ctx.dispatch(GetEmails);
-        },
+    return this.accountSettingsService.deleteEmail(action.email).pipe(
+      tap(() => {
+        ctx.dispatch(GetEmails);
       })
     );
   }
 
   @Action(VerifyEmail)
   verifyEmail(ctx: StateContext<AccountSettingsStateModel>, action: VerifyEmail) {
-    return this.#accountSettingsService.verifyEmail(action.userId, action.emailId).pipe(
+    return this.accountSettingsService.verifyEmail(action.userId, action.emailId).pipe(
       tap((email) => {
         if (email.verified) {
           ctx.dispatch(GetEmails);
@@ -108,7 +105,7 @@ export class AccountSettingsState {
 
   @Action(MakePrimary)
   makePrimary(ctx: StateContext<AccountSettingsStateModel>, action: MakePrimary) {
-    return this.#accountSettingsService.makePrimary(action.emailId).pipe(
+    return this.accountSettingsService.makePrimary(action.emailId).pipe(
       tap((email) => {
         if (email.verified) {
           ctx.dispatch(GetEmails);
@@ -119,7 +116,7 @@ export class AccountSettingsState {
 
   @Action(GetRegions)
   getRegions(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.#accountSettingsService.getRegions().pipe(
+    return this.accountSettingsService.getRegions().pipe(
       tap({
         next: (regions) => ctx.patchState({ regions: regions }),
       })
@@ -128,7 +125,7 @@ export class AccountSettingsState {
 
   @Action(UpdateRegion)
   updateRegion(ctx: StateContext<AccountSettingsStateModel>, action: UpdateRegion) {
-    return this.#accountSettingsService.updateLocation(action.regionId).pipe(
+    return this.accountSettingsService.updateLocation(action.regionId).pipe(
       tap({
         next: (user) => {
           ctx.dispatch(new SetCurrentUser(user));
@@ -139,7 +136,7 @@ export class AccountSettingsState {
 
   @Action(UpdateIndexing)
   updateIndexing(ctx: StateContext<AccountSettingsStateModel>, action: UpdateIndexing) {
-    return this.#accountSettingsService.updateIndexing(action.allowIndexing).pipe(
+    return this.accountSettingsService.updateIndexing(action.allowIndexing).pipe(
       tap({
         next: (user) => {
           ctx.dispatch(new SetCurrentUser(user));
@@ -150,7 +147,7 @@ export class AccountSettingsState {
 
   @Action(GetExternalIdentities)
   getExternalIdentities(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.#accountSettingsService.getExternalIdentities().pipe(
+    return this.accountSettingsService.getExternalIdentities().pipe(
       tap({
         next: (identities) => ctx.patchState({ externalIdentities: identities }),
       })
@@ -159,7 +156,7 @@ export class AccountSettingsState {
 
   @Action(DeleteExternalIdentity)
   deleteExternalIdentity(ctx: StateContext<AccountSettingsStateModel>, action: DeleteExternalIdentity) {
-    return this.#accountSettingsService.deleteExternalIdentity(action.externalId).pipe(
+    return this.accountSettingsService.deleteExternalIdentity(action.externalId).pipe(
       tap(() => {
         ctx.dispatch(GetExternalIdentities);
       })
@@ -168,14 +165,14 @@ export class AccountSettingsState {
 
   @Action(GetUserInstitutions)
   getUserInstitutions(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.#institutionsService
+    return this.institutionsService
       .getUserInstitutions()
       .pipe(tap((userInstitutions) => ctx.patchState({ userInstitutions })));
   }
 
   @Action(DeleteUserInstitution)
   deleteUserInstitution(ctx: StateContext<AccountSettingsStateModel>, action: DeleteUserInstitution) {
-    return this.#institutionsService.deleteUserInstitution(action.id, action.userId).pipe(
+    return this.institutionsService.deleteUserInstitution(action.id, action.userId).pipe(
       tap(() => {
         ctx.dispatch(GetUserInstitutions);
       })
@@ -184,7 +181,7 @@ export class AccountSettingsState {
 
   @Action(GetAccountSettings)
   getAccountSettings(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.#accountSettingsService.getSettings().pipe(
+    return this.accountSettingsService.getSettings().pipe(
       tap({
         next: (settings) => {
           ctx.patchState({
@@ -197,7 +194,7 @@ export class AccountSettingsState {
 
   @Action(UpdateAccountSettings)
   updateAccountSettings(ctx: StateContext<AccountSettingsStateModel>, action: UpdateAccountSettings) {
-    return this.#accountSettingsService.updateSettings(action.accountSettings).pipe(
+    return this.accountSettingsService.updateSettings(action.accountSettings).pipe(
       tap({
         next: (settings) => {
           ctx.patchState({
@@ -210,7 +207,7 @@ export class AccountSettingsState {
 
   @Action(DisableTwoFactorAuth)
   disableTwoFactorAuth(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.#accountSettingsService.updateSettings({ two_factor_enabled: 'false' }).pipe(
+    return this.accountSettingsService.updateSettings({ two_factor_enabled: 'false' }).pipe(
       tap({
         next: (settings) => {
           ctx.patchState({
@@ -223,7 +220,7 @@ export class AccountSettingsState {
 
   @Action(EnableTwoFactorAuth)
   enableTwoFactorAuth(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.#accountSettingsService.updateSettings({ two_factor_enabled: 'true' }).pipe(
+    return this.accountSettingsService.updateSettings({ two_factor_enabled: 'true' }).pipe(
       tap({
         next: (settings) => {
           ctx.patchState({
@@ -241,7 +238,7 @@ export class AccountSettingsState {
 
   @Action(DeactivateAccount)
   deactivateAccount(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.#accountSettingsService.updateSettings({ deactivation_requested: 'true' }).pipe(
+    return this.accountSettingsService.updateSettings({ deactivation_requested: 'true' }).pipe(
       tap({
         next: (settings) => {
           ctx.patchState({
@@ -254,7 +251,7 @@ export class AccountSettingsState {
 
   @Action(CancelDeactivationRequest)
   cancelDeactivationRequest(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.#accountSettingsService.updateSettings({ deactivation_requested: 'false' }).pipe(
+    return this.accountSettingsService.updateSettings({ deactivation_requested: 'false' }).pipe(
       tap({
         next: (settings) => {
           ctx.patchState({

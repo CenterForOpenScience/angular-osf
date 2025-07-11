@@ -11,11 +11,9 @@
   <p-tabs class="flex-1 px-4" [value]="selectedTab" (valueChange)="onTabChange(+$event)">
     @if (!isMobile()) {
       <p-tablist>
-        <p-tab [value]="ResourceTab.All">All</p-tab>
-        <p-tab [value]="ResourceTab.Projects">Projects</p-tab>
-        <p-tab [value]="ResourceTab.Registrations">Registrations</p-tab>
-        <p-tab [value]="ResourceTab.Preprints">Preprints</p-tab>
-        <p-tab [value]="ResourceTab.Files">Files</p-tab>
+        @for (item of resourceTabOptions; track $index) {
+          <p-tab [value]="item.value">{{ item.label | translate }}</p-tab>
+        }
       </p-tablist>
     }
   </p-tabs>
