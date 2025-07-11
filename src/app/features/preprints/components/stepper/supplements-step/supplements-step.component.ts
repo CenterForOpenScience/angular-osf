@@ -1,5 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Select, SelectChangeEvent } from 'primeng/select';
@@ -14,7 +16,6 @@ import {
   computed,
   DestroyRef,
   effect,
-  HostListener,
   inject,
   OnInit,
   output,
@@ -30,10 +31,10 @@ import {
   ConnectProject,
   CreateNewProject,
   DisconnectProject,
+  FetchAvailableProjects,
   FetchPreprintProject,
-  GetAvailableProjects,
-  SubmitPreprintSelectors,
-} from '@osf/features/preprints/store/submit-preprint';
+  PreprintStepperSelectors,
+} from '@osf/features/preprints/store/preprint-stepper';
 import { AddProjectFormComponent } from '@shared/components';
 import { ProjectFormControls } from '@shared/enums';
 import { ProjectForm } from '@shared/models';
@@ -42,7 +43,17 @@ import { CustomValidators } from '@shared/utils';
 
 @Component({
   selector: 'osf-supplements-step',
-  imports: [Button, TitleCasePipe, NgClass, Card, Select, AddProjectFormComponent, ReactiveFormsModule, Skeleton],
+  imports: [
+    Button,
+    TitleCasePipe,
+    NgClass,
+    Card,
+    Select,
+    AddProjectFormComponent,
+    ReactiveFormsModule,
+    Skeleton,
+    TranslatePipe,
+  ],
   templateUrl: './supplements-step.component.html',
   styleUrl: './supplements-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -51,7 +62,7 @@ export class SupplementsStepComponent implements OnInit {
   private customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
   private actions = createDispatchMap({
-    getAvailableProjects: GetAvailableProjects,
+    getAvailableProjects: FetchAvailableProjects,
     connectProject: ConnectProject,
     disconnectProject: DisconnectProject,
     fetchPreprintProject: FetchPreprintProject,
@@ -61,12 +72,12 @@ export class SupplementsStepComponent implements OnInit {
 
   readonly SupplementOptions = SupplementOptions;
 
-  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
-  isPreprintSubmitting = select(SubmitPreprintSelectors.isPreprintSubmitting);
-  availableProjects = select(SubmitPreprintSelectors.getAvailableProjects);
-  areAvailableProjectsLoading = select(SubmitPreprintSelectors.areAvailableProjectsLoading);
-  preprintProject = select(SubmitPreprintSelectors.getPreprintProject);
-  isPreprintProjectLoading = select(SubmitPreprintSelectors.isPreprintProjectLoading);
+  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
+  availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
+  areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
+  preprintProject = select(PreprintStepperSelectors.getPreprintProject);
+  isPreprintProjectLoading = select(PreprintStepperSelectors.isPreprintProjectLoading);
 
   selectedSupplementOption = signal<SupplementOptions>(SupplementOptions.None);
   selectedProjectId = signal<StringOrNull>(null);
@@ -97,20 +108,11 @@ export class SupplementsStepComponent implements OnInit {
   });
 
   isNextButtonDisabled = computed(() => {
-    if (this.createdPreprint()?.nodeId) {
-      return false;
+    if (this.selectedSupplementOption() === SupplementOptions.CreateNewProject) {
+      return !this.createProjectFormValid();
     }
 
-    switch (this.selectedSupplementOption()) {
-      case SupplementOptions.None:
-        return true;
-      case SupplementOptions.ConnectExistingProject:
-        return !this.createdPreprint()?.nodeId;
-      case SupplementOptions.CreateNewProject:
-        return !this.createProjectFormValid();
-      default:
-        return false;
-    }
+    return false;
   });
 
   constructor() {
@@ -132,6 +134,7 @@ export class SupplementsStepComponent implements OnInit {
   }
 
   nextClicked = output<void>();
+  backClicked = output<void>();
 
   ngOnInit() {
     this.projectNameControl.valueChanges
@@ -163,21 +166,20 @@ export class SupplementsStepComponent implements OnInit {
 
     this.actions.connectProject(event.value).subscribe({
       complete: () => {
-        this.toastService.showSuccess('Project connected successfully');
+        this.toastService.showSuccess('preprints.preprintStepper.supplements.successMessages.projectConnected');
       },
     });
   }
 
   disconnectProject() {
     this.customConfirmationService.confirmDelete({
-      headerKey: 'Disconnect supplemental material',
-      messageKey:
-        'This will disconnect the selected project. You can select new supplemental material or re-add the same supplemental material at a later date.',
+      headerKey: 'preprints.preprintStepper.supplements.disconnectProject.header',
+      messageKey: 'preprints.preprintStepper.supplements.disconnectProject.message',
       onConfirm: () => {
         this.actions.disconnectProject().subscribe({
           complete: () => {
             this.selectedProjectId.set(null);
-            this.toastService.showSuccess('Project disconnected successfully');
+            this.toastService.showSuccess('preprints.preprintStepper.supplements.successMessages.projectDisconnected');
           },
         });
       },
@@ -201,7 +203,7 @@ export class SupplementsStepComponent implements OnInit {
       )
       .subscribe({
         complete: () => {
-          this.toastService.showSuccess('Project created successfully');
+          this.toastService.showSuccess('preprints.preprintStepper.supplements.successMessages.projectCreated');
           this.nextClicked.emit();
         },
       });
@@ -213,12 +215,30 @@ export class SupplementsStepComponent implements OnInit {
       return;
     }
 
+    this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
     this.nextClicked.emit();
   }
 
-  @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    $event.preventDefault();
-    return false;
+  backButtonClicked() {
+    const hasData = Object.entries(this.createProjectForm.value).some(([_, value]) => {
+      if (value instanceof Array) {
+        return value.length > 0;
+      }
+      return !!value;
+    });
+
+    if (this.selectedSupplementOption() === SupplementOptions.CreateNewProject && hasData) {
+      this.customConfirmationService.confirmContinue({
+        headerKey: 'preprints.preprintStepper.supplements.discardChanges.header',
+        messageKey: 'preprints.preprintStepper.supplements.discardChanges.message',
+        onConfirm: () => {
+          this.backClicked.emit();
+        },
+        onReject: () => null,
+      });
+      return;
+    }
+
+    this.backClicked.emit();
   }
 }

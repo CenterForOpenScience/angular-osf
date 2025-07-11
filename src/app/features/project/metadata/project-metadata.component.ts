@@ -52,12 +52,10 @@ import {
   UpdateCustomItemMetadata,
   UpdateProjectDetails,
 } from '@osf/features/project/metadata/store';
-import { ProjectOverviewSubject } from '@osf/features/project/overview/models';
 import { ResourceType } from '@osf/shared/enums';
 import { ContributorsSelectors, GetAllContributors } from '@osf/shared/stores';
 import { LoadingSpinnerComponent, SubHeaderComponent, TagsInputComponent } from '@shared/components';
 import { CustomConfirmationService, ToastService } from '@shared/services';
-import { GetSubjects, SubjectsSelectors, UpdateProjectSubjects } from '@shared/stores/subjects';
 
 @Component({
   selector: 'osf-project-metadata',
@@ -107,13 +105,11 @@ export class ProjectMetadataComponent implements OnInit {
   protected actions = createDispatchMap({
     getProject: GetProjectForMetadata,
     updateProjectDetails: UpdateProjectDetails,
-    updateProjectSubjects: UpdateProjectSubjects,
     getCustomItemMetadata: GetCustomItemMetadata,
     updateCustomItemMetadata: UpdateCustomItemMetadata,
     getFundersList: GetFundersList,
     getContributors: GetAllContributors,
     getUserInstitutions: GetUserInstitutions,
-    getHighlightedSubjects: GetSubjects,
     getCedarRecords: GetCedarMetadataRecords,
     getCedarTemplates: GetCedarMetadataTemplates,
     createCedarRecord: CreateCedarMetadataRecord,
@@ -126,8 +122,6 @@ export class ProjectMetadataComponent implements OnInit {
   protected fundersList = select(ProjectMetadataSelectors.getFundersList);
   protected contributors = select(ContributorsSelectors.getContributors);
   protected isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  protected highlightedSubjects = select(SubjectsSelectors.getHighlightedSubjects);
-  protected highlightedSubjectsLoading = select(SubjectsSelectors.getHighlightedSubjectsLoading);
   protected currentUser = select(UserSelectors.getCurrentUser);
   protected cedarRecords = select(ProjectMetadataSelectors.getCedarRecords);
   protected cedarTemplates = select(ProjectMetadataSelectors.getCedarTemplates);
@@ -171,7 +165,6 @@ export class ProjectMetadataComponent implements OnInit {
     const projectId = this.route.parent?.parent?.snapshot.params['id'];
 
     if (projectId) {
-      this.actions.getHighlightedSubjects();
       this.actions.getProject(projectId);
       this.actions.getCustomItemMetadata(projectId);
       this.actions.getContributors(projectId, ResourceType.Project);
@@ -215,14 +208,6 @@ export class ProjectMetadataComponent implements OnInit {
 
   openAddRecord(): void {
     this.router.navigate(['add'], { relativeTo: this.route });
-  }
-
-  onSubjectsChanged(subjects: ProjectOverviewSubject[]): void {
-    const projectId = this.currentProject()?.id;
-    if (projectId) {
-      const subjectIds = subjects.map((subject) => subject.id);
-      this.actions.updateProjectSubjects(projectId, subjectIds);
-    }
   }
 
   openEditContributorDialog(): void {

@@ -1,15 +1,11 @@
-<h2>Author Assertions</h2>
+<h2>{{ 'preprints.preprintStepper.authorAssertions.title' | translate }}</h2>
 
 <p-card styleClass="m-t-24" class="card">
   <div>
-    <h2>Conflict of Interest</h2>
+    <h2>{{ 'preprints.preprintStepper.authorAssertions.conflictOfInterest.title' | translate }}</h2>
 
     <p class="m-t-12">
-      The Conflict of Interest (COI) assertion is made on behalf of all the authors listed for this preprint. COIs
-      include: financial involvement in any entity such as honoraria, grants, speaking fees, employment, consultancies,
-      stock ownership, expert testimony, and patents or licenses. COIs can also include non-financial interests such as
-      personal or professional relationships or pre-existing beliefs in the subject matter or materials discussed in
-      this preprint.
+      {{ 'preprints.preprintStepper.authorAssertions.conflictOfInterest.description' | translate }}
     </p>
 
     <div class="m-t-24 flex flex-row gap-4">
@@ -20,7 +16,7 @@
           [value]="true"
           [formControl]="authorAssertionsForm.controls['hasCoi']"
         />
-        <label for="coi-yes">Yes</label>
+        <label for="coi-yes">{{ 'common.labels.yes' | translate }}</label>
       </div>
 
       <div class="flex flex-row gap-2">
@@ -30,7 +26,7 @@
           [value]="false"
           [formControl]="authorAssertionsForm.controls['hasCoi']"
         />
-        <label for="coi-no">No</label>
+        <label for="coi-no">{{ 'common.labels.no' | translate }}</label>
       </div>
     </div>
 
@@ -43,8 +39,8 @@
       [formControl]="authorAssertionsForm.controls['coiStatement']"
       [placeholder]="
         authorAssertionsForm.value.hasCoi
-          ? 'Describe'
-          : 'Author asserted there is no Conflict of Interest with this preprint.'
+          ? ('preprints.preprintStepper.common.placeholders.describe' | translate)
+          : ('preprints.preprintStepper.authorAssertions.conflictOfInterest.noCoiPlaceholder' | translate)
       "
     ></textarea>
     @let coiStatementControl = authorAssertionsForm.controls['coiStatement'];
@@ -58,14 +54,10 @@
 
 <p-card styleClass="m-t-24" class="card">
   <div>
-    <h2>Public Data</h2>
+    <h2>{{ 'preprints.preprintStepper.authorAssertions.publicData.title' | translate }}</h2>
 
     <p class="m-t-12">
-      Data refers to raw and/or processed information (quantitative or qualitative) used for the analyses, case studies,
-      and/or descriptive interpretation in the preprint. Public data could include data posted to open-access
-      repositories, public archival library collection, or government archive. For data that is available under limited
-      circumstances (e.g., after signing a data sharing agreement), choose the ‘No’ option and use the comment box to
-      explain how others could access the data.
+      {{ 'preprints.preprintStepper.authorAssertions.publicData.description' | translate }}
     </p>
 
     <div class="m-t-24 flex flex-row gap-4">
@@ -76,7 +68,7 @@
           [value]="ApplicabilityStatus.Applicable"
           [formControl]="authorAssertionsForm.controls['hasDataLinks']"
         />
-        <label for="publicDataAvailable">Available</label>
+        <label for="publicDataAvailable">{{ 'common.labels.available' | translate }}</label>
       </div>
 
       <div class="flex flex-row gap-2">
@@ -86,7 +78,7 @@
           [value]="ApplicabilityStatus.Unavailable"
           [formControl]="authorAssertionsForm.controls['hasDataLinks']"
         />
-        <label for="publicDataUnavailable">No</label>
+        <label for="publicDataUnavailable">{{ 'common.labels.unavailable' | translate }}</label>
       </div>
 
       <div class="flex flex-row gap-2">
@@ -96,7 +88,7 @@
           [value]="ApplicabilityStatus.NotApplicable"
           [formControl]="authorAssertionsForm.controls['hasDataLinks']"
         />
-        <label for="publicDataNotApplicable">Not Applicable</label>
+        <label for="publicDataNotApplicable">{{ 'common.labels.notApplicable' | translate }}</label>
       </div>
     </div>
 
@@ -113,8 +105,8 @@
         [rows]="3"
         [placeholder]="
           hasDataLinks === ApplicabilityStatus.Unavailable
-            ? 'Describe'
-            : 'Author asserted there is no data associated with this preprint.'
+            ? ('preprints.preprintStepper.common.placeholders.describe' | translate)
+            : ('preprints.preprintStepper.authorAssertions.publicData.notApplicablePlaceholder' | translate)
         "
       ></textarea>
       @let whyNoDataControl = authorAssertionsForm.controls['whyNoData'];
@@ -127,7 +119,7 @@
       <div class="m-t-24">
         <osf-array-input
           [formArray]="authorAssertionsForm.controls['dataLinks']"
-          inputPlaceholder="Link to data"
+          [inputPlaceholder]="'preprints.preprintStepper.common.placeholders.linkToData' | translate"
           [validators]="linkValidators"
         />
       </div>
@@ -137,12 +129,10 @@
 
 <p-card styleClass="m-t-24" class="card">
   <div>
-    <h2>Public Preregistration</h2>
+    <h2>{{ 'preprints.preprintStepper.authorAssertions.publicPreregistration.title' | translate }}</h2>
 
     <p class="m-t-12">
-      A preregistration is a description of the research design and/or analysis plan that is created and registered
-      before researchers collected data or before they have seen/interacted with preexisting data. The description
-      should appear in a public registry (e.g., clinicaltrials.gov, OSF, AEA registry).
+      {{ 'preprints.preprintStepper.authorAssertions.publicPreregistration.description' | translate }}
     </p>
   </div>
 
@@ -154,7 +144,7 @@
         [value]="ApplicabilityStatus.Applicable"
         [formControl]="authorAssertionsForm.controls['hasPreregLinks']"
       />
-      <label for="preregistrationAvailable">Available</label>
+      <label for="preregistrationAvailable">{{ 'common.labels.available' | translate }}</label>
     </div>
 
     <div class="flex flex-row gap-2">
@@ -164,7 +154,7 @@
         [value]="ApplicabilityStatus.Unavailable"
         [formControl]="authorAssertionsForm.controls['hasPreregLinks']"
       />
-      <label for="preregistrationUnavailable">No</label>
+      <label for="preregistrationUnavailable">{{ 'common.labels.unavailable' | translate }}</label>
     </div>
 
     <div class="flex flex-row gap-2">
@@ -174,7 +164,7 @@
         [value]="ApplicabilityStatus.NotApplicable"
         [formControl]="authorAssertionsForm.controls['hasPreregLinks']"
       />
-      <label for="preregistrationNotApplicable">Not Applicable</label>
+      <label for="preregistrationNotApplicable">{{ 'common.labels.notApplicable' | translate }}</label>
     </div>
   </div>
   @let hasPreregLinks = authorAssertionsForm.value.hasPreregLinks!;
@@ -190,8 +180,8 @@
       [formControl]="authorAssertionsForm.controls['whyNoPrereg']"
       [placeholder]="
         hasPreregLinks === ApplicabilityStatus.Unavailable
-          ? 'Describe'
-          : 'The author asserts that a preregistration is not applicable because no data collection, extraction, or analysis is reported in the preprint.'
+          ? ('preprints.preprintStepper.common.placeholders.describe' | translate)
+          : ('preprints.preprintStepper.authorAssertions.publicPreregistration.notApplicablePlaceholder' | translate)
       "
     ></textarea>
     @let hasPreregLinksControl = authorAssertionsForm.controls['hasPreregLinks'];
@@ -201,22 +191,19 @@
       </p-message>
     }
   } @else {
-    <p-select
-      id="links-info"
-      class="w-12 md:w-6"
-      styleClass="m-t-24"
-      placeholder="Choose one"
-      [formControl]="authorAssertionsForm.controls['preregLinkInfo']"
-      [options]="preregLinkOptions"
-      optionLabel="label"
-      optionValue="value"
-      [showClear]="false"
-    />
+    <div class="m-t-24 w-12 md:w-6">
+      <osf-form-select
+        [control]="authorAssertionsForm.controls['preregLinkInfo']"
+        [options]="preregLinkOptions"
+        [placeholder]="'preprints.preprintStepper.authorAssertions.publicPreregistration.selectType' | translate"
+        [fullWidth]="true"
+      />
+    </div>
 
     <div class="m-t-24">
       <osf-array-input
         [formArray]="authorAssertionsForm.controls['preregLinks']"
-        inputPlaceholder="Link to data"
+        [inputPlaceholder]="'preprints.preprintStepper.common.placeholders.linkToData' | translate"
         [validators]="linkValidators"
       />
     </div>
@@ -224,12 +211,20 @@
 </p-card>
 
 <section class="m-t-48 flex flex-row justify-content-end align-items-center gap-2">
-  <p-button class="w-6 md:w-6rem" styleClass="w-full" label="Back" severity="info" />
+  <p-button
+    class="w-6 md:w-6rem"
+    styleClass="w-full"
+    [label]="'common.buttons.back' | translate"
+    severity="info"
+    (click)="backButtonClicked()"
+  />
   <p-button
     class="w-6 md:w-9rem"
     styleClass="w-full"
-    label="Next"
-    [pTooltip]="authorAssertionsForm.invalid ? 'Fill in \'Required\' fields to continue' : ''"
+    [label]="'common.buttons.next' | translate"
+    [pTooltip]="
+      authorAssertionsForm.invalid ? ('preprints.preprintStepper.common.validation.fillRequiredFields' | translate) : ''
+    "
     tooltipPosition="top"
     [disabled]="authorAssertionsForm.invalid"
     [loading]="isUpdatingPreprint()"

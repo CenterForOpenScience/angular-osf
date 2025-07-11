@@ -18,6 +18,8 @@ export interface PreprintProviderDetailsJsonApi {
       favicon: string;
     };
     allow_submissions: boolean;
+    assertions_enabled: boolean;
+    reviews_workflow: StringOrNull;
   };
   embeds?: {
     brand: {

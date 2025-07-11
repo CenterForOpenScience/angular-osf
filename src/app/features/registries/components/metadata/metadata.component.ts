@@ -15,8 +15,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TextInputComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
-import { Subject } from '@osf/shared/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { SubjectModel } from '@osf/shared/models';
+import { CustomConfirmationService } from '@osf/shared/services';
+import { SubjectsSelectors } from '@osf/shared/stores';
 import { CustomValidators, findChangedFields } from '@osf/shared/utils';
 
 import { Registration } from '../../models';
@@ -48,14 +49,13 @@ import { RegistriesTagsComponent } from './registries-tags/registries-tags.compo
 })
 export class MetadataComponent implements OnDestroy {
   private readonly fb = inject(FormBuilder);
-  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
   private readonly draftId = this.route.snapshot.params['id'];
   protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
-  protected selectedSubjects = select(RegistriesSelectors.getSelectedSubjects);
+  protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
 
   protected actions = createDispatchMap({
     deleteDraft: DeleteDraft,
@@ -69,7 +69,7 @@ export class MetadataComponent implements OnDestroy {
     title: ['', CustomValidators.requiredTrimmed()],
     description: ['', CustomValidators.requiredTrimmed()],
     // contributors: [[], Validators.required],
-    subjects: [[] as Subject[], Validators.required],
+    subjects: [[] as SubjectModel[], Validators.required],
     tags: [[]],
     license: this.fb.group({
       id: ['', Validators.required],
@@ -81,13 +81,6 @@ export class MetadataComponent implements OnDestroy {
       const draft = this.draftRegistration();
       if (draft) {
         this.initForm(draft);
-      }
-    });
-
-    effect(() => {
-      const subjects = this.selectedSubjects();
-      if (subjects) {
-        this.metadataForm.patchValue({ subjects });
       }
     });
   }

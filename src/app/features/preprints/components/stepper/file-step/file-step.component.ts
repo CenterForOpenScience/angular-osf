@@ -1,5 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -15,8 +17,8 @@ import {
   Component,
   computed,
   DestroyRef,
-  HostListener,
   inject,
+  input,
   OnInit,
   output,
   signal,
@@ -26,21 +28,22 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { StringOrNull } from '@core/helpers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
+import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   CopyFileFromProject,
-  GetAvailableProjects,
-  GetPreprintFilesLinks,
-  GetProjectFiles,
-  GetProjectFilesByLink,
+  FetchAvailableProjects,
+  FetchPreprintFilesLinks,
+  FetchProjectFiles,
+  FetchProjectFilesByLink,
+  PreprintStepperSelectors,
   ReuploadFile,
   SetSelectedPreprintFileSource,
-  SubmitPreprintSelectors,
   UploadFile,
-} from '@osf/features/preprints/store/submit-preprint';
+} from '@osf/features/preprints/store/preprint-stepper';
 import { FilesTreeActions } from '@osf/features/project/files/models';
 import { FilesTreeComponent, IconComponent } from '@shared/components';
 import { OsfFile } from '@shared/models';
-import { CustomConfirmationService } from '@shared/services';
+import { CustomConfirmationService, ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-file-step',
@@ -55,6 +58,7 @@ import { CustomConfirmationService } from '@shared/services';
     Select,
     ReactiveFormsModule,
     FilesTreeComponent,
+    TranslatePipe,
   ],
   templateUrl: './file-step.component.html',
   styleUrl: './file-step.component.scss',
@@ -62,31 +66,33 @@ import { CustomConfirmationService } from '@shared/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileStepComponent implements OnInit {
+  private toastService = inject(ToastService);
   private customConfirmationService = inject(CustomConfirmationService);
   private actions = createDispatchMap({
     setSelectedFileSource: SetSelectedPreprintFileSource,
-    getPreprintFilesLinks: GetPreprintFilesLinks,
+    getPreprintFilesLinks: FetchPreprintFilesLinks,
     uploadFile: UploadFile,
     reuploadFile: ReuploadFile,
-    getAvailableProjects: GetAvailableProjects,
-    getFilesForSelectedProject: GetProjectFiles,
-    getProjectFilesByLink: GetProjectFilesByLink,
+    getAvailableProjects: FetchAvailableProjects,
+    getFilesForSelectedProject: FetchProjectFiles,
+    getProjectFilesByLink: FetchProjectFilesByLink,
     copyFileFromProject: CopyFileFromProject,
   });
   private destroyRef = inject(DestroyRef);
 
   readonly PreprintFileSource = PreprintFileSource;
 
-  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
-  providerId = select(SubmitPreprintSelectors.getSelectedProviderId);
-  selectedFileSource = select(SubmitPreprintSelectors.getSelectedFileSource);
-  fileUploadLink = select(SubmitPreprintSelectors.getUploadLink);
-  preprintFiles = select(SubmitPreprintSelectors.getPreprintFiles);
-  arePreprintFilesLoading = select(SubmitPreprintSelectors.arePreprintFilesLoading);
-  availableProjects = select(SubmitPreprintSelectors.getAvailableProjects);
-  areAvailableProjectsLoading = select(SubmitPreprintSelectors.areAvailableProjectsLoading);
-  projectFiles = select(SubmitPreprintSelectors.getProjectFiles);
-  areProjectFilesLoading = select(SubmitPreprintSelectors.areProjectFilesLoading);
+  provider = input.required<PreprintProviderDetails | undefined>();
+  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  providerId = select(PreprintStepperSelectors.getSelectedProviderId);
+  selectedFileSource = select(PreprintStepperSelectors.getSelectedFileSource);
+  fileUploadLink = select(PreprintStepperSelectors.getUploadLink);
+  preprintFiles = select(PreprintStepperSelectors.getPreprintFiles);
+  arePreprintFilesLoading = select(PreprintStepperSelectors.arePreprintFilesLoading);
+  availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
+  areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
+  projectFiles = select(PreprintStepperSelectors.getProjectFiles);
+  areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
   selectedProjectId = signal<StringOrNull>(null);
   currentFolder = signal<OsfFile | null>(null);
 
@@ -145,6 +151,7 @@ export class FileStepComponent implements OnInit {
       return;
     }
 
+    this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
     this.nextClicked.emit();
   }
 
@@ -159,12 +166,6 @@ export class FileStepComponent implements OnInit {
     } else {
       this.actions.uploadFile(file);
     }
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    $event.preventDefault();
-    return false;
   }
 
   selectProject(event: SelectChangeEvent) {
@@ -182,9 +183,8 @@ export class FileStepComponent implements OnInit {
 
   versionFile() {
     this.customConfirmationService.confirmContinue({
-      headerKey: 'Add a new preprint file',
-      messageKey:
-        'This will allow a new version of the preprint file to be uploaded to the preprint. The existing file will be retained as a version of the preprint.',
+      headerKey: 'preprints.preprintStepper.file.versionFile.header',
+      messageKey: 'preprints.preprintStepper.file.versionFile.message',
       onConfirm: () => {
         this.versionFileMode.set(true);
         this.actions.setSelectedFileSource(PreprintFileSource.None);

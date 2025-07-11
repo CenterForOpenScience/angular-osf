@@ -5,7 +5,9 @@ import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
 import { SubjectMapper } from '@shared/mappers';
-import { NodeSubjectModel, SubjectJsonApi, UpdateSubjectRequestJsonApi } from '@shared/models';
+import { SubjectModel, SubjectsResponseJsonApi } from '@shared/models';
+
+import { ResourceType } from '../enums';
 
 import { environment } from 'src/environments/environment';
 
@@ -16,25 +18,68 @@ export class SubjectsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly apiUrl = environment.apiUrl;
 
-  getSubjects(): Observable<NodeSubjectModel[]> {
-    return this.jsonApiService.get<SubjectJsonApi>(`${this.apiUrl}/subjects/?page[size]=150&embed=parent`).pipe(
-      map((response) => {
-        return SubjectMapper.mapSubjectsResponse(response.data);
-      })
-    );
-  }
+  private readonly urlMap = new Map<ResourceType, string>([
+    [ResourceType.Project, 'nodes'],
+    [ResourceType.Registration, 'registrations'],
+    [ResourceType.Preprint, 'preprints'],
+    [ResourceType.DraftRegistration, 'draft_registrations'],
+  ]);
 
-  updateProjectSubjects(projectId: string, subjectIds: string[]): Observable<UpdateSubjectRequestJsonApi[]> {
-    const payload = {
-      data: subjectIds.map((id) => ({
-        type: 'subjects',
-        id,
-      })),
+  getSubjects(resourceType: ResourceType, resourceId?: string, search?: string): Observable<SubjectModel[]> {
+    const baseUrl =
+      resourceType === ResourceType.Project
+        ? `${this.apiUrl}/subjects/`
+        : `${this.apiUrl}/providers/${this.urlMap.get(resourceType)}/${resourceId}/subjects/`;
+
+    const params: Record<string, string> = {
+      'page[size]': '100',
+      sort: 'text',
+      related_counts: 'children',
+      'filter[parent]': 'null',
     };
 
-    return this.jsonApiService.put<UpdateSubjectRequestJsonApi[]>(
-      `${this.apiUrl}/nodes/${projectId}/relationships/subjects/`,
-      payload
-    );
+    if (search) {
+      delete params['filter[parent]'];
+      params['filter[text]'] = search;
+      params['embed'] = 'parent';
+    }
+
+    return this.jsonApiService
+      .get<SubjectsResponseJsonApi>(baseUrl, params)
+      .pipe(map((response) => SubjectMapper.fromSubjectsResponseJsonApi(response)));
+  }
+
+  getChildrenSubjects(parentId: string): Observable<SubjectModel[]> {
+    const params: Record<string, string> = {
+      'page[size]': '100',
+      page: '1',
+      sort: 'text',
+      related_counts: 'children',
+    };
+
+    return this.jsonApiService
+      .get<SubjectsResponseJsonApi>(`${this.apiUrl}/subjects/${parentId}/children/`, params)
+      .pipe(map((response) => SubjectMapper.fromSubjectsResponseJsonApi(response)));
+  }
+
+  getResourceSubjects(resourceId: string, resourceType: ResourceType): Observable<SubjectModel[]> {
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/subjects/`;
+    const params: Record<string, string> = {
+      'page[size]': '100',
+      page: '1',
+    };
+
+    return this.jsonApiService
+      .get<SubjectsResponseJsonApi>(baseUrl, params)
+      .pipe(map((response) => SubjectMapper.fromSubjectsResponseJsonApi(response)));
+  }
+
+  updateResourceSubjects(resourceId: string, resourceType: ResourceType, subjects: SubjectModel[]): Observable<void> {
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/relationships/subjects/`;
+    const payload = {
+      data: subjects.map((item) => ({ id: item.id, type: 'subjects' })),
+    };
+
+    return this.jsonApiService.put(baseUrl, payload);
   }
 }

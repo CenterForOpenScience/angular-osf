@@ -1,8 +1,8 @@
-export interface Subject {
+export interface SubjectModel {
   id: string;
   name: string;
-  children?: Subject[];
-  parent?: Subject | null;
+  children?: SubjectModel[];
+  parent?: SubjectModel | null;
   expanded?: boolean;
   iri?: string;
 }

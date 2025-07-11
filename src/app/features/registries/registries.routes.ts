@@ -5,12 +5,11 @@ import { Routes } from '@angular/router';
 import { RegistriesComponent } from '@osf/features/registries/registries.component';
 import { RegistriesState } from '@osf/features/registries/store';
 import { ContributorsState, SubjectsState } from '@osf/shared/stores';
-import { SUBJECTS_SERVICE } from '@osf/shared/tokens';
 
 import { ModerationState } from '../moderation/store';
 
-import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers, SubjectsHandlers } from './store/handlers';
-import { LicensesService, RegistrationSubjectsService } from './services';
+import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './store/handlers';
+import { LicensesService } from './services';
 
 export const registriesRoutes: Routes = [
   {
@@ -21,13 +20,7 @@ export const registriesRoutes: Routes = [
       ProvidersHandlers,
       ProjectsHandlers,
       LicensesHandlers,
-      SubjectsHandlers,
-      RegistrationSubjectsService,
       LicensesService,
-      {
-        provide: SUBJECTS_SERVICE,
-        useClass: RegistrationSubjectsService,
-      },
     ],
     children: [
       {

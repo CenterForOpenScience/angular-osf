@@ -4,20 +4,16 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@osf/core/services';
-import { ProjectMetadataMapper } from '@osf/features/project/metadata/mappers/project-metadata.mapper';
-import { ProjectMetadataUpdateMapper } from '@osf/features/project/metadata/mappers/project-metadata-update.mapper';
-import {
-  CedarMetadataRecord,
-  CedarMetadataRecordJsonApi,
-  CedarMetadataTemplateJsonApi,
-  ProjectMetadata,
-} from '@osf/features/project/metadata/models';
-import { ProjectOverview } from '@osf/features/project/overview/models';
 
+import { ProjectOverview } from '../../overview/models';
+import { ProjectMetadataMapper } from '../mappers';
+import { ProjectMetadataUpdateMapper } from '../mappers/project-metadata-update.mapper';
+import { CedarMetadataRecord, CedarMetadataRecordJsonApi, CedarMetadataTemplateJsonApi } from '../models';
 import {
   CrossRefFundersResponse,
   CustomItemMetadataRecord,
   CustomItemMetadataResponse,
+  ProjectMetadata,
   UserInstitutionsResponse,
 } from '../models/metadata.models';
 

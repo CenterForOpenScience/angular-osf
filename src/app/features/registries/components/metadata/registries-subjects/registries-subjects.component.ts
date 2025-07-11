@@ -1,21 +1,29 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { TranslatePipe } from '@ngx-translate/core';
+
+import { Card } from 'primeng/card';
+import { Message } from 'primeng/message';
+
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import {
-  FetchRegistrationSubjects,
-  RegistriesSelectors,
-  UpdateRegistrationSubjects,
-} from '@osf/features/registries/store';
 import { SubjectsComponent } from '@osf/shared/components';
-import { Subject } from '@osf/shared/models';
-import { FetchChildrenSubjects, FetchSubjects } from '@osf/shared/stores';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
+import { SubjectModel } from '@osf/shared/models';
+import {
+  FetchChildrenSubjects,
+  FetchSelectedSubjects,
+  FetchSubjects,
+  SubjectsSelectors,
+  UpdateResourceSubjects,
+} from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-registries-subjects',
-  imports: [SubjectsComponent],
+  imports: [SubjectsComponent, Card, Message, TranslatePipe],
   templateUrl: './registries-subjects.component.html',
   styleUrl: './registries-subjects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,19 +34,25 @@ export class RegistriesSubjectsComponent {
   private readonly draftId = this.route.snapshot.params['id'];
   private readonly OSF_PROVIDER_ID = 'osf';
 
-  protected selectedSubjects = select(RegistriesSelectors.getSelectedSubjects);
-  protected isSubjectsUpdating = select(RegistriesSelectors.isSubjectsUpdating);
+  protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  protected isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
 
   protected actions = createDispatchMap({
     fetchSubjects: FetchSubjects,
-    fetchRegistrationSubjects: FetchRegistrationSubjects,
+    fetchSelectedSubjects: FetchSelectedSubjects,
     fetchChildrenSubjects: FetchChildrenSubjects,
-    updateRegistrationSubjects: UpdateRegistrationSubjects,
+    updateResourceSubjects: UpdateResourceSubjects,
   });
 
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+
   constructor() {
-    this.actions.fetchSubjects(this.OSF_PROVIDER_ID);
-    this.actions.fetchRegistrationSubjects(this.draftId);
+    effect(() => {
+      this.updateControlState(this.selectedSubjects());
+    });
+
+    this.actions.fetchSubjects(ResourceType.Registration, this.OSF_PROVIDER_ID);
+    this.actions.fetchSelectedSubjects(this.draftId, ResourceType.DraftRegistration);
   }
 
   getSubjectChildren(parentId: string) {
@@ -46,12 +60,12 @@ export class RegistriesSubjectsComponent {
   }
 
   searchSubjects(search: string) {
-    this.actions.fetchSubjects(search);
+    this.actions.fetchSubjects(ResourceType.Registration, this.OSF_PROVIDER_ID, search);
   }
 
-  updateSelectedSubjects(subjects: Subject[]) {
+  updateSelectedSubjects(subjects: SubjectModel[]) {
     this.updateControlState(subjects);
-    this.actions.updateRegistrationSubjects(this.draftId, subjects);
+    this.actions.updateResourceSubjects(this.draftId, ResourceType.DraftRegistration, subjects);
   }
 
   onFocusOut() {
@@ -62,7 +76,7 @@ export class RegistriesSubjectsComponent {
     }
   }
 
-  updateControlState(value: Subject[]) {
+  updateControlState(value: SubjectModel[]) {
     if (this.control()) {
       this.control().setValue(value);
       this.control().markAsTouched();

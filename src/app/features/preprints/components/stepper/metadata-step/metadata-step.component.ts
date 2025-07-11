@@ -9,7 +9,7 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, HostListener, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { PreprintsSubjectsComponent } from '@osf/features/preprints/components/stepper/metadata-step/preprints-subjects/preprints-subjects.component';
@@ -18,13 +18,14 @@ import { MetadataForm, Preprint } from '@osf/features/preprints/models';
 import {
   CreatePreprint,
   FetchLicenses,
+  PreprintStepperSelectors,
   SaveLicense,
-  SubmitPreprintSelectors,
   UpdatePreprint,
-} from '@osf/features/preprints/store/submit-preprint';
+} from '@osf/features/preprints/store/preprint-stepper';
 import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { License, LicenseOptions } from '@shared/models';
+import { CustomConfirmationService, ToastService } from '@shared/services';
 import { CustomValidators, findChangedFields } from '@shared/utils';
 
 import { ContributorsComponent } from './contributors/contributors.component';
@@ -52,6 +53,8 @@ import { ContributorsComponent } from './contributors/contributors.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetadataStepComponent implements OnInit {
+  private customConfirmationService = inject(CustomConfirmationService);
+  private toastService = inject(ToastService);
   private actions = createDispatchMap({
     createPreprint: CreatePreprint,
     updatePreprint: UpdatePreprint,
@@ -62,12 +65,14 @@ export class MetadataStepComponent implements OnInit {
   protected metadataForm!: FormGroup<MetadataForm>;
   protected inputLimits = formInputLimits;
   protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  protected today = new Date();
 
-  licenses = select(SubmitPreprintSelectors.getLicenses);
-  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
-  isUpdatingPreprint = select(SubmitPreprintSelectors.isPreprintSubmitting);
+  licenses = select(PreprintStepperSelectors.getLicenses);
+  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   nextClicked = output<void>();
+  backClicked = output<void>();
 
   ngOnInit() {
     this.actions.fetchLicenses();
@@ -77,7 +82,7 @@ export class MetadataStepComponent implements OnInit {
   initForm() {
     const publicationDate = this.createdPreprint()?.originalPublicationDate;
     this.metadataForm = new FormGroup<MetadataForm>({
-      doi: new FormControl(this.createdPreprint()?.doi || '', {
+      doi: new FormControl(this.createdPreprint()?.doi || null, {
         nonNullable: true,
         validators: [CustomValidators.requiredTrimmed(), Validators.pattern(this.inputLimits.doi.pattern)],
       }),
@@ -93,6 +98,10 @@ export class MetadataStepComponent implements OnInit {
         nonNullable: true,
         validators: [],
       }),
+      subjects: new FormControl([], {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
     });
   }
 
@@ -107,15 +116,10 @@ export class MetadataStepComponent implements OnInit {
 
     this.actions.updatePreprint(this.createdPreprint()!.id, changedFields).subscribe({
       complete: () => {
+        this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
         this.nextClicked.emit();
       },
     });
-  }
-
-  @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    $event.preventDefault();
-    return false;
   }
 
   createLicense(licenseDetails: { id: string; licenseOptions: LicenseOptions }) {
@@ -129,6 +133,26 @@ export class MetadataStepComponent implements OnInit {
   updateTags(updatedTags: string[]) {
     this.metadataForm.patchValue({
       tags: updatedTags,
+    });
+  }
+
+  backButtonClicked() {
+    const formValue = this.metadataForm.value;
+    delete formValue.subjects;
+    const changedFields = findChangedFields<Preprint>(formValue, this.createdPreprint()!);
+
+    if (!Object.keys(changedFields).length) {
+      this.backClicked.emit();
+      return;
+    }
+
+    this.customConfirmationService.confirmContinue({
+      headerKey: 'common.discardChanges.header',
+      messageKey: 'common.discardChanges.message',
+      onConfirm: () => {
+        this.backClicked.emit();
+      },
+      onReject: () => null,
     });
   }
 }

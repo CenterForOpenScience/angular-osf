@@ -16,7 +16,10 @@ import {
   GetPreprintProvidersAllowingSubmissions,
   PreprintProvidersSelectors,
 } from '@osf/features/preprints/store/preprint-providers';
-import { SetSelectedPreprintProviderId, SubmitPreprintSelectors } from '@osf/features/preprints/store/submit-preprint';
+import {
+  PreprintStepperSelectors,
+  SetSelectedPreprintProviderId,
+} from '@osf/features/preprints/store/preprint-stepper';
 import { SubHeaderComponent } from '@shared/components';
 import { DecodeHtmlPipe } from '@shared/pipes';
 
@@ -37,7 +40,7 @@ export class SelectPreprintServiceComponent implements OnInit {
 
   preprintProvidersAllowingSubmissions = select(PreprintProvidersSelectors.getPreprintProvidersAllowingSubmissions);
   areProvidersLoading = select(PreprintProvidersSelectors.arePreprintProvidersAllowingSubmissionsLoading);
-  selectedProviderId = select(SubmitPreprintSelectors.getSelectedProviderId);
+  selectedProviderId = select(PreprintStepperSelectors.getSelectedProviderId);
   skeletonArray = Array.from({ length: 8 }, (_, i) => i + 1);
 
   ngOnInit(): void {

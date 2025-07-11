@@ -10,7 +10,9 @@
         height="40"
         [src]="preprintProvider()!.brand.heroLogoImageUrl"
       />
-      <h1 class="preprint-provider-name">{{ 'Add a ' + preprintProvider()!.preprintWord }}</h1>
+      <h1 class="preprint-provider-name">
+        {{ 'preprints.addPreprint' | translate: { preprintWord: preprintProvider()!.preprintWord } }}
+      </h1>
     }
   </section>
 
@@ -20,7 +22,7 @@
     } @else {
       <osf-stepper
         class="m-t-48"
-        [steps]="submitPreprintSteps"
+        [steps]="submitPreprintSteps()"
         [currentStep]="currentStep()"
         (currentStepChange)="stepChange($event)"
       />
@@ -31,25 +33,26 @@
 <section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
   @switch (currentStep().value) {
     @case (SubmitStepsEnum.TitleAndAbstract) {
-      <osf-title-and-abstract-step (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.File])" />
+      <osf-title-and-abstract-step (nextClicked)="moveToNextStep()" />
     }
     @case (SubmitStepsEnum.File) {
       <osf-file-step
-        (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.Metadata])"
-        (backClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.TitleAndAbstract])"
+        [provider]="preprintProvider()"
+        (nextClicked)="moveToNextStep()"
+        (backClicked)="moveToPreviousStep()"
       />
     }
     @case (SubmitStepsEnum.Metadata) {
-      <osf-preprint-metadata (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.AuthorAssertions])" />
+      <osf-preprint-metadata (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
     }
     @case (SubmitStepsEnum.AuthorAssertions) {
-      <osf-author-assertions-step (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.Supplements])" />
+      <osf-author-assertions-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
     }
     @case (SubmitStepsEnum.Supplements) {
-      <osf-supplements-step (nextClicked)="currentStep.set(submitPreprintSteps[SubmitStepsEnum.Review])" />
+      <osf-supplements-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
     }
-    @default {
-      <p>No such step</p>
+    @case (SubmitStepsEnum.Review) {
+      <osf-review-step [provider]="preprintProvider()" />
     }
   }
 </section>

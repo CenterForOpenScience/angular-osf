@@ -24,7 +24,7 @@
         @for (tab of tabs(); track $index) {
           <p-tabpanel [value]="tab.id">
             @if (tab.type === 'project') {
-              @if (highlightedSubjectsLoading() && currentProjectLoading()) {
+              @if (currentProjectLoading()) {
                 <div class="flex-1 mt-4 md:mt-8 lg:pt-5">
                   <osf-loading-spinner />
                 </div>
@@ -103,11 +103,7 @@
                       </div>
                     </p-card>
 
-                    <osf-project-metadata-subjects
-                      (subjectsChanged)="onSubjectsChanged($event)"
-                      [currentProject]="currentProject()"
-                      [subjectsList]="highlightedSubjects()"
-                    />
+                    <osf-project-metadata-subjects [projectId]="currentProject()?.id" />
                   </div>
                 </div>
               }

@@ -46,6 +46,18 @@ export class PreprintsService {
       );
   }
 
+  getById(id: string) {
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>, null>
+      >(`${environment.apiUrl}/preprints/${id}/`)
+      .pipe(
+        map((response) => {
+          return PreprintsMapper.fromPreprintJsonApi(response.data);
+        })
+      );
+  }
+
   deletePreprint(id: string) {
     return this.jsonApiService.delete(`${environment.apiUrl}/preprints/${id}/`);
   }
@@ -65,6 +77,11 @@ export class PreprintsService {
         }
       )
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response)));
+  }
+
+  submitPreprint(preprintId: string) {
+    const payload = PreprintsMapper.toSubmitPreprintPayload(preprintId);
+    return this.jsonApiService.post(`${environment.apiUrl}/preprints/${preprintId}/review_actions/`, payload);
   }
 
   private mapPreprintDomainToApiPayload(domainPayload: Partial<Preprint>): Partial<PreprintJsonApi> {

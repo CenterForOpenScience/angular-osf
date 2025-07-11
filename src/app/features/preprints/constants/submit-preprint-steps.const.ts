@@ -1,35 +1,35 @@
-import { SubmitSteps } from '@osf/features/preprints/enums';
+import { PreprintSteps } from '@osf/features/preprints/enums';
 import { StepOption } from '@shared/models';
 
 export const submitPreprintSteps: StepOption[] = [
   {
-    index: SubmitSteps.TitleAndAbstract,
-    label: 'Title and Abstract',
-    value: SubmitSteps.TitleAndAbstract,
+    index: 0,
+    label: 'preprints.preprintStepper.steps.titleAndAbstract',
+    value: PreprintSteps.TitleAndAbstract,
   },
   {
-    index: SubmitSteps.File,
-    label: 'File',
-    value: SubmitSteps.File,
+    index: 1,
+    label: 'preprints.preprintStepper.steps.file',
+    value: PreprintSteps.File,
   },
   {
-    index: SubmitSteps.Metadata,
-    label: 'Metadata',
-    value: SubmitSteps.Metadata,
+    index: 2,
+    label: 'preprints.preprintStepper.steps.metadata',
+    value: PreprintSteps.Metadata,
   },
   {
-    index: SubmitSteps.AuthorAssertions,
-    label: 'Author Assertions',
-    value: SubmitSteps.AuthorAssertions,
+    index: 3,
+    label: 'preprints.preprintStepper.steps.authorAssertions',
+    value: PreprintSteps.AuthorAssertions,
   },
   {
-    index: SubmitSteps.Supplements,
-    label: 'Supplements',
-    value: SubmitSteps.Supplements,
+    index: 4,
+    label: 'preprints.preprintStepper.steps.supplements',
+    value: PreprintSteps.Supplements,
   },
   {
-    index: SubmitSteps.Review,
-    label: 'Review',
-    value: SubmitSteps.Review,
+    index: 5,
+    label: 'preprints.preprintStepper.steps.review',
+    value: PreprintSteps.Review,
   },
 ];

@@ -6,12 +6,11 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Message } from 'primeng/message';
 import { RadioButton } from 'primeng/radiobutton';
-import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 import { Tooltip } from 'primeng/tooltip';
 
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, HostListener, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -26,12 +25,14 @@ import {
 
 import { StringOrNull } from '@core/helpers';
 import { ArrayInputComponent } from '@osf/features/preprints/components/stepper/author-assertion-step/array-input/array-input.component';
-import { formInputLimits } from '@osf/features/preprints/constants';
+import { formInputLimits, preregLinksOptions } from '@osf/features/preprints/constants';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
-import { SubmitPreprintSelectors, UpdatePreprint } from '@osf/features/preprints/store/submit-preprint';
+import { Preprint } from '@osf/features/preprints/models';
+import { PreprintStepperSelectors, UpdatePreprint } from '@osf/features/preprints/store/preprint-stepper';
+import { FormSelectComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
-import { ToastService } from '@shared/services';
-import { CustomValidators } from '@shared/utils';
+import { CustomConfirmationService, ToastService } from '@shared/services';
+import { CustomValidators, findChangedFields } from '@shared/utils';
 
 @Component({
   selector: 'osf-author-assertions-step',
@@ -46,8 +47,8 @@ import { CustomValidators } from '@shared/utils';
     NgClass,
     Button,
     Tooltip,
-    Select,
     ArrayInputComponent,
+    FormSelectComponent,
   ],
   templateUrl: './author-assertions-step.component.html',
   styleUrl: './author-assertions-step.component.scss',
@@ -55,6 +56,7 @@ import { CustomValidators } from '@shared/utils';
 })
 export class AuthorAssertionsStepComponent {
   private toastService = inject(ToastService);
+  private confirmationService = inject(CustomConfirmationService);
   private actions = createDispatchMap({
     updatePreprint: UpdatePreprint,
   });
@@ -63,14 +65,11 @@ export class AuthorAssertionsStepComponent {
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly inputLimits = formInputLimits;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
-  readonly preregLinkOptions = Object.entries(PreregLinkInfo).map(([key, value]) => ({
-    label: key,
-    value,
-  }));
+  readonly preregLinkOptions = preregLinksOptions;
   readonly linkValidators = [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()];
 
-  createdPreprint = select(SubmitPreprintSelectors.getCreatedPreprint);
-  isUpdatingPreprint = select(SubmitPreprintSelectors.isPreprintSubmitting);
+  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   readonly authorAssertionsForm = new FormGroup({
     hasCoi: new FormControl<boolean>(this.createdPreprint()!.hasCoi || false, {
@@ -126,6 +125,7 @@ export class AuthorAssertionsStepComponent {
   });
 
   nextClicked = output<void>();
+  backClicked = output<void>();
 
   constructor() {
     effect(() => {
@@ -193,25 +193,19 @@ export class AuthorAssertionsStepComponent {
     });
   }
 
-  @HostListener('window:beforeunload', ['$event'])
-  public onBeforeUnload($event: BeforeUnloadEvent): boolean {
-    $event.preventDefault();
-    return false;
-  }
-
   nextButtonClicked() {
-    const formValue = this.authorAssertionsForm.value;
+    const formValue = this.authorAssertionsForm.getRawValue();
 
     const hasCoi = formValue.hasCoi;
-    const coiStatement = formValue.coiStatement || null;
+    const coiStatement = formValue.coiStatement;
 
     const hasDataLinks = formValue.hasDataLinks;
-    const whyNoData = formValue.whyNoData || null;
-    const dataLinks: string[] = formValue.dataLinks || [];
+    const whyNoData = formValue.whyNoData;
+    const dataLinks = formValue.dataLinks;
 
     const hasPreregLinks = formValue.hasPreregLinks;
-    const whyNoPrereg = formValue.whyNoPrereg || null;
-    const preregLinks: string[] = formValue.preregLinks || [];
+    const whyNoPrereg = formValue.whyNoPrereg;
+    const preregLinks = formValue.preregLinks;
     const preregLinkInfo = formValue.preregLinkInfo || undefined;
 
     this.actions
@@ -228,10 +222,29 @@ export class AuthorAssertionsStepComponent {
       })
       .subscribe({
         complete: () => {
-          this.toastService.showSuccess('Preprint saved successfully.');
+          this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSaved');
           this.nextClicked.emit();
         },
       });
+  }
+
+  backButtonClicked() {
+    const formValue = this.authorAssertionsForm.getRawValue();
+    const changedFields = findChangedFields<Preprint>(formValue, this.createdPreprint()!);
+
+    if (!Object.keys(changedFields).length) {
+      this.backClicked.emit();
+      return;
+    }
+
+    this.confirmationService.confirmContinue({
+      headerKey: 'common.discardChanges.header',
+      messageKey: 'common.discardChanges.message',
+      onConfirm: () => {
+        this.backClicked.emit();
+      },
+      onReject: () => null,
+    });
   }
 
   private disableAndClearValidators(control: AbstractControl) {

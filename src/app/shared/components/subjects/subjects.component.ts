@@ -6,7 +6,6 @@ import { TreeNode } from 'primeng/api';
 import { Card } from 'primeng/card';
 import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 import { Chip } from 'primeng/chip';
-import { Message } from 'primeng/message';
 import { Skeleton } from 'primeng/skeleton';
 import { Tree, TreeModule } from 'primeng/tree';
 
@@ -15,15 +14,14 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
-import { Subject } from '@osf/shared/models';
+import { SubjectModel } from '@osf/shared/models';
 import { SubjectsSelectors } from '@shared/stores';
 
 import { SearchInputComponent } from '../search-input/search-input.component';
 
 @Component({
   selector: 'osf-subjects',
-  imports: [Card, TranslatePipe, Chip, SearchInputComponent, Tree, TreeModule, Checkbox, Skeleton, Message],
+  imports: [Card, TranslatePipe, Chip, SearchInputComponent, Tree, TreeModule, Checkbox, Skeleton],
   templateUrl: './subjects.component.html',
   styleUrl: './subjects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,19 +32,19 @@ export class SubjectsComponent {
   searchedSubjects = select(SubjectsSelectors.getSearchedSubjects);
   areSubjectsUpdating = input<boolean>(false);
   isSearching = select(SubjectsSelectors.getSearchedSubjectsLoading);
-  control = input<FormControl<Subject[]>>();
-  selected = input<Subject[]>([]);
+  selected = input<SubjectModel[]>([]);
   searchChanged = output<string>();
   loadChildren = output<string>();
-  updateSelection = output<Subject[]>();
+  updateSelection = output<SubjectModel[]>();
 
-  subjectsTree = computed(() => this.subjects().map((subject: Subject) => this.mapSubjectToTreeNode(subject)));
-  selectedTree = computed(() => this.selected().map((subject: Subject) => this.mapSubjectToTreeNode(subject)));
-  searchedList = computed(() => this.searchedSubjects().map((subject: Subject) => this.mapParentsSubject(subject)));
+  subjectsTree = computed(() => this.subjects().map((subject: SubjectModel) => this.mapSubjectToTreeNode(subject)));
+  selectedTree = computed(() => this.selected().map((subject: SubjectModel) => this.mapSubjectToTreeNode(subject)));
+  searchedList = computed(() =>
+    this.searchedSubjects().map((subject: SubjectModel) => this.mapParentsSubject(subject))
+  );
   expanded: Record<string, boolean> = {};
 
   protected searchControl = new FormControl<string>('');
-  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   constructor() {
     this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {
@@ -65,7 +63,7 @@ export class SubjectsComponent {
     this.expanded[event.data.id] = false;
   }
 
-  selectSubject(subject: Subject) {
+  selectSubject(subject: SubjectModel) {
     const childrenIds = this.getChildrenIds([subject]);
     const updatedSelection = [...this.selected().filter((s) => !childrenIds.includes(s.id)), subject];
     const parentSubjects = this.mapParentsSubject(subject.parent).filter(
@@ -77,14 +75,14 @@ export class SubjectsComponent {
     this.updateSelection.emit(updatedSelection);
   }
 
-  removeSubject(subject: Subject) {
+  removeSubject(subject: SubjectModel) {
     const updatedSelection = this.selected().filter(
       (s) => s.id !== subject.id && !this.getChildrenIds([subject]).includes(s.id)
     );
     this.updateSelection.emit(updatedSelection);
   }
 
-  selectSearched(event: CheckboxChangeEvent, subjects: Subject[]) {
+  selectSearched(event: CheckboxChangeEvent, subjects: SubjectModel[]) {
     if (event.checked) {
       this.updateSelection.emit([...this.selected(), ...subjects]);
     } else {
@@ -93,8 +91,8 @@ export class SubjectsComponent {
     }
   }
 
-  private getChildrenIds(subjects: Subject[]): string[] {
-    return subjects.reduce((acc: string[], subject: Subject) => {
+  private getChildrenIds(subjects: SubjectModel[]): string[] {
+    return subjects.reduce((acc: string[], subject: SubjectModel) => {
       acc.push(subject.id);
       if (subject.children) {
         acc.push(...this.getChildrenIds(subject.children));
@@ -103,18 +101,18 @@ export class SubjectsComponent {
     }, []);
   }
 
-  private mapSubjectToTreeNode(subject: Subject): TreeNode {
+  private mapSubjectToTreeNode(subject: SubjectModel): TreeNode {
     return {
       label: subject.name,
       data: subject,
       key: subject.id,
-      children: subject.children?.map((child: Subject) => this.mapSubjectToTreeNode(child)),
+      children: subject.children?.map((child: SubjectModel) => this.mapSubjectToTreeNode(child)),
       leaf: !subject.children,
       expanded: this.expanded[subject.id] ?? false,
     };
   }
 
-  private mapParentsSubject(subject: Subject | null | undefined, acc: Subject[] = []): Subject[] {
+  private mapParentsSubject(subject: SubjectModel | null | undefined, acc: SubjectModel[] = []): SubjectModel[] {
     if (!subject) {
       return acc.reverse();
     }

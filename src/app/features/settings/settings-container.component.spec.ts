@@ -1,5 +1,3 @@
-import { BehaviorSubject } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -8,14 +6,10 @@ import { SettingsContainerComponent } from './settings-container.component';
 describe('SettingsContainerComponent', () => {
   let component: SettingsContainerComponent;
   let fixture: ComponentFixture<SettingsContainerComponent>;
-  let isWebSubject: BehaviorSubject<boolean>;
 
   beforeEach(async () => {
-    isWebSubject = new BehaviorSubject<boolean>(false);
-
     await TestBed.configureTestingModule({
       imports: [SettingsContainerComponent],
-      providers: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SettingsContainerComponent);

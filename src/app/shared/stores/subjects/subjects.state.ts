@@ -4,25 +4,29 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { SUBJECTS_SERVICE } from '@osf/shared/tokens/subjects.token';
-import { ISubjectsService, NodeSubjectModel, Subject } from '@shared/models';
+import { SubjectModel } from '@shared/models';
 import { SubjectsService } from '@shared/services';
 
-import { FetchChildrenSubjects, FetchSubjects, GetSubjects, UpdateProjectSubjects } from './subjects.actions';
+import {
+  FetchChildrenSubjects,
+  FetchSelectedSubjects,
+  FetchSubjects,
+  UpdateResourceSubjects,
+} from './subjects.actions';
 import { SubjectsModel } from './subjects.model';
 
 const initialState: SubjectsModel = {
-  highlightedSubjects: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
   subjects: {
     data: [],
     isLoading: false,
     error: null,
   },
   searchedSubjects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  selectedSubjects: {
     data: [],
     isLoading: false,
     error: null,
@@ -35,11 +39,14 @@ const initialState: SubjectsModel = {
 })
 @Injectable()
 export class SubjectsState {
-  private readonly projectSubjectsService = inject(SubjectsService);
-  private readonly subjectsService = inject<ISubjectsService>(SUBJECTS_SERVICE);
+  private readonly subjectsService = inject(SubjectsService);
 
   @Action(FetchSubjects)
-  fetchSubjects(ctx: StateContext<SubjectsModel>, { providerId, search }: FetchSubjects) {
+  fetchSubjects(ctx: StateContext<SubjectsModel>, { resourceId, resourceType, search }: FetchSubjects) {
+    if (!resourceType) {
+      return;
+    }
+
     ctx.patchState({
       subjects: {
         ...ctx.getState().subjects,
@@ -53,7 +60,7 @@ export class SubjectsState {
       },
     });
 
-    return this.subjectsService.getSubjects(providerId, search).pipe(
+    return this.subjectsService.getSubjects(resourceType, resourceId, search).pipe(
       tap((subjects) => {
         if (search) {
           ctx.patchState({
@@ -103,91 +110,70 @@ export class SubjectsState {
     );
   }
 
-  @Action(GetSubjects)
-  getSubjects(ctx: StateContext<SubjectsModel>) {
+  @Action(FetchSelectedSubjects)
+  fetchSelectedSubjects(ctx: StateContext<SubjectsModel>, { resourceId, resourceType }: FetchSelectedSubjects) {
+    if (!resourceType) {
+      return;
+    }
+
     ctx.patchState({
-      highlightedSubjects: {
+      selectedSubjects: {
         data: [],
         isLoading: true,
         error: null,
       },
     });
-    return this.projectSubjectsService.getSubjects().pipe(
-      tap({
-        next: (subjects) => {
-          ctx.patchState({
-            highlightedSubjects: {
-              data: subjects,
-              error: null,
-              isLoading: false,
-            },
-          });
-        },
-      }),
-      catchError((error) => {
+
+    return this.subjectsService.getResourceSubjects(resourceId, resourceType).pipe(
+      tap((subjects) => {
         ctx.patchState({
-          highlightedSubjects: {
-            ...ctx.getState().highlightedSubjects,
+          selectedSubjects: {
+            data: subjects,
             isLoading: false,
-            error,
+            error: null,
           },
         });
-        return throwError(() => error);
       }),
-      catchError((error) => {
-        ctx.patchState({
-          highlightedSubjects: {
-            ...ctx.getState().highlightedSubjects,
-            isLoading: false,
-            error,
-          },
-        });
-        return throwError(() => error);
-      })
+      catchError((error) => this.handleError(ctx, 'selectedSubjects', error))
     );
   }
 
-  @Action(UpdateProjectSubjects)
-  updateProjectSubjects(ctx: StateContext<SubjectsModel>, action: UpdateProjectSubjects) {
-    return this.projectSubjectsService.updateProjectSubjects(action.projectId, action.subjectIds).pipe(
-      tap({
-        next: (result) => {
-          const state = ctx.getState();
+  @Action(UpdateResourceSubjects)
+  updateResourceSubjects(
+    ctx: StateContext<SubjectsModel>,
+    { resourceId, resourceType, subjects }: UpdateResourceSubjects
+  ) {
+    if (!resourceType) {
+      return;
+    }
 
-          const updatedSubjects = result
-            .map((updatedSubject: { id: string; type: string }) => {
-              const findSubjectById = (subjects: NodeSubjectModel[]): NodeSubjectModel | undefined => {
-                for (const subject of subjects) {
-                  if (subject.id === updatedSubject.id) {
-                    return subject;
-                  }
-                  if (subject.children) {
-                    const found = findSubjectById(subject.children);
-                    if (found) {
-                      return found;
-                    }
-                  }
-                }
-                return undefined;
-              };
+    ctx.patchState({
+      selectedSubjects: {
+        ...ctx.getState().selectedSubjects,
+        isLoading: true,
+        error: null,
+      },
+    });
 
-              const foundSubject = findSubjectById(state.highlightedSubjects.data);
-              return foundSubject
-                ? {
-                    id: foundSubject.id,
-                    text: foundSubject.text,
-                  }
-                : null;
-            })
-            .filter((subject: { id: string; text: string } | null) => subject !== null);
-
-          return updatedSubjects;
-        },
-      })
+    return this.subjectsService.updateResourceSubjects(resourceId, resourceType, subjects).pipe(
+      tap(() => {
+        ctx.patchState({
+          selectedSubjects: {
+            data: subjects,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => this.handleError(ctx, 'selectedSubjects', error))
     );
   }
 
-  private updateSubjectChildren(subjects: Subject[], parentId: string, newChildren: Subject[]): Subject[] {
+  private updateSubjectChildren(
+    subjects: SubjectModel[],
+    parentId: string,
+    newChildren: SubjectModel[]
+  ): SubjectModel[] {
     return subjects.map((subject) => {
       if (subject.id === parentId) {
         return { ...subject, children: newChildren };
