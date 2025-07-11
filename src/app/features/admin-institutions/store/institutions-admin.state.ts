@@ -12,7 +12,9 @@ import {
   FetchInstitutionDepartments,
   FetchInstitutionSearchResults,
   FetchInstitutionSummaryMetrics,
+  FetchInstitutionUsers,
   FetchStorageRegionSearch,
+  SendUserMessage,
 } from './institutions-admin.actions';
 import { InstitutionsAdminModel } from './institutions-admin.model';
 
@@ -24,6 +26,8 @@ import { InstitutionsAdminModel } from './institutions-admin.model';
     hasOsfAddonSearch: { data: [], isLoading: false, error: null },
     storageRegionSearch: { data: [], isLoading: false, error: null },
     searchResults: { data: [], isLoading: false, error: null },
+    users: { data: [], totalCount: 0, isLoading: false, error: null },
+    sendMessage: { data: null, isLoading: false, error: null },
     selectedInstitutionId: null,
     currentSearchPropertyPath: null,
   },
@@ -163,5 +167,67 @@ export class InstitutionsAdminState {
         return throwError(() => error);
       })
     );
+  }
+
+  @Action(FetchInstitutionUsers)
+  fetchUsers(ctx: StateContext<InstitutionsAdminModel>, action: FetchInstitutionUsers) {
+    const state = ctx.getState();
+    ctx.patchState({
+      users: { ...state.users, isLoading: true, error: null },
+    });
+
+    return this.institutionsAdminService
+      .fetchUsers(action.institutionId, action.page, action.pageSize, action.sort, action.filters)
+      .pipe(
+        tap((response) => {
+          ctx.patchState({
+            users: { data: response.users, totalCount: response.totalCount, isLoading: false, error: null },
+          });
+        }),
+        catchError((error) => {
+          ctx.patchState({
+            users: {
+              ...state.users,
+              isLoading: false,
+              error: error.message,
+            },
+          });
+          return throwError(() => error);
+        })
+      );
+  }
+
+  @Action(SendUserMessage)
+  sendUserMessage(ctx: StateContext<InstitutionsAdminModel>, action: SendUserMessage) {
+    const state = ctx.getState();
+    ctx.patchState({
+      sendMessage: { ...state.sendMessage, isLoading: true, error: null },
+    });
+
+    return this.institutionsAdminService
+      .sendMessage({
+        userId: action.userId,
+        institutionId: action.institutionId,
+        messageText: action.messageText,
+        bccSender: action.bccSender,
+        replyTo: action.replyTo,
+      })
+      .pipe(
+        tap((response) => {
+          ctx.patchState({
+            sendMessage: { data: response, isLoading: false, error: null },
+          });
+        }),
+        catchError((error) => {
+          ctx.patchState({
+            sendMessage: {
+              ...state.sendMessage,
+              isLoading: false,
+              error: error.message,
+            },
+          });
+          return throwError(() => error);
+        })
+      );
   }
 }

@@ -1,0 +1,49 @@
+<div class="flex flex-column gap-4">
+  <div class="flex flex-column gap-2">
+    <textarea
+      pTextarea
+      [ngModel]="emailContent()"
+      (ngModelChange)="emailContent.set($event)"
+      [placeholder]="'adminInstitutions.institutionUsers.writeEmailText' | translate"
+      [rows]="6"
+      class="w-full border-2 border-round-xl grey-border-color p-3"
+      [style]="{ 'min-height': '200px' }"
+    ></textarea>
+  </div>
+
+  <div class="flex flex-wrap gap-1 pl-3">
+    <span class="text-sm">{{ 'adminInstitutions.institutionUsers.sincerelyYours' | translate }}, </span>
+    <span class="text-sm">{{ config.data }}</span>
+  </div>
+
+  <div class="flex flex-column gap-3">
+    <div class="flex align-items-center gap-2">
+      <p-checkbox
+        [ngModel]="ccSender()"
+        (ngModelChange)="ccSender.set($event)"
+        binary="true"
+        inputId="cc-sender"
+      ></p-checkbox>
+      <label for="cc-sender" class="text-sm font-medium cursor-pointer">{{
+        'adminInstitutions.institutionUsers.ccSender' | translate
+      }}</label>
+    </div>
+
+    <div class="flex align-items-center gap-2">
+      <p-checkbox
+        [ngModel]="allowReplyToSender()"
+        (ngModelChange)="allowReplyToSender.set($event)"
+        binary="true"
+        inputId="allow-reply"
+      ></p-checkbox>
+      <label for="allow-reply" class="text-sm font-medium cursor-pointer">{{
+        'adminInstitutions.institutionUsers.allowReplyToSenderAddress' | translate
+      }}</label>
+    </div>
+  </div>
+
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button label="Cancel" severity="secondary" variant="outlined" (onClick)="onCancel()"></p-button>
+    <p-button label="Send" severity="primary" (onClick)="onSend()" [disabled]="!emailContent().trim()"></p-button>
+  </div>
+</div>

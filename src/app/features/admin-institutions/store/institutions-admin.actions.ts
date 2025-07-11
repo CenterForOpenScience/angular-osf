@@ -27,11 +27,24 @@ export class FetchStorageRegionSearch {
   constructor(public institutionId: string) {}
 }
 
-export class SetSelectedInstitutionId {
-  static readonly type = '[InstitutionsAdmin] Set Selected Institution Id';
-  constructor(public institutionId: string) {}
+export class FetchInstitutionUsers {
+  static readonly type = '[InstitutionsAdmin] Fetch Institution Users';
+  constructor(
+    public institutionId: string,
+    public page = 1,
+    public pageSize = 10,
+    public sort = 'user_name',
+    public filters?: Record<string, string>
+  ) {}
 }
 
-export class ClearInstitutionsAdminData {
-  static readonly type = '[InstitutionsAdmin] Clear Data';
+export class SendUserMessage {
+  static readonly type = '[InstitutionsAdmin] Send User Message';
+  constructor(
+    public userId: string,
+    public institutionId: string,
+    public messageText: string,
+    public bccSender: boolean,
+    public replyTo: boolean
+  ) {}
 }

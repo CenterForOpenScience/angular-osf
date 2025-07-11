@@ -1,0 +1,16 @@
+.p-08 {
+  padding: 0.7rem;
+}
+
+.hover-group {
+  .icon-button {
+    opacity: 0;
+    transition: opacity;
+  }
+
+  &:hover {
+    .icon-button {
+      opacity: 100;
+    }
+  }
+}

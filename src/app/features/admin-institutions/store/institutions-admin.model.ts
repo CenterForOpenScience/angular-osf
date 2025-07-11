@@ -1,6 +1,12 @@
-import { AsyncStateModel } from '@shared/models';
+import { AsyncStateModel, AsyncStateWithTotalCount } from '@shared/models';
 
-import { InstitutionDepartment, InstitutionSearchFilter, InstitutionSummaryMetrics } from '../models';
+import {
+  InstitutionDepartment,
+  InstitutionSearchFilter,
+  InstitutionSummaryMetrics,
+  InstitutionUser,
+  SendMessageResponse,
+} from '../models';
 
 export interface InstitutionsAdminModel {
   departments: AsyncStateModel<InstitutionDepartment[]>;
@@ -8,6 +14,8 @@ export interface InstitutionsAdminModel {
   hasOsfAddonSearch: AsyncStateModel<InstitutionSearchFilter[]>;
   storageRegionSearch: AsyncStateModel<InstitutionSearchFilter[]>;
   searchResults: AsyncStateModel<InstitutionSearchFilter[]>;
+  users: AsyncStateWithTotalCount<InstitutionUser[]>;
+  sendMessage: AsyncStateModel<SendMessageResponse | null>;
   selectedInstitutionId: string | null;
   currentSearchPropertyPath: string | null;
 }

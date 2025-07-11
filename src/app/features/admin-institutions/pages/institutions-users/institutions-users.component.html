@@ -1,4 +1,47 @@
-<div>
-  <h2 class="text-xl font-bold mb-4">Institution Users</h2>
-  <p>Users content will be implemented here...</p>
+<div class="p-4">
+  <osf-admin-table
+    [tableColumns]="tableColumns"
+    [tableData]="tableData()"
+    [enablePagination]="true"
+    [totalCount]="totalCount()"
+    [currentPage]="currentPage()"
+    [pageSize]="currentPageSize()"
+    [first]="first()"
+    [sortField]="sortField()"
+    [sortOrder]="sortOrder()"
+    (pageChanged)="onPageChange($event)"
+    (sortChanged)="onSortChange($event)"
+    (iconClicked)="onIconClick($event)"
+    [downloadLink]="'/admin/institutions/' + institutionId + '/users/export'"
+    [reportsLink]="'/admin/institutions/' + institutionId + '/reports'"
+    [customizeLabel]="'Select Columns'"
+    [downloadLabel]="'Export Users'"
+    [reportsLabel]="'User Reports'"
+  >
+    <div slot="amount" class="flex items-center">
+      <h3 class="title">{{ amountText() }}</h3>
+    </div>
+
+    <div slot="otherFilters" class="flex gap-3 align-items-center">
+      <div class="flex align-items-center gap-2">
+        <p-checkbox
+          [(ngModel)]="hasOrcidFilter"
+          (onChange)="onOrcidFilterChange($event.checked)"
+          binary="true"
+          inputId="orcid-filter"
+        >
+        </p-checkbox>
+        <label class="text-sm font-medium cursor-pointer m-0" for="orcid-filter">Has ORCID</label>
+      </div>
+
+      <div class="flex align-items-center gap-2">
+        <osf-select
+          [options]="departmentOptions"
+          [(selectedValue)]="selectedDepartment"
+          (changeValue)="onDepartmentChange($event)"
+          [fullWidth]="false"
+        />
+      </div>
+    </div>
+  </osf-admin-table>
 </div>

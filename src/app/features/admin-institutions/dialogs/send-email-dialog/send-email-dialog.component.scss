@@ -1,0 +1,15 @@
+:host {
+  display: block;
+  padding: 0;
+}
+
+textarea {
+  font-family: inherit;
+  font-size: 0.875rem;
+  resize: none;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+  }
+}

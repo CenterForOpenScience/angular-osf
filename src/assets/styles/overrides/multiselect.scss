@@ -1,11 +1,20 @@
-.p-multiselect-header {
-  .p-inputtext {
-    --p-inputtext-padding-y: 0.4rem;
-  }
-}
+.p-multiselect {
+  font-size: 1rem;
+  --p-multiselect-padding-y: 0.6rem;
+  --p-multiselect-hover-border-color: var(--pr-blue-1);
+  --p-multiselect-overlay-color: var(--dark-blue-1);
+  --p-multiselect-overlay-border-color: var(--grey-2);
+  --p-multiselect-dropdown-color: var(--grey-1);
 
-.p-multiselect-option {
-  span {
-    white-space: wrap;
+  .p-multiselect-header {
+    .p-inputtext {
+      --p-inputtext-padding-y: 0.4rem;
+    }
+  }
+
+  .p-multiselect-option {
+    span {
+      white-space: wrap;
+    }
   }
 }
