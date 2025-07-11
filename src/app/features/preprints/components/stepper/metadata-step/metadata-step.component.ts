@@ -68,7 +68,7 @@ export class MetadataStepComponent implements OnInit {
   protected today = new Date();
 
   licenses = select(PreprintStepperSelectors.getLicenses);
-  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  createdPreprint = select(PreprintStepperSelectors.getPreprint);
   isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   nextClicked = output<void>();

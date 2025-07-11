@@ -129,6 +129,6 @@
     styleClass="w-full"
     [label]="'common.buttons.next' | translate"
     (click)="nextButtonClicked()"
-    [disabled]="!createdPreprint()?.primaryFileId || versionFileMode()"
+    [disabled]="!preprint()?.primaryFileId || versionFileMode()"
   />
 </section>
