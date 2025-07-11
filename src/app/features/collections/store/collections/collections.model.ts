@@ -4,7 +4,7 @@ import {
   CollectionsFilters,
   CollectionSubmission,
 } from '@osf/features/collections/models';
-import { AsyncStateModel } from '@osf/shared/models/store';
+import { AsyncStateModel } from '@shared/models/store';
 
 export interface CollectionsStateModel {
   bookmarksId: AsyncStateModel<string>;
@@ -13,6 +13,7 @@ export interface CollectionsStateModel {
   collectionProvider: AsyncStateModel<CollectionProvider | null>;
   collectionDetails: AsyncStateModel<CollectionDetails | null>;
   collectionSubmissions: AsyncStateModel<CollectionSubmission[]>;
+  userCollectionSubmissions: AsyncStateModel<CollectionSubmission[]>;
   totalSubmissions: number;
   sortBy: string;
   searchText: string;

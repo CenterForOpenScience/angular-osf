@@ -1,0 +1,62 @@
+@if (!isProviderLoading()) {
+  <section class="collections-content flex flex-column flex-1 pt-0 xl:pt-5">
+    <div
+      class="collections-sub-header flex justify-content-between flex-column gap-4 mb-4 sm:mb-6 sm:gap-0 sm:flex-row"
+    >
+      <div class="flex gap-3">
+        <i class="collections-icon text-white osf-icon-collections"></i>
+        <h1 class="flex align-items-center text-white">{{ collectionProvider()?.name }}</h1>
+      </div>
+    </div>
+
+    <div class="content-container flex-1">
+      <p-stepper class="collection-stepper flex flex-column gap-5" [value]="stepperActiveValue()">
+        <osf-select-project-step
+          [stepperActiveValue]="stepperActiveValue()"
+          [collectionId]="primaryCollectionId() ?? ''"
+          [targetStepValue]="AddToCollectionSteps.SelectProject"
+          (projectSelected)="handleProjectSelected()"
+          (stepChange)="handleChangeStep($event)"
+        />
+
+        <osf-project-metadata-step
+          [stepperActiveValue]="stepperActiveValue()"
+          [targetStepValue]="AddToCollectionSteps.ProjectMetadata"
+          [isDisabled]="isProjectMetadataDisabled()"
+          [providerId]="providerId()"
+          (metadataSaved)="handleProjectMetadataSaved()"
+          (stepChange)="handleChangeStep($event)"
+        />
+
+        <osf-project-contributors-step
+          [stepperActiveValue]="stepperActiveValue()"
+          [targetStepValue]="AddToCollectionSteps.ProjectContributors"
+          [isDisabled]="isProjectContributorsDisabled()"
+          [isProjectMetadataSaved]="projectMetadataSaved()"
+          (contributorsSaved)="handleContributorsSaved()"
+          (stepChange)="handleChangeStep($event)"
+        />
+
+        <osf-collection-metadata-step
+          [stepperActiveValue]="stepperActiveValue()"
+          [targetStepValue]="AddToCollectionSteps.CollectionMetadata"
+          [isDisabled]="isCollectionMetadataDisabled()"
+          [primaryCollectionId]="primaryCollectionId()"
+          (metadataSaved)="handleCollectionMetadataSaved($event)"
+          (stepChange)="handleChangeStep($event)"
+        />
+      </p-stepper>
+
+      <div class="flex justify-content-end gap-3 mt-4">
+        <p-button severity="info" [label]="'common.buttons.cancel' | translate" [routerLink]="['../']" />
+        <p-button
+          [label]="'common.buttons.addToCollection' | translate"
+          [disabled]="stepperActiveValue() !== AddToCollectionSteps.Complete"
+          (click)="handleAddToCollection()"
+        />
+      </div>
+    </div>
+  </section>
+} @else {
+  <osf-loading-spinner />
+}

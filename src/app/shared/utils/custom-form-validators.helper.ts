@@ -40,4 +40,14 @@ export class CustomValidators {
       return isValid ? null : { link: true };
     };
   }
+
+  static requiredArrayValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (!Array.isArray(value) || !value.length) {
+        return { required: true };
+      }
+      return null;
+    };
+  }
 }

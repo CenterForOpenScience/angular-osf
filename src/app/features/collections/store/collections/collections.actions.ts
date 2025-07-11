@@ -87,6 +87,12 @@ export class SetIssueFilters {
   constructor(public issueFilters: string[]) {}
 }
 
+export class SetReviewsStateFilters {
+  static readonly type = '[Collections] Set Reviews State Filters';
+
+  constructor(public reviewsStateFilters: string[]) {}
+}
+
 export class SetSchoolTypeFilters {
   static readonly type = '[Collections] Set School Type Filters';
 
@@ -135,8 +141,8 @@ export class SetAllFilters {
   constructor(public filters: Partial<CollectionsFilters>) {}
 }
 
-export class GetCollectionSubmissions {
-  static readonly type = '[Collections] Get Collection Submissions';
+export class SearchCollectionSubmissions {
+  static readonly type = '[Collections] Search Collection Submissions';
 
   constructor(
     public providerId: string,
@@ -144,5 +150,14 @@ export class GetCollectionSubmissions {
     public activeFilters: Record<string, string[]>,
     public page: string,
     public sort: string
+  ) {}
+}
+
+export class GetUserCollectionSubmissions {
+  static readonly type = '[Collections] Get User Collection Submissions';
+
+  constructor(
+    public providerId: string,
+    public projectsIds: string[]
   ) {}
 }

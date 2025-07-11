@@ -21,6 +21,7 @@ export * from './metadata-field.model';
 export * from './nodes/create-project-form.model';
 export * from './nodes/nodes-json-api.model';
 export * from './paginated-data.model';
+export * from './project-metadata-update-payload.model';
 export * from './query-params.model';
 export * from './resource-card';
 export * from './resource-overview.model';

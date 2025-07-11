@@ -4,10 +4,10 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponseWithPaging } from '@core/models';
+import { JsonApiResponse, JsonApiResponseWithPaging } from '@core/models';
 import { JsonApiService } from '@osf/core/services';
 import { CollectionsMapper } from '@osf/features/collections/mappers';
-import { SetTotalSubmissions } from '@osf/features/collections/store';
+import { SetTotalSubmissions } from '@osf/features/collections/store/collections';
 
 import {
   CollectionContributor,
@@ -92,7 +92,7 @@ export class CollectionsService {
       .pipe(map((response) => CollectionsMapper.fromGetCollectionDetailsResponse(response.data)));
   }
 
-  getCollectionSubmissions(
+  searchCollectionSubmissions(
     providerId: string,
     searchText: string,
     activeFilters: Record<string, string[]>,
@@ -146,6 +146,15 @@ export class CollectionsService {
       );
   }
 
+  fetchAllUserCollectionSubmissions(providerId: string, projectIds: string[]): Observable<CollectionSubmission[]> {
+    const pendingSubmissions$ = this.fetchUserCollectionSubmissionsByStatus(providerId, projectIds, 'pending');
+    const acceptedSubmissions$ = this.fetchUserCollectionSubmissionsByStatus(providerId, projectIds, 'accepted');
+
+    return forkJoin([pendingSubmissions$, acceptedSubmissions$]).pipe(
+      map(([pending, accepted]) => [...pending, ...accepted])
+    );
+  }
+
   private getCollectionContributors(contributorsUrl: string): Observable<CollectionContributor[]> {
     const params: Record<string, unknown> = {
       'fields[users]': 'full_name',
@@ -184,5 +193,26 @@ export class CollectionsService {
     };
 
     return this.jsonApiService.delete(url, payload);
+  }
+
+  private fetchUserCollectionSubmissionsByStatus(
+    providerId: string,
+    projectIds: string[],
+    submissionStatus: string
+  ): Observable<CollectionSubmission[]> {
+    const params: Record<string, unknown> = {
+      'filter[reviews_state]': submissionStatus,
+      'filter[id]': projectIds.join(','),
+    };
+
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<CollectionSubmissionJsonApi[], null>
+      >(`${environment.apiUrl}/collections/${providerId}/collection_submissions/`, params)
+      .pipe(
+        map((response) => {
+          return CollectionsMapper.fromGetCollectionSubmissionsResponse(response.data);
+        })
+      );
   }
 }

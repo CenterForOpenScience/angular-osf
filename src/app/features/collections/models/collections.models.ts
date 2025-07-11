@@ -81,5 +81,5 @@ export interface CollectionSubmission {
   dataType: string;
   disease: string;
   gradeLevels: string;
-  contributors: CollectionContributor[];
+  contributors?: CollectionContributor[];
 }

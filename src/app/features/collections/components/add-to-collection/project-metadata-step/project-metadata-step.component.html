@@ -1,0 +1,171 @@
+<p-step-item
+  [pTooltip]="isDisabled() ? ('collections.addToCollection.tooltipMessage' | translate) : ''"
+  tooltipPosition="top"
+  class="p-4"
+  [value]="targetStepValue()"
+>
+  <p-step [value]="targetStepValue()" [disabled]="isDisabled()">
+    <ng-template #content>
+      <div class="flex flex-column gap-4 w-full">
+        <h3>{{ 'collections.addToCollection.projectMetadata' | translate }}</h3>
+        @if (!isDisabled() && stepperActiveValue() !== targetStepValue()) {
+          <div>
+            <p class="font-bold">{{ 'collections.addToCollection.form.title' | translate }}</p>
+            <p class="mt-2">{{ selectedProject()?.title }}</p>
+          </div>
+          <div>
+            <p class="font-bold">{{ 'collections.addToCollection.form.description' | translate }}</p>
+            <p class="mt-2">
+              {{ selectedProject()?.description ?? 'collections.addToCollection.noDescription' | translate }}
+            </p>
+          </div>
+          <div>
+            <p class="font-bold">{{ 'collections.addToCollection.form.license' | translate }}</p>
+            <p class="mt-2">
+              {{ projectLicense()?.name ?? 'collections.addToCollection.noLicense' | translate }}
+            </p>
+          </div>
+          <div>
+            <p class="font-bold">{{ 'collections.addToCollection.form.tags' | translate }}</p>
+            <div class="flex mt-2 gap-2">
+              @if (projectTags().length) {
+                @for (tag of projectTags(); track tag) {
+                  <p-chip>{{ tag }}</p-chip>
+                }
+              } @else {
+                <p>{{ 'collections.addToCollection.noTags' | translate }}</p>
+              }
+            </div>
+          </div>
+          <p-button
+            (click)="handleEditStep()"
+            severity="secondary"
+            class="align-self-end"
+            [label]="'common.buttons.clickToEdit' | translate"
+          ></p-button>
+        }
+      </div>
+    </ng-template>
+  </p-step>
+
+  <p-step-panel [value]="targetStepValue()" class="p-0">
+    <ng-template class="m-0" #content>
+      <p class="pt-3">{{ 'collections.addToCollection.projectMetadataMessage' | translate }}</p>
+      <form [formGroup]="projectMetadataForm" class="flex flex-column gap-4 mt-4">
+        <div class="flex flex-column gap-1">
+          <label for="title">
+            {{ 'collections.addToCollection.form.title' | translate }}
+          </label>
+          <input pInputText id="title" type="text" [formControlName]="ProjectMetadataFormControls.Title" />
+          @let titleControl = projectMetadataForm.controls[ProjectMetadataFormControls.Title];
+          @if (titleControl.errors?.['required'] && (titleControl.touched || titleControl.dirty)) {
+            <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+              {{ 'collections.addToCollection.form.fieldRequired' | translate }}
+            </p-message>
+          }
+        </div>
+
+        <div class="flex flex-column gap-1">
+          <label for="description">
+            {{ 'collections.addToCollection.form.description' | translate }}
+          </label>
+          <textarea
+            pTextarea
+            id="description"
+            [formControlName]="ProjectMetadataFormControls.Description"
+            [rows]="5"
+          ></textarea>
+          @let descriptionControl = projectMetadataForm.controls[ProjectMetadataFormControls.Description];
+          @if (descriptionControl.errors?.['required'] && (descriptionControl.touched || descriptionControl.dirty)) {
+            <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+              {{ 'collections.addToCollection.form.fieldRequired' | translate }}
+            </p-message>
+          }
+        </div>
+
+        <p-card>
+          <label for="license">
+            {{ 'collections.addToCollection.form.chooseLicense' | translate }}
+          </label>
+
+          <p-select
+            id="license"
+            [options]="collectionLicenses()"
+            [formControlName]="ProjectMetadataFormControls.License"
+            optionLabel="name"
+            [placeholder]="'shared.license.selectLicense' | translate"
+            (onChange)="handleSelectCollectionLicense($event)"
+            class="w-full mt-1 md:w-6"
+          />
+          @let license = selectedLicense();
+          @if (license) {
+            <p-divider styleClass="mt-3 mb-3" />
+            @if (license.requiredFields.length) {
+              <div class="flex flex-column gap-3 mb-3 w-full md:flex-row">
+                <div class="w-full md:w-6">
+                  <label for="licenseYear"> {{ 'common.labels.year' | translate }} </label>
+                  <p-datePicker
+                    id="licenseYear"
+                    [formControlName]="ProjectMetadataFormControls.LicenseYear"
+                    [maxDate]="currentYear"
+                    dataType="string"
+                    view="year"
+                    dateFormat="yy"
+                  />
+                </div>
+                <osf-text-input
+                  class="w-full md:w-6"
+                  label="shared.license.copyrightHolders"
+                  [control]="projectMetadataForm.controls[ProjectMetadataFormControls.CopyrightHolders]"
+                  [maxLength]="inputLimits.fullName.maxLength"
+                />
+              </div>
+            }
+
+            <p class="highlight-block p-3">
+              <osf-truncated-text
+                [text]="
+                  license.text
+                    | interpolate
+                      : {
+                          year: projectMetadataForm.controls[ProjectMetadataFormControls.LicenseYear].value || '',
+                          copyrightHolders:
+                            projectMetadataForm.controls[ProjectMetadataFormControls.CopyrightHolders].value || '',
+                        }
+                "
+              />
+            </p>
+          }
+        </p-card>
+
+        <div class="flex flex-column gap-1">
+          <label for="tags">
+            {{ 'collections.addToCollection.form.tags' | translate }}
+          </label>
+          @let tagsControl = projectMetadataForm.controls[ProjectMetadataFormControls.Tags];
+          <osf-tags-input [required]="true" [tags]="projectTags()" (tagsChanged)="handleTagsChange($event)" id="tags" />
+          @if (tagsControl.errors?.['required'] && (tagsControl.touched || tagsControl.dirty)) {
+            <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+              {{ 'collections.addToCollection.form.fieldRequired' | translate }}
+            </p-message>
+          }
+        </div>
+
+        <div class="flex justify-content-end gap-3">
+          <p-button
+            (click)="handleDiscardChanges()"
+            [disabled]="isSelectedProjectUpdateSubmitting()"
+            severity="info"
+            [label]="'common.buttons.discardChanges' | translate"
+          />
+          <p-button
+            [label]="'common.buttons.saveAndContinue' | translate"
+            [loading]="isSelectedProjectUpdateSubmitting()"
+            [disabled]="!projectMetadataForm.valid"
+            (click)="handleUpdateMetadata()"
+          />
+        </div>
+      </form>
+    </ng-template>
+  </p-step-panel>
+</p-step-item>

@@ -1,0 +1,58 @@
+<p-step-item
+  [pTooltip]="isDisabled() ? ('collections.addToCollection.tooltipMessage' | translate) : ''"
+  tooltipPosition="top"
+  class="p-4"
+  [value]="targetStepValue()"
+>
+  <p-step [value]="targetStepValue()" [disabled]="isDisabled()">
+    <ng-template #content>
+      <div class="flex flex-column gap-4 w-full">
+        <h3>{{ 'collections.addToCollection.projectContributors' | translate }}</h3>
+        @if (!isDisabled() && stepperActiveValue() !== targetStepValue()) {
+          @if (projectContributors().length) {
+            <div class="flex flex-column gap-2">
+              @for (contributor of projectContributors(); track contributor.id) {
+                <p>{{ contributor.fullName }}</p>
+              }
+            </div>
+          }
+
+          <p-button
+            (click)="handleEditStep()"
+            severity="secondary"
+            class="align-self-end"
+            [label]="'common.buttons.clickToEdit' | translate"
+          ></p-button>
+        }
+      </div>
+    </ng-template>
+  </p-step>
+
+  <p-step-panel [value]="targetStepValue()" class="p-0">
+    <ng-template class="m-0" #content>
+      <div class="pt-4 w-full">
+        <osf-contributors-list
+          class="w-full"
+          [contributors]="projectContributors()"
+          [isLoading]="isContributorsLoading()"
+          [showCuratorColumn]="true"
+          (remove)="handleRemoveContributor($event)"
+        ></osf-contributors-list>
+
+        <div class="flex justify-content-end gap-3 mt-4 w-full">
+          <p-button
+            [label]="'registries.metadata.addContributors' | translate"
+            severity="secondary"
+            (click)="handleAddContributor()"
+          />
+          <p-button
+            [loading]="isContributorsSubmitting()"
+            (click)="handleSaveContributors()"
+            [disabled]="!projectContributors().length"
+            [label]="'common.buttons.saveAndContinue' | translate"
+          />
+        </div>
+      </div>
+    </ng-template>
+  </p-step-panel>
+</p-step-item>

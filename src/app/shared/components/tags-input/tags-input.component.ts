@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class TagsInputComponent {
   tags = input<string[]>([]);
+  required = input<boolean>(false);
   tagsChanged = output<string[]>();
 
   onTagsChange(tags: string[]): void {

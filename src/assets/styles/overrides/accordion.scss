@@ -75,3 +75,14 @@
     }
   }
 }
+
+.collections-accordion {
+  .p-accordionpanel {
+    --p-accordion-panel-border-width: 1px;
+    border-radius: 0.5rem;
+
+    .p-accordionheader {
+      --p-accordion-header-padding: 0;
+    }
+  }
+}

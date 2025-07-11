@@ -7,8 +7,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { collectionsSortOptions } from '@osf/features/collections/constants';
 import { queryParamsKeys } from '@osf/features/collections/constants/query-params-keys.const';
 import { CollectionQueryParams, CollectionsFilters } from '@osf/features/collections/models';
-import { CollectionsSelectors, SetAllFilters, SetSearchValue, SetSortBy } from '@osf/features/collections/store';
-import { SetPageNumber } from '@osf/features/collections/store/collections.actions';
+import {
+  CollectionsSelectors,
+  SetAllFilters,
+  SetSearchValue,
+  SetSortBy,
+} from '@osf/features/collections/store/collections';
+import { SetPageNumber } from '@osf/features/collections/store/collections/collections.actions';
 
 @Injectable()
 export class CollectionsQuerySyncService {

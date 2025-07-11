@@ -7,3 +7,26 @@
     display: none;
   }
 }
+
+.collection-stepper {
+  --p-stepper-step-padding: 0;
+  --p-stepper-step-title-color: var(--dark-blue-1);
+  --p-stepper-step-title-active-color: var(--dark-blue-1);
+
+  .p-step-header {
+    text-align: left;
+  }
+
+  .p-step-number {
+    display: none;
+  }
+
+  .p-stepitem {
+    border: 1px solid var(--grey-2);
+    border-radius: 0.5rem;
+
+    .p-steppanel-content {
+      margin-inline-start: 0;
+    }
+  }
+}

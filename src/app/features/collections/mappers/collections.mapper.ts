@@ -75,6 +75,32 @@ export class CollectionsMapper {
     };
   }
 
+  static fromGetCollectionSubmissionsResponse(response: CollectionSubmissionJsonApi[]): CollectionSubmission[] {
+    return response.map((submission) => ({
+      id: submission.id,
+      type: submission.type,
+      nodeId: submission.embeds.guid.data.id,
+      nodeUrl: submission.embeds.guid.data.links.html,
+      title: submission.embeds.guid.data.attributes.title,
+      description: submission.embeds.guid.data.attributes.description,
+      category: submission.embeds.guid.data.attributes.category,
+      dateCreated: submission.embeds.guid.data.attributes.date_created,
+      dateModified: submission.embeds.guid.data.attributes.date_modified,
+      public: submission.embeds.guid.data.attributes.public,
+      reviewsState: submission.attributes.reviews_state,
+      collectedType: submission.attributes.collected_type,
+      status: submission.attributes.status,
+      volume: submission.attributes.volume,
+      issue: submission.attributes.issue,
+      programArea: submission.attributes.program_area,
+      schoolType: submission.attributes.school_type,
+      studyDesign: submission.attributes.study_design,
+      dataType: submission.attributes.data_type,
+      disease: submission.attributes.disease,
+      gradeLevels: submission.attributes.grade_levels,
+    }));
+  }
+
   static fromPostCollectionSubmissionsResponse(response: CollectionSubmissionJsonApi[]): CollectionSubmission[] {
     return response.map((submission) => ({
       id: submission.id,

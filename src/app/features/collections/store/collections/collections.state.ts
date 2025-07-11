@@ -2,11 +2,10 @@ import { Action, State, StateContext } from '@ngxs/store';
 
 import { catchError, EMPTY, tap, throwError } from 'rxjs';
 
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
+import { CollectionsService } from '@osf/features/collections/services';
 import { ResourceType } from '@shared/enums';
-
-import { CollectionsService } from '../services';
 
 import {
   AddResourceToBookmarks,
@@ -15,8 +14,9 @@ import {
   GetBookmarksCollectionId,
   GetCollectionDetails,
   GetCollectionProvider,
-  GetCollectionSubmissions,
+  GetUserCollectionSubmissions,
   RemoveResourceFromBookmarks,
+  SearchCollectionSubmissions,
   SetAllFilters,
   SetCollectedTypeFilters,
   SetDataTypeFilters,
@@ -75,6 +75,12 @@ const COLLECTIONS_DEFAULTS: CollectionsStateModel = {
     isSubmitting: false,
     error: null,
   },
+  userCollectionSubmissions: {
+    data: [],
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
   totalSubmissions: 0,
   sortBy: '',
   searchText: '',
@@ -87,7 +93,7 @@ const COLLECTIONS_DEFAULTS: CollectionsStateModel = {
 })
 @Injectable()
 export class CollectionsState {
-  constructor(private collectionsService: CollectionsService) {}
+  collectionsService = inject(CollectionsService);
 
   @Action(GetCollectionProvider)
   getCollectionProvider(ctx: StateContext<CollectionsStateModel>, action: GetCollectionProvider) {
@@ -417,8 +423,8 @@ export class CollectionsState {
     });
   }
 
-  @Action(GetCollectionSubmissions)
-  getCollectionSubmission(ctx: StateContext<CollectionsStateModel>, action: GetCollectionSubmissions) {
+  @Action(SearchCollectionSubmissions)
+  searchCollectionSubmissions(ctx: StateContext<CollectionsStateModel>, action: SearchCollectionSubmissions) {
     const state = ctx.getState();
     ctx.patchState({
       collectionSubmissions: {
@@ -428,7 +434,7 @@ export class CollectionsState {
     });
 
     return this.collectionsService
-      .getCollectionSubmissions(action.providerId, action.searchText, action.activeFilters, action.page, action.sort)
+      .searchCollectionSubmissions(action.providerId, action.searchText, action.activeFilters, action.page, action.sort)
       .pipe(
         tap((res) => {
           ctx.patchState({
@@ -441,6 +447,30 @@ export class CollectionsState {
         }),
         catchError((error) => this.handleError(ctx, 'collectionSubmissions', error))
       );
+  }
+
+  @Action(GetUserCollectionSubmissions)
+  getUserCollectionSubmissions(ctx: StateContext<CollectionsStateModel>, action: GetUserCollectionSubmissions) {
+    const state = ctx.getState();
+    ctx.patchState({
+      userCollectionSubmissions: {
+        ...state.userCollectionSubmissions,
+        isLoading: true,
+      },
+    });
+
+    return this.collectionsService.fetchAllUserCollectionSubmissions(action.providerId, action.projectsIds).pipe(
+      tap((res) => {
+        ctx.patchState({
+          userCollectionSubmissions: {
+            data: res,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => this.handleError(ctx, 'userCollectionSubmissions', error))
+    );
   }
 
   private handleError(ctx: StateContext<CollectionsStateModel>, section: keyof CollectionsStateModel, error: Error) {

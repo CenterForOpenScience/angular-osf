@@ -3,5 +3,6 @@ export * from './contributors';
 export * from './institutions';
 export * from './institutions-search';
 export * from './licenses';
+export * from './projects';
 export * from './subjects';
 export * from './view-only-links';

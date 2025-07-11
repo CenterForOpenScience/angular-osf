@@ -20,7 +20,7 @@ import {
   AddResourceToBookmarks,
   CollectionsSelectors,
   RemoveResourceFromBookmarks,
-} from '@osf/features/collections/store';
+} from '@osf/features/collections/store/collections';
 import { GetMyBookmarks, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { DuplicateDialogComponent, TogglePublicityDialogComponent } from '@osf/features/project/overview/components';
 import { IconComponent } from '@osf/shared/components';

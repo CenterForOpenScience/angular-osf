@@ -32,7 +32,7 @@ import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { QueryParams, TableParameters, TabOption } from '@osf/shared/models';
 import { IS_XSMALL } from '@osf/shared/utils';
 
-import { CollectionsSelectors, GetBookmarksCollectionId } from '../collections/store';
+import { CollectionsSelectors, GetBookmarksCollectionId } from '../collections/store/collections';
 
 import { MyProjectsItem, MyProjectsSearchFilters } from './models';
 import {
