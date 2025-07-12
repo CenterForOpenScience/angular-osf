@@ -12,8 +12,8 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
+import { RegistrationCardComponent } from '@osf/shared/components/registration-card/registration-card.component';
 
-import { RegistrationCardComponent } from './components';
 import { GetRegistrations, RegistrationsSelectors } from './store';
 
 @Component({

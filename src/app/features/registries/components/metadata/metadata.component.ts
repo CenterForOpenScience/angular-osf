@@ -15,12 +15,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TextInputComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
-import { SubjectModel } from '@osf/shared/models';
+import { DraftRegistrationModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService } from '@osf/shared/services';
 import { SubjectsSelectors } from '@osf/shared/stores';
 import { CustomValidators, findChangedFields } from '@osf/shared/utils';
 
-import { Registration } from '../../models';
 import { DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepValidation } from '../../store';
 
 import { ContributorsComponent } from './contributors/contributors.component';
@@ -85,7 +84,7 @@ export class MetadataComponent implements OnDestroy {
     });
   }
 
-  private initForm(data: Registration): void {
+  private initForm(data: DraftRegistrationModel): void {
     this.metadataForm.patchValue({
       title: data.title,
       description: data.description,

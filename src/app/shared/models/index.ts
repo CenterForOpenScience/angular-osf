@@ -22,6 +22,7 @@ export * from './nodes/create-project-form.model';
 export * from './nodes/nodes-json-api.model';
 export * from './paginated-data.model';
 export * from './query-params.model';
+export * from './registration';
 export * from './resource-card';
 export * from './resource-overview.model';
 export * from './search';

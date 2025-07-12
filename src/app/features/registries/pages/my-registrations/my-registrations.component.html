@@ -1,0 +1,46 @@
+<section class="subheader flex flex-column">
+  <div class="flex flex-column align-items-start">
+    <osf-sub-header
+      [title]="'navigation.registriesSubRoutes.myRegistrations' | translate"
+      [icon]="'registries'"
+      [showButton]="true"
+      [buttonLabel]="'registries.addRegistration' | translate"
+      (buttonClick)="goToCreateRegistration()"
+    />
+  </div>
+  <div class="flex-column flex flex-1 w-full">
+    <p-tabs [value]="selectedTab()" (valueChange)="selectedTab.set(+$event)" class="flex-1">
+      @if (!isMobile()) {
+        <p-tablist class="px-4">
+          @for (tab of tabOptions; track tab.value) {
+            <p-tab [value]="tab.value"> {{ tab.label | translate }}</p-tab>
+          }
+        </p-tablist>
+      }
+
+      <p-tabpanels class="p-3 sm:p-5 flex-1">
+        @if (isMobile()) {
+          <osf-select
+            class="block mb-4"
+            [options]="tabOptions"
+            [fullWidth]="true"
+            [(selectedValue)]="selectedTab"
+          ></osf-select>
+        }
+        <!--Drafts-->
+        <p-tabpanel [value]="0" class="flex flex-column gap-4 flex-1">
+          @for (registration of draftRegistrations(); track registration.id) {
+            <osf-registration-card [registrationData]="registration" (deleteDraft)="onDeleteDraft($event)" />
+          }
+        </p-tabpanel>
+
+        <!--Submitted-->
+        <p-tabpanel [value]="1" class="flex flex-column gap-4 flex-1">
+          @for (registration of submittedRegistrations(); track registration.registry) {
+            <osf-registration-card [registrationData]="registration" />
+          }
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</section>

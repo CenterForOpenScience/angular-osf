@@ -31,7 +31,9 @@
       "update": "Update",
       "continue update": "Continue update",
       "withdraw": "Withdraw",
-      "submit": "Submit"
+      "submit": "Submit",
+      "view": "View",
+      "review": "Review"
     },
     "search": {
       "title": "Search",
@@ -71,6 +73,10 @@
       "year": "Year",
       "optional": "Optional",
       "makePublic": "Make Public",
+      "noData": "No data",
+      "noFiles": "No files selected",
+      "drafts": "Drafts",
+      "submitted": "Submitted",
       "yes": "Yes",
       "no": "No",
       "available": "Available",
@@ -715,6 +721,8 @@
       "addRegistration": "Add a Registration",
       "emptyState": "There have been no completed registrations of this project.",
       "card": {
+        "noTitle": "(Untitled)",
+        "noDescription": "No description",
         "registrationTemplate": "Registration template:",
         "registry": "Registry:",
         "registered": "Registered:",
@@ -1834,7 +1842,22 @@
     },
     "review": {
       "step": "Review",
-      "title": "Review Registration"
+      "title": "Review Registration",
+      "register": "Register",
+      "confirmation": {
+        "title": "Almost done...",
+        "remember": "Remember:",
+        "text1": "Do not edit any files until the registration has completely archived.",
+        "text2": "This will be permanent and cannot be deleted once submitted.",
+        "text3": "This registration will be copied to Internet Archive as a backup.",
+        "text4": "Title and contributors cannot be updated once submitted.",
+        "options": {
+          "public": "Make registration public immediately",
+          "embargo": "Enter registration into embargo"
+        },
+        "embargoPlaceholder": "Choose embargo end date",
+        "successMessage": "Registration successfully created."
+      }
     }
   },
   "registry": {
@@ -1957,6 +1980,9 @@
       "noSelected": "No subjects selected",
       "searchSubjects": "Search subjects",
       "noSubject": "No subjects found"
+    },
+    "tags": {
+      "title": "Tags"
     }
   },
   "resourceCard": {

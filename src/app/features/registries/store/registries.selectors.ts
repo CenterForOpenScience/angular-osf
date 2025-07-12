@@ -1,8 +1,8 @@
 import { Selector } from '@ngxs/store';
 
-import { License, Resource } from '@shared/models';
+import { DraftRegistrationModel, License, RegistrationCard, Resource } from '@shared/models';
 
-import { PageSchema, Project, Provider, Registration } from '../models';
+import { PageSchema, Project, Provider } from '../models';
 
 import { RegistriesStateModel } from './registries.model';
 import { RegistriesState } from './registries.state';
@@ -29,7 +29,7 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getDraftRegistration(state: RegistriesStateModel): Registration | null {
+  static getDraftRegistration(state: RegistriesStateModel): DraftRegistrationModel | null {
     return state.draftRegistration.data;
   }
 
@@ -76,5 +76,30 @@ export class RegistriesSelectors {
   @Selector([RegistriesState])
   static getStepsData(state: RegistriesStateModel) {
     return state.draftRegistration.data?.stepsData || {};
+  }
+
+  @Selector([RegistriesState])
+  static isRegistrationSubmitting(state: RegistriesStateModel): boolean {
+    return state.registration.isSubmitting || false;
+  }
+
+  @Selector([RegistriesState])
+  static getDraftRegistrations(state: RegistriesStateModel): RegistrationCard[] {
+    return state.draftRegistrations.data;
+  }
+
+  @Selector([RegistriesState])
+  static isDraftRegistrationsLoading(state: RegistriesStateModel): boolean {
+    return state.draftRegistrations.isLoading;
+  }
+
+  @Selector([RegistriesState])
+  static getSubmittedRegistrations(state: RegistriesStateModel): RegistrationCard[] {
+    return state.submittedRegistrations.data;
+  }
+
+  @Selector([RegistriesState])
+  static isSubmittedRegistrationsLoading(state: RegistriesStateModel): boolean {
+    return state.submittedRegistrations.isLoading;
   }
 }

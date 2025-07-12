@@ -3,10 +3,15 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@osf/core/services';
-import { License, LicenseOptions, LicensesResponseJsonApi } from '@osf/shared/models';
+import {
+  CreateRegistrationPayloadJsonApi,
+  DraftRegistrationDataJsonApi,
+  License,
+  LicenseOptions,
+  LicensesResponseJsonApi,
+} from '@osf/shared/models';
 
 import { LicensesMapper } from '../mappers';
-import { RegistrationDataJsonApi, RegistrationPayloadJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -50,7 +55,7 @@ export class LicensesService {
   }
 
   updateLicense(registrationId: string, licenseId: string, licenseOptions?: LicenseOptions) {
-    const payload: RegistrationPayloadJsonApi = {
+    const payload: CreateRegistrationPayloadJsonApi = {
       data: {
         type: 'draft_registrations',
         id: registrationId,
@@ -73,7 +78,7 @@ export class LicensesService {
       },
     };
 
-    return this.jsonApiService.patch<RegistrationDataJsonApi>(
+    return this.jsonApiService.patch<DraftRegistrationDataJsonApi>(
       `${this.apiUrl}/draft_registrations/${registrationId}/`,
       payload
     );

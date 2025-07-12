@@ -12,7 +12,7 @@ import { StepperComponent, SubHeaderComponent } from '@osf/shared/components';
 import { StepOption } from '@osf/shared/models';
 import { LoaderService } from '@osf/shared/services';
 
-import { defaultSteps } from '../../constants';
+import { DEFAULT_STEPS } from '../../constants';
 import { FetchDraft, FetchSchemaBlocks, RegistriesSelectors } from '../../store';
 
 @Component({
@@ -46,7 +46,7 @@ export class DraftsComponent {
   defaultSteps: StepOption[] = [];
 
   steps: Signal<StepOption[]> = computed(() => {
-    this.defaultSteps = defaultSteps.map((step) => ({
+    this.defaultSteps = DEFAULT_STEPS.map((step) => ({
       ...step,
       label: this.translateService.instant(step.label),
       invalid: this.stepsValidation()?.[step.index]?.invalid || false,
@@ -102,7 +102,7 @@ export class DraftsComponent {
     }
     effect(() => {
       const registrationSchemaId = this.draftRegistration()?.registrationSchemaId;
-      if (registrationSchemaId && !this.pages().length) {
+      if (registrationSchemaId) {
         this.actions
           .getSchemaBlocks(registrationSchemaId || '')
           .pipe(

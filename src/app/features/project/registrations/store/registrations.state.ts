@@ -15,13 +15,14 @@ import { RegistrationsStateModel } from './registrations.model';
     registrations: {
       data: [],
       isLoading: false,
-      error: '',
+      error: null,
+      totalCount: 0,
     },
   },
 })
 @Injectable()
 export class RegistrationsState {
-  #registrationsService = inject(RegistrationsService);
+  private readonly registrationsService = inject(RegistrationsService);
 
   @Action(GetRegistrations)
   getRegistrations(ctx: StateContext<RegistrationsStateModel>, action: GetRegistrations) {
@@ -31,15 +32,16 @@ export class RegistrationsState {
       registrations: { ...state.registrations, isLoading: true, error: null },
     });
 
-    return this.#registrationsService.getRegistrations(action.projectId).pipe(
+    return this.registrationsService.getRegistrations(action.projectId).pipe(
       tap((registrations) => {
         const state = ctx.getState();
         ctx.setState({
           ...state,
           registrations: {
-            data: registrations,
+            data: registrations.data,
             isLoading: false,
-            error: '',
+            error: null,
+            totalCount: registrations.totalCount,
           },
         });
       }),
