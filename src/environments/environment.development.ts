@@ -1,13 +1,19 @@
 export const environment = {
   production: false,
-  webUrl: 'https://staging4.osf.io',
-  downloadUrl: 'https://staging4.osf.io/download',
-  apiUrl: 'https://api.staging4.osf.io/v2',
-  apiUrlV1: 'https://staging4.osf.io/api/v1',
-  apiDomainUrl: 'https://api.staging4.osf.io',
+  webUrl: 'http://localhost:8000',
+  downloadUrl: 'http://localhost:8000/download',
+  apiUrl: 'http://localhost:8000/v2',
+  apiUrlV1: 'https//localhost:8000/api/v1',
+  apiDomainUrl: 'http://localhost:8000',
   shareDomainUrl: 'https://staging-share.osf.io/trove',
-  addonsApiUrl: 'https://addons.staging4.osf.io/v1',
-  fileApiUrl: 'https://files.us.staging4.osf.io/v1',
-  baseResourceUri: 'https://staging4.osf.io/',
-  funderApiUrl: 'https://api.crossref.org/',
+  addonsApiUrl: 'http://localhost:8000/v1',
+  fileApiUrl: 'http://localhost:8000/v1',
+  baseResourceUri: 'http://localhost:8000/',
+  funderApiUrl: 'http://api.crossref.org/',
+
+  cookieAuth: {
+    enabled: true,
+    csrfCookieName: 'api-csrf',
+    withCredentials: true,
+  },
 };

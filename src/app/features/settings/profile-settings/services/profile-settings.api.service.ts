@@ -15,7 +15,7 @@ export class ProfileSettingsApiService {
 
   patchUserSettings(userId: string, key: keyof ProfileSettingsStateModel, data: ProfileSettingsUpdate) {
     const patchedData = { [key]: data };
-    return this.#jsonApiService.patch<JsonApiResponse<UserGetResponse, null>>(`${environment.apiUrl}users/${userId}/`, {
+    return this.#jsonApiService.patch<JsonApiResponse<UserGetResponse, null>>(`${environment.apiUrl}/users/${userId}/`, {
       data: { type: 'users', id: userId, attributes: patchedData },
     });
   }
