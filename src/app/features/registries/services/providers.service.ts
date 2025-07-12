@@ -5,7 +5,7 @@ import { inject, Injectable } from '@angular/core';
 import { JsonApiService } from '@osf/core/services';
 
 import { ProvidersMapper } from '../mappers/providers.mapper';
-import { Provider } from '../models';
+import { ProviderSchema } from '../models';
 import { ProvidersResponseJsonApi } from '../models/providers-json-api.model';
 
 import { environment } from 'src/environments/environment';
@@ -17,9 +17,9 @@ export class ProvidersService {
   private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
 
-  getProviders(): Observable<Provider[]> {
+  getProviderSchemas(providerId: string): Observable<ProviderSchema[]> {
     return this.jsonApiService
-      .get<ProvidersResponseJsonApi>(`${this.apiUrl}/providers/registrations/osf/schemas/`)
+      .get<ProvidersResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerId}/schemas/`)
       .pipe(map((response) => ProvidersMapper.fromProvidersResponse(response)));
   }
 }

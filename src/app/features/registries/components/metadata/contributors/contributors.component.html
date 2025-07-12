@@ -1,8 +1,7 @@
-<p-card class="w-full">
+<p-card class="w-full" (focusout)="onFocusOut()">
   <h2 class="mb-2">{{ 'project.overview.metadata.contributors' | translate }}</h2>
 
   <osf-contributors-list
-    (focusout)="onFocusOut()"
     class="w-full"
     [contributors]="contributors()"
     [isLoading]="isContributorsLoading()"
@@ -16,10 +15,6 @@
         <p-button (click)="save()" [label]="'common.buttons.save' | translate" />
       </div>
     }
-    <p-button
-      [label]="'registries.metadata.addContributors' | translate"
-      type="submit"
-      (click)="openAddContributorDialog()"
-    />
+    <p-button [label]="'registries.metadata.addContributors' | translate" (click)="openAddContributorDialog()" />
   </div>
 </p-card>

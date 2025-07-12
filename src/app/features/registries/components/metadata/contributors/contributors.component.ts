@@ -9,9 +9,9 @@ import { TableModule } from 'primeng/table';
 
 import { filter, forkJoin, map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import {
@@ -41,6 +41,8 @@ import { findChangedItems } from '@osf/shared/utils';
   providers: [DialogService],
 })
 export class ContributorsComponent implements OnInit {
+  control = input.required<FormControl>();
+
   readonly destroyRef = inject(DestroyRef);
   readonly translateService = inject(TranslateService);
   readonly dialogService = inject(DialogService);
@@ -84,6 +86,11 @@ export class ContributorsComponent implements OnInit {
   onFocusOut() {
     // [NM] TODO: make request to update contributor if changed
     console.log('Focus out event:', 'Changed:', this.hasChanges);
+    if (this.control()) {
+      this.control().markAsTouched();
+      this.control().markAsDirty();
+      this.control().updateValueAndValidity();
+    }
   }
 
   cancel() {

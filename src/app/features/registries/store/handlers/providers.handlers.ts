@@ -10,17 +10,17 @@ import { RegistriesStateModel } from '../registries.model';
 export class ProvidersHandlers {
   providersService = inject(ProvidersService);
 
-  getProviders({ patchState }: StateContext<RegistriesStateModel>) {
+  getProviderSchemas({ patchState }: StateContext<RegistriesStateModel>, providerId: string) {
     patchState({
-      providers: {
-        ...DefaultState.providers,
+      providerSchemas: {
+        ...DefaultState.providerSchemas,
         isLoading: true,
       },
     });
-    return this.providersService.getProviders().subscribe({
+    return this.providersService.getProviderSchemas(providerId).subscribe({
       next: (providers) => {
         patchState({
-          providers: {
+          providerSchemas: {
             data: providers,
             isLoading: false,
             error: null,
@@ -29,8 +29,8 @@ export class ProvidersHandlers {
       },
       error: (error) => {
         patchState({
-          providers: {
-            ...DefaultState.providers,
+          providerSchemas: {
+            ...DefaultState.providerSchemas,
             isLoading: false,
             error,
           },

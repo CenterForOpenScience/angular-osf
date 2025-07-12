@@ -33,7 +33,11 @@ export class RegistriesLicenseComponent {
   protected licenses = select(RegistriesSelectors.getLicenses);
   protected inputLimits = InputLimits;
 
-  selectedLicense = select(RegistriesSelectors.getSelectedLicense);
+  protected selectedLicense = select(RegistriesSelectors.getSelectedLicense);
+  protected draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+
+  private readonly OSF_PROVIDER_ID = 'osf';
+
   currentYear = new Date();
   licenseYear = this.currentYear;
   licenseForm = this.fb.group({
@@ -43,8 +47,15 @@ export class RegistriesLicenseComponent {
 
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
+  private isLoaded = false;
+
   constructor() {
-    this.actions.fetchLicenses();
+    effect(() => {
+      if (this.draftRegistration() && !this.isLoaded) {
+        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? this.OSF_PROVIDER_ID);
+        this.isLoaded = true;
+      }
+    });
 
     effect(() => {
       const selectedLicense = this.selectedLicense();
@@ -62,7 +73,10 @@ export class RegistriesLicenseComponent {
   }
 
   selectLicense(license: License) {
-    this.control().markAsDirty();
+    this.control().patchValue({
+      id: license.id,
+    });
+    this.control().markAsTouched();
     this.control().updateValueAndValidity();
     this.actions.saveLicense(this.draftId, license.id);
   }

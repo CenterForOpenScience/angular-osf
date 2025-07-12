@@ -6,8 +6,9 @@ export class GetRegistries {
   static readonly type = '[Registries] Get Registries';
 }
 
-export class GetProviders {
-  static readonly type = '[Registries]  Get Providers';
+export class GetProviderSchemas {
+  static readonly type = '[Registries]  Get Provider Schemas';
+  constructor(public providerId: string) {}
 }
 
 export class GetProjects {
@@ -38,6 +39,16 @@ export class DeleteDraft {
   constructor(public draftId: string) {}
 }
 
+export class RegisterDraft {
+  static readonly type = '[Registries]  Register Draft Registration';
+  constructor(
+    public draftId: string,
+    public embargoDate: string,
+    public providerId: string,
+    public projectId?: string
+  ) {}
+}
+
 export class FetchSchemaBlocks {
   static readonly type = '[Registries] Fetch Schema Blocks';
   constructor(public registrationSchemaId: string) {}
@@ -45,6 +56,7 @@ export class FetchSchemaBlocks {
 
 export class FetchLicenses {
   static readonly type = '[Registries] Fetch Licenses';
+  constructor(public providerId: string) {}
 }
 
 export class SaveLicense {

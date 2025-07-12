@@ -64,6 +64,7 @@ export class RegistriesLandingComponent implements OnInit {
   }
 
   goToCreateRegistration(): void {
-    this.router.navigate(['/registries/new']);
+    const providerId = 'osf';
+    this.router.navigate([`/registries/${providerId}/new`]);
   }
 }

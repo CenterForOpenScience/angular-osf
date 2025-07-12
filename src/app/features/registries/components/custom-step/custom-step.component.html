@@ -1,4 +1,4 @@
-<section class="flex flex-column bg-white flex-1 h-full p-5 gap-4 w-full">
+<section class="flex flex-column bg-white flex-1 p-5 gap-4 w-full">
   @if (currentPage()) {
     <h2>{{ currentPage().title }}</h2>
 
@@ -95,6 +95,14 @@
                     </div>
                   }
                 </div>
+                @if (
+                  stepForm.controls[question.responseKey!].errors?.['required'] &&
+                  (stepForm.controls[question.responseKey!].touched || stepForm.controls[question.responseKey!].dirty)
+                ) {
+                  <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+                    {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+                  </p-message>
+                }
               }
               @case (FieldType.Checkbox) {
                 <div class="flex flex-column gap-2">
@@ -109,6 +117,14 @@
                     </div>
                   }
                 </div>
+                @if (
+                  stepForm.controls[question.responseKey!].errors?.['required'] &&
+                  (stepForm.controls[question.responseKey!].touched || stepForm.controls[question.responseKey!].dirty)
+                ) {
+                  <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+                    {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+                  </p-message>
+                }
               }
 
               @case (FieldType.Text) {

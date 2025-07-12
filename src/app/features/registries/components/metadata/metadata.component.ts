@@ -15,12 +15,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TextInputComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
-import { SubjectModel } from '@osf/shared/models';
+import { ContributorModel, SubjectModel } from '@osf/shared/models';
+import { DraftRegistrationModel } from '@osf/shared/models/registration';
 import { CustomConfirmationService } from '@osf/shared/services';
-import { SubjectsSelectors } from '@osf/shared/stores';
+import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 import { CustomValidators, findChangedFields } from '@osf/shared/utils';
 
-import { Registration } from '../../models';
 import { DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepValidation } from '../../store';
 
 import { ContributorsComponent } from './contributors/contributors.component';
@@ -56,6 +56,8 @@ export class MetadataComponent implements OnDestroy {
   private readonly draftId = this.route.snapshot.params['id'];
   protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
   protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  protected initialContributors = select(ContributorsSelectors.getContributors);
+  protected stepsValidation = select(RegistriesSelectors.getStepsValidation);
 
   protected actions = createDispatchMap({
     deleteDraft: DeleteDraft,
@@ -68,7 +70,7 @@ export class MetadataComponent implements OnDestroy {
   metadataForm = this.fb.group({
     title: ['', CustomValidators.requiredTrimmed()],
     description: ['', CustomValidators.requiredTrimmed()],
-    // contributors: [[], Validators.required],
+    contributors: [[] as ContributorModel[], Validators.required],
     subjects: [[] as SubjectModel[], Validators.required],
     tags: [[]],
     license: this.fb.group({
@@ -76,21 +78,30 @@ export class MetadataComponent implements OnDestroy {
     }),
   });
 
+  isDraftDeleted = false;
+  isFormUpdated = false;
+
   constructor() {
     effect(() => {
       const draft = this.draftRegistration();
-      if (draft) {
-        this.initForm(draft);
+      if (draft && !this.isFormUpdated) {
+        this.updateFormValue(draft);
+        this.isFormUpdated = true;
       }
     });
   }
 
-  private initForm(data: Registration): void {
+  private updateFormValue(data: DraftRegistrationModel): void {
     this.metadataForm.patchValue({
       title: data.title,
       description: data.description,
       license: data.license,
+      contributors: this.initialContributors(),
+      subjects: this.selectedSubjects(),
     });
+    if (this.stepsValidation()?.[0]?.invalid) {
+      this.metadataForm.markAllAsTouched();
+    }
   }
 
   submitMetadata(): void {
@@ -116,9 +127,12 @@ export class MetadataComponent implements OnDestroy {
       headerKey: 'registries.deleteDraft',
       messageKey: 'registries.confirmDeleteDraft',
       onConfirm: () => {
+        const providerId = this.draftRegistration()?.providerId;
         this.actions.deleteDraft(this.draftId).subscribe({
           next: () => {
-            this.router.navigateByUrl('/registries/new');
+            // [NM] TODO: clear validation state
+            this.isDraftDeleted = true;
+            this.router.navigateByUrl(`/registries/${providerId}/new`);
           },
         });
       },
@@ -126,14 +140,16 @@ export class MetadataComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.updateStepValidation('0', this.metadataForm.invalid);
-    const changedFields = findChangedFields(
-      { title: this.metadataForm.value.title!, description: this.metadataForm.value.description! },
-      { title: this.draftRegistration()?.title, description: this.draftRegistration()?.description }
-    );
-    if (Object.keys(changedFields).length > 0) {
-      this.metadataForm.markAllAsTouched();
-      this.actions.updateDraft(this.draftId, changedFields);
+    if (!this.isDraftDeleted) {
+      this.actions.updateStepValidation('0', this.metadataForm.invalid);
+      const changedFields = findChangedFields(
+        { title: this.metadataForm.value.title!, description: this.metadataForm.value.description! },
+        { title: this.draftRegistration()?.title, description: this.draftRegistration()?.description }
+      );
+      if (Object.keys(changedFields).length > 0) {
+        this.actions.updateDraft(this.draftId, changedFields);
+        this.metadataForm.markAllAsTouched();
+      }
     }
   }
 }
