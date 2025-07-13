@@ -46,4 +46,14 @@ export const projectFilesStateDefaults = {
     isLoading: false,
     error: null,
   },
+  rootFolders: {
+    data: [],
+    isLoading: true,
+    error: null,
+  },
+  configuredStorageAddons: {
+    data: [],
+    isLoading: true,
+    error: null,
+  },
 };

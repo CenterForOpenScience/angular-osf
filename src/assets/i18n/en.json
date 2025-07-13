@@ -31,7 +31,8 @@
       "update": "Update",
       "continue update": "Continue update",
       "withdraw": "Withdraw",
-      "submit": "Submit"
+      "submit": "Submit",
+      "upload": "Upload"
     },
     "search": {
       "title": "Search",
@@ -741,7 +742,8 @@
       },
       "dialogs": {
         "uploadFile": {
-          "title": "Upload file"
+          "title": "Upload file",
+          "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
         },
         "createFolder": {
           "title": "Create folder",

@@ -25,6 +25,7 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'navigation.registries',
     icon: 'osf-icon-registries',
     routerLinkActiveOptions: { exact: true },
+
     items: [
       {
         routerLink: '/registries/overview',

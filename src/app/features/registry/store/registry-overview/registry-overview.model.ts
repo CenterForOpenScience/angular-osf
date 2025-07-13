@@ -1,5 +1,9 @@
-import { RegistryInstitution, RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
-import { RegistrySchemaBlock } from '@osf/features/registry/models/registry-schema-block.model';
+import {
+  RegistryInstitution,
+  RegistryOverview,
+  RegistrySchemaBlock,
+  RegistrySubject,
+} from '@osf/features/registry/models';
 import { AsyncStateModel } from '@shared/models';
 
 export interface RegistryOverviewStateModel {

@@ -16,5 +16,9 @@
 }
 
 .upload-dialog {
-  width: mix.rem(48px);
+  width: mix.rem(128px);
+}
+
+.provider-name {
+  text-transform: capitalize;
 }

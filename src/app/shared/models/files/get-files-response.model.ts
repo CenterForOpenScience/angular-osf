@@ -73,4 +73,5 @@ export interface FileLinks {
   self: string;
   html: string;
   render: string;
+  new_folder: string;
 }

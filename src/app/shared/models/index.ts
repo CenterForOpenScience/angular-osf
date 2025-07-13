@@ -7,6 +7,7 @@ export * from './contributors';
 export * from './create-component-form.model';
 export * from './file-menu-action.model';
 export * from './files/file.model';
+export * from './files/get-configured-storage-addons.model';
 export * from './files/get-files-response.model';
 export * from './filter-labels.model';
 export * from './filters';

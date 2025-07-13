@@ -16,7 +16,7 @@ export class ToastService {
     this.messageService.add({ severity: 'warn', summary });
   }
 
-  showError(summary: string) {
-    this.messageService.add({ severity: 'error', summary });
+  showError(summary: string, life = 3000) {
+    this.messageService.add({ severity: 'error', summary, life: life });
   }
 }

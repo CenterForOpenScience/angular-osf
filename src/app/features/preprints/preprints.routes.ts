@@ -69,6 +69,9 @@ export const preprintsRoutes: Routes = [
           import('@osf/features/preprints/pages/submit-preprint-stepper/submit-preprint-stepper.component').then(
             (c) => c.SubmitPreprintStepperComponent
           ),
+        data: {
+          context: 'submitPreprints',
+        },
         canDeactivate: [ConfirmLeavingGuard],
       },
       {
