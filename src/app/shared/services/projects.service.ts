@@ -3,7 +3,6 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
-import { CollectionSubmissionMetadataPayloadJsonApi } from '@osf/features/collections/models';
 import { ProjectsMapper } from '@shared/mappers/projects';
 import { ProjectMetadataUpdatePayload } from '@shared/models';
 import { Project, ProjectJsonApi, ProjectsResponseJsonApi } from '@shared/models/projects';
@@ -23,31 +22,7 @@ export class ProjectsService {
   }
 
   updateProjectMetadata(metadata: ProjectMetadataUpdatePayload): Observable<Project> {
-    const payload: CollectionSubmissionMetadataPayloadJsonApi = {
-      data: {
-        type: 'nodes',
-        id: metadata.id,
-        relationships: {
-          license: {
-            data: {
-              id: metadata.licenseId,
-              type: 'licenses',
-            },
-          },
-        },
-        attributes: {
-          title: metadata.title,
-          description: metadata.description,
-          tags: metadata.tags,
-          ...(metadata.licenseOptions && {
-            node_license: {
-              copyright_holders: [metadata.licenseOptions.copyrightHolders],
-              year: metadata.licenseOptions.year,
-            },
-          }),
-        },
-      },
-    };
+    const payload = ProjectsMapper.toUpdateProjectRequest(metadata);
 
     return this.jsonApiService
       .patch<ProjectJsonApi>(`${environment.apiUrl}/nodes/${metadata.id}/`, payload)

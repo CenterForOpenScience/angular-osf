@@ -34,11 +34,6 @@ export class ContributorsSelectors {
   }
 
   @Selector([ContributorsState])
-  static isContributorsSubmitting(state: ContributorsStateModel) {
-    return state?.contributorsList?.isSubmitting || false;
-  }
-
-  @Selector([ContributorsState])
   static isContributorsError(state: ContributorsStateModel) {
     return !!state?.contributorsList?.error?.length;
   }

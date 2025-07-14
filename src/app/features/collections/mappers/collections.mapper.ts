@@ -7,7 +7,10 @@ import {
   CollectionProviderResponseJsonApi,
   CollectionSubmission,
   CollectionSubmissionJsonApi,
+  CollectionSubmissionPayload,
 } from '@osf/features/collections/models';
+import { CollectionSubmissionPayloadJsonApi } from '@osf/features/collections/models/collection-submission-payload-json-api.model';
+import { convertToSnakeCase } from '@shared/utils';
 
 export class CollectionsMapper {
   static fromGetCollectionContributorsResponse(response: CollectionContributorJsonApi[]): CollectionContributor[] {
@@ -126,5 +129,34 @@ export class CollectionsMapper {
       gradeLevels: submission.attributes.grade_levels,
       contributors: [] as CollectionContributor[],
     }));
+  }
+
+  static toCollectionSubmissionRequest(payload: CollectionSubmissionPayload): CollectionSubmissionPayloadJsonApi {
+    const collectionId = payload.collectionId;
+    const collectionsMetadata = convertToSnakeCase(payload.collectionMetadata);
+
+    return {
+      data: {
+        type: 'collection-submissions',
+        attributes: {
+          guid: payload.projectId,
+          ...collectionsMetadata,
+        },
+        relationships: {
+          collection: {
+            data: {
+              id: collectionId,
+              type: 'collections',
+            },
+          },
+          creator: {
+            data: {
+              type: 'users',
+              id: payload.userId,
+            },
+          },
+        },
+      },
+    };
   }
 }

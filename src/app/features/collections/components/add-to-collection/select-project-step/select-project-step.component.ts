@@ -25,6 +25,7 @@ import { UserSelectors } from '@core/store/user';
 import { AddToCollectionSteps } from '@osf/features/collections/enums';
 import { CollectionsSelectors, GetUserCollectionSubmissions } from '@osf/features/collections/store/collections';
 import { GetProjects, SetSelectedProject } from '@osf/shared/stores';
+import { CustomOption } from '@shared/models';
 import { Project } from '@shared/models/projects';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
@@ -55,7 +56,7 @@ export class SelectProjectStepComponent {
   stepChange = output<number>();
   projectSelected = output<void>();
 
-  protected projectsOptions = signal<{ label: string; value: Project }[]>([]);
+  protected projectsOptions = signal<CustomOption<Project>[]>([]);
 
   protected filterMessage = computed(() => {
     const isLoading = this.isProjectsLoading() || this.isSubmissionsLoading();

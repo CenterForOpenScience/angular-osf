@@ -35,7 +35,7 @@
           class="w-full"
           [contributors]="projectContributors()"
           [isLoading]="isContributorsLoading()"
-          [showCuratorColumn]="true"
+          [showCuratorColumn]="false"
           (remove)="handleRemoveContributor($event)"
         ></osf-contributors-list>
 
@@ -43,12 +43,12 @@
           <p-button
             [label]="'registries.metadata.addContributors' | translate"
             severity="secondary"
+            [disabled]="isContributorsLoading()"
             (click)="handleAddContributor()"
           />
           <p-button
-            [loading]="isContributorsSubmitting()"
+            [disabled]="isContributorsLoading() || !projectContributors().length"
             (click)="handleSaveContributors()"
-            [disabled]="!projectContributors().length"
             [label]="'common.buttons.saveAndContinue' | translate"
           />
         </div>

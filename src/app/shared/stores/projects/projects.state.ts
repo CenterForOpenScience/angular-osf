@@ -1,11 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@core/handlers';
-import { ProjectOverviewService } from '@osf/features/project/overview/services';
 import { ProjectsService } from '@shared/services/projects.service';
 import { GetProjects, ProjectsStateModel, SetSelectedProject, UpdateProjectMetadata } from '@shared/stores';
 
@@ -28,7 +27,6 @@ import { GetProjects, ProjectsStateModel, SetSelectedProject, UpdateProjectMetad
 @Injectable()
 export class ProjectsState {
   private readonly projectsService = inject(ProjectsService);
-  private readonly projectOverviewService = inject(ProjectOverviewService);
 
   @Action(GetProjects)
   getProjects(ctx: StateContext<ProjectsStateModel>, action: GetProjects) {
@@ -53,16 +51,7 @@ export class ProjectsState {
           });
         },
       }),
-      catchError((error) => {
-        ctx.patchState({
-          projects: {
-            ...ctx.getState().projects,
-            isLoading: false,
-            error,
-          },
-        });
-        return throwError(() => error);
-      })
+      catchError((error) => handleSectionError(ctx, 'projects', error))
     );
   }
 

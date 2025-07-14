@@ -42,7 +42,6 @@ export class ProjectContributorsStepComponent {
 
   protected readonly projectContributors = select(ContributorsSelectors.getContributors);
   protected readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  protected readonly isContributorsSubmitting = select(ContributorsSelectors.isContributorsSubmitting);
   protected readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
 
   private initialContributors = signal<ContributorModel[]>([]);

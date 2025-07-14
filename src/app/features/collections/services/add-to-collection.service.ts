@@ -3,11 +3,10 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
+import { CollectionsMapper } from '@osf/features/collections/mappers';
 import { CollectionSubmissionPayload } from '@osf/features/collections/models';
-import { CollectionSubmissionPayloadJsonApi } from '@osf/features/collections/models/collection-submission-payload-json-api.model';
 import { LicensesMapper } from '@shared/mappers';
 import { License, LicensesResponseJsonApi } from '@shared/models';
-import { convertToSnakeCase } from '@shared/utils';
 
 import { environment } from 'src/environments/environment';
 
@@ -29,32 +28,7 @@ export class AddToCollectionService {
 
   createCollectionSubmission(payload: CollectionSubmissionPayload): Observable<void> {
     const collectionId = payload.collectionId;
-
-    const collectionsMetadata = convertToSnakeCase(payload.collectionMetadata);
-
-    const metadata: CollectionSubmissionPayloadJsonApi = {
-      data: {
-        type: 'collection-submissions',
-        attributes: {
-          guid: payload.projectId,
-          ...collectionsMetadata,
-        },
-        relationships: {
-          collection: {
-            data: {
-              id: collectionId,
-              type: 'collections',
-            },
-          },
-          creator: {
-            data: {
-              type: 'users',
-              id: payload.userId,
-            },
-          },
-        },
-      },
-    };
+    const metadata = CollectionsMapper.toCollectionSubmissionRequest(payload);
 
     return this.jsonApiService.post(`${this.apiUrl}/collections/${collectionId}/collection_submissions/`, metadata);
   }

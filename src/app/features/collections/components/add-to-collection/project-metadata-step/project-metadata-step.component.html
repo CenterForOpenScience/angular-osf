@@ -52,18 +52,10 @@
     <ng-template class="m-0" #content>
       <p class="pt-3">{{ 'collections.addToCollection.projectMetadataMessage' | translate }}</p>
       <form [formGroup]="projectMetadataForm" class="flex flex-column gap-4 mt-4">
-        <div class="flex flex-column gap-1">
-          <label for="title">
-            {{ 'collections.addToCollection.form.title' | translate }}
-          </label>
-          <input pInputText id="title" type="text" [formControlName]="ProjectMetadataFormControls.Title" />
-          @let titleControl = projectMetadataForm.controls[ProjectMetadataFormControls.Title];
-          @if (titleControl.errors?.['required'] && (titleControl.touched || titleControl.dirty)) {
-            <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-              {{ 'collections.addToCollection.form.fieldRequired' | translate }}
-            </p-message>
-          }
-        </div>
+        <osf-text-input
+          label="collections.addToCollection.form.title"
+          [control]="projectMetadataForm.controls[ProjectMetadataFormControls.Title]"
+        />
 
         <div class="flex flex-column gap-1">
           <label for="description">
