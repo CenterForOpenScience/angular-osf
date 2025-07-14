@@ -1,7 +1,6 @@
-import { AsyncStateModel } from '@osf/shared/models/store';
-
-import { RegistrationModel } from '../models';
+import { RegistrationCard } from '@osf/shared/models';
+import { AsyncStateWithTotalCount } from '@osf/shared/models/store';
 
 export interface RegistrationsStateModel {
-  registrations: AsyncStateModel<RegistrationModel[]>;
+  registrations: AsyncStateWithTotalCount<RegistrationCard[]>;
 }

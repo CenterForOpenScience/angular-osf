@@ -1,10 +1,10 @@
 <div>
   <p-chips
-    class="w-full"
     styleClass="w-full"
     [ngModel]="tags()"
     (ngModelChange)="onTagsChange($event)"
     [placeholder]="'common.placeholder.addTag' | translate"
     separator=","
+    [required]="required()"
   ></p-chips>
 </div>

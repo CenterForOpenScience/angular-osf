@@ -9,7 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { Primitive } from '@core/helpers';
-import { SetSortBy } from '@osf/features/collections/store';
+import { SetSortBy } from '@osf/features/collections/store/collections';
 import { GetResourcesByLink } from '@osf/features/my-profile/store';
 import { PreprintsFilterChipsComponent, PreprintsResourcesFiltersComponent } from '@osf/features/preprints/components';
 import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover';

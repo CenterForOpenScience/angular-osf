@@ -4,9 +4,9 @@ import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
 import { mapIndexCardResults } from '@osf/features/admin-institutions/mappers/institution-summary-index.mapper';
-import { departmens, summaryMetrics } from '@osf/features/admin-institutions/services/mock';
+import { sendMessageRequestMapper } from '@osf/features/admin-institutions/mappers/send-message-request.mapper';
+import { departmens, summaryMetrics, users } from '@osf/features/admin-institutions/services/mock';
 
-import { environment } from '../../../../environments/environment';
 import {
   InstitutionDepartment,
   InstitutionDepartmentsJsonApi,
@@ -14,9 +14,18 @@ import {
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
   InstitutionSummaryMetricsJsonApi,
+  InstitutionUser,
+  InstitutionUsersJsonApi,
+  SendMessageRequest,
+  SendMessageResponseJsonApi,
 } from '../models';
 
-import { mapInstitutionDepartments, mapInstitutionSummaryMetrics } from 'src/app/features/admin-institutions/mappers';
+import {
+  mapInstitutionDepartments,
+  mapInstitutionSummaryMetrics,
+  mapInstitutionUsers,
+} from 'src/app/features/admin-institutions/mappers';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +59,34 @@ export class InstitutionsAdminService {
       );
   }
 
+  fetchUsers(
+    institutionId: string,
+    page = 1,
+    pageSize = 10,
+    sort = 'user_name',
+    filters?: Record<string, string>
+  ): Observable<{ users: InstitutionUser[]; totalCount: number }> {
+    const params: Record<string, string> = {
+      page: page.toString(),
+      'page[size]': pageSize.toString(),
+      sort,
+      ...filters,
+    };
+
+    return this.jsonApiService
+      .get<InstitutionUsersJsonApi>(`${this.hardcodedUrl}/institutions/${institutionId}/metrics/users/`, params)
+      .pipe(
+        //TODO: remove mock data
+        catchError(() => {
+          return of(users);
+        }),
+        map((response) => ({
+          users: mapInstitutionUsers(response as InstitutionUsersJsonApi),
+          totalCount: response.meta.total,
+        }))
+      );
+  }
+
   fetchIndexValueSearch(
     institutionId: string,
     valueSearchPropertyPath: string,
@@ -66,5 +103,14 @@ export class InstitutionsAdminService {
     return this.jsonApiService
       .get<InstitutionIndexValueSearchJsonApi>(`${environment.shareDomainUrl}/index-value-search`, params)
       .pipe(map((response) => mapIndexCardResults(response?.included)));
+  }
+
+  sendMessage(request: SendMessageRequest): Observable<SendMessageResponseJsonApi> {
+    const payload = sendMessageRequestMapper(request);
+
+    return this.jsonApiService.post<SendMessageResponseJsonApi>(
+      `${this.hardcodedUrl}/users/${request.userId}/messages/`,
+      payload
+    );
   }
 }

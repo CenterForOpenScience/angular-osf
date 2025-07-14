@@ -33,6 +33,10 @@ export const registriesRoutes: Routes = [
         loadComponent: () => import('@osf/features/registries/pages').then((c) => c.RegistriesLandingComponent),
       },
       {
+        path: 'my-registrations',
+        loadComponent: () => import('@osf/features/registries/pages').then((c) => c.MyRegistrationsComponent),
+      },
+      {
         path: ':id/moderation',
         loadComponent: () =>
           import('@osf/features/moderation/pages/registries-moderation/registries-moderation.component').then(
@@ -41,7 +45,7 @@ export const registriesRoutes: Routes = [
         providers: [provideStates([ModeratorsState])],
       },
       {
-        path: 'new',
+        path: ':providerId/new',
         loadComponent: () =>
           import('./components/new-registration/new-registration.component').then(
             (mod) => mod.NewRegistrationComponent

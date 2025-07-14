@@ -19,11 +19,14 @@ import {
   CreateDraft,
   DeleteDraft,
   FetchDraft,
+  FetchDraftRegistrations,
   FetchLicenses,
   FetchSchemaBlocks,
+  FetchSubmittedRegistrations,
   GetProjects,
-  GetProviders,
+  GetProviderSchemas,
   GetRegistries,
+  RegisterDraft,
   SaveLicense,
   UpdateDraft,
   UpdateStepValidation,
@@ -74,9 +77,9 @@ export class RegistriesState {
     return this.projectsHandler.getProjects(ctx);
   }
 
-  @Action(GetProviders)
-  getProviders(ctx: StateContext<RegistriesStateModel>) {
-    return this.providersHandler.getProviders(ctx);
+  @Action(GetProviderSchemas)
+  getProviders(ctx: StateContext<RegistriesStateModel>, { providerId }: GetProviderSchemas) {
+    return this.providersHandler.getProviderSchemas(ctx, providerId);
   }
 
   @Action(CreateDraft)
@@ -185,6 +188,33 @@ export class RegistriesState {
     );
   }
 
+  @Action(RegisterDraft)
+  registerDraft(
+    ctx: StateContext<RegistriesStateModel>,
+    { draftId, embargoDate, providerId, projectId }: RegisterDraft
+  ) {
+    ctx.patchState({
+      registration: {
+        ...ctx.getState().registration,
+        isSubmitting: true,
+      },
+    });
+
+    return this.registriesService.registerDraft(draftId, embargoDate, providerId, projectId).pipe(
+      tap((registration) => {
+        ctx.patchState({
+          registration: {
+            data: { ...registration },
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'draftRegistration', error))
+    );
+  }
+
   @Action(FetchSchemaBlocks)
   fetchSchemaBlocks(ctx: StateContext<RegistriesStateModel>, action: FetchSchemaBlocks) {
     const state = ctx.getState();
@@ -217,12 +247,63 @@ export class RegistriesState {
   }
 
   @Action(FetchLicenses)
-  fetchLicenses(ctx: StateContext<RegistriesStateModel>) {
-    return this.licensesHandler.fetchLicenses(ctx);
+  fetchLicenses(ctx: StateContext<RegistriesStateModel>, { providerId }: FetchLicenses) {
+    return this.licensesHandler.fetchLicenses(ctx, providerId);
   }
 
   @Action(SaveLicense)
   saveLicense(ctx: StateContext<RegistriesStateModel>, { registrationId, licenseId, licenseOptions }: SaveLicense) {
     return this.licensesHandler.saveLicense(ctx, { registrationId, licenseId, licenseOptions });
+  }
+
+  @Action(FetchDraftRegistrations)
+  fetchDraftRegistrations(ctx: StateContext<RegistriesStateModel>, { page, pageSize }: FetchDraftRegistrations) {
+    const state = ctx.getState();
+    ctx.patchState({
+      draftRegistrations: {
+        ...state.draftRegistrations,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.registriesService.getDraftRegistrations(page, pageSize).pipe(
+      tap((draftRegistrations) => {
+        ctx.patchState({
+          draftRegistrations: {
+            data: draftRegistrations.data,
+            totalCount: draftRegistrations.totalCount,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'draftRegistrations', error))
+    );
+  }
+
+  @Action(FetchSubmittedRegistrations)
+  fetchSubmittedRegistrations(
+    ctx: StateContext<RegistriesStateModel>,
+    { page, pageSize }: FetchSubmittedRegistrations
+  ) {
+    const state = ctx.getState();
+    ctx.patchState({
+      submittedRegistrations: { ...state.submittedRegistrations, isLoading: true, error: null },
+    });
+
+    return this.registriesService.getSubmittedRegistrations(page, pageSize).pipe(
+      tap((submittedRegistrations) => {
+        ctx.patchState({
+          submittedRegistrations: {
+            data: submittedRegistrations.data,
+            totalCount: submittedRegistrations.totalCount,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'submittedRegistrations', error))
+    );
   }
 }

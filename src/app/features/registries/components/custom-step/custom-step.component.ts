@@ -12,7 +12,7 @@ import { RadioButton } from 'primeng/radiobutton';
 import { Textarea } from 'primeng/textarea';
 
 import { NgTemplateOutlet } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -47,7 +47,7 @@ import { RegistriesSelectors, UpdateDraft, UpdateStepValidation } from '../../st
   styleUrl: './custom-step.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CustomStepComponent {
+export class CustomStepComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
@@ -160,5 +160,9 @@ export class CustomStepComponent {
     } else {
       this.router.navigate(['../', 'review'], { relativeTo: this.route });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.updateStepState();
   }
 }
