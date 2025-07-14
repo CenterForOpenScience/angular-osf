@@ -73,7 +73,7 @@ export class ContributorsState {
     const state = ctx.getState();
 
     ctx.patchState({
-      contributorsList: { ...state.contributorsList, isSubmitting: true, error: null },
+      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
     });
 
     if (!action.resourceId || !action.resourceType) {
@@ -88,7 +88,7 @@ export class ContributorsState {
           contributorsList: {
             ...currentState.contributorsList,
             data: [...currentState.contributorsList.data, contributor],
-            isSubmitting: false,
+            isLoading: false,
           },
         });
       }),
@@ -101,7 +101,7 @@ export class ContributorsState {
     const state = ctx.getState();
 
     ctx.patchState({
-      contributorsList: { ...state.contributorsList, isSubmitting: true, error: null },
+      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
     });
 
     if (!action.resourceId || !action.resourceType) {
@@ -118,7 +118,7 @@ export class ContributorsState {
             data: currentState.contributorsList.data.map((contributor) =>
               contributor.id === updatedContributor.id ? updatedContributor : contributor
             ),
-            isSubmitting: false,
+            isLoading: false,
           },
         });
       }),
@@ -131,7 +131,7 @@ export class ContributorsState {
     const state = ctx.getState();
 
     ctx.patchState({
-      contributorsList: { ...state.contributorsList, isSubmitting: true, error: null },
+      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
     });
 
     if (!action.resourceId || !action.resourceType) {
@@ -146,7 +146,7 @@ export class ContributorsState {
             contributorsList: {
               ...state.contributorsList,
               data: state.contributorsList.data.filter((contributor) => contributor.userId !== action.contributorId),
-              isSubmitting: false,
+              isLoading: false,
             },
           });
         }),

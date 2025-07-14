@@ -2,8 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { CollectionsState } from '@osf/features/collections/store/collections';
-import { ProjectsState } from '@shared/stores';
+import { BookmarksState, ProjectsState } from '@shared/stores';
 
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
@@ -74,7 +73,7 @@ export const routes: Routes = [
         path: 'my-projects',
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
-        providers: [provideStates([CollectionsState])],
+        providers: [provideStates([BookmarksState])],
       },
       {
         path: 'my-projects/:id',

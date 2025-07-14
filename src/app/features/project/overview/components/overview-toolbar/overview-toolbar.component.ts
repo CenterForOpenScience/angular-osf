@@ -16,11 +16,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import {
-  AddResourceToBookmarks,
-  CollectionsSelectors,
-  RemoveResourceFromBookmarks,
-} from '@osf/features/collections/store/collections';
 import { GetMyBookmarks, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { DuplicateDialogComponent, TogglePublicityDialogComponent } from '@osf/features/project/overview/components';
 import { IconComponent } from '@osf/shared/components';
@@ -28,6 +23,7 @@ import { ToastService } from '@osf/shared/services';
 import { ResourceType } from '@shared/enums';
 import { ToolbarResource } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
+import { AddResourceToBookmarks, BookmarksSelectors, RemoveResourceFromBookmarks } from '@shared/stores';
 
 import { SOCIAL_ACTION_ITEMS } from '../../constants';
 import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';
@@ -63,8 +59,8 @@ export class OverviewToolbarComponent {
   visibilityToggle = input<boolean>(true);
   showViewOnlyLinks = input<boolean>(true);
   protected isBookmarksLoading = select(MyProjectsSelectors.getBookmarksLoading);
-  protected isBookmarksSubmitting = select(CollectionsSelectors.getBookmarksCollectionIdSubmitting);
-  protected bookmarksCollectionId = select(CollectionsSelectors.getBookmarksCollectionId);
+  protected isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
+  protected bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
   protected bookmarkedProjects = select(MyProjectsSelectors.getBookmarks);
   protected readonly socialsActionItems = SOCIAL_ACTION_ITEMS;
   protected readonly forkActionItems = [

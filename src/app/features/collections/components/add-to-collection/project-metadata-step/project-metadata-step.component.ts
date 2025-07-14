@@ -7,7 +7,6 @@ import { Card } from 'primeng/card';
 import { Chip } from 'primeng/chip';
 import { DatePicker } from 'primeng/datepicker';
 import { Divider } from 'primeng/divider';
-import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Select, SelectChangeEvent } from 'primeng/select';
 import { Step, StepItem, StepPanel } from 'primeng/stepper';
@@ -49,7 +48,6 @@ import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
   imports: [
     Button,
     TranslatePipe,
-    InputText,
     ReactiveFormsModule,
     Textarea,
     FormsModule,

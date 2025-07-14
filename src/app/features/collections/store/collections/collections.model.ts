@@ -7,7 +7,6 @@ import {
 import { AsyncStateModel } from '@shared/models/store';
 
 export interface CollectionsStateModel {
-  bookmarksId: AsyncStateModel<string>;
   currentFilters: CollectionsFilters;
   filtersOptions: CollectionsFilters;
   collectionProvider: AsyncStateModel<CollectionProvider | null>;

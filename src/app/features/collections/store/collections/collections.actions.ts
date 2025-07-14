@@ -1,5 +1,4 @@
 import { CollectionsFilters } from '@osf/features/collections/models';
-import { ResourceType } from '@shared/enums';
 
 export class GetCollectionProvider {
   static readonly type = '[Collections] Get Collection Provider';
@@ -11,30 +10,6 @@ export class GetCollectionDetails {
   static readonly type = '[Collections] Get Collection Details';
 
   constructor(public collectionId: string) {}
-}
-
-export class GetBookmarksCollectionId {
-  static readonly type = '[Collections] Get Bookmarks Collection Id';
-}
-
-export class AddResourceToBookmarks {
-  static readonly type = '[Collections] Add Resource To Bookmarks';
-
-  constructor(
-    public bookmarksId: string,
-    public resourceId: string,
-    public resourceType: ResourceType
-  ) {}
-}
-
-export class RemoveResourceFromBookmarks {
-  static readonly type = '[Collections] Remove Resource From Bookmarks';
-
-  constructor(
-    public bookmarksId: string,
-    public resourceId: string,
-    public resourceType: ResourceType
-  ) {}
 }
 
 export class ClearCollections {
