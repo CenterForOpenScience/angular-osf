@@ -32,7 +32,7 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLinkActiveOptions: { exact: true },
       },
       {
-        routerLink: '/my-registrations',
+        routerLink: '/registries/my-registrations',
         label: 'navigation.registriesSubRoutes.myRegistrations',
         routerLinkActiveOptions: { exact: true },
       },

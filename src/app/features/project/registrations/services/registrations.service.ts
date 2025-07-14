@@ -2,13 +2,10 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@osf/core/models';
+import { JsonApiResponseWithPaging } from '@osf/core/models';
 import { JsonApiService } from '@osf/core/services';
-
-import { submittedRegistrations } from '../mock-data';
-import { RegistrationModel, RegistrationsGetResponse } from '../models';
-
-import { RegistrationsMapper } from './../mappers';
+import { RegistrationMapper } from '@osf/shared/mappers/registration';
+import { RegistrationCard, RegistrationDataJsonApi } from '@osf/shared/models';
 
 import { environment } from 'src/environments/environment';
 
@@ -16,19 +13,23 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class RegistrationsService {
-  #jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
 
-  getRegistrations(projectId: string): Observable<RegistrationModel[]> {
+  getRegistrations(projectId: string): Observable<{ data: RegistrationCard[]; totalCount: number }> {
     const params: Record<string, unknown> = {
       embed: 'contributors',
     };
     const url = `${environment.apiUrl}/nodes/${projectId}/linked_by_registrations/`;
 
-    return this.#jsonApiService.get<JsonApiResponse<RegistrationsGetResponse[], null>>(url, params).pipe(
+    return this.jsonApiService.get<JsonApiResponseWithPaging<RegistrationDataJsonApi[], null>>(url, params).pipe(
       map((response) => {
-        return response.data.length
-          ? response.data.map((registration) => RegistrationsMapper.fromResponse(registration))
-          : submittedRegistrations;
+        const data = response.data.map((registration: RegistrationDataJsonApi) =>
+          RegistrationMapper.fromRegistrationToRegistrationCard(registration)
+        );
+        return {
+          data,
+          totalCount: response.links.meta?.total,
+        };
       })
     );
   }

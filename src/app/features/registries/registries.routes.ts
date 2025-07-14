@@ -33,6 +33,10 @@ export const registriesRoutes: Routes = [
         loadComponent: () => import('@osf/features/registries/pages').then((c) => c.RegistriesLandingComponent),
       },
       {
+        path: 'my-registrations',
+        loadComponent: () => import('@osf/features/registries/pages').then((c) => c.MyRegistrationsComponent),
+      },
+      {
         path: ':id/moderation',
         loadComponent: () =>
           import('@osf/features/moderation/pages/registries-moderation/registries-moderation.component').then(

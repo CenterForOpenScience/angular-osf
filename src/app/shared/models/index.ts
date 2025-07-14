@@ -23,6 +23,7 @@ export * from './nodes/nodes-json-api.model';
 export * from './paginated-data.model';
 export * from './project-metadata-update-payload.model';
 export * from './query-params.model';
+export * from './registration';
 export * from './resource-card';
 export * from './resource-overview.model';
 export * from './search';

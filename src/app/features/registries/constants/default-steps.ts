@@ -1,6 +1,6 @@
 import { StepOption } from '@osf/shared/models';
 
-export const defaultSteps: StepOption[] = [
+export const DEFAULT_STEPS: StepOption[] = [
   {
     index: 0,
     label: 'navigation.project.metadata',

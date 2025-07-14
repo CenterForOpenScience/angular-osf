@@ -1,7 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { DraftRegistrationModel } from '@osf/shared/models/registration';
-import { License, Resource } from '@shared/models';
+import { DraftRegistrationModel, License, RegistrationCard, Resource } from '@shared/models';
 
 import { PageSchema, Project, ProviderSchema } from '../models';
 
@@ -82,5 +81,35 @@ export class RegistriesSelectors {
   @Selector([RegistriesState])
   static isRegistrationSubmitting(state: RegistriesStateModel): boolean {
     return state.registration.isSubmitting || false;
+  }
+
+  @Selector([RegistriesState])
+  static getDraftRegistrations(state: RegistriesStateModel): RegistrationCard[] {
+    return state.draftRegistrations.data;
+  }
+
+  @Selector([RegistriesState])
+  static isDraftRegistrationsLoading(state: RegistriesStateModel): boolean {
+    return state.draftRegistrations.isLoading;
+  }
+
+  @Selector([RegistriesState])
+  static getDraftRegistrationsTotalCount(state: RegistriesStateModel): number {
+    return state.draftRegistrations.totalCount;
+  }
+
+  @Selector([RegistriesState])
+  static getSubmittedRegistrations(state: RegistriesStateModel): RegistrationCard[] {
+    return state.submittedRegistrations.data;
+  }
+
+  @Selector([RegistriesState])
+  static isSubmittedRegistrationsLoading(state: RegistriesStateModel): boolean {
+    return state.submittedRegistrations.isLoading;
+  }
+
+  @Selector([RegistriesState])
+  static getSubmittedRegistrationsTotalCount(state: RegistriesStateModel): number {
+    return state.submittedRegistrations.totalCount;
   }
 }

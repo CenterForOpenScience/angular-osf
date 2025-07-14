@@ -36,7 +36,9 @@
       "update": "Update",
       "continue update": "Continue update",
       "withdraw": "Withdraw",
-      "submit": "Submit"
+      "submit": "Submit",
+      "view": "View",
+      "review": "Review"
     },
     "search": {
       "title": "Search",
@@ -78,6 +80,8 @@
       "makePublic": "Make Public",
       "noData": "No data",
       "noFiles": "No files selected",
+      "drafts": "Drafts",
+      "submitted": "Submitted",
       "yes": "Yes",
       "no": "No",
       "available": "Available",
@@ -721,6 +725,8 @@
       "addRegistration": "Add a Registration",
       "emptyState": "There have been no completed registrations of this project.",
       "card": {
+        "noTitle": "(Untitled)",
+        "noDescription": "No description",
         "registrationTemplate": "Registration template:",
         "registry": "Registry:",
         "registered": "Registered:",
@@ -1832,6 +1838,7 @@
   "registries": {
     "title": "Registries",
     "addRegistration": "Add a Registration",
+    "noRegistrations": "You don't have any registrations. Create one with the button below.",
     "description": "The open registries network",
     "searchPlaceholder": "Search Registrations",
     "services": {
@@ -1858,6 +1865,7 @@
     },
     "deleteDraft": "Delete Draft",
     "confirmDeleteDraft": "Are you sure you want to delete this draft registration?",
+    "successDeleteDraft": "Draft registration successfully deleted.",
     "metadata": {
       "title": "Registration  Metadata",
       "description": "This metadata applies only to the registration you are creating, and will not be applied to your project.",

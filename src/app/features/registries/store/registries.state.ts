@@ -19,8 +19,10 @@ import {
   CreateDraft,
   DeleteDraft,
   FetchDraft,
+  FetchDraftRegistrations,
   FetchLicenses,
   FetchSchemaBlocks,
+  FetchSubmittedRegistrations,
   GetProjects,
   GetProviderSchemas,
   GetRegistries,
@@ -252,5 +254,56 @@ export class RegistriesState {
   @Action(SaveLicense)
   saveLicense(ctx: StateContext<RegistriesStateModel>, { registrationId, licenseId, licenseOptions }: SaveLicense) {
     return this.licensesHandler.saveLicense(ctx, { registrationId, licenseId, licenseOptions });
+  }
+
+  @Action(FetchDraftRegistrations)
+  fetchDraftRegistrations(ctx: StateContext<RegistriesStateModel>, { page, pageSize }: FetchDraftRegistrations) {
+    const state = ctx.getState();
+    ctx.patchState({
+      draftRegistrations: {
+        ...state.draftRegistrations,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.registriesService.getDraftRegistrations(page, pageSize).pipe(
+      tap((draftRegistrations) => {
+        ctx.patchState({
+          draftRegistrations: {
+            data: draftRegistrations.data,
+            totalCount: draftRegistrations.totalCount,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'draftRegistrations', error))
+    );
+  }
+
+  @Action(FetchSubmittedRegistrations)
+  fetchSubmittedRegistrations(
+    ctx: StateContext<RegistriesStateModel>,
+    { page, pageSize }: FetchSubmittedRegistrations
+  ) {
+    const state = ctx.getState();
+    ctx.patchState({
+      submittedRegistrations: { ...state.submittedRegistrations, isLoading: true, error: null },
+    });
+
+    return this.registriesService.getSubmittedRegistrations(page, pageSize).pipe(
+      tap((submittedRegistrations) => {
+        ctx.patchState({
+          submittedRegistrations: {
+            data: submittedRegistrations.data,
+            totalCount: submittedRegistrations.totalCount,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'submittedRegistrations', error))
+    );
   }
 }
