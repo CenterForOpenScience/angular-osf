@@ -87,6 +87,9 @@
   <section class="m-t-24">
     @if (selectedProjectId()) {
       <osf-files-tree
+        [currentFolder]="currentFolder()"
+        [files]="projectFiles()"
+        [isLoading]="areProjectFilesLoading()"
         [resourceId]="selectedProjectId()!"
         [actions]="filesTreeActions"
         (entryFileClicked)="selectProjectFile($event)"

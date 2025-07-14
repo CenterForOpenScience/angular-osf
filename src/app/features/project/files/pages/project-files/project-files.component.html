@@ -8,7 +8,7 @@
       <p-floatlabel class="w-full md:w-56" variant="in">
         <p-select
           inputId="in_label"
-          [options]="rootFoldersOptions() ?? []"
+          [options]="rootFoldersOptions()"
           [(ngModel)]="currentRootFolder"
           styleClass="w-full"
           variant="filled"
@@ -97,6 +97,9 @@
     </div>
 
     <osf-files-tree
+      [files]="files()"
+      [currentFolder]="currentFolder()"
+      [isLoading]="isFilesLoading()"
       [actions]="filesTreeActions"
       [viewOnly]="false"
       [viewOnlyDownloadable]="false"

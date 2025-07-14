@@ -27,11 +27,9 @@ import { MoveFileDialogComponent, RenameFileDialogComponent } from '@osf/feature
 import { embedDynamicJs, embedStaticHtml, FilesTreeActions } from '@osf/features/project/files/models';
 import { FileMenuType } from '@osf/shared/enums';
 import { FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
-import { filesTreeSelectorsFactory } from '@shared/factories';
 import { FileMenuAction, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
-import { FILES_TREE_SELECTORS } from '@shared/tokens';
 
 @Component({
   selector: 'osf-files-tree',
@@ -39,13 +37,6 @@ import { FILES_TREE_SELECTORS } from '@shared/tokens';
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: FILES_TREE_SELECTORS,
-      useFactory: filesTreeSelectorsFactory,
-      deps: [ActivatedRoute],
-    },
-  ],
 })
 export class FilesTreeComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'relative';
@@ -57,11 +48,9 @@ export class FilesTreeComponent implements OnInit, OnDestroy {
   readonly dialogService = inject(DialogService);
   readonly translateService = inject(TranslateService);
 
-  private readonly selectors = inject(FILES_TREE_SELECTORS);
-  protected readonly files = this.selectors.getFiles();
-  protected readonly isLoading = this.selectors.isFilesLoading();
-  protected readonly currentFolder = this.selectors.getCurrentFolder();
-
+  files = input.required<OsfFile[]>();
+  isLoading = input<boolean>();
+  currentFolder = input.required<OsfFile | null>();
   resourceId = input.required<string>();
   actions = input.required<FilesTreeActions>();
   viewOnly = input<boolean>(true);
@@ -132,6 +121,12 @@ export class FilesTreeComponent implements OnInit, OnDestroy {
       if (currentFolder) {
         this.updateFilesList().subscribe(() => this.folderIsOpening.emit(false));
       }
+    });
+
+    effect(() => {
+      const isLoading = this.isLoading();
+
+      console.log(isLoading);
     });
   }
 

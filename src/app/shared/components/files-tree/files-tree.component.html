@@ -1,11 +1,13 @@
-<div class="drop-zone" [class.active]="isDragOver()" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
-  @if (isDragOver()) {
-    <div class="flex flex-column gap-2 align-items-center">
-      <i class="fa-solid fa-cloud-arrow-up text-5xl"></i>
-      <p class="drop-text text-2xl">{{ 'project.files.dropText' | translate }}</p>
-    </div>
-  }
-</div>
+@if (!viewOnly()) {
+  <div class="drop-zone" [class.active]="isDragOver()" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+    @if (isDragOver()) {
+      <div class="flex flex-column gap-2 align-items-center">
+        <i class="fa-solid fa-cloud-arrow-up text-5xl"></i>
+        <p class="drop-text text-2xl">{{ 'project.files.dropText' | translate }}</p>
+      </div>
+    }
+  </div>
+}
 
 @if (isLoading()) {
   <div class="w-8rem ml-auto mr-auto">

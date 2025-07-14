@@ -37,12 +37,6 @@ export class GetFileProjectMetadata {
   constructor(public projectId: string) {}
 }
 
-export class GetMoveFileRootFiles {
-  static readonly type = '[Project Files] Get Move File Root Files';
-
-  constructor(public projectId: string) {}
-}
-
 export class GetMoveFileFiles {
   static readonly type = '[Project Files] Get Move File Files';
 
