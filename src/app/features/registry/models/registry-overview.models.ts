@@ -61,4 +61,7 @@ export interface RegistryOverview {
   }[];
   status: RegistryStatus;
   revisionStatus: RevisionReviewStates;
+  links: {
+    files: string;
+  };
 }

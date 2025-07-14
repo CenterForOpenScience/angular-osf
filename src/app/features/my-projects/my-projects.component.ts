@@ -345,4 +345,9 @@ export class MyProjectsComponent implements OnInit {
     this.activeProject.set(project);
     this.#router.navigate(['/my-projects', project.id]);
   }
+
+  protected navigateToRegistry(registry: MyProjectsItem): void {
+    this.activeProject.set(registry);
+    this.#router.navigate(['/registries', registry.id]);
+  }
 }

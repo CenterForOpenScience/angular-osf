@@ -38,7 +38,8 @@
       "withdraw": "Withdraw",
       "submit": "Submit",
       "view": "View",
-      "review": "Review"
+      "review": "Review",
+      "upload": "Upload"
     },
     "search": {
       "title": "Search",
@@ -753,7 +754,8 @@
       },
       "dialogs": {
         "uploadFile": {
-          "title": "Upload file"
+          "title": "Upload file",
+          "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
         },
         "createFolder": {
           "title": "Create folder",
@@ -781,6 +783,7 @@
           "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
         }
       },
+      "dropText": "Drop a file to upload",
       "emptyState": "This folder is empty",
       "detail": {
         "backToList": "Back to list of files",

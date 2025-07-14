@@ -9,7 +9,7 @@ import { Select, SelectChangeEvent } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 import { Tooltip } from 'primeng/tooltip';
 
-import { debounceTime, distinctUntilChanged, EMPTY, Observable } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Observable } from 'rxjs';
 
 import { NgClass, TitleCasePipe } from '@angular/common';
 import {
@@ -37,6 +37,7 @@ import {
   FetchProjectFilesByLink,
   PreprintStepperSelectors,
   ReuploadFile,
+  SetCurrentFolder,
   SetSelectedPreprintFileSource,
   UploadFile,
 } from '@osf/features/preprints/store/preprint-stepper';
@@ -77,6 +78,7 @@ export class FileStepComponent implements OnInit {
     getFilesForSelectedProject: FetchProjectFiles,
     getProjectFilesByLink: FetchProjectFilesByLink,
     copyFileFromProject: CopyFileFromProject,
+    setCurrentFolder: SetCurrentFolder,
   });
   private destroyRef = inject(DestroyRef);
 
@@ -91,10 +93,7 @@ export class FileStepComponent implements OnInit {
   arePreprintFilesLoading = select(PreprintStepperSelectors.arePreprintFilesLoading);
   availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
   areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
-  projectFiles = select(PreprintStepperSelectors.getProjectFiles);
-  areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
   selectedProjectId = signal<StringOrNull>(null);
-  currentFolder = signal<OsfFile | null>(null);
 
   versionFileMode = signal<boolean>(false);
 
@@ -102,14 +101,10 @@ export class FileStepComponent implements OnInit {
 
   filesTreeActions: FilesTreeActions = {
     setCurrentFolder: (folder: OsfFile | null): Observable<void> => {
-      this.currentFolder.set(folder);
-      return EMPTY;
+      return this.actions.setCurrentFolder(folder);
     },
     getFiles: (filesLink: string): Observable<void> => {
       return this.actions.getProjectFilesByLink(filesLink);
-    },
-    getRootFolderFiles: (projectId: string): Observable<void> => {
-      return this.actions.getFilesForSelectedProject(projectId);
     },
   };
 

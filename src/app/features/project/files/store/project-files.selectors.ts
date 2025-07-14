@@ -7,6 +7,7 @@ import {
   OsfProjectMetadata,
 } from '@osf/features/project/files/models';
 import { OsfFile } from '@shared/models';
+import { ConfiguredStorageAddon } from '@shared/models/addons';
 
 import { ProjectFilesStateModel } from './project-files.model';
 import { ProjectFilesState } from './project-files.state';
@@ -105,5 +106,25 @@ export class ProjectFilesSelectors {
   @Selector([ProjectFilesState])
   static isFileTagsLoading(state: ProjectFilesStateModel): boolean {
     return state.tags.isLoading;
+  }
+
+  @Selector([ProjectFilesState])
+  static getRootFolders(state: ProjectFilesStateModel): OsfFile[] | null {
+    return state.rootFolders.data;
+  }
+
+  @Selector([ProjectFilesState])
+  static isRootFoldersLoading(state: ProjectFilesStateModel): boolean {
+    return state.rootFolders.isLoading;
+  }
+
+  @Selector([ProjectFilesState])
+  static getConfiguredStorageAddons(state: ProjectFilesStateModel): ConfiguredStorageAddon[] | null {
+    return state.configuredStorageAddons.data;
+  }
+
+  @Selector([ProjectFilesState])
+  static isConfiguredStorageAddonsLoading(state: ProjectFilesStateModel): boolean {
+    return state.configuredStorageAddons.isLoading;
   }
 }

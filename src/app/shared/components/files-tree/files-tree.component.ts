@@ -4,19 +4,34 @@ import { PrimeTemplate } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Tree, TreeNodeDropEvent } from 'primeng/tree';
 
-import { finalize, firstValueFrom, Observable, take } from 'rxjs';
+import { EMPTY, finalize, firstValueFrom, Observable, take, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  HostBinding,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  output,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MoveFileDialogComponent, RenameFileDialogComponent } from '@osf/features/project/files/components';
 import { embedDynamicJs, embedStaticHtml, FilesTreeActions } from '@osf/features/project/files/models';
 import { FileMenuType } from '@osf/shared/enums';
 import { FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
+import { filesTreeSelectorsFactory } from '@shared/factories';
 import { FileMenuAction, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
+import { FILES_TREE_SELECTORS } from '@shared/tokens';
 
 @Component({
   selector: 'osf-files-tree',
@@ -24,8 +39,16 @@ import { CustomConfirmationService, FilesService, ToastService } from '@shared/s
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: FILES_TREE_SELECTORS,
+      useFactory: filesTreeSelectorsFactory,
+      deps: [ActivatedRoute],
+    },
+  ],
 })
-export class FilesTreeComponent {
+export class FilesTreeComponent implements OnInit, OnDestroy {
+  @HostBinding('class') classes = 'relative';
   readonly filesService = inject(FilesService);
   readonly router = inject(Router);
   readonly toastService = inject(ToastService);
@@ -34,16 +57,23 @@ export class FilesTreeComponent {
   readonly dialogService = inject(DialogService);
   readonly translateService = inject(TranslateService);
 
-  files = input.required<OsfFile[]>();
-  projectId = input.required<string>();
+  private readonly selectors = inject(FILES_TREE_SELECTORS);
+  protected readonly files = this.selectors.getFiles();
+  protected readonly isLoading = this.selectors.isFilesLoading();
+  protected readonly currentFolder = this.selectors.getCurrentFolder();
+
+  resourceId = input.required<string>();
   actions = input.required<FilesTreeActions>();
   viewOnly = input<boolean>(true);
+  viewOnlyDownloadable = input<boolean>(false);
   provider = input<string>();
-  isLoading = input(false);
-  currentFolder = input.required<OsfFile | null>();
-  entryFileClicked = output<OsfFile>();
+  isDragOver = signal(false);
 
+  entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
+  uploadFileConfirmed = output<File>();
+
+  protected readonly FileMenuType = FileMenuType;
 
   protected readonly nodes = computed(() => {
     if (this.currentFolder()?.relationships?.parentFolderLink) {
@@ -59,9 +89,46 @@ export class FilesTreeComponent {
     }
   });
 
+  ngOnInit(): void {
+    window.addEventListener('dragenter', this.onGlobalDragEnter);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('dragenter', this.onGlobalDragEnter);
+  }
+
+  onGlobalDragEnter = (event: DragEvent) => {
+    if (event.dataTransfer?.types?.includes('Files')) {
+      this.isDragOver.set(true);
+    }
+  };
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
+    event.dataTransfer!.dropEffect = 'copy';
+    this.isDragOver.set(true);
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    this.isDragOver.set(false);
+    const files = event.dataTransfer?.files;
+
+    if (files && files.length > 0) {
+      this.customConfirmationService.confirmAccept({
+        headerKey: 'project.files.dialogs.uploadFile.title',
+        messageParams: { name: files[0].name },
+        messageKey: 'project.files.dialogs.uploadFile.message',
+        acceptLabelKey: 'common.buttons.upload',
+        onConfirm: () => this.uploadFileConfirmed.emit(files[0]),
+      });
+    }
+  }
+
   constructor() {
     effect(() => {
       const currentFolder = this.currentFolder();
+
       if (currentFolder) {
         this.updateFilesList().subscribe(() => this.folderIsOpening.emit(false));
       }
@@ -89,7 +156,13 @@ export class FilesTreeComponent {
 
     this.filesService
       .getFolder(currentFolder.relationships.parentFolderLink)
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        catchError((error) => {
+          this.toastService.showError(error.error.message);
+          return throwError(() => error);
+        })
+      )
       .subscribe({
         next: (folder) => {
           this.actions().setCurrentFolder(folder);
@@ -172,7 +245,7 @@ export class FilesTreeComponent {
 
   deleteEntry(link: string): void {
     this.actions().setFilesIsLoading?.(true);
-    this.actions().deleteEntry?.(this.projectId(), link);
+    this.actions().deleteEntry?.(this.resourceId(), link);
   }
 
   confirmRename(file: OsfFile): void {
@@ -198,7 +271,7 @@ export class FilesTreeComponent {
   renameEntry(newName: string, file: OsfFile): void {
     if (newName.trim() && file.links.upload) {
       this.actions().setFilesIsLoading?.(true);
-      this.actions().renameEntry?.(this.projectId(), file.links.upload, newName).pipe(take(1)).subscribe();
+      this.actions().renameEntry?.(this.resourceId(), file.links.upload, newName);
     }
   }
 
@@ -215,13 +288,13 @@ export class FilesTreeComponent {
   }
 
   downloadFolder(folderId: string, rootFolder: boolean): void {
-    const projectId = this.projectId();
-    if (projectId && folderId) {
+    const resourceId = this.resourceId();
+    if (resourceId && folderId) {
       if (rootFolder) {
-        const link = this.filesService.getFolderDownloadLink(projectId, this.provider()!, '', true);
+        const link = this.filesService.getFolderDownloadLink(resourceId, this.provider()!, '', true);
         window.open(link, '_blank')?.focus();
       } else {
-        const link = this.filesService.getFolderDownloadLink(projectId, this.provider()!, folderId, false);
+        const link = this.filesService.getFolderDownloadLink(resourceId, this.provider()!, folderId, false);
         window.open(link, '_blank')?.focus();
       }
     }
@@ -246,7 +319,7 @@ export class FilesTreeComponent {
           closable: true,
           data: {
             file: file,
-            projectId: this.projectId(),
+            resourceId: this.resourceId(),
             action: action,
           },
         });
@@ -255,11 +328,11 @@ export class FilesTreeComponent {
 
   updateFilesList(): Observable<void> {
     const currentFolder = this.currentFolder();
+
     if (currentFolder?.relationships.filesLink) {
-      return this.actions().getFiles(currentFolder?.relationships.filesLink).pipe(take(1));
-    } else {
-      return this.actions().getRootFolderFiles(this.projectId());
+      return this.actions().getFiles(currentFolder?.relationships.filesLink);
     }
+    return EMPTY;
   }
 
   copyToClipboard(embedHtml: string): void {
@@ -291,8 +364,6 @@ export class FilesTreeComponent {
         const filesLink = this.currentFolder()?.relationships.filesLink;
         if (filesLink) {
           this.actions().getFiles(filesLink);
-        } else {
-          this.actions().getRootFolderFiles(this.projectId());
         }
       },
     });
@@ -321,7 +392,7 @@ export class FilesTreeComponent {
     }
 
     this.filesService
-      .moveFile(moveLink, path, this.projectId(), this.provider()!, 'move')
+      .moveFile(moveLink, path, this.resourceId(), this.provider()!, 'move')
       .pipe(
         take(1),
         finalize(() => {
@@ -335,8 +406,6 @@ export class FilesTreeComponent {
 
             if (filesLink) {
               this.actions().getFiles(filesLink);
-            } else {
-              this.actions().getRootFolderFiles(this.projectId());
             }
           } else {
             const filesLink = dropNode?.relationships.filesLink;

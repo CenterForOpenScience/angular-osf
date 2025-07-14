@@ -78,6 +78,10 @@ export class ProjectOverviewMapper {
       region: response.relationships.region?.data,
       forksCount: response.relationships.forks.links.related.meta.count,
       viewOnlyLinksCount: response.relationships.view_only_links.links.related.meta.count,
+      links: {
+        rootFolder: response.relationships?.files?.links?.related?.href,
+        iri: response.links?.iri,
+      },
     };
   }
 
