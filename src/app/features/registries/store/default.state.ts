@@ -1,7 +1,7 @@
 import { RegistriesStateModel } from './registries.model';
 
 export const DefaultState: RegistriesStateModel = {
-  providers: {
+  providerSchemas: {
     data: [],
     isLoading: false,
     error: null,
@@ -33,4 +33,10 @@ export const DefaultState: RegistriesStateModel = {
     error: null,
   },
   stepsValidation: {},
+  registration: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
 };

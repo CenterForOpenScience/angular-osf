@@ -41,7 +41,7 @@ export const registriesRoutes: Routes = [
         providers: [provideStates([ModeratorsState])],
       },
       {
-        path: 'new',
+        path: ':providerId/new',
         loadComponent: () =>
           import('./components/new-registration/new-registration.component').then(
             (mod) => mod.NewRegistrationComponent

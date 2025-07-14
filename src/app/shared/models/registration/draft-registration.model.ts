@@ -1,6 +1,6 @@
-import { LicenseOptions } from '@osf/shared/models';
+import { LicenseOptions } from '../license.model';
 
-export interface Registration {
+export interface DraftRegistrationModel {
   id: string;
   title: string;
   description: string;
@@ -12,4 +12,6 @@ export interface Registration {
   tags: string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stepsData?: Record<string, any>;
+  branchedFrom?: string;
+  providerId: string;
 }

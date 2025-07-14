@@ -1,0 +1,60 @@
+<div class="flex flex-column gap-4">
+  <div class="flex flex-column gap-2">
+    <textarea
+      pTextarea
+      [(ngModel)]="emailContent"
+      (ngModelChange)="emailContent.set($event)"
+      [placeholder]="'adminInstitutions.institutionUsers.writeEmailText' | translate"
+      [rows]="6"
+      [style]="{ 'min-height': '200px' }"
+    ></textarea>
+  </div>
+
+  <div class="flex flex-column gap-1 pl-3">
+    <span>{{ 'adminInstitutions.institutionUsers.sincerelyYours' | translate }}, </span>
+    <span>{{ config.data }}</span>
+  </div>
+
+  <div class="flex flex-column gap-3">
+    <div class="flex align-items-center gap-2">
+      <p-checkbox
+        [(ngModel)]="ccSender"
+        (ngModelChange)="ccSender.set($event)"
+        binary="true"
+        inputId="cc-sender"
+      ></p-checkbox>
+      <label for="cc-sender" class="m-0 font-bold font-medium cursor-pointer">{{
+        'adminInstitutions.institutionUsers.ccSender' | translate
+      }}</label>
+    </div>
+
+    <div class="flex align-items-center gap-2">
+      <p-checkbox
+        [(ngModel)]="allowReplyToSender"
+        (ngModelChange)="allowReplyToSender.set($event)"
+        binary="true"
+        inputId="allow-reply"
+      ></p-checkbox>
+      <label for="allow-reply" class="m-0 font-bold font-medium cursor-pointer">{{
+        'adminInstitutions.institutionUsers.allowReplyToSenderAddress' | translate
+      }}</label>
+    </div>
+  </div>
+
+  <div class="flex justify-content-between gap-2 mt-4">
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      severity="info"
+      [label]="'common.buttons.cancel' | translate"
+      (click)="onCancel()"
+    />
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      [label]="'common.buttons.send' | translate"
+      (click)="onSend()"
+      [disabled]="!emailContent().trim()"
+    />
+  </div>
+</div>

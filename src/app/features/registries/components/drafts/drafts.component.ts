@@ -11,9 +11,10 @@ import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/ro
 import { StepperComponent, SubHeaderComponent } from '@osf/shared/components';
 import { StepOption } from '@osf/shared/models';
 import { LoaderService } from '@osf/shared/services';
+import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 
 import { defaultSteps } from '../../constants';
-import { FetchDraft, FetchSchemaBlocks, RegistriesSelectors } from '../../store';
+import { FetchDraft, FetchSchemaBlocks, RegistriesSelectors, UpdateStepValidation } from '../../store';
 
 @Component({
   selector: 'osf-drafts',
@@ -33,17 +34,32 @@ export class DraftsComponent {
   protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
   protected stepsValidation = select(RegistriesSelectors.getStepsValidation);
   protected readonly stepsData = select(RegistriesSelectors.getStepsData);
+  protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  protected initialContributors = select(ContributorsSelectors.getContributors);
 
   private readonly actions = createDispatchMap({
     getSchemaBlocks: FetchSchemaBlocks,
     getDraftRegistration: FetchDraft,
+    updateStepValidation: UpdateStepValidation,
   });
 
   get isReviewPage(): boolean {
     return this.router.url.includes('/review');
   }
 
+  isMetaDataInvalid = computed(() => {
+    return (
+      !this.draftRegistration()?.title ||
+      !this.draftRegistration()?.description ||
+      !this.draftRegistration()?.license?.id ||
+      !this.selectedSubjects()?.length ||
+      !this.initialContributors()?.length
+    );
+  });
+
   defaultSteps: StepOption[] = [];
+
+  isLoaded = false;
 
   steps: Signal<StepOption[]> = computed(() => {
     this.defaultSteps = defaultSteps.map((step) => ({
@@ -102,11 +118,12 @@ export class DraftsComponent {
     }
     effect(() => {
       const registrationSchemaId = this.draftRegistration()?.registrationSchemaId;
-      if (registrationSchemaId && !this.pages().length) {
+      if (registrationSchemaId && !this.isLoaded) {
         this.actions
           .getSchemaBlocks(registrationSchemaId || '')
           .pipe(
             tap(() => {
+              this.isLoaded = true;
               this.loaderService.hide();
             })
           )
@@ -118,6 +135,23 @@ export class DraftsComponent {
       const reviewStepIndex = this.pages().length + 1;
       if (this.isReviewPage) {
         this.currentStepIndex.set(reviewStepIndex);
+      }
+    });
+
+    effect(() => {
+      if (this.currentStepIndex() > 0) {
+        this.actions.updateStepValidation('0', this.isMetaDataInvalid());
+      }
+      if (this.pages().length && this.currentStepIndex() > 0 && this.stepsData()) {
+        for (let i = 1; i < this.currentStepIndex(); i++) {
+          const pageStep = this.pages()[i - 1];
+          const isStepInvalid =
+            pageStep?.questions?.some((question) => {
+              const questionData = this.stepsData()[question.responseKey!];
+              return question.required && (Array.isArray(questionData) ? !questionData.length : !questionData);
+            }) || false;
+          this.actions.updateStepValidation(i.toString(), isStepInvalid);
+        }
       }
     });
   }

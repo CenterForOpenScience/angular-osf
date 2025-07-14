@@ -9,6 +9,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angu
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { RegistriesSelectors } from '@osf/features/registries/store';
 import { SubjectsComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
@@ -32,10 +33,10 @@ export class RegistriesSubjectsComponent {
   control = input.required<FormControl>();
   private readonly route = inject(ActivatedRoute);
   private readonly draftId = this.route.snapshot.params['id'];
-  private readonly OSF_PROVIDER_ID = 'osf';
 
   protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   protected isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
+  protected draftRegistration = select(RegistriesSelectors.getDraftRegistration);
 
   protected actions = createDispatchMap({
     fetchSubjects: FetchSubjects,
@@ -46,13 +47,16 @@ export class RegistriesSubjectsComponent {
 
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
+  private isLoaded = false;
+
   constructor() {
     effect(() => {
-      this.updateControlState(this.selectedSubjects());
+      if (this.draftRegistration() && !this.isLoaded) {
+        this.actions.fetchSubjects(ResourceType.Registration, this.draftRegistration()?.providerId);
+        this.actions.fetchSelectedSubjects(this.draftId, ResourceType.DraftRegistration);
+        this.isLoaded = true;
+      }
     });
-
-    this.actions.fetchSubjects(ResourceType.Registration, this.OSF_PROVIDER_ID);
-    this.actions.fetchSelectedSubjects(this.draftId, ResourceType.DraftRegistration);
   }
 
   getSubjectChildren(parentId: string) {
@@ -60,7 +64,7 @@ export class RegistriesSubjectsComponent {
   }
 
   searchSubjects(search: string) {
-    this.actions.fetchSubjects(ResourceType.Registration, this.OSF_PROVIDER_ID, search);
+    this.actions.fetchSubjects(ResourceType.Registration, this.draftRegistration()?.providerId, search);
   }
 
   updateSelectedSubjects(subjects: SubjectModel[]) {
