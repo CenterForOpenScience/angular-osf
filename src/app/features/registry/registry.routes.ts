@@ -15,6 +15,7 @@ export const registryRoutes: Routes = [
   {
     path: '',
     component: RegistryComponent,
+    providers: [provideStates([RegistryOverviewState])],
     children: [
       {
         path: '',
@@ -25,7 +26,6 @@ export const registryRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('./pages/registry-overview/registry-overview.component').then((c) => c.RegistryOverviewComponent),
-        providers: [provideStates([RegistryOverviewState])],
       },
       {
         path: 'contributors',
@@ -46,7 +46,7 @@ export const registryRoutes: Routes = [
           import('./pages/registry-files/registry-files.component').then((c) => c.RegistryFilesComponent),
         providers: [provideStates([RegistryFilesState])],
         data: {
-          context: 'registry',
+          context: ResourceType.Registration,
         },
       },
     ],

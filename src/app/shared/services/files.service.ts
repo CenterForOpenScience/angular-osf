@@ -73,8 +73,8 @@ export class FilesService {
 
     return this.#jsonApiService.putFile<AddFileResponse>(uploadLink, file, params).pipe(
       catchError((error) => {
-        this.toastService.showError(error.error.message, 5000);
-        return throwError(error);
+        this.toastService.showError(error.error.message);
+        return throwError(() => error);
       })
     );
   }
@@ -97,8 +97,8 @@ export class FilesService {
     return this.#jsonApiService.get<JsonApiResponse<GetFileResponse, null>>(link).pipe(
       map((response) => MapFile(response.data)),
       catchError((error) => {
-        this.toastService.showError(error.error.message, 5000);
-        return throwError(error);
+        this.toastService.showError(error.error.message);
+        return throwError(() => error);
       })
     );
   }
@@ -127,8 +127,8 @@ export class FilesService {
     return this.#jsonApiService.post<JsonApiResponse<GetFileResponse, null>>(link, body).pipe(
       map((response) => MapFile(response.data)),
       catchError((error) => {
-        this.toastService.showError(error.error.message, 5000);
-        return throwError(error);
+        this.toastService.showError(error.error.message);
+        return throwError(() => error);
       })
     );
   }

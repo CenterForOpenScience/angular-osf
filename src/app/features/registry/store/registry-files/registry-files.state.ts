@@ -47,7 +47,7 @@ export class RegistryFilesState {
         },
       }),
       catchError((error) => {
-        this.toastService.showError(error, 5000);
+        this.toastService.showError(error);
         return handleSectionError(ctx, 'files', error);
       })
     );

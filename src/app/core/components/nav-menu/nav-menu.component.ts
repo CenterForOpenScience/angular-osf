@@ -5,7 +5,7 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 
 import { filter, map } from 'rxjs';
 
-import { Component, computed, inject, output } from '@angular/core';
+import { Component, computed, effect, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -24,7 +24,7 @@ export class NavMenuComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  protected readonly menuItems = MENU_ITEMS;
+  protected menuItems = MENU_ITEMS;
   protected readonly myProjectMenuItems = PROJECT_MENU_ITEMS;
   protected readonly registrationMenuItems = REGISTRATION_MENU_ITEMS;
 
@@ -46,6 +46,22 @@ export class NavMenuComponent {
   protected readonly isProjectRoute = computed(() => !!this.currentResourceId());
   protected readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
   protected readonly isRegistryRoute = computed(() => this.currentRoute().isRegistryRoute);
+  protected readonly isRegistryRouteDetails = computed(() => this.currentRoute().isRegistryRouteDetails);
+
+  constructor() {
+    effect(() => {
+      const isRouteDetails = this.isRegistryRouteDetails();
+      if (isRouteDetails) {
+        this.menuItems = this.menuItems.map((menuItem) => {
+          if (menuItem.id === 'registries') {
+            menuItem.expanded = true;
+            return menuItem;
+          }
+          return menuItem;
+        });
+      }
+    });
+  }
 
   private getRouteInfo() {
     const urlSegments = this.router.url.split('/').filter((segment) => segment);
@@ -55,12 +71,14 @@ export class NavMenuComponent {
 
     const isCollectionsWithId = urlSegments[0] === 'collections' && urlSegments[1] && urlSegments[1] !== '';
     const isRegistryRoute = urlSegments[0] === 'registries' && !!urlSegments[2];
+    const isRegistryRouteDetails = urlSegments[0] === 'registries' && urlSegments[2];
 
     return {
       resourceId,
       section,
       isCollectionsWithId,
       isRegistryRoute,
+      isRegistryRouteDetails,
     };
   }
 

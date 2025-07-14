@@ -88,7 +88,7 @@ export class RegistryFilesComponent {
 
   constructor() {
     this.route.parent?.params.subscribe((params) => {
-      const id = params['registrationId'];
+      const id = params['id'];
       if (id) {
         this.registryId.set(id);
         if (!this.registry()) {

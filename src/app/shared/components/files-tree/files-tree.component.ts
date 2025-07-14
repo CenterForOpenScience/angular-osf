@@ -159,8 +159,8 @@ export class FilesTreeComponent implements OnInit, OnDestroy {
       .pipe(
         take(1),
         catchError((error) => {
-          this.toastService.showError(error.error.message, 5000);
-          return throwError(error);
+          this.toastService.showError(error.error.message);
+          return throwError(() => error);
         })
       )
       .subscribe({

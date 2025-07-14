@@ -91,8 +91,8 @@ export class MoveFileDialogComponent {
           this.isFilesUpdating.set(false);
         }),
         catchError((error) => {
-          this.toastService.showError(error.error.message, 5000);
-          return throwError(error);
+          this.toastService.showError(error.error.message);
+          return throwError(() => error);
         })
       )
       .subscribe((folder) => {
@@ -130,8 +130,8 @@ export class MoveFileDialogComponent {
           this.dialogRef.close();
         }),
         catchError((error) => {
-          this.toastService.showError(error.error.message, 5000);
-          return throwError(error);
+          this.toastService.showError(error.error.message);
+          return throwError(() => error);
         })
       )
       .subscribe((file) => {

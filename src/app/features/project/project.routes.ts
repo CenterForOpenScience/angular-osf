@@ -35,7 +35,7 @@ export const projectRoutes: Routes = [
         loadChildren: () => import('../project/files/project-files.routes').then((mod) => mod.projectFilesRoutes),
         providers: [provideStates([ProjectFilesState])],
         data: {
-          context: 'project',
+          context: ResourceType.Project,
         },
       },
       {

@@ -771,6 +771,7 @@
           "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
         }
       },
+      "dropText": "Drop a file to upload",
       "emptyState": "This folder is empty",
       "detail": {
         "backToList": "Back to list of files",

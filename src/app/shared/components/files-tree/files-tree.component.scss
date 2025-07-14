@@ -68,7 +68,7 @@
 }
 
 .drop-zone {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -77,7 +77,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var.$white;
   transition:
     background 0.3s ease,
     backdrop-filter 0.3s ease;
@@ -92,7 +92,7 @@
 
   .drop-text {
     text-transform: none;
-    color: white;
+    color: var.$white;
     pointer-events: none;
   }
 }
