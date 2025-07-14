@@ -1,0 +1,170 @@
+<div>
+  <p-message styleClass="w-full" icon="fas fa-warning" severity="warn">
+    <span class="flex flex-wrap">
+      {{ 'moderation.preprintSettings.warning' | translate }}
+      <a class="mx-1 font-bold" href="mailto:support@osf.io">support&#64;osf.io</a>
+      {{ 'moderation.preprintSettings.warningForAssistance' | translate }}
+    </span>
+  </p-message>
+
+  <form [formGroup]="settingsForm" class="flex flex-column gap-4 mt-4">
+    @for (section of sections; track $index) {
+      <p-card>
+        <h2>{{ section.title | translate }}</h2>
+
+        @if (section.description) {
+          <p class="mt-4">{{ section.description | translate }}</p>
+        }
+
+        <div class="flex flex-column gap-3 mt-4">
+          @for (option of section.options; track $index) {
+            <div class="flex align-items-start gap-2">
+              <p-radioButton
+                [name]="section.control"
+                [value]="option.value"
+                [formControlName]="section.control"
+                [inputId]="section.control + '-' + option.value"
+              />
+              <div>
+                <label [for]="section.control + '-' + option.value" class="font-bold">
+                  {{ option.label | translate }}
+                </label>
+                <p>
+                  {{ option.description | translate }}
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      </p-card>
+    }
+  </form>
+
+  <!-- <form [formGroup]="settingsForm" class="flex flex-column gap-4 mt-4">
+    <p-card>
+      <h2>{{ 'moderation.preprintSettings.moderationType.title' | translate }}</h2>
+
+      <div class="flex flex-column gap-3 mt-4">
+        <div class="flex align-items-start gap-2">
+          <p-radioButton name="moderationType" value="pre" formControlName="moderationType" inputId="pre-moderation" />
+
+          <div>
+            <label for="pre-moderation">
+              {{ 'moderation.preprintSettings.moderationType.pre' | translate }}
+            </label>
+
+            <div>
+              {{ 'moderation.preprintSettings.moderationType.preDescription' | translate }}
+            </div>
+          </div>
+        </div>
+
+        <div class="flex align-items-start gap-2">
+          <p-radioButton
+            name="moderationType"
+            value="post"
+            formControlName="moderationType"
+            inputId="post-moderation"
+          />
+          <div>
+            <label for="post-moderation">
+              {{ 'moderation.preprintSettings.moderationType.post' | translate }}
+            </label>
+
+            <div>
+              {{ 'moderation.preprintSettings.moderationType.postDescription' | translate }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card>
+      <h2>{{ 'moderation.preprintSettings.commentVisibility.title' | translate }}</h2>
+
+      <p class="my-4">{{ 'moderation.preprintSettings.commentVisibility.description' | translate }}</p>
+
+      <div class="flex flex-column gap-3">
+        <div class="flex align-items-start gap-2">
+          <p-radioButton
+            name="commentVisibility"
+            value="moderators"
+            formControlName="commentVisibility"
+            inputId="comment-moderators"
+          />
+          <div>
+            <label for="comment-moderators">
+              {{ 'moderation.preprintSettings.commentVisibility.moderators' | translate }}
+            </label>
+
+            <p>
+              {{ 'moderation.preprintSettings.commentVisibility.moderatorsDescription' | translate }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex align-items-start gap-2">
+          <p-radioButton
+            name="commentVisibility"
+            value="moderatorsAndContributors"
+            formControlName="commentVisibility"
+            inputId="comment-moderators-contributors"
+          />
+          <div>
+            <label for="comment-moderators-contributors">
+              {{ 'moderation.preprintSettings.commentVisibility.moderatorsAndContributors' | translate }}
+            </label>
+
+            <p>
+              {{ 'moderation.preprintSettings.commentVisibility.moderatorsAndContributorsDescription' | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card>
+      <h2>{{ 'moderation.preprintSettings.moderatorComments.title' | translate }}</h2>
+
+      <p class="my-4">{{ 'moderation.preprintSettings.moderatorComments.description' | translate }}</p>
+
+      <div class="flex flex-column gap-3">
+        <div class="flex align-items-start gap-2">
+          <p-radioButton
+            name="moderatorComments"
+            value="anonymized"
+            formControlName="moderatorComments"
+            inputId="anonymized-comments"
+          />
+          <div>
+            <label for="anonymized-comments">
+              {{ 'moderation.preprintSettings.moderatorComments.anonymized' | translate }}
+            </label>
+
+            <p>
+              {{ 'moderation.preprintSettings.moderatorComments.anonymizedDescription' | translate }}
+            </p>
+          </div>
+        </div>
+
+        <div class="flex align-items-start gap-2">
+          <p-radioButton
+            name="moderatorComments"
+            value="named"
+            formControlName="moderatorComments"
+            inputId="named-comments"
+          />
+          <div>
+            <label for="named-comments">
+              {{ 'moderation.preprintSettings.moderatorComments.named' | translate }}
+            </label>
+
+            <p>
+              {{ 'moderation.preprintSettings.moderatorComments.namedDescription' | translate }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </p-card>
+  </form> -->
+</div>

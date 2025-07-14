@@ -17,7 +17,7 @@ import { CustomPaginatorComponent, LoadingSpinnerComponent, SearchInputComponent
 
 import { AddModeratorType } from '../../enums';
 import { ModeratorAddModel, ModeratorDialogAddModel } from '../../models';
-import { ClearUsers, ModerationSelectors, SearchUsers } from '../../store';
+import { ClearUsers, ModeratorsSelectors, SearchUsers } from '../../store/moderation';
 
 @Component({
   selector: 'osf-add-moderator-dialog',
@@ -39,9 +39,9 @@ export class AddModeratorDialogComponent implements OnInit, OnDestroy {
   private readonly destroyRef = inject(DestroyRef);
   readonly config = inject(DynamicDialogConfig);
 
-  protected users = select(ModerationSelectors.getUsers);
-  protected isLoading = select(ModerationSelectors.isUsersLoading);
-  protected totalUsersCount = select(ModerationSelectors.getUsersTotalCount);
+  protected users = select(ModeratorsSelectors.getUsers);
+  protected isLoading = select(ModeratorsSelectors.isUsersLoading);
+  protected totalUsersCount = select(ModeratorsSelectors.getUsersTotalCount);
   protected isInitialState = signal(true);
 
   protected currentPage = signal(1);

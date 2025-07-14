@@ -1,0 +1,24 @@
+.recent-activity-item {
+  border-bottom: 1px solid var(--grey-2);
+
+  &:hover {
+    background-color: var(--grey-3);
+    cursor: pointer;
+  }
+}
+
+.pending {
+  color: var(--yellow-1);
+}
+
+.accepted {
+  color: var(--green-1);
+}
+
+.rejected {
+  color: var(--red-1);
+}
+
+.withdrawn {
+  color: var(--dark-blue-1);
+}

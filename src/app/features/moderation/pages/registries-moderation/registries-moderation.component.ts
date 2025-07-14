@@ -7,11 +7,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/utils';
 
 import {
   CollectionModerationSubmissionsComponent,
-  CollectionModeratorsComponent,
+  ModeratorsListComponent,
   RegistrySettingsComponent,
   RegistrySubmissionsComponent,
 } from '../../components';
@@ -30,7 +31,7 @@ import { RegistryModerationTab } from '../../enums';
     TranslatePipe,
     FormsModule,
     SelectComponent,
-    CollectionModeratorsComponent,
+    ModeratorsListComponent,
     CollectionModerationSubmissionsComponent,
     RegistrySubmissionsComponent,
     RegistrySettingsComponent,
@@ -40,6 +41,8 @@ import { RegistryModerationTab } from '../../enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistriesModerationComponent {
+  readonly resourceType = ResourceType.Registration;
+
   readonly tabOptions = REGISTRY_MODERATION_TABS;
   readonly tabs = RegistryModerationTab;
   readonly isMedium = toSignal(inject(IS_MEDIUM));

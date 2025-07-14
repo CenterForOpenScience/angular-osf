@@ -6,7 +6,7 @@ import { AddToCollectionState } from '@osf/features/collections/store/add-to-col
 import { CollectionsState } from '@osf/features/collections/store/collections';
 import { ContributorsState, ProjectsState } from '@shared/stores';
 
-import { ModerationState } from '../moderation/store';
+import { ModeratorsState } from '../moderation/store/moderation';
 
 export const collectionsRoutes: Routes = [
   {
@@ -47,7 +47,7 @@ export const collectionsRoutes: Routes = [
           import('@osf/features/moderation/pages/collection-moderation/collection-moderation.component').then(
             (m) => m.CollectionModerationComponent
           ),
-        providers: [provideStates([ModerationState])],
+        providers: [provideStates([ModeratorsState])],
       },
     ],
   },

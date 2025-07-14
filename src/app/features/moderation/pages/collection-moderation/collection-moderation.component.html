@@ -26,11 +26,11 @@
         </p-tabpanel>
 
         <p-tabpanel [value]="tabs.Moderators">
-          <osf-collection-moderators></osf-collection-moderators>
+          <osf-moderators-list [resourceType]="resourceType"></osf-moderators-list>
         </p-tabpanel>
 
         <p-tabpanel [value]="tabs.Settings">
-          <osf-collection-moderation-settings></osf-collection-moderation-settings>
+          <osf-notification-settings></osf-notification-settings>
         </p-tabpanel>
       </p-tabpanels>
     </p-tabs>

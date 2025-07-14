@@ -1,11 +1,12 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { insertItem, patch, updateItem } from '@ngxs/store/operators';
 
-import { of, tap, throwError } from 'rxjs';
+import { of, tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/core/handlers';
 import { PreprintProvidersService } from '@osf/features/preprints/services';
 
 import {
@@ -14,32 +15,11 @@ import {
   GetPreprintProvidersAllowingSubmissions,
   GetPreprintProvidersToAdvertise,
 } from './preprint-providers.actions';
-import { PreprintProvidersStateModel } from './preprint-providers.model';
+import { PREPRINT_PROVIDERS_STATE_DEFAULTS, PreprintProvidersStateModel } from './preprint-providers.model';
 
 @State<PreprintProvidersStateModel>({
   name: 'preprintProviders',
-  defaults: {
-    preprintProvidersDetails: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    preprintProvidersToAdvertise: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    preprintProvidersAllowingSubmissions: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    highlightedSubjectsForProvider: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-  },
+  defaults: PREPRINT_PROVIDERS_STATE_DEFAULTS,
 })
 @Injectable()
 export class PreprintProvidersState {
@@ -74,7 +54,7 @@ export class PreprintProvidersState {
           })
         );
       }),
-      catchError((error) => this.handleError(ctx, 'preprintProvidersDetails', error))
+      catchError((error) => handleSectionError(ctx, 'preprintProvidersDetails', error))
     );
   }
 
@@ -93,7 +73,7 @@ export class PreprintProvidersState {
           })
         );
       }),
-      catchError((error) => this.handleError(ctx, 'preprintProvidersToAdvertise', error))
+      catchError((error) => handleSectionError(ctx, 'preprintProvidersToAdvertise', error))
     );
   }
 
@@ -112,7 +92,7 @@ export class PreprintProvidersState {
           })
         );
       }),
-      catchError((error) => this.handleError(ctx, 'preprintProvidersAllowingSubmissions', error))
+      catchError((error) => handleSectionError(ctx, 'preprintProvidersAllowingSubmissions', error))
     );
   }
 
@@ -134,7 +114,7 @@ export class PreprintProvidersState {
           })
         );
       }),
-      catchError((error) => this.handleError(ctx, 'highlightedSubjectsForProvider', error))
+      catchError((error) => handleSectionError(ctx, 'highlightedSubjectsForProvider', error))
     );
   }
 
@@ -144,20 +124,5 @@ export class PreprintProvidersState {
     }
 
     return Date.now() - lastFetched > this.REFRESH_INTERVAL;
-  }
-
-  private handleError(
-    ctx: StateContext<PreprintProvidersStateModel>,
-    section: keyof PreprintProvidersStateModel,
-    error: Error
-  ) {
-    ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
   }
 }

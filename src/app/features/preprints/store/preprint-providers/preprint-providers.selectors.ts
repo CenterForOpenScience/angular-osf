@@ -1,6 +1,7 @@
 import { Selector } from '@ngxs/store';
 
-import { PreprintProvidersState, PreprintProvidersStateModel } from '@osf/features/preprints/store/preprint-providers';
+import { PreprintProvidersStateModel } from './preprint-providers.model';
+import { PreprintProvidersState } from './preprint-providers.state';
 
 export class PreprintProvidersSelectors {
   @Selector([PreprintProvidersState])

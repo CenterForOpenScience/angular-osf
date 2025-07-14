@@ -1,0 +1,15 @@
+<h4>{{ provider().name }}</h4>
+
+<div class="flex flex-column gap-2 mt-2">
+  @for (tab of tabOptions; track $index) {
+    @let badge = tab.value === tabOption.Submissions ? submissionsCount : undefined;
+
+    <p-button
+      class="link-btn"
+      [link]="true"
+      [label]="tab.label | translate"
+      [badge]="badge"
+      [routerLink]="['/preprints', provider().id, 'moderation']"
+    ></p-button>
+  }
+</div>

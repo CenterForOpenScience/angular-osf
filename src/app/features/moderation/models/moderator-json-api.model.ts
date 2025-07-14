@@ -18,3 +18,23 @@ interface ModeratorEmbedsJsonApi {
     data: UserGetResponse;
   };
 }
+
+export interface ModeratorAddRequestModel {
+  type: 'moderators';
+  attributes: {
+    id?: string;
+    permission_group: string;
+    full_name?: string;
+    email?: string;
+  };
+  // relationships: {
+  //   users?: {
+  //     data?: RelationshipUsersData;
+  //   };
+  // };
+}
+
+interface RelationshipUsersData {
+  id?: string;
+  type?: 'users';
+}

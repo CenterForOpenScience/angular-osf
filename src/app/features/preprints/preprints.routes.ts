@@ -11,6 +11,9 @@ import { PreprintsResourcesFiltersState } from '@osf/features/preprints/store/pr
 import { PreprintsResourcesFiltersOptionsState } from '@osf/features/preprints/store/preprints-resources-filters-options';
 import { ContributorsState, SubjectsState } from '@shared/stores';
 
+import { ModeratorsState } from '../moderation/store/moderation';
+import { PreprintModerationState } from '../moderation/store/preprint-moderation';
+
 export const preprintsRoutes: Routes = [
   {
     path: '',
@@ -67,6 +70,22 @@ export const preprintsRoutes: Routes = [
             (c) => c.SubmitPreprintStepperComponent
           ),
         canDeactivate: [ConfirmLeavingGuard],
+      },
+      {
+        path: ':id/moderation',
+        loadComponent: () =>
+          import('@osf/features/moderation/pages/preprint-moderation/preprint-moderation.component').then(
+            (m) => m.PreprintModerationComponent
+          ),
+        providers: [provideStates([ModeratorsState])],
+      },
+      {
+        path: 'my-reviewing',
+        loadComponent: () =>
+          import('@osf/features/moderation/pages/my-preprint-reviewing/my-preprint-reviewing.component').then(
+            (m) => m.MyPreprintReviewingComponent
+          ),
+        providers: [provideStates([PreprintModerationState])],
       },
       {
         path: ':providerId/edit/:preprintId',
