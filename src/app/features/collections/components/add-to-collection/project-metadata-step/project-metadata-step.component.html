@@ -16,13 +16,13 @@
           <div>
             <p class="font-bold">{{ 'collections.addToCollection.form.description' | translate }}</p>
             <p class="mt-2">
-              {{ selectedProject()?.description ?? 'collections.addToCollection.noDescription' | translate }}
+              {{ selectedProject()?.description || 'collections.addToCollection.noDescription' | translate }}
             </p>
           </div>
           <div>
             <p class="font-bold">{{ 'collections.addToCollection.form.license' | translate }}</p>
             <p class="mt-2">
-              {{ projectLicense()?.name ?? 'collections.addToCollection.noLicense' | translate }}
+              {{ projectLicense()?.name || 'collections.addToCollection.noLicense' | translate }}
             </p>
           </div>
           <div>
