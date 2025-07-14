@@ -21,3 +21,7 @@ export class UpdateProjectMetadata {
 
   constructor(public metadata: ProjectMetadataUpdatePayload) {}
 }
+
+export class ClearProjects {
+  static readonly type = '[Projects] Clear Selected Project';
+}

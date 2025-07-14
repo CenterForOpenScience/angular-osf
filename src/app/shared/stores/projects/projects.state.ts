@@ -6,23 +6,31 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@core/handlers';
 import { ProjectsService } from '@shared/services/projects.service';
-import { GetProjects, ProjectsStateModel, SetSelectedProject, UpdateProjectMetadata } from '@shared/stores';
+import {
+  ClearProjects,
+  GetProjects,
+  ProjectsStateModel,
+  SetSelectedProject,
+  UpdateProjectMetadata,
+} from '@shared/stores';
+
+const PROJECTS_DEFAULTS: ProjectsStateModel = {
+  projects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  selectedProject: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+};
 
 @State<ProjectsStateModel>({
   name: 'projects',
-  defaults: {
-    projects: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    selectedProject: {
-      data: null,
-      isLoading: false,
-      isSubmitting: false,
-      error: null,
-    },
-  },
+  defaults: PROJECTS_DEFAULTS,
 })
 @Injectable()
 export class ProjectsState {
@@ -88,5 +96,10 @@ export class ProjectsState {
       }),
       catchError((error) => handleSectionError(ctx, 'selectedProject', error))
     );
+  }
+
+  @Action(ClearProjects)
+  clearProjects(ctx: StateContext<ProjectsStateModel>) {
+    ctx.patchState(PROJECTS_DEFAULTS);
   }
 }

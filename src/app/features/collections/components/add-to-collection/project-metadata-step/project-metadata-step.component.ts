@@ -40,7 +40,7 @@ import { License } from '@shared/models';
 import { Project } from '@shared/models/projects';
 import { InterpolatePipe } from '@shared/pipes';
 import { ToastService } from '@shared/services';
-import { GetAllContributors, UpdateProjectMetadata } from '@shared/stores';
+import { ClearProjects, GetAllContributors, UpdateProjectMetadata } from '@shared/stores';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
 @Component({
@@ -95,6 +95,7 @@ export class ProjectMetadataStepComponent {
     updateCollectionSubmissionMetadata: UpdateProjectMetadata,
     getAllContributors: GetAllContributors,
     getCollectionLicenses: GetCollectionLicenses,
+    clearProjects: ClearProjects,
   });
 
   protected readonly projectMetadataForm: FormGroup<ProjectMetadataForm> = this.formService.createForm();
@@ -230,6 +231,12 @@ export class ProjectMetadataStepComponent {
       if (selectedProject && formValue && !this.initialProjectMetadataFormValues()) {
         this.initialProjectMetadataFormValues.set(JSON.stringify(formValue));
       }
+    });
+
+    effect(() => {
+      this.destroyRef.onDestroy(() => {
+        this.actions.clearProjects();
+      });
     });
   }
 }

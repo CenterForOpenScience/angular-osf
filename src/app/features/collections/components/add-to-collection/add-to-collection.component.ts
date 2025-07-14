@@ -6,6 +6,8 @@ import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Stepper } from 'primeng/stepper';
 
+import { Observable } from 'rxjs';
+
 import {
   ChangeDetectionStrategy,
   Component,
@@ -27,6 +29,7 @@ import {
 } from '@osf/features/collections/store/add-to-collection/add-to-collection.actions';
 import { CollectionsSelectors, GetCollectionProvider } from '@osf/features/collections/store/collections';
 import { LoadingSpinnerComponent } from '@shared/components';
+import { CanDeactivateComponent } from '@shared/models';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
 import {
@@ -55,7 +58,7 @@ import {
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddToCollectionComponent {
+export class AddToCollectionComponent implements CanDeactivateComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -70,6 +73,7 @@ export class AddToCollectionComponent {
   protected selectedProject = select(ProjectsSelectors.getSelectedProject);
   protected currentUser = select(UserSelectors.getCurrentUser);
   protected providerId = signal<string>('');
+  protected isSubmitted = signal<boolean>(false);
   protected projectMetadataSaved = signal<boolean>(false);
   protected projectContributorsSaved = signal<boolean>(false);
   protected collectionMetadataSaved = signal<boolean>(false);
@@ -123,6 +127,7 @@ export class AddToCollectionComponent {
       collectionMetadata: this.collectionMetadataForm.value || {},
       userId: this.currentUser()?.id || '',
     };
+    this.isSubmitted.set(true);
 
     const dialogRef = this.dialogService.open(AddToCollectionConfirmationDialogComponent, {
       width: '500px',
@@ -136,6 +141,7 @@ export class AddToCollectionComponent {
 
     dialogRef.onClose.subscribe((result) => {
       if (result) {
+        this.isSubmitted.set(false);
         this.router.navigate(['/my-projects', this.selectedProject()?.id, 'overview']);
       }
     });
@@ -164,5 +170,9 @@ export class AddToCollectionComponent {
   onBeforeUnload($event: BeforeUnloadEvent): boolean {
     $event.preventDefault();
     return false;
+  }
+
+  canDeactivate(): Observable<boolean> | boolean {
+    return this.isSubmitted();
   }
 }
