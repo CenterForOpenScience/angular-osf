@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 
 import { AddToCollectionState } from '@osf/features/collections/store/add-to-collection';
 import { CollectionsState } from '@osf/features/collections/store/collections';
+import { ConfirmLeavingGuard } from '@shared/guards';
 import { ContributorsState, ProjectsState } from '@shared/stores';
 
 import { ModeratorsState } from '../moderation/store/moderation';
@@ -40,6 +41,7 @@ export const collectionsRoutes: Routes = [
             (mod) => mod.AddToCollectionComponent
           ),
         providers: [provideStates([ProjectsState, CollectionsState, AddToCollectionState, ContributorsState])],
+        canDeactivate: [ConfirmLeavingGuard],
       },
       {
         path: ':id/moderation',

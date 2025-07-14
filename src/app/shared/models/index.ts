@@ -1,6 +1,7 @@
 export * from './addons';
 export * from './brand.json-api.model';
 export * from './brand.model';
+export * from './can-deactivate.interface';
 export * from './charts';
 export * from './confirmation-options.model';
 export * from './contributors';

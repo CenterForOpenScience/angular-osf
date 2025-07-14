@@ -2,13 +2,13 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { ConfirmLeavingGuard } from '@osf/features/preprints/guards';
 import { PreprintsComponent } from '@osf/features/preprints/preprints.component';
 import { PreprintProvidersState } from '@osf/features/preprints/store/preprint-providers';
 import { PreprintStepperState } from '@osf/features/preprints/store/preprint-stepper';
 import { PreprintsDiscoverState } from '@osf/features/preprints/store/preprints-discover';
 import { PreprintsResourcesFiltersState } from '@osf/features/preprints/store/preprints-resources-filters';
 import { PreprintsResourcesFiltersOptionsState } from '@osf/features/preprints/store/preprints-resources-filters-options';
+import { ConfirmLeavingGuard } from '@shared/guards';
 import { ContributorsState, SubjectsState } from '@shared/stores';
 
 import { ModeratorsState } from '../moderation/store/moderation';

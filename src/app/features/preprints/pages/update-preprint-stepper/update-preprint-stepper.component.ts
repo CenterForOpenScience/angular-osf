@@ -30,7 +30,6 @@ import {
 } from '@osf/features/preprints/components';
 import { updatePreprintSteps } from '@osf/features/preprints/constants';
 import { PreprintSteps } from '@osf/features/preprints/enums';
-import { CanDeactivateComponent } from '@osf/features/preprints/models';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
   FetchPreprintById,
@@ -39,7 +38,7 @@ import {
   SetSelectedPreprintProviderId,
 } from '@osf/features/preprints/store/preprint-stepper';
 import { StepperComponent } from '@shared/components';
-import { StepOption } from '@shared/models';
+import { CanDeactivateComponent, StepOption } from '@shared/models';
 import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
 
