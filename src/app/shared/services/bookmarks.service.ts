@@ -5,7 +5,7 @@ import { inject, Injectable } from '@angular/core';
 import { JsonApiService } from '@core/services';
 import { SparseCollectionsResponseJsonApi } from '@osf/features/collections/models';
 
-import { environment } from '../../../environments/environment';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
