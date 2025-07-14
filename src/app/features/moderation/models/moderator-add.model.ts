@@ -2,7 +2,7 @@ import { ModeratorPermission } from '../enums';
 
 export interface ModeratorAddModel {
   id?: string;
-  permission?: ModeratorPermission;
+  permission: ModeratorPermission;
   fullName?: string;
   email?: string;
 }

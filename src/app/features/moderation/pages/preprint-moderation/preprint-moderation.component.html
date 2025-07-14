@@ -1,0 +1,46 @@
+<section class="flex flex-column flex-1 h-full xl:mt-6">
+  <osf-sub-header [title]="'navigation.moderation' | translate" />
+
+  <div class="flex-column flex flex-1 w-full h-full">
+    <p-tabs class="flex-1" [value]="selectedTab" [lazy]="true" (valueChange)="onTabChange(+$event)">
+      @if (isMedium()) {
+        <p-tablist class="pr-5 pl-5">
+          @for (item of tabOptions; track $index) {
+            <p-tab [value]="item.value">{{ item.label | translate }}</p-tab>
+          }
+        </p-tablist>
+      }
+
+      <p-tabpanels class="p-3 flex-1 md:p-5 xl:p-4">
+        @if (!isMedium()) {
+          <osf-select
+            class="block mb-4"
+            [options]="tabOptions"
+            [fullWidth]="true"
+            [(selectedValue)]="selectedTab"
+          ></osf-select>
+        }
+
+        <p-tabpanel [value]="tabs.Submissions">
+          <osf-registry-submissions></osf-registry-submissions>
+        </p-tabpanel>
+
+        <p-tabpanel [value]="tabs.WithdrawalRequests">
+          <osf-collection-moderation-submissions></osf-collection-moderation-submissions>
+        </p-tabpanel>
+
+        <p-tabpanel [value]="tabs.Moderators">
+          <osf-moderators-list [resourceType]="resourceType"></osf-moderators-list>
+        </p-tabpanel>
+
+        <p-tabpanel [value]="tabs.Notifications">
+          <osf-notification-settings></osf-notification-settings>
+        </p-tabpanel>
+
+        <p-tabpanel [value]="tabs.Settings">
+          <osf-preprint-moderation-settings></osf-preprint-moderation-settings>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+</section>

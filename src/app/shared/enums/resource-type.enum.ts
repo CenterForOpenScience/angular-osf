@@ -7,4 +7,5 @@ export enum ResourceType {
   ProjectComponent,
   Agent,
   DraftRegistration,
+  Collection,
 }

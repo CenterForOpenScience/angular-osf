@@ -121,7 +121,8 @@
     "preprints": "Preprints",
     "preprintsSubRoutes": {
       "overview": "Overview",
-      "myPreprints": "My Preprints"
+      "myPreprints": "My Preprints",
+      "myReviewing": "My Reviewing"
     },
     "collections": "Collections",
     "moderation": "Moderation",
@@ -1077,6 +1078,9 @@
     "settings": "Settings",
     "submitted": "Submitted",
     "pending": "Pending",
+    "submissions": "Submissions",
+    "withdrawalRequest": "Withdrawal Request",
+    "notifications": "Notifications",
     "settingsMessage": "To configure your notification preferences visit your",
     "userSettings": "User settings",
     "bulkUpload": "Bulk upload",
@@ -1112,6 +1116,33 @@
       "accepted": "Accepted",
       "rejected": "Rejected",
       "by": "by"
+    },
+    "preprintSettings": {
+      "warning": "Notice: Moderation settings can only be  changed by an OSF administrator. Contact",
+      "warningForAssistance": "for assistance.",
+      "moderationType": {
+        "title": "Moderation Type",
+        "pre": "Pre-moderation",
+        "preDescription": "All preprints are placed in a queue for a moderator to accept or reject. Preprints are displayed publicly only after approval.",
+        "post": "Post-moderation",
+        "postDescription": "All preprints are displayed publicly immediately upon submission. Preprints also appear in a queue for a moderator to accept or reject. If rejected, the preprint is no longer displayed publicly."
+      },
+      "commentVisibility": {
+        "title": "Comment Visibility",
+        "description": "Moderators can add comments when making a decision about a submission.",
+        "moderators": "Moderators",
+        "moderatorsDescription": "Comments will be visible to Open Science Framework. Moderators NOT contributors on the submission.",
+        "moderatorsAndContributors": "Moderators And Contributors",
+        "moderatorsAndContributorsDescription": "Comments will be visible to Open Science Framework moderators AND contributors on the submission."
+      },
+      "moderatorComments": {
+        "title": "Moderator Comments",
+        "description": "If moderators' comments are visible to contributors, the moderator's name can be displayed or hidden from the contributors.",
+        "anonymized": "Anonymized Comments",
+        "anonymizedDescription": "All comments will be visible to the contributors of the submission, but the moderator's name will not be displayed.",
+        "named": "Named Comments",
+        "namedDescription": "All comments will be visible to the contributors of the submission and the moderator's osf profile name will be displayed."
+      }
     }
   },
   "settings": {

@@ -1,8 +1,8 @@
 import { JsonApiResponseWithPaging, UserGetResponse } from '@osf/core/models';
 import { PaginatedData } from '@osf/shared/models';
 
-import { ModeratorPermission } from '../enums';
-import { ModeratorAddModel, ModeratorDataJsonApi, ModeratorModel } from '../models';
+import { AddModeratorType, ModeratorPermission } from '../enums';
+import { ModeratorAddModel, ModeratorAddRequestModel, ModeratorDataJsonApi, ModeratorModel } from '../models';
 
 export class ModerationMapper {
   static fromModeratorResponse(response: ModeratorDataJsonApi): ModeratorModel {
@@ -30,5 +30,26 @@ export class ModerationMapper {
       ),
       totalCount: response.links.meta.total,
     };
+  }
+
+  static toModeratorAddRequest(model: ModeratorAddModel, type = AddModeratorType.Search): ModeratorAddRequestModel {
+    if (type === AddModeratorType.Search) {
+      return {
+        type: 'moderators',
+        attributes: {
+          id: model.id,
+          permission_group: model.permission,
+        },
+      };
+    } else {
+      return {
+        type: 'moderators',
+        attributes: {
+          permission_group: model.permission,
+          full_name: model.fullName,
+          email: model.email,
+        },
+      };
+    }
   }
 }

@@ -1,0 +1,9 @@
+.p-badge {
+  --p-badge-secondary-background: var(--grey-3);
+  --p-badge-secondary-color: var(--dark-blue-1);
+  --p-badge-border-radius: 0.25rem;
+}
+
+.p-badge-circle {
+  border-radius: 4px;
+}

@@ -1,0 +1,38 @@
+<section>
+  <osf-sub-header [title]="'navigation.preprintsSubRoutes.myReviewing' | translate" />
+
+  <div class="flex flex-column bg-white p-3 flex-1 md:p-5 xl:flex-row xl:p-4">
+    <p-card class="col-12 xl:col-7">
+      <h2>{{ 'project.overview.recentActivity.title' | translate }}</h2>
+
+      <div class="mt-4">
+        <osf-recent-activity-list
+          [reviews]="preprintReviews()"
+          [isLoading]="isReviewsLoading()"
+          [totalCount]="preprintReviewsTotalCount()"
+          (pageChanged)="pageChanged($event)"
+        ></osf-recent-activity-list>
+      </div>
+    </p-card>
+
+    <p-card class="col-12 xl:col-5">
+      <h2>{{ 'navigation.preprintsSubRoutes.myReviewing' | translate }}</h2>
+
+      <div class="mt-4">
+        @if (isPreprintProvidersLoading()) {
+          <div class="flex flex-column gap-2">
+            <p-skeleton height="1.5rem"></p-skeleton>
+            <p-skeleton height="1.5rem"></p-skeleton>
+            <p-skeleton height="1.5rem"></p-skeleton>
+            <p-skeleton height="1.5rem"></p-skeleton>
+            <p-skeleton height="1.5rem"></p-skeleton>
+          </div>
+        } @else {
+          @for (provider of preprintProviders(); track provider.id) {
+            <osf-my-reviewing-navigation [provider]="provider"></osf-my-reviewing-navigation>
+          }
+        }
+      </div>
+    </p-card>
+  </div>
+</section>
