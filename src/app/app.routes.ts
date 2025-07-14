@@ -78,7 +78,7 @@ export const routes: Routes = [
       {
         path: 'my-projects/:id',
         loadChildren: () => import('./features/project/project.routes').then((mod) => mod.projectRoutes),
-        providers: [provideStates([ProjectsState])],
+        providers: [provideStates([ProjectsState, BookmarksState])],
       },
       {
         path: 'settings',
@@ -111,6 +111,7 @@ export const routes: Routes = [
       {
         path: 'registries/:id',
         loadChildren: () => import('./features/registry/registry.routes').then((mod) => mod.registryRoutes),
+        providers: [provideStates([BookmarksState])],
       },
       {
         path: 'terms-of-use',
