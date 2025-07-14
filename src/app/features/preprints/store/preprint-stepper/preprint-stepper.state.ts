@@ -1,7 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { EMPTY, filter, forkJoin, of, switchMap, tap, throwError } from 'rxjs';
+import { EMPTY, filter, forkJoin, of, switchMap, tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { HttpEventType } from '@angular/common/http';
@@ -23,6 +23,7 @@ import {
   ConnectProject,
   CopyFileFromProject,
   CreateNewProject,
+  CreateNewVersion,
   CreatePreprint,
   DeletePreprint,
   DisconnectProject,
@@ -114,7 +115,7 @@ export class PreprintStepperState {
       tap((preprint) => {
         ctx.setState(patch({ preprint: patch({ isSubmitting: false, data: preprint }) }));
       }),
-      catchError((error) => this.handleError(ctx, 'preprint', error))
+      catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
   }
 
@@ -126,7 +127,7 @@ export class PreprintStepperState {
       tap((preprint) => {
         ctx.setState(patch({ preprint: patch({ isSubmitting: false, data: preprint }) }));
       }),
-      catchError((error) => this.handleError(ctx, 'preprint', error))
+      catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
   }
 
@@ -138,7 +139,7 @@ export class PreprintStepperState {
       tap((preprint) => {
         ctx.setState(patch({ preprint: patch({ isLoading: false, data: preprint }) }));
       }),
-      catchError((error) => this.handleError(ctx, 'preprint', error))
+      catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
   }
 
@@ -185,7 +186,7 @@ export class PreprintStepperState {
               },
             });
           }),
-          catchError((error) => this.handleError(ctx, 'preprint', error))
+          catchError((error) => handleSectionError(ctx, 'preprint', error))
         );
       })
     );
@@ -226,7 +227,7 @@ export class PreprintStepperState {
           })
         );
       }),
-      catchError((error) => this.handleError(ctx, 'preprintFiles', error))
+      catchError((error) => handleSectionError(ctx, 'preprintFiles', error))
     );
   }
 
@@ -245,7 +246,7 @@ export class PreprintStepperState {
           })
         );
       }),
-      catchError((error) => this.handleError(ctx, 'availableProjects', error))
+      catchError((error) => handleSectionError(ctx, 'availableProjects', error))
     );
   }
 
@@ -272,7 +273,7 @@ export class PreprintStepperState {
             }),
           })
         );
-        return this.handleError(ctx, 'projectFiles', error);
+        return handleSectionError(ctx, 'projectFiles', error);
       })
     );
   }
@@ -292,7 +293,7 @@ export class PreprintStepperState {
           })
         );
       }),
-      catchError((error) => this.handleError(ctx, 'projectFiles', error))
+      catchError((error) => handleSectionError(ctx, 'projectFiles', error))
     );
   }
 
@@ -331,10 +332,10 @@ export class PreprintStepperState {
                 },
               });
             }),
-            catchError((error) => this.handleError(ctx, 'preprint', error))
+            catchError((error) => handleSectionError(ctx, 'preprint', error))
           );
         }),
-        catchError((error) => this.handleError(ctx, 'preprintFiles', error))
+        catchError((error) => handleSectionError(ctx, 'preprintFiles', error))
       );
   }
 
@@ -348,7 +349,7 @@ export class PreprintStepperState {
       tap((licenses) => {
         ctx.setState(patch({ licenses: patch({ isLoading: false, data: licenses }) }));
       }),
-      catchError((error) => this.handleError(ctx, 'licenses', error))
+      catchError((error) => handleSectionError(ctx, 'licenses', error))
     );
   }
 
@@ -361,7 +362,7 @@ export class PreprintStepperState {
       tap((preprint) => {
         ctx.setState(patch({ preprint: patch({ isSubmitting: false, data: preprint }) }));
       }),
-      catchError((error) => this.handleError(ctx, 'preprint', error))
+      catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
   }
 
@@ -469,7 +470,7 @@ export class PreprintStepperState {
             },
           });
         }),
-        catchError((error) => this.handleError(ctx, 'preprintProject', error))
+        catchError((error) => handleSectionError(ctx, 'preprintProject', error))
       );
   }
 
@@ -481,7 +482,19 @@ export class PreprintStepperState {
       tap(() => {
         ctx.setState(patch({ preprint: patch({ isSubmitting: false }), hasBeenSubmitted: true }));
       }),
-      catchError((error) => this.handleError(ctx, 'preprint', error))
+      catchError((error) => handleSectionError(ctx, 'preprint', error))
+    );
+  }
+
+  @Action(CreateNewVersion)
+  createNewVersion(ctx: StateContext<PreprintStepperStateModel>, { preprintId }: CreateNewVersion) {
+    ctx.setState(patch({ preprint: patch({ isLoading: true }) }));
+
+    return this.preprintsService.createNewVersion(preprintId).pipe(
+      tap((preprintNewVersion) => {
+        ctx.setState(patch({ preprint: patch({ data: preprintNewVersion, isSubmitting: false }) }));
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
   }
 
@@ -499,21 +512,5 @@ export class PreprintStepperState {
       return this.preprintsService.deletePreprint(createdPreprintId);
     }
     return EMPTY;
-  }
-
-  private handleError(
-    ctx: StateContext<PreprintStepperStateModel>,
-    section: keyof PreprintStepperStateModel,
-    error: Error
-  ) {
-    ctx.patchState({
-      [section]: {
-        ...(ctx.getState()[section] as object),
-        isLoading: false,
-        isSubmitting: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
   }
 }

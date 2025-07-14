@@ -84,6 +84,14 @@ export class PreprintsService {
     return this.jsonApiService.post(`${environment.apiUrl}/preprints/${preprintId}/review_actions/`, payload);
   }
 
+  createNewVersion(prevVersionPreprintId: string) {
+    return this.jsonApiService
+      .post<
+        JsonApiResponse<ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>, null>
+      >(`${environment.apiUrl}/preprints/${prevVersionPreprintId}/versions/`)
+      .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
+  }
+
   private mapPreprintDomainToApiPayload(domainPayload: Partial<Preprint>): Partial<PreprintJsonApi> {
     const apiPayload: Record<string, unknown> = {};
     Object.entries(domainPayload).forEach(([key, value]) => {
