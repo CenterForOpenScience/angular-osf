@@ -93,8 +93,6 @@ export class FileStepComponent implements OnInit {
   arePreprintFilesLoading = select(PreprintStepperSelectors.arePreprintFilesLoading);
   availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
   areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
-  projectFiles = select(PreprintStepperSelectors.getProjectFiles);
-  areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
   selectedProjectId = signal<StringOrNull>(null);
 
   versionFileMode = signal<boolean>(false);
