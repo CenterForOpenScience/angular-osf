@@ -80,7 +80,6 @@ export class ProjectFilesState {
               error: null,
             },
           });
-          console.log('files is patched');
         },
       }),
       catchError((error) => this.handleError(ctx, 'files', error))
@@ -96,7 +95,6 @@ export class ProjectFilesState {
   @Action(SetCurrentFolder)
   setSelectedFolder(ctx: StateContext<ProjectFilesStateModel>, action: SetCurrentFolder) {
     ctx.patchState({ currentFolder: action.folder });
-    console.log('set currennt folder');
   }
 
   @Action(SetMoveFileCurrentFolder)

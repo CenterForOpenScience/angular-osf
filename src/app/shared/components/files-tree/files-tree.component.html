@@ -53,7 +53,9 @@
             </div>
 
             <div class="files-table-cell">
-              {{ file.kind === 'file' ? file.extra.downloads + ' ' + ('common.labels.downloads' | translate) : '' }}
+              @if (file.extra.downloads) {
+                {{ file.kind === 'file' ? file.extra.downloads + ' ' + ('common.labels.downloads' | translate) : '' }}
+              }
             </div>
 
             <div class="files-table-cell">
