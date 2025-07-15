@@ -1,10 +1,13 @@
 export { AddModeratorDialogComponent } from './add-moderator-dialog/add-moderator-dialog.component';
 export { BulkUploadComponent } from './bulk-upload/bulk-upload.component';
-export { CollectionModerationSettingsComponent } from './collection-moderation-settings/collection-moderation-settings.component';
 export { CollectionModerationSubmissionsComponent } from './collection-moderation-submissions/collection-moderation-submissions.component';
-export { CollectionModeratorsComponent } from './collection-moderators/collection-moderators.component';
-export { CollectionModeratorsListComponent } from './collection-moderators-list/collection-moderators-list.component';
 export { InviteModeratorDialogComponent } from './invite-moderator-dialog/invite-moderator-dialog.component';
+export { ModeratorsListComponent } from './moderators-list/moderators-list.component';
+export { ModeratorsTableComponent } from './moderators-table/moderators-table.component';
+export { MyReviewingNavigationComponent } from './my-reviewing-navigation/my-reviewing-navigation.component';
+export { NotificationSettingsComponent } from './notification-settings/notification-settings.component';
+export { PreprintModerationSettingsComponent } from './preprint-moderation-settings/preprint-moderation-settings.component';
+export { RecentActivityListComponent } from './recent-activity-list/recent-activity-list.component';
 export { RegistrySettingsComponent } from './registry-settings/registry-settings.component';
 export { RegistrySubmissionsComponent } from './registry-submissions/registry-submissions.component';
 export { SubmissionItemComponent } from './submission-item/submission-item.component';

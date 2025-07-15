@@ -65,7 +65,7 @@ export class InviteModeratorDialogComponent {
     const moderatorData: ModeratorAddModel = {
       fullName: formData.fullName,
       email: formData.email,
-      permission: formData.permission,
+      permission: formData.permission || ModeratorPermission.Moderator,
     };
     const data: ModeratorDialogAddModel = { data: [moderatorData], type: AddModeratorType.Invite };
     this.dialogRef.close(data);

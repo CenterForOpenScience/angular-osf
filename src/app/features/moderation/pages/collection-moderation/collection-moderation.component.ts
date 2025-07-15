@@ -1,19 +1,17 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { Tab, TabList, TabPanels, Tabs } from 'primeng/tabs';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
+import { Primitive } from '@osf/core/helpers';
 import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/utils';
 
-import {
-  CollectionModerationSettingsComponent,
-  CollectionModerationSubmissionsComponent,
-  CollectionModeratorsComponent,
-} from '../../components';
 import { COLLECTION_MODERATION_TABS } from '../../constants';
 import { CollectionModerationTab } from '../../enums';
 
@@ -24,27 +22,32 @@ import { CollectionModerationTab } from '../../enums';
     TabList,
     Tabs,
     Tab,
-    TabPanel,
     TabPanels,
     TranslatePipe,
     FormsModule,
     SelectComponent,
-    CollectionModerationSettingsComponent,
-    CollectionModeratorsComponent,
-    CollectionModerationSubmissionsComponent,
+    RouterOutlet,
   ],
   templateUrl: './collection-moderation.component.html',
   styleUrl: './collection-moderation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CollectionModerationComponent {
+export class CollectionModerationComponent implements OnInit {
+  readonly resourceType = ResourceType.Collection;
+  readonly route = inject(ActivatedRoute);
+  readonly router = inject(Router);
+
   readonly tabOptions = COLLECTION_MODERATION_TABS;
-  readonly tabs = CollectionModerationTab;
   readonly isMedium = toSignal(inject(IS_MEDIUM));
 
-  selectedTab = this.tabs.AllItems;
+  selectedTab = CollectionModerationTab.AllItems;
 
-  onTabChange(index: number): void {
-    this.selectedTab = index;
+  ngOnInit(): void {
+    this.selectedTab = this.route.snapshot.firstChild?.data['tab'];
+  }
+
+  onTabChange(value: Primitive): void {
+    this.selectedTab = value as CollectionModerationTab;
+    this.router.navigate([this.selectedTab], { relativeTo: this.route });
   }
 }

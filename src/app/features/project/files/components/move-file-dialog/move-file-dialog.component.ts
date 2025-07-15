@@ -6,7 +6,8 @@ import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Tooltip } from 'primeng/tooltip';
 
-import { finalize, take } from 'rxjs';
+import { finalize, take, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
@@ -22,7 +23,7 @@ import {
 } from '@osf/features/project/files/store';
 import { IconComponent, LoadingSpinnerComponent } from '@shared/components';
 import { OsfFile } from '@shared/models';
-import { FilesService } from '@shared/services';
+import { FilesService, ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-move-file-dialog',
@@ -38,10 +39,12 @@ export class MoveFileDialogComponent {
   private readonly filesService = inject(FilesService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
+  private readonly toastService = inject(ToastService);
 
   protected readonly files = select(ProjectFilesSelectors.getMoveFileFiles);
   protected readonly isLoading = select(ProjectFilesSelectors.isMoveFileFilesLoading);
   protected readonly currentFolder = select(ProjectFilesSelectors.getMoveFileCurrentFolder);
+  private readonly rootFolders = select(ProjectFilesSelectors.getRootFolders);
   protected readonly isFilesUpdating = signal(false);
   protected readonly isFolderSame = computed(() => {
     return this.currentFolder()?.id === this.config.data.file.relationships.parentFolderId;
@@ -58,8 +61,11 @@ export class MoveFileDialogComponent {
 
   constructor() {
     const filesLink = this.currentFolder()?.relationships.filesLink;
+    const rootFolders = this.rootFolders();
     if (filesLink) {
       this.dispatch.getMoveFileFiles(filesLink);
+    } else if (rootFolders) {
+      this.dispatch.getMoveFileFiles(rootFolders[0].relationships.filesLink);
     }
   }
 
@@ -83,6 +89,10 @@ export class MoveFileDialogComponent {
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.isFilesUpdating.set(false);
+        }),
+        catchError((error) => {
+          this.toastService.showError(error.error.message);
+          return throwError(() => error);
         })
       )
       .subscribe((folder) => {
@@ -107,7 +117,7 @@ export class MoveFileDialogComponent {
       .moveFile(
         this.config.data.file.links.move,
         path,
-        this.config.data.projectId,
+        this.config.data.resourceId,
         this.provider(),
         this.config.data.action
       )
@@ -117,6 +127,11 @@ export class MoveFileDialogComponent {
           this.dispatch.setCurrentFolder(this.currentFolder());
           this.dispatch.setMoveFileCurrentFolder(null);
           this.isFilesUpdating.set(false);
+          this.dialogRef.close();
+        }),
+        catchError((error) => {
+          this.toastService.showError(error.error.message);
+          return throwError(() => error);
         })
       )
       .subscribe((file) => {
@@ -124,10 +139,11 @@ export class MoveFileDialogComponent {
 
         if (file.id) {
           const filesLink = this.currentFolder()?.relationships.filesLink;
+          const rootFolders = this.rootFolders();
           if (filesLink) {
             this.dispatch.getFiles(filesLink);
-          } else {
-            this.dispatch.getRootFolderFiles(this.config.data.projectId);
+          } else if (rootFolders) {
+            this.dispatch.getMoveFileFiles(rootFolders[0].relationships.filesLink);
           }
         }
       });

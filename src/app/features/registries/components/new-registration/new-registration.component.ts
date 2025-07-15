@@ -8,12 +8,12 @@ import { Select } from 'primeng/select';
 
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ToastService } from '@osf/shared/services';
 
-import { CreateDraft, GetProjects, GetProviders, RegistriesSelectors } from '../../store';
+import { CreateDraft, GetProjects, GetProviderSchemas, RegistriesSelectors } from '../../store';
 
 @Component({
   selector: 'osf-new-registration',
@@ -26,30 +26,34 @@ export class NewRegistrationComponent {
   private readonly fb = inject(FormBuilder);
   private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   protected readonly projects = select(RegistriesSelectors.getProjects);
-  protected readonly providers = select(RegistriesSelectors.getProviders);
+  protected readonly providerSchemas = select(RegistriesSelectors.getProviderSchemas);
   protected readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
   protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
   protected readonly isProvidersLoading = select(RegistriesSelectors.isProvidersLoading);
   protected actions = createDispatchMap({
     getProjects: GetProjects,
-    getProviders: GetProviders,
+    getProviderSchemas: GetProviderSchemas,
     createDraft: CreateDraft,
   });
+
+  protected readonly providerId = this.route.snapshot.params['providerId'];
+
   fromProject = false;
 
   draftForm = this.fb.group({
-    provider: ['', Validators.required],
+    providerSchema: ['', Validators.required],
     project: [''],
   });
 
   constructor() {
     this.actions.getProjects();
-    this.actions.getProviders();
+    this.actions.getProviderSchemas(this.providerId);
     effect(() => {
-      const provider = this.draftForm.get('provider')?.value;
-      if (!provider) {
-        this.draftForm.get('provider')?.setValue(this.providers()[0]?.id);
+      const providerSchema = this.draftForm.get('providerSchema')?.value;
+      if (!providerSchema) {
+        this.draftForm.get('providerSchema')?.setValue(this.providerSchemas()[0]?.id);
       }
     });
   }
@@ -60,9 +64,9 @@ export class NewRegistrationComponent {
     });
   }
 
-  onSelectProvider(providerId: string) {
+  onSelectProviderSchema(providerSchemaId: string) {
     this.draftForm.patchValue({
-      provider: providerId,
+      providerSchema: providerSchemaId,
     });
   }
 
@@ -73,12 +77,12 @@ export class NewRegistrationComponent {
   }
 
   createDraft() {
-    const { provider, project } = this.draftForm.value;
+    const { providerSchema, project } = this.draftForm.value;
 
     if (this.draftForm.valid) {
       this.actions
         .createDraft({
-          registrationSchemaId: provider!,
+          registrationSchemaId: providerSchema!,
           projectId: this.fromProject ? (project ?? undefined) : undefined,
         })
         .subscribe(() => {

@@ -82,4 +82,9 @@ export class PreprintStepperSelectors {
   static hasBeenSubmitted(state: PreprintStepperStateModel) {
     return state.hasBeenSubmitted;
   }
+
+  @Selector([PreprintStepperState])
+  static getCurrentFolder(state: PreprintStepperStateModel) {
+    return state.currentFolder;
+  }
 }

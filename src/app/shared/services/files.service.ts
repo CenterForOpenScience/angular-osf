@@ -1,5 +1,5 @@
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { EMPTY, Observable, switchMap, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 import { HttpEvent } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -31,6 +31,9 @@ import {
   GetFilesResponse,
   OsfFile,
 } from '@shared/models';
+import { ConfiguredStorageAddon } from '@shared/models/addons/configured-storage-addon.model';
+import { GetConfiguredStorageAddonsJsonApi } from '@shared/models/files/get-configured-storage-addons.model';
+import { ToastService } from '@shared/services/toast.service';
 
 import { environment } from 'src/environments/environment';
 
@@ -40,18 +43,7 @@ import { environment } from 'src/environments/environment';
 export class FilesService {
   #jsonApiService = inject(JsonApiService);
   filesFields = 'name,guid,kind,extra,size,path,materialized_path,date_modified,parent_folder,files';
-
-  getRootFolderFiles(resourceId: string, provider: string, search: string, sort: string): Observable<OsfFile[]> {
-    const params: Record<string, string> = {
-      sort: sort,
-      'fields[files]': this.filesFields,
-      'filter[name]': search,
-    };
-
-    return this.#jsonApiService
-      .get<GetFilesResponse>(`${environment.apiUrl}/nodes/${resourceId}/files/${provider}/`, params)
-      .pipe(map((response) => MapFiles(response.data)));
-  }
+  readonly toastService = inject(ToastService);
 
   getFiles(filesLink: string, search: string, sort: string): Observable<OsfFile[]> {
     const params: Record<string, string> = {
@@ -65,39 +57,26 @@ export class FilesService {
       .pipe(map((response) => MapFiles(response.data)));
   }
 
+  getFolders(folderLink: string): Observable<OsfFile[]> {
+    return this.#jsonApiService.get<GetFilesResponse>(`${folderLink}`).pipe(map((response) => MapFiles(response.data)));
+  }
+
   getFilesWithoutFiltering(filesLink: string): Observable<OsfFile[]> {
     return this.#jsonApiService.get<GetFilesResponse>(filesLink).pipe(map((response) => MapFiles(response.data)));
   }
 
-  uploadFile(
-    file: File,
-    resourceId: string,
-    provider: string,
-    parentFolder: OsfFile | null
-  ): Observable<HttpEvent<JsonApiResponse<AddFileResponse, null>>> {
+  uploadFile(file: File, uploadLink: string): Observable<HttpEvent<JsonApiResponse<AddFileResponse, null>>> {
     const params = {
       kind: 'file',
       name: file.name,
     };
 
-    let link = '';
-
-    if (parentFolder?.relationships.parentFolderLink) {
-      link = `${environment.fileApiUrl}/resources/${resourceId}/providers/${provider}/${parentFolder?.id ? parentFolder?.id + '/' : ''}`;
-    } else {
-      link = `${environment.fileApiUrl}/resources/${resourceId}/providers/${provider}/`;
-    }
-
-    return this.#jsonApiService.putFile<AddFileResponse>(link, file, params);
-  }
-
-  uploadFileByLink(file: File, uploadLink: string): Observable<HttpEvent<JsonApiResponse<AddFileResponse, null>>> {
-    const params = {
-      kind: 'file',
-      name: file.name,
-    };
-
-    return this.#jsonApiService.putFile<AddFileResponse>(uploadLink, file, params);
+    return this.#jsonApiService.putFile<AddFileResponse>(uploadLink, file, params).pipe(
+      catchError((error) => {
+        this.toastService.showError(error.error.message);
+        return throwError(() => error);
+      })
+    );
   }
 
   updateFileContent(file: File, link: string) {
@@ -108,23 +87,20 @@ export class FilesService {
     return this.#jsonApiService.put(link, file, params);
   }
 
-  createFolder(resourceId: string, provider: string, folderName: string, folderId?: string): Observable<OsfFile> {
-    const params: Record<string, string> = {
-      kind: 'folder',
-      name: folderName,
-    };
-
-    const link = `${environment.fileApiUrl}/resources/${resourceId}/providers/${provider}/${folderId ? folderId + '/' : ''}`;
-
+  createFolder(link: string, folderName: string): Observable<OsfFile> {
     return this.#jsonApiService
-      .put<CreateFolderResponse>(link, null, params)
+      .put<CreateFolderResponse>(link, null, { name: folderName })
       .pipe(map((response) => MapFile(response)));
   }
 
   getFolder(link: string): Observable<OsfFile> {
-    return this.#jsonApiService
-      .get<JsonApiResponse<GetFileResponse, null>>(link)
-      .pipe(map((response) => MapFile(response.data)));
+    return this.#jsonApiService.get<JsonApiResponse<GetFileResponse, null>>(link).pipe(
+      map((response) => MapFile(response.data)),
+      catchError((error) => {
+        this.toastService.showError(error.error.message);
+        return throwError(() => error);
+      })
+    );
   }
 
   deleteEntry(link: string) {
@@ -148,9 +124,13 @@ export class FilesService {
       resource: resourceId,
     };
 
-    return this.#jsonApiService
-      .post<JsonApiResponse<GetFileResponse, null>>(link, body)
-      .pipe(map((response) => MapFile(response.data)));
+    return this.#jsonApiService.post<JsonApiResponse<GetFileResponse, null>>(link, body).pipe(
+      map((response) => MapFile(response.data)),
+      catchError((error) => {
+        this.toastService.showError(error.error.message);
+        return throwError(() => error);
+      })
+    );
   }
 
   getFolderDownloadLink(resourceId: string, provider: string, folderId: string, isRootFolder: boolean): string {
@@ -264,5 +244,36 @@ export class FilesService {
         JsonApiResponse<ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>, null>
       >(moveLink, body)
       .pipe(map((response) => MapFile(response.data)));
+  }
+
+  getResourceReferences(resourceUri: string): Observable<string> {
+    const params = {
+      'filter[resource_uri]': resourceUri,
+    };
+
+    return this.#jsonApiService
+      .get<
+        JsonApiResponse<ApiData<null, null, null, { self: string }>[], null>
+      >(`${environment.addonsV1Url}/resource-references`, params)
+      .pipe(map((response) => response.data?.[0]?.links?.self ?? ''));
+  }
+
+  getConfiguredStorageAddons(resourceUri: string): Observable<ConfiguredStorageAddon[]> {
+    return this.getResourceReferences(resourceUri).pipe(
+      switchMap((referenceUrl: string) => {
+        if (!referenceUrl) return EMPTY;
+
+        return this.#jsonApiService
+          .get<GetConfiguredStorageAddonsJsonApi>(`${referenceUrl}/configured_storage_addons`)
+          .pipe(
+            map((response) =>
+              response.data.map((addon) => ({
+                externalServiceName: addon.attributes.external_service_name,
+                displayName: addon.attributes.display_name,
+              }))
+            )
+          );
+      })
+    );
   }
 }

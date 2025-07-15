@@ -14,7 +14,7 @@ import { RegistriesStateModel } from '../registries.model';
 export class LicensesHandlers {
   licensesService = inject(LicensesService);
 
-  fetchLicenses(ctx: StateContext<RegistriesStateModel>) {
+  fetchLicenses(ctx: StateContext<RegistriesStateModel>, providerId: string) {
     ctx.patchState({
       licenses: {
         ...ctx.getState().licenses,
@@ -22,7 +22,7 @@ export class LicensesHandlers {
       },
     });
 
-    return this.licensesService.getLicenses().pipe(
+    return this.licensesService.getLicenses(providerId).pipe(
       tap((licenses) => {
         ctx.patchState({
           licenses: {
@@ -39,25 +39,23 @@ export class LicensesHandlers {
   saveLicense(ctx: StateContext<RegistriesStateModel>, { registrationId, licenseId, licenseOptions }: SaveLicense) {
     const state = ctx.getState();
     ctx.patchState({
-      licenses: {
-        ...state.licenses,
+      draftRegistration: {
+        ...state.draftRegistration,
         isLoading: true,
       },
     });
 
-    return this.licensesService
-      .updateLicense(registrationId, licenseId, licenseOptions)
-      .pipe
-      // tap((response) => {
-      //   ctx.patchState({
-      //     licenses: {
-      //       data: response,
-      //       isLoading: false,
-      //       error: null,
-      //     },
-      //   });
-      // }),
-      // catchError((error) => handleSectionError(ctx, 'licenses', error))
-      ();
+    return this.licensesService.updateLicense(registrationId, licenseId, licenseOptions).pipe(
+      tap((response) => {
+        ctx.patchState({
+          draftRegistration: {
+            data: response,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'licenses', error))
+    );
   }
 }

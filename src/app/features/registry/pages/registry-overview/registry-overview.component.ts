@@ -5,7 +5,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { GetBookmarksCollectionId } from '@osf/features/collections/store';
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
 import {
   DataResourcesComponent,
@@ -16,6 +15,7 @@ import {
 import { ResourceType } from '@osf/shared/enums';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { ToolbarResource } from '@osf/shared/models';
+import { GetBookmarksCollectionId } from '@shared/stores';
 
 import { RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { MapViewSchemaBlock } from '../../mappers';

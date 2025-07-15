@@ -1,20 +1,17 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { Tab, TabList, TabPanels, Tabs } from 'primeng/tabs';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
+import { Primitive } from '@osf/core/helpers';
 import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/utils';
 
-import {
-  CollectionModerationSubmissionsComponent,
-  CollectionModeratorsComponent,
-  RegistrySettingsComponent,
-  RegistrySubmissionsComponent,
-} from '../../components';
 import { REGISTRY_MODERATION_TABS } from '../../constants';
 import { RegistryModerationTab } from '../../enums';
 
@@ -25,28 +22,32 @@ import { RegistryModerationTab } from '../../enums';
     TabList,
     Tabs,
     Tab,
-    TabPanel,
     TabPanels,
     TranslatePipe,
     FormsModule,
     SelectComponent,
-    CollectionModeratorsComponent,
-    CollectionModerationSubmissionsComponent,
-    RegistrySubmissionsComponent,
-    RegistrySettingsComponent,
+    RouterOutlet,
   ],
   templateUrl: './registries-moderation.component.html',
   styleUrl: './registries-moderation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistriesModerationComponent {
+export class RegistriesModerationComponent implements OnInit {
+  readonly resourceType = ResourceType.Registration;
+  readonly route = inject(ActivatedRoute);
+  readonly router = inject(Router);
+
   readonly tabOptions = REGISTRY_MODERATION_TABS;
-  readonly tabs = RegistryModerationTab;
   readonly isMedium = toSignal(inject(IS_MEDIUM));
 
-  selectedTab = this.tabs.Submitted;
+  selectedTab = RegistryModerationTab.Submitted;
 
-  onTabChange(index: number): void {
-    this.selectedTab = index;
+  ngOnInit(): void {
+    this.selectedTab = this.route.snapshot.firstChild?.data['tab'] as RegistryModerationTab;
+  }
+
+  onTabChange(value: Primitive): void {
+    this.selectedTab = value as RegistryModerationTab;
+    this.router.navigate([this.selectedTab], { relativeTo: this.route });
   }
 }

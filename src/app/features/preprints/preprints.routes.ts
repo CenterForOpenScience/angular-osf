@@ -2,14 +2,16 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { ConfirmLeavingGuard } from '@osf/features/preprints/guards';
 import { PreprintsComponent } from '@osf/features/preprints/preprints.component';
 import { PreprintProvidersState } from '@osf/features/preprints/store/preprint-providers';
 import { PreprintStepperState } from '@osf/features/preprints/store/preprint-stepper';
 import { PreprintsDiscoverState } from '@osf/features/preprints/store/preprints-discover';
 import { PreprintsResourcesFiltersState } from '@osf/features/preprints/store/preprints-resources-filters';
 import { PreprintsResourcesFiltersOptionsState } from '@osf/features/preprints/store/preprints-resources-filters-options';
+import { ConfirmLeavingGuard } from '@shared/guards';
 import { ContributorsState, SubjectsState } from '@shared/stores';
+
+import { PreprintModerationState } from '../moderation/store/preprint-moderation';
 
 export const preprintsRoutes: Routes = [
   {
@@ -75,6 +77,19 @@ export const preprintsRoutes: Routes = [
             (c) => c.UpdatePreprintStepperComponent
           ),
         canDeactivate: [ConfirmLeavingGuard],
+      },
+      {
+        path: ':id/moderation',
+        loadChildren: () =>
+          import('@osf/features/moderation/preprint-moderation.routes').then((mod) => mod.preprintModerationRoutes),
+      },
+      {
+        path: 'my-reviewing',
+        loadComponent: () =>
+          import('@osf/features/moderation/pages/my-preprint-reviewing/my-preprint-reviewing.component').then(
+            (m) => m.MyPreprintReviewingComponent
+          ),
+        providers: [provideStates([PreprintModerationState])],
       },
       {
         path: ':providerId/new-version/:preprintId',

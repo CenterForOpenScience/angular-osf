@@ -1,1 +1,132 @@
-<p>review works!</p>
+<section class="flex flex-column flex-1 bg-white p-5 gap-4 w-full">
+  <p-card>
+    <h2 class="mb-4">{{ 'navigation.registration.metadata' | translate }}</h2>
+
+    <div class="mb-4">
+      <h4 class="mb-2">{{ 'common.labels.title' | translate }}</h4>
+      <p>{{ draftRegistration()?.title }}</p>
+      @if (!draftRegistration()?.title) {
+        <p>{{ 'common.labels.title' | translate }}</p>
+        <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
+        <p-message class="mt-1" severity="error" variant="simple" size="small">
+          {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+        </p-message>
+      }
+    </div>
+    <div class="mb-4">
+      <h4 class="mb-2">{{ 'common.labels.description' | translate }}</h4>
+      <p>{{ draftRegistration()?.description }}</p>
+      @if (!draftRegistration()?.description) {
+        <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
+        <p-message class="mt-1" severity="error" variant="simple" size="small">
+          {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+        </p-message>
+      }
+    </div>
+
+    <div class="mb-4">
+      <h4 class="mb-2">{{ 'navigation.registration.contributors' | translate }}</h4>
+      <div class="flex flex-wrap gap-2">
+        @for (contributor of contributors(); let last = $last; track contributor.id) {
+          <span>
+            <a [routerLink]="`/${[contributor.userId]}`">{{ contributor.fullName }}</a>
+            @if (!last) {
+              <span class="text-gray-500">,</span>
+            }
+          </span>
+        }
+      </div>
+    </div>
+    <div class="mb-4">
+      <h4 class="mb-2">{{ 'shared.license.title' | translate }}</h4>
+      <p>{{ draftRegistration()?.license?.id }}</p>
+      @if (!draftRegistration()?.license) {
+        <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
+        <p-message class="mt-1" severity="error" variant="simple" size="small">
+          {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+        </p-message>
+      }
+    </div>
+    <div class="mb-4">
+      <h4 class="mb-2">{{ 'shared.subjects.title' | translate }}</h4>
+      <div class="flex flex-wrap gap-2">
+        @for (subject of subjects(); track subject.id) {
+          <p-tag [value]="subject.name" severity="info" />
+        }
+      </div>
+      @if (!subjects().length) {
+        <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
+        <p-message class="mt-1" severity="error" variant="simple" size="small">
+          {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+        </p-message>
+      }
+    </div>
+
+    <div class="mb-4">
+      <h4 class="mb-2">{{ 'shared.tags.title' | translate }}</h4>
+      <div class="flex flex-wrap gap-2">
+        @for (tag of draftRegistration()?.tags; track tag) {
+          <p-tag [value]="tag" severity="info" />
+        }
+      </div>
+      @if (!draftRegistration()?.tags?.length) {
+        <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
+      }
+    </div>
+  </p-card>
+  @for (page of pages(); track page.id) {
+    <p-card class="w-full">
+      <h2 class="mb-4">{{ page.title }}</h2>
+
+      @if (page.description) {
+        <p class="mb-4">{{ page.description }}</p>
+      }
+
+      @if (page.questions?.length) {
+        @for (question of page.questions; track question.responseKey) {
+          <div [class.mb-4]="!$last">
+            <h4 class="mb-2">{{ question.displayText }}</h4>
+            @if (stepsData()[question.responseKey!]) {
+              @if (question.fieldType === FieldType.Checkbox) {
+                @for (option of stepsData()[question.responseKey!]; track option) {
+                  <p class="mb-1">{{ option }}</p>
+                }
+              } @else {
+                <p>{{ stepsData()[question.responseKey!] }}</p>
+              }
+            } @else {
+              @if (question.fieldType === FieldType.File) {
+                <p class="font-italic">{{ 'common.labels.noFiles' | translate }}</p>
+              } @else {
+                <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
+              }
+              @if (question.required) {
+                <p-message class="mt-1" severity="error" variant="simple" size="small">
+                  {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+                </p-message>
+              }
+            }
+          </div>
+        }
+      }
+    </p-card>
+  }
+
+  <div class="flex justify-content-end">
+    <p-button
+      type="button"
+      [label]="'common.buttons.back' | translate"
+      severity="info"
+      class="mr-2"
+      (click)="goBack()"
+    ></p-button>
+    <p-button [label]="'registries.deleteDraft' | translate" severity="danger" (click)="deleteDraft()" class="mr-2">
+    </p-button>
+    <p-button
+      type="button"
+      [label]="'registries.review.register' | translate"
+      [disabled]="isDraftInvalid()"
+      (click)="confirmRegistration()"
+    ></p-button>
+  </div>
+</section>

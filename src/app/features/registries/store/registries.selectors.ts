@@ -1,21 +1,21 @@
 import { Selector } from '@ngxs/store';
 
-import { License, Resource } from '@shared/models';
+import { DraftRegistrationModel, License, RegistrationCard, Resource } from '@shared/models';
 
-import { PageSchema, Project, Provider, Registration } from '../models';
+import { PageSchema, Project, ProviderSchema } from '../models';
 
 import { RegistriesStateModel } from './registries.model';
 import { RegistriesState } from './registries.state';
 
 export class RegistriesSelectors {
   @Selector([RegistriesState])
-  static getProviders(state: RegistriesStateModel): Provider[] {
-    return state.providers.data;
+  static getProviderSchemas(state: RegistriesStateModel): ProviderSchema[] {
+    return state.providerSchemas.data;
   }
 
   @Selector([RegistriesState])
   static isProvidersLoading(state: RegistriesStateModel): boolean {
-    return state.providers.isLoading;
+    return state.providerSchemas.isLoading;
   }
 
   @Selector([RegistriesState])
@@ -29,7 +29,7 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getDraftRegistration(state: RegistriesStateModel): Registration | null {
+  static getDraftRegistration(state: RegistriesStateModel): DraftRegistrationModel | null {
     return state.draftRegistration.data;
   }
 
@@ -76,5 +76,40 @@ export class RegistriesSelectors {
   @Selector([RegistriesState])
   static getStepsData(state: RegistriesStateModel) {
     return state.draftRegistration.data?.stepsData || {};
+  }
+
+  @Selector([RegistriesState])
+  static isRegistrationSubmitting(state: RegistriesStateModel): boolean {
+    return state.registration.isSubmitting || false;
+  }
+
+  @Selector([RegistriesState])
+  static getDraftRegistrations(state: RegistriesStateModel): RegistrationCard[] {
+    return state.draftRegistrations.data;
+  }
+
+  @Selector([RegistriesState])
+  static isDraftRegistrationsLoading(state: RegistriesStateModel): boolean {
+    return state.draftRegistrations.isLoading;
+  }
+
+  @Selector([RegistriesState])
+  static getDraftRegistrationsTotalCount(state: RegistriesStateModel): number {
+    return state.draftRegistrations.totalCount;
+  }
+
+  @Selector([RegistriesState])
+  static getSubmittedRegistrations(state: RegistriesStateModel): RegistrationCard[] {
+    return state.submittedRegistrations.data;
+  }
+
+  @Selector([RegistriesState])
+  static isSubmittedRegistrationsLoading(state: RegistriesStateModel): boolean {
+    return state.submittedRegistrations.isLoading;
+  }
+
+  @Selector([RegistriesState])
+  static getSubmittedRegistrationsTotalCount(state: RegistriesStateModel): number {
+    return state.submittedRegistrations.totalCount;
   }
 }

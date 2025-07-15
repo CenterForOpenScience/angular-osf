@@ -140,3 +140,9 @@ export class ResetState {
 export class DeletePreprint {
   static readonly type = '[Preprint Stepper]  Delete Preprint';
 }
+
+export class SetCurrentFolder {
+  static readonly type = '[Submit Preprint] Set Current Folder';
+
+  constructor(public folder: OsfFile | null) {}
+}

@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { BulkUploadComponent } from '../bulk-upload/bulk-upload.component';
+import { BulkUploadComponent } from '@osf/features/moderation/components/bulk-upload/bulk-upload.component';
 
 @Component({
   selector: 'osf-registry-settings',

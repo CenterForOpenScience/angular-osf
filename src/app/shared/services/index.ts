@@ -1,4 +1,5 @@
 export * from './addons';
+export { BookmarksService } from './bookmarks.service';
 export { BrandService } from './brand.service';
 export { ContributorsService } from './contributors.service';
 export { CustomConfirmationService } from './custom-confirmation.service';

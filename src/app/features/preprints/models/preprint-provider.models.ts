@@ -26,4 +26,5 @@ export interface PreprintProviderShortInfo {
   descriptionHtml: string;
   whiteWideImageUrl: string;
   squareColorNoTransparentImageUrl: string;
+  submissionCount?: number;
 }

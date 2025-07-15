@@ -37,12 +37,6 @@ export class GetFileProjectMetadata {
   constructor(public projectId: string) {}
 }
 
-export class GetMoveFileRootFiles {
-  static readonly type = '[Project Files] Get Move File Root Files';
-
-  constructor(public projectId: string) {}
-}
-
 export class GetMoveFileFiles {
   static readonly type = '[Project Files] Get Move File Files';
 
@@ -65,9 +59,8 @@ export class CreateFolder {
   static readonly type = '[Project Files] Create folder';
 
   constructor(
-    public projectId: string,
-    public folderName: string,
-    public folderId: string
+    public newFolderLink: string,
+    public folderName: string
   ) {}
 }
 
@@ -132,4 +125,16 @@ export class UpdateTags {
     public tags: string[],
     public fileGuid: string
   ) {}
+}
+
+export class GetRootFolders {
+  static readonly type = '[Project Files] Get Folders';
+
+  constructor(public folderLink: string) {}
+}
+
+export class GetConfiguredStorageAddons {
+  static readonly type = '[Project Files] Get ConfiguredStorageAddons';
+
+  constructor(public resourceUri: string) {}
 }

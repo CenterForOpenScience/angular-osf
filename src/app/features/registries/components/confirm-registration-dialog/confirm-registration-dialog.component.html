@@ -1,0 +1,57 @@
+<p class="mb-2">{{ 'registries.review.confirmation.remember' | translate }}</p>
+<ul class="mb-4 pl-5">
+  <li class="list-disc">{{ 'registries.review.confirmation.text1' | translate }}</li>
+  <li class="list-disc">{{ 'registries.review.confirmation.text2' | translate }}</li>
+  <li class="list-disc">{{ 'registries.review.confirmation.text3' | translate }}</li>
+  <li class="list-disc">{{ 'registries.review.confirmation.text4' | translate }}</li>
+</ul>
+<form [formGroup]="form">
+  <div class="flex align-items-center gap-2 mb-2">
+    <p-radioButton
+      formControlName="submitOption"
+      [inputId]="SubmitType.Public"
+      [value]="SubmitType.Public"
+    ></p-radioButton>
+    <label [for]="SubmitType.Public" class="ml-1 font-bold">{{
+      'registries.review.confirmation.options.public' | translate
+    }}</label>
+  </div>
+  <div class="flex align-items-center gap-2">
+    <p-radioButton
+      formControlName="submitOption"
+      [inputId]="SubmitType.Embargo"
+      [value]="SubmitType.Embargo"
+    ></p-radioButton>
+    <label [for]="SubmitType.Embargo" class="ml-1 font-bold">{{
+      'registries.review.confirmation.options.embargo' | translate
+    }}</label>
+  </div>
+  @if (showDateControl) {
+    <p-datePicker
+      styleClass="mt-2"
+      id="embargoDate"
+      formControlName="embargoDate"
+      dataType="string"
+      dateFormat="yy-mm-dd"
+      appendTo="body"
+      [minDate]="minEmbargoDate()"
+      [placeholder]="'registries.review.confirmation.embargoPlaceholder' | translate"
+    />
+  }
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button
+      class="w-12rem btn-full-width"
+      [label]="'common.buttons.back' | translate"
+      severity="info"
+      (click)="dialogRef.close()"
+      [disabled]="isRegistrationSubmitting()"
+    />
+    <p-button
+      class="w-12rem btn-full-width"
+      [label]="'common.buttons.submit' | translate"
+      [disabled]="form.invalid || isRegistrationSubmitting()"
+      [loading]="isRegistrationSubmitting()"
+      (click)="submit()"
+    />
+  </div>
+</form>

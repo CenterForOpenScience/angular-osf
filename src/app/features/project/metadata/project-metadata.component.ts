@@ -55,7 +55,7 @@ import {
 import { ResourceType } from '@osf/shared/enums';
 import { ContributorsSelectors, GetAllContributors } from '@osf/shared/stores';
 import { LoadingSpinnerComponent, SubHeaderComponent, TagsInputComponent } from '@shared/components';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { CustomConfirmationService, LoaderService, ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-project-metadata',
@@ -93,6 +93,7 @@ export class ProjectMetadataComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
+  private readonly loaderService = inject(LoaderService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
   tabs = signal<{ id: string; label: string; type: 'project' | 'cedar' }[]>([]);

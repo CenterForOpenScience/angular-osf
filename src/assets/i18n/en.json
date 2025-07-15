@@ -8,6 +8,7 @@
       "addMore": "Add More",
       "cancel": "Cancel",
       "save": "Save",
+      "send": "Send",
       "create": "Create",
       "close": "Close",
       "download": "Download",
@@ -25,13 +26,20 @@
       "skip": "Skip",
       "done": "Done",
       "select": "Select",
+      "addToCollection": "Add to Collection",
+      "discardChanges": "Discard Changes",
+      "saveAndContinue": "Save and Continue",
+      "clickToEdit": "Click to edit",
       "deselect": "Deselect",
       "yes": "Yes",
       "no": "No",
       "update": "Update",
       "continue update": "Continue update",
       "withdraw": "Withdraw",
-      "submit": "Submit"
+      "submit": "Submit",
+      "view": "View",
+      "review": "Review",
+      "upload": "Upload"
     },
     "search": {
       "title": "Search",
@@ -71,6 +79,10 @@
       "year": "Year",
       "optional": "Optional",
       "makePublic": "Make Public",
+      "noData": "No data",
+      "noFiles": "No files selected",
+      "drafts": "Drafts",
+      "submitted": "Submitted",
       "yes": "Yes",
       "no": "No",
       "available": "Available",
@@ -94,6 +106,9 @@
     },
     "placeholder": {
       "addTag": "Add tags"
+    },
+    "hint": {
+      "tagSeparators": "Use enter or comma to create a tag."
     }
   },
   "navigation": {
@@ -117,7 +132,8 @@
     "preprints": "Preprints",
     "preprintsSubRoutes": {
       "overview": "Overview",
-      "myPreprints": "My Preprints"
+      "myPreprints": "My Preprints",
+      "myReviewing": "My Reviewing"
     },
     "collections": "Collections",
     "moderation": "Moderation",
@@ -395,8 +411,7 @@
       "enabledForWiki": "This feature is enabled for wikis of private projects.",
       "delete": {
         "title": "Delete Link {{name}}?",
-        "message": "Are you sure you want to delete this view only link?",
-        "success": "View only link successfully deleted."
+        "message": "Are you sure you want to delete this view only link?"
       },
       "descriptions": {
         "comments": {
@@ -714,6 +729,8 @@
       "addRegistration": "Add a Registration",
       "emptyState": "There have been no completed registrations of this project.",
       "card": {
+        "noTitle": "(Untitled)",
+        "noDescription": "No description",
         "registrationTemplate": "Registration template:",
         "registry": "Registry:",
         "registered": "Registered:",
@@ -740,7 +757,8 @@
       },
       "dialogs": {
         "uploadFile": {
-          "title": "Upload file"
+          "title": "Upload file",
+          "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
         },
         "createFolder": {
           "title": "Create folder",
@@ -768,6 +786,7 @@
           "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
         }
       },
+      "dropText": "Drop a file to upload",
       "emptyState": "This folder is empty",
       "detail": {
         "backToList": "Back to list of files",
@@ -956,9 +975,6 @@
     }
   },
   "collections": {
-    "buttons": {
-      "addToCollection": "Add to Collection"
-    },
     "helpDialog": {
       "header": "Search help",
       "message": "OSF Search provides a powerful discovery tool to help you find data, papers, analysis plans, and more content across the research lifecycle. OSF Collections have some specialized filters, which you can learn more about on our ",
@@ -1037,6 +1053,34 @@
       "noResultsFound": "No results found",
       "noResultsFoundMessage": "Try broadening your search terms"
     },
+    "addToCollection": {
+      "confirmationDialogHeader": "Add to Collection",
+      "selectProject": "Select a project",
+      "project": "Project",
+      "projectMetadata": "Project Metadata",
+      "projectMetadataMessage": "Updates made in this section will update the project.",
+      "projectContributors": "Project Contributors",
+      "collectionMetadata": "Collection Metadata",
+      "tooltipMessage": "Complete previous step to edit this section",
+      "noDescription": "No description",
+      "noLicense": "No license",
+      "noTags": "No tags",
+      "projectMetadataUpdateSuccess": "Project Metadata successfully updated.",
+      "confirmationDialogMessage": "Once submitted to the collection, the project will be made public. It can later be made private again. A moderator will review your submission before it is included in the collection.",
+      "confirmationDialogToastMessage": "Project has been successfully submitted to the collection",
+      "form": {
+        "title": "Title",
+        "description": "Description",
+        "chooseLicense": "Choose License",
+        "license": "License",
+        "licensePlaceholder": "Select license",
+        "tags": "Tags",
+        "tagsPlaceholder": "Add tags here",
+        "loadingPlaceholder": "Loading projects...",
+        "noProjectsFound": "No projects found",
+        "fieldRequired": "This field can't be empty"
+      }
+    },
     "common": {
       "dateCreated": "Date Created:",
       "dateModified": "Date Modified:",
@@ -1049,6 +1093,9 @@
     "settings": "Settings",
     "submitted": "Submitted",
     "pending": "Pending",
+    "submissions": "Submissions",
+    "withdrawalRequest": "Withdrawal Request",
+    "notifications": "Notifications",
     "settingsMessage": "To configure your notification preferences visit your",
     "userSettings": "User settings",
     "bulkUpload": "Bulk upload",
@@ -1084,6 +1131,39 @@
       "accepted": "Accepted",
       "rejected": "Rejected",
       "by": "by"
+    },
+    "preprintReviewStatus": {
+      "submitted": "submitted a preprint \"{{name}}\" to",
+      "accepted": "accepted a preprint \"{{name}}\" in",
+      "withdrawn": "withdrawn a preprint \"{{name}}\" from",
+      "rejected": "rejected a preprint \"{{name}}\" from"
+    },
+    "preprintSettings": {
+      "warning": "Notice: Moderation settings can only be  changed by an OSF administrator. Contact",
+      "warningForAssistance": "for assistance.",
+      "moderationType": {
+        "title": "Moderation Type",
+        "pre": "Pre-moderation",
+        "preDescription": "All preprints are placed in a queue for a moderator to accept or reject. Preprints are displayed publicly only after approval.",
+        "post": "Post-moderation",
+        "postDescription": "All preprints are displayed publicly immediately upon submission. Preprints also appear in a queue for a moderator to accept or reject. If rejected, the preprint is no longer displayed publicly."
+      },
+      "commentVisibility": {
+        "title": "Comment Visibility",
+        "description": "Moderators can add comments when making a decision about a submission.",
+        "moderators": "Moderators",
+        "moderatorsDescription": "Comments will be visible to Open Science Framework. Moderators NOT contributors on the submission.",
+        "moderatorsAndContributors": "Moderators And Contributors",
+        "moderatorsAndContributorsDescription": "Comments will be visible to Open Science Framework moderators AND contributors on the submission."
+      },
+      "moderatorComments": {
+        "title": "Moderator Comments",
+        "description": "If moderators' comments are visible to contributors, the moderator's name can be displayed or hidden from the contributors.",
+        "anonymized": "Anonymized Comments",
+        "anonymizedDescription": "All comments will be visible to the contributors of the submission, but the moderator's name will not be displayed.",
+        "named": "Named Comments",
+        "namedDescription": "All comments will be visible to the contributors of the submission and the moderator's osf profile name will be displayed."
+      }
     }
   },
   "settings": {
@@ -1765,11 +1845,13 @@
           }
         }
       }
-    }
+    },
+    "providers": "Providers"
   },
   "registries": {
     "title": "Registries",
     "addRegistration": "Add a Registration",
+    "noRegistrations": "You don't have any registrations. Create one with the button below.",
     "description": "The open registries network",
     "searchPlaceholder": "Search Registrations",
     "services": {
@@ -1796,6 +1878,7 @@
     },
     "deleteDraft": "Delete Draft",
     "confirmDeleteDraft": "Are you sure you want to delete this draft registration?",
+    "successDeleteDraft": "Draft registration successfully deleted.",
     "metadata": {
       "title": "Registration  Metadata",
       "description": "This metadata applies only to the registration you are creating, and will not be applied to your project.",
@@ -1803,7 +1886,22 @@
     },
     "review": {
       "step": "Review",
-      "title": "Review Registration"
+      "title": "Review Registration",
+      "register": "Register",
+      "confirmation": {
+        "title": "Almost done...",
+        "remember": "Remember:",
+        "text1": "Do not edit any files until the registration has completely archived.",
+        "text2": "This will be permanent and cannot be deleted once submitted.",
+        "text3": "This registration will be copied to Internet Archive as a backup.",
+        "text4": "Title and contributors cannot be updated once submitted.",
+        "options": {
+          "public": "Make registration public immediately",
+          "embargo": "Enter registration into embargo"
+        },
+        "embargoPlaceholder": "Choose embargo end date",
+        "successMessage": "Registration successfully created."
+      }
     }
   },
   "registry": {
@@ -1926,6 +2024,9 @@
       "noSelected": "No subjects selected",
       "searchSubjects": "Search subjects",
       "noSubject": "No subjects found"
+    },
+    "tags": {
+      "title": "Tags"
     }
   },
   "resourceCard": {
@@ -2024,7 +2125,29 @@
       "totalPublicFileCount": "Total Public File Count",
       "totalStorageInGb": "Total Storage in GB",
       "embargoedRegistrations": "Embargoed registrations",
-      "privateProjects": "Private projects"
+      "privateProjects": "Private projects",
+      "publicProjects": "Public Projects",
+      "publicRegistrations": "Public Registrations"
+    },
+    "institutionUsers": {
+      "allDepartments": "All departments",
+      "lastLogin": "Last Login",
+      "lastActive": "Last Active",
+      "accountCreated": "Account Created",
+      "publishedPreprints": "Published Preprints",
+      "publicFiles": "Public Files",
+      "storageBytes": "Storage (Bytes)",
+      "contacts": "Contacts",
+      "customize": "Customize",
+      "sendEmail": "Send Email",
+      "writeEmailText": "Please write the text of your email here",
+      "sincerelyYours": "Sincerely Yours",
+      "ccSender": "CC sender",
+      "allowReplyToSenderAddress": "Allow reply to sender address",
+      "hasOrcid": "Has ORCID",
+      "sendMessage": "Send message",
+      "osfLink": "OSF Link",
+      "orcid": "ORCID"
     }
   }
 }

@@ -100,6 +100,20 @@ export interface RegistryOverviewJsonApiEmbed {
       };
     }[];
   };
+  files: {
+    data: {
+      id: string;
+      relationships: {
+        files: {
+          links: {
+            related: {
+              href: string;
+            };
+          };
+        };
+      };
+    }[];
+  };
 }
 
 export interface RegistryOverviewJsonApiRelationships {
