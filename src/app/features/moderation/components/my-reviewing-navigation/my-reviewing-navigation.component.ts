@@ -5,7 +5,7 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { PreprintProviderShortInfo } from '@osf/features/preprints/models';
+import { PreprintProviderModerationInfo } from '@osf/features/moderation/models';
 
 import { PREPRINT_REVIEWING_TABS } from '../../constants';
 import { PreprintModerationTab } from '../../enums';
@@ -18,7 +18,7 @@ import { PreprintModerationTab } from '../../enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyReviewingNavigationComponent {
-  provider = input.required<PreprintProviderShortInfo>();
+  provider = input.required<PreprintProviderModerationInfo>();
 
   readonly tabOptions = PREPRINT_REVIEWING_TABS;
   readonly tabOption = PreprintModerationTab;

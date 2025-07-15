@@ -96,7 +96,9 @@
     class="w-6 md:w-9rem"
     styleClass="w-full"
     [label]="'common.buttons.next' | translate"
-    [pTooltip]="metadataForm.invalid ? ('preprintStepper.common.validation.fillRequiredFields' | translate) : ''"
+    [pTooltip]="
+      metadataForm.invalid ? ('preprints.preprintStepper.common.validation.fillRequiredFields' | translate) : ''
+    "
     tooltipPosition="top"
     [disabled]="metadataForm.invalid || !createdPreprint()?.licenseId"
     [loading]="isUpdatingPreprint()"
