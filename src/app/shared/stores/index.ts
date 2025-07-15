@@ -1,5 +1,6 @@
 export * from './addons';
 export * from './bookmarks';
+export * from './citations';
 export * from './contributors';
 export * from './institutions';
 export * from './institutions-search';
