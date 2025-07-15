@@ -13,7 +13,7 @@ import { StepOption } from '@osf/shared/models';
 import { LoaderService } from '@osf/shared/services';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 
-import { defaultSteps } from '../../constants';
+import { DEFAULT_STEPS } from '../../constants';
 import { FetchDraft, FetchSchemaBlocks, RegistriesSelectors, UpdateStepValidation } from '../../store';
 
 @Component({
@@ -62,7 +62,7 @@ export class DraftsComponent {
   isLoaded = false;
 
   steps: Signal<StepOption[]> = computed(() => {
-    this.defaultSteps = defaultSteps.map((step) => ({
+    this.defaultSteps = DEFAULT_STEPS.map((step) => ({
       ...step,
       label: this.translateService.instant(step.label),
       invalid: this.stepsValidation()?.[step.index]?.invalid || false,

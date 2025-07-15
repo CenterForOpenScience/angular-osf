@@ -1,4 +1,4 @@
-import { CommentVisibilityType, ModerationType, ModeratorsCommentsType, SettingsSectionControl } from '../enums';
+import { ModerationType, SettingsSectionControl } from '../enums';
 
 export const PREPRINT_SETTINGS_SECTIONS = [
   {
@@ -23,12 +23,12 @@ export const PREPRINT_SETTINGS_SECTIONS = [
     description: 'moderation.preprintSettings.commentVisibility.description',
     options: [
       {
-        value: CommentVisibilityType.Moderators,
+        value: true,
         label: 'moderation.preprintSettings.commentVisibility.moderators',
         description: 'moderation.preprintSettings.commentVisibility.moderatorsDescription',
       },
       {
-        value: CommentVisibilityType.ModeratorsAndContributors,
+        value: false,
         label: 'moderation.preprintSettings.commentVisibility.moderatorsAndContributors',
         description: 'moderation.preprintSettings.commentVisibility.moderatorsAndContributorsDescription',
       },
@@ -40,12 +40,12 @@ export const PREPRINT_SETTINGS_SECTIONS = [
     description: 'moderation.preprintSettings.moderatorComments.description',
     options: [
       {
-        value: ModeratorsCommentsType.Anonymized,
+        value: true,
         label: 'moderation.preprintSettings.moderatorComments.anonymized',
         description: 'moderation.preprintSettings.moderatorComments.anonymizedDescription',
       },
       {
-        value: ModeratorsCommentsType.Named,
+        value: false,
         label: 'moderation.preprintSettings.moderatorComments.named',
         description: 'moderation.preprintSettings.moderatorComments.namedDescription',
       },

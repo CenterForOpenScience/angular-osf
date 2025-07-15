@@ -26,13 +26,20 @@
       "skip": "Skip",
       "done": "Done",
       "select": "Select",
+      "addToCollection": "Add to Collection",
+      "discardChanges": "Discard Changes",
+      "saveAndContinue": "Save and Continue",
+      "clickToEdit": "Click to edit",
       "deselect": "Deselect",
       "yes": "Yes",
       "no": "No",
       "update": "Update",
       "continue update": "Continue update",
       "withdraw": "Withdraw",
-      "submit": "Submit"
+      "submit": "Submit",
+      "view": "View",
+      "review": "Review",
+      "upload": "Upload"
     },
     "search": {
       "title": "Search",
@@ -74,6 +81,8 @@
       "makePublic": "Make Public",
       "noData": "No data",
       "noFiles": "No files selected",
+      "drafts": "Drafts",
+      "submitted": "Submitted",
       "yes": "Yes",
       "no": "No",
       "available": "Available",
@@ -97,6 +106,9 @@
     },
     "placeholder": {
       "addTag": "Add tags"
+    },
+    "hint": {
+      "tagSeparators": "Use enter or comma to create a tag."
     }
   },
   "navigation": {
@@ -399,8 +411,7 @@
       "enabledForWiki": "This feature is enabled for wikis of private projects.",
       "delete": {
         "title": "Delete Link {{name}}?",
-        "message": "Are you sure you want to delete this view only link?",
-        "success": "View only link successfully deleted."
+        "message": "Are you sure you want to delete this view only link?"
       },
       "descriptions": {
         "comments": {
@@ -718,6 +729,8 @@
       "addRegistration": "Add a Registration",
       "emptyState": "There have been no completed registrations of this project.",
       "card": {
+        "noTitle": "(Untitled)",
+        "noDescription": "No description",
         "registrationTemplate": "Registration template:",
         "registry": "Registry:",
         "registered": "Registered:",
@@ -744,7 +757,8 @@
       },
       "dialogs": {
         "uploadFile": {
-          "title": "Upload file"
+          "title": "Upload file",
+          "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
         },
         "createFolder": {
           "title": "Create folder",
@@ -772,6 +786,7 @@
           "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
         }
       },
+      "dropText": "Drop a file to upload",
       "emptyState": "This folder is empty",
       "detail": {
         "backToList": "Back to list of files",
@@ -960,9 +975,6 @@
     }
   },
   "collections": {
-    "buttons": {
-      "addToCollection": "Add to Collection"
-    },
     "helpDialog": {
       "header": "Search help",
       "message": "OSF Search provides a powerful discovery tool to help you find data, papers, analysis plans, and more content across the research lifecycle. OSF Collections have some specialized filters, which you can learn more about on our ",
@@ -1041,6 +1053,34 @@
       "noResultsFound": "No results found",
       "noResultsFoundMessage": "Try broadening your search terms"
     },
+    "addToCollection": {
+      "confirmationDialogHeader": "Add to Collection",
+      "selectProject": "Select a project",
+      "project": "Project",
+      "projectMetadata": "Project Metadata",
+      "projectMetadataMessage": "Updates made in this section will update the project.",
+      "projectContributors": "Project Contributors",
+      "collectionMetadata": "Collection Metadata",
+      "tooltipMessage": "Complete previous step to edit this section",
+      "noDescription": "No description",
+      "noLicense": "No license",
+      "noTags": "No tags",
+      "projectMetadataUpdateSuccess": "Project Metadata successfully updated.",
+      "confirmationDialogMessage": "Once submitted to the collection, the project will be made public. It can later be made private again. A moderator will review your submission before it is included in the collection.",
+      "confirmationDialogToastMessage": "Project has been successfully submitted to the collection",
+      "form": {
+        "title": "Title",
+        "description": "Description",
+        "chooseLicense": "Choose License",
+        "license": "License",
+        "licensePlaceholder": "Select license",
+        "tags": "Tags",
+        "tagsPlaceholder": "Add tags here",
+        "loadingPlaceholder": "Loading projects...",
+        "noProjectsFound": "No projects found",
+        "fieldRequired": "This field can't be empty"
+      }
+    },
     "common": {
       "dateCreated": "Date Created:",
       "dateModified": "Date Modified:",
@@ -1091,6 +1131,12 @@
       "accepted": "Accepted",
       "rejected": "Rejected",
       "by": "by"
+    },
+    "preprintReviewStatus": {
+      "submitted": "submitted a preprint \"{{name}}\" to",
+      "accepted": "accepted a preprint \"{{name}}\" in",
+      "withdrawn": "withdrawn a preprint \"{{name}}\" from",
+      "rejected": "rejected a preprint \"{{name}}\" from"
     },
     "preprintSettings": {
       "warning": "Notice: Moderation settings can only be  changed by an OSF administrator. Contact",
@@ -1799,11 +1845,13 @@
           }
         }
       }
-    }
+    },
+    "providers": "Providers"
   },
   "registries": {
     "title": "Registries",
     "addRegistration": "Add a Registration",
+    "noRegistrations": "You don't have any registrations. Create one with the button below.",
     "description": "The open registries network",
     "searchPlaceholder": "Search Registrations",
     "services": {
@@ -1830,6 +1878,7 @@
     },
     "deleteDraft": "Delete Draft",
     "confirmDeleteDraft": "Are you sure you want to delete this draft registration?",
+    "successDeleteDraft": "Draft registration successfully deleted.",
     "metadata": {
       "title": "Registration  Metadata",
       "description": "This metadata applies only to the registration you are creating, and will not be applied to your project.",
@@ -2081,7 +2130,7 @@
       "publicRegistrations": "Public Registrations"
     },
     "institutionUsers": {
-     "allDepartments": "All departments",
+      "allDepartments": "All departments",
       "lastLogin": "Last Login",
       "lastActive": "Last Active",
       "accountCreated": "Account Created",

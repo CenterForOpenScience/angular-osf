@@ -1,0 +1,31 @@
+@use "assets/styles/mixins" as mix;
+
+.collections-content {
+  background: var(--collection-bg-color);
+  border-top: none;
+
+  .collections-sub-header {
+    margin: mix.rem(48px) mix.rem(28px);
+
+    .collections-icon {
+      font-size: mix.rem(42px);
+    }
+  }
+
+  .search-input-container {
+    margin: 0 mix.rem(28px) mix.rem(48px) mix.rem(28px);
+    position: relative;
+
+    img {
+      position: absolute;
+      right: mix.rem(4px);
+      top: mix.rem(4px);
+      z-index: 1;
+    }
+  }
+
+  .content-container {
+    background: var(--white);
+    padding: mix.rem(28px);
+  }
+}

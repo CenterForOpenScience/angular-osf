@@ -19,7 +19,6 @@ import { PreprintModerationTab } from '../../enums';
 })
 export class MyReviewingNavigationComponent {
   provider = input.required<PreprintProviderShortInfo>();
-  submissionsCount = '2';
 
   readonly tabOptions = PREPRINT_REVIEWING_TABS;
   readonly tabOption = PreprintModerationTab;

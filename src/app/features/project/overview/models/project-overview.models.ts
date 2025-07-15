@@ -114,6 +114,10 @@ export interface ProjectOverview {
   }[];
   forksCount: number;
   viewOnlyLinksCount: number;
+  links: {
+    rootFolder: string;
+    iri: string;
+  };
 }
 
 export interface ProjectOverviewSubject {
@@ -256,6 +260,16 @@ export interface ProjectOverviewGetResponseJsoApi {
         };
       };
     };
+    files: {
+      links: {
+        related: {
+          href: string;
+        };
+      };
+    };
+  };
+  links: {
+    iri: string;
   };
 }
 

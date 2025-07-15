@@ -1,3 +1,4 @@
+export { AddToCollectionComponent } from './add-to-collection/add-to-collection.component';
 export { CollectionsFilterChipsComponent } from './collections-filter-chips/collections-filter-chips.component';
 export { CollectionsFiltersComponent } from './collections-filters/collections-filters.component';
 export { CollectionsHelpDialogComponent } from './collections-help-dialog/collections-help-dialog.component';

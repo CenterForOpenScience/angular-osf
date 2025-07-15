@@ -7,7 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of, skip } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -39,8 +39,6 @@ import { ModeratorsTableComponent } from '../moderators-table/moderators-table.c
   providers: [DialogService],
 })
 export class ModeratorsListComponent implements OnInit {
-  resourceType = input.required<ResourceType>();
-
   protected searchControl = new FormControl<string>('');
 
   private readonly route = inject(ActivatedRoute);
@@ -50,7 +48,10 @@ export class ModeratorsListComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly toastService = inject(ToastService);
 
-  providerId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  readonly providerId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  readonly resourceType: Signal<ResourceType | undefined> = toSignal(
+    this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
+  );
 
   moderators = signal([]);
   initialModerators = select(ModeratorsSelectors.getModerators);

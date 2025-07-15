@@ -22,7 +22,7 @@ import {
   SetStatusFilters,
   SetStudyDesignFilters,
   SetVolumeFilters,
-} from '@osf/features/collections/store';
+} from '@osf/features/collections/store/collections';
 
 @Component({
   selector: 'osf-collections-filters',

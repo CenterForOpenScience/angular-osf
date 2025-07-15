@@ -38,6 +38,7 @@ import {
   ResetState,
   ReuploadFile,
   SaveLicense,
+  SetCurrentFolder,
   SetSelectedPreprintFileSource,
   SetSelectedPreprintProviderId,
   SubmitPreprint,
@@ -85,6 +86,7 @@ const DefaultState: PreprintStepperStateModel = {
     error: null,
   },
   hasBeenSubmitted: false,
+  currentFolder: null,
 };
 
 @State<PreprintStepperStateModel>({
@@ -166,7 +168,7 @@ export class PreprintStepperState {
 
     ctx.setState(patch({ preprintFiles: patch({ isLoading: true }) }));
 
-    return this.fileService.uploadFileByLink(action.file, state.preprintFilesLinks.data.uploadFileLink).pipe(
+    return this.fileService.uploadFile(action.file, state.preprintFilesLinks.data.uploadFileLink).pipe(
       filter((event) => event.type === HttpEventType.Response),
       switchMap((event) => {
         const file = event.body!.data;
@@ -499,6 +501,11 @@ export class PreprintStepperState {
       return this.preprintsService.deletePreprint(createdPreprintId);
     }
     return EMPTY;
+  }
+
+  @Action(SetCurrentFolder)
+  setCurrentFolder(ctx: StateContext<PreprintStepperStateModel>, action: SetCurrentFolder) {
+    ctx.patchState({ currentFolder: action.folder });
   }
 
   private handleError(

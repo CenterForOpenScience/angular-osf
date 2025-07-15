@@ -1,0 +1,63 @@
+<p-step-item
+  [pTooltip]="isDisabled() ? ('collections.addToCollection.tooltipMessage' | translate) : ''"
+  tooltipPosition="top"
+  class="p-4"
+  [value]="targetStepValue()"
+>
+  <p-step [value]="targetStepValue()" [disabled]="isDisabled()">
+    <ng-template #content>
+      <div class="flex flex-column gap-4 w-full">
+        <h3>{{ 'collections.addToCollection.collectionMetadata' | translate }}</h3>
+        @if (!isDisabled() && stepperActiveValue() !== targetStepValue()) {
+          @if (collectionMetadataSaved()) {
+            @for (filterEntry of availableFilterEntries(); track filterEntry.key) {
+              <div>
+                <p class="font-bold">{{ filterEntry.labelKey | translate }}</p>
+                <p class="mt-2">
+                  {{ collectionMetadataForm().get(filterEntry.key)?.value }}
+                </p>
+              </div>
+            }
+          }
+          <p-button
+            (click)="handleEditStep()"
+            severity="secondary"
+            class="align-self-end"
+            [label]="'common.buttons.clickToEdit' | translate"
+          ></p-button>
+        }
+      </div>
+    </ng-template>
+  </p-step>
+
+  <p-step-panel [value]="targetStepValue()" class="p-0">
+    <ng-template class="m-0" #content let-activateCallback="activateCallback">
+      <form [formGroup]="collectionMetadataForm()" class="grid row-gap-2 mt-3">
+        @for (filterEntry of availableFilterEntries(); track filterEntry.key) {
+          <div class="flex flex-column gap-1 col-12 md:col-6">
+            <label [for]="filterEntry.key">{{ filterEntry.labelKey | translate }}</label>
+            <p-select
+              [id]="filterEntry.key"
+              [options]="filterEntry.options"
+              [formControlName]="filterEntry.key"
+              [placeholder]="filterEntry.labelKey | translate"
+              appendTo="body"
+            ></p-select>
+          </div>
+        }
+      </form>
+      <div class="flex mt-4 justify-content-end gap-3">
+        <p-button
+          (click)="handleDiscardChanges()"
+          severity="info"
+          [label]="'common.buttons.discardChanges' | translate"
+        />
+        <p-button
+          [label]="'common.buttons.saveAndContinue' | translate"
+          [disabled]="!collectionMetadataForm().valid"
+          (click)="handleSaveMetadata()"
+        />
+      </div>
+    </ng-template>
+  </p-step-panel>
+</p-step-item>

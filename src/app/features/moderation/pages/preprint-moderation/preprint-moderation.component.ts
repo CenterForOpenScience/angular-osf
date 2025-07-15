@@ -1,18 +1,13 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
+import { Tab, TabList, TabPanels, Tabs } from 'primeng/tabs';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
-import {
-  CollectionModerationSubmissionsComponent,
-  ModeratorsListComponent,
-  NotificationSettingsComponent,
-  PreprintModerationSettingsComponent,
-  RegistrySubmissionsComponent,
-} from '@osf/features/moderation/components';
+import { Primitive } from '@osf/core/helpers';
 import { PREPRINT_MODERATION_TABS } from '@osf/features/moderation/constants';
 import { PreprintModerationTab } from '@osf/features/moderation/enums';
 import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
@@ -26,31 +21,32 @@ import { IS_MEDIUM } from '@osf/shared/utils';
     TabList,
     Tabs,
     Tab,
-    TabPanel,
+    RouterOutlet,
     TabPanels,
     TranslatePipe,
     FormsModule,
     SelectComponent,
-    ModeratorsListComponent,
-    CollectionModerationSubmissionsComponent,
-    RegistrySubmissionsComponent,
-    NotificationSettingsComponent,
-    PreprintModerationSettingsComponent,
   ],
   templateUrl: './preprint-moderation.component.html',
   styleUrl: './preprint-moderation.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintModerationComponent {
+export class PreprintModerationComponent implements OnInit {
   readonly resourceType = ResourceType.Preprint;
+  readonly route = inject(ActivatedRoute);
+  readonly router = inject(Router);
 
   readonly tabOptions = PREPRINT_MODERATION_TABS;
-  readonly tabs = PreprintModerationTab;
   readonly isMedium = toSignal(inject(IS_MEDIUM));
 
-  selectedTab = this.tabs.Submissions;
+  selectedTab = PreprintModerationTab.Submissions;
 
-  onTabChange(index: number): void {
-    this.selectedTab = index;
+  ngOnInit(): void {
+    this.selectedTab = this.route.snapshot.firstChild?.data['tab'] as PreprintModerationTab;
+  }
+
+  onTabChange(value: Primitive): void {
+    this.selectedTab = value as PreprintModerationTab;
+    this.router.navigate([this.selectedTab], { relativeTo: this.route });
   }
 }

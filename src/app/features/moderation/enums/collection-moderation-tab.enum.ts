@@ -1,5 +1,5 @@
 export enum CollectionModerationTab {
-  AllItems = 1,
-  Moderators,
-  Settings,
+  AllItems = 'all-items',
+  Moderators = 'moderators',
+  Settings = 'settings',
 }

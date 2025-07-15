@@ -1,0 +1,47 @@
+<p-step-item class="p-4" [value]="targetStepValue()">
+  <p-step [value]="targetStepValue()">
+    <ng-template #content>
+      <div class="flex flex-column gap-4 w-full">
+        <h3>{{ 'collections.addToCollection.selectProject' | translate }}</h3>
+        @if (selectedProject() && stepperActiveValue() !== targetStepValue()) {
+          <p class="font-normal">
+            {{ 'collections.addToCollection.project' | translate }}:
+            <span class="font-bold">{{ selectedProject()?.title }}</span>
+          </p>
+          <p-button
+            (click)="handleEditStep()"
+            severity="secondary"
+            class="align-self-end"
+            [label]="'common.buttons.clickToEdit' | translate"
+          ></p-button>
+        }
+      </div>
+    </ng-template>
+  </p-step>
+
+  <p-step-panel [value]="targetStepValue()" class="p-0">
+    <ng-template class="m-0" #content>
+      <div class="mt-4 w-full lg:w-6">
+        <p-select
+          class="w-full"
+          [loading]="isProjectsLoading()"
+          [options]="projectsOptions()"
+          [filter]="true"
+          (onFilter)="handleFilterSearch($event)"
+          optionLabel="label"
+          optionValue="value"
+          [appendTo]="'body'"
+          [emptyFilterMessage]="filterMessage()"
+          [emptyMessage]="filterMessage()"
+          (onChange)="handleProjectChange($event)"
+          [placeholder]="'common.buttons.select' | translate"
+          [ngModel]="selectedProject()"
+        >
+          <ng-template #selectedItem let-selectedOption>
+            {{ selectedOption.label | translate }}
+          </ng-template>
+        </p-select>
+      </div>
+    </ng-template>
+  </p-step-panel>
+</p-step-item>

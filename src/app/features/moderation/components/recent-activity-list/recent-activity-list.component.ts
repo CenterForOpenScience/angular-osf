@@ -7,7 +7,7 @@ import { TableModule } from 'primeng/table';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 
-import { ReviewStatusIcon } from '@osf/features/moderation/constants';
+import { PreprintReviewStatus, ReviewStatusIcon } from '@osf/features/moderation/constants';
 import { CustomPaginatorComponent, IconComponent } from '@osf/shared/components';
 
 import { PreprintReviewActionModel } from '../../models';
@@ -28,6 +28,7 @@ export class RecentActivityListComponent {
 
   protected first = signal(0);
   readonly reviewStatusIcon = ReviewStatusIcon;
+  readonly preprintReviewStatus = PreprintReviewStatus;
 
   onPageChange(event: PaginatorState) {
     this.pageChanged.emit(event.page ?? 1);

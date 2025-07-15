@@ -15,6 +15,11 @@ export class PreprintModerationSelectors {
   }
 
   @Selector([PreprintModerationState])
+  static getPreprintProvider(state: PreprintModerationStateModel) {
+    return (id: string) => state.preprintProviders.data.find((item) => item.id === id);
+  }
+
+  @Selector([PreprintModerationState])
   static getPreprintReviews(state: PreprintModerationStateModel) {
     return state.reviewActions.data;
   }

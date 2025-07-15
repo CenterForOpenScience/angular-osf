@@ -1,0 +1,21 @@
+<div class="dialog-container">
+  <p>
+    {{ 'collections.addToCollection.confirmationDialogMessage' | translate }}
+  </p>
+
+  <div class="flex pt-5 gap-3 justify-content-between">
+    <p-button
+      [label]="'common.buttons.cancel' | translate"
+      severity="info"
+      (click)="dialogRef.close(false)"
+      [disabled]="isSubmitting()"
+      class="btn-full-width"
+    />
+    <p-button
+      [label]="'common.buttons.addToCollection' | translate"
+      (click)="handleAddToCollectionConfirm()"
+      [loading]="isSubmitting()"
+      class="btn-full-width"
+    />
+  </div>
+</div>

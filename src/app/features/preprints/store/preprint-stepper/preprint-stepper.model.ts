@@ -13,6 +13,7 @@ export interface PreprintStepperStateModel {
   availableProjects: AsyncStateModel<IdName[]>;
   projectFiles: AsyncStateModel<OsfFile[]>;
   licenses: AsyncStateModel<License[]>;
+  currentFolder: OsfFile | null;
   preprintProject: AsyncStateModel<IdName | null>;
   hasBeenSubmitted: boolean;
 }

@@ -9,10 +9,11 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { ClearCollections, GetBookmarksCollectionId } from '@osf/features/collections/store';
+import { ClearCollections } from '@osf/features/collections/store/collections';
 import { LoadingSpinnerComponent, ResourceMetadataComponent, SubHeaderComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
+import { GetBookmarksCollectionId } from '@shared/stores';
 
 import { ClearWiki, GetHomeWiki } from '../wiki/store';
 

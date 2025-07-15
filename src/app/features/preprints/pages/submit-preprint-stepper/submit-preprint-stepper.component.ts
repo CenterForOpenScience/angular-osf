@@ -31,7 +31,6 @@ import {
 } from '@osf/features/preprints/components';
 import { submitPreprintSteps } from '@osf/features/preprints/constants';
 import { PreprintSteps } from '@osf/features/preprints/enums';
-import { CanDeactivateComponent } from '@osf/features/preprints/models';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
   DeletePreprint,
@@ -39,7 +38,7 @@ import {
   ResetState,
   SetSelectedPreprintProviderId,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { StepOption } from '@osf/shared/models';
+import { CanDeactivateComponent, StepOption } from '@osf/shared/models';
 import { StepperComponent } from '@shared/components';
 import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';

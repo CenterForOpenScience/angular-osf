@@ -1,5 +1,4 @@
 import { OsfFileTarget } from '@osf/features/project/files/models';
-import { FileLinks } from '@shared/models';
 
 export interface OsfFile {
   id: string;
@@ -24,11 +23,23 @@ export interface OsfFile {
   currentUserCanComment: boolean;
   currentVersion: number;
   showAsUnviewed: boolean;
-  links: FileLinks;
+  links: {
+    info: string;
+    move: string;
+    upload: string;
+    delete: string;
+    download: string;
+    self: string;
+    html: string;
+    render: string;
+    newFolder: string;
+  };
   relationships: {
     parentFolderLink: string;
     parentFolderId: string;
     filesLink: string;
+    uploadLink: string;
+    newFolderLink: string;
   };
   target: OsfFileTarget;
   previousFolder: boolean;

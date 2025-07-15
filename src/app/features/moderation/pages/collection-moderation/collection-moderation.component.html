@@ -2,7 +2,7 @@
   <osf-sub-header [title]="'navigation.moderation' | translate" />
 
   <div class="flex-column flex flex-1 w-full h-full">
-    <p-tabs class="flex-1" [value]="selectedTab" [lazy]="true" (valueChange)="onTabChange(+$event)">
+    <p-tabs class="flex-1" [value]="selectedTab" [lazy]="true" (valueChange)="onTabChange($event)">
       @if (isMedium()) {
         <p-tablist class="pr-5 pl-5">
           @for (item of tabOptions; track $index) {
@@ -18,20 +18,11 @@
             [options]="tabOptions"
             [fullWidth]="true"
             [(selectedValue)]="selectedTab"
+            (changeValue)="onTabChange($event)"
           ></osf-select>
         }
 
-        <p-tabpanel [value]="tabs.AllItems">
-          <osf-collection-moderation-submissions></osf-collection-moderation-submissions>
-        </p-tabpanel>
-
-        <p-tabpanel [value]="tabs.Moderators">
-          <osf-moderators-list [resourceType]="resourceType"></osf-moderators-list>
-        </p-tabpanel>
-
-        <p-tabpanel [value]="tabs.Settings">
-          <osf-notification-settings></osf-notification-settings>
-        </p-tabpanel>
+        <router-outlet></router-outlet>
       </p-tabpanels>
     </p-tabs>
   </div>
