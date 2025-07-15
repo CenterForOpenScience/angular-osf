@@ -11,7 +11,7 @@
         [src]="preprintProvider()!.brand.heroLogoImageUrl"
       />
       <h1 class="preprint-provider-name">
-        {{ 'Create New Version' }}
+        {{ 'preprints.createNewVersionTitle' | translate }}
       </h1>
     }
   </section>
@@ -30,17 +30,20 @@
   }
 </section>
 
-<section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
-  @switch (currentStep().value) {
-    @case (PreprintSteps.File) {
-      <osf-file-step
-        [provider]="preprintProvider()"
-        (nextClicked)="moveToNextStep()"
-        (backClicked)="moveToPreviousStep()"
-      />
+<!-- [RNi] TODO: Remove when preprint details page implemented -->
+@if (!this.initMode()) {
+  <section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
+    @switch (currentStep().value) {
+      @case (PreprintSteps.File) {
+        <osf-file-step
+          [provider]="preprintProvider()"
+          (nextClicked)="moveToNextStep()"
+          (backClicked)="moveToPreviousStep()"
+        />
+      }
+      @case (PreprintSteps.Review) {
+        <osf-review-step [provider]="preprintProvider()" />
+      }
     }
-    @case (PreprintSteps.Review) {
-      <osf-review-step [provider]="preprintProvider()" />
-    }
-  }
-</section>
+  </section>
+}

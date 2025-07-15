@@ -88,7 +88,7 @@ export class PreprintsService {
     return this.jsonApiService
       .post<
         JsonApiResponse<ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>, null>
-      >(`${environment.apiUrl}/preprints/${prevVersionPreprintId}/versions/`)
+      >(`${environment.apiUrl}/preprints/${prevVersionPreprintId}/versions/?version=2.20`)
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
   }
 

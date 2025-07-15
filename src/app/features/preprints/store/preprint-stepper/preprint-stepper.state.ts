@@ -494,7 +494,7 @@ export class PreprintStepperState {
 
     return this.preprintsService.createNewVersion(preprintId).pipe(
       tap((preprintNewVersion) => {
-        ctx.setState(patch({ preprint: patch({ data: preprintNewVersion, isSubmitting: false }) }));
+        ctx.setState(patch({ preprint: patch({ data: preprintNewVersion, isLoading: false }) }));
       }),
       catchError((error) => handleSectionError(ctx, 'preprint', error))
     );

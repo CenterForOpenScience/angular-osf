@@ -1846,7 +1846,8 @@
         }
       }
     },
-    "providers": "Providers"
+    "providers": "Providers",
+    "createNewVersionTitle": "Create New Version"
   },
   "registries": {
     "title": "Registries",

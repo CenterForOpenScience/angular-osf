@@ -1,5 +1,7 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Skeleton } from 'primeng/skeleton';
 
 import { map, Observable, of } from 'rxjs';
@@ -21,7 +23,6 @@ import { ActivatedRoute } from '@angular/router';
 import { FileStepComponent, ReviewStepComponent } from '@osf/features/preprints/components';
 import { createNewVersionStepsConst } from '@osf/features/preprints/constants';
 import { PreprintSteps } from '@osf/features/preprints/enums';
-import { CanDeactivateComponent } from '@osf/features/preprints/models';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
   CreateNewVersion,
@@ -31,13 +32,13 @@ import {
   SetSelectedPreprintProviderId,
 } from '@osf/features/preprints/store/preprint-stepper';
 import { StepperComponent } from '@shared/components';
-import { StepOption } from '@shared/models';
+import { CanDeactivateComponent, StepOption } from '@shared/models';
 import { BrandService } from '@shared/services';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
 
 @Component({
   selector: 'osf-create-new-version',
-  imports: [Skeleton, StepperComponent, ReviewStepComponent, FileStepComponent],
+  imports: [Skeleton, StepperComponent, ReviewStepComponent, FileStepComponent, TranslatePipe],
   templateUrl: './create-new-version.component.html',
   styleUrl: './create-new-version.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,6 +68,7 @@ export class CreateNewVersionComponent implements OnInit, OnDestroy, CanDeactiva
   hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
   currentStep = signal<StepOption>(createNewVersionStepsConst[0]);
   isWeb = toSignal(inject(IS_WEB));
+  initMode = signal(true);
 
   constructor() {
     effect(() => {
@@ -88,9 +90,14 @@ export class CreateNewVersionComponent implements OnInit, OnDestroy, CanDeactiva
       //[RNi] TODO: move this logic to handler of "Create New Version" button on preprint details page when implemented
       const preprint = this.preprint();
 
+      if (!this.initMode()) return;
       if (!preprint) return;
 
-      this.actions.createNewVersion(preprint.id);
+      this.actions.createNewVersion(preprint.id).subscribe({
+        complete: () => {
+          this.initMode.set(false);
+        },
+      });
     });
   }
 
