@@ -1846,7 +1846,16 @@
         }
       }
     },
-    "providers": "Providers"
+    "providers": "Providers",
+    "myPreprints": {
+      "title": "My Preprints",
+      "searchPlaceholder": "Filter by title, description, and tags",
+      "table": {
+        "titleLabel": "Title",
+        "contributorsLabel": "Contributors",
+        "modifiedLabel": "Modified"
+      }
+    }
   },
   "registries": {
     "title": "Registries",

@@ -1,15 +1,16 @@
 <osf-sub-header
-  [title]="'My Preprints' | translate"
+  [title]="'preprints.myPreprints.title' | translate"
   [icon]="'preprints'"
-  [buttonLabel]="'Add A Preprint' | translate"
+  [showButton]="true"
+  [buttonLabel]="'preprints.addPreprint' | translate: { preprintWord: 'preprint' | titlecase }"
   (buttonClick)="addPreprintBtnClicked()"
 />
 
-<section class="flex-1 flex flex-column bg-white px-3 md:px-5 xl:px-4">
+<section class="flex-1 flex flex-column bg-white p-3 md:p-4">
   <osf-search-input
-    class="w-full mt-4"
+    class="w-full"
     [control]="searchControl"
-    [placeholder]="'Filter by title, description, and tags' | translate"
+    [placeholder]="'preprints.myPreprints.searchPlaceholder' | translate"
   />
 
   <p-table
@@ -37,12 +38,12 @@
     <ng-template #header>
       <tr>
         <th pSortableColumn="title">
-          {{ 'Title' | translate }}
+          {{ 'preprints.myPreprints.table.titleLabel' | translate }}
           <p-sortIcon field="title" />
         </th>
-        <th>{{ 'Contributors' | translate }}</th>
+        <th>{{ 'preprints.myPreprints.table.contributorsLabel' | translate }}</th>
         <th pSortableColumn="dateModified">
-          {{ 'Modified' | translate }}
+          {{ 'preprints.myPreprints.table.modifiedLabel' | translate }}
           <p-sortIcon field="dateModified" />
         </th>
       </tr>

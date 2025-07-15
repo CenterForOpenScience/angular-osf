@@ -8,7 +8,7 @@ import { TableModule, TablePageEvent } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, skip } from 'rxjs';
 
-import { DatePipe } from '@angular/common';
+import { DatePipe, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -42,6 +42,7 @@ import { QueryParams, SearchFilters, TableParameters } from '@shared/models';
     Skeleton,
     DatePipe,
     ListInfoShortenerComponent,
+    TitleCasePipe,
   ],
   templateUrl: './my-preprints.component.html',
   styleUrl: './my-preprints.component.scss',
