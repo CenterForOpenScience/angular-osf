@@ -33,14 +33,16 @@ export class AddToCollectionConfirmationDialogComponent {
   });
 
   protected handleAddToCollectionConfirm(): void {
-    const project = this.config.data;
-    if (!project) return;
+    const payload = this.config.data.payload;
+    const project = this.config.data.project;
+
+    if (!payload || !project) return;
 
     this.isSubmitting.set(true);
 
     const updatePublicStatus$ = project.isPublic ? of(null) : this.actions.updateProjectPublicStatus(project.id, true);
 
-    const createSubmission$ = this.actions.createCollectionSubmission(project);
+    const createSubmission$ = this.actions.createCollectionSubmission(payload);
 
     forkJoin({
       publicStatusUpdate: updatePublicStatus$,
