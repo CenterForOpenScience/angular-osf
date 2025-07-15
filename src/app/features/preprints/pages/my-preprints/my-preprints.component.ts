@@ -6,7 +6,7 @@ import { SortEvent } from 'primeng/api';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, skip } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -116,7 +116,7 @@ export class MyPreprintsComponent {
 
   private setupSearchSubscription(): void {
     this.searchControl.valueChanges
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef), skip(1))
       .subscribe((searchControl) => {
         this.updateQueryParams({
           search: searchControl ?? '',
