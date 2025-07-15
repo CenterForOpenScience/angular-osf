@@ -1,5 +1,11 @@
-import { ApiData } from '@core/models';
-import { Preprint, PreprintJsonApi, PreprintsRelationshipsJsonApi } from '@osf/features/preprints/models';
+import { ApiData, JsonApiResponseWithPaging } from '@core/models';
+import {
+  Preprint,
+  PreprintAttributesJsonApi,
+  PreprintEmbedsJsonApi,
+  PreprintRelationshipsJsonApi,
+  PreprintShortInfoWithTotalCount,
+} from '@osf/features/preprints/models';
 
 export class PreprintsMapper {
   static toCreatePayload(title: string, abstract: string, providerId: string) {
@@ -22,7 +28,9 @@ export class PreprintsMapper {
     };
   }
 
-  static fromPreprintJsonApi(response: ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>): Preprint {
+  static fromPreprintJsonApi(
+    response: ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, null>
+  ): Preprint {
     return {
       id: response.id,
       dateCreated: response.attributes.date_created,
@@ -74,6 +82,27 @@ export class PreprintsMapper {
           },
         },
       },
+    };
+  }
+
+  static fromMyPreprintJsonApi(
+    response: JsonApiResponseWithPaging<ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, null, null>[], null>
+  ): PreprintShortInfoWithTotalCount {
+    return {
+      data: response.data.map((preprintData) => {
+        return {
+          id: preprintData.id,
+          title: preprintData.attributes.title,
+          dateModified: preprintData.attributes.date_modified,
+          contributors: preprintData.embeds.bibliographic_contributors.data.map((contrData) => {
+            return {
+              id: contrData.id,
+              name: contrData.embeds.users.data.attributes.full_name,
+            };
+          }),
+        };
+      }),
+      totalCount: response.links.meta.total,
     };
   }
 }

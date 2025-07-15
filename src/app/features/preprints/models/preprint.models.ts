@@ -1,6 +1,6 @@
 import { BooleanOrNull, StringOrNull } from '@core/helpers';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
-import { LicenseOptions } from '@shared/models';
+import { IdName, LicenseOptions } from '@shared/models';
 
 export interface Preprint {
   id: string;
@@ -34,4 +34,16 @@ export interface Preprint {
 export interface PreprintFilesLinks {
   filesLink: string;
   uploadFileLink: string;
+}
+
+export interface PreprintShortInfo {
+  id: string;
+  title: string;
+  dateModified: string;
+  contributors: IdName[];
+}
+
+export interface PreprintShortInfoWithTotalCount {
+  data: PreprintShortInfo[];
+  totalCount: number;
 }

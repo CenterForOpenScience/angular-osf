@@ -55,7 +55,7 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLinkActiveOptions: { exact: false },
       },
       {
-        routerLink: '/my-preprints',
+        routerLink: 'preprints/my-preprints',
         label: 'navigation.preprintsSubRoutes.myPreprints',
         routerLinkActiveOptions: { exact: false },
       },

@@ -1,8 +1,8 @@
 import { BooleanOrNull, StringOrNull } from '@core/helpers';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
-import { LicenseRecordJsonApi } from '@shared/models';
+import { ContributorResponse, LicenseRecordJsonApi } from '@shared/models';
 
-export interface PreprintJsonApi {
+export interface PreprintAttributesJsonApi {
   date_created: string;
   date_modified: string;
   date_published: Date | null;
@@ -34,7 +34,7 @@ export interface PreprintJsonApi {
   prereg_link_info: PreregLinkInfo | null;
 }
 
-export interface PreprintsRelationshipsJsonApi {
+export interface PreprintRelationshipsJsonApi {
   primary_file: {
     data: {
       id: string;
@@ -52,5 +52,11 @@ export interface PreprintsRelationshipsJsonApi {
       id: string;
       type: 'nodes';
     };
+  };
+}
+
+export interface PreprintEmbedsJsonApi {
+  bibliographic_contributors: {
+    data: ContributorResponse[];
   };
 }
