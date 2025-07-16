@@ -10,22 +10,7 @@ import { handleSectionError } from '@core/handlers';
 import { PreprintsService } from '@osf/features/preprints/services';
 
 import { FetchMyPreprints, FetchPreprintById } from './preprint.actions';
-import { PreprintStateModel } from './preprint.model';
-
-const DefaultState: PreprintStateModel = {
-  preprint: {
-    data: null,
-    isLoading: false,
-    error: null,
-    isSubmitting: false,
-  },
-  myPreprints: {
-    data: [],
-    isLoading: false,
-    error: null,
-    totalCount: 0,
-  },
-};
+import { DefaultState, PreprintStateModel } from './preprint.model';
 
 @State<PreprintStateModel>({
   name: 'preprints',

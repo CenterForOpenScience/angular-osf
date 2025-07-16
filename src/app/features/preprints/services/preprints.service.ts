@@ -95,7 +95,7 @@ export class PreprintsService {
   createNewVersion(prevVersionPreprintId: string) {
     return this.jsonApiService
       .post<
-        JsonApiResponse<ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>, null>
+        JsonApiResponse<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, null>, null>
       >(`${environment.apiUrl}/preprints/${prevVersionPreprintId}/versions/?version=2.20`)
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
   }

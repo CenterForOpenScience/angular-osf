@@ -88,7 +88,9 @@
       "available": "Available",
       "unavailable": "Unavailable",
       "notApplicable": "Not Applicable",
-      "none": "None"
+      "none": "None",
+      "and": "and",
+      "more": "more"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -1847,8 +1849,7 @@
       }
     },
     "providers": "Providers",
-    "createNewVersionTitle": "Create New Version"
-    "providers": "Providers",
+    "createNewVersionTitle": "Create New Version",
     "myPreprints": {
       "title": "My Preprints",
       "searchPlaceholder": "Filter by title, description, and tags",

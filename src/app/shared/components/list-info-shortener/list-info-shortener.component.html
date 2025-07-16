@@ -9,7 +9,7 @@
 
     @if (dataValue.length > limitValue) {
       <p [pTooltip]="tooltipData" tooltipPosition="bottom" autoHide="false">
-        and {{ dataValue.length - limitValue }} more
+        {{ 'common.labels.and' | translate }} {{ dataValue.length - limitValue }} {{ 'common.labels.more' | translate }}
       </p>
       <ng-template #tooltipData>
         @for (item of dataValue.slice(limitValue); track item.id) {
