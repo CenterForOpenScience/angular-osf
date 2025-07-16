@@ -2149,6 +2149,22 @@
       "sendMessage": "Send message",
       "osfLink": "OSF Link",
       "orcid": "ORCID"
+    },
+    "projects": {
+      "title": "Title",
+      "link": "Link",
+      "dateCreated": "Created Date",
+      "dateModified": "Modified Date",
+      "doi": "DOI",
+      "storageLocation": "Storage Location",
+      "totalDataStored": "Total Data Stored on OSF",
+      "contributorName": "Contributor Name",
+      "views": "Views (last 30 days)",
+      "resourceType": "Resource Type",
+      "license": "License",
+      "addOns": "Add-ons",
+      "funderName": "Funder Name",
+      "totalProjects": "Total Projects"
     }
   }
 }

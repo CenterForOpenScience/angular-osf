@@ -1,7 +1,9 @@
+@use "assets/styles/variables" as var;
+
 .width-25 {
   width: calc(25% - 1.5rem);
 
-  @media (max-width: 576px) {
+  @media (max-width: var.$breakpoint-sm) {
     width: calc(50% - 0.5rem);
   }
 }
@@ -9,7 +11,11 @@
 .width-33 {
   width: calc(33% - 1rem);
 
-  @media (max-width: 576px) {
+  @media (max-width: var.$breakpoint-lg) {
+    width: calc(50% - 1rem);
+  }
+
+  @media (max-width: var.$breakpoint-sm) {
     width: 100%;
   }
 }

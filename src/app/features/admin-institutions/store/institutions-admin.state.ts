@@ -15,6 +15,7 @@ import {
   FetchInstitutionSearchResults,
   FetchInstitutionSummaryMetrics,
   FetchInstitutionUsers,
+  FetchProjects,
   FetchStorageRegionSearch,
   SendUserMessage,
 } from './institutions-admin.actions';
@@ -29,6 +30,7 @@ import { InstitutionsAdminModel } from './institutions-admin.model';
     storageRegionSearch: { data: [], isLoading: false, error: null },
     searchResults: { data: [], isLoading: false, error: null },
     users: { data: [], totalCount: 0, isLoading: false, error: null },
+    projects: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
     sendMessage: { data: null, isLoading: false, error: null },
     selectedInstitutionId: null,
     currentSearchPropertyPath: null,
@@ -143,6 +145,31 @@ export class InstitutionsAdminState {
           });
         }),
         catchError((error) => handleSectionError(ctx, 'users', error))
+      );
+  }
+
+  @Action(FetchProjects)
+  fetchProjects(ctx: StateContext<InstitutionsAdminModel>, action: FetchProjects) {
+    const state = ctx.getState();
+    ctx.patchState({
+      projects: { ...state.projects, isLoading: true, error: null },
+    });
+
+    return this.institutionsAdminService
+      .fetchProjects(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .pipe(
+        tap((response) => {
+          ctx.patchState({
+            projects: {
+              data: response.projects,
+              totalCount: response.totalCount,
+              isLoading: false,
+              error: null,
+              links: response.links,
+            },
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'projects', error))
       );
   }
 

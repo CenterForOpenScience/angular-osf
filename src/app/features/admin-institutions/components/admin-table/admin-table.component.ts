@@ -8,6 +8,7 @@ import { PaginatorState } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
 
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -18,6 +19,7 @@ import {
   TableIconClickEvent,
 } from '@osf/features/admin-institutions/models';
 import { CustomPaginatorComponent } from '@osf/shared/components';
+import { StopPropagationDirective } from '@shared/directives';
 import { SortOrder } from '@shared/enums';
 import { QueryParams } from '@shared/models';
 
@@ -33,6 +35,8 @@ import { QueryParams } from '@shared/models';
     TranslatePipe,
     Button,
     Menu,
+    StopPropagationDirective,
+    DatePipe,
   ],
   templateUrl: './admin-table.component.html',
   styleUrl: './admin-table.component.scss',
@@ -40,6 +44,8 @@ import { QueryParams } from '@shared/models';
 })
 export class AdminTableComponent {
   private readonly translateService = inject(TranslateService);
+
+  private userInitiatedSort = false;
 
   tableColumns = input.required<TableColumn[]>();
   tableData = input.required<TableCellData[]>();
@@ -53,9 +59,22 @@ export class AdminTableComponent {
   sortField = input<string>('');
   sortOrder = input<number>(1);
 
+  isNextPreviousPagination = input<boolean>(false);
+
+  paginationLinks = input<
+    | {
+        first?: { href: string };
+        next?: { href: string };
+        prev?: { href: string };
+        last?: { href: string };
+      }
+    | undefined
+  >();
+
   pageChanged = output<PaginatorState>();
   sortChanged = output<QueryParams>();
   iconClicked = output<TableIconClickEvent>();
+  linkPageChanged = output<string>();
 
   downloadLink = input<string>('');
   reportsLink = input<string>('');
@@ -70,17 +89,17 @@ export class AdminTableComponent {
       {
         label: 'CSV',
         icon: 'fa fa-file-csv',
-        link: this.createUrl(baseUrl, 'csv'),
+        link: this.createUrl(baseUrl, 'text/csv'),
       },
       {
         label: 'TSV',
         icon: 'fa fa-file-alt',
-        link: this.createUrl(baseUrl, 'tsv'),
+        link: this.createUrl(baseUrl, 'text/tab-separated-values'),
       },
       {
         label: 'JSON',
         icon: 'fa fa-file-code',
-        link: this.createUrl(baseUrl, 'json'),
+        link: this.createUrl(baseUrl, 'application/json'),
       },
     ];
   });
@@ -99,6 +118,10 @@ export class AdminTableComponent {
   sortColumn = computed(() => this.sortField());
   currentSortOrder = computed(() => this.sortOrder());
 
+  firstLink = computed(() => this.paginationLinks()?.first?.href || '');
+  prevLink = computed(() => this.paginationLinks()?.prev?.href || '');
+  nextLink = computed(() => this.paginationLinks()?.next?.href || '');
+
   constructor() {
     effect(() => {
       const columns = this.tableColumns();
@@ -116,13 +139,20 @@ export class AdminTableComponent {
     this.pageChanged.emit(event);
   }
 
+  onHeaderClick(column: TableColumn): void {
+    if (column.sortable) {
+      this.userInitiatedSort = true;
+    }
+  }
+
   onSort(event: SortEvent): void {
-    if (event.field) {
+    if (event.field && this.userInitiatedSort) {
       this.sortChanged.emit({
         sortColumn: event.field,
         sortOrder: event.order === -1 ? SortOrder.Desc : SortOrder.Asc,
       } as QueryParams);
     }
+    this.userInitiatedSort = false;
   }
 
   onIconClick(rowData: TableCellData, column: TableColumn): void {
@@ -146,36 +176,12 @@ export class AdminTableComponent {
     return this.translateService.instant(String(value)) || '';
   }
 
-  getCellValueWithFormatting(value: string | number | TableCellLink | undefined, column: TableColumn): string {
-    if (this.isLink(value)) {
-      return this.translateService.instant(value.text);
-    }
-
-    const stringValue = String(value);
-
-    if (column.dateFormat && stringValue) {
-      return this.formatDate(stringValue, column.dateFormat);
-    }
-
-    return this.translateService.instant(stringValue) || '';
+  switchPage(link: string) {
+    this.linkPageChanged.emit(link);
   }
 
-  private formatDate(value: string, format: string): string {
-    if (format === 'yyyy-mm-to-mm/yyyy') {
-      const yearMonthRegex = /^(\d{4})-(\d{2})$/;
-      const match = value.match(yearMonthRegex);
-
-      if (match) {
-        const [, year, month] = match;
-        return `${month}/${year}`;
-      }
-    }
-
-    return value;
-  }
-
-  private createUrl(baseUrl: string, format: string): string {
-    return `${baseUrl}?format=${format}`;
+  private createUrl(baseUrl: string, mediaType: string): string {
+    return `${baseUrl}&acceptMediatype=${encodeURIComponent(mediaType)}`;
   }
 
   getLinkUrl(value: string | number | TableCellLink | undefined): string {

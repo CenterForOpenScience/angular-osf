@@ -5,10 +5,9 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { PreprintProviderModerationInfo } from '@osf/features/moderation/models';
-
 import { PREPRINT_REVIEWING_TABS } from '../../constants';
 import { PreprintModerationTab } from '../../enums';
+import { PreprintProviderModerationInfo } from '../../models';
 
 @Component({
   selector: 'osf-my-reviewing-navigation',

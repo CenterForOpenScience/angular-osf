@@ -1,11 +1,11 @@
-<div class="flex justify-content-between align-items-center p-3">
-  <div>
+<div class="flex justify-content-between align-items-center py-2 px-0 md:py-3 md:px-3">
+  <div class="hidden md:block">
     <ng-content select="[slot=amount]"></ng-content>
   </div>
 
   <p-menu #downloadMenu [model]="downloadMenuItems()" appendTo="body" popup>
     <ng-template #item let-item>
-      <a class="p-menu-item-link ml-1" target="_blank" [href]="item.link">
+      <a class="p-menu-item-link ml-1" osfStopPropagation target="_blank" [href]="item.link">
         <i [class]="item.icon"></i>
 
         {{ item.label }}
@@ -13,49 +13,53 @@
     </ng-template>
   </p-menu>
 
-  <div class="filters-section flex align-items-center gap-2">
+  <div class="flex align-items-center gap-2 flex-column w-full md:flex-row md:w-fit">
     <ng-content select="[slot=otherFilters]"></ng-content>
 
-    <p-multiselect
-      [options]="tableColumns()"
-      [(ngModel)]="selectedColumns"
-      (onChange)="onColumnSelectionChange($event.value)"
-      optionLabel="header"
-      [showToggleAll]="false"
-      [showClear]="false"
-      [dropdownIcon]="'hidden'"
-    >
-      <ng-template let-values pTemplate="selectedItems">
-        <div class="flex align-items-center gap-2">
-          <i class="fa fa-table-columns text-primary font-bold"></i>
-          <span>{{ 'adminInstitutions.institutionUsers.customize' | translate }}</span>
-        </div>
-      </ng-template>
-
-      <ng-template #item let-item>
-        {{ item.header | translate }}
-      </ng-template>
-    </p-multiselect>
-
-    @if (downloadLink()) {
-      <p-button
-        icon="fa fa-download text-primary text-xl"
-        class="p-button p-button-outlined p-button-sm p-06 font-bold grey-border-color child-button-0-padding"
-        severity="info"
-        (click)="downloadMenu.toggle($event)"
-      />
-    }
-
-    @if (reportsLink()) {
-      <a
-        pButton
-        [href]="reportsLink()"
-        class="p-button p-button-outlined p-button-sm p-06 font-bold grey-border-color child-button-0-padding"
-        target="_blank"
+    <div class="flex align-items-center gap-2 justify-content-between w-full md:justify-content-start md:w-fit">
+      <p-multiselect
+        class="w-9 md:w-fit"
+        [options]="tableColumns()"
+        [(ngModel)]="selectedColumns"
+        (onChange)="onColumnSelectionChange($event.value)"
+        optionLabel="header"
+        [showToggleAll]="false"
+        [showClear]="false"
+        [dropdownIcon]="'hidden'"
       >
-        <i class="fa fa-chart-pie text-primary border-1 border-transparent text-xl"></i>
-      </a>
-    }
+        <ng-template let-values pTemplate="selectedItems">
+          <div class="flex align-items-center gap-2">
+            <i class="fa fa-table-columns text-primary font-bold"></i>
+            <span>{{ 'adminInstitutions.institutionUsers.customize' | translate }}</span>
+          </div>
+        </ng-template>
+
+        <ng-template #item let-item>
+          {{ item.header | translate }}
+        </ng-template>
+      </p-multiselect>
+
+      @if (downloadLink()) {
+        <p-button
+          icon="fa fa-download text-primary text-xl"
+          outlined
+          class="grey-border-color download-button"
+          severity="info"
+          (click)="downloadMenu.toggle($event)"
+        />
+      }
+
+      @if (reportsLink()) {
+        <a
+          pButton
+          [href]="reportsLink()"
+          class="p-button p-button-outlined p-button-sm p-06 font-bold grey-border-color child-button-0-padding no-underline"
+          target="_blank"
+        >
+          <i class="fa fa-chart-pie text-xl"></i>
+        </a>
+      }
+    </div>
   </div>
 </div>
 
@@ -70,12 +74,12 @@
   [sortOrder]="currentSortOrder()"
   [customSort]="true"
   [resetPageOnSort]="false"
-  [tableStyle]="{ 'min-width': '50rem' }"
+  class="institution-admin-table"
 >
   <ng-template #header let-columns>
     <tr>
       @for (col of columns; track col.field) {
-        <th [pSortableColumn]="col.sortable ? col.field : null">
+        <th [pSortableColumn]="col.sortable ? col.field : null" (click)="onHeaderClick(col)">
           <div class="flex align-items-center gap-2">
             <span>{{ col.header | translate }}</span>
             @if (col.sortable) {
@@ -98,10 +102,18 @@
                 [target]="getLinkTarget(rowData[col.field], col)"
                 class="text-primary no-underline hover:underline"
               >
-                {{ getCellValueWithFormatting(rowData[col.field], col) }}
+                @if (col.dateFormat) {
+                  {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
+                } @else {
+                  {{ getCellValue(rowData[col.field]) }}
+                }
               </a>
             } @else {
-              {{ getCellValueWithFormatting(rowData[col.field], col) }}
+              @if (col.dateFormat) {
+                {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
+              } @else {
+                {{ getCellValue(rowData[col.field]) }}
+              }
             }
 
             @if (col.showIcon) {
@@ -121,13 +133,39 @@
   </ng-template>
 </p-table>
 
-@if (enablePagination() && totalCount() > pageSize()) {
-  <div class="p-3">
-    <osf-custom-paginator
-      [first]="first()"
-      [totalCount]="totalCount()"
-      [rows]="pageSize()"
-      (pageChanged)="onPageChange($event)"
-    ></osf-custom-paginator>
+@if (isNextPreviousPagination()) {
+  <div class="flex column-gap-2 w-full justify-content-center pt-2">
+    @if (firstLink() && prevLink()) {
+      <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(firstLink())"></p-button>
+    }
+
+    <p-button
+      icon="fas fa-angle-left"
+      severity="contrast"
+      text
+      [disabled]="!prevLink()"
+      (click)="switchPage(prevLink())"
+    >
+    </p-button>
+
+    <p-button
+      icon="fas fa-angle-right"
+      severity="contrast"
+      text
+      [disabled]="!nextLink()"
+      (click)="switchPage(nextLink())"
+    >
+    </p-button>
   </div>
+} @else {
+  @if (enablePagination() && totalCount() > pageSize()) {
+    <div class="p-3">
+      <osf-custom-paginator
+        [first]="first()"
+        [totalCount]="totalCount()"
+        [rows]="pageSize()"
+        (pageChanged)="onPageChange($event)"
+      ></osf-custom-paginator>
+    </div>
+  }
 }
