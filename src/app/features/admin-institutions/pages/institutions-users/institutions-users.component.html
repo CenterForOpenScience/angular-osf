@@ -1,46 +1,45 @@
-<div class="p-4">
-  <osf-admin-table
-    [tableColumns]="tableColumns"
-    [tableData]="tableData()"
-    [enablePagination]="true"
-    [totalCount]="totalCount()"
-    [currentPage]="currentPage()"
-    [pageSize]="currentPageSize()"
-    [first]="first()"
-    [sortField]="sortField()"
-    [sortOrder]="sortOrder()"
-    (pageChanged)="onPageChange($event)"
-    (sortChanged)="onSortChange($event)"
-    (iconClicked)="onIconClick($event)"
-    [downloadLink]="'/admin/institutions/' + institutionId + '/users/export'"
-    [reportsLink]="'/admin/institutions/' + institutionId + '/reports'"
-  >
-    <div slot="amount" class="flex items-center">
-      <h3 class="title">{{ amountText() }}</h3>
+<osf-admin-table
+  [tableColumns]="tableColumns"
+  [tableData]="tableData()"
+  [enablePagination]="true"
+  [totalCount]="totalCount()"
+  [currentPage]="currentPage()"
+  [pageSize]="currentPageSize()"
+  [first]="first()"
+  [sortField]="sortField()"
+  [sortOrder]="sortOrder()"
+  (pageChanged)="onPageChange($event)"
+  (sortChanged)="onSortChange($event)"
+  (iconClicked)="onIconClick($event)"
+  [downloadLink]="'/admin/institutions/' + institutionId + '/users/export'"
+  [reportsLink]="reportsLink"
+>
+  <div slot="amount" class="flex items-center">
+    <h3 class="title">{{ amountText() }}</h3>
+  </div>
+
+  <div slot="otherFilters" class="flex gap-3 align-items-center flex-wrap w-full md:w-fit">
+    <div class="flex align-items-center gap-2 w-full md:w-fit">
+      <p-checkbox
+        [(ngModel)]="hasOrcidFilter"
+        (onChange)="onOrcidFilterChange($event.checked)"
+        binary="true"
+        inputId="orcid-filter"
+      >
+      </p-checkbox>
+      <label class="text-sm font-medium cursor-pointer m-0" for="orcid-filter">{{
+        'adminInstitutions.institutionUsers.hasOrcid' | translate
+      }}</label>
     </div>
 
-    <div slot="otherFilters" class="flex gap-3 align-items-center">
-      <div class="flex align-items-center gap-2">
-        <p-checkbox
-          [(ngModel)]="hasOrcidFilter"
-          (onChange)="onOrcidFilterChange($event.checked)"
-          binary="true"
-          inputId="orcid-filter"
-        >
-        </p-checkbox>
-        <label class="text-sm font-medium cursor-pointer m-0" for="orcid-filter">{{
-          'adminInstitutions.institutionUsers.hasOrcid' | translate
-        }}</label>
-      </div>
-
-      <div class="flex align-items-center gap-2">
-        <osf-select
-          [options]="departmentOptions"
-          [(selectedValue)]="selectedDepartment"
-          (changeValue)="onDepartmentChange($event)"
-          [fullWidth]="false"
-        />
-      </div>
+    <div class="w-full md:w-fit">
+      <osf-select
+        class="w-full md:w-fit"
+        [options]="departmentOptions"
+        [(selectedValue)]="selectedDepartment"
+        (changeValue)="onDepartmentChange($event)"
+        [fullWidth]="true"
+      />
     </div>
-  </osf-admin-table>
-</div>
+  </div>
+</osf-admin-table>

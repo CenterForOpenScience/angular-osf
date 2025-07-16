@@ -100,6 +100,14 @@ export const preprintsRoutes: Routes = [
           ),
         providers: [provideStates([PreprintModerationState])],
       },
+      {
+        path: ':providerId/new-version/:preprintId',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/create-new-version/create-new-version.component').then(
+            (c) => c.CreateNewVersionComponent
+          ),
+        canDeactivate: [ConfirmLeavingGuard],
+      },
     ],
   },
 ];

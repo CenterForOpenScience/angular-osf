@@ -1,7 +1,8 @@
-import { AsyncStateModel, AsyncStateWithTotalCount } from '@shared/models';
+import { AsyncStateModel, AsyncStateWithLinksModel, AsyncStateWithTotalCount } from '@shared/models';
 
 import {
   InstitutionDepartment,
+  InstitutionProject,
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
   InstitutionUser,
@@ -15,6 +16,7 @@ export interface InstitutionsAdminModel {
   storageRegionSearch: AsyncStateModel<InstitutionSearchFilter[]>;
   searchResults: AsyncStateModel<InstitutionSearchFilter[]>;
   users: AsyncStateWithTotalCount<InstitutionUser[]>;
+  projects: AsyncStateWithLinksModel<InstitutionProject[]>;
   sendMessage: AsyncStateModel<SendMessageResponseJsonApi | null>;
   selectedInstitutionId: string | null;
   currentSearchPropertyPath: string | null;

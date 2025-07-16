@@ -1,7 +1,10 @@
 import { Selector } from '@ngxs/store';
 
+import { PaginationLinksModel } from '@shared/models';
+
 import {
   InstitutionDepartment,
+  InstitutionProject,
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
   InstitutionUser,
@@ -115,6 +118,26 @@ export class InstitutionsAdminSelectors {
   @Selector([InstitutionsAdminState])
   static getUsersTotalCount(state: InstitutionsAdminModel): number {
     return state.users.totalCount;
+  }
+
+  @Selector([InstitutionsAdminState])
+  static getProjects(state: InstitutionsAdminModel): InstitutionProject[] {
+    return state.projects.data;
+  }
+
+  @Selector([InstitutionsAdminState])
+  static getProjectsLoading(state: InstitutionsAdminModel): boolean {
+    return state.projects.isLoading;
+  }
+
+  @Selector([InstitutionsAdminState])
+  static getProjectsTotalCount(state: InstitutionsAdminModel): number {
+    return state.projects.totalCount;
+  }
+
+  @Selector([InstitutionsAdminState])
+  static getProjectsLinks(state: InstitutionsAdminModel): PaginationLinksModel | undefined {
+    return state.projects.links;
   }
 
   @Selector([InstitutionsAdminState])

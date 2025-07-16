@@ -1,0 +1,21 @@
+<osf-admin-table
+  [tableColumns]="tableColumns"
+  [tableData]="tableData()"
+  [enablePagination]="false"
+  [isNextPreviousPagination]="true"
+  [paginationLinks]="projectsLinks()"
+  [totalCount]="totalCount()"
+  [currentPage]="currentPage()"
+  [pageSize]="currentPageSize()"
+  [first]="first()"
+  [sortField]="sortField()"
+  [sortOrder]="sortOrder()"
+  (sortChanged)="onSortChange($event)"
+  (linkPageChanged)="onLinkPageChange($event)"
+  [downloadLink]="downloadUrl()"
+  [reportsLink]="reportsLink"
+>
+  <div slot="amount" class="flex items-center">
+    <h3 class="title">{{ totalCount() }} {{ 'adminInstitutions.projects.totalProjects' | translate }}</h3>
+  </div>
+</osf-admin-table>

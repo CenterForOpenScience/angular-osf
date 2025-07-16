@@ -8,7 +8,7 @@ export interface TableColumn {
   iconClass?: string;
   iconTooltip?: string;
   iconAction?: string;
-  dateFormat?: 'yyyy-mm-to-mm/yyyy' | 'default';
+  dateFormat?: 'MM/yyyy' | 'dd/MM/yyyy' | 'shortDate' | 'mediumDate' | 'longDate' | 'fullDate' | string;
 }
 
 export interface TableCellLink {

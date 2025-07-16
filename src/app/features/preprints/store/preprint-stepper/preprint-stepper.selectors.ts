@@ -9,13 +9,13 @@ export class PreprintStepperSelectors {
   }
 
   @Selector([PreprintStepperState])
-  static getCreatedPreprint(state: PreprintStepperStateModel) {
-    return state.createdPreprint.data;
+  static getPreprint(state: PreprintStepperStateModel) {
+    return state.preprint.data;
   }
 
   @Selector([PreprintStepperState])
   static isPreprintSubmitting(state: PreprintStepperStateModel) {
-    return state.createdPreprint.isSubmitting;
+    return state.preprint.isSubmitting;
   }
 
   @Selector([PreprintStepperState])
@@ -65,7 +65,7 @@ export class PreprintStepperSelectors {
 
   @Selector([PreprintStepperState])
   static getPreprintLicense(state: PreprintStepperStateModel) {
-    return state.licenses.data.find((l) => l.id === state.createdPreprint.data?.licenseId) || null;
+    return state.licenses.data.find((l) => l.id === state.preprint.data?.licenseId) || null;
   }
 
   @Selector([PreprintStepperState])

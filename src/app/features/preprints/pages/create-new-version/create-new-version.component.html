@@ -1,0 +1,49 @@
+<section class="preprints-hero-container py-5 px-3 flex flex-column md:py-6 md:px-4">
+  <section class="flex align-items-center gap-2">
+    @if (isPreprintProviderLoading()) {
+      <p-skeleton width="3rem" height="1.5rem" />
+      <p-skeleton width="12rem" height="1.5rem" />
+    } @else {
+      <img
+        class="preprint-provider-hero-logo"
+        alt="Provider Logo"
+        height="40"
+        [src]="preprintProvider()!.brand.heroLogoImageUrl"
+      />
+      <h1 class="preprint-provider-name">
+        {{ 'preprints.createNewVersionTitle' | translate }}
+      </h1>
+    }
+  </section>
+
+  @if (isWeb()) {
+    @if (isPreprintProviderLoading()) {
+      <p-skeleton class="m-t-48" width="50rem" height="5rem" />
+    } @else {
+      <osf-stepper
+        class="m-t-48"
+        [steps]="newVersionSteps"
+        [currentStep]="currentStep()"
+        (currentStepChange)="stepChange($event)"
+      />
+    }
+  }
+</section>
+
+<!-- [RNi] TODO: Remove when preprint details page implemented -->
+@if (!this.initMode()) {
+  <section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
+    @switch (currentStep().value) {
+      @case (PreprintSteps.File) {
+        <osf-file-step
+          [provider]="preprintProvider()"
+          (nextClicked)="moveToNextStep()"
+          (backClicked)="moveToPreviousStep()"
+        />
+      }
+      @case (PreprintSteps.Review) {
+        <osf-review-step [provider]="preprintProvider()" />
+      }
+    }
+  </section>
+}

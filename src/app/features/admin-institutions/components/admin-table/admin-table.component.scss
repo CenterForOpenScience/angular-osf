@@ -1,5 +1,5 @@
 .p-06 {
-  padding: 0.6rem;
+  padding: 0.625rem;
 }
 
 .hover-group {
@@ -13,6 +13,11 @@
       opacity: 100;
     }
   }
+}
+
+.download-button {
+  --p-button-outlined-info-border-color: var(--grey-2);
+  --p-button-padding-y: 0.625rem;
 }
 
 .child-button-0-padding {

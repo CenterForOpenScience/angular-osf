@@ -85,7 +85,7 @@ export class FileStepComponent implements OnInit {
   readonly PreprintFileSource = PreprintFileSource;
 
   provider = input.required<PreprintProviderDetails | undefined>();
-  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  preprint = select(PreprintStepperSelectors.getPreprint);
   providerId = select(PreprintStepperSelectors.getSelectedProviderId);
   selectedFileSource = select(PreprintStepperSelectors.getSelectedFileSource);
   fileUploadLink = select(PreprintStepperSelectors.getUploadLink);
@@ -145,7 +145,7 @@ export class FileStepComponent implements OnInit {
   }
 
   nextButtonClicked() {
-    if (!this.createdPreprint()?.primaryFileId) {
+    if (!this.preprint()?.primaryFileId) {
       return;
     }
 

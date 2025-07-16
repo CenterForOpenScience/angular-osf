@@ -72,7 +72,7 @@ export class SupplementsStepComponent implements OnInit {
 
   readonly SupplementOptions = SupplementOptions;
 
-  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  createdPreprint = select(PreprintStepperSelectors.getPreprint);
   isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
   availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
   areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);

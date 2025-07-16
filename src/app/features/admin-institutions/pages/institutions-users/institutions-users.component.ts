@@ -70,6 +70,7 @@ export class InstitutionsUsersComponent implements OnInit {
   });
 
   institutionId = '';
+  reportsLink = 'https://drive.google.com/drive/folders/1_aFmeJwLp5xBS3-8clZ4xA9L3UFxdzDd';
 
   queryParams = toSignal(this.route.queryParams);
   currentPage = signal(1);
