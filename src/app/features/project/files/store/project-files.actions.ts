@@ -138,3 +138,7 @@ export class GetConfiguredStorageAddons {
 
   constructor(public resourceUri: string) {}
 }
+
+export class ResetState {
+  static readonly type = '[Project Files] Reset State';
+}
