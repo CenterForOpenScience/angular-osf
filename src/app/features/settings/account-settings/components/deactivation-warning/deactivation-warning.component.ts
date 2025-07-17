@@ -16,6 +16,6 @@ export class DeactivationWarningComponent {
   dialogRef = inject(DynamicDialogRef);
 
   deactivateAccount(): void {
-    this.dialogRef.close();
+    this.dialogRef.close(true);
   }
 }

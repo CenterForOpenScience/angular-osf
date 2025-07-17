@@ -7,8 +7,6 @@ import { CollectionsState } from '@osf/features/collections/store/collections';
 import { ConfirmLeavingGuard } from '@shared/guards';
 import { ContributorsState, ProjectsState } from '@shared/stores';
 
-import { ModeratorsState } from '../moderation/store/moderation';
-
 export const collectionsRoutes: Routes = [
   {
     path: '',
@@ -45,11 +43,8 @@ export const collectionsRoutes: Routes = [
       },
       {
         path: ':id/moderation',
-        loadComponent: () =>
-          import('@osf/features/moderation/pages/collection-moderation/collection-moderation.component').then(
-            (m) => m.CollectionModerationComponent
-          ),
-        providers: [provideStates([ModeratorsState])],
+        loadChildren: () =>
+          import('@osf/features/moderation/collection-moderation.routes').then((m) => m.collectionModerationRoutes),
       },
     ],
   },

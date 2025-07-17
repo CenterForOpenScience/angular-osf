@@ -12,3 +12,30 @@ export interface MyProjectsStateModel {
   totalPreprints: number;
   totalBookmarks: number;
 }
+
+export const MY_PROJECT_STATE_DEFAULTS: MyProjectsStateModel = {
+  projects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  registrations: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  preprints: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  bookmarks: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  totalProjects: 0,
+  totalRegistrations: 0,
+  totalPreprints: 0,
+  totalBookmarks: 0,
+};

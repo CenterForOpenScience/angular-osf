@@ -3,27 +3,28 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
-import { ProgressSpinner } from 'primeng/progressspinner';
 import { Skeleton } from 'primeng/skeleton';
 
-import { finalize } from 'rxjs';
+import { filter, finalize } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { CustomConfirmationService } from '@osf/shared/services';
+import { ReadonlyInputComponent } from '@osf/shared/components';
+import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 import { IS_SMALL } from '@osf/shared/utils';
 
 import { AccountEmail } from '../../models';
-import { AccountSettingsService } from '../../services';
-import { AccountSettingsSelectors, DeleteEmail, MakePrimary } from '../../store';
-import { AddEmailComponent } from '../add-email/add-email.component';
+import { AccountSettingsSelectors, DeleteEmail, MakePrimary, ResendConfirmation } from '../../store';
+import { ConfirmationSentDialogComponent } from '../confirmation-sent-dialog/confirmation-sent-dialog.component';
+import { AddEmailComponent } from '../';
 
 @Component({
   selector: 'osf-connected-emails',
-  imports: [Button, ProgressSpinner, Skeleton, TranslatePipe],
+  imports: [Button, Skeleton, Card, TranslatePipe, ReadonlyInputComponent],
   templateUrl: './connected-emails.component.html',
   styleUrl: './connected-emails.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,24 +32,22 @@ import { AddEmailComponent } from '../add-email/add-email.component';
 export class ConnectedEmailsComponent {
   readonly isSmall = toSignal(inject(IS_SMALL));
 
-  private readonly accountSettingsService = inject(AccountSettingsService);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly loaderService = inject(LoaderService);
+  private readonly toastService = inject(ToastService);
 
   protected readonly currentUser = select(UserSelectors.getCurrentUser);
   protected readonly emails = select(AccountSettingsSelectors.getEmails);
   protected readonly isEmailsLoading = select(AccountSettingsSelectors.isEmailsLoading);
 
   private readonly actions = createDispatchMap({
+    resendConfirmation: ResendConfirmation,
     deleteEmail: DeleteEmail,
     makePrimary: MakePrimary,
   });
-
-  protected readonly deletingEmailIds = signal<Set<string>>(new Set());
-  protected readonly resendingEmailIds = signal<Set<string>>(new Set());
-  protected readonly makingPrimaryIds = signal<Set<string>>(new Set());
 
   protected readonly unconfirmedEmails = computed(() => {
     return this.emails().filter((email) => !email.confirmed && !email.primary);
@@ -61,47 +60,75 @@ export class ConnectedEmailsComponent {
   });
 
   addEmail() {
-    this.dialogService.open(AddEmailComponent, {
+    this.dialogService
+      .open(AddEmailComponent, {
+        width: '448px',
+        focusOnShow: false,
+        header: this.translateService.instant('settings.accountSettings.connectedEmails.dialog.title'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+      })
+      .onClose.pipe(filter((email: string) => !!email))
+      .subscribe((email) => this.showConfirmationSentDialog(email));
+  }
+
+  showConfirmationSentDialog(email: string) {
+    this.dialogService.open(ConfirmationSentDialogComponent, {
       width: '448px',
       focusOnShow: false,
-      header: this.translateService.instant('settings.accountSettings.connectedEmails.dialog.title'),
+      header: this.translateService.instant('settings.accountSettings.connectedEmails.confirmationSentDialog.header'),
       closeOnEscape: true,
       modal: true,
       closable: true,
+      data: email,
     });
   }
 
-  resendConfirmation(emailId: string) {
-    if (this.currentUser()?.id) {
-      this.resendingEmailIds.set(new Set([...this.resendingEmailIds(), emailId]));
+  resendConfirmation(email: AccountEmail) {
+    this.customConfirmationService.confirmAccept({
+      headerKey: 'settings.accountSettings.connectedEmails.resendDialog.header',
+      messageParams: { email: email.emailAddress },
+      messageKey: 'settings.accountSettings.connectedEmails.resendDialog.message',
+      acceptLabelKey: 'settings.accountSettings.connectedEmails.buttons.resend',
+      onConfirm: () => {
+        if (this.currentUser()?.id) {
+          this.loaderService.show();
 
-      this.accountSettingsService
-        .resendConfirmation(emailId, this.currentUser()!.id)
-        .pipe(
-          finalize(() => {
-            const currentIds = this.resendingEmailIds();
-            const updatedIds = new Set([...currentIds].filter((id) => id !== emailId));
-            this.resendingEmailIds.set(updatedIds);
-          }),
-          takeUntilDestroyed(this.destroyRef)
-        )
-        .subscribe();
-    }
+          this.actions
+            .resendConfirmation(email.id, this.currentUser()!.id)
+            .pipe(
+              finalize(() => this.loaderService.hide()),
+              takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe(() => this.toastService.showSuccess('settings.accountSettings.connectedEmails.successResend'));
+        }
+      },
+    });
   }
 
-  makePrimary(emailId: string) {
-    if (this.currentUser()?.id) {
-      this.makingPrimaryIds.set(new Set([...this.makingPrimaryIds(), emailId]));
+  makePrimary(email: AccountEmail) {
+    this.customConfirmationService.confirmAccept({
+      headerKey: 'settings.accountSettings.connectedEmails.makePrimaryDialog.header',
+      messageParams: { email: email.emailAddress },
+      messageKey: 'settings.accountSettings.connectedEmails.makePrimaryDialog.message',
+      acceptLabelKey: 'settings.accountSettings.connectedEmails.buttons.makePrimary',
+      onConfirm: () => {
+        if (this.currentUser()?.id) {
+          this.loaderService.show();
 
-      this.actions
-        .makePrimary(emailId)
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => {
-          const currentIds = this.makingPrimaryIds();
-          const updatedIds = new Set([...currentIds].filter((id) => id !== emailId));
-          this.makingPrimaryIds.set(updatedIds);
-        });
-    }
+          this.actions
+            .makePrimary(email.id)
+            .pipe(
+              finalize(() => this.loaderService.hide()),
+              takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe(() =>
+              this.toastService.showSuccess('settings.accountSettings.connectedEmails.successMakePrimary')
+            );
+        }
+      },
+    });
   }
 
   openConfirmDeleteEmail(email: AccountEmail) {
@@ -114,15 +141,12 @@ export class ConnectedEmailsComponent {
   }
 
   deleteEmails(emailId: string) {
-    const currentDeletingIds = this.deletingEmailIds();
-    currentDeletingIds.add(emailId);
-    this.deletingEmailIds.set(currentDeletingIds);
+    this.loaderService.show();
 
     this.actions.deleteEmail(emailId).subscribe({
       complete: () => {
-        const updatedDeletingIds = this.deletingEmailIds();
-        updatedDeletingIds.delete(emailId);
-        this.deletingEmailIds.set(updatedDeletingIds);
+        this.loaderService.hide();
+        this.toastService.showSuccess('settings.accountSettings.connectedEmails.successDelete');
       },
     });
   }

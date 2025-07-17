@@ -88,7 +88,10 @@
       "available": "Available",
       "unavailable": "Unavailable",
       "notApplicable": "Not Applicable",
-      "none": "None"
+      "none": "None",
+      "learnMore": "Learn More",
+      "and": "and",
+      "more": "more"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -106,6 +109,9 @@
     },
     "placeholder": {
       "addTag": "Add tags"
+    },
+    "hint": {
+      "tagSeparators": "Use enter or comma to create a tag."
     }
   },
   "navigation": {
@@ -1129,6 +1135,12 @@
       "rejected": "Rejected",
       "by": "by"
     },
+    "preprintReviewStatus": {
+      "submitted": "submitted a preprint \"{{name}}\" to",
+      "accepted": "accepted a preprint \"{{name}}\" in",
+      "withdrawn": "withdrawn a preprint \"{{name}}\" from",
+      "rejected": "rejected a preprint \"{{name}}\" from"
+    },
     "preprintSettings": {
       "warning": "Notice: Moderation settings can only be  changed by an OSF administrator. Contact",
       "warningForAssistance": "for assistance.",
@@ -1454,7 +1466,8 @@
           "disable": "Disable",
           "enable": "Enable",
           "undo": "Undo",
-          "request": "Request"
+          "request": "Request",
+          "deactivate": "Deactivate"
         }
       },
       "deactivateAccount": {
@@ -1478,14 +1491,22 @@
             "title": "Deactivate account"
           },
           "undo": {
-            "title": "Undo deactivation request?"
+            "title": "Undo deactivation request?",
+            "message": "Are you sure you want to undo your account deactivation request? This will preserve your account status."
           }
-        }
+        },
+        "successCancelDeactivation": "Deactivation request successfully undone.",
+        "successDeactivation": "An OSF administrator will contact you shortly to confirm your deactivation request."
       },
       "affiliatedInstitutions": {
         "title": "Affiliated Institutions",
         "description": "Connect your account to institutions to access institutional features and services.",
-        "noInstitutions": "You have no affiliations."
+        "noInstitutions": "You have no affiliations.",
+        "deleteDialog": {
+          "header": "Delete institution",
+          "message": "Are you sure you want to delete <b>{{name}}</b> institution?"
+        },
+        "successDelete": "Successfully deleted affiliated institution."
       },
       "addEmail": {
         "title": "Add alternative email",
@@ -1543,19 +1564,38 @@
         "deleteDialog": {
           "header": "Delete email",
           "message": "Are you sure you want to delete <b>{{name}}</b> email?"
-        }
+        },
+        "confirmationSentDialog": {
+          "header": "Confirmation email sent",
+          "message": "Your account now includes <b>{{email}}</b>. A confirmation email has been sent to that address. Click the link in the email to confirm this action."
+        },
+        "resendDialog": {
+          "header": "Resend email confirmation",
+          "message": "Are you sure you want to resend email confirmation to <b>{{email}}</b>?"
+        },
+        "makePrimaryDialog": {
+          "header": "Make email primary",
+          "message": "Are you sure you want to make <b>{{email}}</b> email primary?"
+        },
+        "successResend": "Email successfully resent.",
+        "successMakePrimary": "Email successfully set as primary.",
+        "successDelete": "Email successfully deleted.",
+        "successAdd": "Email successfully added."
       },
       "connectedIdentities": {
         "title": "Connected identities",
         "description": "Connected identities allow you to log in to the OSF via a third-party service. You can revoke these identifies.",
-        "noIdentities": "You have not authorized any external services to log in to the OSF."
+        "noIdentities": "You have not authorized any external services to log in to the OSF.",
+        "deleteDialog": {
+          "header": "Delete connected identity",
+          "message": "Are you sure you want to delete <b>{{name}}</b> identity?"
+        },
+        "successDelete": "Successfully deleted connected identities."
       },
       "defaultStorageLocation": {
         "title": "Default storage location",
         "description": "This location will be applied to new projects and components. It will not affect existing projects and components.",
-        "buttons": {
-          "update": "Update Location"
-        }
+        "successUpdate": "Successfully updated default storage location."
       },
       "shareIndexing": {
         "title": "Opt out of SHARE indexing",
@@ -1565,9 +1605,7 @@
           "optOut": "Out of SHARE Indexing",
           "optIn": "Opt In To SHARE Indexing"
         },
-        "buttons": {
-          "update": "Update"
-        }
+        "successUpdate": "Successfully updated SHARE indexing preference."
       },
       "twoFactorAuth": {
         "title": "Two-factor authentication",
@@ -1581,25 +1619,19 @@
         },
         "verification": {
           "label": "Enter your verification code:",
-          "error": "Verification code is invalid. Please try again."
-        },
-        "dialog": {
-          "configure": {
-            "title": "Configure"
-          },
-          "disable": {
-            "title": "Disable"
-          }
+          "error": "Verification code is invalid. Please try again.",
+          "success": "Two-factor authentication successfully set up."
         },
         "configure": {
-          "description": {
-            "main": "Configuring two-factor authentication will not immediately activate this feature for your account.",
-            "steps": "You will need to follow the steps that appear below to complete the activation of two-factor authentication for your account."
-          }
+          "title": "Configure",
+          "description": "Configuring two-factor authentication will not immediately activate this feature for your account. You will need to follow the steps that appear below to complete the activation of two-factor authentication for your account."
         },
-        "verify": {
-          "title": "Are you sure you want to disable two-factor authentication?"
-        }
+        "disable": {
+          "title": "Disable",
+          "message": "Are you sure you want to disable two-factor authentication?"
+        },
+        "successDisable": "Two-factor authentication successfully disabled.",
+        "enterCode": "Enter 6-digit code"
       }
     }
   },
@@ -1836,6 +1868,17 @@
           }
         }
       }
+    },
+    "providers": "Providers",
+    "createNewVersionTitle": "Create New Version",
+    "myPreprints": {
+      "title": "My Preprints",
+      "searchPlaceholder": "Filter by title, description, and tags",
+      "table": {
+        "titleLabel": "Title",
+        "contributorsLabel": "Contributors",
+        "modifiedLabel": "Modified"
+      }
     }
   },
   "registries": {
@@ -1878,13 +1921,16 @@
       "step": "Review",
       "title": "Review Registration",
       "register": "Register",
+      "selectComponents": {
+        "title": "Select Components",
+        "description": "Contributor changes for included components must be done on the component contributor page before submitting this registration."
+      },
       "confirmation": {
         "title": "Almost done...",
-        "remember": "Remember:",
-        "text1": "Do not edit any files until the registration has completely archived.",
-        "text2": "This will be permanent and cannot be deleted once submitted.",
-        "text3": "This registration will be copied to Internet Archive as a backup.",
-        "text4": "Title and contributors cannot be updated once submitted.",
+        "text1": "Embargo your registration if you plan to submit to a journal that requires",
+        "text2": "blind peer review",
+        "text3": "Do not edit any files until the registration archives.",
+        "text4": "Registrations can't be deleted, but you can withdraw.",
         "options": {
           "public": "Make registration public immediately",
           "embargo": "Enter registration into embargo"
@@ -2120,7 +2166,7 @@
       "publicRegistrations": "Public Registrations"
     },
     "institutionUsers": {
-     "allDepartments": "All departments",
+      "allDepartments": "All departments",
       "lastLogin": "Last Login",
       "lastActive": "Last Active",
       "accountCreated": "Account Created",
@@ -2137,7 +2183,36 @@
       "hasOrcid": "Has ORCID",
       "sendMessage": "Send message",
       "osfLink": "OSF Link",
-      "orcid": "ORCID"
+      "orcid": "ORCID",
+      "noData": "No users found"
+    },
+    "projects": {
+      "title": "Title",
+      "link": "Link",
+      "dateCreated": "Created Date",
+      "dateModified": "Modified Date",
+      "doi": "DOI",
+      "storageLocation": "Storage Location",
+      "totalDataStored": "Total Data Stored on OSF",
+      "contributorName": "Contributor Name",
+      "views": "Views (last 30 days)",
+      "resourceType": "Resource Type",
+      "license": "License",
+      "addOns": "Add-ons",
+      "funderName": "Funder Name",
+      "totalProjects": "Total Projects",
+      "noData": "No projects found"
+    },
+    "registrations": {
+      "funderName": "Funder Name",
+      "registrationSchema": "Registration Schema",
+      "totalRegistrations": "Total Registrations",
+      "noData": "No registrations found"
+    },
+    "preprints": {
+      "totalPreprints": "Total Preprints",
+      "downloadsLastDays": "Downloads (last 30 days)",
+      "noData": "No preprints found"
     }
   }
 }

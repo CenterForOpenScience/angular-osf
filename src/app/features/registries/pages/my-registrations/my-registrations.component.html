@@ -27,7 +27,7 @@
             [(selectedValue)]="selectedTab"
           ></osf-select>
         }
-        <!--Drafts-->
+
         <p-tabpanel [value]="RegistrationTab.Drafts" class="flex flex-column gap-4 flex-1">
           @if (isDraftRegistrationsLoading()) {
             @for (item of skeletons; track $index) {
@@ -50,7 +50,6 @@
           }
         </p-tabpanel>
 
-        <!--Submitted-->
         <p-tabpanel [value]="RegistrationTab.Submitted" class="flex flex-column gap-4 flex-1">
           @if (isSubmittedRegistrationsLoading()) {
             @for (item of skeletons; track $index) {
@@ -60,7 +59,7 @@
             @if (submittedRegistrationsTotalCount() === 0) {
               <ng-container *ngTemplateOutlet="noRegistration"></ng-container>
             }
-            @for (registration of submittedRegistrations(); track registration.registry) {
+            @for (registration of submittedRegistrations(); track $index) {
               <osf-registration-card [registrationData]="registration" />
             }
             @if (submittedRegistrationsTotalCount() > itemsPerPage) {

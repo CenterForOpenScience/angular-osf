@@ -10,12 +10,17 @@ import { AccountSettingsState } from './account-settings.state';
 export class AccountSettingsSelectors {
   @Selector([AccountSettingsState])
   static getEmails(state: AccountSettingsStateModel): AccountEmail[] {
-    return state.emails;
+    return state.emails.data;
   }
 
   @Selector([AccountSettingsState])
   static isEmailsLoading(state: AccountSettingsStateModel): boolean {
-    return state.emailsLoading;
+    return state.emails.isLoading;
+  }
+
+  @Selector([AccountSettingsState])
+  static isEmailsSubmitting(state: AccountSettingsStateModel): boolean | undefined {
+    return state.emails.isSubmitting;
   }
 
   @Selector([AccountSettingsState])

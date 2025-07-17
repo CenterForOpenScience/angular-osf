@@ -10,7 +10,7 @@ import { Tag } from 'primeng/tag';
 
 import { map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -25,8 +25,9 @@ import {
 } from '@osf/shared/stores';
 
 import { FieldType } from '../../enums';
-import { DeleteDraft, RegisterDraft, RegistriesSelectors } from '../../store';
+import { DeleteDraft, FetchProjectChildren, RegistriesSelectors } from '../../store';
 import { ConfirmRegistrationDialogComponent } from '../confirm-registration-dialog/confirm-registration-dialog.component';
+import { SelectComponentsDialogComponent } from '../select-components-dialog/select-components-dialog.component';
 
 @Component({
   selector: 'osf-review',
@@ -46,17 +47,20 @@ export class ReviewComponent {
 
   protected readonly pages = select(RegistriesSelectors.getPagesSchema);
   protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  protected readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
+  protected readonly isDraftLoading = select(RegistriesSelectors.isDraftLoading);
   protected readonly stepsData = select(RegistriesSelectors.getStepsData);
   protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
   protected readonly contributors = select(ContributorsSelectors.getContributors);
   protected readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
+  protected readonly components = select(RegistriesSelectors.getRegistrationComponents);
   protected readonly FieldType = FieldType;
 
   protected actions = createDispatchMap({
     getContributors: GetAllContributors,
     getSubjects: FetchSelectedSubjects,
     deleteDraft: DeleteDraft,
-    registerDraft: RegisterDraft,
+    getProjectsComponents: FetchProjectChildren,
   });
 
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
@@ -74,6 +78,19 @@ export class ReviewComponent {
     if (!this.subjects()?.length) {
       this.actions.getSubjects(this.draftId(), ResourceType.DraftRegistration);
     }
+
+    let componentsLoaded = false;
+    effect(() => {
+      if (!this.isDraftSubmitting()) {
+        const draftRegistrations = this.draftRegistration();
+        if (draftRegistrations?.hasProject) {
+          if (!componentsLoaded) {
+            this.actions.getProjectsComponents(draftRegistrations?.branchedFrom?.id ?? '');
+            componentsLoaded = true;
+          }
+        }
+      }
+    });
   }
 
   goBack(): void {
@@ -97,6 +114,32 @@ export class ReviewComponent {
   }
 
   confirmRegistration(): void {
+    if (this.components()?.length) {
+      this.openSelectComponentsForRegistrationDialog();
+    } else {
+      this.openConfirmRegistrationDialog();
+    }
+  }
+
+  openSelectComponentsForRegistrationDialog(): void {
+    this.dialogService
+      .open(SelectComponentsDialogComponent, {
+        width: '552px',
+        focusOnShow: false,
+        header: this.translateService.instant('registries.review.selectComponents.title'),
+        closeOnEscape: true,
+        modal: true,
+        data: {
+          parent: this.draftRegistration()?.branchedFrom,
+          components: this.components(),
+        },
+      })
+      .onClose.subscribe((selectedComponents) => {
+        this.openConfirmRegistrationDialog(selectedComponents);
+      });
+  }
+
+  openConfirmRegistrationDialog(components?: string[]): void {
     this.dialogService
       .open(ConfirmRegistrationDialogComponent, {
         width: '552px',
@@ -106,13 +149,21 @@ export class ReviewComponent {
         modal: true,
         data: {
           draftId: this.draftId(),
-          projectId: this.draftRegistration()?.branchedFrom,
+          projectId: this.draftRegistration()?.branchedFrom?.id,
           providerId: this.draftRegistration()?.providerId,
+          components,
         },
       })
-      .onClose.subscribe(() => {
-        this.toastService.showSuccess('registries.review.confirmation.successMessage');
-        // [NM] TODO: Navigate to the newly created registration page
+      .onClose.subscribe((res) => {
+        if (res) {
+          this.toastService.showSuccess('registries.review.confirmation.successMessage');
+          // [NM] TODO: Navigate to the newly created registration page
+          this.router.navigate([`registries/my-registrations`]);
+        } else {
+          if (this.components()?.length) {
+            this.openSelectComponentsForRegistrationDialog();
+          }
+        }
       });
   }
 }

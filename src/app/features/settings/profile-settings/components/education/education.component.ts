@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -24,12 +24,12 @@ import { ProfileSettingsSelectors, UpdateProfileSettingsEducation } from '../../
 })
 export class EducationComponent {
   @HostBinding('class') classes = 'flex flex-column gap-5';
-  readonly #fb = inject(FormBuilder);
-  protected readonly educationForm = this.#fb.group({
-    educations: this.#fb.array<EducationForm>([]),
-  });
-  readonly #store = inject(Store);
-  readonly educationItems = this.#store.selectSignal(ProfileSettingsSelectors.educations);
+
+  readonly fb = inject(FormBuilder);
+  protected readonly educationForm = this.fb.group({ educations: this.fb.array<EducationForm>([]) });
+
+  readonly actions = createDispatchMap({ updateProfileSettingsEducation: UpdateProfileSettingsEducation });
+  readonly educationItems = select(ProfileSettingsSelectors.educations);
 
   constructor() {
     effect(() => {
@@ -37,7 +37,7 @@ export class EducationComponent {
       if (educations && educations.length > 0) {
         this.educations.clear();
         educations.forEach((education) => {
-          const newEducation = this.#fb.group({
+          const newEducation = this.fb.group({
             institution: [education.institution],
             department: [education.department],
             degree: [education.degree],
@@ -64,7 +64,7 @@ export class EducationComponent {
   }
 
   addEducation(): void {
-    const newEducation = this.#fb.group({
+    const newEducation = this.fb.group({
       institution: [''],
       department: [''],
       degree: [''],
@@ -89,7 +89,7 @@ export class EducationComponent {
       ongoing: education.ongoing,
     })) satisfies Education[];
 
-    this.#store.dispatch(new UpdateProfileSettingsEducation({ education: formattedEducation }));
+    this.actions.updateProfileSettingsEducation({ education: formattedEducation });
   }
 
   private setupDates(

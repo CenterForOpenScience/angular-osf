@@ -1,0 +1,15 @@
+<p-iconfield iconPosition="right">
+  <input
+    class="text-sm"
+    pInputText
+    [value]="value()"
+    [readonly]="readonly()"
+    [disabled]="disabled()"
+    [placeholder]="placeholder()"
+  />
+  <p-inputicon
+    class="fas fa-close remove-icon cursor-pointer"
+    (click)="deleteItem.emit()"
+    [class.disabled]="disabled()"
+  ></p-inputicon>
+</p-iconfield>

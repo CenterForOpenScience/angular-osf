@@ -1,0 +1,26 @@
+@if (isLoading()) {
+  <div class="flex justify-content-center align-items-center p-6">
+    <osf-loading-spinner />
+  </div>
+} @else if (tableData().length > 0) {
+  <osf-admin-table
+    [tableColumns]="tableColumns()"
+    [tableData]="tableData()"
+    [isNextPreviousPagination]="true"
+    [paginationLinks]="registrationsLinks()"
+    [downloadLink]="downloadLink()"
+    [reportsLink]="reportsLink"
+    (sortChanged)="onSortChange($event)"
+    (linkPageChanged)="onLinkPageChange($event)"
+  >
+    <div slot="amount">
+      <h3 class="title">
+        {{ totalCount() }} {{ 'adminInstitutions.registrations.totalRegistrations' | translate | lowercase }}
+      </h3>
+    </div>
+  </osf-admin-table>
+} @else {
+  <div class="flex justify-content-center align-items-center p-6">
+    <p class="text-center text-gray-500">{{ 'adminInstitutions.registrations.noData' | translate }}</p>
+  </div>
+}

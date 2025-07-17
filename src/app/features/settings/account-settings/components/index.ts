@@ -2,6 +2,7 @@ export { AddEmailComponent } from './add-email/add-email.component';
 export { AffiliatedInstitutionsComponent } from './affiliated-institutions/affiliated-institutions.component';
 export { CancelDeactivationComponent } from './cancel-deactivation/cancel-deactivation.component';
 export { ChangePasswordComponent } from './change-password/change-password.component';
+export { ConfirmationSentDialogComponent } from './confirmation-sent-dialog/confirmation-sent-dialog.component';
 export { ConnectedEmailsComponent } from './connected-emails/connected-emails.component';
 export { ConnectedIdentitiesComponent } from './connected-identities/connected-identities.component';
 export { DeactivateAccountComponent } from './deactivate-account/deactivate-account.component';

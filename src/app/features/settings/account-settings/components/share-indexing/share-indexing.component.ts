@@ -1,48 +1,53 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
 import { RadioButton } from 'primeng/radiobutton';
 
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import { finalize } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { ShareIndexingEnum } from '@osf/shared/enums';
+import { LoaderService, ToastService } from '@osf/shared/services';
 
 import { UpdateIndexing } from '../../store';
 
 @Component({
   selector: 'osf-share-indexing',
-  imports: [Button, RadioButton, ReactiveFormsModule, FormsModule, TranslatePipe],
+  imports: [Button, Card, RadioButton, ReactiveFormsModule, FormsModule, TranslatePipe],
   templateUrl: './share-indexing.component.html',
   styleUrl: './share-indexing.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ShareIndexingComponent {
-  readonly #store = inject(Store);
-  protected indexing = signal<ShareIndexingEnum>(ShareIndexingEnum.None);
-  protected readonly currentUser = this.#store.selectSignal(UserSelectors.getCurrentUser);
+  private readonly actions = createDispatchMap({ updateIndexing: UpdateIndexing });
+  private readonly loaderService = inject(LoaderService);
+  private readonly toastService = inject(ToastService);
 
-  updateIndexing = () => {
-    if (this.currentUser()?.id) {
-      if (this.indexing() === ShareIndexingEnum.OptIn) {
-        this.#store.dispatch(new UpdateIndexing(true));
-      } else if (this.indexing() === ShareIndexingEnum.OutOf) {
-        this.#store.dispatch(new UpdateIndexing(false));
-      }
+  private readonly indexing = select(UserSelectors.getShareIndexing);
+  protected readonly currentUser = select(UserSelectors.getCurrentUser);
+
+  selectedOption = this.indexing();
+
+  get noChanges() {
+    return this.selectedOption === this.indexing();
+  }
+
+  updateIndexing() {
+    if (this.selectedOption === this.indexing()) {
+      return;
     }
-  };
 
-  constructor() {
-    effect(() => {
-      const user = this.currentUser();
-      if (user?.allowIndexing) {
-        this.indexing.set(ShareIndexingEnum.OptIn);
-      } else if (user?.allowIndexing === false) {
-        this.indexing.set(ShareIndexingEnum.OutOf);
-      }
-    });
+    if (this.currentUser()?.id && this.selectedOption !== undefined) {
+      this.loaderService.show();
+      this.actions
+        .updateIndexing(this.selectedOption)
+        .pipe(finalize(() => this.loaderService.hide()))
+        .subscribe(() => this.toastService.showSuccess('settings.accountSettings.shareIndexing.successUpdate'));
+    }
   }
 }

@@ -4,6 +4,7 @@ import { Region } from '../models';
 
 export function MapRegions(data: ApiData<{ name: string }, null, null, null>[]): Region[] {
   const regions: Region[] = [];
+
   for (const region of data) {
     regions.push(MapRegion(region));
   }

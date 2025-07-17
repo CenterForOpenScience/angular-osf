@@ -1,9 +1,8 @@
 import { SubscriptionEvent } from '@shared/enums';
 
-export const SUBSCRIPTION_EVENTS: {
-  event: SubscriptionEvent;
-  labelKey: string;
-}[] = [
+import { SubscriptionEventModel } from '../models';
+
+export const SUBSCRIPTION_EVENTS: SubscriptionEventModel[] = [
   {
     event: SubscriptionEvent.GlobalCommentReplies,
     labelKey: 'settings.notifications.notificationPreferences.items.replies',

@@ -12,7 +12,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { IS_MEDIUM, IS_WEB, IS_XSMALL } from '@shared/utils';
+import { IS_MEDIUM } from '@shared/utils';
 
 import { InstitutionsState } from '../../shared/stores/institutions';
 
@@ -22,14 +22,10 @@ import { MyProjectsComponent } from './my-projects.component';
 describe('MyProjectsComponent', () => {
   let component: MyProjectsComponent;
   let fixture: ComponentFixture<MyProjectsComponent>;
-  let isXSmallSubject: BehaviorSubject<boolean>;
   let isMediumSubject: BehaviorSubject<boolean>;
-  let isWebSubject: BehaviorSubject<boolean>;
 
   beforeEach(async () => {
-    isXSmallSubject = new BehaviorSubject<boolean>(false);
     isMediumSubject = new BehaviorSubject<boolean>(false);
-    isWebSubject = new BehaviorSubject<boolean>(true);
 
     await TestBed.configureTestingModule({
       imports: [MyProjectsComponent, TranslateModule.forRoot()],
@@ -39,9 +35,7 @@ describe('MyProjectsComponent', () => {
         provideHttpClientTesting(),
         MockProvider(DialogService),
         MockProvider(ActivatedRoute, { queryParams: of({}) }),
-        MockProvider(IS_XSMALL, isXSmallSubject),
         MockProvider(IS_MEDIUM, isMediumSubject),
-        MockProvider(IS_WEB, isWebSubject),
       ],
     }).compileComponents();
 

@@ -1,35 +1,29 @@
 <div class="flex justify-content-between align-items-start pb-3 column-gap-3">
   <div class="flex flex-1 flex-column row-gap-7">
     @if (isMobile()) {
-      <p-select
-        class="text-center"
-        [(ngModel)]="selectedTab"
-        [options]="tabsOptions"
-        optionLabel="label"
-        optionValue="value"
-      />
+      <osf-select class="text-center" [options]="tabsOptions" [(selectedValue)]="selectedTab"></osf-select>
     }
+
     @if (searchCount() > 10000) {
-      <h3>10 000+ results</h3>
+      <h3 class="highlight">{{ 'collections.searchResults.10000results' | translate }}</h3>
     } @else if (searchCount() > 0) {
-      <h3>{{ searchCount() }} results</h3>
+      <h3>{{ searchCount() }} {{ 'collections.searchResults.results' | translate }}</h3>
     } @else {
-      <h3>0 results</h3>
+      <h3 class="highlight">{{ 'collections.searchResults.noResults' | translate }}</h3>
     }
   </div>
 
   <div class="sorting-container">
     @if (isWeb()) {
-      <p>Sort by:</p>
+      <p>{{ 'collections.filters.sortBy' | translate }}:</p>
 
-      <p-select
-        class="no-border-dropdown font-bold ml-2"
+      <osf-select
+        class="ml-1 font-bold"
         [options]="searchSortingOptions"
-        optionLabel="label"
-        optionValue="value"
+        [noBorder]="true"
         appendTo="body"
-        [(ngModel)]="selectedSort"
-      ></p-select>
+        [(selectedValue)]="selectedSort"
+      ></osf-select>
     } @else {
       @if (isAnyFilterOptions()) {
         <p-button severity="secondary" icon="fas fa-sliders" size="large" (click)="openFilters()"></p-button>

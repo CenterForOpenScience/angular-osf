@@ -29,6 +29,11 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
+  static isDraftLoading(state: RegistriesStateModel): boolean {
+    return state.draftRegistration.isLoading;
+  }
+
+  @Selector([RegistriesState])
   static getDraftRegistration(state: RegistriesStateModel): DraftRegistrationModel | null {
     return state.draftRegistration.data;
   }
@@ -111,5 +116,9 @@ export class RegistriesSelectors {
   @Selector([RegistriesState])
   static getSubmittedRegistrationsTotalCount(state: RegistriesStateModel): number {
     return state.submittedRegistrations.totalCount;
+  }
+  @Selector([RegistriesState])
+  static getRegistrationComponents(state: RegistriesStateModel) {
+    return state.draftRegistration.data?.components || [];
   }
 }

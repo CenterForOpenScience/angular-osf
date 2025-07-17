@@ -23,28 +23,29 @@ import { LoadingSpinnerComponent } from '@shared/components';
 export class ConfirmEmailComponent {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
-  readonly #router = inject(Router);
-  readonly #accountSettingsService = inject(AccountSettingsService);
-  readonly #destroyRef = inject(DestroyRef);
+
+  private readonly router = inject(Router);
+  private readonly accountSettingsService = inject(AccountSettingsService);
+  private readonly destroyRef = inject(DestroyRef);
 
   verifyingEmail = signal(false);
 
   closeDialog() {
-    this.#router.navigate(['/home']);
+    this.router.navigate(['/home']);
     this.dialogRef.close();
   }
 
   verifyEmail() {
     this.verifyingEmail.set(true);
-    this.#accountSettingsService
+    this.accountSettingsService
       .confirmEmail(this.config.data.userId, this.config.data.token)
       .pipe(
-        takeUntilDestroyed(this.#destroyRef),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => this.verifyingEmail.set(false))
       )
       .subscribe({
         next: () => {
-          this.#router.navigate(['/settings/account-settings']);
+          this.router.navigate(['/settings/account-settings']);
           this.dialogRef.close();
         },
         error: () => this.closeDialog(),

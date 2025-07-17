@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -12,6 +12,7 @@ import { FormControl } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { SearchHelpTutorialComponent, SearchInputComponent } from '@osf/shared/components';
+import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/utils';
 
@@ -36,39 +37,38 @@ import { MyProfileResourcesComponent } from '../my-profile-resources/my-profile-
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProfileSearchComponent {
-  readonly #store = inject(Store);
+  readonly store = inject(Store);
 
   protected searchControl = new FormControl<string>('');
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
 
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly dateCreatedFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getDateCreated);
-  protected readonly funderFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getFunder);
-  protected readonly subjectFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getSubject);
-  protected readonly licenseFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getLicense);
-  protected readonly resourceTypeFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getResourceType);
-  protected readonly institutionFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getInstitution);
-  protected readonly providerFilter = this.#store.selectSignal(MyProfileResourceFiltersSelectors.getProvider);
-  protected readonly partOfCollectionFilter = this.#store.selectSignal(
-    MyProfileResourceFiltersSelectors.getPartOfCollection
-  );
-  protected searchStoreValue = this.#store.selectSignal(MyProfileSelectors.getSearchText);
-  protected resourcesTabStoreValue = this.#store.selectSignal(MyProfileSelectors.getResourceTab);
-  protected sortByStoreValue = this.#store.selectSignal(MyProfileSelectors.getSortBy);
-  readonly isMyProfilePage = this.#store.selectSignal(MyProfileSelectors.getIsMyProfile);
-  readonly currentUser = this.#store.select(UserSelectors.getCurrentUser);
+  protected readonly dateCreatedFilter = select(MyProfileResourceFiltersSelectors.getDateCreated);
+  protected readonly funderFilter = select(MyProfileResourceFiltersSelectors.getFunder);
+  protected readonly subjectFilter = select(MyProfileResourceFiltersSelectors.getSubject);
+  protected readonly licenseFilter = select(MyProfileResourceFiltersSelectors.getLicense);
+  protected readonly resourceTypeFilter = select(MyProfileResourceFiltersSelectors.getResourceType);
+  protected readonly institutionFilter = select(MyProfileResourceFiltersSelectors.getInstitution);
+  protected readonly providerFilter = select(MyProfileResourceFiltersSelectors.getProvider);
+  protected readonly partOfCollectionFilter = select(MyProfileResourceFiltersSelectors.getPartOfCollection);
+  protected searchStoreValue = select(MyProfileSelectors.getSearchText);
+  protected resourcesTabStoreValue = select(MyProfileSelectors.getResourceTab);
+  protected sortByStoreValue = select(MyProfileSelectors.getSortBy);
+  readonly isMyProfilePage = select(MyProfileSelectors.getIsMyProfile);
+  readonly currentUser = this.store.select(UserSelectors.getCurrentUser);
 
+  protected readonly resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceTab.Users);
   protected selectedTab: ResourceTab = ResourceTab.All;
-  protected readonly ResourceTab = ResourceTab;
+
   protected currentStep = signal(0);
   private skipInitializationEffects = 0;
 
   constructor() {
     this.currentUser.subscribe((user) => {
       if (user?.id) {
-        this.#store.dispatch(GetAllOptions);
-        this.#store.dispatch(GetResources);
+        this.store.dispatch(GetAllOptions);
+        this.store.dispatch(GetResources);
       }
     });
 
@@ -85,7 +85,7 @@ export class MyProfileSearchComponent {
       this.resourcesTabStoreValue();
       this.sortByStoreValue();
       if (this.skipInitializationEffects > 0) {
-        this.#store.dispatch(GetResources);
+        this.store.dispatch(GetResources);
       }
       this.skipInitializationEffects += 1;
     });
@@ -93,8 +93,8 @@ export class MyProfileSearchComponent {
     this.searchControl.valueChanges
       .pipe(skip(1), debounceTime(500), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchText) => {
-        this.#store.dispatch(new SetSearchText(searchText ?? ''));
-        this.#store.dispatch(GetAllOptions);
+        this.store.dispatch(new SetSearchText(searchText ?? ''));
+        this.store.dispatch(GetAllOptions);
       });
 
     effect(() => {
@@ -114,9 +114,9 @@ export class MyProfileSearchComponent {
   }
 
   onTabChange(index: ResourceTab): void {
-    this.#store.dispatch(new SetResourceTab(index));
+    this.store.dispatch(new SetResourceTab(index));
     this.selectedTab = index;
-    this.#store.dispatch(GetAllOptions);
+    this.store.dispatch(GetAllOptions);
   }
 
   showTutorial() {

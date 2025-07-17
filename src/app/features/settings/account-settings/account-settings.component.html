@@ -1,7 +1,7 @@
 <osf-sub-header [title]="'settings.accountSettings.title' | translate" [icon]="'settings'" />
 
 @if (currentUser()?.id) {
-  <section class="content">
+  <section class="flex flex-column gap-4 bg-white py-4 px-3 md:px-5 xl:px-4">
     <osf-connected-emails></osf-connected-emails>
 
     <osf-default-storage-location></osf-default-storage-location>

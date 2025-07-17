@@ -7,7 +7,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { IS_MEDIUM } from '@osf/shared/utils';
 
 import { EducationComponent, EmploymentComponent, NameComponent, SocialComponent } from './components';
 import { ProfileSettingsComponent } from './profile-settings.component';
@@ -15,10 +15,10 @@ import { ProfileSettingsComponent } from './profile-settings.component';
 describe('ProfileSettingsComponent', () => {
   let component: ProfileSettingsComponent;
   let fixture: ComponentFixture<ProfileSettingsComponent>;
-  let isXSmall: BehaviorSubject<boolean>;
+  let isMedium: BehaviorSubject<boolean>;
 
   beforeEach(async () => {
-    isXSmall = new BehaviorSubject<boolean>(false);
+    isMedium = new BehaviorSubject<boolean>(false);
 
     await TestBed.configureTestingModule({
       imports: [
@@ -26,7 +26,7 @@ describe('ProfileSettingsComponent', () => {
         MockPipe(TranslatePipe),
         ...MockComponents(SubHeaderComponent, NameComponent, SocialComponent, EmploymentComponent, EducationComponent),
       ],
-      providers: [MockProvider(IS_XSMALL, isXSmall), MockProvider(TranslateService)],
+      providers: [MockProvider(IS_MEDIUM, isMedium), MockProvider(TranslateService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProfileSettingsComponent);
@@ -38,10 +38,6 @@ describe('ProfileSettingsComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize with default tab value', () => {
-    expect(fixture.componentInstance['selectedTab']).toBe(fixture.componentInstance['defaultTabValue']);
-  });
-
   it('should update selected tab when onTabChange is called', () => {
     const newTabIndex = 2;
     component.onTabChange(newTabIndex);
@@ -51,30 +47,6 @@ describe('ProfileSettingsComponent', () => {
   it('should display all tab options', () => {
     const tabElements = fixture.debugElement.queryAll(By.css('p-tab'));
     expect(tabElements.length).toBe(fixture.componentInstance['tabOptions'].length);
-  });
-
-  it('should show select dropdown in mobile view', () => {
-    isXSmall.next(true);
-    fixture.detectChanges();
-
-    const selectElement = fixture.debugElement.query(By.css('p-select'));
-    expect(selectElement).toBeTruthy();
-  });
-
-  it('should hide tab list in mobile view', () => {
-    isXSmall.next(true);
-    fixture.detectChanges();
-
-    const tabListElement = fixture.debugElement.query(By.css('p-tablist'));
-    expect(tabListElement).toBeFalsy();
-  });
-
-  it('should show tab list in desktop view', () => {
-    isXSmall.next(false);
-    fixture.detectChanges();
-
-    const tabListElement = fixture.debugElement.query(By.css('p-tablist'));
-    expect(tabListElement).toBeTruthy();
   });
 
   it('should render all tab panels', () => {

@@ -8,13 +8,14 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
+import { Primitive } from '@osf/core/helpers';
 import { resourceTabOptions } from '@osf/features/admin-institutions/constants/resource-tab-option.constant';
-import { LoadingSpinnerComponent } from '@shared/components';
+import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 import { FetchInstitutionById, InstitutionsSearchSelectors } from '@shared/stores';
 
 @Component({
   selector: 'osf-admin-institutions',
-  imports: [TabsModule, TranslateModule, RouterOutlet, NgOptimizedImage, LoadingSpinnerComponent],
+  imports: [TabsModule, TranslateModule, RouterOutlet, NgOptimizedImage, LoadingSpinnerComponent, SelectComponent],
   templateUrl: './admin-institutions.component.html',
   styleUrl: './admin-institutions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -44,10 +45,11 @@ export class AdminInstitutionsComponent implements OnInit {
     this.selectedTab = this.route.snapshot.firstChild?.routeConfig?.path || 'summary';
   }
 
-  onTabChange(selectedValue: string | number) {
+  onTabChange(selectedValue: Primitive) {
     const value = String(selectedValue);
     this.selectedTab = value;
     const selectedTab = this.resourceTabOptions.find((tab) => tab.value === value);
+
     if (selectedTab) {
       this.router.navigate([selectedTab.value], { relativeTo: this.route });
     }

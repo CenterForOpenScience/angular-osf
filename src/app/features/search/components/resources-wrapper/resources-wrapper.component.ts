@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { take } from 'rxjs';
 
@@ -32,26 +32,25 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResourcesWrapperComponent implements OnInit {
-  readonly #store = inject(Store);
-  readonly #activeRoute = inject(ActivatedRoute);
-  readonly #router = inject(Router);
+  readonly store = inject(Store);
+  readonly activeRoute = inject(ActivatedRoute);
+  readonly router = inject(Router);
 
-  creatorSelected = this.#store.selectSignal(ResourceFiltersSelectors.getCreator);
-  dateCreatedSelected = this.#store.selectSignal(ResourceFiltersSelectors.getDateCreated);
-  funderSelected = this.#store.selectSignal(ResourceFiltersSelectors.getFunder);
-  subjectSelected = this.#store.selectSignal(ResourceFiltersSelectors.getSubject);
-  licenseSelected = this.#store.selectSignal(ResourceFiltersSelectors.getLicense);
-  resourceTypeSelected = this.#store.selectSignal(ResourceFiltersSelectors.getResourceType);
-  institutionSelected = this.#store.selectSignal(ResourceFiltersSelectors.getInstitution);
-  providerSelected = this.#store.selectSignal(ResourceFiltersSelectors.getProvider);
-  partOfCollectionSelected = this.#store.selectSignal(ResourceFiltersSelectors.getPartOfCollection);
-  sortSelected = this.#store.selectSignal(SearchSelectors.getSortBy);
-  searchInput = this.#store.selectSignal(SearchSelectors.getSearchText);
-  resourceTabSelected = this.#store.selectSignal(SearchSelectors.getResourceTab);
-  isMyProfilePage = this.#store.selectSignal(SearchSelectors.getIsMyProfile);
+  creatorSelected = select(ResourceFiltersSelectors.getCreator);
+  dateCreatedSelected = select(ResourceFiltersSelectors.getDateCreated);
+  funderSelected = select(ResourceFiltersSelectors.getFunder);
+  subjectSelected = select(ResourceFiltersSelectors.getSubject);
+  licenseSelected = select(ResourceFiltersSelectors.getLicense);
+  resourceTypeSelected = select(ResourceFiltersSelectors.getResourceType);
+  institutionSelected = select(ResourceFiltersSelectors.getInstitution);
+  providerSelected = select(ResourceFiltersSelectors.getProvider);
+  partOfCollectionSelected = select(ResourceFiltersSelectors.getPartOfCollection);
+  sortSelected = select(SearchSelectors.getSortBy);
+  searchInput = select(SearchSelectors.getSearchText);
+  resourceTabSelected = select(SearchSelectors.getResourceTab);
+  isMyProfilePage = select(SearchSelectors.getIsMyProfile);
 
   constructor() {
-    // if new value for some filter was put in store, add it to route
     effect(() => this.syncFilterToQuery('Creator', this.creatorSelected()));
     effect(() => this.syncFilterToQuery('DateCreated', this.dateCreatedSelected()));
     effect(() => this.syncFilterToQuery('Funder', this.funderSelected()));
@@ -67,8 +66,7 @@ export class ResourcesWrapperComponent implements OnInit {
   }
 
   ngOnInit() {
-    // set all query parameters from route to store when page is loaded
-    this.#activeRoute.queryParamMap.pipe(take(1)).subscribe((params) => {
+    this.activeRoute.queryParamMap.pipe(take(1)).subscribe((params) => {
       const activeFilters = params.get('activeFilters');
       const filters = activeFilters ? JSON.parse(activeFilters) : [];
       const sortBy = params.get('sortBy');
@@ -86,44 +84,44 @@ export class ResourcesWrapperComponent implements OnInit {
       const partOfCollection = filters.find((p: ResourceFilterLabel) => p.filterName === 'PartOfCollection');
 
       if (creator) {
-        this.#store.dispatch(new SetCreator(creator.label, creator.value));
+        this.store.dispatch(new SetCreator(creator.label, creator.value));
       }
       if (dateCreated) {
-        this.#store.dispatch(new SetDateCreated(dateCreated.value));
+        this.store.dispatch(new SetDateCreated(dateCreated.value));
       }
       if (funder) {
-        this.#store.dispatch(new SetFunder(funder.label, funder.value));
+        this.store.dispatch(new SetFunder(funder.label, funder.value));
       }
       if (subject) {
-        this.#store.dispatch(new SetSubject(subject.label, subject.value));
+        this.store.dispatch(new SetSubject(subject.label, subject.value));
       }
       if (license) {
-        this.#store.dispatch(new SetLicense(license.label, license.value));
+        this.store.dispatch(new SetLicense(license.label, license.value));
       }
       if (resourceType) {
-        this.#store.dispatch(new SetResourceType(resourceType.label, resourceType.value));
+        this.store.dispatch(new SetResourceType(resourceType.label, resourceType.value));
       }
       if (institution) {
-        this.#store.dispatch(new SetInstitution(institution.label, institution.value));
+        this.store.dispatch(new SetInstitution(institution.label, institution.value));
       }
       if (provider) {
-        this.#store.dispatch(new SetProvider(provider.label, provider.value));
+        this.store.dispatch(new SetProvider(provider.label, provider.value));
       }
       if (partOfCollection) {
-        this.#store.dispatch(new SetPartOfCollection(partOfCollection.label, partOfCollection.value));
+        this.store.dispatch(new SetPartOfCollection(partOfCollection.label, partOfCollection.value));
       }
 
       if (sortBy) {
-        this.#store.dispatch(new SetSortBy(sortBy));
+        this.store.dispatch(new SetSortBy(sortBy));
       }
       if (search) {
-        this.#store.dispatch(new SetSearchText(search));
+        this.store.dispatch(new SetSearchText(search));
       }
       if (resourceTab) {
-        this.#store.dispatch(new SetResourceTab(+resourceTab));
+        this.store.dispatch(new SetResourceTab(+resourceTab));
       }
 
-      this.#store.dispatch(GetAllOptions);
+      this.store.dispatch(GetAllOptions);
     });
   }
 
@@ -131,10 +129,9 @@ export class ResourcesWrapperComponent implements OnInit {
     if (this.isMyProfilePage()) {
       return;
     }
-    const paramMap = this.#activeRoute.snapshot.queryParamMap;
-    const currentParams = { ...this.#activeRoute.snapshot.queryParams };
+    const paramMap = this.activeRoute.snapshot.queryParamMap;
+    const currentParams = { ...this.activeRoute.snapshot.queryParams };
 
-    // Read existing parameters
     const currentFiltersRaw = paramMap.get('activeFilters');
 
     let filters: ResourceFilterLabel[] = [];
@@ -149,7 +146,6 @@ export class ResourcesWrapperComponent implements OnInit {
 
     const hasValue = !!filterValue?.value;
 
-    // Update activeFilters array
     if (!hasValue && index !== -1) {
       filters.splice(index, 1);
     } else if (hasValue && filterValue?.label && filterValue.value) {
@@ -172,9 +168,8 @@ export class ResourcesWrapperComponent implements OnInit {
       delete currentParams['activeFilters'];
     }
 
-    // Navigation
-    this.#router.navigate([], {
-      relativeTo: this.#activeRoute,
+    this.router.navigate([], {
+      relativeTo: this.activeRoute,
       queryParams: currentParams,
       replaceUrl: true,
     });
@@ -184,7 +179,7 @@ export class ResourcesWrapperComponent implements OnInit {
     if (this.isMyProfilePage()) {
       return;
     }
-    const currentParams = { ...this.#activeRoute.snapshot.queryParams };
+    const currentParams = { ...this.activeRoute.snapshot.queryParams };
 
     if (sortBy && sortBy !== '-relevance') {
       currentParams['sortBy'] = sortBy;
@@ -192,8 +187,8 @@ export class ResourcesWrapperComponent implements OnInit {
       delete currentParams['sortBy'];
     }
 
-    this.#router.navigate([], {
-      relativeTo: this.#activeRoute,
+    this.router.navigate([], {
+      relativeTo: this.activeRoute,
       queryParams: currentParams,
       replaceUrl: true,
     });
@@ -203,7 +198,7 @@ export class ResourcesWrapperComponent implements OnInit {
     if (this.isMyProfilePage()) {
       return;
     }
-    const currentParams = { ...this.#activeRoute.snapshot.queryParams };
+    const currentParams = { ...this.activeRoute.snapshot.queryParams };
 
     if (search) {
       currentParams['search'] = search;
@@ -211,8 +206,8 @@ export class ResourcesWrapperComponent implements OnInit {
       delete currentParams['search'];
     }
 
-    this.#router.navigate([], {
-      relativeTo: this.#activeRoute,
+    this.router.navigate([], {
+      relativeTo: this.activeRoute,
       queryParams: currentParams,
       replaceUrl: true,
     });
@@ -222,7 +217,7 @@ export class ResourcesWrapperComponent implements OnInit {
     if (this.isMyProfilePage()) {
       return;
     }
-    const currentParams = { ...this.#activeRoute.snapshot.queryParams };
+    const currentParams = { ...this.activeRoute.snapshot.queryParams };
 
     if (resourceTab) {
       currentParams['resourceTab'] = resourceTab;
@@ -230,8 +225,8 @@ export class ResourcesWrapperComponent implements OnInit {
       delete currentParams['resourceTab'];
     }
 
-    this.#router.navigate([], {
-      relativeTo: this.#activeRoute,
+    this.router.navigate([], {
+      relativeTo: this.activeRoute,
       queryParams: currentParams,
       replaceUrl: true,
     });

@@ -9,6 +9,9 @@ export interface ReviewActionJsonApi {
     target: {
       data: PreprintModelJsonApi;
     };
+    provider: {
+      data: ProviderModelJsonApi;
+    };
   };
 }
 
@@ -30,14 +33,6 @@ export interface UserModelJsonApi {
 
 export interface UserAttributesJsonApi {
   full_name: string;
-  given_name: string;
-  middle_names: string;
-  family_name: string;
-  suffix: string;
-  date_registered: string;
-  active: boolean;
-  timezone: string;
-  locale: string;
 }
 
 export interface PreprintModelJsonApi {
@@ -47,31 +42,12 @@ export interface PreprintModelJsonApi {
 }
 
 export interface PreprintAttributesJsonApi {
-  date_created: string;
-  date_modified: string;
-  date_published: string | null;
-  original_publication_date: string | null;
-  custom_publication_citation: string | null;
-  doi: string | null;
   title: string;
-  description: string;
-  is_published: boolean | null;
-  is_preprint_orphan: boolean | null;
-  tags: string[];
-  preprint_doi_created: string | null;
-  date_withdrawn: string;
-  withdrawal_justification: string;
-  current_user_permissions: string[];
-  public: boolean;
-  reviews_state: string;
-  date_last_transitioned: string | null;
-  version: number;
-  is_latest_version: boolean;
-  has_coi: boolean;
-  conflict_of_interest_statement: string;
-  has_data_links: 'not_applicable' | 'available' | 'unavailable';
-  why_no_data: string | null;
-  has_prereg_links: 'not_applicable' | 'available' | 'unavailable';
-  why_no_prereg: string | null;
-  prereg_link_info: string | null;
+}
+
+export interface ProviderModelJsonApi {
+  id: string;
+  attributes: {
+    name: string;
+  };
 }

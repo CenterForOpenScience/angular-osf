@@ -18,6 +18,16 @@
       </div>
     </div>
 
+    <div class="px-3 py-4 bg-white md:hidden md:px-5">
+      <osf-select
+        [options]="resourceTabOptions"
+        [(selectedValue)]="selectedTab"
+        [fullWidth]="true"
+        class="text-center"
+        (changeValue)="onTabChange($event)"
+      />
+    </div>
+
     <p-tabs [value]="selectedTab" (valueChange)="onTabChange($event)" class="flex-1 px-3 hidden md:px-5 md:inline">
       <p-tablist>
         @for (item of resourceTabOptions; track $index) {

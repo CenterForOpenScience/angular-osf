@@ -1,4 +1,5 @@
 import { LicenseOptions } from '../license.model';
+import { Project } from '../projects';
 
 export interface DraftRegistrationModel {
   id: string;
@@ -12,6 +13,8 @@ export interface DraftRegistrationModel {
   tags: string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   stepsData?: Record<string, any>;
-  branchedFrom?: string;
+  branchedFrom?: Partial<Project>;
   providerId: string;
+  hasProject: boolean;
+  components: Partial<Project>[];
 }

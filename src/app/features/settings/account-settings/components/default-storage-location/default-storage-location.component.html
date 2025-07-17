@@ -1,24 +1,21 @@
-<section class="account-setting">
-  <h2 class="account-settings-header">{{ 'settings.accountSettings.defaultStorageLocation.title' | translate }}</h2>
+<p-card>
+  <h2>{{ 'settings.accountSettings.defaultStorageLocation.title' | translate }}</h2>
 
-  <div class="account-settings-description">
+  <p class="mt-4">
     {{ 'settings.accountSettings.defaultStorageLocation.description' | translate }}
-  </div>
+  </p>
 
-  <div class="account-setting-content">
+  <div class="mt-4">
     <p-select
-      styleClass="account-setting-select"
+      class="w-full"
+      styleClass="w-full"
       optionLabel="name"
       [options]="regions()"
-      [class.mobile]="isMobile()"
       [(ngModel)]="selectedRegion"
     ></p-select>
   </div>
 
-  <div class="account-setting-action">
-    <p-button
-      [label]="'settings.accountSettings.defaultStorageLocation.buttons.update' | translate"
-      (click)="updateLocation()"
-    ></p-button>
+  <div class="flex justify-content-end mt-4">
+    <p-button [label]="'common.buttons.update' | translate" (click)="updateLocation()"></p-button>
   </div>
-</section>
+</p-card>

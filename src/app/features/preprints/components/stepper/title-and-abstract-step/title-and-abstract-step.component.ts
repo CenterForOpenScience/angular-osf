@@ -68,7 +68,7 @@ export class TitleAndAbstractStepComponent {
     }),
   });
 
-  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  createdPreprint = select(PreprintStepperSelectors.getPreprint);
   providerId = select(PreprintStepperSelectors.getSelectedProviderId);
 
   isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);

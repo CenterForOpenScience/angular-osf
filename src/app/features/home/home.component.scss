@@ -1,4 +1,3 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
 :host {
@@ -12,29 +11,29 @@
 }
 
 .quick-search-container {
-  background-color: var.$white;
+  background-color: var(--white);
 
   .text-center {
-    color: var.$dark-blue-1;
+    color: var(--dark-blue-1);
   }
 }
 
 .public-projects-container {
-  background-color: var.$gradient-1;
+  background-color: var(--gradient-1);
 
   .osf-icon-search {
-    color: var.$dark-blue-1;
+    color: var(--dark-blue-1);
     font-size: mix.rem(32px);
     margin-right: mix.rem(12px);
   }
 }
 
 .latest-research-container {
-  background-color: var.$bg-blue-3;
+  background-color: var(--bg-blue-3);
   row-gap: mix.rem(24px);
 }
 
 .hosting-container {
-  background-color: var.$bg-blue-2;
+  background-color: var(--bg-blue-2);
   row-gap: mix.rem(24px);
 }

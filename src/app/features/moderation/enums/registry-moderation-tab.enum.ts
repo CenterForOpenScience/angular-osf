@@ -1,6 +1,6 @@
 export enum RegistryModerationTab {
-  Submitted = 1,
-  Pending,
-  Moderators,
-  Settings,
+  Submitted = 'submitted',
+  Pending = 'pending',
+  Moderators = 'moderators',
+  Settings = 'settings',
 }

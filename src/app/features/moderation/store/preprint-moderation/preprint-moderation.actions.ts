@@ -9,3 +9,9 @@ export class GetPreprintReviewActions {
 
   constructor(public page = 1) {}
 }
+
+export class GetPreprintProvider {
+  static readonly type = `${ACTION_SCOPE} Get Preprint Provider`;
+
+  constructor(public providerId: string) {}
+}

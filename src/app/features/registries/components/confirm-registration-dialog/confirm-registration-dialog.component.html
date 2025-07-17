@@ -1,10 +1,21 @@
-<p class="mb-2">{{ 'registries.review.confirmation.remember' | translate }}</p>
-<ul class="mb-4 pl-5">
-  <li class="list-disc">{{ 'registries.review.confirmation.text1' | translate }}</li>
-  <li class="list-disc">{{ 'registries.review.confirmation.text2' | translate }}</li>
-  <li class="list-disc">{{ 'registries.review.confirmation.text3' | translate }}</li>
-  <li class="list-disc">{{ 'registries.review.confirmation.text4' | translate }}</li>
-</ul>
+<p class="mb-2">
+  {{ 'registries.review.confirmation.text1' | translate }}
+  <strong>
+    {{ 'registries.review.confirmation.text2' | translate }}
+  </strong>
+</p>
+<p class="mb-2">{{ 'registries.review.confirmation.text3' | translate }}</p>
+<div class="mb-4">
+  <p>{{ 'registries.review.confirmation.text4' | translate }}</p>
+  <p>
+    (
+    <a href="https://help.osf.io/article/152-withdraw-a-registration" target="_blank" rel="noopener noreferrer">
+      {{ 'common.labels.learnMore' | translate }}
+    </a>
+    )
+  </p>
+</div>
+
 <form [formGroup]="form">
   <div class="flex align-items-center gap-2 mb-2">
     <p-radioButton

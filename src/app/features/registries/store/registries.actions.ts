@@ -47,7 +47,8 @@ export class RegisterDraft {
     public draftId: string,
     public embargoDate: string,
     public providerId: string,
-    public projectId?: string
+    public projectId?: string,
+    public components?: string[]
   ) {}
 }
 
@@ -92,4 +93,13 @@ export class FetchSubmittedRegistrations {
     public page = 1,
     public pageSize = 10
   ) {}
+}
+
+export class FetchProjectChildren {
+  static readonly type = '[Registries] Fetch Project Children';
+  constructor(public projectId: string) {}
+}
+
+export class ClearState {
+  static readonly type = '[Registries] Clear State';
 }

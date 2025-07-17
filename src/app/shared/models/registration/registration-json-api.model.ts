@@ -58,6 +58,12 @@ export interface DraftRegistrationRelationshipsJsonApi {
       type: 'registration-schemas';
     };
   };
+  provider?: {
+    data: {
+      id: string;
+      type: 'providers';
+    };
+  };
   license?: {
     data: {
       id: string;
@@ -120,8 +126,17 @@ export interface RegistrationEmbedsJsonApi {
   };
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-export interface DraftRegistrationEmbedsJsonApi extends RegistrationEmbedsJsonApi {}
+export interface DraftRegistrationEmbedsJsonApi extends RegistrationEmbedsJsonApi {
+  branched_from?: {
+    data: {
+      id: string;
+      type: 'nodes';
+      attributes: {
+        title: string;
+      };
+    };
+  };
+}
 
 export interface CreateRegistrationPayloadJsonApi {
   data: {

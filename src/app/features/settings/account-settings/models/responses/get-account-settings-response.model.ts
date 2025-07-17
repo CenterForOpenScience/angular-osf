@@ -1,8 +1,8 @@
 import { ApiData } from '@osf/core/models';
 
-export type GetAccountSettingsResponse = ApiData<AccountSettingsResponse, null, null, null>;
+export type GetAccountSettingsResponseJsonApi = ApiData<AccountSettingsResponseJsonApi, null, null, null>;
 
-export interface AccountSettingsResponse {
+export interface AccountSettingsResponseJsonApi {
   two_factor_enabled: boolean;
   two_factor_confirmed: boolean;
   subscribe_osf_general_email: boolean;

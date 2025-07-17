@@ -1,4 +1,4 @@
-import { map, Observable } from 'rxjs';
+import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -24,5 +24,31 @@ export class ProjectsService {
     return this.jsonApiService
       .get<ProjectsResponseJsonApi>(`${this.apiUrl}/users/me/nodes/`, params)
       .pipe(map((response) => ProjectsMapper.fromProjectsResponse(response)));
+  }
+
+  getProjectChildren(id: string): Observable<Project[]> {
+    return this.jsonApiService
+      .get<ProjectsResponseJsonApi>(`${this.apiUrl}/nodes/${id}/children`)
+      .pipe(map((response) => ProjectsMapper.fromProjectsResponse(response)));
+  }
+
+  getComponentsTree(id: string): Observable<Project[]> {
+    return this.getProjectChildren(id).pipe(
+      switchMap((children) => {
+        if (!children.length) {
+          return of([]);
+        }
+        const childrenWithSubtrees$ = children.map((child) =>
+          this.getComponentsTree(child.id).pipe(
+            map((subChildren) => ({
+              ...child,
+              children: subChildren,
+            }))
+          )
+        );
+
+        return childrenWithSubtrees$.length ? forkJoin(childrenWithSubtrees$) : of([]);
+      })
+    );
   }
 }

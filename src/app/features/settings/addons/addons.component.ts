@@ -55,9 +55,12 @@ import {
 export class AddonsComponent {
   protected readonly tabOptions = ADDON_TAB_OPTIONS;
   protected readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
+
   protected AddonTabValue = AddonTabValue;
   protected defaultTabValue = AddonTabValue.ALL_ADDONS;
+
   protected searchControl = new FormControl<string>('');
+
   protected searchValue = signal<string>('');
   protected selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
   protected selectedTab = signal<number>(this.defaultTabValue);

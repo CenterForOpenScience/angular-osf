@@ -1,8 +1,11 @@
 import { ApiData, JsonApiResponse } from '@osf/core/models';
 
-export type ListIdentitiesResponse = JsonApiResponse<ApiData<ExternalIdentityResponse, null, null, null>[], null>;
+export type ListIdentitiesResponseJsonApi = JsonApiResponse<
+  ApiData<ExternalIdentityResponseJsonApi, null, null, null>[],
+  null
+>;
 
-export interface ExternalIdentityResponse {
+export interface ExternalIdentityResponseJsonApi {
   external_id: string;
   status: string;
 }

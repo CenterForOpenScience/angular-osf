@@ -1,6 +1,7 @@
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
 import { Password } from 'primeng/password';
 
 import { CommonModule } from '@angular/common';
@@ -20,14 +21,15 @@ import { AccountSettingsService } from '../../services';
 
 @Component({
   selector: 'osf-change-password',
-  imports: [ReactiveFormsModule, Password, CommonModule, Button, TranslatePipe],
+  imports: [Card, ReactiveFormsModule, Password, CommonModule, Button, TranslatePipe],
   templateUrl: './change-password.component.html',
   styleUrl: './change-password.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ChangePasswordComponent implements OnInit {
-  readonly #accountSettingsService = inject(AccountSettingsService);
-  readonly #translateService = inject(TranslateService);
+  private readonly accountSettingsService = inject(AccountSettingsService);
+  private readonly translateService = inject(TranslateService);
+
   readonly passwordForm: AccountSettingsPasswordForm = new FormGroup({
     [AccountSettingsPasswordFormControls.OldPassword]: new FormControl('', {
       nonNullable: true,
@@ -51,7 +53,6 @@ export class ChangePasswordComponent implements OnInit {
   protected errorMessage = signal('');
 
   ngOnInit(): void {
-    // Add form-level validator for password matching and old password check
     this.passwordForm.addValidators((control: AbstractControl): ValidationErrors | null => {
       const oldPassword = control.get(AccountSettingsPasswordFormControls.OldPassword)?.value;
       const newPassword = control.get(AccountSettingsPasswordFormControls.NewPassword)?.value;
@@ -59,12 +60,10 @@ export class ChangePasswordComponent implements OnInit {
 
       const errors: ValidationErrors = {};
 
-      // Check if new password matches old password
       if (oldPassword && newPassword && oldPassword === newPassword) {
         errors['sameAsOldPassword'] = true;
       }
 
-      // Check if confirm password matches new password
       if (newPassword && confirmPassword && newPassword !== confirmPassword) {
         errors['passwordMismatch'] = true;
       }
@@ -72,7 +71,6 @@ export class ChangePasswordComponent implements OnInit {
       return Object.keys(errors).length > 0 ? errors : null;
     });
 
-    // Update validation when any password field changes
     this.passwordForm.get(AccountSettingsPasswordFormControls.OldPassword)?.valueChanges.subscribe(() => {
       this.passwordForm.updateValueAndValidity();
     });
@@ -96,7 +94,7 @@ export class ChangePasswordComponent implements OnInit {
       const oldPassword = this.passwordForm.get(AccountSettingsPasswordFormControls.OldPassword)?.value ?? '';
       const newPassword = this.passwordForm.get(AccountSettingsPasswordFormControls.NewPassword)?.value ?? '';
 
-      this.#accountSettingsService.updatePassword(oldPassword, newPassword).subscribe({
+      this.accountSettingsService.updatePassword(oldPassword, newPassword).subscribe({
         next: () => {
           this.passwordForm.reset();
           Object.values(this.passwordForm.controls).forEach((control) => {
@@ -108,7 +106,7 @@ export class ChangePasswordComponent implements OnInit {
             this.errorMessage.set(error.error.errors[0].detail);
           } else {
             this.errorMessage.set(
-              this.#translateService.instant('settings.accountSettings.changePassword.messages.error')
+              this.translateService.instant('settings.accountSettings.changePassword.messages.error')
             );
           }
         },

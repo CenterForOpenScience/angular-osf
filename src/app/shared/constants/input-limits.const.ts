@@ -28,4 +28,7 @@ export const InputLimits = {
   description: {
     maxLength: 250,
   },
+  code: {
+    maxLength: 6,
+  },
 };

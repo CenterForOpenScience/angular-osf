@@ -1,5 +1,3 @@
-import { AccountSettings } from '../models';
-
 export class GetEmails {
   static readonly type = '[AccountSettings] Get Emails';
 }
@@ -14,6 +12,15 @@ export class DeleteEmail {
   static readonly type = '[AccountSettings] Remove Email';
 
   constructor(public email: string) {}
+}
+
+export class ResendConfirmation {
+  static readonly type = '[AccountSettings] Resend Confirmation';
+
+  constructor(
+    public emailId: string,
+    public userId: string
+  ) {}
 }
 
 export class VerifyEmail {
@@ -92,12 +99,6 @@ export class VerifyTwoFactorAuth {
   static readonly type = '[AccountSettings] Verify Two-Factor Auth';
 
   constructor(public code: string) {}
-}
-
-export class SetAccountSettings {
-  static readonly type = '[AccountSettings] SetAccountSettings';
-
-  constructor(public accountSettings: AccountSettings) {}
 }
 
 export class DeactivateAccount {

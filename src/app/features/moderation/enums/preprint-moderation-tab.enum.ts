@@ -1,7 +1,7 @@
 export enum PreprintModerationTab {
-  Submissions = 1,
-  WithdrawalRequests,
-  Moderators,
-  Notifications,
-  Settings,
+  Submissions = 'submissions',
+  WithdrawalRequests = 'withdrawals',
+  Moderators = 'moderators',
+  Notifications = 'notifications',
+  Settings = 'settings',
 }

@@ -6,7 +6,7 @@ import { Primitive, StringOrNull } from '@core/helpers';
 import { JsonApiService } from '@core/services';
 import { ApiData, JsonApiResponse } from '@osf/core/models';
 import { PreprintsMapper } from '@osf/features/preprints/mappers';
-import { Preprint, PreprintJsonApi, PreprintsRelationshipsJsonApi } from '@osf/features/preprints/models';
+import { Preprint, PreprintAttributesJsonApi, PreprintRelationshipsJsonApi } from '@osf/features/preprints/models';
 import { CreateProjectPayloadJsoApi, IdName, NodeData } from '@osf/shared/models';
 
 import { environment } from 'src/environments/environment';
@@ -55,7 +55,7 @@ export class PreprintsProjectsService {
 
   updatePreprintProjectRelationship(preprintId: string, projectId: string): Observable<Preprint> {
     return this.jsonApiService
-      .patch<ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>>(
+      .patch<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, null>>(
         `${environment.apiUrl}/preprints/${preprintId}/`,
         {
           data: {
