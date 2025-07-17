@@ -3,9 +3,17 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
-import { ApiData, JsonApiResponse } from '@osf/core/models';
+import { ApiData, JsonApiResponse, JsonApiResponseWithPaging } from '@osf/core/models';
+import { preprintSortFieldMap } from '@osf/features/preprints/constants';
 import { PreprintsMapper } from '@osf/features/preprints/mappers';
-import { Preprint, PreprintJsonApi, PreprintsRelationshipsJsonApi } from '@osf/features/preprints/models';
+import {
+  Preprint,
+  PreprintAttributesJsonApi,
+  PreprintEmbedsJsonApi,
+  PreprintRelationshipsJsonApi,
+} from '@osf/features/preprints/models';
+import { SearchFilters } from '@shared/models';
+import { searchPreferencesToJsonApiQueryParams } from '@shared/utils';
 
 import { environment } from 'src/environments/environment';
 
@@ -37,7 +45,7 @@ export class PreprintsService {
     const payload = PreprintsMapper.toCreatePayload(title, abstract, providerId);
     return this.jsonApiService
       .post<
-        JsonApiResponse<ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>, null>
+        JsonApiResponse<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, null>, null>
       >(`${environment.apiUrl}/preprints/`, payload)
       .pipe(
         map((response) => {
@@ -49,7 +57,7 @@ export class PreprintsService {
   getById(id: string) {
     return this.jsonApiService
       .get<
-        JsonApiResponse<ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>, null>
+        JsonApiResponse<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, null>, null>
       >(`${environment.apiUrl}/preprints/${id}/`)
       .pipe(
         map((response) => {
@@ -66,7 +74,7 @@ export class PreprintsService {
     const apiPayload = this.mapPreprintDomainToApiPayload(payload);
 
     return this.jsonApiService
-      .patch<ApiData<PreprintJsonApi, null, PreprintsRelationshipsJsonApi, null>>(
+      .patch<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, null>>(
         `${environment.apiUrl}/preprints/${id}/`,
         {
           data: {
@@ -84,7 +92,15 @@ export class PreprintsService {
     return this.jsonApiService.post(`${environment.apiUrl}/preprints/${preprintId}/review_actions/`, payload);
   }
 
-  private mapPreprintDomainToApiPayload(domainPayload: Partial<Preprint>): Partial<PreprintJsonApi> {
+  createNewVersion(prevVersionPreprintId: string) {
+    return this.jsonApiService
+      .post<
+        JsonApiResponse<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, null>, null>
+      >(`${environment.apiUrl}/preprints/${prevVersionPreprintId}/versions/?version=2.20`)
+      .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
+  }
+
+  private mapPreprintDomainToApiPayload(domainPayload: Partial<Preprint>): Partial<PreprintAttributesJsonApi> {
     const apiPayload: Record<string, unknown> = {};
     Object.entries(domainPayload).forEach(([key, value]) => {
       if (value !== undefined && this.domainToApiFieldMap[key]) {
@@ -92,5 +108,21 @@ export class PreprintsService {
       }
     });
     return apiPayload;
+  }
+
+  getMyPreprints(pageNumber: number, pageSize: number, filters: SearchFilters) {
+    const params: Record<string, unknown> = {
+      'embed[]': ['bibliographic_contributors'],
+      'fields[users]': 'family_name,full_name,given_name,middle_name',
+      'fields[preprints]': 'title,date_modified,public,bibliographic_contributors',
+    };
+
+    searchPreferencesToJsonApiQueryParams(params, pageNumber, pageSize, filters, preprintSortFieldMap);
+
+    return this.jsonApiService
+      .get<
+        JsonApiResponseWithPaging<ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, null, null>[], null>
+      >(`${environment.apiUrl}/users/me/preprints/`, params)
+      .pipe(map((response) => PreprintsMapper.fromMyPreprintJsonApi(response)));
   }
 }

@@ -9,36 +9,25 @@
 
   <div class="flex-column flex flex-1 w-full">
     <p-tabs [value]="selectedTab()" (valueChange)="onTabChange(+$event)" class="flex-1">
-      @if (!isMobile()) {
+      @if (isTablet()) {
         <p-tablist class="pr-5 pl-5">
-          <p-tab [value]="0">{{ 'myProjects.tabs.myProjects' | translate }}</p-tab>
-          <p-tab [value]="1">{{ 'myProjects.tabs.myRegistrations' | translate }}</p-tab>
-          <p-tab [value]="2">{{ 'myProjects.tabs.myPreprints' | translate }}</p-tab>
-          <p-tab [value]="3">{{ 'myProjects.tabs.bookmarks' | translate }}</p-tab>
+          @for (tab of tabOptions; track $index) {
+            <p-tab [value]="tab.value">{{ tab.label | translate }}</p-tab>
+          }
         </p-tablist>
       }
 
       <p-tabpanels class="p-3 sm:p-5 flex-1">
-        @if (isMobile()) {
-          <p-select
-            class="w-full mb-4"
-            [class.mobile]="isMobile()"
+        @if (!isTablet()) {
+          <osf-select
+            class="block mb-4"
             [options]="tabOptions"
-            optionLabel="label"
-            optionValue="value"
-            [ngModel]="selectedTab()"
-            (ngModelChange)="selectedTab.set($event)"
-          >
-            <ng-template #selectedItem let-selectedOption>
-              {{ selectedOption.label | translate }}
-            </ng-template>
-            <ng-template #item let-item>
-              {{ item.label | translate }}
-            </ng-template>
-          </p-select>
+            [(selectedValue)]="selectedTab"
+            [fullWidth]="true"
+          ></osf-select>
         }
 
-        <p-tabpanel [value]="0" class="flex flex-column gap-4 flex-1">
+        <p-tabpanel [value]="tabOption.Projects" class="flex flex-column gap-4 flex-1">
           <osf-my-projects-table
             [items]="projects()"
             [tableParams]="tableParams()"
@@ -52,7 +41,7 @@
           />
         </p-tabpanel>
 
-        <p-tabpanel [value]="1" class="flex flex-column gap-4 flex-1">
+        <p-tabpanel [value]="tabOption.Registrations" class="flex flex-column gap-4 flex-1">
           <osf-my-projects-table
             [items]="registrations()"
             [tableParams]="tableParams()"
@@ -66,7 +55,7 @@
           />
         </p-tabpanel>
 
-        <p-tabpanel [value]="2" class="flex flex-column gap-4 flex-1">
+        <p-tabpanel [value]="tabOption.Preprints" class="flex flex-column gap-4 flex-1">
           <osf-my-projects-table
             [items]="preprints()"
             [tableParams]="tableParams()"
@@ -80,7 +69,7 @@
           />
         </p-tabpanel>
 
-        <p-tabpanel [value]="3" class="flex flex-column gap-4 flex-1">
+        <p-tabpanel [value]="tabOption.Bookmarks" class="flex flex-column gap-4 flex-1">
           @if (!bookmarks().length && !isLoading()) {
             <p>{{ 'myProjects.bookmarks.emptyState' | translate }}</p>
           } @else {

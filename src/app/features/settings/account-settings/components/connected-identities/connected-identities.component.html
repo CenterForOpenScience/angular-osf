@@ -1,25 +1,21 @@
-<section class="account-setting">
-  <h2 class="account-setting-header">{{ 'settings.accountSettings.connectedIdentities.title' | translate }}</h2>
+<p-card>
+  <h2>{{ 'settings.accountSettings.connectedIdentities.title' | translate }}</h2>
 
-  <div class="account-setting-description">
+  <p class="mt-4">
     {{ 'settings.accountSettings.connectedIdentities.description' | translate }}
-  </div>
+  </p>
 
-  <div class="account-setting-content">
+  <div class="mt-4">
     @for (identity of externalIdentities(); track identity.id) {
-      <div class="account-setting-email--readonly">
-        {{ identity.id }}: {{ identity.externalId }} ({{ identity.status }})
-        <i
-          class="osf-icon-close"
-          tabindex="0"
-          (click)="deleteExternalIdentity(identity.id)"
-          (keydown.enter)="deleteExternalIdentity(identity.id)"
-        >
-        </i>
+      <div class="flex mt-3">
+        <osf-readonly-input
+          [value]="`${identity.id}: ${identity.externalId} (${identity.status})`"
+          (deleteItem)="deleteExternalIdentity(identity)"
+        ></osf-readonly-input>
       </div>
     }
     @if (!externalIdentities().length) {
-      <div>{{ 'settings.accountSettings.connectedIdentities.noIdentities' | translate }}</div>
+      <p>{{ 'settings.accountSettings.connectedIdentities.noIdentities' | translate }}</p>
     }
   </div>
-</section>
+</p-card>

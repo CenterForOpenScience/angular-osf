@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -33,7 +33,12 @@ import {
 export class NotificationsComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column';
 
-  private readonly store = inject(Store);
+  private readonly actions = createDispatchMap({
+    getCurrentUserSettings: GetCurrentUserSettings,
+    getAllGlobalNotificationSubscriptions: GetAllGlobalNotificationSubscriptions,
+    updateUserSettings: UpdateUserSettings,
+    updateNotificationSubscription: UpdateNotificationSubscription,
+  });
   private readonly fb = inject(FormBuilder);
 
   private currentUser = select(UserSelectors.getCurrentUser);
@@ -83,11 +88,11 @@ export class NotificationsComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.notificationSubscriptions().length) {
-      this.store.dispatch(new GetAllGlobalNotificationSubscriptions());
+      this.actions.getAllGlobalNotificationSubscriptions();
     }
 
     if (!this.emailPreferences()) {
-      this.store.dispatch(new GetCurrentUserSettings());
+      this.actions.getCurrentUserSettings();
     }
   }
 
@@ -97,7 +102,7 @@ export class NotificationsComponent implements OnInit {
     }
 
     const formValue = this.emailPreferencesForm.value as UserSettings;
-    this.store.dispatch(new UpdateUserSettings(this.currentUser()!.id, formValue));
+    this.actions.updateUserSettings(this.currentUser()!.id, formValue);
   }
 
   onSubscriptionChange(event: SubscriptionEvent, frequency: SubscriptionFrequency) {
@@ -106,7 +111,7 @@ export class NotificationsComponent implements OnInit {
     const id = `${user.id}_${event}`;
 
     this.loadingEvents.update((list) => [...list, event]);
-    this.store.dispatch(new UpdateNotificationSubscription({ id, frequency })).subscribe({
+    this.actions.updateNotificationSubscription({ id, frequency }).subscribe({
       complete: () => {
         this.loadingEvents.update((list) => list.filter((item) => item !== event));
       },

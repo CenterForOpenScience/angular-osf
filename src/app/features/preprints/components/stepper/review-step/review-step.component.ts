@@ -57,7 +57,7 @@ export class ReviewStepComponent implements OnInit {
     submitPreprint: SubmitPreprint,
   });
   provider = input.required<PreprintProviderDetails | undefined>();
-  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  preprint = select(PreprintStepperSelectors.getPreprint);
 
   contributors = select(ContributorsSelectors.getContributors);
   bibliographicContributors = computed(() => {
@@ -68,15 +68,15 @@ export class ReviewStepComponent implements OnInit {
   license = select(PreprintStepperSelectors.getPreprintLicense);
   preprintProject = select(PreprintStepperSelectors.getPreprintProject);
   licenseOptionsRecord = computed(() => {
-    return (this.createdPreprint()?.licenseOptions ?? {}) as Record<string, string>;
+    return (this.preprint()?.licenseOptions ?? {}) as Record<string, string>;
   });
 
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly PreregLinkInfo = PreregLinkInfo;
 
   ngOnInit(): void {
-    this.actions.getContributors(this.createdPreprint()!.id, ResourceType.Preprint);
-    this.actions.fetchSubjects(this.createdPreprint()!.id, ResourceType.Preprint);
+    this.actions.getContributors(this.preprint()!.id, ResourceType.Preprint);
+    this.actions.fetchSubjects(this.preprint()!.id, ResourceType.Preprint);
     this.actions.fetchLicenses();
     this.actions.fetchPreprintProject();
   }

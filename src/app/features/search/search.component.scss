@@ -1,5 +1,3 @@
-@use "assets/styles/variables" as var;
-
 :host {
   display: flex;
   flex-direction: column;
@@ -9,5 +7,5 @@
 
 .resources {
   position: relative;
-  background: var.$white;
+  background: var(--white);
 }

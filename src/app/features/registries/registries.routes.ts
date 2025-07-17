@@ -6,8 +6,6 @@ import { RegistriesComponent } from '@osf/features/registries/registries.compone
 import { RegistriesState } from '@osf/features/registries/store';
 import { ContributorsState, SubjectsState } from '@osf/shared/stores';
 
-import { ModeratorsState } from '../moderation/store/moderation';
-
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './store/handlers';
 import { LicensesService } from './services';
 
@@ -38,11 +36,8 @@ export const registriesRoutes: Routes = [
       },
       {
         path: ':id/moderation',
-        loadComponent: () =>
-          import('@osf/features/moderation/pages/registries-moderation/registries-moderation.component').then(
-            (m) => m.RegistriesModerationComponent
-          ),
-        providers: [provideStates([ModeratorsState])],
+        loadChildren: () =>
+          import('@osf/features/moderation/registry-moderation.routes').then((c) => c.registryModerationRoutes),
       },
       {
         path: ':providerId/new',

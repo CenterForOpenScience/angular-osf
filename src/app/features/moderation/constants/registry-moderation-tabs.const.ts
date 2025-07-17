@@ -1,8 +1,8 @@
-import { TabOption } from '@osf/shared/models';
+import { CustomOption } from '@osf/shared/models';
 
 import { RegistryModerationTab } from '../enums';
 
-export const REGISTRY_MODERATION_TABS: TabOption[] = [
+export const REGISTRY_MODERATION_TABS: CustomOption<string>[] = [
   { label: 'moderation.submitted', value: RegistryModerationTab.Submitted },
   { label: 'moderation.pending', value: RegistryModerationTab.Pending },
   { label: 'moderation.moderators', value: RegistryModerationTab.Moderators },

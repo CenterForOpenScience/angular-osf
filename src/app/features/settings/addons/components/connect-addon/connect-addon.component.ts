@@ -37,9 +37,11 @@ import { getAddonTypeString, isAuthorizedAddon } from '@shared/utils';
   styleUrl: './connect-addon.component.scss',
 })
 export class ConnectAddonComponent {
-  private router = inject(Router);
+  private readonly router = inject(Router);
+
   protected readonly stepper = viewChild(Stepper);
   protected readonly ProjectAddonsStepperValue = ProjectAddonsStepperValue;
+
   protected terms = signal<AddonTerm[]>([]);
   protected addon = signal<Addon | AuthorizedAddon | null>(null);
   protected addonAuthUrl = signal<string>('/settings/addons');

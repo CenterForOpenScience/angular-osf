@@ -5,6 +5,7 @@ import { RouterOutlet } from '@angular/router';
   selector: 'osf-institutions',
   imports: [RouterOutlet],
   templateUrl: './institutions.component.html',
+  styleUrl: './institutions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstitutionsComponent {}

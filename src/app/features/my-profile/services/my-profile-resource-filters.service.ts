@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { Observable } from 'rxjs';
 
@@ -24,20 +24,20 @@ import { MyProfileSelectors } from '../store';
   providedIn: 'root',
 })
 export class MyProfileFiltersOptionsService {
-  #store = inject(Store);
-  #filtersOptions = inject(FiltersOptionsService);
+  private readonly store = inject(Store);
+  private readonly filtersOptions = inject(FiltersOptionsService);
 
-  #getFilterParams(): Record<string, string> {
-    return addFiltersParams(this.#store.selectSignal(MyProfileResourceFiltersSelectors.getAllFilters)());
+  getFilterParams(): Record<string, string> {
+    return addFiltersParams(select(MyProfileResourceFiltersSelectors.getAllFilters)());
   }
 
-  #getParams(): Record<string, string> {
+  getParams(): Record<string, string> {
     const params: Record<string, string> = {};
-    const resourceTab = this.#store.selectSnapshot(MyProfileSelectors.getResourceTab);
+    const resourceTab = this.store.selectSnapshot(MyProfileSelectors.getResourceTab);
     const resourceTypes = getResourceTypes(resourceTab);
-    const searchText = this.#store.selectSnapshot(MyProfileSelectors.getSearchText);
-    const sort = this.#store.selectSnapshot(MyProfileSelectors.getSortBy);
-    const user = this.#store.selectSnapshot(UserSelectors.getCurrentUser);
+    const searchText = this.store.selectSnapshot(MyProfileSelectors.getSearchText);
+    const sort = this.store.selectSnapshot(MyProfileSelectors.getSortBy);
+    const user = this.store.selectSnapshot(UserSelectors.getCurrentUser);
 
     params['cardSearchFilter[resourceType]'] = resourceTypes;
     params['cardSearchFilter[accessService]'] = 'https://staging4.osf.io/';
@@ -49,34 +49,34 @@ export class MyProfileFiltersOptionsService {
   }
 
   getDates(): Observable<DateCreated[]> {
-    return this.#filtersOptions.getDates(this.#getParams(), this.#getFilterParams());
+    return this.filtersOptions.getDates(this.getParams(), this.getFilterParams());
   }
 
   getFunders(): Observable<FunderFilter[]> {
-    return this.#filtersOptions.getFunders(this.#getParams(), this.#getFilterParams());
+    return this.filtersOptions.getFunders(this.getParams(), this.getFilterParams());
   }
 
   getSubjects(): Observable<SubjectFilter[]> {
-    return this.#filtersOptions.getSubjects(this.#getParams(), this.#getFilterParams());
+    return this.filtersOptions.getSubjects(this.getParams(), this.getFilterParams());
   }
 
   getLicenses(): Observable<LicenseFilter[]> {
-    return this.#filtersOptions.getLicenses(this.#getParams(), this.#getFilterParams());
+    return this.filtersOptions.getLicenses(this.getParams(), this.getFilterParams());
   }
 
   getResourceTypes(): Observable<ResourceTypeFilter[]> {
-    return this.#filtersOptions.getResourceTypes(this.#getParams(), this.#getFilterParams());
+    return this.filtersOptions.getResourceTypes(this.getParams(), this.getFilterParams());
   }
 
   getInstitutions(): Observable<ResourceTypeFilter[]> {
-    return this.#filtersOptions.getInstitutions(this.#getParams(), this.#getFilterParams());
+    return this.filtersOptions.getInstitutions(this.getParams(), this.getFilterParams());
   }
 
   getProviders(): Observable<ProviderFilter[]> {
-    return this.#filtersOptions.getProviders(this.#getParams(), this.#getFilterParams());
+    return this.filtersOptions.getProviders(this.getParams(), this.getFilterParams());
   }
 
   getPartOtCollections(): Observable<PartOfCollectionFilter[]> {
-    return this.#filtersOptions.getPartOtCollections(this.#getParams(), this.#getFilterParams());
+    return this.filtersOptions.getPartOtCollections(this.getParams(), this.getFilterParams());
   }
 }

@@ -1,0 +1,23 @@
+@let dataValue = data();
+@let limitValue = limit();
+
+@if (dataValue && dataValue.length > 0) {
+  <div class="flex flex-row gap-1">
+    @for (item of dataValue.slice(0, limitValue); track item.id) {
+      {{ item.name }}{{ $last ? '' : ', ' }}
+    }
+
+    @if (dataValue.length > limitValue) {
+      <p [pTooltip]="tooltipData" tooltipPosition="bottom" autoHide="false">
+        {{ 'common.labels.and' | translate }} {{ dataValue.length - limitValue }} {{ 'common.labels.more' | translate }}
+      </p>
+      <ng-template #tooltipData>
+        @for (item of dataValue.slice(limitValue); track item.id) {
+          <div>
+            {{ item.name }}
+          </div>
+        }
+      </ng-template>
+    }
+  </div>
+}

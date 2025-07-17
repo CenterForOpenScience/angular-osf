@@ -68,7 +68,7 @@ export class AuthorAssertionsStepComponent {
   readonly preregLinkOptions = preregLinksOptions;
   readonly linkValidators = [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()];
 
-  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  createdPreprint = select(PreprintStepperSelectors.getPreprint);
   isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   readonly authorAssertionsForm = new FormGroup({

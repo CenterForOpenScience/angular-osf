@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -11,6 +11,7 @@ import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from 
 import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { Employment } from '@osf/shared/models';
+import { CustomValidators } from '@osf/shared/utils';
 
 import { EmploymentForm } from '../../models';
 import { ProfileSettingsSelectors, UpdateProfileSettingsEmployment } from '../../store';
@@ -24,12 +25,12 @@ import { ProfileSettingsSelectors, UpdateProfileSettingsEmployment } from '../..
 })
 export class EmploymentComponent {
   @HostBinding('class') classes = 'flex flex-column gap-5';
-  readonly #store = inject(Store);
-  readonly employment = this.#store.selectSignal(ProfileSettingsSelectors.employment);
-  readonly #fb = inject(FormBuilder);
-  readonly employmentForm = this.#fb.group({
-    positions: this.#fb.array<EmploymentForm>([]),
-  });
+
+  readonly actions = createDispatchMap({ updateProfileSettingsEmployment: UpdateProfileSettingsEmployment });
+  readonly employment = select(ProfileSettingsSelectors.employment);
+
+  readonly fb = inject(FormBuilder);
+  readonly employmentForm = this.fb.group({ positions: this.fb.array<EmploymentForm>([]) });
 
   constructor() {
     effect(() => {
@@ -39,7 +40,7 @@ export class EmploymentComponent {
         this.positions.clear();
 
         employment.forEach((position) => {
-          const positionGroup = this.#fb.group({
+          const positionGroup = this.fb.group({
             title: [position.title, Validators.required],
             department: [position.department],
             institution: [position.institution, Validators.required],
@@ -63,8 +64,8 @@ export class EmploymentComponent {
   }
 
   addPosition(): void {
-    const positionGroup = this.#fb.group({
-      title: ['', Validators.required],
+    const positionGroup = this.fb.group({
+      title: ['', CustomValidators.requiredTrimmed()],
       department: [''],
       institution: ['', Validators.required],
       startDate: [null, Validators.required],
@@ -93,7 +94,7 @@ export class EmploymentComponent {
       ongoing: !employment.ongoing,
     })) satisfies Employment[];
 
-    this.#store.dispatch(new UpdateProfileSettingsEmployment({ employment: formattedEmployments }));
+    this.actions.updateProfileSettingsEmployment({ employment: formattedEmployments });
   }
 
   private setupDates(

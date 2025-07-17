@@ -98,7 +98,7 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
-  currentStep = signal<StepOption>(updatePreprintSteps[4]);
+  currentStep = signal<StepOption>(updatePreprintSteps[0]);
   isWeb = toSignal(inject(IS_WEB));
 
   readonly PreprintSteps = PreprintSteps;

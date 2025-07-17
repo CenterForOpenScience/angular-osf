@@ -1,4 +1,4 @@
 export enum ModerationType {
-  Pre = 'pre',
-  Post = 'post',
+  Pre = 'pre-moderation',
+  Post = 'post-moderation',
 }

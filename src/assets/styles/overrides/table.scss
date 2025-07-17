@@ -99,6 +99,12 @@ p-table {
   }
 }
 
+.institution-admin-table {
+  th {
+    min-width: 10rem;
+  }
+}
+
 @media (max-width: var.$breakpoint-xl) {
   .addon-table,
   .my-projects-table {

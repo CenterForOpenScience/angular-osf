@@ -191,15 +191,7 @@ export class ProjectFilesComponent {
     });
 
     effect(() => {
-      const currentFolder = this.currentFolder();
-
-      if (currentFolder) {
-        this.actions.getFiles(currentFolder.relationships.filesLink);
-      }
-    });
-
-    effect(() => {
-      if (!this.isFilesLoading() && !this.isConfiguredStorageAddonsLoading() && !this.isRootFoldersLoading()) {
+      if (!this.isConfiguredStorageAddonsLoading() && !this.isRootFoldersLoading()) {
         this.dataLoaded.set(true);
       }
     });

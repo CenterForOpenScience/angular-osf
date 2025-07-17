@@ -85,7 +85,7 @@ export class FileStepComponent implements OnInit {
   readonly PreprintFileSource = PreprintFileSource;
 
   provider = input.required<PreprintProviderDetails | undefined>();
-  createdPreprint = select(PreprintStepperSelectors.getCreatedPreprint);
+  preprint = select(PreprintStepperSelectors.getPreprint);
   providerId = select(PreprintStepperSelectors.getSelectedProviderId);
   selectedFileSource = select(PreprintStepperSelectors.getSelectedFileSource);
   fileUploadLink = select(PreprintStepperSelectors.getUploadLink);
@@ -93,6 +93,9 @@ export class FileStepComponent implements OnInit {
   arePreprintFilesLoading = select(PreprintStepperSelectors.arePreprintFilesLoading);
   availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
   areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
+  projectFiles = select(PreprintStepperSelectors.getProjectFiles);
+  areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
+  currentFolder = select(PreprintStepperSelectors.getCurrentFolder);
   selectedProjectId = signal<StringOrNull>(null);
 
   versionFileMode = signal<boolean>(false);
@@ -142,7 +145,7 @@ export class FileStepComponent implements OnInit {
   }
 
   nextButtonClicked() {
-    if (!this.createdPreprint()?.primaryFileId) {
+    if (!this.preprint()?.primaryFileId) {
       return;
     }
 

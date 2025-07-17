@@ -48,4 +48,9 @@ export class UserSelectors {
   static isUserSettingsSubmitting(state: UserStateModel): boolean {
     return state.currentUserSettings.isSubmitting!;
   }
+
+  @Selector([UserState])
+  static getShareIndexing(state: UserStateModel): boolean | undefined {
+    return state.currentUser.data?.allowIndexing;
+  }
 }

@@ -9,16 +9,24 @@
 
 .pending {
   color: var(--yellow-1);
+  width: 16px;
+  height: 16px;
 }
 
 .accepted {
   color: var(--green-1);
+  width: 16px;
+  height: 16px;
 }
 
 .rejected {
   color: var(--red-1);
+  width: 16px;
+  height: 16px;
 }
 
 .withdrawn {
   color: var(--dark-blue-1);
+  width: 16px;
+  height: 16px;
 }

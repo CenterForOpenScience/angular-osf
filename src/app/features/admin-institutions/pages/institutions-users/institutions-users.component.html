@@ -1,4 +1,8 @@
-<div class="p-4">
+@if (isLoading()) {
+  <div class="flex justify-content-center align-items-center p-6">
+    <osf-loading-spinner />
+  </div>
+} @else if (tableData().length > 0) {
   <osf-admin-table
     [tableColumns]="tableColumns"
     [tableData]="tableData()"
@@ -13,14 +17,14 @@
     (sortChanged)="onSortChange($event)"
     (iconClicked)="onIconClick($event)"
     [downloadLink]="'/admin/institutions/' + institutionId + '/users/export'"
-    [reportsLink]="'/admin/institutions/' + institutionId + '/reports'"
+    [reportsLink]="reportsLink"
   >
     <div slot="amount" class="flex items-center">
       <h3 class="title">{{ amountText() }}</h3>
     </div>
 
-    <div slot="otherFilters" class="flex gap-3 align-items-center">
-      <div class="flex align-items-center gap-2">
+    <div slot="otherFilters" class="flex gap-3 align-items-center flex-wrap w-full md:w-fit">
+      <div class="flex align-items-center gap-2 w-full md:w-fit">
         <p-checkbox
           [(ngModel)]="hasOrcidFilter"
           (onChange)="onOrcidFilterChange($event.checked)"
@@ -33,14 +37,19 @@
         }}</label>
       </div>
 
-      <div class="flex align-items-center gap-2">
+      <div class="w-full md:w-fit">
         <osf-select
+          class="w-full md:w-fit"
           [options]="departmentOptions"
           [(selectedValue)]="selectedDepartment"
           (changeValue)="onDepartmentChange($event)"
-          [fullWidth]="false"
+          [fullWidth]="true"
         />
       </div>
     </div>
   </osf-admin-table>
-</div>
+} @else {
+  <div class="flex justify-content-center align-items-center p-6">
+    <p class="text-center text-gray-500">{{ 'adminInstitutions.institutionUsers.noData' | translate }}</p>
+  </div>
+}

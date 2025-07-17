@@ -1,8 +1,11 @@
+import { IdName } from '@osf/shared/models';
+
 export interface PreprintReviewActionModel {
   id: string;
-  dateCreated: string;
   dateModified: string;
   fromState: string;
   toState: string;
-  trigger: string;
+  creator: IdName;
+  preprint: IdName;
+  provider: IdName;
 }

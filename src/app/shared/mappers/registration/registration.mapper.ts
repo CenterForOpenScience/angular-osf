@@ -25,8 +25,13 @@ export class RegistrationMapper {
       },
       tags: response.attributes.tags || [],
       stepsData: response.attributes.registration_responses || {},
-      branchedFrom: response.relationships.branched_from?.data?.id,
-      providerId: response.relationships.registration_schema?.data?.id || '',
+      branchedFrom: {
+        id: response.embeds?.branched_from?.data.id,
+        title: response.embeds?.branched_from?.data.attributes.title,
+      },
+      providerId: response.relationships.provider?.data?.id || '',
+      hasProject: !!response.attributes.has_project,
+      components: [],
     };
   }
 
@@ -73,13 +78,20 @@ export class RegistrationMapper {
     };
   }
 
-  static toRegistrationPayload(draftId: string, embargoDate: string, providerId: string, projectId?: string) {
+  static toRegistrationPayload(
+    draftId: string,
+    embargoDate: string,
+    providerId: string,
+    projectId?: string,
+    components?: string[]
+  ) {
     return {
       data: {
         type: 'registrations',
         attributes: {
           embargo_end_date: embargoDate,
           draft_registration: draftId,
+          included_node_ids: components,
         },
         relationships: {
           registered_from: projectId

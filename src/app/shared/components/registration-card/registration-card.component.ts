@@ -2,7 +2,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { Tag } from 'primeng/tag';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
@@ -13,7 +12,7 @@ import { RegistrationCard } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-registration-card',
-  imports: [Card, Button, Tag, TranslatePipe, DatePipe, RouterLink],
+  imports: [Card, Button, TranslatePipe, DatePipe, RouterLink],
   templateUrl: './registration-card.component.html',
   styleUrl: './registration-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,16 +1,30 @@
-import { catchError, map, Observable, of } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
-import { mapIndexCardResults } from '@osf/features/admin-institutions/mappers/institution-summary-index.mapper';
-import { sendMessageRequestMapper } from '@osf/features/admin-institutions/mappers/send-message-request.mapper';
+import { mapInstitutionPreprints } from '@osf/features/admin-institutions/mappers/institution-preprints.mapper';
 import { departmens, summaryMetrics, users } from '@osf/features/admin-institutions/services/mock';
+import { PaginationLinksModel } from '@shared/models';
 
+import {
+  mapIndexCardResults,
+  mapInstitutionDepartments,
+  mapInstitutionProjects,
+  mapInstitutionRegistrations,
+  mapInstitutionSummaryMetrics,
+  mapInstitutionUsers,
+  sendMessageRequestMapper,
+} from '../mappers';
 import {
   InstitutionDepartment,
   InstitutionDepartmentsJsonApi,
   InstitutionIndexValueSearchJsonApi,
+  InstitutionPreprint,
+  InstitutionProject,
+  InstitutionRegistration,
+  InstitutionRegistrationsJsonApi,
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
   InstitutionSummaryMetricsJsonApi,
@@ -20,11 +34,6 @@ import {
   SendMessageResponseJsonApi,
 } from '../models';
 
-import {
-  mapInstitutionDepartments,
-  mapInstitutionSummaryMetrics,
-  mapInstitutionUsers,
-} from 'src/app/features/admin-institutions/mappers';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -87,6 +96,18 @@ export class InstitutionsAdminService {
       );
   }
 
+  fetchProjects(institutionId: string, iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards('Project', iris, pageSize, sort, cursor);
+  }
+
+  fetchRegistrations(institutionId: string, iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards('Registration', iris, pageSize, sort, cursor);
+  }
+
+  fetchPreprints(institutionId: string, iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards('Preprint', iris, pageSize, sort, cursor);
+  }
+
   fetchIndexValueSearch(
     institutionId: string,
     valueSearchPropertyPath: string,
@@ -108,9 +129,55 @@ export class InstitutionsAdminService {
   sendMessage(request: SendMessageRequest): Observable<SendMessageResponseJsonApi> {
     const payload = sendMessageRequestMapper(request);
 
-    return this.jsonApiService.post<SendMessageResponseJsonApi>(
-      `${this.hardcodedUrl}/users/${request.userId}/messages/`,
-      payload
+    return this.jsonApiService.post<SendMessageResponseJsonApi>(`${this.hardcodedUrl}/institutions/messages/`, payload);
+  }
+
+  private fetchIndexCards(
+    resourceType: 'Project' | 'Registration' | 'Preprint',
+    institutionIris: string[],
+    pageSize = 10,
+    sort = '-dateModified',
+    cursor = ''
+  ): Observable<{
+    items: InstitutionProject[] | InstitutionRegistration[] | InstitutionPreprint[];
+    totalCount: number;
+    links?: PaginationLinksModel;
+  }> {
+    const url = `${environment.shareDomainUrl}/index-card-search`;
+    const affiliationParam = institutionIris.join(',');
+
+    const params: Record<string, string> = {
+      'cardSearchFilter[affiliation][]': affiliationParam,
+      'cardSearchFilter[resourceType]': resourceType,
+      'cardSearchFilter[accessService]': environment.webUrl,
+      'page[cursor]': cursor,
+      'page[size]': pageSize.toString(),
+      sort,
+    };
+
+    return this.jsonApiService.get<InstitutionRegistrationsJsonApi>(url, params).pipe(
+      map((res) => {
+        let mapper: (
+          response: InstitutionRegistrationsJsonApi
+        ) => InstitutionProject[] | InstitutionRegistration[] | InstitutionPreprint[];
+        switch (resourceType) {
+          case 'Registration':
+            mapper = mapInstitutionRegistrations;
+            break;
+          case 'Project':
+            mapper = mapInstitutionProjects;
+            break;
+          default:
+            mapper = mapInstitutionPreprints;
+            break;
+        }
+
+        return {
+          items: mapper(res),
+          totalCount: res.data.attributes.totalResultCount,
+          links: res.data.relationships.searchResultPage.links,
+        };
+      })
     );
   }
 }

@@ -1,0 +1,30 @@
+@if (isLoading()) {
+  <div class="flex justify-content-center align-items-center p-6">
+    <osf-loading-spinner />
+  </div>
+} @else if (tableData().length > 0) {
+  <osf-admin-table
+    [tableColumns]="tableColumns"
+    [tableData]="tableData()"
+    [enablePagination]="false"
+    [isNextPreviousPagination]="true"
+    [paginationLinks]="projectsLinks()"
+    [totalCount]="totalCount()"
+    [pageSize]="currentPageSize()"
+    [first]="first()"
+    [sortField]="sortField()"
+    [sortOrder]="sortOrder()"
+    (sortChanged)="onSortChange($event)"
+    (linkPageChanged)="onLinkPageChange($event)"
+    [downloadLink]="downloadUrl()"
+    [reportsLink]="reportsLink"
+  >
+    <div slot="amount" class="flex items-center">
+      <h3 class="title">{{ totalCount() }} {{ 'adminInstitutions.projects.totalProjects' | translate }}</h3>
+    </div>
+  </osf-admin-table>
+} @else {
+  <div class="flex justify-content-center align-items-center p-6">
+    <p class="text-center text-gray-500">{{ 'adminInstitutions.projects.noData' | translate }}</p>
+  </div>
+}

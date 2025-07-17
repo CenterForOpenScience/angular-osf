@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@core/handlers';
 
-import { InstitutionSummaryMetrics } from '../models';
+import { InstitutionPreprint, InstitutionProject, InstitutionRegistration, InstitutionSummaryMetrics } from '../models';
 import { InstitutionsAdminService } from '../services/institutions-admin.service';
 
 import {
@@ -15,6 +15,9 @@ import {
   FetchInstitutionSearchResults,
   FetchInstitutionSummaryMetrics,
   FetchInstitutionUsers,
+  FetchPreprints,
+  FetchProjects,
+  FetchRegistrations,
   FetchStorageRegionSearch,
   SendUserMessage,
 } from './institutions-admin.actions';
@@ -29,6 +32,9 @@ import { InstitutionsAdminModel } from './institutions-admin.model';
     storageRegionSearch: { data: [], isLoading: false, error: null },
     searchResults: { data: [], isLoading: false, error: null },
     users: { data: [], totalCount: 0, isLoading: false, error: null },
+    projects: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
+    registrations: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
+    preprints: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
     sendMessage: { data: null, isLoading: false, error: null },
     selectedInstitutionId: null,
     currentSearchPropertyPath: null,
@@ -143,6 +149,81 @@ export class InstitutionsAdminState {
           });
         }),
         catchError((error) => handleSectionError(ctx, 'users', error))
+      );
+  }
+
+  @Action(FetchProjects)
+  fetchProjects(ctx: StateContext<InstitutionsAdminModel>, action: FetchProjects) {
+    const state = ctx.getState();
+    ctx.patchState({
+      projects: { ...state.projects, isLoading: true, error: null },
+    });
+
+    return this.institutionsAdminService
+      .fetchProjects(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .pipe(
+        tap((response) => {
+          ctx.patchState({
+            projects: {
+              data: response.items as InstitutionProject[],
+              totalCount: response.totalCount,
+              isLoading: false,
+              error: null,
+              links: response.links,
+            },
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'projects', error))
+      );
+  }
+
+  @Action(FetchRegistrations)
+  fetchRegistrations(ctx: StateContext<InstitutionsAdminModel>, action: FetchRegistrations) {
+    const state = ctx.getState();
+    ctx.patchState({
+      registrations: { ...state.registrations, isLoading: true, error: null },
+    });
+
+    return this.institutionsAdminService
+      .fetchRegistrations(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .pipe(
+        tap((response) => {
+          ctx.patchState({
+            registrations: {
+              data: response.items as InstitutionRegistration[],
+              totalCount: response.totalCount,
+              isLoading: false,
+              error: null,
+              links: response.links,
+            },
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'registrations', error))
+      );
+  }
+
+  @Action(FetchPreprints)
+  fetchPreprints(ctx: StateContext<InstitutionsAdminModel>, action: FetchPreprints) {
+    const state = ctx.getState();
+    ctx.patchState({
+      preprints: { ...state.preprints, isLoading: true, error: null },
+    });
+
+    return this.institutionsAdminService
+      .fetchPreprints(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .pipe(
+        tap((response) => {
+          ctx.patchState({
+            preprints: {
+              data: response.items as InstitutionPreprint[],
+              totalCount: response.totalCount,
+              isLoading: false,
+              error: null,
+              links: response.links,
+            },
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'preprints', error))
       );
   }
 

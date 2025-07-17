@@ -35,12 +35,12 @@
 
     <section class="flex flex-column gap-2">
       <h3>{{ 'preprints.preprintStepper.common.labels.title' | translate }}</h3>
-      <p>{{ createdPreprint()!.title }}</p>
+      <p>{{ preprint()!.title }}</p>
     </section>
 
     <section class="flex flex-column gap-2">
       <h3>{{ 'preprints.preprintStepper.common.labels.abstract' | translate }}</h3>
-      <osf-truncated-text [maxVisibleLines]="2" [text]="createdPreprint()!.description" />
+      <osf-truncated-text [maxVisibleLines]="2" [text]="preprint()!.description" />
     </section>
   </div>
 </p-card>
@@ -92,8 +92,8 @@
     <section class="flex flex-column gap-2">
       <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationDoi' | translate }}</h3>
 
-      <a [href]="'https://doi.org/' + createdPreprint()?.doi">
-        {{ 'https://doi.org/' + createdPreprint()?.doi }}
+      <a [href]="'https://doi.org/' + preprint()?.doi">
+        {{ 'https://doi.org/' + preprint()?.doi }}
       </a>
     </section>
 
@@ -111,7 +111,7 @@
       <h3>{{ 'preprints.preprintStepper.review.sections.metadata.tags' | translate }}</h3>
 
       <div class="flex flex-wrap gap-2">
-        @for (tag of createdPreprint()?.tags; track tag) {
+        @for (tag of preprint()?.tags; track tag) {
           <p-tag [value]="tag" severity="info" />
         } @empty {
           <p>{{ 'common.labels.none' | translate }}</p>
@@ -122,8 +122,8 @@
     <section class="flex flex-column gap-2">
       <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationDate' | translate }}</h3>
 
-      @if (createdPreprint()?.originalPublicationDate) {
-        {{ createdPreprint()?.originalPublicationDate | date: 'MMM d, y, h:mm a' }}
+      @if (preprint()?.originalPublicationDate) {
+        {{ preprint()?.originalPublicationDate | date: 'MMM d, y, h:mm a' }}
       } @else {
         <p>{{ 'common.labels.notApplicable' | translate }}</p>
       }
@@ -132,8 +132,8 @@
     <section class="flex flex-column gap-2">
       <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationCitation' | translate }}</h3>
 
-      @if (createdPreprint()?.customPublicationCitation) {
-        {{ createdPreprint()?.customPublicationCitation }}
+      @if (preprint()?.customPublicationCitation) {
+        {{ preprint()?.customPublicationCitation }}
       } @else {
         <p>{{ 'common.labels.notApplicable' | translate }}</p>
       }
@@ -149,25 +149,25 @@
       <section class="flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>
 
-        @if (!createdPreprint()?.hasCoi) {
+        @if (!preprint()?.hasCoi) {
           <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
         } @else {
-          {{ createdPreprint()?.coiStatement }}
+          {{ preprint()?.coiStatement }}
         }
       </section>
 
       <section class="flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.publicData' | translate }}</h3>
 
-        @switch (createdPreprint()?.hasDataLinks) {
+        @switch (preprint()?.hasDataLinks) {
           @case (ApplicabilityStatus.NotApplicable) {
             <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noData' | translate }}</p>
           }
           @case (ApplicabilityStatus.Unavailable) {
-            {{ createdPreprint()?.whyNoData }}
+            {{ preprint()?.whyNoData }}
           }
           @case (ApplicabilityStatus.Applicable) {
-            @for (link of createdPreprint()?.dataLinks; track $index) {
+            @for (link of preprint()?.dataLinks; track $index) {
               <p>{{ link }}</p>
             }
           }
@@ -179,17 +179,17 @@
           {{ 'preprints.preprintStepper.review.sections.authorAssertions.publicPreregistration' | translate }}
         </h3>
 
-        @switch (createdPreprint()?.hasPreregLinks) {
+        @switch (preprint()?.hasPreregLinks) {
           @case (ApplicabilityStatus.NotApplicable) {
             <p>
               {{ 'preprints.preprintStepper.review.sections.authorAssertions.noPrereg' | translate }}
             </p>
           }
           @case (ApplicabilityStatus.Unavailable) {
-            {{ createdPreprint()?.whyNoPrereg }}
+            {{ preprint()?.whyNoPrereg }}
           }
           @case (ApplicabilityStatus.Applicable) {
-            @switch (createdPreprint()?.preregLinkInfo) {
+            @switch (preprint()?.preregLinkInfo) {
               @case (PreregLinkInfo.Analysis) {
                 <p>
                   {{ 'preprints.preprintStepper.common.labels.preregTypes.analysis' | translate }}
@@ -206,7 +206,7 @@
                 </p>
               }
             }
-            @for (link of createdPreprint()?.preregLinks; track $index) {
+            @for (link of preprint()?.preregLinks; track $index) {
               <p>{{ link }}</p>
             }
           }

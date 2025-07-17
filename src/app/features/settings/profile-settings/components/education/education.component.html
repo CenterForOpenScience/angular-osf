@@ -51,6 +51,7 @@
                   <label for="start-date-{{ index }}" class="mb-1">
                     {{ 'settings.profileSettings.education.startDate' | translate }}
                   </label>
+
                   <p-datepicker
                     [id]="'start-date-' + index"
                     formControlName="startDate"
@@ -106,7 +107,7 @@
     severity="info"
     disabled="true"
   />
-  <div class="w-6 btn-full-width md:w-auto wide-m-button">
+  <div class="w-6 btn-full-width wide-m-button md:w-auto">
     <p-button [label]="'settings.profileSettings.common.save' | translate" (onClick)="saveEducation()" />
   </div>
 </div>

@@ -4,17 +4,23 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { filter, tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, Signal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
 import { StepperComponent, SubHeaderComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
 import { StepOption } from '@osf/shared/models';
 import { LoaderService } from '@osf/shared/services';
-import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
+import {
+  ContributorsSelectors,
+  FetchSelectedSubjects,
+  GetAllContributors,
+  SubjectsSelectors,
+} from '@osf/shared/stores';
 
 import { DEFAULT_STEPS } from '../../constants';
-import { FetchDraft, FetchSchemaBlocks, RegistriesSelectors, UpdateStepValidation } from '../../store';
+import { ClearState, FetchDraft, FetchSchemaBlocks, RegistriesSelectors, UpdateStepValidation } from '../../store';
 
 @Component({
   selector: 'osf-drafts',
@@ -24,7 +30,7 @@ import { FetchDraft, FetchSchemaBlocks, RegistriesSelectors, UpdateStepValidatio
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TranslateService],
 })
-export class DraftsComponent {
+export class DraftsComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly loaderService = inject(LoaderService);
@@ -36,11 +42,16 @@ export class DraftsComponent {
   protected readonly stepsData = select(RegistriesSelectors.getStepsData);
   protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   protected initialContributors = select(ContributorsSelectors.getContributors);
+  protected readonly contributors = select(ContributorsSelectors.getContributors);
+  protected readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
 
   private readonly actions = createDispatchMap({
     getSchemaBlocks: FetchSchemaBlocks,
     getDraftRegistration: FetchDraft,
     updateStepValidation: UpdateStepValidation,
+    clearState: ClearState,
+    getContributors: GetAllContributors,
+    getSubjects: FetchSelectedSubjects,
   });
 
   get isReviewPage(): boolean {
@@ -116,6 +127,12 @@ export class DraftsComponent {
     if (!this.draftRegistration()) {
       this.actions.getDraftRegistration(this.registrationId);
     }
+    if (!this.contributors()?.length) {
+      this.actions.getContributors(this.registrationId, ResourceType.DraftRegistration);
+    }
+    if (!this.subjects()?.length) {
+      this.actions.getSubjects(this.registrationId, ResourceType.DraftRegistration);
+    }
     effect(() => {
       const registrationSchemaId = this.draftRegistration()?.registrationSchemaId;
       if (registrationSchemaId && !this.isLoaded) {
@@ -161,5 +178,9 @@ export class DraftsComponent {
     this.currentStepIndex.set(step.index);
     const pageLink = this.steps()[step.index].routeLink;
     this.router.navigate([`/registries/drafts/${this.registrationId}/`, pageLink]);
+  }
+
+  ngOnDestroy(): void {
+    this.actions.clearState();
   }
 }

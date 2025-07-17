@@ -34,6 +34,9 @@
     </div>
 
     <osf-files-tree
+      [files]="files()"
+      [isLoading]="isFilesLoading()"
+      [currentFolder]="currentFolder()"
       [actions]="filesTreeActions"
       [viewOnly]="true"
       [viewOnlyDownloadable]="true"

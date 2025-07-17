@@ -87,6 +87,9 @@
   <section class="m-t-24">
     @if (selectedProjectId()) {
       <osf-files-tree
+        [currentFolder]="currentFolder()"
+        [files]="projectFiles()"
+        [isLoading]="areProjectFilesLoading()"
         [resourceId]="selectedProjectId()!"
         [actions]="filesTreeActions"
         (entryFileClicked)="selectProjectFile($event)"
@@ -126,6 +129,6 @@
     styleClass="w-full"
     [label]="'common.buttons.next' | translate"
     (click)="nextButtonClicked()"
-    [disabled]="!createdPreprint()?.primaryFileId || versionFileMode()"
+    [disabled]="!preprint()?.primaryFileId || versionFileMode()"
   />
 </section>

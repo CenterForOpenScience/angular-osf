@@ -1,21 +1,20 @@
 @use "assets/styles/mixins" as mix;
-@use "assets/styles/variables" as var;
 
 :host {
   flex: 1;
   @include mix.flex-column;
+}
 
-  .stepper-container {
-    background-color: var.$white;
-    flex: 1;
+.stepper-container {
+  background-color: var(--white);
+  flex: 1;
 
-    button {
-      width: 100%;
-    }
+  button {
+    width: 100%;
   }
+}
 
-  .folders-list {
-    border: 1px solid var.$grey-2;
-    border-radius: 0.57rem;
-  }
+.folders-list {
+  border: 1px solid var(--grey-2);
+  border-radius: 0.5rem;
 }

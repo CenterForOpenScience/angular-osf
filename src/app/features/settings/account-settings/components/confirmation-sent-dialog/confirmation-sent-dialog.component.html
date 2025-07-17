@@ -1,0 +1,12 @@
+<div class="flex flex-column gap-6">
+  <p
+    [innerHTML]="
+      'settings.accountSettings.connectedEmails.confirmationSentDialog.message' | translate: { email: config.data }
+    "
+  ></p>
+
+  <div class="flex gap-2 justify-content-end">
+    <p-button class="w-6" styleClass="w-full" (click)="dialogRef.close()" [label]="'common.buttons.close' | translate">
+    </p-button>
+  </div>
+</div>

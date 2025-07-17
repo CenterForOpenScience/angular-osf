@@ -1,4 +1,11 @@
 export { mapInstitutionDepartment, mapInstitutionDepartments } from './institution-departments.mapper';
+export { mapPreprintToTableData } from './institution-preprint-to-table-data.mapper';
+export { mapProjectToTableCellData } from './institution-project-to-table-data.mapper';
+export { mapInstitutionProjects } from './institution-projects.mapper';
+export { mapRegistrationToTableData } from './institution-registration-to-table-data.mapper';
+export { mapInstitutionRegistrations } from './institution-registrations.mapper';
+export { mapIndexCardResults } from './institution-summary-index.mapper';
 export { mapInstitutionSummaryMetrics } from './institution-summary-metrics.mapper';
 export { mapUserToTableCellData } from './institution-user-to-table-data.mapper';
 export { mapInstitutionUsers } from './institution-users.mapper';
+export { sendMessageRequestMapper } from './send-message-request.mapper';

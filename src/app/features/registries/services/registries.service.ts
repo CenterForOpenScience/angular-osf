@@ -57,8 +57,11 @@ export class RegistriesService {
   }
 
   getDraft(draftId: string): Observable<DraftRegistrationModel> {
+    const params = {
+      embed: ['branched_from'],
+    };
     return this.jsonApiService
-      .get<DraftRegistrationResponseJsonApi>(`${this.apiUrl}/draft_registrations/${draftId}/`)
+      .get<DraftRegistrationResponseJsonApi>(`${this.apiUrl}/draft_registrations/${draftId}/`, params)
       .pipe(map((response) => RegistrationMapper.fromDraftRegistrationResponse(response.data)));
   }
 
@@ -75,9 +78,12 @@ export class RegistriesService {
         type: 'draft_registrations', // force the correct type
       },
     };
+    const params = {
+      embed: ['branched_from'],
+    };
 
     return this.jsonApiService
-      .patch<DraftRegistrationDataJsonApi>(`${this.apiUrl}/draft_registrations/${id}/`, payload)
+      .patch<DraftRegistrationDataJsonApi>(`${this.apiUrl}/draft_registrations/${id}/`, payload, params)
       .pipe(map((response) => RegistrationMapper.fromDraftRegistrationResponse(response)));
   }
 
@@ -89,9 +95,10 @@ export class RegistriesService {
     draftId: string,
     embargoDate: string,
     providerId: string,
-    projectId?: string
+    projectId?: string,
+    components?: string[]
   ): Observable<RegistrationModel> {
-    const payload = RegistrationMapper.toRegistrationPayload(draftId, embargoDate, providerId, projectId);
+    const payload = RegistrationMapper.toRegistrationPayload(draftId, embargoDate, providerId, projectId, components);
     return this.jsonApiService
       .post<RegistrationResponseJsonApi>(`${this.apiUrl}/registrations/`, payload)
       .pipe(map((response) => RegistrationMapper.fromRegistrationResponse(response.data)));

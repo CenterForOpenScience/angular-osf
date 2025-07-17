@@ -1,14 +1,10 @@
 <div class="flex flex-column gap-6">
-  <div class="flex flex-column gap-1">
-    <label for="email">{{ 'settings.accountSettings.addEmail.form.email' | translate }}</label>
-    <input
-      [formControl]="emailControl"
-      pInputText
-      id="email"
-      [placeholder]="'settings.accountSettings.addEmail.form.emailPlaceholder' | translate"
-      aria-describedby="email-help"
-    />
-  </div>
+  <osf-text-input
+    [control]="emailControl"
+    [placeholder]="'settings.accountSettings.addEmail.form.emailPlaceholder'"
+    [label]="'settings.accountSettings.addEmail.form.email'"
+    [maxLength]="emailMaxLength"
+  ></osf-text-input>
 
   <div class="flex gap-2">
     <p-button
@@ -25,6 +21,7 @@
       styleClass="w-full"
       [disabled]="emailControl.invalid"
       (click)="addEmail()"
+      [loading]="isSubmitting()"
       [label]="'settings.accountSettings.addEmail.buttons.add' | translate"
     >
     </p-button>

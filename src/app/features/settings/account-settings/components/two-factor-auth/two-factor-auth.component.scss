@@ -1,11 +1,3 @@
-@use "../../account-settings.component.scss" as account-settings;
-@use "assets/styles/variables" as var;
-
-:host {
-  @extend .account-setting;
-
-  ::ng-deep .token {
-    color: var.$red-1;
-    display: inline;
-  }
+.token-container {
+  word-break: break-all;
 }

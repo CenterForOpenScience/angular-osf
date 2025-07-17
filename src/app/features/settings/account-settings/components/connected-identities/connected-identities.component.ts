@@ -1,23 +1,46 @@
-import { Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { Card } from 'primeng/card';
+
+import { finalize } from 'rxjs';
+
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 
+import { ReadonlyInputComponent } from '@osf/shared/components';
+import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
+
+import { ExternalIdentity } from '../../models';
 import { AccountSettingsSelectors, DeleteExternalIdentity } from '../../store';
 
 @Component({
   selector: 'osf-connected-identities',
-  imports: [TranslatePipe],
+  imports: [Card, TranslatePipe, ReadonlyInputComponent],
   templateUrl: './connected-identities.component.html',
   styleUrl: './connected-identities.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConnectedIdentitiesComponent {
-  readonly #store = inject(Store);
-  readonly externalIdentities = this.#store.selectSignal(AccountSettingsSelectors.getExternalIdentities);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly loaderService = inject(LoaderService);
+  private readonly toastService = inject(ToastService);
 
-  deleteExternalIdentity(id: string): void {
-    this.#store.dispatch(new DeleteExternalIdentity(id));
+  readonly actions = createDispatchMap({ deleteExternalIdentity: DeleteExternalIdentity });
+  readonly externalIdentities = select(AccountSettingsSelectors.getExternalIdentities);
+
+  deleteExternalIdentity(identity: ExternalIdentity): void {
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'settings.accountSettings.connectedIdentities.deleteDialog.header',
+      messageParams: { name: identity.id },
+      messageKey: 'settings.accountSettings.connectedIdentities.deleteDialog.message',
+      onConfirm: () => {
+        this.loaderService.show();
+        this.actions
+          .deleteExternalIdentity(identity.id)
+          .pipe(finalize(() => this.loaderService.hide()))
+          .subscribe(() => this.toastService.showSuccess('settings.accountSettings.connectedIdentities.successDelete'));
+      },
+    });
   }
 }

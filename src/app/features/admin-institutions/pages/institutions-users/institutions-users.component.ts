@@ -35,7 +35,7 @@ import {
   SendUserMessage,
 } from '@osf/features/admin-institutions/store/institutions-admin.actions';
 import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store/institutions-admin.selectors';
-import { SelectComponent } from '@osf/shared/components';
+import { LoadingSpinnerComponent, SelectComponent } from '@osf/shared/components';
 import { TABLE_PARAMS } from '@shared/constants';
 import { SortOrder } from '@shared/enums';
 import { QueryParams } from '@shared/models';
@@ -51,7 +51,7 @@ import {
 
 @Component({
   selector: 'osf-institutions-users',
-  imports: [AdminTableComponent, FormsModule, SelectComponent, CheckboxModule, TranslatePipe],
+  imports: [AdminTableComponent, FormsModule, SelectComponent, CheckboxModule, TranslatePipe, LoadingSpinnerComponent],
   templateUrl: './institutions-users.component.html',
   styleUrl: './institutions-users.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -70,6 +70,7 @@ export class InstitutionsUsersComponent implements OnInit {
   });
 
   institutionId = '';
+  reportsLink = 'https://drive.google.com/drive/folders/1_aFmeJwLp5xBS3-8clZ4xA9L3UFxdzDd';
 
   queryParams = toSignal(this.route.queryParams);
   currentPage = signal(1);

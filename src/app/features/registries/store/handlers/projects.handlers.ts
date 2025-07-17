@@ -35,4 +35,35 @@ export class ProjectsHandlers {
       },
     });
   }
+
+  fetchProjectChildren(ctx: StateContext<RegistriesStateModel>, projectId: string) {
+    const state = ctx.getState();
+    ctx.patchState({
+      draftRegistration: {
+        data: state.draftRegistration.data,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.projectsService.getComponentsTree(projectId).subscribe({
+      next: (children: Project[]) => {
+        ctx.patchState({
+          draftRegistration: {
+            data: {
+              ...state.draftRegistration.data!,
+              components: [...state.draftRegistration.data!.components, ...children],
+            },
+            isLoading: false,
+            error: null,
+          },
+        });
+      },
+      error: (error) => {
+        ctx.patchState({
+          projects: { ...state.projects, isLoading: false, error },
+        });
+      },
+    });
+  }
 }

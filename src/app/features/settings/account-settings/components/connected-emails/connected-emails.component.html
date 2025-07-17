@@ -1,109 +1,78 @@
-<section class="account-setting">
-  <h2 class="account-setting-header">{{ 'settings.accountSettings.connectedEmails.title' | translate }}</h2>
+<p-card>
+  <h2>{{ 'settings.accountSettings.connectedEmails.title' | translate }}</h2>
 
-  <div class="account-settings-description">
+  <p class="mt-4">
     {{ 'settings.accountSettings.connectedEmails.description' | translate }}
-  </div>
+  </p>
 
-  <div class="account-setting-emails">
-    <div class="account-setting-email-center">
-      <div class="account-setting-email__title">
+  <div class="flex flex-column mt-4 gap-4">
+    <div class="flex align-items-center flex-wrap gap-2">
+      <p>
         {{ 'settings.accountSettings.connectedEmails.primaryEmail' | translate }}
-      </div>
+      </p>
 
       @if (isEmailsLoading()) {
-        <p-skeleton width="9rem" height="2.7rem" />
+        <p-skeleton width="20rem" height="2.5rem" />
       } @else {
-        <div class="account-setting-email__value">{{ primaryEmail()?.emailAddress }}</div>
+        <p>{{ primaryEmail()?.emailAddress }}</p>
       }
     </div>
 
-    <div class="account-setting-email">
-      <div class="account-setting-email__title">
+    <div class="flex align-items-center flex-wrap gap-2">
+      <p>
         {{ 'settings.accountSettings.connectedEmails.alternateEmails' | translate }}
-      </div>
+      </p>
 
-      <div class="account-setting-email__container">
+      <div class="flex flex-column gap-3">
         @if (isEmailsLoading()) {
-          <p-skeleton width="19rem" height="38px" />
+          <p-skeleton width="20rem" height="2.5rem" />
         } @else {
           @for (email of confirmedEmails(); track email.id) {
-            <div class="account-setting-email__value">
-              <div class="account-setting-email--readonly">
-                <div class="account-setting-email--readonly--address">{{ email.emailAddress }}</div>
-                @if (!deletingEmailIds().has(email.id)) {
-                  <i
-                    class="osf-icon-close"
-                    tabindex="0"
-                    (click)="openConfirmDeleteEmail(email)"
-                    (keydown.enter)="openConfirmDeleteEmail(email)"
-                  >
-                  </i>
-                }
-                @if (deletingEmailIds().has(email.id)) {
-                  <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--sm" />
-                }
-              </div>
+            <div class="flex align-items-center flex-wrap gap-2">
+              <osf-readonly-input
+                [value]="email.emailAddress"
+                (deleteItem)="openConfirmDeleteEmail(email)"
+              ></osf-readonly-input>
 
-              @if (makingPrimaryIds().has(email.id)) {
-                <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--md" />
-              } @else {
-                <p-button
-                  [label]="'settings.accountSettings.connectedEmails.buttons.makePrimary' | translate"
-                  severity="secondary"
-                  (click)="makePrimary(email.id)"
-                  [disabled]="makingPrimaryIds().size > 0"
-                >
-                </p-button>
-              }
+              <p-button
+                [label]="'settings.accountSettings.connectedEmails.buttons.makePrimary' | translate"
+                severity="secondary"
+                (click)="makePrimary(email)"
+              >
+              </p-button>
             </div>
           }
         }
       </div>
     </div>
 
-    <div class="account-setting-email">
-      <div class="account-setting-email__title">
+    <div class="flex align-items-center flex-wrap gap-2">
+      <p>
         {{ 'settings.accountSettings.connectedEmails.unconfirmedEmails' | translate }}
-      </div>
+      </p>
 
-      <div class="account-setting-email__container">
+      <div class="flex flex-column gap-3">
         @if (isEmailsLoading()) {
-          <p-skeleton width="19rem" height="38px" />
+          <p-skeleton width="20rem" height="2.5rem" />
         } @else {
           @for (email of unconfirmedEmails(); track email.id) {
-            <div class="account-setting-email__value">
-              <div class="account-setting-email--readonly">
-                <div class="account-setting-email--readonly--address">{{ email.emailAddress }}</div>
+            <div class="flex align-items-center flex-wrap gap-2">
+              <osf-readonly-input
+                [value]="email.emailAddress"
+                (deleteItem)="openConfirmDeleteEmail(email)"
+              ></osf-readonly-input>
 
-                @if (!deletingEmailIds().has(email.id)) {
-                  <i
-                    class="osf-icon-close"
-                    tabindex="0"
-                    (click)="openConfirmDeleteEmail(email)"
-                    (keydown.enter)="openConfirmDeleteEmail(email)"
-                  ></i>
-                }
-                @if (deletingEmailIds().has(email.id)) {
-                  <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--sm" />
-                }
-              </div>
-
-              @if (resendingEmailIds().has(email.id)) {
-                <p-progress-spinner strokeWidth="5" fill="transparent" animationDuration=".5s" class="icon--md" />
-              } @else {
-                <p-button
-                  [label]="
-                    (isSmall()
-                      ? 'settings.accountSettings.connectedEmails.buttons.resendConfirmation'
-                      : 'settings.accountSettings.connectedEmails.buttons.resend'
-                    ) | translate
-                  "
-                  severity="secondary"
-                  (click)="resendConfirmation(email.id)"
-                >
-                </p-button>
-              }
+              <p-button
+                [label]="
+                  (isSmall()
+                    ? 'settings.accountSettings.connectedEmails.buttons.resendConfirmation'
+                    : 'settings.accountSettings.connectedEmails.buttons.resend'
+                  ) | translate
+                "
+                severity="secondary"
+                (click)="resendConfirmation(email)"
+              >
+              </p-button>
             </div>
           }
         }
@@ -111,10 +80,10 @@
     </div>
   </div>
 
-  <div class="account-setting-action">
+  <div class="flex justify-content-end mt-4">
     <p-button
       (onClick)="addEmail()"
       [label]="'settings.accountSettings.connectedEmails.buttons.addEmail' | translate"
     />
   </div>
-</section>
+</p-card>

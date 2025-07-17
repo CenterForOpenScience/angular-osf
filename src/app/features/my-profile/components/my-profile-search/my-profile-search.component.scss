@@ -1,4 +1,3 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
 .search-container {
@@ -14,15 +13,15 @@
 
 .resources {
   position: relative;
-  background: var.$white;
+  background: var(--white);
 }
 
 .stepper {
   position: absolute;
   display: flex;
   flex-direction: column;
-  background: var.$white;
-  border: 1px solid var.$grey-2;
+  background: var(--white);
+  border: 1px solid var(--grey-2);
   border-radius: 12px;
   row-gap: mix.rem(24px);
   padding: mix.rem(24px);

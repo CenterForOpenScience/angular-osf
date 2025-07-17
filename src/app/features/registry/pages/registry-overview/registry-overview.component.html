@@ -46,14 +46,16 @@
             } @else if (block.type === 'multi-select-input' && block.values) {
               <div class="flex flex-column gap-4 p-4">
                 @for (value of block.values; track $index) {
-                  <p class="text-no-transform">{{ value }}</p>
+                  @if (value) {
+                    <p class="text-no-transform">{{ value }}</p>
+                  }
                 }
               </div>
             } @else if (block.type === 'page-heading' && block.value) {
               <h1 class="pb-4 text-no-transform" [class.mt-4]="$index !== 0">{{ block.value }}</h1>
             } @else if ((block.type === 'subsection-heading' || block.type === 'question-label') && block.value) {
               <h3 class="pb-4 text-no-transform">{{ block.value }}</h3>
-            } @else if (block.value !== 'select-input-option') {
+            } @else if (block.value && block.value !== 'select-input-option') {
               <p class="pb-4 text-no-transform">{{ block.value }}</p>
             }
           }
