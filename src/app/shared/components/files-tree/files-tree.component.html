@@ -67,15 +67,20 @@
             </div>
 
             @if (!viewOnly() && !viewOnlyDownloadable()) {
-              <div class="relative ml-auto">
+              <div
+                class="relative ml-auto"
+                (click)="$event.stopPropagation()"
+                (keydown.enter)="$event.stopPropagation()"
+                tabindex="0"
+              >
                 <osf-file-menu (action)="onFileMenuAction($event, file)"></osf-file-menu>
               </div>
             } @else if (viewOnly() && viewOnlyDownloadable()) {
               <div class="files-table-cell">
                 <i
                   class="fas fa-download blue-text"
-                  (click)="onFileMenuAction({ value: FileMenuType.Download }, file)"
-                  (keydown.enter)="onFileMenuAction({ value: FileMenuType.Download }, file)"
+                  (click)="$event.stopPropagation(); onFileMenuAction({ value: FileMenuType.Download }, file)"
+                  (keydown.enter)="$event.stopPropagation(); onFileMenuAction({ value: FileMenuType.Download }, file)"
                   tabindex="1"
                 ></i>
               </div>
