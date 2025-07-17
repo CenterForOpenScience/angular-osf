@@ -1,0 +1,50 @@
+@let resource = currentResource();
+
+@if (resource) {
+  <div class="metadata-accordion">
+    @if (isEditMode()) {}
+    <p-accordion>
+      <p-accordion-panel value="0">
+        <p-accordion-header class="pt-0 pb-2 justify-content-between">
+          <h3>{{ 'project.overview.metadata.citation' | translate }}</h3>
+        </p-accordion-header>
+        <p-accordion-content>
+          <div class="flex flex-column gap-3">
+            @if (resource.customCitation) {
+              <p>{{ resource.customCitation }}</p>
+            } @else {
+              @if (defaultCitations().length) {
+                @for (citation of defaultCitations(); track citation.id) {
+                  <div class="flex flex-column gap-2">
+                    <h3>{{ citation.title }}</h3>
+                    <p>{{ citation.citation }}</p>
+                  </div>
+                }
+              }
+            }
+          </div>
+          <p-divider />
+          <p>{{ 'project.overview.metadata.getMoreCitations' | translate }}</p>
+          <p-select
+            class="mt-2"
+            [placeholder]="'project.overview.metadata.citationInputPlaceholder' | translate"
+            [loading]="isCitationStylesLoading()"
+            [options]="citationStylesOptions()"
+            [filter]="true"
+            (onFilter)="handleCitationStyleFilterSearch($event)"
+            optionLabel="label"
+            optionValue="value"
+            [appendTo]="'body'"
+            [emptyFilterMessage]="filterMessage()"
+            [emptyMessage]="filterMessage()"
+            (onChange)="handleCitationStyleChange($event)"
+          >
+            <ng-template #selectedItem let-selectedOption>
+              {{ selectedOption.label }}
+            </ng-template>
+          </p-select>
+        </p-accordion-content>
+      </p-accordion-panel>
+    </p-accordion>
+  </div>
+}

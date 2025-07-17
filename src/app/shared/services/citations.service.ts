@@ -1,11 +1,12 @@
 import { map, Observable } from 'rxjs';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { JsonApiService } from '@core/services';
 import { ResourceType } from '@shared/enums';
 import { CitationsMapper } from '@shared/mappers';
-import { DefaultCitation, DefaultCitationJsonApi } from '@shared/models';
+import { CitationStylesJsonApiResponse, DefaultCitation, DefaultCitationJsonApi } from '@shared/models';
 
 import { environment } from 'src/environments/environment';
 
@@ -14,6 +15,7 @@ import { environment } from 'src/environments/environment';
 })
 export class CitationsService {
   private readonly http = inject(HttpClient);
+  private readonly jsonApiService = inject(JsonApiService);
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -21,11 +23,25 @@ export class CitationsService {
     [ResourceType.Preprint, 'preprints'],
   ]);
 
-  getDefaultCitation(resourceType: ResourceType, resourceId: string, citationId: string): Observable<DefaultCitation> {
+  fetchDefaultCitation(
+    resourceType: ResourceType,
+    resourceId: string,
+    citationId: string
+  ): Observable<DefaultCitation> {
     const baseUrl = this.getBaseUrl(resourceType, resourceId);
     return this.http
-      .get<DefaultCitationJsonApi>(`${baseUrl}/citation/${citationId}/`)
+      .get<DefaultCitationJsonApi>(`${baseUrl}/${citationId}/`)
       .pipe(map((response) => CitationsMapper.fromGetDefaultResponse(response)));
+  }
+
+  fetchCitationStyles(searchQuery?: string) {
+    const baseUrl = environment.apiUrl;
+
+    const params = new HttpParams().set('filter[title,short_title]', searchQuery || '').set('page[size]', '100');
+
+    return this.http
+      .get<CitationStylesJsonApiResponse>(`${baseUrl}/citations/styles`, { params })
+      .pipe(map((response) => CitationsMapper.fromGetCitationStylesResponse(response)));
   }
 
   private getBaseUrl(resourceType: ResourceType, resourceId: string): string {
@@ -36,6 +52,6 @@ export class CitationsService {
       throw new Error(`Unsupported resource type: ${resourceType}`);
     }
 
-    return `${baseUrl}/${resourcePath}/${resourceId}/contributors`;
+    return `${baseUrl}/${resourcePath}/${resourceId}/citation`;
   }
 }

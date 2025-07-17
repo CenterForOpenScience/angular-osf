@@ -13,4 +13,14 @@ export class CitationsSelectors {
   static getDefaultCitationsLoading(state: CitationsStateModel) {
     return state.defaultCitations.isLoading;
   }
+
+  @Selector([CitationsState])
+  static getCitationStyles(state: CitationsStateModel) {
+    return state.citationStyles.data;
+  }
+
+  @Selector([CitationsState])
+  static getCitationStylesLoading(state: CitationsStateModel) {
+    return state.citationStyles.isLoading;
+  }
 }

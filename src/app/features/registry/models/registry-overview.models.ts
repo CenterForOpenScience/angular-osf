@@ -46,6 +46,7 @@ export interface RegistryOverview {
     type: string;
   };
   subjects?: RegistrySubject[];
+  customCitation: string;
   hasData: boolean;
   hasAnalyticCode: boolean;
   hasMaterials: boolean;

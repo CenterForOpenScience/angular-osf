@@ -101,6 +101,7 @@ export interface ProjectOverview {
   wikiEnabled: boolean;
   subjects: ProjectOverviewSubject[];
   contributors: ProjectOverviewContributor[];
+  customCitation: string | null;
   region?: {
     id: string;
     type: string;
@@ -154,6 +155,7 @@ export interface ProjectOverviewGetResponseJsoApi {
     current_user_is_contributor_or_group_member: boolean;
     wiki_enabled: boolean;
     subjects: ProjectOverviewSubject[][];
+    custom_citation: string | null;
   };
   embeds: {
     affiliated_institutions: {
