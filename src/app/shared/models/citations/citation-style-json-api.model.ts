@@ -1,12 +1,11 @@
 export interface CitationStyleJsonApi {
   id: string;
-  title: string;
-  short_title: string;
-  summary: string | null;
-  has_bibliography: boolean;
-  parent_style: string;
-}
-
-export interface CitationStylesJsonApiResponse {
-  styles: CitationStyleJsonApi[];
+  type: string;
+  attributes: {
+    title: string;
+    short_title: string | null;
+    summary: string | null;
+    date_parsed: string;
+  };
+  links: Record<string, string>;
 }

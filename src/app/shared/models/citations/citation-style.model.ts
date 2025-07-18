@@ -1,8 +1,7 @@
 export interface CitationStyle {
   id: string;
   title: string;
-  shortTitle: string;
+  shortTitle: string | null;
   summary: string | null;
-  hasBibliography: boolean;
-  parentStyle: string;
+  dateParsed: string;
 }

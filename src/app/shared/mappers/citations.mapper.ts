@@ -1,27 +1,56 @@
 import { CITATION_TITLES } from '@shared/constants';
 import { CitationTypes } from '@shared/enums';
-import { CitationStyle, CitationStylesJsonApiResponse, DefaultCitation, DefaultCitationJsonApi } from '@shared/models';
+import {
+  CitationStyle,
+  CitationStyleJsonApi,
+  DefaultCitation,
+  DefaultCitationJsonApi,
+  StyledCitation,
+  StyledCitationJsonApi,
+} from '@shared/models';
+import { CustomCitationPayload } from '@shared/models/citations/custom-citation-payload.model';
+import { CustomCitationPayloadJsonApi } from '@shared/models/citations/custom-citation-payload-json-api.model';
 
 export class CitationsMapper {
   static fromGetDefaultResponse(response: DefaultCitationJsonApi): DefaultCitation {
-    const citationId = response.data.id;
+    const citationId = response.id;
 
     return {
       id: citationId,
-      type: response.data.type,
-      citation: response.data.attributes.citation,
+      type: response.type,
+      citation: response.attributes.citation,
       title: CITATION_TITLES[citationId as CitationTypes],
     };
   }
 
-  static fromGetCitationStylesResponse(response: CitationStylesJsonApiResponse): CitationStyle[] {
-    return response.styles.map((style) => ({
+  static fromGetCitationStylesResponse(response: CitationStyleJsonApi[]): CitationStyle[] {
+    return response.map((style) => ({
       id: style.id,
-      title: style.title,
-      shortTitle: style.short_title,
-      summary: style.summary,
-      hasBibliography: style.has_bibliography,
-      parentStyle: style.parent_style,
+      type: style.type,
+      title: style.attributes.title,
+      shortTitle: style.attributes.short_title,
+      summary: style.attributes.summary,
+      dateParsed: style.attributes.date_parsed,
     }));
+  }
+
+  static fromGetStyledCitationResponse(response: StyledCitationJsonApi): StyledCitation {
+    return {
+      id: response.id,
+      type: response.type,
+      citation: response.attributes.citation,
+    };
+  }
+
+  static toUpdateCustomCitationRequest(payload: CustomCitationPayload): CustomCitationPayloadJsonApi {
+    return {
+      data: {
+        id: payload.id,
+        type: payload.type,
+        attributes: {
+          custom_citation: payload.citationText,
+        },
+      },
+    };
   }
 }

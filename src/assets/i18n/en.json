@@ -39,7 +39,8 @@
       "submit": "Submit",
       "view": "View",
       "review": "Review",
-      "upload": "Upload"
+      "upload": "Upload",
+      "customize": "Customize"
     },
     "search": {
       "title": "Search",
@@ -574,6 +575,8 @@
         "getMoreCitations": "Get More Citations",
         "citationInputPlaceholder": "Select citation style or start typing",
         "citationLoadingPlaceholder": "Loading options...",
+        "customCitationPlaceholder": "Enter custom citation",
+        "citeAs": "Cite as:",
         "noCitationStylesFound": "No results found",
         "affiliatedInstitutions": "Affiliated Institutions",
         "noDescription": "No description",

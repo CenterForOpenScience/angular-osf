@@ -2,47 +2,94 @@
 
 @if (resource) {
   <div class="metadata-accordion">
-    @if (isEditMode()) {}
     <p-accordion>
       <p-accordion-panel value="0">
         <p-accordion-header class="pt-0 pb-2 justify-content-between">
           <h3>{{ 'project.overview.metadata.citation' | translate }}</h3>
         </p-accordion-header>
         <p-accordion-content>
-          <div class="flex flex-column gap-3">
-            @if (resource.customCitation) {
-              <p>{{ resource.customCitation }}</p>
+          @if (!isEditMode()) {
+            <p-button
+              severity="secondary"
+              [label]="'common.buttons.customize' | translate"
+              (click)="toggleEditMode()"
+            ></p-button>
+
+            @if (isCitationsLoading()) {
+              <div class="flex flex-column gap-3">
+                <p-skeleton height="3.5rem"></p-skeleton>
+                <p-skeleton height="3.5rem"></p-skeleton>
+                <p-skeleton height="3.5rem"></p-skeleton>
+              </div>
             } @else {
-              @if (defaultCitations().length) {
-                @for (citation of defaultCitations(); track citation.id) {
-                  <div class="flex flex-column gap-2">
-                    <h3>{{ citation.title }}</h3>
-                    <p>{{ citation.citation }}</p>
+              @if (resource.customCitation) {
+                <div class="flex flex-column gap-1">
+                  <h3>{{ 'project.overview.metadata.citeAs' | translate }}</h3>
+                  <p>{{ resource.customCitation }}</p>
+                </div>
+              } @else {
+                @if (defaultCitations().length) {
+                  <div class="flex flex-column gap-3">
+                    @for (citation of defaultCitations(); track citation.id) {
+                      <div class="flex flex-column gap-1">
+                        <h3>{{ citation.title }}</h3>
+                        <p>{{ citation.citation }}</p>
+                      </div>
+                    }
                   </div>
+                }
+                <p-divider />
+                <p>{{ 'project.overview.metadata.getMoreCitations' | translate }}</p>
+                <p-select
+                  class="mt-2 w-full"
+                  [placeholder]="'project.overview.metadata.citationInputPlaceholder' | translate"
+                  [loading]="isCitationStylesLoading()"
+                  [options]="citationStylesOptions()"
+                  [filter]="true"
+                  (onFilter)="handleCitationStyleFilterSearch($event)"
+                  optionLabel="label"
+                  optionValue="value"
+                  [appendTo]="'body'"
+                  [emptyFilterMessage]="filterMessage()"
+                  [emptyMessage]="filterMessage()"
+                  (onChange)="handleGetStyledCitation($event)"
+                >
+                  <ng-template #selectedItem let-selectedOption>
+                    {{ selectedOption.label }}
+                  </ng-template>
+                </p-select>
+
+                @if (styledCitation()) {
+                  <p>{{ styledCitation()?.citation }}</p>
                 }
               }
             }
-          </div>
-          <p-divider />
-          <p>{{ 'project.overview.metadata.getMoreCitations' | translate }}</p>
-          <p-select
-            class="mt-2"
-            [placeholder]="'project.overview.metadata.citationInputPlaceholder' | translate"
-            [loading]="isCitationStylesLoading()"
-            [options]="citationStylesOptions()"
-            [filter]="true"
-            (onFilter)="handleCitationStyleFilterSearch($event)"
-            optionLabel="label"
-            optionValue="value"
-            [appendTo]="'body'"
-            [emptyFilterMessage]="filterMessage()"
-            [emptyMessage]="filterMessage()"
-            (onChange)="handleCitationStyleChange($event)"
-          >
-            <ng-template #selectedItem let-selectedOption>
-              {{ selectedOption.label }}
-            </ng-template>
-          </p-select>
+          } @else {
+            <textarea
+              [placeholder]="'project.overview.metadata.customCitationPlaceholder' | translate"
+              pTextarea
+              rows="4"
+              class="w-full"
+              [formControl]="customCitationInput"
+            ></textarea>
+            <div class="flex mt-3 justify-content-end">
+              <p-button severity="secondary" [disabled]="isCustomCitationSubmitting()" (click)="toggleEditMode()">
+                Cancel
+              </p-button>
+              <p-button
+                severity="danger"
+                [disabled]="isCustomCitationSubmitting()"
+                (click)="handleDeleteCustomCitation()"
+                >Remove
+              </p-button>
+              <p-button
+                severity="primary"
+                [loading]="isCustomCitationSubmitting()"
+                (click)="handleUpdateCustomCitation()"
+                >Save
+              </p-button>
+            </div>
+          }
         </p-accordion-content>
       </p-accordion-panel>
     </p-accordion>

@@ -15,6 +15,12 @@ export class UpdateProjectPublicStatus {
   ) {}
 }
 
+export class SetProjectCustomCitation {
+  static readonly type = '[Project Overview] Set Project Custom Citation';
+
+  constructor(public citation: string) {}
+}
+
 export class ForkResource {
   static readonly type = '[Project Overview] Fork Resource';
 

@@ -13,6 +13,7 @@ import {
   GetRegistrySubjects,
   GetSchemaBlocks,
   MakePublic,
+  SetRegistryCustomCitation,
   WithdrawRegistration,
 } from './registry-overview.actions';
 import { RegistryOverviewStateModel } from './registry-overview.model';
@@ -209,6 +210,20 @@ export class RegistryOverviewState {
       }),
       catchError((error) => this.handleError(ctx, 'registry', error))
     );
+  }
+
+  @Action(SetRegistryCustomCitation)
+  setRegistryCustomCitation(ctx: StateContext<RegistryOverviewStateModel>, action: SetRegistryCustomCitation) {
+    const state = ctx.getState();
+    ctx.patchState({
+      registry: {
+        ...state.registry,
+        data: {
+          ...state.registry.data!,
+          customCitation: action.citation,
+        },
+      },
+    });
   }
 
   private handleError(

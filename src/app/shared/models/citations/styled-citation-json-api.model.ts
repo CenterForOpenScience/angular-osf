@@ -1,4 +1,4 @@
-export interface DefaultCitationJsonApi {
+export interface StyledCitationJsonApi {
   id: string;
   type: string;
   attributes: {

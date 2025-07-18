@@ -15,6 +15,16 @@ export class CitationsSelectors {
   }
 
   @Selector([CitationsState])
+  static getDefaultCitationsSubmitting(state: CitationsStateModel) {
+    return state.defaultCitations.isSubmitting;
+  }
+
+  @Selector([CitationsState])
+  static getCustomCitationSubmitting(state: CitationsStateModel) {
+    return state.customCitation.isSubmitting;
+  }
+
+  @Selector([CitationsState])
   static getCitationStyles(state: CitationsStateModel) {
     return state.citationStyles.data;
   }
@@ -22,5 +32,15 @@ export class CitationsSelectors {
   @Selector([CitationsState])
   static getCitationStylesLoading(state: CitationsStateModel) {
     return state.citationStyles.isLoading;
+  }
+
+  @Selector([CitationsState])
+  static getStyledCitation(state: CitationsStateModel) {
+    return state.styledCitation.data;
+  }
+
+  @Selector([CitationsState])
+  static getStyledCitationLoading(state: CitationsStateModel) {
+    return state.styledCitation.isLoading;
   }
 }

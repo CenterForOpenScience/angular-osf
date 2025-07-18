@@ -41,3 +41,9 @@ export class MakePublic {
 
   constructor(public registryId: string) {}
 }
+
+export class SetRegistryCustomCitation {
+  static readonly type = '[Registry Overview] Set Registry Custom Citation';
+
+  constructor(public citation: string) {}
+}

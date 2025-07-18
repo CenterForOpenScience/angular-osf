@@ -30,6 +30,7 @@ import {
   GetLinkedProjects,
   GetProjectById,
   ProjectOverviewSelectors,
+  SetProjectCustomCitation,
 } from './store';
 
 @Component({
@@ -65,6 +66,7 @@ export class ProjectOverviewComponent implements OnInit {
     getHomeWiki: GetHomeWiki,
     getComponents: GetComponents,
     getLinkedProjects: GetLinkedProjects,
+    setProjectCustomCitation: SetProjectCustomCitation,
     clearProjectOverview: ClearProjectOverview,
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
@@ -95,6 +97,10 @@ export class ProjectOverviewComponent implements OnInit {
 
   constructor() {
     this.setupCleanup();
+  }
+
+  onCustomCitationUpdated(citation: string): void {
+    this.actions.setProjectCustomCitation(citation);
   }
 
   ngOnInit(): void {

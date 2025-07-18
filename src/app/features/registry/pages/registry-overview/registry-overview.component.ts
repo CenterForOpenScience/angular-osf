@@ -25,6 +25,7 @@ import {
   GetRegistryInstitutions,
   GetRegistrySubjects,
   RegistryOverviewSelectors,
+  SetRegistryCustomCitation,
 } from '../../store/registry-overview';
 
 @Component({
@@ -104,6 +105,7 @@ export class RegistryOverviewComponent {
     getBookmarksId: GetBookmarksCollectionId,
     getSubjects: GetRegistrySubjects,
     getInstitutions: GetRegistryInstitutions,
+    setCustomCitation: SetRegistryCustomCitation,
   });
 
   constructor() {
@@ -124,5 +126,9 @@ export class RegistryOverviewComponent {
 
   openRevision(revisionIndex: number): void {
     this.selectedRevisionIndex.set(revisionIndex);
+  }
+
+  onCustomCitationUpdated(citation: string): void {
+    this.actions.setCustomCitation(citation);
   }
 }

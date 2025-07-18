@@ -18,7 +18,10 @@
     </div>
 
     <div class="flex flex-column right-section p-4">
-      <osf-resource-metadata [currentResource]="resourceOverview()" />
+      <osf-resource-metadata
+        [currentResource]="resourceOverview()"
+        (customCitationUpdated)="onCustomCitationUpdated($event)"
+      />
     </div>
   </div>
 } @else {

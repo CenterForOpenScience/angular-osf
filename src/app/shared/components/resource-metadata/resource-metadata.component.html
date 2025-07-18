@@ -164,6 +164,9 @@
       }
     </div>
 
-    <osf-resource-citations [currentResource]="currentResource()"></osf-resource-citations>
+    <osf-resource-citations
+      [currentResource]="currentResource()"
+      (customCitation)="onCustomCitationUpdated($event)"
+    ></osf-resource-citations>
   </div>
 }

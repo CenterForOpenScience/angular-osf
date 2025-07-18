@@ -4,7 +4,7 @@ import { Button } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { ResourceCitationsComponent } from '@shared/components/resource-citations/resource-citations.component';
@@ -21,6 +21,11 @@ import { ResourceOverview } from '@shared/models';
 })
 export class ResourceMetadataComponent {
   currentResource = input.required<ResourceOverview | null>();
+  customCitationUpdated = output<string>();
 
   protected readonly resourceTypes = OsfResourceTypes;
+
+  onCustomCitationUpdated(citation: string): void {
+    this.customCitationUpdated.emit(citation);
+  }
 }
