@@ -1,6 +1,10 @@
 @use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
+:host {
+  min-height: 200px;
+}
+
 .files-table {
   display: flex;
   flex-direction: column;
@@ -68,7 +72,7 @@
 }
 
 .drop-zone {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;

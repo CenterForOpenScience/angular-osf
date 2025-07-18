@@ -9,17 +9,19 @@ import { catchError } from 'rxjs/operators';
 
 import { DatePipe } from '@angular/common';
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
+  ElementRef,
   HostBinding,
   inject,
   input,
   OnDestroy,
-  OnInit,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -38,8 +40,9 @@ import { CustomConfirmationService, FilesService, ToastService } from '@shared/s
   styleUrl: './files-tree.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FilesTreeComponent implements OnInit, OnDestroy {
+export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   @HostBinding('class') classes = 'relative';
+  private dropZoneContainerRef = viewChild<ElementRef>('dropZoneContainer');
   readonly filesService = inject(FilesService);
   readonly router = inject(Router);
   readonly toastService = inject(ToastService);
@@ -78,15 +81,15 @@ export class FilesTreeComponent implements OnInit, OnDestroy {
     }
   });
 
-  ngOnInit(): void {
-    window.addEventListener('dragenter', this.onGlobalDragEnter);
+  ngAfterViewInit(): void {
+    this.dropZoneContainerRef()!.nativeElement.addEventListener('dragenter', this.dragEnterHandler);
   }
 
   ngOnDestroy(): void {
-    window.removeEventListener('dragenter', this.onGlobalDragEnter);
+    this.dropZoneContainerRef()!.nativeElement.removeEventListener('dragenter', this.dragEnterHandler);
   }
 
-  onGlobalDragEnter = (event: DragEvent) => {
+  private dragEnterHandler = (event: DragEvent) => {
     if (event.dataTransfer?.types?.includes('Files')) {
       this.isDragOver.set(true);
     }
@@ -94,12 +97,20 @@ export class FilesTreeComponent implements OnInit, OnDestroy {
 
   onDragOver(event: DragEvent) {
     event.preventDefault();
+    event.stopPropagation();
     event.dataTransfer!.dropEffect = 'copy';
     this.isDragOver.set(true);
   }
 
+  onDragLeave(event: Event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver.set(false);
+  }
+
   onDrop(event: DragEvent) {
     event.preventDefault();
+    event.stopPropagation();
     this.isDragOver.set(false);
     const files = event.dataTransfer?.files;
 

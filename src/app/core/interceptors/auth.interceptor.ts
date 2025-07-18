@@ -9,11 +9,12 @@ export const authInterceptor: HttpInterceptorFn = (
   const authToken = 'UlO9O9GNKgVzJD7pUeY53jiQTKJ4U2znXVWNvh0KZQruoENuILx0IIYf9LoDz7Duq72EIm';
   // UlO9O9GNKgVzJD7pUeY53jiQTKJ4U2znXVWNvh0KZQruoENuILx0IIYf9LoDz7Duq72EIm kyrylo
   // 2rjFZwmdDG4rtKj7hGkEMO6XyHBM2lN7XBbsA1e8OqcFhOWu6Z7fQZiheu9RXtzSeVrgOt roman nastyuk
-
-  if (authToken) {
+  const localStorageToken = localStorage.getItem('authToken');
+  const token = localStorageToken || authToken;
+  if (token) {
     const authReq = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${authToken}`,
+        Authorization: `Bearer ${token}`,
         Accept: req.responseType === 'text' ? '*/*' : 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
       },

@@ -41,6 +41,7 @@
               [placeholder]="'registries.new.selectProject' | translate"
               optionLabel="title"
               optionValue="id"
+              [loading]="isProjectsLoading()"
               (onChange)="onSelectProject($event.value)"
               class="w-6"
             />
