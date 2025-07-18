@@ -1,0 +1,55 @@
+<section
+  class="p-card p-card-body card gap-4 file-section-height"
+  [class.medium]="isMedium()"
+  [class.large]="isLarge()"
+  [class.small]="!isMedium() && !isLarge()"
+>
+  @if (safeLink()) {
+    <iframe
+      [src]="safeLink()"
+      (load)="isIframeLoading = false"
+      [hidden]="isIframeLoading"
+      title="Rendering of document"
+      allowfullscreen=""
+      width="100%"
+      class="flex-1 border-none"
+    ></iframe>
+  }
+  @if (isIframeLoading || isFileLoading()) {
+    <osf-loading-spinner />
+  }
+
+  <section class="flex flex-column gap-2">
+    @if (fileVersions().length) {
+      @let fileVersionsValue = fileVersions();
+
+      <div class="flex flex-row align-items-center">
+        <p>{{ fileVersionsValue[0].name }}</p>
+        <p class="m-auto">Version: {{ fileVersionsValue[0].id }}</p>
+        <p-button severity="info" label="Download previous versions" (click)="versionsMenu.toggle($event)" />
+
+        <p-menu #versionsMenu [model]="versionMenuItems()" appendTo="body" popup />
+      </div>
+    }
+
+    @if (areFileVersionsLoading()) {
+      <p-skeleton width="100%" height="1rem" />
+    }
+
+    @if (file()) {
+      @let fileValue = file()!;
+
+      <div class="flex flex-column gap-1 justify-content-start md:flex-row">
+        <span>Submitted: {{ fileValue.dateCreated | date: 'longDate' }}</span>
+        @if (isMedium() || isLarge()) {
+          <span>|</span>
+        }
+        <span>Last edited: {{ fileValue.dateModified | date: 'longDate' }}</span>
+      </div>
+    }
+
+    @if (isFileLoading()) {
+      <p-skeleton width="100%" height="1rem" />
+    }
+  </section>
+</section>

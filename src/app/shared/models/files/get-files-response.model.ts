@@ -1,11 +1,9 @@
 import { ApiData, JsonApiResponse } from '@core/models';
 import { FileTargetResponse } from '@osf/features/project/files/models/responses/get-file-target-response.model';
 
-export type GetFilesResponse = JsonApiResponse<
-  ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>[],
-  null
->;
-export type GetFileResponse = ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>;
+export type GetFilesResponse = JsonApiResponse<FileData[], null>;
+export type GetFileResponse = JsonApiResponse<FileData, null>;
+export type FileData = ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>;
 export type AddFileResponse = ApiData<FileResponse, null, null, null>;
 
 export interface FileResponse {

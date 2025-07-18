@@ -80,10 +80,10 @@
       <p-accordion>
         <p-accordion-panel value="0">
           <p-accordion-header class="p-0 justify-content-start gap-2">
-            <div>{{ license()?.name }}</div>
+            <p class="font-normal">{{ license()?.name }}</p>
           </p-accordion-header>
           <p-accordion-content>
-            <div>{{ license()!.text | interpolate: licenseOptionsRecord() }}</div>
+            <p>{{ license()!.text | interpolate: licenseOptionsRecord() }}</p>
           </p-accordion-content>
         </p-accordion-panel>
       </p-accordion>
@@ -234,11 +234,13 @@
     [label]="'common.buttons.cancel' | translate"
     severity="info"
     (click)="cancelSubmission()"
+    [disabled]="isPreprintSubmitting()"
   />
   <p-button
     class="w-6 md:w-9rem"
     styleClass="w-full"
     [label]="'common.buttons.submit' | translate"
     (click)="submitPreprint()"
+    [loading]="isPreprintSubmitting()"
   />
 </section>

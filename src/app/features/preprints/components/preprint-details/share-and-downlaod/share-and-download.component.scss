@@ -1,0 +1,22 @@
+@use "assets/styles/mixins" as mix;
+@use "assets/styles/variables" as var;
+
+.social-link {
+  background-color: var(--pr-blue-1);
+  border-radius: mix.rem(8px);
+  color: var(--white);
+  padding: mix.rem(7px);
+  width: mix.rem(36px);
+  height: mix.rem(36px);
+
+  &:hover {
+    background-color: var(--pr-blue-3);
+    text-decoration: none;
+  }
+}
+
+.card {
+  @media (max-width: var.$breakpoint-sm) {
+    --p-card-body-padding: 0.75rem;
+  }
+}

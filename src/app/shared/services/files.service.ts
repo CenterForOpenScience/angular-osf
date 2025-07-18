@@ -6,7 +6,13 @@ import { inject, Injectable } from '@angular/core';
 
 import { ApiData, JsonApiResponse } from '@core/models';
 import { JsonApiService } from '@core/services';
-import { MapFile, MapFileCustomMetadata, MapFileRevision, MapFiles } from '@osf/features/project/files/mappers';
+import {
+  MapFile,
+  MapFileCustomMetadata,
+  MapFileRevision,
+  MapFiles,
+  MapFileVersions,
+} from '@osf/features/project/files/mappers';
 import {
   CreateFolderResponse,
   FileCustomMetadata,
@@ -30,8 +36,10 @@ import {
   GetFileResponse,
   GetFilesResponse,
   OsfFile,
+  OsfFileVersion,
 } from '@shared/models';
 import { ConfiguredStorageAddon } from '@shared/models/addons/configured-storage-addon.model';
+import { FileVersionsResponseJsonApi } from '@shared/models/files/file-version-json-api.model';
 import { GetConfiguredStorageAddonsJsonApi } from '@shared/models/files/get-configured-storage-addons.model';
 import { ToastService } from '@shared/services/toast.service';
 
@@ -94,7 +102,7 @@ export class FilesService {
   }
 
   getFolder(link: string): Observable<OsfFile> {
-    return this.#jsonApiService.get<JsonApiResponse<GetFileResponse, null>>(link).pipe(
+    return this.#jsonApiService.get<GetFileResponse>(link).pipe(
       map((response) => MapFile(response.data)),
       catchError((error) => {
         this.toastService.showError(error.error.message);
@@ -124,7 +132,7 @@ export class FilesService {
       resource: resourceId,
     };
 
-    return this.#jsonApiService.post<JsonApiResponse<GetFileResponse, null>>(link, body).pipe(
+    return this.#jsonApiService.post<GetFileResponse>(link, body).pipe(
       map((response) => MapFile(response.data)),
       catchError((error) => {
         this.toastService.showError(error.error.message);
@@ -144,6 +152,23 @@ export class FilesService {
     return this.#jsonApiService
       .get<GetFileTargetResponse>(`${environment.apiUrl}/files/${fileGuid}/?embed=target`)
       .pipe(map((response) => MapFile(response.data)));
+  }
+
+  getFileById(fileGuid: string): Observable<OsfFile> {
+    return this.#jsonApiService
+      .get<GetFileResponse>(`${environment.apiUrl}/files/${fileGuid}/`)
+      .pipe(map((response) => MapFile(response.data)));
+  }
+
+  getFileVersions(fileGuid: string): Observable<OsfFileVersion[]> {
+    const params = {
+      sort: '-id',
+      'page[size]': 50,
+    };
+
+    return this.#jsonApiService
+      .get<FileVersionsResponseJsonApi>(`${environment.apiUrl}/files/${fileGuid}/versions/`, params)
+      .pipe(map((response) => MapFileVersions(response)));
   }
 
   getFileMetadata(fileGuid: string): Observable<OsfFileCustomMetadata> {
