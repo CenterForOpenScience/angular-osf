@@ -29,13 +29,23 @@ import { MoveFileDialogComponent, RenameFileDialogComponent } from '@osf/feature
 import { embedDynamicJs, embedStaticHtml, FilesTreeActions } from '@osf/features/project/files/models';
 import { FileMenuType } from '@osf/shared/enums';
 import { FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
+import { StopPropagationDirective } from '@shared/directives';
 import { FileMenuAction, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-files-tree',
-  imports: [DatePipe, FileSizePipe, PrimeTemplate, TranslatePipe, Tree, LoadingSpinnerComponent, FileMenuComponent],
+  imports: [
+    DatePipe,
+    FileSizePipe,
+    PrimeTemplate,
+    TranslatePipe,
+    Tree,
+    LoadingSpinnerComponent,
+    FileMenuComponent,
+    StopPropagationDirective,
+  ],
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
