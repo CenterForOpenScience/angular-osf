@@ -2,6 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
+import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -16,6 +17,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
+import { InterpolatePipe } from '@osf/shared/pipes';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   ContributorsSelectors,
@@ -25,13 +27,25 @@ import {
 } from '@osf/shared/stores';
 
 import { FieldType } from '../../enums';
-import { DeleteDraft, FetchProjectChildren, RegistriesSelectors } from '../../store';
+import { DeleteDraft, FetchLicenses, FetchProjectChildren, RegistriesSelectors } from '../../store';
 import { ConfirmRegistrationDialogComponent } from '../confirm-registration-dialog/confirm-registration-dialog.component';
 import { SelectComponentsDialogComponent } from '../select-components-dialog/select-components-dialog.component';
 
 @Component({
   selector: 'osf-review',
-  imports: [TranslatePipe, Card, Message, RouterLink, Tag, Button],
+  imports: [
+    TranslatePipe,
+    Card,
+    Message,
+    RouterLink,
+    Tag,
+    Button,
+    Accordion,
+    AccordionContent,
+    AccordionHeader,
+    AccordionPanel,
+    InterpolatePipe,
+  ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -54,6 +68,9 @@ export class ReviewComponent {
   protected readonly contributors = select(ContributorsSelectors.getContributors);
   protected readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
   protected readonly components = select(RegistriesSelectors.getRegistrationComponents);
+  protected readonly license = select(RegistriesSelectors.getRegistrationLicense);
+  private readonly OSF_PROVIDER_ID = 'osf';
+
   protected readonly FieldType = FieldType;
 
   protected actions = createDispatchMap({
@@ -61,6 +78,7 @@ export class ReviewComponent {
     getSubjects: FetchSelectedSubjects,
     deleteDraft: DeleteDraft,
     getProjectsComponents: FetchProjectChildren,
+    fetchLicenses: FetchLicenses,
   });
 
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
@@ -71,6 +89,10 @@ export class ReviewComponent {
     return Object.values(this.stepsValidation()).some((step) => step.invalid);
   });
 
+  licenseOptionsRecord = computed(() => {
+    return (this.draftRegistration()?.license.options ?? {}) as Record<string, string>;
+  });
+
   constructor() {
     if (!this.contributors()?.length) {
       this.actions.getContributors(this.draftId(), ResourceType.DraftRegistration);
@@ -78,6 +100,12 @@ export class ReviewComponent {
     if (!this.subjects()?.length) {
       this.actions.getSubjects(this.draftId(), ResourceType.DraftRegistration);
     }
+
+    effect(() => {
+      if (this.draftRegistration()) {
+        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? this.OSF_PROVIDER_ID);
+      }
+    });
 
     let componentsLoaded = false;
     effect(() => {

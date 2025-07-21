@@ -32,6 +32,7 @@ export class NewRegistrationComponent {
   protected readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
   protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
   protected readonly isProvidersLoading = select(RegistriesSelectors.isProvidersLoading);
+  protected readonly isProjectsLoading = select(RegistriesSelectors.isProjectsLoading);
   protected actions = createDispatchMap({
     getProjects: GetProjects,
     getProviderSchemas: GetProviderSchemas,
@@ -39,12 +40,13 @@ export class NewRegistrationComponent {
   });
 
   protected readonly providerId = this.route.snapshot.params['providerId'];
+  protected readonly projectId = this.route.snapshot.queryParams['projectId'];
 
-  fromProject = false;
+  fromProject = this.projectId !== undefined;
 
   draftForm = this.fb.group({
     providerSchema: ['', Validators.required],
-    project: [''],
+    project: [this.projectId || ''],
   });
 
   constructor() {

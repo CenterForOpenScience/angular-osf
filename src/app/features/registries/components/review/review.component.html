@@ -37,10 +37,21 @@
         }
       </div>
     </div>
-    <div class="mb-4">
+
+    <div class="license mb-4">
       <h4 class="mb-2">{{ 'shared.license.title' | translate }}</h4>
-      <p>{{ draftRegistration()?.license?.id }}</p>
-      @if (!draftRegistration()?.license) {
+      @if (draftRegistration()?.license && license()) {
+        <p-accordion>
+          <p-accordion-panel value="0">
+            <p-accordion-header class="p-0 justify-content-start gap-2">
+              <div>{{ license()?.name }}</div>
+            </p-accordion-header>
+            <p-accordion-content>
+              <div>{{ license()!.text | interpolate: licenseOptionsRecord() }}</div>
+            </p-accordion-content>
+          </p-accordion-panel>
+        </p-accordion>
+      } @else {
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
         <p-message class="mt-1" severity="error" variant="simple" size="small">
           {{ INPUT_VALIDATION_MESSAGES.required | translate }}

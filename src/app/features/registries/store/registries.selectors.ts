@@ -24,6 +24,11 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
+  static isProjectsLoading(state: RegistriesStateModel): boolean {
+    return state.projects.isLoading;
+  }
+
+  @Selector([RegistriesState])
   static isDraftSubmitting(state: RegistriesStateModel): boolean {
     return state.draftRegistration.isSubmitting ?? false;
   }
@@ -61,6 +66,11 @@ export class RegistriesSelectors {
   @Selector([RegistriesState])
   static getSelectedLicense(state: RegistriesStateModel) {
     return state.draftRegistration.data?.license || null;
+  }
+
+  @Selector([RegistriesState])
+  static getRegistrationLicense(state: RegistriesStateModel): License | null {
+    return state.licenses.data.find((l) => l.id === state.draftRegistration.data?.license.id) || null;
   }
 
   @Selector([RegistriesState])
