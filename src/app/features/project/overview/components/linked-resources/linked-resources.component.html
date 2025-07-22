@@ -23,24 +23,13 @@
               </h2>
               <div>
                 <p-button
-                  severity="contrast"
-                  variant="text"
-                  raised
-                  icon="fas fa-ellipsis-v"
-                  (click)="componentActionMenu.toggle($event)"
+                  class="danger-icon-btn"
+                  icon="fas fa-trash"
+                  severity="danger"
+                  text
+                  (click)="handleOpenDeleteLinkedResourceModal(linkedResource.id)"
                 >
                 </p-button>
-
-                <p-menu
-                  appendTo="body"
-                  [model]="linkedResourcesActionItems(linkedResource.id)"
-                  #componentActionMenu
-                  popup
-                >
-                  <ng-template #item let-item>
-                    <a class="p-menu-item-link">{{ item.label | translate }}</a>
-                  </ng-template>
-                </p-menu>
               </div>
             </div>
 

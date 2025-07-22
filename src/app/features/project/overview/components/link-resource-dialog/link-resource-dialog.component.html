@@ -5,13 +5,13 @@
   ></osf-search-input>
   <p-buttonGroup>
     <p-button
-      class="link-project-button"
+      class="link-project-button w-6 md:w-auto"
       [label]="'project.overview.dialog.linkProject.searchAllObjects' | translate"
       [ngClass]="{ active: searchMode() === ResourceSearchMode.All }"
       (onClick)="onSearchModeChange(ResourceSearchMode.All)"
     ></p-button>
     <p-button
-      class="link-project-button"
+      class="link-project-button w-6 md:w-auto"
       [label]="'project.overview.dialog.linkProject.searchMyObjects' | translate"
       [ngClass]="{ active: searchMode() === ResourceSearchMode.User }"
       (onClick)="onSearchModeChange(ResourceSearchMode.User)"
@@ -19,13 +19,13 @@
   </p-buttonGroup>
   <p-buttonGroup>
     <p-button
-      class="link-project-button"
+      class="link-project-button w-6 md:w-auto"
       [label]="'project.overview.dialog.linkProject.projects' | translate"
       [ngClass]="{ active: resourceType() === ResourceType.Project }"
       (onClick)="onObjectTypeChange(ResourceType.Project)"
     ></p-button>
     <p-button
-      class="link-project-button"
+      class="link-project-button w-6 md:w-auto"
       [label]="'project.overview.dialog.linkProject.registrations' | translate"
       [ngClass]="{ active: resourceType() === ResourceType.Registration }"
       (onClick)="onObjectTypeChange(ResourceType.Registration)"
@@ -119,5 +119,9 @@
     </p-table>
   }
 
-  <p-button class="ml-auto" [label]="'common.buttons.done' | translate" (onClick)="handleCloseDialog()"></p-button>
+  <p-button
+    class="btn-full-width md:w-auto md:ml-auto"
+    [label]="'common.buttons.done' | translate"
+    (onClick)="handleCloseDialog()"
+  ></p-button>
 </section>

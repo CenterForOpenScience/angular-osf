@@ -4,7 +4,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
 import { NgClass } from '@angular/common';
@@ -18,7 +17,7 @@ import { IS_XSMALL } from '@shared/utils';
 
 @Component({
   selector: 'osf-linked-resources',
-  imports: [Button, Menu, NgClass, Skeleton, TranslatePipe, TruncatedTextComponent],
+  imports: [Button, NgClass, Skeleton, TranslatePipe, TruncatedTextComponent],
   templateUrl: './linked-resources.component.html',
   styleUrl: './linked-resources.component.scss',
   providers: [DialogService],
@@ -31,12 +30,6 @@ export class LinkedResourcesComponent {
   protected isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
   protected isMobile = toSignal(inject(IS_XSMALL));
   protected nodeLinks = select(NodeLinksSelectors.getNodeLinks);
-  protected readonly linkedResourcesActionItems = (resourceId: string) => [
-    {
-      label: 'project.overview.actions.delete',
-      command: () => this.handleDeleteLinkedResource(resourceId),
-    },
-  ];
 
   handleOpenLinkProjectModal() {
     const dialogWidth = this.isMobile() ? '95vw' : '850px';
@@ -51,7 +44,7 @@ export class LinkedResourcesComponent {
     });
   }
 
-  private handleDeleteLinkedResource(resourceId: string): void {
+  handleOpenDeleteLinkedResourceModal(resourceId: string): void {
     const dialogWidth = this.isMobile() ? '95vw' : '650px';
 
     const currentLink = this.getCurrentResourceNodeLink(resourceId);

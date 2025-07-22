@@ -50,3 +50,17 @@
     --p-button-text-danger-color: var(--red-3);
   }
 }
+
+.link-project-button {
+  &:not(.active) {
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .p-button {
+    width: 100%;
+  }
+}
