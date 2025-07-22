@@ -1,0 +1,7 @@
+@use "assets/styles/mixins" as mix;
+
+.upload-dialog {
+  .p-dialog {
+    width: mix.rem(356px);
+  }
+}
