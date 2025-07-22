@@ -25,7 +25,6 @@ import { createNewVersionStepsConst } from '@osf/features/preprints/constants';
 import { PreprintSteps } from '@osf/features/preprints/enums';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
-  CreateNewVersion,
   FetchPreprintById,
   PreprintStepperSelectors,
   ResetState,
@@ -56,7 +55,6 @@ export class CreateNewVersionComponent implements OnInit, OnDestroy, CanDeactiva
     setSelectedPreprintProviderId: SetSelectedPreprintProviderId,
     resetState: ResetState,
     fetchPreprint: FetchPreprintById,
-    createNewVersion: CreateNewVersion,
   });
 
   readonly PreprintSteps = PreprintSteps;
@@ -68,7 +66,6 @@ export class CreateNewVersionComponent implements OnInit, OnDestroy, CanDeactiva
   hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
   currentStep = signal<StepOption>(createNewVersionStepsConst[0]);
   isWeb = toSignal(inject(IS_WEB));
-  initMode = signal(true);
 
   constructor() {
     effect(() => {
@@ -84,20 +81,6 @@ export class CreateNewVersionComponent implements OnInit, OnDestroy, CanDeactiva
         );
         BrowserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
       }
-    });
-
-    effect(() => {
-      //[RNi] TODO: move this logic to handler of "Create New Version" button on preprint details page when implemented
-      const preprint = this.preprint();
-
-      if (!this.initMode()) return;
-      if (!preprint) return;
-
-      this.actions.createNewVersion(preprint.id).subscribe({
-        complete: () => {
-          this.initMode.set(false);
-        },
-      });
     });
   }
 

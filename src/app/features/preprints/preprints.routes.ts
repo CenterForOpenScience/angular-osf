@@ -108,6 +108,13 @@ export const preprintsRoutes: Routes = [
           ),
         canDeactivate: [ConfirmLeavingGuard],
       },
+      {
+        path: ':providerId/:preprintId',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/preprint-details/preprint-details.component').then(
+            (c) => c.PreprintDetailsComponent
+          ),
+      },
     ],
   },
 ];

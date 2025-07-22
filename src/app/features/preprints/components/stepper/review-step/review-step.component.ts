@@ -58,6 +58,7 @@ export class ReviewStepComponent implements OnInit {
   });
   provider = input.required<PreprintProviderDetails | undefined>();
   preprint = select(PreprintStepperSelectors.getPreprint);
+  isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   contributors = select(ContributorsSelectors.getContributors);
   bibliographicContributors = computed(() => {
@@ -85,7 +86,7 @@ export class ReviewStepComponent implements OnInit {
     this.actions.submitPreprint().subscribe({
       complete: () => {
         this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
-        this.router.navigateByUrl('/preprints');
+        this.router.navigate(['/preprints', this.provider()!.id, this.preprint()!.id]);
       },
     });
   }

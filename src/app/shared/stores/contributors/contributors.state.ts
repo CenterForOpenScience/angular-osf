@@ -11,32 +11,18 @@ import {
   ClearUsers,
   DeleteContributor,
   GetAllContributors,
+  ResetContributorsState,
   SearchUsers,
   UpdateBibliographyFilter,
   UpdateContributor,
   UpdatePermissionFilter,
   UpdateSearchValue,
 } from './contributors.actions';
-import { ContributorsStateModel } from './contributors.model';
+import { ContributorsStateModel, DefaultState } from './contributors.model';
 
 @State<ContributorsStateModel>({
   name: 'contributors',
-  defaults: {
-    contributorsList: {
-      data: [],
-      isLoading: false,
-      error: '',
-      searchValue: null,
-      permissionFilter: null,
-      bibliographyFilter: null,
-    },
-    users: {
-      data: [],
-      isLoading: false,
-      error: null,
-      totalCount: 0,
-    },
-  },
+  defaults: { ...DefaultState },
 })
 @Injectable()
 export class ContributorsState {
@@ -47,7 +33,7 @@ export class ContributorsState {
     const state = ctx.getState();
 
     ctx.patchState({
-      contributorsList: { ...state.contributorsList, isLoading: true, error: null },
+      contributorsList: { ...state.contributorsList, data: [], isLoading: true, error: null },
     });
 
     if (!action.resourceId || !action.resourceType) {
@@ -205,6 +191,11 @@ export class ContributorsState {
   @Action(ClearUsers)
   clearUsers(ctx: StateContext<ContributorsStateModel>) {
     ctx.patchState({ users: { data: [], isLoading: false, error: null, totalCount: 0 } });
+  }
+
+  @Action(ResetContributorsState)
+  resetState(ctx: StateContext<ContributorsStateModel>) {
+    ctx.setState({ ...DefaultState });
   }
 
   private handleError(ctx: StateContext<ContributorsStateModel>, section: 'contributorsList' | 'users', error: Error) {

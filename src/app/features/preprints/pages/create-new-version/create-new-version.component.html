@@ -30,20 +30,17 @@
   }
 </section>
 
-<!-- [RNi] TODO: Remove when preprint details page implemented -->
-@if (!this.initMode()) {
-  <section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
-    @switch (currentStep().value) {
-      @case (PreprintSteps.File) {
-        <osf-file-step
-          [provider]="preprintProvider()"
-          (nextClicked)="moveToNextStep()"
-          (backClicked)="moveToPreviousStep()"
-        />
-      }
-      @case (PreprintSteps.Review) {
-        <osf-review-step [provider]="preprintProvider()" />
-      }
+<section class="flex-1 bg-white px-3 py-4 md:py-4 md:px-4">
+  @switch (currentStep().value) {
+    @case (PreprintSteps.File) {
+      <osf-file-step
+        [provider]="preprintProvider()"
+        (nextClicked)="moveToNextStep()"
+        (backClicked)="moveToPreviousStep()"
+      />
     }
-  </section>
-}
+    @case (PreprintSteps.Review) {
+      <osf-review-step [provider]="preprintProvider()" />
+    }
+  }
+</section>

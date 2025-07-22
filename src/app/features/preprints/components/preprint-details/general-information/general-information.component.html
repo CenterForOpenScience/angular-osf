@@ -1,0 +1,133 @@
+<p-card>
+  @if (preprint()) {
+    @let preprintValue = preprint()!;
+    <div class="flex flex-column gap-4">
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.common.labels.abstract' | translate }}</h3>
+        <osf-truncated-text [maxVisibleLines]="2" [text]="preprintValue.description" />
+      </section>
+
+      @if (affiliatedInstitutions().length) {
+        <section class="flex flex-column gap-2">
+          <h3>{{ 'preprints.preprintStepper.review.sections.metadata.affiliatedInstitutions' | translate }}</h3>
+
+          <div class="flex gap-2">
+            @for (institution of affiliatedInstitutions(); track institution.id) {
+              <img alt="Institution logo" [src]="institution.assets.logo" height="45" />
+            }
+          </div>
+        </section>
+      }
+
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'Authors' | translate }}</h3>
+
+        <div class="flex flex-column gap-1 line-height-2 md:flex-row">
+          @for (contributor of bibliographicContributors(); track contributor.id) {
+            <div>
+              <a class="font-bold"> {{ contributor.fullName }}</a>
+              <span>{{ $last ? '' : ',' }}</span>
+            </div>
+          }
+
+          @if (areContributorsLoading()) {
+            <p-skeleton width="10rem" height="1.25rem" />
+          }
+        </div>
+      </section>
+
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>
+
+        @if (!preprintValue.hasCoi) {
+          <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
+        } @else {
+          {{ preprintValue.coiStatement }}
+        }
+      </section>
+
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.publicData' | translate }}</h3>
+
+        @switch (preprintValue.hasDataLinks) {
+          @case (ApplicabilityStatus.NotApplicable) {
+            <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noData' | translate }}</p>
+          }
+          @case (ApplicabilityStatus.Unavailable) {
+            {{ preprintValue.whyNoData }}
+          }
+          @case (ApplicabilityStatus.Applicable) {
+            @for (link of preprintValue.dataLinks; track $index) {
+              <p>{{ link }}</p>
+            }
+          }
+        }
+      </section>
+
+      <section class="flex flex-column gap-2">
+        <h3>
+          {{ 'preprints.preprintStepper.review.sections.authorAssertions.publicPreregistration' | translate }}
+        </h3>
+
+        @switch (preprintValue.hasPreregLinks) {
+          @case (ApplicabilityStatus.NotApplicable) {
+            <p>
+              {{ 'preprints.preprintStepper.review.sections.authorAssertions.noPrereg' | translate }}
+            </p>
+          }
+          @case (ApplicabilityStatus.Unavailable) {
+            {{ preprintValue.whyNoPrereg }}
+          }
+          @case (ApplicabilityStatus.Applicable) {
+            @switch (preprintValue.preregLinkInfo) {
+              @case (PreregLinkInfo.Analysis) {
+                <p>
+                  {{ 'preprints.preprintStepper.common.labels.preregTypes.analysis' | translate }}
+                </p>
+              }
+              @case (PreregLinkInfo.Designs) {
+                <p>
+                  {{ 'preprints.preprintStepper.common.labels.preregTypes.designs' | translate }}
+                </p>
+              }
+              @case (PreregLinkInfo.Both) {
+                <p>
+                  {{ 'preprints.preprintStepper.common.labels.preregTypes.both' | translate }}
+                </p>
+              }
+            }
+            @for (link of preprintValue.preregLinks; track $index) {
+              <p>{{ link }}</p>
+            }
+          }
+        }
+      </section>
+
+      <section class="flex flex-column gap-2">
+        <h3>Preprint DOI</h3>
+
+        <p-select
+          class="w-full"
+          appendTo="body"
+          optionLabel="label"
+          optionValue="value"
+          [ngModel]="preprintValue.id"
+          [options]="versionsDropdownOptions()"
+          [loading]="arePreprintVersionIdsLoading()"
+          (onChange)="selectPreprintVersion($event.value)"
+        />
+      </section>
+    </div>
+  }
+
+  @if (isPreprintLoading()) {
+    <div class="flex flex-column gap-4">
+      @for (i of skeletonData; track $index) {
+        <section class="flex flex-column gap-2">
+          <p-skeleton width="5rem" height="1.3rem" />
+          <p-skeleton width="25rem" height="5rem" />
+        </section>
+      }
+    </div>
+  }
+</p-card>

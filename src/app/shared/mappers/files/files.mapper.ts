@@ -1,6 +1,13 @@
 import { ApiData } from '@core/models';
 import { FileTargetResponse } from '@osf/features/project/files/models/responses/get-file-target-response.model';
-import { FileLinks, FileRelationshipsResponse, FileResponse, OsfFile } from '@osf/shared/models';
+import {
+  FileLinks,
+  FileRelationshipsResponse,
+  FileResponse,
+  FileVersionsResponseJsonApi,
+  OsfFile,
+  OsfFileVersion,
+} from '@osf/shared/models';
 
 export function MapFiles(
   files: ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>[]
@@ -56,4 +63,16 @@ export function MapFile(
       analyticsKey: file?.embeds?.target.data.attributes.analytics_key,
     },
   } as OsfFile;
+}
+
+export function MapFileVersions(fileVersions: FileVersionsResponseJsonApi): OsfFileVersion[] {
+  return fileVersions.data.map((fileVersion) => {
+    return {
+      id: fileVersion.id,
+      size: fileVersion.attributes.size,
+      dateCreated: fileVersion.attributes.date_created,
+      name: fileVersion.attributes.name,
+      downloadLink: fileVersion.links.download,
+    };
+  });
 }
