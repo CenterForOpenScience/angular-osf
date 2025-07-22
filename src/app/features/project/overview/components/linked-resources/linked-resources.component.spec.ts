@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LinkedProjectsComponent } from './linked-projects.component';
+import { LinkedResourcesComponent } from './linked-resources.component';
 
 describe('LinkedProjectsComponent', () => {
-  let component: LinkedProjectsComponent;
-  let fixture: ComponentFixture<LinkedProjectsComponent>;
+  let component: LinkedResourcesComponent;
+  let fixture: ComponentFixture<LinkedResourcesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LinkedProjectsComponent],
+      imports: [LinkedResourcesComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(LinkedProjectsComponent);
+    fixture = TestBed.createComponent(LinkedResourcesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -15,7 +15,6 @@ import {
   DuplicateProject,
   ForkResource,
   GetComponents,
-  GetLinkedProjects,
   GetProjectById,
   UpdateProjectPublicStatus,
 } from './project-overview.actions';
@@ -29,12 +28,6 @@ const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
     error: null,
   },
   components: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  linkedProjects: {
     data: [],
     isLoading: false,
     isSubmitting: false,
@@ -247,30 +240,6 @@ export class ProjectOverviewState {
         });
       }),
       catchError((error) => this.handleError(ctx, 'components', error))
-    );
-  }
-
-  @Action(GetLinkedProjects)
-  getLinkedProjects(ctx: StateContext<ProjectOverviewStateModel>, action: GetLinkedProjects) {
-    const state = ctx.getState();
-    ctx.patchState({
-      linkedProjects: {
-        ...state.linkedProjects,
-        isLoading: true,
-      },
-    });
-
-    return this.projectOverviewService.getLinkedProjects(action.projectId).pipe(
-      tap((linkedProjects) => {
-        ctx.patchState({
-          linkedProjects: {
-            data: linkedProjects,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => this.handleError(ctx, 'linkedProjects', error))
     );
   }
 

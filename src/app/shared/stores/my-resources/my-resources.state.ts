@@ -4,31 +4,30 @@ import { catchError, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/core/handlers';
+import { handleSectionError } from '@core/handlers';
 import { ResourceType } from '@shared/enums';
-
-import { MyProjectsService } from '../services';
+import { MyResourcesService } from '@shared/services';
 
 import {
-  ClearMyProjects,
+  ClearMyResources,
   CreateProject,
   GetMyBookmarks,
   GetMyPreprints,
   GetMyProjects,
   GetMyRegistrations,
-} from './my-projects.actions';
-import { MY_PROJECT_STATE_DEFAULTS, MyProjectsStateModel } from './my-projects.model';
+} from './my-resources.actions';
+import { MY_RESOURCES_STATE_DEFAULTS, MyResourcesStateModel } from './my-resources.model';
 
-@State<MyProjectsStateModel>({
-  name: 'myProjects',
-  defaults: MY_PROJECT_STATE_DEFAULTS,
+@State<MyResourcesStateModel>({
+  name: 'myResources',
+  defaults: MY_RESOURCES_STATE_DEFAULTS,
 })
 @Injectable()
-export class MyProjectsState {
-  private readonly myProjectsService = inject(MyProjectsService);
+export class MyResourcesState {
+  private readonly myResourcesService = inject(MyResourcesService);
 
   @Action(GetMyProjects)
-  getProjects(ctx: StateContext<MyProjectsStateModel>, action: GetMyProjects) {
+  getProjects(ctx: StateContext<MyResourcesStateModel>, action: GetMyProjects) {
     const state = ctx.getState();
     ctx.patchState({
       projects: {
@@ -37,23 +36,25 @@ export class MyProjectsState {
       },
     });
 
-    return this.myProjectsService.getMyProjects(action.filters, action.pageNumber, action.pageSize).pipe(
-      tap((res) => {
-        ctx.patchState({
-          projects: {
-            data: res.data,
-            isLoading: false,
-            error: null,
-          },
-          totalProjects: res.links.meta.total,
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'projects', error))
-    );
+    return this.myResourcesService
+      .getMyProjects(action.filters, action.pageNumber, action.pageSize, action.searchMode, action.rootProjectId)
+      .pipe(
+        tap((res) => {
+          ctx.patchState({
+            projects: {
+              data: res.data,
+              isLoading: false,
+              error: null,
+            },
+            totalProjects: res.links.meta.total,
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'projects', error))
+      );
   }
 
   @Action(GetMyRegistrations)
-  getRegistrations(ctx: StateContext<MyProjectsStateModel>, action: GetMyRegistrations) {
+  getRegistrations(ctx: StateContext<MyResourcesStateModel>, action: GetMyRegistrations) {
     const state = ctx.getState();
     ctx.patchState({
       registrations: {
@@ -62,23 +63,25 @@ export class MyProjectsState {
       },
     });
 
-    return this.myProjectsService.getMyRegistrations(action.filters, action.pageNumber, action.pageSize).pipe(
-      tap((res) => {
-        ctx.patchState({
-          registrations: {
-            data: res.data,
-            isLoading: false,
-            error: null,
-          },
-          totalRegistrations: res.links.meta.total,
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'registrations', error))
-    );
+    return this.myResourcesService
+      .getMyRegistrations(action.filters, action.pageNumber, action.pageSize, action.searchMode)
+      .pipe(
+        tap((res) => {
+          ctx.patchState({
+            registrations: {
+              data: res.data,
+              isLoading: false,
+              error: null,
+            },
+            totalRegistrations: res.links.meta.total,
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'registrations', error))
+      );
   }
 
   @Action(GetMyPreprints)
-  getPreprints(ctx: StateContext<MyProjectsStateModel>, action: GetMyPreprints) {
+  getPreprints(ctx: StateContext<MyResourcesStateModel>, action: GetMyPreprints) {
     const state = ctx.getState();
     ctx.patchState({
       preprints: {
@@ -87,7 +90,7 @@ export class MyProjectsState {
       },
     });
 
-    return this.myProjectsService.getMyPreprints(action.filters, action.pageNumber, action.pageSize).pipe(
+    return this.myResourcesService.getMyPreprints(action.filters, action.pageNumber, action.pageSize).pipe(
       tap((res) => {
         ctx.patchState({
           preprints: {
@@ -103,7 +106,7 @@ export class MyProjectsState {
   }
 
   @Action(GetMyBookmarks)
-  getBookmarks(ctx: StateContext<MyProjectsStateModel>, action: GetMyBookmarks) {
+  getBookmarks(ctx: StateContext<MyResourcesStateModel>, action: GetMyBookmarks) {
     const state = ctx.getState();
     ctx.patchState({
       bookmarks: {
@@ -114,7 +117,7 @@ export class MyProjectsState {
     });
 
     if (action.resourceType !== ResourceType.Null) {
-      return this.myProjectsService
+      return this.myResourcesService
         .getMyBookmarks(action.bookmarksId, action.resourceType, action.filters, action.pageNumber, action.pageSize)
         .pipe(
           tap((res) => {
@@ -131,21 +134,21 @@ export class MyProjectsState {
         );
     } else {
       return forkJoin({
-        projects: this.myProjectsService.getMyBookmarks(
+        projects: this.myResourcesService.getMyBookmarks(
           action.bookmarksId,
           ResourceType.Project,
           action.filters,
           action.pageNumber,
           action.pageSize
         ),
-        preprints: this.myProjectsService.getMyBookmarks(
+        preprints: this.myResourcesService.getMyBookmarks(
           action.bookmarksId,
           ResourceType.Preprint,
           action.filters,
           action.pageNumber,
           action.pageSize
         ),
-        registrations: this.myProjectsService.getMyBookmarks(
+        registrations: this.myResourcesService.getMyBookmarks(
           action.bookmarksId,
           ResourceType.Registration,
           action.filters,
@@ -174,13 +177,13 @@ export class MyProjectsState {
     }
   }
 
-  @Action(ClearMyProjects)
-  clearMyProjects(ctx: StateContext<MyProjectsStateModel>) {
-    ctx.patchState(MY_PROJECT_STATE_DEFAULTS);
+  @Action(ClearMyResources)
+  clearMyResources(ctx: StateContext<MyResourcesStateModel>) {
+    ctx.patchState(MY_RESOURCES_STATE_DEFAULTS);
   }
 
   @Action(CreateProject)
-  createProject(ctx: StateContext<MyProjectsStateModel>, action: CreateProject) {
+  createProject(ctx: StateContext<MyResourcesStateModel>, action: CreateProject) {
     const state = ctx.getState();
     ctx.patchState({
       projects: {
@@ -189,7 +192,7 @@ export class MyProjectsState {
       },
     });
 
-    return this.myProjectsService
+    return this.myResourcesService
       .createProject(action.title, action.description, action.templateFrom, action.region, action.affiliations)
       .pipe(
         tap((project) => {

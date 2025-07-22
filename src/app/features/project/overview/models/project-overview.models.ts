@@ -9,45 +9,6 @@ export interface ProjectOverviewContributor {
   type: string;
 }
 
-export interface ComponentOverview {
-  id: string;
-  type: string;
-  title: string;
-  description: string;
-  public: boolean;
-  contributors: ProjectOverviewContributor[];
-}
-
-export interface ComponentGetResponseJsoApi {
-  id: string;
-  type: string;
-  attributes: {
-    title: string;
-    description: string;
-    public: boolean;
-  };
-  embeds: {
-    bibliographic_contributors: {
-      data: {
-        embeds: {
-          users: {
-            data: {
-              id: string;
-              type: string;
-              attributes: {
-                family_name: string;
-                full_name: string;
-                given_name: string;
-                middle_name: string;
-              };
-            };
-          };
-        };
-      }[];
-    };
-  };
-}
-
 export interface ProjectOverview {
   id: string;
   type: string;

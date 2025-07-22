@@ -1,10 +1,11 @@
-import { JsonApiResponse } from '@osf/core/models';
+import { JsonApiResponse } from '@core/models';
 
-export interface MyProjectsItemGetResponseJsonApi {
+export interface MyResourcesItemGetResponseJsonApi {
   id: string;
   type: string;
   attributes: {
     title: string;
+    date_created: string;
     date_modified: string;
     public: boolean;
   };
@@ -34,24 +35,25 @@ export interface MyProjectsItemGetResponseJsonApi {
   };
 }
 
-export interface MyProjectsContributor {
+export interface MyResourcesContributor {
   familyName: string;
   fullName: string;
   givenName: string;
   middleName: string;
 }
 
-export interface MyProjectsItem {
+export interface MyResourcesItem {
   id: string;
   type: string;
   title: string;
+  dateCreated: string;
   dateModified: string;
   isPublic: boolean;
-  contributors: MyProjectsContributor[];
+  contributors: MyResourcesContributor[];
 }
 
-export interface MyProjectsItemResponseJsonApi {
-  data: MyProjectsItem[];
+export interface MyResourcesItemResponseJsonApi {
+  data: MyResourcesItem[];
   links: {
     meta: {
       total: number;
@@ -60,7 +62,7 @@ export interface MyProjectsItemResponseJsonApi {
   };
 }
 
-export interface MyProjectsResponseJsonApi extends JsonApiResponse<MyProjectsItemGetResponseJsonApi[], null> {
+export interface MyResourcesResponseJsonApi extends JsonApiResponse<MyResourcesItemGetResponseJsonApi[], null> {
   links: {
     meta: {
       total: number;

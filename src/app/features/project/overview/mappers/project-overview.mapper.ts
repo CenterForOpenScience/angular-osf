@@ -1,9 +1,4 @@
-import {
-  ComponentGetResponseJsoApi,
-  ComponentOverview,
-  ProjectOverview,
-  ProjectOverviewGetResponseJsoApi,
-} from '../models';
+import { ProjectOverview, ProjectOverviewGetResponseJsoApi } from '../models';
 
 export class ProjectOverviewMapper {
   static fromGetProjectResponse(response: ProjectOverviewGetResponseJsoApi): ProjectOverview {
@@ -82,24 +77,6 @@ export class ProjectOverviewMapper {
         rootFolder: response.relationships?.files?.links?.related?.href,
         iri: response.links?.iri,
       },
-    };
-  }
-
-  static fromGetComponentResponse(response: ComponentGetResponseJsoApi): ComponentOverview {
-    return {
-      id: response.id,
-      type: response.type,
-      title: response.attributes.title,
-      description: response.attributes.description,
-      public: response.attributes.public,
-      contributors: response.embeds.bibliographic_contributors.data.map((contributor) => ({
-        id: contributor.embeds.users.data.id,
-        familyName: contributor.embeds.users.data.attributes.family_name,
-        fullName: contributor.embeds.users.data.attributes.full_name,
-        givenName: contributor.embeds.users.data.attributes.given_name,
-        middleName: contributor.embeds.users.data.attributes.middle_name,
-        type: contributor.embeds.users.data.type,
-      })),
     };
   }
 }

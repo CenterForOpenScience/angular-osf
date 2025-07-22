@@ -1,11 +1,12 @@
-import { MyProjectsItem, MyProjectsItemGetResponseJsonApi } from '../models';
+import { MyResourcesItem, MyResourcesItemGetResponseJsonApi } from 'src/app/shared/models/my-resources';
 
-export class MyProjectsMapper {
-  static fromResponse(response: MyProjectsItemGetResponseJsonApi): MyProjectsItem {
+export class MyResourcesMapper {
+  static fromResponse(response: MyResourcesItemGetResponseJsonApi): MyResourcesItem {
     return {
       id: response.id,
       type: response.type,
       title: response.attributes.title,
+      dateCreated: response.attributes.date_created,
       dateModified: response.attributes.date_modified,
       isPublic: response.attributes.public,
       contributors: response.embeds.bibliographic_contributors.data.map((contributor) => ({

@@ -1,19 +1,19 @@
-import { AsyncStateModel } from '@osf/shared/models';
+import { AsyncStateModel } from '@shared/models';
 
-import { MyProjectsItem } from '../models';
+import { MyResourcesItem } from 'src/app/shared/models/my-resources';
 
-export interface MyProjectsStateModel {
-  projects: AsyncStateModel<MyProjectsItem[]>;
-  registrations: AsyncStateModel<MyProjectsItem[]>;
-  preprints: AsyncStateModel<MyProjectsItem[]>;
-  bookmarks: AsyncStateModel<MyProjectsItem[]>;
+export interface MyResourcesStateModel {
+  projects: AsyncStateModel<MyResourcesItem[]>;
+  registrations: AsyncStateModel<MyResourcesItem[]>;
+  preprints: AsyncStateModel<MyResourcesItem[]>;
+  bookmarks: AsyncStateModel<MyResourcesItem[]>;
   totalProjects: number;
   totalRegistrations: number;
   totalPreprints: number;
   totalBookmarks: number;
 }
 
-export const MY_PROJECT_STATE_DEFAULTS: MyProjectsStateModel = {
+export const MY_RESOURCES_STATE_DEFAULTS: MyResourcesStateModel = {
   projects: {
     data: [],
     isLoading: false,

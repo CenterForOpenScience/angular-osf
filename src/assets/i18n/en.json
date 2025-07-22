@@ -619,6 +619,9 @@
           "deleteComponent": {
             "success": "Component has been deleted successfully"
           },
+          "deleteNodeLink": {
+            "success": "Node link has been deleted successfully"
+          },
           "fork": {
             "success": "Project has been forked successfully"
           },
@@ -628,6 +631,20 @@
           "bookmark": {
             "add": "Project has been added to bookmarks",
             "remove": "Project has been removed from bookmarks"
+          }
+        },
+        "linkProject": {
+          "header": "Link to another OSF project or registration objects",
+          "searchAllObjects": "Search All Objects",
+          "searchMyObjects": "Search My Objects",
+          "searchObjectsPlaceholder": "Search objects",
+          "projects": "Projects",
+          "registrations": "Registrations",
+          "table": {
+            "title": "Title",
+            "created": "Created",
+            "modified": "Modified",
+            "contributors": "Contributors"
           }
         },
         "addComponent": {
@@ -657,6 +674,10 @@
           "cancelButton": "Cancel",
           "message": "It will no longer be available to other contributors on the project.",
           "confirmation": "Type the following to continue:"
+        },
+        "deleteNodeLink": {
+          "header": "Delete Link",
+          "message": "Are you sure you want to delete this link? This will not remove the project or registration this link refers to."
         },
         "fork": {
           "headerProject": "Fork This Project",

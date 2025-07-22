@@ -1,8 +1,8 @@
-import { SortOrder } from '@osf/shared/enums';
+import { SortOrder } from '@shared/enums';
 
 export type SearchField = 'tags' | 'title' | 'description';
 
-export interface MyProjectsSearchFilters {
+export interface MyResourcesSearchFilters {
   searchValue?: string;
   searchFields?: SearchField[];
   sortColumn?: string;
