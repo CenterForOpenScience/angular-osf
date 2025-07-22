@@ -11,6 +11,7 @@ export * from './filter-type.enum';
 export * from './get-resources-request-type.enum';
 export * from './profile-addons-stepper.enum';
 export * from './registration-review-states.enum';
+export * from './registry-resource.enum';
 export * from './registry-status.enum';
 export * from './resource-tab.enum';
 export * from './resource-type.enum';

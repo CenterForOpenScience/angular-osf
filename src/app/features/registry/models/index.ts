@@ -6,4 +6,6 @@ export * from './registry-institution.model';
 export * from './registry-overview.models';
 export * from './registry-schema-block.model';
 export * from './registry-subject.model';
+export * from './resources/get-registry-resources-json-api.model';
+export * from './resources/registry-resource.model';
 export * from './view-schema-block.model';

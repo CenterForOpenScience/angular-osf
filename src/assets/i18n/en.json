@@ -91,7 +91,8 @@
       "none": "None",
       "learnMore": "Learn More",
       "and": "and",
-      "more": "more"
+      "more": "more",
+      "data": "Data"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -2214,5 +2215,13 @@
       "downloadsLastDays": "Downloads (last 30 days)",
       "noData": "No preprints found"
     }
+  },
+  "resources": {
+    "title": "Resources",
+    "description": "Link a DOI from a repository to your registration by clicking “Add resource” button. Contributors affirmed to adhere to the criteria for each badge.",
+    "add": "Add Resource",
+    "delete": "Delete Resource",
+    "check": "Check your DOI for accuracy",
+    "deleteText": "Are you sure you want to delete resource"
   }
 }

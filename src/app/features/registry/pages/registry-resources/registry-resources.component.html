@@ -1,0 +1,34 @@
+<osf-sub-header
+  [title]="'resources.title' | translate"
+  [showButton]="true"
+  [buttonLabel]="'resources.add' | translate"
+/>
+
+@if (isResourcesLoading()) {
+  <osf-loading-spinner></osf-loading-spinner>
+} @else {
+  <div class="flex flex-column bg-white flex-1 p-4 gap-4">
+    <p>{{ 'resources.description' | translate }}</p>
+
+    <div class="flex flex-column gap-2">
+      @for (resource of resources(); track resource.id) {
+        <div class="resource-block gap-3 p-4">
+          @let iconName = resource.type === 'analytic_code' ? 'code' : resource.type;
+          @let icon = `assets/icons/colored/${iconName}-colored.svg`;
+          @let resourceName = resource.type === 'analytic_code' ? 'analytic code' : resource.type;
+          <img [src]="icon" alt="data-resource" class="align-self-start" />
+
+          <div class="flex flex-column gap-2">
+            <h2>{{ resourceName }}</h2>
+            <a [href]="'https://doi/' + resource.pid">https://doi/{{ resource.pid }}</a>
+          </div>
+
+          <div class="flex gap-2 ml-auto">
+            <p-button severity="secondary" [label]="'common.buttons.edit' | translate"></p-button>
+            <p-button severity="danger" [label]="'common.buttons.delete' | translate"></p-button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}
