@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { CollectionsFilters } from '@osf/features/collections/models';
+import { CollectionsFilters } from '@shared/models';
 
 import { CollectionsStateModel } from './collections.model';
 import { CollectionsState } from './collections.state';
@@ -37,7 +37,7 @@ export class CollectionsSelectors {
   }
 
   @Selector([CollectionsState])
-  static getCollectionSubmissions(state: CollectionsStateModel) {
+  static getCollectionSubmissionsSearchResult(state: CollectionsStateModel) {
     return state.collectionSubmissions.data;
   }
 

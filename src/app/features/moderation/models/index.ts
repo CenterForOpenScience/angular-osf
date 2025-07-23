@@ -1,3 +1,5 @@
+export * from './collection-review-action.model';
+export * from './collection-review-action-json-api.model';
 export * from './invite-moderator-form.model';
 export * from './moderator.model';
 export * from './moderator-add.model';

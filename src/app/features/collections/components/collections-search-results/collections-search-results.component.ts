@@ -8,8 +8,8 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 
-import { CollectionsSelectors, SetPageNumber } from '@osf/features/collections/store/collections';
 import { CustomPaginatorComponent } from '@osf/shared/components';
+import { CollectionsSelectors, SetPageNumber } from '@shared/stores/collections';
 
 import { CollectionsSearchResultCardComponent } from '../collections-search-result-card/collections-search-result-card.component';
 
@@ -21,7 +21,7 @@ import { CollectionsSearchResultCardComponent } from '../collections-search-resu
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionsSearchResultsComponent {
-  protected searchResults = select(CollectionsSelectors.getCollectionSubmissions);
+  protected searchResults = select(CollectionsSelectors.getCollectionSubmissionsSearchResult);
   protected isCollectionDetailsLoading = select(CollectionsSelectors.getCollectionDetailsLoading);
   protected isCollectionSubmissionsLoading = select(CollectionsSelectors.getCollectionSubmissionsLoading);
   protected totalSubmissions = select(CollectionsSelectors.getTotalSubmissions);

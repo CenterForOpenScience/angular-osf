@@ -2,9 +2,11 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ResourceType } from '@osf/shared/enums';
+import { CollectionsState } from '@shared/stores/collections';
 
-import { ModeratorsState } from './store/moderation';
+import { ModeratorsState } from './store/moderators';
 import { CollectionModerationTab } from './enums';
 
 export const collectionModerationRoutes: Routes = [
@@ -27,6 +29,7 @@ export const collectionModerationRoutes: Routes = [
             (m) => m.CollectionModerationSubmissionsComponent
           ),
         data: { tab: CollectionModerationTab.AllItems },
+        providers: [provideStates([CollectionsModerationState, CollectionsState])],
       },
       {
         path: 'moderators',

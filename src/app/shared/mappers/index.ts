@@ -1,4 +1,5 @@
 export * from './addon.mapper';
+export * from './collections';
 export * from './contributors';
 export * from './filters';
 export * from './institutions';

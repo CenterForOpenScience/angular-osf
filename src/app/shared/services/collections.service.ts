@@ -5,10 +5,8 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiResponse, JsonApiResponseWithPaging } from '@core/models';
-import { JsonApiService } from '@osf/core/services';
-import { CollectionsMapper } from '@osf/features/collections/mappers';
-import { SetTotalSubmissions } from '@osf/features/collections/store/collections';
-
+import { JsonApiService } from '@core/services';
+import { CollectionsMapper } from '@shared/mappers/collections';
 import {
   CollectionContributor,
   CollectionDetails,
@@ -17,9 +15,10 @@ import {
   CollectionProviderGetResponseJsonApi,
   CollectionSubmission,
   CollectionSubmissionJsonApi,
-  CollectionSubmissionsPayloadJsonApi,
+  CollectionSubmissionsSearchPayloadJsonApi,
   ContributorsResponseJsonApi,
-} from '../models';
+} from '@shared/models';
+import { SetTotalSubmissions } from '@shared/stores/collections';
 
 import { environment } from 'src/environments/environment';
 
@@ -64,7 +63,7 @@ export class CollectionsService {
       params['sort'] = sortBy;
     }
 
-    const payload: CollectionSubmissionsPayloadJsonApi = {
+    const payload: CollectionSubmissionsSearchPayloadJsonApi = {
       data: {
         attributes: {
           provider: [providerId],
@@ -98,6 +97,30 @@ export class CollectionsService {
               }));
             })
           );
+        })
+      );
+  }
+
+  fetchCollectionSubmissions(
+    collectionId: string,
+    status: string,
+    page = '1',
+    sortBy: string
+  ): Observable<CollectionSubmission[]> {
+    const params: Record<string, string> = {
+      page,
+      'filter[reviews_state]': status,
+      'page[size]': '10',
+      sort: sortBy,
+    };
+
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<CollectionSubmissionJsonApi[], null>
+      >(`${environment.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
+      .pipe(
+        map((response) => {
+          return CollectionsMapper.fromGetCollectionSubmissionsResponse(response.data);
         })
       );
   }

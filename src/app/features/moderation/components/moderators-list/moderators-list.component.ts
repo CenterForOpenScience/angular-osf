@@ -21,7 +21,7 @@ import {
   ModeratorsSelectors,
   UpdateModerator,
   UpdateSearchValue,
-} from '@osf/features/moderation/store/moderation';
+} from '@osf/features/moderation/store/moderators';
 import { SearchInputComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';

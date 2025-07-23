@@ -3,9 +3,9 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { AddToCollectionState } from '@osf/features/collections/store/add-to-collection';
-import { CollectionsState } from '@osf/features/collections/store/collections';
 import { ConfirmLeavingGuard } from '@shared/guards';
 import { ContributorsState, ProjectsState } from '@shared/stores';
+import { CollectionsState } from '@shared/stores/collections';
 
 export const collectionsRoutes: Routes = [
   {

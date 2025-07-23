@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 
 import { CollectionsFilterChipsComponent } from '@osf/features/collections/components';
 import { collectionsSortOptions } from '@osf/features/collections/constants';
-import { CollectionsSelectors, SetSortBy } from '@osf/features/collections/store/collections';
+import { CollectionsSelectors, SetSortBy } from '@shared/stores/collections';
 import { IS_WEB } from '@shared/utils';
 
 import { CollectionsFiltersComponent } from '../collections-filters/collections-filters.component';
@@ -38,7 +38,7 @@ export class CollectionsMainContentComponent {
   protected readonly sortOptions = collectionsSortOptions;
   protected isWeb = toSignal(inject(IS_WEB));
   protected selectedSort = select(CollectionsSelectors.getSortBy);
-  protected collectionSubmissions = select(CollectionsSelectors.getCollectionSubmissions);
+  protected collectionSubmissions = select(CollectionsSelectors.getCollectionSubmissionsSearchResult);
   protected isCollectionSubmissionsLoading = select(CollectionsSelectors.getCollectionSubmissionsLoading);
 
   protected isFiltersOpen = signal(false);

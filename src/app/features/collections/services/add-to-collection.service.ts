@@ -3,10 +3,8 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
-import { CollectionsMapper } from '@osf/features/collections/mappers';
-import { CollectionSubmissionPayload } from '@osf/features/collections/models';
-import { LicensesMapper } from '@shared/mappers';
-import { License, LicensesResponseJsonApi } from '@shared/models';
+import { CollectionsMapper, LicensesMapper } from '@shared/mappers';
+import { CollectionSubmissionPayload, License, LicensesResponseJsonApi } from '@shared/models';
 
 import { environment } from 'src/environments/environment';
 

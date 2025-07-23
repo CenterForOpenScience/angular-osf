@@ -4,7 +4,7 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { CollectionsService } from '@osf/features/collections/services';
+import { CollectionsService } from '@shared/services';
 
 import {
   ClearCollections,

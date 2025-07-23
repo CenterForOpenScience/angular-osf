@@ -1,4 +1,4 @@
-import { CollectionSubmissionPayload } from '@osf/features/collections/models';
+import { CollectionSubmissionPayload } from '@shared/models';
 
 export class GetCollectionLicenses {
   static readonly type = '[Add To Collection] Get Collection Licenses';

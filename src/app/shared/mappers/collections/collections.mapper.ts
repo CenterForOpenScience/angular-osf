@@ -8,8 +8,8 @@ import {
   CollectionSubmission,
   CollectionSubmissionJsonApi,
   CollectionSubmissionPayload,
-} from '@osf/features/collections/models';
-import { CollectionSubmissionPayloadJsonApi } from '@osf/features/collections/models/collection-submission-payload-json-api.model';
+  CollectionSubmissionPayloadJsonApi,
+} from '@osf/shared/models';
 import { convertToSnakeCase } from '@shared/utils';
 
 export class CollectionsMapper {

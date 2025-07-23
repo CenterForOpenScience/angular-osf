@@ -4,7 +4,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
-import { CollectionSubmission } from '@osf/features/collections/models';
+import { CollectionSubmission } from '@shared/models';
 
 @Component({
   selector: 'osf-collections-search-result-card',

@@ -13,8 +13,9 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CollectionsHelpDialogComponent, CollectionsMainContentComponent } from '@osf/features/collections/components';
-import { CollectionsFilters } from '@osf/features/collections/models';
 import { CollectionsQuerySyncService } from '@osf/features/collections/services';
+import { LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
+import { CollectionsFilters } from '@shared/models';
 import {
   ClearCollections,
   ClearCollectionSubmissions,
@@ -24,8 +25,7 @@ import {
   SearchCollectionSubmissions,
   SetPageNumber,
   SetSearchValue,
-} from '@osf/features/collections/store/collections';
-import { LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
+} from '@shared/stores/collections';
 
 @Component({
   selector: 'osf-collections-discover',

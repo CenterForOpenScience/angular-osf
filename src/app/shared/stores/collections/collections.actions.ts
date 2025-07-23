@@ -1,4 +1,4 @@
-import { CollectionsFilters } from '@osf/features/collections/models';
+import { CollectionsFilters } from '@shared/models';
 
 export class GetCollectionProvider {
   static readonly type = '[Collections] Get Collection Provider';

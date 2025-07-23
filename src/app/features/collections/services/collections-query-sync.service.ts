@@ -6,14 +6,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { collectionsSortOptions } from '@osf/features/collections/constants';
 import { queryParamsKeys } from '@osf/features/collections/constants/query-params-keys.const';
-import { CollectionQueryParams, CollectionsFilters } from '@osf/features/collections/models';
-import {
-  CollectionsSelectors,
-  SetAllFilters,
-  SetSearchValue,
-  SetSortBy,
-} from '@osf/features/collections/store/collections';
-import { SetPageNumber } from '@osf/features/collections/store/collections/collections.actions';
+import { CollectionQueryParams } from '@osf/features/collections/models';
+import { CollectionsFilters } from '@shared/models';
+import { CollectionsSelectors, SetAllFilters, SetSearchValue, SetSortBy } from '@shared/stores/collections';
+import { SetPageNumber } from '@shared/stores/collections/collections.actions';
 
 @Injectable()
 export class CollectionsQuerySyncService {

@@ -23,10 +23,10 @@ import { FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
 import { AddToCollectionSteps } from '@osf/features/collections/enums';
-import { CollectionsSelectors, GetUserCollectionSubmissions } from '@osf/features/collections/store/collections';
 import { GetProjects, SetSelectedProject } from '@osf/shared/stores';
 import { CustomOption } from '@shared/models';
 import { Project } from '@shared/models/projects';
+import { CollectionsSelectors, GetUserCollectionSubmissions } from '@shared/stores/collections';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
 @Component({

@@ -17,7 +17,7 @@ import { CustomPaginatorComponent, LoadingSpinnerComponent, SearchInputComponent
 
 import { AddModeratorType } from '../../enums';
 import { ModeratorAddModel, ModeratorDialogAddModel } from '../../models';
-import { ClearUsers, ModeratorsSelectors, SearchUsers } from '../../store/moderation';
+import { ClearUsers, ModeratorsSelectors, SearchUsers } from '../../store/moderators';
 
 @Component({
   selector: 'osf-add-moderator-dialog',

@@ -4,7 +4,7 @@ import { Routes } from '@angular/router';
 
 import { ResourceType } from '@osf/shared/enums';
 
-import { ModeratorsState } from './store/moderation';
+import { ModeratorsState } from './store/moderators';
 import { PreprintModerationState } from './store/preprint-moderation';
 import { PreprintModerationTab } from './enums';
 

@@ -5,7 +5,6 @@ import { inject, Injectable } from '@angular/core';
 
 import { JsonApiResponse } from '@core/models';
 import { JsonApiService } from '@osf/core/services';
-import { SparseCollectionsResponseJsonApi } from '@osf/features/collections/models';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { CreateProjectPayloadJsoApi, NodeResponseModel, UpdateNodeRequestModel } from '@shared/models';
 
@@ -87,21 +86,6 @@ export class MyProjectsService {
     pageSize?: number
   ): Observable<MyProjectsItemResponseJsonApi> {
     return this.getMyItems('nodes', filters, pageNumber, pageSize, 'nodes');
-  }
-
-  getBookmarksCollectionId(): Observable<string> {
-    const params: Record<string, unknown> = {
-      'fields[collections]': 'title,bookmarks',
-    };
-
-    return this.jsonApiService.get<SparseCollectionsResponseJsonApi>(environment.apiUrl + '/collections/', params).pipe(
-      map((response) => {
-        const bookmarksCollection = response.data.find(
-          (collection) => collection.attributes.title === 'Bookmarks' && collection.attributes.bookmarks
-        );
-        return bookmarksCollection?.id ?? '';
-      })
-    );
   }
 
   getMyRegistrations(

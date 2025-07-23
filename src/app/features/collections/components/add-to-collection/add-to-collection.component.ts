@@ -26,10 +26,10 @@ import { AddToCollectionSteps } from '@osf/features/collections/enums';
 import {
   ClearAddToCollectionState,
   CreateCollectionSubmission,
-} from '@osf/features/collections/store/add-to-collection/add-to-collection.actions';
-import { CollectionsSelectors, GetCollectionProvider } from '@osf/features/collections/store/collections';
+} from '@osf/features/collections/store/add-to-collection';
 import { LoadingSpinnerComponent } from '@shared/components';
 import { CanDeactivateComponent } from '@shared/models';
+import { CollectionsSelectors, GetCollectionProvider } from '@shared/stores';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
 import {
