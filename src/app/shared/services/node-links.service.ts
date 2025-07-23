@@ -16,7 +16,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class NodeLinksService {
-  #jsonApiService = inject(JsonApiService);
+  jsonApiService = inject(JsonApiService);
 
   createNodeLink(currentProjectId: string, linkProjectId: string): Observable<NodeLink> {
     const payload = {
@@ -33,7 +33,7 @@ export class NodeLinksService {
       },
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .post<
         JsonApiResponse<NodeLinkJsonApi, null>
       >(`${environment.apiUrl}/nodes/${currentProjectId}/node_links/`, payload)
@@ -49,7 +49,7 @@ export class NodeLinksService {
       'fields[nodes]': 'relationships',
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .get<JsonApiResponse<NodeLinkJsonApi[], null>>(`${environment.apiUrl}/nodes/${projectId}/node_links/`, params)
       .pipe(
         map((response) => {
@@ -59,7 +59,7 @@ export class NodeLinksService {
   }
 
   deleteNodeLink(projectId: string, nodeLinkId: string): Observable<void> {
-    return this.#jsonApiService.delete(`${environment.apiUrl}/nodes/${projectId}/node_links/${nodeLinkId}/`);
+    return this.jsonApiService.delete(`${environment.apiUrl}/nodes/${projectId}/node_links/${nodeLinkId}/`);
   }
 
   fetchLinkedProjects(projectId: string): Observable<ComponentOverview[]> {
@@ -68,7 +68,7 @@ export class NodeLinksService {
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .get<
         JsonApiResponse<ComponentGetResponseJsonApi[], null>
       >(`${environment.apiUrl}/nodes/${projectId}/linked_nodes`, params)
@@ -85,7 +85,7 @@ export class NodeLinksService {
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .get<
         JsonApiResponse<ComponentGetResponseJsonApi[], null>
       >(`${environment.apiUrl}/nodes/${projectId}/linked_registrations`, params)

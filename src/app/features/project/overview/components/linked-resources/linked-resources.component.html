@@ -4,7 +4,7 @@
     <p-button
       severity="secondary"
       [label]="'project.overview.components.linkProjectsButton' | translate"
-      (click)="handleOpenLinkProjectModal()"
+      (click)="openLinkProjectModal()"
     />
   </div>
   <div class="linked-project-container pl-3 pr-3 flex flex-column gap-5">
@@ -27,7 +27,7 @@
                   icon="fas fa-trash"
                   severity="danger"
                   text
-                  (click)="handleOpenDeleteLinkedResourceModal(linkedResource.id)"
+                  (click)="openDeleteResourceModal(linkedResource.id)"
                 >
                 </p-button>
               </div>

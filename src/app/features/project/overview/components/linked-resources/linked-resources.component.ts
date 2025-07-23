@@ -31,7 +31,7 @@ export class LinkedResourcesComponent {
   protected isMobile = toSignal(inject(IS_XSMALL));
   protected nodeLinks = select(NodeLinksSelectors.getNodeLinks);
 
-  handleOpenLinkProjectModal() {
+  openLinkProjectModal() {
     const dialogWidth = this.isMobile() ? '95vw' : '850px';
 
     this.dialogService.open(LinkResourceDialogComponent, {
@@ -44,7 +44,7 @@ export class LinkedResourcesComponent {
     });
   }
 
-  handleOpenDeleteLinkedResourceModal(resourceId: string): void {
+  openDeleteResourceModal(resourceId: string): void {
     const dialogWidth = this.isMobile() ? '95vw' : '650px';
 
     const currentLink = this.getCurrentResourceNodeLink(resourceId);

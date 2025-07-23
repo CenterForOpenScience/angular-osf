@@ -13,22 +13,7 @@ import {
   GetAllNodeLinks,
   GetLinkedResources,
 } from './node-links.actions';
-import { NodeLinksStateModel } from './node-links.model';
-
-const NODE_LINKS_DEFAULTS: NodeLinksStateModel = {
-  nodeLinks: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  linkedResources: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-};
+import { NODE_LINKS_DEFAULTS, NodeLinksStateModel } from './node-links.model';
 
 @State<NodeLinksStateModel>({
   name: 'nodeLinks',
