@@ -1,11 +1,9 @@
 @use "assets/styles/mixins" as mix;
 @use "assets/styles/variables" as var;
 
-.preprints-hero-container {
+%hero-container-base {
   background-color: var(--branding-secondary-color);
   background-image: var(--branding-hero-background-image-url);
-
-  color: var(--branding-primary-color);
 
   .preprint-provider-name {
     color: var(--branding-primary-color);
@@ -32,6 +30,16 @@
       border-color: var(--branding-secondary-color);
     }
   }
+}
+
+.preprints-hero-container {
+  @extend %hero-container-base;
+  color: var(--branding-primary-color);
+}
+
+.registries-hero-container {
+  @extend %hero-container-base;
+  color: var(--white);
 }
 
 .preprints-advisory-board-section {

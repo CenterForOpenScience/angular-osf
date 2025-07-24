@@ -127,6 +127,7 @@ export class RegistriesSelectors {
   static getSubmittedRegistrationsTotalCount(state: RegistriesStateModel): number {
     return state.submittedRegistrations.totalCount;
   }
+
   @Selector([RegistriesState])
   static getRegistrationComponents(state: RegistriesStateModel) {
     return state.draftRegistration.data?.components || [];

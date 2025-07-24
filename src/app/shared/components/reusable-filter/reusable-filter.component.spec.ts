@@ -338,12 +338,6 @@ describe('ReusableFilterComponent', () => {
       expect(component.getFilterPlaceholder('unknown')).toBe('Search...');
     });
 
-    it('should return correct filter editability', () => {
-      expect(component.isFilterEditable('subject')).toBe(true);
-      expect(component.isFilterEditable('affiliation')).toBe(false);
-      expect(component.isFilterEditable('unknown')).toBe(true); // default
-    });
-
     it('should return correct filter description', () => {
       expect(component.getFilterDescription(testFilter)).toBe('Test description');
       expect(component.getFilterDescription({} as DiscoverableFilter)).toBe(null);

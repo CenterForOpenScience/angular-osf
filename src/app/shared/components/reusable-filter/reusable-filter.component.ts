@@ -27,6 +27,7 @@ import { GenericFilterComponent } from '../generic-filter/generic-filter.compone
     LoadingSpinnerComponent,
   ],
   templateUrl: './reusable-filter.component.html',
+  styleUrls: ['./reusable-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReusableFilterComponent {
@@ -87,7 +88,7 @@ export class ReusableFilterComponent {
         return newExpanded;
       });
 
-      if (!selectedFilter.options?.length && selectedFilter.hasOptions) {
+      if (!selectedFilter.options?.length) {
         this.loadFilterOptions.emit({
           filterType: key as ReusableFilterType,
           filter: selectedFilter,

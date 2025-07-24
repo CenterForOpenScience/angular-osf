@@ -1,0 +1,61 @@
+<osf-registry-provider-hero
+  [searchControl]="searchControl"
+  [provider]="provider()"
+  [isProviderLoading]="isProviderLoading()"
+></osf-registry-provider-hero>
+
+<div class="flex flex-column flex-1 w-full">
+  <div class="py-4 px-3 md:px-5 xl:px-4 bg-white">
+    <osf-search-results-container
+      [resources]="resources()"
+      [searchCount]="resourcesCount()"
+      [selectedSort]="selectedSort()"
+      [selectedTab]="resourceType()"
+      [selectedValues]="selectedValues()"
+      [first]="first()"
+      [prev]="previous()"
+      [next]="next()"
+      [isFiltersOpen]="isFiltersOpen()"
+      [isSortingOpen]="isSortingOpen()"
+      [showTabs]="false"
+      (sortChanged)="onSortChanged($event)"
+      (pageChanged)="onPageChanged($event)"
+      (filtersToggled)="onFiltersToggled()"
+      (sortingToggled)="onSortingToggled()"
+    >
+      <div slot="filter-chips">
+        <osf-filter-chips
+          [selectedValues]="selectedValues()"
+          [filterLabels]="filterLabels()"
+          [filterOptions]="filterOptions()"
+          (filterRemoved)="onFilterChipRemoved($event)"
+          (allFiltersCleared)="onAllFiltersCleared()"
+        />
+      </div>
+
+      <div slot="filters">
+        <osf-reusable-filters
+          [filters]="filters()"
+          [selectedValues]="selectedValues()"
+          [isLoading]="isResourcesLoading()"
+          [showEmptyState]="true"
+          (loadFilterOptions)="onLoadFilterOptions($event)"
+          (filterValueChanged)="onFilterChanged($event)"
+        />
+      </div>
+
+      <div slot="mobile-filters">
+        <osf-reusable-filters
+          [filters]="filters()"
+          [selectedValues]="selectedValues()"
+          [isLoading]="isResourcesLoading()"
+          [showEmptyState]="true"
+          (loadFilterOptions)="onLoadFilterOptions($event)"
+          (filterValueChanged)="onFilterChanged($event)"
+        />
+      </div>
+    </osf-search-results-container>
+
+    <osf-search-help-tutorial [(currentStep)]="currentStep"></osf-search-help-tutorial>
+  </div>
+</div>
