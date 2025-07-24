@@ -51,4 +51,16 @@ export const DefaultState: RegistriesStateModel = {
     error: null,
     totalCount: 0,
   },
+  files: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  currentFolder: null,
+  moveFileCurrentFolder: null,
+  rootFolders: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
 };

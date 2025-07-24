@@ -177,7 +177,10 @@ export class ReviewComponent {
         modal: true,
         data: {
           draftId: this.draftId(),
-          projectId: this.draftRegistration()?.branchedFrom?.id,
+          projectId:
+            this.draftRegistration()?.branchedFrom?.type === 'nodes'
+              ? this.draftRegistration()?.branchedFrom?.id
+              : null,
           providerId: this.draftRegistration()?.providerId,
           components,
         },

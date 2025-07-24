@@ -8,10 +8,10 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { MyProjectsItem } from '@osf/features/my-projects/models/my-projects.models';
 import { SortOrder } from '@osf/shared/enums/sort-order.enum';
 import { TableParameters } from '@osf/shared/models/table-parameters.model';
 import { SearchInputComponent } from '@shared/components/search-input/search-input.component';
+import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
 
 @Component({
   selector: 'osf-my-projects-table',
@@ -21,7 +21,7 @@ import { SearchInputComponent } from '@shared/components/search-input/search-inp
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyProjectsTableComponent {
-  items = input<MyProjectsItem[]>([]);
+  items = input<MyResourcesItem[]>([]);
   tableParams = input.required<TableParameters>();
   searchControl = input<FormControl>(new FormControl(''));
   sortColumn = input<string | undefined>(undefined);
@@ -31,7 +31,7 @@ export class MyProjectsTableComponent {
 
   pageChange = output<TablePageEvent>();
   sort = output<SortEvent>();
-  itemClick = output<MyProjectsItem>();
+  itemClick = output<MyResourcesItem>();
 
   protected onPageChange(event: TablePageEvent): void {
     this.pageChange.emit(event);
@@ -41,7 +41,7 @@ export class MyProjectsTableComponent {
     this.sort.emit(event);
   }
 
-  protected onItemClick(item: MyProjectsItem): void {
+  protected onItemClick(item: MyResourcesItem): void {
     this.itemClick.emit(item);
   }
 }

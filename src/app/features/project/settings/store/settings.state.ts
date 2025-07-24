@@ -5,7 +5,6 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { MyProjectsService } from '@osf/features/my-projects/services';
 import { SettingsService } from '@osf/features/project/settings/services';
 import {
   DeleteProject,
@@ -16,6 +15,7 @@ import {
 } from '@osf/features/project/settings/store/settings.actions';
 import { SettingsStateModel } from '@osf/features/project/settings/store/settings.model';
 import { NodeData } from '@shared/models';
+import { MyResourcesService } from '@shared/services';
 
 import { ProjectSettingsModel } from '../models';
 
@@ -37,7 +37,7 @@ import { ProjectSettingsModel } from '../models';
 @Injectable()
 export class SettingsState {
   private readonly settingsService = inject(SettingsService);
-  private readonly myProjectService = inject(MyProjectsService);
+  private readonly myProjectService = inject(MyResourcesService);
 
   private readonly REFRESH_INTERVAL = 5 * 60 * 1000;
 

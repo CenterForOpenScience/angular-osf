@@ -3,15 +3,13 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { JsonApiResponse } from '@core/models';
 import { JsonApiService } from '@osf/core/services';
+import { ComponentGetResponseJsonApi, ComponentOverview } from '@osf/shared/models';
+import { ComponentsMapper } from '@shared/mappers';
 
 import { ProjectOverviewMapper } from '../mappers';
-import {
-  ComponentGetResponseJsoApi,
-  ComponentOverview,
-  ProjectOverview,
-  ProjectOverviewResponseJsonApi,
-} from '../models';
+import { ProjectOverview, ProjectOverviewResponseJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -128,18 +126,9 @@ export class ProjectOverviewService {
     };
 
     return this.#jsonApiService
-      .get<{ data: ComponentGetResponseJsoApi[] }>(`${environment.apiUrl}/nodes/${projectId}/children`, params)
-      .pipe(map((response) => response.data.map((item) => ProjectOverviewMapper.fromGetComponentResponse(item))));
-  }
-
-  getLinkedProjects(projectId: string): Observable<ComponentOverview[]> {
-    const params: Record<string, unknown> = {
-      embed: 'bibliographic_contributors',
-      'fields[users]': 'family_name,full_name,given_name,middle_name',
-    };
-
-    return this.#jsonApiService
-      .get<{ data: ComponentGetResponseJsoApi[] }>(`${environment.apiUrl}/nodes/${projectId}/linked_nodes`, params)
-      .pipe(map((response) => response.data.map((item) => ProjectOverviewMapper.fromGetComponentResponse(item))));
+      .get<
+        JsonApiResponse<ComponentGetResponseJsonApi[], null>
+      >(`${environment.apiUrl}/nodes/${projectId}/children`, params)
+      .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
   }
 }

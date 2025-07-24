@@ -10,12 +10,12 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants/my-projects-table.constants';
-import { CreateProject, GetMyProjects, MyProjectsState } from '@osf/features/my-projects/store';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 
 import { AddProjectFormComponent } from './add-project-form.component';
 
 import { InstitutionsState } from 'src/app/shared/stores/institutions';
+import { CreateProject, GetMyProjects, MyResourcesState } from 'src/app/shared/stores/my-resources';
 
 describe('AddProjectFormComponent', () => {
   let component: AddProjectFormComponent;
@@ -36,7 +36,7 @@ describe('AddProjectFormComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AddProjectFormComponent, MockPipe(TranslatePipe)],
       providers: [
-        provideStore([MyProjectsState, InstitutionsState]),
+        provideStore([MyResourcesState, InstitutionsState]),
         provideHttpClient(),
         provideHttpClientTesting(),
         MockProvider(DynamicDialogRef, { close: jest.fn() }),

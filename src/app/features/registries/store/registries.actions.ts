@@ -2,6 +2,7 @@ import {
   DraftRegistrationAttributesJsonApi,
   DraftRegistrationRelationshipsJsonApi,
   LicenseOptions,
+  OsfFile,
 } from '@osf/shared/models';
 
 export class GetRegistries {
@@ -102,4 +103,43 @@ export class FetchProjectChildren {
 
 export class ClearState {
   static readonly type = '[Registries] Clear State';
+}
+
+export class GetFiles {
+  static readonly type = '[Registries] Get Files';
+
+  constructor(public filesLink: string) {}
+}
+
+export class SetFilesIsLoading {
+  static readonly type = '[Registries] Set Files Loading';
+
+  constructor(public isLoading: boolean) {}
+}
+
+export class GetRootFolders {
+  static readonly type = '[Registries] Get Folders';
+
+  constructor(public folderLink: string) {}
+}
+
+export class CreateFolder {
+  static readonly type = '[Registries] Create folder';
+
+  constructor(
+    public newFolderLink: string,
+    public folderName: string
+  ) {}
+}
+
+export class SetCurrentFolder {
+  static readonly type = '[Registries] Set Current Folder';
+
+  constructor(public folder: OsfFile | null) {}
+}
+
+export class SetMoveFileCurrentFolder {
+  static readonly type = '[Registries] Set Move File Current Folder';
+
+  constructor(public folder: OsfFile | null) {}
 }

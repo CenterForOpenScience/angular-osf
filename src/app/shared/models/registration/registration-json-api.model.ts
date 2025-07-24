@@ -1,4 +1,5 @@
 import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '@osf/core/models';
+import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { LicenseRecordJsonApi } from '@osf/shared/models';
 
 export interface DraftRegistrationResponseJsonApi {
@@ -39,6 +40,7 @@ export interface DraftRegistrationAttributesJsonApi {
   registration_responses: Record<string, unknown>;
   tags: string[];
   title: string;
+  public?: boolean;
 }
 
 export interface RegistrationAttributesJsonApi {
@@ -48,7 +50,13 @@ export interface RegistrationAttributesJsonApi {
   description: string;
   embargoed: boolean;
   archiving: boolean;
+  public: boolean;
   title: string;
+  revision_state: RevisionReviewStates;
+  review_state: RegistrationReviewStates;
+  pending_registration_approval: boolean;
+  pending_embargo_approval: boolean;
+  pending_embargo_termination_approval: boolean;
 }
 
 export interface DraftRegistrationRelationshipsJsonApi {
@@ -74,6 +82,11 @@ export interface DraftRegistrationRelationshipsJsonApi {
     data: {
       id: string;
       type: 'nodes';
+    };
+    links?: {
+      related: {
+        href: string;
+      };
     };
   };
 }
@@ -133,6 +146,15 @@ export interface DraftRegistrationEmbedsJsonApi extends RegistrationEmbedsJsonAp
       type: 'nodes';
       attributes: {
         title: string;
+      };
+      relationships?: {
+        files?: {
+          links: {
+            related: {
+              href: string;
+            };
+          };
+        };
       };
     };
   };

@@ -34,15 +34,16 @@ import { IS_MEDIUM } from '@osf/shared/utils';
 
 import { MY_PROJECTS_TABS } from './constants';
 import { MyProjectsTab } from './enums';
-import { MyProjectsItem, MyProjectsSearchFilters } from './models';
+
+import { MyResourcesItem, MyResourcesSearchFilters } from 'src/app/shared/models/my-resources';
 import {
-  ClearMyProjects,
+  ClearMyResources,
   GetMyBookmarks,
   GetMyPreprints,
   GetMyProjects,
   GetMyRegistrations,
-  MyProjectsSelectors,
-} from './store';
+  MyResourcesSelectors,
+} from 'src/app/shared/stores/my-resources';
 
 @Component({
   selector: 'osf-my-projects',
@@ -81,7 +82,7 @@ export class MyProjectsComponent implements OnInit {
   protected readonly currentPage = signal(1);
   protected readonly currentPageSize = signal(MY_PROJECTS_TABLE_PARAMS.rows);
   protected readonly selectedTab = signal(MyProjectsTab.Projects);
-  protected readonly activeProject = signal<MyProjectsItem | null>(null);
+  protected readonly activeProject = signal<MyResourcesItem | null>(null);
   protected readonly sortColumn = signal<string | undefined>(undefined);
   protected readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
   protected readonly tableParams = signal<TableParameters>({
@@ -89,20 +90,20 @@ export class MyProjectsComponent implements OnInit {
     firstRowIndex: 0,
   });
 
-  protected readonly projects = select(MyProjectsSelectors.getProjects);
-  protected readonly registrations = select(MyProjectsSelectors.getRegistrations);
-  protected readonly preprints = select(MyProjectsSelectors.getPreprints);
-  protected readonly bookmarks = select(MyProjectsSelectors.getBookmarks);
-  protected readonly totalProjectsCount = select(MyProjectsSelectors.getTotalProjects);
-  protected readonly totalRegistrationsCount = select(MyProjectsSelectors.getTotalRegistrations);
-  protected readonly totalPreprintsCount = select(MyProjectsSelectors.getTotalPreprints);
-  protected readonly totalBookmarksCount = select(MyProjectsSelectors.getTotalBookmarks);
+  protected readonly projects = select(MyResourcesSelectors.getProjects);
+  protected readonly registrations = select(MyResourcesSelectors.getRegistrations);
+  protected readonly preprints = select(MyResourcesSelectors.getPreprints);
+  protected readonly bookmarks = select(MyResourcesSelectors.getBookmarks);
+  protected readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
+  protected readonly totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
+  protected readonly totalPreprintsCount = select(MyResourcesSelectors.getTotalPreprints);
+  protected readonly totalBookmarksCount = select(MyResourcesSelectors.getTotalBookmarks);
 
   protected readonly bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
 
   protected readonly actions = createDispatchMap({
     getBookmarksCollectionId: GetBookmarksCollectionId,
-    clearMyProjects: ClearMyProjects,
+    clearMyProjects: ClearMyResources,
     getMyProjects: GetMyProjects,
     getMyRegistrations: GetMyRegistrations,
     getMyPreprints: GetMyPreprints,
@@ -240,7 +241,7 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  createFilters(params: QueryParams): MyProjectsSearchFilters {
+  createFilters(params: QueryParams): MyResourcesSearchFilters {
     return {
       searchValue: params.search || '',
       searchFields: ['title', 'tags', 'description'],
@@ -341,12 +342,12 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  protected navigateToProject(project: MyProjectsItem): void {
+  protected navigateToProject(project: MyResourcesItem): void {
     this.activeProject.set(project);
     this.router.navigate(['/my-projects', project.id]);
   }
 
-  protected navigateToRegistry(registry: MyProjectsItem): void {
+  protected navigateToRegistry(registry: MyResourcesItem): void {
     this.activeProject.set(registry);
     this.router.navigate(['/registries', registry.id]);
   }

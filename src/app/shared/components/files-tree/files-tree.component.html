@@ -75,7 +75,7 @@
 
               @if (!viewOnly() && !viewOnlyDownloadable()) {
                 <div class="relative ml-auto">
-                  <osf-file-menu (action)="onFileMenuAction($event, file)"></osf-file-menu>
+                  <osf-file-menu (action)="onFileMenuAction($event, file)" osfStopPropagation></osf-file-menu>
                 </div>
               } @else if (viewOnly() && viewOnlyDownloadable()) {
                 <div class="files-table-cell">
@@ -84,6 +84,7 @@
                     (click)="onFileMenuAction({ value: FileMenuType.Download }, file)"
                     (keydown.enter)="onFileMenuAction({ value: FileMenuType.Download }, file)"
                     tabindex="1"
+                    osfStopPropagation
                   ></i>
                 </div>
               }
@@ -93,8 +94,15 @@
       </p-tree>
 
       @if (!files().length) {
-        <div class="flex justify-content-center p-4">
-          <h3 class="font-normal text-no-transform">{{ 'project.files.emptyState' | translate }}</h3>
+        <div class="flex justify-content-center p-4 m-auto">
+          @if (viewOnly()) {
+            <h3 class="font-normal text-no-transform">{{ 'project.files.emptyState' | translate }}</h3>
+          } @else {
+            <div class="text-center">
+              <i class="fa-solid fa-cloud-arrow-up text-5xl"></i>
+              <p class="drop-text text-2xl">{{ 'project.files.dropText' | translate }}</p>
+            </div>
+          }
         </div>
       }
     </div>

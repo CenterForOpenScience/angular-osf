@@ -145,16 +145,29 @@
                 }
               }
               @case (FieldType.File) {
-                <h3 class="mb-2">Upload File</h3>
+                <h3 class="mb-2">{{ 'project.files.actions.uploadFile' | translate }}</h3>
                 <p class="mb-1">
-                  You may attach up to 5 file(s) to this question. Files cannot total over 5GB in size.
+                  {{ 'shared.files.limitText' | translate }}
                 </p>
                 <p>
-                  Uploaded files will automatically be archived in this registration. They will also be added to a
-                  related project that will be created for this registration.
+                  {{ 'shared.files.description' | translate }}
                 </p>
-
-                <p>File input is not implemented yet.</p>
+                <div class="flex flex-wrap gap-2 mt-3 mb-3">
+                  @for (file of attachedFiles[question.responseKey!] || []; track file) {
+                    <p-chip
+                      [label]="file.name"
+                      severity="info"
+                      removable="true"
+                      (onRemove)="removeFromAttachedFiles(file, question.responseKey!)"
+                    />
+                  }
+                </div>
+                <div class="-ml-3 -mr-3">
+                  <osf-files-control
+                    [attachedFiles]="attachedFiles[question.responseKey!]"
+                    (attachFile)="onAttachFile($event, question.responseKey!)"
+                  ></osf-files-control>
+                </div>
               }
             }
           </p-card>

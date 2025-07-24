@@ -3,26 +3,17 @@
     @if (registrationData()) {
       <div class="flex gap-3 flex-column">
         <div class="flex flex-wrap gap-2 w-full">
-          <!--  @if (registrationData().status === RegistrationStatus.PendingWithdrawRequest) {
+          @if (registrationData().public) {
+            <i class="osf-icon-padlock-unlock"></i>
+          } @else {
             <i class="osf-icon-padlock"></i>
           }
-          
-          @if (registrationData().status === RegistrationStatus.InProgress) {
-            <i class="osf-icon-padlock-unlock"></i>
-            }
-          -->
           <h2 class="align-self-center">
             {{ registrationData().title || 'project.registrations.card.noTitle' | translate }}
           </h2>
-          <!--
-          @if (registrationData().status === RegistrationStatus.InProgress) {
-            <p-tag severity="warn" value="Update In Progress" />
+          @if (!isDraft()) {
+            <osf-status-badge [status]="registrationData().status" />
           }
-
-          @if (registrationData().status === RegistrationStatus.PendingWithdraw) {
-            <p-tag severity="secondary" value="Withdrawn" />
-          } 
-          -->
         </div>
         <div class="flex flex-wrap flex-column lg:flex-nowrap lg:flex-row justify-content-between gap-5">
           <div class="flex gap-3 flex-column w-full">
@@ -63,7 +54,7 @@
               <p>{{ registrationData().description || 'project.registrations.card.noDescription' | translate }}</p>
             </div>
             <div class="flex gap-2 mt-1">
-              @if (registrationData().status === RegistrationStatus.None) {
+              @if (isDraft()) {
                 <p-button
                   severity="primary"
                   [label]="'common.buttons.review' | translate"
@@ -82,7 +73,12 @@
                   (click)="deleteDraft.emit(registrationData().id)"
                 ></p-button>
               } @else {
-                <p-button severity="primary" [label]="'common.buttons.view' | translate"></p-button>
+                <p-button
+                  severity="primary"
+                  [routerLink]="['../', registrationData().id, 'overview']"
+                  routerLinkActive="router-link-active"
+                  [label]="'common.buttons.view' | translate"
+                ></p-button>
                 @if (registrationData().status === RegistrationStatus.InProgress) {
                   <p-button severity="secondary" [label]="'common.buttons.update' | translate"></p-button>
                 }
@@ -90,34 +86,20 @@
             </div>
           </div>
 
-          <!-- @if (registrationData().status !== RegistrationStatus.Pending) {
-            <div class="flex flex-column gap-3 w-auto">
-              <h3 class="mb-2">{{ 'project.registrations.card.openResources' | translate }}</h3>
-
-              <div class="icon-links flex flex-wrap lg:flex-column gap-3">
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-data text-4xl"></i>
-                  <h3>{{ 'shared.resources.data' | translate }}</h3>
-                </a>
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-code text-4xl"></i>
-                  <h3>{{ 'shared.resources.analyticCode' | translate }}</h3>
-                </a>
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-materials text-4xl"></i>
-                  <h3>{{ 'shared.resources.materials' | translate }}</h3>
-                </a>
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-papers text-4xl"></i>
-                  <h3>{{ 'shared.resources.papers' | translate }}</h3>
-                </a>
-                <a class="icon-container" [href]="">
-                  <i class="osf-icon-supplements text-4xl"></i>
-                  <h3>{{ 'shared.resources.supplements' | translate }}</h3>
-                </a>
-              </div>
+          @if (registrationData().revisionState === RevisionReviewStates.Approved) {
+            <div class="flex flex-column min-w-max">
+              <h3 class="mb-1">{{ 'shared.resources.title' | translate }}</h3>
+              <osf-data-resources
+                [vertical]="true"
+                [resourceId]="registrationData().id"
+                [hasData]="registrationData().hasData"
+                [hasAnalyticCode]="registrationData().hasAnalyticCode"
+                [hasMaterials]="registrationData().hasMaterials"
+                [hasPapers]="registrationData().hasPapers"
+                [hasSupplements]="registrationData().hasSupplements"
+              ></osf-data-resources>
             </div>
-          } -->
+          }
         </div>
       </div>
     }

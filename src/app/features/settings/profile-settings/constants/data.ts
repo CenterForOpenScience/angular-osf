@@ -10,17 +10,17 @@ export const socials: SocialLinksModel[] = [
   },
   {
     id: 1,
-    label: 'LinkedIn',
-    address: 'https://linkedin.com/',
-    placeholder: 'in/userID, profie/view?profileID, or pub/pubID',
-    key: 'linkedIn',
-  },
-  {
-    id: 2,
     label: 'ORCID',
     address: 'http://orcid.org/',
     placeholder: 'xxxx-xxxx-xxxx',
     key: 'orcid',
+  },
+  {
+    id: 2,
+    label: 'LinkedIn',
+    address: 'https://linkedin.com/',
+    placeholder: 'in/userID, profie/view?profileID, or pub/pubID',
+    key: 'linkedIn',
   },
   {
     id: 3,

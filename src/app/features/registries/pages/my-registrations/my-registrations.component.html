@@ -38,7 +38,11 @@
               <ng-container *ngTemplateOutlet="noRegistration"></ng-container>
             }
             @for (registration of draftRegistrations(); track registration.id) {
-              <osf-registration-card [registrationData]="registration" (deleteDraft)="onDeleteDraft($event)" />
+              <osf-registration-card
+                [isDraft]="true"
+                [registrationData]="registration"
+                (deleteDraft)="onDeleteDraft($event)"
+              />
             }
             @if (draftRegistrationsTotalCount() > itemsPerPage) {
               <osf-custom-paginator
@@ -65,7 +69,7 @@
             @if (submittedRegistrationsTotalCount() > itemsPerPage) {
               <osf-custom-paginator
                 [first]="submittedFirst"
-                [totalCount]="draftRegistrationsTotalCount()"
+                [totalCount]="submittedRegistrationsTotalCount()"
                 (pageChanged)="onSubmittedPageChange($event)"
               />
             }

@@ -108,3 +108,12 @@ export class DeactivateAccount {
 export class CancelDeactivationRequest {
   static readonly type = '[AccountSettings] Cancel Deactivation Request';
 }
+
+export class UpdatePassword {
+  static readonly type = '[AccountSettings] Update Password';
+
+  constructor(
+    public oldPassword: string,
+    public newPassword: string
+  ) {}
+}

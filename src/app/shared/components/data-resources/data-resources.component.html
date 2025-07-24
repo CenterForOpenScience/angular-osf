@@ -1,4 +1,4 @@
-<div class="flex column-gap-5 row-gap-3 flex-wrap">
+<div class="flex" [class]="vertical() ? 'flex-column row-gap-2 m-auto min-w-max' : 'column-gap-5 row-gap-3 flex-wrap'">
   <a class="icon-container" [href]="resourceId() + '/resources'">
     @if (hasData()) {
       <img src="assets/icons/colored/data-colored.svg" alt="data-resource" />

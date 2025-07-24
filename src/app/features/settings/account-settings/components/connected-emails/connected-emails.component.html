@@ -23,7 +23,7 @@
         {{ 'settings.accountSettings.connectedEmails.alternateEmails' | translate }}
       </p>
 
-      <div class="flex flex-column gap-3">
+      <div class="flex flex-column gap-3 xl:flex-row xl:flex-wrap">
         @if (isEmailsLoading()) {
           <p-skeleton width="20rem" height="2.5rem" />
         } @else {
@@ -51,7 +51,7 @@
         {{ 'settings.accountSettings.connectedEmails.unconfirmedEmails' | translate }}
       </p>
 
-      <div class="flex flex-column gap-3">
+      <div class="flex flex-column gap-3 xl:flex-row xl:flex-wrap">
         @if (isEmailsLoading()) {
           <p-skeleton width="20rem" height="2.5rem" />
         } @else {

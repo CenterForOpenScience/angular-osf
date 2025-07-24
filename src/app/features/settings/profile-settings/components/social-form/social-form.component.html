@@ -1,0 +1,44 @@
+<div
+  [formGroup]="group()"
+  class="flex flex-column row-gap-4 border-1 border-round-lg grey-border-color p-3 md:p-4 xl:p-5"
+>
+  <div class="flex flex-row justify-content-between">
+    <h2>
+      {{ 'settings.profileSettings.social.title' | translate: { index: index() + 1 } }}
+    </h2>
+    @if (index() !== 0) {
+      <div>
+        <p-button
+          [label]="'common.buttons.remove' | translate"
+          severity="danger"
+          variant="text"
+          (click)="remove.emit()"
+        />
+      </div>
+    }
+  </div>
+
+  <div class="flex flex-column row-gap-4 w-full md:flex-row md:align-items-end md:column-gap-3">
+    <div class="w-full md:w-4">
+      <p class="font-light mb-1">
+        {{ 'settings.profileSettings.social.socialOutput' | translate }}
+      </p>
+
+      <p-select formControlName="socialOutput" [options]="socials" optionLabel="label" class="w-full"></p-select>
+    </div>
+
+    <div class="w-full md:w-8">
+      <p class="mb-1">
+        {{ 'settings.profileSettings.social.webAddress' | translate }}
+      </p>
+
+      <p-inputgroup class="addon-input flex-wrap">
+        <p-inputgroup-addon class="border-1 grey-border-color md:border-0">
+          {{ domain }}
+        </p-inputgroup-addon>
+
+        <input pInputText [placeholder]="placeholder" formControlName="webAddress" [maxlength]="socialMaxLength" />
+      </p-inputgroup>
+    </div>
+  </div>
+</div>

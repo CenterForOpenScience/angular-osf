@@ -6,11 +6,12 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/core/handlers';
 import { ResourceTab } from '@osf/shared/enums';
-import { SearchService } from '@osf/shared/services';
+import { FilesService, SearchService } from '@osf/shared/services';
 import { getResourceTypes } from '@osf/shared/utils';
 
 import { RegistriesService } from '../services';
 
+import { FilesHandlers } from './handlers/files.handlers';
 import { LicensesHandlers } from './handlers/licenses.handlers';
 import { ProjectsHandlers } from './handlers/projects.handlers';
 import { ProvidersHandlers } from './handlers/providers.handlers';
@@ -18,6 +19,7 @@ import { DefaultState } from './default.state';
 import {
   ClearState,
   CreateDraft,
+  CreateFolder,
   DeleteDraft,
   FetchDraft,
   FetchDraftRegistrations,
@@ -25,11 +27,15 @@ import {
   FetchProjectChildren,
   FetchSchemaBlocks,
   FetchSubmittedRegistrations,
+  GetFiles,
   GetProjects,
   GetProviderSchemas,
   GetRegistries,
+  GetRootFolders,
   RegisterDraft,
   SaveLicense,
+  SetCurrentFolder,
+  SetMoveFileCurrentFolder,
   UpdateDraft,
   UpdateStepValidation,
 } from './registries.actions';
@@ -43,10 +49,12 @@ import { RegistriesStateModel } from './registries.model';
 export class RegistriesState {
   searchService = inject(SearchService);
   registriesService = inject(RegistriesService);
+  fileService = inject(FilesService);
 
   providersHandler = inject(ProvidersHandlers);
   projectsHandler = inject(ProjectsHandlers);
   licensesHandler = inject(LicensesHandlers);
+  filesHandlers = inject(FilesHandlers);
 
   @Action(GetRegistries)
   getRegistries(ctx: StateContext<RegistriesStateModel>) {
@@ -317,5 +325,30 @@ export class RegistriesState {
   @Action(ClearState)
   clearState(ctx: StateContext<RegistriesStateModel>) {
     ctx.setState({ ...DefaultState });
+  }
+
+  @Action(GetFiles)
+  getFiles(ctx: StateContext<RegistriesStateModel>, { filesLink }: GetFiles) {
+    return this.filesHandlers.getProjectFiles(ctx, { filesLink });
+  }
+
+  @Action(GetRootFolders)
+  getRootFolders(ctx: StateContext<RegistriesStateModel>, action: GetRootFolders) {
+    return this.filesHandlers.getRootFolders(ctx, action);
+  }
+
+  @Action(CreateFolder)
+  createFolder(ctx: StateContext<RegistriesStateModel>, action: CreateFolder) {
+    return this.filesHandlers.createFolder(ctx, action);
+  }
+
+  @Action(SetMoveFileCurrentFolder)
+  setMoveFileCurrentFolder(ctx: StateContext<RegistriesStateModel>, action: SetMoveFileCurrentFolder) {
+    ctx.patchState({ moveFileCurrentFolder: action.folder });
+  }
+
+  @Action(SetCurrentFolder)
+  setSelectedFolder(ctx: StateContext<RegistriesStateModel>, action: SetCurrentFolder) {
+    ctx.patchState({ currentFolder: action.folder });
   }
 }

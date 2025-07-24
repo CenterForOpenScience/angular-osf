@@ -62,9 +62,3 @@ export class GetComponents {
 
   constructor(public projectId: string) {}
 }
-
-export class GetLinkedProjects {
-  static readonly type = '[Project Overview] Get Linked Projects';
-
-  constructor(public projectId: string) {}
-}

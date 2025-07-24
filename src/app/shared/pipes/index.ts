@@ -1,3 +1,4 @@
+export { CitationFormatPipe } from './citation-format.pipe';
 export { DecodeHtmlPipe } from './decode-html.pipe';
 export { FileSizePipe } from './file-size.pipe';
 export { InterpolatePipe } from './interpolate.pipe';

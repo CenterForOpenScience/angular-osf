@@ -7,18 +7,23 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { RegistryStatus } from '@osf/shared/enums';
+import { RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
 import { RegistrationCard } from '@osf/shared/models';
+
+import { DataResourcesComponent } from '../data-resources/data-resources.component';
+import { StatusBadgeComponent } from '../status-badge/status-badge.component';
 
 @Component({
   selector: 'osf-registration-card',
-  imports: [Card, Button, TranslatePipe, DatePipe, RouterLink],
+  imports: [Card, Button, TranslatePipe, DatePipe, RouterLink, StatusBadgeComponent, DataResourcesComponent],
   templateUrl: './registration-card.component.html',
   styleUrl: './registration-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationCardComponent {
   RegistrationStatus = RegistryStatus;
+  RevisionReviewStates = RevisionReviewStates;
+  readonly isDraft = input<boolean>(false);
   readonly registrationData = input.required<RegistrationCard>();
   readonly deleteDraft = output<string>();
 }
