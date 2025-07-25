@@ -39,18 +39,10 @@ export class RegistryProviderHeroComponent {
       const provider = this.provider();
 
       if (provider) {
-        // this.actions.setProviderIri(provider.iri);
-
-        // if (!this.initAfterIniReceived) {
-        //   this.initAfterIniReceived = true;
-        //   this.actions.getResources();
-        //   this.actions.getAllOptions();
-        // }
-
         BrandService.applyBranding(provider.brand);
         HeaderStyleHelper.applyHeaderStyles(
           provider.brand.primaryColor,
-          provider.brand.secondaryColor,
+          undefined,
           provider.brand.heroBackgroundImageUrl
         );
       }
