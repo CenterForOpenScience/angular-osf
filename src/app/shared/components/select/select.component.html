@@ -6,6 +6,7 @@
   optionValue="value"
   [appendTo]="appendTo()"
   [placeholder]="placeholder() | translate"
+  [disabled]="disabled()"
   [(ngModel)]="selectedValue"
   (ngModelChange)="changeValue.emit($event)"
 >

@@ -8,12 +8,18 @@ import { SelectButton } from 'primeng/selectbutton';
 import { map, of } from 'rxjs';
 
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { Primitive } from '@osf/core/helpers';
+import { PENDING_SUBMISSION_REVIEW_OPTIONS, REGISTRY_SORT_OPTIONS } from '@osf/features/moderation/constants';
+import { RegistrySort, SubmissionReviewStatus } from '@osf/features/moderation/enums';
+import {
+  GetRegistrySubmissions,
+  RegistryModerationSelectors,
+} from '@osf/features/moderation/store/registry-moderation';
 import {
   CustomPaginatorComponent,
   IconComponent,
@@ -21,13 +27,10 @@ import {
   SelectComponent,
 } from '@osf/shared/components';
 
-import { REGISTRY_SORT_OPTIONS, SUBMITTED_SUBMISSION_REVIEW_OPTIONS } from '../../constants';
-import { RegistrySort, SubmissionReviewStatus } from '../../enums';
-import { GetRegistrySubmissions, RegistryModerationSelectors } from '../../store/registry-moderation';
 import { RegistrySubmissionItemComponent } from '..';
 
 @Component({
-  selector: 'osf-registry-submissions',
+  selector: 'osf-registry-pending-submissions',
   imports: [
     SelectButton,
     TranslatePipe,
@@ -39,12 +42,12 @@ import { RegistrySubmissionItemComponent } from '..';
     RegistrySubmissionItemComponent,
     CustomPaginatorComponent,
   ],
-  templateUrl: './registry-submissions.component.html',
-  styleUrl: './registry-submissions.component.scss',
+  templateUrl: './registry-pending-submissions.component.html',
+  styleUrl: './registry-pending-submissions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrySubmissionsComponent implements OnInit {
-  readonly submissionReviewOptions = SUBMITTED_SUBMISSION_REVIEW_OPTIONS;
+export class RegistryPendingSubmissionsComponent implements OnInit {
+  readonly submissionReviewOptions = PENDING_SUBMISSION_REVIEW_OPTIONS;
   readonly sortOptions = REGISTRY_SORT_OPTIONS;
 
   private readonly route = inject(ActivatedRoute);
@@ -63,12 +66,6 @@ export class RegistrySubmissionsComponent implements OnInit {
   readonly first = signal(0);
   readonly selectedSortOption = signal(RegistrySort.RegisteredNewest);
   readonly selectedReviewOption = signal(this.submissionReviewOptions[0].value);
-
-  readonly actualStatus = computed(() =>
-    this.selectedReviewOption() === SubmissionReviewStatus.Public
-      ? SubmissionReviewStatus.Accepted
-      : this.selectedReviewOption()
-  );
 
   ngOnInit(): void {
     this.fetchSubmissions();
@@ -101,6 +98,11 @@ export class RegistrySubmissionsComponent implements OnInit {
 
     if (!providerId) return;
 
-    this.actions.getRegistrySubmissions(providerId, this.actualStatus(), this.currentPage(), this.selectedSortOption());
+    this.actions.getRegistrySubmissions(
+      providerId,
+      this.selectedReviewOption(),
+      this.currentPage(),
+      this.selectedSortOption()
+    );
   }
 }

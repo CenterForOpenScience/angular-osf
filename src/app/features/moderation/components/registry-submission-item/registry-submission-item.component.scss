@@ -1,0 +1,24 @@
+.pending {
+  color: var(--yellow-1);
+}
+
+.accepted {
+  color: var(--green-1);
+}
+
+.rejected {
+  color: var(--red-1);
+}
+
+.withdrawn {
+  color: var(--dark-blue-1);
+}
+
+.submission-link {
+  color: var(--dark-blue-1);
+}
+
+.link-btn {
+  --p-button-padding-y: 0;
+  --p-button-padding-x: 0;
+}

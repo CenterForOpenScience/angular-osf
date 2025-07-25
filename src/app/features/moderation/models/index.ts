@@ -7,4 +7,8 @@ export * from './preprint-provider-moderation-info.model';
 export * from './preprint-related-count-json-api.model';
 export * from './preprint-review-action.model';
 export * from './preprint-review-action-json-api.model';
+export * from './registry-action.model';
+export * from './registry-action-json-api.model';
+export * from './registry-json-api.model';
+export * from './registry-moderation.model';
 export * from './submission.model';

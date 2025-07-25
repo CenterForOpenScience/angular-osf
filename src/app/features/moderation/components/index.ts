@@ -8,7 +8,9 @@ export { MyReviewingNavigationComponent } from './my-reviewing-navigation/my-rev
 export { NotificationSettingsComponent } from './notification-settings/notification-settings.component';
 export { PreprintModerationSettingsComponent } from './preprint-moderation-settings/preprint-moderation-settings.component';
 export { RecentActivityListComponent } from './recent-activity-list/recent-activity-list.component';
+export { RegistryPendingSubmissionsComponent } from './registry-pending-submissions/registry-pending-submissions.component';
 export { RegistrySettingsComponent } from './registry-settings/registry-settings.component';
+export { RegistrySubmissionItemComponent } from './registry-submission-item/registry-submission-item.component';
 export { RegistrySubmissionsComponent } from './registry-submissions/registry-submissions.component';
 export { SubmissionItemComponent } from './submission-item/submission-item.component';
 export { SubmissionsListComponent } from './submissions-list/submissions-list.component';

@@ -5,4 +5,6 @@ export enum SubmissionReviewStatus {
   Withdrawn = 'withdrawn',
   Public = 'public',
   Embargo = 'embargo',
+  PendingUpdates = 'pending-updates',
+  PendingWithdrawal = 'pending-withdrawal',
 }
