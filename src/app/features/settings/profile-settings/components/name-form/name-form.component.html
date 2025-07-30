@@ -1,0 +1,53 @@
+<div class="border-round-lg name-container p-3 sm:p-5">
+  <p>
+    {{ 'settings.profileSettings.name.description' | translate }}
+  </p>
+
+  <form [formGroup]="form()" class="flex flex-column row-gap-2 mt-4 md:row-gap-4">
+    <div class="flex flex-column row-gap-2 w-full md:mb-3 xl:flex-row xl:align-items-end xl:column-gap-3">
+      <div class="w-full xl:w-6">
+        <osf-text-input
+          [label]="'settings.profileSettings.name.fullName'"
+          [control]="form().controls.fullName"
+          [maxLength]="inputLimits.fullName.maxLength"
+        ></osf-text-input>
+      </div>
+    </div>
+
+    <div class="flex flex-column row-gap-3 xl:flex-row xl:align-items-end xl:column-gap-3">
+      <div class="w-full xl:w-6">
+        <osf-text-input
+          [label]="'settings.profileSettings.name.givenName'"
+          [control]="form().controls.givenName"
+          [maxLength]="inputLimits.fullName.maxLength"
+        ></osf-text-input>
+      </div>
+
+      <div class="w-full xl:w-6">
+        <osf-text-input
+          [label]="'settings.profileSettings.name.middleNames'"
+          [control]="form().controls.middleNames"
+          [maxLength]="inputLimits.fullName.maxLength"
+        ></osf-text-input>
+      </div>
+    </div>
+
+    <div class="flex flex-column row-gap-3 xl:flex-row xl:align-items-end xl:column-gap-3">
+      <div class="w-full xl:w-6">
+        <osf-text-input
+          [label]="'settings.profileSettings.name.familyName'"
+          [control]="form().controls.familyName"
+          [maxLength]="inputLimits.fullName.maxLength"
+        ></osf-text-input>
+      </div>
+
+      <div class="w-full xl:w-6">
+        <osf-text-input
+          [label]="'settings.profileSettings.name.suffix'"
+          [control]="form().controls.suffix"
+          [maxLength]="inputLimits.fullName.maxLength"
+        ></osf-text-input>
+      </div>
+    </div>
+  </form>
+</div>

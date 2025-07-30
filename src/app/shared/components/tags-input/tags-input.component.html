@@ -1,11 +1,33 @@
-<div>
-  <p-chips
-    styleClass="w-full"
-    [ngModel]="tags()"
-    (ngModelChange)="onTagsChange($event)"
-    [placeholder]="'common.placeholder.addTag' | translate"
-    separator=","
-    [required]="required()"
-  ></p-chips>
-  <small>{{ 'common.hint.tagSeparators' | translate }}</small>
+<div class="flex flex-column gap-2">
+  <div
+    class="tags-input-container flex flex-wrap align-items-center gap-1 p-inputtext"
+    [class.readonly]="readonly()"
+    tabindex="0"
+    role="textbox"
+    [attr.aria-label]="'common.placeholder.addTag' | translate"
+    (click)="!readonly() && onContainerClick()"
+    (keydown)="!readonly() && onContainerKeydown($event)"
+  >
+    @for (tag of localTags(); track $index) {
+      <p-chip [label]="tag" [removable]="!readonly()" (onRemove)="removeTag($index)" class="p-chip-inline" />
+    }
+
+    <input
+      #tagInput
+      pInputText
+      type="text"
+      [placeholder]="localTags().length === 0 ? ('common.placeholder.addTag' | translate) : ''"
+      [required]="required() && localTags().length === 0"
+      [readOnly]="readonly()"
+      (keydown)="onInputKeydown($event)"
+      (blur)="onInputBlur($event)"
+      class="tag-input-field"
+    />
+  </div>
+
+  @if (!readonly()) {
+    <small class="text-color-secondary">
+      {{ 'common.hint.tagSeparators' | translate }}
+    </small>
+  }
 </div>

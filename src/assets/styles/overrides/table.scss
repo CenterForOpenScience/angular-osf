@@ -105,6 +105,30 @@ p-table {
   }
 }
 
+.link-project-table {
+  .p-datatable {
+    padding: 0 0.5rem 0.5rem 0.5rem;
+  }
+
+  td {
+    background-color: var(--white);
+    height: auto;
+    border: none;
+  }
+
+  thead {
+    tr {
+      outline: 1px solid var(--grey-2);
+    }
+  }
+}
+
+.link-project-table.loading {
+  td {
+    border-bottom: 2px solid var(--white);
+  }
+}
+
 @media (max-width: var.$breakpoint-xl) {
   .addon-table,
   .my-projects-table {

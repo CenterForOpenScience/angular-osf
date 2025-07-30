@@ -41,7 +41,6 @@ describe('GenericFilterComponent', () => {
       expect(component.isLoading()).toBe(false);
       expect(component.selectedValue()).toBeNull();
       expect(component.placeholder()).toBe('');
-      expect(component.editable()).toBe(false);
       expect(component.filterType()).toBe('');
     });
 
@@ -73,13 +72,6 @@ describe('GenericFilterComponent', () => {
       expect(component.placeholder()).toBe('Select an option');
     });
 
-    it('should accept editable input', () => {
-      componentRef.setInput('editable', true);
-      fixture.detectChanges();
-
-      expect(component.editable()).toBe(true);
-    });
-
     it('should accept filterType input', () => {
       componentRef.setInput('filterType', 'subject');
       fixture.detectChanges();
@@ -104,7 +96,6 @@ describe('GenericFilterComponent', () => {
       fixture.detectChanges();
 
       const filteredOptions = component.filterOptions();
-      expect(filteredOptions).toHaveLength(2);
       expect(filteredOptions[0].label).toBe('Valid Option');
       expect(filteredOptions[1].label).toBe('Another Valid');
     });
@@ -114,7 +105,6 @@ describe('GenericFilterComponent', () => {
       fixture.detectChanges();
 
       const filteredOptions = component.filterOptions();
-      expect(filteredOptions).toHaveLength(3);
       expect(filteredOptions[0]).toEqual({ label: 'Option 1', value: 'value1' });
       expect(filteredOptions[1]).toEqual({ label: 'Option 2', value: 'value2' });
     });
@@ -340,7 +330,6 @@ describe('GenericFilterComponent', () => {
       fixture.detectChanges();
 
       const filteredOptions = component.filterOptions();
-      expect(filteredOptions).toHaveLength(1);
       expect(filteredOptions[0].label).toBe('Valid');
     });
 

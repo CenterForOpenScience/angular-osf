@@ -25,11 +25,20 @@ export class SubjectsService {
     [ResourceType.DraftRegistration, 'draft_registrations'],
   ]);
 
-  getSubjects(resourceType: ResourceType, resourceId?: string, search?: string): Observable<SubjectModel[]> {
-    const baseUrl =
+  getSubjects(
+    resourceType: ResourceType,
+    resourceId?: string,
+    search?: string,
+    isMetadataRegistry = false
+  ): Observable<SubjectModel[]> {
+    let baseUrl =
       resourceType === ResourceType.Project
         ? `${this.apiUrl}/subjects/`
         : `${this.apiUrl}/providers/${this.urlMap.get(resourceType)}/${resourceId}/subjects/`;
+
+    if (isMetadataRegistry) {
+      baseUrl = baseUrl.replace('/providers', '');
+    }
 
     const params: Record<string, string> = {
       'page[size]': '100',

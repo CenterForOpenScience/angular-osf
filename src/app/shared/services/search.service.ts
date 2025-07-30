@@ -102,7 +102,7 @@ export class SearchService {
     };
 
     return this.jsonApiService
-      .get<FilterOptionsResponseJsonApi>(`${environment.shareDomainUrl}/index-card-search`, params)
+      .get<FilterOptionsResponseJsonApi>(`${environment.shareDomainUrl}/index-value-search`, params)
       .pipe(
         map((response) => {
           if (response?.included) {

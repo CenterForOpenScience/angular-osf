@@ -1,0 +1,82 @@
+<p-card>
+  @if (preprint()) {
+    @let preprintValue = preprint()!;
+    <div class="flex flex-column gap-4">
+      <section class="license flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.license' | translate }}</h3>
+
+        <p-accordion>
+          <p-accordion-panel value="0">
+            <p-accordion-header class="p-0 justify-content-start gap-2">
+              <p class="font-normal">{{ license()!.name }}</p>
+            </p-accordion-header>
+            <p-accordion-content>
+              <p>{{ license()!.text | interpolate: licenseOptionsRecord() }}</p>
+            </p-accordion-content>
+          </p-accordion-panel>
+        </p-accordion>
+      </section>
+
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.subjects' | translate }}</h3>
+
+        <div class="flex flex-wrap gap-2">
+          @for (subject of subjects(); track subject.id) {
+            <p-tag [value]="subject.name" severity="info" />
+          }
+
+          @if (areSelectedSubjectsLoading()) {
+            <p-skeleton width="10rem" height="1.7rem" />
+          }
+        </div>
+      </section>
+
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.tags' | translate }}</h3>
+
+        <div class="flex flex-wrap gap-2">
+          @for (tag of preprintValue.tags; track tag) {
+            <p-tag [value]="tag" severity="info" />
+          } @empty {
+            <p>{{ 'common.labels.none' | translate }}</p>
+          }
+        </div>
+      </section>
+
+      <!-- [RNi] TODO: Not sure where to place, waiting response from product team -->
+      @if (preprintValue.originalPublicationDate) {
+        <section class="flex flex-column gap-2">
+          <h3>{{ 'Original Publication Date' | translate }}</h3>
+
+          {{ preprintValue.originalPublicationDate | date: 'MMM d, y, h:mm a' }}
+        </section>
+      }
+
+      <!-- [RNi] TODO: Not sure where to place, waiting response from product team -->
+      @if (preprintValue.customPublicationCitation) {
+        <section class="flex flex-column gap-2">
+          <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationCitation' | translate }}</h3>
+
+          {{ preprintValue.customPublicationCitation }}
+        </section>
+      }
+
+      <!-- [RNi] TODO: Implement citation using shared component -->
+      <section>
+        <h3>Citation</h3>
+        <p>Use shared component here</p>
+      </section>
+    </div>
+  }
+
+  @if (isPreprintLoading()) {
+    <div class="flex flex-column gap-4">
+      @for (i of skeletonData; track $index) {
+        <section class="flex flex-column gap-2">
+          <p-skeleton width="5rem" height="1.3rem" />
+          <p-skeleton width="25rem" height="5rem" />
+        </section>
+      }
+    </div>
+  }
+</p-card>

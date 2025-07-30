@@ -2,7 +2,7 @@
 @use "assets/styles/mixins" as mix;
 
 :host {
-  min-height: 200px;
+  min-height: 180px;
 }
 
 .files-table {
@@ -12,6 +12,7 @@
   border-radius: 8px;
   overflow-x: auto;
   min-width: 100%;
+  min-height: 180px;
 
   &-row {
     color: var.$dark-blue-1;

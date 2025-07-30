@@ -91,18 +91,7 @@ export function ReusableFilterMapper(item: RelatedPropertyPathItem): Discoverabl
   const description = propertyPath?.description?.[0]?.['@value'];
   const helpLink = propertyPath?.link?.[0]?.['@value'];
   const helpLinkText = propertyPath?.linkText?.[0]?.['@value'];
-
   const type: DiscoverableFilter['type'] = key === 'dateCreated' ? 'date' : key === 'creator' ? 'checkbox' : 'select';
-
-  const shouldLoadOptions = [
-    'subject',
-    'rights',
-    'resourceNature',
-    'affiliation',
-    'publisher',
-    'funder',
-    'isPartOfCollection',
-  ].includes(key);
 
   return {
     key,
@@ -116,8 +105,6 @@ export function ReusableFilterMapper(item: RelatedPropertyPathItem): Discoverabl
     resultCount: item.attributes.cardSearchResultCount,
     isLoading: false,
     isLoaded: false,
-    hasOptions: shouldLoadOptions,
-    loadOptionsOnExpand: shouldLoadOptions,
   };
 }
 
@@ -132,16 +119,6 @@ export function AppliedFilterMapper(appliedFilter: AppliedFilter): DiscoverableF
 
   const type: DiscoverableFilter['type'] = key === 'dateCreated' ? 'date' : key === 'creator' ? 'checkbox' : 'select';
 
-  const shouldLoadOptions = [
-    'subject',
-    'rights',
-    'resourceNature',
-    'affiliation',
-    'publisher',
-    'funder',
-    'isPartOfCollection',
-  ].includes(key);
-
   return {
     key,
     label,
@@ -151,8 +128,6 @@ export function AppliedFilterMapper(appliedFilter: AppliedFilter): DiscoverableF
     helpLink,
     helpLinkText,
     isLoading: false,
-    hasOptions: shouldLoadOptions,
-    loadOptionsOnExpand: shouldLoadOptions,
   };
 }
 

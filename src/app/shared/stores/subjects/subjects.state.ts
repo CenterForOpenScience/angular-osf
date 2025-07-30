@@ -42,7 +42,10 @@ export class SubjectsState {
   private readonly subjectsService = inject(SubjectsService);
 
   @Action(FetchSubjects)
-  fetchSubjects(ctx: StateContext<SubjectsModel>, { resourceId, resourceType, search }: FetchSubjects) {
+  fetchSubjects(
+    ctx: StateContext<SubjectsModel>,
+    { resourceId, resourceType, search, isMetadataRegistry }: FetchSubjects
+  ) {
     if (!resourceType) {
       return;
     }
@@ -60,7 +63,7 @@ export class SubjectsState {
       },
     });
 
-    return this.subjectsService.getSubjects(resourceType, resourceId, search).pipe(
+    return this.subjectsService.getSubjects(resourceType, resourceId, search, isMetadataRegistry).pipe(
       tap((subjects) => {
         if (search) {
           ctx.patchState({

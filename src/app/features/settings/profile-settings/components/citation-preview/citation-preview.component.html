@@ -1,0 +1,42 @@
+<div class="name-container border-round-lg p-3 sm:p-5">
+  <div class="flex flex-column row-gap-5">
+    <h2>
+      {{ 'settings.profileSettings.name.citationPreview.title' | translate }}
+    </h2>
+
+    <div class="flex flex-column row-gap-4 column-gap-8 sm:flex-row">
+      <div class="flex column-gap-4 row-gap-3">
+        <div class="flex flex-column">
+          <p>
+            {{ 'settings.profileSettings.name.citationPreview.style' | translate }}
+          </p>
+          <p>
+            {{ 'settings.profileSettings.name.citationPreview.citationFormat' | translate }}
+          </p>
+        </div>
+
+        <div class="flex flex-column">
+          <p class="font-bold">{{ 'settings.profileSettings.name.citationPreview.apa' | translate }}</p>
+          <p>{{ currentUser() | citationFormat: 'apa' }}</p>
+        </div>
+      </div>
+
+      <div class="flex column-gap-4 row-gap-3">
+        <div class="flex flex-column">
+          <p>
+            {{ 'settings.profileSettings.name.citationPreview.style' | translate }}
+          </p>
+
+          <p>
+            {{ 'settings.profileSettings.name.citationPreview.citationFormat' | translate }}
+          </p>
+        </div>
+
+        <div class="flex flex-column">
+          <p class="font-bold">{{ 'settings.profileSettings.name.citationPreview.mla' | translate }}</p>
+          <p>{{ currentUser() | citationFormat: 'mla' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

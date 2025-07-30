@@ -13,6 +13,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ClearCollections } from '@osf/features/collections/store/collections';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
   LoadingSpinnerComponent,
@@ -23,7 +24,7 @@ import {
 import { ResourceType } from '@shared/enums';
 import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
 import { ToastService } from '@shared/services';
-import { CollectionsSelectors, GetBookmarksCollectionId } from '@shared/stores';
+import { CollectionsSelectors, GetAllNodeLinks, GetBookmarksCollectionId, GetLinkedResources } from '@shared/stores';
 import { ClearCollections } from '@shared/stores/collections';
 import { IS_XSMALL } from '@shared/utils';
 
@@ -34,19 +35,13 @@ import {
 import { ClearWiki, GetHomeWiki } from '../wiki/store';
 
 import {
-  LinkedProjectsComponent,
+  LinkedResourcesComponent,
   OverviewComponentsComponent,
   OverviewToolbarComponent,
   OverviewWikiComponent,
   RecentActivityComponent,
 } from './components';
-import {
-  ClearProjectOverview,
-  GetComponents,
-  GetLinkedProjects,
-  GetProjectById,
-  ProjectOverviewSelectors,
-} from './store';
+import { ClearProjectOverview, GetComponents, GetProjectById, ProjectOverviewSelectors } from './store';
 
 @Component({
   selector: 'osf-project-overview',
@@ -61,7 +56,7 @@ import {
     LoadingSpinnerComponent,
     OverviewWikiComponent,
     OverviewComponentsComponent,
-    LinkedProjectsComponent,
+    LinkedResourcesComponent,
     RecentActivityComponent,
     OverviewToolbarComponent,
     ResourceMetadataComponent,
@@ -90,7 +85,8 @@ export class ProjectOverviewComponent implements OnInit {
     getBookmarksId: GetBookmarksCollectionId,
     getHomeWiki: GetHomeWiki,
     getComponents: GetComponents,
-    getLinkedProjects: GetLinkedProjects,
+    getLinkedProjects: GetLinkedResources,
+    getNodeLinks: GetAllNodeLinks,
     clearProjectOverview: ClearProjectOverview,
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
@@ -147,6 +143,7 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getBookmarksId();
       this.actions.getHomeWiki(projectId);
       this.actions.getComponents(projectId);
+      this.actions.getNodeLinks(projectId);
       this.actions.getLinkedProjects(projectId);
     }
   }
@@ -177,6 +174,7 @@ export class ProjectOverviewComponent implements OnInit {
   goBack(): void {
     const currentStatus = this.route.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus } : {};
+
     this.router.navigate(['../'], {
       relativeTo: this.route,
       queryParams,

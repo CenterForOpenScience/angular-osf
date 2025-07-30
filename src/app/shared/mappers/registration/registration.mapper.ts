@@ -5,7 +5,11 @@ import {
   RegistrationCard,
   RegistrationDataJsonApi,
   RegistrationModel,
+  SchemaResponse,
+  SchemaResponseDataJsonApi,
 } from '@osf/shared/models';
+
+import { MapRegistryStatus } from '../registry';
 
 export class RegistrationMapper {
   static fromDraftRegistrationResponse(response: DraftRegistrationDataJsonApi): DraftRegistrationModel {
@@ -25,10 +29,19 @@ export class RegistrationMapper {
       },
       tags: response.attributes.tags || [],
       stepsData: response.attributes.registration_responses || {},
-      branchedFrom: {
-        id: response.embeds?.branched_from?.data.id,
-        title: response.embeds?.branched_from?.data.attributes.title,
-      },
+      branchedFrom: response.embeds?.branched_from?.data
+        ? {
+            id: response.embeds.branched_from.data.id,
+            title: response.embeds.branched_from.data.attributes.title,
+            filesLink: response.embeds?.branched_from?.data.relationships?.files?.links?.related?.href,
+            type: response.embeds.branched_from.data.type,
+          }
+        : {
+            id: response.relationships.branched_from?.data?.id || '',
+            title: response.attributes.title,
+            filesLink: response.relationships.branched_from?.links?.related.href + 'files/',
+            type: response.relationships.branched_from?.data?.type,
+          },
       providerId: response.relationships.provider?.data?.id || '',
       hasProject: !!response.attributes.has_project,
       components: [],
@@ -52,6 +65,7 @@ export class RegistrationMapper {
       dateModified: registration.attributes.datetime_updated,
       registrationTemplate: registration.embeds?.registration_schema?.data?.attributes?.name || '',
       registry: registration.embeds?.provider?.data?.attributes?.name || '',
+      public: registration.attributes.public,
       contributors:
         registration.embeds?.bibliographic_contributors?.data.map((contributor) => ({
           id: contributor.id,
@@ -65,11 +79,14 @@ export class RegistrationMapper {
       id: registration.id,
       title: registration.attributes.title,
       description: registration.attributes.description || '',
-      status: RegistryStatus.InProgress, // [NM] TODO: map status accordingly
+      status: MapRegistryStatus(registration.attributes),
       dateCreated: registration.attributes.datetime_initiated,
       dateModified: registration.attributes.date_modified,
       registrationTemplate: registration.embeds?.registration_schema?.data?.attributes?.name || '',
       registry: registration.embeds?.provider?.data?.attributes?.name || '',
+      public: registration.attributes.public,
+      reviewsState: registration.attributes.reviews_state,
+      revisionState: registration.attributes.revision_state,
       contributors:
         registration.embeds?.bibliographic_contributors?.data.map((contributor) => ({
           id: contributor.id,
@@ -89,7 +106,7 @@ export class RegistrationMapper {
       data: {
         type: 'registrations',
         attributes: {
-          embargo_end_date: embargoDate,
+          embargo_end_date: embargoDate || null,
           draft_registration: draftId,
           included_node_ids: components,
         },
@@ -111,6 +128,24 @@ export class RegistrationMapper {
           },
         },
       },
+    };
+  }
+
+  static fromSchemaResponse(response: SchemaResponseDataJsonApi): SchemaResponse {
+    return {
+      id: response.id,
+      dateCreated: response.attributes.date_created,
+      dateSubmitted: response.attributes.date_submitted,
+      dateModified: response.attributes.date_modified,
+      revisionJustification: response.attributes.revision_justification,
+      revisionResponses: response.attributes.revision_responses,
+      updatedResponseKeys: response.attributes.updated_response_keys,
+      reviewsState: response.attributes.reviews_state,
+      isPendingCurrentUserApproval: response.attributes.is_pending_current_user_approval,
+      isOriginalResponse: response.attributes.is_original_response,
+      registrationSchemaId: response.relationships.registration_schema?.data?.id || '',
+      registrationId: response.relationships.registration?.data?.id || '',
+      filesLink: response.embeds?.registration?.data.relationships.files.links.related.href || '',
     };
   }
 }

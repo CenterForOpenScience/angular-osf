@@ -6,6 +6,10 @@ export interface LicensesResponseJsonApi {
   links: PaginationLinksJsonApi;
 }
 
+export interface LicenseResponseJsonApi {
+  data: LicenseDataJsonApi;
+}
+
 export type LicenseDataJsonApi = ApiData<LicenseAttributesJsonApi, null, null, null>;
 
 export interface LicenseAttributesJsonApi {

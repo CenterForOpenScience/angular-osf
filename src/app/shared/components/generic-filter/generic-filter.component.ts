@@ -26,12 +26,23 @@ export class GenericFilterComponent {
   filterOptions = computed(() => {
     const parentOptions = this.options();
     if (parentOptions.length > 0) {
-      return parentOptions
-        .filter((option) => option?.label)
-        .map((option) => ({
-          label: option.label || '',
-          value: option.value || '',
-        }));
+      if (this.filterType() === 'dateCreated') {
+        return parentOptions
+          .filter((option) => option?.label)
+          .sort((a, b) => b.label.localeCompare(a.label))
+          .map((option) => ({
+            label: option.label || '',
+            value: option.label || '',
+          }));
+      } else {
+        return parentOptions
+          .filter((option) => option?.label)
+          .sort((a, b) => a.label.localeCompare(b.label))
+          .map((option) => ({
+            label: option.label || '',
+            value: option.value || '',
+          }));
+      }
     }
     return [];
   });

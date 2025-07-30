@@ -28,4 +28,39 @@ export class PreprintSelectors {
   static isPreprintSubmitting(state: PreprintStateModel) {
     return state.preprint.isSubmitting;
   }
+
+  @Selector([PreprintState])
+  static isPreprintLoading(state: PreprintStateModel) {
+    return state.preprint.isLoading;
+  }
+
+  @Selector([PreprintState])
+  static getPreprintFile(state: PreprintStateModel) {
+    return state.preprintFile.data;
+  }
+
+  @Selector([PreprintState])
+  static isPreprintFileLoading(state: PreprintStateModel) {
+    return state.preprintFile.isLoading;
+  }
+
+  @Selector([PreprintState])
+  static getPreprintFileVersions(state: PreprintStateModel) {
+    return state.fileVersions.data;
+  }
+
+  @Selector([PreprintState])
+  static arePreprintFileVersionsLoading(state: PreprintStateModel) {
+    return state.fileVersions.isLoading;
+  }
+
+  @Selector([PreprintState])
+  static getPreprintVersionIds(state: PreprintStateModel) {
+    return state.preprintVersionIds.data;
+  }
+
+  @Selector([PreprintState])
+  static arePreprintVersionIdsLoading(state: PreprintStateModel) {
+    return state.preprintVersionIds.isLoading;
+  }
 }

@@ -3,9 +3,11 @@ import {
   AsyncStateWithTotalCount,
   DraftRegistrationModel,
   License,
+  OsfFile,
   RegistrationCard,
   RegistrationModel,
   Resource,
+  SchemaResponse,
 } from '@shared/models';
 
 import { PageSchema, Project, ProviderSchema } from '../models';
@@ -21,4 +23,10 @@ export interface RegistriesStateModel {
   stepsValidation: Record<string, { invalid: boolean }>;
   draftRegistrations: AsyncStateWithTotalCount<RegistrationCard[]>;
   submittedRegistrations: AsyncStateWithTotalCount<RegistrationCard[]>;
+  files: AsyncStateModel<OsfFile[]>;
+  currentFolder: OsfFile | null;
+  moveFileCurrentFolder: OsfFile | null;
+  rootFolders: AsyncStateModel<OsfFile[] | null>;
+  schemaResponse: AsyncStateModel<SchemaResponse | null>;
+  updatedFields: Record<string, unknown>;
 }

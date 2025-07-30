@@ -1,4 +1,5 @@
 import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '@osf/core/models';
+import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { LicenseRecordJsonApi } from '@osf/shared/models';
 
 export interface DraftRegistrationResponseJsonApi {
@@ -39,6 +40,7 @@ export interface DraftRegistrationAttributesJsonApi {
   registration_responses: Record<string, unknown>;
   tags: string[];
   title: string;
+  public?: boolean;
 }
 
 export interface RegistrationAttributesJsonApi {
@@ -48,7 +50,13 @@ export interface RegistrationAttributesJsonApi {
   description: string;
   embargoed: boolean;
   archiving: boolean;
+  public: boolean;
   title: string;
+  revision_state: RevisionReviewStates;
+  reviews_state: RegistrationReviewStates;
+  pending_registration_approval: boolean;
+  pending_embargo_approval: boolean;
+  pending_embargo_termination_approval: boolean;
 }
 
 export interface DraftRegistrationRelationshipsJsonApi {
@@ -74,6 +82,11 @@ export interface DraftRegistrationRelationshipsJsonApi {
     data: {
       id: string;
       type: 'nodes';
+    };
+    links?: {
+      related: {
+        href: string;
+      };
     };
   };
 }
@@ -134,6 +147,15 @@ export interface DraftRegistrationEmbedsJsonApi extends RegistrationEmbedsJsonAp
       attributes: {
         title: string;
       };
+      relationships?: {
+        files?: {
+          links: {
+            related: {
+              href: string;
+            };
+          };
+        };
+      };
     };
   };
 }
@@ -144,5 +166,71 @@ export interface CreateRegistrationPayloadJsonApi {
     id: string;
     relationships?: DraftRegistrationRelationshipsJsonApi;
     attributes?: Partial<DraftRegistrationAttributesJsonApi>;
+  };
+}
+
+export interface SchemaResponsesJsonApi {
+  data: SchemaResponseDataJsonApi[];
+  meta: MetaJsonApi;
+  links: PaginationLinksJsonApi;
+}
+
+export interface SchemaResponseJsonApi {
+  data: SchemaResponseDataJsonApi;
+}
+
+export type SchemaResponseDataJsonApi = ApiData<
+  SchemaResponseAttributesJsonApi,
+  SchemaResponseEmbedsJsonApi,
+  SchemaResponseRelationshipsJsonApi,
+  null
+>;
+
+export interface SchemaResponseAttributesJsonApi {
+  id: string;
+  date_created: string;
+  date_submitted: string | null;
+  date_modified: string;
+  revision_justification: string;
+  revision_responses: Record<string, unknown>;
+  updated_response_keys: string[];
+  reviews_state: RevisionReviewStates;
+  is_pending_current_user_approval: boolean;
+  is_original_response: boolean;
+}
+
+export interface SchemaResponseRelationshipsJsonApi {
+  registration_schema: {
+    data: {
+      id: string;
+      type: 'registration-schemas';
+    };
+  };
+  registration: {
+    data: {
+      id: string;
+      type: 'registrations';
+    };
+  };
+}
+
+export interface SchemaResponseEmbedsJsonApi {
+  registration: {
+    data: {
+      id: string;
+      type: 'registrations';
+      attributes: {
+        title: string;
+      };
+      relationships: {
+        files: {
+          links: {
+            related: {
+              href: string;
+            };
+          };
+        };
+      };
+    };
   };
 }

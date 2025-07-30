@@ -1,9 +1,10 @@
 import { Selector } from '@ngxs/store';
 
-import { UserState, UserStateModel } from '@core/store/user';
 import { User, UserSettings } from '@osf/core/models';
-import { ProfileSettingsStateModel } from '@osf/features/settings/profile-settings/store';
-import { Social } from '@osf/shared/models';
+import { Education, Employment, Social } from '@osf/shared/models';
+
+import { UserStateModel } from './user.model';
+import { UserState } from './user.state';
 
 export class UserSelectors {
   @Selector([UserState])
@@ -14,24 +15,6 @@ export class UserSelectors {
   @Selector([UserState])
   static getCurrentUserLoading(state: UserStateModel): boolean {
     return state.currentUser.isLoading;
-  }
-
-  @Selector([UserState])
-  static getProfileSettings(state: UserStateModel): ProfileSettingsStateModel {
-    return {
-      education: state.currentUser.data?.education ?? [],
-      employment: state.currentUser.data?.employment ?? [],
-      social: state.currentUser.data?.social ?? ({} as Social),
-      user: {
-        middleNames: state.currentUser.data?.middleNames ?? '',
-        suffix: state.currentUser.data?.suffix ?? '',
-        id: state.currentUser.data?.id ?? '',
-        fullName: state.currentUser.data?.fullName ?? '',
-        email: state.currentUser.data?.email ?? '',
-        givenName: state.currentUser.data?.givenName ?? '',
-        familyName: state.currentUser.data?.familyName ?? '',
-      },
-    } satisfies ProfileSettingsStateModel;
   }
 
   @Selector([UserState])
@@ -52,5 +35,25 @@ export class UserSelectors {
   @Selector([UserState])
   static getShareIndexing(state: UserStateModel): boolean | undefined {
     return state.currentUser.data?.allowIndexing;
+  }
+
+  @Selector([UserState])
+  static getUserNames(state: UserStateModel): Partial<User> | null {
+    return state.currentUser.data;
+  }
+
+  @Selector([UserState])
+  static getEmployment(state: UserStateModel): Employment[] {
+    return state.currentUser.data?.employment || [];
+  }
+
+  @Selector([UserState])
+  static getEducation(state: UserStateModel): Education[] {
+    return state.currentUser.data?.education || [];
+  }
+
+  @Selector([UserState])
+  static getSocialLinks(state: UserStateModel): Social | undefined {
+    return state.currentUser.data?.social;
   }
 }

@@ -174,7 +174,6 @@ export class DraftsComponent implements OnDestroy {
   }
 
   stepChange(step: StepOption): void {
-    // [NM] TODO: before navigating, validate the current step
     this.currentStepIndex.set(step.index);
     const pageLink = this.steps()[step.index].routeLink;
     this.router.navigate([`/registries/drafts/${this.registrationId}/`, pageLink]);

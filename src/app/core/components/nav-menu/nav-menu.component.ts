@@ -71,7 +71,7 @@ export class NavMenuComponent {
 
     const isCollectionsWithId = urlSegments[0] === 'collections' && urlSegments[1] && urlSegments[1] !== '';
     const isRegistryRoute = urlSegments[0] === 'registries' && !!urlSegments[2];
-    const isRegistryRouteDetails = urlSegments[0] === 'registries' && urlSegments[2];
+    const isRegistryRouteDetails = urlSegments[0] === 'registries' && urlSegments[2] === 'overview';
 
     return {
       resourceId,

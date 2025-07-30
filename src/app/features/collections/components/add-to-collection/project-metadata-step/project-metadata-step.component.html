@@ -116,15 +116,7 @@
 
             <p class="highlight-block p-3">
               <osf-truncated-text
-                [text]="
-                  license.text
-                    | interpolate
-                      : {
-                          year: projectMetadataForm.controls[ProjectMetadataFormControls.LicenseYear].value || '',
-                          copyrightHolders:
-                            projectMetadataForm.controls[ProjectMetadataFormControls.CopyrightHolders].value || '',
-                        }
-                "
+                [text]="license.text | interpolate: { year: year, copyrightHolders: copyrightHolders }"
               />
             </p>
           }

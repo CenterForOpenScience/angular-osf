@@ -1,22 +1,26 @@
-<div class="flex justify-content-between align-items-start pb-3 column-gap-3">
+<div class="flex justify-content-between align-items-start column-gap-3">
   <div class="flex flex-1 flex-column row-gap-7">
-    <osf-select
-      class="text-center inline-flex md:hidden"
-      [options]="tabsOptions"
-      [fullWidth]="true"
-      [selectedValue]="selectedTab()"
-      (changeValue)="selectTab()"
-    />
+    @if (showTabs()) {
+      <osf-select
+        class="text-center inline-flex md:hidden"
+        [options]="tabsOptions"
+        [fullWidth]="true"
+        [selectedValue]="selectedTab()"
+        (changeValue)="selectTab()"
+      />
+    }
 
-    <h3 class="result-count">
-      @if (searchCount() > 10000) {
-        10 000+ {{ 'collections.searchResults.results' | translate }}
-      } @else if (searchCount() > 0) {
-        {{ searchCount() }} {{ 'collections.searchResults.results' | translate }}
-      } @else {
-        0 {{ 'collections.searchResults.results' | translate }}
-      }
-    </h3>
+    <div class="flex flex-column gap-2">
+      <h3 class="result-count">
+        @if (searchCount() > 10000) {
+          10 000+ {{ 'collections.searchResults.results' | translate }}
+        } @else if (searchCount() > 0) {
+          {{ searchCount() }} {{ 'collections.searchResults.results' | translate }}
+        } @else {
+          0 {{ 'collections.searchResults.results' | translate }}
+        }
+      </h3>
+    </div>
   </div>
 
   <div class="flex align-items-center gap-2">
@@ -70,17 +74,16 @@
       </div>
     }
   </div>
-} @else {
-  @if (hasSelectedValues()) {
-    <div class="mb-3">
-      <ng-content select="[slot=filter-chips]"></ng-content>
-    </div>
-  }
 }
 
 <div class="flex flex-column gap-3 md:flex-row md:gap-4">
-  <div class="hidden w-3 md:block">
-    <ng-content select="[slot=filters]"></ng-content>
+  <div class="flex flex-column gap-3 w-full md:gap-4 md:w-3">
+    @if (hasSelectedValues()) {
+      <ng-content select="[slot=filter-chips]"></ng-content>
+    }
+    <div class="hidden md:block">
+      <ng-content select="[slot=filters]"></ng-content>
+    </div>
   </div>
 
   <p-dataView [value]="resources()" class="flex-1 w-full" [rows]="10">

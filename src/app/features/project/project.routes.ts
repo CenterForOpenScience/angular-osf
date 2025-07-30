@@ -4,7 +4,13 @@ import { Routes } from '@angular/router';
 
 import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ResourceType } from '@osf/shared/enums';
-import { CollectionsState, ContributorsState, SubjectsState, ViewOnlyLinkState } from '@osf/shared/stores';
+import {
+  CollectionsState,
+  ContributorsState,
+  NodeLinksState,
+  SubjectsState,
+  ViewOnlyLinkState,
+} from '@osf/shared/stores';
 
 import { AnalyticsState } from './analytics/store';
 import { ProjectFilesState } from './files/store';
@@ -24,7 +30,7 @@ export const projectRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('../project/overview/project-overview.component').then((mod) => mod.ProjectOverviewComponent),
-        providers: [provideStates([CollectionsState, CollectionsModerationState])],
+        providers: [provideStates([NodeLinksState, CollectionsState, CollectionsModerationState])],
       },
       {
         path: 'metadata',

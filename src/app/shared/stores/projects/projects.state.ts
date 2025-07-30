@@ -6,13 +6,9 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@core/handlers';
 import { ProjectsService } from '@shared/services/projects.service';
-import {
-  ClearProjects,
-  GetProjects,
-  ProjectsStateModel,
-  SetSelectedProject,
-  UpdateProjectMetadata,
-} from '@shared/stores';
+
+import { ClearProjects, GetProjects, SetSelectedProject, UpdateProjectMetadata } from './projects.actions';
+import { ProjectsStateModel } from './projects.model';
 
 const PROJECTS_DEFAULTS: ProjectsStateModel = {
   projects: {

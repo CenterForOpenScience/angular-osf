@@ -11,4 +11,5 @@ export interface Project {
   licenseOptions: LicenseOptions | null;
   description: string;
   tags: string[];
+  filesLink?: string;
 }

@@ -1,0 +1,17 @@
+<p>{{ 'project.overview.dialog.deleteNodeLink.message' | translate }}</p>
+<div class="flex pt-5 justify-content-end gap-3">
+  <p-button
+    class="w-12rem btn-full-width"
+    [label]="'common.buttons.cancel' | translate"
+    severity="info"
+    (click)="dialogRef.close()"
+    [disabled]="isSubmitting()"
+  />
+  <p-button
+    class="w-12rem btn-full-width"
+    [label]="'common.buttons.delete' | translate"
+    (onClick)="handleDeleteNodeLink()"
+    severity="danger"
+    [loading]="isSubmitting()"
+  />
+</div>

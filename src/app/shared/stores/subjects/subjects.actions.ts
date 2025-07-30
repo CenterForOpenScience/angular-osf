@@ -7,7 +7,8 @@ export class FetchSubjects {
   constructor(
     public resourceType: ResourceType | undefined,
     public resourceId?: string,
-    public search?: string
+    public search?: string,
+    public isMetadataRegistry?: boolean
   ) {}
 }
 

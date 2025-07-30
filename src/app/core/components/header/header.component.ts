@@ -28,7 +28,7 @@ export class HeaderComponent {
       label: 'navigation.myProfile',
       command: () => this.router.navigate(['my-profile']),
     },
-    { label: 'navigation.settings', command: () => console.log('Settings') },
+    { label: 'navigation.settings', command: () => this.router.navigate(['settings']) },
     { label: 'navigation.logOut', command: () => console.log('Log out') },
   ];
 }

@@ -30,16 +30,6 @@ export class ProjectOverviewSelectors {
   }
 
   @Selector([ProjectOverviewState])
-  static getLinkedProjects(state: ProjectOverviewStateModel) {
-    return state.linkedProjects.data;
-  }
-
-  @Selector([ProjectOverviewState])
-  static getLinkedProjectsLoading(state: ProjectOverviewStateModel) {
-    return state.linkedProjects.isLoading;
-  }
-
-  @Selector([ProjectOverviewState])
   static getForkProjectSubmitting(state: ProjectOverviewStateModel) {
     return state.project.isSubmitting;
   }

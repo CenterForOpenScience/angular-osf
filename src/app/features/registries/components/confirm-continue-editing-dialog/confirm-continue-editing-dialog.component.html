@@ -1,0 +1,8 @@
+<p class="mb-4">{{ 'registries.justification.confirmContinueEditing.message' | translate }}</p>
+<form [formGroup]="form" (ngSubmit)="submit()">
+  <label class="font-bold" for="justification-comment">
+    {{ 'registries.justification.confirmContinueEditing.label' | translate }}
+  </label>
+
+  <textarea id="justification-comment" class="w-full" rows="5" cols="30" pTextarea formControlName="comment"></textarea>
+</form>

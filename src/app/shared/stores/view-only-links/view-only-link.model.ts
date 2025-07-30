@@ -1,5 +1,4 @@
-import { NodeData, PaginatedViewOnlyLinksModel } from '@shared/models';
-import { AsyncStateModel } from '@shared/models/store';
+import { AsyncStateModel, NodeData, PaginatedViewOnlyLinksModel } from '@osf/shared/models';
 
 export interface ViewOnlyLinkStateModel {
   viewOnlyLinks: AsyncStateModel<PaginatedViewOnlyLinksModel>;

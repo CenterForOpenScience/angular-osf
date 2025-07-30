@@ -1,0 +1,115 @@
+<section class="flex flex-column flex-1 bg-white p-5 gap-4 w-full">
+  <p-card>
+    <h2 class="mb-4">{{ 'registries.justification.step' | translate }}</h2>
+    <h4 class="mb-2">{{ 'registries.justification.title' | translate }}</h4>
+    @if (schemaResponse()?.revisionJustification) {
+      <p class="mb-2">{{ schemaResponse()?.revisionJustification }}</p>
+    } @else {
+      <div class="mb-2">
+        <p class="font-italic">{{ 'registries.justification.noData' | translate }}</p>
+        <p-message class="mt-1" severity="error" variant="simple" size="small">
+          {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+        </p-message>
+      </div>
+    }
+    <h4 class="mb-2">{{ 'registries.justification.updatedList' | translate }}</h4>
+    @if (changes().length) {
+      @for (item of changes(); track item) {
+        <p class="mb-1">{{ item }}</p>
+      }
+    } @else {
+      <p class="font-italic">{{ 'registries.justification.noUpdates' | translate }}</p>
+    }
+  </p-card>
+  @for (page of pages(); track page.id) {
+    <p-card class="w-full">
+      <h2 class="mb-4">{{ page.title }}</h2>
+
+      @if (page.description) {
+        <p class="mb-4">{{ page.description }}</p>
+      }
+
+      @if (page.questions?.length) {
+        @for (question of page.questions; track question.responseKey) {
+          <div [class.mb-4]="!$last">
+            <h4 class="mb-2">{{ question.displayText }}</h4>
+            @if (schemaResponseRevisionData()[question.responseKey!]) {
+              @switch (question.fieldType) {
+                @case (FieldType.Text) {
+                  <p>{{ schemaResponseRevisionData()[question.responseKey!] }}</p>
+                }
+                @case (FieldType.Checkbox) {
+                  @for (option of schemaResponseRevisionData()[question.responseKey!]; track option) {
+                    <p class="mb-1">{{ option }}</p>
+                  }
+                }
+                @case (FieldType.File) {
+                  @if (schemaResponseRevisionData()[question.responseKey!].length) {
+                    <div class="flex flex-wrap gap-2">
+                      @for (file of schemaResponseRevisionData()[question.responseKey!]; track file.id) {
+                        <p-tag [value]="file.file_name" severity="info"></p-tag>
+                      }
+                    </div>
+                  } @else {
+                    <p class="font-italic">{{ 'common.labels.noFiles' | translate }}</p>
+                  }
+                }
+                @default {
+                  <p>{{ schemaResponseRevisionData()[question.responseKey!] }}</p>
+                }
+              }
+            } @else {
+              @if (question.fieldType === FieldType.File) {
+                <p class="font-italic">{{ 'common.labels.noFiles' | translate }}</p>
+              } @else {
+                <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
+              }
+              @if (question.required) {
+                <p-message class="mt-1" severity="error" variant="simple" size="small">
+                  {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+                </p-message>
+              }
+            }
+          </div>
+        }
+      }
+    </p-card>
+  }
+  <div>
+    <div class="flex justify-content-end">
+      @if (schemaResponse()?.reviewsState === RevisionReviewStates.RevisionInProgress) {
+        <p-button
+          [label]="'common.buttons.back' | translate"
+          severity="info"
+          class="mr-2"
+          (click)="goBack()"
+        ></p-button>
+        <p-button
+          [label]="'registries.justification.deleteUpdates' | translate"
+          severity="danger"
+          (click)="deleteDraftUpdate()"
+          class="mr-2"
+        >
+        </p-button>
+        <p-button
+          [label]="'registries.justification.submitChanges' | translate"
+          [disabled]="false"
+          (click)="submit()"
+          [loading]="isSchemaResponseLoading()"
+        ></p-button>
+      } @else if (schemaResponse()?.reviewsState === RevisionReviewStates.Unapproved) {
+        <p-button
+          [label]="'registries.justification.acceptChanges' | translate"
+          severity="success"
+          class="mr-2"
+          (click)="acceptChanges()"
+          [loading]="isSchemaResponseLoading()"
+        ></p-button>
+        <p-button
+          [label]="'registries.justification.continueEditing' | translate"
+          (click)="continueEditing()"
+        ></p-button>
+      }
+    </div>
+  </div>
+</section>

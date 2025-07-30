@@ -45,7 +45,7 @@ export interface RegistryOverviewJsonApiAttributes {
   pending_registration_approval: boolean;
   pending_withdrawal: boolean;
   revision_state: RevisionReviewStates;
-  review_state: RegistrationReviewStates;
+  reviews_state: RegistrationReviewStates;
   embargoed: boolean;
 }
 

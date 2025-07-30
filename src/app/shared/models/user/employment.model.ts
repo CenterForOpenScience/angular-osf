@@ -1,10 +1,10 @@
 export interface Employment {
   title: string;
-  startYear: string | number;
-  startMonth: number;
-  endYear: number | null;
-  endMonth: number | null;
-  ongoing: boolean;
-  department: string;
   institution: string;
+  department: string;
+  startMonth: number;
+  startYear: string | number;
+  endMonth: number | null;
+  endYear: number | null;
+  ongoing: boolean;
 }

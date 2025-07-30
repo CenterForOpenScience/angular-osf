@@ -1,0 +1,45 @@
+<section class="registries-hero-container py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4">
+  <div class="flex flex-column align-items-start gap-4 md:flex-row">
+    <div class="flex align-items-center gap-2">
+      @if (isProviderLoading()) {
+        <p-skeleton width="3rem" height="1.5rem" />
+        <p-skeleton width="12rem" height="1.5rem" />
+      } @else {
+        <img
+          class="preprint-provider-hero-logo"
+          alt="Provider Logo"
+          height="40"
+          [src]="provider()!.brand.heroLogoImageUrl"
+        />
+      }
+    </div>
+  </div>
+
+  <div class="provider-description">
+    @if (isProviderLoading()) {
+      <div class="flex flex-column gap-2">
+        <p-skeleton width="40%" height="1.5rem"></p-skeleton>
+        <p-skeleton width="70%" height="1.5rem"></p-skeleton>
+
+        <p-skeleton width="10%" height="1rem"></p-skeleton>
+      </div>
+    } @else {
+      <div [innerHTML]="provider()!.descriptionHtml | decodeHtml"></div>
+    }
+  </div>
+
+  @if (isProviderLoading()) {
+    <p-skeleton class="w-full" height="3rem" />
+  } @else {
+    <div class="search-input-container">
+      <osf-search-input
+        class="w-full"
+        [showHelpIcon]="true"
+        [placeholder]="'preprints.searchPlaceholder' | translate: { preprintWord: 'Registrations' } | titlecase"
+        [control]="searchControl()"
+        (triggerSearch)="onTriggerSearch($event)"
+        (helpClicked)="openHelpDialog()"
+      />
+    </div>
+  }
+</section>

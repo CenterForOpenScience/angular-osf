@@ -1,0 +1,19 @@
+<p-card>
+  <div class="flex justify-content-between align-items-center">
+    <h2>{{ 'project.overview.metadata.description' | translate }}</h2>
+
+    @if (!readonly()) {
+      <p-button
+        severity="secondary"
+        [label]="'common.buttons.edit' | translate"
+        (click)="openEditDescriptionDialog.emit()"
+      ></p-button>
+    }
+  </div>
+
+  @if (description()) {
+    <p>{{ description() }}</p>
+  } @else {
+    <p class="text-color-secondary">{{ 'project.overview.metadata.noDescription' | translate }}</p>
+  }
+</p-card>

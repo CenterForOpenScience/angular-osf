@@ -51,6 +51,20 @@
   }
 }
 
+.link-project-button {
+  &:not(.active) {
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .p-button {
+    width: 100%;
+  }
+}
+
 .submission-link-btn {
   .p-button {
     --p-button-padding-x: 0.5625rem;

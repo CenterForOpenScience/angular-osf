@@ -3,6 +3,10 @@ export interface JsonApiResponse<Data, Included> {
   included?: Included;
 }
 
+export interface JsonApiResponseWithMeta<Data, Meta, Included> extends JsonApiResponse<Data, Included> {
+  meta: Meta;
+}
+
 export interface JsonApiResponseWithPaging<Data, Included> extends JsonApiResponse<Data, Included> {
   links: {
     meta: MetaJsonApi;

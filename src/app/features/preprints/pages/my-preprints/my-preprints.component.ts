@@ -24,7 +24,7 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { parseQueryFilterParams } from '@core/helpers';
-import { Preprint, PreprintShortInfo } from '@osf/features/preprints/models';
+import { PreprintShortInfo } from '@osf/features/preprints/models';
 import { FetchMyPreprints, PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { ListInfoShortenerComponent, SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { TABLE_PARAMS } from '@shared/constants';
@@ -79,8 +79,8 @@ export class MyPreprintsComponent {
     this.setupQueryParamsEffect();
   }
 
-  navigateToPreprintDetails(preprint: Preprint): void {
-    //[RNi] TODO: Implement redirect when details page is done
+  navigateToPreprintDetails(preprint: PreprintShortInfo): void {
+    this.router.navigateByUrl(`/preprints/${preprint.providerId}/${preprint.id}`);
   }
 
   onPageChange(event: TablePageEvent): void {

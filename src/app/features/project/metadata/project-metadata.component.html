@@ -24,83 +24,23 @@
         @for (tab of tabs(); track $index) {
           <p-tabpanel [value]="tab.id">
             @if (tab.type === 'project') {
-              <div class="flex-column flex flex-1 w-full bg-white lg:flex-row">
-                <div class="col-12 lg:col-6 flex flex-column gap-4">
-                  <p-card>
-                    <div class="flex justify-content-between flex-wrap gap-4">
-                      <div class="flex flex-column gap-2 flex-1">
-                        <h2>
-                          {{ 'project.overview.metadata.dateCreated' | translate }}
-                        </h2>
-
-                        <p class="m-0 text-color-secondary">
-                          {{ currentProject()?.dateCreated | date: 'MMM d, y, h:mm a' }}
-                        </p>
-                      </div>
-
-                      <div class="flex flex-column gap-2 flex-1">
-                        <h2>
-                          {{ 'project.overview.metadata.dateUpdated' | translate }}
-                        </h2>
-
-                        <p class="m-0 text-color-secondary">
-                          {{ currentProject()?.dateModified | date: 'MMM d, y, h:mm a' }}
-                        </p>
-                      </div>
-                    </div>
-                  </p-card>
-
-                  <osf-project-metadata-contributors
-                    (openEditContributorDialog)="openEditContributorDialog()"
-                    [currentProject]="currentProject()"
-                  />
-
-                  <osf-project-metadata-description
-                    (openEditDescriptionDialog)="openEditDescriptionDialog()"
-                    [currentProject]="currentProject()"
-                  />
-
-                  <osf-project-metadata-resource-information
-                    (openEditResourceInformationDialog)="openEditResourceInformationDialog()"
-                    [customItemMetadata]="customItemMetadata()"
-                  />
-
-                  <osf-project-metadata-funding
-                    (openEditFundingDialog)="openEditFundingDialog()"
-                    [currentProject]="currentProject()"
-                  />
-
-                  <osf-project-metadata-affiliated-institutions
-                    (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
-                    [currentProject]="currentProject()"
-                  />
-                </div>
-
-                <div class="col-12 lg:col-6 flex flex-column gap-4">
-                  <osf-project-metadata-license
-                    (openEditLicenseDialog)="openEditLicenseDialog()"
-                    [currentProject]="currentProject()"
-                  />
-
-                  <osf-project-metadata-publication-doi
-                    (openEditPublicationDoiDialog)="handleEditDoi()"
-                    [currentProject]="currentProject()"
-                  />
-
-                  <p-card>
-                    <div class="flex flex-column gap-3">
-                      <h2>{{ 'project.overview.metadata.tags' | translate }}</h2>
-
-                      <osf-tags-input
-                        (tagsChanged)="onTagsChanged($event)"
-                        [tags]="currentProject()?.tags || []"
-                      ></osf-tags-input>
-                    </div>
-                  </p-card>
-
-                  <osf-project-metadata-subjects [projectId]="currentProject()?.id" />
-                </div>
-              </div>
+              <osf-shared-metadata
+                [selectedSubjects]="selectedSubjects()"
+                [isSubjectsUpdating]="isSubjectsUpdating()"
+                [currentInstance]="currentProject()!"
+                [customItemMetadata]="customItemMetadata()!"
+                (openEditContributorDialog)="openEditContributorDialog()"
+                (openEditDescriptionDialog)="openEditDescriptionDialog()"
+                (openEditResourceInformationDialog)="openEditResourceInformationDialog()"
+                (openEditFundingDialog)="openEditFundingDialog()"
+                (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
+                (openEditLicenseDialog)="openEditLicenseDialog()"
+                (handleEditDoi)="handleEditDoi()"
+                (tagsChanged)="onTagsChanged($event)"
+                (getSubjectChildren)="getSubjectChildren($event)"
+                (searchSubjects)="searchSubjects($event)"
+                (updateSelectedSubjects)="updateSelectedSubjects($event)"
+              />
             } @else {
               <div class="p-6">
                 @if (selectedCedarTemplate() && selectedCedarRecord()) {

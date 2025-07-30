@@ -2,37 +2,16 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
 import { EMPTY, filter, switchMap } from 'rxjs';
 
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
-import {
-  CedarTemplateFormComponent,
-  ProjectMetadataAffiliatedInstitutionsComponent,
-  ProjectMetadataContributorsComponent,
-  ProjectMetadataDescriptionComponent,
-  ProjectMetadataFundingComponent,
-  ProjectMetadataLicenseComponent,
-  ProjectMetadataPublicationDoiComponent,
-  ProjectMetadataResourceInformationComponent,
-  ProjectMetadataSubjectsComponent,
-} from '@osf/features/project/metadata/components';
-import {
-  AffiliatedInstitutionsDialogComponent,
-  ContributorsDialogComponent,
-  DescriptionDialogComponent,
-  FundingDialogComponent,
-  LicenseDialogComponent,
-  ResourceInformationDialogComponent,
-} from '@osf/features/project/metadata/dialogs';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecord,
@@ -52,25 +31,35 @@ import {
   UpdateCustomItemMetadata,
   UpdateProjectDetails,
 } from '@osf/features/project/metadata/store';
-import { ResourceType } from '@osf/shared/enums';
-import { ContributorsSelectors, GetAllContributors } from '@osf/shared/stores';
-import { LoadingSpinnerComponent, SubHeaderComponent, TagsInputComponent } from '@shared/components';
+import { MetadataProjectsEnum, ResourceType } from '@osf/shared/enums';
+import {
+  ContributorsSelectors,
+  FetchChildrenSubjects,
+  FetchSelectedSubjects,
+  FetchSubjects,
+  GetAllContributors,
+  SubjectsSelectors,
+  UpdateResourceSubjects,
+} from '@osf/shared/stores';
+import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
+import { CedarTemplateFormComponent } from '@shared/components/shared-metadata/components';
+import {
+  AffiliatedInstitutionsDialogComponent,
+  ContributorsDialogComponent,
+  DescriptionDialogComponent,
+  FundingDialogComponent,
+  LicenseDialogComponent,
+  ResourceInformationDialogComponent,
+} from '@shared/components/shared-metadata/dialogs';
+import { SharedMetadataComponent } from '@shared/components/shared-metadata/shared-metadata.component';
+import { SubjectModel } from '@shared/models';
+import { MetadataTabsModel } from '@shared/models/metadata-tabs.model';
 import { CustomConfirmationService, LoaderService, ToastService } from '@shared/services';
 
 @Component({
   selector: 'osf-project-metadata',
   imports: [
     SubHeaderComponent,
-    Card,
-    DatePipe,
-    ProjectMetadataContributorsComponent,
-    ProjectMetadataDescriptionComponent,
-    ProjectMetadataResourceInformationComponent,
-    ProjectMetadataLicenseComponent,
-    ProjectMetadataPublicationDoiComponent,
-    ProjectMetadataSubjectsComponent,
-    ProjectMetadataFundingComponent,
-    ProjectMetadataAffiliatedInstitutionsComponent,
     CedarTemplateFormComponent,
     TranslatePipe,
     Tab,
@@ -79,7 +68,7 @@ import { CustomConfirmationService, LoaderService, ToastService } from '@shared/
     TabPanels,
     Tabs,
     LoadingSpinnerComponent,
-    TagsInputComponent,
+    SharedMetadataComponent,
   ],
   templateUrl: './project-metadata.component.html',
   styleUrl: './project-metadata.component.scss',
@@ -96,7 +85,9 @@ export class ProjectMetadataComponent implements OnInit {
   private readonly loaderService = inject(LoaderService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
-  tabs = signal<{ id: string; label: string; type: 'project' | 'cedar' }[]>([]);
+  private projectId = '';
+
+  tabs = signal<MetadataTabsModel[]>([]);
   protected readonly selectedTab = signal('project');
 
   selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
@@ -115,6 +106,11 @@ export class ProjectMetadataComponent implements OnInit {
     getCedarTemplates: GetCedarMetadataTemplates,
     createCedarRecord: CreateCedarMetadataRecord,
     updateCedarRecord: UpdateCedarMetadataRecord,
+
+    fetchSubjects: FetchSubjects,
+    fetchSelectedSubjects: FetchSelectedSubjects,
+    fetchChildrenSubjects: FetchChildrenSubjects,
+    updateResourceSubjects: UpdateResourceSubjects,
   });
 
   protected currentProject = select(ProjectMetadataSelectors.getProject);
@@ -126,6 +122,8 @@ export class ProjectMetadataComponent implements OnInit {
   protected currentUser = select(UserSelectors.getCurrentUser);
   protected cedarRecords = select(ProjectMetadataSelectors.getCedarRecords);
   protected cedarTemplates = select(ProjectMetadataSelectors.getCedarTemplates);
+  protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  protected isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
 
   constructor() {
     effect(() => {
@@ -133,13 +131,14 @@ export class ProjectMetadataComponent implements OnInit {
       const project = this.currentProject();
       if (!project) return;
 
-      const baseTabs = [{ id: 'project', label: project.title, type: 'project' as const }];
+      const baseTabs = [{ id: 'project', label: project.title, type: MetadataProjectsEnum.PROJECT }];
 
-      const cedarTabs = records.map((record) => ({
-        id: record.id || '',
-        label: record.embeds?.template?.data?.attributes?.schema_name || `Record ${record.id}`,
-        type: 'cedar' as const,
-      }));
+      const cedarTabs =
+        records?.map((record) => ({
+          id: record.id || '',
+          label: record.embeds?.template?.data?.attributes?.schema_name || `Record ${record.id}`,
+          type: MetadataProjectsEnum.CEDAR,
+        })) || [];
 
       this.tabs.set([...baseTabs, ...cedarTabs]);
 
@@ -163,39 +162,20 @@ export class ProjectMetadataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const projectId = this.route.parent?.parent?.snapshot.params['id'];
+    this.projectId = this.route.parent?.parent?.snapshot.params['id'];
 
-    if (projectId) {
-      this.actions.getProject(projectId);
-      this.actions.getCustomItemMetadata(projectId);
-      this.actions.getContributors(projectId, ResourceType.Project);
-      this.actions.getCedarRecords(projectId);
+    if (this.projectId) {
+      this.actions.getProject(this.projectId);
+      this.actions.getCustomItemMetadata(this.projectId);
+      this.actions.getContributors(this.projectId, ResourceType.Project);
+      this.actions.getCedarRecords(this.projectId);
       this.actions.getCedarTemplates();
+      this.actions.fetchSubjects(ResourceType.Project);
+      this.actions.fetchSelectedSubjects(this.projectId!, ResourceType.Project);
 
       const user = this.currentUser();
       if (user?.id) {
         this.actions.getUserInstitutions(user.id);
-      }
-    }
-  }
-
-  private handleRouteBasedTabSelection(): void {
-    const recordId = this.route.snapshot.paramMap.get('recordId');
-
-    if (!recordId) {
-      this.selectedTab.set('project');
-      this.selectedCedarRecord.set(null);
-      this.selectedCedarTemplate.set(null);
-      return;
-    }
-
-    const tab = this.tabs().find((tab) => tab.id === recordId);
-
-    if (tab) {
-      this.selectedTab.set('project');
-
-      if (tab.type === 'cedar') {
-        this.loadCedarRecord(tab.id);
       }
     }
   }
@@ -232,13 +212,6 @@ export class ProjectMetadataComponent implements OnInit {
         this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
       },
     });
-  }
-
-  private refreshContributorsData(): void {
-    const projectId = this.route.parent?.parent?.snapshot.params['id'];
-    if (projectId) {
-      this.actions.getContributors(projectId, ResourceType.Project);
-    }
   }
 
   openEditDescriptionDialog(): void {
@@ -312,7 +285,6 @@ export class ProjectMetadataComponent implements OnInit {
       )
       .subscribe({
         next: () => this.toastService.showSuccess('project.metadata.resourceInformation.updated'),
-        error: () => this.toastService.showError('project.metadata.resourceInformation.updateFailed'),
       });
   }
 
@@ -459,18 +431,20 @@ export class ProjectMetadataComponent implements OnInit {
   }
 
   onTabChange(tabId: string | number): void {
-    const tab = this.tabs().find((x) => x.id === tabId);
+    const tab = this.tabs().find((x) => x.id === tabId.toString());
 
     if (!tab) {
       return;
     }
+
+    this.selectedTab.set(tab.id);
 
     if (tab.type === 'cedar') {
       this.loadCedarRecord(tab.id);
 
       const currentRecordId = this.route.snapshot.paramMap.get('recordId');
       if (currentRecordId !== tab.id) {
-        this.router.navigate(['..', tab.id], { relativeTo: this.route });
+        this.router.navigate(['metadata', tab.id], { relativeTo: this.route.parent?.parent });
       }
     } else {
       this.selectedCedarRecord.set(null);
@@ -478,35 +452,8 @@ export class ProjectMetadataComponent implements OnInit {
 
       const currentRecordId = this.route.snapshot.paramMap.get('recordId');
       if (currentRecordId) {
-        this.router.navigate(['.'], { relativeTo: this.route });
+        this.router.navigate(['metadata'], { relativeTo: this.route.parent?.parent });
       }
-    }
-  }
-
-  private loadCedarRecord(recordId: string): void {
-    const records = this.cedarRecords();
-    const templates = this.cedarTemplates();
-
-    const record = records.find((r) => r.id === recordId);
-    if (!record) {
-      return;
-    }
-
-    this.selectedCedarRecord.set(record);
-    this.cedarFormReadonly.set(true);
-
-    const templateId = record.relationships?.template?.data?.id;
-    if (templateId && templates?.data) {
-      const template = templates.data.find((t) => t.id === templateId);
-      if (template) {
-        this.selectedCedarTemplate.set(template);
-      } else {
-        this.selectedCedarTemplate.set(null);
-        this.actions.getCedarTemplates();
-      }
-    } else {
-      this.selectedCedarTemplate.set(null);
-      this.actions.getCedarTemplates();
     }
   }
 
@@ -560,5 +507,75 @@ export class ProjectMetadataComponent implements OnInit {
 
   onCedarFormChangeTemplate(): void {
     this.router.navigate(['add'], { relativeTo: this.route });
+  }
+
+  getSubjectChildren(parentId: string) {
+    this.actions.fetchChildrenSubjects(parentId);
+  }
+
+  searchSubjects(search: string) {
+    this.actions.fetchSubjects(ResourceType.Project, this.projectId, search);
+  }
+
+  updateSelectedSubjects(subjects: SubjectModel[]) {
+    this.actions.updateResourceSubjects(this.projectId, ResourceType.Project, subjects);
+  }
+
+  private refreshContributorsData(): void {
+    if (this.projectId) {
+      this.actions.getContributors(this.projectId, ResourceType.Project);
+    }
+  }
+
+  private loadCedarRecord(recordId: string): void {
+    const records = this.cedarRecords();
+    const templates = this.cedarTemplates();
+
+    if (!records) {
+      return;
+    }
+
+    const record = records.find((r) => r.id === recordId);
+    if (!record) {
+      return;
+    }
+
+    this.selectedCedarRecord.set(record);
+    this.cedarFormReadonly.set(true);
+
+    const templateId = record.relationships?.template?.data?.id;
+    if (templateId && templates?.data) {
+      const template = templates.data.find((t) => t.id === templateId);
+      if (template) {
+        this.selectedCedarTemplate.set(template);
+      } else {
+        this.selectedCedarTemplate.set(null);
+        this.actions.getCedarTemplates();
+      }
+    } else {
+      this.selectedCedarTemplate.set(null);
+      this.actions.getCedarTemplates();
+    }
+  }
+
+  private handleRouteBasedTabSelection(): void {
+    const recordId = this.route.snapshot.paramMap.get('recordId');
+
+    if (!recordId) {
+      this.selectedTab.set('project');
+      this.selectedCedarRecord.set(null);
+      this.selectedCedarTemplate.set(null);
+      return;
+    }
+
+    const tab = this.tabs().find((tab) => tab.id === recordId);
+
+    if (tab) {
+      this.selectedTab.set(tab.id);
+
+      if (tab.type === 'cedar') {
+        this.loadCedarRecord(tab.id);
+      }
+    }
   }
 }

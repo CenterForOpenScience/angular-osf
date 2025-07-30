@@ -11,10 +11,15 @@ import { ChangeDetectionStrategy, Component, HostBinding, input } from '@angular
 })
 export class DataResourcesComponent {
   @HostBinding('class') classes = 'flex-1 flex';
+  vertical = input<boolean>(false);
   resourceId = input<string>();
   hasData = input<boolean>();
   hasAnalyticCode = input<boolean>();
   hasMaterials = input<boolean>();
   hasPapers = input<boolean>();
   hasSupplements = input<boolean>();
+
+  getResourceLink(): string {
+    return '/registries/' + this.resourceId() + '/resources';
+  }
 }

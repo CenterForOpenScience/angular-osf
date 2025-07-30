@@ -33,6 +33,7 @@ export class SubjectsComponent {
   areSubjectsUpdating = input<boolean>(false);
   isSearching = select(SubjectsSelectors.getSearchedSubjectsLoading);
   selected = input<SubjectModel[]>([]);
+  readonly = input<boolean>(false);
   searchChanged = output<string>();
   loadChildren = output<string>();
   updateSelection = output<SubjectModel[]>();
@@ -64,6 +65,8 @@ export class SubjectsComponent {
   }
 
   selectSubject(subject: SubjectModel) {
+    if (this.readonly()) return;
+
     const childrenIds = this.getChildrenIds([subject]);
     const updatedSelection = [...this.selected().filter((s) => !childrenIds.includes(s.id)), subject];
     const parentSubjects = this.mapParentsSubject(subject.parent).filter(
@@ -76,6 +79,8 @@ export class SubjectsComponent {
   }
 
   removeSubject(subject: SubjectModel) {
+    if (this.readonly()) return;
+
     const updatedSelection = this.selected().filter(
       (s) => s.id !== subject.id && !this.getChildrenIds([subject]).includes(s.id)
     );
@@ -83,6 +88,8 @@ export class SubjectsComponent {
   }
 
   selectSearched(event: CheckboxChangeEvent, subjects: SubjectModel[]) {
+    if (this.readonly()) return;
+
     if (event.checked) {
       this.updateSelection.emit([...this.selected(), ...subjects]);
     } else {

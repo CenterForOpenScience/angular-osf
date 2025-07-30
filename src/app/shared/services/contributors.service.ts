@@ -38,7 +38,7 @@ export class ContributorsService {
     const baseUrl = this.getBaseUrl(resourceType, resourceId);
 
     return this.jsonApiService
-      .get<JsonApiResponse<ContributorResponse[], null>>(baseUrl)
+      .get<JsonApiResponse<ContributorResponse[], null>>(`${baseUrl}/`)
       .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
   }
 

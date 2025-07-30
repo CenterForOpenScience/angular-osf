@@ -29,7 +29,6 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CreateFolderDialogComponent } from '@osf/features/project/files/components';
-import { FilesTreeActions } from '@osf/features/project/files/models';
 import {
   CreateFolder,
   DeleteEntry,
@@ -55,7 +54,7 @@ import {
   SearchInputComponent,
   SubHeaderComponent,
 } from '@shared/components';
-import { ConfiguredStorageAddon, OsfFile } from '@shared/models';
+import { ConfiguredStorageAddon, FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 @Component({

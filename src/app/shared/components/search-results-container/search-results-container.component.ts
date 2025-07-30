@@ -4,7 +4,7 @@ import { Button } from 'primeng/button';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
 
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostBinding, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { Primitive } from '@core/helpers';
@@ -23,6 +23,7 @@ import { SelectComponent } from '../select/select.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchResultsContainerComponent {
+  @HostBinding('class') classes = 'flex flex-column gap-3';
   resources = input<Resource[]>([]);
   searchCount = input<number>(0);
   selectedSort = input<string>('');
@@ -33,6 +34,7 @@ export class SearchResultsContainerComponent {
   next = input<string | null>(null);
   isFiltersOpen = input<boolean>(false);
   isSortingOpen = input<boolean>(false);
+  showTabs = input<boolean>(true);
 
   sortChanged = output<string>();
   tabChanged = output<ResourceTab>();

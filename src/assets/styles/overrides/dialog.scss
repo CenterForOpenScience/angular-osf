@@ -1,5 +1,11 @@
 @use "assets/styles/mixins" as mix;
 
+.p-dialog-close-button {
+  --p-button-padding-y: 0.75rem;
+  --p-button-padding-x: 0.75rem;
+  border: 0;
+}
+
 .upload-dialog {
   .p-dialog {
     width: mix.rem(356px);

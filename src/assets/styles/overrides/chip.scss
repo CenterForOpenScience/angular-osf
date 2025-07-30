@@ -32,8 +32,8 @@
   }
 }
 
-p-chips.ng-invalid.ng-touched {
-  .p-inputchips-input {
-    border-color: var(--p-inputchips-invalid-border-color);
+.osf-tags-input {
+  input.ng-invalid.ng-touched {
+    border-color: var(--p-inputtext-invalid-border-color);
   }
 }

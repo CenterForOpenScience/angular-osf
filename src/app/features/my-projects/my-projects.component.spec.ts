@@ -12,11 +12,11 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
+import { MyResourcesState } from '@shared/stores/my-resources/my-resources.state';
 import { IS_MEDIUM } from '@shared/utils';
 
 import { InstitutionsState } from '../../shared/stores/institutions';
 
-import { MyProjectsState } from './store/my-projects.state';
 import { MyProjectsComponent } from './my-projects.component';
 
 describe('MyProjectsComponent', () => {
@@ -30,7 +30,7 @@ describe('MyProjectsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [MyProjectsComponent, TranslateModule.forRoot()],
       providers: [
-        provideStore([MyProjectsState, InstitutionsState]),
+        provideStore([MyResourcesState, InstitutionsState]),
         provideHttpClient(),
         provideHttpClientTesting(),
         MockProvider(DialogService),

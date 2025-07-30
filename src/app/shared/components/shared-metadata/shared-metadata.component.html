@@ -1,0 +1,92 @@
+<div class="flex-column flex flex-1 w-full bg-white lg:flex-row">
+  <div class="col-12 lg:col-6 flex flex-column gap-4">
+    <p-card>
+      <div class="flex justify-content-between flex-wrap gap-4">
+        <div class="flex flex-column gap-2 flex-1">
+          <h2>
+            {{ 'project.overview.metadata.dateCreated' | translate }}
+          </h2>
+
+          <p class="m-0 text-color-secondary">
+            {{ currentInstance().dateCreated | date: 'MMM d, y, h:mm a' }}
+          </p>
+        </div>
+
+        <div class="flex flex-column gap-2 flex-1">
+          <h2>
+            {{ 'project.overview.metadata.dateUpdated' | translate }}
+          </h2>
+
+          <p class="m-0 text-color-secondary">
+            {{ currentInstance().dateModified | date: 'MMM d, y, h:mm a' }}
+          </p>
+        </div>
+      </div>
+    </p-card>
+
+    <osf-project-metadata-contributors
+      [readonly]="readonly()"
+      (openEditContributorDialog)="openEditContributorDialog.emit()"
+      [contributors]="currentInstance().contributors!"
+    />
+
+    <osf-project-metadata-description
+      [readonly]="readonly()"
+      (openEditDescriptionDialog)="openEditDescriptionDialog.emit()"
+      [description]="currentInstance().description!"
+    />
+
+    <osf-project-metadata-resource-information
+      [readonly]="readonly()"
+      (openEditResourceInformationDialog)="openEditResourceInformationDialog.emit()"
+      [customItemMetadata]="customItemMetadata()!"
+    />
+
+    <osf-project-metadata-funding
+      [readonly]="readonly()"
+      (openEditFundingDialog)="openEditFundingDialog.emit()"
+      [funders]="customItemMetadata().funders!"
+    />
+
+    <osf-project-metadata-affiliated-institutions
+      [readonly]="readonly()"
+      (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog.emit()"
+      [affiliatedInstitutions]="currentInstance().affiliatedInstitutions!"
+    />
+  </div>
+
+  <div class="col-12 lg:col-6 flex flex-column gap-4">
+    <osf-project-metadata-license
+      (openEditLicenseDialog)="openEditLicenseDialog.emit()"
+      [hideEditLicense]="hideEditDoiAndLicence() || readonly()"
+      [license]="currentInstance().license!"
+    />
+
+    <osf-project-metadata-publication-doi
+      (openEditPublicationDoiDialog)="handleEditDoi.emit()"
+      [hideEditDoi]="hideEditDoiAndLicence() || readonly()"
+      [identifiers]="currentInstance().identifiers!"
+    />
+
+    <p-card>
+      <div class="flex flex-column gap-3">
+        <h2>{{ 'project.overview.metadata.tags' | translate }}</h2>
+
+        <osf-tags-input
+          [readonly]="readonly()"
+          (tagsChanged)="tagsChanged.emit($event)"
+          [tags]="currentInstance().tags || []"
+        />
+      </div>
+    </p-card>
+
+    <osf-project-metadata-subjects
+      [readonly]="readonly()"
+      (getSubjectChildren)="getSubjectChildren.emit($event)"
+      (searchSubjects)="searchSubjects.emit($event)"
+      (updateSelectedSubjects)="updateSelectedSubjects.emit($event)"
+      [isSubjectsUpdating]="isSubjectsUpdating()!"
+      [selectedSubjects]="selectedSubjects()"
+    />
+  </div>
+</div>

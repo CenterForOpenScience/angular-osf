@@ -13,7 +13,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { FilesTreeActions } from '@osf/features/project/files/models';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -22,7 +21,7 @@ import {
   SubHeaderComponent,
 } from '@shared/components';
 import { ALL_SORT_OPTIONS } from '@shared/constants';
-import { OsfFile } from '@shared/models';
+import { FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 import {

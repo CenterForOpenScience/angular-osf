@@ -1,5 +1,6 @@
 import {
   Addon,
+  AsyncStateModel,
   AuthorizedAddon,
   AuthorizedAddonResponseJsonApi,
   ConfiguredAddon,
@@ -7,8 +8,7 @@ import {
   OperationInvocation,
   ResourceReferenceJsonApi,
   UserReferenceJsonApi,
-} from '@shared/models';
-import { AsyncStateModel } from '@shared/models/store';
+} from '@osf/shared/models';
 
 export interface AddonsStateModel {
   storageAddons: AsyncStateModel<Addon[]>;

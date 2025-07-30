@@ -3,22 +3,30 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { Checkbox } from 'primeng/checkbox';
-import { DatePicker } from 'primeng/datepicker';
-import { InputText } from 'primeng/inputtext';
 
-import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
-import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  effect,
+  HostBinding,
+  inject,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+import { UpdateProfileSettingsEmployment, UserSelectors } from '@osf/core/store/user';
 import { Employment } from '@osf/shared/models';
-import { CustomValidators } from '@osf/shared/utils';
+import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
+import { CustomValidators, findChangedFields } from '@osf/shared/utils';
 
 import { EmploymentForm } from '../../models';
-import { ProfileSettingsSelectors, UpdateProfileSettingsEmployment } from '../../store';
+import { EmploymentFormComponent } from '../employment-form/employment-form.component';
 
 @Component({
   selector: 'osf-employment',
-  imports: [Button, Checkbox, DatePicker, InputText, ReactiveFormsModule, TranslatePipe],
+  imports: [Button, ReactiveFormsModule, TranslatePipe, EmploymentFormComponent],
   templateUrl: './employment.component.html',
   styleUrl: './employment.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,94 +34,140 @@ import { ProfileSettingsSelectors, UpdateProfileSettingsEmployment } from '../..
 export class EmploymentComponent {
   @HostBinding('class') classes = 'flex flex-column gap-5';
 
-  readonly actions = createDispatchMap({ updateProfileSettingsEmployment: UpdateProfileSettingsEmployment });
-  readonly employment = select(ProfileSettingsSelectors.employment);
+  private readonly loaderService = inject(LoaderService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly fb = inject(FormBuilder);
 
-  readonly fb = inject(FormBuilder);
+  readonly actions = createDispatchMap({ updateProfileSettingsEmployment: UpdateProfileSettingsEmployment });
+  readonly employment = select(UserSelectors.getEmployment);
+
   readonly employmentForm = this.fb.group({ positions: this.fb.array<EmploymentForm>([]) });
 
   constructor() {
-    effect(() => {
-      const employment = this.employment();
-
-      if (employment && employment.length > 0) {
-        this.positions.clear();
-
-        employment.forEach((position) => {
-          const positionGroup = this.fb.group({
-            title: [position.title, Validators.required],
-            department: [position.department],
-            institution: [position.institution, Validators.required],
-            startDate: [new Date(+position.startYear, position.startMonth - 1)],
-            endDate: position.ongoing
-              ? ''
-              : position.endYear && position.endMonth
-                ? [new Date(+position.endYear, position.endMonth - 1)]
-                : null,
-            ongoing: !position.ongoing,
-          });
-
-          this.positions.push(positionGroup);
-        });
-      }
-    });
+    effect(() => this.setInitialData());
   }
 
-  get positions(): FormArray {
-    return this.employmentForm.get('positions') as FormArray;
-  }
-
-  addPosition(): void {
-    const positionGroup = this.fb.group({
-      title: ['', CustomValidators.requiredTrimmed()],
-      department: [''],
-      institution: ['', Validators.required],
-      startDate: [null, Validators.required],
-      endDate: [null, Validators.required],
-      ongoing: [false],
-    });
-
-    this.positions.push(positionGroup);
+  get positions(): FormArray<FormGroup> {
+    return this.employmentForm.get('positions') as FormArray<FormGroup>;
   }
 
   removePosition(index: number): void {
     this.positions.removeAt(index);
   }
 
-  handleSavePositions(): void {
-    const employments = this.positions.value as EmploymentForm[];
+  addPosition(): void {
+    if (this.employmentForm.invalid) {
+      this.employmentForm.markAllAsTouched();
+      return;
+    }
 
-    const formattedEmployments = employments.map((employment) => ({
+    this.positions.push(this.createEmploymentFormGroup());
+  }
+
+  discardChanges(): void {
+    if (!this.hasFormChanges()) {
+      return;
+    }
+
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'common.discardChangesDialog.header',
+      messageKey: 'common.discardChangesDialog.message',
+      onConfirm: () => {
+        this.setInitialData();
+        this.cd.markForCheck();
+      },
+    });
+  }
+
+  saveEmployment(): void {
+    if (this.employmentForm.invalid) {
+      this.employmentForm.markAllAsTouched();
+      return;
+    }
+
+    const formattedEmployment = this.positions.value.map((position) => this.mapFormToEmployment(position));
+    this.loaderService.show();
+
+    this.actions
+      .updateProfileSettingsEmployment({ employment: formattedEmployment })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loaderService.hide();
+          this.toastService.showSuccess('settings.profileSettings.employment.successUpdate');
+        },
+        error: () => this.loaderService.hide(),
+      });
+  }
+
+  private hasFormChanges(): boolean {
+    if (this.positions.length !== this.employment().length) {
+      return true;
+    }
+
+    return this.positions.value.some((formEmployment, index) => {
+      const initial = this.employment()[index];
+      if (!initial) return true;
+
+      const formattedFormEducation = this.mapFormToEmployment(formEmployment);
+      const changedFields = findChangedFields<Employment>(formattedFormEducation, initial);
+
+      return Object.keys(changedFields).length > 0;
+    });
+  }
+
+  private createEmploymentFormGroup(employment?: Partial<EmploymentForm>): FormGroup {
+    return this.fb.group(
+      {
+        title: [employment?.title ?? '', CustomValidators.requiredTrimmed()],
+        institution: [employment?.institution ?? ''],
+        department: [employment?.department ?? ''],
+        startDate: [employment?.startDate ?? null],
+        endDate: [employment?.endDate ?? null],
+        ongoing: [employment?.ongoing ?? false],
+      },
+      { validators: CustomValidators.dateRangeValidator }
+    );
+  }
+
+  private setInitialData(): void {
+    const employment = this.employment();
+    if (!employment?.length) return;
+
+    this.positions.clear();
+    employment
+      .map((x) => this.mapEmploymentToForm(x))
+      .forEach((x) => this.positions.push(this.createEmploymentFormGroup(x)));
+  }
+
+  private mapFormToEmployment(employment: EmploymentForm): Employment {
+    return {
       title: employment.title,
       department: employment.department,
       institution: employment.institution,
-      startYear: this.setupDates(employment.startDate, null).startYear,
-      startMonth: this.setupDates(employment.startDate, null).startMonth,
-      endYear: employment.ongoing ? null : this.setupDates('', employment.endDate).endYear,
-      endMonth: employment.ongoing ? null : this.setupDates('', employment.endDate).endMonth,
-      ongoing: !employment.ongoing,
-    })) satisfies Employment[];
-
-    this.actions.updateProfileSettingsEmployment({ employment: formattedEmployments });
+      startYear: employment.startDate?.getFullYear() ?? new Date().getFullYear(),
+      startMonth: (employment.startDate?.getMonth() ?? 0) + 1,
+      endYear: employment.ongoing ? null : (employment.endDate?.getFullYear() ?? null),
+      endMonth: employment.ongoing ? null : employment.endDate ? employment.endDate.getMonth() + 1 : null,
+      ongoing: employment.ongoing,
+    };
   }
 
-  private setupDates(
-    startDate: Date | string,
-    endDate: Date | string | null
-  ): {
-    startYear: string | number;
-    startMonth: number;
-    endYear: number | null;
-    endMonth: number | null;
-  } {
-    const start = new Date(startDate);
-    const end = endDate ? new Date(endDate) : null;
-
+  private mapEmploymentToForm(employment: Employment): EmploymentForm {
     return {
-      startYear: start.getFullYear(),
-      startMonth: start.getMonth() + 1,
-      endYear: end ? end.getFullYear() : null,
-      endMonth: end ? end.getMonth() + 1 : null,
+      title: employment.title,
+      department: employment.department,
+      institution: employment.institution,
+      startDate: new Date(+employment.startYear, employment.startMonth - 1),
+      endDate: employment.ongoing
+        ? null
+        : employment.endYear && employment.endMonth
+          ? new Date(+employment.endYear, employment.endMonth - 1)
+          : null,
+      ongoing: employment.ongoing,
     };
   }
 }

@@ -20,7 +20,7 @@
       </p>
     </div>
 
-    <div class="scope-container flex flex-column gap-4">
+    <div class="flex flex-column gap-4">
       @for (scope of tokenScopes(); track scope.id) {
         <div class="flex align-items-start gap-2">
           <p-checkbox [value]="scope.id" [formControlName]="TokenFormControls.Scopes" [inputId]="scope.id" />

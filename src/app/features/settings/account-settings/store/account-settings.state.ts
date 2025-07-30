@@ -28,6 +28,7 @@ import {
   ResendConfirmation,
   UpdateAccountSettings,
   UpdateIndexing,
+  UpdatePassword,
   UpdateRegion,
   VerifyEmail,
   VerifyTwoFactorAuth,
@@ -250,5 +251,12 @@ export class AccountSettingsState {
       tap((settings) => ctx.patchState({ accountSettings: settings })),
       catchError((error) => throwError(() => error))
     );
+  }
+
+  @Action(UpdatePassword)
+  updatePassword(ctx: StateContext<AccountSettingsStateModel>, action: UpdatePassword) {
+    return this.accountSettingsService
+      .updatePassword(action.oldPassword, action.newPassword)
+      .pipe(catchError((error) => throwError(() => error)));
   }
 }

@@ -1,0 +1,10 @@
+<osf-custom-step
+  [stepsData]="schemaResponseRevisionData()"
+  (updateAction)="onUpdateAction($event)"
+  (back)="onBack()"
+  (next)="onNext()"
+  [filesLink]="filesLink()"
+  [projectId]="projectId()"
+  [provider]="provider()"
+  [filesViewOnly]="true"
+></osf-custom-step>

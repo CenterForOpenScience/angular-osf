@@ -6,8 +6,8 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { NodeData, PaginatedViewOnlyLinksModel } from '@osf/shared/models';
 import { ViewOnlyLinksService } from '@osf/shared/services';
-import { NodeData, PaginatedViewOnlyLinksModel } from '@shared/models';
 
 import {
   CreateViewOnlyLink,

@@ -27,14 +27,4 @@ export interface ModeratorAddRequestModel {
     full_name?: string;
     email?: string;
   };
-  // relationships: {
-  //   users?: {
-  //     data?: RelationshipUsersData;
-  //   };
-  // };
-}
-
-interface RelationshipUsersData {
-  id?: string;
-  type?: 'users';
 }

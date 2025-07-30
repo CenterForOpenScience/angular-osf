@@ -10,6 +10,7 @@ export interface SocialLinksModel {
   address: string;
   placeholder: string;
   key: SocialLinksKeys;
+  multiple: boolean;
 }
 
 export interface SocialLinksForm {

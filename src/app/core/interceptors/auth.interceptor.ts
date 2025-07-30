@@ -12,15 +12,19 @@ export const authInterceptor: HttpInterceptorFn = (
   const localStorageToken = localStorage.getItem('authToken');
   const token = localStorageToken || authToken;
   if (token) {
-    const authReq = req.clone({
-      setHeaders: {
-        Authorization: `Bearer ${token}`,
-        Accept: req.responseType === 'text' ? '*/*' : 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-      },
-    });
+    if (!req.url.includes('/api.crossref.org/funders')) {
+      const authReq = req.clone({
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+          Accept: req.responseType === 'text' ? '*/*' : 'application/vnd.api+json',
+          'Content-Type': 'application/vnd.api+json',
+        },
+      });
 
-    return next(authReq);
+      return next(authReq);
+    } else {
+      return next(req);
+    }
   }
 
   return next(req);
