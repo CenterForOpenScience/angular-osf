@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { DraftRegistrationModel, License, OsfFile, RegistrationCard, Resource } from '@shared/models';
+import { DraftRegistrationModel, License, OsfFile, RegistrationCard, Resource, SchemaResponse } from '@shared/models';
 
 import { PageSchema, Project, ProviderSchema } from '../models';
 
@@ -146,5 +146,25 @@ export class RegistriesSelectors {
   @Selector([RegistriesState])
   static getCurrentFolder(state: RegistriesStateModel): OsfFile | null {
     return state.currentFolder;
+  }
+
+  @Selector([RegistriesState])
+  static getSchemaResponse(state: RegistriesStateModel): SchemaResponse | null {
+    return state.schemaResponse.data;
+  }
+
+  @Selector([RegistriesState])
+  static getSchemaResponseLoading(state: RegistriesStateModel): boolean {
+    return state.schemaResponse.isLoading || !!state.schemaResponse.isSubmitting;
+  }
+
+  @Selector([RegistriesState])
+  static getSchemaResponseRevisionData(state: RegistriesStateModel) {
+    return state.schemaResponse.data?.revisionResponses || {};
+  }
+
+  @Selector([RegistriesState])
+  static getUpdatedFields(state: RegistriesStateModel): Record<string, unknown> {
+    return state.updatedFields;
   }
 }

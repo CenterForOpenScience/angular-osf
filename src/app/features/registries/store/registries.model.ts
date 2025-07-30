@@ -7,6 +7,7 @@ import {
   RegistrationCard,
   RegistrationModel,
   Resource,
+  SchemaResponse,
 } from '@shared/models';
 
 import { PageSchema, Project, ProviderSchema } from '../models';
@@ -26,4 +27,6 @@ export interface RegistriesStateModel {
   currentFolder: OsfFile | null;
   moveFileCurrentFolder: OsfFile | null;
   rootFolders: AsyncStateModel<OsfFile[] | null>;
+  schemaResponse: AsyncStateModel<SchemaResponse | null>;
+  updatedFields: Record<string, unknown>;
 }

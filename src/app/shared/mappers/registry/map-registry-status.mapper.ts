@@ -19,13 +19,13 @@ export function MapRegistryStatus(
     return RegistryStatus.InProgress;
   } else if (registry.revision_state === RevisionReviewStates.RevisionPendingModeration) {
     return RegistryStatus.PendingModeration;
-  } else if (registry.review_state === RegistrationReviewStates.Accepted) {
+  } else if (registry.reviews_state === RegistrationReviewStates.Accepted) {
     return RegistryStatus.Accepted;
-  } else if (registry.review_state === RegistrationReviewStates.Pending) {
+  } else if (registry.reviews_state === RegistrationReviewStates.Pending) {
     return RegistryStatus.Pending;
-  } else if (registry.review_state === RegistrationReviewStates.PendingWithdraw) {
+  } else if (registry.reviews_state === RegistrationReviewStates.PendingWithdraw) {
     return RegistryStatus.PendingWithdraw;
-  } else if (registry.review_state === RegistrationReviewStates.PendingWithdrawRequest) {
+  } else if (registry.reviews_state === RegistrationReviewStates.PendingWithdrawRequest) {
     return RegistryStatus.PendingWithdrawRequest;
   } else {
     return RegistryStatus.None;

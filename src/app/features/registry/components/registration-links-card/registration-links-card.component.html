@@ -1,0 +1,108 @@
+<p-card>
+  @if (registrationData()) {
+    <div class="flex gap-3 flex-column">
+      <div class="flex flex-wrap gap-2 w-full">
+        @if (registrationData().isPublic) {
+          <i class="osf-icon-padlock-unlock"></i>
+        } @else {
+          <i class="osf-icon-padlock"></i>
+        }
+        <h2 class="align-self-center">
+          {{ registrationData().title || 'project.registrations.card.noTitle' | translate }}
+        </h2>
+      </div>
+      <div class="flex flex-wrap flex-column lg:flex-nowrap lg:flex-row justify-content-between gap-5">
+        <div class="flex gap-3 flex-column w-full">
+          <div class="flex gap-2 align-items-baseline">
+            <strong>{{ 'project.registrations.card.registered' | translate }}</strong>
+            <span>{{ registrationData().dateCreated | date: 'medium' }}</span>
+          </div>
+
+          <div class="flex gap-2 align-items-baseline">
+            <strong>{{ 'project.registrations.card.lastUpdated' | translate }}</strong>
+            <span>{{ registrationData().dateModified | date: 'medium' }}</span>
+          </div>
+
+          <div class="flex gap-2 align-items-baseline">
+            <strong>{{ 'project.overview.metadata.contributors' | translate }}:</strong>
+            <span class="contributors">
+              @for (contributor of registrationData().contributors; track contributor.id) {
+                <a [href]="">{{ contributor.fullName }}</a>
+                @if (!$last) {
+                  <span>, </span>
+                }
+              }
+            </span>
+          </div>
+
+          <div class="flex gap-2 align-items-baseline">
+            <strong>{{ 'project.registrations.card.description' | translate }}</strong>
+
+            <osf-truncated-text
+              [maxVisibleLines]="2"
+              [text]="registrationData().description || 'project.registrations.card.noDescription' | translate"
+            />
+          </div>
+
+          @if (isRegistrationData()) {
+            @if (registrationDataTyped()?.registrationSupplement) {
+              <div class="flex gap-2">
+                <strong>{{ 'project.registrations.card.registrationSupplement' | translate }}:</strong>
+                <span>{{ registrationDataTyped()?.registrationSupplement }}</span>
+              </div>
+            }
+
+            @if (registrationDataTyped()?.withdrawn) {
+              <div class="flex gap-2">
+                <strong>{{ 'project.registrations.card.withdrawn' | translate }}:</strong>
+                <span>{{ 'common.labels.yes' | translate }}</span>
+              </div>
+            }
+
+            @if (registrationDataTyped()?.embargoed) {
+              <div class="flex gap-2">
+                <strong>{{ 'project.registrations.card.embargoed' | translate }}:</strong>
+                <span>{{ 'common.labels.yes' | translate }}</span>
+              </div>
+            }
+          }
+
+          <div class="flex gap-2 mt-1">
+            <p-button
+              severity="primary"
+              [label]="'common.buttons.review' | translate"
+              (click)="reviewEmitRegistrationData.emit(registrationData()!.id)"
+            ></p-button>
+
+            @if (
+              registrationDataTyped() &&
+              registrationDataTyped()?.currentUserPermissions &&
+              registrationDataTyped()!.currentUserPermissions.length > 1
+            ) {
+              <p-button
+                severity="secondary"
+                (click)="updateEmitRegistrationData.emit(registrationData().id)"
+                [label]="'common.buttons.update' | translate"
+              ></p-button>
+            }
+          </div>
+        </div>
+
+        @if (hasResources()) {
+          <div class="flex flex-column min-w-max">
+            <h3 class="mb-1">{{ 'shared.resources.title' | translate }}</h3>
+            <osf-data-resources
+              [vertical]="true"
+              [resourceId]="registrationData().id"
+              [hasData]="registrationDataTyped()?.hasData"
+              [hasAnalyticCode]="registrationDataTyped()?.hasAnalyticCode"
+              [hasMaterials]="registrationDataTyped()?.hasMaterials"
+              [hasPapers]="registrationDataTyped()?.hasPapers"
+              [hasSupplements]="registrationDataTyped()?.hasSupplements"
+            ></osf-data-resources>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</p-card>

@@ -3,6 +3,7 @@
     @for (step of steps(); track $index; let i = $index) {
       @if (currentStep()) {
         <button
+          [disabled]="step.disabled"
           class="step-circle"
           [class.active]="i <= currentStep().index"
           [class.invalid]="step.invalid"

@@ -179,7 +179,7 @@ export class FilesService {
 
   getProjectShortInfo(resourceId: string): Observable<GetProjectShortInfoResponse> {
     const params = {
-      'field[nodes]': 'title,description,date_created,date_mofified',
+      'fields[nodes]': 'title,description,date_created,date_modified',
       embed: 'bibliographic_contributors',
     };
     return this.#jsonApiService.get<GetProjectShortInfoResponse>(`${environment.apiUrl}/nodes/${resourceId}/`, params);

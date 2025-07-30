@@ -1,0 +1,51 @@
+<osf-sub-header
+  [title]="'resources.title' | translate"
+  [showButton]="true"
+  [isButtonDisabled]="addingResource()"
+  [buttonLabel]="'resources.add' | translate"
+  (buttonClick)="addResource()"
+/>
+
+@if (isResourcesLoading()) {
+  <osf-loading-spinner></osf-loading-spinner>
+} @else {
+  <div class="flex flex-column bg-white flex-1 p-4 gap-4">
+    <p>{{ 'resources.description' | translate }}</p>
+
+    <div class="flex flex-column gap-2">
+      @for (resource of resources(); track resource.id) {
+        <div class="resource-block gap-3 p-3 flex flex-column md:p-4 md:flex-row">
+          <div class="flex w-full gap-3 md:w-auto">
+            @let iconName = resource.type === 'analytic_code' ? 'code' : resource.type;
+            @let icon = `assets/icons/colored/${iconName}-colored.svg`;
+            @let resourceName = resource.type === 'analytic_code' ? 'analytic code' : resource.type;
+            <img [src]="icon" alt="data-resource" class="align-self-start" />
+
+            <div class="flex flex-column gap-2">
+              <h2>{{ resourceName }}</h2>
+              <a [href]="'https://doi.org/' + resource.pid">https://doi.org/{{ resource.pid }}</a>
+              <p class="mt-1">{{ resource.description }}</p>
+            </div>
+          </div>
+
+          <div class="flex gap-3 ml-auto w-full md:w-auto">
+            <p-button
+              class="w-full md:w-auto"
+              styleClass="w-full md:w-auto"
+              severity="secondary"
+              [label]="'common.buttons.edit' | translate"
+              (click)="updateResource(resource)"
+            ></p-button>
+            <p-button
+              class="w-full md:w-auto"
+              styleClass="w-full md:w-auto"
+              severity="danger"
+              [label]="'common.buttons.delete' | translate"
+              (click)="deleteResource(resource.id)"
+            ></p-button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

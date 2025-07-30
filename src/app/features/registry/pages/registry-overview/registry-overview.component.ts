@@ -46,7 +46,7 @@ import {
 })
 export class RegistryOverviewComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
-  private readonly route = inject(ActivatedRoute);
+  protected readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
   protected readonly registry = select(RegistryOverviewSelectors.getRegistry);

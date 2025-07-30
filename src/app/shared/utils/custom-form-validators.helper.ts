@@ -62,4 +62,13 @@ export class CustomValidators {
 
     return endDate > startDate ? null : { dateRangeInvalid: true };
   };
+
+  static doiValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
+
+    const DOIRegex = /\b(10\.\d{4,}(?:\.\d+)*\/\S+(?:(?!["&'<>])\S))\b/;
+    const isValid = DOIRegex.test(value);
+    return isValid ? null : { invalidDoi: true };
+  };
 }

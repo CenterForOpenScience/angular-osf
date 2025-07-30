@@ -1,0 +1,56 @@
+<section class="flex flex-column flex-1">
+  <osf-sub-header [title]="'navigation.registration.links' | translate" />
+
+  <div class="flex flex-column gap-6 p-4 bg-white">
+    <section class="flex flex-column gap-4">
+      <h2 class="text-xl font-semibold text-gray-800">
+        {{ 'registry.links.viewLinksProjectsAndComponents' | translate }}
+      </h2>
+
+      @if (linkedNodesLoading()) {
+        <div class="flex justify-content-center p-4">
+          <osf-loading-spinner />
+        </div>
+      } @else if (linkedNodes().length === 0) {
+        <div class="text-center p-6">
+          <p>{{ 'registry.links.noLinkedProjectsOrComponentsFound' | translate }}</p>
+        </div>
+      } @else {
+        <div class="flex flex-column gap-4 w-full">
+          @for (node of nodes(); track node.id) {
+            <osf-registration-links-card
+              (reviewEmitRegistrationData)="navigateToNodes($event)"
+              [registrationData]="node"
+            />
+          }
+        </div>
+      }
+    </section>
+
+    <section class="flex flex-column gap-4">
+      <h2 class="text-xl font-semibold text-gray-800">
+        {{ 'registry.links.linkedRegistrations' | translate }}
+      </h2>
+
+      @if (linkedRegistrationsLoading()) {
+        <div class="flex justify-content-center p-4">
+          <osf-loading-spinner />
+        </div>
+      } @else if (registrations().length === 0) {
+        <div class="text-center p-6">
+          <p>{{ 'registry.links.noLinkedRegistrationsFound' | translate }}</p>
+        </div>
+      } @else {
+        <div class="flex flex-column gap-4 w-full">
+          @for (registration of registrations(); track registration.id) {
+            <osf-registration-links-card
+              (reviewEmitRegistrationData)="navigateToRegistrations($event)"
+              (updateEmitRegistrationData)="updateRegistration($event)"
+              [registrationData]="registration"
+            />
+          }
+        </div>
+      }
+    </section>
+  </div>
+</section>

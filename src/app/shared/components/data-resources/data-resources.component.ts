@@ -18,4 +18,8 @@ export class DataResourcesComponent {
   hasMaterials = input<boolean>();
   hasPapers = input<boolean>();
   hasSupplements = input<boolean>();
+
+  getResourceLink(): string {
+    return '/registries/' + this.resourceId() + '/resources';
+  }
 }

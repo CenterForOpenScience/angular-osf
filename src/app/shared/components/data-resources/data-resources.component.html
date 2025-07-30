@@ -1,5 +1,5 @@
 <div class="flex" [class]="vertical() ? 'flex-column row-gap-2 m-auto min-w-max' : 'column-gap-5 row-gap-3 flex-wrap'">
-  <a class="icon-container" [href]="resourceId() + '/resources'">
+  <a class="icon-container" [href]="getResourceLink()">
     @if (hasData()) {
       <img src="assets/icons/colored/data-colored.svg" alt="data-resource" />
     } @else {
@@ -7,7 +7,7 @@
     }
     <p>{{ 'resourceCard.resources.data' | translate }}</p>
   </a>
-  <a class="icon-container" [href]="resourceId() + '/resources'">
+  <a class="icon-container" [href]="getResourceLink()">
     @if (hasAnalyticCode()) {
       <img src="assets/icons/colored/code-colored.svg" alt="code-resource" />
     } @else {
@@ -15,7 +15,7 @@
     }
     <p>{{ 'resourceCard.resources.analyticCode' | translate }}</p>
   </a>
-  <a class="icon-container" [href]="resourceId() + '/resources'">
+  <a class="icon-container" [href]="getResourceLink()">
     @if (hasMaterials()) {
       <img src="assets/icons/colored/materials-colored.svg" alt="materials-resource" />
     } @else {
@@ -23,7 +23,7 @@
     }
     <p>{{ 'resourceCard.resources.materials' | translate }}</p>
   </a>
-  <a class="icon-container" [href]="resourceId() + '/resources'">
+  <a class="icon-container" [href]="getResourceLink()">
     @if (hasPapers()) {
       <img src="assets/icons/colored/papers-colored.svg" alt="papers-resource" />
     } @else {
@@ -31,7 +31,7 @@
     }
     <p>{{ 'resourceCard.resources.papers' | translate }}</p>
   </a>
-  <a class="icon-container" [href]="resourceId() + '/resources'">
+  <a class="icon-container" [href]="getResourceLink()">
     @if (hasSupplements()) {
       <img src="assets/icons/colored/supplements-colored.svg" alt="supplements-resource" />
     } @else {

@@ -20,23 +20,30 @@ import {
   ClearState,
   CreateDraft,
   CreateFolder,
+  CreateSchemaResponse,
   DeleteDraft,
+  DeleteSchemaResponse,
+  FetchAllSchemaResponses,
   FetchDraft,
   FetchDraftRegistrations,
   FetchLicenses,
   FetchProjectChildren,
   FetchSchemaBlocks,
+  FetchSchemaResponse,
   FetchSubmittedRegistrations,
   GetFiles,
   GetProjects,
   GetProviderSchemas,
   GetRegistries,
   GetRootFolders,
+  HandleSchemaResponse,
   RegisterDraft,
   SaveLicense,
   SetCurrentFolder,
   SetMoveFileCurrentFolder,
+  SetUpdatedFields,
   UpdateDraft,
+  UpdateSchemaResponse,
   UpdateStepValidation,
 } from './registries.actions';
 import { RegistriesStateModel } from './registries.model';
@@ -350,5 +357,158 @@ export class RegistriesState {
   @Action(SetCurrentFolder)
   setSelectedFolder(ctx: StateContext<RegistriesStateModel>, action: SetCurrentFolder) {
     ctx.patchState({ currentFolder: action.folder });
+  }
+
+  @Action(FetchAllSchemaResponses)
+  fetchAllSchemaResponses(ctx: StateContext<RegistriesStateModel>, { registrationId }: FetchAllSchemaResponses) {
+    ctx.patchState({
+      schemaResponse: {
+        ...ctx.getState().schemaResponse,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.registriesService.getAllSchemaResponse(registrationId).pipe(
+      tap((schemaResponses) => {
+        ctx.patchState({
+          schemaResponse: {
+            data: schemaResponses[0],
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'schemaResponse', error))
+    );
+  }
+
+  @Action(FetchSchemaResponse)
+  fetchSchemaResponse(ctx: StateContext<RegistriesStateModel>, { schemaResponseId }: FetchSchemaResponse) {
+    ctx.patchState({
+      schemaResponse: {
+        ...ctx.getState().schemaResponse,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.registriesService.getSchemaResponse(schemaResponseId).pipe(
+      tap((schemaResponse) => {
+        ctx.patchState({
+          schemaResponse: {
+            data: schemaResponse,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'schemaResponse', error))
+    );
+  }
+
+  @Action(CreateSchemaResponse)
+  createSchemaResponse(ctx: StateContext<RegistriesStateModel>, { registrationId }: CreateSchemaResponse) {
+    ctx.patchState({
+      schemaResponse: {
+        ...ctx.getState().schemaResponse,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.registriesService.createSchemaResponse(registrationId).pipe(
+      tap((schemaResponse) => {
+        ctx.patchState({
+          schemaResponse: {
+            data: schemaResponse,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'schemaResponse', error))
+    );
+  }
+
+  @Action(UpdateSchemaResponse)
+  updateSchemaResponse(
+    ctx: StateContext<RegistriesStateModel>,
+    { schemaResponseId, revisionJustification, revisionResponses }: UpdateSchemaResponse
+  ) {
+    ctx.patchState({
+      schemaResponse: {
+        ...ctx.getState().schemaResponse,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.registriesService.updateSchemaResponse(schemaResponseId, revisionJustification, revisionResponses).pipe(
+      tap((schemaResponse) => {
+        ctx.patchState({
+          schemaResponse: {
+            data: schemaResponse,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'schemaResponse', error))
+    );
+  }
+
+  @Action(HandleSchemaResponse)
+  handleSchemaResponse(
+    ctx: StateContext<RegistriesStateModel>,
+    { schemaResponseId, trigger, comment }: HandleSchemaResponse
+  ) {
+    ctx.patchState({
+      schemaResponse: {
+        ...ctx.getState().schemaResponse,
+        isLoading: true,
+        error: null,
+      },
+    });
+    return this.registriesService.handleSchemaResponse(schemaResponseId, trigger, comment).pipe(
+      tap(() => {
+        ctx.dispatch(new FetchSchemaResponse(schemaResponseId));
+      }),
+      catchError((error) => handleSectionError(ctx, 'schemaResponse', error))
+    );
+  }
+
+  @Action(DeleteSchemaResponse)
+  deleteSchemaResponse(ctx: StateContext<RegistriesStateModel>, { schemaResponseId }: DeleteSchemaResponse) {
+    ctx.patchState({
+      schemaResponse: {
+        ...ctx.getState().schemaResponse,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.registriesService.deleteSchemaResponse(schemaResponseId).pipe(
+      tap(() => {
+        ctx.patchState({
+          schemaResponse: {
+            data: null,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'schemaResponse', error))
+    );
+  }
+
+  @Action(SetUpdatedFields)
+  setUpdatedFields(ctx: StateContext<RegistriesStateModel>, { updatedFields }: SetUpdatedFields) {
+    ctx.patchState({
+      updatedFields: {
+        ...ctx.getState().updatedFields,
+        ...updatedFields,
+      },
+    });
   }
 }

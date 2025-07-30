@@ -20,5 +20,6 @@ export class SubHeaderComponent {
   tooltip = input<string>('');
   description = input<string>('');
   isLoading = input<boolean>(false);
+  isButtonDisabled = input<boolean>(false);
   buttonClick = output<void>();
 }

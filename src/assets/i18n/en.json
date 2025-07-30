@@ -40,7 +40,9 @@
       "view": "View",
       "review": "Review",
       "upload": "Upload",
-      "hide": "Hide"
+      "hide": "Hide",
+      "preview": "Preview",
+      "continueUpdate": "Continue Update"
     },
     "search": {
       "title": "Search",
@@ -92,7 +94,8 @@
       "none": "None",
       "learnMore": "Learn More",
       "and": "and",
-      "more": "more"
+      "more": "more",
+      "data": "Data"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -762,6 +765,9 @@
       "card": {
         "noTitle": "(Untitled)",
         "noDescription": "No description",
+        "registrationSupplement": "Registration Supplement",
+        "withdrawn": "Withdrawn",
+        "embargoed": "Embargoed",
         "registrationTemplate": "Registration template:",
         "registry": "Registry:",
         "registered": "Registered:",
@@ -1991,6 +1997,31 @@
         "embargoPlaceholder": "Choose embargo end date",
         "successMessage": "Registration successfully created."
       }
+    },
+    "justification": {
+      "step": "Justification",
+      "title": "Justification for update",
+      "description": "Justification will be provided to admins and moderators upon review. Once approved, it will be displayed at the top of the registration.",
+      "placeholder": "Explain the updates made to this registration and why the changes were necessary. Be thorough in your response. ",
+      "updatedList": "List of updated registration questions",
+      "noUpdates": "No responses updated",
+      "noData": "No justification provided.",
+      "deleteUpdates": "Delete Draft Update",
+      "submitChanges": "Submit Changes",
+      "acceptChanges": "Accept Changes",
+      "decisionRecorded": "Your decision has been recorded.",
+      "continueEditing": "Continue Editing",
+      "successSubmit": "Justification update successfully submitted.",
+      "successAccept": "Changes successfully accepted.",
+      "confirmDeleteUpdate": {
+        "header": "Delete this draft update",
+        "message": "Are you sure you want to delete this draft update?"
+      },
+      "confirmContinueEditing": {
+        "header": "Are you sure this needs more edits?",
+        "message": "This will cancel any approvals from other admin contributors and return the registration back to its draft form for additional changes.",
+        "label": "What additional changes need to be made and why?"
+      }
     }
   },
   "registry": {
@@ -2065,6 +2096,12 @@
       },
       "original": "Original",
       "latest": "Latest"
+    },
+    "links": {
+      "viewLinksProjectsAndComponents": "View for Linked projects and Components",
+      "noLinkedProjectsOrComponentsFound": "No linked projects or components found",
+      "linkedRegistrations": "Linked registrations",
+      "noLinkedRegistrationsFound": "No linked registrations found"
     }
   },
   "truncatedText": {
@@ -2132,7 +2169,7 @@
       "pendingWithdrawRequest": "Pending withdraw request",
       "pendingWithdraw": "Pending withdrawal",
       "unapproved": "Unapproved",
-      "inProgress": "In progress",
+      "inProgress": "Update in progress",
       "pendingModeration": "Pending moderation"
     }
   },
@@ -2284,6 +2321,36 @@
       "totalPreprints": "Total Preprints",
       "downloadsLastDays": "Downloads (last 30 days)",
       "noData": "No preprints found"
+    }
+  },
+  "resources": {
+    "title": "Resources",
+    "description": "Link a DOI from a repository to your registration by clicking “Add resource” button. Contributors affirmed to adhere to the criteria for each badge.",
+    "add": "Add Resource",
+    "edit": "Edit Resource",
+    "delete": "Delete Resource",
+    "check": "Check your DOI for accuracy",
+    "deleteText": "Are you sure you want to delete resource",
+    "selectAResourceType": "Select A Resource Type",
+    "descriptionLabel": "Description(Optional)",
+    "typeOptions": {
+      "data": "Data",
+      "code": "Analytic Code",
+      "materials": "Materials",
+      "papers": "Papers",
+      "supplements": "Supplements"
+    },
+    "toastMessages": {
+      "addResourceSuccess": "Added new resource",
+      "addResourceError": "Error occurred while adding new resource.",
+      "updatedResourceSuccess": "Updated resource.",
+      "updateResourceError": "Error occurred while updating new resource.",
+      "deletedResourceSuccess": "Resource is deleted successfully."
+    },
+    "errors": {
+      "noRegistryId": "No registry ID found.",
+      "noCurrentResource": "No current resource.",
+      "doiValidation": "Please enter a valid DOI in the format: 10.xxxx/xxxxx"
     }
   }
 }

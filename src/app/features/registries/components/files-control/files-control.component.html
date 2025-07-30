@@ -3,34 +3,35 @@
 } @else {
   <div class="flex flex-column bg-white gap-4 h-full flex-1 p-4 p-dialog-align-center">
     <div class="flex flex-grow-0 w-full sm:w-30rem"></div>
+    @if (!filesViewOnly()) {
+      <div class="flex flex-column gap-4 md:justify-content-between md:flex-row md:flex-wrap">
+        <div class="flex flex-column w-full gap-2 sm:flex-row md:w-max">
+          <p-button
+            [disabled]="fileIsUploading() || isFilesLoading()"
+            outlined
+            raised
+            severity="success"
+            [icon]="'fas fa-plus'"
+            [label]="'project.files.actions.createFolder' | translate"
+            (click)="createFolder()"
+          >
+          </p-button>
 
-    <div class="flex flex-column gap-4 md:justify-content-between md:flex-row md:flex-wrap">
-      <div class="flex flex-column w-full gap-2 sm:flex-row md:w-max">
-        <p-button
-          [disabled]="fileIsUploading() || isFilesLoading()"
-          outlined
-          raised
-          severity="success"
-          [icon]="'fas fa-plus'"
-          [label]="'project.files.actions.createFolder' | translate"
-          (click)="createFolder()"
-        >
-        </p-button>
+          <p-button
+            [disabled]="fileIsUploading() || isFilesLoading()"
+            outlined
+            raised
+            severity="success"
+            [icon]="'fas fa-upload'"
+            [label]="'project.files.actions.uploadFile' | translate"
+            (click)="fileInput.click()"
+          >
+          </p-button>
 
-        <p-button
-          [disabled]="fileIsUploading() || isFilesLoading()"
-          outlined
-          raised
-          severity="success"
-          [icon]="'fas fa-upload'"
-          [label]="'project.files.actions.uploadFile' | translate"
-          (click)="fileInput.click()"
-        >
-        </p-button>
-
-        <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
+          <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
+        </div>
       </div>
-    </div>
+    }
 
     <div class="flex absolute">
       <p-dialog
@@ -54,10 +55,10 @@
       [currentFolder]="currentFolder()"
       [isLoading]="isFilesLoading()"
       [actions]="filesTreeActions"
-      [viewOnly]="false"
+      [viewOnly]="filesViewOnly()"
       [viewOnlyDownloadable]="false"
-      [resourceId]="draftRegistration()?.branchedFrom?.id!"
-      [provider]="draftRegistration()?.providerId"
+      [resourceId]="projectId()"
+      [provider]="provider()"
       (folderIsOpening)="folderIsOpening($event)"
       (entryFileClicked)="selectFile($event)"
       (uploadFileConfirmed)="uploadFile($event)"

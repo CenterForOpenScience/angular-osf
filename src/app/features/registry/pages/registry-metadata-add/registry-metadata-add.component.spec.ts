@@ -3,7 +3,7 @@ import { provideStore, Store } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MockComponent, MockPipe } from 'ng-mocks';
 
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
@@ -400,8 +400,7 @@ describe('RegistryMetadataAddComponent', () => {
     });
 
     it('should successfully create cedar record', () => {
-      const dispatchSpy = jest.spyOn(store, 'dispatch').mockReturnValue(of({}));
-      const routerSpy = jest.spyOn(router, 'navigate');
+      const dispatchSpy = jest.spyOn(store, 'dispatch').mockReturnValue(of());
 
       store.reset({
         registryMetadata: {
@@ -422,7 +421,6 @@ describe('RegistryMetadataAddComponent', () => {
 
     it('should handle submission success', (done) => {
       const routerSpy = jest.spyOn(router, 'navigate');
-      const dispatchSpy = jest.spyOn(store, 'dispatch').mockReturnValue(of({}));
 
       store.reset({
         registryMetadata: {
@@ -436,7 +434,6 @@ describe('RegistryMetadataAddComponent', () => {
 
       component.onSubmit(mockSubmissionData);
 
-      // Use setTimeout to allow the subscription to complete
       setTimeout(() => {
         expect(component.isSubmitting()).toBe(false);
         expect(toastService.showSuccess).toHaveBeenCalledWith(
@@ -450,11 +447,8 @@ describe('RegistryMetadataAddComponent', () => {
     });
 
     it('should handle submission error', (done) => {
-      const dispatchSpy = jest.spyOn(store, 'dispatch').mockReturnValue(throwError(() => new Error('Test error')));
-
       component.onSubmit(mockSubmissionData);
 
-      // Use setTimeout to allow the subscription to complete
       setTimeout(() => {
         expect(component.isSubmitting()).toBe(false);
         expect(toastService.showError).toHaveBeenCalledWith('project.overview.metadata.failedToCreateCedarRecord');

@@ -4,4 +4,5 @@ export interface StepOption {
   value: number | string;
   invalid?: boolean;
   routeLink?: string;
+  disabled?: boolean;
 }

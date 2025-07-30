@@ -63,4 +63,10 @@ export const DefaultState: RegistriesStateModel = {
     isLoading: false,
     error: null,
   },
+  schemaResponse: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  updatedFields: {},
 };

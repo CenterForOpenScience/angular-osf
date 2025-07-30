@@ -22,8 +22,14 @@
     </div>
 
     @if (showButton()) {
-      <div class="ml-auto w-full md:w-auto">
-        <p-button class="w-full" styleClass="w-full" [label]="buttonLabel()" (onClick)="buttonClick.emit()"></p-button>
+      <div class="flex ml-auto w-full md:w-auto">
+        <p-button
+          class="w-full"
+          styleClass="w-full"
+          [label]="buttonLabel()"
+          (onClick)="buttonClick.emit()"
+          [disabled]="isButtonDisabled()"
+        ></p-button>
       </div>
     }
     <ng-content #subContent></ng-content>

@@ -1,0 +1,32 @@
+<section class="flex flex-column bg-white flex-1 h-full p-5 gap-4 w-full">
+  <form [formGroup]="justificationForm" (ngSubmit)="submit()" class="flex flex-column gap-4">
+    <section>
+      <h2 class="mb-2">{{ 'registries.justification.title' | translate }}</h2>
+      <p class="mb-4">{{ 'registries.justification.description' | translate }}</p>
+
+      <textarea
+        class="w-full"
+        rows="5"
+        cols="30"
+        [placeholder]="'registries.justification.placeholder' | translate"
+        pTextarea
+        formControlName="justification"
+      ></textarea>
+      @if (isJustificationValid) {
+        <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+          {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+        </p-message>
+      }
+    </section>
+    <div class="flex justify-content-end">
+      <p-button
+        [label]="'registries.justification.deleteUpdates' | translate"
+        severity="danger"
+        (click)="deleteDraftUpdate()"
+        class="mr-2"
+      >
+      </p-button>
+      <p-button [label]="'common.buttons.next' | translate" type="submit"></p-button>
+    </div>
+  </form>
+</section>

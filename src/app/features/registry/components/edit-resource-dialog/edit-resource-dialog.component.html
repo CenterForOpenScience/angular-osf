@@ -1,0 +1,13 @@
+@if (isCurrentResourceLoading()) {
+  <osf-loading-spinner></osf-loading-spinner>
+} @else {
+  <osf-resource-form
+    [formGroup]="form"
+    [showCancelButton]="true"
+    [showPreviewButton]="false"
+    [cancelButtonLabel]="'common.buttons.cancel'"
+    [primaryButtonLabel]="'common.buttons.save'"
+    (cancelClicked)="dialogRef.close()"
+    (submitClicked)="save()"
+  />
+}
