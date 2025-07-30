@@ -7,7 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { DeleteNodeLinkDialogComponent, LinkResourceDialogComponent } from '@osf/features/project/overview/components';
@@ -26,6 +26,7 @@ import { IS_XSMALL } from '@shared/utils';
 export class LinkedResourcesComponent {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
+  isCollectionsRoute = input<boolean>(false);
   protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
   protected isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
   protected isMobile = toSignal(inject(IS_XSMALL));

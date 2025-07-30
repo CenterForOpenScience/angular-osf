@@ -13,7 +13,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ClearCollections } from '@osf/features/collections/store/collections';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
   LoadingSpinnerComponent,
