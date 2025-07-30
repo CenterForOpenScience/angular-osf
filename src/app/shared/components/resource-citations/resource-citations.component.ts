@@ -11,6 +11,7 @@ import { Textarea } from 'primeng/textarea';
 
 import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
 
+import { Clipboard } from '@angular/cdk/clipboard';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -24,8 +25,8 @@ import {
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { CitationsMapper } from '@shared/mappers';
 import { CitationStyle, CustomOption, ResourceOverview } from '@shared/models';
+import { ToastService } from '@shared/services';
 import {
   CitationsSelectors,
   GetCitationStyles,
@@ -57,6 +58,8 @@ export class ResourceCitationsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
   currentResource = input.required<ResourceOverview | null>();
+  private readonly clipboard = inject(Clipboard);
+  private readonly toastService = inject(ToastService);
   private readonly destroy$ = new Subject<void>();
   private readonly filterSubject = new Subject<string>();
   protected customCitation = output<string>();
@@ -66,118 +69,6 @@ export class ResourceCitationsComponent {
   protected isCitationStylesLoading = select(CitationsSelectors.getCitationStylesLoading);
   protected isCustomCitationSubmitting = select(CitationsSelectors.getCustomCitationSubmitting);
   protected styledCitation = select(CitationsSelectors.getStyledCitation);
-  citationOptions = CitationsMapper.fromGetCitationStylesResponse([
-    {
-      id: 'revista-cubana-de-pediatria',
-      type: 'citation-styles',
-      attributes: {
-        title: 'Revista Cubana de Pediatría (Spanish)',
-        date_parsed: '2018-06-14T00:31:10.016240',
-        short_title: null,
-        summary: null,
-      },
-      links: {},
-    },
-    {
-      id: 'the-astronomical-journal',
-      type: 'citation-styles',
-      attributes: {
-        title: 'The Astronomical Journal',
-        date_parsed: '2018-06-14T00:31:10.012365',
-        short_title: null,
-        summary: null,
-      },
-      links: {},
-    },
-    {
-      id: 'vocations-and-learning',
-      type: 'citation-styles',
-      attributes: {
-        title: 'Vocations and Learning',
-        date_parsed: '2018-06-14T00:31:10.008746',
-        short_title: 'Vocations and Learning',
-        summary: null,
-      },
-      links: {},
-    },
-    {
-      id: 'chemical-physics-letters',
-      type: 'citation-styles',
-      attributes: {
-        title: 'Chemical Physics Letters',
-        date_parsed: '2018-06-14T00:31:10.004818',
-        short_title: null,
-        summary: null,
-      },
-      links: {},
-    },
-    {
-      id: 'expert-review-of-respiratory-medicine',
-      type: 'citation-styles',
-      attributes: {
-        title: 'Expert Review of Respiratory Medicine',
-        date_parsed: '2018-06-14T00:31:10.001144',
-        short_title: null,
-        summary: null,
-      },
-      links: {},
-    },
-    {
-      id: 'new-writing',
-      type: 'citation-styles',
-      attributes: {
-        title: 'New Writing',
-        date_parsed: '2018-06-14T00:31:09.997476',
-        short_title: null,
-        summary: null,
-      },
-      links: {},
-    },
-    {
-      id: 'ams-review',
-      type: 'citation-styles',
-      attributes: {
-        title: 'AMS Review',
-        date_parsed: '2018-06-14T00:31:09.993110',
-        short_title: 'AMS Rev',
-        summary: null,
-      },
-      links: {},
-    },
-    {
-      id: 'acs-catalysis',
-      type: 'citation-styles',
-      attributes: {
-        title: 'ACS Catalysis',
-        date_parsed: '2018-06-14T00:31:09.985253',
-        short_title: 'ACS Catal.',
-        summary: null,
-      },
-      links: {},
-    },
-    {
-      id: 'cell-regeneration',
-      type: 'citation-styles',
-      attributes: {
-        title: 'Cell Regeneration',
-        date_parsed: '2018-06-14T00:31:09.981701',
-        short_title: null,
-        summary: null,
-      },
-      links: {},
-    },
-    {
-      id: 'evidence-based-communication-assessment-and-intervention',
-      type: 'citation-styles',
-      attributes: {
-        title: 'Evidence-Based Communication Assessment and Intervention',
-        date_parsed: '2018-06-14T00:31:09.977038',
-        short_title: null,
-        summary: null,
-      },
-      links: {},
-    },
-  ]);
   protected citationStylesOptions = signal<CustomOption<CitationStyle>[]>([]);
   protected isEditMode = signal<boolean>(false);
   protected filterMessage = computed(() => {
@@ -202,7 +93,7 @@ export class ResourceCitationsComponent {
     this.setupDestroyEffect();
   }
 
-  setupDefaultCitationsEffect(): void {
+  protected setupDefaultCitationsEffect(): void {
     effect(() => {
       const resource = this.currentResource();
 
@@ -213,12 +104,12 @@ export class ResourceCitationsComponent {
     });
   }
 
-  handleCitationStyleFilterSearch(event: SelectFilterEvent) {
+  protected handleCitationStyleFilterSearch(event: SelectFilterEvent) {
     event.originalEvent.preventDefault();
     this.filterSubject.next(event.filter);
   }
 
-  handleGetStyledCitation(event: SelectChangeEvent) {
+  protected handleGetStyledCitation(event: SelectChangeEvent) {
     const resource = this.currentResource();
 
     if (resource) {
@@ -226,7 +117,7 @@ export class ResourceCitationsComponent {
     }
   }
 
-  handleUpdateCustomCitation() {
+  protected handleUpdateCustomCitation(): void {
     const resource = this.currentResource();
     const customCitationText = this.customCitationInput.value?.trim();
 
@@ -248,7 +139,7 @@ export class ResourceCitationsComponent {
     }
   }
 
-  handleDeleteCustomCitation() {
+  protected handleDeleteCustomCitation(): void {
     const resource = this.currentResource();
 
     if (resource) {
@@ -269,8 +160,17 @@ export class ResourceCitationsComponent {
     }
   }
 
-  toggleEditMode() {
+  protected toggleEditMode(): void {
     this.isEditMode.set(!this.isEditMode());
+  }
+
+  protected copyCitation(): void {
+    const resource = this.currentResource();
+
+    if (resource?.customCitation) {
+      this.clipboard.copy(resource.customCitation);
+      this.toastService.showSuccess('settings.developerApps.messages.copied');
+    }
   }
 
   private setupFilterDebounce(): void {
@@ -283,8 +183,8 @@ export class ResourceCitationsComponent {
 
   private setupCitationStylesEffect(): void {
     effect(() => {
-      // const styles = this.citationStyles();
-      const styles = this.citationOptions;
+      const styles = this.citationStyles();
+
       const options = styles.map((style: CitationStyle) => ({
         label: style.title,
         value: style,

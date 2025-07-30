@@ -27,7 +27,6 @@ import {
 import {
   ClearProjectOverview,
   GetComponents,
-  GetLinkedResources,
   GetProjectById,
   ProjectOverviewSelectors,
   SetProjectCustomCitation,

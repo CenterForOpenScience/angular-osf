@@ -74,7 +74,7 @@ export function MapRegistryOverview(
     region: registry.region || undefined,
     forksCount: registry.forksCount,
     subjects: subjects,
-    customCitation: registry.customCitation || null,
+    customCitation: registry.customCitation,
     affiliatedInstitutions: institutions,
     associatedProjectId: registry.associatedProjectId,
   };

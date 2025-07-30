@@ -9,23 +9,29 @@
         </p-accordion-header>
         <p-accordion-content>
           @if (!isEditMode()) {
-            <p-button
-              severity="secondary"
-              [label]="'common.buttons.customize' | translate"
-              (click)="toggleEditMode()"
-            ></p-button>
-
             @if (isCitationsLoading()) {
-              <div class="flex flex-column gap-3">
-                <p-skeleton height="3.5rem"></p-skeleton>
-                <p-skeleton height="3.5rem"></p-skeleton>
-                <p-skeleton height="3.5rem"></p-skeleton>
-              </div>
+              <p-skeleton height="3.5rem"></p-skeleton>
             } @else {
               @if (resource.customCitation) {
-                <div class="flex flex-column gap-1">
+                <div class="flex flex-column gap-2">
                   <h3>{{ 'project.overview.metadata.citeAs' | translate }}</h3>
                   <p>{{ resource.customCitation }}</p>
+                </div>
+                <div class="flex mt-3 gap-3">
+                  <p-button
+                    class="btn-full-width"
+                    [label]="'common.buttons.copy' | translate"
+                    severity="secondary"
+                    [disabled]="isCustomCitationSubmitting()"
+                    (click)="copyCitation()"
+                  ></p-button>
+                  <p-button
+                    class="btn-full-width"
+                    [label]="'common.buttons.edit' | translate"
+                    severity="secondary"
+                    [disabled]="isCustomCitationSubmitting()"
+                    (click)="toggleEditMode()"
+                  ></p-button>
                 </div>
               } @else {
                 @if (defaultCitations().length) {
@@ -49,44 +55,59 @@
                   (onFilter)="handleCitationStyleFilterSearch($event)"
                   optionLabel="label"
                   optionValue="value"
-                  [appendTo]="'body'"
+                  appendTo="body"
                   [emptyFilterMessage]="filterMessage()"
-                  [emptyMessage]="filterMessage()"
+                  [emptyMessage]="'project.overview.metadata.citationInputPlaceholder' | translate"
                   (onChange)="handleGetStyledCitation($event)"
                 >
                   <ng-template #selectedItem let-selectedOption>
                     {{ selectedOption.label }}
                   </ng-template>
                 </p-select>
-
                 @if (styledCitation()) {
-                  <p>{{ styledCitation()?.citation }}</p>
+                  <p class="mt-2">{{ styledCitation()?.citation }}</p>
                 }
+                <p-divider />
+                <p-button
+                  class="btn-full-width"
+                  severity="secondary"
+                  [label]="'common.buttons.createCustomCitation' | translate"
+                  (click)="toggleEditMode()"
+                ></p-button>
               }
             }
           } @else {
             <textarea
               [placeholder]="'project.overview.metadata.customCitationPlaceholder' | translate"
               pTextarea
-              rows="4"
+              rows="2"
               class="w-full"
               [formControl]="customCitationInput"
             ></textarea>
-            <div class="flex mt-3 justify-content-end">
-              <p-button severity="secondary" [disabled]="isCustomCitationSubmitting()" (click)="toggleEditMode()">
-                Cancel
-              </p-button>
+            <div class="flex mt-3 gap-3 justify-content-between">
               <p-button
-                severity="danger"
+                class="btn-full-width"
+                [label]="'common.buttons.cancel' | translate"
+                severity="secondary"
                 [disabled]="isCustomCitationSubmitting()"
-                (click)="handleDeleteCustomCitation()"
-                >Remove
+                (click)="toggleEditMode()"
+              >
               </p-button>
               <p-button
-                severity="primary"
+                class="btn-full-width"
+                severity="danger"
+                [label]="'common.buttons.remove' | translate"
+                [disabled]="!resource.customCitation || isCustomCitationSubmitting()"
+                (click)="handleDeleteCustomCitation()"
+              >
+              </p-button>
+              <p-button
+                class="btn-full-width"
+                [label]="'common.buttons.save' | translate"
+                severity="success"
                 [loading]="isCustomCitationSubmitting()"
                 (click)="handleUpdateCustomCitation()"
-                >Save
+              >
               </p-button>
             </div>
           }

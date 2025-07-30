@@ -85,6 +85,7 @@ export class RegistryMetadataMapper {
       doi: (attributes['doi'] as string) || '',
       isPublic: attributes['public'] as boolean,
       isFork: attributes['fork'] as boolean,
+      customCitation: (attributes['custom_citation'] as string) || '',
       accessRequestsEnabled: attributes['access_requests_enabled'] as boolean,
       wikiEnabled: attributes['wiki_enabled'] as boolean,
       currentUserCanComment: attributes['current_user_can_comment'] as boolean,
