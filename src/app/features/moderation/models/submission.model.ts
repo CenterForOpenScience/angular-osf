@@ -1,6 +1,6 @@
-export interface Submission {
+export interface CollectionSubmission {
   id: string;
-  name: string;
+  title: string;
   reviewStatus: string;
   dateSubmitted: string;
   submittedBy: string;

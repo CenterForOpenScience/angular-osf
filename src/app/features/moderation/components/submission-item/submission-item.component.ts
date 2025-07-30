@@ -1,21 +1,80 @@
-import { TranslatePipe } from '@ngx-translate/core';
+import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
+import { Button } from 'primeng/button';
+import { DialogService } from 'primeng/dynamicdialog';
+
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { collectionFilterNames } from '@osf/features/collections/constants';
+import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { IconComponent } from '@osf/shared/components';
+import { CollectionSubmission } from '@shared/models';
+import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
+import { IS_XSMALL } from '@shared/utils';
 
 import { ReviewStatusIcon } from '../../constants';
-import { Submission } from '../../models';
+import { CollectionsModerationSelectors, SetCurrentReviewAction } from '../../store/collections-moderation';
 
 @Component({
   selector: 'osf-submission-item',
-  imports: [TranslatePipe, IconComponent],
+  imports: [TranslatePipe, IconComponent, TimeAgoPipe, Button],
   templateUrl: './submission-item.component.html',
   styleUrl: './submission-item.component.scss',
+  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SubmissionItemComponent {
-  submission = input.required<Submission>();
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+  protected dialogService = inject(DialogService);
+  protected destroyRef = inject(DestroyRef);
+  protected translateService = inject(TranslateService);
+  protected isMobile = toSignal(inject(IS_XSMALL));
+  protected reviewActions = select(CollectionsModerationSelectors.getReviewActions);
+  submission = input.required<CollectionSubmission>();
 
-  readonly reviewStatusIcon = ReviewStatusIcon;
+  protected readonly reviewStatusIcon = ReviewStatusIcon;
+
+  protected currentReviewAction = computed(() => {
+    const nodeId = this.submission().nodeId;
+    const actions = this.reviewActions();
+
+    if (!actions.length || !nodeId) return null;
+
+    return actions.flat().filter((action) => action.targetNodeId === nodeId)[0];
+  });
+
+  protected actions = createDispatchMap({
+    setCurrentReviewAction: SetCurrentReviewAction,
+  });
+
+  protected currentSubmissionAttributes = computed(() => {
+    const item = this.submission();
+    if (!item) return null;
+
+    return collectionFilterNames
+      .map((attribute) => ({
+        ...attribute,
+        value: item[attribute.key as keyof CollectionSubmission] as string,
+      }))
+      .filter((attribute) => attribute.value);
+  });
+
+  protected handleNavigation() {
+    this.actions.setCurrentReviewAction(this.currentReviewAction());
+
+    const currentStatus = this.activatedRoute.snapshot.queryParams['status'];
+    const queryParams = currentStatus ? { status: currentStatus } : {};
+
+    this.router.navigate(['../', this.submission().nodeId], {
+      relativeTo: this.activatedRoute,
+      queryParams,
+    });
+  }
+
+  protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
 }

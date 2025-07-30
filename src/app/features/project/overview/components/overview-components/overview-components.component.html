@@ -2,11 +2,13 @@
   <div class="flex align-items-center pt-3 pl-3 pr-3 justify-content-between">
     <h2>{{ 'project.overview.components.title' | translate }}</h2>
 
-    <p-button
-      (onClick)="handleAddComponent()"
-      severity="secondary"
-      [label]="'project.overview.components.addComponentButton' | translate"
-    />
+    @if (!isCollectionsRoute()) {
+      <p-button
+        (onClick)="handleAddComponent()"
+        severity="secondary"
+        [label]="'project.overview.components.addComponentButton' | translate"
+      />
+    }
   </div>
 
   <div class="component-container pl-3 pr-3 flex flex-column gap-5">

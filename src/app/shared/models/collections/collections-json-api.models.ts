@@ -102,6 +102,19 @@ export interface CollectionSubmissionJsonApi {
         };
       };
     };
+    creator?: {
+      data: {
+        attributes: {
+          full_name: string;
+        };
+        id: string;
+      };
+    };
+  };
+  links: {
+    meta: {
+      total: number;
+    };
   };
 }
 

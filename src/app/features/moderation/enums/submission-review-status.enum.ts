@@ -3,6 +3,7 @@ export enum SubmissionReviewStatus {
   Accepted = 'accepted',
   Rejected = 'rejected',
   Withdrawn = 'withdrawn',
+  Removed = 'removed',
   Public = 'public',
   Embargo = 'embargo',
 }

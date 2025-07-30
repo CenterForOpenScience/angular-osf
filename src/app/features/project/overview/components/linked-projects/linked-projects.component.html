@@ -1,7 +1,9 @@
 <div class="linked-project flex flex-column p-2 pb-4 gap-4">
   <div class="flex align-items-center pt-3 pl-3 pr-3 justify-content-between">
     <h2>{{ 'project.overview.linkedProjects.title' | translate }}</h2>
-    <p-button severity="secondary" [label]="'project.overview.components.linkProjectsButton' | translate" />
+    @if (!isCollectionsRoute()) {
+      <p-button severity="secondary" [label]="'project.overview.components.linkProjectsButton' | translate" />
+    }
   </div>
   <div class="linked-project-container pl-3 pr-3 flex flex-column gap-5">
     @if (isLinkedProjectsLoading()) {

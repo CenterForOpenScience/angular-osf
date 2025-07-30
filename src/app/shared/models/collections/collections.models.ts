@@ -82,4 +82,8 @@ export interface CollectionSubmission {
   disease: string;
   gradeLevels: string;
   contributors?: CollectionContributor[];
+  creator?: {
+    id: string;
+    fullName: string;
+  };
 }

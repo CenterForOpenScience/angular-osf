@@ -1,4 +1,4 @@
-export interface CollectionReviewActionJsonApiModel {
+export interface CollectionSubmissionReviewActionJsonApi {
   id: string;
   type: 'collection-submission-actions';
   attributes: {
@@ -8,6 +8,15 @@ export interface CollectionReviewActionJsonApiModel {
     to_state: string;
     date_created: string;
     date_modified: string;
+  };
+  embeds: {
+    creator: {
+      data: {
+        attributes: {
+          full_name: string;
+        };
+      };
+    };
   };
   relationships: {
     collection: {

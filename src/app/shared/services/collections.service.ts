@@ -6,6 +6,10 @@ import { inject, Injectable } from '@angular/core';
 
 import { JsonApiResponse, JsonApiResponseWithPaging } from '@core/models';
 import { JsonApiService } from '@core/services';
+import {
+  CollectionSubmissionReviewAction,
+  CollectionSubmissionReviewActionJsonApi,
+} from '@osf/features/moderation/models';
 import { CollectionsMapper } from '@shared/mappers/collections';
 import {
   CollectionContributor,
@@ -17,7 +21,10 @@ import {
   CollectionSubmissionJsonApi,
   CollectionSubmissionsSearchPayloadJsonApi,
   ContributorsResponseJsonApi,
+  PaginatedData,
+  ReviewActionPayload,
 } from '@shared/models';
+import { ReviewActionPayloadJsonApi } from '@shared/models/collections/review-action-payload-json-api.model';
 import { SetTotalSubmissions } from '@shared/stores/collections';
 
 import { environment } from 'src/environments/environment';
@@ -101,28 +108,44 @@ export class CollectionsService {
       );
   }
 
-  fetchCollectionSubmissions(
+  fetchCollectionSubmissionsByStatus(
     collectionId: string,
     status: string,
     page = '1',
     sortBy: string
-  ): Observable<CollectionSubmission[]> {
+  ): Observable<PaginatedData<CollectionSubmission[]>> {
     const params: Record<string, string> = {
       page,
       'filter[reviews_state]': status,
       'page[size]': '10',
+      embed: 'creator',
       sort: sortBy,
     };
 
     return this.jsonApiService
       .get<
-        JsonApiResponse<CollectionSubmissionJsonApi[], null>
+        JsonApiResponseWithPaging<CollectionSubmissionJsonApi[], null>
       >(`${environment.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
       .pipe(
         map((response) => {
-          return CollectionsMapper.fromGetCollectionSubmissionsResponse(response.data);
+          return CollectionsMapper.fromGetCollectionSubmissionsResponse(response);
         })
       );
+  }
+
+  fetchCollectionSubmissionsActions(
+    projectId: string,
+    collectionId: string
+  ): Observable<CollectionSubmissionReviewAction[]> {
+    const params: Record<string, unknown> = {
+      embed: 'creator',
+    };
+
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<CollectionSubmissionReviewActionJsonApi[], null>
+      >(`${environment.apiUrl}/collection_submissions/${projectId}-${collectionId}/actions/?sort=-date_modified`, params)
+      .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsActionsResponse(response.data)));
   }
 
   fetchAllUserCollectionSubmissions(providerId: string, projectIds: string[]): Observable<CollectionSubmission[]> {
@@ -130,7 +153,16 @@ export class CollectionsService {
     const acceptedSubmissions$ = this.fetchUserCollectionSubmissionsByStatus(providerId, projectIds, 'accepted');
 
     return forkJoin([pendingSubmissions$, acceptedSubmissions$]).pipe(
-      map(([pending, accepted]) => [...pending, ...accepted])
+      map(([pending, accepted]) => [...pending.data, ...accepted.data])
+    );
+  }
+
+  createCollectionSubmissionAction(payload: ReviewActionPayload): Observable<ReviewActionPayloadJsonApi> {
+    const params = CollectionsMapper.toReviewActionPayloadJsonApi(payload);
+
+    return this.jsonApiService.post<ReviewActionPayloadJsonApi>(
+      `${environment.apiUrl}/collection_submission_actions/`,
+      params
     );
   }
 
@@ -150,7 +182,7 @@ export class CollectionsService {
     providerId: string,
     projectIds: string[],
     submissionStatus: string
-  ): Observable<CollectionSubmission[]> {
+  ): Observable<PaginatedData<CollectionSubmission[]>> {
     const params: Record<string, unknown> = {
       'filter[reviews_state]': submissionStatus,
       'filter[id]': projectIds.join(','),
@@ -158,11 +190,11 @@ export class CollectionsService {
 
     return this.jsonApiService
       .get<
-        JsonApiResponse<CollectionSubmissionJsonApi[], null>
+        JsonApiResponseWithPaging<CollectionSubmissionJsonApi[], null>
       >(`${environment.apiUrl}/collections/${providerId}/collection_submissions/`, params)
       .pipe(
         map((response) => {
-          return CollectionsMapper.fromGetCollectionSubmissionsResponse(response.data);
+          return CollectionsMapper.fromGetCollectionSubmissionsResponse(response);
         })
       );
   }

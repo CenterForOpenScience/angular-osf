@@ -23,3 +23,9 @@
 .p-message-simple {
   --p-message-text-font-weight: 400;
 }
+
+.overview-message {
+  .p-message {
+    width: 100%;
+  }
+}

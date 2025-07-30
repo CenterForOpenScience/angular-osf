@@ -8,7 +8,7 @@ import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
@@ -31,6 +31,7 @@ export class OverviewComponentsComponent {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
   protected isMobile = toSignal(inject(IS_XSMALL));
+  isCollectionsRoute = input<boolean>(false);
   protected components = select(ProjectOverviewSelectors.getComponents);
   protected isComponentsLoading = select(ProjectOverviewSelectors.getComponentsLoading);
   protected readonly componentActionItems = (componentId: string) => [

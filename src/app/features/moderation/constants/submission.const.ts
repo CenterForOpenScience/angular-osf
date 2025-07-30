@@ -17,7 +17,7 @@ export const SUBMISSION_REVIEW_OPTIONS = [
     label: 'moderation.submissionReviewStatus.rejected',
   },
   {
-    value: SubmissionReviewStatus.Withdrawn,
+    value: SubmissionReviewStatus.Removed,
     icon: 'fas fa-circle-minus',
     label: 'moderation.submissionReviewStatus.withdrawn',
   },
@@ -61,6 +61,10 @@ export const ReviewStatusIcon: Record<SubmissionReviewStatus | string, { value: 
   },
   [SubmissionReviewStatus.Withdrawn]: {
     value: SubmissionReviewStatus.Withdrawn,
+    icon: 'fas fa-circle-minus',
+  },
+  [SubmissionReviewStatus.Removed]: {
+    value: SubmissionReviewStatus.Removed,
     icon: 'fas fa-circle-minus',
   },
   [SubmissionReviewStatus.Public]: {

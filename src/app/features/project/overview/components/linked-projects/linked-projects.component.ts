@@ -7,7 +7,7 @@ import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { TruncatedTextComponent } from '@osf/shared/components';
 
@@ -23,4 +23,5 @@ import { ProjectOverviewSelectors } from '../../store';
 export class LinkedProjectsComponent {
   protected linkedProjects = select(ProjectOverviewSelectors.getLinkedProjects);
   protected isLinkedProjectsLoading = select(ProjectOverviewSelectors.getLinkedProjectsLoading);
+  isCollectionsRoute = input<boolean>(false);
 }

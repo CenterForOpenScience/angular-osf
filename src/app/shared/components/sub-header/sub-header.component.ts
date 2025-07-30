@@ -1,4 +1,4 @@
-import { Button } from 'primeng/button';
+import { Button, ButtonSeverity } from 'primeng/button';
 import { SafeHtmlPipe } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 import { Tooltip } from 'primeng/tooltip';
@@ -15,6 +15,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 export class SubHeaderComponent {
   showButton = input<boolean>(false);
   buttonLabel = input<string>('');
+  buttonSeverity = input<ButtonSeverity>('primary');
   title = input<string>('');
   icon = input<string>('');
   tooltip = input<string>('');

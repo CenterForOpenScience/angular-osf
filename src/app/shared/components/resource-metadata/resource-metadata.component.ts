@@ -20,6 +20,7 @@ import { ResourceOverview } from '@shared/models';
 })
 export class ResourceMetadataComponent {
   currentResource = input.required<ResourceOverview | null>();
+  isCollectionsRoute = input<boolean>(false);
 
   protected readonly resourceTypes = OsfResourceTypes;
 }

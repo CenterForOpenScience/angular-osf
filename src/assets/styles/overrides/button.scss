@@ -50,3 +50,17 @@
     --p-button-text-danger-color: var(--red-3);
   }
 }
+
+.submission-link-btn {
+  .p-button {
+    --p-button-padding-x: 0.5625rem;
+    --p-button-padding-y: 0;
+  }
+}
+
+.back-link-btn {
+  .p-button {
+    --p-button-padding-y: 0;
+    --p-button-padding-x: 0;
+  }
+}

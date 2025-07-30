@@ -19,6 +19,7 @@ export { LicenseComponent } from './license/license.component';
 export { LineChartComponent } from './line-chart/line-chart.component';
 export { ListInfoShortenerComponent } from './list-info-shortener/list-info-shortener.component';
 export { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+export { MakeDecisionDialogComponent } from './make-decision-dialog/make-decision-dialog.component';
 export { MarkdownComponent } from './markdown/markdown.component';
 export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.component';
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';

@@ -1107,6 +1107,7 @@
     "inviteModerator": "Invite moderator",
     "searchModerator": "Search moderator",
     "selectPermission": "Select permission",
+    "noSubmissions": "No submissions",
     "moderatorPermissions": {
       "administrator": "Administrator",
       "moderator": "Moderator"
@@ -1129,10 +1130,27 @@
       "public": "Public",
       "embargo": "Embargo"
     },
+    "makeDecision": {
+      "header": "Make decision",
+      "requestSubmitted": "Request submitted",
+      "acceptRequest": "Accept request",
+      "rejectRequest": "Reject request",
+      "withdrawRequest": "Withdraw Request",
+      "acceptRequestMessage": "Submission will appear in search results and will be associated with the collection.",
+      "rejectRequestMessage": "Submission will not appear in search results nor will be associated with the collection.",
+      "withdrawRequestMessage": "Submission will be withdrawn from the collection and will no longer appear in search results.",
+      "remarksPlaceholder": "Add remarks to project admins (optional)",
+      "submitDecision": "Submit decision",
+      "goBackLink": "< Back to list of submissions",
+      "acceptSuccess": "Submission has been accepted successfully",
+      "rejectSuccess": "Submission has been rejected successfully",
+      "removeSuccess": "Submission has been withdrawn successfully"
+    },
     "submissionReview": {
       "submitted": "Submitted",
       "accepted": "Accepted",
       "rejected": "Rejected",
+      "withdrawn": "Withdrawn",
       "by": "by"
     },
     "preprintReviewStatus": {

@@ -48,7 +48,9 @@ export class ModeratorsListComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly toastService = inject(ToastService);
 
-  readonly providerId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  readonly providerId = toSignal(
+    this.route.parent?.params.pipe(map((params) => params['collectionId'])) ?? of(undefined)
+  );
   readonly resourceType: Signal<ResourceType | undefined> = toSignal(
     this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
   );

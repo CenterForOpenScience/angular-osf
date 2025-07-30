@@ -1,7 +1,13 @@
-<div class="submission-container mt-5">
-  @for (item of submissions(); track $index) {
-    <div class="submission-item">
-      <osf-submission-item [submission]="item"></osf-submission-item>
-    </div>
-  }
-</div>
+@if (submissions().length) {
+  <div class="submission-container mt-5">
+    @for (item of submissions(); track $index) {
+      <div class="submission-item">
+        <osf-submission-item [submission]="item"></osf-submission-item>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="submission-container mt-5">
+    <p class="text-align p-4">{{ 'moderation.noSubmissions' | translate }}</p>
+  </div>
+}

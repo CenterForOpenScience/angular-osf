@@ -3,8 +3,9 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { AddToCollectionState } from '@osf/features/collections/store/add-to-collection';
+import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ConfirmLeavingGuard } from '@shared/guards';
-import { ContributorsState, ProjectsState } from '@shared/stores';
+import { BookmarksState, ContributorsState, ProjectsState } from '@shared/stores';
 import { CollectionsState } from '@shared/stores/collections';
 
 export const collectionsRoutes: Routes = [
@@ -42,9 +43,17 @@ export const collectionsRoutes: Routes = [
         canDeactivate: [ConfirmLeavingGuard],
       },
       {
-        path: ':id/moderation',
+        path: ':collectionId/moderation',
         loadChildren: () =>
           import('@osf/features/moderation/collection-moderation.routes').then((m) => m.collectionModerationRoutes),
+      },
+      {
+        path: ':collectionId/moderation/:id',
+        loadComponent: () =>
+          import(
+            '@osf/features/moderation/components/collection-submission-overview/collection-submission-overview.component'
+          ).then((mod) => mod.CollectionSubmissionOverviewComponent),
+        providers: [provideStates([CollectionsModerationState, CollectionsState, BookmarksState])],
       },
     ],
   },

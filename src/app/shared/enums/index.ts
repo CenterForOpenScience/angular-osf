@@ -9,6 +9,8 @@ export * from './create-project-form-controls.enum';
 export * from './file-menu-type.enum';
 export * from './filter-type.enum';
 export * from './get-resources-request-type.enum';
+export * from './moderation-decision-form-controls.enum';
+export * from './moderation-submit-type.enum';
 export * from './profile-addons-stepper.enum';
 export * from './registration-review-states.enum';
 export * from './registry-status.enum';

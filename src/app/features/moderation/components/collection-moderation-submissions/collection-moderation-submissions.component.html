@@ -3,14 +3,13 @@
     <p-selectButton
       class="review-state-select flex-wrap"
       [options]="submissionReviewOptions"
-      [ngModel]="selectedReviewOption"
+      [ngModel]="reviewStatus()"
       (ngModelChange)="changeReviewStatus($event)"
       optionLabel="label"
       optionValue="value"
     >
       <ng-template #item let-item>
         <osf-icon [iconClass]="item.icon" [class]="item.value"></osf-icon>
-        <p>{{ totalCount }}</p>
         <p>{{ item.label | translate }}</p>
       </ng-template>
     </p-selectButton>
@@ -27,4 +26,18 @@
   </div>
 </div>
 
-<osf-submissions-list [submissions]="submissions"></osf-submissions-list>
+@if (!isSubmissionsLoading() && !isReviewActionsLoading()) {
+  <osf-submissions-list></osf-submissions-list>
+
+  @if (collectionSubmissions().length) {
+    <osf-custom-paginator
+      class="submissions-paginator"
+      [totalCount]="totalSubmissions()"
+      [rows]="10"
+      [first]="firstIndex()"
+      (pageChanged)="onPageChange($event)"
+    />
+  }
+} @else {
+  <osf-loading-spinner />
+}
