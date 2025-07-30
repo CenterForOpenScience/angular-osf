@@ -26,7 +26,7 @@
   </div>
 </div>
 
-@if (!isSubmissionsLoading() && !isReviewActionsLoading()) {
+@if (!isLoading()) {
   <osf-submissions-list></osf-submissions-list>
 
   @if (collectionSubmissions().length) {

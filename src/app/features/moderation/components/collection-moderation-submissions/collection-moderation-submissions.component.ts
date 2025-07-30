@@ -59,14 +59,25 @@ export class CollectionModerationSubmissionsComponent {
 
   protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   protected collectionDetails = select(CollectionsSelectors.getCollectionDetails);
-  protected collectionSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
-  protected totalSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissionsTotalCount);
+  protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  protected isCollectionDetailsLoading = select(CollectionsSelectors.getCollectionDetailsLoading);
   protected isSubmissionsLoading = select(CollectionsModerationSelectors.getCollectionSubmissionsLoading);
   protected isReviewActionsLoading = select(CollectionsModerationSelectors.getReviewActionsLoading);
+  protected collectionSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
+  protected totalSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissionsTotalCount);
   protected providerId = signal<string>('');
   protected primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
   protected reviewStatus = signal<SubmissionReviewStatus>(SubmissionReviewStatus.Pending);
   protected currentPage = signal<string>('1');
+
+  protected isLoading = computed(() => {
+    return (
+      this.isCollectionProviderLoading() ||
+      this.isCollectionDetailsLoading() ||
+      this.isSubmissionsLoading() ||
+      this.isReviewActionsLoading()
+    );
+  });
 
   sortOptions = COLLECTION_SUBMISSIONS_SORT_OPTIONS;
   selectedSortOption = signal<string>(this.sortOptions[0].value);
