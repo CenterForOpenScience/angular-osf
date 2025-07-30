@@ -20,7 +20,7 @@ import { CustomConfirmationService } from '@osf/shared/services';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 import { CustomValidators, findChangedFields } from '@osf/shared/utils';
 
-import { DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepValidation } from '../../store';
+import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepValidation } from '../../store';
 
 import { ContributorsComponent } from './contributors/contributors.component';
 import { RegistriesLicenseComponent } from './registries-license/registries-license.component';
@@ -62,6 +62,7 @@ export class MetadataComponent implements OnDestroy {
     deleteDraft: DeleteDraft,
     updateDraft: UpdateDraft,
     updateStepValidation: UpdateStepValidation,
+    clearState: ClearState,
   });
   protected inputLimits = InputLimits;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
@@ -129,8 +130,8 @@ export class MetadataComponent implements OnDestroy {
         const providerId = this.draftRegistration()?.providerId;
         this.actions.deleteDraft(this.draftId).subscribe({
           next: () => {
-            // [NM] TODO: clear validation state
             this.isDraftDeleted = true;
+            this.actions.clearState();
             this.router.navigateByUrl(`/registries/${providerId}/new`);
           },
         });

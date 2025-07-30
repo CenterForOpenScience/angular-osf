@@ -1,3 +1,5 @@
+@use "assets/styles/mixins" as mix;
+
 .p-datepicker {
   width: 100%;
   --p-datepicker-input-icon-color: var(--grey-1);
@@ -34,5 +36,11 @@
   .p-datepicker-day-selected {
     --p-datepicker-date-hover-background: var(--pr-blue-2);
     --p-datepicker-date-hover-color: var(--white);
+  }
+}
+
+.half-width-datepicker {
+  .p-datepicker-panel {
+    min-width: mix.rem(350px) !important;
   }
 }

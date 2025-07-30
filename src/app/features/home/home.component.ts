@@ -15,19 +15,18 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
-import { MyProjectsItem } from '@osf/features/my-projects/models';
 import { MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
 import { SortOrder } from '@osf/shared/enums';
-import { TableParameters } from '@osf/shared/models';
+import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
 import { IS_MEDIUM } from '@osf/shared/utils';
 import { FetchUserInstitutions } from '@shared/stores';
 
 import { CreateProjectDialogComponent } from '../my-projects/components';
-import { MyProjectsSearchFilters } from '../my-projects/models';
-import { ClearMyProjects, GetMyProjects, MyProjectsSelectors } from '../my-projects/store';
 import { AccountSettingsService } from '../settings/account-settings/services';
 
 import { ConfirmEmailComponent } from './components';
+
+import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from 'src/app/shared/stores/my-resources';
 
 @Component({
   selector: 'osf-home',
@@ -51,15 +50,15 @@ export class HomeComponent implements OnInit {
   protected readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   protected readonly searchControl = new FormControl<string>('');
-  protected readonly activeProject = signal<MyProjectsItem | null>(null);
+  protected readonly activeProject = signal<MyResourcesItem | null>(null);
   protected readonly sortColumn = signal<string | undefined>(undefined);
   protected readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
   protected readonly tableParams = signal<TableParameters>({
     ...MY_PROJECTS_TABLE_PARAMS,
   });
 
-  protected readonly projects = select(MyProjectsSelectors.getProjects);
-  protected readonly totalProjectsCount = select(MyProjectsSelectors.getTotalProjects);
+  protected readonly projects = select(MyResourcesSelectors.getProjects);
+  protected readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
 
   protected readonly filteredProjects = computed(() => {
     const search = this.searchControl.value?.toLowerCase() ?? '';
@@ -159,7 +158,7 @@ export class HomeComponent implements OnInit {
 
   setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.store.dispatch(new ClearMyProjects());
+      this.store.dispatch(new ClearMyResources());
     });
   }
 
@@ -180,7 +179,7 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  createFilters(): MyProjectsSearchFilters {
+  createFilters(): MyResourcesSearchFilters {
     return {
       searchValue: this.searchControl.value ?? '',
       searchFields: ['title'],
@@ -224,7 +223,7 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  protected navigateToProject(project: MyProjectsItem): void {
+  protected navigateToProject(project: MyResourcesItem): void {
     this.activeProject.set(project);
     this.router.navigate(['/my-projects', project.id]);
   }

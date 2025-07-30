@@ -117,6 +117,15 @@ export class ProjectMetadataStepComponent {
     return this.formService.isFormUnchanged(currentFormValues ?? null, initialFormValues);
   });
 
+  get copyrightHolders() {
+    const control = this.projectMetadataForm.controls[ProjectMetadataFormControls.CopyrightHolders];
+    return control.value ? `${control.value}.` : '';
+  }
+
+  get year() {
+    return this.projectMetadataForm.controls[ProjectMetadataFormControls.LicenseYear].value || '';
+  }
+
   constructor() {
     this.setupEffects();
   }

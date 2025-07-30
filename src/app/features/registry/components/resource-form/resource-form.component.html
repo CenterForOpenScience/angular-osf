@@ -1,0 +1,42 @@
+<form class="flex flex-column gap-4" [formGroup]="formGroup()" (ngSubmit)="handleSubmit()">
+  <osf-text-input
+    [control]="getControl('pid')"
+    [label]="'DOI'"
+    [placeholder]="'https://doi.org/'"
+    [maxLength]="inputLimits.name.maxLength"
+  >
+    @if (getControl('pid').hasError('invalidDoi')) {
+      <span>{{ 'resources.errors.doiValidation' | translate }}</span>
+    }
+  </osf-text-input>
+
+  <osf-form-select
+    [fullWidth]="true"
+    [options]="resourceOptions()"
+    [appendTo]="'body'"
+    [control]="getControl('resourceType')"
+    [placeholder]="'resources.selectAResourceType'"
+  />
+
+  <div>
+    <label [for]="'coi-reason'">{{ 'resources.descriptionLabel' | translate }}</label>
+    <textarea class="w-full" pTextarea id="coi-reason" [rows]="3" [formControl]="getControl('description')"></textarea>
+  </div>
+
+  <div class="flex justify-content-between w-full gap-1">
+    @if (showCancelButton()) {
+      <p-button
+        class="btn-full-width"
+        [label]="cancelButtonLabel() | translate"
+        severity="info"
+        (click)="handleCancel()"
+      />
+    }
+    <p-button
+      class="btn-full-width"
+      [label]="primaryButtonLabel() | translate"
+      (onClick)="handleSubmit()"
+      [disabled]="formGroup().invalid"
+    />
+  </div>
+</form>

@@ -50,4 +50,25 @@ export class CustomValidators {
       return null;
     };
   }
+
+  static dateRangeValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const start = control.get('startDate')?.value;
+    const end = control.get('endDate')?.value;
+
+    if (!start || !end) return null;
+
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+
+    return endDate > startDate ? null : { dateRangeInvalid: true };
+  };
+
+  static doiValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+    const value = control.value;
+    if (!value) return null;
+
+    const DOIRegex = /\b(10\.\d{4,}(?:\.\d+)*\/\S+(?:(?!["&'<>])\S))\b/;
+    const isValid = DOIRegex.test(value);
+    return isValid ? null : { invalidDoi: true };
+  };
 }

@@ -1,0 +1,10 @@
+<p-card>
+  <osf-subjects
+    [readonly]="readonly()"
+    [areSubjectsUpdating]="isSubjectsUpdating()"
+    [selected]="selectedSubjects()"
+    (loadChildren)="getSubjectChildren.emit($event)"
+    (searchChanged)="searchSubjects.emit($event)"
+    (updateSelection)="updateSelectedSubjects.emit($event)"
+  />
+</p-card>

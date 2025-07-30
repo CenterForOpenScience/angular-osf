@@ -3,7 +3,7 @@ import { map, Observable, switchMap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
-import { ApiData, JsonApiResponse } from '@osf/core/models';
+import { ApiData } from '@osf/core/models';
 import { PreprintsMapper } from '@osf/features/preprints/mappers';
 import {
   Preprint,
@@ -64,7 +64,7 @@ export class PreprintFilesService {
     return this.jsonApiService.get<GetFilesResponse>(`${environment.apiUrl}/nodes/${projectId}/files/`).pipe(
       switchMap((response: GetFilesResponse) => {
         return this.jsonApiService
-          .get<JsonApiResponse<GetFileResponse, null>>(response.data[0].relationships.root_folder.links.related.href)
+          .get<GetFileResponse>(response.data[0].relationships.root_folder.links.related.href)
           .pipe(
             switchMap((fileResponse) =>
               this.filesService.getFilesWithoutFiltering(fileResponse.data.relationships.files.links.related.href)

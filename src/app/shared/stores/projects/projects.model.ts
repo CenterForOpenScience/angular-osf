@@ -1,5 +1,5 @@
-import { AsyncStateModel } from '@shared/models';
-import { Project } from '@shared/models/projects';
+import { AsyncStateModel } from '@osf/shared/models';
+import { Project } from '@osf/shared/models/projects';
 
 export interface ProjectsStateModel {
   projects: AsyncStateModel<Project[]>;

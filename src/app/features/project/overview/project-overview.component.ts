@@ -13,12 +13,12 @@ import { ClearCollections } from '@osf/features/collections/store/collections';
 import { LoadingSpinnerComponent, ResourceMetadataComponent, SubHeaderComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
-import { GetBookmarksCollectionId } from '@shared/stores';
+import { GetAllNodeLinks, GetBookmarksCollectionId, GetLinkedResources } from '@shared/stores';
 
 import { ClearWiki, GetHomeWiki } from '../wiki/store';
 
 import {
-  LinkedProjectsComponent,
+  LinkedResourcesComponent,
   OverviewComponentsComponent,
   OverviewToolbarComponent,
   OverviewWikiComponent,
@@ -27,7 +27,7 @@ import {
 import {
   ClearProjectOverview,
   GetComponents,
-  GetLinkedProjects,
+  GetLinkedResources,
   GetProjectById,
   ProjectOverviewSelectors,
   SetProjectCustomCitation,
@@ -46,7 +46,7 @@ import {
     LoadingSpinnerComponent,
     OverviewWikiComponent,
     OverviewComponentsComponent,
-    LinkedProjectsComponent,
+    LinkedResourcesComponent,
     RecentActivityComponent,
     OverviewToolbarComponent,
     ResourceMetadataComponent,
@@ -65,7 +65,8 @@ export class ProjectOverviewComponent implements OnInit {
     getBookmarksId: GetBookmarksCollectionId,
     getHomeWiki: GetHomeWiki,
     getComponents: GetComponents,
-    getLinkedProjects: GetLinkedProjects,
+    getLinkedProjects: GetLinkedResources,
+    getNodeLinks: GetAllNodeLinks,
     setProjectCustomCitation: SetProjectCustomCitation,
     clearProjectOverview: ClearProjectOverview,
     clearWiki: ClearWiki,
@@ -110,6 +111,7 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getBookmarksId();
       this.actions.getHomeWiki(projectId);
       this.actions.getComponents(projectId);
+      this.actions.getNodeLinks(projectId);
       this.actions.getLinkedProjects(projectId);
     }
   }

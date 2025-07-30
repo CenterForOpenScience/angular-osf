@@ -1,0 +1,9 @@
+@use "assets/styles/variables" as var;
+
+.metadata {
+  flex-basis: calc(50% - 1.5rem);
+
+  @media (max-width: var.$breakpoint-sm) {
+    flex-basis: 100%;
+  }
+}

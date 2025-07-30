@@ -2,7 +2,7 @@
 
 <div class="flex flex-column p-2 bg-white flex-1 gap-4 md:p-3 xl:p-4">
   @if (!isEmailPreferencesLoading()) {
-    <section class="notification-item flex flex-column gap-4">
+    <section class="notification-item flex flex-column gap-4 p-3 md:p-4">
       <h2>{{ 'settings.notifications.emailPreferences.title' | translate }}</h2>
 
       <form [formGroup]="emailPreferencesForm" class="flex flex-column gap-3" (submit)="emailPreferencesFormSubmit()">
@@ -14,13 +14,13 @@
           />
 
           <div class="flex flex-column gap-1">
-            <label for="v1" class="mb-0 font-bold notification-item-label">
+            <label for="v1" class="mb-0 font-bold">
               {{ 'settings.notifications.emailPreferences.items.general.title' | translate }}
             </label>
 
-            <div class="notification-item-description">
+            <p>
               {{ 'settings.notifications.emailPreferences.items.general.description' | translate }}
-            </div>
+            </p>
           </div>
         </div>
 
@@ -32,13 +32,13 @@
           />
 
           <div class="flex flex-column gap-1">
-            <label for="v2" class="mb-0 font-bold notification-item-label">
+            <label for="v2" class="mb-0 font-bold">
               {{ 'settings.notifications.emailPreferences.items.help.title' | translate }}
             </label>
 
-            <div class="notification-item-description">
+            <p>
               {{ 'settings.notifications.emailPreferences.items.help.description' | translate }}
-            </div>
+            </p>
           </div>
         </div>
 
@@ -46,14 +46,14 @@
           <p-button
             [disabled]="!emailPreferencesForm.dirty"
             type="submit"
-            [label]="'settings.notifications.emailPreferences.saveButton' | translate"
+            [label]="'common.buttons.save' | translate"
             [loading]="isSubmittingEmailPreferences()"
           />
         </div>
       </form>
     </section>
   } @else {
-    <div class="notification-item flex flex-column gap-4">
+    <div class="notification-item flex flex-column gap-4 p-3 md:p-4">
       <p-skeleton width="20rem" height="2rem"></p-skeleton>
 
       <div class="flex flex-column gap-3">
@@ -71,7 +71,7 @@
   }
 
   @if (!isNotificationSubscriptionsLoading()) {
-    <section class="notification-item flex flex-column gap-4">
+    <section class="notification-item flex flex-column gap-4 p-3 md:p-4">
       <h2>{{ 'settings.notifications.notificationPreferences.title' | translate }}</h2>
 
       <p>{{ 'settings.notifications.notificationPreferences.note' | translate }}</p>
@@ -84,7 +84,6 @@
             class="dropdown"
             [options]="subscriptionFrequencyOptions"
             optionLabel="label"
-            [loading]="loadingEvents().includes(subscriptionEvent.event)"
             optionValue="value"
             (onChange)="onSubscriptionChange(subscriptionEvent.event, $event.value)"
           />

@@ -41,9 +41,8 @@ import {
   SetSelectedPreprintFileSource,
   UploadFile,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { FilesTreeActions } from '@osf/features/project/files/models';
 import { FilesTreeComponent, IconComponent } from '@shared/components';
-import { OsfFile } from '@shared/models';
+import { FilesTreeActions, OsfFile } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
 @Component({

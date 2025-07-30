@@ -9,11 +9,12 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@a
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants';
-import { CreateProject, GetMyProjects, MyProjectsSelectors } from '@osf/features/my-projects/store';
 import { AddProjectFormComponent } from '@shared/components';
 import { ProjectFormControls } from '@shared/enums';
 import { IdName, ProjectForm } from '@shared/models';
 import { CustomValidators } from '@shared/utils';
+
+import { CreateProject, GetMyProjects, MyResourcesSelectors } from 'src/app/shared/stores/my-resources';
 
 @Component({
   selector: 'osf-create-project-dialog',
@@ -30,7 +31,7 @@ export class CreateProjectDialogComponent implements OnInit {
     createProject: CreateProject,
   });
 
-  private projects = select(MyProjectsSelectors.getProjects);
+  private projects = select(MyResourcesSelectors.getProjects);
 
   readonly templates = computed(() => {
     return this.projects().map(
@@ -41,7 +42,7 @@ export class CreateProjectDialogComponent implements OnInit {
         }) as IdName
     );
   });
-  readonly isProjectSubmitting = select(MyProjectsSelectors.isProjectSubmitting);
+  readonly isProjectSubmitting = select(MyResourcesSelectors.isProjectSubmitting);
 
   readonly projectForm = new FormGroup<ProjectForm>({
     [ProjectFormControls.Title]: new FormControl('', {

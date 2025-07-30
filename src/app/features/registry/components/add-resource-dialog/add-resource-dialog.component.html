@@ -1,0 +1,48 @@
+@if (isCurrentResourceLoading() || isResourceConfirming()) {
+  <osf-loading-spinner></osf-loading-spinner>
+} @else if (isPreviewMode() && currentResource()) {
+  <form class="flex flex-column gap-4" [formGroup]="form">
+    <p>{{ 'resources.check' | translate }}</p>
+
+    @let resourceType = currentResource()?.type;
+    @let iconName = resourceType === 'analytic_code' ? 'code' : resourceType;
+    @let icon = `assets/icons/colored/${iconName}-colored.svg`;
+    @let resourceName = resourceType === RegistryResourceType.Code ? 'Analytic Code' : resourceType;
+
+    <div class="flex align-content-end gap-3 content">
+      <img [src]="icon" alt="resource-type icon" class="align-self-start" />
+      <div class="flex flex-column gap-3 mt-1">
+        <div class="flex flex-column gap-2">
+          <h2>{{ resourceName }}</h2>
+          <a [href]="'https://doi/' + currentResource()?.pid">https://doi/{{ currentResource()?.pid }}</a>
+        </div>
+        <p>{{ currentResource()?.description }}</p>
+      </div>
+    </div>
+
+    <div class="flex justify-content-between w-full gap-1">
+      <p-button
+        class="btn-full-width"
+        [label]="'common.buttons.edit' | translate"
+        severity="info"
+        (click)="backToEdit()"
+      />
+      <p-button
+        class="btn-full-width"
+        [label]="'resources.add' | translate"
+        severity="primary"
+        (onClick)="onAddResource()"
+      />
+    </div>
+  </form>
+} @else {
+  <osf-resource-form
+    [formGroup]="form"
+    [showCancelButton]="true"
+    [showPreviewButton]="false"
+    [cancelButtonLabel]="'common.buttons.cancel'"
+    [primaryButtonLabel]="'common.buttons.preview'"
+    (cancelClicked)="closeDialog()"
+    (submitClicked)="previewResource()"
+  />
+}

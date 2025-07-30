@@ -3,13 +3,14 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
-import { ApiData, JsonApiResponse, JsonApiResponseWithPaging } from '@osf/core/models';
+import { ApiData, JsonApiResponse, JsonApiResponseWithMeta, JsonApiResponseWithPaging } from '@osf/core/models';
 import { preprintSortFieldMap } from '@osf/features/preprints/constants';
 import { PreprintsMapper } from '@osf/features/preprints/mappers';
 import {
   Preprint,
   PreprintAttributesJsonApi,
   PreprintEmbedsJsonApi,
+  PreprintMetaJsonApi,
   PreprintRelationshipsJsonApi,
 } from '@osf/features/preprints/models';
 import { SearchFilters } from '@shared/models';
@@ -66,6 +67,27 @@ export class PreprintsService {
       );
   }
 
+  getByIdWithEmbeds(id: string) {
+    const params = {
+      'metrics[views]': 'total',
+      'metrics[downloads]': 'total',
+      'embed[]': 'license',
+    };
+    return this.jsonApiService
+      .get<
+        JsonApiResponseWithMeta<
+          ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>,
+          PreprintMetaJsonApi,
+          null
+        >
+      >(`${environment.apiUrl}/preprints/${id}/`, params)
+      .pipe(
+        map((response) => {
+          return PreprintsMapper.fromPreprintWithEmbedsJsonApi(response);
+        })
+      );
+  }
+
   deletePreprint(id: string) {
     return this.jsonApiService.delete(`${environment.apiUrl}/preprints/${id}/`);
   }
@@ -110,18 +132,29 @@ export class PreprintsService {
     return apiPayload;
   }
 
+  getPreprintVersionIds(preprintId: string): Observable<string[]> {
+    return this.jsonApiService
+      .get<
+        JsonApiResponseWithPaging<ApiData<PreprintAttributesJsonApi, null, null, null>[], null>
+      >(`${environment.apiUrl}/preprints/${preprintId}/versions/`)
+      .pipe(map((response) => response.data.map((data) => data.id)));
+  }
+
   getMyPreprints(pageNumber: number, pageSize: number, filters: SearchFilters) {
     const params: Record<string, unknown> = {
       'embed[]': ['bibliographic_contributors'],
       'fields[users]': 'family_name,full_name,given_name,middle_name',
-      'fields[preprints]': 'title,date_modified,public,bibliographic_contributors',
+      'fields[preprints]': 'title,date_modified,public,bibliographic_contributors,provider',
     };
 
     searchPreferencesToJsonApiQueryParams(params, pageNumber, pageSize, filters, preprintSortFieldMap);
 
     return this.jsonApiService
       .get<
-        JsonApiResponseWithPaging<ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, null, null>[], null>
+        JsonApiResponseWithPaging<
+          ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>[],
+          null
+        >
       >(`${environment.apiUrl}/users/me/preprints/`, params)
       .pipe(map((response) => PreprintsMapper.fromMyPreprintJsonApi(response)));
   }

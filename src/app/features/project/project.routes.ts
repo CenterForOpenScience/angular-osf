@@ -3,7 +3,13 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { ResourceType } from '@osf/shared/enums';
-import { CitationsState, ContributorsState, SubjectsState, ViewOnlyLinkState } from '@osf/shared/stores';
+import {
+  CitationsState,
+  ContributorsState,
+  NodeLinksState,
+  SubjectsState,
+  ViewOnlyLinkState,
+} from '@osf/shared/stores';
 
 import { AnalyticsState } from './analytics/store';
 import { ProjectFilesState } from './files/store';
@@ -23,7 +29,7 @@ export const projectRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('../project/overview/project-overview.component').then((mod) => mod.ProjectOverviewComponent),
-        providers: [provideStates([CitationsState])],
+        providers: [provideStates([CitationsState, NodeLinksState])],
       },
       {
         path: 'metadata',

@@ -1,6 +1,7 @@
 import {
   User,
   UserGetResponse,
+  UserNamesJsonApi,
   UserSettings,
   UserSettingsGetResponse,
   UserSettingsUpdateRequest,
@@ -44,6 +45,16 @@ export class UserMapper {
           subscribe_osf_help_email: userSettings.subscribeOsfHelpEmail,
         },
       },
+    };
+  }
+
+  static toNamesRequest(name: Partial<User>): UserNamesJsonApi {
+    return {
+      full_name: name.fullName ?? '',
+      given_name: name.givenName ?? '',
+      family_name: name.familyName ?? '',
+      middle_names: name.middleNames ?? '',
+      suffix: name.suffix ?? '',
     };
   }
 }

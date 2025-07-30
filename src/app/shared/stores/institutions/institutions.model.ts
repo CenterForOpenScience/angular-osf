@@ -1,5 +1,4 @@
-import { Institution } from '@shared/models';
-import { AsyncStateWithTotalCount } from '@shared/models/store/async-state-with-total-count.model';
+import { AsyncStateWithTotalCount, Institution } from '@osf/shared/models';
 
 export interface InstitutionsStateModel {
   userInstitutions: Institution[];

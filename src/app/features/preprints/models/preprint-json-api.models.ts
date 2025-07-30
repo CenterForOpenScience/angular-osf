@@ -1,6 +1,6 @@
 import { BooleanOrNull, StringOrNull } from '@core/helpers';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
-import { ContributorResponse, LicenseRecordJsonApi } from '@shared/models';
+import { ContributorResponse, LicenseRecordJsonApi, LicenseResponseJsonApi } from '@shared/models';
 
 export interface PreprintAttributesJsonApi {
   date_created: string;
@@ -53,10 +53,24 @@ export interface PreprintRelationshipsJsonApi {
       type: 'nodes';
     };
   };
+  provider: {
+    data: {
+      id: string;
+      type: 'preprint-providers';
+    };
+  };
 }
 
 export interface PreprintEmbedsJsonApi {
   bibliographic_contributors: {
     data: ContributorResponse[];
+  };
+  license: LicenseResponseJsonApi;
+}
+
+export interface PreprintMetaJsonApi {
+  metrics: {
+    downloads: number;
+    views: number;
   };
 }

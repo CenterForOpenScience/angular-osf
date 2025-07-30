@@ -23,6 +23,7 @@
 @use "./overrides/stepper";
 @use "./overrides/radio";
 @use "./overrides/confirmation-dialog";
+@use "./overrides/dialog";
 @use "./overrides/input-group-addon";
 @use "./overrides/iconfield";
 @use "./overrides/datepicker";
@@ -44,5 +45,4 @@
 @use "./components/md-editor";
 @use "./components/preprints";
 @use "./overrides/cedar-metadata";
-@use "./overrides/date-picker";
 @use "./components/collections";

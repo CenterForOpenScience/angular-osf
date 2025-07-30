@@ -1,4 +1,4 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext, Store } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { tap } from 'rxjs';
@@ -8,8 +8,16 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@core/handlers';
 import { PreprintsService } from '@osf/features/preprints/services';
+import { FilesService } from '@shared/services';
 
-import { FetchMyPreprints, FetchPreprintById } from './preprint.actions';
+import {
+  FetchMyPreprints,
+  FetchPreprintById,
+  FetchPreprintFile,
+  FetchPreprintFileVersions,
+  FetchPreprintVersionIds,
+  ResetState,
+} from './preprint.actions';
 import { DefaultState, PreprintStateModel } from './preprint.model';
 
 @State<PreprintStateModel>({
@@ -18,7 +26,9 @@ import { DefaultState, PreprintStateModel } from './preprint.model';
 })
 @Injectable()
 export class PreprintState {
+  private store = inject(Store);
   private preprintsService = inject(PreprintsService);
+  private fileService = inject(FilesService);
 
   @Action(FetchMyPreprints)
   fetchMyPreprints(ctx: StateContext<PreprintStateModel>, action: FetchMyPreprints) {
@@ -41,14 +51,72 @@ export class PreprintState {
   }
 
   @Action(FetchPreprintById)
-  getPreprintById(ctx: StateContext<PreprintStateModel>, action: FetchPreprintById) {
-    ctx.setState(patch({ preprint: patch({ isLoading: true }) }));
+  fetchPreprintById(ctx: StateContext<PreprintStateModel>, action: FetchPreprintById) {
+    ctx.setState(
+      patch({
+        preprint: patch({ isLoading: true, data: null }),
+        preprintFile: patch({ isLoading: true, data: null }),
+        fileVersions: patch({ isLoading: true, data: [] }),
+      })
+    );
 
-    return this.preprintsService.getById(action.id).pipe(
+    return this.preprintsService.getByIdWithEmbeds(action.id).pipe(
       tap((preprint) => {
         ctx.setState(patch({ preprint: patch({ isLoading: false, data: preprint }) }));
+        this.store.dispatch(new FetchPreprintFile());
+        this.store.dispatch(new FetchPreprintVersionIds());
       }),
       catchError((error) => handleSectionError(ctx, 'preprint', error))
     );
+  }
+
+  @Action(FetchPreprintFile)
+  fetchPreprintFile(ctx: StateContext<PreprintStateModel>) {
+    const preprintFileId = ctx.getState().preprint.data?.primaryFileId;
+    if (!preprintFileId) return;
+    ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
+
+    return this.fileService.getFileById(preprintFileId!).pipe(
+      tap((file) => {
+        ctx.setState(patch({ preprintFile: patch({ isLoading: false, data: file }) }));
+        this.store.dispatch(new FetchPreprintFileVersions());
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprintFile', error))
+    );
+  }
+
+  @Action(FetchPreprintFileVersions)
+  fetchPreprintFileVersions(ctx: StateContext<PreprintStateModel>) {
+    const fileId = ctx.getState().preprintFile.data?.id;
+    if (!fileId) return;
+
+    ctx.setState(patch({ fileVersions: patch({ isLoading: true }) }));
+
+    return this.fileService.getFileVersions(fileId).pipe(
+      tap((fileVersions) => {
+        ctx.setState(patch({ fileVersions: patch({ isLoading: false, data: fileVersions }) }));
+      }),
+      catchError((error) => handleSectionError(ctx, 'fileVersions', error))
+    );
+  }
+
+  @Action(FetchPreprintVersionIds)
+  fetchPreprintVersionIds(ctx: StateContext<PreprintStateModel>) {
+    const preprintId = ctx.getState().preprint.data?.id;
+    if (!preprintId) return;
+
+    ctx.setState(patch({ preprintVersionIds: patch({ isLoading: true }) }));
+
+    return this.preprintsService.getPreprintVersionIds(preprintId).pipe(
+      tap((versionIds) => {
+        ctx.setState(patch({ preprintVersionIds: patch({ isLoading: false, data: versionIds }) }));
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprintVersionIds', error))
+    );
+  }
+
+  @Action(ResetState)
+  resetState(ctx: StateContext<PreprintStateModel>) {
+    ctx.setState(patch({ ...DefaultState }));
   }
 }

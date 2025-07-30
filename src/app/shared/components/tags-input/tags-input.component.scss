@@ -1,0 +1,45 @@
+.tags-input-container {
+  min-height: 2.5rem;
+  border: 1px solid var(--p-inputtext-border-color);
+  background: var(--p-inputtext-background);
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+  cursor: text;
+
+  &:focus-within {
+    border-color: var(--p-inputtext-focus-border-color);
+    box-shadow: var(--p-inputtext-focus-ring-shadow);
+  }
+
+  &:hover {
+    border-color: var(--p-inputtext-hover-border-color);
+  }
+
+  .tag-input-field {
+    border: none;
+    outline: none;
+    background: transparent;
+    flex: 1;
+    min-width: 120px;
+    font-size: 1rem;
+    padding: 0;
+    margin: 0;
+
+    &::placeholder {
+      color: var(--p-inputtext-placeholder-color);
+    }
+  }
+
+  .p-chip-inline {
+    font-size: 0.875rem;
+
+    .p-chip {
+      font-size: inherit;
+    }
+  }
+}
+
+.tags-input-container:focus-within .tag-input-field {
+  outline: none;
+}

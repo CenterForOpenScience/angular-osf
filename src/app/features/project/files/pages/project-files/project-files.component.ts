@@ -29,7 +29,6 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { CreateFolderDialogComponent } from '@osf/features/project/files/components';
-import { FilesTreeActions } from '@osf/features/project/files/models';
 import {
   CreateFolder,
   DeleteEntry,
@@ -38,6 +37,7 @@ import {
   GetRootFolders,
   ProjectFilesSelectors,
   RenameEntry,
+  ResetState,
   SetCurrentFolder,
   SetFilesIsLoading,
   SetMoveFileCurrentFolder,
@@ -54,7 +54,7 @@ import {
   SearchInputComponent,
   SubHeaderComponent,
 } from '@shared/components';
-import { ConfiguredStorageAddon, OsfFile } from '@shared/models';
+import { ConfiguredStorageAddon, FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 @Component({
@@ -101,6 +101,7 @@ export class ProjectFilesComponent {
     getProject: GetProjectById,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
+    resetState: ResetState,
   });
 
   protected readonly files = select(ProjectFilesSelectors.getFiles);
@@ -210,6 +211,12 @@ export class ProjectFilesComponent {
       if (!this.isFolderOpening()) {
         this.updateFilesList();
       }
+    });
+
+    effect(() => {
+      this.destroyRef.onDestroy(() => {
+        this.actions.resetState();
+      });
     });
   }
 

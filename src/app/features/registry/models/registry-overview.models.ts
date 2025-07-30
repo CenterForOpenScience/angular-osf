@@ -1,6 +1,7 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { RegistrationQuestions, RegistrySubject } from '@osf/features/registry/models';
 import { RegistryStatus, RevisionReviewStates } from '@shared/enums';
+import { License } from '@shared/models';
 
 export interface RegistryOverview {
   id: string;
@@ -24,11 +25,8 @@ export interface RegistryOverview {
     copyrightHolders: string[];
     year: string;
   };
-  license?: {
-    name: string;
-    text: string;
-    url: string;
-  };
+  license?: License;
+  licenseUrl?: string;
   identifiers?: {
     id: string;
     type: string;

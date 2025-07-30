@@ -43,7 +43,7 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
   protected readonly appForm: DeveloperAppForm = new FormGroup({
     [DeveloperAppFormFormControls.AppName]: new FormControl('', {
       nonNullable: true,
-      validators: [CustomValidators.requiredTrimmed(), Validators.maxLength(InputLimits.name.maxLength)],
+      validators: [CustomValidators.requiredTrimmed(), Validators.maxLength(InputLimits.fullName.maxLength)],
     }),
     [DeveloperAppFormFormControls.ProjectHomePageUrl]: new FormControl('', {
       nonNullable: true,

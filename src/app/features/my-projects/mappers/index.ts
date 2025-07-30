@@ -1,1 +1,1 @@
-export { MyProjectsMapper } from './my-projects.mapper';
+export { MyResourcesMapper } from './my-resources.mapper';

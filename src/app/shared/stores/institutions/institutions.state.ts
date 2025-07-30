@@ -5,8 +5,10 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { InstitutionsService } from '@shared/services';
-import { FetchInstitutions, FetchUserInstitutions, InstitutionsStateModel } from '@shared/stores';
+import { InstitutionsService } from '@osf/shared/services';
+
+import { FetchInstitutions, FetchUserInstitutions } from './institutions.actions';
+import { InstitutionsStateModel } from './institutions.model';
 
 @State<InstitutionsStateModel>({
   name: 'institutions',

@@ -8,6 +8,8 @@ export { FiltersOptionsService } from './filters-options.service';
 export { InstitutionsService } from './institutions.service';
 export { LicensesService } from './licenses.service';
 export { LoaderService } from './loader.service';
+export { MyResourcesService } from './my-resources.service';
+export { NodeLinksService } from './node-links.service';
 export { RegionsService } from './regions.service';
 export { ResourceCardService } from './resource-card.service';
 export { SearchService } from './search.service';

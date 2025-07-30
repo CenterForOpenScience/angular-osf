@@ -11,3 +11,20 @@ export interface ContributorsStateModel {
     totalCount: number;
   };
 }
+
+export const DefaultState = {
+  contributorsList: {
+    data: [],
+    isLoading: false,
+    error: '',
+    searchValue: null,
+    permissionFilter: null,
+    bibliographyFilter: null,
+  },
+  users: {
+    data: [],
+    isLoading: false,
+    error: null,
+    totalCount: 0,
+  },
+};

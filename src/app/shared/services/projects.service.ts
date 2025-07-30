@@ -26,6 +26,6 @@ export class ProjectsService {
 
     return this.jsonApiService
       .patch<ProjectJsonApi>(`${environment.apiUrl}/nodes/${metadata.id}/`, payload)
-      .pipe(map((response) => ProjectsMapper.fromPatchProjectResponse(response)));
+      .pipe(map((response) => ProjectsMapper.fromProjectResponse(response)));
   }
 }

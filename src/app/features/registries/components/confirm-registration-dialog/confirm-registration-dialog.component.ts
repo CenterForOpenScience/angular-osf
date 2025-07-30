@@ -61,10 +61,11 @@ export class ConfirmRegistrationDialogComponent {
   }
 
   submit(): void {
+    const embargoDate = this.form.value.embargoDate ? new Date(this.form.value.embargoDate)?.toISOString() : '';
     this.actions
       .registerDraft(
         this.config.data.draftId,
-        this.form.value.embargoDate,
+        embargoDate,
         this.config.data.providerId,
         this.config.data.projectId,
         this.config.data.components

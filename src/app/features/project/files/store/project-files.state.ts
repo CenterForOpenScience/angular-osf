@@ -19,6 +19,7 @@ import {
   GetRootFolderFiles,
   GetRootFolders,
   RenameEntry,
+  ResetState,
   SetCurrentFolder,
   SetFileMetadata,
   SetFilesIsLoading,
@@ -80,7 +81,6 @@ export class ProjectFilesState {
               error: null,
             },
           });
-          console.log('files is patched');
         },
       }),
       catchError((error) => this.handleError(ctx, 'files', error))
@@ -96,7 +96,6 @@ export class ProjectFilesState {
   @Action(SetCurrentFolder)
   setSelectedFolder(ctx: StateContext<ProjectFilesStateModel>, action: SetCurrentFolder) {
     ctx.patchState({ currentFolder: action.folder });
-    console.log('set currennt folder');
   }
 
   @Action(SetMoveFileCurrentFolder)
@@ -278,7 +277,7 @@ export class ProjectFilesState {
   @Action(GetRootFolders)
   getRootFolders(ctx: StateContext<ProjectFilesStateModel>, action: GetRootFolders) {
     const state = ctx.getState();
-    ctx.patchState({ rootFolders: { ...state.rootFolders, isLoading: true, error: null } });
+    ctx.patchState({ rootFolders: { ...state.rootFolders, isLoading: true } });
 
     return this.filesService.getFolders(action.folderLink).pipe(
       tap({
@@ -298,7 +297,7 @@ export class ProjectFilesState {
   @Action(GetConfiguredStorageAddons)
   getConfiguredStorageAddons(ctx: StateContext<ProjectFilesStateModel>, action: GetConfiguredStorageAddons) {
     const state = ctx.getState();
-    ctx.patchState({ configuredStorageAddons: { ...state.configuredStorageAddons, isLoading: true, error: null } });
+    ctx.patchState({ configuredStorageAddons: { ...state.configuredStorageAddons, isLoading: true } });
 
     return this.filesService.getConfiguredStorageAddons(action.resourceUri).pipe(
       tap({
@@ -311,8 +310,16 @@ export class ProjectFilesState {
             },
           }),
       }),
+      finalize(() => {
+        ctx.patchState({ configuredStorageAddons: { ...state.configuredStorageAddons, isLoading: false } });
+      }),
       catchError((error) => this.handleError(ctx, 'configuredStorageAddons', error))
     );
+  }
+
+  @Action(ResetState)
+  resetState(ctx: StateContext<ProjectFilesStateModel>) {
+    ctx.patchState(projectFilesStateDefaults);
   }
 
   private handleError(

@@ -4,6 +4,7 @@ export class CedarMetadataHelper {
 
     return items.map((item) => {
       const safeItem = typeof item === 'object' && item !== null ? (item as Record<string, unknown>) : {};
+
       return {
         '@id': safeItem['@id'] ?? '',
         '@type': safeItem['@type'] ?? '',

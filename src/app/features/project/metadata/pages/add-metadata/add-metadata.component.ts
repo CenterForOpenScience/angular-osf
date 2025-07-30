@@ -9,7 +9,6 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, HostBinding, in
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { CedarTemplateFormComponent } from '@osf/features/project/metadata/components';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecord,
@@ -17,6 +16,7 @@ import {
   CedarRecordDataBinding,
 } from '@osf/features/project/metadata/models';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
+import { CedarTemplateFormComponent } from '@shared/components/shared-metadata/components';
 import { ToastService } from '@shared/services';
 
 import {
@@ -56,10 +56,6 @@ export class AddMetadataComponent implements OnInit {
     createCedarMetadataRecord: CreateCedarMetadataRecord,
     updateCedarMetadataRecord: UpdateCedarMetadataRecord,
   });
-
-  get isEditingExistingRecord(): boolean {
-    return !!this.activatedRoute.snapshot.params['record-id'];
-  }
 
   constructor() {
     effect(() => {

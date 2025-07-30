@@ -23,7 +23,7 @@ export class FilterChipsComponent {
     const options = this.filterOptions();
 
     return Object.entries(values)
-      .filter(([key, value]) => value !== null && value !== '')
+      .filter(([, value]) => value !== null && value !== '')
       .map(([key, value]) => {
         const filterLabel = labels[key] || key;
         const filterOptionsList = options[key] || [];

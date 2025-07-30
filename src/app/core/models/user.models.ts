@@ -72,3 +72,11 @@ export interface UserSettingsUpdateRequest {
     };
   };
 }
+
+export interface UserNamesJsonApi {
+  full_name: string;
+  given_name: string;
+  family_name: string;
+  middle_names: string;
+  suffix: string;
+}

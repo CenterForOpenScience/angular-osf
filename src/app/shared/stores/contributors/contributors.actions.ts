@@ -70,3 +70,7 @@ export class SearchUsers {
 export class ClearUsers {
   static readonly type = '[Contributors] Clear Users';
 }
+
+export class ResetContributorsState {
+  static readonly type = '[Contributors] Reset State';
+}

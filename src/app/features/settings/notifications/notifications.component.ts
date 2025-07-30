@@ -7,12 +7,13 @@ import { Checkbox } from 'primeng/checkbox';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UserSettings } from '@osf/core/models';
 import { GetCurrentUserSettings, UpdateUserSettings, UserSelectors } from '@osf/core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components';
+import { LoaderService, ToastService } from '@osf/shared/services';
 import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 
 import { SUBSCRIPTION_EVENTS } from './constants';
@@ -40,6 +41,8 @@ export class NotificationsComponent implements OnInit {
     updateNotificationSubscription: UpdateNotificationSubscription,
   });
   private readonly fb = inject(FormBuilder);
+  private readonly toastService = inject(ToastService);
+  private readonly loaderService = inject(LoaderService);
 
   private currentUser = select(UserSelectors.getCurrentUser);
   private emailPreferences = select(UserSelectors.getCurrentUserSettings);
@@ -49,7 +52,6 @@ export class NotificationsComponent implements OnInit {
   protected isSubmittingEmailPreferences = select(UserSelectors.isUserSettingsSubmitting);
 
   protected isNotificationSubscriptionsLoading = select(NotificationSubscriptionSelectors.isLoading);
-  protected loadingEvents = signal<SubscriptionEvent[]>([]);
 
   protected EmailPreferencesFormControls = EmailPreferencesFormControls;
   protected emailPreferencesForm: EmailPreferencesForm = new FormGroup({
@@ -102,7 +104,12 @@ export class NotificationsComponent implements OnInit {
     }
 
     const formValue = this.emailPreferencesForm.value as UserSettings;
-    this.actions.updateUserSettings(this.currentUser()!.id, formValue);
+
+    this.loaderService.show();
+    this.actions.updateUserSettings(this.currentUser()!.id, formValue).subscribe(() => {
+      this.loaderService.hide();
+      this.toastService.showSuccess('settings.notifications.emailPreferences.successUpdate');
+    });
   }
 
   onSubscriptionChange(event: SubscriptionEvent, frequency: SubscriptionFrequency) {
@@ -110,10 +117,11 @@ export class NotificationsComponent implements OnInit {
     if (!user) return;
     const id = `${user.id}_${event}`;
 
-    this.loadingEvents.update((list) => [...list, event]);
+    this.loaderService.show();
     this.actions.updateNotificationSubscription({ id, frequency }).subscribe({
       complete: () => {
-        this.loadingEvents.update((list) => list.filter((item) => item !== event));
+        this.loaderService.hide();
+        this.toastService.showSuccess('settings.notifications.notificationPreferences.successUpdate');
       },
     });
   }

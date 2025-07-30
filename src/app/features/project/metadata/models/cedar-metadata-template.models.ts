@@ -225,7 +225,7 @@ export interface CedarMetadataRecordData {
     };
     target: {
       data: {
-        type: 'nodes';
+        type: 'nodes' | 'registrations';
         id: string;
       };
     };

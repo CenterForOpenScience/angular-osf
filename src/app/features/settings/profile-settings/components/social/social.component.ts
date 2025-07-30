@@ -3,23 +3,21 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { InputGroup } from 'primeng/inputgroup';
-import { InputGroupAddon } from 'primeng/inputgroupaddon';
-import { InputText } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
-import { FormArray, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { UpdateProfileSettingsSocialLinks, UserSelectors } from '@osf/core/store/user';
 import { Social } from '@osf/shared/models';
+import { LoaderService, ToastService } from '@osf/shared/services';
 
 import { socials } from '../../constants/data';
 import { SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys, UserSocialLink } from '../../models';
-import { ProfileSettingsSelectors, UpdateProfileSettingsSocialLinks } from '../../store';
+import { SocialFormComponent } from '../social-form/social-form.component';
 
 @Component({
   selector: 'osf-social',
-  imports: [Button, SelectModule, InputGroup, InputGroupAddon, InputText, ReactiveFormsModule, TranslatePipe],
+  imports: [Button, ReactiveFormsModule, SocialFormComponent, TranslatePipe],
   templateUrl: './social.component.html',
   styleUrl: './social.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,8 +28,11 @@ export class SocialComponent {
   protected readonly socials = socials;
   readonly userSocialLinks: UserSocialLink[] = [];
 
+  private readonly loaderService = inject(LoaderService);
+  private readonly toastService = inject(ToastService);
+
   readonly actions = createDispatchMap({ updateProfileSettingsSocialLinks: UpdateProfileSettingsSocialLinks });
-  readonly socialLinks = select(ProfileSettingsSelectors.socialLinks);
+  readonly socialLinks = select(UserSelectors.getSocialLinks);
 
   readonly fb = inject(FormBuilder);
   readonly socialLinksForm = this.fb.group({ links: this.fb.array<SocialLinksForm>([]) });
@@ -39,6 +40,8 @@ export class SocialComponent {
   constructor() {
     effect(() => {
       const socialLinks = this.socialLinks();
+
+      this.links.clear();
 
       for (const socialLinksKey in socialLinks) {
         const socialLink = socialLinks[socialLinksKey as SocialLinksKeys];
@@ -53,8 +56,8 @@ export class SocialComponent {
     });
   }
 
-  get links(): FormArray {
-    return this.socialLinksForm.get('links') as FormArray;
+  get links(): FormArray<FormGroup> {
+    return this.socialLinksForm.get('links') as FormArray<FormGroup>;
   }
 
   addLink(): void {
@@ -70,27 +73,28 @@ export class SocialComponent {
     this.links.removeAt(index);
   }
 
-  getDomain(index: number): string {
-    return this.links.at(index).get('socialOutput')?.value?.address;
-  }
-
-  getPlaceholder(index: number): string {
-    return this.links.at(index).get('socialOutput')?.value?.placeholder;
-  }
-
   saveSocialLinks(): void {
     const links = this.socialLinksForm.value.links as SocialLinksForm[];
 
     const mappedLinks = links.map((link) => {
       const key = link.socialOutput.key as SocialLinksKeys;
 
-      const value = SOCIAL_KEYS.includes(key) ? [link.webAddress] : link.webAddress;
+      const value = SOCIAL_KEYS.includes(key)
+        ? Array.isArray(link.webAddress)
+          ? link.webAddress
+          : [link.webAddress]
+        : link.webAddress;
 
       return {
         [key]: value,
       };
     }) satisfies Partial<Social>[];
 
-    this.actions.updateProfileSettingsSocialLinks({ socialLinks: mappedLinks });
+    this.loaderService.show();
+
+    this.actions.updateProfileSettingsSocialLinks({ socialLinks: mappedLinks }).subscribe(() => {
+      this.loaderService.hide();
+      this.toastService.showSuccess('settings.profileSettings.social.successUpdate');
+    });
   }
 }

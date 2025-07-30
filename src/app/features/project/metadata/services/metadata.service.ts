@@ -40,7 +40,7 @@ export class MetadataService {
   }
 
   getFundersList(searchQuery?: string): Observable<CrossRefFundersResponse> {
-    let url = environment.funderApiUrl;
+    let url = `${environment.funderApiUrl}funders?mailto=support%40osf.io`;
 
     if (searchQuery && searchQuery.trim()) {
       url += `&query=${encodeURIComponent(searchQuery.trim())}`;

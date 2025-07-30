@@ -2,7 +2,10 @@ import {
   DraftRegistrationAttributesJsonApi,
   DraftRegistrationRelationshipsJsonApi,
   LicenseOptions,
+  OsfFile,
 } from '@osf/shared/models';
+
+import { SchemaActionTrigger } from '../enums';
 
 export class GetRegistries {
   static readonly type = '[Registries] Get Registries';
@@ -102,4 +105,87 @@ export class FetchProjectChildren {
 
 export class ClearState {
   static readonly type = '[Registries] Clear State';
+}
+
+export class GetFiles {
+  static readonly type = '[Registries] Get Files';
+
+  constructor(public filesLink: string) {}
+}
+
+export class SetFilesIsLoading {
+  static readonly type = '[Registries] Set Files Loading';
+
+  constructor(public isLoading: boolean) {}
+}
+
+export class GetRootFolders {
+  static readonly type = '[Registries] Get Folders';
+
+  constructor(public folderLink: string) {}
+}
+
+export class CreateFolder {
+  static readonly type = '[Registries] Create folder';
+
+  constructor(
+    public newFolderLink: string,
+    public folderName: string
+  ) {}
+}
+
+export class SetCurrentFolder {
+  static readonly type = '[Registries] Set Current Folder';
+
+  constructor(public folder: OsfFile | null) {}
+}
+
+export class SetMoveFileCurrentFolder {
+  static readonly type = '[Registries] Set Move File Current Folder';
+
+  constructor(public folder: OsfFile | null) {}
+}
+
+export class FetchAllSchemaResponses {
+  static readonly type = '[Registries] Fetch  All Schema Responses';
+  constructor(public registrationId: string) {}
+}
+
+export class FetchSchemaResponse {
+  static readonly type = '[Registries] Fetch Schema Response';
+  constructor(public schemaResponseId: string) {}
+}
+
+export class CreateSchemaResponse {
+  static readonly type = '[Registries] Create Schema Response';
+  constructor(public registrationId: string) {}
+}
+
+export class UpdateSchemaResponse {
+  static readonly type = '[Registries] Update Schema Response';
+  constructor(
+    public schemaResponseId: string,
+    public revisionJustification: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public revisionResponses?: Record<string, any>
+  ) {}
+}
+
+export class HandleSchemaResponse {
+  static readonly type = '[Registries] Handle Schema Response';
+  constructor(
+    public schemaResponseId: string,
+    public trigger: SchemaActionTrigger,
+    public comment?: string
+  ) {}
+}
+
+export class DeleteSchemaResponse {
+  static readonly type = '[Registries] Delete Schema Response';
+  constructor(public schemaResponseId: string) {}
+}
+
+export class SetUpdatedFields {
+  static readonly type = '[Registries] Set Updated Fields';
+  constructor(public updatedFields: Record<string, unknown>) {}
 }

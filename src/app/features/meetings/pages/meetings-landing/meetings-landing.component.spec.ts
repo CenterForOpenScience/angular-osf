@@ -1,8 +1,16 @@
-import { TranslateModule } from '@ngx-translate/core';
-import { MockModule } from 'ng-mocks';
+import { provideStates } from '@ngxs/store';
 
+import { TranslateModule } from '@ngx-translate/core';
+import { MockComponents, MockModule } from 'ng-mocks';
+
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
+
+import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
+
+import { MeetingsState } from '../../store';
 
 import { MeetingsLandingComponent } from './meetings-landing.component';
 
@@ -12,7 +20,13 @@ describe('MeetingsLandingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MeetingsLandingComponent, MockModule(TranslateModule), MockModule(RouterModule)],
+      imports: [
+        MeetingsLandingComponent,
+        MockModule(TranslateModule),
+        MockModule(RouterModule),
+        ...MockComponents(SubHeaderComponent, SearchInputComponent),
+      ],
+      providers: [provideStates([MeetingsState]), provideHttpClient(), provideHttpClientTesting()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MeetingsLandingComponent);

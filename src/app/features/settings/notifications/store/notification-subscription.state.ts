@@ -1,9 +1,11 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { patch, updateItem } from '@ngxs/store/operators';
 
-import { tap } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
+
+import { handleSectionError } from '@osf/core/handlers';
 
 import { NotificationSubscription } from '../models';
 import { NotificationSubscriptionService } from '../services';
@@ -14,29 +16,21 @@ import {
   UpdateNotificationSubscription,
   UpdateNotificationSubscriptionForNodeId,
 } from './notification-subscription.actions';
-import { NotificationSubscriptionModel } from './notification-subscription.model';
+import {
+  NOTIFICATION_SUBSCRIPTION_STATE_DEFAULTS,
+  NotificationSubscriptionStateModel,
+} from './notification-subscription.model';
 
-@State<NotificationSubscriptionModel>({
+@State<NotificationSubscriptionStateModel>({
   name: 'notificationSubscriptions',
-  defaults: {
-    notificationSubscriptions: {
-      data: [],
-      isLoading: false,
-      error: '',
-    },
-    notificationSubscriptionsByNodeId: {
-      data: [],
-      isLoading: false,
-      error: '',
-    },
-  },
+  defaults: NOTIFICATION_SUBSCRIPTION_STATE_DEFAULTS,
 })
 @Injectable()
 export class NotificationSubscriptionState {
   private readonly notificationSubscriptionService = inject(NotificationSubscriptionService);
 
   @Action(GetAllGlobalNotificationSubscriptions)
-  getAllGlobalNotificationSubscriptions(ctx: StateContext<NotificationSubscriptionModel>) {
+  getAllGlobalNotificationSubscriptions(ctx: StateContext<NotificationSubscriptionStateModel>) {
     ctx.setState(patch({ notificationSubscriptions: patch({ isLoading: true }) }));
 
     return this.notificationSubscriptionService.getAllGlobalNotificationSubscriptions().pipe(
@@ -49,13 +43,14 @@ export class NotificationSubscriptionState {
             }),
           })
         );
-      })
+      }),
+      catchError((error) => handleSectionError(ctx, 'notificationSubscriptions', error))
     );
   }
 
   @Action(GetNotificationSubscriptionsByNodeId)
   getNotificationSubscriptionsByNodeId(
-    ctx: StateContext<NotificationSubscriptionModel>,
+    ctx: StateContext<NotificationSubscriptionStateModel>,
     action: GetNotificationSubscriptionsByNodeId
   ) {
     return this.notificationSubscriptionService.getAllGlobalNotificationSubscriptions(action.nodeId).pipe(
@@ -68,13 +63,14 @@ export class NotificationSubscriptionState {
             }),
           })
         );
-      })
+      }),
+      catchError((error) => handleSectionError(ctx, 'notificationSubscriptionsByNodeId', error))
     );
   }
 
   @Action(UpdateNotificationSubscription)
   updateNotificationSubscription(
-    ctx: StateContext<NotificationSubscriptionModel>,
+    ctx: StateContext<NotificationSubscriptionStateModel>,
     action: UpdateNotificationSubscription
   ) {
     return this.notificationSubscriptionService.updateSubscription(action.payload.id, action.payload.frequency).pipe(
@@ -88,13 +84,14 @@ export class NotificationSubscriptionState {
             }),
           })
         );
-      })
+      }),
+      catchError((error) => handleSectionError(ctx, 'notificationSubscriptions', error))
     );
   }
 
   @Action(UpdateNotificationSubscriptionForNodeId)
   updateNotificationSubscriptionForNodeId(
-    ctx: StateContext<NotificationSubscriptionModel>,
+    ctx: StateContext<NotificationSubscriptionStateModel>,
     action: UpdateNotificationSubscription
   ) {
     return this.notificationSubscriptionService
@@ -110,7 +107,8 @@ export class NotificationSubscriptionState {
               }),
             })
           );
-        })
+        }),
+        catchError((error) => handleSectionError(ctx, 'notificationSubscriptionsByNodeId', error))
       );
   }
 }
