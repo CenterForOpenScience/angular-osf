@@ -58,9 +58,7 @@ export class CollectionModerationSubmissionsComponent {
   readonly submissionReviewOptions = SUBMISSION_REVIEW_OPTIONS;
 
   protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
-  protected collectionDetails = select(CollectionsSelectors.getCollectionDetails);
   protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
-  protected isCollectionDetailsLoading = select(CollectionsSelectors.getCollectionDetailsLoading);
   protected isSubmissionsLoading = select(CollectionsModerationSelectors.getCollectionSubmissionsLoading);
   protected isReviewActionsLoading = select(CollectionsModerationSelectors.getReviewActionsLoading);
   protected collectionSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
@@ -69,14 +67,10 @@ export class CollectionModerationSubmissionsComponent {
   protected primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
   protected reviewStatus = signal<SubmissionReviewStatus>(SubmissionReviewStatus.Pending);
   protected currentPage = signal<string>('1');
+  protected pageSize = 10;
 
   protected isLoading = computed(() => {
-    return (
-      this.isCollectionProviderLoading() ||
-      this.isCollectionDetailsLoading() ||
-      this.isSubmissionsLoading() ||
-      this.isReviewActionsLoading()
-    );
+    return this.isCollectionProviderLoading() || this.isSubmissionsLoading() || this.isReviewActionsLoading();
   });
 
   sortOptions = COLLECTION_SUBMISSIONS_SORT_OPTIONS;
@@ -104,13 +98,13 @@ export class CollectionModerationSubmissionsComponent {
     });
 
     effect(() => {
-      const collectionDetails = this.collectionDetails();
+      const provider = this.collectionProvider();
       const status = this.reviewStatus();
       const sortBy = this.selectedSortOption() || this.sortOptions[0].value;
       const page = this.currentPage();
 
-      if (collectionDetails && status) {
-        this.actions.getCollectionSubmissions(collectionDetails.id, status, page, sortBy);
+      if (status && provider) {
+        this.actions.getCollectionSubmissions(provider.primaryCollection.id, status, page, sortBy);
       }
     });
 

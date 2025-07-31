@@ -9,7 +9,6 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
 import { Primitive } from '@osf/core/helpers';
 import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/utils';
 
 import { COLLECTION_MODERATION_TABS } from '../../constants';
@@ -33,7 +32,6 @@ import { CollectionModerationTab } from '../../enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionModerationComponent implements OnInit {
-  readonly resourceType = ResourceType.Collection;
   readonly route = inject(ActivatedRoute);
   readonly router = inject(Router);
 

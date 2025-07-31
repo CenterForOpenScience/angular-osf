@@ -57,6 +57,7 @@ import {
 export class ResourceCitationsComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
+  isCollectionsRoute = input<boolean>(false);
   currentResource = input.required<ResourceOverview | null>();
   private readonly clipboard = inject(Clipboard);
   private readonly toastService = inject(ToastService);

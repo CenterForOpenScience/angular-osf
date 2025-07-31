@@ -9,8 +9,13 @@
         [iconClass]="reviewStatusIcon[submission().reviewsState].icon"
       ></osf-icon>
 
-      <p-button class="submission-link-btn" link (click)="handleNavigation()">
-        <h3 class="text-primary">{{ submission().title }}</h3>
+      <p-button
+        class="link-btn-no-padding pl-2"
+        styleClass="text-lg text-primary"
+        link
+        (click)="handleNavigation()"
+        [label]="submission().title"
+      >
       </p-button>
     </div>
 

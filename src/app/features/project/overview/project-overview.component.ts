@@ -176,8 +176,10 @@ export class ProjectOverviewComponent implements OnInit {
       })
       .onClose.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {
-        this.toastService.showSuccess(`moderation.makeDecision.${data.action}Success`);
-        this.goBack();
+        if (data && data.action) {
+          this.toastService.showSuccess(`moderation.makeDecision.${data.action}Success`);
+          this.goBack();
+        }
       });
   }
 

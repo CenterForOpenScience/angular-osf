@@ -1,12 +1,11 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
@@ -14,7 +13,6 @@ import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { IconComponent } from '@osf/shared/components';
 import { CollectionSubmission } from '@shared/models';
 import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
-import { IS_XSMALL } from '@shared/utils';
 
 import { ReviewStatusIcon } from '../../constants';
 import { CollectionsModerationSelectors, SetCurrentReviewAction } from '../../store/collections-moderation';
@@ -30,10 +28,6 @@ import { CollectionsModerationSelectors, SetCurrentReviewAction } from '../../st
 export class SubmissionItemComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-  protected dialogService = inject(DialogService);
-  protected destroyRef = inject(DestroyRef);
-  protected translateService = inject(TranslateService);
-  protected isMobile = toSignal(inject(IS_XSMALL));
   protected reviewActions = select(CollectionsModerationSelectors.getReviewActions);
   submission = input.required<CollectionSubmission>();
 

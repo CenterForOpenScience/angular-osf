@@ -71,7 +71,7 @@ export class NodeLinksService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ComponentGetResponseJsonApi[], null>
-      >(`${environment.apiUrl}/nodes/${projectId}/linked_nodes`, params)
+      >(`${environment.apiUrl}/nodes/${projectId}/linked_nodes/`, params)
       .pipe(
         map((response) => {
           return response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item));

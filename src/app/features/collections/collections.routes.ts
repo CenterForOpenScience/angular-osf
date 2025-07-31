@@ -5,7 +5,7 @@ import { Routes } from '@angular/router';
 import { AddToCollectionState } from '@osf/features/collections/store/add-to-collection';
 import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ConfirmLeavingGuard } from '@shared/guards';
-import { BookmarksState, ContributorsState, NodeLinksState, ProjectsState } from '@shared/stores';
+import { BookmarksState, CitationsState, ContributorsState, NodeLinksState, ProjectsState } from '@shared/stores';
 import { CollectionsState } from '@shared/stores/collections';
 
 export const collectionsRoutes: Routes = [
@@ -53,7 +53,9 @@ export const collectionsRoutes: Routes = [
           import(
             '@osf/features/moderation/components/collection-submission-overview/collection-submission-overview.component'
           ).then((mod) => mod.CollectionSubmissionOverviewComponent),
-        providers: [provideStates([NodeLinksState, CollectionsModerationState, CollectionsState, BookmarksState])],
+        providers: [
+          provideStates([NodeLinksState, CitationsState, CollectionsModerationState, CollectionsState, BookmarksState]),
+        ],
       },
     ],
   },

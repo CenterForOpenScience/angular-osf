@@ -29,11 +29,11 @@
 @if (!isLoading()) {
   <osf-submissions-list></osf-submissions-list>
 
-  @if (collectionSubmissions().length) {
+  @if (collectionSubmissions().length > pageSize) {
     <osf-custom-paginator
       class="submissions-paginator"
       [totalCount]="totalSubmissions()"
-      [rows]="10"
+      [rows]="pageSize"
       [first]="firstIndex()"
       (pageChanged)="onPageChange($event)"
     />
