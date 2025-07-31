@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Primitive } from '@osf/core/helpers';
+import { CollectionSubmissionsListComponent } from '@osf/features/moderation/components/collection-submissions-list/collection-submissions-list.component';
 import {
   CollectionsModerationSelectors,
   GetCollectionSubmissions,
@@ -34,7 +35,6 @@ import {
 
 import { SUBMISSION_REVIEW_OPTIONS } from '../../constants';
 import { SubmissionReviewStatus } from '../../enums';
-import { SubmissionsListComponent } from '../submissions-list/submissions-list.component';
 
 @Component({
   selector: 'osf-collection-moderation-submissions',
@@ -43,7 +43,7 @@ import { SubmissionsListComponent } from '../submissions-list/submissions-list.c
     TranslatePipe,
     FormsModule,
     SelectComponent,
-    SubmissionsListComponent,
+    CollectionSubmissionsListComponent,
     IconComponent,
     CustomPaginatorComponent,
     LoadingSpinnerComponent,

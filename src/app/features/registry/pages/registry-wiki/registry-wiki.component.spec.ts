@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SubmissionItemComponent } from './submission-item.component';
+import { RegistryWikiComponent } from './registry-wiki.component';
 
-describe('SubmissionItemComponent', () => {
-  let component: SubmissionItemComponent;
-  let fixture: ComponentFixture<SubmissionItemComponent>;
+describe('RegistryWikiComponent', () => {
+  let component: RegistryWikiComponent;
+  let fixture: ComponentFixture<RegistryWikiComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SubmissionItemComponent],
+      imports: [RegistryWikiComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SubmissionItemComponent);
+    fixture = TestBed.createComponent(RegistryWikiComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

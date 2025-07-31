@@ -17,6 +17,7 @@
             icon="fas fa-plus"
             severity="success"
             outlined
+            [disabled]="viewOnly()"
             (click)="openAddWikiDialog()"
           />
           <p-button
@@ -29,16 +30,18 @@
           >
           </p-button>
         </div>
-        @if (!isHomeWikiSelected() || !list().length) {
-          <p-button
-            icon="fas fa-trash"
-            [label]="'common.buttons.delete' | translate"
-            severity="danger"
-            outlined
-            (click)="openDeleteWikiDialog()"
-            class="mb-2 flex"
-          >
-          </p-button>
+        @if (!viewOnly()) {
+          @if (!isHomeWikiSelected() || !list().length) {
+            <p-button
+              icon="fas fa-trash"
+              [label]="'common.buttons.delete' | translate"
+              severity="danger"
+              outlined
+              (click)="openDeleteWikiDialog()"
+              class="mb-2 flex"
+            >
+            </p-button>
+          }
         }
         <div class="flex flex-column justify-center mt-4 flex-1">
           <p-panelmenu [model]="wikiMenu()" [multiple]="true" class="w-full flex flex-1 flex-column">

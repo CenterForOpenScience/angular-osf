@@ -1,6 +1,4 @@
-import { AsyncStateModel } from '@osf/shared/models';
-
-import { Wiki, WikiVersion } from '../models';
+import { AsyncStateModel, Wiki, WikiVersion } from '@osf/shared/models';
 
 export interface WikiModesStateModel {
   view: boolean;
@@ -17,8 +15,8 @@ export interface ComponentWiki {
 export interface WikiStateModel {
   homeWikiContent: AsyncStateModel<string>;
   wikiModes: WikiModesStateModel;
-  projectWikiList: AsyncStateModel<Wiki[]>;
-  projectComponentsWikiList: AsyncStateModel<ComponentWiki[]>;
+  wikiList: AsyncStateModel<Wiki[]>;
+  componentsWikiList: AsyncStateModel<ComponentWiki[]>;
   currentWikiId: string;
   previewContent: string;
   wikiVersions: AsyncStateModel<WikiVersion[]>;

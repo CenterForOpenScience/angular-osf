@@ -7,12 +7,12 @@ import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { Primitive } from '@osf/core/helpers';
+import { CollectionSubmissionsListComponent } from '@osf/features/moderation/components/collection-submissions-list/collection-submissions-list.component';
 import { IconComponent, SelectComponent } from '@osf/shared/components';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 
 import { SUBMITTED_SUBMISSION_REVIEW_OPTIONS } from '../../constants';
 import { SubmissionReviewStatus } from '../../enums';
-import { SubmissionsListComponent } from '../submissions-list/submissions-list.component';
 import { pubicReviews } from '../test-data';
 
 @Component({
@@ -22,7 +22,7 @@ import { pubicReviews } from '../test-data';
     TranslatePipe,
     FormsModule,
     SelectComponent,
-    SubmissionsListComponent,
+    CollectionSubmissionsListComponent,
     IconComponent,
     TitleCasePipe,
   ],

@@ -1,10 +1,12 @@
-import { WikiModes } from '../models';
+import { ResourceType } from '@osf/shared/enums';
+import { WikiModes } from '@osf/shared/models';
 
 export class CreateWiki {
   static readonly type = '[Wiki] Create Wiki';
 
   constructor(
-    public projectId: string,
+    public resourceType: ResourceType,
+    public resourceId: string,
     public name: string
   ) {}
 }
@@ -17,7 +19,10 @@ export class DeleteWiki {
 export class GetHomeWiki {
   static readonly type = '[Wiki] Get Home Wiki';
 
-  constructor(public projectId: string) {}
+  constructor(
+    public resourceType: ResourceType,
+    public resourceId: string
+  ) {}
 }
 
 export class ClearWiki {
@@ -27,19 +32,28 @@ export class ClearWiki {
 export class GetWikiList {
   static readonly type = '[Wiki] Get Wiki List';
 
-  constructor(public projectId: string) {}
+  constructor(
+    public resourceType: ResourceType,
+    public resourceId: string
+  ) {}
 }
 
 export class GetComponentsWikiList {
   static readonly type = '[Wiki] Get Components Wiki List';
 
-  constructor(public projectId: string) {}
+  constructor(
+    public resourceType: ResourceType,
+    public resourceId: string
+  ) {}
 }
 
 export class GetWikiModes {
   static readonly type = '[Wiki] Get Wiki Modes';
 
-  constructor(public projectId: string) {}
+  constructor(
+    public resourceType: ResourceType,
+    public resourceId: string
+  ) {}
 }
 
 export class ToggleMode {

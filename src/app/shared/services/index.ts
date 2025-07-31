@@ -17,3 +17,4 @@ export { SearchService } from './search.service';
 export { SubjectsService } from './subjects.service';
 export { ToastService } from './toast.service';
 export { ViewOnlyLinksService } from './view-only-links.service';
+export { WikiService } from './wiki.service';

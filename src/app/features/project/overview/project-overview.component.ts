@@ -23,7 +23,14 @@ import {
 import { ResourceType } from '@shared/enums';
 import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
 import { ToastService } from '@shared/services';
-import { CollectionsSelectors, GetAllNodeLinks, GetBookmarksCollectionId, GetLinkedResources } from '@shared/stores';
+import {
+  ClearWiki,
+  CollectionsSelectors,
+  GetAllNodeLinks,
+  GetBookmarksCollectionId,
+  GetHomeWiki,
+  GetLinkedResources,
+} from '@shared/stores';
 import { ClearCollections } from '@shared/stores/collections';
 import { IS_XSMALL } from '@shared/utils';
 
@@ -31,7 +38,6 @@ import {
   ClearCollectionModeration,
   CollectionsModerationSelectors,
 } from '../../moderation/store/collections-moderation';
-import { ClearWiki, GetHomeWiki } from '../wiki/store';
 
 import {
   LinkedResourcesComponent,
@@ -151,7 +157,7 @@ export class ProjectOverviewComponent implements OnInit {
     if (projectId) {
       this.actions.getProject(projectId);
       this.actions.getBookmarksId();
-      this.actions.getHomeWiki(projectId);
+      this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
       this.actions.getNodeLinks(projectId);
       this.actions.getLinkedProjects(projectId);

@@ -10,10 +10,9 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 
+import { ComponentWiki, Wiki, WikiItemType, WikiMenuItem } from '@osf/shared/models';
 import { CustomConfirmationService } from '@osf/shared/services';
 
-import { Wiki, WikiItemType, WikiMenuItem } from '../../models';
-import { ComponentWiki } from '../../store';
 import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.component';
 
 @Component({
@@ -25,7 +24,8 @@ import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.compo
   providers: [DialogService],
 })
 export class WikiListComponent {
-  readonly projectId = input.required<string>();
+  readonly viewOnly = input<boolean>(false);
+  readonly resourceId = input.required<string>();
   readonly list = input.required<Wiki[]>();
   readonly isLoading = input<boolean>(false);
   readonly componentsList = input.required<ComponentWiki[]>();
@@ -90,7 +90,7 @@ export class WikiListComponent {
       header: this.translateService.instant('project.wiki.addNewWiki'),
       modal: true,
       data: {
-        projectId: this.projectId(),
+        resourceId: this.resourceId(),
       },
     });
     dialogRef.onClose.subscribe(() => {

@@ -20,12 +20,12 @@ import { CollectionsModerationSelectors, SetCurrentReviewAction } from '../../st
 @Component({
   selector: 'osf-submission-item',
   imports: [TranslatePipe, IconComponent, TimeAgoPipe, Button],
-  templateUrl: './submission-item.component.html',
-  styleUrl: './submission-item.component.scss',
+  templateUrl: './collection-submission-item.component.html',
+  styleUrl: './collection-submission-item.component.scss',
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SubmissionItemComponent {
+export class CollectionSubmissionItemComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
   protected reviewActions = select(CollectionsModerationSelectors.getReviewActions);

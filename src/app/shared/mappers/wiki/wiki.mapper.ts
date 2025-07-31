@@ -7,7 +7,7 @@ import {
   WikiGetResponse,
   WikiVersion,
   WikiVersionJsonApi,
-} from '../models';
+} from '@osf/shared/models';
 
 export class WikiMapper {
   static fromCreateWikiResponse(response: WikiGetResponse): Wiki {

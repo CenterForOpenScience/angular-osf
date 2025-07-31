@@ -4,7 +4,7 @@ import { catchError, map, tap, throwError } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 
-import { WikiService } from '../services';
+import { WikiService } from '@osf/shared/services';
 
 import {
   ClearWiki,
@@ -34,13 +34,13 @@ const DefaultState: WikiStateModel = {
     edit: false,
     compare: false,
   },
-  projectWikiList: {
+  wikiList: {
     data: [],
     isLoading: false,
     error: null,
     isSubmitting: false,
   },
-  projectComponentsWikiList: {
+  componentsWikiList: {
     data: [],
     isLoading: false,
     error: null,
@@ -76,17 +76,17 @@ export class WikiState {
   createWiki(ctx: StateContext<WikiStateModel>, action: CreateWiki) {
     const state = ctx.getState();
     ctx.patchState({
-      projectWikiList: {
-        ...state.projectWikiList,
+      wikiList: {
+        ...state.wikiList,
         isSubmitting: true,
       },
     });
-    return this.wikiService.createWiki(action.projectId, action.name).pipe(
+    return this.wikiService.createWiki(action.resourceId, action.name).pipe(
       tap((wiki) => {
         ctx.patchState({
-          projectWikiList: {
-            ...state.projectWikiList,
-            data: [...state.projectWikiList.data, wiki],
+          wikiList: {
+            ...state.wikiList,
+            data: [...state.wikiList.data, wiki],
             isSubmitting: false,
           },
           currentWikiId: wiki.id,
@@ -100,8 +100,8 @@ export class WikiState {
   deleteWiki(ctx: StateContext<WikiStateModel>, action: DeleteWiki) {
     const state = ctx.getState();
     ctx.patchState({
-      projectWikiList: {
-        ...state.projectWikiList,
+      wikiList: {
+        ...state.wikiList,
         isSubmitting: true,
         isLoading: true,
       },
@@ -109,9 +109,9 @@ export class WikiState {
 
     return this.wikiService.deleteWiki(action.wikiId).pipe(
       tap(() => {
-        const updatedList = state.projectWikiList.data.filter((wiki) => wiki.id !== action.wikiId);
+        const updatedList = state.wikiList.data.filter((wiki) => wiki.id !== action.wikiId);
         ctx.patchState({
-          projectWikiList: {
+          wikiList: {
             data: updatedList,
             isSubmitting: false,
             error: null,
@@ -135,7 +135,7 @@ export class WikiState {
       },
     });
 
-    return this.wikiService.getHomeWiki(action.projectId).pipe(
+    return this.wikiService.getHomeWiki(action.resourceType, action.resourceId).pipe(
       tap((content) => {
         ctx.patchState({
           homeWikiContent: {
@@ -154,8 +154,8 @@ export class WikiState {
     ctx.patchState({
       homeWikiContent: { ...DefaultState.homeWikiContent },
       wikiModes: { ...DefaultState.wikiModes },
-      projectWikiList: { ...DefaultState.projectWikiList },
-      projectComponentsWikiList: { ...DefaultState.projectComponentsWikiList },
+      wikiList: { ...DefaultState.wikiList },
+      componentsWikiList: { ...DefaultState.componentsWikiList },
       currentWikiId: DefaultState.currentWikiId,
       previewContent: DefaultState.previewContent,
       wikiVersions: { ...DefaultState.wikiVersions },
@@ -181,17 +181,17 @@ export class WikiState {
   getWikiList(ctx: StateContext<WikiStateModel>, action: GetWikiList) {
     const state = ctx.getState();
     ctx.patchState({
-      projectWikiList: {
-        ...state.projectWikiList,
+      wikiList: {
+        ...state.wikiList,
         isLoading: true,
         error: null,
       },
     });
 
-    return this.wikiService.getWikiList(action.projectId).pipe(
+    return this.wikiService.getWikiList(action.resourceType, action.resourceId).pipe(
       tap((list) => {
         ctx.patchState({
-          projectWikiList: {
+          wikiList: {
             data: [...list],
             isLoading: false,
             error: null,
@@ -208,17 +208,17 @@ export class WikiState {
     const state = ctx.getState();
 
     ctx.patchState({
-      projectComponentsWikiList: {
-        ...state.projectComponentsWikiList,
+      componentsWikiList: {
+        ...state.componentsWikiList,
         isLoading: true,
         error: null,
       },
     });
 
-    return this.wikiService.getComponentsWikiList(action.projectId).pipe(
+    return this.wikiService.getComponentsWikiList(action.resourceType, action.resourceId).pipe(
       tap((componentsWiki) => {
         ctx.patchState({
-          projectComponentsWikiList: {
+          componentsWikiList: {
             data: [...componentsWiki],
             isLoading: false,
             error: null,
@@ -257,8 +257,8 @@ export class WikiState {
         isLoading: false,
         error: error.message,
       },
-      projectWikiList: {
-        ...ctx.getState().projectWikiList,
+      wikiList: {
+        ...ctx.getState().wikiList,
         isLoading: false,
         isSubmitting: false,
         error: error.message,

@@ -4,17 +4,16 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+import { CollectionSubmissionItemComponent } from '@osf/features/moderation/components/collection-submission-item/collection-submission-item.component';
 import { CollectionsModerationSelectors } from '@osf/features/moderation/store/collections-moderation';
-
-import { SubmissionItemComponent } from '../submission-item/submission-item.component';
 
 @Component({
   selector: 'osf-submissions-list',
-  imports: [SubmissionItemComponent, TranslatePipe],
-  templateUrl: './submissions-list.component.html',
-  styleUrl: './submissions-list.component.scss',
+  imports: [CollectionSubmissionItemComponent, TranslatePipe],
+  templateUrl: './collection-submissions-list.component.html',
+  styleUrl: './collection-submissions-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SubmissionsListComponent {
+export class CollectionSubmissionsListComponent {
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
 }

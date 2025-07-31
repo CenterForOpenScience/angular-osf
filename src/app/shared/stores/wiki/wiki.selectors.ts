@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { Wiki, WikiVersion } from '../models';
+import { Wiki, WikiVersion } from '@osf/shared/models';
 
 import { ComponentWiki, WikiModesStateModel, WikiStateModel } from './wiki.model';
 import { WikiState } from './wiki.state';
@@ -23,27 +23,27 @@ export class WikiSelectors {
 
   @Selector([WikiState])
   static getWikiList(state: WikiStateModel): Wiki[] {
-    return state.projectWikiList.data;
+    return state.wikiList.data;
   }
 
   @Selector([WikiState])
   static getWikiListLoading(state: WikiStateModel): boolean {
-    return state.projectWikiList.isLoading;
+    return state.wikiList.isLoading;
   }
 
   @Selector([WikiState])
   static getComponentsWikiList(state: WikiStateModel): ComponentWiki[] {
-    return state.projectComponentsWikiList.data;
+    return state.componentsWikiList.data;
   }
 
   @Selector([WikiState])
   static getComponentsWikiListLoading(state: WikiStateModel): boolean {
-    return state.projectComponentsWikiList.isLoading;
+    return state.componentsWikiList.isLoading;
   }
 
   @Selector([WikiState])
   static getWikiSubmitting(state: WikiStateModel): boolean {
-    return state.projectWikiList.isSubmitting ?? false;
+    return state.wikiList.isSubmitting ?? false;
   }
 
   @Selector([WikiState])
