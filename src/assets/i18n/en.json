@@ -40,6 +40,8 @@
       "view": "View",
       "review": "Review",
       "upload": "Upload",
+      "customize": "Customize",
+      "createCustomCitation": "Create Custom Citation",
       "preview": "Preview",
       "continueUpdate": "Continue Update"
     },
@@ -101,7 +103,7 @@
       "message": "Are you sure you want to proceed?"
     },
     "discardChanges": {
-      "header": "You Might Loose Unsaved Changes",
+      "header": "You Might Lose Unsaved Changes",
       "message": "Are you sure you want to proceed?"
     },
     "discardChangesDialog": {
@@ -577,6 +579,13 @@
         "publication": "Publication DOI",
         "subjects": "Subjects",
         "tags": "Tags",
+        "citation": "Citation",
+        "getMoreCitations": "Get More Citations",
+        "citationInputPlaceholder": "Select citation style or start typing",
+        "citationLoadingPlaceholder": "Loading options...",
+        "customCitationPlaceholder": "Enter custom citation",
+        "citeAs": "Cite as:",
+        "noCitationStylesFound": "No results found",
         "affiliatedInstitutions": "Affiliated Institutions",
         "noDescription": "No description",
         "noLicense": "No License",
@@ -2102,6 +2111,10 @@
       "noLinkedProjectsOrComponentsFound": "No linked projects or components found",
       "linkedRegistrations": "Linked registrations",
       "noLinkedRegistrationsFound": "No linked registrations found"
+    },
+    "components": {
+      "title": "Components",
+      "noComponentsFound": "No components found"
     }
   },
   "truncatedText": {

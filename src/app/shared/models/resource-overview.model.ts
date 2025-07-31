@@ -54,6 +54,7 @@ export interface ResourceOverview {
   wikiEnabled: boolean;
   subjects: RegistrySubject[];
   contributors: ProjectOverviewContributor[];
+  customCitation: string | null;
   region?: {
     id: string;
     type: string;

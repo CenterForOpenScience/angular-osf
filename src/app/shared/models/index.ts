@@ -3,6 +3,7 @@ export * from './brand.json-api.model';
 export * from './brand.model';
 export * from './can-deactivate.interface';
 export * from './charts';
+export * from './citations';
 export * from './collections';
 export * from './components';
 export * from './confirmation-options.model';

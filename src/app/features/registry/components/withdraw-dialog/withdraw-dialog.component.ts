@@ -11,6 +11,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
 import { WithdrawRegistration } from '@osf/features/registry/store/registry-overview';
+import { InputLimits } from '@osf/shared/constants';
 import { TextInputComponent } from '@shared/components';
 
 @Component({
@@ -30,6 +31,7 @@ export class WithdrawDialogComponent {
   protected readonly form = new FormGroup({
     text: new FormControl(''),
   });
+  protected readonly inputLimits = InputLimits;
 
   withdrawRegistration(): void {
     const registryId = this.config.data.registryId;

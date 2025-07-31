@@ -3,6 +3,7 @@ export * from './bibliographic-contributors.mapper';
 export * from './cedar-form.mapper';
 export * from './linked-nodes.mapper';
 export * from './linked-registrations.mapper';
+export * from './registry-components.mapper';
 export * from './registry-metadata.mapper';
 export * from './registry-overview.mapper';
 export * from './registry-resource.mapper';

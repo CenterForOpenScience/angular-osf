@@ -73,7 +73,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   protected selectedProject = select(ProjectsSelectors.getSelectedProject);
   protected currentUser = select(UserSelectors.getCurrentUser);
   protected providerId = signal<string>('');
-  protected isSubmitted = signal<boolean>(false);
+  protected allowNavigation = signal<boolean>(false);
   protected projectMetadataSaved = signal<boolean>(false);
   protected projectContributorsSaved = signal<boolean>(false);
   protected collectionMetadataSaved = signal<boolean>(false);
@@ -99,6 +99,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   handleProjectSelected(): void {
     this.projectContributorsSaved.set(false);
     this.projectMetadataSaved.set(false);
+    this.allowNavigation.set(false);
   }
 
   handleChangeStep(step: number): void {
@@ -127,7 +128,6 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       collectionMetadata: this.collectionMetadataForm.value || {},
       userId: this.currentUser()?.id || '',
     };
-    this.isSubmitted.set(true);
 
     const dialogRef = this.dialogService.open(AddToCollectionConfirmationDialogComponent, {
       width: '500px',
@@ -136,12 +136,12 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       closeOnEscape: true,
       modal: true,
       closable: true,
-      data: payload,
+      data: { payload, project: this.selectedProject() },
     });
 
     dialogRef.onClose.subscribe((result) => {
       if (result) {
-        this.isSubmitted.set(false);
+        this.allowNavigation.set(true);
         this.router.navigate(['/my-projects', this.selectedProject()?.id, 'overview']);
       }
     });
@@ -162,6 +162,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
     effect(() => {
       this.destroyRef.onDestroy(() => {
         this.actions.clearAddToCollectionState();
+        this.allowNavigation.set(false);
       });
     });
   }
@@ -173,6 +174,19 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   }
 
   canDeactivate(): Observable<boolean> | boolean {
-    return this.isSubmitted();
+    if (this.allowNavigation()) {
+      return true;
+    }
+
+    return !this.hasUnsavedChanges();
+  }
+
+  private hasUnsavedChanges(): boolean {
+    return (
+      !!this.selectedProject() ||
+      this.projectMetadataSaved() ||
+      this.projectContributorsSaved() ||
+      this.collectionMetadataSaved()
+    );
   }
 }

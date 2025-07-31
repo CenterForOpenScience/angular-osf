@@ -16,6 +16,7 @@ import {
   ForkResource,
   GetComponents,
   GetProjectById,
+  SetProjectCustomCitation,
   UpdateProjectPublicStatus,
 } from './project-overview.actions';
 import { ProjectOverviewStateModel } from './project-overview.model';
@@ -82,9 +83,10 @@ export class ProjectOverviewState {
           isSubmitting: true,
         },
       });
-
-      return this.projectOverviewService.updateProjectPublicStatus(action.projectId, action.isPublic).pipe(
-        tap(() => {
+    }
+    return this.projectOverviewService.updateProjectPublicStatus(action.projectId, action.isPublic).pipe(
+      tap(() => {
+        if (state.project.data) {
           ctx.patchState({
             project: {
               ...state.project,
@@ -95,11 +97,24 @@ export class ProjectOverviewState {
               isSubmitting: false,
             },
           });
-        }),
-        catchError((error) => this.handleError(ctx, 'project', error))
-      );
-    }
-    return;
+        }
+      }),
+      catchError((error) => this.handleError(ctx, 'project', error))
+    );
+  }
+
+  @Action(SetProjectCustomCitation)
+  setProjectCustomCitation(ctx: StateContext<ProjectOverviewStateModel>, action: SetProjectCustomCitation) {
+    const state = ctx.getState();
+    ctx.patchState({
+      project: {
+        ...state.project,
+        data: {
+          ...state.project.data!,
+          customCitation: action.citation,
+        },
+      },
+    });
   }
 
   @Action(ForkResource)

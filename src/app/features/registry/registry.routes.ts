@@ -2,6 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { RegistryComponentsState } from '@osf/features/registry/store/registry-components';
 import { RegistryFilesState } from '@osf/features/registry/store/registry-files';
 import { RegistryLinksState } from '@osf/features/registry/store/registry-links';
 import { RegistryMetadataState } from '@osf/features/registry/store/registry-metadata';
@@ -77,6 +78,14 @@ export const registryRoutes: Routes = [
         data: {
           context: ResourceType.Registration,
         },
+      },
+      {
+        path: 'components',
+        loadComponent: () =>
+          import('./pages/registry-components/registry-components.component').then(
+            (c) => c.RegistryComponentsComponent
+          ),
+        providers: [provideStates([RegistryComponentsState, RegistryLinksState])],
       },
       {
         path: 'resources',

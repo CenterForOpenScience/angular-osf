@@ -40,7 +40,13 @@ import {
   OverviewWikiComponent,
   RecentActivityComponent,
 } from './components';
-import { ClearProjectOverview, GetComponents, GetProjectById, ProjectOverviewSelectors } from './store';
+import {
+  ClearProjectOverview,
+  GetComponents,
+  GetProjectById,
+  ProjectOverviewSelectors,
+  SetProjectCustomCitation,
+} from './store';
 
 @Component({
   selector: 'osf-project-overview',
@@ -86,6 +92,7 @@ export class ProjectOverviewComponent implements OnInit {
     getComponents: GetComponents,
     getLinkedProjects: GetLinkedResources,
     getNodeLinks: GetAllNodeLinks,
+    setProjectCustomCitation: SetProjectCustomCitation,
     clearProjectOverview: ClearProjectOverview,
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
@@ -133,6 +140,10 @@ export class ProjectOverviewComponent implements OnInit {
 
   constructor() {
     this.setupCleanup();
+  }
+
+  onCustomCitationUpdated(citation: string): void {
+    this.actions.setProjectCustomCitation(citation);
   }
 
   ngOnInit(): void {

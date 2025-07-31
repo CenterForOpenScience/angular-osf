@@ -31,6 +31,7 @@ export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
     wikiEnabled: project.wikiEnabled,
     subjects: project.subjects?.filter(Boolean) || [],
     contributors: project.contributors?.filter(Boolean) || [],
+    customCitation: project.customCitation || null,
     region: project.region || undefined,
     affiliatedInstitutions: project.affiliatedInstitutions?.filter(Boolean) || undefined,
     forksCount: project.forksCount || 0,
@@ -73,6 +74,7 @@ export function MapRegistryOverview(
     region: registry.region || undefined,
     forksCount: registry.forksCount,
     subjects: subjects,
+    customCitation: registry.customCitation,
     affiliatedInstitutions: institutions,
     associatedProjectId: registry.associatedProjectId,
   };

@@ -5,6 +5,7 @@ import { Routes } from '@angular/router';
 import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ResourceType } from '@osf/shared/enums';
 import {
+  CitationsState,
   CollectionsState,
   ContributorsState,
   NodeLinksState,
@@ -30,7 +31,7 @@ export const projectRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('../project/overview/project-overview.component').then((mod) => mod.ProjectOverviewComponent),
-        providers: [provideStates([NodeLinksState, CollectionsState, CollectionsModerationState])],
+        providers: [provideStates([NodeLinksState, CitationsState, CollectionsState, CollectionsModerationState])],
       },
       {
         path: 'metadata',

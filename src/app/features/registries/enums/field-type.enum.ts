@@ -5,4 +5,5 @@ export enum FieldType {
   Checkbox = 'checkbox',
   Radio = 'radio',
   File = 'file',
+  Paragraph = 'paragraph',
 }

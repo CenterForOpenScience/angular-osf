@@ -1,0 +1,26 @@
+<section class="flex flex-column flex-1">
+  <osf-sub-header [title]="'navigation.registration.components' | translate" />
+
+  <div class="flex flex-column gap-6 p-4 bg-white">
+    <section class="flex flex-column gap-4">
+      @if (registryComponentsLoading()) {
+        <div class="flex justify-content-center p-4">
+          <osf-loading-spinner />
+        </div>
+      } @else if (components().length === 0) {
+        <div class="text-center p-6">
+          <p>{{ 'registry.components.noComponentsFound' | translate }}</p>
+        </div>
+      } @else {
+        <div class="flex flex-column gap-4 w-full">
+          @for (component of components(); track component.id) {
+            <osf-registration-links-card
+              (reviewEmitRegistrationData)="reviewComponentDetails($event)"
+              [registrationData]="component"
+            />
+          }
+        </div>
+      }
+    </section>
+  </div>
+</section>

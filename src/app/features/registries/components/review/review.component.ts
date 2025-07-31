@@ -27,8 +27,9 @@ import {
 } from '@osf/shared/stores';
 
 import { FieldType } from '../../enums';
-import { DeleteDraft, FetchLicenses, FetchProjectChildren, RegistriesSelectors } from '../../store';
+import { ClearState, DeleteDraft, FetchLicenses, FetchProjectChildren, RegistriesSelectors } from '../../store';
 import { ConfirmRegistrationDialogComponent } from '../confirm-registration-dialog/confirm-registration-dialog.component';
+import { ReviewDataComponent } from '../review-data/review-data.component';
 import { SelectComponentsDialogComponent } from '../select-components-dialog/select-components-dialog.component';
 
 @Component({
@@ -45,6 +46,7 @@ import { SelectComponentsDialogComponent } from '../select-components-dialog/sel
     AccordionHeader,
     AccordionPanel,
     InterpolatePipe,
+    ReviewDataComponent,
   ],
   templateUrl: './review.component.html',
   styleUrl: './review.component.scss',
@@ -77,6 +79,7 @@ export class ReviewComponent {
     getContributors: GetAllContributors,
     getSubjects: FetchSelectedSubjects,
     deleteDraft: DeleteDraft,
+    clearState: ClearState,
     getProjectsComponents: FetchProjectChildren,
     fetchLicenses: FetchLicenses,
   });
@@ -131,10 +134,11 @@ export class ReviewComponent {
       headerKey: 'registries.deleteDraft',
       messageKey: 'registries.confirmDeleteDraft',
       onConfirm: () => {
+        const providerId = this.draftRegistration()?.providerId;
         this.actions.deleteDraft(this.draftId()).subscribe({
           next: () => {
-            // [NM] TODO: clear validation state
-            this.router.navigateByUrl(`/registries/${this.draftRegistration()?.providerId}new`);
+            this.actions.clearState();
+            this.router.navigateByUrl(`/registries/${providerId}/new`);
           },
         });
       },

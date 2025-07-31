@@ -6,7 +6,6 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
-import { Tag } from 'primeng/tag';
 
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -18,10 +17,11 @@ import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import { FieldType, SchemaActionTrigger } from '../../enums';
 import { DeleteSchemaResponse, HandleSchemaResponse, RegistriesSelectors } from '../../store';
 import { ConfirmContinueEditingDialogComponent } from '../confirm-continue-editing-dialog/confirm-continue-editing-dialog.component';
+import { ReviewDataComponent } from '../review-data/review-data.component';
 
 @Component({
   selector: 'osf-justification-review',
-  imports: [Button, Card, TranslatePipe, Tag, Message],
+  imports: [Button, Card, TranslatePipe, Message, ReviewDataComponent],
   templateUrl: './justification-review.component.html',
   styleUrl: './justification-review.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

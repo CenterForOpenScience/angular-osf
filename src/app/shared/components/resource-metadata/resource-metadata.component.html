@@ -165,5 +165,10 @@
         <p>{{ 'project.overview.metadata.noTags' | translate }}</p>
       }
     </div>
+
+    <osf-resource-citations
+      [currentResource]="currentResource()"
+      (customCitation)="onCustomCitationUpdated($event)"
+    ></osf-resource-citations>
   </div>
 }

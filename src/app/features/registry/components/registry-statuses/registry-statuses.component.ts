@@ -11,6 +11,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, inject, input } from '
 import { WithdrawDialogComponent } from '@osf/features/registry/components';
 import { RegistryOverview } from '@osf/features/registry/models';
 import { MakePublic } from '@osf/features/registry/store/registry-overview';
+import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { RegistryStatus } from '@shared/enums';
 import { CustomConfirmationService } from '@shared/services';
 
@@ -28,10 +29,18 @@ export class RegistryStatusesComponent {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   protected readonly RegistryStatus = RegistryStatus;
+  protected readonly RevisionReviewStates = RevisionReviewStates;
   protected readonly customConfirmationService = inject(CustomConfirmationService);
   protected readonly actions = createDispatchMap({
     makePublic: MakePublic,
   });
+
+  get canWithdraw(): boolean {
+    return (
+      this.registry()?.reviewsState === RegistrationReviewStates.Accepted &&
+      this.registry()?.revisionStatus === RevisionReviewStates.RevisionPendingModeration
+    );
+  }
 
   openWithdrawDialog(): void {
     const registry = this.registry();

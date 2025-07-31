@@ -3,6 +3,7 @@ export * from './addon-tab.enum';
 export * from './addons-category.enum';
 export * from './addons-credentials-format.enum';
 export * from './breakpoint-queries.enum';
+export * from './citation-types.enum';
 export * from './contributors';
 export * from './create-component-form-controls.enum';
 export * from './create-project-form-controls.enum';

@@ -6,73 +6,71 @@
 
     @if (currentPage().sections?.length) {
       @for (section of currentPage().sections; track section.id) {
-        questions = section.questions;
         <p-card>
           <h3 class="mb-2">{{ section.title }}</h3>
           @if (section.description) {
             <p class="mb-3">{{ section.description }}</p>
           }
-          <ng-container *ngTemplateOutlet="questionList"></ng-container>
+          <ng-container *ngTemplateOutlet="questionList; context: { $implicit: section.questions }"></ng-container>
         </p-card>
       }
     } @else {
-      <ng-container *ngTemplateOutlet="questionList"></ng-container>
+      <ng-container *ngTemplateOutlet="questionList; context: { $implicit: questions }"></ng-container>
     }
 
-    <ng-template #questionList>
-      @for (question of questions; track question.id) {
+    <ng-template #questionList let-questions>
+      @for (q of questions; track q.id) {
         <form [formGroup]="stepForm">
           <p-card>
-            <label [for]="question.groupKey">
+            <label [for]="q.groupKey">
               <h3 class="mb-2">
-                {{ question.displayText }}
-                @if (question.required) {
+                {{ q.displayText }}
+                @if (q.required) {
                   <span class="text-red-500">*</span>
                 }
               </h3>
-              @if (question.helpText) {
-                <p class="mb-3">{{ question.helpText }}</p>
+              @if (q.helpText) {
+                <p class="mb-3">{{ q.helpText }}</p>
               }
-              @if (question.paragraphText) {
-                <p class="mb-3">{{ question.paragraphText }}</p>
+              @if (q.paragraphText) {
+                <p class="mb-3">{{ q.paragraphText }}</p>
               }
             </label>
-            @if (question.exampleText) {
+            @if (q.exampleText) {
               <p-inplace #inplaceRef styleClass="mb-4">
                 <ng-template #display>
-                  <span class="text-primary">{{ 'common.links.showExample' | translate }} </span>
+                  <span class="text-primary font-medium">{{ 'common.links.showExample' | translate }} </span>
                 </ng-template>
                 <ng-template #content>
-                  <div class="p-inplace-display">
-                    <button
-                      class="text-primary border-none cursor-pointer bg-transparent text-sm"
-                      tabindex="0"
-                      role="button"
-                      (click)="inplaceRef.deactivate()"
-                      (keyup.enter)="inplaceRef.deactivate()"
-                      (keyup.space)="inplaceRef.deactivate()"
-                    >
+                  <div
+                    class="p-inplace-display"
+                    tabindex="0"
+                    (click)="inplaceRef.deactivate()"
+                    (keyup.enter)="inplaceRef.deactivate()"
+                    (keyup.space)="inplaceRef.deactivate()"
+                  >
+                    <button class="text-primary border-none cursor-pointer bg-transparent text-sm">
                       {{ 'common.links.hideExample' | translate }}
                     </button>
                   </div>
-                  <p class="m-0">{{ question.exampleText }}</p>
+                  <p class="m-0">{{ q.exampleText }}</p>
                 </ng-template>
               </p-inplace>
             }
 
-            @switch (question.fieldType) {
+            @switch (q.fieldType) {
               @case (FieldType.TextArea) {
                 <textarea
-                  id="{{ question.groupKey }}"
+                  id="{{ q.groupKey }}"
                   class="w-full"
                   rows="5"
                   cols="30"
                   pTextarea
-                  [formControlName]="question.responseKey!"
+                  [formControlName]="q.responseKey!"
                 ></textarea>
                 @if (
-                  stepForm.controls[question.responseKey!].errors?.['required'] &&
-                  (stepForm.controls[question.responseKey!].touched || stepForm.controls[question.responseKey!].dirty)
+                  stepForm.controls[q.responseKey!].errors?.['required'] &&
+                  (stepForm.controls[q.responseKey!].touched || stepForm.controls[q.responseKey!].dirty)
                 ) {
                   <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
                     {{ INPUT_VALIDATION_MESSAGES.required | translate }}
@@ -81,10 +79,10 @@
               }
               @case (FieldType.Radio) {
                 <div class="flex flex-column gap-2">
-                  @for (option of question.options; track option) {
+                  @for (option of q.options; track option) {
                     <div class="flex align -items-center gap-2">
                       <p-radioButton
-                        [formControlName]="question.responseKey!"
+                        [formControlName]="q.responseKey!"
                         [inputId]="option.value"
                         [value]="option.value"
                       ></p-radioButton>
@@ -96,8 +94,8 @@
                   }
                 </div>
                 @if (
-                  stepForm.controls[question.responseKey!].errors?.['required'] &&
-                  (stepForm.controls[question.responseKey!].touched || stepForm.controls[question.responseKey!].dirty)
+                  stepForm.controls[q.responseKey!].errors?.['required'] &&
+                  (stepForm.controls[q.responseKey!].touched || stepForm.controls[q.responseKey!].dirty)
                 ) {
                   <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
                     {{ INPUT_VALIDATION_MESSAGES.required | translate }}
@@ -106,20 +104,23 @@
               }
               @case (FieldType.Checkbox) {
                 <div class="flex flex-column gap-2">
-                  @for (option of question.options; track option) {
+                  @for (option of q.options; track option) {
                     <div class="flex align-items-center gap-2">
                       <p-checkbox
                         [inputId]="option.value"
-                        [formControlName]="question.responseKey!"
+                        [formControlName]="q.responseKey!"
                         [value]="option.value"
                       ></p-checkbox>
                       <label [for]="option.value" class="ml-2">{{ option.label }}</label>
+                      @if (option.helpText) {
+                        <osf-info-icon [tooltipText]="option.helpText"></osf-info-icon>
+                      }
                     </div>
                   }
                 </div>
                 @if (
-                  stepForm.controls[question.responseKey!].errors?.['required'] &&
-                  (stepForm.controls[question.responseKey!].touched || stepForm.controls[question.responseKey!].dirty)
+                  stepForm.controls[q.responseKey!].errors?.['required'] &&
+                  (stepForm.controls[q.responseKey!].touched || stepForm.controls[q.responseKey!].dirty)
                 ) {
                   <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
                     {{ INPUT_VALIDATION_MESSAGES.required | translate }}
@@ -129,15 +130,15 @@
 
               @case (FieldType.Text) {
                 <input
-                  [formControlName]="question.responseKey!"
+                  [formControlName]="q.responseKey!"
                   type="text"
                   class="w-full"
-                  [placeholder]="question.exampleText"
+                  [placeholder]="q.exampleText"
                   pInputText
                 />
                 @if (
-                  stepForm.controls[question.responseKey!].errors?.['required'] &&
-                  (stepForm.controls[question.responseKey!].touched || stepForm.controls[question.responseKey!].dirty)
+                  stepForm.controls[q.responseKey!].errors?.['required'] &&
+                  (stepForm.controls[q.responseKey!].touched || stepForm.controls[q.responseKey!].dirty)
                 ) {
                   <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
                     {{ INPUT_VALIDATION_MESSAGES.required | translate }}
@@ -153,22 +154,22 @@
                   {{ 'shared.files.description' | translate }}
                 </p>
                 <div class="flex flex-wrap gap-2 mt-3 mb-3">
-                  @for (file of attachedFiles[question.responseKey!] || []; track file) {
+                  @for (file of attachedFiles[q.responseKey!] || []; track file) {
                     <p-chip
                       [label]="file.name"
                       severity="info"
                       removable="true"
-                      (onRemove)="removeFromAttachedFiles(file, question.responseKey!)"
+                      (onRemove)="removeFromAttachedFiles(file, q.responseKey!)"
                     />
                   }
                 </div>
                 <div class="-ml-3 -mr-3">
                   <osf-files-control
-                    [attachedFiles]="attachedFiles[question.responseKey!]"
+                    [attachedFiles]="attachedFiles[q.responseKey!]"
                     [filesLink]="filesLink()"
                     [projectId]="projectId()"
                     [provider]="provider()"
-                    (attachFile)="onAttachFile($event, question.responseKey!)"
+                    (attachFile)="onAttachFile($event, q.responseKey!)"
                     [filesViewOnly]="filesViewOnly()"
                   ></osf-files-control>
                 </div>

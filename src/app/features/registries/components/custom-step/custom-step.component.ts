@@ -115,7 +115,11 @@ export class CustomStepComponent implements OnDestroy {
 
   private initStepForm(page: PageSchema): void {
     this.stepForm = this.fb.group({});
-    page.questions?.forEach((q) => {
+    let questions = page.questions || [];
+    if (page.sections?.length) {
+      questions = page.sections.flatMap((section) => section.questions || []);
+    }
+    questions?.forEach((q) => {
       const controlName = q.responseKey as string;
       let control: FormControl;
 
@@ -183,8 +187,11 @@ export class CustomStepComponent implements OnDestroy {
       this.stepForm.patchValue({
         [questionKey]: [...(this.attachedFiles[questionKey] || []), file],
       });
+      const otherFormValues = { ...this.stepForm.value };
+      delete otherFormValues[questionKey];
       this.updateAction.emit({
         [questionKey]: [...this.attachedFiles[questionKey].map((f) => FilesMapper.toFilePayload(f as OsfFile))],
+        ...otherFormValues,
       });
     }
   }

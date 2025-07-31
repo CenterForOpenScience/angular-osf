@@ -98,8 +98,10 @@ export class MyRegistrationsComponent {
       const tab = this.selectedTab();
 
       if (tab === 0) {
+        this.draftFirst = 0;
         this.actions.getDraftRegistrations();
       } else {
+        this.submittedFirst = 0;
         this.actions.getSubmittedRegistrations();
       }
       this.router.navigate([], {

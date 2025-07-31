@@ -36,6 +36,7 @@ export class PageSchemaMapper {
         case BlockType.Paragraph:
           if (currentQuestion) {
             currentQuestion.paragraphText = item.attributes.display_text;
+            currentQuestion.fieldType = FieldType.Paragraph;
           } else if (currentSection) {
             currentSection.description = item.attributes.display_text;
           } else {

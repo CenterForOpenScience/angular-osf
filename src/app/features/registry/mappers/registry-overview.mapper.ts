@@ -60,8 +60,10 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
       revisionResponses: schemaResponse.attributes?.revision_responses,
       updatedResponseKeys: schemaResponse.attributes?.updated_response_keys,
     })),
+    registry: data.embeds.provider.data.attributes.name,
     status: MapRegistryStatus(data.attributes),
     revisionStatus: data.attributes.revision_state,
+    reviewsState: data.attributes.reviews_state,
     links: {
       files: data?.embeds?.files?.data?.[0]?.relationships?.files?.links?.related?.href,
     },

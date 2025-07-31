@@ -114,6 +114,13 @@ export interface RegistryOverviewJsonApiEmbed {
       };
     }[];
   };
+  provider: {
+    data: {
+      attributes: {
+        name: string;
+      };
+    };
+  };
 }
 
 export interface RegistryOverviewJsonApiRelationships {

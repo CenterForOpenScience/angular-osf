@@ -28,49 +28,24 @@
       @if (page.description) {
         <p class="mb-4">{{ page.description }}</p>
       }
-
-      @if (page.questions?.length) {
-        @for (question of page.questions; track question.responseKey) {
-          <div [class.mb-4]="!$last">
-            <h4 class="mb-2">{{ question.displayText }}</h4>
-            @if (schemaResponseRevisionData()[question.responseKey!]) {
-              @switch (question.fieldType) {
-                @case (FieldType.Text) {
-                  <p>{{ schemaResponseRevisionData()[question.responseKey!] }}</p>
-                }
-                @case (FieldType.Checkbox) {
-                  @for (option of schemaResponseRevisionData()[question.responseKey!]; track option) {
-                    <p class="mb-1">{{ option }}</p>
-                  }
-                }
-                @case (FieldType.File) {
-                  @if (schemaResponseRevisionData()[question.responseKey!].length) {
-                    <div class="flex flex-wrap gap-2">
-                      @for (file of schemaResponseRevisionData()[question.responseKey!]; track file.id) {
-                        <p-tag [value]="file.file_name" severity="info"></p-tag>
-                      }
-                    </div>
-                  } @else {
-                    <p class="font-italic">{{ 'common.labels.noFiles' | translate }}</p>
-                  }
-                }
-                @default {
-                  <p>{{ schemaResponseRevisionData()[question.responseKey!] }}</p>
-                }
-              }
-            } @else {
-              @if (question.fieldType === FieldType.File) {
-                <p class="font-italic">{{ 'common.labels.noFiles' | translate }}</p>
-              } @else {
-                <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
-              }
-              @if (question.required) {
-                <p-message class="mt-1" severity="error" variant="simple" size="small">
-                  {{ INPUT_VALIDATION_MESSAGES.required | translate }}
-                </p-message>
-              }
+      @if (page.sections?.length) {
+        @for (section of page.sections; track section.id) {
+          <div class="mb-4">
+            <h3 class="mb-2">{{ section.title }}</h3>
+            @if (section.description) {
+              <p class="mb-4">{{ section.description }}</p>
+            }
+            @if (section.questions?.length) {
+              <osf-review-data
+                [questions]="section.questions"
+                [reviewData]="schemaResponseRevisionData()"
+              ></osf-review-data>
             }
           </div>
+        }
+      } @else {
+        @if (page.questions?.length) {
+          <osf-review-data [questions]="page.questions" [reviewData]="schemaResponseRevisionData()"></osf-review-data>
         }
       }
     </p-card>
