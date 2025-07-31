@@ -5,7 +5,7 @@ import { Routes } from '@angular/router';
 import { RegistriesComponent } from '@osf/features/registries/registries.component';
 import { RegistriesState } from '@osf/features/registries/store';
 import { RegistriesProviderSearchState } from '@osf/features/registries/store/registries-provider-search';
-import { ContributorsState, SubjectsState } from '@osf/shared/stores';
+import { CitationsState, ContributorsState, SubjectsState } from '@osf/shared/stores';
 
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './store/handlers';
 import { FilesHandlers } from './store/handlers/files.handlers';
@@ -16,7 +16,7 @@ export const registriesRoutes: Routes = [
     path: '',
     component: RegistriesComponent,
     providers: [
-      provideStates([RegistriesState, ContributorsState, SubjectsState, RegistriesProviderSearchState]),
+      provideStates([RegistriesState, CitationsState, ContributorsState, SubjectsState, RegistriesProviderSearchState]),
       ProvidersHandlers,
       ProjectsHandlers,
       LicensesHandlers,

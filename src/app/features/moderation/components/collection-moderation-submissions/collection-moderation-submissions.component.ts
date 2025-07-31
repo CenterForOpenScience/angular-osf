@@ -60,7 +60,6 @@ export class CollectionModerationSubmissionsComponent {
   protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   protected isSubmissionsLoading = select(CollectionsModerationSelectors.getCollectionSubmissionsLoading);
-  protected isReviewActionsLoading = select(CollectionsModerationSelectors.getReviewActionsLoading);
   protected collectionSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   protected totalSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissionsTotalCount);
   protected providerId = signal<string>('');
@@ -70,7 +69,7 @@ export class CollectionModerationSubmissionsComponent {
   protected pageSize = 10;
 
   protected isLoading = computed(() => {
-    return this.isCollectionProviderLoading() || this.isSubmissionsLoading() || this.isReviewActionsLoading();
+    return this.isCollectionProviderLoading() || this.isSubmissionsLoading();
   });
 
   sortOptions = COLLECTION_SUBMISSIONS_SORT_OPTIONS;

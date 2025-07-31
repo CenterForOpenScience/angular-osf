@@ -35,8 +35,8 @@ export class MakeDecisionDialogComponent implements OnInit {
   protected readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
   protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   protected currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
-  protected isSubmitting = select(CollectionsModerationSelectors.getReviewActionsSubmitting);
-  protected submissionData = this.config.data;
+
+  protected isSubmitting = select(CollectionsModerationSelectors.getCollectionSubmissionSubmitting);
   protected requestForm!: FormGroup;
 
   protected actions = createDispatchMap({
@@ -67,7 +67,7 @@ export class MakeDecisionDialogComponent implements OnInit {
   }
 
   protected handleSubmission(): void {
-    const targetId = this.submissionData.reviewAction.targetId;
+    const targetId = this.currentReviewAction()?.targetId;
     if (this.requestForm.valid && targetId) {
       const formData = this.requestForm.value;
       const payload = { ...formData, targetId };

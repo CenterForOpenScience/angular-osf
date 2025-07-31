@@ -23,6 +23,7 @@ export interface RegistryOverviewJsonApiAttributes {
   tags: string[];
   category: string;
   fork?: boolean;
+  custom_citation?: string | null;
   accessRequestsEnabled?: boolean;
   node_license?: {
     copyright_holders: string[];

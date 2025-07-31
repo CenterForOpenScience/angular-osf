@@ -3,9 +3,7 @@ import { AsyncStateModel, AsyncStateWithTotalCount, CollectionSubmission } from 
 
 export interface CollectionsModerationStateModel {
   collectionSubmissions: AsyncStateWithTotalCount<CollectionSubmission[]>;
-  reviewActions: AsyncStateModel<CollectionSubmissionReviewAction[][]>;
-  currentSubmission: CollectionSubmission | null;
-  currentReviewAction: CollectionSubmissionReviewAction | null;
+  currentReviewAction: AsyncStateModel<CollectionSubmissionReviewAction | null>;
 }
 
 export const COLLECTIONS_MODERATION_STATE_DEFAULTS: CollectionsModerationStateModel = {
@@ -15,12 +13,9 @@ export const COLLECTIONS_MODERATION_STATE_DEFAULTS: CollectionsModerationStateMo
     error: null,
     totalCount: 0,
   },
-  reviewActions: {
-    data: [],
+  currentReviewAction: {
+    data: null,
     isLoading: false,
-    isSubmitting: false,
     error: null,
   },
-  currentSubmission: null,
-  currentReviewAction: null,
 };

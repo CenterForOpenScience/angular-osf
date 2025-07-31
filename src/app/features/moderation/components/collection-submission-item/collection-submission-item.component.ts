@@ -1,4 +1,4 @@
-import { createDispatchMap, select } from '@ngxs/store';
+import { select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -13,9 +13,9 @@ import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { IconComponent } from '@osf/shared/components';
 import { CollectionSubmission } from '@shared/models';
 import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
+import { CollectionsSelectors } from '@shared/stores';
 
 import { ReviewStatusIcon } from '../../constants';
-import { CollectionsModerationSelectors, SetCurrentReviewAction } from '../../store/collections-moderation';
 
 @Component({
   selector: 'osf-submission-item',
@@ -28,22 +28,17 @@ import { CollectionsModerationSelectors, SetCurrentReviewAction } from '../../st
 export class CollectionSubmissionItemComponent {
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
-  protected reviewActions = select(CollectionsModerationSelectors.getReviewActions);
   submission = input.required<CollectionSubmission>();
+  collectionProvider = select(CollectionsSelectors.getCollectionProvider);
 
   protected readonly reviewStatusIcon = ReviewStatusIcon;
 
   protected currentReviewAction = computed(() => {
-    const nodeId = this.submission().nodeId;
-    const actions = this.reviewActions();
+    const actions = this.submission().actions;
 
-    if (!actions.length || !nodeId) return null;
+    if (!actions || !actions.length) return null;
 
-    return actions.flat().filter((action) => action.targetNodeId === nodeId)[0];
-  });
-
-  protected actions = createDispatchMap({
-    setCurrentReviewAction: SetCurrentReviewAction,
+    return actions[0];
   });
 
   protected currentSubmissionAttributes = computed(() => {
@@ -59,10 +54,8 @@ export class CollectionSubmissionItemComponent {
   });
 
   protected handleNavigation() {
-    this.actions.setCurrentReviewAction(this.currentReviewAction());
-
     const currentStatus = this.activatedRoute.snapshot.queryParams['status'];
-    const queryParams = currentStatus ? { status: currentStatus } : {};
+    const queryParams = currentStatus ? { status: currentStatus, mode: 'moderation' } : {};
 
     this.router.navigate(['../', this.submission().nodeId], {
       relativeTo: this.activatedRoute,

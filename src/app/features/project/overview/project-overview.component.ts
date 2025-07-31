@@ -8,7 +8,16 @@ import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  HostBinding,
+  inject,
+  OnInit,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -28,6 +37,7 @@ import {
   CollectionsSelectors,
   GetAllNodeLinks,
   GetBookmarksCollectionId,
+  GetCollectionProvider,
   GetHomeWiki,
   GetLinkedResources,
 } from '@shared/stores';
@@ -37,6 +47,7 @@ import { IS_XSMALL } from '@shared/utils';
 import {
   ClearCollectionModeration,
   CollectionsModerationSelectors,
+  GetSubmissionsReviewActions,
 } from '../../moderation/store/collections-moderation';
 
 import {
@@ -87,9 +98,9 @@ export class ProjectOverviewComponent implements OnInit {
   protected readonly dialogService = inject(DialogService);
   protected readonly translateService = inject(TranslateService);
   protected isMobile = toSignal(inject(IS_XSMALL));
+  protected submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
+  protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   protected currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
-  protected currentSubmission = select(CollectionsModerationSelectors.getCurrentSubmission);
-  protected collection = select(CollectionsSelectors.getCollectionDetails);
 
   protected actions = createDispatchMap({
     getProject: GetProjectById,
@@ -99,6 +110,8 @@ export class ProjectOverviewComponent implements OnInit {
     getLinkedProjects: GetLinkedResources,
     getNodeLinks: GetAllNodeLinks,
     setProjectCustomCitation: SetProjectCustomCitation,
+    getCollectionProvider: GetCollectionProvider,
+    getCurrentReviewAction: GetSubmissionsReviewActions,
     clearProjectOverview: ClearProjectOverview,
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
@@ -107,6 +120,12 @@ export class ProjectOverviewComponent implements OnInit {
 
   readonly isCollectionsRoute = computed(() => {
     return this.router.url.includes('/collections');
+  });
+
+  readonly isModerationMode = computed(() => {
+    const mode = this.route.snapshot.queryParams['mode'];
+
+    return mode === 'moderation';
   });
 
   submissionReviewStatus = computed(() => {
@@ -130,6 +149,11 @@ export class ProjectOverviewComponent implements OnInit {
     return null;
   });
   protected isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
+  protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  protected isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
+  protected isLoading = computed(() => {
+    return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
+  });
   protected currentResource = computed(() => {
     if (this.currentProject()) {
       return {
@@ -145,10 +169,11 @@ export class ProjectOverviewComponent implements OnInit {
   });
 
   constructor() {
+    this.setupCollectionsEffects();
     this.setupCleanup();
   }
 
-  onCustomCitationUpdated(citation: string): void {
+  protected onCustomCitationUpdated(citation: string): void {
     this.actions.setProjectCustomCitation(citation);
   }
 
@@ -164,7 +189,7 @@ export class ProjectOverviewComponent implements OnInit {
     }
   }
 
-  handleOpenMakeDecisionDialog() {
+  protected handleOpenMakeDecisionDialog() {
     const dialogWidth = this.isMobile() ? '95vw' : '600px';
 
     this.dialogService
@@ -175,10 +200,6 @@ export class ProjectOverviewComponent implements OnInit {
         closeOnEscape: true,
         modal: true,
         closable: true,
-        data: {
-          submission: this.currentSubmission(),
-          reviewAction: this.currentReviewAction(),
-        },
       })
       .onClose.pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {
@@ -189,13 +210,34 @@ export class ProjectOverviewComponent implements OnInit {
       });
   }
 
-  goBack(): void {
+  protected goBack(): void {
     const currentStatus = this.route.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus } : {};
 
     this.router.navigate(['../'], {
       relativeTo: this.route,
       queryParams,
+    });
+  }
+
+  private setupCollectionsEffects(): void {
+    effect(() => {
+      if (this.isModerationMode() && this.isCollectionsRoute()) {
+        const collectionId = this.route.snapshot.params['collectionId'];
+
+        this.actions.getCollectionProvider(collectionId);
+      }
+    });
+
+    effect(() => {
+      if (this.isModerationMode() && this.isCollectionsRoute()) {
+        const provider = this.collectionProvider();
+        const resource = this.currentResource();
+
+        if (!provider || !resource) return;
+
+        this.actions.getCurrentReviewAction(resource.id, provider.primaryCollection.id);
+      }
     });
   }
 

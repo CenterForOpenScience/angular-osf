@@ -13,6 +13,7 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     dateCreated: data.attributes?.date_created,
     dateRegistered: data.attributes?.date_registered,
     category: data.attributes?.category,
+    customCitation: data.attributes?.custom_citation,
     isFork: data.attributes?.fork,
     accessRequestsEnabled: data.attributes?.accessRequestsEnabled,
     nodeLicense: data.attributes.node_license

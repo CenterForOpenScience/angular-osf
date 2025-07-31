@@ -1,7 +1,7 @@
 @let project = currentProject();
 @let status = submissionReviewStatus();
 
-@if (!isProjectLoading() && project) {
+@if (!isLoading() && project) {
   <div class="flex justify-content-between">
     <osf-sub-header
       [title]="project.title"
@@ -26,27 +26,27 @@
       >
       </p-button>
 
-      @if (status && isCollectionsRoute()) {
+      @if (status && isCollectionsRoute() && collectionProvider()) {
         @switch (status) {
           @case (SubmissionReviewStatus.Pending) {
             <!-- TODO - Update text messages to translates RNa-->
             <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="warn">
-              Pending: Pending entry into <a class="cursor-pointer">{{ collection()?.title }}</a>
+              Pending: Pending entry into <a class="cursor-pointer">{{ collectionProvider()?.name }}</a>
             </p-message>
           }
           @case (SubmissionReviewStatus.Accepted) {
             <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="success">
-              Accepted: Accepted entry into <a class="cursor-pointer">{{ collection()?.title }}</a>
+              Accepted: Accepted entry into <a class="cursor-pointer">{{ collectionProvider()?.name }}</a>
             </p-message>
           }
           @case (SubmissionReviewStatus.Rejected) {
             <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="error">
-              Rejected: Rejected entry into <a class="cursor-pointer">{{ collection()?.title }}</a>
+              Rejected: Rejected entry into <a class="cursor-pointer">{{ collectionProvider()?.name }}</a>
             </p-message>
           }
           @case (SubmissionReviewStatus.Removed) {
             <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="secondary">
-              Withdrawn: Entry withdrawn from <a class="cursor-pointer">{{ collection()?.title }}</a>
+              Withdrawn: Entry withdrawn from <a class="cursor-pointer">{{ collectionProvider()?.name }}</a>
             </p-message>
           }
         }

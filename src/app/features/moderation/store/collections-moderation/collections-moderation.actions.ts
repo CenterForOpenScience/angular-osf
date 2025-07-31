@@ -1,5 +1,4 @@
-import { CollectionSubmissionReviewAction } from '@osf/features/moderation/models';
-import { CollectionSubmission, ReviewActionPayload } from '@shared/models';
+import { ReviewActionPayload } from '@shared/models';
 
 export class GetCollectionSubmissions {
   static readonly type = '[Collections Moderation] Get Collection Submissions';
@@ -25,18 +24,6 @@ export class CreateCollectionSubmissionAction {
   static readonly type = '[Collections Moderation] Create Collection Submission Action';
 
   constructor(public payload: ReviewActionPayload) {}
-}
-
-export class SetCurrentSubmission {
-  static readonly type = '[Collections Moderation] Set Current Submission';
-
-  constructor(public submission: CollectionSubmission | null) {}
-}
-
-export class SetCurrentReviewAction {
-  static readonly type = '[Collections Moderation] Set Current Review Action';
-
-  constructor(public action: CollectionSubmissionReviewAction | null) {}
 }
 
 export class ClearCollectionModeration {

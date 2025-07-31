@@ -25,7 +25,11 @@
           <span class="capitalize">{{ 'moderation.submissionReview.submitted' | translate }}</span>
         }
         @case (SubmissionReviewStatus.Accepted) {
-          <span class="capitalize">{{ 'moderation.submissionReview.accepted' | translate }}</span>
+          @if (!collectionProvider()?.reviewsWorkflow) {
+            <span class="capitalize">{{ 'moderation.submissionReview.submitted' | translate }}</span>
+          } @else {
+            <span class="capitalize">{{ 'moderation.submissionReview.accepted' | translate }}</span>
+          }
         }
         @case (SubmissionReviewStatus.Rejected) {
           <span class="capitalize">{{ 'moderation.submissionReview.rejected' | translate }}</span>

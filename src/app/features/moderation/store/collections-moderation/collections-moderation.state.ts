@@ -1,6 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
 
-import { catchError, tap } from 'rxjs';
+import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -12,8 +13,6 @@ import {
   CreateCollectionSubmissionAction,
   GetCollectionSubmissions,
   GetSubmissionsReviewActions,
-  SetCurrentReviewAction,
-  SetCurrentSubmission,
 } from './collections-moderation.actions';
 import { COLLECTIONS_MODERATION_STATE_DEFAULTS, CollectionsModerationStateModel } from './collections-moderation.model';
 
@@ -27,17 +26,30 @@ export class CollectionsModerationState {
 
   @Action(GetCollectionSubmissions)
   getCollectionSubmissions(ctx: StateContext<CollectionsModerationStateModel>, action: GetCollectionSubmissions) {
-    const state = ctx.getState();
-    ctx.patchState({
-      collectionSubmissions: {
-        ...state.collectionSubmissions,
-        isLoading: true,
-      },
-    });
+    ctx.setState(patch({ collectionSubmissions: patch({ isLoading: true }) }));
 
     return this.collectionsService
       .fetchCollectionSubmissionsByStatus(action.collectionId, action.status, action.page, action.sortBy)
       .pipe(
+        switchMap((res) => {
+          if (!res.data.length) {
+            return of({
+              data: [],
+              totalCount: res.totalCount,
+            });
+          }
+
+          const actionRequests = res.data.map((submission) =>
+            this.collectionsService.fetchCollectionSubmissionsActions(submission.nodeId, action.collectionId)
+          );
+
+          return forkJoin(actionRequests).pipe(
+            map((actions) => ({
+              data: res.data.map((submission, i) => ({ ...submission, actions: actions[i] })),
+              totalCount: res.totalCount,
+            }))
+          );
+        }),
         tap((res) => {
           ctx.patchState({
             collectionSubmissions: {
@@ -53,26 +65,25 @@ export class CollectionsModerationState {
   }
 
   @Action(GetSubmissionsReviewActions)
-  getSubmissionsReviewActions(ctx: StateContext<CollectionsModerationStateModel>, action: GetSubmissionsReviewActions) {
+  getCurrentReviewAction(ctx: StateContext<CollectionsModerationStateModel>, action: GetSubmissionsReviewActions) {
     ctx.patchState({
-      reviewActions: {
-        ...ctx.getState().reviewActions,
+      currentReviewAction: {
+        ...ctx.getState().currentReviewAction,
         isLoading: true,
       },
     });
 
     return this.collectionsService.fetchCollectionSubmissionsActions(action.submissionId, action.collectionId).pipe(
       tap((res) => {
-        const currentState = ctx.getState();
         ctx.patchState({
-          reviewActions: {
-            data: [...currentState.reviewActions.data, [...res]],
+          currentReviewAction: {
+            data: res[0] || null,
             isLoading: false,
             error: null,
           },
         });
       }),
-      catchError((error) => handleSectionError(ctx, 'reviewActions', error))
+      catchError((error) => handleSectionError(ctx, 'currentReviewAction', error))
     );
   }
 
@@ -83,8 +94,8 @@ export class CollectionsModerationState {
   ) {
     const state = ctx.getState();
     ctx.patchState({
-      reviewActions: {
-        ...state.reviewActions,
+      collectionSubmissions: {
+        ...state.collectionSubmissions,
         isSubmitting: true,
       },
     });
@@ -92,28 +103,14 @@ export class CollectionsModerationState {
     return this.collectionsService.createCollectionSubmissionAction(action.payload).pipe(
       tap(() => {
         ctx.patchState({
-          reviewActions: {
-            ...state.reviewActions,
+          collectionSubmissions: {
+            ...state.collectionSubmissions,
             isSubmitting: false,
           },
         });
       }),
-      catchError((error) => handleSectionError(ctx, 'reviewActions', error))
+      catchError((error) => handleSectionError(ctx, 'collectionSubmissions', error))
     );
-  }
-
-  @Action(SetCurrentSubmission)
-  setCurrentSubmission(ctx: StateContext<CollectionsModerationStateModel>, action: SetCurrentSubmission) {
-    ctx.patchState({
-      currentSubmission: action.submission,
-    });
-  }
-
-  @Action(SetCurrentReviewAction)
-  setCurrentReviewAction(ctx: StateContext<CollectionsModerationStateModel>, action: SetCurrentReviewAction) {
-    ctx.patchState({
-      currentReviewAction: action.action,
-    });
   }
 
   @Action(ClearCollectionModeration)
