@@ -29,7 +29,7 @@ import {
   ResourceMetadataComponent,
   SubHeaderComponent,
 } from '@shared/components';
-import { ResourceType } from '@shared/enums';
+import { Mode, ResourceType } from '@shared/enums';
 import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
 import { ToastService } from '@shared/services';
 import {
@@ -125,7 +125,7 @@ export class ProjectOverviewComponent implements OnInit {
   readonly isModerationMode = computed(() => {
     const mode = this.route.snapshot.queryParams['mode'];
 
-    return mode === 'moderation';
+    return mode === Mode.Moderation;
   });
 
   submissionReviewStatus = computed(() => {

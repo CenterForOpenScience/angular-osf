@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@a
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ProjectOverviewComponent } from '@osf/features/project/overview/project-overview.component';
+import { Mode } from '@shared/enums';
 
 @Component({
   selector: 'osf-collection-submission-overview',
@@ -18,7 +19,7 @@ export class CollectionSubmissionOverviewComponent {
   readonly isModerationMode = computed(() => {
     const mode = this.route.snapshot.queryParams['mode'];
 
-    return mode === 'moderation';
+    return mode === Mode.Moderation;
   });
 
   constructor() {

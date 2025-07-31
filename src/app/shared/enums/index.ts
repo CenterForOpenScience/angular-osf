@@ -11,6 +11,7 @@ export * from './file-menu-type.enum';
 export * from './filter-type.enum';
 export * from './get-resources-request-type.enum';
 export * from './metadata-projects.enum';
+export * from './mode.enum';
 export * from './moderation-decision-form-controls.enum';
 export * from './moderation-submit-type.enum';
 export * from './profile-addons-stepper.enum';
