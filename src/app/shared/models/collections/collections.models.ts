@@ -64,6 +64,24 @@ export interface CollectionContributor {
 export interface CollectionSubmission {
   id: string;
   type: string;
+  collectionTitle: string;
+  collectionId: string;
+  reviewsState: string;
+  collectedType: string;
+  status: string;
+  volume: string;
+  issue: string;
+  programArea: string;
+  schoolType: string;
+  studyDesign: string;
+  dataType: string;
+  disease: string;
+  gradeLevels: string;
+}
+
+export interface CollectionSubmissionWithGuid {
+  id: string;
+  type: string;
   nodeId: string;
   nodeUrl: string;
   title: string;

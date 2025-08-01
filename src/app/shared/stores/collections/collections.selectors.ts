@@ -42,6 +42,16 @@ export class CollectionsSelectors {
   }
 
   @Selector([CollectionsState])
+  static getCurrentProjectSubmissions(state: CollectionsStateModel) {
+    return state.currentProjectSubmissions.data;
+  }
+
+  @Selector([CollectionsState])
+  static getCurrentProjectSubmissionsLoading(state: CollectionsStateModel) {
+    return state.currentProjectSubmissions.isLoading;
+  }
+
+  @Selector([CollectionsState])
   static getCollectionSubmissionsLoading(state: CollectionsStateModel) {
     return state.collectionSubmissions.isLoading;
   }

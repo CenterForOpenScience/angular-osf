@@ -12,6 +12,12 @@ export class GetCollectionDetails {
   constructor(public collectionId: string) {}
 }
 
+export class GetProjectSubmissions {
+  static readonly type = '[Collections] Get Project Submissions';
+
+  constructor(public projectId: string) {}
+}
+
 export class ClearCollections {
   static readonly type = '[Collections] Clear Collections';
 }

@@ -76,6 +76,40 @@ export interface CollectionSubmissionJsonApi {
     grade_levels: string;
   };
   embeds: {
+    collection: {
+      data: {
+        attributes: {
+          title: string;
+        };
+        relationships: {
+          provider: {
+            data: {
+              id: string;
+            };
+          };
+        };
+      };
+    };
+  };
+}
+
+export interface CollectionSubmissionWithGuidJsonApi {
+  id: string;
+  type: string;
+  attributes: {
+    reviews_state: string;
+    collected_type: string;
+    status: string;
+    volume: string;
+    issue: string;
+    program_area: string;
+    school_type: string;
+    study_design: string;
+    data_type: string;
+    disease: string;
+    grade_levels: string;
+  };
+  embeds: {
     guid: {
       data: {
         id: string;

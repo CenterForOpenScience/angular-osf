@@ -138,6 +138,10 @@
       </div>
     </div>
 
+    @if (resource.type === resourceTypes.Projects) {
+      <osf-overview-collections [currentProject]="currentResource()"></osf-overview-collections>
+    }
+
     <div class="flex flex-column gap-2">
       <h3>{{ 'project.overview.metadata.subjects' | translate }}</h3>
 

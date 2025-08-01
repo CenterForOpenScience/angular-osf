@@ -14,6 +14,8 @@ import {
   CollectionSubmissionJsonApi,
   CollectionSubmissionPayload,
   CollectionSubmissionPayloadJsonApi,
+  CollectionSubmissionWithGuid,
+  CollectionSubmissionWithGuidJsonApi,
   PaginatedData,
   ReviewActionPayload,
   ReviewActionPayloadJsonApi,
@@ -86,9 +88,29 @@ export class CollectionsMapper {
     };
   }
 
+  static fromCurrentSubmissionResponse(submission: CollectionSubmissionJsonApi): CollectionSubmission {
+    return {
+      id: submission.id,
+      type: submission.type,
+      reviewsState: submission.attributes.reviews_state,
+      collectedType: submission.attributes.collected_type,
+      status: submission.attributes.status,
+      volume: submission.attributes.volume,
+      issue: submission.attributes.issue,
+      programArea: submission.attributes.program_area,
+      schoolType: submission.attributes.school_type,
+      studyDesign: submission.attributes.study_design,
+      dataType: submission.attributes.data_type,
+      disease: submission.attributes.disease,
+      gradeLevels: submission.attributes.grade_levels,
+      collectionTitle: submission.embeds.collection.data.attributes.title,
+      collectionId: submission.embeds.collection.data.relationships.provider.data.id,
+    };
+  }
+
   static fromGetCollectionSubmissionsResponse(
-    response: JsonApiResponseWithPaging<CollectionSubmissionJsonApi[], null>
-  ): PaginatedData<CollectionSubmission[]> {
+    response: JsonApiResponseWithPaging<CollectionSubmissionWithGuidJsonApi[], null>
+  ): PaginatedData<CollectionSubmissionWithGuid[]> {
     return {
       data: response.data.map((submission) => ({
         id: submission.id,
@@ -141,7 +163,9 @@ export class CollectionsMapper {
     }));
   }
 
-  static fromPostCollectionSubmissionsResponse(response: CollectionSubmissionJsonApi[]): CollectionSubmission[] {
+  static fromPostCollectionSubmissionsResponse(
+    response: CollectionSubmissionWithGuidJsonApi[]
+  ): CollectionSubmissionWithGuid[] {
     return response.map((submission) => ({
       id: submission.id,
       type: submission.type,

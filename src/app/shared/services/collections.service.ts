@@ -15,11 +15,14 @@ import {
   CollectionContributor,
   CollectionDetails,
   CollectionDetailsGetResponseJsonApi,
+  CollectionDetailsResponseJsonApi,
   CollectionProvider,
   CollectionProviderGetResponseJsonApi,
   CollectionSubmission,
   CollectionSubmissionJsonApi,
   CollectionSubmissionsSearchPayloadJsonApi,
+  CollectionSubmissionWithGuid,
+  CollectionSubmissionWithGuidJsonApi,
   ContributorsResponseJsonApi,
   PaginatedData,
   ReviewActionPayload,
@@ -60,7 +63,7 @@ export class CollectionsService {
     activeFilters: Record<string, string[]>,
     page = '1',
     sortBy: string
-  ): Observable<CollectionSubmission[]> {
+  ): Observable<CollectionSubmissionWithGuid[]> {
     const url = `${environment.apiUrl}/search/collections/`;
     const params: Record<string, string> = {
       page,
@@ -82,7 +85,7 @@ export class CollectionsService {
     };
 
     return this.jsonApiService
-      .post<JsonApiResponseWithPaging<CollectionSubmissionJsonApi[], null>>(url, payload, params)
+      .post<JsonApiResponseWithPaging<CollectionSubmissionWithGuidJsonApi[], null>>(url, payload, params)
       .pipe(
         switchMap((response) => {
           if (!response.data.length) {
@@ -113,7 +116,7 @@ export class CollectionsService {
     status: string,
     page = '1',
     sortBy: string
-  ): Observable<PaginatedData<CollectionSubmission[]>> {
+  ): Observable<PaginatedData<CollectionSubmissionWithGuid[]>> {
     const params: Record<string, string> = {
       page,
       'filter[reviews_state]': status,
@@ -124,11 +127,40 @@ export class CollectionsService {
 
     return this.jsonApiService
       .get<
-        JsonApiResponseWithPaging<CollectionSubmissionJsonApi[], null>
+        JsonApiResponseWithPaging<CollectionSubmissionWithGuidJsonApi[], null>
       >(`${environment.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
       .pipe(
         map((response) => {
           return CollectionsMapper.fromGetCollectionSubmissionsResponse(response);
+        })
+      );
+  }
+
+  fetchProjectCollections(projectId: string): Observable<CollectionDetails[]> {
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<CollectionDetailsResponseJsonApi[], null>
+      >(`${environment.apiUrl}/nodes/${projectId}/collections/`)
+      .pipe(
+        map((response) =>
+          response.data.map((collection) => CollectionsMapper.fromGetCollectionDetailsResponse(collection))
+        )
+      );
+  }
+
+  fetchCurrentSubmission(projectId: string, collectionId: string): Observable<CollectionSubmission> {
+    const params: Record<string, string> = {
+      'filter[id]': projectId,
+      embed: 'collection',
+    };
+
+    return this.jsonApiService
+      .get<
+        JsonApiResponse<CollectionSubmissionJsonApi[], null>
+      >(`${environment.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
+      .pipe(
+        map((response) => {
+          return CollectionsMapper.fromCurrentSubmissionResponse(response.data[0]);
         })
       );
   }
@@ -148,7 +180,10 @@ export class CollectionsService {
       .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsActionsResponse(response.data)));
   }
 
-  fetchAllUserCollectionSubmissions(providerId: string, projectIds: string[]): Observable<CollectionSubmission[]> {
+  fetchAllUserCollectionSubmissions(
+    providerId: string,
+    projectIds: string[]
+  ): Observable<CollectionSubmissionWithGuid[]> {
     const pendingSubmissions$ = this.fetchUserCollectionSubmissionsByStatus(providerId, projectIds, 'pending');
     const acceptedSubmissions$ = this.fetchUserCollectionSubmissionsByStatus(providerId, projectIds, 'accepted');
 
@@ -182,7 +217,7 @@ export class CollectionsService {
     providerId: string,
     projectIds: string[],
     submissionStatus: string
-  ): Observable<PaginatedData<CollectionSubmission[]>> {
+  ): Observable<PaginatedData<CollectionSubmissionWithGuid[]>> {
     const params: Record<string, unknown> = {
       'filter[reviews_state]': submissionStatus,
       'filter[id]': projectIds.join(','),
@@ -190,7 +225,7 @@ export class CollectionsService {
 
     return this.jsonApiService
       .get<
-        JsonApiResponseWithPaging<CollectionSubmissionJsonApi[], null>
+        JsonApiResponseWithPaging<CollectionSubmissionWithGuidJsonApi[], null>
       >(`${environment.apiUrl}/collections/${providerId}/collection_submissions/`, params)
       .pipe(
         map((response) => {

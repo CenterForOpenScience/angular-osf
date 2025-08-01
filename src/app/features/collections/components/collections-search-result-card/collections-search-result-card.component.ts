@@ -4,7 +4,7 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
-import { CollectionSubmission } from '@shared/models';
+import { CollectionSubmissionWithGuid } from '@shared/models';
 
 @Component({
   selector: 'osf-collections-search-result-card',
@@ -14,7 +14,7 @@ import { CollectionSubmission } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionsSearchResultCardComponent {
-  cardItem = input.required<CollectionSubmission>();
+  cardItem = input.required<CollectionSubmissionWithGuid>();
 
   protected presentSubmissionAttributes = computed(() => {
     const item = this.cardItem();
@@ -23,7 +23,7 @@ export class CollectionsSearchResultCardComponent {
     return collectionFilterNames
       .map((attribute) => ({
         ...attribute,
-        value: item[attribute.key as keyof CollectionSubmission] as string,
+        value: item[attribute.key as keyof CollectionSubmissionWithGuid] as string,
       }))
       .filter((attribute) => attribute.value);
   });

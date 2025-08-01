@@ -1,6 +1,6 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, forkJoin, of, switchMap, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -11,6 +11,7 @@ import {
   ClearCollectionSubmissions,
   GetCollectionDetails,
   GetCollectionProvider,
+  GetProjectSubmissions,
   GetUserCollectionSubmissions,
   SearchCollectionSubmissions,
   SetAllFilters,
@@ -29,53 +30,7 @@ import {
   SetTotalSubmissions,
   SetVolumeFilters,
 } from './collections.actions';
-import { CollectionsStateModel } from './collections.model';
-
-const FILTERS_DEFAULTS = {
-  programArea: [],
-  status: [],
-  collectedType: [],
-  dataType: [],
-  disease: [],
-  gradeLevels: [],
-  issue: [],
-  reviewsState: [],
-  schoolType: [],
-  studyDesign: [],
-  volume: [],
-};
-
-const COLLECTIONS_DEFAULTS: CollectionsStateModel = {
-  currentFilters: FILTERS_DEFAULTS,
-  filtersOptions: FILTERS_DEFAULTS,
-  collectionProvider: {
-    data: null,
-    isLoading: false,
-    error: null,
-  },
-  collectionDetails: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  collectionSubmissions: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  userCollectionSubmissions: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  totalSubmissions: 0,
-  sortBy: '',
-  searchText: '',
-  page: '1',
-};
+import { COLLECTIONS_DEFAULTS, CollectionsStateModel } from './collections.model';
 
 @State<CollectionsStateModel>({
   name: 'collections',
@@ -105,6 +60,44 @@ export class CollectionsState {
           },
         });
       })
+    );
+  }
+
+  @Action(GetProjectSubmissions)
+  getProjectSubmissions(ctx: StateContext<CollectionsStateModel>, action: GetProjectSubmissions) {
+    const state = ctx.getState();
+    ctx.patchState({
+      currentProjectSubmissions: {
+        ...state.currentProjectSubmissions,
+        isLoading: true,
+      },
+    });
+
+    return this.collectionsService.fetchProjectCollections(action.projectId).pipe(
+      switchMap((res) => {
+        const collections = res.filter((collection) => !collection.bookmarks);
+
+        if (!collections.length) {
+          return of([]);
+        }
+
+        const submissionRequests = collections.map((collection) =>
+          this.collectionsService.fetchCurrentSubmission(action.projectId, collection.id)
+        );
+
+        return forkJoin(submissionRequests);
+      }),
+      tap((submissions) => {
+        ctx.patchState({
+          currentProjectSubmissions: {
+            data: submissions,
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => this.handleError(ctx, 'currentProjectSubmissions', error))
     );
   }
 

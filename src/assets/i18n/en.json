@@ -580,6 +580,8 @@
         "subjects": "Subjects",
         "tags": "Tags",
         "citation": "Citation",
+        "collection": "Collection",
+        "noCollections": "No collections",
         "getMoreCitations": "Get More Citations",
         "citationInputPlaceholder": "Select citation style or start typing",
         "citationLoadingPlaceholder": "Loading options...",
