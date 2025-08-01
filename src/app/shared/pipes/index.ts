@@ -1,4 +1,5 @@
 export { CitationFormatPipe } from './citation-format.pipe';
+export { DateAgoPipe } from './date-ago.pipe';
 export { DecodeHtmlPipe } from './decode-html.pipe';
 export { FileSizePipe } from './file-size.pipe';
 export { InterpolatePipe } from './interpolate.pipe';

@@ -40,6 +40,7 @@
       "view": "View",
       "review": "Review",
       "upload": "Upload",
+      "hide": "Hide",
       "customize": "Customize",
       "createCustomCitation": "Create Custom Citation",
       "preview": "Preview",
@@ -1172,7 +1173,9 @@
       "rejected": "Rejected",
       "withdrawn": "Withdrawn",
       "public": "Public",
-      "embargo": "Embargo"
+      "embargo": "Embargo",
+      "pendingUpdates": "Pending Updates",
+      "pendingWithdrawal": "Pending Withdrawal"
     },
     "makeDecision": {
       "header": "Make decision",
@@ -1194,6 +1197,7 @@
       "submitted": "Submitted",
       "accepted": "Accepted",
       "rejected": "Rejected",
+      "requested": "Requested",
       "withdrawn": "Withdrawn",
       "by": "by"
     },
@@ -1229,6 +1233,20 @@
         "named": "Named Comments",
         "namedDescription": "All comments will be visible to the contributors of the submission and the moderator's osf profile name will be displayed."
       }
+    },
+    "registryAccepted": "Registration submission accepted",
+    "registrySubmitted": "Registration submitted",
+    "registryWithdrawalRequested": "Registration withdrawal requested",
+    "registryWithdrawalAccepted": "Registration withdrawal request accepted",
+    "registryRejected": "Registration submission rejected",
+    "registryEmbargoedWithEndDate": "Embargoed Registration with an end date of ",
+    "withNoEmbargo": "with no embargo",
+    "showHistory": "Show history",
+    "sortOption": {
+      "titleAZ": "Title: A-Z",
+      "titleZA": "Title: Z-A",
+      "oldest": "Date: oldest to newest",
+      "newest": "Date: newest to oldest"
     }
   },
   "settings": {
@@ -1491,11 +1509,22 @@
       },
       "social": {
         "title": "Social Link {{index}}",
-        "remove": "Remove",
-        "socialOutput": "Social output",
-        "webAddress": "Web Address",
-        "addMore": "Add One More",
-        "successUpdate": "Social successfully updated."
+        "successUpdate": "Social successfully updated.",
+        "labels": {
+          "researcherId": "ResearcherID",
+          "orcid": "ORCID",
+          "linkedIn": "LinkedIn",
+          "twitter": "X",
+          "github": "GitHub",
+          "impactStory": "ImpactStory",
+          "scholar": "Google Scholar",
+          "researchGate": "ResearchGate",
+          "baiduScholar": "Baidu Scholar",
+          "ssrn": "SSRN",
+          "profileWebsites": "Your website",
+          "academia": "Academia",
+          "academiaProfileId": "Academia Profile Id"
+        }
       },
       "employment": {
         "title": "Position {{index}}",
@@ -1519,6 +1548,7 @@
         "addMore": "Add One More",
         "successUpdate": "Education successfully updated."
       },
+      "changesDiscarded": "Changes discarded successfully.",
       "endDateError": "End date must be greater than start date."
     },
     "accountSettings": {

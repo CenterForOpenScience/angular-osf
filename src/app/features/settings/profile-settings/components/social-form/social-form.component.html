@@ -6,38 +6,31 @@
     <h2>
       {{ 'settings.profileSettings.social.title' | translate: { index: index() + 1 } }}
     </h2>
-    @if (index() !== 0) {
-      <div>
-        <p-button
-          [label]="'common.buttons.remove' | translate"
-          severity="danger"
-          variant="text"
-          (click)="remove.emit()"
-        />
-      </div>
-    }
   </div>
 
   <div class="flex flex-column row-gap-4 w-full md:flex-row md:align-items-end md:column-gap-3">
-    <div class="w-full md:w-4">
-      <p class="font-light mb-1">
-        {{ 'settings.profileSettings.social.socialOutput' | translate }}
-      </p>
-
-      <p-select formControlName="socialOutput" [options]="socials" optionLabel="label" class="w-full"></p-select>
-    </div>
-
-    <div class="w-full md:w-8">
-      <p class="mb-1">
-        {{ 'settings.profileSettings.social.webAddress' | translate }}
-      </p>
+    <div class="w-full md:w-12">
+      <label for="id">{{ label() | translate }}</label>
 
       <p-inputgroup class="addon-input flex-wrap">
-        <p-inputgroup-addon class="border-1 grey-border-color md:border-0">
-          {{ domain }}
-        </p-inputgroup-addon>
+        @if (domain()) {
+          <p-inputgroup-addon class="border-1 grey-border-color md:border-0">
+            {{ domain() }}
+          </p-inputgroup-addon>
+        }
 
-        <input pInputText [placeholder]="placeholder" formControlName="webAddress" [maxlength]="socialMaxLength" />
+        <input pInputText [placeholder]="placeholder()" formControlName="webAddress" [maxlength]="socialMaxLength" />
+
+        @if (hasLinkedField()) {
+          <p-inputgroup-addon class="border-1 grey-border-color md:border-0"> .academia.edu/ </p-inputgroup-addon>
+
+          <input
+            pInputText
+            [placeholder]="linkedPlaceholder()"
+            formControlName="linkedWebAddress"
+            [maxlength]="socialMaxLength"
+          />
+        }
       </p-inputgroup>
     </div>
   </div>

@@ -17,11 +17,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UpdateProfileSettingsEducation, UserSelectors } from '@osf/core/store/user';
-import { Education } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
-import { CustomValidators, findChangedFields } from '@osf/shared/utils';
+import { CustomValidators } from '@osf/shared/utils';
 
 import { EducationForm } from '../../models';
+import { hasEducationChanges, mapEducationToForm, mapFormToEducation } from '../../utils';
 import { EducationFormComponent } from '../education-form/education-form.component';
 
 @Component({
@@ -54,7 +54,11 @@ export class EducationComponent {
   }
 
   removeEducation(index: number): void {
-    this.educations.removeAt(index);
+    if (this.educations.length > 1) {
+      this.educations.removeAt(index);
+    } else {
+      this.educations.reset();
+    }
   }
 
   addEducation(): void {
@@ -74,9 +78,10 @@ export class EducationComponent {
     this.customConfirmationService.confirmDelete({
       headerKey: 'common.discardChangesDialog.header',
       messageKey: 'common.discardChangesDialog.message',
+      acceptLabelKey: 'common.buttons.discardChanges',
       onConfirm: () => {
         this.setInitialData();
-        this.cd.markForCheck();
+        this.toastService.showSuccess('settings.profileSettings.changesDiscarded');
       },
     });
   }
@@ -87,7 +92,7 @@ export class EducationComponent {
       return;
     }
 
-    const formattedEducation = this.educations.value.map((education) => this.mapFormToEducation(education));
+    const formattedEducation = this.educations.value.map((education) => mapFormToEducation(education));
     this.loaderService.show();
 
     this.actions
@@ -111,10 +116,7 @@ export class EducationComponent {
       const initialEdu = this.educationItems()[index];
       if (!initialEdu) return true;
 
-      const formattedFormEducation = this.mapFormToEducation(formEducation);
-      const changedFields = findChangedFields<Education>(formattedFormEducation, initialEdu);
-
-      return Object.keys(changedFields).length > 0;
+      return hasEducationChanges(formEducation, initialEdu);
     });
   }
 
@@ -138,37 +140,9 @@ export class EducationComponent {
 
     this.educations.clear();
     educations
-      .map((education) => this.mapEducationToForm(education))
+      .map((education) => mapEducationToForm(education))
       .forEach((education) => this.educations.push(this.createEducationFormGroup(education)));
 
     this.cd.markForCheck();
-  }
-
-  private mapFormToEducation(education: EducationForm): Education {
-    return {
-      institution: education.institution,
-      department: education.department,
-      degree: education.degree,
-      startYear: education.startDate?.getFullYear() ?? new Date().getFullYear(),
-      startMonth: (education.startDate?.getMonth() ?? 0) + 1,
-      endYear: education.ongoing ? null : (education.endDate?.getFullYear() ?? null),
-      endMonth: education.ongoing ? null : education.endDate ? education.endDate.getMonth() + 1 : null,
-      ongoing: education.ongoing,
-    };
-  }
-
-  private mapEducationToForm(education: Education): EducationForm {
-    return {
-      institution: education.institution,
-      department: education.department,
-      degree: education.degree,
-      startDate: new Date(+education.startYear, education.startMonth - 1),
-      endDate: education.ongoing
-        ? null
-        : education.endYear && education.endMonth
-          ? new Date(+education.endYear, education.endMonth - 1)
-          : null,
-      ongoing: education.ongoing,
-    };
   }
 }

@@ -17,11 +17,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UpdateProfileSettingsEmployment, UserSelectors } from '@osf/core/store/user';
-import { Employment } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
-import { CustomValidators, findChangedFields } from '@osf/shared/utils';
+import { CustomValidators } from '@osf/shared/utils';
 
 import { EmploymentForm } from '../../models';
+import { hasEmploymentChanges, mapEmploymentToForm, mapFormToEmployment } from '../../utils';
 import { EmploymentFormComponent } from '../employment-form/employment-form.component';
 
 @Component({
@@ -55,7 +55,11 @@ export class EmploymentComponent {
   }
 
   removePosition(index: number): void {
-    this.positions.removeAt(index);
+    if (this.positions.length > 1) {
+      this.positions.removeAt(index);
+    } else {
+      this.positions.reset();
+    }
   }
 
   addPosition(): void {
@@ -75,9 +79,10 @@ export class EmploymentComponent {
     this.customConfirmationService.confirmDelete({
       headerKey: 'common.discardChangesDialog.header',
       messageKey: 'common.discardChangesDialog.message',
+      acceptLabelKey: 'common.buttons.discardChanges',
       onConfirm: () => {
         this.setInitialData();
-        this.cd.markForCheck();
+        this.toastService.showSuccess('settings.profileSettings.changesDiscarded');
       },
     });
   }
@@ -88,7 +93,7 @@ export class EmploymentComponent {
       return;
     }
 
-    const formattedEmployment = this.positions.value.map((position) => this.mapFormToEmployment(position));
+    const formattedEmployment = this.positions.value.map((position) => mapFormToEmployment(position));
     this.loaderService.show();
 
     this.actions
@@ -112,10 +117,7 @@ export class EmploymentComponent {
       const initial = this.employment()[index];
       if (!initial) return true;
 
-      const formattedFormEducation = this.mapFormToEmployment(formEmployment);
-      const changedFields = findChangedFields<Employment>(formattedFormEducation, initial);
-
-      return Object.keys(changedFields).length > 0;
+      return hasEmploymentChanges(formEmployment, initial);
     });
   }
 
@@ -139,35 +141,9 @@ export class EmploymentComponent {
 
     this.positions.clear();
     employment
-      .map((x) => this.mapEmploymentToForm(x))
+      .map((x) => mapEmploymentToForm(x))
       .forEach((x) => this.positions.push(this.createEmploymentFormGroup(x)));
-  }
 
-  private mapFormToEmployment(employment: EmploymentForm): Employment {
-    return {
-      title: employment.title,
-      department: employment.department,
-      institution: employment.institution,
-      startYear: employment.startDate?.getFullYear() ?? new Date().getFullYear(),
-      startMonth: (employment.startDate?.getMonth() ?? 0) + 1,
-      endYear: employment.ongoing ? null : (employment.endDate?.getFullYear() ?? null),
-      endMonth: employment.ongoing ? null : employment.endDate ? employment.endDate.getMonth() + 1 : null,
-      ongoing: employment.ongoing,
-    };
-  }
-
-  private mapEmploymentToForm(employment: Employment): EmploymentForm {
-    return {
-      title: employment.title,
-      department: employment.department,
-      institution: employment.institution,
-      startDate: new Date(+employment.startYear, employment.startMonth - 1),
-      endDate: employment.ongoing
-        ? null
-        : employment.endYear && employment.endMonth
-          ? new Date(+employment.endYear, employment.endMonth - 1)
-          : null,
-      ongoing: employment.ongoing,
-    };
+    this.cd.markForCheck();
   }
 }

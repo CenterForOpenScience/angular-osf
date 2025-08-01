@@ -1,0 +1,47 @@
+<div class="flex align-items-baseline gap-2 p-3">
+  <osf-icon [class]="reviewStatusIcon[status()].value" [iconClass]="reviewStatusIcon[status()].icon"></osf-icon>
+
+  <div>
+    <p-button
+      class="link-btn-no-padding"
+      link
+      [label]="submission().title"
+      [routerLink]="['/registries/', submission().id, 'overview']"
+      [queryParams]="{ mode: 'moderator' }"
+    />
+
+    @if (submission().public && !submission().embargoEndDate) {
+      <p class="flex flex-wrap gap-1 mt-2">{{ 'registry.overview.statuses.accepted.text' | translate }}</p>
+    }
+
+    @if (submission().embargoEndDate) {
+      <p class="flex flex-wrap gap-1 mt-2">{{ 'moderation.registryEmbargoedWithEndDate' | translate }}</p>
+    }
+
+    @for (action of showAll ? submission().actions : submission().actions.slice(0, limitValue); track $index) {
+      <div class="flex flex-wrap gap-1 mt-2">
+        <span>{{ registryActionLabel[action.toState] | translate }}</span>
+        <span>{{ action.dateModified | dateAgo }}</span>
+        <span>{{ 'moderation.submissionReview.by' | translate }}</span>
+        <span>{{ action.creator.name }}</span>
+
+        @if (action.toState === registryActionState.Accepted) {
+          <span>{{ 'moderation.withNoEmbargo' | translate }}</span>
+        }
+
+        @if (action.comment.length) {
+          <span class="font-italic">- {{ action.comment }}</span>
+        }
+      </div>
+    }
+
+    @if (submission().actions.length > 1) {
+      <p-button
+        class="link-btn-no-padding block mt-2"
+        [link]="true"
+        [label]="(showAll ? 'common.buttons.hide' : 'moderation.showHistory') | translate"
+        (onClick)="toggleHistory()"
+      />
+    }
+  </div>
+</div>

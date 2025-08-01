@@ -3,20 +3,13 @@
 
 @if (action && attributes) {
   <div class="p-3">
-    <div class="flex align-items-center">
+    <div class="flex align-items-center gap-2">
       <osf-icon
         [class]="reviewStatusIcon[submission().reviewsState].value"
         [iconClass]="reviewStatusIcon[submission().reviewsState].icon"
       ></osf-icon>
 
-      <p-button
-        class="link-btn-no-padding pl-2"
-        styleClass="text-lg text-primary"
-        link
-        (click)="handleNavigation()"
-        [label]="submission().title"
-      >
-      </p-button>
+      <p-button class="link-btn-no-padding" link (click)="handleNavigation()" [label]="submission().title" />
     </div>
 
     <p class="flex flex-wrap gap-1 mt-2">
@@ -38,7 +31,7 @@
           <span class="capitalize">{{ 'moderation.submissionReview.withdrawn' | translate }}</span>
         }
       }
-      <span>{{ action.dateCreated | timeAgo }}</span>
+      <span>{{ action.dateCreated | dateAgo }}</span>
       <span>{{ 'moderation.submissionReview.by' | translate }}</span>
       <span>{{ action.createdBy }}</span>
     </p>

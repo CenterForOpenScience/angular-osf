@@ -11,15 +11,15 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { collectionFilterNames } from '@osf/features/collections/constants';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { IconComponent } from '@osf/shared/components';
+import { DateAgoPipe } from '@osf/shared/pipes';
 import { CollectionSubmissionWithGuid } from '@shared/models';
-import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
 import { CollectionsSelectors } from '@shared/stores';
 
 import { ReviewStatusIcon } from '../../constants';
 
 @Component({
   selector: 'osf-submission-item',
-  imports: [TranslatePipe, IconComponent, TimeAgoPipe, Button],
+  imports: [TranslatePipe, IconComponent, DateAgoPipe, Button],
   templateUrl: './collection-submission-item.component.html',
   styleUrl: './collection-submission-item.component.scss',
   providers: [DialogService],

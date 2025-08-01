@@ -1,8 +1,16 @@
 import { JsonApiResponseWithPaging } from '@osf/core/models';
 import { PaginatedData } from '@osf/shared/models';
 
-import { PreprintProviderModerationInfo, PreprintRelatedCountJsonApi, ReviewActionJsonApi } from '../models';
+import {
+  PreprintProviderModerationInfo,
+  PreprintRelatedCountJsonApi,
+  PreprintSubmissionResponseJsonApi,
+  PreprintSubmissionWithdrawalResponseJsonApi,
+  PreprintWithdrawalPaginatedData,
+  ReviewActionJsonApi,
+} from '../models';
 import { PreprintReviewActionModel } from '../models/preprint-review-action.model';
+import { PreprintSubmissionPaginatedData } from '../models/preprint-submission.model';
 
 export class PreprintModerationMapper {
   static fromResponse(response: ReviewActionJsonApi): PreprintReviewActionModel {
@@ -44,6 +52,40 @@ export class PreprintModerationMapper {
       reviewsWorkflow: response.attributes.reviews_workflow,
       submissionCount: response.relationships.preprints.links.related.meta.pending ?? 0,
       supportEmail: response.attributes.email_support,
+    };
+  }
+
+  static fromSubmissionResponse(response: PreprintSubmissionResponseJsonApi): PreprintSubmissionPaginatedData {
+    return {
+      data: response.data.map((x) => ({
+        id: x.id,
+        title: x.attributes.title,
+        public: x.attributes.public,
+        reviewsState: x.attributes.reviews_state,
+        actions: [],
+      })),
+      totalCount: response.meta.total,
+      pendingCount: response.meta.reviews_state_counts.pending,
+      acceptedCount: response.meta.reviews_state_counts.accepted,
+      rejectedCount: response.meta.reviews_state_counts.rejected,
+      withdrawnCount: response.meta.reviews_state_counts.withdrawn,
+    };
+  }
+
+  static fromWithdrawalSubmissionResponse(
+    response: PreprintSubmissionWithdrawalResponseJsonApi
+  ): PreprintWithdrawalPaginatedData {
+    return {
+      data: response.data.map((x) => ({
+        id: x.id,
+        title: x.embeds.target.data.attributes.title,
+        preprintId: x.embeds.target.data.id,
+        actions: [],
+      })),
+      totalCount: response.meta.total,
+      pendingCount: response.meta.requests_state_counts.pending,
+      acceptedCount: response.meta.requests_state_counts.accepted,
+      rejectedCount: response.meta.requests_state_counts.rejected,
     };
   }
 }

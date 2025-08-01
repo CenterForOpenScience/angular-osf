@@ -5,6 +5,7 @@ import { Routes } from '@angular/router';
 import { ResourceType } from '@osf/shared/enums';
 
 import { ModeratorsState } from './store/moderators';
+import { RegistryModerationState } from './store/registry-moderation';
 import { RegistryModerationTab } from './enums';
 
 export const registryModerationRoutes: Routes = [
@@ -14,6 +15,7 @@ export const registryModerationRoutes: Routes = [
       import('@osf/features/moderation/pages/registries-moderation/registries-moderation.component').then(
         (m) => m.RegistriesModerationComponent
       ),
+    providers: [provideStates([RegistryModerationState])],
     children: [
       {
         path: '',
@@ -31,8 +33,8 @@ export const registryModerationRoutes: Routes = [
       {
         path: 'pending',
         loadComponent: () =>
-          import('./components/collection-moderation-submissions/collection-moderation-submissions.component').then(
-            (m) => m.CollectionModerationSubmissionsComponent
+          import('./components/registry-pending-submissions/registry-pending-submissions.component').then(
+            (m) => m.RegistryPendingSubmissionsComponent
           ),
         data: { tab: RegistryModerationTab.Pending },
       },

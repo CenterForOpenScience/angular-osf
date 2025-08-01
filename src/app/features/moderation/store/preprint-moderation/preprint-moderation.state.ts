@@ -1,15 +1,22 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { insertItem, patch, updateItem } from '@ngxs/store/operators';
 
-import { catchError, forkJoin, map, switchMap, tap } from 'rxjs';
+import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/core/handlers';
 
+import { PreprintSubmissionPaginatedData, PreprintWithdrawalPaginatedData } from '../../models';
 import { PreprintModerationService } from '../../services';
 
-import { GetPreprintProvider, GetPreprintProviders, GetPreprintReviewActions } from './preprint-moderation.actions';
+import {
+  GetPreprintProvider,
+  GetPreprintProviders,
+  GetPreprintReviewActions,
+  GetPreprintSubmissions,
+  GetPreprintWithdrawalSubmissions,
+} from './preprint-moderation.actions';
 import { PREPRINT_MODERATION_STATE_DEFAULTS, PreprintModerationStateModel } from './preprint-moderation.model';
 
 @State<PreprintModerationStateModel>({
@@ -89,6 +96,103 @@ export class PreprintModerationState {
         );
       }),
       catchError((error) => handleSectionError(ctx, 'preprintProviders', error))
+    );
+  }
+
+  @Action(GetPreprintSubmissions)
+  getPreprintSubmissions(
+    ctx: StateContext<PreprintModerationStateModel>,
+    { provider, status, page, sort }: GetPreprintSubmissions
+  ) {
+    ctx.setState(patch({ submissions: patch({ isLoading: true }) }));
+
+    return this.preprintModerationService.getPreprintSubmissions(provider, status, page, sort).pipe(
+      switchMap((res) => {
+        if (!res.data.length) {
+          return of({
+            ...res,
+            data: [],
+          });
+        }
+
+        const actionRequests = res.data.map((item) =>
+          this.preprintModerationService.getPreprintSubmissionReviewAction(item.id)
+        );
+
+        return forkJoin(actionRequests).pipe(
+          map(
+            (actions) =>
+              ({
+                ...res,
+                data: res.data.map((item, i) => ({ ...item, actions: actions[i] })),
+              }) as PreprintSubmissionPaginatedData
+          )
+        );
+      }),
+      tap((res) => {
+        ctx.setState(
+          patch({
+            submissions: patch({
+              data: res.data,
+              isLoading: false,
+              totalCount: res.totalCount,
+              acceptedCount: res.acceptedCount,
+              rejectedCount: res.rejectedCount,
+              pendingCount: res.pendingCount,
+              withdrawnCount: res.withdrawnCount,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'submissions', error))
+    );
+  }
+
+  @Action(GetPreprintWithdrawalSubmissions)
+  getPreprintWithdrawalSubmissions(
+    ctx: StateContext<PreprintModerationStateModel>,
+    { provider, status, page, sort }: GetPreprintWithdrawalSubmissions
+  ) {
+    ctx.setState(patch({ withdrawalSubmissions: patch({ isLoading: true }) }));
+
+    return this.preprintModerationService.getPreprintWithdrawalSubmissions(provider, status, page, sort).pipe(
+      switchMap((res) => {
+        if (!res.data.length) {
+          return of({
+            ...res,
+            data: [],
+          });
+        }
+
+        const actionRequests = res.data.map((item) =>
+          this.preprintModerationService.getPreprintWithdrawalSubmissionReviewAction(item.id)
+        );
+
+        return forkJoin(actionRequests).pipe(
+          map(
+            (actions) =>
+              ({
+                ...res,
+                data: res.data.map((item, i) => ({ ...item, actions: actions[i] })),
+              }) as PreprintWithdrawalPaginatedData
+          )
+        );
+      }),
+      tap((res) => {
+        ctx.setState(
+          patch({
+            withdrawalSubmissions: patch({
+              data: res.data,
+              isLoading: false,
+              totalCount: res.totalCount,
+              acceptedCount: res.acceptedCount,
+              rejectedCount: res.rejectedCount,
+              pendingCount: res.pendingCount,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'withdrawalSubmissions', error))
     );
   }
 }

@@ -3,14 +3,14 @@
     <p-selectbutton
       class="review-state-select flex-wrap"
       [options]="submissionReviewOptions"
-      [ngModel]="selectedReviewOption"
+      [ngModel]="selectedReviewOption()"
       (ngModelChange)="changeReviewStatus($event)"
+      [disabled]="isLoading()"
       optionLabel="label"
       optionValue="value"
     >
       <ng-template #item let-item>
         <osf-icon [iconClass]="item.icon" [class]="item.value"></osf-icon>
-        <p>{{ totalCount }}</p>
         <p>{{ item.label | translate | titlecase }}</p>
       </ng-template>
     </p-selectbutton>
@@ -23,8 +23,39 @@
       [fullWidth]="true"
       [(selectedValue)]="selectedSortOption"
       (changeValue)="changeSort($event)"
+      [disabled]="isLoading()"
     ></osf-select>
   </div>
 </div>
 
-<!--<osf-submissions-list [submissions]="submissions"></osf-submissions-list>-->
+@if (isLoading()) {
+  <osf-loading-spinner></osf-loading-spinner>
+} @else {
+  @if (submissions().length) {
+    <div class="submission-container mt-5">
+      @for (item of submissions(); track $index) {
+        <div class="submission-item">
+          <osf-registry-submission-item
+            [submission]="item"
+            [status]="selectedReviewOption()"
+          ></osf-registry-submission-item>
+        </div>
+      }
+    </div>
+
+    @if (totalCount() > pageSize()) {
+      <div class="mt-4">
+        <osf-custom-paginator
+          [first]="first()"
+          [totalCount]="totalCount()"
+          [rows]="pageSize()"
+          (pageChanged)="onPageChange($event)"
+        ></osf-custom-paginator>
+      </div>
+    }
+  } @else {
+    <div class="flex justify-content-center align-items-center p-5">
+      <p>{{ 'moderation.noSubmissions' | translate }}</p>
+    </div>
+  }
+}

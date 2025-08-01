@@ -5,7 +5,7 @@
     @let badge = tab.value === tabOption.Submissions ? `${provider().submissionCount}` : undefined;
 
     <p-button
-      class="link-btn"
+      class="link-btn-no-padding"
       [link]="true"
       [label]="tab.label | translate"
       [badge]="badge"

@@ -66,8 +66,6 @@
 }
 
 .link-btn-no-padding {
-  .p-button {
-    --p-button-padding-y: 0;
-    --p-button-padding-x: 0;
-  }
+  --p-button-padding-y: 0;
+  --p-button-padding-x: 0;
 }

@@ -22,6 +22,7 @@ export class SelectComponent {
   appendTo = input<string | null>(null);
   fullWidth = input(false);
   noBorder = input(false);
+  disabled = input(false);
 
   changeValue = output<Primitive>();
 }

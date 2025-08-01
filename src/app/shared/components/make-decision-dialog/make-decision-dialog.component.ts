@@ -15,13 +15,13 @@ import {
   CollectionsModerationSelectors,
   CreateCollectionSubmissionAction,
 } from '@osf/features/moderation/store/collections-moderation';
+import { DateAgoPipe } from '@osf/shared/pipes';
 import { ModerationDecisionFormControls, ModerationSubmitType } from '@shared/enums';
-import { TimeAgoPipe } from '@shared/pipes/time-ago.pipe';
 import { CollectionsSelectors } from '@shared/stores';
 
 @Component({
   selector: 'osf-make-decision-dialog',
-  imports: [Button, TranslatePipe, TimeAgoPipe, FormsModule, RadioButton, ReactiveFormsModule, Textarea],
+  imports: [Button, TranslatePipe, DateAgoPipe, FormsModule, RadioButton, ReactiveFormsModule, Textarea],
   templateUrl: './make-decision-dialog.component.html',
   styleUrl: './make-decision-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

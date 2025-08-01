@@ -10,10 +10,15 @@ export interface SocialLinksModel {
   address: string;
   placeholder: string;
   key: SocialLinksKeys;
-  multiple: boolean;
+  linkedField?: {
+    key: SocialLinksKeys;
+    label: string;
+    placeholder: string;
+  };
 }
 
 export interface SocialLinksForm {
   socialOutput: SocialLinksModel;
   webAddress: string;
+  linkedWebAddress?: string;
 }

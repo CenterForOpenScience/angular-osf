@@ -1,0 +1,13 @@
+.submission-container {
+  border: 1px solid var(--grey-2);
+  border-radius: 0.5rem;
+}
+
+.submission-item:not(:last-child) {
+  border-bottom: 1px solid var(--grey-2);
+}
+
+.pending,
+.pending-updates {
+  color: var(--yellow-1);
+}

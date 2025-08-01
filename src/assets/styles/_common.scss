@@ -113,3 +113,22 @@
   font-weight: 700;
   color: var(--red-1);
 }
+
+// ------------------------- Moderation status -------------------------
+
+.pending,
+.pending-updates {
+  color: var(--yellow-1);
+}
+
+.accepted {
+  color: var(--green-1);
+}
+
+.rejected {
+  color: var(--red-1);
+}
+
+.withdrawn {
+  color: var(--dark-blue-1);
+}

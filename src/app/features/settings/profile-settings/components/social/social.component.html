@@ -1,26 +1,17 @@
 <form [formGroup]="socialLinksForm">
   <div formArrayName="links" class="flex flex-column row-gap-4 social">
-    @if (socialLinks()) {
-      @for (link of links.controls; track index; let index = $index) {
-        <osf-social-form [group]="link" [index]="index" (remove)="removeLink(index)"></osf-social-form>
-      }
+    @for (link of links.controls; track index; let index = $index) {
+      <osf-social-form [group]="link" [index]="index"></osf-social-form>
     }
   </div>
 </form>
 
-<p-button
-  [label]="'settings.profileSettings.social.addMore' | translate"
-  severity="secondary"
-  class="ml-auto w-6 btn-full-width md:w-auto"
-  (click)="addLink()"
-/>
-
-<div class="flex justify-content-between align-items-end column-gap-2 md:ml-auto h-3rem mt-2">
+<div class="flex justify-content-between align-items-end column-gap-2 mt-2 md:justify-content-end">
   <p-button
     class="w-6 btn-full-width md:w-auto"
     [label]="'common.buttons.discardChanges' | translate"
     severity="info"
-    disabled="true"
+    (onClick)="discardChanges()"
   />
   <p-button
     class="w-6 btn-full-width md:w-auto"

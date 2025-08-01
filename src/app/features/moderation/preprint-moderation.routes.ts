@@ -25,16 +25,16 @@ export const preprintModerationRoutes: Routes = [
       {
         path: 'submissions',
         loadComponent: () =>
-          import('./components/registry-submissions/registry-submissions.component').then(
-            (m) => m.RegistrySubmissionsComponent
+          import('./components/preprint-submissions/preprint-submissions.component').then(
+            (m) => m.PreprintSubmissionsComponent
           ),
         data: { tab: PreprintModerationTab.Submissions },
       },
       {
         path: 'withdrawals',
         loadComponent: () =>
-          import('./components/collection-moderation-submissions/collection-moderation-submissions.component').then(
-            (m) => m.CollectionModerationSubmissionsComponent
+          import('./components/preprint-withdrawal-submissions/preprint-withdrawal-submissions.component').then(
+            (m) => m.PreprintWithdrawalSubmissionsComponent
           ),
         data: { tab: PreprintModerationTab.WithdrawalRequests },
       },

@@ -4,15 +4,25 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  DestroyRef,
+  effect,
+  HostBinding,
+  inject,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UpdateProfileSettingsSocialLinks, UserSelectors } from '@osf/core/store/user';
 import { Social } from '@osf/shared/models';
-import { LoaderService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
-import { socials } from '../../constants/data';
-import { SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys, UserSocialLink } from '../../models';
+import { SOCIALS } from '../../constants/socials';
+import { SocialLinksForm } from '../../models';
+import { hasSocialLinkChanges, mapSocialLinkToPayload } from '../../utils';
 import { SocialFormComponent } from '../social-form/social-form.component';
 
 @Component({
@@ -25,76 +35,93 @@ import { SocialFormComponent } from '../social-form/social-form.component';
 export class SocialComponent {
   @HostBinding('class') class = 'flex flex-column gap-5';
 
-  protected readonly socials = socials;
-  readonly userSocialLinks: UserSocialLink[] = [];
-
   private readonly loaderService = inject(LoaderService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly cd = inject(ChangeDetectorRef);
+  private readonly fb = inject(FormBuilder);
+
+  private readonly socials = SOCIALS;
 
   readonly actions = createDispatchMap({ updateProfileSettingsSocialLinks: UpdateProfileSettingsSocialLinks });
   readonly socialLinks = select(UserSelectors.getSocialLinks);
 
-  readonly fb = inject(FormBuilder);
   readonly socialLinksForm = this.fb.group({ links: this.fb.array<SocialLinksForm>([]) });
 
   constructor() {
-    effect(() => {
-      const socialLinks = this.socialLinks();
-
-      this.links.clear();
-
-      for (const socialLinksKey in socialLinks) {
-        const socialLink = socialLinks[socialLinksKey as SocialLinksKeys];
-
-        const socialLinkGroup = this.fb.group({
-          socialOutput: [this.socials.find((social) => social.key === socialLinksKey), Validators.required],
-          webAddress: [socialLink, Validators.required],
-        });
-
-        this.links.push(socialLinkGroup);
-      }
-    });
+    effect(() => this.setInitialData());
   }
 
   get links(): FormArray<FormGroup> {
     return this.socialLinksForm.get('links') as FormArray<FormGroup>;
   }
 
-  addLink(): void {
-    const linkGroup = this.fb.group({
-      socialOutput: [this.socials[0], Validators.required],
-      webAddress: ['', Validators.required],
+  discardChanges(): void {
+    if (!this.hasFormChanges()) {
+      return;
+    }
+
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'common.discardChangesDialog.header',
+      messageKey: 'common.discardChangesDialog.message',
+      acceptLabelKey: 'common.buttons.discardChanges',
+      onConfirm: () => {
+        this.setInitialData();
+        this.toastService.showSuccess('settings.profileSettings.changesDiscarded');
+      },
     });
-
-    this.links.push(linkGroup);
-  }
-
-  removeLink(index: number): void {
-    this.links.removeAt(index);
   }
 
   saveSocialLinks(): void {
+    if (this.socialLinksForm.invalid) {
+      this.socialLinksForm.markAllAsTouched();
+      return;
+    }
+
     const links = this.socialLinksForm.value.links as SocialLinksForm[];
-
-    const mappedLinks = links.map((link) => {
-      const key = link.socialOutput.key as SocialLinksKeys;
-
-      const value = SOCIAL_KEYS.includes(key)
-        ? Array.isArray(link.webAddress)
-          ? link.webAddress
-          : [link.webAddress]
-        : link.webAddress;
-
-      return {
-        [key]: value,
-      };
-    }) satisfies Partial<Social>[];
+    const mappedLinks = links.map((link) => mapSocialLinkToPayload(link)) satisfies Partial<Social>[];
 
     this.loaderService.show();
+    this.actions
+      .updateProfileSettingsSocialLinks({ socialLinks: mappedLinks })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.loaderService.hide();
+          this.toastService.showSuccess('settings.profileSettings.social.successUpdate');
+        },
+        error: () => this.loaderService.hide(),
+      });
+  }
 
-    this.actions.updateProfileSettingsSocialLinks({ socialLinks: mappedLinks }).subscribe(() => {
-      this.loaderService.hide();
-      this.toastService.showSuccess('settings.profileSettings.social.successUpdate');
+  private hasFormChanges(): boolean {
+    const currentLinks = this.socialLinksForm.value.links as SocialLinksForm[];
+    const initialSocialLinks = this.socialLinks();
+
+    if (!initialSocialLinks || !currentLinks) return false;
+
+    return currentLinks.some((link, index) => hasSocialLinkChanges(link, initialSocialLinks, index, this.socials));
+  }
+
+  private setInitialData(): void {
+    const socialLinks = this.socialLinks();
+    this.links.clear();
+
+    this.socials.forEach((social) => {
+      const key = social.key;
+      const socialLink = socialLinks?.[key] ?? null;
+      const linkedKey = social.linkedField?.key;
+      const linkedValue = linkedKey ? (socialLinks?.[linkedKey] ?? null) : null;
+      const socialLinkGroup = this.fb.group({
+        socialOutput: [social],
+        webAddress: [socialLink],
+        linkedWebAddress: [linkedValue],
+      });
+
+      this.links.push(socialLinkGroup);
     });
+
+    this.cd.markForCheck();
   }
 }

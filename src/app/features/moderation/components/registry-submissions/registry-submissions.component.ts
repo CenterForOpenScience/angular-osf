@@ -1,19 +1,30 @@
+import { createDispatchMap, select } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
+import { PaginatorState } from 'primeng/paginator';
 import { SelectButton } from 'primeng/selectbutton';
 
+import { map, of } from 'rxjs';
+
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { Primitive } from '@osf/core/helpers';
-import { CollectionSubmissionsListComponent } from '@osf/features/moderation/components/collection-submissions-list/collection-submissions-list.component';
-import { IconComponent, SelectComponent } from '@osf/shared/components';
-import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
+import {
+  CustomPaginatorComponent,
+  IconComponent,
+  LoadingSpinnerComponent,
+  SelectComponent,
+} from '@osf/shared/components';
 
-import { SUBMITTED_SUBMISSION_REVIEW_OPTIONS } from '../../constants';
-import { SubmissionReviewStatus } from '../../enums';
-import { pubicReviews } from '../test-data';
+import { REGISTRY_SORT_OPTIONS, SUBMITTED_SUBMISSION_REVIEW_OPTIONS } from '../../constants';
+import { RegistrySort, SubmissionReviewStatus } from '../../enums';
+import { GetRegistrySubmissions, RegistryModerationSelectors } from '../../store/registry-moderation';
+import { RegistrySubmissionItemComponent } from '..';
 
 @Component({
   selector: 'osf-registry-submissions',
@@ -22,30 +33,92 @@ import { pubicReviews } from '../test-data';
     TranslatePipe,
     FormsModule,
     SelectComponent,
-    CollectionSubmissionsListComponent,
     IconComponent,
     TitleCasePipe,
+    LoadingSpinnerComponent,
+    RegistrySubmissionItemComponent,
+    CustomPaginatorComponent,
   ],
   templateUrl: './registry-submissions.component.html',
   styleUrl: './registry-submissions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistrySubmissionsComponent {
+export class RegistrySubmissionsComponent implements OnInit {
   readonly submissionReviewOptions = SUBMITTED_SUBMISSION_REVIEW_OPTIONS;
+  readonly sortOptions = REGISTRY_SORT_OPTIONS;
 
-  sortOptions = ALL_SORT_OPTIONS;
-  selectedSortOption = signal(null);
-  selectedReviewOption = this.submissionReviewOptions[0].value;
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly providerId = toSignal(
+    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+  );
 
-  totalCount = 5;
+  readonly actions = createDispatchMap({ getRegistrySubmissions: GetRegistrySubmissions });
 
-  submissions = pubicReviews;
+  readonly submissions = select(RegistryModerationSelectors.getRegistrySubmissions);
+  readonly isLoading = select(RegistryModerationSelectors.areRegistrySubmissionLoading);
+  readonly totalCount = select(RegistryModerationSelectors.getRegistrySubmissionTotalCount);
 
-  changeReviewStatus(value: SubmissionReviewStatus) {
-    console.log(value);
+  readonly currentPage = signal(1);
+  readonly pageSize = signal(10);
+  readonly first = signal(0);
+  readonly selectedSortOption = signal(RegistrySort.RegisteredNewest);
+  readonly selectedReviewOption = signal(this.submissionReviewOptions[0].value);
+
+  ngOnInit(): void {
+    this.getStatusFromQueryParams();
+    this.fetchSubmissions();
   }
 
-  changeSort(value: Primitive) {
-    console.log(value);
+  changeReviewStatus(value: SubmissionReviewStatus): void {
+    this.selectedReviewOption.set(value);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { status: value },
+      queryParamsHandling: 'merge',
+    });
+
+    this.resetPagination();
+    this.fetchSubmissions();
+  }
+
+  changeSort(value: Primitive): void {
+    this.selectedSortOption.set(value as RegistrySort);
+    this.fetchSubmissions();
+  }
+
+  onPageChange(event: PaginatorState): void {
+    this.currentPage.set(event.page ? event.page + 1 : 1);
+    this.first.set(event.first ?? 0);
+    this.fetchSubmissions();
+  }
+
+  private getStatusFromQueryParams() {
+    const queryParams = this.route.snapshot.queryParams;
+    const statusValues = Object.values(SubmissionReviewStatus);
+
+    const statusParam = queryParams['status'];
+
+    if (statusParam && statusValues.includes(statusParam)) {
+      this.selectedReviewOption.set(statusParam);
+    }
+  }
+
+  private resetPagination(): void {
+    this.currentPage.set(1);
+    this.first.set(0);
+  }
+
+  private fetchSubmissions(): void {
+    const providerId = this.providerId();
+
+    if (!providerId) return;
+
+    this.actions.getRegistrySubmissions(
+      providerId,
+      this.selectedReviewOption(),
+      this.currentPage(),
+      this.selectedSortOption()
+    );
   }
 }

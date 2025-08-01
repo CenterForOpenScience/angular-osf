@@ -10,10 +10,11 @@ import { FormBuilder } from '@angular/forms';
 
 import { User } from '@osf/core/models';
 import { UpdateProfileSettingsUser, UserSelectors } from '@osf/core/store/user';
-import { LoaderService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 import { CustomValidators } from '@osf/shared/utils';
 
 import { NameForm } from '../../models';
+import { hasNameChanges } from '../../utils';
 import { CitationPreviewComponent } from '../citation-preview/citation-preview.component';
 import { NameFormComponent } from '../name-form/name-form.component';
 
@@ -30,6 +31,7 @@ export class NameComponent {
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
 
   readonly actions = createDispatchMap({ updateProfileSettingsUser: UpdateProfileSettingsUser });
   readonly currentUser = select(UserSelectors.getUserNames);
@@ -85,13 +87,29 @@ export class NameComponent {
   }
 
   discardChanges() {
-    const user = this.currentUser();
-
-    if (!user) {
+    if (!this.hasFormChanges()) {
       return;
     }
 
-    this.updateForm(user);
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'common.discardChangesDialog.header',
+      messageKey: 'common.discardChangesDialog.message',
+      acceptLabelKey: 'common.buttons.discardChanges',
+      onConfirm: () => {
+        const user = this.currentUser();
+        if (user) {
+          this.updateForm(user);
+          this.toastService.showSuccess('settings.profileSettings.changesDiscarded');
+        }
+      },
+    });
+  }
+
+  private hasFormChanges(): boolean {
+    const user = this.currentUser();
+    if (!user) return false;
+
+    return hasNameChanges(this.form.controls, user);
   }
 
   private updateForm(user: Partial<User>) {
