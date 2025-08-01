@@ -28,6 +28,33 @@ export const SUBMISSION_REVIEW_OPTIONS: SubmissionReviewOption[] = [
   },
 ];
 
+export const COLLECTIONS_SUBMISSIONS_REVIEW_OPTIONS: SubmissionReviewOption[] = [
+  {
+    value: SubmissionReviewStatus.Pending,
+    icon: 'fas fa-hourglass',
+    label: 'moderation.submissionReviewStatus.pending',
+    count: 0,
+  },
+  {
+    value: SubmissionReviewStatus.Accepted,
+    icon: 'fas fa-circle-check',
+    label: 'moderation.submissionReviewStatus.accepted',
+    count: 0,
+  },
+  {
+    value: SubmissionReviewStatus.Rejected,
+    icon: 'fas fa-circle-xmark',
+    label: 'moderation.submissionReviewStatus.rejected',
+    count: 0,
+  },
+  {
+    value: SubmissionReviewStatus.Removed,
+    icon: 'fas fa-circle-minus',
+    label: 'moderation.submissionReviewStatus.withdrawn',
+    count: 0,
+  },
+];
+
 export const WITHDRAWAL_SUBMISSION_REVIEW_OPTIONS: SubmissionReviewOption[] = [
   {
     value: SubmissionReviewStatus.Pending,

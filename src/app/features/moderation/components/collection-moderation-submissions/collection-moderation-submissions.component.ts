@@ -32,7 +32,7 @@ import {
   SetPageNumber,
 } from '@shared/stores';
 
-import { SUBMISSION_REVIEW_OPTIONS } from '../../constants';
+import { COLLECTIONS_SUBMISSIONS_REVIEW_OPTIONS } from '../../constants';
 import { SubmissionReviewStatus } from '../../enums';
 import { CollectionSubmissionsListComponent } from '../collection-submissions-list/collection-submissions-list.component';
 
@@ -55,7 +55,7 @@ import { CollectionSubmissionsListComponent } from '../collection-submissions-li
 export class CollectionModerationSubmissionsComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  readonly submissionReviewOptions = SUBMISSION_REVIEW_OPTIONS;
+  readonly submissionReviewOptions = COLLECTIONS_SUBMISSIONS_REVIEW_OPTIONS;
 
   protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
