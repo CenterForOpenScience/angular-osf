@@ -3,6 +3,7 @@ import {
   Preprint,
   PreprintAttributesJsonApi,
   PreprintEmbedsJsonApi,
+  PreprintLinksJsonApi,
   PreprintMetaJsonApi,
   PreprintRelationshipsJsonApi,
   PreprintShortInfoWithTotalCount,
@@ -70,13 +71,14 @@ export class PreprintsMapper {
 
   static fromPreprintWithEmbedsJsonApi(
     response: JsonApiResponseWithMeta<
-      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>,
+      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>,
       PreprintMetaJsonApi,
       null
     >
   ): Preprint {
     const data = response.data;
     const meta = response.meta;
+    const links = response.data.links;
     return {
       id: data.id,
       dateCreated: data.attributes.date_created,
@@ -114,6 +116,7 @@ export class PreprintsMapper {
         views: meta.metrics.views,
       },
       embeddedLicense: LicensesMapper.fromLicenseDataJsonApi(data.embeds.license.data),
+      preprintDoiLink: links.preprint_doi,
     };
   }
 

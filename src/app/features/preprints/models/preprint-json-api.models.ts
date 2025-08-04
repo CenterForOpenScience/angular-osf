@@ -74,3 +74,7 @@ export interface PreprintMetaJsonApi {
     views: number;
   };
 }
+
+export interface PreprintLinksJsonApi {
+  preprint_doi: string;
+}

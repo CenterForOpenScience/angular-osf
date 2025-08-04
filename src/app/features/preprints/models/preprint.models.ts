@@ -31,6 +31,7 @@ export interface Preprint {
   preregLinkInfo: PreregLinkInfo | null;
   metrics?: PreprintMetrics;
   embeddedLicense?: License;
+  preprintDoiLink?: string;
 }
 
 export interface PreprintFilesLinks {

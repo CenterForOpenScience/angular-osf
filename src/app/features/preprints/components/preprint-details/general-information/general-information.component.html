@@ -116,6 +116,9 @@
           [loading]="arePreprintVersionIdsLoading()"
           (onChange)="selectPreprintVersion($event.value)"
         />
+        <p>
+          <a [href]="preprintValue.preprintDoiLink">{{ preprintValue.preprintDoiLink }}</a>
+        </p>
       </section>
     </div>
   }

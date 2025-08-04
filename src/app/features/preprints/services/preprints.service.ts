@@ -10,6 +10,7 @@ import {
   Preprint,
   PreprintAttributesJsonApi,
   PreprintEmbedsJsonApi,
+  PreprintLinksJsonApi,
   PreprintMetaJsonApi,
   PreprintRelationshipsJsonApi,
 } from '@osf/features/preprints/models';
@@ -76,7 +77,7 @@ export class PreprintsService {
     return this.jsonApiService
       .get<
         JsonApiResponseWithMeta<
-          ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>,
+          ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>,
           PreprintMetaJsonApi,
           null
         >
