@@ -1,9 +1,8 @@
 <p-card class="card">
   <div class="flex flex-column gap-4">
-    <!-- [RNi] TODO: use preprint word from provider -->
     <div class="flex flex-column justify-content-between gap-2 md:flex-row md:align-items-center">
-      @if (preprint()) {
-        <a pButton severity="secondary" [href]="downloadLink()">Download preprint</a>
+      @if (preprint() && preprintProvider()) {
+        <a pButton severity="secondary" [href]="downloadLink()">Download {{ preprintProvider()!.preprintWord }}</a>
       }
 
       @if (metrics()) {
@@ -21,20 +20,17 @@
     </div>
 
     <div class="flex flex-row justify-content-start gap-1">
-      <!-- [RNi] TODO: add all share links when available -->
-      <a class="social-link flex align-items-center justify-content-center" href="#">
-        <osf-icon [iconClass]="`fab fa-linkedin-in`" />
+      <a class="social-link flex align-items-center justify-content-center" [href]="emailShareLink()">
+        <osf-icon [iconClass]="`fas fa-envelope fa-xl`" />
       </a>
-
-      <a class="social-link flex align-items-center justify-content-center" href="#">
-        <osf-icon [iconClass]="``" />
+      <a class="social-link flex align-items-center justify-content-center" [href]="twitterShareLink()">
+        <osf-icon [iconClass]="`fab fa-x-twitter fa-xl`" />
       </a>
-
-      <a class="social-link flex align-items-center justify-content-center" href="#">
-        <osf-icon [iconClass]="``" />
+      <a class="social-link flex align-items-center justify-content-center" [href]="facebookShareLink()">
+        <osf-icon [iconClass]="`fab fa-facebook-f fa-xl`" />
       </a>
-      <a class="social-link flex align-items-center justify-content-center" href="#">
-        <osf-icon [iconClass]="``" />
+      <a class="social-link flex align-items-center justify-content-center" [href]="linkedInShareLink()">
+        <osf-icon [iconClass]="`fab fa-linkedin-in fa-xl`" />
       </a>
     </div>
   </div>
