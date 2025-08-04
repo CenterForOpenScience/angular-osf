@@ -35,6 +35,6 @@ export class ShareAndDownloadComponent {
 
     if (!preprint) return '#';
 
-    return `${environment.webUrl}/${this.preprint()?.id}/download/`;
+    return `${environment.webUrl}/download/${this.preprint()?.id}`;
   });
 }
