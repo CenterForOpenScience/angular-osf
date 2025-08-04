@@ -7,6 +7,8 @@ export interface InstitutionsSearchModel {
   filters: DiscoverableFilter[];
   filterValues: Record<string, string | null>;
   filterOptionsCache: Record<string, SelectOption[]>;
+  filterSearchCache: Record<string, SelectOption[]>;
+  filterPaginationCache: Record<string, string>;
   providerIri: string;
   resourcesCount: number;
   searchText: string;

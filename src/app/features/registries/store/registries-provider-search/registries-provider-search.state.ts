@@ -1,7 +1,7 @@
 import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { BehaviorSubject, catchError, EMPTY, forkJoin, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, forkJoin, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -141,7 +141,8 @@ export class RegistriesProviderSearchState implements NgxsOnInit {
     ctx.patchState({ filters: loadingFilters });
 
     return this.searchService.getFilterOptions(filterKey).pipe(
-      tap((options) => {
+      tap((response) => {
+        const options = response.options;
         const updatedCache = { ...ctx.getState().filterOptionsCache, [filterKey]: options };
         const updatedFilters = ctx
           .getState()
@@ -189,14 +190,14 @@ export class RegistriesProviderSearchState implements NgxsOnInit {
 
     const observables = filterKeys.map((key) =>
       this.searchService.getFilterOptions(key).pipe(
-        tap((options) => {
+        tap((response) => {
+          const options = response.options;
           const updatedCache = { ...ctx.getState().filterOptionsCache, [key]: options };
           const updatedFilters = ctx
             .getState()
             .filters.map((f) => (f.key === key ? { ...f, options, isLoaded: true, isLoading: false } : f));
           ctx.patchState({ filters: updatedFilters, filterOptionsCache: updatedCache });
-        }),
-        catchError(() => of({ filterKey: key, options: [] }))
+        })
       )
     );
 

@@ -1,11 +1,12 @@
 import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { BehaviorSubject, catchError, EMPTY, forkJoin, of, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, EMPTY, forkJoin, switchMap, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
 import { ResourcesData } from '@osf/features/search/models';
+import { SearchStateModel } from '@osf/features/search/store';
 import { GetResourcesRequestTypeEnum, ResourceTab } from '@osf/shared/enums';
 import { Institution } from '@osf/shared/models';
 import { InstitutionsService, SearchService } from '@osf/shared/services';
@@ -32,6 +33,8 @@ import { InstitutionsSearchModel } from './institutions-search.model';
     filters: [],
     filterValues: {},
     filterOptionsCache: {},
+    filterSearchCache: {},
+    filterPaginationCache: {},
     providerIri: '',
     resourcesCount: 0,
     searchText: '',
@@ -138,12 +141,25 @@ export class InstitutionsSearchState implements NgxsOnInit {
     ctx.patchState({ filters: loadingFilters });
 
     return this.searchService.getFilterOptions(filterKey).pipe(
-      tap((options) => {
+      tap((response) => {
+        const options = response.options;
         const updatedCache = { ...ctx.getState().filterOptionsCache, [filterKey]: options };
+        const updatedPaginationCache = { ...ctx.getState().filterPaginationCache };
+
+        if (response.nextUrl) {
+          updatedPaginationCache[filterKey] = response.nextUrl;
+        } else {
+          delete updatedPaginationCache[filterKey];
+        }
+
         const updatedFilters = ctx
           .getState()
           .filters.map((f) => (f.key === filterKey ? { ...f, options, isLoaded: true, isLoading: false } : f));
-        ctx.patchState({ filters: updatedFilters, filterOptionsCache: updatedCache });
+        ctx.patchState({
+          filters: updatedFilters,
+          filterOptionsCache: updatedCache,
+          filterPaginationCache: updatedPaginationCache,
+        });
       })
     );
   }
@@ -186,7 +202,7 @@ export class InstitutionsSearchState implements NgxsOnInit {
   }
 
   @Action(LoadFilterOptionsAndSetValues)
-  loadFilterOptionsAndSetValues(ctx: StateContext<InstitutionsSearchModel>, action: LoadFilterOptionsAndSetValues) {
+  loadFilterOptionsAndSetValues(ctx: StateContext<SearchStateModel>, action: LoadFilterOptionsAndSetValues) {
     const filterKeys = Object.keys(action.filterValues).filter((key) => action.filterValues[key]);
     if (!filterKeys.length) return;
 
@@ -199,14 +215,26 @@ export class InstitutionsSearchState implements NgxsOnInit {
 
     const observables = filterKeys.map((key) =>
       this.searchService.getFilterOptions(key).pipe(
-        tap((options) => {
+        tap((response) => {
+          const options = response.options;
           const updatedCache = { ...ctx.getState().filterOptionsCache, [key]: options };
+          const updatedPaginationCache = { ...ctx.getState().filterPaginationCache };
+
+          if (response.nextUrl) {
+            updatedPaginationCache[key] = response.nextUrl;
+          } else {
+            delete updatedPaginationCache[key];
+          }
+
           const updatedFilters = ctx
             .getState()
             .filters.map((f) => (f.key === key ? { ...f, options, isLoaded: true, isLoading: false } : f));
-          ctx.patchState({ filters: updatedFilters, filterOptionsCache: updatedCache });
-        }),
-        catchError(() => of({ filterKey: key, options: [] }))
+          ctx.patchState({
+            filters: updatedFilters,
+            filterOptionsCache: updatedCache,
+            filterPaginationCache: updatedPaginationCache,
+          });
+        })
       )
     );
 

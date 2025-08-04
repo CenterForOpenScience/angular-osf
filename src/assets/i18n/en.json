@@ -1035,6 +1035,7 @@
       "sortBy": "Sort by",
       "noFiltersAvailable": "No filters available",
       "noOptionsAvailable": "No options available",
+      "searchCreators": "Search for creators",
       "programArea": {
         "label": "Program Area",
         "placeholder": "Select program areas",
