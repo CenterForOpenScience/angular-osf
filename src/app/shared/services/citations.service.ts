@@ -37,7 +37,7 @@ export class CitationsService {
     const params = new HttpParams().set('filter[title,short_title]', searchQuery || '').set('page[size]', '100');
 
     return this.jsonApiService
-      .get<JsonApiResponse<CitationStyleJsonApi[], null>>(`${baseUrl}/citations/styles`, { params })
+      .get<JsonApiResponse<CitationStyleJsonApi[], null>>(`${baseUrl}/citations/styles/`, { params })
       .pipe(map((response) => CitationsMapper.fromGetCitationStylesResponse(response.data)));
   }
 
