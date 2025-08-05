@@ -13,7 +13,6 @@ import { UserSelectors } from '@osf/core/store/user';
 import { EducationHistoryComponent, EmploymentHistoryComponent } from '@osf/shared/components';
 import { IS_MEDIUM } from '@osf/shared/utils';
 
-import { ResetFiltersState } from '../search/components/resource-filters/store';
 import { ResetSearchState } from '../search/store';
 
 import { MyProfileSearchComponent } from './components';
@@ -40,7 +39,6 @@ export class MyProfileComponent implements OnDestroy {
   readonly isMedium = toSignal(inject(IS_MEDIUM));
   readonly currentUser = select(UserSelectors.getCurrentUser);
   readonly actions = createDispatchMap({
-    resetFiltersState: ResetFiltersState,
     resetSearchState: ResetSearchState,
     setIsMyProfile: SetIsMyProfile,
   });
@@ -50,7 +48,6 @@ export class MyProfileComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.resetFiltersState();
     this.actions.resetSearchState();
     this.actions.setIsMyProfile(false);
   }

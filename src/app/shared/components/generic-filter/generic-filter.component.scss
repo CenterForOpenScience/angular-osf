@@ -1,0 +1,11 @@
+::ng-deep .scrollable-panel {
+  .p-select-panel {
+    max-height: 300px;
+    overflow: hidden;
+  }
+
+  .p-select-items-wrapper {
+    max-height: 250px;
+    overflow-y: auto;
+  }
+}
