@@ -31,6 +31,7 @@ import {
   LoadFilterOptionsWithSearch,
   LoadMoreFilterOptions,
   SearchSelectors,
+  SetFilterOptionsFromUrl,
   SetFilterValues,
   SetResourceTab,
   SetSortBy,
@@ -65,6 +66,7 @@ export class SearchComponent implements OnInit {
   filters = select(SearchSelectors.getFilters);
   selectedValues = select(SearchSelectors.getFilterValues);
   filterSearchResults = select(SearchSelectors.getFilterSearchCache);
+  filterOptionsCache = select(SearchSelectors.getFilterOptionsCache);
   selectedSort = select(SearchSelectors.getSortBy);
   first = select(SearchSelectors.getFirst);
   next = select(SearchSelectors.getNext);
@@ -79,6 +81,7 @@ export class SearchComponent implements OnInit {
     loadMoreFilterOptions: LoadMoreFilterOptions,
     clearFilterSearchResults: ClearFilterSearchResults,
     setFilterValues: SetFilterValues,
+    setFilterOptionsFromUrl: SetFilterOptionsFromUrl,
     updateFilterValue: UpdateFilterValue,
     getResourcesByLink: GetResourcesByLink,
     getResources: GetResources,
@@ -116,7 +119,9 @@ export class SearchComponent implements OnInit {
 
   readonly filterOptions = computed(() => {
     const filtersData = this.filters();
+    const cachedOptions = this.filterOptionsCache();
     const options: Record<string, { id: string; value: string; label: string }[]> = {};
+
     filtersData.forEach((filter) => {
       if (filter.key && filter.options) {
         options[filter.key] = filter.options.map((opt) => ({
@@ -126,6 +131,24 @@ export class SearchComponent implements OnInit {
         }));
       }
     });
+
+    Object.entries(cachedOptions).forEach(([filterKey, cachedOpts]) => {
+      if (cachedOpts && cachedOpts.length > 0) {
+        const existingOptions = options[filterKey] || [];
+        const existingValues = new Set(existingOptions.map((opt) => opt.value));
+
+        const newCachedOptions = cachedOpts
+          .filter((opt) => !existingValues.has(String(opt.value || '')))
+          .map((opt) => ({
+            id: String(opt.value || ''),
+            value: String(opt.value || ''),
+            label: opt.label,
+          }));
+
+        options[filterKey] = [...newCachedOptions, ...existingOptions];
+      }
+    });
+
     return options;
   });
 
@@ -134,7 +157,6 @@ export class SearchComponent implements OnInit {
     this.restoreTabFromUrl();
     this.restoreSearchFromUrl();
     this.handleSearch();
-    this.actions.getResources();
   }
 
   onLoadFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
@@ -150,7 +172,6 @@ export class SearchComponent implements OnInit {
   }
 
   onLoadMoreFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
-    console.log('📄 Search Component onLoadMoreFilterOptions called for:', event.filterType);
     this.actions.loadMoreFilterOptions(event.filterType);
   }
 
@@ -238,21 +259,57 @@ export class SearchComponent implements OnInit {
   }
 
   private restoreFiltersFromUrl(): void {
-    const queryParams = this.route.snapshot.queryParams;
     const filterValues: Record<string, string | null> = {};
+    const filterLabels: Record<string, { value: string; label: string }> = {};
 
-    Object.keys(queryParams).forEach((key) => {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const activeFiltersParam = urlParams.get('activeFilters');
+    if (activeFiltersParam) {
+      const activeFilters = JSON.parse(decodeURIComponent(activeFiltersParam));
+      if (Array.isArray(activeFilters)) {
+        activeFilters.forEach((filter: { filterName?: string; label?: string; value?: string }) => {
+          if (filter.filterName && filter.value) {
+            const filterKey = filter.filterName.toLowerCase();
+            filterValues[filterKey] = filter.value;
+
+            if (filter.label) {
+              filterLabels[filterKey] = { value: filter.value, label: filter.label };
+            }
+          }
+        });
+      }
+    }
+
+    for (const [key, value] of urlParams.entries()) {
       if (key.startsWith('filter_')) {
         const filterKey = key.replace('filter_', '');
-        const filterValue = queryParams[key];
-        if (filterValue) {
-          filterValues[filterKey] = filterValue;
-        }
+        filterValues[filterKey] = value;
       }
-    });
+    }
 
     if (Object.keys(filterValues).length > 0) {
+      this.prePopulateFilterLabels(filterLabels);
+
+      this.actions.setFilterValues(filterValues);
+
       this.actions.loadFilterOptionsAndSetValues(filterValues);
+
+      this.actions.getResources();
+    } else {
+      this.actions.getResources();
+    }
+  }
+
+  private prePopulateFilterLabels(filterLabels: Record<string, { value: string; label: string }>): void {
+    if (Object.keys(filterLabels).length > 0) {
+      const filterOptions: Record<string, { value: string; label: string }[]> = {};
+
+      Object.entries(filterLabels).forEach(([filterKey, { value, label }]) => {
+        filterOptions[filterKey] = [{ value, label }];
+      });
+
+      this.actions.setFilterOptionsFromUrl(filterOptions);
     }
   }
 
@@ -298,6 +355,17 @@ export class SearchComponent implements OnInit {
 
   private restoreTabFromUrl(): void {
     const queryParams = this.route.snapshot.queryParams;
+
+    const resourceTabParam = queryParams['resourceTab'];
+    if (resourceTabParam !== undefined) {
+      const tabValue = parseInt(resourceTabParam, 10);
+      if (!isNaN(tabValue) && tabValue >= 0 && tabValue <= 6) {
+        this.selectedTab = tabValue as ResourceTab;
+        this.actions.updateResourceType(tabValue as ResourceTab);
+        return;
+      }
+    }
+
     const tabString = queryParams['tab'];
     if (tabString) {
       const tab = this.urlTabMap.get(tabString);

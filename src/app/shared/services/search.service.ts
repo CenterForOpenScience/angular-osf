@@ -98,6 +98,7 @@ export class SearchService {
   getFilterOptions(filterKey: string): Observable<{ options: SelectOption[]; nextUrl?: string }> {
     const params: Record<string, string> = {
       valueSearchPropertyPath: filterKey,
+      'cardSearchFilter[accessService]': environment.webUrl,
       'page[size]': '50',
     };
 
@@ -113,6 +114,7 @@ export class SearchService {
     const params: Record<string, string> = {
       valueSearchPropertyPath: filterKey,
       valueSearchText: searchText,
+      'cardSearchFilter[accessService]': environment.webUrl,
       'page[size]': '50',
     };
 

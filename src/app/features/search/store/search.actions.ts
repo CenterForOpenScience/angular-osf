@@ -82,3 +82,8 @@ export class LoadMoreFilterOptions {
   static readonly type = '[Search] Load More Filter Options';
   constructor(public filterKey: string) {}
 }
+
+export class SetFilterOptionsFromUrl {
+  static readonly type = '[Search] Set Filter Options From URL';
+  constructor(public filterOptions: Record<string, { value: string; label: string }[]>) {}
+}

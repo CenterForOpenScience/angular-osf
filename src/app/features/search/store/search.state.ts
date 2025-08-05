@@ -18,6 +18,7 @@ import {
   LoadFilterOptionsWithSearch,
   LoadMoreFilterOptions,
   ResetSearchState,
+  SetFilterOptionsFromUrl,
   SetFilterValues,
   SetIsMyProfile,
   SetResourceTab,
@@ -55,7 +56,16 @@ export class SearchState extends BaseSearchState<SearchStateModel> implements Ng
     const filtersParams: Record<string, string> = {};
 
     Object.entries(state.filterValues).forEach(([key, value]) => {
-      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
+      if (value) {
+        const filterDefinition = state.filters.find((f) => f.key === key);
+        const operator = filterDefinition?.operator;
+
+        if (operator === 'is-present') {
+          filtersParams[`cardSearchFilter[${key}][is-present]`] = value;
+        } else {
+          filtersParams[`cardSearchFilter[${key}][]`] = value;
+        }
+      }
     });
 
     if (state.isMyProfile) {
@@ -66,7 +76,7 @@ export class SearchState extends BaseSearchState<SearchStateModel> implements Ng
   }
 
   @Action(GetResources)
-  getResources(_ctx: StateContext<SearchStateModel>) {
+  getResources() {
     this.handleFetchResources();
   }
 
@@ -128,6 +138,35 @@ export class SearchState extends BaseSearchState<SearchStateModel> implements Ng
   @Action(SetSearchText)
   setSearchText(ctx: StateContext<SearchStateModel>, action: SetSearchText) {
     ctx.patchState({ searchText: action.searchText });
+  }
+
+  @Action(SetFilterOptionsFromUrl)
+  setFilterOptionsFromUrl(ctx: StateContext<SearchStateModel>, action: SetFilterOptionsFromUrl) {
+    const currentState = ctx.getState();
+    const updatedCache = { ...currentState.filterOptionsCache };
+
+    Object.entries(action.filterOptions).forEach(([filterKey, options]) => {
+      const existingOptions = updatedCache[filterKey] || [];
+      const newOptions = options.map((opt) => ({ label: opt.label, value: opt.value }));
+
+      const existingValues = new Set(existingOptions.map((opt) => opt.value));
+      const uniqueNewOptions = newOptions.filter((opt) => !existingValues.has(opt.value));
+
+      updatedCache[filterKey] = [...uniqueNewOptions, ...existingOptions];
+    });
+
+    const updatedFilters = currentState.filters.map((filter) => {
+      const cachedOptions = updatedCache[filter.key];
+      if (cachedOptions?.length) {
+        return { ...filter, options: cachedOptions, isLoaded: true };
+      }
+      return filter;
+    });
+
+    ctx.patchState({
+      filterOptionsCache: updatedCache,
+      filters: updatedFilters,
+    });
   }
 
   @Action(ResetSearchState)
