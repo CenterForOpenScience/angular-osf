@@ -1,14 +1,13 @@
 import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 
-import { BehaviorSubject, EMPTY, forkJoin, switchMap, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { ResourcesData } from '@osf/features/search/models';
-import { GetResourcesRequestTypeEnum } from '@osf/shared/enums';
-import { SearchService } from '@osf/shared/services';
 import { getResourceTypes } from '@osf/shared/utils';
 import { searchStateDefaults } from '@shared/constants';
+import { BaseSearchState } from '@shared/stores/base-search';
 
 import {
   ClearFilterSearchResults,
@@ -33,295 +32,87 @@ import { SearchStateModel } from './search.model';
   name: 'search',
   defaults: searchStateDefaults,
 })
-export class SearchState implements NgxsOnInit {
-  private readonly searchService = inject(SearchService);
-
-  private loadRequests = new BehaviorSubject<{ type: GetResourcesRequestTypeEnum; link?: string } | null>(null);
-  private filterOptionsRequests = new BehaviorSubject<string | null>(null);
-
+export class SearchState extends BaseSearchState<SearchStateModel> implements NgxsOnInit {
   ngxsOnInit(ctx: StateContext<SearchStateModel>): void {
-    this.setupLoadRequests(ctx);
-    this.setupFilterOptionsRequests(ctx);
+    this.setupBaseRequests(ctx);
   }
 
-  private setupLoadRequests(ctx: StateContext<SearchStateModel>) {
-    this.loadRequests
-      .pipe(
-        switchMap((query) => {
-          if (!query) return EMPTY;
-          return query.type === GetResourcesRequestTypeEnum.GetResources
-            ? this.loadResources(ctx)
-            : this.loadResourcesByLink(ctx, query.link);
-        })
-      )
-      .subscribe();
-  }
-
-  private loadResources(ctx: StateContext<SearchStateModel>) {
+  protected loadResources(ctx: StateContext<SearchStateModel>): Observable<ResourcesData> {
     const state = ctx.getState();
     ctx.patchState({ resources: { ...state.resources, isLoading: true } });
-    const filtersParams: Record<string, string> = {};
+    const filtersParams = this.buildFiltersParams(state);
     const searchText = state.searchText;
     const sortBy = state.sortBy;
     const resourceTab = state.resourceTab;
     const resourceTypes = getResourceTypes(resourceTab);
-
-    Object.entries(state.filterValues).forEach(([key, value]) => {
-      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
-    });
 
     return this.searchService
       .getResources(filtersParams, searchText, sortBy, resourceTypes)
       .pipe(tap((response) => this.updateResourcesState(ctx, response)));
   }
 
-  private loadResourcesByLink(ctx: StateContext<SearchStateModel>, link?: string) {
-    if (!link) return EMPTY;
-    return this.searchService
-      .getResourcesByLink(link)
-      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
-  }
+  protected buildFiltersParams(state: SearchStateModel): Record<string, string> {
+    const filtersParams: Record<string, string> = {};
 
-  private updateResourcesState(ctx: StateContext<SearchStateModel>, response: ResourcesData) {
-    const state = ctx.getState();
-    const filtersWithCachedOptions = (response.filters || []).map((filter) => {
-      const cachedOptions = state.filterOptionsCache[filter.key];
-      return cachedOptions?.length ? { ...filter, options: cachedOptions, isLoaded: true } : filter;
+    Object.entries(state.filterValues).forEach(([key, value]) => {
+      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
     });
 
-    ctx.patchState({
-      resources: { data: response.resources, isLoading: false, error: null },
-      filters: filtersWithCachedOptions,
-      resourcesCount: response.count,
-      first: response.first,
-      next: response.next,
-      previous: response.previous,
-    });
-  }
-
-  private setupFilterOptionsRequests(ctx: StateContext<SearchStateModel>) {
-    this.filterOptionsRequests
-      .pipe(
-        switchMap((filterKey) => {
-          if (!filterKey) return EMPTY;
-          return this.handleFilterOptionLoad(ctx, filterKey);
-        })
-      )
-      .subscribe();
-  }
-
-  private handleFilterOptionLoad(ctx: StateContext<SearchStateModel>, filterKey: string) {
-    const state = ctx.getState();
-    const cachedOptions = state.filterOptionsCache[filterKey];
-    if (cachedOptions?.length) {
-      const updatedFilters = state.filters.map((f) =>
-        f.key === filterKey ? { ...f, options: cachedOptions, isLoaded: true, isLoading: false } : f
-      );
-      ctx.patchState({ filters: updatedFilters });
-      return EMPTY;
+    if (state.isMyProfile) {
+      filtersParams['cardSearchFilter[creator][]'] = 'me';
     }
 
-    const loadingFilters = state.filters.map((f) => (f.key === filterKey ? { ...f, isLoading: true } : f));
-    ctx.patchState({ filters: loadingFilters });
-
-    return this.searchService.getFilterOptions(filterKey).pipe(
-      tap((response) => {
-        const options = response.options;
-        const updatedCache = { ...ctx.getState().filterOptionsCache, [filterKey]: options };
-        const updatedPaginationCache = { ...ctx.getState().filterPaginationCache };
-
-        if (response.nextUrl) {
-          updatedPaginationCache[filterKey] = response.nextUrl;
-        } else {
-          delete updatedPaginationCache[filterKey];
-        }
-
-        const updatedFilters = ctx
-          .getState()
-          .filters.map((f) => (f.key === filterKey ? { ...f, options, isLoaded: true, isLoading: false } : f));
-        ctx.patchState({
-          filters: updatedFilters,
-          filterOptionsCache: updatedCache,
-          filterPaginationCache: updatedPaginationCache,
-        });
-      })
-    );
+    return filtersParams;
   }
 
   @Action(GetResources)
-  getResources() {
-    this.loadRequests.next({
-      type: GetResourcesRequestTypeEnum.GetResources,
-    });
+  getResources(_ctx: StateContext<SearchStateModel>) {
+    this.handleFetchResources();
   }
 
   @Action(GetResourcesByLink)
-  getResourcesByLink(ctx: StateContext<SearchStateModel>, action: GetResourcesByLink) {
-    this.loadRequests.next({
-      type: GetResourcesRequestTypeEnum.GetResourcesByLink,
-      link: action.link,
-    });
+  getResourcesByLink(_ctx: StateContext<SearchStateModel>, action: GetResourcesByLink) {
+    this.handleFetchResourcesByLink(action.link);
   }
 
   @Action(LoadFilterOptions)
-  loadFilterOptions(_: StateContext<SearchStateModel>, action: LoadFilterOptions) {
-    this.filterOptionsRequests.next(action.filterKey);
+  loadFilterOptions(ctx: StateContext<SearchStateModel>, action: LoadFilterOptions) {
+    this.handleLoadFilterOptions(ctx, action.filterKey);
   }
 
   @Action(LoadFilterOptionsWithSearch)
   loadFilterOptionsWithSearch(ctx: StateContext<SearchStateModel>, action: LoadFilterOptionsWithSearch) {
-    const state = ctx.getState();
-    const loadingFilters = state.filters.map((f) => (f.key === action.filterKey ? { ...f, isSearchLoading: true } : f));
-    ctx.patchState({ filters: loadingFilters });
-
-    return this.searchService.getFilterOptionsWithSearch(action.filterKey, action.searchText).pipe(
-      tap((response) => {
-        const updatedSearchCache = { ...ctx.getState().filterSearchCache, [action.filterKey]: response.options };
-        const updatedPaginationCache = { ...ctx.getState().filterPaginationCache };
-
-        if (response.nextUrl) {
-          updatedPaginationCache[action.filterKey] = response.nextUrl;
-        } else {
-          delete updatedPaginationCache[action.filterKey];
-        }
-
-        const updatedFilters = ctx
-          .getState()
-          .filters.map((f) => (f.key === action.filterKey ? { ...f, isSearchLoading: false } : f));
-
-        ctx.patchState({
-          filters: updatedFilters,
-          filterSearchCache: updatedSearchCache,
-          filterPaginationCache: updatedPaginationCache,
-        });
-      })
-    );
+    return this.handleLoadFilterOptionsWithSearch(ctx, action.filterKey, action.searchText);
   }
 
   @Action(ClearFilterSearchResults)
   clearFilterSearchResults(ctx: StateContext<SearchStateModel>, action: ClearFilterSearchResults) {
-    const state = ctx.getState();
-    const updatedSearchCache = { ...state.filterSearchCache };
-    delete updatedSearchCache[action.filterKey];
-
-    const updatedFilters = state.filters.map((f) =>
-      f.key === action.filterKey ? { ...f, isSearchLoading: false } : f
-    );
-
-    ctx.patchState({
-      filterSearchCache: updatedSearchCache,
-      filters: updatedFilters,
-    });
+    this.handleClearFilterSearchResults(ctx, action.filterKey);
   }
 
   @Action(LoadMoreFilterOptions)
   loadMoreFilterOptions(ctx: StateContext<SearchStateModel>, action: LoadMoreFilterOptions) {
-    const state = ctx.getState();
-    const nextUrl = state.filterPaginationCache[action.filterKey];
-
-    if (!nextUrl) {
-      return;
-    }
-
-    const loadingFilters = state.filters.map((f) =>
-      f.key === action.filterKey ? { ...f, isPaginationLoading: true } : f
-    );
-    ctx.patchState({ filters: loadingFilters });
-
-    return this.searchService.getFilterOptionsFromPaginationUrl(nextUrl).pipe(
-      tap((response) => {
-        const currentOptions = ctx.getState().filterSearchCache[action.filterKey] || [];
-        const updatedSearchCache = {
-          ...ctx.getState().filterSearchCache,
-          [action.filterKey]: [...currentOptions, ...response.options],
-        };
-        const updatedPaginationCache = { ...ctx.getState().filterPaginationCache };
-
-        if (response.nextUrl) {
-          updatedPaginationCache[action.filterKey] = response.nextUrl;
-        } else {
-          delete updatedPaginationCache[action.filterKey];
-        }
-
-        const updatedFilters = ctx
-          .getState()
-          .filters.map((f) => (f.key === action.filterKey ? { ...f, isPaginationLoading: false } : f));
-
-        ctx.patchState({
-          filters: updatedFilters,
-          filterSearchCache: updatedSearchCache,
-          filterPaginationCache: updatedPaginationCache,
-        });
-      })
-    );
+    return this.handleLoadMoreFilterOptions(ctx, action.filterKey);
   }
 
   @Action(LoadFilterOptionsAndSetValues)
   loadFilterOptionsAndSetValues(ctx: StateContext<SearchStateModel>, action: LoadFilterOptionsAndSetValues) {
-    const filterKeys = Object.keys(action.filterValues).filter((key) => action.filterValues[key]);
-    if (!filterKeys.length) return;
-
-    const loadingFilters = ctx
-      .getState()
-      .filters.map((f) =>
-        filterKeys.includes(f.key) && !ctx.getState().filterOptionsCache[f.key]?.length ? { ...f, isLoading: true } : f
-      );
-    ctx.patchState({ filters: loadingFilters });
-
-    const observables = filterKeys.map((key) =>
-      this.searchService.getFilterOptions(key).pipe(
-        tap((response) => {
-          const options = response.options;
-          const updatedCache = { ...ctx.getState().filterOptionsCache, [key]: options };
-          const updatedPaginationCache = { ...ctx.getState().filterPaginationCache };
-
-          if (response.nextUrl) {
-            updatedPaginationCache[key] = response.nextUrl;
-          } else {
-            delete updatedPaginationCache[key];
-          }
-
-          const updatedFilters = ctx
-            .getState()
-            .filters.map((f) => (f.key === key ? { ...f, options, isLoaded: true, isLoading: false } : f));
-          ctx.patchState({
-            filters: updatedFilters,
-            filterOptionsCache: updatedCache,
-            filterPaginationCache: updatedPaginationCache,
-          });
-        })
-      )
-    );
-
-    return forkJoin(observables).pipe(tap(() => ctx.patchState({ filterValues: action.filterValues })));
+    return this.handleLoadFilterOptionsAndSetValues(ctx, action.filterValues);
   }
 
   @Action(SetFilterValues)
   setFilterValues(ctx: StateContext<SearchStateModel>, action: SetFilterValues) {
-    ctx.patchState({ filterValues: action.filterValues });
+    this.handleSetFilterValues(ctx, action.filterValues);
   }
 
   @Action(UpdateFilterValue)
   updateFilterValue(ctx: StateContext<SearchStateModel>, action: UpdateFilterValue) {
-    if (action.filterKey === 'search') {
-      ctx.patchState({ searchText: action.value || '' });
-      this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
-      return;
-    }
-
-    const updatedFilterValues = { ...ctx.getState().filterValues, [action.filterKey]: action.value };
-    ctx.patchState({ filterValues: updatedFilterValues });
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
-  }
-
-  @Action(SetSearchText)
-  setSearchText(ctx: StateContext<SearchStateModel>, action: SetSearchText) {
-    ctx.patchState({ searchText: action.searchText });
+    this.handleUpdateFilterValue(ctx, action.filterKey, action.value);
   }
 
   @Action(SetSortBy)
   setSortBy(ctx: StateContext<SearchStateModel>, action: SetSortBy) {
-    ctx.patchState({ sortBy: action.sortBy });
+    this.handleUpdateSortBy(ctx, action.sortBy);
   }
 
   @Action(SetResourceTab)
@@ -334,8 +125,13 @@ export class SearchState implements NgxsOnInit {
     ctx.patchState({ isMyProfile: action.isMyProfile });
   }
 
+  @Action(SetSearchText)
+  setSearchText(ctx: StateContext<SearchStateModel>, action: SetSearchText) {
+    ctx.patchState({ searchText: action.searchText });
+  }
+
   @Action(ResetSearchState)
-  resetState(ctx: StateContext<SearchStateModel>) {
-    ctx.patchState(searchStateDefaults);
+  resetSearchState(ctx: StateContext<SearchStateModel>) {
+    ctx.setState(searchStateDefaults);
   }
 }
