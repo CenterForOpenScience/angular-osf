@@ -8,7 +8,7 @@ import { RegistryLinksState } from '@osf/features/registry/store/registry-links'
 import { RegistryMetadataState } from '@osf/features/registry/store/registry-metadata';
 import { RegistryOverviewState } from '@osf/features/registry/store/registry-overview';
 import { ResourceType } from '@osf/shared/enums';
-import { ContributorsState, ViewOnlyLinkState } from '@osf/shared/stores';
+import { CitationsState, ContributorsState, ViewOnlyLinkState } from '@osf/shared/stores';
 
 import { AnalyticsState } from '../project/analytics/store';
 
@@ -19,7 +19,6 @@ export const registryRoutes: Routes = [
   {
     path: '',
     component: RegistryComponent,
-    providers: [provideStates([RegistryOverviewState])],
     children: [
       {
         path: '',
@@ -30,6 +29,7 @@ export const registryRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('./pages/registry-overview/registry-overview.component').then((c) => c.RegistryOverviewComponent),
+        providers: [provideStates([RegistryOverviewState, CitationsState])],
       },
       {
         path: 'metadata',

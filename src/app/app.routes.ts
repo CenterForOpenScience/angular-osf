@@ -2,7 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { BookmarksState, ProjectsState } from '@shared/stores';
+import { BookmarksState, ProjectsState, ResourceTypeState } from '@shared/stores';
 
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
@@ -10,6 +10,8 @@ import { MyProfileState } from './features/my-profile/store';
 import { ResourceFiltersOptionsState } from './features/search/components/filters/store';
 import { ResourceFiltersState } from './features/search/components/resource-filters/store';
 import { SearchState } from './features/search/store';
+import { isProjectGuard } from './shared/guards/is-project.guard';
+import { isRegistryGuard } from './shared/guards/is-registry.guard';
 
 export const routes: Routes = [
   {
@@ -76,9 +78,16 @@ export const routes: Routes = [
         providers: [provideStates([BookmarksState])],
       },
       {
-        path: 'my-projects/:id',
-        loadChildren: () => import('./features/project/project.routes').then((mod) => mod.projectRoutes),
-        providers: [provideStates([ProjectsState, BookmarksState])],
+        path: ':id',
+        canMatch: [isProjectGuard],
+        loadChildren: () => import('./features/project/project.routes').then((m) => m.projectRoutes),
+        providers: [provideStates([ProjectsState, BookmarksState, ResourceTypeState])],
+      },
+      {
+        path: ':id',
+        canMatch: [isRegistryGuard],
+        loadChildren: () => import('./features/registry/registry.routes').then((m) => m.registryRoutes),
+        providers: [provideStates([BookmarksState, ResourceTypeState])],
       },
       {
         path: 'settings',
@@ -108,11 +117,7 @@ export const routes: Routes = [
         path: 'registries',
         loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
       },
-      {
-        path: 'registries/:id',
-        loadChildren: () => import('./features/registry/registry.routes').then((mod) => mod.registryRoutes),
-        providers: [provideStates([BookmarksState])],
-      },
+
       {
         path: 'terms-of-use',
         loadComponent: () =>
