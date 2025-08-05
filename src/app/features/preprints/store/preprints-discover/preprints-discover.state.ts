@@ -4,6 +4,7 @@ import { BehaviorSubject, EMPTY, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { MyProfileResourceFiltersStateModel } from '@osf/features/my-profile/components/my-profile-resource-filters/store';
 import {
   GetResources,
   GetResourcesByLink,
@@ -14,7 +15,6 @@ import {
 } from '@osf/features/preprints/store/preprints-discover/preprints-discover.actions';
 import { PreprintsDiscoverStateModel } from '@osf/features/preprints/store/preprints-discover/preprints-discover.model';
 import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
-import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
 import { GetResourcesRequestTypeEnum, ResourceTab } from '@shared/enums';
 import { SearchService } from '@shared/services';
 import { addFiltersParams, getResourceTypes } from '@shared/utils';
@@ -51,7 +51,7 @@ export class PreprintsDiscoverState implements NgxsOnInit {
           ctx.patchState({ resources: { ...state.resources, isLoading: true } });
           if (query.type === GetResourcesRequestTypeEnum.GetResources) {
             const filters = this.store.selectSnapshot(PreprintsResourcesFiltersSelectors.getAllFilters);
-            const filtersParams = addFiltersParams(filters as ResourceFiltersStateModel);
+            const filtersParams = addFiltersParams(filters as MyProfileResourceFiltersStateModel);
             const searchText = state.searchText;
             const sortBy = state.sortBy;
             const resourceTab = ResourceTab.Preprints;
