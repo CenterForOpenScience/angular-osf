@@ -1,4 +1,5 @@
 import { StringOrNull } from '@core/helpers';
+import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { BrandDataJsonApi } from '@shared/models';
 
 export interface PreprintProviderDetailsJsonApi {
@@ -19,7 +20,7 @@ export interface PreprintProviderDetailsJsonApi {
     };
     allow_submissions: boolean;
     assertions_enabled: boolean;
-    reviews_workflow: StringOrNull;
+    reviews_workflow: ProviderReviewsWorkflow | null;
     facebook_app_id: StringOrNull;
   };
   embeds?: {

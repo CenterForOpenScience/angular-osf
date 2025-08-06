@@ -1,4 +1,5 @@
 import { StringOrNull } from '@core/helpers';
+import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums/provider-reviews-workflow.enum';
 import { Brand } from '@shared/models';
 
 export interface PreprintProviderDetails {
@@ -12,7 +13,7 @@ export interface PreprintProviderDetails {
   preprintWord: string;
   allowSubmissions: boolean;
   assertionsEnabled: boolean;
-  reviewsWorkflow: StringOrNull;
+  reviewsWorkflow: ProviderReviewsWorkflow | null;
   brand: Brand;
   lastFetched?: number;
   iri: string;

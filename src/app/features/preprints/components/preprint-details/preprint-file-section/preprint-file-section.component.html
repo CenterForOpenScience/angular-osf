@@ -40,7 +40,7 @@
       @let fileValue = file()!;
 
       <div class="flex flex-column gap-1 justify-content-start md:flex-row">
-        <span>Submitted: {{ fileValue.dateCreated | date: 'longDate' }}</span>
+        <span>{{ dateLabel() }}: {{ fileValue.dateCreated | date: 'longDate' }}</span>
         @if (isMedium() || isLarge()) {
           <span>|</span>
         }

@@ -5,10 +5,11 @@ import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer } from '@angular/platform-browser';
 
+import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { LoadingSpinnerComponent } from '@shared/components';
 import { IS_LARGE, IS_MEDIUM } from '@shared/utils';
@@ -24,6 +25,8 @@ import { IS_LARGE, IS_MEDIUM } from '@shared/utils';
 export class PreprintFileSectionComponent {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly datePipe = inject(DatePipe);
+
+  providerReviewsWorkflow = input.required<ProviderReviewsWorkflow | null>();
 
   isMedium = toSignal(inject(IS_MEDIUM));
   isLarge = toSignal(inject(IS_LARGE));
@@ -49,5 +52,12 @@ export class PreprintFileSectionComponent {
       label: `Version ${++index}, ${this.datePipe.transform(version.dateCreated, 'mm/dd/yyyy hh:mm:ss')}`,
       url: version.downloadLink,
     }));
+  });
+
+  dateLabel = computed(() => {
+    const reviewsWorkflow = this.providerReviewsWorkflow();
+    if (!reviewsWorkflow) return '';
+
+    return reviewsWorkflow === ProviderReviewsWorkflow.PreModeration ? 'Submitted' : 'Created';
   });
 }

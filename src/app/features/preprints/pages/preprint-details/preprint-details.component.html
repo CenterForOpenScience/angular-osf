@@ -31,7 +31,7 @@
 
   <section class="flex-1 flex flex-column gap-4 align-items-start lg:flex-row">
     <section class="w-12 lg:w-6">
-      <osf-preprint-file-section />
+      <osf-preprint-file-section [providerReviewsWorkflow]="preprintProvider()?.reviewsWorkflow || null" />
     </section>
 
     <section class="flex flex-column gap-4 w-12 lg:w-6">
