@@ -77,4 +77,5 @@ export interface PreprintMetaJsonApi {
 
 export interface PreprintLinksJsonApi {
   preprint_doi: string;
+  doi: string;
 }

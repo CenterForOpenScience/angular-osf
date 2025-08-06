@@ -6,12 +6,13 @@ import { Card } from 'primeng/card';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 
-import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
+import { Location, TitleCasePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, OnDestroy, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
+import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { TruncatedTextComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
@@ -20,7 +21,7 @@ import { ContributorsSelectors, GetAllContributors, ResetContributorsState } fro
 
 @Component({
   selector: 'osf-preprint-general-information',
-  imports: [Card, TranslatePipe, TruncatedTextComponent, Skeleton, Select, FormsModule],
+  imports: [Card, TranslatePipe, TruncatedTextComponent, Skeleton, Select, FormsModule, TitleCasePipe],
   templateUrl: './general-information.component.html',
   styleUrl: './general-information.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,6 +37,7 @@ export class GeneralInformationComponent implements OnDestroy {
     resetContributorsState: ResetContributorsState,
     fetchPreprintById: FetchPreprintById,
   });
+  preprintProvider = input.required<PreprintProviderDetails | undefined>();
 
   preprint = select(PreprintSelectors.getPreprint);
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);

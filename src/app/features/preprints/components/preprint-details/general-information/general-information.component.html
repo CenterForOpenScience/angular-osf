@@ -106,7 +106,7 @@
       </section>
 
       <section class="flex flex-column gap-2">
-        <h3>Preprint DOI</h3>
+        <h3>{{ preprintProvider()?.preprintWord | titlecase }} DOI</h3>
 
         <p-select
           class="w-full"
@@ -118,9 +118,22 @@
           [loading]="arePreprintVersionIdsLoading()"
           (onChange)="selectPreprintVersion($event.value)"
         />
-        <p>
-          <a [href]="preprintValue.preprintDoiLink">{{ preprintValue.preprintDoiLink }}</a>
-        </p>
+        @if (preprintValue.preprintDoiLink) {
+          @if (preprintValue.preprintDoiCreated) {
+            <a [href]="preprintValue.preprintDoiLink">{{ preprintValue.preprintDoiLink }}</a>
+          } @else {
+            <p>{{ preprintValue.preprintDoiLink }}</p>
+            <p>DOIs are minted by a third party, and may take up to 24 hours to be registered.</p>
+          }
+        } @else {
+          @if (!preprintValue.isPublic) {
+            <p>DOI created after preprint is made public</p>
+          } @else if (preprintProvider()?.reviewsWorkflow && !preprintValue.isPublished) {
+            <p>DOI created after moderator approval</p>
+          } @else {
+            <p>No DOI</p>
+          }
+        }
       </section>
     </div>
   }

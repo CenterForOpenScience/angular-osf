@@ -66,6 +66,8 @@ export class PreprintsMapper {
       whyNoPrereg: response.attributes.why_no_prereg,
       preregLinks: response.attributes.prereg_links,
       preregLinkInfo: response.attributes.prereg_link_info,
+      preprintDoiLink: response.links.preprint_doi,
+      articleDoiLink: response.links.doi,
     };
   }
 
@@ -117,6 +119,7 @@ export class PreprintsMapper {
       },
       embeddedLicense: LicensesMapper.fromLicenseDataJsonApi(data.embeds.license.data),
       preprintDoiLink: links.preprint_doi,
+      articleDoiLink: links.doi,
     };
   }
 
