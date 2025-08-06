@@ -18,6 +18,7 @@ export interface PreprintProviderDetails {
   iri: string;
   faviconUrl: string;
   squareColorNoTransparentImageUrl: string;
+  facebookAppId: StringOrNull;
 }
 
 export interface PreprintProviderShortInfo {

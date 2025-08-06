@@ -20,6 +20,7 @@ export interface PreprintProviderDetailsJsonApi {
     allow_submissions: boolean;
     assertions_enabled: boolean;
     reviews_workflow: StringOrNull;
+    facebook_app_id: StringOrNull;
   };
   embeds?: {
     brand: {

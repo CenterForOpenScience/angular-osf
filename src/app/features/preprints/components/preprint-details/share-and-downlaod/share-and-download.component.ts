@@ -82,7 +82,8 @@ export class ShareAndDownloadComponent {
 
     const href = encodeURIComponent(this.preprintDetailsFullUrl());
 
-    return `https://www.facebook.com/dialog/share?app_id=${environment.facebookAppId}&display=popup&href=${href}`;
+    const facebookAppId = preprintProvider.facebookAppId || environment.facebookAppId;
+    return `https://www.facebook.com/dialog/share?app_id=${facebookAppId}&display=popup&href=${href}`;
   });
 
   linkedInShareLink = computed(() => {
