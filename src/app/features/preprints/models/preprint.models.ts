@@ -1,5 +1,5 @@
 import { BooleanOrNull, StringOrNull } from '@core/helpers';
-import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
+import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
 import { Permission } from '@shared/enums';
 import { IdName, License, LicenseOptions } from '@shared/models';
 
@@ -11,7 +11,7 @@ export interface Preprint {
   datePublished: Date | null;
   title: string;
   description: string;
-  reviewsState: string;
+  reviewsState: ReviewsState;
   preprintDoiCreated: Date | null;
   currentUserPermissions: Permission[];
   doi: StringOrNull;
@@ -22,6 +22,7 @@ export interface Preprint {
   isPublic: boolean;
   version: number;
   isLatestVersion: boolean;
+  isPreprintOrphan: boolean;
   nodeId: StringOrNull;
   primaryFileId: StringOrNull;
   licenseId: StringOrNull;

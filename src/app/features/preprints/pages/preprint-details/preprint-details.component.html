@@ -10,16 +10,24 @@
   </div>
 
   <div class="flex flex-column justify-content-end gap-2 md:flex-row">
-    <p-button class="w-full md:w-11rem" styleClass="w-full" label="Edit" (click)="editPreprintClicked()" />
-    @if (canCreateNewVersion()) {
-      <p-button
-        class="w-full md:w-11rem"
-        styleClass="w-full"
-        label="Create New Version"
-        (click)="createNewVersionClicked()"
-      />
+    @if (isPreprintLoading() || isPreprintProviderLoading() || areContributorsLoading()) {
+      <p-skeleton width="10rem" height="2.25rem" />
+      <p-skeleton width="10rem" height="2.25rem" />
+      <p-skeleton width="10rem" height="2.25rem" />
+    } @else {
+      @if (editButtonVisible()) {
+        <p-button class="w-full md:w-11rem" styleClass="w-full" label="Edit" (click)="editPreprintClicked()" />
+      }
+      @if (createNewVersionButtonVisible()) {
+        <p-button
+          class="w-full md:w-11rem"
+          styleClass="w-full"
+          label="Create New Version"
+          (click)="createNewVersionClicked()"
+        />
+      }
+      <p-button class="w-full md:w-11rem" styleClass="w-full" label="Withdraw" severity="danger" />
     }
-    <p-button class="w-full md:w-11rem" styleClass="w-full" label="Withdraw" severity="danger" />
   </div>
 </section>
 

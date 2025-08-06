@@ -1,5 +1,5 @@
 import { BooleanOrNull, StringOrNull } from '@core/helpers';
-import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
+import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
 import { Permission } from '@shared/enums';
 import { ContributorResponse, LicenseRecordJsonApi, LicenseResponseJsonApi } from '@shared/models';
 
@@ -20,7 +20,7 @@ export interface PreprintAttributesJsonApi {
   date_withdrawn: Date | null;
   current_user_permissions: Permission[];
   public: boolean;
-  reviews_state: string;
+  reviews_state: ReviewsState;
   date_last_transitioned: Date | null;
   version: number;
   is_latest_version: boolean;
