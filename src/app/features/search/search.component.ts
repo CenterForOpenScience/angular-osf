@@ -20,7 +20,7 @@ import {
 } from '@osf/shared/components';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceTab } from '@osf/shared/enums';
-import { DiscoverableFilter } from '@osf/shared/models';
+import { DiscoverableFilter, SelectOption } from '@osf/shared/models';
 
 import {
   ClearFilterSearchResults,
@@ -260,7 +260,7 @@ export class SearchComponent implements OnInit {
 
   private restoreFiltersFromUrl(): void {
     const filterValues: Record<string, string | null> = {};
-    const filterLabels: Record<string, { value: string; label: string }> = {};
+    const filterLabels: Record<string, SelectOption> = {};
 
     const urlParams = new URLSearchParams(window.location.search);
 
@@ -301,9 +301,9 @@ export class SearchComponent implements OnInit {
     }
   }
 
-  private prePopulateFilterLabels(filterLabels: Record<string, { value: string; label: string }>): void {
+  private prePopulateFilterLabels(filterLabels: Record<string, SelectOption>): void {
     if (Object.keys(filterLabels).length > 0) {
-      const filterOptions: Record<string, { value: string; label: string }[]> = {};
+      const filterOptions: Record<string, SelectOption[]> = {};
 
       Object.entries(filterLabels).forEach(([filterKey, { value, label }]) => {
         filterOptions[filterKey] = [{ value, label }];

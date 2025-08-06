@@ -59,14 +59,6 @@
                     (onChange)="onCheckboxChange($event, filter)"
                     [inputId]="'checkbox-' + filter.key"
                   />
-
-                  <!--                  <input-->
-                  <!--                    type="checkbox"-->
-                  <!--                    [id]="'checkbox-' + filter.key"-->
-                  <!--                    [checked]="isIsPresentFilterChecked(filter.key)"-->
-                  <!--                    (change)="onCheckboxChange($event, filter)"-->
-                  <!--                    class="form-check-input"-->
-                  <!--                  />-->
                   <label [for]="'checkbox-' + filter.key" class="form-check-label cursor-pointer">
                     {{ getFilterLabel(filter) }}
                   </label>

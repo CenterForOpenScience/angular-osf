@@ -48,11 +48,6 @@ export class SearchSelectors {
   }
 
   @Selector([SearchState])
-  static getIsMyProfile(state: SearchStateModel): boolean {
-    return state.isMyProfile;
-  }
-
-  @Selector([SearchState])
   static getResourcesLoading(state: SearchStateModel): boolean {
     return state.resources.isLoading;
   }

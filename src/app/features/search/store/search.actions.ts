@@ -1,4 +1,5 @@
 import { ResourceTab } from '@osf/shared/enums';
+import { SelectOption } from '@osf/shared/models';
 
 export class GetResources {
   static readonly type = '[Search] Get Resources';
@@ -85,5 +86,5 @@ export class LoadMoreFilterOptions {
 
 export class SetFilterOptionsFromUrl {
   static readonly type = '[Search] Set Filter Options From URL';
-  constructor(public filterOptions: Record<string, { value: string; label: string }[]>) {}
+  constructor(public filterOptions: Record<string, SelectOption[]>) {}
 }
