@@ -1,13 +1,19 @@
 import { BooleanOrNull, StringOrNull } from '@core/helpers';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
+import { Permission } from '@shared/enums';
 import { IdName, License, LicenseOptions } from '@shared/models';
 
 export interface Preprint {
   id: string;
   dateCreated: string;
   dateModified: string;
+  dateWithdrawn: Date | null;
+  datePublished: Date | null;
   title: string;
   description: string;
+  reviewsState: string;
+  preprintDoiCreated: Date | null;
+  currentUserPermissions: Permission[];
   doi: StringOrNull;
   originalPublicationDate: Date | null;
   customPublicationCitation: StringOrNull;

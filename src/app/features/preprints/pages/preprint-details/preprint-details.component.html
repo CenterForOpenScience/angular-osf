@@ -11,12 +11,14 @@
 
   <div class="flex flex-column justify-content-end gap-2 md:flex-row">
     <p-button class="w-full md:w-11rem" styleClass="w-full" label="Edit" (click)="editPreprintClicked()" />
-    <p-button
-      class="w-full md:w-11rem"
-      styleClass="w-full"
-      label="Create New Version"
-      (click)="createNewVersionClicked()"
-    />
+    @if (canCreateNewVersion()) {
+      <p-button
+        class="w-full md:w-11rem"
+        styleClass="w-full"
+        label="Create New Version"
+        (click)="createNewVersionClicked()"
+      />
+    }
     <p-button class="w-full md:w-11rem" styleClass="w-full" label="Withdraw" severity="danger" />
   </div>
 </section>

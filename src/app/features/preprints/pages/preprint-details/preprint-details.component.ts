@@ -5,7 +5,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, OnDestroy, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -16,6 +16,7 @@ import { ShareAndDownloadComponent } from '@osf/features/preprints/components/pr
 import { FetchPreprintById, PreprintSelectors, ResetState } from '@osf/features/preprints/store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
+import { Permission } from '@shared/enums';
 
 @Component({
   selector: 'osf-preprint-details',
@@ -52,6 +53,17 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   preprint = select(PreprintSelectors.getPreprint);
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
+
+  private currentUserIsAdmin = computed(() => {
+    return this.preprint()?.currentUserPermissions.includes(Permission.Admin) || false;
+  });
+
+  canCreateNewVersion = computed(() => {
+    const preprint = this.preprint();
+    if (!preprint) return false;
+
+    return this.currentUserIsAdmin() && preprint.datePublished && preprint.isLatestVersion;
+  });
 
   ngOnInit() {
     this.actions.fetchPreprintById(this.preprintId());
