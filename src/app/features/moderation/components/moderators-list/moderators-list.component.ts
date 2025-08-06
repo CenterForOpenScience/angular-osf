@@ -49,7 +49,7 @@ export class ModeratorsListComponent implements OnInit {
   private readonly toastService = inject(ToastService);
 
   readonly providerId = toSignal(
-    this.route.parent?.params.pipe(map((params) => params['collectionId'])) ?? of(undefined)
+    this.route.parent?.params.pipe(map((params) => params['providerId'])) ?? of(undefined)
   );
   readonly resourceType: Signal<ResourceType | undefined> = toSignal(
     this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)

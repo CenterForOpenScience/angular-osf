@@ -1,58 +1,46 @@
-import { Store } from '@ngxs/store';
-
-import { firstValueFrom } from 'rxjs';
-
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { ClearAuth, SetAuthToken } from '@core/store/auth';
+import { JsonApiService } from '@osf/core/services';
 
-import { AuthResponse, LoginCredentials } from '../models';
+import { SignUpModel } from '../models';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  readonly #API_URL = 'VALID_API_URL';
-  readonly #AUTH_TOKEN_KEY = '';
+  private readonly jsonApiService = inject(JsonApiService);
 
-  readonly #http: HttpClient = inject(HttpClient);
-  readonly #store: Store = inject(Store);
+  readonly http: HttpClient = inject(HttpClient);
 
-  //TODO: rewrite/refactor methods according to the API
-  async login(credentials: LoginCredentials): Promise<void> {
-    try {
-      const response = await firstValueFrom(this.#http.post<AuthResponse>(`${this.#API_URL}/auth/login`, credentials));
+  register(payload: SignUpModel) {
+    const baseUrl = `${environment.apiUrlV1}/register/`;
+    const body = { ...payload, 'g-recaptcha-response': payload.recaptcha, campaign: null };
 
-      if (response.accessToken) {
-        this.#setAuthToken(response.accessToken);
-        this.#store.dispatch(new SetAuthToken(response.accessToken));
-      }
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    }
+    return this.jsonApiService.post(baseUrl, body);
   }
 
-  logout(): void {
-    localStorage.removeItem(this.#AUTH_TOKEN_KEY);
-    this.#store.dispatch(new ClearAuth());
+  forgotPassword(email: string) {
+    const baseUrl = `${environment.apiUrl}/users/reset_password/`;
+    const params: Record<string, string> = { email };
+
+    return this.jsonApiService.get(baseUrl, params);
   }
 
-  getAuthToken(): string | null {
-    return localStorage.getItem(this.#AUTH_TOKEN_KEY);
+  resetPassword(userId: string, token: string, newPassword: string) {
+    const baseUrl = `${environment.apiUrl}/users/reset_password/`;
+    const body = {
+      data: {
+        attributes: {
+          uid: userId,
+          token,
+          new_password: newPassword,
+        },
+      },
+    };
+
+    return this.jsonApiService.post(baseUrl, body);
   }
-
-  #setAuthToken(token: string): void {
-    localStorage.setItem(this.#AUTH_TOKEN_KEY, token);
-  }
-
-  // not sure if it's gonna be used, comment out for now
-
-  // #checkInitialAuthState(): void {
-  //   const token: string | null = this.getAuthToken();
-  //   if (token) {
-  //     this.#store.dispatch(new SetAuthToken(token));
-  //   }
-  // }
 }

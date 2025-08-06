@@ -2,7 +2,7 @@
   <div class="flex align-items-center pt-3 pl-3 pr-3 justify-content-between">
     <h2>{{ 'project.overview.components.title' | translate }}</h2>
 
-    @if (!isCollectionsRoute()) {
+    @if (!isCollectionsRoute() && canWrite()) {
       <p-button
         (onClick)="handleAddComponent()"
         severity="secondary"
@@ -24,14 +24,16 @@
                 <a class="component-title" [href]="'my-projects/' + component.id">{{ component.title }}</a>
               </h2>
               <div>
-                <p-button
-                  severity="contrast"
-                  icon="fas fa-ellipsis-vertical"
-                  raised
-                  variant="outlined"
-                  (click)="componentActionMenu.toggle($event)"
-                >
-                </p-button>
+                @if (component.currentUserPermissions.includes(UserPermissions.Write)) {
+                  <p-button
+                    severity="contrast"
+                    icon="fas fa-ellipsis-vertical"
+                    raised
+                    variant="outlined"
+                    (click)="componentActionMenu.toggle($event)"
+                  >
+                  </p-button>
+                }
 
                 <p-menu appendTo="body" #componentActionMenu [model]="componentActionItems(component.id)" popup>
                   <ng-template #item let-item>

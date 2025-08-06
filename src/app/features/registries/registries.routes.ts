@@ -45,7 +45,7 @@ export const registriesRoutes: Routes = [
         loadComponent: () => import('@osf/features/registries/pages').then((c) => c.MyRegistrationsComponent),
       },
       {
-        path: ':id/moderation',
+        path: ':providerId/moderation',
         loadChildren: () =>
           import('@osf/features/moderation/registry-moderation.routes').then((c) => c.registryModerationRoutes),
       },

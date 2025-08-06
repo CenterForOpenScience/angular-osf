@@ -27,6 +27,7 @@ export class LinkedResourcesComponent {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
   isCollectionsRoute = input<boolean>(false);
+  canWrite = input.required<boolean>();
   protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
   protected isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
   protected isMobile = toSignal(inject(IS_XSMALL));

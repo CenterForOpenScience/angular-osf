@@ -28,3 +28,4 @@ export * from './share-indexing.enum';
 export * from './sort-order.enum';
 export * from './sort-type.enum';
 export * from './subscriptions';
+export * from './user-permissions.enum';

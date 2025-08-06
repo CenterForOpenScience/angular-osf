@@ -47,6 +47,7 @@
     "diff": "^8.0.2",
     "markdown-it": "^14.1.0",
     "markdown-it-video": "^0.6.3",
+    "ngx-captcha": "^13.0.0",
     "ngx-cookie-service": "^19.1.2",
     "ngx-markdown-editor": "^5.3.4",
     "primeflex": "^4.0.0",

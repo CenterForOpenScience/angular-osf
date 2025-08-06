@@ -43,7 +43,7 @@ export const collectionsRoutes: Routes = [
         canDeactivate: [ConfirmLeavingGuard],
       },
       {
-        path: ':collectionId/moderation',
+        path: ':providerId/moderation',
         loadChildren: () =>
           import('@osf/features/moderation/collection-moderation.routes').then((m) => m.collectionModerationRoutes),
       },

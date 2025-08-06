@@ -1,3 +1,5 @@
+import { UserPermissions } from '@osf/shared/enums';
+
 export interface ComponentOverview {
   id: string;
   type: string;
@@ -12,6 +14,7 @@ export interface ComponentOverview {
     id: string;
     type: string;
   }[];
+  currentUserPermissions: UserPermissions[];
 }
 
 export interface ComponentGetResponseJsonApi {
@@ -21,6 +24,7 @@ export interface ComponentGetResponseJsonApi {
     title: string;
     description: string;
     public: boolean;
+    current_user_permissions?: UserPermissions[];
   };
   embeds: {
     bibliographic_contributors: {

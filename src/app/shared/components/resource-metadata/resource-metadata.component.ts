@@ -33,6 +33,7 @@ export class ResourceMetadataComponent {
   currentResource = input.required<ResourceOverview | null>();
   customCitationUpdated = output<string>();
   isCollectionsRoute = input<boolean>(false);
+  canWrite = input.required<boolean>();
 
   protected readonly resourceTypes = OsfResourceTypes;
 

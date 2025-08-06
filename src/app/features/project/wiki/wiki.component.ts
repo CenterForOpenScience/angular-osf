@@ -11,13 +11,13 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { SubHeaderComponent } from '@osf/shared/components';
 import {
   CompareSectionComponent,
   EditSectionComponent,
-  SubHeaderComponent,
   ViewSectionComponent,
   WikiListComponent,
-} from '@osf/shared/components';
+} from '@osf/shared/components/wiki';
 import { ResourceType } from '@osf/shared/enums';
 import { WikiModes } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';

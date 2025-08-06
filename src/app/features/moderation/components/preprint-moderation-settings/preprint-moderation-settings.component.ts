@@ -33,7 +33,9 @@ export class PreprintModerationSettingsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
 
   private readonly actions = createDispatchMap({ getPreprintProvider: GetPreprintProvider });
-  readonly providerId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
+  readonly providerId = toSignal(
+    this.route.parent?.params.pipe(map((params) => params['providerId'])) ?? of(undefined)
+  );
 
   settingsForm!: FormGroup;
   sections = PREPRINT_SETTINGS_SECTIONS;

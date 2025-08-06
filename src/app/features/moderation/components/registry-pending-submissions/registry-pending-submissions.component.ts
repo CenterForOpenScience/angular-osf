@@ -53,7 +53,7 @@ export class RegistryPendingSubmissionsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly providerId = toSignal(
-    this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
+    this.route.parent?.params.pipe(map((params) => params['providerId'])) ?? of(undefined)
   );
 
   readonly actions = createDispatchMap({ getRegistrySubmissions: GetRegistrySubmissions });

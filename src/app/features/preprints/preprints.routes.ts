@@ -88,7 +88,7 @@ export const preprintsRoutes: Routes = [
           ),
       },
       {
-        path: ':id/moderation',
+        path: ':providerId/moderation',
         loadChildren: () =>
           import('@osf/features/moderation/preprint-moderation.routes').then((mod) => mod.preprintModerationRoutes),
       },

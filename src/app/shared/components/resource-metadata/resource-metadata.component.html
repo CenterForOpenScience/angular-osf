@@ -5,7 +5,7 @@
     <div class="metadata-header flex align-items-center justify-content-between">
       <h2>{{ 'project.overview.metadata.title' | translate }}</h2>
 
-      @if (!isCollectionsRoute()) {
+      @if (!isCollectionsRoute() && canWrite()) {
         <p-button
           [routerLink]="'../metadata'"
           severity="secondary"

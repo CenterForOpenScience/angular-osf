@@ -1,72 +1,98 @@
+import { createDispatchMap } from '@ngxs/store';
+
+import { NgxCaptchaModule } from 'ngx-captcha';
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DividerModule } from 'primeng/divider';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
+import { Button } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
+import { Divider } from 'primeng/divider';
+import { Password } from 'primeng/password';
 
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit, signal } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
-import { PasswordInputHintComponent } from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { RegisterUser } from '@osf/features/auth/store';
+import { PasswordInputHintComponent, TextInputComponent } from '@osf/shared/components';
+import { InputLimits } from '@osf/shared/constants';
+import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/utils';
 
-import { PASSWORD_REGEX, passwordMatchValidator } from '../../helpers';
+import { SignUpForm, SignUpModel } from '../../models';
 
 @Component({
   selector: 'osf-sign-up',
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    ButtonModule,
-    InputTextModule,
-    PasswordModule,
-    CheckboxModule,
-    DividerModule,
+    Button,
+    Password,
+    Checkbox,
+    Divider,
     NgOptimizedImage,
     RouterLink,
     PasswordInputHintComponent,
     TranslatePipe,
+    NgxCaptchaModule,
+    TextInputComponent,
   ],
   templateUrl: './sign-up.component.html',
   styleUrl: './sign-up.component.scss',
 })
 export class SignUpComponent implements OnInit {
-  signUpForm: FormGroup = new FormGroup({});
+  signUpForm = new FormGroup<SignUpForm>({} as SignUpForm);
   passwordRegex: RegExp = PASSWORD_REGEX;
-  #isMobile$ = inject(IS_XSMALL);
-  isMobile = toSignal(this.#isMobile$);
+  inputLimits = InputLimits;
+
   isFormSubmitted = signal(false);
 
-  fb: FormBuilder = inject(FormBuilder);
-  router: Router = inject(Router);
+  actions = createDispatchMap({ registerUser: RegisterUser });
+
+  readonly siteKey = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+
+  get isPasswordError() {
+    return this.signUpForm.controls['password'].errors && this.signUpForm.get('password')?.touched;
+  }
 
   ngOnInit(): void {
     this.initializeForm();
   }
 
   initializeForm(): void {
-    this.signUpForm = this.fb.group(
-      {
-        fullName: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', [Validators.required, Validators.pattern(this.passwordRegex)]],
-        confirmPassword: ['', Validators.required],
-        agreeToTerms: [false, Validators.requiredTrue],
-      },
-      {
-        validators: passwordMatchValidator(),
-      }
-    );
+    this.signUpForm = new FormGroup<SignUpForm>({
+      fullName: new FormControl('', { nonNullable: true, validators: CustomValidators.requiredTrimmed() }),
+      email1: new FormControl('', {
+        nonNullable: true,
+        validators: [CustomValidators.requiredTrimmed(), Validators.email],
+      }),
+      email2: new FormControl('', {
+        nonNullable: true,
+        validators: [CustomValidators.requiredTrimmed(), Validators.email],
+      }),
+      password: new FormControl('', {
+        nonNullable: true,
+        validators: [CustomValidators.requiredTrimmed(), Validators.pattern(this.passwordRegex)],
+      }),
+      acceptedTermsOfService: new FormControl(false, {
+        nonNullable: true,
+        validators: Validators.requiredTrue,
+      }),
+      recaptcha: new FormControl('', {
+        nonNullable: true,
+        validators: Validators.required,
+      }),
+    });
   }
 
   onSubmit(): void {
-    if (this.signUpForm.valid) {
-      this.isFormSubmitted.set(true);
+    if (this.signUpForm.invalid) {
+      return;
     }
+
+    const data = this.signUpForm.getRawValue() as SignUpModel;
+
+    this.actions.registerUser(data).subscribe(() => {
+      this.isFormSubmitted.set(true);
+    });
   }
 }

@@ -29,6 +29,12 @@ export class HeaderComponent {
       command: () => this.router.navigate(['my-profile']),
     },
     { label: 'navigation.settings', command: () => this.router.navigate(['settings']) },
-    { label: 'navigation.logOut', command: () => console.log('Log out') },
+    {
+      label: 'navigation.logOut',
+      command: () => {
+        document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        this.router.navigate(['/']);
+      },
+    },
   ];
 }

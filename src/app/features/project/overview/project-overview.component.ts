@@ -29,7 +29,7 @@ import {
   ResourceMetadataComponent,
   SubHeaderComponent,
 } from '@shared/components';
-import { Mode, ResourceType } from '@shared/enums';
+import { Mode, ResourceType, UserPermissions } from '@shared/enums';
 import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
 import { ToastService } from '@shared/services';
 import {
@@ -141,6 +141,18 @@ export class ProjectOverviewComponent implements OnInit {
   });
 
   protected currentProject = select(ProjectOverviewSelectors.getProject);
+  protected userPermissions = computed(() => {
+    return this.currentProject()?.currentUserPermissions || [];
+  });
+
+  get isAdmin(): boolean {
+    return this.userPermissions().includes(UserPermissions.Admin);
+  }
+
+  get canWrite(): boolean {
+    return this.userPermissions().includes(UserPermissions.Write);
+  }
+
   protected resourceOverview = computed(() => {
     const project = this.currentProject();
     if (project) {
