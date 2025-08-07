@@ -15,6 +15,8 @@ import {
   FetchPreprintById,
   FetchPreprintFile,
   FetchPreprintFileVersions,
+  FetchPreprintRequests,
+  FetchPreprintReviewActions,
   FetchPreprintVersionIds,
   ResetState,
 } from './preprint.actions';
@@ -112,6 +114,50 @@ export class PreprintState {
         ctx.setState(patch({ preprintVersionIds: patch({ isLoading: false, data: versionIds }) }));
       }),
       catchError((error) => handleSectionError(ctx, 'preprintVersionIds', error))
+    );
+  }
+
+  @Action(FetchPreprintReviewActions)
+  fetchPreprintReviewActions(ctx: StateContext<PreprintStateModel>) {
+    const preprintId = ctx.getState().preprint.data?.id;
+    if (!preprintId) return;
+
+    ctx.setState(patch({ preprintReviewActions: patch({ isLoading: true }) }));
+
+    return this.preprintsService.getPreprintReviewActions(preprintId).pipe(
+      tap((actions) => {
+        ctx.setState(
+          patch({
+            preprintReviewActions: patch({
+              isLoading: false,
+              data: actions,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprintReviewActions', error))
+    );
+  }
+
+  @Action(FetchPreprintRequests)
+  fetchPreprintRequests(ctx: StateContext<PreprintStateModel>) {
+    const preprintId = ctx.getState().preprint.data?.id;
+    if (!preprintId) return;
+
+    ctx.setState(patch({ preprintRequests: patch({ isLoading: true }) }));
+
+    return this.preprintsService.fetchPreprintRequests(preprintId).pipe(
+      tap((actions) => {
+        ctx.setState(
+          patch({
+            preprintRequests: patch({
+              isLoading: false,
+              data: actions,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprintRequests', error))
     );
   }
 

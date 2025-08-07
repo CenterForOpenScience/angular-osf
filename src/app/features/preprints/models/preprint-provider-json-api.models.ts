@@ -22,6 +22,8 @@ export interface PreprintProviderDetailsJsonApi {
     assertions_enabled: boolean;
     reviews_workflow: ProviderReviewsWorkflow | null;
     facebook_app_id: StringOrNull;
+    reviews_comments_private: StringOrNull;
+    reviews_comments_anonymous: StringOrNull;
   };
   embeds?: {
     brand: {

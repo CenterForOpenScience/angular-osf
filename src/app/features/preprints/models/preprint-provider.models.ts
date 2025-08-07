@@ -20,6 +20,8 @@ export interface PreprintProviderDetails {
   faviconUrl: string;
   squareColorNoTransparentImageUrl: string;
   facebookAppId: StringOrNull;
+  reviewsCommentsPrivate: StringOrNull;
+  reviewsCommentsAnonymous: StringOrNull;
 }
 
 export interface PreprintProviderShortInfo {

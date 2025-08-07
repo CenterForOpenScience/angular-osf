@@ -1,0 +1,36 @@
+<p-message styleClass="w-full" [icon]="'fas fa-' + iconClass()" [severity]="severity()">
+  <ng-template #container>
+    <div class="banner-container w-full flex flex-row justify-content-between align-items-center font-bold text-base">
+      @if (!isWithdrawn()) {
+        {{ status() | translate | titlecase }}: {{ bannerContent() }}
+
+        @if (reviewerComment() && !provider().reviewsCommentsPrivate) {
+          <p-button
+            [link]="true"
+            class="cursor-pointer"
+            (click)="feedbackDialogVisible = true"
+            [label]="'Show moderator feedback'"
+          />
+
+          <p-dialog header="Moderator feedback" [modal]="true" draggable="false" [(visible)]="feedbackDialogVisible">
+            <div class="flex flex-column gap-2 align-items-start">
+              <p-tag [severity]="severity()"> {{ status() }}</p-tag>
+
+              <p>{{ reviewerComment() }}</p>
+
+              <div>
+                @if (!provider().reviewsCommentsAnonymous) {
+                  <p>{{ reviewerName() }}</p>
+                }
+
+                <p>{{ provider().name }} Moderator</p>
+              </div>
+            </div>
+          </p-dialog>
+        }
+      } @else {
+        {{ bannerContent() }}
+      }
+    </div>
+  </ng-template>
+</p-message>

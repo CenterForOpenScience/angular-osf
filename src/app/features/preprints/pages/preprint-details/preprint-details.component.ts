@@ -14,8 +14,15 @@ import { AdditionalInfoComponent } from '@osf/features/preprints/components/prep
 import { GeneralInformationComponent } from '@osf/features/preprints/components/preprint-details/general-information/general-information.component';
 import { PreprintFileSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-file-section/preprint-file-section.component';
 import { ShareAndDownloadComponent } from '@osf/features/preprints/components/preprint-details/share-and-downlaod/share-and-download.component';
+import { StatusBannerComponent } from '@osf/features/preprints/components/preprint-details/status-banner/status-banner.component';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
-import { FetchPreprintById, PreprintSelectors, ResetState } from '@osf/features/preprints/store/preprint';
+import {
+  FetchPreprintById,
+  FetchPreprintRequests,
+  FetchPreprintReviewActions,
+  PreprintSelectors,
+  ResetState,
+} from '@osf/features/preprints/store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { Permission } from '@shared/enums';
@@ -31,6 +38,7 @@ import { ContributorsSelectors } from '@shared/stores';
     ShareAndDownloadComponent,
     GeneralInformationComponent,
     AdditionalInfoComponent,
+    StatusBannerComponent,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
@@ -51,6 +59,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     resetState: ResetState,
     fetchPreprintById: FetchPreprintById,
     createNewVersion: CreateNewVersion,
+    fetchPreprintRequests: FetchPreprintRequests,
+    fetchPreprintReviewActions: FetchPreprintReviewActions,
   });
 
   currentUser = select(UserSelectors.getCurrentUser);
@@ -130,13 +140,60 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     return false;
   });
 
+  private preprintWithdrawableState = computed(() => {
+    const preprint = this.preprint();
+    if (!preprint) return false;
+    return [ReviewsState.Accepted, ReviewsState.Pending].includes(preprint.reviewsState);
+  });
+
+  isPendingWithdrawal = computed(() => {
+    //[RNi] TODO: Implement when withdrawal requests available
+    //return Boolean(this.args.latestWithdrawalRequest) && !this.isWithdrawalRejected;
+    return false;
+  });
+
+  isWithdrawalRejected = computed(() => {
+    //[RNi] TODO: Implement when request actions available
+    //const isPreprintRequestActionModel = this.args.latestAction instanceof PreprintRequestActionModel;
+    //         return isPreprintRequestActionModel && this.args.latestAction?.actionTrigger === 'reject';
+    return false;
+  });
+
+  statusBannerVisible = computed(() => {
+    const provider = this.preprintProvider();
+    const preprint = this.preprint();
+    if (!provider || !preprint) return false;
+
+    return (
+      provider.reviewsWorkflow &&
+      preprint.isPublic &&
+      this.currentUserIsContributor() &&
+      preprint.reviewsState !== ReviewsState.Initial &&
+      !preprint.isPreprintOrphan
+    );
+  });
+
+  withdrawalButtonVisible = computed(() => {
+    return (
+      this.currentUserIsAdmin() &&
+      this.preprintWithdrawableState() &&
+      !this.isWithdrawalRejected() &&
+      !this.isPendingWithdrawal()
+    );
+  });
+
   private hasReadWriteAccess(): boolean {
     // True if the current user has write permissions for the node that contains the preprint
     return this.preprint()?.currentUserPermissions.includes(Permission.Write) || false;
   }
 
   ngOnInit() {
-    this.actions.fetchPreprintById(this.preprintId());
+    this.actions.fetchPreprintById(this.preprintId()).subscribe({
+      next: () => {
+        this.actions.fetchPreprintRequests();
+        this.actions.fetchPreprintReviewActions();
+      },
+    });
     this.actions.getPreprintProviderById(this.providerId());
   }
 

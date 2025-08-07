@@ -26,16 +26,22 @@
           (click)="createNewVersionClicked()"
         />
       }
-      <p-button class="w-full md:w-11rem" styleClass="w-full" label="Withdraw" severity="danger" />
+      @if (withdrawalButtonVisible()) {
+        <p-button class="w-full md:w-11rem" styleClass="w-full" label="Withdraw" severity="danger" />
+      }
     }
   </div>
 </section>
 
 <section class="flex-1 flex flex-column gap-2 bg-white py-2 px-3 md:px-4">
-  <section class="w-full bg-yellow-100 p-3">
-    <!-- [RNi] TODO: implement status banner component -->
-    <p>Status banner here</p>
-  </section>
+  @if (statusBannerVisible()) {
+    <osf-preprint-status-banner
+      [provider]="preprintProvider()!"
+      [latestAction]="latestAction()"
+      [isPendingWithdrawal]="isPendingWithdrawal()"
+      [isWithdrawalRejected]="isWithdrawalRejected()"
+    />
+  }
 
   <section class="flex-1 flex flex-column gap-4 align-items-start lg:flex-row">
     <section class="w-12 lg:w-6">
