@@ -25,7 +25,7 @@ import {
 } from '@osf/features/preprints/store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { Permission } from '@shared/enums';
+import { UserPermissions } from '@shared/enums';
 import { ContributorModel } from '@shared/models';
 import { ContributorsSelectors } from '@shared/stores';
 
@@ -81,7 +81,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   });
 
   private currentUserIsAdmin = computed(() => {
-    return this.preprint()?.currentUserPermissions.includes(Permission.Admin) || false;
+    return this.preprint()?.currentUserPermissions.includes(UserPermissions.Admin) || false;
   });
 
   private currentUserIsContributor = computed(() => {
@@ -184,7 +184,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   private hasReadWriteAccess(): boolean {
     // True if the current user has write permissions for the node that contains the preprint
-    return this.preprint()?.currentUserPermissions.includes(Permission.Write) || false;
+    return this.preprint()?.currentUserPermissions.includes(UserPermissions.Write) || false;
   }
 
   ngOnInit() {

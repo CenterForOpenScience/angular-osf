@@ -14,7 +14,6 @@ export * from './metadata-projects.enum';
 export * from './mode.enum';
 export * from './moderation-decision-form-controls.enum';
 export * from './moderation-submit-type.enum';
-export * from './permission.enum';
 export * from './profile-addons-stepper.enum';
 export * from './profile-settings-key.enum';
 export * from './registration-review-states.enum';

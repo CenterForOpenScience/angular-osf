@@ -1,6 +1,6 @@
 import { BooleanOrNull, StringOrNull } from '@core/helpers';
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
-import { Permission } from '@shared/enums';
+import { UserPermissions } from '@shared/enums';
 import { IdName, License, LicenseOptions } from '@shared/models';
 
 export interface Preprint {
@@ -13,7 +13,7 @@ export interface Preprint {
   description: string;
   reviewsState: ReviewsState;
   preprintDoiCreated: Date | null;
-  currentUserPermissions: Permission[];
+  currentUserPermissions: UserPermissions[];
   doi: StringOrNull;
   originalPublicationDate: Date | null;
   customPublicationCitation: StringOrNull;
