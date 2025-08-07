@@ -16,6 +16,7 @@ export class ComponentsMapper {
         middleName: contributor.embeds.users.data.attributes.middle_name,
         type: contributor.embeds.users.data.type,
       })),
+      currentUserPermissions: response.attributes.current_user_permissions || [],
     };
   }
 }

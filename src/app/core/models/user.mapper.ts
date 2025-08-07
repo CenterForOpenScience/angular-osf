@@ -1,5 +1,7 @@
 import {
   User,
+  UserData,
+  UserDataResponseJsonApi,
   UserGetResponse,
   UserNamesJsonApi,
   UserSettings,
@@ -8,6 +10,13 @@ import {
 } from '@osf/core/models';
 
 export class UserMapper {
+  static fromUserDataGetResponse(response: UserDataResponseJsonApi): UserData {
+    return {
+      activeFlags: response.meta.active_flags,
+      currentUser: response.meta.current_user?.data ? this.fromUserGetResponse(response.meta.current_user.data) : null,
+    };
+  }
+
   static fromUserGetResponse(user: UserGetResponse): User {
     return {
       id: user.id,

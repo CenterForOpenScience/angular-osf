@@ -5,7 +5,16 @@ import { inject, Injectable } from '@angular/core';
 import { ProfileSettingsKey } from '@osf/shared/enums';
 import { ProfileSettingsUpdate } from '@osf/shared/models';
 
-import { JsonApiResponse, User, UserGetResponse, UserMapper, UserSettings, UserSettingsGetResponse } from '../models';
+import {
+  JsonApiResponse,
+  User,
+  UserData,
+  UserDataResponseJsonApi,
+  UserGetResponse,
+  UserMapper,
+  UserSettings,
+  UserSettingsGetResponse,
+} from '../models';
 
 import { JsonApiService } from './json-api.service';
 
@@ -17,10 +26,10 @@ import { environment } from 'src/environments/environment';
 export class UserService {
   jsonApiService = inject(JsonApiService);
 
-  getCurrentUser(): Observable<User> {
+  getCurrentUser(): Observable<UserData> {
     return this.jsonApiService
-      .get<JsonApiResponse<UserGetResponse, null>>(`${environment.apiUrl}/users/me/`)
-      .pipe(map((user) => UserMapper.fromUserGetResponse(user.data)));
+      .get<UserDataResponseJsonApi>(`${environment.apiUrl}/`)
+      .pipe(map((response) => UserMapper.fromUserDataGetResponse(response)));
   }
 
   getCurrentUserSettings(): Observable<UserSettings> {

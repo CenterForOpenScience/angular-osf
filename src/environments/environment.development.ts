@@ -11,5 +11,7 @@ export const environment = {
   baseResourceUri: 'https://staging4.osf.io/',
   funderApiUrl: 'https://api.crossref.org/',
   addonsV1Url: 'https://addons.staging4.osf.io/v1',
+  casUrl: 'https://accounts.staging4.osf.io',
+  recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   facebookAppId: '1022273774556662',
 };

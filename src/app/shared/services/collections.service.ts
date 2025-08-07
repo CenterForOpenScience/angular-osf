@@ -19,16 +19,19 @@ import {
   CollectionProvider,
   CollectionProviderGetResponseJsonApi,
   CollectionSubmission,
+  CollectionSubmissionActionType,
   CollectionSubmissionJsonApi,
   CollectionSubmissionsSearchPayloadJsonApi,
+  CollectionSubmissionTargetType,
   CollectionSubmissionWithGuid,
   CollectionSubmissionWithGuidJsonApi,
   ContributorsResponseJsonApi,
   PaginatedData,
-  ReviewActionPayload,
 } from '@shared/models';
-import { ReviewActionPayloadJsonApi } from '@shared/models/collections/review-action-payload-json-api.model';
 import { SetTotalSubmissions } from '@shared/stores/collections';
+
+import { ReviewActionsMapper } from '../mappers';
+import { ReviewActionPayload, ReviewActionPayloadJsonApi } from '../models/review-action';
 
 import { environment } from 'src/environments/environment';
 
@@ -192,13 +195,18 @@ export class CollectionsService {
     );
   }
 
-  createCollectionSubmissionAction(payload: ReviewActionPayload): Observable<ReviewActionPayloadJsonApi> {
-    const params = CollectionsMapper.toReviewActionPayloadJsonApi(payload);
-
-    return this.jsonApiService.post<ReviewActionPayloadJsonApi>(
-      `${environment.apiUrl}/collection_submission_actions/`,
-      params
+  createCollectionSubmissionAction(
+    payload: ReviewActionPayload
+  ): Observable<ReviewActionPayloadJsonApi<CollectionSubmissionActionType, CollectionSubmissionTargetType>> {
+    const params = ReviewActionsMapper.toReviewActionPayloadJsonApi(
+      payload,
+      'collection_submission_actions',
+      'collection-submissions'
     );
+
+    return this.jsonApiService.post<
+      ReviewActionPayloadJsonApi<CollectionSubmissionActionType, CollectionSubmissionTargetType>
+    >(`${environment.apiUrl}/collection_submission_actions/`, params);
   }
 
   private getCollectionContributors(contributorsUrl: string): Observable<CollectionContributor[]> {

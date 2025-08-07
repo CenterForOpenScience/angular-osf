@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { MyResourcesItem } from '@shared/models/my-resources/my-resources.models';
+import { MyResourcesItem } from '@osf/shared/models';
 
 import { MyResourcesStateModel } from './my-resources.model';
 import { MyResourcesState } from './my-resources.state';

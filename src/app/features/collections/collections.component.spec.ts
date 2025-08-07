@@ -9,6 +9,7 @@ describe('CollectionsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CollectionsComponent],
+      providers: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CollectionsComponent);

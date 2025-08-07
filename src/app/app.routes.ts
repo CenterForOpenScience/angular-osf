@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 
 import { BookmarksState, ProjectsState } from '@shared/stores';
 
+import { authGuard, redirectIfLoggedInGuard } from './core/guards';
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
 import { MyProfileState } from './features/my-profile/store';
@@ -19,20 +20,16 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'home',
-      },
-      {
-        path: 'home',
-        loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
+        canActivate: [redirectIfLoggedInGuard],
+        loadComponent: () => import('@osf/features/home/home.component').then((mod) => mod.HomeComponent),
         data: { skipBreadcrumbs: true },
       },
       {
-        path: 'home-logged-out',
+        path: 'dashboard',
         loadComponent: () =>
-          import('@osf/features/home/pages/home-logged-out/home-logged-out.component').then(
-            (mod) => mod.HomeLoggedOutComponent
-          ),
+          import('./features/home/pages/dashboard/dashboard.component').then((mod) => mod.DashboardComponent),
         data: { skipBreadcrumbs: true },
+        canActivate: [authGuard],
       },
       {
         path: 'confirm/:userId/:token',
@@ -40,13 +37,13 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
-        path: 'sign-up',
+        path: 'register',
         loadComponent: () =>
           import('./features/auth/pages/sign-up/sign-up.component').then((mod) => mod.SignUpComponent),
         data: { skipBreadcrumbs: true },
       },
       {
-        path: 'forgot-password',
+        path: 'forgotpassword',
         loadComponent: () =>
           import('./features/auth/pages/forgot-password/forgot-password.component').then(
             (mod) => mod.ForgotPasswordComponent
@@ -54,7 +51,7 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
-        path: 'reset-password',
+        path: 'resetpassword/:userId/:token',
         loadComponent: () =>
           import('./features/auth/pages/reset-password/reset-password.component').then(
             (mod) => mod.ResetPasswordComponent
@@ -74,15 +71,18 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
         providers: [provideStates([BookmarksState])],
+        canActivate: [authGuard],
       },
       {
         path: 'my-projects/:id',
         loadChildren: () => import('./features/project/project.routes').then((mod) => mod.projectRoutes),
         providers: [provideStates([ProjectsState, BookmarksState])],
+        canActivate: [authGuard],
       },
       {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.routes').then((mod) => mod.settingsRoutes),
+        canActivate: [authGuard],
       },
       {
         path: 'preprints',
@@ -99,6 +99,7 @@ export const routes: Routes = [
         providers: [
           provideStates([MyProfileResourceFiltersState, MyProfileResourceFiltersOptionsState, MyProfileState]),
         ],
+        canActivate: [authGuard],
       },
       {
         path: 'institutions',
@@ -112,6 +113,7 @@ export const routes: Routes = [
         path: 'registries/:id',
         loadChildren: () => import('./features/registry/registry.routes').then((mod) => mod.registryRoutes),
         providers: [provideStates([BookmarksState])],
+        canActivate: [authGuard],
       },
       {
         path: 'terms-of-use',

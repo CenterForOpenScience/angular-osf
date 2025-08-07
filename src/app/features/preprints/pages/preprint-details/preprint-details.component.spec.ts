@@ -1,4 +1,20 @@
+import { Store } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+
+import { of } from 'rxjs';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { AdditionalInfoComponent } from '@osf/features/preprints/components/preprint-details/additional-info/additional-info.component';
+import { GeneralInformationComponent } from '@osf/features/preprints/components/preprint-details/general-information/general-information.component';
+import { PreprintFileSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-file-section/preprint-file-section.component';
+import { ShareAndDownloadComponent } from '@osf/features/preprints/components/preprint-details/share-and-downlaod/share-and-download.component';
+import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
+import { MOCK_PROVIDER, MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
 
 import { PreprintDetailsComponent } from './preprint-details.component';
 
@@ -6,9 +22,43 @@ describe('PreprintDetailsComponent', () => {
   let component: PreprintDetailsComponent;
   let fixture: ComponentFixture<PreprintDetailsComponent>;
 
+  const mockRoute: Partial<ActivatedRoute> = {
+    params: of({ providerId: 'osf', preprintId: 'p1' }),
+  };
+
   beforeEach(async () => {
+    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
+      switch (selector) {
+        case PreprintProvidersSelectors.getPreprintProviderDetails('osf'):
+          return () => MOCK_PROVIDER;
+        case PreprintProvidersSelectors.isPreprintProviderDetailsLoading:
+          return () => false;
+        case PreprintSelectors.getPreprint:
+          return () => ({ id: 'p1', title: 'Test', description: '' });
+        case PreprintSelectors.isPreprintLoading:
+          return () => false;
+        default:
+          return () => [];
+      }
+    });
+
     await TestBed.configureTestingModule({
-      imports: [PreprintDetailsComponent],
+      imports: [
+        PreprintDetailsComponent,
+        MockPipe(TranslatePipe),
+        ...MockComponents(
+          PreprintFileSectionComponent,
+          ShareAndDownloadComponent,
+          GeneralInformationComponent,
+          AdditionalInfoComponent
+        ),
+      ],
+      providers: [
+        MockProvider(Store, MOCK_STORE),
+        MockProvider(Router),
+        MockProvider(ActivatedRoute, mockRoute),
+        TranslateServiceMock,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PreprintDetailsComponent);

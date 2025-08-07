@@ -71,4 +71,28 @@ export class CustomValidators {
     const isValid = DOIRegex.test(value);
     return isValid ? null : { invalidDoi: true };
   };
+
+  static passwordMatchValidator(passwordField = 'password', confirmPasswordField = 'confirmPassword'): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const password = control.get(passwordField);
+      const confirmPassword = control.get(confirmPasswordField);
+
+      if (!password || !confirmPassword) {
+        return null;
+      }
+
+      const passwordValue = password.value;
+      const confirmPasswordValue = confirmPassword.value;
+
+      if (!passwordValue || !confirmPasswordValue) {
+        return null;
+      }
+
+      if (passwordValue !== confirmPasswordValue) {
+        return { passwordMismatch: true };
+      }
+
+      return null;
+    };
+  }
 }

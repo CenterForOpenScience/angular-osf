@@ -11,12 +11,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  CompareSectionComponent,
-  SubHeaderComponent,
-  ViewSectionComponent,
-  WikiListComponent,
-} from '@osf/shared/components';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { CompareSectionComponent, ViewSectionComponent, WikiListComponent } from '@osf/shared/components/wiki';
 import { ResourceType } from '@osf/shared/enums';
 import { WikiModes } from '@osf/shared/models';
 import {

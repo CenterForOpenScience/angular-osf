@@ -1,6 +1,9 @@
 module.exports = {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+  globalSetup: '<rootDir>/jest.global-setup.ts',
+  collectCoverage: true,
+  coverageReporters: ['json-summary', 'lcov', 'clover'],
   moduleNameMapper: {
     '^@osf/(.*)$': '<rootDir>/src/app/$1',
     '^@core/(.*)$': '<rootDir>/src/app/core/$1',
@@ -30,4 +33,19 @@ module.exports = {
     '!src/app/**/public-api.ts',
   ],
   extensionsToTreatAsEsm: ['.ts'],
+  coverageThreshold: {
+    global: {
+      branches: 11.89,
+      functions: 12.12,
+      lines: 37.27,
+      statements: 37.83,
+    },
+  },
+  testPathIgnorePatterns: [
+    '<rootDir>/src/app/features/registry/',
+    '<rootDir>/src/app/features/project/',
+    '<rootDir>/src/app/features/registries/',
+    '<rootDir>/src/app/features/settings/',
+    '<rootDir>/src/app/shared/',
+  ],
 };

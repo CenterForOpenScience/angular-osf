@@ -1,48 +1,33 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { tap, throwError } from 'rxjs';
+import { tap } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
+
+import { handleSectionError } from '@osf/core/handlers';
+import { SetCurrentProvider } from '@osf/core/store/provider/provider.actions';
+import { SetUserAsModerator } from '@osf/core/store/user';
 
 import { RegistryOverviewService } from '../../services';
 
 import {
   GetRegistryById,
   GetRegistryInstitutions,
+  GetRegistryReviewActions,
   GetRegistrySubjects,
   GetSchemaBlocks,
   MakePublic,
   SetRegistryCustomCitation,
+  SubmitDecision,
   WithdrawRegistration,
 } from './registry-overview.actions';
-import { RegistryOverviewStateModel } from './registry-overview.model';
+import { REGISTRY_OVERVIEW_DEFAULTS, RegistryOverviewStateModel } from './registry-overview.model';
 
 @Injectable()
 @State<RegistryOverviewStateModel>({
   name: 'registryOverview',
-  defaults: {
-    registry: {
-      data: null,
-      isLoading: false,
-      error: null,
-    },
-    subjects: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    institutions: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    schemaBlocks: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-  },
+  defaults: REGISTRY_OVERVIEW_DEFAULTS,
 })
 export class RegistryOverviewState {
   private readonly registryOverviewService = inject(RegistryOverviewService);
@@ -60,6 +45,12 @@ export class RegistryOverviewState {
     return this.registryOverviewService.getRegistrationById(action.id).pipe(
       tap({
         next: (registryOverview) => {
+          if (registryOverview?.currentUserIsModerator) {
+            ctx.dispatch(new SetUserAsModerator());
+          }
+          if (registryOverview?.provider) {
+            ctx.dispatch(new SetCurrentProvider(registryOverview.provider));
+          }
           ctx.patchState({
             registry: {
               data: registryOverview,
@@ -72,7 +63,7 @@ export class RegistryOverviewState {
           }
         },
       }),
-      catchError((error) => this.handleError(ctx, 'registry', error))
+      catchError((error) => handleSectionError(ctx, 'registry', error))
     );
   }
 
@@ -98,7 +89,7 @@ export class RegistryOverviewState {
           });
         },
       }),
-      catchError((error) => this.handleError(ctx, 'subjects', error))
+      catchError((error) => handleSectionError(ctx, 'subjects', error))
     );
   }
 
@@ -124,7 +115,7 @@ export class RegistryOverviewState {
           });
         },
       }),
-      catchError((error) => this.handleError(ctx, 'institutions', error))
+      catchError((error) => handleSectionError(ctx, 'institutions', error))
     );
   }
 
@@ -150,7 +141,7 @@ export class RegistryOverviewState {
           });
         },
       }),
-      catchError((error) => this.handleError(ctx, 'schemaBlocks', error))
+      catchError((error) => handleSectionError(ctx, 'schemaBlocks', error))
     );
   }
 
@@ -179,7 +170,7 @@ export class RegistryOverviewState {
           }
         },
       }),
-      catchError((error) => this.handleError(ctx, 'registry', error))
+      catchError((error) => handleSectionError(ctx, 'registry', error))
     );
   }
 
@@ -208,7 +199,7 @@ export class RegistryOverviewState {
           }
         },
       }),
-      catchError((error) => this.handleError(ctx, 'registry', error))
+      catchError((error) => handleSectionError(ctx, 'registry', error))
     );
   }
 
@@ -226,18 +217,54 @@ export class RegistryOverviewState {
     });
   }
 
-  private handleError(
-    ctx: StateContext<RegistryOverviewStateModel>,
-    section: 'registry' | 'subjects' | 'institutions' | 'schemaBlocks',
-    error: Error
-  ) {
+  @Action(GetRegistryReviewActions)
+  getRegistryReviewActions(ctx: StateContext<RegistryOverviewStateModel>, action: GetRegistryReviewActions) {
     ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        error: error.message,
+      moderationActions: {
+        data: [],
+        isLoading: true,
+        isSubmitting: false,
+        error: null,
       },
     });
-    return throwError(() => error);
+
+    return this.registryOverviewService.getRegistryReviewActions(action.registryId).pipe(
+      tap((reviewActions) => {
+        ctx.patchState({
+          moderationActions: {
+            data: reviewActions,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'moderationActions', error))
+    );
+  }
+
+  @Action(SubmitDecision)
+  submitDecision(ctx: StateContext<RegistryOverviewStateModel>, action: SubmitDecision) {
+    ctx.patchState({
+      moderationActions: {
+        data: [],
+        isLoading: true,
+        isSubmitting: true,
+        error: null,
+      },
+    });
+
+    return this.registryOverviewService.submitDecision(action.payload, action.isRevision).pipe(
+      tap(() => {
+        ctx.patchState({
+          moderationActions: {
+            data: [],
+            isLoading: false,
+            isSubmitting: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'moderationActions', error))
+    );
   }
 }

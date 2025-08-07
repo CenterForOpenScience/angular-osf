@@ -1,7 +1,7 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { RegistrationQuestions, RegistrySubject } from '@osf/features/registry/models';
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
-import { License } from '@shared/models';
+import { License, ProviderModel } from '@shared/models';
 
 export interface RegistryOverview {
   id: string;
@@ -16,7 +16,7 @@ export interface RegistryOverview {
   registrationType: string;
   doi: string;
   tags: string[];
-  registry?: string;
+  provider?: ProviderModel;
   contributors: ProjectOverviewContributor[];
   citation: string;
   category: string;
@@ -66,4 +66,9 @@ export interface RegistryOverview {
     files: string;
   };
   archiving: boolean;
+  embargoEndDate: string;
+  currentUserIsModerator: boolean;
+  withdrawn: boolean;
+  withdrawalJustification?: string;
+  dateWithdrawn: string | null;
 }

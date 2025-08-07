@@ -27,6 +27,7 @@ export * from './paginated-data.model';
 export * from './pagination-links.model';
 export * from './profile-settings-update.model';
 export * from './project-metadata-update-payload.model';
+export * from './provider';
 export * from './query-params.model';
 export * from './registration';
 export * from './resource-card';

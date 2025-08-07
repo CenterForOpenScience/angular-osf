@@ -1,14 +1,17 @@
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe } from 'ng-mocks';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreprintsHelpDialogComponent } from './preprints-help-dialog.component';
 
-describe('CollectionsHelpDialogComponent', () => {
+describe('PreprintsHelpDialogComponent', () => {
   let component: PreprintsHelpDialogComponent;
   let fixture: ComponentFixture<PreprintsHelpDialogComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PreprintsHelpDialogComponent],
+      imports: [PreprintsHelpDialogComponent, MockPipe(TranslatePipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PreprintsHelpDialogComponent);

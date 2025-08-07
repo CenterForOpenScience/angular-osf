@@ -34,6 +34,10 @@ export class RegistrationCardComponent {
     return this.registrationData().reviewsState === RegistrationReviewStates.Accepted;
   }
 
+  get isPending(): boolean {
+    return this.registrationData().reviewsState === RegistrationReviewStates.Pending;
+  }
+
   get isApproved(): boolean {
     return this.registrationData().revisionState === RevisionReviewStates.Approved;
   }

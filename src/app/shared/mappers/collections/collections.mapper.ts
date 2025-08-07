@@ -17,8 +17,6 @@ import {
   CollectionSubmissionWithGuid,
   CollectionSubmissionWithGuidJsonApi,
   PaginatedData,
-  ReviewActionPayload,
-  ReviewActionPayloadJsonApi,
 } from '@osf/shared/models';
 import { convertToSnakeCase } from '@shared/utils';
 
@@ -214,26 +212,6 @@ export class CollectionsMapper {
             data: {
               type: 'users',
               id: payload.userId,
-            },
-          },
-        },
-      },
-    };
-  }
-
-  static toReviewActionPayloadJsonApi(payload: ReviewActionPayload): ReviewActionPayloadJsonApi {
-    return {
-      data: {
-        type: 'collection_submission_actions',
-        attributes: {
-          trigger: payload.action,
-          comment: payload.comment,
-        },
-        relationships: {
-          target: {
-            data: {
-              type: 'collection-submissions',
-              id: payload.targetId,
             },
           },
         },

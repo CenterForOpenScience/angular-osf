@@ -10,5 +10,6 @@ export * from './find-changed-fields';
 export * from './find-changed-items.helper';
 export * from './form-validation.helper';
 export * from './get-resource-types.helper';
+export * from './password.helper';
 export * from './pie-chart-palette';
 export * from './search-pref-to-json-api-query-params.helper';

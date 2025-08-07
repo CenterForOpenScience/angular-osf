@@ -7,7 +7,7 @@
       link
       [label]="submission().title"
       [routerLink]="['/registries/', submission().id, 'overview']"
-      [queryParams]="{ mode: 'moderator' }"
+      [queryParams]="{ mode: 'moderator', revisionId: isPendingModeration ? submission().revisionId : null }"
     />
 
     @if (submission().public && !submission().embargoEndDate) {

@@ -1,11 +1,10 @@
-import { catchError, Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@core/services';
 import { mapInstitutionPreprints } from '@osf/features/admin-institutions/mappers/institution-preprints.mapper';
-import { departmens, summaryMetrics, users } from '@osf/features/admin-institutions/services/mock';
 import { PaginationLinksModel } from '@shared/models';
 
 import {
@@ -40,32 +39,18 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class InstitutionsAdminService {
-  hardcodedUrl = 'https://api.test.osf.io/v2';
-
   private jsonApiService = inject(JsonApiService);
 
   fetchDepartments(institutionId: string): Observable<InstitutionDepartment[]> {
     return this.jsonApiService
-      .get<InstitutionDepartmentsJsonApi>(`${this.hardcodedUrl}/institutions/${institutionId}/metrics/departments/`)
-      .pipe(
-        //TODO: remove mock data
-        catchError(() => {
-          return of(departmens as InstitutionDepartmentsJsonApi);
-        }),
-        map((res) => mapInstitutionDepartments(res))
-      );
+      .get<InstitutionDepartmentsJsonApi>(`${environment.apiUrl}/institutions/${institutionId}/metrics/departments/`)
+      .pipe(map((res) => mapInstitutionDepartments(res)));
   }
 
   fetchSummary(institutionId: string): Observable<InstitutionSummaryMetrics> {
     return this.jsonApiService
-      .get<InstitutionSummaryMetricsJsonApi>(`${this.hardcodedUrl}/institutions/${institutionId}/metrics/summary/`)
-      .pipe(
-        //TODO: remove mock data
-        catchError(() => {
-          return of(summaryMetrics as InstitutionSummaryMetricsJsonApi);
-        }),
-        map((result) => mapInstitutionSummaryMetrics(result.data.attributes))
-      );
+      .get<InstitutionSummaryMetricsJsonApi>(`${environment.apiUrl}/institutions/${institutionId}/metrics/summary/`)
+      .pipe(map((result) => mapInstitutionSummaryMetrics(result.data.attributes)));
   }
 
   fetchUsers(
@@ -83,12 +68,8 @@ export class InstitutionsAdminService {
     };
 
     return this.jsonApiService
-      .get<InstitutionUsersJsonApi>(`${this.hardcodedUrl}/institutions/${institutionId}/metrics/users/`, params)
+      .get<InstitutionUsersJsonApi>(`${environment.apiUrl}/institutions/${institutionId}/metrics/users/`, params)
       .pipe(
-        //TODO: remove mock data
-        catchError(() => {
-          return of(users);
-        }),
         map((response) => ({
           users: mapInstitutionUsers(response as InstitutionUsersJsonApi),
           totalCount: response.meta.total,
@@ -114,8 +95,7 @@ export class InstitutionsAdminService {
     additionalParams?: Record<string, string>
   ): Observable<InstitutionSearchFilter[]> {
     const params: Record<string, string> = {
-      //TODO: change here https://test.osf.io to current environment
-      'cardSearchFilter[affiliation]': `https://ror.org/05d5mza29,https://test.osf.io/institutions/${institutionId}/`,
+      'cardSearchFilter[affiliation]': `https://ror.org/05d5mza29,${environment.webUrl}/institutions/${institutionId}/`,
       valueSearchPropertyPath,
       'page[size]': '10',
       ...additionalParams,
@@ -129,7 +109,10 @@ export class InstitutionsAdminService {
   sendMessage(request: SendMessageRequest): Observable<SendMessageResponseJsonApi> {
     const payload = sendMessageRequestMapper(request);
 
-    return this.jsonApiService.post<SendMessageResponseJsonApi>(`${this.hardcodedUrl}/institutions/messages/`, payload);
+    return this.jsonApiService.post<SendMessageResponseJsonApi>(
+      `${environment.apiUrl}/institutions/messages/`,
+      payload
+    );
   }
 
   private fetchIndexCards(

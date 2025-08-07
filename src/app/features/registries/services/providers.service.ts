@@ -6,10 +6,10 @@ import { JsonApiResponse } from '@core/models';
 import { JsonApiService } from '@osf/core/services';
 import { RegistryProviderDetails } from '@osf/features/registries/models/registry-provider.model';
 import { RegistryProviderDetailsJsonApi } from '@osf/features/registries/models/registry-provider-json-api.model';
+import { ProvidersResponseJsonApi } from '@osf/shared/models';
 
 import { ProvidersMapper } from '../mappers/providers.mapper';
 import { ProviderSchema } from '../models';
-import { ProvidersResponseJsonApi } from '../models/providers-json-api.model';
 
 import { environment } from 'src/environments/environment';
 

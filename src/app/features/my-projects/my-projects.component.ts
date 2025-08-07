@@ -31,11 +31,6 @@ import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { QueryParams, TableParameters } from '@osf/shared/models';
 import { BookmarksSelectors, GetBookmarksCollectionId } from '@osf/shared/stores';
 import { IS_MEDIUM } from '@osf/shared/utils';
-
-import { MY_PROJECTS_TABS } from './constants';
-import { MyProjectsTab } from './enums';
-
-import { MyResourcesItem, MyResourcesSearchFilters } from 'src/app/shared/models/my-resources';
 import {
   ClearMyResources,
   GetMyBookmarks,
@@ -43,7 +38,12 @@ import {
   GetMyProjects,
   GetMyRegistrations,
   MyResourcesSelectors,
-} from 'src/app/shared/stores/my-resources';
+} from '@shared/stores';
+
+import { MY_PROJECTS_TABS } from './constants';
+import { MyProjectsTab } from './enums';
+
+import { MyResourcesItem, MyResourcesSearchFilters } from 'src/app/shared/models/my-resources';
 
 @Component({
   selector: 'osf-my-projects',

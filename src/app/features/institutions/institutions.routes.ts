@@ -2,6 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { authGuard } from '@osf/core/guards';
 import { InstitutionsComponent } from '@osf/features/institutions/institutions.component';
 import { InstitutionsSearchState } from '@shared/stores';
 
@@ -24,6 +25,7 @@ export const routes: Routes = [
       },
       {
         path: ':institution-id/dashboard',
+        canActivate: [authGuard],
         loadChildren: () => import('../admin-institutions/routes').then((inst) => inst.routes),
       },
     ],

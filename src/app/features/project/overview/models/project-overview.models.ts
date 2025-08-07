@@ -1,4 +1,5 @@
 import { JsonApiResponse } from '@osf/core/models';
+import { UserPermissions } from '@osf/shared/enums';
 import { License } from '@shared/models';
 
 export interface ProjectOverviewContributor {
@@ -42,7 +43,7 @@ export interface ProjectOverview {
   supplements?: ProjectSupplements[];
   analyticsKey: string;
   currentUserCanComment: boolean;
-  currentUserPermissions: string[];
+  currentUserPermissions: UserPermissions[];
   currentUserIsContributor: boolean;
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;

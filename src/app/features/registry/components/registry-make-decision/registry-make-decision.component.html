@@ -1,0 +1,116 @@
+<div class="flex flex-column gap-4">
+  @for (action of reviewActions(); track $index) {
+    <p class="flex flex-wrap gap-1">
+      @switch (action.toState) {
+        @case (SubmissionReviewStatus.Pending) {
+          <span class="capitalize">{{ 'moderation.submissionReview.submitted' | translate }}</span>
+        }
+        @case (SubmissionReviewStatus.Accepted) {
+          <span class="capitalize">{{ 'moderation.submissionReview.accepted' | translate }}</span>
+        }
+      }
+      <span>{{ action.dateModified | dateAgo }}</span>
+      <span>{{ 'moderation.submissionReview.by' | translate }}</span>
+      <span>{{ action.creator.name }}</span>
+      @if (embargoEndDate) {
+        <span>{{ 'moderation.submissionReview.embargoEnding' | translate }}</span>
+        <span>{{ embargoEndDate | date: 'shortDate' }}</span>
+      }
+    </p>
+  }
+
+  <form [formGroup]="requestForm" class="flex flex-column gap-3">
+    @if (isPendingModeration) {
+      <div class="flex flex-column gap-2">
+        <div class="flex gap-2">
+          <p-radioButton
+            [formControlName]="ModerationDecisionFormControls.Action"
+            [inputId]="TriggerAction.Accept"
+            [value]="TriggerAction.Accept"
+          ></p-radioButton>
+          <label [for]="TriggerAction.Accept" class="m-0 flex gap-2 flex-column">
+            @if (isPendingReview) {
+              <p class="font-bold">{{ 'moderation.makeDecision.acceptRequest' | translate }}</p>
+              <p>{{ 'moderation.makeDecision.acceptRequestMessage' | translate }}</p>
+            } @else {
+              <p class="font-bold">{{ 'moderation.makeDecision.acceptUpdate' | translate }}</p>
+              <p>{{ 'moderation.makeDecision.acceptUpdateMessage' | translate }}</p>
+            }
+          </label>
+        </div>
+        <div class="flex gap-2">
+          <p-radioButton
+            [formControlName]="ModerationDecisionFormControls.Action"
+            [inputId]="TriggerAction.Reject"
+            [value]="TriggerAction.Reject"
+          ></p-radioButton>
+          <label [for]="TriggerAction.Reject" class="m-0 flex gap-2 flex-column">
+            @if (registry.reviewsState === RegistrationReviewStates.Pending) {
+              <p class="font-bold">{{ 'moderation.makeDecision.rejectRequest' | translate }}</p>
+              <p>{{ 'moderation.makeDecision.rejectRequestMessage' | translate }}</p>
+            } @else {
+              <p class="font-bold">{{ 'moderation.makeDecision.rejectUpdate' | translate }}</p>
+              <p>{{ 'moderation.makeDecision.rejectUpdateMessage' | translate }}</p>
+            }
+          </label>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <textarea
+          pTextarea
+          [formControlName]="ModerationDecisionFormControls.Comment"
+          [placeholder]="'moderation.makeDecision.remarksPlaceholder' | translate"
+          [rows]="6"
+          class="w-full mt-3"
+        ></textarea>
+      </div>
+    } @else {
+      <div class="flex flex-column gap-2">
+        <div class="flex gap-2">
+          <p-radioButton
+            [formControlName]="ModerationDecisionFormControls.Action"
+            [inputId]="TriggerAction.ForceWithdraw"
+            [value]="TriggerAction.ForceWithdraw"
+          ></p-radioButton>
+          <label [for]="TriggerAction.ForceWithdraw" class="m-0 flex gap-2 flex-column">
+            <p class="font-bold">{{ 'moderation.makeDecision.forceWithdraw' | translate }}</p>
+            <p>{{ 'moderation.makeDecision.forceWithdrawMessage' | translate }}</p>
+          </label>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <textarea
+          pTextarea
+          [formControlName]="ModerationDecisionFormControls.Comment"
+          [placeholder]="'moderation.makeDecision.justificationPlaceholder' | translate"
+          [rows]="6"
+          class="w-full mt-3"
+        ></textarea>
+        @if (isCommentInvalid) {
+          <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+            {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+          </p-message>
+        }
+      </div>
+    }
+
+    <div class="flex pt-3 gap-3 justify-content-between">
+      <p-button
+        [label]="'common.buttons.cancel' | translate"
+        severity="info"
+        (click)="dialogRef.close(false)"
+        [disabled]="isSubmitting()"
+        class="btn-full-width"
+      />
+      <p-button
+        [label]="'moderation.makeDecision.submitDecision' | translate"
+        (click)="handleSubmission()"
+        severity="success"
+        [disabled]="!requestForm.valid || isSubmitting()"
+        [loading]="isSubmitting()"
+        class="btn-full-width"
+      />
+    </div>
+  </form>
+</div>

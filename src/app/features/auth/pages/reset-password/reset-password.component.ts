@@ -1,45 +1,68 @@
+import { createDispatchMap } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
+import { Message } from 'primeng/message';
 import { Password } from 'primeng/password';
 
 import { Component, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
+import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/utils';
 import { PasswordInputHintComponent } from '@shared/components';
-import { IS_XSMALL } from '@shared/utils';
 
-import { PASSWORD_REGEX, passwordMatchValidator } from '../../helpers';
 import { ResetPasswordFormGroupType } from '../../models';
+import { ResetPassword } from '../../store';
 
 @Component({
   selector: 'osf-reset-password',
-  imports: [Button, Password, ReactiveFormsModule, RouterLink, PasswordInputHintComponent, TranslatePipe],
+  imports: [Button, Password, ReactiveFormsModule, RouterLink, PasswordInputHintComponent, Message, TranslatePipe],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
 })
 export class ResetPasswordComponent {
-  #fb = inject(FormBuilder);
-  #isMobile$ = inject(IS_XSMALL);
+  private readonly fb = inject(FormBuilder);
+  private readonly route = inject(ActivatedRoute);
+  private readonly actions = createDispatchMap({ resetPassword: ResetPassword });
+
+  isFormSubmitted = signal(false);
   passwordRegex = PASSWORD_REGEX;
-  resetPasswordForm: ResetPasswordFormGroupType = this.#fb.group(
+
+  resetPasswordForm: ResetPasswordFormGroupType = this.fb.group(
     {
-      newPassword: ['', [Validators.required, Validators.pattern(this.passwordRegex)]],
-      confirmNewPassword: ['', Validators.required],
+      newPassword: ['', [CustomValidators.requiredTrimmed(), Validators.pattern(this.passwordRegex)]],
+      confirmNewPassword: ['', CustomValidators.requiredTrimmed()],
     },
     {
-      validators: passwordMatchValidator(),
+      validators: CustomValidators.passwordMatchValidator('newPassword', 'confirmNewPassword'),
     }
   );
-  isFormSubmitted = signal(false);
-  isMobile = toSignal(this.#isMobile$);
+
+  get isNewPasswordError() {
+    return this.resetPasswordForm.get('newPassword')?.errors && this.resetPasswordForm.get('newPassword')?.touched;
+  }
+
+  get isMismatchError(): boolean {
+    return (
+      this.resetPasswordForm.get('confirmNewPassword')?.dirty &&
+      this.resetPasswordForm.get('newPassword')?.dirty &&
+      this.resetPasswordForm.errors?.['passwordMismatch']
+    );
+  }
 
   onSubmit(): void {
-    if (this.resetPasswordForm.valid) {
-      // TODO: Implement password reset logic
-      this.isFormSubmitted.set(true);
+    if (this.resetPasswordForm.invalid) {
+      return;
     }
+
+    const userId = this.route.snapshot.params['userId'];
+    const token = this.route.snapshot.params['token'];
+    const newPassword = this.resetPasswordForm.getRawValue().newPassword;
+
+    this.actions.resetPassword(userId, token, newPassword).subscribe(() => {
+      this.isFormSubmitted.set(true);
+    });
   }
 }

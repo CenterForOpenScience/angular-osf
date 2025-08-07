@@ -1,1 +1,1 @@
-export { HomeLoggedOutComponent } from './home-logged-out/home-logged-out.component';
+export { DashboardComponent } from './dashboard/dashboard.component';

@@ -36,12 +36,21 @@
             }
           }
 
-          <!--          [KP] TODO: add links to update pages-->
           @if (registry()?.revisionStatus === RevisionReviewStates.Approved) {
-            <p-button class="w-full" styleClass="w-full" [label]="'common.buttons.update' | translate" />
+            <p-button
+              class="w-full"
+              styleClass="w-full"
+              (click)="updateRegistration.emit(registry()?.id!)"
+              [label]="'common.buttons.update' | translate"
+            />
           }
           @if (registry()?.revisionStatus === RevisionReviewStates.RevisionInProgress) {
-            <p-button class="w-full" styleClass="w-full" [label]="'common.buttons.continueUpdate' | translate" />
+            <p-button
+              class="w-full"
+              styleClass="w-full"
+              (click)="continueUpdateHandler()"
+              [label]="'common.buttons.continueUpdate' | translate"
+            />
           }
         }
       </div>

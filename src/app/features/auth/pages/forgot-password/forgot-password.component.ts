@@ -1,40 +1,53 @@
+import { createDispatchMap } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { TextInputComponent } from '@osf/shared/components';
+import { InputLimits } from '@osf/shared/constants';
+import { CustomValidators } from '@osf/shared/utils';
+
 import { ForgotPasswordFormGroupType, MessageInfo } from '../../models';
+import { ForgotPassword } from '../../store';
 
 @Component({
   selector: 'osf-forgot-password',
-  imports: [InputText, ReactiveFormsModule, Button, Message, TranslatePipe],
+  imports: [ReactiveFormsModule, Button, Message, TextInputComponent, TranslatePipe],
   templateUrl: './forgot-password.component.html',
   styleUrl: './forgot-password.component.scss',
 })
 export class ForgotPasswordComponent {
-  #fb = inject(FormBuilder);
-  forgotPasswordForm: ForgotPasswordFormGroupType = this.#fb.group({
-    email: ['', [Validators.required, Validators.email]],
+  private readonly fb = inject(FormBuilder);
+  private readonly actions = createDispatchMap({ forgotPassword: ForgotPassword });
+
+  readonly emailLimit = InputLimits.email.maxLength;
+
+  forgotPasswordForm: ForgotPasswordFormGroupType = this.fb.group({
+    email: ['', [CustomValidators.requiredTrimmed(), Validators.email]],
   });
+
   message = signal<MessageInfo | null>(null);
 
   onSubmit(): void {
-    // [NS] TODO: Implement password reset logic
-    if (this.forgotPasswordForm.valid) {
+    if (this.forgotPasswordForm.invalid) {
+      return;
+    }
+
+    const emailForm = this.forgotPasswordForm.getRawValue();
+
+    this.actions.forgotPassword(emailForm.email).subscribe(() => {
+      this.forgotPasswordForm.reset();
+
       this.message.set({
         severity: 'success',
         content: 'auth.forgotPassword.messages.success',
       });
-
-      // this.message.set({
-      //   severity: 'error',
-      //   content: 'auth.forgotPassword.messages.error'
-      // });
-    }
+    });
   }
 
   onCloseMessage(): void {

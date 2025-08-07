@@ -1,4 +1,10 @@
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe, MockProvider } from 'ng-mocks';
+
+import { of } from 'rxjs';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 
 import { NotificationSettingsComponent } from './notification-settings.component';
 
@@ -8,7 +14,8 @@ describe('NotificationSettingsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NotificationSettingsComponent],
+      imports: [NotificationSettingsComponent, MockPipe(TranslatePipe)],
+      providers: [MockProvider(ActivatedRoute, { params: of({}) })],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NotificationSettingsComponent);

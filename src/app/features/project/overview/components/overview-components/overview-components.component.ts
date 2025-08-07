@@ -13,6 +13,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 import { TruncatedTextComponent } from '@osf/shared/components';
+import { UserPermissions } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/utils';
 
 import { ProjectOverviewSelectors } from '../../store';
@@ -32,6 +33,7 @@ export class OverviewComponentsComponent {
   private translateService = inject(TranslateService);
   protected isMobile = toSignal(inject(IS_XSMALL));
   isCollectionsRoute = input<boolean>(false);
+  canWrite = input.required<boolean>();
   protected components = select(ProjectOverviewSelectors.getComponents);
   protected isComponentsLoading = select(ProjectOverviewSelectors.getComponentsLoading);
   protected readonly componentActionItems = (componentId: string) => [
@@ -48,6 +50,7 @@ export class OverviewComponentsComponent {
       command: () => this.handleDeleteComponent(componentId),
     },
   ];
+  readonly UserPermissions = UserPermissions;
 
   handleAddComponent(): void {
     const dialogWidth = this.isMobile() ? '95vw' : '850px';

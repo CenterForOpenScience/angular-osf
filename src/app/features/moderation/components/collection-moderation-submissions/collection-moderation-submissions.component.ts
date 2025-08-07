@@ -195,7 +195,7 @@ export class CollectionModerationSubmissionsComponent {
   }
 
   private initializeCollectionProvider(): void {
-    const id = this.route.parent?.snapshot.paramMap.get('collectionId');
+    const id = this.route.parent?.snapshot.paramMap.get('providerId');
 
     if (!id) {
       this.router.navigate(['/not-found']);

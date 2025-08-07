@@ -41,4 +41,3 @@ export { TextInputComponent } from './text-input/text-input.component';
 export { ToastComponent } from './toast/toast.component';
 export { TruncatedTextComponent } from './truncated-text/truncated-text.component';
 export { ViewOnlyTableComponent } from './view-only-table/view-only-table.component';
-export * from './wiki';

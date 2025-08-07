@@ -15,7 +15,7 @@ import { RevisionReviewStates } from '@osf/shared/enums';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 import { FieldType, SchemaActionTrigger } from '../../enums';
-import { DeleteSchemaResponse, HandleSchemaResponse, RegistriesSelectors } from '../../store';
+import { ClearState, DeleteSchemaResponse, HandleSchemaResponse, RegistriesSelectors } from '../../store';
 import { ConfirmContinueEditingDialogComponent } from '../confirm-continue-editing-dialog/confirm-continue-editing-dialog.component';
 import { ReviewDataComponent } from '../review-data/review-data.component';
 
@@ -48,12 +48,24 @@ export class JustificationReviewComponent {
   protected actions = createDispatchMap({
     deleteSchemaResponse: DeleteSchemaResponse,
     handleSchemaResponse: HandleSchemaResponse,
+    clearState: ClearState,
   });
 
   private readonly revisionId = this.route.snapshot.params['id'];
 
+  get isUnapproved() {
+    return this.schemaResponse()?.reviewsState === RevisionReviewStates.Unapproved;
+  }
+
+  get inProgress() {
+    return this.schemaResponse()?.reviewsState === RevisionReviewStates.RevisionInProgress;
+  }
+
   changes = computed(() => {
-    return Object.keys(this.updatedFields());
+    const updatedFields = this.updatedFields();
+    const updatedResponseKeys = this.schemaResponse()?.updatedResponseKeys || [];
+    const uniqueKeys = new Set([...updatedResponseKeys, ...Object.keys(updatedFields)]);
+    return Array.from(uniqueKeys);
   });
 
   submit(): void {
@@ -77,6 +89,8 @@ export class JustificationReviewComponent {
         const registrationId = this.schemaResponse()?.registrationId || '';
         this.actions.deleteSchemaResponse(this.revisionId).subscribe({
           next: () => {
+            this.toastService.showSuccess('registries.justification.successDeleteDraft');
+            this.actions.clearState();
             this.router.navigateByUrl(`/registries/${registrationId}/overview`);
           },
         });
@@ -101,6 +115,9 @@ export class JustificationReviewComponent {
         focusOnShow: false,
         closeOnEscape: true,
         modal: true,
+        data: {
+          revisionId: this.revisionId,
+        },
       })
       .onClose.subscribe((result) => {
         if (result) {
