@@ -4,6 +4,11 @@ export { PreprintsCreatorsFilterComponent } from './filters/preprints-creators-f
 export { PreprintsDateCreatedFilterComponent } from './filters/preprints-date-created-filter/preprints-date-created-filter.component';
 export { PreprintsInstitutionFilterComponent } from './filters/preprints-institution-filter/preprints-institution-filter.component';
 export { PreprintsLicenseFilterComponent } from './filters/preprints-license-filter/preprints-license-filter.component';
+export { AdditionalInfoComponent } from './preprint-details/additional-info/additional-info.component';
+export { GeneralInformationComponent } from './preprint-details/general-information/general-information.component';
+export { PreprintFileSectionComponent } from './preprint-details/preprint-file-section/preprint-file-section.component';
+export { ShareAndDownloadComponent } from './preprint-details/share-and-downlaod/share-and-download.component';
+export { StatusBannerComponent } from './preprint-details/status-banner/status-banner.component';
 export { PreprintProviderFooterComponent } from './preprint-provider-footer/preprint-provider-footer.component';
 export { PreprintProviderHeroComponent } from './preprint-provider-hero/preprint-provider-hero.component';
 export { PreprintServicesComponent } from './preprint-services/preprint-services.component';
@@ -14,6 +19,7 @@ export { PreprintsFilterChipsComponent } from '@osf/features/preprints/component
 export { PreprintsResourcesComponent } from '@osf/features/preprints/components/filters/preprints-resources/preprints-resources.component';
 export { PreprintsResourcesFiltersComponent } from '@osf/features/preprints/components/filters/preprints-resources-filters/preprints-resources-filters.component';
 export { PreprintsSubjectFilterComponent } from '@osf/features/preprints/components/filters/preprints-subject-filter/preprints-subject-filter.component';
+export { WithdrawDialogComponent } from '@osf/features/preprints/components/preprint-details/withdraw-dialog/withdraw-dialog.component';
 export { FileStepComponent } from '@osf/features/preprints/components/stepper/file-step/file-step.component';
 export { MetadataStepComponent } from '@osf/features/preprints/components/stepper/metadata-step/metadata-step.component';
 export { ReviewStepComponent } from '@osf/features/preprints/components/stepper/review-step/review-step.component';

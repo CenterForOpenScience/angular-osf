@@ -36,6 +36,15 @@ export class FetchPreprintRequests {
   static readonly type = '[Preprint] Fetch Preprint Requests';
 }
 
+export class WithdrawPreprint {
+  static readonly type = '[Preprint] Withdraw Preprint';
+
+  constructor(
+    public preprintId: string,
+    public justification: string
+  ) {}
+}
+
 export class ResetState {
   static readonly type = '[Preprint] Reset State';
 }

@@ -27,7 +27,13 @@
         />
       }
       @if (withdrawalButtonVisible()) {
-        <p-button class="w-full md:w-11rem" styleClass="w-full" label="Withdraw" severity="danger" />
+        <p-button
+          class="w-full md:w-11rem"
+          styleClass="w-full"
+          label="Withdraw"
+          severity="danger"
+          (click)="handleWithdrawClicked()"
+        />
       }
     }
   </div>

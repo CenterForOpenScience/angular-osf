@@ -68,4 +68,9 @@ export class PreprintSelectors {
   static getPreprintReviewActions(state: PreprintStateModel) {
     return state.preprintReviewActions.data;
   }
+
+  @Selector([PreprintState])
+  static getPreprintRequests(state: PreprintStateModel) {
+    return state.preprintRequests.data;
+  }
 }

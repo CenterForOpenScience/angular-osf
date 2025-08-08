@@ -52,13 +52,6 @@ SEVERITIES[ReviewsState.PendingWithdrawal] = 'error';
 SEVERITIES[ReviewsState.WithdrawalRejected] = 'error';
 SEVERITIES[ReviewsState.Withdrawn] = 'warn';
 
-//1. pending status for pre- and post-moderation providers | works
-//2. accepted status for pre- and post-moderation providers | works
-//3. rejected status for pre-moderation | works
-//4. withdrawn status for post-moderation | works
-
-//[RNi] TODO: check pending withdrawal and withdrawal rejected status for pre- and post-moderation providers
-
 @Component({
   selector: 'osf-preprint-status-banner',
   imports: [TranslatePipe, TitleCasePipe, Message, Dialog, Tag, Button],

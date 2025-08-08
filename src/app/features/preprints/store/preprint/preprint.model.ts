@@ -1,5 +1,6 @@
 import { ReviewAction } from '@osf/features/moderation/models';
 import { Preprint, PreprintShortInfo } from '@osf/features/preprints/models';
+import { PreprintRequest } from '@osf/features/preprints/models/preprint-request.models';
 import { AsyncStateModel, AsyncStateWithTotalCount, OsfFile, OsfFileVersion } from '@shared/models';
 
 export interface PreprintStateModel {
@@ -9,7 +10,7 @@ export interface PreprintStateModel {
   fileVersions: AsyncStateModel<OsfFileVersion[]>;
   preprintVersionIds: AsyncStateModel<string[]>;
   preprintReviewActions: AsyncStateModel<ReviewAction[]>;
-  preprintRequests: AsyncStateModel<[]>;
+  preprintRequests: AsyncStateModel<PreprintRequest[]>;
 }
 
 export const DefaultState: PreprintStateModel = {

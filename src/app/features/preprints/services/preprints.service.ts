@@ -1,4 +1,4 @@
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -8,6 +8,7 @@ import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { preprintSortFieldMap } from '@osf/features/preprints/constants';
 import { PreprintsMapper } from '@osf/features/preprints/mappers';
+import { PreprintRequestMapper } from '@osf/features/preprints/mappers/preprint-request.mapper';
 import {
   Preprint,
   PreprintAttributesJsonApi,
@@ -15,6 +16,8 @@ import {
   PreprintLinksJsonApi,
   PreprintMetaJsonApi,
   PreprintRelationshipsJsonApi,
+  PreprintRequest,
+  PreprintRequestsJsonApiResponse,
 } from '@osf/features/preprints/models';
 import { SearchFilters } from '@shared/models';
 import { searchPreferencesToJsonApiQueryParams } from '@shared/utils';
@@ -179,7 +182,17 @@ export class PreprintsService {
       .pipe(map((response) => response.data.map((x) => RegistryModerationMapper.fromActionResponse(x))));
   }
 
-  fetchPreprintRequests(preprintId: string): Observable<[]> {
-    return of([]);
+  getPreprintRequests(preprintId: string): Observable<PreprintRequest[]> {
+    const baseUrl = `${environment.apiUrl}/preprints/${preprintId}/requests/`;
+
+    return this.jsonApiService
+      .get<PreprintRequestsJsonApiResponse>(baseUrl)
+      .pipe(map((response) => response.data.map((x) => PreprintRequestMapper.fromPreprintRequest(x))));
+  }
+
+  withdrawPreprint(preprintId: string, justification: string) {
+    const payload = PreprintRequestMapper.toWithdrawPreprintPayload(preprintId, justification);
+
+    return this.jsonApiService.post(`${environment.apiUrl}/preprints/${preprintId}/requests/`, payload);
   }
 }

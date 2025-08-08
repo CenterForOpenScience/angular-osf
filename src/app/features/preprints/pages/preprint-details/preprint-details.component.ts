@@ -1,21 +1,34 @@
 import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { Button } from 'primeng/button';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
-import { map, of } from 'rxjs';
+import { filter, map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, OnDestroy, OnInit } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  HostBinding,
+  inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { AdditionalInfoComponent } from '@osf/features/preprints/components/preprint-details/additional-info/additional-info.component';
-import { GeneralInformationComponent } from '@osf/features/preprints/components/preprint-details/general-information/general-information.component';
-import { PreprintFileSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-file-section/preprint-file-section.component';
-import { ShareAndDownloadComponent } from '@osf/features/preprints/components/preprint-details/share-and-downlaod/share-and-download.component';
-import { StatusBannerComponent } from '@osf/features/preprints/components/preprint-details/status-banner/status-banner.component';
-import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
+import {
+  AdditionalInfoComponent,
+  GeneralInformationComponent,
+  PreprintFileSectionComponent,
+  ShareAndDownloadComponent,
+  StatusBannerComponent,
+  WithdrawDialogComponent,
+} from '@osf/features/preprints/components';
+import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import {
   FetchPreprintById,
   FetchPreprintRequests,
@@ -28,6 +41,7 @@ import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/prepri
 import { UserPermissions } from '@shared/enums';
 import { ContributorModel } from '@shared/models';
 import { ContributorsSelectors } from '@shared/stores';
+import { IS_MEDIUM } from '@shared/utils';
 
 @Component({
   selector: 'osf-preprint-details',
@@ -42,6 +56,7 @@ import { ContributorsSelectors } from '@shared/stores';
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
+  providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintDetailsComponent implements OnInit, OnDestroy {
@@ -50,9 +65,29 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store);
   private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
   private preprintId = toSignal(this.route.params.pipe(map((params) => params['preprintId'])) ?? of(undefined));
+
+  //1. pending status for pre- and post-moderation providers  | works
+  //2. accepted status for pre- and post-moderation providers | works (pending -> accepted)
+  //3. rejected status for pre-moderation                     | works (pending -> rejected)
+  //4. rejected status for post-moderation                    | works (pending -> withdrawn), becomes withdrawn after rejection
+
+  //5. pending withdrawal status for pre-moderation           | works (pending -> withdrawn), becomes withdrawn after withdrawal request
+  //                                                          | ?????????????? (accepted -> pending withdrawal)
+
+  //6. pending withdrawal status for post-moderation          | works (pending -> pending withdrawal)
+  //                                                          | works (accepted -> pending withdrawal)
+
+  //7. withdrawn status for pre-moderation           ??????????????  \\\\ pending preprint became withdrawn after withdrawal request
+  //8. withdrawn status for post-moderation          ??????????????
+
+  //9. Withdrawal rejected status for pre-moderation  ??????????????  \\\\ only from accepted state
+  //10. Withdrawal rejected status for post-moderation ??????????????
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
@@ -71,6 +106,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   contributors = select(ContributorsSelectors.getContributors);
   areContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   reviewActions = select(PreprintSelectors.getPreprintReviewActions);
+  withdrawalRequests = select(PreprintSelectors.getPreprintRequests);
 
   latestAction = computed(() => {
     const actions = this.reviewActions();
@@ -78,6 +114,13 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     if (actions.length < 1) return null;
 
     return actions[0];
+  });
+  latestWithdrawalRequest = computed(() => {
+    const requests = this.withdrawalRequests();
+
+    if (requests.length < 1) return null;
+
+    return requests[0];
   });
 
   private currentUserIsAdmin = computed(() => {
@@ -100,6 +143,12 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       return currentUser?.id ? authorIds.includes(authorId) && this.hasReadWriteAccess() : false;
     }
     return false;
+  });
+
+  private preprintWithdrawableState = computed(() => {
+    const preprint = this.preprint();
+    if (!preprint) return false;
+    return [ReviewsState.Accepted, ReviewsState.Pending].includes(preprint.reviewsState);
   });
 
   createNewVersionButtonVisible = computed(() => {
@@ -140,16 +189,11 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     return false;
   });
 
-  private preprintWithdrawableState = computed(() => {
-    const preprint = this.preprint();
-    if (!preprint) return false;
-    return [ReviewsState.Accepted, ReviewsState.Pending].includes(preprint.reviewsState);
-  });
-
   isPendingWithdrawal = computed(() => {
-    //[RNi] TODO: Implement when withdrawal requests available
-    //return Boolean(this.args.latestWithdrawalRequest) && !this.isWithdrawalRejected;
-    return false;
+    const latestWithdrawalRequest = this.latestWithdrawalRequest();
+    if (!latestWithdrawalRequest) return false;
+
+    return latestWithdrawalRequest.machineState === PreprintRequestMachineState.Pending && !this.isWithdrawalRejected();
   });
 
   isWithdrawalRejected = computed(() => {
@@ -157,6 +201,15 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     //const isPreprintRequestActionModel = this.args.latestAction instanceof PreprintRequestActionModel;
     //         return isPreprintRequestActionModel && this.args.latestAction?.actionTrigger === 'reject';
     return false;
+  });
+
+  withdrawalButtonVisible = computed(() => {
+    return (
+      this.currentUserIsAdmin() &&
+      this.preprintWithdrawableState() &&
+      !this.isWithdrawalRejected() &&
+      !this.isPendingWithdrawal()
+    );
   });
 
   statusBannerVisible = computed(() => {
@@ -173,32 +226,36 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     );
   });
 
-  withdrawalButtonVisible = computed(() => {
-    return (
-      this.currentUserIsAdmin() &&
-      this.preprintWithdrawableState() &&
-      !this.isWithdrawalRejected() &&
-      !this.isPendingWithdrawal()
-    );
-  });
-
-  private hasReadWriteAccess(): boolean {
-    // True if the current user has write permissions for the node that contains the preprint
-    return this.preprint()?.currentUserPermissions.includes(UserPermissions.Write) || false;
-  }
-
   ngOnInit() {
-    this.actions.fetchPreprintById(this.preprintId()).subscribe({
-      next: () => {
-        this.actions.fetchPreprintRequests();
-        this.actions.fetchPreprintReviewActions();
-      },
-    });
+    this.fetchPreprint();
     this.actions.getPreprintProviderById(this.providerId());
   }
 
   ngOnDestroy() {
     this.actions.resetState();
+  }
+
+  handleWithdrawClicked() {
+    const dialogWidth = this.isMedium() ? '500px' : '340px';
+
+    const dialogRef = this.dialogService.open(WithdrawDialogComponent, {
+      header: 'Withdraw Preprint',
+      focusOnShow: false,
+      closeOnEscape: true,
+      width: dialogWidth,
+      modal: true,
+      closable: true,
+      data: {
+        preprint: this.preprint(),
+        provider: this.preprintProvider(),
+      },
+    });
+
+    dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef), filter(Boolean)).subscribe({
+      next: () => {
+        this.fetchPreprint();
+      },
+    });
   }
 
   editPreprintClicked() {
@@ -212,5 +269,21 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
         this.router.navigate(['preprints', this.providerId(), 'new-version', newVersionPreprint!.id]);
       },
     });
+  }
+
+  private fetchPreprint() {
+    this.actions.fetchPreprintById(this.preprintId()).subscribe({
+      next: () => {
+        if (this.preprint()!.currentUserPermissions.length > 0) {
+          this.actions.fetchPreprintRequests();
+          this.actions.fetchPreprintReviewActions();
+        }
+      },
+    });
+  }
+
+  private hasReadWriteAccess(): boolean {
+    // True if the current user has write permissions for the node that contains the preprint
+    return this.preprint()?.currentUserPermissions.includes(UserPermissions.Write) || false;
   }
 }
