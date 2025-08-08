@@ -4,30 +4,32 @@
       @if (!isWithdrawn()) {
         {{ status() | translate | titlecase }}: {{ bannerContent() }}
 
-        @if (reviewerComment() && !provider().reviewsCommentsPrivate) {
-          <p-button
-            [link]="true"
-            class="cursor-pointer"
-            (click)="feedbackDialogVisible = true"
-            [label]="'Show moderator feedback'"
-          />
+        <div>
+          @if (reviewerComment() && !provider().reviewsCommentsPrivate) {
+            <p-button
+              [link]="true"
+              class="cursor-pointer"
+              (click)="feedbackDialogVisible = true"
+              [label]="'Show moderator feedback'"
+            />
 
-          <p-dialog header="Moderator feedback" [modal]="true" draggable="false" [(visible)]="feedbackDialogVisible">
-            <div class="flex flex-column gap-2 align-items-start">
-              <p-tag [severity]="severity()"> {{ status() }}</p-tag>
+            <p-dialog header="Moderator feedback" [modal]="true" draggable="false" [(visible)]="feedbackDialogVisible">
+              <div class="flex flex-column gap-2 align-items-start">
+                <p-tag [severity]="severity()"> {{ status() }}</p-tag>
 
-              <p>{{ reviewerComment() }}</p>
+                <p>{{ reviewerComment() }}</p>
 
-              <div>
-                @if (!provider().reviewsCommentsAnonymous) {
-                  <p>{{ reviewerName() }}</p>
-                }
+                <div>
+                  @if (!provider().reviewsCommentsAnonymous) {
+                    <p>{{ reviewerName() }}</p>
+                  }
 
-                <p>{{ provider().name }} Moderator</p>
+                  <p>{{ provider().name }} Moderator</p>
+                </div>
               </div>
-            </div>
-          </p-dialog>
-        }
+            </p-dialog>
+          }
+        </div>
       } @else {
         {{ bannerContent() }}
       }
