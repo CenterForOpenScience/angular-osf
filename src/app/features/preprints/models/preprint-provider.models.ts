@@ -2,6 +2,9 @@ import { StringOrNull } from '@core/helpers';
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums/provider-reviews-workflow.enum';
 import { Brand } from '@shared/models';
 
+export type PreprintWord = 'default' | 'work' | 'paper' | 'preprint' | 'thesis';
+export type PreprintWordGrammar = 'plural' | 'pluralCapitalized' | 'singular' | 'singularCapitalized';
+
 export interface PreprintProviderDetails {
   id: string;
   name: string;
@@ -10,7 +13,7 @@ export interface PreprintProviderDetails {
   examplePreprintId: string;
   domain: string;
   footerLinksHtml: string;
-  preprintWord: string;
+  preprintWord: PreprintWord;
   allowSubmissions: boolean;
   assertionsEnabled: boolean;
   reviewsWorkflow: ProviderReviewsWorkflow | null;

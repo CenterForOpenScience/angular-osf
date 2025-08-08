@@ -1,5 +1,6 @@
 import { StringOrNull } from '@core/helpers';
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
+import { PreprintWord } from '@osf/features/preprints/models/preprint-provider.models';
 import { BrandDataJsonApi } from '@shared/models';
 
 export interface PreprintProviderDetailsJsonApi {
@@ -12,7 +13,7 @@ export interface PreprintProviderDetailsJsonApi {
     example: string;
     domain: string;
     footer_links: string;
-    preprint_word: string;
+    preprint_word: PreprintWord;
     assets: {
       wide_white: string;
       square_color_no_transparent: string;
