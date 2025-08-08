@@ -9,12 +9,16 @@
 
   <div class="flex flex-column gap-4 mt-4 md:gap-5 xl:flex-row xl:justify-content-between">
     <div class="flex flex-column gap-3 xl:gap-4">
-      <p class="font-bold">
-        {{ currentUser()?.employment?.[0]?.title }},
-        {{ currentUser()?.employment?.[0]?.institution }}
-      </p>
+      @if (currentUser()?.employment?.length) {
+        <p class="font-bold">
+          {{ currentUser()?.employment?.[0]?.title }},
+          {{ currentUser()?.employment?.[0]?.institution }}
+        </p>
+      }
 
-      <p class="font-normal">Member since: {{ currentUser()?.dateRegistered | date: 'MMM d, yyyy' }}</p>
+      <p class="font-normal">
+        {{ 'myProfile.memberSince' | translate }}: {{ currentUser()?.dateRegistered | date: 'MMM d, yyyy' }}
+      </p>
     </div>
 
     <div class="flex flex-column gap-4">
@@ -34,21 +38,27 @@
         </div>
       </div>
 
-      <div class="flex flex-column gap-3 md:flex-row xl:gap-4">
-        <div class="flex flex-row align-items-center gap-2">
-          <i class="osf-icon-institution"></i>
-          <h3 class="font-bold">
-            {{ currentUser()?.education?.[0]?.institution }}
-          </h3>
-        </div>
+      @if (isEmploymentAndEducationVisible()) {
+        <div class="flex flex-column gap-3 md:flex-row xl:gap-4">
+          @if (currentUser()?.education?.length) {
+            <div class="flex flex-row align-items-center gap-2">
+              <i class="osf-icon-institution"></i>
+              <h3 class="font-bold">
+                {{ currentUser()?.education?.[0]?.institution }}
+              </h3>
+            </div>
+          }
 
-        <div class="flex flex-row align-items-center gap-2">
-          <img ngSrc="assets/icons/colored/cos-shield.svg" width="16" height="16" alt="cos-shield" />
-          <h3 class="font-bold">
-            {{ currentUser()?.employment?.[0]?.institution }}
-          </h3>
+          @if (currentUser()?.employment?.length) {
+            <div class="flex flex-row align-items-center gap-2">
+              <img ngSrc="assets/icons/colored/cos-shield.svg" width="16" height="16" alt="cos-shield" />
+              <h3 class="font-bold">
+                {{ currentUser()?.employment?.[0]?.institution }}
+              </h3>
+            </div>
+          }
         </div>
-      </div>
+      }
 
       <div class="flex flex-wrap align-items-center gap-3">
         @if (currentUser()?.social?.github) {
@@ -116,18 +126,23 @@
   </div>
 </div>
 
-<div class="cards flex flex-column gap-4 py-4 px-3 md:px-5 xl:flex-row xl:px-4">
-  <div class="card w-full p-3 md:p-4 xl:w-6">
-    <h2 class="mb-3">{{ 'settings.profileSettings.tabs.employment' | translate }}</h2>
+@if (isEmploymentAndEducationVisible()) {
+  <div class="cards flex flex-column gap-4 py-4 px-3 md:px-5 xl:flex-row xl:px-4">
+    @if (currentUser()?.employment?.length) {
+      <div class="card w-full p-3 md:p-4 xl:w-6">
+        <h2 class="mb-3">{{ 'settings.profileSettings.tabs.employment' | translate }}</h2>
 
-    <osf-employment-history [employment]="currentUser()?.employment"></osf-employment-history>
+        <osf-employment-history [employment]="currentUser()?.employment"></osf-employment-history>
+      </div>
+    }
+
+    @if (currentUser()?.education?.length) {
+      <div class="card w-full p-3 md:p-4 xl:w-6">
+        <h2 class="mb-3">{{ 'settings.profileSettings.tabs.education' | translate }}</h2>
+
+        <osf-education-history [education]="currentUser()?.education"></osf-education-history>
+      </div>
+    }
   </div>
-
-  <div class="card w-full p-3 md:p-4 xl:w-6">
-    <h2 class="mb-3">{{ 'settings.profileSettings.tabs.education' | translate }}</h2>
-
-    <osf-education-history [education]="currentUser()?.education"></osf-education-history>
-  </div>
-</div>
-
+}
 <osf-my-profile-search></osf-my-profile-search>

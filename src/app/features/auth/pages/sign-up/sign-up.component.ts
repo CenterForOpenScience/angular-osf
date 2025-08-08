@@ -9,10 +9,11 @@ import { Divider } from 'primeng/divider';
 import { Password } from 'primeng/password';
 
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
+import { NavigationService } from '@osf/core/services';
 import { RegisterUser } from '@osf/features/auth/store';
 import { PasswordInputHintComponent, TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
@@ -42,13 +43,14 @@ import { environment } from 'src/environments/environment';
   styleUrl: './sign-up.component.scss',
 })
 export class SignUpComponent implements OnInit {
+  private readonly navigateService = inject(NavigationService);
+
+  private readonly actions = createDispatchMap({ registerUser: RegisterUser });
+
   signUpForm = new FormGroup<SignUpForm>({} as SignUpForm);
   passwordRegex: RegExp = PASSWORD_REGEX;
   inputLimits = InputLimits;
-
   isFormSubmitted = signal(false);
-
-  actions = createDispatchMap({ registerUser: RegisterUser });
 
   readonly siteKey = environment.recaptchaSiteKey;
 
@@ -104,5 +106,13 @@ export class SignUpComponent implements OnInit {
         this.signUpForm.enable();
       },
     });
+  }
+
+  navigateToOrcidSingIn(): void {
+    this.navigateService.navigateToOrcidSingIn();
+  }
+
+  navigateToInstitutionSingIn(): void {
+    this.navigateService.navigateToInstitutionSignIn();
   }
 }

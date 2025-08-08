@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 
 import { DatePipe, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
@@ -44,6 +44,10 @@ export class MyProfileComponent implements OnDestroy {
     resetSearchState: ResetSearchState,
     setIsMyProfile: SetIsMyProfile,
   });
+
+  isEmploymentAndEducationVisible = computed(
+    () => this.currentUser()?.employment?.length || this.currentUser()?.education?.length
+  );
 
   toProfileSettings() {
     this.router.navigate(['settings/profile-settings']);

@@ -36,4 +36,11 @@ describe('CancelDeactivationComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should close the dialog with true when cancelDeactivation is called', () => {
+    const dialogRef = TestBed.inject(DynamicDialogRef);
+    jest.spyOn(dialogRef, 'close');
+    component.cancelDeactivation();
+    expect(dialogRef.close).toHaveBeenCalledWith(true);
+  });
 });

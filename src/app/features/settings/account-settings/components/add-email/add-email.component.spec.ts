@@ -1,4 +1,4 @@
-import { provideStore } from '@ngxs/store';
+import { provideStore, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 import { MockPipe, MockProviders } from 'ng-mocks';
@@ -9,6 +9,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { TranslateServiceMock } from '@shared/mocks';
+import { ToastService } from '@shared/services';
+
 import { AccountSettingsState } from '../../store';
 
 import { AddEmailComponent } from './add-email.component';
@@ -16,24 +19,37 @@ import { AddEmailComponent } from './add-email.component';
 describe('AddEmailComponent', () => {
   let component: AddEmailComponent;
   let fixture: ComponentFixture<AddEmailComponent>;
+  let store: Store;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AddEmailComponent, MockPipe(TranslatePipe)],
       providers: [
         provideStore([AccountSettingsState]),
+        MockProviders(DynamicDialogRef, ToastService),
+        TranslateServiceMock,
         provideHttpClient(),
         provideHttpClientTesting(),
-        MockProviders(DynamicDialogRef),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddEmailComponent);
     component = fixture.componentInstance;
+
+    store = TestBed.inject(Store);
+
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should not call action addEmail when email is invalid', () => {
+    const actionSpy = jest.spyOn(store, 'dispatch');
+
+    component.addEmail();
+
+    expect(actionSpy).not.toHaveBeenCalled();
   });
 });

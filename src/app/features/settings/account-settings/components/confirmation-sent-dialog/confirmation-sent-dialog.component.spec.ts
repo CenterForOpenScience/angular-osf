@@ -1,15 +1,11 @@
-import { provideStore } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
 import { MockPipe, MockProviders } from 'ng-mocks';
 
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AccountSettingsState } from '@osf/features/settings/account-settings/store';
 
 import { ConfirmationSentDialogComponent } from './confirmation-sent-dialog.component';
 
@@ -21,10 +17,9 @@ describe('ConfirmationSentDialogComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ConfirmationSentDialogComponent, MockPipe(TranslatePipe)],
       providers: [
-        provideStore([AccountSettingsState]),
+        MockProviders(DynamicDialogRef, DynamicDialogConfig),
         provideHttpClient(),
         provideHttpClientTesting(),
-        MockProviders(DynamicDialogRef),
       ],
     }).compileComponents();
 

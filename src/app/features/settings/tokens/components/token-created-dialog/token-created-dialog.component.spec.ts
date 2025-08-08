@@ -1,10 +1,13 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+
+import { TranslateServiceMock } from '@shared/mocks';
+import { ToastService } from '@shared/services';
 
 import { TokenCreatedDialogComponent } from './token-created-dialog.component';
 
@@ -19,7 +22,8 @@ describe('TokenCreatedDialogComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TokenCreatedDialogComponent, MockPipe(TranslatePipe)],
       providers: [
-        MockProvider(TranslateService),
+        TranslateServiceMock,
+        MockProvider(ToastService),
         MockProvider(DynamicDialogRef, { close: jest.fn() }),
         MockProvider(DynamicDialogConfig, {
           data: {

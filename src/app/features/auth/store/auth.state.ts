@@ -25,17 +25,17 @@ export class AuthState {
 
   @Action(RegisterUser)
   signUp(ctx: StateContext<AuthStateModel>, action: RegisterUser) {
-    return this.authService.register(action.payload).subscribe();
+    return this.authService.register(action.payload);
   }
 
   @Action(ForgotPassword)
   forgotPassword(ctx: StateContext<AuthStateModel>, action: ForgotPassword) {
-    return this.authService.forgotPassword(action.email).subscribe();
+    return this.authService.forgotPassword(action.email);
   }
 
   @Action(ResetPassword)
   resetPassword(ctx: StateContext<AuthStateModel>, { userId, token, newPassword }: ResetPassword) {
-    return this.authService.resetPassword(userId, token, newPassword).subscribe();
+    return this.authService.resetPassword(userId, token, newPassword);
   }
 
   @Action(SetAuthenticated)

@@ -38,6 +38,7 @@ export const routes: Routes = [
       },
       {
         path: 'register',
+        canActivate: [redirectIfLoggedInGuard],
         loadComponent: () =>
           import('./features/auth/pages/sign-up/sign-up.component').then((mod) => mod.SignUpComponent),
         data: { skipBreadcrumbs: true },

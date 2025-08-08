@@ -444,7 +444,8 @@
     }
   },
   "myProfile": {
-    "editProfile": "Edit Profile"
+    "editProfile": "Edit Profile",
+    "memberSince": "Member since"
   },
   "project": {
     "analytics": {

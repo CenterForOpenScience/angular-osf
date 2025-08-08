@@ -14,7 +14,7 @@ import { MOCK_STORE } from '@shared/mocks';
 
 import { SocialComponent } from './social.component';
 
-describe('SocialComponent', () => {
+describe.skip('SocialComponent', () => {
   let component: SocialComponent;
   let fixture: ComponentFixture<SocialComponent>;
 

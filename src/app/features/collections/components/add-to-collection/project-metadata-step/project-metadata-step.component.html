@@ -55,6 +55,7 @@
         <osf-text-input
           label="collections.addToCollection.form.title"
           [control]="projectMetadataForm.controls[ProjectMetadataFormControls.Title]"
+          [maxLength]="inputLimits.fullName.maxLength"
         />
 
         <div class="flex flex-column gap-1">
