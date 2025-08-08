@@ -63,4 +63,14 @@ export class PreprintSelectors {
   static arePreprintVersionIdsLoading(state: PreprintStateModel) {
     return state.preprintVersionIds.isLoading;
   }
+
+  @Selector([PreprintState])
+  static getPreprintReviewActions(state: PreprintStateModel) {
+    return state.preprintReviewActions.data;
+  }
+
+  @Selector([PreprintState])
+  static getPreprintRequests(state: PreprintStateModel) {
+    return state.preprintRequests.data;
+  }
 }

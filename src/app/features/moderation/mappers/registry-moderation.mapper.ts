@@ -41,6 +41,7 @@ export class RegistryModerationMapper {
         id: response.embeds.creator.data.id,
         name: response.embeds.creator.data.attributes.full_name,
       },
+      trigger: response.attributes.trigger,
     };
   }
 }

@@ -3,6 +3,7 @@ import {
   Preprint,
   PreprintAttributesJsonApi,
   PreprintEmbedsJsonApi,
+  PreprintLinksJsonApi,
   PreprintMetaJsonApi,
   PreprintRelationshipsJsonApi,
   PreprintShortInfoWithTotalCount,
@@ -31,14 +32,19 @@ export class PreprintsMapper {
   }
 
   static fromPreprintJsonApi(
-    response: ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, null>
+    response: ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>
   ): Preprint {
     return {
       id: response.id,
       dateCreated: response.attributes.date_created,
       dateModified: response.attributes.date_modified,
+      dateWithdrawn: response.attributes.date_withdrawn,
+      datePublished: response.attributes.date_published,
       title: response.attributes.title,
       description: response.attributes.description,
+      reviewsState: response.attributes.reviews_state,
+      preprintDoiCreated: response.attributes.preprint_doi_created,
+      currentUserPermissions: response.attributes.current_user_permissions,
       doi: response.attributes.doi,
       customPublicationCitation: response.attributes.custom_publication_citation,
       originalPublicationDate: response.attributes.original_publication_date,
@@ -47,6 +53,7 @@ export class PreprintsMapper {
       isPublic: response.attributes.public,
       version: response.attributes.version,
       isLatestVersion: response.attributes.is_latest_version,
+      isPreprintOrphan: response.attributes.is_preprint_orphan,
       primaryFileId: response.relationships.primary_file?.data?.id || null,
       nodeId: response.relationships.node?.data?.id,
       licenseId: response.relationships.license?.data?.id || null,
@@ -65,24 +72,32 @@ export class PreprintsMapper {
       whyNoPrereg: response.attributes.why_no_prereg,
       preregLinks: response.attributes.prereg_links,
       preregLinkInfo: response.attributes.prereg_link_info,
+      preprintDoiLink: response.links.preprint_doi,
+      articleDoiLink: response.links.doi,
     };
   }
 
   static fromPreprintWithEmbedsJsonApi(
     response: JsonApiResponseWithMeta<
-      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>,
+      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>,
       PreprintMetaJsonApi,
       null
     >
   ): Preprint {
     const data = response.data;
     const meta = response.meta;
+    const links = response.data.links;
     return {
       id: data.id,
       dateCreated: data.attributes.date_created,
       dateModified: data.attributes.date_modified,
+      dateWithdrawn: data.attributes.date_withdrawn,
+      datePublished: data.attributes.date_published,
       title: data.attributes.title,
       description: data.attributes.description,
+      reviewsState: data.attributes.reviews_state,
+      preprintDoiCreated: data.attributes.preprint_doi_created,
+      currentUserPermissions: data.attributes.current_user_permissions,
       doi: data.attributes.doi,
       customPublicationCitation: data.attributes.custom_publication_citation,
       originalPublicationDate: data.attributes.original_publication_date,
@@ -91,6 +106,7 @@ export class PreprintsMapper {
       isPublic: data.attributes.public,
       version: data.attributes.version,
       isLatestVersion: data.attributes.is_latest_version,
+      isPreprintOrphan: data.attributes.is_preprint_orphan,
       primaryFileId: data.relationships.primary_file?.data?.id || null,
       nodeId: data.relationships.node?.data?.id,
       licenseId: data.relationships.license?.data?.id || null,
@@ -114,6 +130,8 @@ export class PreprintsMapper {
         views: meta.metrics.views,
       },
       embeddedLicense: LicensesMapper.fromLicenseDataJsonApi(data.embeds.license.data),
+      preprintDoiLink: links.preprint_doi,
+      articleDoiLink: links.doi,
     };
   }
 

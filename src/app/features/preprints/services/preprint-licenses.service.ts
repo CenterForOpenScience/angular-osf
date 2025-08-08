@@ -8,6 +8,7 @@ import { PreprintsMapper } from '@osf/features/preprints/mappers';
 import {
   PreprintAttributesJsonApi,
   PreprintLicensePayloadJsonApi,
+  PreprintLinksJsonApi,
   PreprintRelationshipsJsonApi,
 } from '@osf/features/preprints/models';
 import { LicensesMapper } from '@shared/mappers';
@@ -57,7 +58,7 @@ export class PreprintLicensesService {
 
     return this.jsonApiService
       .patch<
-        ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, null>
+        ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>
       >(`${this.apiUrl}/preprints/${preprintId}/`, payload)
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response)));
   }

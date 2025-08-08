@@ -1,0 +1,46 @@
+<div>
+  <p>
+    You are about to withdraw this version of your &#123;singularPreprintWord&#125;. Withdrawing a version will remove
+    it from public view but will not affect other versions of this &#123;singularPreprintWord&#125;, if available.
+  </p>
+  <p [innerHTML]="modalExplanation()"></p>
+</div>
+
+<div class="flex flex-column m-t-24">
+  <label for="withdrawalJustification">{{ 'Reason for withdrawal' | translate | titlecase }}</label>
+  <textarea
+    pTextarea
+    id="withdrawalJustification"
+    [rows]="4"
+    placeholder="Comment"
+    [formControl]="withdrawalJustificationFormControl"
+  ></textarea>
+  @let control = withdrawalJustificationFormControl;
+  @if (control.errors?.['required'] && (control.touched || control.dirty)) {
+    <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+      {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+    </p-message>
+  }
+  @if (control.errors?.['minlength'] && (control.touched || control.dirty)) {
+    <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+      {{ 'Comment must be at least 25 characters.' | translate: { length: inputLimits.abstract.minLength } }}
+    </p-message>
+  }
+</div>
+
+<div class="flex justify-content-end gap-2 m-t-48">
+  <p-button
+    class="w-12rem btn-full-width"
+    [label]="'common.buttons.cancel' | translate"
+    severity="info"
+    (click)="dialogRef.close()"
+  />
+  <p-button
+    class="w-12rem btn-full-width"
+    [label]="'common.buttons.withdraw' | translate"
+    (click)="withdraw()"
+    [loading]="withdrawRequestInProgress()"
+    [disabled]="withdrawalJustificationFormControl.invalid"
+    severity="danger"
+  />
+</div>

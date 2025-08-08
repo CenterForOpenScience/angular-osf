@@ -1,5 +1,9 @@
 export { ApplicabilityStatus } from './applicability-status.enum';
 export { PreprintFileSource } from './preprint-file-source.enum';
+export { PreprintRequestType } from './preprint-request.type';
+export { PreprintRequestMachineState } from './preprint-request-machine.state';
 export { PreprintSteps } from './preprint-steps.enum';
 export { PreregLinkInfo } from './prereg-link-info.enum';
+export { ProviderReviewsWorkflow } from './provider-reviews-workflow.enum';
+export { ReviewsState } from './reviews-state.enum';
 export { SupplementOptions } from './supplement-options.enum';

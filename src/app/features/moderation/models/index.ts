@@ -11,7 +11,6 @@ export * from './preprint-review-action.model';
 export * from './preprint-review-action-json-api.model';
 export * from './preprint-submission.model';
 export * from './preprint-submission-json-api.model';
-export * from './preprint-withdrawal-action.model';
 export * from './preprint-withdrawal-submission.model';
 export * from './preprint-withdrawal-submission-json-api.model';
 export * from './registry-json-api.model';

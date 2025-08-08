@@ -34,6 +34,8 @@ import { FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-files-tree',
   imports: [
@@ -215,7 +217,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   private handleShareAction(file: OsfFile, shareType?: string): void {
     const emailLink = `mailto:?subject=${file.name}&body=${file.links.html}`;
     const twitterLink = `https://twitter.com/intent/tweet?url=${file.links.html}&text=${file.name}&via=OSFramework`;
-    const facebookLink = `https://www.facebook.com/dialog/share?app_id=1022273774556662&display=popup&href=${file.links.html}&redirect_uri=${file.links.html}`;
+    const facebookLink = `https://www.facebook.com/dialog/share?app_id=${environment.facebookAppId}&display=popup&href=${file.links.html}&redirect_uri=${file.links.html}`;
 
     switch (shareType) {
       case 'email':

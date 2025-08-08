@@ -11,7 +11,7 @@ import { PreprintsDiscoverState } from '@osf/features/preprints/store/preprints-
 import { PreprintsResourcesFiltersState } from '@osf/features/preprints/store/preprints-resources-filters';
 import { PreprintsResourcesFiltersOptionsState } from '@osf/features/preprints/store/preprints-resources-filters-options';
 import { ConfirmLeavingGuard } from '@shared/guards';
-import { ContributorsState, SubjectsState } from '@shared/stores';
+import { CitationsState, ContributorsState, SubjectsState } from '@shared/stores';
 
 import { PreprintModerationState } from '../moderation/store/preprint-moderation';
 
@@ -29,6 +29,7 @@ export const preprintsRoutes: Routes = [
         ContributorsState,
         SubjectsState,
         PreprintState,
+        CitationsState,
       ]),
     ],
     children: [

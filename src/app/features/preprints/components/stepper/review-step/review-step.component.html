@@ -92,8 +92,8 @@
     <section class="flex flex-column gap-2">
       <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationDoi' | translate }}</h3>
 
-      <a [href]="'https://doi.org/' + preprint()?.doi">
-        {{ 'https://doi.org/' + preprint()?.doi }}
+      <a [href]="preprint()?.articleDoiLink">
+        {{ preprint()?.articleDoiLink }}
       </a>
     </section>
 

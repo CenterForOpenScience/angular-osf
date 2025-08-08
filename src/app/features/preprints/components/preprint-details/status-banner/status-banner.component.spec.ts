@@ -1,0 +1,22 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { StatusBannerComponent } from './status-banner.component';
+
+describe.skip('StatusBarComponent', () => {
+  let component: StatusBannerComponent;
+  let fixture: ComponentFixture<StatusBannerComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [StatusBannerComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(StatusBannerComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

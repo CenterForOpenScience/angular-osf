@@ -1,13 +1,19 @@
 import { BooleanOrNull, StringOrNull } from '@core/helpers';
-import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
+import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
+import { UserPermissions } from '@shared/enums';
 import { IdName, License, LicenseOptions } from '@shared/models';
 
 export interface Preprint {
   id: string;
   dateCreated: string;
   dateModified: string;
+  dateWithdrawn: Date | null;
+  datePublished: Date | null;
   title: string;
   description: string;
+  reviewsState: ReviewsState;
+  preprintDoiCreated: Date | null;
+  currentUserPermissions: UserPermissions[];
   doi: StringOrNull;
   originalPublicationDate: Date | null;
   customPublicationCitation: StringOrNull;
@@ -16,6 +22,7 @@ export interface Preprint {
   isPublic: boolean;
   version: number;
   isLatestVersion: boolean;
+  isPreprintOrphan: boolean;
   nodeId: StringOrNull;
   primaryFileId: StringOrNull;
   licenseId: StringOrNull;
@@ -31,6 +38,8 @@ export interface Preprint {
   preregLinkInfo: PreregLinkInfo | null;
   metrics?: PreprintMetrics;
   embeddedLicense?: License;
+  preprintDoiLink?: string;
+  articleDoiLink?: string;
 }
 
 export interface PreprintFilesLinks {

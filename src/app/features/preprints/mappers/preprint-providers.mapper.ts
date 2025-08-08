@@ -32,6 +32,9 @@ export class PreprintProvidersMapper {
       faviconUrl: response.attributes.assets.favicon,
       squareColorNoTransparentImageUrl: response.attributes.assets?.square_color_no_transparent,
       reviewsWorkflow: response.attributes.reviews_workflow,
+      facebookAppId: response.attributes.facebook_app_id,
+      reviewsCommentsPrivate: response.attributes.reviews_comments_private,
+      reviewsCommentsAnonymous: response.attributes.reviews_comments_anonymous,
     };
   }
 

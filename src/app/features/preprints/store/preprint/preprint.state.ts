@@ -15,8 +15,11 @@ import {
   FetchPreprintById,
   FetchPreprintFile,
   FetchPreprintFileVersions,
+  FetchPreprintRequests,
+  FetchPreprintReviewActions,
   FetchPreprintVersionIds,
   ResetState,
+  WithdrawPreprint,
 } from './preprint.actions';
 import { DefaultState, PreprintStateModel } from './preprint.model';
 
@@ -63,7 +66,9 @@ export class PreprintState {
     return this.preprintsService.getByIdWithEmbeds(action.id).pipe(
       tap((preprint) => {
         ctx.setState(patch({ preprint: patch({ isLoading: false, data: preprint }) }));
-        this.store.dispatch(new FetchPreprintFile());
+        if (!preprint.dateWithdrawn) {
+          this.store.dispatch(new FetchPreprintFile());
+        }
         this.store.dispatch(new FetchPreprintVersionIds());
       }),
       catchError((error) => handleSectionError(ctx, 'preprint', error))
@@ -113,6 +118,58 @@ export class PreprintState {
       }),
       catchError((error) => handleSectionError(ctx, 'preprintVersionIds', error))
     );
+  }
+
+  @Action(FetchPreprintReviewActions)
+  fetchPreprintReviewActions(ctx: StateContext<PreprintStateModel>) {
+    const preprintId = ctx.getState().preprint.data?.id;
+    if (!preprintId) return;
+
+    ctx.setState(patch({ preprintReviewActions: patch({ isLoading: true }) }));
+
+    return this.preprintsService.getPreprintReviewActions(preprintId).pipe(
+      tap((actions) => {
+        ctx.setState(
+          patch({
+            preprintReviewActions: patch({
+              isLoading: false,
+              data: actions,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprintReviewActions', error))
+    );
+  }
+
+  @Action(FetchPreprintRequests)
+  fetchPreprintRequests(ctx: StateContext<PreprintStateModel>) {
+    const preprintId = ctx.getState().preprint.data?.id;
+    if (!preprintId) return;
+
+    ctx.setState(patch({ preprintRequests: patch({ isLoading: true }) }));
+
+    return this.preprintsService.getPreprintRequests(preprintId).pipe(
+      tap((actions) => {
+        ctx.setState(
+          patch({
+            preprintRequests: patch({
+              isLoading: false,
+              data: actions,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprintRequests', error))
+    );
+  }
+
+  @Action(WithdrawPreprint)
+  withdrawPreprint(ctx: StateContext<PreprintStateModel>, action: WithdrawPreprint) {
+    const preprintId = ctx.getState().preprint.data?.id;
+    if (!preprintId) return;
+
+    return this.preprintsService.withdrawPreprint(preprintId, action.justification);
   }
 
   @Action(ResetState)

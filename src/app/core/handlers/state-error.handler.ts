@@ -7,6 +7,7 @@ export function handleSectionError<T>(ctx: StateContext<T>, section: keyof T, er
     [section]: {
       ...ctx.getState()[section],
       isLoading: false,
+      isSubmitting: false,
       error: error.message,
     },
   } as Partial<T>);
