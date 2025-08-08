@@ -31,6 +31,7 @@ import {
   FetchSchemaBlocks,
   FetchSchemaResponse,
   FetchSubmittedRegistrations,
+  GetFileGuid,
   GetFiles,
   GetProjects,
   GetProviderSchemas,
@@ -62,6 +63,15 @@ export class RegistriesState {
   projectsHandler = inject(ProjectsHandlers);
   licensesHandler = inject(LicensesHandlers);
   filesHandlers = inject(FilesHandlers);
+
+  @Action(GetFileGuid)
+  getFileGuid(ctx: StateContext<RegistriesStateModel>, { id }: GetFileGuid) {
+    return this.fileService.getFileGuid(id).pipe(
+      tap((file) => {
+        console.log(file);
+      })
+    );
+  }
 
   @Action(GetRegistries)
   getRegistries(ctx: StateContext<RegistriesStateModel>) {

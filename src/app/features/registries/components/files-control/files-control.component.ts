@@ -22,6 +22,7 @@ import { FilesService } from '@osf/shared/services';
 
 import {
   CreateFolder,
+  GetFileGuid,
   GetFiles,
   GetRootFolders,
   RegistriesSelectors,
@@ -77,6 +78,7 @@ export class FilesControlComponent {
     setCurrentFolder: SetCurrentFolder,
     getRootFolders: GetRootFolders,
     setMoveFileCurrentFolder: SetMoveFileCurrentFolder,
+    getFileGuid: GetFileGuid,
   });
 
   protected readonly filesTreeActions: FilesTreeActions = {
@@ -174,6 +176,7 @@ export class FilesControlComponent {
           if (event.body) {
             const fileId = event?.body?.data.id;
             const branchedFromId = this.projectId();
+
             if (fileId && branchedFromId) {
               approveFile(fileId, branchedFromId);
             }
@@ -183,6 +186,9 @@ export class FilesControlComponent {
   }
 
   selectFile(file: OsfFile): void {
+    // [NS] TODO: Write normal logic
+    this.actions.getFileGuid(file.id);
+
     if (this.filesViewOnly()) return;
     this.attachFile.emit(file);
   }

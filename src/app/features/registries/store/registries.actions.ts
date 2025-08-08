@@ -11,6 +11,11 @@ export class GetRegistries {
   static readonly type = '[Registries] Get Registries';
 }
 
+export class GetFileGuid {
+  static readonly type = '[Registries]  Get File Guid';
+  constructor(public id: string) {}
+}
+
 export class GetProviderSchemas {
   static readonly type = '[Registries]  Get Provider Schemas';
   constructor(public providerId: string) {}
