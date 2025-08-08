@@ -14,7 +14,7 @@ for (const key of ['branches', 'functions', 'lines', 'statements']) {
   if (current > threshold) {
     errors.push(
       `Coverage for ${key} (${current}%) is above the threshold (${threshold}%).\n\tPlease update the coverageThreshold.global.${key} in the jest.config.js to ${current}!`
-    )
+    );
     failed = true;
   }
 }
@@ -26,6 +26,6 @@ if (failed) {
   console.log('Please update the coverage thresholds in jest.config.js.');
   console.log('You will need to commit again once you have updated the jst.config.js file.');
   console.log('This is only necessary until we hit 100% coverage.\n\n');
-  errors.forEach(err => console.error(`${err}\n`));
+  errors.forEach((err) => console.error(`${err}\n`));
   process.exit(1);
 }
