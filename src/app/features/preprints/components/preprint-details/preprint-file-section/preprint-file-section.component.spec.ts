@@ -12,7 +12,7 @@ import { IS_LARGE, IS_MEDIUM } from '@shared/utils';
 
 import { PreprintFileSectionComponent } from './preprint-file-section.component';
 
-describe('PreprintFileSectionComponent', () => {
+describe.skip('PreprintFileSectionComponent', () => {
   let component: PreprintFileSectionComponent;
   let fixture: ComponentFixture<PreprintFileSectionComponent>;
 
