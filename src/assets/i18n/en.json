@@ -44,7 +44,9 @@
       "customize": "Customize",
       "createCustomCitation": "Create Custom Citation",
       "preview": "Preview",
-      "continueUpdate": "Continue Update"
+      "continueUpdate": "Continue Update",
+      "editAndResubmit": "Edit And Resubmit",
+      "createNewVersion": "Create New Version"
     },
     "search": {
       "title": "Search",

@@ -1,6 +1,6 @@
 import { createDispatchMap, select, Store } from '@ngxs/store';
 
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -55,6 +55,7 @@ import { IS_MEDIUM } from '@shared/utils';
     GeneralInformationComponent,
     AdditionalInfoComponent,
     StatusBannerComponent,
+    TranslatePipe,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
@@ -175,6 +176,15 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       }
     }
     return false;
+  });
+
+  editButtonLabel = computed(() => {
+    const providerIsPremod = this.preprintProvider()?.reviewsWorkflow === ProviderReviewsWorkflow.PreModeration;
+    const preprintIsRejected = this.preprint()?.reviewsState === ReviewsState.Rejected;
+
+    return providerIsPremod && preprintIsRejected && this.currentUserIsAdmin()
+      ? 'common.buttons.editAndResubmit'
+      : 'common.buttons.edit';
   });
 
   isPendingWithdrawal = computed(() => {

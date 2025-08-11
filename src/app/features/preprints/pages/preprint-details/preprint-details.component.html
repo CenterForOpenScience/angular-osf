@@ -17,13 +17,18 @@
         <p-skeleton width="10rem" height="2.25rem" />
       } @else {
         @if (editButtonVisible()) {
-          <p-button class="w-full md:w-11rem" styleClass="w-full" label="Edit" (click)="editPreprintClicked()" />
+          <p-button
+            class="w-full md:w-11rem"
+            styleClass="w-full"
+            [label]="editButtonLabel() | translate"
+            (click)="editPreprintClicked()"
+          />
         }
         @if (createNewVersionButtonVisible()) {
           <p-button
             class="w-full md:w-11rem"
             styleClass="w-full"
-            label="Create New Version"
+            [label]="'common.buttons.createNewVersion' | translate"
             (click)="createNewVersionClicked()"
           />
         }
@@ -31,7 +36,7 @@
           <p-button
             class="w-full md:w-11rem"
             styleClass="w-full"
-            label="Withdraw"
+            [label]="'common.buttons.withdraw' | translate"
             severity="danger"
             (click)="handleWithdrawClicked()"
           />
