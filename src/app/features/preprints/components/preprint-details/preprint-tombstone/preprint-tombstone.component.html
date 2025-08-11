@@ -1,27 +1,35 @@
 <p-card>
   @if (preprint()) {
     @let preprintValue = preprint()!;
-
     <div class="flex flex-column gap-4">
-      @if (preprintValue.customPublicationCitation) {
-        <section class="flex flex-column gap-2">
-          <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationCitation' | translate }}</h3>
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.authors' | translate }}</h3>
 
-          {{ preprintValue.customPublicationCitation }}
-        </section>
-      }
+        <div class="flex flex-column gap-1 line-height-2 md:flex-row">
+          @for (contributor of bibliographicContributors(); track contributor.id) {
+            <div>
+              <a class="font-bold"> {{ contributor.fullName }}</a>
+              <span>{{ $last ? '' : ',' }}</span>
+            </div>
+          }
 
-      @if (preprintValue.originalPublicationDate) {
-        <section class="flex flex-column gap-2">
-          <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationDate' | translate }}</h3>
+          @if (areContributorsLoading()) {
+            <p-skeleton width="10rem" height="1.25rem" />
+          }
+        </div>
+      </section>
 
-          {{ preprintValue.originalPublicationDate | date: 'MMM d, y, h:mm a' }}
-        </section>
-      }
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.common.labels.abstract' | translate }}</h3>
+        <osf-truncated-text [maxVisibleLines]="2" [text]="preprintValue.description" />
+      </section>
+
+      <osf-preprint-doi-section [preprintProvider]="preprintProvider()" />
 
       <section class="license flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.review.sections.metadata.license' | translate }}</h3>
 
+        <!-- [RNi] TODO: Extract to separate component -->
         <p-accordion>
           <p-accordion-panel value="0">
             <p-accordion-header class="p-0 justify-content-start gap-2">
@@ -32,6 +40,17 @@
             </p-accordion-content>
           </p-accordion-panel>
         </p-accordion>
+      </section>
+
+      <section class="flex flex-row gap-4">
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'common.labels.dateCreated' | translate }}</h3>
+          <p>{{ preprintValue.dateCreated | date: 'MMM d, y, hh:mm a' }}</p>
+        </div>
+        <div class="flex flex-column gap-2">
+          <h3>{{ 'common.labels.dateUpdated' | translate }}</h3>
+          <p>{{ preprintValue.dateModified | date: 'MMM d, y, hh:mm a' }}</p>
+        </div>
       </section>
 
       <section class="flex flex-column gap-2">
@@ -59,8 +78,6 @@
           }
         </div>
       </section>
-
-      <osf-preprint-citation-section [preprintId]="preprintValue.id" />
     </div>
   }
 

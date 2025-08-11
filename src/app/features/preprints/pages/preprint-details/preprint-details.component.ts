@@ -30,6 +30,7 @@ import {
   StatusBannerComponent,
   WithdrawDialogComponent,
 } from '@osf/features/preprints/components';
+import { PreprintTombstoneComponent } from '@osf/features/preprints/components/preprint-details/preprint-tombstone/preprint-tombstone.component';
 import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import {
   FetchPreprintById,
@@ -56,6 +57,7 @@ import { IS_MEDIUM } from '@shared/utils';
     AdditionalInfoComponent,
     StatusBannerComponent,
     TranslatePipe,
+    PreprintTombstoneComponent,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',

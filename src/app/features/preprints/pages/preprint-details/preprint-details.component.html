@@ -55,16 +55,20 @@
       />
     }
 
-    <section class="flex-1 flex flex-column gap-4 align-items-start lg:flex-row">
-      <section class="w-12 lg:w-6">
-        <osf-preprint-file-section [providerReviewsWorkflow]="preprintProvider()?.reviewsWorkflow || null" />
-      </section>
+    @if (!preprint()?.dateWithdrawn) {
+      <section class="flex-1 flex flex-column gap-4 align-items-start lg:flex-row">
+        <section class="w-12 lg:w-6">
+          <osf-preprint-file-section [providerReviewsWorkflow]="preprintProvider()?.reviewsWorkflow || null" />
+        </section>
 
-      <section class="flex flex-column gap-4 w-12 lg:w-6">
-        <osf-preprint-share-and-download [preprintProvider]="preprintProvider()" />
-        <osf-preprint-general-information [preprintProvider]="preprintProvider()" />
-        <osf-preprint-additional-info />
+        <section class="flex flex-column gap-4 w-12 lg:w-6">
+          <osf-preprint-share-and-download [preprintProvider]="preprintProvider()" />
+          <osf-preprint-general-information [preprintProvider]="preprintProvider()" />
+          <osf-preprint-additional-info />
+        </section>
       </section>
-    </section>
+    } @else {
+      <osf-preprint-tombstone [preprintProvider]="preprintProvider()" class="lg:w-6" />
+    }
   </section>
 </div>

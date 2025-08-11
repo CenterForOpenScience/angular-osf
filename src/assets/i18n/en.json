@@ -99,7 +99,9 @@
       "learnMore": "Learn More",
       "and": "and",
       "more": "more",
-      "data": "Data"
+      "data": "Data",
+      "dateUpdated": "Date Updated",
+      "dateCreated": "Date Created"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -1927,7 +1929,7 @@
           "metadata": {
             "title": "Metadata",
             "contributors": "Contributors",
-            "authors": "Contributors",
+            "authors": "Authors",
             "affiliatedInstitutions": "Affiliated Institutions",
             "license": "License",
             "publicationDoi": "Publication DOI",
