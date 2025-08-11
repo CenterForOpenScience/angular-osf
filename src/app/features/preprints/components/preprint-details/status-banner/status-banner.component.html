@@ -1,38 +1,47 @@
-<p-message styleClass="w-full" [icon]="'fas fa-' + iconClass()" [severity]="severity()">
+<p-message styleClass="w-full" [severity]="severity()">
   <ng-template #container>
-    <div class="banner-container w-full flex flex-row justify-content-between align-items-center font-bold text-base">
-      @if (!isWithdrawn()) {
-        {{ status() | translate | titlecase }}: {{ bannerContent() }}
+    <div class="banner-container w-full flex flex-row gap-2 align-items-start font-bold text-base">
+      <osf-icon class="pt-1" [iconClass]="'fas fa-' + iconClass()" />
 
-        <div>
-          @if (reviewerComment() && !provider().reviewsCommentsPrivate && !isPendingWithdrawal()) {
-            <p-button
-              [link]="true"
-              class="cursor-pointer"
-              (click)="feedbackDialogVisible = true"
-              [label]="'Show moderator feedback'"
-            />
+      <div class="flex-1 flex flex-column gap-1 justify-content-between align-items-start lg:flex-row">
+        @if (!isWithdrawn()) {
+          {{ status() | translate | titlecase }}: {{ bannerContent() }}
 
-            <p-dialog header="Moderator feedback" [modal]="true" draggable="false" [(visible)]="feedbackDialogVisible">
-              <div class="flex flex-column gap-2 align-items-start">
-                <p-tag [severity]="severity()"> {{ status() | translate | titlecase }}</p-tag>
+          <div>
+            @if (reviewerComment() && !provider().reviewsCommentsPrivate && !isPendingWithdrawal()) {
+              <p-button
+                [link]="true"
+                class="cursor-pointer"
+                (click)="feedbackDialogVisible = true"
+                [label]="'Show moderator feedback'"
+              />
 
-                <p>{{ reviewerComment() }}</p>
+              <p-dialog
+                [header]="'preprints.details.statusBanner.moderatorFeedback' | translate"
+                [modal]="true"
+                draggable="false"
+                [(visible)]="feedbackDialogVisible"
+              >
+                <div class="flex flex-column gap-2 align-items-start">
+                  <p-tag [severity]="severity()"> {{ status() | translate | titlecase }}</p-tag>
 
-                <div>
-                  @if (!provider().reviewsCommentsAnonymous) {
-                    <p>{{ reviewerName() }}</p>
-                  }
+                  <p>{{ reviewerComment() }}</p>
 
-                  <p>{{ provider().name }} {{ 'preprints.details.statusBanner.moderator' | translate }}</p>
+                  <div>
+                    @if (!provider().reviewsCommentsAnonymous) {
+                      <p>{{ reviewerName() }}</p>
+                    }
+
+                    <p>{{ provider().name }} {{ 'preprints.details.statusBanner.moderator' | translate }}</p>
+                  </div>
                 </div>
-              </div>
-            </p-dialog>
-          }
-        </div>
-      } @else {
-        {{ bannerContent() }}
-      }
+              </p-dialog>
+            }
+          </div>
+        } @else {
+          {{ bannerContent() }}
+        }
+      </div>
     </div>
   </ng-template>
 </p-message>

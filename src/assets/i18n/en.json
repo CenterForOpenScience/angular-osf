@@ -2052,7 +2052,8 @@
           "withdrawalRejected": "Your request to withdraw this {{documentType}} from the service has been denied by the moderator.",
           "withdrawn": "This {{documentType}} has been withdrawn."
         },
-        "moderator": "Moderator"
+        "moderator": "Moderator",
+        "moderatorFeedback": "Moderator Feedback"
       },
       "withdrawDialog": {
         "title": "Withdraw {{preprintWord}}",

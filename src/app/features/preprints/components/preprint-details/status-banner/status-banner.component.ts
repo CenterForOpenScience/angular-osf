@@ -14,6 +14,7 @@ import { ReviewAction } from '@osf/features/moderation/models';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { IconComponent } from '@shared/components';
 
 const STATUS = Object({});
 STATUS[ReviewsState.Pending] = 'preprints.details.statusBanner.pending';
@@ -50,7 +51,7 @@ SEVERITIES[ReviewsState.Withdrawn] = 'warn';
 
 @Component({
   selector: 'osf-preprint-status-banner',
-  imports: [TranslatePipe, TitleCasePipe, Message, Dialog, Tag, Button],
+  imports: [TranslatePipe, TitleCasePipe, Message, Dialog, Tag, Button, IconComponent],
   templateUrl: './status-banner.component.html',
   styleUrl: './status-banner.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
