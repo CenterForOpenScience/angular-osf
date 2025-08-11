@@ -29,7 +29,7 @@ export class AuthService {
 
   logout(): void {
     this.cookieService.deleteAll();
-    this.actions.setAuthenticated(false);
+    window.location.href = `${environment.webUrl}/logout/?next=${encodeURIComponent('/')}`;
   }
 
   register(payload: SignUpModel) {

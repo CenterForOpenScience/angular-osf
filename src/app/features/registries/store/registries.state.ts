@@ -307,14 +307,18 @@ export class RegistriesState {
   @Action(FetchSubmittedRegistrations)
   fetchSubmittedRegistrations(
     ctx: StateContext<RegistriesStateModel>,
-    { page, pageSize }: FetchSubmittedRegistrations
+    { userId, page, pageSize }: FetchSubmittedRegistrations
   ) {
     const state = ctx.getState();
     ctx.patchState({
       submittedRegistrations: { ...state.submittedRegistrations, isLoading: true, error: null },
     });
 
-    return this.registriesService.getSubmittedRegistrations(page, pageSize).pipe(
+    if (!userId) {
+      return;
+    }
+
+    return this.registriesService.getSubmittedRegistrations(userId, page, pageSize).pipe(
       tap((submittedRegistrations) => {
         ctx.patchState({
           submittedRegistrations: {

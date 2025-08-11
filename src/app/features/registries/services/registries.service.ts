@@ -149,6 +149,7 @@ export class RegistriesService {
   }
 
   getSubmittedRegistrations(
+    userId: string,
     page: number,
     pageSize: number
   ): Observable<{ data: RegistrationCard[]; totalCount: number }> {
@@ -158,7 +159,9 @@ export class RegistriesService {
       embed: ['bibliographic_contributors', 'registration_schema', 'provider'],
     };
     return this.jsonApiService
-      .get<JsonApiResponseWithPaging<RegistrationDataJsonApi[], null>>(`${this.apiUrl}/registrations/`, params)
+      .get<
+        JsonApiResponseWithPaging<RegistrationDataJsonApi[], null>
+      >(`${this.apiUrl}/users/${userId}/registrations/`, params)
       .pipe(
         map((response) => {
           const data = response.data.map((registration: RegistrationDataJsonApi) =>

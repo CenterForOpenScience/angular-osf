@@ -42,7 +42,6 @@ export class HeaderComponent {
       command: () => {
         this.loaderService.show();
         this.actions.logout();
-        this.router.navigate(['/']).then(() => window.location.reload());
       },
     },
   ];

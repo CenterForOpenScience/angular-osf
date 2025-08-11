@@ -42,11 +42,6 @@ export const registriesRoutes: Routes = [
           ),
       },
       {
-        path: 'my-registrations',
-        canActivate: [authGuard],
-        loadComponent: () => import('@osf/features/registries/pages').then((c) => c.MyRegistrationsComponent),
-      },
-      {
         path: ':providerId/moderation',
         canActivate: [authGuard],
         loadChildren: () =>

@@ -136,17 +136,19 @@
     "support": "Support",
     "meetings": "Meetings",
     "myProjects": "My Projects",
+    "projects": "Projects",
+    "myResources": "My Resources",
     "registries": "Registries",
+    "overview": "Overview",
     "registriesSubRoutes": {
-      "overview": "Overview",
       "myRegistrations": "My Registrations",
       "registryDetails": "Registry Details"
     },
     "preprints": "Preprints",
     "preprintsSubRoutes": {
-      "overview": "Overview",
       "myPreprints": "My Preprints",
-      "myReviewing": "My Reviewing"
+      "myReviewing": "My Reviewing",
+      "preprintDetails": "Preprint details"
     },
     "collections": "Collections",
     "moderation": "Moderation",
@@ -157,30 +159,18 @@
     "notifications": "Notifications",
     "developerApps": "Developer Apps",
     "personalAccessTokens": "Personal Access Tokens",
-    "project": {
-      "details": "Project details",
-      "overview": "Overview",
-      "metadata": "Metadata",
-      "files": "Files",
-      "wiki": "Wiki",
-      "registrations": "Registrations",
-      "settings": "Settings",
-      "contributors": "Contributors",
-      "analytics": "Analytics",
-      "addons": "Add-ons"
-    },
-    "registration": {
-      "details": "Registry details",
-      "overview": "Overview",
-      "metadata": "Metadata",
-      "files": "Files",
-      "resources": "Resources",
-      "wiki": "Wiki",
-      "components": "Components",
-      "contributors": "Contributors",
-      "links": "Links",
-      "analytics": "Analytics"
-    },
+    "projectDetails": "Project details",
+    "registryDetails": "Registry details",
+    "metadata": "Metadata",
+    "files": "Files",
+    "wiki": "Wiki",
+    "registrations": "Registrations",
+    "contributors": "Contributors",
+    "analytics": "Analytics",
+    "addons": "Add-ons",
+    "resources": "Resources",
+    "components": "Components",
+    "links": "Links",
     "institutions": "Institutions"
   },
   "auth": {

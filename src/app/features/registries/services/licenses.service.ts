@@ -17,7 +17,9 @@ import { LicensesMapper } from '../mappers';
 
 import { environment } from 'src/environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class LicensesService {
   private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);

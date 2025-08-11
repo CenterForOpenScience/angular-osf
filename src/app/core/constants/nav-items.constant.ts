@@ -1,14 +1,155 @@
 import { MenuItem } from 'primeng/api';
 
 export const AUTHENTICATED_MENU_ITEMS: string[] = [
-  'my-projects',
   'my-profile',
+  'my-resources',
+  'my-registrations',
+  'my-projects',
+  'my-preprints',
+  'registries-overview',
   'settings',
-  'registries-my-registrations',
-  'registry-details',
-  'preprints-my-preprints',
-  'preprints-my-reviewing',
-  'settings',
+];
+
+export const PROJECT_MENU_ITEMS: MenuItem[] = [
+  {
+    id: 'project-overview',
+    label: 'navigation.overview',
+    routerLink: 'overview',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'project-metadata',
+    label: 'navigation.metadata',
+    routerLink: 'metadata',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'project-files',
+    label: 'navigation.files',
+    routerLink: 'files',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'project-wiki',
+    label: 'navigation.wiki',
+    routerLink: 'wiki',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'project-registrations',
+    label: 'navigation.registrations',
+    routerLink: 'registrations',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'project-contributors',
+    label: 'navigation.contributors',
+    routerLink: 'contributors',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'project-analytics',
+    label: 'navigation.analytics',
+    routerLink: 'analytics',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'project-addons',
+    label: 'navigation.addons',
+    routerLink: 'addons',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'project-settings',
+    label: 'navigation.settings',
+    routerLink: 'settings',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+];
+
+export const PREPRINT_MENU_ITEMS: MenuItem[] = [
+  {
+    id: 'preprint-overview',
+    label: 'navigation.overview',
+    routerLink: 'overview',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+];
+
+export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
+  {
+    id: 'registration-overview',
+    label: 'navigation.overview',
+    routerLink: 'overview',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'registration-metadata',
+    label: 'navigation.metadata',
+    routerLink: 'metadata',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'registration-files',
+    label: 'navigation.files',
+    routerLink: 'files',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'registration-resources',
+    label: 'navigation.resources',
+    routerLink: 'resources',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'registration-wiki',
+    label: 'navigation.wiki',
+    routerLink: 'wiki',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'registration-components',
+    label: 'navigation.components',
+    routerLink: 'components',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'registration-contributors',
+    label: 'navigation.contributors',
+    routerLink: 'contributors',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'registration-links',
+    label: 'navigation.links',
+    routerLink: 'links',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'registration-analytics',
+    label: 'navigation.analytics',
+    routerLink: 'analytics',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
 ];
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -30,12 +171,51 @@ export const MENU_ITEMS: MenuItem[] = [
     visible: true,
   },
   {
-    id: 'my-projects',
-    routerLink: '/my-projects',
-    label: 'navigation.myProjects',
+    id: 'my-resources',
+    label: 'navigation.myResources',
     icon: 'osf-icon-my-projects',
     routerLinkActiveOptions: { exact: true },
     visible: false,
+    items: [
+      {
+        id: 'my-projects',
+        routerLink: '/my-projects',
+        label: 'navigation.myProjects',
+        routerLinkActiveOptions: { exact: false },
+        visible: false,
+      },
+      {
+        id: 'my-registrations',
+        routerLink: '/my-registrations',
+        label: 'navigation.registriesSubRoutes.myRegistrations',
+        visible: false,
+        routerLinkActiveOptions: { exact: false },
+      },
+      {
+        id: 'my-preprints',
+        routerLink: '/my-preprints',
+        label: 'navigation.preprintsSubRoutes.myPreprints',
+        visible: false,
+        routerLinkActiveOptions: { exact: false },
+      },
+    ],
+  },
+  {
+    id: 'projects',
+    label: 'navigation.projects',
+    icon: 'osf-icon-my-projects',
+    routerLinkActiveOptions: { exact: true },
+    visible: false,
+    items: [
+      {
+        id: 'project-details',
+        label: 'navigation.projectDetails',
+        routerLink: null,
+        visible: false,
+        routerLinkActiveOptions: { exact: true },
+        styleClass: 'border-none',
+      },
+    ],
   },
   {
     id: 'registries',
@@ -47,23 +227,24 @@ export const MENU_ITEMS: MenuItem[] = [
       {
         id: 'registries-overview',
         routerLink: '/registries/overview',
-        label: 'navigation.registriesSubRoutes.overview',
+        label: 'navigation.overview',
         visible: true,
         routerLinkActiveOptions: { exact: true },
       },
       {
-        id: 'registries-my-registrations',
-        routerLink: '/registries/my-registrations',
-        label: 'navigation.registriesSubRoutes.myRegistrations',
+        id: 'registries-moderation',
+        routerLink: '/registries/osf/moderation',
+        label: 'navigation.moderation',
         visible: false,
         routerLinkActiveOptions: { exact: true },
       },
       {
         id: 'registry-details',
-        routerLink: '/registry-overview',
+        routerLink: null,
         label: 'navigation.registriesSubRoutes.registryDetails',
         visible: false,
         routerLinkActiveOptions: { exact: true },
+        styleClass: 'border-none',
       },
     ],
   },
@@ -77,23 +258,23 @@ export const MENU_ITEMS: MenuItem[] = [
       {
         id: 'preprints-overview',
         routerLink: '/preprints/overview',
-        label: 'navigation.preprintsSubRoutes.overview',
+        label: 'navigation.overview',
         visible: true,
         routerLinkActiveOptions: { exact: false },
       },
       {
-        id: 'preprints-my-preprints',
-        routerLink: 'preprints/my-preprints',
-        label: 'navigation.preprintsSubRoutes.myPreprints',
-        visible: false,
-        routerLinkActiveOptions: { exact: false },
-      },
-      {
-        id: 'preprints-my-reviewing',
+        id: 'preprints-moderation',
         routerLink: '/preprints/my-reviewing',
-        label: 'navigation.preprintsSubRoutes.myReviewing',
+        label: 'navigation.moderation',
         visible: false,
         routerLinkActiveOptions: { exact: true },
+      },
+      {
+        id: 'preprints-details',
+        label: 'navigation.preprintsSubRoutes.preprintDetails',
+        visible: false,
+        routerLinkActiveOptions: { exact: true },
+        styleClass: 'border-none',
       },
     ],
   },
@@ -115,11 +296,19 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'collections',
-    routerLink: '/collections',
     label: 'navigation.collections',
     icon: 'osf-icon-collections',
     visible: true,
     routerLinkActiveOptions: { exact: false },
+    items: [
+      {
+        id: 'collections-moderation',
+        routerLink: 'moderation',
+        label: 'navigation.moderation',
+        visible: false,
+        routerLinkActiveOptions: { exact: true },
+      },
+    ],
   },
   {
     id: 'meetings',
@@ -182,113 +371,3 @@ export const MENU_ITEMS: MenuItem[] = [
     ],
   },
 ];
-
-export const PROJECT_MENU_ITEMS: MenuItem[] = [
-  {
-    id: 'project-details',
-    label: 'navigation.project.details',
-    icon: 'osf-icon-my-projects',
-    expanded: true,
-    visible: true,
-    items: [
-      { id: 'project-overview', label: 'navigation.project.overview', routerLink: 'overview', visible: true },
-      { id: 'project-metadata', label: 'navigation.project.metadata', routerLink: 'metadata', visible: true },
-      { id: 'project-files', label: 'navigation.project.files', routerLink: 'files', visible: true },
-      {
-        id: 'project-wiki',
-        label: 'navigation.project.wiki',
-        routerLink: 'wiki',
-        visible: true,
-      },
-      {
-        id: 'project-registrations',
-        label: 'navigation.project.registrations',
-        routerLink: 'registrations',
-        visible: true,
-      },
-      {
-        id: 'project-contributors',
-        label: 'navigation.project.contributors',
-        routerLink: 'contributors',
-        visible: true,
-      },
-      {
-        id: 'project-analytics',
-        label: 'navigation.project.analytics',
-        routerLink: 'analytics',
-        visible: true,
-      },
-      {
-        id: 'project-addons',
-        label: 'navigation.project.addons',
-        routerLink: 'addons',
-        visible: true,
-      },
-      {
-        id: 'project-settings',
-        label: 'navigation.project.settings',
-        routerLink: 'settings',
-        visible: true,
-      },
-    ],
-  },
-];
-
-export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
-  {
-    id: 'registration-details',
-    label: 'navigation.registration.details',
-    icon: 'osf-icon-my-projects',
-    expanded: true,
-    visible: true,
-    items: [
-      { id: 'registration-overview', label: 'navigation.registration.overview', routerLink: 'overview', visible: true },
-      { id: 'registration-metadata', label: 'navigation.registration.metadata', routerLink: 'metadata', visible: true },
-      { id: 'registration-files', label: 'navigation.registration.files', routerLink: 'files', visible: true },
-      {
-        id: 'registration-resources',
-        label: 'navigation.registration.resources',
-        routerLink: 'resources',
-        visible: true,
-      },
-      {
-        id: 'registration-wiki',
-        label: 'navigation.registration.wiki',
-        routerLink: 'wiki',
-        visible: true,
-      },
-      {
-        id: 'registration-components',
-        label: 'navigation.registration.components',
-        routerLink: 'components',
-        visible: true,
-      },
-      {
-        id: 'registration-contributors',
-        label: 'navigation.registration.contributors',
-        routerLink: 'contributors',
-        visible: true,
-      },
-      {
-        id: 'registration-links',
-        label: 'navigation.registration.links',
-        routerLink: 'links',
-        visible: true,
-      },
-      {
-        id: 'registration-analytics',
-        label: 'navigation.registration.analytics',
-        routerLink: 'analytics',
-        visible: true,
-      },
-    ],
-  },
-];
-
-export const MODERATION_MENU_ITEM: MenuItem = {
-  label: 'navigation.moderation',
-  routerLink: 'moderation',
-  state: {
-    isModeration: true,
-  },
-};

@@ -15,6 +15,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { UserSelectors } from '@osf/core/store/user';
 import { CustomPaginatorComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
 import { RegistrationCardComponent } from '@osf/shared/components/registration-card/registration-card.component';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
@@ -60,6 +61,7 @@ export class MyRegistrationsComponent {
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
   protected readonly tabOptions = REGISTRATIONS_TABS;
 
+  private currentUser = select(UserSelectors.getCurrentUser);
   protected draftRegistrations = select(RegistriesSelectors.getDraftRegistrations);
   protected draftRegistrationsTotalCount = select(RegistriesSelectors.getDraftRegistrationsTotalCount);
   protected isDraftRegistrationsLoading = select(RegistriesSelectors.isDraftRegistrationsLoading);
@@ -102,7 +104,7 @@ export class MyRegistrationsComponent {
         this.actions.getDraftRegistrations();
       } else {
         this.submittedFirst = 0;
-        this.actions.getSubmittedRegistrations();
+        this.actions.getSubmittedRegistrations(this.currentUser()?.id);
       }
       this.router.navigate([], {
         relativeTo: this.route,
@@ -137,7 +139,7 @@ export class MyRegistrationsComponent {
   }
 
   onSubmittedPageChange(event: PaginatorState): void {
-    this.actions.getSubmittedRegistrations(event.page! + 1);
+    this.actions.getSubmittedRegistrations(this.currentUser()?.id, event.page! + 1);
     this.submittedFirst = event.first!;
   }
 

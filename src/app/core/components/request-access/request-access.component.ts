@@ -1,3 +1,5 @@
+import { createDispatchMap } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
@@ -12,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RequestAccessService } from '@osf/core/services';
+import { Logout } from '@osf/features/auth/store';
 import { InputLimits } from '@osf/shared/constants';
 import { LoaderService, ToastService } from '@osf/shared/services';
 
@@ -29,10 +32,11 @@ export class RequestAccessComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly id = toSignal(this.route?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
-  private readonly requestAccessService = inject(RequestAccessService);
   private readonly router = inject(Router);
+  private readonly requestAccessService = inject(RequestAccessService);
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
+  private readonly actions = createDispatchMap({ logout: Logout });
 
   requestAccess() {
     this.loaderService.show();
@@ -51,6 +55,6 @@ export class RequestAccessComponent {
   }
 
   switchAccount() {
-    // [NS] TODO: add logout logic when the user is logged in
+    this.actions.logout();
   }
 }

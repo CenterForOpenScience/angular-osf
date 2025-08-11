@@ -86,14 +86,6 @@ export const preprintsRoutes: Routes = [
         canDeactivate: [ConfirmLeavingGuard],
       },
       {
-        path: 'my-preprints',
-        canActivate: [authGuard],
-        loadComponent: () =>
-          import('@osf/features/preprints/pages/my-preprints/my-preprints.component').then(
-            (m) => m.MyPreprintsComponent
-          ),
-      },
-      {
         path: ':providerId/moderation',
         canActivate: [authGuard],
         loadChildren: () =>
@@ -116,13 +108,6 @@ export const preprintsRoutes: Routes = [
             (c) => c.CreateNewVersionComponent
           ),
         canDeactivate: [ConfirmLeavingGuard],
-      },
-      {
-        path: ':providerId/:preprintId',
-        loadComponent: () =>
-          import('@osf/features/preprints/pages/preprint-details/preprint-details.component').then(
-            (c) => c.PreprintDetailsComponent
-          ),
       },
     ],
   },

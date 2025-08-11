@@ -1,80 +1,26 @@
 <nav class="nav-menu">
   <p-panelMenu [model]="mainMenuItems()" [multiple]="false">
     <ng-template #item let-item>
-      @if (item.id !== 'registry-details') {
-        <a
-          [routerLink]="item.routerLink"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="item.routerLinkActiveOptions"
-          class="nav-link flex align-items-center"
-          (click)="goToLink(item)"
-        >
-          @if (item.icon) {
-            <osf-icon [iconClass]="`nav-icon ${item.icon}`"></osf-icon>
-          }
-
-          <span>{{ item.label | translate }}</span>
-
-          @if (item.items) {
-            <osf-icon
-              class="ml-auto pt-1"
-              [iconClass]="item.expanded ? `fas fa-chevron-down fa-sm` : `fas fa-chevron-right fa-sm`"
-            ></osf-icon>
-          }
-        </a>
-
-        @if (item.id === 'my-projects' && !isRegistryRoute() && isProjectRoute()) {
-          <div class="ml-4">
-            <p-panelMenu [model]="myProjectMenuItems" [multiple]="false">
-              <ng-template #item let-item>
-                <a
-                  [routerLink]="item.routerLink ? ['/my-projects', currentResourceId(), item.routerLink] : null"
-                  [routerLinkActive]="item.routerLink ? 'active' : ''"
-                  [routerLinkActiveOptions]="{ exact: true }"
-                  class="nav-link flex align-items-center"
-                  (click)="goToLink(item)"
-                >
-                  @if (item.icon) {
-                    <osf-icon [iconClass]="`nav-icon ${item.icon}`"></osf-icon>
-                  }
-                  <span>{{ item.label | translate }}</span>
-                  @if (item.items) {
-                    <osf-icon
-                      class="ml-auto pt-1"
-                      [iconClass]="item.expanded ? `fas fa-chevron-down fa-sm` : `fas fa-chevron-right fa-sm`"
-                    ></osf-icon>
-                  }
-                </a>
-              </ng-template>
-            </p-panelMenu>
-          </div>
+      <a
+        [routerLink]="item.routerLink ? item.routerLink : null"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="item.routerLinkActiveOptions"
+        class="nav-link flex align-items-center"
+        (click)="goToLink(item)"
+      >
+        @if (item.icon) {
+          <osf-icon [iconClass]="`nav-icon ${item.icon}`"></osf-icon>
         }
-      }
-      @if (item.id === 'registry-details' && isRegistryRoute()) {
-        <p-panelMenu [model]="registrationMenuItems()" [multiple]="false" class="border-none">
-          <ng-template #item let-item>
-            <a
-              [routerLink]="item.routerLink"
-              [routerLinkActive]="item.routerLink ? 'active' : ''"
-              [queryParams]="item.queryParams"
-              [routerLinkActiveOptions]="{ exact: true }"
-              class="nav-link flex align-items-center"
-              (click)="goToLink(item)"
-            >
-              @if (item.icon) {
-                <osf-icon [iconClass]="`nav-icon ${item.icon}`"></osf-icon>
-              }
-              <span>{{ item.label | translate }}</span>
-              @if (item.items) {
-                <osf-icon
-                  class="ml-auto pt-1"
-                  [iconClass]="item.expanded ? `fas fa-chevron-down fa-sm` : `fas fa-chevron-right fa-sm`"
-                ></osf-icon>
-              }
-            </a>
-          </ng-template>
-        </p-panelMenu>
-      }
+
+        <span>{{ item.label | translate }}</span>
+
+        @if (hasVisibleChildren | wrapFn: item) {
+          <osf-icon
+            class="ml-auto pt-1"
+            [iconClass]="item.expanded ? `fas fa-chevron-down fa-sm` : `fas fa-chevron-right fa-sm`"
+          ></osf-icon>
+        }
+      </a>
     </ng-template>
   </p-panelMenu>
 </nav>

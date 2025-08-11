@@ -104,14 +104,6 @@ export class RegistryFilesComponent {
       }
     });
 
-    // effect(() => {
-    //   const currentFolder = this.currentFolder();
-    //
-    //   if (currentFolder) {
-    //     this.actions.getFiles(currentFolder.relationships.filesLink);
-    //   }
-    // });
-
     this.searchControl.valueChanges
       .pipe(skip(1), takeUntilDestroyed(this.destroyRef), debounceTime(500))
       .subscribe((searchText) => {

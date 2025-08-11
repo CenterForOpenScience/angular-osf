@@ -19,9 +19,7 @@
             <div class="flex justify-content-between align-items-center">
               <h2 class="flex gap-2">
                 <i [ngClass]="linkedResource.public ? 'osf-icon-padlock-unlock' : 'osf-icon-padlock'"></i>
-                <a class="linked-project-title" [href]="'my-projects/' + linkedResource.id">{{
-                  linkedResource.title
-                }}</a>
+                <a class="linked-project-title" [href]="'project/' + linkedResource.id">{{ linkedResource.title }}</a>
               </h2>
               <div>
                 <p-button

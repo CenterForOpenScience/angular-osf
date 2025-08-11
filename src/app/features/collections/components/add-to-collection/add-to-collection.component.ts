@@ -142,7 +142,7 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
     dialogRef.onClose.subscribe((result) => {
       if (result) {
         this.allowNavigation.set(true);
-        this.router.navigate(['/my-projects', this.selectedProject()?.id, 'overview']);
+        this.router.navigate(['/project', this.selectedProject()?.id, 'overview']);
       }
     });
   }

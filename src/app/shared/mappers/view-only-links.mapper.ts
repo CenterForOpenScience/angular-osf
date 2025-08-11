@@ -9,7 +9,7 @@ export class ViewOnlyLinksMapper {
   static fromResponse(response: ViewOnlyLinksResponseJsonApi, projectId: string): PaginatedViewOnlyLinksModel {
     const items: ViewOnlyLinkModel[] = response.data.map((item) => ({
       id: item.id,
-      link: `${document.baseURI}my-projects/${projectId}/overview?view_only=${item.attributes.key}`,
+      link: `${document.baseURI}project/${projectId}/overview?view_only=${item.attributes.key}`,
       dateCreated: item.attributes.date_created,
       key: item.attributes.key,
       name: item.attributes.name,
@@ -35,7 +35,7 @@ export class ViewOnlyLinksMapper {
 
     const mappedItem: ViewOnlyLinkModel = {
       id: item.id,
-      link: `${document.baseURI}my-projects/${projectId}/overview?view_only=${item.attributes.key}`,
+      link: `${document.baseURI}project/${projectId}/overview?view_only=${item.attributes.key}`,
       dateCreated: item.attributes.date_created,
       key: item.attributes.key,
       name: item.attributes.name,
