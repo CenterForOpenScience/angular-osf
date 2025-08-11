@@ -69,7 +69,7 @@ export class RegistryComponentsComponent implements OnInit {
             if (component.id === bibliographicContributorsForRegistrationId) {
               return {
                 ...component,
-                registry: this.registry()?.registry,
+                registry: this.registry()?.provider?.name,
                 contributors: bibliographicContributorsForRegistration,
               };
             }

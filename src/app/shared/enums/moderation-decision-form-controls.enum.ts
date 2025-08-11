@@ -1,4 +1,4 @@
 export enum ModerationDecisionFormControls {
-  'Action' = 'action',
-  'Comment' = 'comment',
+  Action = 'action',
+  Comment = 'comment',
 }

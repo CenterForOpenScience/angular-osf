@@ -16,6 +16,7 @@ export interface User {
   iri?: string;
   defaultRegionId: string;
   allowIndexing: boolean | undefined;
+  isModerator?: boolean;
 }
 
 export interface UserSettings {
@@ -79,4 +80,18 @@ export interface UserNamesJsonApi {
   family_name: string;
   middle_names: string;
   suffix: string;
+}
+
+export interface UserDataResponseJsonApi {
+  meta: {
+    active_flags: string[];
+    current_user: {
+      data: UserGetResponse | null;
+    };
+  };
+}
+
+export interface UserData {
+  activeFlags: string[];
+  currentUser: User | null;
 }

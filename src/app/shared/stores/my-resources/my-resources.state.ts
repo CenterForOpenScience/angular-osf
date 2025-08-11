@@ -4,9 +4,9 @@ import { catchError, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
-import { ResourceType } from '@shared/enums';
-import { MyResourcesService } from '@shared/services';
+import { handleSectionError } from '@osf/core/handlers';
+import { ResourceType } from '@osf/shared/enums';
+import { MyResourcesService } from '@osf/shared/services';
 
 import {
   ClearMyResources,

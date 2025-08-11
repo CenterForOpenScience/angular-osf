@@ -21,3 +21,17 @@ export class ResetPassword {
     public newPassword: string
   ) {}
 }
+
+export class InitializeAuth {
+  static readonly type = '[Auth] Initialize Auth';
+}
+
+export class SetAuthenticated {
+  static readonly type = '[Auth] Set Authenticated';
+
+  constructor(public isAuthenticated: boolean) {}
+}
+
+export class Logout {
+  static readonly type = '[Auth] Logout';
+}

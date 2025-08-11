@@ -1,5 +1,5 @@
 <section class="registries-hero-container py-5 px-3 flex flex-column gap-4 md:py-6 md:px-4">
-  <div class="flex flex-column align-items-start gap-4 md:flex-row">
+  <div class="flex flex-column align-items-start justify-content-between gap-4 md:flex-row">
     <div class="flex align-items-center gap-2">
       @if (isProviderLoading()) {
         <p-skeleton width="3rem" height="1.5rem" />
@@ -13,6 +13,8 @@
         />
       }
     </div>
+
+    <p-button [label]="'registries.addRegistration' | translate" (onClick)="navigateToCreatePage()"></p-button>
   </div>
 
   <div class="provider-description">

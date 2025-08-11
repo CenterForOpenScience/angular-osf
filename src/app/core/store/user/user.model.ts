@@ -5,6 +5,7 @@ import { User, UserSettings } from '../../models';
 export interface UserStateModel {
   currentUser: AsyncStateModel<User | null>;
   currentUserSettings: AsyncStateModel<UserSettings | null>;
+  activeFlags: string[];
 }
 
 export const USER_STATE_INITIAL: UserStateModel = {
@@ -19,4 +20,5 @@ export const USER_STATE_INITIAL: UserStateModel = {
     isSubmitting: false,
     error: '',
   },
+  activeFlags: [],
 };

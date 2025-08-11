@@ -18,7 +18,7 @@
         <p class="mb-1">{{ item }}</p>
       }
     } @else {
-      <p class="font-italic">{{ 'registries.justification.noUpdates' | translate }}</p>
+      <p class="font-italic text-red-500">{{ 'registries.justification.noUpdates' | translate }}</p>
     }
   </p-card>
   @for (page of pages(); track page.id) {
@@ -52,7 +52,7 @@
   }
   <div>
     <div class="flex justify-content-end">
-      @if (schemaResponse()?.reviewsState === RevisionReviewStates.RevisionInProgress) {
+      @if (inProgress) {
         <p-button
           [label]="'common.buttons.back' | translate"
           severity="info"
@@ -68,11 +68,11 @@
         </p-button>
         <p-button
           [label]="'registries.justification.submitChanges' | translate"
-          [disabled]="false"
+          [disabled]="!changes().length"
           (click)="submit()"
           [loading]="isSchemaResponseLoading()"
         ></p-button>
-      } @else if (schemaResponse()?.reviewsState === RevisionReviewStates.Unapproved) {
+      } @else if (isUnapproved) {
         <p-button
           [label]="'registries.justification.acceptChanges' | translate"
           severity="success"

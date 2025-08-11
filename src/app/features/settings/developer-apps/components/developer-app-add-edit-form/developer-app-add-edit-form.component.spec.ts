@@ -1,13 +1,16 @@
 import { provideStore } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe, MockProviders } from 'ng-mocks';
 
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { TranslateServiceMock } from '@shared/mocks';
+import { ToastService } from '@shared/services';
 
 import { DeveloperAppsState } from '../../store';
 
@@ -24,17 +27,33 @@ describe('CreateDeveloperAppComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         provideStore([DeveloperAppsState]),
-        MockProvider(TranslateService),
-        MockProvider(DynamicDialogRef),
+        TranslateServiceMock,
+        MockProviders(DynamicDialogRef, ToastService),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DeveloperAppAddEditFormComponent);
     component = fixture.componentInstance;
+
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should mark form as touched and dirty when invalid', () => {
+    const form = component['appForm'];
+    form.patchValue({
+      name: '',
+    });
+
+    const markAllAsTouchedSpy = jest.spyOn(form, 'markAllAsTouched');
+    const markAsDirtySpy = jest.spyOn(form.controls['name'], 'markAsDirty');
+
+    component.handleSubmitForm();
+
+    expect(markAllAsTouchedSpy).toHaveBeenCalled();
+    expect(markAsDirtySpy).toHaveBeenCalled();
   });
 });

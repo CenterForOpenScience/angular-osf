@@ -1,27 +1,35 @@
-import { select } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ButtonModule } from 'primeng/button';
-import { MenuModule } from 'primeng/menu';
+import { Button } from 'primeng/button';
+import { Menu } from 'primeng/menu';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { BreadcrumbComponent } from '@core/components/breadcrumb/breadcrumb.component';
-import { UserSelectors } from '@core/store/user/user.selectors';
+import { NavigationService } from '@osf/core/services';
+import { UserSelectors } from '@osf/core/store/user';
+import { AuthSelectors, Logout } from '@osf/features/auth/store';
+import { LoaderService } from '@osf/shared/services';
+
+import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'osf-header',
-  imports: [BreadcrumbComponent, MenuModule, ButtonModule, TranslatePipe],
+  imports: [BreadcrumbComponent, Menu, Button, TranslatePipe],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
   currentUser = select(UserSelectors.getCurrentUser);
+  isAuthenticated = select(AuthSelectors.isAuthenticated);
 
   private readonly router = inject(Router);
+  private readonly loaderService = inject(LoaderService);
+  private readonly navigationService = inject(NavigationService);
+  private readonly actions = createDispatchMap({ logout: Logout });
 
   items = [
     {
@@ -32,9 +40,14 @@ export class HeaderComponent {
     {
       label: 'navigation.logOut',
       command: () => {
-        document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        this.router.navigate(['/']);
+        this.loaderService.show();
+        this.actions.logout();
+        this.router.navigate(['/']).then(() => window.location.reload());
       },
     },
   ];
+
+  navigateToSignIn() {
+    this.navigationService.navigateToSignIn();
+  }
 }

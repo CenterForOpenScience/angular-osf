@@ -28,4 +28,5 @@ export * from './share-indexing.enum';
 export * from './sort-order.enum';
 export * from './sort-type.enum';
 export * from './subscriptions';
+export * from './trigger-action.enum';
 export * from './user-permissions.enum';

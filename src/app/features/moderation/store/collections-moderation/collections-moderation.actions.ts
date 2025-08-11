@@ -1,4 +1,4 @@
-import { ReviewActionPayload } from '@shared/models';
+import { ReviewActionPayload } from '@osf/shared/models/review-action';
 
 export class GetCollectionSubmissions {
   static readonly type = '[Collections Moderation] Get Collection Submissions';

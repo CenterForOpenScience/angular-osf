@@ -12,9 +12,8 @@ import { MY_PROJECTS_TABLE_PARAMS } from '@core/constants';
 import { AddProjectFormComponent } from '@shared/components';
 import { ProjectFormControls } from '@shared/enums';
 import { IdName, ProjectForm } from '@shared/models';
+import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@shared/stores';
 import { CustomValidators } from '@shared/utils';
-
-import { CreateProject, GetMyProjects, MyResourcesSelectors } from 'src/app/shared/stores/my-resources';
 
 @Component({
   selector: 'osf-create-project-dialog',

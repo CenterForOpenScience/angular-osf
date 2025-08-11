@@ -8,48 +8,14 @@
       <p class="text-red-500 mb-2 font-bold pl-5">{{ 'registry.archiving.pleaseNote' | translate }}</p>
       <p class="pl-5">
         {{ 'registry.archiving.description' | translate }}
-        <a href="http://support.osf.io">support.osf.io</a>
+        <a href="mailto:support@osf.io">support.osf.io</a>
         {{ 'registry.archiving.descriptionEnd' | translate }}
       </p>
     </div>
     <p-divider layout="vertical" class="hidden lg:block" />
     <p-divider class="lg:hidden" />
     <div class="lg:w-6">
-      <div class="mb-3">
-        <h4>{{ 'navigation.registration.contributors' | translate }}</h4>
-        <p>
-          @for (c of registration().contributors; track c.id) {
-            <span
-              >{{ c.fullName }}
-              <span>{{ !$last ? ', ' : '' }}</span>
-            </span>
-          }
-        </p>
-      </div>
-      <div class="mb-3">
-        <h4>{{ 'common.labels.description' | translate }}</h4>
-        <p>{{ registration().description }}</p>
-      </div>
-      <div class="mb-3 flex flex-wrap">
-        <div class="mb-3 w-6">
-          <h4>{{ 'registry.overview.metadata.type' | translate }}</h4>
-          <p>{{ registration().registrationType }}</p>
-        </div>
-        <div class="mb-3 w-6">
-          <h4>{{ 'registry.overview.metadata.registeredDate' | translate }}</h4>
-          <p>{{ registration().dateRegistered }}</p>
-        </div>
-      </div>
-      <div class="mb-3 flex flex-wrap">
-        <div class="mb-3 w-6">
-          <h4>{{ 'registry.archiving.createdDate' | translate }}</h4>
-          <p>{{ registration().dateCreated }}</p>
-        </div>
-        <div class="mb-3 w-6">
-          <h4>{{ 'registry.overview.metadata.associatedProject' | translate }}</h4>
-          <a [href]="associatedProjectUrl">{{ associatedProjectUrl }}</a>
-        </div>
-      </div>
+      <osf-short-registration-info [registration]="registration()"></osf-short-registration-info>
     </div>
   </div>
 </p-card>

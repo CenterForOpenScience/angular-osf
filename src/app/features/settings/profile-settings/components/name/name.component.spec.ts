@@ -12,13 +12,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UpdateProfileSettingsUser, UserSelectors } from '@core/store/user';
 import { CitationPreviewComponent, NameFormComponent } from '@osf/features/settings/profile-settings/components';
 import { MOCK_USER, MockCustomConfirmationServiceProvider } from '@osf/shared/mocks';
-import { ToastService } from '@shared/services';
+import { CustomConfirmationService, ToastService } from '@shared/services';
 
 import { NameComponent } from './name.component';
 
 describe('NameComponent', () => {
   let component: NameComponent;
   let fixture: ComponentFixture<NameComponent>;
+  let customConfirmationService: CustomConfirmationService;
 
   const mockStore = {
     selectSignal: jest.fn().mockImplementation((selector) => {
@@ -47,6 +48,7 @@ describe('NameComponent', () => {
 
     fixture = TestBed.createComponent(NameComponent);
     component = fixture.componentInstance;
+    customConfirmationService = TestBed.inject(CustomConfirmationService);
     fixture.detectChanges();
   });
 
@@ -94,6 +96,10 @@ describe('NameComponent', () => {
       middleNames: 'Changed',
       familyName: 'Changed',
       suffix: 'Changed',
+    });
+
+    jest.spyOn(customConfirmationService, 'confirmDelete').mockImplementation(({ onConfirm }) => {
+      onConfirm();
     });
 
     component.discardChanges();

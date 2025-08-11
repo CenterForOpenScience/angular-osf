@@ -444,7 +444,8 @@
     }
   },
   "myProfile": {
-    "editProfile": "Edit Profile"
+    "editProfile": "Edit Profile",
+    "memberSince": "Member since"
   },
   "project": {
     "analytics": {
@@ -1184,16 +1185,25 @@
       "requestSubmitted": "Request submitted",
       "acceptRequest": "Accept request",
       "rejectRequest": "Reject request",
+      "acceptUpdate": "Accept update",
+      "rejectUpdate": "Reject update",
       "withdrawRequest": "Withdraw Request",
+      "forceWithdraw": "Force Withdraw",
+      "forceWithdrawMessage": "Registration will be withdrawn but still have a tombstone page with a justification for withdrawal and a subset of the metadata available",
       "acceptRequestMessage": "Submission will appear in search results and will be associated with the collection.",
       "rejectRequestMessage": "Submission will not appear in search results nor will be associated with the collection.",
+      "acceptUpdateMessage": "Update will be accepted and registration will be updated",
+      "rejectUpdateMessage": "Update will be rejected and registration will remain unchanged",
       "withdrawRequestMessage": "Submission will be withdrawn from the collection and will no longer appear in search results.",
-      "remarksPlaceholder": "Add remarks to project admins (optional)",
+      "remarksPlaceholder": "Add remarks to registration admins (optional)",
       "submitDecision": "Submit decision",
       "goBackLink": "< Back to list of submissions",
       "acceptSuccess": "Submission has been accepted successfully",
       "rejectSuccess": "Submission has been rejected successfully",
-      "removeSuccess": "Submission has been withdrawn successfully"
+      "acceptSubmissionSuccess": "Submission has been accepted successfully",
+      "rejectSubmissionSuccess": "Submission has been rejected successfully",
+      "removeSuccess": "Submission has been withdrawn successfully",
+      "justificationPlaceholder": "Provide justification for withdrawal"
     },
     "submissionReview": {
       "submitted": "Submitted",
@@ -1201,7 +1211,8 @@
       "rejected": "Rejected",
       "requested": "Requested",
       "withdrawn": "Withdrawn",
-      "by": "by"
+      "by": "by",
+      "embargoEnding": "with embargo ending"
     },
     "preprintReviewStatus": {
       "submitted": "submitted a preprint \"{{name}}\" to",
@@ -2050,6 +2061,7 @@
       "noUpdates": "No responses updated",
       "noData": "No justification provided.",
       "deleteUpdates": "Delete Draft Update",
+      "successDeleteDraft": "Draft update successfully deleted.",
       "submitChanges": "Submit Changes",
       "acceptChanges": "Accept Changes",
       "decisionRecorded": "Your decision has been recorded.",
@@ -2115,11 +2127,6 @@
           "short": "Pending withdrawal moderation",
           "long": "This registration is waiting for approval to be withdrawn by registry moderators."
         },
-        "unapproved": {
-          "text": "Update pending",
-          "short": "Update pending approval",
-          "long": "This registration has an update that is waiting for approval from its contributors. Updates will be made available once approved."
-        },
         "inProgress": {
           "text": "Update in progress",
           "short": "Updates being made",
@@ -2129,6 +2136,11 @@
           "text": "Update pending review",
           "short": "Update pending moderator approval",
           "long": "This registration has an update that is waiting for moderation. Updates will be made available once approved."
+        },
+        "updatePendingApproval": {
+          "text": "Update pending",
+          "short": "Update pending approval",
+          "long": "This registration has an update that is waiting for approval from its contributors. Updates will be made available once approved."
         }
       },
       "metadata": {
@@ -2156,6 +2168,11 @@
       "description": "Changes to any files (1) in the projects or components being registered, (2) uploaded or selected as prompt responses, including those connected through add-ons during archiving will result in archiving failure and loss of your registration timestamp. Please do not modify your files until after you have received email confirmation of archiving completion. If this registration has been archiving for more than 72 hours, please email ",
       "descriptionEnd": " for assistance.",
       "createdDate": "Date created"
+    },
+    "withdrawn": {
+      "title": "This registration has been withdrawn for the reason(s) stated below.",
+      "dateWithdrawn": "Date withdrawn",
+      "justificationLabel": "Justification for withdrawal"
     }
   },
   "truncatedText": {
@@ -2224,7 +2241,9 @@
       "pendingWithdraw": "Pending withdrawal",
       "unapproved": "Unapproved",
       "inProgress": "Update in progress",
-      "pendingModeration": "Pending moderation"
+      "pendingModeration": "Pending moderation",
+      "withdrawn": "Withdrawn",
+      "updatePendingApproval": "Update pending approval"
     }
   },
   "resourceCard": {

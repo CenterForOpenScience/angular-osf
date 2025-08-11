@@ -2,7 +2,7 @@
 
 @if (resource) {
   <div class="flex flex-column gap-5 lg:flex-row lg:align-items-center lg:justify-content-between">
-    @if (visibilityToggle() && !isCollectionsRoute() && isAdmin()) {
+    @if (!isCollectionsRoute() && isAdmin()) {
       <div class="flex gap-3 align-items-center">
         <div class="flex gap-1" [class.inactive]="isPublic()">
           <i class="fas fa-lock"></i>
@@ -32,7 +32,7 @@
       }
     }
 
-    <div class="flex">
+    <div class="flex ml-auto">
       <div class="flex flex-1 flex-column-reverse gap-3 justify-content-end sm:gap-3 sm:flex-row-reverse lg:flex-row">
         @if (resource.storage && !isCollectionsRoute()) {
           <p class="font-bold mr-2 ml-0 mt-2 sm:ml-2 sm:mt-0 sm:align-self-center storage">

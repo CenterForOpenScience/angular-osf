@@ -51,7 +51,7 @@
               [formControlName]="ProjectFormControls.Affiliations"
               [inputId]="affiliation.id"
             />
-            <img ngSrc="{{ affiliation.assets.logo }}" alt="OSF Logo" height="44" width="44" />
+            <img class="fit-contain" [ngSrc]="affiliation.assets.logo" alt="OSF Logo" height="44" width="44" />
           </div>
         }
       </div>

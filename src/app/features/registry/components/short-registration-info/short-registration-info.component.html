@@ -1,0 +1,35 @@
+<div class="mb-3">
+  <h4>{{ 'navigation.registration.contributors' | translate }}</h4>
+  <p>
+    @for (c of registration().contributors; track c.id) {
+      <span
+        >{{ c.fullName }}
+        <span>{{ !$last ? ', ' : '' }}</span>
+      </span>
+    }
+  </p>
+</div>
+<div class="mb-3">
+  <h4>{{ 'common.labels.description' | translate }}</h4>
+  <p>{{ registration().description }}</p>
+</div>
+<div class="mb-3 flex flex-wrap">
+  <div class="mb-3 w-6">
+    <h4>{{ 'registry.overview.metadata.type' | translate }}</h4>
+    <p>{{ registration().registrationType }}</p>
+  </div>
+  <div class="mb-3 w-6">
+    <h4>{{ 'registry.overview.metadata.registeredDate' | translate }}</h4>
+    <p>{{ registration().dateRegistered | date }}</p>
+  </div>
+</div>
+<div class="mb-3 flex flex-wrap">
+  <div class="mb-3 w-6">
+    <h4>{{ 'registry.archiving.createdDate' | translate }}</h4>
+    <p>{{ registration().dateCreated | date }}</p>
+  </div>
+  <div class="mb-3 w-6">
+    <h4>{{ 'registry.overview.metadata.associatedProject' | translate }}</h4>
+    <a [href]="associatedProjectUrl">{{ associatedProjectUrl }}</a>
+  </div>
+</div>

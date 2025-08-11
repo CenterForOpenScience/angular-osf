@@ -85,6 +85,7 @@ export class NewRegistrationComponent {
       this.actions
         .createDraft({
           registrationSchemaId: providerSchema!,
+          provider: this.providerId,
           projectId: this.fromProject ? (project ?? undefined) : undefined,
         })
         .subscribe(() => {

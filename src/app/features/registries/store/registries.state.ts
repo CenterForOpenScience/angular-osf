@@ -113,7 +113,7 @@ export class RegistriesState {
       },
     });
 
-    return this.registriesService.createDraft(payload.registrationSchemaId, payload.projectId).pipe(
+    return this.registriesService.createDraft(payload.registrationSchemaId, payload.provider, payload.projectId).pipe(
       tap((registration) => {
         ctx.patchState({
           draftRegistration: {

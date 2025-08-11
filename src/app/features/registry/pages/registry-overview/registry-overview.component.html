@@ -1,22 +1,29 @@
 @if (!isRegistryLoading() && !isSubjectsLoading() && !isInstitutionsLoading() && !isSchemaBlocksLoading()) {
   <div
-    class="flex flex-column justify-content-center md:flex-row md:gap-4 md:justify-content-between md:align-items-center"
+    class="flex flex-column justify-content-center flex-wrap md:flex-row md:justify-content-between md:align-items-center"
   >
-    <osf-sub-header [title]="registry()!.title" />
-    @if (!registry()?.archiving) {
-      <div class="pb-5 pl-3 md:pr-5">
-        <osf-overview-toolbar
-          [currentResource]="toolbarResource()"
-          [visibilityToggle]="false"
-          [showViewOnlyLinks]="false"
-          [isAdmin]="true"
-        />
+    <osf-sub-header
+      [title]="registry()!.title"
+      [showButton]="isModeration"
+      [buttonSeverity]="'success'"
+      [buttonLabel]="'moderation.makeDecision.header' | translate"
+      [isSubmitting]="areReviewActionsLoading()"
+      (buttonClick)="handleOpenMakeDecisionDialog()"
+    />
+
+    @if (!registry()?.archiving && !registry()?.withdrawn) {
+      <div class="pb-5 pl-4 ml-auto w-full md:pr-4">
+        <osf-overview-toolbar [currentResource]="toolbarResource()" [showViewOnlyLinks]="false" [isAdmin]="true" />
       </div>
     }
   </div>
   @if (registry()?.archiving) {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
       <osf-archiving-message [registration]="registry()!"></osf-archiving-message>
+    </div>
+  } @else if (registry()?.withdrawn) {
+    <div class="flex flex-column bg-white flex-1 p-4 gap-4">
+      <osf-withdrawn-message [registration]="registry()!"></osf-withdrawn-message>
     </div>
   } @else {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
@@ -37,6 +44,8 @@
               [registry]="registry()"
               [selectedRevisionIndex]="selectedRevisionIndex()"
               (openRevision)="openRevision($event)"
+              (updateRegistration)="onUpdateRegistration($event)"
+              (continueUpdate)="onContinueUpdateRegistration($event)"
             >
             </osf-registry-revisions>
           </div>

@@ -13,6 +13,9 @@ describe('PreprintProviderFooterComponent', () => {
 
     fixture = TestBed.createComponent(PreprintProviderFooterComponent);
     component = fixture.componentInstance;
+
+    fixture.componentRef.setInput('footerHtml', '');
+
     fixture.detectChanges();
   });
 

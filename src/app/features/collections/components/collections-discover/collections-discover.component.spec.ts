@@ -1,4 +1,23 @@
+import { provideStore } from '@ngxs/store';
+
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
+
+import { DialogService } from 'primeng/dynamicdialog';
+
+import { of } from 'rxjs';
+
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+
+import { CollectionsMainContentComponent } from '@osf/features/collections/components';
+import { CollectionsSearchResultCardComponent } from '@osf/features/collections/components/collections-search-result-card/collections-search-result-card.component';
+import { LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
+import { TranslateServiceMock } from '@shared/mocks';
+import { ToastService } from '@shared/services';
+import { CollectionsState } from '@shared/stores';
 
 import { CollectionsDiscoverComponent } from './collections-discover.component';
 
@@ -8,7 +27,32 @@ describe('CollectionsDiscoverComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CollectionsDiscoverComponent],
+      imports: [
+        CollectionsDiscoverComponent,
+        ...MockComponents(
+          SearchInputComponent,
+          CollectionsMainContentComponent,
+          CollectionsSearchResultCardComponent,
+          LoadingSpinnerComponent
+        ),
+        MockPipe(TranslatePipe),
+      ],
+      teardown: { destroyAfterEach: false },
+      providers: [
+        TranslateServiceMock,
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        MockProvider(DialogService),
+        MockProvider(ToastService),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: { paramMap: { get: () => '1' } },
+            queryParams: of({}),
+          },
+        },
+        provideStore([CollectionsState]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CollectionsDiscoverComponent);

@@ -1,4 +1,4 @@
-export const slides = [
+export const SLIDES = [
   {
     img: 'assets/images/carousel1.png',
     name: 'Patricia Ayala',
@@ -22,7 +22,7 @@ export const slides = [
   },
 ];
 
-export const integrationIcons = [
+export const INTEGRATION_ICONS = [
   {
     title: 'home.loggedOut.integrations.categories.authentication',
     first: {

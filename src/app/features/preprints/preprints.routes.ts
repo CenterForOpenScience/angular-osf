@@ -2,6 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { authGuard } from '@osf/core/guards';
 import { PreprintsComponent } from '@osf/features/preprints/preprints.component';
 import { PreprintState } from '@osf/features/preprints/store/preprint';
 import { PreprintProvidersState } from '@osf/features/preprints/store/preprint-providers';
@@ -59,6 +60,7 @@ export const preprintsRoutes: Routes = [
       },
       {
         path: 'select',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@osf/features/preprints/pages/select-preprint-service/select-preprint-service.component').then(
             (c) => c.SelectPreprintServiceComponent
@@ -66,6 +68,7 @@ export const preprintsRoutes: Routes = [
       },
       {
         path: ':providerId/submit',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@osf/features/preprints/pages/submit-preprint-stepper/submit-preprint-stepper.component').then(
             (c) => c.SubmitPreprintStepperComponent
@@ -74,6 +77,7 @@ export const preprintsRoutes: Routes = [
       },
       {
         path: ':providerId/edit/:preprintId',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@osf/features/preprints/pages/update-preprint-stepper/update-preprint-stepper.component').then(
             (c) => c.UpdatePreprintStepperComponent
@@ -82,6 +86,7 @@ export const preprintsRoutes: Routes = [
       },
       {
         path: 'my-preprints',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@osf/features/preprints/pages/my-preprints/my-preprints.component').then(
             (m) => m.MyPreprintsComponent
@@ -89,11 +94,13 @@ export const preprintsRoutes: Routes = [
       },
       {
         path: ':providerId/moderation',
+        canActivate: [authGuard],
         loadChildren: () =>
           import('@osf/features/moderation/preprint-moderation.routes').then((mod) => mod.preprintModerationRoutes),
       },
       {
         path: 'my-reviewing',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@osf/features/moderation/pages/my-preprint-reviewing/my-preprint-reviewing.component').then(
             (m) => m.MyPreprintReviewingComponent
@@ -102,6 +109,7 @@ export const preprintsRoutes: Routes = [
       },
       {
         path: ':providerId/new-version/:preprintId',
+        canActivate: [authGuard],
         loadComponent: () =>
           import('@osf/features/preprints/pages/create-new-version/create-new-version.component').then(
             (c) => c.CreateNewVersionComponent

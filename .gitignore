@@ -37,7 +37,8 @@ yarn-error.log
 testem.log
 /typings
 
+.github/counter/counter.txt
+
 # System files
 .DS_Store
 Thumbs.db
-package-lock.json

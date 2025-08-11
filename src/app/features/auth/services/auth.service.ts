@@ -1,7 +1,11 @@
-import { HttpClient } from '@angular/common/http';
+import { createDispatchMap } from '@ngxs/store';
+
+import { CookieService } from 'ngx-cookie-service';
+
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@osf/core/services';
+import { SetAuthenticated } from '@osf/features/auth/store';
 
 import { SignUpModel } from '../models';
 
@@ -12,8 +16,21 @@ import { environment } from 'src/environments/environment';
 })
 export class AuthService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly cookieService = inject(CookieService);
+  private readonly actions = createDispatchMap({ setAuthenticated: SetAuthenticated });
 
-  readonly http: HttpClient = inject(HttpClient);
+  isAuthenticated(): boolean {
+    const csrfToken = this.cookieService.get('api-csrf');
+    const authenticated = !!csrfToken;
+
+    this.actions.setAuthenticated(authenticated);
+    return authenticated;
+  }
+
+  logout(): void {
+    this.cookieService.deleteAll();
+    this.actions.setAuthenticated(false);
+  }
 
   register(payload: SignUpModel) {
     const baseUrl = `${environment.apiUrlV1}/register/`;

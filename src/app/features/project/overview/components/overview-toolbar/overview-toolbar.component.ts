@@ -22,12 +22,16 @@ import { ToastService } from '@osf/shared/services';
 import { ResourceType } from '@shared/enums';
 import { ToolbarResource } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
-import { AddResourceToBookmarks, BookmarksSelectors, RemoveResourceFromBookmarks } from '@shared/stores';
+import {
+  AddResourceToBookmarks,
+  BookmarksSelectors,
+  GetMyBookmarks,
+  MyResourcesSelectors,
+  RemoveResourceFromBookmarks,
+} from '@shared/stores';
 
 import { SOCIAL_ACTION_ITEMS } from '../../constants';
 import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';
-
-import { GetMyBookmarks, MyResourcesSelectors } from 'src/app/shared/stores/my-resources';
 
 @Component({
   selector: 'osf-overview-toolbar',
@@ -58,7 +62,6 @@ export class OverviewToolbarComponent {
   protected isBookmarked = signal(false);
   isAdmin = input.required<boolean>();
   currentResource = input.required<ToolbarResource | null>();
-  visibilityToggle = input<boolean>(true);
   showViewOnlyLinks = input<boolean>(true);
   protected isBookmarksLoading = select(MyResourcesSelectors.getBookmarksLoading);
   protected isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);

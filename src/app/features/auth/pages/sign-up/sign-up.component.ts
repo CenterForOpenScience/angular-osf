@@ -9,16 +9,19 @@ import { Divider } from 'primeng/divider';
 import { Password } from 'primeng/password';
 
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
+import { NavigationService } from '@osf/core/services';
 import { RegisterUser } from '@osf/features/auth/store';
 import { PasswordInputHintComponent, TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/utils';
 
 import { SignUpForm, SignUpModel } from '../../models';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-sign-up',
@@ -40,15 +43,16 @@ import { SignUpForm, SignUpModel } from '../../models';
   styleUrl: './sign-up.component.scss',
 })
 export class SignUpComponent implements OnInit {
+  private readonly navigateService = inject(NavigationService);
+
+  private readonly actions = createDispatchMap({ registerUser: RegisterUser });
+
   signUpForm = new FormGroup<SignUpForm>({} as SignUpForm);
   passwordRegex: RegExp = PASSWORD_REGEX;
   inputLimits = InputLimits;
-
   isFormSubmitted = signal(false);
 
-  actions = createDispatchMap({ registerUser: RegisterUser });
-
-  readonly siteKey = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI';
+  readonly siteKey = environment.recaptchaSiteKey;
 
   get isPasswordError() {
     return this.signUpForm.controls['password'].errors && this.signUpForm.get('password')?.touched;
@@ -89,10 +93,26 @@ export class SignUpComponent implements OnInit {
       return;
     }
 
+    this.signUpForm.disable();
+
     const data = this.signUpForm.getRawValue() as SignUpModel;
 
-    this.actions.registerUser(data).subscribe(() => {
-      this.isFormSubmitted.set(true);
+    this.actions.registerUser(data).subscribe({
+      next: () => {
+        this.signUpForm.reset();
+        this.isFormSubmitted.set(true);
+      },
+      error: () => {
+        this.signUpForm.enable();
+      },
     });
+  }
+
+  navigateToOrcidSingIn(): void {
+    this.navigateService.navigateToOrcidSingIn();
+  }
+
+  navigateToInstitutionSingIn(): void {
+    this.navigateService.navigateToInstitutionSignIn();
   }
 }

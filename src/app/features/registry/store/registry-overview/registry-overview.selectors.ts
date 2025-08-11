@@ -1,5 +1,6 @@
 import { Selector } from '@ngxs/store';
 
+import { ReviewAction } from '@osf/features/moderation/models';
 import {
   RegistryInstitution,
   RegistryOverview,
@@ -49,5 +50,20 @@ export class RegistryOverviewSelectors {
   @Selector([RegistryOverviewState])
   static isSchemaBlocksLoading(state: RegistryOverviewStateModel): boolean {
     return state.schemaBlocks.isLoading;
+  }
+
+  @Selector([RegistryOverviewState])
+  static getReviewActions(state: RegistryOverviewStateModel): ReviewAction[] {
+    return state.moderationActions.data;
+  }
+
+  @Selector([RegistryOverviewState])
+  static areReviewActionsLoading(state: RegistryOverviewStateModel): boolean {
+    return state.moderationActions.isLoading;
+  }
+
+  @Selector([RegistryOverviewState])
+  static isReviewActionSubmitting(state: RegistryOverviewStateModel): boolean {
+    return state.moderationActions.isSubmitting || false;
   }
 }

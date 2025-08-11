@@ -1,8 +1,9 @@
 import { Store } from '@ngxs/store';
 
 import { TranslateModule } from '@ngx-translate/core';
+import { MockProvider } from 'ng-mocks';
 
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { of } from 'rxjs';
 
@@ -10,11 +11,13 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, provideRouter, RouterModule } from '@angular/router';
 
+import { ToastService } from '@shared/services';
+
 import { TokenModel } from '../../models';
 
 import { TokenDetailsComponent } from './token-details.component';
 
-describe('TokenDetailsComponent', () => {
+describe.only('TokenDetailsComponent', () => {
   let component: TokenDetailsComponent;
   let fixture: ComponentFixture<TokenDetailsComponent>;
   let store: Partial<Store>;
@@ -43,8 +46,10 @@ describe('TokenDetailsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TokenDetailsComponent, TranslateModule.forRoot(), RouterModule.forRoot([])],
       providers: [
+        MockProvider(ToastService),
         { provide: Store, useValue: store },
         { provide: ConfirmationService, useValue: confirmationService },
+        { provide: MessageService, useValue: {} }, // ✅ ADD THIS LINE
         {
           provide: ActivatedRoute,
           useValue: {

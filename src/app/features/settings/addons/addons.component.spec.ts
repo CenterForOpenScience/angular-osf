@@ -10,6 +10,7 @@ import { UserSelectors } from '@osf/core/store/user';
 import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
 import { IS_XSMALL } from '@osf/shared/utils';
 import { AddonCardListComponent } from '@shared/components/addons';
+import { TranslateServiceMock } from '@shared/mocks';
 import { AddonsSelectors } from '@shared/stores/addons';
 
 import { AddonsComponent } from './addons.component';
@@ -22,6 +23,8 @@ describe('AddonsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [AddonsComponent, ...MockComponents(SubHeaderComponent, SearchInputComponent, AddonCardListComponent)],
       providers: [
+        TranslateServiceMock,
+
         MockProvider(Store, {
           selectSignal: jest.fn().mockImplementation((selector) => {
             if (selector === UserSelectors.getCurrentUser) {

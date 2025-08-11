@@ -46,3 +46,7 @@ export class UpdateProfileSettingsUser {
 
   constructor(public payload: { user: Partial<User> }) {}
 }
+
+export class SetUserAsModerator {
+  static readonly type = '[User] Set User As Moderator';
+}

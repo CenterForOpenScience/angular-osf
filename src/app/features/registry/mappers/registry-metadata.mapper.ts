@@ -1,6 +1,7 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
+import { ReviewPermissionsMapper } from '@osf/shared/mappers';
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
-import { License } from '@shared/models';
+import { License, ProviderDataJsonApi } from '@shared/models';
 
 import {
   BibliographicContributor,
@@ -116,6 +117,13 @@ export class RegistryMetadataMapper {
         files: '',
       },
       archiving: attributes['archiving'] as boolean,
+      currentUserIsModerator: ReviewPermissionsMapper.fromProviderResponse(
+        (embeds['contributors'] as Record<string, unknown>)['data'] as ProviderDataJsonApi
+      ),
+      embargoEndDate: attributes['embargo_end_date'] as string,
+      withdrawn: attributes['withdrawn'] as boolean,
+      withdrawalJustification: attributes['withdrawal_justification'] as string | undefined,
+      dateWithdrawn: attributes['date_withdrawn'] as string | null,
     } as RegistryOverview;
   }
 

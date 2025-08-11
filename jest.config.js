@@ -1,6 +1,9 @@
 module.exports = {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+  globalSetup: '<rootDir>/jest.global-setup.ts',
+  collectCoverage: true,
+  coverageReporters: ['json-summary', 'lcov', 'clover'],
   moduleNameMapper: {
     '^@osf/(.*)$': '<rootDir>/src/app/$1',
     '^@core/(.*)$': '<rootDir>/src/app/core/$1',
@@ -24,10 +27,37 @@ module.exports = {
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
     'src/app/**/*.{ts,js}',
+    '!src/app/app.config.ts',
+    '!src/app/**/*.routes.{ts.js}',
+    '!src/app/**/*.models.{ts.js}',
+    '!src/app/**/*.model.{ts.js}',
+    '!src/app/**/*.route.{ts,js}',
     '!src/app/**/*.spec.{ts,js}',
     '!src/app/**/*.module.ts',
     '!src/app/**/index.ts',
     '!src/app/**/public-api.ts',
   ],
   extensionsToTreatAsEsm: ['.ts'],
+  coverageThreshold: {
+    global: {
+      branches: 11.2,
+      functions: 11.34,
+      lines: 36.73,
+      statements: 37.33,
+    },
+  },
+  testPathIgnorePatterns: [
+    '<rootDir>/src/app/app.config.ts',
+    '<rootDir>/src/app/app.routes.ts',
+    '<rootDir>/src/app/features/registry/',
+    '<rootDir>/src/app/features/project/',
+    '<rootDir>/src/app/features/registries/',
+    '<rootDir>/src/app/features/settings/addons/',
+    '<rootDir>/src/app/features/settings/settings-container.component.ts',
+    '<rootDir>/src/app/features/settings/tokens/components/',
+    '<rootDir>/src/app/features/settings/tokens/mappers/',
+    '<rootDir>/src/app/features/settings/tokens/store/',
+    '<rootDir>/src/app/features/settings/tokens/pages/tokens-list/',
+    '<rootDir>/src/app/shared/',
+  ],
 };

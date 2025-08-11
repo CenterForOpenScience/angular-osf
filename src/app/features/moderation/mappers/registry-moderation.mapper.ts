@@ -14,10 +14,12 @@ export class RegistryModerationMapper {
       id: response.id,
       title: response.attributes.title,
       reviewsState: response.attributes.reviews_state,
+      revisionStatus: response.attributes.revision_state,
       public: response.attributes.public,
       embargoed: response.attributes.embargoed,
       embargoEndDate: response.attributes.embargo_end_date,
       actions: [],
+      revisionId: response.embeds?.schema_responses?.data[0]?.id || null,
     };
   }
 

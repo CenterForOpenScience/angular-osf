@@ -20,10 +20,18 @@ export class RegistryRevisionsComponent {
   registry = input.required<RegistryOverview | null>();
   selectedRevisionIndex = input.required<number>();
   openRevision = output<number>();
+  readonly updateRegistration = output<string>();
+  readonly continueUpdate = output<{ id: string; unapproved: boolean }>();
 
   emitOpenRevision(index: number) {
     this.openRevision.emit(index);
   }
 
   protected readonly RevisionReviewStates = RevisionReviewStates;
+  continueUpdateHandler(): void {
+    this.continueUpdate.emit({
+      id: this.registry()?.id || '',
+      unapproved: this.registry()?.revisionStatus === RevisionReviewStates.Unapproved,
+    });
+  }
 }

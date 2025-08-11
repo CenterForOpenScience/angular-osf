@@ -29,6 +29,7 @@
           styleClass="w-full"
           [label]="buttonLabel()"
           (onClick)="buttonClick.emit()"
+          [loading]="isSubmitting()"
           [disabled]="isButtonDisabled()"
         ></p-button>
       </div>

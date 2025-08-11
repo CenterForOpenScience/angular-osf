@@ -6,9 +6,13 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "jest",
+    "test": "jest && npm run test:display",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage && npm run test:display",
+    "test:check-coverage-thresholds": "node .github/scripts/check-coverage-thresholds.js",
+    "test:counter": "node .github/counter/counter.test.increment.js",
+    "test:display": "node .github/counter/counter.test.display.js",
+    "ci": "npm run lint && jest --coverage",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "format": "prettier --write .",
@@ -90,5 +94,9 @@
       "prettier --write",
       "eslint --fix"
     ]
+  },
+  "volta": {
+    "node": "22.13.1",
+    "npm": "10.9.2"
   }
 }

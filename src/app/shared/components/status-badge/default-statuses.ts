@@ -20,4 +20,6 @@ export const RegistryStatusMap: Record<RegistryStatus, StatusInfo> = {
   [RegistryStatus.Unapproved]: { label: 'shared.statuses.unapproved', severity: 'danger' },
   [RegistryStatus.InProgress]: { label: 'shared.statuses.inProgress', severity: 'info' },
   [RegistryStatus.PendingModeration]: { label: 'shared.statuses.pendingModeration', severity: 'warn' },
+  [RegistryStatus.Withdrawn]: { label: 'shared.statuses.withdrawn', severity: 'danger' },
+  [RegistryStatus.UpdatePendingApproval]: { label: 'shared.statuses.updatePendingApproval', severity: 'warn' },
 };

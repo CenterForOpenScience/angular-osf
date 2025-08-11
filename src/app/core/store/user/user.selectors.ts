@@ -56,4 +56,9 @@ export class UserSelectors {
   static getSocialLinks(state: UserStateModel): Social | undefined {
     return state.currentUser.data?.social;
   }
+
+  @Selector([UserState])
+  static isCurrentUserModerator(state: UserStateModel): boolean {
+    return !!state.currentUser.data?.isModerator;
+  }
 }

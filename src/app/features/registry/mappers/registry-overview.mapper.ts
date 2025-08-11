@@ -1,4 +1,5 @@
 import { RegistryOverview, RegistryOverviewJsonApiData } from '@osf/features/registry/models';
+import { ReviewPermissionsMapper } from '@osf/shared/mappers';
 import { MapRegistryStatus } from '@shared/mappers/registry/map-registry-status.mapper';
 
 export function MapRegistryOverview(data: RegistryOverviewJsonApiData): RegistryOverview | null {
@@ -61,7 +62,11 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
       revisionResponses: schemaResponse.attributes?.revision_responses,
       updatedResponseKeys: schemaResponse.attributes?.updated_response_keys,
     })),
-    registry: data.embeds.provider.data.attributes.name,
+    provider: {
+      id: data.embeds.provider.data.id,
+      name: data.embeds.provider.data.attributes.name,
+      permissions: data.embeds.provider.data.attributes.permissions,
+    },
     status: MapRegistryStatus(data.attributes),
     revisionStatus: data.attributes.revision_state,
     reviewsState: data.attributes.reviews_state,
@@ -69,5 +74,9 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
       files: data?.embeds?.files?.data?.[0]?.relationships?.files?.links?.related?.href,
     },
     archiving: data.attributes.archiving,
+    currentUserIsModerator: ReviewPermissionsMapper.fromProviderResponse(data.embeds?.provider.data),
+    withdrawn: data.attributes.withdrawn || false,
+    withdrawalJustification: data.attributes.withdrawal_justification,
+    dateWithdrawn: data.attributes.date_withdrawn || null,
   } as RegistryOverview;
 }

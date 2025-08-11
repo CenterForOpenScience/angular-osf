@@ -34,7 +34,11 @@ export class RegistriesService {
   private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
 
-  createDraft(registrationSchemaId: string, projectId?: string | undefined): Observable<DraftRegistrationModel> {
+  createDraft(
+    registrationSchemaId: string,
+    provider: string,
+    projectId?: string | undefined
+  ): Observable<DraftRegistrationModel> {
     const payload = {
       data: {
         type: 'draft_registrations',
@@ -51,6 +55,12 @@ export class RegistriesService {
             data: {
               type: 'registration-schemas',
               id: registrationSchemaId,
+            },
+          },
+          provider: {
+            data: {
+              type: 'registration-providers',
+              id: provider,
             },
           },
         },
