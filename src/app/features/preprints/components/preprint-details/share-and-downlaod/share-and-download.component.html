@@ -2,14 +2,16 @@
   <div class="flex flex-column gap-4">
     <div class="flex flex-column justify-content-between gap-2 md:flex-row md:align-items-center">
       @if (preprint() && preprintProvider()) {
-        <a pButton severity="secondary" [href]="downloadLink()">Download {{ preprintProvider()!.preprintWord }}</a>
+        <a pButton severity="secondary" [href]="downloadLink()">{{
+          'preprints.details.share.downloadPreprint' | translate: { documentType: preprintProvider()?.preprintWord }
+        }}</a>
       }
 
       @if (metrics()) {
         <section class="flex flex-row gap-1 font-bold">
-          <span>Views: {{ metrics()!.views }}</span>
+          <span>{{ 'preprints.details.share.views' | translate }}: {{ metrics()!.views }}</span>
           <span>|</span>
-          <span>Downloads: {{ metrics()!.downloads }}</span>
+          <span>{{ 'preprints.details.share.downloads' | translate }}: {{ metrics()!.downloads }}</span>
         </section>
       }
 

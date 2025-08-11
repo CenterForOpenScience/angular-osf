@@ -14,7 +14,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { formInputLimits } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
-import { Preprint, PreprintProviderDetails } from '@osf/features/preprints/models';
+import { Preprint, PreprintProviderDetails, PreprintWordGrammar } from '@osf/features/preprints/models';
 import { WithdrawPreprint } from '@osf/features/preprints/store/preprint';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { CustomValidators } from '@shared/utils';
@@ -50,10 +50,12 @@ export class WithdrawDialogComponent implements OnInit {
   });
   modalExplanation = signal<string>('');
   withdrawRequestInProgress = signal<boolean>(false);
+  documentType!: Record<PreprintWordGrammar, string>;
 
   public ngOnInit() {
     this.provider = this.config.data.provider;
     this.preprint = this.config.data.preprint;
+    this.documentType = getPreprintDocumentType(this.provider, this.translateService);
 
     this.modalExplanation.set(this.calculateModalExplanation());
   }
@@ -78,64 +80,33 @@ export class WithdrawDialogComponent implements OnInit {
 
   private calculateModalExplanation() {
     const providerReviewWorkflow = this.provider.reviewsWorkflow;
-    const documentType = getPreprintDocumentType(this.provider, this.translateService);
     //[RNi] TODO: maybe extract to env, also see static pages
     const supportEmail = 'support@osf.io';
 
     switch (providerReviewWorkflow) {
       case ProviderReviewsWorkflow.PreModeration: {
         if (this.preprint.reviewsState === ReviewsState.Pending) {
-          return this.translateService.instant(
-            'Since this version is still pending approval and private, it can be withdrawn immediately. ' +
-              'The reason of withdrawal will be visible to service moderators. Once withdrawn, the {{singularPreprintWord}} ' +
-              'will remain private and never be made public.',
-            {
-              singularPreprintWord: documentType.singular,
-            }
-          );
+          return this.translateService.instant('preprints.details.withdrawDialog.preModerationNoticePending', {
+            singularPreprintWord: this.documentType.singular,
+          });
         } else
-          return this.translateService.instant(
-            '<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record.' +
-              ' Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version' +
-              ' removal and at the discretion of the moderators.</strong><br>This service uses pre-moderation. ' +
-              'This request will be submitted to service moderators for review. If the request is approved, this ' +
-              '{singularPreprintWord} version will be replaced by a tombstone page with metadata and the reason ' +
-              'for withdrawal. This {singularPreprintWord} version will still be searchable by other users after removal.',
-            {
-              singularPreprintWord: documentType.singular,
-              pluralCapitalizedPreprintWord: documentType.pluralCapitalized,
-            }
-          );
+          return this.translateService.instant('preprints.details.withdrawDialog.preModerationNoticeAccepted', {
+            singularPreprintWord: this.documentType.singular,
+            pluralCapitalizedPreprintWord: this.documentType.pluralCapitalized,
+          });
       }
       case ProviderReviewsWorkflow.PostModeration: {
-        return this.translateService.instant(
-          '<strong>{pluralCapitalizedPreprintWord} are a permanent part of the scholarly record. ' +
-            'Withdrawal requests are subject to this service’s policy on {singularPreprintWord} version ' +
-            'removal and at the discretion of the moderators.</strong><br>This service uses post-moderation.' +
-            ' This request will be submitted to service moderators for review. If the request is approved, this ' +
-            '{singularPreprintWord} version will be replaced by a tombstone page with metadata and the reason for' +
-            ' withdrawal. This {singularPreprintWord} version will still be searchable by other users after removal.',
-          {
-            singularPreprintWord: documentType.singular,
-            pluralCapitalizedPreprintWord: documentType.pluralCapitalized,
-          }
-        );
+        return this.translateService.instant('preprints.details.withdrawDialog.postModerationNotice', {
+          singularPreprintWord: this.documentType.singular,
+          pluralCapitalizedPreprintWord: this.documentType.pluralCapitalized,
+        });
       }
       default: {
-        return this.translateService.instant(
-          '<strong>{pluralCapitalizedPreprintWord} are a permanent part of the scholarly record. ' +
-            'Withdrawal requests are subject to this service’s policy on {singularPreprintWord} version removal' +
-            ' and at the discretion of the moderators.</strong><br>This request will be submitted to' +
-            ' <a href="mailto:{supportEmail}" target="_blank">{supportEmail}</a> for review and removal.' +
-            ' If the request is approved, this {singularPreprintWord} version will be replaced by a tombstone' +
-            ' page with metadata and the reason for withdrawal. This {singularPreprintWord} version will still be ' +
-            'searchable by other users after removal.',
-          {
-            singularPreprintWord: documentType.singular,
-            pluralCapitalizedPreprintWord: documentType.pluralCapitalized,
-            supportEmail,
-          }
-        );
+        return this.translateService.instant('preprints.details.withdrawDialog.noModerationNotice', {
+          singularPreprintWord: this.documentType.singular,
+          pluralCapitalizedPreprintWord: this.documentType.pluralCapitalized,
+          supportEmail,
+        });
       }
     }
   }

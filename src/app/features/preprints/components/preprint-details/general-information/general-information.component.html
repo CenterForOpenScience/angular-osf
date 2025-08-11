@@ -20,7 +20,7 @@
       }
 
       <section class="flex flex-column gap-2">
-        <h3>{{ 'Authors' | translate }}</h3>
+        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.authors' | translate }}</h3>
 
         <div class="flex flex-column gap-1 line-height-2 md:flex-row">
           @for (contributor of bibliographicContributors(); track contributor.id) {
@@ -36,14 +36,15 @@
         </div>
       </section>
 
+      <!-- [RNi] TODO: Extract to separate component -->
       @if (preprintProvider()?.assertionsEnabled) {
         <section class="flex flex-column gap-2">
           <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>
 
-          @if (!preprintValue.hasCoi) {
-            <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
-          } @else {
+          @if (preprintValue.hasCoi) {
             {{ preprintValue.coiStatement }}
+          } @else {
+            <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
           }
         </section>
 
@@ -107,36 +108,7 @@
         </section>
       }
 
-      <section class="flex flex-column gap-2">
-        <h3>{{ preprintProvider()?.preprintWord | titlecase }} DOI</h3>
-
-        <p-select
-          class="w-full"
-          appendTo="body"
-          optionLabel="label"
-          optionValue="value"
-          [ngModel]="preprintValue.id"
-          [options]="versionsDropdownOptions()"
-          [loading]="arePreprintVersionIdsLoading()"
-          (onChange)="selectPreprintVersion($event.value)"
-        />
-        @if (preprintValue.preprintDoiLink) {
-          @if (preprintValue.preprintDoiCreated) {
-            <a [href]="preprintValue.preprintDoiLink">{{ preprintValue.preprintDoiLink }}</a>
-          } @else {
-            <p>{{ preprintValue.preprintDoiLink }}</p>
-            <p>DOIs are minted by a third party, and may take up to 24 hours to be registered.</p>
-          }
-        } @else {
-          @if (!preprintValue.isPublic) {
-            <p>DOI created after preprint is made public</p>
-          } @else if (preprintProvider()?.reviewsWorkflow && !preprintValue.isPublished) {
-            <p>DOI created after moderator approval</p>
-          } @else {
-            <p>No DOI</p>
-          }
-        }
-      </section>
+      <osf-preprint-doi-section [preprintProvider]="preprintProvider()" />
     </div>
   }
 

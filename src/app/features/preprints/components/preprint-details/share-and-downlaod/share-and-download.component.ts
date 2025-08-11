@@ -1,5 +1,7 @@
 import { select } from '@ngxs/store';
 
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { ButtonDirective } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
@@ -14,7 +16,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-preprint-share-and-download',
-  imports: [Card, IconComponent, Skeleton, ButtonDirective],
+  imports: [Card, IconComponent, Skeleton, ButtonDirective, TranslatePipe],
   templateUrl: './share-and-download.component.html',
   styleUrl: './share-and-download.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

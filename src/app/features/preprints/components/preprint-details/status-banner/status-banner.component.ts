@@ -1,6 +1,6 @@
 import { select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Dialog } from 'primeng/dialog';
@@ -8,7 +8,7 @@ import { Message } from 'primeng/message';
 import { Tag } from 'primeng/tag';
 
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 
 import { ReviewAction } from '@osf/features/moderation/models';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
@@ -16,11 +16,11 @@ import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 
 const STATUS = Object({});
-STATUS[ReviewsState.Pending] = 'Pending';
-STATUS[ReviewsState.Accepted] = 'Accepted';
-STATUS[ReviewsState.Rejected] = 'Rejected';
-STATUS[ReviewsState.PendingWithdrawal] = 'Pending withdrawal';
-STATUS[ReviewsState.WithdrawalRejected] = 'Withdrawal rejected';
+STATUS[ReviewsState.Pending] = 'preprints.details.statusBanner.pending';
+STATUS[ReviewsState.Accepted] = 'preprints.details.statusBanner.accepted';
+STATUS[ReviewsState.Rejected] = 'preprints.details.statusBanner.rejected';
+STATUS[ReviewsState.PendingWithdrawal] = 'preprints.details.statusBanner.pendingWithdrawal';
+STATUS[ReviewsState.WithdrawalRejected] = 'preprints.details.statusBanner.withdrawalRejected';
 
 const ICONS = Object({});
 ICONS[ReviewsState.Pending] = 'hourglass';
@@ -31,17 +31,13 @@ ICONS[ReviewsState.WithdrawalRejected] = 'times-circle';
 ICONS[ReviewsState.Withdrawn] = 'exclamation-triangle';
 
 const MESSAGE = Object({});
-MESSAGE[ProviderReviewsWorkflow.PreModeration] =
-  'is not publicly available or searchable until approved by a moderator.';
-MESSAGE[ProviderReviewsWorkflow.PostModeration] =
-  'is publicly available and searchable but is subject to removal by a moderator.';
-MESSAGE[ReviewsState.Accepted] = 'has been accepted by a moderator and is publicly available and searchable.';
-MESSAGE[ReviewsState.Rejected] = 'has been rejected by a moderator and is not publicly available or searchable.';
-MESSAGE[ReviewsState.PendingWithdrawal] =
-  'This {documentType} has been requested by the authors to be withdrawn. It will still be publicly searchable until the request has been approved.';
-MESSAGE[ReviewsState.WithdrawalRejected] =
-  'Your request to withdraw this {documentType} from the service has been denied by the moderator.';
-MESSAGE[ReviewsState.Withdrawn] = 'This {documentType} has been withdrawn.';
+MESSAGE[ProviderReviewsWorkflow.PreModeration] = 'preprints.details.statusBanner.messages.pendingPreModeration';
+MESSAGE[ProviderReviewsWorkflow.PostModeration] = 'preprints.details.statusBanner.messages.pendingPostModeration';
+MESSAGE[ReviewsState.Accepted] = 'preprints.details.statusBanner.messages.accepted';
+MESSAGE[ReviewsState.Rejected] = 'preprints.details.statusBanner.messages.rejected';
+MESSAGE[ReviewsState.PendingWithdrawal] = 'preprints.details.statusBanner.messages.pendingWithdrawal';
+MESSAGE[ReviewsState.WithdrawalRejected] = 'preprints.details.statusBanner.messages.withdrawalRejected';
+MESSAGE[ReviewsState.Withdrawn] = 'preprints.details.statusBanner.messages.withdrawn';
 
 const SEVERITIES = Object({});
 SEVERITIES[ProviderReviewsWorkflow.PreModeration] = 'warn';
@@ -60,6 +56,7 @@ SEVERITIES[ReviewsState.Withdrawn] = 'warn';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StatusBannerComponent {
+  private readonly translateService = inject(TranslateService);
   provider = input.required<PreprintProviderDetails>();
   preprint = select(PreprintSelectors.getPreprint);
 
@@ -122,18 +119,22 @@ export class StatusBannerComponent {
   });
 
   bannerContent = computed(() => {
-    if (this.isPendingWithdrawal()) {
-      return this.statusExplanation();
-    } else if (this.isWithdrawn()) {
-      return this.statusExplanation();
-    } else if (this.isWithdrawalRejected()) {
-      return this.statusExplanation();
+    const documentType = this.provider().preprintWord;
+    if (this.isPendingWithdrawal() || this.isWithdrawn() || this.isWithdrawalRejected()) {
+      return this.translateService.instant(this.statusExplanation(), {
+        documentType,
+      });
     } else {
       const name = this.provider()!.name;
       const workflow = this.provider()?.reviewsWorkflow;
-      const statusExplanation = this.statusExplanation();
+      const statusExplanation = this.translateService.instant(this.statusExplanation());
+      const baseMessage = this.translateService.instant('preprints.details.statusBanner.messages.base', {
+        name,
+        workflow,
+        documentType,
+      });
 
-      return `${name} uses ${workflow}. This preprint ${statusExplanation}`;
+      return `${baseMessage} ${statusExplanation}`;
     }
   });
 

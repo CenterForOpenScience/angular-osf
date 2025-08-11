@@ -1,5 +1,7 @@
 import { select } from '@ngxs/store';
 
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
@@ -16,7 +18,7 @@ import { IS_LARGE, IS_MEDIUM } from '@shared/utils';
 
 @Component({
   selector: 'osf-preprint-file-section',
-  imports: [LoadingSpinnerComponent, DatePipe, Skeleton, Menu, Button],
+  imports: [LoadingSpinnerComponent, DatePipe, Skeleton, Menu, Button, TranslatePipe],
   templateUrl: './preprint-file-section.component.html',
   styleUrl: './preprint-file-section.component.scss',
   providers: [DatePipe],
@@ -25,6 +27,7 @@ import { IS_LARGE, IS_MEDIUM } from '@shared/utils';
 export class PreprintFileSectionComponent {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly datePipe = inject(DatePipe);
+  private readonly translateService = inject(TranslateService);
 
   providerReviewsWorkflow = input.required<ProviderReviewsWorkflow | null>();
 
@@ -49,7 +52,10 @@ export class PreprintFileSectionComponent {
     if (!fileVersions.length) return [];
 
     return fileVersions.map((version, index) => ({
-      label: `Version ${++index}, ${this.datePipe.transform(version.dateCreated, 'mm/dd/yyyy hh:mm:ss')}`,
+      label: this.translateService.instant('preprints.details.file.downloadVersion', {
+        version: ++index,
+        date: this.datePipe.transform(version.dateCreated, 'mm/dd/yyyy hh:mm:ss'),
+      }),
       url: version.downloadLink,
     }));
   });
@@ -58,6 +64,8 @@ export class PreprintFileSectionComponent {
     const reviewsWorkflow = this.providerReviewsWorkflow();
     if (!reviewsWorkflow) return '';
 
-    return reviewsWorkflow === ProviderReviewsWorkflow.PreModeration ? 'Submitted' : 'Created';
+    return reviewsWorkflow === ProviderReviewsWorkflow.PreModeration
+      ? 'preprints.details.file.submitted'
+      : 'preprints.details.file.created';
   });
 }

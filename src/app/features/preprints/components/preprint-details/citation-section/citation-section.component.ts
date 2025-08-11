@@ -64,6 +64,7 @@ export class CitationSectionComponent implements OnInit {
       ? this.translateService.instant('project.overview.metadata.citationLoadingPlaceholder')
       : this.translateService.instant('project.overview.metadata.noCitationStylesFound');
   });
+  private PreprintResourceType = 'preprints';
 
   constructor() {
     this.setupFilterDebounce();
@@ -71,7 +72,7 @@ export class CitationSectionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.actions.getDefaultCitations('preprints', this.preprintId());
+    this.actions.getDefaultCitations(this.PreprintResourceType, this.preprintId());
   }
 
   protected handleCitationStyleFilterSearch(event: SelectFilterEvent) {
@@ -80,7 +81,7 @@ export class CitationSectionComponent implements OnInit {
   }
 
   protected handleGetStyledCitation(event: SelectChangeEvent) {
-    this.actions.getStyledCitation('preprints', this.preprintId(), event.value.id);
+    this.actions.getStyledCitation(this.PreprintResourceType, this.preprintId(), event.value.id);
   }
 
   private setupFilterDebounce(): void {
