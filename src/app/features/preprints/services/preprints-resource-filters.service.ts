@@ -4,9 +4,9 @@ import { Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { MyProfileResourceFiltersStateModel } from '@osf/features/my-profile/components/my-profile-resource-filters/store';
 import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover';
 import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
-import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
 import {
   Creator,
   DateCreated,
@@ -27,7 +27,9 @@ export class PreprintsFiltersOptionsService {
   filtersOptions = inject(FiltersOptionsService);
 
   private getFilterParams(): Record<string, string> {
-    return addFiltersParams(select(PreprintsResourcesFiltersSelectors.getAllFilters)() as ResourceFiltersStateModel);
+    return addFiltersParams(
+      select(PreprintsResourcesFiltersSelectors.getAllFilters)() as MyProfileResourceFiltersStateModel
+    );
   }
 
   private getParams(): Record<string, string> {

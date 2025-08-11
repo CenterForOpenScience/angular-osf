@@ -1,4 +1,5 @@
 export * from './addons';
+export * from './base-search';
 export * from './bookmarks';
 export * from './citations';
 export * from './collections';

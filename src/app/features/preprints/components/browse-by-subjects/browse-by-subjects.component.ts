@@ -6,7 +6,6 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { ResourceTab } from '@shared/enums';
 import { SubjectModel } from '@shared/models';
 
 @Component({
@@ -20,14 +19,8 @@ export class BrowseBySubjectsComponent {
   subjects = input.required<SubjectModel[]>();
   linksToSearchPageForSubject = computed(() => {
     return this.subjects().map((subject) => ({
-      resourceTab: ResourceTab.Preprints,
-      activeFilters: JSON.stringify([
-        {
-          filterName: 'Subject',
-          label: subject.name,
-          value: subject.iri,
-        },
-      ]),
+      tab: 'preprints',
+      filter_subject: subject.iri,
     }));
   });
   areSubjectsLoading = input.required<boolean>();

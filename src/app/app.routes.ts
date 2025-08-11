@@ -8,8 +8,6 @@ import { authGuard, redirectIfLoggedInGuard } from './core/guards';
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
 import { MyProfileState } from './features/my-profile/store';
-import { ResourceFiltersOptionsState } from './features/search/components/filters/store';
-import { ResourceFiltersState } from './features/search/components/resource-filters/store';
 import { SearchState } from './features/search/store';
 
 export const routes: Routes = [
@@ -92,7 +90,7 @@ export const routes: Routes = [
       {
         path: 'search',
         loadComponent: () => import('./features/search/search.component').then((mod) => mod.SearchComponent),
-        providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState, SearchState])],
+        providers: [provideStates([SearchState])],
       },
       {
         path: 'my-profile',

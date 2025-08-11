@@ -3,7 +3,7 @@ import { SelectOption } from '@shared/models';
 export interface DiscoverableFilter {
   key: string;
   label: string;
-  type: 'select' | 'date' | 'checkbox';
+  type: 'select' | 'date' | 'checkbox' | 'group';
   operator: string;
   options?: SelectOption[];
   selectedValues?: SelectOption[];
@@ -13,6 +13,9 @@ export interface DiscoverableFilter {
   resultCount?: number;
   isLoading?: boolean;
   isLoaded?: boolean;
+  isPaginationLoading?: boolean;
+  isSearchLoading?: boolean;
   hasOptions?: boolean;
   loadOptionsOnExpand?: boolean;
+  filters?: DiscoverableFilter[];
 }
