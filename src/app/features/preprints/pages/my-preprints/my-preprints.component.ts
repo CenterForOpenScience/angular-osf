@@ -48,7 +48,7 @@ import { QueryParams, SearchFilters, TableParameters } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyPreprintsComponent {
-  @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
+  @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
