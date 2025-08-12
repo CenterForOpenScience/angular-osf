@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { IconComponent } from '@osf/shared/components';
-import { RevisionReviewStates } from '@osf/shared/enums';
+import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { DateAgoPipe } from '@osf/shared/pipes';
 
 import { REGISTRY_ACTION_LABEL, ReviewStatusIcon } from '../../constants';
@@ -33,6 +33,10 @@ export class RegistrySubmissionItemComponent {
 
   get isPendingModeration(): boolean {
     return this.submission().revisionStatus === RevisionReviewStates.RevisionPendingModeration;
+  }
+
+  get isPending(): boolean {
+    return this.submission().reviewsState === RegistrationReviewStates.Pending;
   }
 
   toggleHistory() {

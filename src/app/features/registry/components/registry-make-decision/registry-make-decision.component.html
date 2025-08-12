@@ -20,15 +20,17 @@
   }
 
   <form [formGroup]="requestForm" class="flex flex-column gap-3">
-    @if (isPendingModeration) {
+    @if (isPendingModeration || isPendingReview) {
       <div class="flex flex-column gap-2">
         <div class="flex gap-2">
           <p-radioButton
             [formControlName]="ModerationDecisionFormControls.Action"
-            [inputId]="TriggerAction.Accept"
-            [value]="TriggerAction.Accept"
+            inputId="accept-action"
+            [value]="
+              isPendingReview ? ReviewActionTrigger.AcceptSubmission : SchemaResponseActionTrigger.AcceptRevision
+            "
           ></p-radioButton>
-          <label [for]="TriggerAction.Accept" class="m-0 flex gap-2 flex-column">
+          <label for="accept-action" class="m-0 flex gap-2 flex-column">
             @if (isPendingReview) {
               <p class="font-bold">{{ 'moderation.makeDecision.acceptRequest' | translate }}</p>
               <p>{{ 'moderation.makeDecision.acceptRequestMessage' | translate }}</p>
@@ -41,11 +43,13 @@
         <div class="flex gap-2">
           <p-radioButton
             [formControlName]="ModerationDecisionFormControls.Action"
-            [inputId]="TriggerAction.Reject"
-            [value]="TriggerAction.Reject"
+            inputId="reject-action"
+            [value]="
+              isPendingReview ? ReviewActionTrigger.RejectSubmission : SchemaResponseActionTrigger.RejectRevision
+            "
           ></p-radioButton>
-          <label [for]="TriggerAction.Reject" class="m-0 flex gap-2 flex-column">
-            @if (registry.reviewsState === RegistrationReviewStates.Pending) {
+          <label for="reject-action" class="m-0 flex gap-2 flex-column">
+            @if (isPendingReview) {
               <p class="font-bold">{{ 'moderation.makeDecision.rejectRequest' | translate }}</p>
               <p>{{ 'moderation.makeDecision.rejectRequestMessage' | translate }}</p>
             } @else {
@@ -70,10 +74,10 @@
         <div class="flex gap-2">
           <p-radioButton
             [formControlName]="ModerationDecisionFormControls.Action"
-            [inputId]="TriggerAction.ForceWithdraw"
-            [value]="TriggerAction.ForceWithdraw"
+            [inputId]="ReviewActionTrigger.ForceWithdraw"
+            [value]="ReviewActionTrigger.ForceWithdraw"
           ></p-radioButton>
-          <label [for]="TriggerAction.ForceWithdraw" class="m-0 flex gap-2 flex-column">
+          <label [for]="ReviewActionTrigger.ForceWithdraw" class="m-0 flex gap-2 flex-column">
             <p class="font-bold">{{ 'moderation.makeDecision.forceWithdraw' | translate }}</p>
             <p>{{ 'moderation.makeDecision.forceWithdrawMessage' | translate }}</p>
           </label>

@@ -8,14 +8,16 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants/my-projects-table.constants';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
+import { IdName, ProjectForm } from '@osf/shared/models';
+import { GetMyProjects, InstitutionsState, MyResourcesState } from '@osf/shared/stores';
+import { CustomValidators } from '@osf/shared/utils';
+import { RegionsState } from '@shared/stores/regions';
 
 import { AddProjectFormComponent } from './add-project-form.component';
-
-import { InstitutionsState } from 'src/app/shared/stores/institutions';
-import { CreateProject, GetMyProjects, MyResourcesState } from 'src/app/shared/stores/my-resources';
 
 describe('AddProjectFormComponent', () => {
   let component: AddProjectFormComponent;
@@ -32,11 +34,44 @@ describe('AddProjectFormComponent', () => {
     { id: 'aff2', name: 'Affiliation 2', assets: { logo: 'logo2.png' } },
   ];
 
+  const mockTemplates: IdName[] = [
+    { id: '1', name: 'Template 1' },
+    { id: '2', name: 'Template 2' },
+  ];
+
+  const createProjectForm = (): FormGroup<ProjectForm> => {
+    return new FormGroup<ProjectForm>({
+      [ProjectFormControls.Title]: new FormControl('', {
+        nonNullable: true,
+        validators: [CustomValidators.requiredTrimmed()],
+      }),
+      [ProjectFormControls.StorageLocation]: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      [ProjectFormControls.Affiliations]: new FormControl<string[]>([], {
+        nonNullable: true,
+      }),
+      [ProjectFormControls.Description]: new FormControl('', {
+        nonNullable: true,
+      }),
+      [ProjectFormControls.Template]: new FormControl('', {
+        nonNullable: true,
+      }),
+    });
+  };
+
+  const createMockStoreState = () => ({
+    myResources: { projects: mockProjects, loading: false, error: null },
+    institutions: { userInstitutions: mockAffiliations, loading: false, error: null },
+    regions: { regions: { data: [], loading: false, error: null } },
+  });
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AddProjectFormComponent, MockPipe(TranslatePipe)],
       providers: [
-        provideStore([MyResourcesState, InstitutionsState]),
+        provideStore([MyResourcesState, InstitutionsState, RegionsState]),
         provideHttpClient(),
         provideHttpClientTesting(),
         MockProvider(DynamicDialogRef, { close: jest.fn() }),
@@ -45,10 +80,14 @@ describe('AddProjectFormComponent', () => {
     }).compileComponents();
 
     store = TestBed.inject(Store);
-    store.reset({ myProjects: { projects: mockProjects }, institutions: { userInstitutions: mockAffiliations } });
+    store.reset(createMockStoreState());
 
     fixture = TestBed.createComponent(AddProjectFormComponent);
     component = fixture.componentInstance;
+
+    fixture.componentRef.setInput('templates', mockTemplates);
+    fixture.componentRef.setInput('projectForm', createProjectForm());
+
     fixture.detectChanges();
   });
 
@@ -65,14 +104,14 @@ describe('AddProjectFormComponent', () => {
   });
 
   it('should select all affiliations on init', () => {
-    const affiliationsControl = component.projectForm.get(ProjectFormControls.Affiliations);
+    const affiliationsControl = component.projectForm().get(ProjectFormControls.Affiliations);
     expect(affiliationsControl?.value).toEqual(mockAffiliations.map((aff) => aff.id));
   });
 
   it('should select all affiliations when selectAllAffiliations is called', () => {
     component.removeAllAffiliations();
     component.selectAllAffiliations();
-    expect(component.projectForm.get(ProjectFormControls.Affiliations)?.value).toEqual(
+    expect(component.projectForm().get(ProjectFormControls.Affiliations)?.value).toEqual(
       mockAffiliations.map((aff) => aff.id)
     );
   });
@@ -80,34 +119,6 @@ describe('AddProjectFormComponent', () => {
   it('should remove all affiliations when removeAllAffiliations is called', () => {
     component.selectAllAffiliations();
     component.removeAllAffiliations();
-    expect(component.projectForm.get(ProjectFormControls.Affiliations)?.value).toEqual([]);
-  });
-
-  it('should dispatch CreateProject action and close dialog on successful submission', () => {
-    const formValue = {
-      title: 'Test Project',
-      description: 'Test Description',
-      template: '1',
-      storageLocation: 'us',
-      affiliations: ['aff1', 'aff2'],
-    };
-
-    const store = TestBed.inject(Store);
-
-    component.projectForm.patchValue(formValue);
-    component.submitForm();
-
-    const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-    const action = new CreateProject(
-      formValue.title,
-      formValue.description,
-      formValue.template,
-      formValue.storageLocation,
-      formValue.affiliations
-    );
-
-    store.dispatch(action);
-    expect(dispatchSpy).toHaveBeenCalledWith(action);
+    expect(component.projectForm().get(ProjectFormControls.Affiliations)?.value).toEqual([]);
   });
 });

@@ -36,16 +36,19 @@
               <p class="mb-4">{{ section.description }}</p>
             }
             @if (section.questions?.length) {
-              <osf-review-data
+              <osf-registration-blocks-data
                 [questions]="section.questions"
                 [reviewData]="schemaResponseRevisionData()"
-              ></osf-review-data>
+              ></osf-registration-blocks-data>
             }
           </div>
         }
       } @else {
         @if (page.questions?.length) {
-          <osf-review-data [questions]="page.questions" [reviewData]="schemaResponseRevisionData()"></osf-review-data>
+          <osf-registration-blocks-data
+            [questions]="page.questions"
+            [reviewData]="schemaResponseRevisionData()"
+          ></osf-registration-blocks-data>
         }
       }
     </p-card>

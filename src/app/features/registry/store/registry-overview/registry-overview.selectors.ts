@@ -1,12 +1,8 @@
 import { Selector } from '@ngxs/store';
 
 import { ReviewAction } from '@osf/features/moderation/models';
-import {
-  RegistryInstitution,
-  RegistryOverview,
-  RegistrySchemaBlock,
-  RegistrySubject,
-} from '@osf/features/registry/models';
+import { RegistryInstitution, RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
+import { PageSchema } from '@osf/shared/models';
 
 import { RegistryOverviewStateModel } from './registry-overview.model';
 import { RegistryOverviewState } from './registry-overview.state';
@@ -43,7 +39,7 @@ export class RegistryOverviewSelectors {
   }
 
   @Selector([RegistryOverviewState])
-  static getSchemaBlocks(state: RegistryOverviewStateModel): RegistrySchemaBlock[] | null {
+  static getSchemaBlocks(state: RegistryOverviewStateModel): PageSchema[] | null {
     return state.schemaBlocks.data;
   }
 

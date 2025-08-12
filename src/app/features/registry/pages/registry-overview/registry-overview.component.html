@@ -27,6 +27,24 @@
     </div>
   } @else {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
+      @if (!schemaResponse()?.isOriginalResponse) {
+        <p-message class="overview-message w-full" severity="warn">
+          <ng-template #container>
+            <div>
+              <h4 class="mb-1">
+                {{ 'registry.overview.updatedRevisionDescription' | translate }}
+                {{ schemaResponse()?.dateCreated | date }}.
+              </h4>
+              <p>
+                {{ 'registry.overview.updateReason' | translate }}
+              </p>
+              <p>
+                {{ schemaResponse()?.revisionJustification }}
+              </p>
+            </div>
+          </ng-template>
+        </p-message>
+      }
       <osf-data-resources
         [resourceId]="registry()?.id"
         [hasData]="registry()?.hasData"
@@ -45,34 +63,51 @@
               [selectedRevisionIndex]="selectedRevisionIndex()"
               (openRevision)="openRevision($event)"
               (updateRegistration)="onUpdateRegistration($event)"
-              (continueUpdate)="onContinueUpdateRegistration($event)"
+              (continueUpdate)="onContinueUpdateRegistration()"
+              [isModeration]="isModeration"
+              [isSubmitting]="isSchemaResponseLoading()"
             >
             </osf-registry-revisions>
           </div>
+
           <div class="blocks-section p-4">
-            @for (block of mappedSchemaBlocks(); track $index) {
-              @if (block.type === 'file-input' && block.files) {
-                <ul class="flex flex-column gap-4 ml-5">
-                  @for (file of block.files; track $index) {
-                    <li class="list-disc">
-                      <a [routerLink]="['/files', file.id]">{{ file.name }}</a>
-                    </li>
-                  }
-                </ul>
-              } @else if (block.type === 'multi-select-input' && block.values) {
-                <div class="flex flex-column gap-4 p-4">
-                  @for (value of block.values; track $index) {
-                    @if (value) {
-                      <p class="text-no-transform">{{ value }}</p>
+            @for (page of schemaBlocks(); track page.id) {
+              <h2 class="mb-4 text-xl">{{ page.title }}</h2>
+
+              @if (page.description) {
+                <p class="mb-4">{{ page.description }}</p>
+              }
+
+              @if (page.sections?.length) {
+                @for (section of page.sections; track section.id) {
+                  <div class="mb-4">
+                    <h3 class="mb-2">{{ section.title }}</h3>
+                    @if (section.description) {
+                      <p class="mb-4">{{ section.description }}</p>
                     }
-                  }
-                </div>
-              } @else if (block.type === 'page-heading' && block.value) {
-                <h1 class="pb-4 text-no-transform" [class.mt-4]="$index !== 0">{{ block.value }}</h1>
-              } @else if ((block.type === 'subsection-heading' || block.type === 'question-label') && block.value) {
-                <h3 class="pb-4 text-no-transform">{{ block.value }}</h3>
-              } @else if (block.value && block.value !== 'select-input-option') {
-                <p class="pb-4 text-no-transform">{{ block.value }}</p>
+                    @if (section.questions?.length) {
+                      <osf-registration-blocks-data
+                        [class.mb-4]="!$last"
+                        [questions]="section.questions"
+                        [reviewData]="schemaResponse()?.revisionResponses || {}"
+                        [isOverviewPage]="true"
+                        [updatedFields]="updatedFields()"
+                        [isOriginalRevision]="schemaResponse()?.isOriginalResponse!"
+                      ></osf-registration-blocks-data>
+                    }
+                  </div>
+                }
+              } @else {
+                @if (page.questions?.length) {
+                  <osf-registration-blocks-data
+                    [class.mb-4]="!$last"
+                    [questions]="page.questions"
+                    [reviewData]="schemaResponse()?.revisionResponses || {}"
+                    [isOverviewPage]="true"
+                    [updatedFields]="updatedFields()"
+                    [isOriginalRevision]="schemaResponse()?.isOriginalResponse!"
+                  ></osf-registration-blocks-data>
+                }
               }
             }
           </div>

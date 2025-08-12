@@ -1,6 +1,6 @@
 <section class="flex flex-column flex-1 bg-white p-5 gap-4 w-full">
   <p-card>
-    <h2 class="mb-4">{{ 'navigation.registration.metadata' | translate }}</h2>
+    <h2 class="mb-4">{{ 'navigation.metadata' | translate }}</h2>
 
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.title' | translate }}</h4>
@@ -25,7 +25,7 @@
     </div>
 
     <div class="mb-4">
-      <h4 class="mb-2">{{ 'navigation.registration.contributors' | translate }}</h4>
+      <h4 class="mb-2">{{ 'navigation.contributors' | translate }}</h4>
       <div class="flex flex-wrap gap-2">
         @for (contributor of contributors(); let last = $last; track contributor.id) {
           <span>
@@ -101,13 +101,19 @@
               <p class="mb-4">{{ section.description }}</p>
             }
             @if (section.questions?.length) {
-              <osf-review-data [questions]="section.questions" [reviewData]="stepsData()"></osf-review-data>
+              <osf-registration-blocks-data
+                [questions]="section.questions"
+                [reviewData]="stepsData()"
+              ></osf-registration-blocks-data>
             }
           </div>
         }
       } @else {
         @if (page.questions?.length) {
-          <osf-review-data [questions]="page.questions" [reviewData]="stepsData()"></osf-review-data>
+          <osf-registration-blocks-data
+            [questions]="page.questions"
+            [reviewData]="stepsData()"
+          ></osf-registration-blocks-data>
         }
       }
     </p-card>

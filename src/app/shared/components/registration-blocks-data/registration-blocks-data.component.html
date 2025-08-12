@@ -1,6 +1,13 @@
 @for (question of questions(); track question.responseKey) {
   <div [class.mb-4]="!$last">
-    <h4 class="mb-2">{{ question.displayText }}</h4>
+    <h4 class="mb-2" [class.text-lg]="isOverviewPage()">
+      {{ question.displayText }}
+
+      @if (!isOriginalRevision() && updatedKeysMap()[question.responseKey!]) {
+        <p-tag styleClass="font-bold" [value]="'common.labels.updated' | translate" severity="warn"></p-tag>
+      }
+    </h4>
+
     @if (reviewData()[question.responseKey!]) {
       @switch (question.fieldType) {
         @case (FieldType.Text) {
@@ -34,7 +41,7 @@
       } @else {
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
       }
-      @if (question.required) {
+      @if (question.required && !isOverviewPage()) {
         <p-message class="mt-1" severity="error" variant="simple" size="small">
           {{ INPUT_VALIDATION_MESSAGES.required | translate }}
         </p-message>

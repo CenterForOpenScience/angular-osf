@@ -1,5 +1,5 @@
 import { ApiData, JsonApiResponse } from '@core/models';
-import { ProviderDataJsonApi } from '@osf/shared/models';
+import { ProviderDataJsonApi, SchemaResponseDataJsonApi } from '@osf/shared/models';
 import { RegistrationReviewStates, RevisionReviewStates } from '@shared/enums';
 
 export type GetRegistryOverviewJsonApi = JsonApiResponse<RegistryOverviewJsonApiData, null>;
@@ -99,13 +99,7 @@ export interface RegistryOverviewJsonApiEmbed {
     }[];
   };
   schema_responses: {
-    data: {
-      id: string;
-      attributes: {
-        revision_responses: RegistrationQuestions;
-        updated_response_keys: string[];
-      };
-    }[];
+    data: SchemaResponseDataJsonApi[];
   };
   files: {
     data: {

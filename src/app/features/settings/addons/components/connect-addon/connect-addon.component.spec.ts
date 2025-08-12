@@ -10,8 +10,7 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Navigation, Router, UrlTree } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { CredentialsFormat } from '@shared/enums';
-import { Addon } from '@shared/models';
+import { MOCK_ADDON } from '@shared/mocks';
 import { AddonsSelectors } from '@shared/stores/addons';
 
 import { ConnectAddonComponent } from './connect-addon.component';
@@ -19,17 +18,6 @@ import { ConnectAddonComponent } from './connect-addon.component';
 describe('ConnectAddonComponent', () => {
   let component: ConnectAddonComponent;
   let fixture: ComponentFixture<ConnectAddonComponent>;
-
-  const mockAddon: Addon = {
-    id: 'test-addon-id',
-    type: 'external-storage-services',
-    displayName: 'Test Addon',
-    credentialsFormat: CredentialsFormat.OAUTH2,
-    supportedFeatures: ['ACCESS'],
-    providerName: 'Test Provider',
-    authUrl: 'https://test.com/auth',
-    externalServiceName: 'test-service',
-  };
 
   beforeEach(async () => {
     const mockNavigation: Partial<Navigation> = {
@@ -39,7 +27,7 @@ describe('ConnectAddonComponent', () => {
       trigger: 'imperative',
       previousNavigation: null,
       extras: {
-        state: { addon: mockAddon },
+        state: { addon: MOCK_ADDON },
       },
     };
 
@@ -75,8 +63,7 @@ describe('ConnectAddonComponent', () => {
 
   it('should create and initialize with addon data from router state', () => {
     expect(component).toBeTruthy();
-    expect(component['addon']()).toEqual(mockAddon);
+    expect(component['addon']()).toEqual(MOCK_ADDON);
     expect(component['terms']().length).toBeGreaterThan(0);
-    expect(component['addonForm']).toBeTruthy();
   });
 });

@@ -1,7 +1,7 @@
-import { TriggerAction } from '@osf/shared/enums/trigger-action.enum';
+import { ReviewActionTrigger } from '@osf/shared/enums';
 
 export interface ReviewActionPayload {
   targetId: string;
-  action: TriggerAction | string;
+  action: ReviewActionTrigger | string;
   comment: string;
 }

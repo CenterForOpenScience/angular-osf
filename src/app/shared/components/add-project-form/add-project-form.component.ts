@@ -14,7 +14,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { ProjectFormControls } from '@osf/shared/enums';
 import { IdName, ProjectForm } from '@osf/shared/models';
-import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
+import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores';
 import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
 
 @Component({

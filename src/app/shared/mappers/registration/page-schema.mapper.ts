@@ -1,6 +1,6 @@
-import { BlockType, FieldType } from '../enums';
-import { PageSchema, Question, Section } from '../models';
-import { SchemaBlocksResponseJsonApi } from '../models/schema-blocks-json-api.model';
+import { BlockType } from '@osf/shared/enums/block-type.enum';
+import { FieldType } from '@osf/shared/enums/field-type.enum';
+import { PageSchema, Question, SchemaBlocksResponseJsonApi, Section } from '@osf/shared/models';
 
 export class PageSchemaMapper {
   static fromSchemaBlocksResponse(response: SchemaBlocksResponseJsonApi): PageSchema[] {

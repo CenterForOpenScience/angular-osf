@@ -1,4 +1,8 @@
 @use "assets/styles/mixins" as mix;
+:host {
+  max-width: 100%;
+  overflow: auto;
+}
 
 .stepper-container {
   display: flex;

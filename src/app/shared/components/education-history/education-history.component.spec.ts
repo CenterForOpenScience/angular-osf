@@ -1,4 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+
+import { MOCK_EDUCATION, TranslateServiceMock } from '@shared/mocks';
 
 import { EducationHistoryComponent } from './education-history.component';
 
@@ -9,6 +12,7 @@ describe('EducationHistoryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [EducationHistoryComponent],
+      providers: [TranslateServiceMock, provideNoopAnimations()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(EducationHistoryComponent);
@@ -18,5 +22,13 @@ describe('EducationHistoryComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should accept education input', () => {
+    const educationData = [MOCK_EDUCATION];
+    fixture.componentRef.setInput('education', educationData);
+    fixture.detectChanges();
+
+    expect(component.education()).toEqual(educationData);
   });
 });

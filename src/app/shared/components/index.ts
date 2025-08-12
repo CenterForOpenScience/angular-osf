@@ -25,6 +25,7 @@ export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';
 export { ReadonlyInputComponent } from './readonly-input/readonly-input.component';
+export { RegistrationBlocksDataComponent } from './registration-blocks-data/registration-blocks-data.component';
 export { ResourceCardComponent } from './resource-card/resource-card.component';
 export { ResourceMetadataComponent } from './resource-metadata/resource-metadata.component';
 export { ReusableFilterComponent } from './reusable-filter/reusable-filter.component';

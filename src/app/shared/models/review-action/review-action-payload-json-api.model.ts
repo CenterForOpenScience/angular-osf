@@ -1,10 +1,10 @@
-import { TriggerAction } from '@osf/shared/enums/trigger-action.enum';
+import { ReviewActionTrigger } from '@osf/shared/enums';
 
 export interface ReviewActionPayloadJsonApi<ActionType, TargetType> {
   data: {
     type: ActionType;
     attributes: {
-      trigger: TriggerAction | string;
+      trigger: ReviewActionTrigger | string;
       comment: string;
     };
     relationships: {

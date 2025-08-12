@@ -11,7 +11,8 @@ import { Textarea } from 'primeng/textarea';
 import { tap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
@@ -19,8 +20,9 @@ import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import {
   ModerationDecisionFormControls,
   RegistrationReviewStates,
+  ReviewActionTrigger,
   RevisionReviewStates,
-  TriggerAction,
+  SchemaResponseActionTrigger,
 } from '@osf/shared/enums';
 import { DateAgoPipe } from '@osf/shared/pipes';
 
@@ -44,12 +46,13 @@ import { RegistryOverviewSelectors, SubmitDecision } from '../../store/registry-
   styleUrl: './registry-make-decision.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistryMakeDecisionComponent implements OnInit {
+export class RegistryMakeDecisionComponent {
   private readonly fb = inject(FormBuilder);
   protected readonly config = inject(DynamicDialogConfig);
   protected readonly dialogRef = inject(DynamicDialogRef);
 
-  protected readonly TriggerAction = TriggerAction;
+  protected readonly ReviewActionTrigger = ReviewActionTrigger;
+  protected readonly SchemaResponseActionTrigger = SchemaResponseActionTrigger;
   protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
   protected readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
   protected reviewActions = select(RegistryOverviewSelectors.getReviewActions);
@@ -91,8 +94,15 @@ export class RegistryMakeDecisionComponent implements OnInit {
     );
   }
 
-  ngOnInit() {
+  constructor() {
     this.initForm();
+
+    this.requestForm
+      .get(ModerationDecisionFormControls.Action)
+      ?.valueChanges.pipe(takeUntilDestroyed())
+      .subscribe((action) => {
+        this.updateCommentValidators(action);
+      });
   }
 
   protected handleSubmission(): void {
@@ -110,12 +120,31 @@ export class RegistryMakeDecisionComponent implements OnInit {
       .subscribe();
   }
 
-  private initForm(): void {
-    const commentValidators = this.canWithdraw ? [Validators.required] : [];
+  protected isCommentRequired(action: string): boolean {
+    return (
+      action === ReviewActionTrigger.RejectSubmission ||
+      action === SchemaResponseActionTrigger.RejectRevision ||
+      action === ReviewActionTrigger.ForceWithdraw
+    );
+  }
 
+  private updateCommentValidators(action: string): void {
+    const commentControl = this.requestForm.get(ModerationDecisionFormControls.Comment);
+    if (commentControl) {
+      if (this.isCommentRequired(action)) {
+        commentControl.setValidators([Validators.required]);
+      } else {
+        commentControl.clearValidators();
+      }
+      commentControl.updateValueAndValidity();
+    }
+    this.requestForm.updateValueAndValidity();
+  }
+
+  private initForm(): void {
     this.requestForm = this.fb.group({
       [ModerationDecisionFormControls.Action]: new FormControl('', [Validators.required]),
-      [ModerationDecisionFormControls.Comment]: new FormControl('', commentValidators),
+      [ModerationDecisionFormControls.Comment]: new FormControl(''),
     });
   }
 }

@@ -1,5 +1,6 @@
 import { RegistryOverview, RegistryOverviewJsonApiData } from '@osf/features/registry/models';
 import { ReviewPermissionsMapper } from '@osf/shared/mappers';
+import { RegistrationMapper } from '@osf/shared/mappers/registration';
 import { MapRegistryStatus } from '@shared/mappers/registry/map-registry-status.mapper';
 
 export function MapRegistryOverview(data: RegistryOverviewJsonApiData): RegistryOverview | null {
@@ -57,11 +58,7 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
     questions: data.attributes.registration_responses,
     registrationSchemaLink: data.relationships.registration_schema.links.related.href,
     associatedProjectId: data.relationships?.registered_from?.data?.id,
-    schemaResponses: data.embeds?.schema_responses?.data?.map((schemaResponse) => ({
-      id: schemaResponse.id,
-      revisionResponses: schemaResponse.attributes?.revision_responses,
-      updatedResponseKeys: schemaResponse.attributes?.updated_response_keys,
-    })),
+    schemaResponses: data.embeds?.schema_responses?.data?.map((item) => RegistrationMapper.fromSchemaResponse(item)),
     provider: {
       id: data.embeds.provider.data.id,
       name: data.embeds.provider.data.attributes.name,

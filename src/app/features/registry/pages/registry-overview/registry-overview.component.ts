@@ -3,32 +3,34 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { DialogService } from 'primeng/dynamicdialog';
+import { Message } from 'primeng/message';
 
 import { filter, map, switchMap, tap } from 'rxjs';
 
+import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
-import { CreateSchemaResponse, FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
+import { CreateSchemaResponse, FetchAllSchemaResponses } from '@osf/features/registries/store';
 import {
   DataResourcesComponent,
   LoadingSpinnerComponent,
+  RegistrationBlocksDataComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
-import { ResourceType, UserPermissions } from '@osf/shared/enums';
+import { ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 import { MapRegistryOverview } from '@osf/shared/mappers';
-import { ToolbarResource } from '@osf/shared/models';
+import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
+import { toCamelCase } from '@osf/shared/utils';
 import { GetBookmarksCollectionId } from '@shared/stores';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';
 import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
-import { MapViewSchemaBlock } from '../../mappers';
-import { RegistrationQuestions } from '../../models';
 import {
   GetRegistryById,
   GetRegistryInstitutions,
@@ -38,13 +40,14 @@ import {
   SetRegistryCustomCitation,
 } from '../../store/registry-overview';
 
+import { RegistriesSelectors } from './../../../registries/store/registries.selectors';
+
 @Component({
   selector: 'osf-registry-overview',
   imports: [
     SubHeaderComponent,
     OverviewToolbarComponent,
     LoadingSpinnerComponent,
-    RouterLink,
     ResourceMetadataComponent,
     RegistryRevisionsComponent,
     RegistryStatusesComponent,
@@ -52,6 +55,9 @@ import {
     ArchivingMessageComponent,
     TranslatePipe,
     WithdrawnMessageComponent,
+    RegistrationBlocksDataComponent,
+    Message,
+    DatePipe,
   ],
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
@@ -76,7 +82,33 @@ export class RegistryOverviewComponent {
   protected readonly schemaBlocks = select(RegistryOverviewSelectors.getSchemaBlocks);
   protected readonly isSchemaBlocksLoading = select(RegistryOverviewSelectors.isSchemaBlocksLoading);
   protected areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
-  protected schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+  protected readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
+  protected readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
+  protected revisionInProgress: SchemaResponse | undefined;
+
+  protected readonly schemaResponse = computed(() => {
+    const registry = this.registry();
+    const index = this.selectedRevisionIndex();
+    this.revisionInProgress = registry?.schemaResponses.find(
+      (r) => r.reviewsState === RevisionReviewStates.RevisionInProgress
+    );
+    const schemaResponses =
+      (this.isModeration
+        ? registry?.schemaResponses
+        : registry?.schemaResponses.filter((r) => r.reviewsState === RevisionReviewStates.Approved)) || [];
+    if (index !== null) {
+      return schemaResponses[index];
+    }
+    return null;
+  });
+
+  protected readonly updatedFields = computed(() => {
+    const schemaResponse = this.schemaResponse();
+    if (schemaResponse) {
+      return schemaResponse.updatedResponseKeys || [];
+    }
+    return [];
+  });
 
   protected readonly resourceOverview = computed(() => {
     const registry = this.registry();
@@ -86,21 +118,6 @@ export class RegistryOverviewComponent {
       return MapRegistryOverview(registry, subjects, institutions);
     }
     return null;
-  });
-  protected readonly mappedSchemaBlocks = computed(() => {
-    const schemaBlocks = this.schemaBlocks();
-    const index = this.selectedRevisionIndex();
-    let questions: RegistrationQuestions | undefined;
-    if (index === 0) {
-      questions = this.registry()?.questions;
-    } else if (this.registry()?.schemaResponses?.length) {
-      questions = this.registry()?.schemaResponses?.[index]?.revisionResponses;
-    }
-
-    if (schemaBlocks?.length && questions) {
-      return schemaBlocks.map((schemaBlock) => MapViewSchemaBlock(schemaBlock, questions));
-    }
-    return [];
   });
 
   protected readonly selectedRevisionIndex = signal(0);
@@ -130,8 +147,9 @@ export class RegistryOverviewComponent {
     createSchemaResponse: CreateSchemaResponse,
   });
 
-  isModeration = this.route.snapshot.queryParamMap.get('mode') === 'moderator';
   revisionId: string | null = null;
+  isModeration = false;
+
   protected userPermissions = computed(() => {
     return this.registry()?.currentUserPermissions || [];
   });
@@ -144,28 +162,35 @@ export class RegistryOverviewComponent {
     this.route.parent?.params.subscribe((params) => {
       const id = params['id'];
       if (id) {
-        this.actions.getRegistryById(id);
-        this.actions.getSubjects(id);
-        this.actions.getInstitutions(id);
+        this.actions
+          .getRegistryById(id)
+          .pipe(
+            filter(() => {
+              return !this.registry()?.withdrawn;
+            }),
+            tap(() => {
+              this.actions.getSubjects(id);
+              this.actions.getInstitutions(id);
+            })
+          )
+          .subscribe();
       }
     });
     this.actions.getBookmarksId();
     this.route.queryParams
       .pipe(
         takeUntilDestroyed(),
-        map((params) => params['revisionId']),
-        filter((revisionId) => revisionId),
-        tap((revisionId) => {
+        map((params) => ({ revisionId: params['revisionId'], mode: params['mode'] })),
+        tap(({ revisionId, mode }) => {
           this.revisionId = revisionId;
+          this.isModeration = mode === 'moderator';
         })
-        // [NM] TODO: add logic to handle revisionId
-        // switchMap((revisionId) => {
-        // })
       )
       .subscribe();
   }
 
   navigateToFile(fileId: string): void {
+    // [NM] TODO: add logic to handle fileId
     this.router.navigate(['/files', fileId]);
   }
 
@@ -182,13 +207,18 @@ export class RegistryOverviewComponent {
       .createSchemaResponse(id)
       .pipe(
         tap(() => {
+          this.revisionInProgress = this.currentRevision()!;
           this.navigateToJustificationPage();
         })
       )
       .subscribe();
   }
 
-  onContinueUpdateRegistration({ id, unapproved }: { id: string; unapproved: boolean }): void {
+  onContinueUpdateRegistration(): void {
+    const { id, unapproved } = {
+      id: this.registry()?.id || '',
+      unapproved: this.revisionInProgress?.reviewsState === RevisionReviewStates.Unapproved,
+    };
     this.actions
       .getSchemaResponse(id)
       .pipe(
@@ -204,12 +234,12 @@ export class RegistryOverviewComponent {
   }
 
   private navigateToJustificationPage(): void {
-    const revisionId = this.revisionId || this.schemaResponse()?.id;
+    const revisionId = this.revisionId || this.revisionInProgress?.id;
     this.router.navigate([`/registries/revisions/${revisionId}/justification`]);
   }
 
   private navigateToJustificationReview(): void {
-    const revisionId = this.revisionId || this.schemaResponse()?.id;
+    const revisionId = this.revisionId || this.revisionInProgress?.id;
     this.router.navigate([`/registries/revisions/${revisionId}/review`]);
   }
 
@@ -238,12 +268,14 @@ export class RegistryOverviewComponent {
       .subscribe((data) => {
         if (data) {
           if (data.action) {
-            this.toastService.showSuccess(`moderation.makeDecision.${data.action}Success`);
+            const action = toCamelCase(data.action);
+            this.toastService.showSuccess(`moderation.makeDecision.${action}Success`);
           }
           const currentUrl = this.router.url.split('?')[0];
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
             this.router.navigateByUrl(currentUrl);
           });
+          this.actions.getRegistryById(this.registry()?.id || '');
         }
       });
   }

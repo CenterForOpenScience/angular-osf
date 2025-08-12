@@ -4,17 +4,19 @@ import { inject, Injectable } from '@angular/core';
 
 import { JsonApiResponseWithPaging } from '@osf/core/models';
 import { JsonApiService } from '@osf/core/services';
-import { RegistrationMapper } from '@osf/shared/mappers/registration';
+import { PageSchemaMapper, RegistrationMapper } from '@osf/shared/mappers/registration';
 import {
   DraftRegistrationDataJsonApi,
   DraftRegistrationModel,
   DraftRegistrationRelationshipsJsonApi,
   DraftRegistrationResponseJsonApi,
+  PageSchema,
   RegistrationAttributesJsonApi,
   RegistrationCard,
   RegistrationDataJsonApi,
   RegistrationModel,
   RegistrationResponseJsonApi,
+  SchemaBlocksResponseJsonApi,
   SchemaResponse,
   SchemaResponseDataJsonApi,
   SchemaResponseJsonApi,
@@ -22,8 +24,6 @@ import {
 } from '@osf/shared/models';
 
 import { SchemaActionTrigger } from '../enums';
-import { PageSchemaMapper } from '../mappers';
-import { PageSchema, SchemaBlocksResponseJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 

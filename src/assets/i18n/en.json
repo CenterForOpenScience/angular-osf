@@ -100,6 +100,7 @@
       "and": "and",
       "more": "more",
       "data": "Data",
+      "updated": "Updated",
       "dateUpdated": "Date Updated",
       "dateCreated": "Date Created"
     },
@@ -1195,6 +1196,7 @@
       "rejectSuccess": "Submission has been rejected successfully",
       "acceptSubmissionSuccess": "Submission has been accepted successfully",
       "rejectSubmissionSuccess": "Submission has been rejected successfully",
+      "forceWithdrawSuccess": "Submission has been force withdrawn successfully",
       "removeSuccess": "Submission has been withdrawn successfully",
       "justificationPlaceholder": "Provide justification for withdrawal"
     },
@@ -2154,7 +2156,8 @@
         "header": "Are you sure this needs more edits?",
         "message": "This will cancel any approvals from other admin contributors and return the registration back to its draft form for additional changes.",
         "label": "What additional changes need to be made and why?"
-      }
+      },
+      "caution": "Caution: Only one person is able to edit a registration draft at a time. Be sure to coordinate with any other contributors."
     }
   },
   "registry": {
@@ -2228,7 +2231,11 @@
         "associatedProject": "Associated project"
       },
       "original": "Original",
-      "latest": "Latest"
+      "latest": "Latest",
+      "update": "Update {{version}}",
+      "reviewUpdate": "Review Update",
+      "updateReason": "Reason for update:",
+      "updatedRevisionDescription": "This is an update to the original registration. This update was made on "
     },
     "links": {
       "viewLinksProjectsAndComponents": "View for Linked projects and Components",
