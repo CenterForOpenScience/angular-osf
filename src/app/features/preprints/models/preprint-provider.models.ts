@@ -1,5 +1,6 @@
 import { StringOrNull } from '@core/helpers';
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums/provider-reviews-workflow.enum';
+import { ReviewPermissions } from '@shared/enums/review-permissions.enum';
 import { Brand } from '@shared/models';
 
 export type PreprintWord = 'default' | 'work' | 'paper' | 'preprint' | 'thesis';
@@ -17,6 +18,7 @@ export interface PreprintProviderDetails {
   allowSubmissions: boolean;
   assertionsEnabled: boolean;
   reviewsWorkflow: ProviderReviewsWorkflow | null;
+  permissions: ReviewPermissions[];
   brand: Brand;
   lastFetched?: number;
   iri: string;

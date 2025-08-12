@@ -43,6 +43,7 @@ import {
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { UserPermissions } from '@shared/enums';
+import { ReviewPermissions } from '@shared/enums/review-permissions.enum';
 import { ContributorsSelectors } from '@shared/stores';
 import { IS_MEDIUM } from '@shared/utils';
 
@@ -99,6 +100,12 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   areReviewActionsLoading = select(PreprintSelectors.arePreprintReviewActionsLoading);
   withdrawalRequests = select(PreprintSelectors.getPreprintRequests);
   areWithdrawalRequestsLoading = select(PreprintSelectors.arePreprintRequestsLoading);
+
+  moderationMode = toSignal(this.route.queryParams.pipe(map((params) => params['mode'] === 'moderator')));
+  currentUserIsModerator = computed(() => {
+    const provider = this.preprintProvider();
+    return this.moderationMode() && provider?.permissions.includes(ReviewPermissions.ViewSubmissions);
+  });
 
   latestAction = computed(() => {
     const actions = this.reviewActions();
