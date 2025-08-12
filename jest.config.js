@@ -40,10 +40,10 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   coverageThreshold: {
     global: {
-      branches: 11.2,
-      functions: 11.34,
-      lines: 36.73,
-      statements: 37.33,
+      branches: 13.84,
+      functions: 14.33,
+      lines: 40.35,
+      statements: 40.9,
     },
   },
   testPathIgnorePatterns: [
