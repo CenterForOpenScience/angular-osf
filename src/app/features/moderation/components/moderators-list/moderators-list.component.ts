@@ -7,12 +7,23 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of, skip } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  Signal,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { AddModeratorType } from '@osf/features/moderation/enums';
+import { UserSelectors } from '@core/store/user';
+import { AddModeratorType, ModeratorPermission } from '@osf/features/moderation/enums';
 import { ModeratorDialogAddModel, ModeratorModel } from '@osf/features/moderation/models';
 import {
   AddModerator,
@@ -58,6 +69,17 @@ export class ModeratorsListComponent implements OnInit {
   moderators = signal([]);
   initialModerators = select(ModeratorsSelectors.getModerators);
   isModeratorsLoading = select(ModeratorsSelectors.isModeratorsLoading);
+  currentUser = select(UserSelectors.getCurrentUser);
+
+  isCurrentUserAdminModerator = computed(() => {
+    const currentUserId = this.currentUser()?.id;
+    const initialModerators = this.initialModerators();
+    if (!currentUserId) return false;
+
+    return initialModerators.some((moderator: ModeratorModel) => {
+      return moderator.userId === currentUserId && moderator.permission === ModeratorPermission.Admin;
+    });
+  });
 
   protected actions = createDispatchMap({
     loadModerators: LoadModerators,
