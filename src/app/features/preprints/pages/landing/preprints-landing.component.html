@@ -35,11 +35,14 @@
     (triggerSearch)="redirectToSearchPageWithValue()"
   />
 
-  <!-- [Rni] TODO: add link to an example preprint -->
   @if (isPreprintProviderLoading()) {
     <p-skeleton width="10%" height="1rem" />
-  } @else {
-    <a class="font-bold">{{ 'preprints.showExample' | translate }}</a>
+  } @else if (osfPreprintProvider()!.examplePreprintId) {
+    <a
+      class="font-bold"
+      [routerLink]="['preprints', osfPreprintProvider()!.id, osfPreprintProvider()!.examplePreprintId]"
+      >{{ 'preprints.showExample' | translate }}
+    </a>
   }
 </section>
 
