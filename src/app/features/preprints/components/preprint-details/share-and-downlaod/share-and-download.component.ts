@@ -96,7 +96,7 @@ export class ShareAndDownloadComponent {
 
     const url = encodeURIComponent(this.preprintDetailsFullUrl());
     const title = encodeURIComponent(preprint.title);
-    const summary = encodeURIComponent(preprint.description || preprint.title); // fallback to title
+    const summary = encodeURIComponent(preprint.description || preprint.title);
     const source = encodeURIComponent('OSF');
 
     return `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${summary}&source=${source}`;

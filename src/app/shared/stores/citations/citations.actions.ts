@@ -1,10 +1,11 @@
+import { ResourceType } from '@shared/enums';
 import { CustomCitationPayload } from '@shared/models';
 
 export class GetDefaultCitations {
   static readonly type = '[Citations] Get Default Citations';
 
   constructor(
-    public resourceType: string,
+    public resourceType: ResourceType | string,
     public resourceId: string
   ) {}
 }
@@ -25,7 +26,7 @@ export class GetStyledCitation {
   static readonly type = '[Citations] Get Styled Citation';
 
   constructor(
-    public resourceType: string,
+    public resourceType: ResourceType | string,
     public resourceId: string,
     public citationStyle: string
   ) {}

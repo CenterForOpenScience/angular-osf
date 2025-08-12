@@ -11,43 +11,18 @@ import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 
 import { ReviewAction } from '@osf/features/moderation/models';
+import {
+  statusIconByState,
+  statusLabelKeyByState,
+  statusMessageByState,
+  statusMessageByWorkflow,
+  statusSeverityByState,
+  statusSeverityByWorkflow,
+} from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent } from '@shared/components';
-
-const STATUS = Object({});
-STATUS[ReviewsState.Pending] = 'preprints.details.statusBanner.pending';
-STATUS[ReviewsState.Accepted] = 'preprints.details.statusBanner.accepted';
-STATUS[ReviewsState.Rejected] = 'preprints.details.statusBanner.rejected';
-STATUS[ReviewsState.PendingWithdrawal] = 'preprints.details.statusBanner.pendingWithdrawal';
-STATUS[ReviewsState.WithdrawalRejected] = 'preprints.details.statusBanner.withdrawalRejected';
-
-const ICONS = Object({});
-ICONS[ReviewsState.Pending] = 'hourglass';
-ICONS[ReviewsState.Accepted] = 'check-circle';
-ICONS[ReviewsState.Rejected] = 'times-circle';
-ICONS[ReviewsState.PendingWithdrawal] = 'hourglass';
-ICONS[ReviewsState.WithdrawalRejected] = 'times-circle';
-ICONS[ReviewsState.Withdrawn] = 'exclamation-triangle';
-
-const MESSAGE = Object({});
-MESSAGE[ProviderReviewsWorkflow.PreModeration] = 'preprints.details.statusBanner.messages.pendingPreModeration';
-MESSAGE[ProviderReviewsWorkflow.PostModeration] = 'preprints.details.statusBanner.messages.pendingPostModeration';
-MESSAGE[ReviewsState.Accepted] = 'preprints.details.statusBanner.messages.accepted';
-MESSAGE[ReviewsState.Rejected] = 'preprints.details.statusBanner.messages.rejected';
-MESSAGE[ReviewsState.PendingWithdrawal] = 'preprints.details.statusBanner.messages.pendingWithdrawal';
-MESSAGE[ReviewsState.WithdrawalRejected] = 'preprints.details.statusBanner.messages.withdrawalRejected';
-MESSAGE[ReviewsState.Withdrawn] = 'preprints.details.statusBanner.messages.withdrawn';
-
-const SEVERITIES = Object({});
-SEVERITIES[ProviderReviewsWorkflow.PreModeration] = 'warn';
-SEVERITIES[ProviderReviewsWorkflow.PostModeration] = 'secondary';
-SEVERITIES[ReviewsState.Accepted] = 'success';
-SEVERITIES[ReviewsState.Rejected] = 'error';
-SEVERITIES[ReviewsState.PendingWithdrawal] = 'error';
-SEVERITIES[ReviewsState.WithdrawalRejected] = 'error';
-SEVERITIES[ReviewsState.Withdrawn] = 'warn';
 
 @Component({
   selector: 'osf-preprint-status-banner',
@@ -69,17 +44,17 @@ export class StatusBannerComponent {
 
   severity = computed(() => {
     if (this.isPendingWithdrawal()) {
-      return SEVERITIES[ReviewsState.PendingWithdrawal];
+      return statusSeverityByState[ReviewsState.PendingWithdrawal]!;
     } else if (this.isWithdrawn()) {
-      return SEVERITIES[ReviewsState.Withdrawn];
+      return statusSeverityByState[ReviewsState.Withdrawn]!;
     } else if (this.isWithdrawalRejected()) {
-      return SEVERITIES[ReviewsState.WithdrawalRejected];
+      return statusSeverityByState[ReviewsState.WithdrawalRejected]!;
     } else {
       const reviewsState = this.preprint()?.reviewsState;
 
       return reviewsState === ReviewsState.Pending
-        ? SEVERITIES[this.provider()?.reviewsWorkflow || ReviewsState.Withdrawn]
-        : SEVERITIES[this.preprint()!.reviewsState];
+        ? statusSeverityByWorkflow[this.provider()?.reviewsWorkflow as ProviderReviewsWorkflow]
+        : statusSeverityByState[this.preprint()!.reviewsState]!;
     }
   });
 
@@ -92,7 +67,7 @@ export class StatusBannerComponent {
       currentState = ReviewsState.WithdrawalRejected;
     }
 
-    return STATUS[currentState];
+    return statusLabelKeyByState[currentState]!;
   });
 
   iconClass = computed(() => {
@@ -104,7 +79,7 @@ export class StatusBannerComponent {
       currentState = ReviewsState.WithdrawalRejected;
     }
 
-    return ICONS[currentState];
+    return statusIconByState[currentState];
   });
 
   reviewerName = computed(() => {
@@ -141,14 +116,18 @@ export class StatusBannerComponent {
 
   private statusExplanation = computed(() => {
     if (this.isPendingWithdrawal()) {
-      return MESSAGE[ReviewsState.PendingWithdrawal];
+      return statusMessageByState[ReviewsState.PendingWithdrawal]!;
     } else if (this.isWithdrawalRejected()) {
-      return MESSAGE[ReviewsState.WithdrawalRejected];
+      return statusMessageByState[ReviewsState.WithdrawalRejected]!;
     } else {
       const reviewsState = this.preprint()?.reviewsState;
       return reviewsState === ReviewsState.Pending
-        ? MESSAGE[this.provider()?.reviewsWorkflow || ReviewsState.Withdrawn]
-        : MESSAGE[this.preprint()!.reviewsState];
+        ? statusMessageByWorkflow[this.provider()?.reviewsWorkflow as ProviderReviewsWorkflow]
+        : statusMessageByState[this.preprint()!.reviewsState]!;
     }
   });
+
+  showFeedbackDialog() {
+    this.feedbackDialogVisible = true;
+  }
 }

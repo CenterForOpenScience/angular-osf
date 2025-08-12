@@ -172,7 +172,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       if (preprint.reviewsState === ReviewsState.Pending) {
         return true;
       }
-      // Edit and resubmit
+
       if (preprintIsRejected && this.currentUserIsAdmin()) {
         return true;
       }
@@ -285,7 +285,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   }
 
   private hasReadWriteAccess(): boolean {
-    // True if the current user has write permissions for the node that contains the preprint
     return this.preprint()?.currentUserPermissions.includes(UserPermissions.Write) || false;
   }
 }

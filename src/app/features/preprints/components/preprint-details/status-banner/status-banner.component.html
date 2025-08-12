@@ -12,8 +12,8 @@
               <p-button
                 [link]="true"
                 class="cursor-pointer"
-                (click)="feedbackDialogVisible = true"
-                [label]="'Show moderator feedback'"
+                (click)="showFeedbackDialog()"
+                [label]="'preprints.details.statusBanner.showModeratorFeedback' | translate"
               />
 
               <p-dialog

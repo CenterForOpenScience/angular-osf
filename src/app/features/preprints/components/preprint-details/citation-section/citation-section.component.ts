@@ -22,6 +22,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { ResourceType } from '@shared/enums';
 import { CitationStyle, CustomOption } from '@shared/models';
 import {
   CitationsSelectors,
@@ -64,7 +65,6 @@ export class CitationSectionComponent implements OnInit {
       ? this.translateService.instant('project.overview.metadata.citationLoadingPlaceholder')
       : this.translateService.instant('project.overview.metadata.noCitationStylesFound');
   });
-  private PreprintResourceType = 'preprints';
 
   constructor() {
     this.setupFilterDebounce();
@@ -72,7 +72,7 @@ export class CitationSectionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.actions.getDefaultCitations(this.PreprintResourceType, this.preprintId());
+    this.actions.getDefaultCitations(ResourceType.Preprint, this.preprintId());
   }
 
   protected handleCitationStyleFilterSearch(event: SelectFilterEvent) {
@@ -81,7 +81,7 @@ export class CitationSectionComponent implements OnInit {
   }
 
   protected handleGetStyledCitation(event: SelectChangeEvent) {
-    this.actions.getStyledCitation(this.PreprintResourceType, this.preprintId(), event.value.id);
+    this.actions.getStyledCitation(ResourceType.Preprint, this.preprintId(), event.value.id);
   }
 
   private setupFilterDebounce(): void {

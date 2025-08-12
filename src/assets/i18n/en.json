@@ -2057,7 +2057,8 @@
           "withdrawn": "This {{documentType}} has been withdrawn."
         },
         "moderator": "Moderator",
-        "moderatorFeedback": "Moderator Feedback"
+        "moderatorFeedback": "Moderator Feedback",
+        "showModeratorFeedback": "Show moderator feedback"
       },
       "withdrawDialog": {
         "title": "Withdraw {{preprintWord}}",
