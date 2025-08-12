@@ -12,6 +12,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { MENU_ITEMS } from '@core/constants';
+import { UserSelectors } from '@core/store/user';
 import { filterMenuItems, updateMenuItems } from '@osf/core/helpers';
 import { RouteContext } from '@osf/core/models';
 import { AuthSelectors } from '@osf/features/auth/store';
@@ -42,6 +43,7 @@ export class NavMenuComponent {
       isProject: this.isProjectRoute() && !this.isRegistryRoute() && !this.isPreprintRoute(),
       isRegistry: this.isRegistryRoute(),
       isPreprint: this.isPreprintRoute(),
+      preprintReviewsPageVisible: this.canUserViewReviews(),
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
     };
@@ -67,6 +69,7 @@ export class NavMenuComponent {
   protected readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
   protected readonly isRegistryRoute = computed(() => this.currentRoute().isRegistryRoute);
   protected readonly isPreprintRoute = computed(() => this.currentRoute().isPreprintRoute);
+  protected readonly canUserViewReviews = select(UserSelectors.getCanViewReviews);
 
   private getRouteInfo() {
     const urlSegments = this.router.url.split('/').filter((segment) => segment);

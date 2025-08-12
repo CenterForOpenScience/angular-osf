@@ -61,4 +61,9 @@ export class UserSelectors {
   static isCurrentUserModerator(state: UserStateModel): boolean {
     return !!state.currentUser.data?.isModerator;
   }
+
+  @Selector([UserState])
+  static getCanViewReviews(state: UserStateModel): boolean {
+    return state.currentUser.data?.canViewReviews || false;
+  }
 }
