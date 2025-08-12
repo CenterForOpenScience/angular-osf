@@ -28,6 +28,30 @@ tests are run locally. The output is displayed.
 The `.github` folder contains the following:
 
 1. The test run "counter" scripts
+   .github/scripts
 2. The "counter" file
+   .github/counter
 3. The github action work flow scripts
+   .github/workflows
 4. The github PR templates
+   .github/pull_request_template.md
+
+## Local pipeline
+
+The local pipeline pipeline is managed via husky
+
+1. The pre-commit requirements are:
+   - linting on the staged files passes
+   - .husky/pre-commit
+2. The pre-push requirements are:
+   - All tests pass
+   - Test coverage is met
+
+## Volta
+
+OSF uses volta (https://volta.sh/) to manage node and npm versions inside of the repository
+
+## Commitlint
+
+OSF use commitlint (https://www.npmjs.com/package/commitlint) to standardize the commit messages.
+Please review the commitlint conventions (@commitlint/config-conventional/README.md)
