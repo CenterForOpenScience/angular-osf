@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { PreprintDoiSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-doi-section/preprint-doi-section.component';
@@ -34,6 +34,7 @@ export class GeneralInformationComponent implements OnDestroy {
     fetchPreprintById: FetchPreprintById,
   });
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
+  preprintVersionSelected = output<string>();
 
   preprint = select(PreprintSelectors.getPreprint);
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);

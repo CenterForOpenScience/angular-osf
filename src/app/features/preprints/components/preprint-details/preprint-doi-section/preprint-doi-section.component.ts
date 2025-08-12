@@ -1,16 +1,14 @@
-import { createDispatchMap, select } from '@ngxs/store';
+import { select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Select } from 'primeng/select';
 
-import { Location } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 
 @Component({
   selector: 'osf-preprint-doi-section',
@@ -20,15 +18,10 @@ import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/st
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintDoiSectionComponent {
-  private readonly router = inject(Router);
-  private readonly location = inject(Location);
-
-  private actions = createDispatchMap({
-    fetchPreprintById: FetchPreprintById,
-  });
-
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
   preprint = select(PreprintSelectors.getPreprint);
+
+  preprintVersionSelected = output<string>();
 
   preprintVersionIds = select(PreprintSelectors.getPreprintVersionIds);
   arePreprintVersionIdsLoading = select(PreprintSelectors.arePreprintVersionIdsLoading);
@@ -46,13 +39,6 @@ export class PreprintDoiSectionComponent {
   selectPreprintVersion(versionId: string) {
     if (this.preprint()!.id === versionId) return;
 
-    this.actions.fetchPreprintById(versionId).subscribe({
-      complete: () => {
-        const currentUrl = this.router.url;
-        const newUrl = currentUrl.replace(/[^/]+$/, versionId);
-
-        this.location.replaceState(newUrl);
-      },
-    });
+    this.preprintVersionSelected.emit(versionId);
   }
 }

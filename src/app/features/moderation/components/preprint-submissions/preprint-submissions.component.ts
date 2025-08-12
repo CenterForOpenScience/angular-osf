@@ -113,7 +113,7 @@ export class PreprintSubmissionsComponent implements OnInit {
   }
 
   navigateToPreprint(item: PreprintSubmission) {
-    this.router.navigate(['/preprints/', item.id, 'overview'], { queryParams: { mode: 'moderator' } });
+    this.router.navigate(['/preprints/', this.providerId(), item.id], { queryParams: { mode: 'moderator' } });
   }
 
   private getStatusFromQueryParams() {

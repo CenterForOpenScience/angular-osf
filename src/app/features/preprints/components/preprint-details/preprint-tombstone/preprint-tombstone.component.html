@@ -24,7 +24,10 @@
         <osf-truncated-text [maxVisibleLines]="2" [text]="preprintValue.description" />
       </section>
 
-      <osf-preprint-doi-section [preprintProvider]="preprintProvider()" />
+      <osf-preprint-doi-section
+        [preprintProvider]="preprintProvider()"
+        (preprintVersionSelected)="preprintVersionSelected.emit($event)"
+      />
 
       <section class="license flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.review.sections.metadata.license' | translate }}</h3>

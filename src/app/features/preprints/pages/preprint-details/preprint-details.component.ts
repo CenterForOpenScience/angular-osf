@@ -8,6 +8,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { filter, map, of } from 'rxjs';
 
+import { Location } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -67,9 +68,10 @@ import { IS_MEDIUM } from '@shared/utils';
 export class PreprintDetailsComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
-  private readonly route = inject(ActivatedRoute);
-  private readonly store = inject(Store);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly location = inject(Location);
+  private readonly store = inject(Store);
   private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
@@ -227,12 +229,19 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    this.fetchPreprint();
+    this.fetchPreprint(this.preprintId());
     this.actions.getPreprintProviderById(this.providerId());
   }
 
   ngOnDestroy() {
     this.actions.resetState();
+  }
+
+  fetchPreprintVersion(preprintVersionId: string) {
+    const currentUrl = this.router.url;
+    const newUrl = currentUrl.replace(/[^/]+$/, preprintVersionId);
+    this.location.replaceState(newUrl);
+    this.fetchPreprint(preprintVersionId);
   }
 
   handleWithdrawClicked() {
@@ -255,7 +264,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
     dialogRef.onClose.pipe(takeUntilDestroyed(this.destroyRef), filter(Boolean)).subscribe({
       next: () => {
-        this.fetchPreprint();
+        this.fetchPreprint(this.preprintId());
       },
     });
   }
@@ -273,8 +282,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     });
   }
 
-  private fetchPreprint() {
-    this.actions.fetchPreprintById(this.preprintId()).subscribe({
+  private fetchPreprint(preprintId: string) {
+    this.actions.fetchPreprintById(preprintId).subscribe({
       next: () => {
         if (this.preprint()!.currentUserPermissions.length > 0) {
           this.actions.fetchPreprintRequests();

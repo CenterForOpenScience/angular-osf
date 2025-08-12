@@ -63,12 +63,19 @@
 
         <section class="flex flex-column gap-4 w-12 lg:w-6">
           <osf-preprint-share-and-download [preprintProvider]="preprintProvider()" />
-          <osf-preprint-general-information [preprintProvider]="preprintProvider()" />
+          <osf-preprint-general-information
+            [preprintProvider]="preprintProvider()"
+            (preprintVersionSelected)="fetchPreprintVersion($event)"
+          />
           <osf-preprint-additional-info />
         </section>
       </section>
     } @else {
-      <osf-preprint-tombstone [preprintProvider]="preprintProvider()" class="lg:w-6" />
+      <osf-preprint-tombstone
+        class="lg:w-6"
+        [preprintProvider]="preprintProvider()"
+        (preprintVersionSelected)="fetchPreprintVersion($event)"
+      />
     }
   </section>
 </div>

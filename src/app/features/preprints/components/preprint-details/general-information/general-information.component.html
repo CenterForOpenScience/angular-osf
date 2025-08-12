@@ -108,7 +108,10 @@
         </section>
       }
 
-      <osf-preprint-doi-section [preprintProvider]="preprintProvider()" />
+      <osf-preprint-doi-section
+        [preprintProvider]="preprintProvider()"
+        (preprintVersionSelected)="preprintVersionSelected.emit($event)"
+      />
     </div>
   }
 
