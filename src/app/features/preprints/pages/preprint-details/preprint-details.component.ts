@@ -43,7 +43,6 @@ import {
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { UserPermissions } from '@shared/enums';
-import { ContributorModel } from '@shared/models';
 import { ContributorsSelectors } from '@shared/stores';
 import { IS_MEDIUM } from '@shared/utils';
 
@@ -122,18 +121,15 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   private currentUserIsContributor = computed(() => {
     const contributors = this.contributors();
-    const preprint = this.preprint()!;
     const currentUser = this.currentUser();
 
     if (this.currentUserIsAdmin()) {
       return true;
     } else if (contributors.length) {
-      const authorIds = [] as string[];
-      contributors.forEach((author: ContributorModel) => {
-        authorIds.push(author.id);
-      });
-      const authorId = `${preprint.id}-${currentUser?.id}`;
-      return currentUser?.id ? authorIds.includes(authorId) && this.hasReadWriteAccess() : false;
+      const authorIds = contributors.map((author) => author.id);
+      return currentUser?.id
+        ? authorIds.some((id) => id.endsWith(currentUser!.id)) && this.hasReadWriteAccess()
+        : false;
     }
     return false;
   });
