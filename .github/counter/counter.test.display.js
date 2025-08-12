@@ -11,7 +11,7 @@ try {
     current = parseInt(content, 10) || 0;
   }
 
-  console.info(`\n\nTests ran: ${current}\n\n`);
+  console.info(`\n\nTotal test runs: ${current}\n\n`);
 } catch (err) {
   console.error('Error updating counter:', err.message);
 }

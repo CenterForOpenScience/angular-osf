@@ -28,9 +28,9 @@ tests are run locally. The output is displayed.
 The `.github` folder contains the following:
 
 1. The test run "counter" scripts
-   .github/scripts
-2. The "counter" file
    .github/counter
+2. Script needed for the deployment process
+   .github/scripts
 3. The github action work flow scripts
    .github/workflows
 4. The github PR templates

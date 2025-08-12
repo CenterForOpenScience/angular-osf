@@ -42,7 +42,6 @@ for (const key of ['branches', 'functions', 'lines', 'statements']) {
 if (failed) {
   const stars = '*'.repeat(warnMessage.length + 8);
   execSync('clear', { stdio: 'inherit' });
-  console.log(warnMessage.length);
   console.log('\n\nCongratulations! You have successfully run the coverage check and added tests.');
   console.log('\n\nThe jest.config.js file is not insync with your new test additions.');
   console.log('Please update the coverage thresholds in jest.config.js.');
