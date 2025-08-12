@@ -60,8 +60,8 @@ export class PreprintState {
         preprint: patch({ isLoading: true, data: null }),
         preprintFile: patch({ isLoading: true, data: null }),
         fileVersions: patch({ isLoading: true, data: [] }),
-        preprintReviewActions: patch({ isLoading: true, data: [] }),
-        preprintRequests: patch({ isLoading: true, data: [] }),
+        preprintReviewActions: patch({ isLoading: false, data: [] }),
+        preprintRequests: patch({ isLoading: false, data: [] }),
       })
     );
 

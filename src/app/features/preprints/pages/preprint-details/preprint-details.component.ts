@@ -286,8 +286,10 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     this.actions.fetchPreprintById(preprintId).subscribe({
       next: () => {
         if (this.preprint()!.currentUserPermissions.length > 0) {
-          this.actions.fetchPreprintRequests();
           this.actions.fetchPreprintReviewActions();
+          if (this.preprintWithdrawableState() && this.currentUserIsAdmin()) {
+            this.actions.fetchPreprintRequests();
+          }
         }
       },
     });
