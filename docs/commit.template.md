@@ -27,7 +27,7 @@ This sets the template **only for this repo** (stored in `.git/config`), so it w
 Once configured, running:
 
 ```bash
-git commit or git commit -a
+git commit
 ```
 
 or
