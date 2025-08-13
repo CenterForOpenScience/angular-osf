@@ -41,6 +41,7 @@ import {
   GetHomeWiki,
   GetLinkedResources,
 } from '@shared/stores';
+import { GetActivityLogs } from '@shared/stores/activity-logs';
 import { ClearCollections } from '@shared/stores/collections';
 import { IS_XSMALL } from '@shared/utils';
 
@@ -109,6 +110,7 @@ export class ProjectOverviewComponent implements OnInit {
     getComponents: GetComponents,
     getLinkedProjects: GetLinkedResources,
     getNodeLinks: GetAllNodeLinks,
+    getActivityLogs: GetActivityLogs,
     setProjectCustomCitation: SetProjectCustomCitation,
     getCollectionProvider: GetCollectionProvider,
     getCurrentReviewAction: GetSubmissionsReviewActions,
@@ -198,6 +200,7 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getComponents(projectId);
       this.actions.getNodeLinks(projectId);
       this.actions.getLinkedProjects(projectId);
+      this.actions.getActivityLogs(projectId, '1', '5');
     }
   }
 

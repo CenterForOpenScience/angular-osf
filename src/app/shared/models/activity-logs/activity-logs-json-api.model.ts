@@ -84,45 +84,6 @@ interface UserEmbedsData {
     active: boolean;
     timezone: string;
     locale: string;
-    social: {
-      ssrn: string;
-      orcid: string;
-      github: string;
-      scholar: string;
-      twitter: string;
-      linkedIn: string;
-      impactStory: string;
-      baiduScholar: string;
-      researchGate: string;
-      researcherId: string;
-      profileWebsites: string[];
-      academiaProfileID: string;
-      academiaInstitution?: string;
-    };
-    employment: {
-      title: string;
-      endYear?: number;
-      ongoing: boolean;
-      endMonth?: number;
-      startYear: number;
-      department: string;
-      startMonth: number;
-      institution: string;
-    }[];
-    education: {
-      degree: string;
-      endYear?: number;
-      ongoing: boolean;
-      endMonth?: number;
-      startYear: number;
-      department: string;
-      startMonth: number;
-      institution: string;
-    }[];
-    allow_indexing?: boolean;
-    can_view_reviews?: boolean;
-    accepted_terms_of_service?: boolean;
-    email?: string;
   };
 }
 
@@ -152,6 +113,9 @@ interface LinkedNodeEmbedsData {
     current_user_is_contributor_or_group_member: boolean;
     wiki_enabled: boolean;
     public: boolean;
-    subjects: { id: string; text: string }[][];
+    subjects: {
+      id: string;
+      text: string;
+    }[][];
   };
 }
