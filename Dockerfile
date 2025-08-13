@@ -3,7 +3,7 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 
-COPY package.json ./
+COPY package*.json ./
 RUN npm install
 
 COPY . .
@@ -27,15 +27,11 @@ CMD ["ng", "serve"]
 
 # Local Development - coding
 FROM node:22-alpine AS local-dev
-# FROM node:20-bullseye AS local-dev
 WORKDIR /app
 
-# Upgrade npm to include the fix
-RUN npm i -g npm@11.5.2
-
 # Install deps in the image (kept in container)
-COPY package.json ./
-COPY package-lock.docker.json ./package-lock.json
+COPY package*.json ./
+# COPY package-lock.docker.json ./package-lock.json
 RUN npm ci --no-audit --no-fund
 
 # Expose Angular dev server
