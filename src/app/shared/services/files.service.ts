@@ -154,6 +154,16 @@ export class FilesService {
       .pipe(map((response) => MapFile(response.data)));
   }
 
+  getFileGuid(id: string): Observable<OsfFile> {
+    const params = {
+      create_guid: 'true',
+    };
+
+    return this.jsonApiService
+      .get<GetFileResponse>(`${environment.apiUrl}/files/${id}`, params)
+      .pipe(map((response) => MapFile(response.data)));
+  }
+
   getFileById(fileGuid: string): Observable<OsfFile> {
     return this.jsonApiService
       .get<GetFileResponse>(`${environment.apiUrl}/files/${fileGuid}/`)

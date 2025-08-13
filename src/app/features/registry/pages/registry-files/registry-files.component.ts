@@ -13,6 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { FileProvider } from '@osf/features/project/files/models';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -83,7 +84,7 @@ export class RegistryFilesComponent {
   protected dataLoaded = signal(false);
 
   protected readonly sortOptions = ALL_SORT_OPTIONS;
-  protected readonly provider = 'osfstorage';
+  protected readonly provider = FileProvider.OsfStorage;
 
   constructor() {
     this.route.parent?.params.subscribe((params) => {
