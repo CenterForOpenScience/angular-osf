@@ -17,9 +17,9 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 import { STORAGE_LOCATIONS } from '@osf/core/constants';
 import { ComponentFormControls } from '@osf/shared/enums';
+import { IS_XSMALL } from '@osf/shared/helpers';
 import { ComponentForm } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
-import { IS_XSMALL } from '@osf/shared/utils';
 
 import { CreateComponent, GetComponents, ProjectOverviewSelectors } from '../../store';
 

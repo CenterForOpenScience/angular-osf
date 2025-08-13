@@ -8,7 +8,6 @@ import { TableModule } from 'primeng/table';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
 import { MODERATION_PERMISSIONS } from '@osf/features/moderation/constants';
 import { ModeratorPermission } from '@osf/features/moderation/enums';
 import { ModeratorModel } from '@osf/features/moderation/models';
@@ -17,6 +16,7 @@ import {
   EmploymentHistoryDialogComponent,
   SelectComponent,
 } from '@osf/shared/components';
+import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { TableParameters } from '@osf/shared/models';
 
 @Component({

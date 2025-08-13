@@ -1,4 +1,8 @@
-import { JsonApiResponse } from '@core/models';
+import { ResponseJsonApi } from '@shared/models';
+
+export type MyResourcesItemResponseJsonApi = ResponseJsonApi<MyResourcesItem[]>;
+
+export type MyResourcesResponseJsonApi = ResponseJsonApi<MyResourcesItemGetResponseJsonApi[]>;
 
 export interface MyResourcesItemGetResponseJsonApi {
   id: string;
@@ -25,12 +29,6 @@ export interface MyResourcesItemGetResponseJsonApi {
           };
         };
       }[];
-      links: {
-        meta: {
-          total: number;
-          per_page: number;
-        };
-      };
     };
   };
 }
@@ -50,23 +48,4 @@ export interface MyResourcesItem {
   dateModified: string;
   isPublic: boolean;
   contributors: MyResourcesContributor[];
-}
-
-export interface MyResourcesItemResponseJsonApi {
-  data: MyResourcesItem[];
-  links: {
-    meta: {
-      total: number;
-      per_page: number;
-    };
-  };
-}
-
-export interface MyResourcesResponseJsonApi extends JsonApiResponse<MyResourcesItemGetResponseJsonApi[], null> {
-  links: {
-    meta: {
-      total: number;
-      per_page: number;
-    };
-  };
 }

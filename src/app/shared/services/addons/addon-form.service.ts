@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
+import { isAuthorizedAddon } from '@osf/shared/helpers';
 import { AddonFormControls, CredentialsFormat } from '@shared/enums';
 import {
   Addon,
@@ -10,7 +11,6 @@ import {
   ConfiguredAddon,
   ConfiguredAddonRequestJsonApi,
 } from '@shared/models';
-import { isAuthorizedAddon } from '@shared/utils';
 
 @Injectable({
   providedIn: 'root',

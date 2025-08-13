@@ -9,7 +9,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { ChangeDetectionStrategy, Component, computed, effect, signal } from '@angular/core';
 import { FormControl, FormsModule } from '@angular/forms';
 
-import { Primitive } from '@osf/core/helpers';
 import { UserSelectors } from '@osf/core/store/user';
 import {
   LoadingSpinnerComponent,
@@ -17,6 +16,7 @@ import {
   SelectComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
+import { Primitive } from '@osf/shared/helpers';
 import { AddonCardListComponent } from '@shared/components/addons';
 import { ADDON_CATEGORY_OPTIONS, ADDON_TAB_OPTIONS } from '@shared/constants';
 import { AddonCategory, AddonTabValue } from '@shared/enums';

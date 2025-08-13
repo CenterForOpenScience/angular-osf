@@ -1,4 +1,4 @@
-import { MetaJsonApi } from '@core/models';
+import { MetaJsonApi } from '@shared/models';
 
 export interface InstitutionUserContactJsonApi {
   sender_name: string;

@@ -5,7 +5,6 @@ import { BehaviorSubject, catchError, EMPTY, forkJoin, of, switchMap, tap } from
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
 import { ProvidersService } from '@osf/features/registries/services';
 import {
   FetchResources,
@@ -20,9 +19,10 @@ import {
 } from '@osf/features/registries/store/registries-provider-search/registries-provider-search.actions';
 import { RegistriesProviderSearchStateModel } from '@osf/features/registries/store/registries-provider-search/registries-provider-search.model';
 import { ResourcesData } from '@osf/features/search/models';
+import { getResourceTypes } from '@osf/shared/helpers';
 import { GetResourcesRequestTypeEnum, ResourceTab } from '@shared/enums';
+import { handleSectionError } from '@shared/helpers';
 import { SearchService } from '@shared/services';
-import { getResourceTypes } from '@shared/utils';
 
 @State<RegistriesProviderSearchStateModel>({
   name: 'registryProviderSearch',

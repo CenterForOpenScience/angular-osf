@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "start:docker": "ng serve --host 0.0.0.0 --port 4200 --poll 2000",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
@@ -97,6 +98,6 @@
   },
   "volta": {
     "node": "22.13.1",
-    "npm": "10.9.2"
+    "npm": "11.5.2"
   }
 }

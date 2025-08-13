@@ -2,11 +2,11 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@osf/core/services';
 import { RegistryProviderDetails } from '@osf/features/registries/models/registry-provider.model';
 import { RegistryProviderDetailsJsonApi } from '@osf/features/registries/models/registry-provider-json-api.model';
 import { ProvidersResponseJsonApi } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
+import { JsonApiResponse } from '@shared/models';
 
 import { ProvidersMapper } from '../mappers/providers.mapper';
 import { ProviderSchema } from '../models';

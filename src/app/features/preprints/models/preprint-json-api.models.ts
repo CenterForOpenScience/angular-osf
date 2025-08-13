@@ -1,7 +1,8 @@
-import { BooleanOrNull, StringOrNull } from '@core/helpers';
-import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
-import { UserPermissions } from '@shared/enums';
-import { ContributorResponse, LicenseRecordJsonApi, LicenseResponseJsonApi } from '@shared/models';
+import { UserPermissions } from '@osf/shared/enums';
+import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers';
+import { ContributorResponse, LicenseRecordJsonApi, LicenseResponseJsonApi } from '@osf/shared/models';
+
+import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '../enums';
 
 export interface PreprintAttributesJsonApi {
   date_created: string;

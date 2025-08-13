@@ -19,7 +19,7 @@ export class GeneralInstitutionMapper {
   static adaptInstitutions(response: FetchInstitutionsJsonApi): GetGeneralInstitutionsResponse {
     return {
       data: response.data.map((institution) => this.adaptInstitution(institution)),
-      total: response.links.meta.total,
+      total: response.meta.total,
     };
   }
 }

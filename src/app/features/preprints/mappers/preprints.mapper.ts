@@ -1,4 +1,6 @@
-import { ApiData, JsonApiResponseWithMeta, JsonApiResponseWithPaging } from '@core/models';
+import { LicensesMapper } from '@osf/shared/mappers';
+import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models';
+
 import {
   Preprint,
   PreprintAttributesJsonApi,
@@ -7,8 +9,7 @@ import {
   PreprintMetaJsonApi,
   PreprintRelationshipsJsonApi,
   PreprintShortInfoWithTotalCount,
-} from '@osf/features/preprints/models';
-import { LicensesMapper } from '@shared/mappers';
+} from '../models';
 
 export class PreprintsMapper {
   static toCreatePayload(title: string, abstract: string, providerId: string) {
@@ -157,9 +158,8 @@ export class PreprintsMapper {
   }
 
   static fromMyPreprintJsonApi(
-    response: JsonApiResponseWithPaging<
-      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>[],
-      null
+    response: ResponseJsonApi<
+      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>[]
     >
   ): PreprintShortInfoWithTotalCount {
     return {
@@ -177,7 +177,7 @@ export class PreprintsMapper {
           providerId: preprintData.relationships.provider.data.id,
         };
       }),
-      totalCount: response.links.meta.total,
+      totalCount: response.meta.total,
     };
   }
 }

@@ -14,7 +14,7 @@ import { UserSelectors } from '@osf/core/store/user';
 import { SearchHelpTutorialComponent, SearchInputComponent } from '@osf/shared/components';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceTab } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { IS_XSMALL } from '@osf/shared/helpers';
 
 import { GetResources, MyProfileSelectors, SetResourceTab, SetSearchText } from '../../store';
 import { GetAllOptions } from '../filters/store';

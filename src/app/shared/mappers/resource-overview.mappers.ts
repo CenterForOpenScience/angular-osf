@@ -1,6 +1,7 @@
 import { ProjectOverview } from '@osf/features/project/overview/models';
 import { RegistryInstitution, RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
-import { ResourceOverview } from '@shared/models';
+
+import { ResourceOverview } from '../models';
 
 export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
   return {

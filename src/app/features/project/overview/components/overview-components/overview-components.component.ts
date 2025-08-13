@@ -13,8 +13,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
 import { TruncatedTextComponent } from '@osf/shared/components';
-import { UserPermissions } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { ResourceType, UserPermissions } from '@osf/shared/enums';
+import { IS_XSMALL } from '@osf/shared/helpers';
 
 import { ProjectOverviewSelectors } from '../../store';
 import { AddComponentDialogComponent } from '../add-component-dialog/add-component-dialog.component';
@@ -77,6 +77,7 @@ export class OverviewComponentsComponent {
       closable: true,
       data: {
         componentId,
+        resourceType: ResourceType.Project,
       },
     });
   }

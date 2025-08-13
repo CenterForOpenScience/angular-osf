@@ -2,7 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { User } from '@osf/core/models';
+import { User } from '@osf/shared/models';
 import { CitationFormatPipe } from '@osf/shared/pipes';
 
 @Component({

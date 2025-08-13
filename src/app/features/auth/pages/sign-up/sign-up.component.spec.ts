@@ -1,14 +1,10 @@
-import { provideStore } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
 import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { AuthState } from '@osf/features/auth/store';
+import { AuthService } from '@osf/core/services';
 import { PasswordInputHintComponent } from '@osf/shared/components';
 import { TranslateServiceMock } from '@shared/mocks';
 
@@ -21,13 +17,7 @@ describe('SignUpComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SignUpComponent, MockComponent(PasswordInputHintComponent), MockPipe(TranslatePipe)],
-      providers: [
-        TranslateServiceMock,
-        MockProvider(ActivatedRoute),
-        provideStore([AuthState]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [TranslateServiceMock, MockProvider(ActivatedRoute), MockProvider(AuthService)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignUpComponent);

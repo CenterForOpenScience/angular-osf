@@ -1,8 +1,10 @@
-import { StringOrNull } from '@core/helpers';
-import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
-import { PreprintWord } from '@osf/features/preprints/models/preprint-provider.models';
+import { StringOrNull } from '@osf/shared/helpers';
 import { ReviewPermissions } from '@shared/enums/review-permissions.enum';
 import { BrandDataJsonApi } from '@shared/models';
+
+import { ProviderReviewsWorkflow } from '../enums';
+
+import { PreprintWord } from './preprint-provider.models';
 
 export interface PreprintProviderDetailsJsonApi {
   id: string;

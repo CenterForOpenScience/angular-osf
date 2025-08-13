@@ -3,8 +3,8 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
+import { JsonApiResponse } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { ScopeMapper, TokenMapper } from '../mappers';
 import { ScopeJsonApi, ScopeModel, TokenCreateResponseJsonApi, TokenGetResponseJsonApi, TokenModel } from '../models';

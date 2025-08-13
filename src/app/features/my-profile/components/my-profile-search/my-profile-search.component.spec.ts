@@ -8,7 +8,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IS_XSMALL } from '@osf/shared/utils';
+import { IS_XSMALL } from '@osf/shared/helpers';
 import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
 
 import { MyProfileSearchComponent } from './my-profile-search.component';

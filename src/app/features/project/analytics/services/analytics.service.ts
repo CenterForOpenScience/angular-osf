@@ -2,9 +2,9 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
 import { ResourceType } from '@osf/shared/enums';
+import { JsonApiResponse } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { AnalyticsMetricsMapper, RelatedCountsMapper } from '../mappers';
 import { AnalyticsMetricsGetResponse, AnalyticsMetricsModel, RelatedCountsGetResponse } from '../models';

@@ -15,9 +15,9 @@ import {
 import { PreprintsDiscoverStateModel } from '@osf/features/preprints/store/preprints-discover/preprints-discover.model';
 import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
 import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
+import { addFiltersParams, getResourceTypes } from '@osf/shared/helpers';
 import { GetResourcesRequestTypeEnum, ResourceTab } from '@shared/enums';
 import { SearchService } from '@shared/services';
-import { addFiltersParams, getResourceTypes } from '@shared/utils';
 
 @State<PreprintsDiscoverStateModel>({
   name: 'preprintsDiscover',

@@ -1,6 +1,6 @@
 import { RegistryOverviewJsonApiAttributes } from '@osf/features/registry/models';
+import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
 import { RegistrationAttributesJsonApi } from '@osf/shared/models';
-import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
 
 export function MapRegistryStatus(
   registry: RegistryOverviewJsonApiAttributes | RegistrationAttributesJsonApi

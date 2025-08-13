@@ -1,4 +1,4 @@
-import { ApiData, JsonApiResponse } from '@osf/core/models';
+import { ApiData, JsonApiResponse } from '@osf/shared/models';
 
 export type ListIdentitiesResponseJsonApi = JsonApiResponse<
   ApiData<ExternalIdentityResponseJsonApi, null, null, null>[],

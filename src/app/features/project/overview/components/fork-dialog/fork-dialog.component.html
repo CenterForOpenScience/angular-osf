@@ -1,9 +1,5 @@
 <p>
-  @if (config.data.resource.resourceType === ResourceType.Project) {
-    {{ 'project.overview.dialog.fork.messageProject' | translate }}
-  } @else if (config.data.resource.resourceType === ResourceType.Registration) {
-    {{ 'project.overview.dialog.fork.messageRegistry' | translate }}
-  }
+  {{ 'project.overview.dialog.fork.messageProject' | translate }}
 </p>
 
 <div class="flex mt-6 gap-3 justify-content-between">
@@ -12,12 +8,12 @@
     severity="info"
     (click)="dialogRef.close(false)"
     [disabled]="isSubmitting()"
-    class="btn-half-width"
+    class="btn-full-width"
   />
   <p-button
     [label]="'project.overview.dialog.fork.confirmButton' | translate"
     (click)="handleForkConfirm()"
     [loading]="isSubmitting()"
-    class="btn-half-width"
+    class="btn-full-width"
   />
 </div>

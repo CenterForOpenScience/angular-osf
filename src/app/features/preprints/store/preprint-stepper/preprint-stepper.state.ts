@@ -7,7 +7,6 @@ import { catchError } from 'rxjs/operators';
 import { HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
 import {
@@ -16,6 +15,7 @@ import {
   PreprintsProjectsService,
   PreprintsService,
 } from '@osf/features/preprints/services';
+import { handleSectionError } from '@shared/helpers';
 import { OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 

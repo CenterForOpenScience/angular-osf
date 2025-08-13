@@ -12,8 +12,8 @@ import { FormsModule } from '@angular/forms';
 
 import { CollectionsFilterChipsComponent } from '@osf/features/collections/components';
 import { collectionsSortOptions } from '@osf/features/collections/constants';
+import { IS_WEB } from '@osf/shared/helpers';
 import { CollectionsSelectors, SetSortBy } from '@shared/stores/collections';
-import { IS_WEB } from '@shared/utils';
 
 import { CollectionsFiltersComponent } from '../collections-filters/collections-filters.component';
 import { CollectionsSearchResultsComponent } from '../collections-search-results/collections-search-results.component';

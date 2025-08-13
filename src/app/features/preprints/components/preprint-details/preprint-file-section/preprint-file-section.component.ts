@@ -13,8 +13,8 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers';
 import { LoadingSpinnerComponent } from '@shared/components';
-import { IS_LARGE, IS_MEDIUM } from '@shared/utils';
 
 @Component({
   selector: 'osf-preprint-file-section',

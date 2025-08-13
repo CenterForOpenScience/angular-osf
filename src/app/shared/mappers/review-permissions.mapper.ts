@@ -1,4 +1,4 @@
-import { ReviewPermissions } from '../enums/review-permissions.enum';
+import { ReviewPermissions } from '../enums';
 import { ProviderDataJsonApi } from '../models';
 
 export class ReviewPermissionsMapper {

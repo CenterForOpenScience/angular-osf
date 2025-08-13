@@ -23,14 +23,13 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
-import { parseQueryFilterParams } from '@osf/core/helpers';
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
+import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
+import { IS_MEDIUM, parseQueryFilterParams } from '@osf/shared/helpers';
 import { QueryParams, TableParameters } from '@osf/shared/models';
 import { BookmarksSelectors, GetBookmarksCollectionId } from '@osf/shared/stores';
-import { IS_MEDIUM } from '@osf/shared/utils';
 import {
   ClearMyResources,
   GetMyBookmarks,

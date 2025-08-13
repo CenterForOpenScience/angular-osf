@@ -2,7 +2,6 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
 import { MapAddResourceRequest, MapRegistryResource, toAddResourceRequestBody } from '@osf/features/registry/mappers';
 import { GetRegistryResourcesJsonApi, RegistryResource } from '@osf/features/registry/models';
 import { AddResource } from '@osf/features/registry/models/resources/add-resource.model';
@@ -11,6 +10,7 @@ import {
   RegistryResourceDataJsonApi,
 } from '@osf/features/registry/models/resources/add-resource-response-json-api.model';
 import { ConfirmAddResource } from '@osf/features/registry/models/resources/confirm-add-resource.model';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 

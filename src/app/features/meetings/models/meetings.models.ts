@@ -1,4 +1,4 @@
-import { NumberOrNull, StringOrNull } from '@core/helpers';
+import { NumberOrNull, StringOrNull } from '@osf/shared/helpers';
 
 export interface Meeting {
   id: string;

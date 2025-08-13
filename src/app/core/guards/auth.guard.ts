@@ -1,17 +1,26 @@
-import { inject } from '@angular/core';
-import { CanActivateFn } from '@angular/router';
+import { Store } from '@ngxs/store';
 
-import { NavigationService } from '@osf/core/services';
-import { AuthService } from '@osf/features/auth/services';
+import { filter, map, take } from 'rxjs';
+
+import { inject } from '@angular/core';
+import { CanActivateFn, Router } from '@angular/router';
+
+import { UserSelectors } from '@osf/core/store/user';
 
 export const authGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
-  const navigationService = inject(NavigationService);
+  const store = inject(Store);
+  const router = inject(Router);
 
-  if (!authService.isAuthenticated()) {
-    navigationService.navigateToSignIn();
-    return false;
-  }
-
-  return true;
+  return store.select(UserSelectors.getCurrentUserLoading).pipe(
+    filter((loading) => !loading),
+    take(1),
+    map(() => {
+      const user = store.selectSnapshot(UserSelectors.getCurrentUser);
+      if (!user) {
+        router.navigate(['/']);
+        return false;
+      }
+      return true;
+    })
+  );
 };

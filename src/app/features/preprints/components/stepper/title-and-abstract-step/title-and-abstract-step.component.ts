@@ -19,10 +19,10 @@ import {
   PreprintStepperSelectors,
   UpdatePreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
+import { CustomValidators } from '@osf/shared/helpers';
 import { TextInputComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { ToastService } from '@shared/services';
-import { CustomValidators } from '@shared/utils';
 
 @Component({
   selector: 'osf-title-and-abstract-step',

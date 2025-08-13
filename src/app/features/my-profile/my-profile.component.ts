@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { EducationHistoryComponent, EmploymentHistoryComponent } from '@osf/shared/components';
-import { IS_MEDIUM } from '@osf/shared/utils';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 
 import { ResetFiltersState } from '../search/components/resource-filters/store';
 import { ResetSearchState } from '../search/store';

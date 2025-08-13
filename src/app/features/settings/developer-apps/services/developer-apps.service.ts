@@ -2,8 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
+import { JsonApiResponse } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { DeveloperAppMapper } from '../mappers';
 import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppGetResponseJsonApi } from '../models';

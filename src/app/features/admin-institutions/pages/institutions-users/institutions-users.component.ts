@@ -23,9 +23,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { parseQueryFilterParams } from '@core/helpers';
 import { UserSelectors } from '@core/store/user';
-import { Primitive } from '@osf/core/helpers';
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { departmentOptions, userTableColumns } from '@osf/features/admin-institutions/constants';
 import { SendEmailDialogComponent } from '@osf/features/admin-institutions/dialogs';
@@ -34,11 +32,12 @@ import {
   FetchInstitutionUsers,
   SendUserMessage,
 } from '@osf/features/admin-institutions/store/institutions-admin.actions';
-import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store/institutions-admin.selectors';
 import { LoadingSpinnerComponent, SelectComponent } from '@osf/shared/components';
-import { TABLE_PARAMS } from '@shared/constants';
-import { SortOrder } from '@shared/enums';
-import { QueryParams } from '@shared/models';
+import { TABLE_PARAMS } from '@osf/shared/constants';
+import { SortOrder } from '@osf/shared/enums';
+import { parseQueryFilterParams, Primitive } from '@osf/shared/helpers';
+import { QueryParams } from '@osf/shared/models';
+import { ToastService } from '@osf/shared/services';
 
 import {
   InstitutionsUsersQueryParamsModel,
@@ -48,6 +47,7 @@ import {
   TableCellLink,
   TableIconClickEvent,
 } from '../../models';
+import { InstitutionsAdminSelectors } from '../../store';
 
 @Component({
   selector: 'osf-institutions-users',
@@ -63,6 +63,7 @@ export class InstitutionsUsersComponent implements OnInit {
   private readonly translate = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toastService = inject(ToastService);
 
   private readonly actions = createDispatchMap({
     fetchInstitutionUsers: FetchInstitutionUsers,
@@ -268,12 +269,14 @@ export class InstitutionsUsersComponent implements OnInit {
   private sendEmailToUser(userRowData: TableCellData, emailData: SendEmailDialogData): void {
     const userId = (userRowData['userLink'] as TableCellLink).text as string;
 
-    this.actions.sendUserMessage(
-      userId,
-      this.institutionId,
-      emailData.emailContent,
-      emailData.ccSender,
-      emailData.allowReplyToSender
-    );
+    this.actions
+      .sendUserMessage(
+        userId,
+        this.institutionId,
+        emailData.emailContent,
+        emailData.ccSender,
+        emailData.allowReplyToSender
+      )
+      .subscribe(() => this.toastService.showSuccess('adminInstitutions.institutionUsers.messageSent'));
   }
 }

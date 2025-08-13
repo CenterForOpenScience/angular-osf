@@ -7,10 +7,10 @@ export interface JsonApiResponseWithMeta<Data, Meta, Included> extends JsonApiRe
   meta: Meta;
 }
 
-export interface JsonApiResponseWithPaging<Data, Included> extends JsonApiResponse<Data, Included> {
-  links: {
-    meta: MetaJsonApi;
-  };
+export interface ResponseJsonApi<Data> {
+  data: Data;
+  links: PaginationLinksJsonApi;
+  meta: MetaJsonApi;
 }
 
 export interface ApiData<Attributes, Embeds, Relationships, Links> {

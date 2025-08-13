@@ -11,8 +11,8 @@ import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 import { EducationHistoryComponent, EmploymentHistoryComponent } from '@osf/shared/components';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MOCK_USER } from '@osf/shared/mocks';
-import { IS_MEDIUM } from '@osf/shared/utils';
 
 import { MyProfileSearchComponent } from './components';
 import { MyProfileComponent } from './my-profile.component';

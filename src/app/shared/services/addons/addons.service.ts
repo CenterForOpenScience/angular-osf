@@ -4,8 +4,6 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@core/services';
 import { UserSelectors } from '@core/store/user';
 import { AddonMapper } from '@shared/mappers';
 import {
@@ -20,12 +18,14 @@ import {
   ConfiguredAddonRequestJsonApi,
   ConfiguredAddonResponseJsonApi,
   IncludedAddonData,
+  JsonApiResponse,
   OperationInvocation,
   OperationInvocationRequestJsonApi,
   ResourceReferenceJsonApi,
   UserReferenceJsonApi,
 } from '@shared/models';
 import { OperationInvocationResponseJsonApi } from '@shared/models/addons/operation-invocation.models';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 

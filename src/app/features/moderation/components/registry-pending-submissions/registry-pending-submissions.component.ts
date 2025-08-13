@@ -13,7 +13,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Primitive } from '@osf/core/helpers';
 import { PENDING_SUBMISSION_REVIEW_OPTIONS, REGISTRY_SORT_OPTIONS } from '@osf/features/moderation/constants';
 import { RegistrySort, SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
@@ -26,6 +25,7 @@ import {
   LoadingSpinnerComponent,
   SelectComponent,
 } from '@osf/shared/components';
+import { Primitive } from '@osf/shared/helpers';
 
 import { RegistrySubmissionItemComponent } from '..';
 

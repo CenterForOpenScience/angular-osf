@@ -3,20 +3,19 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ProfileSettingsKey } from '@osf/shared/enums';
-import { ProfileSettingsUpdate } from '@osf/shared/models';
-
+import { UserMapper } from '@osf/shared/mappers';
 import {
   JsonApiResponse,
+  ProfileSettingsUpdate,
   User,
   UserData,
   UserDataResponseJsonApi,
   UserGetResponse,
-  UserMapper,
   UserSettings,
   UserSettingsGetResponse,
-} from '../models';
+} from '@osf/shared/models';
 
-import { JsonApiService } from './json-api.service';
+import { JsonApiService } from '../../shared/services/json-api.service';
 
 import { environment } from 'src/environments/environment';
 

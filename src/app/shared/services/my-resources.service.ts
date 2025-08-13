@@ -3,13 +3,12 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@core/services';
 import { MyResourcesMapper } from '@osf/features/my-projects/mappers';
 import { ResourceSearchMode, ResourceType, SortOrder } from '@shared/enums';
 import {
   CreateProjectPayloadJsoApi,
   EndpointType,
+  JsonApiResponse,
   MyResourcesItem,
   MyResourcesItemGetResponseJsonApi,
   MyResourcesItemResponseJsonApi,
@@ -18,6 +17,7 @@ import {
   NodeResponseModel,
   UpdateNodeRequestModel,
 } from '@shared/models';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 
@@ -102,6 +102,7 @@ export class MyResourcesService {
       map((response: MyResourcesResponseJsonApi) => ({
         data: response.data.map((item: MyResourcesItemGetResponseJsonApi) => MyResourcesMapper.fromResponse(item)),
         links: response.links,
+        meta: response.meta,
       }))
     );
   }

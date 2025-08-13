@@ -21,6 +21,7 @@ import {
 } from '@osf/shared/components/contributors';
 import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel, SelectOption } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
@@ -30,7 +31,6 @@ import {
   GetAllContributors,
   UpdateContributor,
 } from '@osf/shared/stores';
-import { findChangedItems } from '@osf/shared/utils';
 
 @Component({
   selector: 'osf-contributors',

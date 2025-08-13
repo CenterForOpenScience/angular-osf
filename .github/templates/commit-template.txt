@@ -1,0 +1,43 @@
+
+
+# <type>(<scope>): <Short description> (max 100 chars)
+# 
+# [optional body]
+# 
+# [optional footer(s)]
+# 
+# ─────────────────────────────────────────────
+# Conventional Commits – Commit Message Template (Aligned with commitlint)
+# ─────────────────────────────────────────────
+#
+# Header (REQUIRED)
+#   Format: <type>(<scope>): <Short description>
+#   - <type>: one of
+#     feat – A new feature added to the codebase.
+#     fix – A bug fix or correction to existing functionality.
+#     docs – Documentation changes only (no code changes).
+#     style – Code style updates (formatting, spacing, etc.) without changing behavior.
+#     refactor – Code restructuring without fixing a bug or adding a feature.
+#     perf – Performance improvements in the code.
+#     test – Adding or modifying tests without affecting production code.
+#     chore – Maintenance tasks such as build process updates or dependency changes.
+#     revert – Reverting a previous commit.
+#   - <scope>: REQUIRED (e.g., ui, api, auth). Use lowercase/kebab if possible.
+#   - <Short description>: sentence-case, start-case, or lower-case; max 100 chars; no trailing period.
+#
+# Body (OPTIONAL)
+#   - Explain WHAT and WHY (not how).
+#   - Must be preceded by a blank line (enforced).
+#   - Wrap lines at ≤200 chars (config limit).
+#
+# Footer (OPTIONAL)
+#   - Must be preceded by a blank line (enforced).
+#   - Link issues: Closes #123, Fixes #456
+#   - BREAKING CHANGE: <description of the breaking change and migration notes>
+#
+# Examples
+#   feat(auth): Add OAuth2 login support
+#   fix(api): Handle 429 rate limit with retry and jitter
+#   docs(readme): Update Docker troubleshooting section
+#   refactor(forms): Extract validation helpers from component
+#   perf(search): Cache results for 5 mins to reduce TTFB

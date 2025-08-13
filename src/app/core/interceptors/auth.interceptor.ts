@@ -12,12 +12,10 @@ export const authInterceptor: HttpInterceptorFn = (
   const cookieService = inject(CookieService);
 
   const csrfToken = cookieService.get('api-csrf');
-  const staging = cookieService.get('osf_staging4');
-  console.log(staging);
 
   if (!req.url.includes('/api.crossref.org/funders')) {
     const headers: Record<string, string> = {
-      Accept: req.responseType === 'text' ? '*/*' : 'application/vnd.api+json',
+      Accept: req.responseType === 'text' ? '*/*' : 'application/vnd.api+json;version=2.20',
       'Content-Type': 'application/vnd.api+json',
     };
 

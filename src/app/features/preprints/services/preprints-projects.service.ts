@@ -2,17 +2,12 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { Primitive, StringOrNull } from '@core/helpers';
-import { JsonApiService } from '@core/services';
-import { ApiData, JsonApiResponse } from '@osf/core/models';
-import { PreprintsMapper } from '@osf/features/preprints/mappers';
-import {
-  Preprint,
-  PreprintAttributesJsonApi,
-  PreprintLinksJsonApi,
-  PreprintRelationshipsJsonApi,
-} from '@osf/features/preprints/models';
-import { CreateProjectPayloadJsoApi, IdName, NodeData } from '@osf/shared/models';
+import { Primitive, StringOrNull } from '@osf/shared/helpers';
+import { ApiData, CreateProjectPayloadJsoApi, IdName, JsonApiResponse, NodeData } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
+
+import { PreprintsMapper } from '../mappers';
+import { Preprint, PreprintAttributesJsonApi, PreprintLinksJsonApi, PreprintRelationshipsJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 
