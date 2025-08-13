@@ -2048,6 +2048,7 @@
         "rejected": "Rejected",
         "pendingWithdrawal": "Pending withdrawal",
         "withdrawalRejected": "Withdrawal rejected",
+        "withdrawn": "Withdrawn",
         "messages": {
           "base": "{{name}} uses {{workflow}}. This {{documentType}}",
           "pendingPreModeration": "is not publicly available or searchable until approved by a moderator.",
@@ -2071,6 +2072,19 @@
         "preModerationNoticeAccepted": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This service uses pre-moderation. This request will be submitted to service moderators for review. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal.",
         "postModerationNotice": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This service uses post-moderation. This request will be submitted to service moderators for review. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal.",
         "noModerationNotice": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This request will be submitted to <a href=\"mailto:{{supportEmail}}\" target=\"_blank\">{{supportEmail}}</a> for review and removal. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal."
+      },
+      "moderationStatusBanner": {
+        "recentActivity": {
+          "pending": "submitted this {{documentType}} on",
+          "accepted": "accepted this {{documentType}} on",
+          "rejected": "rejected this {{documentType}} on",
+          "pendingWithdrawal": "requested to withdraw this {{documentType}} on",
+          "withdrawn": "withdrew this {{documentType}} on",
+          "automatic": {
+            "pending": "This {{documentType}} was submitted on",
+            "accepted": "This {{documentType}} was automatically accepted on"
+          }
+        }
       }
     }
   },

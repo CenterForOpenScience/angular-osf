@@ -9,6 +9,7 @@ export interface Preprint {
   dateModified: string;
   dateWithdrawn: Date | null;
   datePublished: Date | null;
+  dateLastTransitioned: Date | null;
   title: string;
   description: string;
   reviewsState: ReviewsState;

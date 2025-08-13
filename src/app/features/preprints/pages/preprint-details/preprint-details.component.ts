@@ -26,6 +26,7 @@ import { UserSelectors } from '@core/store/user';
 import {
   AdditionalInfoComponent,
   GeneralInformationComponent,
+  ModerationStatusBannerComponent,
   PreprintFileSectionComponent,
   ShareAndDownloadComponent,
   StatusBannerComponent,
@@ -59,6 +60,7 @@ import { IS_MEDIUM } from '@shared/utils';
     StatusBannerComponent,
     TranslatePipe,
     PreprintTombstoneComponent,
+    ModerationStatusBannerComponent,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
@@ -89,6 +91,23 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     fetchPreprintReviewActions: FetchPreprintReviewActions,
   });
 
+  //1. pending status for pre- and post-moderation providers  | works
+  //2. accepted status for pre- and post-moderation providers | works (pending -> accepted)
+  //3. rejected status for pre-moderation                     | works (pending -> rejected)
+  //4. rejected status for post-moderation                    | works (pending -> withdrawn), becomes withdrawn after rejection
+
+  //5. pending withdrawal status for pre-moderation           | works (pending -> withdrawn), becomes withdrawn after withdrawal request
+  //                                                          | works (accepted -> pending withdrawal)
+
+  //6. pending withdrawal status for post-moderation          | works (pending -> pending withdrawal)
+  //                                                          | works (accepted -> pending withdrawal)
+
+  //7. withdrawn status for pre-moderation           ??????????????  \\\\ pending preprint became withdrawn after withdrawal request
+  //8. withdrawn status for post-moderation          ??????????????
+
+  //9. Withdrawal rejected status for pre-moderation  ??????????????  \\\\ only from accepted state
+  //10. Withdrawal rejected status for post-moderation ??????????????
+
   currentUser = select(UserSelectors.getCurrentUser);
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
@@ -101,10 +120,10 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   withdrawalRequests = select(PreprintSelectors.getPreprintRequests);
   areWithdrawalRequestsLoading = select(PreprintSelectors.arePreprintRequestsLoading);
 
-  moderationMode = toSignal(this.route.queryParams.pipe(map((params) => params['mode'] === 'moderator')));
-  currentUserIsModerator = computed(() => {
+  isPresentModeratorQueryParam = toSignal(this.route.queryParams.pipe(map((params) => params['mode'] === 'moderator')));
+  moderationMode = computed(() => {
     const provider = this.preprintProvider();
-    return this.moderationMode() && provider?.permissions.includes(ReviewPermissions.ViewSubmissions);
+    return this.isPresentModeratorQueryParam() && provider?.permissions.includes(ReviewPermissions.ViewSubmissions);
   });
 
   latestAction = computed(() => {
@@ -232,8 +251,11 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   });
 
   ngOnInit() {
-    this.fetchPreprint(this.preprintId());
-    this.actions.getPreprintProviderById(this.providerId());
+    this.actions.getPreprintProviderById(this.providerId()).subscribe({
+      next: () => {
+        this.fetchPreprint(this.preprintId());
+      },
+    });
   }
 
   ngOnDestroy() {
@@ -288,9 +310,9 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private fetchPreprint(preprintId: string) {
     this.actions.fetchPreprintById(preprintId).subscribe({
       next: () => {
-        if (this.preprint()!.currentUserPermissions.length > 0) {
+        if (this.preprint()!.currentUserPermissions.length > 0 || this.moderationMode()) {
           this.actions.fetchPreprintReviewActions();
-          if (this.preprintWithdrawableState() && this.currentUserIsAdmin()) {
+          if (this.preprintWithdrawableState() && (this.currentUserIsAdmin() || this.moderationMode())) {
             this.actions.fetchPreprintRequests();
           }
         }
