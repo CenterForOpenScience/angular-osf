@@ -12,6 +12,16 @@ docker compose up -d --build
 **note** Depending on local system architecture the build and launch of the angular server can
 take up to 60 seconds once the docker build finishes.
 
+## Index
+
+### Recommended
+
+- Install git commit template: [Commit Template](docs/commit.template.md).
+
+### Optional
+
+- Admin Knowledge Base: [Admin Knowledge Base](docs/admin.knowledge-base.md).
+
 ## Testing the project
 
 The project uses jest for unit testing.
