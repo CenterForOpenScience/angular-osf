@@ -388,4 +388,20 @@ export const MENU_ITEMS: MenuItem[] = [
     url: 'https://www.cos.io/support-cos',
     visible: true,
   },
+  {
+    id: 'sign-in',
+    label: 'navigation.signIn',
+    visible: false,
+    routerLink: null,
+    routerLinkActiveOptions: { exact: false },
+    styleClass: 'mt-5',
+  },
+  {
+    id: 'log-out',
+    label: 'navigation.logOut',
+    visible: false,
+    routerLink: null,
+    routerLinkActiveOptions: { exact: false },
+    styleClass: 'mt-5',
+  },
 ];

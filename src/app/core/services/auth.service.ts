@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ClearCurrentUser } from '@osf/core/store/user';
 import { urlParam } from '@osf/shared/helpers';
-import { JsonApiService } from '@osf/shared/services';
+import { JsonApiService, LoaderService } from '@osf/shared/services';
 
 import { SignUpModel } from '../models';
 
@@ -18,9 +18,11 @@ import { environment } from 'src/environments/environment';
 export class AuthService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly cookieService = inject(CookieService);
+  private readonly loaderService = inject(LoaderService);
   private readonly actions = createDispatchMap({ clearCurrentUser: ClearCurrentUser });
 
   navigateToSignIn(): void {
+    this.loaderService.show();
     const loginUrl = `${environment.casUrl}/login?${urlParam({ service: `${environment.webUrl}/login` })}`;
     window.location.href = loginUrl;
   }
@@ -42,6 +44,7 @@ export class AuthService {
   }
 
   logout(): void {
+    this.loaderService.show();
     this.cookieService.deleteAll();
     this.actions.clearCurrentUser();
     window.location.href = `${environment.webUrl}/logout/?next=${encodeURIComponent('/')}`;
