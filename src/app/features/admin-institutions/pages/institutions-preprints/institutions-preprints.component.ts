@@ -23,9 +23,9 @@ import { parseQueryFilterParams } from '@shared/helpers';
 import { Institution, QueryParams } from '@shared/models';
 import { InstitutionsSearchSelectors } from '@shared/stores';
 
+import { DownloadType } from '../../enums';
+import { downloadResults } from '../../helpers';
 import { FetchPreprints } from '../../store/institutions-admin.actions';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-institutions-preprints',
@@ -38,9 +38,7 @@ export class InstitutionsPreprintsComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  private readonly actions = createDispatchMap({
-    fetchPreprints: FetchPreprints,
-  });
+  private readonly actions = createDispatchMap({ fetchPreprints: FetchPreprints });
 
   private institutionId = '';
 
@@ -49,9 +47,9 @@ export class InstitutionsPreprintsComponent {
   totalCount = select(InstitutionsAdminSelectors.getPreprintsTotalCount);
   isLoading = select(InstitutionsAdminSelectors.getPreprintsLoading);
   preprintsLinks = select(InstitutionsAdminSelectors.getPreprintsLinks);
+  preprintsDownloadLink = select(InstitutionsAdminSelectors.getPreprintsDownloadLink);
 
   tableColumns = signal(preprintsTableColumns);
-  reportsLink = 'https://drive.google.com/drive/folders/1_aFmeJwLp5xBS3-8clZ4xA9L3UFxdzDd';
 
   queryParams = toSignal(this.route.queryParams);
   currentPageSize = signal(TABLE_PARAMS.rows);
@@ -64,34 +62,6 @@ export class InstitutionsPreprintsComponent {
   tableData = computed(() => {
     const preprintsData = this.preprints();
     return preprintsData.map(mapPreprintToTableData) as TableCellData[];
-  });
-
-  downloadLink = computed(() => {
-    const institution = this.institution();
-    const queryParams = this.queryParams();
-
-    if (!institution?.iris?.length) {
-      return '';
-    }
-
-    const institutionIris = institution.iris.join(',');
-    const baseUrl = `${environment.shareDomainUrl}/index-card-search`;
-    let params = new URLSearchParams();
-    if (queryParams) {
-      params = new URLSearchParams({
-        'cardSearchFilter[affiliation][]': institutionIris,
-        'cardSearchFilter[resourceType]': 'Preprint',
-        'cardSearchFilter[accessService]': environment.webUrl,
-        'page[size]': String(queryParams['size'] || this.currentPageSize()),
-        sort: queryParams['sort'] || this.currentSort(),
-      });
-    }
-
-    if (queryParams && queryParams['cursor']) {
-      params.append('page[cursor]', queryParams['cursor']);
-    }
-
-    return `${baseUrl}?${params.toString()}`;
   });
 
   constructor() {
@@ -113,6 +83,10 @@ export class InstitutionsPreprintsComponent {
     const url = new URL(link);
     const cursor = url.searchParams.get('page[cursor]') || '';
     this.updateQueryParams({ cursor });
+  }
+
+  download(type: DownloadType) {
+    downloadResults(this.preprintsDownloadLink(), type);
   }
 
   private setupQueryParamsEffect(): void {

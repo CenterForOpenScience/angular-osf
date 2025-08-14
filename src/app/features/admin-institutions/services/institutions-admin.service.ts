@@ -4,7 +4,6 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { mapInstitutionPreprints } from '@osf/features/admin-institutions/mappers/institution-preprints.mapper';
-import { PaginationLinksModel } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
 import {
@@ -17,6 +16,7 @@ import {
   sendMessageRequestMapper,
 } from '../mappers';
 import {
+  AdminInstitutionSearchResult,
   InstitutionDepartment,
   InstitutionDepartmentsJsonApi,
   InstitutionIndexValueSearchJsonApi,
@@ -121,11 +121,7 @@ export class InstitutionsAdminService {
     pageSize = 10,
     sort = '-dateModified',
     cursor = ''
-  ): Observable<{
-    items: InstitutionProject[] | InstitutionRegistration[] | InstitutionPreprint[];
-    totalCount: number;
-    links?: PaginationLinksModel;
-  }> {
+  ): Observable<AdminInstitutionSearchResult> {
     const url = `${environment.shareDomainUrl}/index-card-search`;
     const affiliationParam = institutionIris.join(',');
 
@@ -159,6 +155,7 @@ export class InstitutionsAdminService {
           items: mapper(res),
           totalCount: res.data.attributes.totalResultCount,
           links: res.data.relationships.searchResultPage.links,
+          downloadLink: res.data.links.self || null,
         };
       })
     );

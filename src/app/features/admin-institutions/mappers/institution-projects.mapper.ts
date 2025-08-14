@@ -20,8 +20,10 @@ export function mapInstitutionProjects(response: InstitutionRegistrationsJsonApi
 
   searchResults.forEach((result: SearchResult) => {
     const indexCardId = result.relationships?.indexCard?.data?.id;
+
     if (indexCardId) {
       const indexCard = indexCards.find((card: IndexCard) => card.id === indexCardId);
+
       if (indexCard && indexCard.attributes) {
         const metadata = indexCard.attributes.resourceMetadata;
 

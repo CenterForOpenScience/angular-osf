@@ -1,3 +1,4 @@
+export * from './admin-institution-search-result.model';
 export * from './index-search-query-params.model';
 export * from './institution-department.model';
 export * from './institution-departments-json-api.model';

@@ -18,9 +18,9 @@ import { parseQueryFilterParams } from '@shared/helpers';
 import { Institution, QueryParams } from '@shared/models';
 import { InstitutionsSearchSelectors } from '@shared/stores';
 
+import { DownloadType } from '../../enums';
+import { downloadResults } from '../../helpers';
 import { InstitutionProject, InstitutionProjectsQueryParamsModel, TableCellData } from '../../models';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-institutions-projects',
@@ -38,7 +38,6 @@ export class InstitutionsProjectsComponent {
   });
 
   institutionId = '';
-  reportsLink = 'https://drive.google.com/drive/folders/1_aFmeJwLp5xBS3-8clZ4xA9L3UFxdzDd';
 
   queryParams = toSignal(this.route.queryParams);
   currentPageSize = signal(TABLE_PARAMS.rows);
@@ -53,31 +52,11 @@ export class InstitutionsProjectsComponent {
   totalCount = select(InstitutionsAdminSelectors.getProjectsTotalCount);
   isLoading = select(InstitutionsAdminSelectors.getProjectsLoading);
   projectsLinks = select(InstitutionsAdminSelectors.getProjectsLinks);
+  projectsDownloadLink = select(InstitutionsAdminSelectors.getProjectsDownloadLink);
   institution = select(InstitutionsSearchSelectors.getInstitution);
 
   tableData = computed(() => {
     return this.projects().map((project: InstitutionProject): TableCellData => mapProjectToTableCellData(project));
-  });
-
-  downloadUrl = computed(() => {
-    const baseUrl = `${environment.shareDomainUrl}/index-card-search`;
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-    const affiliationParam = institutionIris.join(',');
-
-    const params = new URLSearchParams({
-      'cardSearchFilter[affiliation][]': affiliationParam,
-      'cardSearchFilter[resourceType]': 'Project',
-      'cardSearchFilter[accessService]': environment.webUrl,
-      'page[cursor]': '',
-      'page[size]': '10000',
-      sort: this.sortField(),
-      withFileName: 'projects-search-results',
-      'fields[Project]':
-        'title,dateCreated,dateModified,sameAs,storageRegion.prefLabel,storageByteCount,creator.name,usage.viewCount,resourceNature.displayLabel,rights.name,hasOsfAddon.prefLabel,funder.name',
-    });
-
-    return `${baseUrl}?${params.toString()}`;
   });
 
   constructor() {
@@ -103,6 +82,10 @@ export class InstitutionsProjectsComponent {
     this.updateQueryParams({
       cursor: cursor,
     });
+  }
+
+  download(type: DownloadType) {
+    downloadResults(this.projectsDownloadLink(), type);
   }
 
   private setupQueryParamsEffect(): void {

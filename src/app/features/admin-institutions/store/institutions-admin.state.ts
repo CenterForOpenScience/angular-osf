@@ -92,7 +92,6 @@ export class InstitutionsAdminState {
     const state = ctx.getState();
     ctx.patchState({
       searchResults: { ...state.searchResults, isLoading: true, error: null },
-      currentSearchPropertyPath: action.valueSearchPropertyPath,
     });
 
     return this.institutionsAdminService
@@ -178,6 +177,7 @@ export class InstitutionsAdminState {
               isLoading: false,
               error: null,
               links: response.links,
+              downloadLink: response.downloadLink,
             },
           });
         }),
@@ -203,6 +203,7 @@ export class InstitutionsAdminState {
               isLoading: false,
               error: null,
               links: response.links,
+              downloadLink: response.downloadLink,
             },
           });
         }),
@@ -228,6 +229,7 @@ export class InstitutionsAdminState {
               isLoading: false,
               error: null,
               links: response.links,
+              downloadLink: response.downloadLink,
             },
           });
         }),

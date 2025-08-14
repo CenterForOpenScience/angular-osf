@@ -38,7 +38,9 @@ import { SortOrder } from '@osf/shared/enums';
 import { parseQueryFilterParams, Primitive } from '@osf/shared/helpers';
 import { QueryParams } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
+import { InstitutionsSearchSelectors } from '@osf/shared/stores';
 
+import { DownloadType } from '../../enums';
 import {
   InstitutionsUsersQueryParamsModel,
   InstitutionUser,
@@ -71,7 +73,6 @@ export class InstitutionsUsersComponent implements OnInit {
   });
 
   institutionId = '';
-  reportsLink = 'https://drive.google.com/drive/folders/1_aFmeJwLp5xBS3-8clZ4xA9L3UFxdzDd';
 
   queryParams = toSignal(this.route.queryParams);
   currentPage = signal(1);
@@ -88,6 +89,7 @@ export class InstitutionsUsersComponent implements OnInit {
   tableColumns = userTableColumns;
 
   users = select(InstitutionsAdminSelectors.getUsers);
+  institution = select(InstitutionsSearchSelectors.getInstitution);
   totalCount = select(InstitutionsAdminSelectors.getUsersTotalCount);
   isLoading = select(InstitutionsAdminSelectors.getUsersLoading);
 
@@ -169,6 +171,39 @@ export class InstitutionsUsersComponent implements OnInit {
         break;
       }
     }
+  }
+
+  download(type: DownloadType) {
+    const baseUrl = this.institution().userMetricsUrl;
+
+    if (!baseUrl) {
+      return;
+    }
+
+    const url = this.createUrl(baseUrl, type);
+
+    window.open(url, '_blank');
+  }
+
+  private createUrl(baseUrl: string, mediaType: string): string {
+    const query = {} as Record<string, string>;
+    if (this.selectedDepartment()) {
+      query['filter[department]'] = this.selectedDepartment() || '';
+    }
+
+    if (this.hasOrcidFilter()) {
+      query['filter[orcid_id][ne]'] = '';
+    }
+
+    const userURL = new URL(baseUrl);
+    userURL.searchParams.set('format', mediaType);
+    userURL.searchParams.set('page[size]', '10000');
+
+    Object.entries(query).forEach(([key, value]) => {
+      userURL.searchParams.set(key, value);
+    });
+
+    return userURL.toString();
   }
 
   private setupQueryParamsEffect(): void {

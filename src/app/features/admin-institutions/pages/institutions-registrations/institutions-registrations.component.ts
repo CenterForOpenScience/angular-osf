@@ -23,9 +23,9 @@ import { parseQueryFilterParams } from '@shared/helpers';
 import { Institution, QueryParams } from '@shared/models';
 import { InstitutionsSearchSelectors } from '@shared/stores';
 
+import { DownloadType } from '../../enums';
+import { downloadResults } from '../../helpers';
 import { FetchRegistrations } from '../../store/institutions-admin.actions';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-institutions-registrations',
@@ -38,9 +38,7 @@ export class InstitutionsRegistrationsComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  private readonly actions = createDispatchMap({
-    fetchRegistrations: FetchRegistrations,
-  });
+  private readonly actions = createDispatchMap({ fetchRegistrations: FetchRegistrations });
 
   private institutionId = '';
 
@@ -49,9 +47,9 @@ export class InstitutionsRegistrationsComponent {
   totalCount = select(InstitutionsAdminSelectors.getRegistrationsTotalCount);
   isLoading = select(InstitutionsAdminSelectors.getRegistrationsLoading);
   registrationsLinks = select(InstitutionsAdminSelectors.getRegistrationsLinks);
+  registrationsDownloadLink = select(InstitutionsAdminSelectors.getRegistrationsDownloadLink);
 
   tableColumns = signal(registrationTableColumns);
-  reportsLink = 'https://drive.google.com/drive/folders/1_aFmeJwLp5xBS3-8clZ4xA9L3UFxdzDd';
 
   queryParams = toSignal(this.route.queryParams);
   currentPageSize = signal(TABLE_PARAMS.rows);
@@ -62,34 +60,6 @@ export class InstitutionsRegistrationsComponent {
   tableData = computed(() => {
     const registrationsData = this.registrations();
     return registrationsData.map(mapRegistrationToTableData) as TableCellData[];
-  });
-
-  downloadLink = computed(() => {
-    const institution = this.institution();
-    const queryParams = this.queryParams();
-
-    if (!institution?.iris?.length) {
-      return '';
-    }
-
-    const institutionIris = institution.iris.join(',');
-    const baseUrl = `${environment.shareDomainUrl}/index-card-search`;
-    let params = new URLSearchParams();
-    if (queryParams) {
-      params = new URLSearchParams({
-        'cardSearchFilter[affiliation][]': institutionIris,
-        'cardSearchFilter[resourceType]': 'Registration',
-        'cardSearchFilter[accessService]': environment.webUrl,
-        'page[size]': String(queryParams['size'] || this.currentPageSize()),
-        sort: queryParams['sort'] || this.currentSort(),
-      });
-    }
-
-    if (queryParams && queryParams['cursor']) {
-      params.append('page[cursor]', queryParams['cursor']);
-    }
-
-    return `${baseUrl}?${params.toString()}`;
   });
 
   constructor() {
@@ -111,6 +81,10 @@ export class InstitutionsRegistrationsComponent {
     const url = new URL(link);
     const cursor = url.searchParams.get('page[cursor]') || '';
     this.updateQueryParams({ cursor });
+  }
+
+  download(type: DownloadType) {
+    downloadResults(this.registrationsDownloadLink(), type);
   }
 
   private setupQueryParamsEffect(): void {
