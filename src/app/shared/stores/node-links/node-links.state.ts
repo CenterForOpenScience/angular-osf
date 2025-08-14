@@ -27,9 +27,12 @@ export class NodeLinksState {
       },
     });
 
-    return this.nodeLinksService
-      .createNodeLink(action.currentProjectId, action.resource)
-      .pipe(catchError((error) => this.handleError(ctx, 'linkedResources', error)));
+    return this.nodeLinksService.createNodeLink(action.currentProjectId, action.resource).pipe(
+      tap(() => {
+        ctx.dispatch(new GetLinkedResources(action.currentProjectId));
+      }),
+      catchError((error) => this.handleError(ctx, 'linkedResources', error))
+    );
   }
 
   @Action(GetLinkedResources)

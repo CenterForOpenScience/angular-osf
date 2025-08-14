@@ -9,7 +9,7 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 import { TableModule, TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { DatePipe, NgClass } from '@angular/common';
 import {
@@ -181,10 +181,7 @@ export class LinkResourceDialogComponent {
 
       this.actions.deleteNodeLink(currentProjectId, linkToDelete);
     } else {
-      this.actions
-        .createNodeLink(currentProjectId, resource)
-        .pipe(switchMap(() => this.actions.getLinkedProjects(currentProjectId)))
-        .subscribe();
+      this.actions.createNodeLink(currentProjectId, resource);
     }
   }
 
