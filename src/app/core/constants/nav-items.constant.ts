@@ -236,7 +236,7 @@ export const MENU_ITEMS: MenuItem[] = [
       {
         id: 'registries-overview',
         routerLink: '/registries/overview',
-        label: 'navigation.overview',
+        label: 'navigation.discover',
         visible: true,
         routerLinkActiveOptions: { exact: true },
       },
@@ -267,7 +267,7 @@ export const MENU_ITEMS: MenuItem[] = [
       {
         id: 'preprints-overview',
         routerLink: '/preprints/overview',
-        label: 'navigation.overview',
+        label: 'navigation.discover',
         visible: true,
         routerLinkActiveOptions: { exact: false },
       },
@@ -286,22 +286,6 @@ export const MENU_ITEMS: MenuItem[] = [
         styleClass: 'border-none',
       },
     ],
-  },
-  {
-    id: 'my-profile',
-    routerLink: '/my-profile',
-    label: 'navigation.profile',
-    icon: 'osf-icon-profile',
-    visible: false,
-    routerLinkActiveOptions: { exact: false },
-  },
-  {
-    id: 'institutions',
-    routerLink: '/institutions',
-    label: 'navigation.institutions',
-    icon: 'osf-icon-institutions',
-    visible: true,
-    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'collections',
@@ -328,11 +312,27 @@ export const MENU_ITEMS: MenuItem[] = [
     routerLinkActiveOptions: { exact: false },
   },
   {
+    id: 'institutions',
+    routerLink: '/institutions',
+    label: 'navigation.institutions',
+    icon: 'osf-icon-institutions',
+    visible: true,
+    routerLinkActiveOptions: { exact: false },
+    styleClass: 'mb-5',
+  },
+  {
+    id: 'my-profile',
+    routerLink: '/my-profile',
+    label: 'navigation.profile',
+    icon: 'osf-icon-profile',
+    visible: false,
+    routerLinkActiveOptions: { exact: false },
+  },
+  {
     id: 'settings',
     label: 'navigation.settings',
     icon: 'osf-icon-settings',
     routerLinkActiveOptions: { exact: true },
-    styleClass: 'mt-5',
     visible: false,
     items: [
       {

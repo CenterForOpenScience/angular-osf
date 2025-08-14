@@ -148,6 +148,7 @@
     "myResources": "My Resources",
     "registries": "Registries",
     "overview": "Overview",
+    "discover": "Discover",
     "registriesSubRoutes": {
       "myRegistrations": "My Registrations",
       "registryDetails": "Registry Details"
