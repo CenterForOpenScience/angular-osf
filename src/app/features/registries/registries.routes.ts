@@ -31,11 +31,11 @@ export const registriesRoutes: Routes = [
         redirectTo: 'overview',
       },
       {
-        path: 'overview',
+        path: 'discover',
         loadComponent: () => import('@osf/features/registries/pages').then((c) => c.RegistriesLandingComponent),
       },
       {
-        path: 'overview/:name',
+        path: ':name',
         loadComponent: () =>
           import('@osf/features/registries/pages/registries-provider-search/registries-provider-search.component').then(
             (c) => c.RegistriesProviderSearchComponent

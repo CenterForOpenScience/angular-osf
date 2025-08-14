@@ -148,6 +148,7 @@
     "myResources": "My Resources",
     "registries": "Registries",
     "overview": "Overview",
+    "discover": "Discover",
     "registriesSubRoutes": {
       "myRegistrations": "My Registrations",
       "registryDetails": "Registry Details"
@@ -2124,7 +2125,9 @@
           "updateComment": "Update comment"
         }
       }
-    }
+    },
+    "preprintContributorsWarning": "Warning: Changing your permissions will prevent you from editing your draft.",
+    "addContributorBySearch": "Add Contributor By Search"
   },
   "registries": {
     "title": "Registries",

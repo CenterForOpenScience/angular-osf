@@ -12,9 +12,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { MENU_ITEMS } from '@core/constants';
-import { UserSelectors } from '@core/store/user';
 import { filterMenuItems, updateMenuItems } from '@osf/core/helpers';
 import { RouteContext } from '@osf/core/models';
+import { AuthService } from '@osf/core/services';
+import { UserSelectors } from '@osf/core/store/user';
 import { IconComponent } from '@osf/shared/components';
 import { WrapFnPipe } from '@osf/shared/pipes';
 
@@ -29,6 +30,7 @@ export class NavMenuComponent {
 
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly authService = inject(AuthService);
 
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
 
@@ -89,6 +91,20 @@ export class NavMenuComponent {
   }
 
   goToLink(item: MenuItem) {
+    if (item.id === 'support' || item.id === 'donate') {
+      window.open(item.url, '_blank');
+    }
+
+    if (item.id === 'sign-in') {
+      this.authService.navigateToSignIn();
+      return;
+    }
+
+    if (item.id === 'log-out') {
+      this.authService.logout();
+      return;
+    }
+
     if (!item.items) {
       this.closeMenu.emit();
     }

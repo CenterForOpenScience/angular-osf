@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '@osf/core/services';
 import { UserSelectors } from '@osf/core/store/user';
-import { LoaderService } from '@osf/shared/services';
 
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
@@ -25,7 +24,6 @@ export class HeaderComponent {
   currentUser = select(UserSelectors.getCurrentUser);
 
   private readonly router = inject(Router);
-  private readonly loaderService = inject(LoaderService);
   private readonly authService = inject(AuthService);
 
   items = [
@@ -37,7 +35,6 @@ export class HeaderComponent {
     {
       label: 'navigation.logOut',
       command: () => {
-        this.loaderService.show();
         this.authService.logout();
       },
     },

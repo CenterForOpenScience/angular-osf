@@ -9,7 +9,7 @@ import { PaginatorState } from 'primeng/paginator';
 
 import { map, of } from 'rxjs';
 
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,6 +32,7 @@ import {
 } from '@osf/features/registry/store/registry-overview';
 import {
   CustomPaginatorComponent,
+  IconComponent,
   LoadingSpinnerComponent,
   SubHeaderComponent,
   TruncatedTextComponent,
@@ -49,11 +50,11 @@ import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@shared/
     Button,
     Menu,
     TruncatedTextComponent,
-    NgClass,
     DatePipe,
     LoadingSpinnerComponent,
     RouterLink,
     CustomPaginatorComponent,
+    IconComponent,
   ],
   templateUrl: './view-duplicates.component.html',
   styleUrl: './view-duplicates.component.scss',

@@ -17,17 +17,18 @@
         @for (linkedResource of linkedResources(); track linkedResource.id) {
           <div class="linked-project-wrapper flex flex-column p-3 gap-3">
             <div class="flex justify-content-between align-items-center">
-              <h2 class="flex gap-2">
-                <i [ngClass]="linkedResource.public ? 'osf-icon-padlock-unlock' : 'osf-icon-padlock'"></i>
+              <h2 class="flex align-items-center gap-2">
+                <osf-icon [iconClass]="linkedResource.public ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
                 <a class="linked-project-title" [href]="'project/' + linkedResource.id">{{ linkedResource.title }}</a>
               </h2>
+
               <div>
                 <p-button
                   class="danger-icon-btn"
                   icon="fas fa-trash"
                   severity="danger"
                   text
-                  (click)="openDeleteResourceModal(linkedResource.id)"
+                  (onClick)="openDeleteResourceModal(linkedResource.id)"
                 >
                 </p-button>
               </div>

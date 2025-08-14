@@ -36,24 +36,24 @@ export const preprintsRoutes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'overview',
+        redirectTo: 'discover',
       },
       {
-        path: 'overview',
+        path: 'discover',
         loadComponent: () =>
           import('@osf/features/preprints/pages/landing/preprints-landing.component').then(
             (c) => c.PreprintsLandingComponent
           ),
       },
       {
-        path: 'overview/:providerId',
+        path: ':providerId',
         loadComponent: () =>
           import('@osf/features/preprints/pages/preprint-provider-overview/preprint-provider-overview.component').then(
             (c) => c.PreprintProviderOverviewComponent
           ),
       },
       {
-        path: 'overview/:providerId/discover',
+        path: ':providerId/discover',
         loadComponent: () =>
           import('@osf/features/preprints/pages/preprint-provider-discover/preprint-provider-discover.component').then(
             (c) => c.PreprintProviderDiscoverComponent
