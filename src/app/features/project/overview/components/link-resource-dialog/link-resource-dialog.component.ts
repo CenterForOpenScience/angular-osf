@@ -28,11 +28,10 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { SearchInputComponent } from '@shared/components';
 import { ResourceSearchMode, ResourceType } from '@shared/enums';
-import { MyResourcesSearchFilters } from '@shared/models';
+import { MyResourcesItem, MyResourcesSearchFilters } from '@shared/models';
 import {
   CreateNodeLink,
   DeleteNodeLink,
-  GetAllNodeLinks,
   GetLinkedResources,
   GetMyProjects,
   GetMyRegistrations,
@@ -77,8 +76,7 @@ export class LinkResourceDialogComponent {
   protected totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
   protected totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
   protected isNodeLinksSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
-  protected isNodeLinksLoading = select(NodeLinksSelectors.getNodeLinksLoading);
-  protected nodeLinks = select(NodeLinksSelectors.getNodeLinks);
+  protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
 
   protected currentTableItems = computed(() => {
     return this.resourceType() === ResourceType.Project ? this.myProjects() : this.myRegistrations();
@@ -93,8 +91,8 @@ export class LinkResourceDialogComponent {
   });
 
   protected isItemLinked = computed(() => {
-    const nodeLinks = this.nodeLinks();
-    const linkedTargetIds = new Set(nodeLinks.map((link) => link.targetNode.id));
+    const linkedResources = this.linkedResources();
+    const linkedTargetIds = new Set(linkedResources.map((resource) => resource.id));
 
     return (itemId: string) => linkedTargetIds.has(itemId);
   });
@@ -103,7 +101,6 @@ export class LinkResourceDialogComponent {
     getProjects: GetMyProjects,
     getRegistrations: GetMyRegistrations,
     createNodeLink: CreateNodeLink,
-    getAllNodeLinks: GetAllNodeLinks,
     deleteNodeLink: DeleteNodeLink,
     getLinkedProjects: GetLinkedResources,
   });
@@ -141,7 +138,7 @@ export class LinkResourceDialogComponent {
     effect(() => {
       const currentProject = this.currentProject();
       if (currentProject) {
-        this.actions.getAllNodeLinks(currentProject.id);
+        this.actions.getLinkedProjects(currentProject.id);
       }
     });
   }
@@ -167,24 +164,24 @@ export class LinkResourceDialogComponent {
     this.dialogRef.close();
   }
 
-  handleToggleNodeLink($event: CheckboxChangeEvent, linkProjectId: string) {
+  handleToggleNodeLink($event: CheckboxChangeEvent, resource: MyResourcesItem) {
     const currentProjectId = this.currentProject()?.id;
 
     if (!currentProjectId) {
       return;
     }
 
-    const isCurrentlyLinked = this.isItemLinked()(linkProjectId);
+    const isCurrentlyLinked = this.isItemLinked()(resource.id);
 
     if (isCurrentlyLinked) {
-      const nodeLinks = this.nodeLinks();
-      const linkToDelete = nodeLinks.find((link) => link.targetNode.id === linkProjectId);
+      const resources = this.linkedResources();
+      const linkToDelete = resources.find((component) => component.id === resource.id);
 
       if (!linkToDelete) return;
 
-      this.actions.deleteNodeLink(currentProjectId, linkToDelete.id);
+      this.actions.deleteNodeLink(currentProjectId, linkToDelete);
     } else {
-      this.actions.createNodeLink(currentProjectId, linkProjectId);
+      this.actions.createNodeLink(currentProjectId, resource);
     }
   }
 

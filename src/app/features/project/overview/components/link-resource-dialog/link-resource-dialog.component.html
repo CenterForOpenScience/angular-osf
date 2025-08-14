@@ -32,7 +32,7 @@
     ></p-button>
   </p-buttonGroup>
 
-  @if (isCurrentTableLoading() || isNodeLinksLoading()) {
+  @if (isCurrentTableLoading()) {
     <p-table class="link-project-table loading" [value]="[1, 2, 3, 4, 5]">
       <ng-template #header>
         <tr>
@@ -96,7 +96,7 @@
                 [inputId]="item.id"
                 [ngModel]="isItemLinked()(item.id)"
                 [binary]="true"
-                (onChange)="handleToggleNodeLink($event, item.id)"
+                (onChange)="handleToggleNodeLink($event, item)"
               />
               <span class="overflow-ellipsis">{{ item.title }}</span>
             </p>

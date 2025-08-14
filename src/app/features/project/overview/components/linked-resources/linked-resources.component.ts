@@ -31,7 +31,6 @@ export class LinkedResourcesComponent {
   protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
   protected isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
   protected isMobile = toSignal(inject(IS_XSMALL));
-  protected nodeLinks = select(NodeLinksSelectors.getNodeLinks);
 
   openLinkProjectModal() {
     const dialogWidth = this.isMobile() ? '95vw' : '850px';
@@ -61,12 +60,12 @@ export class LinkedResourcesComponent {
       modal: true,
       closable: true,
       data: {
-        nodeLinkId: currentLink.id,
+        currentLink,
       },
     });
   }
 
   private getCurrentResourceNodeLink(resourceId: string) {
-    return this.nodeLinks().find((link) => link.targetNode.id === resourceId);
+    return this.linkedResources().find((resource) => resource.id === resourceId);
   }
 }

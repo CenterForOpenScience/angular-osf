@@ -8,7 +8,13 @@ import { CitationTypes } from '@shared/enums';
 import { handleSectionError } from '@shared/helpers';
 import { CitationsService } from '@shared/services/citations.service';
 
-import { GetCitationStyles, GetDefaultCitations, GetStyledCitation, UpdateCustomCitation } from './citations.actions';
+import {
+  ClearStyledCitation,
+  GetCitationStyles,
+  GetDefaultCitations,
+  GetStyledCitation,
+  UpdateCustomCitation,
+} from './citations.actions';
 import { CitationsStateModel } from './citations.model';
 
 const CITATIONS_DEFAULTS: CitationsStateModel = {
@@ -151,5 +157,16 @@ export class CitationsState {
       }),
       catchError((error) => handleSectionError(ctx, 'styledCitation', error))
     );
+  }
+
+  @Action(ClearStyledCitation)
+  clearStyledCitation(ctx: StateContext<CitationsStateModel>) {
+    const state = ctx.getState();
+    ctx.patchState({
+      styledCitation: {
+        ...state.styledCitation,
+        data: null,
+      },
+    });
   }
 }

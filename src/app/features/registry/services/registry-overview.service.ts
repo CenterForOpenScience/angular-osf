@@ -44,7 +44,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .get<GetRegistryOverviewJsonApi>(`${environment.apiUrl}/registrations/${id}`, params)
+      .get<GetRegistryOverviewJsonApi>(`${environment.apiUrl}/registrations/${id}/`, params)
       .pipe(map((response) => MapRegistryOverview(response.data)));
   }
 

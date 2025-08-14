@@ -12,6 +12,7 @@ import { handleSectionError } from '@osf/shared/helpers';
 import { RegistryOverviewService } from '../../services';
 
 import {
+  ClearRegistryOverview,
   GetRegistryById,
   GetRegistryInstitutions,
   GetRegistryReviewActions,
@@ -266,5 +267,10 @@ export class RegistryOverviewState {
       }),
       catchError((error) => handleSectionError(ctx, 'moderationActions', error))
     );
+  }
+
+  @Action(ClearRegistryOverview)
+  clearRegistryOverview(ctx: StateContext<RegistryOverviewStateModel>) {
+    ctx.patchState(REGISTRY_OVERVIEW_DEFAULTS);
   }
 }

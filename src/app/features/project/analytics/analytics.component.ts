@@ -7,10 +7,10 @@ import { SelectModule } from 'primeng/select';
 import { map, of } from 'rxjs';
 
 import { CommonModule, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, Signal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, Signal, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { BarChartComponent, LineChartComponent, PieChartComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
@@ -20,7 +20,7 @@ import { DatasetInput } from '@osf/shared/models';
 import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
 import { DateRangeOption } from './models';
-import { AnalyticsSelectors, GetMetrics, GetRelatedCounts } from './store';
+import { AnalyticsSelectors, ClearAnalytics, GetMetrics, GetRelatedCounts } from './store';
 import { analyticsData } from './test-data';
 
 @Component({
@@ -49,6 +49,8 @@ export class AnalyticsComponent implements OnInit {
 
   private readonly datePipe = inject(DatePipe);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly resourceId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
   readonly resourceType: Signal<ResourceType | undefined> = toSignal(
@@ -63,7 +65,11 @@ export class AnalyticsComponent implements OnInit {
 
   protected isMetricsError = select(AnalyticsSelectors.isMetricsError);
 
-  protected actions = createDispatchMap({ getMetrics: GetMetrics, getRelatedCounts: GetRelatedCounts });
+  protected actions = createDispatchMap({
+    getMetrics: GetMetrics,
+    getRelatedCounts: GetRelatedCounts,
+    clearAnalytics: ClearAnalytics,
+  });
 
   protected visitsLabels: string[] = [];
   protected visitsDataset: DatasetInput[] = [];
@@ -81,6 +87,16 @@ export class AnalyticsComponent implements OnInit {
     this.actions.getMetrics(this.resourceId(), this.selectedRange().value);
     this.actions.getRelatedCounts(this.resourceId(), this.resourceType());
     this.setData();
+  }
+
+  constructor() {
+    this.setupCleanup();
+  }
+
+  setupCleanup(): void {
+    this.destroyRef.onDestroy(() => {
+      this.actions.clearAnalytics();
+    });
   }
 
   onRangeChange(range: DateRangeOption) {
@@ -106,5 +122,9 @@ export class AnalyticsComponent implements OnInit {
 
     this.popularPagesLabels = analytics.popularPages.map((item) => item.title);
     this.popularPagesDataset = [{ label: 'Popular pages', data: analytics.popularPages.map((item) => item.count) }];
+  }
+
+  protected navigateToDuplicates() {
+    this.router.navigate(['duplicates'], { relativeTo: this.route });
   }
 }

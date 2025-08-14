@@ -31,3 +31,7 @@ export class GetStyledCitation {
     public citationStyle: string
   ) {}
 }
+
+export class ClearStyledCitation {
+  static readonly type = '[Citations] Clear Styled Citation';
+}

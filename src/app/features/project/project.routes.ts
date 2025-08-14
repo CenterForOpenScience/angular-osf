@@ -8,6 +8,7 @@ import {
   CitationsState,
   CollectionsState,
   ContributorsState,
+  DuplicatesState,
   NodeLinksState,
   SubjectsState,
   ViewOnlyLinkState,
@@ -69,6 +70,15 @@ export const projectRoutes: Routes = [
         loadComponent: () => import('../project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
         data: { resourceType: ResourceType.Project },
         providers: [provideStates([AnalyticsState])],
+      },
+      {
+        path: 'analytics/duplicates',
+        data: { resourceType: ResourceType.Project },
+        loadComponent: () =>
+          import('../project/analytics/components/view-duplicates/view-duplicates.component').then(
+            (mod) => mod.ViewDuplicatesComponent
+          ),
+        providers: [provideStates([DuplicatesState])],
       },
       {
         path: 'wiki',
