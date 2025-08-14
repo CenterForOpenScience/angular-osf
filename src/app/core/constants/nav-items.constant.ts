@@ -394,7 +394,7 @@ export const MENU_ITEMS: MenuItem[] = [
     visible: false,
     routerLink: null,
     routerLinkActiveOptions: { exact: false },
-    styleClass: 'mt-5',
+    styleClass: 'my-5',
   },
   {
     id: 'log-out',
@@ -402,6 +402,6 @@ export const MENU_ITEMS: MenuItem[] = [
     visible: false,
     routerLink: null,
     routerLinkActiveOptions: { exact: false },
-    styleClass: 'mt-5',
+    styleClass: 'my-5',
   },
 ];
