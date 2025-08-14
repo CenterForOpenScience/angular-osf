@@ -27,17 +27,9 @@ export class NodeLinksState {
       },
     });
 
-    return this.nodeLinksService.createNodeLink(action.currentProjectId, action.resource).pipe(
-      tap(() => {
-        ctx.patchState({
-          linkedResources: {
-            ...state.linkedResources,
-            isSubmitting: false,
-          },
-        });
-      }),
-      catchError((error) => this.handleError(ctx, 'linkedResources', error))
-    );
+    return this.nodeLinksService
+      .createNodeLink(action.currentProjectId, action.resource)
+      .pipe(catchError((error) => this.handleError(ctx, 'linkedResources', error)));
   }
 
   @Action(GetLinkedResources)
@@ -60,6 +52,7 @@ export class NodeLinksState {
           linkedResources: {
             data: combinedResources,
             isLoading: false,
+            isSubmitting: false,
             error: null,
           },
         });
