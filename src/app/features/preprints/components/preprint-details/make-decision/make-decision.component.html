@@ -1,0 +1,46 @@
+<p-button
+  [label]="labelDecisionButton() | translate | titlecase"
+  severity="success"
+  (click)="dialogVisible = true"
+  [disabled]="makeDecisionButtonDisabled()"
+  [pTooltip]="makeDecisionButtonDisabled() ? ('preprints.details.decision.noReasonProvided' | translate) : ''"
+  tooltipPosition="left"
+/>
+
+<p-dialog
+  [header]="labelDecisionDialogHeader() | translate"
+  [modal]="true"
+  draggable="false"
+  [(visible)]="dialogVisible"
+>
+  <div class="flex flex-column gap-2 align-items-start">
+    @if (isPendingWithdrawal()) {
+    } @else {
+      @if (preprint()?.reviewsState === ReviewsState.Withdrawn) {
+        {{ latestAction()!.comment }}
+      } @else {
+        <section>
+          <ul class="ml-4">
+            <li class="list-disc">{{ settingsComments() | translate }}</li>
+            @if (!provider().reviewsCommentsPrivate) {
+              <li class="list-disc">{{ settingsNames() | translate }}</li>
+            }
+            <li class="list-disc">{{ settingsModeration() | translate }}</li>
+          </ul>
+        </section>
+        <section class="m-t-48 w-full flex gap-2 justify-content-end">
+          @if (preprint()?.reviewsState !== ReviewsState.Withdrawn) {
+            <p-button class="w-12rem btn-full-width" [label]="'common.buttons.cancel' | translate" severity="info" />
+          }
+          <p-button
+            class="w-12rem btn-full-width"
+            [label]="labelSubmitButton() | translate | titlecase"
+            severity="success"
+            [disabled]="submitButtonDisabled()"
+            (click)="submit()"
+          />
+        </section>
+      }
+    }
+  </div>
+</p-dialog>

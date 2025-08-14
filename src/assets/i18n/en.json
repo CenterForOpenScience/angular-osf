@@ -2093,6 +2093,36 @@
             "accepted": "This {{documentType}} was automatically accepted on"
           }
         }
+      },
+      "decision": {
+        "noReasonProvided": "No reason provided",
+        "makeDecision": "Make decision",
+        "modifyDecision": "Modify decision",
+        "withdrawalReason": "View reason",
+        "header": {
+          "submitDecision": "Submit your decision",
+          "modifyDecision": "Modify your decision",
+          "withdrawalReason": "Reason for withdrawal"
+        },
+        "settings": {
+          "comments": {
+            "private": "Comments are not visible to contributors",
+            "public": "Comments are visible to contributors on decision"
+          },
+          "names": {
+            "anonymous": "Comments are anonymous",
+            "named": "Commenter's name is visible to contributors"
+          },
+          "moderation": {
+            "pre": "Submission appears in search results once accepted",
+            "post": "Submission will be removed from search results and made private if rejected"
+          }
+        },
+        "submitButton": {
+          "submitDecision": "Submit decision",
+          "modifyDecision": "Modify decision",
+          "updateComment": "Update comment"
+        }
       }
     }
   },

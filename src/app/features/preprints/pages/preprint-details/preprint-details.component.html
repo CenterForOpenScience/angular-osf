@@ -1,12 +1,27 @@
 <div class="flex-column xl:mt-6 flex-1">
   <section class="flex flex-column py-5 px-3 gap-4 md:py-6 md:px-4">
-    <div class="flex flex-column gap-3 md:flex-row">
+    <div class="flex flex-column justify-content-between md:flex-row">
       @if (isPreprintProviderLoading() || isPreprintLoading()) {
-        <p-skeleton width="4rem" height="2.25rem" />
-        <p-skeleton width="12rem" height="2.25rem" />
+        <div class="flex flex-column gap-3 md:flex-row">
+          <p-skeleton width="4rem" height="2.25rem" />
+          <p-skeleton width="12rem" height="2.25rem" />
+        </div>
+
+        <p-skeleton width="10rem" height="2.25rem" />
       } @else {
-        <img alt="Provider Logo" height="36" [src]="preprintProvider()!.brand.heroLogoImageUrl" />
-        <h1>{{ preprint()!.title }}</h1>
+        <div class="flex flex-column gap-3 md:flex-row">
+          <img alt="Provider Logo" height="36" [src]="preprintProvider()!.brand.heroLogoImageUrl" />
+          <h1>{{ preprint()!.title }}</h1>
+        </div>
+
+        @if (moderationMode() && !isPreprintLoading() && !areReviewActionsLoading()) {
+          <osf-make-decision
+            [provider]="preprintProvider()!"
+            [isPendingWithdrawal]="isPendingWithdrawal()"
+            [latestAction]="latestAction()"
+            [latestWithdrawalRequest]="latestWithdrawalRequest()"
+          />
+        }
       }
     </div>
 
@@ -51,7 +66,7 @@
         [provider]="preprintProvider()!"
         [isPendingWithdrawal]="isPendingWithdrawal()"
         [latestAction]="latestAction()"
-        [areReviewActionsLoading]="areReviewActionsLoading()"
+        [latestWithdrawalRequest]="latestWithdrawalRequest()"
       />
     }
     @if (statusBannerVisible()) {

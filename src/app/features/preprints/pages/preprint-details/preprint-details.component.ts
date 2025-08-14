@@ -32,6 +32,7 @@ import {
   StatusBannerComponent,
   WithdrawDialogComponent,
 } from '@osf/features/preprints/components';
+import { MakeDecisionComponent } from '@osf/features/preprints/components/preprint-details/make-decision/make-decision.component';
 import { PreprintTombstoneComponent } from '@osf/features/preprints/components/preprint-details/preprint-tombstone/preprint-tombstone.component';
 import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import {
@@ -61,6 +62,7 @@ import { ContributorsSelectors } from '@shared/stores';
     TranslatePipe,
     PreprintTombstoneComponent,
     ModerationStatusBannerComponent,
+    MakeDecisionComponent,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
