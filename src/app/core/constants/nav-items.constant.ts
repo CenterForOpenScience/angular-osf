@@ -370,4 +370,18 @@ export const MENU_ITEMS: MenuItem[] = [
       },
     ],
   },
+  {
+    id: 'sign-in',
+    label: 'navigation.signIn',
+    visible: false,
+    routerLink: null,
+    styleClass: 'mt-5',
+  },
+  {
+    id: 'log-out',
+    label: 'navigation.logOut',
+    visible: false,
+    routerLink: null,
+    styleClass: 'mt-5',
+  },
 ];
