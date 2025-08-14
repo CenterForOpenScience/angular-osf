@@ -1178,7 +1178,9 @@
       "public": "Public",
       "embargo": "Embargo",
       "pendingUpdates": "Pending Updates",
-      "pendingWithdrawal": "Pending Withdrawal"
+      "pendingWithdrawal": "Pending Withdrawal",
+      "approved": "Approved",
+      "declined": "Declined"
     },
     "makeDecision": {
       "header": "Make decision",
