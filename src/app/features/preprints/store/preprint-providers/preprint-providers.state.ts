@@ -6,8 +6,8 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/core/handlers';
 import { PreprintProvidersService } from '@osf/features/preprints/services';
+import { handleSectionError } from '@osf/shared/helpers';
 
 import {
   GetHighlightedSubjectsByProviderId,

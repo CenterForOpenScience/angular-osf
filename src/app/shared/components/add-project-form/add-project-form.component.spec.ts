@@ -10,11 +10,11 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants/my-projects-table.constants';
+import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants/my-projects-table.constants';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
+import { CustomValidators } from '@osf/shared/helpers';
 import { IdName, ProjectForm } from '@osf/shared/models';
 import { GetMyProjects, InstitutionsState, MyResourcesState } from '@osf/shared/stores';
-import { CustomValidators } from '@osf/shared/utils';
 import { RegionsState } from '@shared/stores/regions';
 
 import { AddProjectFormComponent } from './add-project-form.component';

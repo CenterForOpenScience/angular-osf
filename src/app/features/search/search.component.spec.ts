@@ -10,7 +10,7 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SearchInputComponent } from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/utils';
+import { IS_XSMALL } from '@osf/shared/helpers';
 
 import { ResourceFiltersState } from './components/resource-filters/store';
 import { ResourcesWrapperComponent } from './components';

@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { ProjectOverview } from '@osf/features/project/overview/models';
-import { CustomValidators } from '@osf/shared/utils';
+import { CustomValidators } from '@osf/shared/helpers';
 
 @Component({
   selector: 'osf-description-dialog',

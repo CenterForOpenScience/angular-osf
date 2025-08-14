@@ -1,5 +1,3 @@
-import { createDispatchMap } from '@ngxs/store';
-
 import { NgxCaptchaModule } from 'ngx-captcha';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -13,13 +11,13 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { NavigationService } from '@osf/core/services';
-import { RegisterUser } from '@osf/features/auth/store';
+import { SignUpModel } from '@osf/core/models';
+import { AuthService } from '@osf/core/services';
 import { PasswordInputHintComponent, TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
-import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/utils';
+import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/helpers';
 
-import { SignUpForm, SignUpModel } from '../../models';
+import { SignUpForm } from '../../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -43,9 +41,7 @@ import { environment } from 'src/environments/environment';
   styleUrl: './sign-up.component.scss',
 })
 export class SignUpComponent implements OnInit {
-  private readonly navigateService = inject(NavigationService);
-
-  private readonly actions = createDispatchMap({ registerUser: RegisterUser });
+  private readonly authService = inject(AuthService);
 
   signUpForm = new FormGroup<SignUpForm>({} as SignUpForm);
   passwordRegex: RegExp = PASSWORD_REGEX;
@@ -97,7 +93,7 @@ export class SignUpComponent implements OnInit {
 
     const data = this.signUpForm.getRawValue() as SignUpModel;
 
-    this.actions.registerUser(data).subscribe({
+    this.authService.register(data).subscribe({
       next: () => {
         this.signUpForm.reset();
         this.isFormSubmitted.set(true);
@@ -109,10 +105,10 @@ export class SignUpComponent implements OnInit {
   }
 
   navigateToOrcidSingIn(): void {
-    this.navigateService.navigateToOrcidSingIn();
+    this.authService.navigateToOrcidSingIn();
   }
 
   navigateToInstitutionSingIn(): void {
-    this.navigateService.navigateToInstitutionSignIn();
+    this.authService.navigateToInstitutionSignIn();
   }
 }

@@ -1,7 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { User, UserSettings } from '@osf/core/models';
-import { Education, Employment, Social } from '@osf/shared/models';
+import { Education, Employment, Social, User, UserSettings } from '@osf/shared/models';
 
 import { UserStateModel } from './user.model';
 import { UserState } from './user.state';
@@ -9,7 +8,9 @@ import { UserState } from './user.state';
 export class UserSelectors {
   @Selector([UserState])
   static getCurrentUser(state: UserStateModel): User | null {
-    return state.currentUser.data;
+    return state.currentUser.data || localStorage.getItem('currentUser')
+      ? JSON.parse(localStorage.getItem('currentUser')!)
+      : null;
   }
 
   @Selector([UserState])
@@ -60,5 +61,10 @@ export class UserSelectors {
   @Selector([UserState])
   static isCurrentUserModerator(state: UserStateModel): boolean {
     return !!state.currentUser.data?.isModerator;
+  }
+
+  @Selector([UserState])
+  static isAuthenticated(state: UserStateModel): boolean {
+    return !!state.currentUser.data || !!localStorage.getItem('currentUser');
   }
 }

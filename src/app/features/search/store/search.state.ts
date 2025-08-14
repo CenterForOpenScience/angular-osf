@@ -4,8 +4,8 @@ import { BehaviorSubject, EMPTY, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { addFiltersParams, getResourceTypes } from '@osf/shared/helpers';
 import { SearchService } from '@osf/shared/services';
-import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
 import { searchStateDefaults } from '@shared/constants';
 import { GetResourcesRequestTypeEnum } from '@shared/enums';
 

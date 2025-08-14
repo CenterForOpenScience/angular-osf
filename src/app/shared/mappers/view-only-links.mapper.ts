@@ -23,8 +23,8 @@ export class ViewOnlyLinksMapper {
 
     return {
       items,
-      total: response.links.meta.total,
-      perPage: response.links.meta.per_page,
+      total: response.meta.total,
+      perPage: response.meta.per_page,
       next: response.links.next,
       prev: response.links.prev,
     };

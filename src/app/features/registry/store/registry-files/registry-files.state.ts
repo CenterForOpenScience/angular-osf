@@ -5,7 +5,7 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
+import { handleSectionError } from '@shared/helpers';
 import { FilesService, ToastService } from '@shared/services';
 
 import { GetRegistryFiles, SetCurrentFolder, SetSearch, SetSort } from './registry-files.actions';

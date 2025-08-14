@@ -2,7 +2,7 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@osf/core/services';
+import { JsonApiService } from '@osf/shared/services';
 
 import { ProjectsMapper } from '../mappers/projects.mapper';
 import { Project } from '../models';

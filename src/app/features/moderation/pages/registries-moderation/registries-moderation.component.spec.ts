@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { IS_MEDIUM } from '@osf/shared/utils';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { TranslateServiceMock } from '@shared/mocks';
 
 import { RegistriesModerationComponent } from './registries-moderation.component';

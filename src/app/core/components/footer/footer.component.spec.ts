@@ -6,8 +6,8 @@ import { BehaviorSubject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
+import { IS_WEB } from '@osf/shared/helpers';
 import { IconComponent } from '@shared/components';
-import { IS_WEB } from '@shared/utils';
 
 import { FooterComponent } from './footer.component';
 

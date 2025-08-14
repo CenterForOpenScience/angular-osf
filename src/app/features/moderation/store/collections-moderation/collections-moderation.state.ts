@@ -5,7 +5,7 @@ import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
+import { handleSectionError } from '@shared/helpers';
 import { CollectionsService } from '@shared/services';
 
 import {

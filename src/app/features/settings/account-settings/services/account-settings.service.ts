@@ -4,9 +4,10 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ApiData, JsonApiResponse, User, UserGetResponse, UserMapper } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
 import { UserSelectors } from '@osf/core/store/user';
+import { UserMapper } from '@osf/shared/mappers';
+import { ApiData, JsonApiResponse, User, UserGetResponse } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { MapAccountSettings, MapEmail, MapEmails, MapExternalIdentities, MapRegions } from '../mappers';
 import {

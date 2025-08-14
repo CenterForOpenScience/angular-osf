@@ -1,6 +1,7 @@
-import { StringOrNull } from '@core/helpers';
-import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums/provider-reviews-workflow.enum';
-import { Brand } from '@shared/models';
+import { StringOrNull } from '@osf/shared/helpers';
+import { Brand } from '@osf/shared/models';
+
+import { ProviderReviewsWorkflow } from '../enums';
 
 export type PreprintWord = 'default' | 'work' | 'paper' | 'preprint' | 'thesis';
 export type PreprintWordGrammar = 'plural' | 'pluralCapitalized' | 'singular' | 'singularCapitalized';

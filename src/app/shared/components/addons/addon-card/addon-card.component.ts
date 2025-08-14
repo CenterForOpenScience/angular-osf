@@ -7,10 +7,10 @@ import { Button } from 'primeng/button';
 import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { getAddonTypeString, isConfiguredAddon } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService } from '@osf/shared/services';
 import { Addon, AuthorizedAddon, ConfiguredAddon } from '@shared/models';
 import { DeleteAuthorizedAddon } from '@shared/stores/addons';
-import { getAddonTypeString, isConfiguredAddon } from '@shared/utils';
 
 @Component({
   selector: 'osf-addon-card',

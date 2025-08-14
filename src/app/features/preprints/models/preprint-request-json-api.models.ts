@@ -1,5 +1,5 @@
-import { JsonApiResponse } from '@core/models';
 import { PreprintRequestMachineState, PreprintRequestType } from '@osf/features/preprints/enums';
+import { JsonApiResponse } from '@osf/shared/models';
 
 export type PreprintRequestsJsonApiResponse = JsonApiResponse<PreprintRequestDataJsonApi[], null>;
 

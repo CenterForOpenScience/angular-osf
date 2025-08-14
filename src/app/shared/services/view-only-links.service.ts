@@ -2,8 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@core/services';
+import { JsonApiResponse } from '@shared/models';
+import { JsonApiService } from '@shared/services';
 
 import { ResourceType } from '../enums';
 import { ViewOnlyLinksMapper } from '../mappers';

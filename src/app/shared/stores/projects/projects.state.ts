@@ -4,7 +4,7 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
+import { handleSectionError } from '@shared/helpers';
 import { ProjectsService } from '@shared/services/projects.service';
 
 import { ClearProjects, GetProjects, SetSelectedProject, UpdateProjectMetadata } from './projects.actions';

@@ -3,9 +3,9 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
 import { SubjectMapper } from '@shared/mappers';
 import { SubjectModel, SubjectsResponseJsonApi } from '@shared/models';
+import { JsonApiService } from '@shared/services';
 
 import { ResourceType } from '../enums';
 

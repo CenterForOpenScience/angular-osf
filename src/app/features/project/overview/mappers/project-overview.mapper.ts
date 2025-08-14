@@ -35,7 +35,7 @@ export class ProjectOverviewMapper {
       currentUserIsContributorOrGroupMember: response.attributes.current_user_is_contributor_or_group_member,
       wikiEnabled: response.attributes.wiki_enabled,
       customCitation: response.attributes.custom_citation,
-      subjects: response.attributes.subjects.map((subjectArray) => subjectArray[0]),
+      subjects: response.attributes.subjects?.map((subjectArray) => subjectArray[0]),
       contributors: response.embeds.bibliographic_contributors.data.map((contributor) => ({
         id: contributor.embeds.users.data.id,
         familyName: contributor.embeds.users.data.attributes.family_name,

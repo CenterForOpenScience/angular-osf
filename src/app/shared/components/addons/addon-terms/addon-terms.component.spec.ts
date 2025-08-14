@@ -3,13 +3,13 @@ import { MockProvider } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { isCitationAddon } from '@osf/shared/helpers';
 import { AddonTermsComponent } from '@shared/components/addons';
 import { ADDON_TERMS } from '@shared/constants';
 import { MOCK_ADDON } from '@shared/mocks';
 import { Addon, AddonTerm } from '@shared/models';
-import { isCitationAddon } from '@shared/utils';
 
-jest.mock('@shared/utils', () => ({
+jest.mock('@shared/helpers', () => ({
   isCitationAddon: jest.fn(),
 }));
 

@@ -1,7 +1,7 @@
-import { JsonApiResponseWithPaging } from '@osf/core/models';
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+import { ResponseJsonApi } from '@osf/shared/models';
 
-export type RegistryResponseJsonApi = JsonApiResponseWithPaging<RegistryDataJsonApi[], null>;
+export type RegistryResponseJsonApi = ResponseJsonApi<RegistryDataJsonApi[]>;
 
 export interface RegistryDataJsonApi {
   id: string;

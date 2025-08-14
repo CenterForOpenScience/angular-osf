@@ -41,10 +41,10 @@ import {
 } from '@osf/features/preprints/store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { UserPermissions } from '@shared/enums';
 import { ContributorModel } from '@shared/models';
 import { ContributorsSelectors } from '@shared/stores';
-import { IS_MEDIUM } from '@shared/utils';
 
 @Component({
   selector: 'osf-preprint-details',

@@ -37,10 +37,10 @@ import {
   ResetState,
   SetSelectedPreprintProviderId,
 } from '@osf/features/preprints/store/preprint-stepper';
+import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@osf/shared/helpers';
 import { StepperComponent } from '@shared/components';
 import { CanDeactivateComponent, StepOption } from '@shared/models';
 import { BrandService } from '@shared/services';
-import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@shared/utils';
 
 @Component({
   selector: 'osf-update-preprint-stepper',

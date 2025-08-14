@@ -4,7 +4,7 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/core/handlers';
+import { handleSectionError } from '@osf/shared/helpers';
 
 import { LicensesService } from '../../services';
 import { SaveLicense } from '../registries.actions';

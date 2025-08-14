@@ -13,6 +13,7 @@ import { filter } from 'rxjs/operators';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { findChangedItems } from '@osf/shared/helpers';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
@@ -23,7 +24,6 @@ import { ContributorDialogAddModel, ContributorModel } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 import { AddContributor, ContributorsSelectors, DeleteContributor, UpdateContributor } from '@shared/stores';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
-import { findChangedItems } from '@shared/utils';
 
 @Component({
   selector: 'osf-project-contributors-step',

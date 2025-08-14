@@ -8,8 +8,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FilterChipsComponent, ResourceFiltersComponent } from '@osf/features/search/components';
 import { ResourceTab } from '@osf/shared/enums';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 import { MOCK_STORE } from '@osf/shared/mocks';
-import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
 import { ResourceCardComponent } from '@shared/components/resource-card/resource-card.component';
 
 import { GetResourcesByLink, SearchSelectors } from '../../store';

@@ -1,15 +1,35 @@
+import { Store } from '@ngxs/store';
+
+import { map, switchMap, take } from 'rxjs';
+
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
-import { AuthService } from '@osf/features/auth/services';
+import { GetCurrentUser, UserSelectors } from '@osf/core/store/user';
 
 export const redirectIfLoggedInGuard: CanActivateFn = () => {
-  const authService = inject(AuthService);
+  const store = inject(Store);
   const router = inject(Router);
 
-  if (authService.isAuthenticated()) {
-    return router.navigate(['/dashboard']);
+  const isAuthenticated = store.selectSnapshot(UserSelectors.isAuthenticated);
+
+  if (isAuthenticated) {
+    router.navigate(['/dashboard']);
+    return false;
   }
 
-  return true;
+  return store.dispatch(GetCurrentUser).pipe(
+    switchMap(() => {
+      return store.select(UserSelectors.isAuthenticated).pipe(
+        take(1),
+        map((isAuthenticated) => {
+          if (isAuthenticated) {
+            router.navigate(['/dashboard']);
+            return false;
+          }
+          return true;
+        })
+      );
+    })
+  );
 };

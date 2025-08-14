@@ -4,7 +4,6 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { GetCurrentUser } from '@core/store/user';
-import { InitializeAuth } from '@osf/features/auth/store';
 
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 
@@ -18,11 +17,9 @@ import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 export class AppComponent implements OnInit {
   actions = createDispatchMap({
     getCurrentUser: GetCurrentUser,
-    initializeAuth: InitializeAuth,
   });
 
   ngOnInit(): void {
-    this.actions.initializeAuth();
     this.actions.getCurrentUser();
   }
 }

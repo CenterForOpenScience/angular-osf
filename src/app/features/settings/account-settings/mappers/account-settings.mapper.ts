@@ -1,4 +1,4 @@
-import { ApiData } from '@osf/core/models';
+import { ApiData } from '@osf/shared/models';
 
 import { AccountSettings, AccountSettingsResponseJsonApi } from '../models';
 

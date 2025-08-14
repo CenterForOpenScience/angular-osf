@@ -1,5 +1,5 @@
+import { findChangedFields } from '@osf/shared/helpers';
 import { Employment } from '@osf/shared/models';
-import { findChangedFields } from '@osf/shared/utils';
 
 import { EmploymentForm } from '../models';
 

@@ -7,7 +7,7 @@ import {
   UserSettings,
   UserSettingsGetResponse,
   UserSettingsUpdateRequest,
-} from '@osf/core/models';
+} from '@osf/shared/models';
 
 export class UserMapper {
   static fromUserDataGetResponse(response: UserDataResponseJsonApi): UserData {

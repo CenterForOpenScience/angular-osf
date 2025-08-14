@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 import { HttpClient, HttpEvent, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@osf/core/models';
+import { JsonApiResponse } from '@osf/shared/models';
 
 @Injectable({
   providedIn: 'root',

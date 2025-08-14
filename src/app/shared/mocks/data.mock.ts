@@ -1,4 +1,4 @@
-import { User } from '@osf/core/models';
+import { User } from '@osf/shared/models';
 
 export const MOCK_USER: User = {
   id: '1',

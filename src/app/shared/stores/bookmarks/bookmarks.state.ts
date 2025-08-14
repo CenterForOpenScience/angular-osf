@@ -4,8 +4,8 @@ import { catchError, EMPTY, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
 import { ResourceType } from '@shared/enums';
+import { handleSectionError } from '@shared/helpers';
 import { BookmarksService } from '@shared/services';
 
 import { AddResourceToBookmarks, GetBookmarksCollectionId, RemoveResourceFromBookmarks } from './bookmarks.actions';

@@ -9,7 +9,7 @@ import {
   OperationInvocation,
   OperationInvocationResponseJsonApi,
   StorageItemResponseJsonApi,
-} from '@shared/models';
+} from '../models';
 
 export class AddonMapper {
   static fromResponse(response: AddonGetResponseJsonApi): Addon {

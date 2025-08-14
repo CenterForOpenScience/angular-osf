@@ -2,13 +2,14 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
-import { ApiData, JsonApiResponse, JsonApiResponseWithMeta, JsonApiResponseWithPaging } from '@osf/core/models';
 import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
-import { preprintSortFieldMap } from '@osf/features/preprints/constants';
-import { PreprintsMapper } from '@osf/features/preprints/mappers';
-import { PreprintRequestMapper } from '@osf/features/preprints/mappers/preprint-request.mapper';
+import { searchPreferencesToJsonApiQueryParams } from '@osf/shared/helpers';
+import { ApiData, JsonApiResponse, JsonApiResponseWithMeta, ResponseJsonApi, SearchFilters } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
+
+import { preprintSortFieldMap } from '../constants';
+import { PreprintRequestMapper, PreprintsMapper } from '../mappers';
 import {
   Preprint,
   PreprintAttributesJsonApi,
@@ -18,9 +19,7 @@ import {
   PreprintRelationshipsJsonApi,
   PreprintRequest,
   PreprintRequestsJsonApiResponse,
-} from '@osf/features/preprints/models';
-import { SearchFilters } from '@shared/models';
-import { searchPreferencesToJsonApiQueryParams } from '@shared/utils';
+} from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -57,11 +56,7 @@ export class PreprintsService {
           null
         >
       >(`${environment.apiUrl}/preprints/`, payload)
-      .pipe(
-        map((response) => {
-          return PreprintsMapper.fromPreprintJsonApi(response.data);
-        })
-      );
+      .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
   }
 
   getById(id: string) {
@@ -72,11 +67,7 @@ export class PreprintsService {
           null
         >
       >(`${environment.apiUrl}/preprints/${id}/`)
-      .pipe(
-        map((response) => {
-          return PreprintsMapper.fromPreprintJsonApi(response.data);
-        })
-      );
+      .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
   }
 
   getByIdWithEmbeds(id: string) {
@@ -93,11 +84,7 @@ export class PreprintsService {
           null
         >
       >(`${environment.apiUrl}/preprints/${id}/`, params)
-      .pipe(
-        map((response) => {
-          return PreprintsMapper.fromPreprintWithEmbedsJsonApi(response);
-        })
-      );
+      .pipe(map((response) => PreprintsMapper.fromPreprintWithEmbedsJsonApi(response)));
   }
 
   deletePreprint(id: string) {
@@ -150,7 +137,7 @@ export class PreprintsService {
   getPreprintVersionIds(preprintId: string): Observable<string[]> {
     return this.jsonApiService
       .get<
-        JsonApiResponseWithPaging<ApiData<PreprintAttributesJsonApi, null, null, null>[], null>
+        ResponseJsonApi<ApiData<PreprintAttributesJsonApi, null, null, null>[]>
       >(`${environment.apiUrl}/preprints/${preprintId}/versions/`)
       .pipe(map((response) => response.data.map((data) => data.id)));
   }
@@ -166,10 +153,7 @@ export class PreprintsService {
 
     return this.jsonApiService
       .get<
-        JsonApiResponseWithPaging<
-          ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>[],
-          null
-        >
+        ResponseJsonApi<ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>[]>
       >(`${environment.apiUrl}/users/me/preprints/`, params)
       .pipe(map((response) => PreprintsMapper.fromMyPreprintJsonApi(response)));
   }

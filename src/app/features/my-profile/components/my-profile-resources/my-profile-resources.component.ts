@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { MyProfileFilterChipsComponent, MyProfileResourceFiltersComponent } from '@osf/features/my-profile/components';
 import { SelectComponent } from '@osf/shared/components';
 import { ResourceTab } from '@osf/shared/enums';
-import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 import { ResourceCardComponent } from '@shared/components/resource-card/resource-card.component';
 import { SEARCH_TAB_OPTIONS, searchSortingOptions } from '@shared/constants';
 

@@ -1,7 +1,7 @@
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { StringOrNullOrUndefined } from '@core/helpers';
+import { StringOrNullOrUndefined } from '@osf/shared/helpers';
 import { Brand } from '@shared/models';
 
 @Component({

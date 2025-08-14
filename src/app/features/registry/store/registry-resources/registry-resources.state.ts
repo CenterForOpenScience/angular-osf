@@ -5,7 +5,6 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
 import { RegistryResourcesService } from '@osf/features/registry/services';
 import {
   AddRegistryResource,
@@ -17,6 +16,7 @@ import {
   SilentDelete,
   UpdateResource,
 } from '@osf/features/registry/store/registry-resources';
+import { handleSectionError } from '@shared/helpers';
 
 @Injectable()
 @State<RegistryResourcesStateModel>({

@@ -1,4 +1,4 @@
-import { PaginationLinksJsonApi } from '@osf/core/models';
+import { MetaJsonApi, PaginationLinksJsonApi } from '@osf/shared/models';
 
 export interface CedarMetadataDataTemplateJsonApi {
   id: string;
@@ -194,11 +194,7 @@ export interface CedarRecordDataBinding {
 export interface CedarMetadataRecordJsonApi {
   data: CedarMetadataRecordData[];
   links: PaginationLinksJsonApi;
-  meta: {
-    per_page: number;
-    total: number;
-    version: string;
-  };
+  meta: MetaJsonApi;
 }
 
 export interface CedarMetadataRecordData {

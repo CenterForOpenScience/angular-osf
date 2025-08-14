@@ -2,8 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
+import { JsonApiResponse } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 import { SubscriptionFrequency } from '@shared/enums';
 
 import { NotificationSubscriptionMapper } from '../mappers';

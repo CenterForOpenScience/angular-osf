@@ -1,0 +1,14 @@
+@use "assets/styles/variables" as var;
+@use "assets/styles/mixins" as mix;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.duplicate-wrapper {
+  border: 1px solid var.$grey-2;
+  border-radius: mix.rem(12px);
+  color: var.$dark-blue-1;
+}

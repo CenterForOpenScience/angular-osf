@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -11,7 +11,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { DeleteComponent, GetComponents, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
 import { ScientistsNames } from '@osf/shared/constants';
+import { ResourceType } from '@shared/enums';
 import { ToastService } from '@shared/services';
 
 @Component({
@@ -22,19 +24,36 @@ import { ToastService } from '@shared/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DeleteComponentDialogComponent {
-  private store = inject(Store);
   private dialogConfig = inject(DynamicDialogConfig);
   private toastService = inject(ToastService);
   protected dialogRef = inject(DynamicDialogRef);
   protected destroyRef = inject(DestroyRef);
   private componentId = signal(this.dialogConfig.data.componentId);
   protected scientistNames = ScientistsNames;
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
+  protected project = select(ProjectOverviewSelectors.getProject);
+  protected registration = select(RegistryOverviewSelectors.getRegistry);
   protected isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
   protected userInput = signal('');
   protected selectedScientist = computed(() => {
     const names = Object.values(this.scientistNames);
     return names[Math.floor(Math.random() * names.length)];
+  });
+
+  readonly currentResource = computed(() => {
+    const resourceType = this.dialogConfig.data.resourceType;
+
+    if (resourceType) {
+      if (resourceType === ResourceType.Project) return this.project();
+
+      if (resourceType === ResourceType.Registration) return this.registration();
+    }
+
+    return null;
+  });
+
+  protected actions = createDispatchMap({
+    getComponents: GetComponents,
+    deleteComponent: DeleteComponent,
   });
 
   protected isInputValid(): boolean {
@@ -46,18 +65,25 @@ export class DeleteComponentDialogComponent {
   }
 
   protected handleDeleteComponent(): void {
-    const project = this.currentProject();
+    const resource = this.currentResource();
     const componentId = this.componentId();
 
-    if (!componentId || !project) return;
+    if (!componentId || !resource) return;
 
-    this.store
-      .dispatch(new DeleteComponent(componentId))
+    this.actions
+      .deleteComponent(componentId)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.dialogRef.close();
-          this.store.dispatch(new GetComponents(project.id));
+          this.dialogRef.close({ success: true });
+
+          const isForksContext = this.dialogConfig.data.isForksContext;
+
+          if (!isForksContext) {
+            this.actions.getComponents(resource.id);
+          }
+        },
+        complete: () => {
           this.toastService.showSuccess('project.overview.dialog.toast.deleteComponent.success');
         },
       });

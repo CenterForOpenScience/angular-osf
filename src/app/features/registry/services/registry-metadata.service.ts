@@ -3,16 +3,17 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@osf/core/services';
 import {
   CedarMetadataRecord,
   CedarMetadataRecordJsonApi,
   CedarMetadataTemplateJsonApi,
 } from '@osf/features/project/metadata/models';
+import { JsonApiService } from '@osf/shared/services';
 import { License } from '@shared/models';
 
 import { RegistryMetadataMapper } from '../mappers';
 import {
+  BibliographicContributor,
   BibliographicContributorsJsonApi,
   CustomItemMetadataRecord,
   CustomItemMetadataResponse,
@@ -34,11 +35,7 @@ export class RegistryMetadataService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly apiUrl = environment.apiUrl;
 
-  getBibliographicContributors(
-    registryId: string,
-    page = 1,
-    pageSize = 100
-  ): Observable<BibliographicContributorsJsonApi> {
+  getBibliographicContributors(registryId: string, page = 1, pageSize = 100): Observable<BibliographicContributor[]> {
     const params: Record<string, unknown> = {
       'fields[contributors]': 'index,users',
       'fields[users]': 'full_name',
@@ -46,10 +43,12 @@ export class RegistryMetadataService {
       'page[size]': pageSize,
     };
 
-    return this.jsonApiService.get<BibliographicContributorsJsonApi>(
-      `${this.apiUrl}/registrations/${registryId}/bibliographic_contributors/`,
-      params
-    );
+    return this.jsonApiService
+      .get<BibliographicContributorsJsonApi>(
+        `${this.apiUrl}/registrations/${registryId}/bibliographic_contributors/`,
+        params
+      )
+      .pipe(map((response) => RegistryMetadataMapper.mapBibliographicContributors(response)));
   }
 
   getCustomItemMetadata(guid: string): Observable<CustomItemMetadataResponse> {

@@ -1,15 +1,15 @@
-import { CITATION_TITLES } from '@shared/constants';
-import { CitationTypes } from '@shared/enums';
+import { CITATION_TITLES } from '../constants';
+import { CitationTypes } from '../enums';
 import {
   CitationStyle,
   CitationStyleJsonApi,
+  CustomCitationPayload,
+  CustomCitationPayloadJsonApi,
   DefaultCitation,
   DefaultCitationJsonApi,
   StyledCitation,
   StyledCitationJsonApi,
-} from '@shared/models';
-import { CustomCitationPayload } from '@shared/models/citations/custom-citation-payload.model';
-import { CustomCitationPayloadJsonApi } from '@shared/models/citations/custom-citation-payload-json-api.model';
+} from '../models';
 
 export class CitationsMapper {
   static fromGetDefaultResponse(response: DefaultCitationJsonApi): DefaultCitation {

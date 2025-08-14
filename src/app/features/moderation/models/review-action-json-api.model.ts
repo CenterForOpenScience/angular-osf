@@ -1,4 +1,4 @@
-import { JsonApiResponse } from '@osf/core/models';
+import { JsonApiResponse } from '@osf/shared/models';
 
 export type ReviewActionsResponseJsonApi = JsonApiResponse<ReviewActionsDataJsonApi[], null>;
 

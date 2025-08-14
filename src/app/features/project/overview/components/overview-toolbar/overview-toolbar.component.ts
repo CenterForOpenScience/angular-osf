@@ -14,7 +14,7 @@ import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { DuplicateDialogComponent, TogglePublicityDialogComponent } from '@osf/features/project/overview/components';
 import { IconComponent } from '@osf/shared/components';
@@ -57,6 +57,8 @@ export class OverviewToolbarComponent {
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   protected destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   isCollectionsRoute = input<boolean>(false);
   protected isPublic = signal(false);
   protected isBookmarked = signal(false);
@@ -70,7 +72,7 @@ export class OverviewToolbarComponent {
   protected readonly socialsActionItems = SOCIAL_ACTION_ITEMS;
   protected readonly forkActionItems = [
     {
-      label: 'project.overview.actions.forkResource',
+      label: 'project.overview.actions.forkProject',
       command: () => this.handleForkResource(),
     },
     {
@@ -80,7 +82,7 @@ export class OverviewToolbarComponent {
     {
       label: 'project.overview.actions.viewDuplication',
       command: () => {
-        //TODO: RNa redirect to duplication page
+        this.router.navigate(['../analytics/duplicates'], { relativeTo: this.route });
       },
     },
   ];
@@ -115,19 +117,6 @@ export class OverviewToolbarComponent {
       }
 
       this.isBookmarked.set(bookmarks.some((bookmark) => bookmark.id === resource.id));
-    });
-
-    effect(() => {
-      const resource = this.currentResource();
-
-      if (resource) {
-        this.forkActionItems[0].label =
-          this.currentResource()?.resourceType === ResourceType.Project
-            ? 'project.overview.actions.forkProject'
-            : this.currentResource()?.resourceType === ResourceType.Registration
-              ? 'project.overview.actions.forkRegistry'
-              : 'project.overview.actions.forkResource';
-      }
     });
   }
 

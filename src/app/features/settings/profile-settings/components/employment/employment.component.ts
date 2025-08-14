@@ -17,8 +17,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { UpdateProfileSettingsEmployment, UserSelectors } from '@osf/core/store/user';
+import { CustomValidators } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
-import { CustomValidators } from '@osf/shared/utils';
 
 import { EmploymentForm } from '../../models';
 import { hasEmploymentChanges, mapEmploymentToForm, mapFormToEmployment } from '../../utils';
