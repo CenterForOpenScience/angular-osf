@@ -167,7 +167,16 @@ export const MENU_ITEMS: MenuItem[] = [
     label: 'navigation.searchOsf',
     icon: 'osf-icon-search',
     routerLinkActiveOptions: { exact: false },
+    visible: true,
+  },
+  {
+    id: 'support',
+    routerLink: null,
+    label: 'navigation.support',
+    icon: 'osf-icon-support',
     styleClass: 'mb-5',
+    url: 'https://help.osf.io/',
+    routerLinkActiveOptions: { exact: false },
     visible: true,
   },
   {
@@ -369,5 +378,14 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLinkActiveOptions: { exact: false },
       },
     ],
+  },
+  {
+    id: 'donate',
+    routerLink: null,
+    routerLinkActiveOptions: { exact: false },
+    label: 'navigation.donate',
+    icon: 'osf-icon-donate',
+    url: 'https://www.cos.io/support-cos',
+    visible: true,
   },
 ];
