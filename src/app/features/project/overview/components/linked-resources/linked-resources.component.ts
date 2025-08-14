@@ -6,18 +6,17 @@ import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
-import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { DeleteNodeLinkDialogComponent, LinkResourceDialogComponent } from '@osf/features/project/overview/components';
-import { TruncatedTextComponent } from '@osf/shared/components';
+import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { IS_XSMALL } from '@osf/shared/helpers';
 import { NodeLinksSelectors } from '@shared/stores';
 
 @Component({
   selector: 'osf-linked-resources',
-  imports: [Button, NgClass, Skeleton, TranslatePipe, TruncatedTextComponent],
+  imports: [Button, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent],
   templateUrl: './linked-resources.component.html',
   styleUrl: './linked-resources.component.scss',
   providers: [DialogService],

@@ -7,12 +7,11 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Menu } from 'primeng/menu';
 import { Skeleton } from 'primeng/skeleton';
 
-import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 
-import { TruncatedTextComponent } from '@osf/shared/components';
+import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/helpers';
 
@@ -22,7 +21,7 @@ import { DeleteComponentDialogComponent } from '../delete-component-dialog/delet
 
 @Component({
   selector: 'osf-project-components',
-  imports: [Button, Menu, Skeleton, TranslatePipe, TruncatedTextComponent, NgClass],
+  imports: [Button, Menu, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent],
   templateUrl: './overview-components.component.html',
   styleUrl: './overview-components.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

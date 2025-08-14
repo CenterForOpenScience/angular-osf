@@ -19,10 +19,11 @@
         @for (component of components(); track component.id) {
           <div class="component-wrapper flex flex-column p-3 gap-3">
             <div class="flex justify-content-between align-items-center">
-              <h2 class="flex gap-2">
-                <i [ngClass]="component.public ? 'osf-icon-padlock-unlock' : 'osf-icon-padlock'"></i>
+              <h2 class="flex align-items-center gap-2">
+                <osf-icon [iconClass]="component.public ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
                 <a class="component-title" [href]="'project/' + component.id">{{ component.title }}</a>
               </h2>
+
               <div>
                 @if (component.currentUserPermissions.includes(UserPermissions.Write)) {
                   <p-button
@@ -30,7 +31,7 @@
                     icon="fas fa-ellipsis-vertical"
                     raised
                     variant="outlined"
-                    (click)="componentActionMenu.toggle($event)"
+                    (onClick)="componentActionMenu.toggle($event)"
                   >
                   </p-button>
                 }
