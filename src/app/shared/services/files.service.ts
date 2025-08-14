@@ -160,7 +160,7 @@ export class FilesService {
     };
 
     return this.jsonApiService
-      .get<GetFileResponse>(`${environment.apiUrl}/files/${id}`, params)
+      .get<GetFileResponse>(`${environment.apiUrl}/files/${id}/`, params)
       .pipe(map((response) => MapFile(response.data)));
   }
 
@@ -190,7 +190,6 @@ export class FilesService {
   getProjectShortInfo(resourceId: string): Observable<GetProjectShortInfoResponse> {
     const params = {
       'fields[nodes]': 'title,description,date_created,date_modified',
-      embed: 'bibliographic_contributors',
     };
     return this.jsonApiService.get<GetProjectShortInfoResponse>(`${environment.apiUrl}/nodes/${resourceId}/`, params);
   }

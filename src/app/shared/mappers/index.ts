@@ -3,6 +3,7 @@ export * from './citations.mapper';
 export * from './collections';
 export * from './components';
 export * from './contributors';
+export * from './files/files.mapper';
 export * from './filters';
 export * from './institutions';
 export * from './licenses.mapper';

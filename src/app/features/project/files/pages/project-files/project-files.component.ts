@@ -44,7 +44,6 @@ import {
   SetSearch,
   SetSort,
 } from '@osf/features/project/files/store';
-import { approveFile } from '@osf/features/project/files/utils';
 import { GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import {
@@ -246,8 +245,10 @@ export class ProjectFilesComponent {
 
         if (event.type === HttpEventType.Response) {
           if (event.body) {
-            const fileId = event?.body?.data.id;
-            approveFile(fileId, this.projectId());
+            const fileId = event?.body?.data?.id?.split('/').pop();
+            if (fileId) {
+              this.filesService.getFileGuid(fileId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+            }
           }
         }
       });
