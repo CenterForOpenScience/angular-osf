@@ -17,7 +17,7 @@ import {
 } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
-import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { PreprintProviderDetails, PreprintRequest } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent } from '@shared/components';
 
@@ -37,7 +37,7 @@ export class ModerationStatusBannerComponent {
   preprint = select(PreprintSelectors.getPreprint);
   provider = input.required<PreprintProviderDetails>();
   latestAction = input.required<ReviewAction | null>();
-  areReviewActionsLoading = input.required<boolean>();
+  latestWithdrawalRequest = input.required<PreprintRequest | null>();
 
   isPendingWithdrawal = input.required<boolean>();
   noActions = signal<boolean>(false);
@@ -96,10 +96,25 @@ export class ModerationStatusBannerComponent {
     }
   });
 
-  creatorName = computed(() => {
+  requestActivityLanguage = computed(() => {
+    if (!this.isPendingWithdrawal()) {
+      return;
+    }
+
+    return recentActivityMessageByState[ReviewsState.PendingWithdrawal];
+  });
+
+  actionCreatorName = computed(() => {
     return this.latestAction()?.creator.name;
   });
-  creatorId = computed(() => {
+  actionCreatorId = computed(() => {
     return this.latestAction()?.creator.id;
+  });
+
+  withdrawalRequesterName = computed(() => {
+    return this.latestWithdrawalRequest()?.creator.name;
+  });
+  withdrawalRequesterId = computed(() => {
+    return this.latestWithdrawalRequest()?.creator.id;
   });
 }

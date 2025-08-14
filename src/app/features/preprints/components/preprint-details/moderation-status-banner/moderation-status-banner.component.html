@@ -13,10 +13,16 @@
             </p>
           } @else {
             <p>
-              <a [href]="`${environment.webUrl}/${creatorId()}`">{{ creatorName() }}</a>
+              <a [href]="`${environment.webUrl}/${actionCreatorId()}`">{{ actionCreatorName() }}</a>
               {{ recentActivityLanguage() | translate: { documentType: documentType()?.singular } }}
               {{ labelDate() | date: 'MMM d, y' }}
             </p>
+          }
+
+          @if (isPendingWithdrawal()) {
+            <a [href]="`${environment.webUrl}/${withdrawalRequesterId()}`">{{ withdrawalRequesterName() }}</a>
+            {{ requestActivityLanguage()! | translate: { documentType: documentType()?.singular } }}
+            {{ latestWithdrawalRequest()?.dateLastTransitioned | date: 'MMM d, y' }}
           }
         </div>
       </div>

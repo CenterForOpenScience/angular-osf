@@ -167,7 +167,7 @@ export class PreprintsService {
   }
 
   getPreprintRequests(preprintId: string): Observable<PreprintRequest[]> {
-    const baseUrl = `${environment.apiUrl}/preprints/${preprintId}/requests/`;
+    const baseUrl = `${environment.apiUrl}/preprints/${preprintId}/requests/?embed=creator`;
 
     return this.jsonApiService
       .get<PreprintRequestsJsonApiResponse>(baseUrl)
