@@ -6,6 +6,7 @@ export { MOCK_EDUCATION } from './education.mock';
 export { MOCK_EMPLOYMENT } from './employment.mock';
 export * from './employment.mock';
 export * from './filters.mock';
+export { LoaderServiceMock } from './loader-service.mock';
 export * from './meeting.mock';
 export { MOCK_MEETING } from './meeting.mock';
 export { MOCK_STORE } from './mock-store.mock';
