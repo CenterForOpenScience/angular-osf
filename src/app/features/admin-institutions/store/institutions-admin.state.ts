@@ -1,7 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { catchError, tap } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -23,6 +23,7 @@ import {
   FetchProjects,
   FetchRegistrations,
   FetchStorageRegionSearch,
+  RequestProjectAccess,
   SendUserMessage,
 } from './institutions-admin.actions';
 import { INSTITUTIONS_ADMIN_STATE_DEFAULTS, InstitutionsAdminModel } from './institutions-admin.model';
@@ -239,11 +240,6 @@ export class InstitutionsAdminState {
 
   @Action(SendUserMessage)
   sendUserMessage(ctx: StateContext<InstitutionsAdminModel>, action: SendUserMessage) {
-    const state = ctx.getState();
-    ctx.patchState({
-      sendMessage: { ...state.sendMessage, isLoading: true, error: null },
-    });
-
     return this.institutionsAdminService
       .sendMessage({
         userId: action.userId,
@@ -252,13 +248,13 @@ export class InstitutionsAdminState {
         bccSender: action.bccSender,
         replyTo: action.replyTo,
       })
-      .pipe(
-        tap((response) => {
-          ctx.patchState({
-            sendMessage: { data: response, isLoading: false, error: null },
-          });
-        }),
-        catchError((error) => handleSectionError(ctx, 'sendMessage', error))
-      );
+      .pipe(catchError((error) => throwError(() => error)));
+  }
+
+  @Action(RequestProjectAccess)
+  requestProjectAccess(ctx: StateContext<InstitutionsAdminModel>, action: RequestProjectAccess) {
+    return this.institutionsAdminService
+      .requestProjectAccess(action.payload)
+      .pipe(catchError((error) => throwError(() => error)));
   }
 }

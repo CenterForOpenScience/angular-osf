@@ -8,7 +8,6 @@ import {
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
   InstitutionUser,
-  SendMessageResponseJsonApi,
 } from '../models';
 
 export interface InstitutionsAdminModel {
@@ -21,7 +20,6 @@ export interface InstitutionsAdminModel {
   projects: ResultStateModel<InstitutionProject[]>;
   registrations: ResultStateModel<InstitutionRegistration[]>;
   preprints: ResultStateModel<InstitutionPreprint[]>;
-  sendMessage: AsyncStateModel<SendMessageResponseJsonApi | null>;
   institution: AsyncStateModel<Institution>;
 }
 
@@ -40,6 +38,5 @@ export const INSTITUTIONS_ADMIN_STATE_DEFAULTS: InstitutionsAdminModel = {
   projects: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined, downloadLink: null },
   registrations: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined, downloadLink: null },
   preprints: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined, downloadLink: null },
-  sendMessage: { data: null, isLoading: false, error: null },
   institution: { data: {} as Institution, isLoading: false, error: null },
 };

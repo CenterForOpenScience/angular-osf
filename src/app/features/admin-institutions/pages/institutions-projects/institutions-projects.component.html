@@ -17,6 +17,7 @@
     (sortChanged)="onSortChange($event)"
     (linkPageChanged)="onLinkPageChange($event)"
     (downloadClicked)="download($event)"
+    (iconClicked)="onIconClick($event)"
     [reportsLink]="institution().linkToExternalReportsArchive"
   >
     <div slot="amount" class="flex items-center">

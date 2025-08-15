@@ -10,7 +10,6 @@ import {
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
   InstitutionUser,
-  SendMessageResponseJsonApi,
 } from '../models';
 
 import { InstitutionsAdminModel } from './institutions-admin.model';
@@ -155,16 +154,6 @@ export class InstitutionsAdminSelectors {
   @Selector([InstitutionsAdminState])
   static getPreprintsDownloadLink(state: InstitutionsAdminModel): string | null {
     return state.preprints.downloadLink;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getSendMessageResponse(state: InstitutionsAdminModel): SendMessageResponseJsonApi | null {
-    return state.sendMessage.data;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getSendMessageLoading(state: InstitutionsAdminModel): boolean {
-    return state.sendMessage.isLoading;
   }
 
   @Selector([InstitutionsAdminState])

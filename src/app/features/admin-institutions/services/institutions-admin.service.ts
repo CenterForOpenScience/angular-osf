@@ -3,18 +3,19 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { mapInstitutionPreprints } from '@osf/features/admin-institutions/mappers/institution-preprints.mapper';
 import { JsonApiService } from '@shared/services';
 
 import {
   mapIndexCardResults,
   mapInstitutionDepartments,
+  mapInstitutionPreprints,
   mapInstitutionProjects,
   mapInstitutionRegistrations,
   mapInstitutionSummaryMetrics,
   mapInstitutionUsers,
   sendMessageRequestMapper,
 } from '../mappers';
+import { requestProjectAccessMapper } from '../mappers/request-access.mapper';
 import {
   AdminInstitutionSearchResult,
   InstitutionDepartment,
@@ -29,6 +30,7 @@ import {
   InstitutionSummaryMetricsJsonApi,
   InstitutionUser,
   InstitutionUsersJsonApi,
+  RequestProjectAccessData,
   SendMessageRequest,
   SendMessageResponseJsonApi,
 } from '../models';
@@ -113,6 +115,12 @@ export class InstitutionsAdminService {
       `${environment.apiUrl}/users/${request.userId}/messages/`,
       payload
     );
+  }
+
+  requestProjectAccess(request: RequestProjectAccessData): Observable<void> {
+    const payload = requestProjectAccessMapper(request);
+
+    return this.jsonApiService.post<void>(`${environment.apiUrl}/nodes/${request.projectId}/requests/`, payload);
   }
 
   private fetchIndexCards(

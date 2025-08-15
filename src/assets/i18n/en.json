@@ -2440,6 +2440,13 @@
       "publicProjects": "Public Projects",
       "publicRegistrations": "Public Registrations"
     },
+    "contact": {
+      "requestAccess": "Request Access",
+      "sendMessage": "Send Message",
+      "message": "I am an admin associated with Center For Open Science and I would like to be added to your project as a non-bibliographic contributor in order to assist with metadata curation please add me with the following permissions.",
+      "administrative": "Administrative",
+      "readWrite": "Read/Write"
+    },
     "institutionUsers": {
       "allDepartments": "All departments",
       "lastLogin": "Last Login",
@@ -2460,7 +2467,8 @@
       "osfLink": "OSF Link",
       "orcid": "ORCID",
       "noData": "No users found",
-      "messageSent": "Message has been sent."
+      "messageSent": "Message has been sent.",
+      "requestSent": "Request has been sent."
     },
     "projects": {
       "title": "Title",

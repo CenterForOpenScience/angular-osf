@@ -1,26 +1,48 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { DialogService } from 'primeng/dynamicdialog';
+
+import { filter } from 'rxjs';
+
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { AdminTableComponent } from '@osf/features/admin-institutions/components';
-import { projectTableColumns } from '@osf/features/admin-institutions/constants';
-import { mapProjectToTableCellData } from '@osf/features/admin-institutions/mappers';
-import { FetchProjects } from '@osf/features/admin-institutions/store/institutions-admin.actions';
-import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store/institutions-admin.selectors';
+import { UserSelectors } from '@osf/core/store/user';
 import { LoadingSpinnerComponent } from '@osf/shared/components';
-import { TABLE_PARAMS } from '@shared/constants';
-import { SortOrder } from '@shared/enums';
-import { parseQueryFilterParams } from '@shared/helpers';
-import { Institution, QueryParams } from '@shared/models';
-import { InstitutionsSearchSelectors } from '@shared/stores';
+import { TABLE_PARAMS } from '@osf/shared/constants';
+import { SortOrder } from '@osf/shared/enums';
+import { parseQueryFilterParams } from '@osf/shared/helpers';
+import { Institution, QueryParams } from '@osf/shared/models';
+import { ToastService } from '@osf/shared/services';
+import { InstitutionsSearchSelectors } from '@osf/shared/stores';
 
-import { DownloadType } from '../../enums';
+import { AdminTableComponent } from '../../components';
+import { projectTableColumns } from '../../constants';
+import { ContactDialogComponent } from '../../dialogs';
+import { ContactOption, DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
-import { InstitutionProject, InstitutionProjectsQueryParamsModel, TableCellData } from '../../models';
+import { mapProjectToTableCellData } from '../../mappers';
+import {
+  ContactDialogData,
+  InstitutionProject,
+  InstitutionProjectsQueryParamsModel,
+  TableCellData,
+  TableCellLink,
+  TableIconClickEvent,
+} from '../../models';
+import { FetchProjects, InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } from '../../store';
 
 @Component({
   selector: 'osf-institutions-projects',
@@ -28,13 +50,20 @@ import { InstitutionProject, InstitutionProjectsQueryParamsModel, TableCellData 
   templateUrl: './institutions-projects.component.html',
   styleUrl: './institutions-projects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DialogService],
 })
 export class InstitutionsProjectsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly dialogService = inject(DialogService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly toastService = inject(ToastService);
+  private readonly translate = inject(TranslateService);
 
   private readonly actions = createDispatchMap({
     fetchProjects: FetchProjects,
+    sendUserMessage: SendUserMessage,
+    requestProjectAccess: RequestProjectAccess,
   });
 
   institutionId = '';
@@ -54,10 +83,11 @@ export class InstitutionsProjectsComponent {
   projectsLinks = select(InstitutionsAdminSelectors.getProjectsLinks);
   projectsDownloadLink = select(InstitutionsAdminSelectors.getProjectsDownloadLink);
   institution = select(InstitutionsSearchSelectors.getInstitution);
+  currentUser = select(UserSelectors.getCurrentUser);
 
-  tableData = computed(() => {
-    return this.projects().map((project: InstitutionProject): TableCellData => mapProjectToTableCellData(project));
-  });
+  tableData = computed(() =>
+    this.projects().map((project: InstitutionProject): TableCellData => mapProjectToTableCellData(project))
+  );
 
   constructor() {
     this.setupQueryParamsEffect();
@@ -86,6 +116,61 @@ export class InstitutionsProjectsComponent {
 
   download(type: DownloadType) {
     downloadResults(this.projectsDownloadLink(), type);
+  }
+
+  onIconClick(event: TableIconClickEvent): void {
+    switch (event.action) {
+      case 'sendMessage': {
+        this.dialogService
+          .open(ContactDialogComponent, {
+            width: '448px',
+            focusOnShow: false,
+            header: this.translate.instant('adminInstitutions.institutionUsers.sendEmail'),
+            closeOnEscape: true,
+            modal: true,
+            closable: true,
+            data: this.currentUser()?.fullName,
+          })
+          .onClose.pipe(
+            filter((value) => !!value),
+            takeUntilDestroyed(this.destroyRef)
+          )
+          .subscribe((data: ContactDialogData) => this.sendEmailToUser(event.rowData, data));
+        break;
+      }
+    }
+  }
+
+  private sendEmailToUser(userRowData: TableCellData, emailData: ContactDialogData): void {
+    const userId = (userRowData['creator'] as TableCellLink).url.split('/').pop() || '';
+
+    if (emailData.selectedOption === ContactOption.SendMessage) {
+      this.actions
+        .sendUserMessage(
+          userId,
+          this.institutionId,
+          emailData.emailContent,
+          emailData.ccSender,
+          emailData.allowReplyToSender
+        )
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.toastService.showSuccess('adminInstitutions.institutionUsers.messageSent'));
+    } else {
+      const projectId = (userRowData['title'] as TableCellLink).url.split('/').pop() || '';
+
+      this.actions
+        .requestProjectAccess({
+          userId,
+          projectId,
+          institutionId: this.institutionId,
+          permission: emailData.permission || '',
+          messageText: emailData.emailContent,
+          bccSender: emailData.ccSender,
+          replyTo: emailData.allowReplyToSender,
+        })
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => this.toastService.showSuccess('adminInstitutions.institutionUsers.requestSent'));
+    }
   }
 
   private setupQueryParamsEffect(): void {
