@@ -105,7 +105,7 @@ export class MoveFileDialogComponent {
     let path = this.currentFolder()?.path;
 
     if (!path) {
-      throw new Error(this.translateService.instant('project.files.dialogs.moveFile.pathError'));
+      throw new Error(this.translateService.instant('files.dialogs.moveFile.pathError'));
     }
 
     if (!this.currentFolder()?.relationships.parentFolderLink) {

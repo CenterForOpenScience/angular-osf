@@ -12,7 +12,7 @@
             raised
             severity="success"
             [icon]="'fas fa-plus'"
-            [label]="'project.files.actions.createFolder' | translate"
+            [label]="'files.actions.createFolder' | translate"
             (click)="createFolder()"
           >
           </p-button>
@@ -23,7 +23,7 @@
             raised
             severity="success"
             [icon]="'fas fa-upload'"
-            [label]="'project.files.actions.uploadFile' | translate"
+            [label]="'files.actions.uploadFile' | translate"
             (click)="fileInput.click()"
           >
           </p-button>
@@ -35,7 +35,7 @@
 
     <div class="flex absolute">
       <p-dialog
-        [header]="'project.files.dialogs.uploadFile.title' | translate"
+        [header]="'files.dialogs.uploadFile.title' | translate"
         [modal]="true"
         [(visible)]="fileIsUploading"
         class="upload-dialog"

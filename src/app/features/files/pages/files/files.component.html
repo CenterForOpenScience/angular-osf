@@ -1,6 +1,6 @@
 <osf-sub-header [title]="'files.title' | translate"></osf-sub-header>
 
-@if (!dataLoaded()) {
+@if (dataLoaded()) {
   <osf-loading-spinner></osf-loading-spinner>
 } @else {
   <div class="flex flex-column bg-white gap-4 h-full flex-1 p-4 p-dialog-align-center">
@@ -103,7 +103,7 @@
       [actions]="filesTreeActions"
       [viewOnly]="false"
       [viewOnlyDownloadable]="false"
-      [resourceId]="projectId()"
+      [resourceId]="resourceId()"
       [provider]="provider()"
       (folderIsOpening)="folderIsOpening($event)"
       (entryFileClicked)="navigateToFile($event)"

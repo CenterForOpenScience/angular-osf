@@ -15,21 +15,19 @@
     <div class="pt-4">
       @for (funder of funders(); track funder.funder_identifier) {
         <div class="mb-2 pb-3 border-bottom-1 surface-border flex flex-column gap-2">
-          <p>{{ 'project.files.detail.projectMetadata.fields.funder' | translate }}: {{ funder.funder_name }}</p>
+          <p>{{ 'files.detail.resourceMetadata.fields.funder' | translate }}: {{ funder.funder_name }}</p>
 
-          <p>{{ 'project.files.detail.projectMetadata.fields.awardTitle' | translate }}: {{ funder.award_title }}</p>
+          <p>{{ 'files.detail.resourceMetadata.fields.awardTitle' | translate }}: {{ funder.award_title }}</p>
 
           @if (funder.award_uri) {
             <p>
-              {{ 'project.files.detail.projectMetadata.fields.awardUri' | translate }}:
+              {{ 'files.detail.resourceMetadata.fields.awardUri' | translate }}:
               <a [href]="funder.award_uri" target="_blank" class="text-primary text-sm">{{ funder.award_title }}</a>
             </p>
           }
 
           @if (funder.award_number) {
-            <p>
-              {{ 'project.files.detail.projectMetadata.fields.awardNumber' | translate }} : {{ funder.award_number }}
-            </p>
+            <p>{{ 'files.detail.resourceMetadata.fields.awardNumber' | translate }} : {{ funder.award_number }}</p>
           }
 
           @if (funder.award_uri) {

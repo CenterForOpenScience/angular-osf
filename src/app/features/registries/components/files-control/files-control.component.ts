@@ -14,7 +14,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { CreateFolderDialogComponent } from '@osf/features/project/files/components';
+import { CreateFolderDialogComponent } from '@osf/features/files/components';
 import { FilesTreeComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { FilesTreeActions, OsfFile } from '@osf/shared/models';
 import { FilesService } from '@osf/shared/services';
@@ -117,7 +117,7 @@ export class FilesControlComponent {
       .open(CreateFolderDialogComponent, {
         width: '448px',
         focusOnShow: false,
-        header: this.translateService.instant('project.files.dialogs.createFolder.title'),
+        header: this.translateService.instant('files.dialogs.createFolder.title'),
         closeOnEscape: true,
         modal: true,
         closable: true,

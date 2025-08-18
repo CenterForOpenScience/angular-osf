@@ -84,26 +84,26 @@ export class FileDetailComponent {
 
   embedItems = [
     {
-      label: 'project.files.detail.actions.copyDynamicIframe',
+      label: 'files.detail.actions.copyDynamicIframe',
       command: () => this.handleCopyDynamicEmbed(),
     },
     {
-      label: 'project.files.detail.actions.copyStaticIframe',
+      label: 'files.detail.actions.copyStaticIframe',
       command: () => this.handleCopyStaticEmbed(),
     },
   ];
 
   shareItems = [
     {
-      label: 'project.files.detail.actions.share.email',
+      label: 'files.detail.actions.share.email',
       command: () => this.handleEmailShare(),
     },
     {
-      label: 'project.files.detail.actions.share.x',
+      label: 'files.detail.actions.share.x',
       command: () => this.handleXShare(),
     },
     {
-      label: 'project.files.detail.actions.share.facebook',
+      label: 'files.detail.actions.share.facebook',
       command: () => this.handleFacebookShare(),
     },
   ];
@@ -155,7 +155,7 @@ export class FileDetailComponent {
     navigator.clipboard
       .writeText(embedHtml)
       .then(() => {
-        this.toastService.showSuccess('project.files.detail.toast.copiedToClipboard');
+        this.toastService.showSuccess('files.detail.toast.copiedToClipboard');
       })
       .catch((err) => {
         this.toastService.showError(err.message);
@@ -176,9 +176,9 @@ export class FileDetailComponent {
 
   confirmDelete(file: OsfFile): void {
     this.customConfirmationService.confirmDelete({
-      headerKey: 'project.files.dialogs.deleteFile.title',
+      headerKey: 'files.dialogs.deleteFile.title',
       messageParams: { name: file.name },
-      messageKey: 'project.files.dialogs.deleteFile.message',
+      messageKey: 'files.dialogs.deleteFile.message',
       onConfirm: () => this.deleteEntry(file.links.delete),
     });
   }

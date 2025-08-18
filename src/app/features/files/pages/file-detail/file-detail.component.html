@@ -2,9 +2,9 @@
 
 <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1 ml-auto mr-4">
   <p-tablist>
-    <p-tab [value]="FileDetailTab.Details">{{ 'project.files.detail.tabs.details' | translate }}</p-tab>
-    <p-tab [value]="FileDetailTab.Revisions">{{ 'project.files.detail.tabs.revisions' | translate }}</p-tab>
-    <p-tab [value]="FileDetailTab.Keywords">{{ 'project.files.detail.tabs.keywords' | translate }}</p-tab>
+    <p-tab [value]="FileDetailTab.Details">{{ 'files.detail.tabs.details' | translate }}</p-tab>
+    <p-tab [value]="FileDetailTab.Revisions">{{ 'files.detail.tabs.revisions' | translate }}</p-tab>
+    <p-tab [value]="FileDetailTab.Keywords">{{ 'files.detail.tabs.keywords' | translate }}</p-tab>
   </p-tablist>
 </p-tabs>
 
@@ -13,14 +13,14 @@
     <div class="flex align-items-center gap-2 back-navigation font-semibold">
       <i class="pi pi-angle-left text-base"></i>
       <a [routerLink]="['../']" class="font-semibold">
-        {{ 'project.files.detail.backToList' | translate }}
+        {{ 'files.detail.backToList' | translate }}
       </a>
     </div>
 
     <div class="flex gap-3 ml-auto sm-round-padding-btn">
       <p-button
         severity="secondary"
-        [label]="'project.files.detail.actions.addCommunityMetadata' | translate"
+        [label]="'files.detail.actions.addCommunityMetadata' | translate"
         [routerLink]="['/metadata']"
       ></p-button>
 

@@ -44,6 +44,8 @@ import {
 import { JsonApiService } from '@shared/services';
 import { ToastService } from '@shared/services/toast.service';
 
+import { ResourceType } from '../enums';
+
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -53,6 +55,19 @@ export class FilesService {
   readonly jsonApiService = inject(JsonApiService);
   readonly toastService = inject(ToastService);
   filesFields = 'name,guid,kind,extra,size,path,materialized_path,date_modified,parent_folder,files';
+
+  private readonly urlMap = new Map<ResourceType, string>([
+    [ResourceType.Project, 'nodes'],
+    [ResourceType.Registration, 'registrations'],
+  ]);
+
+  // getModerators(resourceId: string, resourceType: ResourceType): Observable<ModeratorModel[]> {
+  //   const baseUrl = `${environment.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators`;
+
+  //   return this.jsonApiService
+  //     .get<ModeratorResponseJsonApi>(baseUrl)
+  //     .pipe(map((response) => response.data.map((moderator) => ModerationMapper.fromModeratorResponse(moderator))));
+  // }
 
   getFiles(filesLink: string, search: string, sort: string): Observable<OsfFile[]> {
     const params: Record<string, string> = {

@@ -4,6 +4,7 @@ import { catchError, finalize, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { CreateFolder } from '@osf/features/registries/store';
 import { handleSectionError } from '@osf/shared/helpers';
 import { FilesService, ToastService } from '@shared/services';
 
@@ -18,9 +19,18 @@ import {
   GetFileResourceContributors,
   GetFileResourceMetadata,
   GetFileRevisions,
+  GetFiles,
+  GetMoveFileFiles,
+  GetRootFolderFiles,
   GetRootFolders,
+  RenameEntry,
   ResetState,
+  SetCurrentFolder,
   SetFileMetadata,
+  SetFilesIsLoading,
+  SetMoveFileCurrentFolder,
+  SetSearch,
+  SetSort,
   UpdateTags,
 } from './files.actions';
 import { FilesStateModel } from './files.model';
@@ -33,6 +43,121 @@ import { FilesStateModel } from './files.model';
 export class FilesState {
   filesService = inject(FilesService);
   toastService = inject(ToastService);
+
+  @Action(GetMoveFileFiles)
+  getMoveFileFiles(ctx: StateContext<FilesStateModel>, action: GetMoveFileFiles) {
+    const state = ctx.getState();
+    ctx.patchState({
+      moveFileFiles: { ...state.moveFileFiles, isLoading: true, error: null },
+    });
+
+    return this.filesService.getFiles(action.filesLink, '', '').pipe(
+      tap({
+        next: (files) => {
+          ctx.patchState({
+            moveFileFiles: {
+              data: files,
+              isLoading: false,
+              error: null,
+            },
+          });
+        },
+      }),
+      catchError((error) => handleSectionError(ctx, 'moveFileFiles', error))
+    );
+  }
+
+  @Action(GetFiles)
+  getFiles(ctx: StateContext<FilesStateModel>, action: GetFiles) {
+    const state = ctx.getState();
+    ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
+
+    return this.filesService.getFiles(action.filesLink, state.search, state.sort).pipe(
+      tap({
+        next: (files) => {
+          ctx.patchState({
+            files: {
+              data: files,
+              isLoading: false,
+              error: null,
+            },
+          });
+        },
+      }),
+      catchError((error) => handleSectionError(ctx, 'files', error))
+    );
+  }
+
+  @Action(SetFilesIsLoading)
+  setFilesIsLoading(ctx: StateContext<FilesStateModel>, action: SetFilesIsLoading) {
+    const state = ctx.getState();
+    ctx.patchState({ files: { ...state.files, isLoading: action.isLoading, error: null } });
+  }
+
+  @Action(SetCurrentFolder)
+  setSelectedFolder(ctx: StateContext<FilesStateModel>, action: SetCurrentFolder) {
+    ctx.patchState({ currentFolder: action.folder });
+  }
+
+  @Action(SetMoveFileCurrentFolder)
+  setMoveFileSelectedFolder(ctx: StateContext<FilesStateModel>, action: SetMoveFileCurrentFolder) {
+    ctx.patchState({ moveFileCurrentFolder: action.folder });
+  }
+
+  @Action(CreateFolder)
+  createFolder(ctx: StateContext<FilesStateModel>, action: CreateFolder) {
+    const state = ctx.getState();
+    ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
+
+    return this.filesService
+      .createFolder(action.newFolderLink, action.folderName)
+      .pipe(finalize(() => ctx.patchState({ files: { ...state.files, isLoading: false, error: null } })));
+  }
+
+  @Action(DeleteEntry)
+  deleteEntry(ctx: StateContext<FilesStateModel>, action: DeleteEntry) {
+    return this.filesService.deleteEntry(action.link).pipe(
+      tap({
+        next: () => {
+          const selectedFolder = ctx.getState().currentFolder;
+          if (selectedFolder?.relationships.filesLink) {
+            ctx.dispatch(new GetFiles(selectedFolder?.relationships.filesLink));
+          } else {
+            ctx.dispatch(new GetRootFolderFiles(action.resourceId));
+          }
+        },
+      })
+    );
+  }
+
+  @Action(RenameEntry)
+  renameEntry(ctx: StateContext<FilesStateModel>, action: RenameEntry) {
+    const state = ctx.getState();
+    ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
+
+    return this.filesService.renameEntry(action.link, action.name).pipe(
+      tap({
+        next: () => {
+          const selectedFolder = ctx.getState().currentFolder;
+          if (selectedFolder?.relationships.filesLink) {
+            ctx.dispatch(new GetFiles(selectedFolder?.relationships.filesLink));
+          } else {
+            ctx.dispatch(new GetRootFolderFiles(action.resourceId));
+          }
+        },
+      })
+    );
+  }
+
+  @Action(SetSearch)
+  setSearch(ctx: StateContext<FilesStateModel>, action: SetSearch) {
+    ctx.patchState({ search: action.search });
+  }
+
+  @Action(SetSort)
+  setSort(ctx: StateContext<FilesStateModel>, action: SetSort) {
+    ctx.patchState({ sort: action.sort });
+  }
 
   @Action(GetFile)
   getFile(ctx: StateContext<FilesStateModel>, action: GetFile) {
@@ -80,22 +205,6 @@ export class FilesState {
         },
       }),
       catchError((error) => handleSectionError(ctx, 'fileMetadata', error))
-    );
-  }
-
-  @Action(DeleteEntry)
-  deleteEntry(ctx: StateContext<FilesStateModel>, action: DeleteEntry) {
-    return this.filesService.deleteEntry(action.link).pipe(
-      tap({
-        next: () => {
-          const selectedFolder = ctx.getState().currentFolder;
-          // if (selectedFolder?.relationships.filesLink) {
-          //   ctx.dispatch(new GetFiles(selectedFolder?.relationships.filesLink));
-          // } else {
-          //   ctx.dispatch(new GetRootFolderFiles(action.resourceId));
-          // }
-        },
-      })
     );
   }
 
@@ -201,9 +310,6 @@ export class FilesState {
               error: null,
             },
           }),
-      }),
-      finalize(() => {
-        ctx.patchState({ configuredStorageAddons: { ...state.configuredStorageAddons, isLoading: false } });
       }),
       catchError((error) => handleSectionError(ctx, 'configuredStorageAddons', error))
     );

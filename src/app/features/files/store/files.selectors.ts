@@ -64,12 +64,12 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
-  static getMetadata(state: FilesStateModel): ResourceMetadata | null {
+  static getResourceMetadata(state: FilesStateModel): ResourceMetadata | null {
     return state.resourceMetadata.data;
   }
 
   @Selector([FilesState])
-  static isMetadataLoading(state: FilesStateModel): boolean {
+  static isResourceMetadataLoading(state: FilesStateModel): boolean {
     return state.resourceMetadata.isLoading;
   }
 
@@ -79,7 +79,7 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
-  static isContributorsLoading(state: FilesStateModel): boolean {
+  static isResourceContributorsLoading(state: FilesStateModel): boolean {
     return state.contributors.isLoading;
   }
 

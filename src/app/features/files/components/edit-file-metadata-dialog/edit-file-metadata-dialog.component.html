@@ -1,16 +1,16 @@
 <form [formGroup]="fileMetadataForm" (ngSubmit)="setFileMetadata()" class="flex flex-column gap-3">
   <div class="flex flex-column gap-1">
-    <p>{{ 'project.files.detail.fileMetadata.fields.title' | translate }}</p>
+    <p>{{ 'files.detail.fileMetadata.fields.title' | translate }}</p>
     <input pInputText id="title" [formControl]="titleControl" />
   </div>
 
   <div class="flex flex-column gap-1">
-    <p>{{ 'project.files.detail.fileMetadata.fields.description' | translate }}</p>
+    <p>{{ 'files.detail.fileMetadata.fields.description' | translate }}</p>
     <input pInputText id="description" [formControl]="descriptionControl" />
   </div>
 
   <div class="flex flex-column gap-1">
-    <p>{{ 'project.files.detail.fileMetadata.fields.resourceType' | translate }}</p>
+    <p>{{ 'files.detail.fileMetadata.fields.resourceType' | translate }}</p>
     <p-select
       class="w-full"
       [options]="resourceTypes"
@@ -23,7 +23,7 @@
   </div>
 
   <div class="flex flex-column gap-1">
-    <p>{{ 'project.files.detail.fileMetadata.fields.resourceLanguage' | translate }}</p>
+    <p>{{ 'files.detail.fileMetadata.fields.resourceLanguage' | translate }}</p>
     <p-select
       class="w-full"
       [options]="languages"

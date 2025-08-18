@@ -1,4 +1,64 @@
+import { OsfFile } from '@osf/shared/models';
+
 import { PatchFileMetadata } from '../models';
+
+export class GetRootFolderFiles {
+  static readonly type = '[Files] Get Root Folder Files';
+
+  constructor(public resourceId: string) {}
+}
+
+export class GetFiles {
+  static readonly type = '[Files] Get Files';
+
+  constructor(public filesLink: string) {}
+}
+
+export class SetFilesIsLoading {
+  static readonly type = '[Files] Set Files Loading';
+
+  constructor(public isLoading: boolean) {}
+}
+
+export class RenameEntry {
+  static readonly type = '[Files] Rename entry';
+
+  constructor(
+    public resourceId: string,
+    public link: string,
+    public name: string
+  ) {}
+}
+
+export class SetSearch {
+  static readonly type = '[Files] Set Search';
+
+  constructor(public search: string) {}
+}
+
+export class SetSort {
+  static readonly type = '[Files] Set Sort';
+
+  constructor(public sort: string) {}
+}
+
+export class SetCurrentFolder {
+  static readonly type = '[Files] Set Current Folder';
+
+  constructor(public folder: OsfFile | null) {}
+}
+
+export class SetMoveFileCurrentFolder {
+  static readonly type = '[Files] Set Move File Current Folder';
+
+  constructor(public folder: OsfFile | null) {}
+}
+
+export class GetMoveFileFiles {
+  static readonly type = '[Files] Get Move File Files';
+
+  constructor(public filesLink: string) {}
+}
 
 export class GetFile {
   static readonly type = '[Files] Get File';
@@ -55,6 +115,15 @@ export class UpdateTags {
   constructor(
     public tags: string[],
     public fileGuid: string
+  ) {}
+}
+
+export class CreateFolder {
+  static readonly type = '[Files] Create folder';
+
+  constructor(
+    public newFolderLink: string,
+    public folderName: string
   ) {}
 }
 

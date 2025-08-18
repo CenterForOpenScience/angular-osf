@@ -28,14 +28,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { CreateFolderDialogComponent } from '@osf/features/files/components';
 import {
   CreateFolder,
   DeleteEntry,
   GetConfiguredStorageAddons,
   GetFiles,
   GetRootFolders,
-  ProjectFilesSelectors,
   RenameEntry,
   ResetState,
   SetCurrentFolder,
@@ -43,8 +41,8 @@ import {
   SetMoveFileCurrentFolder,
   SetSearch,
   SetSort,
-} from '@osf/features/project/files/store';
-import { GetProjectById, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
+} from '@osf/features/files/store';
+import { GetProjectById } from '@osf/features/project/overview/store';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import {
   FilesTreeComponent,
@@ -56,8 +54,14 @@ import {
 import { ConfiguredStorageAddon, FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
+import { CreateFolderDialogComponent } from '../../components';
+import { FileProvider } from '../../constants';
+import { FilesSelectors } from '../../store';
+
+import { environment } from 'src/environments/environment';
+
 @Component({
-  selector: 'osf-project-files',
+  selector: 'osf-files',
   imports: [
     TableModule,
     Button,
@@ -73,12 +77,12 @@ import { FilesService } from '@shared/services';
     FilesTreeComponent,
     FormSelectComponent,
   ],
-  templateUrl: './project-files.component.html',
-  styleUrl: './project-files.component.scss',
+  templateUrl: './files.component.html',
+  styleUrl: './files.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService, TreeDragDropService],
 })
-export class ProjectFilesComponent {
+export class FilesComponent {
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
   private readonly filesService = inject(FilesService);
@@ -103,17 +107,16 @@ export class ProjectFilesComponent {
     resetState: ResetState,
   });
 
-  protected readonly files = select(ProjectFilesSelectors.getFiles);
-  protected readonly isFilesLoading = select(ProjectFilesSelectors.isFilesLoading);
-  protected readonly currentFolder = select(ProjectFilesSelectors.getCurrentFolder);
-  protected readonly provider = select(ProjectFilesSelectors.getProvider);
+  protected readonly files = select(FilesSelectors.getFiles);
+  protected readonly isFilesLoading = select(FilesSelectors.isFilesLoading);
+  protected readonly currentFolder = select(FilesSelectors.getCurrentFolder);
+  protected readonly provider = select(FilesSelectors.getProvider);
 
-  protected readonly project = select(ProjectOverviewSelectors.getProject);
-  protected readonly projectId = signal<string>('');
-  private readonly rootFolders = select(ProjectFilesSelectors.getRootFolders);
-  protected isRootFoldersLoading = select(ProjectFilesSelectors.isRootFoldersLoading);
-  private readonly configuredStorageAddons = select(ProjectFilesSelectors.getConfiguredStorageAddons);
-  protected isConfiguredStorageAddonsLoading = select(ProjectFilesSelectors.isConfiguredStorageAddonsLoading);
+  protected readonly resourceId = signal<string>('');
+  private readonly rootFolders = select(FilesSelectors.getRootFolders);
+  protected isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
+  private readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
+  protected isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
   protected currentRootFolder = model<{ label: string; folder: OsfFile } | null>(null);
   protected readonly progress = signal(0);
   protected readonly fileName = signal('');
@@ -138,33 +141,32 @@ export class ProjectFilesComponent {
 
   sortOptions = ALL_SORT_OPTIONS;
 
+  storageProvider = FileProvider.OsfStorage;
+
   protected readonly filesTreeActions: FilesTreeActions = {
     setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
     setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
     getFiles: (filesLink) => this.actions.getFiles(filesLink),
-    deleteEntry: (projectId, link) => this.actions.deleteEntry(projectId, link),
-    renameEntry: (projectId, link, newName) => this.actions.renameEntry(projectId, link, newName),
+    deleteEntry: (resourceId, link) => this.actions.deleteEntry(resourceId, link),
+    renameEntry: (resourceId, link, newName) => this.actions.renameEntry(resourceId, link, newName),
     setMoveFileCurrentFolder: (folder) => this.actions.setMoveFileCurrentFolder(folder),
   };
 
   constructor() {
     this.activeRoute.parent?.parent?.parent?.params.subscribe((params) => {
+      console.log(params);
       if (params['id']) {
-        this.projectId.set(params['id']);
-        if (!this.project()) {
-          this.filesTreeActions.setFilesIsLoading?.(true);
-          this.actions.getProject(params['id']);
-        }
+        this.resourceId.set(params['id']);
+        this.filesTreeActions.setFilesIsLoading?.(true);
       }
     });
 
     effect(() => {
-      const project = this.project();
-
-      if (project) {
-        this.actions.getRootFolders(project.links.rootFolder);
-        this.actions.getConfiguredStorageAddons(project.links.iri);
-      }
+      const resourcePath = 'nodes';
+      const folderLink = `${environment.apiUrl}/${resourcePath}/${this.resourceId()}/files/${this.storageProvider}/`;
+      const iriLink = `${environment.apiUrl}/${this.resourceId()}/`;
+      this.actions.getRootFolders(folderLink);
+      this.actions.getConfiguredStorageAddons(iriLink);
     });
 
     effect(() => {
@@ -291,17 +293,17 @@ export class ProjectFilesComponent {
   }
 
   downloadFolder(): void {
-    const projectId = this.projectId();
+    const resourceId = this.resourceId();
     const folderId = this.currentFolder()?.id ?? '';
     const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
     const provider = this.currentRootFolder()?.folder?.provider ?? 'osfstorage';
 
-    if (projectId && folderId) {
+    if (resourceId && folderId) {
       if (isRootFolder) {
-        const link = this.filesService.getFolderDownloadLink(projectId, provider, '', true);
+        const link = this.filesService.getFolderDownloadLink(resourceId, provider, '', true);
         window.open(link, '_blank')?.focus();
       } else {
-        const link = this.filesService.getFolderDownloadLink(projectId, provider, folderId, false);
+        const link = this.filesService.getFolderDownloadLink(resourceId, provider, folderId, false);
         window.open(link, '_blank')?.focus();
       }
     }

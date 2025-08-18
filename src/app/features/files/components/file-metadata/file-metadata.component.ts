@@ -59,7 +59,7 @@ export class FileMetadataComponent {
       .open(EditFileMetadataDialogComponent, {
         width: '448px',
         focusOnShow: false,
-        header: this.translateService.instant('project.files.detail.fileMetadata.edit'),
+        header: this.translateService.instant('files.detail.fileMetadata.edit'),
         closeOnEscape: true,
         modal: true,
         closable: true,

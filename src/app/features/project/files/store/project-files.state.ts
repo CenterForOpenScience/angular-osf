@@ -310,9 +310,6 @@ export class ProjectFilesState {
             },
           }),
       }),
-      finalize(() => {
-        ctx.patchState({ configuredStorageAddons: { ...state.configuredStorageAddons, isLoading: false } });
-      }),
       catchError((error) => this.handleError(ctx, 'configuredStorageAddons', error))
     );
   }

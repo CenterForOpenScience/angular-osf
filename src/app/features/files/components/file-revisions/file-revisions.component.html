@@ -1,6 +1,6 @@
 <div class="p-4 flex flex-column gap-2">
   <div class="flex justify-content-between">
-    <h2>{{ 'project.files.detail.revisions.title' | translate }}</h2>
+    <h2>{{ 'files.detail.revisions.title' | translate }}</h2>
   </div>
 
   @if (isLoading()) {
@@ -18,12 +18,12 @@
               <li class="flex align-items-center justify-content-between">
                 <osf-copy-button
                   class="copy-button"
-                  [label]="'project.files.detail.revisions.actions.copyMd5' | translate"
+                  [label]="'files.detail.revisions.actions.copyMd5' | translate"
                   [copyItem]="item.hashes.md5"
                 ></osf-copy-button>
 
                 <osf-info-icon
-                  [tooltipText]="'project.files.detail.revisions.tooltips.md5' | translate"
+                  [tooltipText]="'files.detail.revisions.tooltips.md5' | translate"
                   tooltipPosition="left"
                 ></osf-info-icon>
               </li>
@@ -31,12 +31,12 @@
               <li class="flex align-items-center justify-content-between gap-2">
                 <osf-copy-button
                   class="copy-button"
-                  [label]="'project.files.detail.revisions.actions.copySha2' | translate"
+                  [label]="'files.detail.revisions.actions.copySha2' | translate"
                   [copyItem]="item.hashes.sha256"
                 ></osf-copy-button>
 
                 <osf-info-icon
-                  [tooltipText]="'project.files.detail.revisions.tooltips.sha2' | translate"
+                  [tooltipText]="'files.detail.revisions.tooltips.sha2' | translate"
                   tooltipPosition="left"
                 ></osf-info-icon>
               </li>
@@ -45,7 +45,7 @@
                 <p-button
                   icon="fas fa-download"
                   variant="text"
-                  [label]="'project.files.detail.revisions.actions.download' | translate"
+                  [label]="'files.detail.revisions.actions.download' | translate"
                   (click)="downloadRevision(item.version)"
                 ></p-button>
 

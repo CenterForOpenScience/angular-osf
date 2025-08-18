@@ -85,7 +85,7 @@ export const registryRoutes: Routes = [
           import('./pages/registry-files/registry-files.component').then((c) => c.RegistryFilesComponent),
         providers: [provideStates([RegistryFilesState])],
         data: {
-          context: ResourceType.Registration,
+          resourceType: ResourceType.Registration,
         },
       },
       {

@@ -1,18 +1,15 @@
 import { Routes } from '@angular/router';
 
-import { ProjectFilesContainerComponent } from './pages/project-files-container/project-files-container.component';
+import { FilesContainerComponent } from './pages/files-container/files-container.component';
 
-export const projectFilesRoutes: Routes = [
+export const filesRoutes: Routes = [
   {
     path: '',
-    component: ProjectFilesContainerComponent,
+    component: FilesContainerComponent,
     children: [
       {
         path: '',
-        loadComponent: () =>
-          import('@osf/features/project/files/pages/project-files/project-files.component').then(
-            (c) => c.ProjectFilesComponent
-          ),
+        loadComponent: () => import('@osf/features/files/pages/files/files.component').then((c) => c.FilesComponent),
       },
       {
         path: ':fileGuid',
@@ -22,7 +19,7 @@ export const projectFilesRoutes: Routes = [
           {
             path: 'metadata',
             loadComponent: () =>
-              import('@osf/features/project/files/pages/community-metadata/community-metadata.component').then(
+              import('@osf/features/files/pages/community-metadata/community-metadata.component').then(
                 (c) => c.CommunityMetadataComponent
               ),
           },
