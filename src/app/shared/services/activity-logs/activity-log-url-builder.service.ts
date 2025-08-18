@@ -123,8 +123,9 @@ export class ActivityLogUrlBuilderService {
 
   buildPageUrl(log: ActivityLog, page: string): string {
     const acceptableLinkedItems = ['wiki_updated', 'wiki_renamed'];
-    if (acceptableLinkedItems.includes(log.action) && log.params.pageId) {
-      return this.buildAHrefElement(`/${log.params.pageId}`, page);
+    const projectId = log.embeds?.originalNode?.id;
+    if (acceptableLinkedItems.includes(log.action) && log.params.pageId && projectId) {
+      return this.buildAHrefElement(`project/${projectId}/wiki/?wiki=${log.params.pageId}`, page);
     }
 
     return page;
