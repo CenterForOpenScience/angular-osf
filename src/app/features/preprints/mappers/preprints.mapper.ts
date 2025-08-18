@@ -1,5 +1,6 @@
 import { LicensesMapper } from '@osf/shared/mappers';
 import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models';
+import { StringOrNull } from '@shared/helpers';
 
 import {
   Preprint,
@@ -138,12 +139,13 @@ export class PreprintsMapper {
     };
   }
 
-  static toSubmitPreprintPayload(preprintId: string) {
+  static toReviewActionPayload(preprintId: string, trigger: string, comment?: StringOrNull) {
     return {
       data: {
         type: 'review_actions',
         attributes: {
-          trigger: 'submit',
+          trigger,
+          ...(comment && { comment }),
         },
         relationships: {
           target: {

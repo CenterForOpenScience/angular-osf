@@ -37,6 +37,7 @@ import { PreprintTombstoneComponent } from '@osf/features/preprints/components/p
 import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import {
   FetchPreprintById,
+  FetchPreprintRequestActions,
   FetchPreprintRequests,
   FetchPreprintReviewActions,
   PreprintSelectors,
@@ -91,6 +92,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     createNewVersion: CreateNewVersion,
     fetchPreprintRequests: FetchPreprintRequests,
     fetchPreprintReviewActions: FetchPreprintReviewActions,
+    fetchPreprintRequestActions: FetchPreprintRequestActions,
   });
 
   //1. pending status for pre- and post-moderation providers  | works
@@ -121,6 +123,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   areReviewActionsLoading = select(PreprintSelectors.arePreprintReviewActionsLoading);
   withdrawalRequests = select(PreprintSelectors.getPreprintRequests);
   areWithdrawalRequestsLoading = select(PreprintSelectors.arePreprintRequestsLoading);
+  requestActions = select(PreprintSelectors.getPreprintRequestActions);
+  areRequestActionsLoading = select(PreprintSelectors.arePreprintRequestActionsLoading);
 
   isPresentModeratorQueryParam = toSignal(this.route.queryParams.pipe(map((params) => params['mode'] === 'moderator')));
   moderationMode = computed(() => {
@@ -141,6 +145,13 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     if (requests.length < 1) return null;
 
     return requests[0];
+  });
+  latestRequestAction = computed(() => {
+    const actions = this.requestActions();
+
+    if (actions.length < 1) return null;
+
+    return actions[0];
   });
 
   private currentUserIsAdmin = computed(() => {
@@ -223,13 +234,13 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   });
 
   isWithdrawalRejected = computed(() => {
-    //[RNi] TODO: Implement when request actions available
-    //const isPreprintRequestActionModel = this.args.latestAction instanceof PreprintRequestActionModel;
-    //         return isPreprintRequestActionModel && this.args.latestAction?.actionTrigger === 'reject';
-    return false;
+    const latestRequestActions = this.latestRequestAction();
+    if (!latestRequestActions) return false;
+    return latestRequestActions?.trigger === 'reject';
   });
 
   withdrawalButtonVisible = computed(() => {
+    if (this.areWithdrawalRequestsLoading() || this.areRequestActionsLoading()) return false;
     return (
       this.currentUserIsAdmin() &&
       this.preprintWithdrawableState() &&
@@ -238,10 +249,29 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     );
   });
 
+  moderationStatusBannerVisible = computed(() => {
+    return (
+      this.moderationMode() &&
+      !(
+        this.isPreprintLoading() ||
+        this.areReviewActionsLoading() ||
+        this.areWithdrawalRequestsLoading() ||
+        this.areRequestActionsLoading()
+      )
+    );
+  });
+
   statusBannerVisible = computed(() => {
     const provider = this.preprintProvider();
     const preprint = this.preprint();
-    if (!provider || !preprint || this.areWithdrawalRequestsLoading() || this.areReviewActionsLoading()) return false;
+    if (
+      !provider ||
+      !preprint ||
+      this.areWithdrawalRequestsLoading() ||
+      this.areReviewActionsLoading() ||
+      this.areRequestActionsLoading()
+    )
+      return false;
 
     return (
       provider.reviewsWorkflow &&
@@ -315,7 +345,14 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
         if (this.preprint()!.currentUserPermissions.length > 0 || this.moderationMode()) {
           this.actions.fetchPreprintReviewActions();
           if (this.preprintWithdrawableState() && (this.currentUserIsAdmin() || this.moderationMode())) {
-            this.actions.fetchPreprintRequests();
+            this.actions.fetchPreprintRequests().subscribe({
+              next: () => {
+                const latestWithdrawalRequest = this.latestWithdrawalRequest();
+                if (latestWithdrawalRequest) {
+                  this.actions.fetchPreprintRequestActions(latestWithdrawalRequest.id);
+                }
+              },
+            });
           }
         }
       },

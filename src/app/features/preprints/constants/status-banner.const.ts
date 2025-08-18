@@ -44,6 +44,7 @@ export const statusSeverityByState: Partial<Record<ReviewsState, StatusSeverity>
   [ReviewsState.PendingWithdrawal]: 'error',
   [ReviewsState.WithdrawalRejected]: 'error',
   [ReviewsState.Withdrawn]: 'warn',
+  [ReviewsState.Pending]: 'warn',
 };
 
 type ActivityMap = Partial<Record<ReviewsState, string>>;

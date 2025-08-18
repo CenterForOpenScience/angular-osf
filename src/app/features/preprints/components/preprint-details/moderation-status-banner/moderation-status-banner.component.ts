@@ -5,7 +5,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Message } from 'primeng/message';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 
 import { ReviewAction } from '@osf/features/moderation/models';
 import {
@@ -40,7 +40,9 @@ export class ModerationStatusBannerComponent {
   latestWithdrawalRequest = input.required<PreprintRequest | null>();
 
   isPendingWithdrawal = input.required<boolean>();
-  noActions = signal<boolean>(false);
+  noActions = computed(() => {
+    return this.latestAction() === null;
+  });
 
   documentType = computed(() => {
     const provider = this.provider();
@@ -78,7 +80,7 @@ export class ModerationStatusBannerComponent {
     const currentState = this.preprint()!.reviewsState;
 
     if (this.isPendingWithdrawal()) {
-      return statusSeverityByState[ReviewsState.PendingWithdrawal];
+      return statusSeverityByState[ReviewsState.Pending];
     } else {
       return currentState === ReviewsState.Pending
         ? statusSeverityByWorkflow[this.provider()?.reviewsWorkflow as ProviderReviewsWorkflow]

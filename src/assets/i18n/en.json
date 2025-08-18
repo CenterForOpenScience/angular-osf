@@ -2123,7 +2123,35 @@
           "submitDecision": "Submit decision",
           "modifyDecision": "Modify decision",
           "updateComment": "Update comment"
-        }
+        },
+        "accept": {
+          "label": "Accept submission",
+          "pre": "Submission will appear in search results and be made public.",
+          "post": "Submission will continue to appear in search results."
+        },
+        "reject": {
+          "label": "Reject submission",
+          "pre": "Submission will not appear in search results and will remain private.",
+          "post": "Submission will be removed from search results and made private."
+        },
+        "approve": {
+          "label": "Approve withdrawal",
+          "explanation": "Submission will be withdrawn but still have a tombstone page with a subset of the metadata available"
+        },
+        "decline": {
+          "label": "Decline withdrawal",
+          "explanation": "Submission will remain fully public"
+        },
+        "withdrawn": {
+          "label": "Withdraw submission",
+          "post": "Submission will no longer be publicly available."
+        },
+        "commentPlaceholder": "Explain the reasoning behind your decision (optional)",
+        "commentLengthError": "Comment is {{difference}} character(s) too long (maximum is {{limit}}).",
+        "withdrawalJustification": "Reason for withdrawal (optional, will be publicly displayed)",
+        "denialJustification": "Reason for denial (required, not publicly visible)",
+        "justificationRequiredError": "Request decision justification can't be blank",
+        "justificationLengthError": "Request decision justification is too short (minimum is {{minLength}} characters)"
       }
     },
     "preprintContributorsWarning": "Warning: Changing your permissions will prevent you from editing your draft.",

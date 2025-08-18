@@ -24,6 +24,7 @@ import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent } from '@shared/components';
 
+//[RNi] TODO: In withdrawal rejected state, the feedback is shown is wrong, need to take from latest request action
 @Component({
   selector: 'osf-preprint-status-banner',
   imports: [TranslatePipe, TitleCasePipe, Message, Dialog, Tag, Button, IconComponent],
