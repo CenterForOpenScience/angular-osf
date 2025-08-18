@@ -5,14 +5,15 @@ import { tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { UserMapper } from '@osf/core/models';
 import { removeNullable } from '@osf/shared/constants';
 import { ProfileSettingsKey } from '@osf/shared/enums';
+import { UserMapper } from '@osf/shared/mappers';
 import { Social } from '@osf/shared/models';
 
 import { UserService } from '../../services';
 
 import {
+  ClearCurrentUser,
   GetCurrentUser,
   GetCurrentUserSettings,
   SetCurrentUser,
@@ -35,6 +36,22 @@ export class UserState {
 
   @Action(GetCurrentUser)
   getCurrentUser(ctx: StateContext<UserStateModel>) {
+    const currentUser = localStorage.getItem('currentUser');
+
+    if (currentUser) {
+      const parsedUser = JSON.parse(currentUser);
+
+      ctx.patchState({
+        currentUser: {
+          data: parsedUser,
+          isLoading: false,
+          error: null,
+        },
+      });
+
+      return;
+    }
+
     ctx.patchState({
       currentUser: {
         ...ctx.getState().currentUser,
@@ -52,6 +69,10 @@ export class UserState {
           },
           activeFlags: data.activeFlags,
         });
+
+        if (data.currentUser) {
+          localStorage.setItem('currentUser', JSON.stringify(data.currentUser));
+        }
       })
     );
   }
@@ -65,6 +86,8 @@ export class UserState {
         error: null,
       },
     });
+
+    localStorage.setItem('currentUser', JSON.stringify(action.user));
   }
 
   @Action(GetCurrentUserSettings)
@@ -219,5 +242,19 @@ export class UserState {
         },
       },
     });
+  }
+
+  @Action(ClearCurrentUser)
+  clearCurrentUser(ctx: StateContext<UserStateModel>) {
+    ctx.patchState({
+      currentUser: {
+        data: null,
+        isLoading: false,
+        error: null,
+      },
+      activeFlags: [],
+    });
+
+    localStorage.removeItem('currentUser');
   }
 }

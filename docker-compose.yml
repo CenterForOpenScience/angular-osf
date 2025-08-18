@@ -1,0 +1,30 @@
+# docker-compose.yml
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: local-dev
+    container_name: angular-dev
+    ports:
+      - '4200:4200'
+    networks:
+      - osf_net
+    environment:
+      # Improve file watching reliability on Docker Desktop
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - NG_CLI_ANALYTICS=false
+    # Mount only source assets you want live-edited (as requested)
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./angular.json:/app/angular.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./tsconfig.app.json:/app/tsconfig.app.json
+    # (CMD comes from Dockerfile, but you could override here if you wanted)
+    command: ['npm', 'run', 'start:docker']
+
+networks:
+  osf_net:
+    driver: bridge

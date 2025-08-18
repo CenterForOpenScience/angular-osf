@@ -1,4 +1,4 @@
-import { ApiData, JsonApiResponse } from '@osf/core/models';
+import { ApiData, JsonApiResponse } from '@osf/shared/models';
 
 import { AccountEmailResponseJsonApi } from './list-emails.model';
 

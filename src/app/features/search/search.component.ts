@@ -25,7 +25,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SearchHelpTutorialComponent, SearchInputComponent } from '@osf/shared/components';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceTab } from '@osf/shared/enums';
-import { IS_SMALL } from '@osf/shared/utils';
+import { IS_SMALL } from '@osf/shared/helpers';
 
 import { GetAllOptions } from './components/filters/store';
 import { ResetFiltersState, ResourceFiltersSelectors } from './components/resource-filters/store';

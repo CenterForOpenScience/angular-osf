@@ -38,9 +38,9 @@ import {
   SetSubject,
 } from '@osf/features/preprints/store/preprints-resources-filters';
 import { GetAllOptions } from '@osf/features/preprints/store/preprints-resources-filters-options';
+import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
 import { FilterLabelsModel, ResourceFilterLabel } from '@shared/models';
 import { BrandService } from '@shared/services';
-import { BrowserTabHelper, HeaderStyleHelper } from '@shared/utils';
 
 @Component({
   selector: 'osf-preprint-provider-discover',

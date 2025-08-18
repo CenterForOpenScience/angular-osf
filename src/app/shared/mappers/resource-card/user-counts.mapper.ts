@@ -1,5 +1,4 @@
-import { UserCountsResponse } from '@osf/shared/models/resource-card/user-counts-response.model';
-import { UserRelatedDataCounts } from '@osf/shared/models/resource-card/user-related-data-counts.model';
+import { UserCountsResponse, UserRelatedDataCounts } from '@osf/shared/models';
 
 export function MapUserCounts(response: UserCountsResponse): UserRelatedDataCounts {
   return {

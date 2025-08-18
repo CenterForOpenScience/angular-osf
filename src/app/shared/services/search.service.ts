@@ -2,10 +2,9 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ApiData } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
 import { MapResources } from '@osf/features/search/mappers';
 import { IndexCardSearch, ResourceItem, ResourcesData } from '@osf/features/search/models';
+import { JsonApiService } from '@osf/shared/services';
 import {
   AppliedFilter,
   CombinedFilterMapper,
@@ -13,7 +12,7 @@ import {
   mapFilterOption,
   RelatedPropertyPathItem,
 } from '@shared/mappers';
-import { FilterOptionsResponseJsonApi, SelectOption } from '@shared/models';
+import { ApiData, FilterOptionsResponseJsonApi, SelectOption } from '@shared/models';
 
 import { environment } from 'src/environments/environment';
 

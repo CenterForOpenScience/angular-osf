@@ -1,6 +1,5 @@
-import { ApiData, JsonApiResponse } from '@core/models';
-import { ProviderDataJsonApi, SchemaResponseDataJsonApi } from '@osf/shared/models';
-import { RegistrationReviewStates, RevisionReviewStates } from '@shared/enums';
+import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+import { ApiData, JsonApiResponse, ProviderDataJsonApi, SchemaResponseDataJsonApi } from '@osf/shared/models';
 
 export type GetRegistryOverviewJsonApi = JsonApiResponse<RegistryOverviewJsonApiData, null>;
 

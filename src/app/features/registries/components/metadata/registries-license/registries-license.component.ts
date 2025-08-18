@@ -12,8 +12,8 @@ import { ActivatedRoute } from '@angular/router';
 import { FetchLicenses, RegistriesSelectors, SaveLicense } from '@osf/features/registries/store';
 import { LicenseComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
+import { CustomValidators } from '@osf/shared/helpers';
 import { License, LicenseOptions } from '@osf/shared/models';
-import { CustomValidators } from '@osf/shared/utils';
 
 @Component({
   selector: 'osf-registries-license',

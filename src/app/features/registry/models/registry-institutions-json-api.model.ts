@@ -1,3 +1,5 @@
+import { MetaJsonApi } from '@osf/shared/models';
+
 export interface RegistryInstitutionJsonApi {
   id: string;
   type: string;
@@ -18,12 +20,6 @@ export interface RegistryInstitutionsJsonApiResponse {
     last: string | null;
     prev: string | null;
     next: string | null;
-    meta: {
-      total: number;
-      per_page: number;
-    };
   };
-  meta: {
-    version: string;
-  };
+  meta: MetaJsonApi;
 }

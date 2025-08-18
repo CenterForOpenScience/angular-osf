@@ -9,7 +9,6 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Primitive } from '@osf/core/helpers';
 import {
   CollectionsModerationSelectors,
   GetCollectionSubmissions,
@@ -22,6 +21,7 @@ import {
   SelectComponent,
 } from '@osf/shared/components';
 import { COLLECTION_SUBMISSIONS_SORT_OPTIONS } from '@osf/shared/constants';
+import { Primitive } from '@osf/shared/helpers';
 import {
   ClearCollections,
   ClearCollectionSubmissions,

@@ -2,9 +2,9 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
 import { CollectionsMapper, LicensesMapper } from '@shared/mappers';
 import { CollectionSubmissionPayload, License, LicensesResponseJsonApi } from '@shared/models';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 

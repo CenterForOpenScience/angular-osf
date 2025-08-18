@@ -5,7 +5,7 @@ import { catchError, tap, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentUser } from '@core/store/user';
-import { handleSectionError } from '@osf/core/handlers';
+import { handleSectionError } from '@osf/shared/helpers';
 import { InstitutionsService } from '@shared/services';
 
 import { AccountSettingsService } from '../services';

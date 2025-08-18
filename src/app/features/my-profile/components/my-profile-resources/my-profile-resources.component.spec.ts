@@ -7,7 +7,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceTab } from '@osf/shared/enums';
-import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 import { EMPTY_FILTERS, EMPTY_OPTIONS, MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
 
 import { MyProfileSelectors } from '../../store';

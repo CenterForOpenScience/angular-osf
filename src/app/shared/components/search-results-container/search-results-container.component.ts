@@ -7,9 +7,9 @@ import { Select } from 'primeng/select';
 import { ChangeDetectionStrategy, Component, computed, HostBinding, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { Primitive } from '@core/helpers';
 import { SEARCH_TAB_OPTIONS, searchSortingOptions } from '@shared/constants';
 import { ResourceTab } from '@shared/enums';
+import { Primitive } from '@shared/helpers';
 import { Resource } from '@shared/models';
 
 import { ResourceCardComponent } from '../resource-card/resource-card.component';

@@ -3,9 +3,9 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
 import { mapInstitutionPreprints } from '@osf/features/admin-institutions/mappers/institution-preprints.mapper';
 import { PaginationLinksModel } from '@shared/models';
+import { JsonApiService } from '@shared/services';
 
 import {
   mapIndexCardResults,
@@ -110,7 +110,7 @@ export class InstitutionsAdminService {
     const payload = sendMessageRequestMapper(request);
 
     return this.jsonApiService.post<SendMessageResponseJsonApi>(
-      `${environment.apiUrl}/institutions/messages/`,
+      `${environment.apiUrl}/users/${request.userId}/messages/`,
       payload
     );
   }

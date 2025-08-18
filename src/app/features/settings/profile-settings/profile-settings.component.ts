@@ -7,7 +7,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
-import { IS_MEDIUM } from '@osf/shared/utils';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 
 import { EducationComponent, EmploymentComponent, NameComponent, SocialComponent } from './components';
 import { PROFILE_SETTINGS_TAB_OPTIONS } from './constants';

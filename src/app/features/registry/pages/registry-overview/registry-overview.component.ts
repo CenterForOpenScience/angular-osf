@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
-import { CreateSchemaResponse, FetchAllSchemaResponses } from '@osf/features/registries/store';
+import { CreateSchemaResponse, FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
 import {
   DataResourcesComponent,
   LoadingSpinnerComponent,
@@ -22,25 +22,22 @@ import {
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
+import { toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
-import { toCamelCase } from '@osf/shared/utils';
 import { GetBookmarksCollectionId } from '@shared/stores';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';
 import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
+import { GetRegistryInstitutions, GetRegistrySubjects } from '../../store/registry-metadata';
 import {
   GetRegistryById,
-  GetRegistryInstitutions,
   GetRegistryReviewActions,
-  GetRegistrySubjects,
   RegistryOverviewSelectors,
   SetRegistryCustomCitation,
 } from '../../store/registry-overview';
-
-import { RegistriesSelectors } from './../../../registries/store/registries.selectors';
 
 @Component({
   selector: 'osf-registry-overview',

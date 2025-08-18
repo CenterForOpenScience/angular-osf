@@ -22,6 +22,7 @@ import {
 } from '@osf/shared/components/contributors';
 import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import { findChangedItems } from '@osf/shared/helpers';
 import {
   ContributorDialogAddModel,
   ContributorModel,
@@ -45,7 +46,6 @@ import {
   UpdateSearchValue,
   ViewOnlyLinkSelectors,
 } from '@osf/shared/stores';
-import { findChangedItems } from '@osf/shared/utils';
 
 import { CreateViewLinkDialogComponent } from './components';
 

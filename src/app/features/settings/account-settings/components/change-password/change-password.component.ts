@@ -19,8 +19,8 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { CustomValidators, FormValidationHelper } from '@osf/shared/helpers';
 import { LoaderService, ToastService } from '@osf/shared/services';
-import { CustomValidators, FormValidationHelper } from '@osf/shared/utils';
 
 import { AccountSettingsPasswordForm, AccountSettingsPasswordFormControls } from '../../models';
 import { UpdatePassword } from '../../store';

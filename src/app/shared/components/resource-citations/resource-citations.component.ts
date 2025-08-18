@@ -29,6 +29,7 @@ import { CitationStyle, CustomOption, ResourceOverview } from '@shared/models';
 import { ToastService } from '@shared/services';
 import {
   CitationsSelectors,
+  ClearStyledCitation,
   GetCitationStyles,
   GetDefaultCitations,
   GetStyledCitation,
@@ -85,6 +86,7 @@ export class ResourceCitationsComponent {
     getCitationStyles: GetCitationStyles,
     getStyledCitation: GetStyledCitation,
     updateCustomCitation: UpdateCustomCitation,
+    clearStyledCitation: ClearStyledCitation,
   });
 
   constructor() {
@@ -162,6 +164,9 @@ export class ResourceCitationsComponent {
   }
 
   protected toggleEditMode(): void {
+    if (this.styledCitation()) {
+      this.actions.clearStyledCitation();
+    }
     this.isEditMode.set(!this.isEditMode());
   }
 

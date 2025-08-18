@@ -3,9 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { ProjectMetadataFormControls } from '@osf/features/collections/enums';
 import { ProjectMetadataForm } from '@osf/features/collections/models';
+import { CustomValidators } from '@osf/shared/helpers';
 import { License, ProjectMetadataUpdatePayload } from '@shared/models';
 import { Project } from '@shared/models/projects';
-import { CustomValidators } from '@shared/utils';
 
 @Injectable({
   providedIn: 'root',

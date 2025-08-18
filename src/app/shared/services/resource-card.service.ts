@@ -2,9 +2,9 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
 import { MapUserCounts } from '@shared/mappers';
 import { UserCountsResponse, UserRelatedDataCounts } from '@shared/models';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 

@@ -10,7 +10,6 @@ import { ChangeDetectionStrategy, Component, HostBinding, inject, signal } from 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { Primitive } from '@core/helpers';
 import { GetResourcesByLink } from '@osf/features/my-profile/store';
 import { PreprintsFilterChipsComponent, PreprintsResourcesFiltersComponent } from '@osf/features/preprints/components';
 import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover';
@@ -18,7 +17,8 @@ import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/stor
 import { PreprintsResourcesFiltersOptionsSelectors } from '@osf/features/preprints/store/preprints-resources-filters-options';
 import { ResourceCardComponent } from '@osf/shared/components';
 import { searchSortingOptions } from '@osf/shared/constants';
-import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
+import { Primitive } from '@shared/helpers';
 import { SetSortBy } from '@shared/stores/collections';
 
 @Component({

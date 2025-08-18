@@ -15,7 +15,7 @@ export const authInterceptor: HttpInterceptorFn = (
 
   if (!req.url.includes('/api.crossref.org/funders')) {
     const headers: Record<string, string> = {
-      Accept: req.responseType === 'text' ? '*/*' : 'application/vnd.api+json',
+      Accept: req.responseType === 'text' ? '*/*' : 'application/vnd.api+json;version=2.20',
       'Content-Type': 'application/vnd.api+json',
     };
 

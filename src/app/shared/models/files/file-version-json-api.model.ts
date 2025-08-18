@@ -1,4 +1,4 @@
-import { ApiData, JsonApiResponse } from '@core/models';
+import { ApiData, JsonApiResponse } from '@shared/models';
 
 export type FileVersionsResponseJsonApi = JsonApiResponse<
   ApiData<FileVersionAttributesJsonApi, null, null, FileVersionLinksJsonApi>[],

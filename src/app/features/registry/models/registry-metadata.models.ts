@@ -1,11 +1,8 @@
+import { MetaJsonApi } from '@osf/shared/models';
+
 export interface BibliographicContributorsJsonApi {
   data: BibliographicContributorData[];
-  meta: {
-    total: number;
-    per_page: number;
-    total_bibliographic: number;
-    version: string;
-  };
+  meta: MetaJsonApi;
   links: {
     self: string;
     first: string | null;
@@ -125,11 +122,7 @@ export interface UserInstitution {
 
 export interface UserInstitutionsResponse {
   data: UserInstitution[];
-  meta: {
-    total: number;
-    per_page: number;
-    version: string;
-  };
+  meta: MetaJsonApi;
   links: {
     self: string;
     first: string | null;
@@ -161,14 +154,8 @@ export interface RegistrySubjectsJsonApi {
     last: string | null;
     prev: string | null;
     next: string | null;
-    meta: {
-      total: number;
-      per_page: number;
-    };
   };
-  meta: {
-    version: string;
-  };
+  meta: MetaJsonApi;
 }
 
 export interface RegistrySubjectData {

@@ -13,7 +13,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Primitive } from '@osf/core/helpers';
 import { PREPRINT_SORT_OPTIONS, WITHDRAWAL_SUBMISSION_REVIEW_OPTIONS } from '@osf/features/moderation/constants';
 import { PreprintSubmissionsSort, SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
@@ -22,6 +21,7 @@ import {
   LoadingSpinnerComponent,
   SelectComponent,
 } from '@osf/shared/components';
+import { Primitive } from '@osf/shared/helpers';
 
 import { PreprintWithdrawalSubmission } from '../../models';
 import { GetPreprintWithdrawalSubmissions, PreprintModerationSelectors } from '../../store/preprint-moderation';

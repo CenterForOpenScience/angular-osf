@@ -13,8 +13,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { RegistryResourceType } from '@osf/shared/enums';
+import { CustomValidators } from '@osf/shared/helpers';
 import { SelectOption } from '@osf/shared/models';
-import { CustomValidators } from '@osf/shared/utils';
 
 import { resourceTypeOptions } from '../../constants';
 import { AddResource, ConfirmAddResource } from '../../models';

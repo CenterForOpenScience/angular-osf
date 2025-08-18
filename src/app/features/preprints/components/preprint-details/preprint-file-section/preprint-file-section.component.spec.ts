@@ -7,8 +7,8 @@ import { BehaviorSubject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers';
 import { MOCK_STORE } from '@shared/mocks';
-import { IS_LARGE, IS_MEDIUM } from '@shared/utils';
 
 import { PreprintFileSectionComponent } from './preprint-file-section.component';
 

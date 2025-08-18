@@ -11,10 +11,10 @@ import { Router } from '@angular/router';
 
 import { PreprintsHelpDialogComponent } from '@osf/features/preprints/components';
 import { RegistryProviderDetails } from '@osf/features/registries/models/registry-provider.model';
+import { HeaderStyleHelper } from '@osf/shared/helpers';
 import { SearchInputComponent } from '@shared/components';
 import { DecodeHtmlPipe } from '@shared/pipes';
 import { BrandService } from '@shared/services';
-import { HeaderStyleHelper } from '@shared/utils';
 
 @Component({
   selector: 'osf-registry-provider-hero',

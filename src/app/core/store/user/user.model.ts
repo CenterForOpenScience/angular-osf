@@ -1,6 +1,4 @@
-import { AsyncStateModel } from '@osf/shared/models';
-
-import { User, UserSettings } from '../../models';
+import { AsyncStateModel, User, UserSettings } from '@osf/shared/models';
 
 export interface UserStateModel {
   currentUser: AsyncStateModel<User | null>;

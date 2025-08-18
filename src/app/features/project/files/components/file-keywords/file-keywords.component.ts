@@ -12,8 +12,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { ProjectFilesSelectors, UpdateTags } from '@osf/features/project/files/store';
+import { CustomValidators } from '@osf/shared/helpers';
 import { InputLimits } from '@shared/constants';
-import { CustomValidators } from '@shared/utils';
 
 @Component({
   selector: 'osf-file-keywords',

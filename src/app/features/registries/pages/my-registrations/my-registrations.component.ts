@@ -18,8 +18,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserSelectors } from '@osf/core/store/user';
 import { CustomPaginatorComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
 import { RegistrationCardComponent } from '@osf/shared/components/registration-card/registration-card.component';
+import { IS_XSMALL } from '@osf/shared/helpers';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
-import { IS_XSMALL } from '@osf/shared/utils';
 
 import { REGISTRATIONS_TABS } from '../../constants/registrations-tabs';
 import { RegistrationTab } from '../../enums';

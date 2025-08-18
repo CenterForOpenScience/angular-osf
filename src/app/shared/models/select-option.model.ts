@@ -1,4 +1,4 @@
-import { Primitive } from '@core/helpers/types.helper';
+import { Primitive } from '@osf/shared/helpers/types.helper';
 
 export interface SelectOption {
   label: string;

@@ -3,19 +3,20 @@ import { map, Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@core/services';
-import { ResourceType } from '@shared/enums';
-import { CitationsMapper } from '@shared/mappers';
+import { ResourceType } from '../enums';
+import { CitationsMapper } from '../mappers';
 import {
   CitationStyle,
   CitationStyleJsonApi,
   CustomCitationPayload,
   DefaultCitation,
   DefaultCitationJsonApi,
+  JsonApiResponse,
   StyledCitation,
   StyledCitationJsonApi,
-} from '@shared/models';
+} from '../models';
+
+import { JsonApiService } from './json-api.service';
 
 import { environment } from 'src/environments/environment';
 

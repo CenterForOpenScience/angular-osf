@@ -5,8 +5,8 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
 import { AddToCollectionService } from '@osf/features/collections/services/add-to-collection.service';
+import { handleSectionError } from '@shared/helpers';
 
 import {
   ClearAddToCollectionState,

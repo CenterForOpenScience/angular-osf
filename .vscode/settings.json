@@ -7,5 +7,5 @@
   },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "scss.lint.unknownAtRules": "ignore",
-  "eslint.validate": ["json"]
+  "eslint.validate": ["json", "javascript", "typescript", "html"]
 }

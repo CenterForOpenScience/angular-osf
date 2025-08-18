@@ -16,7 +16,7 @@ try {
 
   // Write back
   fs.writeFileSync(filePath, String(updated));
-  console.info(`\n\nCounter updated: ${current} → ${updated}\n\n`);
+  console.info(`\n\nTest run counter updated: ${current} → ${updated}\n\n`);
 } catch (err) {
   console.error('Error updating counter:', err.message);
 }

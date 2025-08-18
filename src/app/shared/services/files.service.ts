@@ -4,8 +4,6 @@ import { catchError, map } from 'rxjs/operators';
 import { HttpEvent } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { ApiData, JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@core/services';
 import {
   MapFile,
   MapFileCustomMetadata,
@@ -30,6 +28,7 @@ import {
 } from '@osf/features/project/files/models';
 import {
   AddFileResponse,
+  ApiData,
   ConfiguredStorageAddon,
   FileLinks,
   FileRelationshipsResponse,
@@ -38,9 +37,11 @@ import {
   GetConfiguredStorageAddonsJsonApi,
   GetFileResponse,
   GetFilesResponse,
+  JsonApiResponse,
   OsfFile,
   OsfFileVersion,
 } from '@shared/models';
+import { JsonApiService } from '@shared/services';
 import { ToastService } from '@shared/services/toast.service';
 
 import { environment } from 'src/environments/environment';

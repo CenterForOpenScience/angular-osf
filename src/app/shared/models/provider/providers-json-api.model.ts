@@ -1,5 +1,6 @@
-import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '@osf/core/models';
 import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
+
+import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common';
 
 export interface ProvidersResponseJsonApi {
   data: ProviderDataJsonApi[];

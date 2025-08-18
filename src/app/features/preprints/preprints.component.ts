@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, HostBinding, inject } from '@angula
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 
-import { IS_WEB } from '@shared/utils';
+import { IS_WEB } from '@osf/shared/helpers';
 
 @Component({
   selector: 'osf-preprints',

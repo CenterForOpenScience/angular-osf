@@ -1,5 +1,5 @@
-import { ApiData, JsonApiResponse } from '@core/models';
 import { FileTargetResponse } from '@osf/features/project/files/models/responses/get-file-target-response.model';
+import { ApiData, JsonApiResponse } from '@shared/models';
 
 export type GetFilesResponse = JsonApiResponse<FileData[], null>;
 export type GetFileResponse = JsonApiResponse<FileData, null>;

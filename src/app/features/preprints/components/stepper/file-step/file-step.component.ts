@@ -26,7 +26,6 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { StringOrNull } from '@core/helpers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
@@ -42,6 +41,7 @@ import {
   UploadFile,
 } from '@osf/features/preprints/store/preprint-stepper';
 import { FilesTreeComponent, IconComponent } from '@shared/components';
+import { StringOrNull } from '@shared/helpers';
 import { FilesTreeActions, OsfFile } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 

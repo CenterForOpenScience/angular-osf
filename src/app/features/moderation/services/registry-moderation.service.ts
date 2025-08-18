@@ -2,8 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@osf/core/services';
 import { PaginatedData } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { RegistrySort, SubmissionReviewStatus } from '../enums';
 import { RegistryModerationMapper } from '../mappers';

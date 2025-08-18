@@ -17,6 +17,7 @@ import { OperationNames } from '@osf/features/project/addons/enums';
 import { AddonConfigMap } from '@osf/features/project/addons/utils';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ProjectAddonsStepperValue } from '@osf/shared/enums';
+import { getAddonTypeString } from '@osf/shared/helpers';
 import {
   AddonSetupAccountFormComponent,
   AddonTermsComponent,
@@ -34,7 +35,6 @@ import {
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
 } from '@shared/stores/addons';
-import { getAddonTypeString } from '@shared/utils';
 
 import { environment } from 'src/environments/environment';
 

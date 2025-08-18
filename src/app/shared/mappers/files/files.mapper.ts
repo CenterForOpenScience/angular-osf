@@ -1,4 +1,3 @@
-import { ApiData } from '@core/models';
 import { FileTargetResponse } from '@osf/features/project/files/models/responses/get-file-target-response.model';
 import {
   FileLinks,
@@ -8,6 +7,7 @@ import {
   OsfFile,
   OsfFileVersion,
 } from '@osf/shared/models';
+import { ApiData } from '@shared/models';
 
 export function MapFiles(
   files: ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>[]

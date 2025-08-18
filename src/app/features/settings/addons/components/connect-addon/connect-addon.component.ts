@@ -12,10 +12,10 @@ import { Router, RouterLink } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ProjectAddonsStepperValue } from '@osf/shared/enums';
+import { getAddonTypeString, isAuthorizedAddon } from '@osf/shared/helpers';
 import { AddonSetupAccountFormComponent, AddonTermsComponent } from '@shared/components/addons';
 import { Addon, AddonTerm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
-import { getAddonTypeString, isAuthorizedAddon } from '@shared/utils';
 
 @Component({
   selector: 'osf-connect-addon',

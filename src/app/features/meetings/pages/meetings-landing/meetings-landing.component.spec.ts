@@ -11,8 +11,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { parseQueryFilterParams } from '@core/helpers';
 import { MeetingsState } from '@osf/features/meetings/store';
+import { parseQueryFilterParams } from '@osf/shared/helpers';
 import { MOCK_MEETING } from '@osf/shared/mocks';
 import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { TABLE_PARAMS } from '@shared/constants';

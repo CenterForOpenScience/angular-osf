@@ -10,7 +10,7 @@
       @if (isDragOver()) {
         <div class="flex flex-column gap-2 align-items-center pointer-events-none">
           <i class="fa-solid fa-cloud-arrow-up text-5xl"></i>
-          <p class="drop-text text-2xl">{{ 'project.files.dropText' | translate }}</p>
+          <p class="drop-text text-xl">{{ 'project.files.dropText' | translate }}</p>
         </div>
       }
     </div>
@@ -35,12 +35,10 @@
         <ng-template let-file pTemplate="default">
           @if (file.previousFolder) {
             <div class="files-table-row" tabindex="0" (click)="openParentFolder()" (keydown.enter)="openParentFolder()">
-              <div class="flex gap-2">
-                <div class="flex align-items-center gap-1">
-                  <i class="osf-icon-arrow-left"></i>
-                  <i class="osf-icon-folder"></i>
-                  {{ file.name ?? '' }}
-                </div>
+              <div class="flex align-items-center gap-2">
+                <i class="fas fa-sm fa-angle-left"></i>
+                <i class="fas fa-folder"></i>
+                {{ file.name ?? '' }}
               </div>
             </div>
           } @else {
@@ -100,7 +98,7 @@
           } @else {
             <div class="text-center">
               <i class="fa-solid fa-cloud-arrow-up text-5xl"></i>
-              <p class="drop-text text-2xl">{{ 'project.files.dropText' | translate }}</p>
+              <p class="drop-text text-xl">{{ 'project.files.dropText' | translate }}</p>
             </div>
           }
         </div>

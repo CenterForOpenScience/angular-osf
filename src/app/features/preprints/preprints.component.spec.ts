@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { IS_WEB } from '@shared/utils';
+import { IS_WEB } from '@osf/shared/helpers';
 
 import { PreprintsComponent } from './preprints.component';
 

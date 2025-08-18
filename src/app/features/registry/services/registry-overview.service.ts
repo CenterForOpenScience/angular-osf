@@ -2,7 +2,6 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
 import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewAction, ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { MapRegistryOverview } from '@osf/features/registry/mappers';
@@ -19,6 +18,7 @@ import { ReviewActionsMapper } from '@osf/shared/mappers';
 import { PageSchemaMapper } from '@osf/shared/mappers/registration';
 import { PageSchema, SchemaBlocksResponseJsonApi } from '@osf/shared/models';
 import { ReviewActionPayload } from '@osf/shared/models/review-action';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 
@@ -44,7 +44,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .get<GetRegistryOverviewJsonApi>(`${environment.apiUrl}/registrations/${id}`, params)
+      .get<GetRegistryOverviewJsonApi>(`${environment.apiUrl}/registrations/${id}/`, params)
       .pipe(map((response) => MapRegistryOverview(response.data)));
   }
 

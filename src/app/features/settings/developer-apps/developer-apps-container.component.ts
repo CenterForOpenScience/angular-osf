@@ -9,7 +9,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { IS_MEDIUM } from '@osf/shared/utils';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 
 import { DeveloperAppAddEditFormComponent } from './components';
 

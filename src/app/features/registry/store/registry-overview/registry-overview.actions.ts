@@ -66,3 +66,7 @@ export class SubmitDecision {
     public isRevision: boolean
   ) {}
 }
+
+export class ClearRegistryOverview {
+  static readonly type = '[Registry Overview] Clear Registry Overview';
+}
