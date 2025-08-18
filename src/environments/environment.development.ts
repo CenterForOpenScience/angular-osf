@@ -14,4 +14,5 @@ export const environment = {
   recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   facebookAppId: '1022273774556662',
   supportEmail: 'support@osf.io',
+  defaultProvider: 'osf',
 };

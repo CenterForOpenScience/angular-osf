@@ -50,7 +50,7 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
   protected searchControl = new FormControl<string>('');
 
   readonly supportEmail = environment.supportEmail;
-  private readonly OSF_PROVIDER_ID = 'osf';
+  private readonly OSF_PROVIDER_ID = environment.defaultProvider;
 
   private readonly router = inject(Router);
   private readonly actions = createDispatchMap({
