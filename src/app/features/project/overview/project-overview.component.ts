@@ -20,7 +20,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { IS_XSMALL } from '@osf/shared/helpers';
@@ -84,6 +84,7 @@ import {
     ResourceMetadataComponent,
     TranslatePipe,
     Message,
+    RouterLink,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -101,6 +102,8 @@ export class ProjectOverviewComponent implements OnInit {
   protected submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   protected currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
+  protected readonly activityPageSize = 5;
+  protected readonly activityDefaultPage = 1;
 
   protected actions = createDispatchMap({
     getProject: GetProjectById,
@@ -197,7 +200,7 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
-      this.actions.getActivityLogs(projectId, '1', '5');
+      this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
     }
   }
 

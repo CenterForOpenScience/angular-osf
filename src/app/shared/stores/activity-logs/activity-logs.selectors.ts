@@ -1,18 +1,23 @@
 import { Selector } from '@ngxs/store';
 
-import { ActivityLogJsonApi } from '@shared/models';
+import { ActivityLog } from '@shared/models';
 
 import { ActivityLogsStateModel } from './activity-logs.model';
 import { ActivityLogsState } from './activity-logs.state';
 
 export class ActivityLogsSelectors {
   @Selector([ActivityLogsState])
-  static getActivityLogs(state: ActivityLogsStateModel): ActivityLogJsonApi[] {
+  static getActivityLogs(state: ActivityLogsStateModel): ActivityLog[] {
     return state.activityLogs.data;
   }
 
   @Selector([ActivityLogsState])
-  static getLoading(state: ActivityLogsStateModel): boolean {
+  static getActivityLogsTotalCount(state: ActivityLogsStateModel): number {
+    return state.activityLogs.totalCount;
+  }
+
+  @Selector([ActivityLogsState])
+  static getActivityLogsLoading(state: ActivityLogsStateModel): boolean {
     return state.activityLogs.isLoading;
   }
 }

@@ -5,7 +5,7 @@ export interface ActivityLogJsonApi {
     action: string;
     date: string;
     params: {
-      contributors: unknown[];
+      contributors: LogContributorJsonApi[];
       license?: string;
       tag?: string;
       institution?: {
@@ -18,7 +18,57 @@ export interface ActivityLogJsonApi {
       };
       params_project: null;
       pointer: PointerJsonApi | null;
-      preprint_provider: string | null;
+      preprint_provider?:
+        | string
+        | {
+            url: string;
+            name: string;
+          }
+        | null;
+      addon?: string;
+      anonymous_link?: boolean;
+      file?: {
+        name: string;
+        url: string;
+      };
+      wiki?: {
+        name: string;
+        url: string;
+      };
+      destination?: {
+        materialized: string;
+        addon: string;
+        url: string;
+      };
+      identifiers?: {
+        doi?: string;
+        ark?: string;
+      };
+      kind?: string;
+      old_page?: string;
+      page?: string;
+      page_id?: string;
+      path?: string;
+      urls?: {
+        view: string;
+      };
+      preprint?: string;
+      source?: {
+        materialized: string;
+        addon: string;
+      };
+      title_new?: string;
+      title_original?: string;
+      updated_fields?: Record<
+        string,
+        {
+          new: string;
+          old: string;
+        }
+      >;
+      value?: string;
+      version?: string;
+      github_user?: string;
     };
   };
   embeds?: {
@@ -31,6 +81,9 @@ export interface ActivityLogJsonApi {
     linked_node?: {
       data: LinkedNodeEmbedsData;
     };
+  };
+  meta: {
+    total: number;
   };
 }
 
@@ -60,7 +113,7 @@ interface OriginalNodeEmbedsData {
     node_license: {
       copyright_holders: string[];
       year: string | null;
-    };
+    } | null;
     current_user_can_comment: boolean;
     current_user_permissions: string[];
     current_user_is_contributor: boolean;
@@ -106,7 +159,7 @@ interface LinkedNodeEmbedsData {
     node_license: {
       copyright_holders: string[];
       year: string | null;
-    };
+    } | null;
     current_user_can_comment: boolean;
     current_user_permissions: string[];
     current_user_is_contributor: boolean;
@@ -118,4 +171,14 @@ interface LinkedNodeEmbedsData {
       text: string;
     }[][];
   };
+}
+
+export interface LogContributorJsonApi {
+  id: string;
+  full_name: string;
+  given_name: string;
+  middle_names: string;
+  family_name: string;
+  unregistered_name: string | null;
+  active: boolean;
 }

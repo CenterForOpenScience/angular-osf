@@ -1,4 +1,7 @@
-export { ActivityLogsService } from './activity-logs.service';
+export { ActivityLogDisplayService } from './activity-logs/activity-log-display.service';
+export { ActivityLogFormatterService } from './activity-logs/activity-log-formatter.service';
+export { ActivityLogUrlBuilderService } from './activity-logs/activity-log-url-builder.service';
+export { ActivityLogsService } from './activity-logs/activity-logs.service';
 export * from './addons';
 export { BookmarksService } from './bookmarks.service';
 export { BrandService } from './brand.service';
