@@ -3,29 +3,22 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { AdminTableComponent } from '@osf/features/admin-institutions/components';
-import { registrationTableColumns } from '@osf/features/admin-institutions/constants';
-import { mapRegistrationToTableData } from '@osf/features/admin-institutions/mappers';
-import {
-  IndexSearchQueryParamsModel,
-  InstitutionProjectsQueryParamsModel,
-  TableCellData,
-} from '@osf/features/admin-institutions/models';
-import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store';
 import { LoadingSpinnerComponent } from '@osf/shared/components';
-import { TABLE_PARAMS } from '@shared/constants';
-import { SortOrder } from '@shared/enums';
-import { parseQueryFilterParams } from '@shared/helpers';
-import { Institution, QueryParams } from '@shared/models';
-import { InstitutionsSearchSelectors } from '@shared/stores';
+import { TABLE_PARAMS } from '@osf/shared/constants';
+import { SortOrder } from '@osf/shared/enums';
+import { Institution, QueryParams } from '@osf/shared/models';
+import { InstitutionsSearchSelectors } from '@osf/shared/stores';
 
+import { AdminTableComponent } from '../../components';
+import { registrationTableColumns } from '../../constants';
 import { DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
-import { FetchRegistrations } from '../../store/institutions-admin.actions';
+import { mapRegistrationToTableData } from '../../mappers';
+import { TableCellData } from '../../models';
+import { FetchRegistrations, InstitutionsAdminSelectors } from '../../store';
 
 @Component({
   selector: 'osf-institutions-registrations',
@@ -34,7 +27,7 @@ import { FetchRegistrations } from '../../store/institutions-admin.actions';
   styleUrl: './institutions-registrations.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstitutionsRegistrationsComponent {
+export class InstitutionsRegistrationsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -51,103 +44,58 @@ export class InstitutionsRegistrationsComponent {
 
   tableColumns = signal(registrationTableColumns);
 
-  queryParams = toSignal(this.route.queryParams);
   currentPageSize = signal(TABLE_PARAMS.rows);
   currentSort = signal('-dateModified');
   sortField = signal<string>('-dateModified');
   sortOrder = signal<number>(1);
 
-  tableData = computed(() => {
-    const registrationsData = this.registrations();
-    return registrationsData.map(mapRegistrationToTableData) as TableCellData[];
-  });
+  tableData = computed(() => this.registrations().map(mapRegistrationToTableData) as TableCellData[]);
 
-  constructor() {
-    this.setupQueryParamsEffect();
+  ngOnInit(): void {
+    this.getRegistrations();
   }
 
   onSortChange(params: QueryParams): void {
-    this.updateQueryParams({
-      sort:
-        params.sortColumn && params.sortOrder
-          ? params.sortOrder === SortOrder.Desc
-            ? `-${params.sortColumn}`
-            : params.sortColumn
-          : undefined,
-    });
+    this.sortField.set(params.sortColumn || '-dateModified');
+    this.sortOrder.set(params.sortOrder || 1);
+
+    const sortField = params.sortColumn || '-dateModified';
+    const sortOrder = params.sortOrder || 1;
+    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
+
+    const institution = this.institution() as Institution;
+    const institutionIris = institution.iris || [];
+
+    this.actions.fetchRegistrations(this.institutionId, institutionIris, this.currentPageSize(), sortParam, '');
   }
 
   onLinkPageChange(link: string): void {
     const url = new URL(link);
     const cursor = url.searchParams.get('page[cursor]') || '';
-    this.updateQueryParams({ cursor });
+
+    const sortField = this.sortField();
+    const sortOrder = this.sortOrder();
+    const sortParam = sortOrder === -1 ? `-${sortField}` : sortField;
+
+    const institution = this.institution() as Institution;
+    const institutionIris = institution.iris || [];
+
+    this.actions.fetchRegistrations(this.institutionId, institutionIris, this.currentPageSize(), sortParam, cursor);
   }
 
   download(type: DownloadType) {
     downloadResults(this.registrationsDownloadLink(), type);
   }
 
-  private setupQueryParamsEffect(): void {
-    effect(() => {
-      const institutionId = this.route.parent?.snapshot.params['institution-id'];
-      const rawQueryParams = this.queryParams();
-      if (!rawQueryParams && !institutionId) return;
+  private getRegistrations(): void {
+    const institutionId = this.route.parent?.snapshot.params['institution-id'];
+    if (!institutionId) return;
 
-      this.institutionId = institutionId;
-      const parsedQueryParams = this.parseQueryParams(rawQueryParams as Params);
+    this.institutionId = institutionId;
 
-      this.updateComponentState(parsedQueryParams);
+    const institution = this.institution() as Institution;
+    const institutionIris = institution.iris || [];
 
-      const sortField = parsedQueryParams.sortColumn;
-      const sortOrder = parsedQueryParams.sortOrder;
-      const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-      const cursor = parsedQueryParams.cursor;
-      const size = parsedQueryParams.size;
-
-      const institution = this.institution() as Institution;
-      const institutionIris = institution.iris || [];
-
-      this.actions.fetchRegistrations(this.institutionId, institutionIris, size, sortParam, cursor);
-    });
-  }
-
-  private parseQueryParams(params: Params): InstitutionProjectsQueryParamsModel {
-    const parsed = parseQueryFilterParams(params);
-    return {
-      ...parsed,
-      cursor: params['cursor'] || '',
-    };
-  }
-
-  private updateComponentState(params: InstitutionProjectsQueryParamsModel): void {
-    untracked(() => {
-      this.currentPageSize.set(params.size);
-
-      if (params.sortColumn) {
-        this.sortField.set(params.sortColumn);
-        const order = params.sortOrder === SortOrder.Desc ? -1 : 1;
-        this.sortOrder.set(order);
-      }
-    });
-  }
-
-  private updateQueryParams(params: IndexSearchQueryParamsModel): void {
-    const queryParams: Record<string, string | undefined> = {};
-
-    if (params.sort) {
-      queryParams['sort'] = params.sort;
-    }
-    if (params.cursor) {
-      queryParams['cursor'] = params.cursor;
-    }
-    if (params.size) {
-      queryParams['size'] = params.size.toString();
-    }
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
+    this.actions.fetchRegistrations(this.institutionId, institutionIris, this.currentPageSize(), this.sortField(), '');
   }
 }

@@ -168,7 +168,7 @@ export class InstitutionsAdminState {
     });
 
     return this.institutionsAdminService
-      .fetchProjects(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .fetchProjects(action.institutionIris, action.pageSize, action.sort, action.cursor)
       .pipe(
         tap((response) => {
           ctx.patchState({
@@ -194,7 +194,7 @@ export class InstitutionsAdminState {
     });
 
     return this.institutionsAdminService
-      .fetchRegistrations(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .fetchRegistrations(action.institutionIris, action.pageSize, action.sort, action.cursor)
       .pipe(
         tap((response) => {
           ctx.patchState({
@@ -220,7 +220,7 @@ export class InstitutionsAdminState {
     });
 
     return this.institutionsAdminService
-      .fetchPreprints(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .fetchPreprints(action.institutionIris, action.pageSize, action.sort, action.cursor)
       .pipe(
         tap((response) => {
           ctx.patchState({

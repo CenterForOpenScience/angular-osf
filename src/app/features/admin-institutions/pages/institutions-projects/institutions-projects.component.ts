@@ -6,24 +6,14 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { filter } from 'rxjs';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  signal,
-  untracked,
-} from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
-import { parseQueryFilterParams } from '@osf/shared/helpers';
 import { Institution, QueryParams } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import { InstitutionsSearchSelectors } from '@osf/shared/stores';
@@ -34,14 +24,7 @@ import { ContactDialogComponent } from '../../dialogs';
 import { ContactOption, DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
 import { mapProjectToTableCellData } from '../../mappers';
-import {
-  ContactDialogData,
-  InstitutionProject,
-  InstitutionProjectsQueryParamsModel,
-  TableCellData,
-  TableCellLink,
-  TableIconClickEvent,
-} from '../../models';
+import { ContactDialogData, InstitutionProject, TableCellData, TableCellLink, TableIconClickEvent } from '../../models';
 import { FetchProjects, InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } from '../../store';
 
 @Component({
@@ -52,9 +35,8 @@ import { FetchProjects, InstitutionsAdminSelectors, RequestProjectAccess, SendUs
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class InstitutionsProjectsComponent {
+export class InstitutionsProjectsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
@@ -68,7 +50,6 @@ export class InstitutionsProjectsComponent {
 
   institutionId = '';
 
-  queryParams = toSignal(this.route.queryParams);
   currentPageSize = signal(TABLE_PARAMS.rows);
   first = signal(0);
 
@@ -89,19 +70,24 @@ export class InstitutionsProjectsComponent {
     this.projects().map((project: InstitutionProject): TableCellData => mapProjectToTableCellData(project))
   );
 
-  constructor() {
-    this.setupQueryParamsEffect();
+  ngOnInit(): void {
+    this.getProjects();
   }
 
   onSortChange(params: QueryParams): void {
+    console.log(params);
+
     this.sortField.set(params.sortColumn || '-dateModified');
     this.sortOrder.set(params.sortOrder || 1);
 
-    this.updateQueryParams({
-      sortColumn: params.sortColumn || '-dateModified',
-      sortOrder: params.sortOrder || 1,
-      cursor: '',
-    });
+    const sortField = params.sortColumn || '-dateModified';
+    const sortOrder = params.sortOrder || 1;
+    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
+
+    const institution = this.institution() as Institution;
+    const institutionIris = institution.iris || [];
+
+    this.actions.fetchProjects(this.institutionId, institutionIris, this.currentPageSize(), sortParam, '');
   }
 
   onLinkPageChange(linkUrl: string): void {
@@ -109,9 +95,14 @@ export class InstitutionsProjectsComponent {
 
     const cursor = this.extractCursorFromUrl(linkUrl);
 
-    this.updateQueryParams({
-      cursor: cursor,
-    });
+    const sortField = this.sortField();
+    const sortOrder = this.sortOrder();
+    const sortParam = sortOrder === -1 ? `-${sortField}` : sortField;
+
+    const institution = this.institution() as Institution;
+    const institutionIris = institution.iris || [];
+
+    this.actions.fetchProjects(this.institutionId, institutionIris, this.currentPageSize(), sortParam, cursor);
   }
 
   download(type: DownloadType) {
@@ -173,85 +164,16 @@ export class InstitutionsProjectsComponent {
     }
   }
 
-  private setupQueryParamsEffect(): void {
-    effect(() => {
-      const institutionId = this.route.parent?.snapshot.params['institution-id'];
-      const rawQueryParams = this.queryParams();
-      if (!rawQueryParams && !institutionId) return;
+  private getProjects(): void {
+    const institutionId = this.route.parent?.snapshot.params['institution-id'];
+    if (!institutionId) return;
 
-      this.institutionId = institutionId;
-      const parsedQueryParams = this.parseQueryParams(rawQueryParams as Params);
+    this.institutionId = institutionId;
 
-      this.updateComponentState(parsedQueryParams);
+    const institution = this.institution() as Institution;
+    const institutionIris = institution.iris || [];
 
-      const sortField = parsedQueryParams.sortColumn;
-      const sortOrder = parsedQueryParams.sortOrder;
-      const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-      const cursor = parsedQueryParams.cursor;
-      const size = parsedQueryParams.size;
-
-      const institution = this.institution() as Institution;
-      const institutionIris = institution.iris || [];
-
-      this.actions.fetchProjects(this.institutionId, institutionIris, size, sortParam, cursor);
-    });
-  }
-
-  private updateQueryParams(updates: Partial<InstitutionProjectsQueryParamsModel>): void {
-    const queryParams: Record<string, string | undefined> = {};
-    const current = this.route.snapshot.queryParams;
-
-    const same =
-      (updates.page?.toString() ?? current['page']) === current['page'] &&
-      (updates.size?.toString() ?? current['size']) === current['size'] &&
-      (updates.sortColumn ?? current['sortColumn']) === current['sortColumn'] &&
-      (updates.sortOrder?.toString() ?? current['sortOrder']) === current['sortOrder'] &&
-      (updates.cursor ?? current['cursor']) === current['cursor'];
-
-    if (same) return;
-
-    if ('page' in updates) {
-      queryParams['page'] = updates.page!.toString();
-    }
-    if ('size' in updates) {
-      queryParams['size'] = updates.size!.toString();
-    }
-    if ('sortColumn' in updates) {
-      queryParams['sortColumn'] = updates.sortColumn || undefined;
-    }
-    if ('sortOrder' in updates) {
-      queryParams['sortOrder'] = updates.sortOrder?.toString() || undefined;
-    }
-    if ('cursor' in updates) {
-      queryParams['cursor'] = updates.cursor || undefined;
-    }
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  private parseQueryParams(params: Params): InstitutionProjectsQueryParamsModel {
-    const parsed = parseQueryFilterParams(params);
-    return {
-      ...parsed,
-      cursor: params['cursor'] || '',
-    };
-  }
-
-  private updateComponentState(params: InstitutionProjectsQueryParamsModel): void {
-    untracked(() => {
-      this.currentPageSize.set(params.size);
-      this.first.set((params.page - 1) * params.size);
-
-      if (params.sortColumn) {
-        this.sortField.set(params.sortColumn);
-        const order = params.sortOrder === SortOrder.Desc ? -1 : 1;
-        this.sortOrder.set(order);
-      }
-    });
+    this.actions.fetchProjects(this.institutionId, institutionIris, this.currentPageSize(), this.sortField(), '');
   }
 
   private extractCursorFromUrl(url: string): string {

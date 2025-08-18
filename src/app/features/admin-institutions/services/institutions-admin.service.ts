@@ -5,6 +5,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@shared/services';
 
+import { SearchResourceType } from '../enums';
 import {
   mapIndexCardResults,
   mapInstitutionDepartments,
@@ -79,16 +80,16 @@ export class InstitutionsAdminService {
       );
   }
 
-  fetchProjects(institutionId: string, iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards('Project', iris, pageSize, sort, cursor);
+  fetchProjects(iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards(SearchResourceType.Project, iris, pageSize, sort, cursor);
   }
 
-  fetchRegistrations(institutionId: string, iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards('Registration', iris, pageSize, sort, cursor);
+  fetchRegistrations(iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards(SearchResourceType.Registration, iris, pageSize, sort, cursor);
   }
 
-  fetchPreprints(institutionId: string, iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards('Preprint', iris, pageSize, sort, cursor);
+  fetchPreprints(iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards(SearchResourceType.Preprint, iris, pageSize, sort, cursor);
   }
 
   fetchIndexValueSearch(
@@ -124,7 +125,7 @@ export class InstitutionsAdminService {
   }
 
   private fetchIndexCards(
-    resourceType: 'Project' | 'Registration' | 'Preprint',
+    resourceType: SearchResourceType,
     institutionIris: string[],
     pageSize = 10,
     sort = '-dateModified',
@@ -148,10 +149,10 @@ export class InstitutionsAdminService {
           response: InstitutionRegistrationsJsonApi
         ) => InstitutionProject[] | InstitutionRegistration[] | InstitutionPreprint[];
         switch (resourceType) {
-          case 'Registration':
+          case SearchResourceType.Registration:
             mapper = mapInstitutionRegistrations;
             break;
-          case 'Project':
+          case SearchResourceType.Project:
             mapper = mapInstitutionProjects;
             break;
           default:

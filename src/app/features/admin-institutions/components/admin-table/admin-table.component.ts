@@ -20,7 +20,6 @@ import {
 } from '@osf/features/admin-institutions/models';
 import { CustomPaginatorComponent } from '@osf/shared/components';
 import { StopPropagationDirective } from '@shared/directives';
-import { SortOrder } from '@shared/enums';
 import { QueryParams } from '@shared/models';
 
 import { DOWNLOAD_OPTIONS } from '../../constants';
@@ -131,9 +130,10 @@ export class AdminTableComponent {
     if (event.field && this.userInitiatedSort) {
       this.sortChanged.emit({
         sortColumn: event.field,
-        sortOrder: event.order === -1 ? SortOrder.Desc : SortOrder.Asc,
+        sortOrder: event.order,
       } as QueryParams);
     }
+
     this.userInitiatedSort = false;
   }
 
