@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -6,33 +6,28 @@ import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 
-import { EMPTY, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import {
-  FileKeywordsComponent,
-  FileMetadataComponent,
-  FileProjectMetadataComponent,
-  FileRevisionsComponent,
-} from '@osf/features/project/files/components';
-import { FileDetailTab } from '@osf/features/project/files/enums/file-detail-tab.enum';
 import { embedDynamicJs, embedStaticHtml } from '@osf/features/project/files/models';
-import {
-  DeleteEntry,
-  GetFile,
-  GetFileMetadata,
-  GetFileProjectContributors,
-  GetFileProjectMetadata,
-  GetFileRevisions,
-  ProjectFilesSelectors,
-} from '@osf/features/project/files/store';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
 import { OsfFile } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
+
+import { FileKeywordsComponent, FileMetadataComponent, FileRevisionsComponent } from '../../components';
+import { FileDetailTab } from '../../enums';
+import {
+  FilesSelectors,
+  GetFile,
+  GetFileMetadata,
+  GetFileResourceContributors,
+  GetFileResourceMetadata,
+  GetFileRevisions,
+} from '../../store';
 
 @Component({
   selector: 'osf-file-detail',
@@ -49,7 +44,6 @@ import { CustomConfirmationService, ToastService } from '@shared/services';
     FileKeywordsComponent,
     FileRevisionsComponent,
     FileMetadataComponent,
-    FileProjectMetadataComponent,
   ],
   templateUrl: './file-detail.component.html',
   styleUrl: './file-detail.component.scss',
@@ -66,10 +60,19 @@ export class FileDetailComponent {
   readonly toastService = inject(ToastService);
   readonly customConfirmationService = inject(CustomConfirmationService);
 
-  file = select(ProjectFilesSelectors.getOpenedFile);
-  isFileLoading = select(ProjectFilesSelectors.isOpenedFileLoading);
+  private readonly actions = createDispatchMap({
+    getFile: GetFile,
+    getFileRevisions: GetFileRevisions,
+    getFileMetadata: GetFileMetadata,
+    getFileResourceMetadata: GetFileResourceMetadata,
+    getFileResourceContributors: GetFileResourceContributors,
+  });
+
+  file = select(FilesSelectors.getOpenedFile);
+  isFileLoading = select(FilesSelectors.isOpenedFileLoading);
   safeLink: SafeResourceUrl | null = null;
-  projectId: string | null = null;
+  resourceId = '';
+  resourceType = '';
 
   isIframeLoading = true;
 
@@ -106,20 +109,18 @@ export class FileDetailComponent {
   ];
 
   constructor() {
-    this.route.parent?.parent?.parent?.parent?.params.subscribe((params) => {
-      if (params['id']) {
-        this.projectId = params['id'];
-      }
-    });
+    // this.route.parent?.parent?.parent?.parent?.params.subscribe((params) => {
+    //   if (params['id']) {
+    //     this.projectId = params['id'];
+    //   }
+    // });
 
     this.route.params
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         switchMap((params) => {
           this.fileGuid = params['fileGuid'];
-          return this.store
-            .dispatch(new GetFile(this.fileGuid))
-            .pipe(switchMap(() => this.route.parent?.parent?.parent?.params || EMPTY));
+          return this.actions.getFile(this.fileGuid);
         })
       )
       .subscribe((parentParams) => {
@@ -127,20 +128,22 @@ export class FileDetailComponent {
         if (link) {
           this.safeLink = this.sanitizer.bypassSecurityTrustResourceUrl(link);
         }
+        this.resourceId = this.file()?.target.id || '';
+        this.resourceType = this.file()?.target.type || '';
+        const fileId = this.file()?.path.replaceAll('/', '');
+        // this.projectId = parentParams['id'];
+        if (this.resourceId && this.resourceType) {
+          this.actions.getFileResourceMetadata(this.resourceId, this.resourceType);
+          this.actions.getFileResourceContributors(this.resourceId, this.resourceType);
 
-        this.projectId = parentParams['id'];
-        if (this.projectId) {
-          this.store.dispatch(new GetFileProjectMetadata(this.projectId));
-          this.store.dispatch(new GetFileProjectContributors(this.projectId));
-          const fileId = this.file()?.path.replaceAll('/', '');
           if (fileId) {
-            this.store.dispatch(new GetFileRevisions(this.projectId, fileId));
+            this.actions.getFileRevisions(this.resourceId, this.resourceType, fileId);
           }
         }
       });
 
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      this.store.dispatch(new GetFileMetadata(params['fileGuid']));
+      this.actions.getFileMetadata(params['fileGuid']);
     });
   }
 
@@ -160,14 +163,15 @@ export class FileDetailComponent {
   }
 
   deleteEntry(link: string): void {
-    if (this.projectId) {
-      this.store
-        .dispatch(new DeleteEntry(this.projectId, link))
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe(() => {
-          this.router.navigate(['/project', this.projectId, 'files']);
-        });
-    }
+    console.log('Delete entry link:', link);
+    // if (this.projectId) {
+    //   this.store
+    //     .dispatch(new DeleteEntry(this.projectId, link))
+    //     .pipe(takeUntilDestroyed(this.destroyRef))
+    //     .subscribe(() => {
+    //       this.router.navigate(['/project', this.projectId, 'files']);
+    //     });
+    // }
   }
 
   confirmDelete(file: OsfFile): void {

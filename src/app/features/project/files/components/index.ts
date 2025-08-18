@@ -6,5 +6,4 @@ export { FileProjectMetadataComponent } from './file-project-metadata/file-proje
 export { MoveFileDialogComponent } from './move-file-dialog/move-file-dialog.component';
 export { RenameFileDialogComponent } from './rename-file-dialog/rename-file-dialog.component';
 export { FileRevisionsComponent } from '@osf/features/project/files/components/file-revisions/file-revisions.component';
-export { FileDetailComponent } from '@osf/features/project/files/pages/file-detail/file-detail.component';
 export { FilesTreeComponent } from '@shared/components/files-tree/files-tree.component';

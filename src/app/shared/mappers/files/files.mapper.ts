@@ -48,6 +48,7 @@ export function MapFile(
       filesLink: file?.relationships?.files?.links?.related?.href,
     },
     target: {
+      id: file?.embeds?.target.data.id,
       title: file?.embeds?.target.data.attributes.title,
       description: file?.embeds?.target.data.attributes.description,
       category: file?.embeds?.target.data.attributes.category,
@@ -61,6 +62,7 @@ export function MapFile(
       tags: file?.embeds?.target.data.attributes.tags,
       nodeLicense: file?.embeds?.target.data.attributes.node_license,
       analyticsKey: file?.embeds?.target.data.attributes.analytics_key,
+      type: file?.embeds?.target.data.type,
     },
   } as OsfFile;
 }

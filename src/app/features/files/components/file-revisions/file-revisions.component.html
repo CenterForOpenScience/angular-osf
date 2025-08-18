@@ -1,0 +1,60 @@
+<div class="p-4 flex flex-column gap-2">
+  <div class="flex justify-content-between">
+    <h2>{{ 'project.files.detail.revisions.title' | translate }}</h2>
+  </div>
+
+  @if (isLoading()) {
+    <p-skeleton width="100%" height="2rem" />
+  } @else {
+    <p-accordion [multiple]="true">
+      @for (item of fileRevisions(); track item.version) {
+        <p-accordion-panel [value]="item.version" class="border-none">
+          <p-accordion-header class="h-3rem font-normal">
+            {{ item.version }}. {{ item.dateTime | date: 'MMM d, yyyy HH:mm' }}
+          </p-accordion-header>
+
+          <p-accordion-content>
+            <ul class="flex flex-column gap-2">
+              <li class="flex align-items-center justify-content-between">
+                <osf-copy-button
+                  class="copy-button"
+                  [label]="'project.files.detail.revisions.actions.copyMd5' | translate"
+                  [copyItem]="item.hashes.md5"
+                ></osf-copy-button>
+
+                <osf-info-icon
+                  [tooltipText]="'project.files.detail.revisions.tooltips.md5' | translate"
+                  tooltipPosition="left"
+                ></osf-info-icon>
+              </li>
+
+              <li class="flex align-items-center justify-content-between gap-2">
+                <osf-copy-button
+                  class="copy-button"
+                  [label]="'project.files.detail.revisions.actions.copySha2' | translate"
+                  [copyItem]="item.hashes.sha256"
+                ></osf-copy-button>
+
+                <osf-info-icon
+                  [tooltipText]="'project.files.detail.revisions.tooltips.sha2' | translate"
+                  tooltipPosition="left"
+                ></osf-info-icon>
+              </li>
+
+              <li class="flex align-items-center gap-2">
+                <p-button
+                  icon="fas fa-download"
+                  variant="text"
+                  [label]="'project.files.detail.revisions.actions.download' | translate"
+                  (click)="downloadRevision(item.version)"
+                ></p-button>
+
+                <p class="ml-auto mr-1">{{ item.downloads }}</p>
+              </li>
+            </ul>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+  }
+</div>

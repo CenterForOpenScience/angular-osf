@@ -187,29 +187,26 @@ export class FilesService {
       .pipe(map((response) => MapFileCustomMetadata(response.data)));
   }
 
-  getProjectShortInfo(resourceId: string): Observable<GetProjectShortInfoResponse> {
+  getResourceShortInfo(resourceId: string, resourceType: string): Observable<GetProjectShortInfoResponse> {
     const params = {
       'fields[nodes]': 'title,description,date_created,date_modified',
     };
-    return this.jsonApiService.get<GetProjectShortInfoResponse>(`${environment.apiUrl}/nodes/${resourceId}/`, params);
+    return this.jsonApiService.get<GetProjectShortInfoResponse>(
+      `${environment.apiUrl}/${resourceType}/${resourceId}/`,
+      params
+    );
   }
 
-  getProjectCustomMetadata(resourceId: string): Observable<GetProjectCustomMetadataResponse> {
+  getCustomMetadata(resourceId: string): Observable<GetProjectCustomMetadataResponse> {
     return this.jsonApiService.get<GetProjectCustomMetadataResponse>(
       `${environment.apiUrl}/guids/${resourceId}/?embed=custom_metadata&resolve=false`
     );
   }
 
-  getProjectContributors(resourceId: string): Observable<OsfFileProjectContributor[]> {
-    const params = {
-      'page[size]': '50',
-      'fields[users]': 'full_name,active',
-    };
-
+  getResourceContributors(resourceId: string, resourceType: string): Observable<OsfFileProjectContributor[]> {
     return this.jsonApiService
       .get<GetProjectContributorsResponse>(
-        `${environment.apiUrl}/nodes/${resourceId}/contributors_and_group_members/`,
-        params
+        `${environment.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`
       )
       .pipe(
         map((response) =>

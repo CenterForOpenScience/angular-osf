@@ -17,9 +17,7 @@ export const projectFilesRoutes: Routes = [
       {
         path: ':fileGuid',
         loadComponent: () =>
-          import('@osf/features/project/files/pages/file-detail/file-detail.component').then(
-            (c) => c.FileDetailComponent
-          ),
+          import('@osf/features/files/pages/file-detail/file-detail.component').then((c) => c.FileDetailComponent),
         children: [
           {
             path: 'metadata',

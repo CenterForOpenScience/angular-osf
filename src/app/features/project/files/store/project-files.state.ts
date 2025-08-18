@@ -213,8 +213,8 @@ export class ProjectFilesState {
     ctx.patchState({ projectMetadata: { ...state.projectMetadata, isLoading: true, error: null } });
 
     forkJoin({
-      projectShortInfo: this.filesService.getProjectShortInfo(action.projectId),
-      projectMetadata: this.filesService.getProjectCustomMetadata(action.projectId),
+      projectShortInfo: this.filesService.getResourceShortInfo(action.projectId, 'nodes'),
+      projectMetadata: this.filesService.getCustomMetadata(action.projectId),
     })
       .pipe(catchError((error) => this.handleError(ctx, 'projectMetadata', error)))
       .subscribe((results) => {
@@ -234,7 +234,7 @@ export class ProjectFilesState {
     const state = ctx.getState();
     ctx.patchState({ contributors: { ...state.contributors, isLoading: true, error: null } });
 
-    return this.filesService.getProjectContributors(action.projectId).pipe(
+    return this.filesService.getResourceContributors(action.projectId, 'nodes').pipe(
       tap({
         next: (contributors) => {
           ctx.patchState({ contributors: { data: contributors, isLoading: false, error: null } });

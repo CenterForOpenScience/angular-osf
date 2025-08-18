@@ -22,7 +22,7 @@
           @if (reviewData()[question.responseKey!].length) {
             <div class="flex flex-wrap gap-2">
               @for (file of reviewData()[question.responseKey!]; track file.id) {
-                <p-tag [value]="file.file_name" severity="info"></p-tag>
+                <osf-file-link [file]="file"></osf-file-link>
               }
             </div>
           } @else {

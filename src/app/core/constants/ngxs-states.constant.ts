@@ -1,6 +1,7 @@
 import { ProviderState } from '@core/store/provider';
 import { UserState } from '@core/store/user';
 import { AuthState } from '@osf/features/auth/store';
+import { FilesState } from '@osf/features/files/store';
 import { MeetingsState } from '@osf/features/meetings/store';
 import { ProjectMetadataState } from '@osf/features/project/metadata/store';
 import { ProjectOverviewState } from '@osf/features/project/overview/store';
@@ -30,4 +31,5 @@ export const STATES = [
   ProjectMetadataState,
   LicensesState,
   RegionsState,
+  FilesState,
 ];

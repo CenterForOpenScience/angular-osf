@@ -149,12 +149,12 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   openEntry(file: OsfFile) {
     if (file.kind === 'file') {
-      if (!file.guid) {
+      if (file.guid) {
+        this.entryFileClicked.emit(file);
+      } else {
         this.filesService.getFileGuid(file.id).subscribe((file) => {
           this.entryFileClicked.emit(file);
         });
-      } else {
-        this.entryFileClicked.emit(file);
       }
     } else {
       this.actions().setFilesIsLoading?.(true);
