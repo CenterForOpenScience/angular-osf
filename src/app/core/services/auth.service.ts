@@ -71,7 +71,7 @@ export class AuthService {
         attributes: {
           uid: userId,
           token,
-          new_password: newPassword,
+          password: newPassword,
         },
       },
     };
