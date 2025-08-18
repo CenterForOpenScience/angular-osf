@@ -1,4 +1,4 @@
-import { AsyncStateModel, AsyncStateWithLinksModel, AsyncStateWithTotalCount, Institution } from '@shared/models';
+import { AsyncStateModel, AsyncStateWithTotalCount, Institution, PaginationLinksModel } from '@shared/models';
 
 import {
   InstitutionDepartment,
@@ -8,7 +8,6 @@ import {
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
   InstitutionUser,
-  SendMessageResponseJsonApi,
 } from '../models';
 
 export interface InstitutionsAdminModel {
@@ -18,13 +17,15 @@ export interface InstitutionsAdminModel {
   storageRegionSearch: AsyncStateModel<InstitutionSearchFilter[]>;
   searchResults: AsyncStateModel<InstitutionSearchFilter[]>;
   users: AsyncStateWithTotalCount<InstitutionUser[]>;
-  projects: AsyncStateWithLinksModel<InstitutionProject[]>;
-  registrations: AsyncStateWithLinksModel<InstitutionRegistration[]>;
-  preprints: AsyncStateWithLinksModel<InstitutionPreprint[]>;
-  sendMessage: AsyncStateModel<SendMessageResponseJsonApi | null>;
-  selectedInstitutionId: string | null;
-  currentSearchPropertyPath: string | null;
+  projects: ResultStateModel<InstitutionProject[]>;
+  registrations: ResultStateModel<InstitutionRegistration[]>;
+  preprints: ResultStateModel<InstitutionPreprint[]>;
   institution: AsyncStateModel<Institution>;
+}
+
+interface ResultStateModel<T> extends AsyncStateWithTotalCount<T> {
+  links?: PaginationLinksModel;
+  downloadLink: string | null;
 }
 
 export const INSTITUTIONS_ADMIN_STATE_DEFAULTS: InstitutionsAdminModel = {
@@ -34,11 +35,8 @@ export const INSTITUTIONS_ADMIN_STATE_DEFAULTS: InstitutionsAdminModel = {
   storageRegionSearch: { data: [], isLoading: false, error: null },
   searchResults: { data: [], isLoading: false, error: null },
   users: { data: [], totalCount: 0, isLoading: false, error: null },
-  projects: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
-  registrations: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
-  preprints: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
-  sendMessage: { data: null, isLoading: false, error: null },
-  selectedInstitutionId: null,
-  currentSearchPropertyPath: null,
+  projects: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined, downloadLink: null },
+  registrations: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined, downloadLink: null },
+  preprints: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined, downloadLink: null },
   institution: { data: {} as Institution, isLoading: false, error: null },
 };

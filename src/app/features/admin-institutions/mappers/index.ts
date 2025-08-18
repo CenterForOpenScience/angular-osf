@@ -1,5 +1,6 @@
 export { mapInstitutionDepartment, mapInstitutionDepartments } from './institution-departments.mapper';
 export { mapPreprintToTableData } from './institution-preprint-to-table-data.mapper';
+export { mapInstitutionPreprints } from './institution-preprints.mapper';
 export { mapProjectToTableCellData } from './institution-project-to-table-data.mapper';
 export { mapInstitutionProjects } from './institution-projects.mapper';
 export { mapRegistrationToTableData } from './institution-registration-to-table-data.mapper';

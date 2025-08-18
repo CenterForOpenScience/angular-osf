@@ -16,8 +16,8 @@ export function mapProjectToTableCellData(project: InstitutionProject): TableCel
     storageLocation: project.storageRegion || '-',
     totalDataStored: project.storageByteCount ? `${(project.storageByteCount / (1024 * 1024)).toFixed(1)} MB` : '0 B',
     creator: {
-      url: project.creator || '#',
-      text: project.creator || '-',
+      url: project.creator.id || '#',
+      text: project.creator.name || '-',
     } as TableCellLink,
     views: project.viewCount?.toString() || '-',
     resourceType: project.resourceType,

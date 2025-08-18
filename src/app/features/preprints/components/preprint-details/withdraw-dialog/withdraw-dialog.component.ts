@@ -19,6 +19,8 @@ import { WithdrawPreprint } from '@osf/features/preprints/store/preprint';
 import { CustomValidators } from '@osf/shared/helpers';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-withdraw-dialog',
   imports: [Textarea, ReactiveFormsModule, Message, TranslatePipe, Button, TitleCasePipe],
@@ -30,6 +32,8 @@ export class WithdrawDialogComponent implements OnInit {
   private readonly config = inject(DynamicDialogConfig);
   private readonly translateService = inject(TranslateService);
   readonly dialogRef = inject(DynamicDialogRef);
+
+  readonly supportEmail = environment.supportEmail;
 
   private provider!: PreprintProviderDetails;
   private preprint!: Preprint;
@@ -80,8 +84,6 @@ export class WithdrawDialogComponent implements OnInit {
 
   private calculateModalExplanation() {
     const providerReviewWorkflow = this.provider.reviewsWorkflow;
-    //[RNi] TODO: maybe extract to env, also see static pages
-    const supportEmail = 'support@osf.io';
 
     switch (providerReviewWorkflow) {
       case ProviderReviewsWorkflow.PreModeration: {
@@ -105,7 +107,7 @@ export class WithdrawDialogComponent implements OnInit {
         return this.translateService.instant('preprints.details.withdrawDialog.noModerationNotice', {
           singularPreprintWord: this.documentType.singular,
           pluralCapitalizedPreprintWord: this.documentType.pluralCapitalized,
-          supportEmail,
+          supportEmail: this.supportEmail,
         });
       }
     }

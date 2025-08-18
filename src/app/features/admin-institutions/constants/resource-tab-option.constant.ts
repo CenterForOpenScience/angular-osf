@@ -1,9 +1,11 @@
 import { CustomOption } from '@shared/models';
 
-export const resourceTabOptions: CustomOption<string>[] = [
-  { label: 'adminInstitutions.summary.title', value: 'summary' },
-  { label: 'common.search.tabs.users', value: 'users' },
-  { label: 'common.search.tabs.projects', value: 'projects' },
-  { label: 'common.search.tabs.registrations', value: 'registrations' },
-  { label: 'common.search.tabs.preprints', value: 'preprints' },
+import { AdminInstitutionResourceTab } from '../enums';
+
+export const resourceTabOptions: CustomOption<AdminInstitutionResourceTab>[] = [
+  { label: 'adminInstitutions.summary.title', value: AdminInstitutionResourceTab.Summary },
+  { label: 'common.search.tabs.users', value: AdminInstitutionResourceTab.Users },
+  { label: 'common.search.tabs.projects', value: AdminInstitutionResourceTab.Projects },
+  { label: 'common.search.tabs.registrations', value: AdminInstitutionResourceTab.Registrations },
+  { label: 'common.search.tabs.preprints', value: AdminInstitutionResourceTab.Preprints },
 ];

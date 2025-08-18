@@ -1,7 +1,9 @@
+import { IdName } from '@osf/shared/models';
+
 export interface InstitutionProject {
   id: string;
   title: string;
-  creator: string;
+  creator: IdName;
   dateCreated: string;
   dateModified: string;
   resourceType: string;

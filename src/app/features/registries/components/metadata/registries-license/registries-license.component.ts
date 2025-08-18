@@ -15,6 +15,8 @@ import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
 import { License, LicenseOptions } from '@osf/shared/models';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-registries-license',
   imports: [FormsModule, ReactiveFormsModule, LicenseComponent, Card, TranslatePipe, Message],
@@ -36,8 +38,6 @@ export class RegistriesLicenseComponent {
   protected selectedLicense = select(RegistriesSelectors.getSelectedLicense);
   protected draftRegistration = select(RegistriesSelectors.getDraftRegistration);
 
-  private readonly OSF_PROVIDER_ID = 'osf';
-
   currentYear = new Date();
   licenseYear = this.currentYear;
   licenseForm = this.fb.group({
@@ -52,7 +52,7 @@ export class RegistriesLicenseComponent {
   constructor() {
     effect(() => {
       if (this.draftRegistration() && !this.isLoaded) {
-        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? this.OSF_PROVIDER_ID);
+        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? environment.defaultProvider);
         this.isLoaded = true;
       }
     });

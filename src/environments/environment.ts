@@ -8,10 +8,11 @@ export const environment = {
   shareDomainUrl: 'https://staging-share.osf.io/trove',
   addonsApiUrl: 'https://addons.staging4.osf.io/v1',
   fileApiUrl: 'https://files.us.staging4.osf.io/v1',
-  baseResourceUri: 'https://staging4.osf.io/',
   funderApiUrl: 'https://api.crossref.org/',
   addonsV1Url: 'https://addons.staging4.osf.io/v1',
   casUrl: 'https://accounts.staging4.osf.io',
   recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   facebookAppId: '1022273774556662',
+  supportEmail: 'support@osf.io',
+  defaultProvider: 'osf',
 };
