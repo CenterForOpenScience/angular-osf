@@ -2,6 +2,7 @@
   <h2>{{ 'pageNotFound.title' | translate }}</h2>
   <p class="mt-4">
     <span>{{ 'pageNotFound.message' | translate }}</span>
-    <a class="ml-1 font-bold" href="mailto:support@osf.io">support&#64;osf.io</a>.
+    <a class="ml-1 font-bold" [href]="'mailto:' + supportEmail">{{ supportEmail }}</a
+    >.
   </p>
 </section>
