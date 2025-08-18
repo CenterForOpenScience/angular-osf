@@ -1,6 +1,6 @@
 # Docker
 
-The OSF angular project uses a docker image to simplify that developer process.
+The OSF angular project uses a docker image to simplify the developer process.
 
 ### Volumes
 

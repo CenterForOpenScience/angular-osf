@@ -22,7 +22,7 @@ To contribute to this repository, follow these steps:
 
 1. **Fork the Repository**
 
-   - Go to the main repository page on GitHub.
+   - Go to the main repository page on GitHub [OSF Angular Project](https://github.com/CenterForOpenScience/angular-osf).
    - Click the **Fork** button (top-right corner).
    - This creates a copy of the repository under your GitHub account.
 
@@ -51,9 +51,13 @@ To contribute to this repository, follow these steps:
    ```
 
 6. **Open a Pull Request**
-   - Go to the main repository on GitHub.
+   - Go to the main repository page on GitHub [OSF Angular Project](https://github.com/CenterForOpenScience/angular-osf).
    - Click **New Pull Request**.
-   - Select your fork and branch, then create the PR against the `main` branch of the main repo.
+   - Select your fork and branch, then create the PR against the appropriate branch of the main repo.
+     - A pre-determined `feature` branch (standard OSF development cycle)
+     - The `active PB&S` branch (standard OSF bug fix cycle)
+     - `develop` (used by internal OSF release engineers for releases to the testing environment)
+     - `main` (used by internal OSF release engineers to push tested (QA and UAT) code to production)
 
 ---
 
