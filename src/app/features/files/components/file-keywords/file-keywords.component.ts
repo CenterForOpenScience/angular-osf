@@ -11,8 +11,8 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { CustomValidators } from '@osf/shared/helpers';
 import { InputLimits } from '@shared/constants';
-import { CustomValidators } from '@shared/utils';
 
 import { FilesSelectors, UpdateTags } from '../../store';
 
