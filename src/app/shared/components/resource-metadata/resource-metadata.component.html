@@ -17,7 +17,7 @@
     <div class="flex flex-column gap-2">
       <h3>{{ 'project.overview.metadata.contributors' | translate }}</h3>
 
-      <div class="flex gap-1 line-height-2">
+      <div class="flex flex-wrap gap-1 line-height-2">
         @for (contributor of resource.contributors; track contributor.id) {
           <div>
             <a class="font-bold"> {{ contributor.fullName }}</a>

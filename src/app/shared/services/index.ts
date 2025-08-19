@@ -1,3 +1,4 @@
+export * from './activity-logs';
 export * from './addons';
 export { BookmarksService } from './bookmarks.service';
 export { BrandService } from './brand.service';

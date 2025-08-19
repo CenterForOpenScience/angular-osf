@@ -33,24 +33,35 @@
       @if (status && isCollectionsRoute() && collectionProvider()) {
         @switch (status) {
           @case (SubmissionReviewStatus.Pending) {
-            <!-- TODO - Update text messages to translates RNa-->
             <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="warn">
-              Pending: Pending entry into <a class="cursor-pointer">{{ collectionProvider()?.name }}</a>
+              {{ 'project.overview.collectionsModeration.pending' | translate }}
+              <a class="cursor-pointer" [routerLink]="['/collections/', collectionProvider()?.id]">
+                {{ collectionProvider()?.name }}</a
+              >
             </p-message>
           }
           @case (SubmissionReviewStatus.Accepted) {
             <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="success">
-              Accepted: Accepted entry into <a class="cursor-pointer">{{ collectionProvider()?.name }}</a>
+              {{ 'project.overview.collectionsModeration.accepted' | translate }}
+              <a class="cursor-pointer" [routerLink]="['/collections/', collectionProvider()?.id]">
+                {{ collectionProvider()?.name }}</a
+              >
             </p-message>
           }
           @case (SubmissionReviewStatus.Rejected) {
             <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="error">
-              Rejected: Rejected entry into <a class="cursor-pointer">{{ collectionProvider()?.name }}</a>
+              {{ 'project.overview.collectionsModeration.rejected' | translate }}
+              <a class="cursor-pointer" [routerLink]="['/collections/', collectionProvider()?.id]">
+                {{ collectionProvider()?.name }}</a
+              >
             </p-message>
           }
           @case (SubmissionReviewStatus.Removed) {
             <p-message class="overview-message w-full" icon="fas fa-circle-exclamation" severity="secondary">
-              Withdrawn: Entry withdrawn from <a class="cursor-pointer">{{ collectionProvider()?.name }}</a>
+              {{ 'project.overview.collectionsModeration.removed' | translate }}
+              <a class="cursor-pointer" [routerLink]="['/collections/', collectionProvider()?.id]">
+                {{ collectionProvider()?.name }}</a
+              >
             </p-message>
           }
         }
@@ -64,7 +75,7 @@
 
       <osf-project-components [isCollectionsRoute]="isCollectionsRoute()" [canWrite]="canWrite" />
       <osf-linked-resources [isCollectionsRoute]="isCollectionsRoute()" [canWrite]="canWrite" />
-      <osf-recent-activity-list />
+      <osf-recent-activity-list [pageSize]="activityPageSize" />
     </div>
 
     <div class="flex flex-column right-section p-4">
