@@ -1,3 +1,5 @@
+export * from './admin-institution-search-result.model';
+export * from './contact-dialog-data.model';
 export * from './index-search-query-params.model';
 export * from './institution-department.model';
 export * from './institution-departments-json-api.model';
@@ -16,6 +18,7 @@ export * from './institution-summary-metrics-json-api.model';
 export * from './institution-user.model';
 export * from './institution-users-json-api.model';
 export * from './institution-users-query-params.model';
+export * from './request-project-access.model';
 export * from './send-email-dialog-data.model';
 export * from './send-message-json-api.model';
 export * from './send-message-request.model';

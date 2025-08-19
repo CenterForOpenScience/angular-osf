@@ -2,7 +2,7 @@
   <div class="flex justify-content-center align-items-center p-6">
     <osf-loading-spinner />
   </div>
-} @else if (tableData().length > 0) {
+} @else {
   <osf-admin-table
     [tableColumns]="tableColumns"
     [tableData]="tableData()"
@@ -16,15 +16,12 @@
     [sortOrder]="sortOrder()"
     (sortChanged)="onSortChange($event)"
     (linkPageChanged)="onLinkPageChange($event)"
-    [downloadLink]="downloadUrl()"
-    [reportsLink]="reportsLink"
+    (downloadClicked)="download($event)"
+    (iconClicked)="onIconClick($event)"
+    [reportsLink]="institution().linkToExternalReportsArchive"
   >
     <div slot="amount" class="flex items-center">
       <h3 class="title">{{ totalCount() }} {{ 'adminInstitutions.projects.totalProjects' | translate }}</h3>
     </div>
   </osf-admin-table>
-} @else {
-  <div class="flex justify-content-center align-items-center p-6">
-    <p class="text-center text-gray-500">{{ 'adminInstitutions.projects.noData' | translate }}</p>
-  </div>
 }

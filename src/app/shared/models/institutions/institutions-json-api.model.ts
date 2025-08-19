@@ -26,6 +26,14 @@ export interface InstitutionRelationships {
       };
     };
   };
+  user_metrics: {
+    links: {
+      related: {
+        href: string;
+        meta: Record<string, unknown>;
+      };
+    };
+  };
 }
 
 export interface InstitutionLinks {

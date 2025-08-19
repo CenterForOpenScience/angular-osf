@@ -48,6 +48,10 @@ export const projectTableColumns: TableColumn[] = [
     sortable: true,
     isLink: true,
     linkTarget: '_blank',
+    showIcon: true,
+    iconClass: 'fa-solid fa-comment text-primary',
+    iconTooltip: 'adminInstitutions.institutionUsers.sendMessage',
+    iconAction: 'sendMessage',
   },
   {
     field: 'views',
