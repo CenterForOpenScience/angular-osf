@@ -42,8 +42,8 @@ import {
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
-import { GetProjectById } from '@osf/features/project/overview/store';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -101,7 +101,6 @@ export class FilesComponent {
     setMoveFileCurrentFolder: SetMoveFileCurrentFolder,
     setSearch: SetSearch,
     setSort: SetSort,
-    getProject: GetProjectById,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     resetState: ResetState,
@@ -124,6 +123,11 @@ export class FilesComponent {
   protected readonly searchControl = new FormControl<string>('');
   protected readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
 
+  private readonly urlMap = new Map<ResourceType, string>([
+    [ResourceType.Project, 'nodes'],
+    [ResourceType.Registration, 'registrations'],
+  ]);
+
   protected readonly rootFoldersOptions = computed(() => {
     const rootFolders = this.rootFolders();
     const addons = this.configuredStorageAddons();
@@ -134,6 +138,18 @@ export class FilesComponent {
       }));
     }
     return [];
+  });
+
+  resourceType = signal<ResourceType>(
+    this.activeRoute.parent?.parent?.snapshot.data['resourceType'] || ResourceType.Project
+  );
+
+  protected readonly isViewOnly = computed(() => {
+    return this.resourceType() === ResourceType.Registration;
+  });
+
+  protected readonly isViewOnlyDownloadable = computed(() => {
+    return this.resourceType() === ResourceType.Registration;
   });
 
   fileIsUploading = signal(false);
@@ -154,7 +170,6 @@ export class FilesComponent {
 
   constructor() {
     this.activeRoute.parent?.parent?.parent?.params.subscribe((params) => {
-      console.log(params);
       if (params['id']) {
         this.resourceId.set(params['id']);
         this.filesTreeActions.setFilesIsLoading?.(true);
@@ -162,16 +177,17 @@ export class FilesComponent {
     });
 
     effect(() => {
-      const resourcePath = 'nodes';
-      const folderLink = `${environment.apiUrl}/${resourcePath}/${this.resourceId()}/files/${this.storageProvider}/`;
-      const iriLink = `${environment.apiUrl}/${this.resourceId()}/`;
+      const resourceId = this.resourceId();
+
+      const resourcePath = this.urlMap.get(this.resourceType()!);
+      const folderLink = `${environment.apiUrl}/${resourcePath}/${resourceId}/files/`;
+      const iriLink = `${environment.webUrl}/${resourceId}`;
       this.actions.getRootFolders(folderLink);
       this.actions.getConfiguredStorageAddons(iriLink);
     });
 
     effect(() => {
       const rootFolders = this.rootFolders();
-
       if (rootFolders) {
         const osfRootFolder = rootFolders.find((folder) => folder.provider === 'osfstorage');
         if (osfRootFolder) {
@@ -185,15 +201,18 @@ export class FilesComponent {
 
     effect(() => {
       const currentRootFolder = this.currentRootFolder();
-
       if (currentRootFolder) {
         this.actions.setCurrentFolder(currentRootFolder.folder);
       }
     });
 
     effect(() => {
-      if (!this.isConfiguredStorageAddonsLoading() && !this.isRootFoldersLoading()) {
+      if (this.resourceType() === ResourceType.Registration) {
         this.dataLoaded.set(true);
+      } else {
+        if (!this.isConfiguredStorageAddonsLoading() && !this.isRootFoldersLoading()) {
+          this.dataLoaded.set(true);
+        }
       }
     });
 
@@ -243,15 +262,15 @@ export class FilesComponent {
         if (event.type === HttpEventType.UploadProgress && event.total) {
           this.progress.set(Math.round((event.loaded / event.total) * 100));
         }
-
-        if (event.type === HttpEventType.Response) {
-          if (event.body) {
-            const fileId = event?.body?.data?.id?.split('/').pop();
-            if (fileId) {
-              this.filesService.getFileGuid(fileId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-            }
-          }
-        }
+        // [NM] Check if need to create guid here
+        // if (event.type === HttpEventType.Response) {
+        //   if (event.body) {
+        //     const fileId = event?.body?.data?.id?.split('/').pop();
+        //     if (fileId) {
+        //       this.filesService.getFileGuid(fileId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
+        //     }
+        //   }
+        // }
       });
   }
 

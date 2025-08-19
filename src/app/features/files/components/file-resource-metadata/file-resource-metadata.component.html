@@ -1,5 +1,7 @@
 <div class="p-4 flex flex-column gap-5">
-  <h2>{{ 'files.detail.resourceMetadata.title' | translate }}</h2>
+  <h2>
+    {{ 'files.detail.resourceMetadata.title.' + resourceType() | translate }}
+  </h2>
 
   @if (isResourceMetadataLoading()) {
     <p-skeleton width="100%" height="4rem" />

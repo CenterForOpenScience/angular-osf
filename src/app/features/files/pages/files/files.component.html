@@ -1,6 +1,6 @@
 <osf-sub-header [title]="'files.title' | translate"></osf-sub-header>
 
-@if (dataLoaded()) {
+@if (!dataLoaded()) {
   <osf-loading-spinner></osf-loading-spinner>
 } @else {
   <div class="flex flex-column bg-white gap-4 h-full flex-1 p-4 p-dialog-align-center">
@@ -53,28 +53,29 @@
         >
         </p-button>
 
-        <p-button
-          [disabled]="fileIsUploading() || isFilesLoading()"
-          outlined
-          raised
-          severity="success"
-          [icon]="'fas fa-plus'"
-          [label]="'files.actions.createFolder' | translate"
-          (click)="createFolder()"
-        >
-        </p-button>
+        @if (!isViewOnly()) {
+          <p-button
+            [disabled]="fileIsUploading() || isFilesLoading()"
+            outlined
+            raised
+            severity="success"
+            [icon]="'fas fa-plus'"
+            [label]="'files.actions.createFolder' | translate"
+            (click)="createFolder()"
+          >
+          </p-button>
 
-        <p-button
-          [disabled]="fileIsUploading() || isFilesLoading()"
-          outlined
-          raised
-          severity="success"
-          [icon]="'fas fa-upload'"
-          [label]="'files.actions.uploadFile' | translate"
-          (click)="fileInput.click()"
-        >
-        </p-button>
-
+          <p-button
+            [disabled]="fileIsUploading() || isFilesLoading()"
+            outlined
+            raised
+            severity="success"
+            [icon]="'fas fa-upload'"
+            [label]="'files.actions.uploadFile' | translate"
+            (click)="fileInput.click()"
+          >
+          </p-button>
+        }
         <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
       </div>
     </div>
@@ -101,8 +102,8 @@
       [currentFolder]="currentFolder()"
       [isLoading]="isFilesLoading()"
       [actions]="filesTreeActions"
-      [viewOnly]="false"
-      [viewOnlyDownloadable]="false"
+      [viewOnly]="isViewOnly()"
+      [viewOnlyDownloadable]="isViewOnlyDownloadable()"
       [resourceId]="resourceId()"
       [provider]="provider()"
       (folderIsOpening)="folderIsOpening($event)"

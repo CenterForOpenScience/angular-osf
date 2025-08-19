@@ -5,7 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Skeleton } from 'primeng/skeleton';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 import { FilesSelectors } from '../../store';
 
@@ -17,6 +17,7 @@ import { FilesSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FileResourceMetadataComponent {
+  resourceType = input<string>('nodes');
   resourceMetadata = select(FilesSelectors.getResourceMetadata);
   contributors = select(FilesSelectors.getContributors);
   isResourceMetadataLoading = select(FilesSelectors.isResourceMetadataLoading);

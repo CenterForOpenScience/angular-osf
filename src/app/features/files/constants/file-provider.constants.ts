@@ -6,4 +6,5 @@ export const FileProvider = {
   OneDrive: 'onedrive',
   WebDav: 'webdav',
   S3: 's3',
+  GitHub: 'github',
 };

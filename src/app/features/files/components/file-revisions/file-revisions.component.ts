@@ -13,7 +13,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { CopyButtonComponent, InfoIconComponent } from '@shared/components';
+import { CopyButtonComponent } from '@osf/shared/components';
+import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
 
 import { FilesSelectors } from '../../store';
 
@@ -32,9 +33,9 @@ import { environment } from 'src/environments/environment';
     Button,
     DatePipe,
     TranslatePipe,
-    InfoIconComponent,
     CopyButtonComponent,
     Skeleton,
+    InfoIconComponent,
   ],
 })
 export class FileRevisionsComponent {

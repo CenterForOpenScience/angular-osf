@@ -1,4 +1,5 @@
 export interface OsfFileTarget {
+  id: string;
   title: string;
   description: string;
   category: string;
@@ -18,4 +19,5 @@ export interface OsfFileTarget {
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;
   public: boolean;
+  type: string;
 }

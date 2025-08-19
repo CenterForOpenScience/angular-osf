@@ -81,7 +81,9 @@ export class AddonMapper {
 
   static fromOperationInvocationResponse(response: OperationInvocationResponseJsonApi): OperationInvocation {
     const operationResult = response.attributes.operation_result;
-    const isOperationResult = 'items' in operationResult && 'total_count' in operationResult;
+    // [NM] TODO: Double check this condition
+    // const isOperationResult = 'items' in operationResult && 'total_count' in operationResult;
+    const isOperationResult = 'items' in operationResult;
 
     const mappedOperationResult = isOperationResult
       ? operationResult.items.map((item: StorageItemResponseJsonApi) => ({

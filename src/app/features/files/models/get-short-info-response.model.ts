@@ -1,6 +1,6 @@
 import { ApiData, JsonApiResponse } from '@shared/models';
 
-export type GetProjectShortInfoResponse = JsonApiResponse<
+export type GetShortInfoResponse = JsonApiResponse<
   ApiData<
     {
       title: string;

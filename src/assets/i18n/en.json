@@ -990,7 +990,10 @@
         }
       },
       "resourceMetadata": {
-        "title": "Project Metadata",
+        "title": {
+          "nodes": "Project Metadata",
+          "registrations": "Registration Metadata"
+        },
         "edit": "Edit",
         "fields": {
           "funder": "Funder",

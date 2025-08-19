@@ -14,13 +14,13 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signa
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import {
+  FilesSelectors,
   GetFiles,
   GetMoveFileFiles,
   GetRootFolderFiles,
-  ProjectFilesSelectors,
   SetCurrentFolder,
   SetMoveFileCurrentFolder,
-} from '@osf/features/project/files/store';
+} from '@osf/features/files/store';
 import { IconComponent, LoadingSpinnerComponent } from '@shared/components';
 import { OsfFile } from '@shared/models';
 import { FilesService, ToastService } from '@shared/services';
@@ -41,15 +41,15 @@ export class MoveFileDialogComponent {
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly files = select(ProjectFilesSelectors.getMoveFileFiles);
-  protected readonly isLoading = select(ProjectFilesSelectors.isMoveFileFilesLoading);
-  protected readonly currentFolder = select(ProjectFilesSelectors.getMoveFileCurrentFolder);
-  private readonly rootFolders = select(ProjectFilesSelectors.getRootFolders);
+  protected readonly files = select(FilesSelectors.getMoveFileFiles);
+  protected readonly isLoading = select(FilesSelectors.isMoveFileFilesLoading);
+  protected readonly currentFolder = select(FilesSelectors.getMoveFileCurrentFolder);
+  private readonly rootFolders = select(FilesSelectors.getRootFolders);
   protected readonly isFilesUpdating = signal(false);
   protected readonly isFolderSame = computed(() => {
     return this.currentFolder()?.id === this.config.data.file.relationships.parentFolderId;
   });
-  protected readonly provider = select(ProjectFilesSelectors.getProvider);
+  protected readonly provider = select(FilesSelectors.getProvider);
 
   protected readonly dispatch = createDispatchMap({
     getMoveFileFiles: GetMoveFileFiles,

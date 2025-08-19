@@ -13,14 +13,20 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { embedDynamicJs, embedStaticHtml } from '@osf/features/project/files/models';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
+import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 import { OsfFile } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
-import { FileKeywordsComponent, FileMetadataComponent, FileRevisionsComponent } from '../../components';
+import {
+  FileKeywordsComponent,
+  FileMetadataComponent,
+  FileResourceMetadataComponent,
+  FileRevisionsComponent,
+} from '../../components';
+import { embedDynamicJs, embedStaticHtml } from '../../constants';
 import { FileDetailTab } from '../../enums';
 import {
+  DeleteEntry,
   FilesSelectors,
   GetFile,
   GetFileMetadata,
@@ -44,6 +50,7 @@ import {
     FileKeywordsComponent,
     FileRevisionsComponent,
     FileMetadataComponent,
+    FileResourceMetadataComponent,
   ],
   templateUrl: './file-detail.component.html',
   styleUrl: './file-detail.component.scss',
@@ -66,6 +73,7 @@ export class FileDetailComponent {
     getFileMetadata: GetFileMetadata,
     getFileResourceMetadata: GetFileResourceMetadata,
     getFileResourceContributors: GetFileResourceContributors,
+    deleteEntry: DeleteEntry,
   });
 
   file = select(FilesSelectors.getOpenedFile);
@@ -109,12 +117,6 @@ export class FileDetailComponent {
   ];
 
   constructor() {
-    // this.route.parent?.parent?.parent?.parent?.params.subscribe((params) => {
-    //   if (params['id']) {
-    //     this.projectId = params['id'];
-    //   }
-    // });
-
     this.route.params
       .pipe(
         takeUntilDestroyed(this.destroyRef),
@@ -123,7 +125,7 @@ export class FileDetailComponent {
           return this.actions.getFile(this.fileGuid);
         })
       )
-      .subscribe((parentParams) => {
+      .subscribe(() => {
         const link = this.file()?.links.render;
         if (link) {
           this.safeLink = this.sanitizer.bypassSecurityTrustResourceUrl(link);
@@ -131,13 +133,13 @@ export class FileDetailComponent {
         this.resourceId = this.file()?.target.id || '';
         this.resourceType = this.file()?.target.type || '';
         const fileId = this.file()?.path.replaceAll('/', '');
-        // this.projectId = parentParams['id'];
         if (this.resourceId && this.resourceType) {
           this.actions.getFileResourceMetadata(this.resourceId, this.resourceType);
           this.actions.getFileResourceContributors(this.resourceId, this.resourceType);
 
           if (fileId) {
-            this.actions.getFileRevisions(this.resourceId, this.resourceType, fileId);
+            const fileProvider = this.file()?.provider || '';
+            this.actions.getFileRevisions(this.resourceId, fileProvider, fileId);
           }
         }
       });
@@ -163,15 +165,16 @@ export class FileDetailComponent {
   }
 
   deleteEntry(link: string): void {
-    console.log('Delete entry link:', link);
-    // if (this.projectId) {
-    //   this.store
-    //     .dispatch(new DeleteEntry(this.projectId, link))
-    //     .pipe(takeUntilDestroyed(this.destroyRef))
-    //     .subscribe(() => {
-    //       this.router.navigate(['/project', this.projectId, 'files']);
-    //     });
-    // }
+    if (this.resourceId) {
+      const redirectUrl =
+        this.resourceType === 'nodes' ? `/project/${this.resourceId}/files` : `/registry/${this.resourceId}/files`;
+      this.actions
+        .deleteEntry(this.resourceId, link)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe(() => {
+          this.router.navigate([redirectUrl]);
+        });
+    }
   }
 
   confirmDelete(file: OsfFile): void {

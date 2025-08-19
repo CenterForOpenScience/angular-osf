@@ -4,14 +4,13 @@ import { catchError, finalize, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { CreateFolder } from '@osf/features/registries/store';
 import { handleSectionError } from '@osf/shared/helpers';
 import { FilesService, ToastService } from '@shared/services';
 
-import { filesStateDefaults } from '../constants';
 import { MapResourceMetadata } from '../mappers/resource-metadata.mapper';
 
 import {
+  CreateFolder,
   DeleteEntry,
   GetConfiguredStorageAddons,
   GetFile,
@@ -33,7 +32,7 @@ import {
   SetSort,
   UpdateTags,
 } from './files.actions';
-import { FilesStateModel } from './files.model';
+import { filesStateDefaults, FilesStateModel } from './files.model';
 
 @Injectable()
 @State<FilesStateModel>({
@@ -71,7 +70,6 @@ export class FilesState {
   getFiles(ctx: StateContext<FilesStateModel>, action: GetFiles) {
     const state = ctx.getState();
     ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
-
     return this.filesService.getFiles(action.filesLink, state.search, state.sort).pipe(
       tap({
         next: (files) => {
@@ -214,12 +212,12 @@ export class FilesState {
     ctx.patchState({ resourceMetadata: { ...state.resourceMetadata, isLoading: true, error: null } });
 
     forkJoin({
-      projectShortInfo: this.filesService.getResourceShortInfo(action.resourceId, action.resourceType),
+      resourceShortInfo: this.filesService.getResourceShortInfo(action.resourceId, action.resourceType),
       resourceMetadata: this.filesService.getCustomMetadata(action.resourceId),
     })
       .pipe(catchError((error) => handleSectionError(ctx, 'resourceMetadata', error)))
       .subscribe((results) => {
-        const resourceMetadata = MapResourceMetadata(results.projectShortInfo, results.resourceMetadata);
+        const resourceMetadata = MapResourceMetadata(results.resourceShortInfo, results.resourceMetadata);
         ctx.patchState({
           resourceMetadata: {
             data: resourceMetadata,
@@ -250,7 +248,7 @@ export class FilesState {
     const state = ctx.getState();
     ctx.patchState({ fileRevisions: { ...state.fileRevisions, isLoading: true, error: null } });
 
-    return this.filesService.getFileRevisions(action.resourceId, state.provider, action.fileId).pipe(
+    return this.filesService.getFileRevisions(action.resourceId, action.fileProvider, action.fileId).pipe(
       tap({
         next: (revisions) => {
           ctx.patchState({ fileRevisions: { data: revisions, isLoading: false, error: null } });

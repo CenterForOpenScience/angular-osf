@@ -1,11 +1,8 @@
 import { ApiData, JsonApiResponse } from '@osf/shared/models';
 
-export type GetProjectCustomMetadataResponse = JsonApiResponse<
-  ApiData<null, ProjectMetadataEmbedResponse, null, null>,
-  null
->;
+export type GetCustomMetadataResponse = JsonApiResponse<ApiData<null, MetadataEmbedResponse, null, null>, null>;
 
-export interface ProjectMetadataEmbedResponse {
+export interface MetadataEmbedResponse {
   custom_metadata: JsonApiResponse<
     ApiData<
       {

@@ -104,7 +104,7 @@ export class GetFileRevisions {
 
   constructor(
     public resourceId: string,
-    public resourceType: string,
+    public fileProvider: string,
     public fileId: string
   ) {}
 }

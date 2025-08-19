@@ -1,6 +1,6 @@
 import { ApiData, JsonApiResponse } from '@osf/shared/models';
 
-export type GetProjectContributorsResponse = JsonApiResponse<
+export type GetContributorsResponse = JsonApiResponse<
   ApiData<
     {
       full_name: string;
