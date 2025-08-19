@@ -27,6 +27,7 @@ export class MetaTagsService {
   };
 
   private readonly metaTagClass = 'osf-dynamic-meta';
+  private currentRouteGroup: string | null = null;
 
   constructor(
     private meta: Meta,
@@ -40,6 +41,11 @@ export class MetaTagsService {
 
     this.applyHeadTags(headTags);
     this.dispatchZoteroEvent();
+  }
+
+  updateMetaTagsForRoute(metaTagsData: MetaTagsData, routeGroup: string): void {
+    this.currentRouteGroup = routeGroup;
+    this.updateMetaTags(metaTagsData);
   }
 
   clearMetaTags(): void {
@@ -56,6 +62,18 @@ export class MetaTagsService {
     });
 
     this.title.setTitle(String(this.defaultMetaTags.siteName));
+    this.currentRouteGroup = null;
+  }
+
+  shouldClearMetaTags(newUrl: string): boolean {
+    if (!this.currentRouteGroup) return true;
+    return !newUrl.startsWith(`/${this.currentRouteGroup}`);
+  }
+
+  clearMetaTagsIfNeeded(newUrl: string): void {
+    if (this.shouldClearMetaTags(newUrl)) {
+      this.clearMetaTags();
+    }
   }
 
   resetToDefaults(): void {

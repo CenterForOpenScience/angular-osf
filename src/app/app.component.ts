@@ -42,6 +42,6 @@ export class AppComponent implements OnInit {
         filter((event) => event instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe(() => this.metaTagsService.clearMetaTags());
+      .subscribe((event: NavigationEnd) => this.metaTagsService.clearMetaTagsIfNeeded(event.url));
   }
 }
