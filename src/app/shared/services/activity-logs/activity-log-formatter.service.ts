@@ -196,7 +196,7 @@ export class ActivityLogFormatterService {
     if (updatedField === 'category') {
       const newValue = updatedFieldsParam[updatedField].new;
       const newText = this.nodeCategories.includes(newValue)
-        ? this.translateService.instant(`node_categories.${newValue}`)
+        ? this.translateService.instant(`nodeCategories.${newValue}`)
         : this.translateService.instant('activityLog.defaults.uncategorized');
 
       return this.translateService.instant('activityLog.defaults.updatedFields', {
@@ -257,9 +257,16 @@ export class ActivityLogFormatterService {
     const action = log.action.replace(/_/g, ' ');
 
     if (node) {
-      return `${user} performed action "${action}" on ${node}`;
+      return this.translateService.instant('activityLog.defaults.fallbackWithNode', {
+        user,
+        action,
+        node,
+      });
     }
-    return `${user} performed action "${action}"`;
+    return this.translateService.instant('activityLog.defaults.fallbackWithoutNode', {
+      user,
+      action,
+    });
   }
 
   private replaceSlash(path: string): string {

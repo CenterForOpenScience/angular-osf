@@ -7,7 +7,7 @@ import { ActivityLogsMapper } from '@shared/mappers/activity-logs.mapper';
 import { ActivityLog, ActivityLogJsonApi, PaginatedData, ResponseJsonApi } from '@shared/models';
 import { JsonApiService } from '@shared/services/json-api.service';
 
-import { environment } from '../../../../environments/environment';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -23,10 +23,8 @@ export class ActivityLogsService {
       'page[size]': pageSize,
     };
 
-    return this.jsonApiService.get<ResponseJsonApi<ActivityLogJsonApi[]>>(url, params).pipe(
-      map((res) => {
-        return ActivityLogsMapper.fromGetActivityLogsResponse(res);
-      })
-    );
+    return this.jsonApiService
+      .get<ResponseJsonApi<ActivityLogJsonApi[]>>(url, params)
+      .pipe(map((res) => ActivityLogsMapper.fromGetActivityLogsResponse(res)));
   }
 }

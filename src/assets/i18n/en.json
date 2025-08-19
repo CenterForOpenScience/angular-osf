@@ -2548,7 +2548,9 @@
       "wikiOn": "wiki {{wiki}}",
       "field": "field",
       "updatedFields": "{{old}} to {{new}}",
-      "uncategorized": "Uncategorized"
+      "uncategorized": "Uncategorized",
+      "fallbackWithNode": "{{user}} performed action \"{{action}}\" on {{node}}",
+      "fallbackWithoutNode": "{{user}} performed action \"{{action}}\""
     },
     "activities": {
       "addon_added": "{{user}} added addon {{addon}} to {{node}}",
@@ -2660,7 +2662,7 @@
       "wiki_updated": "{{user}} updated wiki page {{page}} to version {{version}} of {{node}}"
     }
   },
-  "node_categories": {
+  "nodeCategories": {
     "analysis": "Analysis",
     "communication": "Communication",
     "data": "Data",

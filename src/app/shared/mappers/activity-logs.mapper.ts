@@ -27,7 +27,6 @@ export class ActivityLogsMapper {
             }
           : null,
         preprintProvider: log.attributes.params.preprint_provider,
-        // Additional parameters from Ember implementation
         addon: log.attributes.params.addon,
         anonymousLink: log.attributes.params.anonymous_link,
         file: log.attributes.params.file,
