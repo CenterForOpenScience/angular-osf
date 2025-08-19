@@ -20,8 +20,10 @@ export function mapInstitutionProjects(response: InstitutionRegistrationsJsonApi
 
   searchResults.forEach((result: SearchResult) => {
     const indexCardId = result.relationships?.indexCard?.data?.id;
+
     if (indexCardId) {
       const indexCard = indexCards.find((card: IndexCard) => card.id === indexCardId);
+
       if (indexCard && indexCard.attributes) {
         const metadata = indexCard.attributes.resourceMetadata;
 
@@ -29,7 +31,10 @@ export function mapInstitutionProjects(response: InstitutionRegistrationsJsonApi
           projects.push({
             id: metadata['@id'] || indexCard.id,
             title: metadata.title?.[0]?.['@value'] || '',
-            creator: metadata.creator?.[0]?.name?.[0]?.['@value'] || '',
+            creator: {
+              id: metadata.creator?.[0]?.['@id'] || '',
+              name: metadata.creator?.[0]?.name?.[0]?.['@value'] || '',
+            },
             dateCreated: metadata.dateCreated?.[0]?.['@value'] || '',
             dateModified: metadata.dateModified?.[0]?.['@value'] || '',
             resourceType: metadata.resourceType?.[0]?.['@id'] || '',

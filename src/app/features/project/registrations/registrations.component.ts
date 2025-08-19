@@ -16,6 +16,8 @@ import { RegistrationCardComponent } from '@osf/shared/components/registration-c
 
 import { GetRegistrations, RegistrationsSelectors } from './store';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-registrations',
   imports: [RegistrationCardComponent, SubHeaderComponent, FormsModule, TranslatePipe, LoadingSpinnerComponent],
@@ -31,14 +33,13 @@ export class RegistrationsComponent implements OnInit {
   protected registrations = select(RegistrationsSelectors.getRegistrations);
   protected isRegistrationsLoading = select(RegistrationsSelectors.isRegistrationsLoading);
   protected actions = createDispatchMap({ getRegistrations: GetRegistrations });
-  private readonly OSF_PROVIDER_ID = 'osf';
 
   ngOnInit(): void {
     this.actions.getRegistrations(this.projectId());
   }
 
   addRegistration(): void {
-    this.router.navigate([`registries/${this.OSF_PROVIDER_ID}/new`], {
+    this.router.navigate([`registries/${environment.defaultProvider}/new`], {
       queryParams: { projectId: this.projectId() },
     });
   }

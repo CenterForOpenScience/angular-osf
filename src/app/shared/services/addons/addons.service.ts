@@ -52,7 +52,7 @@ export class AddonsService {
     const currentUser = this.currentUser();
     if (!currentUser) throw new Error('Current user not found');
 
-    const userUri = `${environment.baseResourceUri}${currentUser.id}`;
+    const userUri = `${environment.webUrl}/${currentUser.id}`;
     const params = {
       'filter[user_uri]': userUri,
     };
@@ -63,7 +63,7 @@ export class AddonsService {
   }
 
   getAddonsResourceReference(resourceId: string): Observable<ResourceReferenceJsonApi[]> {
-    const resourceUri = `${environment.baseResourceUri}${resourceId}`;
+    const resourceUri = `${environment.webUrl}/${resourceId}`;
     const params = {
       'filter[resource_uri]': resourceUri,
     };

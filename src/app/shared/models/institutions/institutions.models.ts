@@ -13,6 +13,7 @@ export interface InstitutionAttributes {
   assets: InstitutionAssets;
   institutional_request_access_enabled: boolean;
   logo_path: string;
+  link_to_external_reports_archive: string;
 }
 
 export interface UserInstitutionGetResponse {
@@ -32,4 +33,6 @@ export interface Institution {
   assets: InstitutionAssets;
   institutionalRequestAccessEnabled: boolean;
   logoPath: string;
+  userMetricsUrl?: string;
+  linkToExternalReportsArchive?: string;
 }
