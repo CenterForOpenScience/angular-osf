@@ -4,9 +4,6 @@
   <div>
     <p-button class="link-btn-no-padding" link [label]="submission().title" (onClick)="selected.emit()" />
 
-    <!-- [RNi] TODO needed to be handled differently for withdraw requests -->
-    <!-- Requested on (from withdrawal request) -->
-    <!-- Approved or Declined based on actions with trigger accept or reject -->
     @for (action of showAll ? submission().actions : submission().actions.slice(0, limitValue); track $index) {
       <div class="flex flex-wrap gap-1 mt-2">
         <span>{{ actionLabel[action.toState] | translate }}</span>
