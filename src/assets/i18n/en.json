@@ -2034,6 +2034,7 @@
       "reasonForWithdrawal": "Reason for withdrawal",
       "originalPublicationDate": "Original Publication Date",
       "publicationDoi": "Peer-reviewed Publication DOI",
+      "supplementalMaterials": "Supplemental Materials",
       "doi": {
         "title": "{{documentType}} DOI",
         "pendingDoiMinted": "DOIs are minted by a third party, and may take up to 24 hours to be registered.",
