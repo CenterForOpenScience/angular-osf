@@ -20,11 +20,10 @@ import {
   statusSeverityByWorkflow,
 } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
-import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { PreprintProviderDetails, PreprintRequestAction } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent } from '@shared/components';
 
-//[RNi] TODO: In withdrawal rejected state, the feedback is shown is wrong, need to take from latest request action
 @Component({
   selector: 'osf-preprint-status-banner',
   imports: [TranslatePipe, TitleCasePipe, Message, Dialog, Tag, Button, IconComponent],
@@ -40,6 +39,7 @@ export class StatusBannerComponent {
   latestAction = input.required<ReviewAction | null>();
   isPendingWithdrawal = input.required<boolean>();
   isWithdrawalRejected = input.required<boolean>();
+  latestRequestAction = input.required<PreprintRequestAction | null>();
 
   feedbackDialogVisible = false;
 
@@ -84,11 +84,19 @@ export class StatusBannerComponent {
   });
 
   reviewerName = computed(() => {
-    return this.latestAction()?.creator.name;
+    if (this.isWithdrawalRejected()) {
+      return this.latestRequestAction()?.creator.name;
+    } else {
+      return this.latestAction()?.creator.name;
+    }
   });
 
   reviewerComment = computed(() => {
-    return this.latestAction()?.comment;
+    if (this.isWithdrawalRejected()) {
+      return this.latestRequestAction()?.comment;
+    } else {
+      return this.latestAction()?.comment;
+    }
   });
 
   isWithdrawn = computed(() => {
