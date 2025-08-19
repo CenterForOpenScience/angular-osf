@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { SOCIAL_SHARE_URLS } from '@shared/config/social-share.config';
 import { ShareableContent, SocialShareLinks } from '@shared/models/social-share.model';
 
 import { environment } from 'src/environments/environment';
@@ -12,20 +13,20 @@ export class SocialShareService {
     const subject = encodeURIComponent(content.title);
     const body = encodeURIComponent(content.url);
 
-    return `mailto:?subject=${subject}&body=${body}`;
+    return `${SOCIAL_SHARE_URLS.email}?subject=${subject}&body=${body}`;
   }
 
   generateTwitterLink(content: ShareableContent): string {
     const url = encodeURIComponent(content.url);
     const text = encodeURIComponent(content.title);
 
-    return `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
+    return `${SOCIAL_SHARE_URLS.twitter}?url=${url}&text=${text}`;
   }
 
   generateFacebookLink(content: ShareableContent): string {
     const href = encodeURIComponent(content.url);
 
-    return `https://www.facebook.com/sharer/sharer.php?u=${href}`;
+    return `${SOCIAL_SHARE_URLS.facebook}?u=${href}`;
   }
 
   generateLinkedInLink(content: ShareableContent): string {
@@ -34,7 +35,7 @@ export class SocialShareService {
     const summary = encodeURIComponent(content.description || content.title);
     const source = encodeURIComponent('OSF');
 
-    return `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${summary}&source=${source}`;
+    return `${SOCIAL_SHARE_URLS.linkedIn}?mini=true&url=${url}&title=${title}&summary=${summary}&source=${source}`;
   }
 
   generateAllSharingLinks(content: ShareableContent): SocialShareLinks {
