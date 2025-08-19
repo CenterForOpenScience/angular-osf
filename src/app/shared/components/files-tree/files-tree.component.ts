@@ -357,7 +357,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     navigator.clipboard
       .writeText(embedHtml)
       .then(() => {
-        this.toastService.showSuccess(this.translateService.instant('files.toast.copiedToClipboard'));
+        this.toastService.showSuccess('files.toast.copiedToClipboard');
       })
       .catch((err) => {
         this.toastService.showError(err.message);
