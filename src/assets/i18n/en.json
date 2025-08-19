@@ -2031,6 +2031,7 @@
       }
     },
     "details": {
+      "reasonForWithdrawal": "Reason for withdrawal",
       "doi": {
         "title": "{{documentType}} DOI",
         "pendingDoiMinted": "DOIs are minted by a third party, and may take up to 24 hours to be registered.",

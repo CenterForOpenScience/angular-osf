@@ -25,6 +25,7 @@ export interface Preprint {
   version: number;
   isLatestVersion: boolean;
   isPreprintOrphan: boolean;
+  withdrawalJustification: StringOrNull;
   nodeId: StringOrNull;
   primaryFileId: StringOrNull;
   licenseId: StringOrNull;

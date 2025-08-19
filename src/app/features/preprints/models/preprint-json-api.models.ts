@@ -11,6 +11,7 @@ export interface PreprintAttributesJsonApi {
   original_publication_date: Date | null;
   date_last_transitioned: Date | null;
   date_withdrawn: Date | null;
+  withdrawal_justification: StringOrNull;
   custom_publication_citation: StringOrNull;
   doi: StringOrNull;
   preprint_doi_created: Date | null;
