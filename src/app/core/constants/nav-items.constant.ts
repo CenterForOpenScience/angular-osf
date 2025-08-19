@@ -235,7 +235,7 @@ export const MENU_ITEMS: MenuItem[] = [
     items: [
       {
         id: 'registries-overview',
-        routerLink: '/registries/overview',
+        routerLink: '/registries/discover',
         label: 'navigation.discover',
         visible: true,
         routerLinkActiveOptions: { exact: true },
@@ -266,7 +266,7 @@ export const MENU_ITEMS: MenuItem[] = [
     items: [
       {
         id: 'preprints-overview',
-        routerLink: '/preprints/overview',
+        routerLink: '/preprints/discover',
         label: 'navigation.discover',
         visible: true,
         routerLinkActiveOptions: { exact: false },
@@ -394,7 +394,7 @@ export const MENU_ITEMS: MenuItem[] = [
     visible: false,
     routerLink: null,
     routerLinkActiveOptions: { exact: false },
-    styleClass: 'mt-5',
+    styleClass: 'my-5',
   },
   {
     id: 'log-out',
@@ -402,6 +402,6 @@ export const MENU_ITEMS: MenuItem[] = [
     visible: false,
     routerLink: null,
     routerLinkActiveOptions: { exact: false },
-    styleClass: 'mt-5',
+    styleClass: 'my-5',
   },
 ];
