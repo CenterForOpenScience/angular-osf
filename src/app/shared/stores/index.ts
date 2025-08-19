@@ -9,6 +9,7 @@ export * from './licenses';
 export * from './my-resources';
 export * from './node-links';
 export * from './projects';
+export * from './resource-type';
 export * from './subjects';
 export * from './view-only-links';
 export * from './wiki';

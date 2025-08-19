@@ -28,7 +28,7 @@
             <p-panelMenu [model]="myProjectMenuItems" [multiple]="false">
               <ng-template #item let-item>
                 <a
-                  [routerLink]="item.routerLink ? ['/my-projects', currentResourceId(), item.routerLink] : null"
+                  [routerLink]="item.routerLink ? [currentResourceId(), item.routerLink] : null"
                   [routerLinkActive]="item.routerLink ? 'active' : ''"
                   [routerLinkActiveOptions]="{ exact: true }"
                   class="nav-link flex align-items-center"
@@ -55,7 +55,7 @@
         <p-panelMenu [model]="registrationMenuItems" [multiple]="false" class="border-none">
           <ng-template #item let-item>
             <a
-              [routerLink]="item.routerLink ? ['/registries', currentResourceId(), item.routerLink] : null"
+              [routerLink]="item.routerLink ? [currentResourceId(), item.routerLink] : null"
               [routerLinkActive]="item.routerLink ? 'active' : ''"
               [routerLinkActiveOptions]="{ exact: true }"
               class="nav-link flex align-items-center"
