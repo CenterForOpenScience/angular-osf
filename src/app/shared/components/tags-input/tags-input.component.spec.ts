@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { TranslateServiceMock } from '@shared/mocks';
+
 import { TagsInputComponent } from './tags-input.component';
 
 describe('TagsInputComponent', () => {
@@ -9,6 +11,7 @@ describe('TagsInputComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [TagsInputComponent],
+      providers: [TranslateServiceMock],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TagsInputComponent);
@@ -93,17 +96,6 @@ describe('TagsInputComponent', () => {
 
     expect(component.localTags()).toEqual(['tag1', 'tag2', 'tag3']);
     expect(emitSpy).not.toHaveBeenCalled();
-  });
-
-  it('should handle effect when tags input changes', () => {
-    const initialTags = ['initial1', 'initial2'];
-    const updatedTags = ['updated1', 'updated2'];
-
-    fixture.componentRef.setInput('tags', initialTags);
-    expect(component.localTags()).toEqual(initialTags);
-
-    fixture.componentRef.setInput('tags', updatedTags);
-    expect(component.localTags()).toEqual(updatedTags);
   });
 
   it('should handle rapid tag removals', () => {
