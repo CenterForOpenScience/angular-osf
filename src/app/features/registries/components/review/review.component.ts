@@ -31,6 +31,8 @@ import { ClearState, DeleteDraft, FetchLicenses, FetchProjectChildren, Registrie
 import { ConfirmRegistrationDialogComponent } from '../confirm-registration-dialog/confirm-registration-dialog.component';
 import { SelectComponentsDialogComponent } from '../select-components-dialog/select-components-dialog.component';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-review',
   imports: [
@@ -71,7 +73,6 @@ export class ReviewComponent {
   protected readonly components = select(RegistriesSelectors.getRegistrationComponents);
   protected readonly license = select(RegistriesSelectors.getRegistrationLicense);
   protected readonly newRegistration = select(RegistriesSelectors.getRegistration);
-  private readonly OSF_PROVIDER_ID = 'osf';
 
   protected readonly FieldType = FieldType;
 
@@ -106,7 +107,7 @@ export class ReviewComponent {
 
     effect(() => {
       if (this.draftRegistration()) {
-        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? this.OSF_PROVIDER_ID);
+        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? environment.defaultProvider);
       }
     });
 

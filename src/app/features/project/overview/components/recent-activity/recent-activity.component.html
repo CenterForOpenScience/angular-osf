@@ -1,30 +1,36 @@
-<div class="activities p-4 flex flex-column gap-3">
-  <h2>{{ 'project.overview.recentActivity.title' | translate }}</h2>
+<div class="activities p-3 flex flex-column gap-3">
+  <h2 class="mb-2">{{ 'project.overview.recentActivity.title' | translate }}</h2>
 
-  <div class="activities-activity flex justify-content-between align-items-center">
-    <div>
-      <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
-      <a class="font-bold">Project name example</a>
+  @if (!isLoading()) {
+    @if (formattedActivityLogs().length) {
+      @for (activityLog of formattedActivityLogs(); track activityLog.id) {
+        <div class="activities-activity flex justify-content-between gap-3 pb-2 align-items-center">
+          <div [innerHTML]="activityLog.formattedActivity"></div>
+          <p class="hidden activity-date sm:block text-right">{{ activityLog.date | date: 'MMM d, y hh:mm a' }}</p>
+        </div>
+      }
+    } @else {
+      <div class="text-center text-muted-color">
+        {{ 'project.overview.recentActivity.noActivity' | translate }}
+      </div>
+    }
+
+    @if (totalCount() > pageSize()) {
+      <osf-custom-paginator
+        [showFirstLastIcon]="true"
+        [totalCount]="totalCount()"
+        [rows]="pageSize()"
+        [first]="firstIndex()"
+        (pageChanged)="onPageChange($event)"
+      />
+    }
+  } @else {
+    <div class="flex flex-column gap-2">
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
     </div>
-
-    <div class="hidden sm:block">Feb 5, 2025 04:37 AM</div>
-  </div>
-
-  <div class="activities-activity flex justify-content-between align-items-center">
-    <div>
-      <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
-      <a class="font-bold">Project name example</a>
-    </div>
-
-    <div class="hidden sm:block">Feb 5, 2025 04:37 AM</div>
-  </div>
-
-  <div class="activities-activity flex justify-content-between align-items-center">
-    <div>
-      <a class="font-bold">Jeremy Wolfe</a> removed <a class="font-bold">tag example</a> from
-      <a class="font-bold">Project name example</a>
-    </div>
-
-    <div class="hidden sm:block">Feb 5, 2025 04:37 AM</div>
-  </div>
+  }
 </div>

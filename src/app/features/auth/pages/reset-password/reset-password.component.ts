@@ -6,7 +6,7 @@ import { Password } from 'primeng/password';
 
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '@osf/core/services';
 import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/helpers';
@@ -16,7 +16,7 @@ import { ResetPasswordFormGroupType } from '../../models';
 
 @Component({
   selector: 'osf-reset-password',
-  imports: [Button, Password, ReactiveFormsModule, RouterLink, PasswordInputHintComponent, Message, TranslatePipe],
+  imports: [Button, Password, ReactiveFormsModule, PasswordInputHintComponent, Message, TranslatePipe],
   templateUrl: './reset-password.component.html',
   styleUrl: './reset-password.component.scss',
 })
@@ -62,5 +62,9 @@ export class ResetPasswordComponent {
     this.authService.resetPassword(userId, token, newPassword).subscribe(() => {
       this.isFormSubmitted.set(true);
     });
+  }
+
+  backToSignIn() {
+    this.authService.navigateToSignIn();
   }
 }

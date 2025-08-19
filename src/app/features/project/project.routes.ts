@@ -13,6 +13,7 @@ import {
   SubjectsState,
   ViewOnlyLinkState,
 } from '@osf/shared/stores';
+import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from './analytics/store';
 import { ProjectFilesState } from './files/store';
@@ -32,7 +33,15 @@ export const projectRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('../project/overview/project-overview.component').then((mod) => mod.ProjectOverviewComponent),
-        providers: [provideStates([NodeLinksState, CitationsState, CollectionsState, CollectionsModerationState])],
+        providers: [
+          provideStates([
+            NodeLinksState,
+            CitationsState,
+            CollectionsState,
+            CollectionsModerationState,
+            ActivityLogsState,
+          ]),
+        ],
       },
       {
         path: 'metadata',

@@ -27,7 +27,7 @@ export interface IndexCard extends IncludedItem {
 export interface ResourceMetadata {
   '@id'?: string;
   title?: { '@value': string }[];
-  creator?: { name?: { '@value': string }[] }[];
+  creator?: { '@id': string; name?: { '@value': string }[] }[];
   dateCreated?: { '@value': string }[];
   dateModified?: { '@value': string }[];
   resourceType?: { '@id': string }[];

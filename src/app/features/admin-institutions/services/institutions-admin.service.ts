@@ -3,20 +3,22 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { mapInstitutionPreprints } from '@osf/features/admin-institutions/mappers/institution-preprints.mapper';
-import { PaginationLinksModel } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
+import { SearchResourceType } from '../enums';
 import {
   mapIndexCardResults,
   mapInstitutionDepartments,
+  mapInstitutionPreprints,
   mapInstitutionProjects,
   mapInstitutionRegistrations,
   mapInstitutionSummaryMetrics,
   mapInstitutionUsers,
   sendMessageRequestMapper,
 } from '../mappers';
+import { requestProjectAccessMapper } from '../mappers/request-access.mapper';
 import {
+  AdminInstitutionSearchResult,
   InstitutionDepartment,
   InstitutionDepartmentsJsonApi,
   InstitutionIndexValueSearchJsonApi,
@@ -29,6 +31,7 @@ import {
   InstitutionSummaryMetricsJsonApi,
   InstitutionUser,
   InstitutionUsersJsonApi,
+  RequestProjectAccessData,
   SendMessageRequest,
   SendMessageResponseJsonApi,
 } from '../models';
@@ -77,16 +80,16 @@ export class InstitutionsAdminService {
       );
   }
 
-  fetchProjects(institutionId: string, iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards('Project', iris, pageSize, sort, cursor);
+  fetchProjects(iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards(SearchResourceType.Project, iris, pageSize, sort, cursor);
   }
 
-  fetchRegistrations(institutionId: string, iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards('Registration', iris, pageSize, sort, cursor);
+  fetchRegistrations(iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards(SearchResourceType.Registration, iris, pageSize, sort, cursor);
   }
 
-  fetchPreprints(institutionId: string, iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards('Preprint', iris, pageSize, sort, cursor);
+  fetchPreprints(iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards(SearchResourceType.Preprint, iris, pageSize, sort, cursor);
   }
 
   fetchIndexValueSearch(
@@ -115,17 +118,19 @@ export class InstitutionsAdminService {
     );
   }
 
+  requestProjectAccess(request: RequestProjectAccessData): Observable<void> {
+    const payload = requestProjectAccessMapper(request);
+
+    return this.jsonApiService.post<void>(`${environment.apiUrl}/nodes/${request.projectId}/requests/`, payload);
+  }
+
   private fetchIndexCards(
-    resourceType: 'Project' | 'Registration' | 'Preprint',
+    resourceType: SearchResourceType,
     institutionIris: string[],
     pageSize = 10,
     sort = '-dateModified',
     cursor = ''
-  ): Observable<{
-    items: InstitutionProject[] | InstitutionRegistration[] | InstitutionPreprint[];
-    totalCount: number;
-    links?: PaginationLinksModel;
-  }> {
+  ): Observable<AdminInstitutionSearchResult> {
     const url = `${environment.shareDomainUrl}/index-card-search`;
     const affiliationParam = institutionIris.join(',');
 
@@ -144,10 +149,10 @@ export class InstitutionsAdminService {
           response: InstitutionRegistrationsJsonApi
         ) => InstitutionProject[] | InstitutionRegistration[] | InstitutionPreprint[];
         switch (resourceType) {
-          case 'Registration':
+          case SearchResourceType.Registration:
             mapper = mapInstitutionRegistrations;
             break;
-          case 'Project':
+          case SearchResourceType.Project:
             mapper = mapInstitutionProjects;
             break;
           default:
@@ -159,6 +164,7 @@ export class InstitutionsAdminService {
           items: mapper(res),
           totalCount: res.data.attributes.totalResultCount,
           links: res.data.relationships.searchResultPage.links,
+          downloadLink: res.data.links.self || null,
         };
       })
     );

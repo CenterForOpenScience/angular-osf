@@ -17,37 +17,28 @@ import {
   inject,
   OnInit,
   signal,
-  untracked,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
-import { UserSelectors } from '@core/store/user';
-import { AdminTableComponent } from '@osf/features/admin-institutions/components';
-import { departmentOptions, userTableColumns } from '@osf/features/admin-institutions/constants';
-import { SendEmailDialogComponent } from '@osf/features/admin-institutions/dialogs';
-import { mapUserToTableCellData } from '@osf/features/admin-institutions/mappers';
-import {
-  FetchInstitutionUsers,
-  SendUserMessage,
-} from '@osf/features/admin-institutions/store/institutions-admin.actions';
+import { UserSelectors } from '@osf/core/store/user';
 import { LoadingSpinnerComponent, SelectComponent } from '@osf/shared/components';
 import { TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
-import { parseQueryFilterParams, Primitive } from '@osf/shared/helpers';
+import { Primitive } from '@osf/shared/helpers';
 import { QueryParams } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
+import { InstitutionsSearchSelectors } from '@osf/shared/stores';
 
-import {
-  InstitutionsUsersQueryParamsModel,
-  InstitutionUser,
-  SendEmailDialogData,
-  TableCellData,
-  TableCellLink,
-  TableIconClickEvent,
-} from '../../models';
-import { InstitutionsAdminSelectors } from '../../store';
+import { AdminTableComponent } from '../../components';
+import { departmentOptions, userTableColumns } from '../../constants';
+import { SendEmailDialogComponent } from '../../dialogs';
+import { DownloadType } from '../../enums';
+import { camelToSnakeCase } from '../../helpers/camel-to-snake.helper';
+import { mapUserToTableCellData } from '../../mappers';
+import { InstitutionUser, SendEmailDialogData, TableCellData, TableCellLink, TableIconClickEvent } from '../../models';
+import { FetchInstitutionUsers, InstitutionsAdminSelectors, SendUserMessage } from '../../store';
 
 @Component({
   selector: 'osf-institutions-users',
@@ -59,7 +50,6 @@ import { InstitutionsAdminSelectors } from '../../store';
 })
 export class InstitutionsUsersComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
   private readonly translate = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
@@ -71,9 +61,7 @@ export class InstitutionsUsersComponent implements OnInit {
   });
 
   institutionId = '';
-  reportsLink = 'https://drive.google.com/drive/folders/1_aFmeJwLp5xBS3-8clZ4xA9L3UFxdzDd';
 
-  queryParams = toSignal(this.route.queryParams);
   currentPage = signal(1);
   currentPageSize = signal(TABLE_PARAMS.rows);
   first = signal(0);
@@ -82,12 +70,13 @@ export class InstitutionsUsersComponent implements OnInit {
   hasOrcidFilter = signal<boolean>(false);
 
   sortField = signal<string>('user_name');
-  sortOrder = signal<number>(1);
+  sortOrder = signal<number>(SortOrder.Desc);
 
   departmentOptions = departmentOptions;
   tableColumns = userTableColumns;
 
   users = select(InstitutionsAdminSelectors.getUsers);
+  institution = select(InstitutionsSearchSelectors.getInstitution);
   totalCount = select(InstitutionsAdminSelectors.getUsersTotalCount);
   isLoading = select(InstitutionsAdminSelectors.getUsersLoading);
 
@@ -103,7 +92,7 @@ export class InstitutionsUsersComponent implements OnInit {
   });
 
   constructor() {
-    this.setupQueryParamsEffect();
+    this.setupDataFetchingEffect();
   }
 
   ngOnInit(): void {
@@ -117,35 +106,24 @@ export class InstitutionsUsersComponent implements OnInit {
   onPageChange(event: PaginatorState): void {
     this.currentPage.set(event.page ? event.page + 1 : 1);
     this.first.set(event.first ?? 0);
-    this.updateQueryParams({
-      page: this.currentPage(),
-      size: event.rows || this.currentPageSize(),
-    });
+    this.currentPageSize.set(event.rows || this.currentPageSize());
   }
 
   onDepartmentChange(department: Primitive): void {
     const departmentValue = department === null || department === undefined ? null : String(department);
     this.selectedDepartment.set(departmentValue);
-    this.updateQueryParams({
-      department: departmentValue,
-      page: 1,
-    });
+    this.currentPage.set(1);
   }
 
   onOrcidFilterChange(hasOrcid: boolean): void {
     this.hasOrcidFilter.set(hasOrcid);
-    this.updateQueryParams({
-      hasOrcid: hasOrcid,
-      page: 1,
-    });
+    this.currentPage.set(1);
   }
 
   onSortChange(sortEvent: QueryParams): void {
-    this.updateQueryParams({
-      sortColumn: sortEvent.sortColumn,
-      sortOrder: sortEvent.sortOrder,
-      page: 1,
-    });
+    this.currentPage.set(1);
+    this.sortField.set(camelToSnakeCase(sortEvent.sortColumn) || 'user_name');
+    this.sortOrder.set(sortEvent.sortOrder);
   }
 
   onIconClick(event: TableIconClickEvent): void {
@@ -171,83 +149,56 @@ export class InstitutionsUsersComponent implements OnInit {
     }
   }
 
-  private setupQueryParamsEffect(): void {
+  download(type: DownloadType) {
+    const baseUrl = this.institution().userMetricsUrl;
+
+    if (!baseUrl) {
+      return;
+    }
+
+    const url = this.createUrl(baseUrl, type);
+
+    window.open(url, '_blank');
+  }
+
+  private createUrl(baseUrl: string, mediaType: string): string {
+    const query = {} as Record<string, string>;
+    if (this.selectedDepartment()) {
+      query['filter[department]'] = this.selectedDepartment() || '';
+    }
+
+    if (this.hasOrcidFilter()) {
+      query['filter[orcid_id][ne]'] = '';
+    }
+
+    const userURL = new URL(baseUrl);
+    userURL.searchParams.set('format', mediaType);
+    userURL.searchParams.set('page[size]', '10000');
+
+    Object.entries(query).forEach(([key, value]) => {
+      userURL.searchParams.set(key, value);
+    });
+
+    return userURL.toString();
+  }
+
+  private setupDataFetchingEffect(): void {
     effect(() => {
-      const rawQueryParams = this.queryParams();
-      if (!rawQueryParams) return;
+      if (!this.institutionId) return;
 
-      const parsedQueryParams = this.parseQueryParams(rawQueryParams);
-      this.updateComponentState(parsedQueryParams);
+      const filters = this.buildFilters();
+      const sortField = this.sortField();
+      const sortOrder = this.sortOrder();
+      console.log(sortOrder);
+      const sortParam = sortOrder === 0 ? `-${sortField}` : sortField;
 
-      if (this.institutionId) {
-        const filters = untracked(() => this.buildFilters());
-
-        const sortField = untracked(() => this.sortField());
-        const sortOrder = untracked(() => this.sortOrder());
-        const sortParam = sortOrder === -1 ? `-${sortField}` : sortField;
-
-        this.actions.fetchInstitutionUsers(
-          this.institutionId,
-          parsedQueryParams.page,
-          parsedQueryParams.size,
-          sortParam,
-          filters
-        );
-      }
-    });
-  }
-
-  private updateQueryParams(updates: Partial<InstitutionsUsersQueryParamsModel>): void {
-    const queryParams: Record<string, string | undefined> = {};
-
-    if ('page' in updates) {
-      queryParams['page'] = updates.page!.toString();
-    }
-    if ('size' in updates) {
-      queryParams['size'] = updates.size!.toString();
-    }
-    if ('department' in updates) {
-      queryParams['department'] = updates.department || undefined;
-    }
-    if ('hasOrcid' in updates) {
-      queryParams['hasOrcid'] = updates.hasOrcid ? 'true' : undefined;
-    }
-    if ('sortColumn' in updates) {
-      queryParams['sortColumn'] = updates.sortColumn || undefined;
-    }
-    if ('sortOrder' in updates) {
-      queryParams['sortOrder'] = updates.sortOrder?.toString() || undefined;
-    }
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  private parseQueryParams(params: Params): InstitutionsUsersQueryParamsModel {
-    const parsed = parseQueryFilterParams(params);
-    return {
-      ...parsed,
-      department: params['department'] || null,
-      hasOrcid: params['hasOrcid'] === 'true',
-    };
-  }
-
-  private updateComponentState(params: InstitutionsUsersQueryParamsModel): void {
-    untracked(() => {
-      this.currentPage.set(params.page);
-      this.currentPageSize.set(params.size);
-      this.first.set((params.page - 1) * params.size);
-      this.selectedDepartment.set(params.department || null);
-      this.hasOrcidFilter.set(params.hasOrcid || false);
-
-      if (params.sortColumn) {
-        this.sortField.set(params.sortColumn);
-        const order = params.sortOrder === SortOrder.Desc ? -1 : 1;
-        this.sortOrder.set(order);
-      }
+      this.actions.fetchInstitutionUsers(
+        this.institutionId,
+        this.currentPage(),
+        this.currentPageSize(),
+        sortParam,
+        filters
+      );
     });
   }
 

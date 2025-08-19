@@ -79,7 +79,7 @@ export class ConfigureAddonComponent implements OnInit {
   });
   protected readonly resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
-    return `${environment.baseResourceUri}${id}`;
+    return `${environment.webUrl}/${id}`;
   });
   protected readonly addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());
