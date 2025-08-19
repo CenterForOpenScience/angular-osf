@@ -1,7 +1,7 @@
 export { MOCK_ADDON } from './addon.mock';
 export * from './contributors.mock';
 export * from './custom-сonfirmation.service.mock';
-export { MOCK_USER } from './data.mock';
+export * from './data.mock';
 export { MOCK_EDUCATION } from './education.mock';
 export { MOCK_EMPLOYMENT } from './employment.mock';
 export * from './employment.mock';
@@ -11,4 +11,7 @@ export * from './meeting.mock';
 export { MOCK_MEETING } from './meeting.mock';
 export { MOCK_STORE } from './mock-store.mock';
 export { MOCK_PROVIDER } from './provider.mock';
+export { MOCK_REGISTRATION } from './registration.mock';
+export * from './resource.mock';
+export { MOCK_REVIEW } from './review.mock';
 export { TranslateServiceMock } from './translate.service.mock';

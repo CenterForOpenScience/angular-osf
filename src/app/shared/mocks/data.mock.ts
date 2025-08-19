@@ -1,4 +1,5 @@
 import { User } from '@osf/core/models';
+import { UserRelatedDataCounts } from '@shared/models';
 
 export const MOCK_USER: User = {
   id: '1',
@@ -51,4 +52,12 @@ export const MOCK_USER: User = {
   link: 'https://example.com/profile',
   defaultRegionId: 'us',
   allowIndexing: true,
+};
+
+export const MOCK_USER_RELATED_COUNTS: UserRelatedDataCounts = {
+  projects: 5,
+  preprints: 3,
+  registrations: 2,
+  education: MOCK_USER.education[0].institution,
+  employment: MOCK_USER.employment[0].title,
 };
