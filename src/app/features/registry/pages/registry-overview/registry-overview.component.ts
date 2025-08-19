@@ -22,22 +22,25 @@ import {
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
-import { toCamelCase } from '@osf/shared/helpers';
+import { pathJoin, toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
-import { ToastService } from '@osf/shared/services';
+import { MetaTagsService, ToastService } from '@osf/shared/services';
 import { GetBookmarksCollectionId } from '@shared/stores';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';
 import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
-import { GetRegistryInstitutions, GetRegistrySubjects } from '../../store/registry-metadata';
 import {
   GetRegistryById,
+  GetRegistryInstitutions,
   GetRegistryReviewActions,
+  GetRegistrySubjects,
   RegistryOverviewSelectors,
   SetRegistryCustomCitation,
 } from '../../store/registry-overview';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-registry-overview',
@@ -59,16 +62,18 @@ import {
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
+  providers: [DialogService, DatePipe],
 })
 export class RegistryOverviewComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly toastService = inject(ToastService);
-  protected readonly dialogService = inject(DialogService);
-  protected readonly translateService = inject(TranslateService);
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
+  private readonly metaTags = inject(MetaTagsService);
+  private readonly datePipe = inject(DatePipe);
 
   protected readonly registry = select(RegistryOverviewSelectors.getRegistry);
   protected readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
@@ -78,7 +83,7 @@ export class RegistryOverviewComponent {
   protected readonly isInstitutionsLoading = select(RegistryOverviewSelectors.isInstitutionsLoading);
   protected readonly schemaBlocks = select(RegistryOverviewSelectors.getSchemaBlocks);
   protected readonly isSchemaBlocksLoading = select(RegistryOverviewSelectors.isSchemaBlocksLoading);
-  protected areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
+  protected readonly areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
   protected readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
   protected readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
   protected revisionInProgress: SchemaResponse | undefined;
@@ -170,9 +175,10 @@ export class RegistryOverviewComponent {
               this.actions.getInstitutions(id);
             })
           )
-          .subscribe();
+          .subscribe(() => this.setMetaTags());
       }
     });
+
     this.actions.getBookmarksId();
     this.route.queryParams
       .pipe(
@@ -184,6 +190,28 @@ export class RegistryOverviewComponent {
         })
       )
       .subscribe();
+  }
+
+  setMetaTags() {
+    const image = 'engines-dist/registries/assets/img/osf-sharing.png';
+
+    this.metaTags.updateMetaTags({
+      title: this.registry()?.title,
+      description: this.registry()?.description,
+      publishedDate: this.datePipe.transform(this.registry()?.dateRegistered, 'yyyy-MM-dd'),
+      modifiedDate: this.datePipe.transform(this.registry()?.dateModified, 'yyyy-MM-dd'),
+      url: pathJoin(environment.webUrl, this.registry()?.id ?? ''),
+      image,
+      identifier: this.registry()?.id,
+      doi: this.registry()?.doi,
+      keywords: this.registry()?.tags,
+      siteName: 'OSF',
+      license: this.registry()?.license?.name,
+      contributors: this.registry()?.contributors.map((contributor) => ({
+        givenName: contributor.givenName,
+        familyName: contributor.familyName,
+      })),
+    });
   }
 
   navigateToFile(fileId: string): void {

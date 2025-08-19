@@ -21,6 +21,7 @@ export * from './license';
 export * from './license.model';
 export * from './license.model';
 export * from './licenses-json-api.model';
+export * from './meta-tags';
 export * from './metadata-field.model';
 export * from './my-resources';
 export * from './nodes/create-project-form.model';

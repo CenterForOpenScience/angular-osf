@@ -59,12 +59,14 @@ export class OverviewToolbarComponent {
   protected destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  isCollectionsRoute = input<boolean>(false);
   protected isPublic = signal(false);
   protected isBookmarked = signal(false);
+
+  isCollectionsRoute = input<boolean>(false);
   isAdmin = input.required<boolean>();
   currentResource = input.required<ToolbarResource | null>();
   showViewOnlyLinks = input<boolean>(true);
+
   protected isBookmarksLoading = select(MyResourcesSelectors.getBookmarksLoading);
   protected isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
   protected bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
