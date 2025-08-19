@@ -7,10 +7,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
-import { Primitive } from '@osf/core/helpers';
 import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
-import { IS_MEDIUM } from '@osf/shared/utils';
+import { IS_MEDIUM, Primitive } from '@osf/shared/helpers';
 
 import { REGISTRY_MODERATION_TABS } from '../../constants';
 import { RegistryModerationTab } from '../../enums';

@@ -5,18 +5,8 @@ import { NodeLinksState } from './node-links.state';
 
 export class NodeLinksSelectors {
   @Selector([NodeLinksState])
-  static getNodeLinks(state: NodeLinksStateModel) {
-    return state.nodeLinks.data;
-  }
-
-  @Selector([NodeLinksState])
-  static getNodeLinksLoading(state: NodeLinksStateModel) {
-    return state.nodeLinks.isLoading;
-  }
-
-  @Selector([NodeLinksState])
   static getNodeLinksSubmitting(state: NodeLinksStateModel) {
-    return state.nodeLinks.isSubmitting || false;
+    return state.linkedResources.isSubmitting || false;
   }
 
   @Selector([NodeLinksState])

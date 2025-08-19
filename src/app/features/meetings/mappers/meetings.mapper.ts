@@ -1,4 +1,4 @@
-import { JsonApiResponseWithPaging } from '@core/models';
+import { ResponseJsonApi } from '@shared/models';
 
 import {
   MeetingGetResponseJsonApi,
@@ -8,9 +8,7 @@ import {
 } from '../models';
 
 export class MeetingsMapper {
-  static fromMeetingsGetResponse(
-    response: JsonApiResponseWithPaging<MeetingGetResponseJsonApi[], null>
-  ): MeetingsWithPaging {
+  static fromMeetingsGetResponse(response: ResponseJsonApi<MeetingGetResponseJsonApi[]>): MeetingsWithPaging {
     return {
       data: response.data.map((item) => ({
         id: item.id,
@@ -20,12 +18,12 @@ export class MeetingsMapper {
         endDate: item.attributes.end_date,
         submissionsCount: item.attributes.submissions_count,
       })),
-      totalCount: response.links.meta.total,
+      totalCount: response.meta.total,
     };
   }
 
   static fromMeetingSubmissionGetResponse(
-    response: JsonApiResponseWithPaging<MeetingSubmissionGetResponseJsonApi[], null>
+    response: ResponseJsonApi<MeetingSubmissionGetResponseJsonApi[]>
   ): MeetingSubmissionsWithPaging {
     return {
       data: response.data.map((item) => ({
@@ -37,7 +35,7 @@ export class MeetingsMapper {
         meetingCategory: item.attributes.meeting_category,
         downloadLink: item.links.download,
       })),
-      totalCount: response.links.meta.total,
+      totalCount: response.meta.total,
     };
   }
 

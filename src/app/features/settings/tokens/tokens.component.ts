@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterOutlet } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { IS_SMALL } from '@osf/shared/utils';
+import { IS_SMALL } from '@osf/shared/helpers';
 
 import { TokenAddEditFormComponent } from './components';
 import { GetScopes } from './store';

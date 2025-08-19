@@ -23,19 +23,13 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/core/constants';
-import { parseQueryFilterParams } from '@osf/core/helpers';
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
+import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
+import { IS_MEDIUM, parseQueryFilterParams } from '@osf/shared/helpers';
 import { QueryParams, TableParameters } from '@osf/shared/models';
 import { BookmarksSelectors, GetBookmarksCollectionId } from '@osf/shared/stores';
-import { IS_MEDIUM } from '@osf/shared/utils';
-
-import { MY_PROJECTS_TABS } from './constants';
-import { MyProjectsTab } from './enums';
-
-import { MyResourcesItem, MyResourcesSearchFilters } from 'src/app/shared/models/my-resources';
 import {
   ClearMyResources,
   GetMyBookmarks,
@@ -43,7 +37,12 @@ import {
   GetMyProjects,
   GetMyRegistrations,
   MyResourcesSelectors,
-} from 'src/app/shared/stores/my-resources';
+} from '@shared/stores';
+
+import { MY_PROJECTS_TABS } from './constants';
+import { MyProjectsTab } from './enums';
+
+import { MyResourcesItem, MyResourcesSearchFilters } from 'src/app/shared/models/my-resources';
 
 @Component({
   selector: 'osf-my-projects',
@@ -344,7 +343,7 @@ export class MyProjectsComponent implements OnInit {
 
   protected navigateToProject(project: MyResourcesItem): void {
     this.activeProject.set(project);
-    this.router.navigate(['/my-projects', project.id]);
+    this.router.navigate(['/project', project.id]);
   }
 
   protected navigateToRegistry(registry: MyResourcesItem): void {

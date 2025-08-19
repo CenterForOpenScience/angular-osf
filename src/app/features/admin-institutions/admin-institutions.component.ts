@@ -8,8 +8,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
-import { Primitive } from '@osf/core/helpers';
 import { resourceTabOptions } from '@osf/features/admin-institutions/constants/resource-tab-option.constant';
+import { Primitive } from '@osf/shared/helpers';
 import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 import { FetchInstitutionById, InstitutionsSearchSelectors } from '@shared/stores';
 

@@ -14,17 +14,19 @@ export class RegistryModerationMapper {
       id: response.id,
       title: response.attributes.title,
       reviewsState: response.attributes.reviews_state,
+      revisionStatus: response.attributes.revision_state,
       public: response.attributes.public,
       embargoed: response.attributes.embargoed,
       embargoEndDate: response.attributes.embargo_end_date,
       actions: [],
+      revisionId: response.embeds?.schema_responses?.data[0]?.id || null,
     };
   }
 
   static fromResponseWithPagination(response: RegistryResponseJsonApi): PaginatedData<RegistryModeration[]> {
     return {
       data: response.data.map((x) => this.fromResponse(x)),
-      totalCount: response.links.meta.total,
+      totalCount: response.meta.total,
     };
   }
 
@@ -39,6 +41,7 @@ export class RegistryModerationMapper {
         id: response.embeds.creator.data.id,
         name: response.embeds.creator.data.attributes.full_name,
       },
+      trigger: response.attributes.trigger,
     };
   }
 }

@@ -1,5 +1,4 @@
-import { ApiData, JsonApiResponse } from '@core/models';
-import { FileLinks, FileRelationshipsResponse, FileResponse } from '@shared/models';
+import { ApiData, FileLinks, FileRelationshipsResponse, FileResponse, JsonApiResponse } from '@shared/models';
 
 export type GetFileTargetResponse = JsonApiResponse<
   ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>,

@@ -4,9 +4,9 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { IS_XSMALL } from '@osf/shared/helpers';
 import { ResourceCardComponent } from '@shared/components';
 import { ResourceCardService } from '@shared/services';
-import { IS_XSMALL } from '@shared/utils';
 
 describe('MyProfileResourceCardComponent', () => {
   let component: ResourceCardComponent;

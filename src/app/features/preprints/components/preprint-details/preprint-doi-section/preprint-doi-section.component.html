@@ -1,0 +1,32 @@
+@let preprintValue = preprint()!;
+@let preprintProviderValue = preprintProvider()!;
+<section class="flex flex-column gap-2">
+  <h3>{{ 'preprints.details.doi.title' | translate: { documentType: preprintProviderValue.preprintWord } }}</h3>
+
+  <p-select
+    class="w-full"
+    appendTo="body"
+    optionLabel="label"
+    optionValue="value"
+    [ngModel]="preprintValue.id"
+    [options]="versionsDropdownOptions()"
+    [loading]="arePreprintVersionIdsLoading()"
+    (onChange)="selectPreprintVersion($event.value)"
+  />
+  @if (preprintValue.preprintDoiLink) {
+    @if (preprintValue.preprintDoiCreated) {
+      <a [href]="preprintValue.preprintDoiLink">{{ preprintValue.preprintDoiLink }}</a>
+    } @else {
+      <p>{{ preprintValue.preprintDoiLink }}</p>
+      <p>{{ 'preprints.details.doi.pendingDoiMinted' | translate }}</p>
+    }
+  } @else {
+    @if (!preprintValue.isPublic) {
+      <p>{{ 'preprints.details.doi.pendingDoi' | translate: { documentType: preprintProviderValue.preprintWord } }}</p>
+    } @else if (preprintProvider()?.reviewsWorkflow && !preprintValue.isPublished) {
+      <p>{{ 'preprints.details.doi.pendingDoiModeration' | translate }}</p>
+    } @else {
+      <p>{{ 'preprints.details.doi.noDoi' | translate }}</p>
+    }
+  }
+</section>

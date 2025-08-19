@@ -25,8 +25,12 @@
 
       <div class="flex flex-row align-items-center">
         <p>{{ fileVersionsValue[0].name }}</p>
-        <p class="m-auto">Version: {{ fileVersionsValue[0].id }}</p>
-        <p-button severity="info" label="Download previous versions" (click)="versionsMenu.toggle($event)" />
+        <p class="m-auto">{{ 'preprints.details.file.version' | translate: { version: fileVersionsValue[0].id } }}</p>
+        <p-button
+          severity="info"
+          [label]="'preprints.details.file.downloadPreviousVersion' | translate"
+          (click)="versionsMenu.toggle($event)"
+        />
 
         <p-menu #versionsMenu [model]="versionMenuItems()" appendTo="body" popup />
       </div>
@@ -40,11 +44,13 @@
       @let fileValue = file()!;
 
       <div class="flex flex-column gap-1 justify-content-start md:flex-row">
-        <span>Submitted: {{ fileValue.dateCreated | date: 'longDate' }}</span>
+        <span>{{ dateLabel() | translate }}: {{ fileValue.dateCreated | date: 'longDate' }}</span>
         @if (isMedium() || isLarge()) {
           <span>|</span>
         }
-        <span>Last edited: {{ fileValue.dateModified | date: 'longDate' }}</span>
+        <span>
+          {{ 'preprints.details.file.lastEdited' | translate }} : {{ fileValue.dateModified | date: 'longDate' }}
+        </span>
       </div>
     }
 

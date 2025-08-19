@@ -165,7 +165,7 @@ export class FileDetailComponent {
         .dispatch(new DeleteEntry(this.projectId, link))
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => {
-          this.router.navigate(['/my-projects', this.projectId, 'files']);
+          this.router.navigate(['/project', this.projectId, 'files']);
         });
     }
   }

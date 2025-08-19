@@ -1,7 +1,7 @@
-@use "assets/styles/mixins" as mix;
-
 :host {
-  @include mix.flex-column-center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex: 1;
   background: url("/assets/images/dark-blue-gradient.png") center no-repeat;
   background-size: cover;
@@ -9,7 +9,8 @@
 
 .sign-up-container,
 .message-container {
-  @include mix.flex-column;
+  display: flex;
+  flex-direction: column;
   background: var(--white);
   border-radius: 0.6rem;
   box-shadow: 0 2px 4px var(--grey-outline);
@@ -20,10 +21,6 @@
     color: var(--red-1);
     font-weight: 600;
   }
-}
-
-.sign-up-container {
-  flex: 1;
 }
 
 .message-container {

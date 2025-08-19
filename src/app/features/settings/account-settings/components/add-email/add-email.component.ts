@@ -10,8 +10,8 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
+import { CustomValidators } from '@osf/shared/helpers';
 import { ToastService } from '@osf/shared/services';
-import { CustomValidators } from '@osf/shared/utils';
 
 import { AccountSettingsSelectors, AddEmail } from '../../store';
 

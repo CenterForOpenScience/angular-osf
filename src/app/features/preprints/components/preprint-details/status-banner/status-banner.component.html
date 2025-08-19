@@ -1,0 +1,47 @@
+<p-message styleClass="w-full" [severity]="severity()">
+  <ng-template #container>
+    <div class="banner-container w-full flex flex-row gap-2 align-items-start font-bold text-base">
+      <osf-icon class="pt-1" [iconClass]="'fas fa-' + iconClass()" />
+
+      <div class="flex-1 flex flex-column gap-1 justify-content-between align-items-start lg:flex-row">
+        @if (!isWithdrawn()) {
+          {{ status() | translate | titlecase }}: {{ bannerContent() }}
+
+          <div>
+            @if (reviewerComment() && !provider().reviewsCommentsPrivate && !isPendingWithdrawal()) {
+              <p-button
+                [link]="true"
+                class="cursor-pointer"
+                (click)="showFeedbackDialog()"
+                [label]="'preprints.details.statusBanner.showModeratorFeedback' | translate"
+              />
+
+              <p-dialog
+                [header]="'preprints.details.statusBanner.moderatorFeedback' | translate"
+                [modal]="true"
+                draggable="false"
+                [(visible)]="feedbackDialogVisible"
+              >
+                <div class="flex flex-column gap-2 align-items-start">
+                  <p-tag [severity]="severity()"> {{ status() | translate | titlecase }}</p-tag>
+
+                  <p>{{ reviewerComment() }}</p>
+
+                  <div>
+                    @if (!provider().reviewsCommentsAnonymous) {
+                      <p>{{ reviewerName() }}</p>
+                    }
+
+                    <p>{{ provider().name }} {{ 'preprints.details.statusBanner.moderator' | translate }}</p>
+                  </div>
+                </div>
+              </p-dialog>
+            }
+          </div>
+        } @else {
+          {{ bannerContent() }}
+        }
+      </div>
+    </div>
+  </ng-template>
+</p-message>

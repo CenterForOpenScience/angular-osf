@@ -1,12 +1,9 @@
 <p-card>
   @if (registrationData()) {
     <div class="flex gap-3 flex-column">
-      <div class="flex flex-wrap gap-2 w-full">
-        @if (registrationData().isPublic) {
-          <i class="osf-icon-padlock-unlock"></i>
-        } @else {
-          <i class="osf-icon-padlock"></i>
-        }
+      <div class="flex align-items-center flex-wrap gap-2 w-full">
+        <osf-icon [iconClass]="registrationData().isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
+
         <h2 class="align-self-center">
           {{ registrationData().title || 'project.registrations.card.noTitle' | translate }}
         </h2>

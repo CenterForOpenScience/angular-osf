@@ -3,7 +3,7 @@ import { StepOption } from '@osf/shared/models';
 export const DEFAULT_STEPS: StepOption[] = [
   {
     index: 0,
-    label: 'navigation.project.metadata',
+    label: 'navigation.metadata',
     value: '',
     routeLink: 'metadata',
   },

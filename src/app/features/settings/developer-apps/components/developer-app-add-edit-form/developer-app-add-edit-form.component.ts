@@ -11,8 +11,8 @@ import { Router } from '@angular/router';
 
 import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
+import { CustomValidators } from '@osf/shared/helpers';
 import { ToastService } from '@osf/shared/services';
-import { CustomValidators } from '@osf/shared/utils';
 
 import { DeveloperApp, DeveloperAppCreateUpdate, DeveloperAppForm, DeveloperAppFormFormControls } from '../../models';
 import { CreateDeveloperApp, DeveloperAppsSelectors, UpdateDeveloperApp } from '../../store';

@@ -1,4 +1,4 @@
-import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '@osf/core/models';
+import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common';
 
 export interface SubjectsResponseJsonApi {
   data: SubjectDataJsonApi[];

@@ -2,6 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { authGuard } from '@osf/core/guards';
 import { AddToCollectionState } from '@osf/features/collections/store/add-to-collection';
 import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ConfirmLeavingGuard } from '@shared/guards';
@@ -40,15 +41,18 @@ export const collectionsRoutes: Routes = [
             (mod) => mod.AddToCollectionComponent
           ),
         providers: [provideStates([ProjectsState, CollectionsState, AddToCollectionState, ContributorsState])],
+        canActivate: [authGuard],
         canDeactivate: [ConfirmLeavingGuard],
       },
       {
         path: ':providerId/moderation',
+        canActivate: [authGuard],
         loadChildren: () =>
           import('@osf/features/moderation/collection-moderation.routes').then((m) => m.collectionModerationRoutes),
       },
       {
         path: ':collectionId/moderation/:id',
+        canActivate: [authGuard],
         loadComponent: () =>
           import(
             '@osf/features/moderation/components/collection-submission-overview/collection-submission-overview.component'

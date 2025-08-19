@@ -2,28 +2,28 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponseWithPaging } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
-import { RegistrationMapper } from '@osf/shared/mappers/registration';
+import { PageSchemaMapper, RegistrationMapper } from '@osf/shared/mappers/registration';
 import {
   DraftRegistrationDataJsonApi,
   DraftRegistrationModel,
   DraftRegistrationRelationshipsJsonApi,
   DraftRegistrationResponseJsonApi,
+  PageSchema,
   RegistrationAttributesJsonApi,
   RegistrationCard,
   RegistrationDataJsonApi,
   RegistrationModel,
   RegistrationResponseJsonApi,
+  ResponseJsonApi,
+  SchemaBlocksResponseJsonApi,
   SchemaResponse,
   SchemaResponseDataJsonApi,
   SchemaResponseJsonApi,
   SchemaResponsesJsonApi,
 } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { SchemaActionTrigger } from '../enums';
-import { PageSchemaMapper } from '../mappers';
-import { PageSchema, SchemaBlocksResponseJsonApi } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -34,7 +34,11 @@ export class RegistriesService {
   private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
 
-  createDraft(registrationSchemaId: string, projectId?: string | undefined): Observable<DraftRegistrationModel> {
+  createDraft(
+    registrationSchemaId: string,
+    provider: string,
+    projectId?: string | undefined
+  ): Observable<DraftRegistrationModel> {
     const payload = {
       data: {
         type: 'draft_registrations',
@@ -51,6 +55,12 @@ export class RegistriesService {
             data: {
               type: 'registration-schemas',
               id: registrationSchemaId,
+            },
+          },
+          provider: {
+            data: {
+              type: 'registration-providers',
+              id: provider,
             },
           },
         },
@@ -122,9 +132,7 @@ export class RegistriesService {
       embed: ['bibliographic_contributors', 'registration_schema', 'provider'],
     };
     return this.jsonApiService
-      .get<
-        JsonApiResponseWithPaging<DraftRegistrationDataJsonApi[], null>
-      >(`${this.apiUrl}/draft_registrations/`, params)
+      .get<ResponseJsonApi<DraftRegistrationDataJsonApi[]>>(`${this.apiUrl}/draft_registrations/`, params)
       .pipe(
         map((response) => {
           const data = response.data.map((registration: DraftRegistrationDataJsonApi) =>
@@ -132,13 +140,14 @@ export class RegistriesService {
           );
           return {
             data,
-            totalCount: response.links.meta?.total,
+            totalCount: response.meta?.total,
           };
         })
       );
   }
 
   getSubmittedRegistrations(
+    userId: string,
     page: number,
     pageSize: number
   ): Observable<{ data: RegistrationCard[]; totalCount: number }> {
@@ -148,7 +157,7 @@ export class RegistriesService {
       embed: ['bibliographic_contributors', 'registration_schema', 'provider'],
     };
     return this.jsonApiService
-      .get<JsonApiResponseWithPaging<RegistrationDataJsonApi[], null>>(`${this.apiUrl}/registrations/`, params)
+      .get<ResponseJsonApi<RegistrationDataJsonApi[]>>(`${this.apiUrl}/users/${userId}/registrations/`, params)
       .pipe(
         map((response) => {
           const data = response.data.map((registration: RegistrationDataJsonApi) =>
@@ -156,7 +165,7 @@ export class RegistriesService {
           );
           return {
             data,
-            totalCount: response.links.meta?.total,
+            totalCount: response.meta?.total,
           };
         })
       );

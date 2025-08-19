@@ -13,7 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { FilterChipsComponent, ResourceFiltersComponent } from '@osf/features/search/components';
 import { ResourceTab } from '@osf/shared/enums';
-import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 import { ResourceCardComponent, SelectComponent } from '@shared/components';
 import { SEARCH_TAB_OPTIONS, searchSortingOptions } from '@shared/constants';
 

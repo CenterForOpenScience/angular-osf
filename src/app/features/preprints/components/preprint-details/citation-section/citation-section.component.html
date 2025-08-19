@@ -1,0 +1,47 @@
+<div class="metadata-accordion">
+  <p-accordion>
+    <p-accordion-panel value="0">
+      <p-accordion-header class="p-0 justify-content-between">
+        <h3>{{ 'project.overview.metadata.citation' | translate }}</h3>
+      </p-accordion-header>
+      <p-accordion-content>
+        @if (areCitationsLoading()) {
+          <p-skeleton height="3.5rem"></p-skeleton>
+        } @else {
+          <div class="flex flex-column gap-3">
+            @for (citation of defaultCitations(); track citation.id) {
+              <div class="flex flex-column gap-1">
+                <h3>{{ citation.title }}</h3>
+                <p>{{ citation.citation }}</p>
+              </div>
+            }
+          </div>
+
+          <p-divider />
+          <p>{{ 'project.overview.metadata.getMoreCitations' | translate }}</p>
+          <p-select
+            class="mt-2 w-full"
+            [placeholder]="'project.overview.metadata.citationInputPlaceholder' | translate"
+            [loading]="areCitationStylesLoading()"
+            [options]="citationStylesOptions()"
+            [filter]="true"
+            (onFilter)="handleCitationStyleFilterSearch($event)"
+            optionLabel="label"
+            optionValue="value"
+            appendTo="body"
+            [emptyFilterMessage]="filterMessage()"
+            [emptyMessage]="'project.overview.metadata.citationInputPlaceholder' | translate"
+            (onChange)="handleGetStyledCitation($event)"
+          >
+            <ng-template #selectedItem let-selectedOption>
+              {{ selectedOption.label }}
+            </ng-template>
+          </p-select>
+          @if (styledCitation()) {
+            <p class="mt-2">{{ styledCitation()?.citation }}</p>
+          }
+        }
+      </p-accordion-content>
+    </p-accordion-panel>
+  </p-accordion>
+</div>

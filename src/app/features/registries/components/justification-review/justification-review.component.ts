@@ -10,18 +10,18 @@ import { Message } from 'primeng/message';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { RegistrationBlocksDataComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
-import { RevisionReviewStates } from '@osf/shared/enums';
+import { FieldType, RevisionReviewStates } from '@osf/shared/enums';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
-import { FieldType, SchemaActionTrigger } from '../../enums';
-import { DeleteSchemaResponse, HandleSchemaResponse, RegistriesSelectors } from '../../store';
+import { SchemaActionTrigger } from '../../enums';
+import { ClearState, DeleteSchemaResponse, HandleSchemaResponse, RegistriesSelectors } from '../../store';
 import { ConfirmContinueEditingDialogComponent } from '../confirm-continue-editing-dialog/confirm-continue-editing-dialog.component';
-import { ReviewDataComponent } from '../review-data/review-data.component';
 
 @Component({
   selector: 'osf-justification-review',
-  imports: [Button, Card, TranslatePipe, Message, ReviewDataComponent],
+  imports: [Button, Card, TranslatePipe, Message, RegistrationBlocksDataComponent],
   templateUrl: './justification-review.component.html',
   styleUrl: './justification-review.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,12 +48,42 @@ export class JustificationReviewComponent {
   protected actions = createDispatchMap({
     deleteSchemaResponse: DeleteSchemaResponse,
     handleSchemaResponse: HandleSchemaResponse,
+    clearState: ClearState,
   });
 
   private readonly revisionId = this.route.snapshot.params['id'];
 
+  get isUnapproved() {
+    return this.schemaResponse()?.reviewsState === RevisionReviewStates.Unapproved;
+  }
+
+  get inProgress() {
+    return this.schemaResponse()?.reviewsState === RevisionReviewStates.RevisionInProgress;
+  }
+
   changes = computed(() => {
-    return Object.keys(this.updatedFields());
+    let questions: Record<string, string> = {};
+    this.pages().forEach((page) => {
+      if (page.sections?.length) {
+        questions = {
+          ...questions,
+          ...Object.fromEntries(
+            page.sections.flatMap(
+              (section) => section.questions?.map((q) => [q.responseKey, q.displayText || '']) || []
+            )
+          ),
+        };
+      } else {
+        questions = {
+          ...questions,
+          ...Object.fromEntries(page.questions?.map((q) => [q.responseKey, q.displayText]) || []),
+        };
+      }
+    });
+    const updatedFields = this.updatedFields();
+    const updatedResponseKeys = this.schemaResponse()?.updatedResponseKeys || [];
+    const uniqueKeys = new Set([...updatedResponseKeys, ...Object.keys(updatedFields)]);
+    return Array.from(uniqueKeys).map((key) => questions[key]);
   });
 
   submit(): void {
@@ -77,6 +107,8 @@ export class JustificationReviewComponent {
         const registrationId = this.schemaResponse()?.registrationId || '';
         this.actions.deleteSchemaResponse(this.revisionId).subscribe({
           next: () => {
+            this.toastService.showSuccess('registries.justification.successDeleteDraft');
+            this.actions.clearState();
             this.router.navigateByUrl(`/registries/${registrationId}/overview`);
           },
         });
@@ -101,6 +133,9 @@ export class JustificationReviewComponent {
         focusOnShow: false,
         closeOnEscape: true,
         modal: true,
+        data: {
+          revisionId: this.revisionId,
+        },
       })
       .onClose.subscribe((result) => {
         if (result) {

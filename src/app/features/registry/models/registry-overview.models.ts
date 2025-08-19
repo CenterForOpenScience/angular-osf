@@ -1,7 +1,7 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { RegistrationQuestions, RegistrySubject } from '@osf/features/registry/models';
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
-import { License } from '@shared/models';
+import { License, ProviderModel, SchemaResponse } from '@shared/models';
 
 export interface RegistryOverview {
   id: string;
@@ -16,7 +16,7 @@ export interface RegistryOverview {
   registrationType: string;
   doi: string;
   tags: string[];
-  registry?: string;
+  provider?: ProviderModel;
   contributors: ProjectOverviewContributor[];
   citation: string;
   category: string;
@@ -54,11 +54,7 @@ export interface RegistryOverview {
   questions: RegistrationQuestions;
   registrationSchemaLink: string;
   associatedProjectId: string;
-  schemaResponses: {
-    id: string;
-    revisionResponses: RegistrationQuestions;
-    updatedResponseKeys: string[];
-  }[];
+  schemaResponses: SchemaResponse[];
   status: RegistryStatus;
   revisionStatus: RevisionReviewStates;
   reviewsState?: RegistrationReviewStates;
@@ -66,4 +62,9 @@ export interface RegistryOverview {
     files: string;
   };
   archiving: boolean;
+  embargoEndDate: string;
+  currentUserIsModerator: boolean;
+  withdrawn: boolean;
+  withdrawalJustification?: string;
+  dateWithdrawn: string | null;
 }

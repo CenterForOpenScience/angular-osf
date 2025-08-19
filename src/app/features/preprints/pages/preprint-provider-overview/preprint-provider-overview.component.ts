@@ -17,8 +17,8 @@ import {
   GetPreprintProviderById,
   PreprintProvidersSelectors,
 } from '@osf/features/preprints/store/preprint-providers';
+import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
 import { BrandService } from '@shared/services';
-import { BrowserTabHelper, HeaderStyleHelper } from '@shared/utils';
 
 @Component({
   selector: 'osf-provider-overview',

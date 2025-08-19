@@ -2,8 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@osf/core/services';
 import { PaginatedData } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { RegistrySort, SubmissionReviewStatus } from '../enums';
 import { RegistryModerationMapper } from '../mappers';
@@ -29,9 +29,11 @@ export class RegistryModerationService {
         : `filter[reviews_state]=${status}`;
 
     const baseUrl = `${environment.apiUrl}/providers/registrations/${provider}/registrations/?page=${page}&page[size]=10&${filters}&sort=${sort}`;
-
+    const params = {
+      'embed[]': ['schema_responses'],
+    };
     return this.jsonApiService
-      .get<RegistryResponseJsonApi>(baseUrl)
+      .get<RegistryResponseJsonApi>(baseUrl, params)
       .pipe(map((response) => RegistryModerationMapper.fromResponseWithPagination(response)));
   }
 

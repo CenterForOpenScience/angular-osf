@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { LoadingSpinnerComponent } from '@osf/shared/components';
-import { CustomValidators } from '@osf/shared/utils';
+import { CustomValidators } from '@osf/shared/helpers';
 
 import { AddResource, RegistryResource } from '../../models';
 import { RegistryResourcesSelectors, UpdateResource } from '../../store/registry-resources';

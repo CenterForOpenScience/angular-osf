@@ -2,10 +2,9 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponseWithPaging } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
 import { RegistrationMapper } from '@osf/shared/mappers/registration';
-import { RegistrationCard, RegistrationDataJsonApi } from '@osf/shared/models';
+import { RegistrationCard, RegistrationDataJsonApi, ResponseJsonApi } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { environment } from 'src/environments/environment';
 
@@ -21,14 +20,14 @@ export class RegistrationsService {
     };
     const url = `${environment.apiUrl}/nodes/${projectId}/linked_by_registrations/`;
 
-    return this.jsonApiService.get<JsonApiResponseWithPaging<RegistrationDataJsonApi[], null>>(url, params).pipe(
+    return this.jsonApiService.get<ResponseJsonApi<RegistrationDataJsonApi[]>>(url, params).pipe(
       map((response) => {
         const data = response.data.map((registration: RegistrationDataJsonApi) =>
           RegistrationMapper.fromRegistrationToRegistrationCard(registration)
         );
         return {
           data,
-          totalCount: response.links.meta?.total,
+          totalCount: response.meta?.total,
         };
       })
     );

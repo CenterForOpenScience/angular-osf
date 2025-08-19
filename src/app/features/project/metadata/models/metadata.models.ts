@@ -1,3 +1,5 @@
+import { MetaJsonApi } from '@osf/shared/models';
+
 export interface ProjectMetadata {
   id: string;
   title: string;
@@ -110,12 +112,6 @@ export interface UserInstitutionsResponse {
     last: string | null;
     prev: string | null;
     next: string | null;
-    meta: {
-      total: number;
-      per_page: number;
-    };
   };
-  meta: {
-    version: string;
-  };
+  meta: MetaJsonApi;
 }

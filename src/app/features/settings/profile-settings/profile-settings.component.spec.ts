@@ -7,7 +7,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { IS_MEDIUM } from '@osf/shared/utils';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 
 import { EducationComponent, EmploymentComponent, NameComponent, SocialComponent } from './components';
 import { ProfileSettingsComponent } from './profile-settings.component';

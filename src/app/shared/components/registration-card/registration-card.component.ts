@@ -11,11 +11,21 @@ import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '
 import { RegistrationCard } from '@osf/shared/models';
 
 import { DataResourcesComponent } from '../data-resources/data-resources.component';
+import { IconComponent } from '../icon/icon.component';
 import { StatusBadgeComponent } from '../status-badge/status-badge.component';
 
 @Component({
   selector: 'osf-registration-card',
-  imports: [Card, Button, TranslatePipe, DatePipe, RouterLink, StatusBadgeComponent, DataResourcesComponent],
+  imports: [
+    Card,
+    Button,
+    TranslatePipe,
+    DatePipe,
+    RouterLink,
+    StatusBadgeComponent,
+    DataResourcesComponent,
+    IconComponent,
+  ],
   templateUrl: './registration-card.component.html',
   styleUrl: './registration-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,6 +42,10 @@ export class RegistrationCardComponent {
 
   get isAccepted(): boolean {
     return this.registrationData().reviewsState === RegistrationReviewStates.Accepted;
+  }
+
+  get isPending(): boolean {
+    return this.registrationData().reviewsState === RegistrationReviewStates.Pending;
   }
 
   get isApproved(): boolean {

@@ -2,18 +2,20 @@ import { select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ButtonModule } from 'primeng/button';
-import { MenuModule } from 'primeng/menu';
+import { Button } from 'primeng/button';
+import { Menu } from 'primeng/menu';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { BreadcrumbComponent } from '@core/components/breadcrumb/breadcrumb.component';
-import { UserSelectors } from '@core/store/user/user.selectors';
+import { AuthService } from '@osf/core/services';
+import { UserSelectors } from '@osf/core/store/user';
+
+import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
 
 @Component({
   selector: 'osf-header',
-  imports: [BreadcrumbComponent, MenuModule, ButtonModule, TranslatePipe],
+  imports: [BreadcrumbComponent, Menu, Button, TranslatePipe],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +24,7 @@ export class HeaderComponent {
   currentUser = select(UserSelectors.getCurrentUser);
 
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
 
   items = [
     {
@@ -32,9 +35,12 @@ export class HeaderComponent {
     {
       label: 'navigation.logOut',
       command: () => {
-        document.cookie = 'auth_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        this.router.navigate(['/']);
+        this.authService.logout();
       },
     },
   ];
+
+  navigateToSignIn() {
+    this.authService.navigateToSignIn();
+  }
 }

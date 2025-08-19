@@ -2,7 +2,6 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@osf/core/services';
 import { RegistrationMapper } from '@osf/shared/mappers/registration';
 import {
   CreateRegistrationPayloadJsonApi,
@@ -12,12 +11,15 @@ import {
   LicenseOptions,
   LicensesResponseJsonApi,
 } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { LicensesMapper } from '../mappers';
 
 import { environment } from 'src/environments/environment';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class LicensesService {
   private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);

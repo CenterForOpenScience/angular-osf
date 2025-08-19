@@ -1,11 +1,10 @@
+import { MetaJsonApi } from '@osf/shared/models';
+
 import { LinkedNode, LinkedRegistration } from './linked-nodes.models';
 
 export interface LinkedNodesResponseJsonApi {
   data: LinkedNode[];
-  meta: {
-    total: number;
-    per_page: number;
-  };
+  meta: MetaJsonApi;
   links: {
     self: string;
     first: string | null;
@@ -17,10 +16,7 @@ export interface LinkedNodesResponseJsonApi {
 
 export interface LinkedRegistrationsResponseJsonApi {
   data: LinkedRegistration[];
-  meta: {
-    total: number;
-    per_page: number;
-  };
+  meta: MetaJsonApi;
   links: {
     self: string;
     first: string | null;

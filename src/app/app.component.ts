@@ -15,7 +15,9 @@ import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
-  actions = createDispatchMap({ getCurrentUser: GetCurrentUser });
+  actions = createDispatchMap({
+    getCurrentUser: GetCurrentUser,
+  });
 
   ngOnInit(): void {
     this.actions.getCurrentUser();

@@ -4,10 +4,9 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/core/handlers';
 import { ResourceTab } from '@osf/shared/enums';
+import { getResourceTypes, handleSectionError } from '@osf/shared/helpers';
 import { FilesService, SearchService } from '@osf/shared/services';
-import { getResourceTypes } from '@osf/shared/utils';
 
 import { RegistriesService } from '../services';
 
@@ -113,7 +112,7 @@ export class RegistriesState {
       },
     });
 
-    return this.registriesService.createDraft(payload.registrationSchemaId, payload.projectId).pipe(
+    return this.registriesService.createDraft(payload.registrationSchemaId, payload.provider, payload.projectId).pipe(
       tap((registration) => {
         ctx.patchState({
           draftRegistration: {
@@ -307,14 +306,18 @@ export class RegistriesState {
   @Action(FetchSubmittedRegistrations)
   fetchSubmittedRegistrations(
     ctx: StateContext<RegistriesStateModel>,
-    { page, pageSize }: FetchSubmittedRegistrations
+    { userId, page, pageSize }: FetchSubmittedRegistrations
   ) {
     const state = ctx.getState();
     ctx.patchState({
       submittedRegistrations: { ...state.submittedRegistrations, isLoading: true, error: null },
     });
 
-    return this.registriesService.getSubmittedRegistrations(page, pageSize).pipe(
+    if (!userId) {
+      return;
+    }
+
+    return this.registriesService.getSubmittedRegistrations(userId, page, pageSize).pipe(
       tap((submittedRegistrations) => {
         ctx.patchState({
           submittedRegistrations: {

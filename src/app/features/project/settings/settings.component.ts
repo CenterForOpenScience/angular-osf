@@ -41,9 +41,9 @@ import {
   NotificationSubscriptionSelectors,
   UpdateNotificationSubscriptionForNodeId,
 } from '@osf/features/settings/notifications/store';
+import { CustomValidators } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 import { DeleteViewOnlyLink, FetchViewOnlyLinks, ViewOnlyLinkSelectors } from '@osf/shared/stores';
-import { CustomValidators } from '@osf/shared/utils';
 import { SubHeaderComponent } from '@shared/components';
 import { ProjectFormControls, ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 import { UpdateNodeRequestModel, ViewOnlyLinkModel } from '@shared/models';

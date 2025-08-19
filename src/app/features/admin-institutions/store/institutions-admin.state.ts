@@ -1,16 +1,20 @@
 import { Action, State, StateContext } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
 
 import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
+import { handleSectionError } from '@osf/shared/helpers';
+import { Institution } from '@osf/shared/models';
+import { InstitutionsService } from '@osf/shared/services';
 
-import { InstitutionPreprint, InstitutionProject, InstitutionRegistration, InstitutionSummaryMetrics } from '../models';
+import { InstitutionPreprint, InstitutionProject, InstitutionRegistration } from '../models';
 import { InstitutionsAdminService } from '../services/institutions-admin.service';
 
 import {
   FetchHasOsfAddonSearch,
+  FetchInstitutionById,
   FetchInstitutionDepartments,
   FetchInstitutionSearchResults,
   FetchInstitutionSummaryMetrics,
@@ -21,28 +25,32 @@ import {
   FetchStorageRegionSearch,
   SendUserMessage,
 } from './institutions-admin.actions';
-import { InstitutionsAdminModel } from './institutions-admin.model';
+import { INSTITUTIONS_ADMIN_STATE_DEFAULTS, InstitutionsAdminModel } from './institutions-admin.model';
 
 @State<InstitutionsAdminModel>({
   name: 'institutionsAdmin',
-  defaults: {
-    departments: { data: [], isLoading: false, error: null },
-    summaryMetrics: { data: {} as InstitutionSummaryMetrics, isLoading: false, error: null },
-    hasOsfAddonSearch: { data: [], isLoading: false, error: null },
-    storageRegionSearch: { data: [], isLoading: false, error: null },
-    searchResults: { data: [], isLoading: false, error: null },
-    users: { data: [], totalCount: 0, isLoading: false, error: null },
-    projects: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
-    registrations: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
-    preprints: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
-    sendMessage: { data: null, isLoading: false, error: null },
-    selectedInstitutionId: null,
-    currentSearchPropertyPath: null,
-  },
+  defaults: INSTITUTIONS_ADMIN_STATE_DEFAULTS,
 })
 @Injectable()
 export class InstitutionsAdminState {
+  private readonly institutionsService = inject(InstitutionsService);
   private readonly institutionsAdminService = inject(InstitutionsAdminService);
+
+  @Action(FetchInstitutionById)
+  fetchInstitutionById(ctx: StateContext<InstitutionsAdminModel>, action: FetchInstitutionById) {
+    ctx.patchState({ institution: { data: {} as Institution, isLoading: true, error: null } });
+
+    return this.institutionsService.getInstitutionById(action.institutionId).pipe(
+      tap((response) => {
+        ctx.setState(
+          patch({
+            institution: patch({ data: response, error: null, isLoading: false }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'institution', error))
+    );
+  }
 
   @Action(FetchInstitutionDepartments)
   fetchDepartments(ctx: StateContext<InstitutionsAdminModel>, action: FetchInstitutionDepartments) {

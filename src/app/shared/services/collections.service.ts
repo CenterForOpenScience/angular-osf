@@ -4,8 +4,6 @@ import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse, JsonApiResponseWithPaging } from '@core/models';
-import { JsonApiService } from '@core/services';
 import {
   CollectionSubmissionReviewAction,
   CollectionSubmissionReviewActionJsonApi,
@@ -19,16 +17,22 @@ import {
   CollectionProvider,
   CollectionProviderGetResponseJsonApi,
   CollectionSubmission,
+  CollectionSubmissionActionType,
   CollectionSubmissionJsonApi,
   CollectionSubmissionsSearchPayloadJsonApi,
+  CollectionSubmissionTargetType,
   CollectionSubmissionWithGuid,
   CollectionSubmissionWithGuidJsonApi,
   ContributorsResponseJsonApi,
+  JsonApiResponse,
   PaginatedData,
-  ReviewActionPayload,
+  ResponseJsonApi,
 } from '@shared/models';
-import { ReviewActionPayloadJsonApi } from '@shared/models/collections/review-action-payload-json-api.model';
+import { JsonApiService } from '@shared/services';
 import { SetTotalSubmissions } from '@shared/stores/collections';
+
+import { ReviewActionsMapper } from '../mappers';
+import { ReviewActionPayload, ReviewActionPayloadJsonApi } from '../models/review-action';
 
 import { environment } from 'src/environments/environment';
 
@@ -84,31 +88,29 @@ export class CollectionsService {
       type: 'search',
     };
 
-    return this.jsonApiService
-      .post<JsonApiResponseWithPaging<CollectionSubmissionWithGuidJsonApi[], null>>(url, payload, params)
-      .pipe(
-        switchMap((response) => {
-          if (!response.data.length) {
-            return of([]);
-          }
+    return this.jsonApiService.post<ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>>(url, payload, params).pipe(
+      switchMap((response) => {
+        if (!response.data.length) {
+          return of([]);
+        }
 
-          const contributorUrls = response.data.map(
-            (submission) => submission.embeds.guid.data.relationships.bibliographic_contributors.links.related.href
-          );
-          const contributorRequests = contributorUrls.map((url) => this.getCollectionContributors(url));
-          const totalCount = response.links.meta?.total ?? 0;
-          this.actions.setTotalSubmissions(totalCount);
+        const contributorUrls = response.data.map(
+          (submission) => submission.embeds.guid.data.relationships.bibliographic_contributors.links.related.href
+        );
+        const contributorRequests = contributorUrls.map((url) => this.getCollectionContributors(url));
+        const totalCount = response.meta?.total ?? 0;
+        this.actions.setTotalSubmissions(totalCount);
 
-          return forkJoin(contributorRequests).pipe(
-            map((contributorsArrays) => {
-              return response.data.map((submission, index) => ({
-                ...CollectionsMapper.fromPostCollectionSubmissionsResponse([submission])[0],
-                contributors: contributorsArrays[index],
-              }));
-            })
-          );
-        })
-      );
+        return forkJoin(contributorRequests).pipe(
+          map((contributorsArrays) =>
+            response.data.map((submission, index) => ({
+              ...CollectionsMapper.fromPostCollectionSubmissionsResponse([submission])[0],
+              contributors: contributorsArrays[index],
+            }))
+          )
+        );
+      })
+    );
   }
 
   fetchCollectionSubmissionsByStatus(
@@ -127,13 +129,9 @@ export class CollectionsService {
 
     return this.jsonApiService
       .get<
-        JsonApiResponseWithPaging<CollectionSubmissionWithGuidJsonApi[], null>
+        ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>
       >(`${environment.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
-      .pipe(
-        map((response) => {
-          return CollectionsMapper.fromGetCollectionSubmissionsResponse(response);
-        })
-      );
+      .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsResponse(response)));
   }
 
   fetchProjectCollections(projectId: string): Observable<CollectionDetails[]> {
@@ -158,11 +156,7 @@ export class CollectionsService {
       .get<
         JsonApiResponse<CollectionSubmissionJsonApi[], null>
       >(`${environment.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
-      .pipe(
-        map((response) => {
-          return CollectionsMapper.fromCurrentSubmissionResponse(response.data[0]);
-        })
-      );
+      .pipe(map((response) => CollectionsMapper.fromCurrentSubmissionResponse(response.data[0])));
   }
 
   fetchCollectionSubmissionsActions(
@@ -192,13 +186,18 @@ export class CollectionsService {
     );
   }
 
-  createCollectionSubmissionAction(payload: ReviewActionPayload): Observable<ReviewActionPayloadJsonApi> {
-    const params = CollectionsMapper.toReviewActionPayloadJsonApi(payload);
-
-    return this.jsonApiService.post<ReviewActionPayloadJsonApi>(
-      `${environment.apiUrl}/collection_submission_actions/`,
-      params
+  createCollectionSubmissionAction(
+    payload: ReviewActionPayload
+  ): Observable<ReviewActionPayloadJsonApi<CollectionSubmissionActionType, CollectionSubmissionTargetType>> {
+    const params = ReviewActionsMapper.toReviewActionPayloadJsonApi(
+      payload,
+      'collection_submission_actions',
+      'collection-submissions'
     );
+
+    return this.jsonApiService.post<
+      ReviewActionPayloadJsonApi<CollectionSubmissionActionType, CollectionSubmissionTargetType>
+    >(`${environment.apiUrl}/collection_submission_actions/`, params);
   }
 
   private getCollectionContributors(contributorsUrl: string): Observable<CollectionContributor[]> {
@@ -206,11 +205,13 @@ export class CollectionsService {
       'fields[users]': 'full_name',
     };
 
-    return this.jsonApiService.get<ContributorsResponseJsonApi>(contributorsUrl, params).pipe(
-      map((response: ContributorsResponseJsonApi) => {
-        return CollectionsMapper.fromGetCollectionContributorsResponse(response.data);
-      })
-    );
+    return this.jsonApiService
+      .get<ContributorsResponseJsonApi>(contributorsUrl, params)
+      .pipe(
+        map((response: ContributorsResponseJsonApi) =>
+          CollectionsMapper.fromGetCollectionContributorsResponse(response.data)
+        )
+      );
   }
 
   private fetchUserCollectionSubmissionsByStatus(
@@ -225,12 +226,8 @@ export class CollectionsService {
 
     return this.jsonApiService
       .get<
-        JsonApiResponseWithPaging<CollectionSubmissionWithGuidJsonApi[], null>
+        ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>
       >(`${environment.apiUrl}/collections/${providerId}/collection_submissions/`, params)
-      .pipe(
-        map((response) => {
-          return CollectionsMapper.fromGetCollectionSubmissionsResponse(response);
-        })
-      );
+      .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsResponse(response)));
   }
 }

@@ -1,4 +1,4 @@
-import { StringOrNull } from '@core/helpers';
+import { StringOrNull } from '@shared/helpers';
 import { LicenseOptions } from '@shared/models';
 
 export interface Project {

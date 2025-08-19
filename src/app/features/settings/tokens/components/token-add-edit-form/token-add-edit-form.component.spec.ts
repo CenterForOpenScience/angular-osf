@@ -1,6 +1,6 @@
 import { Store } from '@ngxs/store';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -9,6 +9,9 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+
+import { TranslateServiceMock } from '@shared/mocks';
+import { ToastService } from '@shared/services';
 
 import { TokenAddEditFormComponent } from './token-add-edit-form.component';
 
@@ -55,11 +58,12 @@ describe('TokenAddEditFormComponent', () => {
     await TestBed.configureTestingModule({
       imports: [TokenAddEditFormComponent, MockPipe(TranslatePipe)],
       providers: [
-        MockProvider(TranslateService),
+        TranslateServiceMock,
         MockProvider(Store, store),
         MockProvider(DialogService, dialogService),
         MockProvider(DynamicDialogRef, dialogRef),
         MockProvider(ActivatedRoute, activatedRoute),
+        MockProvider(ToastService),
       ],
     }).compileComponents();
 

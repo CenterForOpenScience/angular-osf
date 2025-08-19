@@ -19,3 +19,7 @@ export class GetRelatedCounts {
     public resourceType: ResourceType | undefined
   ) {}
 }
+
+export class ClearAnalytics {
+  static readonly type = '[Analytics] Clear Analytics';
+}

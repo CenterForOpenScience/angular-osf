@@ -22,7 +22,7 @@ export class GetProjects {
 
 export class CreateDraft {
   static readonly type = '[Registries]  Create Draft';
-  constructor(public payload: { registrationSchemaId: string; projectId?: string }) {}
+  constructor(public payload: { registrationSchemaId: string; provider: string; projectId?: string }) {}
 }
 
 export class FetchDraft {
@@ -93,6 +93,7 @@ export class FetchDraftRegistrations {
 export class FetchSubmittedRegistrations {
   static readonly type = '[Registries] Fetch Submitted Registrations';
   constructor(
+    public userId: string | undefined,
     public page = 1,
     public pageSize = 10
   ) {}

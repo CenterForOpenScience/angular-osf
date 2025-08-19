@@ -13,6 +13,7 @@ import { filter } from 'rxjs/operators';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
+import { findChangedItems } from '@osf/shared/helpers';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
@@ -23,7 +24,6 @@ import { ContributorDialogAddModel, ContributorModel } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 import { AddContributor, ContributorsSelectors, DeleteContributor, UpdateContributor } from '@shared/stores';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
-import { findChangedItems } from '@shared/utils';
 
 @Component({
   selector: 'osf-project-contributors-step',
@@ -168,11 +168,10 @@ export class ProjectContributorsStepComponent {
         if (res.type === AddContributorType.Registered) {
           this.openAddContributorDialog();
         } else {
-          const successMessage = this.translateService.instant('project.contributors.toastMessages.addSuccessMessage');
           const params = { name: res.data[0].fullName };
 
           this.actions.addContributor(this.selectedProject()?.id, ResourceType.Project, res.data[0]).subscribe({
-            next: () => this.toastService.showSuccess(successMessage, params),
+            next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
           });
         }
       });

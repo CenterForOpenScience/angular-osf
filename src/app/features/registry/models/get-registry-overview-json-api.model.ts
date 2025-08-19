@@ -1,5 +1,5 @@
-import { ApiData, JsonApiResponse } from '@core/models';
-import { RegistrationReviewStates, RevisionReviewStates } from '@shared/enums';
+import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+import { ApiData, JsonApiResponse, ProviderDataJsonApi, SchemaResponseDataJsonApi } from '@osf/shared/models';
 
 export type GetRegistryOverviewJsonApi = JsonApiResponse<RegistryOverviewJsonApiData, null>;
 
@@ -49,6 +49,10 @@ export interface RegistryOverviewJsonApiAttributes {
   reviews_state: RegistrationReviewStates;
   embargoed: boolean;
   archiving: boolean;
+  withdrawn: boolean;
+  withdrawal_justification?: string;
+  date_withdrawn?: string | null;
+  embargo_end_date?: string;
 }
 
 export type RegistrationQuestions = Record<string, string | string[] | { file_id: string; file_name: string }[]>;
@@ -94,13 +98,7 @@ export interface RegistryOverviewJsonApiEmbed {
     }[];
   };
   schema_responses: {
-    data: {
-      id: string;
-      attributes: {
-        revision_responses: RegistrationQuestions;
-        updated_response_keys: string[];
-      };
-    }[];
+    data: SchemaResponseDataJsonApi[];
   };
   files: {
     data: {
@@ -116,13 +114,7 @@ export interface RegistryOverviewJsonApiEmbed {
       };
     }[];
   };
-  provider: {
-    data: {
-      attributes: {
-        name: string;
-      };
-    };
-  };
+  provider: { data: ProviderDataJsonApi };
 }
 
 export interface RegistryOverviewJsonApiRelationships {

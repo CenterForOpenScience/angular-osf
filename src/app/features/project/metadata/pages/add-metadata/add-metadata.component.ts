@@ -94,7 +94,8 @@ export class AddMetadataComponent implements OnInit {
     const urlSegments = this.activatedRoute.snapshot.pathFromRoot
       .map((segment) => segment.url.map((url) => url.path))
       .flat();
-    const projectIdIndex = urlSegments.findIndex((segment) => segment === 'my-projects') + 1;
+    const projectIdIndex = urlSegments.findIndex((segment) => segment === 'project') + 1;
+
     if (projectIdIndex > 0 && projectIdIndex < urlSegments.length) {
       this.projectId = urlSegments[projectIdIndex];
       this.actions.getCedarRecords(this.projectId);

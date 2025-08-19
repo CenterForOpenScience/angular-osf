@@ -3,10 +3,10 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@osf/core/services';
 import { ComponentGetResponseJsonApi, ComponentOverview } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 import { ComponentsMapper } from '@shared/mappers';
+import { JsonApiResponse } from '@shared/models';
 
 import { ProjectOverviewMapper } from '../mappers';
 import { ProjectOverview, ProjectOverviewResponseJsonApi } from '../models';
@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ProjectOverviewService {
-  #jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
 
   getProjectById(projectId: string): Observable<ProjectOverview> {
     const params: Record<string, unknown> = {
@@ -35,7 +35,7 @@ export class ProjectOverviewService {
       related_counts: 'forks,view_only_links',
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .get<ProjectOverviewResponseJsonApi>(`${environment.apiUrl}/nodes/${projectId}/`, params)
       .pipe(map((response) => ProjectOverviewMapper.fromGetProjectResponse(response.data)));
   }
@@ -51,7 +51,7 @@ export class ProjectOverviewService {
       },
     };
 
-    return this.#jsonApiService.patch<void>(`${environment.apiUrl}/nodes/${projectId}/`, payload);
+    return this.jsonApiService.patch<void>(`${environment.apiUrl}/nodes/${projectId}/`, payload);
   }
 
   forkResource(projectId: string, resourceType: string): Observable<void> {
@@ -61,7 +61,7 @@ export class ProjectOverviewService {
       },
     };
 
-    return this.#jsonApiService.post<void>(`${environment.apiUrl}/${resourceType}/${projectId}/forks/`, payload);
+    return this.jsonApiService.post<void>(`${environment.apiUrl}/${resourceType}/${projectId}/forks/`, payload);
   }
 
   duplicateProject(projectId: string, title: string): Observable<void> {
@@ -76,7 +76,7 @@ export class ProjectOverviewService {
       },
     };
 
-    return this.#jsonApiService.post<void>(`${environment.apiUrl}/nodes/`, payload);
+    return this.jsonApiService.post<void>(`${environment.apiUrl}/nodes/`, payload);
   }
 
   createComponent(
@@ -112,11 +112,11 @@ export class ProjectOverviewService {
       params['affiliated_institutions'] = affiliatedInstitutions;
     }
 
-    return this.#jsonApiService.post<void>(`${environment.apiUrl}/nodes/${projectId}/children/`, payload, params);
+    return this.jsonApiService.post<void>(`${environment.apiUrl}/nodes/${projectId}/children/`, payload, params);
   }
 
   deleteComponent(componentId: string): Observable<void> {
-    return this.#jsonApiService.delete(`${environment.apiUrl}/nodes/${componentId}/`);
+    return this.jsonApiService.delete(`${environment.apiUrl}/nodes/${componentId}/`);
   }
 
   getComponents(projectId: string): Observable<ComponentOverview[]> {
@@ -125,7 +125,7 @@ export class ProjectOverviewService {
       'fields[users]': 'family_name,full_name,given_name,middle_name',
     };
 
-    return this.#jsonApiService
+    return this.jsonApiService
       .get<
         JsonApiResponse<ComponentGetResponseJsonApi[], null>
       >(`${environment.apiUrl}/nodes/${projectId}/children`, params)

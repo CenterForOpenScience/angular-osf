@@ -20,7 +20,7 @@
       }
 
       <section class="flex flex-column gap-2">
-        <h3>{{ 'Authors' | translate }}</h3>
+        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.authors' | translate }}</h3>
 
         <div class="flex flex-column gap-1 line-height-2 md:flex-row">
           @for (contributor of bibliographicContributors(); track contributor.id) {
@@ -36,87 +36,79 @@
         </div>
       </section>
 
-      <section class="flex flex-column gap-2">
-        <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>
+      <!-- [RNi] TODO: Extract to separate component -->
+      @if (preprintProvider()?.assertionsEnabled) {
+        <section class="flex flex-column gap-2">
+          <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>
 
-        @if (!preprintValue.hasCoi) {
-          <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
-        } @else {
-          {{ preprintValue.coiStatement }}
-        }
-      </section>
-
-      <section class="flex flex-column gap-2">
-        <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.publicData' | translate }}</h3>
-
-        @switch (preprintValue.hasDataLinks) {
-          @case (ApplicabilityStatus.NotApplicable) {
-            <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noData' | translate }}</p>
+          @if (preprintValue.hasCoi) {
+            {{ preprintValue.coiStatement }}
+          } @else {
+            <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noCoi' | translate }}</p>
           }
-          @case (ApplicabilityStatus.Unavailable) {
-            {{ preprintValue.whyNoData }}
-          }
-          @case (ApplicabilityStatus.Applicable) {
-            @for (link of preprintValue.dataLinks; track $index) {
-              <p>{{ link }}</p>
+        </section>
+
+        <section class="flex flex-column gap-2">
+          <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.publicData' | translate }}</h3>
+
+          @switch (preprintValue.hasDataLinks) {
+            @case (ApplicabilityStatus.NotApplicable) {
+              <p>{{ 'preprints.preprintStepper.review.sections.authorAssertions.noData' | translate }}</p>
             }
-          }
-        }
-      </section>
-
-      <section class="flex flex-column gap-2">
-        <h3>
-          {{ 'preprints.preprintStepper.review.sections.authorAssertions.publicPreregistration' | translate }}
-        </h3>
-
-        @switch (preprintValue.hasPreregLinks) {
-          @case (ApplicabilityStatus.NotApplicable) {
-            <p>
-              {{ 'preprints.preprintStepper.review.sections.authorAssertions.noPrereg' | translate }}
-            </p>
-          }
-          @case (ApplicabilityStatus.Unavailable) {
-            {{ preprintValue.whyNoPrereg }}
-          }
-          @case (ApplicabilityStatus.Applicable) {
-            @switch (preprintValue.preregLinkInfo) {
-              @case (PreregLinkInfo.Analysis) {
-                <p>
-                  {{ 'preprints.preprintStepper.common.labels.preregTypes.analysis' | translate }}
-                </p>
-              }
-              @case (PreregLinkInfo.Designs) {
-                <p>
-                  {{ 'preprints.preprintStepper.common.labels.preregTypes.designs' | translate }}
-                </p>
-              }
-              @case (PreregLinkInfo.Both) {
-                <p>
-                  {{ 'preprints.preprintStepper.common.labels.preregTypes.both' | translate }}
-                </p>
+            @case (ApplicabilityStatus.Unavailable) {
+              {{ preprintValue.whyNoData }}
+            }
+            @case (ApplicabilityStatus.Applicable) {
+              @for (link of preprintValue.dataLinks; track $index) {
+                <p>{{ link }}</p>
               }
             }
-            @for (link of preprintValue.preregLinks; track $index) {
-              <p>{{ link }}</p>
+          }
+        </section>
+
+        <section class="flex flex-column gap-2">
+          <h3>
+            {{ 'preprints.preprintStepper.review.sections.authorAssertions.publicPreregistration' | translate }}
+          </h3>
+
+          @switch (preprintValue.hasPreregLinks) {
+            @case (ApplicabilityStatus.NotApplicable) {
+              <p>
+                {{ 'preprints.preprintStepper.review.sections.authorAssertions.noPrereg' | translate }}
+              </p>
+            }
+            @case (ApplicabilityStatus.Unavailable) {
+              {{ preprintValue.whyNoPrereg }}
+            }
+            @case (ApplicabilityStatus.Applicable) {
+              @switch (preprintValue.preregLinkInfo) {
+                @case (PreregLinkInfo.Analysis) {
+                  <p>
+                    {{ 'preprints.preprintStepper.common.labels.preregTypes.analysis' | translate }}
+                  </p>
+                }
+                @case (PreregLinkInfo.Designs) {
+                  <p>
+                    {{ 'preprints.preprintStepper.common.labels.preregTypes.designs' | translate }}
+                  </p>
+                }
+                @case (PreregLinkInfo.Both) {
+                  <p>
+                    {{ 'preprints.preprintStepper.common.labels.preregTypes.both' | translate }}
+                  </p>
+                }
+              }
+              @for (link of preprintValue.preregLinks; track $index) {
+                <p>
+                  <a [href]="link">{{ link }}</a>
+                </p>
+              }
             }
           }
-        }
-      </section>
+        </section>
+      }
 
-      <section class="flex flex-column gap-2">
-        <h3>Preprint DOI</h3>
-
-        <p-select
-          class="w-full"
-          appendTo="body"
-          optionLabel="label"
-          optionValue="value"
-          [ngModel]="preprintValue.id"
-          [options]="versionsDropdownOptions()"
-          [loading]="arePreprintVersionIdsLoading()"
-          (onChange)="selectPreprintVersion($event.value)"
-        />
-      </section>
+      <osf-preprint-doi-section [preprintProvider]="preprintProvider()" />
     </div>
   }
 

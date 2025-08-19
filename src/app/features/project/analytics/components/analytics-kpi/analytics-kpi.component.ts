@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'osf-analytics-kpi',
@@ -18,4 +18,5 @@ export class AnalyticsKpiComponent {
   buttonLabel = input<string>('');
   title = input<string>('');
   value = input<number | undefined>(0);
+  buttonClick = output<void>();
 }

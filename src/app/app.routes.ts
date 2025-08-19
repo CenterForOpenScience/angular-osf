@@ -4,14 +4,20 @@ import { Routes } from '@angular/router';
 
 import { BookmarksState, ProjectsState, ResourceTypeState } from '@shared/stores';
 
+import { authGuard, redirectIfLoggedInGuard } from './core/guards';
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
 import { MyProfileState } from './features/my-profile/store';
+import { PreprintState } from './features/preprints/store/preprint';
+import { RegistriesState } from './features/registries/store';
+import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './features/registries/store/handlers';
+import { FilesHandlers } from './features/registries/store/handlers/files.handlers';
 import { ResourceFiltersOptionsState } from './features/search/components/filters/store';
 import { ResourceFiltersState } from './features/search/components/resource-filters/store';
 import { SearchState } from './features/search/store';
 import { isProjectGuard } from './shared/guards/is-project.guard';
 import { isRegistryGuard } from './shared/guards/is-registry.guard';
+import { LicensesService } from './shared/services';
 
 export const routes: Routes = [
   {
@@ -21,20 +27,16 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'home',
-      },
-      {
-        path: 'home',
-        loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
+        canActivate: [redirectIfLoggedInGuard],
+        loadComponent: () => import('@osf/features/home/home.component').then((mod) => mod.HomeComponent),
         data: { skipBreadcrumbs: true },
       },
       {
-        path: 'home-logged-out',
+        path: 'dashboard',
         loadComponent: () =>
-          import('@osf/features/home/pages/home-logged-out/home-logged-out.component').then(
-            (mod) => mod.HomeLoggedOutComponent
-          ),
+          import('./features/home/pages/dashboard/dashboard.component').then((mod) => mod.DashboardComponent),
         data: { skipBreadcrumbs: true },
+        canActivate: [authGuard],
       },
       {
         path: 'confirm/:userId/:token',
@@ -43,6 +45,7 @@ export const routes: Routes = [
       },
       {
         path: 'register',
+        canActivate: [redirectIfLoggedInGuard],
         loadComponent: () =>
           import('./features/auth/pages/sign-up/sign-up.component').then((mod) => mod.SignUpComponent),
         data: { skipBreadcrumbs: true },
@@ -64,6 +67,91 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: 'search',
+        loadComponent: () => import('./features/search/search.component').then((mod) => mod.SearchComponent),
+        providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState, SearchState])],
+      },
+      {
+        path: 'my-projects',
+        loadComponent: () =>
+          import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
+        providers: [provideStates([BookmarksState])],
+        canActivate: [authGuard],
+      },
+      {
+        path: 'my-registrations',
+        canActivate: [authGuard],
+        loadComponent: () => import('@osf/features/registries/pages').then((c) => c.MyRegistrationsComponent),
+        providers: [
+          provideStates([RegistriesState]),
+          ProvidersHandlers,
+          ProjectsHandlers,
+          LicensesService,
+          LicensesHandlers,
+          FilesHandlers,
+        ],
+      },
+      {
+        path: 'my-preprints',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/my-preprints/my-preprints.component').then(
+            (m) => m.MyPreprintsComponent
+          ),
+        providers: [provideStates([PreprintState])],
+      },
+      {
+        path: ':id',
+        canMatch: [authGuard, isProjectGuard],
+        loadChildren: () => import('./features/project/project.routes').then((m) => m.projectRoutes),
+        providers: [provideStates([ProjectsState, BookmarksState, ResourceTypeState])],
+      },
+      {
+        path: ':id',
+        canMatch: [authGuard, isRegistryGuard],
+        loadChildren: () => import('./features/registry/registry.routes').then((m) => m.registryRoutes),
+        providers: [provideStates([BookmarksState, ResourceTypeState])],
+      },
+      {
+        path: 'project/:id',
+        loadChildren: () => import('./features/project/project.routes').then((mod) => mod.projectRoutes),
+        providers: [provideStates([ProjectsState, BookmarksState])],
+        canActivate: [authGuard],
+      },
+      {
+        path: 'preprints',
+        loadChildren: () => import('./features/preprints/preprints.routes').then((mod) => mod.preprintsRoutes),
+      },
+      {
+        path: 'preprints/:providerId/:id',
+        loadComponent: () =>
+          import('@osf/features/preprints/pages/preprint-details/preprint-details.component').then(
+            (c) => c.PreprintDetailsComponent
+          ),
+      },
+      {
+        path: 'registries',
+        loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
+      },
+      {
+        path: 'registries/:id',
+        loadChildren: () => import('./features/registry/registry.routes').then((mod) => mod.registryRoutes),
+        providers: [provideStates([BookmarksState])],
+        canActivate: [authGuard],
+      },
+      {
+        path: 'my-profile',
+        loadComponent: () => import('./features/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
+        providers: [
+          provideStates([MyProfileResourceFiltersState, MyProfileResourceFiltersOptionsState, MyProfileState]),
+        ],
+        canActivate: [authGuard],
+      },
+      {
+        path: 'institutions',
+        loadChildren: () => import('./features/institutions/institutions.routes').then((r) => r.routes),
+      },
+      {
         path: 'collections',
         loadChildren: () => import('./features/collections/collections.routes').then((mod) => mod.collectionsRoutes),
       },
@@ -72,52 +160,10 @@ export const routes: Routes = [
         loadChildren: () => import('./features/meetings/meetings.routes').then((mod) => mod.meetingsRoutes),
       },
       {
-        path: 'my-projects',
-        loadComponent: () =>
-          import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
-        providers: [provideStates([BookmarksState])],
-      },
-      {
-        path: ':id',
-        canMatch: [isProjectGuard],
-        loadChildren: () => import('./features/project/project.routes').then((m) => m.projectRoutes),
-        providers: [provideStates([ProjectsState, BookmarksState, ResourceTypeState])],
-      },
-      {
-        path: ':id',
-        canMatch: [isRegistryGuard],
-        loadChildren: () => import('./features/registry/registry.routes').then((m) => m.registryRoutes),
-        providers: [provideStates([BookmarksState, ResourceTypeState])],
-      },
-      {
         path: 'settings',
         loadChildren: () => import('./features/settings/settings.routes').then((mod) => mod.settingsRoutes),
+        canActivate: [authGuard],
       },
-      {
-        path: 'preprints',
-        loadChildren: () => import('./features/preprints/preprints.routes').then((mod) => mod.preprintsRoutes),
-      },
-      {
-        path: 'search',
-        loadComponent: () => import('./features/search/search.component').then((mod) => mod.SearchComponent),
-        providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState, SearchState])],
-      },
-      {
-        path: 'my-profile',
-        loadComponent: () => import('./features/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
-        providers: [
-          provideStates([MyProfileResourceFiltersState, MyProfileResourceFiltersOptionsState, MyProfileState]),
-        ],
-      },
-      {
-        path: 'institutions',
-        loadChildren: () => import('./features/institutions/institutions.routes').then((r) => r.routes),
-      },
-      {
-        path: 'registries',
-        loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
-      },
-
       {
         path: 'terms-of-use',
         loadComponent: () =>

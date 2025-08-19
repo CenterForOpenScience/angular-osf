@@ -4,13 +4,14 @@ import {
   DraftRegistrationModel,
   License,
   OsfFile,
+  PageSchema,
   RegistrationCard,
   RegistrationModel,
   Resource,
   SchemaResponse,
 } from '@shared/models';
 
-import { PageSchema, Project, ProviderSchema } from '../models';
+import { Project, ProviderSchema } from '../models';
 
 import { RegistriesStateModel } from './registries.model';
 import { RegistriesState } from './registries.state';

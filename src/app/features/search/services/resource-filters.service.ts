@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { addFiltersParams, getResourceTypes } from '@osf/shared/helpers';
 import {
   Creator,
   DateCreated,
@@ -15,7 +16,6 @@ import {
   SubjectFilter,
 } from '@osf/shared/models';
 import { FiltersOptionsService } from '@osf/shared/services';
-import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
 
 import { ResourceFiltersSelectors } from '../components/resource-filters/store';
 import { SearchSelectors } from '../store';

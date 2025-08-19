@@ -1,3 +1,8 @@
+export class FetchInstitutionById {
+  static readonly type = '[InstitutionsAdmin] Fetch Institution By Id';
+  constructor(public institutionId: string) {}
+}
+
 export class FetchInstitutionDepartments {
   static readonly type = '[InstitutionsAdmin] Fetch Institution Departments';
   constructor(public institutionId: string) {}

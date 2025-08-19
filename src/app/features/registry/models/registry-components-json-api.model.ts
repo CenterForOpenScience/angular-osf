@@ -1,3 +1,5 @@
+import { MetaJsonApi } from '@osf/shared/models';
+
 import { RegistryComponentModel } from './registry-components.models';
 
 export interface RegistryComponentJsonApi {
@@ -18,13 +20,10 @@ export interface RegistryComponentJsonApi {
 
 export interface RegistryComponentsJsonApiResponse {
   data: RegistryComponentJsonApi[];
-  meta: {
-    total: number;
-    per_page: number;
-  };
+  meta: MetaJsonApi;
 }
 
 export interface RegistryComponentsResponseJsonApi {
   data: RegistryComponentModel[];
-  meta: { total: number; per_page: number };
+  meta: MetaJsonApi;
 }

@@ -1,4 +1,4 @@
-import { ApiData, JsonApiResponse } from '@osf/core/models';
+import { ApiData, JsonApiResponse } from '@osf/shared/models';
 
 export type ListEmailsResponseJsonApi = JsonApiResponse<ApiData<AccountEmailResponseJsonApi, null, null, null>[], null>;
 

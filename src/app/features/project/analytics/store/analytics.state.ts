@@ -8,23 +8,12 @@ import { inject, Injectable } from '@angular/core';
 import { AnalyticsMetricsModel, RelatedCountsModel } from '../models';
 import { AnalyticsService } from '../services';
 
-import { GetMetrics, GetRelatedCounts } from './analytics.actions';
-import { AnalyticsStateModel } from './analytics.model';
+import { ClearAnalytics, GetMetrics, GetRelatedCounts } from './analytics.actions';
+import { ANALYTICS_DEFAULT_STATE, AnalyticsStateModel } from './analytics.model';
 
 @State<AnalyticsStateModel>({
   name: 'analytics',
-  defaults: {
-    metrics: {
-      data: [],
-      isLoading: false,
-      error: '',
-    },
-    relatedCounts: {
-      data: [],
-      isLoading: false,
-      error: '',
-    },
-  },
+  defaults: ANALYTICS_DEFAULT_STATE,
 })
 @Injectable()
 export class AnalyticsState {
@@ -118,6 +107,11 @@ export class AnalyticsState {
       }),
       catchError((error) => this.handleError(ctx, 'relatedCounts', error))
     );
+  }
+
+  @Action(ClearAnalytics)
+  clearAnalytics(ctx: StateContext<AnalyticsStateModel>) {
+    ctx.patchState(ANALYTICS_DEFAULT_STATE);
   }
 
   private shouldRefresh(lastFetched: number | undefined): boolean {

@@ -1,6 +1,6 @@
-import { StringOrNull } from '@core/helpers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
+import { StringOrNull } from '@shared/helpers';
 import { LicenseOptions, OsfFile } from '@shared/models';
 
 export class SetSelectedPreprintProviderId {

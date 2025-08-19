@@ -10,7 +10,7 @@ import { BreadcrumbComponent } from '@core/components/breadcrumb/breadcrumb.comp
 import { FooterComponent } from '@core/components/footer/footer.component';
 import { HeaderComponent } from '@core/components/header/header.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
-import { IS_MEDIUM, IS_WEB } from '@shared/utils';
+import { IS_MEDIUM, IS_WEB } from '@osf/shared/helpers';
 
 @Component({
   selector: 'osf-root',

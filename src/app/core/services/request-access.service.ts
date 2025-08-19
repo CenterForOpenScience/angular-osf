@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from './json-api.service';
+import { JsonApiService } from '../../shared/services/json-api.service';
 
 import { environment } from 'src/environments/environment';
 

@@ -8,7 +8,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
-import { CustomValidators } from '@osf/shared/utils';
+import { CustomValidators } from '@osf/shared/helpers';
 
 @Component({
   selector: 'osf-rename-file-dialog',

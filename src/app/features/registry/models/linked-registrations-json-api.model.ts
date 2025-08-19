@@ -1,3 +1,4 @@
+import { MetaJsonApi } from '@osf/shared/models';
 import { RegistrationReviewStates } from '@shared/enums';
 
 export interface LinkedRegistrationJsonApi {
@@ -33,11 +34,7 @@ export interface LinkedRegistrationJsonApi {
 
 export interface LinkedRegistrationsJsonApiResponse {
   data: LinkedRegistrationJsonApi[];
-  meta: {
-    total: number;
-    per_page: number;
-    version: string;
-  };
+  meta: MetaJsonApi;
   links: {
     self: string;
     first: string | null;

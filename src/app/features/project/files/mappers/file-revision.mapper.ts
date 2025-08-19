@@ -1,6 +1,6 @@
-import { ApiData } from '@core/models';
 import { OsfFileRevision } from '@osf/features/project/files/models/osf-models/file-revisions.model';
 import { FileRevisionJsonApi } from '@osf/features/project/files/models/responses/get-file-revisions-response.model';
+import { ApiData } from '@shared/models';
 
 export function MapFileRevision(data: ApiData<FileRevisionJsonApi, null, null, null>[]): OsfFileRevision[] {
   return data.map((revision) => ({

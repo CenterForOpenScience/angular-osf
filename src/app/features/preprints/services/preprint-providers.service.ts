@@ -2,15 +2,14 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@core/services';
 import { PreprintProvidersMapper } from '@osf/features/preprints/mappers';
 import {
   PreprintProviderDetails,
   PreprintProviderDetailsJsonApi,
   PreprintProviderShortInfo,
 } from '@osf/features/preprints/models';
-import { SubjectModel, SubjectsResponseJsonApi } from '@shared/models';
+import { JsonApiResponse, SubjectModel, SubjectsResponseJsonApi } from '@shared/models';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 

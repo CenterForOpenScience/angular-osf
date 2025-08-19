@@ -2,6 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { authGuard } from '@osf/core/guards';
 import { RegistriesComponent } from '@osf/features/registries/registries.component';
 import { RegistriesState } from '@osf/features/registries/store';
 import { RegistriesProviderSearchState } from '@osf/features/registries/store/registries-provider-search';
@@ -30,22 +31,19 @@ export const registriesRoutes: Routes = [
         redirectTo: 'overview',
       },
       {
-        path: 'overview',
+        path: 'discover',
         loadComponent: () => import('@osf/features/registries/pages').then((c) => c.RegistriesLandingComponent),
       },
       {
-        path: 'overview/:name',
+        path: ':name',
         loadComponent: () =>
           import('@osf/features/registries/pages/registries-provider-search/registries-provider-search.component').then(
             (c) => c.RegistriesProviderSearchComponent
           ),
       },
       {
-        path: 'my-registrations',
-        loadComponent: () => import('@osf/features/registries/pages').then((c) => c.MyRegistrationsComponent),
-      },
-      {
         path: ':providerId/moderation',
+        canActivate: [authGuard],
         loadChildren: () =>
           import('@osf/features/moderation/registry-moderation.routes').then((c) => c.registryModerationRoutes),
       },
@@ -55,6 +53,7 @@ export const registriesRoutes: Routes = [
           import('./components/new-registration/new-registration.component').then(
             (mod) => mod.NewRegistrationComponent
           ),
+        canActivate: [authGuard],
       },
       {
         path: 'drafts',
@@ -83,6 +82,11 @@ export const registriesRoutes: Routes = [
         loadComponent: () =>
           import('./pages/justification/justification.component').then((mod) => mod.JustificationComponent),
         children: [
+          {
+            path: ':id',
+            redirectTo: ':id/review',
+            pathMatch: 'full',
+          },
           {
             path: ':id/justification',
             loadComponent: () =>

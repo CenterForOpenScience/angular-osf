@@ -33,6 +33,9 @@
                       @case (SubmissionReviewStatus.Pending) {
                         <p-tag class="capitalize" [value]="status" severity="warn"></p-tag>
                       }
+                      @case (SubmissionReviewStatus.InProgress) {
+                        <p-tag class="capitalize" [value]="SubmissionReviewStatus.Pending" severity="warn"></p-tag>
+                      }
                       @case (SubmissionReviewStatus.Removed) {
                         <p-tag class="capitalize" [value]="status" severity="secondary"></p-tag>
                       }

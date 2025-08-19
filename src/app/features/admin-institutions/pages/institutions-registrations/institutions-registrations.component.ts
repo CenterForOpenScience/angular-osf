@@ -7,7 +7,6 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, u
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 
-import { parseQueryFilterParams } from '@core/helpers';
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { registrationTableColumns } from '@osf/features/admin-institutions/constants';
 import { mapRegistrationToTableData } from '@osf/features/admin-institutions/mappers';
@@ -20,6 +19,7 @@ import { InstitutionsAdminSelectors } from '@osf/features/admin-institutions/sto
 import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { TABLE_PARAMS } from '@shared/constants';
 import { SortOrder } from '@shared/enums';
+import { parseQueryFilterParams } from '@shared/helpers';
 import { Institution, QueryParams } from '@shared/models';
 import { InstitutionsSearchSelectors } from '@shared/stores';
 

@@ -1,3 +1,5 @@
+import { MetaJsonApi } from '@osf/shared/models';
+
 export interface LinkedNodeJsonApi {
   id: string;
   type: 'nodes';
@@ -114,11 +116,7 @@ export interface LinkedNodeJsonApi {
 
 export interface LinkedNodesJsonApiResponse {
   data: LinkedNodeJsonApi[];
-  meta: {
-    total: number;
-    per_page: number;
-    version: string;
-  };
+  meta: MetaJsonApi;
   links: {
     self: string;
     first: string | null;

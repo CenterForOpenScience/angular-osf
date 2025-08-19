@@ -13,13 +13,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { Primitive } from '@osf/core/helpers';
 import {
   CustomPaginatorComponent,
   IconComponent,
   LoadingSpinnerComponent,
   SelectComponent,
 } from '@osf/shared/components';
+import { Primitive } from '@osf/shared/helpers';
 
 import { REGISTRY_SORT_OPTIONS, SUBMITTED_SUBMISSION_REVIEW_OPTIONS } from '../../constants';
 import { RegistrySort, SubmissionReviewStatus } from '../../enums';

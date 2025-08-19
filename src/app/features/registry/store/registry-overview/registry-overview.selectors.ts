@@ -1,11 +1,8 @@
 import { Selector } from '@ngxs/store';
 
-import {
-  RegistryInstitution,
-  RegistryOverview,
-  RegistrySchemaBlock,
-  RegistrySubject,
-} from '@osf/features/registry/models';
+import { ReviewAction } from '@osf/features/moderation/models';
+import { RegistryInstitution, RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
+import { PageSchema } from '@osf/shared/models';
 
 import { RegistryOverviewStateModel } from './registry-overview.model';
 import { RegistryOverviewState } from './registry-overview.state';
@@ -42,12 +39,27 @@ export class RegistryOverviewSelectors {
   }
 
   @Selector([RegistryOverviewState])
-  static getSchemaBlocks(state: RegistryOverviewStateModel): RegistrySchemaBlock[] | null {
+  static getSchemaBlocks(state: RegistryOverviewStateModel): PageSchema[] | null {
     return state.schemaBlocks.data;
   }
 
   @Selector([RegistryOverviewState])
   static isSchemaBlocksLoading(state: RegistryOverviewStateModel): boolean {
     return state.schemaBlocks.isLoading;
+  }
+
+  @Selector([RegistryOverviewState])
+  static getReviewActions(state: RegistryOverviewStateModel): ReviewAction[] {
+    return state.moderationActions.data;
+  }
+
+  @Selector([RegistryOverviewState])
+  static areReviewActionsLoading(state: RegistryOverviewStateModel): boolean {
+    return state.moderationActions.isLoading;
+  }
+
+  @Selector([RegistryOverviewState])
+  static isReviewActionSubmitting(state: RegistryOverviewStateModel): boolean {
+    return state.moderationActions.isSubmitting || false;
   }
 }

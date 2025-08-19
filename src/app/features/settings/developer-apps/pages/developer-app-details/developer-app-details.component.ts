@@ -16,8 +16,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CopyButtonComponent, IconComponent } from '@osf/shared/components';
+import { IS_XSMALL } from '@osf/shared/helpers';
 import { CustomConfirmationService } from '@osf/shared/services';
-import { IS_XSMALL } from '@osf/shared/utils';
 
 import { DeveloperAppAddEditFormComponent } from '../../components';
 import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, ResetClientSecret } from '../../store';

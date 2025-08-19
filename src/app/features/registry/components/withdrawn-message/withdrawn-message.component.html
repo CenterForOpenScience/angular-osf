@@ -1,0 +1,23 @@
+<p-card>
+  <div class="flex flex-column lg:flex-row">
+    <div class="flex flex-column lg:w-6">
+      <h2 class="mb-4 flex">
+        <osf-icon iconClass="text-red-500 fas fa-ban mr-2 text-4xl"></osf-icon>
+        {{ 'registry.withdrawn.title' | translate }}
+      </h2>
+      <div class="mb-3 w-6">
+        <h4>{{ 'registry.withdrawn.dateWithdrawn' | translate }}</h4>
+        <p>{{ registration().dateWithdrawn | date }}</p>
+      </div>
+      <div class="mb-3 w-6">
+        <h4>{{ 'registry.withdrawn.justificationLabel' | translate }}</h4>
+        <p>{{ registration().withdrawalJustification }}</p>
+      </div>
+    </div>
+    <p-divider layout="vertical" class="hidden lg:block" />
+    <p-divider class="lg:hidden" />
+    <div class="lg:w-6">
+      <osf-short-registration-info [registration]="registration()"></osf-short-registration-info>
+    </div>
+  </div>
+</p-card>

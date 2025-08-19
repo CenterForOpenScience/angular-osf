@@ -16,7 +16,7 @@
 
       <div class="py-5 flex flex-column gap-3">
         @for (institution of institutions(); track $index) {
-          <a [routerLink]="[institution.id]">
+          <a class="dark-blue-link" [routerLink]="[institution.id]">
             <div class="border-1 border-round-xl grey-border-color px-5 py-4 flex align-items-center gap-4">
               <img
                 class="fit-contain"

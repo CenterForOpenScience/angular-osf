@@ -1,5 +1,10 @@
-import { StringOrNull } from '@core/helpers';
-import { Brand } from '@shared/models';
+import { StringOrNull } from '@osf/shared/helpers';
+import { Brand } from '@osf/shared/models';
+
+import { ProviderReviewsWorkflow } from '../enums';
+
+export type PreprintWord = 'default' | 'work' | 'paper' | 'preprint' | 'thesis';
+export type PreprintWordGrammar = 'plural' | 'pluralCapitalized' | 'singular' | 'singularCapitalized';
 
 export interface PreprintProviderDetails {
   id: string;
@@ -9,15 +14,18 @@ export interface PreprintProviderDetails {
   examplePreprintId: string;
   domain: string;
   footerLinksHtml: string;
-  preprintWord: string;
+  preprintWord: PreprintWord;
   allowSubmissions: boolean;
   assertionsEnabled: boolean;
-  reviewsWorkflow: StringOrNull;
+  reviewsWorkflow: ProviderReviewsWorkflow | null;
   brand: Brand;
   lastFetched?: number;
   iri: string;
   faviconUrl: string;
   squareColorNoTransparentImageUrl: string;
+  facebookAppId: StringOrNull;
+  reviewsCommentsPrivate: StringOrNull;
+  reviewsCommentsAnonymous: StringOrNull;
 }
 
 export interface PreprintProviderShortInfo {

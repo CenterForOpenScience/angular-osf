@@ -1,74 +1,76 @@
-<osf-sub-header
-  [title]="'preprints.myPreprints.title' | translate"
-  [icon]="'preprints'"
-  [showButton]="true"
-  [buttonLabel]="'preprints.addPreprint' | translate: { preprintWord: 'preprint' | titlecase }"
-  (buttonClick)="addPreprintBtnClicked()"
-/>
-
-<section class="flex-1 flex flex-column bg-white p-3 md:p-4">
-  <osf-search-input
-    class="w-full"
-    [control]="searchControl"
-    [placeholder]="'preprints.myPreprints.searchPlaceholder' | translate"
+<div class="xl:flex xl:flex-column xl:mt-6 flex-1">
+  <osf-sub-header
+    [title]="'preprints.myPreprints.title' | translate"
+    [icon]="'preprints'"
+    [showButton]="true"
+    [buttonLabel]="'preprints.addPreprint' | translate: { preprintWord: 'preprint' | titlecase }"
+    (buttonClick)="addPreprintBtnClicked()"
   />
 
-  <p-table
-    class="mt-4"
-    [value]="areMyPreprintsLoading() ? skeletonData : preprints()"
-    [rows]="tableParams().rows"
-    [first]="tableParams().firstRowIndex"
-    [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
-    [paginator]="true"
-    [totalRecords]="tableParams().totalRecords"
-    paginatorDropdownAppendTo="body"
-    [resizableColumns]="true"
-    [autoLayout]="true"
-    [scrollable]="true"
-    [sortMode]="'single'"
-    [lazy]="true"
-    [lazyLoadOnInit]="true"
-    (onPage)="onPageChange($event)"
-    (onSort)="onSort($event)"
-    [sortField]="sortColumn()"
-    [sortOrder]="sortOrder() === 0 ? 1 : -1"
-    [customSort]="true"
-    [resetPageOnSort]="false"
-  >
-    <ng-template #header>
-      <tr>
-        <th pSortableColumn="title">
-          {{ 'preprints.myPreprints.table.titleLabel' | translate }}
-          <p-sortIcon field="title" />
-        </th>
-        <th>{{ 'preprints.myPreprints.table.contributorsLabel' | translate }}</th>
-        <th pSortableColumn="dateModified">
-          {{ 'preprints.myPreprints.table.modifiedLabel' | translate }}
-          <p-sortIcon field="dateModified" />
-        </th>
-      </tr>
-    </ng-template>
-    <ng-template #body let-item>
-      @if (item?.id) {
-        <tr class="cursor-pointer" (click)="navigateToPreprintDetails(item)">
-          <td>{{ item.title }}</td>
-          <td>
-            <osf-list-info-shortener [data]="item.contributors" />
-          </td>
-          <td>{{ item.dateModified | date: 'MMM d, y, h:mm a' }}</td>
+  <section class="flex-1 flex flex-column bg-white p-3 md:p-4">
+    <osf-search-input
+      class="w-full"
+      [control]="searchControl"
+      [placeholder]="'preprints.myPreprints.searchPlaceholder' | translate"
+    />
+
+    <p-table
+      class="mt-4"
+      [value]="areMyPreprintsLoading() ? skeletonData : preprints()"
+      [rows]="tableParams().rows"
+      [first]="tableParams().firstRowIndex"
+      [rowsPerPageOptions]="tableParams().rowsPerPageOptions"
+      [paginator]="true"
+      [totalRecords]="tableParams().totalRecords"
+      paginatorDropdownAppendTo="body"
+      [resizableColumns]="true"
+      [autoLayout]="true"
+      [scrollable]="true"
+      [sortMode]="'single'"
+      [lazy]="true"
+      [lazyLoadOnInit]="true"
+      (onPage)="onPageChange($event)"
+      (onSort)="onSort($event)"
+      [sortField]="sortColumn()"
+      [sortOrder]="sortOrder() === 0 ? 1 : -1"
+      [customSort]="true"
+      [resetPageOnSort]="false"
+    >
+      <ng-template #header>
+        <tr>
+          <th pSortableColumn="title">
+            {{ 'preprints.myPreprints.table.titleLabel' | translate }}
+            <p-sortIcon field="title" />
+          </th>
+          <th>{{ 'preprints.myPreprints.table.contributorsLabel' | translate }}</th>
+          <th pSortableColumn="dateModified">
+            {{ 'preprints.myPreprints.table.modifiedLabel' | translate }}
+            <p-sortIcon field="dateModified" />
+          </th>
         </tr>
-      } @else {
-        <tr class="loading-row">
-          <td colspan="4">
-            <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
-          </td>
+      </ng-template>
+      <ng-template #body let-item>
+        @if (item?.id) {
+          <tr class="cursor-pointer" (click)="navigateToPreprintDetails(item)">
+            <td>{{ item.title }}</td>
+            <td>
+              <osf-list-info-shortener [data]="item.contributors" />
+            </td>
+            <td>{{ item.dateModified | date: 'MMM d, y, h:mm a' }}</td>
+          </tr>
+        } @else {
+          <tr class="loading-row">
+            <td colspan="4">
+              <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+            </td>
+          </tr>
+        }
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="4" class="text-center">{{ 'common.search.noResultsFound' | translate }}</td>
         </tr>
-      }
-    </ng-template>
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td colspan="4" class="text-center">{{ 'common.search.noResultsFound' | translate }}</td>
-      </tr>
-    </ng-template>
-  </p-table>
-</section>
+      </ng-template>
+    </p-table>
+  </section>
+</div>

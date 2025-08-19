@@ -2,20 +2,24 @@
   <osf-breadcrumb />
 
   <div class="header-dropdown-button ml-auto">
-    <p-button
-      class="custom-dark-hover"
-      icon="fas fa-chevron-down"
-      iconPos="right"
-      variant="text"
-      severity="contrast"
-      [label]="currentUser()?.fullName"
-      (click)="menu.toggle($event)"
-    />
+    @if (currentUser()) {
+      <p-button
+        class="custom-dark-hover"
+        icon="fas fa-chevron-down"
+        iconPos="right"
+        variant="text"
+        severity="contrast"
+        [label]="currentUser()?.fullName"
+        (click)="menu.toggle($event)"
+      />
 
-    <p-menu appendTo="body" #menu [model]="items" popup>
-      <ng-template #item let-item>
-        <a class="p-menu-item-link">{{ item.label | translate }}</a>
-      </ng-template>
-    </p-menu>
+      <p-menu appendTo="body" #menu [model]="items" popup>
+        <ng-template #item let-item>
+          <a class="p-menu-item-link">{{ item.label | translate }}</a>
+        </ng-template>
+      </p-menu>
+    } @else {
+      <p-button [label]="'navigation.signIn' | translate" (onClick)="navigateToSignIn()"></p-button>
+    }
   </div>
 </header>

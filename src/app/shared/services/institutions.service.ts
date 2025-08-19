@@ -3,16 +3,16 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@core/services';
 import { GeneralInstitutionMapper, UserInstitutionsMapper } from '@shared/mappers';
 import {
   FetchInstitutionsJsonApi,
   GetGeneralInstitutionsResponse,
   Institution,
+  InstitutionJsonApiModel,
+  JsonApiResponse,
   UserInstitutionGetResponse,
 } from '@shared/models';
-import { InstitutionJsonApiModel } from '@shared/models/institutions/institution-json-api.model';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 

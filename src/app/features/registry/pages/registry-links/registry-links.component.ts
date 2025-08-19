@@ -157,7 +157,7 @@ export class RegistryLinksComponent implements OnInit {
   }
 
   navigateToNodes(id: string): void {
-    this.router.navigate(['/my-projects', id, 'overview']);
+    this.router.navigate(['/project', id, 'overview']);
   }
 
   fetchContributors(nodeId: string): void {

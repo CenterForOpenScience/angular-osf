@@ -10,11 +10,11 @@ import { Tag } from 'primeng/tag';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect } from '@angular/core';
 
+import { CitationSectionComponent } from '@osf/features/preprints/components/preprint-details/citation-section/citation-section.component';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { FetchLicenses, FetchPreprintProject, SubmitPreprint } from '@osf/features/preprints/store/preprint-stepper';
 import { ResourceType } from '@shared/enums';
 import { InterpolatePipe } from '@shared/pipes';
-import { FetchSelectedSubjects, GetAllContributors, SubjectsSelectors } from '@shared/stores';
+import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores';
 
 @Component({
   selector: 'osf-preprint-additional-info',
@@ -29,6 +29,7 @@ import { FetchSelectedSubjects, GetAllContributors, SubjectsSelectors } from '@s
     AccordionHeader,
     AccordionContent,
     InterpolatePipe,
+    CitationSectionComponent,
   ],
   templateUrl: './additional-info.component.html',
   styleUrl: './additional-info.component.scss',
@@ -36,11 +37,7 @@ import { FetchSelectedSubjects, GetAllContributors, SubjectsSelectors } from '@s
 })
 export class AdditionalInfoComponent {
   private actions = createDispatchMap({
-    getContributors: GetAllContributors,
     fetchSubjects: FetchSelectedSubjects,
-    fetchLicenses: FetchLicenses,
-    fetchPreprintProject: FetchPreprintProject,
-    submitPreprint: SubmitPreprint,
   });
 
   preprint = select(PreprintSelectors.getPreprint);

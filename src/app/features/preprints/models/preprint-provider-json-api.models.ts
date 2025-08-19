@@ -1,5 +1,9 @@
-import { StringOrNull } from '@core/helpers';
-import { BrandDataJsonApi } from '@shared/models';
+import { StringOrNull } from '@osf/shared/helpers';
+import { BrandDataJsonApi } from '@osf/shared/models';
+
+import { ProviderReviewsWorkflow } from '../enums';
+
+import { PreprintWord } from './preprint-provider.models';
 
 export interface PreprintProviderDetailsJsonApi {
   id: string;
@@ -11,7 +15,7 @@ export interface PreprintProviderDetailsJsonApi {
     example: string;
     domain: string;
     footer_links: string;
-    preprint_word: string;
+    preprint_word: PreprintWord;
     assets: {
       wide_white: string;
       square_color_no_transparent: string;
@@ -19,7 +23,10 @@ export interface PreprintProviderDetailsJsonApi {
     };
     allow_submissions: boolean;
     assertions_enabled: boolean;
-    reviews_workflow: StringOrNull;
+    reviews_workflow: ProviderReviewsWorkflow | null;
+    facebook_app_id: StringOrNull;
+    reviews_comments_private: StringOrNull;
+    reviews_comments_anonymous: StringOrNull;
   };
   embeds?: {
     brand: {

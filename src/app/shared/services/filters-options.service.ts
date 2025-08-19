@@ -2,8 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ApiData, JsonApiResponse } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
+import { JsonApiService } from '@osf/shared/services';
 
 import {
   MapCreators,
@@ -17,6 +16,7 @@ import {
   MapSubject,
 } from '../mappers';
 import {
+  ApiData,
   Creator,
   CreatorItem,
   DateCreated,
@@ -24,6 +24,7 @@ import {
   FunderIndexValueSearch,
   IndexValueSearch,
   InstitutionIndexValueSearch,
+  JsonApiResponse,
   LicenseFilter,
   LicenseIndexValueSearch,
   PartOfCollectionFilter,

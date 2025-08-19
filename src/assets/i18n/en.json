@@ -44,7 +44,9 @@
       "customize": "Customize",
       "createCustomCitation": "Create Custom Citation",
       "preview": "Preview",
-      "continueUpdate": "Continue Update"
+      "continueUpdate": "Continue Update",
+      "editAndResubmit": "Edit And Resubmit",
+      "createNewVersion": "Create New Version"
     },
     "search": {
       "title": "Search",
@@ -97,7 +99,13 @@
       "learnMore": "Learn More",
       "and": "and",
       "more": "more",
-      "data": "Data"
+      "data": "Data",
+      "forked": "Forked",
+      "lastUpdated": "Last Updated",
+      "contributors": "Contributors",
+      "updated": "Updated",
+      "dateUpdated": "Date Updated",
+      "dateCreated": "Date Created"
     },
     "deleteConfirmation": {
       "header": "Delete",
@@ -136,17 +144,20 @@
     "support": "Support",
     "meetings": "Meetings",
     "myProjects": "My Projects",
+    "projects": "Projects",
+    "myResources": "My Resources",
     "registries": "Registries",
+    "overview": "Overview",
+    "discover": "Discover",
     "registriesSubRoutes": {
-      "overview": "Overview",
       "myRegistrations": "My Registrations",
       "registryDetails": "Registry Details"
     },
     "preprints": "Preprints",
     "preprintsSubRoutes": {
-      "overview": "Overview",
       "myPreprints": "My Preprints",
-      "myReviewing": "My Reviewing"
+      "myReviewing": "My Reviewing",
+      "preprintDetails": "Preprint details"
     },
     "collections": "Collections",
     "moderation": "Moderation",
@@ -157,30 +168,18 @@
     "notifications": "Notifications",
     "developerApps": "Developer Apps",
     "personalAccessTokens": "Personal Access Tokens",
-    "project": {
-      "details": "Project details",
-      "overview": "Overview",
-      "metadata": "Metadata",
-      "files": "Files",
-      "wiki": "Wiki",
-      "registrations": "Registrations",
-      "settings": "Settings",
-      "contributors": "Contributors",
-      "analytics": "Analytics",
-      "addons": "Add-ons"
-    },
-    "registration": {
-      "details": "Registry details",
-      "overview": "Overview",
-      "metadata": "Metadata",
-      "files": "Files",
-      "resources": "Resources",
-      "wiki": "Wiki",
-      "components": "Components",
-      "contributors": "Contributors",
-      "links": "Links",
-      "analytics": "Analytics"
-    },
+    "projectDetails": "Project details",
+    "registryDetails": "Registry details",
+    "metadata": "Metadata",
+    "files": "Files",
+    "wiki": "Wiki",
+    "registrations": "Registrations",
+    "contributors": "Contributors",
+    "analytics": "Analytics",
+    "addons": "Add-ons",
+    "resources": "Resources",
+    "components": "Components",
+    "links": "Links",
     "institutions": "Institutions"
   },
   "auth": {
@@ -444,15 +443,16 @@
     }
   },
   "myProfile": {
-    "editProfile": "Edit Profile"
+    "editProfile": "Edit Profile",
+    "memberSince": "Member since"
   },
   "project": {
     "analytics": {
       "kpi": {
-        "forks": "Forks",
+        "forks": "Duplicates",
         "linksToThisProject": "Links to this project",
         "templateCopies": "Template copies",
-        "viewForks": "View forks",
+        "viewForks": "View duplicates",
         "viewLinks": "View links"
       },
       "charts": {
@@ -626,7 +626,7 @@
           "header": "Make Project Private",
           "confirmButton": "Make Private",
           "cancelButton": "Cancel",
-          "message": "<ul><li>&#8226; Public forks and registrations of this project will remain public.</li><li>&#8226; Search engines (including Google's cache) or others may have accessed files, wiki pages, or analytics while this project was public.</li><li>&#8226; The project will automatically be removed from any collections. Any pending requests will be cancelled.</li></ul><br/>"
+          "message": "<ul><li>&#8226; Public duplicates and registrations of this project will remain public.</li><li>&#8226; Search engines (including Google's cache) or others may have accessed files, wiki pages, or analytics while this project was public.</li><li>&#8226; The project will automatically be removed from any collections. Any pending requests will be cancelled.</li></ul><br/>"
         },
         "toast": {
           "makePublic": {
@@ -645,7 +645,7 @@
             "success": "Node link has been deleted successfully"
           },
           "fork": {
-            "success": "Project has been forked successfully"
+            "success": "Project has been duplicated successfully"
           },
           "duplicate": {
             "success": "Project has been duplicated successfully"
@@ -702,12 +702,14 @@
           "message": "Are you sure you want to delete this link? This will not remove the project or registration this link refers to."
         },
         "fork": {
-          "headerProject": "Fork This Project",
-          "headerRegistry": "Fork This Registry",
-          "confirmButton": "Fork",
+          "headerProject": "Duplicate This Project",
+          "headerRegistry": "Duplicate This Registry",
+          "forksMessage": "Duplicates you have permission to view are shown here.",
+          "noForksMessage": "No duplicates found",
+          "confirmButton": "Duplicate",
           "cancelButton": "Cancel",
-          "messageProject": "Are you sure you want to fork this project?",
-          "messageRegistry": "Are you sure you want to fork this registry?"
+          "messageProject": "Are you sure you want to duplicate this project (with files)?",
+          "messageRegistry": "Are you sure you want to duplicate this registry (with files)?"
         },
         "duplicate": {
           "header": "Duplicate Template",
@@ -721,11 +723,12 @@
         "manageContributors": "Manage Contributors",
         "settings": "Settings",
         "delete": "Delete",
-        "forkProject": "Fork this project",
-        "forkRegistry": "Fork this registry",
+        "forkProject": "Duplicate project (with files)",
+        "forkProjectLabel": "Duplicate project",
+        "forkRegistry": "Duplicate this registration",
         "forkResource": "Fork this resource",
-        "duplicateProject": "Duplicate this project",
-        "viewDuplication": "View forks",
+        "duplicateProject": "Duplicate project (structure only)",
+        "viewDuplication": "View duplicates",
         "socials": {
           "email": "Email",
           "x": "X",
@@ -1183,16 +1186,26 @@
       "requestSubmitted": "Request submitted",
       "acceptRequest": "Accept request",
       "rejectRequest": "Reject request",
+      "acceptUpdate": "Accept update",
+      "rejectUpdate": "Reject update",
       "withdrawRequest": "Withdraw Request",
+      "forceWithdraw": "Force Withdraw",
+      "forceWithdrawMessage": "Registration will be withdrawn but still have a tombstone page with a justification for withdrawal and a subset of the metadata available",
       "acceptRequestMessage": "Submission will appear in search results and will be associated with the collection.",
       "rejectRequestMessage": "Submission will not appear in search results nor will be associated with the collection.",
+      "acceptUpdateMessage": "Update will be accepted and registration will be updated",
+      "rejectUpdateMessage": "Update will be rejected and registration will remain unchanged",
       "withdrawRequestMessage": "Submission will be withdrawn from the collection and will no longer appear in search results.",
-      "remarksPlaceholder": "Add remarks to project admins (optional)",
+      "remarksPlaceholder": "Add remarks to registration admins (optional)",
       "submitDecision": "Submit decision",
       "goBackLink": "< Back to list of submissions",
       "acceptSuccess": "Submission has been accepted successfully",
       "rejectSuccess": "Submission has been rejected successfully",
-      "removeSuccess": "Submission has been withdrawn successfully"
+      "acceptSubmissionSuccess": "Submission has been accepted successfully",
+      "rejectSubmissionSuccess": "Submission has been rejected successfully",
+      "forceWithdrawSuccess": "Submission has been force withdrawn successfully",
+      "removeSuccess": "Submission has been withdrawn successfully",
+      "justificationPlaceholder": "Provide justification for withdrawal"
     },
     "submissionReview": {
       "submitted": "Submitted",
@@ -1200,7 +1213,8 @@
       "rejected": "Rejected",
       "requested": "Requested",
       "withdrawn": "Withdrawn",
-      "by": "by"
+      "by": "by",
+      "embargoEnding": "with embargo ending"
     },
     "preprintReviewStatus": {
       "submitted": "submitted a preprint \"{{name}}\" to",
@@ -1924,6 +1938,7 @@
           "metadata": {
             "title": "Metadata",
             "contributors": "Contributors",
+            "authors": "Authors",
             "affiliatedInstitutions": "Affiliated Institutions",
             "license": "License",
             "publicationDoi": "Publication DOI",
@@ -1980,7 +1995,93 @@
         "contributorsLabel": "Contributors",
         "modifiedLabel": "Modified"
       }
-    }
+    },
+    "documentType": {
+      "default": {
+        "plural": "documents",
+        "pluralCapitalized": "Documents",
+        "singular": "document",
+        "singularCapitalized": "Document"
+      },
+      "work": {
+        "plural": "works",
+        "pluralCapitalized": "Works",
+        "singular": "work",
+        "singularCapitalized": "Work"
+      },
+      "paper": {
+        "plural": "papers",
+        "pluralCapitalized": "Papers",
+        "singular": "paper",
+        "singularCapitalized": "Paper"
+      },
+      "preprint": {
+        "plural": "preprints",
+        "pluralCapitalized": "Preprints",
+        "singular": "preprint",
+        "singularCapitalized": "Preprint"
+      },
+      "thesis": {
+        "plural": "theses",
+        "pluralCapitalized": "Theses",
+        "singular": "thesis",
+        "singularCapitalized": "Thesis"
+      }
+    },
+    "details": {
+      "doi": {
+        "title": "{{documentType}} DOI",
+        "pendingDoiMinted": "DOIs are minted by a third party, and may take up to 24 hours to be registered.",
+        "pendingDoi": "DOI created after {{documentType}} is made public",
+        "pendingDoiModeration": "DOI created after moderator approval",
+        "noDoi": "No DOI"
+      },
+      "file": {
+        "version": "Version: {{version}}",
+        "downloadVersion": "Version {{version}}, {{date}}",
+        "downloadPreviousVersion": "Download previous version",
+        "lastEdited": "Last edited",
+        "submitted": "Submitted",
+        "created": "Created"
+      },
+      "share": {
+        "views": "Views",
+        "downloads": "Downloads",
+        "downloadPreprint": "Download {{documentType}}"
+      },
+      "statusBanner": {
+        "pending": "Pending",
+        "accepted": "Accepted",
+        "rejected": "Rejected",
+        "pendingWithdrawal": "Pending withdrawal",
+        "withdrawalRejected": "Withdrawal rejected",
+        "messages": {
+          "base": "{{name}} uses {{workflow}}. This {{documentType}}",
+          "pendingPreModeration": "is not publicly available or searchable until approved by a moderator.",
+          "pendingPostModeration": "is publicly available and searchable but is subject to removal by a moderator.",
+          "accepted": "has been accepted by a moderator and is publicly available and searchable.",
+          "rejected": "has been rejected by a moderator and is not publicly available or searchable.",
+          "pendingWithdrawal": "This {{documentType}} has been requested by the authors to be withdrawn. It will still be publicly searchable until the request has been approved.",
+          "withdrawalRejected": "Your request to withdraw this {{documentType}} from the service has been denied by the moderator.",
+          "withdrawn": "This {{documentType}} has been withdrawn."
+        },
+        "moderator": "Moderator",
+        "moderatorFeedback": "Moderator Feedback",
+        "showModeratorFeedback": "Show moderator feedback"
+      },
+      "withdrawDialog": {
+        "title": "Withdraw {{preprintWord}}",
+        "withdrawalExplanation": "You are about to withdraw this version of your {{singularPreprintWord}}. Withdrawing a version will remove it from public view but will not affect other versions of this {{singularPreprintWord}}, if available.",
+        "justificationInputLabel": "Reason for withdrawal",
+        "justificationInputError": "Comment must be at least {{length}} characters.",
+        "preModerationNoticePending": "Since this version is still pending approval and private, it can be withdrawn immediately. The reason of withdrawal will be visible to service moderators. Once withdrawn, the {{singularPreprintWord}} will remain private and never be made public.",
+        "preModerationNoticeAccepted": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This service uses pre-moderation. This request will be submitted to service moderators for review. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal.",
+        "postModerationNotice": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This service uses post-moderation. This request will be submitted to service moderators for review. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal.",
+        "noModerationNotice": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This request will be submitted to <a href=\"mailto:{{supportEmail}}\" target=\"_blank\">{{supportEmail}}</a> for review and removal. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal."
+      }
+    },
+    "preprintContributorsWarning": "Warning: Changing your permissions will prevent you from editing your draft.",
+    "addContributorBySearch": "Add Contributor By Search"
   },
   "registries": {
     "title": "Registries",
@@ -2049,6 +2150,7 @@
       "noUpdates": "No responses updated",
       "noData": "No justification provided.",
       "deleteUpdates": "Delete Draft Update",
+      "successDeleteDraft": "Draft update successfully deleted.",
       "submitChanges": "Submit Changes",
       "acceptChanges": "Accept Changes",
       "decisionRecorded": "Your decision has been recorded.",
@@ -2063,7 +2165,8 @@
         "header": "Are you sure this needs more edits?",
         "message": "This will cancel any approvals from other admin contributors and return the registration back to its draft form for additional changes.",
         "label": "What additional changes need to be made and why?"
-      }
+      },
+      "caution": "Caution: Only one person is able to edit a registration draft at a time. Be sure to coordinate with any other contributors."
     }
   },
   "registry": {
@@ -2114,11 +2217,6 @@
           "short": "Pending withdrawal moderation",
           "long": "This registration is waiting for approval to be withdrawn by registry moderators."
         },
-        "unapproved": {
-          "text": "Update pending",
-          "short": "Update pending approval",
-          "long": "This registration has an update that is waiting for approval from its contributors. Updates will be made available once approved."
-        },
         "inProgress": {
           "text": "Update in progress",
           "short": "Updates being made",
@@ -2128,6 +2226,11 @@
           "text": "Update pending review",
           "short": "Update pending moderator approval",
           "long": "This registration has an update that is waiting for moderation. Updates will be made available once approved."
+        },
+        "updatePendingApproval": {
+          "text": "Update pending",
+          "short": "Update pending approval",
+          "long": "This registration has an update that is waiting for approval from its contributors. Updates will be made available once approved."
         }
       },
       "metadata": {
@@ -2137,7 +2240,11 @@
         "associatedProject": "Associated project"
       },
       "original": "Original",
-      "latest": "Latest"
+      "latest": "Latest",
+      "update": "Update {{version}}",
+      "reviewUpdate": "Review Update",
+      "updateReason": "Reason for update:",
+      "updatedRevisionDescription": "This is an update to the original registration. This update was made on "
     },
     "links": {
       "viewLinksProjectsAndComponents": "View for Linked projects and Components",
@@ -2155,6 +2262,11 @@
       "description": "Changes to any files (1) in the projects or components being registered, (2) uploaded or selected as prompt responses, including those connected through add-ons during archiving will result in archiving failure and loss of your registration timestamp. Please do not modify your files until after you have received email confirmation of archiving completion. If this registration has been archiving for more than 72 hours, please email ",
       "descriptionEnd": " for assistance.",
       "createdDate": "Date created"
+    },
+    "withdrawn": {
+      "title": "This registration has been withdrawn for the reason(s) stated below.",
+      "dateWithdrawn": "Date withdrawn",
+      "justificationLabel": "Justification for withdrawal"
     }
   },
   "truncatedText": {
@@ -2223,7 +2335,9 @@
       "pendingWithdraw": "Pending withdrawal",
       "unapproved": "Unapproved",
       "inProgress": "Update in progress",
-      "pendingModeration": "Pending moderation"
+      "pendingModeration": "Pending moderation",
+      "withdrawn": "Withdrawn",
+      "updatePendingApproval": "Update pending approval"
     }
   },
   "resourceCard": {
@@ -2345,7 +2459,8 @@
       "sendMessage": "Send message",
       "osfLink": "OSF Link",
       "orcid": "ORCID",
-      "noData": "No users found"
+      "noData": "No users found",
+      "messageSent": "Message has been sent."
     },
     "projects": {
       "title": "Title",

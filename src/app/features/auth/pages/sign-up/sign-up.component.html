@@ -4,7 +4,13 @@
 
     <form [formGroup]="signUpForm" class="mt-6" (ngSubmit)="onSubmit()">
       <div class="flex flex-column gap-3">
-        <p-button class="btn-full-width" [label]="'auth.signUp.social.orcid' | translate" variant="text" raised>
+        <p-button
+          class="btn-full-width"
+          [label]="'auth.signUp.social.orcid' | translate"
+          variant="text"
+          raised
+          (onClick)="navigateToOrcidSingIn()"
+        >
           <img ngSrc="assets/images/orcid.svg" alt="Orchid icon" height="20" width="20" />
         </p-button>
 
@@ -14,6 +20,7 @@
           variant="text"
           raised
           icon="fas fa-landmark fa-lg"
+          (onClick)="navigateToInstitutionSingIn()"
         >
         </p-button>
       </div>

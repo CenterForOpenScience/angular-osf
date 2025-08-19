@@ -12,4 +12,7 @@ export const formInputLimits = {
   citation: {
     maxLength: 500,
   },
+  withdrawalJustification: {
+    minLength: 25,
+  },
 };

@@ -1,8 +1,8 @@
-import { JsonApiResponseWithPaging } from '@core/models';
 import {
   CollectionSubmissionReviewAction,
   CollectionSubmissionReviewActionJsonApi,
 } from '@osf/features/moderation/models';
+import { convertToSnakeCase } from '@osf/shared/helpers';
 import {
   CollectionContributor,
   CollectionContributorJsonApi,
@@ -17,10 +17,8 @@ import {
   CollectionSubmissionWithGuid,
   CollectionSubmissionWithGuidJsonApi,
   PaginatedData,
-  ReviewActionPayload,
-  ReviewActionPayloadJsonApi,
+  ResponseJsonApi,
 } from '@osf/shared/models';
-import { convertToSnakeCase } from '@shared/utils';
 
 export class CollectionsMapper {
   static fromGetCollectionContributorsResponse(response: CollectionContributorJsonApi[]): CollectionContributor[] {
@@ -109,7 +107,7 @@ export class CollectionsMapper {
   }
 
   static fromGetCollectionSubmissionsResponse(
-    response: JsonApiResponseWithPaging<CollectionSubmissionWithGuidJsonApi[], null>
+    response: ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>
   ): PaginatedData<CollectionSubmissionWithGuid[]> {
     return {
       data: response.data.map((submission) => ({
@@ -141,7 +139,7 @@ export class CollectionsMapper {
             }
           : undefined,
       })),
-      totalCount: response.links.meta.total,
+      totalCount: response.meta.total,
     };
   }
 
@@ -214,26 +212,6 @@ export class CollectionsMapper {
             data: {
               type: 'users',
               id: payload.userId,
-            },
-          },
-        },
-      },
-    };
-  }
-
-  static toReviewActionPayloadJsonApi(payload: ReviewActionPayload): ReviewActionPayloadJsonApi {
-    return {
-      data: {
-        type: 'collection_submission_actions',
-        attributes: {
-          trigger: payload.action,
-          comment: payload.comment,
-        },
-        relationships: {
-          target: {
-            data: {
-              type: 'collection-submissions',
-              id: payload.targetId,
             },
           },
         },

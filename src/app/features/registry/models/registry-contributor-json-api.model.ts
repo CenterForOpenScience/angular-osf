@@ -1,3 +1,5 @@
+import { MetaJsonApi } from '@osf/shared/models';
+
 export interface RegistryContributorJsonApi {
   id: string;
   type: 'contributors';
@@ -73,9 +75,7 @@ export interface RegistryContributorJsonApiResponse {
   links: {
     self: string;
   };
-  meta: {
-    version: string;
-  };
+  meta: MetaJsonApi;
 }
 
 export interface RegistryContributorUpdateRequest {
@@ -84,24 +84,6 @@ export interface RegistryContributorUpdateRequest {
     type: 'contributors';
     attributes: Record<string, unknown>;
     relationships: Record<string, unknown>;
-  };
-}
-
-export interface RegistryContributorsListJsonApiResponse {
-  data: RegistryContributorJsonApi[];
-  links: {
-    first: string | null;
-    last: string | null;
-    prev: string | null;
-    next: string | null;
-    meta: {
-      total: number;
-      per_page: number;
-      total_bibliographic: number;
-    };
-  };
-  meta: {
-    version: string;
   };
 }
 

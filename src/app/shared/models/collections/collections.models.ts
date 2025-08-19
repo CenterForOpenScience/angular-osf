@@ -108,3 +108,7 @@ export interface CollectionSubmissionWithGuid {
   };
   actions?: CollectionSubmissionReviewAction[];
 }
+
+export type CollectionSubmissionActionType = 'collection_submission_actions';
+
+export type CollectionSubmissionTargetType = 'collection-submissions';

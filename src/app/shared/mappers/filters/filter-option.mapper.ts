@@ -1,4 +1,4 @@
-import { ApiData } from '@osf/core/models';
+import { ApiData } from '@osf/shared/models';
 import { FilterOptionAttributes, SelectOption } from '@shared/models';
 
 export type FilterOptionItem = ApiData<FilterOptionAttributes, null, null, null>;

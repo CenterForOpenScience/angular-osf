@@ -1,4 +1,4 @@
-<osf-sub-header [title]="'navigation.project.analytics' | translate"></osf-sub-header>
+<osf-sub-header [title]="'navigation.analytics' | translate"></osf-sub-header>
 
 <section class="flex flex-column bg-white flex-1 h-full p-5 gap-4">
   <div class="flex align-items-center justify-content-end">
@@ -70,6 +70,7 @@
       [value]="relatedCounts()?.forksCount"
       [showButton]="true"
       [buttonLabel]="'project.analytics.kpi.viewForks'"
+      (buttonClick)="navigateToDuplicates()"
     ></osf-analytics-kpi>
 
     <osf-analytics-kpi

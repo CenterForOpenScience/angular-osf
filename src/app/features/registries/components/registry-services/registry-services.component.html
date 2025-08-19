@@ -8,7 +8,7 @@
     @for (registryService of registryServices; track $index) {
       <a
         class="registry-service-item"
-        [routerLink]="[registryService.id]"
+        [routerLink]="['/registries', registryService.id]"
         [style.background-image]="'url(' + registryService.src + ')'"
         [title]="registryService.id"
       ></a>

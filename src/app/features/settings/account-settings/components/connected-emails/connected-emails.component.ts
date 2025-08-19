@@ -14,8 +14,8 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { ReadonlyInputComponent } from '@osf/shared/components';
+import { IS_SMALL } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
-import { IS_SMALL } from '@osf/shared/utils';
 
 import { AccountEmail } from '../../models';
 import { AccountSettingsSelectors, DeleteEmail, MakePrimary, ResendConfirmation } from '../../store';

@@ -1,70 +1,61 @@
-import { Store } from '@ngxs/store';
+import { TranslatePipe } from '@ngx-translate/core';
 
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
-
-import { Confirmation, ConfirmationService } from 'primeng/api';
+import { Button } from 'primeng/button';
+import { Card } from 'primeng/card';
+import { Skeleton } from 'primeng/skeleton';
 
 import { of } from 'rxjs';
 
-import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
+import { RouterLink } from '@angular/router';
+
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 import { TokenModel } from '../../models';
-import { DeleteToken } from '../../store';
 
 import { TokensListComponent } from './tokens-list.component';
+
+jest.mock('@core/store/user', () => ({}));
+jest.mock('@osf/shared/stores/collections', () => ({}));
+jest.mock('@osf/shared/stores/addons', () => ({}));
+jest.mock('@osf/features/settings/tokens/store', () => ({}));
+
+const mockGetTokens = jest.fn();
+const mockDeleteToken = jest.fn(() => of(void 0));
+
+jest.mock('@ngxs/store', () => {
+  return {
+    createDispatchMap: jest.fn(() => ({
+      getTokens: mockGetTokens,
+      deleteToken: mockDeleteToken,
+    })),
+    select: (selectorFn: any) => {
+      const name = selectorFn?.name;
+      if (name === 'isTokensLoading') return of(false);
+      if (name === 'getTokens') return of([]);
+      return of(undefined);
+    },
+  };
+});
 
 describe('TokensListComponent', () => {
   let component: TokensListComponent;
   let fixture: ComponentFixture<TokensListComponent>;
-  let store: Partial<Store>;
-  let confirmationService: Partial<ConfirmationService>;
 
-  const mockTokens: TokenModel[] = [
-    {
-      id: '1',
-      name: 'Test Token 1',
-      tokenId: 'token1',
-      scopes: ['read', 'write'],
-      ownerId: 'user1',
-    },
-    {
-      id: '2',
-      name: 'Test Token 2',
-      tokenId: 'token2',
-      scopes: ['read'],
-      ownerId: 'user1',
-    },
-  ];
+  const mockConfirmationService = {
+    confirmDelete: jest.fn(),
+  };
+
+  const mockToastService = {
+    showSuccess: jest.fn(),
+  };
 
   beforeEach(async () => {
-    store = {
-      dispatch: jest.fn().mockReturnValue(of(undefined)),
-      selectSignal: jest.fn().mockReturnValue(signal(mockTokens)),
-    };
-
-    confirmationService = {
-      confirm: jest.fn(),
-    };
-
     await TestBed.configureTestingModule({
-      imports: [TokensListComponent, MockPipe(TranslatePipe)],
+      imports: [TokensListComponent, TranslatePipe, Button, Card, Skeleton, RouterLink],
       providers: [
-        MockProvider(TranslateService),
-        MockProvider(Store, store),
-        MockProvider(ConfirmationService, confirmationService),
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              params: {},
-              queryParams: {},
-            },
-          },
-        },
+        { provide: CustomConfirmationService, useValue: mockConfirmationService },
+        { provide: ToastService, useValue: mockToastService },
       ],
     }).compileComponents();
 
@@ -73,53 +64,33 @@ describe('TokensListComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create the component', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should not load tokens on init if they already exist', () => {
-    component.ngOnInit();
-    expect(store.dispatch).not.toHaveBeenCalled();
+  it('should dispatch getTokens on init', () => {
+    expect(mockGetTokens).toHaveBeenCalled();
   });
 
-  it('should display tokens in the list', () => {
-    const tokenElements = fixture.debugElement.queryAll(By.css('p-card'));
-    expect(tokenElements.length).toBe(mockTokens.length);
-  });
+  it('should call confirmDelete and deleteToken, then showSuccess', () => {
+    const token: TokenModel = { id: 'abc123', name: 'My Token' } as TokenModel;
 
-  it('should show token names in the list', () => {
-    const tokenNames = fixture.debugElement.queryAll(By.css('h2'));
-    expect(tokenNames[0].nativeElement.textContent).toBe(mockTokens[0].name);
-    expect(tokenNames[1].nativeElement.textContent).toBe(mockTokens[1].name);
-  });
-
-  it('should show confirmation dialog when deleting token', () => {
-    const token = mockTokens[0];
-    component.deleteToken(token);
-    expect(confirmationService.confirm).toHaveBeenCalled();
-  });
-
-  it('should dispatch delete action when confirmation is accepted', () => {
-    const token = mockTokens[0];
-    (confirmationService.confirm as jest.Mock).mockImplementation((config: Confirmation) => {
-      if (config.accept) {
-        config.accept();
-      }
-      return confirmationService;
+    mockConfirmationService.confirmDelete.mockImplementation((config: any) => {
+      config.onConfirm();
     });
-    component.deleteToken(token);
-    expect(store.dispatch).toHaveBeenCalledWith(new DeleteToken(token.id));
-  });
 
-  it('should not dispatch delete action when confirmation is rejected', () => {
-    const token = mockTokens[0];
-    (confirmationService.confirm as jest.Mock).mockImplementation((config: Confirmation) => {
-      if (config.reject) {
-        config.reject();
-      }
-      return confirmationService;
-    });
     component.deleteToken(token);
-    expect(store.dispatch).not.toHaveBeenCalledWith(new DeleteToken(token.id));
+
+    expect(mockConfirmationService.confirmDelete).toHaveBeenCalledWith(
+      expect.objectContaining({
+        headerKey: 'settings.tokens.confirmation.delete.title',
+        messageKey: 'settings.tokens.confirmation.delete.message',
+        headerParams: { name: token.name },
+        onConfirm: expect.any(Function),
+      })
+    );
+
+    expect(mockDeleteToken).toHaveBeenCalledWith(token.id);
+    expect(mockToastService.showSuccess).toHaveBeenCalledWith('settings.tokens.toastMessage.successDelete');
   });
 });

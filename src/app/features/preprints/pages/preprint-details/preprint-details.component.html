@@ -1,41 +1,74 @@
-<section class="flex flex-column py-5 px-3 gap-4 md:py-6 md:px-4">
-  <div class="flex flex-column gap-3 md:flex-row">
-    @if (isPreprintProviderLoading() || isPreprintLoading()) {
-      <p-skeleton width="4rem" height="2.25rem" />
-      <p-skeleton width="12rem" height="2.25rem" />
-    } @else {
-      <img alt="Provider Logo" height="36" [src]="preprintProvider()!.brand.heroLogoImageUrl" />
-      <h1>{{ preprint()!.title }}</h1>
+<div class="flex-column xl:mt-6 flex-1">
+  <section class="flex flex-column py-5 px-3 gap-4 md:py-6 md:px-4">
+    <div class="flex flex-column gap-3 md:flex-row">
+      @if (isPreprintProviderLoading() || isPreprintLoading()) {
+        <p-skeleton width="4rem" height="2.25rem" />
+        <p-skeleton width="12rem" height="2.25rem" />
+      } @else {
+        <img alt="Provider Logo" height="36" [src]="preprintProvider()!.brand.heroLogoImageUrl" />
+        <h1>{{ preprint()!.title }}</h1>
+      }
+    </div>
+
+    <div class="flex flex-column justify-content-end gap-2 md:flex-row">
+      @if (isPreprintLoading() || isPreprintProviderLoading() || areContributorsLoading()) {
+        <p-skeleton width="10rem" height="2.25rem" />
+        <p-skeleton width="10rem" height="2.25rem" />
+        <p-skeleton width="10rem" height="2.25rem" />
+      } @else {
+        @if (editButtonVisible()) {
+          <p-button
+            class="w-full md:w-11rem"
+            styleClass="w-full"
+            [label]="editButtonLabel() | translate"
+            (click)="editPreprintClicked()"
+          />
+        }
+        @if (createNewVersionButtonVisible()) {
+          <p-button
+            class="w-full md:w-11rem"
+            styleClass="w-full"
+            [label]="'common.buttons.createNewVersion' | translate"
+            (click)="createNewVersionClicked()"
+          />
+        }
+        @if (withdrawalButtonVisible()) {
+          <p-button
+            class="w-full md:w-11rem"
+            styleClass="w-full"
+            [label]="'common.buttons.withdraw' | translate"
+            severity="danger"
+            (click)="handleWithdrawClicked()"
+          />
+        }
+      }
+    </div>
+  </section>
+
+  <section class="flex-1 flex flex-column gap-2 bg-white py-2 px-3 md:px-4">
+    @if (statusBannerVisible()) {
+      <osf-preprint-status-banner
+        [provider]="preprintProvider()!"
+        [latestAction]="latestAction()"
+        [isPendingWithdrawal]="isPendingWithdrawal()"
+        [isWithdrawalRejected]="isWithdrawalRejected()"
+      />
     }
-  </div>
 
-  <div class="flex flex-column justify-content-end gap-2 md:flex-row">
-    <p-button class="w-full md:w-11rem" styleClass="w-full" label="Edit" (click)="editPreprintClicked()" />
-    <p-button
-      class="w-full md:w-11rem"
-      styleClass="w-full"
-      label="Create New Version"
-      (click)="createNewVersionClicked()"
-    />
-    <p-button class="w-full md:w-11rem" styleClass="w-full" label="Withdraw" severity="danger" />
-  </div>
-</section>
+    @if (!preprint()?.dateWithdrawn) {
+      <section class="flex-1 flex flex-column gap-4 align-items-start lg:flex-row">
+        <section class="w-12 lg:w-6">
+          <osf-preprint-file-section [providerReviewsWorkflow]="preprintProvider()?.reviewsWorkflow || null" />
+        </section>
 
-<section class="flex-1 flex flex-column gap-2 bg-white py-2 px-3 md:px-4">
-  <section class="w-full bg-yellow-100 p-3">
-    <!-- [RNi] TODO: implement status banner component -->
-    <p>Status banner here</p>
+        <section class="flex flex-column gap-4 w-12 lg:w-6">
+          <osf-preprint-share-and-download [preprintProvider]="preprintProvider()" />
+          <osf-preprint-general-information [preprintProvider]="preprintProvider()" />
+          <osf-preprint-additional-info />
+        </section>
+      </section>
+    } @else {
+      <osf-preprint-tombstone [preprintProvider]="preprintProvider()" class="lg:w-6" />
+    }
   </section>
-
-  <section class="flex-1 flex flex-column gap-4 align-items-start lg:flex-row">
-    <section class="w-12 lg:w-6">
-      <osf-preprint-file-section />
-    </section>
-
-    <section class="flex flex-column gap-4 w-12 lg:w-6">
-      <osf-preprint-share-and-download />
-      <osf-preprint-general-information />
-      <osf-preprint-additional-info />
-    </section>
-  </section>
-</section>
+</div>

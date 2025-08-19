@@ -112,8 +112,8 @@ export class WikiListComponent {
 
   private navigateTo(wikiId: string, componentId?: string) {
     if (componentId) {
-      this.router.navigateByUrl('/my-projects').then(() => {
-        this.router.navigate(['/my-projects', componentId, 'wiki'], {
+      this.router.navigateByUrl('/project').then(() => {
+        this.router.navigate(['/project', componentId, 'wiki'], {
           queryParams: { wiki: wikiId },
         });
       });

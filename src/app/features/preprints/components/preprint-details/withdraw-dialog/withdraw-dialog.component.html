@@ -1,0 +1,52 @@
+<div>
+  <p>
+    {{
+      'preprints.details.withdrawDialog.withdrawalExplanation'
+        | translate: { singularPreprintWord: documentType.singular }
+    }}
+  </p>
+  <p [innerHTML]="modalExplanation()"></p>
+</div>
+
+<div class="flex flex-column m-t-24">
+  <label for="withdrawalJustification">{{
+    'preprints.details.withdrawDialog.justificationInputLabel' | translate | titlecase
+  }}</label>
+  <textarea
+    pTextarea
+    id="withdrawalJustification"
+    [rows]="4"
+    [formControl]="withdrawalJustificationFormControl"
+  ></textarea>
+  @let control = withdrawalJustificationFormControl;
+  @if (control.errors?.['required'] && (control.touched || control.dirty)) {
+    <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+      {{ INPUT_VALIDATION_MESSAGES.required | translate }}
+    </p-message>
+  }
+  @if (control.errors?.['minlength'] && (control.touched || control.dirty)) {
+    <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+      {{
+        'preprints.details.withdrawDialog.justificationInputError'
+          | translate: { length: inputLimits.abstract.minLength }
+      }}
+    </p-message>
+  }
+</div>
+
+<div class="flex justify-content-end gap-2 m-t-48">
+  <p-button
+    class="w-12rem btn-full-width"
+    [label]="'common.buttons.cancel' | translate"
+    severity="info"
+    (click)="dialogRef.close()"
+  />
+  <p-button
+    class="w-12rem btn-full-width"
+    [label]="'common.buttons.withdraw' | translate"
+    (click)="withdraw()"
+    [loading]="withdrawRequestInProgress()"
+    [disabled]="withdrawalJustificationFormControl.invalid"
+    severity="danger"
+  />
+</div>

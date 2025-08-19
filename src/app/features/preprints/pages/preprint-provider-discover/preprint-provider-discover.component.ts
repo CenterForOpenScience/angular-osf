@@ -38,9 +38,9 @@ import {
   SetSubject,
 } from '@osf/features/preprints/store/preprints-resources-filters';
 import { GetAllOptions } from '@osf/features/preprints/store/preprints-resources-filters-options';
+import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
 import { FilterLabelsModel, ResourceFilterLabel } from '@shared/models';
 import { BrandService } from '@shared/services';
-import { BrowserTabHelper, HeaderStyleHelper } from '@shared/utils';
 
 @Component({
   selector: 'osf-preprint-provider-discover',
@@ -113,7 +113,6 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
       }
     });
 
-    // if new value for some filter was put in store, add it to route
     effect(() => this.syncFilterToQuery('Creator', this.creatorSelected()));
     effect(() => this.syncFilterToQuery('DateCreated', this.dateCreatedSelected()));
     effect(() => this.syncFilterToQuery('Subject', this.subjectSelected()));
@@ -123,7 +122,6 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
     effect(() => this.syncSortingToQuery(this.sortSelected()));
     effect(() => this.syncSearchToQuery(this.searchValue()));
 
-    // if new value for some filter was put in store, fetch resources
     effect(() => {
       this.creatorSelected();
       this.dateCreatedSelected();
@@ -141,7 +139,6 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.actions.getPreprintProviderById(this.providerId());
 
-    // set all query parameters from route to store when page is loaded
     this.activatedRoute.queryParamMap.pipe(take(1)).subscribe((params) => {
       const activeFilters = params.get('activeFilters');
       const filters = activeFilters ? JSON.parse(activeFilters) : [];

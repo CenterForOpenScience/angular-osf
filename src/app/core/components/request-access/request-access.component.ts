@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { RequestAccessService } from '@osf/core/services';
+import { AuthService, RequestAccessService } from '@osf/core/services';
 import { InputLimits } from '@osf/shared/constants';
 import { LoaderService, ToastService } from '@osf/shared/services';
 
@@ -29,10 +29,11 @@ export class RequestAccessComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly id = toSignal(this.route?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
-  private readonly requestAccessService = inject(RequestAccessService);
   private readonly router = inject(Router);
+  private readonly requestAccessService = inject(RequestAccessService);
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
+  private readonly authService = inject(AuthService);
 
   requestAccess() {
     this.loaderService.show();
@@ -51,6 +52,6 @@ export class RequestAccessComponent {
   }
 
   switchAccount() {
-    // [NS] TODO: add logout logic when the user is logged in
+    this.authService.logout();
   }
 }
