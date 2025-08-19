@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover';
 import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
-import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
+import { ProfileResourceFiltersStateModel } from '@osf/features/profile/components/profile-resource-filters/store';
 import { addFiltersParams, getResourceTypes } from '@osf/shared/helpers';
 import {
   Creator,
@@ -27,7 +27,9 @@ export class PreprintsFiltersOptionsService {
   filtersOptions = inject(FiltersOptionsService);
 
   private getFilterParams(): Record<string, string> {
-    return addFiltersParams(select(PreprintsResourcesFiltersSelectors.getAllFilters)() as ResourceFiltersStateModel);
+    return addFiltersParams(
+      select(PreprintsResourcesFiltersSelectors.getAllFilters)() as ProfileResourceFiltersStateModel
+    );
   }
 
   private getParams(): Record<string, string> {

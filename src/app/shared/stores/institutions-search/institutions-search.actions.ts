@@ -50,3 +50,21 @@ export class LoadFilterOptionsAndSetValues {
   static readonly type = '[InstitutionsSearch] Load Filter Options And Set Values';
   constructor(public filterValues: Record<string, string | null>) {}
 }
+
+export class LoadFilterOptionsWithSearch {
+  static readonly type = '[InstitutionsSearch] Load Filter Options With Search';
+  constructor(
+    public filterKey: string,
+    public searchText: string
+  ) {}
+}
+
+export class ClearFilterSearchResults {
+  static readonly type = '[InstitutionsSearch] Clear Filter Search Results';
+  constructor(public filterKey: string) {}
+}
+
+export class LoadMoreFilterOptions {
+  static readonly type = '[InstitutionsSearch] Load More Filter Options';
+  constructor(public filterKey: string) {}
+}

@@ -26,12 +26,15 @@ import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceTab } from '@osf/shared/enums';
 import { DiscoverableFilter } from '@osf/shared/models';
 import {
+  ClearFilterSearchResults,
   FetchInstitutionById,
   FetchResources,
   FetchResourcesByLink,
   InstitutionsSearchSelectors,
   LoadFilterOptions,
   LoadFilterOptionsAndSetValues,
+  LoadFilterOptionsWithSearch,
+  LoadMoreFilterOptions,
   SetFilterValues,
   UpdateFilterValue,
   UpdateResourceType,
@@ -75,6 +78,7 @@ export class InstitutionsSearchComponent implements OnInit {
   first = select(InstitutionsSearchSelectors.getFirst);
   next = select(InstitutionsSearchSelectors.getNext);
   previous = select(InstitutionsSearchSelectors.getPrevious);
+  filterSearchResults = select(InstitutionsSearchSelectors.getFilterSearchCache);
 
   private readonly actions = createDispatchMap({
     fetchInstitution: FetchInstitutionById,
@@ -82,6 +86,9 @@ export class InstitutionsSearchComponent implements OnInit {
     updateSortBy: UpdateSortBy,
     loadFilterOptions: LoadFilterOptions,
     loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
+    loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
+    clearFilterSearchResults: ClearFilterSearchResults,
+    loadMoreFilterOptions: LoadMoreFilterOptions,
     setFilterValues: SetFilterValues,
     updateFilterValue: UpdateFilterValue,
     fetchResourcesByLink: FetchResourcesByLink,
@@ -146,6 +153,18 @@ export class InstitutionsSearchComponent implements OnInit {
 
   onLoadFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
     this.actions.loadFilterOptions(event.filterType);
+  }
+
+  onFilterSearchChanged(event: { filterType: string; searchText: string }): void {
+    if (event.searchText.trim()) {
+      this.actions.loadFilterOptionsWithSearch(event.filterType, event.searchText);
+    } else {
+      this.actions.clearFilterSearchResults(event.filterType);
+    }
+  }
+
+  onLoadMoreFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
+    this.actions.loadMoreFilterOptions(event.filterType);
   }
 
   onFilterChanged(event: { filterType: string; value: string | null }): void {

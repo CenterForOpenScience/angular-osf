@@ -4,8 +4,7 @@ import { tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { MyProfileFiltersOptionsService } from '@osf/features/profile/services';
-import { ResourceFiltersOptionsStateModel } from '@osf/features/search/components/filters/store';
+import { ProfileFiltersOptionsService } from '@osf/features/profile/services/profile-resource-filters.service';
 
 import {
   GetAllOptions,
@@ -36,10 +35,10 @@ import { ProfileResourceFiltersOptionsStateModel } from './profile-resource-filt
 @Injectable()
 export class ProfileResourceFiltersOptionsState {
   readonly store = inject(Store);
-  readonly filtersOptionsService = inject(MyProfileFiltersOptionsService);
+  readonly filtersOptionsService = inject(ProfileFiltersOptionsService);
 
   @Action(GetDatesCreatedOptions)
-  getDatesCreated(ctx: StateContext<ResourceFiltersOptionsStateModel>) {
+  getDatesCreated(ctx: StateContext<ProfileResourceFiltersOptionsStateModel>) {
     return this.filtersOptionsService.getDates().pipe(
       tap((datesCreated) => {
         ctx.patchState({ datesCreated: datesCreated });
@@ -48,7 +47,7 @@ export class ProfileResourceFiltersOptionsState {
   }
 
   @Action(GetFundersOptions)
-  getFunders(ctx: StateContext<ResourceFiltersOptionsStateModel>) {
+  getFunders(ctx: StateContext<ProfileResourceFiltersOptionsStateModel>) {
     return this.filtersOptionsService.getFunders().pipe(
       tap((funders) => {
         ctx.patchState({ funders: funders });
@@ -57,7 +56,7 @@ export class ProfileResourceFiltersOptionsState {
   }
 
   @Action(GetSubjectsOptions)
-  getSubjects(ctx: StateContext<ResourceFiltersOptionsStateModel>) {
+  getSubjects(ctx: StateContext<ProfileResourceFiltersOptionsStateModel>) {
     return this.filtersOptionsService.getSubjects().pipe(
       tap((subjects) => {
         ctx.patchState({ subjects: subjects });
@@ -66,7 +65,7 @@ export class ProfileResourceFiltersOptionsState {
   }
 
   @Action(GetLicensesOptions)
-  getLicenses(ctx: StateContext<ResourceFiltersOptionsStateModel>) {
+  getLicenses(ctx: StateContext<ProfileResourceFiltersOptionsStateModel>) {
     return this.filtersOptionsService.getLicenses().pipe(
       tap((licenses) => {
         ctx.patchState({ licenses: licenses });
@@ -75,7 +74,7 @@ export class ProfileResourceFiltersOptionsState {
   }
 
   @Action(GetResourceTypesOptions)
-  getResourceTypes(ctx: StateContext<ResourceFiltersOptionsStateModel>) {
+  getResourceTypes(ctx: StateContext<ProfileResourceFiltersOptionsStateModel>) {
     return this.filtersOptionsService.getResourceTypes().pipe(
       tap((resourceTypes) => {
         ctx.patchState({ resourceTypes: resourceTypes });
@@ -84,7 +83,7 @@ export class ProfileResourceFiltersOptionsState {
   }
 
   @Action(GetInstitutionsOptions)
-  getInstitutions(ctx: StateContext<ResourceFiltersOptionsStateModel>) {
+  getInstitutions(ctx: StateContext<ProfileResourceFiltersOptionsStateModel>) {
     return this.filtersOptionsService.getInstitutions().pipe(
       tap((institutions) => {
         ctx.patchState({ institutions: institutions });
@@ -93,7 +92,7 @@ export class ProfileResourceFiltersOptionsState {
   }
 
   @Action(GetProvidersOptions)
-  getProviders(ctx: StateContext<ResourceFiltersOptionsStateModel>) {
+  getProviders(ctx: StateContext<ProfileResourceFiltersOptionsStateModel>) {
     return this.filtersOptionsService.getProviders().pipe(
       tap((providers) => {
         ctx.patchState({ providers: providers });
@@ -101,7 +100,7 @@ export class ProfileResourceFiltersOptionsState {
     );
   }
   @Action(GetPartOfCollectionOptions)
-  getPartOfCollection(ctx: StateContext<ResourceFiltersOptionsStateModel>) {
+  getPartOfCollection(ctx: StateContext<ProfileResourceFiltersOptionsStateModel>) {
     return this.filtersOptionsService.getPartOtCollections().pipe(
       tap((partOfCollection) => {
         ctx.patchState({ partOfCollection: partOfCollection });

@@ -12,8 +12,6 @@ import { ProfileState } from './features/profile/store';
 import { RegistriesState } from './features/registries/store';
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './features/registries/store/handlers';
 import { FilesHandlers } from './features/registries/store/handlers/files.handlers';
-import { ResourceFiltersOptionsState } from './features/search/components/filters/store';
-import { ResourceFiltersState } from './features/search/components/resource-filters/store';
 import { SearchState } from './features/search/store';
 import { LicensesService } from './shared/services';
 
@@ -67,7 +65,7 @@ export const routes: Routes = [
       {
         path: 'search',
         loadComponent: () => import('./features/search/search.component').then((mod) => mod.SearchComponent),
-        providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState, SearchState])],
+        providers: [provideStates([SearchState])],
       },
       {
         path: 'my-projects',

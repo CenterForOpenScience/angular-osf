@@ -71,10 +71,13 @@
               <osf-reusable-filters
                 [filters]="filters()"
                 [selectedValues]="selectedValues()"
+                [filterSearchResults]="filterSearchResults()"
                 [isLoading]="isResourcesLoading()"
                 [showEmptyState]="true"
                 (loadFilterOptions)="onLoadFilterOptions($event)"
                 (filterValueChanged)="onFilterChanged($event)"
+                (filterSearchChanged)="onFilterSearchChanged($event)"
+                (loadMoreFilterOptions)="onLoadMoreFilterOptions($event)"
               />
             </div>
 
@@ -82,10 +85,13 @@
               <osf-reusable-filters
                 [filters]="filters()"
                 [selectedValues]="selectedValues()"
+                [filterSearchResults]="filterSearchResults()"
                 [isLoading]="isResourcesLoading()"
                 [showEmptyState]="true"
                 (loadFilterOptions)="onLoadFilterOptions($event)"
                 (filterValueChanged)="onFilterChanged($event)"
+                (filterSearchChanged)="onFilterSearchChanged($event)"
+                (loadMoreFilterOptions)="onLoadMoreFilterOptions($event)"
               />
             </div>
           </osf-search-results-container>
