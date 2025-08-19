@@ -8,7 +8,7 @@ import { RegistryLinksState } from '@osf/features/registry/store/registry-links'
 import { RegistryMetadataState } from '@osf/features/registry/store/registry-metadata';
 import { RegistryOverviewState } from '@osf/features/registry/store/registry-overview';
 import { ResourceType } from '@osf/shared/enums';
-import { ContributorsState, DuplicatesState, ViewOnlyLinkState } from '@osf/shared/stores';
+import { CitationsState, ContributorsState, DuplicatesState, ViewOnlyLinkState } from '@osf/shared/stores';
 
 import { AnalyticsState } from '../project/analytics/store';
 
