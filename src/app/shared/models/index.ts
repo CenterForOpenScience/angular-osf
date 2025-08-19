@@ -1,3 +1,4 @@
+export * from './activity-logs';
 export * from './addons';
 export * from './brand.json-api.model';
 export * from './brand.model';
