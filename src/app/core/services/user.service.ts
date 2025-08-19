@@ -45,6 +45,12 @@ export class UserService {
       .pipe(map((response) => UserMapper.fromUserSettingsGetResponse(response)));
   }
 
+  getUserById(userId: string): Observable<User> {
+    return this.jsonApiService
+      .get<UserGetResponse>(`${environment.apiUrl}/users/${userId}/`)
+      .pipe(map((response) => UserMapper.fromUserGetResponse(response)));
+  }
+
   updateUserProfile(userId: string, key: string, data: ProfileSettingsUpdate): Observable<User> {
     const patchedData = key === ProfileSettingsKey.User ? data : { [key]: data };
 
