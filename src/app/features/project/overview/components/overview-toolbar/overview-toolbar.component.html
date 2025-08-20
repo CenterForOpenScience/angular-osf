@@ -2,7 +2,7 @@
 
 @if (resource) {
   <div class="flex flex-column gap-5 lg:flex-row lg:align-items-center lg:justify-content-between">
-    @if (!isCollectionsRoute() && isAdmin()) {
+    @if (!isCollectionsRoute() && isAdmin() && !isRegistration) {
       <div class="flex gap-3 align-items-center">
         <div class="flex gap-1" [class.inactive]="isPublic()">
           <i class="fas fa-lock"></i>

@@ -1,4 +1,4 @@
-import { EMPTY, Observable, switchMap, throwError } from 'rxjs';
+import { Observable, of, switchMap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { HttpEvent } from '@angular/common/http';
@@ -296,7 +296,7 @@ export class FilesService {
   getConfiguredStorageAddons(resourceUri: string): Observable<ConfiguredStorageAddon[]> {
     return this.getResourceReferences(resourceUri).pipe(
       switchMap((referenceUrl: string) => {
-        if (!referenceUrl) return EMPTY;
+        if (!referenceUrl) return of([]);
 
         return this.jsonApiService
           .get<GetConfiguredStorageAddonsJsonApi>(`${referenceUrl}/configured_storage_addons`)
