@@ -125,9 +125,18 @@ export const routes: Routes = [
       },
       {
         path: 'my-profile',
-        loadComponent: () => import('./features/profile/profile.component').then((mod) => mod.ProfileComponent),
+        loadComponent: () =>
+          import('./features/profile/pages/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
         providers: [provideStates([ProfileResourceFiltersState, ProfileResourceFiltersOptionsState, ProfileState])],
         canActivate: [authGuard],
+      },
+      {
+        path: 'user/:id',
+        loadComponent: () =>
+          import('./features/profile/pages/user-profile/user-profile.component').then(
+            (mod) => mod.UserProfileComponent
+          ),
+        providers: [provideStates([ProfileResourceFiltersState, ProfileResourceFiltersOptionsState, ProfileState])],
       },
       {
         path: 'institutions',

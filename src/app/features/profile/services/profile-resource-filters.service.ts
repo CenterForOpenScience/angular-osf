@@ -1,11 +1,12 @@
 import { select, Store } from '@ngxs/store';
 
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
 import { UserSelectors } from '@core/store/user/user.selectors';
 import { addFiltersParams, getResourceTypes } from '@osf/shared/helpers';
+import { UserMapper } from '@osf/shared/mappers';
 import {
   DateCreated,
   FunderFilter,
@@ -13,12 +14,17 @@ import {
   PartOfCollectionFilter,
   ProviderFilter,
   ResourceTypeFilter,
+  ResponseJsonApi,
   SubjectFilter,
+  User,
+  UserGetResponse,
 } from '@osf/shared/models';
-import { FiltersOptionsService } from '@osf/shared/services';
+import { FiltersOptionsService, JsonApiService } from '@osf/shared/services';
 
 import { ProfileResourceFiltersSelectors } from '../components/profile-resource-filters/store';
 import { ProfileSelectors } from '../store';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +32,13 @@ import { ProfileSelectors } from '../store';
 export class ProfileFiltersOptionsService {
   private readonly store = inject(Store);
   private readonly filtersOptions = inject(FiltersOptionsService);
+  private readonly jsonApiService = inject(JsonApiService);
+
+  getUserById(userId: string): Observable<User> {
+    return this.jsonApiService
+      .get<ResponseJsonApi<UserGetResponse>>(`${environment.apiUrl}/users/${userId}/`)
+      .pipe(map((response) => UserMapper.fromUserGetResponse(response.data)));
+  }
 
   getFilterParams(): Record<string, string> {
     return addFiltersParams(select(ProfileResourceFiltersSelectors.getAllFilters)());

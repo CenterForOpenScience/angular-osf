@@ -1,6 +1,7 @@
 import { Action, State, StateContext, Store } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
 
-import { tap } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -8,6 +9,8 @@ import { UserSelectors } from '@osf/core/store/user';
 import {
   GetResources,
   GetResourcesByLink,
+  GetUserProfile,
+  PROFILE_STATE_DEFAULTS,
   ProfileSelectors,
   ProfileStateModel,
   SetIsMyProfile,
@@ -15,21 +18,45 @@ import {
   SetSearchText,
   SetSortBy,
 } from '@osf/features/profile/store';
-import { addFiltersParams, getResourceTypes } from '@osf/shared/helpers';
+import { addFiltersParams, getResourceTypes, handleSectionError } from '@osf/shared/helpers';
 import { SearchService } from '@osf/shared/services';
-import { searchStateDefaults } from '@shared/constants';
 
 import { ProfileResourceFiltersSelectors } from '../components/profile-resource-filters/store';
+import { ProfileFiltersOptionsService } from '../services/profile-resource-filters.service';
 
 @Injectable()
 @State<ProfileStateModel>({
   name: 'profile',
-  defaults: searchStateDefaults,
+  defaults: PROFILE_STATE_DEFAULTS,
 })
 export class ProfileState {
   searchService = inject(SearchService);
   store = inject(Store);
   currentUser = this.store.selectSignal(UserSelectors.getCurrentUser);
+  profileResourceFilters = inject(ProfileFiltersOptionsService);
+
+  @Action(GetUserProfile)
+  getUserProfile(ctx: StateContext<ProfileStateModel>, action: GetUserProfile) {
+    ctx.setState(patch({ user: patch({ isLoading: true }) }));
+
+    if (!action.userId) {
+      return;
+    }
+
+    return this.profileResourceFilters.getUserById(action.userId).pipe(
+      tap((user) => {
+        ctx.setState(
+          patch({
+            user: patch({
+              data: user,
+              isLoading: false,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'user', error))
+    );
+  }
 
   @Action(GetResources)
   getResources(ctx: StateContext<ProfileStateModel>) {

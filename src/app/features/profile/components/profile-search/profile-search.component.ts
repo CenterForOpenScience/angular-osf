@@ -6,15 +6,24 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 import { debounceTime, skip } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 
-import { UserSelectors } from '@osf/core/store/user';
 import { SearchHelpTutorialComponent, SearchInputComponent } from '@osf/shared/components';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceTab } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/helpers';
+import { User } from '@osf/shared/models';
 
 import { GetResources, ProfileSelectors, SetResourceTab, SetSearchText } from '../../store';
 import { GetAllOptions } from '../filters/store';
@@ -39,6 +48,8 @@ import { ProfileResourcesComponent } from '../profile-resources/profile-resource
 export class ProfileSearchComponent {
   readonly store = inject(Store);
 
+  currentUser = input<User | null>();
+
   protected searchControl = new FormControl<string>('');
   protected readonly isMobile = toSignal(inject(IS_XSMALL));
 
@@ -56,7 +67,6 @@ export class ProfileSearchComponent {
   protected resourcesTabStoreValue = select(ProfileSelectors.getResourceTab);
   protected sortByStoreValue = select(ProfileSelectors.getSortBy);
   readonly isMyProfilePage = select(ProfileSelectors.getIsMyProfile);
-  readonly currentUser = this.store.select(UserSelectors.getCurrentUser);
 
   protected readonly resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceTab.Users);
   protected selectedTab: ResourceTab = ResourceTab.All;
@@ -65,8 +75,8 @@ export class ProfileSearchComponent {
   private skipInitializationEffects = 0;
 
   constructor() {
-    this.currentUser.subscribe((user) => {
-      if (user?.id) {
+    effect(() => {
+      if (this.currentUser()) {
         this.store.dispatch(GetAllOptions);
         this.store.dispatch(GetResources);
       }

@@ -1,5 +1,11 @@
 import { ResourceTab } from '@osf/shared/enums/resource-tab.enum';
 
+export class GetUserProfile {
+  static readonly type = '[My Profile] Get User Profile';
+
+  constructor(public userId: string | undefined) {}
+}
+
 export class GetResources {
   static readonly type = '[My Profile] Get Resources';
 }

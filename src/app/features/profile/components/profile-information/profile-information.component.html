@@ -2,7 +2,7 @@
   <div class="flex align-items-center">
     <h1>{{ currentUser()?.fullName }}</h1>
 
-    @if (isMedium()) {
+    @if (isMedium() && showEdit()) {
       <p-button class="ml-auto" [label]="'myProfile.editProfile' | translate" (click)="toProfileSettings()"></p-button>
     }
   </div>
@@ -113,7 +113,7 @@
         }
       </div>
 
-      @if (!isMedium()) {
+      @if (!isMedium() && showEdit()) {
         <div class="btn-full-width">
           <p-button
             class="ml-auto"
@@ -145,4 +145,3 @@
     }
   </div>
 }
-<osf-profile-search></osf-profile-search>

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ProfileResourceFiltersSelectors } from '@osf/features/profile/components/profile-resource-filters/store';
 import { addFiltersParams, getResourceTypes } from '@osf/shared/helpers';
 import {
   Creator,
@@ -17,7 +18,6 @@ import {
 } from '@osf/shared/models';
 import { FiltersOptionsService } from '@osf/shared/services';
 
-import { ResourceFiltersSelectors } from '../components/resource-filters/store';
 import { SearchSelectors } from '../store';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class ResourceFiltersService {
   filtersOptions = inject(FiltersOptionsService);
 
   getFilterParams(): Record<string, string> {
-    return addFiltersParams(this.store.selectSignal(ResourceFiltersSelectors.getAllFilters)());
+    return addFiltersParams(this.store.selectSignal(ProfileResourceFiltersSelectors.getAllFilters)());
   }
 
   getParams(): Record<string, string> {
