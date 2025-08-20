@@ -68,6 +68,7 @@ export class OverviewToolbarComponent {
   projectTitle = input<string>('');
   projectDescription = input<string>('');
   showViewOnlyLinks = input<boolean>(true);
+
   protected isBookmarksLoading = select(MyResourcesSelectors.getBookmarksLoading);
   protected isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
   protected bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);

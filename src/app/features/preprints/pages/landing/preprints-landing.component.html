@@ -76,6 +76,6 @@
   </div>
 
   <p-button severity="success" class="link-button">
-    <a href="mailto:support@osf.io">{{ 'preprints.createServer.contactUs' | translate }}</a>
+    <a [href]="'mailto:' + supportEmail">{{ 'preprints.createServer.contactUs' | translate }}</a>
   </p-button>
 </section>

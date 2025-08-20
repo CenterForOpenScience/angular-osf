@@ -173,6 +173,11 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
+        path: 'files/:fileGuid',
+        loadComponent: () =>
+          import('@osf/features/files/pages/file-detail/file-detail.component').then((c) => c.FileDetailComponent),
+      },
+      {
         path: '**',
         loadComponent: () =>
           import('./core/components/page-not-found/page-not-found.component').then((mod) => mod.PageNotFoundComponent),
