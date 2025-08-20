@@ -26,14 +26,14 @@ import { UserSelectors } from '@core/store/user';
 import {
   AdditionalInfoComponent,
   GeneralInformationComponent,
+  MakeDecisionComponent,
   ModerationStatusBannerComponent,
   PreprintFileSectionComponent,
+  PreprintTombstoneComponent,
   ShareAndDownloadComponent,
   StatusBannerComponent,
   WithdrawDialogComponent,
 } from '@osf/features/preprints/components';
-import { MakeDecisionComponent } from '@osf/features/preprints/components/preprint-details/make-decision/make-decision.component';
-import { PreprintTombstoneComponent } from '@osf/features/preprints/components/preprint-details/preprint-tombstone/preprint-tombstone.component';
 import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import {
   FetchPreprintById,
@@ -45,9 +45,12 @@ import {
 } from '@osf/features/preprints/store/preprint';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { IS_MEDIUM } from '@osf/shared/helpers';
-import { UserPermissions } from '@shared/enums';
+import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
+import { ReviewPermissions, UserPermissions } from '@shared/enums';
+import { MetaTagsService } from '@shared/services';
 import { ContributorsSelectors } from '@shared/stores';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-preprint-details',
