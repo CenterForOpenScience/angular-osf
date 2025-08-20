@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Primitive } from '@core/helpers';
+import { Primitive } from '@shared/helpers';
 import { TranslateServiceMock } from '@shared/mocks';
 import { SelectOption } from '@shared/models';
 

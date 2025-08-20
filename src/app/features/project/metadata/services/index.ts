@@ -1,1 +1,1 @@
-export * from './project-metadata.service';
+export * from './metadata.service';
