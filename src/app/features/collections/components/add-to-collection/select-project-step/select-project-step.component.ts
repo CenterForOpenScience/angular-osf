@@ -34,7 +34,6 @@ export class SelectProjectStepComponent {
 
   currentSelectedProject = signal<Project | null>(null);
 
-  // Calculate excluded project IDs (already submitted to this collection)
   protected excludedProjectIds = computed(() => {
     const submissions = this.currentUserSubmissions();
     return submissions.map((submission) => submission.nodeId);
