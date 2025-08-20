@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { TranslateServiceMock } from '@shared/mocks';
+
 import { CompareSectionComponent } from './compare-section.component';
 
 describe('CompareSectionComponent', () => {
@@ -9,6 +11,7 @@ describe('CompareSectionComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CompareSectionComponent],
+      providers: [TranslateServiceMock],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CompareSectionComponent);

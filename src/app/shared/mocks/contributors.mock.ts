@@ -1,3 +1,4 @@
+import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { ContributorModel } from '@shared/models';
 
 export const MOCK_CONTRIBUTOR: ContributorModel = {
@@ -23,3 +24,14 @@ export const MOCK_CONTRIBUTOR_WITHOUT_HISTORY: ContributorModel = {
   education: [],
   employment: [],
 };
+
+export const MOCK_OVERVIEW_CONTRIBUTORS: ProjectOverviewContributor[] = [
+  {
+    id: MOCK_CONTRIBUTOR.id,
+    type: MOCK_CONTRIBUTOR.type,
+    familyName: 'Doe',
+    fullName: MOCK_CONTRIBUTOR.fullName,
+    givenName: 'John',
+    middleName: '',
+  },
+];
