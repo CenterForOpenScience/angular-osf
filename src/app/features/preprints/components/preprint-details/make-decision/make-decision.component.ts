@@ -15,7 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ReviewAction } from '@osf/features/moderation/models';
-import { formInputLimits } from '@osf/features/preprints/constants';
+import { decisionExplanation, decisionSettings, formInputLimits } from '@osf/features/preprints/constants';
 import { ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails, PreprintRequest } from '@osf/features/preprints/models';
 import {
@@ -24,35 +24,6 @@ import {
   SubmitReviewsDecision,
 } from '@osf/features/preprints/store/preprint';
 import { StringOrNull } from '@shared/helpers';
-
-const SETTINGS = {
-  comments: {
-    public: 'preprints.details.decision.settings.comments.public',
-    private: 'preprints.details.decision.settings.comments.private',
-  },
-  names: {
-    anonymous: 'preprints.details.decision.settings.names.anonymous',
-    named: 'preprints.details.decision.settings.names.named',
-  },
-  moderation: {
-    [ProviderReviewsWorkflow.PreModeration]: 'preprints.details.decision.settings.moderation.pre',
-    [ProviderReviewsWorkflow.PostModeration]: 'preprints.details.decision.settings.moderation.post',
-  },
-};
-
-const DECISION_EXPLANATION = {
-  accept: {
-    [ProviderReviewsWorkflow.PreModeration]: 'preprints.details.decision.accept.pre',
-    [ProviderReviewsWorkflow.PostModeration]: 'preprints.details.decision.accept.post',
-  },
-  reject: {
-    [ProviderReviewsWorkflow.PreModeration]: 'preprints.details.decision.reject.pre',
-    [ProviderReviewsWorkflow.PostModeration]: 'preprints.details.decision.reject.post',
-  },
-  withdrawn: {
-    [ProviderReviewsWorkflow.PostModeration]: 'preprints.details.decision.withdrawn.post',
-  },
-};
 
 @Component({
   selector: 'osf-make-decision',
@@ -168,10 +139,10 @@ export class MakeDecisionComponent {
       if (this.preprint()?.reviewsState === ReviewsState.Accepted) {
         return 'preprints.details.decision.approve.explanation';
       } else {
-        return DECISION_EXPLANATION.reject[reviewsWorkflow];
+        return decisionExplanation.reject[reviewsWorkflow];
       }
     } else {
-      return DECISION_EXPLANATION.withdrawn[reviewsWorkflow!];
+      return decisionExplanation.withdrawn[reviewsWorkflow!];
     }
   });
 
@@ -181,16 +152,16 @@ export class MakeDecisionComponent {
 
   settingsComments = computed(() => {
     const commentType = this.provider().reviewsCommentsPrivate ? 'private' : 'public';
-    return SETTINGS.comments[commentType];
+    return decisionSettings.comments[commentType];
   });
 
   settingsNames = computed(() => {
     const commentType = this.provider().reviewsCommentsAnonymous ? 'anonymous' : 'named';
-    return SETTINGS.names[commentType];
+    return decisionSettings.names[commentType];
   });
 
   settingsModeration = computed(() => {
-    return SETTINGS.moderation[this.provider().reviewsWorkflow || ProviderReviewsWorkflow.PreModeration];
+    return decisionSettings.moderation[this.provider().reviewsWorkflow || ProviderReviewsWorkflow.PreModeration];
   });
 
   commentEdited = computed(() => {
@@ -255,6 +226,7 @@ export class MakeDecisionComponent {
   }
 
   submit() {
+    // don't remove comments
     const preprint = this.preprint()!;
     let trigger = '';
     if (preprint.reviewsState !== ReviewsState.Pending && this.commentEdited() && !this.decisionChanged()) {

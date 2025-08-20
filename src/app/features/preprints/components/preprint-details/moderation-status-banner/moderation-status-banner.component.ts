@@ -109,6 +109,9 @@ export class ModerationStatusBannerComponent {
   actionCreatorName = computed(() => {
     return this.latestAction()?.creator.name;
   });
+  actionCreatorLink = computed(() => {
+    return `${environment.webUrl}/${this.actionCreatorId()}`;
+  });
   actionCreatorId = computed(() => {
     return this.latestAction()?.creator.id;
   });

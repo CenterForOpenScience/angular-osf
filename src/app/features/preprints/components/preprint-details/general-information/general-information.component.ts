@@ -64,6 +64,10 @@ export class GeneralInformationComponent implements OnDestroy {
 
   skeletonData = Array.from({ length: 5 }, () => null);
 
+  nodeLink = computed(() => {
+    return `${environment.webUrl}/${this.preprint()?.nodeId}`;
+  });
+
   constructor() {
     effect(() => {
       const preprint = this.preprint();

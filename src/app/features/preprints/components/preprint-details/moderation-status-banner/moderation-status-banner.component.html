@@ -20,7 +20,7 @@
           }
 
           @if (isPendingWithdrawal()) {
-            <a [href]="`${environment.webUrl}/${withdrawalRequesterId()}`">{{ withdrawalRequesterName() }}</a>
+            <a [href]="actionCreatorLink()">{{ withdrawalRequesterName() }}</a>
             {{ requestActivityLanguage()! | translate: { documentType: documentType()?.singular } }}
             {{ latestWithdrawalRequest()?.dateLastTransitioned | date: 'MMM d, y' }}
           }

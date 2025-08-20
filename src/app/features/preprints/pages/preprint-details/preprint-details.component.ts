@@ -94,24 +94,6 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     fetchPreprintReviewActions: FetchPreprintReviewActions,
     fetchPreprintRequestActions: FetchPreprintRequestActions,
   });
-
-  //1. pending status for pre- and post-moderation providers  | works
-  //2. accepted status for pre- and post-moderation providers | works (pending -> accepted)
-  //3. rejected status for pre-moderation                     | works (pending -> rejected)
-  //4. rejected status for post-moderation                    | works (pending -> withdrawn), becomes withdrawn after rejection
-
-  //5. pending withdrawal status for pre-moderation           | works (pending -> withdrawn), becomes withdrawn after withdrawal request
-  //                                                          | works (accepted -> pending withdrawal)
-
-  //6. pending withdrawal status for post-moderation          | works (pending -> pending withdrawal)
-  //                                                          | works (accepted -> pending withdrawal)
-
-  //7. withdrawn status for pre-moderation           ??????????????  \\\\ pending preprint became withdrawn after withdrawal request
-  //8. withdrawn status for post-moderation          ??????????????
-
-  //9. Withdrawal rejected status for pre-moderation  ??????????????  \\\\ only from accepted state
-  //10. Withdrawal rejected status for post-moderation ??????????????
-
   currentUser = select(UserSelectors.getCurrentUser);
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
