@@ -22,7 +22,7 @@
       }
     </div>
 
-    @if (totalUsersCount()) {
+    @if (totalUsersCount() > pageSize()) {
       <osf-custom-paginator
         [first]="first()"
         [totalCount]="totalUsersCount()"

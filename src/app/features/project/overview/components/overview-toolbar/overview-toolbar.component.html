@@ -91,11 +91,11 @@
               [pTooltip]="'project.overview.tooltips.share' | translate"
               tooltipPosition="bottom"
             >
-              <span class="font-bold">{{ socialsActionItems.length }}</span>
+              <span class="font-bold">{{ socialsActionItems().length }}</span>
               <i class="fas fa-share-nodes text-2xl"></i>
-              <p-menu appendTo="body" #socialsActionMenu [model]="socialsActionItems" popup>
+              <p-menu appendTo="body" #socialsActionMenu [model]="socialsActionItems()" popup>
                 <ng-template #item let-item>
-                  <a class="p-menu-item-link">
+                  <a class="p-menu-item-link" [href]="item.url" target="_blank" rel="noopener noreferrer">
                     <div class="social-link flex align-items-center justify-content-center">
                       <osf-icon [iconClass]="`${item.icon} fa-sm`"></osf-icon>
                     </div>

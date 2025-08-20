@@ -8,7 +8,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { filter, map, of } from 'rxjs';
 
-import { Location } from '@angular/common';
+import { DatePipe, Location } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -47,7 +47,6 @@ import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/featur
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { UserPermissions } from '@shared/enums';
-import { ReviewPermissions } from '@shared/enums/review-permissions.enum';
 import { ContributorsSelectors } from '@shared/stores';
 
 @Component({
@@ -67,7 +66,7 @@ import { ContributorsSelectors } from '@shared/stores';
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
-  providers: [DialogService],
+  providers: [DialogService, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintDetailsComponent implements OnInit, OnDestroy {
@@ -80,6 +79,8 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
+  private readonly metaTags = inject(MetaTagsService);
+  private readonly datePipe = inject(DatePipe);
   private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
@@ -337,7 +338,31 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
             });
           }
         }
+
+        this.setMetaTags();
       },
+    });
+  }
+
+  private setMetaTags() {
+    const image = 'engines-dist/registries/assets/img/osf-sharing.png';
+
+    this.metaTags.updateMetaTags({
+      title: this.preprint()?.title,
+      description: this.preprint()?.description,
+      publishedDate: this.datePipe.transform(this.preprint()?.dateCreated, 'yyyy-MM-dd'),
+      modifiedDate: this.datePipe.transform(this.preprint()?.dateModified, 'yyyy-MM-dd'),
+      url: pathJoin(environment.webUrl, this.preprint()?.id ?? ''),
+      image,
+      identifier: this.preprint()?.id,
+      doi: this.preprint()?.doi,
+      keywords: this.preprint()?.tags,
+      siteName: 'OSF',
+      license: this.preprint()?.embeddedLicense?.name,
+      contributors: this.contributors().map((contributor) => ({
+        givenName: contributor.fullName,
+        familyName: contributor.familyName,
+      })),
     });
   }
 

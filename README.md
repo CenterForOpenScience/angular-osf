@@ -20,6 +20,7 @@ take up to 60 seconds once the docker build finishes.
 - Docker Commands: [Docker Commands](docs/docker.md).
 - Git Conventions: [Git Conventions](docs/git-convention.md).
 - Volta: [Volta](#volta)
+- Redux DevTools: [Redux DevTools](#redux-devtools)
 
 ### Optional
 
@@ -50,4 +51,9 @@ npm run test:check-coverage-thresholds
 ## Volta
 
 OSF uses volta to manage node and npm versions inside of the repository
-Install Volta from https://volta.sh/ and it will automatically pin Node/npm per the repo toolchain.
+Install Volta from [volta](https://volta.sh/) and it will automatically pin Node/npm per the repo toolchain.
+
+## Redux DevTools
+
+OSF Angular uses [NGXS](https://github.com/ngxs) for state management. It is highly recommended to install
+the `Redux DevTools` extension from the Chrome web store.
