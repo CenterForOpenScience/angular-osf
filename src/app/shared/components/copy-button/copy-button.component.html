@@ -4,7 +4,8 @@
   icon="fas fa-clone"
   [label]="label()"
   text
-  [pTooltip]="tooltip() | translate"
+  [pTooltip]="(copyItem() ? tooltip() : 'common.labels.noData') | translate"
+  [disabled]="!copyItem()"
   (click)="copy()"
 >
 </p-button>

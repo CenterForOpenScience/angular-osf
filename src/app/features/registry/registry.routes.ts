@@ -3,7 +3,6 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { RegistryComponentsState } from '@osf/features/registry/store/registry-components';
-import { RegistryFilesState } from '@osf/features/registry/store/registry-files';
 import { RegistryLinksState } from '@osf/features/registry/store/registry-links';
 import { RegistryMetadataState } from '@osf/features/registry/store/registry-metadata';
 import { RegistryOverviewState } from '@osf/features/registry/store/registry-overview';
@@ -81,12 +80,8 @@ export const registryRoutes: Routes = [
       },
       {
         path: 'files',
-        loadComponent: () =>
-          import('./pages/registry-files/registry-files.component').then((c) => c.RegistryFilesComponent),
-        providers: [provideStates([RegistryFilesState])],
-        data: {
-          context: ResourceType.Registration,
-        },
+        loadChildren: () => import('@osf/features/files/files.routes').then((mod) => mod.filesRoutes),
+        data: { resourceType: ResourceType.Registration },
       },
       {
         path: 'components',

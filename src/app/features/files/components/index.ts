@@ -1,0 +1,8 @@
+export { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
+export { EditFileMetadataDialogComponent } from './edit-file-metadata-dialog/edit-file-metadata-dialog.component';
+export { FileKeywordsComponent } from './file-keywords/file-keywords.component';
+export { FileMetadataComponent } from './file-metadata/file-metadata.component';
+export { FileResourceMetadataComponent } from './file-resource-metadata/file-resource-metadata.component';
+export { FileRevisionsComponent } from './file-revisions/file-revisions.component';
+export { MoveFileDialogComponent } from './move-file-dialog/move-file-dialog.component';
+export { RenameFileDialogComponent } from './rename-file-dialog/rename-file-dialog.component';

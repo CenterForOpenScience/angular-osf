@@ -31,10 +31,11 @@ import { GetBookmarksCollectionId } from '@shared/stores';
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';
 import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
-import { GetRegistryInstitutions, GetRegistrySubjects } from '../../store/registry-metadata';
 import {
   GetRegistryById,
+  GetRegistryInstitutions,
   GetRegistryReviewActions,
+  GetRegistrySubjects,
   RegistryOverviewSelectors,
   SetRegistryCustomCitation,
 } from '../../store/registry-overview';
@@ -59,16 +60,17 @@ import {
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
+  providers: [DialogService, DatePipe],
 })
 export class RegistryOverviewComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly toastService = inject(ToastService);
-  protected readonly dialogService = inject(DialogService);
-  protected readonly translateService = inject(TranslateService);
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
+  private readonly datePipe = inject(DatePipe);
 
   protected readonly registry = select(RegistryOverviewSelectors.getRegistry);
   protected readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
@@ -78,7 +80,7 @@ export class RegistryOverviewComponent {
   protected readonly isInstitutionsLoading = select(RegistryOverviewSelectors.isInstitutionsLoading);
   protected readonly schemaBlocks = select(RegistryOverviewSelectors.getSchemaBlocks);
   protected readonly isSchemaBlocksLoading = select(RegistryOverviewSelectors.isSchemaBlocksLoading);
-  protected areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
+  protected readonly areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
   protected readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
   protected readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
   protected revisionInProgress: SchemaResponse | undefined;
@@ -173,6 +175,7 @@ export class RegistryOverviewComponent {
           .subscribe();
       }
     });
+
     this.actions.getBookmarksId();
     this.route.queryParams
       .pipe(

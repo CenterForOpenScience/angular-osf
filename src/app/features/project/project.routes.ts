@@ -16,7 +16,6 @@ import {
 import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from './analytics/store';
-import { ProjectFilesState } from './files/store';
 import { SettingsState } from './settings/store';
 
 export const projectRoutes: Routes = [
@@ -51,11 +50,8 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'files',
-        loadChildren: () => import('../project/files/project-files.routes').then((mod) => mod.projectFilesRoutes),
-        providers: [provideStates([ProjectFilesState])],
-        data: {
-          context: ResourceType.Project,
-        },
+        loadChildren: () => import('@osf/features/files/files.routes').then((mod) => mod.filesRoutes),
+        data: { resourceType: ResourceType.Project },
       },
       {
         path: 'registrations',

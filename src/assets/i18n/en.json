@@ -798,119 +798,6 @@
         "openResources": "Open Resources"
       }
     },
-    "files": {
-      "title": "Files",
-      "storageLocation": "OSF Storage",
-      "searchPlaceholder": "Search your projects",
-      "sort": {
-        "placeholder": "Sort",
-        "nameAZ": "Name: A-Z",
-        "nameZA": "Name: Z-A",
-        "lastModifiedOldest": "Last modified: oldest to newest",
-        "lastModifiedNewest": "Last modified: newest to oldest"
-      },
-      "actions": {
-        "downloadAsZip": "Download As Zip",
-        "createFolder": "Create Folder",
-        "uploadFile": "Upload File"
-      },
-      "dialogs": {
-        "uploadFile": {
-          "title": "Upload file",
-          "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
-        },
-        "createFolder": {
-          "title": "Create folder",
-          "folderName": "New folder name",
-          "folderNamePlaceholder": "Please enter a folder name"
-        },
-        "renameFile": {
-          "title": "Rename file",
-          "newName": "New name",
-          "enterNewName": "Enter new name",
-          "renameLabel": "Please rename the file"
-        },
-        "moveFile": {
-          "cannotMove": "Cannot move to the same folder",
-          "title": "Move file",
-          "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
-          "storage": "OSF Storage",
-          "pathError": "Path is not specified!"
-        },
-        "copyFile": {
-          "title": "Copy file"
-        },
-        "deleteFile": {
-          "title": "Delete File",
-          "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
-        }
-      },
-      "dropText": "Drop a file to upload",
-      "emptyState": "This folder is empty",
-      "detail": {
-        "backToList": "Back to list of files",
-        "tabs": {
-          "details": "Details",
-          "revisions": "Revisions",
-          "keywords": "Keywords"
-        },
-        "actions": {
-          "addCommunityMetadata": "Add community Metadata",
-          "copyDynamicIframe": "Copy dynamic JS iFrame",
-          "copyStaticIframe": "Copy static HTML iFrame",
-          "share": {
-            "email": "Email",
-            "x": "X",
-            "facebook": "Facebook"
-          }
-        },
-        "fileMetadata": {
-          "title": "File Metadata",
-          "edit": "Edit",
-          "fields": {
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource Type",
-            "resourceLanguage": "Resource Language"
-          }
-        },
-        "projectMetadata": {
-          "title": "Project Metadata",
-          "edit": "Edit",
-          "fields": {
-            "funder": "Funder",
-            "awardTitle": "Award title",
-            "awardNumber": "Award number",
-            "awardUri": "Award URI",
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource type",
-            "resourceLanguage": "Resource language",
-            "dateCreated": "Date created",
-            "dateModified": "Date modified",
-            "contributors": "Contributors"
-          }
-        },
-        "toast": {
-          "copiedToClipboard": "Copied to clipboard"
-        },
-        "keywords": {
-          "title": "Keywords"
-        },
-        "revisions": {
-          "title": "Revisions",
-          "actions": {
-            "copyMd5": "Copy MD5",
-            "copySha2": "Copy SHA-2",
-            "download": "Download"
-          },
-          "tooltips": {
-            "md5": "MD5 is an algorithm used to verify data integrity",
-            "sha2": "SHA-2 is a cryptographic hash function designed by the NSA used to verify data integrity."
-          }
-        }
-      }
-    },
     "metadata": {
       "addSubjects": "Add subjects...",
       "description": {
@@ -1033,6 +920,122 @@
       "success": "Project has been successfully deleted."
     }
   },
+  "files": {
+    "title": "Files",
+    "storageLocation": "OSF Storage",
+    "searchPlaceholder": "Search your projects",
+    "sort": {
+      "placeholder": "Sort",
+      "nameAZ": "Name: A-Z",
+      "nameZA": "Name: Z-A",
+      "lastModifiedOldest": "Last modified: oldest to newest",
+      "lastModifiedNewest": "Last modified: newest to oldest"
+    },
+    "actions": {
+      "downloadAsZip": "Download As Zip",
+      "createFolder": "Create Folder",
+      "uploadFile": "Upload File"
+    },
+    "dialogs": {
+      "uploadFile": {
+        "title": "Upload file",
+        "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
+      },
+      "createFolder": {
+        "title": "Create folder",
+        "folderName": "New folder name",
+        "folderNamePlaceholder": "Please enter a folder name"
+      },
+      "renameFile": {
+        "title": "Rename file",
+        "newName": "New name",
+        "enterNewName": "Enter new name",
+        "renameLabel": "Please rename the file"
+      },
+      "moveFile": {
+        "cannotMove": "Cannot move to the same folder",
+        "title": "Move file",
+        "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
+        "storage": "OSF Storage",
+        "pathError": "Path is not specified!"
+      },
+      "copyFile": {
+        "title": "Copy file"
+      },
+      "deleteFile": {
+        "title": "Delete File",
+        "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
+      }
+    },
+    "dropText": "Drop a file to upload",
+    "emptyState": "This folder is empty",
+    "detail": {
+      "backToList": "Back to list of files",
+      "tabs": {
+        "details": "Details",
+        "revisions": "Revisions",
+        "keywords": "Keywords"
+      },
+      "actions": {
+        "addCommunityMetadata": "Add community Metadata",
+        "copyDynamicIframe": "Copy dynamic JS iFrame",
+        "copyStaticIframe": "Copy static HTML iFrame",
+        "share": {
+          "email": "Email",
+          "x": "X",
+          "facebook": "Facebook"
+        }
+      },
+      "fileMetadata": {
+        "title": "File Metadata",
+        "edit": "Edit",
+        "fields": {
+          "title": "Title",
+          "description": "Description",
+          "resourceType": "Resource Type",
+          "resourceLanguage": "Resource Language"
+        }
+      },
+      "resourceMetadata": {
+        "title": {
+          "nodes": "Project Metadata",
+          "registrations": "Registration Metadata"
+        },
+        "edit": "Edit",
+        "fields": {
+          "funder": "Funder",
+          "awardTitle": "Award title",
+          "awardNumber": "Award number",
+          "awardUri": "Award URI",
+          "title": "Title",
+          "description": "Description",
+          "resourceType": "Resource type",
+          "resourceLanguage": "Resource language",
+          "dateCreated": "Date created",
+          "dateModified": "Date modified",
+          "contributors": "Contributors"
+        }
+      },
+      "toast": {
+        "copiedToClipboard": "Copied to clipboard"
+      },
+      "keywords": {
+        "title": "Keywords"
+      },
+      "revisions": {
+        "title": "Revisions",
+        "actions": {
+          "copyMd5": "Copy MD5",
+          "copySha2": "Copy SHA-2",
+          "download": "Download"
+        },
+        "tooltips": {
+          "md5": "MD5 is an algorithm used to verify data integrity",
+          "sha2": "SHA-2 is a cryptographic hash function designed by the NSA used to verify data integrity."
+        }
+      }
+    }
+  },
   "collections": {
     "helpDialog": {
       "header": "Search help",
@@ -1116,7 +1119,7 @@
       "confirmationDialogHeader": "Add to Collection",
       "selectProject": "Select a project",
       "project": "Project",
-      "projectMetadata": "Project Metadata",
+      "resourceMetadata": "Project Metadata",
       "projectMetadataMessage": "Updates made in this section will update the project.",
       "projectContributors": "Project Contributors",
       "collectionMetadata": "Collection Metadata",

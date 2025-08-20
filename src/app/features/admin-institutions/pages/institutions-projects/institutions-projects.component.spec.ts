@@ -1,6 +1,6 @@
 import { provideStore } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
+import { ToastService } from '@osf/shared/services';
 import { LoadingSpinnerComponent } from '@shared/components';
 import { InstitutionsSearchState } from '@shared/stores';
 
@@ -30,6 +31,8 @@ describe('InstitutionsProjectsComponent', () => {
       ],
       providers: [
         MockProvider(ActivatedRoute, { queryParams: of({}) }),
+        MockProvider(ToastService),
+        MockProvider(TranslateService),
         provideStore([InstitutionsAdminState, InstitutionsSearchState]),
         provideHttpClient(),
         provideHttpClientTesting(),
