@@ -22,25 +22,12 @@
   <p-step-panel [value]="targetStepValue()" class="p-0">
     <ng-template class="m-0" #content>
       <div class="mt-4 w-full lg:w-6">
-        <p-select
-          class="w-full"
-          [loading]="isProjectsLoading()"
-          [options]="projectsOptions()"
-          [filter]="true"
-          (onFilter)="handleFilterSearch($event)"
-          optionLabel="label"
-          optionValue="value"
-          [appendTo]="'body'"
-          [emptyFilterMessage]="filterMessage()"
-          [emptyMessage]="filterMessage()"
-          (onChange)="handleProjectChange($event)"
-          [placeholder]="'common.buttons.select' | translate"
-          [ngModel]="selectedProject()"
-        >
-          <ng-template #selectedItem let-selectedOption>
-            {{ selectedOption.label | translate }}
-          </ng-template>
-        </p-select>
+        <osf-project-selector
+          [excludeProjectIds]="excludedProjectIds()"
+          [(selectedProject)]="currentSelectedProject"
+          (projectChange)="handleProjectChange($event)"
+          (projectsLoaded)="handleProjectsLoaded($event)"
+        />
       </div>
     </ng-template>
   </p-step-panel>

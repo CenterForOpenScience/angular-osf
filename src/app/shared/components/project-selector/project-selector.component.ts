@@ -45,9 +45,11 @@ export class ProjectSelectorComponent {
 
   placeholder = input<string>('common.buttons.select');
   showClear = input<boolean>(true);
+  excludeProjectIds = input<string[]>([]);
   selectedProject = model<Project | null>(null);
 
   projectChange = output<Project | null>();
+  projectsLoaded = output<Project[]>();
 
   protected projectsOptions = signal<CustomOption<Project>[]>([]);
 
@@ -89,13 +91,19 @@ export class ProjectSelectorComponent {
     effect(() => {
       const isProjectsLoading = this.isProjectsLoading();
       const projects = this.projects();
+      const excludeIds = this.excludeProjectIds();
 
       if (isProjectsLoading || !projects.length) {
         this.projectsOptions.set([]);
         return;
       }
 
-      const options = projects.map((project) => ({
+      this.projectsLoaded.emit(projects);
+
+      const excludeSet = new Set(excludeIds);
+      const availableProjects = projects.filter((project) => !excludeSet.has(project.id));
+
+      const options = availableProjects.map((project) => ({
         label: project.title,
         value: project,
       }));
