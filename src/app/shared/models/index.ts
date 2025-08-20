@@ -35,6 +35,7 @@ export * from './provider';
 export * from './query-params.model';
 export * from './registration';
 export * from './resource-card';
+export * from './resource-metadata.model';
 export * from './resource-overview.model';
 export * from './search';
 export * from './select-option.model';

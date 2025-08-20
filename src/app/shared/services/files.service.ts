@@ -4,32 +4,26 @@ import { catchError, map } from 'rxjs/operators';
 import { HttpEvent } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import {
-  MapFile,
-  MapFileCustomMetadata,
-  MapFileRevision,
-  MapFiles,
-  MapFileVersions,
-} from '@osf/features/project/files/mappers';
+import { MapFileCustomMetadata, MapFileRevision } from '@osf/features/files/mappers';
 import {
   CreateFolderResponse,
   FileCustomMetadata,
   FileTargetResponse,
+  GetCustomMetadataResponse,
   GetFileMetadataResponse,
   GetFileRevisionsResponse,
   GetFileTargetResponse,
-  GetProjectContributorsResponse,
-  GetProjectCustomMetadataResponse,
-  GetProjectShortInfoResponse,
+  GetShortInfoResponse,
   OsfFileCustomMetadata,
-  OsfFileProjectContributor,
   OsfFileRevision,
   PatchFileMetadata,
-} from '@osf/features/project/files/models';
+} from '@osf/features/files/models';
 import {
   AddFileResponse,
   ApiData,
   ConfiguredStorageAddon,
+  ContributorModel,
+  ContributorResponse,
   FileLinks,
   FileRelationshipsResponse,
   FileResponse,
@@ -44,6 +38,9 @@ import {
 import { JsonApiService } from '@shared/services';
 import { ToastService } from '@shared/services/toast.service';
 
+import { ResourceType } from '../enums';
+import { ContributorsMapper, MapFile, MapFiles, MapFileVersions } from '../mappers';
+
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -53,6 +50,11 @@ export class FilesService {
   readonly jsonApiService = inject(JsonApiService);
   readonly toastService = inject(ToastService);
   filesFields = 'name,guid,kind,extra,size,path,materialized_path,date_modified,parent_folder,files';
+
+  private readonly urlMap = new Map<ResourceType, string>([
+    [ResourceType.Project, 'nodes'],
+    [ResourceType.Registration, 'registrations'],
+  ]);
 
   getFiles(filesLink: string, search: string, sort: string): Observable<OsfFile[]> {
     const params: Record<string, string> = {
@@ -97,9 +99,13 @@ export class FilesService {
   }
 
   createFolder(link: string, folderName: string): Observable<OsfFile> {
-    return this.jsonApiService
-      .put<CreateFolderResponse>(link, null, { name: folderName })
-      .pipe(map((response) => MapFile(response)));
+    return this.jsonApiService.put<CreateFolderResponse>(link, null, { name: folderName }).pipe(
+      map((response) => MapFile(response)),
+      catchError((error) => {
+        this.toastService.showError(error.error.message);
+        return throwError(() => error);
+      })
+    );
   }
 
   getFolder(link: string): Observable<OsfFile> {
@@ -113,7 +119,12 @@ export class FilesService {
   }
 
   deleteEntry(link: string) {
-    return this.jsonApiService.delete(link);
+    return this.jsonApiService.delete(link).pipe(
+      catchError((error) => {
+        this.toastService.showError(error.error.message);
+        return throwError(() => error);
+      })
+    );
   }
 
   renameEntry(link: string, name: string, conflict = ''): Observable<OsfFile> {
@@ -155,6 +166,16 @@ export class FilesService {
       .pipe(map((response) => MapFile(response.data)));
   }
 
+  getFileGuid(id: string): Observable<OsfFile> {
+    const params = {
+      create_guid: 'true',
+    };
+
+    return this.jsonApiService
+      .get<GetFileResponse>(`${environment.apiUrl}/files/${id}/`, params)
+      .pipe(map((response) => MapFile(response.data)));
+  }
+
   getFileById(fileGuid: string): Observable<OsfFile> {
     return this.jsonApiService
       .get<GetFileResponse>(`${environment.apiUrl}/files/${fileGuid}/`)
@@ -178,40 +199,28 @@ export class FilesService {
       .pipe(map((response) => MapFileCustomMetadata(response.data)));
   }
 
-  getProjectShortInfo(resourceId: string): Observable<GetProjectShortInfoResponse> {
+  getResourceShortInfo(resourceId: string, resourceType: string): Observable<GetShortInfoResponse> {
     const params = {
       'fields[nodes]': 'title,description,date_created,date_modified',
-      embed: 'bibliographic_contributors',
     };
-    return this.jsonApiService.get<GetProjectShortInfoResponse>(`${environment.apiUrl}/nodes/${resourceId}/`, params);
+    return this.jsonApiService.get<GetShortInfoResponse>(
+      `${environment.apiUrl}/${resourceType}/${resourceId}/`,
+      params
+    );
   }
 
-  getProjectCustomMetadata(resourceId: string): Observable<GetProjectCustomMetadataResponse> {
-    return this.jsonApiService.get<GetProjectCustomMetadataResponse>(
+  getCustomMetadata(resourceId: string): Observable<GetCustomMetadataResponse> {
+    return this.jsonApiService.get<GetCustomMetadataResponse>(
       `${environment.apiUrl}/guids/${resourceId}/?embed=custom_metadata&resolve=false`
     );
   }
 
-  getProjectContributors(resourceId: string): Observable<OsfFileProjectContributor[]> {
-    const params = {
-      'page[size]': '50',
-      'fields[users]': 'full_name,active',
-    };
-
+  getResourceContributors(resourceId: string, resourceType: string): Observable<Partial<ContributorModel>[]> {
     return this.jsonApiService
-      .get<GetProjectContributorsResponse>(
-        `${environment.apiUrl}/nodes/${resourceId}/contributors_and_group_members/`,
-        params
-      )
-      .pipe(
-        map((response) =>
-          response.data.map((user) => ({
-            id: user.id,
-            name: user.attributes.full_name,
-            active: user.attributes.active,
-          }))
-        )
-      );
+      .get<
+        JsonApiResponse<ContributorResponse[], null>
+      >(`${environment.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`)
+      .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
   }
 
   patchFileMetadata(data: PatchFileMetadata, fileGuid: string): Observable<OsfFileCustomMetadata> {
