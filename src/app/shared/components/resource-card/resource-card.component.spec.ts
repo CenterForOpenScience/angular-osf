@@ -74,4 +74,61 @@ describe('ResourceCardComponent', () => {
 
     expect(navigateSpy).not.toHaveBeenCalled();
   });
+
+  it('should return early when item is null', () => {
+    fixture.componentRef.setInput('item', null);
+
+    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+
+    component.onOpen();
+
+    expect(getUserCountsSpy).not.toHaveBeenCalled();
+  });
+
+  it('should return early when data is already loaded', () => {
+    fixture.componentRef.setInput('item', mockAgentResource);
+    component.dataIsLoaded = true;
+
+    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+
+    component.onOpen();
+
+    expect(getUserCountsSpy).not.toHaveBeenCalled();
+  });
+
+  it('should return early when resource type is not Agent', () => {
+    fixture.componentRef.setInput('item', mockResource);
+
+    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+
+    component.onOpen();
+
+    expect(getUserCountsSpy).not.toHaveBeenCalled();
+  });
+
+  it('should call service when all conditions are met', () => {
+    fixture.componentRef.setInput('item', mockAgentResource);
+    component.dataIsLoaded = false;
+
+    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+
+    component.onOpen();
+
+    expect(getUserCountsSpy).toHaveBeenCalledWith('user-123');
+  });
+
+  it('should handle item with id that does not contain slash', () => {
+    const mockItemWithoutSlash = {
+      ...mockAgentResource,
+      id: 'simple-id-without-slash',
+    };
+    fixture.componentRef.setInput('item', mockItemWithoutSlash);
+    component.dataIsLoaded = false;
+
+    const getUserCountsSpy = jest.spyOn(TestBed.inject(ResourceCardService), 'getUserRelatedCounts');
+
+    component.onOpen();
+
+    expect(getUserCountsSpy).toHaveBeenCalledWith('simple-id-without-slash');
+  });
 });

@@ -2,6 +2,7 @@ import { User } from '@osf/shared/models';
 import { UserRelatedDataCounts } from '@shared/models';
 
 export const MOCK_USER: User = {
+  iri: '',
   id: '1',
   fullName: 'John Doe',
   email: 'john@example.com',
@@ -52,6 +53,7 @@ export const MOCK_USER: User = {
   link: 'https://example.com/profile',
   defaultRegionId: 'us',
   allowIndexing: true,
+  canViewReviews: true,
 };
 
 export const MOCK_USER_RELATED_COUNTS: UserRelatedDataCounts = {

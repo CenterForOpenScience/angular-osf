@@ -110,4 +110,175 @@ describe('TagsInputComponent', () => {
     expect(emitSpy).toHaveBeenNthCalledWith(1, ['tag2', 'tag3', 'tag4']);
     expect(emitSpy).toHaveBeenNthCalledWith(2, ['tag2', 'tag4']);
   });
+
+  it('should focus input element when called', () => {
+    const mockInputElement = {
+      nativeElement: {
+        focus: jest.fn(),
+      },
+    };
+
+    Object.defineProperty(component, 'inputElement', {
+      get: () => () => mockInputElement,
+    });
+
+    component.onContainerClick();
+
+    expect(mockInputElement.nativeElement.focus).toHaveBeenCalled();
+  });
+
+  it('should handle when input element is null', () => {
+    Object.defineProperty(component, 'inputElement', {
+      get: () => () => null,
+    });
+
+    expect(() => component.onContainerClick()).not.toThrow();
+  });
+
+  it('should add tag on Enter key with value', () => {
+    const mockEvent = {
+      key: 'Enter',
+      preventDefault: jest.fn(),
+      target: {
+        value: 'new tag',
+      },
+    } as unknown as KeyboardEvent;
+
+    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    component.localTags.set(['existing tag']);
+
+    component.onInputKeydown(mockEvent);
+
+    expect(mockEvent.preventDefault).toHaveBeenCalled();
+    expect(component.localTags()).toEqual(['existing tag', 'new tag']);
+    expect(emitSpy).toHaveBeenCalledWith(['existing tag', 'new tag']);
+    expect((mockEvent.target as HTMLInputElement).value).toBe('');
+    expect(component.inputValue()).toBe('');
+  });
+
+  it('should add tag on Comma key with value', () => {
+    const mockEvent = {
+      key: ',',
+      preventDefault: jest.fn(),
+      target: {
+        value: 'new tag',
+      },
+    } as unknown as KeyboardEvent;
+
+    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    component.localTags.set(['existing tag']);
+
+    component.onInputKeydown(mockEvent);
+
+    expect(mockEvent.preventDefault).toHaveBeenCalled();
+    expect(component.localTags()).toEqual(['existing tag', 'new tag']);
+    expect(emitSpy).toHaveBeenCalledWith(['existing tag', 'new tag']);
+  });
+
+  it('should add tag on Space key with value', () => {
+    const mockEvent = {
+      key: ' ',
+      preventDefault: jest.fn(),
+      target: {
+        value: 'new tag',
+      },
+    } as unknown as KeyboardEvent;
+
+    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    component.localTags.set(['existing tag']);
+
+    component.onInputKeydown(mockEvent);
+
+    expect(mockEvent.preventDefault).toHaveBeenCalled();
+    expect(component.localTags()).toEqual(['existing tag', 'new tag']);
+    expect(emitSpy).toHaveBeenCalledWith(['existing tag', 'new tag']);
+  });
+
+  it('should remove last tag on Backspace with empty value and existing tags', () => {
+    const mockEvent = {
+      key: 'Backspace',
+      preventDefault: jest.fn(),
+      target: {
+        value: '',
+      },
+    } as unknown as KeyboardEvent;
+
+    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    component.localTags.set(['tag1', 'tag2', 'tag3']);
+
+    component.onInputKeydown(mockEvent);
+
+    expect(component.localTags()).toEqual(['tag1', 'tag2']);
+    expect(emitSpy).toHaveBeenCalledWith(['tag1', 'tag2']);
+  });
+
+  it('should not remove tag on Backspace when value is not empty', () => {
+    const mockEvent = {
+      key: 'Backspace',
+      preventDefault: jest.fn(),
+      target: {
+        value: 'some value',
+      },
+    } as unknown as KeyboardEvent;
+
+    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    component.localTags.set(['tag1', 'tag2']);
+
+    component.onInputKeydown(mockEvent);
+
+    expect(component.localTags()).toEqual(['tag1', 'tag2']);
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should not remove tag on Backspace when no tags exist', () => {
+    const mockEvent = {
+      key: 'Backspace',
+      preventDefault: jest.fn(),
+      target: {
+        value: '',
+      },
+    } as unknown as KeyboardEvent;
+
+    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    component.localTags.set([]);
+
+    component.onInputKeydown(mockEvent);
+
+    expect(component.localTags()).toEqual([]);
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
+
+  it('should add tag when value exists', () => {
+    const mockEvent = {
+      target: {
+        value: 'new tag',
+      },
+    } as unknown as FocusEvent;
+
+    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    component.localTags.set(['existing tag']);
+
+    component.onInputBlur(mockEvent);
+
+    expect(component.localTags()).toEqual(['existing tag', 'new tag']);
+    expect(emitSpy).toHaveBeenCalledWith(['existing tag', 'new tag']);
+    expect((mockEvent.target as HTMLInputElement).value).toBe('');
+    expect(component.inputValue()).toBe('');
+  });
+
+  it('should not add tag when value is empty', () => {
+    const mockEvent = {
+      target: {
+        value: '   ',
+      },
+    } as unknown as FocusEvent;
+
+    const emitSpy = jest.spyOn(component.tagsChanged, 'emit');
+    component.localTags.set(['existing tag']);
+
+    component.onInputBlur(mockEvent);
+
+    expect(component.localTags()).toEqual(['existing tag']);
+    expect(emitSpy).not.toHaveBeenCalled();
+  });
 });

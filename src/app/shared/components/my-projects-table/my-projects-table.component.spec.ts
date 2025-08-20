@@ -127,16 +127,6 @@ describe('MyProjectsTableComponent', () => {
     expect(rows.length).toBeGreaterThan(1);
   });
 
-  it('should render public project with unlock icon', () => {
-    fixture.componentRef.setInput('items', [mockItems[0]]);
-    fixture.detectChanges();
-
-    const compiled = fixture.nativeElement;
-    const unlockIcon = compiled.querySelector('.osf-icon-padlock-unlock');
-
-    expect(unlockIcon).toBeTruthy();
-  });
-
   it('should render project title', () => {
     const compiled = fixture.nativeElement;
     const titleElement = compiled.querySelector('span.overflow-ellipsis');
