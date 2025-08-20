@@ -1,10 +1,10 @@
-# 📚 Angular Documentation with Compodoc
+# Angular Documentation with Compodoc
 
 This project uses [Compodoc](https://compodoc.app/) to generate and enforce documentation for all Angular code. Documentation is mandatory and must meet a **100% coverage threshold** to ensure consistent API clarity across the codebase.
 
 ---
 
-## 🧪 How to Generate Documentation
+## How to Generate Documentation
 
 To generate and view the documentation locally:
 
@@ -19,7 +19,7 @@ This will:
 
 ---
 
-## 📏 Documentation Coverage Requirements
+## Documentation Coverage Requirements
 
 - **100% Compodoc coverage is required** across all services, components, models, and utilities.
 - All public methods, properties, and classes must be documented using proper JSDoc style comments.
@@ -27,7 +27,7 @@ This will:
 
 ---
 
-## ✅ Pre-commit Enforcement via Husky
+## Pre-commit Enforcement via Husky
 
 Husky is configured to run a **pre-commit hook** that will:
 
@@ -39,7 +39,7 @@ If the hook fails, you’ll see output indicating which files or symbols are und
 
 ---
 
-## 🔒 CI/CD Enforcement
+## CI/CD Enforcement
 
 During pull requests and merges, GitHub Actions re-validates documentation coverage.
 
@@ -47,7 +47,7 @@ Any PR that does not meet the 100% documentation requirement will be blocked fro
 
 ---
 
-## 💡 Tips for Passing Coverage
+## Tips for Passing Coverage
 
 - Use `@Input`, `@Output`, and `@Injectable` annotations with proper descriptions.
 - Document every exported interface, function, method, and variable.
@@ -56,7 +56,7 @@ Any PR that does not meet the 100% documentation requirement will be blocked fro
 
 ---
 
-## 📁 Output Directory
+## Output Directory
 
 By default, generated documentation lives in:
 
@@ -68,7 +68,7 @@ This folder is **not committed to the repo** and is only used locally or in buil
 
 ---
 
-## 🛠 Need Help?
+## Need Help?
 
 Run the following to see detailed CLI options:
 
