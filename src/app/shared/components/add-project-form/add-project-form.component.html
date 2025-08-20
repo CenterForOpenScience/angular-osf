@@ -69,17 +69,12 @@
     <label for="template">
       {{ 'myProjects.createProject.template.label' | translate }}
     </label>
-    <p-select
+    <osf-project-selector
       id="template"
-      [options]="templates()"
-      optionValue="id"
-      optionLabel="name"
-      [formControlName]="ProjectFormControls.Template"
-      [placeholder]="'myProjects.createProject.template.placeholder' | translate"
-      [filter]="true"
-      styleClass="w-full"
-      appendTo="body"
+      placeholder="myProjects.createProject.template.placeholder"
       [showClear]="hasTemplateSelected()"
+      [(selectedProject)]="selectedTemplate"
+      (projectChange)="onTemplateChange($event)"
     />
   </div>
 </form>
