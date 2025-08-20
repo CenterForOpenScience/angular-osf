@@ -9,3 +9,11 @@ export enum ResourceType {
   DraftRegistration,
   Collection,
 }
+
+export enum CurrentResourceType {
+  User = 'users',
+  File = 'files',
+  Project = 'nodes',
+  Registration = 'registrations',
+  Preprint = 'preprints',
+}

@@ -11,6 +11,7 @@ export * from './components';
 export * from './confirmation-options.model';
 export * from './contributors';
 export * from './create-component-form.model';
+export * from './current-resource.model';
 export * from './files';
 export * from './filter-labels.model';
 export * from './filters';

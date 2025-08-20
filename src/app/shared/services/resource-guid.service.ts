@@ -2,29 +2,33 @@ import { finalize, map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
+import { CurrentResource, GuidedResponseJsonApi } from '@osf/shared/models';
 
-import { ResourceType } from '../enums';
-import { GuidedResponseJsonApi } from '../models';
+import { environment } from '../../../environments/environment';
 
+import { JsonApiService } from './json-api.service';
 import { LoaderService } from './loader.service';
-
-import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ResourceTypeService {
+export class ResourceGuidService {
   private jsonApiService = inject(JsonApiService);
   private loaderService = inject(LoaderService);
 
-  getResourceType(id: string): Observable<ResourceType> {
+  getResourceById(id: string): Observable<CurrentResource> {
     const baseUrl = `${environment.apiUrl}/guids/${id}/`;
 
     this.loaderService.show();
 
     return this.jsonApiService.get<GuidedResponseJsonApi>(baseUrl).pipe(
-      map((res) => (res.data.type === 'nodes' ? ResourceType.Project : ResourceType.Registration)),
+      map(
+        (res) =>
+          ({
+            id: res.data.id,
+            type: res.data.type,
+          }) as CurrentResource
+      ),
       finalize(() => this.loaderService.hide())
     );
   }
