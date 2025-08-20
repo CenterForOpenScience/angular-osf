@@ -1,4 +1,6 @@
-import { MockProvider } from 'ng-mocks';
+import { MockModule, MockProvider } from 'ng-mocks';
+
+import { ToastModule } from 'primeng/toast';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -13,7 +15,7 @@ describe('ToastComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ToastComponent],
+      imports: [ToastComponent, MockModule(ToastModule)],
       providers: [TranslateServiceMock, MockProvider(ToastService)],
     }).compileComponents();
 
