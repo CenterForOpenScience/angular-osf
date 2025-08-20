@@ -3,14 +3,13 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { GeneralInstitutionMapper, UserInstitutionsMapper } from '@shared/mappers';
+import { InstitutionsMapper } from '@shared/mappers';
 import {
-  FetchInstitutionsJsonApi,
-  GetGeneralInstitutionsResponse,
   Institution,
-  InstitutionJsonApiModel,
-  JsonApiResponse,
-  UserInstitutionGetResponse,
+  InstitutionJsonApiResponse,
+  InstitutionsJsonApiResponse,
+  InstitutionsWithMetaJsonApi,
+  InstitutionsWithTotalCount,
 } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
@@ -22,11 +21,7 @@ import { environment } from 'src/environments/environment';
 export class InstitutionsService {
   private readonly jsonApiService = inject(JsonApiService);
 
-  getInstitutions(
-    pageNumber: number,
-    pageSize: number,
-    searchValue?: string
-  ): Observable<GetGeneralInstitutionsResponse> {
+  getInstitutions(pageNumber: number, pageSize: number, searchValue?: string): Observable<InstitutionsWithTotalCount> {
     const params: Record<string, unknown> = {};
 
     if (pageNumber) {
@@ -42,22 +37,22 @@ export class InstitutionsService {
     }
 
     return this.jsonApiService
-      .get<FetchInstitutionsJsonApi>(`${environment.apiUrl}/institutions`, params)
-      .pipe(map((response) => GeneralInstitutionMapper.adaptInstitutions(response)));
+      .get<InstitutionsWithMetaJsonApi>(`${environment.apiUrl}/institutions/`, params)
+      .pipe(map((response) => InstitutionsMapper.fromResponseWithMeta(response)));
   }
 
   getUserInstitutions(): Observable<Institution[]> {
     const url = `${environment.apiUrl}/users/me/institutions/`;
 
     return this.jsonApiService
-      .get<JsonApiResponse<UserInstitutionGetResponse[], null>>(url)
-      .pipe(map((response) => response.data.map((item) => UserInstitutionsMapper.fromResponse(item))));
+      .get<InstitutionsJsonApiResponse>(url)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
   }
 
   getInstitutionById(institutionId: string): Observable<Institution> {
     return this.jsonApiService
-      .get<InstitutionJsonApiModel>(`${environment.apiUrl}/institutions/${institutionId}/`)
-      .pipe(map((result) => GeneralInstitutionMapper.adaptInstitution(result.data)));
+      .get<InstitutionJsonApiResponse>(`${environment.apiUrl}/institutions/${institutionId}/`)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionData(response.data)));
   }
 
   deleteUserInstitution(id: string, userId: string): Observable<void> {

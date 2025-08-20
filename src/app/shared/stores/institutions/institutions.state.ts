@@ -6,21 +6,14 @@ import { catchError, tap, throwError } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { InstitutionsService } from '@osf/shared/services';
+import { handleSectionError } from '@shared/helpers';
 
 import { FetchInstitutions, FetchUserInstitutions } from './institutions.actions';
-import { InstitutionsStateModel } from './institutions.model';
+import { DefaultState, InstitutionsStateModel } from './institutions.model';
 
 @State<InstitutionsStateModel>({
   name: 'institutions',
-  defaults: {
-    userInstitutions: [],
-    institutions: {
-      data: [],
-      isLoading: false,
-      error: null,
-      totalCount: 0,
-    },
-  },
+  defaults: { ...DefaultState },
 })
 @Injectable()
 export class InstitutionsState {
@@ -28,12 +21,20 @@ export class InstitutionsState {
 
   @Action(FetchUserInstitutions)
   getUserInstitutions(ctx: StateContext<InstitutionsStateModel>) {
+    ctx.setState(patch({ userInstitutions: patch({ isLoading: true }) }));
+
     return this.institutionsService.getUserInstitutions().pipe(
       tap((institutions) => {
-        ctx.patchState({
-          userInstitutions: institutions,
-        });
-      })
+        ctx.setState(
+          patch({
+            userInstitutions: patch({
+              isLoading: false,
+              data: institutions,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'userInstitutions', error))
     );
   }
 
@@ -71,6 +72,26 @@ export class InstitutionsState {
         });
         return throwError(() => error);
       })
+    );
+  }
+
+  @Action(FetchResourceInstitutions)
+  fetchResourceInstitutions(ctx: StateContext<InstitutionsStateModel>, action: FetchResourceInstitutions) {
+    ctx.setState(patch({ resourceInstitutions: patch({ isLoading: true }) }));
+
+    return this.institutionsService.getResourceInstitutions(action.resourceId, action.resourceType).pipe(
+      tap((institutions) => {
+        ctx.setState(
+          patch({
+            resourceInstitutions: patch({
+              data: institutions,
+              isLoading: false,
+              error: null,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'resourceInstitutions', error))
     );
   }
 }

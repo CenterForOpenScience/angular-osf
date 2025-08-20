@@ -6,7 +6,7 @@ import { InstitutionsState } from './institutions.state';
 export class InstitutionsSelectors {
   @Selector([InstitutionsState])
   static getUserInstitutions(state: InstitutionsStateModel) {
-    return state.userInstitutions;
+    return state.userInstitutions.data;
   }
 
   @Selector([InstitutionsState])
