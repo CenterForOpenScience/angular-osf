@@ -18,7 +18,7 @@ describe('Service: Addons', () => {
     service = TestBed.inject(AddonsService);
   });
 
-  it.only('should test getAddons', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+  it('should test getAddons', inject([HttpTestingController], (httpMock: HttpTestingController) => {
     let results: any[] = [];
     service.getAddons('storage').subscribe((result) => {
       results = result;

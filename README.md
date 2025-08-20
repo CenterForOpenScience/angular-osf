@@ -16,9 +16,10 @@ take up to 60 seconds once the docker build finishes.
 
 ### Recommended
 
-- Install git commit template: [Commit Template](docs/commit.template.md).
+- Compodoc: [Compodoc Conventions](docs/compodoc.md).
 - Docker Commands: [Docker Commands](docs/docker.md).
 - Git Conventions: [Git Conventions](docs/git-convention.md).
+- Install git commit template: [Commit Template](docs/commit.template.md).
 - Volta: [Volta](#volta)
 - Redux DevTools: [Redux DevTools](#redux-devtools)
 
