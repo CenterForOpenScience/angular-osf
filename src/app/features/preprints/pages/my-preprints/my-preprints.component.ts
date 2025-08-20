@@ -23,9 +23,9 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { parseQueryFilterParams } from '@core/helpers';
 import { PreprintShortInfo } from '@osf/features/preprints/models';
 import { FetchMyPreprints, PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { parseQueryFilterParams } from '@osf/shared/helpers';
 import { ListInfoShortenerComponent, SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { TABLE_PARAMS } from '@shared/constants';
 import { SortOrder } from '@shared/enums';

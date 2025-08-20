@@ -1,5 +1,3 @@
-import { createDispatchMap } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
@@ -8,12 +6,12 @@ import { Message } from 'primeng/message';
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { AuthService } from '@osf/core/services';
 import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
-import { CustomValidators } from '@osf/shared/utils';
+import { CustomValidators } from '@osf/shared/helpers';
 
 import { ForgotPasswordFormGroupType, MessageInfo } from '../../models';
-import { ForgotPassword } from '../../store';
 
 @Component({
   selector: 'osf-forgot-password',
@@ -23,7 +21,7 @@ import { ForgotPassword } from '../../store';
 })
 export class ForgotPasswordComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly actions = createDispatchMap({ forgotPassword: ForgotPassword });
+  private readonly authService = inject(AuthService);
 
   readonly emailLimit = InputLimits.email.maxLength;
 
@@ -40,7 +38,7 @@ export class ForgotPasswordComponent {
 
     const emailForm = this.forgotPasswordForm.getRawValue();
 
-    this.actions.forgotPassword(emailForm.email).subscribe(() => {
+    this.authService.forgotPassword(emailForm.email).subscribe(() => {
       this.forgotPasswordForm.reset();
 
       this.message.set({

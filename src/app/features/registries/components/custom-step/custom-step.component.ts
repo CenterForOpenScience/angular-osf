@@ -31,8 +31,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { InfoIconComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { FieldType } from '@osf/shared/enums';
+import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
 import { FilePayloadJsonApi, OsfFile, PageSchema } from '@osf/shared/models';
-import { CustomValidators, findChangedFields } from '@osf/shared/utils';
 
 import { FilesMapper } from '../../mappers/files.mapper';
 import { RegistriesSelectors, SetUpdatedFields, UpdateStepValidation } from '../../store';
@@ -96,7 +96,7 @@ export class CustomStepComponent implements OnDestroy {
 
   stepForm!: FormGroup;
 
-  attachedFiles: Record<string, Partial<OsfFile>[]> = {};
+  attachedFiles: Record<string, Partial<OsfFile & { file_id: string }>[]> = {};
 
   constructor() {
     this.route.params.pipe(takeUntilDestroyed()).subscribe((params) => {
@@ -181,7 +181,7 @@ export class CustomStepComponent implements OnDestroy {
 
   onAttachFile(file: OsfFile, questionKey: string): void {
     this.attachedFiles[questionKey] = this.attachedFiles[questionKey] || [];
-    if (!this.attachedFiles[questionKey].some((f) => f.id === file.id)) {
+    if (!this.attachedFiles[questionKey].some((f) => f.file_id === file.id)) {
       this.attachedFiles[questionKey].push(file);
       this.stepForm.patchValue({
         [questionKey]: [...(this.attachedFiles[questionKey] || []), file],
@@ -189,20 +189,36 @@ export class CustomStepComponent implements OnDestroy {
       const otherFormValues = { ...this.stepForm.value };
       delete otherFormValues[questionKey];
       this.updateAction.emit({
-        [questionKey]: [...this.attachedFiles[questionKey].map((f) => FilesMapper.toFilePayload(f as OsfFile))],
+        [questionKey]: [
+          ...this.attachedFiles[questionKey].map((f) => {
+            if (f.file_id) {
+              const { name, ...payload } = f;
+              return payload;
+            }
+            return FilesMapper.toFilePayload(f as OsfFile);
+          }),
+        ],
         ...otherFormValues,
       });
     }
   }
 
-  removeFromAttachedFiles(file: Partial<OsfFile>, questionKey: string): void {
+  removeFromAttachedFiles(file: Partial<OsfFile & { file_id: string }>, questionKey: string): void {
     if (this.attachedFiles[questionKey]) {
-      this.attachedFiles[questionKey] = this.attachedFiles[questionKey].filter((f) => f.id !== file.id);
+      this.attachedFiles[questionKey] = this.attachedFiles[questionKey].filter((f) => f.file_id !== file.file_id);
       this.stepForm.patchValue({
         [questionKey]: this.attachedFiles[questionKey],
       });
       this.updateAction.emit({
-        [questionKey]: [...this.attachedFiles[questionKey].map((f) => FilesMapper.toFilePayload(f as OsfFile))],
+        [questionKey]: [
+          ...this.attachedFiles[questionKey].map((f) => {
+            if (f.file_id) {
+              const { name, ...payload } = f;
+              return payload;
+            }
+            return FilesMapper.toFilePayload(f as OsfFile);
+          }),
+        ],
       });
     }
   }

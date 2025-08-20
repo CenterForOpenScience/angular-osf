@@ -8,13 +8,14 @@ import {
   CitationsState,
   CollectionsState,
   ContributorsState,
+  DuplicatesState,
   NodeLinksState,
   SubjectsState,
   ViewOnlyLinkState,
 } from '@osf/shared/stores';
+import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from './analytics/store';
-import { ProjectFilesState } from './files/store';
 import { SettingsState } from './settings/store';
 
 export const projectRoutes: Routes = [
@@ -31,7 +32,15 @@ export const projectRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('../project/overview/project-overview.component').then((mod) => mod.ProjectOverviewComponent),
-        providers: [provideStates([NodeLinksState, CitationsState, CollectionsState, CollectionsModerationState])],
+        providers: [
+          provideStates([
+            NodeLinksState,
+            CitationsState,
+            CollectionsState,
+            CollectionsModerationState,
+            ActivityLogsState,
+          ]),
+        ],
       },
       {
         path: 'metadata',
@@ -41,11 +50,8 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'files',
-        loadChildren: () => import('../project/files/project-files.routes').then((mod) => mod.projectFilesRoutes),
-        providers: [provideStates([ProjectFilesState])],
-        data: {
-          context: ResourceType.Project,
-        },
+        loadChildren: () => import('@osf/features/files/files.routes').then((mod) => mod.filesRoutes),
+        data: { resourceType: ResourceType.Project },
       },
       {
         path: 'registrations',
@@ -69,6 +75,15 @@ export const projectRoutes: Routes = [
         loadComponent: () => import('../project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
         data: { resourceType: ResourceType.Project },
         providers: [provideStates([AnalyticsState])],
+      },
+      {
+        path: 'analytics/duplicates',
+        data: { resourceType: ResourceType.Project },
+        loadComponent: () =>
+          import('../project/analytics/components/view-duplicates/view-duplicates.component').then(
+            (mod) => mod.ViewDuplicatesComponent
+          ),
+        providers: [provideStates([DuplicatesState])],
       },
       {
         path: 'wiki',

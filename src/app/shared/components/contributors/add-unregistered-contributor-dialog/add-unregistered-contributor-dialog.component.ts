@@ -9,8 +9,8 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission } from '@osf/shared/enums/contributors';
+import { CustomValidators } from '@osf/shared/helpers';
 import { ContributorAddModel, ContributorDialogAddModel, UnregisteredContributorForm } from '@osf/shared/models';
-import { CustomValidators } from '@osf/shared/utils';
 
 @Component({
   selector: 'osf-add-unregistered-contributor-dialog',

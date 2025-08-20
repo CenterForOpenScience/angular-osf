@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { UserSelectors } from '@core/store/user/user.selectors';
+import { addFiltersParams, getResourceTypes } from '@osf/shared/helpers';
 import {
   DateCreated,
   FunderFilter,
@@ -15,7 +16,6 @@ import {
   SubjectFilter,
 } from '@osf/shared/models';
 import { FiltersOptionsService } from '@osf/shared/services';
-import { addFiltersParams, getResourceTypes } from '@osf/shared/utils';
 
 import { MyProfileResourceFiltersSelectors } from '../components/my-profile-resource-filters/store';
 import { MyProfileSelectors } from '../store';

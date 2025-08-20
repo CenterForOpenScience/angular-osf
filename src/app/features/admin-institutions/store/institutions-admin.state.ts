@@ -1,16 +1,20 @@
 import { Action, State, StateContext } from '@ngxs/store';
+import { patch } from '@ngxs/store/operators';
 
-import { catchError, tap } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
+import { handleSectionError } from '@osf/shared/helpers';
+import { Institution } from '@osf/shared/models';
+import { InstitutionsService } from '@osf/shared/services';
 
-import { InstitutionPreprint, InstitutionProject, InstitutionRegistration, InstitutionSummaryMetrics } from '../models';
+import { InstitutionPreprint, InstitutionProject, InstitutionRegistration } from '../models';
 import { InstitutionsAdminService } from '../services/institutions-admin.service';
 
 import {
   FetchHasOsfAddonSearch,
+  FetchInstitutionById,
   FetchInstitutionDepartments,
   FetchInstitutionSearchResults,
   FetchInstitutionSummaryMetrics,
@@ -19,30 +23,35 @@ import {
   FetchProjects,
   FetchRegistrations,
   FetchStorageRegionSearch,
+  RequestProjectAccess,
   SendUserMessage,
 } from './institutions-admin.actions';
-import { InstitutionsAdminModel } from './institutions-admin.model';
+import { INSTITUTIONS_ADMIN_STATE_DEFAULTS, InstitutionsAdminModel } from './institutions-admin.model';
 
 @State<InstitutionsAdminModel>({
   name: 'institutionsAdmin',
-  defaults: {
-    departments: { data: [], isLoading: false, error: null },
-    summaryMetrics: { data: {} as InstitutionSummaryMetrics, isLoading: false, error: null },
-    hasOsfAddonSearch: { data: [], isLoading: false, error: null },
-    storageRegionSearch: { data: [], isLoading: false, error: null },
-    searchResults: { data: [], isLoading: false, error: null },
-    users: { data: [], totalCount: 0, isLoading: false, error: null },
-    projects: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
-    registrations: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
-    preprints: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined },
-    sendMessage: { data: null, isLoading: false, error: null },
-    selectedInstitutionId: null,
-    currentSearchPropertyPath: null,
-  },
+  defaults: INSTITUTIONS_ADMIN_STATE_DEFAULTS,
 })
 @Injectable()
 export class InstitutionsAdminState {
+  private readonly institutionsService = inject(InstitutionsService);
   private readonly institutionsAdminService = inject(InstitutionsAdminService);
+
+  @Action(FetchInstitutionById)
+  fetchInstitutionById(ctx: StateContext<InstitutionsAdminModel>, action: FetchInstitutionById) {
+    ctx.patchState({ institution: { data: {} as Institution, isLoading: true, error: null } });
+
+    return this.institutionsService.getInstitutionById(action.institutionId).pipe(
+      tap((response) => {
+        ctx.setState(
+          patch({
+            institution: patch({ data: response, error: null, isLoading: false }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'institution', error))
+    );
+  }
 
   @Action(FetchInstitutionDepartments)
   fetchDepartments(ctx: StateContext<InstitutionsAdminModel>, action: FetchInstitutionDepartments) {
@@ -84,7 +93,6 @@ export class InstitutionsAdminState {
     const state = ctx.getState();
     ctx.patchState({
       searchResults: { ...state.searchResults, isLoading: true, error: null },
-      currentSearchPropertyPath: action.valueSearchPropertyPath,
     });
 
     return this.institutionsAdminService
@@ -160,7 +168,7 @@ export class InstitutionsAdminState {
     });
 
     return this.institutionsAdminService
-      .fetchProjects(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .fetchProjects(action.institutionIris, action.pageSize, action.sort, action.cursor)
       .pipe(
         tap((response) => {
           ctx.patchState({
@@ -170,6 +178,7 @@ export class InstitutionsAdminState {
               isLoading: false,
               error: null,
               links: response.links,
+              downloadLink: response.downloadLink,
             },
           });
         }),
@@ -185,7 +194,7 @@ export class InstitutionsAdminState {
     });
 
     return this.institutionsAdminService
-      .fetchRegistrations(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .fetchRegistrations(action.institutionIris, action.pageSize, action.sort, action.cursor)
       .pipe(
         tap((response) => {
           ctx.patchState({
@@ -195,6 +204,7 @@ export class InstitutionsAdminState {
               isLoading: false,
               error: null,
               links: response.links,
+              downloadLink: response.downloadLink,
             },
           });
         }),
@@ -210,7 +220,7 @@ export class InstitutionsAdminState {
     });
 
     return this.institutionsAdminService
-      .fetchPreprints(action.institutionId, action.institutionIris, action.pageSize, action.sort, action.cursor)
+      .fetchPreprints(action.institutionIris, action.pageSize, action.sort, action.cursor)
       .pipe(
         tap((response) => {
           ctx.patchState({
@@ -220,6 +230,7 @@ export class InstitutionsAdminState {
               isLoading: false,
               error: null,
               links: response.links,
+              downloadLink: response.downloadLink,
             },
           });
         }),
@@ -229,11 +240,6 @@ export class InstitutionsAdminState {
 
   @Action(SendUserMessage)
   sendUserMessage(ctx: StateContext<InstitutionsAdminModel>, action: SendUserMessage) {
-    const state = ctx.getState();
-    ctx.patchState({
-      sendMessage: { ...state.sendMessage, isLoading: true, error: null },
-    });
-
     return this.institutionsAdminService
       .sendMessage({
         userId: action.userId,
@@ -242,13 +248,13 @@ export class InstitutionsAdminState {
         bccSender: action.bccSender,
         replyTo: action.replyTo,
       })
-      .pipe(
-        tap((response) => {
-          ctx.patchState({
-            sendMessage: { data: response, isLoading: false, error: null },
-          });
-        }),
-        catchError((error) => handleSectionError(ctx, 'sendMessage', error))
-      );
+      .pipe(catchError((error) => throwError(() => error)));
+  }
+
+  @Action(RequestProjectAccess)
+  requestProjectAccess(ctx: StateContext<InstitutionsAdminModel>, action: RequestProjectAccess) {
+    return this.institutionsAdminService
+      .requestProjectAccess(action.payload)
+      .pipe(catchError((error) => throwError(() => error)));
   }
 }

@@ -15,8 +15,8 @@ import {
   signal,
 } from '@angular/core';
 
+import { PIE_CHART_PALETTE } from '@osf/shared/helpers';
 import { DatasetInput } from '@osf/shared/models';
-import { PIE_CHART_PALETTE } from '@shared/utils';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 

@@ -25,7 +25,6 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { StringOrNull } from '@core/helpers';
 import { SupplementOptions } from '@osf/features/preprints/enums';
 import {
   ConnectProject,
@@ -35,11 +34,12 @@ import {
   FetchPreprintProject,
   PreprintStepperSelectors,
 } from '@osf/features/preprints/store/preprint-stepper';
+import { CustomValidators } from '@osf/shared/helpers';
 import { AddProjectFormComponent } from '@shared/components';
 import { ProjectFormControls } from '@shared/enums';
+import { StringOrNull } from '@shared/helpers';
 import { ProjectForm } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
-import { CustomValidators } from '@shared/utils';
 
 @Component({
   selector: 'osf-supplements-step',

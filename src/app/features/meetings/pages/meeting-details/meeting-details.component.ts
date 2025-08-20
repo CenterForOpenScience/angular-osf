@@ -25,10 +25,10 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { parseQueryFilterParams } from '@core/helpers/http.helper';
 import { MEETING_SUBMISSIONS_TABLE_PARAMS } from '@osf/features/meetings/constants';
 import { MeetingSubmission } from '@osf/features/meetings/models';
 import { GetMeetingById, GetMeetingSubmissions, MeetingsSelectors } from '@osf/features/meetings/store';
+import { parseQueryFilterParams } from '@osf/shared/helpers/http.helper';
 import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { SortOrder } from '@shared/enums';
 import { QueryParams, TableParameters } from '@shared/models';

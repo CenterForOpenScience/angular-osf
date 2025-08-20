@@ -9,8 +9,8 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
+import { CustomValidators } from '@osf/shared/helpers';
 import { ViewOnlyLinkNodeModel } from '@osf/shared/models';
-import { CustomValidators } from '@osf/shared/utils';
 
 @Component({
   selector: 'osf-create-view-link-dialog',

@@ -8,11 +8,13 @@ import { Router } from '@angular/router';
 import { LoaderService, ToastService } from '@osf/shared/services';
 
 import { ERROR_MESSAGES } from '../constants';
+import { AuthService } from '../services';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const toastService = inject(ToastService);
   const loaderService = inject(LoaderService);
   const router = inject(Router);
+  const authService = inject(AuthService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
@@ -28,6 +30,11 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         }
       }
 
+      if (error.status === 401) {
+        authService.logout();
+        return throwError(() => error);
+      }
+
       if (error.status === 403) {
         if (error.url?.includes('v2/nodes/')) {
           const match = error.url.match(/\/nodes\/([^/]+)/);
@@ -40,10 +47,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       loaderService.hide();
-
-      if (error.status === 409) {
-        return throwError(() => error);
-      }
 
       toastService.showError(errorMessage);
 

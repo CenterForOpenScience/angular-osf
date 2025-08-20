@@ -9,7 +9,7 @@
 
   @if (showButton()) {
     <div>
-      <p-button severity="secondary" [label]="buttonLabel() | translate"> </p-button>
+      <p-button severity="secondary" [label]="buttonLabel() | translate" (onClick)="buttonClick.emit()"> </p-button>
     </div>
   }
 </div>

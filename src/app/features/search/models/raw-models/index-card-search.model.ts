@@ -1,4 +1,4 @@
-import { ApiData, JsonApiResponse } from '@osf/core/models';
+import { ApiData, JsonApiResponse } from '@osf/shared/models';
 import { AppliedFilter, RelatedPropertyPathAttributes } from '@shared/mappers';
 
 import { ResourceItem } from './resource-response.model';

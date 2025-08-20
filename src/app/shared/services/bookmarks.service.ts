@@ -2,8 +2,8 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
 import { SparseCollectionsResponseJsonApi } from '@shared/models';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 
@@ -33,7 +33,7 @@ export class BookmarksService {
     const payload = {
       data: [
         {
-          type: 'linked_nodes',
+          type: 'nodes',
           id: projectId,
         },
       ],
@@ -47,7 +47,7 @@ export class BookmarksService {
     const payload = {
       data: [
         {
-          type: 'linked_nodes',
+          type: 'nodes',
           id: projectId,
         },
       ],
@@ -61,7 +61,7 @@ export class BookmarksService {
     const payload = {
       data: [
         {
-          type: 'linked_registrations',
+          type: 'registrations',
           id: registryId,
         },
       ],
@@ -75,7 +75,7 @@ export class BookmarksService {
     const payload = {
       data: [
         {
-          type: 'linked_registrations',
+          type: 'registrations',
           id: registryId,
         },
       ],

@@ -10,8 +10,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PreprintsDiscoverSelectors } from '@osf/features/preprints/store/preprints-discover';
 import { PreprintsResourcesFiltersSelectors } from '@osf/features/preprints/store/preprints-resources-filters';
 import { PreprintsResourcesFiltersOptionsSelectors } from '@osf/features/preprints/store/preprints-resources-filters-options';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 import { EMPTY_FILTERS, MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
-import { IS_WEB, IS_XSMALL } from '@shared/utils';
 
 import { PreprintsResourcesComponent } from './preprints-resources.component';
 

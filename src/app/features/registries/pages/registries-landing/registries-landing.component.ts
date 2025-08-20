@@ -18,6 +18,8 @@ import {
 } from '@shared/components';
 import { ResourceTab } from '@shared/enums';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-registries-landing',
   imports: [
@@ -64,7 +66,6 @@ export class RegistriesLandingComponent implements OnInit {
   }
 
   goToCreateRegistration(): void {
-    const providerId = 'osf';
-    this.router.navigate([`/registries/${providerId}/new`]);
+    this.router.navigate([`/registries/${environment.defaultProvider}/new`]);
   }
 }

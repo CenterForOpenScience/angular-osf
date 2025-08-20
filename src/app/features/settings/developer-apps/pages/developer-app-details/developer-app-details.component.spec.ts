@@ -12,8 +12,8 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
+import { IS_XSMALL } from '@osf/shared/helpers';
 import { CustomConfirmationService } from '@osf/shared/services';
-import { IS_XSMALL } from '@osf/shared/utils';
 
 import { DeveloperAppsState } from '../../store';
 

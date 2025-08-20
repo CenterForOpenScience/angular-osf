@@ -1,6 +1,6 @@
-import { StringOrNull } from '@core/helpers';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint, PreprintFilesLinks } from '@osf/features/preprints/models';
+import { StringOrNull } from '@shared/helpers';
 import { AsyncStateModel, IdName, OsfFile } from '@shared/models';
 import { License } from '@shared/models/license.model';
 

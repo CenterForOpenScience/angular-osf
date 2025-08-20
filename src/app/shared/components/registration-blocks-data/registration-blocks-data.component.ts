@@ -9,9 +9,11 @@ import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { FieldType } from '@osf/shared/enums';
 import { Question } from '@osf/shared/models';
 
+import { FileLinkComponent } from '../file-link/file-link.component';
+
 @Component({
   selector: 'osf-registration-blocks-data',
-  imports: [Tag, TranslatePipe, Message],
+  imports: [Tag, TranslatePipe, Message, FileLinkComponent],
   templateUrl: './registration-blocks-data.component.html',
   styleUrl: './registration-blocks-data.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

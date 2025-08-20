@@ -1,7 +1,8 @@
-import { BooleanOrNull, StringOrNull } from '@core/helpers';
-import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
-import { UserPermissions } from '@shared/enums';
-import { IdName, License, LicenseOptions } from '@shared/models';
+import { UserPermissions } from '@osf/shared/enums';
+import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers';
+import { IdName, License, LicenseOptions } from '@osf/shared/models';
+
+import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '../enums';
 
 export interface Preprint {
   id: string;
@@ -9,6 +10,7 @@ export interface Preprint {
   dateModified: string;
   dateWithdrawn: Date | null;
   datePublished: Date | null;
+  dateLastTransitioned: Date | null;
   title: string;
   description: string;
   reviewsState: ReviewsState;
@@ -23,6 +25,7 @@ export interface Preprint {
   version: number;
   isLatestVersion: boolean;
   isPreprintOrphan: boolean;
+  withdrawalJustification: StringOrNull;
   nodeId: StringOrNull;
   primaryFileId: StringOrNull;
   licenseId: StringOrNull;

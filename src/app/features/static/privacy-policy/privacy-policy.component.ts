@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-privacy-policy',
   imports: [],
@@ -7,4 +9,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './privacy-policy.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PrivacyPolicyComponent {}
+export class PrivacyPolicyComponent {
+  readonly supportEmail = environment.supportEmail;
+}

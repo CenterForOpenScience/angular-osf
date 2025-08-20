@@ -4,8 +4,8 @@ import { catchError, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/core/handlers';
 import { ResourceType } from '@osf/shared/enums';
+import { handleSectionError } from '@osf/shared/helpers';
 import { MyResourcesService } from '@osf/shared/services';
 
 import {
@@ -46,7 +46,7 @@ export class MyResourcesState {
               isLoading: false,
               error: null,
             },
-            totalProjects: res.links.meta.total,
+            totalProjects: res.meta.total,
           });
         }),
         catchError((error) => handleSectionError(ctx, 'projects', error))
@@ -73,7 +73,7 @@ export class MyResourcesState {
               isLoading: false,
               error: null,
             },
-            totalRegistrations: res.links.meta.total,
+            totalRegistrations: res.meta.total,
           });
         }),
         catchError((error) => handleSectionError(ctx, 'registrations', error))
@@ -98,7 +98,7 @@ export class MyResourcesState {
             isLoading: false,
             error: null,
           },
-          totalPreprints: res.links.meta.total,
+          totalPreprints: res.meta.total,
         });
       }),
       catchError((error) => handleSectionError(ctx, 'preprints', error))
@@ -127,7 +127,7 @@ export class MyResourcesState {
                 isLoading: false,
                 error: null,
               },
-              totalBookmarks: res.links.meta.total,
+              totalBookmarks: res.meta.total,
             });
           }),
           catchError((error) => handleSectionError(ctx, 'bookmarks', error))
@@ -159,9 +159,7 @@ export class MyResourcesState {
         tap((results) => {
           const allData = [...results.projects.data, ...results.preprints.data, ...results.registrations.data];
           const totalCount =
-            results.projects.links.meta.total +
-            results.preprints.links.meta.total +
-            results.registrations.links.meta.total;
+            results.projects.meta.total + results.preprints.meta.total + results.registrations.meta.total;
 
           ctx.patchState({
             bookmarks: {

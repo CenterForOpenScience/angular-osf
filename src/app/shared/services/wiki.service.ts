@@ -4,8 +4,8 @@ import { map, switchMap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@osf/core/services';
+import { JsonApiService } from '@osf/shared/services';
+import { JsonApiResponse } from '@shared/models';
 
 import { ResourceType } from '../enums';
 import { WikiMapper } from '../mappers/wiki';

@@ -39,7 +39,7 @@ export class ForkDialogComponent {
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
-          this.dialogRef.close();
+          this.dialogRef.close({ success: true });
           this.toastService.showSuccess('project.overview.dialog.toast.fork.success');
         })
       )

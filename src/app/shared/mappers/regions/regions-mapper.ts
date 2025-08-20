@@ -1,5 +1,5 @@
-import { IdName } from '@shared/models';
-import { RegionsResponseJsonApi } from '@shared/models/regions';
+import { IdName } from '@osf/shared/models';
+import { RegionsResponseJsonApi } from '@osf/shared/models/regions';
 
 export class RegionsMapper {
   static fromRegionsResponseJsonApi(response: RegionsResponseJsonApi): IdName[] {

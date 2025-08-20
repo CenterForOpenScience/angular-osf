@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 
 import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ResourceType } from '@osf/shared/enums';
+import { ActivityLogsState } from '@shared/stores/activity-logs';
 import { CollectionsState } from '@shared/stores/collections';
 
 import { ModeratorsState } from './store/moderators';
@@ -16,6 +17,7 @@ export const collectionModerationRoutes: Routes = [
       import('@osf/features/moderation/pages/collection-moderation/collection-moderation.component').then(
         (m) => m.CollectionModerationComponent
       ),
+    providers: [provideStates([ActivityLogsState])],
     children: [
       {
         path: '',

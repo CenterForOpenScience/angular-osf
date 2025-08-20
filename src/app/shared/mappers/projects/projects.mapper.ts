@@ -1,6 +1,6 @@
 import { CollectionSubmissionMetadataPayloadJsonApi } from '@osf/features/collections/models';
-import { ProjectMetadataUpdatePayload } from '@shared/models';
-import { Project, ProjectJsonApi, ProjectsResponseJsonApi } from '@shared/models/projects';
+import { ProjectMetadataUpdatePayload } from '@osf/shared/models';
+import { Project, ProjectJsonApi, ProjectsResponseJsonApi } from '@osf/shared/models/projects';
 
 export class ProjectsMapper {
   static fromGetAllProjectsResponse(response: ProjectsResponseJsonApi): Project[] {

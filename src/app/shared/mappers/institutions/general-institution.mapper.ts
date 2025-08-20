@@ -13,13 +13,15 @@ export class GeneralInstitutionMapper {
       assets: data.attributes.assets,
       institutionalRequestAccessEnabled: data.attributes.institutional_request_access_enabled,
       logoPath: data.attributes.logo_path,
+      userMetricsUrl: data.relationships.user_metrics.links.related.href,
+      linkToExternalReportsArchive: data.attributes.link_to_external_reports_archive,
     };
   }
 
   static adaptInstitutions(response: FetchInstitutionsJsonApi): GetGeneralInstitutionsResponse {
     return {
       data: response.data.map((institution) => this.adaptInstitution(institution)),
-      total: response.links.meta.total,
+      total: response.meta.total,
     };
   }
 }

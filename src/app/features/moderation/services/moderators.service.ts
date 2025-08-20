@@ -2,10 +2,9 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse, JsonApiResponseWithPaging, UserGetResponse } from '@osf/core/models';
-import { JsonApiService } from '@osf/core/services';
 import { ResourceType } from '@osf/shared/enums';
-import { PaginatedData } from '@osf/shared/models';
+import { JsonApiResponse, PaginatedData, ResponseJsonApi, UserGetResponse } from '@osf/shared/models';
+import { JsonApiService } from '@osf/shared/services';
 
 import { AddModeratorType } from '../enums';
 import { ModerationMapper } from '../mappers';
@@ -22,7 +21,7 @@ export class ModeratorsService {
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Collection, 'providers/collections'],
     [ResourceType.Registration, 'providers/registrations'],
-    [ResourceType.Preprint, 'preprint_providers'],
+    [ResourceType.Preprint, 'providers/preprints'],
   ]);
 
   getModerators(resourceId: string, resourceType: ResourceType): Observable<ModeratorModel[]> {
@@ -63,7 +62,7 @@ export class ModeratorsService {
     const baseUrl = `${environment.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
 
     return this.jsonApiService
-      .get<JsonApiResponseWithPaging<UserGetResponse[], null>>(baseUrl)
+      .get<ResponseJsonApi<UserGetResponse[]>>(baseUrl)
       .pipe(map((response) => ModerationMapper.fromUsersWithPaginationGetResponse(response)));
   }
 }

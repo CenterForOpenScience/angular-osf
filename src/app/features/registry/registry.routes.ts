@@ -3,12 +3,11 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { RegistryComponentsState } from '@osf/features/registry/store/registry-components';
-import { RegistryFilesState } from '@osf/features/registry/store/registry-files';
 import { RegistryLinksState } from '@osf/features/registry/store/registry-links';
 import { RegistryMetadataState } from '@osf/features/registry/store/registry-metadata';
 import { RegistryOverviewState } from '@osf/features/registry/store/registry-overview';
 import { ResourceType } from '@osf/shared/enums';
-import { ContributorsState, ViewOnlyLinkState } from '@osf/shared/stores';
+import { ContributorsState, DuplicatesState, ViewOnlyLinkState } from '@osf/shared/stores';
 
 import { AnalyticsState } from '../project/analytics/store';
 
@@ -71,13 +70,18 @@ export const registryRoutes: Routes = [
         providers: [provideStates([AnalyticsState])],
       },
       {
-        path: 'files',
+        path: 'analytics/duplicates',
+        data: { resourceType: ResourceType.Registration },
         loadComponent: () =>
-          import('./pages/registry-files/registry-files.component').then((c) => c.RegistryFilesComponent),
-        providers: [provideStates([RegistryFilesState])],
-        data: {
-          context: ResourceType.Registration,
-        },
+          import('../project/analytics/components/view-duplicates/view-duplicates.component').then(
+            (mod) => mod.ViewDuplicatesComponent
+          ),
+        providers: [provideStates([DuplicatesState])],
+      },
+      {
+        path: 'files',
+        loadChildren: () => import('@osf/features/files/files.routes').then((mod) => mod.filesRoutes),
+        data: { resourceType: ResourceType.Registration },
       },
       {
         path: 'components',

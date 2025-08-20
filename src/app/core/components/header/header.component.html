@@ -2,7 +2,7 @@
   <osf-breadcrumb />
 
   <div class="header-dropdown-button ml-auto">
-    @if (isAuthenticated()) {
+    @if (currentUser()) {
       <p-button
         class="custom-dark-hover"
         icon="fas fa-chevron-down"

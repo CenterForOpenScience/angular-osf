@@ -15,10 +15,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TextInputComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
+import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
 import { ContributorModel, DraftRegistrationModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService } from '@osf/shared/services';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
-import { CustomValidators, findChangedFields } from '@osf/shared/utils';
 
 import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepValidation } from '../../store';
 

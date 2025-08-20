@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
 
 import { SOCIAL_ICONS } from '@osf/core/constants';
 import { IconComponent } from '@osf/shared/components';
-import { IS_WEB } from '@shared/utils';
+import { IS_WEB } from '@osf/shared/helpers';
 
 @Component({
   selector: 'osf-footer',

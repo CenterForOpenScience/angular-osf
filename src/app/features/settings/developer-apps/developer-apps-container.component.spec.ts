@@ -8,9 +8,9 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeveloperAppAddEditFormComponent } from '@osf/features/settings/developer-apps/components';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
-import { IS_MEDIUM } from '@shared/utils';
 
 import { DeveloperAppsContainerComponent } from './developer-apps-container.component';
 

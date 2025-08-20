@@ -100,6 +100,9 @@
       "and": "and",
       "more": "more",
       "data": "Data",
+      "forked": "Forked",
+      "lastUpdated": "Last Updated",
+      "contributors": "Contributors",
       "updated": "Updated",
       "dateUpdated": "Date Updated",
       "dateCreated": "Date Created"
@@ -145,6 +148,7 @@
     "myResources": "My Resources",
     "registries": "Registries",
     "overview": "Overview",
+    "discover": "Discover",
     "registriesSubRoutes": {
       "myRegistrations": "My Registrations",
       "registryDetails": "Registry Details"
@@ -445,10 +449,10 @@
   "project": {
     "analytics": {
       "kpi": {
-        "forks": "Forks",
+        "forks": "Duplicates",
         "linksToThisProject": "Links to this project",
         "templateCopies": "Template copies",
-        "viewForks": "View forks",
+        "viewForks": "View duplicates",
         "viewLinks": "View links"
       },
       "charts": {
@@ -562,7 +566,14 @@
         "noLinkedProjectsMessage": "<em>Link your project.</em>"
       },
       "recentActivity": {
-        "title": "Recent Activity"
+        "title": "Recent Activity",
+        "noActivity": "No recent activity"
+      },
+      "collectionsModeration": {
+        "pending": "Pending entry into\u00A0",
+        "accepted": "Included in\u00A0",
+        "removed": "Removed from\u00A0",
+        "rejected": "Rejected from\u00A0"
       },
       "metadata": {
         "title": "Metadata",
@@ -622,7 +633,7 @@
           "header": "Make Project Private",
           "confirmButton": "Make Private",
           "cancelButton": "Cancel",
-          "message": "<ul><li>&#8226; Public forks and registrations of this project will remain public.</li><li>&#8226; Search engines (including Google's cache) or others may have accessed files, wiki pages, or analytics while this project was public.</li><li>&#8226; The project will automatically be removed from any collections. Any pending requests will be cancelled.</li></ul><br/>"
+          "message": "<ul><li>&#8226; Public duplicates and registrations of this project will remain public.</li><li>&#8226; Search engines (including Google's cache) or others may have accessed files, wiki pages, or analytics while this project was public.</li><li>&#8226; The project will automatically be removed from any collections. Any pending requests will be cancelled.</li></ul><br/>"
         },
         "toast": {
           "makePublic": {
@@ -641,7 +652,7 @@
             "success": "Node link has been deleted successfully"
           },
           "fork": {
-            "success": "Project has been forked successfully"
+            "success": "Project has been duplicated successfully"
           },
           "duplicate": {
             "success": "Project has been duplicated successfully"
@@ -698,12 +709,14 @@
           "message": "Are you sure you want to delete this link? This will not remove the project or registration this link refers to."
         },
         "fork": {
-          "headerProject": "Fork This Project",
-          "headerRegistry": "Fork This Registry",
-          "confirmButton": "Fork",
+          "headerProject": "Duplicate This Project",
+          "headerRegistry": "Duplicate This Registry",
+          "forksMessage": "Duplicates you have permission to view are shown here.",
+          "noForksMessage": "No duplicates found",
+          "confirmButton": "Duplicate",
           "cancelButton": "Cancel",
-          "messageProject": "Are you sure you want to fork this project?",
-          "messageRegistry": "Are you sure you want to fork this registry?"
+          "messageProject": "Are you sure you want to duplicate this project (with files)?",
+          "messageRegistry": "Are you sure you want to duplicate this registry (with files)?"
         },
         "duplicate": {
           "header": "Duplicate Template",
@@ -717,11 +730,12 @@
         "manageContributors": "Manage Contributors",
         "settings": "Settings",
         "delete": "Delete",
-        "forkProject": "Fork this project",
-        "forkRegistry": "Fork this registry",
+        "forkProject": "Duplicate project (with files)",
+        "forkProjectLabel": "Duplicate project",
+        "forkRegistry": "Duplicate this registration",
         "forkResource": "Fork this resource",
-        "duplicateProject": "Duplicate this project",
-        "viewDuplication": "View forks",
+        "duplicateProject": "Duplicate project (structure only)",
+        "viewDuplication": "View duplicates",
         "socials": {
           "email": "Email",
           "x": "X",
@@ -782,119 +796,6 @@
         "lastUpdated": "Last Updated:",
         "description": "Description:",
         "openResources": "Open Resources"
-      }
-    },
-    "files": {
-      "title": "Files",
-      "storageLocation": "OSF Storage",
-      "searchPlaceholder": "Search your projects",
-      "sort": {
-        "placeholder": "Sort",
-        "nameAZ": "Name: A-Z",
-        "nameZA": "Name: Z-A",
-        "lastModifiedOldest": "Last modified: oldest to newest",
-        "lastModifiedNewest": "Last modified: newest to oldest"
-      },
-      "actions": {
-        "downloadAsZip": "Download As Zip",
-        "createFolder": "Create Folder",
-        "uploadFile": "Upload File"
-      },
-      "dialogs": {
-        "uploadFile": {
-          "title": "Upload file",
-          "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
-        },
-        "createFolder": {
-          "title": "Create folder",
-          "folderName": "New folder name",
-          "folderNamePlaceholder": "Please enter a folder name"
-        },
-        "renameFile": {
-          "title": "Rename file",
-          "newName": "New name",
-          "enterNewName": "Enter new name",
-          "renameLabel": "Please rename the file"
-        },
-        "moveFile": {
-          "cannotMove": "Cannot move to the same folder",
-          "title": "Move file",
-          "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
-          "storage": "OSF Storage",
-          "pathError": "Path is not specified!"
-        },
-        "copyFile": {
-          "title": "Copy file"
-        },
-        "deleteFile": {
-          "title": "Delete File",
-          "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
-        }
-      },
-      "dropText": "Drop a file to upload",
-      "emptyState": "This folder is empty",
-      "detail": {
-        "backToList": "Back to list of files",
-        "tabs": {
-          "details": "Details",
-          "revisions": "Revisions",
-          "keywords": "Keywords"
-        },
-        "actions": {
-          "addCommunityMetadata": "Add community Metadata",
-          "copyDynamicIframe": "Copy dynamic JS iFrame",
-          "copyStaticIframe": "Copy static HTML iFrame",
-          "share": {
-            "email": "Email",
-            "x": "X",
-            "facebook": "Facebook"
-          }
-        },
-        "fileMetadata": {
-          "title": "File Metadata",
-          "edit": "Edit",
-          "fields": {
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource Type",
-            "resourceLanguage": "Resource Language"
-          }
-        },
-        "projectMetadata": {
-          "title": "Project Metadata",
-          "edit": "Edit",
-          "fields": {
-            "funder": "Funder",
-            "awardTitle": "Award title",
-            "awardNumber": "Award number",
-            "awardUri": "Award URI",
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource type",
-            "resourceLanguage": "Resource language",
-            "dateCreated": "Date created",
-            "dateModified": "Date modified",
-            "contributors": "Contributors"
-          }
-        },
-        "toast": {
-          "copiedToClipboard": "Copied to clipboard"
-        },
-        "keywords": {
-          "title": "Keywords"
-        },
-        "revisions": {
-          "title": "Revisions",
-          "actions": {
-            "copyMd5": "Copy MD5",
-            "copySha2": "Copy SHA-2",
-            "download": "Download"
-          },
-          "tooltips": {
-            "md5": "MD5 is an algorithm used to verify data integrity",
-            "sha2": "SHA-2 is a cryptographic hash function designed by the NSA used to verify data integrity."
-          }
-        }
       }
     },
     "metadata": {
@@ -1019,6 +920,122 @@
       "success": "Project has been successfully deleted."
     }
   },
+  "files": {
+    "title": "Files",
+    "storageLocation": "OSF Storage",
+    "searchPlaceholder": "Search your projects",
+    "sort": {
+      "placeholder": "Sort",
+      "nameAZ": "Name: A-Z",
+      "nameZA": "Name: Z-A",
+      "lastModifiedOldest": "Last modified: oldest to newest",
+      "lastModifiedNewest": "Last modified: newest to oldest"
+    },
+    "actions": {
+      "downloadAsZip": "Download As Zip",
+      "createFolder": "Create Folder",
+      "uploadFile": "Upload File"
+    },
+    "dialogs": {
+      "uploadFile": {
+        "title": "Upload file",
+        "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
+      },
+      "createFolder": {
+        "title": "Create folder",
+        "folderName": "New folder name",
+        "folderNamePlaceholder": "Please enter a folder name"
+      },
+      "renameFile": {
+        "title": "Rename file",
+        "newName": "New name",
+        "enterNewName": "Enter new name",
+        "renameLabel": "Please rename the file"
+      },
+      "moveFile": {
+        "cannotMove": "Cannot move to the same folder",
+        "title": "Move file",
+        "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
+        "storage": "OSF Storage",
+        "pathError": "Path is not specified!"
+      },
+      "copyFile": {
+        "title": "Copy file"
+      },
+      "deleteFile": {
+        "title": "Delete File",
+        "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
+      }
+    },
+    "dropText": "Drop a file to upload",
+    "emptyState": "This folder is empty",
+    "detail": {
+      "backToList": "Back to list of files",
+      "tabs": {
+        "details": "Details",
+        "revisions": "Revisions",
+        "keywords": "Keywords"
+      },
+      "actions": {
+        "addCommunityMetadata": "Add community Metadata",
+        "copyDynamicIframe": "Copy dynamic JS iFrame",
+        "copyStaticIframe": "Copy static HTML iFrame",
+        "share": {
+          "email": "Email",
+          "x": "X",
+          "facebook": "Facebook"
+        }
+      },
+      "fileMetadata": {
+        "title": "File Metadata",
+        "edit": "Edit",
+        "fields": {
+          "title": "Title",
+          "description": "Description",
+          "resourceType": "Resource Type",
+          "resourceLanguage": "Resource Language"
+        }
+      },
+      "resourceMetadata": {
+        "title": {
+          "nodes": "Project Metadata",
+          "registrations": "Registration Metadata"
+        },
+        "edit": "Edit",
+        "fields": {
+          "funder": "Funder",
+          "awardTitle": "Award title",
+          "awardNumber": "Award number",
+          "awardUri": "Award URI",
+          "title": "Title",
+          "description": "Description",
+          "resourceType": "Resource type",
+          "resourceLanguage": "Resource language",
+          "dateCreated": "Date created",
+          "dateModified": "Date modified",
+          "contributors": "Contributors"
+        }
+      },
+      "toast": {
+        "copiedToClipboard": "Copied to clipboard"
+      },
+      "keywords": {
+        "title": "Keywords"
+      },
+      "revisions": {
+        "title": "Revisions",
+        "actions": {
+          "copyMd5": "Copy MD5",
+          "copySha2": "Copy SHA-2",
+          "download": "Download"
+        },
+        "tooltips": {
+          "md5": "MD5 is an algorithm used to verify data integrity",
+          "sha2": "SHA-2 is a cryptographic hash function designed by the NSA used to verify data integrity."
+        }
+      }
+    }
+  },
   "collections": {
     "helpDialog": {
       "header": "Search help",
@@ -1102,7 +1119,7 @@
       "confirmationDialogHeader": "Add to Collection",
       "selectProject": "Select a project",
       "project": "Project",
-      "projectMetadata": "Project Metadata",
+      "resourceMetadata": "Project Metadata",
       "projectMetadataMessage": "Updates made in this section will update the project.",
       "projectContributors": "Project Contributors",
       "collectionMetadata": "Collection Metadata",
@@ -1172,7 +1189,9 @@
       "public": "Public",
       "embargo": "Embargo",
       "pendingUpdates": "Pending Updates",
-      "pendingWithdrawal": "Pending Withdrawal"
+      "pendingWithdrawal": "Pending Withdrawal",
+      "approved": "Approved",
+      "declined": "Declined"
     },
     "makeDecision": {
       "header": "Make decision",
@@ -2022,6 +2041,10 @@
       }
     },
     "details": {
+      "reasonForWithdrawal": "Reason for withdrawal",
+      "originalPublicationDate": "Original Publication Date",
+      "publicationDoi": "Peer-reviewed Publication DOI",
+      "supplementalMaterials": "Supplemental Materials",
       "doi": {
         "title": "{{documentType}} DOI",
         "pendingDoiMinted": "DOIs are minted by a third party, and may take up to 24 hours to be registered.",
@@ -2048,6 +2071,7 @@
         "rejected": "Rejected",
         "pendingWithdrawal": "Pending withdrawal",
         "withdrawalRejected": "Withdrawal rejected",
+        "withdrawn": "Withdrawn",
         "messages": {
           "base": "{{name}} uses {{workflow}}. This {{documentType}}",
           "pendingPreModeration": "is not publicly available or searchable until approved by a moderator.",
@@ -2071,8 +2095,81 @@
         "preModerationNoticeAccepted": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This service uses pre-moderation. This request will be submitted to service moderators for review. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal.",
         "postModerationNotice": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This service uses post-moderation. This request will be submitted to service moderators for review. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal.",
         "noModerationNotice": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This request will be submitted to <a href=\"mailto:{{supportEmail}}\" target=\"_blank\">{{supportEmail}}</a> for review and removal. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal."
+      },
+      "moderationStatusBanner": {
+        "recentActivity": {
+          "pending": "submitted this {{documentType}} on",
+          "accepted": "accepted this {{documentType}} on",
+          "rejected": "rejected this {{documentType}} on",
+          "pendingWithdrawal": "requested to withdraw this {{documentType}} on",
+          "withdrawn": "withdrew this {{documentType}} on",
+          "automatic": {
+            "pending": "This {{documentType}} was submitted on",
+            "accepted": "This {{documentType}} was automatically accepted on"
+          }
+        }
+      },
+      "decision": {
+        "noReasonProvided": "No reason provided",
+        "makeDecision": "Make decision",
+        "modifyDecision": "Modify decision",
+        "withdrawalReason": "View reason",
+        "header": {
+          "submitDecision": "Submit your decision",
+          "modifyDecision": "Modify your decision",
+          "withdrawalReason": "Reason for withdrawal"
+        },
+        "settings": {
+          "comments": {
+            "private": "Comments are not visible to contributors",
+            "public": "Comments are visible to contributors on decision"
+          },
+          "names": {
+            "anonymous": "Comments are anonymous",
+            "named": "Commenter's name is visible to contributors"
+          },
+          "moderation": {
+            "pre": "Submission appears in search results once accepted",
+            "post": "Submission will be removed from search results and made private if rejected"
+          }
+        },
+        "submitButton": {
+          "submitDecision": "Submit decision",
+          "modifyDecision": "Modify decision",
+          "updateComment": "Update comment"
+        },
+        "accept": {
+          "label": "Accept submission",
+          "pre": "Submission will appear in search results and be made public.",
+          "post": "Submission will continue to appear in search results."
+        },
+        "reject": {
+          "label": "Reject submission",
+          "pre": "Submission will not appear in search results and will remain private.",
+          "post": "Submission will be removed from search results and made private."
+        },
+        "approve": {
+          "label": "Approve withdrawal",
+          "explanation": "Submission will be withdrawn but still have a tombstone page with a subset of the metadata available"
+        },
+        "decline": {
+          "label": "Decline withdrawal",
+          "explanation": "Submission will remain fully public"
+        },
+        "withdrawn": {
+          "label": "Withdraw submission",
+          "post": "Submission will no longer be publicly available."
+        },
+        "commentPlaceholder": "Explain the reasoning behind your decision (optional)",
+        "commentLengthError": "Comment is {{difference}} character(s) too long (maximum is {{limit}}).",
+        "withdrawalJustification": "Reason for withdrawal (optional, will be publicly displayed)",
+        "denialJustification": "Reason for denial (required, not publicly visible)",
+        "justificationRequiredError": "Request decision justification can't be blank",
+        "justificationLengthError": "Request decision justification is too short (minimum is {{minLength}} characters)"
       }
-    }
+    },
+    "preprintContributorsWarning": "Warning: Changing your permissions will prevent you from editing your draft.",
+    "addContributorBySearch": "Add Contributor By Search"
   },
   "registries": {
     "title": "Registries",
@@ -2431,6 +2528,13 @@
       "publicProjects": "Public Projects",
       "publicRegistrations": "Public Registrations"
     },
+    "contact": {
+      "requestAccess": "Request Access",
+      "sendMessage": "Send Message",
+      "message": "I am an admin associated with Center For Open Science and I would like to be added to your project as a non-bibliographic contributor in order to assist with metadata curation please add me with the following permissions.",
+      "administrative": "Administrative",
+      "readWrite": "Read/Write"
+    },
     "institutionUsers": {
       "allDepartments": "All departments",
       "lastLogin": "Last Login",
@@ -2450,7 +2554,9 @@
       "sendMessage": "Send message",
       "osfLink": "OSF Link",
       "orcid": "ORCID",
-      "noData": "No users found"
+      "noData": "No users found",
+      "messageSent": "Message has been sent.",
+      "requestSent": "Request has been sent."
     },
     "projects": {
       "title": "Title",
@@ -2510,5 +2616,153 @@
       "noCurrentResource": "No current resource.",
       "doiValidation": "Please enter a valid DOI in the format: 10.xxxx/xxxxx"
     }
+  },
+  "activityLog": {
+    "defaults": {
+      "preprint": "preprint",
+      "preprintPlural": "preprints",
+      "anonymousA": "a",
+      "anonymousAn": "an",
+      "someUsers": "some users",
+      "contributorsAnd": " and ",
+      "contributorsOthers": " others",
+      "aNewNameLocation": "a new name/location",
+      "materialized": "{{materialized}} {{addon}}",
+      "aTitle": "a title",
+      "aNameLocation": "a name/location",
+      "pageTitle": "page title",
+      "aFile": "a file",
+      "folder": "folder",
+      "file": "file",
+      "aUser": "A user",
+      "fileOn": "file {{file}}",
+      "wikiOn": "wiki {{wiki}}",
+      "field": "field",
+      "updatedFields": "{{old}} to {{new}}",
+      "uncategorized": "Uncategorized",
+      "fallbackWithNode": "{{user}} performed action \"{{action}}\" on {{node}}",
+      "fallbackWithoutNode": "{{user}} performed action \"{{action}}\""
+    },
+    "activities": {
+      "addon_added": "{{user}} added addon {{addon}} to {{node}}",
+      "addon_file_copied": "{{user}} copied {{source}} to {{destination}} in {{node}}",
+      "addon_file_moved": "{{user}} moved {{source}} to {{destination}} in {{node}}",
+      "addon_file_renamed": "{{user}} renamed {{source}} to {{destination}} in {{node}}",
+      "addon_removed": "{{user}} removed addon {{addon}} from {{node}}",
+      "affiliated_institution_added": "{{user}} added {{institution}} affiliation to {{node}}",
+      "affiliated_institution_removed": "{{user}} removed {{institution}} affiliation from {{node}}",
+      "article_doi_updated": "{{user}} changed the article_doi of {{node}}",
+      "category_updated": "{{user}} changed the category of {{node}}",
+      "checked_in": "{{user}} checked in {{kind}} {{path}} to {{node}}",
+      "checked_out": "{{user}} checked out {{kind}} {{path}} from {{node}}",
+      "coi_statement_updated": "{{user}} changed the conflict of interest statement for {{preprint}}.",
+      "comment_added": "{{user}} added a comment {{commentLocation}} in {{node}}",
+      "comment_removed": "{{user}} deleted a comment {{commentLocation}} in {{node}}",
+      "comment_restored": "{{user}} restored a comment {{commentLocation}} in {{node}}",
+      "comment_updated": "{{user}} updated a comment {{commentLocation}} in {{node}}",
+      "contributor_added": "{{user}} added {{contributors}} as contributor(s) to {{node}}",
+      "contributor_removed": "{{user}} removed {{contributors}} as contributor(s) from {{node}}",
+      "contributors_reordered": "{{user}} reordered contributors for {{node}}",
+      "created_from": "{{user}} created {{node}} based on {{template}}",
+      "custom_citation_added": "{{user}} created a custom citation for {{node}}",
+      "custom_citation_edited": "{{user}} edited a custom citation for {{node}}",
+      "custom_citation_removed": "{{user}} removed a custom citation from {{node}}",
+      "data_links_updated": "{{user}} has updated their data links",
+      "edit_description": "{{user}} edited description of {{node}}",
+      "edit_title": "{{user}} changed the title from {{titleOriginal}} to {{titleNew}}",
+      "embargo_approved": "{{user}} approved embargoed registration of {{node}}",
+      "embargo_approved_no_user": "Embargo of registration of {{node}} approved",
+      "embargo_cancelled": "{{user}} cancelled embargoed registration of {{node}}",
+      "embargo_completed": "{{user}} completed embargo of {{node}}",
+      "embargo_completed_no_user": "Embargo for {{node}} completed",
+      "embargo_initiated": "{{user}} initiated an embargoed registration of {{node}}",
+      "embargo_terminated": "Embargo for {{node}} ended",
+      "external_ids_added": "{{user}} created external identifier(s) {{identifiers}} on {{node}}",
+      "external_registration_created": "A registration of {{node}} was created on an external registry.",
+      "external_registration_imported": "A registration of {{node}} was imported to OSF from an external registry.",
+      "file_added": "{{user}} added file {{path}} to {{node}}",
+      "file_metadata_updated": "{{user}} updated file metadata for {{path}}",
+      "file_removed": "{{user}} removed {{pathType}} {{path}} from {{node}}",
+      "file_restored": "{{user}} restored file {{path}} from {{node}}",
+      "file_tag_added": "{{user}} added tag {{tag}} to {{path}} in OSF Storage in {{node}}",
+      "file_tag_removed": "{{user}} removed tag {{tag}} from {{path}} in OSF Storage in {{node}}",
+      "file_updated": "{{user}} updated file in {{node}}",
+      "folder_created": "{{user}} created a folder in {{node}}",
+      "group_added": "{{user}} added {{group}} to {{node}}",
+      "group_removed": "{{user}} removed {{group}} from {{node}}",
+      "group_updated": "{{user}} changed {{group}} permissions to {{node}}",
+      "guid_metadata_updated": "{{user}} updated metadata for {{node}}",
+      "has_coi_updated": "{{user}} changed the conflict of interest statement availability for {{preprint}}.",
+      "has_data_links_updated": "{{user}} has updated the has links to data field to {{value}}",
+      "has_prereg_links_updated": "{{user}} has updated their preregistration data link availability to {{value}}",
+      "license_changed": "{{user}} updated the license of {{node}} to {{license}}",
+      "made_contributor_invisible": "{{user}} made bibliographic contributor {{contributors}} a non-bibliographic contributor on {{node}}",
+      "made_contributor_visible": "{{user}} made non-bibliographic contributor {{contributors}} a bibliographic contributor on {{node}}",
+      "made_private": "{{user}} made {{node}} private",
+      "made_public": "{{user}} made {{node}} public",
+      "made_public_no_user": "{{node}} made public",
+      "made_wiki_private": "{{user}} made the wiki of {{node}} privately editable",
+      "made_wiki_public": "{{user}} made the wiki of {{node}} publicly editable",
+      "migrated_quickfiles": "{{user}} had their QuickFiles migrated into {{node}}",
+      "node_access_requests_disabled": "{{user}} disabled access requests for {{node}}",
+      "node_access_requests_enabled": "{{user}} enabled access requests for {{node}}",
+      "node_created": "{{user}} created {{node}}",
+      "node_forked": "{{user}} created fork from {{forkedFrom}}",
+      "node_removed": "{{user}} removed {{node}}",
+      "osf_storage_file_added": "{{user}} added file {{path}} to OSF Storage in {{node}}",
+      "osf_storage_file_removed": "{{user}} removed {{pathType}} {{path}} from OSF Storage in {{node}}",
+      "osf_storage_file_updated": "{{user}} updated file {{path}} in OSF Storage in {{node}}",
+      "osf_storage_folder_created": "{{user}} created folder {{path}} in OSF Storage in {{node}}",
+      "permissions_updated": "{{user}} changed permissions for {{node}}",
+      "pointer_created": "{{user}} created a link to {{pointerCategory}} {{pointer}}",
+      "pointer_forked": "{{user}} forked a link to {{pointerCategory}} {{pointer}}",
+      "pointer_removed": "{{user}} removed a link to {{pointerCategory}} {{pointer}}",
+      "preprint_file_updated": "{{user}} updated the primary file of this {{preprint}} on {{preprintProvider}} {{preprintWordPlural}}",
+      "preprint_initiated": "{{user}} made {{node}} a {{preprint}} on {{preprintProvider}} {{preprintWordPlural}}",
+      "preprint_license_updated": "{{user}} updated the license of this {{preprint}} on {{preprintProvider}} {{preprintWordPlural}} {{license}}",
+      "prereg_links_info_updated": "{{user}} has updated their preregistration links to {{value}}",
+      "prereg_links_updated": "{{user}} has updated their preregistration data links",
+      "prereg_registration_initiated": "{{user}} submitted for review to the Preregistration Challenge a registration of {{node}}",
+      "project_created": "{{user}} created {{node}}",
+      "project_created_from_draft_reg": "{{node}} was created from a draft registration",
+      "project_deleted": "{{user}} deleted {{node}}",
+      "project_registered": "{{user}} registered {{node}}",
+      "project_registered_no_user": "{{node}} registered",
+      "registration_approved": "{{user}} approved a registration of {{node}}",
+      "registration_approved_no_user": "Registration of {{node}} was approved",
+      "registration_cancelled": "{{user}} cancelled a registration of {{node}}",
+      "registration_initiated": "{{user}} initiated a registration of {{node}}",
+      "resource_identifier_added": "{{user}} has added a Resource to Registration {{node}}",
+      "resource_identifier_removed": "{{user}} has removed a Resource to Registration {{node}}",
+      "resource_identifier_updated": "{{user}} has updated a Resource to Registration {{node}}",
+      "retraction_approved": "{{user}} approved a withdrawal of a registration of {{node}}",
+      "retraction_approved_no_user": "A withdrawal of a registration of {{node}} was approved",
+      "retraction_cancelled": "{{user}} cancelled withdrawal of a registration of {{node}}",
+      "retraction_initiated": "{{user}} initiated withdrawal of a registration of {{node}}",
+      "retraction_initiated_no_user": "A withdrawal of a registration of {{node}} was proposed",
+      "subjects_updated": "{{user}} updated the subjects on {{node}}",
+      "tag_added": "{{user}} added tag {{tag}} to {{node}}",
+      "tag_removed": "{{user}} removed tag {{tag}} from {{node}}",
+      "updated_fields": "{{user}} changed the {{updatedFields}} for {{node}}",
+      "view_only_link_added": "{{user}} created {{anonymousLink}} view-only link to {{node}}",
+      "view_only_link_removed": "{{user}} removed {{anonymousLink}} view-only link to {{node}}",
+      "why_no_data_updated": "{{user}} has updated their data statement",
+      "why_no_prereg_updated": "{{user}} has updated their preregistration data availability statement",
+      "wiki_deleted": "{{user}} deleted wiki page {{page}} of {{node}}",
+      "wiki_renamed": "{{user}} renamed wiki page {{oldPage}} to {{page}} of {{node}}",
+      "wiki_updated": "{{user}} updated wiki page {{page}} to version {{version}} of {{node}}"
+    }
+  },
+  "nodeCategories": {
+    "analysis": "Analysis",
+    "communication": "Communication",
+    "data": "Data",
+    "hypothesis": "Hypothesis",
+    "instrumentation": "Instrumentation",
+    "methods and measures": "Methods and Measures",
+    "procedure": "Procedure",
+    "project": "Project",
+    "software": "Software",
+    "other": "Other"
   }
 }

@@ -1,4 +1,3 @@
-import { JsonApiResponseWithPaging, UserGetResponse } from '@osf/core/models';
 import { AddContributorType, ContributorPermission } from '@osf/shared/enums';
 import {
   ContributorAddModel,
@@ -6,6 +5,8 @@ import {
   ContributorModel,
   ContributorResponse,
   PaginatedData,
+  ResponseJsonApi,
+  UserGetResponse,
 } from '@osf/shared/models';
 
 export class ContributorsMapper {
@@ -18,13 +19,15 @@ export class ContributorsMapper {
       isCurator: contributor.attributes.is_curator,
       permission: contributor.attributes.permission,
       fullName: contributor.embeds.users.data.attributes.full_name,
+      givenName: contributor.embeds.users.data.attributes.given_name,
+      familyName: contributor.embeds.users.data.attributes.family_name,
       education: contributor.embeds.users.data.attributes.education,
       employment: contributor.embeds.users.data.attributes.employment,
     }));
   }
 
   static fromUsersWithPaginationGetResponse(
-    response: JsonApiResponseWithPaging<UserGetResponse[], null>
+    response: ResponseJsonApi<UserGetResponse[]>
   ): PaginatedData<ContributorAddModel[]> {
     return {
       data: response.data.map(
@@ -36,7 +39,7 @@ export class ContributorsMapper {
             permission: ContributorPermission.Read,
           }) as ContributorAddModel
       ),
-      totalCount: response.links.meta.total,
+      totalCount: response.meta.total,
     };
   }
 
@@ -49,6 +52,8 @@ export class ContributorsMapper {
       isCurator: response.attributes.is_curator,
       permission: response.attributes.permission,
       fullName: response.embeds.users.data.attributes.full_name,
+      givenName: response.embeds.users.data.attributes.given_name,
+      familyName: response.embeds.users.data.attributes.family_name,
       education: response.embeds.users.data.attributes.education,
       employment: response.embeds.users.data.attributes.employment,
     };

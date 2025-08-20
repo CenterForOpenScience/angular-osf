@@ -20,9 +20,10 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
+import { IS_XSMALL } from '@osf/shared/helpers';
 import {
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
@@ -35,14 +36,13 @@ import { ToastService } from '@shared/services';
 import {
   ClearWiki,
   CollectionsSelectors,
-  GetAllNodeLinks,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetHomeWiki,
   GetLinkedResources,
 } from '@shared/stores';
+import { GetActivityLogs } from '@shared/stores/activity-logs';
 import { ClearCollections } from '@shared/stores/collections';
-import { IS_XSMALL } from '@shared/utils';
 
 import {
   ClearCollectionModeration,
@@ -84,6 +84,7 @@ import {
     ResourceMetadataComponent,
     TranslatePipe,
     Message,
+    RouterLink,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -101,6 +102,8 @@ export class ProjectOverviewComponent implements OnInit {
   protected submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
   protected currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
+  protected readonly activityPageSize = 5;
+  protected readonly activityDefaultPage = 1;
 
   protected actions = createDispatchMap({
     getProject: GetProjectById,
@@ -108,7 +111,7 @@ export class ProjectOverviewComponent implements OnInit {
     getHomeWiki: GetHomeWiki,
     getComponents: GetComponents,
     getLinkedProjects: GetLinkedResources,
-    getNodeLinks: GetAllNodeLinks,
+    getActivityLogs: GetActivityLogs,
     setProjectCustomCitation: SetProjectCustomCitation,
     getCollectionProvider: GetCollectionProvider,
     getCurrentReviewAction: GetSubmissionsReviewActions,
@@ -196,8 +199,8 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getBookmarksId();
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
-      this.actions.getNodeLinks(projectId);
       this.actions.getLinkedProjects(projectId);
+      this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
     }
   }
 

@@ -35,11 +35,14 @@
     (triggerSearch)="redirectToSearchPageWithValue()"
   />
 
-  <!-- [Rni] TODO: add link to an example preprint -->
   @if (isPreprintProviderLoading()) {
     <p-skeleton width="10%" height="1rem" />
-  } @else {
-    <a class="font-bold">{{ 'preprints.showExample' | translate }}</a>
+  } @else if (osfPreprintProvider()!.examplePreprintId) {
+    <a
+      class="font-bold"
+      [routerLink]="['preprints', osfPreprintProvider()!.id, osfPreprintProvider()!.examplePreprintId]"
+      >{{ 'preprints.showExample' | translate }}
+    </a>
   }
 </section>
 
@@ -65,18 +68,17 @@
     <h2 class="text-2xl">{{ 'preprints.createServer.title' | translate }}</h2>
     <p class="mt-2">
       {{ 'preprints.createServer.description' | translate }}
-      <a class="font-bold" href="https://github.com/CenterForOpenScience/ember-osf-web" target="_blank">{{
-        'preprints.createServer.openSourceCode' | translate
-      }}</a>
+      <a class="font-bold" href="https://github.com/CenterForOpenScience/ember-osf-web" target="_blank">
+        {{ 'preprints.createServer.openSourceCode' | translate }}
+      </a>
       {{ 'preprints.createServer.and' | translate }}
-      <a class="font-bold" href="https://www.cos.io/product-roadmap" target="_blank">{{
-        'preprints.createServer.publicRoadmap' | translate
-      }}</a
+      <a class="font-bold" href="https://www.cos.io/product-roadmap" target="_blank">
+        {{ 'preprints.createServer.publicRoadmap' | translate }} </a
       >. {{ 'preprints.createServer.inputWelcome' | translate }}
     </p>
   </div>
 
   <p-button severity="success" class="link-button">
-    <a href="mailto:support@osf.io">{{ 'preprints.createServer.contactUs' | translate }}</a>
+    <a [href]="'mailto:' + supportEmail">{{ 'preprints.createServer.contactUs' | translate }}</a>
   </p-button>
 </section>

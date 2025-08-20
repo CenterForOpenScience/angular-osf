@@ -1,4 +1,4 @@
-import { User } from '@osf/core/models';
+import { User } from '@osf/shared/models';
 import { UserRelatedDataCounts } from '@shared/models';
 
 export const MOCK_USER: User = {

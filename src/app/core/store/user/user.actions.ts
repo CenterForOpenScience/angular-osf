@@ -1,6 +1,4 @@
-import { Education, Employment, Social } from '@osf/shared/models';
-
-import { User, UserSettings } from '../../models';
+import { Education, Employment, Social, User, UserSettings } from '@osf/shared/models';
 
 export class GetCurrentUser {
   static readonly type = '[User] Get Current User';
@@ -49,4 +47,8 @@ export class UpdateProfileSettingsUser {
 
 export class SetUserAsModerator {
   static readonly type = '[User] Set User As Moderator';
+}
+
+export class ClearCurrentUser {
+  static readonly type = '[User] Clear Current User';
 }

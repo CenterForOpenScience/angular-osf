@@ -1,5 +1,6 @@
 export enum SubmissionReviewStatus {
   Pending = 'pending',
+  InProgress = 'in_progress',
   Accepted = 'accepted',
   Rejected = 'rejected',
   Withdrawn = 'withdrawn',

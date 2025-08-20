@@ -6,13 +6,13 @@ import { ButtonDirective } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent } from '@shared/components';
-
-import { environment } from 'src/environments/environment';
+import { ShareableContent } from '@shared/models';
+import { SocialShareService } from '@shared/services';
 
 @Component({
   selector: 'osf-preprint-share-and-download',
@@ -23,6 +23,8 @@ import { environment } from 'src/environments/environment';
 })
 export class ShareAndDownloadComponent {
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
+
+  private readonly socialShareService = inject(SocialShareService);
 
   preprint = select(PreprintSelectors.getPreprint);
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
@@ -40,65 +42,33 @@ export class ShareAndDownloadComponent {
 
     if (!preprint) return '#';
 
-    return `${environment.webUrl}/download/${this.preprint()?.id}`;
+    return this.socialShareService.createDownloadUrl(preprint.id);
   });
 
-  private preprintDetailsFullUrl = computed(() => {
+  private shareableContent = computed((): ShareableContent | null => {
     const preprint = this.preprint();
     const preprintProvider = this.preprintProvider();
 
-    if (!preprint || !preprintProvider) return '';
+    if (!preprint || !preprintProvider) return null;
 
-    return `${environment.webUrl}/preprints/${preprintProvider.id}/${preprint.id}`;
+    return {
+      id: preprint.id,
+      title: preprint.title,
+      description: preprint.description,
+      url: this.socialShareService.createPreprintUrl(preprint.id, preprintProvider.id),
+    };
   });
 
-  emailShareLink = computed(() => {
-    const preprint = this.preprint();
-    const preprintProvider = this.preprintProvider();
+  shareLinks = computed(() => {
+    const content = this.shareableContent();
 
-    if (!preprint || !preprintProvider) return;
+    if (!content) return null;
 
-    const subject = encodeURIComponent(preprint.title);
-    const body = encodeURIComponent(this.preprintDetailsFullUrl());
-
-    return `mailto:?subject=${subject}&body=${body}`;
+    return this.socialShareService.generateAllSharingLinks(content);
   });
 
-  twitterShareLink = computed(() => {
-    const preprint = this.preprint();
-    const preprintProvider = this.preprintProvider();
-
-    if (!preprint || !preprintProvider) return '';
-
-    const url = encodeURIComponent(this.preprintDetailsFullUrl());
-    const text = encodeURIComponent(preprint.title);
-
-    return `https://twitter.com/intent/tweet?url=${url}&text=${text}`;
-  });
-
-  facebookShareLink = computed(() => {
-    const preprint = this.preprint();
-    const preprintProvider = this.preprintProvider();
-
-    if (!preprint || !preprintProvider) return '';
-
-    const href = encodeURIComponent(this.preprintDetailsFullUrl());
-
-    const facebookAppId = preprintProvider.facebookAppId || environment.facebookAppId;
-    return `https://www.facebook.com/dialog/share?app_id=${facebookAppId}&display=popup&href=${href}`;
-  });
-
-  linkedInShareLink = computed(() => {
-    const preprint = this.preprint();
-    const preprintProvider = this.preprintProvider();
-
-    if (!preprint || !preprintProvider) return '';
-
-    const url = encodeURIComponent(this.preprintDetailsFullUrl());
-    const title = encodeURIComponent(preprint.title);
-    const summary = encodeURIComponent(preprint.description || preprint.title);
-    const source = encodeURIComponent('OSF');
-
-    return `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}&summary=${summary}&source=${source}`;
-  });
+  emailShareLink = computed(() => this.shareLinks()?.email || '');
+  twitterShareLink = computed(() => this.shareLinks()?.twitter || '');
+  facebookShareLink = computed(() => this.shareLinks()?.facebook || '');
+  linkedInShareLink = computed(() => this.shareLinks()?.linkedIn || '');
 }

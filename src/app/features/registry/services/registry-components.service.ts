@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@osf/core/services';
+import { JsonApiService } from '@osf/shared/services';
 
 import { RegistryComponentsMapper } from '../mappers';
 import { RegistryComponentsJsonApiResponse, RegistryComponentsResponseJsonApi } from '../models';

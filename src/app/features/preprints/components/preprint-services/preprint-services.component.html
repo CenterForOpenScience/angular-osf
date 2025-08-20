@@ -8,7 +8,7 @@
     @for (preprintProvider of preprintProvidersToAdvertise(); track preprintProvider.id) {
       <a
         class="preprint-provider-grid-item"
-        [routerLink]="[preprintProvider.id]"
+        [routerLink]="['/preprints', preprintProvider.id]"
         [style.background-image]="'url(' + preprintProvider.whiteWideImageUrl + ')'"
         [title]="preprintProvider.name"
       ></a>

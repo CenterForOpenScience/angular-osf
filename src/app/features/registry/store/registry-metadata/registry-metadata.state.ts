@@ -4,12 +4,11 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@core/handlers';
 import { CedarMetadataRecord, CedarMetadataRecordJsonApi } from '@osf/features/project/metadata/models';
 import { ResourceType } from '@shared/enums';
+import { handleSectionError } from '@shared/helpers';
 import { GetAllContributors } from '@shared/stores';
 
-import { RegistryMetadataMapper } from '../../mappers';
 import { CustomItemMetadataRecord } from '../../models';
 import { RegistryMetadataService } from '../../services/registry-metadata.service';
 
@@ -97,8 +96,7 @@ export class RegistryMetadataState {
     return this.registryMetadataService
       .getBibliographicContributors(action.registryId, action.page, action.pageSize)
       .pipe(
-        tap((response) => {
-          const contributors = RegistryMetadataMapper.mapBibliographicContributors(response);
+        tap((contributors) => {
           ctx.patchState({
             bibliographicContributors: {
               data: contributors,

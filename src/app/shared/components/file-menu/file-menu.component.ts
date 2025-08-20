@@ -29,17 +29,17 @@ export class FileMenuComponent {
       icon: 'fas fa-share',
       items: [
         {
-          label: 'project.files.detail.actions.share.email',
+          label: 'files.detail.actions.share.email',
           icon: 'fas fa-envelope',
           command: () => this.emitAction(FileMenuType.Share, { type: 'email' }),
         },
         {
-          label: 'project.files.detail.actions.share.x',
+          label: 'files.detail.actions.share.x',
           icon: 'fab fa-square-x-twitter',
           command: () => this.emitAction(FileMenuType.Share, { type: 'twitter' }),
         },
         {
-          label: 'project.files.detail.actions.share.facebook',
+          label: 'files.detail.actions.share.facebook',
           icon: 'fab fa-facebook',
           command: () => this.emitAction(FileMenuType.Share, { type: 'facebook' }),
         },
@@ -50,12 +50,12 @@ export class FileMenuComponent {
       icon: 'fas fa-code',
       items: [
         {
-          label: 'project.files.detail.actions.copyDynamicIframe',
+          label: 'files.detail.actions.copyDynamicIframe',
           icon: 'fas fa-file-code',
           command: () => this.emitAction(FileMenuType.Embed, { type: 'dynamic' }),
         },
         {
-          label: 'project.files.detail.actions.copyStaticIframe',
+          label: 'files.detail.actions.copyStaticIframe',
           icon: 'fas fa-file-code',
           command: () => this.emitAction(FileMenuType.Embed, { type: 'static' }),
         },

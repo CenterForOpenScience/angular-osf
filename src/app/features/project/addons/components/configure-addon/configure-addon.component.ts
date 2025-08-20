@@ -22,6 +22,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { OperationNames } from '@osf/features/project/addons/enums';
+import { getAddonTypeString } from '@osf/shared/helpers';
 import { SubHeaderComponent } from '@shared/components';
 import { FolderSelectorComponent } from '@shared/components/addons/folder-selector/folder-selector.component';
 import { ConfiguredAddon } from '@shared/models';
@@ -32,7 +33,6 @@ import {
   CreateAddonOperationInvocation,
   UpdateConfiguredAddon,
 } from '@shared/stores/addons';
-import { getAddonTypeString } from '@shared/utils';
 
 import { environment } from 'src/environments/environment';
 
@@ -79,7 +79,7 @@ export class ConfigureAddonComponent implements OnInit {
   });
   protected readonly resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
-    return `${environment.baseResourceUri}${id}`;
+    return `${environment.webUrl}/${id}`;
   });
   protected readonly addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());

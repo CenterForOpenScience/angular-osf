@@ -1,4 +1,7 @@
-import { ApiData, JsonApiResponseWithMeta, JsonApiResponseWithPaging } from '@core/models';
+import { LicensesMapper } from '@osf/shared/mappers';
+import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models';
+import { StringOrNull } from '@shared/helpers';
+
 import {
   Preprint,
   PreprintAttributesJsonApi,
@@ -7,8 +10,7 @@ import {
   PreprintMetaJsonApi,
   PreprintRelationshipsJsonApi,
   PreprintShortInfoWithTotalCount,
-} from '@osf/features/preprints/models';
-import { LicensesMapper } from '@shared/mappers';
+} from '../models';
 
 export class PreprintsMapper {
   static toCreatePayload(title: string, abstract: string, providerId: string) {
@@ -40,6 +42,7 @@ export class PreprintsMapper {
       dateModified: response.attributes.date_modified,
       dateWithdrawn: response.attributes.date_withdrawn,
       datePublished: response.attributes.date_published,
+      dateLastTransitioned: response.attributes.date_last_transitioned,
       title: response.attributes.title,
       description: response.attributes.description,
       reviewsState: response.attributes.reviews_state,
@@ -50,6 +53,7 @@ export class PreprintsMapper {
       originalPublicationDate: response.attributes.original_publication_date,
       isPublished: response.attributes.is_published,
       tags: response.attributes.tags,
+      withdrawalJustification: response.attributes.withdrawal_justification,
       isPublic: response.attributes.public,
       version: response.attributes.version,
       isLatestVersion: response.attributes.is_latest_version,
@@ -93,6 +97,7 @@ export class PreprintsMapper {
       dateModified: data.attributes.date_modified,
       dateWithdrawn: data.attributes.date_withdrawn,
       datePublished: data.attributes.date_published,
+      dateLastTransitioned: data.attributes.date_last_transitioned,
       title: data.attributes.title,
       description: data.attributes.description,
       reviewsState: data.attributes.reviews_state,
@@ -102,6 +107,7 @@ export class PreprintsMapper {
       customPublicationCitation: data.attributes.custom_publication_citation,
       originalPublicationDate: data.attributes.original_publication_date,
       isPublished: data.attributes.is_published,
+      withdrawalJustification: data.attributes.withdrawal_justification,
       tags: data.attributes.tags,
       isPublic: data.attributes.public,
       version: data.attributes.version,
@@ -135,12 +141,13 @@ export class PreprintsMapper {
     };
   }
 
-  static toSubmitPreprintPayload(preprintId: string) {
+  static toReviewActionPayload(preprintId: string, trigger: string, comment?: StringOrNull) {
     return {
       data: {
         type: 'review_actions',
         attributes: {
-          trigger: 'submit',
+          trigger,
+          ...(comment && { comment }),
         },
         relationships: {
           target: {
@@ -155,9 +162,8 @@ export class PreprintsMapper {
   }
 
   static fromMyPreprintJsonApi(
-    response: JsonApiResponseWithPaging<
-      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>[],
-      null
+    response: ResponseJsonApi<
+      ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>[]
     >
   ): PreprintShortInfoWithTotalCount {
     return {
@@ -175,7 +181,7 @@ export class PreprintsMapper {
           providerId: preprintData.relationships.provider.data.id,
         };
       }),
-      totalCount: response.links.meta.total,
+      totalCount: response.meta.total,
     };
   }
 }

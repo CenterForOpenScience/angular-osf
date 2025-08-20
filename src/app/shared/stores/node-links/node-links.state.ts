@@ -6,13 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { NodeLinksService } from '@osf/shared/services';
 
-import {
-  ClearNodeLinks,
-  CreateNodeLink,
-  DeleteNodeLink,
-  GetAllNodeLinks,
-  GetLinkedResources,
-} from './node-links.actions';
+import { ClearNodeLinks, CreateNodeLink, DeleteNodeLink, GetLinkedResources } from './node-links.actions';
 import { NODE_LINKS_DEFAULTS, NodeLinksStateModel } from './node-links.model';
 
 @State<NodeLinksStateModel>({
@@ -27,49 +21,17 @@ export class NodeLinksState {
   createNodeLink(ctx: StateContext<NodeLinksStateModel>, action: CreateNodeLink) {
     const state = ctx.getState();
     ctx.patchState({
-      nodeLinks: {
-        ...state.nodeLinks,
+      linkedResources: {
+        ...state.linkedResources,
         isSubmitting: true,
       },
     });
 
-    return this.nodeLinksService.createNodeLink(action.currentProjectId, action.linkProjectId).pipe(
-      tap((nodeLink) => {
-        ctx.patchState({
-          nodeLinks: {
-            data: [...state.nodeLinks.data, nodeLink],
-            isSubmitting: false,
-            isLoading: false,
-            error: null,
-          },
-        });
+    return this.nodeLinksService.createNodeLink(action.currentProjectId, action.resource).pipe(
+      tap(() => {
+        ctx.dispatch(new GetLinkedResources(action.currentProjectId));
       }),
-      catchError((error) => this.handleError(ctx, 'nodeLinks', error))
-    );
-  }
-
-  @Action(GetAllNodeLinks)
-  getAllNodeLinks(ctx: StateContext<NodeLinksStateModel>, action: GetAllNodeLinks) {
-    const state = ctx.getState();
-    ctx.patchState({
-      nodeLinks: {
-        ...state.nodeLinks,
-        isLoading: true,
-      },
-    });
-
-    return this.nodeLinksService.fetchAllNodeLinks(action.projectId).pipe(
-      tap((nodeLinks) => {
-        ctx.patchState({
-          nodeLinks: {
-            data: nodeLinks,
-            isLoading: false,
-            isSubmitting: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => this.handleError(ctx, 'nodeLinks', error))
+      catchError((error) => this.handleError(ctx, 'linkedResources', error))
     );
   }
 
@@ -93,6 +55,7 @@ export class NodeLinksState {
           linkedResources: {
             data: combinedResources,
             isLoading: false,
+            isSubmitting: false,
             error: null,
           },
         });
@@ -106,18 +69,20 @@ export class NodeLinksState {
     const state = ctx.getState();
 
     ctx.patchState({
-      nodeLinks: {
-        ...state.nodeLinks,
+      linkedResources: {
+        ...state.linkedResources,
         isSubmitting: true,
       },
     });
 
-    return this.nodeLinksService.deleteNodeLink(action.projectId, action.nodeLinkId).pipe(
+    return this.nodeLinksService.deleteNodeLink(action.projectId, action.linkedResource).pipe(
       tap(() => {
-        const updatedNodeLinks = state.nodeLinks.data.filter((link) => link.id !== action.nodeLinkId);
+        const updatedResources = state.linkedResources.data.filter(
+          (resource) => resource.id !== action.linkedResource.id
+        );
         ctx.patchState({
-          nodeLinks: {
-            data: updatedNodeLinks,
+          linkedResources: {
+            data: updatedResources,
             isLoading: false,
             isSubmitting: false,
             error: null,

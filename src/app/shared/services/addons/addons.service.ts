@@ -4,8 +4,6 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiResponse } from '@core/models';
-import { JsonApiService } from '@core/services';
 import { UserSelectors } from '@core/store/user';
 import { AddonMapper } from '@shared/mappers';
 import {
@@ -20,12 +18,14 @@ import {
   ConfiguredAddonRequestJsonApi,
   ConfiguredAddonResponseJsonApi,
   IncludedAddonData,
+  JsonApiResponse,
   OperationInvocation,
   OperationInvocationRequestJsonApi,
   ResourceReferenceJsonApi,
   UserReferenceJsonApi,
 } from '@shared/models';
 import { OperationInvocationResponseJsonApi } from '@shared/models/addons/operation-invocation.models';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 
@@ -52,7 +52,7 @@ export class AddonsService {
     const currentUser = this.currentUser();
     if (!currentUser) throw new Error('Current user not found');
 
-    const userUri = `${environment.baseResourceUri}${currentUser.id}`;
+    const userUri = `${environment.webUrl}/${currentUser.id}`;
     const params = {
       'filter[user_uri]': userUri,
     };
@@ -63,7 +63,7 @@ export class AddonsService {
   }
 
   getAddonsResourceReference(resourceId: string): Observable<ResourceReferenceJsonApi[]> {
-    const resourceUri = `${environment.baseResourceUri}${resourceId}`;
+    const resourceUri = `${environment.webUrl}/${resourceId}`;
     const params = {
       'filter[resource_uri]': resourceUri,
     };

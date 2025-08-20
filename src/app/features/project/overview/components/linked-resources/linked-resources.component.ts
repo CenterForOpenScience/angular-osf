@@ -6,18 +6,17 @@ import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
-import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { DeleteNodeLinkDialogComponent, LinkResourceDialogComponent } from '@osf/features/project/overview/components';
-import { TruncatedTextComponent } from '@osf/shared/components';
+import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
+import { IS_XSMALL } from '@osf/shared/helpers';
 import { NodeLinksSelectors } from '@shared/stores';
-import { IS_XSMALL } from '@shared/utils';
 
 @Component({
   selector: 'osf-linked-resources',
-  imports: [Button, NgClass, Skeleton, TranslatePipe, TruncatedTextComponent],
+  imports: [Button, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent],
   templateUrl: './linked-resources.component.html',
   styleUrl: './linked-resources.component.scss',
   providers: [DialogService],
@@ -31,7 +30,6 @@ export class LinkedResourcesComponent {
   protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
   protected isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
   protected isMobile = toSignal(inject(IS_XSMALL));
-  protected nodeLinks = select(NodeLinksSelectors.getNodeLinks);
 
   openLinkProjectModal() {
     const dialogWidth = this.isMobile() ? '95vw' : '850px';
@@ -61,12 +59,12 @@ export class LinkedResourcesComponent {
       modal: true,
       closable: true,
       data: {
-        nodeLinkId: currentLink.id,
+        currentLink,
       },
     });
   }
 
   private getCurrentResourceNodeLink(resourceId: string) {
-    return this.nodeLinks().find((link) => link.targetNode.id === resourceId);
+    return this.linkedResources().find((resource) => resource.id === resourceId);
   }
 }

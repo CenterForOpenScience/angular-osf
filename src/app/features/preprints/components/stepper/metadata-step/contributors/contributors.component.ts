@@ -20,6 +20,7 @@ import {
   ContributorsListComponent,
 } from '@osf/shared/components/contributors';
 import { AddContributorType, ResourceType } from '@osf/shared/enums';
+import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
@@ -29,7 +30,6 @@ import {
   GetAllContributors,
   UpdateContributor,
 } from '@osf/shared/stores';
-import { findChangedItems } from '@osf/shared/utils';
 
 @Component({
   selector: 'osf-preprint-contributors',

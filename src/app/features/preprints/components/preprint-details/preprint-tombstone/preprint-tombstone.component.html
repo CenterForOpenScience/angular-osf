@@ -2,6 +2,13 @@
   @if (preprint()) {
     @let preprintValue = preprint()!;
     <div class="flex flex-column gap-4">
+      @if (preprintValue.withdrawalJustification) {
+        <section class="flex flex-column gap-2">
+          <h3>{{ 'preprints.details.reasonForWithdrawal' | translate }}</h3>
+          <p>{{ preprintValue.withdrawalJustification }}</p>
+        </section>
+      }
+
       <section class="flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.review.sections.metadata.authors' | translate }}</h3>
 
@@ -24,7 +31,10 @@
         <osf-truncated-text [maxVisibleLines]="2" [text]="preprintValue.description" />
       </section>
 
-      <osf-preprint-doi-section [preprintProvider]="preprintProvider()" />
+      <osf-preprint-doi-section
+        [preprintProvider]="preprintProvider()"
+        (preprintVersionSelected)="preprintVersionSelected.emit($event)"
+      />
 
       <section class="license flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.review.sections.metadata.license' | translate }}</h3>

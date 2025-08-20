@@ -2,7 +2,7 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '@core/services';
+import { JsonApiService } from '@shared/services';
 
 import { SettingsMapper } from '../mappers';
 import { ProjectSettingsData, ProjectSettingsModel, ProjectSettingsResponseModel } from '../models';

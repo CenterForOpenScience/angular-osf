@@ -70,6 +70,7 @@
       [value]="relatedCounts()?.forksCount"
       [showButton]="true"
       [buttonLabel]="'project.analytics.kpi.viewForks'"
+      (buttonClick)="navigateToDuplicates()"
     ></osf-analytics-kpi>
 
     <osf-analytics-kpi

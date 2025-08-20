@@ -1,3 +1,4 @@
+import { ResponseJsonApi } from '@osf/shared/models';
 import { Institution, InstitutionAttributes } from '@shared/models';
 
 export interface InstitutionRelationships {
@@ -18,6 +19,14 @@ export interface InstitutionRelationships {
     };
   };
   users: {
+    links: {
+      related: {
+        href: string;
+        meta: Record<string, unknown>;
+      };
+    };
+  };
+  user_metrics: {
     links: {
       related: {
         href: string;
@@ -46,18 +55,10 @@ export interface InstitutionsResponseLinks {
   last: string | null;
   prev: string | null;
   next: string | null;
-  meta: {
-    total: number;
-    per_page: number;
-  };
 }
 
-export interface FetchInstitutionsJsonApi {
-  data: InstitutionData[];
+export interface FetchInstitutionsJsonApi extends ResponseJsonApi<InstitutionData[]> {
   links: InstitutionsResponseLinks;
-  meta: {
-    version: string;
-  };
 }
 
 export interface GetGeneralInstitutionsResponse {

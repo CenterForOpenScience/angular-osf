@@ -6,12 +6,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 
+import { IS_XSMALL } from '@osf/shared/helpers';
 import { ResourceCardComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { MOCK_AGENT_RESOURCE, MOCK_RESOURCE, MOCK_USER_RELATED_COUNTS, TranslateServiceMock } from '@shared/mocks';
 import { Resource } from '@shared/models';
 import { ResourceCardService } from '@shared/services';
-import { IS_XSMALL } from '@shared/utils';
 
 describe('ResourceCardComponent', () => {
   let component: ResourceCardComponent;

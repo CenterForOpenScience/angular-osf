@@ -8,7 +8,7 @@
       <p class="text-red-500 mb-2 font-bold pl-5">{{ 'registry.archiving.pleaseNote' | translate }}</p>
       <p class="pl-5">
         {{ 'registry.archiving.description' | translate }}
-        <a href="mailto:support@osf.io">support.osf.io</a>
+        <a [href]="'mailto:' + supportEmail">{{ supportEmail }}</a>
         {{ 'registry.archiving.descriptionEnd' | translate }}
       </p>
     </div>

@@ -26,7 +26,7 @@ export class RegistryModerationMapper {
   static fromResponseWithPagination(response: RegistryResponseJsonApi): PaginatedData<RegistryModeration[]> {
     return {
       data: response.data.map((x) => this.fromResponse(x)),
-      totalCount: response.links.meta.total,
+      totalCount: response.meta.total,
     };
   }
 

@@ -11,7 +11,7 @@ import { BreadcrumbComponent } from '@core/components/breadcrumb/breadcrumb.comp
 import { FooterComponent } from '@core/components/footer/footer.component';
 import { HeaderComponent } from '@core/components/header/header.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
-import { IS_WEB, IS_XSMALL } from '@osf/shared/utils';
+import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 
 import { SidenavComponent } from '../sidenav/sidenav.component';
 

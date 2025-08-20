@@ -30,11 +30,11 @@ export class DeleteNodeLinkDialogComponent {
 
   handleDeleteNodeLink(): void {
     const project = this.currentProject();
-    const nodeLinkId = this.dialogConfig.data.nodeLinkId;
+    const currentLink = this.dialogConfig.data.currentLink;
 
-    if (!nodeLinkId || !project) return;
+    if (!currentLink || !project) return;
 
-    this.actions.deleteNodeLink(project.id, nodeLinkId).subscribe({
+    this.actions.deleteNodeLink(project.id, currentLink).subscribe({
       next: () => {
         this.dialogRef.close();
         this.actions.getLinkedResources(project.id);

@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { OverviewToolbarComponent } from '@osf/features/project/overview/components';
-import { CreateSchemaResponse, FetchAllSchemaResponses } from '@osf/features/registries/store';
+import { CreateSchemaResponse, FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
 import {
   DataResourcesComponent,
   LoadingSpinnerComponent,
@@ -22,10 +22,10 @@ import {
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
+import { toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
-import { toCamelCase } from '@osf/shared/utils';
 import { GetBookmarksCollectionId } from '@shared/stores';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
@@ -39,8 +39,6 @@ import {
   RegistryOverviewSelectors,
   SetRegistryCustomCitation,
 } from '../../store/registry-overview';
-
-import { RegistriesSelectors } from './../../../registries/store/registries.selectors';
 
 @Component({
   selector: 'osf-registry-overview',
@@ -62,16 +60,17 @@ import { RegistriesSelectors } from './../../../registries/store/registries.sele
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService],
+  providers: [DialogService, DatePipe],
 })
 export class RegistryOverviewComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly toastService = inject(ToastService);
-  protected readonly dialogService = inject(DialogService);
-  protected readonly translateService = inject(TranslateService);
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
+  private readonly datePipe = inject(DatePipe);
 
   protected readonly registry = select(RegistryOverviewSelectors.getRegistry);
   protected readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
@@ -81,7 +80,7 @@ export class RegistryOverviewComponent {
   protected readonly isInstitutionsLoading = select(RegistryOverviewSelectors.isInstitutionsLoading);
   protected readonly schemaBlocks = select(RegistryOverviewSelectors.getSchemaBlocks);
   protected readonly isSchemaBlocksLoading = select(RegistryOverviewSelectors.isSchemaBlocksLoading);
-  protected areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
+  protected readonly areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
   protected readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
   protected readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
   protected revisionInProgress: SchemaResponse | undefined;
@@ -176,6 +175,7 @@ export class RegistryOverviewComponent {
           .subscribe();
       }
     });
+
     this.actions.getBookmarksId();
     this.route.queryParams
       .pipe(

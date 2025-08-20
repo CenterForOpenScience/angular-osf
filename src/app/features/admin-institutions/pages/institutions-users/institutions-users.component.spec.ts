@@ -13,6 +13,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserState } from '@core/store/user';
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
+import { ToastService } from '@osf/shared/services';
+import { InstitutionsSearchState } from '@osf/shared/stores';
 import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 import { TranslateServiceMock } from '@shared/mocks';
 
@@ -33,7 +35,8 @@ describe('InstitutionsUsersComponent', () => {
         MockProvider(ActivatedRoute, { queryParams: of({}) }),
         MockProvider(Router),
         TranslateServiceMock,
-        provideStore([InstitutionsAdminState, UserState]),
+        MockProvider(ToastService),
+        provideStore([InstitutionsAdminState, UserState, InstitutionsSearchState]),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],

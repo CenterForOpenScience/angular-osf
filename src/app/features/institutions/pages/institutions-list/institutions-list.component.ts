@@ -21,7 +21,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { parseQueryFilterParams } from '@core/helpers';
 import {
   CustomPaginatorComponent,
   LoadingSpinnerComponent,
@@ -29,6 +28,7 @@ import {
   SubHeaderComponent,
 } from '@shared/components';
 import { TABLE_PARAMS } from '@shared/constants';
+import { parseQueryFilterParams } from '@shared/helpers';
 import { QueryParams } from '@shared/models';
 import { FetchInstitutions, InstitutionsSelectors } from '@shared/stores';
 

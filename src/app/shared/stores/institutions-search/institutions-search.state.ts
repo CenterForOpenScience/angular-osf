@@ -7,9 +7,9 @@ import { inject, Injectable } from '@angular/core';
 
 import { ResourcesData } from '@osf/features/search/models';
 import { GetResourcesRequestTypeEnum, ResourceTab } from '@osf/shared/enums';
+import { getResourceTypes } from '@osf/shared/helpers';
 import { Institution } from '@osf/shared/models';
 import { InstitutionsService, SearchService } from '@osf/shared/services';
-import { getResourceTypes } from '@osf/shared/utils';
 
 import {
   FetchInstitutionById,

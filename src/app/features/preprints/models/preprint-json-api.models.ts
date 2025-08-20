@@ -1,13 +1,17 @@
-import { BooleanOrNull, StringOrNull } from '@core/helpers';
-import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
-import { UserPermissions } from '@shared/enums';
-import { ContributorResponse, LicenseRecordJsonApi, LicenseResponseJsonApi } from '@shared/models';
+import { UserPermissions } from '@osf/shared/enums';
+import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers';
+import { ContributorResponse, LicenseRecordJsonApi, LicenseResponseJsonApi } from '@osf/shared/models';
+
+import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '../enums';
 
 export interface PreprintAttributesJsonApi {
   date_created: string;
   date_modified: string;
   date_published: Date | null;
   original_publication_date: Date | null;
+  date_last_transitioned: Date | null;
+  date_withdrawn: Date | null;
+  withdrawal_justification: StringOrNull;
   custom_publication_citation: StringOrNull;
   doi: StringOrNull;
   preprint_doi_created: Date | null;
@@ -17,11 +21,9 @@ export interface PreprintAttributesJsonApi {
   is_preprint_orphan: boolean;
   license_record: LicenseRecordJsonApi | null;
   tags: string[];
-  date_withdrawn: Date | null;
   current_user_permissions: UserPermissions[];
   public: boolean;
   reviews_state: ReviewsState;
-  date_last_transitioned: Date | null;
   version: number;
   is_latest_version: boolean;
   has_coi: BooleanOrNull;

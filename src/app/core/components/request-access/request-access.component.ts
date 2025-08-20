@@ -1,5 +1,3 @@
-import { createDispatchMap } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
@@ -13,10 +11,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { RequestAccessService } from '@osf/core/services';
-import { Logout } from '@osf/features/auth/store';
+import { AuthService, RequestAccessService } from '@osf/core/services';
 import { InputLimits } from '@osf/shared/constants';
 import { LoaderService, ToastService } from '@osf/shared/services';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-request-access',
@@ -26,8 +25,10 @@ import { LoaderService, ToastService } from '@osf/shared/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestAccessComponent {
-  commentLimit = InputLimits.requestAccessComment.maxLength;
   comment = model('');
+
+  readonly supportEmail = environment.supportEmail;
+  readonly commentLimit = InputLimits.requestAccessComment.maxLength;
 
   private readonly route = inject(ActivatedRoute);
   private readonly id = toSignal(this.route?.params.pipe(map((params) => params['id'])) ?? of(undefined));
@@ -36,7 +37,7 @@ export class RequestAccessComponent {
   private readonly requestAccessService = inject(RequestAccessService);
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
-  private readonly actions = createDispatchMap({ logout: Logout });
+  private readonly authService = inject(AuthService);
 
   requestAccess() {
     this.loaderService.show();
@@ -55,6 +56,6 @@ export class RequestAccessComponent {
   }
 
   switchAccount() {
-    this.actions.logout();
+    this.authService.logout();
   }
 }

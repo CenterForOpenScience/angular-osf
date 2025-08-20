@@ -22,11 +22,11 @@ import {
   SaveLicense,
   UpdatePreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
+import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
 import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
 import { License, LicenseOptions } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
-import { CustomValidators, findChangedFields } from '@shared/utils';
 
 import { ContributorsComponent } from './contributors/contributors.component';
 

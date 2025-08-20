@@ -63,7 +63,7 @@
         <tr (click)="onItemClick(item)">
           <td>
             <p class="flex align-items-center gap-2">
-              <i [ngClass]="item.isPublic ? 'osf-icon-padlock-unlock' : 'osf-icon-padlock'"></i>
+              <osf-icon [iconClass]="item.isPublic ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
               <span class="overflow-ellipsis">{{ item.title }}</span>
             </p>
           </td>

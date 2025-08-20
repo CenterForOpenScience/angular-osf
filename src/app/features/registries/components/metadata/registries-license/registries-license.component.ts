@@ -12,8 +12,10 @@ import { ActivatedRoute } from '@angular/router';
 import { FetchLicenses, RegistriesSelectors, SaveLicense } from '@osf/features/registries/store';
 import { LicenseComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
+import { CustomValidators } from '@osf/shared/helpers';
 import { License, LicenseOptions } from '@osf/shared/models';
-import { CustomValidators } from '@osf/shared/utils';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-registries-license',
@@ -36,8 +38,6 @@ export class RegistriesLicenseComponent {
   protected selectedLicense = select(RegistriesSelectors.getSelectedLicense);
   protected draftRegistration = select(RegistriesSelectors.getDraftRegistration);
 
-  private readonly OSF_PROVIDER_ID = 'osf';
-
   currentYear = new Date();
   licenseYear = this.currentYear;
   licenseForm = this.fb.group({
@@ -52,7 +52,7 @@ export class RegistriesLicenseComponent {
   constructor() {
     effect(() => {
       if (this.draftRegistration() && !this.isLoaded) {
-        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? this.OSF_PROVIDER_ID);
+        this.actions.fetchLicenses(this.draftRegistration()?.providerId ?? environment.defaultProvider);
         this.isLoaded = true;
       }
     });

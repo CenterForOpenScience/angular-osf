@@ -5,7 +5,7 @@ import { catchError, forkJoin, map, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@osf/core/handlers';
+import { handleSectionError } from '@osf/shared/helpers';
 
 import { PreprintSubmissionPaginatedData, PreprintWithdrawalPaginatedData } from '../../models';
 import { PreprintModerationService } from '../../services';

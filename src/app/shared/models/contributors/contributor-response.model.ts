@@ -1,5 +1,4 @@
-import { ApiData } from '@osf/core/models';
-import { Education, Employment } from '@osf/shared/models';
+import { ApiData, Education, Employment } from '@osf/shared/models';
 
 export type ContributorResponse = ApiData<ContributorAttributes, ContributorEmbeds, ContributorRelationships, null>;
 

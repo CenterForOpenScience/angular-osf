@@ -1,5 +1,4 @@
-import { JsonApiResponse } from '@core/models';
-import { LicenseRecordJsonApi } from '@shared/models';
+import { JsonApiResponse, LicenseRecordJsonApi } from '@shared/models';
 
 export interface ProjectJsonApi {
   id: string;

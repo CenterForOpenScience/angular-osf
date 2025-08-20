@@ -22,6 +22,14 @@ export function filterMenuItems(items: MenuItem[], isAuthenticated: boolean): Me
       };
     }
 
+    if (item.id === 'sign-in') {
+      updatedItem = { ...updatedItem, visible: !isAuthenticated };
+    }
+
+    if (item.id === 'log-out') {
+      updatedItem = { ...updatedItem, visible: isAuthenticated };
+    }
+
     if (item.items) {
       updatedItem.items = filterMenuItems(item.items, isAuthenticated);
     }
@@ -131,6 +139,9 @@ function updatePreprintMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
         };
       }
       return { ...subItem, visible: false, expanded: false };
+    }
+    if (subItem.id === 'preprints-moderation') {
+      return { ...subItem, visible: ctx.preprintReviewsPageVisible };
     }
     return subItem;
   });
