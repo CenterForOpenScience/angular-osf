@@ -22,16 +22,36 @@
     </div>
 
     <div class="flex flex-row justify-content-start gap-1">
-      <a class="social-link flex align-items-center justify-content-center" [href]="emailShareLink()">
+      <a
+        class="social-link flex align-items-center justify-content-center"
+        [href]="emailShareLink()"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <osf-icon [iconClass]="`fas fa-envelope fa-xl`" />
       </a>
-      <a class="social-link flex align-items-center justify-content-center" [href]="twitterShareLink()">
+      <a
+        class="social-link flex align-items-center justify-content-center"
+        [href]="twitterShareLink()"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <osf-icon [iconClass]="`fab fa-x-twitter fa-xl`" />
       </a>
-      <a class="social-link flex align-items-center justify-content-center" [href]="facebookShareLink()">
+      <a
+        class="social-link flex align-items-center justify-content-center"
+        [href]="facebookShareLink()"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <osf-icon [iconClass]="`fab fa-facebook-f fa-xl`" />
       </a>
-      <a class="social-link flex align-items-center justify-content-center" [href]="linkedInShareLink()">
+      <a
+        class="social-link flex align-items-center justify-content-center"
+        [href]="linkedInShareLink()"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         <osf-icon [iconClass]="`fab fa-linkedin-in fa-xl`" />
       </a>
     </div>

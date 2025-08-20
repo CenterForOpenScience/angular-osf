@@ -8,7 +8,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { Tag } from 'primeng/tag';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, output } from '@angular/core';
 
 import { PreprintDoiSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-doi-section/preprint-doi-section.component';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
@@ -55,6 +55,8 @@ export class PreprintTombstoneComponent implements OnDestroy {
     fetchPreprintById: FetchPreprintById,
     fetchSubjects: FetchSelectedSubjects,
   });
+  preprintVersionSelected = output<string>();
+
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
 
   preprint = select(PreprintSelectors.getPreprint);

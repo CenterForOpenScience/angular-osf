@@ -11,16 +11,17 @@ import { Tooltip } from 'primeng/tooltip';
 import { timer } from 'rxjs';
 
 import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { DuplicateDialogComponent, TogglePublicityDialogComponent } from '@osf/features/project/overview/components';
+import { SocialsShareActionItem } from '@osf/features/project/overview/models';
 import { IconComponent } from '@osf/shared/components';
-import { ToastService } from '@osf/shared/services';
+import { SocialShareService, ToastService } from '@osf/shared/services';
 import { ResourceType } from '@shared/enums';
-import { ToolbarResource } from '@shared/models';
+import { ShareableContent, ToolbarResource } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import {
   AddResourceToBookmarks,
@@ -30,7 +31,6 @@ import {
   RemoveResourceFromBookmarks,
 } from '@shared/stores';
 
-import { SOCIAL_ACTION_ITEMS } from '../../constants';
 import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';
 
 @Component({
@@ -56,22 +56,28 @@ export class OverviewToolbarComponent {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
+  private socialShareService = inject(SocialShareService);
   protected destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   protected isPublic = signal(false);
   protected isBookmarked = signal(false);
-
   isCollectionsRoute = input<boolean>(false);
   isAdmin = input.required<boolean>();
   currentResource = input.required<ToolbarResource | null>();
+  projectTitle = input<string>('');
+  projectDescription = input<string>('');
   showViewOnlyLinks = input<boolean>(true);
 
   protected isBookmarksLoading = select(MyResourcesSelectors.getBookmarksLoading);
   protected isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
   protected bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
   protected bookmarkedProjects = select(MyResourcesSelectors.getBookmarks);
-  protected readonly socialsActionItems = SOCIAL_ACTION_ITEMS;
+  protected socialsActionItems = computed(() => {
+    const shareableContent = this.createShareableContent();
+    return shareableContent ? this.buildSocialActionItems(shareableContent) : [];
+  });
+
   protected readonly forkActionItems = [
     {
       label: 'project.overview.actions.forkProject',
@@ -119,38 +125,6 @@ export class OverviewToolbarComponent {
       }
 
       this.isBookmarked.set(bookmarks.some((bookmark) => bookmark.id === resource.id));
-    });
-  }
-
-  private handleForkResource(): void {
-    const resource = this.currentResource();
-    const headerTranslation =
-      resource?.resourceType === ResourceType.Project
-        ? 'project.overview.dialog.fork.headerProject'
-        : resource?.resourceType === ResourceType.Registration
-          ? 'project.overview.dialog.fork.headerRegistry'
-          : '';
-    if (resource) {
-      this.dialogService.open(ForkDialogComponent, {
-        focusOnShow: false,
-        header: this.translateService.instant(headerTranslation),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
-        data: {
-          resource: resource,
-        },
-      });
-    }
-  }
-
-  private handleDuplicateProject(): void {
-    this.dialogService.open(DuplicateDialogComponent, {
-      focusOnShow: false,
-      header: this.translateService.instant('project.overview.dialog.duplicate.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
     });
   }
 
@@ -211,5 +185,92 @@ export class OverviewToolbarComponent {
           },
         });
     }
+  }
+
+  private handleForkResource(): void {
+    const resource = this.currentResource();
+    const headerTranslation =
+      resource?.resourceType === ResourceType.Project
+        ? 'project.overview.dialog.fork.headerProject'
+        : resource?.resourceType === ResourceType.Registration
+          ? 'project.overview.dialog.fork.headerRegistry'
+          : '';
+    if (resource) {
+      this.dialogService.open(ForkDialogComponent, {
+        focusOnShow: false,
+        header: this.translateService.instant(headerTranslation),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: {
+          resource: resource,
+        },
+      });
+    }
+  }
+
+  private handleDuplicateProject(): void {
+    this.dialogService.open(DuplicateDialogComponent, {
+      focusOnShow: false,
+      header: this.translateService.instant('project.overview.dialog.duplicate.header'),
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+    });
+  }
+
+  private createShareableContent(): ShareableContent | null {
+    const resource = this.currentResource();
+    const title = this.projectTitle();
+    const description = this.projectDescription();
+
+    if (!resource?.isPublic || !title) {
+      return null;
+    }
+
+    return {
+      id: resource.id,
+      title,
+      description,
+      url: this.buildResourceUrl(resource),
+    };
+  }
+
+  private buildResourceUrl(resource: ToolbarResource): string {
+    switch (resource.resourceType) {
+      case ResourceType.Project:
+        return this.socialShareService.createProjectUrl(resource.id);
+      case ResourceType.Registration:
+        return this.socialShareService.createRegistrationUrl(resource.id);
+      default:
+        return `${window.location.origin}/${resource.id}`;
+    }
+  }
+
+  private buildSocialActionItems(shareableContent: ShareableContent): SocialsShareActionItem[] {
+    const shareLinks = this.socialShareService.generateAllSharingLinks(shareableContent);
+
+    return [
+      {
+        label: 'project.overview.actions.socials.email',
+        icon: 'fas fa-envelope',
+        url: shareLinks.email,
+      },
+      {
+        label: 'project.overview.actions.socials.x',
+        icon: 'fab fa-x-twitter',
+        url: shareLinks.twitter,
+      },
+      {
+        label: 'project.overview.actions.socials.linkedIn',
+        icon: 'fab fa-linkedin',
+        url: shareLinks.linkedIn,
+      },
+      {
+        label: 'project.overview.actions.socials.facebook',
+        icon: 'fab fa-facebook-f',
+        url: shareLinks.facebook,
+      },
+    ];
   }
 }

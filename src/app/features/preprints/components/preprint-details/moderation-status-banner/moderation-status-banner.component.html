@@ -1,0 +1,31 @@
+<p-message styleClass="w-full" [severity]="severity()">
+  <ng-template #container>
+    <div class="banner-container w-full flex flex-row gap-2 align-items-start font-bold text-base">
+      <osf-icon class="pt-1" [iconClass]="'fas fa-' + iconClass()" />
+
+      <div class="flex-1 flex gap-1 lg:flex-row">
+        <div>{{ status() | translate | titlecase }}:</div>
+        <div>
+          @if (noActions()) {
+            <p>
+              {{ recentActivityLanguage() | translate: { documentType: documentType()?.singular } }}
+              {{ labelDate() | date: 'MMM d, y' }}
+            </p>
+          } @else {
+            <p>
+              <a [href]="`${environment.webUrl}/${actionCreatorId()}`">{{ actionCreatorName() }}</a>
+              {{ recentActivityLanguage() | translate: { documentType: documentType()?.singular } }}
+              {{ labelDate() | date: 'MMM d, y' }}
+            </p>
+          }
+
+          @if (isPendingWithdrawal()) {
+            <a [href]="actionCreatorLink()">{{ withdrawalRequesterName() }}</a>
+            {{ requestActivityLanguage()! | translate: { documentType: documentType()?.singular } }}
+            {{ latestWithdrawalRequest()?.dateLastTransitioned | date: 'MMM d, y' }}
+          }
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</p-message>

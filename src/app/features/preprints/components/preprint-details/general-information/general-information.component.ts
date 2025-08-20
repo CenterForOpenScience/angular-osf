@@ -5,21 +5,33 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { PreprintDoiSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-doi-section/preprint-doi-section.component';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { TruncatedTextComponent } from '@shared/components';
+import { IconComponent, TruncatedTextComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { Institution } from '@shared/models';
 import { ContributorsSelectors, GetAllContributors, ResetContributorsState } from '@shared/stores';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-preprint-general-information',
-  imports: [Card, TranslatePipe, TruncatedTextComponent, Skeleton, FormsModule, PreprintDoiSectionComponent],
+  imports: [
+    Card,
+    TranslatePipe,
+    TruncatedTextComponent,
+    Skeleton,
+    FormsModule,
+    PreprintDoiSectionComponent,
+    RouterLink,
+    IconComponent,
+  ],
   templateUrl: './general-information.component.html',
   styleUrl: './general-information.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,7 +45,10 @@ export class GeneralInformationComponent implements OnDestroy {
     resetContributorsState: ResetContributorsState,
     fetchPreprintById: FetchPreprintById,
   });
+  protected readonly environment = environment;
+
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
+  preprintVersionSelected = output<string>();
 
   preprint = select(PreprintSelectors.getPreprint);
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
@@ -48,6 +63,10 @@ export class GeneralInformationComponent implements OnDestroy {
   });
 
   skeletonData = Array.from({ length: 5 }, () => null);
+
+  nodeLink = computed(() => {
+    return `${environment.webUrl}/${this.preprint()?.nodeId}`;
+  });
 
   constructor() {
     effect(() => {

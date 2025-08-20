@@ -17,7 +17,7 @@ export const statusIconByState: Partial<Record<ReviewsState, string>> = {
   [ReviewsState.Rejected]: 'times-circle',
   [ReviewsState.PendingWithdrawal]: 'hourglass',
   [ReviewsState.WithdrawalRejected]: 'times-circle',
-  [ReviewsState.Withdrawn]: 'exclamation-triangle',
+  [ReviewsState.Withdrawn]: 'circle-minus',
 };
 
 export const statusMessageByWorkflow: Record<ProviderReviewsWorkflow, string> = {
@@ -44,4 +44,21 @@ export const statusSeverityByState: Partial<Record<ReviewsState, StatusSeverity>
   [ReviewsState.PendingWithdrawal]: 'error',
   [ReviewsState.WithdrawalRejected]: 'error',
   [ReviewsState.Withdrawn]: 'warn',
+  [ReviewsState.Pending]: 'warn',
+};
+
+type ActivityMap = Partial<Record<ReviewsState, string>>;
+
+export const recentActivityMessageByState: ActivityMap & {
+  automatic: ActivityMap;
+} = {
+  [ReviewsState.Pending]: 'preprints.details.moderationStatusBanner.recentActivity.pending',
+  [ReviewsState.Accepted]: 'preprints.details.moderationStatusBanner.recentActivity.accepted',
+  [ReviewsState.Rejected]: 'preprints.details.moderationStatusBanner.recentActivity.rejected',
+  [ReviewsState.PendingWithdrawal]: 'preprints.details.moderationStatusBanner.recentActivity.pendingWithdrawal',
+  [ReviewsState.Withdrawn]: 'preprints.details.moderationStatusBanner.recentActivity.withdrawn',
+  automatic: {
+    [ReviewsState.Pending]: 'preprints.details.moderationStatusBanner.recentActivity.automatic.pending',
+    [ReviewsState.Accepted]: 'preprints.details.moderationStatusBanner.recentActivity.automatic.accepted',
+  },
 };
