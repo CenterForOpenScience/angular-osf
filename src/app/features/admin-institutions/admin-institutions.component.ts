@@ -8,10 +8,12 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
-import { resourceTabOptions } from '@osf/features/admin-institutions/constants/resource-tab-option.constant';
 import { Primitive } from '@osf/shared/helpers';
+import { FetchInstitutionById, InstitutionsSearchSelectors } from '@osf/shared/stores';
 import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
-import { FetchInstitutionById, InstitutionsSearchSelectors } from '@shared/stores';
+
+import { resourceTabOptions } from './constants';
+import { AdminInstitutionResourceTab } from './enums';
 
 @Component({
   selector: 'osf-admin-institutions',
@@ -31,9 +33,8 @@ export class AdminInstitutionsComponent implements OnInit {
     fetchInstitution: FetchInstitutionById,
   });
 
-  selectedTab = 'summary';
-
   resourceTabOptions = resourceTabOptions;
+  selectedTab = AdminInstitutionResourceTab.Summary;
 
   ngOnInit() {
     const institutionId = this.route.snapshot.params['institution-id'];
@@ -42,16 +43,17 @@ export class AdminInstitutionsComponent implements OnInit {
       this.actions.fetchInstitution(institutionId);
     }
 
-    this.selectedTab = this.route.snapshot.firstChild?.routeConfig?.path || 'summary';
+    this.selectedTab =
+      (this.route.snapshot.firstChild?.routeConfig?.path as AdminInstitutionResourceTab) ||
+      AdminInstitutionResourceTab.Summary;
   }
 
   onTabChange(selectedValue: Primitive) {
-    const value = String(selectedValue);
+    const value = selectedValue as AdminInstitutionResourceTab;
     this.selectedTab = value;
-    const selectedTab = this.resourceTabOptions.find((tab) => tab.value === value);
 
-    if (selectedTab) {
-      this.router.navigate([selectedTab.value], { relativeTo: this.route });
+    if (this.selectedTab) {
+      this.router.navigate([this.selectedTab], { relativeTo: this.route });
     }
   }
 }

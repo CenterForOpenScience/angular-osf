@@ -1,3 +1,4 @@
+import { StringOrNull } from '@shared/helpers';
 import { SearchFilters } from '@shared/models';
 
 export class FetchMyPreprints {
@@ -36,12 +37,37 @@ export class FetchPreprintRequests {
   static readonly type = '[Preprint] Fetch Preprint Requests';
 }
 
+export class FetchPreprintRequestActions {
+  static readonly type = '[Preprint] Fetch Preprint Requests Actions';
+
+  constructor(public requestId: string) {}
+}
+
 export class WithdrawPreprint {
   static readonly type = '[Preprint] Withdraw Preprint';
 
   constructor(
     public preprintId: string,
     public justification: string
+  ) {}
+}
+
+export class SubmitReviewsDecision {
+  static readonly type = '[Preprint] Submit Reviews Decision';
+
+  constructor(
+    public trigger: string,
+    public comment: StringOrNull
+  ) {}
+}
+
+export class SubmitRequestsDecision {
+  static readonly type = '[Preprint] Submit Request Decision';
+
+  constructor(
+    public requestId: string,
+    public trigger: string,
+    public comment: StringOrNull
   ) {}
 }
 

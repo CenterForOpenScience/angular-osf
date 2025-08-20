@@ -21,7 +21,7 @@ export class ModeratorsService {
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Collection, 'providers/collections'],
     [ResourceType.Registration, 'providers/registrations'],
-    [ResourceType.Preprint, 'preprint_providers'],
+    [ResourceType.Preprint, 'providers/preprints'],
   ]);
 
   getModerators(resourceId: string, resourceType: ResourceType): Observable<ModeratorModel[]> {

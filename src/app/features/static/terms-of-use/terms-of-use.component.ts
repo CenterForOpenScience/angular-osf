@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-terms-of-use',
   imports: [],
@@ -7,4 +9,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './terms-of-use.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TermsOfUseComponent {}
+export class TermsOfUseComponent {
+  readonly supportEmail = environment.supportEmail;
+}

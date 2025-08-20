@@ -1,7 +1,6 @@
 export * from './addon-terms.const';
 export * from './addons-category-options.const';
 export * from './addons-tab-options.const';
-export * from './constants';
 export * from './contributors.constants';
 export * from './default-citation-titles.const';
 export * from './filter-placeholders';

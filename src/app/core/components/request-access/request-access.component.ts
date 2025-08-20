@@ -15,6 +15,8 @@ import { AuthService, RequestAccessService } from '@osf/core/services';
 import { InputLimits } from '@osf/shared/constants';
 import { LoaderService, ToastService } from '@osf/shared/services';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-request-access',
   imports: [TranslatePipe, Button, Textarea, FormsModule],
@@ -23,8 +25,10 @@ import { LoaderService, ToastService } from '@osf/shared/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RequestAccessComponent {
-  commentLimit = InputLimits.requestAccessComment.maxLength;
   comment = model('');
+
+  readonly supportEmail = environment.supportEmail;
+  readonly commentLimit = InputLimits.requestAccessComment.maxLength;
 
   private readonly route = inject(ActivatedRoute);
   private readonly id = toSignal(this.route?.params.pipe(map((params) => params['id'])) ?? of(undefined));

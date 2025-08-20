@@ -25,6 +25,8 @@ import { SearchInputComponent } from '@shared/components';
 import { ResourceTab } from '@shared/enums';
 import { BrandService } from '@shared/services';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-overview',
   imports: [
@@ -47,8 +49,10 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
 
   protected searchControl = new FormControl<string>('');
 
+  readonly supportEmail = environment.supportEmail;
+  private readonly OSF_PROVIDER_ID = environment.defaultProvider;
+
   private readonly router = inject(Router);
-  private readonly OSF_PROVIDER_ID = 'osf';
   private readonly actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
     getPreprintProvidersToAdvertise: GetPreprintProvidersToAdvertise,

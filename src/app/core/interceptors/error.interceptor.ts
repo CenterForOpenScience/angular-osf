@@ -48,10 +48,6 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       loaderService.hide();
 
-      if (error.status === 409) {
-        return throwError(() => error);
-      }
-
       toastService.showError(errorMessage);
 
       return throwError(() => error);

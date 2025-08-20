@@ -1,3 +1,4 @@
+export * from './activity-logs';
 export * from './addons';
 export { BookmarksService } from './bookmarks.service';
 export { BrandService } from './brand.service';
@@ -11,11 +12,13 @@ export { InstitutionsService } from './institutions.service';
 export { JsonApiService } from './json-api.service';
 export { LicensesService } from './licenses.service';
 export { LoaderService } from './loader.service';
+export { MetaTagsService } from './meta-tags.service';
 export { MyResourcesService } from './my-resources.service';
 export { NodeLinksService } from './node-links.service';
 export { RegionsService } from './regions.service';
 export { ResourceCardService } from './resource-card.service';
 export { SearchService } from './search.service';
+export { SocialShareService } from './social-share.service';
 export { SubjectsService } from './subjects.service';
 export { ToastService } from './toast.service';
 export { ViewOnlyLinksService } from './view-only-links.service';

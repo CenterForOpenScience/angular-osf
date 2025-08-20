@@ -32,6 +32,8 @@ import {
   RegistriesSelectors,
 } from '../../store';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-my-registrations',
   imports: [
@@ -80,7 +82,7 @@ export class MyRegistrationsComponent {
 
   protected readonly RegistrationTab = RegistrationTab;
 
-  readonly provider = 'osf';
+  readonly provider = environment.defaultProvider;
 
   selectedTab = signal(RegistrationTab.Submitted);
   itemsPerPage = 10;

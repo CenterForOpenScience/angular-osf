@@ -465,8 +465,9 @@
     </p>
     <p>
       Inquiries. For questions or issues regarding SSO access, please contact
-      <a href="mailto:support@osf.io">support&#64;osf.io</a>. Institutional administrators that have questions or
-      requests should inquire at <a href="mailto:institutions@cos.io">institutions&#64;cos.io</a>.
+      <a [href]="'mailto:' + supportEmail">{{ supportEmail }}</a
+      >. Institutional administrators that have questions or requests should inquire at
+      <a href="mailto:institutions@cos.io">institutions&#64;cos.io</a>.
     </p>
   </section>
 
@@ -654,8 +655,8 @@
       <a href="https://github.com/CenterForOpenScience/cos.io/blob/master/PRIVACY_POLICY.md">here</a>.
     </p>
     <p>
-      Contact COS at <a href="mailto:support@osf.io">support&#64;osf.io</a>, if you have concerns regarding your
-      Personal Data, or wish to exercise any of your rights under the GDPR.
+      Contact COS at <a [href]="'mailto:' + supportEmail">{{ supportEmail }}</a
+      >, if you have concerns regarding your Personal Data, or wish to exercise any of your rights under the GDPR.
     </p>
   </section>
 

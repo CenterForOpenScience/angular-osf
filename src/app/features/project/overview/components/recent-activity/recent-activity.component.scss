@@ -7,9 +7,13 @@
   color: var.$dark-blue-1;
 
   &-activity {
-    height: mix.rem(35px);
     border-bottom: 1px solid var.$grey-2;
+
+    .activity-date {
+      width: 30%;
+    }
   }
+
   &-description {
     line-height: mix.rem(24px);
   }

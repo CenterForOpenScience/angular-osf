@@ -8,6 +8,8 @@ export interface ContributorModel {
   isCurator: boolean;
   permission: string;
   fullName: string;
+  givenName: string;
+  familyName: string;
   employment: Employment[];
   education: Education[];
 }
