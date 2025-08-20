@@ -7,10 +7,10 @@ export { ModeratorsTableComponent } from './moderators-table/moderators-table.co
 export { MyReviewingNavigationComponent } from './my-reviewing-navigation/my-reviewing-navigation.component';
 export { NotificationSettingsComponent } from './notification-settings/notification-settings.component';
 export { PreprintModerationSettingsComponent } from './preprint-moderation-settings/preprint-moderation-settings.component';
+export { PreprintRecentActivityListComponent } from './preprint-recent-activity-list/preprint-recent-activity-list.component';
 export { PreprintSubmissionItemComponent } from './preprint-submission-item/preprint-submission-item.component';
 export { PreprintSubmissionsComponent } from './preprint-submissions/preprint-submissions.component';
 export { PreprintWithdrawalSubmissionsComponent } from './preprint-withdrawal-submissions/preprint-withdrawal-submissions.component';
-export { RecentActivityListComponent } from './recent-activity-list/recent-activity-list.component';
 export { RegistryPendingSubmissionsComponent } from './registry-pending-submissions/registry-pending-submissions.component';
 export { RegistrySettingsComponent } from './registry-settings/registry-settings.component';
 export { RegistrySubmissionItemComponent } from './registry-submission-item/registry-submission-item.component';

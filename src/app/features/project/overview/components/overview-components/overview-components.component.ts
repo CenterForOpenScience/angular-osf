@@ -38,11 +38,11 @@ export class OverviewComponentsComponent {
   protected readonly componentActionItems = (componentId: string) => [
     {
       label: 'project.overview.actions.manageContributors',
-      command: () => this.router.navigate(['/project', componentId, 'contributors']),
+      command: () => this.router.navigate([componentId, 'contributors']),
     },
     {
       label: 'project.overview.actions.settings',
-      command: () => this.router.navigate(['/project', componentId, 'settings']),
+      command: () => this.router.navigate([componentId, 'settings']),
     },
     {
       label: 'project.overview.actions.delete',

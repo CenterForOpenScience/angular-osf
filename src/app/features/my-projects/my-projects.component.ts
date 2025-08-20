@@ -343,11 +343,11 @@ export class MyProjectsComponent implements OnInit {
 
   protected navigateToProject(project: MyResourcesItem): void {
     this.activeProject.set(project);
-    this.router.navigate(['/project', project.id]);
+    this.router.navigate([project.id]);
   }
 
   protected navigateToRegistry(registry: MyResourcesItem): void {
     this.activeProject.set(registry);
-    this.router.navigate(['/registries', registry.id]);
+    this.router.navigate([registry.id]);
   }
 }

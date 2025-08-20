@@ -8,18 +8,17 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 
 import { PreprintReviewStatus, ReviewStatusIcon } from '@osf/features/moderation/constants';
+import { PreprintReviewActionModel } from '@osf/features/moderation/models';
 import { CustomPaginatorComponent, IconComponent } from '@osf/shared/components';
 
-import { PreprintReviewActionModel } from '../../models';
-
 @Component({
-  selector: 'osf-recent-activity-list',
+  selector: 'osf-preprint-recent-activity-list',
   imports: [TableModule, DatePipe, TranslatePipe, IconComponent, Skeleton, CustomPaginatorComponent],
-  templateUrl: './recent-activity-list.component.html',
-  styleUrl: './recent-activity-list.component.scss',
+  templateUrl: './preprint-recent-activity-list.component.html',
+  styleUrl: './preprint-recent-activity-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RecentActivityListComponent {
+export class PreprintRecentActivityListComponent {
   reviews = input.required<PreprintReviewActionModel[]>();
   isLoading = input(false);
   totalCount = input(0);

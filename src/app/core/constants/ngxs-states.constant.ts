@@ -4,7 +4,7 @@ import { FilesState } from '@osf/features/files/store';
 import { ProjectMetadataState } from '@osf/features/project/metadata/store';
 import { ProjectOverviewState } from '@osf/features/project/overview/store';
 import { RegistrationsState } from '@osf/features/project/registrations/store';
-import { AddonsState, InstitutionsState, WikiState } from '@osf/shared/stores';
+import { AddonsState, CurrentResourceState, InstitutionsState, WikiState } from '@osf/shared/stores';
 import { LicensesState } from '@shared/stores/licenses';
 import { MyResourcesState } from '@shared/stores/my-resources';
 import { RegionsState } from '@shared/stores/regions';
@@ -22,4 +22,5 @@ export const STATES = [
   LicensesState,
   RegionsState,
   FilesState,
+  CurrentResourceState,
 ];

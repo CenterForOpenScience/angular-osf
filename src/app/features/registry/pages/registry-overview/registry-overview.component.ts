@@ -60,7 +60,7 @@ import {
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DialogService, DatePipe],
+  providers: [DialogService],
 })
 export class RegistryOverviewComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
@@ -70,7 +70,6 @@ export class RegistryOverviewComponent {
   private readonly toastService = inject(ToastService);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
-  private readonly datePipe = inject(DatePipe);
 
   protected readonly registry = select(RegistryOverviewSelectors.getRegistry);
   protected readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);

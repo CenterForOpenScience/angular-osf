@@ -1,10 +1,11 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, HostBinding, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'osf-data-resources',
-  imports: [TranslatePipe],
+  imports: [TranslatePipe, RouterLink],
   templateUrl: './data-resources.component.html',
   styleUrl: './data-resources.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,7 +20,7 @@ export class DataResourcesComponent {
   hasPapers = input<boolean>();
   hasSupplements = input<boolean>();
 
-  getResourceLink(): string {
-    return '/registries/' + this.resourceId() + '/resources';
+  get resourceLink(): string {
+    return `/${this.resourceId()}/resources`;
   }
 }

@@ -2,9 +2,11 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { BookmarksState, ProjectsState, ResourceTypeState } from '@shared/stores';
+import { BookmarksState, ProjectsState } from '@shared/stores';
 
 import { authGuard, redirectIfLoggedInGuard } from './core/guards';
+import { isProjectGuard } from './core/guards/is-project.guard';
+import { isRegistryGuard } from './core/guards/is-registry.guard';
 import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
 import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
 import { MyProfileState } from './features/my-profile/store';
@@ -15,8 +17,6 @@ import { FilesHandlers } from './features/registries/store/handlers/files.handle
 import { ResourceFiltersOptionsState } from './features/search/components/filters/store';
 import { ResourceFiltersState } from './features/search/components/resource-filters/store';
 import { SearchState } from './features/search/store';
-import { isProjectGuard } from './shared/guards/is-project.guard';
-import { isRegistryGuard } from './shared/guards/is-registry.guard';
 import { LicensesService } from './shared/services';
 
 export const routes: Routes = [
@@ -101,24 +101,6 @@ export const routes: Routes = [
         providers: [provideStates([PreprintState])],
       },
       {
-        path: ':id',
-        canMatch: [authGuard, isProjectGuard],
-        loadChildren: () => import('./features/project/project.routes').then((m) => m.projectRoutes),
-        providers: [provideStates([ProjectsState, BookmarksState, ResourceTypeState])],
-      },
-      {
-        path: ':id',
-        canMatch: [authGuard, isRegistryGuard],
-        loadChildren: () => import('./features/registry/registry.routes').then((m) => m.registryRoutes),
-        providers: [provideStates([BookmarksState, ResourceTypeState])],
-      },
-      {
-        path: 'project/:id',
-        loadChildren: () => import('./features/project/project.routes').then((mod) => mod.projectRoutes),
-        providers: [provideStates([ProjectsState, BookmarksState])],
-        canActivate: [authGuard],
-      },
-      {
         path: 'preprints',
         loadChildren: () => import('./features/preprints/preprints.routes').then((mod) => mod.preprintsRoutes),
       },
@@ -132,12 +114,6 @@ export const routes: Routes = [
       {
         path: 'registries',
         loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
-      },
-      {
-        path: 'registries/:id',
-        loadChildren: () => import('./features/registry/registry.routes').then((mod) => mod.registryRoutes),
-        providers: [provideStates([BookmarksState])],
-        canActivate: [authGuard],
       },
       {
         path: 'my-profile',
@@ -190,6 +166,18 @@ export const routes: Routes = [
         path: 'files/:fileGuid',
         loadComponent: () =>
           import('@osf/features/files/pages/file-detail/file-detail.component').then((c) => c.FileDetailComponent),
+      },
+      {
+        path: ':id',
+        canMatch: [isProjectGuard],
+        loadChildren: () => import('./features/project/project.routes').then((m) => m.projectRoutes),
+        providers: [provideStates([ProjectsState, BookmarksState])],
+      },
+      {
+        path: ':id',
+        canMatch: [isRegistryGuard],
+        loadChildren: () => import('./features/registry/registry.routes').then((m) => m.registryRoutes),
+        providers: [provideStates([BookmarksState])],
       },
       {
         path: '**',

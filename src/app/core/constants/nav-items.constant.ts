@@ -37,7 +37,7 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.wiki',
     routerLink: 'wiki',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-registrations',
@@ -58,7 +58,7 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.analytics',
     routerLink: 'analytics',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-addons',
@@ -120,7 +120,7 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.wiki',
     routerLink: 'wiki',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'registration-components',
@@ -148,7 +148,7 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.analytics',
     routerLink: 'analytics',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
 ];
 
