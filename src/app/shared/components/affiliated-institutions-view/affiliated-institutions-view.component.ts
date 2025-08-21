@@ -5,8 +5,6 @@ import { RouterLink } from '@angular/router';
 
 import { Institution } from '@shared/models';
 
-import { environment } from 'src/environments/environment';
-
 @Component({
   selector: 'osf-affiliated-institutions-view',
   imports: [TranslatePipe, RouterLink],
@@ -17,5 +15,4 @@ import { environment } from 'src/environments/environment';
 export class AffiliatedInstitutionsViewComponent {
   showTitle = input<boolean>(true);
   institutions = input.required<Institution[]>();
-  protected readonly environment = environment;
 }
