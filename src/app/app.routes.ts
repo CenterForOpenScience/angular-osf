@@ -37,6 +37,7 @@ export const routes: Routes = [
           import('./features/home/pages/dashboard/dashboard.component').then((mod) => mod.DashboardComponent),
         data: { skipBreadcrumbs: true },
         canActivate: [authGuard],
+        providers: [provideStates([ProjectsState])],
       },
       {
         path: 'confirm/:userId/:token',
@@ -75,7 +76,7 @@ export const routes: Routes = [
         path: 'my-projects',
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
-        providers: [provideStates([BookmarksState])],
+        providers: [provideStates([BookmarksState, ProjectsState])],
         canActivate: [authGuard],
       },
       {
