@@ -1,14 +1,19 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
 import { InstitutionsService } from '@osf/shared/services';
 import { handleSectionError } from '@shared/helpers';
 
-import { FetchInstitutions, FetchUserInstitutions } from './institutions.actions';
+import {
+  FetchInstitutions,
+  FetchResourceInstitutions,
+  FetchUserInstitutions,
+  UpdateResourceInstitutions,
+} from './institutions.actions';
 import { DefaultState, InstitutionsStateModel } from './institutions.model';
 
 @State<InstitutionsStateModel>({
@@ -93,5 +98,29 @@ export class InstitutionsState {
       }),
       catchError((error) => handleSectionError(ctx, 'resourceInstitutions', error))
     );
+  }
+
+  @Action(UpdateResourceInstitutions)
+  updateResourceInstitutions(
+    ctx: StateContext<InstitutionsStateModel>,
+    action: UpdateResourceInstitutions
+  ): Observable<void> {
+    ctx.setState(patch({ resourceInstitutions: patch({ isSubmitting: true }) }));
+
+    return this.institutionsService
+      .updateResourceInstitutions(action.resourceId, action.resourceType, action.institutions)
+      .pipe(
+        tap(() => {
+          ctx.setState(
+            patch({
+              resourceInstitutions: patch({
+                data: action.institutions,
+                isSubmitting: false,
+              }),
+            })
+          );
+        }),
+        catchError((error) => handleSectionError(ctx, 'resourceInstitutions', error))
+      );
   }
 }
