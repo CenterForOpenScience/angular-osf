@@ -4,8 +4,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { isAuthorizedAddon } from '@osf/shared/helpers';
 import { AddonFormControls, CredentialsFormat } from '@shared/enums';
 import {
-  Addon,
   AddonForm,
+  AddonModel,
   AuthorizedAddon,
   AuthorizedAddonRequestJsonApi,
   ConfiguredAddonRequestJsonApi,
@@ -18,7 +18,7 @@ import {
 export class AddonFormService {
   protected formBuilder: FormBuilder = inject(FormBuilder);
 
-  initializeForm(addon: Addon | AuthorizedAddon): FormGroup<AddonForm> {
+  initializeForm(addon: AddonModel | AuthorizedAddon): FormGroup<AddonForm> {
     if (!addon) {
       return new FormGroup({} as AddonForm);
     }
@@ -51,7 +51,7 @@ export class AddonFormService {
 
   generateAuthorizedAddonPayload(
     formValue: Record<string, unknown>,
-    addon: Addon | AuthorizedAddon,
+    addon: AddonModel | AuthorizedAddon,
     userReferenceId: string,
     addonTypeString: string
   ): AuthorizedAddonRequestJsonApi {
@@ -107,12 +107,12 @@ export class AddonFormService {
     };
   }
 
-  private getAddonServiceId(addon: Addon | AuthorizedAddon): string {
-    return isAuthorizedAddon(addon) ? (addon as AuthorizedAddon).externalStorageServiceId : (addon as Addon).id;
+  private getAddonServiceId(addon: AddonModel | AuthorizedAddon): string {
+    return isAuthorizedAddon(addon) ? (addon as AuthorizedAddon).externalStorageServiceId : (addon as AddonModel).id;
   }
 
   generateConfiguredAddonCreatePayload(
-    addon: Addon | AuthorizedAddon,
+    addon: AddonModel | AuthorizedAddon,
     selectedAccount: AuthorizedAddon,
     userReferenceId: string,
     resourceUri: string,

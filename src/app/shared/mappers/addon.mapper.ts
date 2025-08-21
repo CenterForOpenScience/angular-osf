@@ -1,6 +1,6 @@
 import {
-  Addon,
   AddonGetResponseJsonApi,
+  AddonModel,
   AuthorizedAddon,
   AuthorizedAddonGetResponseJsonApi,
   ConfiguredAddonGetResponseJsonApi,
@@ -12,10 +12,11 @@ import {
 } from '../models';
 
 export class AddonMapper {
-  static fromResponse(response: AddonGetResponseJsonApi): Addon {
+  static fromResponse(response: AddonGetResponseJsonApi): AddonModel {
     return {
       type: response.type,
       id: response.id,
+      wbKey: response.attributes.wb_key,
       authUrl: response.attributes.auth_uri,
       displayName: response.attributes.display_name,
       externalServiceName: response.attributes.external_service_name,

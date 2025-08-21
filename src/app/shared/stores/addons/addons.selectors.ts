@@ -1,7 +1,7 @@
 import { Selector } from '@ngxs/store';
 
 import {
-  Addon,
+  AddonModel,
   AuthorizedAddon,
   AuthorizedAddonResponseJsonApi,
   ConfiguredAddonResponseJsonApi,
@@ -36,10 +36,21 @@ export class AddonsSelectors {
    * @returns An array of available `Addon` objects representing storage providers.
    */
   @Selector([AddonsState])
-  static getStorageAddons(state: AddonsStateModel): Addon[] {
+  static getStorageAddons(state: AddonsStateModel): AddonModel[] {
     return state.storageAddons.data;
   }
 
+  /**
+   * Selector to retrieve a specific storage addon by its ID from the NGXS state.
+   *
+   * @param state The current state of the Addons NGXS store.
+   * @param id The unique identifier of the storage addon to retrieve.
+   * @returns The matched Addon object if found, otherwise undefined.
+   */
+  @Selector([AddonsState])
+  static getStorageAddon(state: AddonsStateModel, id: string): AddonModel | undefined {
+    return state.storageAddons.data.find((addon: AddonModel) => addon.id === id);
+  }
   /**
    * Selector to retrieve the loading status of storage addons from the AddonsState.
    *
@@ -52,7 +63,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCitationAddons(state: AddonsStateModel): Addon[] {
+  static getCitationAddons(state: AddonsStateModel): AddonModel[] {
     return state.citationAddons.data;
   }
 

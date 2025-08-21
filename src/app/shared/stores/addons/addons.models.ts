@@ -1,5 +1,5 @@
 import {
-  Addon,
+  AddonModel,
   AsyncStateModel,
   AuthorizedAddon,
   AuthorizedAddonResponseJsonApi,
@@ -24,12 +24,12 @@ export interface AddonsStateModel {
   /**
    * Async state for available external storage addons (e.g., Google Drive, Dropbox).
    */
-  storageAddons: AsyncStateModel<Addon[]>;
+  storageAddons: AsyncStateModel<AddonModel[]>;
 
   /**
    * Async state for available external citation addons (e.g., Zotero, Mendeley).
    */
-  citationAddons: AsyncStateModel<Addon[]>;
+  citationAddons: AsyncStateModel<AddonModel[]>;
 
   /**
    * Async state for authorized external storage addons linked to the current user.

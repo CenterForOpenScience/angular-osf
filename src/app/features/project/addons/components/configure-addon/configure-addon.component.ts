@@ -1,4 +1,4 @@
-import { createDispatchMap, select } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -25,7 +25,7 @@ import { OperationNames } from '@osf/features/project/addons/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
 import { SubHeaderComponent } from '@shared/components';
 import { FolderSelectorComponent } from '@shared/components/addons/folder-selector/folder-selector.component';
-import { ConfiguredStorageAddonModel } from '@shared/models';
+import { AddonModel, ConfiguredStorageAddonModel } from '@shared/models';
 import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {
   AddonsSelectors,
@@ -63,9 +63,26 @@ export class ConfigureAddonComponent implements OnInit {
   private addonDialogService = inject(AddonDialogService);
   private addonFormService = inject(AddonFormService);
   private operationInvocationService = inject(AddonOperationInvocationService);
+  /**
+   * Injected NGXS store used to access and dispatch state actions and selectors.
+   */
+  private store = inject(Store);
 
+  /**
+   * Form control for capturing or displaying the user’s selected account name.
+   */
   protected accountNameControl = new FormControl('');
+  /**
+   * Signal representing the currently selected `Addon` from the list of available storage addons.
+   * This value updates reactively as the selection changes.
+   */
+  protected storageAddon = signal<AddonModel | undefined>(undefined);
+  /**
+   * Signal representing the currently selected and configured storage addon model.
+   * This may be `null` if no addon has been configured.
+   */
   protected addon = signal<ConfiguredStorageAddonModel | null>(null);
+
   protected isEditMode = signal<boolean>(false);
   protected selectedRootFolderId = signal('');
   protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
@@ -104,6 +121,12 @@ export class ConfigureAddonComponent implements OnInit {
     const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as ConfiguredStorageAddonModel;
 
     if (addon) {
+      this.storageAddon.set(
+        this.store.selectSnapshot((state) =>
+          AddonsSelectors.getStorageAddon(state.addons, addon.externalStorageServiceId || '')
+        )
+      );
+
       this.addon.set(addon);
       this.selectedRootFolderId.set(addon.selectedFolderId);
       this.accountNameControl.setValue(addon.displayName);

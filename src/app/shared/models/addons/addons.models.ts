@@ -1,18 +1,67 @@
+/**
+ * JSON:API response structure for a single external addon.
+ */
 export interface AddonGetResponseJsonApi {
+  /**
+   * Resource type (e.g., 'external-storage-services').
+   */
   type: string;
+  /**
+   * Unique identifier for the addon.
+   */
   id: string;
+  /**
+   * Addon metadata fields returned from the API.
+   */
   attributes: {
+    /**
+     * OAuth authorization URI for the external provider.
+     */
     auth_uri: string;
+    /**
+     * Human-readable name of the addon (e.g., "Google Drive").
+     */
     display_name: string;
+    /**
+     * List of supported capabilities for this addon
+     * (e.g., 'DOWNLOAD_AS_ZIP', 'PERMISSIONS').
+     */
     supported_features: string[];
+    /**
+     * Internal identifier for the external provider
+     * (e.g., 'googledrive', 'figshare').
+     */
     external_service_name: string;
+    /**
+     * Type of credentials used to authenticate
+     * (e.g., 'OAUTH2', 'S3').
+     */
     credentials_format: string;
+    /**
+     * Internal WaterButler key used for routing and integration.
+     */
+    wb_key: string;
+    /**
+     * Additional provider-specific fields (if present).
+     */
     [key: string]: unknown;
   };
+  /**
+   * Object relationships to other API resources.
+   */
   relationships: {
+    /**
+     * Reference to the associated addon implementation.
+     */
     addon_imp: {
       data: {
+        /**
+         * Resource type of the related addon implementation.
+         */
         type: string;
+        /**
+         * Resource ID of the related addon implementation.
+         */
         id: string;
       };
     };
@@ -136,15 +185,46 @@ export interface ConfiguredAddonGetResponseJsonApi {
   };
 }
 
-export interface Addon {
+/**
+ * Normalized model representing an external addon provider.
+ */
+export interface AddonModel {
+  /**
+   * Resource type, typically 'external-storage-services'.
+   */
   type: string;
+  /**
+   * Unique identifier of the addon instance.
+   */
   id: string;
+  /**
+   * OAuth authorization URI for initiating credential flow.
+   */
   authUrl: string;
+  /**
+   * Human-friendly name of the addon (e.g., 'Google Drive').
+   */
   displayName: string;
+  /**
+   * Machine-friendly name of the addon (e.g., 'googledrive').
+   */
   externalServiceName: string;
+  /**
+   * List of supported features or capabilities the addon provides.
+   */
   supportedFeatures: string[];
+  /**
+   * Credential mechanism used by the addon (e.g., 'OAUTH2', 'S3').
+   */
   credentialsFormat: string;
+  /**
+   * Provider key used internally (e.g., for icon or routing).
+   */
   providerName: string;
+  /**
+   * Internal WaterButler key used for addon routing.
+   */
+  wbKey: string;
 }
 
 export interface AuthorizedAddon {

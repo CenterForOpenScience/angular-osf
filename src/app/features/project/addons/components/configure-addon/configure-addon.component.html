@@ -63,6 +63,11 @@
           (keydown.enter)="toggleEditMode()"
         ></p-button>
       </div>
+      <!-- @if (storageAddon()) {
+        <p class="text-lg">
+          {{ storageAddon()?.wbKey }}
+        </p>
+      } @else { -->
       <osf-folder-selector
         [accountName]="addon()?.displayName || ''"
         [operationInvocationResult]="operationInvocation()?.operationResult || []"
@@ -72,6 +77,7 @@
         (save)="handleUpdateAddonConfiguration()"
         (cancelSelection)="toggleEditMode()"
       />
+      <!-- } -->
     </section>
   }
 </section>

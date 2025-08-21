@@ -51,9 +51,25 @@ describe('State: Addons', () => {
             providerName: 'figshare',
             supportedFeatures: ['DOWNLOAD_AS_ZIP', 'FORKING', 'LOGS', 'PERMISSIONS', 'REGISTERING'],
             type: 'external-storage-services',
+            wbKey: 'figshare',
           })
         );
 
+        const addon = store.selectSnapshot((state) => AddonsSelectors.getStorageAddon(state.addons, result[0].id));
+
+        expect(addon).toEqual(
+          Object({
+            authUrl: 'https://figshare.com/account/applications/authorize',
+            credentialsFormat: 'OAUTH2',
+            displayName: 'figshare',
+            externalServiceName: 'figshare',
+            id: '1d8d9be2-522e-4969-b8fa-bfb45ae13c0d',
+            providerName: 'figshare',
+            supportedFeatures: ['DOWNLOAD_AS_ZIP', 'FORKING', 'LOGS', 'PERMISSIONS', 'REGISTERING'],
+            type: 'external-storage-services',
+            wbKey: 'figshare',
+          })
+        );
         expect(loading()).toBeFalsy();
       }
     ));

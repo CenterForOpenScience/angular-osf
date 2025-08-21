@@ -7,8 +7,8 @@ import { inject, Injectable } from '@angular/core';
 import { UserSelectors } from '@core/store/user';
 import { AddonMapper } from '@shared/mappers';
 import {
-  Addon,
   AddonGetResponseJsonApi,
+  AddonModel,
   AuthorizedAddon,
   AuthorizedAddonGetResponseJsonApi,
   AuthorizedAddonRequestJsonApi,
@@ -63,7 +63,7 @@ export class AddonsService {
    * @returns Observable emitting an array of mapped Addon objects.
    *
    */
-  getAddons(addonType: string): Observable<Addon[]> {
+  getAddons(addonType: string): Observable<AddonModel[]> {
     return this.jsonApiService
       .get<
         JsonApiResponse<AddonGetResponseJsonApi[], null>
