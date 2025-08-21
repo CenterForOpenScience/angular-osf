@@ -5,10 +5,11 @@ import { Card } from 'primeng/card';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { CustomItemMetadataRecord } from '@osf/features/project/metadata/models';
+import { CustomItemMetadataRecord } from '@osf/features/metadata/models';
 import { ProjectOverview } from '@osf/features/project/overview/models';
-import { TagsInputComponent } from '@shared/components';
-import { SubjectModel } from '@shared/models';
+import { SubjectModel } from '@osf/shared/models';
+
+import { TagsInputComponent } from '../tags-input/tags-input.component';
 
 import {
   ProjectMetadataAffiliatedInstitutionsComponent,

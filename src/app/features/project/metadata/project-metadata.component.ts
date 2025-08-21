@@ -31,7 +31,8 @@ import {
   UpdateCustomItemMetadata,
   UpdateProjectDetails,
 } from '@osf/features/project/metadata/store';
-import { MetadataProjectsEnum, ResourceType } from '@osf/shared/enums';
+import { MetadataResourceEnum } from '@osf/shared/enums/metadata-resource.enum';
+import { ResourceType } from '@osf/shared/enums/resource-type.enum';
 import {
   ContributorsSelectors,
   FetchChildrenSubjects,
@@ -131,13 +132,13 @@ export class ProjectMetadataComponent implements OnInit {
       const project = this.currentProject();
       if (!project) return;
 
-      const baseTabs = [{ id: 'project', label: project.title, type: MetadataProjectsEnum.PROJECT }];
+      const baseTabs = [{ id: 'project', label: project.title, type: MetadataResourceEnum.PROJECT }];
 
       const cedarTabs =
         records?.map((record) => ({
           id: record.id || '',
           label: record.embeds?.template?.data?.attributes?.schema_name || `Record ${record.id}`,
-          type: MetadataProjectsEnum.CEDAR,
+          type: MetadataResourceEnum.CEDAR,
         })) || [];
 
       this.tabs.set([...baseTabs, ...cedarTabs]);

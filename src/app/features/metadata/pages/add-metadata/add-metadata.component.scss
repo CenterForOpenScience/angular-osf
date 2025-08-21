@@ -1,0 +1,7 @@
+.metadata {
+  flex-basis: calc(50% - 1.5rem);
+
+  @media (max-width: 576px) {
+    flex-basis: 100%;
+  }
+}

@@ -4,7 +4,6 @@ import { Routes } from '@angular/router';
 
 import { RegistryComponentsState } from '@osf/features/registry/store/registry-components';
 import { RegistryLinksState } from '@osf/features/registry/store/registry-links';
-import { RegistryMetadataState } from '@osf/features/registry/store/registry-metadata';
 import { RegistryOverviewState } from '@osf/features/registry/store/registry-overview';
 import { ResourceType } from '@osf/shared/enums';
 import { ContributorsState, DuplicatesState, ViewOnlyLinkState } from '@osf/shared/stores';
@@ -32,23 +31,8 @@ export const registryRoutes: Routes = [
       },
       {
         path: 'metadata',
-        loadComponent: () =>
-          import('./pages/registry-metadata/registry-metadata.component').then((c) => c.RegistryMetadataComponent),
-        providers: [provideStates([RegistryMetadataState])],
-      },
-      {
-        path: 'metadata/add',
-        loadComponent: () =>
-          import('./pages/registry-metadata-add/registry-metadata-add.component').then(
-            (c) => c.RegistryMetadataAddComponent
-          ),
-        providers: [provideStates([RegistryMetadataState])],
-      },
-      {
-        path: 'metadata/:recordId',
-        loadComponent: () =>
-          import('./pages/registry-metadata/registry-metadata.component').then((c) => c.RegistryMetadataComponent),
-        providers: [provideStates([RegistryMetadataState])],
+        loadChildren: () => import('@osf/features/metadata/metadata.routes').then((mod) => mod.metadataRoutes),
+        data: { resourceType: ResourceType.Registration },
       },
       {
         path: 'links',

@@ -1,0 +1,37 @@
+<section class="flex flex-column flex-1">
+  <osf-sub-header
+    [showButton]="true"
+    [buttonLabel]="'project.metadata.addCommunityMetadataRecord.title' | translate"
+    (buttonClick)="openAddRecord()"
+    [title]="'project.overview.metadata.title' | translate"
+  />
+  <osf-metadata-tabs
+    [tabs]="tabs()"
+    [selectedTab]="selectedTab()"
+    [selectedCedarTemplate]="selectedCedarTemplate()!"
+    [selectedCedarRecord]="selectedCedarRecord()!"
+    [cedarFormReadonly]="cedarFormReadonly()"
+    (changeTab)="onTabChange($event)"
+    (formSubmit)="onCedarFormSubmit($event)"
+    (cedarFormChangeTemplate)="onCedarFormChangeTemplate()"
+    (cedarFormEdit)="onCedarFormEdit()"
+  >
+    <!-- <osf-shared-metadata
+      [selectedSubjects]="selectedSubjects()"
+      [isSubjectsUpdating]="isSubjectsUpdating()"
+      [currentInstance]="currentProject()!"
+      [customItemMetadata]="customItemMetadata()!"
+      (openEditContributorDialog)="openEditContributorDialog()"
+      (openEditDescriptionDialog)="openEditDescriptionDialog()"
+      (openEditResourceInformationDialog)="openEditResourceInformationDialog()"
+      (openEditFundingDialog)="openEditFundingDialog()"
+      (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog()"
+      (openEditLicenseDialog)="openEditLicenseDialog()"
+      (handleEditDoi)="handleEditDoi()"
+      (tagsChanged)="onTagsChanged($event)"
+      (getSubjectChildren)="getSubjectChildren($event)"
+      (searchSubjects)="searchSubjects($event)"
+      (updateSelectedSubjects)="updateSelectedSubjects($event)"
+    /> -->
+  </osf-metadata-tabs>
+</section>
