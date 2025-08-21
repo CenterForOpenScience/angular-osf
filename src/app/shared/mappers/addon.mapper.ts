@@ -64,6 +64,19 @@ export class AddonMapper {
     };
   }
 
+  /**
+   * Maps a JSON:API-formatted response object into a `ConfiguredAddon` domain model.
+   *
+   * @param response - The raw API response object representing a configured addon.
+   * This must conform to the `ConfiguredAddonGetResponseJsonApi` structure.
+   *
+   * @returns A `ConfiguredAddon` object with normalized and flattened properties
+   * for application use.
+   *
+   * @example
+   * const addon = AddonMapper.fromConfiguredAddonResponse(apiResponse);
+   * console.log(addon.displayName); // "Google Drive"
+   */
   static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredAddon {
     return {
       type: response.type,

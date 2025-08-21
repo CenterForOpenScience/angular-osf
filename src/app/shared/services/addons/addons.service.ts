@@ -117,6 +117,14 @@ export class AddonsService {
       );
   }
 
+  /**
+   * Retrieves the list of configured addons for a given resource reference.
+   *
+   * @param addonType - The addon category to retrieve. Valid values: `'citation'` or `'storage'`.
+   * @param referenceId - The unique identifier of the resource (e.g., node, registration) that the addons are configured for.
+   * @returns An observable that emits an array of {@link ConfiguredAddon} objects.
+   *
+   */
   getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddon[]> {
     return this.jsonApiService
       .get<
