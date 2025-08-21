@@ -68,4 +68,11 @@ describe('DescriptionDialogComponent', () => {
 
     expect(dialogRef.close).toHaveBeenCalled();
   });
+
+  it('should return currentProject when config.data exists and has currentProject', () => {
+    const config = TestBed.inject(DynamicDialogConfig);
+    (config as any).data = { currentProject: mockProjectWithDescription };
+
+    expect(component.currentProject).toBe(mockProjectWithDescription);
+  });
 });
