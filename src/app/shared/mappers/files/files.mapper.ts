@@ -1,4 +1,4 @@
-import { FileTargetResponse } from '@osf/features/project/files/models/responses/get-file-target-response.model';
+import { FileTargetResponse } from '@osf/features/files/models';
 import {
   FileLinks,
   FileRelationshipsResponse,
@@ -46,8 +46,11 @@ export function MapFile(
       parentFolderLink: file?.relationships?.parent_folder?.links?.related?.href,
       parentFolderId: file?.relationships?.parent_folder?.data?.id,
       filesLink: file?.relationships?.files?.links?.related?.href,
+      uploadLink: file?.links?.upload,
+      newFolderLink: file?.links?.new_folder,
     },
     target: {
+      id: file?.embeds?.target.data.id,
       title: file?.embeds?.target.data.attributes.title,
       description: file?.embeds?.target.data.attributes.description,
       category: file?.embeds?.target.data.attributes.category,
@@ -61,8 +64,21 @@ export function MapFile(
       tags: file?.embeds?.target.data.attributes.tags,
       nodeLicense: file?.embeds?.target.data.attributes.node_license,
       analyticsKey: file?.embeds?.target.data.attributes.analytics_key,
+      type: file?.embeds?.target.data.type,
+      currentUserCanComment: file?.embeds?.target.data.attributes.current_user_can_comment,
+      currentUserIsContributor: file?.embeds?.target.data.attributes.current_user_is_contributor,
+      currentUserIsContributorOrGroupMember:
+        file?.embeds?.target.data.attributes.current_user_is_contributor_or_group_member,
+      currentUserPermissions: file?.embeds?.target.data.attributes.current_user_permissions,
+      wikiEnabled: file?.embeds?.target.data.attributes.wiki_enabled,
+      public: file?.embeds?.target.data.attributes.public,
     },
-  } as OsfFile;
+    currentUserCanComment: file.attributes.current_user_can_comment,
+    currentVersion: file.attributes.current_version,
+    lastTouched: file.attributes.last_touched,
+    previousFolder: false,
+    showAsUnviewed: file.attributes.show_as_unviewed,
+  };
 }
 
 export function MapFileVersions(fileVersions: FileVersionsResponseJsonApi): OsfFileVersion[] {

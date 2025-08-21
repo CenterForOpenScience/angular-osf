@@ -2,7 +2,7 @@
   <div class="flex justify-content-center align-items-center p-6">
     <osf-loading-spinner />
   </div>
-} @else if (tableData().length > 0) {
+} @else {
   <osf-admin-table
     [tableColumns]="tableColumns"
     [tableData]="tableData()"
@@ -16,8 +16,8 @@
     (pageChanged)="onPageChange($event)"
     (sortChanged)="onSortChange($event)"
     (iconClicked)="onIconClick($event)"
-    [downloadLink]="'/admin/institutions/' + institutionId + '/users/export'"
-    [reportsLink]="reportsLink"
+    (downloadClicked)="download($event)"
+    [reportsLink]="institution().linkToExternalReportsArchive"
   >
     <div slot="amount" class="flex items-center">
       <h3 class="title">{{ amountText() }}</h3>
@@ -32,9 +32,9 @@
           inputId="orcid-filter"
         >
         </p-checkbox>
-        <label class="text-sm font-medium cursor-pointer m-0" for="orcid-filter">{{
-          'adminInstitutions.institutionUsers.hasOrcid' | translate
-        }}</label>
+        <label class="text-sm font-medium cursor-pointer m-0" for="orcid-filter">
+          {{ 'adminInstitutions.institutionUsers.hasOrcid' | translate }}
+        </label>
       </div>
 
       <div class="w-full md:w-fit">
@@ -48,8 +48,4 @@
       </div>
     </div>
   </osf-admin-table>
-} @else {
-  <div class="flex justify-content-center align-items-center p-6">
-    <p class="text-center text-gray-500">{{ 'adminInstitutions.institutionUsers.noData' | translate }}</p>
-  </div>
 }

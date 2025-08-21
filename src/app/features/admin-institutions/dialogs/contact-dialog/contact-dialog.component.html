@@ -1,0 +1,90 @@
+<div class="contact-dialog">
+  <p-selectButton
+    class="w-full"
+    styleClass="w-full"
+    [options]="contactOptions"
+    [ngModel]="selectedOption()"
+    (ngModelChange)="onOptionChange($event)"
+    optionLabel="label"
+    optionValue="value"
+    [unselectable]="true"
+  >
+    <ng-template #item let-item>
+      {{ item.label | translate }}
+    </ng-template>
+  </p-selectButton>
+
+  <form [formGroup]="form" class="mt-4">
+    @if (isRequestAccess) {
+      <p>{{ 'adminInstitutions.contact.message' | translate }}</p>
+
+      <div class="flex flex-column gap-3 mt-3">
+        <div class="flex items-center gap-2">
+          <p-radiobutton
+            [value]="projectPermission.Administrative"
+            formControlName="permission"
+            inputId="permission1"
+          />
+          <label for="permission1" class="font-bold">
+            {{ 'adminInstitutions.contact.administrative' | translate }}
+          </label>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <p-radiobutton [value]="projectPermission.Write" formControlName="permission" inputId="permission2" />
+          <label for="permission2" class="font-bold">{{ 'adminInstitutions.contact.readWrite' | translate }}</label>
+        </div>
+      </div>
+    }
+
+    <div class="flex flex-column gap-2 mt-3">
+      <textarea
+        pTextarea
+        formControlName="emailContent"
+        [placeholder]="'adminInstitutions.institutionUsers.writeEmailText' | translate"
+        [rows]="6"
+        [style]="{ 'min-height': '200px' }"
+      ></textarea>
+    </div>
+
+    <div class="flex flex-column gap-1 mt-3">
+      <span>{{ 'adminInstitutions.institutionUsers.sincerelyYours' | translate }}, </span>
+      <span>{{ config.data }}</span>
+    </div>
+
+    @if (!isRequestAccess) {
+      <div class="flex flex-column gap-3 mt-3">
+        <div class="flex align-items-center gap-2">
+          <p-checkbox formControlName="ccSender" binary="true" inputId="cc-sender"></p-checkbox>
+          <label for="cc-sender" class="m-0 font-bold font-medium cursor-pointer">
+            {{ 'adminInstitutions.institutionUsers.ccSender' | translate }}
+          </label>
+        </div>
+
+        <div class="flex align-items-center gap-2">
+          <p-checkbox formControlName="allowReplyToSender" binary="true" inputId="allow-reply"></p-checkbox>
+          <label for="allow-reply" class="m-0 font-bold font-medium cursor-pointer">
+            {{ 'adminInstitutions.institutionUsers.allowReplyToSenderAddress' | translate }}
+          </label>
+        </div>
+      </div>
+    }
+  </form>
+
+  <div class="flex justify-content-between gap-2 mt-4">
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      severity="info"
+      [label]="'common.buttons.cancel' | translate"
+      (click)="onCancel()"
+    />
+    <p-button
+      class="w-full"
+      styleClass="w-full"
+      [label]="'common.buttons.send' | translate"
+      (click)="onSend()"
+      [disabled]="!form.valid"
+    />
+  </div>
+</div>

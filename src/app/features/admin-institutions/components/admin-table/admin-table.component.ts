@@ -20,8 +20,10 @@ import {
 } from '@osf/features/admin-institutions/models';
 import { CustomPaginatorComponent } from '@osf/shared/components';
 import { StopPropagationDirective } from '@shared/directives';
-import { SortOrder } from '@shared/enums';
 import { QueryParams } from '@shared/models';
+
+import { DOWNLOAD_OPTIONS } from '../../constants';
+import { DownloadType } from '../../enums';
 
 @Component({
   selector: 'osf-admin-table',
@@ -75,34 +77,13 @@ export class AdminTableComponent {
   sortChanged = output<QueryParams>();
   iconClicked = output<TableIconClickEvent>();
   linkPageChanged = output<string>();
+  downloadClicked = output<DownloadType>();
 
-  downloadLink = input<string>('');
-  reportsLink = input<string>('');
+  reportsLink = input<string | undefined>('');
 
   selectedColumns = signal<TableColumn[]>([]);
 
-  downloadMenuItems = computed(() => {
-    const baseUrl = this.downloadLink();
-    if (!baseUrl) return [];
-
-    return [
-      {
-        label: 'CSV',
-        icon: 'fa fa-file-csv',
-        link: this.createUrl(baseUrl, 'text/csv'),
-      },
-      {
-        label: 'TSV',
-        icon: 'fa fa-file-alt',
-        link: this.createUrl(baseUrl, 'text/tab-separated-values'),
-      },
-      {
-        label: 'JSON',
-        icon: 'fa fa-file-code',
-        link: this.createUrl(baseUrl, 'application/json'),
-      },
-    ];
-  });
+  downloadMenuItems = DOWNLOAD_OPTIONS;
 
   selectedColumnsComputed = computed(() => {
     const selected = this.selectedColumns();
@@ -149,9 +130,10 @@ export class AdminTableComponent {
     if (event.field && this.userInitiatedSort) {
       this.sortChanged.emit({
         sortColumn: event.field,
-        sortOrder: event.order === -1 ? SortOrder.Desc : SortOrder.Asc,
+        sortOrder: event.order,
       } as QueryParams);
     }
+
     this.userInitiatedSort = false;
   }
 
@@ -178,10 +160,6 @@ export class AdminTableComponent {
 
   switchPage(link: string) {
     this.linkPageChanged.emit(link);
-  }
-
-  private createUrl(baseUrl: string, mediaType: string): string {
-    return `${baseUrl}&acceptMediatype=${encodeURIComponent(mediaType)}`;
   }
 
   getLinkUrl(value: string | number | TableCellLink | undefined): string {

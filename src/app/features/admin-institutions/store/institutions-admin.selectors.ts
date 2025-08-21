@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { PaginationLinksModel } from '@shared/models';
+import { Institution, PaginationLinksModel } from '@shared/models';
 
 import {
   InstitutionDepartment,
@@ -10,7 +10,6 @@ import {
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
   InstitutionUser,
-  SendMessageResponseJsonApi,
 } from '../models';
 
 import { InstitutionsAdminModel } from './institutions-admin.model';
@@ -28,11 +27,6 @@ export class InstitutionsAdminSelectors {
   }
 
   @Selector([InstitutionsAdminState])
-  static getDepartmentsError(state: InstitutionsAdminModel): string | null {
-    return state.departments.error;
-  }
-
-  @Selector([InstitutionsAdminState])
   static getSummaryMetrics(state: InstitutionsAdminModel): InstitutionSummaryMetrics {
     return state.summaryMetrics.data;
   }
@@ -40,11 +34,6 @@ export class InstitutionsAdminSelectors {
   @Selector([InstitutionsAdminState])
   static getSummaryMetricsLoading(state: InstitutionsAdminModel): boolean {
     return state.summaryMetrics.isLoading;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getSummaryMetricsError(state: InstitutionsAdminModel): string | null {
-    return state.summaryMetrics.error;
   }
 
   @Selector([InstitutionsAdminState])
@@ -58,11 +47,6 @@ export class InstitutionsAdminSelectors {
   }
 
   @Selector([InstitutionsAdminState])
-  static getHasOsfAddonSearchError(state: InstitutionsAdminModel): string | null {
-    return state.hasOsfAddonSearch.error;
-  }
-
-  @Selector([InstitutionsAdminState])
   static getStorageRegionSearch(state: InstitutionsAdminModel): InstitutionSearchFilter[] {
     return state.storageRegionSearch.data;
   }
@@ -70,11 +54,6 @@ export class InstitutionsAdminSelectors {
   @Selector([InstitutionsAdminState])
   static getStorageRegionSearchLoading(state: InstitutionsAdminModel): boolean {
     return state.storageRegionSearch.isLoading;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getStorageRegionSearchError(state: InstitutionsAdminModel): string | null {
-    return state.storageRegionSearch.error;
   }
 
   @Selector([InstitutionsAdminState])
@@ -88,21 +67,6 @@ export class InstitutionsAdminSelectors {
   }
 
   @Selector([InstitutionsAdminState])
-  static getSearchResultsError(state: InstitutionsAdminModel): string | null {
-    return state.searchResults.error;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getSelectedInstitutionId(state: InstitutionsAdminModel): string | null {
-    return state.selectedInstitutionId;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getCurrentSearchPropertyPath(state: InstitutionsAdminModel): string | null {
-    return state.currentSearchPropertyPath;
-  }
-
-  @Selector([InstitutionsAdminState])
   static getUsers(state: InstitutionsAdminModel): InstitutionUser[] {
     return state.users.data;
   }
@@ -110,11 +74,6 @@ export class InstitutionsAdminSelectors {
   @Selector([InstitutionsAdminState])
   static getUsersLoading(state: InstitutionsAdminModel): boolean {
     return state.users.isLoading;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getUsersError(state: InstitutionsAdminModel): string | null {
-    return state.users.error;
   }
 
   @Selector([InstitutionsAdminState])
@@ -143,6 +102,11 @@ export class InstitutionsAdminSelectors {
   }
 
   @Selector([InstitutionsAdminState])
+  static getProjectsDownloadLink(state: InstitutionsAdminModel): string | null {
+    return state.projects.downloadLink;
+  }
+
+  @Selector([InstitutionsAdminState])
   static getRegistrations(state: InstitutionsAdminModel): InstitutionRegistration[] {
     return state.registrations.data;
   }
@@ -160,6 +124,11 @@ export class InstitutionsAdminSelectors {
   @Selector([InstitutionsAdminState])
   static getRegistrationsLinks(state: InstitutionsAdminModel): PaginationLinksModel | undefined {
     return state.registrations.links;
+  }
+
+  @Selector([InstitutionsAdminState])
+  static getRegistrationsDownloadLink(state: InstitutionsAdminModel): string | null {
+    return state.registrations.downloadLink;
   }
 
   @Selector([InstitutionsAdminState])
@@ -183,17 +152,17 @@ export class InstitutionsAdminSelectors {
   }
 
   @Selector([InstitutionsAdminState])
-  static getSendMessageResponse(state: InstitutionsAdminModel): SendMessageResponseJsonApi | null {
-    return state.sendMessage.data;
+  static getPreprintsDownloadLink(state: InstitutionsAdminModel): string | null {
+    return state.preprints.downloadLink;
   }
 
   @Selector([InstitutionsAdminState])
-  static getSendMessageLoading(state: InstitutionsAdminModel): boolean {
-    return state.sendMessage.isLoading;
+  static getInstitution(state: InstitutionsAdminModel): Institution {
+    return state.institution.data;
   }
 
   @Selector([InstitutionsAdminState])
-  static getSendMessageError(state: InstitutionsAdminModel): string | null {
-    return state.sendMessage.error;
+  static getInstitutionLoading(state: InstitutionsAdminModel): boolean {
+    return state.institution.isLoading;
   }
 }

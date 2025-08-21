@@ -19,6 +19,7 @@ export class PreprintProvidersMapper {
       preprintWord: response.attributes.preprint_word,
       allowSubmissions: response.attributes.allow_submissions,
       assertionsEnabled: response.attributes.assertions_enabled,
+      permissions: response.attributes.permissions,
       brand: {
         id: brandRaw.id,
         name: brandRaw.attributes.name,

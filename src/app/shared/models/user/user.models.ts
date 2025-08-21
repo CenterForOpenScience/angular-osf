@@ -17,6 +17,7 @@ export interface User {
   defaultRegionId: string;
   allowIndexing: boolean | undefined;
   isModerator?: boolean;
+  canViewReviews: boolean;
 }
 
 export interface UserSettings {
@@ -39,6 +40,7 @@ export interface UserGetResponse {
     social: Social;
     date_registered: string;
     allow_indexing?: boolean;
+    can_view_reviews: boolean;
   };
   relationships: {
     default_region: {

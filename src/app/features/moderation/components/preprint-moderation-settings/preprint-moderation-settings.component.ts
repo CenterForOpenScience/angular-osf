@@ -14,11 +14,12 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { LoadingSpinnerComponent } from '@osf/shared/components';
-import { DEFAULT_SUPPORT_EMAIL } from '@osf/shared/constants';
 
 import { PREPRINT_SETTINGS_SECTIONS } from '../../constants';
 import { SettingsSectionControl } from '../../enums';
 import { GetPreprintProvider, PreprintModerationSelectors } from '../../store/preprint-moderation';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-preprint-moderation-settings',
@@ -40,9 +41,9 @@ export class PreprintModerationSettingsComponent implements OnInit {
   settingsForm!: FormGroup;
   sections = PREPRINT_SETTINGS_SECTIONS;
 
-  supportEmail = DEFAULT_SUPPORT_EMAIL;
+  readonly supportEmail = environment.supportEmail;
 
-  isLoading = select(PreprintModerationSelectors.arePreprintProviderLoading);
+  readonly isLoading = select(PreprintModerationSelectors.arePreprintProviderLoading);
 
   settings = computed(() =>
     this.store.selectSignal(PreprintModerationSelectors.getPreprintProvider)()(this.providerId())

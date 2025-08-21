@@ -4,6 +4,7 @@ export interface RouteContext {
   isProject: boolean;
   isRegistry: boolean;
   isPreprint: boolean;
+  preprintReviewsPageVisible?: boolean;
   isCollections: boolean;
   currentUrl?: string;
 }

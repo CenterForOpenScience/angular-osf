@@ -2,6 +2,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-forbidden-page',
   imports: [TranslatePipe],
@@ -9,4 +11,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   styleUrl: './forbidden-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ForbiddenPageComponent {}
+export class ForbiddenPageComponent {
+  readonly supportEmail = environment.supportEmail;
+}

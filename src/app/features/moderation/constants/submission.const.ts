@@ -65,13 +65,13 @@ export const WITHDRAWAL_SUBMISSION_REVIEW_OPTIONS: SubmissionReviewOption[] = [
   {
     value: SubmissionReviewStatus.Accepted,
     icon: 'fas fa-circle-check',
-    label: 'moderation.submissionReviewStatus.accepted',
+    label: 'moderation.submissionReviewStatus.approved',
     count: 0,
   },
   {
     value: SubmissionReviewStatus.Rejected,
     icon: 'fas fa-circle-minus',
-    label: 'moderation.submissionReviewStatus.rejected',
+    label: 'moderation.submissionReviewStatus.declined',
     count: 0,
   },
 ];

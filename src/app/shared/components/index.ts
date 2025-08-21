@@ -7,6 +7,7 @@ export { EducationHistoryComponent } from './education-history/education-history
 export { EducationHistoryDialogComponent } from './education-history-dialog/education-history-dialog.component';
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';
 export { EmploymentHistoryDialogComponent } from './employment-history-dialog/employment-history-dialog.component';
+export { FileLinkComponent } from './file-link/file-link.component';
 export { FileMenuComponent } from './file-menu/file-menu.component';
 export { FilesTreeComponent } from './files-tree/files-tree.component';
 export { FilterChipsComponent } from './filter-chips/filter-chips.component';
@@ -24,6 +25,7 @@ export { MarkdownComponent } from './markdown/markdown.component';
 export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.component';
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';
+export { ProjectSelectorComponent } from './project-selector/project-selector.component';
 export { ReadonlyInputComponent } from './readonly-input/readonly-input.component';
 export { RegistrationBlocksDataComponent } from './registration-blocks-data/registration-blocks-data.component';
 export { ResourceCardComponent } from './resource-card/resource-card.component';

@@ -13,9 +13,19 @@
 
       @if (preprintValue.originalPublicationDate) {
         <section class="flex flex-column gap-2">
-          <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationDate' | translate }}</h3>
+          <h3>{{ 'preprints.details.originalPublicationDate' | translate }}</h3>
 
           {{ preprintValue.originalPublicationDate | date: 'MMM d, y, h:mm a' }}
+        </section>
+      }
+
+      @if (preprintValue.doi) {
+        <section class="flex flex-column gap-2">
+          <h3>{{ 'preprints.details.publicationDoi' | translate }}</h3>
+
+          <a [href]="preprint()?.articleDoiLink">
+            {{ preprint()?.articleDoiLink }}
+          </a>
         </section>
       }
 

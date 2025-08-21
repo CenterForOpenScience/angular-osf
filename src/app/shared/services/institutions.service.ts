@@ -56,8 +56,8 @@ export class InstitutionsService {
 
   getInstitutionById(institutionId: string): Observable<Institution> {
     return this.jsonApiService
-      .get<InstitutionJsonApiModel>(`${environment.apiUrl}/institutions/${institutionId}`)
-      .pipe(map((result) => result.data.attributes));
+      .get<InstitutionJsonApiModel>(`${environment.apiUrl}/institutions/${institutionId}/`)
+      .pipe(map((result) => GeneralInstitutionMapper.adaptInstitution(result.data)));
   }
 
   deleteUserInstitution(id: string, userId: string): Observable<void> {

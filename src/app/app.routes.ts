@@ -35,6 +35,7 @@ export const routes: Routes = [
           import('./features/home/pages/dashboard/dashboard.component').then((mod) => mod.DashboardComponent),
         data: { skipBreadcrumbs: true },
         canActivate: [authGuard],
+        providers: [provideStates([ProjectsState])],
       },
       {
         path: 'confirm/:userId/:token',
@@ -73,7 +74,7 @@ export const routes: Routes = [
         path: 'my-projects',
         loadComponent: () =>
           import('./features/my-projects/my-projects.component').then((mod) => mod.MyProjectsComponent),
-        providers: [provideStates([BookmarksState])],
+        providers: [provideStates([BookmarksState, ProjectsState])],
         canActivate: [authGuard],
       },
       {
@@ -171,6 +172,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./core/components/request-access/request-access.component').then((mod) => mod.RequestAccessComponent),
         data: { skipBreadcrumbs: true },
+      },
+      {
+        path: 'files/:fileGuid',
+        loadComponent: () =>
+          import('@osf/features/files/pages/file-detail/file-detail.component').then((c) => c.FileDetailComponent),
       },
       {
         path: '**',

@@ -693,8 +693,8 @@
       member state of your habitual residence, your place of work or the place of the alleged infringement.
     </p>
     <p>
-      Contact COS at <a href="mailto:support@osf.io">support&#64;osf.io</a> if you have concerns regarding your personal
-      data, or wish to exercise any of these listed rights.
+      Contact COS at <a [href]="'mailto:' + supportEmail">{{ supportEmail }}</a> if you have concerns regarding your
+      personal data, or wish to exercise any of these listed rights.
     </p>
     <p>
       Note that, if you are in the EEA, we may transfer your personal data outside of the EEA, including to the United
@@ -710,7 +710,8 @@
     <h2>20. CONTACTING US</h2>
     <p>
       Questions about this Privacy Policy can be directed to
-      <a href="mailto:support@osf.io">support&#64;osf.io</a>. Support is provided in English only.<br />
+      <a [href]="'mailto:' + supportEmail">{{ supportEmail }}</a
+      >. Support is provided in English only.<br />
       This Privacy Policy was last updated on January 10, 2025.
     </p>
     <p>

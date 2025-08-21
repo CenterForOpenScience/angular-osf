@@ -1,0 +1,75 @@
+@if (isLoading() || isFilesUpdating()) {
+  <div class="w-8rem ml-auto mr-auto">
+    <osf-loading-spinner></osf-loading-spinner>
+  </div>
+} @else {
+  <div class="flex flex-column gap-2">
+    <div class="flex gap-2">
+      <img [ngSrc]="'/assets/images/cos-shield.svg'" width="24" height="24" alt="cost-shield" />
+      <h2 class="font-normal">{{ 'files.dialogs.moveFile.storage' | translate }}</h2>
+    </div>
+
+    <div class="files-table flex flex-column">
+      @if (currentFolder()?.relationships?.parentFolderLink) {
+        <div class="files-table-row py-2 px-3">
+          <div
+            tabindex="0"
+            (click)="openParentFolder()"
+            (keydown.enter)="openParentFolder()"
+            class="flex align-items-center gap-2 cursor-pointer"
+          >
+            <i class="fas fa-chevron-left fa-sm"></i>
+            <i class="fas fa-folder"></i>
+            {{ currentFolder()?.name ?? '' }}
+          </div>
+        </div>
+      }
+
+      @for (file of files(); track $index) {
+        <div
+          class="files-table-row flex align-items-center py-2"
+          [class]="currentFolder()?.relationships?.parentFolderLink ? 'pl-6' : 'px-3'"
+        >
+          <div class="flex align-items-center gap-2">
+            @if (file.kind !== 'folder') {
+              <osf-icon class="disabled-icon" iconClass="fas fa-file disabled-icon"></osf-icon>
+              <div class="filename-link overflow-ellipsis disabled">{{ file?.name ?? '' }}</div>
+            } @else if (config.data.file.id === file.id) {
+              <osf-icon class="disabled-icon" iconClass="fas fa-folder disabled-icon"></osf-icon>
+
+              <div class="filename-link overflow-ellipsis" [pTooltip]="'files.dialogs.moveFile.cannotMove' | translate">
+                {{ file?.name ?? '' }}
+              </div>
+            } @else {
+              <osf-icon iconClass="fas fa-folder"></osf-icon>
+
+              <div
+                class="filename-link overflow-ellipsis"
+                tabindex="0"
+                (click)="openFolder(file)"
+                (keydown.enter)="openFolder(file)"
+              >
+                {{ file?.name ?? '' }}
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @if (!files().length) {
+        <div class="flex justify-content-center p-4">
+          <h3 class="font-normal text-no-transform">{{ 'files.emptyState' | translate }}</h3>
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<div class="flex justify-content-end gap-2 mt-4">
+  <p-button (click)="dialogRef.close()" severity="info" [label]="'common.buttons.cancel' | translate"></p-button>
+
+  <p-button
+    [disabled]="isFolderSame() || isLoading() || isFilesUpdating()"
+    [label]="(config.data.action === 'move' ? 'common.buttons.move' : 'common.buttons.copy') | translate"
+    (click)="moveFile()"
+  ></p-button>
+</div>
