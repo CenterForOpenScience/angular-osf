@@ -4,8 +4,8 @@ import {
   Addon,
   AuthorizedAddon,
   AuthorizedAddonResponseJsonApi,
-  ConfiguredAddon,
   ConfiguredAddonResponseJsonApi,
+  ConfiguredStorageAddonModel,
   OperationInvocation,
   ResourceReferenceJsonApi,
   StorageItem,
@@ -91,7 +91,7 @@ export class AddonsSelectors {
    * const addons = this.store.selectSnapshot(AddonsSelectors.getConfiguredStorageAddons);
    */
   @Selector([AddonsState])
-  static getConfiguredStorageAddons(state: AddonsStateModel): ConfiguredAddon[] {
+  static getConfiguredStorageAddons(state: AddonsStateModel): ConfiguredStorageAddonModel[] {
     return state.configuredStorageAddons.data;
   }
 
@@ -110,7 +110,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getConfiguredCitationAddons(state: AddonsStateModel): ConfiguredAddon[] {
+  static getConfiguredCitationAddons(state: AddonsStateModel): ConfiguredStorageAddonModel[] {
     return state.configuredCitationAddons.data;
   }
 

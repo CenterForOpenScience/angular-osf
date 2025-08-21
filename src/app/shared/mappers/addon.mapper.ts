@@ -3,8 +3,8 @@ import {
   AddonGetResponseJsonApi,
   AuthorizedAddon,
   AuthorizedAddonGetResponseJsonApi,
-  ConfiguredAddon,
   ConfiguredAddonGetResponseJsonApi,
+  ConfiguredStorageAddonModel,
   IncludedAddonData,
   OperationInvocation,
   OperationInvocationResponseJsonApi,
@@ -77,7 +77,7 @@ export class AddonMapper {
    * const addon = AddonMapper.fromConfiguredAddonResponse(apiResponse);
    * console.log(addon.displayName); // "Google Drive"
    */
-  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredAddon {
+  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredStorageAddonModel {
     return {
       type: response.type,
       id: response.id,

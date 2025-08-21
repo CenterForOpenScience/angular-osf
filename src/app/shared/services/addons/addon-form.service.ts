@@ -8,8 +8,8 @@ import {
   AddonForm,
   AuthorizedAddon,
   AuthorizedAddonRequestJsonApi,
-  ConfiguredAddon,
   ConfiguredAddonRequestJsonApi,
+  ConfiguredStorageAddonModel,
 } from '@shared/models';
 
 @Injectable({
@@ -156,7 +156,7 @@ export class AddonFormService {
   }
 
   generateConfiguredAddonUpdatePayload(
-    addon: ConfiguredAddon,
+    addon: ConfiguredStorageAddonModel,
     userReferenceId: string,
     resourceUri: string,
     displayName: string,

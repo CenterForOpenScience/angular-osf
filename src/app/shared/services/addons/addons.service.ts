@@ -13,10 +13,10 @@ import {
   AuthorizedAddonGetResponseJsonApi,
   AuthorizedAddonRequestJsonApi,
   AuthorizedAddonResponseJsonApi,
-  ConfiguredAddon,
   ConfiguredAddonGetResponseJsonApi,
   ConfiguredAddonRequestJsonApi,
   ConfiguredAddonResponseJsonApi,
+  ConfiguredStorageAddonModel,
   IncludedAddonData,
   JsonApiResponse,
   OperationInvocation,
@@ -122,10 +122,10 @@ export class AddonsService {
    *
    * @param addonType - The addon category to retrieve. Valid values: `'citation'` or `'storage'`.
    * @param referenceId - The unique identifier of the resource (e.g., node, registration) that the addons are configured for.
-   * @returns An observable that emits an array of {@link ConfiguredAddon} objects.
+   * @returns An observable that emits an array of {@link ConfiguredStorageAddonModel} objects.
    *
    */
-  getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddon[]> {
+  getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredStorageAddonModel[]> {
     return this.jsonApiService
       .get<
         JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>

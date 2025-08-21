@@ -103,19 +103,6 @@ export interface AuthorizedAddon {
   credentialsFormat: string;
 }
 
-export interface ConfiguredAddon {
-  type: string;
-  id: string;
-  displayName: string;
-  externalServiceName: string;
-  selectedFolderId: string;
-  connectedCapabilities: string[];
-  connectedOperationNames: string[];
-  currentUserIsOwner: boolean;
-  baseAccountId: string;
-  baseAccountType: string;
-}
-
 export interface IncludedAddonData {
   type: string;
   id: string;
