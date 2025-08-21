@@ -91,4 +91,125 @@ describe('AddonTermsComponent', () => {
       expect(term.status).not.toContain('{provider}');
     });
   });
+
+  it('should show all terms when isCitationService is false', () => {
+    const regularAddon: Addon = {
+      ...mockAddon,
+      supportedFeatures: ['STORAGE', 'FORKING'],
+    };
+
+    mockIsCitationAddon.mockReturnValue(false);
+    fixture.componentRef.setInput('addon', regularAddon);
+
+    const terms = (component as any).terms();
+
+    expect(terms.length).toBeGreaterThan(0);
+
+    const allTerms = (component as any).getAddonTerms(regularAddon);
+    expect(terms.length).toBe(allTerms.length);
+  });
+
+  it('should handle citation service without required features', () => {
+    const citationAddonWithoutFeatures: Addon = {
+      ...mockAddon,
+      supportedFeatures: [],
+    };
+
+    mockIsCitationAddon.mockReturnValue(true);
+    fixture.componentRef.setInput('addon', citationAddonWithoutFeatures);
+
+    const terms = (component as any).terms();
+
+    expect(terms.length).toBeGreaterThan(0);
+
+    const hasDangerTerm = terms.some((term: AddonTerm) => term.type === 'danger');
+    expect(hasDangerTerm).toBe(true);
+  });
+
+  it('should handle citation service with full features', () => {
+    const citationAddonWithFullFeatures: Addon = {
+      ...mockAddon,
+      supportedFeatures: ['STORAGE', 'FORKING'],
+    };
+
+    mockIsCitationAddon.mockReturnValue(true);
+    fixture.componentRef.setInput('addon', citationAddonWithFullFeatures);
+
+    const terms = (component as any).terms();
+
+    expect(terms.length).toBeGreaterThan(0);
+
+    const hasInfoTerm = terms.some((term: AddonTerm) => term.type === 'info');
+    expect(hasInfoTerm).toBe(true);
+  });
+
+  it('should handle null addon input', () => {
+    fixture.componentRef.setInput('addon', null);
+
+    const terms = (component as any).terms();
+
+    expect(terms).toEqual([]);
+  });
+
+  it('should handle undefined addon input', () => {
+    fixture.componentRef.setInput('addon', undefined);
+
+    const terms = (component as any).terms();
+
+    expect(terms).toEqual([]);
+  });
+
+  it('should handle addon with empty supportedFeatures', () => {
+    const addonWithEmptyFeatures: Addon = {
+      ...mockAddon,
+      supportedFeatures: [],
+    };
+
+    mockIsCitationAddon.mockReturnValue(false);
+    fixture.componentRef.setInput('addon', addonWithEmptyFeatures);
+
+    const terms = (component as any).terms();
+
+    expect(terms.length).toBeGreaterThan(0);
+
+    terms.forEach((term: AddonTerm) => {
+      expect(term.type).toBe('danger');
+    });
+  });
+
+  it('should handle addon with partial features only', () => {
+    const addonWithPartialOnly: Addon = {
+      ...mockAddon,
+      supportedFeatures: ['STORAGE_PARTIAL', 'FORKING_PARTIAL'],
+    };
+
+    mockIsCitationAddon.mockReturnValue(false);
+    fixture.componentRef.setInput('addon', addonWithPartialOnly);
+
+    const terms = (component as any).terms();
+
+    expect(terms.length).toBeGreaterThan(0);
+
+    const hasWarningTerm = terms.some((term: AddonTerm) => term.type === 'warning');
+    expect(hasWarningTerm).toBe(true);
+  });
+
+  it('should handle addon with mixed features (full, partial, none)', () => {
+    const addonWithMixedFeatures: Addon = {
+      ...mockAddon,
+      supportedFeatures: ['STORAGE', 'FORKING_PARTIAL'],
+    };
+    mockIsCitationAddon.mockReturnValue(false);
+    fixture.componentRef.setInput('addon', addonWithMixedFeatures);
+
+    const terms = (component as any).terms();
+
+    expect(terms.length).toBeGreaterThan(0);
+
+    const hasInfoTerm = terms.some((term: AddonTerm) => term.type === 'info');
+    const hasWarningTerm = terms.some((term: AddonTerm) => term.type === 'warning');
+    const hasDangerTerm = terms.some((term: AddonTerm) => term.type === 'danger');
+
+    expect(hasInfoTerm || hasWarningTerm || hasDangerTerm).toBe(true);
+  });
 });

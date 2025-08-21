@@ -207,12 +207,8 @@ export class FilesComponent {
     });
 
     effect(() => {
-      if (this.resourceType() === ResourceType.Registration) {
+      if (!this.isConfiguredStorageAddonsLoading() && !this.isRootFoldersLoading()) {
         this.dataLoaded.set(true);
-      } else {
-        if (!this.isConfiguredStorageAddonsLoading() && !this.isRootFoldersLoading()) {
-          this.dataLoaded.set(true);
-        }
       }
     });
 

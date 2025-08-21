@@ -21,7 +21,7 @@ import {
   ResourceMetadataComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
-import { ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
+import { RegistrationReviewStates, ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 import { toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
@@ -155,6 +155,10 @@ export class RegistryOverviewComponent {
 
   get isAdmin(): boolean {
     return this.userPermissions().includes(UserPermissions.Admin);
+  }
+
+  get isInitialState(): boolean {
+    return this.registry()?.reviewsState === RegistrationReviewStates.Initial;
   }
 
   constructor() {

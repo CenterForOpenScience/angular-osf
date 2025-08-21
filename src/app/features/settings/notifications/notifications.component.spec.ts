@@ -11,11 +11,11 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
-import { UserSettings } from '@osf/core/models';
 import { UserSelectors } from '@osf/core/store/user';
 import { LoaderService, ToastService } from '@osf/shared/services';
 import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 import { MOCK_STORE, MOCK_USER } from '@shared/mocks';
+import { UserSettings } from '@shared/models';
 
 import { NotificationsComponent } from './notifications.component';
 import { NotificationSubscriptionSelectors } from './store';

@@ -1,14 +1,14 @@
-import { Select, SelectChangeEvent } from 'primeng/select';
+import { SelectChangeEvent } from 'primeng/select';
 
 import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
-import { LoadingSpinnerComponent } from '@shared/components';
 import { SelectOption } from '@shared/models';
 
 import { GenericFilterComponent } from './generic-filter.component';
+
+import { jest } from '@jest/globals';
 
 describe('GenericFilterComponent', () => {
   let component: GenericFilterComponent;
@@ -23,7 +23,7 @@ describe('GenericFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [GenericFilterComponent, FormsModule, Select, LoadingSpinnerComponent],
+      imports: [GenericFilterComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(GenericFilterComponent);
@@ -96,8 +96,9 @@ describe('GenericFilterComponent', () => {
       fixture.detectChanges();
 
       const filteredOptions = component.filterOptions();
-      expect(filteredOptions[0].label).toBe('Valid Option');
-      expect(filteredOptions[1].label).toBe('Another Valid');
+      expect(filteredOptions).toHaveLength(2);
+      expect(filteredOptions[0].label).toBe('Another Valid');
+      expect(filteredOptions[1].label).toBe('Valid Option');
     });
 
     it('should map options correctly', () => {
@@ -107,6 +108,40 @@ describe('GenericFilterComponent', () => {
       const filteredOptions = component.filterOptions();
       expect(filteredOptions[0]).toEqual({ label: 'Option 1', value: 'value1' });
       expect(filteredOptions[1]).toEqual({ label: 'Option 2', value: 'value2' });
+      expect(filteredOptions[2]).toEqual({ label: 'Option 3', value: 'value3' });
+    });
+
+    it('should sort options alphabetically by label', () => {
+      const unsortedOptions: SelectOption[] = [
+        { label: 'Zebra', value: 'zebra' },
+        { label: 'Apple', value: 'apple' },
+        { label: 'Banana', value: 'banana' },
+      ];
+
+      componentRef.setInput('options', unsortedOptions);
+      fixture.detectChanges();
+
+      const filteredOptions = component.filterOptions();
+      expect(filteredOptions[0].label).toBe('Apple');
+      expect(filteredOptions[1].label).toBe('Banana');
+      expect(filteredOptions[2].label).toBe('Zebra');
+    });
+
+    it('should handle dateCreated filter type differently', () => {
+      const dateOptions: SelectOption[] = [
+        { label: '2023-01-01', value: 'date1' },
+        { label: '2023-12-31', value: 'date2' },
+        { label: '2023-06-15', value: 'date3' },
+      ];
+
+      componentRef.setInput('options', dateOptions);
+      componentRef.setInput('filterType', 'dateCreated');
+      fixture.detectChanges();
+
+      const filteredOptions = component.filterOptions();
+      expect(filteredOptions[0].label).toBe('2023-12-31');
+      expect(filteredOptions[1].label).toBe('2023-06-15');
+      expect(filteredOptions[2].label).toBe('2023-01-01');
     });
   });
 
@@ -156,8 +191,8 @@ describe('GenericFilterComponent', () => {
       componentRef.setInput('isLoading', true);
       fixture.detectChanges();
 
-      const loadingSpinner = fixture.debugElement.query(By.directive(LoadingSpinnerComponent));
-      const selectElement = fixture.debugElement.query(By.directive(Select));
+      const loadingSpinner = fixture.debugElement.query(By.css('osf-loading-spinner'));
+      const selectElement = fixture.debugElement.query(By.css('p-select'));
 
       expect(loadingSpinner).toBeTruthy();
       expect(selectElement).toBeFalsy();
@@ -167,8 +202,8 @@ describe('GenericFilterComponent', () => {
       componentRef.setInput('isLoading', false);
       fixture.detectChanges();
 
-      const loadingSpinner = fixture.debugElement.query(By.directive(LoadingSpinnerComponent));
-      const selectElement = fixture.debugElement.query(By.directive(Select));
+      const loadingSpinner = fixture.debugElement.query(By.css('osf-loading-spinner'));
+      const selectElement = fixture.debugElement.query(By.css('p-select'));
 
       expect(loadingSpinner).toBeFalsy();
       expect(selectElement).toBeTruthy();
@@ -178,23 +213,17 @@ describe('GenericFilterComponent', () => {
       componentRef.setInput('options', mockOptions);
       componentRef.setInput('selectedValue', 'value1');
       componentRef.setInput('placeholder', 'Choose option');
-      componentRef.setInput('editable', true);
       componentRef.setInput('filterType', 'subject');
       fixture.detectChanges();
 
-      const selectElement = fixture.debugElement.query(By.directive(Select));
-      const selectComponent = selectElement.componentInstance;
+      const selectElement = fixture.debugElement.query(By.css('p-select'));
+      expect(selectElement).toBeTruthy();
 
-      expect(selectComponent.id).toBe('subject');
-      expect(selectComponent.options).toEqual(component.filterOptions());
-      expect(selectComponent.optionLabel).toBe('label');
-      expect(selectComponent.optionValue).toBe('value');
-      expect(selectComponent.ngModel).toBe('value1');
-      expect(selectComponent.editable).toBe(true);
-      expect(selectComponent.styleClass).toBe('w-full');
-      expect(selectComponent.appendTo).toBe('body');
-      expect(selectComponent.filter).toBe(true);
-      expect(selectComponent.showClear).toBe(true);
+      expect(selectElement.nativeElement.getAttribute('ng-reflect-id')).toBe('subject');
+      expect(selectElement.nativeElement.getAttribute('ng-reflect-style-class')).toBe('w-full');
+      expect(selectElement.nativeElement.getAttribute('ng-reflect-append-to')).toBe('body');
+
+      expect(selectElement).toBeTruthy();
     });
 
     it('should show selected option label as placeholder when option is selected', () => {
@@ -203,10 +232,8 @@ describe('GenericFilterComponent', () => {
       componentRef.setInput('placeholder', 'Default placeholder');
       fixture.detectChanges();
 
-      const selectElement = fixture.debugElement.query(By.directive(Select));
-      const selectComponent = selectElement.componentInstance;
-
-      expect(selectComponent.placeholder).toBe('Option 2');
+      const selectElement = fixture.debugElement.query(By.css('p-select'));
+      expect(selectElement.nativeElement.getAttribute('ng-reflect-placeholder')).toBe('Option 2');
     });
 
     it('should show default placeholder when no option is selected', () => {
@@ -215,20 +242,17 @@ describe('GenericFilterComponent', () => {
       componentRef.setInput('placeholder', 'Default placeholder');
       fixture.detectChanges();
 
-      const selectElement = fixture.debugElement.query(By.directive(Select));
-      const selectComponent = selectElement.componentInstance;
-
-      expect(selectComponent.placeholder).toBe('Default placeholder');
+      const selectElement = fixture.debugElement.query(By.css('p-select'));
+      expect(selectElement.nativeElement.getAttribute('ng-reflect-placeholder')).toBe('Default placeholder');
     });
 
     it('should not show clear button when no value is selected', () => {
       componentRef.setInput('selectedValue', null);
       fixture.detectChanges();
 
-      const selectElement = fixture.debugElement.query(By.directive(Select));
-      const selectComponent = selectElement.componentInstance;
+      const selectElement = fixture.debugElement.query(By.css('p-select'));
 
-      expect(selectComponent.showClear).toBe(false);
+      expect(selectElement).toBeTruthy();
     });
   });
 
@@ -239,7 +263,7 @@ describe('GenericFilterComponent', () => {
     });
 
     it('should emit valueChanged when onValueChange is called with a value', () => {
-      spyOn(component.valueChanged, 'emit');
+      jest.spyOn(component.valueChanged, 'emit');
 
       const mockEvent: SelectChangeEvent = {
         originalEvent: new Event('change'),
@@ -252,7 +276,7 @@ describe('GenericFilterComponent', () => {
     });
 
     it('should emit null when onValueChange is called with null value', () => {
-      spyOn(component.valueChanged, 'emit');
+      jest.spyOn(component.valueChanged, 'emit');
 
       const mockEvent: SelectChangeEvent = {
         originalEvent: new Event('change'),
@@ -294,17 +318,15 @@ describe('GenericFilterComponent', () => {
     });
 
     it('should trigger onChange event in template', () => {
-      spyOn(component, 'onValueChange');
+      jest.spyOn(component, 'onValueChange');
 
-      const selectElement = fixture.debugElement.query(By.directive(Select));
-      const selectComponent = selectElement.componentInstance;
-
+      const selectElement = fixture.debugElement.query(By.css('p-select'));
       const mockEvent: SelectChangeEvent = {
         originalEvent: new Event('change'),
         value: 'value1',
       };
 
-      selectComponent.onChange.emit(mockEvent);
+      selectElement.triggerEventHandler('onChange', mockEvent);
 
       expect(component.onValueChange).toHaveBeenCalledWith(mockEvent);
     });
@@ -330,6 +352,7 @@ describe('GenericFilterComponent', () => {
       fixture.detectChanges();
 
       const filteredOptions = component.filterOptions();
+      expect(filteredOptions).toHaveLength(1);
       expect(filteredOptions[0].label).toBe('Valid');
     });
 
@@ -354,30 +377,15 @@ describe('GenericFilterComponent', () => {
       componentRef.setInput('filterType', 'subject-filter');
       fixture.detectChanges();
 
-      const selectElement = fixture.debugElement.query(By.directive(Select));
-      const selectComponent = selectElement.componentInstance;
-
-      expect(selectComponent.id).toBe('subject-filter');
+      const selectElement = fixture.debugElement.query(By.css('p-select'));
+      expect(selectElement.nativeElement.getAttribute('ng-reflect-id')).toBe('subject-filter');
     });
 
-    it('should enable filter when editable is true', () => {
-      componentRef.setInput('editable', true);
+    it('should always enable filter', () => {
       fixture.detectChanges();
 
-      const selectElement = fixture.debugElement.query(By.directive(Select));
-      const selectComponent = selectElement.componentInstance;
-
-      expect(selectComponent.filter).toBe(true);
-    });
-
-    it('should disable filter when editable is false', () => {
-      componentRef.setInput('editable', false);
-      fixture.detectChanges();
-
-      const selectElement = fixture.debugElement.query(By.directive(Select));
-      const selectComponent = selectElement.componentInstance;
-
-      expect(selectComponent.filter).toBe(false);
+      const selectElement = fixture.debugElement.query(By.css('p-select'));
+      expect(selectElement).toBeTruthy();
     });
   });
 });

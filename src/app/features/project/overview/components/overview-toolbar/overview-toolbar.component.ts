@@ -96,6 +96,10 @@ export class OverviewToolbarComponent {
   ];
   protected readonly ResourceType = ResourceType;
 
+  get isRegistration(): boolean {
+    return this.currentResource()?.resourceType === ResourceType.Registration;
+  }
+
   constructor() {
     effect(() => {
       const bookmarksId = this.bookmarksCollectionId();
