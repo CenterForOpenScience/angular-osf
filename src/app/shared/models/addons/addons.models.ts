@@ -53,21 +53,83 @@ export interface AuthorizedAddonGetResponseJsonApi {
   };
 }
 
+/**
+ * Interface representing the JSON:API response shape for a configured addon.
+ *
+ * This structure is returned from the backend when querying for configured addons
+ * related to a specific resource or user. It conforms to the JSON:API specification.
+ */
 export interface ConfiguredAddonGetResponseJsonApi {
+  /**
+   * The resource type (e.g., "configured-storage-addons").
+   */
   type: string;
+  /**
+   * Unique identifier of the configured addon.
+   */
   id: string;
+  /**
+   * Attributes associated with the configured addon.
+   */
   attributes: {
+    /**
+     * Display name shown to users (e.g., "Google Drive").
+     */
     display_name: string;
+    /**
+     * Internal identifier of the external storage service (e.g., "googledrive").
+     */
     external_service_name: string;
+    /**
+     * ID of the root folder selected during configuration.
+     */
     root_folder: string;
+    /**
+     * List of capabilities enabled for this addon (e.g., "DOWNLOAD", "UPLOAD").
+     */
     connected_capabilities: string[];
+    /**
+     * List of operation names tied to the addon configuration.
+     */
     connected_operation_names: string[];
+    /**
+     * Indicates whether the current user is the owner of this addon configuration.
+     */
     current_user_is_owner: boolean;
   };
+
+  /**
+   * Relationships to other entities, such as accounts or external services.
+   */
   relationships: {
+    /**
+     * Reference to the base account used for this addon.
+     */
     base_account: {
       data: {
+        /**
+         * Resource type of the account (e.g., "accounts").
+         */
         type: string;
+        /**
+         * Unique identifier of the account.
+         */
+        id: string;
+      };
+    };
+
+    /**
+     * Reference to the underlying external storage service (e.g., Dropbox, Drive).
+     */
+    external_storage_service: {
+      data: {
+        /**
+         * Resource type of the storage service.
+         */
+        type: string;
+        /**
+         * Unique identifier of the storage service.
+         */
         id: string;
       };
     };

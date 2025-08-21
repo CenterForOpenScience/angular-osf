@@ -1,5 +1,3 @@
-import { IdName } from '../id-name.model';
-
 /**
  * Represents a configured external addon instance for a resource (e.g., a linked storage service).
  *
@@ -50,5 +48,5 @@ export interface ConfiguredStorageAddonModel {
   /**
    * Optional: If linked to a parent storage service, provides its ID and name.
    */
-  externalStorageServiceId?: IdName;
+  externalStorageServiceId?: string;
 }

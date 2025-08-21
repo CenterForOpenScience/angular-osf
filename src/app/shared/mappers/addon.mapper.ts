@@ -89,6 +89,7 @@ export class AddonMapper {
       currentUserIsOwner: response.attributes.current_user_is_owner,
       baseAccountId: response.relationships.base_account.data.id,
       baseAccountType: response.relationships.base_account.data.type,
+      externalStorageServiceId: response.relationships?.external_storage_service?.data?.id,
     };
   }
 
