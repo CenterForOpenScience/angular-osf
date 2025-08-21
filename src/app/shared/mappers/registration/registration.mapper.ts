@@ -107,7 +107,7 @@ export class RegistrationMapper {
         type: 'registrations',
         attributes: {
           embargo_end_date: embargoDate || null,
-          draft_registration: draftId,
+          draft_registration_id: draftId,
           included_node_ids: components,
         },
         relationships: {

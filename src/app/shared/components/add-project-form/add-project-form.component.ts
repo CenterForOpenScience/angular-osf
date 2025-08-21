@@ -13,7 +13,9 @@ import { ChangeDetectionStrategy, Component, input, OnInit, signal } from '@angu
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { ProjectFormControls } from '@osf/shared/enums';
-import { IdName, ProjectForm } from '@osf/shared/models';
+import { ProjectForm } from '@osf/shared/models';
+import { Project } from '@osf/shared/models/projects';
+import { ProjectSelectorComponent } from '@shared/components/project-selector/project-selector.component';
 import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores';
 import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
 
@@ -29,6 +31,7 @@ import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
     Textarea,
     NgOptimizedImage,
     TranslatePipe,
+    ProjectSelectorComponent,
   ],
   templateUrl: './add-project-form.component.html',
   styleUrl: './add-project-form.component.scss',
@@ -40,11 +43,10 @@ export class AddProjectFormComponent implements OnInit {
     fetchRegions: FetchRegions,
   });
 
-  templates = input.required<IdName[]>();
-
   ProjectFormControls = ProjectFormControls;
 
   hasTemplateSelected = signal(false);
+  selectedTemplate = signal<Project | null>(null);
   isSubmitting = signal(false);
   storageLocations = select(RegionsSelectors.getRegions);
   areStorageLocationsLoading = select(RegionsSelectors.areRegionsLoading);
@@ -63,6 +65,13 @@ export class AddProjectFormComponent implements OnInit {
       ?.valueChanges.subscribe((value) => {
         this.hasTemplateSelected.set(!!value);
       });
+  }
+
+  onTemplateChange(project: Project | null): void {
+    if (!project) return;
+    this.selectedTemplate.set(project);
+    this.projectForm().get(ProjectFormControls.Template)?.setValue(project.id);
+    this.hasTemplateSelected.set(!!project);
   }
 
   selectAllAffiliations(): void {
