@@ -1,0 +1,20 @@
+<section class="flex flex-column gap-2">
+  @if (showTitle()) {
+    <h3>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h3>
+  }
+
+  <div class="flex gap-2">
+    @if (institutions()?.length) {
+      @for (institution of institutions(); track institution.id) {
+        <img
+          alt="institution logo"
+          [src]="institution.assets.logo"
+          height="45"
+          [routerLink]="`${environment.webUrl}/institutions/${ institution.id}`"
+        />
+      }
+    } @else {
+      <p>{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
+    }
+  </div>
+</section>

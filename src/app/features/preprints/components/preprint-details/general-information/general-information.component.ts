@@ -14,6 +14,7 @@ import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enu
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent, TruncatedTextComponent } from '@shared/components';
+import { AffiliatedInstitutionsViewComponent } from '@shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
 import { ResourceType } from '@shared/enums';
 import { ContributorsSelectors, GetAllContributors, ResetContributorsState } from '@shared/stores';
 import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
@@ -31,6 +32,7 @@ import { environment } from 'src/environments/environment';
     PreprintDoiSectionComponent,
     RouterLink,
     IconComponent,
+    AffiliatedInstitutionsViewComponent,
   ],
   templateUrl: './general-information.component.html',
   styleUrl: './general-information.component.scss',

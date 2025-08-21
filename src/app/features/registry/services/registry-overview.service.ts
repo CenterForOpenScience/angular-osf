@@ -6,17 +6,15 @@ import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewAction, ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { MapRegistryOverview } from '@osf/features/registry/mappers';
 import {
-  GetRegistryInstitutionsJsonApi,
   GetRegistryOverviewJsonApi,
   GetResourceSubjectsJsonApi,
-  RegistryInstitution,
   RegistryOverview,
   RegistryOverviewJsonApiData,
   RegistrySubject,
 } from '@osf/features/registry/models';
-import { ReviewActionsMapper } from '@osf/shared/mappers';
+import { InstitutionsMapper, ReviewActionsMapper } from '@osf/shared/mappers';
 import { PageSchemaMapper } from '@osf/shared/mappers/registration';
-import { PageSchema, SchemaBlocksResponseJsonApi } from '@osf/shared/models';
+import { Institution, InstitutionsJsonApiResponse, PageSchema, SchemaBlocksResponseJsonApi } from '@osf/shared/models';
 import { ReviewActionPayload } from '@osf/shared/models/review-action';
 import { JsonApiService } from '@shared/services';
 
@@ -59,22 +57,14 @@ export class RegistryOverviewService {
       .pipe(map((response) => response.data.map((subject) => ({ id: subject.id, text: subject.attributes.text }))));
   }
 
-  getInstitutions(registryId: string): Observable<RegistryInstitution[]> {
+  getInstitutions(registryId: string): Observable<Institution[]> {
     const params = {
       'page[size]': 100,
     };
 
     return this.jsonApiService
-      .get<GetRegistryInstitutionsJsonApi>(`${environment.apiUrl}/registrations/${registryId}/institutions/`, params)
-      .pipe(
-        map((response) =>
-          response.data.map((institution) => ({
-            id: institution.id,
-            logo: institution.attributes.assets.logo,
-            logoRounded: institution.attributes.assets.logo_rounded,
-          }))
-        )
-      );
+      .get<InstitutionsJsonApiResponse>(`${environment.apiUrl}/registrations/${registryId}/institutions/`, params)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
   }
 
   getSchemaBlocks(schemaLink: string): Observable<PageSchema[]> {
@@ -84,7 +74,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .get<SchemaBlocksResponseJsonApi>(`${schemaLink}schema_blocks`, params)
+      .get<SchemaBlocksResponseJsonApi>(`${schemaLink}schema_blocks/`, params)
       .pipe(map((response) => PageSchemaMapper.fromSchemaBlocksResponse(response)));
   }
 
