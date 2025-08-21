@@ -4,10 +4,12 @@ import { inject, Injectable } from '@angular/core';
 
 import { CurrentResource, GuidedResponseJsonApi } from '@osf/shared/models';
 
-import { environment } from '../../../environments/environment';
+import { CurrentResourceType } from '../enums';
 
 import { JsonApiService } from './json-api.service';
 import { LoaderService } from './loader.service';
+
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -25,8 +27,13 @@ export class ResourceGuidService {
       map(
         (res) =>
           ({
-            id: res.data.id,
-            type: res.data.type,
+            id: res.data.type === CurrentResourceType.Files ? res.data.attributes.guid : res.data.id,
+            type:
+              res.data.type === CurrentResourceType.Files ? res.data.relationships.target?.data.type : res.data.type,
+            parentId:
+              res.data.type === CurrentResourceType.Preprints
+                ? res.data.relationships.provider?.data.id
+                : res.data.relationships.target?.data.id,
           }) as CurrentResource
       ),
       finalize(() => this.loaderService.hide())

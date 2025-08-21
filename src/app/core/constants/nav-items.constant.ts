@@ -30,7 +30,7 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.files',
     routerLink: 'files',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-wiki',
@@ -106,7 +106,7 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.files',
     routerLink: 'files',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'registration-resources',

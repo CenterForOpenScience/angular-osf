@@ -44,8 +44,12 @@ export class NavMenuComponent {
     const routeContext: RouteContext = {
       resourceId: this.currentResourceId(),
       providerId: this.currentProviderId(),
-      isProject: this.currentResource()?.type === CurrentResourceType.Project,
-      isRegistry: this.currentResource()?.type === CurrentResourceType.Registration,
+      isProject:
+        this.currentResource()?.type === CurrentResourceType.Projects &&
+        this.currentResourceId() === this.currentResource()?.id,
+      isRegistry:
+        this.currentResource()?.type === CurrentResourceType.Registrations &&
+        this.currentResourceId() === this.currentResource()?.id,
       isPreprint: this.isPreprintRoute(),
       preprintReviewsPageVisible: this.canUserViewReviews(),
       isCollections: this.isCollectionsRoute() || false,

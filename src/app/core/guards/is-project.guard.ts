@@ -21,17 +21,22 @@ export const isProjectGuard: CanMatchFn = (route: Route, segments: UrlSegment[])
   const currentResource = store.selectSnapshot(CurrentResourceSelectors.getCurrentResource);
 
   if (currentResource && currentResource.id === id) {
-    if (currentResource.type === CurrentResourceType.File) {
-      router.navigate(['/files', id]);
+    if (currentResource.type === CurrentResourceType.Projects && currentResource.parentId) {
+      router.navigate(['/', currentResource.parentId, 'files', id]);
+      return true;
+    }
+
+    if (currentResource.type === CurrentResourceType.Preprints && currentResource.parentId) {
+      router.navigate(['/preprints', currentResource.parentId, id]);
+      return true;
+    }
+
+    if (currentResource.type === CurrentResourceType.Users) {
+      router.navigate(['/profile', id]);
       return false;
     }
 
-    if (currentResource.type === CurrentResourceType.User) {
-      router.navigate(['/user', id]);
-      return false;
-    }
-
-    return currentResource.type === CurrentResourceType.Project;
+    return currentResource.type === CurrentResourceType.Projects;
   }
 
   return store.dispatch(new GetResource(id)).pipe(
@@ -41,17 +46,22 @@ export const isProjectGuard: CanMatchFn = (route: Route, segments: UrlSegment[])
         return false;
       }
 
-      if (resource.type === CurrentResourceType.File) {
-        router.navigate(['/files', id]);
-        return false;
+      if (resource.type === CurrentResourceType.Projects && resource.parentId) {
+        router.navigate(['/', resource.parentId, 'files', id]);
+        return true;
       }
 
-      if (resource.type === CurrentResourceType.User) {
+      if (resource.type === CurrentResourceType.Preprints && resource.parentId) {
+        router.navigate(['/preprints', resource.parentId, id]);
+        return true;
+      }
+
+      if (resource.type === CurrentResourceType.Users) {
         router.navigate(['/user', id]);
         return false;
       }
 
-      return resource.type === CurrentResourceType.Project;
+      return resource.type === CurrentResourceType.Projects;
     })
   );
 };

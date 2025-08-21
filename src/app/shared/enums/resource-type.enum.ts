@@ -11,9 +11,9 @@ export enum ResourceType {
 }
 
 export enum CurrentResourceType {
-  User = 'users',
-  File = 'files',
-  Project = 'nodes',
-  Registration = 'registrations',
-  Preprint = 'preprints',
+  Users = 'users',
+  Files = 'files',
+  Projects = 'nodes',
+  Registrations = 'registrations',
+  Preprints = 'preprints',
 }

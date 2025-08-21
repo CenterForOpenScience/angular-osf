@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers';
 import { ResourceGuidService } from '@osf/shared/services';
 
-import { ClearResourceType, GetResource, SetResource } from './current-resource.actions';
+import { GetResource } from './current-resource.actions';
 import { CURRENT_RESOURCE_DEFAULTS, CurrentResourceStateModel } from './current-resource.model';
 
 @State<CurrentResourceStateModel>({
@@ -46,21 +46,5 @@ export class CurrentResourceState {
       }),
       catchError((error) => handleSectionError(ctx, 'currentResource', error))
     );
-  }
-
-  @Action(SetResource)
-  setResourceType(ctx: StateContext<CurrentResourceStateModel>, action: SetResource) {
-    ctx.patchState({
-      currentResource: {
-        data: action.resource,
-        isLoading: false,
-        error: null,
-      },
-    });
-  }
-
-  @Action(ClearResourceType)
-  clearResourceType(ctx: StateContext<CurrentResourceStateModel>) {
-    ctx.setState(CURRENT_RESOURCE_DEFAULTS);
   }
 }
