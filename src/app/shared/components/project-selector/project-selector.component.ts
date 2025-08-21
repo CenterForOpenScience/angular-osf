@@ -4,7 +4,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Select, SelectChangeEvent, SelectFilterEvent } from 'primeng/select';
 
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -18,6 +18,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
@@ -36,7 +37,6 @@ import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 export class ProjectSelectorComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly translateService = inject(TranslateService);
-  private readonly destroy$ = new Subject<void>();
   private readonly filterSubject = new Subject<string>();
 
   protected projects = select(ProjectsSelectors.getProjects);
@@ -110,18 +110,11 @@ export class ProjectSelectorComponent {
 
       this.projectsOptions.set(options);
     });
-
-    effect(() => {
-      this.destroyRef.onDestroy(() => {
-        this.destroy$.next();
-        this.destroy$.complete();
-      });
-    });
   }
 
   private setupFilterDebounce(): void {
     this.filterSubject
-      .pipe(debounceTime(300), distinctUntilChanged(), takeUntil(this.destroy$))
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((filterValue) => {
         const currentUser = this.currentUser();
         if (!currentUser) return;
