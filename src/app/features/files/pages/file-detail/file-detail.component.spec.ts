@@ -1,11 +1,12 @@
-import { MockComponent, MockProvider } from 'ng-mocks';
+import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute } from '@angular/router';
 
 import { SubHeaderComponent } from '@shared/components';
 
 import { FileDetailComponent } from './file-detail.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('FileDetailComponent', () => {
   let component: FileDetailComponent;
@@ -13,8 +14,8 @@ describe('FileDetailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileDetailComponent, MockComponent(SubHeaderComponent)],
-      providers: [MockProvider(ActivatedRoute)],
+      imports: [FileDetailComponent, MockComponent(SubHeaderComponent), OSFTestingModule],
+      providers: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FileDetailComponent);
