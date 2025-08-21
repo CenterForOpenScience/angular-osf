@@ -4,7 +4,7 @@
   }
 
   <div class="flex gap-2">
-    @if (institutions()?.length) {
+    @if (institutions().length) {
       @for (institution of institutions(); track institution.id) {
         <a [routerLink]="`/institutions/${ institution.id}`" target="_blank" rel="noopener noreferrer">
           <img alt="institution logo" [src]="institution.assets.logo" height="45" />
