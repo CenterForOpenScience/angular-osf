@@ -182,7 +182,6 @@ export class AddonsService {
       >(`${environment.addonsApiUrl}/addon-operation-invocations/`, invocationRequestPayload)
       .pipe(
         map((response) => {
-          console.log('Create Addon Operation invocation created:', response);
           return AddonMapper.fromOperationInvocationResponse(response.data);
         })
       );
