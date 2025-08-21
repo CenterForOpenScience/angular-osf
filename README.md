@@ -14,14 +14,17 @@ take up to 60 seconds once the docker build finishes.
 
 ## Index
 
+### First steps
+
+- Install git commit template: [Commit Template](docs/commit.template.md).
+- Volta: [Volta](#volta)
+
 ### Recommended
 
 - Compodoc: [Compodoc Conventions](docs/compodoc.md).
 - Docker Commands: [Docker Commands](docs/docker.md).
 - Git Conventions: [Git Conventions](docs/git-convention.md).
-- Install git commit template: [Commit Template](docs/commit.template.md).
-- Volta: [Volta](#volta)
-- Redux DevTools: [Redux DevTools](#redux-devtools)
+- NGXS: [NGXS Conventions](docs/ngxs.md).
 
 ### Optional
 
@@ -53,8 +56,3 @@ npm run test:check-coverage-thresholds
 
 OSF uses volta to manage node and npm versions inside of the repository
 Install Volta from [volta](https://volta.sh/) and it will automatically pin Node/npm per the repo toolchain.
-
-## Redux DevTools
-
-OSF Angular uses [NGXS](https://github.com/ngxs) for state management. It is highly recommended to install
-the `Redux DevTools` extension from the Chrome web store.
