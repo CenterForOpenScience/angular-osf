@@ -60,6 +60,7 @@ module.exports = {
     '<rootDir>/src/app/app.config.ts',
     '<rootDir>/src/app/app.routes.ts',
     '<rootDir>/src/app/features/registry/',
+    '<rootDir>/src/app/features/my-projects/',
     '<rootDir>/src/app/features/project/addons',
     '<rootDir>/src/app/features/project/analytics/',
     '<rootDir>/src/app/features/project/contributors/',
