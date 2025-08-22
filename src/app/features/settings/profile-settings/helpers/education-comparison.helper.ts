@@ -4,7 +4,6 @@ import { Education } from '@osf/shared/models';
 import { EducationForm } from '../models';
 
 export function mapFormToEducation(education: EducationForm): Education {
-  console.log(education.startDate);
   return {
     institution: education.institution,
     department: education.department,
