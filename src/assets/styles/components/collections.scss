@@ -1,14 +1,30 @@
 @use "assets/styles/mixins" as mix;
 
 .collections-content {
-  background: var(--collection-bg-color);
+  background: var(--branding-background-color);
   border-top: none;
 
   .collections-sub-header {
     margin: mix.rem(48px) mix.rem(28px);
 
-    .collections-icon {
-      font-size: mix.rem(42px);
+    .collections-logo {
+      background: var(--branding-background-color);
+    }
+
+    .collections-heading {
+      color: var(--branding-secondary-color);
+    }
+
+    .collections-heading-btn {
+      --p-button-primary-background: var(--branding-primary-color);
+      --p-button-primary-border-color: var(--branding-primary-color);
+      --p-button-primary-color: var(--branding-secondary-color);
+      --p-button-primary-hover-background: var(--branding-primary-color);
+      --p-button-primary-hover-border-color: var(--branding-primary-color);
+      --p-button-primary-hover-color: var(--branding-secondary-color);
+      --p-button-primary-active-background: var(--branding-primary-color);
+      --p-button-primary-active-border-color: var(--branding-primary-color);
+      --p-button-primary-active-color: var(--branding-secondary-color);
     }
   }
 

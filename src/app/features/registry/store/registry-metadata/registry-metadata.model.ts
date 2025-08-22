@@ -3,12 +3,11 @@ import {
   CedarMetadataRecordData,
   CedarMetadataTemplateJsonApi,
 } from '@osf/features/project/metadata/models';
-import { AsyncStateModel, License } from '@shared/models';
+import { AsyncStateModel, Institution, License } from '@shared/models';
 
 import {
   BibliographicContributor,
   CustomItemMetadataRecord,
-  RegistryInstitutionJsonApi,
   RegistryOverview,
   RegistrySubjectData,
   UserInstitution,
@@ -19,7 +18,7 @@ export interface RegistryMetadataStateModel {
   bibliographicContributors: AsyncStateModel<BibliographicContributor[]>;
   customItemMetadata: AsyncStateModel<CustomItemMetadataRecord>;
   userInstitutions: AsyncStateModel<UserInstitution[]>;
-  institutions: AsyncStateModel<RegistryInstitutionJsonApi[]>;
+  institutions: AsyncStateModel<Institution[]>;
   subjects: AsyncStateModel<RegistrySubjectData[]>;
   cedarTemplates: AsyncStateModel<CedarMetadataTemplateJsonApi | null>;
   cedarRecord: AsyncStateModel<CedarMetadataRecord | null>;

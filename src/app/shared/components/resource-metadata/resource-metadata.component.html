@@ -124,19 +124,7 @@
       }
     </div>
 
-    <div class="flex flex-column gap-2">
-      <h3>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h3>
-
-      <div class="flex gap-2">
-        @if (resource.affiliatedInstitutions?.length) {
-          @for (institution of resource.affiliatedInstitutions; track institution.id) {
-            <img alt="institution logo" [src]="institution.logo" height="45" />
-          }
-        } @else {
-          <p>{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
-        }
-      </div>
-    </div>
+    <osf-affiliated-institutions-view [institutions]="resource.affiliatedInstitutions || []" />
 
     @if (resource.type === resourceTypes.Projects) {
       <osf-overview-collections [currentProject]="currentResource()"></osf-overview-collections>

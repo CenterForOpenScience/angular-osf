@@ -28,7 +28,9 @@ import {
   CreateCollectionSubmission,
 } from '@osf/features/collections/store/add-to-collection';
 import { LoadingSpinnerComponent } from '@shared/components';
+import { HeaderStyleHelper } from '@shared/helpers';
 import { CanDeactivateComponent } from '@shared/models';
+import { BrandService } from '@shared/services';
 import { CollectionsSelectors, GetCollectionProvider } from '@shared/stores';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
@@ -163,7 +165,19 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
       this.destroyRef.onDestroy(() => {
         this.actions.clearAddToCollectionState();
         this.allowNavigation.set(false);
+
+        HeaderStyleHelper.resetToDefaults();
+        BrandService.resetBranding();
       });
+    });
+
+    effect(() => {
+      const provider = this.collectionProvider();
+
+      if (provider && provider.brand) {
+        BrandService.applyBranding(provider.brand);
+        HeaderStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
+      }
     });
   }
 

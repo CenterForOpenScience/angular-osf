@@ -1888,7 +1888,9 @@
         },
         "tagsTitle": "Tags (optional)",
         "publicationDateTitle": "Publication Date (optional)",
-        "publicationCitationTitle": "Publication Citation (optional)"
+        "publicationCitationTitle": "Publication Citation (optional)",
+        "affiliatedInstitutionsTitle": "Affiliated Institutions",
+        "affiliatedInstitutionsDescription": "You can affiliate your {{preprintWord}} with your institution if it is an OSF institutional member and has worked with the Center for Open Science to create a dedicated institutional OSF landing page."
       },
       "authorAssertions": {
         "title": "Author Assertions",
