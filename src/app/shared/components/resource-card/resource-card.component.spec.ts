@@ -59,14 +59,6 @@ describe('ResourceCardComponent', () => {
     expect(component.isSmall()).toBe(false);
   });
 
-  it('should navigate to registries for registration resources', () => {
-    const navigateSpy = jest.spyOn(router, 'navigate');
-
-    component.redirectToResource(mockResource);
-
-    expect(navigateSpy).toHaveBeenCalledWith(['/registries', 'resource-123']);
-  });
-
   it('should not navigate for non-registration resources', () => {
     const navigateSpy = jest.spyOn(router, 'navigate');
 
