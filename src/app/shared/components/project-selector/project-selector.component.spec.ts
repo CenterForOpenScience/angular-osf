@@ -40,7 +40,7 @@ describe('ProjectSelectorComponent', () => {
   });
 
   it('should handle project selection', () => {
-    spyOn(component.projectChange, 'emit');
+    jest.spyOn(component.projectChange, 'emit');
     const mockProject = { id: '1', title: 'Test Project' } as any;
     const mockEvent = { value: mockProject };
 
@@ -51,7 +51,7 @@ describe('ProjectSelectorComponent', () => {
 
   it('should handle filter search', () => {
     const mockEvent = {
-      originalEvent: { preventDefault: jasmine.createSpy() },
+      originalEvent: { preventDefault: jest.fn() },
       filter: 'test filter',
     };
 

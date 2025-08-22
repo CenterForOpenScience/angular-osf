@@ -58,6 +58,18 @@ export class CollectionsMapper {
         id: response.relationships.primary_collection.data.id,
         type: response.relationships.primary_collection.data.type,
       },
+      brand: response.embeds.brand.data
+        ? {
+            id: response.embeds.brand.data.id,
+            name: response.embeds.brand.data.attributes.name,
+            heroLogoImageUrl: response.embeds.brand.data.attributes.hero_logo_image,
+            topNavLogoImageUrl: response.embeds.brand.data.attributes.topnav_logo_image,
+            heroBackgroundImageUrl: response.embeds.brand.data.attributes.hero_background_image,
+            primaryColor: response.embeds.brand.data.attributes.primary_color,
+            secondaryColor: response.embeds.brand.data.attributes.secondary_color,
+            backgroundColor: response.embeds.brand.data.attributes.background_color,
+          }
+        : null,
     };
   }
 

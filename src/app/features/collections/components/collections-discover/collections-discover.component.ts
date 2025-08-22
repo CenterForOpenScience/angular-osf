@@ -15,7 +15,9 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CollectionsHelpDialogComponent, CollectionsMainContentComponent } from '@osf/features/collections/components';
 import { CollectionsQuerySyncService } from '@osf/features/collections/services';
 import { LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
+import { HeaderStyleHelper } from '@shared/helpers';
 import { CollectionsFilters } from '@shared/models';
+import { BrandService } from '@shared/services';
 import {
   ClearCollections,
   ClearCollectionSubmissions,
@@ -115,6 +117,15 @@ export class CollectionsDiscoverComponent {
     });
 
     effect(() => {
+      const provider = this.collectionProvider();
+
+      if (provider && provider.brand) {
+        BrandService.applyBranding(provider.brand);
+        HeaderStyleHelper.applyHeaderStyles(provider.brand.secondaryColor, provider.brand.backgroundColor || '');
+      }
+    });
+
+    effect(() => {
       const searchText = this.searchText();
       const sortBy = this.sortBy();
       const selectedFilters = this.selectedFilters();
@@ -143,6 +154,8 @@ export class CollectionsDiscoverComponent {
     effect(() => {
       this.destroyRef.onDestroy(() => {
         this.actions.clearCollections();
+        HeaderStyleHelper.resetToDefaults();
+        BrandService.resetBranding();
       });
     });
   }

@@ -4,7 +4,7 @@
   @if (!isLoading()) {
     @if (formattedActivityLogs().length) {
       @for (activityLog of formattedActivityLogs(); track activityLog.id) {
-        <div class="activities-activity flex justify-content-between gap-3 pb-2 align-items-center">
+        <div class="activities-activity flex justify-content-between pb-2 align-items-center">
           <div [innerHTML]="activityLog.formattedActivity"></div>
           <p class="hidden activity-date sm:block text-right">{{ activityLog.date | date: 'MMM d, y hh:mm a' }}</p>
         </div>
