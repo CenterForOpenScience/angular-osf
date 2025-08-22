@@ -103,6 +103,7 @@ describe('Component: Configure Addon', () => {
       expect(component.addonTypeString()).toBe('storage');
       expect(component.selectedRootFolderId()).toBeUndefined();
       expect(component.accountNameControl.value).toBeUndefined();
+      expect(component.isGoogleDrive()).toBeFalsy();
     });
 
     it('should valid onInit - action called', inject([HttpTestingController], (httpMock: HttpTestingController) => {
