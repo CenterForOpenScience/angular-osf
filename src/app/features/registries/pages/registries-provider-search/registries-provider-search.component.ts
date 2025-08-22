@@ -28,7 +28,6 @@ import {
   SearchHelpTutorialComponent,
   SearchResultsContainerComponent,
 } from '@shared/components';
-import { SEARCH_TAB_OPTIONS } from '@shared/constants';
 import { DiscoverableFilter } from '@shared/models';
 
 @Component({
@@ -78,14 +77,6 @@ export class RegistriesProviderSearchComponent {
   });
 
   protected currentStep = signal(0);
-
-  private readonly tabUrlMap = new Map(
-    SEARCH_TAB_OPTIONS.map((option) => [option.value, option.label.split('.').pop()?.toLowerCase() || 'all'])
-  );
-
-  private readonly urlTabMap = new Map(
-    SEARCH_TAB_OPTIONS.map((option) => [option.label.split('.').pop()?.toLowerCase() || 'all', option.value])
-  );
 
   readonly filterLabels = computed(() => {
     const filtersData = this.filters();

@@ -2,7 +2,7 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Tabs, TabsModule } from 'primeng/tabs';
+import { TabsModule } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -45,7 +45,6 @@ import {
     SearchResultsContainerComponent,
     FilterChipsComponent,
     FormsModule,
-    Tabs,
     TabsModule,
     SearchHelpTutorialComponent,
     SearchInputComponent,

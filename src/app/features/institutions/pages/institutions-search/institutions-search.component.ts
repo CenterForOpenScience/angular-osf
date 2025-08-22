@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SafeHtmlPipe } from 'primeng/menu';
-import { Tabs, TabsModule } from 'primeng/tabs';
+import { TabsModule } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -49,7 +49,6 @@ import {
     FilterChipsComponent,
     AutoCompleteModule,
     FormsModule,
-    Tabs,
     TabsModule,
     SearchHelpTutorialComponent,
     SearchInputComponent,
