@@ -74,6 +74,7 @@ module.exports = {
     '<rootDir>/src/app/features/project/addons/components/configure-configure-addon/',
     '<rootDir>/src/app/features/project/addons/components/connect-configured-addon/',
     '<rootDir>/src/app/features/project/addons/components/disconnect-addon-modal/',
+    '<rootDir>/src/app/features/project/addons/components/confirm-account-connection-modal/',
     '<rootDir>/src/app/features/files/',
     '<rootDir>/src/app/features/my-projects/',
     '<rootDir>/src/app/features/preprints/',
