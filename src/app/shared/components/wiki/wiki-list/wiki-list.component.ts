@@ -56,7 +56,7 @@ export class WikiListComponent {
       {
         expanded: true,
         type: WikiItemType.Folder,
-        label: this.translateService.instant('project.wiki.list.header'),
+        label: 'project.wiki.list.header',
         items: this.list()?.map((wiki) => ({
           id: wiki.id,
           label: wiki.name,
@@ -68,7 +68,7 @@ export class WikiListComponent {
     if (this.hasComponentsWikis()) {
       menu.push({
         type: WikiItemType.Folder,
-        label: this.translateService.instant('project.wiki.list.componentsHeader'),
+        label: 'project.wiki.list.componentsHeader',
         items: this.componentsList()?.map((component) => ({
           id: component.id,
           label: component.title,
@@ -88,11 +88,16 @@ export class WikiListComponent {
   openAddWikiDialog() {
     const dialogRef = this.dialogService.open(AddWikiDialogComponent, {
       header: this.translateService.instant('project.wiki.addNewWiki'),
+      focusOnShow: false,
+      closeOnEscape: true,
       modal: true,
+      closable: true,
+      width: '448px',
       data: {
         resourceId: this.resourceId(),
       },
     });
+
     dialogRef.onClose.subscribe(() => {
       this.createWiki.emit();
     });
@@ -112,8 +117,8 @@ export class WikiListComponent {
 
   private navigateTo(wikiId: string, componentId?: string) {
     if (componentId) {
-      this.router.navigateByUrl('/project').then(() => {
-        this.router.navigate(['/project', componentId, 'wiki'], {
+      this.router.navigateByUrl('/').then(() => {
+        this.router.navigate([componentId, 'wiki'], {
           queryParams: { wiki: wikiId },
         });
       });

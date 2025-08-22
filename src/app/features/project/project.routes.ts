@@ -2,7 +2,6 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ResourceType } from '@osf/shared/enums';
 import {
   CitationsState,
@@ -13,7 +12,10 @@ import {
   SubjectsState,
   ViewOnlyLinkState,
 } from '@osf/shared/stores';
-import { ActivityLogsState } from '@shared/stores/activity-logs';
+import { ActivityLogsState } from '@osf/shared/stores/activity-logs';
+
+import { CollectionsModerationState } from '../moderation/store/collections-moderation';
+import { NotificationSubscriptionState } from '../settings/notifications/store';
 
 import { AnalyticsState } from './analytics/store';
 import { SettingsState } from './settings/store';
@@ -61,7 +63,7 @@ export const projectRoutes: Routes = [
       {
         path: 'settings',
         loadComponent: () => import('../project/settings/settings.component').then((mod) => mod.SettingsComponent),
-        providers: [provideStates([SettingsState, ViewOnlyLinkState])],
+        providers: [provideStates([SettingsState, ViewOnlyLinkState, NotificationSubscriptionState])],
       },
       {
         path: 'contributors',

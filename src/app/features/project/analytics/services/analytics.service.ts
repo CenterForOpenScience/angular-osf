@@ -26,7 +26,7 @@ export class AnalyticsService {
     const baseUrl = `${environment.apiDomainUrl}/_/metrics/query/node_analytics`;
 
     return this.jsonApiService
-      .get<JsonApiResponse<AnalyticsMetricsGetResponse, null>>(`${baseUrl}/${resourceId}/${dateRange}`)
+      .get<JsonApiResponse<AnalyticsMetricsGetResponse, null>>(`${baseUrl}/${resourceId}/${dateRange}/`)
       .pipe(map((response) => AnalyticsMetricsMapper.fromResponse(response.data)));
   }
 

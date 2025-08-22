@@ -20,43 +20,15 @@
     />
   </div>
 
-  @if (affiliations().length) {
-    <div class="flex flex-column gap-2">
-      <div class="relative">
-        <h3 class="font-normal mb-2">
-          {{ 'myProjects.createProject.affiliation.title' | translate }}
-        </h3>
-        <div class="flex gap-4 absolute top-0 right-0">
-          <p-button
-            severity="secondary"
-            [label]="'myProjects.createProject.affiliation.selectAll' | translate"
-            (click)="selectAllAffiliations()"
-            (keydown.enter)="selectAllAffiliations()"
-          />
-          <p-button
-            severity="secondary"
-            [label]="'myProjects.createProject.affiliation.removeAll' | translate"
-            (click)="removeAllAffiliations()"
-            (keydown.enter)="removeAllAffiliations()"
-          />
-        </div>
-      </div>
-
-      <div class="flex gap-2" role="group" aria-label="Affiliations">
-        @for (affiliation of affiliations(); track affiliation.id) {
-          <div class="flex align-items-center relative gap-2">
-            <p-checkbox
-              class="absolute top-0 affiliation-checkbox"
-              [value]="affiliation.id"
-              [formControlName]="ProjectFormControls.Affiliations"
-              [inputId]="affiliation.id"
-            />
-            <img class="fit-contain" [ngSrc]="affiliation.assets.logo" alt="OSF Logo" height="44" width="44" />
-          </div>
-        }
-      </div>
-    </div>
-  }
+  <div>
+    <h3 class="font-normal mb-2">
+      {{ 'myProjects.createProject.affiliation.title' | translate }}
+    </h3>
+    <osf-affiliated-institution-select
+      (selectInstitutions)="institutionsSelected($event)"
+      [selectAllByDefault]="true"
+    />
+  </div>
 
   <div class="flex flex-column">
     <label for="description">

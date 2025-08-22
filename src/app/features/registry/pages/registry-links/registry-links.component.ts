@@ -140,7 +140,7 @@ export class RegistryLinksComponent implements OnInit {
   }
 
   navigateToRegistrations(id: string): void {
-    this.router.navigate(['/registries', id, 'overview']);
+    this.router.navigate([id, 'overview']);
   }
 
   updateRegistration(id: string): void {
@@ -157,7 +157,7 @@ export class RegistryLinksComponent implements OnInit {
   }
 
   navigateToNodes(id: string): void {
-    this.router.navigate(['/project', id, 'overview']);
+    this.router.navigate([id, 'overview']);
   }
 
   fetchContributors(nodeId: string): void {

@@ -4,12 +4,13 @@ import { Education } from '@osf/shared/models';
 import { EducationForm } from '../models';
 
 export function mapFormToEducation(education: EducationForm): Education {
+  console.log(education.startDate);
   return {
     institution: education.institution,
     department: education.department,
     degree: education.degree,
-    startYear: education.startDate?.getFullYear() ?? new Date().getFullYear(),
-    startMonth: (education.startDate?.getMonth() ?? 0) + 1,
+    startYear: education.startDate?.getFullYear() ?? null,
+    startMonth: education.startDate?.getMonth() ?? null,
     endYear: education.ongoing ? null : (education.endDate?.getFullYear() ?? null),
     endMonth: education.ongoing ? null : education.endDate ? education.endDate.getMonth() + 1 : null,
     ongoing: education.ongoing,

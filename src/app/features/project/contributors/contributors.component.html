@@ -4,7 +4,7 @@
   <p-button
     [label]="'project.contributors.addContributor' | translate"
     [disabled]="isContributorsLoading()"
-    (click)="openAddContributorDialog()"
+    (onClick)="openAddContributorDialog()"
   ></p-button>
 
   <div class="filters-container flex flex-column xl:flex-row">
@@ -73,13 +73,13 @@
       <p-button
         class="w-3"
         styleClass="w-full"
-        (click)="cancel()"
+        (onClick)="cancel()"
         severity="info"
         [label]="'common.buttons.cancel' | translate"
       >
       </p-button>
 
-      <p-button class="w-3" styleClass="w-full" (click)="save()" [label]="'common.buttons.save' | translate">
+      <p-button class="w-3" styleClass="w-full" (onClick)="save()" [label]="'common.buttons.save' | translate">
       </p-button>
     </div>
   }
@@ -89,7 +89,7 @@
 
     <p>{{ 'project.contributors.createLink' | translate }}</p>
 
-    <p-button class="w-10rem" [label]="'project.contributors.createButton' | translate" (click)="createViewLink()">
+    <p-button class="w-10rem" [label]="'project.contributors.createButton' | translate" (onClick)="createViewLink()">
     </p-button>
 
     <osf-view-only-table

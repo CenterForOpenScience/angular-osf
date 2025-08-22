@@ -1,0 +1,37 @@
+@if (areUserInstitutionsLoading() || areResourceInstitutionsLoading() || areResourceInstitutionsSubmitting()) {
+  <p-skeleton width="100%" height="3rem" />
+} @else {
+  <div class="flex flex-column gap-2">
+    <div class="relative">
+      <div class="flex gap-4 absolute top-0 right-0">
+        <p-button
+          severity="secondary"
+          [label]="'myProjects.createProject.affiliation.selectAll' | translate"
+          (onClick)="selectAll()"
+          (keydown.enter)="selectAll()"
+        />
+        <p-button
+          severity="secondary"
+          [label]="'myProjects.createProject.affiliation.removeAll' | translate"
+          (onClick)="removeAll()"
+          (keydown.enter)="removeAll()"
+        />
+      </div>
+    </div>
+
+    <div class="flex gap-2" role="group" aria-label="Affiliations">
+      @for (institution of userInstitutions(); track institution.id) {
+        <div class="flex align-items-center relative gap-2">
+          <p-checkbox
+            [inputId]="institution.id"
+            class="absolute top-0 affiliation-checkbox"
+            [value]="institution"
+            [ngModel]="selectedInstitutions()"
+            (onChange)="selectDeselectInstitution(institution)"
+          />
+          <img class="fit-contain" [ngSrc]="institution.assets.logo" alt="OSF Logo" height="44" width="44" />
+        </div>
+      }
+    </div>
+  </div>
+}

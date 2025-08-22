@@ -8,15 +8,16 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, OnInit, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { ProjectFormControls } from '@osf/shared/enums';
-import { ProjectForm } from '@osf/shared/models';
+import { Institution, ProjectForm } from '@osf/shared/models';
 import { Project } from '@osf/shared/models/projects';
+import { AffiliatedInstitutionSelectComponent } from '@shared/components/affiliated-institution-select/affiliated-institution-select.component';
 import { ProjectSelectorComponent } from '@shared/components/project-selector/project-selector.component';
-import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores';
+import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
 import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
 
 @Component({
@@ -29,8 +30,8 @@ import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
     CheckboxModule,
     Select,
     Textarea,
-    NgOptimizedImage,
     TranslatePipe,
+    AffiliatedInstitutionSelectComponent,
     ProjectSelectorComponent,
   ],
   templateUrl: './add-project-form.component.html',
@@ -58,8 +59,6 @@ export class AddProjectFormComponent implements OnInit {
     this.actions.fetchUserInstitutions();
     this.actions.fetchRegions();
 
-    this.selectAllAffiliations();
-
     this.projectForm()
       .get(ProjectFormControls.Template)
       ?.valueChanges.subscribe((value) => {
@@ -67,19 +66,16 @@ export class AddProjectFormComponent implements OnInit {
       });
   }
 
+  institutionsSelected(institutions: Institution[]) {
+    this.projectForm()
+      .get(ProjectFormControls.Affiliations)
+      ?.setValue(institutions.map((inst) => inst.id));
+  }
+
   onTemplateChange(project: Project | null): void {
     if (!project) return;
     this.selectedTemplate.set(project);
     this.projectForm().get(ProjectFormControls.Template)?.setValue(project.id);
     this.hasTemplateSelected.set(!!project);
-  }
-
-  selectAllAffiliations(): void {
-    const allAffiliationValues = this.affiliations().map((aff) => aff.id);
-    this.projectForm().get(ProjectFormControls.Affiliations)?.setValue(allAffiliationValues);
-  }
-
-  removeAllAffiliations(): void {
-    this.projectForm().get(ProjectFormControls.Affiliations)?.setValue([]);
   }
 }

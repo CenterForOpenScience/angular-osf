@@ -38,8 +38,6 @@ import {
   WikiSelectors,
 } from '@osf/shared/stores';
 
-const HomeWikiName = 'Home';
-
 @Component({
   selector: 'osf-wiki',
   imports: [
@@ -60,7 +58,9 @@ export class WikiComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private toastService = inject(ToastService);
+
   WikiModes = WikiModes;
+  homeWikiName = 'Home';
 
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
   protected wikiModes = select(WikiSelectors.getWikiModes);
@@ -104,7 +104,7 @@ export class WikiComponent {
             this.navigateToWiki(this.wikiList()?.[0]?.id || '');
           }
           if (!this.wikiList()?.length) {
-            this.actions.createWiki(ResourceType.Project, this.projectId(), HomeWikiName);
+            this.actions.createWiki(ResourceType.Project, this.projectId(), this.homeWikiName);
           }
         })
       )

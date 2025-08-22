@@ -21,7 +21,6 @@ import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
 import { DateRangeOption } from './models';
 import { AnalyticsSelectors, ClearAnalytics, GetMetrics, GetRelatedCounts } from './store';
-import { analyticsData } from './test-data';
 
 @Component({
   selector: 'osf-analytics',
@@ -105,7 +104,7 @@ export class AnalyticsComponent implements OnInit {
   }
 
   private setData() {
-    const analytics = this.analytics() || analyticsData;
+    const analytics = this.analytics();
 
     if (!analytics) {
       return;

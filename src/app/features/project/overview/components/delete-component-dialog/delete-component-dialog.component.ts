@@ -10,11 +10,12 @@ import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signa
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { DeleteComponent, GetComponents, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
 import { ScientistsNames } from '@osf/shared/constants';
-import { ResourceType } from '@shared/enums';
-import { ToastService } from '@shared/services';
+import { ResourceType } from '@osf/shared/enums';
+import { ToastService } from '@osf/shared/services';
+
+import { DeleteComponent, GetComponents, ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-delete-component-dialog',

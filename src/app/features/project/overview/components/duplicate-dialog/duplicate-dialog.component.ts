@@ -8,8 +8,9 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { DuplicateProject, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services';
+
+import { DuplicateProject, ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-duplicate-dialog',
