@@ -30,7 +30,6 @@ module.exports = {
     'src/app/**/*.{ts,js}',
     '!src/app/app.config.ts',
     '!src/app/**/*.routes.{ts.js}',
-    '!src/app/**/*.actions.{ts.js}',
     '!src/app/**/*.models.{ts.js}',
     '!src/app/**/*.model.{ts.js}',
     '!src/app/**/*.route.{ts,js}',
