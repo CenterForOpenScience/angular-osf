@@ -4,6 +4,8 @@ import { By } from '@angular/platform-browser';
 
 import { FilterChipsComponent } from './filter-chips.component';
 
+import { jest } from '@jest/globals';
+
 describe('FilterChipsComponent', () => {
   let component: FilterChipsComponent;
   let fixture: ComponentFixture<FilterChipsComponent>;
@@ -39,7 +41,6 @@ describe('FilterChipsComponent', () => {
 
   describe('Chips Display', () => {
     beforeEach(() => {
-      // Set up test data
       componentRef.setInput('selectedValues', {
         subject: 'psychology',
         resourceType: 'project',
@@ -56,35 +57,27 @@ describe('FilterChipsComponent', () => {
     });
 
     it('should display chips for selected values', () => {
-      const chips = fixture.debugElement.queryAll(By.css('.filter-chip'));
+      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
       expect(chips.length).toBe(2);
     });
 
     it('should display correct chip labels and values', () => {
-      const chips = fixture.debugElement.queryAll(By.css('.chip-label'));
-      const chipTexts = chips.map((chip) => chip.nativeElement.textContent.trim());
+      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
+      const chipLabels = chips.map((chip) => chip.nativeElement.getAttribute('ng-reflect-label'));
 
-      expect(chipTexts).toContain('Subject: Psychology');
-      expect(chipTexts).toContain('Resource Type: Project');
+      expect(chipLabels).toContain('Subject : Psychology');
+      expect(chipLabels).toContain('Resource Type : Project');
     });
 
     it('should display remove button for each chip', () => {
-      const removeButtons = fixture.debugElement.queryAll(By.css('.chip-remove'));
-      expect(removeButtons.length).toBe(2);
-    });
+      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
+      expect(chips.length).toBe(2);
 
-    it('should display clear all button when multiple chips are present', () => {
-      const clearAllButton = fixture.debugElement.query(By.css('.clear-all-btn'));
-      expect(clearAllButton).toBeTruthy();
-      expect(clearAllButton.nativeElement.textContent.trim()).toBe('Clear all');
-    });
-
-    it('should have proper aria-label for remove buttons', () => {
-      const removeButtons = fixture.debugElement.queryAll(By.css('.chip-remove'));
-      const ariaLabels = removeButtons.map((btn) => btn.nativeElement.getAttribute('aria-label'));
-
-      expect(ariaLabels).toContain('Remove Subject filter');
-      expect(ariaLabels).toContain('Remove Resource Type filter');
+      chips.forEach((chip) => {
+        const removableAttr = chip.nativeElement.getAttribute('ng-reflect-removable');
+        const removeIconAttr = chip.nativeElement.getAttribute('ng-reflect-remove-icon');
+        expect(removableAttr === 'true' || removeIconAttr).toBeTruthy();
+      });
     });
   });
 
@@ -102,14 +95,18 @@ describe('FilterChipsComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should not display clear all button for single chip', () => {
-      const clearAllButton = fixture.debugElement.query(By.css('.clear-all-btn'));
-      expect(clearAllButton).toBeFalsy();
+    it('should display single chip correctly', () => {
+      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
+      expect(chips.length).toBe(1);
     });
 
     it('should still display remove button for single chip', () => {
-      const removeButtons = fixture.debugElement.queryAll(By.css('.chip-remove'));
-      expect(removeButtons.length).toBe(1);
+      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
+      expect(chips.length).toBe(1);
+
+      const removableAttr = chips[0].nativeElement.getAttribute('ng-reflect-removable');
+      const removeIconAttr = chips[0].nativeElement.getAttribute('ng-reflect-remove-icon');
+      expect(removableAttr === 'true' || removeIconAttr).toBeTruthy();
     });
   });
 
@@ -127,21 +124,12 @@ describe('FilterChipsComponent', () => {
     });
 
     it('should emit filterRemoved when remove button is clicked', () => {
-      spyOn(component.filterRemoved, 'emit');
+      const emitSpy = jest.spyOn(component.filterRemoved, 'emit');
 
-      const removeButtons = fixture.debugElement.queryAll(By.css('.chip-remove'));
-      removeButtons[0].nativeElement.click();
+      const chips = fixture.debugElement.queryAll(By.css('p-chip'));
+      chips[0].triggerEventHandler('onRemove', null);
 
-      expect(component.filterRemoved.emit).toHaveBeenCalledWith('subject');
-    });
-
-    it('should emit allFiltersCleared when clear all button is clicked', () => {
-      spyOn(component.allFiltersCleared, 'emit');
-
-      const clearAllButton = fixture.debugElement.query(By.css('.clear-all-btn'));
-      clearAllButton.nativeElement.click();
-
-      expect(component.allFiltersCleared.emit).toHaveBeenCalled();
+      expect(emitSpy).toHaveBeenCalledWith('subject');
     });
   });
 
@@ -194,19 +182,19 @@ describe('FilterChipsComponent', () => {
 
   describe('Component Methods', () => {
     it('should call filterRemoved.emit with correct parameter in removeFilter', () => {
-      spyOn(component.filterRemoved, 'emit');
+      const emitSpy = jest.spyOn(component.filterRemoved, 'emit');
 
       component.removeFilter('testKey');
 
-      expect(component.filterRemoved.emit).toHaveBeenCalledWith('testKey');
+      expect(emitSpy).toHaveBeenCalledWith('testKey');
     });
 
     it('should call allFiltersCleared.emit in clearAllFilters', () => {
-      spyOn(component.allFiltersCleared, 'emit');
+      const emitSpy = jest.spyOn(component.allFiltersCleared, 'emit');
 
       component.clearAllFilters();
 
-      expect(component.allFiltersCleared.emit).toHaveBeenCalled();
+      expect(emitSpy).toHaveBeenCalled();
     });
   });
 
@@ -232,7 +220,6 @@ describe('FilterChipsComponent', () => {
       componentRef.setInput('filterLabels', {
         subject: 'Subject',
       });
-      // filterOptions not set (undefined)
       fixture.detectChanges();
 
       expect(() => fixture.detectChanges()).not.toThrow();

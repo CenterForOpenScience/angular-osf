@@ -1,18 +1,18 @@
 # npm run build
 
 npm run test:coverage || {
-  printf "\n\nERROR: Testing errors or coverage issues were found."
+  printf "\n\nERROR: Testing errors or coverage issues are found."
   printf "\n\nIn the future this will block your ability to push to github until it is resolved."
-  printf "\n\nThe same pipeline runs on github."
+  printf "\n\nThe same pipeline runs via GitHub actions."
   printf "\n\nYou are seeing this error because code was added without test coverage."
   # printf "\n\n Please address them before proceeding.\n\n\n\n"
   # exit 1
 }
 
 npm run test:check-coverage-thresholds || {
-  printf "\n\nERROR: Coverage thresholds were not met."
+  printf "\n\nERROR: Coverage thresholds are not met."
   printf "\n\nIn the future this will block your ability to push to github until it is resolved."
-  printf "\n\nThe same pipeline runs on github."
+  printf "\n\nThe same pipeline runs via GitHub actions."
   printf "\n\nYou are seeing this error because test coverage increased without updating the jest.config.js thresholds."
   #printf "\n\nPlease address them before proceeding.\n\n\n\n"
   # exit 1

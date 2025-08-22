@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { TranslateServiceMock } from '@shared/mocks';
+
 import { ResourceCitationsComponent } from './resource-citations.component';
 
 describe('ResourceCitationsComponent', () => {
@@ -9,6 +11,7 @@ describe('ResourceCitationsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [ResourceCitationsComponent],
+      providers: [TranslateServiceMock],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ResourceCitationsComponent);
