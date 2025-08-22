@@ -83,6 +83,10 @@ export class ConfigureAddonComponent implements OnInit {
    */
   public addon = signal<ConfiguredStorageAddonModel | null>(null);
 
+  public readonly isGoogleDrive = computed(() => {
+    return this.storageAddon()?.wbKey === 'googledrive';
+  });
+
   protected isEditMode = signal<boolean>(false);
   public selectedRootFolderId = signal('');
   protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);

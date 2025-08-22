@@ -63,21 +63,21 @@
           (keydown.enter)="toggleEditMode()"
         ></p-button>
       </div>
-      <!-- @if (storageAddon()) {
+      @if (isGoogleDrive()) {
         <p class="text-lg">
           {{ storageAddon()?.wbKey }}
         </p>
-      } @else { -->
-      <osf-folder-selector
-        [accountName]="addon()?.displayName || ''"
-        [operationInvocationResult]="operationInvocation()?.operationResult || []"
-        [accountNameControl]="accountNameControl"
-        (operationInvoke)="handleCreateOperationInvocation($event.operationName, $event.itemId)"
-        [(selectedRootFolderId)]="selectedRootFolderId"
-        (save)="handleUpdateAddonConfiguration()"
-        (cancelSelection)="toggleEditMode()"
-      />
-      <!-- } -->
+      } @else {
+        <osf-folder-selector
+          [accountName]="addon()?.displayName || ''"
+          [operationInvocationResult]="operationInvocation()?.operationResult || []"
+          [accountNameControl]="accountNameControl"
+          (operationInvoke)="handleCreateOperationInvocation($event.operationName, $event.itemId)"
+          [(selectedRootFolderId)]="selectedRootFolderId"
+          (save)="handleUpdateAddonConfiguration()"
+          (cancelSelection)="toggleEditMode()"
+        />
+      }
     </section>
   }
 </section>
