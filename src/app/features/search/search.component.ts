@@ -100,8 +100,6 @@ export class SearchComponent implements OnInit {
   protected searchControl = new FormControl('');
   protected selectedTab: ResourceTab = ResourceTab.All;
   protected currentStep = signal(0);
-  protected isFiltersOpen = signal(true);
-  protected isSortingOpen = signal(false);
 
   readonly resourceTab = ResourceTab;
   readonly resourceType = select(SearchSelectors.getResourceTab);
@@ -211,16 +209,6 @@ export class SearchComponent implements OnInit {
 
   onPageChanged(link: string): void {
     this.actions.getResourcesByLink(link);
-  }
-
-  onFiltersToggled(): void {
-    this.isFiltersOpen.update((open) => !open);
-    this.isSortingOpen.set(false);
-  }
-
-  onSortingToggled(): void {
-    this.isSortingOpen.update((open) => !open);
-    this.isFiltersOpen.set(false);
   }
 
   onFilterChipRemoved(filterKey: string): void {

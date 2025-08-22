@@ -10,24 +10,22 @@
       />
     }
 
-    <div class="flex flex-column gap-2">
-      <h3 class="result-count">
-        @if (searchCount() > 10000) {
-          10 000+ {{ 'collections.searchResults.results' | translate }}
-        } @else if (searchCount() > 0) {
-          {{ searchCount() }} {{ 'collections.searchResults.results' | translate }}
-        } @else {
-          0 {{ 'collections.searchResults.results' | translate }}
-        }
-      </h3>
-    </div>
+    <h4 class="result-count">
+      @if (searchCount() > 10000) {
+        10 000+ {{ 'collections.searchResults.results' | translate }}
+      } @else if (searchCount() > 0) {
+        {{ searchCount() }} {{ 'collections.searchResults.results' | translate }}
+      } @else {
+        0 {{ 'collections.searchResults.results' | translate }}
+      }
+    </h4>
   </div>
 
-  <div class="flex align-items-center gap-2">
+  <div class="flex align-items-center gap-1">
     <p class="hidden md:block">{{ 'collections.filters.sortBy' | translate }}:</p>
 
     <p-select
-      class="no-border-dropdown font-bold ml-2 hidden md:inline-flex"
+      class="no-border-dropdown font-bold hidden md:inline-flex"
       [options]="searchSortingOptions"
       optionLabel="label"
       optionValue="value"
@@ -36,7 +34,7 @@
       (ngModelChange)="selectSort($event)"
     ></p-select>
 
-    @if (isAnyFilterOptions()) {
+    @if (hasFilters()) {
       <p-button
         class="block md:hidden"
         severity="secondary"
@@ -57,7 +55,7 @@
 
 @if (isFiltersOpen()) {
   <div class="w-full mb-3 md:hidden">
-    <ng-content select="[slot=mobile-filters]"></ng-content>
+    <ng-container *ngTemplateOutlet="filtersComponent() || null"></ng-container>
   </div>
 } @else if (isSortingOpen()) {
   <div class="flex flex-column p-5 pt-1 row-gap-3">
@@ -78,11 +76,11 @@
 
 <div class="flex flex-column gap-3 md:flex-row md:gap-4">
   <div class="flex flex-column gap-3 w-full md:gap-4 md:w-3">
-    @if (hasSelectedValues()) {
+    @if (hasSelectedValues() || hasAnySelectedValues()) {
       <ng-content select="[slot=filter-chips]"></ng-content>
     }
     <div class="hidden md:block">
-      <ng-content select="[slot=filters]"></ng-content>
+      <ng-container *ngTemplateOutlet="filtersComponent() || null"></ng-container>
     </div>
   </div>
 

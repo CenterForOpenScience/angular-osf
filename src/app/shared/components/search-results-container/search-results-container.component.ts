@@ -4,7 +4,18 @@ import { Button } from 'primeng/button';
 import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
 
-import { ChangeDetectionStrategy, Component, computed, HostBinding, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  contentChild,
+  HostBinding,
+  input,
+  output,
+  signal,
+  TemplateRef,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { SEARCH_TAB_OPTIONS, searchSortingOptions } from '@shared/constants';
@@ -17,7 +28,16 @@ import { SelectComponent } from '../select/select.component';
 
 @Component({
   selector: 'osf-search-results-container',
-  imports: [FormsModule, Button, DataView, Select, ResourceCardComponent, TranslatePipe, SelectComponent],
+  imports: [
+    FormsModule,
+    Button,
+    DataView,
+    Select,
+    ResourceCardComponent,
+    TranslatePipe,
+    SelectComponent,
+    NgTemplateOutlet,
+  ],
   templateUrl: './search-results-container.component.html',
   styleUrl: './search-results-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,15 +52,15 @@ export class SearchResultsContainerComponent {
   first = input<string | null>(null);
   prev = input<string | null>(null);
   next = input<string | null>(null);
-  isFiltersOpen = input<boolean>(false);
-  isSortingOpen = input<boolean>(false);
   showTabs = input<boolean>(true);
+  hasAnySelectedValues = input<boolean>(false);
+
+  isFiltersOpen = signal<boolean>(false);
+  isSortingOpen = signal<boolean>(false);
 
   sortChanged = output<string>();
   tabChanged = output<ResourceTab>();
   pageChanged = output<string>();
-  filtersToggled = output<void>();
-  sortingToggled = output<void>();
 
   protected readonly searchSortingOptions = searchSortingOptions;
   protected readonly ResourceTab = ResourceTab;
@@ -55,6 +75,7 @@ export class SearchResultsContainerComponent {
   protected readonly hasFilters = computed(() => {
     return true;
   });
+  filtersComponent = contentChild<TemplateRef<unknown>>('filtersComponent');
 
   selectSort(value: string): void {
     this.sortChanged.emit(value);
@@ -71,14 +92,12 @@ export class SearchResultsContainerComponent {
   }
 
   openFilters(): void {
-    this.filtersToggled.emit();
+    this.isFiltersOpen.set(!this.isFiltersOpen());
+    this.isSortingOpen.set(false);
   }
 
   openSorting(): void {
-    this.sortingToggled.emit();
-  }
-
-  isAnyFilterOptions(): boolean {
-    return this.hasFilters();
+    this.isSortingOpen.set(!this.isSortingOpen());
+    this.isFiltersOpen.set(false);
   }
 }

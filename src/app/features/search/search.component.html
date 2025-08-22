@@ -27,13 +27,9 @@
         [first]="first()"
         [prev]="previous()"
         [next]="next()"
-        [isFiltersOpen]="isFiltersOpen()"
-        [isSortingOpen]="isSortingOpen()"
         (sortChanged)="onSortChanged($event)"
         (tabChanged)="onTabChange(+$event)"
         (pageChanged)="onPageChanged($event)"
-        (filtersToggled)="onFiltersToggled()"
-        (sortingToggled)="onSortingToggled()"
       >
         <div slot="filter-chips">
           <osf-filter-chips
@@ -45,7 +41,7 @@
           />
         </div>
 
-        <div slot="filters">
+        <ng-template #filtersComponent>
           <osf-reusable-filters
             [filters]="filters()"
             [selectedValues]="selectedValues()"
@@ -57,21 +53,7 @@
             (filterSearchChanged)="onFilterSearchChanged($event)"
             (loadMoreFilterOptions)="onLoadMoreFilterOptions($event)"
           />
-        </div>
-
-        <div slot="mobile-filters">
-          <osf-reusable-filters
-            [filters]="filters()"
-            [selectedValues]="selectedValues()"
-            [filterSearchResults]="filterSearchResults()"
-            [isLoading]="isResourcesLoading()"
-            [showEmptyState]="true"
-            (loadFilterOptions)="onLoadFilterOptions($event)"
-            (filterValueChanged)="onFilterChanged($event)"
-            (filterSearchChanged)="onFilterSearchChanged($event)"
-            (loadMoreFilterOptions)="onLoadMoreFilterOptions($event)"
-          />
-        </div>
+        </ng-template>
       </osf-search-results-container>
 
       <osf-search-help-tutorial [(currentStep)]="currentStep"></osf-search-help-tutorial>

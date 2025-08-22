@@ -2,7 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -12,7 +12,7 @@ import { User } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-profile-information',
-  imports: [Button, EmploymentHistoryComponent, EducationHistoryComponent, TranslatePipe, DatePipe],
+  imports: [Button, EmploymentHistoryComponent, EducationHistoryComponent, TranslatePipe, DatePipe, NgOptimizedImage],
   templateUrl: './profile-information.component.html',
   styleUrl: './profile-information.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
