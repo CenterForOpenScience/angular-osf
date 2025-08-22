@@ -8,8 +8,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ProjectOverviewSelectors, UpdateProjectPublicStatus } from '@osf/features/project/overview/store';
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services';
+
+import { ProjectOverviewSelectors, UpdateProjectPublicStatus } from '../../store';
 
 @Component({
   selector: 'osf-toggle-publicity-dialog',
@@ -22,9 +23,11 @@ export class TogglePublicityDialogComponent {
   private store = inject(Store);
   private dialogConfig = inject(DynamicDialogConfig);
   private toastService = inject(ToastService);
+
   protected dialogRef = inject(DynamicDialogRef);
   protected destroyRef = inject(DestroyRef);
   protected isSubmitting = select(ProjectOverviewSelectors.getUpdatePublicStatusSubmitting);
+
   private newPublicStatus = signal(this.dialogConfig.data.newPublicStatus);
   private projectId = signal(this.dialogConfig.data.projectId);
   protected isCurrentlyPublic = signal(this.dialogConfig.data.isCurrentlyPublic);

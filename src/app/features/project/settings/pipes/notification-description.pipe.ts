@@ -1,5 +1,3 @@
-import { TranslateService } from '@ngx-translate/core';
-
 import { Pipe, PipeTransform } from '@angular/core';
 
 import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
@@ -8,8 +6,6 @@ import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
   name: 'notificationDescription',
 })
 export class NotificationDescriptionPipe implements PipeTransform {
-  constructor(private translate: TranslateService) {}
-
   transform(event: SubscriptionEvent, frequency?: SubscriptionFrequency): string {
     if (!event || !frequency) return '';
 

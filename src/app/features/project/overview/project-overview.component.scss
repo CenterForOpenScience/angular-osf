@@ -1,11 +1,9 @@
-@use "/assets/styles/variables" as var;
-
 .left-section {
   flex: 3;
 }
 
 .right-section {
   width: 23rem;
-  border: 1px solid var.$grey-2;
+  border: 1px solid var(--grey-2);
   border-radius: 12px;
 }

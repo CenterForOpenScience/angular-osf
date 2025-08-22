@@ -6,8 +6,8 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
+import { MarkdownComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { WikiSelectors } from '@osf/shared/stores';
-import { MarkdownComponent, TruncatedTextComponent } from '@shared/components';
 
 @Component({
   selector: 'osf-project-wiki',

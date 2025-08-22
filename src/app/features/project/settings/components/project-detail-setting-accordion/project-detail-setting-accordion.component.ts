@@ -6,7 +6,7 @@ import { SelectModule } from 'primeng/select';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { RightControl } from '@osf/features/project/settings/models';
+import { RightControl } from '../../models';
 
 @Component({
   selector: 'osf-project-detail-setting-accordion',

@@ -23,32 +23,31 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
+import {
+  ClearCollectionModeration,
+  CollectionsModerationSelectors,
+  GetSubmissionsReviewActions,
+} from '@osf/features/moderation/store/collections-moderation';
 import {
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
-} from '@shared/components';
-import { Mode, ResourceType, UserPermissions } from '@shared/enums';
-import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
-import { ToastService } from '@shared/services';
+} from '@osf/shared/components';
+import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
+import { IS_XSMALL } from '@osf/shared/helpers';
+import { MapProjectOverview } from '@osf/shared/mappers';
+import { ToastService } from '@osf/shared/services';
 import {
+  ClearCollections,
   ClearWiki,
   CollectionsSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetHomeWiki,
   GetLinkedResources,
-} from '@shared/stores';
-import { GetActivityLogs } from '@shared/stores/activity-logs';
-import { ClearCollections } from '@shared/stores/collections';
-
-import {
-  ClearCollectionModeration,
-  CollectionsModerationSelectors,
-  GetSubmissionsReviewActions,
-} from '../../moderation/store/collections-moderation';
+} from '@osf/shared/stores';
+import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 
 import {
   LinkedResourcesComponent,
@@ -92,20 +91,26 @@ import {
 export class ProjectOverviewComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
-  protected readonly toastService = inject(ToastService);
-  protected readonly dialogService = inject(DialogService);
-  protected readonly translateService = inject(TranslateService);
-  protected isMobile = toSignal(inject(IS_XSMALL));
-  protected submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
-  protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
-  protected currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
-  protected readonly activityPageSize = 5;
-  protected readonly activityDefaultPage = 1;
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
 
-  protected actions = createDispatchMap({
+  isMobile = toSignal(inject(IS_XSMALL));
+  submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
+  collectionProvider = select(CollectionsSelectors.getCollectionProvider);
+  currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
+  isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
+  isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
+
+  readonly activityPageSize = 5;
+  readonly activityDefaultPage = 1;
+  readonly SubmissionReviewStatus = SubmissionReviewStatus;
+
+  private readonly actions = createDispatchMap({
     getProject: GetProjectById,
     getBookmarksId: GetBookmarksCollectionId,
     getHomeWiki: GetHomeWiki,
@@ -163,12 +168,11 @@ export class ProjectOverviewComponent implements OnInit {
     }
     return null;
   });
-  protected isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
-  protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
-  protected isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
+
   protected isLoading = computed(() => {
     return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
   });
+
   protected currentResource = computed(() => {
     if (this.currentProject()) {
       return {
@@ -264,6 +268,4 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.clearCollectionModeration();
     });
   }
-
-  protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
 }

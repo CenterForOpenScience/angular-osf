@@ -2,9 +2,6 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { RegistryComponentsState } from '@osf/features/registry/store/registry-components';
-import { RegistryLinksState } from '@osf/features/registry/store/registry-links';
-import { RegistryMetadataState } from '@osf/features/registry/store/registry-metadata';
 import { ResourceType } from '@osf/shared/enums';
 import { LicensesService } from '@osf/shared/services';
 import {
@@ -20,8 +17,11 @@ import { RegistriesState } from '../registries/store';
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from '../registries/store/handlers';
 import { FilesHandlers } from '../registries/store/handlers/files.handlers';
 
+import { RegistryComponentsState } from './store/registry-components';
+import { RegistryLinksState } from './store/registry-links';
+import { RegistryMetadataState } from './store/registry-metadata';
 import { RegistryOverviewState } from './store/registry-overview';
-import { RegistryResourcesState } from './store/registry-resources/registry-resources.state';
+import { RegistryResourcesState } from './store/registry-resources';
 import { RegistryComponent } from './registry.component';
 
 export const registryRoutes: Routes = [

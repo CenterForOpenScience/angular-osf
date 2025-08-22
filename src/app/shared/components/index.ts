@@ -30,6 +30,7 @@ export { PieChartComponent } from './pie-chart/pie-chart.component';
 export { ProjectSelectorComponent } from './project-selector/project-selector.component';
 export { ReadonlyInputComponent } from './readonly-input/readonly-input.component';
 export { RegistrationBlocksDataComponent } from './registration-blocks-data/registration-blocks-data.component';
+export { RegistrationCardComponent } from './registration-card/registration-card.component';
 export { ResourceCardComponent } from './resource-card/resource-card.component';
 export { ResourceMetadataComponent } from './resource-metadata/resource-metadata.component';
 export { ReusableFilterComponent } from './reusable-filter/reusable-filter.component';
