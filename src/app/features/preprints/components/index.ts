@@ -17,7 +17,6 @@ export { PreprintsHelpDialogComponent } from './preprints-help-dialog/preprints-
 export { AuthorAssertionsStepComponent } from './stepper/author-assertion-step/author-assertions-step.component';
 export { SupplementsStepComponent } from './stepper/supplements-step/supplements-step.component';
 export { PreprintsFilterChipsComponent } from '@osf/features/preprints/components/filters/preprints-filter-chips/preprints-filter-chips.component';
-export { PreprintsResourcesComponent } from '@osf/features/preprints/components/filters/preprints-resources/preprints-resources.component';
 export { PreprintsResourcesFiltersComponent } from '@osf/features/preprints/components/filters/preprints-resources-filters/preprints-resources-filters.component';
 export { PreprintsSubjectFilterComponent } from '@osf/features/preprints/components/filters/preprints-subject-filter/preprints-subject-filter.component';
 export { MakeDecisionComponent } from '@osf/features/preprints/components/preprint-details/make-decision/make-decision.component';

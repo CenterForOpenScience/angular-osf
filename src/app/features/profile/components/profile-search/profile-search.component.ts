@@ -1,14 +1,13 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
-
-import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 import { debounceTime, skip } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   effect,
   inject,
@@ -19,41 +18,55 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 
-import { SearchHelpTutorialComponent, SearchInputComponent } from '@osf/shared/components';
-import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
-import { ResourceTab } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
+import { ProfileFilterChipsComponent, ProfileResourceFiltersComponent } from '@osf/features/profile/components';
+import {
+  SearchHelpTutorialComponent,
+  SearchInputComponent,
+  SearchResultsContainerComponent,
+} from '@osf/shared/components';
+import { IS_XSMALL, Primitive } from '@osf/shared/helpers';
 import { User } from '@osf/shared/models';
+import { SEARCH_TAB_OPTIONS } from '@shared/constants';
+import { ResourceTab } from '@shared/enums';
 
-import { GetResources, ProfileSelectors, SetResourceTab, SetSearchText } from '../../store';
+import {
+  GetResources,
+  GetResourcesByLink,
+  ProfileSelectors,
+  SetResourceTab,
+  SetSearchText,
+  SetSortBy,
+} from '../../store';
 import { GetAllOptions } from '../filters/store';
 import { ProfileResourceFiltersSelectors } from '../profile-resource-filters/store';
-import { ProfileResourcesComponent } from '../profile-resources/profile-resources.component';
 
 @Component({
   selector: 'osf-profile-search',
   imports: [
     TranslatePipe,
     SearchInputComponent,
-    Tab,
-    TabList,
-    Tabs,
-    ProfileResourcesComponent,
     SearchHelpTutorialComponent,
+    ProfileFilterChipsComponent,
+    ProfileResourceFiltersComponent,
+    SearchResultsContainerComponent,
   ],
   templateUrl: './profile-search.component.html',
   styleUrl: './profile-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileSearchComponent {
-  readonly store = inject(Store);
+  private readonly store = inject(Store);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly actions = createDispatchMap({
+    getResourcesByLink: GetResourcesByLink,
+    setResourceTab: SetResourceTab,
+    setSortBy: SetSortBy,
+  });
 
   currentUser = input<User | null>();
 
   protected searchControl = new FormControl<string>('');
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
-
-  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly dateCreatedFilter = select(ProfileResourceFiltersSelectors.getDateCreated);
   protected readonly funderFilter = select(ProfileResourceFiltersSelectors.getFunder);
@@ -67,12 +80,31 @@ export class ProfileSearchComponent {
   protected resourcesTabStoreValue = select(ProfileSelectors.getResourceTab);
   protected sortByStoreValue = select(ProfileSelectors.getSortBy);
   readonly isMyProfilePage = select(ProfileSelectors.getIsMyProfile);
+  searchCount = select(ProfileSelectors.getResourcesCount);
+  resources = select(ProfileSelectors.getResources);
+  first = select(ProfileSelectors.getFirst);
+  next = select(ProfileSelectors.getNext);
+  prev = select(ProfileSelectors.getPrevious);
+  protected filters = select(ProfileResourceFiltersSelectors.getAllFilters);
 
-  protected readonly resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceTab.Users);
-  protected selectedTab: ResourceTab = ResourceTab.All;
+  protected readonly isMobile = toSignal(inject(IS_XSMALL));
 
   protected currentStep = signal(0);
   private skipInitializationEffects = 0;
+
+  protected readonly resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceTab.Users);
+  protected isAnyFilterSelected = computed(() => {
+    return (
+      this.filters().dateCreated.value ||
+      this.filters().funder.value ||
+      this.filters().subject.value ||
+      this.filters().license.value ||
+      this.filters().resourceType.value ||
+      this.filters().institution.value ||
+      this.filters().provider.value ||
+      this.filters().partOfCollection.value
+    );
+  });
 
   constructor() {
     effect(() => {
@@ -115,21 +147,21 @@ export class ProfileSearchComponent {
         this.searchControl.setValue(storeValue);
       }
     });
-
-    effect(() => {
-      if (this.selectedTab !== this.resourcesTabStoreValue()) {
-        this.selectedTab = this.resourcesTabStoreValue();
-      }
-    });
-  }
-
-  onTabChange(index: ResourceTab): void {
-    this.store.dispatch(new SetResourceTab(index));
-    this.selectedTab = index;
-    this.store.dispatch(GetAllOptions);
   }
 
   showTutorial() {
     this.currentStep.set(1);
+  }
+
+  onTabChange(index: ResourceTab): void {
+    this.actions.setResourceTab(index);
+  }
+
+  switchPage(link: string) {
+    this.actions.getResourcesByLink(link);
+  }
+
+  sortOptionSelected(value: Primitive) {
+    this.actions.setSortBy(value as string);
   }
 }

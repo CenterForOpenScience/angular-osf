@@ -17,10 +17,15 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PreprintProviderHeroComponent, PreprintsResourcesComponent } from '@osf/features/preprints/components';
+import {
+  PreprintProviderHeroComponent,
+  PreprintsFilterChipsComponent,
+  PreprintsResourcesFiltersComponent,
+} from '@osf/features/preprints/components';
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import {
   GetResources,
+  GetResourcesByLink,
   PreprintsDiscoverSelectors,
   ResetState,
   SetProviderIri,
@@ -37,20 +42,35 @@ import {
   SetProvider,
   SetSubject,
 } from '@osf/features/preprints/store/preprints-resources-filters';
-import { GetAllOptions } from '@osf/features/preprints/store/preprints-resources-filters-options';
-import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
+import {
+  GetAllOptions,
+  PreprintsResourcesFiltersOptionsSelectors,
+} from '@osf/features/preprints/store/preprints-resources-filters-options';
+import { searchSortingOptions } from '@osf/shared/constants';
+import { BrowserTabHelper, HeaderStyleHelper, IS_WEB, IS_XSMALL, Primitive } from '@osf/shared/helpers';
+import { SearchResultsContainerComponent } from '@shared/components';
 import { FilterLabelsModel, ResourceFilterLabel } from '@shared/models';
 import { BrandService } from '@shared/services';
 
 @Component({
   selector: 'osf-preprint-provider-discover',
-  imports: [PreprintProviderHeroComponent, PreprintsResourcesComponent],
+  imports: [
+    PreprintProviderHeroComponent,
+    PreprintsFilterChipsComponent,
+    PreprintsResourcesFiltersComponent,
+    SearchResultsContainerComponent,
+  ],
   templateUrl: './preprint-provider-discover.component.html',
   styleUrl: './preprint-provider-discover.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
+
+  isWeb = toSignal(inject(IS_WEB));
+  isMobile = toSignal(inject(IS_XSMALL));
+  searchSortingOptions = searchSortingOptions;
+
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -74,6 +94,7 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
     resetFiltersState: ResetFiltersState,
     resetDiscoverState: ResetState,
     setProviderIri: SetProviderIri,
+    getResourcesByLink: GetResourcesByLink,
   });
 
   searchControl = new FormControl('');
@@ -89,6 +110,17 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
   institutionSelected = select(PreprintsResourcesFiltersSelectors.getInstitution);
   sortSelected = select(PreprintsDiscoverSelectors.getSortBy);
   searchValue = select(PreprintsDiscoverSelectors.getSearchText);
+
+  resources = select(PreprintsDiscoverSelectors.getResources);
+  resourcesCount = select(PreprintsDiscoverSelectors.getResourcesCount);
+
+  sortBy = select(PreprintsDiscoverSelectors.getSortBy);
+  first = select(PreprintsDiscoverSelectors.getFirst);
+  next = select(PreprintsDiscoverSelectors.getNext);
+  prev = select(PreprintsDiscoverSelectors.getPrevious);
+
+  isAnyFilterSelected = select(PreprintsResourcesFiltersSelectors.isAnyFilterSelected);
+  isAnyFilterOptions = select(PreprintsResourcesFiltersOptionsSelectors.isAnyFilterOptions);
 
   constructor() {
     effect(() => {
@@ -284,5 +316,13 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
         this.searchControl.setValue(storeValue);
       }
     });
+  }
+
+  switchPage(link: string) {
+    this.actions.getResourcesByLink(link);
+  }
+
+  sortOptionSelected(value: Primitive) {
+    this.actions.setSortBy(value as string);
   }
 }
