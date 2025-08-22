@@ -4,13 +4,13 @@ import { ConfigureAddonComponent } from './configure-addon.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('ConfigureAddonComponent', () => {
+describe('Component: Configure Addon', () => {
   let component: ConfigureAddonComponent;
   let fixture: ComponentFixture<ConfigureAddonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ConfigureAddonComponent, OSFTestingModule],
+      imports: [OSFTestingModule, ConfigureAddonComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ConfigureAddonComponent);
