@@ -33,7 +33,7 @@ const initialState: MetadataStateModel = {
 };
 
 @State<MetadataStateModel>({
-  name: 'metadata',
+  name: 'projectMetadata',
   defaults: initialState,
 })
 @Injectable()

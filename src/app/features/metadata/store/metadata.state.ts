@@ -1,10 +1,12 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { finalize, tap } from 'rxjs';
+import { catchError, finalize, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { CedarMetadataRecord, CedarMetadataRecordJsonApi } from '../models';
+import { handleSectionError } from '@osf/shared/helpers';
+
+import { CedarMetadataRecord, CedarMetadataRecordJsonApi, Metadata } from '../models';
 import { MetadataService } from '../services/metadata.service';
 
 import {
@@ -14,22 +16,19 @@ import {
   GetCedarMetadataTemplates,
   GetCustomItemMetadata,
   GetFundersList,
-  GetProjectForMetadata,
-  GetUserInstitutions,
+  GetResourceMetadata,
   UpdateCedarMetadataRecord,
   UpdateCustomItemMetadata,
-  UpdateProjectDetails,
 } from './metadata.actions';
 import { MetadataStateModel } from './metadata.model';
 
 const initialState: MetadataStateModel = {
-  project: { data: null, isLoading: false, error: null },
-  customItemMetadata: { data: null, isLoading: false, error: null },
+  metadata: { data: null, isLoading: false, error: null },
+  customMetadata: { data: null, isLoading: false, error: null },
   fundersList: { data: [], isLoading: false, error: null },
   cedarTemplates: { data: null, isLoading: false, error: null },
   cedarRecord: { data: null, isLoading: false, error: null },
   cedarRecords: { data: [], isLoading: false, error: null },
-  userInstitutions: { data: [], isLoading: false, error: null },
 };
 
 @State<MetadataStateModel>({
@@ -40,29 +39,55 @@ const initialState: MetadataStateModel = {
 export class MetadataState {
   private readonly metadataService = inject(MetadataService);
 
+  @Action(GetResourceMetadata)
+  getResourceMetadata(ctx: StateContext<MetadataStateModel>, action: GetResourceMetadata) {
+    const state = ctx.getState();
+    ctx.patchState({
+      metadata: {
+        ...state.metadata,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.metadataService.getResourceMetadata(action.resourceId, action.resourceType).pipe(
+      tap({
+        next: (resource) => {
+          ctx.patchState({
+            metadata: {
+              data: resource as Metadata,
+              isLoading: false,
+              error: null,
+            },
+          });
+        },
+      }),
+      catchError((error) => handleSectionError(ctx, 'metadata', error))
+    );
+  }
+
   @Action(GetCustomItemMetadata)
   getCustomItemMetadata(ctx: StateContext<MetadataStateModel>, action: GetCustomItemMetadata) {
+    const state = ctx.getState();
+
     ctx.patchState({
-      customItemMetadata: { data: null, isLoading: true, error: null },
+      customMetadata: { ...state.customMetadata, isLoading: true, error: null },
     });
 
     return this.metadataService.getCustomItemMetadata(action.guid).pipe(
       tap({
         next: (response) => {
           ctx.patchState({
-            customItemMetadata: { data: response.data.attributes, isLoading: false, error: null },
-          });
-        },
-        error: (error) => {
-          ctx.patchState({
-            customItemMetadata: { data: null, isLoading: false, error: error.message },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            customMetadata: { data: response as any, isLoading: false, error: null },
           });
         },
       }),
+      catchError((error) => handleSectionError(ctx, 'customMetadata', error)),
       finalize(() =>
         ctx.patchState({
-          customItemMetadata: {
-            ...ctx.getState().customItemMetadata,
+          customMetadata: {
+            ...state.customMetadata,
             isLoading: false,
           },
         })
@@ -73,23 +98,24 @@ export class MetadataState {
   @Action(UpdateCustomItemMetadata)
   updateCustomItemMetadata(ctx: StateContext<MetadataStateModel>, action: UpdateCustomItemMetadata) {
     ctx.patchState({
-      customItemMetadata: { data: null, isLoading: true, error: null },
+      customMetadata: { data: null, isLoading: true, error: null },
     });
 
     return this.metadataService.updateCustomItemMetadata(action.guid, action.metadata).pipe(
       tap({
         next: (response) => {
           ctx.patchState({
-            customItemMetadata: { data: response.data.attributes, isLoading: true, error: null },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            customMetadata: { data: response as any, isLoading: false, error: null },
           });
         },
         error: (error) => {
           ctx.patchState({
-            customItemMetadata: { ...ctx.getState().customItemMetadata, isLoading: false, error: error.message },
+            customMetadata: { ...ctx.getState().customMetadata, isLoading: false, error: error.message },
           });
         },
       }),
-      finalize(() => ctx.patchState({ customItemMetadata: { ...ctx.getState().customItemMetadata, isLoading: false } }))
+      finalize(() => ctx.patchState({ customMetadata: { ...ctx.getState().customMetadata, isLoading: false } }))
     );
   }
 
@@ -234,136 +260,94 @@ export class MetadataState {
     });
   }
 
-  @Action(GetProjectForMetadata)
-  getProjectForMetadata(ctx: StateContext<MetadataStateModel>, action: GetProjectForMetadata) {
-    ctx.patchState({
-      project: {
-        data: null,
-        isLoading: true,
-        error: null,
-      },
-    });
+  // @Action(UpdateProjectDetails)
+  // updateProjectDetails(ctx: StateContext<MetadataStateModel>, action: UpdateProjectDetails) {
+  //   ctx.patchState({
+  //     project: {
+  //       ...ctx.getState().project,
+  //       isLoading: true,
+  //       error: null,
+  //     },
+  //   });
 
-    return this.metadataService.getProjectForMetadata(action.projectId).pipe(
-      tap({
-        next: (project) => {
-          ctx.patchState({
-            project: {
-              data: project,
-              isLoading: false,
-              error: null,
-            },
-          });
-        },
-        error: (error) => {
-          ctx.patchState({
-            project: {
-              data: ctx.getState().project.data,
-              error: error.message,
-              isLoading: false,
-            },
-          });
-        },
-      }),
-      finalize(() =>
-        ctx.patchState({
-          project: {
-            data: ctx.getState().project.data,
-            error: null,
-            isLoading: false,
-          },
-        })
-      )
-    );
-  }
+  //   return this.metadataService.updateProjectDetails(action.projectId, action.updates).pipe(
+  //     tap({
+  //       next: (updatedProject) => {
+  //         const currentProject = ctx.getState().project.data;
 
-  @Action(UpdateProjectDetails)
-  updateProjectDetails(ctx: StateContext<MetadataStateModel>, action: UpdateProjectDetails) {
-    ctx.patchState({
-      project: {
-        ...ctx.getState().project,
-        isLoading: true,
-        error: null,
-      },
-    });
+  //         ctx.patchState({
+  //           project: {
+  //             data: {
+  //               ...currentProject,
+  //               ...updatedProject,
+  //             },
+  //             error: null,
+  //             isLoading: false,
+  //           },
+  //         });
+  //       },
+  //       error: (error) => {
+  //         ctx.patchState({
+  //           project: {
+  //             ...ctx.getState().project,
+  //             error: error.message,
+  //             isLoading: false,
+  //           },
+  //         });
+  //       },
+  //     }),
+  //     finalize(() =>
+  //       ctx.patchState({
+  //         project: {
+  //           ...ctx.getState().project,
+  //           error: null,
+  //           isLoading: false,
+  //         },
+  //       })
+  //     )
+  //   );
+  // }
 
-    return this.metadataService.updateProjectDetails(action.projectId, action.updates).pipe(
-      tap({
-        next: (updatedProject) => {
-          const currentProject = ctx.getState().project.data;
+  // @Action(GetUserInstitutions)
+  // getUserInstitutions(ctx: StateContext<MetadataStateModel>, action: GetUserInstitutions) {
+  //   ctx.patchState({
+  //     userInstitutions: {
+  //       data: [],
+  //       isLoading: true,
+  //       error: null,
+  //     },
+  //   });
 
-          ctx.patchState({
-            project: {
-              data: {
-                ...currentProject,
-                ...updatedProject,
-              },
-              error: null,
-              isLoading: false,
-            },
-          });
-        },
-        error: (error) => {
-          ctx.patchState({
-            project: {
-              ...ctx.getState().project,
-              error: error.message,
-              isLoading: false,
-            },
-          });
-        },
-      }),
-      finalize(() =>
-        ctx.patchState({
-          project: {
-            ...ctx.getState().project,
-            error: null,
-            isLoading: false,
-          },
-        })
-      )
-    );
-  }
-  @Action(GetUserInstitutions)
-  getUserInstitutions(ctx: StateContext<MetadataStateModel>, action: GetUserInstitutions) {
-    ctx.patchState({
-      userInstitutions: {
-        data: [],
-        isLoading: true,
-        error: null,
-      },
-    });
-
-    return this.metadataService.getUserInstitutions(action.userId, action.page, action.pageSize).pipe(
-      tap({
-        next: (response) => {
-          ctx.patchState({
-            userInstitutions: {
-              data: response.data,
-              isLoading: false,
-              error: null,
-            },
-          });
-        },
-        error: (error) => {
-          ctx.patchState({
-            userInstitutions: {
-              ...ctx.getState().userInstitutions,
-              error: error.message,
-              isLoading: false,
-            },
-          });
-        },
-      }),
-      finalize(() =>
-        ctx.patchState({
-          userInstitutions: {
-            ...ctx.getState().userInstitutions,
-            error: null,
-            isLoading: false,
-          },
-        })
-      )
-    );
-  }
+  //   return this.metadataService.getUserInstitutions(action.userId, action.page, action.pageSize).pipe(
+  //     tap({
+  //       next: (response) => {
+  //         ctx.patchState({
+  //           userInstitutions: {
+  //             data: response.data,
+  //             isLoading: false,
+  //             error: null,
+  //           },
+  //         });
+  //       },
+  //       error: (error) => {
+  //         ctx.patchState({
+  //           userInstitutions: {
+  //             ...ctx.getState().userInstitutions,
+  //             error: error.message,
+  //             isLoading: false,
+  //           },
+  //         });
+  //       },
+  //     }),
+  //     finalize(() =>
+  //       ctx.patchState({
+  //         userInstitutions: {
+  //           ...ctx.getState().userInstitutions,
+  //           error: null,
+  //           isLoading: false,
+  //         },
+  //       })
+  //     )
+  //   );
+  // }
 }

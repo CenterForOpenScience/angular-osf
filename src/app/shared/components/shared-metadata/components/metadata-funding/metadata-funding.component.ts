@@ -5,15 +5,15 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { Funder } from '@osf/features/project/metadata/models';
+import { Funder } from '@osf/features/metadata/models';
 
 @Component({
-  selector: 'osf-project-metadata-funding',
+  selector: 'osf-metadata-funding',
   imports: [Button, Card, TranslatePipe],
-  templateUrl: './project-metadata-funding.component.html',
+  templateUrl: './metadata-funding.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectMetadataFundingComponent {
+export class MetadataFundingComponent {
   openEditFundingDialog = output<void>();
 
   funders = input<Funder[]>([]);

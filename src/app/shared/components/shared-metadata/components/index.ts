@@ -1,9 +1,9 @@
 export { CedarTemplateFormComponent } from './cedar-template-form/cedar-template-form.component';
-export { ProjectMetadataAffiliatedInstitutionsComponent } from './project-metadata-affiliated-institutions/project-metadata-affiliated-institutions.component';
-export { ProjectMetadataContributorsComponent } from './project-metadata-contributors/project-metadata-contributors.component';
-export { ProjectMetadataDescriptionComponent } from './project-metadata-description/project-metadata-description.component';
-export { ProjectMetadataFundingComponent } from './project-metadata-funding/project-metadata-funding.component';
-export { ProjectMetadataLicenseComponent } from './project-metadata-license/project-metadata-license.component';
-export { ProjectMetadataPublicationDoiComponent } from './project-metadata-publication-doi/project-metadata-publication-doi.component';
-export { ProjectMetadataResourceInformationComponent } from './project-metadata-resource-information/project-metadata-resource-information.component';
-export { ProjectMetadataSubjectsComponent } from './project-metadata-subjects/project-metadata-subjects.component';
+export { MetadataAffiliatedInstitutionsComponent } from './metadata-affiliated-institutions/metadata-affiliated-institutions.component';
+export { MetadataContributorsComponent } from './metadata-contributors/metadata-contributors.component';
+export { MetadataDescriptionComponent } from './metadata-description/metadata-description.component';
+export { MetadataFundingComponent } from './metadata-funding/metadata-funding.component';
+export { MetadataLicenseComponent } from './metadata-license/metadata-license.component';
+export { MetadataPublicationDoiComponent } from './metadata-publication-doi/metadata-publication-doi.component';
+export { MetadataResourceInformationComponent } from './metadata-resource-information/metadata-resource-information.component';
+export { MetadataSubjectsComponent } from './metadata-subjects/metadata-subjects.component';

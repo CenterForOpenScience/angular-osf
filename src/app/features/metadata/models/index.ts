@@ -1,3 +1,4 @@
-export * from './cedar-metadata-template.models';
-export * from './funding-dialog.models';
-export * from './metadata.models';
+export * from './cedar-metadata-template.model';
+export * from './funding-dialog.model';
+export * from './metadata.model';
+export * from './metadata-json-api.model';

@@ -6,17 +6,17 @@ import { Card } from 'primeng/card';
 import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { CustomItemMetadataRecord } from '@osf/features/project/metadata/models';
-import { languageCodes } from '@shared/constants/language.const';
-import { LanguageCodeModel } from '@shared/models';
+import { CustomItemMetadataRecord } from '@osf/features/metadata/models';
+import { languageCodes } from '@osf/shared/constants';
+import { LanguageCodeModel } from '@osf/shared/models';
 
 @Component({
-  selector: 'osf-project-metadata-resource-information',
+  selector: 'osf-metadata-resource-information',
   imports: [Button, Card, TranslatePipe, TitleCasePipe],
-  templateUrl: './project-metadata-resource-information.component.html',
+  templateUrl: './metadata-resource-information.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectMetadataResourceInformationComponent {
+export class MetadataResourceInformationComponent {
   openEditResourceInformationDialog = output<void>();
 
   customItemMetadata = input.required<CustomItemMetadataRecord>();

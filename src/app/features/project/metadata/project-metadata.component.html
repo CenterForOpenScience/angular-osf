@@ -24,7 +24,7 @@
         @for (tab of tabs(); track $index) {
           <p-tabpanel [value]="tab.id">
             @if (tab.type === 'project') {
-              <osf-shared-metadata
+              <!-- <osf-shared-metadata
                 [selectedSubjects]="selectedSubjects()"
                 [isSubjectsUpdating]="isSubjectsUpdating()"
                 [currentInstance]="currentProject()!"
@@ -40,7 +40,7 @@
                 (getSubjectChildren)="getSubjectChildren($event)"
                 (searchSubjects)="searchSubjects($event)"
                 (updateSelectedSubjects)="updateSelectedSubjects($event)"
-              />
+              /> -->
             } @else {
               <div class="p-6">
                 @if (selectedCedarTemplate() && selectedCedarRecord()) {

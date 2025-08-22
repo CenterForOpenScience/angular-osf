@@ -1,8 +1,13 @@
+import { ResourceType } from '@osf/shared/enums';
+
 import { CedarMetadataRecord, CedarMetadataRecordData, CustomItemMetadataRecord, Metadata } from '../models';
 
-export class GetProjectForMetadata {
-  static readonly type = '[Metadata] Get Project For Metadata';
-  constructor(public projectId: string) {}
+export class GetResourceMetadata {
+  static readonly type = '[Metadata] Get Resource Metadata';
+  constructor(
+    public resourceId: string,
+    public resourceType: ResourceType
+  ) {}
 }
 
 export class GetCustomItemMetadata {

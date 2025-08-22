@@ -11,11 +11,11 @@
     }
   </div>
 
-  @if (customItemMetadata().resource_type_general) {
+  @if (customItemMetadata().resourceTypeGeneral) {
     <div class="flex-column flex gap-2">
       <p class="inline-block font-bold">
         <span> {{ 'project.overview.metadata.resourceType' | translate }}: </span>
-        <span>{{ customItemMetadata().resource_type_general | titlecase }}</span>
+        <span>{{ customItemMetadata().resourceTypeGeneral | titlecase }}</span>
       </p>
 
       <p class="inline-block font-bold">

@@ -3,18 +3,18 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ProjectOverview } from '@osf/features/project/overview/models';
+import { ResourceType } from '@osf/shared/enums';
 import { JsonApiService } from '@osf/shared/services';
 
-import { MetadataMapper, MetadataUpdateMapper } from '../mappers';
-import { CedarMetadataRecord, CedarMetadataRecordJsonApi, CedarMetadataTemplateJsonApi } from '../models';
+import { MetadataMapper } from '../mappers';
 import {
-  CrossRefFundersResponse,
-  CustomItemMetadataRecord,
-  CustomItemMetadataResponse,
-  Metadata,
-  UserInstitutionsResponse,
-} from '../models/metadata.models';
+  CedarMetadataRecord,
+  CedarMetadataRecordJsonApi,
+  CedarMetadataTemplateJsonApi,
+  CustomMetadataJsonApiResponse,
+  MetadataJsonApiResponse,
+} from '../models';
+import { CrossRefFundersResponse, CustomItemMetadataRecord, Metadata } from '../models/metadata.model';
 
 import { environment } from 'src/environments/environment';
 
@@ -24,18 +24,26 @@ import { environment } from 'src/environments/environment';
 export class MetadataService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly apiUrl = environment.apiUrl;
+  private readonly urlMap = new Map<ResourceType, string>([
+    [ResourceType.Project, 'nodes'],
+    [ResourceType.Registration, 'registrations'],
+  ]);
 
-  getCustomItemMetadata(guid: string): Observable<CustomItemMetadataResponse> {
-    return this.jsonApiService.get<CustomItemMetadataResponse>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`);
+  getCustomItemMetadata(guid: string): Observable<CustomItemMetadataRecord> {
+    return this.jsonApiService
+      .get<CustomMetadataJsonApiResponse>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`)
+      .pipe(map((response) => MetadataMapper.fromCustomMetadataApiResponse(response)));
   }
 
-  updateCustomItemMetadata(guid: string, metadata: CustomItemMetadataRecord): Observable<CustomItemMetadataResponse> {
-    return this.jsonApiService.put<CustomItemMetadataResponse>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`, {
-      data: {
-        type: 'custom-item-metadata-records',
-        attributes: metadata,
-      },
-    });
+  updateCustomItemMetadata(guid: string, metadata: CustomItemMetadataRecord): Observable<CustomItemMetadataRecord> {
+    return this.jsonApiService
+      .put<CustomMetadataJsonApiResponse>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`, {
+        data: {
+          type: 'custom-item-metadata-records',
+          attributes: metadata,
+        },
+      })
+      .pipe(map((response) => MetadataMapper.fromCustomMetadataApiResponse(response)));
   }
 
   getFundersList(searchQuery?: string): Observable<CrossRefFundersResponse> {
@@ -77,41 +85,44 @@ export class MetadataService {
     );
   }
 
-  getProjectForMetadata(projectId: string): Observable<ProjectOverview> {
-    const params: Record<string, unknown> = {
-      'embed[]': ['contributors', 'affiliated_institutions', 'identifiers', 'license', 'subjects_acceptable'],
-      'fields[institutions]': 'assets,description,name',
-      'fields[users]': 'family_name,full_name,given_name,middle_name',
-      'fields[subjects]': 'text,taxonomy',
-    };
-
-    return this.jsonApiService
-      .get<{ data: Record<string, unknown> }>(`${environment.apiUrl}/nodes/${projectId}/`, params)
-      .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response.data)));
-  }
-
-  updateProjectDetails(projectId: string, updates: Partial<Metadata>): Observable<ProjectOverview> {
-    const payload = {
-      data: {
-        id: projectId,
-        type: 'nodes',
-        attributes: updates,
-      },
-    };
-
-    return this.jsonApiService
-      .patch<Record<string, unknown>>(`${this.apiUrl}/nodes/${projectId}`, payload)
-      .pipe(map((response) => MetadataUpdateMapper.fromMetadataApiResponse(response)));
-  }
-
-  getUserInstitutions(userId: string, page = 1, pageSize = 10): Observable<UserInstitutionsResponse> {
+  getResourceMetadata(resourceId: string, resourceType: ResourceType): Observable<Partial<Metadata>> {
+    // const params: Record<string, unknown> = {
+    //   'embed[]': ['contributors', 'affiliated_institutions', 'identifiers', 'license', 'subjects_acceptable'],
+    //   'fields[institutions]': 'assets,description,name',
+    //   'fields[users]': 'family_name,full_name,given_name,middle_name',
+    //   'fields[subjects]': 'text,taxonomy',
+    // };
     const params = {
-      page: page.toString(),
-      'page[size]': pageSize.toString(),
+      embed: ['affiliated_institutions', 'identifiers', 'license', 'bibliographic_contributors'],
     };
-
-    return this.jsonApiService.get<UserInstitutionsResponse>(`${this.apiUrl}/users/${userId}/institutions/`, {
-      params,
-    });
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/`;
+    return this.jsonApiService
+      .get<MetadataJsonApiResponse>(baseUrl, params)
+      .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response)));
   }
+
+  // updateProjectDetails(projectId: string, updates: Partial<Metadata>): Observable<ProjectOverview> {
+  //   const payload = {
+  //     data: {
+  //       id: projectId,
+  //       type: 'nodes',
+  //       attributes: updates,
+  //     },
+  //   };
+
+  //   return this.jsonApiService
+  //     .patch<Record<string, unknown>>(`${this.apiUrl}/nodes/${projectId}`, payload)
+  //     .pipe(map((response) => MetadataUpdateMapper.fromMetadataApiResponse(response)));
+  // }
+
+  // getUserInstitutions(userId: string, page = 1, pageSize = 10): Observable<UserInstitutionsResponse> {
+  //   const params = {
+  //     page: page.toString(),
+  //     'page[size]': pageSize.toString(),
+  //   };
+
+  //   return this.jsonApiService.get<UserInstitutionsResponse>(`${this.apiUrl}/users/${userId}/institutions/`, {
+  //     params,
+  //   });
+  // }
 }

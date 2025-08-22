@@ -5,36 +5,31 @@ import { Card } from 'primeng/card';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { CustomItemMetadataRecord } from '@osf/features/metadata/models';
-import { ProjectOverview } from '@osf/features/project/overview/models';
+import { CustomItemMetadataRecord, Metadata } from '@osf/features/metadata/models';
 import { SubjectModel } from '@osf/shared/models';
 
 import { TagsInputComponent } from '../tags-input/tags-input.component';
 
 import {
-  ProjectMetadataAffiliatedInstitutionsComponent,
-  ProjectMetadataContributorsComponent,
-  ProjectMetadataDescriptionComponent,
-  ProjectMetadataFundingComponent,
-  ProjectMetadataLicenseComponent,
-  ProjectMetadataPublicationDoiComponent,
-  ProjectMetadataResourceInformationComponent,
-  ProjectMetadataSubjectsComponent,
+  MetadataAffiliatedInstitutionsComponent,
+  MetadataContributorsComponent,
+  MetadataDescriptionComponent,
+  MetadataLicenseComponent,
+  MetadataPublicationDoiComponent,
+  MetadataSubjectsComponent,
 } from './components';
 
 @Component({
   selector: 'osf-shared-metadata',
   imports: [
-    ProjectMetadataSubjectsComponent,
+    MetadataSubjectsComponent,
     TranslatePipe,
     TagsInputComponent,
-    ProjectMetadataPublicationDoiComponent,
-    ProjectMetadataLicenseComponent,
-    ProjectMetadataAffiliatedInstitutionsComponent,
-    ProjectMetadataFundingComponent,
-    ProjectMetadataResourceInformationComponent,
-    ProjectMetadataDescriptionComponent,
-    ProjectMetadataContributorsComponent,
+    MetadataPublicationDoiComponent,
+    MetadataLicenseComponent,
+    MetadataAffiliatedInstitutionsComponent,
+    MetadataDescriptionComponent,
+    MetadataContributorsComponent,
     DatePipe,
     Card,
   ],
@@ -42,7 +37,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SharedMetadataComponent {
-  currentInstance = input.required<ProjectOverview>();
+  metadata = input.required<Metadata | null>();
   customItemMetadata = input.required<CustomItemMetadataRecord>();
   selectedSubjects = input.required<SubjectModel[]>();
   isSubjectsUpdating = input.required<boolean>();

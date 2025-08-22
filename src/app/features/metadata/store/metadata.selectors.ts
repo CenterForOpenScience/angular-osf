@@ -5,28 +5,23 @@ import { MetadataState } from './metadata.state';
 
 export class MetadataSelectors {
   @Selector([MetadataState])
-  static getProject(state: MetadataStateModel) {
-    return state.project.data;
-  }
-
-  @Selector([MetadataState])
-  static getProjectLoading(state: MetadataStateModel) {
-    return state.project.isLoading;
+  static getResourceMetadata(state: MetadataStateModel) {
+    return state.metadata?.data ?? null;
   }
 
   @Selector([MetadataState])
   static getCustomItemMetadata(state: MetadataStateModel) {
-    return state.customItemMetadata.data;
+    return state.customMetadata?.data ?? null;
   }
 
   @Selector([MetadataState])
   static getLoading(state: MetadataStateModel) {
-    return state.project.isLoading;
+    return state.metadata?.isLoading || state.customMetadata?.isLoading || false;
   }
 
   @Selector([MetadataState])
   static getError(state: MetadataStateModel) {
-    return state.project.error;
+    return state.metadata?.error ?? null;
   }
 
   @Selector([MetadataState])
@@ -67,15 +62,5 @@ export class MetadataSelectors {
   @Selector([MetadataState])
   static getCedarRecordsLoading(state: MetadataStateModel) {
     return state.cedarRecords.isLoading;
-  }
-
-  @Selector([MetadataState])
-  static getUserInstitutions(state: MetadataStateModel) {
-    return state.userInstitutions.data;
-  }
-
-  @Selector([MetadataState])
-  static getUserInstitutionsLoading(state: MetadataStateModel): boolean {
-    return state.userInstitutions.isLoading;
   }
 }

@@ -6,6 +6,7 @@
     [title]="'project.overview.metadata.title' | translate"
   />
   <osf-metadata-tabs
+    [loading]="isMetadataLoading()"
     [tabs]="tabs()"
     [selectedTab]="selectedTab()"
     [selectedCedarTemplate]="selectedCedarTemplate()!"
@@ -16,10 +17,10 @@
     (cedarFormChangeTemplate)="onCedarFormChangeTemplate()"
     (cedarFormEdit)="onCedarFormEdit()"
   >
-    <!-- <osf-shared-metadata
+    <osf-shared-metadata
       [selectedSubjects]="selectedSubjects()"
       [isSubjectsUpdating]="isSubjectsUpdating()"
-      [currentInstance]="currentProject()!"
+      [metadata]="metadata()"
       [customItemMetadata]="customItemMetadata()!"
       (openEditContributorDialog)="openEditContributorDialog()"
       (openEditDescriptionDialog)="openEditDescriptionDialog()"
@@ -32,6 +33,6 @@
       (getSubjectChildren)="getSubjectChildren($event)"
       (searchSubjects)="searchSubjects($event)"
       (updateSelectedSubjects)="updateSelectedSubjects($event)"
-    /> -->
+    />
   </osf-metadata-tabs>
 </section>

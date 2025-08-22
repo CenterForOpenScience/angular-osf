@@ -2,16 +2,16 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
+import { SubjectsComponent } from '@osf/shared/components/subjects/subjects.component';
 import { SubjectModel } from '@osf/shared/models';
-import { SubjectsComponent } from '@shared/components';
 
 @Component({
-  selector: 'osf-project-metadata-subjects',
+  selector: 'osf-metadata-subjects',
   imports: [SubjectsComponent, Card],
-  templateUrl: './project-metadata-subjects.component.html',
+  templateUrl: './metadata-subjects.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectMetadataSubjectsComponent {
+export class MetadataSubjectsComponent {
   selectedSubjects = input.required<SubjectModel[]>();
   isSubjectsUpdating = input.required<boolean>();
   readonly = input<boolean>(false);

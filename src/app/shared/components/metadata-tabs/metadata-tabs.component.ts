@@ -22,6 +22,7 @@ import { CedarTemplateFormComponent } from '../shared-metadata/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetadataTabsComponent {
+  loading = input<boolean>(false);
   tabs = input.required<MetadataTabsModel[]>();
   selectedTab = input.required<string>();
   selectedCedarTemplate = input.required<CedarMetadataDataTemplateJsonApi>();

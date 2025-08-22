@@ -1,5 +1,7 @@
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
 
+import { Funder } from './metadata.model';
+
 export interface FundingEntryForm {
   funderName: FormControl<string>;
   funderIdentifier: FormControl<string>;
@@ -20,27 +22,12 @@ export interface FunderOption {
   uri: string;
 }
 
-export interface SupplementData {
-  funderName?: string;
-  funderIdentifier?: string;
-  funderIdentifierType?: string;
-  title?: string;
-  awardTitle?: string;
-  url?: string;
-  awardUri?: string;
-  awardNumber?: string;
-}
-
 export interface FundingDialogResult {
-  fundingEntries: FundingEntryData[];
+  fundingEntries: Funder;
   resourceId?: string;
 }
 
-export interface FundingEntryData {
-  funderName: string;
-  funderIdentifier: string;
-  funderIdentifierType: string;
-  awardTitle: string;
-  awardUri: string;
-  awardNumber: string;
+export interface SupplementData extends Partial<Funder> {
+  title?: string;
+  url?: string;
 }

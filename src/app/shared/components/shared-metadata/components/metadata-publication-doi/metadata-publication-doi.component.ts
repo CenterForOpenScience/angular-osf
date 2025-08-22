@@ -8,12 +8,12 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { ProjectIdentifiers } from '@osf/features/project/overview/models';
 
 @Component({
-  selector: 'osf-project-metadata-publication-doi',
+  selector: 'osf-metadata-publication-doi',
   imports: [Button, Card, TranslatePipe],
-  templateUrl: './project-metadata-publication-doi.component.html',
+  templateUrl: './metadata-publication-doi.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectMetadataPublicationDoiComponent {
+export class MetadataPublicationDoiComponent {
   openEditPublicationDoiDialog = output<void>();
 
   identifiers = input<ProjectIdentifiers[]>([]);

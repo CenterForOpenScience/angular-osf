@@ -5,16 +5,16 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { License } from '@shared/models';
+import { ContributorModel } from '@osf/shared/models';
 
 @Component({
-  selector: 'osf-project-metadata-license',
+  selector: 'osf--metadata-contributors',
   imports: [Button, Card, TranslatePipe],
-  templateUrl: './project-metadata-license.component.html',
+  templateUrl: './metadata-contributors.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectMetadataLicenseComponent {
-  openEditLicenseDialog = output<void>();
-  hideEditLicense = input<boolean>(false);
-  license = input<License>({} as License);
+export class MetadataContributorsComponent {
+  openEditContributorDialog = output<void>();
+  contributors = input<ContributorModel[]>([]);
+  readonly = input<boolean>(false);
 }

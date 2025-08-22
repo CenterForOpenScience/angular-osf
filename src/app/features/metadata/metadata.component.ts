@@ -1,4 +1,4 @@
-import { select } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -15,13 +15,13 @@ import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 
-import { MetadataSelectors } from './store/metadata.selectors';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecord,
   CedarMetadataRecordData,
   CedarRecordDataBinding,
 } from './models';
+import { GetCustomItemMetadata, GetResourceMetadata, MetadataSelectors } from './store';
 
 @Component({
   selector: 'osf-metadata',
@@ -55,8 +55,8 @@ export class MetadataComponent implements OnInit {
   selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
   cedarFormReadonly = signal<boolean>(true);
-  protected currentProject = select(MetadataSelectors.getProject);
-  protected currentProjectLoading = select(MetadataSelectors.getProjectLoading);
+  protected metadata = select(MetadataSelectors.getResourceMetadata);
+  protected isMetadataLoading = select(MetadataSelectors.getLoading);
   protected customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
   protected fundersList = select(MetadataSelectors.getFundersList);
   protected contributors = select(ContributorsSelectors.getContributors);
@@ -65,16 +65,36 @@ export class MetadataComponent implements OnInit {
   protected cedarTemplates = select(MetadataSelectors.getCedarTemplates);
   protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
   protected isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
-  resourceType = signal<ResourceType>(
-    this.activeRoute.parent?.parent?.snapshot.data['resourceType'] || ResourceType.Project
-  );
+  resourceType = signal<ResourceType>(this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project);
+
+  protected actions = createDispatchMap({
+    getResourceMetadata: GetResourceMetadata,
+    // updateProjectDetails: UpdateProjectDetails,
+    getCustomItemMetadata: GetCustomItemMetadata,
+    // updateCustomItemMetadata: UpdateCustomItemMetadata,
+    // getFundersList: GetFundersList,
+    // getContributors: GetAllContributors,
+    // getUserInstitutions: GetUserInstitutions,
+    // getCedarRecords: GetCedarMetadataRecords,
+    // getCedarTemplates: GetCedarMetadataTemplates,
+    // createCedarRecord: CreateCedarMetadataRecord,
+    // updateCedarRecord: UpdateCedarMetadataRecord,
+
+    // fetchSubjects: FetchSubjects,
+    // fetchSelectedSubjects: FetchSelectedSubjects,
+    // fetchChildrenSubjects: FetchChildrenSubjects,
+    // updateResourceSubjects: UpdateResourceSubjects,
+  });
 
   ngOnInit(): void {
     this.resourceId = this.activeRoute.parent?.parent?.snapshot.params['id'];
 
+    console.log(this.resourceId);
+    console.log(this.resourceType());
+
     if (this.resourceId) {
-      // this.actions.getProject(this.resourceId);
-      // this.actions.getCustomItemMetadata(this.resourceId);
+      this.actions.getResourceMetadata(this.resourceId, this.resourceType());
+      this.actions.getCustomItemMetadata(this.resourceId);
       // this.actions.getContributors(this.resourceId, ResourceType.Project);
       // this.actions.getCedarRecords(this.resourceId);
       // this.actions.getCedarTemplates();
