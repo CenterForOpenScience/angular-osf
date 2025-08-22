@@ -2,7 +2,7 @@ module.exports = {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   globalSetup: '<rootDir>/jest.global-setup.ts',
-  collectCoverage: true,
+  collectCoverage: false,
   coverageReporters: ['json-summary', 'lcov', 'clover'],
   moduleNameMapper: {
     '^@osf/(.*)$': '<rootDir>/src/app/$1',
