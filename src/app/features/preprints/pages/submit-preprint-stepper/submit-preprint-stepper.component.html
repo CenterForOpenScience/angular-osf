@@ -43,7 +43,11 @@
       />
     }
     @case (SubmitStepsEnum.Metadata) {
-      <osf-preprint-metadata (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+      <osf-preprint-metadata
+        (nextClicked)="moveToNextStep()"
+        (backClicked)="moveToPreviousStep()"
+        [provider]="preprintProvider()"
+      />
     }
     @case (SubmitStepsEnum.AuthorAssertions) {
       <osf-author-assertions-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />

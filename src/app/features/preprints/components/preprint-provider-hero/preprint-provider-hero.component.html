@@ -58,12 +58,13 @@
     </div>
   }
 
-  <!-- [Rni] TODO: add link to an example preprint -->
   @if (isPreprintProviderLoading()) {
     <p-skeleton width="10%" height="1rem" />
-  } @else {
+  } @else if (preprintProvider()?.examplePreprintId) {
     <p>
-      <a class="font-bold">{{ 'preprints.showExample' | translate }}</a>
+      <a class="font-bold" [routerLink]="['preprints', preprintProvider()!.id, preprintProvider()!.examplePreprintId]"
+        >{{ 'preprints.showExample' | translate }}
+      </a>
     </p>
   }
 </section>

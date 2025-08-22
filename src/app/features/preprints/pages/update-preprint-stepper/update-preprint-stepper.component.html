@@ -36,7 +36,11 @@
       <osf-title-and-abstract-step (nextClicked)="moveToNextStep()" />
     }
     @case (PreprintSteps.Metadata) {
-      <osf-preprint-metadata (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />
+      <osf-preprint-metadata
+        (nextClicked)="moveToNextStep()"
+        (backClicked)="moveToPreviousStep()"
+        [provider]="preprintProvider()"
+      />
     }
     @case (PreprintSteps.AuthorAssertions) {
       <osf-author-assertions-step (nextClicked)="moveToNextStep()" (backClicked)="moveToPreviousStep()" />

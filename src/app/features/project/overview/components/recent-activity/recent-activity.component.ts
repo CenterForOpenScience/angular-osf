@@ -9,9 +9,9 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { CustomPaginatorComponent } from '@shared/components';
-import { ActivityLogDisplayService } from '@shared/services';
-import { ActivityLogsSelectors, GetActivityLogs } from '@shared/stores/activity-logs';
+import { CustomPaginatorComponent } from '@osf/shared/components';
+import { ActivityLogDisplayService } from '@osf/shared/services';
+import { ActivityLogsSelectors, GetActivityLogs } from '@osf/shared/stores/activity-logs';
 
 @Component({
   selector: 'osf-recent-activity-list',

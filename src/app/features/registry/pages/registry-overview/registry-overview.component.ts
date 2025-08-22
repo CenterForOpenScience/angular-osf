@@ -21,7 +21,7 @@ import {
   ResourceMetadataComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
-import { ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
+import { RegistrationReviewStates, ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 import { toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
@@ -31,10 +31,11 @@ import { GetBookmarksCollectionId } from '@shared/stores';
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';
 import { WithdrawnMessageComponent } from '../../components/withdrawn-message/withdrawn-message.component';
-import { GetRegistryInstitutions, GetRegistrySubjects } from '../../store/registry-metadata';
 import {
   GetRegistryById,
+  GetRegistryInstitutions,
   GetRegistryReviewActions,
+  GetRegistrySubjects,
   RegistryOverviewSelectors,
   SetRegistryCustomCitation,
 } from '../../store/registry-overview';
@@ -66,9 +67,9 @@ export class RegistryOverviewComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly toastService = inject(ToastService);
-  protected readonly dialogService = inject(DialogService);
-  protected readonly translateService = inject(TranslateService);
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
 
   protected readonly registry = select(RegistryOverviewSelectors.getRegistry);
   protected readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
@@ -78,7 +79,7 @@ export class RegistryOverviewComponent {
   protected readonly isInstitutionsLoading = select(RegistryOverviewSelectors.isInstitutionsLoading);
   protected readonly schemaBlocks = select(RegistryOverviewSelectors.getSchemaBlocks);
   protected readonly isSchemaBlocksLoading = select(RegistryOverviewSelectors.isSchemaBlocksLoading);
-  protected areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
+  protected readonly areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
   protected readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
   protected readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
   protected revisionInProgress: SchemaResponse | undefined;
@@ -155,6 +156,10 @@ export class RegistryOverviewComponent {
     return this.userPermissions().includes(UserPermissions.Admin);
   }
 
+  get isInitialState(): boolean {
+    return this.registry()?.reviewsState === RegistrationReviewStates.Initial;
+  }
+
   constructor() {
     this.route.parent?.params.subscribe((params) => {
       const id = params['id'];
@@ -173,6 +178,7 @@ export class RegistryOverviewComponent {
           .subscribe();
       }
     });
+
     this.actions.getBookmarksId();
     this.route.queryParams
       .pipe(

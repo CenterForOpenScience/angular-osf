@@ -3,13 +3,12 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
-import { ConfirmDialog } from 'primeng/confirmdialog';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'osf-metadata-doi',
-  imports: [Button, Card, ConfirmDialog, TranslatePipe],
+  imports: [Button, Card, TranslatePipe],
   providers: [ConfirmationService],
   templateUrl: './metadata-doi.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

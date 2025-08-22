@@ -38,14 +38,25 @@
         </td>
         <td>
           <div>
-            <osf-select
-              [options]="permissionsOptions"
-              [placeholder]="'project.contributors.permissionFilter'"
-              [appendTo]="'body'"
-              [noBorder]="true"
-              [(selectedValue)]="item.permission"
-              (changeValue)="updatePermission(item)"
-            ></osf-select>
+            @if (isCurrentUserAdminModerator()) {
+              <osf-select
+                [options]="permissionsOptions"
+                [placeholder]="'project.contributors.permissionFilter'"
+                [appendTo]="'body'"
+                [noBorder]="true"
+                [(selectedValue)]="item.permission"
+                (changeValue)="updatePermission(item)"
+              />
+            } @else {
+              @switch (item.permission) {
+                @case (ModeratorPermission.Admin) {
+                  <span>{{ 'moderation.moderatorPermissions.administrator' | translate }}</span>
+                }
+                @case (ModeratorPermission.Moderator) {
+                  <span>{{ 'moderation.moderatorPermissions.moderator' | translate }}</span>
+                }
+              }
+            }
           </div>
         </td>
         <td>
@@ -79,8 +90,16 @@
           </div>
         </td>
         <td>
-          <p-button class="danger-icon-btn" icon="fas fa-trash" severity="danger" text (click)="removeModerator(item)">
-          </p-button>
+          @if (isCurrentUserAdminModerator() || currentUserId() === item.id) {
+            <p-button
+              class="danger-icon-btn"
+              icon="fas fa-trash"
+              severity="danger"
+              text
+              (click)="removeModerator(item)"
+              [disabled]="!isCurrentUserAdminModerator() && currentUserId() !== item.id"
+            />
+          }
         </td>
       </tr>
     } @else {

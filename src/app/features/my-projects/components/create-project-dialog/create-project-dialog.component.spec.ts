@@ -10,7 +10,8 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TranslateServiceMock } from '@shared/mocks';
-import { InstitutionsState, MyResourcesState } from '@shared/stores';
+import { MyResourcesState } from '@shared/stores';
+import { InstitutionsState } from '@shared/stores/institutions';
 import { RegionsState } from '@shared/stores/regions';
 
 import { CreateProjectDialogComponent } from './create-project-dialog.component';

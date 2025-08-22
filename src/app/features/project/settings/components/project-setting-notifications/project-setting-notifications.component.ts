@@ -4,12 +4,12 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
 
-import { ProjectDetailSettingAccordionComponent } from '@osf/features/project/settings/components';
-import { NotificationDescriptionPipe } from '@osf/features/project/settings/pipes';
 import { NotificationSubscription } from '@osf/features/settings/notifications/models';
-import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
+import { SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
 
 import { RightControl } from '../../models';
+import { NotificationDescriptionPipe } from '../../pipes';
+import { ProjectDetailSettingAccordionComponent } from '../project-detail-setting-accordion/project-detail-setting-accordion.component';
 
 @Component({
   selector: 'osf-project-setting-notifications',

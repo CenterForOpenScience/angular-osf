@@ -19,22 +19,7 @@ import {
   SetProjectCustomCitation,
   UpdateProjectPublicStatus,
 } from './project-overview.actions';
-import { ProjectOverviewStateModel } from './project-overview.model';
-
-const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
-  project: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  components: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-};
+import { PROJECT_OVERVIEW_DEFAULTS, ProjectOverviewStateModel } from './project-overview.model';
 
 @State<ProjectOverviewStateModel>({
   name: 'projectOverview',

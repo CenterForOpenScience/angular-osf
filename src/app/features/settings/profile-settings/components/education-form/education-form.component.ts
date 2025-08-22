@@ -34,6 +34,7 @@ export class EducationFormComponent implements OnInit {
 
   group = input.required<FormGroup>();
   index = input.required<number>();
+  showRemove = input(false);
   remove = output<void>();
 
   get institutionControl() {

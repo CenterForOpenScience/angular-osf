@@ -31,18 +31,20 @@ export class OverviewComponentsComponent {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
   protected isMobile = toSignal(inject(IS_XSMALL));
+
   isCollectionsRoute = input<boolean>(false);
   canWrite = input.required<boolean>();
+
   protected components = select(ProjectOverviewSelectors.getComponents);
   protected isComponentsLoading = select(ProjectOverviewSelectors.getComponentsLoading);
   protected readonly componentActionItems = (componentId: string) => [
     {
       label: 'project.overview.actions.manageContributors',
-      command: () => this.router.navigate(['/project', componentId, 'contributors']),
+      command: () => this.router.navigate([componentId, 'contributors']),
     },
     {
       label: 'project.overview.actions.settings',
-      command: () => this.router.navigate(['/project', componentId, 'settings']),
+      command: () => this.router.navigate([componentId, 'settings']),
     },
     {
       label: 'project.overview.actions.delete',

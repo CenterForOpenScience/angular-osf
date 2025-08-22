@@ -5,15 +5,15 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import { AddProjectFormComponent } from '@osf/shared/components';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
+import { ProjectFormControls } from '@osf/shared/enums';
 import { CustomValidators } from '@osf/shared/helpers';
-import { AddProjectFormComponent } from '@shared/components';
-import { ProjectFormControls } from '@shared/enums';
-import { IdName, ProjectForm } from '@shared/models';
-import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@shared/stores';
+import { ProjectForm } from '@osf/shared/models';
+import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-create-project-dialog',
@@ -22,7 +22,7 @@ import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@shared/stor
   styleUrl: './create-project-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateProjectDialogComponent implements OnInit {
+export class CreateProjectDialogComponent {
   protected readonly dialogRef = inject(DynamicDialogRef);
 
   private actions = createDispatchMap({
@@ -30,17 +30,6 @@ export class CreateProjectDialogComponent implements OnInit {
     createProject: CreateProject,
   });
 
-  private projects = select(MyResourcesSelectors.getProjects);
-
-  readonly templates = computed(() => {
-    return this.projects().map(
-      (project) =>
-        ({
-          id: project.id,
-          name: project.title,
-        }) as IdName
-    );
-  });
   readonly isProjectSubmitting = select(MyResourcesSelectors.isProjectSubmitting);
 
   readonly projectForm = new FormGroup<ProjectForm>({
@@ -62,10 +51,6 @@ export class CreateProjectDialogComponent implements OnInit {
       nonNullable: true,
     }),
   });
-
-  ngOnInit(): void {
-    this.actions.getMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {});
-  }
 
   submitForm(): void {
     if (this.projectForm.invalid) {

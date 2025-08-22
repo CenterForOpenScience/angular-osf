@@ -2,7 +2,7 @@
   <div class="flex justify-content-between align-items-center">
     <h2>{{ 'project.overview.metadata.doi' | translate }}</h2>
 
-    @if (doi) {
+    @if (doi()) {
       <p-button severity="secondary" [label]="'common.buttons.edit' | translate" (click)="onEditDoi()"></p-button>
     } @else {
       <p-button
@@ -13,9 +13,9 @@
     }
   </div>
 
-  @if (doi) {
+  @if (doi()) {
     <div class="pt-4">
-      <p class="m-0">{{ doi }}</p>
+      <p class="m-0">{{ doi() }}</p>
     </div>
   } @else {
     <div class="pt-4">

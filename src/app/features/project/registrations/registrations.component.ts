@@ -11,8 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { RegistrationCardComponent } from '@osf/shared/components/registration-card/registration-card.component';
+import { LoadingSpinnerComponent, RegistrationCardComponent, SubHeaderComponent } from '@osf/shared/components';
 
 import { GetRegistrations, RegistrationsSelectors } from './store';
 

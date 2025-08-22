@@ -1,7 +1,7 @@
 import { provideStore, Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockPipe, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -13,8 +13,11 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants/my-projects-table.constants';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 import { CustomValidators } from '@osf/shared/helpers';
-import { IdName, ProjectForm } from '@osf/shared/models';
-import { GetMyProjects, InstitutionsState, MyResourcesState } from '@osf/shared/stores';
+import { ProjectForm } from '@osf/shared/models';
+import { Project } from '@osf/shared/models/projects';
+import { GetMyProjects, MyResourcesState } from '@osf/shared/stores';
+import { AffiliatedInstitutionSelectComponent, ProjectSelectorComponent } from '@shared/components';
+import { InstitutionsState } from '@shared/stores/institutions';
 import { RegionsState } from '@shared/stores/regions';
 
 import { AddProjectFormComponent } from './add-project-form.component';
@@ -32,11 +35,6 @@ describe('AddProjectFormComponent', () => {
   const mockAffiliations = [
     { id: 'aff1', name: 'Affiliation 1', assets: { logo: 'logo1.png' } },
     { id: 'aff2', name: 'Affiliation 2', assets: { logo: 'logo2.png' } },
-  ];
-
-  const mockTemplates: IdName[] = [
-    { id: '1', name: 'Template 1' },
-    { id: '2', name: 'Template 2' },
   ];
 
   const createProjectForm = (): FormGroup<ProjectForm> => {
@@ -69,7 +67,11 @@ describe('AddProjectFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddProjectFormComponent, MockPipe(TranslatePipe)],
+      imports: [
+        AddProjectFormComponent,
+        MockPipe(TranslatePipe),
+        MockComponents(ProjectSelectorComponent, AffiliatedInstitutionSelectComponent),
+      ],
       providers: [
         provideStore([MyResourcesState, InstitutionsState, RegionsState]),
         provideHttpClient(),
@@ -85,7 +87,6 @@ describe('AddProjectFormComponent', () => {
     fixture = TestBed.createComponent(AddProjectFormComponent);
     component = fixture.componentInstance;
 
-    fixture.componentRef.setInput('templates', mockTemplates);
     fixture.componentRef.setInput('projectForm', createProjectForm());
 
     fixture.detectChanges();
@@ -103,22 +104,29 @@ describe('AddProjectFormComponent', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(action);
   });
 
-  it('should select all affiliations on init', () => {
-    const affiliationsControl = component.projectForm().get(ProjectFormControls.Affiliations);
-    expect(affiliationsControl?.value).toEqual(mockAffiliations.map((aff) => aff.id));
+  it('should update template when onTemplateChange is called with a project', () => {
+    const mockProject: Project = { id: 'template1', title: 'Template Project' } as Project;
+    const templateControl = component.projectForm().get(ProjectFormControls.Template);
+
+    expect(templateControl?.value).toBe('');
+    expect(component.selectedTemplate()).toBeNull();
+    expect(component.hasTemplateSelected()).toBe(false);
+
+    component.onTemplateChange(mockProject);
+
+    expect(templateControl?.value).toBe('template1');
+    expect(component.selectedTemplate()).toEqual(mockProject);
+    expect(component.hasTemplateSelected()).toBe(true);
   });
 
-  it('should select all affiliations when selectAllAffiliations is called', () => {
-    component.removeAllAffiliations();
-    component.selectAllAffiliations();
-    expect(component.projectForm().get(ProjectFormControls.Affiliations)?.value).toEqual(
-      mockAffiliations.map((aff) => aff.id)
-    );
-  });
+  it('should not update template when onTemplateChange is called with null', () => {
+    const templateControl = component.projectForm().get(ProjectFormControls.Template);
+    const initialValue = templateControl?.value;
 
-  it('should remove all affiliations when removeAllAffiliations is called', () => {
-    component.selectAllAffiliations();
-    component.removeAllAffiliations();
-    expect(component.projectForm().get(ProjectFormControls.Affiliations)?.value).toEqual([]);
+    component.onTemplateChange(null);
+
+    expect(templateControl?.value).toBe(initialValue);
+    expect(component.selectedTemplate()).toBeNull();
+    expect(component.hasTemplateSelected()).toBe(false);
   });
 });

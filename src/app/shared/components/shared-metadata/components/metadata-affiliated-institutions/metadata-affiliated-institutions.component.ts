@@ -5,17 +5,18 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { ProjectAffiliatedInstitutions } from '@osf/features/project/overview/models';
+import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components';
+import { Institution } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-metadata-affiliated-institutions',
-  imports: [Button, Card, TranslatePipe],
+  imports: [Button, Card, TranslatePipe, AffiliatedInstitutionsViewComponent],
   templateUrl: './metadata-affiliated-institutions.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MetadataAffiliatedInstitutionsComponent {
   openEditAffiliatedInstitutionsDialog = output<void>();
 
-  affiliatedInstitutions = input<ProjectAffiliatedInstitutions[]>([]);
+  affiliatedInstitutions = input<Institution[]>([]);
   readonly = input<boolean>(false);
 }

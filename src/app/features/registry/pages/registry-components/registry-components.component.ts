@@ -95,6 +95,6 @@ export class RegistryComponentsComponent implements OnInit {
   }
 
   reviewComponentDetails(id: string): void {
-    this.router.navigate(['/registries', id, 'overview']);
+    this.router.navigate([id, 'overview']);
   }
 }

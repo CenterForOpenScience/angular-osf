@@ -14,12 +14,17 @@ take up to 60 seconds once the docker build finishes.
 
 ## Index
 
-### Recommended
+### First steps
 
 - Install git commit template: [Commit Template](docs/commit.template.md).
+- Volta: [Volta](#volta)
+
+### Recommended
+
+- Compodoc: [Compodoc Conventions](docs/compodoc.md).
 - Docker Commands: [Docker Commands](docs/docker.md).
 - Git Conventions: [Git Conventions](docs/git-convention.md).
-- Volta: [Volta](#volta)
+- NGXS: [NGXS Conventions](docs/ngxs.md).
 
 ### Optional
 
@@ -50,4 +55,4 @@ npm run test:check-coverage-thresholds
 ## Volta
 
 OSF uses volta to manage node and npm versions inside of the repository
-Install Volta from https://volta.sh/ and it will automatically pin Node/npm per the repo toolchain.
+Install Volta from [volta](https://volta.sh/) and it will automatically pin Node/npm per the repo toolchain.

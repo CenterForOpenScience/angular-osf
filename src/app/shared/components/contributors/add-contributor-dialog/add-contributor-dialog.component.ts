@@ -49,6 +49,7 @@ export class AddContributorDialogComponent implements OnInit, OnDestroy {
   protected currentState = signal(AddDialogState.Search);
   protected currentPage = signal(1);
   protected first = signal(0);
+  protected pageSize = signal(10);
 
   protected selectedUsers = signal<ContributorAddModel[]>([]);
   protected searchControl = new FormControl<string>('');

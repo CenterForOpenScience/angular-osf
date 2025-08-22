@@ -9,6 +9,7 @@ import { ChangeDetectionStrategy, Component, inject, input, output, signal } fro
 import { FormsModule } from '@angular/forms';
 
 import { MODERATION_PERMISSIONS } from '@osf/features/moderation/constants';
+import { ModeratorPermission } from '@osf/features/moderation/enums';
 import { ModeratorModel } from '@osf/features/moderation/models';
 import {
   EducationHistoryDialogComponent,
@@ -29,6 +30,8 @@ import { TableParameters } from '@osf/shared/models';
 export class ModeratorsTableComponent {
   items = input<ModeratorModel[]>([]);
   isLoading = input(false);
+  currentUserId = input.required<string | undefined>();
+  isCurrentUserAdminModerator = input.required<boolean>();
 
   update = output<ModeratorModel>();
   remove = output<ModeratorModel>();
@@ -38,6 +41,7 @@ export class ModeratorsTableComponent {
 
   protected readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS });
   protected readonly permissionsOptions = MODERATION_PERMISSIONS;
+  protected readonly ModeratorPermission = ModeratorPermission;
 
   skeletonData: ModeratorModel[] = Array.from({ length: 3 }, () => ({}) as ModeratorModel);
 

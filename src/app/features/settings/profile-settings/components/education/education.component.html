@@ -2,7 +2,12 @@
   <div formArrayName="educations" class="flex flex-column row-gap-4">
     @if (educations.controls.length) {
       @for (education of educations.controls; track $index; let index = $index) {
-        <osf-education-form [group]="education" [index]="index" (remove)="removeEducation(index)"></osf-education-form>
+        <osf-education-form
+          [group]="education"
+          [index]="index"
+          [showRemove]="educations.controls.length > 1"
+          (remove)="removeEducation(index)"
+        ></osf-education-form>
       }
     }
   </div>
@@ -20,12 +25,13 @@
     class="w-6 btn-full-width md:w-auto"
     [label]="'common.buttons.discardChanges' | translate"
     severity="info"
+    [disabled]="!hasFormChanges()"
     (onClick)="discardChanges()"
   />
   <p-button
     class="w-6 btn-full-width md:w-auto"
     [label]="'common.buttons.save' | translate"
-    [disabled]="educationForm.invalid"
+    [disabled]="educationForm.invalid || !hasFormChanges()"
     (onClick)="saveEducation()"
   />
 </div>

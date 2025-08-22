@@ -145,6 +145,8 @@ export class UserState {
             data: user,
           },
         });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -168,6 +170,8 @@ export class UserState {
             data: user,
           },
         });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -191,6 +195,8 @@ export class UserState {
             data: user,
           },
         });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -221,6 +227,8 @@ export class UserState {
             data: user,
           },
         });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }

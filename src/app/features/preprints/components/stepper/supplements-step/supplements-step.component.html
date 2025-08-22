@@ -58,7 +58,7 @@
     </p-card>
   } @else if (selectedSupplementOption() === SupplementOptions.CreateNewProject) {
     <p-card styleClass="m-t-24" class="card">
-      <osf-add-project-form [templates]="availableProjects()" [projectForm]="createProjectForm" />
+      <osf-add-project-form [projectForm]="createProjectForm" />
     </p-card>
   }
 } @else {

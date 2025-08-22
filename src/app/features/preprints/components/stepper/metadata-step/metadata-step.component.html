@@ -42,6 +42,10 @@
 </p-card>
 
 <div class="m-t-24">
+  <osf-preprints-affiliated-institutions [preprintId]="createdPreprint()?.id" [provider]="provider()" />
+</div>
+
+<div class="m-t-24">
   <osf-preprints-subjects [control]="metadataForm.controls['subjects']" [preprintId]="createdPreprint()?.id" />
 </div>
 

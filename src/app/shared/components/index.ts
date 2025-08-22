@@ -1,4 +1,6 @@
 export { AddProjectFormComponent } from './add-project-form/add-project-form.component';
+export { AffiliatedInstitutionSelectComponent } from './affiliated-institution-select/affiliated-institution-select.component';
+export { AffiliatedInstitutionsViewComponent } from './affiliated-institutions-view/affiliated-institutions-view.component';
 export { BarChartComponent } from './bar-chart/bar-chart.component';
 export { CopyButtonComponent } from './copy-button/copy-button.component';
 export { CustomPaginatorComponent } from './custom-paginator/custom-paginator.component';
@@ -26,8 +28,10 @@ export { MetadataTabsComponent } from './metadata-tabs/metadata-tabs.component';
 export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.component';
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';
+export { ProjectSelectorComponent } from './project-selector/project-selector.component';
 export { ReadonlyInputComponent } from './readonly-input/readonly-input.component';
 export { RegistrationBlocksDataComponent } from './registration-blocks-data/registration-blocks-data.component';
+export { RegistrationCardComponent } from './registration-card/registration-card.component';
 export { ResourceCardComponent } from './resource-card/resource-card.component';
 export { ResourceMetadataComponent } from './resource-metadata/resource-metadata.component';
 export { ReusableFilterComponent } from './reusable-filter/reusable-filter.component';

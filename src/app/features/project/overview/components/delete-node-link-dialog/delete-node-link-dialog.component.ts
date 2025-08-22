@@ -7,9 +7,10 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 
-import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { ToastService } from '@shared/services';
-import { DeleteNodeLink, GetLinkedResources, NodeLinksSelectors } from '@shared/stores';
+import { ToastService } from '@osf/shared/services';
+import { DeleteNodeLink, GetLinkedResources, NodeLinksSelectors } from '@osf/shared/stores';
+
+import { ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-delete-node-link-dialog',

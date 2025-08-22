@@ -64,6 +64,11 @@ export class UserSelectors {
   }
 
   @Selector([UserState])
+  static getCanViewReviews(state: UserStateModel): boolean {
+    return state.currentUser.data?.canViewReviews || false;
+  }
+
+  @Selector([UserState])
   static isAuthenticated(state: UserStateModel): boolean {
     return !!state.currentUser.data || !!localStorage.getItem('currentUser');
   }

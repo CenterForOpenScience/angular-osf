@@ -12,8 +12,8 @@ import { Router } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import { CollectionSubmission, ResourceOverview } from '@shared/models';
-import { CollectionsSelectors, GetProjectSubmissions } from '@shared/stores';
+import { CollectionSubmission, ResourceOverview } from '@osf/shared/models';
+import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-overview-collections',
@@ -25,6 +25,7 @@ import { CollectionsSelectors, GetProjectSubmissions } from '@shared/stores';
 export class OverviewCollectionsComponent {
   private readonly router = inject(Router);
   protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
+
   currentProject = input.required<ResourceOverview | null>();
   projectSubmissions = select(CollectionsSelectors.getCurrentProjectSubmissions);
   isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
@@ -34,9 +35,7 @@ export class OverviewCollectionsComponent {
     return resource ? resource.id : null;
   });
 
-  protected actions = createDispatchMap({
-    getProjectSubmissions: GetProjectSubmissions,
-  });
+  protected actions = createDispatchMap({ getProjectSubmissions: GetProjectSubmissions });
 
   constructor() {
     effect(() => {

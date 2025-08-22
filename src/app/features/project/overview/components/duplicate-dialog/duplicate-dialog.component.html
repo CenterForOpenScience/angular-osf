@@ -10,15 +10,13 @@
     <p-button
       [label]="'project.overview.dialog.duplicate.cancelButton' | translate"
       severity="info"
-      (click)="dialogRef.close(false)"
+      (onClick)="dialogRef.close(false)"
       [disabled]="isSubmitting()"
-      class="btn-half-width"
     />
     <p-button
       [label]="'project.overview.dialog.duplicate.confirmButton' | translate"
-      (click)="handleDuplicateConfirm()"
+      (onClick)="handleDuplicateConfirm()"
       [loading]="isSubmitting()"
-      class="btn-half-width"
     />
   </div>
 </div>

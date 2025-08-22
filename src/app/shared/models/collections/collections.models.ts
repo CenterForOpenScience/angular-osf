@@ -1,4 +1,5 @@
 import { CollectionSubmissionReviewAction } from '@osf/features/moderation/models';
+import { Brand } from '@shared/models';
 
 export interface CollectionProvider {
   id: string;
@@ -28,6 +29,7 @@ export interface CollectionProvider {
     id: string;
     type: string;
   };
+  brand: Brand | null;
 }
 
 export interface CollectionFilters {

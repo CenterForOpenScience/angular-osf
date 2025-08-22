@@ -8,9 +8,10 @@ import { Textarea } from 'primeng/textarea';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ProjectDetailsModel } from '@osf/features/project/settings/models';
-import { ProjectFormControls } from '@shared/enums';
-import { NodeData } from '@shared/models';
+import { ProjectFormControls } from '@osf/shared/enums';
+import { NodeData } from '@osf/shared/models';
+
+import { ProjectDetailsModel } from '../../models';
 
 @Component({
   selector: 'osf-settings-project-form-card',

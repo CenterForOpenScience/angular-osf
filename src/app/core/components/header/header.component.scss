@@ -15,7 +15,7 @@
 
     &:hover,
     &:active {
-      --p-button-text-contrast-color: var(--dark-blue-2);
+      filter: contrast(2);
     }
   }
 }

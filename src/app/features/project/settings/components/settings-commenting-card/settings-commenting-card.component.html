@@ -4,7 +4,6 @@
   <div class="flex flex-column gap-3">
     <div class="flex gap-3">
       <p-radio-button
-        [ariaLabel]="'Select ' + 'myProjects.settings.contributorsCanPost' | translate"
         name="contributorsCanPost"
         [value]="false"
         [ngModel]="anyoneCanComment()"
@@ -16,7 +15,6 @@
 
     <div class="flex gap-3">
       <p-radio-button
-        [ariaLabel]="'Select ' + 'myProjects.settings.osfUserCanPost' | translate"
         name="osfUserCanPost"
         [value]="true"
         [ngModel]="anyoneCanComment()"
