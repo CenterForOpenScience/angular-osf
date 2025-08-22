@@ -15,7 +15,7 @@
 
   @if (rightControls()) {
     <div class="flex flex-wrap gap-2 align-items-center w-full sm:gap-4 sm:w-7">
-      @for (control of rightControls(); let index = $index; track control.value) {
+      @for (control of rightControls(); let index = $index; track index) {
         <div class="flex align-items-center gap-2">
           @if (control.label) {
             <span class="font-medium text-color">

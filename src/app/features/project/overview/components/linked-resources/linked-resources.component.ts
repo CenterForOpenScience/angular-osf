@@ -11,7 +11,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { DeleteNodeLinkDialogComponent, LinkResourceDialogComponent } from '@osf/features/project/overview/components';
 import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/helpers';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { NodeLinksSelectors } from '@shared/stores';
 
 @Component({
@@ -25,14 +25,16 @@ import { NodeLinksSelectors } from '@shared/stores';
 export class LinkedResourcesComponent {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
+
   isCollectionsRoute = input<boolean>(false);
   canWrite = input.required<boolean>();
+
   protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
   protected isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
-  protected isMobile = toSignal(inject(IS_XSMALL));
+  protected isMedium = toSignal(inject(IS_MEDIUM));
 
   openLinkProjectModal() {
-    const dialogWidth = this.isMobile() ? '95vw' : '850px';
+    const dialogWidth = this.isMedium() ? '850px' : '95vw';
 
     this.dialogService.open(LinkResourceDialogComponent, {
       width: dialogWidth,
@@ -45,7 +47,7 @@ export class LinkedResourcesComponent {
   }
 
   openDeleteResourceModal(resourceId: string): void {
-    const dialogWidth = this.isMobile() ? '95vw' : '650px';
+    const dialogWidth = this.isMedium() ? '650px' : '95vw';
 
     const currentLink = this.getCurrentResourceNodeLink(resourceId);
 

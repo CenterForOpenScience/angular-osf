@@ -42,7 +42,7 @@
               [inputId]="affiliation.id"
               [name]="'affiliations'"
             />
-            <img ngSrc="{{ affiliation.assets.logo }}" alt="OSF Logo" height="44" width="44" />
+            <img class="fit-contain" [ngSrc]="affiliation.assets.logo" alt="Institution Logo" height="44" width="44" />
           </div>
         }
       </div>
@@ -79,7 +79,6 @@
     </div>
   </div>
 
-  <!-- Add Tags -->
   <div
     class="cursor-pointer flex align-items-start gap-2"
     (click)="toggleAddTags()"
@@ -94,7 +93,6 @@
     </p>
   </div>
 
-  <!-- License Info -->
   <div class="flex flex-column">
     <label for="license">{{ 'project.overview.dialog.addComponent.license.title' | translate }}</label>
     <p class="pt-1" id="license">

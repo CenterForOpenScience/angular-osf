@@ -5,12 +5,22 @@ import { Routes } from '@angular/router';
 import { RegistryComponentsState } from '@osf/features/registry/store/registry-components';
 import { RegistryLinksState } from '@osf/features/registry/store/registry-links';
 import { RegistryMetadataState } from '@osf/features/registry/store/registry-metadata';
-import { RegistryOverviewState } from '@osf/features/registry/store/registry-overview';
 import { ResourceType } from '@osf/shared/enums';
-import { ContributorsState, DuplicatesState, ViewOnlyLinkState } from '@osf/shared/stores';
+import { LicensesService } from '@osf/shared/services';
+import {
+  CitationsState,
+  ContributorsState,
+  DuplicatesState,
+  SubjectsState,
+  ViewOnlyLinkState,
+} from '@osf/shared/stores';
 
 import { AnalyticsState } from '../project/analytics/store';
+import { RegistriesState } from '../registries/store';
+import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from '../registries/store/handlers';
+import { FilesHandlers } from '../registries/store/handlers/files.handlers';
 
+import { RegistryOverviewState } from './store/registry-overview';
 import { RegistryResourcesState } from './store/registry-resources/registry-resources.state';
 import { RegistryComponent } from './registry.component';
 
@@ -29,12 +39,20 @@ export const registryRoutes: Routes = [
         path: 'overview',
         loadComponent: () =>
           import('./pages/registry-overview/registry-overview.component').then((c) => c.RegistryOverviewComponent),
+        providers: [
+          provideStates([RegistriesState, CitationsState]),
+          ProvidersHandlers,
+          ProjectsHandlers,
+          LicensesHandlers,
+          FilesHandlers,
+          LicensesService,
+        ],
       },
       {
         path: 'metadata',
         loadComponent: () =>
           import('./pages/registry-metadata/registry-metadata.component').then((c) => c.RegistryMetadataComponent),
-        providers: [provideStates([RegistryMetadataState])],
+        providers: [provideStates([RegistryMetadataState, SubjectsState])],
       },
       {
         path: 'metadata/add',

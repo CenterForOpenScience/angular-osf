@@ -221,7 +221,7 @@ export class DashboardComponent implements OnInit {
 
   protected navigateToProject(project: MyResourcesItem): void {
     this.activeProject.set(project);
-    this.router.navigate(['/project', project.id]);
+    this.router.navigate([project.id]);
   }
 
   protected createProject(): void {

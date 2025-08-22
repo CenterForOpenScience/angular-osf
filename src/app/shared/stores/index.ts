@@ -4,6 +4,7 @@ export * from './bookmarks';
 export * from './citations';
 export * from './collections';
 export * from './contributors';
+export * from './current-resource';
 export * from './duplicates';
 export * from './institutions-search';
 export * from './licenses';

@@ -6,7 +6,7 @@
       @for (activityLog of formattedActivityLogs(); track activityLog.id) {
         <div class="activities-activity flex justify-content-between pb-2 align-items-center">
           <div [innerHTML]="activityLog.formattedActivity"></div>
-          <p class="hidden activity-date sm:block text-right">{{ activityLog.date | date: 'MMM d, y hh:mm a' }}</p>
+          <p class="hidden activity-date text-right sm:block">{{ activityLog.date | date: 'MMM d, y hh:mm a' }}</p>
         </div>
       }
     } @else {
