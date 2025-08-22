@@ -39,6 +39,7 @@ describe('Service: Addons', () => {
         providerName: 'figshare',
         supportedFeatures: ['DOWNLOAD_AS_ZIP', 'FORKING', 'LOGS', 'PERMISSIONS', 'REGISTERING'],
         type: 'external-storage-services',
+        wbKey: 'figshare',
       })
     );
 
@@ -63,6 +64,7 @@ describe('Service: Addons', () => {
         baseAccountType: 'authorized-storage-accounts',
         connectedCapabilities: ['ACCESS', 'UPDATE'],
         connectedOperationNames: ['list_child_items', 'list_root_items', 'get_item_info'],
+        externalStorageServiceId: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
         currentUserIsOwner: true,
         displayName: 'Google Drive',
         externalServiceName: 'googledrive',
