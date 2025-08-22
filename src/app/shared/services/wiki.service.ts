@@ -42,7 +42,7 @@ export class WikiService {
       throw new Error(`Unsupported resource type: ${resourceType}`);
     }
 
-    return `${baseUrl}/${resourcePath}/${resourceId}/wikis`;
+    return `${baseUrl}/${resourcePath}/${resourceId}/wikis/`;
   }
 
   createWiki(projectId: string, name: string): Observable<Wiki> {

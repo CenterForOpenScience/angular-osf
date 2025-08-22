@@ -1,10 +1,13 @@
-@let havePositions = employment() && employment().length > 0;
-
 <form [formGroup]="employmentForm">
   <div formArrayName="positions" class="flex flex-column row-gap-4">
-    @if (havePositions) {
+    @if (positions.controls.length) {
       @for (position of positions.controls; track index; let index = $index) {
-        <osf-employment-form [group]="position" [index]="index" (remove)="removePosition(index)"></osf-employment-form>
+        <osf-employment-form
+          [group]="position"
+          [index]="index"
+          [showRemove]="positions.controls.length > 1"
+          (remove)="removePosition(index)"
+        ></osf-employment-form>
       }
     }
   </div>
@@ -22,11 +25,13 @@
     class="w-6 btn-full-width md:w-auto"
     [label]="'common.buttons.discardChanges' | translate"
     severity="info"
+    [disabled]="!hasFormChanges()"
     (onClick)="discardChanges()"
   />
   <p-button
     class="w-6 btn-full-width md:w-auto"
     [label]="'common.buttons.save' | translate"
+    [disabled]="positions.invalid || !hasFormChanges()"
     (onClick)="saveEmployment()"
   />
 </div>

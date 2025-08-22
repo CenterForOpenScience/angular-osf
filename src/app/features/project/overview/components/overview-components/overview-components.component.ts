@@ -31,8 +31,10 @@ export class OverviewComponentsComponent {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
   protected isMobile = toSignal(inject(IS_XSMALL));
+
   isCollectionsRoute = input<boolean>(false);
   canWrite = input.required<boolean>();
+
   protected components = select(ProjectOverviewSelectors.getComponents);
   protected isComponentsLoading = select(ProjectOverviewSelectors.getComponentsLoading);
   protected readonly componentActionItems = (componentId: string) => [

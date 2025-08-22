@@ -20,8 +20,8 @@ import { UpdateProfileSettingsEducation, UserSelectors } from '@osf/core/store/u
 import { CustomValidators } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
+import { hasEducationChanges, mapEducationToForm, mapFormToEducation } from '../../helpers';
 import { EducationForm } from '../../models';
-import { hasEducationChanges, mapEducationToForm, mapFormToEducation } from '../../utils';
 import { EducationFormComponent } from '../education-form/education-form.component';
 
 @Component({
@@ -107,9 +107,20 @@ export class EducationComponent {
       });
   }
 
-  private hasFormChanges(): boolean {
-    if (this.educations.length !== this.educationItems().length) {
-      return true;
+  hasFormChanges(): boolean {
+    const education = this.educationItems();
+    const formPositions = this.educations.value;
+
+    if (!education?.length) {
+      return formPositions.some(
+        (position) =>
+          position.degree?.trim() ||
+          position.institution?.trim() ||
+          position.department?.trim() ||
+          position.startDate ||
+          position.endDate ||
+          position.ongoing
+      );
     }
 
     return this.educations.value.some((formEducation, index) => {
@@ -136,9 +147,15 @@ export class EducationComponent {
 
   private setInitialData(): void {
     const educations = this.educationItems();
-    if (!educations?.length) return;
 
     this.educations.clear();
+
+    if (!educations?.length) {
+      this.addEducation();
+      this.cd.markForCheck();
+      return;
+    }
+
     educations
       .map((education) => mapEducationToForm(education))
       .forEach((education) => this.educations.push(this.createEducationFormGroup(education)));

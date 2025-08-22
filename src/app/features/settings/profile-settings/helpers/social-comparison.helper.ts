@@ -1,6 +1,6 @@
 import { Social } from '@osf/shared/models';
 
-import { SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys } from '../models';
+import { SOCIAL_KEYS, SocialLinksForm, SocialLinksKeys, SocialLinksModel } from '../models';
 
 export function normalizeValue(value: unknown, key: SocialLinksKeys): unknown {
   if (SOCIAL_KEYS.includes(key)) {
@@ -11,12 +11,12 @@ export function normalizeValue(value: unknown, key: SocialLinksKeys): unknown {
 
 export function mapSocialLinkToPayload(link: SocialLinksForm): Partial<Social> {
   const key = link.socialOutput.key as SocialLinksKeys;
-  const linkedKey = link.socialOutput.linkedField?.key as SocialLinksKeys | undefined;
+  const linkedKey = link.socialOutput.linkedField?.key as SocialLinksKeys;
 
   const value = SOCIAL_KEYS.includes(key)
     ? Array.isArray(link.webAddress)
       ? link.webAddress
-      : [link.webAddress]
+      : [link.webAddress].filter(Boolean)
     : link.webAddress;
 
   const result: Partial<Social> = { [key]: value };
@@ -33,30 +33,31 @@ export function hasSocialLinkChanges(
   link: SocialLinksForm,
   initialSocialLinks: Social,
   socialIndex: number,
-  socials: readonly { key: string; linkedField?: { key: string } }[]
+  socials: SocialLinksModel[]
 ): boolean {
-  const mappedLink = mapSocialLinkToPayload(link);
   const social = socials[socialIndex];
-
   if (!social) return true;
 
-  const key = social.key as SocialLinksKeys;
-  const linkedKey = social.linkedField?.key as SocialLinksKeys | undefined;
+  const mappedLink = mapSocialLinkToPayload(link);
+  const { key, linkedField } = social;
 
-  const currentValue = mappedLink[key];
-  const initialValue = normalizeValue(initialSocialLinks[key], key);
+  const hasChanged = (currentKey: keyof Social) => {
+    const current = mappedLink[currentKey];
+    const initial = normalizeValue(initialSocialLinks[currentKey], currentKey);
 
-  if (JSON.stringify(currentValue) !== JSON.stringify(initialValue)) {
+    if (!current && !initial) {
+      return false;
+    }
+
+    return JSON.stringify(current) !== JSON.stringify(initial);
+  };
+
+  if (hasChanged(key)) {
     return true;
   }
 
-  if (linkedKey) {
-    const currentLinkedValue = mappedLink[linkedKey];
-    const initialLinkedValue = normalizeValue(initialSocialLinks[linkedKey], linkedKey);
-
-    if (JSON.stringify(currentLinkedValue) !== JSON.stringify(initialLinkedValue)) {
-      return true;
-    }
+  if (linkedField?.key && hasChanged(linkedField.key)) {
+    return true;
   }
 
   return false;

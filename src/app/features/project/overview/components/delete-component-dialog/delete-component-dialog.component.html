@@ -4,13 +4,15 @@
   {{ 'project.overview.dialog.deleteComponent.confirmation' | translate }}
   <strong> {{ selectedScientist() }}</strong>
 </p>
+
 <input pInputText class="mt-3" [ngModel]="userInput()" (ngModelChange)="onInputChange($event)" />
+
 <div class="flex pt-5 justify-content-end gap-3">
   <p-button
     class="w-12rem btn-full-width"
     [label]="'project.overview.dialog.deleteComponent.cancelButton' | translate"
     severity="info"
-    (click)="dialogRef.close()"
+    (onClick)="dialogRef.close()"
     [disabled]="isSubmitting()"
   />
   <p-button

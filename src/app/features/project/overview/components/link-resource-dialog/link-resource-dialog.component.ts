@@ -25,10 +25,9 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
-import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { SearchInputComponent } from '@shared/components';
-import { ResourceSearchMode, ResourceType } from '@shared/enums';
-import { MyResourcesItem, MyResourcesSearchFilters } from '@shared/models';
+import { SearchInputComponent } from '@osf/shared/components';
+import { ResourceSearchMode, ResourceType } from '@osf/shared/enums';
+import { MyResourcesItem, MyResourcesSearchFilters } from '@osf/shared/models';
 import {
   CreateNodeLink,
   DeleteNodeLink,
@@ -37,7 +36,9 @@ import {
   GetMyRegistrations,
   MyResourcesSelectors,
   NodeLinksSelectors,
-} from '@shared/stores';
+} from '@osf/shared/stores';
+
+import { ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-link-resource-dialog',
@@ -63,6 +64,7 @@ export class LinkResourceDialogComponent {
   protected readonly dialogRef = inject(DynamicDialogRef);
   protected readonly ResourceSearchMode = ResourceSearchMode;
   protected readonly ResourceType = ResourceType;
+
   protected currentPage = signal(1);
   protected searchMode = signal<ResourceSearchMode>(ResourceSearchMode.User);
   protected resourceType = signal<ResourceType>(ResourceType.Project);

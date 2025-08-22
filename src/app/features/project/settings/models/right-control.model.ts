@@ -1,5 +1,5 @@
-import { SubscriptionEvent } from '@shared/enums';
-import { SelectOption } from '@shared/models';
+import { SubscriptionEvent } from '@osf/shared/enums';
+import { SelectOption } from '@osf/shared/models';
 
 export interface RightControl {
   type: 'dropdown';

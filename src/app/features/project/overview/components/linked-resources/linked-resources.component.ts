@@ -9,10 +9,12 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 
-import { DeleteNodeLinkDialogComponent, LinkResourceDialogComponent } from '@osf/features/project/overview/components';
 import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { IS_MEDIUM } from '@osf/shared/helpers';
-import { NodeLinksSelectors } from '@shared/stores';
+import { NodeLinksSelectors } from '@osf/shared/stores';
+
+import { DeleteNodeLinkDialogComponent } from '../delete-node-link-dialog/delete-node-link-dialog.component';
+import { LinkResourceDialogComponent } from '../link-resource-dialog/link-resource-dialog.component';
 
 @Component({
   selector: 'osf-linked-resources',

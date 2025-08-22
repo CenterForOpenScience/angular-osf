@@ -37,7 +37,7 @@ export class ViewOnlyLinksService {
     const params: Record<string, unknown> = { embed: 'creator' };
 
     return this.jsonApiService
-      .get<ViewOnlyLinksResponseJsonApi>(`${environment.apiUrl}/${resourcePath}/${projectId}/view_only_links`, params)
+      .get<ViewOnlyLinksResponseJsonApi>(`${environment.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, params)
       .pipe(map((response) => ViewOnlyLinksMapper.fromResponse(response, projectId)));
   }
 

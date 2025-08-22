@@ -3,6 +3,7 @@
     [placeholder]="'project.overview.dialog.linkProject.searchObjectsPlaceholder' | translate"
     [control]="searchControl"
   ></osf-search-input>
+
   <p-buttonGroup>
     <p-button
       class="link-project-button w-6 md:w-auto"
@@ -10,6 +11,7 @@
       [ngClass]="{ active: searchMode() === ResourceSearchMode.All }"
       (onClick)="onSearchModeChange(ResourceSearchMode.All)"
     ></p-button>
+
     <p-button
       class="link-project-button w-6 md:w-auto"
       [label]="'project.overview.dialog.linkProject.searchMyObjects' | translate"
@@ -17,6 +19,7 @@
       (onClick)="onSearchModeChange(ResourceSearchMode.User)"
     ></p-button>
   </p-buttonGroup>
+
   <p-buttonGroup>
     <p-button
       class="link-project-button w-6 md:w-auto"
@@ -24,6 +27,7 @@
       [ngClass]="{ active: resourceType() === ResourceType.Project }"
       (onClick)="onObjectTypeChange(ResourceType.Project)"
     ></p-button>
+
     <p-button
       class="link-project-button w-6 md:w-auto"
       [label]="'project.overview.dialog.linkProject.registrations' | translate"
