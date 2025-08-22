@@ -1,6 +1,5 @@
 import { UserPermissions } from '@osf/shared/enums';
-import { JsonApiResponse } from '@osf/shared/models';
-import { License } from '@shared/models';
+import { JsonApiResponse, License } from '@osf/shared/models';
 
 export interface ProjectOverviewContributor {
   familyName: string;

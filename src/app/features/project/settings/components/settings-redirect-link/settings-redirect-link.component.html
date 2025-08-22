@@ -3,7 +3,6 @@
 
   <div class="flex align-items-center w-full">
     <p-checkbox
-      ariaLabel="Checkbox for redirect link"
       [binary]="true"
       [(ngModel)]="redirectLink"
       (ngModelChange)="onToggleRedirectLink($event)"
@@ -26,8 +25,6 @@
           type="text"
           pInputText
           id="link-url"
-          aria-required="true"
-          aria-describedby="link-url"
           class="mt-2 w-full"
           placeholder="{{ 'myProjects.settings.redirectUrlPlaceholder' | translate }}"
           [(ngModel)]="redirectUrlData().url"
@@ -51,8 +48,6 @@
           type="text"
           pInputText
           id="link-label"
-          aria-required="true"
-          aria-describedby="link-label"
           class="mt-2 w-full"
           placeholder="{{ 'myProjects.settings.redirectLabelPlaceholder' | translate }}"
           [(ngModel)]="redirectUrlData().label"
@@ -62,7 +57,7 @@
 
     <div class="flex justify-content-end w-full flex-0 pt-4">
       <p-button
-        (click)="emitIfChecked()"
+        (onClick)="emitIfChecked()"
         [label]="'settings.developerApps.form.buttons.save' | translate"
         class="w-10rem btn-full-width bg-primary-blue-second"
         [disabled]="!redirectUrlData().url || !redirectUrlData().url.trim()"

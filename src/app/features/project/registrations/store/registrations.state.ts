@@ -1,8 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
+
+import { handleSectionError } from '@osf/shared/helpers';
 
 import { RegistrationsService } from '../services';
 
@@ -45,18 +47,7 @@ export class RegistrationsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'registrations', error))
+      catchError((error) => handleSectionError(ctx, 'registrations', error))
     );
-  }
-
-  private handleError(ctx: StateContext<RegistrationsStateModel>, section: 'registrations', error: Error) {
-    ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
   }
 }

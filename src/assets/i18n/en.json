@@ -1823,7 +1823,7 @@
       "description": "Leading preprint service providers use this open source infrastructure to support their communities."
     },
     "createServer": {
-      "title": "Create your own branded preprint servers backed by the OSF?",
+      "title": "Create your own branded preprint servers backed by the OSF",
       "description": "Check out the",
       "openSourceCode": "open source code",
       "and": "and",
