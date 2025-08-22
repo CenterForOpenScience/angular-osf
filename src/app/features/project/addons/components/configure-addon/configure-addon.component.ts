@@ -118,19 +118,27 @@ export class ConfigureAddonComponent implements OnInit {
   }
 
   private initializeAddon(): void {
+    console.log('Initializing addon configuration...');
     const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as ConfiguredStorageAddonModel;
+    console.log(2);
 
     if (addon) {
+      console.log(3);
       this.storageAddon.set(
         this.store.selectSnapshot((state) =>
           AddonsSelectors.getStorageAddon(state.addons, addon.externalStorageServiceId || '')
         )
       );
 
+      console.log(4);
       this.addon.set(addon);
+      console.log(5);
       this.selectedRootFolderId.set(addon.selectedFolderId);
+      console.log(6);
       this.accountNameControl.setValue(addon.displayName);
+      console.log(7);
     } else {
+      console.log(8);
       this.router.navigate([`${this.baseUrl()}/addons`]);
     }
   }

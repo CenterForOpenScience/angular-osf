@@ -5,14 +5,14 @@ import { AddonsService } from './addons.service';
 
 import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
 import { getAddonsExternalStorageData } from '@testing/data/addons/addons.external-storage.data';
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('Service: Addons', () => {
   let service: AddonsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [OSFTestingModule],
+      imports: [OSFTestingStoreModule],
       providers: [AddonsService],
     });
 

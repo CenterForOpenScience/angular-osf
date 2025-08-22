@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AddonsComponent } from './addons.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('AddonsComponent', () => {
   let component: AddonsComponent;
@@ -10,7 +10,7 @@ describe('AddonsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddonsComponent, OSFTestingModule],
+      imports: [AddonsComponent, OSFTestingStoreModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddonsComponent);
