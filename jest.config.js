@@ -74,7 +74,6 @@ module.exports = {
     '<rootDir>/src/app/features/registries/',
     '<rootDir>/src/app/features/settings/addons/',
     '<rootDir>/src/app/features/settings/settings-container.component.ts',
-    '<rootDir>/src/app/features/settings/tokens/components/',
     '<rootDir>/src/app/features/settings/tokens/mappers/',
     '<rootDir>/src/app/features/settings/tokens/store/',
     '<rootDir>/src/app/features/settings/tokens/pages/tokens-list/',
