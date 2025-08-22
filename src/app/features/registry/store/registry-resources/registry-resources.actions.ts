@@ -1,5 +1,4 @@
-import { AddResource } from '@osf/features/registry/models/resources/add-resource.model';
-import { ConfirmAddResource } from '@osf/features/registry/models/resources/confirm-add-resource.model';
+import { AddResource, ConfirmAddResource } from '../../models';
 
 export class GetRegistryResources {
   static readonly type = '[Registry Resources] Get Registry Resources';

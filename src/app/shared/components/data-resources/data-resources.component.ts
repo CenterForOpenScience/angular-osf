@@ -3,9 +3,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, HostBinding, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { IconComponent } from '../icon/icon.component';
+
 @Component({
   selector: 'osf-data-resources',
-  imports: [TranslatePipe, RouterLink],
+  imports: [TranslatePipe, RouterLink, IconComponent],
   templateUrl: './data-resources.component.html',
   styleUrl: './data-resources.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -75,8 +75,6 @@ export class InstitutionsProjectsComponent implements OnInit {
   }
 
   onSortChange(params: QueryParams): void {
-    console.log(params);
-
     this.sortField.set(params.sortColumn || '-dateModified');
     this.sortOrder.set(params.sortOrder || 1);
 

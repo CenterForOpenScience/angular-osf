@@ -1,7 +1,21 @@
-import { RegistryResource } from '@osf/features/registry/models/resources/registry-resource.model';
-import { AsyncStateModel } from '@shared/models';
+import { AsyncStateModel } from '@osf/shared/models';
+
+import { RegistryResource } from '../../models';
 
 export interface RegistryResourcesStateModel {
   resources: AsyncStateModel<RegistryResource[] | null>;
   currentResource: AsyncStateModel<RegistryResource | null>;
 }
+
+export const REGISTRY_RESOURCES_STATE_DEFAULTS = {
+  resources: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  currentResource: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+};
