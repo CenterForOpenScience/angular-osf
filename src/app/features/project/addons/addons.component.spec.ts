@@ -8,7 +8,7 @@ import { AddonsState } from '@osf/shared/stores';
 
 import { AddonsComponent } from './addons.component';
 
-import { OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('AddonsComponent', () => {
   let component: AddonsComponent;
