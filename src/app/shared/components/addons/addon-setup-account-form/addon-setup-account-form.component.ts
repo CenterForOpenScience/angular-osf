@@ -33,12 +33,12 @@ export class AddonSetupAccountFormComponent {
 
   protected readonly formControls = AddonFormControls;
 
+  get isFormValid() {
+    return this.addonForm().valid;
+  }
+
   protected readonly addonForm = computed<FormGroup<AddonForm>>(() => {
     return this.addonFormService.initializeForm(this.addon());
-  });
-
-  protected readonly isFormValid = computed(() => {
-    return this.addonForm().valid;
   });
 
   protected readonly isAccessSecretKeysFormat = computed(() => {
@@ -63,7 +63,7 @@ export class AddonSetupAccountFormComponent {
   });
 
   protected handleSubmit(): void {
-    if (!this.isFormValid()) return;
+    if (!this.isFormValid) return;
 
     const formValue = this.addonForm().value;
     const payload = this.addonFormService.generateAuthorizedAddonPayload(

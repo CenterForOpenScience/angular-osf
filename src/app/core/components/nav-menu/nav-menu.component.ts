@@ -44,6 +44,7 @@ export class NavMenuComponent {
       isProject: this.isProjectRoute() && !this.isRegistryRoute() && !this.isPreprintRoute(),
       isRegistry: this.isRegistryRoute(),
       isPreprint: this.isPreprintRoute(),
+      preprintReviewsPageVisible: this.canUserViewReviews(),
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
     };
@@ -69,6 +70,7 @@ export class NavMenuComponent {
   protected readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
   protected readonly isRegistryRoute = computed(() => this.currentRoute().isRegistryRoute);
   protected readonly isPreprintRoute = computed(() => this.currentRoute().isPreprintRoute);
+  protected readonly canUserViewReviews = select(UserSelectors.getCanViewReviews);
 
   private getRouteInfo() {
     const urlSegments = this.router.url.split('/').filter((segment) => segment);

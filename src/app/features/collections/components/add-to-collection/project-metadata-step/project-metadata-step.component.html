@@ -7,7 +7,7 @@
   <p-step [value]="targetStepValue()" [disabled]="isDisabled()">
     <ng-template #content>
       <div class="flex flex-column gap-4 w-full">
-        <h3>{{ 'collections.addToCollection.projectMetadata' | translate }}</h3>
+        <h3>{{ 'collections.addToCollection.resourceMetadata' | translate }}</h3>
         @if (!isDisabled() && stepperActiveValue() !== targetStepValue()) {
           <div>
             <p class="font-bold">{{ 'collections.addToCollection.form.title' | translate }}</p>

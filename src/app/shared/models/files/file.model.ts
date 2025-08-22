@@ -1,4 +1,4 @@
-import { OsfFileTarget } from '@osf/features/project/files/models';
+import { OsfFileTarget } from '@osf/features/files/models';
 
 export interface OsfFile {
   id: string;

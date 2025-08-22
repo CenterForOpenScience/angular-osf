@@ -140,6 +140,9 @@ function updatePreprintMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
       }
       return { ...subItem, visible: false, expanded: false };
     }
+    if (subItem.id === 'preprints-moderation') {
+      return { ...subItem, visible: ctx.preprintReviewsPageVisible };
+    }
     return subItem;
   });
 

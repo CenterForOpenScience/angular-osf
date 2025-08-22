@@ -798,119 +798,6 @@
         "openResources": "Open Resources"
       }
     },
-    "files": {
-      "title": "Files",
-      "storageLocation": "OSF Storage",
-      "searchPlaceholder": "Search your projects",
-      "sort": {
-        "placeholder": "Sort",
-        "nameAZ": "Name: A-Z",
-        "nameZA": "Name: Z-A",
-        "lastModifiedOldest": "Last modified: oldest to newest",
-        "lastModifiedNewest": "Last modified: newest to oldest"
-      },
-      "actions": {
-        "downloadAsZip": "Download As Zip",
-        "createFolder": "Create Folder",
-        "uploadFile": "Upload File"
-      },
-      "dialogs": {
-        "uploadFile": {
-          "title": "Upload file",
-          "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
-        },
-        "createFolder": {
-          "title": "Create folder",
-          "folderName": "New folder name",
-          "folderNamePlaceholder": "Please enter a folder name"
-        },
-        "renameFile": {
-          "title": "Rename file",
-          "newName": "New name",
-          "enterNewName": "Enter new name",
-          "renameLabel": "Please rename the file"
-        },
-        "moveFile": {
-          "cannotMove": "Cannot move to the same folder",
-          "title": "Move file",
-          "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
-          "storage": "OSF Storage",
-          "pathError": "Path is not specified!"
-        },
-        "copyFile": {
-          "title": "Copy file"
-        },
-        "deleteFile": {
-          "title": "Delete File",
-          "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
-        }
-      },
-      "dropText": "Drop a file to upload",
-      "emptyState": "This folder is empty",
-      "detail": {
-        "backToList": "Back to list of files",
-        "tabs": {
-          "details": "Details",
-          "revisions": "Revisions",
-          "keywords": "Keywords"
-        },
-        "actions": {
-          "addCommunityMetadata": "Add community Metadata",
-          "copyDynamicIframe": "Copy dynamic JS iFrame",
-          "copyStaticIframe": "Copy static HTML iFrame",
-          "share": {
-            "email": "Email",
-            "x": "X",
-            "facebook": "Facebook"
-          }
-        },
-        "fileMetadata": {
-          "title": "File Metadata",
-          "edit": "Edit",
-          "fields": {
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource Type",
-            "resourceLanguage": "Resource Language"
-          }
-        },
-        "projectMetadata": {
-          "title": "Project Metadata",
-          "edit": "Edit",
-          "fields": {
-            "funder": "Funder",
-            "awardTitle": "Award title",
-            "awardNumber": "Award number",
-            "awardUri": "Award URI",
-            "title": "Title",
-            "description": "Description",
-            "resourceType": "Resource type",
-            "resourceLanguage": "Resource language",
-            "dateCreated": "Date created",
-            "dateModified": "Date modified",
-            "contributors": "Contributors"
-          }
-        },
-        "toast": {
-          "copiedToClipboard": "Copied to clipboard"
-        },
-        "keywords": {
-          "title": "Keywords"
-        },
-        "revisions": {
-          "title": "Revisions",
-          "actions": {
-            "copyMd5": "Copy MD5",
-            "copySha2": "Copy SHA-2",
-            "download": "Download"
-          },
-          "tooltips": {
-            "md5": "MD5 is an algorithm used to verify data integrity",
-            "sha2": "SHA-2 is a cryptographic hash function designed by the NSA used to verify data integrity."
-          }
-        }
-      }
-    },
     "metadata": {
       "addSubjects": "Add subjects...",
       "description": {
@@ -1033,6 +920,122 @@
       "success": "Project has been successfully deleted."
     }
   },
+  "files": {
+    "title": "Files",
+    "storageLocation": "OSF Storage",
+    "searchPlaceholder": "Search your projects",
+    "sort": {
+      "placeholder": "Sort",
+      "nameAZ": "Name: A-Z",
+      "nameZA": "Name: Z-A",
+      "lastModifiedOldest": "Last modified: oldest to newest",
+      "lastModifiedNewest": "Last modified: newest to oldest"
+    },
+    "actions": {
+      "downloadAsZip": "Download As Zip",
+      "createFolder": "Create Folder",
+      "uploadFile": "Upload File"
+    },
+    "dialogs": {
+      "uploadFile": {
+        "title": "Upload file",
+        "message": "Are you sure you want to update <span class=\"font-bold\">{{name}}</span>?"
+      },
+      "createFolder": {
+        "title": "Create folder",
+        "folderName": "New folder name",
+        "folderNamePlaceholder": "Please enter a folder name"
+      },
+      "renameFile": {
+        "title": "Rename file",
+        "newName": "New name",
+        "enterNewName": "Enter new name",
+        "renameLabel": "Please rename the file"
+      },
+      "moveFile": {
+        "cannotMove": "Cannot move to the same folder",
+        "title": "Move file",
+        "message": "Are you sure you want to move <span class=\"font-bold\">{{dragNodeName}}</span> to <span class=\"font-bold\">{{dropNodeName}}</span> ?",
+        "storage": "OSF Storage",
+        "pathError": "Path is not specified!"
+      },
+      "copyFile": {
+        "title": "Copy file"
+      },
+      "deleteFile": {
+        "title": "Delete File",
+        "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
+      }
+    },
+    "dropText": "Drop a file to upload",
+    "emptyState": "This folder is empty",
+    "detail": {
+      "backToList": "Back to list of files",
+      "tabs": {
+        "details": "Details",
+        "revisions": "Revisions",
+        "keywords": "Keywords"
+      },
+      "actions": {
+        "addCommunityMetadata": "Add community Metadata",
+        "copyDynamicIframe": "Copy dynamic JS iFrame",
+        "copyStaticIframe": "Copy static HTML iFrame",
+        "share": {
+          "email": "Email",
+          "x": "X",
+          "facebook": "Facebook"
+        }
+      },
+      "fileMetadata": {
+        "title": "File Metadata",
+        "edit": "Edit",
+        "fields": {
+          "title": "Title",
+          "description": "Description",
+          "resourceType": "Resource Type",
+          "resourceLanguage": "Resource Language"
+        }
+      },
+      "resourceMetadata": {
+        "title": {
+          "nodes": "Project Metadata",
+          "registrations": "Registration Metadata"
+        },
+        "edit": "Edit",
+        "fields": {
+          "funder": "Funder",
+          "awardTitle": "Award title",
+          "awardNumber": "Award number",
+          "awardUri": "Award URI",
+          "title": "Title",
+          "description": "Description",
+          "resourceType": "Resource type",
+          "resourceLanguage": "Resource language",
+          "dateCreated": "Date created",
+          "dateModified": "Date modified",
+          "contributors": "Contributors"
+        }
+      },
+      "toast": {
+        "copiedToClipboard": "Copied to clipboard"
+      },
+      "keywords": {
+        "title": "Keywords"
+      },
+      "revisions": {
+        "title": "Revisions",
+        "actions": {
+          "copyMd5": "Copy MD5",
+          "copySha2": "Copy SHA-2",
+          "download": "Download"
+        },
+        "tooltips": {
+          "md5": "MD5 is an algorithm used to verify data integrity",
+          "sha2": "SHA-2 is a cryptographic hash function designed by the NSA used to verify data integrity."
+        }
+      }
+    }
+  },
   "collections": {
     "helpDialog": {
       "header": "Search help",
@@ -1117,7 +1120,7 @@
       "confirmationDialogHeader": "Add to Collection",
       "selectProject": "Select a project",
       "project": "Project",
-      "projectMetadata": "Project Metadata",
+      "resourceMetadata": "Project Metadata",
       "projectMetadataMessage": "Updates made in this section will update the project.",
       "projectContributors": "Project Contributors",
       "collectionMetadata": "Collection Metadata",
@@ -1187,7 +1190,9 @@
       "public": "Public",
       "embargo": "Embargo",
       "pendingUpdates": "Pending Updates",
-      "pendingWithdrawal": "Pending Withdrawal"
+      "pendingWithdrawal": "Pending Withdrawal",
+      "approved": "Approved",
+      "declined": "Declined"
     },
     "makeDecision": {
       "header": "Make decision",
@@ -1884,7 +1889,9 @@
         },
         "tagsTitle": "Tags (optional)",
         "publicationDateTitle": "Publication Date (optional)",
-        "publicationCitationTitle": "Publication Citation (optional)"
+        "publicationCitationTitle": "Publication Citation (optional)",
+        "affiliatedInstitutionsTitle": "Affiliated Institutions",
+        "affiliatedInstitutionsDescription": "You can affiliate your {{preprintWord}} with your institution if it is an OSF institutional member and has worked with the Center for Open Science to create a dedicated institutional OSF landing page."
       },
       "authorAssertions": {
         "title": "Author Assertions",
@@ -2037,6 +2044,10 @@
       }
     },
     "details": {
+      "reasonForWithdrawal": "Reason for withdrawal",
+      "originalPublicationDate": "Original Publication Date",
+      "publicationDoi": "Peer-reviewed Publication DOI",
+      "supplementalMaterials": "Supplemental Materials",
       "doi": {
         "title": "{{documentType}} DOI",
         "pendingDoiMinted": "DOIs are minted by a third party, and may take up to 24 hours to be registered.",
@@ -2063,6 +2074,7 @@
         "rejected": "Rejected",
         "pendingWithdrawal": "Pending withdrawal",
         "withdrawalRejected": "Withdrawal rejected",
+        "withdrawn": "Withdrawn",
         "messages": {
           "base": "{{name}} uses {{workflow}}. This {{documentType}}",
           "pendingPreModeration": "is not publicly available or searchable until approved by a moderator.",
@@ -2086,6 +2098,77 @@
         "preModerationNoticeAccepted": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This service uses pre-moderation. This request will be submitted to service moderators for review. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal.",
         "postModerationNotice": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This service uses post-moderation. This request will be submitted to service moderators for review. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal.",
         "noModerationNotice": "<strong>{{pluralCapitalizedPreprintWord}} are a permanent part of the scholarly record. Withdrawal requests are subject to this service’s policy on {{singularPreprintWord}} version removal and at the discretion of the moderators.</strong><br>This request will be submitted to <a href=\"mailto:{{supportEmail}}\" target=\"_blank\">{{supportEmail}}</a> for review and removal. If the request is approved, this {{singularPreprintWord}} version will be replaced by a tombstone page with metadata and the reason for withdrawal. This {{singularPreprintWord}} version will still be searchable by other users after removal."
+      },
+      "moderationStatusBanner": {
+        "recentActivity": {
+          "pending": "submitted this {{documentType}} on",
+          "accepted": "accepted this {{documentType}} on",
+          "rejected": "rejected this {{documentType}} on",
+          "pendingWithdrawal": "requested to withdraw this {{documentType}} on",
+          "withdrawn": "withdrew this {{documentType}} on",
+          "automatic": {
+            "pending": "This {{documentType}} was submitted on",
+            "accepted": "This {{documentType}} was automatically accepted on"
+          }
+        }
+      },
+      "decision": {
+        "noReasonProvided": "No reason provided",
+        "makeDecision": "Make decision",
+        "modifyDecision": "Modify decision",
+        "withdrawalReason": "View reason",
+        "header": {
+          "submitDecision": "Submit your decision",
+          "modifyDecision": "Modify your decision",
+          "withdrawalReason": "Reason for withdrawal"
+        },
+        "settings": {
+          "comments": {
+            "private": "Comments are not visible to contributors",
+            "public": "Comments are visible to contributors on decision"
+          },
+          "names": {
+            "anonymous": "Comments are anonymous",
+            "named": "Commenter's name is visible to contributors"
+          },
+          "moderation": {
+            "pre": "Submission appears in search results once accepted",
+            "post": "Submission will be removed from search results and made private if rejected"
+          }
+        },
+        "submitButton": {
+          "submitDecision": "Submit decision",
+          "modifyDecision": "Modify decision",
+          "updateComment": "Update comment"
+        },
+        "accept": {
+          "label": "Accept submission",
+          "pre": "Submission will appear in search results and be made public.",
+          "post": "Submission will continue to appear in search results."
+        },
+        "reject": {
+          "label": "Reject submission",
+          "pre": "Submission will not appear in search results and will remain private.",
+          "post": "Submission will be removed from search results and made private."
+        },
+        "approve": {
+          "label": "Approve withdrawal",
+          "explanation": "Submission will be withdrawn but still have a tombstone page with a subset of the metadata available"
+        },
+        "decline": {
+          "label": "Decline withdrawal",
+          "explanation": "Submission will remain fully public"
+        },
+        "withdrawn": {
+          "label": "Withdraw submission",
+          "post": "Submission will no longer be publicly available."
+        },
+        "commentPlaceholder": "Explain the reasoning behind your decision (optional)",
+        "commentLengthError": "Comment is {{difference}} character(s) too long (maximum is {{limit}}).",
+        "withdrawalJustification": "Reason for withdrawal (optional, will be publicly displayed)",
+        "denialJustification": "Reason for denial (required, not publicly visible)",
+        "justificationRequiredError": "Request decision justification can't be blank",
+        "justificationLengthError": "Request decision justification is too short (minimum is {{minLength}} characters)"
       }
     },
     "preprintContributorsWarning": "Warning: Changing your permissions will prevent you from editing your draft.",

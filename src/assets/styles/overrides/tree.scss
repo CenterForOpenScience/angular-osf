@@ -35,7 +35,8 @@
     }
 
     .p-tree-root {
-      overflow: hidden;
+      overflow: auto;
+      min-height: 180px;
     }
 
     .p-tree-node-content {

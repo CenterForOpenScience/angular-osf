@@ -17,5 +17,4 @@ export * from './registry-json-api.model';
 export * from './registry-moderation.model';
 export * from './review-action.model';
 export * from './review-action-json-api.model';
-export * from './submission.model';
 export * from './submission-review-option.model';

@@ -8,5 +8,6 @@ export interface BrandDataJsonApi {
     topnav_logo_image: string;
     primary_color: string;
     secondary_color: string;
+    background_color: string;
   };
 }

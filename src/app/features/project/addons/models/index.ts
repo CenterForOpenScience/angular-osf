@@ -1,1 +1,1 @@
-export * from './addon-config-actions.interface';
+export * from './addon-config-actions.model';

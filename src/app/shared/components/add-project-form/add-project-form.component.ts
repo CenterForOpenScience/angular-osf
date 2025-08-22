@@ -8,13 +8,16 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 
-import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, OnInit, signal } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { ProjectFormControls } from '@osf/shared/enums';
-import { IdName, ProjectForm } from '@osf/shared/models';
-import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores';
+import { Institution, ProjectForm } from '@osf/shared/models';
+import { Project } from '@osf/shared/models/projects';
+import { AffiliatedInstitutionSelectComponent } from '@shared/components/affiliated-institution-select/affiliated-institution-select.component';
+import { ProjectSelectorComponent } from '@shared/components/project-selector/project-selector.component';
+import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
 import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
 
 @Component({
@@ -27,8 +30,9 @@ import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
     CheckboxModule,
     Select,
     Textarea,
-    NgOptimizedImage,
     TranslatePipe,
+    AffiliatedInstitutionSelectComponent,
+    ProjectSelectorComponent,
   ],
   templateUrl: './add-project-form.component.html',
   styleUrl: './add-project-form.component.scss',
@@ -40,11 +44,10 @@ export class AddProjectFormComponent implements OnInit {
     fetchRegions: FetchRegions,
   });
 
-  templates = input.required<IdName[]>();
-
   ProjectFormControls = ProjectFormControls;
 
   hasTemplateSelected = signal(false);
+  selectedTemplate = signal<Project | null>(null);
   isSubmitting = signal(false);
   storageLocations = select(RegionsSelectors.getRegions);
   areStorageLocationsLoading = select(RegionsSelectors.areRegionsLoading);
@@ -56,8 +59,6 @@ export class AddProjectFormComponent implements OnInit {
     this.actions.fetchUserInstitutions();
     this.actions.fetchRegions();
 
-    this.selectAllAffiliations();
-
     this.projectForm()
       .get(ProjectFormControls.Template)
       ?.valueChanges.subscribe((value) => {
@@ -65,12 +66,16 @@ export class AddProjectFormComponent implements OnInit {
       });
   }
 
-  selectAllAffiliations(): void {
-    const allAffiliationValues = this.affiliations().map((aff) => aff.id);
-    this.projectForm().get(ProjectFormControls.Affiliations)?.setValue(allAffiliationValues);
+  institutionsSelected(institutions: Institution[]) {
+    this.projectForm()
+      .get(ProjectFormControls.Affiliations)
+      ?.setValue(institutions.map((inst) => inst.id));
   }
 
-  removeAllAffiliations(): void {
-    this.projectForm().get(ProjectFormControls.Affiliations)?.setValue([]);
+  onTemplateChange(project: Project | null): void {
+    if (!project) return;
+    this.selectedTemplate.set(project);
+    this.projectForm().get(ProjectFormControls.Template)?.setValue(project.id);
+    this.hasTemplateSelected.set(!!project);
   }
 }

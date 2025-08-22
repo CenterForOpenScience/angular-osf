@@ -29,13 +29,40 @@ import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 
+/**
+ * Service for managing addon-related operations within the OSF platform.
+ *
+ * This service provides methods for retrieving, configuring, and interacting
+ * with external storage service addons (e.g., Google Drive, Dropbox).
+ * It communicates with the OSF Addons API and maps responses into domain models.
+ *
+ * Used by components and state layers to facilitate addon workflows such as
+ * integration configuration, credential management, and supported feature handling.
+ *
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class AddonsService {
+  /**
+   * Injected instance of the JSON:API service used for making API requests.
+   * This service handles standardized JSON:API request and response formatting.
+   */
   private jsonApiService = inject(JsonApiService);
+
+  /**
+   * Signal holding the current authenticated user from the global NGXS store.
+   * Typically used for access control, display logic, or personalized API calls.
+   */
   private currentUser = select(UserSelectors.getCurrentUser);
 
+  /**
+   * Retrieves a list of external storage service addons by type.
+   *
+   * @param addonType - The addon type to fetch (e.g., 'storage').
+   * @returns Observable emitting an array of mapped Addon objects.
+   *
+   */
   getAddons(addonType: string): Observable<Addon[]> {
     return this.jsonApiService
       .get<

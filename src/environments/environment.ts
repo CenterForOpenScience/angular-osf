@@ -12,6 +12,7 @@ export const environment = {
   addonsV1Url: 'https://addons.staging4.osf.io/v1',
   casUrl: 'https://accounts.staging4.osf.io',
   recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+  twitterHandle: 'OSFramework',
   facebookAppId: '1022273774556662',
   supportEmail: 'support@osf.io',
   defaultProvider: 'osf',

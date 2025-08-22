@@ -1,0 +1,22 @@
+<form [formGroup]="renameForm" (ngSubmit)="onSubmit()">
+  <div class="flex flex-column gap-4">
+    <osf-text-input
+      [control]="renameForm.controls['name']"
+      [label]="'files.dialogs.renameFile.newName'"
+      [placeholder]="'files.dialogs.renameFile.enterNewName'"
+      [maxLength]="nameLimit"
+      [minLength]="nameMinLength"
+    >
+    </osf-text-input>
+
+    <div class="flex justify-content-end gap-2">
+      <p-button
+        type="button"
+        severity="secondary"
+        [label]="'common.buttons.cancel' | translate"
+        (click)="onCancel()"
+      ></p-button>
+      <p-button type="submit" [label]="'common.buttons.rename' | translate" [disabled]="renameForm.invalid"></p-button>
+    </div>
+  </div>
+</form>

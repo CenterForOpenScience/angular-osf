@@ -7,6 +7,7 @@ export interface PreprintRequestDataJsonApi {
   id: string;
   type: 'preprint_requests';
   attributes: PreprintRequestAttributesJsonApi;
+  embeds: PreprintRequestEmbedsJsonApi;
 }
 
 interface PreprintRequestAttributesJsonApi {
@@ -16,4 +17,20 @@ interface PreprintRequestAttributesJsonApi {
   created: Date;
   modified: Date;
   date_last_transitioned: Date;
+}
+
+interface PreprintRequestEmbedsJsonApi {
+  creator: {
+    data: UserModelJsonApi;
+  };
+}
+
+interface UserModelJsonApi {
+  id: string;
+  type: 'users';
+  attributes: UserAttributesJsonApi;
+}
+
+interface UserAttributesJsonApi {
+  full_name: string;
 }

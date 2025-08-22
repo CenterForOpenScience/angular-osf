@@ -1,7 +1,7 @@
 import { provideStore, Store } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -13,8 +13,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants/my-projects-table.constants';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 import { CustomValidators } from '@osf/shared/helpers';
-import { IdName, ProjectForm } from '@osf/shared/models';
+import { ProjectForm } from '@osf/shared/models';
 import { GetMyProjects, InstitutionsState, MyResourcesState } from '@osf/shared/stores';
+import { ProjectSelectorComponent } from '@shared/components';
 import { RegionsState } from '@shared/stores/regions';
 
 import { AddProjectFormComponent } from './add-project-form.component';
@@ -32,11 +33,6 @@ describe('AddProjectFormComponent', () => {
   const mockAffiliations = [
     { id: 'aff1', name: 'Affiliation 1', assets: { logo: 'logo1.png' } },
     { id: 'aff2', name: 'Affiliation 2', assets: { logo: 'logo2.png' } },
-  ];
-
-  const mockTemplates: IdName[] = [
-    { id: '1', name: 'Template 1' },
-    { id: '2', name: 'Template 2' },
   ];
 
   const createProjectForm = (): FormGroup<ProjectForm> => {
@@ -69,7 +65,7 @@ describe('AddProjectFormComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AddProjectFormComponent, MockPipe(TranslatePipe)],
+      imports: [AddProjectFormComponent, MockPipe(TranslatePipe), MockComponent(ProjectSelectorComponent)],
       providers: [
         provideStore([MyResourcesState, InstitutionsState, RegionsState]),
         provideHttpClient(),
@@ -85,7 +81,6 @@ describe('AddProjectFormComponent', () => {
     fixture = TestBed.createComponent(AddProjectFormComponent);
     component = fixture.componentInstance;
 
-    fixture.componentRef.setInput('templates', mockTemplates);
     fixture.componentRef.setInput('projectForm', createProjectForm());
 
     fixture.detectChanges();
