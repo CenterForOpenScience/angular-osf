@@ -21,8 +21,8 @@ import { Social } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
 import { SOCIALS } from '../../constants/socials';
+import { hasSocialLinkChanges, mapSocialLinkToPayload } from '../../helpers';
 import { SocialLinksForm } from '../../models';
-import { hasSocialLinkChanges, mapSocialLinkToPayload } from '../../utils';
 import { SocialFormComponent } from '../social-form/social-form.component';
 
 @Component({

@@ -20,8 +20,8 @@ import { UpdateProfileSettingsEmployment, UserSelectors } from '@osf/core/store/
 import { CustomValidators } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
+import { hasEmploymentChanges, mapEmploymentToForm, mapFormToEmployment } from '../../helpers';
 import { EmploymentForm } from '../../models';
-import { hasEmploymentChanges, mapEmploymentToForm, mapFormToEmployment } from '../../utils';
 import { EmploymentFormComponent } from '../employment-form/employment-form.component';
 
 @Component({
@@ -108,13 +108,28 @@ export class EmploymentComponent {
       });
   }
 
-  private hasFormChanges(): boolean {
-    if (this.positions.length !== this.employment().length) {
+  hasFormChanges(): boolean {
+    const employment = this.employment();
+    const formPositions = this.positions.value;
+
+    if (!employment?.length) {
+      return formPositions.some(
+        (position) =>
+          position.title?.trim() ||
+          position.institution?.trim() ||
+          position.department?.trim() ||
+          position.startDate ||
+          position.endDate ||
+          position.ongoing
+      );
+    }
+
+    if (formPositions.length !== employment.length) {
       return true;
     }
 
-    return this.positions.value.some((formEmployment, index) => {
-      const initial = this.employment()[index];
+    return formPositions.some((formEmployment, index) => {
+      const initial = employment[index];
       if (!initial) return true;
 
       return hasEmploymentChanges(formEmployment, initial);
@@ -137,9 +152,14 @@ export class EmploymentComponent {
 
   private setInitialData(): void {
     const employment = this.employment();
-    if (!employment?.length) return;
-
     this.positions.clear();
+
+    if (!employment?.length) {
+      this.addPosition();
+      this.cd.markForCheck();
+      return;
+    }
+
     employment
       .map((x) => mapEmploymentToForm(x))
       .forEach((x) => this.positions.push(this.createEmploymentFormGroup(x)));
