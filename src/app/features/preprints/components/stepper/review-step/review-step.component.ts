@@ -19,8 +19,7 @@ import {
   PreprintStepperSelectors,
   SubmitPreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { TruncatedTextComponent } from '@shared/components';
-import { AffiliatedInstitutionsViewComponent } from '@shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
+import { AffiliatedInstitutionsViewComponent, TruncatedTextComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { InterpolatePipe } from '@shared/pipes';
 import { ToastService } from '@shared/services';

@@ -13,8 +13,7 @@ import { PreprintDoiSectionComponent } from '@osf/features/preprints/components/
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { IconComponent, TruncatedTextComponent } from '@shared/components';
-import { AffiliatedInstitutionsViewComponent } from '@shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
+import { AffiliatedInstitutionsViewComponent, IconComponent, TruncatedTextComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { ContributorsSelectors, GetAllContributors, ResetContributorsState } from '@shared/stores';
 import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';

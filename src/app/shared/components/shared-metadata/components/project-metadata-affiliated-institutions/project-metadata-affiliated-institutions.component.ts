@@ -5,7 +5,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { AffiliatedInstitutionsViewComponent } from '@shared/components/affiliated-institutions-view/affiliated-institutions-view.component';
+import { AffiliatedInstitutionsViewComponent } from '@shared/components';
 import { Institution } from '@shared/models';
 
 @Component({
