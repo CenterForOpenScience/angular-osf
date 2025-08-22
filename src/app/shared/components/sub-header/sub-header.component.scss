@@ -1,14 +1,15 @@
 @use "assets/styles/mixins" as mix;
-@use "assets/styles/variables" as var;
 
 :host {
   width: 100%;
 }
 
 .sub-header {
-  color: var.$dark-blue-1;
+  color: var(--dark-blue-1);
 }
 
 .title-icon {
   font-size: mix.rem(36px);
+  width: mix.rem(36px);
+  height: mix.rem(36px);
 }
