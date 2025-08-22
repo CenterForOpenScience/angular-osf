@@ -8,15 +8,7 @@
       </section>
 
       @if (affiliatedInstitutions().length) {
-        <section class="flex flex-column gap-2">
-          <h3>{{ 'preprints.preprintStepper.review.sections.metadata.affiliatedInstitutions' | translate }}</h3>
-
-          <div class="flex gap-2">
-            @for (institution of affiliatedInstitutions(); track institution.id) {
-              <img alt="Institution logo" [src]="institution.assets.logo" height="45" />
-            }
-          </div>
-        </section>
+        <osf-affiliated-institutions-view [institutions]="affiliatedInstitutions()" />
       }
 
       @if (preprintValue.nodeId) {

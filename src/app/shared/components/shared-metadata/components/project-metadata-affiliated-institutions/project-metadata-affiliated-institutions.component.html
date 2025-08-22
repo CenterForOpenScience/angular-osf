@@ -11,25 +11,5 @@
     }
   </div>
 
-  @if (affiliatedInstitutions()) {
-    <div class="pt-4">
-      @for (institution of affiliatedInstitutions(); track institution.id) {
-        <div class="flex align-items-center gap-3 mb-3">
-          @if (institution.logo) {
-            <img [src]="institution.logo" [alt]="institution.name" class="w-3rem h-3rem border-round" />
-          }
-          <div>
-            <p class="font-semibold m-0">{{ institution.name }}</p>
-            @if (institution.description) {
-              <p class="text-sm text-color-secondary m-0">{{ institution.description }}</p>
-            }
-          </div>
-        </div>
-      }
-    </div>
-  } @else {
-    <div class="pt-4">
-      <p class="text-color-secondary">{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
-    </div>
-  }
+  <osf-affiliated-institutions-view [institutions]="affiliatedInstitutions()" [showTitle]="false" />
 </p-card>

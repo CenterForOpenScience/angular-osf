@@ -432,15 +432,9 @@ export class RegistryMetadataComponent implements OnInit {
     const registry = this.currentRegistry();
     const institutions = this.institutions();
 
-    const institutionsFormatted =
-      institutions?.map((inst) => ({
-        id: inst.id,
-        name: inst.attributes.name,
-      })) || [];
-
     return {
       ...registry,
-      institutions: institutionsFormatted,
+      institutions,
     } as unknown as ProjectOverview;
   }
 

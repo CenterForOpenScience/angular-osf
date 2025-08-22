@@ -144,10 +144,10 @@ export class RegistryMetadataState {
     });
 
     return this.registryMetadataService.getRegistryInstitutions(action.registryId, action.page, action.pageSize).pipe(
-      tap((response) => {
+      tap((institutions) => {
         ctx.patchState({
           institutions: {
-            data: response.data,
+            data: institutions,
             isLoading: false,
             error: null,
           },

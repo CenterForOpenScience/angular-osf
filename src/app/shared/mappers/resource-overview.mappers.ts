@@ -1,7 +1,7 @@
 import { ProjectOverview } from '@osf/features/project/overview/models';
-import { RegistryInstitution, RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
+import { RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
 
-import { ResourceOverview } from '../models';
+import { Institution, ResourceOverview } from '../models';
 
 export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
   return {
@@ -43,7 +43,7 @@ export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
 export function MapRegistryOverview(
   registry: RegistryOverview,
   subjects: RegistrySubject[],
-  institutions: RegistryInstitution[]
+  institutions: Institution[]
 ): ResourceOverview {
   return {
     id: registry.id,

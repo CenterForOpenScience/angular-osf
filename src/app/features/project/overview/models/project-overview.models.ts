@@ -1,5 +1,5 @@
 import { UserPermissions } from '@osf/shared/enums';
-import { JsonApiResponse, License } from '@osf/shared/models';
+import { Institution, InstitutionsJsonApiResponse, JsonApiResponse, License } from '@osf/shared/models';
 
 export interface ProjectOverviewContributor {
   familyName: string;
@@ -53,7 +53,7 @@ export interface ProjectOverview {
     id: string;
     type: string;
   };
-  affiliatedInstitutions?: ProjectAffiliatedInstitutions[];
+  affiliatedInstitutions?: Institution[];
   forksCount: number;
   viewOnlyLinksCount: number;
   links: {
@@ -99,19 +99,7 @@ export interface ProjectOverviewGetResponseJsoApi {
     custom_citation: string | null;
   };
   embeds: {
-    affiliated_institutions: {
-      data: {
-        id: string;
-        type: string;
-        attributes: {
-          assets: {
-            logo: string;
-          };
-          description: string;
-          name: string;
-        };
-      }[];
-    };
+    affiliated_institutions: InstitutionsJsonApiResponse;
     identifiers: {
       data: {
         id: string;
@@ -225,14 +213,6 @@ export interface ProjectIdentifiers {
   type: string;
   category: string;
   value: string;
-}
-
-export interface ProjectAffiliatedInstitutions {
-  id: string;
-  type: string;
-  name: string;
-  description: string;
-  logo: string;
 }
 
 export interface ProjectSupplements {

@@ -21,7 +21,7 @@ import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
-import { ClearMyResources, FetchUserInstitutions, GetMyProjects, MyResourcesSelectors } from '@shared/stores';
+import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@shared/stores';
 
 import { ConfirmEmailComponent } from '../../components';
 
@@ -73,7 +73,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.setupQueryParamsSubscription();
-    this.store.dispatch(new FetchUserInstitutions());
 
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const userId = params['userId'];
@@ -222,7 +221,7 @@ export class DashboardComponent implements OnInit {
 
   protected navigateToProject(project: MyResourcesItem): void {
     this.activeProject.set(project);
-    this.router.navigate(['/project', project.id]);
+    this.router.navigate([project.id]);
   }
 
   protected createProject(): void {

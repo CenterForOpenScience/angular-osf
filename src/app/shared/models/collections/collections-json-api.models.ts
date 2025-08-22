@@ -1,4 +1,4 @@
-import { JsonApiResponse } from '@shared/models';
+import { BrandDataJsonApi, JsonApiResponse } from '@shared/models';
 
 export interface CollectionProviderResponseJsonApi {
   id: string;
@@ -26,12 +26,23 @@ export interface CollectionProviderResponseJsonApi {
     permissions: string[];
     reviews_workflow: string;
   };
+  embeds: {
+    brand: {
+      data?: BrandDataJsonApi;
+    };
+  };
   relationships: {
     primary_collection: {
       data: {
         id: string;
         type: string;
       };
+    };
+    brand: {
+      data: {
+        id: string;
+        type: string;
+      } | null;
     };
   };
 }
@@ -164,10 +175,6 @@ export interface SparseCollectionJsonAi {
 
 export interface SparseCollectionsResponseJsonApi {
   data: SparseCollectionJsonAi[];
-}
-
-export interface CollectionProviderGetResponseJsonApi extends JsonApiResponse<CollectionProviderResponseJsonApi, null> {
-  data: CollectionProviderResponseJsonApi;
 }
 
 export interface CollectionDetailsGetResponseJsonApi extends JsonApiResponse<CollectionDetailsResponseJsonApi, null> {

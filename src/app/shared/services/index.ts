@@ -17,6 +17,7 @@ export { MyResourcesService } from './my-resources.service';
 export { NodeLinksService } from './node-links.service';
 export { RegionsService } from './regions.service';
 export { ResourceCardService } from './resource-card.service';
+export { ResourceGuidService } from './resource-guid.service';
 export { SearchService } from './search.service';
 export { SocialShareService } from './social-share.service';
 export { SubjectsService } from './subjects.service';

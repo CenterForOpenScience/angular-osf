@@ -1,5 +1,5 @@
 <div class="flex" [class]="vertical() ? 'flex-column row-gap-2 m-auto min-w-max' : 'column-gap-5 row-gap-3 flex-wrap'">
-  <a class="icon-container" [href]="getResourceLink()">
+  <a class="icon-container" [routerLink]="[resourceLink]">
     <img
       [src]="hasData() ? 'assets/icons/colored/data-colored.svg' : 'assets/icons/source/data.svg'"
       alt="data-resource"
@@ -8,7 +8,7 @@
     <p>{{ 'resourceCard.resources.data' | translate }}</p>
   </a>
 
-  <a class="icon-container" [href]="getResourceLink()">
+  <a class="icon-container" [routerLink]="[resourceLink]">
     <img
       [src]="hasAnalyticCode() ? 'assets/icons/colored/code-colored.svg' : 'assets/icons/source/code.svg'"
       alt="code-resource"
@@ -16,7 +16,7 @@
     <p>{{ 'resourceCard.resources.analyticCode' | translate }}</p>
   </a>
 
-  <a class="icon-container" [href]="getResourceLink()">
+  <a class="icon-container" [routerLink]="[resourceLink]">
     <img
       [src]="hasMaterials() ? 'assets/icons/colored/materials-colored.svg' : 'assets/icons/source/materials.svg'"
       alt="materials-resource"
@@ -25,7 +25,7 @@
     <p>{{ 'resourceCard.resources.materials' | translate }}</p>
   </a>
 
-  <a class="icon-container" [href]="getResourceLink()">
+  <a class="icon-container" [routerLink]="[resourceLink]">
     <img
       [src]="hasPapers() ? 'assets/icons/colored/papers-colored.svg' : 'assets/icons/source/papers.svg'"
       alt="papers-resource"
@@ -34,7 +34,7 @@
     <p>{{ 'resourceCard.resources.papers' | translate }}</p>
   </a>
 
-  <a class="icon-container" [href]="getResourceLink()">
+  <a class="icon-container" [routerLink]="[resourceLink]">
     <img
       [src]="hasPapers() ? 'assets/icons/colored/supplements-colored.svg' : 'assets/icons/source/supplements.svg'"
       alt="supplements-resource"

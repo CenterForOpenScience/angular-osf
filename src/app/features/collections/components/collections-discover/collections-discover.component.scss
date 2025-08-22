@@ -1,7 +1,6 @@
 @use "assets/styles/mixins" as mix;
 
 :host {
-  --collection-bg-color: #013b5c;
   @include mix.flex-column;
   flex: 1;
 }

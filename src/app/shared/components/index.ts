@@ -1,4 +1,6 @@
 export { AddProjectFormComponent } from './add-project-form/add-project-form.component';
+export { AffiliatedInstitutionSelectComponent } from './affiliated-institution-select/affiliated-institution-select.component';
+export { AffiliatedInstitutionsViewComponent } from './affiliated-institutions-view/affiliated-institutions-view.component';
 export { BarChartComponent } from './bar-chart/bar-chart.component';
 export { CopyButtonComponent } from './copy-button/copy-button.component';
 export { CustomPaginatorComponent } from './custom-paginator/custom-paginator.component';

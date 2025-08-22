@@ -15,6 +15,7 @@ import {
 import { ActivityLogsState } from '@osf/shared/stores/activity-logs';
 
 import { CollectionsModerationState } from '../moderation/store/collections-moderation';
+import { NotificationSubscriptionState } from '../settings/notifications/store';
 
 import { AnalyticsState } from './analytics/store';
 import { SettingsState } from './settings/store';
@@ -62,7 +63,7 @@ export const projectRoutes: Routes = [
       {
         path: 'settings',
         loadComponent: () => import('../project/settings/settings.component').then((mod) => mod.SettingsComponent),
-        providers: [provideStates([SettingsState, ViewOnlyLinkState])],
+        providers: [provideStates([SettingsState, ViewOnlyLinkState, NotificationSubscriptionState])],
       },
       {
         path: 'contributors',

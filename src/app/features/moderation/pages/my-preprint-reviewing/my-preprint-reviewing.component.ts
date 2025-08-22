@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 
 import { SubHeaderComponent } from '@osf/shared/components';
 
-import { MyReviewingNavigationComponent, RecentActivityListComponent } from '../../components';
+import { MyReviewingNavigationComponent, PreprintRecentActivityListComponent } from '../../components';
 import {
   GetPreprintProviders,
   GetPreprintReviewActions,
@@ -23,7 +23,7 @@ import {
     Card,
     Skeleton,
     TranslatePipe,
-    RecentActivityListComponent,
+    PreprintRecentActivityListComponent,
     MyReviewingNavigationComponent,
   ],
   templateUrl: './my-preprint-reviewing.component.html',

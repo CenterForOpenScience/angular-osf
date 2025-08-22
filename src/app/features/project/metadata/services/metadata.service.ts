@@ -81,7 +81,6 @@ export class MetadataService {
   getProjectForMetadata(projectId: string): Observable<ProjectOverview> {
     const params: Record<string, unknown> = {
       'embed[]': ['contributors', 'affiliated_institutions', 'identifiers', 'license', 'subjects_acceptable'],
-      'fields[institutions]': 'assets,description,name',
       'fields[users]': 'family_name,full_name,given_name,middle_name',
       'fields[subjects]': 'text,taxonomy',
     };

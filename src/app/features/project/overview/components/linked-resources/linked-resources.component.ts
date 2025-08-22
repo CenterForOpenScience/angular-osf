@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/helpers';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { NodeLinksSelectors } from '@osf/shared/stores';
 
 import { DeleteNodeLinkDialogComponent } from '../delete-node-link-dialog/delete-node-link-dialog.component';
@@ -33,10 +33,10 @@ export class LinkedResourcesComponent {
 
   protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
   protected isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
-  protected isMobile = toSignal(inject(IS_XSMALL));
+  protected isMedium = toSignal(inject(IS_MEDIUM));
 
   openLinkProjectModal() {
-    const dialogWidth = this.isMobile() ? '95vw' : '850px';
+    const dialogWidth = this.isMedium() ? '850px' : '95vw';
 
     this.dialogService.open(LinkResourceDialogComponent, {
       width: dialogWidth,
@@ -49,7 +49,7 @@ export class LinkedResourcesComponent {
   }
 
   openDeleteResourceModal(resourceId: string): void {
-    const dialogWidth = this.isMobile() ? '95vw' : '650px';
+    const dialogWidth = this.isMedium() ? '650px' : '95vw';
 
     const currentLink = this.getCurrentResourceNodeLink(resourceId);
 

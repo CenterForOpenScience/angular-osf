@@ -1,11 +1,15 @@
+import { provideStates } from '@ngxs/store';
+
 import { Routes } from '@angular/router';
 
+import { MeetingsState } from './store/meetings.state';
 import { MeetingsComponent } from './meetings.component';
 
 export const meetingsRoutes: Routes = [
   {
     path: '',
     component: MeetingsComponent,
+    providers: [provideStates([MeetingsState])],
     children: [
       {
         path: '',
