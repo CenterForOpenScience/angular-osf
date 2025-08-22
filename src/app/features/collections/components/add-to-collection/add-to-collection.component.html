@@ -6,7 +6,7 @@
       <div class="flex gap-3">
         @let provider = collectionProvider();
         @if (provider && provider.brand) {
-          <img class="collections-logo" alt="Collections Logo" height="50" [src]="provider.brand.heroLogoImageUrl" />
+          <img class="collections-logo" alt="Collections Logo" height="64" [src]="provider.brand.heroLogoImageUrl" />
         }
         <h1 class="collections-heading flex align-items-center">{{ collectionProvider()?.name }}</h1>
       </div>
