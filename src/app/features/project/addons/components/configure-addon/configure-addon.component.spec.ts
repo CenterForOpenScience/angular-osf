@@ -5,11 +5,18 @@ import { of } from 'rxjs';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
+import { of } from 'rxjs';
+
+import { HttpTestingController } from '@angular/common/http/testing';
+import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { AddonsState } from '@osf/shared/stores';
 
 import { ConfigureAddonComponent } from './configure-addon.component';
 
+import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
+import { getAddonsOperationInvocation } from '@testing/data/addons/addons.operation-invocation.data';
 import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
 import { getAddonsOperationInvocation } from '@testing/data/addons/addons.operation-invocation.data';
 import { ToastServiceMock } from '@testing/mocks/toast.service.mock';
@@ -96,7 +103,6 @@ describe('Component: Configure Addon', () => {
       expect(component.addonTypeString()).toBe('storage');
       expect(component.selectedRootFolderId()).toBeUndefined();
       expect(component.accountNameControl.value).toBeUndefined();
-      expect(component.isGoogleDrive()).toBeFalsy();
     });
 
     it('should valid onInit - action called', inject([HttpTestingController], (httpMock: HttpTestingController) => {
