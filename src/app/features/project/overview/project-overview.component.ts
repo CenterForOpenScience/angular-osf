@@ -23,31 +23,34 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import {
-  ClearCollectionModeration,
-  CollectionsModerationSelectors,
-  GetSubmissionsReviewActions,
-} from '@osf/features/moderation/store/collections-moderation';
+import { IS_XSMALL } from '@osf/shared/helpers';
 import {
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
-} from '@osf/shared/components';
-import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
-import { MapProjectOverview } from '@osf/shared/mappers';
-import { ToastService } from '@osf/shared/services';
+} from '@shared/components';
+import { Mode, ResourceType, UserPermissions } from '@shared/enums';
+import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
+import { DataciteEvent } from '@shared/models/datacite';
+import { ToastService } from '@shared/services';
+import { DataciteService } from '@shared/services/datacite.service';
 import {
-  ClearCollections,
   ClearWiki,
   CollectionsSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetHomeWiki,
   GetLinkedResources,
-} from '@osf/shared/stores';
-import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
+} from '@shared/stores';
+import { GetActivityLogs } from '@shared/stores/activity-logs';
+import { ClearCollections } from '@shared/stores/collections';
+
+import {
+  ClearCollectionModeration,
+  CollectionsModerationSelectors,
+  GetSubmissionsReviewActions,
+} from '../../moderation/store/collections-moderation';
 
 import {
   LinkedResourcesComponent,
@@ -105,7 +108,8 @@ export class ProjectOverviewComponent implements OnInit {
   isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
-
+  private dataciteService = inject(DataciteService);
+  private logged = false;
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
@@ -189,6 +193,7 @@ export class ProjectOverviewComponent implements OnInit {
 
   constructor() {
     this.setupCollectionsEffects();
+    this.setupTrackerEffect();
     this.setupCleanup();
   }
 
@@ -236,6 +241,16 @@ export class ProjectOverviewComponent implements OnInit {
     this.router.navigate(['../'], {
       relativeTo: this.route,
       queryParams,
+    });
+  }
+
+  private setupTrackerEffect() {
+    effect(() => {
+      const project = this.currentProject();
+      if (project && !this.logged) {
+        this.dataciteService.logActivity(DataciteEvent.VIEW, project.doi).subscribe();
+        this.logged = true;
+      }
     });
   }
 

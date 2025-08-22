@@ -16,4 +16,5 @@ export const environment = {
   facebookAppId: '1022273774556662',
   supportEmail: 'support@osf.io',
   defaultProvider: 'osf',
+  dataciteTrackerRepoId: null,
 };
