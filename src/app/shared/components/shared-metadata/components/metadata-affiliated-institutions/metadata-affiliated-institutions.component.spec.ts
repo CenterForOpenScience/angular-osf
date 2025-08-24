@@ -2,24 +2,24 @@ import { MockComponent } from 'ng-mocks';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AffiliatedInstitutionsViewComponent } from '@shared/components';
-import { MOCK_PROJECT_AFFILIATED_INSTITUTIONS, TranslateServiceMock } from '@shared/mocks';
+import { AffiliatedInstitutionsViewComponent } from '@osf/shared/components';
+import { MOCK_PROJECT_AFFILIATED_INSTITUTIONS, TranslateServiceMock } from '@osf/shared/mocks';
 
-import { ProjectMetadataAffiliatedInstitutionsComponent } from './project-metadata-affiliated-institutions.component';
+import { MetadataAffiliatedInstitutionsComponent } from './metadata-affiliated-institutions.component';
 
-describe('ProjectMetadataAffiliatedInstitutionsComponent', () => {
-  let component: ProjectMetadataAffiliatedInstitutionsComponent;
-  let fixture: ComponentFixture<ProjectMetadataAffiliatedInstitutionsComponent>;
+describe('MetadataAffiliatedInstitutionsComponent', () => {
+  let component: MetadataAffiliatedInstitutionsComponent;
+  let fixture: ComponentFixture<MetadataAffiliatedInstitutionsComponent>;
 
   const mockAffiliatedInstitutions = MOCK_PROJECT_AFFILIATED_INSTITUTIONS;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectMetadataAffiliatedInstitutionsComponent, MockComponent(AffiliatedInstitutionsViewComponent)],
+      imports: [MetadataAffiliatedInstitutionsComponent, MockComponent(AffiliatedInstitutionsViewComponent)],
       providers: [TranslateServiceMock],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ProjectMetadataAffiliatedInstitutionsComponent);
+    fixture = TestBed.createComponent(MetadataAffiliatedInstitutionsComponent);
     component = fixture.componentInstance;
   });
 
