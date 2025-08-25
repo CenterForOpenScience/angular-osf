@@ -1441,6 +1441,12 @@
         "disconnectSuccess": "Successfully disconnected from the {{addonName}} account"
       },
       "configureAddon": {
+        "google-file-picker": {
+          "select-root-folder": "Select Root Folder",
+          "selected-folder": "Selected Folder",
+          "root-folder-title": "Select a root folder",
+          "file-folder-title": "Select a file or folder to add"
+        },
         "title": "Configure Add-on",
         "noFolders": "No folders",
         "noFolderSelected": "No selected folder",

@@ -2,7 +2,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { of } from 'rxjs';
 
-export const translationServiceMock = {
+export const TranslationServiceMock = {
   provide: TranslateService,
   useValue: {
     get: jest.fn().mockImplementation((key) => of(key || '')),
