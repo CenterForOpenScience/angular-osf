@@ -17,7 +17,7 @@
     "ngxs:actions": "ng generate @ngxs/store:actions --name --path",
     "ngxs:store": "ng generate @ngxs/store:store --name --path",
     "start": "ng serve",
-    "start:docker": "ng serve --host 0.0.0.0 --port 4200 --poll 2000",
+    "start:docker": "ng serve --host 0.0.0.0 --port 5000 --poll 2000",
     "test": "jest && npm run test:display",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage && npm run test:display",
