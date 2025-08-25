@@ -18,6 +18,7 @@ import {
   GetAddonsUserReference,
   GetAuthorizedCitationAddons,
   GetAuthorizedStorageAddons,
+  GetAuthorizedStorageOauthToken as GetAuthorizedtorageOauthToken,
   GetCitationAddons,
   GetConfiguredCitationAddons,
   GetConfiguredStorageAddons,
@@ -208,6 +209,31 @@ export class AddonsState {
         ctx.patchState({
           authorizedStorageAddons: {
             data: addons,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => this.handleError(ctx, 'authorizedStorageAddons', error))
+    );
+  }
+
+  @Action(GetAuthorizedtorageOauthToken)
+  getAuthorizedStorageOauthToken(ctx: StateContext<AddonsStateModel>, action: GetAuthorizedtorageOauthToken) {
+    const state = ctx.getState();
+    ctx.patchState({
+      authorizedStorageAddons: {
+        ...state.authorizedStorageAddons,
+        isLoading: true,
+      },
+    });
+
+    return this.addonsService.getAuthorizedStorageOauthToken(action.accountId).pipe(
+      tap((addon) => {
+        // todo this is not correct
+        ctx.patchState({
+          authorizedStorageAddons: {
+            data: [addon],
             isLoading: false,
             error: null,
           },

@@ -3,6 +3,7 @@ import { inject, TestBed } from '@angular/core/testing';
 
 import { AddonsService } from './addons.service';
 
+import { getAddonsAuthorizedStorageData } from '@testing/data/addons/addons.authorized-storage.data';
 import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
 import { getAddonsExternalStorageData } from '@testing/data/addons/addons.external-storage.data';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
@@ -76,4 +77,41 @@ describe('Service: Addons', () => {
 
     expect(httpMock.verify).toBeTruthy();
   }));
+
+  it('should test getAuthorizedStorageOauthToken', inject(
+    [HttpTestingController],
+    (httpMock: HttpTestingController) => {
+      let results;
+      service.getAuthorizedStorageOauthToken('account-id').subscribe((result) => {
+        results = result;
+      });
+
+      const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+      expect(request.request.method).toBe('GET');
+      request.flush(getAddonsAuthorizedStorageData());
+
+      expect(results).toEqual(
+        Object({
+          accountOwnerId: '0e761652-ac4c-427e-b31c-7317d53ef32a',
+          apiBaseUrl: 'https://www.googleapis.com',
+          authUrl: null,
+          authorizedCapabilities: ['ACCESS', 'UPDATE'],
+          authorizedOperationNames: ['list_root_items', 'get_item_info', 'list_child_items'],
+          credentialsAvailable: true,
+          credentialsFormat: '',
+          defaultRootFolder: '',
+          displayName: 'Google Drive',
+          externalServiceName: '',
+          oauthToken: 'ya29.A0AS3H6NzDCKgrUx',
+          externalStorageServiceId: '986c6ba5-ff9b-4a57-8c01-e58ff4cd48ca',
+          id: '0ab44840-5a37-4a79-9e94-9b5f5830159a',
+          providerName: '',
+          supportedFeatures: [],
+          type: 'authorized-storage-accounts',
+        })
+      );
+
+      expect(httpMock.verify).toBeTruthy();
+    }
+  ));
 });

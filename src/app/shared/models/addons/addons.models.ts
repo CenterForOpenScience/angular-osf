@@ -79,6 +79,7 @@ export interface AuthorizedAddonGetResponseJsonApi {
     authorized_operation_names: string[];
     default_root_folder: string;
     credentials_available: boolean;
+    oauth_token: string;
   };
   relationships: {
     account_owner: {
@@ -237,6 +238,7 @@ export interface AuthorizedAddon {
   authorizedOperationNames: string[];
   defaultRootFolder: string;
   credentialsAvailable: boolean;
+  oauthToken: string;
   accountOwnerId: string;
   externalStorageServiceId: string;
   externalServiceName: string;

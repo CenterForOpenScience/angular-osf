@@ -117,6 +117,20 @@ export class AddonsService {
       );
   }
 
+  getAuthorizedStorageOauthToken(accountId: string): Observable<AuthorizedAddon> {
+    // https://addons.test.osf.io/v1/authorized-storage-accounts/0ab44840-5a37-4a79-9e94-9b5f5830159a
+    return this.jsonApiService
+
+      .get<
+        JsonApiResponse<AuthorizedAddonGetResponseJsonApi, null>
+      >(`${environment.addonsApiUrl}/authorized-storage-accounts/${accountId}`)
+      .pipe(
+        map((response) => {
+          return AddonMapper.fromAuthorizedAddonResponse(response.data);
+        })
+      );
+  }
+
   /**
    * Retrieves the list of configured addons for a given resource reference.
    *

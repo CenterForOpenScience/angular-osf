@@ -6,10 +6,11 @@ import { inject, TestBed } from '@angular/core/testing';
 
 import { AddonsService } from '@osf/shared/services/addons/addons.service';
 
-import { GetConfiguredStorageAddons, GetStorageAddons } from './addons.actions';
+import { GetAuthorizedStorageOauthToken, GetConfiguredStorageAddons, GetStorageAddons } from './addons.actions';
 import { AddonsSelectors } from './addons.selectors';
 import { AddonsState } from './addons.state';
 
+import { getAddonsAuthorizedStorageData } from '@testing/data/addons/addons.authorized-storage.data';
 import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
 import { getAddonsExternalStorageData } from '@testing/data/addons/addons.external-storage.data';
 
@@ -171,6 +172,82 @@ describe('State: Addons', () => {
           data: [],
           error:
             'Http failure response for https://addons.staging4.osf.io/v1/resource-references/reference-id/configured_storage_addons/: 500 Server Error',
+          isLoading: false,
+          isSubmitting: false,
+        });
+
+        expect(loading()).toBeFalsy();
+      }
+    ));
+  });
+
+  describe('getAuthorizedStorageOauthToken', () => {
+    it('should fetch authorized storage oauth token and update state and selector output', inject(
+      [HttpTestingController],
+      (httpMock: HttpTestingController) => {
+        let result: any[] = [];
+        store.dispatch(new GetAuthorizedStorageOauthToken('account-id')).subscribe(() => {
+          result = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddons);
+        });
+
+        const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+        expect(loading()).toBeTruthy();
+
+        const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+        expect(request.request.method).toBe('GET');
+        request.flush(getAddonsAuthorizedStorageData());
+
+        expect(result[0]).toEqual(
+          Object({
+            accountOwnerId: '0e761652-ac4c-427e-b31c-7317d53ef32a',
+            apiBaseUrl: 'https://www.googleapis.com',
+            authUrl: null,
+            authorizedCapabilities: ['ACCESS', 'UPDATE'],
+            authorizedOperationNames: ['list_root_items', 'get_item_info', 'list_child_items'],
+            credentialsAvailable: true,
+            credentialsFormat: '',
+            defaultRootFolder: '',
+            displayName: 'Google Drive',
+            externalServiceName: '',
+            oauthToken: 'ya29.A0AS3H6NzDCKgrUx',
+            externalStorageServiceId: '986c6ba5-ff9b-4a57-8c01-e58ff4cd48ca',
+            id: '0ab44840-5a37-4a79-9e94-9b5f5830159a',
+            providerName: '',
+            supportedFeatures: [],
+            type: 'authorized-storage-accounts',
+          })
+        );
+
+        expect(loading()).toBeFalsy();
+      }
+    ));
+
+    it('should handle error if getAuthorizedStorageOauthToken fails', inject(
+      [HttpTestingController],
+      (httpMock: HttpTestingController) => {
+        let result: any = null;
+
+        store.dispatch(new GetAuthorizedStorageOauthToken('account-id')).subscribe({
+          next: () => {
+            result = 'Expected error, but got success';
+          },
+          error: () => {
+            result = store.snapshot().addons.authorizedStorageAddons;
+          },
+        });
+
+        const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+        expect(loading()).toBeTruthy();
+
+        const req = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+        expect(req.request.method).toBe('GET');
+
+        req.flush({ message: 'Internal Server Error' }, { status: 500, statusText: 'Server Error' });
+
+        expect(result).toEqual({
+          data: [],
+          error:
+            'Http failure response for https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id: 500 Server Error',
           isLoading: false,
           isSubmitting: false,
         });
