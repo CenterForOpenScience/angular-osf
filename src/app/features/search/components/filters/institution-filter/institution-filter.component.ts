@@ -4,13 +4,14 @@ import { Select, SelectChangeEvent } from 'primeng/select';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { ResourceFiltersSelectors, SetInstitution } from '../../resource-filters/store';
 import { GetAllOptions, ResourceFiltersOptionsSelectors } from '../store';
 
 @Component({
   selector: 'osf-institution-filter',
-  imports: [Select, FormsModule],
+  imports: [Select, FormsModule, TranslateModule],
   templateUrl: './institution-filter.component.html',
   styleUrl: './institution-filter.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
