@@ -31,3 +31,12 @@ export class DeleteProject {
 
   constructor(public projectId: string) {}
 }
+
+export class DeleteInstitution {
+  static readonly type = '[Settings] Delete Institution';
+
+  constructor(
+    public institutionId: string,
+    public projectId: string
+  ) {}
+}

@@ -417,6 +417,7 @@
       "whoCanEdit": "Who can edit:",
       "url": "url",
       "label": "label",
+      "storageLocationMessage": "Storage location cannot be changed after project is created.",
       "redirectUrlPlaceholder": "Send people who visit your OSF project page to this link instead",
       "redirectLabelPlaceholder": "Optional",
       "invalidUrl": "Please enter a valid URL, such as: https://example.com",
@@ -918,6 +919,11 @@
       "title": "Delete project",
       "message": "Are you sure you want to delete <b>{{name}}</b> project?",
       "success": "Project has been successfully deleted."
+    },
+    "deleteInstitution": {
+      "title": "Delete institution",
+      "message": "Are you sure you want to delete <b>{{name}}</b> from this project?",
+      "success": "Institution has been successfully deleted."
     }
   },
   "files": {

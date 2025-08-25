@@ -13,4 +13,9 @@ export class SettingsSelectors {
   static getProjectDetails(state: SettingsStateModel) {
     return state.projectDetails.data;
   }
+
+  @Selector([SettingsState])
+  static areProjectDetailsLoading(state: SettingsStateModel) {
+    return state.projectDetails.isLoading;
+  }
 }

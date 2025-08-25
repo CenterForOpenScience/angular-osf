@@ -1,17 +1,16 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { map, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers';
-import { NodeData } from '@osf/shared/models';
-import { MyResourcesService } from '@osf/shared/services';
 
 import { SettingsService } from '../services';
 
 import {
+  DeleteInstitution,
   DeleteProject,
   GetProjectDetails,
   GetProjectSettings,
@@ -27,8 +26,6 @@ import { SETTINGS_STATE_DEFAULTS, SettingsStateModel } from './settings.model';
 @Injectable()
 export class SettingsState {
   private readonly settingsService = inject(SettingsService);
-  private readonly myProjectService = inject(MyResourcesService);
-
   private readonly REFRESH_INTERVAL = 5 * 60 * 1000;
 
   private shouldRefresh(lastFetched?: number): boolean {
@@ -70,23 +67,10 @@ export class SettingsState {
   @Action(GetProjectDetails)
   getProjectDetails(ctx: StateContext<SettingsStateModel>, action: GetProjectDetails) {
     const state = ctx.getState();
-    const cached = state.projectDetails.data;
-    const shouldRefresh = this.shouldRefresh(cached.lastFetched);
-
-    if (cached.id === action.projectId && !shouldRefresh) {
-      return of(cached).pipe(
-        tap(() =>
-          ctx.patchState({
-            projectDetails: { ...state.projectDetails, isLoading: false, error: null },
-          })
-        )
-      );
-    }
 
     ctx.patchState({ projectDetails: { ...state.projectDetails, isLoading: true, error: null } });
 
-    return this.myProjectService.getProjectById(action.projectId).pipe(
-      map((response) => response?.data as NodeData),
+    return this.settingsService.getProjectById(action.projectId).pipe(
       tap((details) => {
         const updatedDetails = {
           ...details,
@@ -107,7 +91,7 @@ export class SettingsState {
 
   @Action(UpdateProjectDetails)
   updateProjectDetails(ctx: StateContext<SettingsStateModel>, action: UpdateProjectDetails) {
-    return this.myProjectService.updateProjectById(action.payload).pipe(
+    return this.settingsService.updateProjectById(action.payload).pipe(
       tap((updatedProject) => {
         ctx.patchState({
           projectDetails: {
@@ -155,5 +139,10 @@ export class SettingsState {
   @Action(DeleteProject)
   deleteProject(ctx: StateContext<SettingsStateModel>, action: DeleteProject) {
     return this.settingsService.deleteProject(action.projectId);
+  }
+
+  @Action(DeleteInstitution)
+  deleteInstitution(ctx: StateContext<SettingsStateModel>, action: DeleteInstitution) {
+    return this.settingsService.deleteInstitution(action.institutionId, action.projectId);
   }
 }
