@@ -1,9 +1,6 @@
-import { EMPTY } from 'rxjs';
-
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { DataciteEvent } from 'src/app/shared/models/datacite';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -12,10 +9,18 @@ import { environment } from 'src/environments/environment';
 export class DataciteService {
   #http: HttpClient = inject(HttpClient);
 
-  logActivity(event: DataciteEvent, doi: string | null | undefined) {
-    console.log(`Invoked ${event} with ${doi}`);
+  logView(doi: string | null | undefined): void {
+    this.logActivity('view', doi);
+  }
+
+  logDownload(doi: string | null | undefined): void {
+    this.logActivity('download', doi);
+  }
+
+  protected logActivity(event: string, doi: string | null | undefined): void {
+    console.log(`Logging ${event} for doi:${doi} to datacite tracker`);
     if (!doi || !environment.dataciteTrackerRepoId) {
-      return EMPTY;
+      return;
     }
     const payload = {
       n: event,
@@ -26,6 +31,6 @@ export class DataciteService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    return this.#http.post(`http://localhost:8000/api/metric`, payload, { headers });
+    this.#http.post(`http://localhost:8000/api/metric`, payload, { headers }).subscribe();
   }
 }
