@@ -6,7 +6,7 @@ import { map, of } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
@@ -15,8 +15,7 @@ import {
   UpdateNotificationSubscriptionForNodeId,
 } from '@osf/features/settings/notifications/store';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { ProjectFormControls, ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
-import { CustomValidators } from '@osf/shared/helpers';
+import { ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
 import { Institution, UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 import { DeleteViewOnlyLink, FetchViewOnlyLinks, ViewOnlyLinkSelectors } from '@osf/shared/stores';
@@ -32,7 +31,7 @@ import {
   SettingsViewOnlyLinksCardComponent,
   SettingsWikiCardComponent,
 } from './components';
-import { ProjectDetailsModel, ProjectSettingsAttributes, ProjectSettingsData, RedirectUrlDataModel } from './models';
+import { ProjectDetailsModel, ProjectSettingsAttributes, ProjectSettingsData, RedirectLinkDataModel } from './models';
 import {
   DeleteInstitution,
   DeleteProject,
@@ -94,12 +93,7 @@ export class SettingsComponent implements OnInit {
     deleteInstitution: DeleteInstitution,
   });
 
-  projectForm = new FormGroup({
-    [ProjectFormControls.Title]: new FormControl('', CustomValidators.requiredTrimmed()),
-    [ProjectFormControls.Description]: new FormControl(''),
-  });
-
-  redirectUrlData = signal<RedirectUrlDataModel>({ url: '', label: '' });
+  redirectUrlData = signal<RedirectLinkDataModel>({ isEnabled: false, url: '', label: '' });
   accessRequest = signal(false);
   wikiEnabled = signal(false);
   anyoneCanEditWiki = signal(false);
@@ -161,7 +155,7 @@ export class SettingsComponent implements OnInit {
     this.syncSettingsChanges('anyone_can_comment', newValue);
   }
 
-  onRedirectUrlDataRequestChange(data: RedirectUrlDataModel): void {
+  onRedirectUrlDataRequestChange(data: RedirectLinkDataModel): void {
     this.redirectUrlData.set(data);
     this.syncSettingsChanges('redirectUrl', data);
   }
@@ -223,7 +217,7 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  private syncSettingsChanges(changedField: string, value: boolean | RedirectUrlDataModel): void {
+  private syncSettingsChanges(changedField: string, value: boolean | RedirectLinkDataModel): void {
     const payload: Partial<ProjectSettingsAttributes> = {};
 
     switch (changedField) {
@@ -236,9 +230,9 @@ export class SettingsComponent implements OnInit {
         break;
       case 'redirectUrl':
         if (typeof value === 'object') {
-          payload['redirect_link_enabled'] = true;
-          payload['redirect_link_url'] = value.url ?? null;
-          payload['redirect_link_label'] = value.label ?? null;
+          payload['redirect_link_enabled'] = value.isEnabled;
+          payload['redirect_link_url'] = value.isEnabled ? value.url : undefined;
+          payload['redirect_link_label'] = value.isEnabled ? value.label : undefined;
         }
         break;
     }
@@ -266,7 +260,9 @@ export class SettingsComponent implements OnInit {
         this.wikiEnabled.set(settings.attributes.wikiEnabled);
         this.anyoneCanEditWiki.set(settings.attributes.anyoneCanEditWiki);
         this.anyoneCanComment.set(settings.attributes.anyoneCanComment);
+
         this.redirectUrlData.set({
+          isEnabled: settings.attributes.redirectLinkEnabled,
           url: settings.attributes.redirectLinkUrl,
           label: settings.attributes.redirectLinkLabel,
         });
@@ -277,11 +273,6 @@ export class SettingsComponent implements OnInit {
       const project = this.projectDetails();
 
       if (project) {
-        this.projectForm.patchValue({
-          [ProjectFormControls.Title]: project.title,
-          [ProjectFormControls.Description]: project.description,
-        });
-
         this.title.set(project.title);
       }
     });
