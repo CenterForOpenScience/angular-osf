@@ -1,18 +1,33 @@
-import { ContributorsMapper } from '@osf/shared/mappers';
+import { ContributorsMapper, InstitutionsMapper, LicensesMapper } from '@osf/shared/mappers';
 
-import { CustomItemMetadataRecord, CustomMetadataJsonApiResponse, Metadata, MetadataJsonApiResponse } from '../models';
+import { CustomItemMetadataRecord, CustomMetadataJsonApiResponse, Metadata, MetadataJsonApi } from '../models';
 
 export class MetadataMapper {
-  static fromMetadataApiResponse(response: MetadataJsonApiResponse): Partial<Metadata> {
-    console.log('MetadataMapper data', response.data);
+  static fromMetadataApiResponse(response: MetadataJsonApi): Metadata {
+    console.log('MetadataMapper data', response);
     return {
-      id: response.data.id,
-      title: response.data.attributes.title,
-      description: response.data.attributes.description,
-      tags: response.data.attributes.tags,
-      dateCreated: response.data.attributes.date_created,
-      dateModified: response.data.attributes.date_modified,
-      contributors: ContributorsMapper.fromResponse(response.data.embeds.bibliographic_contributors.data),
+      id: response.id,
+      title: response.attributes.title,
+      description: response.attributes.description,
+      tags: response.attributes.tags,
+      dateCreated: response.attributes.date_created,
+      dateModified: response.attributes.date_modified,
+      contributors: ContributorsMapper.fromResponse(response.embeds.bibliographic_contributors.data),
+      license: LicensesMapper.fromLicenseDataJsonApi(response.embeds.license?.data),
+      nodeLicense: response.attributes.node_license
+        ? {
+            copyrightHolders: response.attributes.node_license.copyright_holders || [],
+            year: response.attributes.node_license.year || '',
+          }
+        : undefined,
+      identifiers: response.embeds.identifiers.data.map((identifier) => ({
+        id: identifier.id,
+        type: identifier.type,
+        category: identifier.attributes.category,
+        value: identifier.attributes.value,
+      })),
+      affiliatedInstitutions: InstitutionsMapper.fromInstitutionsResponse(response.embeds.affiliated_institutions),
+      provider: response.embeds.provider?.data.id,
     };
   }
 

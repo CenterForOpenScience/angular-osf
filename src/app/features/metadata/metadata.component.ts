@@ -4,16 +4,31 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { EMPTY, filter, switchMap } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
 import { CedarTemplateFormComponent } from '@osf/shared/components/shared-metadata/components';
+import {
+  ContributorsDialogComponent,
+  DescriptionDialogComponent,
+  LicenseDialogComponent,
+} from '@osf/shared/components/shared-metadata/dialogs';
 import { SharedMetadataComponent } from '@osf/shared/components/shared-metadata/shared-metadata.component';
 import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
 import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
-import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
+import {
+  ContributorsSelectors,
+  FetchChildrenSubjects,
+  FetchSelectedSubjects,
+  FetchSubjects,
+  GetAllContributors,
+  SubjectsSelectors,
+  UpdateResourceSubjects,
+} from '@osf/shared/stores';
 
 import {
   CedarMetadataDataTemplateJsonApi,
@@ -21,7 +36,15 @@ import {
   CedarMetadataRecordData,
   CedarRecordDataBinding,
 } from './models';
-import { GetCustomItemMetadata, GetResourceMetadata, MetadataSelectors } from './store';
+import {
+  GetCustomItemMetadata,
+  GetResourceMetadata,
+  MetadataSelectors,
+  UpdateResourceDetails,
+  UpdateResourceLicense,
+} from './store';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-metadata',
@@ -67,24 +90,72 @@ export class MetadataComponent implements OnInit {
   protected isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
   resourceType = signal<ResourceType>(this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project);
 
+  provider = environment.defaultProvider;
+
   protected actions = createDispatchMap({
     getResourceMetadata: GetResourceMetadata,
-    // updateProjectDetails: UpdateProjectDetails,
+    updateMetadata: UpdateResourceDetails,
+    updateResourceLicense: UpdateResourceLicense,
     getCustomItemMetadata: GetCustomItemMetadata,
     // updateCustomItemMetadata: UpdateCustomItemMetadata,
     // getFundersList: GetFundersList,
-    // getContributors: GetAllContributors,
+    getContributors: GetAllContributors,
     // getUserInstitutions: GetUserInstitutions,
     // getCedarRecords: GetCedarMetadataRecords,
     // getCedarTemplates: GetCedarMetadataTemplates,
     // createCedarRecord: CreateCedarMetadataRecord,
     // updateCedarRecord: UpdateCedarMetadataRecord,
 
-    // fetchSubjects: FetchSubjects,
-    // fetchSelectedSubjects: FetchSelectedSubjects,
-    // fetchChildrenSubjects: FetchChildrenSubjects,
-    // updateResourceSubjects: UpdateResourceSubjects,
+    fetchSubjects: FetchSubjects,
+    fetchSelectedSubjects: FetchSelectedSubjects,
+    fetchChildrenSubjects: FetchChildrenSubjects,
+    updateResourceSubjects: UpdateResourceSubjects,
   });
+
+  constructor() {
+    effect(() => {
+      const records = this.cedarRecords();
+
+      const baseTabs = [{ id: 'osf', label: 'OSF', type: MetadataResourceEnum.PROJECT }];
+
+      const cedarTabs =
+        records?.map((record) => ({
+          id: record.id || '',
+          label: record.embeds?.template?.data?.attributes?.schema_name || `Record ${record.id}`,
+          type: MetadataResourceEnum.CEDAR,
+        })) || [];
+
+      this.tabs.set([...baseTabs, ...cedarTabs]);
+      this.handleRouteBasedTabSelection();
+    });
+
+    effect(() => {
+      const templates = this.cedarTemplates();
+      const selectedRecord = this.selectedCedarRecord();
+
+      if (selectedRecord && templates?.data && !this.selectedCedarTemplate()) {
+        const templateId = selectedRecord.relationships?.template?.data?.id;
+        if (templateId) {
+          const template = templates.data.find((t) => t.id === templateId);
+          if (template) {
+            this.selectedCedarTemplate.set(template);
+          }
+        }
+      }
+    });
+
+    effect(() => {
+      const metadata = this.metadata();
+      if (this.resourceType() === ResourceType.Registration) {
+        if (metadata) {
+          this.provider = metadata.provider || environment.defaultProvider;
+          this.actions.fetchSubjects(this.resourceType(), this.provider);
+        }
+      } else {
+        this.actions.fetchSubjects(this.resourceType());
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.resourceId = this.activeRoute.parent?.parent?.snapshot.params['id'];
@@ -92,14 +163,13 @@ export class MetadataComponent implements OnInit {
     console.log(this.resourceId);
     console.log(this.resourceType());
 
-    if (this.resourceId) {
+    if (this.resourceId && this.resourceType()) {
       this.actions.getResourceMetadata(this.resourceId, this.resourceType());
       this.actions.getCustomItemMetadata(this.resourceId);
-      // this.actions.getContributors(this.resourceId, ResourceType.Project);
+      this.actions.getContributors(this.resourceId, this.resourceType());
       // this.actions.getCedarRecords(this.resourceId);
       // this.actions.getCedarTemplates();
-      // this.actions.fetchSubjects(ResourceType.Project);
-      // this.actions.fetchSelectedSubjects(this.resourceId!, ResourceType.Project);
+      this.actions.fetchSelectedSubjects(this.resourceId, this.resourceType());
       // const user = this.currentUser();
       // if (user?.id) {
       //   this.actions.getUserInstitutions(user.id);
@@ -189,66 +259,60 @@ export class MetadataComponent implements OnInit {
   }
 
   onTagsChanged(tags: string[]): void {
-    // const projectId = this.currentProject()?.id;
-    // if (projectId) {
-    //   this.actions.updateProjectDetails(projectId, { tags });
-    // }
+    console.log('Tags changed:', tags);
+    this.actions.updateMetadata(this.resourceId, this.resourceType(), { tags });
   }
 
   openEditContributorDialog(): void {
-    // const dialogRef = this.dialogService.open(ContributorsDialogComponent, {
-    //   width: '800px',
-    //   header: this.translateService.instant('project.metadata.contributors.editContributors'),
-    //   focusOnShow: false,
-    //   closeOnEscape: true,
-    //   modal: true,
-    //   closable: true,
-    //   data: {
-    //     projectId: this.currentProject()?.id,
-    //     contributors: this.contributors(),
-    //     isLoading: this.isContributorsLoading(),
-    //   },
-    // });
-    // dialogRef.onClose.pipe(filter((result) => !!result && (result.refresh || result.saved))).subscribe({
-    //   next: () => {
-    //     this.refreshContributorsData();
-    //     this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
-    //   },
-    // });
+    const dialogRef = this.dialogService.open(ContributorsDialogComponent, {
+      width: '800px',
+      header: this.translateService.instant('project.metadata.contributors.editContributors'),
+      focusOnShow: false,
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        resourceId: this.resourceId,
+        resourceType: this.resourceType(),
+        contributors: this.contributors(),
+        isLoading: this.isContributorsLoading(),
+      },
+    });
+    dialogRef.onClose.pipe(filter((result) => !!result && (result.refresh || result.saved))).subscribe({
+      next: () => {
+        this.actions.getResourceMetadata(this.resourceId, this.resourceType());
+        this.toastService.showSuccess('project.metadata.contributors.updateSucceed');
+      },
+    });
   }
 
   openEditDescriptionDialog(): void {
-    // const dialogRef = this.dialogService.open(DescriptionDialogComponent, {
-    //   header: this.translateService.instant('project.metadata.description.dialog.header'),
-    //   width: '500px',
-    //   focusOnShow: false,
-    //   closeOnEscape: true,
-    //   modal: true,
-    //   closable: true,
-    //   data: {
-    //     currentProject: this.currentProject(),
-    //   },
-    // });
-    // dialogRef.onClose
-    //   .pipe(
-    //     filter((result) => !!result),
-    //     switchMap((result) => {
-    //       const projectId = this.currentProject()?.id;
-    //       if (projectId) {
-    //         return this.actions.updateProjectDetails(projectId, { description: result });
-    //       }
-    //       return EMPTY;
-    //     })
-    //   )
-    //   .subscribe({
-    //     next: () => {
-    //       this.toastService.showSuccess('project.metadata.description.updated');
-    //       const projectId = this.currentProject()?.id;
-    //       if (projectId) {
-    //         this.actions.getProject(projectId);
-    //       }
-    //     },
-    //   });
+    const dialogRef = this.dialogService.open(DescriptionDialogComponent, {
+      header: this.translateService.instant('project.metadata.description.dialog.header'),
+      width: '500px',
+      focusOnShow: false,
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        currentMetadata: this.metadata(),
+      },
+    });
+    dialogRef.onClose
+      .pipe(
+        filter((result) => !!result),
+        switchMap((result) => {
+          if (this.resourceId) {
+            return this.actions.updateMetadata(this.resourceId, this.resourceType(), { description: result });
+          }
+          return EMPTY;
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.toastService.showSuccess('project.metadata.description.updated');
+        },
+      });
   }
 
   openEditResourceInformationDialog(): void {
@@ -288,36 +352,32 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditLicenseDialog(): void {
-    // const dialogRef = this.dialogService.open(LicenseDialogComponent, {
-    //   header: this.translateService.instant('project.metadata.license.dialog.header'),
-    //   width: '600px',
-    //   focusOnShow: false,
-    //   closeOnEscape: true,
-    //   modal: true,
-    //   closable: true,
-    //   data: {
-    //     currentProject: this.currentProject(),
-    //   },
-    // });
-    // dialogRef.onClose
-    //   .pipe(
-    //     filter((result) => !!result && result.licenseName && result.licenseId),
-    //     switchMap((result) => {
-    //       const projectId = this.currentProject()?.id;
-    //       if (projectId) {
-    //         return this.actions.updateProjectDetails(projectId, {
-    //           node_license: {
-    //             id: result.licenseId,
-    //             type: 'node-license',
-    //           },
-    //         });
-    //       }
-    //       return EMPTY;
-    //     })
-    //   )
-    //   .subscribe({
-    //     next: () => this.toastService.showSuccess('project.metadata.license.updated'),
-    //   });
+    const dialogRef = this.dialogService.open(LicenseDialogComponent, {
+      header: this.translateService.instant('project.metadata.license.dialog.header'),
+      width: '600px',
+      focusOnShow: false,
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        metadata: this.metadata(),
+      },
+    });
+    dialogRef.onClose
+      .pipe(
+        filter((result) => !!result && result.licenseId),
+        switchMap((result) => {
+          return this.actions.updateResourceLicense(
+            this.resourceId,
+            this.resourceType(),
+            result.licenseId,
+            result.licenseOptions
+          );
+        })
+      )
+      .subscribe({
+        next: () => this.toastService.showSuccess('project.metadata.license.updated'),
+      });
   }
 
   openEditFundingDialog(): void {
@@ -405,32 +465,29 @@ export class MetadataComponent implements OnInit {
   }
 
   getSubjectChildren(parentId: string) {
-    // this.actions.fetchChildrenSubjects(parentId);
+    this.actions.fetchChildrenSubjects(parentId);
   }
 
   searchSubjects(search: string) {
-    // this.actions.fetchSubjects(ResourceType.Project, this.projectId, search);
+    this.actions.fetchSubjects(this.resourceType(), this.provider, search);
   }
 
   updateSelectedSubjects(subjects: SubjectModel[]) {
-    // this.actions.updateResourceSubjects(this.projectId, ResourceType.Project, subjects);
+    this.actions.updateResourceSubjects(this.resourceId, this.resourceType(), subjects);
   }
 
   handleEditDoi(): void {
-    // this.customConfirmationService.confirmDelete({
-    //   headerKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.header'),
-    //   messageKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.message'),
-    //   acceptLabelKey: this.translateService.instant('common.buttons.create'),
-    //   acceptLabelType: 'primary',
-    //   onConfirm: () => {
-    //     const projectId = this.currentProject()?.id;
-    //     if (projectId) {
-    //       this.actions.updateProjectDetails(projectId, { doi: true }).subscribe({
-    //         next: () => this.toastService.showSuccess('project.metadata.doi.created'),
-    //       });
-    //     }
-    //   },
-    // });
+    this.customConfirmationService.confirmDelete({
+      headerKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.header'),
+      messageKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.message'),
+      acceptLabelKey: this.translateService.instant('common.buttons.create'),
+      acceptLabelType: 'primary',
+      onConfirm: () => {
+        this.actions.updateMetadata(this.resourceId, this.resourceType(), { doi: true }).subscribe({
+          next: () => this.toastService.showSuccess('project.metadata.doi.created'),
+        });
+      },
+    });
   }
 
   private loadCedarRecord(recordId: string): void {
@@ -458,5 +515,30 @@ export class MetadataComponent implements OnInit {
     //   this.selectedCedarTemplate.set(null);
     //   this.actions.getCedarTemplates();
     // }
+  }
+
+  private handleRouteBasedTabSelection(): void {
+    const recordId = this.activeRoute.snapshot.paramMap.get('recordId');
+
+    if (!recordId) {
+      this.selectedTab.set('project');
+      this.selectedCedarRecord.set(null);
+      this.selectedCedarTemplate.set(null);
+      return;
+    }
+
+    const tab = this.tabs().find((tab) => tab.id === recordId);
+
+    if (tab) {
+      this.selectedTab.set(tab.id);
+
+      if (tab.type === 'cedar') {
+        this.loadCedarRecord(tab.id);
+      }
+    }
+  }
+
+  private refreshContributorsData(): void {
+    this.actions.getContributors(this.resourceId, this.resourceType());
   }
 }

@@ -5,7 +5,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { ProjectIdentifiers } from '@osf/features/project/overview/models';
+import { Identifier } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-metadata-publication-doi',
@@ -16,6 +16,6 @@ import { ProjectIdentifiers } from '@osf/features/project/overview/models';
 export class MetadataPublicationDoiComponent {
   openEditPublicationDoiDialog = output<void>();
 
-  identifiers = input<ProjectIdentifiers[]>([]);
+  identifiers = input<Identifier[]>([]);
   hideEditDoi = input<boolean>(false);
 }

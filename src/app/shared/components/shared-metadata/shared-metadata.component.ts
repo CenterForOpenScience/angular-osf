@@ -14,8 +14,10 @@ import {
   MetadataAffiliatedInstitutionsComponent,
   MetadataContributorsComponent,
   MetadataDescriptionComponent,
+  MetadataFundingComponent,
   MetadataLicenseComponent,
   MetadataPublicationDoiComponent,
+  MetadataResourceInformationComponent,
   MetadataSubjectsComponent,
 } from './components';
 
@@ -30,6 +32,8 @@ import {
     MetadataAffiliatedInstitutionsComponent,
     MetadataDescriptionComponent,
     MetadataContributorsComponent,
+    MetadataResourceInformationComponent,
+    MetadataFundingComponent,
     DatePipe,
     Card,
   ],
@@ -38,7 +42,7 @@ import {
 })
 export class SharedMetadataComponent {
   metadata = input.required<Metadata | null>();
-  customItemMetadata = input.required<CustomItemMetadataRecord>();
+  customItemMetadata = input.required<CustomItemMetadataRecord | null>();
   selectedSubjects = input.required<SubjectModel[]>();
   isSubjectsUpdating = input.required<boolean>();
   hideEditDoiAndLicence = input<boolean>(false);

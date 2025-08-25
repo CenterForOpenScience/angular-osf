@@ -4,7 +4,13 @@ import { Routes } from '@angular/router';
 
 import { ResourceType } from '@osf/shared/enums';
 import { LicensesService } from '@osf/shared/services';
-import { CitationsState, ContributorsState, DuplicatesState, ViewOnlyLinkState } from '@osf/shared/stores';
+import {
+  CitationsState,
+  ContributorsState,
+  DuplicatesState,
+  SubjectsState,
+  ViewOnlyLinkState,
+} from '@osf/shared/stores';
 
 import { AnalyticsState } from '../project/analytics/store';
 import { RegistriesState } from '../registries/store';
@@ -44,6 +50,7 @@ export const registryRoutes: Routes = [
       {
         path: 'metadata',
         loadChildren: () => import('@osf/features/metadata/metadata.routes').then((mod) => mod.metadataRoutes),
+        providers: [provideStates([SubjectsState, ContributorsState])],
         data: { resourceType: ResourceType.Registration },
       },
       {

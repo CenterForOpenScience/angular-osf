@@ -19,6 +19,8 @@ import {
   GetResourceMetadata,
   UpdateCedarMetadataRecord,
   UpdateCustomItemMetadata,
+  UpdateResourceDetails,
+  UpdateResourceLicense,
 } from './metadata.actions';
 import { MetadataStateModel } from './metadata.model';
 
@@ -260,53 +262,69 @@ export class MetadataState {
     });
   }
 
-  // @Action(UpdateProjectDetails)
-  // updateProjectDetails(ctx: StateContext<MetadataStateModel>, action: UpdateProjectDetails) {
-  //   ctx.patchState({
-  //     project: {
-  //       ...ctx.getState().project,
-  //       isLoading: true,
-  //       error: null,
-  //     },
-  //   });
+  @Action(UpdateResourceDetails)
+  updateResourceDetails(ctx: StateContext<MetadataStateModel>, action: UpdateResourceDetails) {
+    ctx.patchState({
+      metadata: {
+        ...ctx.getState().metadata,
+        isLoading: true,
+        error: null,
+      },
+    });
 
-  //   return this.metadataService.updateProjectDetails(action.projectId, action.updates).pipe(
-  //     tap({
-  //       next: (updatedProject) => {
-  //         const currentProject = ctx.getState().project.data;
+    return this.metadataService.updateResourceDetails(action.resourceId, action.resourceType, action.updates).pipe(
+      tap({
+        next: (updatedResource) => {
+          const currentResource = ctx.getState().metadata.data;
 
-  //         ctx.patchState({
-  //           project: {
-  //             data: {
-  //               ...currentProject,
-  //               ...updatedProject,
-  //             },
-  //             error: null,
-  //             isLoading: false,
-  //           },
-  //         });
-  //       },
-  //       error: (error) => {
-  //         ctx.patchState({
-  //           project: {
-  //             ...ctx.getState().project,
-  //             error: error.message,
-  //             isLoading: false,
-  //           },
-  //         });
-  //       },
-  //     }),
-  //     finalize(() =>
-  //       ctx.patchState({
-  //         project: {
-  //           ...ctx.getState().project,
-  //           error: null,
-  //           isLoading: false,
-  //         },
-  //       })
-  //     )
-  //   );
-  // }
+          ctx.patchState({
+            metadata: {
+              data: {
+                ...currentResource,
+                ...updatedResource,
+              },
+              error: null,
+              isLoading: false,
+            },
+          });
+        },
+      }),
+      catchError((error) => handleSectionError(ctx, 'metadata', error))
+    );
+  }
+
+  @Action(UpdateResourceLicense)
+  updateResourceLiceUpdateResourceLicense(ctx: StateContext<MetadataStateModel>, action: UpdateResourceLicense) {
+    ctx.patchState({
+      metadata: {
+        ...ctx.getState().metadata,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.metadataService
+      .updateResourceLicense(action.resourceId, action.resourceType, action.licenseId, action.licenseOptions)
+      .pipe(
+        tap({
+          next: (updatedResource) => {
+            const currentResource = ctx.getState().metadata.data;
+
+            ctx.patchState({
+              metadata: {
+                data: {
+                  ...currentResource,
+                  ...updatedResource,
+                },
+                error: null,
+                isLoading: false,
+              },
+            });
+          },
+        }),
+        catchError((error) => handleSectionError(ctx, 'metadata', error))
+      );
+  }
 
   // @Action(GetUserInstitutions)
   // getUserInstitutions(ctx: StateContext<MetadataStateModel>, action: GetUserInstitutions) {

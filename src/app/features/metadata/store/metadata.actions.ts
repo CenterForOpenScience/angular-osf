@@ -1,6 +1,12 @@
 import { ResourceType } from '@osf/shared/enums';
+import { LicenseOptions } from '@osf/shared/models';
 
-import { CedarMetadataRecord, CedarMetadataRecordData, CustomItemMetadataRecord, Metadata } from '../models';
+import {
+  CedarMetadataRecord,
+  CedarMetadataRecordData,
+  CustomItemMetadataRecord,
+  MetadataAttributesJsonApi,
+} from '../models';
 
 export class GetResourceMetadata {
   static readonly type = '[Metadata] Get Resource Metadata';
@@ -25,11 +31,22 @@ export class UpdateCustomItemMetadata {
   ) {}
 }
 
-export class UpdateProjectDetails {
-  static readonly type = '[Metadata] Update Project Details';
+export class UpdateResourceDetails {
+  static readonly type = '[Metadata] Update Resource Details';
   constructor(
-    public projectId: string,
-    public updates: Partial<Metadata>
+    public resourceId: string,
+    public resourceType: ResourceType,
+    public updates: Partial<MetadataAttributesJsonApi>
+  ) {}
+}
+
+export class UpdateResourceLicense {
+  static readonly type = '[Metadata] Update Resource License';
+  constructor(
+    public resourceId: string,
+    public resourceType: ResourceType,
+    public licenseId: string,
+    public licenseOptions?: LicenseOptions
   ) {}
 }
 

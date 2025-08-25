@@ -18,6 +18,7 @@ export * from './filters';
 export * from './google-drive-folder.model';
 export * from './guid-response-json-api.model';
 export * from './id-name.model';
+export * from './identifier.model';
 export * from './institutions';
 export * from './language-code.model';
 export * from './license';

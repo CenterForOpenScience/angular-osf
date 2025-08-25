@@ -200,7 +200,7 @@ export class RegistryMetadataComponent implements OnInit {
       this.actions.getRegistrySubjects(this.registryId);
       this.actions.getCedarRecords(this.registryId);
       this.actions.getCedarTemplates();
-      this.actions.fetchSubjects(ResourceType.Registration, this.registryId, '', true);
+      this.actions.fetchSubjects(ResourceType.Registration, this.registryId, '');
       this.actions.fetchSelectedSubjects(this.registryId, ResourceType.Registration);
 
       const user = this.currentUser();
@@ -417,7 +417,7 @@ export class RegistryMetadataComponent implements OnInit {
   }
 
   searchSubjects(search: string) {
-    this.actions.fetchSubjects(ResourceType.Registration, this.registryId, search, true);
+    this.actions.fetchSubjects(ResourceType.Registration, this.registryId, search);
   }
 
   updateSelectedSubjects(subjects: SubjectModel[]) {

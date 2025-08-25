@@ -8,7 +8,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { ContributorModel } from '@osf/shared/models';
 
 @Component({
-  selector: 'osf--metadata-contributors',
+  selector: 'osf-metadata-contributors',
   imports: [Button, Card, TranslatePipe],
   templateUrl: './metadata-contributors.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

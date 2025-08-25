@@ -19,7 +19,7 @@ import { LanguageCodeModel } from '@osf/shared/models';
 export class MetadataResourceInformationComponent {
   openEditResourceInformationDialog = output<void>();
 
-  customItemMetadata = input.required<CustomItemMetadataRecord>();
+  customItemMetadata = input.required<CustomItemMetadataRecord | null>();
   readonly = input<boolean>(false);
   protected readonly languageCodes = languageCodes;
 

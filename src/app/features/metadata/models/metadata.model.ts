@@ -1,4 +1,4 @@
-import { ContributorModel, LicenseOptions } from '@osf/shared/models';
+import { ContributorModel, Identifier, Institution, License } from '@osf/shared/models';
 
 export interface Metadata {
   id: string;
@@ -10,14 +10,18 @@ export interface Metadata {
   publicationDoi?: string;
   institutions?: string[];
   doi?: boolean;
-  license: {
-    id: string;
-    options: LicenseOptions | null;
-  };
+  license: License | null;
   category?: string;
   dateCreated: string;
   dateModified: string;
   contributors: ContributorModel[];
+  identifiers: Identifier[];
+  affiliatedInstitutions: Institution[];
+  provider?: string;
+  nodeLicense?: {
+    copyrightHolders: string[];
+    year: string;
+  };
 }
 
 export interface CustomItemMetadataRecord {

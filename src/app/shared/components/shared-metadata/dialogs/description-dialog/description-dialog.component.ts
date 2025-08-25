@@ -26,13 +26,13 @@ export class DescriptionDialogComponent implements OnInit {
     validators: [CustomValidators.requiredTrimmed],
   });
 
-  get currentProject(): ProjectOverview | null {
-    return this.config.data ? this.config.data.currentProject || null : null;
+  get currentMetadata(): ProjectOverview | null {
+    return this.config.data ? this.config.data.currentMetadata || null : null;
   }
 
   ngOnInit(): void {
-    if (this.currentProject && this.currentProject.description) {
-      this.descriptionControl.setValue(this.currentProject.description);
+    if (this.currentMetadata && this.currentMetadata.description) {
+      this.descriptionControl.setValue(this.currentMetadata.description);
     }
   }
 

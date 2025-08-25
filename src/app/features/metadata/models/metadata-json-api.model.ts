@@ -1,4 +1,10 @@
-import { ApiData, ContributorResponse, LicenseRecordJsonApi } from '@osf/shared/models';
+import {
+  ApiData,
+  ContributorResponse,
+  InstitutionsJsonApiResponse,
+  LicenseDataJsonApi,
+  LicenseRecordJsonApi,
+} from '@osf/shared/models';
 
 export interface MetadataJsonApiResponse {
   data: MetadataJsonApi;
@@ -6,7 +12,7 @@ export interface MetadataJsonApiResponse {
 
 export type MetadataJsonApi = ApiData<MetadataAttributesJsonApi, MetadataEmbedsJsonApi, null, null>;
 
-interface MetadataAttributesJsonApi {
+export interface MetadataAttributesJsonApi {
   title: string;
   description: string;
   tags: string[];
@@ -22,6 +28,16 @@ interface MetadataEmbedsJsonApi {
   // affiliated_institutions: ApiData<InstitutionAttributesJsonApi, null, null, null>[];
   bibliographic_contributors: {
     data: ContributorResponse[];
+  };
+  identifiers: {
+    data: { id: string; type: string; attributes: { category: string; value: string } }[];
+  };
+  license: {
+    data: LicenseDataJsonApi;
+  };
+  affiliated_institutions: InstitutionsJsonApiResponse;
+  provider?: {
+    data: { id: string; type: string; attributes: { name: string } };
   };
 }
 
