@@ -8,17 +8,10 @@
     [rightControls]="allAccordionData"
     [title]="title()"
   >
-    <div class="flex align-items-baseline gap-2">
-      <i class="fas fa-minus text-sm icon-space"></i>
-      <span>
-        {{ subscriptionEvent.Comments | notificationDescription: notifications()?.[0]?.frequency | translate }}
-      </span>
-    </div>
-
     <div class="flex align-items-baseline gap-2 mt-2">
       <i class="fas fa-minus text-sm icon-space"></i>
       <span>
-        {{ subscriptionEvent.FileUpdated | notificationDescription: notifications()?.[1]?.frequency | translate }}
+        {{ subscriptionEvent.FileUpdated | notificationDescription: notifications()[0].frequency | translate }}
       </span>
     </div>
   </osf-project-detail-setting-accordion>

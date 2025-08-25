@@ -20,9 +20,10 @@ export class NotificationSubscriptionService {
 
   getAllGlobalNotificationSubscriptions(nodeId?: string): Observable<NotificationSubscription[]> {
     let params: Record<string, string>;
+
     if (nodeId) {
       params = {
-        'filter[id]': `${nodeId}_file_updated,${nodeId}_comments`,
+        'filter[id]': `${nodeId}_file_updated`,
       };
     } else {
       params = {
@@ -46,7 +47,7 @@ export class NotificationSubscriptionService {
     const request = NotificationSubscriptionMapper.toUpdateRequest(id, frequency, isNodeSubscription);
 
     return this.jsonApiService
-      .patch<NotificationSubscriptionGetResponseJsonApi>(`${this.baseUrl}/${id}/`, request)
+      .patch<NotificationSubscriptionGetResponseJsonApi>(`${this.baseUrl}${id}/`, request)
       .pipe(map((response) => NotificationSubscriptionMapper.fromGetResponse(response)));
   }
 }

@@ -35,11 +35,6 @@
         [title]="title()"
       />
 
-      <osf-settings-commenting-card
-        (anyoneCanCommentChange)="onAnyoneCanCommentRequestChange($event)"
-        [anyoneCanComment]="anyoneCanComment()"
-      />
-
       <osf-project-setting-notifications
         (notificationEmitValue)="onNotificationRequestChange($event)"
         [title]="title()"

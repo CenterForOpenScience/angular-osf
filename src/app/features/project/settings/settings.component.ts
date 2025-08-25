@@ -23,7 +23,6 @@ import { DeleteViewOnlyLink, FetchViewOnlyLinks, ViewOnlyLinkSelectors } from '@
 import {
   ProjectSettingNotificationsComponent,
   SettingsAccessRequestsCardComponent,
-  SettingsCommentingCardComponent,
   SettingsProjectAffiliationComponent,
   SettingsProjectFormCardComponent,
   SettingsRedirectLinkComponent,
@@ -54,7 +53,6 @@ import {
     SettingsViewOnlyLinksCardComponent,
     SettingsAccessRequestsCardComponent,
     SettingsWikiCardComponent,
-    SettingsCommentingCardComponent,
     SettingsRedirectLinkComponent,
     SettingsProjectAffiliationComponent,
     ProjectSettingNotificationsComponent,
@@ -150,18 +148,13 @@ export class SettingsComponent implements OnInit {
     this.syncSettingsChanges('anyone_can_edit_wiki', newValue);
   }
 
-  onAnyoneCanCommentRequestChange(newValue: boolean): void {
-    this.anyoneCanComment.set(newValue);
-    this.syncSettingsChanges('anyone_can_comment', newValue);
-  }
-
   onRedirectUrlDataRequestChange(data: RedirectLinkDataModel): void {
     this.redirectUrlData.set(data);
     this.syncSettingsChanges('redirectUrl', data);
   }
 
   onNotificationRequestChange(data: { event: SubscriptionEvent; frequency: SubscriptionFrequency }): void {
-    const id = `${'n5str'}_${data.event}`;
+    const id = `${this.projectId()}_${data.event}`;
     const frequency = data.frequency;
 
     this.loaderService.show();
