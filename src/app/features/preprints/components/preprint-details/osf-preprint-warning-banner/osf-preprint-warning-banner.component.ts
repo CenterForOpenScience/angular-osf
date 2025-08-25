@@ -2,7 +2,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Message } from 'primeng/message';
 
-// import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 import { IconComponent } from '@shared/components';
