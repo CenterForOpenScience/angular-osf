@@ -51,7 +51,7 @@ import {
   SearchInputComponent,
   SubHeaderComponent,
 } from '@shared/components';
-import { ConfiguredStorageAddon, FilesTreeActions, OsfFile } from '@shared/models';
+import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 import { CreateFolderDialogComponent } from '../../components';
@@ -346,7 +346,7 @@ export class FilesComponent {
     this.router.navigate([file.guid], { relativeTo: this.activeRoute });
   }
 
-  getAddonName(addons: ConfiguredStorageAddon[], provider: string): string {
+  getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
     if (provider === 'osfstorage') {
       return 'Osf Storage';
     } else {

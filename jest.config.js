@@ -2,7 +2,7 @@ module.exports = {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   globalSetup: '<rootDir>/jest.global-setup.ts',
-  collectCoverage: true,
+  collectCoverage: false,
   coverageReporters: ['json-summary', 'lcov', 'clover'],
   moduleNameMapper: {
     '^@osf/(.*)$': '<rootDir>/src/app/$1',
@@ -30,6 +30,7 @@ module.exports = {
     'src/app/**/*.{ts,js}',
     '!src/app/app.config.ts',
     '!src/app/**/*.routes.{ts.js}',
+    '!src/app/**/*.actions.{ts.js}',
     '!src/app/**/*.models.{ts.js}',
     '!src/app/**/*.model.{ts.js}',
     '!src/app/**/*.route.{ts,js}',
@@ -45,10 +46,10 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   coverageThreshold: {
     global: {
-      branches: 14.15,
-      functions: 14.83,
-      lines: 41.15,
-      statements: 41.63,
+      branches: 14.27,
+      functions: 15.55,
+      lines: 42.6,
+      statements: 43.2,
     },
   },
   watchPathIgnorePatterns: [

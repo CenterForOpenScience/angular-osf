@@ -1,6 +1,6 @@
-import { Addon, AuthorizedAddon, ConfiguredAddon } from '@shared/models';
+import { AddonModel, AuthorizedAddon, ConfiguredStorageAddonModel } from '@shared/models';
 
-export function isStorageAddon(addon: Addon | AuthorizedAddon | ConfiguredAddon | null): boolean {
+export function isStorageAddon(addon: AddonModel | AuthorizedAddon | ConfiguredStorageAddonModel | null): boolean {
   if (!addon) return false;
 
   return (
@@ -10,7 +10,7 @@ export function isStorageAddon(addon: Addon | AuthorizedAddon | ConfiguredAddon 
   );
 }
 
-export function isCitationAddon(addon: Addon | AuthorizedAddon | ConfiguredAddon | null): boolean {
+export function isCitationAddon(addon: AddonModel | AuthorizedAddon | ConfiguredStorageAddonModel | null): boolean {
   if (!addon) return false;
 
   return (
@@ -20,19 +20,19 @@ export function isCitationAddon(addon: Addon | AuthorizedAddon | ConfiguredAddon
   );
 }
 
-export function getAddonTypeString(addon: Addon | AuthorizedAddon | ConfiguredAddon | null): string {
+export function getAddonTypeString(addon: AddonModel | AuthorizedAddon | ConfiguredStorageAddonModel | null): string {
   if (!addon) return '';
 
   return isStorageAddon(addon) ? 'storage' : 'citation';
 }
 
-export function isAuthorizedAddon(addon: Addon | AuthorizedAddon | ConfiguredAddon | null): boolean {
+export function isAuthorizedAddon(addon: AddonModel | AuthorizedAddon | ConfiguredStorageAddonModel | null): boolean {
   if (!addon) return false;
 
   return addon.type === 'authorized-storage-accounts' || addon.type === 'authorized-citation-accounts';
 }
 
-export function isConfiguredAddon(addon: Addon | AuthorizedAddon | ConfiguredAddon | null): boolean {
+export function isConfiguredAddon(addon: AddonModel | AuthorizedAddon | ConfiguredStorageAddonModel | null): boolean {
   if (!addon) return false;
 
   return addon.type === 'configured-storage-addons' || addon.type === 'configured-citation-addons';
