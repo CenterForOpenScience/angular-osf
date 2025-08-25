@@ -33,22 +33,24 @@ export class GoogleFilePickerDownloadService {
    */
   loadScript(): Observable<void> {
     return new Observable<void>((observer: Subscriber<void>) => {
-      new Promise(() => {
-        if (this.scriptLoaded) {
-          observer.next();
-          observer.complete();
-        }
+      const existingScript = this.document.querySelector(`script[src="${this.scriptUrl}"]`);
+      if (existingScript || this.scriptLoaded) {
+        observer.next();
+        observer.complete();
+        return;
+      }
 
-        const script = this.document.createElement('script');
-        script.src = this.scriptUrl;
-        script.onload = () => {
-          this.scriptLoaded = true;
-          observer.next();
-          observer.complete();
-        };
-        script.onerror = () => observer.error('Failed to load Google Picker script');
-        this.document.body.appendChild(script);
-      });
+      const script = this.document.createElement('script');
+      script.src = this.scriptUrl;
+      script.async = true;
+      script.defer = true;
+      script.onload = () => {
+        this.scriptLoaded = true;
+        observer.next();
+        observer.complete();
+      };
+      script.onerror = () => observer.error('Failed to load Google Picker script');
+      this.document.body.appendChild(script);
     });
   }
 }

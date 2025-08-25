@@ -23,8 +23,9 @@ describe('Service: Google File Picker Download', () => {
     mockDocument = {
       createElement: jest.fn(() => mockScriptElement),
       body: {
-        appendChild: jest.fn(),
-      },
+        appendChild: jest.fn((node: Node) => node),
+      } as any,
+      querySelector: jest.fn(),
     } as any;
 
     TestBed.configureTestingModule({
@@ -41,6 +42,8 @@ describe('Service: Google File Picker Download', () => {
       next: () => {
         expect(mockDocument.createElement).toHaveBeenCalledWith('script');
         expect(mockScriptElement.src).toBe('https://apis.google.com/js/api.js');
+        expect(mockScriptElement.async).toBeTruthy();
+        expect(mockScriptElement.defer).toBeTruthy();
         expect(mockDocument.body.appendChild).toHaveBeenCalledWith(mockScriptElement);
       },
       complete: () => {
@@ -56,6 +59,25 @@ describe('Service: Google File Picker Download', () => {
   });
 
   it('should emit error when script fails to load', (done) => {
+    const mockScriptElement: Partial<HTMLScriptElement> = {};
+
+    // Mock document
+    const mockDocument = {
+      createElement: jest.fn(() => mockScriptElement),
+      body: {
+        appendChild: jest.fn(() => {
+          // Simulate async error after appendChild
+          setTimeout(() => {
+            mockScriptElement.onerror?.(new Event('error'));
+          }, 0);
+        }),
+      },
+      querySelector: jest.fn(() => null),
+    };
+
+    // Re-instantiate service with mocked document
+    const service = new GoogleFilePickerDownloadService(mockDocument as unknown as Document);
+
     service.loadScript().subscribe({
       next: () => fail('Should not emit next on error'),
       error: (err) => {
@@ -63,7 +85,5 @@ describe('Service: Google File Picker Download', () => {
         done();
       },
     });
-
-    mockScriptElement.onerror();
   });
 });
