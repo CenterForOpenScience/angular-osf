@@ -4,7 +4,7 @@ export class HeaderStyleHelper {
 
     root.style.setProperty('--header-color', textColor);
     root.style.setProperty('--header-background-color', backgroundColor || '');
-    root.style.setProperty('--header-background-image-url', `url(${backgroundImageUrl})`);
+    root.style.setProperty('--header-background-image-url', `url(${backgroundImageUrl || ''})`);
   }
 
   static resetToDefaults() {

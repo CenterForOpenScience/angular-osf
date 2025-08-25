@@ -6,15 +6,7 @@
       <label class="input-label" for="project-title">
         {{ 'myProjects.createProject.title' | translate }}
       </label>
-      <input
-        pInputText
-        id="project-title"
-        type="text"
-        aria-required="true"
-        class="mt-2"
-        aria-describedby="project-title"
-        [formControlName]="ProjectFormControls.Title"
-      />
+      <input pInputText id="project-title" type="text" class="mt-2" [formControlName]="ProjectFormControls.Title" />
     </div>
 
     <div class="flex flex-column">
@@ -48,7 +40,7 @@
 
     <div class="flex justify-content-end w-full flex-0 border-top-1 pt-4 border-gray-300">
       <p-button
-        (click)="deleteProject.emit()"
+        (onClick)="deleteProject.emit()"
         severity="danger"
         [label]="'myProjects.settings.deleteProject' | translate"
         class="btn-full-width sm:w-10rem md:ml-auto"

@@ -6,6 +6,7 @@ export { PreprintsInstitutionFilterComponent } from './filters/preprints-institu
 export { PreprintsLicenseFilterComponent } from './filters/preprints-license-filter/preprints-license-filter.component';
 export { AdditionalInfoComponent } from './preprint-details/additional-info/additional-info.component';
 export { GeneralInformationComponent } from './preprint-details/general-information/general-information.component';
+export { ModerationStatusBannerComponent } from './preprint-details/moderation-status-banner/moderation-status-banner.component';
 export { PreprintFileSectionComponent } from './preprint-details/preprint-file-section/preprint-file-section.component';
 export { ShareAndDownloadComponent } from './preprint-details/share-and-downlaod/share-and-download.component';
 export { StatusBannerComponent } from './preprint-details/status-banner/status-banner.component';
@@ -19,6 +20,8 @@ export { PreprintsFilterChipsComponent } from '@osf/features/preprints/component
 export { PreprintsResourcesComponent } from '@osf/features/preprints/components/filters/preprints-resources/preprints-resources.component';
 export { PreprintsResourcesFiltersComponent } from '@osf/features/preprints/components/filters/preprints-resources-filters/preprints-resources-filters.component';
 export { PreprintsSubjectFilterComponent } from '@osf/features/preprints/components/filters/preprints-subject-filter/preprints-subject-filter.component';
+export { MakeDecisionComponent } from '@osf/features/preprints/components/preprint-details/make-decision/make-decision.component';
+export { PreprintTombstoneComponent } from '@osf/features/preprints/components/preprint-details/preprint-tombstone/preprint-tombstone.component';
 export { WithdrawDialogComponent } from '@osf/features/preprints/components/preprint-details/withdraw-dialog/withdraw-dialog.component';
 export { FileStepComponent } from '@osf/features/preprints/components/stepper/file-step/file-step.component';
 export { MetadataStepComponent } from '@osf/features/preprints/components/stepper/metadata-step/metadata-step.component';

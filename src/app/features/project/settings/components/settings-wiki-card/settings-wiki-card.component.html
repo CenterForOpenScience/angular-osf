@@ -3,7 +3,6 @@
 
   <div class="flex align-items-center w-full">
     <p-checkbox
-      ariaLabel="Checkbox for wiki"
       [binary]="true"
       [ngModel]="wikiEnabled()"
       (ngModelChange)="wikiChangeEmit.emit(wikiEnabled())"

@@ -14,6 +14,7 @@ import { UserState } from '@core/store/user';
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
 import { ToastService } from '@osf/shared/services';
+import { InstitutionsSearchState } from '@osf/shared/stores';
 import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 import { TranslateServiceMock } from '@shared/mocks';
 
@@ -35,7 +36,7 @@ describe('InstitutionsUsersComponent', () => {
         MockProvider(Router),
         TranslateServiceMock,
         MockProvider(ToastService),
-        provideStore([InstitutionsAdminState, UserState]),
+        provideStore([InstitutionsAdminState, UserState, InstitutionsSearchState]),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],

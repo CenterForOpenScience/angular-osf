@@ -8,14 +8,16 @@
       </section>
 
       @if (affiliatedInstitutions().length) {
-        <section class="flex flex-column gap-2">
-          <h3>{{ 'preprints.preprintStepper.review.sections.metadata.affiliatedInstitutions' | translate }}</h3>
+        <osf-affiliated-institutions-view [institutions]="affiliatedInstitutions()" />
+      }
 
-          <div class="flex gap-2">
-            @for (institution of affiliatedInstitutions(); track institution.id) {
-              <img alt="Institution logo" [src]="institution.assets.logo" height="45" />
-            }
-          </div>
+      @if (preprintValue.nodeId) {
+        <section class="flex flex-column gap-2">
+          <h3>{{ 'preprints.details.supplementalMaterials' | translate }}</h3>
+          <a [routerLink]="nodeLink()" class="flex gap-1">
+            {{ nodeLink() }}
+            <osf-icon iconClass="fa fa-external-link-alt" />
+          </a>
         </section>
       }
 
@@ -108,7 +110,10 @@
         </section>
       }
 
-      <osf-preprint-doi-section [preprintProvider]="preprintProvider()" />
+      <osf-preprint-doi-section
+        [preprintProvider]="preprintProvider()"
+        (preprintVersionSelected)="preprintVersionSelected.emit($event)"
+      />
     </div>
   }
 

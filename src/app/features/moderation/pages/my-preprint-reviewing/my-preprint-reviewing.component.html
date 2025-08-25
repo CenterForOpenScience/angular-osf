@@ -6,12 +6,12 @@
       <h2>{{ 'project.overview.recentActivity.title' | translate }}</h2>
 
       <div class="mt-4">
-        <osf-recent-activity-list
+        <osf-preprint-recent-activity-list
           [reviews]="preprintReviews()"
           [isLoading]="isReviewsLoading()"
           [totalCount]="preprintReviewsTotalCount()"
           (pageChanged)="pageChanged($event)"
-        ></osf-recent-activity-list>
+        ></osf-preprint-recent-activity-list>
       </div>
     </p-card>
 

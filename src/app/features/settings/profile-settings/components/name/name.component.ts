@@ -13,8 +13,8 @@ import { CustomValidators } from '@osf/shared/helpers';
 import { User } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
+import { hasNameChanges } from '../../helpers';
 import { NameForm } from '../../models';
-import { hasNameChanges } from '../../utils';
 import { CitationPreviewComponent } from '../citation-preview/citation-preview.component';
 import { NameFormComponent } from '../name-form/name-form.component';
 
@@ -105,7 +105,7 @@ export class NameComponent {
     });
   }
 
-  private hasFormChanges(): boolean {
+  hasFormChanges(): boolean {
     const user = this.currentUser();
     if (!user) return false;
 

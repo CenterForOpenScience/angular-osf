@@ -11,11 +11,13 @@
     class="w-6 btn-full-width md:w-auto"
     [label]="'common.buttons.discardChanges' | translate"
     severity="info"
+    [disabled]="!hasFormChanges()"
     (onClick)="discardChanges()"
   />
   <p-button
     class="w-6 btn-full-width md:w-auto"
     [label]="'common.buttons.save' | translate"
+    [disabled]="!hasFormChanges()"
     (onClick)="saveSocialLinks()"
   />
 </div>

@@ -10,7 +10,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { AddonFormControls, CredentialsFormat } from '@shared/enums';
-import { Addon, AddonForm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
+import { AddonForm, AddonModel, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonFormService } from '@shared/services/addons/addon-form.service';
 
 @Component({
@@ -22,7 +22,7 @@ import { AddonFormService } from '@shared/services/addons/addon-form.service';
 export class AddonSetupAccountFormComponent {
   private addonFormService = inject(AddonFormService);
 
-  addon = input.required<Addon | AuthorizedAddon>();
+  addon = input.required<AddonModel | AuthorizedAddon>();
   userReferenceId = input.required<string>();
   addonTypeString = input.required<string>();
   isSubmitting = input<boolean>(false);
@@ -33,12 +33,12 @@ export class AddonSetupAccountFormComponent {
 
   protected readonly formControls = AddonFormControls;
 
+  get isFormValid() {
+    return this.addonForm().valid;
+  }
+
   protected readonly addonForm = computed<FormGroup<AddonForm>>(() => {
     return this.addonFormService.initializeForm(this.addon());
-  });
-
-  protected readonly isFormValid = computed(() => {
-    return this.addonForm().valid;
   });
 
   protected readonly isAccessSecretKeysFormat = computed(() => {
@@ -63,7 +63,7 @@ export class AddonSetupAccountFormComponent {
   });
 
   protected handleSubmit(): void {
-    if (!this.isFormValid()) return;
+    if (!this.isFormValid) return;
 
     const formValue = this.addonForm().value;
     const payload = this.addonFormService.generateAuthorizedAddonPayload(

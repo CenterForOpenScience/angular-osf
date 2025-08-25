@@ -4,14 +4,14 @@
       {{ 'settings.profileSettings.education.title' | translate: { index: index() + 1 } }}
     </h2>
 
-    <div>
+    @if (showRemove()) {
       <p-button
         [label]="'common.buttons.remove' | translate"
         severity="danger"
         variant="text"
         (click)="remove.emit()"
       />
-    </div>
+    }
   </div>
 
   <div class="flex flex-column row-gap-4">

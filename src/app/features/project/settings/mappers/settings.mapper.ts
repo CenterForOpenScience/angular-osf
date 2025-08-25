@@ -1,8 +1,4 @@
-import {
-  ProjectSettingsData,
-  ProjectSettingsModel,
-  ProjectSettingsResponseModel,
-} from '@osf/features/project/settings/models';
+import { ProjectSettingsData, ProjectSettingsModel, ProjectSettingsResponseModel } from '../models';
 
 export class SettingsMapper {
   static fromResponse(

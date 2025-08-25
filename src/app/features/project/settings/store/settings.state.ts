@@ -1,38 +1,28 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { map, of, throwError } from 'rxjs';
+import { map, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { SettingsService } from '@osf/features/project/settings/services';
+import { handleSectionError } from '@osf/shared/helpers';
+import { NodeData } from '@osf/shared/models';
+import { MyResourcesService } from '@osf/shared/services';
+
+import { SettingsService } from '../services';
+
 import {
   DeleteProject,
   GetProjectDetails,
   GetProjectSettings,
   UpdateProjectDetails,
   UpdateProjectSettings,
-} from '@osf/features/project/settings/store/settings.actions';
-import { SettingsStateModel } from '@osf/features/project/settings/store/settings.model';
-import { NodeData } from '@shared/models';
-import { MyResourcesService } from '@shared/services';
-
-import { ProjectSettingsModel } from '../models';
+} from './settings.actions';
+import { SETTINGS_STATE_DEFAULTS, SettingsStateModel } from './settings.model';
 
 @State<SettingsStateModel>({
   name: 'settings',
-  defaults: {
-    settings: {
-      data: {} as ProjectSettingsModel,
-      isLoading: false,
-      error: null,
-    },
-    projectDetails: {
-      data: {} as NodeData,
-      isLoading: false,
-      error: null,
-    },
-  },
+  defaults: SETTINGS_STATE_DEFAULTS,
 })
 @Injectable()
 export class SettingsState {
@@ -45,17 +35,6 @@ export class SettingsState {
     return !lastFetched || Date.now() - lastFetched > this.REFRESH_INTERVAL;
   }
 
-  private handleError(ctx: StateContext<SettingsStateModel>, section: keyof SettingsStateModel, error: Error) {
-    ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
-  }
-
   @Action(GetProjectSettings)
   getProjectSettings(ctx: StateContext<SettingsStateModel>, action: GetProjectSettings) {
     const state = ctx.getState();
@@ -64,11 +43,7 @@ export class SettingsState {
 
     if (cached.id === action.projectId && !shouldRefresh) {
       return of(cached).pipe(
-        tap(() =>
-          ctx.patchState({
-            settings: { ...state.settings, isLoading: false, error: null },
-          })
-        )
+        tap(() => ctx.patchState({ settings: { ...state.settings, isLoading: false, error: null } }))
       );
     }
 
@@ -79,6 +54,7 @@ export class SettingsState {
     return this.settingsService.getProjectSettings(action.projectId).pipe(
       tap((settings) => {
         settings.lastFetched = Date.now();
+
         ctx.patchState({
           settings: {
             data: settings,
@@ -87,7 +63,7 @@ export class SettingsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'settings', error))
+      catchError((error) => handleSectionError(ctx, 'settings', error))
     );
   }
 
@@ -107,9 +83,7 @@ export class SettingsState {
       );
     }
 
-    ctx.patchState({
-      projectDetails: { ...state.projectDetails, isLoading: true, error: null },
-    });
+    ctx.patchState({ projectDetails: { ...state.projectDetails, isLoading: true, error: null } });
 
     return this.myProjectService.getProjectById(action.projectId).pipe(
       map((response) => response?.data as NodeData),
@@ -127,7 +101,7 @@ export class SettingsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'projectDetails', error))
+      catchError((error) => handleSectionError(ctx, 'projectDetails', error))
     );
   }
 
@@ -138,13 +112,13 @@ export class SettingsState {
         ctx.patchState({
           projectDetails: {
             ...ctx.getState().projectDetails,
-            data: updatedProject.data,
+            data: updatedProject,
             isLoading: false,
             error: null,
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'projectDetails', error))
+      catchError((error) => handleSectionError(ctx, 'projectDetails', error))
     );
   }
 
@@ -173,7 +147,7 @@ export class SettingsState {
             error: error?.message,
           },
         });
-        return this.handleError(ctx, 'settings', error);
+        return handleSectionError(ctx, 'settings', error);
       })
     );
   }

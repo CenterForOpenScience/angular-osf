@@ -29,7 +29,7 @@ export class PreprintModerationService {
   private readonly jsonApiService = inject(JsonApiService);
 
   getPreprintProviders(): Observable<PreprintProviderModerationInfo[]> {
-    const baseUrl = `${environment.apiUrl}/preprint_providers/?filter[permissions]=view_actions,set_up_moderation`;
+    const baseUrl = `${environment.apiUrl}/providers/preprints/?filter[permissions]=view_actions,set_up_moderation`;
 
     return this.jsonApiService
       .get<JsonApiResponse<PreprintRelatedCountJsonApi[], null>>(baseUrl)

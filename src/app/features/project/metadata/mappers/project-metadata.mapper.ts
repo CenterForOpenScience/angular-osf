@@ -1,4 +1,6 @@
 import { ProjectOverview, ProjectOverviewContributor } from '@osf/features/project/overview/models';
+import { InstitutionsMapper } from '@shared/mappers';
+import { InstitutionsJsonApiResponse } from '@shared/models';
 
 export class ProjectMetadataMapper {
   static fromMetadataApiResponse(response: Record<string, unknown>): ProjectOverview {
@@ -40,6 +42,9 @@ export class ProjectMetadataMapper {
       isCollection: attributes['collection'] as boolean,
       accessRequestsEnabled: attributes['access_requests_enabled'] as boolean,
       wikiEnabled: attributes['wiki_enabled'] as boolean,
+      affiliatedInstitutions: InstitutionsMapper.fromInstitutionsResponse(
+        embeds['affiliated_institutions'] as InstitutionsJsonApiResponse
+      ),
       currentUserCanComment: attributes['current_user_can_comment'] as boolean,
       currentUserPermissions: (attributes['current_user_permissions'] as string[]) || [],
       currentUserIsContributor: attributes['current_user_is_contributor'] as boolean,

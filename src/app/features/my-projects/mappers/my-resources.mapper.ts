@@ -1,4 +1,4 @@
-import { MyResourcesItem, MyResourcesItemGetResponseJsonApi } from 'src/app/shared/models/my-resources';
+import { MyResourcesItem, MyResourcesItemGetResponseJsonApi } from '@osf/shared/models';
 
 export class MyResourcesMapper {
   static fromResponse(response: MyResourcesItemGetResponseJsonApi): MyResourcesItem {

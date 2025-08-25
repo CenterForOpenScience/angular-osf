@@ -1,4 +1,3 @@
-@use "assets/styles/variables" as var;
 @use "assets/styles/mixins" as mix;
 
 .search-container {
@@ -7,16 +6,16 @@
   .search-icon {
     position: absolute;
     left: mix.rem(12px);
-    color: var.$grey-1;
+    color: var(--grey-1);
   }
 
   .search-input {
-    color: var.$dark-blue-1;
+    color: var(--dark-blue-1);
     padding-left: mix.rem(40px);
     width: 100%;
 
     &::placeholder {
-      color: var.$grey-1;
+      color: var(--grey-1);
     }
   }
 

@@ -1,5 +1,6 @@
 import { StringOrNull } from '@osf/shared/helpers';
-import { BrandDataJsonApi } from '@osf/shared/models';
+import { ReviewPermissions } from '@shared/enums/review-permissions.enum';
+import { BrandDataJsonApi } from '@shared/models';
 
 import { ProviderReviewsWorkflow } from '../enums';
 
@@ -16,6 +17,7 @@ export interface PreprintProviderDetailsJsonApi {
     domain: string;
     footer_links: string;
     preprint_word: PreprintWord;
+    permissions: ReviewPermissions[];
     assets: {
       wide_white: string;
       square_color_no_transparent: string;

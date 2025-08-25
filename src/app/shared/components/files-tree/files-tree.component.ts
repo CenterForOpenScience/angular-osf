@@ -25,8 +25,8 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { MoveFileDialogComponent, RenameFileDialogComponent } from '@osf/features/project/files/components';
-import { embedDynamicJs, embedStaticHtml } from '@osf/features/project/files/models';
+import { MoveFileDialogComponent, RenameFileDialogComponent } from '@osf/features/files/components';
+import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { FileMenuType } from '@osf/shared/enums';
 import { FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
 import { StopPropagationDirective } from '@shared/directives';
@@ -128,9 +128,9 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
     if (files && files.length > 0) {
       this.customConfirmationService.confirmAccept({
-        headerKey: 'project.files.dialogs.uploadFile.title',
+        headerKey: 'files.dialogs.uploadFile.title',
         messageParams: { name: files[0].name },
-        messageKey: 'project.files.dialogs.uploadFile.message',
+        messageKey: 'files.dialogs.uploadFile.message',
         acceptLabelKey: 'common.buttons.upload',
         onConfirm: () => this.uploadFileConfirmed.emit(files[0]),
       });
@@ -149,7 +149,13 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   openEntry(file: OsfFile) {
     if (file.kind === 'file') {
-      this.entryFileClicked.emit(file);
+      if (file.guid) {
+        this.entryFileClicked.emit(file);
+      } else {
+        this.filesService.getFileGuid(file.id).subscribe((file) => {
+          this.entryFileClicked.emit(file);
+        });
+      }
     } else {
       this.actions().setFilesIsLoading?.(true);
       this.folderIsOpening.emit(true);
@@ -247,9 +253,9 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   confirmDelete(file: OsfFile): void {
     this.customConfirmationService.confirmDelete({
-      headerKey: 'project.files.dialogs.deleteFile.title',
+      headerKey: 'files.dialogs.deleteFile.title',
       messageParams: { name: file.name },
-      messageKey: 'project.files.dialogs.deleteFile.message',
+      messageKey: 'files.dialogs.deleteFile.message',
       acceptLabelKey: 'common.buttons.remove',
       onConfirm: () => this.deleteEntry(file.links.delete),
     });
@@ -265,7 +271,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       .open(RenameFileDialogComponent, {
         width: '448px',
         focusOnShow: false,
-        header: this.translateService.instant('project.files.dialogs.renameFile.title'),
+        header: this.translateService.instant('files.dialogs.renameFile.title'),
         closeOnEscape: true,
         modal: true,
         closable: true,
@@ -319,8 +325,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       .subscribe(() => {
         const header =
           action === 'move'
-            ? this.translateService.instant('project.files.dialogs.moveFile.title')
-            : this.translateService.instant('project.files.dialogs.copyFile.title');
+            ? this.translateService.instant('files.dialogs.moveFile.title')
+            : this.translateService.instant('files.dialogs.copyFile.title');
 
         this.dialogService.open(MoveFileDialogComponent, {
           width: '552px',
@@ -351,7 +357,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     navigator.clipboard
       .writeText(embedHtml)
       .then(() => {
-        this.toastService.showSuccess(this.translateService.instant('project.files.toast.copiedToClipboard'));
+        this.toastService.showSuccess('files.toast.copiedToClipboard');
       })
       .catch((err) => {
         this.toastService.showError(err.message);
@@ -363,12 +369,12 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     const dropNode = event.dropNode as OsfFile;
 
     this.customConfirmationService.confirmAccept({
-      headerKey: 'project.files.dialogs.moveFile.title',
+      headerKey: 'files.dialogs.moveFile.title',
       messageParams: {
         dragNodeName: dragNode.name,
         dropNodeName: dropNode.previousFolder ? 'parent folder' : dropNode.name,
       },
-      messageKey: 'project.files.dialogs.moveFile.message',
+      messageKey: 'files.dialogs.moveFile.message',
       onConfirm: async () => {
         await this.dropFileToFolder(event);
       },

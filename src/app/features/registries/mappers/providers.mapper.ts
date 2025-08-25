@@ -26,6 +26,7 @@ export class ProvidersMapper {
         topNavLogoImageUrl: brandRaw.attributes.topnav_logo_image,
         primaryColor: brandRaw.attributes.primary_color,
         secondaryColor: brandRaw.attributes.secondary_color,
+        backgroundColor: brandRaw.attributes.background_color,
       },
       iri: response.links.iri,
     };

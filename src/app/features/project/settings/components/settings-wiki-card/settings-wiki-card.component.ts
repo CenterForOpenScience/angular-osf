@@ -6,8 +6,8 @@ import { Checkbox } from 'primeng/checkbox';
 import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { ProjectDetailSettingAccordionComponent } from '@osf/features/project/settings/components';
-import { RightControl } from '@osf/features/project/settings/models';
+import { RightControl } from '../../models';
+import { ProjectDetailSettingAccordionComponent } from '../project-detail-setting-accordion/project-detail-setting-accordion.component';
 
 @Component({
   selector: 'osf-settings-wiki-card',

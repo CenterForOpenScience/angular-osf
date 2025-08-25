@@ -34,6 +34,7 @@ export class UserMapper {
       social: user.attributes.social,
       defaultRegionId: user.relationships?.default_region?.data?.id,
       allowIndexing: user.attributes?.allow_indexing,
+      canViewReviews: user.attributes.can_view_reviews === true, //do not simplify it
     };
   }
 

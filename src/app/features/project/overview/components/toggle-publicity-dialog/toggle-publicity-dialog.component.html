@@ -4,8 +4,7 @@
     <p-button
       [label]="'project.overview.dialog.makePublic.cancelButton' | translate"
       severity="info"
-      (click)="dialogRef.close()"
-      class="btn-half-width"
+      (onClick)="dialogRef.close()"
       [disabled]="isSubmitting()"
     />
     <p-button
@@ -14,8 +13,7 @@
           ? ('project.overview.dialog.makePrivate.confirmButton' | translate)
           : ('project.overview.dialog.makePublic.confirmButton' | translate)
       "
-      (click)="toggleProjectPublicity()"
-      class="btn-half-width"
+      (onClick)="toggleProjectPublicity()"
       [disabled]="isSubmitting()"
       [loading]="isSubmitting()"
     />

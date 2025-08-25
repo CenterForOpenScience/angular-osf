@@ -96,14 +96,55 @@ const ADDONS_DEFAULTS: AddonsStateModel = {
   },
 };
 
+/**
+ * NGXS state class for managing addon-related data and actions.
+ *
+ * Handles loading and storing both storage and citation addons as well as their configurations.
+ * This state includes logic for retrieving addons, patching loading states, handling errors,
+ * and providing selectors for access within the application.
+ *
+ * @see AddonsStateModel
+ * @see ADDONS_DEFAULTS
+ * @see addons.actions.ts
+ * @see addons.selectors.ts
+ */
 @State<AddonsStateModel>({
   name: 'addons',
   defaults: ADDONS_DEFAULTS,
 })
 @Injectable()
 export class AddonsState {
+  /**
+   * Injected instance of {@link AddonsService}, used to interact with the addons API.
+   *
+   * Provides methods for retrieving and mapping addon configurations, including
+   * storage and citation addon types.
+   *
+   * @see AddonsService
+   */
   addonsService = inject(AddonsService);
 
+  /**
+   * NGXS action handler for retrieving the list of storage addons.
+   *
+   * Dispatching this action sets the `storageAddons` slice of state into a loading state,
+   * then asynchronously fetches storage addon configurations from the `AddonsService`.
+   *
+   * On success:
+   * - The retrieved addon list is stored in `storageAddons.data`.
+   * - `isLoading` is set to `false` and `error` is cleared.
+   *
+   * On failure:
+   * - Invokes `handleError` to populate the `error` state and stop the loading flag.
+   *
+   * @param ctx - NGXS `StateContext` instance for `AddonsStateModel`.
+   * Used to read and mutate the application state.
+   *
+   * @returns An observable that completes once the addon data has been loaded or the error is handled.
+   *
+   * @example
+   * this.store.dispatch(new GetStorageAddons());
+   */
   @Action(GetStorageAddons)
   getStorageAddons(ctx: StateContext<AddonsStateModel>) {
     const state = ctx.getState();
@@ -200,6 +241,22 @@ export class AddonsState {
     );
   }
 
+  /**
+   * Handles the NGXS action `GetConfiguredStorageAddons`.
+   *
+   * This method is responsible for retrieving a list of configured storage addons
+   * associated with a specific `referenceId` (e.g., a node or registration).
+   *
+   * It sets the loading state before initiating the request and patches the store
+   * with the resulting data or error upon completion.
+   *
+   * @param ctx - The NGXS `StateContext` used to read and mutate the `AddonsStateModel`.
+   * @param action - The dispatched `GetConfiguredStorageAddons` action, which contains the `referenceId` used to fetch data.
+   * @returns An `Observable` that emits when the addons are successfully fetched or an error is handled.
+   *
+   * @example
+   * store.dispatch(new GetConfiguredStorageAddons('abc123'));
+   */
   @Action(GetConfiguredStorageAddons)
   getConfiguredStorageAddons(ctx: StateContext<AddonsStateModel>, action: GetConfiguredStorageAddons) {
     const state = ctx.getState();
@@ -555,6 +612,23 @@ export class AddonsState {
     });
   }
 
+  /**
+   * Handles errors by patching the specified section of the state with error information
+   * and marking loading/submitting flags as false.
+   *
+   * This method is used in catchError operators within NGXS actions to ensure consistent
+   * error handling across all async state models.
+   *
+   * @param ctx - The NGXS StateContext instance for the AddonsStateModel.
+   * @param section - The specific section of the AddonsStateModel to update (e.g., 'storageAddons').
+   * @param error - The error object caught during an observable operation.
+   * @returns An observable that rethrows the provided error.
+   *
+   * @example
+   * return this.addonsService.getAddons('storage').pipe(
+   *   catchError(error => this.handleError(ctx, 'storageAddons', error))
+   * );
+   */
   private handleError(ctx: StateContext<AddonsStateModel>, section: keyof AddonsStateModel, error: Error) {
     ctx.patchState({
       [section]: {

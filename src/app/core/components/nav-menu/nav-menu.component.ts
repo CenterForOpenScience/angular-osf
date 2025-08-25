@@ -17,7 +17,9 @@ import { RouteContext } from '@osf/core/models';
 import { AuthService } from '@osf/core/services';
 import { UserSelectors } from '@osf/core/store/user';
 import { IconComponent } from '@osf/shared/components';
+import { CurrentResourceType } from '@osf/shared/enums';
 import { WrapFnPipe } from '@osf/shared/pipes';
+import { CurrentResourceSelectors } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-nav-menu',
@@ -33,6 +35,7 @@ export class NavMenuComponent {
   private readonly authService = inject(AuthService);
 
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
+  private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
 
   protected readonly mainMenuItems = computed(() => {
     const isAuthenticated = this.isAuthenticated();
@@ -41,9 +44,14 @@ export class NavMenuComponent {
     const routeContext: RouteContext = {
       resourceId: this.currentResourceId(),
       providerId: this.currentProviderId(),
-      isProject: this.isProjectRoute() && !this.isRegistryRoute() && !this.isPreprintRoute(),
-      isRegistry: this.isRegistryRoute(),
+      isProject:
+        this.currentResource()?.type === CurrentResourceType.Projects &&
+        this.currentResourceId() === this.currentResource()?.id,
+      isRegistry:
+        this.currentResource()?.type === CurrentResourceType.Registrations &&
+        this.currentResourceId() === this.currentResource()?.id,
       isPreprint: this.isPreprintRoute(),
+      preprintReviewsPageVisible: this.canUserViewReviews(),
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
     };
@@ -65,10 +73,9 @@ export class NavMenuComponent {
 
   protected readonly currentResourceId = computed(() => this.currentRoute().resourceId);
   protected readonly currentProviderId = computed(() => this.currentRoute().providerId);
-  protected readonly isProjectRoute = computed(() => !!this.currentResourceId());
   protected readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
-  protected readonly isRegistryRoute = computed(() => this.currentRoute().isRegistryRoute);
   protected readonly isPreprintRoute = computed(() => this.currentRoute().isPreprintRoute);
+  protected readonly canUserViewReviews = select(UserSelectors.getCanViewReviews);
 
   private getRouteInfo() {
     const urlSegments = this.router.url.split('/').filter((segment) => segment);
@@ -76,14 +83,12 @@ export class NavMenuComponent {
     const resourceId = this.route.firstChild?.snapshot.params['id'] || resourceFromQueryParams;
     const providerId = this.route.firstChild?.snapshot.params['providerId'];
     const isCollectionsWithId = urlSegments[0] === 'collections' && urlSegments[1] && urlSegments[1] !== '';
-    const isRegistryRoute = urlSegments[0] === 'registries' && !!urlSegments[2];
     const isPreprintRoute = urlSegments[0] === 'preprints' && !!urlSegments[2];
 
     return {
       resourceId,
       providerId,
       isCollectionsWithId,
-      isRegistryRoute,
       isPreprintRoute,
     };
   }

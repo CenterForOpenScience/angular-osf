@@ -10,15 +10,16 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { WikiComponent } from '@osf/features/project/wiki/wiki.component';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ToastService } from '@osf/shared/services';
-
-import { CompareSectionComponent } from './components/compare-section/compare-section.component';
-import { EditSectionComponent } from './components/edit-section/edit-section.component';
-import { ViewSectionComponent } from './components/view-section/view-section.component';
-import { WikiListComponent } from './components/wiki-list/wiki-list.component';
-import { WikiState } from './store';
-import { WikiComponent } from './wiki.component';
+import {
+  CompareSectionComponent,
+  EditSectionComponent,
+  ViewSectionComponent,
+  WikiListComponent,
+} from '@shared/components/wiki';
+import { WikiState } from '@shared/stores';
 
 describe('WikiComponent', () => {
   let component: WikiComponent;

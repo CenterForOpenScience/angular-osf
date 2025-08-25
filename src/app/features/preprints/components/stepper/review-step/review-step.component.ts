@@ -8,10 +8,10 @@ import { Card } from 'primeng/card';
 import { Tag } from 'primeng/tag';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
+import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   FetchLicenses,
@@ -19,12 +19,12 @@ import {
   PreprintStepperSelectors,
   SubmitPreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { TruncatedTextComponent } from '@shared/components';
+import { AffiliatedInstitutionsViewComponent, TruncatedTextComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
-import { Institution } from '@shared/models';
 import { InterpolatePipe } from '@shared/pipes';
 import { ToastService } from '@shared/services';
 import { ContributorsSelectors, FetchSelectedSubjects, GetAllContributors, SubjectsSelectors } from '@shared/stores';
+import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
 
 @Component({
   selector: 'osf-review-step',
@@ -41,6 +41,7 @@ import { ContributorsSelectors, FetchSelectedSubjects, GetAllContributors, Subje
     AccordionHeader,
     AccordionPanel,
     InterpolatePipe,
+    AffiliatedInstitutionsViewComponent,
   ],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',
@@ -55,6 +56,7 @@ export class ReviewStepComponent implements OnInit {
     fetchLicenses: FetchLicenses,
     fetchPreprintProject: FetchPreprintProject,
     submitPreprint: SubmitPreprint,
+    fetchResourceInstitutions: FetchResourceInstitutions,
   });
   provider = input.required<PreprintProviderDetails | undefined>();
   preprint = select(PreprintStepperSelectors.getPreprint);
@@ -65,7 +67,7 @@ export class ReviewStepComponent implements OnInit {
     return this.contributors().filter((contributor) => contributor.isBibliographic);
   });
   subjects = select(SubjectsSelectors.getSelectedSubjects);
-  affiliatedInstitutions = signal<Institution[]>([]);
+  affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
   license = select(PreprintStepperSelectors.getPreprintLicense);
   preprintProject = select(PreprintStepperSelectors.getPreprintProject);
   licenseOptionsRecord = computed(() => {
@@ -80,15 +82,20 @@ export class ReviewStepComponent implements OnInit {
     this.actions.fetchSubjects(this.preprint()!.id, ResourceType.Preprint);
     this.actions.fetchLicenses();
     this.actions.fetchPreprintProject();
+    this.actions.fetchResourceInstitutions(this.preprint()!.id, ResourceType.Preprint);
   }
 
   submitPreprint() {
-    this.actions.submitPreprint().subscribe({
-      complete: () => {
-        this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
-        this.router.navigate(['/preprints', this.provider()!.id, this.preprint()!.id]);
-      },
-    });
+    if (this.preprint()?.reviewsState !== ReviewsState.Accepted) {
+      this.actions.submitPreprint().subscribe({
+        complete: () => {
+          this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
+          this.router.navigate(['/preprints', this.provider()!.id, this.preprint()!.id]);
+        },
+      });
+    } else {
+      this.toastService.showSuccess('preprints.preprintStepper.common.successMessages.preprintSubmitted');
+    }
   }
 
   cancelSubmission() {

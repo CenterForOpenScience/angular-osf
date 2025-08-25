@@ -1,8 +1,8 @@
 @use "assets/styles/mixins" as mix;
-@use "assets/styles/variables" as var;
 
 .services-background-image {
   background: url("/assets/images/preprints/preprints-services-background.png") center;
+  background-size: cover;
 }
 
 .registry-service-item {

@@ -1,0 +1,20 @@
+<p-select
+  class="w-full"
+  [loading]="isProjectsLoading()"
+  [options]="projectsOptions()"
+  [filter]="true"
+  (onFilter)="handleFilterSearch($event)"
+  optionLabel="label"
+  optionValue="value"
+  appendTo="body"
+  [emptyFilterMessage]="filterMessage()"
+  [emptyMessage]="filterMessage()"
+  (onChange)="handleProjectChange($event)"
+  [placeholder]="placeholder() | translate"
+  [(ngModel)]="selectedProject"
+  [showClear]="showClear() && !!selectedProject()"
+>
+  <ng-template #selectedItem let-selectedOption>
+    {{ selectedOption.label }}
+  </ng-template>
+</p-select>

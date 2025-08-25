@@ -8,7 +8,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { MOCK_STORE } from '@shared/mocks';
 
-import { MyReviewingNavigationComponent, RecentActivityListComponent } from '../../components';
+import { MyReviewingNavigationComponent, PreprintRecentActivityListComponent } from '../../components';
 import { PreprintModerationSelectors } from '../../store/preprint-moderation';
 
 import { MyPreprintReviewingComponent } from './my-preprint-reviewing.component';
@@ -30,7 +30,7 @@ describe('MyPreprintReviewingComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         MyPreprintReviewingComponent,
-        ...MockComponents(SubHeaderComponent, MyReviewingNavigationComponent, RecentActivityListComponent),
+        ...MockComponents(SubHeaderComponent, MyReviewingNavigationComponent, PreprintRecentActivityListComponent),
         MockPipe(TranslatePipe),
       ],
       providers: [MockProvider(Store, MOCK_STORE)],

@@ -1,6 +1,10 @@
+import { provideStates } from '@ngxs/store';
+
 import { Routes } from '@angular/router';
 
+import { AccountSettingsState } from './account-settings/store';
 import { developerAppsRoute } from './developer-apps/developer-apps.route';
+import { NotificationSubscriptionState } from './notifications/store';
 import { tokensAppsRoute } from './tokens/tokens.route';
 import { SettingsContainerComponent } from './settings-container.component';
 
@@ -8,6 +12,7 @@ export const settingsRoutes: Routes = [
   {
     path: '',
     component: SettingsContainerComponent,
+    providers: [provideStates([AccountSettingsState])],
     children: [
       {
         path: '',
@@ -46,6 +51,7 @@ export const settingsRoutes: Routes = [
         path: 'notifications',
         loadComponent: () =>
           import('./notifications/notifications.component').then((mod) => mod.NotificationsComponent),
+        providers: [provideStates([NotificationSubscriptionState])],
       },
     ],
   },

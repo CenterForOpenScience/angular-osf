@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 
 import { TranslateServiceMock } from '@shared/mocks';
 
@@ -8,10 +9,23 @@ describe('DataResourcesComponent', () => {
   let component: DataResourcesComponent;
   let fixture: ComponentFixture<DataResourcesComponent>;
 
+  const mockRoute = {
+    snapshot: {
+      data: {},
+    },
+    firstChild: null,
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [DataResourcesComponent],
-      providers: [TranslateServiceMock],
+      providers: [
+        TranslateServiceMock,
+        {
+          provide: ActivatedRoute,
+          useValue: mockRoute,
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DataResourcesComponent);
@@ -88,9 +102,9 @@ describe('DataResourcesComponent', () => {
     fixture.componentRef.setInput('resourceId', testId);
     fixture.detectChanges();
 
-    const result = component.getResourceLink();
+    const result = component.resourceLink;
 
-    expect(result).toBe('/registries/test-resource-id1/resources');
+    expect(result).toBe('/test-resource-id1/resources');
   });
 
   it('should return correct link with numeric resourceId', () => {
@@ -98,27 +112,27 @@ describe('DataResourcesComponent', () => {
     fixture.componentRef.setInput('resourceId', testId);
     fixture.detectChanges();
 
-    const result = component.getResourceLink();
+    const result = component.resourceLink;
 
-    expect(result).toBe('/registries/12345/resources');
+    expect(result).toBe('/12345/resources');
   });
 
   it('should return correct link with empty resourceId', () => {
     fixture.componentRef.setInput('resourceId', '');
     fixture.detectChanges();
 
-    const result = component.getResourceLink();
+    const result = component.resourceLink;
 
-    expect(result).toBe('/registries//resources');
+    expect(result).toBe('//resources');
   });
 
   it('should return correct link with undefined resourceId', () => {
     fixture.componentRef.setInput('resourceId', undefined);
     fixture.detectChanges();
 
-    const result = component.getResourceLink();
+    const result = component.resourceLink;
 
-    expect(result).toBe('/registries/undefined/resources');
+    expect(result).toBe('/undefined/resources');
   });
 
   it('should handle input updates', () => {

@@ -14,6 +14,18 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
+  GetNotificationSubscriptionsByNodeId,
+  NotificationSubscriptionSelectors,
+  UpdateNotificationSubscriptionForNodeId,
+} from '@osf/features/settings/notifications/store';
+import { SubHeaderComponent } from '@osf/shared/components';
+import { ProjectFormControls, ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
+import { CustomValidators } from '@osf/shared/helpers';
+import { UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
+import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
+import { DeleteViewOnlyLink, FetchViewOnlyLinks, ViewOnlyLinkSelectors } from '@osf/shared/stores';
+
+import {
   ProjectSettingNotificationsComponent,
   SettingsAccessRequestsCardComponent,
   SettingsCommentingCardComponent,
@@ -22,12 +34,8 @@ import {
   SettingsStorageLocationCardComponent,
   SettingsViewOnlyLinksCardComponent,
   SettingsWikiCardComponent,
-} from '@osf/features/project/settings/components';
-import {
-  ProjectDetailsModel,
-  ProjectSettingsAttributes,
-  ProjectSettingsData,
-} from '@osf/features/project/settings/models';
+} from './components';
+import { ProjectDetailsModel, ProjectSettingsAttributes, ProjectSettingsData } from './models';
 import {
   DeleteProject,
   GetProjectDetails,
@@ -35,18 +43,7 @@ import {
   SettingsSelectors,
   UpdateProjectDetails,
   UpdateProjectSettings,
-} from '@osf/features/project/settings/store';
-import {
-  GetNotificationSubscriptionsByNodeId,
-  NotificationSubscriptionSelectors,
-  UpdateNotificationSubscriptionForNodeId,
-} from '@osf/features/settings/notifications/store';
-import { CustomValidators } from '@osf/shared/helpers';
-import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
-import { DeleteViewOnlyLink, FetchViewOnlyLinks, ViewOnlyLinkSelectors } from '@osf/shared/stores';
-import { SubHeaderComponent } from '@shared/components';
-import { ProjectFormControls, ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
-import { UpdateNodeRequestModel, ViewOnlyLinkModel } from '@shared/models';
+} from './store';
 
 @Component({
   selector: 'osf-settings',

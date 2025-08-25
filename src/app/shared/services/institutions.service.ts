@@ -3,14 +3,14 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { GeneralInstitutionMapper, UserInstitutionsMapper } from '@shared/mappers';
+import { ResourceType } from '@shared/enums';
+import { InstitutionsMapper } from '@shared/mappers';
 import {
-  FetchInstitutionsJsonApi,
-  GetGeneralInstitutionsResponse,
   Institution,
-  InstitutionJsonApiModel,
-  JsonApiResponse,
-  UserInstitutionGetResponse,
+  InstitutionJsonApiResponse,
+  InstitutionsJsonApiResponse,
+  InstitutionsWithMetaJsonApiResponse,
+  InstitutionsWithTotalCount,
 } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
@@ -21,12 +21,12 @@ import { environment } from 'src/environments/environment';
 })
 export class InstitutionsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly urlMap = new Map<ResourceType, string>([
+    [ResourceType.Preprint, 'preprints'],
+    [ResourceType.Agent, 'users'],
+  ]);
 
-  getInstitutions(
-    pageNumber: number,
-    pageSize: number,
-    searchValue?: string
-  ): Observable<GetGeneralInstitutionsResponse> {
+  getInstitutions(pageNumber: number, pageSize: number, searchValue?: string): Observable<InstitutionsWithTotalCount> {
     const params: Record<string, unknown> = {};
 
     if (pageNumber) {
@@ -42,22 +42,22 @@ export class InstitutionsService {
     }
 
     return this.jsonApiService
-      .get<FetchInstitutionsJsonApi>(`${environment.apiUrl}/institutions`, params)
-      .pipe(map((response) => GeneralInstitutionMapper.adaptInstitutions(response)));
+      .get<InstitutionsWithMetaJsonApiResponse>(`${environment.apiUrl}/institutions/`, params)
+      .pipe(map((response) => InstitutionsMapper.fromResponseWithMeta(response)));
   }
 
   getUserInstitutions(): Observable<Institution[]> {
     const url = `${environment.apiUrl}/users/me/institutions/`;
 
     return this.jsonApiService
-      .get<JsonApiResponse<UserInstitutionGetResponse[], null>>(url)
-      .pipe(map((response) => response.data.map((item) => UserInstitutionsMapper.fromResponse(item))));
+      .get<InstitutionsJsonApiResponse>(url)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
   }
 
   getInstitutionById(institutionId: string): Observable<Institution> {
     return this.jsonApiService
-      .get<InstitutionJsonApiModel>(`${environment.apiUrl}/institutions/${institutionId}/`)
-      .pipe(map((result) => GeneralInstitutionMapper.adaptInstitution(result.data)));
+      .get<InstitutionJsonApiResponse>(`${environment.apiUrl}/institutions/${institutionId}/`)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionData(response.data)));
   }
 
   deleteUserInstitution(id: string, userId: string): Observable<void> {
@@ -65,5 +65,26 @@ export class InstitutionsService {
       data: [{ id: id, type: 'institutions' }],
     };
     return this.jsonApiService.delete(`${environment.apiUrl}/users/${userId}/relationships/institutions/`, payload);
+  }
+
+  getResourceInstitutions(resourceId: string, resourceType: ResourceType): Observable<Institution[]> {
+    const url = `${environment.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/institutions/`;
+
+    return this.jsonApiService
+      .get<InstitutionsJsonApiResponse>(url)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
+  }
+
+  updateResourceInstitutions(
+    resourceId: string,
+    resourceType: ResourceType,
+    institutions: Institution[]
+  ): Observable<void> {
+    const baseUrl = `${environment.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/relationships/institutions/`;
+    const payload = {
+      data: institutions.map((item) => ({ id: item.id, type: 'institutions' })),
+    };
+
+    return this.jsonApiService.put(baseUrl, payload);
   }
 }

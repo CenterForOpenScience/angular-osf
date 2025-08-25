@@ -10,6 +10,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
+import { UserState } from '@core/store/user';
 import { ModeratorsTableComponent } from '@osf/features/moderation/components';
 import { ModeratorsState } from '@osf/features/moderation/store/moderators';
 import { SearchInputComponent } from '@shared/components';
@@ -41,7 +42,7 @@ describe('ModeratorsListComponent', () => {
           provide: ActivatedRoute,
           useValue: mockRoute,
         },
-        provideStore([ModeratorsState]),
+        provideStore([ModeratorsState, UserState]),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],
