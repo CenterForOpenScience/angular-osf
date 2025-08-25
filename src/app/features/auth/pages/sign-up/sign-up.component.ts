@@ -7,6 +7,7 @@ import { Divider } from 'primeng/divider';
 import { Password } from 'primeng/password';
 
 import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -16,6 +17,7 @@ import { AuthService } from '@osf/core/services';
 import { PasswordInputHintComponent, TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/helpers';
+import { ToastService } from '@osf/shared/services';
 
 import { SignUpForm } from '../../models';
 
@@ -42,6 +44,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SignUpComponent implements OnInit {
   private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
 
   signUpForm = new FormGroup<SignUpForm>({} as SignUpForm);
   passwordRegex: RegExp = PASSWORD_REGEX;
@@ -98,8 +101,9 @@ export class SignUpComponent implements OnInit {
         this.signUpForm.reset();
         this.isFormSubmitted.set(true);
       },
-      error: () => {
+      error: (error: HttpErrorResponse) => {
         this.signUpForm.enable();
+        this.toastService.showError(error.error?.message_long);
       },
     });
   }
