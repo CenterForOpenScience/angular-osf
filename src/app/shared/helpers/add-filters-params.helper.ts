@@ -1,6 +1,6 @@
-import { ResourceFiltersStateModel } from '@osf/features/search/components/resource-filters/store';
+import { ProfileResourceFiltersStateModel } from '@osf/features/profile/components/profile-resource-filters/store';
 
-export function addFiltersParams(filters: ResourceFiltersStateModel): Record<string, string> {
+export function addFiltersParams(filters: ProfileResourceFiltersStateModel): Record<string, string> {
   const params: Record<string, string> = {};
 
   if (filters.creator?.value) {

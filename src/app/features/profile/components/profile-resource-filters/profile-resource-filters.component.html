@@ -1,0 +1,77 @@
+@if (anyOptionsCount()) {
+  <div class="filters">
+    <p-accordion>
+      @if (datesOptionsCount() > 0) {
+        <p-accordion-panel value="0">
+          <p-accordion-header>Date Created</p-accordion-header>
+          <p-accordion-content>
+            <osf-profile-date-created-filter></osf-profile-date-created-filter>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (funderOptionsCount() > 0) {
+        <p-accordion-panel value="1">
+          <p-accordion-header>Funder</p-accordion-header>
+          <p-accordion-content>
+            <osf-profile-funder-filter></osf-profile-funder-filter>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (subjectOptionsCount() > 0) {
+        <p-accordion-panel value="2">
+          <p-accordion-header>Subject</p-accordion-header>
+          <p-accordion-content>
+            <osf-profile-subject-filter></osf-profile-subject-filter>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (licenseOptionsCount() > 0) {
+        <p-accordion-panel value="3">
+          <p-accordion-header>License</p-accordion-header>
+          <p-accordion-content>
+            <osf-profile-license-filter></osf-profile-license-filter>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (resourceTypeOptionsCount() > 0) {
+        <p-accordion-panel value="4">
+          <p-accordion-header>Resource Type</p-accordion-header>
+          <p-accordion-content>
+            <osf-profile-resource-type-filter></osf-profile-resource-type-filter>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (institutionOptionsCount() > 0) {
+        <p-accordion-panel value="5">
+          <p-accordion-header>Institution</p-accordion-header>
+          <p-accordion-content>
+            <osf-profile-institution-filter></osf-profile-institution-filter>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (providerOptionsCount() > 0) {
+        <p-accordion-panel value="6">
+          <p-accordion-header>Provider</p-accordion-header>
+          <p-accordion-content>
+            <osf-profile-provider-filter></osf-profile-provider-filter>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @if (partOfCollectionOptionsCount() > 0) {
+        <p-accordion-panel value="7" class="border-none">
+          <p-accordion-header>Part of Collection</p-accordion-header>
+          <p-accordion-content>
+            <osf-profile-part-of-collection-filter></osf-profile-part-of-collection-filter>
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+    </p-accordion>
+  </div>
+}

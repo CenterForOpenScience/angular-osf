@@ -30,7 +30,7 @@ export class SearchService {
   ): Observable<ResourcesData> {
     const params: Record<string, string> = {
       'cardSearchFilter[resourceType]': resourceType ?? '',
-      'cardSearchFilter[accessService]': 'https://staging4.osf.io/',
+      'cardSearchFilter[accessService]': environment.webUrl,
       'cardSearchText[*,creator.name,isContainedBy.creator.name]': searchText ?? '',
       'page[size]': '10',
       sort: sortBy,
@@ -94,26 +94,62 @@ export class SearchService {
     );
   }
 
-  getFilterOptions(filterKey: string): Observable<SelectOption[]> {
+  getFilterOptions(filterKey: string): Observable<{ options: SelectOption[]; nextUrl?: string }> {
     const params: Record<string, string> = {
       valueSearchPropertyPath: filterKey,
+      'cardSearchFilter[accessService]': environment.webUrl,
       'page[size]': '50',
     };
 
     return this.jsonApiService
       .get<FilterOptionsResponseJsonApi>(`${environment.shareDomainUrl}/index-value-search`, params)
-      .pipe(
-        map((response) => {
-          if (response?.included) {
-            const filterOptionItems = response.included.filter(
-              (item): item is FilterOptionItem => item.type === 'index-card' && !!item.attributes?.resourceMetadata
-            );
+      .pipe(map((response) => this.returnDataToOptionsWithNextUrl(response)));
+  }
 
-            return filterOptionItems.map((item) => mapFilterOption(item));
-          }
+  getFilterOptionsWithSearch(
+    filterKey: string,
+    searchText: string
+  ): Observable<{ options: SelectOption[]; nextUrl?: string }> {
+    const params: Record<string, string> = {
+      valueSearchPropertyPath: filterKey,
+      valueSearchText: searchText,
+      'cardSearchFilter[accessService]': environment.webUrl,
+      'page[size]': '50',
+    };
 
-          return [];
-        })
+    return this.jsonApiService
+      .get<FilterOptionsResponseJsonApi>(`${environment.shareDomainUrl}/index-value-search`, params)
+      .pipe(map((response) => this.returnDataToOptionsWithNextUrl(response)));
+  }
+
+  getFilterOptionsFromPaginationUrl(url: string): Observable<{ options: SelectOption[]; nextUrl?: string }> {
+    return this.jsonApiService
+      .get<FilterOptionsResponseJsonApi>(url)
+      .pipe(map((response) => this.returnDataToOptionsWithNextUrl(response)));
+  }
+
+  private returnDataToOptionsWithNextUrl(response: FilterOptionsResponseJsonApi): {
+    options: SelectOption[];
+    nextUrl?: string;
+  } {
+    const options: SelectOption[] = [];
+    let nextUrl: string | undefined;
+
+    if (response?.included) {
+      const filterOptionItems = response.included.filter(
+        (item): item is FilterOptionItem => item.type === 'index-card' && !!item.attributes?.resourceMetadata
       );
+
+      options.push(...filterOptionItems.map((item) => mapFilterOption(item)));
+    }
+
+    const searchResultPage = response?.data?.relationships?.['searchResultPage'] as {
+      links?: { next?: { href: string } };
+    };
+    if (searchResultPage?.links?.next?.href) {
+      nextUrl = searchResultPage.links.next.href;
+    }
+
+    return { options, nextUrl };
   }
 }

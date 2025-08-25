@@ -189,7 +189,6 @@ export class InstitutionsUsersComponent implements OnInit {
       const filters = this.buildFilters();
       const sortField = this.sortField();
       const sortOrder = this.sortOrder();
-      console.log(sortOrder);
       const sortParam = sortOrder === 0 ? `-${sortField}` : sortField;
 
       this.actions.fetchInstitutionUsers(

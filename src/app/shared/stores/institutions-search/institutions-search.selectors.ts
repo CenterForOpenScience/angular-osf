@@ -80,4 +80,14 @@ export class InstitutionsSearchSelectors {
   static getFilterOptionsCache(state: InstitutionsSearchModel): Record<string, SelectOption[]> {
     return state.filterOptionsCache;
   }
+
+  @Selector([InstitutionsSearchState])
+  static getFilterSearchCache(state: InstitutionsSearchModel): Record<string, SelectOption[]> {
+    return state.filterSearchCache;
+  }
+
+  @Selector([InstitutionsSearchState])
+  static getFilterPaginationCache(state: InstitutionsSearchModel): Record<string, string> {
+    return state.filterPaginationCache;
+  }
 }

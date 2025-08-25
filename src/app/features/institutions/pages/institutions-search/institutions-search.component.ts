@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { SafeHtmlPipe } from 'primeng/menu';
-import { Tabs, TabsModule } from 'primeng/tabs';
+import { TabsModule } from 'primeng/tabs';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -26,12 +26,15 @@ import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceTab } from '@osf/shared/enums';
 import { DiscoverableFilter } from '@osf/shared/models';
 import {
+  ClearFilterSearchResults,
   FetchInstitutionById,
   FetchResources,
   FetchResourcesByLink,
   InstitutionsSearchSelectors,
   LoadFilterOptions,
   LoadFilterOptionsAndSetValues,
+  LoadFilterOptionsWithSearch,
+  LoadMoreFilterOptions,
   SetFilterValues,
   UpdateFilterValue,
   UpdateResourceType,
@@ -46,7 +49,6 @@ import {
     FilterChipsComponent,
     AutoCompleteModule,
     FormsModule,
-    Tabs,
     TabsModule,
     SearchHelpTutorialComponent,
     SearchInputComponent,
@@ -75,6 +77,7 @@ export class InstitutionsSearchComponent implements OnInit {
   first = select(InstitutionsSearchSelectors.getFirst);
   next = select(InstitutionsSearchSelectors.getNext);
   previous = select(InstitutionsSearchSelectors.getPrevious);
+  filterSearchResults = select(InstitutionsSearchSelectors.getFilterSearchCache);
 
   private readonly actions = createDispatchMap({
     fetchInstitution: FetchInstitutionById,
@@ -82,6 +85,9 @@ export class InstitutionsSearchComponent implements OnInit {
     updateSortBy: UpdateSortBy,
     loadFilterOptions: LoadFilterOptions,
     loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
+    loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
+    clearFilterSearchResults: ClearFilterSearchResults,
+    loadMoreFilterOptions: LoadMoreFilterOptions,
     setFilterValues: SetFilterValues,
     updateFilterValue: UpdateFilterValue,
     fetchResourcesByLink: FetchResourcesByLink,
@@ -100,8 +106,6 @@ export class InstitutionsSearchComponent implements OnInit {
   protected searchControl = new FormControl('');
   protected selectedTab: ResourceTab = ResourceTab.All;
   protected currentStep = signal(0);
-  protected isFiltersOpen = signal(true);
-  protected isSortingOpen = signal(false);
 
   readonly resourceTab = ResourceTab;
   readonly resourceType = select(InstitutionsSearchSelectors.getResourceType);
@@ -148,6 +152,18 @@ export class InstitutionsSearchComponent implements OnInit {
     this.actions.loadFilterOptions(event.filterType);
   }
 
+  onFilterSearchChanged(event: { filterType: string; searchText: string }): void {
+    if (event.searchText.trim()) {
+      this.actions.loadFilterOptionsWithSearch(event.filterType, event.searchText);
+    } else {
+      this.actions.clearFilterSearchResults(event.filterType);
+    }
+  }
+
+  onLoadMoreFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
+    this.actions.loadMoreFilterOptions(event.filterType);
+  }
+
   onFilterChanged(event: { filterType: string; value: string | null }): void {
     this.actions.updateFilterValue(event.filterType, event.value);
 
@@ -184,16 +200,6 @@ export class InstitutionsSearchComponent implements OnInit {
 
   onPageChanged(link: string): void {
     this.actions.fetchResourcesByLink(link);
-  }
-
-  onFiltersToggled(): void {
-    this.isFiltersOpen.update((open) => !open);
-    this.isSortingOpen.set(false);
-  }
-
-  onSortingToggled(): void {
-    this.isSortingOpen.update((open) => !open);
-    this.isFiltersOpen.set(false);
   }
 
   onFilterChipRemoved(filterKey: string): void {

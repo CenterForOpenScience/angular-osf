@@ -5,12 +5,7 @@
         <p-skeleton width="3rem" height="1.5rem" />
         <p-skeleton width="12rem" height="1.5rem" />
       } @else {
-        <img
-          class="preprint-provider-hero-logo"
-          alt="Provider Logo"
-          height="40"
-          [src]="provider()!.brand.heroLogoImageUrl"
-        />
+        <img alt="Provider Logo" height="40" [src]="provider()!.brand.heroLogoImageUrl" />
       }
     </div>
 
@@ -33,15 +28,13 @@
   @if (isProviderLoading()) {
     <p-skeleton class="w-full" height="3rem" />
   } @else {
-    <div class="search-input-container">
-      <osf-search-input
-        class="w-full"
-        [showHelpIcon]="true"
-        [placeholder]="'preprints.searchPlaceholder' | translate: { preprintWord: 'Registrations' } | titlecase"
-        [control]="searchControl()"
-        (triggerSearch)="onTriggerSearch($event)"
-        (helpClicked)="openHelpDialog()"
-      />
-    </div>
+    <osf-search-input
+      class="w-full"
+      [showHelpIcon]="true"
+      [placeholder]="'preprints.searchPlaceholder' | translate: { preprintWord: 'Registrations' } | titlecase"
+      [control]="searchControl()"
+      (triggerSearch)="onTriggerSearch($event)"
+      (helpClicked)="openHelpDialog()"
+    />
   }
 </section>

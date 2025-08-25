@@ -1,0 +1,34 @@
+<div class="search-container mt-5 mx-3 md:mx-5 xl:mt-6 xl:mx-4">
+  <osf-search-input
+    [control]="searchControl"
+    [showHelpIcon]="true"
+    [placeholder]="'collections.searchInput.placeholder' | translate"
+    (helpClicked)="showTutorial()"
+  />
+</div>
+
+<osf-search-results-container
+  [showTabs]="true"
+  [tabOptions]="resourceTabOptions"
+  [resources]="resources()"
+  [searchCount]="searchCount()"
+  [selectedSort]="sortByStoreValue()"
+  [selectedTab]="resourcesTabStoreValue()"
+  [hasAnySelectedValues]="!!isAnyFilterSelected()"
+  [first]="first()"
+  [prev]="prev()"
+  [next]="next()"
+  (sortChanged)="sortOptionSelected($event)"
+  (pageChanged)="switchPage($event)"
+  (tabChanged)="onTabChange($event)"
+>
+  <div slot="filter-chips">
+    <osf-profile-filter-chips />
+  </div>
+
+  <ng-template #filtersComponent>
+    <osf-profile-resource-filters />
+  </ng-template>
+</osf-search-results-container>
+
+<osf-search-help-tutorial [(currentStep)]="currentStep"></osf-search-help-tutorial>

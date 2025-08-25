@@ -28,8 +28,6 @@ import {
   SearchHelpTutorialComponent,
   SearchResultsContainerComponent,
 } from '@shared/components';
-import { SEARCH_TAB_OPTIONS } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
 import { DiscoverableFilter } from '@shared/models';
 
 @Component({
@@ -79,16 +77,6 @@ export class RegistriesProviderSearchComponent {
   });
 
   protected currentStep = signal(0);
-  protected isFiltersOpen = signal(false);
-  protected isSortingOpen = signal(false);
-
-  private readonly tabUrlMap = new Map(
-    SEARCH_TAB_OPTIONS.map((option) => [option.value, option.label.split('.').pop()?.toLowerCase() || 'all'])
-  );
-
-  private readonly urlTabMap = new Map(
-    SEARCH_TAB_OPTIONS.map((option) => [option.label.split('.').pop()?.toLowerCase() || 'all', option.value])
-  );
 
   readonly filterLabels = computed(() => {
     const filtersData = this.filters();
@@ -195,16 +183,6 @@ export class RegistriesProviderSearchComponent {
     this.actions.fetchResourcesByLink(link);
   }
 
-  onFiltersToggled(): void {
-    this.isFiltersOpen.update((open) => !open);
-    this.isSortingOpen.set(false);
-  }
-
-  onSortingToggled(): void {
-    this.isSortingOpen.update((open) => !open);
-    this.isFiltersOpen.set(false);
-  }
-
   showTutorial() {
     this.currentStep.set(1);
   }
@@ -232,23 +210,6 @@ export class RegistriesProviderSearchComponent {
     });
   }
 
-  private updateUrlWithTab(tab: ResourceTab): void {
-    const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
-
-    if (tab !== ResourceTab.All) {
-      queryParams['tab'] = this.tabUrlMap.get(tab) || 'all';
-    } else {
-      delete queryParams['tab'];
-    }
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: 'replace',
-      replaceUrl: true,
-    });
-  }
-
   private restoreFiltersFromUrl(): void {
     const queryParams = this.route.snapshot.queryParams;
     const filterValues: Record<string, string | null> = {};
@@ -267,6 +228,7 @@ export class RegistriesProviderSearchComponent {
       this.actions.loadFilterOptionsAndSetValues(filterValues);
     }
   }
+
   private restoreSearchFromUrl(): void {
     const queryParams = this.route.snapshot.queryParams;
     const searchTerm = queryParams['search'];

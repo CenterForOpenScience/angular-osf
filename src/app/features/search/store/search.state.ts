@@ -1,105 +1,128 @@
-import { Action, NgxsOnInit, State, StateContext, Store } from '@ngxs/store';
+import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
 
-import { BehaviorSubject, EMPTY, switchMap, tap } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
-import { addFiltersParams, getResourceTypes } from '@osf/shared/helpers';
-import { SearchService } from '@osf/shared/services';
+import { ResourcesData } from '@osf/features/search/models';
+import { getResourceTypes } from '@osf/shared/helpers';
 import { searchStateDefaults } from '@shared/constants';
-import { GetResourcesRequestTypeEnum } from '@shared/enums';
-
-import { ResourceFiltersSelectors } from '../components/resource-filters/store';
+import { BaseSearchState } from '@shared/stores/base-search';
 
 import {
+  ClearFilterSearchResults,
   GetResources,
   GetResourcesByLink,
+  LoadFilterOptions,
+  LoadFilterOptionsAndSetValues,
+  LoadFilterOptionsWithSearch,
+  LoadMoreFilterOptions,
   ResetSearchState,
+  SetFilterOptionsFromUrl,
+  SetFilterValues,
   SetIsMyProfile,
   SetResourceTab,
   SetSearchText,
   SetSortBy,
+  UpdateFilterValue,
 } from './search.actions';
 import { SearchStateModel } from './search.model';
-import { SearchSelectors } from './search.selectors';
 
 @Injectable()
 @State<SearchStateModel>({
   name: 'search',
   defaults: searchStateDefaults,
 })
-export class SearchState implements NgxsOnInit {
-  searchService = inject(SearchService);
-  store = inject(Store);
-  loadRequests = new BehaviorSubject<{ type: GetResourcesRequestTypeEnum; link?: string } | null>(null);
-
+export class SearchState extends BaseSearchState<SearchStateModel> implements NgxsOnInit {
   ngxsOnInit(ctx: StateContext<SearchStateModel>): void {
-    this.loadRequests
-      .pipe(
-        switchMap((query) => {
-          if (!query) return EMPTY;
-          const state = ctx.getState();
-          ctx.patchState({ resources: { ...state.resources, isLoading: true } });
-          if (query.type === GetResourcesRequestTypeEnum.GetResources) {
-            const filters = this.store.selectSnapshot(ResourceFiltersSelectors.getAllFilters);
-            const filtersParams = addFiltersParams(filters);
-            const searchText = this.store.selectSnapshot(SearchSelectors.getSearchText);
-            const sortBy = this.store.selectSnapshot(SearchSelectors.getSortBy);
-            const resourceTab = this.store.selectSnapshot(SearchSelectors.getResourceTab);
-            const resourceTypes = getResourceTypes(resourceTab);
+    this.setupBaseRequests(ctx);
+  }
 
-            return this.searchService.getResources(filtersParams, searchText, sortBy, resourceTypes).pipe(
-              tap((response) => {
-                ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
-                ctx.patchState({ resourcesCount: response.count });
-                ctx.patchState({ first: response.first });
-                ctx.patchState({ next: response.next });
-                ctx.patchState({ previous: response.previous });
-              })
-            );
-          } else if (query.type === GetResourcesRequestTypeEnum.GetResourcesByLink) {
-            if (query.link) {
-              return this.searchService.getResourcesByLink(query.link!).pipe(
-                tap((response) => {
-                  ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
-                  ctx.patchState({ resourcesCount: response.count });
-                  ctx.patchState({ first: response.first });
-                  ctx.patchState({ next: response.next });
-                  ctx.patchState({ previous: response.previous });
-                })
-              );
-            }
-            return EMPTY;
-          }
-          return EMPTY;
-        })
-      )
-      .subscribe();
+  protected loadResources(ctx: StateContext<SearchStateModel>): Observable<ResourcesData> {
+    const state = ctx.getState();
+    ctx.patchState({ resources: { ...state.resources, isLoading: true } });
+    const filtersParams = this.buildFiltersParams(state);
+    const searchText = state.searchText;
+    const sortBy = state.sortBy;
+    const resourceTab = state.resourceTab;
+    const resourceTypes = getResourceTypes(resourceTab);
+
+    return this.searchService
+      .getResources(filtersParams, searchText, sortBy, resourceTypes)
+      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
+  }
+
+  protected buildFiltersParams(state: SearchStateModel): Record<string, string> {
+    const filtersParams: Record<string, string> = {};
+
+    Object.entries(state.filterValues).forEach(([key, value]) => {
+      if (value) {
+        const filterDefinition = state.filters.find((f) => f.key === key);
+        const operator = filterDefinition?.operator;
+
+        if (operator === 'is-present') {
+          filtersParams[`cardSearchFilter[${key}][is-present]`] = value;
+        } else {
+          filtersParams[`cardSearchFilter[${key}][]`] = value;
+        }
+      }
+    });
+
+    if (state.isMyProfile) {
+      filtersParams['cardSearchFilter[creator][]'] = 'me';
+    }
+
+    return filtersParams;
   }
 
   @Action(GetResources)
   getResources() {
-    this.loadRequests.next({
-      type: GetResourcesRequestTypeEnum.GetResources,
-    });
+    this.handleFetchResources();
   }
 
   @Action(GetResourcesByLink)
-  getResourcesByLink(ctx: StateContext<SearchStateModel>, action: GetResourcesByLink) {
-    this.loadRequests.next({
-      type: GetResourcesRequestTypeEnum.GetResourcesByLink,
-      link: action.link,
-    });
+  getResourcesByLink(_ctx: StateContext<SearchStateModel>, action: GetResourcesByLink) {
+    this.handleFetchResourcesByLink(action.link);
   }
 
-  @Action(SetSearchText)
-  setSearchText(ctx: StateContext<SearchStateModel>, action: SetSearchText) {
-    ctx.patchState({ searchText: action.searchText });
+  @Action(LoadFilterOptions)
+  loadFilterOptions(ctx: StateContext<SearchStateModel>, action: LoadFilterOptions) {
+    this.handleLoadFilterOptions(ctx, action.filterKey);
+  }
+
+  @Action(LoadFilterOptionsWithSearch)
+  loadFilterOptionsWithSearch(ctx: StateContext<SearchStateModel>, action: LoadFilterOptionsWithSearch) {
+    return this.handleLoadFilterOptionsWithSearch(ctx, action.filterKey, action.searchText);
+  }
+
+  @Action(ClearFilterSearchResults)
+  clearFilterSearchResults(ctx: StateContext<SearchStateModel>, action: ClearFilterSearchResults) {
+    this.handleClearFilterSearchResults(ctx, action.filterKey);
+  }
+
+  @Action(LoadMoreFilterOptions)
+  loadMoreFilterOptions(ctx: StateContext<SearchStateModel>, action: LoadMoreFilterOptions) {
+    return this.handleLoadMoreFilterOptions(ctx, action.filterKey);
+  }
+
+  @Action(LoadFilterOptionsAndSetValues)
+  loadFilterOptionsAndSetValues(ctx: StateContext<SearchStateModel>, action: LoadFilterOptionsAndSetValues) {
+    return this.handleLoadFilterOptionsAndSetValues(ctx, action.filterValues);
+  }
+
+  @Action(SetFilterValues)
+  setFilterValues(ctx: StateContext<SearchStateModel>, action: SetFilterValues) {
+    this.handleSetFilterValues(ctx, action.filterValues);
+  }
+
+  @Action(UpdateFilterValue)
+  updateFilterValue(ctx: StateContext<SearchStateModel>, action: UpdateFilterValue) {
+    this.handleUpdateFilterValue(ctx, action.filterKey, action.value);
   }
 
   @Action(SetSortBy)
   setSortBy(ctx: StateContext<SearchStateModel>, action: SetSortBy) {
-    ctx.patchState({ sortBy: action.sortBy });
+    this.handleUpdateSortBy(ctx, action.sortBy);
   }
 
   @Action(SetResourceTab)
@@ -112,8 +135,42 @@ export class SearchState implements NgxsOnInit {
     ctx.patchState({ isMyProfile: action.isMyProfile });
   }
 
+  @Action(SetSearchText)
+  setSearchText(ctx: StateContext<SearchStateModel>, action: SetSearchText) {
+    ctx.patchState({ searchText: action.searchText });
+  }
+
+  @Action(SetFilterOptionsFromUrl)
+  setFilterOptionsFromUrl(ctx: StateContext<SearchStateModel>, action: SetFilterOptionsFromUrl) {
+    const currentState = ctx.getState();
+    const updatedCache = { ...currentState.filterOptionsCache };
+
+    Object.entries(action.filterOptions).forEach(([filterKey, options]) => {
+      const existingOptions = updatedCache[filterKey] || [];
+      const newOptions = options.map((opt) => ({ label: opt.label, value: opt.value }));
+
+      const existingValues = new Set(existingOptions.map((opt) => opt.value));
+      const uniqueNewOptions = newOptions.filter((opt) => !existingValues.has(opt.value));
+
+      updatedCache[filterKey] = [...uniqueNewOptions, ...existingOptions];
+    });
+
+    const updatedFilters = currentState.filters.map((filter) => {
+      const cachedOptions = updatedCache[filter.key];
+      if (cachedOptions?.length) {
+        return { ...filter, options: cachedOptions, isLoaded: true };
+      }
+      return filter;
+    });
+
+    ctx.patchState({
+      filterOptionsCache: updatedCache,
+      filters: updatedFilters,
+    });
+  }
+
   @Action(ResetSearchState)
-  resetState(ctx: StateContext<SearchStateModel>) {
-    ctx.patchState(searchStateDefaults);
+  resetSearchState(ctx: StateContext<SearchStateModel>) {
+    ctx.setState(searchStateDefaults);
   }
 }
