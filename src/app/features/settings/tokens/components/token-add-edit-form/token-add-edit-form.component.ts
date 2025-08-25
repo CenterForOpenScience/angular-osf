@@ -45,13 +45,13 @@ export class TokenAddEditFormComponent implements OnInit {
   isEditMode = input(false);
   initialValues = input<TokenModel | null>(null);
 
-  inputLimits = InputLimits.fullName;
+  readonly inputLimits = InputLimits.fullName;
 
-  protected readonly tokenId = toSignal(this.route.params.pipe(map((params) => params['id'])));
-  protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly TokenFormControls = TokenFormControls;
-  protected readonly tokenScopes = select(TokensSelectors.getScopes);
-  protected readonly isLoading = select(TokensSelectors.isTokensLoading);
+  readonly tokenId = toSignal(this.route.params.pipe(map((params) => params['id'])));
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly TokenFormControls = TokenFormControls;
+  readonly tokenScopes = select(TokensSelectors.getScopes);
+  readonly isLoading = select(TokensSelectors.isTokensLoading);
 
   readonly tokenForm: TokenForm = new FormGroup({
     [TokenFormControls.TokenName]: new FormControl('', {
@@ -98,14 +98,14 @@ export class TokenAddEditFormComponent implements OnInit {
           const tokens = this.store.selectSignal(TokensSelectors.getTokens);
           const newToken = tokens()[0];
           this.dialogRef.close();
-          this.showTokenCreatedDialog(newToken.name, newToken.tokenId);
+          this.showTokenCreatedDialog(newToken.name, newToken.id);
         },
       });
     } else {
       this.actions.updateToken(this.tokenId(), tokenName, scopes).subscribe({
         complete: () => {
-          this.toastService.showSuccess('settings.tokens.toastMessage.successEdit');
           this.router.navigate(['settings/tokens']);
+          this.toastService.showSuccess('settings.tokens.toastMessage.successEdit');
         },
       });
     }

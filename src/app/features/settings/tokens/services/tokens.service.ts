@@ -7,7 +7,7 @@ import { JsonApiResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { ScopeMapper, TokenMapper } from '../mappers';
-import { ScopeJsonApi, ScopeModel, TokenCreateResponseJsonApi, TokenGetResponseJsonApi, TokenModel } from '../models';
+import { ScopeJsonApi, ScopeModel, TokenGetResponseJsonApi, TokenModel } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -39,16 +39,16 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.jsonApiService
-      .post<JsonApiResponse<TokenCreateResponseJsonApi, null>>(environment.apiUrl + '/tokens/', request)
-      .pipe(map((response) => TokenMapper.fromCreateResponse(response.data)));
+      .post<JsonApiResponse<TokenGetResponseJsonApi, null>>(environment.apiUrl + '/tokens/', request)
+      .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 
   updateToken(tokenId: string, name: string, scopes: string[]): Observable<TokenModel> {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.jsonApiService
-      .patch<TokenCreateResponseJsonApi>(`${environment.apiUrl}/tokens/${tokenId}/`, request)
-      .pipe(map((response) => TokenMapper.fromCreateResponse(response)));
+      .patch<TokenGetResponseJsonApi>(`${environment.apiUrl}/tokens/${tokenId}/`, request)
+      .pipe(map((response) => TokenMapper.fromGetResponse(response)));
   }
 
   deleteToken(tokenId: string): Observable<void> {
