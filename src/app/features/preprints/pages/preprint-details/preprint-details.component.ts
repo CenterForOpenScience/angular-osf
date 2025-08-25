@@ -46,6 +46,8 @@ import { UserPermissions } from '@shared/enums';
 import { ContributorModel } from '@shared/models';
 import { ContributorsSelectors } from '@shared/stores';
 
+import { OsfPreprintWarningBannerComponent } from '../../components/preprint-details/osf-preprint-warning-banner/osf-preprint-warning-banner.component';
+
 @Component({
   selector: 'osf-preprint-details',
   imports: [
@@ -58,6 +60,7 @@ import { ContributorsSelectors } from '@shared/stores';
     StatusBannerComponent,
     TranslatePipe,
     PreprintTombstoneComponent,
+    OsfPreprintWarningBannerComponent,
   ],
   templateUrl: './preprint-details.component.html',
   styleUrl: './preprint-details.component.scss',
@@ -210,6 +213,10 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       !this.isWithdrawalRejected() &&
       !this.isPendingWithdrawal()
     );
+  });
+
+  isOsfPreprint = computed(() => {
+    return this.providerId() === 'osf';
   });
 
   statusBannerVisible = computed(() => {
