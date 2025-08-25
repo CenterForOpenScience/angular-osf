@@ -1,5 +1,8 @@
 <div class="content-body">
-  <p class="m-0">Please select the institution from the dropdown below or start typing for find it</p>
+  <p class="m-0">
+    {{ 'institutions.searchInstitutionsDesctiption' | translate }}
+    <a href="https://www.cos.io/products/osf-institutions">{{ 'institutions.learnMore' | translate }}</a>
+  </p>
   <p-select
     id="institution"
     [options]="institutionsOptions()"
