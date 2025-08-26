@@ -1,6 +1,6 @@
+import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
@@ -8,7 +8,7 @@ import { IconComponent } from '@shared/components';
 
 @Component({
   selector: 'osf-search-input',
-  imports: [InputText, ReactiveFormsModule, IconComponent, NgOptimizedImage],
+  imports: [InputText, Button, ReactiveFormsModule, IconComponent],
   templateUrl: './search-input.component.html',
   styleUrl: './search-input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

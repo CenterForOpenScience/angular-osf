@@ -2,7 +2,7 @@ module.exports = {
   preset: 'jest-preset-angular',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
   globalSetup: '<rootDir>/jest.global-setup.ts',
-  collectCoverage: true,
+  collectCoverage: false,
   coverageReporters: ['json-summary', 'lcov', 'clover'],
   moduleNameMapper: {
     '^@osf/(.*)$': '<rootDir>/src/app/$1',
@@ -45,10 +45,10 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts'],
   coverageThreshold: {
     global: {
-      branches: 14.15,
-      functions: 14.83,
-      lines: 41.15,
-      statements: 41.63,
+      branches: 14.27,
+      functions: 15.55,
+      lines: 42.6,
+      statements: 43.2,
     },
   },
   watchPathIgnorePatterns: [
@@ -71,10 +71,13 @@ module.exports = {
     '<rootDir>/src/app/app.config.ts',
     '<rootDir>/src/app/app.routes.ts',
     '<rootDir>/src/app/features/registry/',
+    '<rootDir>/src/app/features/project/addons/components/configure-configure-addon/',
+    '<rootDir>/src/app/features/project/addons/components/connect-configured-addon/',
+    '<rootDir>/src/app/features/project/addons/components/disconnect-addon-modal/',
+    '<rootDir>/src/app/features/project/addons/components/confirm-account-connection-modal/',
     '<rootDir>/src/app/features/files/',
     '<rootDir>/src/app/features/my-projects/',
     '<rootDir>/src/app/features/preprints/',
-    '<rootDir>/src/app/features/project/addons/',
     '<rootDir>/src/app/features/project/analytics/',
     '<rootDir>/src/app/features/project/contributors/',
     '<rootDir>/src/app/features/project/files/',

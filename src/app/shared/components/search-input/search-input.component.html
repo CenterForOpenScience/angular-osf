@@ -11,16 +11,6 @@
   />
 
   @if (showHelpIcon()) {
-    <img
-      class="help-icon custom-dark-hover cursor-pointer"
-      ngSrc="assets/icons/colored/question-mark.svg"
-      tabindex="0"
-      role="button"
-      height="36"
-      width="36"
-      alt="Info icon"
-      (click)="helpClicked.emit()"
-      (keydown.enter)="helpClicked.emit()"
-    />
+    <p-button class="help-icon" icon="fas fa-question" severity="secondary" (onClick)="helpClicked.emit()" />
   }
 </div>

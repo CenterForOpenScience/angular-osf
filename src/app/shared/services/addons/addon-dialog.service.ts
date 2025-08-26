@@ -8,7 +8,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ConfirmAccountConnectionModalComponent } from '@osf/features/project/addons/components/confirm-account-connection-modal/confirm-account-connection-modal.component';
 import { DisconnectAddonModalComponent } from '@osf/features/project/addons/components/disconnect-addon-modal/disconnect-addon-modal.component';
-import { AuthorizedAddon, ConfiguredAddon } from '@shared/models';
+import { AuthorizedAddon, ConfiguredStorageAddonModel } from '@shared/models';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +17,7 @@ export class AddonDialogService {
   private dialogService = inject(DialogService);
   private translateService = inject(TranslateService);
 
-  openDisconnectDialog(addon: ConfiguredAddon): Observable<{ success: boolean }> {
+  openDisconnectDialog(addon: ConfiguredStorageAddonModel): Observable<{ success: boolean }> {
     const dialogRef = this.dialogService.open(DisconnectAddonModalComponent, {
       focusOnShow: false,
       header: this.translateService.instant('settings.addons.configureAddon.disconnect', {

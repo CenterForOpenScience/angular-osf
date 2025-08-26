@@ -1417,7 +1417,7 @@
       "header": {
         "title": "Add-ons"
       },
-      "description": "Sync your projects with external services to help stay connected and organized. Select a category and browse the options.",
+      "description": "Sync your projects with external services to help stay connected and organized. Select a category and browse the options. Add-ons can also be linked directly from Project page.",
       "tabs": {
         "allAddons": "All Add-ons",
         "connectedAddons": "Connected Add-ons"

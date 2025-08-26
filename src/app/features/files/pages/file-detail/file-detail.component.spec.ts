@@ -6,7 +6,7 @@ import { SubHeaderComponent } from '@shared/components';
 
 import { FileDetailComponent } from './file-detail.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('FileDetailComponent', () => {
   let component: FileDetailComponent;
@@ -14,7 +14,7 @@ describe('FileDetailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileDetailComponent, MockComponent(SubHeaderComponent), OSFTestingModule],
+      imports: [FileDetailComponent, MockComponent(SubHeaderComponent), OSFTestingStoreModule],
       providers: [],
     }).compileComponents();
 

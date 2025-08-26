@@ -23,7 +23,7 @@ import {
   AddonTermsComponent,
   FolderSelectorComponent,
 } from '@shared/components/addons';
-import { Addon, AddonTerm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
+import { AddonModel, AddonTerm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {
   AddonsSelectors,
@@ -74,7 +74,7 @@ export class ConnectConfiguredAddonComponent {
   protected readonly stepper = viewChild(Stepper);
   protected accountNameControl = new FormControl('');
   protected terms = signal<AddonTerm[]>([]);
-  protected addon = signal<Addon | AuthorizedAddon | null>(null);
+  protected addon = signal<AddonModel | AuthorizedAddon | null>(null);
   protected addonAuthUrl = signal<string>('/settings/addons');
   protected currentAuthorizedAddonAccounts = signal<AuthorizedAddon[]>([]);
   protected chosenAccountId = signal('');
@@ -128,7 +128,7 @@ export class ConnectConfiguredAddonComponent {
   });
 
   constructor() {
-    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as Addon | AuthorizedAddon;
+    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAddon;
     if (!addon) {
       this.router.navigate([`${this.baseUrl()}/addons`]);
     }
@@ -243,7 +243,7 @@ export class ConnectConfiguredAddonComponent {
 
   private processAuthorizedAddons(
     addonConfig: AddonConfigMap[keyof AddonConfigMap],
-    currentAddon: Addon | AuthorizedAddon
+    currentAddon: AddonModel | AuthorizedAddon
   ) {
     const authorizedAddons = addonConfig.getAuthorizedAddons();
     const matchingAddons = this.findMatchingAddons(authorizedAddons, currentAddon);
@@ -262,7 +262,7 @@ export class ConnectConfiguredAddonComponent {
 
   private findMatchingAddons(
     authorizedAddons: AuthorizedAddon[],
-    currentAddon: Addon | AuthorizedAddon
+    currentAddon: AddonModel | AuthorizedAddon
   ): AuthorizedAddon[] {
     return authorizedAddons.filter((addon) => addon.externalServiceName === currentAddon.externalServiceName);
   }

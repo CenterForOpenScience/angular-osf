@@ -1,9 +1,9 @@
 import { Selector } from '@ngxs/store';
 
-import { RegistryResource } from '@osf/features/registry/models';
-import { RegistryResourcesState } from '@osf/features/registry/store/registry-resources/registry-resources.state';
+import { RegistryResource } from '../../models';
 
 import { RegistryResourcesStateModel } from './registry-resources.model';
+import { RegistryResourcesState } from './registry-resources.state';
 
 export class RegistryResourcesSelectors {
   @Selector([RegistryResourcesState])

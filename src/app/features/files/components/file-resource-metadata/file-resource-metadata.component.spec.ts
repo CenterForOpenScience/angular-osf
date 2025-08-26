@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileResourceMetadataComponent } from './file-resource-metadata.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('FileResourceMetadataComponent', () => {
   let component: FileResourceMetadataComponent;
@@ -10,7 +10,7 @@ describe('FileResourceMetadataComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileResourceMetadataComponent, OSFTestingModule],
+      imports: [FileResourceMetadataComponent, OSFTestingStoreModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FileResourceMetadataComponent);

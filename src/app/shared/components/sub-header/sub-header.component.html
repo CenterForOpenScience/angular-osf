@@ -2,7 +2,7 @@
   <div class="flex flex-column gap-4 md:flex-row">
     <div class="flex align-items-center gap-3">
       @if (icon()) {
-        <i class="title-icon" [class]="'osf-icon-' + icon()"></i>
+        <i class="title-icon" [class]="icon()"></i>
       }
 
       @if (isLoading()) {

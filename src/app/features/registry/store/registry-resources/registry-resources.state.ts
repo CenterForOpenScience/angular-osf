@@ -5,34 +5,25 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { RegistryResourcesService } from '@osf/features/registry/services';
+import { handleSectionError } from '@osf/shared/helpers';
+
+import { RegistryResourcesService } from '../../services';
+
 import {
   AddRegistryResource,
   ConfirmAddRegistryResource,
   DeleteResource,
   GetRegistryResources,
   PreviewRegistryResource,
-  RegistryResourcesStateModel,
   SilentDelete,
   UpdateResource,
-} from '@osf/features/registry/store/registry-resources';
-import { handleSectionError } from '@shared/helpers';
+} from './registry-resources.actions';
+import { REGISTRY_RESOURCES_STATE_DEFAULTS, RegistryResourcesStateModel } from './registry-resources.model';
 
 @Injectable()
 @State<RegistryResourcesStateModel>({
   name: 'registryResources',
-  defaults: {
-    resources: {
-      data: null,
-      isLoading: false,
-      error: null,
-    },
-    currentResource: {
-      data: null,
-      isLoading: false,
-      error: null,
-    },
-  },
+  defaults: REGISTRY_RESOURCES_STATE_DEFAULTS,
 })
 export class RegistryResourcesState {
   private readonly registryResourcesService = inject(RegistryResourcesService);

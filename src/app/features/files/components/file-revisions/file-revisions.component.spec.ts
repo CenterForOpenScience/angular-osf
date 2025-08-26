@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileRevisionsComponent } from './file-revisions.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('FileRevisionsComponent', () => {
   let component: FileRevisionsComponent;
@@ -10,7 +10,7 @@ describe('FileRevisionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileRevisionsComponent, OSFTestingModule],
+      imports: [FileRevisionsComponent, OSFTestingStoreModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FileRevisionsComponent);
