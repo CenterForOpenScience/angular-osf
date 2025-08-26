@@ -2093,6 +2093,7 @@
         "moderatorFeedback": "Moderator Feedback",
         "showModeratorFeedback": "Show moderator feedback"
       },
+      "warningBanner": "OSF preprints are not peer reviewed and acceptance into OSF preprints is not an indicator of scholarly merit.",
       "withdrawDialog": {
         "title": "Withdraw {{preprintWord}}",
         "withdrawalExplanation": "You are about to withdraw this version of your {{singularPreprintWord}}. Withdrawing a version will remove it from public view but will not affect other versions of this {{singularPreprintWord}}, if available.",
