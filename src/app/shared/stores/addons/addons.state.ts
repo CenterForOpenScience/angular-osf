@@ -4,6 +4,7 @@ import { catchError, switchMap, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { AuthorizedAddon } from '@osf/shared/models';
 import { AddonsService } from '@shared/services';
 
 import {
@@ -204,7 +205,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.getAuthorizedAddons('storage', action.referenceId).pipe(
+    return this.addonsService.getAuthorizedStorageAddons('storage', action.referenceId).pipe(
       tap((addons) => {
         ctx.patchState({
           authorizedStorageAddons: {
@@ -230,13 +231,25 @@ export class AddonsState {
 
     return this.addonsService.getAuthorizedStorageOauthToken(action.accountId).pipe(
       tap((addon) => {
-        // todo this is not correct
-        ctx.patchState({
-          authorizedStorageAddons: {
-            data: [addon],
-            isLoading: false,
-            error: null,
-          },
+        ctx.setState((state) => {
+          const existing = state.authorizedStorageAddons.data.find(
+            (existingAddon: AuthorizedAddon) => existingAddon.id === addon.id
+          );
+          const updatedData = existing
+            ? state.authorizedStorageAddons.data.map((existingAddon: AuthorizedAddon) =>
+                existingAddon.id === addon.id ? { ...existingAddon, ...addon } : existingAddon
+              )
+            : [...state.authorizedStorageAddons.data, addon];
+
+          return {
+            ...state,
+            authorizedStorageAddons: {
+              ...state.authorizedStorageAddons,
+              data: updatedData,
+              isLoading: false,
+              error: null,
+            },
+          };
         });
       }),
       catchError((error) => this.handleError(ctx, 'authorizedStorageAddons', error))
@@ -253,7 +266,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.getAuthorizedAddons('citation', action.referenceId).pipe(
+    return this.addonsService.getAuthorizedStorageAddons('citation', action.referenceId).pipe(
       tap((addons) => {
         ctx.patchState({
           authorizedCitationAddons: {

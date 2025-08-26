@@ -78,6 +78,42 @@ describe('Service: Addons', () => {
     expect(httpMock.verify).toBeTruthy();
   }));
 
+  it('should test getAuthorizedStorageAddons', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    let results: any[] = [];
+    service.getAuthorizedStorageAddons('storage', 'reference-id').subscribe((result) => {
+      results = result;
+    });
+
+    const request = httpMock.expectOne(
+      'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name'
+    );
+    expect(request.request.method).toBe('GET');
+    request.flush(getAddonsAuthorizedStorageData());
+
+    expect(results[0]).toEqual(
+      Object({
+        accountOwnerId: '0b441148-83e5-4f7f-b302-b07b528b160b',
+        apiBaseUrl: 'https://www.googleapis.com',
+        authUrl: null,
+        authorizedCapabilities: ['ACCESS', 'UPDATE'],
+        authorizedOperationNames: ['list_root_items', 'get_item_info', 'list_child_items'],
+        credentialsAvailable: true,
+        credentialsFormat: '',
+        defaultRootFolder: '',
+        displayName: 'Google Drive',
+        externalServiceName: 'googledrive',
+        oauthToken: 'ya29.A0AS3H6NzDCKgrUx',
+        externalStorageServiceId: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
+        id: '331b7333-a13a-4d3b-add0-5af0fd1d4ac4',
+        providerName: '',
+        supportedFeatures: [],
+        type: 'authorized-storage-accounts',
+      })
+    );
+
+    expect(httpMock.verify).toBeTruthy();
+  }));
+
   it('should test getAuthorizedStorageOauthToken', inject(
     [HttpTestingController],
     (httpMock: HttpTestingController) => {
@@ -88,11 +124,11 @@ describe('Service: Addons', () => {
 
       const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
       expect(request.request.method).toBe('GET');
-      request.flush(getAddonsAuthorizedStorageData());
+      request.flush(getAddonsAuthorizedStorageData(0));
 
       expect(results).toEqual(
         Object({
-          accountOwnerId: '0e761652-ac4c-427e-b31c-7317d53ef32a',
+          accountOwnerId: '0b441148-83e5-4f7f-b302-b07b528b160b',
           apiBaseUrl: 'https://www.googleapis.com',
           authUrl: null,
           authorizedCapabilities: ['ACCESS', 'UPDATE'],
@@ -103,8 +139,8 @@ describe('Service: Addons', () => {
           displayName: 'Google Drive',
           externalServiceName: '',
           oauthToken: 'ya29.A0AS3H6NzDCKgrUx',
-          externalStorageServiceId: '986c6ba5-ff9b-4a57-8c01-e58ff4cd48ca',
-          id: '0ab44840-5a37-4a79-9e94-9b5f5830159a',
+          externalStorageServiceId: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
+          id: '331b7333-a13a-4d3b-add0-5af0fd1d4ac4',
           providerName: '',
           supportedFeatures: [],
           type: 'authorized-storage-accounts',

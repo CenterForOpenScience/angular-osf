@@ -102,7 +102,7 @@ export class AddonsService {
       .pipe(map((response) => response.data));
   }
 
-  getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAddon[]> {
+  getAuthorizedStorageAddons(addonType: string, referenceId: string): Observable<AuthorizedAddon[]> {
     const params = {
       [`fields[external-${addonType}-services]`]: 'external_service_name',
     };
@@ -118,7 +118,6 @@ export class AddonsService {
   }
 
   getAuthorizedStorageOauthToken(accountId: string): Observable<AuthorizedAddon> {
-    // https://addons.test.osf.io/v1/authorized-storage-accounts/0ab44840-5a37-4a79-9e94-9b5f5830159a
     return this.jsonApiService
 
       .get<
