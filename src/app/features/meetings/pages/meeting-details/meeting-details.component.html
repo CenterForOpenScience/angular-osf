@@ -57,24 +57,24 @@
     </ng-template>
     <ng-template #body let-item>
       @if (item?.id) {
-        <tr class="cursor-pointer" [routerLink]="[item.id, 'overview']">
+        <tr class="cursor-pointer" [routerLink]="['/', item.id, 'overview']">
           <td>{{ item.title }}</td>
           <td>{{ item.authorName }}</td>
           <td>{{ item.meetingCategory }}</td>
           <td class="w-14rem">{{ item.dateCreated | date: 'MMM d, y, h:mm a' }}</td>
           <td class="text-center" [class.w-9rem]="!item.downloadCount">
-            @if (item.downloadCount) {
+            @if (item.downloadLink) {
               <p-button
                 [label]="'meetings.details.downloadButton' | translate"
-                icon="pi pi-download"
+                icon="fas fa-download"
                 class="mr-1"
                 severity="secondary"
                 [raised]="true"
                 (click)="downloadSubmission($event, item)"
               />
-              {{ item.downloadCount }}
+              <span class="ml-2">{{ item.downloadCount }}</span>
             } @else {
-              -
+              <span>-</span>
             }
           </td>
         </tr>
