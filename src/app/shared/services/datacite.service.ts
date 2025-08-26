@@ -9,15 +9,15 @@ import { environment } from 'src/environments/environment';
 export class DataciteService {
   #http: HttpClient = inject(HttpClient);
 
-  logView(doi: string | null | undefined): void {
+  logView(doi: string): void {
     this.logActivity('view', doi);
   }
 
-  logDownload(doi: string | null | undefined): void {
+  logDownload(doi: string): void {
     this.logActivity('download', doi);
   }
 
-  protected logActivity(event: string, doi: string | null | undefined): void {
+  private logActivity(event: string, doi: string): void {
     console.log(`Logging ${event} for doi:${doi} to datacite tracker`);
     if (!doi || !environment.dataciteTrackerRepoId) {
       return;

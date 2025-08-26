@@ -12,14 +12,14 @@ export abstract class DataciteTrackerComponent {
   protected constructor() {
     this.setupTrackerEffect();
   }
-  protected abstract getDoi(): string | null | undefined;
+  protected abstract getDoi(): string | null;
 
   protected setupTrackerEffect() {
     effect(() => {
       const doi = this.getDoi();
-      if (doi && !this.logged) {
+      if (doi && !this.isLogged) {
+        this.isLogged = true;
         this.dataciteService.logView(doi);
-        this.logged = true;
       }
     });
   }

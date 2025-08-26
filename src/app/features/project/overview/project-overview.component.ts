@@ -188,8 +188,8 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  protected override getDoi(): string | null | undefined {
-    return this.currentProject()?.identifiers?.find((item) => item.category == 'doi')?.value;
+  protected override getDoi(): string | null {
+    return this.currentProject()?.identifiers?.find((item) => item.category == 'doi')?.value ?? null;
   }
   constructor() {
     super();
