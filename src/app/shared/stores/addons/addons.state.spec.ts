@@ -60,7 +60,7 @@ describe('State: Addons', () => {
           })
         );
 
-        const addon = store.selectSnapshot((state) => AddonsSelectors.getStorageAddon(state.addons, result[0].id));
+        const addon = store.selectSnapshot(AddonsSelectors.getStorageAddon(result[0].id));
 
         expect(addon).toEqual(
           Object({
@@ -309,6 +309,10 @@ describe('State: Addons', () => {
           })
         );
 
+        const oauthToken = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(result[0].id));
+
+        expect(oauthToken).toBe('ya29.A0AS3H6NzDCKgrUx');
+
         expect(loading()).toBeFalsy();
         expect(httpMock.verify).toBeTruthy();
       }
@@ -359,6 +363,12 @@ describe('State: Addons', () => {
             type: 'authorized-storage-accounts',
           })
         );
+
+        let oauthToken = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(result[0].id));
+        expect(oauthToken).toBe('ya29.A0AS3H6NzDCKgrUx');
+
+        oauthToken = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(result[1].id));
+        expect(oauthToken).toBe(result[1].oauthToken);
 
         expect(loading()).toBeFalsy();
         expect(httpMock.verify).toBeTruthy();

@@ -5,18 +5,11 @@ import { of } from 'rxjs';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { of } from 'rxjs';
-
-import { HttpTestingController } from '@angular/common/http/testing';
-import { ComponentFixture, inject, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { AddonsState } from '@osf/shared/stores';
 
 import { ConfigureAddonComponent } from './configure-addon.component';
 
-import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
-import { getAddonsOperationInvocation } from '@testing/data/addons/addons.operation-invocation.data';
 import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
 import { getAddonsOperationInvocation } from '@testing/data/addons/addons.operation-invocation.data';
 import { ToastServiceMock } from '@testing/mocks/toast.service.mock';
@@ -80,7 +73,7 @@ describe('Component: Configure Addon', () => {
     });
 
     it('should validate the constuctor values', () => {
-      expect(component.storageAddon()).toBeUndefined();
+      expect(component.storageAddon()).toBeNull();
       expect(component.addon()).toEqual(
         Object({
           attributes: {
