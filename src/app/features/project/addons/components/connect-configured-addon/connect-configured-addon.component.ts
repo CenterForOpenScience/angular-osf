@@ -114,8 +114,6 @@ export class ConnectConfiguredAddonComponent {
 
   protected resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
-    console.log('resourceUri id', id);
-
     return `${environment.webUrl}/${id}`;
   });
 

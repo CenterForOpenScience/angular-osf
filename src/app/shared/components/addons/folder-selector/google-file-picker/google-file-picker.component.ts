@@ -1,3 +1,5 @@
+import { Store } from '@ngxs/store';
+
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
@@ -5,6 +7,7 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/constants/environment.token';
+import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@osf/shared/stores';
 
 import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
 
@@ -22,24 +25,23 @@ export class GoogleFilePickerComponent implements OnInit {
   readonly #environment = inject(ENVIRONMENT);
 
   public isFolderPicker = input.required<boolean>();
-
-  selectedFolderName = input<string>('');
-  rootFolderId = input<string>('');
+  public selectedFolderName = input<string>('');
+  public rootFolderId = input<string>('');
+  public accountId = input<string>('');
 
   //   selectFolder?: (a: Partial<Item>) => void;
   //   onRegisterChild?: (a: GoogleFilePickerWidget) => void;
   //   manager: StorageManager;
-  //   accountId: string;
   //     @tracked openGoogleFilePicker = false;
   #folderName = signal<string>('');
   selectFolder = undefined;
-  accessToken!: string;
+  accessToken = signal<string | null>(null);
 
   public visible = signal(false);
   public isGFPDisabled = signal(true);
   readonly #apiKey = this.#environment.google.GOOGLE_FILE_PICKER_API_KEY;
   readonly #appId = this.#environment.google.GOOGLE_FILE_PICKER_APP_ID;
-  #mimeTypes = '';
+  readonly #store = inject(Store);
   #parentId = '';
   #isMultipleSelect!: boolean;
   #title!: string;
@@ -47,8 +49,6 @@ export class GoogleFilePickerComponent implements OnInit {
   ngOnInit(): void {
     //         window.GoogleFilePickerWidget = this;
     // this.selectFolder = this.selectFolder();
-    // taskFor(this.loadOauthToken).perform();
-    this.#mimeTypes = this.isFolderPicker() ? 'application/vnd.google-apps.folder' : '';
     this.#parentId = this.isFolderPicker() ? '' : this.rootFolderId();
     this.#title = this.isFolderPicker()
       ? this.#translateService.instant('settings.addons.configureAddon.google-file-picker.root-folder-title')
@@ -59,7 +59,10 @@ export class GoogleFilePickerComponent implements OnInit {
     this.#googlePicker.loadScript().subscribe({
       next: () => {
         this.#googlePicker.loadGapiModules().subscribe({
-          next: () => this.initializePicker(),
+          next: () => {
+            this.initializePicker();
+            this.#loadOauthToken();
+          },
           // TODO add this error when the Sentry service is working
           //error: (err) => console.error('GAPI modules failed:', err),
         });
@@ -72,7 +75,6 @@ export class GoogleFilePickerComponent implements OnInit {
   public initializePicker() {
     if (this.isFolderPicker()) {
       this.visible.set(true);
-      this.isGFPDisabled.set(false);
     }
   }
 
@@ -81,7 +83,9 @@ export class GoogleFilePickerComponent implements OnInit {
 
     const googlePickerView = new google.picker.DocsView(google.picker.ViewId.DOCS);
     googlePickerView.setSelectFolderEnabled(true);
-    googlePickerView.setMimeTypes(this.#mimeTypes);
+    if (this.isFolderPicker()) {
+      googlePickerView.setMimeTypes('application/vnd.google-apps.folder');
+    }
     googlePickerView.setIncludeFolders(true);
     googlePickerView.setParent(this.#parentId);
 
@@ -90,7 +94,7 @@ export class GoogleFilePickerComponent implements OnInit {
       .setAppId(this.#appId)
       .addView(googlePickerView)
       .setTitle(this.#title)
-      .setOAuthToken(this.accessToken)
+      .setOAuthToken(this.accessToken())
       .setCallback(this.pickerCallback.bind(this));
 
     if (this.#isMultipleSelect) {
@@ -99,6 +103,19 @@ export class GoogleFilePickerComponent implements OnInit {
 
     const picker = pickerBuilder.build();
     picker.setVisible(true);
+  }
+
+  #loadOauthToken(): void {
+    if (this.accountId()) {
+      this.#store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId())).subscribe({
+        next: () => {
+          this.accessToken.set(
+            this.#store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
+          );
+          this.isGFPDisabled.set(this.accessToken() ? false : true);
+        },
+      });
+    }
   }
 
   //     /**
@@ -115,39 +132,6 @@ export class GoogleFilePickerComponent implements OnInit {
     console.log('data');
   }
 }
-
-// //
-// // 📚 Interface for Expected Arguments
-// //
-// interface Args {
-//   /**
-//    * selectFolder
-//    *
-//    * @description
-//    * A callback function passed into the component
-//    * that accepts a partial Item object and handles it (e.g., selects a file).
-//    */
-//   selectFolder?: (a: Partial<Item>) => void;
-//   onRegisterChild?: (a: GoogleFilePickerWidget) => void;
-//   selectedFolderName?: string;
-//   isFolderPicker: boolean;
-//   rootFolderId: string;
-//   manager: StorageManager;
-//   accountId: string;
-// }
-
-//     @task
-//     @waitFor
-//     private async loadOauthToken(): Promise<void>{
-//         if (this.args.accountId) {
-//             const authorizedStorageAccount = await this.store.
-//                 findRecord('authorized-storage-account', this.args.accountId);
-//             authorizedStorageAccount.serializeOauthToken = true;
-//             const token = await authorizedStorageAccount.save();
-//             this.accessToken = token.oauthToken;
-//             this.isGFPDisabled = this.accessToken ? false : true;
-//         }
-//     }
 
 //     /**
 //      * filePickerCallback

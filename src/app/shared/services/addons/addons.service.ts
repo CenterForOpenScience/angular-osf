@@ -119,13 +119,15 @@ export class AddonsService {
 
   getAuthorizedStorageOauthToken(accountId: string): Observable<AuthorizedAddon> {
     return this.jsonApiService
-
-      .get<
-        JsonApiResponse<AuthorizedAddonGetResponseJsonApi, null>
-      >(`${environment.addonsApiUrl}/authorized-storage-accounts/${accountId}`)
+      .patch<AuthorizedAddonGetResponseJsonApi>(
+        `${environment.addonsApiUrl}/authorized-storage-accounts/${accountId}`,
+        {
+          serializeOauthToken: true,
+        }
+      )
       .pipe(
         map((response) => {
-          return AddonMapper.fromAuthorizedAddonResponse(response.data);
+          return AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi);
         })
       );
   }

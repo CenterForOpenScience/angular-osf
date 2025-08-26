@@ -5,7 +5,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule, provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
 import { EnvironmentTokenMock } from './mocks/environment.token.mock';
@@ -16,6 +16,7 @@ import { TranslationServiceMock } from './mocks/translation.service.mock';
 @NgModule({
   imports: [NoopAnimationsModule, BrowserModule, CommonModule, TranslateModule.forRoot()],
   providers: [
+    provideNoopAnimations(),
     provideRouter([]),
     provideHttpClient(withInterceptorsFromDi()),
     provideHttpClientTesting(),

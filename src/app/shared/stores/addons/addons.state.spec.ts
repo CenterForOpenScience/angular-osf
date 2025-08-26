@@ -285,7 +285,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
-        expect(request.request.method).toBe('GET');
+        expect(request.request.method).toBe('PATCH');
         request.flush(getAddonsAuthorizedStorageData(0));
 
         expect(result[0]).toEqual(
@@ -338,7 +338,7 @@ describe('State: Addons', () => {
         request.flush(getAddonsAuthorizedStorageData());
 
         request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
-        expect(request.request.method).toBe('GET');
+        expect(request.request.method).toBe('PATCH');
         const addonWithToken = getAddonsAuthorizedStorageData(1);
         addonWithToken.data.attributes.oauth_token = 'ya2.34234324534';
         request.flush(addonWithToken);
@@ -393,7 +393,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const req = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
-        expect(req.request.method).toBe('GET');
+        expect(req.request.method).toBe('PATCH');
 
         req.flush({ message: 'Internal Server Error' }, { status: 500, statusText: 'Server Error' });
 

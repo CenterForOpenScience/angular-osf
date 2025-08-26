@@ -77,7 +77,6 @@ export class AddonMapper {
    *
    * @example
    * const addon = AddonMapper.fromConfiguredAddonResponse(apiResponse);
-   * console.log(addon.displayName); // "Google Drive"
    */
   static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredStorageAddonModel {
     return {

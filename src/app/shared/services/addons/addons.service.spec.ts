@@ -123,7 +123,12 @@ describe('Service: Addons', () => {
       });
 
       const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
-      expect(request.request.method).toBe('GET');
+      expect(request.request.method).toBe('PATCH');
+      expect(request.request.body).toEqual(
+        Object({
+          serializeOauthToken: true,
+        })
+      );
       request.flush(getAddonsAuthorizedStorageData(0));
 
       expect(results).toEqual(

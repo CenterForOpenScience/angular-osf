@@ -1,3 +1,5 @@
+import { Store } from '@ngxs/store';
+
 import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -5,7 +7,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
 import { GoogleFilePickerComponent } from './google-file-picker.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('Component: Google File Picker', () => {
   let component: GoogleFilePickerComponent;
@@ -32,8 +34,15 @@ describe('Component: Google File Picker', () => {
   const setIncludeFolders = jest.fn();
   const setParent = jest.fn();
 
+  const storeMock = {
+    dispatch: jest.fn().mockReturnValue(of({})),
+    selectSnapshot: jest.fn().mockReturnValue('mock-token'),
+  };
+
   describe('isFolderPicker - true', () => {
     beforeEach(async () => {
+      jest.clearAllMocks();
+
       (window as any).google = {
         picker: {
           ViewId: {
@@ -63,7 +72,13 @@ describe('Component: Google File Picker', () => {
 
       await TestBed.configureTestingModule({
         imports: [OSFTestingModule, GoogleFilePickerComponent],
-        providers: [{ provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy }],
+        providers: [
+          { provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy },
+          {
+            provide: Store,
+            useValue: storeMock,
+          },
+        ],
       }).compileComponents();
 
       fixture = TestBed.createComponent(GoogleFilePickerComponent);
@@ -71,6 +86,7 @@ describe('Component: Google File Picker', () => {
       fixture.componentRef.setInput('isFolderPicker', true);
       fixture.componentRef.setInput('rootFolderId', 'root-folder-id');
       fixture.componentRef.setInput('selectedFolderName', 'selected-folder-name');
+      fixture.componentRef.setInput('accountId', 'account-id');
       fixture.detectChanges();
     });
 
@@ -96,7 +112,7 @@ describe('Component: Google File Picker', () => {
       expect(setAppId).toHaveBeenCalledWith('test-app-id');
       expect(addView).toHaveBeenCalled();
       expect(setTitle).toHaveBeenCalledWith('settings.addons.configureAddon.google-file-picker.root-folder-title');
-      expect(setOAuthToken).toHaveBeenCalledWith(undefined);
+      expect(setOAuthToken).toHaveBeenCalledWith('mock-token');
       expect(setCallback).toHaveBeenCalled();
       expect(enableFeature).not.toHaveBeenCalled();
       expect(build).toHaveBeenCalledWith();
@@ -106,6 +122,7 @@ describe('Component: Google File Picker', () => {
 
   describe('isFolderPicker - false', () => {
     beforeEach(async () => {
+      jest.clearAllMocks();
       (window as any).google = {
         picker: {
           ViewId: {
@@ -134,8 +151,14 @@ describe('Component: Google File Picker', () => {
       };
 
       await TestBed.configureTestingModule({
-        imports: [OSFTestingModule, GoogleFilePickerComponent],
-        providers: [{ provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy }],
+        imports: [OSFTestingStoreModule, GoogleFilePickerComponent],
+        providers: [
+          { provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy },
+          {
+            provide: Store,
+            useValue: storeMock,
+          },
+        ],
       }).compileComponents();
 
       fixture = TestBed.createComponent(GoogleFilePickerComponent);
@@ -159,16 +182,16 @@ describe('Component: Google File Picker', () => {
 
       expect(window.google.picker.DocsView).toHaveBeenCalledWith('docs');
       expect(setSelectFolderEnabled).toHaveBeenCalledWith(true);
-      expect(setMimeTypes).toHaveBeenCalledWith('application/vnd.google-apps.folder');
+      expect(setMimeTypes).not.toHaveBeenCalled();
       expect(setIncludeFolders).toHaveBeenCalledWith(true);
-      expect(setParent).toHaveBeenCalledWith('');
+      expect(setParent).toHaveBeenCalledWith('root-folder-id');
 
       expect(window.google.picker.PickerBuilder).toHaveBeenCalledWith();
       expect(setDeveloperKey).toHaveBeenCalledWith('test-api-key');
       expect(setAppId).toHaveBeenCalledWith('test-app-id');
       expect(addView).toHaveBeenCalled();
-      expect(setTitle).toHaveBeenCalledWith('settings.addons.configureAddon.google-file-picker.root-folder-title');
-      expect(setOAuthToken).toHaveBeenCalledWith(undefined);
+      expect(setTitle).toHaveBeenCalledWith('settings.addons.configureAddon.google-file-picker.file-folder-title');
+      expect(setOAuthToken).toHaveBeenCalledWith(null);
       expect(setCallback).toHaveBeenCalled();
       expect(enableFeature).toHaveBeenCalledWith('multiselect');
       expect(build).toHaveBeenCalledWith();
