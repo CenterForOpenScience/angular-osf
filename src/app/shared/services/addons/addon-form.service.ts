@@ -6,8 +6,8 @@ import { AddonFormControls, CredentialsFormat } from '@shared/enums';
 import {
   AddonForm,
   AddonModel,
-  AuthorizedAddon,
   AuthorizedAddonRequestJsonApi,
+  AuthorizedStorageAccountModel,
   ConfiguredAddonRequestJsonApi,
   ConfiguredStorageAddonModel,
 } from '@shared/models';
@@ -18,7 +18,7 @@ import {
 export class AddonFormService {
   protected formBuilder: FormBuilder = inject(FormBuilder);
 
-  initializeForm(addon: AddonModel | AuthorizedAddon): FormGroup<AddonForm> {
+  initializeForm(addon: AddonModel | AuthorizedStorageAccountModel): FormGroup<AddonForm> {
     if (!addon) {
       return new FormGroup({} as AddonForm);
     }
@@ -51,7 +51,7 @@ export class AddonFormService {
 
   generateAuthorizedAddonPayload(
     formValue: Record<string, unknown>,
-    addon: AddonModel | AuthorizedAddon,
+    addon: AddonModel | AuthorizedStorageAccountModel,
     userReferenceId: string,
     addonTypeString: string
   ): AuthorizedAddonRequestJsonApi {
@@ -107,13 +107,15 @@ export class AddonFormService {
     };
   }
 
-  private getAddonServiceId(addon: AddonModel | AuthorizedAddon): string {
-    return isAuthorizedAddon(addon) ? (addon as AuthorizedAddon).externalStorageServiceId : (addon as AddonModel).id;
+  private getAddonServiceId(addon: AddonModel | AuthorizedStorageAccountModel): string {
+    return isAuthorizedAddon(addon)
+      ? (addon as AuthorizedStorageAccountModel).externalStorageServiceId
+      : (addon as AddonModel).id;
   }
 
   generateConfiguredAddonCreatePayload(
-    addon: AddonModel | AuthorizedAddon,
-    selectedAccount: AuthorizedAddon,
+    addon: AddonModel | AuthorizedStorageAccountModel,
+    selectedAccount: AuthorizedStorageAccountModel,
     userReferenceId: string,
     resourceUri: string,
     displayName: string,

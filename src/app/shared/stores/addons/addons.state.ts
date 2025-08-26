@@ -4,7 +4,7 @@ import { catchError, switchMap, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { AuthorizedAddon } from '@osf/shared/models';
+import { AuthorizedStorageAccountModel } from '@osf/shared/models';
 import { AddonsService } from '@shared/services';
 
 import {
@@ -233,10 +233,10 @@ export class AddonsState {
       tap((addon) => {
         ctx.setState((state) => {
           const existing = state.authorizedStorageAddons.data.find(
-            (existingAddon: AuthorizedAddon) => existingAddon.id === addon.id
+            (existingAddon: AuthorizedStorageAccountModel) => existingAddon.id === addon.id
           );
           const updatedData = existing
-            ? state.authorizedStorageAddons.data.map((existingAddon: AuthorizedAddon) =>
+            ? state.authorizedStorageAddons.data.map((existingAddon: AuthorizedStorageAccountModel) =>
                 existingAddon.id === addon.id ? { ...existingAddon, ...addon } : existingAddon
               )
             : [...state.authorizedStorageAddons.data, addon];

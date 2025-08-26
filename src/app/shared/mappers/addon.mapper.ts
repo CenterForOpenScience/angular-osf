@@ -1,8 +1,8 @@
 import {
   AddonGetResponseJsonApi,
   AddonModel,
-  AuthorizedAddon,
   AuthorizedAddonGetResponseJsonApi,
+  AuthorizedStorageAccountModel,
   ConfiguredAddonGetResponseJsonApi,
   ConfiguredStorageAddonModel,
   IncludedAddonData,
@@ -29,7 +29,7 @@ export class AddonMapper {
   static fromAuthorizedAddonResponse(
     response: AuthorizedAddonGetResponseJsonApi,
     included?: IncludedAddonData[]
-  ): AuthorizedAddon {
+  ): AuthorizedStorageAccountModel {
     const externalServiceData =
       response.relationships?.external_storage_service?.data || response.relationships?.external_citation_service?.data;
 
