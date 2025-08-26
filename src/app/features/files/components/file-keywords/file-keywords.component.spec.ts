@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FileKeywordsComponent } from './file-keywords.component';
 
-import { OSFTestingModule } from '@testing/osf.testing.module';
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('FileKeywordsComponent', () => {
   let component: FileKeywordsComponent;
@@ -10,7 +10,7 @@ describe('FileKeywordsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FileKeywordsComponent, OSFTestingModule],
+      imports: [FileKeywordsComponent, OSFTestingStoreModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FileKeywordsComponent);

@@ -1,8 +1,4 @@
-import { Store } from '@ngxs/store';
-
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
-
-import { of } from 'rxjs';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { CommonModule } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
@@ -12,7 +8,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
-import { ToastService } from '@osf/shared/services';
+import { StoreMock } from './mocks/store.mock';
+import { ToastServiceMock } from './mocks/toast.service.mock';
+import { translationServiceMock } from './mocks/translation.service.mock';
 
 @NgModule({
   imports: [NoopAnimationsModule, BrowserModule, CommonModule, TranslateModule.forRoot()],
@@ -20,32 +18,13 @@ import { ToastService } from '@osf/shared/services';
     provideRouter([]),
     provideHttpClient(withInterceptorsFromDi()),
     provideHttpClientTesting(),
-    {
-      provide: Store,
-      useValue: {
-        select: jest.fn().mockReturnValue(of([])),
-        selectSignal: jest.fn().mockReturnValue(of([])),
-        dispatch: jest.fn().mockReturnValue(of({})),
-      } as unknown as jest.Mocked<Store>,
-    },
-    {
-      provide: ToastService,
-      useValue: {
-        success: jest.fn(),
-        error: jest.fn(),
-        info: jest.fn(),
-        warning: jest.fn(),
-      },
-    },
-    {
-      provide: TranslateService,
-      useValue: {
-        get: jest.fn().mockImplementation((key) => of(key || '')),
-        instant: jest.fn().mockImplementation((key) => key || ''),
-        use: jest.fn(),
-        onLangChange: of({}),
-      },
-    },
+    translationServiceMock,
   ],
 })
 export class OSFTestingModule {}
+
+@NgModule({
+  imports: [OSFTestingModule],
+  providers: [StoreMock, ToastServiceMock],
+})
+export class OSFTestingStoreModule {}

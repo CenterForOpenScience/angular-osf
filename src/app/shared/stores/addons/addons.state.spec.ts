@@ -1,4 +1,4 @@
-import { NgxsModule, Store } from '@ngxs/store';
+import { provideStore, Store } from '@ngxs/store';
 
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
@@ -18,8 +18,7 @@ describe('State: Addons', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([AddonsState])],
-      providers: [provideHttpClient(), provideHttpClientTesting(), AddonsService],
+      providers: [provideStore([AddonsState]), provideHttpClient(), provideHttpClientTesting(), AddonsService],
     });
 
     store = TestBed.inject(Store);

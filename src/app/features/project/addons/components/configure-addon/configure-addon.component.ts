@@ -71,34 +71,38 @@ export class ConfigureAddonComponent implements OnInit {
   /**
    * Form control for capturing or displaying the user’s selected account name.
    */
-  protected accountNameControl = new FormControl('');
+  public accountNameControl = new FormControl('');
   /**
    * Signal representing the currently selected `Addon` from the list of available storage addons.
    * This value updates reactively as the selection changes.
    */
-  protected storageAddon = signal<AddonModel | undefined>(undefined);
+  public storageAddon = signal<AddonModel | undefined>(undefined);
   /**
    * Signal representing the currently selected and configured storage addon model.
    * This may be `null` if no addon has been configured.
    */
-  protected addon = signal<ConfiguredStorageAddonModel | null>(null);
+  public addon = signal<ConfiguredStorageAddonModel | null>(null);
+
+  public readonly isGoogleDrive = computed(() => {
+    return this.storageAddon()?.wbKey === 'googledrive';
+  });
 
   protected isEditMode = signal<boolean>(false);
-  protected selectedRootFolderId = signal('');
+  public selectedRootFolderId = signal('');
   protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
-  protected operationInvocation = select(AddonsSelectors.getOperationInvocation);
+  public operationInvocation = select(AddonsSelectors.getOperationInvocation);
   protected selectedFolderOperationInvocation = select(AddonsSelectors.getSelectedFolderOperationInvocation);
   protected selectedFolder = select(AddonsSelectors.getSelectedFolder);
 
-  protected readonly baseUrl = computed(() => {
+  readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
     return currentUrl.split('/addons')[0];
   });
-  protected readonly resourceUri = computed(() => {
+  readonly resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
     return `${environment.webUrl}/${id}`;
   });
-  protected readonly addonTypeString = computed(() => {
+  readonly addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());
   });
   protected readonly actions = createDispatchMap({
@@ -118,6 +122,8 @@ export class ConfigureAddonComponent implements OnInit {
   }
 
   private initializeAddon(): void {
+    // TODO this should be reviewed to have the addon be retrieved from the store
+    // I have limited my testing because it will create a false/positive test based on the required data
     const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as ConfiguredStorageAddonModel;
 
     if (addon) {
