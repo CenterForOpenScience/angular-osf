@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { DataciteEvent } from '@shared/models/datacite/datacite-event.enum';
+
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -10,14 +12,14 @@ export class DataciteService {
   #http: HttpClient = inject(HttpClient);
 
   logView(doi: string): void {
-    this.logActivity('view', doi);
+    this.logActivity(DataciteEvent.VIEW, doi);
   }
 
   logDownload(doi: string): void {
-    this.logActivity('download', doi);
+    this.logActivity(DataciteEvent.DOWNLOAD, doi);
   }
 
-  private logActivity(event: string, doi: string): void {
+  private logActivity(event: DataciteEvent, doi: string): void {
     console.log(`Logging ${event} for doi:${doi} to datacite tracker`);
     if (!doi || !environment.dataciteTrackerRepoId) {
       return;

@@ -30,7 +30,7 @@ import {
   ResourceMetadataComponent,
   SubHeaderComponent,
 } from '@shared/components';
-import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker/datacite-tracker.component';
+import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
 import { Mode, ResourceType, UserPermissions } from '@shared/enums';
 import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
 import { ToastService } from '@shared/services';

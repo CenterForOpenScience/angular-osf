@@ -6,15 +6,15 @@ import { DataciteService } from '@shared/services/datacite.service';
   template: ``,
 })
 export abstract class DataciteTrackerComponent {
-  private logged = false;
+  private isLogged = false;
   private dataciteService = inject(DataciteService);
 
   protected constructor() {
-    this.setupTrackerEffect();
+    this.setupDataciteViewTrackerEffect();
   }
   protected abstract getDoi(): string | null;
 
-  protected setupTrackerEffect() {
+  protected setupDataciteViewTrackerEffect() {
     effect(() => {
       const doi = this.getDoi();
       if (doi && !this.isLogged) {
