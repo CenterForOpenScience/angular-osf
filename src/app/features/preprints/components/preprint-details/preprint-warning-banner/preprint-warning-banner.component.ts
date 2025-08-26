@@ -4,15 +4,12 @@ import { Message } from 'primeng/message';
 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { IconComponent } from '@shared/components';
-
 @Component({
   selector: 'osf-preprint-warning-banner',
-  imports: [TranslatePipe, Message, IconComponent],
-  templateUrl: './osf-preprint-warning-banner.component.html',
-  styleUrl: './osf-preprint-warning-banner.component.scss',
+  imports: [TranslatePipe, Message],
+  templateUrl: './preprint-warning-banner.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OsfPreprintWarningBannerComponent {
+export class PreprintWarningBannerComponent {
   //
 }
