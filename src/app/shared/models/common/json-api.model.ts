@@ -28,6 +28,10 @@ export interface MetaJsonApi {
   version?: string;
 }
 
+export interface MetaAnonymousJsonApi {
+  anonymous: boolean;
+}
+
 export interface PaginationLinksJsonApi {
   self?: string;
   first?: string | null;

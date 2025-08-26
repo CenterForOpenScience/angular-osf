@@ -37,7 +37,7 @@ export class ProjectOverviewService {
 
     return this.jsonApiService
       .get<ProjectOverviewResponseJsonApi>(`${environment.apiUrl}/nodes/${projectId}/`, params)
-      .pipe(map((response) => ProjectOverviewMapper.fromGetProjectResponse(response.data)));
+      .pipe(map((response) => ProjectOverviewMapper.fromGetProjectResponse(response.data, response.meta)));
   }
 
   updateProjectPublicStatus(projectId: string, isPublic: boolean): Observable<void> {

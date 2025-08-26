@@ -34,10 +34,10 @@ export class ViewOnlyLinksService {
 
   getViewOnlyLinksData(projectId: string, resourceType: ResourceType): Observable<PaginatedViewOnlyLinksModel> {
     const resourcePath = this.urlMap.get(resourceType);
-    const params: Record<string, unknown> = { embed: 'creator' };
+    const params: Record<string, unknown> = { 'embed[]': ['creator', 'nodes'] };
 
     return this.jsonApiService
-      .get<ViewOnlyLinksResponseJsonApi>(`${environment.apiUrl}/${resourcePath}/${projectId}/view_only_links`, params)
+      .get<ViewOnlyLinksResponseJsonApi>(`${environment.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, params)
       .pipe(map((response) => ViewOnlyLinksMapper.fromResponse(response, projectId)));
   }
 
@@ -48,7 +48,7 @@ export class ViewOnlyLinksService {
   ): Observable<PaginatedViewOnlyLinksModel> {
     const resourcePath = this.urlMap.get(resourceType);
     const data = { data: { ...payload } };
-    const params: Record<string, unknown> = { embed: 'creator' };
+    const params: Record<string, unknown> = { 'embed[]': ['creator', 'nodes'] };
 
     return this.jsonApiService
       .post<

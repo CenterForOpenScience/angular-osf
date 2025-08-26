@@ -5,7 +5,7 @@ export interface ActivityLogJsonApi {
     action: string;
     date: string;
     params: {
-      contributors: LogContributorJsonApi[];
+      contributors?: LogContributorJsonApi[];
       license?: string;
       tag?: string;
       institution?: {

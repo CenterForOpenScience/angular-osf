@@ -67,4 +67,5 @@ export interface ResourceOverview {
   forksCount: number;
   viewOnlyLinksCount?: number;
   associatedProjectId?: string;
+  isAnonymous?: boolean;
 }

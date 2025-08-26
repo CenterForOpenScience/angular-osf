@@ -18,11 +18,15 @@
       <h3>{{ 'project.overview.metadata.contributors' | translate }}</h3>
 
       <div class="flex flex-wrap gap-1 line-height-2">
-        @for (contributor of resource.contributors; track contributor.id) {
-          <div>
-            <a class="font-bold"> {{ contributor.fullName }}</a>
-            <span>{{ $last ? '' : ',' }}</span>
-          </div>
+        @if (!resource.isAnonymous) {
+          @for (contributor of resource.contributors; track contributor.id) {
+            <div>
+              <a class="font-bold"> {{ contributor.fullName }}</a>
+              <span>{{ $last ? '' : ',' }}</span>
+            </div>
+          }
+        } @else {
+          <p>{{ 'project.overview.metadata.anonymousContributors' | translate }}</p>
         }
       </div>
     </div>
@@ -98,45 +102,49 @@
       <div>{{ resource.license?.name ?? ('project.overview.metadata.noLicense' | translate) }}</div>
     </div>
 
-    <div class="flex flex-column gap-2">
-      @if (resource.type !== resourceTypes.Registrations) {
-        <h3>{{ 'project.overview.metadata.publication' | translate }}</h3>
-      } @else {
-        <h3>{{ 'registry.overview.metadata.doi' | translate }}</h3>
-      }
+    @if (!resource.isAnonymous) {
+      <div class="flex flex-column gap-2">
+        @if (resource.type !== resourceTypes.Registrations) {
+          <h3>{{ 'project.overview.metadata.publication' | translate }}</h3>
+        } @else {
+          <h3>{{ 'registry.overview.metadata.doi' | translate }}</h3>
+        }
 
-      @if (resource.identifiers?.length) {
-        @for (identifier of resource.identifiers; track identifier.id) {
-          @if (identifier.category === 'doi') {
-            @if (resource.type !== resourceTypes.Registrations) {
-              <a [href]="'https://doi.org/' + identifier.value">
-                {{ identifier.value }}
-              </a>
-            } @else {
-              <a [href]="'https://doi.org/' + identifier.value">
-                {{ 'https://doi.org/' + identifier.value }}
-              </a>
+        @if (resource.identifiers?.length) {
+          @for (identifier of resource.identifiers; track identifier.id) {
+            @if (identifier.category === 'doi') {
+              @if (resource.type !== resourceTypes.Registrations) {
+                <a [href]="'https://doi.org/' + identifier.value">
+                  {{ identifier.value }}
+                </a>
+              } @else {
+                <a [href]="'https://doi.org/' + identifier.value">
+                  {{ 'https://doi.org/' + identifier.value }}
+                </a>
+              }
             }
           }
-        }
-      } @else {
-        <p>{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
-      }
-    </div>
-
-    <div class="flex flex-column gap-2">
-      <h3>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h3>
-
-      <div class="flex gap-2">
-        @if (resource.affiliatedInstitutions?.length) {
-          @for (institution of resource.affiliatedInstitutions; track institution.id) {
-            <img alt="institution logo" [src]="institution.logo" height="45" />
-          }
         } @else {
-          <p>{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
+          <p>{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
         }
       </div>
-    </div>
+    }
+
+    @if (!resource.isAnonymous) {
+      <div class="flex flex-column gap-2">
+        <h3>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h3>
+
+        <div class="flex gap-2">
+          @if (resource.affiliatedInstitutions?.length) {
+            @for (institution of resource.affiliatedInstitutions; track institution.id) {
+              <img alt="institution logo" [src]="institution.logo" height="45" />
+            }
+          } @else {
+            <p>{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
+          }
+        </div>
+      </div>
+    }
 
     @if (resource.type === resourceTypes.Projects) {
       <osf-overview-collections [currentProject]="currentResource()"></osf-overview-collections>
@@ -169,11 +177,12 @@
         <p>{{ 'project.overview.metadata.noTags' | translate }}</p>
       }
     </div>
-
-    <osf-resource-citations
-      [currentResource]="currentResource()"
-      (customCitation)="onCustomCitationUpdated($event)"
-      [isCollectionsRoute]="isCollectionsRoute()"
-    ></osf-resource-citations>
+    @if (!resource.isAnonymous) {
+      <osf-resource-citations
+        [currentResource]="currentResource()"
+        (customCitation)="onCustomCitationUpdated($event)"
+        [isCollectionsRoute]="isCollectionsRoute()"
+      ></osf-resource-citations>
+    }
   </div>
 }

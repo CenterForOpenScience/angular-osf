@@ -387,6 +387,8 @@
         "anonymous": "Anonymous"
       },
       "viewOnlyLinkCreated": "View only link successfully created.",
+      "viewOnlyLinkDeleted": "View only link successfully deleted.",
+      "viewOnlyLinkCurrentProject": "(current component)",
       "anonymizeContributorList": "Anonymize contributor list for this link (e.g., for blind peer review).",
       "ensureNoInformation": "Ensure the wiki pages, files, registration forms and add-ons do not contain identifying information.",
       "linkName": "Link name",
@@ -576,6 +578,7 @@
         "rejected": "Rejected from\u00A0"
       },
       "metadata": {
+        "anonymousContributors": "Anonymous Contributors",
         "title": "Metadata",
         "contributors": "Contributors",
         "description": "Description",

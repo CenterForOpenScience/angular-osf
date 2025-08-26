@@ -1,9 +1,12 @@
-import { License } from '@shared/models';
+import { License, MetaAnonymousJsonApi } from '@shared/models';
 
-import { ProjectOverview, ProjectOverviewGetResponseJsoApi } from '../models';
+import { ProjectOverview, ProjectOverviewGetResponseJsonApi } from '../models';
 
 export class ProjectOverviewMapper {
-  static fromGetProjectResponse(response: ProjectOverviewGetResponseJsoApi): ProjectOverview {
+  static fromGetProjectResponse(
+    response: ProjectOverviewGetResponseJsonApi,
+    meta?: MetaAnonymousJsonApi
+  ): ProjectOverview {
     return {
       id: response.id,
       type: response.type,
@@ -36,14 +39,15 @@ export class ProjectOverviewMapper {
       wikiEnabled: response.attributes.wiki_enabled,
       customCitation: response.attributes.custom_citation,
       subjects: response.attributes.subjects?.map((subjectArray) => subjectArray[0]),
-      contributors: response.embeds.bibliographic_contributors.data.map((contributor) => ({
-        id: contributor.embeds.users.data.id,
-        familyName: contributor.embeds.users.data.attributes.family_name,
-        fullName: contributor.embeds.users.data.attributes.full_name,
-        givenName: contributor.embeds.users.data.attributes.given_name,
-        middleName: contributor.embeds.users.data.attributes.middle_name,
-        type: contributor.embeds.users.data.type,
-      })),
+      contributors:
+        response.embeds.bibliographic_contributors?.data?.map((contributor) => ({
+          id: contributor.embeds.users.data.id,
+          familyName: contributor.embeds.users.data.attributes.family_name,
+          fullName: contributor.embeds.users.data.attributes.full_name,
+          givenName: contributor.embeds.users.data.attributes.given_name,
+          middleName: contributor.embeds.users.data.attributes.middle_name,
+          type: contributor.embeds.users.data.type,
+        })) ?? [],
       affiliatedInstitutions: response.embeds.affiliated_institutions?.data.map((institution) => ({
         id: institution.id,
         type: institution.type,
@@ -74,12 +78,13 @@ export class ProjectOverviewMapper {
         url: preprint.links.html,
       })),
       region: response.relationships.region?.data,
-      forksCount: response.relationships.forks.links.related.meta.count,
-      viewOnlyLinksCount: response.relationships.view_only_links.links.related.meta.count,
+      forksCount: response.relationships.forks?.links?.related?.meta?.count ?? 0,
+      viewOnlyLinksCount: response.relationships.view_only_links?.links?.related?.meta?.count ?? 0,
       links: {
         rootFolder: response.relationships?.files?.links?.related?.href,
         iri: response.links?.iri,
       },
+      isAnonymous: meta?.anonymous ?? false,
     } as ProjectOverview;
   }
 }

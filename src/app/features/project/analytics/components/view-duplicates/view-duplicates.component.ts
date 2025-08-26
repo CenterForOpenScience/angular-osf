@@ -151,6 +151,7 @@ export class ViewDuplicatesComponent {
         viewOnlyLinksCount: 0,
         forksCount: resource.forksCount,
         resourceType: resourceType,
+        isAnonymous: resource.isAnonymous,
       } as ToolbarResource;
     }
     return null;

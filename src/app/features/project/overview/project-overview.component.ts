@@ -170,14 +170,16 @@ export class ProjectOverviewComponent implements OnInit {
     return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
   });
   protected currentResource = computed(() => {
-    if (this.currentProject()) {
+    const project = this.currentProject();
+    if (project) {
       return {
-        id: this.currentProject()!.id,
-        isPublic: this.currentProject()!.isPublic,
-        storage: this.currentProject()!.storage,
-        viewOnlyLinksCount: this.currentProject()!.viewOnlyLinksCount,
-        forksCount: this.currentProject()!.forksCount,
+        id: project.id,
+        isPublic: project.isPublic,
+        storage: project.storage,
+        viewOnlyLinksCount: project.viewOnlyLinksCount,
+        forksCount: project.forksCount,
         resourceType: ResourceType.Project,
+        isAnonymous: project.isAnonymous,
       };
     }
     return null;

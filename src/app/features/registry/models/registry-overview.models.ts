@@ -67,4 +67,5 @@ export interface RegistryOverview {
   withdrawn: boolean;
   withdrawalJustification?: string;
   dateWithdrawn: string | null;
+  isAnonymous?: boolean;
 }

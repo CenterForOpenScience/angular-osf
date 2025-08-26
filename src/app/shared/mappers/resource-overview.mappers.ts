@@ -37,6 +37,7 @@ export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
     affiliatedInstitutions: project.affiliatedInstitutions?.filter(Boolean) || undefined,
     forksCount: project.forksCount || 0,
     viewOnlyLinksCount: project.viewOnlyLinksCount || 0,
+    isAnonymous: project.isAnonymous || false,
   };
 }
 
@@ -78,5 +79,6 @@ export function MapRegistryOverview(
     customCitation: registry.customCitation,
     affiliatedInstitutions: institutions,
     associatedProjectId: registry.associatedProjectId,
+    isAnonymous: registry.isAnonymous || false,
   };
 }

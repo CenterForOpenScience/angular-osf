@@ -130,6 +130,7 @@ export class RegistryOverviewComponent {
         viewOnlyLinksCount: 0,
         forksCount: this.registry()!.forksCount,
         resourceType: ResourceType.Registration,
+        isAnonymous: this.registry()!.isAnonymous,
       } as ToolbarResource;
     }
     return null;
