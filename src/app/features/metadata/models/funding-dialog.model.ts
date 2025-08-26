@@ -23,7 +23,7 @@ export interface FunderOption {
 }
 
 export interface FundingDialogResult {
-  fundingEntries: Funder;
+  fundingEntries: Funder[];
   resourceId?: string;
 }
 

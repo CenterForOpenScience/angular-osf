@@ -325,7 +325,7 @@ export class ProjectMetadataComponent implements OnInit {
   }
 
   openEditFundingDialog(): void {
-    this.actions.getFundersList();
+    // this.actions.getFundersList();
 
     const dialogRef = this.dialogService.open(FundingDialogComponent, {
       header: this.translateService.instant('project.metadata.funding.dialog.header'),

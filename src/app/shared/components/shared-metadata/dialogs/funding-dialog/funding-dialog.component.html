@@ -18,6 +18,7 @@
             [filter]="true"
             filterBy="label"
             [showClear]="true"
+            [loading]="fundersLoading()"
             (onChange)="onFunderSelected($event.value, $index)"
             (onFilter)="onFunderSearch($event.filter)"
           />

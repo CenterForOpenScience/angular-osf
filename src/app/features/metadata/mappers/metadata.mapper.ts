@@ -1,6 +1,6 @@
 import { ContributorsMapper, InstitutionsMapper, LicensesMapper } from '@osf/shared/mappers';
 
-import { CustomItemMetadataRecord, CustomMetadataJsonApiResponse, Metadata, MetadataJsonApi } from '../models';
+import { CustomItemMetadataRecord, CustomMetadataJsonApi, Metadata, MetadataJsonApi } from '../models';
 
 export class MetadataMapper {
   static fromMetadataApiResponse(response: MetadataJsonApi): Metadata {
@@ -31,11 +31,11 @@ export class MetadataMapper {
     };
   }
 
-  static fromCustomMetadataApiResponse(response: CustomMetadataJsonApiResponse): Partial<CustomItemMetadataRecord> {
+  static fromCustomMetadataApiResponse(response: CustomMetadataJsonApi): Partial<CustomItemMetadataRecord> {
     return {
-      language: response.data.attributes.language,
-      resourceTypeGeneral: response.data.attributes.resource_type_general,
-      funders: response.data.attributes.funders?.map((funder) => ({
+      language: response.attributes.language,
+      resourceTypeGeneral: response.attributes.resource_type_general,
+      funders: response.attributes.funders?.map((funder) => ({
         funderName: funder.funder_name,
         funderIdentifier: funder.funder_identifier,
         funderIdentifierType: funder.funder_identifier_type,
@@ -45,6 +45,29 @@ export class MetadataMapper {
       })),
     };
   }
+
+  static toCustomMetadataApiRequest(id: string, metadata: Partial<CustomItemMetadataRecord>) {
+    console.log('toCustomMetadataApiRequest', { id, metadata });
+    return {
+      data: {
+        type: 'custom-item-metadata-records',
+        id,
+        attributes: {
+          language: metadata.language,
+          resource_type_general: metadata.resourceTypeGeneral,
+          funders: metadata.funders?.map((funder) => ({
+            funder_name: funder.funderName,
+            funder_identifier: funder.funderIdentifier,
+            funder_identifier_type: funder.funderIdentifierType,
+            award_number: funder.awardNumber,
+            award_uri: funder.awardUri,
+            award_title: funder.awardTitle,
+          })),
+        },
+      },
+    };
+  }
+
   // static fromMetadataApiResponse(response: Record<string, unknown>): ProjectOverview {
   //   const attributes = response['attributes'] as Record<string, unknown>;
   //   const embeds = response['embeds'] as Record<string, unknown>;

@@ -20,6 +20,11 @@ export class MetadataSelectors {
   }
 
   @Selector([MetadataState])
+  static getSubmitting(state: MetadataStateModel) {
+    return state.metadata?.isSubmitting || state.customMetadata?.isSubmitting || false;
+  }
+
+  @Selector([MetadataState])
   static getError(state: MetadataStateModel) {
     return state.metadata?.error ?? null;
   }

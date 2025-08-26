@@ -33,7 +33,7 @@ export class CustomValidators {
         return null;
       }
 
-      const urlPattern = /^(https):\/\/.+/i;
+      const urlPattern = /^(https?):\/\/([a-zA-Z0-9.-]+)(:\d{1,5})?(\/.*)?$/i;
 
       const isValid = urlPattern.test(value);
 

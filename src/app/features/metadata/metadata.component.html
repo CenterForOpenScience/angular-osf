@@ -6,7 +6,7 @@
     [title]="'project.overview.metadata.title' | translate"
   />
   <osf-metadata-tabs
-    [loading]="isMetadataLoading()"
+    [loading]="isLoading() || isSubmitting()"
     [tabs]="tabs()"
     [selectedTab]="selectedTab()"
     [selectedCedarTemplate]="selectedCedarTemplate()!"

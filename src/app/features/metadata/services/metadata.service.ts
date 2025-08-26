@@ -12,6 +12,7 @@ import {
   CedarMetadataRecord,
   CedarMetadataRecordJsonApi,
   CedarMetadataTemplateJsonApi,
+  CustomMetadataJsonApi,
   CustomMetadataJsonApiResponse,
   MetadataAttributesJsonApi,
   MetadataJsonApi,
@@ -35,17 +36,14 @@ export class MetadataService {
   getCustomItemMetadata(guid: string): Observable<CustomItemMetadataRecord> {
     return this.jsonApiService
       .get<CustomMetadataJsonApiResponse>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`)
-      .pipe(map((response) => MetadataMapper.fromCustomMetadataApiResponse(response)));
+      .pipe(map((response) => MetadataMapper.fromCustomMetadataApiResponse(response.data)));
   }
 
   updateCustomItemMetadata(guid: string, metadata: CustomItemMetadataRecord): Observable<CustomItemMetadataRecord> {
+    const payload = MetadataMapper.toCustomMetadataApiRequest(guid, metadata);
+
     return this.jsonApiService
-      .put<CustomMetadataJsonApiResponse>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`, {
-        data: {
-          type: 'custom-item-metadata-records',
-          attributes: metadata,
-        },
-      })
+      .put<CustomMetadataJsonApi>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`, payload)
       .pipe(map((response) => MetadataMapper.fromCustomMetadataApiResponse(response)));
   }
 

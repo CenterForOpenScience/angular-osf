@@ -2,8 +2,7 @@
   <div class="flex-1">
     <osf-loading-spinner />
   </div>
-}
-@if (tabs().length) {
+} @else {
   <p-tabs class="flex-1" [value]="selectedTab()" [lazy]="true" scrollable (valueChange)="changeTab.emit($event)">
     <p-tablist class="pr-5 pl-5">
       @for (item of tabs(); track $index) {

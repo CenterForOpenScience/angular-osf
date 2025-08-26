@@ -14,7 +14,9 @@ import { CedarTemplateFormComponent } from '@osf/shared/components/shared-metada
 import {
   ContributorsDialogComponent,
   DescriptionDialogComponent,
+  FundingDialogComponent,
   LicenseDialogComponent,
+  ResourceInformationDialogComponent,
 } from '@osf/shared/components/shared-metadata/dialogs';
 import { SharedMetadataComponent } from '@osf/shared/components/shared-metadata/shared-metadata.component';
 import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
@@ -40,6 +42,7 @@ import {
   GetCustomItemMetadata,
   GetResourceMetadata,
   MetadataSelectors,
+  UpdateCustomItemMetadata,
   UpdateResourceDetails,
   UpdateResourceLicense,
 } from './store';
@@ -73,32 +76,31 @@ export class MetadataComponent implements OnInit {
   private resourceId = '';
 
   tabs = signal<MetadataTabsModel[]>([]);
-  protected readonly selectedTab = signal('osf');
+  readonly selectedTab = signal('osf');
 
   selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
   cedarFormReadonly = signal<boolean>(true);
-  protected metadata = select(MetadataSelectors.getResourceMetadata);
-  protected isMetadataLoading = select(MetadataSelectors.getLoading);
-  protected customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
-  protected fundersList = select(MetadataSelectors.getFundersList);
-  protected contributors = select(ContributorsSelectors.getContributors);
-  protected isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  protected cedarRecords = select(MetadataSelectors.getCedarRecords);
-  protected cedarTemplates = select(MetadataSelectors.getCedarTemplates);
-  protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
-  protected isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
+  metadata = select(MetadataSelectors.getResourceMetadata);
+  isLoading = select(MetadataSelectors.getLoading);
+  customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
+  contributors = select(ContributorsSelectors.getContributors);
+  isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  cedarRecords = select(MetadataSelectors.getCedarRecords);
+  cedarTemplates = select(MetadataSelectors.getCedarTemplates);
+  selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
   resourceType = signal<ResourceType>(this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project);
+  isSubmitting = select(MetadataSelectors.getSubmitting);
 
   provider = environment.defaultProvider;
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getResourceMetadata: GetResourceMetadata,
     updateMetadata: UpdateResourceDetails,
     updateResourceLicense: UpdateResourceLicense,
     getCustomItemMetadata: GetCustomItemMetadata,
-    // updateCustomItemMetadata: UpdateCustomItemMetadata,
-    // getFundersList: GetFundersList,
+    updateCustomItemMetadata: UpdateCustomItemMetadata,
     getContributors: GetAllContributors,
     // getUserInstitutions: GetUserInstitutions,
     // getCedarRecords: GetCedarMetadataRecords,
@@ -145,6 +147,7 @@ export class MetadataComponent implements OnInit {
     });
 
     effect(() => {
+      console.log('customItemMetadata:', this.customItemMetadata());
       const metadata = this.metadata();
       if (this.resourceType() === ResourceType.Registration) {
         if (metadata) {
@@ -259,7 +262,6 @@ export class MetadataComponent implements OnInit {
   }
 
   onTagsChanged(tags: string[]): void {
-    console.log('Tags changed:', tags);
     this.actions.updateMetadata(this.resourceId, this.resourceType(), { tags });
   }
 
@@ -316,39 +318,32 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditResourceInformationDialog(): void {
-    // const dialogRef = this.dialogService.open(ResourceInformationDialogComponent, {
-    //   header: this.translateService.instant('project.metadata.resourceInformation.dialog.header'),
-    //   width: '500px',
-    //   focusOnShow: false,
-    //   closeOnEscape: true,
-    //   modal: true,
-    //   closable: true,
-    //   data: {
-    //     currentProject: this.currentProject(),
-    //     customItemMetadata: this.customItemMetadata(),
-    //   },
-    // });
-    // dialogRef.onClose
-    //   .pipe(
-    //     filter((result) => !!result && (result.resourceType || result.resourceLanguage)),
-    //     switchMap((result) => {
-    //       const projectId = this.currentProject()?.id;
-    //       if (projectId) {
-    //         const currentMetadata = this.customItemMetadata();
-    //         const updatedMetadata = {
-    //           ...currentMetadata,
-    //           language: result.resourceLanguage || currentMetadata?.language,
-    //           resource_type_general: result.resourceType || currentMetadata?.resource_type_general,
-    //           funder: currentMetadata?.funders,
-    //         };
-    //         return this.actions.updateCustomItemMetadata(projectId, updatedMetadata);
-    //       }
-    //       return EMPTY;
-    //     })
-    //   )
-    //   .subscribe({
-    //     next: () => this.toastService.showSuccess('project.metadata.resourceInformation.updated'),
-    //   });
+    const currentCustomMetadata = this.customItemMetadata();
+    const dialogRef = this.dialogService.open(ResourceInformationDialogComponent, {
+      header: this.translateService.instant('project.metadata.resourceInformation.dialog.header'),
+      width: '500px',
+      focusOnShow: false,
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        customItemMetadata: currentCustomMetadata,
+      },
+    });
+    dialogRef.onClose
+      .pipe(
+        filter((result) => !!result && (result.resourceTypeGeneral || result.language)),
+        switchMap((result) => {
+          const updatedMetadata = {
+            ...currentCustomMetadata,
+            ...result,
+          };
+          return this.actions.updateCustomItemMetadata(this.resourceId, updatedMetadata);
+        })
+      )
+      .subscribe({
+        next: () => this.toastService.showSuccess('project.metadata.resourceInformation.updated'),
+      });
   }
 
   openEditLicenseDialog(): void {
@@ -381,57 +376,33 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditFundingDialog(): void {
-    // this.actions.getFundersList();
-    // const dialogRef = this.dialogService.open(FundingDialogComponent, {
-    //   header: this.translateService.instant('project.metadata.funding.dialog.header'),
-    //   width: '600px',
-    //   focusOnShow: false,
-    //   closeOnEscape: true,
-    //   modal: true,
-    //   closable: true,
-    //   data: {
-    //     currentProject: this.currentProject(),
-    //   },
-    // });
-    // dialogRef.onClose
-    //   .pipe(
-    //     filter((result) => !!result && result.fundingEntries),
-    //     switchMap((result) => {
-    //       const projectId = this.currentProject()?.id;
-    //       if (projectId) {
-    //         const currentMetadata = this.customItemMetadata() || {
-    //           language: 'en',
-    //           resource_type_general: 'Dataset',
-    //           funders: [],
-    //         };
-    //         const updatedMetadata = {
-    //           ...currentMetadata,
-    //           funders: result.fundingEntries.map(
-    //             (entry: {
-    //               funderName?: string;
-    //               funderIdentifier?: string;
-    //               funderIdentifierType?: string;
-    //               awardNumber?: string;
-    //               awardUri?: string;
-    //               awardTitle?: string;
-    //             }) => ({
-    //               funder_name: entry.funderName || '',
-    //               funder_identifier: entry.funderIdentifier || '',
-    //               funder_identifier_type: entry.funderIdentifierType || '',
-    //               award_number: entry.awardNumber || '',
-    //               award_uri: entry.awardUri || '',
-    //               award_title: entry.awardTitle || '',
-    //             })
-    //           ),
-    //         };
-    //         return this.actions.updateCustomItemMetadata(projectId, updatedMetadata);
-    //       }
-    //       return EMPTY;
-    //     })
-    //   )
-    //   .subscribe({
-    //     next: () => this.toastService.showSuccess('project.metadata.funding.updated'),
-    //   });
+    const currentCustomMetadata = this.customItemMetadata();
+
+    const dialogRef = this.dialogService.open(FundingDialogComponent, {
+      header: this.translateService.instant('project.metadata.funding.dialog.header'),
+      width: '600px',
+      focusOnShow: false,
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        funders: currentCustomMetadata?.funders || [],
+      },
+    });
+    dialogRef.onClose
+      .pipe(
+        filter((result) => !!result && result.fundingEntries),
+        switchMap((result) => {
+          const updatedMetadata = {
+            ...currentCustomMetadata,
+            funders: result.fundingEntries,
+          };
+          return this.actions.updateCustomItemMetadata(this.resourceId, updatedMetadata);
+        })
+      )
+      .subscribe({
+        next: () => this.toastService.showSuccess('project.metadata.funding.updated'),
+      });
   }
 
   openEditAffiliatedInstitutionsDialog(): void {

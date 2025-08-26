@@ -79,52 +79,40 @@ export class MetadataState {
     return this.metadataService.getCustomItemMetadata(action.guid).pipe(
       tap({
         next: (response) => {
+          console.log('Custom Metadata response:', response);
           ctx.patchState({
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            customMetadata: { data: response as any, isLoading: false, error: null },
+            customMetadata: { data: response, isLoading: false, error: null },
           });
         },
       }),
-      catchError((error) => handleSectionError(ctx, 'customMetadata', error)),
-      finalize(() =>
-        ctx.patchState({
-          customMetadata: {
-            ...state.customMetadata,
-            isLoading: false,
-          },
-        })
-      )
+      catchError((error) => handleSectionError(ctx, 'customMetadata', error))
     );
   }
 
   @Action(UpdateCustomItemMetadata)
   updateCustomItemMetadata(ctx: StateContext<MetadataStateModel>, action: UpdateCustomItemMetadata) {
+    const state = ctx.getState();
+
     ctx.patchState({
-      customMetadata: { data: null, isLoading: true, error: null },
+      customMetadata: { ...state.customMetadata, isLoading: true, error: null },
     });
 
     return this.metadataService.updateCustomItemMetadata(action.guid, action.metadata).pipe(
       tap({
         next: (response) => {
           ctx.patchState({
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            customMetadata: { data: response as any, isLoading: false, error: null },
-          });
-        },
-        error: (error) => {
-          ctx.patchState({
-            customMetadata: { ...ctx.getState().customMetadata, isLoading: false, error: error.message },
+            customMetadata: { data: response, isLoading: false, error: null },
           });
         },
       }),
-      finalize(() => ctx.patchState({ customMetadata: { ...ctx.getState().customMetadata, isLoading: false } }))
+      catchError((error) => handleSectionError(ctx, 'customMetadata', error))
     );
   }
 
   @Action(GetFundersList)
   getFundersList(ctx: StateContext<MetadataStateModel>, action: GetFundersList) {
     ctx.patchState({
-      fundersList: { data: [], isLoading: true, error: null },
+      fundersList: { ...ctx.getState().fundersList, isLoading: true, error: null },
     });
 
     return this.metadataService.getFundersList(action.search).pipe(
@@ -134,24 +122,8 @@ export class MetadataState {
             fundersList: { data: response.message.items, isLoading: false, error: null },
           });
         },
-        error: (error) => {
-          ctx.patchState({
-            fundersList: {
-              ...ctx.getState().fundersList,
-              isLoading: false,
-              error: error.message,
-            },
-          });
-        },
       }),
-      finalize(() =>
-        ctx.patchState({
-          fundersList: {
-            ...ctx.getState().fundersList,
-            isLoading: false,
-          },
-        })
-      )
+      catchError((error) => handleSectionError(ctx, 'fundersList', error))
     );
   }
 
