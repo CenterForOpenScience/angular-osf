@@ -44,7 +44,6 @@
             ],
             "styles": [
               "src/assets/styles/styles.scss",
-              "src/assets/icons/dist/icons.css",
               "node_modules/primeflex/primeflex.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/ngx-markdown-editor/assets/highlight.js/agate.min.css"

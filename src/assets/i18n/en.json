@@ -417,10 +417,10 @@
       "contributorsOption": "Contributors (with write access)",
       "anyoneOption": "Anyone with link",
       "whoCanEdit": "Who can edit:",
-      "url": "url",
-      "label": "label",
+      "url": "URL",
+      "label": "Label",
+      "storageLocationMessage": "Storage location cannot be changed after project is created.",
       "redirectUrlPlaceholder": "Send people who visit your OSF project page to this link instead",
-      "redirectLabelPlaceholder": "Optional",
       "invalidUrl": "Please enter a valid URL, such as: https://example.com",
       "disabledForWiki": "This feature is disabled for wikis of private projects.",
       "enabledForWiki": "This feature is enabled for wikis of private projects.",
@@ -921,6 +921,11 @@
       "title": "Delete project",
       "message": "Are you sure you want to delete <b>{{name}}</b> project?",
       "success": "Project has been successfully deleted."
+    },
+    "deleteInstitution": {
+      "title": "Delete institution",
+      "message": "Are you sure you want to delete <b>{{name}}</b> from this project?",
+      "success": "Institution has been successfully deleted."
     }
   },
   "files": {
@@ -1420,7 +1425,7 @@
       "header": {
         "title": "Add-ons"
       },
-      "description": "Sync your projects with external services to help stay connected and organized. Select a category and browse the options.",
+      "description": "Sync your projects with external services to help stay connected and organized. Select a category and browse the options. Add-ons can also be linked directly from Project page.",
       "tabs": {
         "allAddons": "All Add-ons",
         "connectedAddons": "Connected Add-ons"
@@ -1826,7 +1831,7 @@
       "description": "Leading preprint service providers use this open source infrastructure to support their communities."
     },
     "createServer": {
-      "title": "Create your own branded preprint servers backed by the OSF?",
+      "title": "Create your own branded preprint servers backed by the OSF",
       "description": "Check out the",
       "openSourceCode": "open source code",
       "and": "and",
@@ -1891,7 +1896,9 @@
         },
         "tagsTitle": "Tags (optional)",
         "publicationDateTitle": "Publication Date (optional)",
-        "publicationCitationTitle": "Publication Citation (optional)"
+        "publicationCitationTitle": "Publication Citation (optional)",
+        "affiliatedInstitutionsTitle": "Affiliated Institutions",
+        "affiliatedInstitutionsDescription": "You can affiliate your {{preprintWord}} with your institution if it is an OSF institutional member and has worked with the Center for Open Science to create a dedicated institutional OSF landing page."
       },
       "authorAssertions": {
         "title": "Author Assertions",

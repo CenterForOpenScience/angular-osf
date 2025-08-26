@@ -1,18 +1,67 @@
+/**
+ * JSON:API response structure for a single external addon.
+ */
 export interface AddonGetResponseJsonApi {
+  /**
+   * Resource type (e.g., 'external-storage-services').
+   */
   type: string;
+  /**
+   * Unique identifier for the addon.
+   */
   id: string;
+  /**
+   * Addon metadata fields returned from the API.
+   */
   attributes: {
+    /**
+     * OAuth authorization URI for the external provider.
+     */
     auth_uri: string;
+    /**
+     * Human-readable name of the addon (e.g., "Google Drive").
+     */
     display_name: string;
+    /**
+     * List of supported capabilities for this addon
+     * (e.g., 'DOWNLOAD_AS_ZIP', 'PERMISSIONS').
+     */
     supported_features: string[];
+    /**
+     * Internal identifier for the external provider
+     * (e.g., 'googledrive', 'figshare').
+     */
     external_service_name: string;
+    /**
+     * Type of credentials used to authenticate
+     * (e.g., 'OAUTH2', 'S3').
+     */
     credentials_format: string;
+    /**
+     * Internal WaterButler key used for routing and integration.
+     */
+    wb_key: string;
+    /**
+     * Additional provider-specific fields (if present).
+     */
     [key: string]: unknown;
   };
+  /**
+   * Object relationships to other API resources.
+   */
   relationships: {
+    /**
+     * Reference to the associated addon implementation.
+     */
     addon_imp: {
       data: {
+        /**
+         * Resource type of the related addon implementation.
+         */
         type: string;
+        /**
+         * Resource ID of the related addon implementation.
+         */
         id: string;
       };
     };
@@ -53,36 +102,129 @@ export interface AuthorizedAddonGetResponseJsonApi {
   };
 }
 
+/**
+ * Interface representing the JSON:API response shape for a configured addon.
+ *
+ * This structure is returned from the backend when querying for configured addons
+ * related to a specific resource or user. It conforms to the JSON:API specification.
+ */
 export interface ConfiguredAddonGetResponseJsonApi {
+  /**
+   * The resource type (e.g., "configured-storage-addons").
+   */
   type: string;
+  /**
+   * Unique identifier of the configured addon.
+   */
   id: string;
+  /**
+   * Attributes associated with the configured addon.
+   */
   attributes: {
+    /**
+     * Display name shown to users (e.g., "Google Drive").
+     */
     display_name: string;
+    /**
+     * Internal identifier of the external storage service (e.g., "googledrive").
+     */
     external_service_name: string;
+    /**
+     * ID of the root folder selected during configuration.
+     */
     root_folder: string;
+    /**
+     * List of capabilities enabled for this addon (e.g., "DOWNLOAD", "UPLOAD").
+     */
     connected_capabilities: string[];
+    /**
+     * List of operation names tied to the addon configuration.
+     */
     connected_operation_names: string[];
+    /**
+     * Indicates whether the current user is the owner of this addon configuration.
+     */
     current_user_is_owner: boolean;
   };
+
+  /**
+   * Relationships to other entities, such as accounts or external services.
+   */
   relationships: {
+    /**
+     * Reference to the base account used for this addon.
+     */
     base_account: {
       data: {
+        /**
+         * Resource type of the account (e.g., "accounts").
+         */
         type: string;
+        /**
+         * Unique identifier of the account.
+         */
+        id: string;
+      };
+    };
+
+    /**
+     * Reference to the underlying external storage service (e.g., Dropbox, Drive).
+     */
+    external_storage_service: {
+      data: {
+        /**
+         * Resource type of the storage service.
+         */
+        type: string;
+        /**
+         * Unique identifier of the storage service.
+         */
         id: string;
       };
     };
   };
 }
 
-export interface Addon {
+/**
+ * Normalized model representing an external addon provider.
+ */
+export interface AddonModel {
+  /**
+   * Resource type, typically 'external-storage-services'.
+   */
   type: string;
+  /**
+   * Unique identifier of the addon instance.
+   */
   id: string;
+  /**
+   * OAuth authorization URI for initiating credential flow.
+   */
   authUrl: string;
+  /**
+   * Human-friendly name of the addon (e.g., 'Google Drive').
+   */
   displayName: string;
+  /**
+   * Machine-friendly name of the addon (e.g., 'googledrive').
+   */
   externalServiceName: string;
+  /**
+   * List of supported features or capabilities the addon provides.
+   */
   supportedFeatures: string[];
+  /**
+   * Credential mechanism used by the addon (e.g., 'OAUTH2', 'S3').
+   */
   credentialsFormat: string;
+  /**
+   * Provider key used internally (e.g., for icon or routing).
+   */
   providerName: string;
+  /**
+   * Internal WaterButler key used for addon routing.
+   */
+  wbKey: string;
 }
 
 export interface AuthorizedAddon {
@@ -101,19 +243,6 @@ export interface AuthorizedAddon {
   supportedFeatures: string[];
   providerName: string;
   credentialsFormat: string;
-}
-
-export interface ConfiguredAddon {
-  type: string;
-  id: string;
-  displayName: string;
-  externalServiceName: string;
-  selectedFolderId: string;
-  connectedCapabilities: string[];
-  connectedOperationNames: string[];
-  currentUserIsOwner: boolean;
-  baseAccountId: string;
-  baseAccountType: string;
 }
 
 export interface IncludedAddonData {

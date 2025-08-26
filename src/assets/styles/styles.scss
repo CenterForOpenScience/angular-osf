@@ -6,6 +6,10 @@
 @use "common";
 @use "base";
 
+@use "./components/md-editor";
+@use "./components/preprints";
+@use "./components/collections";
+
 @use "./overrides/button";
 @use "./overrides/button-toggle";
 @use "./overrides/badge";
@@ -42,7 +46,5 @@
 @use "./overrides/multiselect";
 @use "./overrides/tree";
 @use "./overrides/breadcrumbs";
-@use "./components/md-editor";
-@use "./components/preprints";
 @use "./overrides/cedar-metadata";
-@use "./components/collections";
+@use "./icons";

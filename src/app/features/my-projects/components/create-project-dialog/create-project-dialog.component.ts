@@ -8,12 +8,12 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import { AddProjectFormComponent } from '@osf/shared/components';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
+import { ProjectFormControls } from '@osf/shared/enums';
 import { CustomValidators } from '@osf/shared/helpers';
-import { AddProjectFormComponent } from '@shared/components';
-import { ProjectFormControls } from '@shared/enums';
-import { ProjectForm } from '@shared/models';
-import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@shared/stores';
+import { ProjectForm } from '@osf/shared/models';
+import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-create-project-dialog',

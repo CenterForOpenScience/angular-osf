@@ -1,4 +1,4 @@
-import { TokenCreateRequestJsonApi, TokenCreateResponseJsonApi, TokenGetResponseJsonApi, TokenModel } from '../models';
+import { TokenCreateRequestJsonApi, TokenGetResponseJsonApi, TokenModel } from '../models';
 
 export class TokenMapper {
   static toRequest(name: string, scopes: string[]): TokenCreateRequestJsonApi {
@@ -13,23 +13,11 @@ export class TokenMapper {
     };
   }
 
-  static fromCreateResponse(response: TokenCreateResponseJsonApi): TokenModel {
-    return {
-      id: response.id,
-      name: response.attributes.name,
-      tokenId: response.attributes.token_id,
-      scopes: response.attributes.scopes.split(' '),
-      ownerId: response.attributes.owner,
-    };
-  }
-
   static fromGetResponse(response: TokenGetResponseJsonApi): TokenModel {
     return {
       id: response.id,
       name: response.attributes.name,
-      tokenId: response.id,
-      scopes: response.attributes.scopes.split(' '),
-      ownerId: response.attributes.owner,
+      scopes: response.embeds.scopes.data.map((item) => item.id),
     };
   }
 }

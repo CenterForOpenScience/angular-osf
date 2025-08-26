@@ -1,4 +1,48 @@
-export interface NodeAttributes {
+export interface NodeData {
+  id: string;
+  type: 'nodes';
+  attributes: NodeAttributes;
+  relationships: NodeRelationships;
+  links: NodeLinks;
+  lastFetched?: number;
+}
+
+export interface NodeResponseModel {
+  data: NodeData;
+  meta: NodeMeta;
+}
+
+export interface UpdateNodeRequestModel {
+  data: UpdateNodeData;
+}
+
+export interface CreateProjectPayloadJsoApi {
+  data: {
+    type: 'nodes';
+    attributes: {
+      title: string;
+      description?: string;
+      category: 'project';
+      template_from?: string;
+    };
+    relationships: {
+      region: {
+        data: {
+          type: 'regions';
+          id: string;
+        };
+      };
+      affiliated_institutions?: {
+        data: {
+          type: 'institutions';
+          id: string;
+        }[];
+      };
+    };
+  };
+}
+
+interface NodeAttributes {
   title: string;
   description: string;
   category: string;
@@ -21,7 +65,7 @@ export interface NodeAttributes {
   subjects: unknown[];
 }
 
-export interface RelationshipLinks {
+interface RelationshipLinks {
   related: {
     href: string;
     meta: Record<string, unknown>;
@@ -32,7 +76,7 @@ export interface RelationshipLinks {
   };
 }
 
-export interface NodeRelationships {
+interface NodeRelationships {
   children: { links: RelationshipLinks };
   comments: { links: RelationshipLinks };
   contributors: { links: RelationshipLinks };
@@ -82,69 +126,25 @@ export interface NodeRelationships {
   subjects_acceptable: { links: RelationshipLinks };
 }
 
-export interface NodeLinks {
+interface NodeLinks {
   html: string;
   self: string;
   iri: string;
 }
 
-export interface NodeData {
-  id: string;
-  type: 'nodes';
-  attributes: NodeAttributes;
-  relationships: NodeRelationships;
-  links: NodeLinks;
-  lastFetched?: number;
-}
-
-export interface NodeMeta {
+interface NodeMeta {
   version: string;
 }
 
-export interface NodeResponseModel {
-  data: NodeData;
-  meta: NodeMeta;
-}
-
-export interface UpdateNodeAttributes {
+interface UpdateNodeAttributes {
   description?: string;
   tags?: string[];
   public?: boolean;
   title?: string;
 }
 
-export interface UpdateNodeData {
+interface UpdateNodeData {
   type: 'nodes';
   id: string;
   attributes: UpdateNodeAttributes;
-}
-
-export interface UpdateNodeRequestModel {
-  data: UpdateNodeData;
-}
-
-export interface CreateProjectPayloadJsoApi {
-  data: {
-    type: 'nodes';
-    attributes: {
-      title: string;
-      description?: string;
-      category: 'project';
-      template_from?: string;
-    };
-    relationships: {
-      region: {
-        data: {
-          type: 'regions';
-          id: string;
-        };
-      };
-      affiliated_institutions?: {
-        data: {
-          type: 'institutions';
-          id: string;
-        }[];
-      };
-    };
-  };
 }

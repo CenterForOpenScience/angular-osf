@@ -77,7 +77,7 @@
     <p-button
       class="w-full"
       styleClass="w-full"
-      (click)="dialogRef.close()"
+      (onClick)="dialogRef.close()"
       severity="info"
       [label]="'project.contributors.addDialog.cancel' | translate"
     ></p-button>
@@ -85,7 +85,7 @@
     <p-button
       class="w-full"
       styleClass="w-full"
-      (click)="addLink()"
+      (onClick)="addLink()"
       [disabled]="!isFormValid"
       [label]="'project.contributors.addDialog.next' | translate"
     ></p-button>

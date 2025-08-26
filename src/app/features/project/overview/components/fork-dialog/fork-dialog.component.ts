@@ -10,10 +10,10 @@ import { finalize } from 'rxjs';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ForkResource, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { ResourceType } from '@shared/enums';
-import { ToolbarResource } from '@shared/models';
-import { ToastService } from '@shared/services';
+import { ToolbarResource } from '@osf/shared/models';
+import { ToastService } from '@osf/shared/services';
+
+import { ForkResource, ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-fork-dialog',
@@ -45,6 +45,4 @@ export class ForkDialogComponent {
       )
       .subscribe();
   }
-
-  protected readonly ResourceType = ResourceType;
 }

@@ -1,6 +1,11 @@
 import { UserPermissions } from '@osf/shared/enums';
-import { JsonApiResponseWithMeta, MetaAnonymousJsonApi } from '@osf/shared/models';
-import { License } from '@shared/models';
+import {
+  Institution,
+  InstitutionsJsonApiResponse,
+  JsonApiResponseWithMeta,
+  License,
+  MetaAnonymousJsonApi,
+} from '@osf/shared/models';
 
 export interface ProjectOverviewContributor {
   familyName: string;
@@ -54,7 +59,7 @@ export interface ProjectOverview {
     id: string;
     type: string;
   };
-  affiliatedInstitutions?: ProjectAffiliatedInstitutions[];
+  affiliatedInstitutions?: Institution[];
   forksCount: number;
   viewOnlyLinksCount: number;
   links: {
@@ -101,19 +106,7 @@ export interface ProjectOverviewGetResponseJsonApi {
     custom_citation: string | null;
   };
   embeds: {
-    affiliated_institutions: {
-      data: {
-        id: string;
-        type: string;
-        attributes: {
-          assets: {
-            logo: string;
-          };
-          description: string;
-          name: string;
-        };
-      }[];
-    };
+    affiliated_institutions: InstitutionsJsonApiResponse;
     identifiers: {
       data: {
         id: string;
@@ -229,14 +222,6 @@ export interface ProjectIdentifiers {
   type: string;
   category: string;
   value: string;
-}
-
-export interface ProjectAffiliatedInstitutions {
-  id: string;
-  type: string;
-  name: string;
-  description: string;
-  logo: string;
 }
 
 export interface ProjectSupplements {

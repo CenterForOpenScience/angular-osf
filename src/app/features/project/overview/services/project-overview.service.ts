@@ -3,10 +3,9 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ComponentGetResponseJsonApi, ComponentOverview } from '@osf/shared/models';
+import { ComponentsMapper } from '@osf/shared/mappers';
+import { ComponentGetResponseJsonApi, ComponentOverview, JsonApiResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
-import { ComponentsMapper } from '@shared/mappers';
-import { JsonApiResponse } from '@shared/models';
 
 import { ProjectOverviewMapper } from '../mappers';
 import { ProjectOverview, ProjectOverviewResponseJsonApi } from '../models';
@@ -128,7 +127,7 @@ export class ProjectOverviewService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ComponentGetResponseJsonApi[], null>
-      >(`${environment.apiUrl}/nodes/${projectId}/children`, params)
+      >(`${environment.apiUrl}/nodes/${projectId}/children/`, params)
       .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
   }
 }

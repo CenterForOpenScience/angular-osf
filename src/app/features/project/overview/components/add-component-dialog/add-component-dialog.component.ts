@@ -15,7 +15,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { STORAGE_LOCATIONS } from '@osf/core/constants';
+import { STORAGE_LOCATIONS } from '@core/constants';
 import { ComponentFormControls } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/helpers';
 import { ComponentForm } from '@osf/shared/models';
@@ -43,7 +43,8 @@ import { CreateComponent, GetComponents, ProjectOverviewSelectors } from '../../
 })
 export class AddComponentDialogComponent implements OnInit {
   private store = inject(Store);
-  private toastService = inject(ToastService);
+  private readonly toastService = inject(ToastService);
+
   protected isMobile = toSignal(inject(IS_XSMALL));
   protected dialogRef = inject(DynamicDialogRef);
   protected destroyRef = inject(DestroyRef);

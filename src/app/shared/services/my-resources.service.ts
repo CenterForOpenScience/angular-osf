@@ -14,8 +14,6 @@ import {
   MyResourcesItemResponseJsonApi,
   MyResourcesResponseJsonApi,
   MyResourcesSearchFilters,
-  NodeResponseModel,
-  UpdateNodeRequestModel,
 } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
@@ -209,13 +207,5 @@ export class MyResourcesService {
     return this.jsonApiService
       .post<JsonApiResponse<MyResourcesItemGetResponseJsonApi, null>>(`${environment.apiUrl}/nodes/`, payload, params)
       .pipe(map((response) => MyResourcesMapper.fromResponse(response.data)));
-  }
-
-  getProjectById(projectId: string): Observable<NodeResponseModel> {
-    return this.jsonApiService.get(`${this.apiUrl}/nodes/${projectId}`);
-  }
-
-  updateProjectById(model: UpdateNodeRequestModel): Observable<NodeResponseModel> {
-    return this.jsonApiService.patch(`${this.apiUrl}/nodes/${model?.data?.id}`, model);
   }
 }

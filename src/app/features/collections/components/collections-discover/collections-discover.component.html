@@ -4,8 +4,12 @@
       class="collections-sub-header flex justify-content-between flex-column gap-4 mb-4 sm:mb-6 sm:gap-0 sm:flex-row"
     >
       <div class="flex gap-3">
-        <i class="collections-icon text-white osf-icon-collections"></i>
-        <h1 class="flex align-items-center text-white">{{ collectionProvider()?.name }}</h1>
+        @let provider = collectionProvider();
+        @if (provider && provider.brand) {
+          <img class="collections-logo" alt="Collections Logo" height="64" [src]="provider.brand.heroLogoImageUrl" />
+        }
+
+        <h1 class="collections-heading flex align-items-center">{{ collectionProvider()?.name }}</h1>
       </div>
 
       <p-button

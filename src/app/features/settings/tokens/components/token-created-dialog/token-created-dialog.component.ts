@@ -26,8 +26,8 @@ import { CopyButtonComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TokenCreatedDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly config = inject(DynamicDialogConfig);
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly config = inject(DynamicDialogConfig);
 
   readonly tokenInput = viewChild<ElementRef<HTMLInputElement>>('tokenInput');
   readonly tokenName = input(this.config.data?.tokenName ?? '');

@@ -166,8 +166,7 @@ export class FileDetailComponent {
 
   deleteEntry(link: string): void {
     if (this.resourceId) {
-      const redirectUrl =
-        this.resourceType === 'nodes' ? `/project/${this.resourceId}/files` : `/registry/${this.resourceId}/files`;
+      const redirectUrl = `/${this.resourceId}/files`;
       this.actions
         .deleteEntry(this.resourceId, link)
         .pipe(takeUntilDestroyed(this.destroyRef))

@@ -1,3 +1,4 @@
+import { InstitutionsMapper } from '@shared/mappers';
 import { License, MetaAnonymousJsonApi } from '@shared/models';
 
 import { ProjectOverview, ProjectOverviewGetResponseJsonApi } from '../models';
@@ -48,13 +49,7 @@ export class ProjectOverviewMapper {
           middleName: contributor.embeds.users.data.attributes.middle_name,
           type: contributor.embeds.users.data.type,
         })) ?? [],
-      affiliatedInstitutions: response.embeds.affiliated_institutions?.data.map((institution) => ({
-        id: institution.id,
-        type: institution.type,
-        logo: institution.attributes.assets.logo,
-        description: institution.attributes.description,
-        name: institution.attributes.name,
-      })),
+      affiliatedInstitutions: InstitutionsMapper.fromInstitutionsResponse(response.embeds.affiliated_institutions),
       identifiers: response.embeds.identifiers?.data.map((identifier) => ({
         id: identifier.id,
         type: identifier.type,

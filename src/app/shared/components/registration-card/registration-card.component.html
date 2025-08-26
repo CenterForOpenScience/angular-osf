@@ -73,7 +73,7 @@
               } @else {
                 <p-button
                   severity="primary"
-                  [routerLink]="['/registries', registrationData().id, 'overview']"
+                  [routerLink]="['/' + registrationData().id, 'overview']"
                   routerLinkActive="router-link-active"
                   [label]="'common.buttons.view' | translate"
                 ></p-button>

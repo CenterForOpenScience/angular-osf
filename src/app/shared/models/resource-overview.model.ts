@@ -1,5 +1,6 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { RegistrySubject } from '@osf/features/registry/models';
+import { Institution } from '@shared/models/institutions';
 
 export interface ResourceOverview {
   id: string;
@@ -59,11 +60,7 @@ export interface ResourceOverview {
     id: string;
     type: string;
   };
-  affiliatedInstitutions?: {
-    id: string;
-    logo: string;
-    logoRounded?: string;
-  }[];
+  affiliatedInstitutions?: Institution[];
   forksCount: number;
   viewOnlyLinksCount?: number;
   associatedProjectId?: string;

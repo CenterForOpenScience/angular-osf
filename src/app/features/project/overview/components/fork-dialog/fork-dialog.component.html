@@ -6,13 +6,13 @@
   <p-button
     [label]="'project.overview.dialog.fork.cancelButton' | translate"
     severity="info"
-    (click)="dialogRef.close(false)"
+    (onClick)="dialogRef.close(false)"
     [disabled]="isSubmitting()"
     class="btn-full-width"
   />
   <p-button
     [label]="'project.overview.dialog.fork.confirmButton' | translate"
-    (click)="handleForkConfirm()"
+    (onClick)="handleForkConfirm()"
     [loading]="isSubmitting()"
     class="btn-full-width"
   />

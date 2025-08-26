@@ -1,10 +1,14 @@
+import { provideStates } from '@ngxs/store';
+
 import { Route } from '@angular/router';
 
 import { DeveloperAppsContainerComponent } from './developer-apps-container.component';
+import { DeveloperAppsState } from './store';
 
 export const developerAppsRoute: Route = {
   path: 'developer-apps',
   component: DeveloperAppsContainerComponent,
+  providers: [provideStates([DeveloperAppsState])],
   children: [
     {
       path: '',

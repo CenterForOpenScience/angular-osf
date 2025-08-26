@@ -6,11 +6,11 @@
 
     @let resourceType = currentResource()?.type;
     @let iconName = resourceType === 'analytic_code' ? 'code' : resourceType;
-    @let icon = `assets/icons/colored/${iconName}-colored.svg`;
+    @let icon = `custom-icon-${iconName} icon-resource-size`;
     @let resourceName = resourceType === RegistryResourceType.Code ? 'Analytic Code' : resourceType;
 
     <div class="flex align-content-end gap-3 content">
-      <img [src]="icon" alt="resource-type icon" class="align-self-start" />
+      <osf-icon class="align-self-start" [iconClass]="icon"></osf-icon>
       <div class="flex flex-column gap-3 mt-1">
         <div class="flex flex-column gap-2">
           <h2>{{ resourceName }}</h2>

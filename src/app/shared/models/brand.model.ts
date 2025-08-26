@@ -6,4 +6,5 @@ export interface Brand {
   topNavLogoImageUrl: string;
   primaryColor: string;
   secondaryColor: string;
+  backgroundColor: string | null;
 }

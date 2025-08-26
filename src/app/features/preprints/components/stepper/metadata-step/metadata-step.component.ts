@@ -9,12 +9,11 @@ import { InputText } from 'primeng/inputtext';
 import { Message } from 'primeng/message';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, OnInit, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { PreprintsSubjectsComponent } from '@osf/features/preprints/components/stepper/metadata-step/preprints-subjects/preprints-subjects.component';
 import { formInputLimits } from '@osf/features/preprints/constants';
-import { MetadataForm, Preprint } from '@osf/features/preprints/models';
+import { MetadataForm, Preprint, PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
   CreatePreprint,
   FetchLicenses,
@@ -29,6 +28,8 @@ import { License, LicenseOptions } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
 import { ContributorsComponent } from './contributors/contributors.component';
+import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions/preprints-affiliated-institutions.component';
+import { PreprintsSubjectsComponent } from './preprints-subjects/preprints-subjects.component';
 
 @Component({
   selector: 'osf-preprint-metadata',
@@ -47,6 +48,7 @@ import { ContributorsComponent } from './contributors/contributors.component';
     LicenseComponent,
     TagsInputComponent,
     PreprintsSubjectsComponent,
+    PreprintsAffiliatedInstitutionsComponent,
   ],
   templateUrl: './metadata-step.component.html',
   styleUrl: './metadata-step.component.scss',
@@ -71,6 +73,7 @@ export class MetadataStepComponent implements OnInit {
   createdPreprint = select(PreprintStepperSelectors.getPreprint);
   isUpdatingPreprint = select(PreprintStepperSelectors.isPreprintSubmitting);
 
+  provider = input.required<PreprintProviderDetails | undefined>();
   nextClicked = output<void>();
   backClicked = output<void>();
 

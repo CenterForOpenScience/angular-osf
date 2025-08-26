@@ -9,7 +9,8 @@ import {
   CedarMetadataTemplateJsonApi,
 } from '@osf/features/project/metadata/models';
 import { JsonApiService } from '@osf/shared/services';
-import { License } from '@shared/models';
+import { InstitutionsMapper } from '@shared/mappers';
+import { Institution, InstitutionsJsonApiResponse, License } from '@shared/models';
 
 import { RegistryMetadataMapper } from '../mappers';
 import {
@@ -20,7 +21,6 @@ import {
   RegistryContributorAddRequest,
   RegistryContributorJsonApiResponse,
   RegistryContributorUpdateRequest,
-  RegistryInstitutionsJsonApiResponse,
   RegistryOverview,
   RegistrySubjectsJsonApi,
   UserInstitutionsResponse,
@@ -189,18 +189,15 @@ export class RegistryMetadataService {
     );
   }
 
-  getRegistryInstitutions(
-    registryId: string,
-    page = 1,
-    pageSize = 100
-  ): Observable<RegistryInstitutionsJsonApiResponse> {
+  getRegistryInstitutions(registryId: string, page = 1, pageSize = 100): Observable<Institution[]> {
     const params: Record<string, unknown> = {
-      'fields[institutions]': 'name',
       page: page,
       'page[size]': pageSize,
     };
 
-    return this.jsonApiService.get(`${this.apiUrl}/registrations/${registryId}/institutions/`, params);
+    return this.jsonApiService
+      .get<InstitutionsJsonApiResponse>(`${this.apiUrl}/registrations/${registryId}/institutions/`, params)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
   }
 
   updateRegistryContributor(

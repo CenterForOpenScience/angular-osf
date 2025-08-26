@@ -10,22 +10,22 @@ import { finalize, take } from 'rxjs';
 import { ChangeDetectionStrategy, Component, HostBinding, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { AddResourceDialogComponent } from '@osf/features/registry/components/add-resource-dialog/add-resource-dialog.component';
-import { EditResourceDialogComponent } from '@osf/features/registry/components/edit-resource-dialog/edit-resource-dialog.component';
-import { RegistryResource } from '@osf/features/registry/models';
+import { IconComponent, LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+
+import { AddResourceDialogComponent, EditResourceDialogComponent } from '../../components';
+import { RegistryResource } from '../../models';
 import {
   AddRegistryResource,
   DeleteResource,
   GetRegistryResources,
   RegistryResourcesSelectors,
   SilentDelete,
-} from '@osf/features/registry/store/registry-resources';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+} from '../../store/registry-resources';
 
 @Component({
   selector: 'osf-registry-resources',
-  imports: [SubHeaderComponent, TranslatePipe, Button, LoadingSpinnerComponent],
+  imports: [SubHeaderComponent, TranslatePipe, Button, LoadingSpinnerComponent, IconComponent],
   templateUrl: './registry-resources.component.html',
   styleUrl: './registry-resources.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

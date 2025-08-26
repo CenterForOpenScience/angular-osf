@@ -88,7 +88,7 @@ function updateProjectMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
           expanded: true,
           items: PROJECT_MENU_ITEMS.map((menuItem) => ({
             ...menuItem,
-            routerLink: ['project', ctx.resourceId as string, menuItem.routerLink],
+            routerLink: [ctx.resourceId as string, menuItem.routerLink],
           })),
         };
       }
@@ -111,7 +111,7 @@ function updateRegistryMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
           expanded: true,
           items: REGISTRATION_MENU_ITEMS.map((menuItem) => ({
             ...menuItem,
-            routerLink: ['registries', ctx.resourceId as string, menuItem.routerLink],
+            routerLink: [ctx.resourceId as string, menuItem.routerLink],
           })),
         };
       }
