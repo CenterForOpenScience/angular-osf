@@ -23,31 +23,33 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import {
-  ClearCollectionModeration,
-  CollectionsModerationSelectors,
-  GetSubmissionsReviewActions,
-} from '@osf/features/moderation/store/collections-moderation';
+import { IS_XSMALL } from '@osf/shared/helpers';
 import {
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
-} from '@osf/shared/components';
-import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
-import { MapProjectOverview } from '@osf/shared/mappers';
-import { ToastService } from '@osf/shared/services';
+} from '@shared/components';
+import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
+import { Mode, ResourceType, UserPermissions } from '@shared/enums';
+import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
+import { ToastService } from '@shared/services';
 import {
-  ClearCollections,
   ClearWiki,
   CollectionsSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetHomeWiki,
   GetLinkedResources,
-} from '@osf/shared/stores';
-import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
+} from '@shared/stores';
+import { GetActivityLogs } from '@shared/stores/activity-logs';
+import { ClearCollections } from '@shared/stores/collections';
+
+import {
+  ClearCollectionModeration,
+  CollectionsModerationSelectors,
+  GetSubmissionsReviewActions,
+} from '../../moderation/store/collections-moderation';
 
 import {
   LinkedResourcesComponent,
@@ -88,7 +90,7 @@ import {
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectOverviewComponent implements OnInit {
+export class ProjectOverviewComponent extends DataciteTrackerComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -105,7 +107,6 @@ export class ProjectOverviewComponent implements OnInit {
   isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
-
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
@@ -187,7 +188,11 @@ export class ProjectOverviewComponent implements OnInit {
     return null;
   });
 
+  protected override getDoi(): string | null {
+    return this.currentProject()?.identifiers?.find((item) => item.category == 'doi')?.value ?? null;
+  }
   constructor() {
+    super();
     this.setupCollectionsEffects();
     this.setupCleanup();
   }

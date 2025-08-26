@@ -74,4 +74,5 @@ export const environment = {
    * Default provider for OSF content and routing.
    */
   defaultProvider: 'osf',
+  dataciteTrackerRepoId: null,
 };
