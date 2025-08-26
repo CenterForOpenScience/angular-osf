@@ -1,4 +1,5 @@
 import { Action, State, StateContext } from '@ngxs/store';
+import { patch, updateItem } from '@ngxs/store/operators';
 
 import { of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
@@ -6,6 +7,7 @@ import { catchError, tap } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers';
+import { NotificationSubscription } from '@osf/shared/models';
 
 import { SettingsService } from '../services';
 
@@ -13,8 +15,10 @@ import {
   DeleteInstitution,
   DeleteProject,
   GetProjectDetails,
+  GetProjectNotificationSubscriptions,
   GetProjectSettings,
   UpdateProjectDetails,
+  UpdateProjectNotificationSubscription,
   UpdateProjectSettings,
 } from './settings.actions';
 import { SETTINGS_STATE_DEFAULTS, SettingsStateModel } from './settings.model';
@@ -133,6 +137,47 @@ export class SettingsState {
         });
         return handleSectionError(ctx, 'settings', error);
       })
+    );
+  }
+
+  @Action(GetProjectNotificationSubscriptions)
+  getNotificationSubscriptionsByNodeId(
+    ctx: StateContext<SettingsStateModel>,
+    action: GetProjectNotificationSubscriptions
+  ) {
+    return this.settingsService.getNotificationSubscriptions(action.nodeId).pipe(
+      tap((notificationSubscriptions) => {
+        ctx.setState(
+          patch({
+            notifications: patch({
+              data: notificationSubscriptions,
+              isLoading: false,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'notifications', error))
+    );
+  }
+
+  @Action(UpdateProjectNotificationSubscription)
+  updateNotificationSubscriptionForNodeId(
+    ctx: StateContext<SettingsStateModel>,
+    action: UpdateProjectNotificationSubscription
+  ) {
+    return this.settingsService.updateSubscription(action.payload.id, action.payload.frequency).pipe(
+      tap((updatedSubscription) => {
+        ctx.setState(
+          patch({
+            notifications: patch({
+              data: updateItem<NotificationSubscription>((app) => app.id === action.payload.id, updatedSubscription),
+              error: null,
+              isLoading: false,
+            }),
+          })
+        );
+      }),
+      catchError((error) => handleSectionError(ctx, 'notifications', error))
     );
   }
 

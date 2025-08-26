@@ -28,6 +28,7 @@ export * from './metadata-field.model';
 export * from './my-resources';
 export * from './nodes/create-project-form.model';
 export * from './nodes/nodes-json-api.model';
+export * from './notifications';
 export * from './paginated-data.model';
 export * from './pagination-links.model';
 export * from './profile-settings-update.model';

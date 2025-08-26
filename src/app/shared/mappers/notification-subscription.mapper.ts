@@ -1,5 +1,4 @@
-import { SubscriptionEvent, SubscriptionFrequency, SubscriptionType } from '@shared/enums';
-
+import { SubscriptionEvent, SubscriptionFrequency, SubscriptionType } from '../enums';
 import {
   NotificationSubscription,
   NotificationSubscriptionGetResponseJsonApi,
@@ -26,7 +25,7 @@ export class NotificationSubscriptionMapper {
 
     return {
       data: {
-        type: isNodeSubscription ? SubscriptionType.Node : SubscriptionType.Global,
+        type: SubscriptionType.Global,
         attributes: baseAttributes,
         ...(isNodeSubscription ? {} : { id }),
       },

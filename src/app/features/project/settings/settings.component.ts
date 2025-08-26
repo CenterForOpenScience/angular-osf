@@ -9,11 +9,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  GetNotificationSubscriptionsByNodeId,
-  NotificationSubscriptionSelectors,
-  UpdateNotificationSubscriptionForNodeId,
-} from '@osf/features/settings/notifications/store';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
 import { Institution, UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
@@ -35,9 +30,11 @@ import {
   DeleteInstitution,
   DeleteProject,
   GetProjectDetails,
+  GetProjectNotificationSubscriptions,
   GetProjectSettings,
   SettingsSelectors,
   UpdateProjectDetails,
+  UpdateProjectNotificationSubscription,
   UpdateProjectSettings,
 } from './store';
 
@@ -72,7 +69,8 @@ export class SettingsComponent implements OnInit {
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
   settings = select(SettingsSelectors.getSettings);
-  notifications = select(NotificationSubscriptionSelectors.getNotificationSubscriptionsByNodeId);
+  notifications = select(SettingsSelectors.getNotificationSubscriptions);
+  areNotificationsLoading = select(SettingsSelectors.areNotificationsLoading);
   projectDetails = select(SettingsSelectors.getProjectDetails);
   areProjectDetailsLoading = select(SettingsSelectors.areProjectDetailsLoading);
   viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
@@ -80,12 +78,12 @@ export class SettingsComponent implements OnInit {
 
   actions = createDispatchMap({
     getSettings: GetProjectSettings,
-    getNotifications: GetNotificationSubscriptionsByNodeId,
+    getNotifications: GetProjectNotificationSubscriptions,
     getProjectDetails: GetProjectDetails,
     getViewOnlyLinks: FetchViewOnlyLinks,
     updateProjectDetails: UpdateProjectDetails,
     updateProjectSettings: UpdateProjectSettings,
-    updateNotificationSubscriptionForNodeId: UpdateNotificationSubscriptionForNodeId,
+    updateNotificationSubscription: UpdateProjectNotificationSubscription,
     deleteViewOnlyLink: DeleteViewOnlyLink,
     deleteProject: DeleteProject,
     deleteInstitution: DeleteInstitution,
@@ -158,7 +156,7 @@ export class SettingsComponent implements OnInit {
     const frequency = data.frequency;
 
     this.loaderService.show();
-    this.actions.updateNotificationSubscriptionForNodeId({ id, frequency }).subscribe(() => {
+    this.actions.updateNotificationSubscription({ id, frequency }).subscribe(() => {
       this.toastService.showSuccess('myProjects.settings.updateProjectSettingsMessage');
       this.loaderService.hide();
     });

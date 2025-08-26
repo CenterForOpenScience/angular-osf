@@ -2,7 +2,14 @@ import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { UpdateNodeRequestModel } from '@osf/shared/models';
+import { SubscriptionFrequency } from '@osf/shared/enums';
+import { NotificationSubscriptionMapper } from '@osf/shared/mappers';
+import {
+  NotificationSubscription,
+  NotificationSubscriptionGetResponseJsonApi,
+  ResponseJsonApi,
+  UpdateNodeRequestModel,
+} from '@osf/shared/models';
 import { JsonApiService } from '@shared/services';
 
 import { SettingsMapper } from '../mappers';
@@ -34,6 +41,26 @@ export class SettingsService {
     return this.jsonApiService
       .patch<ProjectSettingsResponseModel>(`${this.baseUrl}/nodes/${model.id}/settings/`, { data: model })
       .pipe(map((response) => SettingsMapper.fromResponse(response, model.id)));
+  }
+
+  getNotificationSubscriptions(nodeId?: string): Observable<NotificationSubscription[]> {
+    const params: Record<string, string> = {
+      'filter[id]': `${nodeId}_file_updated`,
+    };
+
+    return this.jsonApiService
+      .get<ResponseJsonApi<NotificationSubscriptionGetResponseJsonApi[]>>(`${this.baseUrl}/subscriptions/`, params)
+      .pipe(
+        map((responses) => responses.data.map((response) => NotificationSubscriptionMapper.fromGetResponse(response)))
+      );
+  }
+
+  updateSubscription(id: string, frequency: SubscriptionFrequency): Observable<NotificationSubscription> {
+    const request = NotificationSubscriptionMapper.toUpdateRequest(id, frequency, false);
+
+    return this.jsonApiService
+      .patch<NotificationSubscriptionGetResponseJsonApi>(`${this.baseUrl}/subscriptions/${id}/`, request)
+      .pipe(map((response) => NotificationSubscriptionMapper.fromGetResponse(response)));
   }
 
   getProjectById(projectId: string): Observable<NodeDetailsModel> {

@@ -34,6 +34,7 @@ export class SettingsMapper {
       id: data.id,
       title: data.attributes.title,
       description: data.attributes.description,
+      isPublic: data.attributes.public,
       region: {
         id: data.embeds.region.data.id,
         name: data.embeds.region.data.attributes.name,

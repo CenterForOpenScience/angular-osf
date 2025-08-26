@@ -6,7 +6,7 @@
       [icon]="expanded() ? 'fas fa-minus' : 'fas fa-plus'"
       variant="text"
       severity="contrast"
-      (click)="toggle()"
+      (onClick)="toggle()"
     ></p-button>
 
     <span class="font-medium text-color">{{ title() }}</span>
@@ -22,20 +22,13 @@
             </span>
           }
 
-          <p-select
-            class="accordion-dropdown"
+          <osf-select
+            [noBorder]="true"
             [options]="control.options"
-            [(ngModel)]="control.value"
-            (ngModelChange)="emitValueChange.emit({ index: index, value: control.value })"
-          >
-            <ng-template let-item pTemplate="item">
-              <span>{{ item.label | translate }}</span>
-            </ng-template>
-
-            <ng-template let-item pTemplate="selectedItem">
-              {{ item.label | translate }}
-            </ng-template>
-          </p-select>
+            [(selectedValue)]="control.value"
+            [disabled]="disabledRightControls()"
+            (changeValue)="emitValueChange.emit({ index: index, value: control.value })"
+          ></osf-select>
         </div>
       }
     </div>
@@ -43,11 +36,7 @@
 </div>
 
 @if (expanded()) {
-  <div
-    class="mt-2 pl-5 border-bottom-1 border-gray-300"
-    [attr.id]="'accordion-content-' + title()"
-    [attr.aria-labelledby]="'accordion-label-' + title()"
-  >
+  <div class="mt-2 pl-5 border-bottom-1 border-gray-300">
     <ng-content></ng-content>
   </div>
 }
