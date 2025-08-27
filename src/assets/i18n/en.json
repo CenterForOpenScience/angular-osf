@@ -2109,6 +2109,7 @@
         "moderatorFeedback": "Moderator Feedback",
         "showModeratorFeedback": "Show moderator feedback"
       },
+      "warningBanner": "OSF preprints are not peer reviewed and acceptance into OSF preprints is not an indicator of scholarly merit.",
       "withdrawDialog": {
         "title": "Withdraw {{preprintWord}}",
         "withdrawalExplanation": "You are about to withdraw this version of your {{singularPreprintWord}}. Withdrawing a version will remove it from public view but will not affect other versions of this {{singularPreprintWord}}, if available.",
@@ -2526,7 +2527,9 @@
   "institutions": {
     "title": "Institutions",
     "description": "OSF Institutions enhances transparency and increases the visibility of research outputs, accelerating discovery and reuse. Institutional members focus on generating and sharing research, and let OSF Institutions handle the infrastructure. <br /> <a href='https://www.cos.io/products/osf-institutions' target='_blank'>Read more</a>",
-    "searchInstitutions": "Search institutions"
+    "searchInstitutions": "Search institutions",
+    "searchInstitutionsDesctiption": "Please select an institution to apply to your search. Only OSF Institutions member affiliations are discoverable. ",
+    "learnMore": "Learn more about OSF Institutions."
   },
   "adminInstitutions": {
     "summary": {
