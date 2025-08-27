@@ -152,7 +152,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   });
 
   protected currentProject = select(ProjectOverviewSelectors.getProject);
-  protected currentProject$ = toObservable(this.currentProject); // field initializer
+  private currentProject$ = toObservable(this.currentProject);
   protected userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
   });
