@@ -10,7 +10,12 @@
   <osf-loading-spinner></osf-loading-spinner>
 } @else {
   <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-    <p>{{ 'resources.description' | translate }}</p>
+    <p>
+      {{ 'resources.description' | translate }}
+      <a class="font-bold" href="https://help.osf.io/article/410-registration-files" target="_blank">
+        {{ 'common.labels.learnMore' | translate }}
+      </a>
+    </p>
 
     <div class="flex flex-column gap-2">
       @for (resource of resources(); track resource.id) {

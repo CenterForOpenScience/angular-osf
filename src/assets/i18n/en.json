@@ -399,9 +399,6 @@
       "wikiText": "Enable the wiki In [Dashboard] New and Noteworthy.",
       "wikiConfigureTitle": "Configure",
       "wikiConfigureText": "Create a link to share this project so those who have the link can view—but not edit—the project.",
-      "commenting": "Commenting",
-      "contributorsCanPost": "Only contributors can post comments",
-      "osfUserCanPost": "When the project is public, any OSF user can post comments",
       "emailNotifications": "Email Notifications",
       "emailNotificationsText": "These notification settings only apply to you. They do NOT affect any other contributor on this project.",
       "redirectLink": "Redirect Link",
@@ -427,11 +424,6 @@
         "message": "Are you sure you want to delete this view only link?"
       },
       "descriptions": {
-        "comments": {
-          "instant": "You'll be notified immediately when someone adds a comment.",
-          "daily": "You'll receive a daily summary of comments.",
-          "none": "You won't receive comment notifications."
-        },
         "file_updated": {
           "instant": "You'll be notified immediately when files are updated.",
           "daily": "You'll receive a daily summary of file updates.",
@@ -972,6 +964,33 @@
         "message": "Are you sure you want to delete <span class=\"font-bold\">{{name}}</span>?"
       }
     },
+    "filesBrowserDialog": {
+      "title": "Using the OSF Files Browser",
+      "seeAllFiles": "See All Files in a Provider",
+      "seeAllFilesDescription": "All connected storage providers are displayed in  the left navbar. Choose one provider to view contents.",
+      "selectFilesFolders": "Select Files/Folders",
+      "selectFilesFoldersDescription": "Click on a row (outside of the file or folder name) to show further actions in the top toolbar. Click on more rows to select multiple files. To select a range of files, click a file to begin selection and then shift+click another file to select the range.",
+      "openViewFiles": "Open/View Files",
+      "openViewFilesDescription": "Click a file name to go to view the file in the OSF. Opens file in a new tab.",
+      "upload": "Upload.",
+      "uploadDescription": "There are two ways to upload files. Open the storage provider or folder where you intend to upload files; you can then drag files from your desktop into files list area OR click “Upload Files”, and select your files. Note: File names with special characters may cause unexpected behavior with certain addons.",
+      "createFolder": "Create a folder",
+      "createFolderDescription": "To create a folder to help organize your files, click “Create a Folder”. Note: You can also organize your project content by creating Components.",
+      "renameFolderFile": "Rename a folder or file",
+      "renameFolderFileDescription": "In the files list, select the file that you want to rename and click the vertical ellipses to open the dropdown. Select “Rename”. Note: Some special characters may cause unexpected behavior with certain addons.",
+      "move": "Move",
+      "moveDescription": "You can move your files from one part of your project or component to another. Select the files that you want to move, and click the vertical ellipses to open the dropdown, then click “move”. Choose a component, provider, or folder and then click “Move”.",
+      "copy": "Copy",
+      "copyDescription": "You can copy your files from one part of your project or component to another. Select the files that you want to copy, and click the vertical ellipses to open the dropdown, click the “Copy” button. Choose a component, provider, or folder and then click “Copy”. Your files will now appear in both the original and chosen locations.",
+      "downloadAllFilesZip": "Download All Files As a Zip",
+      "downloadAllFilesZipDescription": "Select the storage provider from the left navigation, and then click “Download As Zip” in the top toolbar.",
+      "downloadFolderZip": "Download a Folder as Zip",
+      "downloadFolderZipDescription": "To download a specific folder as a zip, click the vertical ellipses on the folder’s row to open the dropdown. Click “Download”. Alternatively, open the folder and then click “Download As Zip” in the top toolbar.",
+      "downloadFile": "Download a File",
+      "downloadFileDescription": "With the file open: Click the vertical ellipses  to open the dropdown. Click “Download”. From the file list: Click the vertical ellipses of the file to open the dropdown. Click “Download”.",
+      "moreInfo": "For more information please see our",
+      "helpGuides": "help guides on project files."
+    },
     "dropText": "Drop a file to upload",
     "emptyState": "This folder is empty",
     "detail": {
@@ -1129,6 +1148,7 @@
       "projectContributors": "Project Contributors",
       "collectionMetadata": "Collection Metadata",
       "tooltipMessage": "Complete previous step to edit this section",
+      "contributorsTooltip": "Projects must have at least one registered administrator and one author showing in the citation at all times. A registered administrator is a user who has both confirmed their account and has administrator privileges.",
       "noDescription": "No description",
       "noLicense": "No license",
       "noTags": "No tags",
@@ -1388,9 +1408,6 @@
       }
     },
     "notifications": {
-      "header": {
-        "title": "Notifications"
-      },
       "emailPreferences": {
         "title": "Configure Email Preferences",
         "items": {
@@ -1408,9 +1425,8 @@
       "notificationPreferences": {
         "title": "Configure Notification Preferences",
         "note": "Note: Transactional and administrative service emails will still be sent.",
+        "tooltipText": "These are default settings for new projects you create or are added to. Modifying these settings will not modify settings on existing projects.",
         "items": {
-          "replies": "Replies to your comments",
-          "comments": "Comments added",
           "files": "Files updated",
           "mentions": "Mentions added",
           "preprints": "Preprint submissions updated"

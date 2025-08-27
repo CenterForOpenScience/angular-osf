@@ -6,7 +6,7 @@ import { JsonApiResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { ScopeMapper, TokenMapper } from '../mappers';
-import { ScopeJsonApi, ScopeModel, TokenCreateResponseJsonApi, TokenGetResponseJsonApi, TokenModel } from '../models';
+import { ScopeJsonApi, ScopeModel, TokenGetResponseJsonApi, TokenModel } from '../models';
 
 import { TokensService } from './tokens.service';
 
@@ -86,11 +86,11 @@ describe('TokensService', () => {
     const scopes = ['read'];
     const requestBody = { name, scopes };
 
-    const apiResponse = { data: { id: 'xyz' } } as JsonApiResponse<TokenCreateResponseJsonApi, null>;
+    const apiResponse = { data: { id: 'xyz' } } as JsonApiResponse<TokenGetResponseJsonApi, null>;
     const mapped = { id: 'xyz' } as TokenModel;
 
     (TokenMapper.toRequest as jest.Mock).mockReturnValue(requestBody);
-    (TokenMapper.fromCreateResponse as jest.Mock).mockReturnValue(mapped);
+    (TokenMapper.fromGetResponse as jest.Mock).mockReturnValue(mapped);
     jsonApiServiceMock.post.mockReturnValue(of(apiResponse));
 
     service.createToken(name, scopes).subscribe((token) => {
@@ -106,11 +106,11 @@ describe('TokensService', () => {
     const scopes = ['write'];
     const requestBody = { name, scopes };
 
-    const apiResponse = { id: tokenId } as TokenCreateResponseJsonApi;
+    const apiResponse = { id: tokenId } as TokenGetResponseJsonApi;
     const mapped = { id: tokenId } as TokenModel;
 
     (TokenMapper.toRequest as jest.Mock).mockReturnValue(requestBody);
-    (TokenMapper.fromCreateResponse as jest.Mock).mockReturnValue(mapped);
+    (TokenMapper.fromGetResponse as jest.Mock).mockReturnValue(mapped);
     jsonApiServiceMock.patch.mockReturnValue(of(apiResponse));
 
     service.updateToken(tokenId, name, scopes).subscribe((token) => {

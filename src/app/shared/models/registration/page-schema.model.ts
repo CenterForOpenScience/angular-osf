@@ -1,8 +1,9 @@
-import { FieldType } from '@osf/shared/enums/field-type.enum';
+import { FieldType } from '@osf/shared/enums';
 
 export interface PageSchema {
   id: string;
   title: string;
+  helpText?: string;
   description?: string;
   questions?: Question[];
   sections?: Section[];
@@ -12,6 +13,7 @@ export interface Section {
   id: string;
   title: string;
   description?: string;
+  helpText?: string;
   questions?: Question[];
 }
 

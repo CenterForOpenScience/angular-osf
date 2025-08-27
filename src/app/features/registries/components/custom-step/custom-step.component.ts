@@ -78,11 +78,11 @@ export class CustomStepComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
-  protected readonly pages = select(RegistriesSelectors.getPagesSchema);
-  protected readonly FieldType = FieldType;
-  protected stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  readonly pages = select(RegistriesSelectors.getPagesSchema);
+  readonly FieldType = FieldType;
+  readonly stepsValidation = select(RegistriesSelectors.getStepsValidation);
 
-  protected actions = createDispatchMap({
+  readonly actions = createDispatchMap({
     updateStepValidation: UpdateStepValidation,
     setUpdatedFields: SetUpdatedFields,
   });
