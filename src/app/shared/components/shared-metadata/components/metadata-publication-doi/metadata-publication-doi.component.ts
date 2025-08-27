@@ -5,6 +5,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
+import { ResourceType } from '@osf/shared/enums';
 import { Identifier } from '@osf/shared/models';
 
 @Component({
@@ -18,4 +19,8 @@ export class MetadataPublicationDoiComponent {
 
   identifiers = input<Identifier[]>([]);
   hideEditDoi = input<boolean>(false);
+  publicationDoi = input<string | null>(null);
+  resourceType = input<ResourceType>(ResourceType.Project);
+  doiHost = 'https://doi.org/';
+  ResourceType = ResourceType;
 }

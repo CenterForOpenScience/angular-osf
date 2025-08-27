@@ -8,15 +8,13 @@ export interface Metadata {
   resourceType?: string;
   resourceLanguage?: string;
   publicationDoi?: string;
-  institutions?: string[];
-  doi?: boolean;
   license: License | null;
   category?: string;
   dateCreated: string;
   dateModified: string;
   contributors: ContributorModel[];
   identifiers: Identifier[];
-  affiliatedInstitutions: Institution[];
+  affiliatedInstitutions?: Institution[];
   provider?: string;
   nodeLicense?: {
     copyrightHolders: string[];

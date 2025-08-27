@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers';
 
 import { CedarMetadataRecord, CedarMetadataRecordJsonApi, Metadata } from '../models';
-import { MetadataService } from '../services/metadata.service';
+import { MetadataService } from '../services';
 
 import {
   AddCedarMetadataRecordToState,
