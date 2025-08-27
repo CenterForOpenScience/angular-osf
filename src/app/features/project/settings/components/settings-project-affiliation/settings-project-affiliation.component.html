@@ -1,0 +1,40 @@
+<p-card>
+  <h3 class="text-xl pb-4">{{ 'myProjects.settings.projectAffiliation' | translate }}</h3>
+
+  <p>{{ 'myProjects.settings.projectsCanBeAffiliated' | translate }}</p>
+
+  <ol class="list-disc ml-5" role="list">
+    <li class="list-disc">{{ 'myProjects.settings.institutionalLogos' | translate }}</li>
+    <li class="list-disc">{{ 'myProjects.settings.publicProjectsToBeDiscoverable' | translate }}</li>
+    <li class="list-disc">{{ 'myProjects.settings.singleSignInToTHeOSF' | translate }}</li>
+    <li class="list-disc">
+      <a class="font-bold" href="https://help.osf.io/article/406-faqs-home-page" target="_blank">
+        {{ 'myProjects.settings.faq' | translate }}
+      </a>
+    </li>
+  </ol>
+
+  @if (affiliations().length > 0) {
+    <div class="flex flex-column gap-3 w-full mt-5">
+      @for (affiliation of affiliations(); track $index) {
+        <div
+          class="flex justify-content-between align-items-center w-full border-bottom-1 border-gray-300 pb-2 pr-2 sm:pr-4"
+        >
+          <div class="flex align-items-center gap-3">
+            <img class="fit-contain" [ngSrc]="affiliation.assets.logo" alt="Affiliation logo" width="44" height="44" />
+
+            <p>{{ affiliation.name }}</p>
+          </div>
+
+          <p-button
+            class="danger-icon-btn"
+            icon="fas fa-trash"
+            severity="danger"
+            text
+            (onClick)="removeAffiliation(affiliation)"
+          ></p-button>
+        </div>
+      }
+    </div>
+  }
+</p-card>

@@ -50,6 +50,8 @@ import { ReviewPermissions, UserPermissions } from '@shared/enums';
 import { MetaTagsService } from '@shared/services';
 import { ContributorsSelectors } from '@shared/stores';
 
+import { PreprintWarningBannerComponent } from '../../components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
+
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -64,6 +66,7 @@ import { environment } from 'src/environments/environment';
     StatusBannerComponent,
     TranslatePipe,
     PreprintTombstoneComponent,
+    PreprintWarningBannerComponent,
     ModerationStatusBannerComponent,
     MakeDecisionComponent,
   ],
@@ -233,6 +236,10 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
       !this.isWithdrawalRejected() &&
       !this.isPendingWithdrawal()
     );
+  });
+
+  isOsfPreprint = computed(() => {
+    return this.providerId() === 'osf';
   });
 
   moderationStatusBannerVisible = computed(() => {

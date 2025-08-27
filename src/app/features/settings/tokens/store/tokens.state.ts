@@ -1,33 +1,24 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, of, tap, throwError } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
+
+import { handleSectionError } from '@osf/shared/helpers';
 
 import { TokenModel } from '../models';
 import { TokensService } from '../services';
 
 import { CreateToken, DeleteToken, GetScopes, GetTokenById, GetTokens, UpdateToken } from './tokens.actions';
-import { TokensStateModel } from './tokens.models';
+import { TOKENS_STATE_DEFAULTS, TokensStateModel } from './tokens.models';
 
 @State<TokensStateModel>({
   name: 'tokens',
-  defaults: {
-    scopes: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-    tokens: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-  },
+  defaults: TOKENS_STATE_DEFAULTS,
 })
 @Injectable()
 export class TokensState {
-  tokensService = inject(TokensService);
+  private readonly tokensService = inject(TokensService);
 
   @Action(GetScopes)
   getScopes(ctx: StateContext<TokensStateModel>) {
@@ -39,7 +30,7 @@ export class TokensState {
       tap((scopes) => {
         ctx.patchState({ scopes: { data: scopes, isLoading: false, error: null } });
       }),
-      catchError((error) => this.handleError(ctx, 'scopes', error))
+      catchError((error) => handleSectionError(ctx, 'scopes', error))
     );
   }
 
@@ -51,7 +42,7 @@ export class TokensState {
       tap((tokens) => {
         ctx.patchState({ tokens: { data: tokens, isLoading: false, error: null } });
       }),
-      catchError((error) => this.handleError(ctx, 'tokens', error))
+      catchError((error) => handleSectionError(ctx, 'tokens', error))
     );
   }
 
@@ -71,7 +62,22 @@ export class TokensState {
         const updatedTokens = [...state.tokens.data, token];
         ctx.patchState({ tokens: { data: updatedTokens, isLoading: false, error: null } });
       }),
-      catchError((error) => this.handleError(ctx, 'tokens', error))
+      catchError((error) => handleSectionError(ctx, 'tokens', error))
+    );
+  }
+
+  @Action(CreateToken)
+  createToken(ctx: StateContext<TokensStateModel>, action: CreateToken) {
+    const state = ctx.getState();
+    ctx.patchState({ tokens: { ...state.tokens, isLoading: true, error: null } });
+
+    return this.tokensService.createToken(action.name, action.scopes).pipe(
+      tap((newToken) => {
+        const state = ctx.getState();
+        const updatedTokens = [newToken, ...state.tokens.data];
+        ctx.patchState({ tokens: { data: updatedTokens, isLoading: false, error: null } });
+      }),
+      catchError((error) => handleSectionError(ctx, 'tokens', error))
     );
   }
 
@@ -88,7 +94,7 @@ export class TokensState {
         );
         ctx.patchState({ tokens: { data: updatedTokens, isLoading: false, error: null } });
       }),
-      catchError((error) => this.handleError(ctx, 'tokens', error))
+      catchError((error) => handleSectionError(ctx, 'tokens', error))
     );
   }
 
@@ -103,36 +109,7 @@ export class TokensState {
         const updatedTokens = state.tokens.data.filter((token: TokenModel) => token.id !== action.tokenId);
         ctx.patchState({ tokens: { data: updatedTokens, isLoading: false, error: null } });
       }),
-      catchError((error) => this.handleError(ctx, 'tokens', error))
+      catchError((error) => handleSectionError(ctx, 'tokens', error))
     );
-  }
-
-  @Action(CreateToken)
-  createToken(ctx: StateContext<TokensStateModel>, action: CreateToken) {
-    const state = ctx.getState();
-    ctx.patchState({ tokens: { ...state.tokens, isLoading: true, error: null } });
-
-    return this.tokensService.createToken(action.name, action.scopes).pipe(
-      tap((newToken) => {
-        const state = ctx.getState();
-        const updatedTokens = [newToken, ...state.tokens.data];
-        ctx.patchState({ tokens: { data: updatedTokens, isLoading: false, error: null } });
-
-        return newToken;
-      }),
-      catchError((error) => this.handleError(ctx, 'tokens', error))
-    );
-  }
-
-  private handleError(ctx: StateContext<TokensStateModel>, key: keyof TokensStateModel, error: Error) {
-    const state = ctx.getState();
-    ctx.patchState({
-      [key]: {
-        ...state[key],
-        isLoading: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
   }
 }

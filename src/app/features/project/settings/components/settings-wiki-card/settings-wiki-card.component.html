@@ -23,6 +23,7 @@
     (emitValueChange)="changeEmittedValue($event)"
     [title]="title()"
     [rightControls]="allAccordionData"
+    [disabledRightControls]="!isPublic()"
   >
     <div class="flex align-items-baseline gap-2">
       <i class="fas fa-minus text-sm icon-space"></i>

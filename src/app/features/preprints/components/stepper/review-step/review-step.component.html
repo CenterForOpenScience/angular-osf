@@ -28,7 +28,13 @@
         }}
       </h3>
       <div class="flex flex-row gap-2 align-items-center">
-        <img [src]="provider()?.squareColorNoTransparentImageUrl" alt="Provider logo" height="36" width="36" />
+        <img
+          class="fit-contain"
+          [src]="provider()?.squareColorNoTransparentImageUrl"
+          alt="Provider logo"
+          height="36"
+          width="36"
+        />
         <p>{{ provider()?.name }}</p>
       </div>
     </section>

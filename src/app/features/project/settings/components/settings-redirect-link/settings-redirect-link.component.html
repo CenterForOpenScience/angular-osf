@@ -1,67 +1,39 @@
 <p-card>
   <h2 class="pb-4">{{ 'myProjects.settings.redirectLink' | translate }}</h2>
 
-  <div class="flex align-items-center w-full">
-    <p-checkbox
-      [binary]="true"
-      [(ngModel)]="redirectLink"
-      (ngModelChange)="onToggleRedirectLink($event)"
-      id="redirectLink"
-      name="ongoing"
-    ></p-checkbox>
+  <form [formGroup]="redirectForm">
+    <div class="flex align-items-center w-full">
+      <p-checkbox [binary]="true" formControlName="isEnabled" id="redirectLink"></p-checkbox>
 
-    <label for="redirectLink" class="input-label ml-2">
-      {{ 'myProjects.settings.redirectLinkText' | translate }}
-    </label>
-  </div>
-
-  @if (redirectLink()) {
-    <div class="mt-3 flex flex-column gap-3">
-      <div class="flex flex-column">
-        <label class="input-label" for="link-url">
-          {{ 'myProjects.settings.url' | translate | uppercase }}
-        </label>
-        <input
-          type="text"
-          pInputText
-          id="link-url"
-          class="mt-2 w-full"
-          placeholder="{{ 'myProjects.settings.redirectUrlPlaceholder' | translate }}"
-          [(ngModel)]="redirectUrlData().url"
-          #urlInput="ngModel"
-          pattern="https?://.+"
-        />
-
-        @if (urlInput.invalid && urlInput.touched) {
-          <small class="text-red-500 mt-1">
-            {{ 'myProjects.settings.invalidUrl' | translate }}
-          </small>
-        }
-      </div>
-
-      <div class="flex flex-column">
-        <label class="input-label" for="link-label">
-          {{ 'myProjects.settings.label' | translate | titlecase }}
-        </label>
-
-        <input
-          type="text"
-          pInputText
-          id="link-label"
-          class="mt-2 w-full"
-          placeholder="{{ 'myProjects.settings.redirectLabelPlaceholder' | translate }}"
-          [(ngModel)]="redirectUrlData().label"
-        />
-      </div>
+      <label for="redirectLink" class="input-label ml-2">
+        {{ 'myProjects.settings.redirectLinkText' | translate }}
+      </label>
     </div>
 
-    <div class="flex justify-content-end w-full flex-0 pt-4">
-      <p-button
-        (onClick)="emitIfChecked()"
-        [label]="'settings.developerApps.form.buttons.save' | translate"
-        class="w-10rem btn-full-width bg-primary-blue-second"
-        [disabled]="!redirectUrlData().url || !redirectUrlData().url.trim()"
-      ></p-button>
-    </div>
-  }
+    @if (redirectForm.get('isEnabled')?.value) {
+      <div class="mt-3 flex flex-column gap-3">
+        <osf-text-input
+          [control]="redirectForm.controls['url']"
+          [label]="'myProjects.settings.url'"
+          [placeholder]="'myProjects.settings.redirectUrlPlaceholder'"
+          [maxLength]="inputLimits.link.maxLength"
+        />
+
+        <osf-text-input
+          [control]="redirectForm.controls['label']"
+          [label]="'myProjects.settings.label'"
+          [maxLength]="inputLimits.name.maxLength"
+        />
+      </div>
+
+      <div class="flex justify-content-end w-full flex-0 pt-4">
+        <p-button
+          (onClick)="saveRedirectSettings()"
+          [label]="'settings.developerApps.form.buttons.save' | translate"
+          class="w-10rem btn-full-width bg-primary-blue-second"
+          [disabled]="!redirectForm.valid"
+        ></p-button>
+      </div>
+    }
+  </form>
 </p-card>
