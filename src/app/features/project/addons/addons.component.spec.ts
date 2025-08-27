@@ -1,4 +1,10 @@
+import { provideStore } from '@ngxs/store';
+
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { UserSelectors, UserState } from '@core/store/user';
+import { AddonsState } from '@osf/shared/stores';
 
 import { AddonsComponent } from './addons.component';
 
@@ -11,6 +17,15 @@ describe('AddonsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AddonsComponent, OSFTestingModule],
+      providers: [
+        provideStore([UserState, AddonsState]),
+        {
+          provide: UserSelectors,
+          useValue: {
+            getCurrentUser: () => signal({ id: 'mock-user' }),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AddonsComponent);

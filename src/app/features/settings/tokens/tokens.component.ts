@@ -30,11 +30,10 @@ export class TokensComponent implements OnInit {
   private readonly translateService = inject(TranslateService);
   private readonly actions = createDispatchMap({ getScopes: GetScopes });
 
-  protected readonly isSmall = toSignal(inject(IS_SMALL));
-  protected readonly isBaseRoute = toSignal(
-    this.router.events.pipe(map(() => this.router.url === '/settings/tokens')),
-    { initialValue: this.router.url === '/settings/tokens' }
-  );
+  readonly isSmall = toSignal(inject(IS_SMALL));
+  readonly isBaseRoute = toSignal(this.router.events.pipe(map(() => this.router.url === '/settings/tokens')), {
+    initialValue: this.router.url === '/settings/tokens',
+  });
 
   ngOnInit() {
     this.actions.getScopes();

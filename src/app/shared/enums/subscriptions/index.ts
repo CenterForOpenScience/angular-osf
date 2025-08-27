@@ -1,3 +1,3 @@
-export * from '@shared/enums/subscriptions/subscription-event.enum';
-export * from '@shared/enums/subscriptions/subscription-frequency.enum';
-export * from '@shared/enums/subscriptions/subscription-type.enum';
+export * from './subscription-event.enum';
+export * from './subscription-frequency.enum';
+export * from './subscription-type.enum';

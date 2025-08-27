@@ -1,7 +1,7 @@
 import {
   AddonGetResponseJsonApi,
   AddonModel,
-  AuthorizedAddon,
+  AuthorizedAccountModel,
   AuthorizedAddonGetResponseJsonApi,
   ConfiguredAddonGetResponseJsonApi,
   ConfiguredStorageAddonModel,
@@ -29,7 +29,7 @@ export class AddonMapper {
   static fromAuthorizedAddonResponse(
     response: AuthorizedAddonGetResponseJsonApi,
     included?: IncludedAddonData[]
-  ): AuthorizedAddon {
+  ): AuthorizedAccountModel {
     const externalServiceData =
       response.relationships?.external_storage_service?.data || response.relationships?.external_citation_service?.data;
 
@@ -56,6 +56,7 @@ export class AddonMapper {
       authorizedOperationNames: response.attributes.authorized_operation_names,
       defaultRootFolder: response.attributes.default_root_folder,
       credentialsAvailable: response.attributes.credentials_available,
+      oauthToken: response.attributes.oauth_token,
       accountOwnerId: response.relationships.account_owner.data.id,
       externalStorageServiceId: externalServiceId || '',
       externalServiceName,
@@ -76,7 +77,6 @@ export class AddonMapper {
    *
    * @example
    * const addon = AddonMapper.fromConfiguredAddonResponse(apiResponse);
-   * console.log(addon.displayName); // "Google Drive"
    */
   static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredStorageAddonModel {
     return {

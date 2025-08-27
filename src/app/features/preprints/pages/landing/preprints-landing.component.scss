@@ -1,11 +1,13 @@
-@use "assets/styles/mixins" as mix;
-@use "assets/styles/variables" as var;
-
 .subheader {
-  color: var.$dark-blue-1;
+  color: var(--dark-blue-1);
+
+  .custom-icon-preprints-dark {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
 
   .provider-description {
-    line-height: mix.rem(24px);
+    line-height: 1.5rem;
   }
 }
 

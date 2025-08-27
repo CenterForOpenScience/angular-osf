@@ -18,12 +18,13 @@ import { AddonConfigMap } from '@osf/features/project/addons/utils';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
+import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
 import {
   AddonSetupAccountFormComponent,
   AddonTermsComponent,
   FolderSelectorComponent,
 } from '@shared/components/addons';
-import { AddonModel, AddonTerm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
+import { AddonModel, AddonTerm, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {
   AddonsSelectors,
@@ -74,9 +75,9 @@ export class ConnectConfiguredAddonComponent {
   protected readonly stepper = viewChild(Stepper);
   protected accountNameControl = new FormControl('');
   protected terms = signal<AddonTerm[]>([]);
-  protected addon = signal<AddonModel | AuthorizedAddon | null>(null);
+  protected addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
   protected addonAuthUrl = signal<string>('/settings/addons');
-  protected currentAuthorizedAddonAccounts = signal<AuthorizedAddon[]>([]);
+  protected currentAuthorizedAddonAccounts = signal<AuthorizedAccountModel[]>([]);
   protected chosenAccountId = signal('');
   protected chosenAccountName = signal('');
   protected selectedRootFolderId = signal('');
@@ -114,7 +115,6 @@ export class ConnectConfiguredAddonComponent {
 
   protected resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
-
     return `${environment.webUrl}/${id}`;
   });
 
@@ -128,7 +128,7 @@ export class ConnectConfiguredAddonComponent {
   });
 
   constructor() {
-    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAddon;
+    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAccountModel;
     if (!addon) {
       this.router.navigate([`${this.baseUrl()}/addons`]);
     }
@@ -243,7 +243,7 @@ export class ConnectConfiguredAddonComponent {
 
   private processAuthorizedAddons(
     addonConfig: AddonConfigMap[keyof AddonConfigMap],
-    currentAddon: AddonModel | AuthorizedAddon
+    currentAddon: AddonModel | AuthorizedAccountModel
   ) {
     const authorizedAddons = addonConfig.getAuthorizedAddons();
     const matchingAddons = this.findMatchingAddons(authorizedAddons, currentAddon);
@@ -261,9 +261,9 @@ export class ConnectConfiguredAddonComponent {
   }
 
   private findMatchingAddons(
-    authorizedAddons: AuthorizedAddon[],
-    currentAddon: AddonModel | AuthorizedAddon
-  ): AuthorizedAddon[] {
+    authorizedAddons: AuthorizedAccountModel[],
+    currentAddon: AddonModel | AuthorizedAccountModel
+  ): AuthorizedAccountModel[] {
     return authorizedAddons.filter((addon) => addon.externalServiceName === currentAddon.externalServiceName);
   }
 

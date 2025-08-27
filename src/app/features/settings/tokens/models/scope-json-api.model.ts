@@ -4,7 +4,4 @@ export interface ScopeJsonApi {
   attributes: {
     description: string;
   };
-  links: {
-    self: string;
-  };
 }

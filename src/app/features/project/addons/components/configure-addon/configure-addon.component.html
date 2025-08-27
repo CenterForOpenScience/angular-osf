@@ -63,12 +63,8 @@
           (keydown.enter)="toggleEditMode()"
         ></p-button>
       </div>
-      <!-- @if (storageAddon()) {
-        <p class="text-lg">
-          {{ storageAddon()?.wbKey }}
-        </p>
-      } @else { -->
       <osf-folder-selector
+        [isGoogleFilePicker]="isGoogleDrive()"
         [accountName]="addon()?.displayName || ''"
         [operationInvocationResult]="operationInvocation()?.operationResult || []"
         [accountNameControl]="accountNameControl"
@@ -77,7 +73,6 @@
         (save)="handleUpdateAddonConfiguration()"
         (cancelSelection)="toggleEditMode()"
       />
-      <!-- } -->
     </section>
   }
 </section>

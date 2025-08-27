@@ -25,7 +25,7 @@
       <div class="flex flex-column gap-3 md:flex-row xl:gap-4">
         @if (currentUser()?.social?.orcid) {
           <div class="flex flex-row align-items-center gap-2">
-            <img ngSrc="assets/icons/colored/orchid.svg" width="16" height="16" alt="orcid" />
+            <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
             <a class="font-bold" [href]="'https://orcid.org/' + currentUser()?.social?.orcid">
               https://orcid.org/{{ currentUser()?.social?.orcid }}
             </a>
@@ -63,7 +63,7 @@
       <div class="flex flex-wrap align-items-center gap-3">
         @if (currentUser()?.social?.github) {
           <a class="cursor-pointer" [href]="currentUser()?.social?.github">
-            <img ngSrc="assets/icons/socials/github2.svg" width="24" height="24" alt="github" />
+            <img ngSrc="assets/icons/socials/github.svg" width="24" height="24" alt="github" />
           </a>
         }
         @if (currentUser()?.social?.scholar) {
@@ -73,12 +73,12 @@
         }
         @if (currentUser()?.social?.twitter) {
           <a class="cursor-pointer" [href]="currentUser()?.social?.twitter">
-            <img ngSrc="assets/icons/socials/twitter.svg" width="24" height="24" alt="twitter" />
+            <img ngSrc="assets/icons/socials/x.svg" width="24" height="24" alt="x(twitter)" />
           </a>
         }
         @if (currentUser()?.social?.linkedIn) {
           <a class="cursor-pointer" [href]="currentUser()?.social?.linkedIn">
-            <img ngSrc="assets/icons/socials/linkedin2.svg" width="24" height="24" alt="linkedin" />
+            <img ngSrc="assets/icons/socials/linkedin.svg" width="24" height="24" alt="linkedin" />
           </a>
         }
         @if (currentUser()?.social?.impactStory) {
