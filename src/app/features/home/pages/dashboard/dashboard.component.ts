@@ -62,8 +62,6 @@ export class DashboardComponent implements OnInit {
   protected readonly projects = select(MyResourcesSelectors.getProjects);
   protected readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
   protected readonly isProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
-  protected readonly isInitialLoading = false;
-
 
   protected readonly filteredProjects = computed(() => {
     const search = this.searchControl.value?.toLowerCase() ?? '';
