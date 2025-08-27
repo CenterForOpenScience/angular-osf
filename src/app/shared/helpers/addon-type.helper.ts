@@ -1,7 +1,7 @@
-import { AddonModel, AuthorizedStorageAccountModel, ConfiguredStorageAddonModel } from '@shared/models';
+import { AddonModel, AuthorizedAccountModel, ConfiguredStorageAddonModel } from '@shared/models';
 
 export function isStorageAddon(
-  addon: AddonModel | AuthorizedStorageAccountModel | ConfiguredStorageAddonModel | null
+  addon: AddonModel | AuthorizedAccountModel | ConfiguredStorageAddonModel | null
 ): boolean {
   if (!addon) return false;
 
@@ -13,7 +13,7 @@ export function isStorageAddon(
 }
 
 export function isCitationAddon(
-  addon: AddonModel | AuthorizedStorageAccountModel | ConfiguredStorageAddonModel | null
+  addon: AddonModel | AuthorizedAccountModel | ConfiguredStorageAddonModel | null
 ): boolean {
   if (!addon) return false;
 
@@ -25,7 +25,7 @@ export function isCitationAddon(
 }
 
 export function getAddonTypeString(
-  addon: AddonModel | AuthorizedStorageAccountModel | ConfiguredStorageAddonModel | null
+  addon: AddonModel | AuthorizedAccountModel | ConfiguredStorageAddonModel | null
 ): string {
   if (!addon) return '';
 
@@ -33,7 +33,7 @@ export function getAddonTypeString(
 }
 
 export function isAuthorizedAddon(
-  addon: AddonModel | AuthorizedStorageAccountModel | ConfiguredStorageAddonModel | null
+  addon: AddonModel | AuthorizedAccountModel | ConfiguredStorageAddonModel | null
 ): boolean {
   if (!addon) return false;
 
@@ -41,7 +41,7 @@ export function isAuthorizedAddon(
 }
 
 export function isConfiguredAddon(
-  addon: AddonModel | AuthorizedStorageAccountModel | ConfiguredStorageAddonModel | null
+  addon: AddonModel | AuthorizedAccountModel | ConfiguredStorageAddonModel | null
 ): boolean {
   if (!addon) return false;
 

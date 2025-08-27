@@ -1,4 +1,4 @@
-export interface AuthorizedStorageAccountModel {
+export interface AuthorizedAccountModel {
   type: string;
   id: string;
   displayName: string;

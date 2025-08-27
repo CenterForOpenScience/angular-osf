@@ -33,28 +33,28 @@ export class GoogleFilePickerComponent implements OnInit {
   //   onRegisterChild?: (a: GoogleFilePickerWidget) => void;
   //   manager: StorageManager;
   //     @tracked openGoogleFilePicker = false;
-  #folderName = signal<string>('');
+  private folderName = signal<string>('');
   selectFolder = undefined;
   accessToken = signal<string | null>(null);
 
   public visible = signal(false);
   public isGFPDisabled = signal(true);
-  readonly #apiKey = this.#environment.google.GOOGLE_FILE_PICKER_API_KEY;
-  readonly #appId = this.#environment.google.GOOGLE_FILE_PICKER_APP_ID;
-  readonly #store = inject(Store);
-  #parentId = '';
-  #isMultipleSelect!: boolean;
-  #title!: string;
+  private readonly apiKey = this.#environment.google.GOOGLE_FILE_PICKER_API_KEY;
+  private readonly appId = this.#environment.google.GOOGLE_FILE_PICKER_APP_ID;
+  private readonly store = inject(Store);
+  private parentId = '';
+  private isMultipleSelect!: boolean;
+  private title!: string;
 
   ngOnInit(): void {
     //         window.GoogleFilePickerWidget = this;
     // this.selectFolder = this.selectFolder();
-    this.#parentId = this.isFolderPicker() ? '' : this.rootFolderId();
-    this.#title = this.isFolderPicker()
+    this.parentId = this.isFolderPicker() ? '' : this.rootFolderId();
+    this.title = this.isFolderPicker()
       ? this.#translateService.instant('settings.addons.configureAddon.google-file-picker.root-folder-title')
       : this.#translateService.instant('settings.addons.configureAddon.google-file-picker.file-folder-title');
-    this.#isMultipleSelect = !this.isFolderPicker();
-    this.#folderName.set(this.selectedFolderName());
+    this.isMultipleSelect = !this.isFolderPicker();
+    this.folderName.set(this.selectedFolderName());
 
     this.#googlePicker.loadScript().subscribe({
       next: () => {
@@ -87,17 +87,17 @@ export class GoogleFilePickerComponent implements OnInit {
       googlePickerView.setMimeTypes('application/vnd.google-apps.folder');
     }
     googlePickerView.setIncludeFolders(true);
-    googlePickerView.setParent(this.#parentId);
+    googlePickerView.setParent(this.parentId);
 
     const pickerBuilder = new google.picker.PickerBuilder()
-      .setDeveloperKey(this.#apiKey)
-      .setAppId(this.#appId)
+      .setDeveloperKey(this.apiKey)
+      .setAppId(this.appId)
       .addView(googlePickerView)
-      .setTitle(this.#title)
+      .setTitle(this.title)
       .setOAuthToken(this.accessToken())
       .setCallback(this.pickerCallback.bind(this));
 
-    if (this.#isMultipleSelect) {
+    if (this.isMultipleSelect) {
       pickerBuilder.enableFeature(google.picker.Feature.MULTISELECT_ENABLED);
     }
 
@@ -107,10 +107,10 @@ export class GoogleFilePickerComponent implements OnInit {
 
   #loadOauthToken(): void {
     if (this.accountId()) {
-      this.#store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId())).subscribe({
+      this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId())).subscribe({
         next: () => {
           this.accessToken.set(
-            this.#store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
+            this.store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
           );
           this.isGFPDisabled.set(this.accessToken() ? false : true);
         },

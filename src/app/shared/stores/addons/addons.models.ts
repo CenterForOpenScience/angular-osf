@@ -1,8 +1,8 @@
 import {
   AddonModel,
   AsyncStateModel,
+  AuthorizedAccountModel,
   AuthorizedAddonResponseJsonApi,
-  AuthorizedStorageAccountModel,
   ConfiguredAddonResponseJsonApi,
   ConfiguredStorageAddonModel,
   OperationInvocation,
@@ -34,12 +34,12 @@ export interface AddonsStateModel {
   /**
    * Async state for authorized external storage addons linked to the current user.
    */
-  authorizedStorageAddons: AsyncStateModel<AuthorizedStorageAccountModel[]>;
+  authorizedStorageAddons: AsyncStateModel<AuthorizedAccountModel[]>;
 
   /**
    * Async state for authorized external citation addons linked to the current user.
    */
-  authorizedCitationAddons: AsyncStateModel<AuthorizedStorageAccountModel[]>;
+  authorizedCitationAddons: AsyncStateModel<AuthorizedAccountModel[]>;
 
   /**
    * Async state for storage addons that have been configured on a resource (e.g., project, node).

@@ -2,8 +2,8 @@ import { createSelector, Selector } from '@ngxs/store';
 
 import {
   AddonModel,
+  AuthorizedAccountModel,
   AuthorizedAddonResponseJsonApi,
-  AuthorizedStorageAccountModel,
   ConfiguredAddonResponseJsonApi,
   ConfiguredStorageAddonModel,
   OperationInvocation,
@@ -74,15 +74,14 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedStorageAddons(state: AddonsStateModel): AuthorizedStorageAccountModel[] {
+  static getAuthorizedStorageAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
     return state.authorizedStorageAddons.data;
   }
 
   static getAuthorizedStorageAddonOauthToken(id: string): (state: AddonsStateModel) => string | null {
     return createSelector([AddonsState], (state: AddonsStateModel): string | null => {
       return (
-        state.authorizedStorageAddons.data.find((addon: AuthorizedStorageAccountModel) => addon.id === id)
-          ?.oauthToken || null
+        state.authorizedStorageAddons.data.find((addon: AuthorizedAccountModel) => addon.id === id)?.oauthToken || null
       );
     });
   }
@@ -93,7 +92,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedCitationAddons(state: AddonsStateModel): AuthorizedStorageAccountModel[] {
+  static getAuthorizedCitationAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
     return state.authorizedCitationAddons.data;
   }
 

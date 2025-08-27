@@ -124,8 +124,6 @@ export class ConfigureAddonComponent implements OnInit {
   private initializeAddon(): void {
     // TODO this should be reviewed to have the addon be retrieved from the store
     // I have limited my testing because it will create a false/positive test based on the required data
-    // TODO this should be reviewed to have the addon be retrieved from the store
-    // I have limited my testing because it will create a false/positive test based on the required data
     const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as ConfiguredStorageAddonModel;
 
     if (addon) {

@@ -4,9 +4,9 @@
       <p-button
         [label]="'settings.addons.configureAddon.google-file-picker.select-root-folder' | translate"
         class="authorize-button"
-        [class.visible]="this.visible()"
-        [disabled]="this.isGFPDisabled()"
-        (click)="this.createPicker()"
+        [class.visible]="visible()"
+        [disabled]="isGFPDisabled()"
+        (click)="createPicker()"
       ></p-button>
     </div>
   }

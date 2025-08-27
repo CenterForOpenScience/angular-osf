@@ -1,10 +1,11 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, switchMap, tap, throwError } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { AuthorizedStorageAccountModel } from '@osf/shared/models';
+import { handleSectionError } from '@osf/shared/helpers';
+import { AuthorizedAccountModel } from '@osf/shared/models';
 import { AddonsService } from '@shared/services';
 
 import {
@@ -19,7 +20,7 @@ import {
   GetAddonsUserReference,
   GetAuthorizedCitationAddons,
   GetAuthorizedStorageAddons,
-  GetAuthorizedStorageOauthToken as GetAuthorizedtorageOauthToken,
+  GetAuthorizedStorageOauthToken,
   GetCitationAddons,
   GetConfiguredCitationAddons,
   GetConfiguredStorageAddons,
@@ -167,7 +168,7 @@ export class AddonsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'storageAddons', error))
+      catchError((error) => handleSectionError(ctx, 'storageAddons', error))
     );
   }
 
@@ -191,7 +192,7 @@ export class AddonsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'citationAddons', error))
+      catchError((error) => handleSectionError(ctx, 'citationAddons', error))
     );
   }
 
@@ -215,12 +216,12 @@ export class AddonsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'authorizedStorageAddons', error))
+      catchError((error) => handleSectionError(ctx, 'authorizedStorageAddons', error))
     );
   }
 
-  @Action(GetAuthorizedtorageOauthToken)
-  getAuthorizedStorageOauthToken(ctx: StateContext<AddonsStateModel>, action: GetAuthorizedtorageOauthToken) {
+  @Action(GetAuthorizedStorageOauthToken)
+  getAuthorizedStorageOauthToken(ctx: StateContext<AddonsStateModel>, action: GetAuthorizedStorageOauthToken) {
     const state = ctx.getState();
     ctx.patchState({
       authorizedStorageAddons: {
@@ -233,10 +234,10 @@ export class AddonsState {
       tap((addon) => {
         ctx.setState((state) => {
           const existing = state.authorizedStorageAddons.data.find(
-            (existingAddon: AuthorizedStorageAccountModel) => existingAddon.id === addon.id
+            (existingAddon: AuthorizedAccountModel) => existingAddon.id === addon.id
           );
           const updatedData = existing
-            ? state.authorizedStorageAddons.data.map((existingAddon: AuthorizedStorageAccountModel) =>
+            ? state.authorizedStorageAddons.data.map((existingAddon: AuthorizedAccountModel) =>
                 existingAddon.id === addon.id ? { ...existingAddon, ...addon } : existingAddon
               )
             : [...state.authorizedStorageAddons.data, addon];
@@ -252,7 +253,7 @@ export class AddonsState {
           };
         });
       }),
-      catchError((error) => this.handleError(ctx, 'authorizedStorageAddons', error))
+      catchError((error) => handleSectionError(ctx, 'authorizedStorageAddons', error))
     );
   }
 
@@ -276,7 +277,7 @@ export class AddonsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'authorizedCitationAddons', error))
+      catchError((error) => handleSectionError(ctx, 'authorizedCitationAddons', error))
     );
   }
 
@@ -316,7 +317,7 @@ export class AddonsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'configuredStorageAddons', error))
+      catchError((error) => handleSectionError(ctx, 'configuredStorageAddons', error))
     );
   }
 
@@ -340,7 +341,7 @@ export class AddonsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'configuredCitationAddons', error))
+      catchError((error) => handleSectionError(ctx, 'configuredCitationAddons', error))
     );
   }
 
@@ -373,7 +374,7 @@ export class AddonsState {
           );
         }
       }),
-      catchError((error) => this.handleError(ctx, 'createdUpdatedAuthorizedAddon', error))
+      catchError((error) => handleSectionError(ctx, 'createdUpdatedAuthorizedAddon', error))
     );
   }
 
@@ -406,7 +407,7 @@ export class AddonsState {
           );
         }
       }),
-      catchError((error) => this.handleError(ctx, 'createdUpdatedAuthorizedAddon', error))
+      catchError((error) => handleSectionError(ctx, 'createdUpdatedAuthorizedAddon', error))
     );
   }
 
@@ -431,7 +432,7 @@ export class AddonsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'createdUpdatedConfiguredAddon', error))
+      catchError((error) => handleSectionError(ctx, 'createdUpdatedConfiguredAddon', error))
     );
   }
 
@@ -455,7 +456,7 @@ export class AddonsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'addonsUserReference', error))
+      catchError((error) => handleSectionError(ctx, 'addonsUserReference', error))
     );
   }
 
@@ -494,7 +495,7 @@ export class AddonsState {
           );
         }
       }),
-      catchError((error) => this.handleError(ctx, 'createdUpdatedAuthorizedAddon', error))
+      catchError((error) => handleSectionError(ctx, 'createdUpdatedAuthorizedAddon', error))
     );
   }
 
@@ -518,7 +519,7 @@ export class AddonsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'addonsResourceReference', error))
+      catchError((error) => handleSectionError(ctx, 'addonsResourceReference', error))
     );
   }
 
@@ -543,7 +544,7 @@ export class AddonsState {
         }
         return [];
       }),
-      catchError((error) => this.handleError(ctx, stateKey, error))
+      catchError((error) => handleSectionError(ctx, stateKey, error))
     );
   }
 
@@ -574,7 +575,7 @@ export class AddonsState {
         }
         return [];
       }),
-      catchError((error) => this.handleError(ctx, 'createdUpdatedConfiguredAddon', error))
+      catchError((error) => handleSectionError(ctx, 'createdUpdatedConfiguredAddon', error))
     );
   }
 
@@ -610,7 +611,7 @@ export class AddonsState {
           });
         }
       }),
-      catchError((error) => this.handleError(ctx, 'operationInvocation', error))
+      catchError((error) => handleSectionError(ctx, 'operationInvocation', error))
     );
   }
 
@@ -649,34 +650,5 @@ export class AddonsState {
         error: null,
       },
     });
-  }
-
-  /**
-   * Handles errors by patching the specified section of the state with error information
-   * and marking loading/submitting flags as false.
-   *
-   * This method is used in catchError operators within NGXS actions to ensure consistent
-   * error handling across all async state models.
-   *
-   * @param ctx - The NGXS StateContext instance for the AddonsStateModel.
-   * @param section - The specific section of the AddonsStateModel to update (e.g., 'storageAddons').
-   * @param error - The error object caught during an observable operation.
-   * @returns An observable that rethrows the provided error.
-   *
-   * @example
-   * return this.addonsService.getAddons('storage').pipe(
-   *   catchError(error => this.handleError(ctx, 'storageAddons', error))
-   * );
-   */
-  private handleError(ctx: StateContext<AddonsStateModel>, section: keyof AddonsStateModel, error: Error) {
-    ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        isSubmitting: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
   }
 }
