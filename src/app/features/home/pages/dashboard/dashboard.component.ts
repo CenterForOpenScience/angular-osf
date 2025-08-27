@@ -20,7 +20,7 @@ import {
   IconComponent,
   LoadingSpinnerComponent,
   MyProjectsTableComponent,
-  SubHeaderComponent
+  SubHeaderComponent,
 } from '@osf/shared/components';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
@@ -32,7 +32,15 @@ import { ConfirmEmailComponent } from '../../components';
 
 @Component({
   selector: 'osf-dashboard',
-  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent, IconComponent, TranslatePipe, LoadingSpinnerComponent],
+  imports: [
+    RouterLink,
+    Button,
+    SubHeaderComponent,
+    MyProjectsTableComponent,
+    IconComponent,
+    TranslatePipe,
+    LoadingSpinnerComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   providers: [DialogService],
