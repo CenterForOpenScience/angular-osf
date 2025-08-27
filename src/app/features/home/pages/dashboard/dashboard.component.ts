@@ -16,7 +16,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import { AccountSettingsService } from '@osf/features/settings/account-settings/services';
-import { IconComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
+import {
+  IconComponent,
+  LoadingSpinnerComponent,
+  MyProjectsTableComponent,
+  SubHeaderComponent
+} from '@osf/shared/components';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
@@ -27,7 +32,7 @@ import { ConfirmEmailComponent } from '../../components';
 
 @Component({
   selector: 'osf-dashboard',
-  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent, IconComponent, TranslatePipe],
+  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent, IconComponent, TranslatePipe, LoadingSpinnerComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   providers: [DialogService],
@@ -56,10 +61,17 @@ export class DashboardComponent implements OnInit {
 
   protected readonly projects = select(MyResourcesSelectors.getProjects);
   protected readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
+  protected readonly isProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
+  protected readonly isInitialLoading = false;
+
 
   protected readonly filteredProjects = computed(() => {
     const search = this.searchControl.value?.toLowerCase() ?? '';
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
+  });
+
+  protected readonly existsProjects = computed(() => {
+    return this.projects().length;
   });
 
   dialogRef: DynamicDialogRef | null = null;
@@ -240,5 +252,9 @@ export class DashboardComponent implements OnInit {
       .onClose.subscribe(() => {
         this.isSubmitting.set(false);
       });
+  }
+
+  protected openInfoLink(): void {
+    window.open('https://help.osf.io/', '_blank');
   }
 }

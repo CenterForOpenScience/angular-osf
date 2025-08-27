@@ -240,7 +240,11 @@
     "loggedIn": {
       "dashboard": {
         "title": "Dashboard",
+        "welcome": "Welcome to OSF!",
         "createProject": "Create New Project",
+        "noCreatedProject": "You haven’t created a project yet. Click the \"Create New Project\" button above to get started.",
+        "watchVideoBelow": "Watch the short video below or visit the OSF Get Started help guides to learn more.",
+        "getStartedHelp": "Visit Get Started Help Guides",
         "quickSearch": {
           "goTo": "Go to",
           "myProjects": "My Projects",
