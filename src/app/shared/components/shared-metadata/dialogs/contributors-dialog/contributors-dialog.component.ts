@@ -1,4 +1,4 @@
-import { createDispatchMap } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -7,7 +7,7 @@ import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dy
 import { Skeleton } from 'primeng/skeleton';
 import { Tooltip } from 'primeng/tooltip';
 
-import { forkJoin } from 'rxjs';
+import { filter, forkJoin } from 'rxjs';
 
 import { TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
@@ -15,12 +15,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
 import { SearchInputComponent } from '@osf/shared/components';
-import { AddContributorDialogComponent } from '@osf/shared/components/contributors';
+import {
+  AddContributorDialogComponent,
+  AddUnregisteredContributorDialogComponent,
+} from '@osf/shared/components/contributors';
 import { AddContributorType, ResourceType } from '@osf/shared/enums';
 import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import {
   AddContributor,
+  ContributorsSelectors,
   DeleteContributor,
   UpdateBibliographyFilter,
   UpdatePermissionFilter,
@@ -35,7 +39,7 @@ import {
   providers: [DialogService],
 })
 export class ContributorsDialogComponent implements OnInit {
-  protected searchControl = new FormControl<string>('');
+  searchControl = new FormControl<string>('');
 
   readonly destroyRef = inject(DestroyRef);
   readonly translateService = inject(TranslateService);
@@ -43,11 +47,9 @@ export class ContributorsDialogComponent implements OnInit {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
   readonly dialogService = inject(DialogService);
-
-  protected contributors = signal<ContributorModel[]>([]);
-  protected isContributorsLoading = signal<boolean>(false);
-
-  protected actions = createDispatchMap({
+  isContributorsLoading = signal<boolean>(false);
+  contributors = select(ContributorsSelectors.getContributors);
+  actions = createDispatchMap({
     updateSearchValue: UpdateSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
     updateBibliographyFilter: UpdateBibliographyFilter,
@@ -63,7 +65,6 @@ export class ContributorsDialogComponent implements OnInit {
 
     this.resourceType = this.config.data?.resourceType;
 
-    this.contributors.set(this.config.data?.contributors || []);
     this.isContributorsLoading.set(this.config.data?.isLoading || false);
   }
 
@@ -90,16 +91,54 @@ export class ContributorsDialogComponent implements OnInit {
         modal: true,
         closable: true,
       })
-      .onClose.pipe(takeUntilDestroyed(this.destroyRef))
+      .onClose.pipe(
+        filter((res: ContributorDialogAddModel) => !!res),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe((res: ContributorDialogAddModel) => {
-        if (res?.type === AddContributorType.Registered) {
-          const addRequests = res.data.map((payload) =>
-            this.actions.addContributor(this.resourceId, this.resourceType, payload)
+        if (res.type === AddContributorType.Unregistered) {
+          this.openAddUnregisteredContributorDialog();
+        } else {
+          if (res?.type === AddContributorType.Registered) {
+            const addRequests = res.data.map((payload) =>
+              this.actions.addContributor(this.resourceId, this.resourceType, payload)
+            );
+
+            forkJoin(addRequests).subscribe(() => {
+              this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
+              this.dialogRef.close({ refresh: true });
+            });
+          }
+        }
+      });
+  }
+
+  openAddUnregisteredContributorDialog() {
+    this.dialogService
+      .open(AddUnregisteredContributorDialogComponent, {
+        width: '448px',
+        focusOnShow: false,
+        header: this.translateService.instant('project.contributors.addDialog.addUnregisteredContributor'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+      })
+      .onClose.pipe(
+        filter((res: ContributorDialogAddModel) => !!res),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((res: ContributorDialogAddModel) => {
+        if (res.type === AddContributorType.Registered) {
+          this.openAddContributorDialog();
+        } else {
+          const params = { name: res.data[0].fullName };
+          const successMessage = this.translateService.instant(
+            'project.contributors.toastMessages.addSuccessMessage',
+            params
           );
 
-          forkJoin(addRequests).subscribe(() => {
-            this.toastService.showSuccess('project.contributors.toastMessages.multipleAddSuccessMessage');
-            this.dialogRef.close({ refresh: true });
+          this.actions.addContributor(this.resourceId, this.resourceType, res.data[0]).subscribe({
+            next: () => this.toastService.showSuccess(successMessage, params),
           });
         }
       });

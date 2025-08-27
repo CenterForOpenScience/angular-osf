@@ -276,7 +276,6 @@ export class MetadataComponent implements OnInit {
       data: {
         resourceId: this.resourceId,
         resourceType: this.resourceType(),
-        contributors: this.contributors(),
         isLoading: this.isContributorsLoading(),
       },
     });
