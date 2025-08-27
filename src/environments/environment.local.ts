@@ -17,4 +17,5 @@ export const environment = {
   supportEmail: 'support@osf.io',
   defaultProvider: 'osf',
   dataciteTrackerRepoId: null,
+  dataciteTrackerAddress: 'https://analytics.datacite.org/api/metric',
 };

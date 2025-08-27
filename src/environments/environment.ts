@@ -75,6 +75,7 @@ export const environment = {
    */
   defaultProvider: 'osf',
   dataciteTrackerRepoId: null,
+  dataciteTrackerAddress: 'https://analytics.datacite.org/api/metric',
 
   /**
    * Google File Picker configuration values.

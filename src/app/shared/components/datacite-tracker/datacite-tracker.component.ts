@@ -1,26 +1,22 @@
-import { Component, effect, inject } from '@angular/core';
+import { filter, Observable, switchMap, take } from 'rxjs';
+
+import { inject, Injectable } from '@angular/core';
 
 import { DataciteService } from '@shared/services/datacite.service';
 
-@Component({
-  template: ``,
-})
+@Injectable()
 export abstract class DataciteTrackerComponent {
-  private isLogged = false;
   private dataciteService = inject(DataciteService);
 
-  protected constructor() {
-    this.setupDataciteViewTrackerEffect();
-  }
-  protected abstract getDoi(): string | null;
+  protected abstract getDoi(): Observable<string | null>;
 
   protected setupDataciteViewTrackerEffect() {
-    effect(() => {
-      const doi = this.getDoi();
-      if (doi && !this.isLogged) {
-        this.isLogged = true;
-        this.dataciteService.logView(doi);
-      }
-    });
+    this.getDoi()
+      .pipe(
+        take(1),
+        filter((doi): doi is string => !!doi),
+        switchMap((doi) => this.dataciteService.logView(doi))
+      )
+      .subscribe();
   }
 }

@@ -7,6 +7,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
+import { filter, map, Observable } from 'rxjs';
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -18,7 +20,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -150,6 +152,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   });
 
   protected currentProject = select(ProjectOverviewSelectors.getProject);
+  protected currentProject$ = toObservable(this.currentProject); // field initializer
   protected userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
   });
@@ -188,9 +191,13 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  protected override getDoi(): string | null {
-    return this.currentProject()?.identifiers?.find((item) => item.category == 'doi')?.value ?? null;
+  protected getDoi(): Observable<string | null> {
+    return this.currentProject$.pipe(
+      filter((project) => project != null),
+      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
+    );
   }
+
   constructor() {
     super();
     this.setupCollectionsEffects();
@@ -210,6 +217,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
+      this.setupDataciteViewTrackerEffect();
     }
   }
 

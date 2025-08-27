@@ -1,3 +1,5 @@
+import { EMPTY, Observable } from 'rxjs';
+
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
@@ -11,18 +13,17 @@ import { environment } from 'src/environments/environment';
 export class DataciteService {
   #http: HttpClient = inject(HttpClient);
 
-  logView(doi: string): void {
-    this.logActivity(DataciteEvent.VIEW, doi);
+  logView(doi: string): Observable<object> {
+    return this.logActivity(DataciteEvent.VIEW, doi);
   }
 
-  logDownload(doi: string): void {
-    this.logActivity(DataciteEvent.DOWNLOAD, doi);
+  logDownload(doi: string): Observable<object> {
+    return this.logActivity(DataciteEvent.DOWNLOAD, doi);
   }
 
-  private logActivity(event: DataciteEvent, doi: string): void {
-    console.log(`Logging ${event} for doi:${doi} to datacite tracker`);
+  private logActivity(event: DataciteEvent, doi: string): Observable<object> {
     if (!doi || !environment.dataciteTrackerRepoId) {
-      return;
+      return EMPTY;
     }
     const payload = {
       n: event,
@@ -33,6 +34,6 @@ export class DataciteService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    this.#http.post(`http://localhost:8000/api/metric`, payload, { headers }).subscribe();
+    return this.#http.post(environment.dataciteTrackerAddress, payload, { headers });
   }
 }
