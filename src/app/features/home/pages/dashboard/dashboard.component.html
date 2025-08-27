@@ -7,55 +7,146 @@
     (buttonClick)="createProject()"
   />
 
-  <div class="quick-search-container py-4 px-3 md:px-4">
-    <p class="text-center mb-4 xl:mb-6">
-      {{ 'home.loggedIn.dashboard.quickSearch.goTo' | translate }}
-      <a routerLink="/my-projects">
-        {{ 'home.loggedIn.dashboard.quickSearch.myProjects' | translate }}
-      </a>
-      {{ 'home.loggedIn.dashboard.quickSearch.toOrganize' | translate }}
-      <a routerLink="/search">
-        {{ 'home.loggedIn.dashboard.quickSearch.search' | translate }}
-      </a>
-      {{ 'home.loggedIn.dashboard.quickSearch.osf' | translate }}
-    </p>
 
-    <osf-my-projects-table
-      [items]="filteredProjects()"
-      [tableParams]="tableParams()"
-      [searchControl]="searchControl"
-      [sortColumn]="sortColumn()"
-      [sortOrder]="sortOrder()"
-      [isLoading]="isLoading()"
-      [searchPlaceholder]="'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate"
-      (pageChange)="onPageChange($event)"
-      (sort)="onSort($event)"
-      (itemClick)="navigateToProject($event)"
-    />
-  </div>
-
-  <div class="public-projects-container flex align-items-center flex-row pt-6 pb-4 px-3 md:px-4 xl:py-6">
-    <osf-icon class="mr-2" iconClass="fas fa-2xl fa-magnifying-glass"></osf-icon>
-    <h1>{{ 'home.loggedIn.publicProjects.title' | translate }}</h1>
-  </div>
-
-  <div
-    class="latest-research-container flex flex-column gap-4 py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between"
-  >
+  @if (filteredProjects().length) {
     <div>
-      <h1>{{ 'home.loggedIn.latestResearch.title' | translate }}</h1>
-      <p class="m-t-12">{{ 'home.loggedIn.latestResearch.subtitle' | translate }}</p>
+      <div class="quick-search-container py-4 px-3 md:px-4">
+        <p class="text-center mb-4 xl:mb-6">
+          {{ 'home.loggedIn.dashboard.quickSearch.goTo' | translate }}
+          <a routerLink="/my-projects">
+            {{ 'home.loggedIn.dashboard.quickSearch.myProjects' | translate }}
+          </a>
+          {{ 'home.loggedIn.dashboard.quickSearch.toOrganize' | translate }}
+          <a routerLink="/search">
+            {{ 'home.loggedIn.dashboard.quickSearch.search' | translate }}
+          </a>
+          {{ 'home.loggedIn.dashboard.quickSearch.osf' | translate }}
+        </p>
+
+        <osf-my-projects-table
+          [items]="filteredProjects()"
+          [tableParams]="tableParams()"
+          [searchControl]="searchControl"
+          [sortColumn]="sortColumn()"
+          [sortOrder]="sortOrder()"
+          [isLoading]="isLoading()"
+          [searchPlaceholder]="'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate"
+          (pageChange)="onPageChange($event)"
+          (sort)="onSort($event)"
+          (itemClick)="navigateToProject($event)"
+        />
+      </div>
+
+      <div class="public-projects-container flex align-items-center flex-row pt-6 pb-4 px-3 md:px-4 xl:py-6">
+        <osf-icon class="mr-2" iconClass="fas fa-2xl fa-magnifying-glass"></osf-icon>
+        <h1>{{ 'home.loggedIn.publicProjects.title' | translate }}</h1>
+      </div>
+
+      <div
+        class="latest-research-container flex flex-column gap-4 py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between"
+      >
+        <div>
+          <h1>{{ 'home.loggedIn.latestResearch.title' | translate }}</h1>
+          <p class="m-t-12">{{ 'home.loggedIn.latestResearch.subtitle' | translate }}</p>
+        </div>
+
+        <p-button routerLink="/preprints" [label]="'home.loggedIn.latestResearch.button' | translate" severity="success" />
+      </div>
+
+      <div class="hosting-container flex flex-column gap-4 py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between">
+        <div class="text-container">
+          <h1>{{ 'home.loggedIn.hosting.title' | translate }}</h1>
+          <p class="m-t-12">{{ 'home.loggedIn.hosting.subtitle' | translate }}</p>
+        </div>
+
+        <p-button routerLink="/meetings" [label]="'home.loggedIn.hosting.button' | translate" severity="success" />
+      </div>
+    </div>
+  } @else {
+    <div class="flex items-center justify-center min-h-screen">
+      <div class="text-center max-w-2xl px-6 w-100">
+        <p class="text-gray-600 mb-4">
+          You haven’t created a project yet. Click the
+          "Create New Project" button above to get started.
+        </p>
+
+        <p class="text-gray-600 mb-6">
+          Watch the short video below or visit the OSF Get Started help guides to learn more.
+        </p>
+
+        <!-- YouTube Video -->
+        <div class="mb-6 flex justify-center">
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/X07mBq2tnMg"
+            title="Introduction to OSF"
+            frameborder="0"
+            allowfullscreen
+            class="rounded-xl shadow-md"
+          ></iframe>
+        </div>
+
+        <a  href="https://help.osf.io/"  target="_blank">
+        <button class="p-ripple p-button p-component p-button-primary w-full w-20"  type="button">
+
+          <span class="p-button-label ng-star-inserted" data-pc-section="label">Visit Get Started Help Guides</span>
+        </button>
+        </a>
+
+      </div>
     </div>
 
-    <p-button routerLink="/preprints" [label]="'home.loggedIn.latestResearch.button' | translate" severity="success" />
-  </div>
+      <div class="flex col items-center" style="align-items: start;">
+      <a
+        href="https://www.cos.io/products/osf-collections"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test-products-collections
+      >
+        <img
+          src="assets/images/dashboard/products/osf-collections-c66e5d4408313e47ec3a7d0912d8b45d.png"
+          alt="OSF Collections"
+        >
+    </a>
 
-  <div class="hosting-container flex flex-column gap-4 py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between">
-    <div class="text-container">
-      <h1>{{ 'home.loggedIn.hosting.title' | translate }}</h1>
-      <p class="m-t-12">{{ 'home.loggedIn.hosting.subtitle' | translate }}</p>
-    </div>
+    <a
+      href="/registries"
+      target="_self"
+      rel="noopener noreferrer"
+      data-test-products-registries
+    >
+      <img
+        src="assets/images/dashboard/products/osf-registries-948f7d55ba7ca8585e25d020a26a7f59.png"
+        alt="OSF Registries"
+      >
+    </a>
 
-    <p-button routerLink="/meetings" [label]="'home.loggedIn.hosting.button' | translate" severity="success" />
-  </div>
+    <a
+      href="/institutions"
+      target="_self"
+      rel="noopener noreferrer"
+      data-test-products-institutions
+    >
+      <img
+        src="assets/images/dashboard/products/osf-institutions-3980d88f66513f667da557bfdc8401d5.png"
+        alt="OSF Institutions"
+      >
+    </a>
+
+    <a
+      href="/preprints"
+      target="_self"
+      rel="noopener noreferrer"
+      data-test-products-preprints
+    >
+      <img
+        src="assets/images/dashboard/products/osf-preprints-d4831812809138161920fe6f3ba277eb.png"
+        alt="OSF Preprints"
+      >
+    </a>
+</div>
+  }
+
+
 </section>

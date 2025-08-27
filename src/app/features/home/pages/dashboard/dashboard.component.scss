@@ -8,6 +8,19 @@
   max-width: 100%;
 }
 
+.w-100 {
+  width: 100% !important;
+}
+
+.w-20 {
+  width: 20% !important;
+}
+
+.justify-center {
+  display: flex;
+  justify-content: center;
+}
+
 .quick-search-container {
   background-color: var(--white);
 
@@ -26,4 +39,8 @@
 
 .hosting-container {
   background-color: var(--bg-blue-2);
+}
+
+.col {
+  flex-direction: column;
 }
