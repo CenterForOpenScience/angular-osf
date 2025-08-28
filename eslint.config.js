@@ -6,6 +6,8 @@ const pluginImport = require('eslint-plugin-import');
 const pluginSimpleImportSort = require('eslint-plugin-simple-import-sort');
 const pluginUnusedImports = require('eslint-plugin-unused-imports');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
+const angularEslintTemplate = require('@angular-eslint/eslint-plugin-template');
+const angularTemplateParser = require('@angular-eslint/template-parser');
 
 module.exports = tseslint.config(
   {
@@ -83,8 +85,29 @@ module.exports = tseslint.config(
   },
   {
     files: ['**/*.html'],
+    plugins: {
+      '@angular-eslint/template': angularEslintTemplate,
+    },
+    languageOptions: {
+      parser: angularTemplateParser,
+    },
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
-    rules: {},
+    rules: {
+      '@angular-eslint/template/banana-in-box': ['error'],
+      '@angular-eslint/template/eqeqeq': ['error'],
+      '@angular-eslint/template/no-negated-async': ['error'],
+      '@angular-eslint/template/alt-text': ['error'],
+      '@angular-eslint/template/click-events-have-key-events': ['error'],
+      '@angular-eslint/template/elements-content': ['error'],
+      '@angular-eslint/template/interactive-supports-focus': ['error'],
+      '@angular-eslint/template/label-has-associated-control': ['error'],
+      '@angular-eslint/template/mouse-events-have-key-events': ['error'],
+      '@angular-eslint/template/no-autofocus': ['error'],
+      '@angular-eslint/template/no-distracting-elements': ['error'],
+      '@angular-eslint/template/role-has-required-aria': ['error'],
+      '@angular-eslint/template/table-scope': ['error'],
+      '@angular-eslint/template/valid-aria': ['error'],
+    },
   },
   {
     files: ['**/*.spec.ts'],
