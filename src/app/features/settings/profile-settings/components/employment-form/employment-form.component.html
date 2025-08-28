@@ -9,7 +9,7 @@
         [label]="'common.buttons.remove' | translate"
         severity="danger"
         variant="text"
-        (click)="remove.emit()"
+        (onClick)="remove.emit()"
       />
     }
   </div>
@@ -33,11 +33,11 @@
       </div>
 
       <div class="w-full lg:w-6">
-        <label for="institution-{{ index() }}" class="mb-1">
-          {{ 'settings.profileSettings.employment.institution' | translate }}
-        </label>
-
-        <input pInputText [id]="'institution-' + index()" class="w-full" formControlName="institution" />
+        <osf-text-input
+          [control]="institutionControl"
+          [label]="'settings.profileSettings.employment.institution'"
+          [maxLength]="institutionMaxLength"
+        ></osf-text-input>
       </div>
     </div>
 
@@ -53,10 +53,17 @@
             formControlName="startDate"
             [dateFormat]="dateFormat"
             [iconDisplay]="'input'"
+            view="month"
             [showIcon]="true"
             [maxDate]="maxDate"
             [minDate]="minDate"
           ></p-datepicker>
+
+          @if (startDateRequiredError) {
+            <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+              {{ 'validation.required' | translate }}
+            </p-message>
+          }
         </div>
 
         @if (!group().controls['ongoing'].value) {
@@ -70,10 +77,17 @@
               formControlName="endDate"
               [dateFormat]="dateFormat"
               [iconDisplay]="'input'"
+              view="month"
               [showIcon]="true"
               [maxDate]="maxDate"
               [minDate]="minDate"
             ></p-datepicker>
+
+            @if (endDateRequiredError) {
+              <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+                {{ 'validation.required' | translate }}
+              </p-message>
+            }
           </div>
         }
       </div>
@@ -93,7 +107,7 @@
     </div>
 
     @if (isDateError) {
-      <p-message class="simple-variant flex" severity="error" variant="simple" size="small">
+      <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
         {{ 'settings.profileSettings.endDateError' | translate }}
       </p-message>
     }

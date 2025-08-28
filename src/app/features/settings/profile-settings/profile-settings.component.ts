@@ -36,11 +36,11 @@ import { ProfileSettingsTabOption } from './enums';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProfileSettingsComponent {
-  protected readonly isMedium = toSignal(inject(IS_MEDIUM));
-  protected readonly tabOptions = PROFILE_SETTINGS_TAB_OPTIONS;
-  protected readonly tabOption = ProfileSettingsTabOption;
+  readonly isMedium = toSignal(inject(IS_MEDIUM));
+  readonly tabOptions = PROFILE_SETTINGS_TAB_OPTIONS;
+  readonly tabOption = ProfileSettingsTabOption;
 
-  protected selectedTab = this.tabOption.Name;
+  selectedTab = this.tabOption.Name;
 
   onTabChange(index: number): void {
     this.selectedTab = index;
