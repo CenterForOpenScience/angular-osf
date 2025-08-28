@@ -72,6 +72,8 @@
     </section>
   }
 } @else {
+  <p-button (click)="toggleEditMode()" class="cursor-pointer text-blue-600 underline mb-3">toggle</p-button>
+
   <osf-cedar-template-form
     (editMode)="toggleEditMode()"
     (emitData)="createRecordMetadata($event)"

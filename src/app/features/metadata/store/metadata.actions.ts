@@ -2,8 +2,8 @@ import { ResourceType } from '@osf/shared/enums';
 import { LicenseOptions } from '@osf/shared/models';
 
 import {
-  CedarMetadataRecord,
   CedarMetadataRecordData,
+  CedarRecordDataBinding,
   CustomItemMetadataRecord,
   MetadataAttributesJsonApi,
 } from '../models';
@@ -62,32 +62,32 @@ export class GetCedarMetadataTemplates {
 
 export class GetCedarMetadataRecords {
   static readonly type = '[Metadata] Get Cedar Metadata Records';
-  constructor(public projectId: string) {}
+  constructor(
+    public resourceId: string,
+    public resourceType: ResourceType
+  ) {}
 }
 
 export class CreateCedarMetadataRecord {
   static readonly type = '[Metadata] Create Cedar Metadata Record';
-  constructor(public record: CedarMetadataRecord) {}
+  constructor(
+    public record: CedarRecordDataBinding,
+    public resourceId: string,
+    public resourceType: ResourceType
+  ) {}
 }
 
 export class UpdateCedarMetadataRecord {
   static readonly type = '[Metadata] Update Cedar Metadata Record';
   constructor(
-    public record: CedarMetadataRecord,
-    public recordId: string
+    public record: CedarRecordDataBinding,
+    public recordId: string,
+    public resourceId: string,
+    public resourceType: ResourceType
   ) {}
 }
 
 export class AddCedarMetadataRecordToState {
   static readonly type = '[Metadata] Add Cedar Metadata Record To State';
   constructor(public record: CedarMetadataRecordData) {}
-}
-
-export class GetUserInstitutions {
-  static readonly type = '[Metadata] Get User Institutions';
-  constructor(
-    public userId: string,
-    public page?: number,
-    public pageSize?: number
-  ) {}
 }

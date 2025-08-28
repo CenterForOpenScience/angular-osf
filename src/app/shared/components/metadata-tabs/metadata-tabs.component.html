@@ -16,7 +16,7 @@
           @if (tab.id === 'osf') {
             <ng-content></ng-content>
           } @else {
-            <div class="p-6">
+            <div class="p-3">
               @if (selectedCedarTemplate() && selectedCedarRecord()) {
                 <osf-cedar-template-form
                   [template]="selectedCedarTemplate()!"

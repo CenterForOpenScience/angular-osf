@@ -16,7 +16,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
@@ -49,16 +49,15 @@ import {
   UpdateResourceSubjects,
 } from '@osf/shared/stores';
 
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData, CedarRecordDataBinding } from './models';
 import {
-  CedarMetadataDataTemplateJsonApi,
-  CedarMetadataRecord,
-  CedarMetadataRecordData,
-  CedarRecordDataBinding,
-} from './models';
-import {
+  CreateCedarMetadataRecord,
+  GetCedarMetadataRecords,
+  GetCedarMetadataTemplates,
   GetCustomItemMetadata,
   GetResourceMetadata,
   MetadataSelectors,
+  UpdateCedarMetadataRecord,
   UpdateCustomItemMetadata,
   UpdateResourceDetails,
   UpdateResourceLicense,
@@ -131,11 +130,10 @@ export class MetadataComponent implements OnInit {
     updateResourceInstitutions: UpdateResourceInstitutions,
     fetchResourceInstitutions: FetchResourceInstitutions,
 
-    // getUserInstitutions: GetUserInstitutions,
-    // getCedarRecords: GetCedarMetadataRecords,
-    // getCedarTemplates: GetCedarMetadataTemplates,
-    // createCedarRecord: CreateCedarMetadataRecord,
-    // updateCedarRecord: UpdateCedarMetadataRecord,
+    getCedarRecords: GetCedarMetadataRecords,
+    getCedarTemplates: GetCedarMetadataTemplates,
+    createCedarRecord: CreateCedarMetadataRecord,
+    updateCedarRecord: UpdateCedarMetadataRecord,
 
     fetchSubjects: FetchSubjects,
     fetchSelectedSubjects: FetchSelectedSubjects,
@@ -214,13 +212,9 @@ export class MetadataComponent implements OnInit {
       this.actions.getCustomItemMetadata(this.resourceId);
       this.actions.getContributors(this.resourceId, this.resourceType());
       this.actions.fetchResourceInstitutions(this.resourceId, this.resourceType());
-      // this.actions.getCedarRecords(this.resourceId);
-      // this.actions.getCedarTemplates();
+      this.actions.getCedarRecords(this.resourceId, this.resourceType());
+      this.actions.getCedarTemplates();
       this.actions.fetchSelectedSubjects(this.resourceId, this.resourceType());
-      // const user = this.currentUser();
-      // if (user?.id) {
-      //   this.actions.getUserInstitutions(user.id);
-      // }
     }
   }
   onTabChange(tabId: string | number): void {
@@ -259,41 +253,17 @@ export class MetadataComponent implements OnInit {
 
     if (!this.resourceId || !selectedRecord) return;
 
-    const model = {
-      data: {
-        type: 'cedar_metadata_records' as const,
-        attributes: {
-          metadata: data.data,
-          is_published: false,
-        },
-        relationships: {
-          template: {
-            data: {
-              type: 'cedar-metadata-templates' as const,
-              id: data.id,
-            },
-          },
-          target: {
-            data: {
-              type: 'nodes' as const,
-              id: this.resourceId,
-            },
-          },
-        },
-      },
-    } as CedarMetadataRecord;
-
     if (selectedRecord.id) {
-      // this.actions
-      //   .updateCedarRecord(model, selectedRecord.id)
-      //   .pipe(takeUntilDestroyed(this.destroyRef))
-      //   .subscribe({
-      //     next: () => {
-      //       this.cedarFormReadonly.set(true);
-      //       this.toastService.showSuccess('CEDAR record updated successfully');
-      //       this.actions.getCedarRecords(projectId);
-      //     },
-      //   });
+      this.actions
+        .updateCedarRecord(data, selectedRecord.id, this.resourceId, this.resourceType())
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.cedarFormReadonly.set(true);
+            this.toastService.showSuccess('CEDAR record updated successfully');
+            this.actions.getCedarRecords(this.resourceId, this.resourceType());
+          },
+        });
     }
   }
 
@@ -302,7 +272,7 @@ export class MetadataComponent implements OnInit {
   }
 
   openAddRecord(): void {
-    this.router.navigate(['add'], { relativeTo: this.activeRoute });
+    this.router.navigate(['../add'], { relativeTo: this.activeRoute });
   }
 
   onTagsChanged(tags: string[]): void {
@@ -541,30 +511,31 @@ export class MetadataComponent implements OnInit {
   }
 
   private loadCedarRecord(recordId: string): void {
-    // const records = this.cedarRecords();
-    // const templates = this.cedarTemplates();
-    // if (!records) {
-    //   return;
-    // }
-    // const record = records.find((r) => r.id === recordId);
-    // if (!record) {
-    //   return;
-    // }
-    // this.selectedCedarRecord.set(record);
-    // this.cedarFormReadonly.set(true);
-    // const templateId = record.relationships?.template?.data?.id;
-    // if (templateId && templates?.data) {
-    //   const template = templates.data.find((t) => t.id === templateId);
-    //   if (template) {
-    //     this.selectedCedarTemplate.set(template);
-    //   } else {
-    //     this.selectedCedarTemplate.set(null);
-    //     this.actions.getCedarTemplates();
-    //   }
-    // } else {
-    //   this.selectedCedarTemplate.set(null);
-    //   this.actions.getCedarTemplates();
-    // }
+    const records = this.cedarRecords();
+    const templates = this.cedarTemplates();
+    if (!records) {
+      return;
+    }
+    const record = records.find((r) => r.id === recordId);
+    if (!record) {
+      return;
+    }
+    this.selectedCedarRecord.set(record);
+    this.cedarFormReadonly.set(true);
+    const templateId = record.relationships?.template?.data?.id;
+    console.log('templateId:', templateId);
+    if (templateId && templates?.data) {
+      const template = templates.data.find((t) => t.id === templateId);
+      if (template) {
+        this.selectedCedarTemplate.set(template);
+      } else {
+        this.selectedCedarTemplate.set(null);
+        this.actions.getCedarTemplates();
+      }
+    } else {
+      this.selectedCedarTemplate.set(null);
+      this.actions.getCedarTemplates();
+    }
   }
 
   private handleRouteBasedTabSelection(): void {

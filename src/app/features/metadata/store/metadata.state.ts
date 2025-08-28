@@ -178,7 +178,7 @@ export class MetadataState {
         error: null,
       },
     });
-    return this.metadataService.getMetadataCedarRecords(action.projectId).pipe(
+    return this.metadataService.getMetadataCedarRecords(action.resourceId, action.resourceType).pipe(
       tap((response: CedarMetadataRecordJsonApi) => {
         ctx.patchState({
           cedarRecords: {
@@ -193,7 +193,7 @@ export class MetadataState {
 
   @Action(CreateCedarMetadataRecord)
   createCedarMetadataRecord(ctx: StateContext<MetadataStateModel>, action: CreateCedarMetadataRecord) {
-    return this.metadataService.createMetadataCedarRecord(action.record).pipe(
+    return this.metadataService.createMetadataCedarRecord(action.record, action.resourceId, action.resourceType).pipe(
       tap((response: CedarMetadataRecord) => {
         ctx.dispatch(new AddCedarMetadataRecordToState(response.data));
       })
@@ -202,21 +202,23 @@ export class MetadataState {
 
   @Action(UpdateCedarMetadataRecord)
   updateCedarMetadataRecord(ctx: StateContext<MetadataStateModel>, action: UpdateCedarMetadataRecord) {
-    return this.metadataService.updateMetadataCedarRecord(action.record, action.recordId).pipe(
-      tap((response: CedarMetadataRecord) => {
-        const state = ctx.getState();
-        const updatedRecords = state.cedarRecords.data.map((record) =>
-          record.id === action.recordId ? response.data : record
-        );
-        ctx.patchState({
-          cedarRecords: {
-            data: updatedRecords,
-            isLoading: false,
-            error: null,
-          },
-        });
-      })
-    );
+    return this.metadataService
+      .updateMetadataCedarRecord(action.record, action.recordId, action.resourceId, action.resourceType)
+      .pipe(
+        tap((response: CedarMetadataRecord) => {
+          const state = ctx.getState();
+          const updatedRecords = state.cedarRecords.data.map((record) =>
+            record.id === action.recordId ? response.data : record
+          );
+          ctx.patchState({
+            cedarRecords: {
+              data: updatedRecords,
+              isLoading: false,
+              error: null,
+            },
+          });
+        })
+      );
   }
 
   @Action(AddCedarMetadataRecordToState)
@@ -297,47 +299,4 @@ export class MetadataState {
         catchError((error) => handleSectionError(ctx, 'metadata', error))
       );
   }
-
-  // @Action(GetUserInstitutions)
-  // getUserInstitutions(ctx: StateContext<MetadataStateModel>, action: GetUserInstitutions) {
-  //   ctx.patchState({
-  //     userInstitutions: {
-  //       data: [],
-  //       isLoading: true,
-  //       error: null,
-  //     },
-  //   });
-
-  //   return this.metadataService.getUserInstitutions(action.userId, action.page, action.pageSize).pipe(
-  //     tap({
-  //       next: (response) => {
-  //         ctx.patchState({
-  //           userInstitutions: {
-  //             data: response.data,
-  //             isLoading: false,
-  //             error: null,
-  //           },
-  //         });
-  //       },
-  //       error: (error) => {
-  //         ctx.patchState({
-  //           userInstitutions: {
-  //             ...ctx.getState().userInstitutions,
-  //             error: error.message,
-  //             isLoading: false,
-  //           },
-  //         });
-  //       },
-  //     }),
-  //     finalize(() =>
-  //       ctx.patchState({
-  //         userInstitutions: {
-  //           ...ctx.getState().userInstitutions,
-  //           error: null,
-  //           isLoading: false,
-  //         },
-  //       })
-  //     )
-  //   );
-  // }
 }

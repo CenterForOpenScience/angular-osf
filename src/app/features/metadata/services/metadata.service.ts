@@ -7,11 +7,12 @@ import { ResourceType } from '@osf/shared/enums';
 import { LicenseOptions } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
-import { MetadataMapper } from '../mappers';
+import { CedarRecordsMapper, MetadataMapper } from '../mappers';
 import {
   CedarMetadataRecord,
   CedarMetadataRecordJsonApi,
   CedarMetadataTemplateJsonApi,
+  CedarRecordDataBinding,
   CustomMetadataJsonApi,
   CustomMetadataJsonApiResponse,
   MetadataAttributesJsonApi,
@@ -63,36 +64,45 @@ export class MetadataService {
     );
   }
 
-  getMetadataCedarRecords(projectId: string): Observable<CedarMetadataRecordJsonApi> {
+  getMetadataCedarRecords(resourceId: string, resourceType: ResourceType): Observable<CedarMetadataRecordJsonApi> {
     const params: Record<string, unknown> = {
       embed: 'template',
       'page[size]': 20,
     };
 
     return this.jsonApiService.get<CedarMetadataRecordJsonApi>(
-      `${this.apiUrl}/nodes/${projectId}/cedar_metadata_records/`,
+      `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/cedar_metadata_records/`,
       params
     );
   }
 
-  createMetadataCedarRecord(data: CedarMetadataRecord): Observable<CedarMetadataRecord> {
-    return this.jsonApiService.post<CedarMetadataRecord>(`${environment.apiDomainUrl}/_/cedar_metadata_records/`, data);
+  createMetadataCedarRecord(
+    data: CedarRecordDataBinding,
+    resourceId: string,
+    resourceType: ResourceType
+  ): Observable<CedarMetadataRecord> {
+    const payload = CedarRecordsMapper.toCedarRecordsPayload(data, resourceId, this.urlMap.get(resourceType) as string);
+    return this.jsonApiService.post<CedarMetadataRecord>(
+      `${environment.apiDomainUrl}/_/cedar_metadata_records/`,
+      payload
+    );
   }
 
-  updateMetadataCedarRecord(data: CedarMetadataRecord, recordId: string): Observable<CedarMetadataRecord> {
+  updateMetadataCedarRecord(
+    data: CedarRecordDataBinding,
+    recordId: string,
+    resourceId: string,
+    resourceType: ResourceType
+  ): Observable<CedarMetadataRecord> {
+    const payload = CedarRecordsMapper.toCedarRecordsPayload(data, resourceId, this.urlMap.get(resourceType) as string);
+
     return this.jsonApiService.patch<CedarMetadataRecord>(
-      `https://api.staging4.osf.io/_/cedar_metadata_records/${recordId}/`,
-      data
+      `${environment.apiDomainUrl}/_/cedar_metadata_records/${recordId}/`,
+      payload
     );
   }
 
   getResourceMetadata(resourceId: string, resourceType: ResourceType): Observable<Partial<Metadata>> {
-    // const params: Record<string, unknown> = {
-    //   'embed[]': ['contributors', 'affiliated_institutions', 'identifiers', 'license', 'subjects_acceptable'],
-    //   'fields[institutions]': 'assets,description,name',
-    //   'fields[users]': 'family_name,full_name,given_name,middle_name',
-    //   'fields[subjects]': 'text,taxonomy',
-    // };
     const params = this.getMetadataParams(resourceType);
 
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/`;
@@ -157,17 +167,6 @@ export class MetadataService {
       .patch<MetadataJsonApi>(baseUrl, payload, params)
       .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response)));
   }
-
-  // getUserInstitutions(userId: string, page = 1, pageSize = 10): Observable<UserInstitutionsResponse> {
-  //   const params = {
-  //     page: page.toString(),
-  //     'page[size]': pageSize.toString(),
-  //   };
-
-  //   return this.jsonApiService.get<UserInstitutionsResponse>(`${this.apiUrl}/users/${userId}/institutions/`, {
-  //     params,
-  //   });
-  // }
 
   private getMetadataParams(resourceType: ResourceType): Record<string, unknown> {
     const params = {

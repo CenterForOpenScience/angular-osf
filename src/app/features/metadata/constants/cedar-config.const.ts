@@ -15,3 +15,13 @@ export const CEDAR_CONFIG = {
   strictValidation: false,
   autoInitializeFields: true,
 };
+
+export const CEDAR_VIEWER_CONFIG = {
+  showHeader: false,
+  showFooter: false,
+  expandedSampleTemplateLinks: false,
+  showSampleTemplateLinks: false,
+  defaultLanguage: 'en',
+  showTemplateData: false,
+  showInstanceData: false,
+};

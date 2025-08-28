@@ -189,6 +189,7 @@ export interface CedarMetadataRecord {
 export interface CedarRecordDataBinding {
   data: CedarMetadataAttributes;
   id: string;
+  isPublished: boolean;
 }
 
 export interface CedarMetadataRecordJsonApi {
@@ -221,7 +222,7 @@ export interface CedarMetadataRecordData {
     };
     target: {
       data: {
-        type: 'nodes' | 'registrations';
+        type: string;
         id: string;
       };
     };

@@ -5,20 +5,25 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, HostBinding, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  HostBinding,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  CedarMetadataDataTemplateJsonApi,
-  CedarMetadataRecord,
-  CedarMetadataRecordData,
-  CedarRecordDataBinding,
-} from '@osf/features/project/metadata/models';
+import { ResourceType } from '@osf/shared/enums';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
 import { CedarTemplateFormComponent } from '@shared/components/shared-metadata/components';
 import { ToastService } from '@shared/services';
 
+import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData, CedarRecordDataBinding } from '../../models';
 import {
   CreateCedarMetadataRecord,
   GetCedarMetadataRecords,
@@ -36,32 +41,35 @@ import {
 })
 export class AddMetadataComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
+  private readonly activeRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  private projectId = '';
-  protected isEditMode = true;
-  protected selectedTemplate: CedarMetadataDataTemplateJsonApi | null = null;
-  protected existingRecord: CedarMetadataRecordData | null = null;
+  private resourceId = '';
+  isEditMode = true;
+  selectedTemplate: CedarMetadataDataTemplateJsonApi | null = null;
+  existingRecord: CedarMetadataRecordData | null = null;
 
-  protected readonly cedarTemplates = select(MetadataSelectors.getCedarTemplates);
-  protected readonly cedarRecords = select(MetadataSelectors.getCedarRecords);
-  protected readonly cedarTemplatesLoading = select(MetadataSelectors.getCedarTemplatesLoading);
+  readonly cedarTemplates = select(MetadataSelectors.getCedarTemplates);
+  readonly cedarRecords = select(MetadataSelectors.getCedarRecords);
+  readonly cedarTemplatesLoading = select(MetadataSelectors.getCedarTemplatesLoading);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getCedarTemplates: GetCedarMetadataTemplates,
     getCedarRecords: GetCedarMetadataRecords,
     createCedarMetadataRecord: CreateCedarMetadataRecord,
     updateCedarMetadataRecord: UpdateCedarMetadataRecord,
   });
 
+  resourceType = signal<ResourceType>(this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project);
+
   constructor() {
     effect(() => {
       const records = this.cedarRecords();
       const cedarTemplatesData = this.cedarTemplates()?.data;
-      const recordId = this.activatedRoute.snapshot.params['record-id'];
+      const recordId = this.activatedRoute.snapshot.params['recordId'];
 
       if (!records || !cedarTemplatesData) {
         return;
@@ -71,7 +79,6 @@ export class AddMetadataComponent implements OnInit {
         const existingRecord = records.find((record) => {
           return record.id === recordId;
         });
-
         if (existingRecord) {
           const templateId = existingRecord.relationships.template.data.id;
           const matchingTemplate = cedarTemplatesData.find((template) => template.id === templateId);
@@ -91,14 +98,10 @@ export class AddMetadataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const urlSegments = this.activatedRoute.snapshot.pathFromRoot
-      .map((segment) => segment.url.map((url) => url.path))
-      .flat();
-    const projectIdIndex = urlSegments.findIndex((segment) => segment === 'project') + 1;
+    this.resourceId = this.activeRoute.parent?.parent?.snapshot.params['id'];
 
-    if (projectIdIndex > 0 && projectIdIndex < urlSegments.length) {
-      this.projectId = urlSegments[projectIdIndex];
-      this.actions.getCedarRecords(this.projectId);
+    if (this.resourceId) {
+      this.actions.getCedarRecords(this.resourceId, this.resourceType());
     }
 
     this.actions.getCedarTemplates();
@@ -150,35 +153,11 @@ export class AddMetadataComponent implements OnInit {
   }
 
   createRecordMetadata(data: CedarRecordDataBinding): void {
-    const model: CedarMetadataRecord = {
-      data: {
-        type: 'cedar_metadata_records',
-        attributes: {
-          metadata: data.data,
-          is_published: false,
-        },
-        relationships: {
-          template: {
-            data: {
-              type: 'cedar-metadata-templates',
-              id: data.id,
-            },
-          },
-          target: {
-            data: {
-              type: 'nodes',
-              id: this.projectId,
-            },
-          },
-        },
-      },
-    };
-
-    const recordId = this.activatedRoute.snapshot.params['record-id'];
+    const recordId = this.activatedRoute.snapshot.params['recordId'];
 
     if (recordId && this.existingRecord) {
       this.actions
-        .updateCedarMetadataRecord(model, recordId)
+        .updateCedarMetadataRecord(data, recordId, this.resourceId, this.resourceType())
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
@@ -188,7 +167,7 @@ export class AddMetadataComponent implements OnInit {
         });
     } else {
       this.actions
-        .createCedarMetadataRecord(model)
+        .createCedarMetadataRecord(data, this.resourceId, this.resourceType())
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
