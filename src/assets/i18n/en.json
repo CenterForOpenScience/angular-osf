@@ -1349,11 +1349,13 @@
       "confirmation": {
         "delete": {
           "title": "Delete App {{name}}?",
-          "message": "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed."
+          "message": "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed.",
+          "success": "Delete App successfully deleted."
         },
         "resetSecret": {
           "title": "Reset Client Secret?",
-          "message": "Resetting the client secret will render your application unusable until it is updated with the new client secret, and all users must reauthorize access. Previously issued access tokens will no longer work.<br><br>Are you sure you want to reset the client secret? This cannot be reversed."
+          "message": "Resetting the client secret will render your application unusable until it is updated with the new client secret, and all users must reauthorize access. Previously issued access tokens will no longer work.<br><br>Are you sure you want to reset the client secret? This cannot be reversed.",
+          "success": "Client secret successfully reset."
         }
       }
     },
