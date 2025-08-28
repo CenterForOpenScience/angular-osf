@@ -1,4 +1,5 @@
 import { ResourceTab } from '@shared/enums';
+import { StringOrNull } from '@shared/helpers';
 
 export class FetchInstitutionById {
   static readonly type = '[InstitutionsSearch] Fetch Institution By Id';
@@ -30,29 +31,28 @@ export class UpdateSortBy {
 
 export class LoadFilterOptions {
   static readonly type = '[InstitutionsSearch] Load Filter Options';
+
   constructor(public filterKey: string) {}
 }
 
 export class UpdateFilterValue {
   static readonly type = '[InstitutionsSearch] Update Filter Value';
+
   constructor(
     public filterKey: string,
-    public value: string | null
+    public value: StringOrNull
   ) {}
-}
-
-export class SetFilterValues {
-  static readonly type = '[InstitutionsSearch] Set Filter Values';
-  constructor(public filterValues: Record<string, string | null>) {}
 }
 
 export class LoadFilterOptionsAndSetValues {
   static readonly type = '[InstitutionsSearch] Load Filter Options And Set Values';
-  constructor(public filterValues: Record<string, string | null>) {}
+
+  constructor(public filterValues: Record<string, StringOrNull>) {}
 }
 
 export class LoadFilterOptionsWithSearch {
   static readonly type = '[InstitutionsSearch] Load Filter Options With Search';
+
   constructor(
     public filterKey: string,
     public searchText: string
@@ -61,10 +61,12 @@ export class LoadFilterOptionsWithSearch {
 
 export class ClearFilterSearchResults {
   static readonly type = '[InstitutionsSearch] Clear Filter Search Results';
+
   constructor(public filterKey: string) {}
 }
 
 export class LoadMoreFilterOptions {
   static readonly type = '[InstitutionsSearch] Load More Filter Options';
+
   constructor(public filterKey: string) {}
 }

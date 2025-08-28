@@ -2,14 +2,15 @@
   [searchControl]="searchControl"
   [provider]="provider()"
   [isProviderLoading]="isProviderLoading()"
-></osf-registry-provider-hero>
+/>
 
 <osf-search-results-container
   [resources]="resources()"
+  [areResourcesLoading]="areResourcesLoading()"
   [searchCount]="resourcesCount()"
-  [selectedSort]="selectedSort()"
+  [selectedSort]="sortBy()"
   [selectedTab]="resourceType()"
-  [selectedValues]="selectedValues()"
+  [selectedValues]="filterValues()"
   [first]="first()"
   [prev]="previous()"
   [next]="next()"
@@ -18,19 +19,17 @@
 >
   <div slot="filter-chips">
     <osf-filter-chips
-      [selectedValues]="selectedValues()"
-      [filterLabels]="filterLabels()"
-      [filterOptions]="filterOptions()"
+      [filterValues]="filterValues()"
+      [filters]="filters()"
       (filterRemoved)="onFilterChipRemoved($event)"
-      (allFiltersCleared)="onAllFiltersCleared()"
     />
   </div>
 
   <ng-template #filtersComponent>
     <osf-reusable-filters
       [filters]="filters()"
-      [selectedValues]="selectedValues()"
-      [isLoading]="isResourcesLoading()"
+      [selectedValues]="filterValues()"
+      [isLoading]="areResourcesLoading()"
       [showEmptyState]="true"
       (loadFilterOptions)="onLoadFilterOptions($event)"
       (filterValueChanged)="onFilterChanged($event)"
@@ -38,4 +37,4 @@
   </ng-template>
 </osf-search-results-container>
 
-<osf-search-help-tutorial [(currentStep)]="currentStep"></osf-search-help-tutorial>
+<osf-search-help-tutorial [(currentStep)]="currentStep" />

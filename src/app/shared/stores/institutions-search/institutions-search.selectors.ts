@@ -1,5 +1,6 @@
 import { Selector } from '@ngxs/store';
 
+import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter, Resource, SelectOption } from '@shared/models';
 
 import { InstitutionsSearchModel } from './institutions-search.model';
@@ -37,7 +38,7 @@ export class InstitutionsSearchSelectors {
   }
 
   @Selector([InstitutionsSearchState])
-  static getSearchText(state: InstitutionsSearchModel): string {
+  static getSearchText(state: InstitutionsSearchModel): StringOrNull {
     return state.searchText;
   }
 
@@ -72,7 +73,7 @@ export class InstitutionsSearchSelectors {
   }
 
   @Selector([InstitutionsSearchState])
-  static getFilterValues(state: InstitutionsSearchModel): Record<string, string | null> {
+  static getFilterValues(state: InstitutionsSearchModel): Record<string, StringOrNull> {
     return state.filterValues;
   }
 

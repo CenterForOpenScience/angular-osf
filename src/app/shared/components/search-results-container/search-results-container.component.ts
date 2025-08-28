@@ -1,7 +1,6 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 
@@ -18,6 +17,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { LoadingSpinnerComponent } from '@shared/components';
 import { searchSortingOptions } from '@shared/constants';
 import { ResourceTab } from '@shared/enums';
 import { Resource, TabOption } from '@shared/models';
@@ -30,7 +30,6 @@ import { SelectComponent } from '../select/select.component';
   imports: [
     FormsModule,
     Button,
-    DataView,
     Select,
     ResourceCardComponent,
     TranslatePipe,
@@ -39,6 +38,7 @@ import { SelectComponent } from '../select/select.component';
     Tab,
     TabList,
     Tabs,
+    LoadingSpinnerComponent,
   ],
   templateUrl: './search-results-container.component.html',
   styleUrl: './search-results-container.component.scss',
@@ -46,6 +46,7 @@ import { SelectComponent } from '../select/select.component';
 })
 export class SearchResultsContainerComponent {
   resources = input<Resource[]>([]);
+  areResourcesLoading = input<boolean>(false);
   searchCount = input<number>(0);
   selectedSort = input<string>('');
   selectedTab = input<number>(ResourceTab.All);

@@ -54,8 +54,7 @@ export class PreprintsDiscoverState implements NgxsOnInit {
             const filtersParams = addFiltersParams(filters as ProfileResourceFiltersStateModel);
             const searchText = state.searchText;
             const sortBy = state.sortBy;
-            const resourceTab = ResourceTab.Preprints;
-            const resourceTypes = getResourceTypes(resourceTab);
+            const resourceTypes = getResourceTypes(ResourceTab.Preprints);
             filtersParams['cardSearchFilter[publisher][]'] = state.providerIri;
 
             return this.searchService.getResources(filtersParams, searchText, sortBy, resourceTypes).pipe(

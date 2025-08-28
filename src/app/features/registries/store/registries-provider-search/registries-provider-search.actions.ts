@@ -26,25 +26,23 @@ export class FetchResourcesByLink {
 
 export class LoadFilterOptionsAndSetValues {
   static readonly type = `${stateName} Load Filter Options And Set Values`;
+
   constructor(public filterValues: Record<string, string | null>) {}
 }
 
 export class LoadFilterOptions {
   static readonly type = `${stateName} Load Filter Options`;
+
   constructor(public filterKey: string) {}
 }
 
 export class UpdateFilterValue {
   static readonly type = `${stateName} Update Filter Value`;
+
   constructor(
     public filterKey: string,
     public value: string | null
   ) {}
-}
-
-export class SetFilterValues {
-  static readonly type = `${stateName} Set Filter Values`;
-  constructor(public filterValues: Record<string, string | null>) {}
 }
 
 export class UpdateSortBy {

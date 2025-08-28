@@ -1,13 +1,13 @@
 import { StateContext } from '@ngxs/store';
 
-import { BehaviorSubject, catchError, EMPTY, forkJoin, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, forkJoin, of, tap } from 'rxjs';
 
 import { inject } from '@angular/core';
 
 import { ResourcesData } from '@osf/features/search/models';
-import { GetResourcesRequestTypeEnum } from '@osf/shared/enums';
 import { AsyncStateModel, DiscoverableFilter, SelectOption } from '@osf/shared/models';
 import { SearchService } from '@osf/shared/services';
+import { StringOrNull } from '@shared/helpers';
 
 export interface BaseSearchStateModel {
   resources: AsyncStateModel<unknown[]>;
@@ -17,7 +17,7 @@ export interface BaseSearchStateModel {
   filterSearchCache: Record<string, SelectOption[]>;
   filterPaginationCache: Record<string, string>;
   resourcesCount: number;
-  searchText: string;
+  searchText: StringOrNull;
   sortBy: string;
   first: string;
   next: string;
@@ -26,48 +26,6 @@ export interface BaseSearchStateModel {
 
 export abstract class BaseSearchState<T extends BaseSearchStateModel> {
   protected readonly searchService = inject(SearchService);
-
-  protected loadRequests = new BehaviorSubject<{ type: GetResourcesRequestTypeEnum; link?: string } | null>(null);
-  protected filterOptionsRequests = new BehaviorSubject<string | null>(null);
-
-  protected setupBaseRequests(ctx: StateContext<T>): void {
-    this.setupLoadRequests(ctx);
-    this.setupFilterOptionsRequests(ctx);
-  }
-
-  protected setupLoadRequests(ctx: StateContext<T>) {
-    this.loadRequests
-      .pipe(
-        switchMap((query) => {
-          if (!query) return EMPTY;
-          return query.type === GetResourcesRequestTypeEnum.GetResources
-            ? this.loadResources(ctx)
-            : this.loadResourcesByLink(ctx, query.link);
-        })
-      )
-      .subscribe();
-  }
-
-  protected setupFilterOptionsRequests(ctx: StateContext<T>) {
-    this.filterOptionsRequests
-      .pipe(
-        switchMap((filterKey) => {
-          if (!filterKey) return EMPTY;
-          return this.handleFilterOptionLoad(ctx, filterKey);
-        })
-      )
-      .subscribe();
-  }
-
-  protected abstract loadResources(ctx: StateContext<T>): Observable<ResourcesData>;
-  protected abstract buildFiltersParams(state: T): Record<string, string>;
-
-  protected loadResourcesByLink(ctx: StateContext<T>, link?: string) {
-    if (!link) return EMPTY;
-    return this.searchService
-      .getResourcesByLink(link)
-      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
-  }
 
   protected updateResourcesState(ctx: StateContext<T>, response: ResourcesData) {
     const state = ctx.getState();
@@ -86,7 +44,7 @@ export abstract class BaseSearchState<T extends BaseSearchStateModel> {
     } as Partial<T>);
   }
 
-  protected handleFilterOptionLoad(ctx: StateContext<T>, filterKey: string) {
+  protected handleLoadFilterOptions(ctx: StateContext<T>, filterKey: string) {
     const state = ctx.getState();
     const cachedOptions = state.filterOptionsCache[filterKey];
     if (cachedOptions?.length) {
@@ -124,10 +82,6 @@ export abstract class BaseSearchState<T extends BaseSearchStateModel> {
       }),
       catchError(() => of({ options: [], nextUrl: undefined }))
     );
-  }
-
-  protected handleLoadFilterOptions(_: StateContext<T>, filterKey: string) {
-    this.filterOptionsRequests.next(filterKey);
   }
 
   protected handleLoadFilterOptionsWithSearch(ctx: StateContext<T>, filterKey: string, searchText: string) {
@@ -211,7 +165,7 @@ export abstract class BaseSearchState<T extends BaseSearchStateModel> {
     );
   }
 
-  protected handleLoadFilterOptionsAndSetValues(ctx: StateContext<T>, filterValues: Record<string, string | null>) {
+  protected handleLoadFilterOptionsAndSetValues(ctx: StateContext<T>, filterValues: Record<string, StringOrNull>) {
     const filterKeys = Object.keys(filterValues).filter((key) => filterValues[key]);
     if (!filterKeys.length) return;
 
@@ -221,6 +175,7 @@ export abstract class BaseSearchState<T extends BaseSearchStateModel> {
         filterKeys.includes(f.key) && !ctx.getState().filterOptionsCache[f.key]?.length ? { ...f, isLoading: true } : f
       );
     ctx.patchState({ filters: loadingFilters } as Partial<T>);
+    ctx.patchState({ filterValues } as Partial<T>);
 
     const observables = filterKeys.map((key) =>
       this.searchService.getFilterOptions(key).pipe(
@@ -249,34 +204,23 @@ export abstract class BaseSearchState<T extends BaseSearchStateModel> {
       )
     );
 
-    return forkJoin(observables).pipe(tap(() => ctx.patchState({ filterValues } as Partial<T>)));
+    return forkJoin(observables);
   }
 
-  protected handleSetFilterValues(ctx: StateContext<T>, filterValues: Record<string, string | null>) {
-    ctx.patchState({ filterValues } as Partial<T>);
-  }
-
-  protected handleUpdateFilterValue(ctx: StateContext<T>, filterKey: string, value: string | null) {
+  protected handleUpdateFilterValue(ctx: StateContext<T>, filterKey: string, value: StringOrNull) {
     if (filterKey === 'search') {
-      ctx.patchState({ searchText: value || '' } as Partial<T>);
-      this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
+      ctx.patchState({ searchText: value } as Partial<T>);
       return;
     }
 
     const updatedFilterValues = { ...ctx.getState().filterValues, [filterKey]: value };
     ctx.patchState({ filterValues: updatedFilterValues } as Partial<T>);
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
   }
 
-  protected handleUpdateSortBy(ctx: StateContext<T>, sortBy: string) {
-    ctx.patchState({ sortBy } as Partial<T>);
-  }
-
-  protected handleFetchResources() {
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
-  }
-
-  protected handleFetchResourcesByLink(link: string) {
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResourcesByLink, link });
+  protected handleFetchResourcesByLink(ctx: StateContext<T>, link: string) {
+    if (!link) return EMPTY;
+    return this.searchService
+      .getResourcesByLink(link)
+      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
   }
 }

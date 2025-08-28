@@ -9,7 +9,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { LoadingSpinnerComponent } from '@shared/components';
 import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
-import { ReusableFilterType } from '@shared/enums';
 import { DiscoverableFilter, SelectOption } from '@shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
@@ -39,7 +38,7 @@ export class ReusableFilterComponent {
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
 
-  loadFilterOptions = output<{ filterType: string; filter: DiscoverableFilter }>();
+  loadFilterOptions = output<DiscoverableFilter>();
   filterValueChanged = output<{ filterType: string; value: string | null }>();
   filterSearchChanged = output<{ filterType: string; searchText: string; filter: DiscoverableFilter }>();
   loadMoreFilterOptions = output<{ filterType: string; filter: DiscoverableFilter }>();
@@ -127,10 +126,7 @@ export class ReusableFilterComponent {
       });
 
       if (!selectedFilter.options?.length) {
-        this.loadFilterOptions.emit({
-          filterType: key as ReusableFilterType,
-          filter: selectedFilter,
-        });
+        this.loadFilterOptions.emit(selectedFilter);
       }
     }
   }

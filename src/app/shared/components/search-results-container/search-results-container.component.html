@@ -95,11 +95,13 @@
         </div>
       </div>
 
-      <p-dataView [value]="resources()" class="flex-1 w-full" [rows]="10">
-        <ng-template #list let-items>
+      <div class="flex-1">
+        @if (areResourcesLoading()) {
+          <osf-loading-spinner />
+        } @else {
           <div class="flex flex-column gap-4">
-            @if (items.length > 0) {
-              @for (item of items; track item.id) {
+            @if (resources().length > 0) {
+              @for (item of resources(); track item.id) {
                 <osf-resource-card [item]="item" />
               }
 
@@ -126,10 +128,12 @@
                 >
                 </p-button>
               </div>
+            } @else {
+              <p class="m-auto">{{ 'common.search.noResultsFound' | translate }}</p>
             }
           </div>
-        </ng-template>
-      </p-dataView>
+        }
+      </div>
     </div>
   </div>
 </div>

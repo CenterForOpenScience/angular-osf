@@ -18,5 +18,4 @@ export const searchStateDefaults = {
   first: '',
   next: '',
   previous: '',
-  isMyProfile: false,
 };

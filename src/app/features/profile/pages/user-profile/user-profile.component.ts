@@ -3,8 +3,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { ResetSearchState } from '@osf/features/search/store';
-
 import { ProfileSearchComponent } from '../../components';
 import { ProfileInformationComponent } from '../../components/profile-information/profile-information.component';
 import { GetUserProfile, ProfileSelectors, SetIsMyProfile } from '../../store';
@@ -23,7 +21,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   isLoading = select(ProfileSelectors.getIsUserProfile);
 
   readonly actions = createDispatchMap({
-    resetSearchState: ResetSearchState,
     setIsMyProfile: SetIsMyProfile,
     getUserProfile: GetUserProfile,
   });
@@ -37,7 +34,6 @@ export class UserProfileComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.resetSearchState();
     this.actions.setIsMyProfile(false);
   }
 }

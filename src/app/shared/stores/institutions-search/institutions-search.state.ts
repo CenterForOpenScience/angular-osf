@@ -1,4 +1,4 @@
-import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { catchError, Observable, tap, throwError } from 'rxjs';
@@ -21,7 +21,6 @@ import {
   LoadFilterOptionsAndSetValues,
   LoadFilterOptionsWithSearch,
   LoadMoreFilterOptions,
-  SetFilterValues,
   UpdateFilterValue,
   UpdateResourceType,
   UpdateSortBy,
@@ -49,12 +48,8 @@ import { InstitutionsSearchModel } from './institutions-search.model';
   },
 })
 @Injectable()
-export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchModel> implements NgxsOnInit {
+export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchModel> {
   private readonly institutionsService = inject(InstitutionsService);
-
-  ngxsOnInit(ctx: StateContext<InstitutionsSearchModel>): void {
-    this.setupBaseRequests(ctx);
-  }
 
   protected loadResources(ctx: StateContext<InstitutionsSearchModel>): Observable<ResourcesData> {
     const state = ctx.getState();
@@ -71,11 +66,12 @@ export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchM
       .pipe(tap((response) => this.updateResourcesState(ctx, response)));
   }
 
-  protected buildFiltersParams(state: InstitutionsSearchModel): Record<string, string> {
+  private buildFiltersParams(state: InstitutionsSearchModel): Record<string, string> {
     const filtersParams: Record<string, string> = {};
 
     filtersParams['cardSearchFilter[affiliation][]'] = state.providerIri;
 
+    //TODO see search state
     Object.entries(state.filterValues).forEach(([key, value]) => {
       if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
     });
@@ -86,17 +82,17 @@ export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchM
   @Action(FetchResources)
   getResources(ctx: StateContext<InstitutionsSearchModel>) {
     if (!ctx.getState().providerIri) return;
-    this.handleFetchResources();
+    return this.loadResources(ctx);
   }
 
   @Action(FetchResourcesByLink)
-  getResourcesByLink(_: StateContext<InstitutionsSearchModel>, action: FetchResourcesByLink) {
-    this.handleFetchResourcesByLink(action.link);
+  getResourcesByLink(ctx: StateContext<InstitutionsSearchModel>, action: FetchResourcesByLink) {
+    return this.handleFetchResourcesByLink(ctx, action.link);
   }
 
   @Action(LoadFilterOptions)
   loadFilterOptions(ctx: StateContext<InstitutionsSearchModel>, action: LoadFilterOptions) {
-    this.handleLoadFilterOptions(ctx, action.filterKey);
+    return this.handleLoadFilterOptions(ctx, action.filterKey);
   }
 
   @Action(LoadFilterOptionsWithSearch)
@@ -119,11 +115,6 @@ export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchM
     return this.handleLoadFilterOptionsAndSetValues(ctx, action.filterValues);
   }
 
-  @Action(SetFilterValues)
-  setFilterValues(ctx: StateContext<InstitutionsSearchModel>, action: SetFilterValues) {
-    this.handleSetFilterValues(ctx, action.filterValues);
-  }
-
   @Action(UpdateFilterValue)
   updateFilterValue(ctx: StateContext<InstitutionsSearchModel>, action: UpdateFilterValue) {
     this.handleUpdateFilterValue(ctx, action.filterKey, action.value);
@@ -131,7 +122,7 @@ export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchM
 
   @Action(UpdateSortBy)
   updateSortBy(ctx: StateContext<InstitutionsSearchModel>, action: UpdateSortBy) {
-    this.handleUpdateSortBy(ctx, action.sortBy);
+    ctx.patchState({ sortBy: action.sortBy });
   }
 
   @Action(FetchInstitutionById)
@@ -146,7 +137,6 @@ export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchM
             providerIri: response.iris.join(','),
           })
         );
-        this.handleFetchResources();
       }),
       catchError((error) => {
         ctx.patchState({ institution: { ...ctx.getState().institution, isLoading: false, error } });

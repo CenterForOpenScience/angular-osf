@@ -4,7 +4,6 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/
 import { Router } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { ResetSearchState } from '@osf/features/search/store';
 
 import { ProfileSearchComponent } from '../../components';
 import { ProfileInformationComponent } from '../../components/profile-information/profile-information.component';
@@ -23,7 +22,6 @@ export class MyProfileComponent implements OnDestroy {
   currentUser = select(UserSelectors.getCurrentUser);
 
   readonly actions = createDispatchMap({
-    resetSearchState: ResetSearchState,
     setIsMyProfile: SetIsMyProfile,
   });
 
@@ -32,7 +30,6 @@ export class MyProfileComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.actions.resetSearchState();
     this.actions.setIsMyProfile(false);
   }
 }

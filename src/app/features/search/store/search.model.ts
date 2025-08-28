@@ -6,5 +6,4 @@ export interface SearchStateModel extends BaseSearchStateModel {
   resources: AsyncStateModel<Resource[]>;
   filterValues: Record<string, string | null>;
   resourceTab: ResourceTab;
-  isMyProfile: boolean;
 }

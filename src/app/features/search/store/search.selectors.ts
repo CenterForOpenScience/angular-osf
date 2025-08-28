@@ -2,6 +2,7 @@ import { Selector } from '@ngxs/store';
 
 import { ResourceTab } from '@osf/shared/enums';
 import { DiscoverableFilter, Resource, SelectOption } from '@osf/shared/models';
+import { StringOrNull } from '@shared/helpers';
 
 import { SearchStateModel } from './search.model';
 import { SearchState } from './search.state';
@@ -13,12 +14,17 @@ export class SearchSelectors {
   }
 
   @Selector([SearchState])
+  static getResourcesLoading(state: SearchStateModel): boolean {
+    return state.resources.isLoading;
+  }
+
+  @Selector([SearchState])
   static getResourcesCount(state: SearchStateModel): number {
     return state.resourcesCount;
   }
 
   @Selector([SearchState])
-  static getSearchText(state: SearchStateModel): string {
+  static getSearchText(state: SearchStateModel): StringOrNull {
     return state.searchText;
   }
 
@@ -45,11 +51,6 @@ export class SearchSelectors {
   @Selector([SearchState])
   static getPrevious(state: SearchStateModel): string {
     return state.previous;
-  }
-
-  @Selector([SearchState])
-  static getResourcesLoading(state: SearchStateModel): boolean {
-    return state.resources.isLoading;
   }
 
   @Selector([SearchState])

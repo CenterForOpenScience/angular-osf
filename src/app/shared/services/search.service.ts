@@ -5,6 +5,7 @@ import { inject, Injectable } from '@angular/core';
 import { MapResources } from '@osf/features/search/mappers';
 import { IndexCardSearch, ResourceItem, ResourcesData } from '@osf/features/search/models';
 import { JsonApiService } from '@osf/shared/services';
+import { StringOrNull } from '@shared/helpers';
 import {
   AppliedFilter,
   CombinedFilterMapper,
@@ -24,13 +25,13 @@ export class SearchService {
 
   getResources(
     filters: Record<string, string>,
-    searchText: string,
+    searchText: StringOrNull,
     sortBy: string,
     resourceType: string
   ): Observable<ResourcesData> {
     const params: Record<string, string> = {
       'cardSearchFilter[resourceType]': resourceType ?? '',
-      'cardSearchFilter[accessService]': environment.webUrl,
+      'cardSearchFilter[accessService]': `${environment.webUrl}/`,
       'cardSearchText[*,creator.name,isContainedBy.creator.name]': searchText ?? '',
       'page[size]': '10',
       sort: sortBy,

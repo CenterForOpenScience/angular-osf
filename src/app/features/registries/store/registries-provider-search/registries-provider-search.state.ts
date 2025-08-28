@@ -1,7 +1,7 @@
-import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { BehaviorSubject, catchError, EMPTY, forkJoin, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -12,7 +12,6 @@ import {
   GetRegistryProviderBrand,
   LoadFilterOptions,
   LoadFilterOptionsAndSetValues,
-  SetFilterValues,
   UpdateFilterValue,
   UpdateResourceType,
   UpdateSortBy,
@@ -20,7 +19,7 @@ import {
 import { RegistriesProviderSearchStateModel } from '@osf/features/registries/store/registries-provider-search/registries-provider-search.model';
 import { ResourcesData } from '@osf/features/search/models';
 import { getResourceTypes } from '@osf/shared/helpers';
-import { GetResourcesRequestTypeEnum, ResourceTab } from '@shared/enums';
+import { ResourceTab } from '@shared/enums';
 import { handleSectionError } from '@shared/helpers';
 import { SearchService } from '@shared/services';
 
@@ -47,56 +46,9 @@ import { SearchService } from '@shared/services';
   },
 })
 @Injectable()
-export class RegistriesProviderSearchState implements NgxsOnInit {
+export class RegistriesProviderSearchState {
   private readonly searchService = inject(SearchService);
   providersService = inject(ProvidersService);
-
-  private loadRequests = new BehaviorSubject<{ type: GetResourcesRequestTypeEnum; link?: string } | null>(null);
-  private filterOptionsRequests = new BehaviorSubject<string | null>(null);
-
-  ngxsOnInit(ctx: StateContext<RegistriesProviderSearchStateModel>): void {
-    this.setupLoadRequests(ctx);
-    this.setupFilterOptionsRequests(ctx);
-  }
-
-  private setupLoadRequests(ctx: StateContext<RegistriesProviderSearchStateModel>) {
-    this.loadRequests
-      .pipe(
-        switchMap((query) => {
-          if (!query) return EMPTY;
-          return query.type === GetResourcesRequestTypeEnum.GetResources
-            ? this.loadResources(ctx)
-            : this.loadResourcesByLink(ctx, query.link);
-        })
-      )
-      .subscribe();
-  }
-
-  private loadResources(ctx: StateContext<RegistriesProviderSearchStateModel>) {
-    const state = ctx.getState();
-    ctx.patchState({ resources: { ...state.resources, isLoading: true } });
-    const filtersParams: Record<string, string> = {};
-    const searchText = state.searchText;
-    const sortBy = state.sortBy;
-    const resourceTypes = getResourceTypes(ResourceTab.Registrations);
-
-    filtersParams['cardSearchFilter[publisher][]'] = state.providerIri;
-
-    Object.entries(state.filterValues).forEach(([key, value]) => {
-      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
-    });
-
-    return this.searchService
-      .getResources(filtersParams, searchText, sortBy, resourceTypes)
-      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
-  }
-
-  private loadResourcesByLink(ctx: StateContext<RegistriesProviderSearchStateModel>, link?: string) {
-    if (!link) return EMPTY;
-    return this.searchService
-      .getResourcesByLink(link)
-      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
-  }
 
   private updateResourcesState(ctx: StateContext<RegistriesProviderSearchStateModel>, response: ResourcesData) {
     const state = ctx.getState();
@@ -115,19 +67,41 @@ export class RegistriesProviderSearchState implements NgxsOnInit {
     });
   }
 
-  private setupFilterOptionsRequests(ctx: StateContext<RegistriesProviderSearchStateModel>) {
-    this.filterOptionsRequests
-      .pipe(
-        switchMap((filterKey) => {
-          if (!filterKey) return EMPTY;
-          return this.handleFilterOptionLoad(ctx, filterKey);
-        })
-      )
-      .subscribe();
+  @Action(FetchResources)
+  getResources(ctx: StateContext<RegistriesProviderSearchStateModel>) {
+    const state = ctx.getState();
+    if (!state.providerIri) return;
+
+    ctx.patchState({ resources: { ...state.resources, isLoading: true } });
+    const filtersParams: Record<string, string> = {};
+    const searchText = state.searchText;
+    const sortBy = state.sortBy;
+    const resourceTypes = getResourceTypes(ResourceTab.Registrations);
+
+    filtersParams['cardSearchFilter[publisher][]'] = state.providerIri;
+
+    Object.entries(state.filterValues).forEach(([key, value]) => {
+      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
+    });
+
+    return this.searchService
+      .getResources(filtersParams, searchText, sortBy, resourceTypes)
+      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
   }
 
-  private handleFilterOptionLoad(ctx: StateContext<RegistriesProviderSearchStateModel>, filterKey: string) {
+  @Action(FetchResourcesByLink)
+  getResourcesByLink(ctx: StateContext<RegistriesProviderSearchStateModel>, action: FetchResourcesByLink) {
+    if (!action.link) return EMPTY;
+    return this.searchService
+      .getResourcesByLink(action.link)
+      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
+  }
+
+  @Action(LoadFilterOptions)
+  loadFilterOptions(ctx: StateContext<RegistriesProviderSearchStateModel>, action: LoadFilterOptions) {
     const state = ctx.getState();
+    const filterKey = action.filterKey;
+
     const cachedOptions = state.filterOptionsCache[filterKey];
     if (cachedOptions?.length) {
       const updatedFilters = state.filters.map((f) =>
@@ -150,22 +124,6 @@ export class RegistriesProviderSearchState implements NgxsOnInit {
         ctx.patchState({ filters: updatedFilters, filterOptionsCache: updatedCache });
       })
     );
-  }
-
-  @Action(FetchResources)
-  getResources(ctx: StateContext<RegistriesProviderSearchStateModel>) {
-    if (!ctx.getState().providerIri) return;
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
-  }
-
-  @Action(FetchResourcesByLink)
-  getResourcesByLink(_: StateContext<RegistriesProviderSearchStateModel>, action: FetchResourcesByLink) {
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResourcesByLink, link: action.link });
-  }
-
-  @Action(LoadFilterOptions)
-  loadFilterOptions(_: StateContext<RegistriesProviderSearchStateModel>, action: LoadFilterOptions) {
-    this.filterOptionsRequests.next(action.filterKey);
   }
 
   @Action(UpdateResourceType)
@@ -204,22 +162,15 @@ export class RegistriesProviderSearchState implements NgxsOnInit {
     return forkJoin(observables).pipe(tap(() => ctx.patchState({ filterValues: action.filterValues })));
   }
 
-  @Action(SetFilterValues)
-  setFilterValues(ctx: StateContext<RegistriesProviderSearchStateModel>, action: SetFilterValues) {
-    ctx.patchState({ filterValues: action.filterValues });
-  }
-
   @Action(UpdateFilterValue)
   updateFilterValue(ctx: StateContext<RegistriesProviderSearchStateModel>, action: UpdateFilterValue) {
     if (action.filterKey === 'search') {
       ctx.patchState({ searchText: action.value || '' });
-      this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
       return;
     }
 
     const updatedFilterValues = { ...ctx.getState().filterValues, [action.filterKey]: action.value };
     ctx.patchState({ filterValues: updatedFilterValues });
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
   }
 
   @Action(GetRegistryProviderBrand)
@@ -244,7 +195,6 @@ export class RegistriesProviderSearchState implements NgxsOnInit {
             providerIri: brand.iri,
           })
         );
-        this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
       }),
       catchError((error) => handleSectionError(ctx, 'currentBrandedProvider', error))
     );
