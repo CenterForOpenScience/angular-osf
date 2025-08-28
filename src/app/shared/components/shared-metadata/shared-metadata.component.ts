@@ -6,7 +6,8 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { CustomItemMetadataRecord, Metadata } from '@osf/features/metadata/models';
-import { SubjectModel } from '@osf/shared/models';
+import { ResourceType } from '@osf/shared/enums';
+import { Institution, SubjectModel } from '@osf/shared/models';
 
 import { TagsInputComponent } from '../tags-input/tags-input.component';
 
@@ -45,8 +46,11 @@ export class SharedMetadataComponent {
   customItemMetadata = input.required<CustomItemMetadataRecord | null>();
   selectedSubjects = input.required<SubjectModel[]>();
   isSubjectsUpdating = input.required<boolean>();
-  hideEditDoiAndLicence = input<boolean>(false);
+  hideEditDoi = input<boolean>(false);
+  hideEditLicence = input<boolean>(false);
+  resourceType = input<ResourceType>(ResourceType.Project);
   readonly = input<boolean>(false);
+  affiliatedInstitutions = input<Institution[]>([]);
 
   openEditContributorDialog = output<void>();
   openEditDescriptionDialog = output<void>();

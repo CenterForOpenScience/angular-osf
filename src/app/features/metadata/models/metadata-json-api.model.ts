@@ -18,7 +18,7 @@ export interface MetadataAttributesJsonApi {
   tags: string[];
   date_created: string;
   date_modified: string;
-  publication_doi?: string;
+  article_doi?: string;
   doi?: boolean;
   category?: string;
   node_license?: LicenseRecordJsonApi;

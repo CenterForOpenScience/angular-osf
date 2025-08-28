@@ -889,9 +889,9 @@
       "doi": {
         "created": "DOI created successfully",
         "dialog": {
-          "header": "Edit DOI",
-          "label": "DOI",
-          "placeholder": "Enter DOI",
+          "header": "Edit publication DOI",
+          "label": "https://doi.org/",
+          "placeholder": "10.xxxx/xxxxx",
           "createConfirm": {
             "header": "Create DOI",
             "message": "Are you sure you want to create a DOI for this project? A DOI is persistent and will always resolve this page."

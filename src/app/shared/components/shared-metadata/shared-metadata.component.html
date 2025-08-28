@@ -51,21 +51,23 @@
     <osf-metadata-affiliated-institutions
       [readonly]="readonly()"
       (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog.emit()"
-      [affiliatedInstitutions]="metadata()?.affiliatedInstitutions || []"
+      [affiliatedInstitutions]="affiliatedInstitutions()"
     />
   </div>
 
   <div class="col-12 lg:col-6 flex flex-column gap-4">
     <osf-metadata-license
       (openEditLicenseDialog)="openEditLicenseDialog.emit()"
-      [hideEditLicense]="hideEditDoiAndLicence() || readonly()"
+      [hideEditLicense]="hideEditLicence() || readonly()"
       [license]="metadata()?.license!"
     />
 
     <osf-metadata-publication-doi
       (openEditPublicationDoiDialog)="handleEditDoi.emit()"
-      [hideEditDoi]="hideEditDoiAndLicence() || readonly()"
+      [hideEditDoi]="hideEditDoi() || readonly()"
       [identifiers]="metadata()?.identifiers!"
+      [publicationDoi]="metadata()?.publicationDoi || null"
+      [resourceType]="resourceType()"
     />
 
     <p-card>

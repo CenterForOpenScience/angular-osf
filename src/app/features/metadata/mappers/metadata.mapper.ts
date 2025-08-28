@@ -1,10 +1,9 @@
-import { ContributorsMapper, InstitutionsMapper, LicensesMapper } from '@osf/shared/mappers';
+import { ContributorsMapper, LicensesMapper } from '@osf/shared/mappers';
 
 import { CustomItemMetadataRecord, CustomMetadataJsonApi, Metadata, MetadataJsonApi } from '../models';
 
 export class MetadataMapper {
   static fromMetadataApiResponse(response: MetadataJsonApi): Metadata {
-    console.log('MetadataMapper data', response);
     return {
       id: response.id,
       title: response.attributes.title,
@@ -12,22 +11,22 @@ export class MetadataMapper {
       tags: response.attributes.tags,
       dateCreated: response.attributes.date_created,
       dateModified: response.attributes.date_modified,
-      contributors: ContributorsMapper.fromResponse(response.embeds.bibliographic_contributors.data),
-      license: LicensesMapper.fromLicenseDataJsonApi(response.embeds.license?.data),
+      publicationDoi: response.attributes.article_doi,
+      contributors: ContributorsMapper.fromResponse(response.embeds?.bibliographic_contributors?.data),
+      license: LicensesMapper.fromLicenseDataJsonApi(response.embeds?.license?.data),
       nodeLicense: response.attributes.node_license
         ? {
             copyrightHolders: response.attributes.node_license.copyright_holders || [],
             year: response.attributes.node_license.year || '',
           }
         : undefined,
-      identifiers: response.embeds.identifiers.data.map((identifier) => ({
+      identifiers: response.embeds?.identifiers?.data.map((identifier) => ({
         id: identifier.id,
         type: identifier.type,
         category: identifier.attributes.category,
         value: identifier.attributes.value,
       })),
-      affiliatedInstitutions: InstitutionsMapper.fromInstitutionsResponse(response.embeds.affiliated_institutions),
-      provider: response.embeds.provider?.data.id,
+      provider: response.embeds?.provider?.data.id,
     };
   }
 

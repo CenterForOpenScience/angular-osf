@@ -6,7 +6,7 @@
     [title]="'project.overview.metadata.title' | translate"
   />
   <osf-metadata-tabs
-    [loading]="isLoading() || isSubmitting()"
+    [loading]="isLoading()"
     [tabs]="tabs()"
     [selectedTab]="selectedTab()"
     [selectedCedarTemplate]="selectedCedarTemplate()!"
@@ -18,9 +18,12 @@
     (cedarFormEdit)="onCedarFormEdit()"
   >
     <osf-shared-metadata
+      [hideEditDoi]="hideEditDoi()"
       [selectedSubjects]="selectedSubjects()"
       [isSubjectsUpdating]="isSubjectsUpdating()"
       [metadata]="metadata()"
+      [affiliatedInstitutions]="affiliatedInstitutions()"
+      [resourceType]="resourceType()"
       [customItemMetadata]="customItemMetadata()!"
       (openEditContributorDialog)="openEditContributorDialog()"
       (openEditDescriptionDialog)="openEditDescriptionDialog()"

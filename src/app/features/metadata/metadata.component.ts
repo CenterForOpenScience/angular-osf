@@ -6,16 +6,27 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { EMPTY, filter, switchMap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
 import { CedarTemplateFormComponent } from '@osf/shared/components/shared-metadata/components';
 import {
+  AffiliatedInstitutionsDialogComponent,
   ContributorsDialogComponent,
   DescriptionDialogComponent,
   FundingDialogComponent,
   LicenseDialogComponent,
+  PublicationDoiDialogComponent,
   ResourceInformationDialogComponent,
 } from '@osf/shared/components/shared-metadata/dialogs';
 import { SharedMetadataComponent } from '@osf/shared/components/shared-metadata/shared-metadata.component';
@@ -25,10 +36,13 @@ import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   ContributorsSelectors,
   FetchChildrenSubjects,
+  FetchResourceInstitutions,
   FetchSelectedSubjects,
   FetchSubjects,
   GetAllContributors,
+  InstitutionsSelectors,
   SubjectsSelectors,
+  UpdateResourceInstitutions,
   UpdateResourceSubjects,
 } from '@osf/shared/stores';
 
@@ -82,7 +96,7 @@ export class MetadataComponent implements OnInit {
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
   cedarFormReadonly = signal<boolean>(true);
   metadata = select(MetadataSelectors.getResourceMetadata);
-  isLoading = select(MetadataSelectors.getLoading);
+  isMetadataLoading = select(MetadataSelectors.getLoading);
   customItemMetadata = select(MetadataSelectors.getCustomItemMetadata);
   contributors = select(ContributorsSelectors.getContributors);
   isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
@@ -92,6 +106,9 @@ export class MetadataComponent implements OnInit {
   isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
   resourceType = signal<ResourceType>(this.activeRoute.parent?.snapshot.data['resourceType'] || ResourceType.Project);
   isSubmitting = select(MetadataSelectors.getSubmitting);
+  affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
+  areInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
+  areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
 
   provider = environment.defaultProvider;
 
@@ -102,6 +119,9 @@ export class MetadataComponent implements OnInit {
     getCustomItemMetadata: GetCustomItemMetadata,
     updateCustomItemMetadata: UpdateCustomItemMetadata,
     getContributors: GetAllContributors,
+    updateResourceInstitutions: UpdateResourceInstitutions,
+    fetchResourceInstitutions: FetchResourceInstitutions,
+
     // getUserInstitutions: GetUserInstitutions,
     // getCedarRecords: GetCedarMetadataRecords,
     // getCedarTemplates: GetCedarMetadataTemplates,
@@ -112,6 +132,20 @@ export class MetadataComponent implements OnInit {
     fetchSelectedSubjects: FetchSelectedSubjects,
     fetchChildrenSubjects: FetchChildrenSubjects,
     updateResourceSubjects: UpdateResourceSubjects,
+  });
+
+  isLoading = computed(() => {
+    return (
+      this.isMetadataLoading() ||
+      this.isContributorsLoading() ||
+      this.areInstitutionsLoading() ||
+      this.isSubmitting() ||
+      this.areResourceInstitutionsSubmitting()
+    );
+  });
+
+  hideEditDoi = computed(() => {
+    return !!(this.metadata()?.identifiers?.length && this.resourceType() === ResourceType.Project);
   });
 
   constructor() {
@@ -170,6 +204,7 @@ export class MetadataComponent implements OnInit {
       this.actions.getResourceMetadata(this.resourceId, this.resourceType());
       this.actions.getCustomItemMetadata(this.resourceId);
       this.actions.getContributors(this.resourceId, this.resourceType());
+      this.actions.fetchResourceInstitutions(this.resourceId, this.resourceType());
       // this.actions.getCedarRecords(this.resourceId);
       // this.actions.getCedarTemplates();
       this.actions.fetchSelectedSubjects(this.resourceId, this.resourceType());
@@ -405,33 +440,24 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditAffiliatedInstitutionsDialog(): void {
-    // const dialogRef = this.dialogService.open(AffiliatedInstitutionsDialogComponent, {
-    //   header: this.translateService.instant('project.metadata.affiliatedInstitutions.dialog.header'),
-    //   width: '500px',
-    //   focusOnShow: false,
-    //   closeOnEscape: true,
-    //   modal: true,
-    //   closable: true,
-    //   data: {
-    //     currentProject: this.currentProject(),
-    //   },
-    // });
-    // dialogRef.onClose
-    //   .pipe(
-    //     filter((result) => !!result),
-    //     switchMap((result) => {
-    //       const projectId = this.currentProject()?.id;
-    //       if (projectId) {
-    //         return this.actions.updateProjectDetails(projectId, {
-    //           institutions: result,
-    //         });
-    //       }
-    //       return EMPTY;
-    //     })
-    //   )
-    //   .subscribe({
-    //     next: () => this.toastService.showSuccess('project.metadata.affiliatedInstitutions.updated'),
-    //   });
+    const dialogRef = this.dialogService.open(AffiliatedInstitutionsDialogComponent, {
+      header: this.translateService.instant('project.metadata.affiliatedInstitutions.dialog.header'),
+      width: '500px',
+      focusOnShow: false,
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+    });
+    dialogRef.onClose
+      .pipe(
+        filter((result) => !!result),
+        switchMap((institutions) => {
+          return this.actions.updateResourceInstitutions(this.resourceId, this.resourceType(), institutions);
+        })
+      )
+      .subscribe({
+        next: () => this.toastService.showSuccess('project.metadata.affiliatedInstitutions.updated'),
+      });
   }
 
   getSubjectChildren(parentId: string) {
@@ -447,17 +473,48 @@ export class MetadataComponent implements OnInit {
   }
 
   handleEditDoi(): void {
-    this.customConfirmationService.confirmDelete({
-      headerKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.header'),
-      messageKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.message'),
-      acceptLabelKey: this.translateService.instant('common.buttons.create'),
-      acceptLabelType: 'primary',
-      onConfirm: () => {
-        this.actions.updateMetadata(this.resourceId, this.resourceType(), { doi: true }).subscribe({
-          next: () => this.toastService.showSuccess('project.metadata.doi.created'),
-        });
+    if (this.resourceType() === ResourceType.Project) {
+      this.customConfirmationService.confirmDelete({
+        headerKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.header'),
+        messageKey: this.translateService.instant('project.metadata.doi.dialog.createConfirm.message'),
+        acceptLabelKey: this.translateService.instant('common.buttons.create'),
+        acceptLabelType: 'primary',
+        onConfirm: () => {
+          this.actions.updateMetadata(this.resourceId, this.resourceType(), { doi: true }).subscribe({
+            next: () => this.toastService.showSuccess('project.metadata.doi.created'),
+          });
+        },
+      });
+    } else {
+      this.openEditPublicationDoi();
+    }
+  }
+
+  private openEditPublicationDoi() {
+    console.log('Opening edit publication DOI dialog', this.metadata()?.publicationDoi);
+    const dialogRef = this.dialogService.open(PublicationDoiDialogComponent, {
+      header: this.translateService.instant('project.metadata.doi.dialog.header'),
+      width: '600px',
+      focusOnShow: false,
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: {
+        publicationDoi: this.metadata()?.publicationDoi,
       },
     });
+    dialogRef.onClose
+      .pipe(
+        filter((result) => !!result),
+        switchMap((result) => {
+          return this.actions.updateMetadata(this.resourceId, this.resourceType(), { article_doi: result });
+        })
+      )
+      .subscribe({
+        next: () => {
+          this.toastService.showSuccess('project.metadata.description.updated');
+        },
+      });
   }
 
   private loadCedarRecord(recordId: string): void {
