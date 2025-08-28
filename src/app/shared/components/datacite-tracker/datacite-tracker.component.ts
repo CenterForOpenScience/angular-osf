@@ -2,7 +2,7 @@ import { filter, Observable, switchMap, take } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { DataciteService } from '@shared/services/datacite.service';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 @Injectable()
 export abstract class DataciteTrackerComponent {
