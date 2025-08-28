@@ -26,7 +26,8 @@ module.exports = tseslint.config(
       'unused-imports': pluginUnusedImports,
     },
     rules: {
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+
       '@angular-eslint/directive-selector': [
         'error',
         {
@@ -44,10 +45,10 @@ module.exports = tseslint.config(
         },
       ],
       'import/first': 'error',
-      'import/no-duplicates': 'warn',
-      'import/newline-after-import': 'warn',
+      'import/no-duplicates': 'error',
+      'import/newline-after-import': 'error',
       'simple-import-sort/imports': [
-        'warn',
+        'error',
         {
           groups: [
             // NGXS packages
@@ -79,8 +80,8 @@ module.exports = tseslint.config(
           ],
         },
       ],
-      'simple-import-sort/exports': 'warn',
-      'unused-imports/no-unused-imports': 'warn',
+      'simple-import-sort/exports': 'error',
+      'unused-imports/no-unused-imports': 'error',
     },
   },
   {
