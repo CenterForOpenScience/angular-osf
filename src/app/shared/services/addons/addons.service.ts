@@ -9,7 +9,7 @@ import { AddonMapper } from '@shared/mappers';
 import {
   AddonGetResponseJsonApi,
   AddonModel,
-  AuthorizedAddon,
+  AuthorizedAccountModel,
   AuthorizedAddonGetResponseJsonApi,
   AuthorizedAddonRequestJsonApi,
   AuthorizedAddonResponseJsonApi,
@@ -102,7 +102,7 @@ export class AddonsService {
       .pipe(map((response) => response.data));
   }
 
-  getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAddon[]> {
+  getAuthorizedStorageAddons(addonType: string, referenceId: string): Observable<AuthorizedAccountModel[]> {
     const params = {
       [`fields[external-${addonType}-services]`]: 'external_service_name',
     };
@@ -113,6 +113,21 @@ export class AddonsService {
       .pipe(
         map((response) => {
           return response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included));
+        })
+      );
+  }
+
+  getAuthorizedStorageOauthToken(accountId: string): Observable<AuthorizedAccountModel> {
+    return this.jsonApiService
+      .patch<AuthorizedAddonGetResponseJsonApi>(
+        `${environment.addonsApiUrl}/authorized-storage-accounts/${accountId}`,
+        {
+          serializeOauthToken: true,
+        }
+      )
+      .pipe(
+        map((response) => {
+          return AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi);
         })
       );
   }

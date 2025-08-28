@@ -67,6 +67,8 @@
     "@commitlint/cli": "^19.7.1",
     "@commitlint/config-conventional": "^19.7.1",
     "@compodoc/compodoc": "^1.1.26",
+    "@types/gapi": "^0.0.47",
+    "@types/gapi.auth2": "^0.0.61",
     "@types/jest": "^29.5.14",
     "@types/markdown-it": "^14.1.2",
     "angular-eslint": "19.1.0",

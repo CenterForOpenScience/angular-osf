@@ -14,7 +14,7 @@ import { SubHeaderComponent } from '@osf/shared/components';
 import { ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { getAddonTypeString, isAuthorizedAddon } from '@osf/shared/helpers';
 import { AddonSetupAccountFormComponent, AddonTermsComponent } from '@shared/components/addons';
-import { AddonModel, AddonTerm, AuthorizedAddon, AuthorizedAddonRequestJsonApi } from '@shared/models';
+import { AddonModel, AddonTerm, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
 
 @Component({
@@ -43,7 +43,7 @@ export class ConnectAddonComponent {
   protected readonly ProjectAddonsStepperValue = ProjectAddonsStepperValue;
 
   protected terms = signal<AddonTerm[]>([]);
-  protected addon = signal<AddonModel | AuthorizedAddon | null>(null);
+  protected addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
   protected addonAuthUrl = signal<string>('/settings/addons');
 
   protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
@@ -70,7 +70,7 @@ export class ConnectAddonComponent {
   });
 
   constructor() {
-    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAddon;
+    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as AddonModel | AuthorizedAccountModel;
     if (!addon) {
       this.router.navigate([`${this.baseUrl()}/addons`]);
     }

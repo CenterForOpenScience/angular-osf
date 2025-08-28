@@ -53,11 +53,13 @@ import { GoogleFilePickerComponent } from './google-file-picker/google-file-pick
 export class FolderSelectorComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private translateService = inject(TranslateService);
+
   isGoogleFilePicker = input.required<boolean>();
   accountName = input.required<string>();
   operationInvocationResult = input.required<StorageItem[]>();
   accountNameControl = input(new FormControl());
   isCreateMode = input(false);
+
   selectedRootFolderId = model<string>('/');
   operationInvoke = output<OperationInvokeData>();
   save = output<void>();

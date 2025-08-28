@@ -6,10 +6,16 @@ import { inject, TestBed } from '@angular/core/testing';
 
 import { AddonsService } from '@osf/shared/services/addons/addons.service';
 
-import { GetConfiguredStorageAddons, GetStorageAddons } from './addons.actions';
+import {
+  GetAuthorizedStorageAddons,
+  GetAuthorizedStorageOauthToken,
+  GetConfiguredStorageAddons,
+  GetStorageAddons,
+} from './addons.actions';
 import { AddonsSelectors } from './addons.selectors';
 import { AddonsState } from './addons.state';
 
+import { getAddonsAuthorizedStorageData } from '@testing/data/addons/addons.authorized-storage.data';
 import { getConfiguredAddonsData } from '@testing/data/addons/addons.configured.data';
 import { getAddonsExternalStorageData } from '@testing/data/addons/addons.external-storage.data';
 
@@ -54,7 +60,7 @@ describe('State: Addons', () => {
           })
         );
 
-        const addon = store.selectSnapshot((state) => AddonsSelectors.getStorageAddon(state.addons, result[0].id));
+        const addon = store.selectSnapshot(AddonsSelectors.getStorageAddon(result[0].id));
 
         expect(addon).toEqual(
           Object({
@@ -70,6 +76,7 @@ describe('State: Addons', () => {
           })
         );
         expect(loading()).toBeFalsy();
+        expect(httpMock.verify).toBeTruthy();
       }
     ));
 
@@ -102,6 +109,7 @@ describe('State: Addons', () => {
       });
 
       expect(loading()).toBeFalsy();
+      expect(httpMock.verify).toBeTruthy();
     }));
   });
 
@@ -140,6 +148,7 @@ describe('State: Addons', () => {
         );
 
         expect(loading()).toBeFalsy();
+        expect(httpMock.verify).toBeTruthy();
       }
     ));
 
@@ -176,6 +185,228 @@ describe('State: Addons', () => {
         });
 
         expect(loading()).toBeFalsy();
+        expect(httpMock.verify).toBeTruthy();
+      }
+    ));
+  });
+
+  describe('getAuthorizedStorageAddons', () => {
+    it('should fetch authorized storage oauth token and add state and selector output', inject(
+      [HttpTestingController],
+      (httpMock: HttpTestingController) => {
+        let result: any[] = [];
+        store.dispatch(new GetAuthorizedStorageAddons('reference-id')).subscribe(() => {
+          result = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddons);
+        });
+
+        const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+        expect(loading()).toBeTruthy();
+
+        const request = httpMock.expectOne(
+          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name'
+        );
+        expect(request.request.method).toBe('GET');
+        request.flush(getAddonsAuthorizedStorageData());
+
+        expect(result[0]).toEqual(
+          Object({
+            accountOwnerId: '0b441148-83e5-4f7f-b302-b07b528b160b',
+            apiBaseUrl: 'https://www.googleapis.com',
+            authUrl: null,
+            authorizedCapabilities: ['ACCESS', 'UPDATE'],
+            authorizedOperationNames: ['list_root_items', 'get_item_info', 'list_child_items'],
+            credentialsAvailable: true,
+            credentialsFormat: '',
+            defaultRootFolder: '',
+            displayName: 'Google Drive',
+            externalServiceName: 'googledrive',
+            oauthToken: 'ya29.A0AS3H6NzDCKgrUx',
+            externalStorageServiceId: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
+            id: '331b7333-a13a-4d3b-add0-5af0fd1d4ac4',
+            providerName: '',
+            supportedFeatures: [],
+            type: 'authorized-storage-accounts',
+          })
+        );
+
+        expect(loading()).toBeFalsy();
+        expect(httpMock.verify).toBeTruthy();
+      }
+    ));
+
+    it('should handle error if getAuthorizedStorageOauthToken fails', inject(
+      [HttpTestingController],
+      (httpMock: HttpTestingController) => {
+        let result: any = null;
+
+        store.dispatch(new GetAuthorizedStorageAddons('reference-id')).subscribe({
+          next: () => {
+            result = 'Expected error, but got success';
+          },
+          error: () => {
+            result = store.snapshot().addons.authorizedStorageAddons;
+          },
+        });
+
+        const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+        expect(loading()).toBeTruthy();
+
+        const request = httpMock.expectOne(
+          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name'
+        );
+        expect(request.request.method).toBe('GET');
+
+        request.flush({ message: 'Internal Server Error' }, { status: 500, statusText: 'Server Error' });
+
+        expect(result).toEqual({
+          data: [],
+          error:
+            'Http failure response for https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name: 500 Server Error',
+          isLoading: false,
+          isSubmitting: false,
+        });
+
+        expect(loading()).toBeFalsy();
+        expect(httpMock.verify).toBeTruthy();
+      }
+    ));
+  });
+
+  describe('getAuthorizedStorageOauthToken', () => {
+    it('should fetch authorized storage oauth token and add state and selector output', inject(
+      [HttpTestingController],
+      (httpMock: HttpTestingController) => {
+        let result: any[] = [];
+        store.dispatch(new GetAuthorizedStorageOauthToken('account-id')).subscribe(() => {
+          result = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddons);
+        });
+
+        const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+        expect(loading()).toBeTruthy();
+
+        const request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+        expect(request.request.method).toBe('PATCH');
+        request.flush(getAddonsAuthorizedStorageData(0));
+
+        expect(result[0]).toEqual(
+          Object({
+            accountOwnerId: '0b441148-83e5-4f7f-b302-b07b528b160b',
+            apiBaseUrl: 'https://www.googleapis.com',
+            authUrl: null,
+            authorizedCapabilities: ['ACCESS', 'UPDATE'],
+            authorizedOperationNames: ['list_root_items', 'get_item_info', 'list_child_items'],
+            credentialsAvailable: true,
+            credentialsFormat: '',
+            defaultRootFolder: '',
+            displayName: 'Google Drive',
+            externalServiceName: '',
+            oauthToken: 'ya29.A0AS3H6NzDCKgrUx',
+            externalStorageServiceId: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
+            id: '331b7333-a13a-4d3b-add0-5af0fd1d4ac4',
+            providerName: '',
+            supportedFeatures: [],
+            type: 'authorized-storage-accounts',
+          })
+        );
+
+        const oauthToken = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(result[0].id));
+
+        expect(oauthToken).toBe('ya29.A0AS3H6NzDCKgrUx');
+
+        expect(loading()).toBeFalsy();
+        expect(httpMock.verify).toBeTruthy();
+      }
+    ));
+
+    it('should fetch authorized storage oauth token and update state and selector output', inject(
+      [HttpTestingController],
+      (httpMock: HttpTestingController) => {
+        let result: any[] = [];
+        store.dispatch(new GetAuthorizedStorageAddons('reference-id')).subscribe();
+
+        store.dispatch(new GetAuthorizedStorageOauthToken('account-id')).subscribe(() => {
+          result = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddons);
+        });
+
+        const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+        expect(loading()).toBeTruthy();
+
+        let request = httpMock.expectOne(
+          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name'
+        );
+        expect(request.request.method).toBe('GET');
+        request.flush(getAddonsAuthorizedStorageData());
+
+        request = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+        expect(request.request.method).toBe('PATCH');
+        const addonWithToken = getAddonsAuthorizedStorageData(1);
+        addonWithToken.data.attributes.oauth_token = 'ya2.34234324534';
+        request.flush(addonWithToken);
+
+        expect(result[1]).toEqual(
+          Object({
+            accountOwnerId: '0b441148-83e5-4f7f-b302-b07b528b160b',
+            apiBaseUrl: 'https://www.googleapis.com',
+            authUrl: null,
+            authorizedCapabilities: ['ACCESS', 'UPDATE'],
+            authorizedOperationNames: ['list_root_items', 'get_item_info', 'list_child_items'],
+            credentialsAvailable: true,
+            credentialsFormat: '',
+            defaultRootFolder: '',
+            displayName: 'Google Drive',
+            externalServiceName: '',
+            externalStorageServiceId: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
+            id: '62ed6dd7-f7b7-4003-b7b4-855789c1f991',
+            oauthToken: 'ya2.34234324534',
+            providerName: '',
+            supportedFeatures: [],
+            type: 'authorized-storage-accounts',
+          })
+        );
+
+        let oauthToken = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(result[0].id));
+        expect(oauthToken).toBe('ya29.A0AS3H6NzDCKgrUx');
+
+        oauthToken = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(result[1].id));
+        expect(oauthToken).toBe(result[1].oauthToken);
+
+        expect(loading()).toBeFalsy();
+        expect(httpMock.verify).toBeTruthy();
+      }
+    ));
+
+    it('should handle error if getAuthorizedStorageOauthToken fails', inject(
+      [HttpTestingController],
+      (httpMock: HttpTestingController) => {
+        let result: any = null;
+
+        store.dispatch(new GetAuthorizedStorageOauthToken('account-id')).subscribe({
+          next: () => {
+            result = 'Expected error, but got success';
+          },
+          error: () => {
+            result = store.snapshot().addons.authorizedStorageAddons;
+          },
+        });
+
+        const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+        expect(loading()).toBeTruthy();
+
+        const req = httpMock.expectOne('https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id');
+        expect(req.request.method).toBe('PATCH');
+
+        req.flush({ message: 'Internal Server Error' }, { status: 500, statusText: 'Server Error' });
+
+        expect(result).toEqual({
+          data: [],
+          error:
+            'Http failure response for https://addons.staging4.osf.io/v1/authorized-storage-accounts/account-id: 500 Server Error',
+          isLoading: false,
+          isSubmitting: false,
+        });
+
+        expect(loading()).toBeFalsy();
+        expect(httpMock.verify).toBeTruthy();
       }
     ));
   });

@@ -1,140 +1,137 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Store } from '@ngxs/store';
+
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+
+import { Button } from 'primeng/button';
+
+import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
+
+import { ENVIRONMENT } from '@core/constants/environment.token';
+import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@osf/shared/stores';
+
+import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
 
 @Component({
   selector: 'osf-google-file-picker',
-  imports: [],
+  imports: [TranslateModule, Button],
   templateUrl: './google-file-picker.component.html',
   styleUrl: './google-file-picker.component.scss',
   providers: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class GoogleFilePickerComponent {}
+export class GoogleFilePickerComponent implements OnInit {
+  readonly #translateService = inject(TranslateService);
+  readonly #googlePicker = inject(GoogleFilePickerDownloadService);
+  readonly #environment = inject(ENVIRONMENT);
 
-// import Store from '@ember-data/store';
-// import { action } from '@ember/object';
-// import { waitFor } from '@ember/test-waiters';
-// import Component from '@glimmer/component';
-// import { tracked } from '@glimmer/tracking';
-// import { task } from 'ember-concurrency';
-// import { taskFor } from 'ember-concurrency-ts';
-// import config from 'ember-osf-web/config/environment';
-// import { Item } from 'ember-osf-web/models/addon-operation-invocation';
-// import StorageManager from 'osf-components/components/storage-provider-manager/storage-manager/component';
-// import { inject as service } from '@ember/service';
-// import Intl from 'ember-intl/services/intl';
+  public isFolderPicker = input.required<boolean>();
+  public selectedFolderName = input<string>('');
+  public rootFolderId = input<string>('');
+  public accountId = input<string>('');
 
-// const {
-//     GOOGLE_FILE_PICKER_SCOPES,
-//     GOOGLE_FILE_PICKER_API_KEY,
-//     GOOGLE_FILE_PICKER_APP_ID,
-// } = config.OSF.googleFilePicker;
+  //   selectFolder?: (a: Partial<Item>) => void;
+  //   onRegisterChild?: (a: GoogleFilePickerWidget) => void;
+  //   manager: StorageManager;
+  //     @tracked openGoogleFilePicker = false;
+  private folderName = signal<string>('');
+  selectFolder = undefined;
+  accessToken = signal<string | null>(null);
 
-// //
-// // 📚 Interface for Expected Arguments
-// //
-// interface Args {
-//   /**
-//    * selectFolder
-//    *
-//    * @description
-//    * A callback function passed into the component
-//    * that accepts a partial Item object and handles it (e.g., selects a file).
-//    */
-//   selectFolder?: (a: Partial<Item>) => void;
-//   onRegisterChild?: (a: GoogleFilePickerWidget) => void;
-//   selectedFolderName?: string;
-//   isFolderPicker: boolean;
-//   rootFolderId: string;
-//   manager: StorageManager;
-//   accountId: string;
-// }
+  public visible = signal(false);
+  public isGFPDisabled = signal(true);
+  private readonly apiKey = this.#environment.google.GOOGLE_FILE_PICKER_API_KEY;
+  private readonly appId = this.#environment.google.GOOGLE_FILE_PICKER_APP_ID;
+  private readonly store = inject(Store);
+  private parentId = '';
+  private isMultipleSelect!: boolean;
+  private title!: string;
 
-// //
-// // 📚 Extend Global Window Type
-// //
-// // Declares that `window` can optionally have a GoogleFilePickerWidget instance.
-// // This allows safe typing when accessing it elsewhere.
-// //
-// declare global {
-//   interface Window {
-//     GoogleFilePickerWidget?: GoogleFilePickerWidget;
-//     gapi?: any;
-//     google?: any;
-//   }
-// }
+  ngOnInit(): void {
+    //         window.GoogleFilePickerWidget = this;
+    // this.selectFolder = this.selectFolder();
+    this.parentId = this.isFolderPicker() ? '' : this.rootFolderId();
+    this.title = this.isFolderPicker()
+      ? this.#translateService.instant('settings.addons.configureAddon.google-file-picker.root-folder-title')
+      : this.#translateService.instant('settings.addons.configureAddon.google-file-picker.file-folder-title');
+    this.isMultipleSelect = !this.isFolderPicker();
+    this.folderName.set(this.selectedFolderName());
 
-// //
-// // GoogleFilePickerWidget Component
-// //
-// // @description
-// // An Ember Glimmer component that exposes itself to the global `window`
-// // so that external JavaScript (like Google Picker API callbacks)
-// // can interact with it directly.
-// //
-// export default class GoogleFilePickerWidget extends Component<Args> {
-//     @service intl!: Intl;
-//     @service store!: Store;
-//     @tracked folderName!: string | undefined;
-//     @tracked isFolderPicker = false;
-//     @tracked openGoogleFilePicker = false;
-//     @tracked visible = false;
-//     @tracked isGFPDisabled = true;
-//     pickerInited = false;
-//     selectFolder: any = undefined;
-//     accessToken!: string;
-//     scopes = GOOGLE_FILE_PICKER_SCOPES;
-//     apiKey = GOOGLE_FILE_PICKER_API_KEY;
-//     appId = GOOGLE_FILE_PICKER_APP_ID;
-//     mimeTypes = '';
-//     parentId = '';
-//     isMultipleSelect: boolean;
-//     title!: string;
+    this.#googlePicker.loadScript().subscribe({
+      next: () => {
+        this.#googlePicker.loadGapiModules().subscribe({
+          next: () => {
+            this.initializePicker();
+            this.#loadOauthToken();
+          },
+          // TODO add this error when the Sentry service is working
+          //error: (err) => console.error('GAPI modules failed:', err),
+        });
+      },
+      // TODO add this error when the Sentry service is working
+      // error: (err) => console.error('Script load failed:', err),
+    });
+  }
 
-//     /**
-//      * Constructor
-//      *
-//      * @description
-//      * Initializes the GoogleFilePickerWidget component and exposes its key methods to the global `window` object
-//      * for integration with external JavaScript (e.g., Google Picker API).
-//      *
-//      * - Sets `window.GoogleFilePickerWidget` to the current component instance (`this`),
-//      *   allowing external scripts to call methods like `filePickerCallback()`.
-//      * - Captures the closure action `selectFolder` from `this.args` and assigns it directly to `window.selectFolder`,
-//      *   preserving the correct closure reference even outside of Ember's internal context.
-//      *
-//      * @param owner - The owner/context passed by Ember at component instantiation.
-//      * @param args - The arguments passed to the component, including closure actions like `selectFolder`.
-//      */
-//     constructor(owner: unknown, args: Args) {
-//         super(owner, args);
+  public initializePicker() {
+    if (this.isFolderPicker()) {
+      this.visible.set(true);
+    }
+  }
 
-//         window.GoogleFilePickerWidget = this;
-//         this.selectFolder = this.args.selectFolder;
-//         this.mimeTypes = this.args.isFolderPicker ? 'application/vnd.google-apps.folder' : '';
-//         this.parentId = this.args.isFolderPicker ? '': this.args.rootFolderId;
-//         this.title = this.args.isFolderPicker ?
-//             this.intl.t('addons.configure.google-file-picker.root-folder-title') :
-//             this.intl.t('addons.configure.google-file-picker.file-folder-title');
-//         this.isMultipleSelect = !this.args.isFolderPicker;
-//         this.isFolderPicker = this.args.isFolderPicker;
+  createPicker(): void {
+    const google = window.google;
 
-//         this.folderName = this.args.selectedFolderName;
+    const googlePickerView = new google.picker.DocsView(google.picker.ViewId.DOCS);
+    googlePickerView.setSelectFolderEnabled(true);
+    if (this.isFolderPicker()) {
+      googlePickerView.setMimeTypes('application/vnd.google-apps.folder');
+    }
+    googlePickerView.setIncludeFolders(true);
+    googlePickerView.setParent(this.parentId);
 
-//         taskFor(this.loadOauthToken).perform();
-//     }
+    const pickerBuilder = new google.picker.PickerBuilder()
+      .setDeveloperKey(this.apiKey)
+      .setAppId(this.appId)
+      .addView(googlePickerView)
+      .setTitle(this.title)
+      .setOAuthToken(this.accessToken())
+      .setCallback(this.pickerCallback.bind(this));
 
-//     @task
-//     @waitFor
-//     private async loadOauthToken(): Promise<void>{
-//         if (this.args.accountId) {
-//             const authorizedStorageAccount = await this.store.
-//                 findRecord('authorized-storage-account', this.args.accountId);
-//             authorizedStorageAccount.serializeOauthToken = true;
-//             const token = await authorizedStorageAccount.save();
-//             this.accessToken = token.oauthToken;
-//             this.isGFPDisabled = this.accessToken ? false : true;
-//         }
-//     }
+    if (this.isMultipleSelect) {
+      pickerBuilder.enableFeature(google.picker.Feature.MULTISELECT_ENABLED);
+    }
+
+    const picker = pickerBuilder.build();
+    picker.setVisible(true);
+  }
+
+  #loadOauthToken(): void {
+    if (this.accountId()) {
+      this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId())).subscribe({
+        next: () => {
+          this.accessToken.set(
+            this.store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
+          );
+          this.isGFPDisabled.set(this.accessToken() ? false : true);
+        },
+      });
+    }
+  }
+
+  //     /**
+  //     * Displays the file details of the user's selection.
+  //     * @param {object} data - Containers the user selection from the picker
+  //     */
+  // eslint-disable-next-line
+  async pickerCallback(data: any) {
+    //     async pickerCallback(data: any) {
+    //         if (data.action === window.google.picker.Action.PICKED) {
+    //             this.filePickerCallback(data.docs[0]);
+    //         }
+    //     }
+    console.log('data');
+  }
+}
 
 //     /**
 //      * filePickerCallback
@@ -168,47 +165,6 @@ export class GoogleFilePickerComponent {}
 //     willDestroy() {
 //         super.willDestroy();
 //         this.pickerInited = false;
-//     }
-
-//     /**
-//     * Callback after api.js is loaded.
-//     */
-//     gapiLoaded() {
-//         window.gapi.load('client:picker', this.initializePicker.bind(this));
-//     }
-
-//     /**
-//     * Callback after the API client is loaded. Loads the
-//     * discovery doc to initialize the API.
-//     */
-//     async initializePicker() {
-//         this.pickerInited = true;
-//         if (this.isFolderPicker) {
-//             this.visible = true;
-//         }
-//     }
-
-//     /**
-//     *  Create and render a Picker object for searching images.
-//     */
-//     @action
-//     createPicker() {
-//         const googlePickerView = new window.google.picker.DocsView(window.google.picker.ViewId.DOCS);
-//         googlePickerView.setSelectFolderEnabled(true);
-//         googlePickerView.setMimeTypes(this.mimeTypes);
-//         googlePickerView.setIncludeFolders(true);
-//         googlePickerView.setParent(this.parentId);
-
-//         const picker = new window.google.picker.PickerBuilder()
-//             .enableFeature(this.isMultipleSelect ? window.google.picker.Feature.MULTISELECT_ENABLED : '')
-//             .setDeveloperKey(this.apiKey)
-//             .setAppId(this.appId)
-//             .addView(googlePickerView)
-//             .setTitle(this.title)
-//             .setOAuthToken(this.accessToken)
-//             .setCallback(this.pickerCallback.bind(this))
-//             .build();
-//         picker.setVisible(true);
 //     }
 
 //     /**

@@ -1,8 +1,8 @@
-import { Selector } from '@ngxs/store';
+import { createSelector, Selector } from '@ngxs/store';
 
 import {
   AddonModel,
-  AuthorizedAddon,
+  AuthorizedAccountModel,
   AuthorizedAddonResponseJsonApi,
   ConfiguredAddonResponseJsonApi,
   ConfiguredStorageAddonModel,
@@ -47,9 +47,10 @@ export class AddonsSelectors {
    * @param id The unique identifier of the storage addon to retrieve.
    * @returns The matched Addon object if found, otherwise undefined.
    */
-  @Selector([AddonsState])
-  static getStorageAddon(state: AddonsStateModel, id: string): AddonModel | undefined {
-    return state.storageAddons.data.find((addon: AddonModel) => addon.id === id);
+  static getStorageAddon(id: string): (state: AddonsStateModel) => AddonModel | null {
+    return createSelector([AddonsState], (state: AddonsStateModel): AddonModel | null => {
+      return state.storageAddons.data.find((addon: AddonModel) => addon.id === id) || null;
+    });
   }
   /**
    * Selector to retrieve the loading status of storage addons from the AddonsState.
@@ -73,8 +74,16 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedStorageAddons(state: AddonsStateModel): AuthorizedAddon[] {
+  static getAuthorizedStorageAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
     return state.authorizedStorageAddons.data;
+  }
+
+  static getAuthorizedStorageAddonOauthToken(id: string): (state: AddonsStateModel) => string | null {
+    return createSelector([AddonsState], (state: AddonsStateModel): string | null => {
+      return (
+        state.authorizedStorageAddons.data.find((addon: AuthorizedAccountModel) => addon.id === id)?.oauthToken || null
+      );
+    });
   }
 
   @Selector([AddonsState])
@@ -83,7 +92,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getAuthorizedCitationAddons(state: AddonsStateModel): AuthorizedAddon[] {
+  static getAuthorizedCitationAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
     return state.authorizedCitationAddons.data;
   }
 
