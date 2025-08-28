@@ -18,9 +18,4 @@ export class BookmarksSelectors {
   static getBookmarksCollectionIdSubmitting(state: BookmarksStateModel) {
     return state.bookmarksId.isSubmitting;
   }
-
-  @Selector([BookmarksState])
-  static getBookmarksError(state: BookmarksStateModel) {
-    return state.bookmarksId.error;
-  }
 }

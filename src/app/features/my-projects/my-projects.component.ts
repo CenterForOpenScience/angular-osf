@@ -237,7 +237,8 @@ export class MyProjectsComponent implements OnInit {
   createFilters(params: QueryParams): MyResourcesSearchFilters {
     return {
       searchValue: params.search || '',
-      searchFields: ['title', 'tags', 'description'],
+      searchFields:
+        this.selectedTab() === MyProjectsTab.Preprints ? ['title', 'tags'] : ['title', 'tags', 'description'],
       sortColumn: params.sortColumn,
       sortOrder: params.sortOrder,
     };

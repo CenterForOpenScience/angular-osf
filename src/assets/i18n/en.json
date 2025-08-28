@@ -650,8 +650,8 @@
             "success": "Project has been duplicated successfully"
           },
           "bookmark": {
-            "add": "Project has been added to bookmarks",
-            "remove": "Project has been removed from bookmarks"
+            "add": "Successfully added to bookmarks",
+            "remove": "Successfully removed from bookmarks"
           }
         },
         "linkProject": {
