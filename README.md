@@ -23,6 +23,7 @@ take up to 60 seconds once the docker build finishes.
 
 - Compodoc: [Compodoc Conventions](docs/compodoc.md).
 - Docker Commands: [Docker Commands](docs/docker.md).
+- ESLint Strategy: [ESLint Strategy](docs/eslint.md).
 - Git Conventions: [Git Conventions](docs/git-convention.md).
 - NGXS: [NGXS Conventions](docs/ngxs.md).
 
