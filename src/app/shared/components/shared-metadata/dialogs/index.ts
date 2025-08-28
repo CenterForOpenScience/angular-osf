@@ -5,3 +5,4 @@ export { FundingDialogComponent } from './funding-dialog/funding-dialog.componen
 export { LicenseDialogComponent } from './license-dialog/license-dialog.component';
 export { PublicationDoiDialogComponent } from './publication-doi-dialog/publication-doi-dialog.component';
 export { ResourceInformationDialogComponent } from './resource-information-dialog/resource-information-dialog.component';
+export { ResourceInfoTooltipComponent } from './resource-tooltip-info/resource-tooltip-info.component';

@@ -16,6 +16,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
@@ -28,9 +29,11 @@ import {
   LicenseDialogComponent,
   PublicationDoiDialogComponent,
   ResourceInformationDialogComponent,
+  ResourceInfoTooltipComponent,
 } from '@osf/shared/components/shared-metadata/dialogs';
 import { SharedMetadataComponent } from '@osf/shared/components/shared-metadata/shared-metadata.component';
 import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
@@ -111,6 +114,12 @@ export class MetadataComponent implements OnInit {
   areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
 
   provider = environment.defaultProvider;
+  isMedium = toSignal(inject(IS_MEDIUM));
+
+  private readonly resourceNameMap = new Map<ResourceType, string>([
+    [ResourceType.Project, 'project'],
+    [ResourceType.Registration, 'registration'],
+  ]);
 
   actions = createDispatchMap({
     getResourceMetadata: GetResourceMetadata,
@@ -378,6 +387,20 @@ export class MetadataComponent implements OnInit {
       .subscribe({
         next: () => this.toastService.showSuccess('project.metadata.resourceInformation.updated'),
       });
+  }
+
+  onShowResourceInfo() {
+    const dialogWidth = this.isMedium() ? '850px' : '95vw';
+
+    this.dialogService.open(ResourceInfoTooltipComponent, {
+      width: dialogWidth,
+      focusOnShow: false,
+      header: this.translateService.instant('project.metadata.resourceInformation.tooltipDialog.header'),
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: this.resourceNameMap.get(this.resourceType()),
+    });
   }
 
   openEditLicenseDialog(): void {

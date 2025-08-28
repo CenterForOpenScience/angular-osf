@@ -55,6 +55,7 @@ export class SharedMetadataComponent {
   openEditContributorDialog = output<void>();
   openEditDescriptionDialog = output<void>();
   openEditResourceInformationDialog = output<void>();
+  showResourceInfo = output<void>();
   openEditFundingDialog = output<void>();
   openEditAffiliatedInstitutionsDialog = output<void>();
   openEditLicenseDialog = output<void>();

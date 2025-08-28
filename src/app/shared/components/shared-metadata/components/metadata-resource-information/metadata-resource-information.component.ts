@@ -21,6 +21,7 @@ export class MetadataResourceInformationComponent {
 
   customItemMetadata = input.required<CustomItemMetadataRecord | null>();
   readonly = input<boolean>(false);
+  showResourceInfo = output<void>();
   readonly languageCodes = languageCodes;
   readonly resourceTypes = RESOURCE_TYPE_OPTIONS;
 
