@@ -4,8 +4,8 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
 
-import { NotificationSubscription } from '@osf/features/settings/notifications/models';
 import { SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
+import { NotificationSubscription } from '@osf/shared/models';
 
 import { RightControl } from '../../models';
 import { NotificationDescriptionPipe } from '../../pipes';
@@ -19,9 +19,9 @@ import { ProjectDetailSettingAccordionComponent } from '../project-detail-settin
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectSettingNotificationsComponent {
-  notificationEmitValue = output<{ event: SubscriptionEvent; frequency: SubscriptionFrequency }>();
+  notifications = input.required<NotificationSubscription[]>();
   title = input<string>();
-  notifications = input<NotificationSubscription[]>();
+  notificationEmitValue = output<NotificationSubscription>();
 
   allAccordionData: RightControl[] | undefined = [];
 
@@ -33,24 +33,14 @@ export class ProjectSettingNotificationsComponent {
 
   constructor() {
     effect(() => {
-      this.allAccordionData = this.notifications()?.map((notification) => {
-        if (notification.event === SubscriptionEvent.Comments) {
-          return {
-            label: 'settings.notifications.notificationPreferences.items.comments',
-            value: notification.frequency as string,
-            type: 'dropdown',
-            options: this.subscriptionFrequencyOptions,
-            event: notification.event,
-          } as RightControl;
-        } else {
-          return {
-            label: 'settings.notifications.notificationPreferences.items.files',
-            value: notification.frequency as string,
-            type: 'dropdown',
-            options: this.subscriptionFrequencyOptions,
-            event: notification.event,
-          } as RightControl;
-        }
+      this.allAccordionData = this.notifications().map((notification) => {
+        return {
+          label: 'settings.notifications.notificationPreferences.items.files',
+          value: notification.frequency as string,
+          type: 'dropdown',
+          options: this.subscriptionFrequencyOptions,
+          event: notification.event,
+        } as RightControl;
       });
     });
   }
@@ -58,6 +48,7 @@ export class ProjectSettingNotificationsComponent {
   changeEmittedValue(emittedValue: { index: number; value: boolean | string }): void {
     if (this.allAccordionData) {
       this.notificationEmitValue.emit({
+        id: this.notifications()[0].id,
         event: this.allAccordionData[emittedValue.index].event as SubscriptionEvent,
         frequency: emittedValue.value as SubscriptionFrequency,
       });

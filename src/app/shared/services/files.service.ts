@@ -21,7 +21,7 @@ import {
 import {
   AddFileResponse,
   ApiData,
-  ConfiguredStorageAddon,
+  ConfiguredStorageAddonModel,
   ContributorModel,
   ContributorResponse,
   FileLinks,
@@ -293,7 +293,7 @@ export class FilesService {
       .pipe(map((response) => response.data?.[0]?.links?.self ?? ''));
   }
 
-  getConfiguredStorageAddons(resourceUri: string): Observable<ConfiguredStorageAddon[]> {
+  getConfiguredStorageAddons(resourceUri: string): Observable<ConfiguredStorageAddonModel[]> {
     return this.getResourceReferences(resourceUri).pipe(
       switchMap((referenceUrl: string) => {
         if (!referenceUrl) return of([]);
@@ -301,11 +301,15 @@ export class FilesService {
         return this.jsonApiService
           .get<GetConfiguredStorageAddonsJsonApi>(`${referenceUrl}/configured_storage_addons`)
           .pipe(
-            map((response) =>
-              response.data.map((addon) => ({
-                externalServiceName: addon.attributes.external_service_name,
-                displayName: addon.attributes.display_name,
-              }))
+            map(
+              (response) =>
+                response.data.map(
+                  (addon) =>
+                    ({
+                      externalServiceName: addon.attributes.external_service_name,
+                      displayName: addon.attributes.display_name,
+                    }) as ConfiguredStorageAddonModel
+                ) as ConfiguredStorageAddonModel[]
             )
           );
       })

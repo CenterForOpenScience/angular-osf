@@ -61,45 +61,47 @@ import { ProjectOverviewSelectors } from '../../store';
 export class LinkResourceDialogComponent {
   private readonly tableRows = 6;
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly ResourceSearchMode = ResourceSearchMode;
-  protected readonly ResourceType = ResourceType;
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly ResourceSearchMode = ResourceSearchMode;
+  readonly ResourceType = ResourceType;
 
-  protected currentPage = signal(1);
-  protected searchMode = signal<ResourceSearchMode>(ResourceSearchMode.User);
-  protected resourceType = signal<ResourceType>(ResourceType.Project);
-  protected searchControl = new FormControl('');
+  currentPage = signal(1);
+  searchMode = signal<ResourceSearchMode>(ResourceSearchMode.User);
+  resourceType = signal<ResourceType>(ResourceType.Project);
+  searchControl = new FormControl('');
 
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
-  protected myProjects = select(MyResourcesSelectors.getProjects);
-  protected isMyProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
-  protected myRegistrations = select(MyResourcesSelectors.getRegistrations);
-  protected isMyRegistrationsLoading = select(MyResourcesSelectors.getRegistrationsLoading);
-  protected totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
-  protected totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
-  protected isNodeLinksSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
-  protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
+  skeletonData: MyResourcesItem[] = Array.from({ length: 10 }, () => ({}) as MyResourcesItem);
 
-  protected currentTableItems = computed(() => {
-    return this.resourceType() === ResourceType.Project ? this.myProjects() : this.myRegistrations();
-  });
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  myProjects = select(MyResourcesSelectors.getProjects);
+  isMyProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
+  myRegistrations = select(MyResourcesSelectors.getRegistrations);
+  isMyRegistrationsLoading = select(MyResourcesSelectors.getRegistrationsLoading);
+  totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
+  totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
+  isNodeLinksSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
+  linkedResources = select(NodeLinksSelectors.getLinkedResources);
 
-  protected isCurrentTableLoading = computed(() => {
-    return this.resourceType() === ResourceType.Project ? this.isMyProjectsLoading() : this.isMyRegistrationsLoading();
-  });
+  currentTableItems = computed(() =>
+    this.resourceType() === ResourceType.Project ? this.myProjects() : this.myRegistrations()
+  );
 
-  protected currentTotalCount = computed(() => {
-    return this.resourceType() === ResourceType.Project ? this.totalProjectsCount() : this.totalRegistrationsCount();
-  });
+  isCurrentTableLoading = computed(() =>
+    this.resourceType() === ResourceType.Project ? this.isMyProjectsLoading() : this.isMyRegistrationsLoading()
+  );
 
-  protected isItemLinked = computed(() => {
+  currentTotalCount = computed(() =>
+    this.resourceType() === ResourceType.Project ? this.totalProjectsCount() : this.totalRegistrationsCount()
+  );
+
+  isItemLinked = computed(() => {
     const linkedResources = this.linkedResources();
     const linkedTargetIds = new Set(linkedResources.map((resource) => resource.id));
 
     return (itemId: string) => linkedTargetIds.has(itemId);
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getProjects: GetMyProjects,
     getRegistrations: GetMyRegistrations,
     createNodeLink: CreateNodeLink,

@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { UserMapper } from '@osf/shared/mappers';
-import { ApiData, JsonApiResponse, User, UserGetResponse } from '@osf/shared/models';
+import { ApiData, IdName, JsonApiResponse, User, UserGetResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { MapAccountSettings, MapEmail, MapEmails, MapExternalIdentities, MapRegions } from '../mappers';
@@ -20,7 +20,6 @@ import {
   GetRegionsResponseJsonApi,
   ListEmailsResponseJsonApi,
   ListIdentitiesResponseJsonApi,
-  Region,
 } from '../models';
 
 import { environment } from 'src/environments/environment';
@@ -141,7 +140,7 @@ export class AccountSettingsService {
       .pipe(map((response) => MapEmail(response)));
   }
 
-  getRegions(): Observable<Region[]> {
+  getRegions(): Observable<IdName[]> {
     return this.jsonApiService
       .get<GetRegionsResponseJsonApi>(`${environment.apiUrl}/regions/`)
       .pipe(map((response) => MapRegions(response.data)));

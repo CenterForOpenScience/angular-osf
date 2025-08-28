@@ -5,6 +5,8 @@ import { inject, Injectable } from '@angular/core';
 import { SparseCollectionsResponseJsonApi } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
+import { ResourceType } from '../enums';
+
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -12,6 +14,15 @@ import { environment } from 'src/environments/environment';
 })
 export class BookmarksService {
   private jsonApiService = inject(JsonApiService);
+  private readonly urlMap = new Map<ResourceType, string>([
+    [ResourceType.Project, 'linked_nodes'],
+    [ResourceType.Registration, 'linked_registrations'],
+  ]);
+
+  private readonly resourceMap = new Map<ResourceType, string>([
+    [ResourceType.Project, 'nodes'],
+    [ResourceType.Registration, 'registrations'],
+  ]);
 
   getBookmarksCollectionId(): Observable<string> {
     const params: Record<string, unknown> = {
@@ -28,58 +39,16 @@ export class BookmarksService {
     );
   }
 
-  addProjectToBookmarks(bookmarksId: string, projectId: string): Observable<void> {
-    const url = `${environment.apiUrl}/collections/${bookmarksId}/relationships/linked_nodes/`;
-    const payload = {
-      data: [
-        {
-          type: 'nodes',
-          id: projectId,
-        },
-      ],
-    };
+  addResourceToBookmarks(bookmarksId: string, resourceId: string, resourceType: ResourceType): Observable<void> {
+    const url = `${environment.apiUrl}/collections/${bookmarksId}/relationships/${this.urlMap.get(resourceType)}/`;
+    const payload = { data: [{ type: this.resourceMap.get(resourceType), id: resourceId }] };
 
     return this.jsonApiService.post<void>(url, payload);
   }
 
-  removeProjectFromBookmarks(bookmarksId: string, projectId: string): Observable<void> {
-    const url = `${environment.apiUrl}/collections/${bookmarksId}/relationships/linked_nodes/`;
-    const payload = {
-      data: [
-        {
-          type: 'nodes',
-          id: projectId,
-        },
-      ],
-    };
-
-    return this.jsonApiService.delete(url, payload);
-  }
-
-  addRegistrationToBookmarks(bookmarksId: string, registryId: string): Observable<void> {
-    const url = `${environment.apiUrl}/collections/${bookmarksId}/relationships/linked_registrations/`;
-    const payload = {
-      data: [
-        {
-          type: 'registrations',
-          id: registryId,
-        },
-      ],
-    };
-
-    return this.jsonApiService.post<void>(url, payload);
-  }
-
-  removeRegistrationFromBookmarks(bookmarksId: string, registryId: string): Observable<void> {
-    const url = `${environment.apiUrl}/collections/${bookmarksId}/relationships/linked_registrations/`;
-    const payload = {
-      data: [
-        {
-          type: 'registrations',
-          id: registryId,
-        },
-      ],
-    };
+  removeResourceFromBookmarks(bookmarksId: string, resourceId: string, resourceType: ResourceType): Observable<void> {
+    const url = `${environment.apiUrl}/collections/${bookmarksId}/relationships/${this.urlMap.get(resourceType)}/`;
+    const payload = { data: [{ type: this.resourceMap.get(resourceType), id: resourceId }] };
 
     return this.jsonApiService.delete(url, payload);
   }

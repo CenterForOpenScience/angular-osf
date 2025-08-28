@@ -1,24 +1,14 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, EMPTY, tap } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ResourceType } from '@shared/enums';
 import { handleSectionError } from '@shared/helpers';
 import { BookmarksService } from '@shared/services';
 
 import { AddResourceToBookmarks, GetBookmarksCollectionId, RemoveResourceFromBookmarks } from './bookmarks.actions';
-import { BookmarksStateModel } from './bookmarks.model';
-
-const BOOKMARKS_DEFAULTS: BookmarksStateModel = {
-  bookmarksId: {
-    data: '',
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-};
+import { BOOKMARKS_DEFAULTS, BookmarksStateModel } from './bookmarks.model';
 
 @State<BookmarksStateModel>({
   name: 'bookmarks',
@@ -63,34 +53,19 @@ export class BookmarksState {
       },
     });
 
-    switch (action.resourceType) {
-      case ResourceType.Project:
-        return this.bookmarksService.addProjectToBookmarks(action.bookmarksId, action.resourceId).pipe(
-          tap(() => {
-            ctx.patchState({
-              bookmarksId: {
-                ...state.bookmarksId,
-                isSubmitting: false,
-              },
-            });
-          }),
-          catchError((error) => handleSectionError(ctx, 'bookmarksId', error))
-        );
-      case ResourceType.Registration:
-        return this.bookmarksService.addRegistrationToBookmarks(action.bookmarksId, action.resourceId).pipe(
-          tap(() => {
-            ctx.patchState({
-              bookmarksId: {
-                ...state.bookmarksId,
-                isSubmitting: false,
-              },
-            });
-          }),
-          catchError((error) => handleSectionError(ctx, 'bookmarksId', error))
-        );
-      default:
-        return EMPTY;
-    }
+    return this.bookmarksService
+      .addResourceToBookmarks(action.bookmarksId, action.resourceId, action.resourceType)
+      .pipe(
+        tap(() => {
+          ctx.patchState({
+            bookmarksId: {
+              ...state.bookmarksId,
+              isSubmitting: false,
+            },
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'bookmarksId', error))
+      );
   }
 
   @Action(RemoveResourceFromBookmarks)
@@ -103,33 +78,18 @@ export class BookmarksState {
       },
     });
 
-    switch (action.resourceType) {
-      case ResourceType.Project:
-        return this.bookmarksService.removeProjectFromBookmarks(action.bookmarksId, action.resourceId).pipe(
-          tap(() => {
-            ctx.patchState({
-              bookmarksId: {
-                ...state.bookmarksId,
-                isSubmitting: false,
-              },
-            });
-          }),
-          catchError((error) => handleSectionError(ctx, 'bookmarksId', error))
-        );
-      case ResourceType.Registration:
-        return this.bookmarksService.removeRegistrationFromBookmarks(action.bookmarksId, action.resourceId).pipe(
-          tap(() => {
-            ctx.patchState({
-              bookmarksId: {
-                ...state.bookmarksId,
-                isSubmitting: false,
-              },
-            });
-          }),
-          catchError((error) => handleSectionError(ctx, 'bookmarksId', error))
-        );
-      default:
-        return EMPTY;
-    }
+    return this.bookmarksService
+      .removeResourceFromBookmarks(action.bookmarksId, action.resourceId, action.resourceType)
+      .pipe(
+        tap(() => {
+          ctx.patchState({
+            bookmarksId: {
+              ...state.bookmarksId,
+              isSubmitting: false,
+            },
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'bookmarksId', error))
+      );
   }
 }

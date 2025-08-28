@@ -1,10 +1,10 @@
 import {
-  Addon,
   AddonGetResponseJsonApi,
-  AuthorizedAddon,
+  AddonModel,
+  AuthorizedAccountModel,
   AuthorizedAddonGetResponseJsonApi,
-  ConfiguredAddon,
   ConfiguredAddonGetResponseJsonApi,
+  ConfiguredStorageAddonModel,
   IncludedAddonData,
   OperationInvocation,
   OperationInvocationResponseJsonApi,
@@ -12,10 +12,11 @@ import {
 } from '../models';
 
 export class AddonMapper {
-  static fromResponse(response: AddonGetResponseJsonApi): Addon {
+  static fromResponse(response: AddonGetResponseJsonApi): AddonModel {
     return {
       type: response.type,
       id: response.id,
+      wbKey: response.attributes.wb_key,
       authUrl: response.attributes.auth_uri,
       displayName: response.attributes.display_name,
       externalServiceName: response.attributes.external_service_name,
@@ -28,7 +29,7 @@ export class AddonMapper {
   static fromAuthorizedAddonResponse(
     response: AuthorizedAddonGetResponseJsonApi,
     included?: IncludedAddonData[]
-  ): AuthorizedAddon {
+  ): AuthorizedAccountModel {
     const externalServiceData =
       response.relationships?.external_storage_service?.data || response.relationships?.external_citation_service?.data;
 
@@ -55,6 +56,7 @@ export class AddonMapper {
       authorizedOperationNames: response.attributes.authorized_operation_names,
       defaultRootFolder: response.attributes.default_root_folder,
       credentialsAvailable: response.attributes.credentials_available,
+      oauthToken: response.attributes.oauth_token,
       accountOwnerId: response.relationships.account_owner.data.id,
       externalStorageServiceId: externalServiceId || '',
       externalServiceName,
@@ -64,7 +66,19 @@ export class AddonMapper {
     };
   }
 
-  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredAddon {
+  /**
+   * Maps a JSON:API-formatted response object into a `ConfiguredAddon` domain model.
+   *
+   * @param response - The raw API response object representing a configured addon.
+   * This must conform to the `ConfiguredAddonGetResponseJsonApi` structure.
+   *
+   * @returns A `ConfiguredAddon` object with normalized and flattened properties
+   * for application use.
+   *
+   * @example
+   * const addon = AddonMapper.fromConfiguredAddonResponse(apiResponse);
+   */
+  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredStorageAddonModel {
     return {
       type: response.type,
       id: response.id,
@@ -76,6 +90,7 @@ export class AddonMapper {
       currentUserIsOwner: response.attributes.current_user_is_owner,
       baseAccountId: response.relationships.base_account.data.id,
       baseAccountType: response.relationships.base_account.data.type,
+      externalStorageServiceId: response.relationships?.external_storage_service?.data?.id,
     };
   }
 

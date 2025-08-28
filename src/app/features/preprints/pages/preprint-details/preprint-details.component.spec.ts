@@ -69,4 +69,8 @@ describe.skip('PreprintDetailsComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('isOsfPreprint should be true if providerId === osf', () => {
+    expect(component.isOsfPreprint()).toBeTruthy();
+  });
 });

@@ -5,6 +5,7 @@ import { Button, ButtonDirective } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { MultiSelect } from 'primeng/multiselect';
 import { PaginatorState } from 'primeng/paginator';
+import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -37,6 +38,7 @@ import { DownloadType } from '../../enums';
     TranslatePipe,
     Button,
     Menu,
+    Skeleton,
     StopPropagationDirective,
     DatePipe,
   ],
@@ -52,6 +54,7 @@ export class AdminTableComponent {
   tableColumns = input.required<TableColumn[]>();
   tableData = input.required<TableCellData[]>();
 
+  isLoading = input(false);
   enablePagination = input<boolean>(false);
   totalCount = input<number>(0);
   currentPage = input<number>(1);
@@ -60,6 +63,7 @@ export class AdminTableComponent {
 
   sortField = input<string>('');
   sortOrder = input<number>(1);
+  reportsLink = input<string | undefined>('');
 
   isNextPreviousPagination = input<boolean>(false);
 
@@ -79,8 +83,7 @@ export class AdminTableComponent {
   linkPageChanged = output<string>();
   downloadClicked = output<DownloadType>();
 
-  reportsLink = input<string | undefined>('');
-
+  skeletonData: TableCellData[] = Array.from({ length: 10 }, () => ({}) as TableCellData);
   selectedColumns = signal<TableColumn[]>([]);
 
   downloadMenuItems = DOWNLOAD_OPTIONS;

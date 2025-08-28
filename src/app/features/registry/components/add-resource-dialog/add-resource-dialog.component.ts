@@ -10,14 +10,14 @@ import { finalize, take } from 'rxjs';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { LoadingSpinnerComponent } from '@osf/shared/components';
+import { IconComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { RegistryResourceType } from '@osf/shared/enums';
 import { CustomValidators } from '@osf/shared/helpers';
 import { SelectOption } from '@osf/shared/models';
 
 import { resourceTypeOptions } from '../../constants';
-import { AddResource, ConfirmAddResource } from '../../models';
+import { AddResource, ConfirmAddResource, RegistryResourceFormModel } from '../../models';
 import {
   ConfirmAddRegistryResource,
   PreviewRegistryResource,
@@ -28,7 +28,7 @@ import { ResourceFormComponent } from '../resource-form/resource-form.component'
 
 @Component({
   selector: 'osf-add-resource-dialog',
-  imports: [Button, TranslatePipe, ReactiveFormsModule, LoadingSpinnerComponent, ResourceFormComponent],
+  imports: [Button, TranslatePipe, ReactiveFormsModule, LoadingSpinnerComponent, ResourceFormComponent, IconComponent],
   templateUrl: './add-resource-dialog.component.html',
   styleUrl: './add-resource-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,7 +45,7 @@ export class AddResourceDialogComponent {
   protected inputLimits = InputLimits;
   protected isResourceConfirming = signal(false);
 
-  protected form = new FormGroup({
+  protected form = new FormGroup<RegistryResourceFormModel>({
     pid: new FormControl<string | null>('', [CustomValidators.requiredTrimmed(), CustomValidators.doiValidator]),
     resourceType: new FormControl<string | null>('', [Validators.required]),
     description: new FormControl<string | null>(''),

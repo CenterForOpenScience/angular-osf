@@ -1,25 +1,20 @@
 <p-card>
   <h2 class="pb-4">{{ 'myProjects.settings.project' | translate }}</h2>
 
-  <form [formGroup]="formGroup()" (ngSubmit)="submit()" class="flex flex-column gap-4">
+  <form [formGroup]="projectForm" (ngSubmit)="submit()" class="flex flex-column gap-4">
     <div class="flex flex-column">
-      <label class="input-label" for="project-title">
-        {{ 'myProjects.createProject.title' | translate }}
-      </label>
-      <input pInputText id="project-title" type="text" class="mt-2" [formControlName]="ProjectFormControls.Title" />
+      <osf-text-input
+        [control]="projectForm.controls[ProjectFormControls.Title]"
+        [label]="'myProjects.createProject.title'"
+        [maxLength]="inputLimits.fullName.maxLength"
+      ></osf-text-input>
     </div>
 
     <div class="flex flex-column">
       <label class="input-label" for="description">
         {{ 'myProjects.createProject.description.label' | translate }}
       </label>
-      <textarea
-        class="mt-2"
-        pTextarea
-        id="description"
-        [formControlName]="ProjectFormControls.Description"
-        [rows]="5"
-      ></textarea>
+      <textarea pTextarea id="description" [formControlName]="ProjectFormControls.Description" [rows]="5"></textarea>
     </div>
 
     <div class="flex flex-0 gap-2 justify-content-between sm:justify-content-end">
@@ -34,7 +29,7 @@
         type="submit"
         class="w-10rem btn-full-width bg-primary-blue-second"
         [label]="'myProjects.settings.saveChanges' | translate"
-        [disabled]="formGroup().invalid"
+        [disabled]="projectForm.invalid"
       ></p-button>
     </div>
 

@@ -8,23 +8,22 @@ export interface TokenCreateRequestJsonApi {
   };
 }
 
-export interface TokenCreateResponseJsonApi {
+export interface TokenGetResponseJsonApi {
   id: string;
-  type: 'tokens';
-  attributes: {
-    name: string;
-    token_id: string;
-    scopes: string;
-    owner: string;
+  attributes: TokenAttributesJsonApi;
+  embeds: TokenEmbedsJsonApi;
+}
+
+interface TokenAttributesJsonApi {
+  name: string;
+}
+
+interface TokenEmbedsJsonApi {
+  scopes: {
+    data: TokenEmbedsDataItemJsonApi[];
   };
 }
 
-export interface TokenGetResponseJsonApi {
+interface TokenEmbedsDataItemJsonApi {
   id: string;
-  type: 'tokens';
-  attributes: {
-    name: string;
-    scopes: string;
-    owner: string;
-  };
 }

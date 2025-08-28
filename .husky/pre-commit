@@ -3,10 +3,10 @@ npx lint-staged || {
   exit 1
 }
 
-npm run docs:coverage || {
-  printf "\n\nERROR: Documentation Coverage thresholds are not met."
-  printf "\n\nIn the future this will block your ability to commit locally until it is resolved."
-  printf "\n\nThe same pipeline runs via GitHub actions."
-  printf "\n\nYou are seeing this error because code was added without documentation."
+# npm run docs:coverage || {
+#   printf "\n\nERROR: Documentation Coverage thresholds are not met."
+#   printf "\n\nIn the future this will block your ability to commit locally until it is resolved."
+#   printf "\n\nThe same pipeline runs via GitHub actions."
+#   printf "\n\nYou are seeing this error because code was added without documentation."
   # exit 1
-}
+# }

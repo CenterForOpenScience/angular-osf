@@ -1,0 +1,13 @@
+<section class="google-file-picker-container" [class.file-picker]="this.isFolderPicker()">
+  @if (this.isFolderPicker()) {
+    <div local-class="action-container">
+      <p-button
+        [label]="'settings.addons.configureAddon.google-file-picker.select-root-folder' | translate"
+        class="authorize-button"
+        [class.visible]="visible()"
+        [disabled]="isGFPDisabled()"
+        (click)="createPicker()"
+      ></p-button>
+    </div>
+  }
+</section>

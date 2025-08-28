@@ -23,7 +23,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { LoadingSpinnerComponent, SelectComponent } from '@osf/shared/components';
+import { SelectComponent } from '@osf/shared/components';
 import { TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { Primitive } from '@osf/shared/helpers';
@@ -35,14 +35,14 @@ import { AdminTableComponent } from '../../components';
 import { departmentOptions, userTableColumns } from '../../constants';
 import { SendEmailDialogComponent } from '../../dialogs';
 import { DownloadType } from '../../enums';
-import { camelToSnakeCase } from '../../helpers/camel-to-snake.helper';
+import { camelToSnakeCase } from '../../helpers';
 import { mapUserToTableCellData } from '../../mappers';
 import { InstitutionUser, SendEmailDialogData, TableCellData, TableCellLink, TableIconClickEvent } from '../../models';
 import { FetchInstitutionUsers, InstitutionsAdminSelectors, SendUserMessage } from '../../store';
 
 @Component({
   selector: 'osf-institutions-users',
-  imports: [AdminTableComponent, FormsModule, SelectComponent, CheckboxModule, TranslatePipe, LoadingSpinnerComponent],
+  imports: [AdminTableComponent, FormsModule, SelectComponent, CheckboxModule, TranslatePipe],
   templateUrl: './institutions-users.component.html',
   styleUrl: './institutions-users.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

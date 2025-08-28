@@ -9,4 +9,5 @@ export * from './get-file-metadata-response.model';
 export * from './get-file-revisions-response.model';
 export * from './get-file-target-response.model';
 export * from './get-short-info-response.model';
+export * from './info-item.model';
 export * from './patch-file-metadata.model';

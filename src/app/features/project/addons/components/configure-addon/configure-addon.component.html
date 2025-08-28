@@ -64,6 +64,7 @@
         ></p-button>
       </div>
       <osf-folder-selector
+        [isGoogleFilePicker]="isGoogleDrive()"
         [accountName]="addon()?.displayName || ''"
         [operationInvocationResult]="operationInvocation()?.operationResult || []"
         [accountNameControl]="accountNameControl"

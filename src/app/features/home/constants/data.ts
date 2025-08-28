@@ -26,12 +26,12 @@ export const INTEGRATION_ICONS = [
   {
     title: 'home.loggedOut.integrations.categories.authentication',
     first: {
-      path: 'assets/icons/socials/integrations/incommon.png',
+      path: 'assets/images/integrations/incommon.png',
       height: '36',
       width: '200',
     },
     second: {
-      path: 'assets/icons/socials/integrations/sso.png',
+      path: 'assets/images/integrations/sso.png',
       height: '59',
       width: '135',
     },
@@ -39,12 +39,12 @@ export const INTEGRATION_ICONS = [
   {
     title: 'home.loggedOut.integrations.categories.discovery',
     first: {
-      path: 'assets/icons/socials/integrations/google-scholar.png',
+      path: 'assets/images/integrations/google-scholar.png',
       height: '36',
       width: '215',
     },
     second: {
-      path: 'assets/icons/socials/integrations/orcid.png',
+      path: 'assets/images/integrations/orcid.png',
       height: '34',
       width: '111',
     },
@@ -52,12 +52,12 @@ export const INTEGRATION_ICONS = [
   {
     title: 'home.loggedOut.integrations.categories.references',
     first: {
-      path: 'assets/icons/socials/integrations/mendeley.png',
+      path: 'assets/images/integrations/mendeley.png',
       height: '42',
       width: '214',
     },
     second: {
-      path: 'assets/icons/socials/integrations/zotero.png',
+      path: 'assets/images/integrations/zotero.png',
       height: '36',
       width: '152',
     },
@@ -65,12 +65,12 @@ export const INTEGRATION_ICONS = [
   {
     title: 'home.loggedOut.integrations.categories.storage',
     first: {
-      path: 'assets/icons/socials/integrations/dropbox.png',
+      path: 'assets/images/integrations/dropbox.png',
       height: '34',
       width: '175',
     },
     second: {
-      path: 'assets/icons/socials/integrations/google-drive.png',
+      path: 'assets/images/integrations/google-drive.png',
       height: '35',
       width: '207',
     },

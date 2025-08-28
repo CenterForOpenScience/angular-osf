@@ -1,26 +1,27 @@
 import { Store } from '@ngxs/store';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 import { Select, SelectChangeEvent } from 'primeng/select';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { GetAllOptions, ProfileResourceFiltersOptionsSelectors } from '@osf/features/profile/components/filters/store';
-
-import { ProfileResourceFiltersSelectors, SetInstitution } from '../../profile-resource-filters/store';
+import { ResourceFiltersSelectors, SetInstitution } from '../../resource-filters/store';
+import { GetAllOptions, ResourceFiltersOptionsSelectors } from '../store';
 
 @Component({
-  selector: 'osf-profile-institution-filter',
-  imports: [Select, FormsModule],
-  templateUrl: './profile-institution-filter.component.html',
-  styleUrl: './profile-institution-filter.component.scss',
+  selector: 'osf-institution-filter',
+  imports: [Select, FormsModule, TranslateModule],
+  templateUrl: './institution-filter.component.html',
+  styleUrl: './institution-filter.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileInstitutionFilterComponent {
+export class InstitutionFilterComponent {
   readonly #store = inject(Store);
 
-  protected institutionState = this.#store.selectSignal(ProfileResourceFiltersSelectors.getInstitution);
-  protected availableInstitutions = this.#store.selectSignal(ProfileResourceFiltersOptionsSelectors.getInstitutions);
+  protected institutionState = this.#store.selectSignal(ResourceFiltersSelectors.getInstitution);
+  protected availableInstitutions = this.#store.selectSignal(ResourceFiltersOptionsSelectors.getInstitutions);
   protected inputText = signal<string | null>(null);
   protected institutionsOptions = computed(() => {
     if (this.inputText() !== null) {

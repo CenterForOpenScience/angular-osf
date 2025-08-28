@@ -2,46 +2,39 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Button } from 'primeng/button';
-import { Card } from 'primeng/card';
-
 import { map, of } from 'rxjs';
 
-import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import {
-  GetNotificationSubscriptionsByNodeId,
-  NotificationSubscriptionSelectors,
-  UpdateNotificationSubscriptionForNodeId,
-} from '@osf/features/settings/notifications/store';
-import { SubHeaderComponent } from '@osf/shared/components';
-import { ProjectFormControls, ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
-import { CustomValidators } from '@osf/shared/helpers';
-import { UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
+import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
+import { ResourceType, SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
+import { Institution, UpdateNodeRequestModel, ViewOnlyLinkModel } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 import { DeleteViewOnlyLink, FetchViewOnlyLinks, ViewOnlyLinkSelectors } from '@osf/shared/stores';
 
 import {
   ProjectSettingNotificationsComponent,
   SettingsAccessRequestsCardComponent,
-  SettingsCommentingCardComponent,
+  SettingsProjectAffiliationComponent,
   SettingsProjectFormCardComponent,
   SettingsRedirectLinkComponent,
   SettingsStorageLocationCardComponent,
   SettingsViewOnlyLinksCardComponent,
   SettingsWikiCardComponent,
 } from './components';
-import { ProjectDetailsModel, ProjectSettingsAttributes, ProjectSettingsData } from './models';
+import { ProjectDetailsModel, ProjectSettingsAttributes, ProjectSettingsData, RedirectLinkDataModel } from './models';
 import {
+  DeleteInstitution,
   DeleteProject,
   GetProjectDetails,
+  GetProjectNotificationSubscriptions,
   GetProjectSettings,
   SettingsSelectors,
   UpdateProjectDetails,
+  UpdateProjectNotificationSubscription,
   UpdateProjectSettings,
 } from './store';
 
@@ -52,17 +45,15 @@ import {
     SubHeaderComponent,
     FormsModule,
     ReactiveFormsModule,
-    Card,
-    Button,
-    NgOptimizedImage,
     SettingsProjectFormCardComponent,
     SettingsStorageLocationCardComponent,
     SettingsViewOnlyLinksCardComponent,
     SettingsAccessRequestsCardComponent,
     SettingsWikiCardComponent,
-    SettingsCommentingCardComponent,
     SettingsRedirectLinkComponent,
+    SettingsProjectAffiliationComponent,
     ProjectSettingNotificationsComponent,
+    LoadingSpinnerComponent,
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.scss',
@@ -77,37 +68,33 @@ export class SettingsComponent implements OnInit {
 
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
-  protected settings = select(SettingsSelectors.getSettings);
-  protected notifications = select(NotificationSubscriptionSelectors.getNotificationSubscriptionsByNodeId);
-  protected projectDetails = select(SettingsSelectors.getProjectDetails);
-  protected viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
-  protected isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+  settings = select(SettingsSelectors.getSettings);
+  notifications = select(SettingsSelectors.getNotificationSubscriptions);
+  areNotificationsLoading = select(SettingsSelectors.areNotificationsLoading);
+  projectDetails = select(SettingsSelectors.getProjectDetails);
+  areProjectDetailsLoading = select(SettingsSelectors.areProjectDetailsLoading);
+  viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
+  isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getSettings: GetProjectSettings,
-    getNotifications: GetNotificationSubscriptionsByNodeId,
+    getNotifications: GetProjectNotificationSubscriptions,
     getProjectDetails: GetProjectDetails,
     getViewOnlyLinks: FetchViewOnlyLinks,
     updateProjectDetails: UpdateProjectDetails,
     updateProjectSettings: UpdateProjectSettings,
-    updateNotificationSubscriptionForNodeId: UpdateNotificationSubscriptionForNodeId,
+    updateNotificationSubscription: UpdateProjectNotificationSubscription,
     deleteViewOnlyLink: DeleteViewOnlyLink,
     deleteProject: DeleteProject,
+    deleteInstitution: DeleteInstitution,
   });
 
-  projectForm = new FormGroup({
-    [ProjectFormControls.Title]: new FormControl('', CustomValidators.requiredTrimmed()),
-    [ProjectFormControls.Description]: new FormControl(''),
-  });
-
-  redirectUrlData = signal<{ url: string; label: string }>({ url: '', label: '' });
+  redirectUrlData = signal<RedirectLinkDataModel>({ isEnabled: false, url: '', label: '' });
   accessRequest = signal(false);
   wikiEnabled = signal(false);
   anyoneCanEditWiki = signal(false);
   anyoneCanComment = signal(false);
   title = signal('');
-
-  affiliations = [];
 
   constructor() {
     this.setupEffects();
@@ -124,7 +111,7 @@ export class SettingsComponent implements OnInit {
   }
 
   submitForm({ title, description }: ProjectDetailsModel): void {
-    const current = this.projectDetails().attributes;
+    const current = this.projectDetails();
 
     if (title === current.title && description === current.description) return;
 
@@ -159,22 +146,17 @@ export class SettingsComponent implements OnInit {
     this.syncSettingsChanges('anyone_can_edit_wiki', newValue);
   }
 
-  onAnyoneCanCommentRequestChange(newValue: boolean): void {
-    this.anyoneCanComment.set(newValue);
-    this.syncSettingsChanges('anyone_can_comment', newValue);
-  }
-
-  onRedirectUrlDataRequestChange(data: { url: string; label: string }): void {
+  onRedirectUrlDataRequestChange(data: RedirectLinkDataModel): void {
     this.redirectUrlData.set(data);
     this.syncSettingsChanges('redirectUrl', data);
   }
 
   onNotificationRequestChange(data: { event: SubscriptionEvent; frequency: SubscriptionFrequency }): void {
-    const id = `${'n5str'}_${data.event}`;
+    const id = `${this.projectId()}_${data.event}`;
     const frequency = data.frequency;
 
     this.loaderService.show();
-    this.actions.updateNotificationSubscriptionForNodeId({ id, frequency }).subscribe(() => {
+    this.actions.updateNotificationSubscription({ id, frequency }).subscribe(() => {
       this.toastService.showSuccess('myProjects.settings.updateProjectSettingsMessage');
       this.loaderService.hide();
     });
@@ -197,7 +179,7 @@ export class SettingsComponent implements OnInit {
   deleteProject(): void {
     this.customConfirmationService.confirmDelete({
       headerKey: 'project.deleteProject.title',
-      messageParams: { name: this.projectDetails().attributes.title },
+      messageParams: { name: this.projectDetails().title },
       messageKey: 'project.deleteProject.message',
       onConfirm: () => {
         this.loaderService.show();
@@ -210,7 +192,23 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  private syncSettingsChanges(changedField: string, value: boolean | { url: string; label: string }): void {
+  removeAffiliation(affiliation: Institution): void {
+    this.customConfirmationService.confirmDelete({
+      headerKey: 'project.deleteInstitution.title',
+      messageParams: { name: affiliation.name },
+      messageKey: 'project.deleteInstitution.message',
+      onConfirm: () => {
+        this.loaderService.show();
+        this.actions.deleteInstitution(affiliation.id, this.projectId()).subscribe(() => {
+          this.loaderService.hide();
+          this.toastService.showSuccess('project.deleteInstitution.success');
+          this.actions.getProjectDetails(this.projectId());
+        });
+      },
+    });
+  }
+
+  private syncSettingsChanges(changedField: string, value: boolean | RedirectLinkDataModel): void {
     const payload: Partial<ProjectSettingsAttributes> = {};
 
     switch (changedField) {
@@ -223,9 +221,9 @@ export class SettingsComponent implements OnInit {
         break;
       case 'redirectUrl':
         if (typeof value === 'object') {
-          payload['redirect_link_enabled'] = true;
-          payload['redirect_link_url'] = value.url ?? null;
-          payload['redirect_link_label'] = value.label ?? null;
+          payload['redirect_link_enabled'] = value.isEnabled;
+          payload['redirect_link_url'] = value.isEnabled ? value.url : undefined;
+          payload['redirect_link_label'] = value.isEnabled ? value.label : undefined;
         }
         break;
     }
@@ -253,7 +251,9 @@ export class SettingsComponent implements OnInit {
         this.wikiEnabled.set(settings.attributes.wikiEnabled);
         this.anyoneCanEditWiki.set(settings.attributes.anyoneCanEditWiki);
         this.anyoneCanComment.set(settings.attributes.anyoneCanComment);
+
         this.redirectUrlData.set({
+          isEnabled: settings.attributes.redirectLinkEnabled,
           url: settings.attributes.redirectLinkUrl,
           label: settings.attributes.redirectLinkLabel,
         });
@@ -262,12 +262,9 @@ export class SettingsComponent implements OnInit {
 
     effect(() => {
       const project = this.projectDetails();
-      if (project?.attributes) {
-        this.projectForm.patchValue({
-          [ProjectFormControls.Title]: project.attributes.title,
-          [ProjectFormControls.Description]: project.attributes.description,
-        });
-        this.title.set(project.attributes.title);
+
+      if (project) {
+        this.title.set(project.title);
       }
     });
   }
