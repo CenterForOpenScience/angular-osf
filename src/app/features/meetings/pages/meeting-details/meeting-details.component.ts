@@ -138,7 +138,7 @@ export class MeetingDetailsComponent {
     if (event.field) {
       this.updateQueryParams({
         sortColumn: event.field,
-        sortOrder: event.order === -1 ? SortOrder.Desc : SortOrder.Asc,
+        sortOrder: event.order as SortOrder,
       });
     }
   }

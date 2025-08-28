@@ -1,4 +1,4 @@
-<section class="home-container xl:mt-6" [class.medium]="isMedium()">
+<section class="home-container xl:mt-6">
   <osf-sub-header
     [showButton]="true"
     [title]="'home.loggedIn.dashboard.title' | translate"
@@ -26,7 +26,7 @@
       [searchControl]="searchControl"
       [sortColumn]="sortColumn()"
       [sortOrder]="sortOrder()"
-      [isLoading]="isLoading()"
+      [isLoading]="areProjectsLoading()"
       [searchPlaceholder]="'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate"
       (pageChange)="onPageChange($event)"
       (sort)="onSort($event)"

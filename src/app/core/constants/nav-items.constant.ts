@@ -181,7 +181,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'my-resources',
-    label: 'navigation.myResources',
+    label: 'navigation.myOsf',
     icon: 'custom-icon-projects',
     routerLinkActiveOptions: { exact: true },
     visible: false,
