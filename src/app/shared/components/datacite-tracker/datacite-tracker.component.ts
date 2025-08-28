@@ -10,13 +10,11 @@ export abstract class DataciteTrackerComponent {
 
   protected abstract getDoi(): Observable<string | null>;
 
-  protected setupDataciteViewTrackerEffect() {
-    this.getDoi()
-      .pipe(
-        take(1),
-        filter((doi): doi is string => !!doi),
-        switchMap((doi) => this.dataciteService.logView(doi))
-      )
-      .subscribe();
+  protected setupDataciteViewTrackerEffect(): Observable<void> {
+    return this.getDoi().pipe(
+      take(1),
+      filter((doi): doi is string => !!doi),
+      switchMap((doi) => this.dataciteService.logView(doi))
+    );
   }
 }

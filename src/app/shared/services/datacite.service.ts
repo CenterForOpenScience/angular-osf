@@ -13,15 +13,15 @@ import { environment } from 'src/environments/environment';
 export class DataciteService {
   #http: HttpClient = inject(HttpClient);
 
-  logView(doi: string): Observable<object> {
+  logView(doi: string): Observable<void> {
     return this.logActivity(DataciteEvent.VIEW, doi);
   }
 
-  logDownload(doi: string): Observable<object> {
+  logDownload(doi: string): Observable<void> {
     return this.logActivity(DataciteEvent.DOWNLOAD, doi);
   }
 
-  private logActivity(event: DataciteEvent, doi: string): Observable<object> {
+  private logActivity(event: DataciteEvent, doi: string): Observable<void> {
     if (!doi || !environment.dataciteTrackerRepoId) {
       return EMPTY;
     }
@@ -34,6 +34,6 @@ export class DataciteService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    return this.#http.post(environment.dataciteTrackerAddress, payload, { headers });
+    return this.#http.post<void>(environment.dataciteTrackerAddress, payload, { headers });
   }
 }

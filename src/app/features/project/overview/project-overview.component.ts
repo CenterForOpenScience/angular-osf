@@ -217,7 +217,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
-      this.setupDataciteViewTrackerEffect();
+      this.setupDataciteViewTrackerEffect().subscribe();
     }
   }
 
