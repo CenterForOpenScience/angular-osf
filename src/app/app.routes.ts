@@ -8,8 +8,6 @@ import { authGuard, redirectIfLoggedInGuard } from './core/guards';
 import { isProjectGuard } from './core/guards/is-project.guard';
 import { isRegistryGuard } from './core/guards/is-registry.guard';
 import { PreprintState } from './features/preprints/store/preprint';
-import { ProfileResourceFiltersOptionsState } from './features/profile/components/filters/store';
-import { ProfileResourceFiltersState } from './features/profile/components/profile-resource-filters/store';
 import { ProfileState } from './features/profile/store';
 import { RegistriesState } from './features/registries/store';
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './features/registries/store/handlers';
@@ -118,7 +116,7 @@ export const routes: Routes = [
         path: 'my-profile',
         loadComponent: () =>
           import('./features/profile/pages/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
-        providers: [provideStates([ProfileResourceFiltersState, ProfileResourceFiltersOptionsState, ProfileState])],
+        providers: [provideStates([ProfileState])],
         canActivate: [authGuard],
       },
       {
@@ -127,7 +125,7 @@ export const routes: Routes = [
           import('./features/profile/pages/user-profile/user-profile.component').then(
             (mod) => mod.UserProfileComponent
           ),
-        providers: [provideStates([ProfileResourceFiltersState, ProfileResourceFiltersOptionsState, ProfileState])],
+        providers: [provideStates([ProfileState])],
       },
       {
         path: 'institutions',

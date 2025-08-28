@@ -1,15 +1,35 @@
 import { Selector } from '@ngxs/store';
 
-import { ResourceTab } from '@osf/shared/enums';
-import { Resource, User } from '@osf/shared/models';
+import { DiscoverableFilter, Resource, SelectOption, User } from '@osf/shared/models';
+import { StringOrNull } from '@shared/helpers';
 
 import { ProfileStateModel } from './profile.model';
-import { ProfileState } from './profile.state';
+import { ProfileState } from '.';
 
 export class ProfileSelectors {
   @Selector([ProfileState])
+  static getUserProfile(state: ProfileStateModel): User | null {
+    return state.userProfile.data;
+  }
+
+  @Selector([ProfileState])
+  static isUserProfileLoading(state: ProfileStateModel): boolean {
+    return state.userProfile.isLoading;
+  }
+
+  @Selector([ProfileState])
   static getResources(state: ProfileStateModel): Resource[] {
     return state.resources.data;
+  }
+
+  @Selector([ProfileState])
+  static getResourcesLoading(state: ProfileStateModel): boolean {
+    return state.resources.isLoading;
+  }
+
+  @Selector([ProfileState])
+  static getFilters(state: ProfileStateModel): DiscoverableFilter[] {
+    return state.filters;
   }
 
   @Selector([ProfileState])
@@ -18,18 +38,13 @@ export class ProfileSelectors {
   }
 
   @Selector([ProfileState])
-  static getSearchText(state: ProfileStateModel): string {
+  static getSearchText(state: ProfileStateModel): StringOrNull {
     return state.searchText;
   }
 
   @Selector([ProfileState])
   static getSortBy(state: ProfileStateModel): string {
     return state.sortBy;
-  }
-
-  @Selector([ProfileState])
-  static getResourceTab(state: ProfileStateModel): ResourceTab {
-    return state.resourceTab;
   }
 
   @Selector([ProfileState])
@@ -48,17 +63,27 @@ export class ProfileSelectors {
   }
 
   @Selector([ProfileState])
-  static getIsMyProfile(state: ProfileStateModel): boolean {
-    return state.isMyProfile;
+  static getResourceType(state: ProfileStateModel) {
+    return state.resourceType;
   }
 
   @Selector([ProfileState])
-  static getUserProfile(state: ProfileStateModel): User | null {
-    return state.user.data;
+  static getFilterValues(state: ProfileStateModel): Record<string, StringOrNull> {
+    return state.filterValues;
   }
 
   @Selector([ProfileState])
-  static getIsUserProfile(state: ProfileStateModel): boolean {
-    return state.user.isLoading;
+  static getFilterOptionsCache(state: ProfileStateModel): Record<string, SelectOption[]> {
+    return state.filterOptionsCache;
+  }
+
+  @Selector([ProfileState])
+  static getFilterSearchCache(state: ProfileStateModel): Record<string, SelectOption[]> {
+    return state.filterSearchCache;
+  }
+
+  @Selector([ProfileState])
+  static getFilterPaginationCache(state: ProfileStateModel): Record<string, string> {
+    return state.filterPaginationCache;
   }
 }

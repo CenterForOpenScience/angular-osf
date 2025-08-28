@@ -1,4 +1,3 @@
-export * from './add-filters-params.helper';
 export * from './addon-type.helper';
 export * from './breakpoints.tokens';
 export * from './browser-tab.helper';

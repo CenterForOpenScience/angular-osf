@@ -1,117 +1,139 @@
-import { Action, State, StateContext, Store } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { UserSelectors } from '@osf/core/store/user';
-import {
-  GetResources,
-  GetResourcesByLink,
-  GetUserProfile,
-  PROFILE_STATE_DEFAULTS,
-  ProfileSelectors,
-  ProfileStateModel,
-  SetIsMyProfile,
-  SetResourceTab,
-  SetSearchText,
-  SetSortBy,
-} from '@osf/features/profile/store';
-import { addFiltersParams, getResourceTypes, handleSectionError } from '@osf/shared/helpers';
-import { SearchService } from '@osf/shared/services';
+import { UserService } from '@core/services';
+import { getResourceTypes, handleSectionError } from '@osf/shared/helpers';
+import { BaseSearchState } from '@shared/stores';
 
-import { ProfileResourceFiltersSelectors } from '../components/profile-resource-filters/store';
-import { ProfileFiltersOptionsService } from '../services/profile-resource-filters.service';
+import {
+  ClearFilterSearchResults,
+  FetchResources,
+  FetchResourcesByLink,
+  FetchUserProfile,
+  LoadFilterOptions,
+  LoadFilterOptionsAndSetValues,
+  LoadFilterOptionsWithSearch,
+  LoadMoreFilterOptions,
+  SetResourceType,
+  SetSortBy,
+  SetUserProfile,
+  UpdateFilterValue,
+} from './profile.actions';
+import { PROFILE_STATE_DEFAULTS, ProfileStateModel } from './profile.model';
 
 @Injectable()
 @State<ProfileStateModel>({
   name: 'profile',
   defaults: PROFILE_STATE_DEFAULTS,
 })
-export class ProfileState {
-  searchService = inject(SearchService);
-  store = inject(Store);
-  currentUser = this.store.selectSignal(UserSelectors.getCurrentUser);
-  profileResourceFilters = inject(ProfileFiltersOptionsService);
+export class ProfileState extends BaseSearchState<ProfileStateModel> {
+  private userService = inject(UserService);
 
-  @Action(GetUserProfile)
-  getUserProfile(ctx: StateContext<ProfileStateModel>, action: GetUserProfile) {
-    ctx.setState(patch({ user: patch({ isLoading: true }) }));
+  @Action(FetchUserProfile)
+  fetchUserProfile(ctx: StateContext<ProfileStateModel>, action: FetchUserProfile) {
+    ctx.setState(patch({ userProfile: patch({ isLoading: true }) }));
 
-    if (!action.userId) {
-      return;
-    }
-
-    return this.profileResourceFilters.getUserById(action.userId).pipe(
+    return this.userService.getUserById(action.userId).pipe(
       tap((user) => {
         ctx.setState(
           patch({
-            user: patch({
+            userProfile: patch({
               data: user,
               isLoading: false,
             }),
           })
         );
       }),
-      catchError((error) => handleSectionError(ctx, 'user', error))
+      catchError((error) => handleSectionError(ctx, 'userProfile', error))
     );
   }
 
-  @Action(GetResources)
-  getResources(ctx: StateContext<ProfileStateModel>) {
-    const filters = this.store.selectSnapshot(ProfileResourceFiltersSelectors.getAllFilters);
-    const filtersParams = addFiltersParams(filters);
-    const searchText = this.store.selectSnapshot(ProfileSelectors.getSearchText);
-    const sortBy = this.store.selectSnapshot(ProfileSelectors.getSortBy);
-    const resourceTab = this.store.selectSnapshot(ProfileSelectors.getResourceTab);
-    const resourceTypes = getResourceTypes(resourceTab);
-    const iri = this.currentUser()?.iri;
-    if (iri) {
-      filtersParams['cardSearchFilter[creator][]'] = iri;
-    }
-
-    return this.searchService.getResources(filtersParams, searchText, sortBy, resourceTypes).pipe(
-      tap((response) => {
-        ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
-        ctx.patchState({ resourcesCount: response.count });
-        ctx.patchState({ first: response.first });
-        ctx.patchState({ next: response.next });
-        ctx.patchState({ previous: response.previous });
+  @Action(SetUserProfile)
+  setUserProfile(ctx: StateContext<ProfileStateModel>, action: SetUserProfile) {
+    ctx.setState(
+      patch({
+        userProfile: patch({
+          data: action.userProfile,
+          isLoading: false,
+        }),
       })
     );
   }
 
-  @Action(GetResourcesByLink)
-  getResourcesByLink(ctx: StateContext<ProfileStateModel>, action: GetResourcesByLink) {
-    return this.searchService.getResourcesByLink(action.link).pipe(
-      tap((response) => {
-        ctx.patchState({ resources: { data: response.resources, isLoading: false, error: null } });
-        ctx.patchState({ resourcesCount: response.count });
-        ctx.patchState({ first: response.first });
-        ctx.patchState({ next: response.next });
-        ctx.patchState({ previous: response.previous });
-      })
-    );
+  @Action(FetchResources)
+  fetchResources(ctx: StateContext<ProfileStateModel>) {
+    const state = ctx.getState();
+    if (!state.userProfile) return;
+
+    ctx.patchState({ resources: { ...state.resources, isLoading: true } });
+    const filtersParams = this.buildFiltersParams(state);
+    const sortBy = state.sortBy;
+    const resourceTypes = getResourceTypes(state.resourceType);
+
+    return this.searchService
+      .getResources(filtersParams, null, sortBy, resourceTypes)
+      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
   }
 
-  @Action(SetSearchText)
-  setSearchText(ctx: StateContext<ProfileStateModel>, action: SetSearchText) {
-    ctx.patchState({ searchText: action.searchText });
+  @Action(FetchResourcesByLink)
+  fetchResourcesByLink(ctx: StateContext<ProfileStateModel>, action: FetchResourcesByLink) {
+    return this.handleFetchResourcesByLink(ctx, action.link);
+  }
+
+  @Action(LoadFilterOptions)
+  loadFilterOptions(ctx: StateContext<ProfileStateModel>, action: LoadFilterOptions) {
+    return this.handleLoadFilterOptions(ctx, action.filterKey);
+  }
+
+  @Action(LoadFilterOptionsWithSearch)
+  loadFilterOptionsWithSearch(ctx: StateContext<ProfileStateModel>, action: LoadFilterOptionsWithSearch) {
+    return this.handleLoadFilterOptionsWithSearch(ctx, action.filterKey, action.searchText);
+  }
+
+  @Action(ClearFilterSearchResults)
+  clearFilterSearchResults(ctx: StateContext<ProfileStateModel>, action: ClearFilterSearchResults) {
+    this.handleClearFilterSearchResults(ctx, action.filterKey);
+  }
+
+  @Action(LoadMoreFilterOptions)
+  loadMoreFilterOptions(ctx: StateContext<ProfileStateModel>, action: LoadMoreFilterOptions) {
+    return this.handleLoadMoreFilterOptions(ctx, action.filterKey);
+  }
+
+  @Action(LoadFilterOptionsAndSetValues)
+  loadFilterOptionsAndSetValues(ctx: StateContext<ProfileStateModel>, action: LoadFilterOptionsAndSetValues) {
+    return this.handleLoadFilterOptionsAndSetValues(ctx, action.filterValues);
+  }
+
+  @Action(UpdateFilterValue)
+  updateFilterValue(ctx: StateContext<ProfileStateModel>, action: UpdateFilterValue) {
+    this.handleUpdateFilterValue(ctx, action.filterKey, action.value);
   }
 
   @Action(SetSortBy)
-  setSortBy(ctx: StateContext<ProfileStateModel>, action: SetSortBy) {
+  updateSortBy(ctx: StateContext<ProfileStateModel>, action: SetSortBy) {
     ctx.patchState({ sortBy: action.sortBy });
   }
 
-  @Action(SetResourceTab)
-  setResourceTab(ctx: StateContext<ProfileStateModel>, action: SetResourceTab) {
-    ctx.patchState({ resourceTab: action.resourceTab });
+  @Action(SetResourceType)
+  setResourceTab(ctx: StateContext<ProfileStateModel>, action: SetResourceType) {
+    ctx.patchState({ resourceType: action.resourceType });
   }
 
-  @Action(SetIsMyProfile)
-  setIsMyProfile(ctx: StateContext<ProfileStateModel>, action: SetIsMyProfile) {
-    ctx.patchState({ isMyProfile: action.isMyProfile });
+  private buildFiltersParams(state: ProfileStateModel): Record<string, string> {
+    const filtersParams: Record<string, string> = {};
+
+    filtersParams['cardSearchFilter[creator][]'] = state.userProfile.data!.iri!;
+
+    //TODO see search state
+    Object.entries(state.filterValues).forEach(([key, value]) => {
+      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
+    });
+
+    return filtersParams;
   }
 }
