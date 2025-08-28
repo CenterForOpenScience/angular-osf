@@ -34,7 +34,7 @@
   @if (isOperationInvocationSubmitting()) {
     <p-skeleton width="100%" height="7.5rem" borderRadius="16" />
   } @else if (isGoogleFilePicker()) {
-    <osf-google-file-picker></osf-google-file-picker>
+    <osf-google-file-picker [isFolderPicker]="true"></osf-google-file-picker>
   } @else {
     <div class="folders-table flex flex-column">
       <div class="folders-table-heading flex justify-content-between">

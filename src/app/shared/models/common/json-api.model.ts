@@ -13,6 +13,11 @@ export interface ResponseJsonApi<Data> {
   meta: MetaJsonApi;
 }
 
+export interface ResponseDataJsonApi<Data> {
+  data: Data;
+  meta: MetaJsonApi;
+}
+
 export interface ApiData<Attributes, Embeds, Relationships, Links> {
   id: string;
   attributes: Attributes;
@@ -25,7 +30,7 @@ export interface ApiData<Attributes, Embeds, Relationships, Links> {
 export interface MetaJsonApi {
   total: number;
   per_page: number;
-  version?: string;
+  version: string;
 }
 
 export interface PaginationLinksJsonApi {

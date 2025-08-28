@@ -1,13 +1,28 @@
 <section class="flex flex-column bg-white flex-1 p-5 gap-4 w-full">
   @if (currentPage()) {
-    <h2>{{ currentPage().title }}</h2>
+    <div class="flex align-items-baseline gap-1">
+      <h2>{{ currentPage().title }}</h2>
+
+      @let helpText = currentPage().helpText;
+
+      @if (helpText) {
+        <osf-info-icon [tooltipText]="helpText" tooltipPosition="top"></osf-info-icon>
+      }
+    </div>
 
     @let questions = currentPage().questions || [];
 
     @if (currentPage().sections?.length) {
       @for (section of currentPage().sections; track section.id) {
         <p-card>
-          <h3 class="mb-2">{{ section.title }}</h3>
+          <div class="flex align-items-baseline gap-1">
+            <h3 class="mb-2">{{ section.title }}</h3>
+
+            @if (section.helpText) {
+              <osf-info-icon [tooltipText]="section.helpText" tooltipPosition="top"></osf-info-icon>
+            }
+          </div>
+
           @if (section.description) {
             <p class="mb-3">{{ section.description }}</p>
           }
@@ -20,18 +35,21 @@
 
     <ng-template #questionList let-questions>
       @for (q of questions; track q.id) {
-        <form [formGroup]="stepForm">
+        <form class="mb-4" [formGroup]="stepForm">
           <p-card>
             <label [for]="q.groupKey">
-              <h3 class="mb-2">
-                {{ q.displayText }}
-                @if (q.required) {
-                  <span class="text-red-500">*</span>
+              <div class="flex align-items-baseline gap-1">
+                <h3 class="mb-2">
+                  {{ q.displayText }}
+                  @if (q.required) {
+                    <span class="text-red-500">*</span>
+                  }
+                </h3>
+
+                @if (q.helpText) {
+                  <osf-info-icon [tooltipText]="q.helpText" tooltipPosition="top"></osf-info-icon>
                 }
-              </h3>
-              @if (q.helpText) {
-                <p class="mb-3">{{ q.helpText }}</p>
-              }
+              </div>
               @if (q.paragraphText) {
                 <p class="mb-3">{{ q.paragraphText }}</p>
               }
@@ -88,7 +106,7 @@
                       ></p-radioButton>
                       <label [for]="option.value" class="ml-2">{{ option.label }}</label>
                       @if (option.helpText) {
-                        <osf-info-icon [tooltipText]="option.helpText"></osf-info-icon>
+                        <osf-info-icon [tooltipText]="option.helpText" tooltipPosition="top"></osf-info-icon>
                       }
                     </div>
                   }
@@ -113,7 +131,7 @@
                       ></p-checkbox>
                       <label [for]="option.value" class="ml-2">{{ option.label }}</label>
                       @if (option.helpText) {
-                        <osf-info-icon [tooltipText]="option.helpText"></osf-info-icon>
+                        <osf-info-icon [tooltipText]="option.helpText" tooltipPosition="top"></osf-info-icon>
                       }
                     </div>
                   }
@@ -180,6 +198,7 @@
       }
     </ng-template>
   }
+
   <div class="flex justify-content-end">
     <p-button
       type="button"

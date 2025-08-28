@@ -140,12 +140,14 @@ export class AddonsComponent {
   }
 
   constructor() {
+    // TODO There should not be three effects
     effect(() => {
       if (this.currentUser()) {
         this.actions.getAddonsUserReference();
       }
     });
 
+    // TODO There should not be three effects
     effect(() => {
       if (this.currentUser() && this.userReferenceId()) {
         const action = this.currentAction();
@@ -157,6 +159,7 @@ export class AddonsComponent {
       }
     });
 
+    // TODO There should not be three effects
     effect(() => {
       if (this.currentUser() && this.userReferenceId()) {
         this.fetchAllAuthorizedAddons(this.userReferenceId());

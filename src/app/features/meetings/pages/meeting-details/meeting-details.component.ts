@@ -25,14 +25,14 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { MEETING_SUBMISSIONS_TABLE_PARAMS } from '@osf/features/meetings/constants';
-import { MeetingSubmission } from '@osf/features/meetings/models';
-import { GetMeetingById, GetMeetingSubmissions, MeetingsSelectors } from '@osf/features/meetings/store';
-import { parseQueryFilterParams } from '@osf/shared/helpers/http.helper';
-import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
-import { SortOrder } from '@shared/enums';
-import { QueryParams, TableParameters } from '@shared/models';
-import { SearchFilters } from '@shared/models/filters';
+import { SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
+import { SortOrder } from '@osf/shared/enums';
+import { parseQueryFilterParams } from '@osf/shared/helpers';
+import { QueryParams, SearchFilters, TableParameters } from '@osf/shared/models';
+
+import { MEETING_SUBMISSIONS_TABLE_PARAMS } from '../../constants';
+import { MeetingSubmission } from '../../models';
+import { GetMeetingById, GetMeetingSubmissions, MeetingsSelectors } from '../../store';
 
 @Component({
   selector: 'osf-meeting-details',

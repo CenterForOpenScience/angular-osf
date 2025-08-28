@@ -1,4 +1,4 @@
-import { SubscriptionFrequency } from '@shared/enums';
+import { SubscriptionFrequency } from '@osf/shared/enums';
 
 export interface NotificationSubscriptionGetResponseJsonApi {
   id: string;

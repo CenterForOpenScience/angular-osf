@@ -1,10 +1,10 @@
-import { AsyncStateModel, Institution } from '@shared/models';
+import { AsyncStateModel, IdName, Institution } from '@shared/models';
 
-import { AccountEmail, AccountSettings, ExternalIdentity, Region } from '../models';
+import { AccountEmail, AccountSettings, ExternalIdentity } from '../models';
 
 export interface AccountSettingsStateModel {
   emails: AsyncStateModel<AccountEmail[]>;
-  regions: Region[];
+  regions: IdName[];
   externalIdentities: ExternalIdentity[];
   accountSettings: AccountSettings;
   userInstitutions: Institution[];

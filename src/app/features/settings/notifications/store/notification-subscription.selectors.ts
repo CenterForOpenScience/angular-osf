@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { NotificationSubscription } from '../models';
+import { NotificationSubscription } from '@osf/shared/models';
 
 import { NotificationSubscriptionStateModel } from './notification-subscription.model';
 import { NotificationSubscriptionState } from './notification-subscription.state';
@@ -9,11 +9,6 @@ export class NotificationSubscriptionSelectors {
   @Selector([NotificationSubscriptionState])
   static getAllGlobalNotificationSubscriptions(state: NotificationSubscriptionStateModel): NotificationSubscription[] {
     return state.notificationSubscriptions.data;
-  }
-
-  @Selector([NotificationSubscriptionState])
-  static getNotificationSubscriptionsByNodeId(state: NotificationSubscriptionStateModel): NotificationSubscription[] {
-    return state.notificationSubscriptionsByNodeId.data;
   }
 
   @Selector([NotificationSubscriptionState])

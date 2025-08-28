@@ -4,14 +4,6 @@ import { SubscriptionEventModel } from '../models';
 
 export const SUBSCRIPTION_EVENTS: SubscriptionEventModel[] = [
   {
-    event: SubscriptionEvent.GlobalCommentReplies,
-    labelKey: 'settings.notifications.notificationPreferences.items.replies',
-  },
-  {
-    event: SubscriptionEvent.GlobalComments,
-    labelKey: 'settings.notifications.notificationPreferences.items.comments',
-  },
-  {
     event: SubscriptionEvent.GlobalFileUpdated,
     labelKey: 'settings.notifications.notificationPreferences.items.files',
   },

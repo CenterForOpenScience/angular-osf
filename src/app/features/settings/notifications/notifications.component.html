@@ -1,4 +1,4 @@
-<osf-sub-header [title]="'settings.notifications.header.title' | translate" [icon]="'fas fa-gear'" />
+<osf-sub-header [title]="'navigation.notifications' | translate" [icon]="'fas fa-gear'" />
 
 <div class="flex flex-column p-2 bg-white flex-1 gap-4 md:p-3 xl:p-4">
   @if (!isEmailPreferencesLoading()) {
@@ -72,7 +72,14 @@
 
   @if (!isNotificationSubscriptionsLoading()) {
     <section class="notification-item flex flex-column gap-4 p-3 md:p-4">
-      <h2>{{ 'settings.notifications.notificationPreferences.title' | translate }}</h2>
+      <div class="flex align-items-baseline gap-1">
+        <h2>{{ 'settings.notifications.notificationPreferences.title' | translate }}</h2>
+
+        <osf-info-icon
+          [tooltipText]="'settings.notifications.notificationPreferences.tooltipText' | translate"
+          tooltipPosition="bottom"
+        ></osf-info-icon>
+      </div>
 
       <p>{{ 'settings.notifications.notificationPreferences.note' | translate }}</p>
 

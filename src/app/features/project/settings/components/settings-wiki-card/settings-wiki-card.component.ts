@@ -23,6 +23,7 @@ export class SettingsWikiCardComponent {
   wikiEnabled = input.required<boolean>();
   anyoneCanEditWiki = input.required<boolean>();
   title = input.required<string>();
+  isPublic = input(false);
 
   allAccordionData: RightControl[] = [];
 
@@ -35,8 +36,8 @@ export class SettingsWikiCardComponent {
           value: anyoneCanEditWiki,
           type: 'dropdown',
           options: [
-            { label: 'myProjects.settings.contributorsOption', value: true },
-            { label: 'myProjects.settings.anyoneOption', value: false },
+            { label: 'myProjects.settings.contributorsOption', value: false },
+            { label: 'myProjects.settings.anyoneOption', value: true },
           ],
         },
       ];
