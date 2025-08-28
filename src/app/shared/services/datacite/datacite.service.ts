@@ -1,4 +1,4 @@
-import { EMPTY, Observable } from 'rxjs';
+import { EMPTY, map, Observable } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -60,6 +60,10 @@ export class DataciteService {
     const headers = {
       'Content-Type': 'application/json',
     };
-    return this.#http.post<void>(this.#environment.dataciteTrackerAddress, payload, { headers });
+    return this.#http.post(this.#environment.dataciteTrackerAddress, payload, { headers }).pipe(
+      map(() => {
+        return;
+      })
+    );
   }
 }

@@ -13,13 +13,13 @@ describe('DataciteService', () => {
 
   const dataciteTrackerAddress = 'https://tracker.test';
   const dataciteTrackerRepoId = 'repo-123';
-  describe('proper configuration', () => {
+  describe('with proper configuration', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         providers: [
           DataciteService,
-          provideHttpClient(), // new style http provider
-          provideHttpClientTesting(), // testing provider
+          provideHttpClient(),
+          provideHttpClientTesting(),
           {
             provide: ENVIRONMENT,
             useValue: {
@@ -38,13 +38,11 @@ describe('DataciteService', () => {
       httpMock.verify();
     });
 
-    it('should be created', () => {
-      expect(service).toBeTruthy();
-    });
-
     it('logView should POST with correct payload', () => {
       const doi = '10.1234/abcd';
-      service.logView(doi).subscribe();
+      service.logView(doi).subscribe({
+        next: (result) => expect(result).toBeUndefined(),
+      });
 
       const req = httpMock.expectOne(dataciteTrackerAddress);
       expect(req.request.method).toBe('POST');
@@ -74,26 +72,20 @@ describe('DataciteService', () => {
 
     it('should return EMPTY when doi is missing', (done: () => void) => {
       service.logView('').subscribe({
-        complete: () => done(),
-      });
-      httpMock.expectNone(dataciteTrackerAddress);
-    });
-
-    it('should return EMPTY when doi is missing', (done: () => void) => {
-      service.logView('').subscribe({
+        next: (result) => expect(result).toBeUndefined(),
         complete: () => done(),
       });
       httpMock.expectNone(dataciteTrackerAddress);
     });
   });
 
-  describe('', () => {
+  describe('on local setup (without dataciteTrackerRepoId configured)', () => {
     beforeEach(() => {
       TestBed.configureTestingModule({
         providers: [
           DataciteService,
-          provideHttpClient(), // new style http provider
-          provideHttpClientTesting(), // testing provider
+          provideHttpClient(),
+          provideHttpClientTesting(),
           {
             provide: ENVIRONMENT,
             useValue: {
@@ -108,11 +100,16 @@ describe('DataciteService', () => {
       httpMock = TestBed.inject(HttpTestingController);
     });
 
-    it('should return EMPTY when dataciteTrackerdataciteTrackerRepoId is missing', (done: () => void) => {
+    it('should return EMPTY when dataciteTrackerRepoId is missing', (done: () => void) => {
       service.logView('10.1234/abcd').subscribe({
+        next: (result) => expect(result).toBeUndefined(),
         complete: () => done(),
       });
       httpMock.expectNone(dataciteTrackerAddress);
+    });
+
+    afterEach(() => {
+      httpMock.verify();
     });
   });
 });
