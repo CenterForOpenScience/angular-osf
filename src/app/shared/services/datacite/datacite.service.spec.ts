@@ -58,7 +58,9 @@ describe('DataciteService', () => {
 
     it('logDownload should POST with correct payload', () => {
       const doi = '10.1234/abcd';
-      service.logDownload(doi).subscribe();
+      service.logDownload(doi).subscribe({
+        next: (result) => expect(result).toBeUndefined(),
+      });
 
       const req = httpMock.expectOne(dataciteTrackerAddress);
       expect(req.request.body).toEqual({
