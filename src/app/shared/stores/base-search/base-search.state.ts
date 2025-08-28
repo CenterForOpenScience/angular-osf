@@ -5,14 +5,15 @@ import { catchError, EMPTY, forkJoin, of, tap } from 'rxjs';
 import { inject } from '@angular/core';
 
 import { ResourcesData } from '@osf/features/search/models';
-import { AsyncStateModel, DiscoverableFilter, SelectOption } from '@osf/shared/models';
+import { AsyncStateModel, DiscoverableFilter, Resource, SelectOption } from '@osf/shared/models';
 import { SearchService } from '@osf/shared/services';
+import { ResourceTab } from '@shared/enums';
 import { StringOrNull } from '@shared/helpers';
 
 export interface BaseSearchStateModel {
-  resources: AsyncStateModel<unknown[]>;
+  resources: AsyncStateModel<Resource[]>;
   filters: DiscoverableFilter[];
-  filterValues: Record<string, string | null>;
+  filterValues: Record<string, StringOrNull>;
   filterOptionsCache: Record<string, SelectOption[]>;
   filterSearchCache: Record<string, SelectOption[]>;
   filterPaginationCache: Record<string, string>;
@@ -22,6 +23,7 @@ export interface BaseSearchStateModel {
   first: string;
   next: string;
   previous: string;
+  resourceType: ResourceTab;
 }
 
 export abstract class BaseSearchState<T extends BaseSearchStateModel> {

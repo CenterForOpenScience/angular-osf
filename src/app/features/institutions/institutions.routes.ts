@@ -4,7 +4,7 @@ import { Routes } from '@angular/router';
 
 import { authGuard } from '@osf/core/guards';
 import { InstitutionsComponent } from '@osf/features/institutions/institutions.component';
-import { InstitutionsSearchState } from '@shared/stores';
+import { InstitutionsSearchState } from '@shared/stores/institutions-search';
 
 import { InstitutionsListComponent, InstitutionsSearchComponent } from './pages';
 

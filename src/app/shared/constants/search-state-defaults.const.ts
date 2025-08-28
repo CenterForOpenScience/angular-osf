@@ -14,7 +14,7 @@ export const searchStateDefaults = {
   resourcesCount: 0,
   searchText: '',
   sortBy: '-relevance',
-  resourceTab: ResourceTab.All,
+  resourceType: ResourceTab.All,
   first: '',
   next: '',
   previous: '',

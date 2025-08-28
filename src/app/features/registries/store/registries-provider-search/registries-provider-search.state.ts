@@ -19,6 +19,7 @@ import {
 import { RegistriesProviderSearchStateModel } from '@osf/features/registries/store/registries-provider-search/registries-provider-search.model';
 import { ResourcesData } from '@osf/features/search/models';
 import { getResourceTypes } from '@osf/shared/helpers';
+import { searchStateDefaults } from '@shared/constants';
 import { ResourceTab } from '@shared/enums';
 import { handleSectionError } from '@shared/helpers';
 import { SearchService } from '@shared/services';
@@ -31,24 +32,14 @@ import { SearchService } from '@shared/services';
       isLoading: false,
       error: null,
     },
-    resources: { data: [], isLoading: false, error: null },
-    filters: [],
-    filterValues: {},
-    filterOptionsCache: {},
     providerIri: '',
-    resourcesCount: 0,
-    searchText: '',
-    sortBy: '-relevance',
-    first: '',
-    next: '',
-    previous: '',
-    resourceType: ResourceTab.All,
+    ...searchStateDefaults,
   },
 })
 @Injectable()
 export class RegistriesProviderSearchState {
-  private readonly searchService = inject(SearchService);
-  providersService = inject(ProvidersService);
+  private searchService = inject(SearchService);
+  private providersService = inject(ProvidersService);
 
   private updateResourcesState(ctx: StateContext<RegistriesProviderSearchStateModel>, response: ResourcesData) {
     const state = ctx.getState();

@@ -36,7 +36,7 @@ export class SearchState extends BaseSearchState<SearchStateModel> {
     const filtersParams = this.buildFiltersParams(state);
     const searchText = state.searchText;
     const sortBy = state.sortBy;
-    const resourceTab = state.resourceTab;
+    const resourceTab = state.resourceType;
     const resourceTypes = getResourceTypes(resourceTab);
 
     return this.searchService
@@ -86,7 +86,7 @@ export class SearchState extends BaseSearchState<SearchStateModel> {
 
   @Action(SetResourceType)
   setResourceTab(ctx: StateContext<SearchStateModel>, action: SetResourceType) {
-    ctx.patchState({ resourceTab: action.resourceTab });
+    ctx.patchState({ resourceType: action.resourceTab });
   }
 
   private buildFiltersParams(state: SearchStateModel): Record<string, string> {

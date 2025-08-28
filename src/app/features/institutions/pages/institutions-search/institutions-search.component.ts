@@ -38,7 +38,7 @@ import {
   UpdateFilterValue,
   UpdateResourceType,
   UpdateSortBy,
-} from '@osf/shared/stores';
+} from '@osf/shared/stores/institutions-search';
 import { StringOrNull } from '@shared/helpers';
 
 @Component({

@@ -34,8 +34,8 @@ export class SearchSelectors {
   }
 
   @Selector([SearchState])
-  static getResourceTab(state: SearchStateModel): ResourceTab {
-    return state.resourceTab;
+  static getResourceType(state: SearchStateModel): ResourceTab {
+    return state.resourceType;
   }
 
   @Selector([SearchState])

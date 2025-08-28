@@ -92,7 +92,7 @@ export class SearchComponent implements OnInit {
   first = select(SearchSelectors.getFirst);
   next = select(SearchSelectors.getNext);
   previous = select(SearchSelectors.getPrevious);
-  resourceType = select(SearchSelectors.getResourceTab);
+  resourceType = select(SearchSelectors.getResourceType);
 
   readonly resourceTabOptions = SEARCH_TAB_OPTIONS;
 

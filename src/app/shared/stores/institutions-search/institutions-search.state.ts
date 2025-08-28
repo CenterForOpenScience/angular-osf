@@ -1,15 +1,14 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ResourcesData } from '@osf/features/search/models';
-import { ResourceTab } from '@osf/shared/enums';
 import { getResourceTypes } from '@osf/shared/helpers';
 import { Institution } from '@osf/shared/models';
 import { InstitutionsService } from '@osf/shared/services';
+import { searchStateDefaults } from '@shared/constants';
 import { BaseSearchState } from '@shared/stores/base-search';
 
 import {
@@ -31,28 +30,18 @@ import { InstitutionsSearchModel } from './institutions-search.model';
   name: 'institutionsSearch',
   defaults: {
     institution: { data: {} as Institution, isLoading: false, error: null },
-    resources: { data: [], isLoading: false, error: null },
-    filters: [],
-    filterValues: {},
-    filterOptionsCache: {},
-    filterSearchCache: {},
-    filterPaginationCache: {},
     providerIri: '',
-    resourcesCount: 0,
-    searchText: '',
-    sortBy: '-relevance',
-    first: '',
-    next: '',
-    previous: '',
-    resourceType: ResourceTab.All,
+    ...searchStateDefaults,
   },
 })
 @Injectable()
 export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchModel> {
   private readonly institutionsService = inject(InstitutionsService);
 
-  protected loadResources(ctx: StateContext<InstitutionsSearchModel>): Observable<ResourcesData> {
+  @Action(FetchResources)
+  fetchResources(ctx: StateContext<InstitutionsSearchModel>) {
     const state = ctx.getState();
+    if (!state.providerIri) return;
 
     ctx.patchState({ resources: { ...state.resources, isLoading: true } });
     const filtersParams = this.buildFiltersParams(state);
@@ -66,27 +55,8 @@ export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchM
       .pipe(tap((response) => this.updateResourcesState(ctx, response)));
   }
 
-  private buildFiltersParams(state: InstitutionsSearchModel): Record<string, string> {
-    const filtersParams: Record<string, string> = {};
-
-    filtersParams['cardSearchFilter[affiliation][]'] = state.providerIri;
-
-    //TODO see search state
-    Object.entries(state.filterValues).forEach(([key, value]) => {
-      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
-    });
-
-    return filtersParams;
-  }
-
-  @Action(FetchResources)
-  getResources(ctx: StateContext<InstitutionsSearchModel>) {
-    if (!ctx.getState().providerIri) return;
-    return this.loadResources(ctx);
-  }
-
   @Action(FetchResourcesByLink)
-  getResourcesByLink(ctx: StateContext<InstitutionsSearchModel>, action: FetchResourcesByLink) {
+  fetchResourcesByLink(ctx: StateContext<InstitutionsSearchModel>, action: FetchResourcesByLink) {
     return this.handleFetchResourcesByLink(ctx, action.link);
   }
 
@@ -148,5 +118,18 @@ export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchM
   @Action(UpdateResourceType)
   updateResourceType(ctx: StateContext<InstitutionsSearchModel>, action: UpdateResourceType) {
     ctx.patchState({ resourceType: action.type });
+  }
+
+  private buildFiltersParams(state: InstitutionsSearchModel): Record<string, string> {
+    const filtersParams: Record<string, string> = {};
+
+    filtersParams['cardSearchFilter[affiliation][]'] = state.providerIri;
+
+    //TODO see search state
+    Object.entries(state.filterValues).forEach(([key, value]) => {
+      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
+    });
+
+    return filtersParams;
   }
 }
