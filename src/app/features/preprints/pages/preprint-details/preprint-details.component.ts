@@ -48,6 +48,7 @@ import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/prepri
 import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
 import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
+import { Identifier } from '@shared/models';
 import { MetaTagsService } from '@shared/services';
 import { ContributorsSelectors } from '@shared/stores';
 
@@ -290,12 +291,10 @@ export class PreprintDetailsComponent extends DataciteTrackerComponent implement
     this.actions.resetState();
   }
 
-  protected getDoi(): Observable<string | null> {
-    return this.preprint$.pipe(
-      filter((project) => project != null),
-      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
-    );
+  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
+    return this.preprint$;
   }
+
   fetchPreprintVersion(preprintVersionId: string) {
     const currentUrl = this.router.url;
     const newUrl = currentUrl.replace(/[^/]+$/, preprintVersionId);

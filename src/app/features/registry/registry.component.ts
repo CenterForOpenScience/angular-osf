@@ -1,6 +1,6 @@
 import { select } from '@ngxs/store';
 
-import { filter, map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
@@ -10,6 +10,7 @@ import { RouterOutlet } from '@angular/router';
 import { pathJoin } from '@osf/shared/helpers';
 import { MetaTagsService } from '@osf/shared/services';
 import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
+import { Identifier } from '@shared/models';
 
 import { RegistryOverviewSelectors } from './store/registry-overview';
 
@@ -42,11 +43,8 @@ export class RegistryComponent extends DataciteTrackerComponent {
     this.setupDataciteViewTrackerEffect().subscribe();
   }
 
-  protected getDoi(): Observable<string | null> {
-    return this.registry$.pipe(
-      filter((project) => project != null),
-      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
-    );
+  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
+    return this.registry$;
   }
 
   private setMetaTags(): void {
