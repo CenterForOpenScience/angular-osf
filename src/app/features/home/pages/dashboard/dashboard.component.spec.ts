@@ -5,10 +5,10 @@ import { Store } from '@ngxs/store';
 import { of } from 'rxjs';
 import { By } from '@angular/platform-browser';
 import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
-import {MOCK_PROJECTS} from '@shared/mocks/dasboard.mock';
 import {MyResourcesSelectors} from '@shared/stores';
 import {LoadingSpinnerComponent, MyProjectsTableComponent, SubHeaderComponent} from '@shared/components';
 import { MockComponents } from 'ng-mocks';
+import {getProjectsMockForComponent} from '@testing/data/addons/dasboard.data';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -22,8 +22,8 @@ describe('DashboardComponent', () => {
 
   beforeEach(async () => {
     (storeMock.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === MyResourcesSelectors.getProjects) return () => MOCK_PROJECTS;
-      if (selector === MyResourcesSelectors.getTotalProjects) return () => MOCK_PROJECTS.length;
+      if (selector === MyResourcesSelectors.getProjects) return () => getProjectsMockForComponent();
+      if (selector === MyResourcesSelectors.getTotalProjects) return () => getProjectsMockForComponent().length;
       if (selector === MyResourcesSelectors.getProjectsLoading) return () => false;
       return () => null;
     });
