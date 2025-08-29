@@ -61,7 +61,7 @@ export class DashboardComponent implements OnInit {
   });
 
   protected readonly existsProjects = computed(() => {
-    return this.projects().length;
+    return this.projects().length || !! this.searchControl.value?.length;
   });
 
   dialogRef: DynamicDialogRef | null = null;
