@@ -7,7 +7,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal, viewChild } from '@angular/core';
 
-import { ProjectOverview } from '@osf/features/project/overview/models';
+import { Metadata } from '@osf/features/metadata/models';
 import { LicenseComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { License, LicenseOptions } from '@shared/models';
 import { LicensesSelectors, LoadAllLicenses } from '@shared/stores/licenses';
@@ -31,38 +31,43 @@ export class LicenseDialogComponent implements OnInit {
 
   selectedLicenseId = signal<string | null>(null);
   selectedLicenseOptions = signal<LicenseOptions | null>(null);
-  currentProject: ProjectOverview | null = null;
+  metadata: Metadata | null = null;
   isSubmitting = signal<boolean>(false);
 
   licenseComponent = viewChild<LicenseComponent>('licenseComponent');
 
+  get isInvalid(): boolean {
+    return (
+      !!this.licenseComponent()?.selectedLicense()?.requiredFields?.length &&
+      !!this.licenseComponent()?.licenseForm.invalid
+    );
+  }
+
   ngOnInit(): void {
     this.actions.loadLicenses();
-    this.currentProject = this.config.data?.currentProject || null;
-    if (this.currentProject?.license) {
-      this.selectedLicenseId.set(this.currentProject.license.id || null);
-      if (this.currentProject.nodeLicense) {
+    this.metadata = this.config.data?.metadata || null;
+    if (this.metadata?.license) {
+      this.selectedLicenseId.set(this.metadata.license.id || null);
+      if (this.metadata.nodeLicense) {
         this.selectedLicenseOptions.set({
-          copyrightHolders: this.currentProject.nodeLicense.copyrightHolders?.join(', ') || '',
-          year: this.currentProject.nodeLicense.year || new Date().getFullYear().toString(),
+          copyrightHolders: this.metadata.nodeLicense.copyrightHolders?.join(', ') || '',
+          year: this.metadata.nodeLicense.year || new Date().getFullYear().toString(),
         });
       }
     }
   }
 
   onSelectLicense(license: License): void {
+    console.log(license);
     this.selectedLicenseId.set(license.id);
   }
 
   onCreateLicense(event: { id: string; licenseOptions: LicenseOptions }): void {
     const selectedLicense = this.licenses().find((license) => license.id === event.id);
-
     if (selectedLicense) {
       this.dialogRef.close({
-        licenseName: selectedLicense.name,
         licenseId: selectedLicense.id,
         licenseOptions: event.licenseOptions,
-        projectId: this.currentProject?.id,
       });
     }
 
@@ -70,13 +75,6 @@ export class LicenseDialogComponent implements OnInit {
   }
 
   save(): void {
-    if (
-      this.licenseComponent()?.selectedLicense()!.requiredFields.length &&
-      this.licenseComponent()?.licenseForm.invalid
-    ) {
-      return;
-    }
-
     const selectedLicenseId = this.selectedLicenseId();
     if (!selectedLicenseId) return;
 
@@ -89,9 +87,7 @@ export class LicenseDialogComponent implements OnInit {
       this.licenseComponent()?.saveLicense();
     } else {
       this.dialogRef.close({
-        licenseName: selectedLicense.name,
         licenseId: selectedLicense.id,
-        projectId: this.currentProject?.id,
       });
     }
   }

@@ -8,23 +8,31 @@ import {
   Component,
   CUSTOM_ELEMENTS_SCHEMA,
   effect,
+  ElementRef,
   input,
   OnInit,
   output,
   signal,
+  viewChild,
   ViewEncapsulation,
 } from '@angular/core';
 
-import { CEDAR_CONFIG } from '@osf/features/project/metadata/constants';
-import { CedarMetadataHelper } from '@osf/features/project/metadata/helpers';
+import { CEDAR_CONFIG } from '@osf/features/metadata/constants';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
   CedarRecordDataBinding,
-} from '@osf/features/project/metadata/models';
+} from '@osf/features/metadata/models';
+import { CedarMetadataHelper } from '@osf/features/project/metadata/helpers';
+
+import { CEDAR_VIEWER_CONFIG } from './../../../../../features/metadata/constants/cedar-config.const';
 
 interface CedarEditorElement extends HTMLElement {
   currentMetadata?: unknown;
+  instanceObject?: unknown;
+  dataQualityReport?: {
+    isValid: boolean;
+  };
 }
 
 @Component({
@@ -49,14 +57,24 @@ export class CedarTemplateFormComponent implements OnInit {
   formData = signal<Record<string, unknown>>({});
 
   cedarConfig = CEDAR_CONFIG;
+  cedarViewerConfig = CEDAR_VIEWER_CONFIG;
+  isValid = false;
+  cedarEditor = viewChild<ElementRef<CedarEditorElement>>('cedarEditor');
 
   constructor() {
     effect(() => {
-      this.cedarConfig.readOnlyMode = this.readonly() ?? false;
-
       const tpl = this.template();
       if (tpl?.attributes?.template) {
         this.initializeFormData();
+      }
+    });
+
+    effect(() => {
+      const editor = this.cedarEditor()?.nativeElement;
+      if (editor) {
+        if (this.existingRecord()?.attributes?.metadata) {
+          editor.instanceObject = this.existingRecord()?.attributes?.metadata;
+        }
       }
     });
   }
@@ -75,17 +93,22 @@ export class CedarTemplateFormComponent implements OnInit {
         this.formData.set(currentData as Record<string, unknown>);
       }
     }
+    this.validateCedarMetadata();
+  }
+
+  validateCedarMetadata() {
+    const report = this.cedarEditor()?.nativeElement.dataQualityReport;
+    this.isValid = !!report?.isValid;
   }
 
   editModeEmit(): void {
     this.editMode.emit();
-    this.cedarConfig = { ...this.cedarConfig, readOnlyMode: false };
   }
 
   onSubmit() {
-    const cedarEditor = document.querySelector('cedar-embeddable-editor') as CedarEditorElement;
-    if (cedarEditor && typeof cedarEditor.currentMetadata !== 'undefined') {
-      const finalData = { data: cedarEditor.currentMetadata, id: this.template().id };
+    const editor = this.cedarEditor()?.nativeElement;
+    if (editor && typeof editor.currentMetadata !== 'undefined') {
+      const finalData = { data: editor.currentMetadata, id: this.template().id, isPublished: this.isValid };
       this.formData.set(finalData);
       this.emitData.emit(finalData as CedarRecordDataBinding);
     }

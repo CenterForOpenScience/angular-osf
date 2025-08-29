@@ -1,7 +1,8 @@
 @use "assets/styles/mixins" as mix;
 
 cedar-embeddable-editor,
-cedar-embeddable-metadata-editor {
+cedar-embeddable-metadata-editor,
+cedar-artifact-viewer {
   .template-card {
     margin: 0;
     padding: 0 1.5rem;
@@ -12,6 +13,12 @@ cedar-embeddable-metadata-editor {
     box-sizing: border-box;
     font-family: var(--openSans);
     font-size: 1rem;
+  }
+
+  .required {
+    fa-icon {
+      font-size: 0.5rem;
+    }
   }
 
   app-cedar-static-rich-text > p > div,
@@ -112,6 +119,19 @@ cedar-embeddable-metadata-editor {
 
       input {
         padding-top: 13px;
+      }
+    }
+  }
+}
+
+cedar-artifact-viewer {
+  .mat-form-field-appearance-outline {
+    .mat-form-field-infix {
+      padding-bottom: 13px !important;
+      border-top: 0;
+
+      input {
+        padding-top: 0;
       }
     }
   }

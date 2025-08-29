@@ -8,7 +8,7 @@
           </h2>
 
           <p class="m-0 text-color-secondary">
-            {{ currentInstance().dateCreated | date: 'MMM d, y, h:mm a' }}
+            {{ metadata()?.dateCreated | date: 'MMM d, y, h:mm a' }}
           </p>
         </div>
 
@@ -18,54 +18,57 @@
           </h2>
 
           <p class="m-0 text-color-secondary">
-            {{ currentInstance().dateModified | date: 'MMM d, y, h:mm a' }}
+            {{ metadata()?.dateModified | date: 'MMM d, y, h:mm a' }}
           </p>
         </div>
       </div>
     </p-card>
 
-    <osf-project-metadata-contributors
+    <osf-metadata-contributors
       [readonly]="readonly()"
       (openEditContributorDialog)="openEditContributorDialog.emit()"
-      [contributors]="currentInstance().contributors!"
+      [contributors]="metadata()?.contributors || []"
     />
 
-    <osf-project-metadata-description
+    <osf-metadata-description
       [readonly]="readonly()"
       (openEditDescriptionDialog)="openEditDescriptionDialog.emit()"
-      [description]="currentInstance().description!"
+      [description]="metadata()?.description!"
     />
 
-    <osf-project-metadata-resource-information
+    <osf-metadata-resource-information
       [readonly]="readonly()"
       (openEditResourceInformationDialog)="openEditResourceInformationDialog.emit()"
+      (showResourceInfo)="showResourceInfo.emit()"
       [customItemMetadata]="customItemMetadata()!"
     />
 
-    <osf-project-metadata-funding
+    <osf-metadata-funding
       [readonly]="readonly()"
       (openEditFundingDialog)="openEditFundingDialog.emit()"
-      [funders]="customItemMetadata().funders!"
+      [funders]="customItemMetadata()?.funders!"
     />
 
-    <osf-project-metadata-affiliated-institutions
+    <osf-metadata-affiliated-institutions
       [readonly]="readonly()"
       (openEditAffiliatedInstitutionsDialog)="openEditAffiliatedInstitutionsDialog.emit()"
-      [affiliatedInstitutions]="currentInstance().affiliatedInstitutions!"
+      [affiliatedInstitutions]="affiliatedInstitutions()"
     />
   </div>
 
   <div class="col-12 lg:col-6 flex flex-column gap-4">
-    <osf-project-metadata-license
+    <osf-metadata-license
       (openEditLicenseDialog)="openEditLicenseDialog.emit()"
-      [hideEditLicense]="hideEditDoiAndLicence() || readonly()"
-      [license]="currentInstance().license!"
+      [hideEditLicense]="hideEditLicence() || readonly()"
+      [license]="metadata()?.license!"
     />
 
-    <osf-project-metadata-publication-doi
+    <osf-metadata-publication-doi
       (openEditPublicationDoiDialog)="handleEditDoi.emit()"
-      [hideEditDoi]="hideEditDoiAndLicence() || readonly()"
-      [identifiers]="currentInstance().identifiers!"
+      [hideEditDoi]="hideEditDoi() || readonly()"
+      [identifiers]="metadata()?.identifiers!"
+      [publicationDoi]="metadata()?.publicationDoi || null"
+      [resourceType]="resourceType()"
     />
 
     <p-card>
@@ -75,12 +78,12 @@
         <osf-tags-input
           [readonly]="readonly()"
           (tagsChanged)="tagsChanged.emit($event)"
-          [tags]="currentInstance().tags || []"
+          [tags]="metadata()?.tags || []"
         />
       </div>
     </p-card>
 
-    <osf-project-metadata-subjects
+    <osf-metadata-subjects
       [readonly]="readonly()"
       (getSubjectChildren)="getSubjectChildren.emit($event)"
       (searchSubjects)="searchSubjects.emit($event)"

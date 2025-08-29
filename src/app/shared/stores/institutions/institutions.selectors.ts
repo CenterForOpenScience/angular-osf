@@ -41,6 +41,6 @@ export class InstitutionsSelectors {
 
   @Selector([InstitutionsState])
   static areResourceInstitutionsSubmitting(state: InstitutionsStateModel) {
-    return state.resourceInstitutions.isSubmitting;
+    return state.resourceInstitutions.isSubmitting || false;
   }
 }

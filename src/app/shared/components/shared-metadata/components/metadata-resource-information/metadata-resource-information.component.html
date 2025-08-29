@@ -1,0 +1,37 @@
+<p-card>
+  <div class="flex justify-content-between align-items-center">
+    <h2>
+      {{ 'project.overview.metadata.resourceInformation' | translate }}
+      <p-button
+        icon="fas fa-info-circle blue-icon"
+        severity="secondary"
+        text
+        (onClick)="showResourceInfo.emit()"
+      ></p-button>
+    </h2>
+
+    @if (!readonly()) {
+      <p-button
+        severity="secondary"
+        [label]="'common.buttons.edit' | translate"
+        (click)="openEditResourceInformationDialog.emit()"
+      ></p-button>
+    }
+  </div>
+
+  @if (customItemMetadata()?.resourceTypeGeneral) {
+    <div class="flex-column flex gap-2">
+      <p class="inline-block font-bold">
+        <span> {{ 'project.overview.metadata.resourceType' | translate }}: </span>
+        <span>{{ getResourceTypeName(customItemMetadata()?.resourceTypeGeneral!) }}</span>
+      </p>
+
+      <p class="inline-block font-bold">
+        <span> {{ 'project.overview.metadata.resourceLanguage' | translate }}: </span>
+        <span>{{ getLanguageName(customItemMetadata()?.language || '') }}</span>
+      </p>
+    </div>
+  } @else {
+    <p class="text-color-secondary">{{ 'project.overview.metadata.noResourceInformation' | translate }}</p>
+  }
+</p-card>

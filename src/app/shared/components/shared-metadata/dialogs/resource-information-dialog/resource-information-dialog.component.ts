@@ -7,9 +7,8 @@ import { Select } from 'primeng/select';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { RESOURCE_TYPE_OPTIONS } from '@osf/features/project/metadata/constants';
-import { CustomItemMetadataRecord } from '@osf/features/project/metadata/models';
-import { ProjectOverview } from '@osf/features/project/overview/models';
+import { RESOURCE_TYPE_OPTIONS } from '@osf/features/metadata/constants';
+import { CustomItemMetadataRecord } from '@osf/features/metadata/models';
 import { languageCodes } from '@shared/constants';
 import { LanguageCodeModel } from '@shared/models';
 
@@ -45,10 +44,6 @@ export class ResourceInformationDialogComponent implements OnInit {
     value: lang.code,
   }));
 
-  get currentProject(): ProjectOverview | null {
-    return this.config.data?.currentProject || null;
-  }
-
   get customItemMetadata(): CustomItemMetadataRecord | null {
     return this.config.data?.customItemMetadata || null;
   }
@@ -57,11 +52,15 @@ export class ResourceInformationDialogComponent implements OnInit {
     return !!this.customItemMetadata;
   }
 
+  getResourceTypeName(resourceType: string): string {
+    return Object.fromEntries(RESOURCE_TYPE_OPTIONS.map((item) => [item.value, item.label]))[resourceType];
+  }
+
   ngOnInit(): void {
     const metadata = this.customItemMetadata;
     if (metadata) {
       this.resourceForm.patchValue({
-        resourceType: metadata.resource_type_general || '',
+        resourceType: metadata.resourceTypeGeneral || '',
         resourceLanguage: metadata.language || '',
       });
     }
@@ -71,9 +70,8 @@ export class ResourceInformationDialogComponent implements OnInit {
     if (this.resourceForm.valid) {
       const formValue = this.resourceForm.getRawValue();
       this.dialogRef.close({
-        resourceType: formValue.resourceType,
-        resourceLanguage: formValue.resourceLanguage,
-        projectId: this.currentProject?.id,
+        resourceTypeGeneral: formValue.resourceType,
+        language: formValue.resourceLanguage,
       });
     }
   }

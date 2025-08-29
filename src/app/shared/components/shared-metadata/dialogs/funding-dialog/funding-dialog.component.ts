@@ -17,12 +17,12 @@ import {
   Funder,
   FunderOption,
   FundingDialogResult,
-  FundingEntryData,
   FundingEntryForm,
   FundingForm,
   SupplementData,
-} from '@osf/features/project/metadata/models';
-import { GetFundersList, ProjectMetadataSelectors } from '@osf/features/project/metadata/store';
+} from '@osf/features/metadata/models';
+import { GetFundersList, MetadataSelectors } from '@osf/features/metadata/store';
+import { CustomValidators } from '@osf/shared/helpers';
 
 @Component({
   selector: 'osf-funding-dialog',
@@ -31,23 +31,25 @@ import { GetFundersList, ProjectMetadataSelectors } from '@osf/features/project/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FundingDialogComponent implements OnInit {
-  protected dialogRef = inject(DynamicDialogRef);
-  protected config = inject(DynamicDialogConfig);
-  protected destroyRef = inject(DestroyRef);
+  dialogRef = inject(DynamicDialogRef);
+  config = inject(DynamicDialogConfig);
+  destroyRef = inject(DestroyRef);
 
-  private searchSubject = new Subject<string>();
-
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getFundersList: GetFundersList,
   });
 
-  protected fundersList = select(ProjectMetadataSelectors.getFundersList);
-  protected fundersLoading = select(ProjectMetadataSelectors.getFundersLoading);
-  protected funderOptions = signal<FunderOption[]>([]);
+  fundersList = select(MetadataSelectors.getFundersList);
+  fundersLoading = select(MetadataSelectors.getFundersLoading);
+  funderOptions = signal<FunderOption[]>([]);
 
   fundingForm = new FormGroup<FundingForm>({
     fundingEntries: new FormArray<FormGroup<FundingEntryForm>>([]),
   });
+
+  private searchSubject = new Subject<string>();
+
+  readonly linkValidators = [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()];
 
   constructor() {
     effect(() => {
@@ -80,12 +82,12 @@ export class FundingDialogComponent implements OnInit {
     if (configFunders && configFunders.length > 0) {
       configFunders.forEach((funder: Funder) => {
         this.addFundingEntry({
-          funderName: funder.funder_name || '',
-          funderIdentifier: funder.funder_identifier || '',
-          funderIdentifierType: funder.funder_identifier_type || 'DOI',
-          awardTitle: funder.award_title || '',
-          awardUri: funder.award_uri || '',
-          awardNumber: funder.award_number || '',
+          funderName: funder.funderName || '',
+          funderIdentifier: funder.funderIdentifier || '',
+          funderIdentifierType: funder.funderIdentifierType || 'DOI',
+          awardTitle: funder.awardTitle || '',
+          awardUri: funder.awardUri || '',
+          awardNumber: funder.awardNumber || '',
         });
       });
     } else {
@@ -95,6 +97,7 @@ export class FundingDialogComponent implements OnInit {
     this.searchSubject
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchQuery) => {
+        console.log('Searching funders for:', searchQuery);
         this.actions.getFundersList(searchQuery);
       });
   }
@@ -105,24 +108,25 @@ export class FundingDialogComponent implements OnInit {
 
   private createFundingEntryGroup(supplement?: SupplementData): FormGroup<FundingEntryForm> {
     return new FormGroup<FundingEntryForm>({
-      funderName: new FormControl(supplement ? supplement.funderName || '' : '', {
+      funderName: new FormControl(supplement?.funderName ?? '', {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      funderIdentifier: new FormControl(supplement ? supplement.funderIdentifier || '' : '', {
+      funderIdentifier: new FormControl(supplement?.funderIdentifier ?? '', {
         nonNullable: true,
       }),
-      funderIdentifierType: new FormControl(supplement ? supplement.funderIdentifierType || 'DOI' : 'DOI', {
+      funderIdentifierType: new FormControl(supplement?.funderIdentifierType ?? 'DOI', {
         nonNullable: true,
       }),
-      awardTitle: new FormControl(supplement ? supplement.title || supplement.awardTitle || '' : '', {
+      awardTitle: new FormControl(supplement?.title || supplement?.awardTitle || '', {
         nonNullable: true,
         validators: [Validators.required],
       }),
-      awardUri: new FormControl(supplement ? supplement.url || supplement.awardUri || '' : '', {
+      awardUri: new FormControl(supplement?.url || supplement?.awardUri || '', {
         nonNullable: true,
+        validators: this.linkValidators,
       }),
-      awardNumber: new FormControl(supplement ? supplement.awardNumber || '' : '', {
+      awardNumber: new FormControl(supplement?.awardNumber || '', {
         nonNullable: true,
       }),
     });
@@ -154,11 +158,12 @@ export class FundingDialogComponent implements OnInit {
   }
 
   save(): void {
+    console.log('Funding form value:', this.fundingForm.value);
+    console.log('Funding form valid:', this.fundingForm.valid);
     if (this.fundingForm.valid) {
-      const fundingData = this.fundingEntries.value.filter((entry): entry is FundingEntryData =>
+      const fundingData = this.fundingEntries.value.filter((entry): entry is Funder =>
         Boolean(entry && (entry.funderName || entry.awardTitle || entry.awardUri || entry.awardNumber))
       );
-
       const result: FundingDialogResult = {
         fundingEntries: fundingData,
       };

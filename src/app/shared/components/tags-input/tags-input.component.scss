@@ -25,6 +25,7 @@
     font-size: 1rem;
     padding: 0;
     margin: 0;
+    box-shadow: none;
 
     &::placeholder {
       color: var(--p-inputtext-placeholder-color);

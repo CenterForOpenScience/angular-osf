@@ -14,11 +14,11 @@ import {
   FetchUserInstitutions,
   UpdateResourceInstitutions,
 } from './institutions.actions';
-import { DefaultState, InstitutionsStateModel } from './institutions.model';
+import { DefaultInstitutionsState, InstitutionsStateModel } from './institutions.model';
 
 @State<InstitutionsStateModel>({
   name: 'institutions',
-  defaults: { ...DefaultState },
+  defaults: { ...DefaultInstitutionsState },
 })
 @Injectable()
 export class InstitutionsState {

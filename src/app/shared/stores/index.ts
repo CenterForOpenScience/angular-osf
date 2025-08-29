@@ -5,6 +5,7 @@ export * from './collections';
 export * from './contributors';
 export * from './current-resource';
 export * from './duplicates';
+export * from './institutions';
 export * from './institutions-search';
 export * from './licenses';
 export * from './my-resources';

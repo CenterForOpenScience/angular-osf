@@ -46,6 +46,7 @@
     "@ngxs/store": "^19.0.0",
     "@primeng/themes": "^19.0.9",
     "ace-builds": "^1.42.0",
+    "cedar-artifact-viewer": "^0.9.5",
     "cedar-embeddable-editor": "^1.5.0",
     "chart.js": "^4.4.9",
     "diff": "^8.0.2",

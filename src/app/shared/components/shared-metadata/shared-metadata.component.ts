@@ -5,35 +5,36 @@ import { Card } from 'primeng/card';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { CustomItemMetadataRecord } from '@osf/features/project/metadata/models';
-import { ProjectOverview } from '@osf/features/project/overview/models';
-import { TagsInputComponent } from '@shared/components';
-import { SubjectModel } from '@shared/models';
+import { CustomItemMetadataRecord, Metadata } from '@osf/features/metadata/models';
+import { ResourceType } from '@osf/shared/enums';
+import { Institution, SubjectModel } from '@osf/shared/models';
+
+import { TagsInputComponent } from '../tags-input/tags-input.component';
 
 import {
-  ProjectMetadataAffiliatedInstitutionsComponent,
-  ProjectMetadataContributorsComponent,
-  ProjectMetadataDescriptionComponent,
-  ProjectMetadataFundingComponent,
-  ProjectMetadataLicenseComponent,
-  ProjectMetadataPublicationDoiComponent,
-  ProjectMetadataResourceInformationComponent,
-  ProjectMetadataSubjectsComponent,
+  MetadataAffiliatedInstitutionsComponent,
+  MetadataContributorsComponent,
+  MetadataDescriptionComponent,
+  MetadataFundingComponent,
+  MetadataLicenseComponent,
+  MetadataPublicationDoiComponent,
+  MetadataResourceInformationComponent,
+  MetadataSubjectsComponent,
 } from './components';
 
 @Component({
   selector: 'osf-shared-metadata',
   imports: [
-    ProjectMetadataSubjectsComponent,
+    MetadataSubjectsComponent,
     TranslatePipe,
     TagsInputComponent,
-    ProjectMetadataPublicationDoiComponent,
-    ProjectMetadataLicenseComponent,
-    ProjectMetadataAffiliatedInstitutionsComponent,
-    ProjectMetadataFundingComponent,
-    ProjectMetadataResourceInformationComponent,
-    ProjectMetadataDescriptionComponent,
-    ProjectMetadataContributorsComponent,
+    MetadataPublicationDoiComponent,
+    MetadataLicenseComponent,
+    MetadataAffiliatedInstitutionsComponent,
+    MetadataDescriptionComponent,
+    MetadataContributorsComponent,
+    MetadataResourceInformationComponent,
+    MetadataFundingComponent,
     DatePipe,
     Card,
   ],
@@ -41,16 +42,20 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SharedMetadataComponent {
-  currentInstance = input.required<ProjectOverview>();
-  customItemMetadata = input.required<CustomItemMetadataRecord>();
+  metadata = input.required<Metadata | null>();
+  customItemMetadata = input.required<CustomItemMetadataRecord | null>();
   selectedSubjects = input.required<SubjectModel[]>();
   isSubjectsUpdating = input.required<boolean>();
-  hideEditDoiAndLicence = input<boolean>(false);
+  hideEditDoi = input<boolean>(false);
+  hideEditLicence = input<boolean>(false);
+  resourceType = input<ResourceType>(ResourceType.Project);
   readonly = input<boolean>(false);
+  affiliatedInstitutions = input<Institution[]>([]);
 
   openEditContributorDialog = output<void>();
   openEditDescriptionDialog = output<void>();
   openEditResourceInformationDialog = output<void>();
+  showResourceInfo = output<void>();
   openEditFundingDialog = output<void>();
   openEditAffiliatedInstitutionsDialog = output<void>();
   openEditLicenseDialog = output<void>();

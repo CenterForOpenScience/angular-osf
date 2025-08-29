@@ -24,6 +24,8 @@ export class InstitutionsService {
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Preprint, 'preprints'],
     [ResourceType.Agent, 'users'],
+    [ResourceType.Project, 'nodes'],
+    [ResourceType.Registration, 'registrations'],
   ]);
 
   getInstitutions(pageNumber: number, pageSize: number, searchValue?: string): Observable<InstitutionsWithTotalCount> {

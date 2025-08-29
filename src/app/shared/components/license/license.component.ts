@@ -94,10 +94,6 @@ export class LicenseComponent {
   }
 
   onSelectLicense(license: License): void {
-    if (license.requiredFields.length) {
-      return;
-    }
-
     this.selectLicense.emit(license);
   }
 

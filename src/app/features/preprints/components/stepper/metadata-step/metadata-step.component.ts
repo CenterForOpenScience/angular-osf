@@ -130,6 +130,9 @@ export class MetadataStepComponent implements OnInit {
   }
 
   selectLicense(license: License) {
+    if (license.requiredFields.length) {
+      return;
+    }
     this.actions.saveLicense(license.id);
   }
 

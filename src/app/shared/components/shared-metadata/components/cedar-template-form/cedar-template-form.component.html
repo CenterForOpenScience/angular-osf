@@ -7,34 +7,59 @@
         } @else {
           <h3 class="text-lg text-red-500">{{ 'project.metadata.addMetadata.notPublishedText' | translate }}</h3>
         }
-        <p-button class="w-10rem btn-full-width" severity="secondary" [label]="'Edit record'" (click)="editModeEmit()">
+        <p-button
+          class="w-10rem flex-shrink-0 btn-full-width"
+          severity="secondary"
+          [label]="'Edit record'"
+          (onClick)="editModeEmit()"
+        >
         </p-button>
       </div>
     }
 
     <div class="cedar-editor-container">
-      <cedar-embeddable-editor
-        [config]="cedarConfig"
-        [templateObject]="template().attributes.template"
-        [metadata]="formData()"
-        (change)="onCedarChange($event)"
-      ></cedar-embeddable-editor>
+      @if (readonly()) {
+        <cedar-artifact-viewer
+          [config]="cedarViewerConfig"
+          [templateObject]="template().attributes.template"
+          [instanceObject]="formData()"
+        ></cedar-artifact-viewer>
+      } @else {
+        <cedar-embeddable-editor
+          #cedarEditor
+          [config]="cedarConfig"
+          [templateObject]="template().attributes.template"
+          [metadata]="formData()"
+          (change)="onCedarChange($event)"
+          (keyup)="onCedarChange($event)"
+        ></cedar-embeddable-editor>
+      }
     </div>
 
     @if (!readonly()) {
       <div class="flex justify-content-between gap-3 px-4 pt-4 pb-8 sm:justify-content-end">
-        <p-button
-          class="w-10rem btn-full-width"
-          severity="secondary"
-          [label]="'project.metadata.addMetadata.changeTemplate' | translate"
-          (click)="changeTemplate.emit()"
-        >
-        </p-button>
+        @if (existingRecord()) {
+          <p-button
+            class="w-10rem btn-full-width"
+            severity="secondary"
+            [label]="'common.buttons.cancel' | translate"
+            (onClick)="editModeEmit()"
+          >
+          </p-button>
+        } @else {
+          <p-button
+            class="w-10rem btn-full-width"
+            severity="secondary"
+            [label]="'project.metadata.addMetadata.changeTemplate' | translate"
+            (onClick)="changeTemplate.emit()"
+          >
+          </p-button>
+        }
 
         <p-button
           class="w-10rem btn-full-width"
-          [label]="'project.metadata.addMetadata.publish' | translate"
-          (click)="onSubmit()"
+          [label]="'project.metadata.addMetadata.' + (isValid ? 'publish' : 'saveDraft') | translate"
+          (onClick)="onSubmit()"
         >
         </p-button>
       </div>
