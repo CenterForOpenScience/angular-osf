@@ -8,21 +8,45 @@
     />
   </div>
 
-  <div class="flex-column flex w-full pt-6">
-    <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1 px-3 md:px-5 xl:px-4">
-      @if (isSmall()) {
-        <p-tablist>
-          @for (item of resourceTabOptions; track $index) {
-            <p-tab [value]="item.value">{{ item.label | translate }}</p-tab>
-          }
-        </p-tablist>
-      }
-    </p-tabs>
-
-    <div class="resources py-4 px-3 md:px-5 xl:px-4">
-      <osf-resources-wrapper></osf-resources-wrapper>
-
-      <osf-search-help-tutorial [(currentStep)]="currentStep"></osf-search-help-tutorial>
+  <osf-search-results-container
+    [showTabs]="true"
+    [tabOptions]="resourceTabOptions"
+    [resources]="resources()"
+    [areResourcesLoading]="areResourcesLoading()"
+    [searchCount]="resourcesCount()"
+    [selectedSort]="sortBy()"
+    [selectedTab]="resourceType()"
+    [selectedValues]="filterValues()"
+    [first]="first()"
+    [prev]="previous()"
+    [next]="next()"
+    (sortChanged)="onSortChanged($event)"
+    (tabChanged)="onTabChange(+$event)"
+    (pageChanged)="onPageChanged($event)"
+  >
+    <div slot="filter-chips">
+      <osf-filter-chips
+        [filterValues]="filterValues()"
+        [filters]="filters()"
+        [filterOptionsCache]="filterOptionsCache()"
+        (filterRemoved)="onFilterChipRemoved($event)"
+      />
     </div>
-  </div>
+
+    <ng-template #filtersComponent>
+      <osf-reusable-filters
+        [filters]="filters()"
+        [selectedValues]="filterValues()"
+        [filterSearchResults]="filterSearchCache()"
+        [isLoading]="areResourcesLoading()"
+        [showEmptyState]="true"
+        (loadFilterOptions)="onLoadFilterOptions($event)"
+        (filterValueChanged)="onFilterChanged($event)"
+        (filterSearchChanged)="onFilterSearchChanged($event)"
+        (loadMoreFilterOptions)="onLoadMoreFilterOptions($event)"
+      />
+    </ng-template>
+  </osf-search-results-container>
+
+  <osf-search-help-tutorial [(currentStep)]="currentStep" />
 </div>

@@ -1,0 +1,8 @@
+@if (isUserLoading()) {
+} @else {
+  <osf-profile-information [currentUser]="currentUser()" />
+
+  @if (currentUser()) {
+    <osf-profile-search />
+  }
+}

@@ -1,4 +1,4 @@
-import { PaginatedData, ResponseJsonApi, UserGetResponse } from '@osf/shared/models';
+import { PaginatedData, ResponseJsonApi, UserDataJsonApi } from '@osf/shared/models';
 
 import { AddModeratorType, ModeratorPermission } from '../enums';
 import { ModeratorAddModel, ModeratorAddRequestModel, ModeratorDataJsonApi, ModeratorModel } from '../models';
@@ -16,7 +16,7 @@ export class ModerationMapper {
   }
 
   static fromUsersWithPaginationGetResponse(
-    response: ResponseJsonApi<UserGetResponse[]>
+    response: ResponseJsonApi<UserDataJsonApi[]>
   ): PaginatedData<ModeratorAddModel[]> {
     return {
       data: response.data.map(

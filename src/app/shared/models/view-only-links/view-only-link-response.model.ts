@@ -1,5 +1,5 @@
 import { MetaJsonApi } from '../common';
-import { UserGetResponse } from '../user';
+import { UserDataJsonApi } from '../user';
 
 export interface ViewOnlyLinksResponseJsonApi {
   data: ViewOnlyLinkJsonApi[];
@@ -18,7 +18,7 @@ export interface ViewOnlyLinkJsonApi {
   };
   embeds: {
     creator: {
-      data: UserGetResponse;
+      data: UserDataJsonApi;
     };
   };
   relationships: {

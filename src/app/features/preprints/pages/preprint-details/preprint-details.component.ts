@@ -360,7 +360,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     this.metaTags.updateMetaTags({
       title: this.preprint()?.title,
       description: this.preprint()?.description,
-      publishedDate: this.datePipe.transform(this.preprint()?.dateCreated, 'yyyy-MM-dd'),
+      publishedDate: this.datePipe.transform(this.preprint()?.datePublished, 'yyyy-MM-dd'),
       modifiedDate: this.datePipe.transform(this.preprint()?.dateModified, 'yyyy-MM-dd'),
       url: pathJoin(environment.webUrl, this.preprint()?.id ?? ''),
       image,

@@ -6,7 +6,7 @@ import {
   ContributorResponse,
   PaginatedData,
   ResponseJsonApi,
-  UserGetResponse,
+  UserDataJsonApi,
 } from '@osf/shared/models';
 
 export class ContributorsMapper {
@@ -27,7 +27,7 @@ export class ContributorsMapper {
   }
 
   static fromUsersWithPaginationGetResponse(
-    response: ResponseJsonApi<UserGetResponse[]>
+    response: ResponseJsonApi<UserDataJsonApi[]>
   ): PaginatedData<ContributorAddModel[]> {
     return {
       data: response.data.map(

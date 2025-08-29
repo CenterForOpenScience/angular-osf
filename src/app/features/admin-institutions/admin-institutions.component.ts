@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
 import { Primitive } from '@osf/shared/helpers';
-import { FetchInstitutionById, InstitutionsSearchSelectors } from '@osf/shared/stores';
+import { FetchInstitutionById, InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
 import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 
 import { resourceTabOptions } from './constants';

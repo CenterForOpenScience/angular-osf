@@ -1,139 +1,256 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { AccordionModule } from 'primeng/accordion';
-import { DataViewModule } from 'primeng/dataview';
-import { TableModule } from 'primeng/table';
-import { Tab, TabList, Tabs } from 'primeng/tabs';
+import { TabsModule } from 'primeng/tabs';
 
-import { debounceTime, skip } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  effect,
-  inject,
-  OnDestroy,
-  signal,
-  untracked,
-} from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { SearchHelpTutorialComponent, SearchInputComponent } from '@osf/shared/components';
+  FilterChipsComponent,
+  ReusableFilterComponent,
+  SearchHelpTutorialComponent,
+  SearchInputComponent,
+  SearchResultsContainerComponent,
+} from '@osf/shared/components';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { ResourceTab } from '@osf/shared/enums';
-import { IS_SMALL } from '@osf/shared/helpers';
+import { DiscoverableFilter } from '@osf/shared/models';
+import { StringOrNull } from '@shared/helpers';
 
-import { GetAllOptions } from './components/filters/store';
-import { ResetFiltersState, ResourceFiltersSelectors } from './components/resource-filters/store';
-import { ResourcesWrapperComponent } from './components';
-import { GetResources, ResetSearchState, SearchSelectors, SetResourceTab, SetSearchText } from './store';
+import {
+  ClearFilterSearchResults,
+  GetResources,
+  GetResourcesByLink,
+  LoadFilterOptions,
+  LoadFilterOptionsAndSetValues,
+  LoadFilterOptionsWithSearch,
+  LoadMoreFilterOptions,
+  SearchSelectors,
+  SetResourceType,
+  SetSortBy,
+  UpdateFilterValue,
+} from './store';
 
 @Component({
   selector: 'osf-search',
   imports: [
-    SearchInputComponent,
-    ReactiveFormsModule,
-    Tab,
-    TabList,
-    Tabs,
-    TranslatePipe,
+    ReusableFilterComponent,
+    SearchResultsContainerComponent,
+    FilterChipsComponent,
     FormsModule,
-    AccordionModule,
-    TableModule,
-    DataViewModule,
-    ResourcesWrapperComponent,
+    TabsModule,
     SearchHelpTutorialComponent,
+    SearchInputComponent,
+    TranslatePipe,
   ],
   templateUrl: './search.component.html',
   styleUrl: './search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchComponent implements OnDestroy {
-  readonly store = inject(Store);
+export class SearchComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
-  protected searchControl = new FormControl('');
-  protected readonly isSmall = toSignal(inject(IS_SMALL));
+  private actions = createDispatchMap({
+    setResourceType: SetResourceType,
+    setSortBy: SetSortBy,
+    loadFilterOptions: LoadFilterOptions,
+    loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
+    loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
+    loadMoreFilterOptions: LoadMoreFilterOptions,
+    clearFilterSearchResults: ClearFilterSearchResults,
+    updateFilterValue: UpdateFilterValue,
+    getResourcesByLink: GetResourcesByLink,
+    fetchResources: GetResources,
+  });
 
-  private readonly destroyRef = inject(DestroyRef);
+  private readonly tabUrlMap = new Map(
+    SEARCH_TAB_OPTIONS.map((option) => [option.value, option.label.split('.').pop()?.toLowerCase() || 'all'])
+  );
 
-  protected readonly creatorsFilter = select(ResourceFiltersSelectors.getCreator);
-  protected readonly dateCreatedFilter = select(ResourceFiltersSelectors.getDateCreated);
-  protected readonly funderFilter = select(ResourceFiltersSelectors.getFunder);
-  protected readonly subjectFilter = select(ResourceFiltersSelectors.getSubject);
-  protected readonly licenseFilter = select(ResourceFiltersSelectors.getLicense);
-  protected readonly resourceTypeFilter = select(ResourceFiltersSelectors.getResourceType);
-  protected readonly institutionFilter = select(ResourceFiltersSelectors.getInstitution);
-  protected readonly providerFilter = select(ResourceFiltersSelectors.getProvider);
-  protected readonly partOfCollectionFilter = select(ResourceFiltersSelectors.getPartOfCollection);
-  protected searchStoreValue = select(SearchSelectors.getSearchText);
-  protected resourcesTabStoreValue = select(SearchSelectors.getResourceTab);
-  protected sortByStoreValue = select(SearchSelectors.getSortBy);
+  private readonly urlTabMap = new Map(
+    SEARCH_TAB_OPTIONS.map((option) => [option.label.split('.').pop()?.toLowerCase() || 'all', option.value])
+  );
 
-  protected readonly resourceTabOptions = SEARCH_TAB_OPTIONS;
-  protected selectedTab: ResourceTab = ResourceTab.All;
+  resources = select(SearchSelectors.getResources);
+  areResourcesLoading = select(SearchSelectors.getResourcesLoading);
+  resourcesCount = select(SearchSelectors.getResourcesCount);
 
-  protected currentStep = signal(0);
+  filters = select(SearchSelectors.getFilters);
+  filterValues = select(SearchSelectors.getFilterValues);
+  filterSearchCache = select(SearchSelectors.getFilterSearchCache);
+  filterOptionsCache = select(SearchSelectors.getFilterOptionsCache);
 
-  constructor() {
-    effect(() => {
-      this.creatorsFilter();
-      this.dateCreatedFilter();
-      this.funderFilter();
-      this.subjectFilter();
-      this.licenseFilter();
-      this.resourceTypeFilter();
-      this.institutionFilter();
-      this.providerFilter();
-      this.partOfCollectionFilter();
-      this.searchStoreValue();
-      this.resourcesTabStoreValue();
-      this.sortByStoreValue();
-      this.store.dispatch(GetResources);
-    });
+  sortBy = select(SearchSelectors.getSortBy);
+  first = select(SearchSelectors.getFirst);
+  next = select(SearchSelectors.getNext);
+  previous = select(SearchSelectors.getPrevious);
+  resourceType = select(SearchSelectors.getResourceType);
 
-    effect(() => {
-      const storeValue = this.searchStoreValue();
-      const currentInput = untracked(() => this.searchControl.value);
+  readonly resourceTabOptions = SEARCH_TAB_OPTIONS;
 
-      if (storeValue && currentInput !== storeValue) {
-        this.searchControl.setValue(storeValue);
-      }
-    });
+  searchControl = new FormControl('');
+  currentStep = signal(0);
 
-    effect(() => {
-      if (this.selectedTab !== this.resourcesTabStoreValue()) {
-        this.selectedTab = this.resourcesTabStoreValue();
-      }
-    });
+  ngOnInit(): void {
+    this.restoreFiltersFromUrl();
+    this.restoreTabFromUrl();
+    this.restoreSearchFromUrl();
+    this.handleSearch();
 
-    this.setSearchSubscription();
+    this.actions.fetchResources();
   }
 
-  ngOnDestroy(): void {
-    this.store.dispatch(ResetFiltersState);
-    this.store.dispatch(ResetSearchState);
+  onLoadFilterOptions(filter: DiscoverableFilter): void {
+    this.actions.loadFilterOptions(filter.key);
   }
 
-  onTabChange(index: ResourceTab): void {
-    this.store.dispatch(new SetResourceTab(index));
-    this.selectedTab = index;
-    this.store.dispatch(GetAllOptions);
+  onLoadMoreFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
+    this.actions.loadMoreFilterOptions(event.filterType);
+  }
+
+  onFilterSearchChanged(event: { filterType: string; searchText: string; filter: DiscoverableFilter }): void {
+    if (event.searchText.trim()) {
+      this.actions.loadFilterOptionsWithSearch(event.filterType, event.searchText);
+    } else {
+      this.actions.clearFilterSearchResults(event.filterType);
+    }
+  }
+
+  onFilterChanged(event: { filterType: string; value: StringOrNull }): void {
+    this.actions.updateFilterValue(event.filterType, event.value);
+
+    const currentFilters = this.filterValues();
+
+    this.updateUrlWithFilters(currentFilters);
+    this.actions.fetchResources();
+  }
+
+  onTabChange(resourceTab: ResourceTab): void {
+    this.actions.setResourceType(resourceTab);
+    this.updateUrlWithTab(resourceTab);
+    this.actions.fetchResources();
+  }
+
+  onSortChanged(sortBy: string): void {
+    this.actions.setSortBy(sortBy);
+    this.actions.fetchResources();
+  }
+
+  onPageChanged(link: string): void {
+    this.actions.getResourcesByLink(link);
+  }
+
+  onFilterChipRemoved(filterKey: string): void {
+    this.actions.updateFilterValue(filterKey, null);
+    this.updateUrlWithFilters(this.filterValues());
+    this.actions.fetchResources();
   }
 
   showTutorial() {
     this.currentStep.set(1);
   }
 
-  private setSearchSubscription() {
+  private updateUrlWithFilters(filterValues: Record<string, StringOrNull>): void {
+    const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
+
+    Object.keys(queryParams).forEach((key) => {
+      if (key.startsWith('filter_')) {
+        delete queryParams[key];
+      }
+    });
+
+    Object.entries(filterValues).forEach(([key, value]) => {
+      if (value && value.trim() !== '') {
+        queryParams[`filter_${key}`] = value;
+      }
+    });
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'replace',
+      replaceUrl: true,
+    });
+  }
+
+  private restoreFiltersFromUrl(): void {
+    const queryParams = this.route.snapshot.queryParams;
+    const filterValues: Record<string, StringOrNull> = {};
+
+    Object.keys(queryParams).forEach((key) => {
+      if (key.startsWith('filter_')) {
+        const filterKey = key.replace('filter_', '');
+        const filterValue = queryParams[key];
+        if (filterValue) {
+          filterValues[filterKey] = filterValue;
+        }
+      }
+    });
+
+    if (Object.keys(filterValues).length > 0) {
+      this.actions.loadFilterOptionsAndSetValues(filterValues);
+    }
+  }
+
+  private updateUrlWithTab(tab: ResourceTab): void {
+    const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
+
+    if (tab !== ResourceTab.All) {
+      queryParams['tab'] = this.tabUrlMap.get(tab) || 'all';
+    } else {
+      delete queryParams['tab'];
+    }
+
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams,
+      queryParamsHandling: 'replace',
+      replaceUrl: true,
+    });
+  }
+
+  private restoreTabFromUrl(): void {
+    const tabString = this.route.snapshot.queryParams['tab'];
+
+    if (tabString) {
+      const tab = this.urlTabMap.get(tabString);
+      if (tab !== undefined) {
+        this.actions.setResourceType(tab);
+      }
+    }
+  }
+
+  private handleSearch(): void {
     this.searchControl.valueChanges
-      .pipe(skip(1), debounceTime(500), takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchText) => {
-        this.store.dispatch(new SetSearchText(searchText ?? ''));
-        this.store.dispatch(GetAllOptions);
+      .pipe(debounceTime(1000), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (newValue) => {
+          if (!newValue) newValue = null;
+          this.actions.updateFilterValue('search', newValue);
+          this.router.navigate([], {
+            relativeTo: this.route,
+            queryParams: { search: newValue },
+            queryParamsHandling: 'merge',
+          });
+          this.actions.fetchResources();
+        },
       });
+  }
+
+  private restoreSearchFromUrl(): void {
+    const searchTerm = this.route.snapshot.queryParams['search'];
+
+    if (searchTerm) {
+      this.searchControl.setValue(searchTerm, { emitEvent: false });
+      this.actions.updateFilterValue('search', searchTerm);
+    }
   }
 }

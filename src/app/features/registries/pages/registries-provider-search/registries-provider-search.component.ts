@@ -4,7 +4,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -17,7 +17,6 @@ import {
   LoadFilterOptions,
   LoadFilterOptionsAndSetValues,
   RegistriesProviderSearchSelectors,
-  SetFilterValues,
   UpdateFilterValue,
   UpdateResourceType,
   UpdateSortBy,
@@ -28,8 +27,7 @@ import {
   SearchHelpTutorialComponent,
   SearchResultsContainerComponent,
 } from '@shared/components';
-import { SEARCH_TAB_OPTIONS } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
+import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter } from '@shared/models';
 
 @Component({
@@ -46,87 +44,64 @@ import { DiscoverableFilter } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class RegistriesProviderSearchComponent {
-  private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
+export class RegistriesProviderSearchComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
-  protected readonly provider = select(RegistriesProviderSearchSelectors.getBrandedProvider);
-  protected readonly isProviderLoading = select(RegistriesProviderSearchSelectors.isBrandedProviderLoading);
-  protected readonly resources = select(RegistriesProviderSearchSelectors.getResources);
-  protected readonly isResourcesLoading = select(RegistriesProviderSearchSelectors.getResourcesLoading);
-  protected readonly resourcesCount = select(RegistriesProviderSearchSelectors.getResourcesCount);
-  protected readonly resourceType = select(RegistriesProviderSearchSelectors.getResourceType);
-  protected readonly filters = select(RegistriesProviderSearchSelectors.getFilters);
-  protected readonly selectedValues = select(RegistriesProviderSearchSelectors.getFilterValues);
-  protected readonly selectedSort = select(RegistriesProviderSearchSelectors.getSortBy);
-  protected readonly first = select(RegistriesProviderSearchSelectors.getFirst);
-  protected readonly next = select(RegistriesProviderSearchSelectors.getNext);
-  protected readonly previous = select(RegistriesProviderSearchSelectors.getPrevious);
-
-  searchControl = new FormControl('');
-
-  private readonly actions = createDispatchMap({
+  private actions = createDispatchMap({
     getProvider: GetRegistryProviderBrand,
     updateResourceType: UpdateResourceType,
     updateSortBy: UpdateSortBy,
     loadFilterOptions: LoadFilterOptions,
     loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
-    setFilterValues: SetFilterValues,
     updateFilterValue: UpdateFilterValue,
     fetchResourcesByLink: FetchResourcesByLink,
     fetchResources: FetchResources,
   });
 
-  protected currentStep = signal(0);
-  protected isFiltersOpen = signal(false);
-  protected isSortingOpen = signal(false);
+  provider = select(RegistriesProviderSearchSelectors.getBrandedProvider);
+  isProviderLoading = select(RegistriesProviderSearchSelectors.isBrandedProviderLoading);
 
-  private readonly tabUrlMap = new Map(
-    SEARCH_TAB_OPTIONS.map((option) => [option.value, option.label.split('.').pop()?.toLowerCase() || 'all'])
-  );
+  resources = select(RegistriesProviderSearchSelectors.getResources);
+  areResourcesLoading = select(RegistriesProviderSearchSelectors.getResourcesLoading);
+  resourcesCount = select(RegistriesProviderSearchSelectors.getResourcesCount);
 
-  private readonly urlTabMap = new Map(
-    SEARCH_TAB_OPTIONS.map((option) => [option.label.split('.').pop()?.toLowerCase() || 'all', option.value])
-  );
+  filters = select(RegistriesProviderSearchSelectors.getFilters);
+  filterValues = select(RegistriesProviderSearchSelectors.getFilterValues);
 
-  readonly filterLabels = computed(() => {
-    const filtersData = this.filters();
-    const labels: Record<string, string> = {};
-    filtersData.forEach((filter) => {
-      if (filter.key && filter.label) {
-        labels[filter.key] = filter.label;
-      }
-    });
-    return labels;
-  });
+  sortBy = select(RegistriesProviderSearchSelectors.getSortBy);
+  first = select(RegistriesProviderSearchSelectors.getFirst);
+  next = select(RegistriesProviderSearchSelectors.getNext);
+  previous = select(RegistriesProviderSearchSelectors.getPrevious);
+  resourceType = select(RegistriesProviderSearchSelectors.getResourceType);
 
-  readonly filterOptions = computed(() => {
-    const filtersData = this.filters();
-    const options: Record<string, { id: string; value: string; label: string }[]> = {};
-    filtersData.forEach((filter) => {
-      if (filter.key && filter.options) {
-        options[filter.key] = filter.options.map((opt) => ({
-          id: String(opt.value || ''),
-          value: String(opt.value || ''),
-          label: opt.label,
-        }));
-      }
-    });
-    return options;
-  });
+  searchControl = new FormControl('');
+  currentStep = signal(0);
 
-  constructor() {
+  ngOnInit(): void {
     this.restoreFiltersFromUrl();
     this.restoreSearchFromUrl();
     this.handleSearch();
 
-    this.route.params.subscribe((params) => {
-      const name = params['name'];
-      if (name) {
-        this.actions.getProvider(name);
-      }
-    });
+    const providerName = this.route.snapshot.params['name'];
+    if (providerName) {
+      this.actions.getProvider(providerName).subscribe({
+        next: () => {
+          this.actions.fetchResources();
+        },
+      });
+    }
+  }
+
+  onLoadFilterOptions(filter: DiscoverableFilter): void {
+    this.actions.loadFilterOptions(filter.key);
+  }
+
+  onFilterChanged(event: { filterType: string; value: StringOrNull }): void {
+    this.actions.updateFilterValue(event.filterType, event.value);
+    this.updateUrlWithFilters(this.filterValues());
+    this.actions.fetchResources();
   }
 
   onSortChanged(sort: string): void {
@@ -134,82 +109,22 @@ export class RegistriesProviderSearchComponent {
     this.actions.fetchResources();
   }
 
-  onFilterChipRemoved(filterKey: string): void {
-    this.actions.updateFilterValue(filterKey, null);
-
-    const currentFilters = this.selectedValues();
-    const updatedFilters = { ...currentFilters };
-    delete updatedFilters[filterKey];
-    this.updateUrlWithFilters(updatedFilters);
-
-    this.actions.fetchResources();
-  }
-
-  onAllFiltersCleared(): void {
-    this.actions.setFilterValues({});
-
-    this.searchControl.setValue('', { emitEvent: false });
-    this.actions.updateFilterValue('search', '');
-
-    const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
-
-    Object.keys(queryParams).forEach((key) => {
-      if (key.startsWith('filter_')) {
-        delete queryParams[key];
-      }
-    });
-
-    delete queryParams['search'];
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: 'replace',
-      replaceUrl: true,
-    });
-  }
-
-  onLoadFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
-    this.actions.loadFilterOptions(event.filterType);
-  }
-
-  onFilterChanged(event: { filterType: string; value: string | null }): void {
-    this.actions.updateFilterValue(event.filterType, event.value);
-
-    const currentFilters = this.selectedValues();
-    const updatedFilters = {
-      ...currentFilters,
-      [event.filterType]: event.value,
-    };
-
-    Object.keys(updatedFilters).forEach((key) => {
-      if (!updatedFilters[key]) {
-        delete updatedFilters[key];
-      }
-    });
-
-    this.updateUrlWithFilters(updatedFilters);
-  }
-
   onPageChanged(link: string): void {
     this.actions.fetchResourcesByLink(link);
   }
 
-  onFiltersToggled(): void {
-    this.isFiltersOpen.update((open) => !open);
-    this.isSortingOpen.set(false);
-  }
+  onFilterChipRemoved(filterKey: string): void {
+    this.actions.updateFilterValue(filterKey, null);
+    this.updateUrlWithFilters(this.filterValues());
 
-  onSortingToggled(): void {
-    this.isSortingOpen.update((open) => !open);
-    this.isFiltersOpen.set(false);
+    this.actions.fetchResources();
   }
 
   showTutorial() {
     this.currentStep.set(1);
   }
 
-  private updateUrlWithFilters(filterValues: Record<string, string | null>): void {
+  private updateUrlWithFilters(filterValues: Record<string, StringOrNull>): void {
     const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
 
     Object.keys(queryParams).forEach((key) => {
@@ -232,26 +147,9 @@ export class RegistriesProviderSearchComponent {
     });
   }
 
-  private updateUrlWithTab(tab: ResourceTab): void {
-    const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
-
-    if (tab !== ResourceTab.All) {
-      queryParams['tab'] = this.tabUrlMap.get(tab) || 'all';
-    } else {
-      delete queryParams['tab'];
-    }
-
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: 'replace',
-      replaceUrl: true,
-    });
-  }
-
   private restoreFiltersFromUrl(): void {
     const queryParams = this.route.snapshot.queryParams;
-    const filterValues: Record<string, string | null> = {};
+    const filterValues: Record<string, StringOrNull> = {};
 
     Object.keys(queryParams).forEach((key) => {
       if (key.startsWith('filter_')) {
@@ -267,27 +165,30 @@ export class RegistriesProviderSearchComponent {
       this.actions.loadFilterOptionsAndSetValues(filterValues);
     }
   }
-  private restoreSearchFromUrl(): void {
-    const queryParams = this.route.snapshot.queryParams;
-    const searchTerm = queryParams['search'];
-    if (searchTerm) {
-      this.searchControl.setValue(searchTerm, { emitEvent: false });
-      this.actions.updateFilterValue('search', searchTerm);
-    }
-  }
 
   private handleSearch(): void {
     this.searchControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (newValue) => {
+          if (!newValue) newValue = null;
           this.actions.updateFilterValue('search', newValue);
           this.router.navigate([], {
             relativeTo: this.route,
             queryParams: { search: newValue },
             queryParamsHandling: 'merge',
           });
+          this.actions.fetchResources();
         },
       });
+  }
+
+  private restoreSearchFromUrl(): void {
+    const searchTerm = this.route.snapshot.queryParams['search'];
+
+    if (searchTerm) {
+      this.searchControl.setValue(searchTerm, { emitEvent: false });
+      this.actions.updateFilterValue('search', searchTerm);
+    }
   }
 }

@@ -4,19 +4,42 @@
       <osf-loading-spinner></osf-loading-spinner>
     </div>
   } @else {
-    <p-select
-      [id]="filterType()"
-      [options]="filterOptions()"
-      optionLabel="label"
-      optionValue="value"
-      [ngModel]="selectedValue()"
-      [placeholder]="currentSelectedOption() ? currentSelectedOption()?.label : placeholder()"
-      styleClass="w-full"
-      panelStyleClass="max-w-30rem"
-      appendTo="body"
-      filter
-      (onChange)="onValueChange($event)"
-      [showClear]="!!selectedValue()"
-    ></p-select>
+    <div class="relative">
+      <p-select
+        [id]="filterType()"
+        [options]="filterOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [ngModel]="selectedValue()"
+        [placeholder]="currentSelectedOption() ? currentSelectedOption()?.label : placeholder()"
+        styleClass="w-full"
+        panelStyleClass="max-w-30rem scrollable-panel"
+        appendTo="body"
+        filter
+        resetFilterOnHide="false"
+        [virtualScroll]="true"
+        [virtualScrollItemSize]="35"
+        [lazy]="true"
+        scrollHeight="200px"
+        [autoOptionFocus]="false"
+        [loading]="isLoading()"
+        (onLazyLoad)="loadMoreItems($event)"
+        (onChange)="onValueChange($event)"
+        (onFilter)="onFilterChange($event)"
+        [showClear]="!!selectedValue()"
+      ></p-select>
+
+      @if (isPaginationLoading()) {
+        <div class="absolute top-1 right-8 pointer-events-none">
+          <osf-loading-spinner />
+        </div>
+      }
+
+      @if (isSearchLoading()) {
+        <div class="absolute top-1 right-14 pointer-events-none">
+          <osf-loading-spinner />
+        </div>
+      }
+    </div>
   }
 </div>

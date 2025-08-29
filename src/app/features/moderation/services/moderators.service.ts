@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ResourceType } from '@osf/shared/enums';
-import { JsonApiResponse, PaginatedData, ResponseJsonApi, UserGetResponse } from '@osf/shared/models';
+import { JsonApiResponse, PaginatedData, ResponseJsonApi, UserDataJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { AddModeratorType } from '../enums';
@@ -62,7 +62,7 @@ export class ModeratorsService {
     const baseUrl = `${environment.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
 
     return this.jsonApiService
-      .get<ResponseJsonApi<UserGetResponse[]>>(baseUrl)
+      .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)
       .pipe(map((response) => ModerationMapper.fromUsersWithPaginationGetResponse(response)));
   }
 }

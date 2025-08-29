@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { Institution, QueryParams } from '@osf/shared/models';
-import { InstitutionsSearchSelectors } from '@osf/shared/stores';
+import { InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
 
 import { AdminTableComponent } from '../../components';
 import { preprintsTableColumns } from '../../constants';

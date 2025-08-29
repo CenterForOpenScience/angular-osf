@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { UserMapper } from '@osf/shared/mappers';
-import { ApiData, IdName, JsonApiResponse, User, UserGetResponse } from '@osf/shared/models';
+import { ApiData, IdName, JsonApiResponse, User, UserDataJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { MapAccountSettings, MapEmail, MapEmails, MapExternalIdentities, MapRegions } from '../mappers';
@@ -164,7 +164,7 @@ export class AccountSettingsService {
     };
 
     return this.jsonApiService
-      .patch<UserGetResponse>(`${environment.apiUrl}/users/${this.currentUser()?.id}`, body)
+      .patch<UserDataJsonApi>(`${environment.apiUrl}/users/${this.currentUser()?.id}`, body)
       .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 
@@ -181,7 +181,7 @@ export class AccountSettingsService {
     };
 
     return this.jsonApiService
-      .patch<UserGetResponse>(`${environment.apiUrl}/users/${this.currentUser()?.id}`, body)
+      .patch<UserDataJsonApi>(`${environment.apiUrl}/users/${this.currentUser()?.id}`, body)
       .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 

@@ -1,23 +1,25 @@
-import { Action, NgxsOnInit, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { BehaviorSubject, catchError, EMPTY, forkJoin, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ResourcesData } from '@osf/features/search/models';
-import { GetResourcesRequestTypeEnum, ResourceTab } from '@osf/shared/enums';
 import { getResourceTypes } from '@osf/shared/helpers';
 import { Institution } from '@osf/shared/models';
-import { InstitutionsService, SearchService } from '@osf/shared/services';
+import { InstitutionsService } from '@osf/shared/services';
+import { searchStateDefaults } from '@shared/constants';
+import { BaseSearchState } from '@shared/stores/base-search';
 
 import {
+  ClearFilterSearchResults,
   FetchInstitutionById,
   FetchResources,
   FetchResourcesByLink,
   LoadFilterOptions,
   LoadFilterOptionsAndSetValues,
-  SetFilterValues,
+  LoadFilterOptionsWithSearch,
+  LoadMoreFilterOptions,
   UpdateFilterValue,
   UpdateResourceType,
   UpdateSortBy,
@@ -28,140 +30,69 @@ import { InstitutionsSearchModel } from './institutions-search.model';
   name: 'institutionsSearch',
   defaults: {
     institution: { data: {} as Institution, isLoading: false, error: null },
-    resources: { data: [], isLoading: false, error: null },
-    filters: [],
-    filterValues: {},
-    filterOptionsCache: {},
     providerIri: '',
-    resourcesCount: 0,
-    searchText: '',
-    sortBy: '-relevance',
-    first: '',
-    next: '',
-    previous: '',
-    resourceType: ResourceTab.All,
+    ...searchStateDefaults,
   },
 })
 @Injectable()
-export class InstitutionsSearchState implements NgxsOnInit {
+export class InstitutionsSearchState extends BaseSearchState<InstitutionsSearchModel> {
   private readonly institutionsService = inject(InstitutionsService);
-  private readonly searchService = inject(SearchService);
 
-  private loadRequests = new BehaviorSubject<{ type: GetResourcesRequestTypeEnum; link?: string } | null>(null);
-  private filterOptionsRequests = new BehaviorSubject<string | null>(null);
-
-  ngxsOnInit(ctx: StateContext<InstitutionsSearchModel>): void {
-    this.setupLoadRequests(ctx);
-    this.setupFilterOptionsRequests(ctx);
-  }
-
-  private setupLoadRequests(ctx: StateContext<InstitutionsSearchModel>) {
-    this.loadRequests
-      .pipe(
-        switchMap((query) => {
-          if (!query) return EMPTY;
-          return query.type === GetResourcesRequestTypeEnum.GetResources
-            ? this.loadResources(ctx)
-            : this.loadResourcesByLink(ctx, query.link);
-        })
-      )
-      .subscribe();
-  }
-
-  private loadResources(ctx: StateContext<InstitutionsSearchModel>) {
+  @Action(FetchResources)
+  fetchResources(ctx: StateContext<InstitutionsSearchModel>) {
     const state = ctx.getState();
+    if (!state.providerIri) return;
+
     ctx.patchState({ resources: { ...state.resources, isLoading: true } });
-    const filtersParams: Record<string, string> = {};
+    const filtersParams = this.buildFiltersParams(state);
     const searchText = state.searchText;
     const sortBy = state.sortBy;
     const resourceTab = state.resourceType;
     const resourceTypes = getResourceTypes(resourceTab);
-
-    filtersParams['cardSearchFilter[affiliation][]'] = state.providerIri;
-
-    Object.entries(state.filterValues).forEach(([key, value]) => {
-      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
-    });
 
     return this.searchService
       .getResources(filtersParams, searchText, sortBy, resourceTypes)
       .pipe(tap((response) => this.updateResourcesState(ctx, response)));
   }
 
-  private loadResourcesByLink(ctx: StateContext<InstitutionsSearchModel>, link?: string) {
-    if (!link) return EMPTY;
-    return this.searchService
-      .getResourcesByLink(link)
-      .pipe(tap((response) => this.updateResourcesState(ctx, response)));
-  }
-
-  private updateResourcesState(ctx: StateContext<InstitutionsSearchModel>, response: ResourcesData) {
-    const state = ctx.getState();
-    const filtersWithCachedOptions = (response.filters || []).map((filter) => {
-      const cachedOptions = state.filterOptionsCache[filter.key];
-      return cachedOptions?.length ? { ...filter, options: cachedOptions, isLoaded: true } : filter;
-    });
-
-    ctx.patchState({
-      resources: { data: response.resources, isLoading: false, error: null },
-      filters: filtersWithCachedOptions,
-      resourcesCount: response.count,
-      first: response.first,
-      next: response.next,
-      previous: response.previous,
-    });
-  }
-
-  private setupFilterOptionsRequests(ctx: StateContext<InstitutionsSearchModel>) {
-    this.filterOptionsRequests
-      .pipe(
-        switchMap((filterKey) => {
-          if (!filterKey) return EMPTY;
-          return this.handleFilterOptionLoad(ctx, filterKey);
-        })
-      )
-      .subscribe();
-  }
-
-  private handleFilterOptionLoad(ctx: StateContext<InstitutionsSearchModel>, filterKey: string) {
-    const state = ctx.getState();
-    const cachedOptions = state.filterOptionsCache[filterKey];
-    if (cachedOptions?.length) {
-      const updatedFilters = state.filters.map((f) =>
-        f.key === filterKey ? { ...f, options: cachedOptions, isLoaded: true, isLoading: false } : f
-      );
-      ctx.patchState({ filters: updatedFilters });
-      return EMPTY;
-    }
-
-    const loadingFilters = state.filters.map((f) => (f.key === filterKey ? { ...f, isLoading: true } : f));
-    ctx.patchState({ filters: loadingFilters });
-
-    return this.searchService.getFilterOptions(filterKey).pipe(
-      tap((options) => {
-        const updatedCache = { ...ctx.getState().filterOptionsCache, [filterKey]: options };
-        const updatedFilters = ctx
-          .getState()
-          .filters.map((f) => (f.key === filterKey ? { ...f, options, isLoaded: true, isLoading: false } : f));
-        ctx.patchState({ filters: updatedFilters, filterOptionsCache: updatedCache });
-      })
-    );
-  }
-
-  @Action(FetchResources)
-  getResources(ctx: StateContext<InstitutionsSearchModel>) {
-    if (!ctx.getState().providerIri) return;
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
-  }
-
   @Action(FetchResourcesByLink)
-  getResourcesByLink(_: StateContext<InstitutionsSearchState>, action: FetchResourcesByLink) {
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResourcesByLink, link: action.link });
+  fetchResourcesByLink(ctx: StateContext<InstitutionsSearchModel>, action: FetchResourcesByLink) {
+    return this.handleFetchResourcesByLink(ctx, action.link);
   }
 
   @Action(LoadFilterOptions)
-  loadFilterOptions(_: StateContext<InstitutionsSearchModel>, action: LoadFilterOptions) {
-    this.filterOptionsRequests.next(action.filterKey);
+  loadFilterOptions(ctx: StateContext<InstitutionsSearchModel>, action: LoadFilterOptions) {
+    return this.handleLoadFilterOptions(ctx, action.filterKey);
+  }
+
+  @Action(LoadFilterOptionsWithSearch)
+  loadFilterOptionsWithSearch(ctx: StateContext<InstitutionsSearchModel>, action: LoadFilterOptionsWithSearch) {
+    return this.handleLoadFilterOptionsWithSearch(ctx, action.filterKey, action.searchText);
+  }
+
+  @Action(ClearFilterSearchResults)
+  clearFilterSearchResults(ctx: StateContext<InstitutionsSearchModel>, action: ClearFilterSearchResults) {
+    this.handleClearFilterSearchResults(ctx, action.filterKey);
+  }
+
+  @Action(LoadMoreFilterOptions)
+  loadMoreFilterOptions(ctx: StateContext<InstitutionsSearchModel>, action: LoadMoreFilterOptions) {
+    return this.handleLoadMoreFilterOptions(ctx, action.filterKey);
+  }
+
+  @Action(LoadFilterOptionsAndSetValues)
+  loadFilterOptionsAndSetValues(ctx: StateContext<InstitutionsSearchModel>, action: LoadFilterOptionsAndSetValues) {
+    return this.handleLoadFilterOptionsAndSetValues(ctx, action.filterValues);
+  }
+
+  @Action(UpdateFilterValue)
+  updateFilterValue(ctx: StateContext<InstitutionsSearchModel>, action: UpdateFilterValue) {
+    this.handleUpdateFilterValue(ctx, action.filterKey, action.value);
+  }
+
+  @Action(UpdateSortBy)
+  updateSortBy(ctx: StateContext<InstitutionsSearchModel>, action: UpdateSortBy) {
+    ctx.patchState({ sortBy: action.sortBy });
   }
 
   @Action(FetchInstitutionById)
@@ -176,7 +107,6 @@ export class InstitutionsSearchState implements NgxsOnInit {
             providerIri: response.iris.join(','),
           })
         );
-        this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
       }),
       catchError((error) => {
         ctx.patchState({ institution: { ...ctx.getState().institution, isLoading: false, error } });
@@ -185,59 +115,21 @@ export class InstitutionsSearchState implements NgxsOnInit {
     );
   }
 
-  @Action(LoadFilterOptionsAndSetValues)
-  loadFilterOptionsAndSetValues(ctx: StateContext<InstitutionsSearchModel>, action: LoadFilterOptionsAndSetValues) {
-    const filterKeys = Object.keys(action.filterValues).filter((key) => action.filterValues[key]);
-    if (!filterKeys.length) return;
-
-    const loadingFilters = ctx
-      .getState()
-      .filters.map((f) =>
-        filterKeys.includes(f.key) && !ctx.getState().filterOptionsCache[f.key]?.length ? { ...f, isLoading: true } : f
-      );
-    ctx.patchState({ filters: loadingFilters });
-
-    const observables = filterKeys.map((key) =>
-      this.searchService.getFilterOptions(key).pipe(
-        tap((options) => {
-          const updatedCache = { ...ctx.getState().filterOptionsCache, [key]: options };
-          const updatedFilters = ctx
-            .getState()
-            .filters.map((f) => (f.key === key ? { ...f, options, isLoaded: true, isLoading: false } : f));
-          ctx.patchState({ filters: updatedFilters, filterOptionsCache: updatedCache });
-        }),
-        catchError(() => of({ filterKey: key, options: [] }))
-      )
-    );
-
-    return forkJoin(observables).pipe(tap(() => ctx.patchState({ filterValues: action.filterValues })));
-  }
-
-  @Action(SetFilterValues)
-  setFilterValues(ctx: StateContext<InstitutionsSearchModel>, action: SetFilterValues) {
-    ctx.patchState({ filterValues: action.filterValues });
-  }
-
-  @Action(UpdateFilterValue)
-  updateFilterValue(ctx: StateContext<InstitutionsSearchModel>, action: UpdateFilterValue) {
-    if (action.filterKey === 'search') {
-      ctx.patchState({ searchText: action.value || '' });
-      this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
-      return;
-    }
-
-    const updatedFilterValues = { ...ctx.getState().filterValues, [action.filterKey]: action.value };
-    ctx.patchState({ filterValues: updatedFilterValues });
-    this.loadRequests.next({ type: GetResourcesRequestTypeEnum.GetResources });
-  }
-
   @Action(UpdateResourceType)
   updateResourceType(ctx: StateContext<InstitutionsSearchModel>, action: UpdateResourceType) {
     ctx.patchState({ resourceType: action.type });
   }
 
-  @Action(UpdateSortBy)
-  updateSortBy(ctx: StateContext<InstitutionsSearchModel>, action: UpdateSortBy) {
-    ctx.patchState({ sortBy: action.sortBy });
+  private buildFiltersParams(state: InstitutionsSearchModel): Record<string, string> {
+    const filtersParams: Record<string, string> = {};
+
+    filtersParams['cardSearchFilter[affiliation][]'] = state.providerIri;
+
+    //TODO see search state
+    Object.entries(state.filterValues).forEach(([key, value]) => {
+      if (value) filtersParams[`cardSearchFilter[${key}][]`] = value;
+    });
+
+    return filtersParams;
   }
 }

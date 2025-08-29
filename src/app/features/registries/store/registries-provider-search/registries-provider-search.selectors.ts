@@ -2,6 +2,7 @@ import { Selector } from '@ngxs/store';
 
 import { RegistriesProviderSearchStateModel } from '@osf/features/registries/store/registries-provider-search/registries-provider-search.model';
 import { RegistriesProviderSearchState } from '@osf/features/registries/store/registries-provider-search/registries-provider-search.state';
+import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter, Resource, SelectOption } from '@shared/models';
 
 import { RegistryProviderDetails } from '../../models/registry-provider.model';
@@ -38,7 +39,7 @@ export class RegistriesProviderSearchSelectors {
   }
 
   @Selector([RegistriesProviderSearchState])
-  static getSearchText(state: RegistriesProviderSearchStateModel): string {
+  static getSearchText(state: RegistriesProviderSearchStateModel): StringOrNull {
     return state.searchText;
   }
 
@@ -73,7 +74,7 @@ export class RegistriesProviderSearchSelectors {
   }
 
   @Selector([RegistriesProviderSearchState])
-  static getFilterValues(state: RegistriesProviderSearchStateModel): Record<string, string | null> {
+  static getFilterValues(state: RegistriesProviderSearchStateModel): Record<string, StringOrNull> {
     return state.filterValues;
   }
 
