@@ -1,5 +1,20 @@
 # Angular Documentation with Compodoc
 
+## Index
+
+- [Overview](#overview)
+- [How to Generate Documentation](#how-to-generate-documentation)
+- [Documentation Coverage Requirements](#documentation-coverage-requirements)
+- [Pre-commit Enforcement via Husky](#pre-commit-enforcement-via-husky)
+- [CI/CD Enforcement](#cicd-enforcement)
+- [Tips for Passing Coverage](#tips-for-passing-coverage)
+- [Output Directory](#output-directory)
+- [Need Help?](#need-help)
+
+---
+
+## Overview
+
 This project uses [Compodoc](https://compodoc.app/) to generate and enforce documentation for all Angular code. Documentation is mandatory and must meet a **100% coverage threshold** to ensure consistent API clarity across the codebase.
 
 ---

@@ -1,5 +1,13 @@
 # Linting Strategy – OSF Angular
 
+## Index
+
+- [Overview](#overview)
+- [Linting Commands](#linting-commands)
+- [ESLint Config Structure](#eslint-config-structure)
+- [Pre-Commit Hook](#pre-commit-hook)
+- [Summary](#summary)
+
 ---
 
 ## Overview

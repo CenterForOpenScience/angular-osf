@@ -1,6 +1,17 @@
 # Admin Knowledge Base
 
+## Index
+
+- [Overview](#overview)
+- [All things GitHub](#all-things-github)
+
+---
+
+## Overview
+
 Information on updates that require admin permissions
+
+---
 
 ## All things GitHub
 
@@ -16,6 +27,8 @@ The `.github` folder contains the following:
    .github/workflows
 4. The GitHub PR templates
    .github/pull_request_template.md
+5. The backup json for the settings/rules
+   .github/rules
 
 ### Local pipeline
 
