@@ -121,35 +121,37 @@ Commit messages must be structured as:
 
 | Type         | Description                                                                           |
 | ------------ | ------------------------------------------------------------------------------------- |
+| **chore**    | Changes to the build process, CI/CD pipeline, or dependencies.                        |
+| **docs**     | Documentation-only changes (e.g., README, comments).                                  |
 | **feat**     | New feature added to the codebase.                                                    |
 | **fix**      | Bug fix for an existing issue.                                                        |
-| **docs**     | Documentation-only changes (e.g., README, comments).                                  |
-| **style**    | Changes that do not affect code meaning (formatting, whitespace, missing semicolons). |
-| **refactor** | Code restructuring without changing external behavior.                                |
+| **lang**     | Any updates to the i18n files in src/asssets/i18n/en.json.                            |
 | **perf**     | Code changes that improve performance.                                                |
-| **test**     | Adding or updating tests.                                                             |
-| **chore**    | Changes to the build process, CI/CD pipeline, or dependencies.                        |
+| **refactor** | Code restructuring without changing external behavior.                                |
 | **revert**   | Reverts a previous commit.                                                            |
+| **style**    | Changes that do not affect code meaning (formatting, whitespace, missing semicolons). |
+| **test**     | Adding or updating tests.                                                             |
 
 ---
 
 ### **Examples**
 
-✅ **Good Examples**
+**Good Examples**
 
 ```
+chore(deps): update Angular to v19
+docs(readme): add setup instructions for Windows
 feat(auth): add OAuth2 login support
 fix(user-profile): resolve avatar upload failure on Safari
-docs(readme): add setup instructions for Windows
-style(header): reformat nav menu CSS
-refactor(api): simplify data fetching logic
+lang(eng-4898): added new strings for preprint page
 perf(search): reduce API response time by caching results
-test(auth): add tests for password reset flow
-chore(deps): update Angular to v19
+refactor(api): simplify data fetching logic
 revert: revert “feat(auth): add OAuth2 login support”
+style(header): reformat nav menu CSS
+test(auth): add tests for password reset flow
 ```
 
-❌ **Bad Examples**
+**Bad Examples**
 
 ```
 fixed bug in login
@@ -214,7 +216,7 @@ See the [Allowed Commit Types](#allowed-commit-types) section for details.
 
 ```
 
-### 🛠 Example of Creating a Branch:
+### Example of Creating a Branch:
 
 To create a new branch, use the following command:
 
@@ -223,15 +225,15 @@ git checkout -b feat/1234-add-user-authentication
 
 ```
 
-### 🏆 Best Practices
+### Best Practices
 
-- ✅ Use short and clear descriptions in branch names.
-- ✅ Follow a consistent style across all branches for better project structure.
-- ✅ Avoid redundant words, e.g., fix/1234-fix-bug (the word "fix" is redundant).
-- ✅ Use kebab-case (- instead of \_ or CamelCase).
-- ✅ If there is no issue ID, omit it, e.g., docs/update-contributing-guide.
+- Use short and clear descriptions in branch names.
+- Follow a consistent style across all branches for better project structure.
+- Avoid redundant words, e.g., fix/1234-fix-bug (the word "fix" is redundant).
+- Use kebab-case (- instead of \_ or CamelCase).
+- If there is no issue ID, omit it, e.g., docs/update-contributing-guide.
 
-### 🔗 Additional Resources
+### Additional Resources
 
 **Conventional Commits**: https://www.conventionalcommits.org
 
@@ -241,7 +243,7 @@ git checkout -b feat/1234-add-user-authentication
 
 ### This branch naming strategy ensures better traceability and improves commit history readability.
 
-### 🔗 Additional Resources
+### Additional Resources
 
 Conventional Commits: https://www.conventionalcommits.org
 
@@ -249,4 +251,4 @@ Angular Commit Guidelines: https://github.com/angular/angular/blob/main/CONTRIBU
 
 Git Flow: https://nvie.com/posts/a-successful-git-branching-model/
 
-This branch naming and commit message strategy ensures better traceability and improves commit history readability. 🚀
+This branch naming and commit message strategy ensures better traceability and improves commit history readability.
