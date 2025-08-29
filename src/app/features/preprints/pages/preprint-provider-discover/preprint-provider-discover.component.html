@@ -1,25 +1,4 @@
 <osf-preprint-provider-hero
   [preprintProvider]="preprintProvider()"
   [isPreprintProviderLoading]="isPreprintProviderLoading()"
-  [searchControl]="searchControl"
 />
-
-<osf-search-results-container
-  [resources]="resources()"
-  [searchCount]="resourcesCount()"
-  [selectedSort]="sortBy()"
-  [hasAnySelectedValues]="isAnyFilterSelected()"
-  [first]="first()"
-  [prev]="prev()"
-  [next]="next()"
-  (sortChanged)="sortOptionSelected($event)"
-  (pageChanged)="switchPage($event)"
->
-  <div slot="filter-chips">
-    <osf-preprints-filter-chips />
-  </div>
-
-  <ng-template #filtersComponent>
-    <osf-preprints-resources-filters />
-  </ng-template>
-</osf-search-results-container>

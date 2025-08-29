@@ -7,7 +7,6 @@ export { ContributorsService } from './contributors.service';
 export { CustomConfirmationService } from './custom-confirmation.service';
 export { DuplicatesService } from './duplicates.service';
 export { FilesService } from './files.service';
-export { FiltersOptionsService } from './filters-options.service';
 export { InstitutionsService } from './institutions.service';
 export { JsonApiService } from './json-api.service';
 export { LicensesService } from './licenses.service';
