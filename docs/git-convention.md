@@ -1,10 +1,24 @@
 # CommitLint and Git Branch Naming Convention (Aligned with Angular Guideline)
 
+## Index
+
+- [Overview](#overview)
+- [Local pipeline](#local-pipeline)
+- [Contributing Workflow](#contributing-workflow)
+- [Commitlint](#commitlint)
+- [Branch Naming Format](#branch-naming-format)
+
+---
+
+## Overview
+
 To maintain a clean, structured commit history and optimize team collaboration, we adhere to the Angular Conventional Commits standard for both commit messages and Git branch naming. This ensures every change type is immediately recognizable and supports automation for changelog generation, semantic versioning, and streamlined release processes.
 
 In addition, we enforce these standards using CommitLint, ensuring that all commit messages conform to the defined rules before they are accepted into the repository.
 
 This project employs both GitHub Actions and a local pre-commit pipeline to validate commit messages, enforce branch naming conventions, and maintain repository integrity throughout the development workflow.
+
+---
 
 ## Local pipeline
 
@@ -15,6 +29,8 @@ The local pipeline is managed via husky
 2. The pre-push requirements are:
    - All tests pass
    - Test coverage is met
+
+---
 
 ## Contributing Workflow
 
@@ -68,6 +84,8 @@ This workflow ensures that:
 - Contributors maintain full control of their own changes until they are merged.
 
 For a step-by-step guide on forking and creating pull requests, see [GitHub’s documentation on forks](https://docs.github.com/en/get-started/quickstart/fork-a-repo) and [about pull requests](https://docs.github.com/en/pull-requests).
+
+---
 
 ## Commitlint
 
@@ -156,9 +174,9 @@ update stuff
   Refs #456
   ```
 
----
-
 Commitlint will run automatically and reject non-compliant messages.
+
+---
 
 ## Branch Naming Format
 
@@ -175,9 +193,13 @@ short-description – a brief description of the change.
 
 ```
 
+---
+
 ## Available Types (type)
 
 See the [Allowed Commit Types](#allowed-commit-types) section for details.
+
+---
 
 ## Branch Naming Examples
 

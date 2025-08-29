@@ -1,5 +1,21 @@
 # OSF Angular Testing Strategy
 
+## Index
+
+- [Overview](#overview)
+  - [Pro-tips](#pro-tips)
+- [Best Practices](#best-practices)
+- [Summary Table](#summary-table)
+- [Test Coverage Enforcement (100%)](#test-coverage-enforcement-100)
+- [Key Structure](#key-structure)
+- [Testing Angular Services (with HTTP)](#testing-angular-services-with-http)
+- [Testing Angular Components](#testing-angular-components)
+- [Testing Angular Pipes](#testing-angular-pipes)
+- [Testing Angular Directives](#testing-angular-directives)
+- [Testing Angular NGXS](#testing-ngxs)
+
+---
+
 ## Overview
 
 The OSF Angular project uses a modular and mock-driven testing strategy. A shared `testing/` folder provides reusable mocks, mock data, and testing module configuration to support consistent and maintainable unit tests across the codebase.
@@ -28,20 +44,6 @@ The strategy for structuring test data follows two principles:
 The OSF Angular project defines a `@testing` scope that can be used for importing all testing-related modules.
 
 ---
-
-## Index
-
-- [Best Practices](#best-practices)
-- [Summary Table](#summary-table)
-- [Test Coverage Enforcement (100%)](#test-coverage-enforcement-100)
-- [Key Structure](#key-structure)
-- [Testing Angular Services (with HTTP)](#testing-angular-services-with-http)
-- [Testing Angular Components](#testing-angular-components)
-- [Testing Angular Pipes](#testing-angular-pipes)
-- [Testing Angular Directives](#testing-angular-directives)
-- [Testing Angular NGXS](#testing-ngxs)
-
---
 
 ## Best Practices
 
@@ -113,6 +115,8 @@ This guarantees **test integrity in CI** and **prevents regressions**.
 - **Zero exceptions** for test coverage.
 - **Push blocked** without passing 100% tests.
 - GitHub CI double-checks every PR.
+
+---
 
 ## Key Structure
 
