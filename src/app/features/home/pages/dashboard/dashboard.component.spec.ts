@@ -75,4 +75,11 @@ describe('DashboardComponent', () => {
     const welcomeText = fixture.debugElement.nativeElement.textContent;
     expect(welcomeText).toContain('home.loggedIn.dashboard.noCreatedProject');
   });
+
+  it('should open OSF help link in new tab when openInfoLink is called', () => {
+      const spy = jest.spyOn(window, 'open').mockImplementation(() => null);
+      component.openInfoLink();
+
+      expect(spy).toHaveBeenCalledWith('https://help.osf.io/', '_blank');
+  });
 });

@@ -237,7 +237,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  protected openInfoLink(): void {
+  openInfoLink(): void {
     window.open('https://help.osf.io/', '_blank');
   }
 }
