@@ -1,5 +1,6 @@
 import { UserPermissions } from '@osf/shared/enums';
-import { Institution, InstitutionsJsonApiResponse, JsonApiResponse, License } from '@osf/shared/models';
+import { Identifier, Institution, InstitutionsJsonApiResponse, JsonApiResponse, License } from '@osf/shared/models';
+import { IdentifiersEmbedJsonApiResponse } from '@shared/models/identifiers/identifier-json-api';
 
 export interface ProjectOverviewContributor {
   familyName: string;
@@ -38,7 +39,7 @@ export interface ProjectOverview {
     storageLimitStatus: string;
     storageUsage: string;
   };
-  identifiers?: ProjectIdentifiers[];
+  identifiers?: Identifier[];
   supplements?: ProjectSupplements[];
   analyticsKey: string;
   currentUserCanComment: boolean;
@@ -100,16 +101,7 @@ export interface ProjectOverviewGetResponseJsoApi {
   };
   embeds: {
     affiliated_institutions: InstitutionsJsonApiResponse;
-    identifiers: {
-      data: {
-        id: string;
-        type: string;
-        attributes: {
-          category: string;
-          value: string;
-        };
-      }[];
-    };
+    identifiers: IdentifiersEmbedJsonApiResponse;
     bibliographic_contributors: {
       data: {
         embeds: {
@@ -206,13 +198,6 @@ export interface ProjectOverviewGetResponseJsoApi {
 
 export interface ProjectOverviewResponseJsonApi extends JsonApiResponse<ProjectOverviewGetResponseJsoApi, null> {
   data: ProjectOverviewGetResponseJsoApi;
-}
-
-export interface ProjectIdentifiers {
-  id: string;
-  type: string;
-  category: string;
-  value: string;
 }
 
 export interface ProjectSupplements {

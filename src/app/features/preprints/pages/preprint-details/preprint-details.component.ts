@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
-import { filter, map, of } from 'rxjs';
+import { filter, map, Observable, of } from 'rxjs';
 
 import { DatePipe, Location } from '@angular/common';
 import {
@@ -19,7 +19,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
@@ -46,6 +46,7 @@ import {
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
+import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
 import { MetaTagsService } from '@shared/services';
 import { ContributorsSelectors } from '@shared/stores';
@@ -75,7 +76,7 @@ import { environment } from 'src/environments/environment';
   providers: [DialogService, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintDetailsComponent implements OnInit, OnDestroy {
+export class PreprintDetailsComponent extends DataciteTrackerComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
   private readonly router = inject(Router);
@@ -105,6 +106,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
   preprint = select(PreprintSelectors.getPreprint);
+  preprint$ = toObservable(select(PreprintSelectors.getPreprint));
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
   contributors = select(ContributorsSelectors.getContributors);
   areContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
@@ -281,12 +283,19 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
         this.fetchPreprint(this.preprintId());
       },
     });
+    this.setupDataciteViewTrackerEffect().subscribe();
   }
 
   ngOnDestroy() {
     this.actions.resetState();
   }
 
+  protected getDoi(): Observable<string | null> {
+    return this.preprint$.pipe(
+      filter((project) => project != null),
+      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
+    );
+  }
   fetchPreprintVersion(preprintVersionId: string) {
     const currentUrl = this.router.url;
     const newUrl = currentUrl.replace(/[^/]+$/, preprintVersionId);

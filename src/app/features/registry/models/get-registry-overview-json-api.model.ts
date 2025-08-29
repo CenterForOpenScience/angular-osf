@@ -1,5 +1,6 @@
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
 import { ApiData, JsonApiResponse, ProviderDataJsonApi, SchemaResponseDataJsonApi } from '@osf/shared/models';
+import { IdentifiersEmbedJsonApiResponse } from '@shared/models/identifiers/identifier-json-api';
 
 export type GetRegistryOverviewJsonApi = JsonApiResponse<RegistryOverviewJsonApiData, null>;
 
@@ -87,16 +88,7 @@ export interface RegistryOverviewJsonApiEmbed {
       };
     };
   };
-  identifiers: {
-    data: {
-      id: string;
-      type: string;
-      attributes: {
-        category: string;
-        value: string;
-      };
-    }[];
-  };
+  identifiers: IdentifiersEmbedJsonApiResponse;
   schema_responses: {
     data: SchemaResponseDataJsonApi[];
   };

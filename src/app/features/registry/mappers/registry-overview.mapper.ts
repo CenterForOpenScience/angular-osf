@@ -1,6 +1,7 @@
 import { RegistryOverview, RegistryOverviewJsonApiData } from '@osf/features/registry/models';
 import { ReviewPermissionsMapper } from '@osf/shared/mappers';
 import { RegistrationMapper } from '@osf/shared/mappers/registration';
+import { IdentifiersMapper } from '@shared/mappers/identifiers.mapper';
 import { MapRegistryStatus } from '@shared/mappers/registry/map-registry-status.mapper';
 
 export function MapRegistryOverview(data: RegistryOverviewJsonApiData): RegistryOverview | null {
@@ -36,12 +37,7 @@ export function MapRegistryOverview(data: RegistryOverviewJsonApiData): Registry
       middleName: contributor?.embeds?.users?.data?.attributes?.middle_names,
       type: contributor?.embeds?.users?.data?.type,
     })),
-    identifiers: data.embeds.identifiers?.data.map((identifier) => ({
-      id: identifier.id,
-      type: identifier.type,
-      value: identifier.attributes.value,
-      category: identifier.attributes.category,
-    })),
+    identifiers: IdentifiersMapper.fromEmbeds(data.embeds.identifiers),
     analyticsKey: data.attributes?.analyticsKey,
     currentUserCanComment: data.attributes.current_user_can_comment,
     currentUserPermissions: data.attributes.current_user_permissions,

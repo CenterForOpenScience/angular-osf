@@ -1,4 +1,5 @@
 import { InstitutionsMapper } from '@shared/mappers';
+import { IdentifiersMapper } from '@shared/mappers/identifiers.mapper';
 import { License } from '@shared/models';
 
 import { ProjectOverview, ProjectOverviewGetResponseJsoApi } from '../models';
@@ -46,12 +47,7 @@ export class ProjectOverviewMapper {
         type: contributor.embeds.users.data.type,
       })),
       affiliatedInstitutions: InstitutionsMapper.fromInstitutionsResponse(response.embeds.affiliated_institutions),
-      identifiers: response.embeds.identifiers?.data.map((identifier) => ({
-        id: identifier.id,
-        type: identifier.type,
-        value: identifier.attributes.value,
-        category: identifier.attributes.category,
-      })),
+      identifiers: IdentifiersMapper.fromEmbeds(response.embeds.identifiers),
       ...(response.embeds.storage?.data &&
         !response.embeds.storage?.errors && {
           storage: {

@@ -1,6 +1,7 @@
 import { UserPermissions } from '@osf/shared/enums';
 import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers';
 import { IdName, License, LicenseOptions } from '@osf/shared/models';
+import { Identifier } from '@shared/models/identifiers/indentifier.model';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '../enums';
 
@@ -43,6 +44,7 @@ export interface Preprint {
   embeddedLicense?: License;
   preprintDoiLink?: string;
   articleDoiLink?: string;
+  identifiers?: Identifier[];
 }
 
 export interface PreprintFilesLinks {
