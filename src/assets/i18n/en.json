@@ -245,6 +245,12 @@
         "noCreatedProject": "You haven’t created a project yet. Click the \"Create New Project\" button above to get started.",
         "watchVideoBelow": "Watch the short video below or visit the OSF Get Started help guides to learn more.",
         "getStartedHelp": "Visit Get Started Help Guides",
+        "images": {
+          "osfCollectionsImageAltText": "OSF Collections",
+          "osfInstitutionsImageAltText": "OSF Institutions",
+          "osfRegistriesImageAltTest": "OSF Registries",
+          "osfPreprintsImageAltTest": "OSF Preprints"
+        },
         "quickSearch": {
           "goTo": "Go to",
           "myProjects": "My Projects",
