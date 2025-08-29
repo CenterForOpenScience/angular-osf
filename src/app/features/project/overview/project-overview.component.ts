@@ -7,7 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
-import { filter, map, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import { CommonModule } from '@angular/common';
 import {
@@ -35,6 +35,7 @@ import {
 import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
 import { Mode, ResourceType, UserPermissions } from '@shared/enums';
 import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
+import { Identifier } from '@shared/models';
 import { ToastService } from '@shared/services';
 import {
   ClearWiki,
@@ -191,11 +192,8 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  protected getDoi(): Observable<string | null> {
-    return this.currentProject$.pipe(
-      filter((project) => project != null),
-      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
-    );
+  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
+    return this.currentProject$;
   }
 
   constructor() {
