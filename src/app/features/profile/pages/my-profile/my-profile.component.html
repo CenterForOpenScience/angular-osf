@@ -1,7 +1,5 @@
-<osf-profile-information
-  [currentUser]="currentUser()"
-  [showEdit]="true"
-  (editProfile)="toProfileSettings()"
-></osf-profile-information>
+<osf-profile-information [currentUser]="currentUser()" [showEdit]="true" (editProfile)="toProfileSettings()" />
 
-<osf-profile-search [currentUser]="currentUser()"></osf-profile-search>
+@if (currentUser()) {
+  <osf-profile-search />
+}

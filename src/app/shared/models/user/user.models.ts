@@ -1,4 +1,6 @@
-import { Education, Employment, Social } from '@osf/shared/models';
+import { Education, Employment, JsonApiResponse, Social } from '@osf/shared/models';
+
+export type UserResponseJsonApi = JsonApiResponse<UserDataJsonApi, null>;
 
 export interface User {
   id: string;
@@ -25,7 +27,7 @@ export interface UserSettings {
   subscribeOsfHelpEmail: boolean;
 }
 
-export interface UserGetResponse {
+export interface UserDataJsonApi {
   id: string;
   type: string;
   attributes: {
@@ -88,7 +90,7 @@ export interface UserDataResponseJsonApi {
   meta: {
     active_flags: string[];
     current_user: {
-      data: UserGetResponse | null;
+      data: UserDataJsonApi | null;
     };
   };
 }

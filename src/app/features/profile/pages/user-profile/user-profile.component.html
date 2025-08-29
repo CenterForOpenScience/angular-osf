@@ -1,6 +1,8 @@
-@if (isLoading()) {
+@if (isUserLoading()) {
 } @else {
-  <osf-profile-information [currentUser]="currentUser()"></osf-profile-information>
+  <osf-profile-information [currentUser]="currentUser()" />
 
-  <osf-profile-search [currentUser]="currentUser()"></osf-profile-search>
+  @if (currentUser()) {
+    <osf-profile-search />
+  }
 }

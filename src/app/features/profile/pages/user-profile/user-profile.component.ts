@@ -1,11 +1,10 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { ProfileSearchComponent } from '../../components';
-import { ProfileInformationComponent } from '../../components/profile-information/profile-information.component';
-import { GetUserProfile, ProfileSelectors, SetIsMyProfile } from '../../store';
+import { ProfileInformationComponent, ProfileSearchComponent } from '@osf/features/profile/components';
+import { FetchUserProfile, ProfileSelectors } from '@osf/features/profile/store';
 
 @Component({
   selector: 'osf-user-profile',
@@ -14,26 +13,20 @@ import { GetUserProfile, ProfileSelectors, SetIsMyProfile } from '../../store';
   styleUrl: './user-profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UserProfileComponent implements OnInit, OnDestroy {
-  private readonly route = inject(ActivatedRoute);
+export class UserProfileComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private actions = createDispatchMap({
+    fetchUserProfile: FetchUserProfile,
+  });
 
   currentUser = select(ProfileSelectors.getUserProfile);
-  isLoading = select(ProfileSelectors.getIsUserProfile);
-
-  readonly actions = createDispatchMap({
-    setIsMyProfile: SetIsMyProfile,
-    getUserProfile: GetUserProfile,
-  });
+  isUserLoading = select(ProfileSelectors.isUserProfileLoading);
 
   ngOnInit(): void {
     const userId = this.route.snapshot.params['id'];
 
     if (userId) {
-      this.actions.getUserProfile(userId);
+      this.actions.fetchUserProfile(userId);
     }
-  }
-
-  ngOnDestroy(): void {
-    this.actions.setIsMyProfile(false);
   }
 }

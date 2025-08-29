@@ -11,7 +11,7 @@ import {
   JsonApiResponse,
   PaginatedData,
   ResponseJsonApi,
-  UserGetResponse,
+  UserDataJsonApi,
 } from '../models';
 
 import { JsonApiService } from './json-api.service';
@@ -54,7 +54,7 @@ export class ContributorsService {
     const baseUrl = `${environment.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
 
     return this.jsonApiService
-      .get<ResponseJsonApi<UserGetResponse[]>>(baseUrl)
+      .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)
       .pipe(map((response) => ContributorsMapper.fromUsersWithPaginationGetResponse(response)));
   }
 

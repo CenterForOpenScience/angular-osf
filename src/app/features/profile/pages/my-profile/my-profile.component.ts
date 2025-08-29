@@ -1,13 +1,11 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
-
-import { ProfileSearchComponent } from '../../components';
-import { ProfileInformationComponent } from '../../components/profile-information/profile-information.component';
-import { SetIsMyProfile } from '../../store';
+import { ProfileInformationComponent, ProfileSearchComponent } from '@osf/features/profile/components';
+import { SetUserProfile } from '@osf/features/profile/store';
 
 @Component({
   selector: 'osf-my-profile',
@@ -16,20 +14,22 @@ import { SetIsMyProfile } from '../../store';
   styleUrl: './my-profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MyProfileComponent implements OnDestroy {
-  private readonly router = inject(Router);
+export class MyProfileComponent implements OnInit {
+  private router = inject(Router);
+  private actions = createDispatchMap({
+    setUserProfile: SetUserProfile,
+  });
 
   currentUser = select(UserSelectors.getCurrentUser);
 
-  readonly actions = createDispatchMap({
-    setIsMyProfile: SetIsMyProfile,
-  });
+  ngOnInit(): void {
+    const user = this.currentUser();
+    if (user) {
+      this.actions.setUserProfile(user);
+    }
+  }
 
   toProfileSettings() {
     this.router.navigate(['settings/profile-settings']);
-  }
-
-  ngOnDestroy(): void {
-    this.actions.setIsMyProfile(false);
   }
 }
