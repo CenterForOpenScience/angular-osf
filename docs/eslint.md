@@ -20,6 +20,9 @@ This project uses a **unified, modern ESLint flat config** approach to enforce c
 
 It also integrates into the **Git workflow** via `pre-commit` hooks to ensure clean, compliant code before every commit.
 
+**IMPORTANT**
+The OSF application must meet full accessibility (a11y) compliance to ensure equitable access for users of all abilities, in alignment with our commitment to inclusivity and funding obligations.
+
 ---
 
 ## Linting Commands
