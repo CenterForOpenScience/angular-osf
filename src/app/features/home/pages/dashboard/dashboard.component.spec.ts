@@ -8,7 +8,7 @@ import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.mo
 import {MyResourcesSelectors} from '@shared/stores';
 import {LoadingSpinnerComponent, MyProjectsTableComponent, SubHeaderComponent} from '@shared/components';
 import { MockComponents } from 'ng-mocks';
-import {getProjectsMockForComponent} from '@testing/data/addons/dasboard.data';
+import {getProjectsMockForComponent} from '@testing/data/dashboard/dasboard.data';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -82,4 +82,43 @@ describe('DashboardComponent', () => {
 
       expect(spy).toHaveBeenCalledWith('https://help.osf.io/', '_blank');
   });
+
+  it('should render product images after loading spinner disappears', () => {
+    jest.spyOn(component, 'areProjectsLoading').mockReturnValue(true);
+    fixture.detectChanges();
+
+    let productImages = fixture.debugElement
+      .queryAll(By.css('img'))
+      .filter(img =>
+        img.nativeElement.getAttribute('src')?.includes('assets/images/dashboard/products/')
+      );
+
+    expect(productImages.length).toBe(0);
+
+    const spinner = fixture.debugElement.query(By.css('osf-loading-spinner'));
+    expect(spinner).toBeTruthy();
+
+    jest.spyOn(component, 'areProjectsLoading').mockReturnValue(false);
+    fixture.detectChanges();
+
+    productImages = fixture.debugElement
+      .queryAll(By.css('img'))
+      .filter(img =>
+        img.nativeElement.getAttribute('src')?.includes('assets/images/dashboard/products/')
+      );
+
+    expect(productImages.length).toBe(4);
+
+    const sources = productImages.map(img =>
+      img.nativeElement.getAttribute('src')
+    );
+
+    expect(sources).toEqual(expect.arrayContaining([
+      'assets/images/dashboard/products/osf-collections.png',
+      'assets/images/dashboard/products/osf-institutions.png',
+      'assets/images/dashboard/products/osf-registries.png',
+      'assets/images/dashboard/products/osf-preprints.png',
+    ]));
+  });
+
 });
