@@ -78,6 +78,17 @@
               "outputHashing": "none",
               "namedChunks": true
             },
+            "local": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -100,6 +111,10 @@
             },
             "development": {
               "buildTarget": "osf:build:development",
+              "hmr": false
+            },
+            "local": {
+              "buildTarget": "osf:build:local",
               "hmr": false
             }
           },

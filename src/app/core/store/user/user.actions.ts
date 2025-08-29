@@ -24,25 +24,25 @@ export class UpdateUserSettings {
 export class UpdateProfileSettingsEmployment {
   static readonly type = '[Profile Settings] Update Employment';
 
-  constructor(public payload: { employment: Employment[] }) {}
+  constructor(public payload: Employment[]) {}
 }
 
 export class UpdateProfileSettingsEducation {
   static readonly type = '[Profile Settings] Update Education';
 
-  constructor(public payload: { education: Education[] }) {}
+  constructor(public payload: Education[]) {}
 }
 
 export class UpdateProfileSettingsSocialLinks {
   static readonly type = '[Profile Settings] Update Social Links';
 
-  constructor(public payload: { socialLinks: Partial<Social>[] }) {}
+  constructor(public payload: Partial<Social>[]) {}
 }
 
 export class UpdateProfileSettingsUser {
   static readonly type = '[Profile Settings] Update User';
 
-  constructor(public payload: { user: Partial<User> }) {}
+  constructor(public payload: Partial<User>) {}
 }
 
 export class SetUserAsModerator {

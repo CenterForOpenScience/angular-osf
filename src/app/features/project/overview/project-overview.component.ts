@@ -7,6 +7,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
+import { filter, map, Observable } from 'rxjs';
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -18,36 +20,38 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import {
-  ClearCollectionModeration,
-  CollectionsModerationSelectors,
-  GetSubmissionsReviewActions,
-} from '@osf/features/moderation/store/collections-moderation';
+import { IS_XSMALL } from '@osf/shared/helpers';
 import {
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
-} from '@osf/shared/components';
-import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
-import { MapProjectOverview } from '@osf/shared/mappers';
-import { ToastService } from '@osf/shared/services';
+} from '@shared/components';
+import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
+import { Mode, ResourceType, UserPermissions } from '@shared/enums';
+import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
+import { ToastService } from '@shared/services';
 import {
-  ClearCollections,
   ClearWiki,
   CollectionsSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetHomeWiki,
   GetLinkedResources,
-} from '@osf/shared/stores';
-import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
+} from '@shared/stores';
+import { GetActivityLogs } from '@shared/stores/activity-logs';
+import { ClearCollections } from '@shared/stores/collections';
+
+import {
+  ClearCollectionModeration,
+  CollectionsModerationSelectors,
+  GetSubmissionsReviewActions,
+} from '../../moderation/store/collections-moderation';
 
 import {
   LinkedResourcesComponent,
@@ -88,7 +92,7 @@ import {
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectOverviewComponent implements OnInit {
+export class ProjectOverviewComponent extends DataciteTrackerComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -105,7 +109,6 @@ export class ProjectOverviewComponent implements OnInit {
   isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
-
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
@@ -149,6 +152,7 @@ export class ProjectOverviewComponent implements OnInit {
   });
 
   protected currentProject = select(ProjectOverviewSelectors.getProject);
+  private currentProject$ = toObservable(this.currentProject);
   protected userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
   });
@@ -187,7 +191,15 @@ export class ProjectOverviewComponent implements OnInit {
     return null;
   });
 
+  protected getDoi(): Observable<string | null> {
+    return this.currentProject$.pipe(
+      filter((project) => project != null),
+      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
+    );
+  }
+
   constructor() {
+    super();
     this.setupCollectionsEffects();
     this.setupCleanup();
   }
@@ -205,6 +217,7 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
+      this.setupDataciteViewTrackerEffect().subscribe();
     }
   }
 

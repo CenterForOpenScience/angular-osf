@@ -125,30 +125,28 @@ describe('EducationComponent', () => {
     component.saveEducation();
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      new UpdateProfileSettingsEducation({
-        education: [
-          {
-            institution: 'Test University',
-            department: 'Engineering',
-            degree: 'Bachelor',
-            startYear: 2020,
-            startMonth: 0,
-            endYear: 2024,
-            endMonth: 6,
-            ongoing: false,
-          },
-          {
-            institution: 'Advanced University',
-            department: 'Software Engineering',
-            degree: 'Master of Science',
-            startYear: 2020,
-            startMonth: 8,
-            endYear: null,
-            endMonth: null,
-            ongoing: false,
-          },
-        ],
-      })
+      new UpdateProfileSettingsEducation([
+        {
+          institution: 'Test University',
+          department: 'Engineering',
+          degree: 'Bachelor',
+          startYear: 2020,
+          startMonth: 1,
+          endYear: 2024,
+          endMonth: 6,
+          ongoing: false,
+        },
+        {
+          institution: 'Advanced University',
+          department: 'Software Engineering',
+          degree: 'Master of Science',
+          startYear: 2020,
+          startMonth: 9,
+          endYear: 2025,
+          endMonth: 8,
+          ongoing: false,
+        },
+      ])
     );
   });
 });

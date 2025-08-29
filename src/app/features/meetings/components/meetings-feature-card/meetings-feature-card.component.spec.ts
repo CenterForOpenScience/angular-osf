@@ -13,7 +13,7 @@ describe('MeetingsFeatureCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MeetingsFeatureCardComponent, MockPipe(TranslatePipe, (value) => value)],
+      imports: [MeetingsFeatureCardComponent, MockPipe(TranslatePipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(MeetingsFeatureCardComponent);

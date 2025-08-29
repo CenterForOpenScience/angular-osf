@@ -23,13 +23,14 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PreprintShortInfo } from '@osf/features/preprints/models';
-import { FetchMyPreprints, PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { ListInfoShortenerComponent, SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
+import { TABLE_PARAMS } from '@osf/shared/constants';
+import { SortOrder } from '@osf/shared/enums';
 import { parseQueryFilterParams } from '@osf/shared/helpers';
-import { ListInfoShortenerComponent, SearchInputComponent, SubHeaderComponent } from '@shared/components';
-import { TABLE_PARAMS } from '@shared/constants';
-import { SortOrder } from '@shared/enums';
-import { QueryParams, SearchFilters, TableParameters } from '@shared/models';
+import { QueryParams, SearchFilters, TableParameters } from '@osf/shared/models';
+
+import { PreprintShortInfo } from '../../models';
+import { FetchMyPreprints, PreprintSelectors } from '../../store/preprint';
 
 @Component({
   selector: 'osf-my-preprints',
@@ -52,9 +53,7 @@ export class MyPreprintsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-  private actions = createDispatchMap({
-    fetchMyPreprints: FetchMyPreprints,
-  });
+  private readonly actions = createDispatchMap({ fetchMyPreprints: FetchMyPreprints });
 
   searchControl = new FormControl<string>('');
 
@@ -63,10 +62,7 @@ export class MyPreprintsComponent {
   sortOrder = signal<SortOrder>(SortOrder.Asc);
   currentPage = signal(1);
   currentPageSize = signal(TABLE_PARAMS.rows);
-  tableParams = signal<TableParameters>({
-    ...TABLE_PARAMS,
-    firstRowIndex: 0,
-  });
+  tableParams = signal<TableParameters>({ ...TABLE_PARAMS, firstRowIndex: 0 });
 
   preprints = select(PreprintSelectors.getMyPreprints);
   preprintsTotalCount = select(PreprintSelectors.getMyPreprintsTotalCount);
@@ -96,7 +92,7 @@ export class MyPreprintsComponent {
     if (event.field) {
       this.updateQueryParams({
         sortColumn: event.field,
-        sortOrder: event.order === -1 ? SortOrder.Desc : SortOrder.Asc,
+        sortOrder: event.order as SortOrder.Asc,
       });
     }
   }

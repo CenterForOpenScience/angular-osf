@@ -14,7 +14,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { UserSelectors } from '@osf/core/store/user';
 import { LoaderService, ToastService } from '@osf/shared/services';
 import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
-import { MOCK_STORE, MOCK_USER } from '@shared/mocks';
+import { MOCK_STORE, MOCK_USER, TranslateServiceMock } from '@shared/mocks';
 import { UserSettings } from '@shared/models';
 
 import { NotificationsComponent } from './notifications.component';
@@ -31,7 +31,7 @@ describe('NotificationsComponent', () => {
   };
 
   const mockNotificationSubscriptions = [
-    { id: 'id1', event: SubscriptionEvent.GlobalComments, frequency: SubscriptionFrequency.Daily },
+    { id: 'id1', event: SubscriptionEvent.GlobalMentions, frequency: SubscriptionFrequency.Daily },
     {
       id: 'id2',
       event: SubscriptionEvent.GlobalMentions,
@@ -79,7 +79,7 @@ describe('NotificationsComponent', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
-        MockProvider(TranslatePipe),
+        TranslateServiceMock,
         MockProvider(Store, MOCK_STORE),
         MockProvider(LoaderService, mockLoaderService),
         MockProvider(ToastService, mockToastService),
@@ -127,7 +127,7 @@ describe('NotificationsComponent', () => {
   it('should call dispatch only once per subscription change', () => {
     const mockDispatch = jest.fn().mockReturnValue(of({}));
     MOCK_STORE.dispatch.mockImplementation(mockDispatch);
-    const event = SubscriptionEvent.GlobalComments;
+    const event = SubscriptionEvent.GlobalMentions;
     const frequency = SubscriptionFrequency.Daily;
 
     component.onSubscriptionChange(event, frequency);

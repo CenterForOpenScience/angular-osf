@@ -31,7 +31,7 @@ export class MeetingsMapper {
         title: item.attributes.title,
         dateCreated: item.attributes.date_created,
         authorName: item.attributes.author_name,
-        downloadCount: item.attributes.download_count,
+        downloadCount: item.attributes.download_count || 0,
         meetingCategory: item.attributes.meeting_category,
         downloadLink: item.links.download,
       })),

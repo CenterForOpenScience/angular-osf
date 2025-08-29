@@ -84,7 +84,7 @@ export class SocialComponent {
 
     this.loaderService.show();
     this.actions
-      .updateProfileSettingsSocialLinks({ socialLinks: mappedLinks })
+      .updateProfileSettingsSocialLinks(mappedLinks)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {

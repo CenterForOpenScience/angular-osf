@@ -1,4 +1,4 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -16,38 +16,24 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import { AccountSettingsService } from '@osf/features/settings/account-settings/services';
-import {
-  IconComponent,
-  LoadingSpinnerComponent,
-  MyProjectsTableComponent,
-  SubHeaderComponent,
-} from '@osf/shared/components';
+import { IconComponent, LoadingSpinnerComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
-import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@shared/stores';
+import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 
 import { ConfirmEmailComponent } from '../../components';
 
 @Component({
   selector: 'osf-dashboard',
-  imports: [
-    RouterLink,
-    Button,
-    SubHeaderComponent,
-    MyProjectsTableComponent,
-    IconComponent,
-    TranslatePipe,
-    LoadingSpinnerComponent,
-  ],
+  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent, IconComponent, TranslatePipe, LoadingSpinnerComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   providers: [DialogService],
 })
 export class DashboardComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
-  private readonly store = inject(Store);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly translateService = inject(TranslateService);
@@ -55,23 +41,21 @@ export class DashboardComponent implements OnInit {
   private readonly accountSettingsService = inject(AccountSettingsService);
 
   protected readonly isLoading = signal(false);
-  protected readonly isSubmitting = signal(false);
+  readonly isMedium = toSignal(inject(IS_MEDIUM));
 
-  protected readonly isMedium = toSignal(inject(IS_MEDIUM));
+  readonly searchControl = new FormControl<string>('');
+  readonly activeProject = signal<MyResourcesItem | null>(null);
+  readonly sortColumn = signal<string | undefined>(undefined);
+  readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
+  readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS });
 
-  protected readonly searchControl = new FormControl<string>('');
-  protected readonly activeProject = signal<MyResourcesItem | null>(null);
-  protected readonly sortColumn = signal<string | undefined>(undefined);
-  protected readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
-  protected readonly tableParams = signal<TableParameters>({
-    ...MY_PROJECTS_TABLE_PARAMS,
-  });
+  readonly projects = select(MyResourcesSelectors.getProjects);
+  readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
+  readonly areProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
 
-  protected readonly projects = select(MyResourcesSelectors.getProjects);
-  protected readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
-  protected readonly isProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
+  readonly actions = createDispatchMap({ getMyProjects: GetMyProjects, clearMyResources: ClearMyResources });
 
-  protected readonly filteredProjects = computed(() => {
+  readonly filteredProjects = computed(() => {
     const search = this.searchControl.value?.toLowerCase() ?? '';
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
@@ -143,7 +127,7 @@ export class DashboardComponent implements OnInit {
 
       if (sortField) {
         this.sortColumn.set(sortField);
-        this.sortOrder.set(sortOrder || SortOrder.Asc);
+        this.sortOrder.set(+sortOrder || SortOrder.Asc);
       }
 
       if (search) {
@@ -172,7 +156,7 @@ export class DashboardComponent implements OnInit {
 
   setupCleanup(): void {
     this.destroyRef.onDestroy(() => {
-      this.store.dispatch(new ClearMyResources());
+      this.actions.clearMyResources();
     });
   }
 
@@ -180,9 +164,7 @@ export class DashboardComponent implements OnInit {
     this.isLoading.set(true);
     const filters = this.createFilters();
     const page = Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
-    this.store
-      .dispatch(new GetMyProjects(page, this.tableParams().rows, filters))
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.actions.getMyProjects(page, this.tableParams().rows, filters).pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         complete: () => {
           this.isLoading.set(false);
@@ -219,7 +201,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  protected onPageChange(event: TablePageEvent): void {
+  onPageChange(event: TablePageEvent): void {
     this.tableParams.update((current) => ({
       ...current,
       rows: event.rows,
@@ -229,35 +211,30 @@ export class DashboardComponent implements OnInit {
     this.updateQueryParams();
   }
 
-  protected onSort(event: SortEvent): void {
+  onSort(event: SortEvent): void {
     if (event.field) {
       this.sortColumn.set(event.field);
-      this.sortOrder.set(event.order === -1 ? SortOrder.Desc : SortOrder.Asc);
+      this.sortOrder.set(event.order as SortOrder);
       this.updateQueryParams();
     }
   }
 
-  protected navigateToProject(project: MyResourcesItem): void {
+  navigateToProject(project: MyResourcesItem): void {
     this.activeProject.set(project);
     this.router.navigate([project.id]);
   }
 
-  protected createProject(): void {
+  createProject(): void {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';
-    this.isSubmitting.set(true);
 
-    this.dialogService
-      .open(CreateProjectDialogComponent, {
-        width: dialogWidth,
-        focusOnShow: false,
-        header: this.translateService.instant('myProjects.header.createProject'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
-      })
-      .onClose.subscribe(() => {
-        this.isSubmitting.set(false);
-      });
+    this.dialogService.open(CreateProjectDialogComponent, {
+      width: dialogWidth,
+      focusOnShow: false,
+      header: this.translateService.instant('myProjects.header.createProject'),
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+    });
   }
 
   protected openInfoLink(): void {

@@ -135,7 +135,7 @@ export class UserState {
       return;
     }
 
-    const withoutNulls = payload.employment.map((item) => removeNullable(item));
+    const withoutNulls = payload.map((item) => removeNullable(item));
 
     return this.userService.updateUserProfile(userId, ProfileSettingsKey.Employment, withoutNulls).pipe(
       tap((user) => {
@@ -160,7 +160,7 @@ export class UserState {
       return;
     }
 
-    const withoutNulls = payload.education.map((item) => removeNullable(item));
+    const withoutNulls = payload.map((item) => removeNullable(item));
 
     return this.userService.updateUserProfile(userId, ProfileSettingsKey.Education, withoutNulls).pipe(
       tap((user) => {
@@ -185,7 +185,7 @@ export class UserState {
       return;
     }
 
-    const withoutNulls = UserMapper.toNamesRequest(removeNullable(payload.user));
+    const withoutNulls = UserMapper.toNamesRequest(removeNullable(payload));
 
     return this.userService.updateUserProfile(userId, ProfileSettingsKey.User, withoutNulls).pipe(
       tap((user) => {
@@ -212,7 +212,7 @@ export class UserState {
 
     let social = {} as Partial<Social>;
 
-    payload.socialLinks.forEach((item) => {
+    payload.forEach((item) => {
       social = {
         ...social,
         ...item,

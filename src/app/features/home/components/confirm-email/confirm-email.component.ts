@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { AccountSettingsService } from '@osf/features/settings/account-settings/services';
-import { LoadingSpinnerComponent } from '@shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components';
 
 @Component({
   selector: 'osf-confirm-email',
@@ -31,7 +31,7 @@ export class ConfirmEmailComponent {
   verifyingEmail = signal(false);
 
   closeDialog() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/']);
     this.dialogRef.close();
   }
 

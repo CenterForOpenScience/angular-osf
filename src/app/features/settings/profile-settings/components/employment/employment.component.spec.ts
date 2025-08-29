@@ -124,21 +124,19 @@ describe('EmploymentComponent', () => {
     component.saveEmployment();
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      new UpdateProfileSettingsEmployment({
-        employment: [
-          {
-            title: 'Software Engineer Intern',
-            institution: 'Test University',
-            department: 'Engineering',
-            startYear: 2020,
-            startMonth: 1,
-            endYear: 2024,
-            endMonth: 6,
-            ongoing: false,
-          },
-          expect.any(Object),
-        ],
-      })
+      new UpdateProfileSettingsEmployment([
+        {
+          title: 'Software Engineer Intern',
+          institution: 'Test University',
+          department: 'Engineering',
+          startYear: 2020,
+          startMonth: 1,
+          endYear: 2024,
+          endMonth: 6,
+          ongoing: false,
+        },
+        expect.any(Object),
+      ])
     );
   });
 });

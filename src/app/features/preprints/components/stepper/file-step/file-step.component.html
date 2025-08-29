@@ -20,9 +20,9 @@
     [label]="'preprints.preprintStepper.file.uploadFromComputer' | translate | titlecase"
     severity="secondary"
     [disabled]="isFileSourceSelected()"
-    [pTooltip]="isFileSourceSelected() ? ('preprints.preprintStepper.file.tooltips.computerDisabled' | translate) : ''"
+    [pTooltip]="'preprints.preprintStepper.file.tooltips.computerDisabled' | translate"
     tooltipPosition="top"
-    (click)="selectFileSource(PreprintFileSource.Computer)"
+    (onClick)="selectFileSource(PreprintFileSource.Computer)"
   />
   <p-button
     [ngClass]="{
@@ -33,9 +33,9 @@
     [label]="'preprints.preprintStepper.file.selectFromProject' | translate | titlecase"
     severity="secondary"
     [disabled]="isFileSourceSelected() || versionFileMode()"
-    [pTooltip]="isFileSourceSelected() ? ('preprints.preprintStepper.file.tooltips.projectDisabled' | translate) : ''"
+    [pTooltip]="'preprints.preprintStepper.file.tooltips.projectDisabled' | translate"
     tooltipPosition="top"
-    (click)="selectFileSource(PreprintFileSource.Project)"
+    (onClick)="selectFileSource(PreprintFileSource.Project)"
   />
 </section>
 
@@ -50,7 +50,7 @@
         severity="success"
         [icon]="'fas fa-upload'"
         [label]="'preprints.preprintStepper.file.uploadFileButton' | translate | titlecase"
-        (click)="fileInput.click()"
+        (onClick)="fileInput.click()"
       />
 
       <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
@@ -109,7 +109,7 @@
             <p>{{ file.name }}</p>
           </div>
 
-          <p-button class="danger-icon-btn" icon="fas fa-trash" severity="danger" text (click)="versionFile()" />
+          <p-button class="danger-icon-btn" icon="fas fa-trash" severity="danger" text (onClick)="versionFile()" />
         </section>
       }
     }
@@ -122,13 +122,13 @@
     styleClass="w-full"
     [label]="'common.buttons.back' | translate"
     severity="info"
-    (click)="backButtonClicked()"
+    (onClick)="backButtonClicked()"
   />
   <p-button
     class="w-6 md:w-9rem"
     styleClass="w-full"
     [label]="'common.buttons.next' | translate"
-    (click)="nextButtonClicked()"
+    (onClick)="nextButtonClicked()"
     [disabled]="!preprint()?.primaryFileId || versionFileMode()"
   />
 </section>

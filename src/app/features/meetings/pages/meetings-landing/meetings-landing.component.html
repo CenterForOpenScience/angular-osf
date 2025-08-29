@@ -33,7 +33,7 @@
     (onPage)="onPageChange($event)"
     (onSort)="onSort($event)"
     [sortField]="sortColumn()"
-    [sortOrder]="sortOrder() === 0 ? 1 : -1"
+    [sortOrder]="sortOrder()"
     [customSort]="true"
     [resetPageOnSort]="false"
   >
