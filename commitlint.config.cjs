@@ -5,15 +5,16 @@ module.exports = {
       2,
       'always',
       [
+        'chore', // Build process, CI/CD, dependencies
+        'docs', // Documentation update
         'feat', // New feature
         'fix', // Bug fix
-        'docs', // Documentation update
-        'style', // Code style (formatting, missing semicolons, etc.)
-        'refactor', // Code refactoring (no feature changes)
+        'lang', // All updates related to i18n changes
         'perf', // Performance improvements
-        'test', // Adding tests
-        'chore', // Build process, CI/CD, dependencies
+        'refactor', // Code refactoring (no feature changes)
         'revert', // Reverting changes
+        'style', // Code style (formatting, missing semicolons, etc.)
+        'test', // Adding tests
       ],
     ],
     'scope-empty': [2, 'never'], // Scope must always be present

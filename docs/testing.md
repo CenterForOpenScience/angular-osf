@@ -1,13 +1,9 @@
 # OSF Angular Testing Strategy
 
-## Overview
-
-The OSF Angular project uses a modular and mock-driven testing strategy. A shared `testing/` folder provides reusable mocks, mock data, and testing module configuration to support consistent and maintainable unit tests across the codebase.
-
----
-
 ## Index
 
+- [Overview](#overview)
+  - [Pro-tips](#pro-tips)
 - [Best Practices](#best-practices)
 - [Summary Table](#summary-table)
 - [Test Coverage Enforcement (100%)](#test-coverage-enforcement-100)
@@ -18,7 +14,36 @@ The OSF Angular project uses a modular and mock-driven testing strategy. A share
 - [Testing Angular Directives](#testing-angular-directives)
 - [Testing Angular NGXS](#testing-ngxs)
 
---
+---
+
+## Overview
+
+The OSF Angular project uses a modular and mock-driven testing strategy. A shared `testing/` folder provides reusable mocks, mock data, and testing module configuration to support consistent and maintainable unit tests across the codebase.
+
+---
+
+### Pro-tips
+
+**What to test**
+
+The OSF Angular testing strategy enforces 100% coverage while also serving as a guardrail for future engineers. Each test should highlight the most critical aspect of your code — what you’d want the next developer to understand before making changes. If a test fails during a refactor, it should clearly signal that a core feature was impacted, prompting them to investigate why and preserve the intended behavior.
+
+---
+
+**Test Data**
+
+The OSF Angular Test Data module provides a centralized and consistent source of data across all unit tests. It is intended solely for use within unit tests. By standardizing test data, any changes to underlying data models will produce cascading failures, which help expose the full scope of a refactor. This is preferable to isolated or hardcoded test values, which can lead to false positives and missed regressions.
+
+The strategy for structuring test data follows two principles:
+
+1. Include enough data to cover all relevant permutations required by the test suite.
+2. Ensure the data reflects all possible states (stati) of the model.
+
+**Test Scope**
+
+The OSF Angular project defines a `@testing` scope that can be used for importing all testing-related modules.
+
+---
 
 ## Best Practices
 
@@ -34,8 +59,8 @@ The OSF Angular project uses a modular and mock-driven testing strategy. A share
 | Location                | Purpose                                |
 | ----------------------- | -------------------------------------- |
 | `osf.testing.module.ts` | Unified test module for shared imports |
-| `mocks/*.mock.ts`       | Mock services and tokens               |
-| `data/*.data.ts`        | Static mock data for test cases        |
+| `src/mocks/*.mock.ts`   | Mock services and tokens               |
+| `src/data/*.data.ts`    | Static mock data for test cases        |
 
 ---
 
@@ -91,9 +116,11 @@ This guarantees **test integrity in CI** and **prevents regressions**.
 - **Push blocked** without passing 100% tests.
 - GitHub CI double-checks every PR.
 
+---
+
 ## Key Structure
 
-### `testing/osf.testing.module.ts`
+### `src/testing/osf.testing.module.ts`
 
 This module centralizes commonly used providers, declarations, and test utilities. It's intended to be imported into any `*.spec.ts` test file to avoid repetitive boilerplate.
 
@@ -101,7 +128,7 @@ Example usage:
 
 ```ts
 import { TestBed } from '@angular/core/testing';
-import { OsfTestingModule } from 'testing/osf.testing.module';
+import { OsfTestingModule } from '@testing/osf.testing.module';
 
 beforeEach(async () => {
   await TestBed.configureTestingModule({
@@ -141,9 +168,9 @@ beforeEach(async () => {
 - `StoreMock` – mocks NgRx Store for selector and dispatch testing.
 - `ToastServiceMock` – injects a mock version of the UI toast service.
 
-### `testing/mocks/`
+### Testing Mocks
 
-Provides common service and token mocks to isolate unit tests from real implementations.
+The `src/testing/mocks/` directory provides common service and token mocks to isolate unit tests from real implementations.
 
 **examples**
 
@@ -154,11 +181,16 @@ Provides common service and token mocks to isolate unit tests from real implemen
 
 ---
 
-### `testing/data/`
+### Test Data
 
-Includes fake/mock data used by tests to simulate external API responses or internal state.
+The `src/testing/data/` directory includes fake/mock data used by tests to simulate external API responses or internal state.
 
-Only use data from the `testing/data` data mocks to ensure that all data is the centralized.
+The OSF Angular Test Data module provides a centralized and consistent source of data across all unit tests. It is intended solely for use within unit tests. By standardizing test data, any changes to underlying data models will produce cascading failures, which help expose the full scope of a refactor. This is preferable to isolated or hardcoded test values, which can lead to false positives and missed regressions.
+
+The strategy for structuring test data follows two principles:
+
+1. Include enough data to cover all relevant permutations required by the test suite.
+2. Ensure the data reflects all possible states (stati) of the model.
 
 **examples**
 
@@ -169,11 +201,13 @@ Only use data from the `testing/data` data mocks to ensure that all data is the 
 
 ---
 
----
-
 ## Testing Angular Services (with HTTP)
 
-All OSF Angular services that make HTTP requests must be tested using `HttpClientTestingModule` and `HttpTestingController`.
+All OSF Angular services that make HTTP requests must be tested using `HttpClientTestingModule` and `HttpTestingController`. This testing style verifies both the API call itself and the logic that maps the response into application data.
+
+When using HttpTestingController to flush HTTP requests in tests, only use data from the @testing/data mocks to ensure consistency and full test coverage.
+
+Any error handling will also need to be tested.
 
 ### Setup
 
@@ -240,8 +274,86 @@ it('should call correct endpoint and return expected data', inject(
 
 ---
 
-## Testing NGXS
+## NGXS State Testing Strategy
 
-- coming soon
+The OSF Angular strategy for NGXS state testing is to create **small integration test scenarios**. This is a deliberate departure from traditional **black box isolated** testing. The rationale is:
+
+1. **NGXS actions** tested in isolation are difficult to mock and result in garbage-in/garbage-out tests.
+2. **NGXS selectors** tested in isolation are easy to mock but also lead to garbage-in/garbage-out outcomes.
+3. **NGXS states** tested in isolation are easy to invoke but provide no meaningful validation.
+4. **Mocking service calls** during state testing introduces false positives, since the mocked service responses may not reflect actual backend behavior.
+
+This approach favors realism and accuracy over artificial test isolation.
+
+### Test Outline Strategy
+
+1. **Dispatch the primary action** – Kick off the state logic under test.
+2. **Dispatch any dependent actions** – Include any secondary actions that rely on the primary action's outcome.
+3. **Verify the loading selector is `true`** – Ensure the loading state is activated during the async flow.
+4. **Verify the service call using `HttpTestingController` and `@testing/data` mocks** – Confirm that the correct HTTP request is made and flushed with known mock data.
+5. **Verify the loading selector is `false`** – Ensure the loading state deactivates after the response is handled.
+6. **Verify the primary data selector** – Check that the core selector related to the dispatched action returns the expected state.
+7. **Verify any additional selectors** – Assert the output of other derived selectors relevant to the action.
+8. **Validate the test with `httpMock.verify()`** – Confirm that all HTTP requests were flushed and none remain unhandled:
+
+```ts
+expect(httpMock.verify).toBeTruthy();
+```
+
+### Example
+
+This is an example of an NGXS action test that involves both a **primary action** and a **dependent action**. The dependency must be dispatched first to ensure the test environment mimics the actual runtime behavior. This pattern helps validate not only the action effects but also the full selector state after updates. All HTTP requests are flushed using the centralized `@testing/data` mocks.
+
+```ts
+it('should test action, state and selectors', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+  let result: any[] = [];
+  // Dependency Action
+  store.dispatch(new GetAuthorizedStorageAddons('reference-id')).subscribe();
+
+  // Primary Action
+  store.dispatch(new GetAuthorizedStorageOauthToken('account-id')).subscribe(() => {
+    result = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddons);
+  });
+
+  // Loading selector is true
+  const loading = store.selectSignal(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+  expect(loading()).toBeTruthy();
+
+  // Http request for service for dependency action
+  let request = httpMock.expectOne('api/path/dependency/action');
+  expect(request.request.method).toBe('GET');
+  // @testing/data response mock
+  request.flush(getAddonsAuthorizedStorageData());
+
+  // Http request for service for primary action
+  let request = httpMock.expectOne('api/path/primary/action');
+  expect(request.request.method).toBe('PATCH');
+  // @testing/data response mock with updates
+  const addonWithToken = getAddonsAuthorizedStorageData(1);
+  addonWithToken.data.attributes.oauth_token = 'ya2.34234324534';
+  request.flush(addonWithToken);
+
+  // Full testing of the dependency selector
+  expect(result[1]).toEqual(
+    Object({
+      accountOwnerId: '0b441148-83e5-4f7f-b302-b07b528b160b',
+    })
+  );
+
+  // Full testing of the primary selector
+  let oauthToken = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(result[0].id));
+  expect(oauthToken).toBe('ya29.A0AS3H6NzDCKgrUx');
+
+  // Verify only the requested `account-id` was updated
+  oauthToken = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(result[1].id));
+  expect(oauthToken).toBe(result[1].oauthToken);
+
+  // Loading selector is false
+  expect(loading()).toBeFalsy();
+
+  // httpMock.verify to ensure no other api calls are called.
+  expect(httpMock.verify).toBeTruthy();
+}));
+```
 
 ---
