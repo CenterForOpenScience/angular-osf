@@ -16,7 +16,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import { AccountSettingsService } from '@osf/features/settings/account-settings/services';
-import { IconComponent, LoadingSpinnerComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
+import {
+  IconComponent,
+  LoadingSpinnerComponent,
+  MyProjectsTableComponent,
+  SubHeaderComponent,
+} from '@osf/shared/components';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
@@ -27,7 +32,15 @@ import { ConfirmEmailComponent } from '../../components';
 
 @Component({
   selector: 'osf-dashboard',
-  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent, IconComponent, TranslatePipe, LoadingSpinnerComponent],
+  imports: [
+    RouterLink,
+    Button,
+    SubHeaderComponent,
+    MyProjectsTableComponent,
+    IconComponent,
+    TranslatePipe,
+    LoadingSpinnerComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   providers: [DialogService],
@@ -61,7 +74,7 @@ export class DashboardComponent implements OnInit {
   });
 
   protected readonly existsProjects = computed(() => {
-    return this.projects().length || !! this.searchControl.value?.length;
+    return this.projects().length || !!this.searchControl.value?.length;
   });
 
   dialogRef: DynamicDialogRef | null = null;
@@ -164,7 +177,9 @@ export class DashboardComponent implements OnInit {
     this.isLoading.set(true);
     const filters = this.createFilters();
     const page = Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
-    this.actions.getMyProjects(page, this.tableParams().rows, filters).pipe(takeUntilDestroyed(this.destroyRef))
+    this.actions
+      .getMyProjects(page, this.tableParams().rows, filters)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         complete: () => {
           this.isLoading.set(false);

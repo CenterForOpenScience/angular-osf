@@ -1,19 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule} from '@angular/forms';
-import { DashboardComponent } from './dashboard.component';
 import { Store } from '@ngxs/store';
-import { of } from 'rxjs';
-import { By } from '@angular/platform-browser';
-import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
-import {MyResourcesSelectors} from '@shared/stores';
-import {LoadingSpinnerComponent, MyProjectsTableComponent, SubHeaderComponent} from '@shared/components';
+
 import { MockComponents } from 'ng-mocks';
-import {getProjectsMockForComponent} from '@testing/data/dashboard/dasboard.data';
+
+import { of } from 'rxjs';
+
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+
+import { LoadingSpinnerComponent, MyProjectsTableComponent, SubHeaderComponent } from '@shared/components';
+import { MyResourcesSelectors } from '@shared/stores';
+
+import { DashboardComponent } from './dashboard.component';
+
+import { getProjectsMockForComponent } from '@testing/data/dashboard/dasboard.data';
+import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
-  console.log('hello hello')
   const storeMock = {
     dispatch: jest.fn().mockReturnValue(of({})),
     selectSnapshot: jest.fn(),
@@ -28,8 +33,13 @@ describe('DashboardComponent', () => {
       return () => null;
     });
     await TestBed.configureTestingModule({
-      imports: [DashboardComponent, ReactiveFormsModule, OSFTestingModule, OSFTestingStoreModule,
-        ...MockComponents(SubHeaderComponent, MyProjectsTableComponent, LoadingSpinnerComponent)],
+      imports: [
+        DashboardComponent,
+        ReactiveFormsModule,
+        OSFTestingModule,
+        OSFTestingStoreModule,
+        ...MockComponents(SubHeaderComponent, MyProjectsTableComponent, LoadingSpinnerComponent),
+      ],
       providers: [{ provide: Store, useValue: storeMock }],
     }).compileComponents();
 
@@ -37,7 +47,6 @@ describe('DashboardComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
-
 
   it('should show loading spinner when projects are loading', () => {
     jest.spyOn(component, 'areProjectsLoading').mockReturnValue(true);
@@ -77,10 +86,9 @@ describe('DashboardComponent', () => {
   });
 
   it('should open OSF help link in new tab when openInfoLink is called', () => {
-      const spy = jest.spyOn(window, 'open').mockImplementation(() => null);
-      component.openInfoLink();
-
-      expect(spy).toHaveBeenCalledWith('https://help.osf.io/', '_blank');
+    const spy = jest.spyOn(window, 'open').mockImplementation(() => null);
+    component.openInfoLink();
+    expect(spy).toHaveBeenCalledWith('https://help.osf.io/', '_blank');
   });
 
   it('should render product images after loading spinner disappears', () => {
@@ -89,9 +97,7 @@ describe('DashboardComponent', () => {
 
     let productImages = fixture.debugElement
       .queryAll(By.css('img'))
-      .filter(img =>
-        img.nativeElement.getAttribute('src')?.includes('assets/images/dashboard/products/')
-      );
+      .filter((img) => img.nativeElement.getAttribute('src')?.includes('assets/images/dashboard/products/'));
 
     expect(productImages.length).toBe(0);
 
@@ -103,22 +109,19 @@ describe('DashboardComponent', () => {
 
     productImages = fixture.debugElement
       .queryAll(By.css('img'))
-      .filter(img =>
-        img.nativeElement.getAttribute('src')?.includes('assets/images/dashboard/products/')
-      );
+      .filter((img) => img.nativeElement.getAttribute('src')?.includes('assets/images/dashboard/products/'));
 
     expect(productImages.length).toBe(4);
 
-    const sources = productImages.map(img =>
-      img.nativeElement.getAttribute('src')
+    const sources = productImages.map((img) => img.nativeElement.getAttribute('src'));
+
+    expect(sources).toEqual(
+      expect.arrayContaining([
+        'assets/images/dashboard/products/osf-collections.png',
+        'assets/images/dashboard/products/osf-institutions.png',
+        'assets/images/dashboard/products/osf-registries.png',
+        'assets/images/dashboard/products/osf-preprints.png',
+      ])
     );
-
-    expect(sources).toEqual(expect.arrayContaining([
-      'assets/images/dashboard/products/osf-collections.png',
-      'assets/images/dashboard/products/osf-institutions.png',
-      'assets/images/dashboard/products/osf-registries.png',
-      'assets/images/dashboard/products/osf-preprints.png',
-    ]));
   });
-
 });

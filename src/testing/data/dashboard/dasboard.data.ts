@@ -1,5 +1,6 @@
-import structuredClone from 'structured-clone';
 import { MyResourcesItem } from '@shared/models';
+
+import structuredClone from 'structured-clone';
 
 const ProjectsMock = {
   data: [
