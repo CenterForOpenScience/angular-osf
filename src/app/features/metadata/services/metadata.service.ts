@@ -32,6 +32,7 @@ export class MetadataService {
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],
+    [ResourceType.File, 'files'],
   ]);
 
   getCustomItemMetadata(guid: string): Observable<CustomItemMetadataRecord> {
@@ -46,6 +47,24 @@ export class MetadataService {
     return this.jsonApiService
       .put<CustomMetadataJsonApi>(`${this.apiUrl}/custom_item_metadata_records/${guid}/`, payload)
       .pipe(map((response) => MetadataMapper.fromCustomMetadataApiResponse(response)));
+  }
+
+  createDoi(resourceId: string, resourceType: ResourceType): Observable<Metadata> {
+    const payload = {
+      data: {
+        type: 'identifiers',
+        attributes: {
+          category: 'doi',
+        },
+      },
+    };
+
+    return this.jsonApiService
+      .post<MetadataJsonApiResponse>(
+        `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/identifiers/`,
+        payload
+      )
+      .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response.data)));
   }
 
   getFundersList(searchQuery?: string): Observable<CrossRefFundersResponse> {
@@ -137,7 +156,6 @@ export class MetadataService {
     licenseId: string,
     licenseOptions?: LicenseOptions
   ): Observable<Metadata> {
-    console.log(licenseOptions);
     const payload = {
       data: {
         id: resourceId,

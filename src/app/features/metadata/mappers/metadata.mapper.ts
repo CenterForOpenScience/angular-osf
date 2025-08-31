@@ -46,7 +46,6 @@ export class MetadataMapper {
   }
 
   static toCustomMetadataApiRequest(id: string, metadata: Partial<CustomItemMetadataRecord>) {
-    console.log('toCustomMetadataApiRequest', { id, metadata });
     return {
       data: {
         type: 'custom-item-metadata-records',

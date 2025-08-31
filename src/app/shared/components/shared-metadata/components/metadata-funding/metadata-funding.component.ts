@@ -16,6 +16,6 @@ import { Funder } from '@osf/features/metadata/models';
 export class MetadataFundingComponent {
   openEditFundingDialog = output<void>();
 
-  funders = input<Funder[]>([]);
+  funders = input<Funder[]>();
   readonly = input<boolean>(false);
 }

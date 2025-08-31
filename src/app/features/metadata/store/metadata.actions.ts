@@ -50,6 +50,14 @@ export class UpdateResourceLicense {
   ) {}
 }
 
+export class CreateDoi {
+  static readonly type = '[Metadata] Create DOI';
+  constructor(
+    public resourceId: string,
+    public resourceType: ResourceType
+  ) {}
+}
+
 export class GetFundersList {
   static readonly type = '[Metadata] Get Funders List';
   constructor(public search?: string) {}

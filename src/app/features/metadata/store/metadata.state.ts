@@ -12,6 +12,7 @@ import { MetadataService } from '../services';
 import {
   AddCedarMetadataRecordToState,
   CreateCedarMetadataRecord,
+  CreateDoi,
   GetCedarMetadataRecords,
   GetCedarMetadataTemplates,
   GetCustomItemMetadata,
@@ -79,7 +80,6 @@ export class MetadataState {
     return this.metadataService.getCustomItemMetadata(action.guid).pipe(
       tap({
         next: (response) => {
-          console.log('Custom Metadata response:', response);
           ctx.patchState({
             customMetadata: { data: response, isLoading: false, error: null },
           });
@@ -106,6 +106,24 @@ export class MetadataState {
         },
       }),
       catchError((error) => handleSectionError(ctx, 'customMetadata', error))
+    );
+  }
+
+  @Action(CreateDoi)
+  createDoi(ctx: StateContext<MetadataStateModel>, action: CreateDoi) {
+    ctx.patchState({
+      metadata: { ...ctx.getState().metadata, isLoading: true, error: null },
+    });
+
+    return this.metadataService.createDoi(action.resourceId, action.resourceType).pipe(
+      tap({
+        next: (response) => {
+          ctx.patchState({
+            metadata: { data: response, isLoading: false, error: null },
+          });
+        },
+      }),
+      catchError((error) => handleSectionError(ctx, 'metadata', error))
     );
   }
 

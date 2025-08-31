@@ -58,7 +58,6 @@ export class LicenseDialogComponent implements OnInit {
   }
 
   onSelectLicense(license: License): void {
-    console.log(license);
     this.selectedLicenseId.set(license.id);
   }
 

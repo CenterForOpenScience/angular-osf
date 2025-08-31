@@ -97,7 +97,6 @@ export class FundingDialogComponent implements OnInit {
     this.searchSubject
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((searchQuery) => {
-        console.log('Searching funders for:', searchQuery);
         this.actions.getFundersList(searchQuery);
       });
   }
@@ -158,8 +157,6 @@ export class FundingDialogComponent implements OnInit {
   }
 
   save(): void {
-    console.log('Funding form value:', this.fundingForm.value);
-    console.log('Funding form valid:', this.fundingForm.valid);
     if (this.fundingForm.valid) {
       const fundingData = this.fundingEntries.value.filter((entry): entry is Funder =>
         Boolean(entry && (entry.funderName || entry.awardTitle || entry.awardUri || entry.awardNumber))

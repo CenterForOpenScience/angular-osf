@@ -5,13 +5,13 @@
 } @else {
   <p-tabs class="flex-1" [value]="selectedTab()" [lazy]="true" scrollable (valueChange)="changeTab.emit($event)">
     <p-tablist class="pr-5 pl-5">
-      @for (item of tabs(); track $index) {
+      @for (item of tabs(); track item.id) {
         <p-tab [value]="item.id">{{ item.label | translate }}</p-tab>
       }
     </p-tablist>
 
     <p-tabpanels class="p-3 flex-1 md:p-5 xl:p-4">
-      @for (tab of tabs(); track $index) {
+      @for (tab of tabs(); track tab.id) {
         <p-tabpanel [value]="tab.id">
           @if (tab.id === 'osf') {
             <ng-content></ng-content>

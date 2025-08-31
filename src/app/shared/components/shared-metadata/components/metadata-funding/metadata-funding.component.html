@@ -11,7 +11,7 @@
     }
   </div>
 
-  @if (funders()) {
+  @if (funders()?.length) {
     <div class="pt-4">
       @for (funder of funders(); track funder.funderIdentifier) {
         <div class="mb-2 pb-3 border-bottom-1 surface-border flex flex-column gap-2">

@@ -52,6 +52,7 @@ import {
 import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData, CedarRecordDataBinding } from './models';
 import {
   CreateCedarMetadataRecord,
+  CreateDoi,
   GetCedarMetadataRecords,
   GetCedarMetadataTemplates,
   GetCustomItemMetadata,
@@ -92,7 +93,7 @@ export class MetadataComponent implements OnInit {
   private resourceId = '';
 
   tabs = signal<MetadataTabsModel[]>([]);
-  readonly selectedTab = signal('osf');
+  selectedTab = signal('osf');
 
   selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
@@ -129,6 +130,7 @@ export class MetadataComponent implements OnInit {
     getContributors: GetAllContributors,
     updateResourceInstitutions: UpdateResourceInstitutions,
     fetchResourceInstitutions: FetchResourceInstitutions,
+    createDoi: CreateDoi,
 
     getCedarRecords: GetCedarMetadataRecords,
     getCedarTemplates: GetCedarMetadataTemplates,
@@ -188,7 +190,6 @@ export class MetadataComponent implements OnInit {
     });
 
     effect(() => {
-      console.log('customItemMetadata:', this.customItemMetadata());
       const metadata = this.metadata();
       if (this.resourceType() === ResourceType.Registration) {
         if (metadata) {
@@ -203,10 +204,6 @@ export class MetadataComponent implements OnInit {
 
   ngOnInit(): void {
     this.resourceId = this.activeRoute.parent?.parent?.snapshot.params['id'];
-
-    console.log(this.resourceId);
-    console.log(this.resourceType());
-
     if (this.resourceId && this.resourceType()) {
       this.actions.getResourceMetadata(this.resourceId, this.resourceType());
       this.actions.getCustomItemMetadata(this.resourceId);
@@ -217,6 +214,7 @@ export class MetadataComponent implements OnInit {
       this.actions.fetchSelectedSubjects(this.resourceId, this.resourceType());
     }
   }
+
   onTabChange(tabId: string | number): void {
     const tab = this.tabs().find((x) => x.id === tabId.toString());
 
@@ -227,11 +225,12 @@ export class MetadataComponent implements OnInit {
     this.selectedTab.set(tab.id as MetadataResourceEnum);
 
     if (tab.type === 'cedar') {
-      this.loadCedarRecord(tab.id);
-
+      this.selectedCedarRecord.set(null);
+      this.selectedCedarTemplate.set(null);
       const currentRecordId = this.activeRoute.snapshot.paramMap.get('recordId');
       if (currentRecordId !== tab.id) {
         this.router.navigate(['metadata', tab.id], { relativeTo: this.activeRoute.parent?.parent });
+        this.loadCedarRecord(tab.id);
       }
     } else {
       this.selectedCedarRecord.set(null);
@@ -473,7 +472,7 @@ export class MetadataComponent implements OnInit {
         acceptLabelKey: this.translateService.instant('common.buttons.create'),
         acceptLabelType: 'primary',
         onConfirm: () => {
-          this.actions.updateMetadata(this.resourceId, this.resourceType(), { doi: true }).subscribe({
+          this.actions.createDoi(this.resourceId, this.resourceType()).subscribe({
             next: () => this.toastService.showSuccess('project.metadata.doi.created'),
           });
         },
@@ -484,7 +483,6 @@ export class MetadataComponent implements OnInit {
   }
 
   private openEditPublicationDoi() {
-    console.log('Opening edit publication DOI dialog', this.metadata()?.publicationDoi);
     const dialogRef = this.dialogService.open(PublicationDoiDialogComponent, {
       header: this.translateService.instant('project.metadata.doi.dialog.header'),
       width: '600px',
@@ -523,7 +521,6 @@ export class MetadataComponent implements OnInit {
     this.selectedCedarRecord.set(record);
     this.cedarFormReadonly.set(true);
     const templateId = record.relationships?.template?.data?.id;
-    console.log('templateId:', templateId);
     if (templateId && templates?.data) {
       const template = templates.data.find((t) => t.id === templateId);
       if (template) {
@@ -541,13 +538,6 @@ export class MetadataComponent implements OnInit {
   private handleRouteBasedTabSelection(): void {
     const recordId = this.activeRoute.snapshot.paramMap.get('recordId');
 
-    if (!recordId) {
-      this.selectedTab.set('project');
-      this.selectedCedarRecord.set(null);
-      this.selectedCedarTemplate.set(null);
-      return;
-    }
-
     const tab = this.tabs().find((tab) => tab.id === recordId);
 
     if (tab) {
@@ -557,9 +547,5 @@ export class MetadataComponent implements OnInit {
         this.loadCedarRecord(tab.id);
       }
     }
-  }
-
-  private refreshContributorsData(): void {
-    this.actions.getContributors(this.resourceId, this.resourceType());
   }
 }

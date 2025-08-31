@@ -17,15 +17,15 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { CEDAR_CONFIG } from '@osf/features/metadata/constants';
+import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
+import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
   CedarRecordDataBinding,
 } from '@osf/features/metadata/models';
-import { CedarMetadataHelper } from '@osf/features/project/metadata/helpers';
 
-import { CEDAR_VIEWER_CONFIG } from './../../../../../features/metadata/constants/cedar-config.const';
+import 'cedar-artifact-viewer';
 
 interface CedarEditorElement extends HTMLElement {
   currentMetadata?: unknown;
@@ -60,6 +60,7 @@ export class CedarTemplateFormComponent implements OnInit {
   cedarViewerConfig = CEDAR_VIEWER_CONFIG;
   isValid = false;
   cedarEditor = viewChild<ElementRef<CedarEditorElement>>('cedarEditor');
+  cedarViewer = viewChild<ElementRef<CedarEditorElement>>('cedarViewer');
 
   constructor() {
     effect(() => {
@@ -71,9 +72,14 @@ export class CedarTemplateFormComponent implements OnInit {
 
     effect(() => {
       const editor = this.cedarEditor()?.nativeElement;
-      if (editor) {
-        if (this.existingRecord()?.attributes?.metadata) {
-          editor.instanceObject = this.existingRecord()?.attributes?.metadata;
+      const viewer = this.cedarViewer()?.nativeElement;
+      const metadata = this.existingRecord()?.attributes?.metadata;
+      if (metadata) {
+        if (editor) {
+          editor.instanceObject = metadata;
+        }
+        if (viewer) {
+          viewer.instanceObject = metadata;
         }
       }
     });
@@ -116,10 +122,8 @@ export class CedarTemplateFormComponent implements OnInit {
 
   private initializeFormData(): void {
     const template = this.template()?.attributes?.template;
-
     if (!template) return;
     const metadata = this.existingRecord()?.attributes?.metadata;
-
     if (this.existingRecord()) {
       const structuredMetadata = CedarMetadataHelper.buildStructuredMetadata(metadata);
       this.formData.set(structuredMetadata);
