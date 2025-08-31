@@ -29,9 +29,9 @@ export class DefaultStorageLocationComponent {
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly currentUser = select(UserSelectors.getCurrentUser);
-  protected readonly regions = select(AccountSettingsSelectors.getRegions);
-  protected selectedRegion = signal<IdName | undefined>(undefined);
+  readonly currentUser = select(UserSelectors.getCurrentUser);
+  readonly regions = select(AccountSettingsSelectors.getRegions);
+  selectedRegion = signal<IdName | undefined>(undefined);
 
   constructor() {
     effect(() => {
