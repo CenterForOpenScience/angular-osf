@@ -1,20 +1,21 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { map, of } from 'rxjs';
-
-import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnDestroy, OnInit } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { PreprintProviderHeroComponent } from '@osf/features/preprints/components';
 import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
 import { BrandService } from '@osf/shared/services';
+import { OsfSearchComponent } from '@shared/components/osf-search/osf-search.component';
+import { ResourceTab } from '@shared/enums';
+import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/osf-search/osf-search.actions';
 
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 @Component({
   selector: 'osf-preprint-provider-discover',
-  imports: [PreprintProviderHeroComponent],
+  imports: [PreprintProviderHeroComponent, OsfSearchComponent],
   templateUrl: './preprint-provider-discover.component.html',
   styleUrl: './preprint-provider-discover.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,33 +27,36 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
 
   private actions = createDispatchMap({
     getPreprintProviderById: GetPreprintProviderById,
+    setDefaultFilterValue: SetDefaultFilterValue,
+    setResourceType: SetResourceType,
   });
 
-  private providerId = toSignal(
-    this.activatedRoute.params.pipe(map((params) => params['providerId'])) ?? of(undefined)
-  );
+  providerId = this.activatedRoute.snapshot.params['providerId'];
 
-  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
+  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId));
   isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
 
-  constructor() {
-    effect(() => {
-      const provider = this.preprintProvider();
-
-      if (provider) {
-        BrandService.applyBranding(provider.brand);
-        HeaderStyleHelper.applyHeaderStyles(
-          provider.brand.primaryColor,
-          provider.brand.secondaryColor,
-          provider.brand.heroBackgroundImageUrl
-        );
-        BrowserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
-      }
-    });
-  }
+  searchControl = new FormControl('');
 
   ngOnInit() {
-    this.actions.getPreprintProviderById(this.providerId());
+    this.actions.getPreprintProviderById(this.providerId).subscribe({
+      next: () => {
+        const provider = this.preprintProvider();
+
+        if (provider) {
+          this.actions.setDefaultFilterValue('publisher', provider.iri);
+          this.actions.setResourceType(ResourceTab.Preprints);
+
+          BrandService.applyBranding(provider.brand);
+          HeaderStyleHelper.applyHeaderStyles(
+            provider.brand.primaryColor,
+            provider.brand.secondaryColor,
+            provider.brand.heroBackgroundImageUrl
+          );
+          BrowserTabHelper.updateTabStyles(provider.faviconUrl, provider.name);
+        }
+      },
+    });
   }
 
   ngOnDestroy() {

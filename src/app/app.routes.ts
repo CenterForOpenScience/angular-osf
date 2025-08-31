@@ -12,7 +12,6 @@ import { ProfileState } from './features/profile/store';
 import { RegistriesState } from './features/registries/store';
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './features/registries/store/handlers';
 import { FilesHandlers } from './features/registries/store/handlers/files.handlers';
-import { SearchState } from './features/search/store';
 import { LicensesService } from './shared/services';
 
 export const routes: Routes = [
@@ -66,7 +65,6 @@ export const routes: Routes = [
       {
         path: 'search',
         loadComponent: () => import('./features/search/search.component').then((mod) => mod.SearchComponent),
-        providers: [provideStates([SearchState])],
       },
       {
         path: 'my-projects',

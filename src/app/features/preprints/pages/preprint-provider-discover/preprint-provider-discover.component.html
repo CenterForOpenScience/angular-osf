@@ -1,4 +1,9 @@
 <osf-preprint-provider-hero
+  [searchControl]="searchControl"
   [preprintProvider]="preprintProvider()"
   [isPreprintProviderLoading]="isPreprintProviderLoading()"
 />
+
+@if (preprintProvider()) {
+  <osf-search [searchControlInput]="searchControl" />
+}

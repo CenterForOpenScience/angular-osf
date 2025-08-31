@@ -8,6 +8,7 @@ import { AddonsState, CurrentResourceState, WikiState } from '@osf/shared/stores
 import { InstitutionsState } from '@shared/stores/institutions';
 import { LicensesState } from '@shared/stores/licenses';
 import { MyResourcesState } from '@shared/stores/my-resources';
+import { OsfSearchState } from '@shared/stores/osf-search';
 import { RegionsState } from '@shared/stores/regions';
 
 export const STATES = [
@@ -24,4 +25,5 @@ export const STATES = [
   RegionsState,
   FilesState,
   CurrentResourceState,
+  OsfSearchState,
 ];

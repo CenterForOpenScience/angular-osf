@@ -4,37 +4,6 @@
   [isProviderLoading]="isProviderLoading()"
 />
 
-<osf-search-results-container
-  [resources]="resources()"
-  [areResourcesLoading]="areResourcesLoading()"
-  [searchCount]="resourcesCount()"
-  [selectedSort]="sortBy()"
-  [selectedTab]="resourceType()"
-  [selectedValues]="filterValues()"
-  [first]="first()"
-  [prev]="previous()"
-  [next]="next()"
-  (sortChanged)="onSortChanged($event)"
-  (pageChanged)="onPageChanged($event)"
->
-  <div slot="filter-chips">
-    <osf-filter-chips
-      [filterValues]="filterValues()"
-      [filters]="filters()"
-      (filterRemoved)="onFilterChipRemoved($event)"
-    />
-  </div>
-
-  <ng-template #filtersComponent>
-    <osf-reusable-filters
-      [filters]="filters()"
-      [selectedValues]="filterValues()"
-      [isLoading]="areResourcesLoading()"
-      [showEmptyState]="true"
-      (loadFilterOptions)="onLoadFilterOptions($event)"
-      (filterValueChanged)="onFilterChanged($event)"
-    />
-  </ng-template>
-</osf-search-results-container>
-
-<osf-search-help-tutorial [(currentStep)]="currentStep" />
+@if (provider()) {
+  <osf-search [searchControlInput]="searchControl" />
+}

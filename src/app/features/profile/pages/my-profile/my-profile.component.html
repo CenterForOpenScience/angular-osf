@@ -1,5 +1,7 @@
 <osf-profile-information [currentUser]="currentUser()" [showEdit]="true" (editProfile)="toProfileSettings()" />
 
 @if (currentUser()) {
-  <osf-profile-search />
+  <div class="m-t-48">
+    <osf-search [resourceTabOptions]="resourceTabOptions" />
+  </div>
 }

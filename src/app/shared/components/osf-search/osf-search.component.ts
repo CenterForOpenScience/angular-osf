@@ -4,11 +4,24 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { SEARCH_TAB_OPTIONS } from '@shared/constants';
+import { ResourceTab } from '@shared/enums';
+import { StringOrNull } from '@shared/helpers';
+import { DiscoverableFilter, TabOption } from '@shared/models';
 import {
   ClearFilterSearchResults,
   FetchResources,
@@ -17,53 +30,50 @@ import {
   LoadFilterOptionsAndSetValues,
   LoadFilterOptionsWithSearch,
   LoadMoreFilterOptions,
-  ProfileSelectors,
+  OsfSearchSelectors,
+  ResetSearchState,
   SetResourceType,
   SetSortBy,
   UpdateFilterValue,
-} from '@osf/features/profile/store';
-import {
-  FilterChipsComponent,
-  ReusableFilterComponent,
-  SearchHelpTutorialComponent,
-  SearchInputComponent,
-  SearchResultsContainerComponent,
-} from '@shared/components';
-import { SEARCH_TAB_OPTIONS } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter } from '@shared/models';
+} from '@shared/stores/osf-search';
+
+import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
+import { ReusableFilterComponent } from '../reusable-filter/reusable-filter.component';
+import { SearchHelpTutorialComponent } from '../search-help-tutorial/search-help-tutorial.component';
+import { SearchInputComponent } from '../search-input/search-input.component';
+import { SearchResultsContainerComponent } from '../search-results-container/search-results-container.component';
 
 @Component({
-  selector: 'osf-profile-search',
+  selector: 'osf-search',
   imports: [
-    SearchInputComponent,
-    TranslatePipe,
-    SearchResultsContainerComponent,
     FilterChipsComponent,
-    SearchHelpTutorialComponent,
+    SearchInputComponent,
+    SearchResultsContainerComponent,
+    TranslatePipe,
     ReusableFilterComponent,
+    SearchHelpTutorialComponent,
   ],
-  templateUrl: './profile-search.component.html',
-  styleUrl: './profile-search.component.scss',
+  templateUrl: './osf-search.component.html',
+  styleUrl: './osf-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProfileSearchComponent implements OnInit {
+export class OsfSearchComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
   private actions = createDispatchMap({
     fetchResources: FetchResources,
-    fetchResourcesByLink: FetchResourcesByLink,
+    getResourcesByLink: FetchResourcesByLink,
     setSortBy: SetSortBy,
     setResourceType: SetResourceType,
     loadFilterOptions: LoadFilterOptions,
     loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
     loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
-    clearFilterSearchResults: ClearFilterSearchResults,
     loadMoreFilterOptions: LoadMoreFilterOptions,
+    clearFilterSearchResults: ClearFilterSearchResults,
     updateFilterValue: UpdateFilterValue,
+    resetSearchState: ResetSearchState,
   });
 
   private readonly tabUrlMap = new Map(
@@ -74,32 +84,41 @@ export class ProfileSearchComponent implements OnInit {
     SEARCH_TAB_OPTIONS.map((option) => [option.label.split('.').pop()?.toLowerCase() || 'all', option.value])
   );
 
-  resources = select(ProfileSelectors.getResources);
-  areResourcesLoading = select(ProfileSelectors.getResourcesLoading);
-  resourcesCount = select(ProfileSelectors.getResourcesCount);
+  resourceTabOptions = input<TabOption[]>([]);
 
-  filters = select(ProfileSelectors.getFilters);
-  filterValues = select(ProfileSelectors.getFilterValues);
-  filterSearchCache = select(ProfileSelectors.getFilterSearchCache);
+  resources = select(OsfSearchSelectors.getResources);
+  areResourcesLoading = select(OsfSearchSelectors.getResourcesLoading);
+  resourcesCount = select(OsfSearchSelectors.getResourcesCount);
 
-  sortBy = select(ProfileSelectors.getSortBy);
-  first = select(ProfileSelectors.getFirst);
-  next = select(ProfileSelectors.getNext);
-  previous = select(ProfileSelectors.getPrevious);
-  resourceType = select(ProfileSelectors.getResourceType);
+  filters = select(OsfSearchSelectors.getFilters);
+  filterValues = select(OsfSearchSelectors.getFilterValues);
+  filterSearchCache = select(OsfSearchSelectors.getFilterSearchCache);
+  filterOptionsCache = select(OsfSearchSelectors.getFilterOptionsCache);
 
-  protected readonly resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceTab.Users);
+  sortBy = select(OsfSearchSelectors.getSortBy);
+  first = select(OsfSearchSelectors.getFirst);
+  next = select(OsfSearchSelectors.getNext);
+  previous = select(OsfSearchSelectors.getPrevious);
+  resourceType = select(OsfSearchSelectors.getResourceType);
 
-  searchControl = new FormControl('');
+  searchControlInput = input<FormControl | null>(null);
+
+  searchControl!: FormControl;
   currentStep = signal(0);
 
   ngOnInit(): void {
+    this.searchControl = this.searchControlInput() ?? new FormControl('');
+
     this.restoreFiltersFromUrl();
     this.restoreTabFromUrl();
     this.restoreSearchFromUrl();
     this.handleSearch();
 
     this.actions.fetchResources();
+  }
+
+  ngOnDestroy() {
+    this.actions.resetSearchState();
   }
 
   onLoadFilterOptions(filter: DiscoverableFilter): void {
@@ -139,7 +158,7 @@ export class ProfileSearchComponent implements OnInit {
   }
 
   onPageChanged(link: string): void {
-    this.actions.fetchResourcesByLink(link);
+    this.actions.getResourcesByLink(link);
   }
 
   onFilterChipRemoved(filterKey: string): void {

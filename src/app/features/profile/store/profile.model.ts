@@ -1,8 +1,6 @@
 import { AsyncStateModel, User } from '@osf/shared/models';
-import { searchStateDefaults } from '@shared/constants';
-import { BaseSearchStateModel } from '@shared/stores';
 
-export interface ProfileStateModel extends BaseSearchStateModel {
+export interface ProfileStateModel {
   userProfile: AsyncStateModel<User | null>;
 }
 
@@ -12,5 +10,4 @@ export const PROFILE_STATE_DEFAULTS: ProfileStateModel = {
     isLoading: false,
     error: null,
   },
-  ...searchStateDefaults,
 };

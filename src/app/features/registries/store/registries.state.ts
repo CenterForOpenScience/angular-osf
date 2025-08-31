@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ResourceTab } from '@osf/shared/enums';
 import { getResourceTypes, handleSectionError } from '@osf/shared/helpers';
-import { FilesService, SearchService } from '@osf/shared/services';
+import { SearchService } from '@osf/shared/services';
 
 import { RegistriesService } from '../services';
 
@@ -47,6 +47,8 @@ import {
 } from './registries.actions';
 import { RegistriesStateModel } from './registries.model';
 
+import { environment } from 'src/environments/environment';
+
 @State<RegistriesStateModel>({
   name: 'registries',
   defaults: { ...DefaultState },
@@ -55,7 +57,6 @@ import { RegistriesStateModel } from './registries.model';
 export class RegistriesState {
   searchService = inject(SearchService);
   registriesService = inject(RegistriesService);
-  fileService = inject(FilesService);
 
   providersHandler = inject(ProvidersHandlers);
   projectsHandler = inject(ProjectsHandlers);
@@ -72,9 +73,13 @@ export class RegistriesState {
       },
     });
 
-    const resourceType = getResourceTypes(ResourceTab.Registrations);
+    const params: Record<string, string> = {
+      'cardSearchFilter[resourceType]': getResourceTypes(ResourceTab.Registrations),
+      'cardSearchFilter[accessService]': `${environment.webUrl}/`,
+      'page[size]': '10',
+    };
 
-    return this.searchService.getResources({}, '', '', resourceType).pipe(
+    return this.searchService.getResources(params).pipe(
       tap((registries) => {
         ctx.patchState({
           registries: {

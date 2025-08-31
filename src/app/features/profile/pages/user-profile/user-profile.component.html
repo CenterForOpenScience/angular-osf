@@ -3,6 +3,8 @@
   <osf-profile-information [currentUser]="currentUser()" />
 
   @if (currentUser()) {
-    <osf-profile-search />
+    <div class="m-t-48">
+      <osf-search [resourceTabOptions]="resourceTabOptions" />
+    </div>
   }
 }

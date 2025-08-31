@@ -1,7 +1,5 @@
 import { ApiData } from '@osf/shared/models';
 
-import { FilterOptionAttributes } from './filter-option.model';
-
 export interface FilterOptionsResponseData {
   type: string;
   id: string;
@@ -26,3 +24,8 @@ export interface FilterOptionsResponseJsonApi {
 }
 
 export type FilterOptionItem = ApiData<FilterOptionAttributes, null, null, null>;
+
+export interface FilterOptionAttributes {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resourceMetadata: any;
+}

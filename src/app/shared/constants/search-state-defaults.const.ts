@@ -7,6 +7,7 @@ export const searchStateDefaults = {
     error: null,
   },
   filters: [],
+  defaultFilterValues: {},
   filterValues: {},
   filterOptionsCache: {},
   filterSearchCache: {},

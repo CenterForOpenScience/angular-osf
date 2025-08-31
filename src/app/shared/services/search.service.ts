@@ -95,11 +95,13 @@ export class SearchService {
     );
   }
 
-  getFilterOptions(filterKey: string): Observable<{ options: SelectOption[]; nextUrl?: string }> {
+  getFilterOptions(filterKey: string, resourceType: string): Observable<{ options: SelectOption[]; nextUrl?: string }> {
     const params: Record<string, string> = {
-      valueSearchPropertyPath: filterKey,
-      'cardSearchFilter[accessService]': environment.webUrl,
+      'cardSearchFilter[resourceType]': resourceType,
+      'cardSearchFilter[accessService]': `${environment.webUrl}/`,
       'page[size]': '50',
+      sort: '-relevance',
+      valueSearchPropertyPath: filterKey,
     };
 
     return this.jsonApiService

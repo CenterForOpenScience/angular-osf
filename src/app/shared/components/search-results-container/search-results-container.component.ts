@@ -54,7 +54,6 @@ export class SearchResultsContainerComponent {
   first = input<string | null>(null);
   prev = input<string | null>(null);
   next = input<string | null>(null);
-  showTabs = input<boolean>(false);
   hasAnySelectedValues = input<boolean>(false);
   tabOptions = input<TabOption[]>([]);
 
@@ -64,6 +63,10 @@ export class SearchResultsContainerComponent {
   sortChanged = output<string>();
   tabChanged = output<ResourceTab>();
   pageChanged = output<string>();
+
+  showTabs = computed(() => {
+    return this.tabOptions().length > 0;
+  });
 
   protected readonly searchSortingOptions = searchSortingOptions;
   protected readonly ResourceTab = ResourceTab;

@@ -1,7 +1,5 @@
 import { AsyncStateModel, Institution } from '@shared/models';
-import { BaseSearchStateModel } from '@shared/stores/base-search';
 
-export interface InstitutionsSearchModel extends BaseSearchStateModel {
+export interface InstitutionsSearchModel {
   institution: AsyncStateModel<Institution>;
-  providerIri: string;
 }

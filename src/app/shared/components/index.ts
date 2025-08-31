@@ -25,6 +25,7 @@ export { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.compo
 export { MakeDecisionDialogComponent } from './make-decision-dialog/make-decision-dialog.component';
 export { MarkdownComponent } from './markdown/markdown.component';
 export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.component';
+export { OsfSearchComponent } from './osf-search/osf-search.component';
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';
 export { ProjectSelectorComponent } from './project-selector/project-selector.component';
