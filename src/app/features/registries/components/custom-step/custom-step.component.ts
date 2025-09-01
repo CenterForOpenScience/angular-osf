@@ -192,7 +192,7 @@ export class CustomStepComponent implements OnDestroy {
         [questionKey]: [
           ...this.attachedFiles[questionKey].map((f) => {
             if (f.file_id) {
-              const { name, ...payload } = f;
+              const { name: _, ...payload } = f;
               return payload;
             }
             return FilesMapper.toFilePayload(f as OsfFile);
@@ -213,7 +213,7 @@ export class CustomStepComponent implements OnDestroy {
         [questionKey]: [
           ...this.attachedFiles[questionKey].map((f) => {
             if (f.file_id) {
-              const { name, ...payload } = f;
+              const { name: _, ...payload } = f;
               return payload;
             }
             return FilesMapper.toFilePayload(f as OsfFile);

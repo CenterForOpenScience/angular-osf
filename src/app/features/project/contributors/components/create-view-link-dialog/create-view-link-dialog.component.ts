@@ -53,7 +53,7 @@ export class CreateViewLinkDialogComponent implements OnInit {
     if (!this.linkName.value) return;
 
     const components = (this.config.data?.['sharedComponents'] as ViewOnlyLinkNodeModel[]) || [];
-    const selectedIds = Object.entries(this.selectedComponents()).filter(([component, checked]) => checked);
+    const selectedIds = Object.entries(this.selectedComponents()).filter(([_, checked]) => checked);
 
     const selected = components
       .filter((comp: ViewOnlyLinkNodeModel) =>
