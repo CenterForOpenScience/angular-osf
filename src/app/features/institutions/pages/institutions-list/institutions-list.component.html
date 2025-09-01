@@ -36,7 +36,7 @@
         }
       </div>
 
-      @if (totalInstitutionsCount() > 10) {
+      @if (totalInstitutionsCount() > currentPageSize()) {
         <osf-custom-paginator
           [first]="first()"
           [totalCount]="totalInstitutionsCount()"
