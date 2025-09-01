@@ -156,9 +156,6 @@ export class AddMetadataComponent implements OnInit {
   createRecordMetadata(data: CedarRecordDataBinding): void {
     const recordId = this.activatedRoute.snapshot.params['recordId'];
 
-    console.log('Creating or updating record metadata:', this.resourceType());
-    console.log('Creating or updating record metadata:', this.resourceId);
-
     if (recordId && this.existingRecord) {
       this.actions
         .updateCedarMetadataRecord(data, recordId, this.resourceId, this.resourceType())
@@ -189,8 +186,6 @@ export class AddMetadataComponent implements OnInit {
 
   private navigateToRecord(resourceId: string, resourceType: ResourceType): void {
     const recordId = this.cedarRecord()?.data.id;
-    console.log('Navigating to record:', recordId);
-    console.log('Navigating to record:', resourceType);
     if (resourceType === ResourceType.File) {
       this.router.navigate([resourceId]);
     } else {
