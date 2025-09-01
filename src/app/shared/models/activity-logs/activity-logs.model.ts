@@ -74,6 +74,7 @@ export interface ActivityLog {
     user?: User;
     linkedNode?: LinkedNode;
   };
+  isAnonymous?: boolean;
 }
 
 interface Pointer {

@@ -35,7 +35,7 @@ import {
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
+import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
 import { ToastService } from '@osf/shared/services';
 import {
@@ -48,6 +48,7 @@ import {
   GetLinkedResources,
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
+import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 
 import {
   LinkedResourcesComponent,
@@ -84,6 +85,7 @@ import {
     TranslatePipe,
     Message,
     RouterLink,
+    ViewOnlyLinkMessageComponent,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -140,7 +142,7 @@ export class ProjectOverviewComponent implements OnInit {
     return this.currentReviewAction()?.toState;
   });
 
-  protected showDecisionButton = computed(() => {
+  showDecisionButton = computed(() => {
     return (
       this.isCollectionsRoute() &&
       this.submissionReviewStatus() !== SubmissionReviewStatus.Removed &&
@@ -148,9 +150,14 @@ export class ProjectOverviewComponent implements OnInit {
     );
   });
 
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
-  protected userPermissions = computed(() => {
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+  userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
+  });
+
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
   });
 
   get isAdmin(): boolean {
@@ -161,19 +168,19 @@ export class ProjectOverviewComponent implements OnInit {
     return this.userPermissions().includes(UserPermissions.Write);
   }
 
-  protected resourceOverview = computed(() => {
+  resourceOverview = computed(() => {
     const project = this.currentProject();
     if (project) {
-      return MapProjectOverview(project);
+      return MapProjectOverview(project, this.isAnonymous());
     }
     return null;
   });
 
-  protected isLoading = computed(() => {
+  isLoading = computed(() => {
     return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
   });
 
-  protected currentResource = computed(() => {
+  currentResource = computed(() => {
     const project = this.currentProject();
     if (project) {
       return {
@@ -183,7 +190,7 @@ export class ProjectOverviewComponent implements OnInit {
         viewOnlyLinksCount: project.viewOnlyLinksCount,
         forksCount: project.forksCount,
         resourceType: ResourceType.Project,
-        isAnonymous: project.isAnonymous,
+        isAnonymous: this.isAnonymous(),
       };
     }
     return null;
@@ -194,7 +201,7 @@ export class ProjectOverviewComponent implements OnInit {
     this.setupCleanup();
   }
 
-  protected onCustomCitationUpdated(citation: string): void {
+  onCustomCitationUpdated(citation: string): void {
     this.actions.setProjectCustomCitation(citation);
   }
 
@@ -210,7 +217,7 @@ export class ProjectOverviewComponent implements OnInit {
     }
   }
 
-  protected handleOpenMakeDecisionDialog() {
+  handleOpenMakeDecisionDialog() {
     const dialogWidth = this.isMobile() ? '95vw' : '600px';
 
     this.dialogService
@@ -231,7 +238,7 @@ export class ProjectOverviewComponent implements OnInit {
       });
   }
 
-  protected goBack(): void {
+  goBack(): void {
     const currentStatus = this.route.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus } : {};
 

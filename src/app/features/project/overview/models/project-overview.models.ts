@@ -66,12 +66,16 @@ export interface ProjectOverview {
     rootFolder: string;
     iri: string;
   };
-  isAnonymous: boolean;
 }
 
 export interface ProjectOverviewSubject {
   id: string;
   text: string;
+}
+
+export interface ProjectOverviewWithMeta {
+  project: ProjectOverview;
+  meta?: MetaAnonymousJsonApi;
 }
 
 export interface ProjectOverviewGetResponseJsonApi {

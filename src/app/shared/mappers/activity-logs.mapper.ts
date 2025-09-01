@@ -1,8 +1,15 @@
-import { ActivityLog, ActivityLogJsonApi, LogContributor, PaginatedData, ResponseJsonApi } from '@shared/models';
+import {
+  ActivityLog,
+  ActivityLogJsonApi,
+  JsonApiResponseWithMeta,
+  LogContributor,
+  MetaAnonymousJsonApi,
+  PaginatedData,
+} from '@shared/models';
 import { LogContributorJsonApi } from '@shared/models/activity-logs/activity-logs-json-api.model';
 
 export class ActivityLogsMapper {
-  static fromActivityLogJsonApi(log: ActivityLogJsonApi): ActivityLog {
+  static fromActivityLogJsonApi(log: ActivityLogJsonApi, isAnonymous?: boolean): ActivityLog {
     const params = log.attributes.params ?? {};
     const contributors = params.contributors ?? [];
     return {
@@ -54,6 +61,7 @@ export class ActivityLogsMapper {
         version: params.version,
         githubUser: params.github_user,
       },
+      isAnonymous,
       embeds: log.embeds
         ? {
             originalNode: log.embeds.original_node?.data
@@ -140,10 +148,14 @@ export class ActivityLogsMapper {
     };
   }
 
-  static fromGetActivityLogsResponse(logs: ResponseJsonApi<ActivityLogJsonApi[]>): PaginatedData<ActivityLog[]> {
+  static fromGetActivityLogsResponse(
+    logs: JsonApiResponseWithMeta<ActivityLogJsonApi[], MetaAnonymousJsonApi, null>
+  ): PaginatedData<ActivityLog[]> {
+    const isAnonymous = logs.meta.anonymous ?? false;
     return {
-      data: logs.data.map((log) => this.fromActivityLogJsonApi(log)),
+      data: logs.data.map((log) => this.fromActivityLogJsonApi(log, isAnonymous)),
       totalCount: logs.meta.total ?? 0,
+      isAnonymous,
     };
   }
 

@@ -84,6 +84,7 @@ export interface ActivityLogJsonApi {
   };
   meta: {
     total: number;
+    anonymous: boolean;
   };
 }
 

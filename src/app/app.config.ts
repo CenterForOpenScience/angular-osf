@@ -37,7 +37,7 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideAnimations(),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor, viewOnlyInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, viewOnlyInterceptor, errorInterceptor])),
     importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
     ConfirmationService,
     MessageService,

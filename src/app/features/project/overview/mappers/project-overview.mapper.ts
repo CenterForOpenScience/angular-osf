@@ -1,13 +1,10 @@
 import { InstitutionsMapper } from '@shared/mappers';
-import { License, MetaAnonymousJsonApi } from '@shared/models';
+import { License } from '@shared/models';
 
 import { ProjectOverview, ProjectOverviewGetResponseJsonApi } from '../models';
 
 export class ProjectOverviewMapper {
-  static fromGetProjectResponse(
-    response: ProjectOverviewGetResponseJsonApi,
-    meta?: MetaAnonymousJsonApi
-  ): ProjectOverview {
+  static fromGetProjectResponse(response: ProjectOverviewGetResponseJsonApi): ProjectOverview {
     return {
       id: response.id,
       type: response.type,
@@ -49,7 +46,9 @@ export class ProjectOverviewMapper {
           middleName: contributor.embeds.users.data.attributes.middle_name,
           type: contributor.embeds.users.data.type,
         })) ?? [],
-      affiliatedInstitutions: InstitutionsMapper.fromInstitutionsResponse(response.embeds.affiliated_institutions),
+      affiliatedInstitutions: response.embeds.affiliated_institutions
+        ? InstitutionsMapper.fromInstitutionsResponse(response.embeds.affiliated_institutions)
+        : [],
       identifiers: response.embeds.identifiers?.data.map((identifier) => ({
         id: identifier.id,
         type: identifier.type,
@@ -79,7 +78,6 @@ export class ProjectOverviewMapper {
         rootFolder: response.relationships?.files?.links?.related?.href,
         iri: response.links?.iri,
       },
-      isAnonymous: meta?.anonymous ?? false,
     } as ProjectOverview;
   }
 }

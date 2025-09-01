@@ -8,6 +8,11 @@ export class PageSchemaMapper {
     let currentPage!: PageSchema;
     let currentQuestion: Question | null = null;
     let currentSection: Section | null = null;
+
+    if (!response?.data || !Array.isArray(response.data)) {
+      return pages;
+    }
+
     response.data.map((item) => {
       switch (item.attributes.block_type) {
         case BlockType.PageHeading:

@@ -19,6 +19,11 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
+  static isFilesAnonymous(state: FilesStateModel): boolean {
+    return state.isAnonymous;
+  }
+
+  @Selector([FilesState])
   static getMoveFileFiles(state: FilesStateModel): OsfFile[] {
     return state.moveFileFiles.data;
   }

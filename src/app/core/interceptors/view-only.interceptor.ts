@@ -4,15 +4,15 @@ import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angul
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { getViewOnlyParam } from '@osf/shared/helpers';
+
 export const viewOnlyInterceptor: HttpInterceptorFn = (
   req: HttpRequest<unknown>,
   next: HttpHandlerFn
 ): Observable<HttpEvent<unknown>> => {
   const router = inject(Router);
 
-  const currentUrl = router.url;
-  const urlParams = new URLSearchParams(currentUrl.split('?')[1] || '');
-  const viewOnlyParam = urlParams.get('view_only');
+  const viewOnlyParam = getViewOnlyParam(router);
 
   if (!req.url.includes('/api.crossref.org/funders') && viewOnlyParam) {
     const separator = req.url.includes('?') ? '&' : '?';

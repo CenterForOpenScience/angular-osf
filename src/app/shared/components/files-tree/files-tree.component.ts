@@ -71,15 +71,16 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   viewOnly = input<boolean>(true);
   viewOnlyDownloadable = input<boolean>(false);
   provider = input<string>();
+  isAnonymous = input<boolean>(false);
   isDragOver = signal(false);
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
   uploadFileConfirmed = output<File>();
 
-  protected readonly FileMenuType = FileMenuType;
+  readonly FileMenuType = FileMenuType;
 
-  protected readonly nodes = computed(() => {
+  readonly nodes = computed(() => {
     if (this.currentFolder()?.relationships?.parentFolderLink) {
       return [
         {
@@ -94,20 +95,27 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   });
 
   ngAfterViewInit(): void {
-    this.dropZoneContainerRef()!.nativeElement.addEventListener('dragenter', this.dragEnterHandler);
+    if (!this.viewOnly() && !this.isAnonymous()) {
+      this.dropZoneContainerRef()!.nativeElement.addEventListener('dragenter', this.dragEnterHandler);
+    }
   }
 
   ngOnDestroy(): void {
-    this.dropZoneContainerRef()!.nativeElement.removeEventListener('dragenter', this.dragEnterHandler);
+    if (!this.viewOnly() && !this.isAnonymous()) {
+      this.dropZoneContainerRef()!.nativeElement.removeEventListener('dragenter', this.dragEnterHandler);
+    }
   }
 
   private dragEnterHandler = (event: DragEvent) => {
-    if (event.dataTransfer?.types?.includes('Files')) {
+    if (event.dataTransfer?.types?.includes('Files') && !this.viewOnly() && !this.isAnonymous()) {
       this.isDragOver.set(true);
     }
   };
 
   onDragOver(event: DragEvent) {
+    if (this.viewOnly() || this.isAnonymous()) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     event.dataTransfer!.dropEffect = 'copy';
@@ -115,6 +123,9 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   onDragLeave(event: Event) {
+    if (this.viewOnly() || this.isAnonymous()) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver.set(false);
@@ -124,6 +135,11 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver.set(false);
+
+    if (this.viewOnly() || this.isAnonymous()) {
+      return;
+    }
+
     const files = event.dataTransfer?.files;
 
     if (files && files.length > 0) {

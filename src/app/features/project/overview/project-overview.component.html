@@ -70,6 +70,10 @@
       }
     }
 
+    @if (hasViewOnly()) {
+      <osf-view-only-link-message />
+    }
+
     <div class="flex flex-column gap-4 left-section">
       @if (isAdmin || canWrite) {
         <osf-project-wiki />

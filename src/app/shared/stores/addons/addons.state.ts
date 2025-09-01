@@ -612,23 +612,6 @@ export class AddonsState {
     });
   }
 
-  /**
-   * Handles errors by patching the specified section of the state with error information
-   * and marking loading/submitting flags as false.
-   *
-   * This method is used in catchError operators within NGXS actions to ensure consistent
-   * error handling across all async state models.
-   *
-   * @param ctx - The NGXS StateContext instance for the AddonsStateModel.
-   * @param section - The specific section of the AddonsStateModel to update (e.g., 'storageAddons').
-   * @param error - The error object caught during an observable operation.
-   * @returns An observable that rethrows the provided error.
-   *
-   * @example
-   * return this.addonsService.getAddons('storage').pipe(
-   *   catchError(error => this.handleError(ctx, 'storageAddons', error))
-   * );
-   */
   private handleError(ctx: StateContext<AddonsStateModel>, section: keyof AddonsStateModel, error: Error) {
     ctx.patchState({
       [section]: {
