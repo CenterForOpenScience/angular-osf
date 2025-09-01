@@ -328,7 +328,9 @@
       "title": "Add alternative email",
       "description": "Do you want to add ",
       "description2": "to your profile ?",
-      "goToEmails": "Add email"
+      "goToEmails": "Add email",
+      "emailNotAdded": "{{name}} has not been added to your account.",
+      "emailVerified": "{{name}} has been added to your account."
     }
   },
   "myProjects": {
@@ -522,7 +524,7 @@
       },
       "curatorInfo": {
         "heading": "Curator Information",
-        "description": "An administrator designated by your affiliated institution to curate your project"
+        "description": "An administrator designated by your affiliated institution to curate your project."
       },
       "employment": {
         "show": "Show employment history",
