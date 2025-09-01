@@ -1,4 +1,4 @@
-import { LicenseOptions } from '@shared/models/license.model';
+import { LicenseOptions } from './license.model';
 
 export interface ProjectMetadataUpdatePayload {
   id: string;

@@ -1,4 +1,4 @@
-import { MetadataProjectsEnum } from '@shared/enums';
+import { MetadataProjectsEnum } from '../enums';
 
 export interface MetadataTabsModel {
   id: string;

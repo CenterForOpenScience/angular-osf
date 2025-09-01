@@ -1,6 +1,8 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { RegistrySubject } from '@osf/features/registry/models';
-import { Institution } from '@shared/models/institutions';
+
+import { IdTypeModel } from './common';
+import { Institution } from './institutions';
 
 export interface ResourceOverview {
   id: string;
@@ -56,10 +58,7 @@ export interface ResourceOverview {
   subjects: RegistrySubject[];
   contributors: ProjectOverviewContributor[];
   customCitation: string | null;
-  region?: {
-    id: string;
-    type: string;
-  };
+  region?: IdTypeModel;
   affiliatedInstitutions?: Institution[];
   forksCount: number;
   viewOnlyLinksCount?: number;

@@ -11,6 +11,7 @@ export * from './meetings-table.constants';
 export * from './my-projects-table.constants';
 export * from './osf-resource-types.const';
 export * from './pie-chart-palette';
+export * from './pie-chart-palette';
 export * from './registry-services-icons.const';
 export * from './resource-filters-defaults';
 export * from './resource-languages.const';

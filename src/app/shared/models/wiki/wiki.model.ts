@@ -1,4 +1,4 @@
-import { JsonApiResponse } from '@osf/shared/models';
+import { JsonApiResponse } from '../common';
 
 export enum WikiModes {
   View = 'view',
