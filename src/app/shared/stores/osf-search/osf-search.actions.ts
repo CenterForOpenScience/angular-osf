@@ -12,13 +12,19 @@ export class FetchResourcesByLink {
 }
 
 export class SetResourceType {
-  static readonly type = '[OsfSearch] Update Resource Type';
+  static readonly type = '[OsfSearch] Set Resource Type';
 
   constructor(public type: ResourceTab) {}
 }
 
+export class SetSearchText {
+  static readonly type = '[OsfSearch] Set Search Text';
+
+  constructor(public searchText: StringOrNull) {}
+}
+
 export class SetSortBy {
-  static readonly type = '[OsfSearch] Update Sort By';
+  static readonly type = '[OsfSearch] Set Sort By';
 
   constructor(public sortBy: string) {}
 }

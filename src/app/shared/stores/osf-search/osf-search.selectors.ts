@@ -4,7 +4,8 @@ import { ResourceTab } from '@shared/enums';
 import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter, Resource, SelectOption } from '@shared/models';
 
-import { OsfSearchState, OsfSearchStateModel } from './osf-search.state';
+import { OsfSearchStateModel } from './osf-search.model';
+import { OsfSearchState } from './osf-search.state';
 
 export class OsfSearchSelectors {
   @Selector([OsfSearchState])

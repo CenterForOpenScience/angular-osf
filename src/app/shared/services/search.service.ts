@@ -5,15 +5,9 @@ import { inject, Injectable } from '@angular/core';
 import { MapResources } from '@osf/features/search/mappers';
 import { IndexCardSearch, ResourceItem, ResourcesData } from '@osf/features/search/models';
 import { JsonApiService } from '@osf/shared/services';
-import { StringOrNull } from '@shared/helpers';
-import {
-  AppliedFilter,
-  CombinedFilterMapper,
-  FilterOptionItem,
-  mapFilterOption,
-  RelatedPropertyPathItem,
-} from '@shared/mappers';
-import { ApiData, FilterOptionsResponseJsonApi, SelectOption } from '@shared/models';
+import { ApiData, FilterOptionItem, FilterOptionsResponseJsonApi, SelectOption } from '@shared/models';
+
+import { AppliedFilter, CombinedFilterMapper, mapFilterOption, RelatedPropertyPathItem } from '../mappers';
 
 import { environment } from 'src/environments/environment';
 
@@ -23,45 +17,10 @@ import { environment } from 'src/environments/environment';
 export class SearchService {
   private readonly jsonApiService = inject(JsonApiService);
 
-  getResources(
-    filters: Record<string, string>,
-    searchText: StringOrNull,
-    sortBy: string,
-    resourceType: string
-  ): Observable<ResourcesData> {
-    const params: Record<string, string> = {
-      'cardSearchFilter[resourceType]': resourceType ?? '',
-      'cardSearchFilter[accessService]': `${environment.webUrl}/`,
-      'cardSearchText[*,creator.name,isContainedBy.creator.name]': searchText ?? '',
-      'page[size]': '10',
-      sort: sortBy,
-      ...filters,
-    };
-
+  getResources(params: Record<string, string>): Observable<ResourcesData> {
     return this.jsonApiService.get<IndexCardSearch>(`${environment.shareDomainUrl}/index-card-search`, params).pipe(
       map((response) => {
-        if (response?.included) {
-          const indexCardItems = response.included.filter(
-            (item): item is ApiData<{ resourceMetadata: ResourceItem }, null, null, null> => item.type === 'index-card'
-          );
-
-          const relatedPropertyPathItems = response.included.filter(
-            (item): item is RelatedPropertyPathItem => item.type === 'related-property-path'
-          );
-
-          const appliedFilters: AppliedFilter[] = response.data?.attributes?.cardSearchFilter || [];
-
-          return {
-            resources: indexCardItems.map((item) => MapResources(item.attributes.resourceMetadata)),
-            filters: CombinedFilterMapper(appliedFilters, relatedPropertyPathItems),
-            count: response.data.attributes.totalResultCount,
-            first: response.data?.relationships?.searchResultPage?.links?.first?.href,
-            next: response.data?.relationships?.searchResultPage?.links?.next?.href,
-            previous: response.data?.relationships?.searchResultPage?.links?.prev?.href,
-          };
-        }
-
-        return {} as ResourcesData;
+        return this.handleResourcesRawResponse(response);
       })
     );
   }
@@ -69,69 +28,24 @@ export class SearchService {
   getResourcesByLink(link: string): Observable<ResourcesData> {
     return this.jsonApiService.get<IndexCardSearch>(link).pipe(
       map((response) => {
-        if (response?.included) {
-          const indexCardItems = response.included.filter(
-            (item): item is ApiData<{ resourceMetadata: ResourceItem }, null, null, null> => item.type === 'index-card'
-          );
-
-          const relatedPropertyPathItems = response.included.filter(
-            (item): item is RelatedPropertyPathItem => item.type === 'related-property-path'
-          );
-
-          const appliedFilters: AppliedFilter[] = response.data?.attributes?.cardSearchFilter || [];
-
-          return {
-            resources: indexCardItems.map((item) => MapResources(item.attributes.resourceMetadata)),
-            filters: CombinedFilterMapper(appliedFilters, relatedPropertyPathItems),
-            count: response.data.attributes.totalResultCount,
-            first: response.data?.relationships?.searchResultPage?.links?.first?.href,
-            next: response.data?.relationships?.searchResultPage?.links?.next?.href,
-            previous: response.data?.relationships?.searchResultPage?.links?.prev?.href,
-          };
-        }
-
-        return {} as ResourcesData;
+        return this.handleResourcesRawResponse(response);
       })
     );
   }
 
-  getFilterOptions(filterKey: string, resourceType: string): Observable<{ options: SelectOption[]; nextUrl?: string }> {
-    const params: Record<string, string> = {
-      'cardSearchFilter[resourceType]': resourceType,
-      'cardSearchFilter[accessService]': `${environment.webUrl}/`,
-      'page[size]': '50',
-      sort: '-relevance',
-      valueSearchPropertyPath: filterKey,
-    };
-
+  getFilterOptions(params: Record<string, string>): Observable<{ options: SelectOption[]; nextUrl?: string }> {
     return this.jsonApiService
       .get<FilterOptionsResponseJsonApi>(`${environment.shareDomainUrl}/index-value-search`, params)
-      .pipe(map((response) => this.returnDataToOptionsWithNextUrl(response)));
-  }
-
-  getFilterOptionsWithSearch(
-    filterKey: string,
-    searchText: string
-  ): Observable<{ options: SelectOption[]; nextUrl?: string }> {
-    const params: Record<string, string> = {
-      valueSearchPropertyPath: filterKey,
-      valueSearchText: searchText,
-      'cardSearchFilter[accessService]': environment.webUrl,
-      'page[size]': '50',
-    };
-
-    return this.jsonApiService
-      .get<FilterOptionsResponseJsonApi>(`${environment.shareDomainUrl}/index-value-search`, params)
-      .pipe(map((response) => this.returnDataToOptionsWithNextUrl(response)));
+      .pipe(map((response) => this.handleFilterOptionsRawResponse(response)));
   }
 
   getFilterOptionsFromPaginationUrl(url: string): Observable<{ options: SelectOption[]; nextUrl?: string }> {
     return this.jsonApiService
       .get<FilterOptionsResponseJsonApi>(url)
-      .pipe(map((response) => this.returnDataToOptionsWithNextUrl(response)));
+      .pipe(map((response) => this.handleFilterOptionsRawResponse(response)));
   }
 
-  private returnDataToOptionsWithNextUrl(response: FilterOptionsResponseJsonApi): {
+  private handleFilterOptionsRawResponse(response: FilterOptionsResponseJsonApi): {
     options: SelectOption[];
     nextUrl?: string;
   } {
@@ -154,5 +68,30 @@ export class SearchService {
     }
 
     return { options, nextUrl };
+  }
+
+  private handleResourcesRawResponse(response: IndexCardSearch): ResourcesData {
+    if (response?.included) {
+      const indexCardItems = response.included.filter(
+        (item): item is ApiData<{ resourceMetadata: ResourceItem }, null, null, null> => item.type === 'index-card'
+      );
+
+      const relatedPropertyPathItems = response.included.filter(
+        (item): item is RelatedPropertyPathItem => item.type === 'related-property-path'
+      );
+
+      const appliedFilters: AppliedFilter[] = response.data?.attributes?.cardSearchFilter || [];
+
+      return {
+        resources: indexCardItems.map((item) => MapResources(item.attributes.resourceMetadata)),
+        filters: CombinedFilterMapper(appliedFilters, relatedPropertyPathItems),
+        count: response.data.attributes.totalResultCount,
+        first: response.data?.relationships?.searchResultPage?.links?.first?.href,
+        next: response.data?.relationships?.searchResultPage?.links?.next?.href,
+        previous: response.data?.relationships?.searchResultPage?.links?.prev?.href,
+      };
+    }
+
+    return {} as ResourcesData;
   }
 }

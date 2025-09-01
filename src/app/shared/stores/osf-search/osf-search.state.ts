@@ -5,10 +5,7 @@ import { catchError, EMPTY, forkJoin, Observable, of, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ResourcesData } from '@osf/features/search/models';
-import { searchStateDefaults } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
-import { getResourceTypes, StringOrNull } from '@shared/helpers';
-import { AsyncStateModel, DiscoverableFilter, Resource, SelectOption } from '@shared/models';
+import { getResourceTypes } from '@shared/helpers';
 import { SearchService } from '@shared/services';
 
 import {
@@ -22,34 +19,17 @@ import {
   ResetSearchState,
   SetDefaultFilterValue,
   SetResourceType,
+  SetSearchText,
   SetSortBy,
   UpdateFilterValue,
 } from './osf-search.actions';
+import { OSF_SEARCH_STATE_DEFAULTS, OsfSearchStateModel } from './osf-search.model';
 
 import { environment } from 'src/environments/environment';
 
-export interface OsfSearchStateModel {
-  resources: AsyncStateModel<Resource[]>;
-  filters: DiscoverableFilter[];
-  defaultFilterValues: Record<string, string>;
-  filterValues: Record<string, StringOrNull>;
-  filterOptionsCache: Record<string, SelectOption[]>;
-  filterSearchCache: Record<string, SelectOption[]>;
-  filterPaginationCache: Record<string, string>;
-  resourcesCount: number;
-  searchText: StringOrNull;
-  sortBy: string;
-  first: string;
-  next: string;
-  previous: string;
-  resourceType: ResourceTab;
-}
-
 @State<OsfSearchStateModel>({
   name: 'osfSearch',
-  defaults: {
-    ...searchStateDefaults,
-  },
+  defaults: OSF_SEARCH_STATE_DEFAULTS,
 })
 @Injectable()
 export class OsfSearchState {
@@ -113,9 +93,8 @@ export class OsfSearchState {
 
     const loadingFilters = state.filters.map((f) => (f.key === filterKey ? { ...f, isLoading: true } : f));
     ctx.patchState({ filters: loadingFilters });
-    const resourceType = getResourceTypes(state.resourceType);
 
-    return this.searchService.getFilterOptions(filterKey, resourceType).pipe(
+    return this.searchService.getFilterOptions(this.buildParamsForIndexValueSearch(ctx, filterKey)).pipe(
       tap((response) => {
         const options = response.options;
         const updatedCache = { ...ctx.getState().filterOptionsCache, [filterKey]: options };
@@ -189,28 +168,30 @@ export class OsfSearchState {
     const loadingFilters = state.filters.map((f) => (f.key === filterKey ? { ...f, isSearchLoading: true } : f));
     ctx.patchState({ filters: loadingFilters });
     const filterKey = action.filterKey;
-    return this.searchService.getFilterOptionsWithSearch(filterKey, action.searchText).pipe(
-      tap((response) => {
-        const updatedSearchCache = { ...ctx.getState().filterSearchCache, [filterKey]: response.options };
-        const updatedPaginationCache = { ...ctx.getState().filterPaginationCache };
+    return this.searchService
+      .getFilterOptions(this.buildParamsForIndexValueSearch(ctx, filterKey, action.searchText))
+      .pipe(
+        tap((response) => {
+          const updatedSearchCache = { ...ctx.getState().filterSearchCache, [filterKey]: response.options };
+          const updatedPaginationCache = { ...ctx.getState().filterPaginationCache };
 
-        if (response.nextUrl) {
-          updatedPaginationCache[filterKey] = response.nextUrl;
-        } else {
-          delete updatedPaginationCache[filterKey];
-        }
+          if (response.nextUrl) {
+            updatedPaginationCache[filterKey] = response.nextUrl;
+          } else {
+            delete updatedPaginationCache[filterKey];
+          }
 
-        const updatedFilters = ctx
-          .getState()
-          .filters.map((f) => (f.key === filterKey ? { ...f, isSearchLoading: false } : f));
+          const updatedFilters = ctx
+            .getState()
+            .filters.map((f) => (f.key === filterKey ? { ...f, isSearchLoading: false } : f));
 
-        ctx.patchState({
-          filters: updatedFilters,
-          filterSearchCache: updatedSearchCache,
-          filterPaginationCache: updatedPaginationCache,
-        });
-      })
-    );
+          ctx.patchState({
+            filters: updatedFilters,
+            filterSearchCache: updatedSearchCache,
+            filterPaginationCache: updatedPaginationCache,
+          });
+        })
+      );
   }
 
   @Action(ClearFilterSearchResults)
@@ -242,10 +223,8 @@ export class OsfSearchState {
     ctx.patchState({ filters: loadingFilters });
     ctx.patchState({ filterValues });
 
-    const resourceType = getResourceTypes(ctx.getState().resourceType);
-
     const observables = filterKeys.map((key) =>
-      this.searchService.getFilterOptions(key, resourceType).pipe(
+      this.searchService.getFilterOptions(this.buildParamsForIndexValueSearch(ctx, key)).pipe(
         tap((response) => {
           const options = response.options;
           const updatedCache = { ...ctx.getState().filterOptionsCache, [key]: options };
@@ -282,21 +261,18 @@ export class OsfSearchState {
 
   @Action(UpdateFilterValue)
   updateFilterValue(ctx: StateContext<OsfSearchStateModel>, action: UpdateFilterValue) {
-    const filterKey = action.filterKey;
-    const value = action.value;
-
-    if (filterKey === 'search') {
-      ctx.patchState({ searchText: value });
-      return;
-    }
-
-    const updatedFilterValues = { ...ctx.getState().filterValues, [filterKey]: value };
+    const updatedFilterValues = { ...ctx.getState().filterValues, [action.filterKey]: action.value };
     ctx.patchState({ filterValues: updatedFilterValues });
   }
 
   @Action(SetSortBy)
   setSortBy(ctx: StateContext<OsfSearchStateModel>, action: SetSortBy) {
     ctx.patchState({ sortBy: action.sortBy });
+  }
+
+  @Action(SetSearchText)
+  setSearchText(ctx: StateContext<OsfSearchStateModel>, action: SetSearchText) {
+    ctx.patchState({ searchText: action.searchText });
   }
 
   @Action(SetResourceType)
@@ -307,7 +283,7 @@ export class OsfSearchState {
   @Action(ResetSearchState)
   resetSearchState(ctx: StateContext<OsfSearchStateModel>) {
     ctx.setState({
-      ...searchStateDefaults,
+      ...OSF_SEARCH_STATE_DEFAULTS,
     });
   }
 
@@ -326,5 +302,23 @@ export class OsfSearchState {
       next: response.next,
       previous: response.previous,
     });
+  }
+
+  private buildParamsForIndexValueSearch(
+    ctx: StateContext<OsfSearchStateModel>,
+    filterKey: string,
+    valueSearchText?: string
+  ): Record<string, string> {
+    const state = ctx.getState();
+
+    return {
+      'cardSearchFilter[resourceType]': getResourceTypes(state.resourceType),
+      'cardSearchFilter[accessService]': `${environment.webUrl}/`,
+      'cardSearchText[*,creator.name,isContainedBy.creator.name]': state.searchText ?? '',
+      'page[size]': '50',
+      sort: '-relevance',
+      valueSearchPropertyPath: filterKey,
+      valueSearchText: valueSearchText ?? '',
+    };
   }
 }

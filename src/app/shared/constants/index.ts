@@ -17,7 +17,6 @@ export * from './resource-languages.const';
 export * from './resource-types.const';
 export * from './scientists.const';
 export * from './search-sort-options.const';
-export * from './search-state-defaults.const';
 export * from './search-tab-options.const';
 export * from './search-tutorial-steps.const';
 export * from './sort-options.const';

@@ -33,6 +33,7 @@ import {
   OsfSearchSelectors,
   ResetSearchState,
   SetResourceType,
+  SetSearchText,
   SetSortBy,
   UpdateFilterValue,
 } from '@shared/stores/osf-search';
@@ -66,6 +67,7 @@ export class OsfSearchComponent implements OnInit, OnDestroy {
     fetchResources: FetchResources,
     getResourcesByLink: FetchResourcesByLink,
     setSortBy: SetSortBy,
+    setSearchText: SetSearchText,
     setResourceType: SetResourceType,
     loadFilterOptions: LoadFilterOptions,
     loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
@@ -247,7 +249,7 @@ export class OsfSearchComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (newValue) => {
           if (!newValue) newValue = null;
-          this.actions.updateFilterValue('search', newValue);
+          this.actions.setSearchText(newValue);
           this.router.navigate([], {
             relativeTo: this.route,
             queryParams: { search: newValue },
