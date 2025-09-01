@@ -3,6 +3,7 @@ import { RegistrySubject } from '@osf/features/registry/models';
 
 import { IdTypeModel } from './common';
 import { Institution } from './institutions';
+import { LicensesOption } from './license.model';
 
 export interface ResourceOverview {
   id: string;
@@ -20,10 +21,7 @@ export interface ResourceOverview {
   isCollection: boolean;
   tags: string[];
   accessRequestsEnabled: boolean;
-  nodeLicense?: {
-    copyrightHolders: string[];
-    year: string;
-  };
+  nodeLicense?: LicensesOption;
   license?: {
     name: string;
     text: string;

@@ -1,7 +1,7 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { RegistrationQuestions, RegistrySubject } from '@osf/features/registry/models';
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
-import { License, ProviderModel, SchemaResponse } from '@shared/models';
+import { IdTypeModel, License, LicensesOption, ProviderModel, SchemaResponse } from '@shared/models';
 
 export interface RegistryOverview {
   id: string;
@@ -22,10 +22,7 @@ export interface RegistryOverview {
   category: string;
   isFork: boolean;
   accessRequestsEnabled: boolean;
-  nodeLicense?: {
-    copyrightHolders: string[];
-    year: string;
-  };
+  nodeLicense?: LicensesOption;
   license?: License;
   licenseUrl?: string;
   identifiers?: {
@@ -40,10 +37,7 @@ export interface RegistryOverview {
   currentUserIsContributor: boolean;
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;
-  region?: {
-    id: string;
-    type: string;
-  };
+  region?: IdTypeModel;
   subjects?: RegistrySubject[];
   customCitation: string;
   hasData: boolean;

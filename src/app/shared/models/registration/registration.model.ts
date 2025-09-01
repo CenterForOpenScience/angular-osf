@@ -1,6 +1,8 @@
 import { RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
 
+import { IdTypeModel } from '../common';
 import { ContributorModel } from '../contributors';
+import { LicensesOption } from '../license.model';
 import { SubjectModel } from '../subject';
 
 export type RegistrationQuestions = Record<string, string | string[] | { file_id: string; file_name: string }[]>;
@@ -23,10 +25,7 @@ export interface RegistrationModel {
   category: string;
   isFork: boolean;
   accessRequestsEnabled: boolean;
-  nodeLicense?: {
-    copyrightHolders: string[];
-    year: string;
-  };
+  nodeLicense?: LicensesOption;
   license?: {
     name: string;
     text: string;
@@ -44,10 +43,7 @@ export interface RegistrationModel {
   currentUserIsContributor: boolean;
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;
-  region?: {
-    id: string;
-    type: string;
-  };
+  region?: IdTypeModel;
   subjects?: SubjectModel[];
   hasData: boolean;
   hasAnalyticCode: boolean;
