@@ -15,10 +15,11 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ProjectFormControls } from '@osf/shared/enums';
 import { Institution, ProjectForm } from '@osf/shared/models';
 import { Project } from '@osf/shared/models/projects';
-import { AffiliatedInstitutionSelectComponent } from '@shared/components/affiliated-institution-select/affiliated-institution-select.component';
-import { ProjectSelectorComponent } from '@shared/components/project-selector/project-selector.component';
-import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
-import { FetchRegions, RegionsSelectors } from '@shared/stores/regions';
+import { FetchRegions, RegionsSelectors } from '@osf/shared/stores';
+import { FetchUserInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
+
+import { AffiliatedInstitutionSelectComponent } from '../affiliated-institution-select/affiliated-institution-select.component';
+import { ProjectSelectorComponent } from '../project-selector/project-selector.component';
 
 @Component({
   selector: 'osf-add-project-form',

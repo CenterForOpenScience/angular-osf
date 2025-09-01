@@ -82,11 +82,7 @@ describe('NameComponent', () => {
 
     component.saveChanges();
 
-    expect(mockStore.dispatch).toHaveBeenCalledWith(
-      new UpdateProfileSettingsUser({
-        user: formData,
-      })
-    );
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new UpdateProfileSettingsUser(formData));
   });
 
   it('should reset form to current user data', () => {

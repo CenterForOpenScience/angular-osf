@@ -14,7 +14,7 @@ import {
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { UpdateProfileSettingsEducation, UserSelectors } from '@osf/core/store/user';
 import { CustomValidators } from '@osf/shared/helpers';
@@ -96,7 +96,7 @@ export class EducationComponent {
     this.loaderService.show();
 
     this.actions
-      .updateProfileSettingsEducation({ education: formattedEducation })
+      .updateProfileSettingsEducation(formattedEducation)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -132,16 +132,19 @@ export class EducationComponent {
   }
 
   private createEducationFormGroup(education?: Partial<EducationForm>): FormGroup {
+    const isOngoing = education?.ongoing ?? false;
+    const endDateValidators = isOngoing ? [] : [Validators.required];
+
     return this.fb.group(
       {
         institution: [education?.institution ?? '', CustomValidators.requiredTrimmed()],
         department: [education?.department ?? ''],
         degree: [education?.degree ?? ''],
-        startDate: [education?.startDate ?? null],
-        endDate: [education?.endDate ?? null],
-        ongoing: [education?.ongoing ?? false],
+        startDate: [education?.startDate ?? null, Validators.required],
+        endDate: [education?.endDate ?? null, endDateValidators],
+        ongoing: [isOngoing],
       },
-      { validators: CustomValidators.dateRangeValidator }
+      { validators: CustomValidators.monthYearRangeValidator }
     );
   }
 

@@ -8,8 +8,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { GetCurrentUser, UserState } from '@core/store/user';
+import { UserEmailsState } from '@core/store/user-emails';
 
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
+import { TranslateServiceMock } from './shared/mocks';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -19,7 +21,12 @@ describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent, ...MockComponents(ToastComponent, FullScreenLoaderComponent)],
-      providers: [provideStore([UserState]), provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideStore([UserState, UserEmailsState]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        TranslateServiceMock,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);

@@ -1,9 +1,8 @@
-import { AsyncStateModel, IdName, Institution } from '@shared/models';
+import { IdName, Institution } from '@shared/models';
 
-import { AccountEmail, AccountSettings, ExternalIdentity } from '../models';
+import { AccountSettings, ExternalIdentity } from '../models';
 
 export interface AccountSettingsStateModel {
-  emails: AsyncStateModel<AccountEmail[]>;
   regions: IdName[];
   externalIdentities: ExternalIdentity[];
   accountSettings: AccountSettings;
@@ -11,12 +10,6 @@ export interface AccountSettingsStateModel {
 }
 
 export const ACCOUNT_SETTINGS_STATE_DEFAULTS: AccountSettingsStateModel = {
-  emails: {
-    data: [],
-    isLoading: false,
-    error: null,
-    isSubmitting: false,
-  },
   regions: [],
   externalIdentities: [],
   accountSettings: {

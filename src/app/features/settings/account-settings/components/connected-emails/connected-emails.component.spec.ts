@@ -12,6 +12,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { DestroyRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { UserEmailsState } from '@core/store/user-emails';
 import { SetCurrentUser, UserState } from '@osf/core/store/user';
 import { AddEmailComponent, ConfirmationSentDialogComponent } from '@osf/features/settings/account-settings/components';
 import { MOCK_USER, MockCustomConfirmationServiceProvider } from '@shared/mocks';
@@ -42,7 +43,7 @@ describe('ConnectedEmailsComponent', () => {
     await TestBed.configureTestingModule({
       imports: [ConnectedEmailsComponent, MockPipe(TranslatePipe)],
       providers: [
-        provideStore([AccountSettingsState, UserState]),
+        provideStore([AccountSettingsState, UserState, UserEmailsState]),
         provideHttpClient(),
         provideHttpClientTesting(),
         MockProviders(DialogService, TranslateService, DestroyRef, LoaderService, ToastService),

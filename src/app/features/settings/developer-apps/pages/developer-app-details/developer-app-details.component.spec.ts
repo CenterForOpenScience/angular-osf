@@ -12,8 +12,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 
-import { IS_XSMALL } from '@osf/shared/helpers';
-import { CustomConfirmationService } from '@osf/shared/services';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 import { DeveloperAppsState } from '../../store';
 
@@ -42,7 +41,7 @@ describe('DeveloperAppDetailsComponent', () => {
         MockProvider(ActivatedRoute, { params: of({ id: 'test-client-id' }) }),
         MockProvider(Router, mockRouter),
         MockProvider(CustomConfirmationService),
-        MockProvider(IS_XSMALL, of(false)),
+        MockProvider(ToastService),
       ],
     }).compileComponents();
 
