@@ -27,7 +27,7 @@
     </div>
   } @else {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-      @if (!schemaResponse()?.isOriginalResponse && !isInitialState && !isAnonymous()) {
+      @if (!schemaResponse()?.isOriginalResponse && !isInitialState && !hasViewOnly()) {
         <p-message class="overview-message w-full" severity="warn">
           <ng-template #container>
             <div>
@@ -121,7 +121,7 @@
           <osf-resource-metadata
             [currentResource]="resourceOverview()"
             (customCitationUpdated)="onCustomCitationUpdated($event)"
-            [canWrite]="true"
+            [canWrite]="!hasViewOnly()"
           />
         </div>
       </div>

@@ -21,7 +21,7 @@
 
 <section class="flex flex-column lg:flex-row bg-white flex-1 h-full p-5 gap-4 w-full overflow-auto wiki-page">
   <osf-wiki-list
-    [viewOnly]="isAnonymous()"
+    [viewOnly]="hasViewOnly()"
     [list]="wikiList()"
     [resourceId]="resourceId"
     [isLoading]="isWikiListLoading()"

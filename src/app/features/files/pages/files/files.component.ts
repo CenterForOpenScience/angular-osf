@@ -111,7 +111,6 @@ export class FilesComponent {
 
   isMedium = toSignal(inject(IS_MEDIUM));
 
-  readonly isAnonymous = select(FilesSelectors.isFilesAnonymous);
   readonly hasViewOnly = computed(() => {
     return hasViewOnlyParam(this.router);
   });

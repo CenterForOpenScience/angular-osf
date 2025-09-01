@@ -59,7 +59,7 @@
 
         <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="showInfoDialog()"></p-button>
 
-        @if (!isViewOnly() && !isAnonymous()) {
+        @if (!isViewOnly() && !hasViewOnly()) {
           <p-button
             [disabled]="fileIsUploading() || isFilesLoading()"
             outlined
@@ -112,7 +112,6 @@
       [viewOnlyDownloadable]="isViewOnlyDownloadable()"
       [resourceId]="resourceId()"
       [provider]="provider()"
-      [isAnonymous]="isAnonymous()"
       (folderIsOpening)="folderIsOpening($event)"
       (entryFileClicked)="navigateToFile($event)"
       (uploadFileConfirmed)="uploadFile($event)"

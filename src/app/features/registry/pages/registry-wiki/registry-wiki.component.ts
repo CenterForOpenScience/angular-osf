@@ -58,7 +58,6 @@ export class RegistryWikiComponent {
   currentWikiId = select(WikiSelectors.getCurrentWikiId);
   wikiVersions = select(WikiSelectors.getWikiVersions);
   isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
-  isAnonymous = select(WikiSelectors.isWikiAnonymous);
 
   hasViewOnly = computed(() => {
     return hasViewOnlyParam(this.router);

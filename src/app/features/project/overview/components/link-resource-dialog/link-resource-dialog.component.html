@@ -39,9 +39,9 @@
   <p-table
     class="link-project-table"
     [value]="isCurrentTableLoading() ? skeletonData : currentTableItems()"
-    [rows]="10"
+    [rows]="tableRows"
     [first]="(currentPage() - 1) * 10"
-    [paginator]="!!currentTableItems().length"
+    [paginator]="currentTotalCount() > tableRows"
     [totalRecords]="currentTotalCount()"
     paginatorDropdownAppendTo="body"
     [resizableColumns]="true"

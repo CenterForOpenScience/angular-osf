@@ -1,5 +1,5 @@
 <div #dropZoneContainer class="drop-zone-container">
-  @if (!viewOnly() && !isAnonymous()) {
+  @if (!viewOnly() && !hasViewOnly) {
     <div
       class="drop-zone"
       [class.active]="isDragOver()"
@@ -75,7 +75,6 @@
                 <div class="relative ml-auto">
                   <osf-file-menu
                     (action)="onFileMenuAction($event, file)"
-                    [isAnonymous]="isAnonymous()"
                     [isFolder]="file.kind === 'folder'"
                     osfStopPropagation
                   >
@@ -99,7 +98,7 @@
 
       @if (!files().length) {
         <div class="flex justify-content-center p-4 m-auto">
-          @if (viewOnly() || isAnonymous()) {
+          @if (viewOnly() || hasViewOnly()) {
             <h3 class="font-normal text-no-transform">{{ 'files.emptyState' | translate }}</h3>
           } @else {
             <div class="text-center">

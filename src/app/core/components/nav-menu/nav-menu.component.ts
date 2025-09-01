@@ -55,7 +55,7 @@ export class NavMenuComponent {
       preprintReviewsPageVisible: this.canUserViewReviews(),
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
-      isViewOnly: this.isViewOnlyMode(),
+      isViewOnly: !!getViewOnlyParam(this.router),
     };
 
     const items = updateMenuItems(filtered, routeContext);
@@ -78,10 +78,6 @@ export class NavMenuComponent {
   protected readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
   protected readonly isPreprintRoute = computed(() => this.currentRoute().isPreprintRoute);
   protected readonly canUserViewReviews = select(UserSelectors.getCanViewReviews);
-
-  private isViewOnlyMode(): boolean {
-    return !!getViewOnlyParam(this.router);
-  }
 
   private getRouteInfo() {
     const urlSegments = this.router.url.split('/').filter((segment) => segment);

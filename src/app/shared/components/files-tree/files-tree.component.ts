@@ -30,6 +30,7 @@ import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { FileMenuType } from '@osf/shared/enums';
 import { FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
 import { StopPropagationDirective } from '@shared/directives';
+import { hasViewOnlyParam } from '@shared/helpers';
 import { FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
@@ -71,8 +72,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   viewOnly = input<boolean>(true);
   viewOnlyDownloadable = input<boolean>(false);
   provider = input<string>();
-  isAnonymous = input<boolean>(false);
   isDragOver = signal(false);
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
@@ -95,25 +98,25 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   });
 
   ngAfterViewInit(): void {
-    if (!this.viewOnly() && !this.isAnonymous()) {
+    if (!this.viewOnly()) {
       this.dropZoneContainerRef()!.nativeElement.addEventListener('dragenter', this.dragEnterHandler);
     }
   }
 
   ngOnDestroy(): void {
-    if (!this.viewOnly() && !this.isAnonymous()) {
+    if (!this.viewOnly()) {
       this.dropZoneContainerRef()!.nativeElement.removeEventListener('dragenter', this.dragEnterHandler);
     }
   }
 
   private dragEnterHandler = (event: DragEvent) => {
-    if (event.dataTransfer?.types?.includes('Files') && !this.viewOnly() && !this.isAnonymous()) {
+    if (event.dataTransfer?.types?.includes('Files') && !this.viewOnly()) {
       this.isDragOver.set(true);
     }
   };
 
   onDragOver(event: DragEvent) {
-    if (this.viewOnly() || this.isAnonymous()) {
+    if (this.viewOnly()) {
       return;
     }
     event.preventDefault();
@@ -123,7 +126,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   onDragLeave(event: Event) {
-    if (this.viewOnly() || this.isAnonymous()) {
+    if (this.viewOnly()) {
       return;
     }
     event.preventDefault();
@@ -136,7 +139,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     event.stopPropagation();
     this.isDragOver.set(false);
 
-    if (this.viewOnly() || this.isAnonymous()) {
+    if (this.viewOnly()) {
       return;
     }
 
@@ -228,10 +231,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
         this.confirmRename(file);
         break;
       case FileMenuType.Move:
-        this.moveFile(file, 'move');
+        this.moveFile(file, FileMenuType.Move);
         break;
       case FileMenuType.Copy:
-        this.moveFile(file, 'copy');
+        this.moveFile(file, FileMenuType.Copy);
         break;
     }
   }

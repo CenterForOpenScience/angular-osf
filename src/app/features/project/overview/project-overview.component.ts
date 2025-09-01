@@ -45,13 +45,13 @@ import {
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
+  DataciteTrackerComponent,
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
-import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 
 import {
   LinkedResourcesComponent,
@@ -88,6 +88,7 @@ import {
     TranslatePipe,
     Message,
     RouterLink,
+    ViewOnlyLinkMessageComponent,
     ViewOnlyLinkMessageComponent,
   ],
   providers: [DialogService],
