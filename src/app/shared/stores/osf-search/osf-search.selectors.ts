@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter, Resource, SelectOption } from '@shared/models';
 
@@ -34,7 +34,7 @@ export class OsfSearchSelectors {
   }
 
   @Selector([OsfSearchState])
-  static getResourceType(state: OsfSearchStateModel): ResourceTab {
+  static getResourceType(state: OsfSearchStateModel): ResourceType {
     return state.resourceType;
   }
 

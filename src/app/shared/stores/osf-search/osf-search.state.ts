@@ -5,7 +5,7 @@ import { catchError, EMPTY, forkJoin, Observable, of, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { ResourcesData } from '@osf/features/search/models';
-import { getResourceTypes } from '@shared/helpers';
+import { getResourceTypeStringFromEnum } from '@shared/helpers';
 import { SearchService } from '@shared/services';
 
 import {
@@ -40,33 +40,9 @@ export class OsfSearchState {
     const state = ctx.getState();
 
     ctx.patchState({ resources: { ...state.resources, isLoading: true } });
-    const searchText = state.searchText;
 
-    const filtersParams: Record<string, string> = {};
-    Object.entries(state.filterValues).forEach(([key, value]) => {
-      if (value) {
-        const filterDefinition = state.filters.find((f) => f.key === key);
-        const operator = filterDefinition?.operator;
-
-        if (operator === 'is-present') {
-          filtersParams[`cardSearchFilter[${key}][is-present]`] = value;
-        } else {
-          filtersParams[`cardSearchFilter[${key}][]`] = value;
-        }
-      }
-    });
-
-    filtersParams['cardSearchFilter[resourceType]'] = getResourceTypes(state.resourceType);
-    filtersParams['cardSearchFilter[accessService]'] = `${environment.webUrl}/`;
-    filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = searchText ?? '';
-    filtersParams['page[size]'] = '10';
-    filtersParams['sort'] = state.sortBy;
-
-    Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
-      filtersParams[`cardSearchFilter[${key}][]`] = value;
-    });
     return this.searchService
-      .getResources(filtersParams)
+      .getResources(this.buildParamsForIndexCardSearch(state))
       .pipe(tap((response) => this.updateResourcesState(ctx, response)));
   }
 
@@ -94,7 +70,7 @@ export class OsfSearchState {
     const loadingFilters = state.filters.map((f) => (f.key === filterKey ? { ...f, isLoading: true } : f));
     ctx.patchState({ filters: loadingFilters });
 
-    return this.searchService.getFilterOptions(this.buildParamsForIndexValueSearch(ctx, filterKey)).pipe(
+    return this.searchService.getFilterOptions(this.buildParamsForIndexValueSearch(state, filterKey)).pipe(
       tap((response) => {
         const options = response.options;
         const updatedCache = { ...ctx.getState().filterOptionsCache, [filterKey]: options };
@@ -169,7 +145,7 @@ export class OsfSearchState {
     ctx.patchState({ filters: loadingFilters });
     const filterKey = action.filterKey;
     return this.searchService
-      .getFilterOptions(this.buildParamsForIndexValueSearch(ctx, filterKey, action.searchText))
+      .getFilterOptions(this.buildParamsForIndexValueSearch(state, filterKey, action.searchText))
       .pipe(
         tap((response) => {
           const updatedSearchCache = { ...ctx.getState().filterSearchCache, [filterKey]: response.options };
@@ -224,7 +200,7 @@ export class OsfSearchState {
     ctx.patchState({ filterValues });
 
     const observables = filterKeys.map((key) =>
-      this.searchService.getFilterOptions(this.buildParamsForIndexValueSearch(ctx, key)).pipe(
+      this.searchService.getFilterOptions(this.buildParamsForIndexValueSearch(ctx.getState(), key)).pipe(
         tap((response) => {
           const options = response.options;
           const updatedCache = { ...ctx.getState().filterOptionsCache, [key]: options };
@@ -305,20 +281,43 @@ export class OsfSearchState {
   }
 
   private buildParamsForIndexValueSearch(
-    ctx: StateContext<OsfSearchStateModel>,
+    state: OsfSearchStateModel,
     filterKey: string,
     valueSearchText?: string
   ): Record<string, string> {
-    const state = ctx.getState();
-
     return {
-      'cardSearchFilter[resourceType]': getResourceTypes(state.resourceType),
-      'cardSearchFilter[accessService]': `${environment.webUrl}/`,
-      'cardSearchText[*,creator.name,isContainedBy.creator.name]': state.searchText ?? '',
+      ...this.buildParamsForIndexCardSearch(state),
       'page[size]': '50',
-      sort: '-relevance',
       valueSearchPropertyPath: filterKey,
       valueSearchText: valueSearchText ?? '',
     };
+  }
+
+  private buildParamsForIndexCardSearch(state: OsfSearchStateModel): Record<string, string> {
+    const filtersParams: Record<string, string> = {};
+    Object.entries(state.filterValues).forEach(([key, value]) => {
+      if (value) {
+        const filterDefinition = state.filters.find((f) => f.key === key);
+        const operator = filterDefinition?.operator;
+
+        if (operator === 'is-present') {
+          filtersParams[`cardSearchFilter[${key}][is-present]`] = value;
+        } else {
+          filtersParams[`cardSearchFilter[${key}][]`] = value;
+        }
+      }
+    });
+
+    filtersParams['cardSearchFilter[resourceType]'] = getResourceTypeStringFromEnum(state.resourceType);
+    filtersParams['cardSearchFilter[accessService]'] = `${environment.webUrl}/`;
+    filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = state.searchText ?? '';
+    filtersParams['page[size]'] = '10';
+    filtersParams['sort'] = state.sortBy;
+
+    Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
+      filtersParams[`cardSearchFilter[${key}][]`] = value;
+    });
+
+    return filtersParams;
   }
 }

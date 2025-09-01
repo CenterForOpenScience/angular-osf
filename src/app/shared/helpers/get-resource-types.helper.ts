@@ -1,16 +1,16 @@
-import { ResourceTab } from '@osf/shared/enums';
+import { ResourceType } from '@osf/shared/enums';
 
-export function getResourceTypes(resourceTab: ResourceTab): string {
+export function getResourceTypeStringFromEnum(resourceTab: ResourceType): string {
   switch (resourceTab) {
-    case ResourceTab.Projects:
+    case ResourceType.Project:
       return 'Project,ProjectComponent';
-    case ResourceTab.Registrations:
+    case ResourceType.Registration:
       return 'Registration,RegistrationComponent';
-    case ResourceTab.Preprints:
+    case ResourceType.Preprint:
       return 'Preprint';
-    case ResourceTab.Files:
+    case ResourceType.File:
       return 'File';
-    case ResourceTab.Users:
+    case ResourceType.Agent:
       return 'Agent';
     default:
       return 'Registration,RegistrationComponent,Project,ProjectComponent,Preprint,Agent,File';

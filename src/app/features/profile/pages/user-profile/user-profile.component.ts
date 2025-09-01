@@ -7,7 +7,7 @@ import { ProfileInformationComponent } from '@osf/features/profile/components';
 import { FetchUserProfile, ProfileSelectors } from '@osf/features/profile/store';
 import { OsfSearchComponent } from '@shared/components';
 import { SEARCH_TAB_OPTIONS } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { SetDefaultFilterValue } from '@shared/stores/osf-search';
 
 @Component({
@@ -27,7 +27,7 @@ export class UserProfileComponent implements OnInit {
   currentUser = select(ProfileSelectors.getUserProfile);
   isUserLoading = select(ProfileSelectors.isUserProfileLoading);
 
-  resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceTab.Users);
+  resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceType.Agent);
 
   ngOnInit(): void {
     const userId = this.route.snapshot.params['id'];

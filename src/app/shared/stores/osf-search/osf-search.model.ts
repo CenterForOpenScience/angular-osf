@@ -1,6 +1,6 @@
 import { StringOrNull } from '@osf/shared/helpers';
 import { AsyncStateModel, DiscoverableFilter, Resource, SelectOption } from '@osf/shared/models';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 
 export interface OsfSearchStateModel {
   resources: AsyncStateModel<Resource[]>;
@@ -16,7 +16,7 @@ export interface OsfSearchStateModel {
   first: string;
   next: string;
   previous: string;
-  resourceType: ResourceTab;
+  resourceType: ResourceType;
 }
 
 export const OSF_SEARCH_STATE_DEFAULTS = {
@@ -34,7 +34,7 @@ export const OSF_SEARCH_STATE_DEFAULTS = {
   resourcesCount: 0,
   searchText: '',
   sortBy: '-relevance',
-  resourceType: ResourceTab.All,
+  resourceType: ResourceType.Null,
   first: '',
   next: '',
   previous: '',

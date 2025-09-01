@@ -1,4 +1,4 @@
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { StringOrNull } from '@shared/helpers';
 
 export class FetchResources {
@@ -14,7 +14,7 @@ export class FetchResourcesByLink {
 export class SetResourceType {
   static readonly type = '[OsfSearch] Set Resource Type';
 
-  constructor(public type: ResourceTab) {}
+  constructor(public type: ResourceType) {}
 }
 
 export class SetSearchText {

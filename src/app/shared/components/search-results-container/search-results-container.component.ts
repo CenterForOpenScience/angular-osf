@@ -19,7 +19,7 @@ import { FormsModule } from '@angular/forms';
 
 import { LoadingSpinnerComponent } from '@shared/components';
 import { searchSortingOptions } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { Resource, TabOption } from '@shared/models';
 
 import { ResourceCardComponent } from '../resource-card/resource-card.component';
@@ -49,19 +49,18 @@ export class SearchResultsContainerComponent {
   areResourcesLoading = input<boolean>(false);
   searchCount = input<number>(0);
   selectedSort = input<string>('');
-  selectedTab = input<number>(ResourceTab.All);
+  selectedTab = input<number>(ResourceType.Null);
   selectedValues = input<Record<string, string | null>>({});
   first = input<string | null>(null);
   prev = input<string | null>(null);
   next = input<string | null>(null);
-  hasAnySelectedValues = input<boolean>(false);
   tabOptions = input<TabOption[]>([]);
 
   isFiltersOpen = signal<boolean>(false);
   isSortingOpen = signal<boolean>(false);
 
   sortChanged = output<string>();
-  tabChanged = output<ResourceTab>();
+  tabChanged = output<ResourceType>();
   pageChanged = output<string>();
 
   showTabs = computed(() => {
@@ -69,7 +68,7 @@ export class SearchResultsContainerComponent {
   });
 
   protected readonly searchSortingOptions = searchSortingOptions;
-  protected readonly ResourceTab = ResourceTab;
+  protected readonly ResourceType = ResourceType;
 
   protected readonly hasSelectedValues = computed(() => {
     const values = this.selectedValues();
@@ -86,7 +85,7 @@ export class SearchResultsContainerComponent {
     this.sortChanged.emit(value);
   }
 
-  selectTab(value?: ResourceTab): void {
+  selectTab(value?: ResourceType): void {
     this.tabChanged.emit(value !== undefined ? value : this.selectedTab());
   }
 

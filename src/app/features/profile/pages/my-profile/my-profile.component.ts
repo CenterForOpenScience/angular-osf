@@ -8,7 +8,7 @@ import { ProfileInformationComponent } from '@osf/features/profile/components';
 import { SetUserProfile } from '@osf/features/profile/store';
 import { OsfSearchComponent } from '@shared/components';
 import { SEARCH_TAB_OPTIONS } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { SetDefaultFilterValue, UpdateFilterValue } from '@shared/stores/osf-search';
 
 @Component({
@@ -28,7 +28,7 @@ export class MyProfileComponent implements OnInit {
 
   currentUser = select(UserSelectors.getCurrentUser);
 
-  resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceTab.Users);
+  resourceTabOptions = SEARCH_TAB_OPTIONS.filter((x) => x.value !== ResourceType.Agent);
 
   ngOnInit(): void {
     const user = this.currentUser();

@@ -18,8 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SEARCH_TAB_OPTIONS } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter, TabOption } from '@shared/models';
 import {
@@ -77,14 +76,6 @@ export class OsfSearchComponent implements OnInit, OnDestroy {
     updateFilterValue: UpdateFilterValue,
     resetSearchState: ResetSearchState,
   });
-
-  private readonly tabUrlMap = new Map(
-    SEARCH_TAB_OPTIONS.map((option) => [option.value, option.label.split('.').pop()?.toLowerCase() || 'all'])
-  );
-
-  private readonly urlTabMap = new Map(
-    SEARCH_TAB_OPTIONS.map((option) => [option.label.split('.').pop()?.toLowerCase() || 'all', option.value])
-  );
 
   resourceTabOptions = input<TabOption[]>([]);
 
@@ -148,7 +139,7 @@ export class OsfSearchComponent implements OnInit, OnDestroy {
     this.actions.fetchResources();
   }
 
-  onTabChange(resourceTab: ResourceTab): void {
+  onTabChange(resourceTab: ResourceType): void {
     this.actions.setResourceType(resourceTab);
     this.updateUrlWithTab(resourceTab);
     this.actions.fetchResources();
@@ -215,31 +206,18 @@ export class OsfSearchComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateUrlWithTab(tab: ResourceTab): void {
-    const queryParams: Record<string, string> = { ...this.route.snapshot.queryParams };
-
-    if (tab !== ResourceTab.All) {
-      queryParams['tab'] = this.tabUrlMap.get(tab) || 'all';
-    } else {
-      delete queryParams['tab'];
-    }
-
+  private updateUrlWithTab(tab: ResourceType): void {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams,
-      queryParamsHandling: 'replace',
-      replaceUrl: true,
+      queryParams: { tab: tab !== ResourceType.Null ? tab : null },
+      queryParamsHandling: 'merge',
     });
   }
 
   private restoreTabFromUrl(): void {
-    const tabString = this.route.snapshot.queryParams['tab'];
-
-    if (tabString) {
-      const tab = this.urlTabMap.get(tabString);
-      if (tab !== undefined) {
-        this.actions.setResourceType(tab);
-      }
+    const tab = this.route.snapshot.queryParams['tab'];
+    if (tab !== undefined) {
+      this.actions.setResourceType(+tab);
     }
   }
 
@@ -265,7 +243,7 @@ export class OsfSearchComponent implements OnInit, OnDestroy {
 
     if (searchTerm) {
       this.searchControl.setValue(searchTerm, { emitEvent: false });
-      this.actions.updateFilterValue('search', searchTerm);
+      this.actions.setSearchText(searchTerm);
     }
   }
 }

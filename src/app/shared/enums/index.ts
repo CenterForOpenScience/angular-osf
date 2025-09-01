@@ -22,7 +22,6 @@ export * from './registration-review-states.enum';
 export * from './registry-resource.enum';
 export * from './registry-status.enum';
 export * from './resource-search-mode.enum';
-export * from './resource-tab.enum';
 export * from './resource-type.enum';
 export * from './reusable-filter-type.enum';
 export * from './review-permissions.enum';

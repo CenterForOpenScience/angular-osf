@@ -4,8 +4,8 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ResourceTab } from '@osf/shared/enums';
-import { getResourceTypes, handleSectionError } from '@osf/shared/helpers';
+import { ResourceType } from '@osf/shared/enums';
+import { getResourceTypeStringFromEnum, handleSectionError } from '@osf/shared/helpers';
 import { SearchService } from '@osf/shared/services';
 
 import { RegistriesService } from '../services';
@@ -74,7 +74,7 @@ export class RegistriesState {
     });
 
     const params: Record<string, string> = {
-      'cardSearchFilter[resourceType]': getResourceTypes(ResourceTab.Registrations),
+      'cardSearchFilter[resourceType]': getResourceTypeStringFromEnum(ResourceType.Registration),
       'cardSearchFilter[accessService]': `${environment.webUrl}/`,
       'page[size]': '10',
     };

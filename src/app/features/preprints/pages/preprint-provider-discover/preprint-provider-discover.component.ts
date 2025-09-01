@@ -8,7 +8,7 @@ import { PreprintProviderHeroComponent } from '@osf/features/preprints/component
 import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
 import { BrandService } from '@osf/shared/services';
 import { OsfSearchComponent } from '@shared/components/osf-search/osf-search.component';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/osf-search/osf-search.actions';
 
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
@@ -45,7 +45,7 @@ export class PreprintProviderDiscoverComponent implements OnInit, OnDestroy {
 
         if (provider) {
           this.actions.setDefaultFilterValue('publisher', provider.iri);
-          this.actions.setResourceType(ResourceTab.Preprints);
+          this.actions.setResourceType(ResourceType.Preprint);
 
           BrandService.applyBranding(provider.brand);
           HeaderStyleHelper.applyHeaderStyles(

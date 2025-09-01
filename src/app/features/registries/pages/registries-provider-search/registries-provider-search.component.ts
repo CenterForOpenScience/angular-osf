@@ -12,7 +12,7 @@ import {
   RegistriesProviderSearchSelectors,
 } from '@osf/features/registries/store/registries-provider-search';
 import { OsfSearchComponent } from '@shared/components';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/osf-search';
 
 @Component({
@@ -43,7 +43,7 @@ export class RegistriesProviderSearchComponent implements OnInit {
       this.actions.getProvider(providerName).subscribe({
         next: () => {
           this.actions.setDefaultFilterValue('publisher', this.provider()!.iri!);
-          this.actions.setResourceType(ResourceTab.Registrations);
+          this.actions.setResourceType(ResourceType.Registration);
         },
       });
     }

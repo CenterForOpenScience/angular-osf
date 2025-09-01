@@ -6,6 +6,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { ResourceType } from '@shared/enums';
 import { SubjectModel } from '@shared/models';
 
 @Component({
@@ -19,7 +20,7 @@ export class BrowseBySubjectsComponent {
   subjects = input.required<SubjectModel[]>();
   linksToSearchPageForSubject = computed(() => {
     return this.subjects().map((subject) => ({
-      tab: 'preprints',
+      tab: ResourceType.Preprint,
       filter_subject: subject.iri,
     }));
   });
