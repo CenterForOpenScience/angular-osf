@@ -154,7 +154,10 @@ export class MetadataComponent implements OnInit {
   });
 
   hideEditDoi = computed(() => {
-    return !!(this.metadata()?.identifiers?.length && this.resourceType() === ResourceType.Project);
+    return (
+      !!(this.metadata()?.identifiers?.length && this.resourceType() === ResourceType.Project) ||
+      !this.metadata()?.public
+    );
   });
 
   constructor() {
@@ -473,7 +476,9 @@ export class MetadataComponent implements OnInit {
         acceptLabelType: 'primary',
         onConfirm: () => {
           this.actions.createDoi(this.resourceId, this.resourceType()).subscribe({
-            next: () => this.toastService.showSuccess('project.metadata.doi.created'),
+            next: () => {
+              this.toastService.showSuccess('project.metadata.doi.created');
+            },
           });
         },
       });

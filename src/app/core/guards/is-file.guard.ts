@@ -3,15 +3,17 @@ import { Store } from '@ngxs/store';
 import { map, switchMap } from 'rxjs/operators';
 
 import { inject } from '@angular/core';
-import { CanMatchFn, Route, UrlSegment } from '@angular/router';
+import { CanMatchFn, Route, Router, UrlSegment } from '@angular/router';
 
 import { CurrentResourceType } from '../../shared/enums';
 import { CurrentResourceSelectors, GetResource } from '../../shared/stores';
 
 export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) => {
   const store = inject(Store);
+  const router = inject(Router);
 
   const id = segments[0]?.path;
+  const isMetadataPath = segments[1]?.path === 'metadata';
   if (!id) {
     return false;
   }
@@ -20,7 +22,13 @@ export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) =>
 
   if (currentResource && currentResource.id === id) {
     if (currentResource.type === CurrentResourceType.Files) {
-      return true;
+      if (isMetadataPath) {
+        return true;
+      }
+      if (currentResource.parentId) {
+        router.navigate(['/', currentResource.parentId, 'files', id]);
+        return false;
+      }
     }
 
     return currentResource.type === CurrentResourceType.Files;
@@ -34,7 +42,13 @@ export const isFileGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) =>
       }
 
       if (resource.type === CurrentResourceType.Files) {
-        return true;
+        if (isMetadataPath) {
+          return true;
+        }
+        if (resource.parentId) {
+          router.navigate(['/', resource.parentId, 'files', id]);
+          return false;
+        }
       }
       return resource.type === CurrentResourceType.Files;
     })

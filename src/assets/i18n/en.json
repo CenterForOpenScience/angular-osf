@@ -1051,7 +1051,8 @@
         }
       },
       "toast": {
-        "copiedToClipboard": "Copied to clipboard"
+        "copiedToClipboard": "Copied to clipboard",
+        "cedarUpdated": "CEDAR record updated successfully"
       },
       "keywords": {
         "title": "Keywords"

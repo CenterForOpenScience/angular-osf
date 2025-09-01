@@ -22,6 +22,7 @@ export interface MetadataAttributesJsonApi {
   doi?: boolean;
   category?: string;
   node_license?: LicenseRecordJsonApi;
+  public?: boolean;
 }
 
 interface MetadataEmbedsJsonApi {

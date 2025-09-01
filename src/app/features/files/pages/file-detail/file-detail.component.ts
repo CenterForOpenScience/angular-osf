@@ -203,7 +203,6 @@ export class FileDetailComponent {
         })) || [];
 
       this.tabs.set([...baseTabs, ...cedarTabs]);
-      // this.handleRouteBasedTabSelection();
     });
 
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
@@ -301,24 +300,21 @@ export class FileDetailComponent {
   }
 
   onCedarFormSubmit(data: CedarRecordDataBinding): void {
-    // const selectedRecord = this.selectedCedarRecord();
-    // if (!this.resourceId || !selectedRecord) return;
-    // if (selectedRecord.id) {
-    //   this.actions
-    //     .updateCedarRecord(data, selectedRecord.id, this.resourceId, this.resourceType())
-    //     .pipe(takeUntilDestroyed(this.destroyRef))
-    //     .subscribe({
-    //       next: () => {
-    //         this.cedarFormReadonly.set(true);
-    //         this.toastService.showSuccess('CEDAR record updated successfully');
-    //         this.actions.getCedarRecords(this.resourceId, this.resourceType());
-    //       },
-    //     });
-    // }
-  }
-
-  onCedarFormChangeTemplate(): void {
-    // this.router.navigate(['add'], { relativeTo: this.activeRoute });
+    const selectedRecord = this.selectedCedarRecord();
+    if (!this.resourceId || !selectedRecord) return;
+    if (selectedRecord.id) {
+      this.actions
+        .updateCedarRecord(data, selectedRecord.id, this.resourceId, ResourceType.File)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.cedarFormReadonly.set(true);
+            this.toastService.showSuccess('files.detail.toast.cedarUpdated');
+            const fileId = this.file()?.path.replaceAll('/', '') || '';
+            this.actions.getCedarRecords(fileId, ResourceType.File);
+          },
+        });
+    }
   }
 
   private loadCedarRecord(recordId: string): void {

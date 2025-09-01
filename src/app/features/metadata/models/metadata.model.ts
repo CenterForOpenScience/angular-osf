@@ -20,6 +20,7 @@ export interface Metadata {
     copyrightHolders: string[];
     year: string;
   };
+  public?: boolean;
 }
 
 export interface CustomItemMetadataRecord {

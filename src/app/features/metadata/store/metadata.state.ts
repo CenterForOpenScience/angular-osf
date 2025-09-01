@@ -117,10 +117,11 @@ export class MetadataState {
 
     return this.metadataService.createDoi(action.resourceId, action.resourceType).pipe(
       tap({
-        next: (response) => {
+        next: () => {
           ctx.patchState({
-            metadata: { data: response, isLoading: false, error: null },
+            metadata: { ...ctx.getState().metadata, isLoading: false, error: null },
           });
+          ctx.dispatch(new GetResourceMetadata(action.resourceId, action.resourceType));
         },
       }),
       catchError((error) => handleSectionError(ctx, 'metadata', error))
@@ -213,6 +214,13 @@ export class MetadataState {
   createCedarMetadataRecord(ctx: StateContext<MetadataStateModel>, action: CreateCedarMetadataRecord) {
     return this.metadataService.createMetadataCedarRecord(action.record, action.resourceId, action.resourceType).pipe(
       tap((response: CedarMetadataRecord) => {
+        ctx.patchState({
+          cedarRecord: {
+            data: response,
+            error: null,
+            isLoading: false,
+          },
+        });
         ctx.dispatch(new AddCedarMetadataRecordToState(response.data));
       })
     );

@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ResourceType } from '@osf/shared/enums';
-import { LicenseOptions } from '@osf/shared/models';
+import { Identifier, LicenseOptions } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { CedarRecordsMapper, MetadataMapper } from '../mappers';
@@ -49,7 +49,7 @@ export class MetadataService {
       .pipe(map((response) => MetadataMapper.fromCustomMetadataApiResponse(response)));
   }
 
-  createDoi(resourceId: string, resourceType: ResourceType): Observable<Metadata> {
+  createDoi(resourceId: string, resourceType: ResourceType): Observable<Identifier> {
     const payload = {
       data: {
         type: 'identifiers',
@@ -59,12 +59,10 @@ export class MetadataService {
       },
     };
 
-    return this.jsonApiService
-      .post<MetadataJsonApiResponse>(
-        `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/identifiers/`,
-        payload
-      )
-      .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response.data)));
+    return this.jsonApiService.post(
+      `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/identifiers/`,
+      payload
+    );
   }
 
   getFundersList(searchQuery?: string): Observable<CrossRefFundersResponse> {
