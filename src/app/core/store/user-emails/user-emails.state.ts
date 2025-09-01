@@ -23,6 +23,12 @@ export class UserEmailsState {
 
   @Action(GetEmails)
   getEmails(ctx: StateContext<UserEmailsStateModel>) {
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
+    if (!currentUser) {
+      return;
+    }
+
     ctx.patchState({
       emails: {
         ...ctx.getState().emails,
