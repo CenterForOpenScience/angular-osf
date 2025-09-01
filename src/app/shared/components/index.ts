@@ -2,6 +2,7 @@ export { AddProjectFormComponent } from './add-project-form/add-project-form.com
 export { AffiliatedInstitutionSelectComponent } from './affiliated-institution-select/affiliated-institution-select.component';
 export { AffiliatedInstitutionsViewComponent } from './affiliated-institutions-view/affiliated-institutions-view.component';
 export { BarChartComponent } from './bar-chart/bar-chart.component';
+export { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 export { CopyButtonComponent } from './copy-button/copy-button.component';
 export { CustomPaginatorComponent } from './custom-paginator/custom-paginator.component';
 export { DataResourcesComponent } from './data-resources/data-resources.component';

@@ -232,6 +232,7 @@ export class UserState {
       })
     );
   }
+
   @Action(SetUserAsModerator)
   setUserAsModerator(ctx: StateContext<UserStateModel>) {
     const state = ctx.getState();
