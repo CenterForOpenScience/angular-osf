@@ -14,6 +14,7 @@ import { JsonApiService } from '@shared/services';
 
 import { SettingsMapper } from '../mappers';
 import {
+  NodeDataJsonApi,
   NodeDetailsModel,
   NodeResponseJsonApi,
   ProjectSettingsData,
@@ -74,8 +75,8 @@ export class SettingsService {
 
   updateProjectById(model: UpdateNodeRequestModel): Observable<NodeDetailsModel> {
     return this.jsonApiService
-      .patch<NodeResponseJsonApi>(`${this.baseUrl}/nodes/${model?.data?.id}/`, model)
-      .pipe(map((response) => SettingsMapper.fromNodeResponse(response.data)));
+      .patch<NodeDataJsonApi>(`${this.baseUrl}/nodes/${model?.data?.id}/`, model)
+      .pipe(map((response) => SettingsMapper.fromNodeResponse(response)));
   }
 
   deleteProject(projectId: string): Observable<void> {

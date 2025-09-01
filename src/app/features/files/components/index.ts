@@ -1,5 +1,6 @@
 export { CreateFolderDialogComponent } from './create-folder-dialog/create-folder-dialog.component';
 export { EditFileMetadataDialogComponent } from './edit-file-metadata-dialog/edit-file-metadata-dialog.component';
+export { FileBrowserInfoComponent } from './file-browser-info/file-browser-info.component';
 export { FileKeywordsComponent } from './file-keywords/file-keywords.component';
 export { FileMetadataComponent } from './file-metadata/file-metadata.component';
 export { FileResourceMetadataComponent } from './file-resource-metadata/file-resource-metadata.component';

@@ -18,7 +18,7 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const {owner, repo} = context.repo;
+            const { owner, repo } = context.repo;
 
             // Determine PR number for both pull_request and pull_request_review events
             let number;
@@ -41,11 +41,13 @@ jobs:
             const latestByUser = new Map();
             for (const r of reviews) latestByUser.set(r.user.id, r.state);
 
-            // Count approvals
             const approvals = [...latestByUser.values()].filter(s => s === 'APPROVED').length;
+            const hasRequestChanges = [...latestByUser.values()].includes('CHANGES_REQUESTED');
 
             if (approvals < 1) {
               core.setFailed(`PR #${number} requires at least one approving review before merging.`);
+            } else if (hasRequestChanges) {
+              core.setFailed(`PR #${number} cannot be merged because at least one reviewer has requested changes.`);
             } else {
               core.info(`Approvals found: ${approvals}. Check passed.`);
             }

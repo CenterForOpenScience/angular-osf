@@ -16,15 +16,11 @@ import {
   ResetClientSecret,
   UpdateDeveloperApp,
 } from './developer-apps.actions';
-import { DeveloperAppsStateModel } from './developer-apps.state-model';
+import { DEVELOPER_APPS_STATE_DEFAULTS, DeveloperAppsStateModel } from './developer-apps.state-model';
 
 @State<DeveloperAppsStateModel>({
   name: 'developerApps',
-  defaults: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
+  defaults: DEVELOPER_APPS_STATE_DEFAULTS,
 })
 @Injectable()
 export class DeveloperAppsState {
@@ -51,6 +47,8 @@ export class DeveloperAppsState {
     if (developerAppFromState) {
       return of(developerAppFromState);
     }
+
+    ctx.patchState({ ...state.data, isLoading: true, error: null });
 
     return this.developerAppsService.getApplicationDetails(action.clientId).pipe(
       tap((fetchedApp) => {

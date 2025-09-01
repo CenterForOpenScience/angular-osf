@@ -48,6 +48,9 @@
         }
       </p-tabpanel>
       <p-tabpanel [value]="AddonTabValue.CONNECTED_ADDONS" class="flex flex-column gap-5">
+        <p>
+          {{ 'settings.addons.connectedDescription' | translate }}
+        </p>
         <osf-search-input
           class="flex-1"
           [control]="searchControl"

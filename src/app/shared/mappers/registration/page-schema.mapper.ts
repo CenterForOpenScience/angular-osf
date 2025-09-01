@@ -1,5 +1,4 @@
-import { BlockType } from '@osf/shared/enums/block-type.enum';
-import { FieldType } from '@osf/shared/enums/field-type.enum';
+import { BlockType, FieldType } from '@osf/shared/enums';
 import { PageSchema, Question, SchemaBlocksResponseJsonApi, Section } from '@osf/shared/models';
 
 export class PageSchemaMapper {
@@ -19,6 +18,7 @@ export class PageSchemaMapper {
           currentPage = {
             id: item.id,
             title: item.attributes.display_text,
+            helpText: item.attributes.help_text,
             questions: [],
           };
           currentQuestion = null;
@@ -30,6 +30,7 @@ export class PageSchemaMapper {
             currentSection = {
               id: item.id,
               title: item.attributes.display_text,
+              helpText: item.attributes.help_text,
               questions: [],
             };
             currentPage.sections = currentPage.sections || [];

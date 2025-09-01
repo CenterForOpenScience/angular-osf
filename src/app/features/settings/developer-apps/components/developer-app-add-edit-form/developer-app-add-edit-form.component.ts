@@ -35,12 +35,12 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
     updateDeveloperApp: UpdateDeveloperApp,
   });
 
-  protected readonly inputLimits = InputLimits;
-  protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly isLoading = select(DeveloperAppsSelectors.isLoading);
+  readonly inputLimits = InputLimits;
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly isLoading = select(DeveloperAppsSelectors.isLoading);
 
-  protected readonly DeveloperAppFormFormControls = DeveloperAppFormFormControls;
-  protected readonly appForm: DeveloperAppForm = new FormGroup({
+  readonly DeveloperAppFormFormControls = DeveloperAppFormFormControls;
+  readonly appForm: DeveloperAppForm = new FormGroup({
     [DeveloperAppFormFormControls.AppName]: new FormControl('', {
       nonNullable: true,
       validators: [CustomValidators.requiredTrimmed(), Validators.maxLength(InputLimits.fullName.maxLength)],
@@ -68,9 +68,7 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
   });
 
   constructor() {
-    effect(() => {
-      return this.isLoading() ? this.appForm.disable() : this.appForm.enable();
-    });
+    effect(() => (this.isLoading() ? this.appForm.disable() : this.appForm.enable()));
   }
 
   ngOnInit(): void {
@@ -91,21 +89,21 @@ export class DeveloperAppAddEditFormComponent implements OnInit {
       return;
     }
 
-    if (!this.isEditMode()) {
-      this.actions.createDeveloperApp({ ...this.appForm.value } as DeveloperAppCreateUpdate).subscribe({
-        next: () => this.toastService.showSuccess('settings.developerApps.form.createSuccess'),
-        complete: () => this.dialogRef.close(),
-      });
-    } else {
+    if (this.isEditMode()) {
       this.actions
         .updateDeveloperApp(this.initialValues()!.clientId, {
           ...this.appForm.value,
           id: this.initialValues()!.id,
         } as DeveloperAppCreateUpdate)
         .subscribe({
-          next: () => this.toastService.showSuccess('settings.developerApps.form.createSuccess'),
+          next: () => this.toastService.showSuccess('settings.developerApps.form.updateSuccess'),
           complete: () => this.router.navigate(['settings/developer-apps']),
         });
+    } else {
+      this.actions.createDeveloperApp({ ...this.appForm.value } as DeveloperAppCreateUpdate).subscribe({
+        next: () => this.toastService.showSuccess('settings.developerApps.form.createSuccess'),
+        complete: () => this.dialogRef.close(),
+      });
     }
   }
 }

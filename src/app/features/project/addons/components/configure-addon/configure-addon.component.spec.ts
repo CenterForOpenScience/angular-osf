@@ -73,7 +73,7 @@ describe('Component: Configure Addon', () => {
     });
 
     it('should validate the constuctor values', () => {
-      expect(component.storageAddon()).toBeUndefined();
+      expect(component.storageAddon()).toBeNull();
       expect(component.addon()).toEqual(
         Object({
           attributes: {

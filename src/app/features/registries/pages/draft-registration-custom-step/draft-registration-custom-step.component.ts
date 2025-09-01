@@ -16,30 +16,19 @@ import { RegistriesSelectors, UpdateDraft } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DraftRegistrationCustomStepComponent {
-  protected readonly stepsData = select(RegistriesSelectors.getStepsData);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
-  protected actions = createDispatchMap({
-    updateDraft: UpdateDraft,
-  });
 
-  filesLink = computed(() => {
-    return this.draftRegistration()?.branchedFrom?.filesLink || '';
-  });
+  readonly stepsData = select(RegistriesSelectors.getStepsData);
+  readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  readonly actions = createDispatchMap({ updateDraft: UpdateDraft });
 
-  provider = computed(() => {
-    return this.draftRegistration()?.providerId || '';
-  });
-
-  projectId = computed(() => {
-    return this.draftRegistration()?.branchedFrom?.id || '';
-  });
+  filesLink = computed(() => this.draftRegistration()?.branchedFrom?.filesLink || '');
+  provider = computed(() => this.draftRegistration()?.providerId || '');
+  projectId = computed(() => this.draftRegistration()?.branchedFrom?.id || '');
 
   onUpdateAction(attributes: Partial<DraftRegistrationAttributesJsonApi>): void {
-    const payload = {
-      registration_responses: { ...attributes },
-    };
+    const payload = { registration_responses: { ...attributes } };
     this.actions.updateDraft(this.route.snapshot.params['id'], payload);
   }
 

@@ -9,7 +9,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { CustomConfirmationService } from '@osf/shared/services';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 import { DeveloperApp } from '../../models';
 import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperApps } from '../../store';
@@ -27,8 +27,9 @@ export class DeveloperAppsListComponent implements OnInit {
     deleteDeveloperApp: DeleteDeveloperApp,
   });
   private readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly toastService = inject(ToastService);
 
-  protected readonly isLoading = select(DeveloperAppsSelectors.isLoading);
+  readonly isLoading = select(DeveloperAppsSelectors.isLoading);
   readonly developerApplications = select(DeveloperAppsSelectors.getDeveloperApps);
 
   ngOnInit(): void {
@@ -42,7 +43,10 @@ export class DeveloperAppsListComponent implements OnInit {
       headerKey: 'settings.developerApps.confirmation.delete.title',
       headerParams: { name: developerApp.name },
       messageKey: 'settings.developerApps.confirmation.delete.message',
-      onConfirm: () => this.actions.deleteDeveloperApp(developerApp.clientId),
+      onConfirm: () =>
+        this.actions
+          .deleteDeveloperApp(developerApp.clientId)
+          .subscribe(() => this.toastService.showSuccess('settings.developerApps.confirmation.delete.success')),
     });
   }
 }

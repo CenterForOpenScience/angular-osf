@@ -24,7 +24,7 @@ import {
   model,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -44,7 +44,7 @@ import {
 } from '@osf/features/files/store';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
-import { hasViewOnlyParam } from '@osf/shared/helpers';
+import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -56,7 +56,7 @@ import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-
 import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
-import { CreateFolderDialogComponent } from '../../components';
+import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
 import { FileProvider } from '../../constants';
 import { FilesSelectors } from '../../store';
 
@@ -109,26 +109,37 @@ export class FilesComponent {
     resetState: ResetState,
   });
 
-  readonly files = select(FilesSelectors.getFiles);
-  readonly isFilesLoading = select(FilesSelectors.isFilesLoading);
-  readonly currentFolder = select(FilesSelectors.getCurrentFolder);
-  readonly provider = select(FilesSelectors.getProvider);
+  isMedium = toSignal(inject(IS_MEDIUM));
+
   readonly isAnonymous = select(FilesSelectors.isFilesAnonymous);
   readonly hasViewOnly = computed(() => {
     return hasViewOnlyParam(this.router);
   });
+  readonly files = select(FilesSelectors.getFiles);
+  readonly isFilesLoading = select(FilesSelectors.isFilesLoading);
+  readonly currentFolder = select(FilesSelectors.getCurrentFolder);
+  readonly provider = select(FilesSelectors.getProvider);
 
   readonly resourceId = signal<string>('');
-  private readonly rootFolders = select(FilesSelectors.getRootFolders);
-  isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
-  private readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
-  isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
-  currentRootFolder = model<{ label: string; folder: OsfFile } | null>(null);
+  readonly rootFolders = select(FilesSelectors.getRootFolders);
+  readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
+  readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
+  readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
+
   readonly progress = signal(0);
   readonly fileName = signal('');
   readonly dataLoaded = signal(false);
   readonly searchControl = new FormControl<string>('');
   readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
+
+  currentRootFolder = model<{ label: string; folder: OsfFile } | null>(null);
+
+  fileIsUploading = signal(false);
+  isFolderOpening = signal(false);
+
+  sortOptions = ALL_SORT_OPTIONS;
+
+  storageProvider = FileProvider.OsfStorage;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -158,13 +169,6 @@ export class FilesComponent {
   readonly isViewOnlyDownloadable = computed(() => {
     return this.resourceType() === ResourceType.Registration;
   });
-
-  fileIsUploading = signal(false);
-  isFolderOpening = signal(false);
-
-  sortOptions = ALL_SORT_OPTIONS;
-
-  storageProvider = FileProvider.OsfStorage;
 
   readonly filesTreeActions: FilesTreeActions = {
     setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
@@ -329,6 +333,20 @@ export class FilesComponent {
         window.open(link, '_blank')?.focus();
       }
     }
+  }
+
+  showInfoDialog() {
+    const dialogWidth = this.isMedium() ? '850px' : '95vw';
+
+    this.dialogService.open(FileBrowserInfoComponent, {
+      width: dialogWidth,
+      focusOnShow: false,
+      header: this.translateService.instant('files.filesBrowserDialog.title'),
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: this.resourceType(),
+    });
   }
 
   updateFilesList(): Observable<void> {

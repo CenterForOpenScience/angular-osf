@@ -13,21 +13,27 @@ import { filter } from 'rxjs/operators';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { findChangedItems } from '@osf/shared/helpers';
+import { InfoIconComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsListComponent,
-} from '@shared/components/contributors';
-import { AddContributorType, ResourceType } from '@shared/enums';
-import { ContributorDialogAddModel, ContributorModel } from '@shared/models';
-import { CustomConfirmationService, ToastService } from '@shared/services';
-import { AddContributor, ContributorsSelectors, DeleteContributor, UpdateContributor } from '@shared/stores';
-import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
+} from '@osf/shared/components/contributors';
+import { AddContributorType, ResourceType } from '@osf/shared/enums';
+import { findChangedItems } from '@osf/shared/helpers';
+import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import {
+  AddContributor,
+  ContributorsSelectors,
+  DeleteContributor,
+  ProjectsSelectors,
+  UpdateContributor,
+} from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-project-contributors-step',
-  imports: [Button, TranslatePipe, ContributorsListComponent, Step, StepItem, StepPanel, Tooltip],
+  imports: [Button, Step, StepItem, StepPanel, Tooltip, TranslatePipe, ContributorsListComponent, InfoIconComponent],
   templateUrl: './project-contributors-step.component.html',
   styleUrl: './project-contributors-step.component.scss',
   providers: [DialogService],
@@ -40,9 +46,9 @@ export class ProjectContributorsStepComponent {
   private readonly toastService = inject(ToastService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
-  protected readonly projectContributors = select(ContributorsSelectors.getContributors);
-  protected readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  protected readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
+  readonly projectContributors = select(ContributorsSelectors.getContributors);
+  readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
 
   private initialContributors = signal<ContributorModel[]>([]);
 

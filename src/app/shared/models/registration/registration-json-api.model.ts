@@ -44,7 +44,7 @@ export interface DraftRegistrationAttributesJsonApi {
 
 export interface RegistrationAttributesJsonApi {
   access_requests_enabled: boolean;
-  datetime_initiated: string;
+  date_created: string;
   date_modified: string;
   description: string;
   embargoed: boolean;

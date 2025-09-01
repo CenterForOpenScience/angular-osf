@@ -1,0 +1,19 @@
+<main class="flex flex-column gap-3">
+  @for (item of filteredInfoItems(); track item.titleKey) {
+    <div>
+      <h3>{{ item.titleKey | translate }}</h3>
+      <p>{{ item.descriptionKey | translate }}</p>
+    </div>
+  }
+
+  <p>
+    {{ 'files.filesBrowserDialog.moreInfo' | translate }}
+    <a class="font-bold" href="https://help.osf.io/article/387-project-files">
+      {{ 'files.filesBrowserDialog.helpGuides' | translate }}
+    </a>
+  </p>
+</main>
+
+<div class="flex justify-content-end">
+  <p-button [label]="'common.buttons.close' | translate" (click)="dialogRef.close()" />
+</div>

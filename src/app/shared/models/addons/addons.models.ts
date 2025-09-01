@@ -79,6 +79,7 @@ export interface AuthorizedAddonGetResponseJsonApi {
     authorized_operation_names: string[];
     default_root_folder: string;
     credentials_available: boolean;
+    oauth_token: string;
   };
   relationships: {
     account_owner: {
@@ -225,24 +226,6 @@ export interface AddonModel {
    * Internal WaterButler key used for addon routing.
    */
   wbKey: string;
-}
-
-export interface AuthorizedAddon {
-  type: string;
-  id: string;
-  displayName: string;
-  apiBaseUrl: string;
-  authUrl: string | null;
-  authorizedCapabilities: string[];
-  authorizedOperationNames: string[];
-  defaultRootFolder: string;
-  credentialsAvailable: boolean;
-  accountOwnerId: string;
-  externalStorageServiceId: string;
-  externalServiceName: string;
-  supportedFeatures: string[];
-  providerName: string;
-  credentialsFormat: string;
 }
 
 export interface IncludedAddonData {
