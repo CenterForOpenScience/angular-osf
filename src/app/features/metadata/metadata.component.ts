@@ -20,18 +20,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
-import { CedarTemplateFormComponent } from '@osf/shared/components/shared-metadata/components';
-import {
-  AffiliatedInstitutionsDialogComponent,
-  ContributorsDialogComponent,
-  DescriptionDialogComponent,
-  FundingDialogComponent,
-  LicenseDialogComponent,
-  PublicationDoiDialogComponent,
-  ResourceInformationDialogComponent,
-  ResourceInfoTooltipComponent,
-} from '@osf/shared/components/shared-metadata/dialogs';
-import { SharedMetadataComponent } from '@osf/shared/components/shared-metadata/shared-metadata.component';
 import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MetadataTabsModel, SubjectModel } from '@osf/shared/models';
@@ -49,6 +37,17 @@ import {
   UpdateResourceSubjects,
 } from '@osf/shared/stores';
 
+import { SharedMetadataComponent } from './components/shared-metadata/shared-metadata.component';
+import {
+  AffiliatedInstitutionsDialogComponent,
+  ContributorsDialogComponent,
+  DescriptionDialogComponent,
+  FundingDialogComponent,
+  LicenseDialogComponent,
+  PublicationDoiDialogComponent,
+  ResourceInformationDialogComponent,
+  ResourceInfoTooltipComponent,
+} from './dialogs';
 import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData, CedarRecordDataBinding } from './models';
 import {
   CreateCedarMetadataRecord,
@@ -68,13 +67,7 @@ import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-metadata',
-  imports: [
-    SubHeaderComponent,
-    TranslatePipe,
-    MetadataTabsComponent,
-    SharedMetadataComponent,
-    CedarTemplateFormComponent,
-  ],
+  imports: [SubHeaderComponent, TranslatePipe, MetadataTabsComponent, SharedMetadataComponent],
   templateUrl: './metadata.component.html',
   styleUrl: './metadata.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -87,7 +80,6 @@ export class MetadataComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
-  // private readonly loaderService = inject(LoaderService);
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
   private resourceId = '';

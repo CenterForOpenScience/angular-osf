@@ -26,7 +26,6 @@ export interface MetadataAttributesJsonApi {
 }
 
 interface MetadataEmbedsJsonApi {
-  // affiliated_institutions: ApiData<InstitutionAttributesJsonApi, null, null, null>[];
   bibliographic_contributors: {
     data: ContributorResponse[];
   };

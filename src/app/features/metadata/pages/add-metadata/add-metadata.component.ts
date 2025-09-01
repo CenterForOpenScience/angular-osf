@@ -20,9 +20,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ResourceType } from '@osf/shared/enums';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
-import { CedarTemplateFormComponent } from '@shared/components/shared-metadata/components';
 import { ToastService } from '@shared/services';
 
+import { CedarTemplateFormComponent } from '../../components';
 import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData, CedarRecordDataBinding } from '../../models';
 import {
   CreateCedarMetadataRecord,

@@ -4,6 +4,7 @@ import { TabsModule } from 'primeng/tabs';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
+import { CedarTemplateFormComponent } from '@osf/features/metadata/components';
 import {
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
@@ -12,7 +13,6 @@ import {
 import { MetadataTabsModel } from '@osf/shared/models';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
-import { CedarTemplateFormComponent } from '../shared-metadata/components';
 
 @Component({
   selector: 'osf-metadata-tabs',

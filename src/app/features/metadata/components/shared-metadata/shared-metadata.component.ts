@@ -6,21 +6,18 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 import { CustomItemMetadataRecord, Metadata } from '@osf/features/metadata/models';
+import { TagsInputComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { Institution, SubjectModel } from '@osf/shared/models';
 
-import { TagsInputComponent } from '../tags-input/tags-input.component';
-
-import {
-  MetadataAffiliatedInstitutionsComponent,
-  MetadataContributorsComponent,
-  MetadataDescriptionComponent,
-  MetadataFundingComponent,
-  MetadataLicenseComponent,
-  MetadataPublicationDoiComponent,
-  MetadataResourceInformationComponent,
-  MetadataSubjectsComponent,
-} from './components';
+import { MetadataAffiliatedInstitutionsComponent } from '../metadata-affiliated-institutions/metadata-affiliated-institutions.component';
+import { MetadataContributorsComponent } from '../metadata-contributors/metadata-contributors.component';
+import { MetadataDescriptionComponent } from '../metadata-description/metadata-description.component';
+import { MetadataFundingComponent } from '../metadata-funding/metadata-funding.component';
+import { MetadataLicenseComponent } from '../metadata-license/metadata-license.component';
+import { MetadataPublicationDoiComponent } from '../metadata-publication-doi/metadata-publication-doi.component';
+import { MetadataResourceInformationComponent } from '../metadata-resource-information/metadata-resource-information.component';
+import { MetadataSubjectsComponent } from '../metadata-subjects/metadata-subjects.component';
 
 @Component({
   selector: 'osf-shared-metadata',

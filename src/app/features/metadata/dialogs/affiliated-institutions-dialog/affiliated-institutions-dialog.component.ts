@@ -6,15 +6,11 @@ import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components';
 import { Institution } from '@osf/shared/models';
 import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
-
-interface AffiliatedInstitutionsForm {
-  institutions: FormArray<FormControl<boolean>>;
-}
 
 @Component({
   selector: 'osf-affiliated-institutions-dialog',

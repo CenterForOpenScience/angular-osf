@@ -160,13 +160,9 @@ export class ContributorsComponent implements OnInit {
           this.openAddContributorDialog();
         } else {
           const params = { name: res.data[0].fullName };
-          const successMessage = this.translateService.instant(
-            'project.contributors.toastMessages.addSuccessMessage',
-            params
-          );
 
           this.actions.addContributor(this.draftId(), ResourceType.DraftRegistration, res.data[0]).subscribe({
-            next: () => this.toastService.showSuccess(successMessage),
+            next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
           });
         }
       });
