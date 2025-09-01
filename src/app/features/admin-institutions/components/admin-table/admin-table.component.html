@@ -50,7 +50,7 @@
         outlined
         class="grey-border-color download-button"
         severity="info"
-        (click)="downloadMenu.toggle($event)"
+        (onClick)="downloadMenu.toggle($event)"
       />
 
       @if (reportsLink()) {
@@ -69,7 +69,7 @@
 
 <p-table
   [columns]="selectedColumnsComputed()"
-  [value]="tableData()"
+  [value]="isLoading() ? skeletonData : tableData()"
   [autoLayout]="true"
   [scrollable]="true"
   [sortMode]="'single'"
@@ -96,44 +96,52 @@
   </ng-template>
 
   <ng-template #body let-rowData let-columns="columns">
-    <tr>
-      @for (col of columns; track col.field) {
-        <td class="relative">
-          <div class="flex align-items-center hover-group">
-            @if (col.isLink && isLink(rowData[col.field])) {
-              <a
-                [href]="getLinkUrl(rowData[col.field])"
-                [target]="getLinkTarget(rowData[col.field], col)"
-                class="text-primary no-underline hover:underline"
-              >
+    @if (isLoading()) {
+      <tr class="loading-row">
+        <td colspan="15">
+          <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+        </td>
+      </tr>
+    } @else {
+      <tr>
+        @for (col of columns; track col.field) {
+          <td class="relative">
+            <div class="flex align-items-center hover-group">
+              @if (col.isLink && isLink(rowData[col.field])) {
+                <a
+                  [href]="getLinkUrl(rowData[col.field])"
+                  [target]="getLinkTarget(rowData[col.field], col)"
+                  class="text-primary no-underline hover:underline"
+                >
+                  @if (col.dateFormat) {
+                    {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
+                  } @else {
+                    {{ getCellValue(rowData[col.field]) }}
+                  }
+                </a>
+              } @else {
                 @if (col.dateFormat) {
                   {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
                 } @else {
                   {{ getCellValue(rowData[col.field]) }}
                 }
-              </a>
-            } @else {
-              @if (col.dateFormat) {
-                {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
-              } @else {
-                {{ getCellValue(rowData[col.field]) }}
               }
-            }
 
-            @if (col.showIcon) {
-              <p-button
-                [pTooltip]="col.iconTooltip | translate"
-                class="icon-button pl-3"
-                [icon]="col.iconClass"
-                variant="text"
-                severity="info"
-                (click)="onIconClick(rowData, col)"
-              />
-            }
-          </div>
-        </td>
-      }
-    </tr>
+              @if (col.showIcon) {
+                <p-button
+                  [pTooltip]="col.iconTooltip | translate"
+                  class="icon-button pl-3"
+                  [icon]="col.iconClass"
+                  variant="text"
+                  severity="info"
+                  (onClick)="onIconClick(rowData, col)"
+                />
+              }
+            </div>
+          </td>
+        }
+      </tr>
+    }
   </ng-template>
 
   <ng-template pTemplate="emptymessage">
@@ -154,7 +162,7 @@
       severity="contrast"
       text
       [disabled]="!prevLink()"
-      (click)="switchPage(prevLink())"
+      (onClick)="switchPage(prevLink())"
     >
     </p-button>
 
@@ -163,7 +171,7 @@
       severity="contrast"
       text
       [disabled]="!nextLink()"
-      (click)="switchPage(nextLink())"
+      (onClick)="switchPage(nextLink())"
     >
     </p-button>
   </div>

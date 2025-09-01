@@ -145,7 +145,7 @@
     "meetings": "Meetings",
     "myProjects": "My Projects",
     "projects": "Projects",
-    "myResources": "My Resources",
+    "myOsf": "My OSF",
     "registries": "Registries",
     "overview": "Overview",
     "discover": "Discover",
@@ -328,7 +328,9 @@
       "title": "Add alternative email",
       "description": "Do you want to add ",
       "description2": "to your profile ?",
-      "goToEmails": "Add email"
+      "goToEmails": "Add email",
+      "emailNotAdded": "{{name}} has not been added to your account.",
+      "emailVerified": "{{name}} has been added to your account."
     }
   },
   "myProjects": {
@@ -522,7 +524,7 @@
       },
       "curatorInfo": {
         "heading": "Curator Information",
-        "description": "An administrator designated by your affiliated institution to curate your project"
+        "description": "An administrator designated by your affiliated institution to curate your project."
       },
       "employment": {
         "show": "Show employment history",
@@ -650,8 +652,8 @@
             "success": "Project has been duplicated successfully"
           },
           "bookmark": {
-            "add": "Project has been added to bookmarks",
-            "remove": "Project has been removed from bookmarks"
+            "add": "Successfully added to bookmarks",
+            "remove": "Successfully removed from bookmarks"
           }
         },
         "linkProject": {
@@ -982,7 +984,7 @@
       "selectFilesFoldersDescription": "Click on a row (outside of the file or folder name) to show further actions in the top toolbar. Click on more rows to select multiple files. To select a range of files, click a file to begin selection and then shift+click another file to select the range.",
       "openViewFiles": "Open/View Files",
       "openViewFilesDescription": "Click a file name to go to view the file in the OSF. Opens file in a new tab.",
-      "upload": "Upload.",
+      "upload": "Upload",
       "uploadDescription": "There are two ways to upload files. Open the storage provider or folder where you intend to upload files; you can then drag files from your desktop into files list area OR click “Upload Files”, and select your files. Note: File names with special characters may cause unexpected behavior with certain addons.",
       "createFolder": "Create a folder",
       "createFolderDescription": "To create a folder to help organize your files, click “Create a Folder”. Note: You can also organize your project content by creating Components.",
@@ -1360,11 +1362,13 @@
       "confirmation": {
         "delete": {
           "title": "Delete App {{name}}?",
-          "message": "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed."
+          "message": "Are you sure you want to delete this developer app? All users' access tokens will be revoked. This cannot be reversed.",
+          "success": "Delete App successfully deleted."
         },
         "resetSecret": {
           "title": "Reset Client Secret?",
-          "message": "Resetting the client secret will render your application unusable until it is updated with the new client secret, and all users must reauthorize access. Previously issued access tokens will no longer work.<br><br>Are you sure you want to reset the client secret? This cannot be reversed."
+          "message": "Resetting the client secret will render your application unusable until it is updated with the new client secret, and all users must reauthorize access. Previously issued access tokens will no longer work.<br><br>Are you sure you want to reset the client secret? This cannot be reversed.",
+          "success": "Client secret successfully reset."
         }
       }
     },
@@ -1450,6 +1454,7 @@
         "title": "Add-ons"
       },
       "description": "Sync your projects with external services to help stay connected and organized. Select a category and browse the options. Add-ons can also be linked directly from Project page.",
+      "connectedDescription": "Manage your connected Add-ons, re-authorize, disconnect account, or disconnect project",
       "tabs": {
         "allAddons": "All Add-ons",
         "connectedAddons": "Connected Add-ons"

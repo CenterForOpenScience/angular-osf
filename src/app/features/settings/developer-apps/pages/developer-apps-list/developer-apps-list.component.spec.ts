@@ -9,7 +9,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CustomConfirmationService } from '@osf/shared/services';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import { MOCK_DEVELOPER_APP } from '@shared/mocks/developer-app.mock';
 
 import { DeveloperAppsState } from '../../store';
@@ -31,6 +31,7 @@ describe('DeveloperApplicationsListComponent', () => {
         MockProvider(ConfirmationService),
         MockProvider(TranslateService),
         MockProvider(CustomConfirmationService),
+        MockProvider(ToastService),
       ],
     }).compileComponents();
 

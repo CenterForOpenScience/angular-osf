@@ -99,8 +99,11 @@ export class SettingsState {
       tap((updatedProject) => {
         ctx.patchState({
           projectDetails: {
-            ...ctx.getState().projectDetails,
-            data: updatedProject,
+            data: {
+              ...ctx.getState().projectDetails.data,
+              title: updatedProject.title,
+              description: updatedProject.description,
+            },
             isLoading: false,
             error: null,
           },

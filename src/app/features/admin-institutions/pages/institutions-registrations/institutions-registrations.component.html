@@ -1,22 +1,17 @@
-@if (isLoading()) {
-  <div class="flex justify-content-center align-items-center p-6">
-    <osf-loading-spinner />
+<osf-admin-table
+  [tableColumns]="tableColumns()"
+  [tableData]="tableData()"
+  [isLoading]="isLoading()"
+  [isNextPreviousPagination]="true"
+  [paginationLinks]="registrationsLinks()"
+  [reportsLink]="institution().linkToExternalReportsArchive"
+  (sortChanged)="onSortChange($event)"
+  (linkPageChanged)="onLinkPageChange($event)"
+  (downloadClicked)="download($event)"
+>
+  <div slot="amount">
+    <h3 class="title">
+      {{ totalCount() }} {{ 'adminInstitutions.registrations.totalRegistrations' | translate | lowercase }}
+    </h3>
   </div>
-} @else {
-  <osf-admin-table
-    [tableColumns]="tableColumns()"
-    [tableData]="tableData()"
-    [isNextPreviousPagination]="true"
-    [paginationLinks]="registrationsLinks()"
-    [reportsLink]="institution().linkToExternalReportsArchive"
-    (sortChanged)="onSortChange($event)"
-    (linkPageChanged)="onLinkPageChange($event)"
-    (downloadClicked)="download($event)"
-  >
-    <div slot="amount">
-      <h3 class="title">
-        {{ totalCount() }} {{ 'adminInstitutions.registrations.totalRegistrations' | translate | lowercase }}
-      </h3>
-    </div>
-  </osf-admin-table>
-}
+</osf-admin-table>

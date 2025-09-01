@@ -19,6 +19,7 @@ import {
   Validators,
 } from '@angular/forms';
 
+import { AuthService } from '@core/services';
 import { CustomValidators, FormValidationHelper } from '@osf/shared/helpers';
 import { LoaderService, ToastService } from '@osf/shared/services';
 
@@ -37,6 +38,7 @@ export class ChangePasswordComponent implements OnInit {
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly authService = inject(AuthService);
 
   readonly passwordForm: AccountSettingsPasswordForm = new FormGroup({
     [AccountSettingsPasswordFormControls.OldPassword]: new FormControl('', {
@@ -57,10 +59,10 @@ export class ChangePasswordComponent implements OnInit {
     }),
   });
 
-  protected readonly AccountSettingsPasswordFormControls = AccountSettingsPasswordFormControls;
-  protected readonly FormValidationHelper = FormValidationHelper;
+  readonly AccountSettingsPasswordFormControls = AccountSettingsPasswordFormControls;
+  readonly FormValidationHelper = FormValidationHelper;
 
-  protected errorMessage = signal('');
+  errorMessage = signal('');
 
   ngOnInit(): void {
     this.setupFormValidation();
@@ -101,11 +103,11 @@ export class ChangePasswordComponent implements OnInit {
       .subscribe(() => this.passwordForm.updateValueAndValidity());
   }
 
-  protected getFormControl(controlName: string): AbstractControl | null {
+  getFormControl(controlName: string): AbstractControl | null {
     return FormValidationHelper.getFormControl(this.passwordForm, controlName);
   }
 
-  protected getFormErrors(): Record<string, boolean> {
+  getFormErrors(): Record<string, boolean> {
     const errors: Record<string, boolean> = {};
 
     if (this.passwordForm.errors?.['sameAsOldPassword']) {
@@ -141,6 +143,7 @@ export class ChangePasswordComponent implements OnInit {
 
           this.loaderService.hide();
           this.toastService.showSuccess('settings.accountSettings.changePassword.messages.success');
+          this.authService.logout();
         },
         error: (error: HttpErrorResponse) => {
           if (error.error?.errors?.[0]?.detail) {

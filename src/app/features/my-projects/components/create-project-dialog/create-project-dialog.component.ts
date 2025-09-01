@@ -23,7 +23,7 @@ import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@osf/shared/
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateProjectDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
+  readonly dialogRef = inject(DynamicDialogRef);
 
   private actions = createDispatchMap({
     getMyProjects: GetMyProjects,

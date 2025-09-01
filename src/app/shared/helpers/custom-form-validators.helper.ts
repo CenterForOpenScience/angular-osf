@@ -51,7 +51,7 @@ export class CustomValidators {
     };
   }
 
-  static dateRangeValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  static monthYearRangeValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const start = control.get('startDate')?.value;
     const end = control.get('endDate')?.value;
 
@@ -60,7 +60,10 @@ export class CustomValidators {
     const startDate = new Date(start);
     const endDate = new Date(end);
 
-    return endDate > startDate ? null : { dateRangeInvalid: true };
+    const startYearMonth = startDate.getFullYear() * 12 + startDate.getMonth();
+    const endYearMonth = endDate.getFullYear() * 12 + endDate.getMonth();
+
+    return endYearMonth > startYearMonth ? null : { dateRangeInvalid: true };
   };
 
   static doiValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {

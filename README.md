@@ -17,14 +17,16 @@ take up to 60 seconds once the docker build finishes.
 ### First steps
 
 - Install git commit template: [Commit Template](docs/commit.template.md).
-- Volta: [Volta](#volta)
+- [Volta](#volta)
 
 ### Recommended
 
-- Compodoc: [Compodoc Conventions](docs/compodoc.md).
-- Docker Commands: [Docker Commands](docs/docker.md).
-- Git Conventions: [Git Conventions](docs/git-convention.md).
-- NGXS: [NGXS Conventions](docs/ngxs.md).
+- [Compodoc Conventions](docs/compodoc.md).
+- [Docker Commands](docs/docker.md).
+- [ESLint Strategy](docs/eslint.md).
+- [Git Conventions](docs/git-convention.md).
+- [NGXS Conventions](docs/ngxs.md).
+- [Testing Strategy](docs/testing.md).
 
 ### Optional
 

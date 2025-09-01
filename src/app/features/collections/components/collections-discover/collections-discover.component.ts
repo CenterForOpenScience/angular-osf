@@ -162,7 +162,7 @@ export class CollectionsDiscoverComponent {
 
   private getActiveFilters(filters: CollectionsFilters): Record<string, string[]> {
     return Object.entries(filters)
-      .filter(([key, value]) => value.length)
+      .filter(([_, value]) => value.length)
       .reduce(
         (acc, [key, value]) => {
           acc[key] = value;

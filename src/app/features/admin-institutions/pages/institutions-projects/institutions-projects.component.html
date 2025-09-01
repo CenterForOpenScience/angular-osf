@@ -1,27 +1,22 @@
-@if (isLoading()) {
-  <div class="flex justify-content-center align-items-center p-6">
-    <osf-loading-spinner />
+<osf-admin-table
+  [tableColumns]="tableColumns"
+  [tableData]="tableData()"
+  [isLoading]="isLoading()"
+  [enablePagination]="false"
+  [isNextPreviousPagination]="true"
+  [paginationLinks]="projectsLinks()"
+  [totalCount]="totalCount()"
+  [pageSize]="currentPageSize()"
+  [first]="first()"
+  [sortField]="sortField()"
+  [sortOrder]="sortOrder()"
+  (sortChanged)="onSortChange($event)"
+  (linkPageChanged)="onLinkPageChange($event)"
+  (downloadClicked)="download($event)"
+  (iconClicked)="onIconClick($event)"
+  [reportsLink]="institution().linkToExternalReportsArchive"
+>
+  <div slot="amount" class="flex items-center">
+    <h3 class="title">{{ totalCount() }} {{ 'adminInstitutions.projects.totalProjects' | translate }}</h3>
   </div>
-} @else {
-  <osf-admin-table
-    [tableColumns]="tableColumns"
-    [tableData]="tableData()"
-    [enablePagination]="false"
-    [isNextPreviousPagination]="true"
-    [paginationLinks]="projectsLinks()"
-    [totalCount]="totalCount()"
-    [pageSize]="currentPageSize()"
-    [first]="first()"
-    [sortField]="sortField()"
-    [sortOrder]="sortOrder()"
-    (sortChanged)="onSortChange($event)"
-    (linkPageChanged)="onLinkPageChange($event)"
-    (downloadClicked)="download($event)"
-    (iconClicked)="onIconClick($event)"
-    [reportsLink]="institution().linkToExternalReportsArchive"
-  >
-    <div slot="amount" class="flex items-center">
-      <h3 class="title">{{ totalCount() }} {{ 'adminInstitutions.projects.totalProjects' | translate }}</h3>
-    </div>
-  </osf-admin-table>
-}
+</osf-admin-table>

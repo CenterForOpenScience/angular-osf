@@ -9,7 +9,7 @@ export function mapFormToEmployment(employment: EmploymentForm): Employment {
     department: employment.department,
     institution: employment.institution,
     startYear: employment.startDate?.getFullYear() ?? new Date().getFullYear(),
-    startMonth: (employment.startDate?.getMonth() ?? 0) + 1,
+    startMonth: employment.startDate?.getMonth() + 1,
     endYear: employment.ongoing ? null : (employment.endDate?.getFullYear() ?? null),
     endMonth: employment.ongoing ? null : employment.endDate ? employment.endDate.getMonth() + 1 : null,
     ongoing: employment.ongoing,

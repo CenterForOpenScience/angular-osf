@@ -1,3 +1,6 @@
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe } from 'ng-mocks';
+
 import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
@@ -13,7 +16,7 @@ describe('InfoIconComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InfoIconComponent],
+      imports: [InfoIconComponent, MockPipe(TranslatePipe)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(InfoIconComponent);

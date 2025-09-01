@@ -68,12 +68,13 @@ export class NotificationsComponent implements OnInit {
     [EmailPreferencesFormControls.SubscribeOsfHelpEmail]: this.fb.control(false, { nonNullable: true }),
   });
 
-  protected readonly SUBSCRIPTION_EVENTS = SUBSCRIPTION_EVENTS;
-  protected subscriptionFrequencyOptions = Object.entries(SubscriptionFrequency).map(([key, value]) => ({
+  readonly SUBSCRIPTION_EVENTS = SUBSCRIPTION_EVENTS;
+  subscriptionFrequencyOptions = Object.entries(SubscriptionFrequency).map(([key, value]) => ({
     label: key,
     value,
   }));
-  protected notificationSubscriptionsForm = this.fb.group(
+
+  notificationSubscriptionsForm = this.fb.group(
     SUBSCRIPTION_EVENTS.reduce(
       (control, { event }) => {
         control[event] = this.fb.control<SubscriptionFrequency>(SubscriptionFrequency.Never, { nonNullable: true });
@@ -127,11 +128,9 @@ export class NotificationsComponent implements OnInit {
     const id = `${user.id}_${event}`;
 
     this.loaderService.show();
-    this.actions.updateNotificationSubscription({ id, frequency }).subscribe({
-      complete: () => {
-        this.loaderService.hide();
-        this.toastService.showSuccess('settings.notifications.notificationPreferences.successUpdate');
-      },
+    this.actions.updateNotificationSubscription({ id, frequency }).subscribe(() => {
+      this.loaderService.hide();
+      this.toastService.showSuccess('settings.notifications.notificationPreferences.successUpdate');
     });
   }
 
@@ -144,9 +143,11 @@ export class NotificationsComponent implements OnInit {
 
   private updateNotificationSubscriptionsForm() {
     const patch: Record<string, SubscriptionFrequency> = {};
+
     for (const sub of this.notificationSubscriptions()) {
       patch[sub.event] = sub.frequency;
     }
+
     this.notificationSubscriptionsForm.patchValue(patch);
   }
 }
