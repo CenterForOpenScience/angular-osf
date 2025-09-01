@@ -1,7 +1,6 @@
 import { LicensesMapper } from '@osf/shared/mappers';
 import { ApiData, JsonApiResponseWithMeta, ResponseJsonApi } from '@osf/shared/models';
 import { StringOrNull } from '@shared/helpers';
-import { IdentifiersMapper } from '@shared/mappers/identifiers.mapper';
 
 import {
   Preprint,
@@ -137,7 +136,12 @@ export class PreprintsMapper {
         views: meta.metrics.views,
       },
       embeddedLicense: LicensesMapper.fromLicenseDataJsonApi(data.embeds.license.data),
-      identifiers: IdentifiersMapper.fromEmbeds(data.embeds.identifiers),
+      identifiers: data.embeds.identifiers?.data.map((identifier) => ({
+        id: identifier.id,
+        type: identifier.type,
+        value: identifier.attributes.value,
+        category: identifier.attributes.category,
+      })),
       preprintDoiLink: links.preprint_doi,
       articleDoiLink: links.doi,
     };

@@ -25,6 +25,7 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
+import { ProjectIdentifiers } from '@osf/features/project/overview/models';
 import { IS_XSMALL } from '@osf/shared/helpers';
 import {
   LoadingSpinnerComponent,
@@ -35,7 +36,6 @@ import {
 import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
 import { Mode, ResourceType, UserPermissions } from '@shared/enums';
 import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
-import { Identifier } from '@shared/models';
 import { ToastService } from '@shared/services';
 import {
   ClearWiki,
@@ -192,7 +192,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
+  protected override get trackable(): Observable<{ identifiers?: ProjectIdentifiers[] } | null> {
     return this.currentProject$;
   }
 

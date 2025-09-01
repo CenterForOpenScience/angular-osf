@@ -7,10 +7,10 @@ import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from 
 import { toObservable } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 
+import { ProjectIdentifiers } from '@osf/features/project/overview/models';
 import { pathJoin } from '@osf/shared/helpers';
 import { MetaTagsService } from '@osf/shared/services';
 import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
-import { Identifier } from '@shared/models';
 
 import { RegistryOverviewSelectors } from './store/registry-overview';
 
@@ -43,7 +43,7 @@ export class RegistryComponent extends DataciteTrackerComponent {
     this.setupDataciteViewTrackerEffect().subscribe();
   }
 
-  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
+  protected override get trackable(): Observable<{ identifiers?: ProjectIdentifiers[] } | null> {
     return this.registry$;
   }
 

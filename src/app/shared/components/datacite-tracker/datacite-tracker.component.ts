@@ -2,7 +2,7 @@ import { filter, map, Observable, switchMap, take } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { Identifier } from '@shared/models';
+import { ProjectIdentifiers } from '@osf/features/project/overview/models';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 @Injectable()
@@ -15,7 +15,7 @@ export abstract class DataciteTrackerComponent {
    *
    * @returns An Observable that emits an item which may contain DOI identifier or null .
    */
-  protected abstract get trackable(): Observable<{ identifiers?: Identifier[] } | null>;
+  protected abstract get trackable(): Observable<{ identifiers?: ProjectIdentifiers[] } | null>;
 
   /**
    * Sets up a one-time effect to log a "view" event to Datacite for the resource DOI.
