@@ -32,6 +32,8 @@ import {
   GetFileResponse,
   GetFilesResponse,
   GetFilesResponseWithMeta,
+  Institution,
+  InstitutionsJsonApiResponse,
   JsonApiResponse,
   MetaAnonymousJsonApi,
   OsfFile,
@@ -41,7 +43,7 @@ import { JsonApiService } from '@shared/services';
 import { ToastService } from '@shared/services/toast.service';
 
 import { ResourceType } from '../enums';
-import { ContributorsMapper, MapFile, MapFiles, MapFileVersions } from '../mappers';
+import { ContributorsMapper, InstitutionsMapper, MapFile, MapFiles, MapFileVersions } from '../mappers';
 
 import { environment } from 'src/environments/environment';
 
@@ -229,6 +231,12 @@ export class FilesService {
         JsonApiResponse<ContributorResponse[], null>
       >(`${environment.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`)
       .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
+  }
+
+  getResourceInstitutions(resourceId: string, resourceType: string): Observable<Partial<Institution>[]> {
+    return this.jsonApiService
+      .get<InstitutionsJsonApiResponse>(`${environment.apiUrl}/${resourceType}/${resourceId}/institutions/`)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
   }
 
   patchFileMetadata(data: PatchFileMetadata, fileGuid: string): Observable<OsfFileCustomMetadata> {
