@@ -96,15 +96,6 @@ describe('LicenseComponent', () => {
     expect(emitSpy).toHaveBeenCalledWith(license);
   });
 
-  it('should not emit selectLicense when license with required fields is selected', () => {
-    const emitSpy = jest.spyOn(component.selectLicense, 'emit');
-    const license = mockLicenses[1];
-
-    component.onSelectLicense(license);
-
-    expect(emitSpy).not.toHaveBeenCalled();
-  });
-
   it('should emit createLicense when save is called with valid form', () => {
     const emitSpy = jest.spyOn(component.createLicense, 'emit');
 

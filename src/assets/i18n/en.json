@@ -821,6 +821,15 @@
             "label": "Resource Language",
             "placeholder": "Select resource language"
           }
+        },
+        "tooltipDialog": {
+          "header": "About resource information",
+          "mainContent": "The resource information section allows you to describe what kind of material you are sharing in a human and machine readable format. Indexes and search engines can use the resource types to filter results, increasing discoverability for works with completed metadata. For example, indicating that your resource type is “Dataset” will allow your work to be displayed in other indexes and repositories that specialize in data in addition to the OSF.",
+          "secondaryContent": "You can describe the resources within your entire {{ resourceName }}, and you can also describe the resource type of individual files within. Just open one of your files to edit its metadata.",
+          "thirdContent": "OSF enables the",
+          "dataTypeLink": "Datacite Resource Types",
+          "endText": "More information is available on our",
+          "helpLink": " help guides"
         }
       },
       "license": {
@@ -861,9 +870,10 @@
         "select": "Select",
         "selected": "Selected",
         "publish": "Publish",
+        "saveDraft": "Save Draft",
         "changeTemplate": "Change template",
         "publishedText": "This metadata has a status of 'Published' and is publicly viewable.",
-        "notPublishedText": "This metadata has a status of 'Published' and is publicly viewable.",
+        "notPublishedText": "This metadata has a status of 'Draft' and is not publicly viewable. To 'Publish' this metadata please fill in all required fields and resubmit the data.",
         "youAlreadyAddedText": "You have already added a record for this template",
         "youAlreadyAdded": "Already Added",
         "loadingCedar": "Loading CEDAR record...",
@@ -896,9 +906,9 @@
       "doi": {
         "created": "DOI created successfully",
         "dialog": {
-          "header": "Edit DOI",
-          "label": "DOI",
-          "placeholder": "Enter DOI",
+          "header": "Edit publication DOI",
+          "label": "https://doi.org/",
+          "placeholder": "10.xxxx/xxxxx",
           "createConfirm": {
             "header": "Create DOI",
             "message": "Are you sure you want to create a DOI for this project? A DOI is persistent and will always resolve this page."
@@ -1048,7 +1058,8 @@
         }
       },
       "toast": {
-        "copiedToClipboard": "Copied to clipboard"
+        "copiedToClipboard": "Copied to clipboard",
+        "cedarUpdated": "CEDAR record updated successfully"
       },
       "keywords": {
         "title": "Keywords"

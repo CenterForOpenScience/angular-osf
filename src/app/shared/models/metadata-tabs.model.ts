@@ -1,7 +1,7 @@
-import { MetadataProjectsEnum } from '../enums';
+import { MetadataResourceEnum } from '../enums';
 
 export interface MetadataTabsModel {
-  id: string;
+  id: string | 'osf';
   label: string;
-  type: MetadataProjectsEnum;
+  type: MetadataResourceEnum;
 }

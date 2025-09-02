@@ -20,7 +20,6 @@ import { FilesHandlers } from '../registries/store/handlers/files.handlers';
 
 import { RegistryComponentsState } from './store/registry-components';
 import { RegistryLinksState } from './store/registry-links';
-import { RegistryMetadataState } from './store/registry-metadata';
 import { RegistryOverviewState } from './store/registry-overview';
 import { RegistryResourcesState } from './store/registry-resources';
 import { RegistryComponent } from './registry.component';
@@ -51,26 +50,10 @@ export const registryRoutes: Routes = [
       },
       {
         path: 'metadata',
+        loadChildren: () => import('@osf/features/metadata/metadata.routes').then((mod) => mod.metadataRoutes),
+        providers: [provideStates([SubjectsState, ContributorsState])],
+        data: { resourceType: ResourceType.Registration },
         canActivate: [viewOnlyGuard],
-        loadComponent: () =>
-          import('./pages/registry-metadata/registry-metadata.component').then((c) => c.RegistryMetadataComponent),
-        providers: [provideStates([RegistryMetadataState, SubjectsState])],
-      },
-      {
-        path: 'metadata/add',
-        canActivate: [viewOnlyGuard],
-        loadComponent: () =>
-          import('./pages/registry-metadata-add/registry-metadata-add.component').then(
-            (c) => c.RegistryMetadataAddComponent
-          ),
-        providers: [provideStates([RegistryMetadataState])],
-      },
-      {
-        path: 'metadata/:recordId',
-        canActivate: [viewOnlyGuard],
-        loadComponent: () =>
-          import('./pages/registry-metadata/registry-metadata.component').then((c) => c.RegistryMetadataComponent),
-        providers: [provideStates([RegistryMetadataState])],
       },
       {
         path: 'links',

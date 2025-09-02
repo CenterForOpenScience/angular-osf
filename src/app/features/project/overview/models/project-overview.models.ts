@@ -1,5 +1,6 @@
 import { UserPermissions } from '@osf/shared/enums';
 import {
+  Identifier,
   IdTypeModel,
   Institution,
   InstitutionsJsonApiResponse,
@@ -43,7 +44,7 @@ export interface ProjectOverview {
     storageLimitStatus: string;
     storageUsage: string;
   };
-  identifiers?: ProjectIdentifiers[];
+  identifiers?: Identifier[];
   supplements?: ProjectSupplements[];
   analyticsKey: string;
   currentUserCanComment: boolean;
@@ -215,13 +216,6 @@ export interface ProjectOverviewResponseJsonApi
   extends JsonApiResponseWithMeta<ProjectOverviewGetResponseJsonApi, MetaAnonymousJsonApi, null> {
   data: ProjectOverviewGetResponseJsonApi;
   meta: MetaAnonymousJsonApi;
-}
-
-export interface ProjectIdentifiers {
-  id: string;
-  type: string;
-  category: string;
-  value: string;
 }
 
 export interface ProjectSupplements {

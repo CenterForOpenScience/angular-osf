@@ -1,0 +1,25 @@
+<p-card>
+  <div class="flex justify-content-between align-items-center">
+    <h2>{{ 'project.overview.metadata.doi' | translate }}</h2>
+
+    @if (doi()) {
+      <p-button severity="secondary" [label]="'common.buttons.edit' | translate" (click)="onEditDoi()"></p-button>
+    } @else {
+      <p-button
+        severity="secondary"
+        [label]="'project.overview.metadata.createDoi' | translate"
+        (click)="onCreateDoi()"
+      ></p-button>
+    }
+  </div>
+
+  @if (doi()) {
+    <div class="pt-4">
+      <p class="m-0">{{ doi() }}</p>
+    </div>
+  } @else {
+    <div class="pt-4">
+      <p class="text-color-secondary m-0">{{ 'project.overview.metadata.noDoi' | translate }}</p>
+    </div>
+  }
+</p-card>

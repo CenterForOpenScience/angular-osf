@@ -7,11 +7,11 @@ export class LicensesMapper {
 
   static fromLicenseDataJsonApi(data: LicenseDataJsonApi): License {
     return {
-      id: data.id,
-      name: data.attributes.name,
-      requiredFields: data.attributes.required_fields,
-      url: data.attributes.url,
-      text: data.attributes.text,
+      id: data?.id,
+      name: data?.attributes?.name,
+      requiredFields: data?.attributes?.required_fields,
+      url: data?.attributes?.url,
+      text: data?.attributes?.text,
     };
   }
 }

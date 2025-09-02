@@ -28,12 +28,15 @@ export class ResourceGuidService {
         (res) =>
           ({
             id: res.data.type === CurrentResourceType.Files ? res.data.attributes.guid : res.data.id,
-            type:
-              res.data.type === CurrentResourceType.Files ? res.data.relationships.target?.data.type : res.data.type,
+            type: res.data.type,
             parentId:
               res.data.type === CurrentResourceType.Preprints
                 ? res.data.relationships.provider?.data.id
                 : res.data.relationships.target?.data.id,
+            parentType:
+              res.data.type === CurrentResourceType.Preprints
+                ? res.data.relationships.provider?.data.type
+                : res.data.relationships.target?.data.type,
           }) as CurrentResource
       ),
       finalize(() => this.loaderService.hide())
