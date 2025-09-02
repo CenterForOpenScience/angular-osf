@@ -41,7 +41,7 @@ describe('RegistryComponent', () => {
         { provide: DataciteService, useValue: dataciteService },
         {
           provide: MetaTagsService,
-          useValue: { updateMetaTagsForRoute: jest.fn() },
+          useValue: { updateMetaTags: jest.fn() },
         },
       ],
     }).compileComponents();
