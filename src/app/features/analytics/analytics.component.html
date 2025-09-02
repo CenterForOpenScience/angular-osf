@@ -5,7 +5,7 @@
     <osf-view-only-link-message />
   }
 
-  @if (!relatedCounts()?.isPublic) {
+  @if (relatedCounts() && !relatedCounts()?.isPublic) {
     <div class="flex flex-column gap-3 px-4">
       <p>
         {{ 'project.analytics.privateProject.message' | translate }}
