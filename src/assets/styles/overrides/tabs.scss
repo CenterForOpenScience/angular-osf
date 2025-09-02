@@ -26,3 +26,12 @@
   border-top-left-radius: 0.75rem;
   border-top-right-radius: 0.75rem;
 }
+
+.file-metadata-tabs {
+  .p-tab-active {
+    --p-tabs-tab-active-background: var(--bg-blue-3);
+    --p-tabs-tab-hover-background: var(--white-60);
+    --p-tabs-tab-active-border-color: var(--bg-blue-2);
+    --p-tabs-tab-active-color: var(--pr-blue-1);
+  }
+}

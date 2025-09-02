@@ -1,0 +1,22 @@
+<main class="flex flex-column gap-3">
+  <p>
+    {{ 'project.metadata.resourceInformation.tooltipDialog.mainContent' | translate }}
+  </p>
+  <p>
+    {{ 'project.metadata.resourceInformation.tooltipDialog.secondaryContent' | translate: { resourceName } }}
+  </p>
+  <p>
+    {{ 'project.metadata.resourceInformation.tooltipDialog.dataTypeLink' | translate }}
+    <a href="https://support.datacite.org/v1.3/docs/what-are-the-resource-types-for-datacite-dois" target="_blank">
+      {{ 'project.metadata.resourceInformation.tooltipDialog.dataTypeLink' | translate }}. </a
+    >
+    {{ 'project.metadata.resourceInformation.tooltipDialog.endText' | translate }}
+    <a href="https://help.osf.io/article/570-resource-types-in-osf" target="_blank">
+      {{ 'project.metadata.resourceInformation.tooltipDialog.helpLink' | translate }}. </a
+    >
+  </p>
+</main>
+
+<div class="flex justify-content-end">
+  <p-button [label]="'common.buttons.close' | translate" (click)="dialogRef.close()" />
+</div>

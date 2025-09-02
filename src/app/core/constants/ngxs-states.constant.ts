@@ -2,7 +2,7 @@ import { ProviderState } from '@core/store/provider';
 import { UserState } from '@core/store/user';
 import { UserEmailsState } from '@core/store/user-emails';
 import { FilesState } from '@osf/features/files/store';
-import { ProjectMetadataState } from '@osf/features/project/metadata/store';
+import { MetadataState } from '@osf/features/metadata/store';
 import { ProjectOverviewState } from '@osf/features/project/overview/store';
 import { RegistrationsState } from '@osf/features/project/registrations/store';
 import { AddonsState, CurrentResourceState, WikiState } from '@osf/shared/stores';
@@ -21,9 +21,9 @@ export const STATES = [
   ProjectOverviewState,
   WikiState,
   RegistrationsState,
-  ProjectMetadataState,
   LicensesState,
   RegionsState,
   FilesState,
+  MetadataState,
   CurrentResourceState,
 ];

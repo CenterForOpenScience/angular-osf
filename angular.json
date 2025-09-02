@@ -27,6 +27,7 @@
             "allowedCommonJsDependencies": [
               "qrcode",
               "cedar-embeddable-editor",
+              "cedar-artifact-viewer",
               "markdown-it-video",
               "ace-builds/src-noconflict/ext-language_tools"
             ],

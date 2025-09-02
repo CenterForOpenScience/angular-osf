@@ -26,6 +26,7 @@ export { ListInfoShortenerComponent } from './list-info-shortener/list-info-shor
 export { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 export { MakeDecisionDialogComponent } from './make-decision-dialog/make-decision-dialog.component';
 export { MarkdownComponent } from './markdown/markdown.component';
+export { MetadataTabsComponent } from './metadata-tabs/metadata-tabs.component';
 export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.component';
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';
