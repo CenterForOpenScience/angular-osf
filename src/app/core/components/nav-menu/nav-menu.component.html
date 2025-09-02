@@ -3,6 +3,7 @@
     <ng-template #item let-item>
       <a
         [routerLink]="item.routerLink ? item.routerLink : null"
+        [queryParams]="item.queryParams"
         routerLinkActive="active"
         [routerLinkActiveOptions]="item.routerLinkActiveOptions"
         class="nav-link flex align-items-center"

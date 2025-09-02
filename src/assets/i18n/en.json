@@ -46,7 +46,8 @@
       "preview": "Preview",
       "continueUpdate": "Continue Update",
       "editAndResubmit": "Edit And Resubmit",
-      "createNewVersion": "Create New Version"
+      "createNewVersion": "Create New Version",
+      "leaveThisView": "Leave this view"
     },
     "search": {
       "title": "Search",
@@ -129,7 +130,8 @@
       "addTag": "Add tags"
     },
     "hint": {
-      "tagSeparators": "Use enter or comma to create a tag."
+      "tagSeparators": "Use enter or comma to create a tag.",
+      "viewOnlyLinksBanner": "You are viewing OSF through a view-only link, which may limit the data you have permission to see."
     }
   },
   "navigation": {
@@ -389,6 +391,8 @@
         "anonymous": "Anonymous"
       },
       "viewOnlyLinkCreated": "View only link successfully created.",
+      "viewOnlyLinkDeleted": "View only link successfully deleted.",
+      "viewOnlyLinkCurrentProject": "(current component)",
       "anonymizeContributorList": "Anonymize contributor list for this link (e.g., for blind peer review).",
       "ensureNoInformation": "Ensure the wiki pages, files, registration forms and add-ons do not contain identifying information.",
       "linkName": "Link name",
@@ -570,6 +574,7 @@
         "rejected": "Rejected from\u00A0"
       },
       "metadata": {
+        "anonymousContributors": "Anonymous Contributors",
         "title": "Metadata",
         "contributors": "Contributors",
         "description": "Description",
@@ -2656,24 +2661,25 @@
   },
   "activityLog": {
     "defaults": {
-      "preprint": "preprint",
-      "preprintPlural": "preprints",
+      "preprint": "Preprint",
+      "preprintPlural": "Preprints",
       "anonymousA": "a",
-      "anonymousAn": "an",
+      "anonymousAn": "an anonymous",
       "someUsers": "some users",
-      "contributorsAnd": " and ",
+      "contributorsAnd": ", and ",
       "contributorsOthers": " others",
       "aNewNameLocation": "a new name/location",
-      "materialized": "{{materialized}} {{addon}}",
+      "materialized": "{{materialized}} in {{addon}}",
       "aTitle": "a title",
       "aNameLocation": "a name/location",
-      "pageTitle": "page title",
+      "pageTitle": "a title",
       "aFile": "a file",
       "folder": "folder",
       "file": "file",
       "aUser": "A user",
-      "fileOn": "file {{file}}",
-      "wikiOn": "wiki {{wiki}}",
+      "aProject": "a project",
+      "fileOn": "on {{file}}",
+      "wikiOn": "on wiki page {{wiki}}",
       "field": "field",
       "updatedFields": "{{old}} to {{new}}",
       "uncategorized": "Uncategorized",
@@ -2695,7 +2701,7 @@
       "coi_statement_updated": "{{user}} changed the conflict of interest statement for {{preprint}}.",
       "comment_added": "{{user}} added a comment {{commentLocation}} in {{node}}",
       "comment_removed": "{{user}} deleted a comment {{commentLocation}} in {{node}}",
-      "comment_restored": "{{user}} restored a comment {{commentLocation}} in {{node}}",
+      "comment_restored": "{{user}} restored a comment {{commentLocation}}  in {{node}}",
       "comment_updated": "{{user}} updated a comment {{commentLocation}} in {{node}}",
       "contributor_added": "{{user}} added {{contributors}} as contributor(s) to {{node}}",
       "contributor_removed": "{{user}} removed {{contributors}} as contributor(s) from {{node}}",
@@ -2756,7 +2762,7 @@
       "pointer_removed": "{{user}} removed a link to {{pointerCategory}} {{pointer}}",
       "preprint_file_updated": "{{user}} updated the primary file of this {{preprint}} on {{preprintProvider}} {{preprintWordPlural}}",
       "preprint_initiated": "{{user}} made {{node}} a {{preprint}} on {{preprintProvider}} {{preprintWordPlural}}",
-      "preprint_license_updated": "{{user}} updated the license of this {{preprint}} on {{preprintProvider}} {{preprintWordPlural}} {{license}}",
+      "preprint_license_updated": "{{user}} updated the license of this {{preprint}} on {{preprintProvider}} {{preprintWordPlural}} to {{license}}",
       "prereg_links_info_updated": "{{user}} has updated their preregistration links to {{value}}",
       "prereg_links_updated": "{{user}} has updated their preregistration data links",
       "prereg_registration_initiated": "{{user}} submitted for review to the Preregistration Challenge a registration of {{node}}",

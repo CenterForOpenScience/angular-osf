@@ -3,9 +3,10 @@ import {
   IdTypeModel,
   Institution,
   InstitutionsJsonApiResponse,
-  JsonApiResponse,
+  JsonApiResponseWithMeta,
   License,
   LicensesOption,
+  MetaAnonymousJsonApi,
 } from '@osf/shared/models';
 
 export interface ProjectOverviewContributor {
@@ -68,7 +69,12 @@ export interface ProjectOverviewSubject {
   text: string;
 }
 
-export interface ProjectOverviewGetResponseJsoApi {
+export interface ProjectOverviewWithMeta {
+  project: ProjectOverview;
+  meta?: MetaAnonymousJsonApi;
+}
+
+export interface ProjectOverviewGetResponseJsonApi {
   id: string;
   type: string;
   attributes: {
@@ -205,8 +211,10 @@ export interface ProjectOverviewGetResponseJsoApi {
   };
 }
 
-export interface ProjectOverviewResponseJsonApi extends JsonApiResponse<ProjectOverviewGetResponseJsoApi, null> {
-  data: ProjectOverviewGetResponseJsoApi;
+export interface ProjectOverviewResponseJsonApi
+  extends JsonApiResponseWithMeta<ProjectOverviewGetResponseJsonApi, MetaAnonymousJsonApi, null> {
+  data: ProjectOverviewGetResponseJsonApi;
+  meta: MetaAnonymousJsonApi;
 }
 
 export interface ProjectIdentifiers {

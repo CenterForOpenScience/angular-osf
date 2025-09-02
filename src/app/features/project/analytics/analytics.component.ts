@@ -7,15 +7,25 @@ import { SelectModule } from 'primeng/select';
 import { map, of } from 'rxjs';
 
 import { CommonModule, DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, Signal, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnInit,
+  Signal,
+  signal,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { BarChartComponent, LineChartComponent, PieChartComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
-import { IS_WEB } from '@osf/shared/helpers';
+import { hasViewOnlyParam, IS_WEB } from '@osf/shared/helpers';
 import { DatasetInput } from '@osf/shared/models';
+import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 
 import { AnalyticsKpiComponent } from './components';
 import { DATE_RANGE_OPTIONS } from './constants';
@@ -34,6 +44,7 @@ import { AnalyticsSelectors, ClearAnalytics, GetMetrics, GetRelatedCounts } from
     LineChartComponent,
     PieChartComponent,
     BarChartComponent,
+    ViewOnlyLinkMessageComponent,
   ],
   templateUrl: './analytics.component.html',
   styleUrl: './analytics.component.scss',
@@ -41,10 +52,10 @@ import { AnalyticsSelectors, ClearAnalytics, GetMetrics, GetRelatedCounts } from
   providers: [DatePipe],
 })
 export class AnalyticsComponent implements OnInit {
-  protected rangeOptions = DATE_RANGE_OPTIONS;
-  protected selectedRange = signal(DATE_RANGE_OPTIONS[0]);
+  rangeOptions = DATE_RANGE_OPTIONS;
+  selectedRange = signal(DATE_RANGE_OPTIONS[0]);
 
-  protected readonly IS_X_LARGE = toSignal(inject(IS_WEB));
+  readonly IS_X_LARGE = toSignal(inject(IS_WEB));
 
   private readonly datePipe = inject(DatePipe);
   private readonly route = inject(ActivatedRoute);
@@ -56,31 +67,35 @@ export class AnalyticsComponent implements OnInit {
     this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
   );
 
-  protected analytics = select(AnalyticsSelectors.getMetrics(this.resourceId()));
-  protected relatedCounts = select(AnalyticsSelectors.getRelatedCounts(this.resourceId()));
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
 
-  protected isMetricsLoading = select(AnalyticsSelectors.isMetricsLoading);
-  protected isRelatedCountsLoading = select(AnalyticsSelectors.isRelatedCountsLoading);
+  analytics = select(AnalyticsSelectors.getMetrics(this.resourceId()));
+  relatedCounts = select(AnalyticsSelectors.getRelatedCounts(this.resourceId()));
 
-  protected isMetricsError = select(AnalyticsSelectors.isMetricsError);
+  isMetricsLoading = select(AnalyticsSelectors.isMetricsLoading);
+  isRelatedCountsLoading = select(AnalyticsSelectors.isRelatedCountsLoading);
 
-  protected actions = createDispatchMap({
+  isMetricsError = select(AnalyticsSelectors.isMetricsError);
+
+  actions = createDispatchMap({
     getMetrics: GetMetrics,
     getRelatedCounts: GetRelatedCounts,
     clearAnalytics: ClearAnalytics,
   });
 
-  protected visitsLabels: string[] = [];
-  protected visitsDataset: DatasetInput[] = [];
+  visitsLabels: string[] = [];
+  visitsDataset: DatasetInput[] = [];
 
-  protected totalVisitsLabels: string[] = [];
-  protected totalVisitsDataset: DatasetInput[] = [];
+  totalVisitsLabels: string[] = [];
+  totalVisitsDataset: DatasetInput[] = [];
 
-  protected topReferrersLabels: string[] = [];
-  protected topReferrersDataset: DatasetInput[] = [];
+  topReferrersLabels: string[] = [];
+  topReferrersDataset: DatasetInput[] = [];
 
-  protected popularPagesLabels: string[] = [];
-  protected popularPagesDataset: DatasetInput[] = [];
+  popularPagesLabels: string[] = [];
+  popularPagesDataset: DatasetInput[] = [];
 
   ngOnInit() {
     this.actions.getMetrics(this.resourceId(), this.selectedRange().value);
@@ -123,7 +138,7 @@ export class AnalyticsComponent implements OnInit {
     this.popularPagesDataset = [{ label: 'Popular pages', data: analytics.popularPages.map((item) => item.count) }];
   }
 
-  protected navigateToDuplicates() {
+  navigateToDuplicates() {
     this.router.navigate(['duplicates'], { relativeTo: this.route });
   }
 }

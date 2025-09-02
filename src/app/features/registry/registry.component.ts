@@ -25,7 +25,7 @@ export class RegistryComponent {
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
 
-  protected readonly registry = select(RegistryOverviewSelectors.getRegistry);
+  readonly registry = select(RegistryOverviewSelectors.getRegistry);
 
   constructor() {
     effect(() => {
@@ -51,10 +51,11 @@ export class RegistryComponent {
         keywords: this.registry()?.tags,
         siteName: 'OSF',
         license: this.registry()?.license?.name,
-        contributors: this.registry()?.contributors.map((contributor) => ({
-          givenName: contributor.givenName,
-          familyName: contributor.familyName,
-        })),
+        contributors:
+          this.registry()?.contributors?.map((contributor) => ({
+            givenName: contributor.givenName,
+            familyName: contributor.familyName,
+          })) ?? [],
       },
       'registries'
     );

@@ -44,7 +44,7 @@ import {
 } from '@osf/features/files/store';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
-import { IS_MEDIUM } from '@osf/shared/helpers';
+import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -52,6 +52,7 @@ import {
   SearchInputComponent,
   SubHeaderComponent,
 } from '@shared/components';
+import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
@@ -77,6 +78,7 @@ import { environment } from 'src/environments/environment';
     TranslatePipe,
     FilesTreeComponent,
     FormSelectComponent,
+    ViewOnlyLinkMessageComponent,
   ],
   templateUrl: './files.component.html',
   styleUrl: './files.component.scss',
@@ -109,6 +111,9 @@ export class FilesComponent {
 
   isMedium = toSignal(inject(IS_MEDIUM));
 
+  readonly hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
   readonly files = select(FilesSelectors.getFiles);
   readonly isFilesLoading = select(FilesSelectors.isFilesLoading);
   readonly currentFolder = select(FilesSelectors.getCurrentFolder);

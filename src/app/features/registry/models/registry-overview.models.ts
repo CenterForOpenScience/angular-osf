@@ -1,7 +1,14 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { RegistrationQuestions, RegistrySubject } from '@osf/features/registry/models';
+import {
+  IdTypeModel,
+  License,
+  LicensesOption,
+  MetaAnonymousJsonApi,
+  ProviderModel,
+  SchemaResponse,
+} from '@osf/shared/models';
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
-import { IdTypeModel, License, LicensesOption, ProviderModel, SchemaResponse } from '@shared/models';
 
 export interface RegistryOverview {
   id: string;
@@ -61,4 +68,9 @@ export interface RegistryOverview {
   withdrawn: boolean;
   withdrawalJustification?: string;
   dateWithdrawn: string | null;
+}
+
+export interface RegistryOverviewWithMeta {
+  registry: RegistryOverview | null;
+  meta?: MetaAnonymousJsonApi;
 }

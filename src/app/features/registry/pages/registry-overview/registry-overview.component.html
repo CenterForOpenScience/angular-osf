@@ -27,7 +27,7 @@
     </div>
   } @else {
     <div class="flex flex-column bg-white flex-1 p-4 gap-4">
-      @if (!schemaResponse()?.isOriginalResponse && !isInitialState) {
+      @if (!schemaResponse()?.isOriginalResponse && !isInitialState && !hasViewOnly()) {
         <p-message class="overview-message w-full" severity="warn">
           <ng-template #container>
             <div>
@@ -45,6 +45,9 @@
           </ng-template>
         </p-message>
       }
+      @if (hasViewOnly()) {
+        <osf-view-only-link-message />
+      }
       <osf-data-resources
         [resourceId]="registry()?.id"
         [hasData]="registry()?.hasData"
@@ -56,19 +59,21 @@
 
       <div class="flex flex-column gap-4 xl:flex-row">
         <div class="left-section">
-          <div class="flex flex-column gap-4 md:flex-row resource">
-            <osf-registry-statuses [registry]="registry()"></osf-registry-statuses>
-            <osf-registry-revisions
-              [registry]="registry()"
-              [selectedRevisionIndex]="selectedRevisionIndex()"
-              (openRevision)="openRevision($event)"
-              (updateRegistration)="onUpdateRegistration($event)"
-              (continueUpdate)="onContinueUpdateRegistration()"
-              [isModeration]="isModeration"
-              [isSubmitting]="isSchemaResponseLoading()"
-            >
-            </osf-registry-revisions>
-          </div>
+          @if (!isAnonymous()) {
+            <div class="flex flex-column gap-4 md:flex-row resource">
+              <osf-registry-statuses [registry]="registry()"></osf-registry-statuses>
+              <osf-registry-revisions
+                [registry]="registry()"
+                [selectedRevisionIndex]="selectedRevisionIndex()"
+                (openRevision)="openRevision($event)"
+                (updateRegistration)="onUpdateRegistration($event)"
+                (continueUpdate)="onContinueUpdateRegistration()"
+                [isModeration]="isModeration"
+                [isSubmitting]="isSchemaResponseLoading()"
+              >
+              </osf-registry-revisions>
+            </div>
+          }
 
           <div class="blocks-section p-4">
             @for (page of schemaBlocks(); track page.id) {
@@ -116,7 +121,7 @@
           <osf-resource-metadata
             [currentResource]="resourceOverview()"
             (customCitationUpdated)="onCustomCitationUpdated($event)"
-            [canWrite]="true"
+            [canWrite]="!hasViewOnly()"
           />
         </div>
       </div>

@@ -18,11 +18,13 @@
     </div>
 
     <div class="flex gap-3 ml-auto sm-round-padding-btn">
-      <p-button
-        severity="secondary"
-        [label]="'files.detail.actions.addCommunityMetadata' | translate"
-        [routerLink]="['/metadata']"
-      ></p-button>
+      @if (!isAnonymous()) {
+        <p-button
+          severity="secondary"
+          [label]="'files.detail.actions.addCommunityMetadata' | translate"
+          [routerLink]="['/metadata']"
+        ></p-button>
+      }
 
       @if (file()?.links?.download) {
         <p-button severity="secondary" (click)="downloadFile(file()?.links?.download!)">
@@ -55,7 +57,7 @@
           </p-menu>
         </div>
       }
-      @if (file()) {
+      @if (file() && !isAnonymous()) {
         <p-button severity="danger" (click)="confirmDelete(file()!)">
           <i class="fas fa-trash p-1"></i>
         </p-button>

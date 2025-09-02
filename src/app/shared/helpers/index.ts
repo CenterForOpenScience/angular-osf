@@ -18,3 +18,4 @@ export * from './search-pref-to-json-api-query-params.helper';
 export * from './state-error.handler';
 export * from './types.helper';
 export * from './url-param.helper';
+export * from './view-only.helper';
