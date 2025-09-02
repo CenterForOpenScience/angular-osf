@@ -81,6 +81,10 @@ export class ConnectConfiguredAddonComponent {
   protected chosenAccountId = signal('');
   protected chosenAccountName = signal('');
   protected selectedRootFolderId = signal('');
+  private selectedAccount = signal<AuthorizedAccountModel>({} as AuthorizedAccountModel);
+  public readonly isGoogleDrive = computed(() => {
+    return this.selectedAccount()?.externalServiceName === 'googledrive';
+  });
 
   protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
   protected createdAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
@@ -137,14 +141,15 @@ export class ConnectConfiguredAddonComponent {
 
   protected handleCreateConfiguredAddon() {
     const addon = this.addon();
-    const selectedAccount = this.currentAuthorizedAddonAccounts().find(
-      (account) => account.id === this.chosenAccountId()
+    this.selectedAccount.set(
+      this.currentAuthorizedAddonAccounts().find((account) => account.id === this.chosenAccountId()) ||
+        ({} as AuthorizedAccountModel)
     );
-    if (!addon || !selectedAccount) return;
+    if (!addon || !this.selectedAccount()) return;
 
     const payload = this.addonFormService.generateConfiguredAddonCreatePayload(
       addon,
-      selectedAccount,
+      this.selectedAccount(),
       this.userReferenceId(),
       this.resourceUri(),
       this.accountNameControl.value || '',
@@ -181,19 +186,20 @@ export class ConnectConfiguredAddonComponent {
   }
 
   protected handleConfirmAccountConnection(): void {
-    const selectedAccount = this.currentAuthorizedAddonAccounts().find(
-      (account) => account.id === this.chosenAccountId()
+    this.selectedAccount.set(
+      this.currentAuthorizedAddonAccounts().find((account) => account.id === this.chosenAccountId()) ||
+        ({} as AuthorizedAccountModel)
     );
 
-    if (!selectedAccount) return;
+    if (!this.selectedAccount()) return;
 
-    const dialogRef = this.addonDialogService.openConfirmAccountConnectionDialog(selectedAccount);
+    const dialogRef = this.addonDialogService.openConfirmAccountConnectionDialog(this.selectedAccount());
 
     dialogRef.subscribe((result) => {
       if (result?.success) {
         this.stepper()?.value.set(ProjectAddonsStepperValue.CONFIGURE_ROOT_FOLDER);
-        this.chosenAccountName.set(selectedAccount.displayName);
-        this.accountNameControl.setValue(selectedAccount.displayName);
+        this.chosenAccountName.set(this.selectedAccount().displayName);
+        this.accountNameControl.setValue(this.selectedAccount().displayName);
       }
     });
   }
