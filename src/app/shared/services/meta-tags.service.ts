@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable } from '@angular/core';
+import { DestroyRef, Inject, Injectable } from '@angular/core';
 import { Meta, MetaDefinition, Title } from '@angular/platform-browser';
 
 import { Content, DataContent, HeadTagDef, MetaTagAuthor, MetaTagsData } from '../models/meta-tags';
@@ -27,7 +27,8 @@ export class MetaTagsService {
   };
 
   private readonly metaTagClass = 'osf-dynamic-meta';
-  private currentRouteGroup: string | null = null;
+
+  private metaTagStack: Array<{ metaTagsData: MetaTagsData; destroyRef: DestroyRef }> = [];
 
   constructor(
     private meta: Meta,
@@ -35,17 +36,13 @@ export class MetaTagsService {
     @Inject(DOCUMENT) private document: Document
   ) {}
 
-  updateMetaTags(metaTagsData: MetaTagsData): void {
-    const combinedData = { ...this.defaultMetaTags, ...metaTagsData };
-    const headTags = this.getHeadTags(combinedData);
-
-    this.applyHeadTags(headTags);
-    this.dispatchZoteroEvent();
-  }
-
-  updateMetaTagsForRoute(metaTagsData: MetaTagsData, routeGroup: string): void {
-    this.currentRouteGroup = routeGroup;
-    this.updateMetaTags(metaTagsData);
+  updateMetaTags(metaTagsData: MetaTagsData, untilDestroyed: DestroyRef): void {
+    this.metaTagStack = [...this.metaTagStackWithout(untilDestroyed), { metaTagsData, destroyRef: untilDestroyed }];
+    untilDestroyed.onDestroy(() => {
+      this.metaTagStack = this.metaTagStackWithout(untilDestroyed);
+      this.applyNearestMetaTags();
+    });
+    this.applyNearestMetaTags();
   }
 
   clearMetaTags(): void {
@@ -62,27 +59,26 @@ export class MetaTagsService {
     });
 
     this.title.setTitle(String(this.defaultMetaTags.siteName));
-    this.currentRouteGroup = null;
   }
 
-  shouldClearMetaTags(newUrl: string): boolean {
-    if (!this.currentRouteGroup) return true;
-    return !newUrl.startsWith(`/${this.currentRouteGroup}`);
+  private metaTagStackWithout(destroyRefToRemove: DestroyRef) {
+    return this.metaTagStack.filter(({ destroyRef }) => destroyRef !== destroyRefToRemove);
   }
 
-  clearMetaTagsIfNeeded(newUrl: string): void {
-    if (this.shouldClearMetaTags(newUrl)) {
+  private applyNearestMetaTags() {
+    const nearest = this.metaTagStack.at(-1);
+    if (nearest) {
+      this.applyMetaTagsData(nearest.metaTagsData);
+    } else {
       this.clearMetaTags();
     }
-  }
+  };
 
-  resetToDefaults(): void {
-    this.updateMetaTags({});
-  }
-
-  getHeadTagsPublic(metaTagsData: MetaTagsData): HeadTagDef[] {
+  private applyMetaTagsData(metaTagsData: MetaTagsData) {
     const combinedData = { ...this.defaultMetaTags, ...metaTagsData };
-    return this.getHeadTags(combinedData);
+    const headTags = this.getHeadTags(combinedData);
+    this.applyHeadTags(headTags);
+    this.dispatchZoteroEvent();
   }
 
   private getHeadTags(metaTagsData: MetaTagsData): HeadTagDef[] {
