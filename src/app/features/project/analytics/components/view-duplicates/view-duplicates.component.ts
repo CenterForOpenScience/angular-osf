@@ -67,18 +67,20 @@ export class ViewDuplicatesComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
-  protected currentPage = signal<string>('1');
-  protected isSmall = toSignal(inject(IS_SMALL));
-  protected readonly pageSize = 10;
-  protected readonly UserPermissions = UserPermissions;
-  protected firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * this.pageSize);
   private project = select(ProjectOverviewSelectors.getProject);
   private registration = select(RegistryOverviewSelectors.getRegistry);
-  protected duplicates = select(DuplicatesSelectors.getDuplicates);
-  protected isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
-  protected totalDuplicates = select(DuplicatesSelectors.getDuplicatesTotalCount);
+  private isProjectAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+  private isRegistryAnonymous = select(RegistryOverviewSelectors.isRegistryAnonymous);
+  duplicates = select(DuplicatesSelectors.getDuplicates);
+  isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
+  totalDuplicates = select(DuplicatesSelectors.getDuplicatesTotalCount);
+  readonly pageSize = 10;
+  readonly UserPermissions = UserPermissions;
+  currentPage = signal<string>('1');
+  isSmall = toSignal(inject(IS_SMALL));
+  firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * this.pageSize);
 
-  protected readonly forkActionItems = (resourceId: string) => [
+  readonly forkActionItems = (resourceId: string) => [
     {
       label: 'project.overview.actions.manageContributors',
       command: () => this.router.navigate([resourceId, 'contributors']),
@@ -109,7 +111,7 @@ export class ViewDuplicatesComponent {
     return null;
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getProject: GetProjectById,
     getRegistration: GetRegistryById,
     getDuplicates: GetAllDuplicates,
@@ -140,10 +142,13 @@ export class ViewDuplicatesComponent {
     this.setupCleanup();
   }
 
-  protected toolbarResource = computed(() => {
+  toolbarResource = computed(() => {
     const resource = this.currentResource();
     const resourceType = this.resourceType();
     if (resource && resourceType) {
+      const isAnonymous =
+        resourceType === ResourceType.Project ? this.isProjectAnonymous() : this.isRegistryAnonymous();
+
       return {
         id: resource.id,
         isPublic: resource.isPublic,
@@ -151,12 +156,13 @@ export class ViewDuplicatesComponent {
         viewOnlyLinksCount: 0,
         forksCount: resource.forksCount,
         resourceType: resourceType,
+        isAnonymous,
       } as ToolbarResource;
     }
     return null;
   });
 
-  protected handleForkResource(): void {
+  handleForkResource(): void {
     const toolbarResource = this.toolbarResource();
     const dialogWidth = !this.isSmall() ? '95vw' : '450px';
 

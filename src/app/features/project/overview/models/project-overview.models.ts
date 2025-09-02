@@ -1,5 +1,12 @@
 import { UserPermissions } from '@osf/shared/enums';
-import { Identifier, Institution, InstitutionsJsonApiResponse, JsonApiResponse, License } from '@osf/shared/models';
+import {
+  Identifier,
+  Institution,
+  InstitutionsJsonApiResponse,
+  JsonApiResponseWithMeta,
+  License,
+  MetaAnonymousJsonApi,
+} from '@osf/shared/models';
 
 export interface ProjectOverviewContributor {
   familyName: string;
@@ -67,7 +74,12 @@ export interface ProjectOverviewSubject {
   text: string;
 }
 
-export interface ProjectOverviewGetResponseJsoApi {
+export interface ProjectOverviewWithMeta {
+  project: ProjectOverview;
+  meta?: MetaAnonymousJsonApi;
+}
+
+export interface ProjectOverviewGetResponseJsonApi {
   id: string;
   type: string;
   attributes: {
@@ -204,8 +216,10 @@ export interface ProjectOverviewGetResponseJsoApi {
   };
 }
 
-export interface ProjectOverviewResponseJsonApi extends JsonApiResponse<ProjectOverviewGetResponseJsoApi, null> {
-  data: ProjectOverviewGetResponseJsoApi;
+export interface ProjectOverviewResponseJsonApi
+  extends JsonApiResponseWithMeta<ProjectOverviewGetResponseJsonApi, MetaAnonymousJsonApi, null> {
+  data: ProjectOverviewGetResponseJsonApi;
+  meta: MetaAnonymousJsonApi;
 }
 
 export interface ProjectSupplements {

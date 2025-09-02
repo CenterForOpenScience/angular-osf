@@ -22,11 +22,12 @@ import {
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { RegistrationReviewStates, ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
-import { toCamelCase } from '@osf/shared/helpers';
+import { hasViewOnlyParam, toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import { GetBookmarksCollectionId } from '@osf/shared/stores';
+import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';
@@ -56,6 +57,7 @@ import {
     RegistrationBlocksDataComponent,
     Message,
     DatePipe,
+    ViewOnlyLinkMessageComponent,
   ],
   templateUrl: './registry-overview.component.html',
   styleUrl: './registry-overview.component.scss',
@@ -71,20 +73,21 @@ export class RegistryOverviewComponent {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
 
-  protected readonly registry = select(RegistryOverviewSelectors.getRegistry);
-  protected readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
-  protected readonly subjects = select(RegistryOverviewSelectors.getSubjects);
-  protected readonly isSubjectsLoading = select(RegistryOverviewSelectors.isSubjectsLoading);
-  protected readonly institutions = select(RegistryOverviewSelectors.getInstitutions);
-  protected readonly isInstitutionsLoading = select(RegistryOverviewSelectors.isInstitutionsLoading);
-  protected readonly schemaBlocks = select(RegistryOverviewSelectors.getSchemaBlocks);
-  protected readonly isSchemaBlocksLoading = select(RegistryOverviewSelectors.isSchemaBlocksLoading);
-  protected readonly areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
-  protected readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
-  protected readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
-  protected revisionInProgress: SchemaResponse | undefined;
+  readonly registry = select(RegistryOverviewSelectors.getRegistry);
+  readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
+  readonly isAnonymous = select(RegistryOverviewSelectors.isRegistryAnonymous);
+  readonly subjects = select(RegistryOverviewSelectors.getSubjects);
+  readonly isSubjectsLoading = select(RegistryOverviewSelectors.isSubjectsLoading);
+  readonly institutions = select(RegistryOverviewSelectors.getInstitutions);
+  readonly isInstitutionsLoading = select(RegistryOverviewSelectors.isInstitutionsLoading);
+  readonly schemaBlocks = select(RegistryOverviewSelectors.getSchemaBlocks);
+  readonly isSchemaBlocksLoading = select(RegistryOverviewSelectors.isSchemaBlocksLoading);
+  readonly areReviewActionsLoading = select(RegistryOverviewSelectors.areReviewActionsLoading);
+  readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
+  readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
+  revisionInProgress: SchemaResponse | undefined;
 
-  protected readonly schemaResponse = computed(() => {
+  readonly schemaResponse = computed(() => {
     const registry = this.registry();
     const index = this.selectedRevisionIndex();
     this.revisionInProgress = registry?.schemaResponses.find(
@@ -100,7 +103,7 @@ export class RegistryOverviewComponent {
     return null;
   });
 
-  protected readonly updatedFields = computed(() => {
+  readonly updatedFields = computed(() => {
     const schemaResponse = this.schemaResponse();
     if (schemaResponse) {
       return schemaResponse.updatedResponseKeys || [];
@@ -108,19 +111,19 @@ export class RegistryOverviewComponent {
     return [];
   });
 
-  protected readonly resourceOverview = computed(() => {
+  readonly resourceOverview = computed(() => {
     const registry = this.registry();
     const subjects = this.subjects();
     const institutions = this.institutions();
     if (registry && subjects && institutions) {
-      return MapRegistryOverview(registry, subjects, institutions);
+      return MapRegistryOverview(registry, subjects, institutions, this.isAnonymous());
     }
     return null;
   });
 
-  protected readonly selectedRevisionIndex = signal(0);
+  readonly selectedRevisionIndex = signal(0);
 
-  protected toolbarResource = computed(() => {
+  toolbarResource = computed(() => {
     if (this.registry()) {
       return {
         id: this.registry()!.id,
@@ -129,6 +132,7 @@ export class RegistryOverviewComponent {
         viewOnlyLinksCount: 0,
         forksCount: this.registry()!.forksCount,
         resourceType: ResourceType.Registration,
+        isAnonymous: this.isAnonymous(),
       } as ToolbarResource;
     }
     return null;
@@ -148,8 +152,12 @@ export class RegistryOverviewComponent {
   revisionId: string | null = null;
   isModeration = false;
 
-  protected userPermissions = computed(() => {
+  userPermissions = computed(() => {
     return this.registry()?.currentUserPermissions || [];
+  });
+
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
   });
 
   get isAdmin(): boolean {
@@ -246,7 +254,7 @@ export class RegistryOverviewComponent {
     this.router.navigate([`/registries/revisions/${revisionId}/review`]);
   }
 
-  protected handleOpenMakeDecisionDialog() {
+  handleOpenMakeDecisionDialog() {
     const dialogWidth = '600px';
     this.actions
       .getRegistryReviewActions(this.registry()?.id || '')

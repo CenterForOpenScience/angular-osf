@@ -1,5 +1,5 @@
 <div #dropZoneContainer class="drop-zone-container">
-  @if (!viewOnly()) {
+  @if (!viewOnly() && !hasViewOnly) {
     <div
       class="drop-zone"
       [class.active]="isDragOver()"
@@ -73,7 +73,12 @@
 
               @if (!viewOnly() && !viewOnlyDownloadable()) {
                 <div class="relative ml-auto">
-                  <osf-file-menu (action)="onFileMenuAction($event, file)" osfStopPropagation></osf-file-menu>
+                  <osf-file-menu
+                    (action)="onFileMenuAction($event, file)"
+                    [isFolder]="file.kind === 'folder'"
+                    osfStopPropagation
+                  >
+                  </osf-file-menu>
                 </div>
               } @else if (viewOnly() && viewOnlyDownloadable()) {
                 <div class="files-table-cell">
@@ -93,7 +98,7 @@
 
       @if (!files().length) {
         <div class="flex justify-content-center p-4 m-auto">
-          @if (viewOnly()) {
+          @if (viewOnly() || hasViewOnly()) {
             <h3 class="font-normal text-no-transform">{{ 'files.emptyState' | translate }}</h3>
           } @else {
             <div class="text-center">

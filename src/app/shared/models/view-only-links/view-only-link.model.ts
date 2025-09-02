@@ -22,6 +22,12 @@ export interface ViewOnlyLinkModel {
   anonymous: boolean;
 }
 
+export interface ViewOnlyLinkComponent {
+  id: string;
+  title: string;
+  isCurrentProject: boolean;
+}
+
 export interface PaginatedViewOnlyLinksModel {
   items: ViewOnlyLinkModel[];
   total: number;

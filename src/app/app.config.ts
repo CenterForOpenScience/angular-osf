@@ -15,7 +15,7 @@ import { STATES } from '@core/constants';
 import { provideTranslation } from '@core/helpers';
 
 import { GlobalErrorHandler } from './core/handlers';
-import { authInterceptor, errorInterceptor } from './core/interceptors';
+import { authInterceptor, errorInterceptor, viewOnlyInterceptor } from './core/interceptors';
 import CustomPreset from './core/theme/custom-preset';
 import { routes } from './app.routes';
 
@@ -37,7 +37,7 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideAnimations(),
-    provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([authInterceptor, viewOnlyInterceptor, errorInterceptor])),
     importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
     ConfirmationService,
     MessageService,

@@ -59,8 +59,8 @@ import { ProjectOverviewSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LinkResourceDialogComponent {
-  private readonly tableRows = 6;
   private readonly destroyRef = inject(DestroyRef);
+  readonly tableRows = 6;
   readonly dialogRef = inject(DynamicDialogRef);
   readonly ResourceSearchMode = ResourceSearchMode;
   readonly ResourceType = ResourceType;
@@ -70,7 +70,7 @@ export class LinkResourceDialogComponent {
   resourceType = signal<ResourceType>(ResourceType.Project);
   searchControl = new FormControl('');
 
-  skeletonData: MyResourcesItem[] = Array.from({ length: 10 }, () => ({}) as MyResourcesItem);
+  skeletonData: MyResourcesItem[] = Array.from({ length: this.tableRows }, () => ({}) as MyResourcesItem);
 
   currentProject = select(ProjectOverviewSelectors.getProject);
   myProjects = select(MyResourcesSelectors.getProjects);

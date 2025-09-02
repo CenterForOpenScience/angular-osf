@@ -4,7 +4,13 @@ import { map } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { ActivityLogsMapper } from '@shared/mappers/activity-logs.mapper';
-import { ActivityLog, ActivityLogJsonApi, PaginatedData, ResponseJsonApi } from '@shared/models';
+import {
+  ActivityLog,
+  ActivityLogJsonApi,
+  JsonApiResponseWithMeta,
+  MetaAnonymousJsonApi,
+  PaginatedData,
+} from '@shared/models';
 import { JsonApiService } from '@shared/services/json-api.service';
 
 import { environment } from 'src/environments/environment';
@@ -24,7 +30,7 @@ export class ActivityLogsService {
     };
 
     return this.jsonApiService
-      .get<ResponseJsonApi<ActivityLogJsonApi[]>>(url, params)
+      .get<JsonApiResponseWithMeta<ActivityLogJsonApi[], MetaAnonymousJsonApi, null>>(url, params)
       .pipe(map((res) => ActivityLogsMapper.fromGetActivityLogsResponse(res)));
   }
 }

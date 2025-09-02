@@ -85,4 +85,9 @@ export class WikiSelectors {
   static getPreviewContent(state: WikiStateModel): string {
     return state.previewContent;
   }
+
+  @Selector([WikiState])
+  static isWikiAnonymous(state: WikiStateModel): boolean {
+    return state.isAnonymous;
+  }
 }

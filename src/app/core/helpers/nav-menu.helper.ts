@@ -1,10 +1,14 @@
 import { MenuItem } from 'primeng/api';
 
+import { getViewOnlyParamFromUrl } from '@osf/shared/helpers';
+
 import {
   AUTHENTICATED_MENU_ITEMS,
   PREPRINT_MENU_ITEMS,
   PROJECT_MENU_ITEMS,
   REGISTRATION_MENU_ITEMS,
+  VIEW_ONLY_PROJECT_MENU_ITEMS,
+  VIEW_ONLY_REGISTRY_MENU_ITEMS,
 } from '../constants';
 import { RouteContext } from '../models';
 
@@ -82,13 +86,21 @@ function updateProjectMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
   const items = (item.items || []).map((subItem) => {
     if (subItem.id === 'project-details') {
       if (hasProject) {
+        let menuItems = PROJECT_MENU_ITEMS;
+
+        if (ctx.isViewOnly) {
+          const allowedViewOnlyItems = VIEW_ONLY_PROJECT_MENU_ITEMS;
+          menuItems = PROJECT_MENU_ITEMS.filter((menuItem) => allowedViewOnlyItems.includes(menuItem.id || ''));
+        }
+
         return {
           ...subItem,
           visible: true,
           expanded: true,
-          items: PROJECT_MENU_ITEMS.map((menuItem) => ({
+          items: menuItems.map((menuItem) => ({
             ...menuItem,
             routerLink: [ctx.resourceId as string, menuItem.routerLink],
+            queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
           })),
         };
       }
@@ -105,13 +117,21 @@ function updateRegistryMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
   const items = (item.items || []).map((subItem) => {
     if (subItem.id === 'registry-details') {
       if (hasRegistry) {
+        let menuItems = REGISTRATION_MENU_ITEMS;
+
+        if (ctx.isViewOnly) {
+          const allowedViewOnlyItems = VIEW_ONLY_REGISTRY_MENU_ITEMS;
+          menuItems = REGISTRATION_MENU_ITEMS.filter((menuItem) => allowedViewOnlyItems.includes(menuItem.id || ''));
+        }
+
         return {
           ...subItem,
           visible: true,
           expanded: true,
-          items: REGISTRATION_MENU_ITEMS.map((menuItem) => ({
+          items: menuItems.map((menuItem) => ({
             ...menuItem,
             routerLink: [ctx.resourceId as string, menuItem.routerLink],
+            queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
           })),
         };
       }
@@ -135,6 +155,7 @@ function updatePreprintMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
           items: PREPRINT_MENU_ITEMS.map((menuItem) => ({
             ...menuItem,
             routerLink: ['preprints', ctx.providerId, ctx.resourceId as string],
+            queryParams: ctx.isViewOnly ? { view_only: getViewOnlyParamFromUrl(ctx.currentUrl) } : undefined,
           })),
         };
       }

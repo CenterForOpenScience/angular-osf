@@ -1,9 +1,9 @@
 export enum FileMenuType {
-  Download = 1,
-  Copy,
-  Move,
-  Delete,
-  Rename,
-  Share,
-  Embed,
+  Download = 'download',
+  Copy = 'copy',
+  Move = 'move',
+  Delete = 'delete',
+  Rename = 'rename',
+  Share = 'share',
+  Embed = 'embed',
 }

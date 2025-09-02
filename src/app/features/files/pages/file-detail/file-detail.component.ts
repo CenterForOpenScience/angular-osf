@@ -111,6 +111,7 @@ export class FileDetailComponent {
   cedarRecords = select(MetadataSelectors.getCedarRecords);
   cedarTemplates = select(MetadataSelectors.getCedarTemplates);
 
+  isAnonymous = select(FilesSelectors.isFilesAnonymous);
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
   resourceType = '';

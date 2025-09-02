@@ -33,6 +33,12 @@ export interface MetaJsonApi {
   version: string;
 }
 
+export interface MetaAnonymousJsonApi {
+  total?: number;
+  per_page?: number;
+  anonymous: boolean;
+}
+
 export interface PaginationLinksJsonApi {
   self?: string;
   first?: string | null;
