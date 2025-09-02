@@ -13,13 +13,7 @@
             @if (item().resourceType === ResourceType.File && item().fileName) {
               <a class="title">{{ item().fileName }}</a>
             } @else {
-              <a
-                tabindex="0"
-                class="title"
-                (click)="$event.stopPropagation(); redirectToResource(item())"
-                (keydown.enter)="$event.stopPropagation(); redirectToResource(item())"
-                >{{ item().title }}</a
-              >
+              <a [href]="item().identifier" class="title">{{ item().title }}</a>
             }
             @if (item().orcid) {
               <a [href]="item().orcid" class="orcid-icon">
@@ -129,10 +123,10 @@
             </span>
           }
 
-          @if (item().doi) {
+          @if (item().identifier) {
             <span>
               <p>{{ 'resourceCard.labels.doi' | translate }}&nbsp;</p>
-              <a [href]="item().doi">{{ item().doi }}</a>
+              <a [href]="item().identifier">{{ item().identifier }}</a>
             </span>
           }
 

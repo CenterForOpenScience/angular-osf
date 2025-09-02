@@ -4,8 +4,8 @@ import { catchError, EMPTY, forkJoin, Observable, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ResourcesData } from '@osf/features/search/models';
 import { getResourceTypeStringFromEnum } from '@shared/helpers';
+import { ResourcesData } from '@shared/models';
 import { SearchService } from '@shared/services';
 
 import {

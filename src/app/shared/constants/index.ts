@@ -12,7 +12,6 @@ export * from './my-projects-table.constants';
 export * from './osf-resource-types.const';
 export * from './registry-services-icons.const';
 export * from './remove-nullable.const';
-export * from './resource-filters-defaults';
 export * from './resource-languages.const';
 export * from './resource-types.const';
 export * from './scientists.const';

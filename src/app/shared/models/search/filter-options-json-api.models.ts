@@ -1,12 +1,5 @@
 import { ApiData } from '@osf/shared/models';
 
-export interface FilterOptionsResponseData {
-  type: string;
-  id: string;
-  attributes: Record<string, unknown>;
-  relationships?: Record<string, unknown>;
-}
-
 export interface FilterOptionsResponseJsonApi {
   data: FilterOptionsResponseData;
   included?: FilterOptionItem[];
@@ -21,6 +14,13 @@ export interface FilterOptionsResponseJsonApi {
     page?: number;
     'per-page'?: number;
   };
+}
+
+interface FilterOptionsResponseData {
+  type: string;
+  id: string;
+  attributes: Record<string, unknown>;
+  relationships?: Record<string, unknown>;
 }
 
 export type FilterOptionItem = ApiData<FilterOptionAttributes, null, null, null>;

@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 import { LoadingSpinnerComponent } from '@shared/components';
 import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
+import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter, SelectOption } from '@shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
@@ -33,13 +34,13 @@ import { GenericFilterComponent } from '../generic-filter/generic-filter.compone
 })
 export class ReusableFilterComponent {
   filters = input<DiscoverableFilter[]>([]);
-  selectedValues = input<Record<string, string | null>>({});
+  selectedValues = input<Record<string, StringOrNull>>({});
   filterSearchResults = input<Record<string, SelectOption[]>>({});
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
 
   loadFilterOptions = output<DiscoverableFilter>();
-  filterValueChanged = output<{ filterType: string; value: string | null }>();
+  filterValueChanged = output<{ filterType: string; value: StringOrNull }>();
   filterSearchChanged = output<{ filterType: string; searchText: string; filter: DiscoverableFilter }>();
   loadMoreFilterOptions = output<{ filterType: string; filter: DiscoverableFilter }>();
 
@@ -48,8 +49,7 @@ export class ReusableFilterComponent {
   readonly FILTER_PLACEHOLDERS = FILTER_PLACEHOLDERS;
 
   readonly hasFilters = computed(() => {
-    const filterList = this.filters();
-    return filterList && filterList.length > 0;
+    return this.filters().length > 0;
   });
 
   readonly visibleFilters = computed(() => {
@@ -203,10 +203,6 @@ export class ReusableFilterComponent {
       filter.hasOptions ||
       filter.type === 'group'
     );
-  }
-
-  isGroupedFilter(filter: DiscoverableFilter): boolean {
-    return filter.type === 'group';
   }
 
   onIsPresentFilterToggle(filter: DiscoverableFilter, isChecked: boolean): void {

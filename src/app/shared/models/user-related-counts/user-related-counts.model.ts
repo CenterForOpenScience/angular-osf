@@ -1,4 +1,4 @@
-export interface UserRelatedDataCounts {
+export interface UserRelatedCounts {
   projects: number;
   registrations: number;
   preprints: number;

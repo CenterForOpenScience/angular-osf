@@ -1,9 +1,8 @@
-import { ResourceType } from '@osf/shared/enums';
-import { Resource } from '@osf/shared/models';
+import { ResourceType } from '@shared/enums';
+import { IdName, Resource, SearchResourceMetadata } from '@shared/models';
 
-import { LinkItem, ResourceItem } from '../models';
-
-export function MapResources(rawItem: ResourceItem): Resource {
+export function MapResources(rawItem: SearchResourceMetadata): Resource {
+  //TODO fix doi (identifiers) and check other fields
   return {
     id: rawItem['@id'],
     resourceType: ResourceType[rawItem?.resourceType[0]['@id'] as keyof typeof ResourceType],
@@ -14,7 +13,7 @@ export function MapResources(rawItem: ResourceItem): Resource {
         ({
           id: creator?.['@id'],
           name: creator?.name?.[0]?.['@value'],
-        }) as LinkItem
+        }) as IdName
     ),
     fileName: rawItem?.fileName?.[0]?.['@value'],
     title: rawItem?.title?.[0]?.['@value'] ?? rawItem?.name?.[0]?.['@value'],
@@ -32,12 +31,12 @@ export function MapResources(rawItem: ResourceItem): Resource {
       name: rawItem?.publisher?.[0]?.name?.[0]?.['@value'],
     },
     registrationTemplate: rawItem?.conformsTo?.[0]?.title?.[0]?.['@value'],
-    doi: rawItem?.identifier?.[0]?.['@value'],
+    identifier: rawItem?.identifier?.[0]?.['@value'],
     conflictOfInterestResponse: rawItem?.statedConflictOfInterest?.[0]?.['@id'],
     hasDataResource: !!rawItem?.hasDataResource,
     hasAnalyticCodeResource: !!rawItem?.hasAnalyticCodeResource,
     hasMaterialsResource: !!rawItem?.hasMaterialsResource,
     hasPapersResource: !!rawItem?.hasPapersResource,
     hasSupplementalResource: !!rawItem?.hasSupplementalResource,
-  } as Resource;
+  };
 }

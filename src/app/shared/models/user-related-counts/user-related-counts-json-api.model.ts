@@ -1,6 +1,6 @@
 import { ApiData, JsonApiResponse } from '@osf/shared/models/common/json-api.model';
 
-export type UserCountsResponse = JsonApiResponse<
+export type UserRelatedCountsResponseJsonApi = JsonApiResponse<
   ApiData<
     {
       employment: { institution: string }[];

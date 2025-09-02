@@ -8,7 +8,6 @@ import { finalize } from 'rxjs';
 import { DatePipe, NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 
 import { IS_XSMALL } from '@osf/shared/helpers';
 import { DataResourcesComponent } from '@shared/components/data-resources/data-resources.component';
@@ -34,11 +33,12 @@ import { ResourceCardService } from '@shared/services';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResourceCardComponent {
-  private readonly resourceCardService = inject(ResourceCardService);
+  private resourceCardService = inject(ResourceCardService);
   ResourceType = ResourceType;
   isSmall = toSignal(inject(IS_XSMALL));
   item = model.required<Resource>();
-  private readonly router = inject(Router);
+
+  //[RNi] TODO: get resource Identifier
 
   isLoading = false;
   dataIsLoaded = false;
@@ -48,39 +48,33 @@ export class ResourceCardComponent {
       return;
     }
 
-    const userIri = this.item()?.id.split('/').pop();
-    if (userIri) {
-      this.isLoading = true;
-      this.resourceCardService
-        .getUserRelatedCounts(userIri)
-        .pipe(
-          finalize(() => {
-            this.isLoading = false;
-            this.dataIsLoaded = true;
-          })
-        )
-        .subscribe((res) => {
-          this.item.update(
-            (current) =>
-              ({
-                ...current,
-                publicProjects: res.projects,
-                publicPreprints: res.preprints,
-                publicRegistrations: res.registrations,
-                education: res.education,
-                employment: res.employment,
-              }) as Resource
-          );
-        });
-    }
-  }
+    const userId = this.item()?.id.split('/').pop();
 
-  redirectToResource(item: Resource) {
-    // [KP] TODO: handle my registrations and foreign separately
-    if (item.resourceType === ResourceType.Registration) {
-      const parts = item.id.split('/');
-      const uri = parts[parts.length - 1];
-      this.router.navigate([uri]);
+    if (!userId) {
+      return;
     }
+
+    this.isLoading = true;
+    this.resourceCardService
+      .getUserRelatedCounts(userId)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+          this.dataIsLoaded = true;
+        })
+      )
+      .subscribe((res) => {
+        this.item.update(
+          (current) =>
+            ({
+              ...current,
+              publicProjects: res.projects,
+              publicPreprints: res.preprints,
+              publicRegistrations: res.registrations,
+              education: res.education,
+              employment: res.employment,
+            }) as Resource
+        );
+      });
   }
 }

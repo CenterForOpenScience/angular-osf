@@ -1,20 +1,20 @@
-import { LinkItem } from '@osf/features/search/models';
-import { ResourceType } from '@osf/shared/enums';
+import { ResourceType } from '@shared/enums';
+import { DiscoverableFilter, IdName } from '@shared/models';
 
 export interface Resource {
   id: string;
   resourceType: ResourceType;
   dateCreated?: Date;
   dateModified?: Date;
-  creators?: LinkItem[];
+  creators?: IdName[];
   fileName?: string;
   title?: string;
   description?: string;
-  from?: LinkItem;
-  license?: LinkItem;
-  provider?: LinkItem;
+  from?: IdName;
+  license?: IdName;
+  provider?: IdName;
   registrationTemplate?: string;
-  doi?: string;
+  identifier?: string;
   conflictOfInterestResponse?: string;
   publicProjects?: number;
   publicRegistrations?: number;
@@ -27,4 +27,13 @@ export interface Resource {
   hasMaterialsResource: boolean;
   hasPapersResource: boolean;
   hasSupplementalResource: boolean;
+}
+
+export interface ResourcesData {
+  resources: Resource[];
+  filters: DiscoverableFilter[];
+  count: number;
+  first: string;
+  next: string;
+  previous: string;
 }

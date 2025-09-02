@@ -1,6 +1,6 @@
-import { UserCountsResponse, UserRelatedDataCounts } from '@osf/shared/models';
+import { UserRelatedCounts, UserRelatedCountsResponseJsonApi } from '@osf/shared/models';
 
-export function MapUserCounts(response: UserCountsResponse): UserRelatedDataCounts {
+export function MapUserCounts(response: UserRelatedCountsResponseJsonApi): UserRelatedCounts {
   return {
     projects: response.data?.relationships?.nodes?.links?.related?.meta?.count,
     registrations: response.data?.relationships?.registrations?.links?.related?.meta?.count,
