@@ -5,27 +5,42 @@
     <osf-view-only-link-message />
   }
 
-  <div class="flex align-items-center justify-content-end">
-    <label class="date-range-label" for="date-range">{{ 'project.analytics.charts.showAnalytics' | translate }}</label>
+  @if (!relatedCounts()?.isPublic) {
+    <div class="flex flex-column gap-3 px-4">
+      <p>
+        {{ 'project.analytics.privateProject.message' | translate }}
+      </p>
 
-    <p-select
-      class="ml-3"
-      inputId="date-range"
-      [options]="rangeOptions"
-      optionLabel="dateRange"
-      [ngModel]="selectedRange()"
-      (ngModelChange)="onRangeChange($event)"
-      [disabled]="isMetricsError() || isMetricsLoading()"
-    >
-      <ng-template #selectedItem let-selectedOption>
-        {{ selectedOption.label | translate }}
-      </ng-template>
+      <ul class="pl-5">
+        <li class="list-disc">{{ 'project.analytics.privateProject.benefits.discoverable' | translate }}</li>
+        <li class="list-disc">{{ 'project.analytics.privateProject.benefits.citable' | translate }}</li>
+        <li class="list-disc">{{ 'project.analytics.privateProject.benefits.affiliated' | translate }}</li>
+        <li class="list-disc">{{ 'project.analytics.privateProject.benefits.openPractices' | translate }}</li>
+      </ul>
 
-      <ng-template #item let-item>
-        {{ item.label | translate }}
-      </ng-template>
-    </p-select>
-  </div>
+      <p>
+        {{ 'project.analytics.privateProject.impact' | translate }}
+      </p>
+    </div>
+  }
+
+  @if (relatedCounts()?.isPublic) {
+    <div class="flex align-items-center justify-content-end">
+      <label class="date-range-label" for="date-range">
+        {{ 'project.analytics.charts.showAnalytics' | translate }}
+      </label>
+
+      <div class="ml-3 w-3">
+        <osf-select
+          [options]="rangeOptions"
+          [selectedValue]="selectedRange()"
+          [fullWidth]="true"
+          [disabled]="isMetricsError() || isMetricsLoading()"
+          (changeValue)="onRangeChange($event)"
+        />
+      </div>
+    </div>
+  }
 
   <div class="flex flex-column flex-wrap gap-4 xl:flex-row" [class]="{ disabled: isMetricsError() }">
     <osf-line-chart

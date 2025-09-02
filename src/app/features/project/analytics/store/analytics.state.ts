@@ -1,9 +1,11 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { insertItem, updateItem } from '@ngxs/store/operators';
 
-import { catchError, of, tap, throwError } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
+
+import { handleSectionError } from '@osf/shared/helpers';
 
 import { AnalyticsMetricsModel, RelatedCountsModel } from '../models';
 import { AnalyticsService } from '../services';
@@ -57,7 +59,7 @@ export class AnalyticsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'metrics', error))
+      catchError((error) => handleSectionError(ctx, 'metrics', error))
     );
   }
 
@@ -105,7 +107,7 @@ export class AnalyticsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'relatedCounts', error))
+      catchError((error) => handleSectionError(ctx, 'relatedCounts', error))
     );
   }
 
@@ -120,16 +122,5 @@ export class AnalyticsState {
     }
 
     return Date.now() - lastFetched > this.REFRESH_INTERVAL;
-  }
-
-  private handleError(ctx: StateContext<AnalyticsStateModel>, section: 'metrics' | 'relatedCounts', error: Error) {
-    ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
   }
 }
