@@ -5,12 +5,11 @@ import { inject, Injectable } from '@angular/core';
 import { JsonApiService } from '@osf/shared/services';
 import { MapResources } from '@shared/mappers/search';
 import {
-  ApiData,
   FilterOptionItem,
   FilterOptionsResponseJsonApi,
-  IndexCardSearchResponse,
+  IndexCardDataJsonApi,
+  IndexCardSearchResponseJsonApi,
   ResourcesData,
-  SearchResourceMetadata,
   SelectOption,
 } from '@shared/models';
 
@@ -26,7 +25,7 @@ export class SearchService {
 
   getResources(params: Record<string, string>): Observable<ResourcesData> {
     return this.jsonApiService
-      .get<IndexCardSearchResponse>(`${environment.shareDomainUrl}/index-card-search`, params)
+      .get<IndexCardSearchResponseJsonApi>(`${environment.shareDomainUrl}/index-card-search`, params)
       .pipe(
         map((response) => {
           return this.handleResourcesRawResponse(response);
@@ -35,7 +34,7 @@ export class SearchService {
   }
 
   getResourcesByLink(link: string): Observable<ResourcesData> {
-    return this.jsonApiService.get<IndexCardSearchResponse>(link).pipe(
+    return this.jsonApiService.get<IndexCardSearchResponseJsonApi>(link).pipe(
       map((response) => {
         return this.handleResourcesRawResponse(response);
       })
@@ -79,19 +78,8 @@ export class SearchService {
     return { options, nextUrl };
   }
 
-  private handleResourcesRawResponse(response: IndexCardSearchResponse): ResourcesData {
-    const indexCardItems = response.included!.filter(
-      (
-        item
-      ): item is ApiData<
-        {
-          resourceMetadata: SearchResourceMetadata;
-        },
-        null,
-        null,
-        null
-      > => item.type === 'index-card'
-    );
+  private handleResourcesRawResponse(response: IndexCardSearchResponseJsonApi): ResourcesData {
+    const indexCardItems = response.included!.filter((item) => item.type === 'index-card') as IndexCardDataJsonApi[];
 
     const relatedPropertyPathItems = response.included!.filter(
       (item): item is RelatedPropertyPathItem => item.type === 'related-property-path'
@@ -100,7 +88,7 @@ export class SearchService {
     const appliedFilters: AppliedFilter[] = response.data?.attributes?.cardSearchFilter || [];
 
     return {
-      resources: indexCardItems.map((item) => MapResources(item.attributes.resourceMetadata)),
+      resources: indexCardItems.map((item) => MapResources(item)),
       filters: CombinedFilterMapper(appliedFilters, relatedPropertyPathItems),
       count: response.data.attributes.totalResultCount,
       first: response.data?.relationships?.searchResultPage?.links?.first?.href,

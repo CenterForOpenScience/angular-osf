@@ -1,7 +1,7 @@
 import { AppliedFilter, RelatedPropertyPathAttributes } from '@shared/mappers';
 import { ApiData, JsonApiResponse } from '@shared/models';
 
-export type IndexCardSearchResponse = JsonApiResponse<
+export type IndexCardSearchResponseJsonApi = JsonApiResponse<
   {
     attributes: {
       totalResultCount: number;
@@ -23,13 +23,17 @@ export type IndexCardSearchResponse = JsonApiResponse<
       };
     };
   },
-  (
-    | ApiData<{ resourceMetadata: SearchResourceMetadata }, null, null, null>
-    | ApiData<RelatedPropertyPathAttributes, null, null, null>
-  )[]
+  (IndexCardDataJsonApi | ApiData<RelatedPropertyPathAttributes, null, null, null>)[]
 >;
 
-export interface SearchResourceMetadata {
+export type IndexCardDataJsonApi = ApiData<IndexCardAttributesJsonApi, null, null, null>;
+
+interface IndexCardAttributesJsonApi {
+  resourceIdentifier: string[];
+  resourceMetadata: ResourceMetadataJsonApi;
+}
+
+interface ResourceMetadataJsonApi {
   '@id': string;
   accessService: MetadataField[];
   affiliation: MetadataField[];

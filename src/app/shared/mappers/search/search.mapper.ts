@@ -1,7 +1,8 @@
 import { ResourceType } from '@shared/enums';
-import { IdName, Resource, SearchResourceMetadata } from '@shared/models';
+import { IdName, IndexCardDataJsonApi, Resource } from '@shared/models';
 
-export function MapResources(rawItem: SearchResourceMetadata): Resource {
+export function MapResources(indexCardData: IndexCardDataJsonApi): Resource {
+  const rawItem = indexCardData.attributes.resourceMetadata;
   //TODO fix doi (identifiers) and check other fields
   return {
     id: rawItem['@id'],
