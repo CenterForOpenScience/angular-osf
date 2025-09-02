@@ -3,7 +3,7 @@ import { select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,7 +20,6 @@ import { InstitutionsSelectors } from '@osf/shared/stores/institutions';
 })
 export class AffiliatedInstitutionsDialogComponent {
   dialogRef = inject(DynamicDialogRef);
-  config = inject(DynamicDialogConfig);
 
   userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
   areUserInstitutionsLoading = select(InstitutionsSelectors.areUserInstitutionsLoading);

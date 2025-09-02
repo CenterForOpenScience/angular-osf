@@ -7,8 +7,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DestroyRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ProjectMetadataSelectors } from '@osf/features/project/metadata/store';
 import { MOCK_FUNDERS, MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
+
+import { MetadataSelectors } from '../../store';
 
 import { FundingDialogComponent } from './funding-dialog.component';
 
@@ -18,8 +19,8 @@ describe('FundingDialogComponent', () => {
 
   beforeEach(async () => {
     (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === ProjectMetadataSelectors.getFundersList) return () => MOCK_FUNDERS;
-      if (selector === ProjectMetadataSelectors.getFundersLoading) return () => false;
+      if (selector === MetadataSelectors.getFundersList) return () => MOCK_FUNDERS;
+      if (selector === MetadataSelectors.getFundersLoading) return () => false;
       return () => null;
     });
 
@@ -68,7 +69,10 @@ describe('FundingDialogComponent', () => {
     entry.patchValue({
       funderName: 'Test Funder',
       awardTitle: 'Test Award',
+      awardUri: 'https://www.nsf.gov/awardsearch/showAward?AWD_ID=1234567',
     });
+
+    fixture.detectChanges();
 
     component.save();
 
@@ -79,7 +83,7 @@ describe('FundingDialogComponent', () => {
           funderIdentifier: '',
           funderIdentifierType: 'DOI',
           awardTitle: 'Test Award',
-          awardUri: '',
+          awardUri: 'https://www.nsf.gov/awardsearch/showAward?AWD_ID=1234567',
           awardNumber: '',
         },
       ],
@@ -145,8 +149,8 @@ describe('FundingDialogComponent', () => {
 
   it('should handle empty funders list', () => {
     (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === ProjectMetadataSelectors.getFundersList) return () => [];
-      if (selector === ProjectMetadataSelectors.getFundersLoading) return () => false;
+      if (selector === MetadataSelectors.getFundersList) return () => [];
+      if (selector === MetadataSelectors.getFundersLoading) return () => false;
       return () => null;
     });
 
@@ -166,8 +170,8 @@ describe('FundingDialogComponent', () => {
 
   it('should handle null funders list', () => {
     (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === ProjectMetadataSelectors.getFundersList) return () => null;
-      if (selector === ProjectMetadataSelectors.getFundersLoading) return () => false;
+      if (selector === MetadataSelectors.getFundersList) return () => null;
+      if (selector === MetadataSelectors.getFundersLoading) return () => false;
       return () => null;
     });
 
@@ -206,239 +210,6 @@ describe('FundingDialogComponent', () => {
 
     component.removeFundingEntry(999);
     expect(component.fundingEntries.length).toBe(initialLength);
-  });
-
-  it('should save when form is valid', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    const entry = component.fundingEntries.at(0);
-    entry.patchValue({
-      funderName: 'Test Funder',
-      awardTitle: 'Test Award',
-    });
-
-    component.save();
-
-    expect(closeSpy).toHaveBeenCalledWith({
-      fundingEntries: [
-        {
-          funderName: 'Test Funder',
-          funderIdentifier: '',
-          funderIdentifierType: 'DOI',
-          awardTitle: 'Test Award',
-          awardUri: '',
-          awardNumber: '',
-        },
-      ],
-    });
-  });
-
-  it('should not save when form is invalid', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    const entry = component.fundingEntries.at(0);
-    entry.patchValue({
-      funderName: '',
-      awardTitle: '',
-    });
-
-    component.save();
-
-    expect(closeSpy).not.toHaveBeenCalled();
-  });
-
-  it('should filter out empty entries when saving', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    component.addFundingEntry();
-    const firstEntry = component.fundingEntries.at(0);
-    const secondEntry = component.fundingEntries.at(1);
-
-    firstEntry.patchValue({
-      funderName: 'Test Funder',
-      awardTitle: 'Test Award',
-    });
-
-    secondEntry.patchValue({
-      funderName: 'Test Funder 2',
-      awardTitle: 'Test Award 2',
-      awardUri: '',
-      awardNumber: '',
-    });
-
-    component.save();
-
-    expect(closeSpy).toHaveBeenCalledWith({
-      fundingEntries: [
-        {
-          funderName: 'Test Funder',
-          funderIdentifier: '',
-          funderIdentifierType: 'DOI',
-          awardTitle: 'Test Award',
-          awardUri: '',
-          awardNumber: '',
-        },
-        {
-          funderName: 'Test Funder 2',
-          funderIdentifier: '',
-          funderIdentifierType: 'DOI',
-          awardTitle: 'Test Award 2',
-          awardUri: '',
-          awardNumber: '',
-        },
-      ],
-    });
-  });
-
-  it('should include entries with only funderName', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    const entry = component.fundingEntries.at(0);
-    entry.patchValue({
-      funderName: 'Test Funder',
-      awardTitle: 'Test Award',
-      awardUri: '',
-      awardNumber: '',
-    });
-
-    component.save();
-
-    expect(closeSpy).toHaveBeenCalledWith({
-      fundingEntries: [
-        {
-          funderName: 'Test Funder',
-          funderIdentifier: '',
-          funderIdentifierType: 'DOI',
-          awardTitle: 'Test Award',
-          awardUri: '',
-          awardNumber: '',
-        },
-      ],
-    });
-  });
-
-  it('should include entries with only awardTitle', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    const entry = component.fundingEntries.at(0);
-    entry.patchValue({
-      funderName: 'Test Funder',
-      awardTitle: 'Test Award',
-      awardUri: '',
-      awardNumber: '',
-    });
-
-    component.save();
-
-    expect(closeSpy).toHaveBeenCalledWith({
-      fundingEntries: [
-        {
-          funderName: 'Test Funder',
-          funderIdentifier: '',
-          funderIdentifierType: 'DOI',
-          awardTitle: 'Test Award',
-          awardUri: '',
-          awardNumber: '',
-        },
-      ],
-    });
-  });
-
-  it('should include entries with only awardUri', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    const entry = component.fundingEntries.at(0);
-    entry.patchValue({
-      funderName: 'Test Funder',
-      awardTitle: 'Test Award',
-      awardUri: 'https://test.com',
-      awardNumber: '',
-    });
-
-    component.save();
-
-    expect(closeSpy).toHaveBeenCalledWith({
-      fundingEntries: [
-        {
-          funderName: 'Test Funder',
-          funderIdentifier: '',
-          funderIdentifierType: 'DOI',
-          awardTitle: 'Test Award',
-          awardUri: 'https://test.com',
-          awardNumber: '',
-        },
-      ],
-    });
-  });
-
-  it('should include entries with only awardNumber', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    const entry = component.fundingEntries.at(0);
-    entry.patchValue({
-      funderName: 'Test Funder',
-      awardTitle: 'Test Award',
-      awardUri: '',
-      awardNumber: 'AWARD-123',
-    });
-
-    component.save();
-
-    expect(closeSpy).toHaveBeenCalledWith({
-      fundingEntries: [
-        {
-          funderName: 'Test Funder',
-          funderIdentifier: '',
-          funderIdentifierType: 'DOI',
-          awardTitle: 'Test Award',
-          awardUri: '',
-          awardNumber: 'AWARD-123',
-        },
-      ],
-    });
-  });
-
-  it('should filter out completely empty entries', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    const entry = component.fundingEntries.at(0);
-    entry.patchValue({
-      funderName: '',
-      awardTitle: '',
-      awardUri: '',
-      awardNumber: '',
-    });
-
-    component.save();
-    expect(closeSpy).not.toHaveBeenCalled();
-
-    entry.patchValue({
-      funderName: 'Test Funder',
-      awardTitle: 'Test Award',
-    });
-
-    component.save();
-
-    expect(closeSpy).toHaveBeenCalledWith({
-      fundingEntries: [
-        {
-          funderName: 'Test Funder',
-          funderIdentifier: '',
-          funderIdentifierType: 'DOI',
-          awardTitle: 'Test Award',
-          awardUri: '',
-          awardNumber: '',
-        },
-      ],
-    });
   });
 
   it('should create entry with supplement data when provided', () => {

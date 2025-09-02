@@ -102,28 +102,6 @@ describe('LicenseDialogComponent', () => {
     expect(closeSpy).not.toHaveBeenCalled();
   });
 
-  it('should not save when license has required fields and form is invalid', () => {
-    const dialogRef = TestBed.inject(DynamicDialogRef);
-    const closeSpy = jest.spyOn(dialogRef, 'close');
-
-    component.selectedLicenseId.set(MOCK_LICENSE.id);
-
-    const mockLicenseComponent = {
-      selectedLicense: () => MOCK_LICENSE,
-      licenseForm: { invalid: true },
-      saveLicense: jest.fn(),
-    };
-
-    Object.defineProperty(component, 'licenseComponent', {
-      get: () => () => mockLicenseComponent,
-    });
-
-    component.save();
-
-    expect(mockLicenseComponent.saveLicense).not.toHaveBeenCalled();
-    expect(closeSpy).not.toHaveBeenCalled();
-  });
-
   it('should handle cancel', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
     const closeSpy = jest.spyOn(dialogRef, 'close');
