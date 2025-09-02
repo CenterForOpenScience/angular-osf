@@ -5,6 +5,7 @@
 @use "mixins" as mix;
 @use "common";
 @use "base";
+@use "icons";
 
 @use "./components/md-editor";
 @use "./components/preprints";
@@ -47,4 +48,3 @@
 @use "./overrides/tree";
 @use "./overrides/breadcrumbs";
 @use "./overrides/cedar-metadata";
-@use "./icons";

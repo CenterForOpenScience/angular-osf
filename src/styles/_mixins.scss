@@ -1,6 +1,6 @@
 @use "sass:math";
 @use "sass:meta";
-@use "assets/styles/variables" as var;
+@use "styles/variables" as var;
 
 @function rem($px) {
   @return math.div($px, var.$base-font-size) * 1rem;
