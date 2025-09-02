@@ -13,7 +13,7 @@ import {
   ViewOnlyLinkState,
 } from '@osf/shared/stores';
 
-import { AnalyticsState } from '../project/analytics/store';
+import { AnalyticsState } from '../analytics/store';
 import { RegistriesState } from '../registries/store';
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from '../registries/store/handlers';
 import { FilesHandlers } from '../registries/store/handlers/files.handlers';
@@ -72,7 +72,7 @@ export const registryRoutes: Routes = [
       },
       {
         path: 'analytics',
-        loadComponent: () => import('../project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
+        loadComponent: () => import('../analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
         data: { resourceType: ResourceType.Registration },
         providers: [provideStates([AnalyticsState])],
       },
@@ -80,7 +80,7 @@ export const registryRoutes: Routes = [
         path: 'analytics/duplicates',
         data: { resourceType: ResourceType.Registration },
         loadComponent: () =>
-          import('../project/analytics/components/view-duplicates/view-duplicates.component').then(
+          import('../analytics/components/view-duplicates/view-duplicates.component').then(
             (mod) => mod.ViewDuplicatesComponent
           ),
         providers: [provideStates([DuplicatesState])],

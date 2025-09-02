@@ -13,7 +13,6 @@ import {
   effect,
   inject,
   OnInit,
-  Signal,
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -28,7 +27,6 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_WEB, Primitive } from '@osf/shared/helpers';
 import { DatasetInput } from '@osf/shared/models';
 
@@ -68,9 +66,7 @@ export class AnalyticsComponent implements OnInit {
   private readonly translateService = inject(TranslateService);
 
   readonly resourceId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
-  readonly resourceType: Signal<ResourceType | undefined> = toSignal(
-    this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
-  );
+  readonly resourceType = toSignal(this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined));
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 

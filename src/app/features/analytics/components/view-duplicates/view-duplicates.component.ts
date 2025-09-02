@@ -36,11 +36,11 @@ import {
   LoadingSpinnerComponent,
   SubHeaderComponent,
   TruncatedTextComponent,
-} from '@shared/components';
-import { ResourceType, UserPermissions } from '@shared/enums';
-import { IS_SMALL } from '@shared/helpers';
-import { ToolbarResource } from '@shared/models';
-import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@shared/stores';
+} from '@osf/shared/components';
+import { ResourceType, UserPermissions } from '@osf/shared/enums';
+import { IS_SMALL } from '@osf/shared/helpers';
+import { ToolbarResource } from '@osf/shared/models';
+import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-view-duplicates',
@@ -71,11 +71,14 @@ export class ViewDuplicatesComponent {
   private registration = select(RegistryOverviewSelectors.getRegistry);
   private isProjectAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
   private isRegistryAnonymous = select(RegistryOverviewSelectors.isRegistryAnonymous);
+
   duplicates = select(DuplicatesSelectors.getDuplicates);
   isDuplicatesLoading = select(DuplicatesSelectors.getDuplicatesLoading);
   totalDuplicates = select(DuplicatesSelectors.getDuplicatesTotalCount);
+
   readonly pageSize = 10;
   readonly UserPermissions = UserPermissions;
+
   currentPage = signal<string>('1');
   isSmall = toSignal(inject(IS_SMALL));
   firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * this.pageSize);
@@ -167,27 +170,27 @@ export class ViewDuplicatesComponent {
     const dialogWidth = !this.isSmall() ? '95vw' : '450px';
 
     if (toolbarResource) {
-      const dialogRef = this.dialogService.open(ForkDialogComponent, {
-        width: dialogWidth,
-        focusOnShow: false,
-        header: this.translateService.instant('project.overview.dialog.fork.headerProject'),
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
-        data: {
-          resource: toolbarResource,
-          resourceType: this.resourceType(),
-        },
-      });
-
-      dialogRef.onClose.subscribe((result) => {
-        if (result.success) {
-          const resource = this.currentResource();
-          if (resource) {
-            this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+      this.dialogService
+        .open(ForkDialogComponent, {
+          width: dialogWidth,
+          focusOnShow: false,
+          header: this.translateService.instant('project.overview.dialog.fork.headerProject'),
+          closeOnEscape: true,
+          modal: true,
+          closable: true,
+          data: {
+            resource: toolbarResource,
+            resourceType: this.resourceType(),
+          },
+        })
+        .onClose.subscribe((result) => {
+          if (result.success) {
+            const resource = this.currentResource();
+            if (resource) {
+              this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+            }
           }
-        }
-      });
+        });
     }
   }
 
@@ -209,29 +212,29 @@ export class ViewDuplicatesComponent {
   private handleDeleteFork(id: string): void {
     const dialogWidth = !this.isSmall() ? '95vw' : '650px';
 
-    const dialogRef = this.dialogService.open(DeleteComponentDialogComponent, {
-      width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('project.overview.dialog.deleteComponent.header'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-      data: {
-        componentId: id,
-        resourceType: this.resourceType(),
-        isForksContext: true,
-        currentPage: parseInt(this.currentPage()),
-        pageSize: this.pageSize,
-      },
-    });
-
-    dialogRef.onClose.subscribe((result) => {
-      if (result && result.success) {
-        const resource = this.currentResource();
-        if (resource) {
-          this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+    this.dialogService
+      .open(DeleteComponentDialogComponent, {
+        width: dialogWidth,
+        focusOnShow: false,
+        header: this.translateService.instant('project.overview.dialog.deleteComponent.header'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: {
+          componentId: id,
+          resourceType: this.resourceType(),
+          isForksContext: true,
+          currentPage: parseInt(this.currentPage()),
+          pageSize: this.pageSize,
+        },
+      })
+      .onClose.subscribe((result) => {
+        if (result && result.success) {
+          const resource = this.currentResource();
+          if (resource) {
+            this.actions.getDuplicates(resource.id, resource.type, parseInt(this.currentPage()), this.pageSize);
+          }
         }
-      }
-    });
+      });
   }
 }
