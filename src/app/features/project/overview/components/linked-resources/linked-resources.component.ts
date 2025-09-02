@@ -31,9 +31,9 @@ export class LinkedResourcesComponent {
   isCollectionsRoute = input<boolean>(false);
   canWrite = input.required<boolean>();
 
-  protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
-  protected isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
-  protected isMedium = toSignal(inject(IS_MEDIUM));
+  linkedResources = select(NodeLinksSelectors.getLinkedResources);
+  isLinkedResourcesLoading = select(NodeLinksSelectors.getLinkedResourcesLoading);
+  isMedium = toSignal(inject(IS_MEDIUM));
 
   openLinkProjectModal() {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';

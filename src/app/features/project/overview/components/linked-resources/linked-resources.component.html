@@ -34,15 +34,20 @@
               </div>
             </div>
 
-            <div class="component-name flex flex-column gap-2">
+            <div class="component-name flex flex-wrap gap-1">
+              <p>{{ 'common.labels.contributors' | translate }}:</p>
               @for (contributor of linkedResource.contributors; track contributor.id) {
                 <div>
                   <a class="font-bold"> {{ contributor.fullName }}</a>
                   <span>{{ $last ? '' : ',' }}</span>
                 </div>
               }
+            </div>
+            <div class="flex align-items-center gap-1">
               <div class="component-description">
-                <osf-truncated-text [text]="linkedResource.description" />
+                <osf-truncated-text
+                  [text]="('common.labels.description' | translate) + ': ' + linkedResource.description"
+                />
               </div>
             </div>
           </div>
