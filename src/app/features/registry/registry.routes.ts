@@ -1,5 +1,4 @@
 import { provideStates } from '@ngxs/store';
-
 import { Routes } from '@angular/router';
 
 import { viewOnlyGuard } from '@osf/core/guards';
@@ -12,6 +11,7 @@ import {
   SubjectsState,
   ViewOnlyLinkState,
 } from '@osf/shared/stores';
+import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from '../analytics/store';
 import { RegistriesState } from '../registries/store';
@@ -28,7 +28,7 @@ export const registryRoutes: Routes = [
   {
     path: '',
     component: RegistryComponent,
-    providers: [provideStates([RegistryOverviewState])],
+    providers: [provideStates([RegistryOverviewState, ActivityLogsState])],
     children: [
       {
         path: '',
@@ -112,6 +112,13 @@ export const registryRoutes: Routes = [
         path: 'wiki',
         loadComponent: () =>
           import('./pages/registry-wiki/registry-wiki.component').then((c) => c.RegistryWikiComponent),
+      },
+      {
+        path: 'recent-activity',
+        loadComponent: () =>
+          import('./pages/recent-activity/registration-recent-activity.component').then(
+            (c) => c.RegistrationRecentActivityComponent
+          ),
       },
     ],
   },

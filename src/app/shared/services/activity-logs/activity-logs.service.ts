@@ -34,4 +34,21 @@ export class ActivityLogsService {
       .get<JsonApiResponseWithMeta<ActivityLogJsonApi[], MetaAnonymousJsonApi, null>>(url, params)
       .pipe(map((res) => ActivityLogsMapper.fromGetActivityLogsResponse(res)));
   }
+
+  fetchRegistrationLogs(
+    registrationId: string,
+    page = '1',
+    pageSize: string
+  ): Observable<PaginatedData<ActivityLog[]>> {
+    const url = `${environment.apiUrl}/registrations/${registrationId}/logs/`;
+    const params: Record<string, unknown> = {
+      'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node', 'group'],
+      page,
+      'page[size]': pageSize,
+    };
+
+    return this.jsonApiService
+      .get<ResponseJsonApi<ActivityLogJsonApi[]>>(url, params)
+      .pipe(map((res) => ActivityLogsMapper.fromGetActivityLogsResponse(res)));
+  }
 }
