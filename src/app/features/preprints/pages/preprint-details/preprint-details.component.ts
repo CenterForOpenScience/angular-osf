@@ -379,7 +379,8 @@ export class PreprintDetailsComponent extends DataciteTrackerComponent implement
         siteName: 'OSF',
         license: this.preprint()?.embeddedLicense?.name,
         contributors: this.contributors().map((contributor) => ({
-          givenName: contributor.fullName,
+          fullName: contributor.fullName,
+          givenName: contributor.givenName,
           familyName: contributor.familyName,
         })),
       },

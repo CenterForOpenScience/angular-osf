@@ -169,6 +169,7 @@ export class MetaTagsService {
       .filter((person): person is MetaTagAuthor => typeof person === 'object' && person !== null)
       .map((person) => ({
         '@type': 'schema:Person',
+        name: person.fullName,
         givenName: person.givenName,
         familyName: person.familyName,
       }));

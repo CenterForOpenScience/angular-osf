@@ -66,6 +66,7 @@ export class RegistryComponent extends DataciteTrackerComponent {
         license: this.registry()?.license?.name,
         contributors:
           this.registry()?.contributors?.map((contributor) => ({
+            fullName: contributor.fullName,
             givenName: contributor.givenName,
             familyName: contributor.familyName,
           })) ?? [],
