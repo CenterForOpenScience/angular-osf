@@ -1,6 +1,6 @@
 import { createDispatchMap, select, Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
@@ -9,6 +9,7 @@ import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 import { switchMap } from 'rxjs';
 
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -37,8 +38,9 @@ import {
 } from '@osf/features/metadata/store';
 import { LoadingSpinnerComponent, MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
 import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
+import { pathJoin } from '@osf/shared/helpers';
 import { MetadataTabsModel, OsfFile } from '@osf/shared/models';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { CustomConfirmationService, MetaTagsService, ToastService } from '@osf/shared/services';
 
 import {
   FileKeywordsComponent,
@@ -57,6 +59,8 @@ import {
   GetFileResourceMetadata,
   GetFileRevisions,
 } from '../../store';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-file-detail',
@@ -80,6 +84,7 @@ import {
   templateUrl: './file-detail.component.html',
   styleUrl: './file-detail.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DatePipe],
 })
 export class FileDetailComponent {
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
@@ -91,6 +96,9 @@ export class FileDetailComponent {
   readonly sanitizer = inject(DomSanitizer);
   readonly toastService = inject(ToastService);
   readonly customConfirmationService = inject(CustomConfirmationService);
+  private readonly metaTags = inject(MetaTagsService);
+  private readonly datePipe = inject(DatePipe);
+  private readonly translateService = inject(TranslateService);
 
   private readonly actions = createDispatchMap({
     getFile: GetFile,
@@ -110,8 +118,11 @@ export class FileDetailComponent {
   isFileLoading = select(FilesSelectors.isOpenedFileLoading);
   cedarRecords = select(MetadataSelectors.getCedarRecords);
   cedarTemplates = select(MetadataSelectors.getCedarTemplates);
-
   isAnonymous = select(FilesSelectors.isFilesAnonymous);
+  fileCustomMetadata = select(FilesSelectors.getFileCustomMetadata);
+  resourceMetadata = select(FilesSelectors.getResourceMetadata);
+  resourceContributors = select(FilesSelectors.getContributors);
+
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
   resourceType = '';
@@ -161,6 +172,33 @@ export class FileDetailComponent {
   selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
   selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
   cedarFormReadonly = signal<boolean>(true);
+
+  private readonly effectMetaTags = effect(() => {
+    const metaTagsData = this.metaTagsData();
+    if (metaTagsData) {
+      this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
+    }
+  });
+
+  private readonly metaTagsData = computed(() => {
+    const file = this.file();
+    if (!file) return null;
+    return {
+      title: this.fileCustomMetadata()?.title || file.name,
+      description:
+        this.fileCustomMetadata()?.description ??
+        this.translateService.instant('files.metaTagDescriptionPlaceholder'),
+      url: pathJoin(environment.webUrl, this.fileGuid),
+      publishedDate: this.datePipe.transform(file.dateCreated, 'yyyy-MM-dd'),
+      modifiedDate: this.datePipe.transform(file.dateModified, 'yyyy-MM-dd'),
+      language: this.fileCustomMetadata()?.language,
+      contributors: this.resourceContributors()?.map((contributor) => ({
+        fullName: contributor.fullName,
+        givenName: contributor.givenName,
+        familyName: contributor.familyName,
+      })),
+    };
+  });
 
   constructor() {
     this.route.params

@@ -956,6 +956,7 @@
     "title": "Files",
     "storageLocation": "OSF Storage",
     "searchPlaceholder": "Search your projects",
+    "metaTagDescriptionPlaceholder": "Presented by OSF",
     "sort": {
       "placeholder": "Sort",
       "nameAZ": "Name: A-Z",
