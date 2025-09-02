@@ -1,4 +1,4 @@
-import { ApiData, JsonApiResponse } from '@osf/shared/models/common/json-api.model';
+import { ApiData, JsonApiResponse } from '../common';
 
 export type UserCountsResponse = JsonApiResponse<
   ApiData<

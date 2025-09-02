@@ -6,14 +6,14 @@
     [icon]="'custom-icon-institutions-dark'"
   />
 
-  @if (institutionsLoading()) {
-    <div class="flex-1 mt-4 bg-white md:mt-8 lg:pt-5">
-      <osf-loading-spinner />
-    </div>
-  } @else {
-    <div class="flex-column flex flex-1 w-full bg-white p-5">
-      <osf-search-input [control]="searchControl" [placeholder]="'institutions.searchInstitutions' | translate" />
+  <div class="flex-column flex flex-1 w-full bg-white p-5">
+    <osf-search-input [control]="searchControl" [placeholder]="'institutions.searchInstitutions' | translate" />
 
+    @if (institutionsLoading()) {
+      <div class="flex-1 mt-4 bg-white md:mt-8 lg:pt-5">
+        <osf-loading-spinner />
+      </div>
+    } @else {
       <div class="py-5 flex flex-column gap-3">
         @for (institution of institutions(); track $index) {
           <a class="dark-blue-link" [routerLink]="[institution.id]">
@@ -36,13 +36,13 @@
         }
       </div>
 
-      @if (totalInstitutionsCount() > 10) {
+      @if (totalInstitutionsCount() > currentPageSize()) {
         <osf-custom-paginator
           [first]="first()"
           [totalCount]="totalInstitutionsCount()"
           (pageChanged)="onPageChange($event)"
         ></osf-custom-paginator>
       }
-    </div>
-  }
+    }
+  </div>
 </section>

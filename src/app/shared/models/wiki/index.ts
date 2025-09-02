@@ -1,3 +1,3 @@
 export * from './wiki.model';
-export * from './wikiMenu.model';
-export * from './wikiType.model';
+export * from './wiki-menu.model';
+export * from './wiki-type.model';

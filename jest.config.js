@@ -8,7 +8,7 @@ module.exports = {
     '^@osf/(.*)$': '<rootDir>/src/app/$1',
     '^@core/(.*)$': '<rootDir>/src/app/core/$1',
     '^@shared/(.*)$': '<rootDir>/src/app/shared/$1',
-    '^@styles/(.*)$': '<rootDir>/assets/styles/$1',
+    '^@styles/(.*)$': '<rootDir>/src/styles/$1',
     '^@testing/(.*)$': '<rootDir>/src/testing/$1',
     '^src/environments/environment$': '<rootDir>/src/environments/environment.ts',
   },

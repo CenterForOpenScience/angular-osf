@@ -1,6 +1,6 @@
 import { MenuItem } from 'primeng/api';
 
-import { WikiItemType } from './wikiType.model';
+import { WikiItemType } from './wiki-type.model';
 
 export interface WikiMenuItem extends MenuItem {
   type?: WikiItemType;

@@ -13,7 +13,7 @@ export * from './header-style.helper';
 export * from './http.helper';
 export * from './password.helper';
 export * from './path-join.helper';
-export * from './pie-chart-palette';
+export * from './remove-nullable.helper';
 export * from './search-pref-to-json-api-query-params.helper';
 export * from './state-error.handler';
 export * from './types.helper';
