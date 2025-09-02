@@ -3,7 +3,7 @@ import { RegistryOverview, RegistrySubject } from '@osf/features/registry/models
 
 import { Institution, ResourceOverview } from '../models';
 
-export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
+export function MapProjectOverview(project: ProjectOverview, isAnonymous = false): ResourceOverview {
   return {
     id: project.id,
     type: project.type,
@@ -37,13 +37,15 @@ export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
     affiliatedInstitutions: project.affiliatedInstitutions?.filter(Boolean) || undefined,
     forksCount: project.forksCount || 0,
     viewOnlyLinksCount: project.viewOnlyLinksCount || 0,
+    isAnonymous,
   };
 }
 
 export function MapRegistryOverview(
   registry: RegistryOverview,
   subjects: RegistrySubject[],
-  institutions: Institution[]
+  institutions: Institution[],
+  isAnonymous = false
 ): ResourceOverview {
   return {
     id: registry.id,
@@ -78,5 +80,6 @@ export function MapRegistryOverview(
     customCitation: registry.customCitation,
     affiliatedInstitutions: institutions,
     associatedProjectId: registry.associatedProjectId,
+    isAnonymous,
   };
 }

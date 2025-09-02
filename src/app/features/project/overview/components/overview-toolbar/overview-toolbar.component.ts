@@ -28,6 +28,7 @@ import {
   MyResourcesSelectors,
   RemoveResourceFromBookmarks,
 } from '@osf/shared/stores';
+import { hasViewOnlyParam } from '@shared/helpers';
 
 import { SocialsShareActionItem } from '../../models';
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
@@ -79,6 +80,10 @@ export class OverviewToolbarComponent {
   socialsActionItems = computed(() => {
     const shareableContent = this.createShareableContent();
     return shareableContent ? this.buildSocialActionItems(shareableContent) : [];
+  });
+
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
   });
 
   readonly forkActionItems = [

@@ -69,13 +69,14 @@
                     <p class="mt-2">{{ styledCitation()?.citation }}</p>
                   }
                   <p-divider />
-
-                  <p-button
-                    class="btn-full-width"
-                    severity="secondary"
-                    [label]="'common.buttons.createCustomCitation' | translate"
-                    (click)="toggleEditMode()"
-                  ></p-button>
+                  @if (!hasViewOnly) {
+                    <p-button
+                      class="btn-full-width"
+                      severity="secondary"
+                      [label]="'common.buttons.createCustomCitation' | translate"
+                      (click)="toggleEditMode()"
+                    ></p-button>
+                  }
                 }
               }
             }

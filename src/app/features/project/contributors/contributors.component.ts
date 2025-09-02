@@ -9,11 +9,22 @@ import { TableModule } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of, switchMap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  Signal,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { GetComponents, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { SearchInputComponent, ViewOnlyTableComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
@@ -85,6 +96,7 @@ export class ContributorsComponent implements OnInit {
 
   protected viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
   protected projectDetails = select(ViewOnlyLinkSelectors.getResourceDetails);
+  protected components = select(ProjectOverviewSelectors.getComponents);
 
   protected readonly selectedPermission = signal<ContributorPermission | null>(null);
   protected readonly selectedBibliography = signal<boolean | null>(null);
@@ -95,6 +107,11 @@ export class ContributorsComponent implements OnInit {
   protected contributors = signal([]);
   protected readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
   protected readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+
+  canCreateViewLink = computed(() => {
+    const details = this.projectDetails();
+    return !!details && !!details.attributes && !!this.resourceId();
+  });
 
   protected actions = createDispatchMap({
     getViewOnlyLinks: FetchViewOnlyLinks,
@@ -108,6 +125,7 @@ export class ContributorsComponent implements OnInit {
     addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
+    getComponents: GetComponents,
   });
 
   get hasChanges(): boolean {
@@ -133,6 +151,7 @@ export class ContributorsComponent implements OnInit {
       this.actions.getViewOnlyLinks(id, this.resourceType());
       this.actions.getResourceDetails(id, this.resourceType());
       this.actions.getContributors(id, this.resourceType());
+      this.actions.getComponents(id);
     }
 
     this.setSearchSubscription();
@@ -249,20 +268,23 @@ export class ContributorsComponent implements OnInit {
   }
 
   createViewLink() {
-    const sharedComponents = [
-      {
-        id: this.projectDetails().id,
-        title: this.projectDetails().attributes.title,
-        category: 'project',
-      },
-    ];
+    const projectDetails = this.projectDetails();
+    const projectId = this.resourceId();
+
+    const currentProject = {
+      id: projectDetails.id,
+      title: projectDetails.attributes.title,
+    };
 
     this.dialogService
       .open(CreateViewLinkDialogComponent, {
         width: '448px',
         focusOnShow: false,
         header: this.translateService.instant('project.contributors.createLinkDialog.dialogTitle'),
-        data: { sharedComponents, projectId: this.resourceId() },
+        data: {
+          projectId: projectId,
+          currentProject: currentProject,
+        },
         closeOnEscape: true,
         modal: true,
         closable: true,
@@ -285,7 +307,7 @@ export class ContributorsComponent implements OnInit {
       onConfirm: () =>
         this.actions
           .deleteViewOnlyLink(this.resourceId(), this.resourceType(), link.id)
-          .subscribe(() => this.toastService.showSuccess('myProjects.settings.delete.success')),
+          .subscribe(() => this.toastService.showSuccess('myProjects.settings.viewOnlyLinkDeleted')),
     });
   }
 }

@@ -2,6 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { viewOnlyGuard } from '@osf/core/guards';
 import { ResourceType } from '@osf/shared/enums';
 import {
   CitationsState,
@@ -45,6 +46,7 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'metadata',
+        canActivate: [viewOnlyGuard],
         loadChildren: () =>
           import('../project/metadata/project-metadata.routes').then((mod) => mod.projectMetadataRoutes),
         providers: [provideStates([ContributorsState, SubjectsState])],
@@ -56,16 +58,19 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'registrations',
+        canActivate: [viewOnlyGuard],
         loadComponent: () =>
           import('../project/registrations/registrations.component').then((mod) => mod.RegistrationsComponent),
       },
       {
         path: 'settings',
+        canActivate: [viewOnlyGuard],
         loadComponent: () => import('../project/settings/settings.component').then((mod) => mod.SettingsComponent),
         providers: [provideStates([SettingsState, ViewOnlyLinkState])],
       },
       {
         path: 'contributors',
+        canActivate: [viewOnlyGuard],
         loadComponent: () =>
           import('../project/contributors/contributors.component').then((mod) => mod.ContributorsComponent),
         data: { resourceType: ResourceType.Project },
@@ -92,6 +97,7 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'addons',
+        canActivate: [viewOnlyGuard],
         loadChildren: () => import('../project/addons/addons.routes').then((mod) => mod.addonsRoutes),
       },
     ],

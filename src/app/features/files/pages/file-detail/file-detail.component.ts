@@ -78,15 +78,16 @@ export class FileDetailComponent {
 
   file = select(FilesSelectors.getOpenedFile);
   isFileLoading = select(FilesSelectors.isOpenedFileLoading);
+  isAnonymous = select(FilesSelectors.isFilesAnonymous);
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
   resourceType = '';
 
   isIframeLoading = true;
 
-  protected readonly FileDetailTab = FileDetailTab;
+  readonly FileDetailTab = FileDetailTab;
 
-  protected selectedTab: FileDetailTab = FileDetailTab.Details;
+  selectedTab: FileDetailTab = FileDetailTab.Details;
 
   fileGuid = '';
 
@@ -189,27 +190,27 @@ export class FileDetailComponent {
     this.selectedTab = index;
   }
 
-  protected handleEmailShare(): void {
+  handleEmailShare(): void {
     const link = `mailto:?subject=${this.file()?.name ?? ''}&body=${this.file()?.links?.html ?? ''}`;
     window.location.href = link;
   }
 
-  protected handleXShare(): void {
+  handleXShare(): void {
     const link = `https://x.com/intent/tweet?url=${this.file()?.links?.html ?? ''}&text=${this.file()?.name ?? ''}&via=OSFramework`;
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 
-  protected handleFacebookShare(): void {
+  handleFacebookShare(): void {
     const link = `https://www.facebook.com/dialog/share?app_id=1022273774556662&display=popup&href=${this.file()?.links?.html ?? ''}&redirect_uri=${this.file()?.links?.html ?? ''}`;
     window.open(link, '_blank', 'noopener,noreferrer');
   }
 
-  protected handleCopyDynamicEmbed(): void {
+  handleCopyDynamicEmbed(): void {
     const data = embedDynamicJs.replace('ENCODED_URL', this.file()?.links?.render ?? '');
     this.copyToClipboard(data);
   }
 
-  protected handleCopyStaticEmbed(): void {
+  handleCopyStaticEmbed(): void {
     const data = embedStaticHtml.replace('ENCODED_URL', this.file()?.links?.render ?? '');
     this.copyToClipboard(data);
   }

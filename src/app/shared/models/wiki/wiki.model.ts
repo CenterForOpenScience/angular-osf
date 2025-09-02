@@ -1,14 +1,20 @@
-import { JsonApiResponse } from '@osf/shared/models';
+import { JsonApiResponse, JsonApiResponseWithMeta, MetaAnonymousJsonApi } from '@osf/shared/models';
 
 export enum WikiModes {
   View = 'view',
   Edit = 'edit',
   Compare = 'compare',
 }
+
 export interface Wiki {
   id: string;
   name: string;
   kind: string;
+}
+
+export interface WikisWithMeta {
+  wikis: Wiki[];
+  meta: MetaAnonymousJsonApi;
 }
 
 export interface WikiVersion {
@@ -88,6 +94,11 @@ export interface HomeWikiJsonApiResponse extends JsonApiResponse<HomeWikiGetResp
 }
 
 export interface WikiJsonApiResponse extends JsonApiResponse<WikiGetResponse[], null> {
+  data: WikiGetResponse[];
+}
+
+export interface WikiJsonApiResponseWithMeta
+  extends JsonApiResponseWithMeta<WikiGetResponse[], MetaAnonymousJsonApi, null> {
   data: WikiGetResponse[];
 }
 

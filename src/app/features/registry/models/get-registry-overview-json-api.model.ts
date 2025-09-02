@@ -1,7 +1,17 @@
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
-import { ApiData, JsonApiResponse, ProviderDataJsonApi, SchemaResponseDataJsonApi } from '@osf/shared/models';
+import {
+  ApiData,
+  JsonApiResponseWithMeta,
+  MetaAnonymousJsonApi,
+  ProviderDataJsonApi,
+  SchemaResponseDataJsonApi,
+} from '@osf/shared/models';
 
-export type GetRegistryOverviewJsonApi = JsonApiResponse<RegistryOverviewJsonApiData, null>;
+export type GetRegistryOverviewJsonApi = JsonApiResponseWithMeta<
+  RegistryOverviewJsonApiData,
+  MetaAnonymousJsonApi,
+  null
+>;
 
 export type RegistryOverviewJsonApiData = ApiData<
   RegistryOverviewJsonApiAttributes,

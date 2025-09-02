@@ -4,6 +4,10 @@
   <osf-loading-spinner></osf-loading-spinner>
 } @else {
   <div class="flex flex-column bg-white gap-4 h-full flex-1 p-4 p-dialog-align-center">
+    @if (hasViewOnly()) {
+      <osf-view-only-link-message />
+    }
+
     <div class="flex flex-grow-0 w-full sm:w-30rem">
       <p-floatlabel class="w-full md:w-56" variant="in">
         <p-select
@@ -55,7 +59,7 @@
 
         <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="showInfoDialog()"></p-button>
 
-        @if (!isViewOnly()) {
+        @if (!isViewOnly() && !hasViewOnly()) {
           <p-button
             [disabled]="fileIsUploading() || isFilesLoading()"
             outlined

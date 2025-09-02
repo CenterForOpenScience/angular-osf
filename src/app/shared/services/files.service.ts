@@ -31,7 +31,9 @@ import {
   GetConfiguredStorageAddonsJsonApi,
   GetFileResponse,
   GetFilesResponse,
+  GetFilesResponseWithMeta,
   JsonApiResponse,
+  MetaAnonymousJsonApi,
   OsfFile,
   OsfFileVersion,
 } from '@shared/models';
@@ -56,7 +58,11 @@ export class FilesService {
     [ResourceType.Registration, 'registrations'],
   ]);
 
-  getFiles(filesLink: string, search: string, sort: string): Observable<OsfFile[]> {
+  getFiles(
+    filesLink: string,
+    search: string,
+    sort: string
+  ): Observable<{ files: OsfFile[]; meta?: MetaAnonymousJsonApi }> {
     const params: Record<string, string> = {
       sort: sort,
       'fields[files]': this.filesFields,
@@ -64,12 +70,14 @@ export class FilesService {
     };
 
     return this.jsonApiService
-      .get<GetFilesResponse>(`${filesLink}`, params)
-      .pipe(map((response) => MapFiles(response.data)));
+      .get<GetFilesResponseWithMeta>(`${filesLink}`, params)
+      .pipe(map((response) => ({ files: MapFiles(response.data), meta: response.meta })));
   }
 
-  getFolders(folderLink: string): Observable<OsfFile[]> {
-    return this.jsonApiService.get<GetFilesResponse>(`${folderLink}`).pipe(map((response) => MapFiles(response.data)));
+  getFolders(folderLink: string): Observable<{ files: OsfFile[]; meta?: MetaAnonymousJsonApi }> {
+    return this.jsonApiService
+      .get<GetFilesResponseWithMeta>(`${folderLink}`)
+      .pipe(map((response) => ({ files: MapFiles(response.data), meta: response.meta })));
   }
 
   getFilesWithoutFiltering(filesLink: string): Observable<OsfFile[]> {

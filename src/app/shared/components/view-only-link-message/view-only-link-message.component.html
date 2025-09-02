@@ -1,0 +1,10 @@
+<p-message class="overview-message w-full" severity="info">
+  <ng-template #container>
+    <div class="flex w-full align-items-center justify-content-between">
+      <p>
+        {{ 'common.hint.viewOnlyLinksBanner' | translate }}
+      </p>
+      <p-button (onClick)="handleLeaveViewOnlyView()" [label]="'common.buttons.leaveThisView' | translate"></p-button>
+    </div>
+  </ng-template>
+</p-message>

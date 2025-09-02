@@ -29,21 +29,49 @@
     </span>
   </p>
 
-  <div class="flex flex-column gap-2">
-    @for (item of config.data.sharedComponents; track item.id) {
-      <div class="flex gap-1">
-        <p-checkbox
-          variant="filled"
-          binary="true"
-          [ngModel]="selectedComponents()[item.id]"
-          (ngModelChange)="onCheckboxToggle(item.id, $event)"
-          [disabled]="isCurrentProject(item)"
-        >
-        </p-checkbox>
-        <p>{{ item.title }}</p>
-      </div>
-    }
-  </div>
+  @if (isLoading()) {
+    <osf-loading-spinner />
+  } @else {
+    <div class="flex flex-column gap-2">
+      @for (item of allComponents; track item.id) {
+        <div class="flex gap-1">
+          <p-checkbox
+            variant="filled"
+            binary="true"
+            [class.pl-4]="!isCurrentProject(item)"
+            [ngModel]="selectedComponents()[item.id]"
+            (ngModelChange)="onCheckboxToggle(item.id, $event)"
+            [disabled]="isCurrentProject(item)"
+          >
+          </p-checkbox>
+          <p>
+            {{ item.title }}
+            @if (isCurrentProject(item)) {
+              <span>
+                {{ 'myProjects.settings.viewOnlyLinkCurrentProject' | translate }}
+              </span>
+            }
+          </p>
+        </div>
+      }
+      @if (allComponents.length > 1) {
+        <div class="flex gap-2 justify-content-end">
+          <p-button
+            severity="secondary"
+            size="small"
+            [label]="'myProjects.createProject.affiliation.selectAll' | translate"
+            (click)="selectAllComponents()"
+          />
+          <p-button
+            severity="secondary"
+            size="small"
+            [label]="'myProjects.createProject.affiliation.removeAll' | translate"
+            (click)="deselectAllComponents()"
+          />
+        </div>
+      }
+    </div>
+  }
 
   <div class="flex gap-2">
     <p-button
@@ -58,6 +86,7 @@
       class="w-full"
       styleClass="w-full"
       (onClick)="addLink()"
+      [disabled]="!isFormValid"
       [label]="'project.contributors.addDialog.next' | translate"
     ></p-button>
   </div>

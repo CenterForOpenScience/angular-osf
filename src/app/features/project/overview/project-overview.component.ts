@@ -25,33 +25,33 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
 import {
-  LoadingSpinnerComponent,
-  MakeDecisionDialogComponent,
-  ResourceMetadataComponent,
-  SubHeaderComponent,
-} from '@shared/components';
-import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
-import { Mode, ResourceType, UserPermissions } from '@shared/enums';
-import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
-import { ToastService } from '@shared/services';
+  ClearCollectionModeration,
+  CollectionsModerationSelectors,
+  GetSubmissionsReviewActions,
+} from '@osf/features/moderation/store/collections-moderation';
+import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
+import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
+import { MapProjectOverview } from '@osf/shared/mappers';
+import { ToastService } from '@osf/shared/services';
 import {
+  ClearCollections,
   ClearWiki,
   CollectionsSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetHomeWiki,
   GetLinkedResources,
-} from '@shared/stores';
-import { GetActivityLogs } from '@shared/stores/activity-logs';
-import { ClearCollections } from '@shared/stores/collections';
-
+} from '@osf/shared/stores';
+import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
-  ClearCollectionModeration,
-  CollectionsModerationSelectors,
-  GetSubmissionsReviewActions,
-} from '../../moderation/store/collections-moderation';
+  DataciteTrackerComponent,
+  LoadingSpinnerComponent,
+  MakeDecisionDialogComponent,
+  ResourceMetadataComponent,
+  SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
+} from '@shared/components';
 
 import {
   LinkedResourcesComponent,
@@ -88,6 +88,8 @@ import {
     TranslatePipe,
     Message,
     RouterLink,
+    ViewOnlyLinkMessageComponent,
+    ViewOnlyLinkMessageComponent,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -143,7 +145,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return this.currentReviewAction()?.toState;
   });
 
-  protected showDecisionButton = computed(() => {
+  showDecisionButton = computed(() => {
     return (
       this.isCollectionsRoute() &&
       this.submissionReviewStatus() !== SubmissionReviewStatus.Removed &&
@@ -151,10 +153,16 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     );
   });
 
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
   private currentProject$ = toObservable(this.currentProject);
-  protected userPermissions = computed(() => {
+
+  userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
+  });
+
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
   });
 
   get isAdmin(): boolean {
@@ -165,33 +173,35 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return this.userPermissions().includes(UserPermissions.Write);
   }
 
-  protected resourceOverview = computed(() => {
+  resourceOverview = computed(() => {
     const project = this.currentProject();
     if (project) {
-      return MapProjectOverview(project);
+      return MapProjectOverview(project, this.isAnonymous());
     }
     return null;
   });
 
-  protected isLoading = computed(() => {
+  isLoading = computed(() => {
     return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
   });
 
-  protected currentResource = computed(() => {
-    if (this.currentProject()) {
+  currentResource = computed(() => {
+    const project = this.currentProject();
+    if (project) {
       return {
-        id: this.currentProject()!.id,
-        isPublic: this.currentProject()!.isPublic,
-        storage: this.currentProject()!.storage,
-        viewOnlyLinksCount: this.currentProject()!.viewOnlyLinksCount,
-        forksCount: this.currentProject()!.forksCount,
+        id: project.id,
+        isPublic: project.isPublic,
+        storage: project.storage,
+        viewOnlyLinksCount: project.viewOnlyLinksCount,
+        forksCount: project.forksCount,
         resourceType: ResourceType.Project,
+        isAnonymous: this.isAnonymous(),
       };
     }
     return null;
   });
 
-  protected getDoi(): Observable<string | null> {
+  getDoi(): Observable<string | null> {
     return this.currentProject$.pipe(
       filter((project) => project != null),
       map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
@@ -221,7 +231,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     }
   }
 
-  protected handleOpenMakeDecisionDialog() {
+  handleOpenMakeDecisionDialog() {
     const dialogWidth = this.isMobile() ? '95vw' : '600px';
 
     this.dialogService
@@ -242,7 +252,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       });
   }
 
-  protected goBack(): void {
+  goBack(): void {
     const currentStatus = this.route.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus } : {};
 

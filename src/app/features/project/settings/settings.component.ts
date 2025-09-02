@@ -169,7 +169,7 @@ export class SettingsComponent implements OnInit {
       messageKey: 'myProjects.settings.delete.message',
       onConfirm: () => {
         this.actions.deleteViewOnlyLink(this.projectId(), ResourceType.Project, link.id).subscribe(() => {
-          this.toastService.showSuccess('myProjects.settings.delete.success');
+          this.toastService.showSuccess('myProjects.settings.viewOnlyLinkDeleted');
           this.loaderService.hide();
         });
       },
