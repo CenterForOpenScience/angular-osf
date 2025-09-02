@@ -56,6 +56,7 @@ export class FolderSelectorComponent implements OnInit {
 
   isGoogleFilePicker = input.required<boolean>();
   accountName = input.required<string>();
+  accountId = input.required<string>();
   operationInvocationResult = input.required<StorageItem[]>();
   accountNameControl = input(new FormControl());
   isCreateMode = input(false);
