@@ -30,7 +30,6 @@ export * from './metadata-field.model';
 export * from './metadata-tabs.model';
 export * from './my-resources';
 export * from './nodes';
-export * from './nodes/nodes-json-api.model';
 export * from './notifications';
 export * from './paginated-data.model';
 export * from './pagination-links.model';
