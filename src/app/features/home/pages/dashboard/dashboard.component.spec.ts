@@ -1,11 +1,9 @@
 import { Store } from '@ngxs/store';
+import { signal } from '@angular/core';
 
 import { MockComponents } from 'ng-mocks';
 
-import { of } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ReactiveFormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 
 import { LoadingSpinnerComponent, MyProjectsTableComponent, SubHeaderComponent } from '@shared/components';
@@ -14,31 +12,39 @@ import { MyResourcesSelectors } from '@shared/stores';
 import { DashboardComponent } from './dashboard.component';
 
 import { getProjectsMockForComponent } from '@testing/data/dashboard/dasboard.data';
-import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
-  const storeMock = {
-    dispatch: jest.fn().mockReturnValue(of({})),
-    selectSnapshot: jest.fn(),
-    selectSignal: jest.fn(),
-  };
 
   beforeEach(async () => {
-    (storeMock.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === MyResourcesSelectors.getProjects) return () => getProjectsMockForComponent();
-      if (selector === MyResourcesSelectors.getTotalProjects) return () => getProjectsMockForComponent().length;
-      if (selector === MyResourcesSelectors.getProjectsLoading) return () => false;
-      return () => null;
-    });
     await TestBed.configureTestingModule({
       imports: [
         DashboardComponent,
         OSFTestingStoreModule,
         ...MockComponents(SubHeaderComponent, MyProjectsTableComponent, LoadingSpinnerComponent),
       ],
-      providers: [{ provide: Store, useValue: storeMock }],
+      providers: [
+        {
+          provide: Store,
+          useValue: {
+            selectSignal: (selector: any) => {
+              if (selector === MyResourcesSelectors.getProjects) {
+                return signal(getProjectsMockForComponent());
+              }
+              if (selector === MyResourcesSelectors.getTotalProjects) {
+                return signal(getProjectsMockForComponent().length);
+              }
+              if (selector === MyResourcesSelectors.getProjectsLoading) {
+                return signal(false);
+              }
+              return signal(null);
+            },
+            dispatch: jest.fn(),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardComponent);
@@ -73,7 +79,6 @@ describe('DashboardComponent', () => {
     expect(iframe).toBeTruthy();
     expect(iframe.nativeElement.src).toContain('youtube.com');
   });
-
   it('should render welcome screen when no projects exist', () => {
     jest.spyOn(component, 'areProjectsLoading').mockReturnValue(false);
     jest.spyOn(component, 'existsProjects').mockReturnValue(false);
