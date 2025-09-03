@@ -70,7 +70,6 @@ module.exports = {
   testPathIgnorePatterns: [
     '<rootDir>/src/app/app.config.ts',
     '<rootDir>/src/app/app.routes.ts',
-    '<rootDir>/src/app/features/registry/',
     '<rootDir>/src/app/features/project/addons/components/configure-configure-addon/',
     '<rootDir>/src/app/features/project/addons/components/connect-configured-addon/',
     '<rootDir>/src/app/features/project/addons/components/disconnect-addon-modal/',
