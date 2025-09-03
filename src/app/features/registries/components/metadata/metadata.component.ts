@@ -84,6 +84,7 @@ export class MetadataComponent implements OnDestroy {
   constructor() {
     effect(() => {
       const draft = this.draftRegistration();
+      // TODO: This shouldn't be an effect()
       if (draft && !this.isFormUpdated) {
         this.updateFormValue(draft);
         this.isFormUpdated = true;

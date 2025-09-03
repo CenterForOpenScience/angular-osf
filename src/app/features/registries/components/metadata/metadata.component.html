@@ -4,21 +4,29 @@
     <p class="mb-4">{{ 'registries.metadata.description' | translate }}</p>
   </div>
   <form [formGroup]="metadataForm" (ngSubmit)="submitMetadata()" class="flex flex-column gap-4">
-    <section>
+    <section data-test-registration-title-section>
       <p-card class="w-full">
-        <h2 class="mb-2">{{ 'common.labels.title' | translate }}</h2>
+        <label for="registration-title-id">
+          <h2 class="mb-2">{{ 'common.labels.title' | translate }}</h2>
+        </label>
         <p class="mb-1">{{ 'shared.title.description' | translate }}</p>
-        <osf-text-input [control]="metadataForm.controls['title']" [maxLength]="inputLimits.fullName.maxLength">
+        <osf-text-input
+          id="registration-title-id"
+          [control]="metadataForm.controls['title']"
+          [maxLength]="inputLimits.fullName.maxLength"
+        >
         </osf-text-input>
       </p-card>
     </section>
-    <section>
+    <section data-test-registration-description-section>
       <p-card>
         <div class="mt-2">
-          <h2 class="mb-2">{{ 'common.labels.description' | translate }}</h2>
-          <p class="mb-1">{{ 'shared.description.description' | translate }}</p>
+          <label for="registration-description-id" class="mb-2">
+            <h2>{{ 'common.labels.description' | translate }}</h2>
+          </label>
+          <p class="mb-1">{{ 'shared.description.descriptionMessage' | translate }}</p>
           <textarea
-            id="project-description-id"
+            id="registration-description-id"
             formControlName="description"
             class="w-full"
             rows="5"
@@ -37,10 +45,19 @@
         <div class="flex justify-content-end"></div>
       </p-card>
     </section>
-    <osf-contributors [control]="metadataForm.controls['contributors']"></osf-contributors>
-    <osf-registries-license [control]="metadataForm.controls['license']"></osf-registries-license>
-    <osf-registries-subjects [control]="metadataForm.controls['subjects']"></osf-registries-subjects>
-    <osf-registries-tags></osf-registries-tags>
+    <osf-contributors
+      data-test-registration-contributors-section
+      [control]="metadataForm.controls['contributors']"
+    ></osf-contributors>
+    <osf-registries-license
+      data-test-registration-license-section
+      [control]="metadataForm.controls['license']"
+    ></osf-registries-license>
+    <osf-registries-subjects
+      data-test-registration-subjects-section
+      [control]="metadataForm.controls['subjects']"
+    ></osf-registries-subjects>
+    <osf-registries-tags data-test-registration-tags-section></osf-registries-tags>
     <div class="flex justify-content-end">
       <p-button [label]="'registries.deleteDraft' | translate" severity="danger" (click)="deleteDraft()" class="mr-2">
       </p-button>

@@ -2395,7 +2395,7 @@
       "description": "Provide a concise and descriptive title for your registration that accurately reflects the main focus of your research. A clear and specific title will help others quickly understand the essence of your study."
     },
     "description": {
-      "description": "Write a detailed description of your research project, including its purpose and any expected outcomes. This should give readers a comprehensive overview of your work."
+      "descriptionMessage": "Write a detailed description of your research project, including its purpose and any expected outcomes. This should give readers a comprehensive overview of your work."
     },
     "affiliatedInstitutions": {
       "description": "This is a service provided by the OSF and is automatically applied to your registration. If you are not sure if your institution has signed up for this service, you can look for their name in this list."
