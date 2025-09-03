@@ -14,7 +14,7 @@ export class MetaTagsService {
     type: 'article',
     description: 'Hosted on the OSF',
     language: 'en-US',
-    image: `${environment.webUrl}/static/img/preprints_assets/osf/sharing.png`,
+    image: `${environment.webUrl}/assets/images/osf-sharing.png`,
     imageType: 'image/png',
     imageWidth: 1200,
     imageHeight: 630,

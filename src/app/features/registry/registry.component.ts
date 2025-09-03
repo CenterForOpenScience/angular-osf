@@ -49,8 +49,6 @@ export class RegistryComponent extends DataciteTrackerComponent {
   }
 
   private setMetaTags(): void {
-    const image = 'engines-dist/registries/assets/img/osf-sharing.png';
-
     this.metaTags.updateMetaTags(
       {
         title: this.registry()?.title,
@@ -58,7 +56,6 @@ export class RegistryComponent extends DataciteTrackerComponent {
         publishedDate: this.datePipe.transform(this.registry()?.dateRegistered, 'yyyy-MM-dd'),
         modifiedDate: this.datePipe.transform(this.registry()?.dateModified, 'yyyy-MM-dd'),
         url: pathJoin(environment.webUrl, this.registry()?.id ?? ''),
-        image,
         identifier: this.registry()?.id,
         doi: this.registry()?.doi,
         keywords: this.registry()?.tags,
