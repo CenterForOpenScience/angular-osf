@@ -63,7 +63,9 @@ export class DashboardComponent implements OnInit {
   readonly areProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
 
   readonly actions = createDispatchMap({ getMyProjects: GetMyProjects, clearMyResources: ClearMyResources });
-
+  protected readonly existsProjects = computed(() => {
+    return this.projects().length || !!this.searchControl.value?.length;
+  });
   readonly filteredProjects = computed(() => {
     const search = this.searchControl.value?.toLowerCase() ?? '';
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
