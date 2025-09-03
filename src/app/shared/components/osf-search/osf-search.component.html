@@ -10,6 +10,7 @@
 }
 
 <osf-search-results-container
+  [provider]="provider()"
   [tabOptions]="resourceTabOptions()"
   [resources]="resources()"
   [areResourcesLoading]="areResourcesLoading()"

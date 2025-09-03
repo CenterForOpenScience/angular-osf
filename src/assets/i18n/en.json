@@ -2471,25 +2471,41 @@
   },
   "resourceCard": {
     "type": {
-      "user": "User"
+      "user": "User",
+      "project": "Project",
+      "projectComponent": "Project Component",
+      "registration": "Registration",
+      "registrationComponent": "Registration Component",
+      "preprint": "Preprint",
+      "file": "File",
+      "null": "Unknown"
     },
     "labels": {
+      "collection": "Collection:",
+      "language": "Language:",
+      "withdrawn": "Withdrawn",
       "from": "From:",
-      "dateCreated": "Date created:",
-      "dateModified": "Date modified:",
+      "funder": "Funder:",
+      "resourceNature": "Resource type:",
+      "dateCreated": "Date created",
+      "dateModified": "Date modified",
+      "dateRegistered": "Date registered",
       "description": "Description:",
-      "registrationProvider": "Registration provider:",
+      "provider": "Provider:",
       "license": "License:",
       "registrationTemplate": "Registration Template:",
-      "provider": "Provider:",
-      "conflictOfInterestResponse": "Conflict of Interest response: Author asserted no Conflict of Interest",
+      "conflictOfInterestResponse": "Conflict of Interest response:",
+      "associatedData": "Associated data:",
+      "associatedAnalysisPlan": " Associated preregistration:",
+      "associatedStudyDesign": "Associated study design:",
       "url": "URL:",
       "doi": "DOI:",
       "publicProjects": "Public projects:",
       "publicRegistrations": "Public registrations:",
       "publicPreprints": "Public preprints:",
       "employment": "Employment:",
-      "education": "Education:"
+      "education": "Education:",
+      "noCoi": "Author asserted no Conflict of Interest"
     },
     "resources": {
       "data": "Data",
@@ -2498,7 +2514,7 @@
       "papers": "Papers",
       "supplements": "Supplements"
     },
-    "more": "and {{count}} more"
+    "andCountMore": "and {{count}} more"
   },
   "pageNotFound": {
     "title": "Page not found",

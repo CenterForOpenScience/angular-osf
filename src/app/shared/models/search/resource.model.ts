@@ -1,32 +1,57 @@
 import { ResourceType } from '@shared/enums';
-import { DiscoverableFilter, IdName } from '@shared/models';
+import { DiscoverableFilter } from '@shared/models';
 
 export interface Resource {
-  id: string;
+  absoluteUrl: string;
   resourceType: ResourceType;
+  name?: string;
+  title?: string;
+  fileName?: string;
+  description?: string;
+
   dateCreated?: Date;
   dateModified?: Date;
-  creators?: IdName[];
-  fileName?: string;
-  title?: string;
-  description?: string;
-  from?: IdName;
-  license?: IdName;
-  provider?: IdName;
+  dateWithdrawn?: Date;
+
+  doi: string[];
+  creators: AbsoluteUrlName[];
+  identifiers: string[];
+  provider?: AbsoluteUrlName;
+  license?: AbsoluteUrlName;
+  language: string;
+  statedConflictOfInterest?: string;
+  resourceNature?: string;
+  isPartOfCollection: AbsoluteUrlName;
+  funders: AbsoluteUrlName[];
+  affiliations: AbsoluteUrlName[];
+  qualifiedAttribution: QualifiedAttribution[];
+  isPartOf?: AbsoluteUrlName;
+  isContainedBy?: IsContainedBy;
   registrationTemplate?: string;
-  identifier?: string;
-  conflictOfInterestResponse?: string;
-  publicProjects?: number;
-  publicRegistrations?: number;
-  publicPreprints?: number;
-  orcid?: string;
-  employment?: string;
-  education?: string;
-  hasDataResource: boolean;
+  hasPreregisteredAnalysisPlan?: string;
+  hasPreregisteredStudyDesign?: string;
+  hasDataResource: string;
   hasAnalyticCodeResource: boolean;
   hasMaterialsResource: boolean;
   hasPapersResource: boolean;
   hasSupplementalResource: boolean;
+}
+
+export interface IsContainedBy extends AbsoluteUrlName {
+  funders: AbsoluteUrlName[];
+  creators: AbsoluteUrlName[];
+  license?: AbsoluteUrlName;
+  qualifiedAttribution: QualifiedAttribution[];
+}
+
+export interface QualifiedAttribution {
+  agentId: string;
+  order: number;
+}
+
+export interface AbsoluteUrlName {
+  absoluteUrl: string;
+  name: string;
 }
 
 export interface ResourcesData {
@@ -35,5 +60,5 @@ export interface ResourcesData {
   count: number;
   first: string;
   next: string;
-  previous: string;
+  previous?: string;
 }

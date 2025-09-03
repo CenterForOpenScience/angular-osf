@@ -18,6 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { ResourceType } from '@shared/enums';
 import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter, TabOption } from '@shared/models';
@@ -94,6 +95,7 @@ export class OsfSearchComponent implements OnInit, OnDestroy {
   previous = select(OsfSearchSelectors.getPrevious);
   resourceType = select(OsfSearchSelectors.getResourceType);
 
+  provider = input<PreprintProviderDetails | null>(null);
   searchControlInput = input<FormControl | null>(null);
 
   searchControl!: FormControl;

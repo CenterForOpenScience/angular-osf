@@ -1,0 +1,81 @@
+<div class="flex flex-column gap-2">
+  @let resourceValue = resource();
+  @if (resourceValue.description) {
+    <p>{{ 'resourceCard.labels.description' | translate }} {{ resourceValue.description }}</p>
+  }
+
+  @if (resourceValue.provider) {
+    <p>
+      {{ 'resourceCard.labels.provider' | translate }}
+      <a class="font-bold" [href]="resourceValue.provider!.absoluteUrl">{{ resourceValue.provider!.name }}</a>
+    </p>
+  }
+
+  @if (resourceValue.hasDataResource) {
+    <p>
+      {{ 'resourceCard.labels.associatedData' | translate }}
+      <a class="font-bold" [href]="resourceValue.hasDataResource">
+        {{ resourceValue.hasDataResource }}
+      </a>
+    </p>
+  }
+
+  @if (resourceValue.hasPreregisteredAnalysisPlan) {
+    <p>
+      {{ 'resourceCard.labels.associatedAnalysisPlan' | translate }}
+      <a class="font-bold" [href]="resourceValue.hasPreregisteredAnalysisPlan">
+        {{ resourceValue.hasPreregisteredAnalysisPlan }}
+      </a>
+    </p>
+  }
+
+  @if (resourceValue.hasPreregisteredStudyDesign) {
+    <p>
+      {{ 'resourceCard.labels.associatedStudyDesign' | translate }}
+      <a class="font-bold" [href]="resourceValue.hasPreregisteredStudyDesign">
+        {{ resourceValue.hasPreregisteredStudyDesign }}
+      </a>
+    </p>
+  }
+
+  @if (resourceValue.statedConflictOfInterest) {
+    <p>
+      {{ 'resourceCard.labels.conflictOfInterestResponse' | translate }}
+      {{ resourceValue.statedConflictOfInterest }}
+    </p>
+  } @else {
+    <p>
+      {{ 'resourceCard.labels.conflictOfInterestResponse' | translate }}
+      {{ 'resourceCard.labels.noCoi' | translate }}
+    </p>
+  }
+
+  @if (resourceValue.license?.absoluteUrl) {
+    <p>
+      {{ 'resourceCard.labels.license' | translate }}
+      <a class="font-bold" [attr.href]="resourceValue.license!.absoluteUrl || null">{{
+        resourceValue.license!.name
+      }}</a>
+    </p>
+  }
+
+  @if (resourceValue.absoluteUrl) {
+    <p>
+      {{ 'resourceCard.labels.url' | translate }}
+      <a class="font-bold" [href]="resourceValue.absoluteUrl">{{ resourceValue.absoluteUrl }}</a>
+    </p>
+  }
+
+  @let limit = 4;
+  @if (resourceValue.doi.length > 0) {
+    <p>
+      {{ 'resourceCard.labels.doi' | translate }}
+      @for (doi of resourceValue.doi.slice(0, limit); track $index) {
+        <a class="font-bold" [href]="doi" target="_blank">{{ doi }}{{ $last ? '' : ', ' }}</a>
+      }
+      @if (resourceValue.doi.length > limit) {
+        <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }} </span>
+      }
+    </p>
+  }
+</div>

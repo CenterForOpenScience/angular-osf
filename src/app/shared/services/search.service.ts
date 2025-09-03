@@ -80,7 +80,6 @@ export class SearchService {
 
   private handleResourcesRawResponse(response: IndexCardSearchResponseJsonApi): ResourcesData {
     const indexCardItems = response.included!.filter((item) => item.type === 'index-card') as IndexCardDataJsonApi[];
-
     const relatedPropertyPathItems = response.included!.filter(
       (item): item is RelatedPropertyPathItem => item.type === 'related-property-path'
     );
@@ -91,9 +90,9 @@ export class SearchService {
       resources: indexCardItems.map((item) => MapResources(item)),
       filters: CombinedFilterMapper(appliedFilters, relatedPropertyPathItems),
       count: response.data.attributes.totalResultCount,
-      first: response.data?.relationships?.searchResultPage?.links?.first?.href,
-      next: response.data?.relationships?.searchResultPage?.links?.next?.href,
-      previous: response.data?.relationships?.searchResultPage?.links?.prev?.href,
+      first: response.data?.relationships?.searchResultPage.links?.first?.href,
+      next: response.data?.relationships?.searchResultPage.links?.next?.href,
+      previous: response.data?.relationships?.searchResultPage.links?.prev?.href,
     };
   }
 }
