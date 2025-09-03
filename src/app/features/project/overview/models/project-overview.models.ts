@@ -1,6 +1,14 @@
 import { UserPermissions } from '@osf/shared/enums';
-import { JsonApiResponse } from '@osf/shared/models';
-import { License } from '@shared/models';
+import {
+  Identifier,
+  IdTypeModel,
+  Institution,
+  InstitutionsJsonApiResponse,
+  JsonApiResponseWithMeta,
+  License,
+  LicensesOption,
+  MetaAnonymousJsonApi,
+} from '@osf/shared/models';
 
 export interface ProjectOverviewContributor {
   familyName: string;
@@ -26,10 +34,7 @@ export interface ProjectOverview {
   isCollection: boolean;
   tags: string[];
   accessRequestsEnabled: boolean;
-  nodeLicense?: {
-    copyrightHolders: string[];
-    year: string;
-  };
+  nodeLicense?: LicensesOption;
   license?: License;
   doi?: string;
   publicationDoi?: string;
@@ -39,7 +44,7 @@ export interface ProjectOverview {
     storageLimitStatus: string;
     storageUsage: string;
   };
-  identifiers?: ProjectIdentifiers[];
+  identifiers?: Identifier[];
   supplements?: ProjectSupplements[];
   analyticsKey: string;
   currentUserCanComment: boolean;
@@ -50,11 +55,8 @@ export interface ProjectOverview {
   subjects: ProjectOverviewSubject[];
   contributors: ProjectOverviewContributor[];
   customCitation: string | null;
-  region?: {
-    id: string;
-    type: string;
-  };
-  affiliatedInstitutions?: ProjectAffiliatedInstitutions[];
+  region?: IdTypeModel;
+  affiliatedInstitutions?: Institution[];
   forksCount: number;
   viewOnlyLinksCount: number;
   links: {
@@ -68,7 +70,12 @@ export interface ProjectOverviewSubject {
   text: string;
 }
 
-export interface ProjectOverviewGetResponseJsoApi {
+export interface ProjectOverviewWithMeta {
+  project: ProjectOverview;
+  meta?: MetaAnonymousJsonApi;
+}
+
+export interface ProjectOverviewGetResponseJsonApi {
   id: string;
   type: string;
   attributes: {
@@ -100,19 +107,7 @@ export interface ProjectOverviewGetResponseJsoApi {
     custom_citation: string | null;
   };
   embeds: {
-    affiliated_institutions: {
-      data: {
-        id: string;
-        type: string;
-        attributes: {
-          assets: {
-            logo: string;
-          };
-          description: string;
-          name: string;
-        };
-      }[];
-    };
+    affiliated_institutions: InstitutionsJsonApiResponse;
     identifiers: {
       data: {
         id: string;
@@ -217,23 +212,10 @@ export interface ProjectOverviewGetResponseJsoApi {
   };
 }
 
-export interface ProjectOverviewResponseJsonApi extends JsonApiResponse<ProjectOverviewGetResponseJsoApi, null> {
-  data: ProjectOverviewGetResponseJsoApi;
-}
-
-export interface ProjectIdentifiers {
-  id: string;
-  type: string;
-  category: string;
-  value: string;
-}
-
-export interface ProjectAffiliatedInstitutions {
-  id: string;
-  type: string;
-  name: string;
-  description: string;
-  logo: string;
+export interface ProjectOverviewResponseJsonApi
+  extends JsonApiResponseWithMeta<ProjectOverviewGetResponseJsonApi, MetaAnonymousJsonApi, null> {
+  data: ProjectOverviewGetResponseJsonApi;
+  meta: MetaAnonymousJsonApi;
 }
 
 export interface ProjectSupplements {

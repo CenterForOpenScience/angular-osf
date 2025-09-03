@@ -30,30 +30,36 @@ import { OperationNames } from '@osf/features/project/addons/enums';
 import { OperationInvokeData, StorageItem } from '@shared/models';
 import { AddonsSelectors } from '@shared/stores/addons';
 
+import { GoogleFilePickerComponent } from './google-file-picker/google-file-picker.component';
+
 @Component({
   selector: 'osf-folder-selector',
   templateUrl: './folder-selector.component.html',
   styleUrl: './folder-selector.component.scss',
   imports: [
-    TranslatePipe,
+    BreadcrumbModule,
     Button,
     Card,
+    FormsModule,
+    GoogleFilePickerComponent,
     InputText,
     RadioButton,
     ReactiveFormsModule,
     Skeleton,
-    BreadcrumbModule,
-    FormsModule,
+    TranslatePipe,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FolderSelectorComponent implements OnInit {
   private destroyRef = inject(DestroyRef);
   private translateService = inject(TranslateService);
+
+  isGoogleFilePicker = input.required<boolean>();
   accountName = input.required<string>();
   operationInvocationResult = input.required<StorageItem[]>();
   accountNameControl = input(new FormControl());
   isCreateMode = input(false);
+
   selectedRootFolderId = model<string>('/');
   operationInvoke = output<OperationInvokeData>();
   save = output<void>();

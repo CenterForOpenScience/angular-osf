@@ -1,7 +1,6 @@
 import { Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { of } from 'rxjs';
 
@@ -10,6 +9,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UpdateProfileSettingsEducation, UserSelectors } from '@core/store/user';
+import { EducationFormComponent } from '@osf/features/settings/profile-settings/components';
 import {
   CustomConfirmationServiceMock,
   MOCK_EDUCATION,
@@ -36,7 +36,7 @@ describe('EducationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EducationComponent, MockPipe(TranslatePipe)],
+      imports: [EducationComponent, MockComponent(EducationFormComponent)],
       providers: [
         TranslateServiceMock,
         MockCustomConfirmationServiceProvider,
@@ -125,21 +125,28 @@ describe('EducationComponent', () => {
     component.saveEducation();
 
     expect(mockStore.dispatch).toHaveBeenCalledWith(
-      new UpdateProfileSettingsEducation({
-        education: [
-          {
-            institution: 'Test University',
-            department: 'Engineering',
-            degree: 'Bachelor',
-            startYear: 2020,
-            startMonth: 1,
-            endYear: 2024,
-            endMonth: 6,
-            ongoing: false,
-          },
-          expect.any(Object),
-        ],
-      })
+      new UpdateProfileSettingsEducation([
+        {
+          institution: 'Test University',
+          department: 'Engineering',
+          degree: 'Bachelor',
+          startYear: 2020,
+          startMonth: 1,
+          endYear: 2024,
+          endMonth: 6,
+          ongoing: false,
+        },
+        {
+          institution: 'Advanced University',
+          department: 'Software Engineering',
+          degree: 'Master of Science',
+          startYear: 2020,
+          startMonth: 9,
+          endYear: 2025,
+          endMonth: 8,
+          ongoing: false,
+        },
+      ])
     );
   });
 });

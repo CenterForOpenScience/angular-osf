@@ -6,8 +6,8 @@ import { Checkbox } from 'primeng/checkbox';
 import { ChangeDetectionStrategy, Component, effect, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { ProjectDetailSettingAccordionComponent } from '@osf/features/project/settings/components';
-import { RightControl } from '@osf/features/project/settings/models';
+import { RightControl } from '../../models';
+import { ProjectDetailSettingAccordionComponent } from '../project-detail-setting-accordion/project-detail-setting-accordion.component';
 
 @Component({
   selector: 'osf-settings-wiki-card',
@@ -23,6 +23,7 @@ export class SettingsWikiCardComponent {
   wikiEnabled = input.required<boolean>();
   anyoneCanEditWiki = input.required<boolean>();
   title = input.required<string>();
+  isPublic = input(false);
 
   allAccordionData: RightControl[] = [];
 
@@ -35,8 +36,8 @@ export class SettingsWikiCardComponent {
           value: anyoneCanEditWiki,
           type: 'dropdown',
           options: [
-            { label: 'myProjects.settings.contributorsOption', value: true },
-            { label: 'myProjects.settings.anyoneOption', value: false },
+            { label: 'myProjects.settings.contributorsOption', value: false },
+            { label: 'myProjects.settings.anyoneOption', value: true },
           ],
         },
       ];

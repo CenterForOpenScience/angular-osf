@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { Institution, QueryParams } from '@osf/shared/models';
@@ -22,7 +21,7 @@ import { FetchPreprints, InstitutionsAdminSelectors } from '../../store';
 
 @Component({
   selector: 'osf-institutions-preprints',
-  imports: [CommonModule, AdminTableComponent, TranslatePipe, LoadingSpinnerComponent],
+  imports: [CommonModule, AdminTableComponent, TranslatePipe],
   templateUrl: './institutions-preprints.component.html',
   styleUrl: './institutions-preprints.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,7 +76,7 @@ export class InstitutionsPreprintsComponent implements OnInit {
 
     const sortField = this.sortField();
     const sortOrder = this.sortOrder();
-    const sortParam = sortOrder === -1 ? `-${sortField}` : sortField;
+    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
 
     const institution = this.institution() as Institution;
     const institutionIris = institution.iris || [];

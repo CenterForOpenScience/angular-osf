@@ -7,20 +7,22 @@
       <div class="flex flex-column pt-4 gap-2">
         <h2 class="font-normal">{{ 'registry.overview.statuses.' + registry()?.status + '.short' | translate }}</h2>
         <p>{{ 'registry.overview.statuses.' + registry()?.status + '.long' | translate }}</p>
-        @if (canWithdraw) {
-          <p-button
-            (click)="openWithdrawDialog()"
-            [label]="'registry.overview.withdrawRegistration' | translate"
-            severity="danger"
-            class="ml-auto"
-          ></p-button>
-        }
-        @if (registry()?.status === RegistryStatus.Embargo) {
-          <p-button
-            (click)="openMakePublicDialog()"
-            [label]="'common.labels.makePublic' | translate"
-            class="ml-auto"
-          ></p-button>
+        @if (!hasViewOnly()) {
+          @if (canWithdraw) {
+            <p-button
+              (click)="openWithdrawDialog()"
+              [label]="'registry.overview.withdrawRegistration' | translate"
+              severity="danger"
+              class="ml-auto"
+            ></p-button>
+          }
+          @if (registry()?.status === RegistryStatus.Embargo) {
+            <p-button
+              (click)="openMakePublicDialog()"
+              [label]="'common.labels.makePublic' | translate"
+              class="ml-auto"
+            ></p-button>
+          }
         }
       </div>
     </p-accordion-content>

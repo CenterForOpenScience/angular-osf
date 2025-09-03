@@ -1,6 +1,5 @@
 export * from './add-resource-request.mapper';
 export * from './bibliographic-contributors.mapper';
-export * from './cedar-form.mapper';
 export * from './linked-nodes.mapper';
 export * from './linked-registrations.mapper';
 export * from './registry-components.mapper';

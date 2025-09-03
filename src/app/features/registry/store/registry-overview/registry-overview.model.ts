@@ -1,14 +1,15 @@
 import { ReviewAction } from '@osf/features/moderation/models';
-import { RegistryInstitution, RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
-import { PageSchema } from '@osf/shared/models';
+import { RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
+import { Institution, PageSchema } from '@osf/shared/models';
 import { AsyncStateModel } from '@shared/models';
 
 export interface RegistryOverviewStateModel {
   registry: AsyncStateModel<RegistryOverview | null>;
   subjects: AsyncStateModel<RegistrySubject[] | null>;
-  institutions: AsyncStateModel<RegistryInstitution[] | null>;
+  institutions: AsyncStateModel<Institution[] | null>;
   schemaBlocks: AsyncStateModel<PageSchema[] | null>;
   moderationActions: AsyncStateModel<ReviewAction[]>;
+  isAnonymous: boolean;
 }
 
 export const REGISTRY_OVERVIEW_DEFAULTS: RegistryOverviewStateModel = {
@@ -38,4 +39,5 @@ export const REGISTRY_OVERVIEW_DEFAULTS: RegistryOverviewStateModel = {
     isSubmitting: false,
     error: null,
   },
+  isAnonymous: false,
 };

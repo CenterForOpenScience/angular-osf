@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { ConfiguredStorageAddon, ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
+import { ConfiguredStorageAddonModel, ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
 
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
 
@@ -16,6 +16,11 @@ export class FilesSelectors {
   @Selector([FilesState])
   static isFilesLoading(state: FilesStateModel): boolean {
     return state.files.isLoading;
+  }
+
+  @Selector([FilesState])
+  static isFilesAnonymous(state: FilesStateModel): boolean {
+    return state.isAnonymous;
   }
 
   @Selector([FilesState])
@@ -114,7 +119,7 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
-  static getConfiguredStorageAddons(state: FilesStateModel): ConfiguredStorageAddon[] | null {
+  static getConfiguredStorageAddons(state: FilesStateModel): ConfiguredStorageAddonModel[] | null {
     return state.configuredStorageAddons.data;
   }
 

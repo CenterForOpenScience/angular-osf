@@ -14,14 +14,14 @@ import {
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { UpdateProfileSettingsEmployment, UserSelectors } from '@osf/core/store/user';
 import { CustomValidators } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
+import { hasEmploymentChanges, mapEmploymentToForm, mapFormToEmployment } from '../../helpers';
 import { EmploymentForm } from '../../models';
-import { hasEmploymentChanges, mapEmploymentToForm, mapFormToEmployment } from '../../utils';
 import { EmploymentFormComponent } from '../employment-form/employment-form.component';
 
 @Component({
@@ -97,7 +97,7 @@ export class EmploymentComponent {
     this.loaderService.show();
 
     this.actions
-      .updateProfileSettingsEmployment({ employment: formattedEmployment })
+      .updateProfileSettingsEmployment(formattedEmployment)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -108,13 +108,28 @@ export class EmploymentComponent {
       });
   }
 
-  private hasFormChanges(): boolean {
-    if (this.positions.length !== this.employment().length) {
+  hasFormChanges(): boolean {
+    const employment = this.employment();
+    const formPositions = this.positions.value;
+
+    if (!employment?.length) {
+      return formPositions.some(
+        (position) =>
+          position.title?.trim() ||
+          position.institution?.trim() ||
+          position.department?.trim() ||
+          position.startDate ||
+          position.endDate ||
+          position.ongoing
+      );
+    }
+
+    if (formPositions.length !== employment.length) {
       return true;
     }
 
-    return this.positions.value.some((formEmployment, index) => {
-      const initial = this.employment()[index];
+    return formPositions.some((formEmployment, index) => {
+      const initial = employment[index];
       if (!initial) return true;
 
       return hasEmploymentChanges(formEmployment, initial);
@@ -122,24 +137,32 @@ export class EmploymentComponent {
   }
 
   private createEmploymentFormGroup(employment?: Partial<EmploymentForm>): FormGroup {
+    const isOngoing = employment?.ongoing ?? false;
+    const endDateValidators = isOngoing ? [] : [Validators.required];
+
     return this.fb.group(
       {
         title: [employment?.title ?? '', CustomValidators.requiredTrimmed()],
-        institution: [employment?.institution ?? ''],
+        institution: [employment?.institution ?? '', CustomValidators.requiredTrimmed()],
         department: [employment?.department ?? ''],
-        startDate: [employment?.startDate ?? null],
-        endDate: [employment?.endDate ?? null],
+        startDate: [employment?.startDate ?? null, Validators.required],
+        endDate: [employment?.endDate ?? null, endDateValidators],
         ongoing: [employment?.ongoing ?? false],
       },
-      { validators: CustomValidators.dateRangeValidator }
+      { validators: CustomValidators.monthYearRangeValidator }
     );
   }
 
   private setInitialData(): void {
     const employment = this.employment();
-    if (!employment?.length) return;
-
     this.positions.clear();
+
+    if (!employment?.length) {
+      this.addPosition();
+      this.cd.markForCheck();
+      return;
+    }
+
     employment
       .map((x) => mapEmploymentToForm(x))
       .forEach((x) => this.positions.push(this.createEmploymentFormGroup(x)));

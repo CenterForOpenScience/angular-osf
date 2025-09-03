@@ -10,6 +10,21 @@ export const AUTHENTICATED_MENU_ITEMS: string[] = [
   'settings',
 ];
 
+export const VIEW_ONLY_PROJECT_MENU_ITEMS: string[] = [
+  'project-overview',
+  'project-files',
+  'project-wiki',
+  'project-analytics',
+];
+
+export const VIEW_ONLY_REGISTRY_MENU_ITEMS: string[] = [
+  'registration-overview',
+  'registration-files',
+  'registration-wiki',
+  'registration-analytics',
+  'registration-components',
+];
+
 export const PROJECT_MENU_ITEMS: MenuItem[] = [
   {
     id: 'project-overview',
@@ -30,14 +45,14 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.files',
     routerLink: 'files',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-wiki',
     label: 'navigation.wiki',
     routerLink: 'wiki',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-registrations',
@@ -58,7 +73,7 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.analytics',
     routerLink: 'analytics',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-addons',
@@ -106,7 +121,7 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.files',
     routerLink: 'files',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'registration-resources',
@@ -120,7 +135,7 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.wiki',
     routerLink: 'wiki',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'registration-components',
@@ -148,7 +163,7 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.analytics',
     routerLink: 'analytics',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
 ];
 
@@ -157,7 +172,7 @@ export const MENU_ITEMS: MenuItem[] = [
     id: 'home',
     routerLink: '/',
     label: 'navigation.home',
-    icon: 'osf-icon-home',
+    icon: 'fas fa-home',
     routerLinkActiveOptions: { exact: true },
     visible: true,
   },
@@ -165,7 +180,7 @@ export const MENU_ITEMS: MenuItem[] = [
     id: 'search',
     routerLink: '/search',
     label: 'navigation.searchOsf',
-    icon: 'osf-icon-search',
+    icon: 'fas fa-magnifying-glass',
     routerLinkActiveOptions: { exact: false },
     visible: true,
   },
@@ -173,7 +188,7 @@ export const MENU_ITEMS: MenuItem[] = [
     id: 'support',
     routerLink: null,
     label: 'navigation.support',
-    icon: 'osf-icon-support',
+    icon: 'fas fa-headset',
     styleClass: 'mb-5',
     url: 'https://help.osf.io/',
     routerLinkActiveOptions: { exact: false },
@@ -181,8 +196,8 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'my-resources',
-    label: 'navigation.myResources',
-    icon: 'osf-icon-my-projects',
+    label: 'navigation.myOsf',
+    icon: 'custom-icon-projects',
     routerLinkActiveOptions: { exact: true },
     visible: false,
     items: [
@@ -212,13 +227,14 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: 'projects',
     label: 'navigation.projects',
-    icon: 'osf-icon-my-projects',
+    icon: 'custom-icon-projects',
     routerLinkActiveOptions: { exact: true },
     visible: false,
     items: [
       {
         id: 'project-details',
         label: 'navigation.projectDetails',
+        icon: 'custom-icon-projects',
         routerLink: null,
         visible: false,
         routerLinkActiveOptions: { exact: true },
@@ -229,7 +245,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: 'registries',
     label: 'navigation.registries',
-    icon: 'osf-icon-registries',
+    icon: 'custom-icon-registries',
     visible: true,
     routerLinkActiveOptions: { exact: true },
     items: [
@@ -249,10 +265,10 @@ export const MENU_ITEMS: MenuItem[] = [
       },
       {
         id: 'registry-details',
-        routerLink: null,
         label: 'navigation.registriesSubRoutes.registryDetails',
-        visible: false,
+        icon: 'custom-icon-registries',
         routerLinkActiveOptions: { exact: true },
+        visible: false,
         styleClass: 'border-none',
       },
     ],
@@ -260,7 +276,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: 'preprints',
     label: 'navigation.preprints',
-    icon: 'osf-icon-preprints',
+    icon: 'custom-icon-preprints',
     visible: true,
     routerLinkActiveOptions: { exact: true },
     items: [
@@ -281,8 +297,9 @@ export const MENU_ITEMS: MenuItem[] = [
       {
         id: 'preprints-details',
         label: 'navigation.preprintsSubRoutes.preprintDetails',
-        visible: false,
+        icon: 'custom-icon-preprints',
         routerLinkActiveOptions: { exact: true },
+        visible: false,
         styleClass: 'border-none',
       },
     ],
@@ -290,7 +307,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     id: 'collections',
     label: 'navigation.collections',
-    icon: 'osf-icon-collections',
+    icon: 'custom-icon-collections',
     visible: true,
     routerLinkActiveOptions: { exact: false },
     items: [
@@ -307,7 +324,7 @@ export const MENU_ITEMS: MenuItem[] = [
     id: 'meetings',
     routerLink: '/meetings',
     label: 'navigation.meetings',
-    icon: 'osf-icon-meetings',
+    icon: 'custom-icon-meetings',
     visible: true,
     routerLinkActiveOptions: { exact: false },
   },
@@ -315,7 +332,7 @@ export const MENU_ITEMS: MenuItem[] = [
     id: 'institutions',
     routerLink: '/institutions',
     label: 'navigation.institutions',
-    icon: 'osf-icon-institutions',
+    icon: 'custom-icon-institutions',
     visible: true,
     routerLinkActiveOptions: { exact: false },
     styleClass: 'mb-5',
@@ -324,14 +341,14 @@ export const MENU_ITEMS: MenuItem[] = [
     id: 'my-profile',
     routerLink: '/my-profile',
     label: 'navigation.profile',
-    icon: 'osf-icon-profile',
+    icon: 'fas fa-user',
     visible: false,
     routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'settings',
     label: 'navigation.settings',
-    icon: 'osf-icon-settings',
+    icon: 'fas fa-gear',
     routerLinkActiveOptions: { exact: true },
     visible: false,
     items: [
@@ -384,24 +401,26 @@ export const MENU_ITEMS: MenuItem[] = [
     routerLink: null,
     routerLinkActiveOptions: { exact: false },
     label: 'navigation.donate',
-    icon: 'osf-icon-donate',
+    icon: 'fas fa-hand-holding-dollar',
     url: 'https://www.cos.io/support-cos',
     visible: true,
   },
   {
     id: 'sign-in',
     label: 'navigation.signIn',
-    visible: false,
+    icon: 'fas fa-arrow-right-to-bracket',
     routerLink: null,
     routerLinkActiveOptions: { exact: false },
+    visible: false,
     styleClass: 'my-5',
   },
   {
     id: 'log-out',
     label: 'navigation.logOut',
-    visible: false,
+    icon: 'fas fa-arrow-right-from-bracket',
     routerLink: null,
     routerLinkActiveOptions: { exact: false },
+    visible: false,
     styleClass: 'my-5',
   },
 ];

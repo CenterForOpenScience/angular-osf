@@ -25,10 +25,9 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
-import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
-import { SearchInputComponent } from '@shared/components';
-import { ResourceSearchMode, ResourceType } from '@shared/enums';
-import { MyResourcesItem, MyResourcesSearchFilters } from '@shared/models';
+import { SearchInputComponent } from '@osf/shared/components';
+import { ResourceSearchMode, ResourceType } from '@osf/shared/enums';
+import { MyResourcesItem, MyResourcesSearchFilters } from '@osf/shared/models';
 import {
   CreateNodeLink,
   DeleteNodeLink,
@@ -37,7 +36,9 @@ import {
   GetMyRegistrations,
   MyResourcesSelectors,
   NodeLinksSelectors,
-} from '@shared/stores';
+} from '@osf/shared/stores';
+
+import { ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-link-resource-dialog',
@@ -58,46 +59,49 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LinkResourceDialogComponent {
-  private readonly tableRows = 6;
   private readonly destroyRef = inject(DestroyRef);
-  protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly ResourceSearchMode = ResourceSearchMode;
-  protected readonly ResourceType = ResourceType;
-  protected currentPage = signal(1);
-  protected searchMode = signal<ResourceSearchMode>(ResourceSearchMode.User);
-  protected resourceType = signal<ResourceType>(ResourceType.Project);
-  protected searchControl = new FormControl('');
+  readonly tableRows = 6;
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly ResourceSearchMode = ResourceSearchMode;
+  readonly ResourceType = ResourceType;
 
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
-  protected myProjects = select(MyResourcesSelectors.getProjects);
-  protected isMyProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
-  protected myRegistrations = select(MyResourcesSelectors.getRegistrations);
-  protected isMyRegistrationsLoading = select(MyResourcesSelectors.getRegistrationsLoading);
-  protected totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
-  protected totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
-  protected isNodeLinksSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
-  protected linkedResources = select(NodeLinksSelectors.getLinkedResources);
+  currentPage = signal(1);
+  searchMode = signal<ResourceSearchMode>(ResourceSearchMode.User);
+  resourceType = signal<ResourceType>(ResourceType.Project);
+  searchControl = new FormControl('');
 
-  protected currentTableItems = computed(() => {
-    return this.resourceType() === ResourceType.Project ? this.myProjects() : this.myRegistrations();
-  });
+  skeletonData: MyResourcesItem[] = Array.from({ length: this.tableRows }, () => ({}) as MyResourcesItem);
 
-  protected isCurrentTableLoading = computed(() => {
-    return this.resourceType() === ResourceType.Project ? this.isMyProjectsLoading() : this.isMyRegistrationsLoading();
-  });
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  myProjects = select(MyResourcesSelectors.getProjects);
+  isMyProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
+  myRegistrations = select(MyResourcesSelectors.getRegistrations);
+  isMyRegistrationsLoading = select(MyResourcesSelectors.getRegistrationsLoading);
+  totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
+  totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
+  isNodeLinksSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
+  linkedResources = select(NodeLinksSelectors.getLinkedResources);
 
-  protected currentTotalCount = computed(() => {
-    return this.resourceType() === ResourceType.Project ? this.totalProjectsCount() : this.totalRegistrationsCount();
-  });
+  currentTableItems = computed(() =>
+    this.resourceType() === ResourceType.Project ? this.myProjects() : this.myRegistrations()
+  );
 
-  protected isItemLinked = computed(() => {
+  isCurrentTableLoading = computed(() =>
+    this.resourceType() === ResourceType.Project ? this.isMyProjectsLoading() : this.isMyRegistrationsLoading()
+  );
+
+  currentTotalCount = computed(() =>
+    this.resourceType() === ResourceType.Project ? this.totalProjectsCount() : this.totalRegistrationsCount()
+  );
+
+  isItemLinked = computed(() => {
     const linkedResources = this.linkedResources();
     const linkedTargetIds = new Set(linkedResources.map((resource) => resource.id));
 
     return (itemId: string) => linkedTargetIds.has(itemId);
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getProjects: GetMyProjects,
     getRegistrations: GetMyRegistrations,
     createNodeLink: CreateNodeLink,

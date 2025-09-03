@@ -21,7 +21,7 @@ import {
 import {
   AddFileResponse,
   ApiData,
-  ConfiguredStorageAddon,
+  ConfiguredStorageAddonModel,
   ContributorModel,
   ContributorResponse,
   FileLinks,
@@ -31,7 +31,9 @@ import {
   GetConfiguredStorageAddonsJsonApi,
   GetFileResponse,
   GetFilesResponse,
+  GetFilesResponseWithMeta,
   JsonApiResponse,
+  MetaAnonymousJsonApi,
   OsfFile,
   OsfFileVersion,
 } from '@shared/models';
@@ -56,7 +58,11 @@ export class FilesService {
     [ResourceType.Registration, 'registrations'],
   ]);
 
-  getFiles(filesLink: string, search: string, sort: string): Observable<OsfFile[]> {
+  getFiles(
+    filesLink: string,
+    search: string,
+    sort: string
+  ): Observable<{ files: OsfFile[]; meta?: MetaAnonymousJsonApi }> {
     const params: Record<string, string> = {
       sort: sort,
       'fields[files]': this.filesFields,
@@ -64,12 +70,14 @@ export class FilesService {
     };
 
     return this.jsonApiService
-      .get<GetFilesResponse>(`${filesLink}`, params)
-      .pipe(map((response) => MapFiles(response.data)));
+      .get<GetFilesResponseWithMeta>(`${filesLink}`, params)
+      .pipe(map((response) => ({ files: MapFiles(response.data), meta: response.meta })));
   }
 
-  getFolders(folderLink: string): Observable<OsfFile[]> {
-    return this.jsonApiService.get<GetFilesResponse>(`${folderLink}`).pipe(map((response) => MapFiles(response.data)));
+  getFolders(folderLink: string): Observable<{ files: OsfFile[]; meta?: MetaAnonymousJsonApi }> {
+    return this.jsonApiService
+      .get<GetFilesResponseWithMeta>(`${folderLink}`)
+      .pipe(map((response) => ({ files: MapFiles(response.data), meta: response.meta })));
   }
 
   getFilesWithoutFiltering(filesLink: string): Observable<OsfFile[]> {
@@ -293,7 +301,7 @@ export class FilesService {
       .pipe(map((response) => response.data?.[0]?.links?.self ?? ''));
   }
 
-  getConfiguredStorageAddons(resourceUri: string): Observable<ConfiguredStorageAddon[]> {
+  getConfiguredStorageAddons(resourceUri: string): Observable<ConfiguredStorageAddonModel[]> {
     return this.getResourceReferences(resourceUri).pipe(
       switchMap((referenceUrl: string) => {
         if (!referenceUrl) return of([]);
@@ -301,11 +309,15 @@ export class FilesService {
         return this.jsonApiService
           .get<GetConfiguredStorageAddonsJsonApi>(`${referenceUrl}/configured_storage_addons`)
           .pipe(
-            map((response) =>
-              response.data.map((addon) => ({
-                externalServiceName: addon.attributes.external_service_name,
-                displayName: addon.attributes.display_name,
-              }))
+            map(
+              (response) =>
+                response.data.map(
+                  (addon) =>
+                    ({
+                      externalServiceName: addon.attributes.external_service_name,
+                      displayName: addon.attributes.display_name,
+                    }) as ConfiguredStorageAddonModel
+                ) as ConfiguredStorageAddonModel[]
             )
           );
       })

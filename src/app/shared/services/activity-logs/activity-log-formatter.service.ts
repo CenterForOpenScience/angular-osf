@@ -226,7 +226,8 @@ export class ActivityLogFormatterService {
   }
 
   buildNode(log: ActivityLog): string {
-    return this.urlBuilder.buildNodeUrl(log);
+    const nodeUrl = this.urlBuilder.buildNodeUrl(log);
+    return nodeUrl || this.translateService.instant('activityLog.defaults.aProject');
   }
 
   buildEmbeddedNode(log: ActivityLog): string {

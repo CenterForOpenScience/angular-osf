@@ -1,6 +1,7 @@
 import { Store } from '@ngxs/store';
 
-import { MockProvider } from 'ng-mocks';
+import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe, MockProvider } from 'ng-mocks';
 
 import { SelectChangeEvent } from 'primeng/select';
 
@@ -41,7 +42,7 @@ describe('InstitutionFilterComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [InstitutionFilterComponent],
+      imports: [InstitutionFilterComponent, MockPipe(TranslatePipe)],
       providers: [MockProvider(Store, store)],
     }).compileComponents();
 

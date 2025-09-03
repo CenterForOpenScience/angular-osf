@@ -6,6 +6,7 @@ import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '@osf/core/services';
 import { PasswordInputHintComponent } from '@osf/shared/components';
+import { ToastService } from '@osf/shared/services';
 import { TranslateServiceMock } from '@shared/mocks';
 
 import { SignUpComponent } from './sign-up.component';
@@ -17,7 +18,12 @@ describe('SignUpComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [SignUpComponent, MockComponent(PasswordInputHintComponent), MockPipe(TranslatePipe)],
-      providers: [TranslateServiceMock, MockProvider(ActivatedRoute), MockProvider(AuthService)],
+      providers: [
+        TranslateServiceMock,
+        MockProvider(ActivatedRoute),
+        MockProvider(ToastService),
+        MockProvider(AuthService),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignUpComponent);

@@ -1,10 +1,8 @@
-import {
-  ProjectAffiliatedInstitutions,
-  ProjectIdentifiers,
-  ProjectOverview,
-} from '@osf/features/project/overview/models';
+import { ProjectOverview } from '@osf/features/project/overview/models';
 
-export const MOCK_PROJECT_AFFILIATED_INSTITUTIONS: ProjectAffiliatedInstitutions[] = [
+import { Identifier } from '../models';
+
+export const MOCK_PROJECT_AFFILIATED_INSTITUTIONS = [
   {
     id: 'inst-1',
     type: 'institutions',
@@ -28,7 +26,7 @@ export const MOCK_PROJECT_AFFILIATED_INSTITUTIONS: ProjectAffiliatedInstitutions
   },
 ];
 
-export const MOCK_PROJECT_IDENTIFIERS: ProjectIdentifiers = {
+export const MOCK_PROJECT_IDENTIFIERS: Identifier = {
   id: 'identifier-1',
   type: 'identifiers',
   category: 'doi',

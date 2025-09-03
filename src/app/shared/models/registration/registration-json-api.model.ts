@@ -1,5 +1,7 @@
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
-import { ApiData, LicenseRecordJsonApi, MetaJsonApi, PaginationLinksJsonApi } from '@osf/shared/models';
+
+import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common';
+import { LicenseRecordJsonApi } from '../licenses-json-api.model';
 
 export interface DraftRegistrationResponseJsonApi {
   data: DraftRegistrationDataJsonApi;
@@ -44,7 +46,7 @@ export interface DraftRegistrationAttributesJsonApi {
 
 export interface RegistrationAttributesJsonApi {
   access_requests_enabled: boolean;
-  datetime_initiated: string;
+  date_created: string;
   date_modified: string;
   description: string;
   embargoed: boolean;

@@ -1,4 +1,4 @@
-import { SortOrder } from '@osf/shared/enums/sort-order.enum';
+import { SortOrder } from '../enums';
 
 export interface TableParameters {
   rows: number;

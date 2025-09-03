@@ -1,8 +1,8 @@
 import { Selector } from '@ngxs/store';
 
 import { ReviewAction } from '@osf/features/moderation/models';
-import { RegistryInstitution, RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
-import { PageSchema } from '@osf/shared/models';
+import { RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
+import { Institution, PageSchema } from '@osf/shared/models';
 
 import { RegistryOverviewStateModel } from './registry-overview.model';
 import { RegistryOverviewState } from './registry-overview.state';
@@ -19,6 +19,11 @@ export class RegistryOverviewSelectors {
   }
 
   @Selector([RegistryOverviewState])
+  static isRegistryAnonymous(state: RegistryOverviewStateModel): boolean {
+    return state.isAnonymous;
+  }
+
+  @Selector([RegistryOverviewState])
   static getSubjects(state: RegistryOverviewStateModel): RegistrySubject[] | null {
     return state.subjects.data;
   }
@@ -29,7 +34,7 @@ export class RegistryOverviewSelectors {
   }
 
   @Selector([RegistryOverviewState])
-  static getInstitutions(state: RegistryOverviewStateModel): RegistryInstitution[] | null {
+  static getInstitutions(state: RegistryOverviewStateModel): Institution[] | null {
     return state.institutions.data;
   }
 

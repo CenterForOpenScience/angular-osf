@@ -7,6 +7,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
+import { filter, map, Observable } from 'rxjs';
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -18,37 +20,38 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
 import {
-  LoadingSpinnerComponent,
-  MakeDecisionDialogComponent,
-  ResourceMetadataComponent,
-  SubHeaderComponent,
-} from '@shared/components';
-import { Mode, ResourceType, UserPermissions } from '@shared/enums';
-import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
-import { ToastService } from '@shared/services';
+  ClearCollectionModeration,
+  CollectionsModerationSelectors,
+  GetSubmissionsReviewActions,
+} from '@osf/features/moderation/store/collections-moderation';
+import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
+import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
+import { MapProjectOverview } from '@osf/shared/mappers';
+import { ToastService } from '@osf/shared/services';
 import {
+  ClearCollections,
   ClearWiki,
   CollectionsSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetHomeWiki,
   GetLinkedResources,
-} from '@shared/stores';
-import { GetActivityLogs } from '@shared/stores/activity-logs';
-import { ClearCollections } from '@shared/stores/collections';
-
+} from '@osf/shared/stores';
+import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
-  ClearCollectionModeration,
-  CollectionsModerationSelectors,
-  GetSubmissionsReviewActions,
-} from '../../moderation/store/collections-moderation';
+  DataciteTrackerComponent,
+  LoadingSpinnerComponent,
+  MakeDecisionDialogComponent,
+  ResourceMetadataComponent,
+  SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
+} from '@shared/components';
 
 import {
   LinkedResourcesComponent,
@@ -85,27 +88,34 @@ import {
     TranslatePipe,
     Message,
     RouterLink,
+    ViewOnlyLinkMessageComponent,
+    ViewOnlyLinkMessageComponent,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectOverviewComponent implements OnInit {
+export class ProjectOverviewComponent extends DataciteTrackerComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
-  protected readonly toastService = inject(ToastService);
-  protected readonly dialogService = inject(DialogService);
-  protected readonly translateService = inject(TranslateService);
-  protected isMobile = toSignal(inject(IS_XSMALL));
-  protected submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
-  protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
-  protected currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
-  protected readonly activityPageSize = 5;
-  protected readonly activityDefaultPage = 1;
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly toastService = inject(ToastService);
+  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
 
-  protected actions = createDispatchMap({
+  isMobile = toSignal(inject(IS_XSMALL));
+  submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
+  collectionProvider = select(CollectionsSelectors.getCollectionProvider);
+  currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
+  isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
+  isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
+  readonly activityPageSize = 5;
+  readonly activityDefaultPage = 1;
+  readonly SubmissionReviewStatus = SubmissionReviewStatus;
+
+  private readonly actions = createDispatchMap({
     getProject: GetProjectById,
     getBookmarksId: GetBookmarksCollectionId,
     getHomeWiki: GetHomeWiki,
@@ -135,7 +145,7 @@ export class ProjectOverviewComponent implements OnInit {
     return this.currentReviewAction()?.toState;
   });
 
-  protected showDecisionButton = computed(() => {
+  showDecisionButton = computed(() => {
     return (
       this.isCollectionsRoute() &&
       this.submissionReviewStatus() !== SubmissionReviewStatus.Removed &&
@@ -143,9 +153,16 @@ export class ProjectOverviewComponent implements OnInit {
     );
   });
 
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
-  protected userPermissions = computed(() => {
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+  private currentProject$ = toObservable(this.currentProject);
+
+  userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
+  });
+
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
   });
 
   get isAdmin(): boolean {
@@ -156,34 +173,43 @@ export class ProjectOverviewComponent implements OnInit {
     return this.userPermissions().includes(UserPermissions.Write);
   }
 
-  protected resourceOverview = computed(() => {
+  resourceOverview = computed(() => {
     const project = this.currentProject();
     if (project) {
-      return MapProjectOverview(project);
+      return MapProjectOverview(project, this.isAnonymous());
     }
     return null;
   });
-  protected isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
-  protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
-  protected isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
-  protected isLoading = computed(() => {
+
+  isLoading = computed(() => {
     return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
   });
-  protected currentResource = computed(() => {
-    if (this.currentProject()) {
+
+  currentResource = computed(() => {
+    const project = this.currentProject();
+    if (project) {
       return {
-        id: this.currentProject()!.id,
-        isPublic: this.currentProject()!.isPublic,
-        storage: this.currentProject()!.storage,
-        viewOnlyLinksCount: this.currentProject()!.viewOnlyLinksCount,
-        forksCount: this.currentProject()!.forksCount,
+        id: project.id,
+        isPublic: project.isPublic,
+        storage: project.storage,
+        viewOnlyLinksCount: project.viewOnlyLinksCount,
+        forksCount: project.forksCount,
         resourceType: ResourceType.Project,
+        isAnonymous: this.isAnonymous(),
       };
     }
     return null;
   });
 
+  getDoi(): Observable<string | null> {
+    return this.currentProject$.pipe(
+      filter((project) => project != null),
+      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
+    );
+  }
+
   constructor() {
+    super();
     this.setupCollectionsEffects();
     this.setupCleanup();
   }
@@ -201,10 +227,11 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
+      this.setupDataciteViewTrackerEffect().subscribe();
     }
   }
 
-  protected handleOpenMakeDecisionDialog() {
+  handleOpenMakeDecisionDialog() {
     const dialogWidth = this.isMobile() ? '95vw' : '600px';
 
     this.dialogService
@@ -225,7 +252,7 @@ export class ProjectOverviewComponent implements OnInit {
       });
   }
 
-  protected goBack(): void {
+  goBack(): void {
     const currentStatus = this.route.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus } : {};
 
@@ -264,6 +291,4 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.clearCollectionModeration();
     });
   }
-
-  protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
 }

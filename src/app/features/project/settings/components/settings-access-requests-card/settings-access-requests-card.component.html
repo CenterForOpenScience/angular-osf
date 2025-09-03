@@ -3,13 +3,13 @@
 
   <div class="flex align-items-center w-full">
     <p-checkbox
-      ariaLabel="Checkbox for access request"
       [binary]="true"
       [ngModel]="accessRequest()"
       (ngModelChange)="accessRequestChange.emit($event)"
       id="accessRequest"
       name="ongoing"
     ></p-checkbox>
+
     <label class="input-label ml-2" for="accessRequest">
       {{ 'myProjects.settings.accessRequestsText' | translate }}
     </label>

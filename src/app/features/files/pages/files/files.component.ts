@@ -24,7 +24,7 @@ import {
   model,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -44,6 +44,7 @@ import {
 } from '@osf/features/files/store';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
+import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -51,10 +52,11 @@ import {
   SearchInputComponent,
   SubHeaderComponent,
 } from '@shared/components';
-import { ConfiguredStorageAddon, FilesTreeActions, OsfFile } from '@shared/models';
+import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
+import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
-import { CreateFolderDialogComponent } from '../../components';
+import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
 import { FileProvider } from '../../constants';
 import { FilesSelectors } from '../../store';
 
@@ -76,6 +78,7 @@ import { environment } from 'src/environments/environment';
     TranslatePipe,
     FilesTreeComponent,
     FormSelectComponent,
+    ViewOnlyLinkMessageComponent,
   ],
   templateUrl: './files.component.html',
   styleUrl: './files.component.scss',
@@ -106,29 +109,43 @@ export class FilesComponent {
     resetState: ResetState,
   });
 
-  protected readonly files = select(FilesSelectors.getFiles);
-  protected readonly isFilesLoading = select(FilesSelectors.isFilesLoading);
-  protected readonly currentFolder = select(FilesSelectors.getCurrentFolder);
-  protected readonly provider = select(FilesSelectors.getProvider);
+  isMedium = toSignal(inject(IS_MEDIUM));
 
-  protected readonly resourceId = signal<string>('');
-  private readonly rootFolders = select(FilesSelectors.getRootFolders);
-  protected isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
-  private readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
-  protected isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
-  protected currentRootFolder = model<{ label: string; folder: OsfFile } | null>(null);
-  protected readonly progress = signal(0);
-  protected readonly fileName = signal('');
-  protected readonly dataLoaded = signal(false);
-  protected readonly searchControl = new FormControl<string>('');
-  protected readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
+  readonly hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
+  readonly files = select(FilesSelectors.getFiles);
+  readonly isFilesLoading = select(FilesSelectors.isFilesLoading);
+  readonly currentFolder = select(FilesSelectors.getCurrentFolder);
+  readonly provider = select(FilesSelectors.getProvider);
+
+  readonly resourceId = signal<string>('');
+  readonly rootFolders = select(FilesSelectors.getRootFolders);
+  readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
+  readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
+  readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
+
+  readonly progress = signal(0);
+  readonly fileName = signal('');
+  readonly dataLoaded = signal(false);
+  readonly searchControl = new FormControl<string>('');
+  readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
+
+  currentRootFolder = model<{ label: string; folder: OsfFile } | null>(null);
+
+  fileIsUploading = signal(false);
+  isFolderOpening = signal(false);
+
+  sortOptions = ALL_SORT_OPTIONS;
+
+  storageProvider = FileProvider.OsfStorage;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],
   ]);
 
-  protected readonly rootFoldersOptions = computed(() => {
+  readonly rootFoldersOptions = computed(() => {
     const rootFolders = this.rootFolders();
     const addons = this.configuredStorageAddons();
     if (rootFolders && addons) {
@@ -144,22 +161,15 @@ export class FilesComponent {
     this.activeRoute.parent?.parent?.snapshot.data['resourceType'] || ResourceType.Project
   );
 
-  protected readonly isViewOnly = computed(() => {
+  readonly isViewOnly = computed(() => {
     return this.resourceType() === ResourceType.Registration;
   });
 
-  protected readonly isViewOnlyDownloadable = computed(() => {
+  readonly isViewOnlyDownloadable = computed(() => {
     return this.resourceType() === ResourceType.Registration;
   });
 
-  fileIsUploading = signal(false);
-  isFolderOpening = signal(false);
-
-  sortOptions = ALL_SORT_OPTIONS;
-
-  storageProvider = FileProvider.OsfStorage;
-
-  protected readonly filesTreeActions: FilesTreeActions = {
+  readonly filesTreeActions: FilesTreeActions = {
     setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
     setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
     getFiles: (filesLink) => this.actions.getFiles(filesLink),
@@ -324,6 +334,20 @@ export class FilesComponent {
     }
   }
 
+  showInfoDialog() {
+    const dialogWidth = this.isMedium() ? '850px' : '95vw';
+
+    this.dialogService.open(FileBrowserInfoComponent, {
+      width: dialogWidth,
+      focusOnShow: false,
+      header: this.translateService.instant('files.filesBrowserDialog.title'),
+      closeOnEscape: true,
+      modal: true,
+      closable: true,
+      data: this.resourceType(),
+    });
+  }
+
   updateFilesList(): Observable<void> {
     const currentFolder = this.currentFolder();
     if (currentFolder?.relationships.filesLink) {
@@ -346,7 +370,7 @@ export class FilesComponent {
     this.router.navigate([file.guid], { relativeTo: this.activeRoute });
   }
 
-  getAddonName(addons: ConfiguredStorageAddon[], provider: string): string {
+  getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
     if (provider === 'osfstorage') {
       return 'Osf Storage';
     } else {

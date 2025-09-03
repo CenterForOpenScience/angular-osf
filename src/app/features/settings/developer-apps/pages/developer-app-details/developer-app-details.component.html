@@ -1,4 +1,4 @@
-<section class="bg-white py-4 px-3 md:p-5 xl:p-4">
+<section class="bg-white py-4 px-3 h-full md:p-5 xl:p-4">
   <nav class="flex align-items-center gap-2">
     <osf-icon iconClass="fas fa-chevron-left fa-sm"></osf-icon>
 
@@ -7,85 +7,93 @@
     </a>
   </nav>
 
-  @if (developerApp()) {
-    <section class="flex align-items-center justify-content-between mt-5">
-      <h1>{{ developerApp()?.name }}</h1>
+  @if (isLoading()) {
+    <osf-loading-spinner></osf-loading-spinner>
+  } @else {
+    @if (developerApp()) {
+      <section class="flex align-items-center justify-content-between mt-5">
+        <h1>{{ developerApp()?.name }}</h1>
 
-      <p-button
-        [label]="'settings.developerApps.list.deleteButton' | translate"
-        severity="danger"
-        (click)="deleteApp()"
-      />
-    </section>
+        <p-button
+          [label]="'settings.developerApps.list.deleteButton' | translate"
+          severity="danger"
+          (click)="deleteApp()"
+        />
+      </section>
 
-    <section class="flex flex-column gap-4 mt-4 md:mt-6">
-      <p-card class="no-padding-card">
-        <section class="p-3 md:p-4">
-          <h2>
-            {{ 'settings.developerApps.details.clientId.title' | translate }}
-          </h2>
+      <section class="flex flex-column gap-4 mt-4 md:mt-6">
+        <p-card class="no-padding-card">
+          <section class="p-3 md:p-4">
+            <h2>
+              {{ 'settings.developerApps.details.clientId.title' | translate }}
+            </h2>
 
-          <p class="mt-4">
-            {{ 'settings.developerApps.details.clientId.description' | translate }}
-          </p>
+            <p class="mt-4">
+              {{ 'settings.developerApps.details.clientId.description' | translate }}
+            </p>
 
-          <div class="mt-3 w-4">
-            <p-iconfield iconPosition="right">
-              <input type="text" pInputText readonly [value]="clientId()" />
-              <p-inputicon>
-                <osf-copy-button [copyItem]="clientId()"></osf-copy-button>
-              </p-inputicon>
-            </p-iconfield>
-          </div>
-        </section>
-      </p-card>
-
-      <p-card class="no-padding-card">
-        <section class="p-3 md:p-4">
-          <h2>
-            {{ 'settings.developerApps.details.clientSecret.title' | translate }}
-          </h2>
-
-          <p class="mt-4">
-            {{ 'settings.developerApps.details.clientSecret.description' | translate }}
-          </p>
-
-          <section class="flex flex-column gap-2 mt-3 md:flex-row">
-            <div class="relative">
+            <div class="mt-3 w-4">
               <p-iconfield iconPosition="right">
-                <input pInputText [value]="isClientSecretVisible() ? clientSecret() : hiddenClientSecret()" readonly />
+                <input type="text" pInputText readonly [value]="clientId()" />
                 <p-inputicon>
-                  <osf-copy-button [copyItem]="clientSecret()"></osf-copy-button>
+                  <osf-copy-button [copyItem]="clientId()"></osf-copy-button>
                 </p-inputicon>
               </p-iconfield>
             </div>
-
-            <p-button
-              [label]="
-                isClientSecretVisible()
-                  ? ('settings.developerApps.details.clientSecret.hide' | translate)
-                  : ('settings.developerApps.details.clientSecret.show' | translate)
-              "
-              severity="secondary"
-              (click)="isClientSecretVisible.set(!isClientSecretVisible())"
-            />
           </section>
+        </p-card>
 
-          <section class="flex justify-content-end mt-4">
-            <p-button
-              [label]="'settings.developerApps.details.clientSecret.resetSecret' | translate"
-              (click)="resetClientSecret()"
-            />
+        <p-card class="no-padding-card">
+          <section class="p-3 md:p-4">
+            <h2>
+              {{ 'settings.developerApps.details.clientSecret.title' | translate }}
+            </h2>
+
+            <p class="mt-4">
+              {{ 'settings.developerApps.details.clientSecret.description' | translate }}
+            </p>
+
+            <section class="flex flex-column gap-2 mt-3 md:flex-row">
+              <div class="relative">
+                <p-iconfield iconPosition="right">
+                  <input
+                    pInputText
+                    [value]="isClientSecretVisible() ? clientSecret() : hiddenClientSecret()"
+                    readonly
+                  />
+                  <p-inputicon>
+                    <osf-copy-button [copyItem]="clientSecret()"></osf-copy-button>
+                  </p-inputicon>
+                </p-iconfield>
+              </div>
+
+              <p-button
+                [label]="
+                  isClientSecretVisible()
+                    ? ('settings.developerApps.details.clientSecret.hide' | translate)
+                    : ('settings.developerApps.details.clientSecret.show' | translate)
+                "
+                severity="secondary"
+                (click)="isClientSecretVisible.set(!isClientSecretVisible())"
+              />
+            </section>
+
+            <section class="flex justify-content-end mt-4">
+              <p-button
+                [label]="'settings.developerApps.details.clientSecret.resetSecret' | translate"
+                (click)="resetClientSecret()"
+              />
+            </section>
           </section>
-        </section>
-      </p-card>
+        </p-card>
 
-      <p-card class="no-padding-card">
-        <section class="p-3 md:p-4">
-          <h2>{{ 'settings.developerApps.form.editTitle' | translate }}</h2>
-          <osf-developer-app-add-edit-form class="block mt-4" [isEditMode]="true" [initialValues]="developerApp()!" />
-        </section>
-      </p-card>
-    </section>
+        <p-card class="no-padding-card">
+          <section class="p-3 md:p-4">
+            <h2>{{ 'settings.developerApps.form.editTitle' | translate }}</h2>
+            <osf-developer-app-add-edit-form class="block mt-4" [isEditMode]="true" [initialValues]="developerApp()!" />
+          </section>
+        </p-card>
+      </section>
+    }
   }
 </section>

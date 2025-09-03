@@ -6,16 +6,12 @@ import { Textarea } from 'primeng/textarea';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { resourceTypeOptions } from '@osf/features/registry/constants';
-import { FormSelectComponent, TextInputComponent } from '@shared/components';
-import { InputLimits } from '@shared/constants';
-import { SelectOption } from '@shared/models';
+import { FormSelectComponent, TextInputComponent } from '@osf/shared/components';
+import { InputLimits } from '@osf/shared/constants';
+import { SelectOption } from '@osf/shared/models';
 
-interface ResourceForm {
-  pid: FormControl<string | null>;
-  resourceType: FormControl<string | null>;
-  description: FormControl<string | null>;
-}
+import { resourceTypeOptions } from '../../constants';
+import { RegistryResourceFormModel } from '../../models';
 
 @Component({
   selector: 'osf-resource-form',
@@ -25,7 +21,7 @@ interface ResourceForm {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResourceFormComponent {
-  formGroup = input.required<FormGroup<ResourceForm>>();
+  formGroup = input.required<FormGroup<RegistryResourceFormModel>>();
   showCancelButton = input(true);
   showPreviewButton = input(false);
   cancelButtonLabel = input('common.buttons.cancel');
@@ -37,7 +33,7 @@ export class ResourceFormComponent {
   protected inputLimits = InputLimits;
   public resourceOptions = signal<SelectOption[]>(resourceTypeOptions);
 
-  protected getControl(controlName: keyof ResourceForm): FormControl<string | null> {
+  protected getControl(controlName: keyof RegistryResourceFormModel): FormControl<string | null> {
     return this.formGroup().get(controlName) as FormControl<string | null>;
   }
 

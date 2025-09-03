@@ -6,7 +6,7 @@
       class="link-btn-no-padding"
       link
       [label]="submission().title"
-      [routerLink]="['/registries/', submission().id, 'overview']"
+      [routerLink]="[submission().id, 'overview']"
       [queryParams]="{
         mode: 'moderator',
         revisionId: isPendingModeration && !isPending ? submission().revisionId : null,

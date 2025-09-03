@@ -7,16 +7,16 @@ import { inject, Injectable } from '@angular/core';
 import { UserSelectors } from '@core/store/user';
 import { AddonMapper } from '@shared/mappers';
 import {
-  Addon,
   AddonGetResponseJsonApi,
-  AuthorizedAddon,
+  AddonModel,
+  AuthorizedAccountModel,
   AuthorizedAddonGetResponseJsonApi,
   AuthorizedAddonRequestJsonApi,
   AuthorizedAddonResponseJsonApi,
-  ConfiguredAddon,
   ConfiguredAddonGetResponseJsonApi,
   ConfiguredAddonRequestJsonApi,
   ConfiguredAddonResponseJsonApi,
+  ConfiguredStorageAddonModel,
   IncludedAddonData,
   JsonApiResponse,
   OperationInvocation,
@@ -29,14 +29,41 @@ import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 
+/**
+ * Service for managing addon-related operations within the OSF platform.
+ *
+ * This service provides methods for retrieving, configuring, and interacting
+ * with external storage service addons (e.g., Google Drive, Dropbox).
+ * It communicates with the OSF Addons API and maps responses into domain models.
+ *
+ * Used by components and state layers to facilitate addon workflows such as
+ * integration configuration, credential management, and supported feature handling.
+ *
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class AddonsService {
+  /**
+   * Injected instance of the JSON:API service used for making API requests.
+   * This service handles standardized JSON:API request and response formatting.
+   */
   private jsonApiService = inject(JsonApiService);
+
+  /**
+   * Signal holding the current authenticated user from the global NGXS store.
+   * Typically used for access control, display logic, or personalized API calls.
+   */
   private currentUser = select(UserSelectors.getCurrentUser);
 
-  getAddons(addonType: string): Observable<Addon[]> {
+  /**
+   * Retrieves a list of external storage service addons by type.
+   *
+   * @param addonType - The addon type to fetch (e.g., 'storage').
+   * @returns Observable emitting an array of mapped Addon objects.
+   *
+   */
+  getAddons(addonType: string): Observable<AddonModel[]> {
     return this.jsonApiService
       .get<
         JsonApiResponse<AddonGetResponseJsonApi[], null>
@@ -75,7 +102,7 @@ export class AddonsService {
       .pipe(map((response) => response.data));
   }
 
-  getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAddon[]> {
+  getAuthorizedStorageAddons(addonType: string, referenceId: string): Observable<AuthorizedAccountModel[]> {
     const params = {
       [`fields[external-${addonType}-services]`]: 'external_service_name',
     };
@@ -90,7 +117,30 @@ export class AddonsService {
       );
   }
 
-  getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddon[]> {
+  getAuthorizedStorageOauthToken(accountId: string): Observable<AuthorizedAccountModel> {
+    return this.jsonApiService
+      .patch<AuthorizedAddonGetResponseJsonApi>(
+        `${environment.addonsApiUrl}/authorized-storage-accounts/${accountId}`,
+        {
+          serializeOauthToken: true,
+        }
+      )
+      .pipe(
+        map((response) => {
+          return AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi);
+        })
+      );
+  }
+
+  /**
+   * Retrieves the list of configured addons for a given resource reference.
+   *
+   * @param addonType - The addon category to retrieve. Valid values: `'citation'` or `'storage'`.
+   * @param referenceId - The unique identifier of the resource (e.g., node, registration) that the addons are configured for.
+   * @returns An observable that emits an array of {@link ConfiguredStorageAddonModel} objects.
+   *
+   */
+  getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredStorageAddonModel[]> {
     return this.jsonApiService
       .get<
         JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>

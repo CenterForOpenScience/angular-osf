@@ -16,22 +16,24 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { DuplicateDialogComponent, TogglePublicityDialogComponent } from '@osf/features/project/overview/components';
-import { SocialsShareActionItem } from '@osf/features/project/overview/models';
 import { IconComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
+import { ShareableContent, ToolbarResource } from '@osf/shared/models';
+import { FileSizePipe } from '@osf/shared/pipes';
 import { SocialShareService, ToastService } from '@osf/shared/services';
-import { ResourceType } from '@shared/enums';
-import { ShareableContent, ToolbarResource } from '@shared/models';
-import { FileSizePipe } from '@shared/pipes';
 import {
   AddResourceToBookmarks,
   BookmarksSelectors,
   GetMyBookmarks,
   MyResourcesSelectors,
   RemoveResourceFromBookmarks,
-} from '@shared/stores';
+} from '@osf/shared/stores';
+import { hasViewOnlyParam } from '@shared/helpers';
 
+import { SocialsShareActionItem } from '../../models';
+import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
 import { ForkDialogComponent } from '../fork-dialog/fork-dialog.component';
+import { TogglePublicityDialogComponent } from '../toggle-publicity-dialog/toggle-publicity-dialog.component';
 
 @Component({
   selector: 'osf-overview-toolbar',
@@ -57,11 +59,13 @@ export class OverviewToolbarComponent {
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   private socialShareService = inject(SocialShareService);
-  protected destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  protected isPublic = signal(false);
-  protected isBookmarked = signal(false);
+
+  destroyRef = inject(DestroyRef);
+  isPublic = signal(false);
+  isBookmarked = signal(false);
+
   isCollectionsRoute = input<boolean>(false);
   isAdmin = input.required<boolean>();
   currentResource = input.required<ToolbarResource | null>();
@@ -69,16 +73,20 @@ export class OverviewToolbarComponent {
   projectDescription = input<string>('');
   showViewOnlyLinks = input<boolean>(true);
 
-  protected isBookmarksLoading = select(MyResourcesSelectors.getBookmarksLoading);
-  protected isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
-  protected bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
-  protected bookmarkedProjects = select(MyResourcesSelectors.getBookmarks);
-  protected socialsActionItems = computed(() => {
+  isBookmarksLoading = select(MyResourcesSelectors.getBookmarksLoading);
+  isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
+  bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
+  bookmarkedProjects = select(MyResourcesSelectors.getBookmarks);
+  socialsActionItems = computed(() => {
     const shareableContent = this.createShareableContent();
     return shareableContent ? this.buildSocialActionItems(shareableContent) : [];
   });
 
-  protected readonly forkActionItems = [
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
+
+  readonly forkActionItems = [
     {
       label: 'project.overview.actions.forkProject',
       command: () => this.handleForkResource(),
@@ -94,7 +102,7 @@ export class OverviewToolbarComponent {
       },
     },
   ];
-  protected readonly ResourceType = ResourceType;
+  readonly ResourceType = ResourceType;
 
   get isRegistration(): boolean {
     return this.currentResource()?.resourceType === ResourceType.Registration;
@@ -132,7 +140,7 @@ export class OverviewToolbarComponent {
     });
   }
 
-  protected handleToggleProjectPublicity(): void {
+  handleToggleProjectPublicity(): void {
     const resource = this.currentResource();
     if (!resource) return;
 
@@ -160,7 +168,7 @@ export class OverviewToolbarComponent {
     });
   }
 
-  protected toggleBookmark(): void {
+  toggleBookmark(): void {
     const resource = this.currentResource();
     const bookmarksId = this.bookmarksCollectionId();
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { SOCIAL_SHARE_URLS } from '@shared/config/social-share.config';
-import { ShareableContent, SocialShareLinks } from '@shared/models/social-share.model';
+import { SOCIAL_SHARE_URLS } from '../constants';
+import { ShareableContent, SocialShareLinks } from '../models';
 
 import { environment } from 'src/environments/environment';
 

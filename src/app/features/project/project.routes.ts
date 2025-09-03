@@ -2,7 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
+import { viewOnlyGuard } from '@osf/core/guards';
 import { ResourceType } from '@osf/shared/enums';
 import {
   CitationsState,
@@ -13,9 +13,11 @@ import {
   SubjectsState,
   ViewOnlyLinkState,
 } from '@osf/shared/stores';
-import { ActivityLogsState } from '@shared/stores/activity-logs';
+import { ActivityLogsState } from '@osf/shared/stores/activity-logs';
 
-import { AnalyticsState } from './analytics/store';
+import { AnalyticsState } from '../analytics/store';
+import { CollectionsModerationState } from '../moderation/store/collections-moderation';
+
 import { SettingsState } from './settings/store';
 
 export const projectRoutes: Routes = [
@@ -44,9 +46,10 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'metadata',
-        loadChildren: () =>
-          import('../project/metadata/project-metadata.routes').then((mod) => mod.projectMetadataRoutes),
-        providers: [provideStates([ContributorsState, SubjectsState])],
+        loadChildren: () => import('@osf/features/metadata/metadata.routes').then((mod) => mod.metadataRoutes),
+        providers: [provideStates([SubjectsState, ContributorsState])],
+        data: { resourceType: ResourceType.Project },
+        canActivate: [viewOnlyGuard],
       },
       {
         path: 'files',
@@ -55,16 +58,19 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'registrations',
+        canActivate: [viewOnlyGuard],
         loadComponent: () =>
           import('../project/registrations/registrations.component').then((mod) => mod.RegistrationsComponent),
       },
       {
         path: 'settings',
+        canActivate: [viewOnlyGuard],
         loadComponent: () => import('../project/settings/settings.component').then((mod) => mod.SettingsComponent),
         providers: [provideStates([SettingsState, ViewOnlyLinkState])],
       },
       {
         path: 'contributors',
+        canActivate: [viewOnlyGuard],
         loadComponent: () =>
           import('../project/contributors/contributors.component').then((mod) => mod.ContributorsComponent),
         data: { resourceType: ResourceType.Project },
@@ -72,7 +78,7 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'analytics',
-        loadComponent: () => import('../project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
+        loadComponent: () => import('../analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
         data: { resourceType: ResourceType.Project },
         providers: [provideStates([AnalyticsState])],
       },
@@ -80,7 +86,7 @@ export const projectRoutes: Routes = [
         path: 'analytics/duplicates',
         data: { resourceType: ResourceType.Project },
         loadComponent: () =>
-          import('../project/analytics/components/view-duplicates/view-duplicates.component').then(
+          import('../analytics/components/view-duplicates/view-duplicates.component').then(
             (mod) => mod.ViewDuplicatesComponent
           ),
         providers: [provideStates([DuplicatesState])],
@@ -91,6 +97,7 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'addons',
+        canActivate: [viewOnlyGuard],
         loadChildren: () => import('../project/addons/addons.routes').then((mod) => mod.addonsRoutes),
       },
     ],

@@ -1,6 +1,10 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { RegistrySubject } from '@osf/features/registry/models';
 
+import { IdTypeModel } from './common';
+import { Institution } from './institutions';
+import { LicensesOption } from './license.model';
+
 export interface ResourceOverview {
   id: string;
   type: string;
@@ -17,10 +21,7 @@ export interface ResourceOverview {
   isCollection: boolean;
   tags: string[];
   accessRequestsEnabled: boolean;
-  nodeLicense?: {
-    copyrightHolders: string[];
-    year: string;
-  };
+  nodeLicense?: LicensesOption;
   license?: {
     name: string;
     text: string;
@@ -55,16 +56,10 @@ export interface ResourceOverview {
   subjects: RegistrySubject[];
   contributors: ProjectOverviewContributor[];
   customCitation: string | null;
-  region?: {
-    id: string;
-    type: string;
-  };
-  affiliatedInstitutions?: {
-    id: string;
-    logo: string;
-    logoRounded?: string;
-  }[];
+  region?: IdTypeModel;
+  affiliatedInstitutions?: Institution[];
   forksCount: number;
   viewOnlyLinksCount?: number;
   associatedProjectId?: string;
+  isAnonymous?: boolean;
 }

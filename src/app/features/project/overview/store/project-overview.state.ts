@@ -1,9 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/shared/helpers';
 import { ResourceType } from '@shared/enums';
 
 import { ProjectOverviewService } from '../services';
@@ -19,22 +20,7 @@ import {
   SetProjectCustomCitation,
   UpdateProjectPublicStatus,
 } from './project-overview.actions';
-import { ProjectOverviewStateModel } from './project-overview.model';
-
-const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
-  project: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  components: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-};
+import { PROJECT_OVERVIEW_DEFAULTS, ProjectOverviewStateModel } from './project-overview.model';
 
 @State<ProjectOverviewStateModel>({
   name: 'projectOverview',
@@ -55,16 +41,17 @@ export class ProjectOverviewState {
     });
 
     return this.projectOverviewService.getProjectById(action.projectId).pipe(
-      tap((project) => {
+      tap((response) => {
         ctx.patchState({
           project: {
-            data: project,
+            data: response.project,
             isLoading: false,
             error: null,
           },
+          isAnonymous: response.meta?.anonymous ?? false,
         });
       }),
-      catchError((error) => this.handleError(ctx, 'project', error))
+      catchError((error) => handleSectionError(ctx, 'project', error))
     );
   }
 
@@ -99,7 +86,7 @@ export class ProjectOverviewState {
           });
         }
       }),
-      catchError((error) => this.handleError(ctx, 'project', error))
+      catchError((error) => handleSectionError(ctx, 'project', error))
     );
   }
 
@@ -150,7 +137,7 @@ export class ProjectOverviewState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'project', error))
+      catchError((error) => handleSectionError(ctx, 'project', error))
     );
   }
 
@@ -173,7 +160,7 @@ export class ProjectOverviewState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'project', error))
+      catchError((error) => handleSectionError(ctx, 'project', error))
     );
   }
 
@@ -206,7 +193,7 @@ export class ProjectOverviewState {
             },
           });
         }),
-        catchError((error) => this.handleError(ctx, 'components', error))
+        catchError((error) => handleSectionError(ctx, 'components', error))
       );
   }
 
@@ -230,7 +217,7 @@ export class ProjectOverviewState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'components', error))
+      catchError((error) => handleSectionError(ctx, 'components', error))
     );
   }
 
@@ -254,23 +241,7 @@ export class ProjectOverviewState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'components', error))
+      catchError((error) => handleSectionError(ctx, 'components', error))
     );
-  }
-
-  private handleError(
-    ctx: StateContext<ProjectOverviewStateModel>,
-    section: keyof ProjectOverviewStateModel,
-    error: Error
-  ) {
-    ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        isSubmitting: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
   }
 }

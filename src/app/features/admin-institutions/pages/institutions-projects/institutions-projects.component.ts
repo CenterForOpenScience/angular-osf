@@ -11,7 +11,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { Institution, QueryParams } from '@osf/shared/models';
@@ -29,7 +28,7 @@ import { FetchProjects, InstitutionsAdminSelectors, RequestProjectAccess, SendUs
 
 @Component({
   selector: 'osf-institutions-projects',
-  imports: [AdminTableComponent, TranslatePipe, LoadingSpinnerComponent],
+  imports: [AdminTableComponent, TranslatePipe],
   templateUrl: './institutions-projects.component.html',
   styleUrl: './institutions-projects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -75,8 +74,6 @@ export class InstitutionsProjectsComponent implements OnInit {
   }
 
   onSortChange(params: QueryParams): void {
-    console.log(params);
-
     this.sortField.set(params.sortColumn || '-dateModified');
     this.sortOrder.set(params.sortOrder || 1);
 
@@ -97,7 +94,7 @@ export class InstitutionsProjectsComponent implements OnInit {
 
     const sortField = this.sortField();
     const sortOrder = this.sortOrder();
-    const sortParam = sortOrder === -1 ? `-${sortField}` : sortField;
+    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
 
     const institution = this.institution() as Institution;
     const institutionIris = institution.iris || [];

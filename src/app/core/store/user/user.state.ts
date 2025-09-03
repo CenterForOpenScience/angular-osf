@@ -5,8 +5,8 @@ import { tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { removeNullable } from '@osf/shared/constants';
 import { ProfileSettingsKey } from '@osf/shared/enums';
+import { removeNullable } from '@osf/shared/helpers';
 import { UserMapper } from '@osf/shared/mappers';
 import { Social } from '@osf/shared/models';
 
@@ -135,7 +135,7 @@ export class UserState {
       return;
     }
 
-    const withoutNulls = payload.employment.map((item) => removeNullable(item));
+    const withoutNulls = payload.map((item) => removeNullable(item));
 
     return this.userService.updateUserProfile(userId, ProfileSettingsKey.Employment, withoutNulls).pipe(
       tap((user) => {
@@ -145,6 +145,8 @@ export class UserState {
             data: user,
           },
         });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -158,7 +160,7 @@ export class UserState {
       return;
     }
 
-    const withoutNulls = payload.education.map((item) => removeNullable(item));
+    const withoutNulls = payload.map((item) => removeNullable(item));
 
     return this.userService.updateUserProfile(userId, ProfileSettingsKey.Education, withoutNulls).pipe(
       tap((user) => {
@@ -168,6 +170,8 @@ export class UserState {
             data: user,
           },
         });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -181,7 +185,7 @@ export class UserState {
       return;
     }
 
-    const withoutNulls = UserMapper.toNamesRequest(removeNullable(payload.user));
+    const withoutNulls = UserMapper.toNamesRequest(removeNullable(payload));
 
     return this.userService.updateUserProfile(userId, ProfileSettingsKey.User, withoutNulls).pipe(
       tap((user) => {
@@ -191,6 +195,8 @@ export class UserState {
             data: user,
           },
         });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
@@ -206,7 +212,7 @@ export class UserState {
 
     let social = {} as Partial<Social>;
 
-    payload.socialLinks.forEach((item) => {
+    payload.forEach((item) => {
       social = {
         ...social,
         ...item,
@@ -221,9 +227,12 @@ export class UserState {
             data: user,
           },
         });
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
   }
+
   @Action(SetUserAsModerator)
   setUserAsModerator(ctx: StateContext<UserStateModel>) {
     const state = ctx.getState();

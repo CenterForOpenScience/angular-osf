@@ -3,13 +3,12 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ComponentGetResponseJsonApi, ComponentOverview } from '@osf/shared/models';
+import { ComponentsMapper } from '@osf/shared/mappers';
+import { ComponentGetResponseJsonApi, ComponentOverview, JsonApiResponse } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
-import { ComponentsMapper } from '@shared/mappers';
-import { JsonApiResponse } from '@shared/models';
 
 import { ProjectOverviewMapper } from '../mappers';
-import { ProjectOverview, ProjectOverviewResponseJsonApi } from '../models';
+import { ProjectOverviewResponseJsonApi, ProjectOverviewWithMeta } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -19,7 +18,7 @@ import { environment } from 'src/environments/environment';
 export class ProjectOverviewService {
   private readonly jsonApiService = inject(JsonApiService);
 
-  getProjectById(projectId: string): Observable<ProjectOverview> {
+  getProjectById(projectId: string): Observable<ProjectOverviewWithMeta> {
     const params: Record<string, unknown> = {
       'embed[]': [
         'bibliographic_contributors',
@@ -37,7 +36,12 @@ export class ProjectOverviewService {
 
     return this.jsonApiService
       .get<ProjectOverviewResponseJsonApi>(`${environment.apiUrl}/nodes/${projectId}/`, params)
-      .pipe(map((response) => ProjectOverviewMapper.fromGetProjectResponse(response.data)));
+      .pipe(
+        map((response) => ({
+          project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
+          meta: response.meta,
+        }))
+      );
   }
 
   updateProjectPublicStatus(projectId: string, isPublic: boolean): Observable<void> {
@@ -128,7 +132,7 @@ export class ProjectOverviewService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ComponentGetResponseJsonApi[], null>
-      >(`${environment.apiUrl}/nodes/${projectId}/children`, params)
+      >(`${environment.apiUrl}/nodes/${projectId}/children/`, params)
       .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
   }
 }

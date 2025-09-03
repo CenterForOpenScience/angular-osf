@@ -7,7 +7,7 @@ import { ButtonGroup } from 'primeng/buttongroup';
 
 import { filter, map, mergeMap, tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -25,6 +25,8 @@ import {
   ToggleMode,
   WikiSelectors,
 } from '@osf/shared/stores';
+import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
+import { hasViewOnlyParam } from '@shared/helpers';
 
 @Component({
   selector: 'osf-registry-wiki',
@@ -36,6 +38,7 @@ import {
     WikiListComponent,
     ViewSectionComponent,
     CompareSectionComponent,
+    ViewOnlyLinkMessageComponent,
   ],
   templateUrl: './registry-wiki.component.html',
   styleUrl: './registry-wiki.component.scss',
@@ -46,19 +49,23 @@ export class RegistryWikiComponent {
   private readonly router = inject(Router);
 
   WikiModes = WikiModes;
-  protected wikiModes = select(WikiSelectors.getWikiModes);
-  protected previewContent = select(WikiSelectors.getPreviewContent);
-  protected versionContent = select(WikiSelectors.getWikiVersionContent);
-  protected compareVersionContent = select(WikiSelectors.getCompareVersionContent);
-  protected isWikiListLoading = select(WikiSelectors.getWikiListLoading || WikiSelectors.getComponentsWikiListLoading);
-  protected wikiList = select(WikiSelectors.getWikiList);
-  protected currentWikiId = select(WikiSelectors.getCurrentWikiId);
-  protected wikiVersions = select(WikiSelectors.getWikiVersions);
-  protected isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
+  wikiModes = select(WikiSelectors.getWikiModes);
+  previewContent = select(WikiSelectors.getPreviewContent);
+  versionContent = select(WikiSelectors.getWikiVersionContent);
+  compareVersionContent = select(WikiSelectors.getCompareVersionContent);
+  isWikiListLoading = select(WikiSelectors.getWikiListLoading || WikiSelectors.getComponentsWikiListLoading);
+  wikiList = select(WikiSelectors.getWikiList);
+  currentWikiId = select(WikiSelectors.getCurrentWikiId);
+  wikiVersions = select(WikiSelectors.getWikiVersions);
+  isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
+
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
 
   readonly resourceId = this.route.parent?.snapshot.params['id'];
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     toggleMode: ToggleMode,
     getWikiContent: GetWikiContent,
     getWikiList: GetWikiList,
@@ -68,7 +75,7 @@ export class RegistryWikiComponent {
     getCompareVersionContent: GetCompareVersionContent,
   });
 
-  protected wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
+  wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
 
   constructor() {
     this.actions

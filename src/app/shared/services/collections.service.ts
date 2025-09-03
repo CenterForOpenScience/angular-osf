@@ -15,7 +15,7 @@ import {
   CollectionDetailsGetResponseJsonApi,
   CollectionDetailsResponseJsonApi,
   CollectionProvider,
-  CollectionProviderGetResponseJsonApi,
+  CollectionProviderResponseJsonApi,
   CollectionSubmission,
   CollectionSubmissionActionType,
   CollectionSubmissionJsonApi,
@@ -46,10 +46,10 @@ export class CollectionsService {
   });
 
   getCollectionProvider(collectionName: string): Observable<CollectionProvider> {
-    const url = `${environment.apiUrl}/providers/collections/${collectionName}/`;
+    const url = `${environment.apiUrl}/providers/collections/${collectionName}/?embed=brand`;
 
     return this.jsonApiService
-      .get<CollectionProviderGetResponseJsonApi>(url)
+      .get<JsonApiResponse<CollectionProviderResponseJsonApi, null>>(url)
       .pipe(map((response) => CollectionsMapper.fromGetCollectionProviderResponse(response.data)));
   }
 

@@ -80,7 +80,7 @@ export class RegistrationMapper {
       title: registration.attributes.title,
       description: registration.attributes.description || '',
       status: MapRegistryStatus(registration.attributes),
-      dateCreated: registration.attributes.datetime_initiated,
+      dateCreated: registration.attributes.date_created,
       dateModified: registration.attributes.date_modified,
       registrationTemplate: registration.embeds?.registration_schema?.data?.attributes?.name || '',
       registry: registration.embeds?.provider?.data?.attributes?.name || '',

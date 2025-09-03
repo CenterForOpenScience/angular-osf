@@ -36,10 +36,10 @@ export class RegistryFilesState {
 
     return this.filesService.getFiles(action.filesLink, state.search, state.sort).pipe(
       tap({
-        next: (files) => {
+        next: (response) => {
           ctx.patchState({
             files: {
-              data: files,
+              data: response.files,
               isLoading: false,
               error: null,
             },

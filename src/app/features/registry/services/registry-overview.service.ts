@@ -6,17 +6,16 @@ import { RegistryModerationMapper } from '@osf/features/moderation/mappers';
 import { ReviewAction, ReviewActionsResponseJsonApi } from '@osf/features/moderation/models';
 import { MapRegistryOverview } from '@osf/features/registry/mappers';
 import {
-  GetRegistryInstitutionsJsonApi,
   GetRegistryOverviewJsonApi,
   GetResourceSubjectsJsonApi,
-  RegistryInstitution,
   RegistryOverview,
   RegistryOverviewJsonApiData,
+  RegistryOverviewWithMeta,
   RegistrySubject,
 } from '@osf/features/registry/models';
-import { ReviewActionsMapper } from '@osf/shared/mappers';
+import { InstitutionsMapper, ReviewActionsMapper } from '@osf/shared/mappers';
 import { PageSchemaMapper } from '@osf/shared/mappers/registration';
-import { PageSchema, SchemaBlocksResponseJsonApi } from '@osf/shared/models';
+import { Institution, InstitutionsJsonApiResponse, PageSchema, SchemaBlocksResponseJsonApi } from '@osf/shared/models';
 import { ReviewActionPayload } from '@osf/shared/models/review-action';
 import { JsonApiService } from '@shared/services';
 
@@ -28,7 +27,7 @@ import { environment } from 'src/environments/environment';
 export class RegistryOverviewService {
   private jsonApiService = inject(JsonApiService);
 
-  getRegistrationById(id: string): Observable<RegistryOverview | null> {
+  getRegistrationById(id: string): Observable<RegistryOverviewWithMeta> {
     const params = {
       related_counts: 'forks,comments,linked_nodes,linked_registrations,children,wikis',
       'embed[]': [
@@ -45,7 +44,7 @@ export class RegistryOverviewService {
 
     return this.jsonApiService
       .get<GetRegistryOverviewJsonApi>(`${environment.apiUrl}/registrations/${id}/`, params)
-      .pipe(map((response) => MapRegistryOverview(response.data)));
+      .pipe(map((response) => ({ registry: MapRegistryOverview(response.data), meta: response.meta })));
   }
 
   getSubjects(registryId: string): Observable<RegistrySubject[]> {
@@ -59,22 +58,14 @@ export class RegistryOverviewService {
       .pipe(map((response) => response.data.map((subject) => ({ id: subject.id, text: subject.attributes.text }))));
   }
 
-  getInstitutions(registryId: string): Observable<RegistryInstitution[]> {
+  getInstitutions(registryId: string): Observable<Institution[]> {
     const params = {
       'page[size]': 100,
     };
 
     return this.jsonApiService
-      .get<GetRegistryInstitutionsJsonApi>(`${environment.apiUrl}/registrations/${registryId}/institutions/`, params)
-      .pipe(
-        map((response) =>
-          response.data.map((institution) => ({
-            id: institution.id,
-            logo: institution.attributes.assets.logo,
-            logoRounded: institution.attributes.assets.logo_rounded,
-          }))
-        )
-      );
+      .get<InstitutionsJsonApiResponse>(`${environment.apiUrl}/registrations/${registryId}/institutions/`, params)
+      .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
   }
 
   getSchemaBlocks(schemaLink: string): Observable<PageSchema[]> {
@@ -83,8 +74,16 @@ export class RegistryOverviewService {
       page: 1,
     };
 
+    let fullUrl: string;
+    if (schemaLink.includes('?')) {
+      const [baseUrl, queryString] = schemaLink.split('?');
+      fullUrl = `${baseUrl}schema_blocks/?${queryString}`;
+    } else {
+      fullUrl = `${schemaLink}schema_blocks/`;
+    }
+
     return this.jsonApiService
-      .get<SchemaBlocksResponseJsonApi>(`${schemaLink}schema_blocks`, params)
+      .get<SchemaBlocksResponseJsonApi>(fullUrl, params)
       .pipe(map((response) => PageSchemaMapper.fromSchemaBlocksResponse(response)));
   }
 

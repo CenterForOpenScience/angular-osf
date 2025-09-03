@@ -16,7 +16,7 @@ export const USER_STATE_INITIAL: UserStateModel = {
     data: null,
     isLoading: false,
     isSubmitting: false,
-    error: '',
+    error: null,
   },
   activeFlags: [],
 };

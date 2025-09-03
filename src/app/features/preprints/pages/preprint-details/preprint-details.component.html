@@ -68,6 +68,9 @@
   </section>
 
   <section class="flex-1 flex flex-column gap-2 bg-white py-2 px-3 md:px-4">
+    @if (isOsfPreprint()) {
+      <osf-preprint-warning-banner />
+    }
     @if (moderationStatusBannerVisible()) {
       <osf-moderation-status-banner
         [provider]="preprintProvider()!"

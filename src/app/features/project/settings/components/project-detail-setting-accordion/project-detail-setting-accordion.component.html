@@ -1,21 +1,20 @@
 <div
-  class="flex justify-between align-items-center mb-2 w-full border-bottom-1 border-gray-300 gap-2 flex-column sm:flex-row sm:gap-4"
+  class="flex justify-content-between align-items-center mb-2 w-full border-bottom-1 border-gray-300 gap-2 flex-column sm:flex-row sm:gap-4"
 >
   <div class="flex align-items-center gap-2 cursor-pointer w-full sm:w-5">
     <p-button
       [icon]="expanded() ? 'fas fa-minus' : 'fas fa-plus'"
       variant="text"
       severity="contrast"
-      (click)="toggle()"
-    >
-    </p-button>
+      (onClick)="toggle()"
+    ></p-button>
 
     <span class="font-medium text-color">{{ title() }}</span>
   </div>
 
   @if (rightControls()) {
     <div class="flex flex-wrap gap-2 align-items-center w-full sm:gap-4 sm:w-7">
-      @for (control of rightControls(); let index = $index; track control.value) {
+      @for (control of rightControls(); let index = $index; track index) {
         <div class="flex align-items-center gap-2">
           @if (control.label) {
             <span class="font-medium text-color">
@@ -23,20 +22,13 @@
             </span>
           }
 
-          <p-select
-            class="accordion-dropdown"
+          <osf-select
+            [noBorder]="true"
             [options]="control.options"
-            [(ngModel)]="control.value"
-            (ngModelChange)="emitValueChange.emit({ index: index, value: control.value })"
-          >
-            <ng-template let-item pTemplate="item">
-              <span>{{ item.label | translate }}</span>
-            </ng-template>
-
-            <ng-template let-item pTemplate="selectedItem">
-              {{ item.label | translate }}
-            </ng-template>
-          </p-select>
+            [(selectedValue)]="control.value"
+            [disabled]="disabledRightControls()"
+            (changeValue)="emitValueChange.emit({ index: index, value: control.value })"
+          ></osf-select>
         </div>
       }
     </div>
@@ -44,11 +36,7 @@
 </div>
 
 @if (expanded()) {
-  <div
-    class="mt-2 pl-5 border-bottom-1 border-gray-300"
-    [attr.id]="'accordion-content-' + title()"
-    [attr.aria-labelledby]="'accordion-label-' + title()"
-  >
+  <div class="mt-2 pl-5 border-bottom-1 border-gray-300">
     <ng-content></ng-content>
   </div>
 }

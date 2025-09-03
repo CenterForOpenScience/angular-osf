@@ -23,26 +23,25 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM, parseQueryFilterParams } from '@osf/shared/helpers';
-import { QueryParams, TableParameters } from '@osf/shared/models';
-import { BookmarksSelectors, GetBookmarksCollectionId } from '@osf/shared/stores';
+import { MyResourcesItem, MyResourcesSearchFilters, QueryParams, TableParameters } from '@osf/shared/models';
 import {
+  BookmarksSelectors,
   ClearMyResources,
+  GetBookmarksCollectionId,
   GetMyBookmarks,
   GetMyPreprints,
   GetMyProjects,
   GetMyRegistrations,
   MyResourcesSelectors,
-} from '@shared/stores';
+} from '@osf/shared/stores';
 
+import { CreateProjectDialogComponent } from './components';
 import { MY_PROJECTS_TABS } from './constants';
 import { MyProjectsTab } from './enums';
-
-import { MyResourcesItem, MyResourcesSearchFilters } from 'src/app/shared/models/my-resources';
 
 @Component({
   selector: 'osf-my-projects',
@@ -70,37 +69,34 @@ export class MyProjectsComponent implements OnInit {
   readonly route = inject(ActivatedRoute);
   readonly translateService = inject(TranslateService);
 
-  protected readonly isLoading = signal(false);
-  protected readonly isTablet = toSignal(inject(IS_MEDIUM));
-  protected readonly tabOptions = MY_PROJECTS_TABS;
-  protected readonly tabOption = MyProjectsTab;
+  readonly isLoading = signal(false);
+  readonly isTablet = toSignal(inject(IS_MEDIUM));
+  readonly tabOptions = MY_PROJECTS_TABS;
+  readonly tabOption = MyProjectsTab;
 
-  protected readonly searchControl = new FormControl<string>('');
+  readonly searchControl = new FormControl<string>('');
 
-  protected readonly queryParams = toSignal(this.route.queryParams);
-  protected readonly currentPage = signal(1);
-  protected readonly currentPageSize = signal(MY_PROJECTS_TABLE_PARAMS.rows);
-  protected readonly selectedTab = signal(MyProjectsTab.Projects);
-  protected readonly activeProject = signal<MyResourcesItem | null>(null);
-  protected readonly sortColumn = signal<string | undefined>(undefined);
-  protected readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
-  protected readonly tableParams = signal<TableParameters>({
-    ...MY_PROJECTS_TABLE_PARAMS,
-    firstRowIndex: 0,
-  });
+  readonly queryParams = toSignal(this.route.queryParams);
+  readonly currentPage = signal(1);
+  readonly currentPageSize = signal(MY_PROJECTS_TABLE_PARAMS.rows);
+  readonly selectedTab = signal(MyProjectsTab.Projects);
+  readonly activeProject = signal<MyResourcesItem | null>(null);
+  readonly sortColumn = signal<string | undefined>(undefined);
+  readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
+  readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS, firstRowIndex: 0 });
 
-  protected readonly projects = select(MyResourcesSelectors.getProjects);
-  protected readonly registrations = select(MyResourcesSelectors.getRegistrations);
-  protected readonly preprints = select(MyResourcesSelectors.getPreprints);
-  protected readonly bookmarks = select(MyResourcesSelectors.getBookmarks);
-  protected readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
-  protected readonly totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
-  protected readonly totalPreprintsCount = select(MyResourcesSelectors.getTotalPreprints);
-  protected readonly totalBookmarksCount = select(MyResourcesSelectors.getTotalBookmarks);
+  readonly projects = select(MyResourcesSelectors.getProjects);
+  readonly registrations = select(MyResourcesSelectors.getRegistrations);
+  readonly preprints = select(MyResourcesSelectors.getPreprints);
+  readonly bookmarks = select(MyResourcesSelectors.getBookmarks);
+  readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
+  readonly totalRegistrationsCount = select(MyResourcesSelectors.getTotalRegistrations);
+  readonly totalPreprintsCount = select(MyResourcesSelectors.getTotalPreprints);
+  readonly totalBookmarksCount = select(MyResourcesSelectors.getTotalBookmarks);
 
-  protected readonly bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
+  readonly bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
 
-  protected readonly actions = createDispatchMap({
+  readonly actions = createDispatchMap({
     getBookmarksCollectionId: GetBookmarksCollectionId,
     clearMyProjects: ClearMyResources,
     getMyProjects: GetMyProjects,
@@ -129,9 +125,7 @@ export class MyProjectsComponent implements OnInit {
   setupSearchSubscription(): void {
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchValue) => {
-        this.handleSearch(searchValue ?? '');
-      });
+      .subscribe((searchValue) => this.handleSearch(searchValue ?? ''));
   }
 
   setupTotalRecordsEffect(): void {
@@ -243,7 +237,8 @@ export class MyProjectsComponent implements OnInit {
   createFilters(params: QueryParams): MyResourcesSearchFilters {
     return {
       searchValue: params.search || '',
-      searchFields: ['title', 'tags', 'description'],
+      searchFields:
+        this.selectedTab() === MyProjectsTab.Preprints ? ['title', 'tags'] : ['title', 'tags', 'description'],
       sortColumn: params.sortColumn,
       sortOrder: params.sortOrder,
     };
@@ -293,7 +288,7 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  protected onPageChange(event: TablePageEvent): void {
+  onPageChange(event: TablePageEvent): void {
     const page = Math.floor(event.first / event.rows) + 1;
     const currentParams = this.queryParams() || {};
 
@@ -305,16 +300,16 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  protected onSort(event: SortEvent): void {
+  onSort(event: SortEvent): void {
     if (event.field) {
       this.updateQueryParams({
         sortColumn: event.field,
-        sortOrder: event.order === -1 ? SortOrder.Desc : SortOrder.Asc,
+        sortOrder: event.order as SortOrder,
       });
     }
   }
 
-  protected onTabChange(tabIndex: number): void {
+  onTabChange(tabIndex: number): void {
     this.actions.clearMyProjects();
     this.selectedTab.set(tabIndex);
     const currentParams = this.queryParams() || {};
@@ -328,7 +323,7 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  protected createProject(): void {
+  createProject(): void {
     const dialogWidth = this.isTablet() ? '850px' : '95vw';
 
     this.dialogService.open(CreateProjectDialogComponent, {
@@ -341,13 +336,13 @@ export class MyProjectsComponent implements OnInit {
     });
   }
 
-  protected navigateToProject(project: MyResourcesItem): void {
+  navigateToProject(project: MyResourcesItem): void {
     this.activeProject.set(project);
-    this.router.navigate(['/project', project.id]);
+    this.router.navigate([project.id]);
   }
 
-  protected navigateToRegistry(registry: MyResourcesItem): void {
+  navigateToRegistry(registry: MyResourcesItem): void {
     this.activeProject.set(registry);
-    this.router.navigate(['/registries', registry.id]);
+    this.router.navigate([registry.id]);
   }
 }

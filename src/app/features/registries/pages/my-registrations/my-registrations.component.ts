@@ -15,13 +15,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { UserSelectors } from '@osf/core/store/user';
-import { CustomPaginatorComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
-import { RegistrationCardComponent } from '@osf/shared/components/registration-card/registration-card.component';
+import { UserSelectors } from '@core/store/user';
+import {
+  CustomPaginatorComponent,
+  RegistrationCardComponent,
+  SelectComponent,
+  SubHeaderComponent,
+} from '@osf/shared/components';
 import { IS_XSMALL } from '@osf/shared/helpers';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
-import { REGISTRATIONS_TABS } from '../../constants/registrations-tabs';
+import { REGISTRATIONS_TABS } from '../../constants';
 import { RegistrationTab } from '../../enums';
 import {
   CreateSchemaResponse,
@@ -60,19 +64,19 @@ export class MyRegistrationsComponent {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly isMobile = toSignal(inject(IS_XSMALL));
-  protected readonly tabOptions = REGISTRATIONS_TABS;
+  readonly isMobile = toSignal(inject(IS_XSMALL));
+  readonly tabOptions = REGISTRATIONS_TABS;
 
   private currentUser = select(UserSelectors.getCurrentUser);
-  protected draftRegistrations = select(RegistriesSelectors.getDraftRegistrations);
-  protected draftRegistrationsTotalCount = select(RegistriesSelectors.getDraftRegistrationsTotalCount);
-  protected isDraftRegistrationsLoading = select(RegistriesSelectors.isDraftRegistrationsLoading);
-  protected submittedRegistrations = select(RegistriesSelectors.getSubmittedRegistrations);
-  protected submittedRegistrationsTotalCount = select(RegistriesSelectors.getSubmittedRegistrationsTotalCount);
-  protected isSubmittedRegistrationsLoading = select(RegistriesSelectors.isSubmittedRegistrationsLoading);
-  protected schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+  draftRegistrations = select(RegistriesSelectors.getDraftRegistrations);
+  draftRegistrationsTotalCount = select(RegistriesSelectors.getDraftRegistrationsTotalCount);
+  isDraftRegistrationsLoading = select(RegistriesSelectors.isDraftRegistrationsLoading);
+  submittedRegistrations = select(RegistriesSelectors.getSubmittedRegistrations);
+  submittedRegistrationsTotalCount = select(RegistriesSelectors.getSubmittedRegistrationsTotalCount);
+  isSubmittedRegistrationsLoading = select(RegistriesSelectors.isSubmittedRegistrationsLoading);
+  schemaResponse = select(RegistriesSelectors.getSchemaResponse);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getDraftRegistrations: FetchDraftRegistrations,
     getSubmittedRegistrations: FetchSubmittedRegistrations,
     deleteDraft: DeleteDraft,
@@ -80,7 +84,7 @@ export class MyRegistrationsComponent {
     createSchemaResponse: CreateSchemaResponse,
   });
 
-  protected readonly RegistrationTab = RegistrationTab;
+  readonly RegistrationTab = RegistrationTab;
 
   readonly provider = environment.defaultProvider;
 
@@ -108,6 +112,7 @@ export class MyRegistrationsComponent {
         this.submittedFirst = 0;
         this.actions.getSubmittedRegistrations(this.currentUser()?.id);
       }
+
       this.router.navigate([], {
         relativeTo: this.route,
         queryParams: { tab: tab === RegistrationTab.Drafts ? 'drafts' : 'submitted' },
@@ -148,11 +153,7 @@ export class MyRegistrationsComponent {
   onUpdateRegistration(id: string): void {
     this.actions
       .createSchemaResponse(id)
-      .pipe(
-        tap(() => {
-          this.navigateToJustificationPage();
-        })
-      )
+      .pipe(tap(() => this.navigateToJustificationPage()))
       .subscribe();
   }
 

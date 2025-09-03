@@ -9,9 +9,9 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { CustomPaginatorComponent } from '@shared/components';
-import { ActivityLogDisplayService } from '@shared/services';
-import { ActivityLogsSelectors, GetActivityLogs } from '@shared/stores/activity-logs';
+import { CustomPaginatorComponent } from '@osf/shared/components';
+import { ActivityLogDisplayService } from '@osf/shared/services';
+import { ActivityLogsSelectors, GetActivityLogs } from '@osf/shared/stores/activity-logs';
 
 @Component({
   selector: 'osf-recent-activity-list',
@@ -25,17 +25,17 @@ export class RecentActivityComponent {
   private readonly route = inject(ActivatedRoute);
 
   readonly pageSize = input.required<number>();
-  protected currentPage = signal<number>(1);
-  protected activityLogs = select(ActivityLogsSelectors.getActivityLogs);
-  protected totalCount = select(ActivityLogsSelectors.getActivityLogsTotalCount);
-  protected isLoading = select(ActivityLogsSelectors.getActivityLogsLoading);
-  protected firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize());
+  currentPage = signal<number>(1);
+  activityLogs = select(ActivityLogsSelectors.getActivityLogs);
+  totalCount = select(ActivityLogsSelectors.getActivityLogsTotalCount);
+  isLoading = select(ActivityLogsSelectors.getActivityLogsLoading);
+  firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize());
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getActivityLogs: GetActivityLogs,
   });
 
-  protected formattedActivityLogs = computed(() => {
+  formattedActivityLogs = computed(() => {
     const logs = this.activityLogs();
     return logs.map((log) => ({
       ...log,

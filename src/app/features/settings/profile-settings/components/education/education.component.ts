@@ -14,14 +14,14 @@ import {
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { UpdateProfileSettingsEducation, UserSelectors } from '@osf/core/store/user';
 import { CustomValidators } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
+import { hasEducationChanges, mapEducationToForm, mapFormToEducation } from '../../helpers';
 import { EducationForm } from '../../models';
-import { hasEducationChanges, mapEducationToForm, mapFormToEducation } from '../../utils';
 import { EducationFormComponent } from '../education-form/education-form.component';
 
 @Component({
@@ -96,7 +96,7 @@ export class EducationComponent {
     this.loaderService.show();
 
     this.actions
-      .updateProfileSettingsEducation({ education: formattedEducation })
+      .updateProfileSettingsEducation(formattedEducation)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -107,9 +107,20 @@ export class EducationComponent {
       });
   }
 
-  private hasFormChanges(): boolean {
-    if (this.educations.length !== this.educationItems().length) {
-      return true;
+  hasFormChanges(): boolean {
+    const education = this.educationItems();
+    const formPositions = this.educations.value;
+
+    if (!education?.length) {
+      return formPositions.some(
+        (position) =>
+          position.degree?.trim() ||
+          position.institution?.trim() ||
+          position.department?.trim() ||
+          position.startDate ||
+          position.endDate ||
+          position.ongoing
+      );
     }
 
     return this.educations.value.some((formEducation, index) => {
@@ -121,24 +132,33 @@ export class EducationComponent {
   }
 
   private createEducationFormGroup(education?: Partial<EducationForm>): FormGroup {
+    const isOngoing = education?.ongoing ?? false;
+    const endDateValidators = isOngoing ? [] : [Validators.required];
+
     return this.fb.group(
       {
         institution: [education?.institution ?? '', CustomValidators.requiredTrimmed()],
         department: [education?.department ?? ''],
         degree: [education?.degree ?? ''],
-        startDate: [education?.startDate ?? null],
-        endDate: [education?.endDate ?? null],
-        ongoing: [education?.ongoing ?? false],
+        startDate: [education?.startDate ?? null, Validators.required],
+        endDate: [education?.endDate ?? null, endDateValidators],
+        ongoing: [isOngoing],
       },
-      { validators: CustomValidators.dateRangeValidator }
+      { validators: CustomValidators.monthYearRangeValidator }
     );
   }
 
   private setInitialData(): void {
     const educations = this.educationItems();
-    if (!educations?.length) return;
 
     this.educations.clear();
+
+    if (!educations?.length) {
+      this.addEducation();
+      this.cd.markForCheck();
+      return;
+    }
+
     educations
       .map((education) => mapEducationToForm(education))
       .forEach((education) => this.educations.push(this.createEducationFormGroup(education)));
