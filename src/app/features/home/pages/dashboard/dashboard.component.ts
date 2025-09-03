@@ -48,8 +48,6 @@ export class DashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly translateService = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
-
-  protected readonly isLoading = signal(false);
   readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   readonly searchControl = new FormControl<string>('');
@@ -63,12 +61,14 @@ export class DashboardComponent implements OnInit {
   readonly areProjectsLoading = select(MyResourcesSelectors.getProjectsLoading);
 
   readonly actions = createDispatchMap({ getMyProjects: GetMyProjects, clearMyResources: ClearMyResources });
-  protected readonly existsProjects = computed(() => {
-    return this.projects().length || !!this.searchControl.value?.length;
-  });
+
   readonly filteredProjects = computed(() => {
     const search = this.searchControl.value?.toLowerCase() ?? '';
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
+  });
+
+  protected readonly existsProjects = computed(() => {
+    return this.projects().length || !!this.searchControl.value?.length;
   });
 
   dialogRef: DynamicDialogRef | null = null;
@@ -134,20 +134,9 @@ export class DashboardComponent implements OnInit {
   }
 
   fetchProjects(): void {
-    this.isLoading.set(true);
     const filters = this.createFilters();
     const page = Math.floor(this.tableParams().firstRowIndex / this.tableParams().rows) + 1;
-    this.actions
-      .getMyProjects(page, this.tableParams().rows, filters)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        complete: () => {
-          this.isLoading.set(false);
-        },
-        error: () => {
-          this.isLoading.set(false);
-        },
-      });
+    this.actions.getMyProjects(page, this.tableParams().rows, filters);
   }
 
   createFilters(): MyResourcesSearchFilters {

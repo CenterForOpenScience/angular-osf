@@ -1,8 +1,8 @@
 import { Store } from '@ngxs/store';
-import { signal } from '@angular/core';
 
 import { MockComponents } from 'ng-mocks';
 
+import { signal, WritableSignal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
@@ -18,7 +18,15 @@ describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
 
+  let projectsSignal: WritableSignal<any[]>;
+  let totalProjectsSignal: WritableSignal<number>;
+  let areProjectsLoadingSignal: WritableSignal<boolean>;
+
   beforeEach(async () => {
+    projectsSignal = signal(getProjectsMockForComponent());
+    totalProjectsSignal = signal(getProjectsMockForComponent().length);
+    areProjectsLoadingSignal = signal(false);
+
     await TestBed.configureTestingModule({
       imports: [
         DashboardComponent,
@@ -30,15 +38,9 @@ describe('DashboardComponent', () => {
           provide: Store,
           useValue: {
             selectSignal: (selector: any) => {
-              if (selector === MyResourcesSelectors.getProjects) {
-                return signal(getProjectsMockForComponent());
-              }
-              if (selector === MyResourcesSelectors.getTotalProjects) {
-                return signal(getProjectsMockForComponent().length);
-              }
-              if (selector === MyResourcesSelectors.getProjectsLoading) {
-                return signal(false);
-              }
+              if (selector === MyResourcesSelectors.getProjects) return projectsSignal;
+              if (selector === MyResourcesSelectors.getTotalProjects) return totalProjectsSignal;
+              if (selector === MyResourcesSelectors.getProjectsLoading) return areProjectsLoadingSignal;
               return signal(null);
             },
             dispatch: jest.fn(),
@@ -49,11 +51,10 @@ describe('DashboardComponent', () => {
 
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
-  it('should show loading spinner when projects are loading', () => {
-    jest.spyOn(component, 'areProjectsLoading').mockReturnValue(true);
+  it('should show loading s pinner when projects are loading', () => {
+    areProjectsLoadingSignal.set(true);
     fixture.detectChanges();
 
     const spinner = fixture.debugElement.query(By.directive(LoadingSpinnerComponent));
@@ -61,8 +62,9 @@ describe('DashboardComponent', () => {
   });
 
   it('should render projects table when projects exist', () => {
-    jest.spyOn(component, 'areProjectsLoading').mockReturnValue(false);
-    jest.spyOn(component, 'existsProjects').mockReturnValue(true);
+    projectsSignal.set(getProjectsMockForComponent());
+    totalProjectsSignal.set(getProjectsMockForComponent().length);
+    areProjectsLoadingSignal.set(false);
     fixture.detectChanges();
 
     const table = fixture.debugElement.query(By.directive(MyProjectsTableComponent));
@@ -70,18 +72,19 @@ describe('DashboardComponent', () => {
   });
 
   it('should render welcome video when no projects exist', () => {
-    jest.spyOn(component, 'areProjectsLoading').mockReturnValue(false);
-    jest.spyOn(component, 'existsProjects').mockReturnValue(false);
-
+    projectsSignal.set([]);
+    totalProjectsSignal.set(0);
+    areProjectsLoadingSignal.set(false);
     fixture.detectChanges();
-
     const iframe = fixture.debugElement.query(By.css('iframe'));
     expect(iframe).toBeTruthy();
     expect(iframe.nativeElement.src).toContain('youtube.com');
   });
+
   it('should render welcome screen when no projects exist', () => {
-    jest.spyOn(component, 'areProjectsLoading').mockReturnValue(false);
-    jest.spyOn(component, 'existsProjects').mockReturnValue(false);
+    projectsSignal.set([]);
+    totalProjectsSignal.set(0);
+    areProjectsLoadingSignal.set(false);
     fixture.detectChanges();
 
     const welcomeText = fixture.debugElement.nativeElement.textContent;
@@ -95,7 +98,7 @@ describe('DashboardComponent', () => {
   });
 
   it('should render product images after loading spinner disappears', () => {
-    jest.spyOn(component, 'areProjectsLoading').mockReturnValue(true);
+    areProjectsLoadingSignal.set(true);
     fixture.detectChanges();
 
     let productImages = fixture.debugElement
@@ -107,7 +110,7 @@ describe('DashboardComponent', () => {
     const spinner = fixture.debugElement.query(By.css('osf-loading-spinner'));
     expect(spinner).toBeTruthy();
 
-    jest.spyOn(component, 'areProjectsLoading').mockReturnValue(false);
+    areProjectsLoadingSignal.set(false);
     fixture.detectChanges();
 
     productImages = fixture.debugElement

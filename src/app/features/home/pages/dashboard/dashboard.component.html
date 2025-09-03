@@ -2,7 +2,7 @@
   @if (areProjectsLoading()) {
     <osf-loading-spinner />
   } @else {
-    @if (existsProjects()){
+    @if (existsProjects()) {
       <osf-sub-header
         [showButton]="true"
         [title]="'home.loggedIn.dashboard.title' | translate"
@@ -30,7 +30,7 @@
             [searchControl]="searchControl"
             [sortColumn]="sortColumn()"
             [sortOrder]="sortOrder()"
-            [isLoading]="isLoading()"
+            [isLoading]="areProjectsLoading()"
             [searchPlaceholder]="'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate"
             (pageChange)="onPageChange($event)"
             (sort)="onSort($event)"
@@ -110,19 +110,31 @@
         rel="noopener noreferrer"
         data-test-products-collections
       >
-        <img src="assets/images/dashboard/products/osf-collections.png" [alt]="'home.loggedIn.dashboard.images.osfCollectionsImageAltText' | translate" />
+        <img
+          src="assets/images/dashboard/products/osf-collections.png"
+          [alt]="'home.loggedIn.dashboard.images.osfCollectionsImageAltText' | translate"
+        />
       </a>
 
       <a routerLink="/institutions">
-        <img src="assets/images/dashboard/products/osf-institutions.png" [alt]="'home.loggedIn.dashboard.images.osfInstitutionsImageAltText' | translate" />
+        <img
+          src="assets/images/dashboard/products/osf-institutions.png"
+          [alt]="'home.loggedIn.dashboard.images.osfInstitutionsImageAltText' | translate"
+        />
       </a>
 
       <a routerLink="/registries">
-        <img src="assets/images/dashboard/products/osf-registries.png" [alt]="'home.loggedIn.dashboard.images.osfRegistriesImageAltTest' | translate" />
+        <img
+          src="assets/images/dashboard/products/osf-registries.png"
+          [alt]="'home.loggedIn.dashboard.images.osfRegistriesImageAltTest' | translate"
+        />
       </a>
 
       <a routerLink="/preprints">
-        <img src="assets/images/dashboard/products/osf-preprints.png" [alt]="'home.loggedIn.dashboard.images.osfPreprintsImageAltTest' | translate" />
+        <img
+          src="assets/images/dashboard/products/osf-preprints.png"
+          [alt]="'home.loggedIn.dashboard.images.osfPreprintsImageAltTest' | translate"
+        />
       </a>
     </div>
   }
