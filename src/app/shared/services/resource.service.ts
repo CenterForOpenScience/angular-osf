@@ -2,9 +2,17 @@ import { finalize, map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { CurrentResource, GuidedResponseJsonApi } from '@osf/shared/models';
+import { BaseNodeMapper } from '@osf/shared/mappers';
+import {
+  BaseNodeDataJsonApi,
+  BaseNodeModel,
+  CurrentResource,
+  GuidedResponseJsonApi,
+  ResponseDataJsonApi,
+  ResponseJsonApi,
+} from '@osf/shared/models';
 
-import { CurrentResourceType } from '../enums';
+import { CurrentResourceType, ResourceType } from '../enums';
 
 import { JsonApiService } from './json-api.service';
 import { LoaderService } from './loader.service';
@@ -17,6 +25,11 @@ import { environment } from 'src/environments/environment';
 export class ResourceGuidService {
   private jsonApiService = inject(JsonApiService);
   private loaderService = inject(LoaderService);
+
+  private readonly urlMap = new Map<ResourceType, string>([
+    [ResourceType.Project, 'nodes'],
+    [ResourceType.Registration, 'registrations'],
+  ]);
 
   getResourceById(id: string): Observable<CurrentResource> {
     const baseUrl = `${environment.apiUrl}/guids/${id}/`;
@@ -41,5 +54,21 @@ export class ResourceGuidService {
       ),
       finalize(() => this.loaderService.hide())
     );
+  }
+
+  getResourceDetails(resourceId: string, resourceType: ResourceType): Observable<BaseNodeModel> {
+    const resourcePath = this.urlMap.get(resourceType);
+
+    return this.jsonApiService
+      .get<ResponseDataJsonApi<BaseNodeDataJsonApi>>(`${environment.apiUrl}/${resourcePath}/${resourceId}/`)
+      .pipe(map((response) => BaseNodeMapper.getNodeData(response.data)));
+  }
+
+  getResourceChildren(resourceId: string, resourceType: ResourceType): Observable<BaseNodeModel[]> {
+    const resourcePath = this.urlMap.get(resourceType);
+
+    return this.jsonApiService
+      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${environment.apiUrl}/${resourcePath}/${resourceId}/children/`)
+      .pipe(map((response) => BaseNodeMapper.getNodesData(response.data)));
   }
 }

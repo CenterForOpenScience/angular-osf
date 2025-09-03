@@ -7,7 +7,6 @@ import { JsonApiService } from '@shared/services';
 
 import { ResourceType } from '../enums';
 import { ViewOnlyLinksMapper } from '../mappers';
-import { NodeResponseModel } from '../models';
 import {
   PaginatedViewOnlyLinksModel,
   ViewOnlyLinkJsonApi,
@@ -26,11 +25,6 @@ export class ViewOnlyLinksService {
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],
   ]);
-
-  getResourceById(resourceId: string, resourceType: ResourceType): Observable<NodeResponseModel> {
-    const resourcePath = this.urlMap.get(resourceType);
-    return this.jsonApiService.get(`${environment.apiUrl}/${resourcePath}/${resourceId}`);
-  }
 
   getViewOnlyLinksData(projectId: string, resourceType: ResourceType): Observable<PaginatedViewOnlyLinksModel> {
     const resourcePath = this.urlMap.get(resourceType);

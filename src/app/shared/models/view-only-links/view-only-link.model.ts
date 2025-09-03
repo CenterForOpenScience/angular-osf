@@ -22,10 +22,10 @@ export interface ViewOnlyLinkModel {
   anonymous: boolean;
 }
 
-export interface ViewOnlyLinkComponent {
+export interface ViewOnlyLinkChildren {
   id: string;
   title: string;
-  isCurrentProject: boolean;
+  isCurrentResource: boolean;
 }
 
 export interface PaginatedViewOnlyLinksModel {
