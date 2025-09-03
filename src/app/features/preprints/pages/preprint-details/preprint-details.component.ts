@@ -363,8 +363,6 @@ export class PreprintDetailsComponent extends DataciteTrackerComponent implement
   }
 
   private setMetaTags() {
-    const image = 'engines-dist/registries/assets/img/osf-sharing.png';
-
     this.metaTags.updateMetaTags(
       {
         title: this.preprint()?.title,
@@ -372,7 +370,6 @@ export class PreprintDetailsComponent extends DataciteTrackerComponent implement
         publishedDate: this.datePipe.transform(this.preprint()?.datePublished, 'yyyy-MM-dd'),
         modifiedDate: this.datePipe.transform(this.preprint()?.dateModified, 'yyyy-MM-dd'),
         url: pathJoin(environment.webUrl, this.preprint()?.id ?? ''),
-        image,
         identifier: this.preprint()?.id,
         doi: this.preprint()?.doi,
         keywords: this.preprint()?.tags,
