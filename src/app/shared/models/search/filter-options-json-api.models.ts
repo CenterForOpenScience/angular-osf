@@ -1,4 +1,4 @@
-import { ApiData } from '@osf/shared/models';
+import { ApiData } from '../common';
 
 export interface FilterOptionsResponseJsonApi {
   data: FilterOptionsResponseData;

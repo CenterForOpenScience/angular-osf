@@ -17,6 +17,7 @@ describe('Component: Google File Picker', () => {
     loadGapiModules: jest.fn().mockReturnValue(of(void 0)),
   };
 
+  const handleFolderSelection = jest.fn();
   const setDeveloperKey = jest.fn().mockReturnThis();
   const setAppId = jest.fn().mockReturnThis();
   const addView = jest.fn().mockReturnThis();
@@ -38,6 +39,18 @@ describe('Component: Google File Picker', () => {
     dispatch: jest.fn().mockReturnValue(of({})),
     selectSnapshot: jest.fn().mockReturnValue('mock-token'),
   };
+
+  beforeAll(() => {
+    window.google = {
+      picker: {
+        Action: null,
+      },
+    };
+  });
+
+  afterAll(() => {
+    delete (window as any).google;
+  });
 
   describe('isFolderPicker - true', () => {
     beforeEach(async () => {
@@ -84,8 +97,10 @@ describe('Component: Google File Picker', () => {
       fixture = TestBed.createComponent(GoogleFilePickerComponent);
       component = fixture.componentInstance;
       fixture.componentRef.setInput('isFolderPicker', true);
-      fixture.componentRef.setInput('rootFolderId', 'root-folder-id');
-      fixture.componentRef.setInput('selectedFolderName', 'selected-folder-name');
+      fixture.componentRef.setInput('rootFolder', {
+        itemId: 'root-folder-id',
+      });
+      fixture.componentRef.setInput('handleFolderSelection', handleFolderSelection);
       fixture.componentRef.setInput('accountId', 'account-id');
       fixture.detectChanges();
     });
@@ -117,6 +132,41 @@ describe('Component: Google File Picker', () => {
       expect(enableFeature).not.toHaveBeenCalled();
       expect(build).toHaveBeenCalledWith();
       expect(setVisible).toHaveBeenCalledWith(true);
+    });
+
+    describe('pickerCallback', () => {
+      it('should handle a folder selection `PICKED` action', () => {
+        window.google.picker.Action = {
+          PICKED: 'PICKED',
+        };
+        component.pickerCallback(
+          Object({
+            action: 'PICKED',
+            docs: [
+              Object({
+                itemId: 'item id',
+                itemName: 'item name',
+              }),
+            ],
+          })
+        );
+
+        expect(handleFolderSelection).toHaveBeenCalledWith(Object({}));
+      });
+
+      it('should handle a folder selection not `PICKED` action', () => {
+        window.google.picker.Action = {
+          PICKED: 'not picked',
+        };
+
+        component.pickerCallback(
+          Object({
+            action: 'Loading',
+          })
+        );
+
+        expect(handleFolderSelection).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -164,8 +214,10 @@ describe('Component: Google File Picker', () => {
       fixture = TestBed.createComponent(GoogleFilePickerComponent);
       component = fixture.componentInstance;
       fixture.componentRef.setInput('isFolderPicker', false);
-      fixture.componentRef.setInput('rootFolderId', 'root-folder-id');
-      fixture.componentRef.setInput('selectedFolderName', 'selected-folder-name');
+      fixture.componentRef.setInput('rootFolder', {
+        itemId: 'root-folder-id',
+      });
+      fixture.componentRef.setInput('handleFolderSelection', jest.fn());
       fixture.detectChanges();
     });
 

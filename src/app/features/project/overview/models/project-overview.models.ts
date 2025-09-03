@@ -1,9 +1,12 @@
 import { UserPermissions } from '@osf/shared/enums';
 import {
+  Identifier,
+  IdTypeModel,
   Institution,
   InstitutionsJsonApiResponse,
   JsonApiResponseWithMeta,
   License,
+  LicensesOption,
   MetaAnonymousJsonApi,
 } from '@osf/shared/models';
 
@@ -31,10 +34,7 @@ export interface ProjectOverview {
   isCollection: boolean;
   tags: string[];
   accessRequestsEnabled: boolean;
-  nodeLicense?: {
-    copyrightHolders: string[];
-    year: string;
-  };
+  nodeLicense?: LicensesOption;
   license?: License;
   doi?: string;
   publicationDoi?: string;
@@ -44,7 +44,7 @@ export interface ProjectOverview {
     storageLimitStatus: string;
     storageUsage: string;
   };
-  identifiers?: ProjectIdentifiers[];
+  identifiers?: Identifier[];
   supplements?: ProjectSupplements[];
   analyticsKey: string;
   currentUserCanComment: boolean;
@@ -55,10 +55,7 @@ export interface ProjectOverview {
   subjects: ProjectOverviewSubject[];
   contributors: ProjectOverviewContributor[];
   customCitation: string | null;
-  region?: {
-    id: string;
-    type: string;
-  };
+  region?: IdTypeModel;
   affiliatedInstitutions?: Institution[];
   forksCount: number;
   viewOnlyLinksCount: number;
@@ -219,13 +216,6 @@ export interface ProjectOverviewResponseJsonApi
   extends JsonApiResponseWithMeta<ProjectOverviewGetResponseJsonApi, MetaAnonymousJsonApi, null> {
   data: ProjectOverviewGetResponseJsonApi;
   meta: MetaAnonymousJsonApi;
-}
-
-export interface ProjectIdentifiers {
-  id: string;
-  type: string;
-  category: string;
-  value: string;
 }
 
 export interface ProjectSupplements {

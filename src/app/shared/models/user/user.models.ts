@@ -1,4 +1,6 @@
-import { Education, Employment, JsonApiResponse, Social } from '@osf/shared/models';
+import { Education } from './education.model';
+import { Employment } from './employment.model';
+import { Social } from './social.model';
 
 export type UserResponseJsonApi = JsonApiResponse<UserDataJsonApi, null>;
 

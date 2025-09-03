@@ -1,4 +1,4 @@
-import { ReviewPermissions } from '@osf/shared/enums/review-permissions.enum';
+import { ReviewPermissions } from '@osf/shared/enums';
 
 export interface ProviderModel {
   id: string;

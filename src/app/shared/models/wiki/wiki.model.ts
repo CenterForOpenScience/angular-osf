@@ -1,4 +1,4 @@
-import { JsonApiResponse, JsonApiResponseWithMeta, MetaAnonymousJsonApi } from '@osf/shared/models';
+import { JsonApiResponse, JsonApiResponseWithMeta, MetaAnonymousJsonApi } from '../common';
 
 export enum WikiModes {
   View = 'view',

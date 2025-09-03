@@ -5,4 +5,5 @@ export * from './authorized-account.model';
 export * from './configured-storage-addon.model';
 export * from './operation-invocation.models';
 export * from './operation-invoke-data.model';
+export * from './strorage-item.model';
 export * from './term.model';

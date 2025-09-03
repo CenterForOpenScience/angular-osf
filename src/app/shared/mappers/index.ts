@@ -10,6 +10,7 @@ export * from './filters/filter-option.mapper';
 export * from './filters/reusable-filter.mapper';
 export * from './institutions';
 export * from './licenses.mapper';
+export * from './nodes';
 export * from './notification-subscription.mapper';
 export * from './registry';
 export * from './resource-overview.mappers';

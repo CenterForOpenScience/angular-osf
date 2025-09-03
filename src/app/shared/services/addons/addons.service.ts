@@ -122,7 +122,13 @@ export class AddonsService {
       .patch<AuthorizedAddonGetResponseJsonApi>(
         `${environment.addonsApiUrl}/authorized-storage-accounts/${accountId}`,
         {
-          serializeOauthToken: true,
+          data: {
+            id: accountId,
+            type: 'authorized-storage-accounts',
+            attributes: {
+              serialize_oauth_token: 'true',
+            },
+          },
         }
       )
       .pipe(

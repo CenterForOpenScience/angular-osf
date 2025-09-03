@@ -4,18 +4,41 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Menu } from 'primeng/menu';
+import { TableModule } from 'primeng/table';
 import { Tab, TabList, Tabs } from 'primeng/tabs';
 
 import { switchMap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, HostBinding, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  HostBinding,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
-import { OsfFile } from '@shared/models';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import {
+  CedarMetadataDataTemplateJsonApi,
+  CedarMetadataRecordData,
+  CedarRecordDataBinding,
+} from '@osf/features/metadata/models';
+import {
+  CreateCedarMetadataRecord,
+  GetCedarMetadataRecords,
+  GetCedarMetadataTemplates,
+  MetadataSelectors,
+  UpdateCedarMetadataRecord,
+} from '@osf/features/metadata/store';
+import { LoadingSpinnerComponent, MetadataTabsComponent, SubHeaderComponent } from '@osf/shared/components';
+import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
+import { MetadataTabsModel, OsfFile } from '@osf/shared/models';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 import {
   FileKeywordsComponent,
@@ -51,6 +74,8 @@ import {
     FileRevisionsComponent,
     FileMetadataComponent,
     FileResourceMetadataComponent,
+    MetadataTabsComponent,
+    TableModule,
   ],
   templateUrl: './file-detail.component.html',
   styleUrl: './file-detail.component.scss',
@@ -74,10 +99,18 @@ export class FileDetailComponent {
     getFileResourceMetadata: GetFileResourceMetadata,
     getFileResourceContributors: GetFileResourceContributors,
     deleteEntry: DeleteEntry,
+
+    getCedarRecords: GetCedarMetadataRecords,
+    getCedarTemplates: GetCedarMetadataTemplates,
+    createCedarRecord: CreateCedarMetadataRecord,
+    updateCedarRecord: UpdateCedarMetadataRecord,
   });
 
   file = select(FilesSelectors.getOpenedFile);
   isFileLoading = select(FilesSelectors.isOpenedFileLoading);
+  cedarRecords = select(MetadataSelectors.getCedarRecords);
+  cedarTemplates = select(MetadataSelectors.getCedarTemplates);
+
   isAnonymous = select(FilesSelectors.isFilesAnonymous);
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
@@ -117,6 +150,18 @@ export class FileDetailComponent {
     },
   ];
 
+  tabs = signal<MetadataTabsModel[]>([]);
+
+  isLoading = computed(() => {
+    return this.isFileLoading();
+  });
+
+  selectedMetadataTab = signal('osf');
+
+  selectedCedarRecord = signal<CedarMetadataRecordData | null>(null);
+  selectedCedarTemplate = signal<CedarMetadataDataTemplateJsonApi | null>(null);
+  cedarFormReadonly = signal<boolean>(true);
+
   constructor() {
     this.route.params
       .pipe(
@@ -137,13 +182,29 @@ export class FileDetailComponent {
         if (this.resourceId && this.resourceType) {
           this.actions.getFileResourceMetadata(this.resourceId, this.resourceType);
           this.actions.getFileResourceContributors(this.resourceId, this.resourceType);
-
           if (fileId) {
             const fileProvider = this.file()?.provider || '';
             this.actions.getFileRevisions(this.resourceId, fileProvider, fileId);
+            this.actions.getCedarTemplates();
+            this.actions.getCedarRecords(fileId, ResourceType.File);
           }
         }
       });
+
+    effect(() => {
+      const records = this.cedarRecords();
+
+      const baseTabs = [{ id: 'osf', label: 'OSF', type: MetadataResourceEnum.PROJECT }];
+
+      const cedarTabs =
+        records?.map((record) => ({
+          id: record.id || '',
+          label: record.embeds?.template?.data?.attributes?.schema_name || `Record ${record.id}`,
+          type: MetadataResourceEnum.CEDAR,
+        })) || [];
+
+      this.tabs.set([...baseTabs, ...cedarTabs]);
+    });
 
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.actions.getFileMetadata(params['fileGuid']);
@@ -213,5 +274,74 @@ export class FileDetailComponent {
   handleCopyStaticEmbed(): void {
     const data = embedStaticHtml.replace('ENCODED_URL', this.file()?.links?.render ?? '');
     this.copyToClipboard(data);
+  }
+
+  onMetadataTabChange(tabId: string | number): void {
+    const tab = this.tabs().find((x) => x.id === tabId.toString());
+
+    if (!tab) {
+      return;
+    }
+
+    this.selectedMetadataTab.set(tab.id as MetadataResourceEnum);
+    if (tab.type === 'cedar') {
+      this.selectedCedarRecord.set(null);
+      this.selectedCedarTemplate.set(null);
+      if (tab.id) {
+        this.loadCedarRecord(tab.id);
+      }
+    } else {
+      this.selectedCedarRecord.set(null);
+      this.selectedCedarTemplate.set(null);
+    }
+  }
+
+  onCedarFormEdit(): void {
+    this.cedarFormReadonly.set(false);
+  }
+
+  onCedarFormSubmit(data: CedarRecordDataBinding): void {
+    const selectedRecord = this.selectedCedarRecord();
+    if (!this.resourceId || !selectedRecord) return;
+    if (selectedRecord.id) {
+      this.actions
+        .updateCedarRecord(data, selectedRecord.id, this.resourceId, ResourceType.File)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe({
+          next: () => {
+            this.cedarFormReadonly.set(true);
+            this.toastService.showSuccess('files.detail.toast.cedarUpdated');
+            const fileId = this.file()?.path.replaceAll('/', '') || '';
+            this.actions.getCedarRecords(fileId, ResourceType.File);
+          },
+        });
+    }
+  }
+
+  private loadCedarRecord(recordId: string): void {
+    const records = this.cedarRecords();
+    const templates = this.cedarTemplates();
+    if (!records) {
+      return;
+    }
+    const record = records.find((r) => r.id === recordId);
+    if (!record) {
+      return;
+    }
+    this.selectedCedarRecord.set(record);
+    this.cedarFormReadonly.set(true);
+    const templateId = record.relationships?.template?.data?.id;
+    if (templateId && templates?.data) {
+      const template = templates.data.find((t) => t.id === templateId);
+      if (template) {
+        this.selectedCedarTemplate.set(template);
+      } else {
+        this.selectedCedarTemplate.set(null);
+        this.actions.getCedarTemplates();
+      }
+    } else {
+      this.selectedCedarTemplate.set(null);
+      this.actions.getCedarTemplates();
+    }
   }
 }

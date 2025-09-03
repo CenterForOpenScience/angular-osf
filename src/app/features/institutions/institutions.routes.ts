@@ -2,10 +2,10 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
-import { authGuard } from '@osf/core/guards';
-import { InstitutionsComponent } from '@osf/features/institutions/institutions.component';
+import { authGuard } from '@core/guards';
 import { InstitutionsSearchState } from '@shared/stores/institutions-search';
 
+import { InstitutionsComponent } from './institutions.component';
 import { InstitutionsListComponent, InstitutionsSearchComponent } from './pages';
 
 export const routes: Routes = [

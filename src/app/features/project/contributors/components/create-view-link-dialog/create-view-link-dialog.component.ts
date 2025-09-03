@@ -9,11 +9,13 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { GetComponents, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { LoadingSpinnerComponent, TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
-import { ViewOnlyLinkComponent } from '@shared/models';
+import { CurrentResourceSelectors, GetResourceChildren } from '@osf/shared/stores';
+import { ViewOnlyLinkChildren } from '@shared/models';
+
+import { ResourceInfoModel } from '../../models';
 
 @Component({
   selector: 'osf-create-view-link-dialog',
@@ -31,36 +33,34 @@ import { ViewOnlyLinkComponent } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateViewLinkDialogComponent implements OnInit {
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly config = inject(DynamicDialogConfig);
+  readonly inputLimits = InputLimits;
+
   linkName = new FormControl('', { nonNullable: true, validators: [CustomValidators.requiredTrimmed()] });
 
-  readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly config = inject(DynamicDialogConfig);
-  inputLimits = InputLimits;
-
   anonymous = signal(true);
-  protected selectedComponents = signal<Record<string, boolean>>({});
-  protected components = select(ProjectOverviewSelectors.getComponents);
-  protected isLoading = select(ProjectOverviewSelectors.getComponentsLoading);
+  selectedComponents = signal<Record<string, boolean>>({});
+  components = select(CurrentResourceSelectors.getResourceChildren);
+  isLoading = select(CurrentResourceSelectors.isResourceChildrenLoading);
 
-  protected actions = createDispatchMap({
-    getComponents: GetComponents,
-  });
+  actions = createDispatchMap({ getComponents: GetResourceChildren });
 
-  get currentProjectId(): string {
-    return this.config.data?.['projectId'] || '';
+  get currentResource() {
+    return this.config.data as ResourceInfoModel;
   }
 
-  get allComponents(): ViewOnlyLinkComponent[] {
-    const currentProjectData = this.config.data?.['currentProject'];
+  get allComponents(): ViewOnlyLinkChildren[] {
+    const currentResourceData = this.currentResource;
     const components = this.components();
 
-    const result: ViewOnlyLinkComponent[] = [];
+    const result: ViewOnlyLinkChildren[] = [];
 
-    if (currentProjectData) {
+    if (currentResourceData) {
       result.push({
-        id: currentProjectData.id,
-        title: currentProjectData.title,
-        isCurrentProject: true,
+        id: currentResourceData.id,
+        title: currentResourceData.title,
+        isCurrentResource: true,
       });
     }
 
@@ -68,7 +68,7 @@ export class CreateViewLinkDialogComponent implements OnInit {
       result.push({
         id: comp.id,
         title: comp.title,
-        isCurrentProject: false,
+        isCurrentResource: false,
       });
     });
 
@@ -85,10 +85,10 @@ export class CreateViewLinkDialogComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const projectId = this.currentProjectId;
+    const projectId = this.currentResource.id;
 
     if (projectId) {
-      this.actions.getComponents(projectId);
+      this.actions.getComponents(projectId, this.currentResource.type);
     } else {
       this.initializeSelection();
     }
@@ -98,28 +98,20 @@ export class CreateViewLinkDialogComponent implements OnInit {
     const initialState: Record<string, boolean> = {};
 
     this.allComponents.forEach((component) => {
-      initialState[component.id] = component.isCurrentProject;
+      initialState[component.id] = component.isCurrentResource;
     });
 
     this.selectedComponents.set(initialState);
   }
 
-  isCurrentProject(item: ViewOnlyLinkComponent): boolean {
-    return item.isCurrentProject;
-  }
-
-  get isFormValid(): boolean {
-    return this.linkName.valid && !!this.linkName.value.trim().length;
-  }
-
   addLink(): void {
-    if (!this.isFormValid) return;
+    if (this.linkName.invalid) return;
 
     const selectedIds = Object.entries(this.selectedComponents())
       .filter(([, checked]) => checked)
       .map(([id]) => id);
 
-    const rootProjectId = this.currentProjectId;
+    const rootProjectId = this.currentResource.id;
     const rootProject = selectedIds.includes(rootProjectId) ? [{ id: rootProjectId, type: 'nodes' }] : [];
 
     const relationshipComponents = selectedIds
@@ -160,7 +152,7 @@ export class CreateViewLinkDialogComponent implements OnInit {
   deselectAllComponents(): void {
     const allIds: Record<string, boolean> = {};
     this.allComponents.forEach((component) => {
-      allIds[component.id] = component.isCurrentProject;
+      allIds[component.id] = component.isCurrentResource;
     });
     this.selectedComponents.set(allIds);
   }
