@@ -1,4 +1,5 @@
 import { TranslatePipe } from '@ngx-translate/core';
+import { MockPipe } from 'ng-mocks';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
@@ -18,7 +19,12 @@ import { TokensListComponent } from './tokens-list.component';
 jest.mock('@core/store/user', () => ({}));
 jest.mock('@osf/shared/stores/collections', () => ({}));
 jest.mock('@osf/shared/stores/addons', () => ({}));
-jest.mock('@osf/features/settings/tokens/store', () => ({}));
+jest.mock('../../store', () => ({
+  TokensSelectors: {
+    isTokensLoading: function isTokensLoading() {},
+    getTokens: function getTokens() {},
+  },
+}));
 
 const mockGetTokens = jest.fn();
 const mockDeleteToken = jest.fn(() => of(void 0));
@@ -31,9 +37,9 @@ jest.mock('@ngxs/store', () => {
     })),
     select: (selectorFn: any) => {
       const name = selectorFn?.name;
-      if (name === 'isTokensLoading') return of(false);
-      if (name === 'getTokens') return of([]);
-      return of(undefined);
+      if (name === 'isTokensLoading') return () => false;
+      if (name === 'getTokens') return () => [];
+      return () => undefined;
     },
   };
 });
@@ -52,7 +58,7 @@ describe('TokensListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TokensListComponent, TranslatePipe, Button, Card, Skeleton, RouterLink],
+      imports: [TokensListComponent, MockPipe(TranslatePipe), Button, Card, Skeleton, RouterLink],
       providers: [
         { provide: CustomConfirmationService, useValue: mockConfirmationService },
         { provide: ToastService, useValue: mockToastService },
