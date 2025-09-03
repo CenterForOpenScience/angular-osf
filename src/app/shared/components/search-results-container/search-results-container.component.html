@@ -101,8 +101,8 @@
         } @else {
           <div class="flex flex-column gap-4">
             @if (resources().length > 0) {
-              @for (item of resources(); track item.id) {
-                <osf-resource-card [item]="item" />
+              @for (item of resources(); track $index) {
+                <osf-resource-card [resource]="item" [provider]="provider()" />
               }
 
               <div class="flex column-gap-2 w-full justify-content-center pt-2">

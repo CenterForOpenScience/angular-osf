@@ -17,6 +17,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { LoadingSpinnerComponent } from '@shared/components';
 import { searchSortingOptions } from '@shared/constants';
 import { ResourceType } from '@shared/enums';
@@ -58,6 +59,7 @@ export class SearchResultsContainerComponent {
 
   isFiltersOpen = signal<boolean>(false);
   isSortingOpen = signal<boolean>(false);
+  provider = input<PreprintProviderDetails | null>(null);
 
   sortChanged = output<string>();
   tabChanged = output<ResourceType>();

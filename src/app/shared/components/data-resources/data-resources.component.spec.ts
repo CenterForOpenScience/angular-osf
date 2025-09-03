@@ -39,7 +39,7 @@ describe('DataResourcesComponent', () => {
 
   it('should have default values', () => {
     expect(component.vertical()).toBe(false);
-    expect(component.resourceId()).toBeUndefined();
+    expect(component.absoluteUrl()).toBeUndefined();
     expect(component.hasData()).toBeUndefined();
     expect(component.hasAnalyticCode()).toBeUndefined();
     expect(component.hasMaterials()).toBeUndefined();
@@ -59,7 +59,7 @@ describe('DataResourcesComponent', () => {
     fixture.componentRef.setInput('resourceId', testId);
     fixture.detectChanges();
 
-    expect(component.resourceId()).toBe(testId);
+    expect(component.absoluteUrl()).toBe(testId);
   });
 
   it('should accept hasData input', () => {
@@ -140,14 +140,14 @@ describe('DataResourcesComponent', () => {
     fixture.componentRef.setInput('hasData', false);
     fixture.detectChanges();
 
-    expect(component.resourceId()).toBe('initial-id');
+    expect(component.absoluteUrl()).toBe('initial-id');
     expect(component.hasData()).toBe(false);
 
     fixture.componentRef.setInput('resourceId', 'updated-id');
     fixture.componentRef.setInput('hasData', true);
     fixture.detectChanges();
 
-    expect(component.resourceId()).toBe('updated-id');
+    expect(component.absoluteUrl()).toBe('updated-id');
     expect(component.hasData()).toBe(true);
   });
 });
