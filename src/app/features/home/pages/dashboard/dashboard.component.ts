@@ -7,7 +7,7 @@ import { Button } from 'primeng/button';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -15,7 +15,6 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
-import { AccountSettingsService } from '@osf/features/settings/account-settings/services';
 import {
   IconComponent,
   LoadingSpinnerComponent,
@@ -27,8 +26,6 @@ import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
-
-import { ConfirmEmailComponent } from '../../components';
 
 @Component({
   selector: 'osf-dashboard',
@@ -51,7 +48,6 @@ export class DashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly translateService = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
-  private readonly accountSettingsService = inject(AccountSettingsService);
 
   protected readonly isLoading = signal(false);
   readonly isMedium = toSignal(inject(IS_MEDIUM));
@@ -73,10 +69,6 @@ export class DashboardComponent implements OnInit {
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
 
-  protected readonly existsProjects = computed(() => {
-    return this.projects().length || !!this.searchControl.value?.length;
-  });
-
   dialogRef: DynamicDialogRef | null = null;
   emailAddress = '';
 
@@ -88,40 +80,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.setupQueryParamsSubscription();
-
-    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
-      const userId = params['userId'];
-      const token = params['token'];
-
-      if (userId && token) {
-        this.accountSettingsService
-          .getEmail(token, userId)
-          .pipe(take(1))
-          .subscribe((email) => {
-            this.emailAddress = email.emailAddress;
-            this.addAlternateEmail(token);
-          });
-      }
-    });
-  }
-
-  addAlternateEmail(token: string) {
-    this.translateService.get('home.confirmEmail.title').subscribe((title) => {
-      this.dialogRef = this.dialogService.open(ConfirmEmailComponent, {
-        width: '448px',
-        focusOnShow: false,
-        header: title,
-        closeOnEscape: true,
-        modal: true,
-        closable: true,
-        data: {
-          emailAddress: this.emailAddress,
-          userId: this.route.snapshot.params['userId'],
-          emailId: this.route.snapshot.params['emailId'],
-          token: token,
-        },
-      });
-    });
   }
 
   setupQueryParamsSubscription(): void {

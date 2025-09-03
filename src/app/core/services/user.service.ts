@@ -15,7 +15,7 @@ import {
   UserSettingsGetResponse,
 } from '@osf/shared/models';
 
-import { JsonApiService } from '../../shared/services/json-api.service';
+import { JsonApiService } from '../../shared/services';
 
 import { environment } from 'src/environments/environment';
 

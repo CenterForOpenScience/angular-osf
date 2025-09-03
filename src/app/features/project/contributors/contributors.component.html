@@ -89,7 +89,12 @@
 
     <p>{{ 'project.contributors.createLink' | translate }}</p>
 
-    <p-button class="w-10rem" [label]="'project.contributors.createButton' | translate" (onClick)="createViewLink()">
+    <p-button
+      class="w-10rem"
+      [label]="'project.contributors.createButton' | translate"
+      [disabled]="!canCreateViewLink()"
+      (onClick)="createViewLink()"
+    >
     </p-button>
 
     <osf-view-only-table

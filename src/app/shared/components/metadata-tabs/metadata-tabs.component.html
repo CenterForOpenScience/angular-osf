@@ -1,0 +1,42 @@
+@if (loading()) {
+  <div class="flex-1">
+    <osf-loading-spinner />
+  </div>
+} @else {
+  <p-tabs class="flex-1" [value]="selectedTab()" [lazy]="true" scrollable (valueChange)="changeTab.emit($event)">
+    <p-tablist class="pr-5 pl-5">
+      @for (item of tabs(); track item.id) {
+        <p-tab [value]="item.id">{{ item.label | translate }}</p-tab>
+      }
+    </p-tablist>
+
+    <p-tabpanels class="p-3 flex-1 md:p-5 xl:p-4">
+      @for (tab of tabs(); track tab.id) {
+        <p-tabpanel [value]="tab.id">
+          @if (tab.id === 'osf') {
+            <ng-content></ng-content>
+          } @else {
+            <div class="p-3">
+              @if (selectedCedarTemplate() && selectedCedarRecord()) {
+                <osf-cedar-template-form
+                  [template]="selectedCedarTemplate()!"
+                  [existingRecord]="selectedCedarRecord()!"
+                  [readonly]="cedarFormReadonly()"
+                  [showEditButton]="true"
+                  (emitData)="onCedarFormSubmit($event)"
+                  (changeTemplate)="onCedarFormChangeTemplate()"
+                  (editMode)="onCedarFormEdit()"
+                />
+              } @else {
+                <div class="text-center py-8">
+                  <p class="text-lg mb-4">{{ 'project.metadata.addMetadata.loadingCedar' | translate }}</p>
+                  <p class="text-sm text-gray-600">{{ tab.label }}</p>
+                </div>
+              }
+            </div>
+          }
+        </p-tabpanel>
+      }
+    </p-tabpanels>
+  </p-tabs>
+}

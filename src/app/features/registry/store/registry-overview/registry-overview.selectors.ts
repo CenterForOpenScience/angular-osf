@@ -19,6 +19,11 @@ export class RegistryOverviewSelectors {
   }
 
   @Selector([RegistryOverviewState])
+  static isRegistryAnonymous(state: RegistryOverviewStateModel): boolean {
+    return state.isAnonymous;
+  }
+
+  @Selector([RegistryOverviewState])
   static getSubjects(state: RegistryOverviewStateModel): RegistrySubject[] | null {
     return state.subjects.data;
   }

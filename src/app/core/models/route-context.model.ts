@@ -7,4 +7,5 @@ export interface RouteContext {
   preprintReviewsPageVisible?: boolean;
   isCollections: boolean;
   currentUrl?: string;
+  isViewOnly?: boolean;
 }

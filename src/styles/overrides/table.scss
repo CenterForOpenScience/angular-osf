@@ -1,0 +1,193 @@
+@use "styles/variables" as var;
+
+p-table {
+  --p-datatable-header-cell-color: var(--dark-blue-1);
+  --p-datatable-header-cell-hover-background: var(--grey-3);
+  --p-datatable-row-color: var(--dark-blue-1);
+  --p-datatable-column-title-font-weight: 700;
+
+  .p-datatable {
+    border: 1px solid var(--grey-2);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+
+  table {
+    tr:hover {
+      td {
+        background: var(--bg-blue-2);
+      }
+    }
+
+    tr.loading-row {
+      td {
+        background: transparent;
+        border: none;
+        padding: 0;
+        width: 100%;
+      }
+    }
+
+    th,
+    td {
+      border: none;
+    }
+
+    .p-sortable-column-icon {
+      color: var(--grey-1);
+      margin-left: 0.6rem;
+    }
+
+    td {
+      background-color: var(--bg-blue-3);
+      border-bottom: 0.75rem solid var(--white);
+      height: 4rem;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+}
+
+.my-projects-table {
+  tr:not(.loading-row) {
+    cursor: pointer;
+  }
+}
+
+.addon-table {
+  tr {
+    &.background-warning td {
+      background-color: var(--yellow-2);
+    }
+
+    &.background-success td {
+      background-color: var(--green-2);
+    }
+
+    &.background-danger td {
+      background-color: var(--red-2);
+    }
+
+    td {
+      white-space: wrap;
+    }
+  }
+}
+
+.view-only-table {
+  .p-datatable {
+    padding: 0.125rem;
+
+    td,
+    th {
+      background-color: transparent;
+      border-bottom: 1px solid var(--grey-2);
+    }
+
+    tr {
+      &:hover {
+        background: transparent;
+      }
+
+      &:last-of-type {
+        td {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+
+.institution-admin-table {
+  th {
+    min-width: 10rem;
+  }
+}
+
+.link-project-table {
+  .p-datatable {
+    padding: 0 0.5rem 0.5rem 0.5rem;
+  }
+
+  td {
+    background-color: var(--white);
+    height: auto;
+    border: none;
+  }
+
+  thead {
+    tr {
+      outline: 1px solid var(--grey-2);
+    }
+  }
+}
+
+.link-project-table.loading {
+  td {
+    border-bottom: 2px solid var(--white);
+  }
+}
+
+@media (max-width: var.$breakpoint-xl) {
+  .addon-table,
+  .my-projects-table {
+    .p-datatable {
+      padding: 1rem;
+      overflow-x: auto;
+    }
+  }
+
+  .my-projects-table {
+    .p-datatable {
+      overflow-x: auto;
+    }
+
+    td {
+      max-width: calc((100vw - 6.85rem - 2px) / 3);
+    }
+  }
+}
+
+@media (max-width: var.$breakpoint-sm) {
+  .addon-table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+
+    .p-datatable {
+      padding: 1rem;
+      width: 100%;
+
+      table {
+        width: 100%;
+        table-layout: auto;
+      }
+
+      td {
+        white-space: wrap;
+        overflow: visible;
+        text-overflow: unset;
+        max-width: max-content;
+      }
+    }
+  }
+
+  .my-projects-table {
+    .p-datatable {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      min-width: 100%;
+    }
+
+    td {
+      white-space: normal;
+      max-width: none;
+      min-width: 50vw;
+    }
+  }
+}

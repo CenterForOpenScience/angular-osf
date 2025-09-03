@@ -45,7 +45,8 @@ export class RegistryOverviewState {
 
     return this.registryOverviewService.getRegistrationById(action.id).pipe(
       tap({
-        next: (registryOverview) => {
+        next: (response) => {
+          const registryOverview = response.registry;
           if (registryOverview?.currentUserIsModerator) {
             ctx.dispatch(new SetUserAsModerator());
           }
@@ -58,6 +59,7 @@ export class RegistryOverviewState {
               isLoading: false,
               error: null,
             },
+            isAnonymous: response.meta?.anonymous ?? false,
           });
           if (registryOverview?.registrationSchemaLink && registryOverview?.questions && !action.isComponentPage) {
             ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));

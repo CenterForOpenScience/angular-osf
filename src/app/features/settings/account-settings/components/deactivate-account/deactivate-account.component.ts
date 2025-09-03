@@ -35,7 +35,7 @@ export class DeactivateAccountComponent {
     deactivateAccount: DeactivateAccount,
   });
 
-  protected accountSettings = select(AccountSettingsSelectors.getAccountSettings);
+  accountSettings = select(AccountSettingsSelectors.getAccountSettings);
 
   deactivateAccount() {
     this.dialogService
@@ -51,11 +51,10 @@ export class DeactivateAccountComponent {
       .subscribe(() => {
         this.loaderService.show();
 
-        // [NS] Hidden to avoid issues with development
-        // this.action.deactivateAccount().subscribe(() => {
-        this.toastService.showSuccess('settings.accountSettings.deactivateAccount.successDeactivation');
-        this.loaderService.hide();
-        // });
+        this.action.deactivateAccount().subscribe(() => {
+          this.toastService.showSuccess('settings.accountSettings.deactivateAccount.successDeactivation');
+          this.loaderService.hide();
+        });
       });
   }
 

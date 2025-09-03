@@ -37,9 +37,6 @@ describe('AccountSettingsComponent', () => {
         case UserSelectors.getCurrentUser:
           return () => MOCK_USER;
 
-        case AccountSettingsSelectors.getEmails:
-          return () => [];
-
         case AccountSettingsSelectors.getAccountSettings:
           return () => null;
 

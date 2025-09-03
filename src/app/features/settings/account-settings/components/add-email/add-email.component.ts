@@ -8,12 +8,11 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { AddEmail, UserEmailsSelectors } from '@core/store/user-emails';
 import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
 import { ToastService } from '@osf/shared/services';
-
-import { AccountSettingsSelectors, AddEmail } from '../../store';
 
 @Component({
   selector: 'osf-confirmation-sent-dialog',
@@ -28,7 +27,7 @@ export class AddEmailComponent {
   private readonly action = createDispatchMap({ addEmail: AddEmail });
   private readonly toastService = inject(ToastService);
 
-  isSubmitting = select(AccountSettingsSelectors.isEmailsSubmitting);
+  isSubmitting = select(UserEmailsSelectors.isEmailsSubmitting);
 
   protected readonly emailControl = new FormControl('', {
     nonNullable: true,

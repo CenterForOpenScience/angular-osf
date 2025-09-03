@@ -1,7 +1,8 @@
 import { FileTargetResponse } from '@osf/features/files/models';
-import { ApiData, JsonApiResponse } from '@shared/models';
+import { ApiData, JsonApiResponse, JsonApiResponseWithMeta, MetaAnonymousJsonApi } from '@shared/models';
 
 export type GetFilesResponse = JsonApiResponse<FileData[], null>;
+export type GetFilesResponseWithMeta = JsonApiResponseWithMeta<FileData[], MetaAnonymousJsonApi, null>;
 export type GetFileResponse = JsonApiResponse<FileData, null>;
 export type FileData = ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>;
 export type AddFileResponse = ApiData<FileResponse, null, null, null>;

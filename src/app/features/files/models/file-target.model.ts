@@ -20,4 +20,5 @@ export interface OsfFileTarget {
   wikiEnabled: boolean;
   public: boolean;
   type: string;
+  isAnonymous?: boolean;
 }

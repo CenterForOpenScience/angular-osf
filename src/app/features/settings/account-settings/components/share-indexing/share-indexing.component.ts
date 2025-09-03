@@ -29,7 +29,7 @@ export class ShareIndexingComponent {
   private readonly toastService = inject(ToastService);
 
   private readonly indexing = select(UserSelectors.getShareIndexing);
-  protected readonly currentUser = select(UserSelectors.getCurrentUser);
+  readonly currentUser = select(UserSelectors.getCurrentUser);
 
   selectedOption = this.indexing();
 
