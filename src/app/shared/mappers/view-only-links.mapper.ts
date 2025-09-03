@@ -2,6 +2,7 @@ import {
   PaginatedViewOnlyLinksModel,
   ViewOnlyLinkJsonApi,
   ViewOnlyLinkModel,
+  ViewOnlyLinkNodeModel,
   ViewOnlyLinksResponseJsonApi,
 } from '../models';
 
@@ -18,7 +19,14 @@ export class ViewOnlyLinksMapper {
         id: item.embeds.creator.data.id,
         fullName: item.embeds.creator.data.attributes.full_name ?? '',
       },
-      nodes: [],
+      nodes: item.embeds.nodes.data.map(
+        (node) =>
+          ({
+            id: node.id,
+            title: node.attributes.title,
+            category: node.attributes.category,
+          }) as ViewOnlyLinkNodeModel
+      ),
     }));
 
     return {
