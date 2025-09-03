@@ -81,6 +81,19 @@
             (onClick)="fileInput.click()"
           >
           </p-button>
+
+          @if (isGoogleDrive()) {
+            <p-button
+              [disabled]="fileIsUploading() || isFilesLoading()"
+              outlined
+              raised
+              severity="success"
+              [icon]="'fa-brands fa-google-plus-g'"
+              [label]="'files.actions.addFromDrive' | translate"
+              (onClick)="fileInput.click()"
+            >
+            </p-button>
+          }
         }
         <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
       </div>

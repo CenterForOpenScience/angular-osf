@@ -119,6 +119,7 @@ export class FilesComponent {
   readonly currentFolder = select(FilesSelectors.getCurrentFolder);
   readonly provider = select(FilesSelectors.getProvider);
 
+  readonly isGoogleDrive = signal<boolean>(false);
   readonly resourceId = signal<string>('');
   readonly rootFolders = select(FilesSelectors.getRootFolders);
   readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
@@ -202,7 +203,7 @@ export class FilesComponent {
         const osfRootFolder = rootFolders.find((folder) => folder.provider === 'osfstorage');
         if (osfRootFolder) {
           this.currentRootFolder.set({
-            label: 'Osf Storage',
+            label: this.translateService.instant('files.storageLocation'),
             folder: osfRootFolder,
           });
         }
@@ -212,6 +213,7 @@ export class FilesComponent {
     effect(() => {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
+        this.isGoogleDrive.set(currentRootFolder.folder.provider === 'googledrive');
         this.actions.setCurrentFolder(currentRootFolder.folder);
       }
     });
@@ -372,7 +374,7 @@ export class FilesComponent {
 
   getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
     if (provider === 'osfstorage') {
-      return 'Osf Storage';
+      return this.translateService.instant('files.storageLocation');
     } else {
       return addons.find((addon) => addon.externalServiceName === provider)?.displayName ?? '';
     }

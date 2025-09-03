@@ -959,7 +959,8 @@
     "actions": {
       "downloadAsZip": "Download As Zip",
       "createFolder": "Create Folder",
-      "uploadFile": "Upload File"
+      "uploadFile": "Upload File",
+      "addFromDrive": "Add from Drive"
     },
     "dialogs": {
       "uploadFile": {
