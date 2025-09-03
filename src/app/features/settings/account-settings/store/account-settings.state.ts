@@ -1,36 +1,29 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext, Store } from '@ngxs/store';
 
 import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { SetCurrentUser } from '@core/store/user';
-import { handleSectionError } from '@osf/shared/helpers';
+import { SetCurrentUser, UserSelectors } from '@core/store/user';
 import { InstitutionsService } from '@shared/services';
 
 import { AccountSettingsService } from '../services';
 
 import {
-  AddEmail,
   CancelDeactivationRequest,
   DeactivateAccount,
-  DeleteEmail,
   DeleteExternalIdentity,
   DeleteUserInstitution,
   DisableTwoFactorAuth,
   EnableTwoFactorAuth,
   GetAccountSettings,
-  GetEmails,
   GetExternalIdentities,
   GetRegions,
   GetUserInstitutions,
-  MakePrimary,
-  ResendConfirmation,
   UpdateAccountSettings,
   UpdateIndexing,
   UpdatePassword,
   UpdateRegion,
-  VerifyEmail,
   VerifyTwoFactorAuth,
 } from './account-settings.actions';
 import { ACCOUNT_SETTINGS_STATE_DEFAULTS, AccountSettingsStateModel } from './account-settings.model';
@@ -43,103 +36,7 @@ import { ACCOUNT_SETTINGS_STATE_DEFAULTS, AccountSettingsStateModel } from './ac
 export class AccountSettingsState {
   private readonly accountSettingsService = inject(AccountSettingsService);
   private readonly institutionsService = inject(InstitutionsService);
-
-  @Action(GetEmails)
-  getEmails(ctx: StateContext<AccountSettingsStateModel>) {
-    const state = ctx.getState();
-
-    ctx.patchState({ emails: { ...state.emails, isLoading: true } });
-
-    return this.accountSettingsService.getEmails().pipe(
-      tap((emails) => {
-        ctx.patchState({
-          emails: {
-            data: emails,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'emails', error))
-    );
-  }
-
-  @Action(AddEmail)
-  addEmail(ctx: StateContext<AccountSettingsStateModel>, action: AddEmail) {
-    const state = ctx.getState();
-    ctx.patchState({ emails: { ...state.emails, isSubmitting: true } });
-
-    return this.accountSettingsService.addEmail(action.email).pipe(
-      tap((email) => {
-        ctx.patchState({
-          emails: {
-            data: state.emails.data,
-            isSubmitting: false,
-            isLoading: false,
-            error: null,
-          },
-        });
-
-        if (email.emailAddress && !email.confirmed) {
-          ctx.dispatch(GetEmails);
-        }
-      }),
-      catchError((error) => handleSectionError(ctx, 'emails', error))
-    );
-  }
-
-  @Action(DeleteEmail)
-  deleteEmail(ctx: StateContext<AccountSettingsStateModel>, action: DeleteEmail) {
-    const state = ctx.getState();
-    ctx.patchState({ emails: { ...state.emails, isLoading: true } });
-
-    return this.accountSettingsService.deleteEmail(action.email).pipe(
-      tap(() => {
-        ctx.patchState({
-          emails: {
-            data: state.emails.data,
-            isSubmitting: false,
-            isLoading: false,
-            error: null,
-          },
-        });
-
-        ctx.dispatch(GetEmails);
-      }),
-      catchError((error) => handleSectionError(ctx, 'emails', error))
-    );
-  }
-
-  @Action(ResendConfirmation)
-  resendConfirmation(ctx: StateContext<AccountSettingsStateModel>, action: ResendConfirmation) {
-    return this.accountSettingsService
-      .resendConfirmation(action.emailId, action.userId)
-      .pipe(catchError((error) => throwError(() => error)));
-  }
-
-  @Action(VerifyEmail)
-  verifyEmail(ctx: StateContext<AccountSettingsStateModel>, action: VerifyEmail) {
-    return this.accountSettingsService.verifyEmail(action.userId, action.emailId).pipe(
-      tap((email) => {
-        if (email.verified) {
-          ctx.dispatch(GetEmails);
-        }
-      }),
-      catchError((error) => throwError(() => error))
-    );
-  }
-
-  @Action(MakePrimary)
-  makePrimary(ctx: StateContext<AccountSettingsStateModel>, action: MakePrimary) {
-    return this.accountSettingsService.makePrimary(action.emailId).pipe(
-      tap((email) => {
-        if (email.verified) {
-          ctx.dispatch(GetEmails);
-        }
-      }),
-      catchError((error) => throwError(() => error))
-    );
-  }
+  private readonly store = inject(Store);
 
   @Action(GetRegions)
   getRegions(ctx: StateContext<AccountSettingsStateModel>) {
@@ -151,7 +48,13 @@ export class AccountSettingsState {
 
   @Action(UpdateRegion)
   updateRegion(ctx: StateContext<AccountSettingsStateModel>, action: UpdateRegion) {
-    return this.accountSettingsService.updateLocation(action.regionId).pipe(
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
+    if (!currentUser?.id) {
+      return;
+    }
+
+    return this.accountSettingsService.updateLocation(currentUser.id, action.regionId).pipe(
       tap((user) => ctx.dispatch(new SetCurrentUser(user))),
       catchError((error) => throwError(() => error))
     );
@@ -159,7 +62,13 @@ export class AccountSettingsState {
 
   @Action(UpdateIndexing)
   updateIndexing(ctx: StateContext<AccountSettingsStateModel>, action: UpdateIndexing) {
-    return this.accountSettingsService.updateIndexing(action.allowIndexing).pipe(
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
+    if (!currentUser?.id) {
+      return;
+    }
+
+    return this.accountSettingsService.updateIndexing(currentUser.id, action.allowIndexing).pipe(
       tap((user) => ctx.dispatch(new SetCurrentUser(user))),
       catchError((error) => throwError(() => error))
     );
@@ -207,7 +116,13 @@ export class AccountSettingsState {
 
   @Action(UpdateAccountSettings)
   updateAccountSettings(ctx: StateContext<AccountSettingsStateModel>, action: UpdateAccountSettings) {
-    return this.accountSettingsService.updateSettings(action.accountSettings).pipe(
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
+    if (!currentUser?.id) {
+      return;
+    }
+
+    return this.accountSettingsService.updateSettings(currentUser.id, action.accountSettings).pipe(
       tap((settings) => ctx.patchState({ accountSettings: settings })),
       catchError((error) => throwError(() => error))
     );
@@ -215,7 +130,13 @@ export class AccountSettingsState {
 
   @Action(DisableTwoFactorAuth)
   disableTwoFactorAuth(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.accountSettingsService.updateSettings({ two_factor_enabled: 'false' }).pipe(
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
+    if (!currentUser?.id) {
+      return;
+    }
+
+    return this.accountSettingsService.updateSettings(currentUser.id, { two_factor_enabled: 'false' }).pipe(
       tap((settings) => ctx.patchState({ accountSettings: settings })),
       catchError((error) => throwError(() => error))
     );
@@ -223,7 +144,13 @@ export class AccountSettingsState {
 
   @Action(EnableTwoFactorAuth)
   enableTwoFactorAuth(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.accountSettingsService.updateSettings({ two_factor_enabled: 'true' }).pipe(
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
+    if (!currentUser?.id) {
+      return;
+    }
+
+    return this.accountSettingsService.updateSettings(currentUser.id, { two_factor_enabled: 'true' }).pipe(
       tap((settings) => ctx.patchState({ accountSettings: settings })),
       catchError((error) => throwError(() => error))
     );
@@ -231,7 +158,13 @@ export class AccountSettingsState {
 
   @Action(VerifyTwoFactorAuth)
   verifyTwoFactorAuth(ctx: StateContext<AccountSettingsStateModel>, action: VerifyTwoFactorAuth) {
-    return this.accountSettingsService.updateSettings({ two_factor_verification: action.code }).pipe(
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
+    if (!currentUser?.id) {
+      return;
+    }
+
+    return this.accountSettingsService.updateSettings(currentUser.id, { two_factor_verification: action.code }).pipe(
       tap((settings) => ctx.patchState({ accountSettings: settings })),
       catchError((error) => throwError(() => error))
     );
@@ -239,7 +172,13 @@ export class AccountSettingsState {
 
   @Action(DeactivateAccount)
   deactivateAccount(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.accountSettingsService.updateSettings({ deactivation_requested: 'true' }).pipe(
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
+    if (!currentUser?.id) {
+      return;
+    }
+
+    return this.accountSettingsService.updateSettings(currentUser.id, { deactivation_requested: 'true' }).pipe(
       tap((settings) => ctx.patchState({ accountSettings: settings })),
       catchError((error) => throwError(() => error))
     );
@@ -247,7 +186,13 @@ export class AccountSettingsState {
 
   @Action(CancelDeactivationRequest)
   cancelDeactivationRequest(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.accountSettingsService.updateSettings({ deactivation_requested: 'false' }).pipe(
+    const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+
+    if (!currentUser?.id) {
+      return;
+    }
+
+    return this.accountSettingsService.updateSettings(currentUser.id, { deactivation_requested: 'false' }).pipe(
       tap((settings) => ctx.patchState({ accountSettings: settings })),
       catchError((error) => throwError(() => error))
     );

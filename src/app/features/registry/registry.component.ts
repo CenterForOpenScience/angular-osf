@@ -30,8 +30,9 @@ export class RegistryComponent extends DataciteTrackerComponent {
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
 
-  protected readonly registry = select(RegistryOverviewSelectors.getRegistry);
+  readonly registry = select(RegistryOverviewSelectors.getRegistry);
   readonly registry$ = toObservable(select(RegistryOverviewSelectors.getRegistry));
+
 
   constructor() {
     super();
@@ -63,10 +64,11 @@ export class RegistryComponent extends DataciteTrackerComponent {
         keywords: this.registry()?.tags,
         siteName: 'OSF',
         license: this.registry()?.license?.name,
-        contributors: this.registry()?.contributors.map((contributor) => ({
-          givenName: contributor.givenName,
-          familyName: contributor.familyName,
-        })),
+        contributors:
+          this.registry()?.contributors?.map((contributor) => ({
+            givenName: contributor.givenName,
+            familyName: contributor.familyName,
+          })) ?? [],
       },
       'registries'
     );

@@ -21,6 +21,7 @@ export interface FilesStateModel {
   tags: AsyncStateModel<string[]>;
   rootFolders: AsyncStateModel<OsfFile[] | null>;
   configuredStorageAddons: AsyncStateModel<ConfiguredStorageAddonModel[] | null>;
+  isAnonymous: boolean;
 }
 
 export const filesStateDefaults: FilesStateModel = {
@@ -79,4 +80,5 @@ export const filesStateDefaults: FilesStateModel = {
     isLoading: true,
     error: null,
   },
+  isAnonymous: false,
 };

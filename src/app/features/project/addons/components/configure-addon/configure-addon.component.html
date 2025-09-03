@@ -65,6 +65,7 @@
       </div>
       <osf-folder-selector
         [isGoogleFilePicker]="isGoogleDrive()"
+        [accountId]="addon()?.baseAccountId || ''"
         [accountName]="addon()?.displayName || ''"
         [operationInvocationResult]="operationInvocation()?.operationResult || []"
         [accountNameControl]="accountNameControl"

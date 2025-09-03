@@ -4,11 +4,9 @@ export interface ViewOnlyLinkCreatorModel {
 }
 
 export interface ViewOnlyLinkNodeModel {
+  id: string;
   title: string;
-  url: string;
-  scale: string;
   category: string;
-  id?: string;
 }
 
 export interface ViewOnlyLinkModel {
@@ -20,6 +18,12 @@ export interface ViewOnlyLinkModel {
   creator: ViewOnlyLinkCreatorModel;
   nodes: ViewOnlyLinkNodeModel[];
   anonymous: boolean;
+}
+
+export interface ViewOnlyLinkChildren {
+  id: string;
+  title: string;
+  isCurrentResource: boolean;
 }
 
 export interface PaginatedViewOnlyLinksModel {

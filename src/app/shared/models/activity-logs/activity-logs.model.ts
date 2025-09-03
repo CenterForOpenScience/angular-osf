@@ -1,3 +1,5 @@
+import { LicensesOption } from '../license.model';
+
 export interface ActivityLog {
   id: string;
   type: string;
@@ -74,6 +76,7 @@ export interface ActivityLog {
     user?: User;
     linkedNode?: LinkedNode;
   };
+  isAnonymous?: boolean;
 }
 
 interface Pointer {
@@ -98,10 +101,7 @@ interface OriginalNode {
   collection: boolean;
   tags: string[];
   accessRequestsEnabled: boolean;
-  nodeLicense: {
-    copyrightHolders: string[];
-    year: string | null;
-  };
+  nodeLicense: LicensesOption;
   currentUserCanComment: boolean;
   currentUserPermissions: string[];
   currentUserIsContributor: boolean;
@@ -140,10 +140,7 @@ interface LinkedNode {
   collection: boolean;
   tags: string[];
   accessRequestsEnabled: boolean;
-  nodeLicense: {
-    copyrightHolders: string[];
-    year: string | null;
-  };
+  nodeLicense: LicensesOption;
   currentUserCanComment: boolean;
   currentUserPermissions: string[];
   currentUserIsContributor: boolean;

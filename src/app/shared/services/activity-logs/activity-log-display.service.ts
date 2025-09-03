@@ -37,7 +37,7 @@ export class ActivityLogDisplayService {
       identifiers: this.formatter.buildIdentifiers(log),
       institution: this.formatter.buildInstitution(log),
       kind: log.params.kind,
-      license: log.params.license,
+      license: log.params.license || '',
       node: this.formatter.buildNode(log),
       oldPage: this.formatter.buildOldPage(log),
       page: this.formatter.buildPage(log),

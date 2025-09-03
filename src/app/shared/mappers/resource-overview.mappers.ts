@@ -3,7 +3,7 @@ import { RegistryOverview, RegistrySubject } from '@osf/features/registry/models
 
 import { Institution, ResourceOverview } from '../models';
 
-export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
+export function MapProjectOverview(project: ProjectOverview, isAnonymous = false): ResourceOverview {
   return {
     id: project.id,
     type: project.type,
@@ -19,7 +19,7 @@ export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
     isCollection: project.isCollection,
     tags: project.tags || [],
     accessRequestsEnabled: project.accessRequestsEnabled,
-    nodeLicense: project.nodeLicense || undefined,
+    nodeLicense: project.nodeLicense,
     license: project.license || undefined,
     storage: project.storage || undefined,
     identifiers: project.identifiers?.filter(Boolean) || undefined,
@@ -37,13 +37,15 @@ export function MapProjectOverview(project: ProjectOverview): ResourceOverview {
     affiliatedInstitutions: project.affiliatedInstitutions?.filter(Boolean) || undefined,
     forksCount: project.forksCount || 0,
     viewOnlyLinksCount: project.viewOnlyLinksCount || 0,
+    isAnonymous,
   };
 }
 
 export function MapRegistryOverview(
   registry: RegistryOverview,
   subjects: RegistrySubject[],
-  institutions: Institution[]
+  institutions: Institution[],
+  isAnonymous = false
 ): ResourceOverview {
   return {
     id: registry.id,
@@ -61,7 +63,7 @@ export function MapRegistryOverview(
     isFork: registry.isFork,
     tags: registry.tags || [],
     accessRequestsEnabled: registry.accessRequestsEnabled,
-    nodeLicense: registry.nodeLicense || undefined,
+    nodeLicense: registry.nodeLicense,
     license: registry.license || undefined,
     identifiers: registry.identifiers?.filter(Boolean) || undefined,
     analyticsKey: registry.analyticsKey,
@@ -78,5 +80,6 @@ export function MapRegistryOverview(
     customCitation: registry.customCitation,
     affiliatedInstitutions: institutions,
     associatedProjectId: registry.associatedProjectId,
+    isAnonymous,
   };
 }

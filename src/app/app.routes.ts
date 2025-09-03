@@ -2,6 +2,7 @@ import { provideStates } from '@ngxs/store';
 
 import { Routes } from '@angular/router';
 
+import { isFileGuard } from '@core/guards/is-file.guard';
 import { BookmarksState, ProjectsState } from '@shared/stores';
 
 import { authGuard, redirectIfLoggedInGuard } from './core/guards';
@@ -164,9 +165,9 @@ export const routes: Routes = [
         data: { skipBreadcrumbs: true },
       },
       {
-        path: 'files/:fileGuid',
-        loadComponent: () =>
-          import('@osf/features/files/pages/file-detail/file-detail.component').then((c) => c.FileDetailComponent),
+        path: ':id',
+        canMatch: [isFileGuard],
+        loadChildren: () => import('./features/files/files.routes').then((m) => m.filesRoutes),
       },
       {
         path: ':id',

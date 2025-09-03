@@ -1,10 +1,11 @@
 import { Store } from '@ngxs/store';
 
+import { TranslateModule } from '@ngx-translate/core';
+
 import { Select, SelectChangeEvent } from 'primeng/select';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 
 import { ResourceFiltersSelectors, SetInstitution } from '../../resource-filters/store';
 import { GetAllOptions, ResourceFiltersOptionsSelectors } from '../store';

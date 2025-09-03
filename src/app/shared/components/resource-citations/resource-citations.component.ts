@@ -24,7 +24,9 @@ import {
   signal,
 } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
+import { hasViewOnlyParam } from '@shared/helpers';
 import { CitationStyle, CustomOption, ResourceOverview } from '@shared/models';
 import { ToastService } from '@shared/services';
 import {
@@ -57,6 +59,7 @@ import {
 })
 export class ResourceCitationsComponent {
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
   isCollectionsRoute = input<boolean>(false);
   currentResource = input.required<ResourceOverview | null>();
@@ -64,24 +67,26 @@ export class ResourceCitationsComponent {
   private readonly toastService = inject(ToastService);
   private readonly destroy$ = new Subject<void>();
   private readonly filterSubject = new Subject<string>();
-  protected customCitation = output<string>();
-  protected defaultCitations = select(CitationsSelectors.getDefaultCitations);
-  protected isCitationsLoading = select(CitationsSelectors.getDefaultCitationsLoading);
-  protected citationStyles = select(CitationsSelectors.getCitationStyles);
-  protected isCitationStylesLoading = select(CitationsSelectors.getCitationStylesLoading);
-  protected isCustomCitationSubmitting = select(CitationsSelectors.getCustomCitationSubmitting);
-  protected styledCitation = select(CitationsSelectors.getStyledCitation);
-  protected citationStylesOptions = signal<CustomOption<CitationStyle>[]>([]);
-  protected isEditMode = signal<boolean>(false);
-  protected filterMessage = computed(() => {
+  customCitation = output<string>();
+  defaultCitations = select(CitationsSelectors.getDefaultCitations);
+  isCitationsLoading = select(CitationsSelectors.getDefaultCitationsLoading);
+  citationStyles = select(CitationsSelectors.getCitationStyles);
+  isCitationStylesLoading = select(CitationsSelectors.getCitationStylesLoading);
+  isCustomCitationSubmitting = select(CitationsSelectors.getCustomCitationSubmitting);
+  styledCitation = select(CitationsSelectors.getStyledCitation);
+  citationStylesOptions = signal<CustomOption<CitationStyle>[]>([]);
+  isEditMode = signal<boolean>(false);
+  filterMessage = computed(() => {
     const isLoading = this.isCitationStylesLoading();
     return isLoading
       ? this.translateService.instant('project.overview.metadata.citationLoadingPlaceholder')
       : this.translateService.instant('project.overview.metadata.noCitationStylesFound');
   });
-  protected customCitationInput = new FormControl('');
-
-  protected actions = createDispatchMap({
+  customCitationInput = new FormControl('');
+  readonly hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
+  actions = createDispatchMap({
     getDefaultCitations: GetDefaultCitations,
     getCitationStyles: GetCitationStyles,
     getStyledCitation: GetStyledCitation,
@@ -96,7 +101,7 @@ export class ResourceCitationsComponent {
     this.setupDestroyEffect();
   }
 
-  protected setupDefaultCitationsEffect(): void {
+  setupDefaultCitationsEffect(): void {
     effect(() => {
       const resource = this.currentResource();
 
@@ -107,12 +112,12 @@ export class ResourceCitationsComponent {
     });
   }
 
-  protected handleCitationStyleFilterSearch(event: SelectFilterEvent) {
+  handleCitationStyleFilterSearch(event: SelectFilterEvent) {
     event.originalEvent.preventDefault();
     this.filterSubject.next(event.filter);
   }
 
-  protected handleGetStyledCitation(event: SelectChangeEvent) {
+  handleGetStyledCitation(event: SelectChangeEvent) {
     const resource = this.currentResource();
 
     if (resource) {
@@ -120,7 +125,7 @@ export class ResourceCitationsComponent {
     }
   }
 
-  protected handleUpdateCustomCitation(): void {
+  handleUpdateCustomCitation(): void {
     const resource = this.currentResource();
     const customCitationText = this.customCitationInput.value?.trim();
 
@@ -142,7 +147,7 @@ export class ResourceCitationsComponent {
     }
   }
 
-  protected handleDeleteCustomCitation(): void {
+  handleDeleteCustomCitation(): void {
     const resource = this.currentResource();
 
     if (resource) {
@@ -163,14 +168,14 @@ export class ResourceCitationsComponent {
     }
   }
 
-  protected toggleEditMode(): void {
+  toggleEditMode(): void {
     if (this.styledCitation()) {
       this.actions.clearStyledCitation();
     }
     this.isEditMode.set(!this.isEditMode());
   }
 
-  protected copyCitation(): void {
+  copyCitation(): void {
     const resource = this.currentResource();
 
     if (resource?.customCitation) {

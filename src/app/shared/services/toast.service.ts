@@ -12,11 +12,11 @@ export class ToastService {
     this.messageService.add({ severity: 'success', summary, data: { translationParams: params } });
   }
 
-  showWarn(summary: string) {
-    this.messageService.add({ severity: 'warn', summary });
+  showWarn(summary: string, params?: unknown) {
+    this.messageService.add({ severity: 'warn', summary, data: { translationParams: params } });
   }
 
-  showError(summary: string) {
-    this.messageService.add({ severity: 'error', summary, life: 5000 });
+  showError(summary: string, params?: unknown) {
+    this.messageService.add({ severity: 'error', summary, life: 5000, data: { translationParams: params } });
   }
 }

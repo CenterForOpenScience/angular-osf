@@ -73,6 +73,9 @@ export class RegistriesLicenseComponent {
   }
 
   selectLicense(license: License) {
+    if (license.requiredFields.length) {
+      return;
+    }
     this.control().patchValue({
       id: license.id,
     });

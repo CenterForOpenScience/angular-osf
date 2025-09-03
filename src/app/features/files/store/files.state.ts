@@ -52,13 +52,14 @@ export class FilesState {
 
     return this.filesService.getFiles(action.filesLink, '', '').pipe(
       tap({
-        next: (files) => {
+        next: (response) => {
           ctx.patchState({
             moveFileFiles: {
-              data: files,
+              data: response.files,
               isLoading: false,
               error: null,
             },
+            isAnonymous: response.meta?.anonymous ?? false,
           });
         },
       }),
@@ -72,13 +73,14 @@ export class FilesState {
     ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
     return this.filesService.getFiles(action.filesLink, state.search, state.sort).pipe(
       tap({
-        next: (files) => {
+        next: (response) => {
           ctx.patchState({
             files: {
-              data: files,
+              data: response.files,
               isLoading: false,
               error: null,
             },
+            isAnonymous: response.meta?.anonymous ?? false,
           });
         },
       }),
@@ -280,13 +282,14 @@ export class FilesState {
 
     return this.filesService.getFolders(action.folderLink).pipe(
       tap({
-        next: (folders) =>
+        next: (response) =>
           ctx.patchState({
             rootFolders: {
-              data: folders,
+              data: response.files,
               isLoading: false,
               error: null,
             },
+            isAnonymous: response.meta?.anonymous ?? false,
           }),
       }),
       catchError((error) => handleSectionError(ctx, 'rootFolders', error))

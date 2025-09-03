@@ -46,7 +46,8 @@
       "preview": "Preview",
       "continueUpdate": "Continue Update",
       "editAndResubmit": "Edit And Resubmit",
-      "createNewVersion": "Create New Version"
+      "createNewVersion": "Create New Version",
+      "leaveThisView": "Leave this view"
     },
     "search": {
       "title": "Search",
@@ -129,7 +130,8 @@
       "addTag": "Add tags"
     },
     "hint": {
-      "tagSeparators": "Use enter or comma to create a tag."
+      "tagSeparators": "Use enter or comma to create a tag.",
+      "viewOnlyLinksBanner": "You are viewing OSF through a view-only link, which may limit the data you have permission to see."
     }
   },
   "navigation": {
@@ -328,7 +330,9 @@
       "title": "Add alternative email",
       "description": "Do you want to add ",
       "description2": "to your profile ?",
-      "goToEmails": "Add email"
+      "goToEmails": "Add email",
+      "emailNotAdded": "{{name}} has not been added to your account.",
+      "emailVerified": "{{name}} has been added to your account."
     }
   },
   "myProjects": {
@@ -387,6 +391,8 @@
         "anonymous": "Anonymous"
       },
       "viewOnlyLinkCreated": "View only link successfully created.",
+      "viewOnlyLinkDeleted": "View only link successfully deleted.",
+      "viewOnlyLinkCurrentProject": "(current component)",
       "anonymizeContributorList": "Anonymize contributor list for this link (e.g., for blind peer review).",
       "ensureNoInformation": "Ensure the wiki pages, files, registration forms and add-ons do not contain identifying information.",
       "linkName": "Link name",
@@ -457,6 +463,16 @@
         "topReferrers": "Top referrers",
         "popularPages": "Popular pages",
         "visits": "Visits"
+      },
+      "privateProject": {
+        "message": "Analytics are not available for private projects. To view Analytics, make your project public by switching Public from the project overview page. Public projects:",
+        "benefits": {
+          "discoverable": "are discoverable",
+          "citable": "are citable",
+          "affiliated": "can be affiliated with OSF for Institutions partners",
+          "openPractices": "promote open practices among peers"
+        },
+        "impact": "Receive data on visitors to your project by enabling Analytics and begin discovering the impact of your work."
       }
     },
     "contributors": {
@@ -522,7 +538,7 @@
       },
       "curatorInfo": {
         "heading": "Curator Information",
-        "description": "An administrator designated by your affiliated institution to curate your project"
+        "description": "An administrator designated by your affiliated institution to curate your project."
       },
       "employment": {
         "show": "Show employment history",
@@ -568,6 +584,7 @@
         "rejected": "Rejected from\u00A0"
       },
       "metadata": {
+        "anonymousContributors": "Anonymous Contributors",
         "title": "Metadata",
         "contributors": "Contributors",
         "description": "Description",
@@ -814,6 +831,15 @@
             "label": "Resource Language",
             "placeholder": "Select resource language"
           }
+        },
+        "tooltipDialog": {
+          "header": "About resource information",
+          "mainContent": "The resource information section allows you to describe what kind of material you are sharing in a human and machine readable format. Indexes and search engines can use the resource types to filter results, increasing discoverability for works with completed metadata. For example, indicating that your resource type is “Dataset” will allow your work to be displayed in other indexes and repositories that specialize in data in addition to the OSF.",
+          "secondaryContent": "You can describe the resources within your entire {{ resourceName }}, and you can also describe the resource type of individual files within. Just open one of your files to edit its metadata.",
+          "thirdContent": "OSF enables the",
+          "dataTypeLink": "Datacite Resource Types",
+          "endText": "More information is available on our",
+          "helpLink": " help guides"
         }
       },
       "license": {
@@ -854,9 +880,10 @@
         "select": "Select",
         "selected": "Selected",
         "publish": "Publish",
+        "saveDraft": "Save Draft",
         "changeTemplate": "Change template",
         "publishedText": "This metadata has a status of 'Published' and is publicly viewable.",
-        "notPublishedText": "This metadata has a status of 'Published' and is publicly viewable.",
+        "notPublishedText": "This metadata has a status of 'Draft' and is not publicly viewable. To 'Publish' this metadata please fill in all required fields and resubmit the data.",
         "youAlreadyAddedText": "You have already added a record for this template",
         "youAlreadyAdded": "Already Added",
         "loadingCedar": "Loading CEDAR record...",
@@ -889,9 +916,9 @@
       "doi": {
         "created": "DOI created successfully",
         "dialog": {
-          "header": "Edit DOI",
-          "label": "DOI",
-          "placeholder": "Enter DOI",
+          "header": "Edit publication DOI",
+          "label": "https://doi.org/",
+          "placeholder": "10.xxxx/xxxxx",
           "createConfirm": {
             "header": "Create DOI",
             "message": "Are you sure you want to create a DOI for this project? A DOI is persistent and will always resolve this page."
@@ -1041,7 +1068,8 @@
         }
       },
       "toast": {
-        "copiedToClipboard": "Copied to clipboard"
+        "copiedToClipboard": "Copied to clipboard",
+        "cedarUpdated": "CEDAR record updated successfully"
       },
       "keywords": {
         "title": "Keywords"
@@ -2654,24 +2682,25 @@
   },
   "activityLog": {
     "defaults": {
-      "preprint": "preprint",
-      "preprintPlural": "preprints",
+      "preprint": "Preprint",
+      "preprintPlural": "Preprints",
       "anonymousA": "a",
-      "anonymousAn": "an",
+      "anonymousAn": "an anonymous",
       "someUsers": "some users",
-      "contributorsAnd": " and ",
+      "contributorsAnd": ", and ",
       "contributorsOthers": " others",
       "aNewNameLocation": "a new name/location",
-      "materialized": "{{materialized}} {{addon}}",
+      "materialized": "{{materialized}} in {{addon}}",
       "aTitle": "a title",
       "aNameLocation": "a name/location",
-      "pageTitle": "page title",
+      "pageTitle": "a title",
       "aFile": "a file",
       "folder": "folder",
       "file": "file",
       "aUser": "A user",
-      "fileOn": "file {{file}}",
-      "wikiOn": "wiki {{wiki}}",
+      "aProject": "a project",
+      "fileOn": "on {{file}}",
+      "wikiOn": "on wiki page {{wiki}}",
       "field": "field",
       "updatedFields": "{{old}} to {{new}}",
       "uncategorized": "Uncategorized",
@@ -2693,7 +2722,7 @@
       "coi_statement_updated": "{{user}} changed the conflict of interest statement for {{preprint}}.",
       "comment_added": "{{user}} added a comment {{commentLocation}} in {{node}}",
       "comment_removed": "{{user}} deleted a comment {{commentLocation}} in {{node}}",
-      "comment_restored": "{{user}} restored a comment {{commentLocation}} in {{node}}",
+      "comment_restored": "{{user}} restored a comment {{commentLocation}}  in {{node}}",
       "comment_updated": "{{user}} updated a comment {{commentLocation}} in {{node}}",
       "contributor_added": "{{user}} added {{contributors}} as contributor(s) to {{node}}",
       "contributor_removed": "{{user}} removed {{contributors}} as contributor(s) from {{node}}",
@@ -2754,7 +2783,7 @@
       "pointer_removed": "{{user}} removed a link to {{pointerCategory}} {{pointer}}",
       "preprint_file_updated": "{{user}} updated the primary file of this {{preprint}} on {{preprintProvider}} {{preprintWordPlural}}",
       "preprint_initiated": "{{user}} made {{node}} a {{preprint}} on {{preprintProvider}} {{preprintWordPlural}}",
-      "preprint_license_updated": "{{user}} updated the license of this {{preprint}} on {{preprintProvider}} {{preprintWordPlural}} {{license}}",
+      "preprint_license_updated": "{{user}} updated the license of this {{preprint}} on {{preprintProvider}} {{preprintWordPlural}} to {{license}}",
       "prereg_links_info_updated": "{{user}} has updated their preregistration links to {{value}}",
       "prereg_links_updated": "{{user}} has updated their preregistration data links",
       "prereg_registration_initiated": "{{user}} submitted for review to the Preregistration Challenge a registration of {{node}}",

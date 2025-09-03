@@ -1,4 +1,5 @@
 import { MetaJsonApi } from '../common';
+import { BaseNodeDataJsonApi } from '../nodes';
 import { UserGetResponse } from '../user';
 
 export interface ViewOnlyLinksResponseJsonApi {
@@ -20,26 +21,9 @@ export interface ViewOnlyLinkJsonApi {
     creator: {
       data: UserGetResponse;
     };
-  };
-  relationships: {
-    creator: {
-      links: {
-        related: LinkWithMetaJsonApi;
-      };
-      data: {
-        id: string;
-        type: 'users';
-      };
-    };
     nodes: {
-      links: {
-        related: LinkWithMetaJsonApi;
-        self: LinkWithMetaJsonApi;
-      };
+      data: BaseNodeDataJsonApi[];
     };
-  };
-  links: {
-    self: string;
   };
 }
 

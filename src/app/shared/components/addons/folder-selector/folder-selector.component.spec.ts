@@ -6,7 +6,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OperationNames } from '@osf/features/project/addons/enums';
 import { FolderSelectorComponent } from '@shared/components/addons';
 import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
-import { StorageItem } from '@shared/models';
+import { StorageItemModel } from '@shared/models';
 
 describe('FolderSelectorComponent', () => {
   let component: FolderSelectorComponent;
@@ -65,11 +65,11 @@ describe('FolderSelectorComponent', () => {
   });
 
   it('should set selectedRootFolderId', () => {
-    const mockFolder: StorageItem = {
+    const mockFolder: StorageItemModel = {
       itemId: 'test-folder-id',
       itemName: 'Test Folder',
       itemType: 'folder',
-    } as StorageItem;
+    } as StorageItemModel;
 
     (component as any).selectedRootFolder.set(mockFolder);
     (component as any).handleSave();

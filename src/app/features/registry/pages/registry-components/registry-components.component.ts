@@ -2,20 +2,28 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { RegistrationLinksCardComponent } from '@osf/features/registry/components';
 import { RegistryComponentModel } from '@osf/features/registry/models';
 import { GetRegistryById, RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
+import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
+import { hasViewOnlyParam } from '@shared/helpers';
 
 import { GetRegistryComponents, RegistryComponentsSelectors } from '../../store/registry-components';
 import { GetBibliographicContributorsForRegistration, RegistryLinksSelectors } from '../../store/registry-links';
 
 @Component({
   selector: 'osf-registry-components',
-  imports: [SubHeaderComponent, TranslatePipe, LoadingSpinnerComponent, RegistrationLinksCardComponent],
+  imports: [
+    SubHeaderComponent,
+    TranslatePipe,
+    LoadingSpinnerComponent,
+    RegistrationLinksCardComponent,
+    ViewOnlyLinkMessageComponent,
+  ],
   templateUrl: './registry-components.component.html',
   styleUrl: './registry-components.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -26,25 +34,27 @@ export class RegistryComponentsComponent implements OnInit {
 
   private registryId = signal('');
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getRegistryComponents: GetRegistryComponents,
     getBibliographicContributorsForRegistration: GetBibliographicContributorsForRegistration,
     getRegistryById: GetRegistryById,
   });
 
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
+
   components = signal<RegistryComponentModel[]>([]);
 
-  protected registryComponents = select(RegistryComponentsSelectors.getRegistryComponents);
-  protected registryComponentsLoading = select(RegistryComponentsSelectors.getRegistryComponentsLoading);
+  registryComponents = select(RegistryComponentsSelectors.getRegistryComponents);
+  registryComponentsLoading = select(RegistryComponentsSelectors.getRegistryComponentsLoading);
 
-  protected bibliographicContributorsForRegistration = select(
-    RegistryLinksSelectors.getBibliographicContributorsForRegistration
-  );
-  protected bibliographicContributorsForRegistrationId = select(
+  bibliographicContributorsForRegistration = select(RegistryLinksSelectors.getBibliographicContributorsForRegistration);
+  bibliographicContributorsForRegistrationId = select(
     RegistryLinksSelectors.getBibliographicContributorsForRegistrationId
   );
 
-  protected registry = select(RegistryOverviewSelectors.getRegistry);
+  registry = select(RegistryOverviewSelectors.getRegistry);
 
   constructor() {
     effect(() => {
