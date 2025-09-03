@@ -28,8 +28,8 @@ export abstract class DataciteTrackerComponent {
     return this.trackable.pipe(
       filter((item) => item != null),
       map((item) => item?.identifiers?.find((identifier) => identifier.category == 'doi')?.value ?? null),
-      take(1),
       filter((doi): doi is string => !!doi),
+      take(1),
       switchMap((doi) => this.dataciteService.logView(doi))
     );
   }
