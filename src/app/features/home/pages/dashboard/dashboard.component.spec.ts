@@ -35,8 +35,6 @@ describe('DashboardComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         DashboardComponent,
-        ReactiveFormsModule,
-        OSFTestingModule,
         OSFTestingStoreModule,
         ...MockComponents(SubHeaderComponent, MyProjectsTableComponent, LoadingSpinnerComponent),
       ],
