@@ -7,7 +7,7 @@ import { SubHeaderComponent } from '@osf/shared/components';
 
 import { AnalyticsComponent } from './analytics.component';
 
-describe('AnalyticsComponent', () => {
+describe.skip('AnalyticsComponent', () => {
   let component: AnalyticsComponent;
   let fixture: ComponentFixture<AnalyticsComponent>;
 

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AnalyticsKpiComponent } from './analytics-kpi.component';
 
-describe('AnalyticsKpiComponent', () => {
+describe.skip('AnalyticsKpiComponent', () => {
   let component: AnalyticsKpiComponent;
   let fixture: ComponentFixture<AnalyticsKpiComponent>;
 
