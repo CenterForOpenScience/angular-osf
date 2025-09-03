@@ -399,6 +399,7 @@
       "typeLinkName": "Type link name",
       "whichComponentLink": "Which components would you like to associate with this link?",
       "anyonePrivateLink": "Anyone with the private link can view—but not edit—the components associated with the link.",
+      "parentsNeedToBeChecked": "Parents need to be checked",
       "accessRequests": "Access Requests",
       "accessRequestsText": "Allow users to request access to this project",
       "wiki": "Wiki",

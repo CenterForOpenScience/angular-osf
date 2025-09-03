@@ -1,0 +1,22 @@
+<div class="flex gap-1" [class.disabled]="item().disabled">
+  <p-checkbox
+    variant="filled"
+    binary="true"
+    [(ngModel)]="item().checked"
+    [disabled]="item().disabled"
+    (onChange)="onCheckboxChange()"
+  ></p-checkbox>
+
+  <p class="item-title">
+    {{ item().title }}
+    @if (item().isCurrentResource) {
+      <span>
+        {{ 'myProjects.settings.viewOnlyLinkCurrentProject' | translate }}
+      </span>
+    }
+  </p>
+
+  @if (item().disabled && !item().isCurrentResource) {
+    <osf-info-icon [tooltipText]="'myProjects.settings.parentsNeedToBeChecked' | translate"></osf-info-icon>
+  }
+</div>

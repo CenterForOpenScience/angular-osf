@@ -13,8 +13,8 @@ export class GetResourceDetails {
   ) {}
 }
 
-export class GetResourceChildren {
-  static readonly type = '[Current Resource] Get Resource Children';
+export class GetResourceWithChildren {
+  static readonly type = '[Current Resource] Get Resource With Children';
   constructor(
     public resourceId: string,
     public resourceType: ResourceType

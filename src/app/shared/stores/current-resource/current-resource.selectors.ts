@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { BaseNodeModel, CurrentResource } from '@osf/shared/models';
+import { BaseNodeModel, CurrentResource, NodeShortInfoModel } from '@osf/shared/models';
 
 import { CurrentResourceStateModel } from './current-resource.model';
 import { CurrentResourceState } from './current-resource.state';
@@ -17,7 +17,7 @@ export class CurrentResourceSelectors {
   }
 
   @Selector([CurrentResourceState])
-  static getResourceChildren(state: CurrentResourceStateModel): BaseNodeModel[] {
+  static getResourceWithChildren(state: CurrentResourceStateModel): NodeShortInfoModel[] {
     return state.resourceChildren.data;
   }
 
@@ -27,7 +27,7 @@ export class CurrentResourceSelectors {
   }
 
   @Selector([CurrentResourceState])
-  static isResourceChildrenLoading(state: CurrentResourceStateModel): boolean {
+  static isResourceWithChildrenLoading(state: CurrentResourceStateModel): boolean {
     return state.resourceChildren.isLoading;
   }
 }

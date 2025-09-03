@@ -1,8 +1,16 @@
-import { BaseNodeDataJsonApi, BaseNodeModel } from '@osf/shared/models';
+import { BaseNodeDataJsonApi, BaseNodeModel, NodeShortInfoModel } from '@osf/shared/models';
 
 export class BaseNodeMapper {
   static getNodesData(data: BaseNodeDataJsonApi[]): BaseNodeModel[] {
     return data.map((item) => this.getNodeData(item));
+  }
+
+  static getNodesWithChildren(data: BaseNodeDataJsonApi[]): NodeShortInfoModel[] {
+    return data.map((item) => ({
+      id: item.id,
+      title: item.attributes.title,
+      parentId: item.relationships.parent?.data?.id,
+    }));
   }
 
   static getNodeData(data: BaseNodeDataJsonApi): BaseNodeModel {

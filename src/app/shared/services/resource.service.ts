@@ -8,6 +8,7 @@ import {
   BaseNodeModel,
   CurrentResource,
   GuidedResponseJsonApi,
+  NodeShortInfoModel,
   ResponseDataJsonApi,
   ResponseJsonApi,
 } from '@osf/shared/models';
@@ -64,11 +65,11 @@ export class ResourceGuidService {
       .pipe(map((response) => BaseNodeMapper.getNodeData(response.data)));
   }
 
-  getResourceChildren(resourceId: string, resourceType: ResourceType): Observable<BaseNodeModel[]> {
+  getResourceWithChildren(resourceId: string, resourceType: ResourceType): Observable<NodeShortInfoModel[]> {
     const resourcePath = this.urlMap.get(resourceType);
 
     return this.jsonApiService
-      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${environment.apiUrl}/${resourcePath}/${resourceId}/children/`)
-      .pipe(map((response) => BaseNodeMapper.getNodesData(response.data)));
+      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${environment.apiUrl}/${resourcePath}/?filter[root]=${resourceId}`)
+      .pipe(map((response) => BaseNodeMapper.getNodesWithChildren(response.data.reverse())));
   }
 }
