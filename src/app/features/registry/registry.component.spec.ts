@@ -6,9 +6,9 @@ import { DatePipe } from '@angular/common';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 
-import { ProjectIdentifiers } from '@osf/features/project/overview/models';
 import { RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
 import { MetaTagsService } from '@osf/shared/services';
+import { Identifier } from '@shared/models';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { RegistryComponent } from './registry.component';
@@ -75,7 +75,7 @@ describe('RegistryComponent', () => {
   });
 });
 
-function getRegistry(identifiers: ProjectIdentifiers[]) {
+function getRegistry(identifiers: Identifier[]) {
   return {
     id: 'r1',
     title: 'Mock Registry',

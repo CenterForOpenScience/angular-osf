@@ -25,8 +25,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import { ProjectIdentifiers } from '@osf/features/project/overview/models';
-
 import {
   ClearCollectionModeration,
   CollectionsModerationSelectors,
@@ -54,6 +52,7 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
+import { Identifier } from '@shared/models';
 
 import {
   LinkedResourcesComponent,
@@ -203,7 +202,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  protected override get trackable(): Observable<{ identifiers?: ProjectIdentifiers[] } | null> {
+  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
     return this.currentProject$;
   }
 
