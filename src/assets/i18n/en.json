@@ -2037,7 +2037,7 @@
       },
       "common": {
         "validation": {
-          "fillRequiredFields": "Fill in 'Required' fields to continue"
+          "fillRequiredFields": "Fill in “Required” fields to continue"
         },
         "successMessages": {
           "preprintSaved": "Preprint saved",
