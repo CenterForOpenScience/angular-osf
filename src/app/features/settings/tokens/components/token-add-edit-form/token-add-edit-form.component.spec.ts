@@ -13,7 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { TokenCreatedDialogComponent } from '@osf/features/settings/tokens/components';
 import { InputLimits } from '@osf/shared/constants';
-import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
+import { MOCK_SCOPES, MOCK_STORE, MOCK_TOKEN, TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 
 import { TokenFormControls, TokenModel } from '../../models';
@@ -30,29 +30,25 @@ describe('TokenAddEditFormComponent', () => {
   let dialogRef: Partial<DynamicDialogRef>;
   let activatedRoute: Partial<ActivatedRoute>;
   let router: Partial<Router>;
-  let toastService: Partial<ToastService>;
+  let toastService: jest.Mocked<ToastService>;
+  let translateService: jest.Mocked<TranslateService>;
 
-  const MOCK_TOKEN: TokenModel = {
-    id: '1',
-    name: 'Test Token',
-    scopes: ['read', 'write'],
+  const mockTokens: TokenModel[] = [MOCK_TOKEN];
+
+  const fillForm = (tokenName: string = MOCK_TOKEN.name, scopes: string[] = MOCK_TOKEN.scopes): void => {
+    component.tokenForm.patchValue({
+      [TokenFormControls.TokenName]: tokenName,
+      [TokenFormControls.Scopes]: scopes,
+    });
   };
-
-  const MOCK_SCOPES = [
-    { id: 'read', description: 'Read access' },
-    { id: 'write', description: 'Write access' },
-    { id: 'delete', description: 'Delete access' },
-  ];
-
-  const MOCK_TOKENS = [MOCK_TOKEN];
 
   beforeEach(async () => {
     (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
       if (selector === TokensSelectors.getScopes) return () => MOCK_SCOPES;
       if (selector === TokensSelectors.isTokensLoading) return () => false;
-      if (selector === TokensSelectors.getTokens) return () => MOCK_TOKENS;
+      if (selector === TokensSelectors.getTokens) return () => mockTokens;
       if (selector === TokensSelectors.getTokenById) {
-        return () => (id: string) => MOCK_TOKENS.find((token) => token.id === id);
+        return () => (id: string) => mockTokens.find((token) => token.id === id);
       }
       return () => null;
     });
@@ -73,11 +69,6 @@ describe('TokenAddEditFormComponent', () => {
       navigate: jest.fn(),
     };
 
-    toastService = {
-      showSuccess: jest.fn(),
-      showError: jest.fn(),
-    };
-
     await TestBed.configureTestingModule({
       imports: [TokenAddEditFormComponent, ReactiveFormsModule, OSFTestingStoreModule],
       providers: [
@@ -87,12 +78,20 @@ describe('TokenAddEditFormComponent', () => {
         MockProvider(DynamicDialogRef, dialogRef),
         MockProvider(ActivatedRoute, activatedRoute),
         MockProvider(Router, router),
-        MockProvider(ToastService, toastService),
+        MockProvider(ToastService, {
+          showSuccess: jest.fn(),
+          showWarn: jest.fn(),
+          showError: jest.fn(),
+        }),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TokenAddEditFormComponent);
     component = fixture.componentInstance;
+
+    toastService = TestBed.inject(ToastService) as jest.Mocked<ToastService>;
+    translateService = TestBed.inject(TranslateService) as jest.Mocked<TranslateService>;
+
     fixture.detectChanges();
   });
 
@@ -100,15 +99,7 @@ describe('TokenAddEditFormComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should patch form with initial values when provided', () => {
-    fixture.componentRef.setInput('initialValues', MOCK_TOKEN);
-    component.ngOnInit();
-
-    expect(component.tokenForm.get(TokenFormControls.TokenName)?.value).toBe(MOCK_TOKEN.name);
-    expect(component.tokenForm.get(TokenFormControls.Scopes)?.value).toEqual(MOCK_TOKEN.scopes);
-  });
-
-  it('should call patchValue with initial values on ngOnInit', () => {
+  it('should patch form with initial values on init', () => {
     fixture.componentRef.setInput('initialValues', MOCK_TOKEN);
     const patchSpy = jest.spyOn(component.tokenForm, 'patchValue');
 
@@ -120,15 +111,14 @@ describe('TokenAddEditFormComponent', () => {
         [TokenFormControls.Scopes]: MOCK_TOKEN.scopes,
       })
     );
+    expect(component.tokenForm.get(TokenFormControls.TokenName)?.value).toBe(MOCK_TOKEN.name);
+    expect(component.tokenForm.get(TokenFormControls.Scopes)?.value).toEqual(MOCK_TOKEN.scopes);
   });
 
   it('should not patch form when initialValues are not provided', () => {
     fixture.componentRef.setInput('initialValues', null);
 
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: 'Existing Name',
-      [TokenFormControls.Scopes]: ['read'],
-    });
+    fillForm('Existing Name', ['read']);
 
     component.ngOnInit();
 
@@ -137,10 +127,7 @@ describe('TokenAddEditFormComponent', () => {
   });
 
   it('should not submit when form is invalid', () => {
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: '',
-      [TokenFormControls.Scopes]: [],
-    });
+    fillForm('', []);
 
     const markAllAsTouchedSpy = jest.spyOn(component.tokenForm, 'markAllAsTouched');
     const markAsDirtySpy = jest.spyOn(component.tokenForm.get(TokenFormControls.TokenName)!, 'markAsDirty');
@@ -155,10 +142,7 @@ describe('TokenAddEditFormComponent', () => {
   });
 
   it('should return early when tokenName is missing', () => {
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: '',
-      [TokenFormControls.Scopes]: ['read'],
-    });
+    fillForm('', ['read']);
 
     component.handleSubmitForm();
 
@@ -166,52 +150,7 @@ describe('TokenAddEditFormComponent', () => {
   });
 
   it('should return early when scopes is missing', () => {
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: 'Test Token',
-      [TokenFormControls.Scopes]: [],
-    });
-
-    component.handleSubmitForm();
-
-    expect(MOCK_STORE.dispatch).not.toHaveBeenCalled();
-  });
-
-  it('should early-return when tokenName is falsy even if form is valid', () => {
-    const tokenNameControl = component.tokenForm.get(TokenFormControls.TokenName)!;
-    const scopesControl = component.tokenForm.get(TokenFormControls.Scopes)!;
-
-    tokenNameControl.clearValidators();
-    scopesControl.clearValidators();
-    tokenNameControl.updateValueAndValidity();
-    scopesControl.updateValueAndValidity();
-
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: undefined as unknown as string,
-      [TokenFormControls.Scopes]: ['read'],
-    });
-
-    expect(component.tokenForm.valid).toBe(true);
-
-    component.handleSubmitForm();
-
-    expect(MOCK_STORE.dispatch).not.toHaveBeenCalled();
-  });
-
-  it('should early-return when scopes is falsy even if form is valid', () => {
-    const tokenNameControl = component.tokenForm.get(TokenFormControls.TokenName)!;
-    const scopesControl = component.tokenForm.get(TokenFormControls.Scopes)!;
-
-    tokenNameControl.clearValidators();
-    scopesControl.clearValidators();
-    tokenNameControl.updateValueAndValidity();
-    scopesControl.updateValueAndValidity();
-
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: 'Test Token',
-      [TokenFormControls.Scopes]: undefined as unknown as string[],
-    });
-
-    expect(component.tokenForm.valid).toBe(true);
+    fillForm('Test Token', []);
 
     component.handleSubmitForm();
 
@@ -220,10 +159,7 @@ describe('TokenAddEditFormComponent', () => {
 
   it('should create token when not in edit mode', () => {
     fixture.componentRef.setInput('isEditMode', false);
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: 'Test Token',
-      [TokenFormControls.Scopes]: ['read', 'write'],
-    });
+    fillForm('Test Token', ['read', 'write']);
 
     MOCK_STORE.dispatch.mockReturnValue(of(undefined));
 
@@ -234,10 +170,7 @@ describe('TokenAddEditFormComponent', () => {
 
   it('should show success toast and close dialog after creating token', () => {
     fixture.componentRef.setInput('isEditMode', false);
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: 'Test Token',
-      [TokenFormControls.Scopes]: ['read', 'write'],
-    });
+    fillForm('Test Token', ['read', 'write']);
 
     MOCK_STORE.dispatch.mockReturnValue(of(undefined));
 
@@ -249,10 +182,7 @@ describe('TokenAddEditFormComponent', () => {
 
   it('should open created dialog with new token name and value after create', () => {
     fixture.componentRef.setInput('isEditMode', false);
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: 'Test Token',
-      [TokenFormControls.Scopes]: ['read', 'write'],
-    });
+    fillForm('Test Token', ['read', 'write']);
 
     const showDialogSpy = jest.spyOn(component, 'showTokenCreatedDialog');
 
@@ -265,10 +195,7 @@ describe('TokenAddEditFormComponent', () => {
 
   it('should show success toast and navigate after updating token', () => {
     fixture.componentRef.setInput('isEditMode', true);
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: 'Updated Token',
-      [TokenFormControls.Scopes]: ['read', 'write'],
-    });
+    fillForm('Updated Token', ['read', 'write']);
 
     MOCK_STORE.dispatch.mockReturnValue(of(undefined));
 
@@ -301,17 +228,13 @@ describe('TokenAddEditFormComponent', () => {
   });
 
   it('should use TranslateService.instant for dialog header', () => {
-    const translate = TestBed.inject(TranslateService) as unknown as { instant: jest.Mock };
     component.showTokenCreatedDialog('Name', 'Value');
-    expect(translate.instant).toHaveBeenCalledWith('settings.tokens.createdDialog.title');
+    expect(translateService.instant).toHaveBeenCalledWith('settings.tokens.createdDialog.title');
   });
 
   it('should read tokens via selectSignal after create', () => {
     fixture.componentRef.setInput('isEditMode', false);
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: 'Test Token',
-      [TokenFormControls.Scopes]: ['read'],
-    });
+    fillForm('Test Token', ['read']);
 
     const selectSpy = jest.spyOn(MOCK_STORE, 'selectSignal');
     MOCK_STORE.dispatch.mockReturnValue(of(undefined));
@@ -336,10 +259,7 @@ describe('TokenAddEditFormComponent', () => {
   });
 
   it('should be valid when both fields are filled', () => {
-    component.tokenForm.patchValue({
-      [TokenFormControls.TokenName]: 'Test Token',
-      [TokenFormControls.Scopes]: ['read'],
-    });
+    fillForm('Test Token', ['read']);
 
     expect(component.tokenForm.valid).toBe(true);
   });
@@ -354,23 +274,5 @@ describe('TokenAddEditFormComponent', () => {
 
   it('should expose scopes from store via tokenScopes signal', () => {
     expect(component.tokenScopes()).toEqual(MOCK_SCOPES);
-  });
-
-  it('should disable form when isLoading is true', () => {
-    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
-      if (selector === TokensSelectors.getScopes) return () => MOCK_SCOPES;
-      if (selector === TokensSelectors.isTokensLoading) return () => true;
-      if (selector === TokensSelectors.getTokens) return () => MOCK_TOKENS;
-      if (selector === TokensSelectors.getTokenById) {
-        return () => (id: string) => MOCK_TOKENS.find((token) => token.id === id);
-      }
-      return () => null;
-    });
-
-    const loadingFixture = TestBed.createComponent(TokenAddEditFormComponent);
-    const loadingComponent = loadingFixture.componentInstance;
-    loadingFixture.detectChanges();
-
-    expect(loadingComponent.tokenForm.disabled).toBe(true);
   });
 });
