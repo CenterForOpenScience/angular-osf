@@ -10,6 +10,21 @@ export const AUTHENTICATED_MENU_ITEMS: string[] = [
   'settings',
 ];
 
+export const VIEW_ONLY_PROJECT_MENU_ITEMS: string[] = [
+  'project-overview',
+  'project-files',
+  'project-wiki',
+  'project-analytics',
+];
+
+export const VIEW_ONLY_REGISTRY_MENU_ITEMS: string[] = [
+  'registration-overview',
+  'registration-files',
+  'registration-wiki',
+  'registration-analytics',
+  'registration-components',
+];
+
 export const PROJECT_MENU_ITEMS: MenuItem[] = [
   {
     id: 'project-overview',
@@ -181,7 +196,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     id: 'my-resources',
-    label: 'navigation.myResources',
+    label: 'navigation.myOsf',
     icon: 'custom-icon-projects',
     routerLinkActiveOptions: { exact: true },
     visible: false,

@@ -9,7 +9,16 @@ import { TableModule } from 'primeng/table';
 
 import { debounceTime, distinctUntilChanged, filter, forkJoin, map, of, switchMap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, Signal, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
@@ -21,7 +30,7 @@ import {
   ContributorsListComponent,
 } from '@osf/shared/components/contributors';
 import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import { AddContributorType, ContributorPermission } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import {
   ContributorDialogAddModel,
@@ -35,6 +44,7 @@ import {
   AddContributor,
   ContributorsSelectors,
   CreateViewOnlyLink,
+  CurrentResourceSelectors,
   DeleteContributor,
   DeleteViewOnlyLink,
   FetchViewOnlyLinks,
@@ -48,6 +58,7 @@ import {
 } from '@osf/shared/stores';
 
 import { CreateViewLinkDialogComponent } from './components';
+import { ResourceInfoModel } from './models';
 
 @Component({
   selector: 'osf-contributors',
@@ -67,7 +78,7 @@ import { CreateViewLinkDialogComponent } from './components';
   providers: [DialogService],
 })
 export class ContributorsComponent implements OnInit {
-  protected searchControl = new FormControl<string>('');
+  searchControl = new FormControl<string>('');
 
   readonly destroyRef = inject(DestroyRef);
   readonly translateService = inject(TranslateService);
@@ -79,24 +90,25 @@ export class ContributorsComponent implements OnInit {
   private readonly resourceId = toSignal(
     this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
   );
-  readonly resourceType: Signal<ResourceType | undefined> = toSignal(
-    this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
-  );
+  readonly resourceType = toSignal(this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined));
 
-  protected viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
-  protected projectDetails = select(ViewOnlyLinkSelectors.getResourceDetails);
+  viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
+  resourceDetails = select(CurrentResourceSelectors.getResourceDetails);
 
-  protected readonly selectedPermission = signal<ContributorPermission | null>(null);
-  protected readonly selectedBibliography = signal<boolean | null>(null);
-  protected readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
-  protected readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
+  readonly selectedPermission = signal<ContributorPermission | null>(null);
+  readonly selectedBibliography = signal<boolean | null>(null);
+  readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
+  readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
 
-  protected initialContributors = select(ContributorsSelectors.getContributors);
-  protected contributors = signal([]);
-  protected readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  protected readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+  initialContributors = select(ContributorsSelectors.getContributors);
+  contributors = signal([]);
 
-  protected actions = createDispatchMap({
+  readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+
+  canCreateViewLink = computed(() => !!this.resourceDetails() && !!this.resourceId());
+
+  actions = createDispatchMap({
     getViewOnlyLinks: FetchViewOnlyLinks,
     getResourceDetails: GetResourceDetails,
     getContributors: GetAllContributors,
@@ -144,11 +156,11 @@ export class ContributorsComponent implements OnInit {
       .subscribe((res) => this.actions.updateSearchValue(res ?? null));
   }
 
-  protected onPermissionChange(value: ContributorPermission): void {
+  onPermissionChange(value: ContributorPermission): void {
     this.actions.updatePermissionFilter(value);
   }
 
-  protected onBibliographyChange(value: boolean): void {
+  onBibliographyChange(value: boolean): void {
     this.actions.updateBibliographyFilter(value);
   }
 
@@ -218,11 +230,10 @@ export class ContributorsComponent implements OnInit {
         if (res.type === AddContributorType.Registered) {
           this.openAddContributorDialog();
         } else {
-          const successMessage = this.translateService.instant('project.contributors.toastMessages.addSuccessMessage');
           const params = { name: res.data[0].fullName };
 
           this.actions.addContributor(this.resourceId(), this.resourceType(), res.data[0]).subscribe({
-            next: () => this.toastService.showSuccess(successMessage, params),
+            next: () => this.toastService.showSuccess('project.contributors.toastMessages.addSuccessMessage', params),
           });
         }
       });
@@ -249,20 +260,18 @@ export class ContributorsComponent implements OnInit {
   }
 
   createViewLink() {
-    const sharedComponents = [
-      {
-        id: this.projectDetails().id,
-        title: this.projectDetails().attributes.title,
-        category: 'project',
-      },
-    ];
+    const currentResource: ResourceInfoModel = {
+      id: this.resourceDetails().id,
+      title: this.resourceDetails().title,
+      type: this.resourceType(),
+    };
 
     this.dialogService
       .open(CreateViewLinkDialogComponent, {
         width: '448px',
         focusOnShow: false,
         header: this.translateService.instant('project.contributors.createLinkDialog.dialogTitle'),
-        data: { sharedComponents, projectId: this.resourceId() },
+        data: currentResource,
         closeOnEscape: true,
         modal: true,
         closable: true,
@@ -285,7 +294,7 @@ export class ContributorsComponent implements OnInit {
       onConfirm: () =>
         this.actions
           .deleteViewOnlyLink(this.resourceId(), this.resourceType(), link.id)
-          .subscribe(() => this.toastService.showSuccess('myProjects.settings.delete.success')),
+          .subscribe(() => this.toastService.showSuccess('myProjects.settings.viewOnlyLinkDeleted')),
     });
   }
 }

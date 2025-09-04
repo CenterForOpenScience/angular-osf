@@ -1,0 +1,140 @@
+@use "styles/variables" as var;
+
+// ------------------------- Custom scrollbar styles -------------------------
+
+.custom-scrollbar {
+  overflow: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--grey-3) var(--dark-blue-1);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--dark-blue-1);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--grey-3);
+  border-radius: 4px;
+  border: 2px solid var(--dark-blue-1);
+}
+
+// ------------------------- Highlight color -------------------------
+
+.highlight {
+  color: var.$pr-blue-1;
+}
+
+// ------------------------- Copy notification -------------------------
+
+.copy-notification {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  white-space: nowrap;
+  border-radius: 8px;
+  box-shadow: 0 0 4px 0 var(--grey-outline);
+  background: var.$white;
+
+  &.visible {
+    opacity: 1;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px 5px 0;
+    border-style: solid;
+    border-color: var.$grey-1 transparent transparent;
+  }
+}
+
+// ------------------------- Blue icon -------------------------
+.blue-icon {
+  color: var.$pr-blue-1;
+
+  &:hover {
+    color: var.$pr-blue-3;
+  }
+}
+
+// ------------------------- Text styles -------------------------
+
+.text-no-transform {
+  text-transform: none;
+}
+
+.overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ------------------------- Universal custom hover state -------------------------
+
+.custom-dark-hover:hover:not(:disabled) {
+  filter: contrast(2);
+}
+
+.custom-light-hover:hover:not(:disabled) {
+  filter: opacity(80%);
+}
+
+// ------------------------- Universal custom hover state -------------------------
+
+.grey-border-color {
+  border-color: var(--grey-2);
+}
+
+// ------------------------- Cursor not allowed -------------------------
+
+.cursor-not-allowed {
+  cursor: not-allowed;
+}
+
+// ------------------------- Object fit contain -------------------------
+.fit-contain {
+  object-fit: contain;
+}
+
+.token {
+  font-weight: 700;
+  color: var(--red-1);
+}
+
+// ------------------------- Moderation status -------------------------
+
+.pending,
+.pending-updates {
+  color: var(--yellow-1);
+}
+
+.accepted {
+  color: var(--green-1);
+}
+
+.rejected {
+  color: var(--red-1);
+}
+
+.withdrawn {
+  color: var(--dark-blue-1);
+}
+
+// ------------------------- Links -------------------------
+
+.dark-blue-link {
+  color: var(--dark-blue-1);
+}

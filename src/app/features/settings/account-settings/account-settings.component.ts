@@ -7,6 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, effect } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { GetEmails } from '@core/store/user-emails';
 import { UserSelectors } from '@osf/core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components';
 
@@ -20,7 +21,7 @@ import {
   ShareIndexingComponent,
   TwoFactorAuthComponent,
 } from './components';
-import { GetAccountSettings, GetEmails, GetExternalIdentities, GetRegions, GetUserInstitutions } from './store';
+import { GetAccountSettings, GetExternalIdentities, GetRegions, GetUserInstitutions } from './store';
 
 @Component({
   selector: 'osf-account-settings',

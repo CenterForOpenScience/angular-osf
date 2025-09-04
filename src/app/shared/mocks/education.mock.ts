@@ -17,8 +17,8 @@ export const MOCK_EDUCATION: Education[] = [
     degree: 'Master of Science',
     startMonth: 9,
     startYear: 2020,
-    endMonth: null,
-    endYear: null,
+    endMonth: 8,
+    endYear: 2025,
     ongoing: false,
   },
 ];

@@ -18,11 +18,13 @@
     </div>
 
     <div class="flex gap-3 ml-auto sm-round-padding-btn">
-      <p-button
-        severity="secondary"
-        [label]="'files.detail.actions.addCommunityMetadata' | translate"
-        [routerLink]="['/metadata']"
-      ></p-button>
+      @if (!isAnonymous()) {
+        <p-button
+          severity="secondary"
+          [label]="'files.detail.actions.addCommunityMetadata' | translate"
+          [routerLink]="['/', fileGuid, 'metadata', 'add']"
+        ></p-button>
+      }
 
       @if (file()?.links?.download) {
         <p-button severity="secondary" (click)="downloadFile(file()?.links?.download!)">
@@ -55,7 +57,7 @@
           </p-menu>
         </div>
       }
-      @if (file()) {
+      @if (file() && !isAnonymous()) {
         <p-button severity="danger" (click)="confirmDelete(file()!)">
           <i class="fas fa-trash p-1"></i>
         </p-button>
@@ -90,8 +92,24 @@
       } @else if (selectedTab === FileDetailTab.Keywords) {
         <osf-file-keywords class="metadata"></osf-file-keywords>
       } @else {
-        <osf-file-metadata class="metadata"></osf-file-metadata>
-        <osf-file-resource-metadata class="metadata" [resourceType]="resourceType"></osf-file-resource-metadata>
+        <div class="file-metadata-tabs">
+          <osf-metadata-tabs
+            [loading]="isLoading()"
+            [tabs]="tabs()"
+            [selectedTab]="selectedMetadataTab()"
+            [selectedCedarTemplate]="selectedCedarTemplate()!"
+            [selectedCedarRecord]="selectedCedarRecord()!"
+            [cedarFormReadonly]="cedarFormReadonly()"
+            (changeTab)="onMetadataTabChange($event)"
+            (formSubmit)="onCedarFormSubmit($event)"
+            (cedarFormEdit)="onCedarFormEdit()"
+          >
+            <div class="w-full flex flex-column gap-4 flex-1 -mt-4">
+              <osf-file-metadata class="metadata"></osf-file-metadata>
+              <osf-file-resource-metadata class="metadata" [resourceType]="resourceType"></osf-file-resource-metadata>
+            </div>
+          </osf-metadata-tabs>
+        </div>
       }
     </div>
   </div>

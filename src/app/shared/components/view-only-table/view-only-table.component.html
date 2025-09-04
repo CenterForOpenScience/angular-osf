@@ -5,6 +5,9 @@
         <th>
           {{ 'myProjects.settings.viewOnlyTable.linkName' | translate }}
         </th>
+
+        <th></th>
+
         <th>
           {{ 'myProjects.settings.viewOnlyTable.sharedComponents' | translate }}
         </th>
@@ -29,27 +32,32 @@
       @if (item.id) {
         <tr>
           <td>
-            <div class="flex align-items-center gap-2">
-              <span class="w-3 min-w-max">{{ item.name }}</span>
+            {{ item.name }}
+          </td>
+          <td>
+            <div class="relative flex align-items-center">
+              <input
+                [id]="item.link"
+                [attr.aria-label]="'Link for ' + item.link"
+                pInputText
+                class="h-auto text-base w-max py-2 pl-3 pr-5"
+                type="text"
+                [value]="item.link"
+              />
 
-              <div class="relative flex align-items-center">
-                <input
-                  [id]="item.link"
-                  [attr.aria-label]="'Link for ' + item.link"
-                  pInputText
-                  class="h-auto text-base w-max py-2 pl-3 pr-5"
-                  type="text"
-                  [value]="item.link"
-                />
-
-                <osf-copy-button class="icon-copy-btn absolute" [copyItem]="item.link"></osf-copy-button>
-              </div>
+              <osf-copy-button class="icon-copy-btn absolute" [copyItem]="item.link"></osf-copy-button>
             </div>
           </td>
-          <td>{{ item.sharedComponents }}</td>
+          <td>
+            <div class="flex flex-column gap-1">
+              @for (node of item.nodes; track node.id) {
+                <span>{{ node.title }}</span>
+              }
+            </div>
+          </td>
           <td>{{ item.dateCreated | date: 'MMM d, y h:mm a' }}</td>
           <td>{{ item.creator.fullName }}</td>
-          <td>{{ item.anonymous ? 'Yes' : 'No' }}</td>
+          <td>{{ (item.anonymous ? 'common.buttons.yes' : 'common.buttons.no') | translate }}</td>
           <td>
             <p-button
               class="danger-icon-btn"

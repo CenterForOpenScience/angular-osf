@@ -23,7 +23,6 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class MyResourcesService {
-  private apiUrl = environment.apiUrl;
   private sortFieldMap: Record<string, string> = {
     title: 'title',
     dateModified: 'date_modified',

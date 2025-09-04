@@ -4,6 +4,10 @@
   <osf-loading-spinner></osf-loading-spinner>
 } @else {
   <div class="flex flex-column bg-white gap-4 h-full flex-1 p-4 p-dialog-align-center">
+    @if (hasViewOnly()) {
+      <osf-view-only-link-message />
+    }
+
     <div class="flex flex-grow-0 w-full sm:w-30rem">
       <p-floatlabel class="w-full md:w-56" variant="in">
         <p-select
@@ -42,18 +46,20 @@
         </div>
       </div>
 
-      <div class="flex flex-column w-full gap-2 sm:flex-row md:w-max">
+      <div class="flex flex-column align-items-center w-full gap-2 sm:flex-row md:w-max">
         <p-button
           [disabled]="fileIsUploading() || isFilesLoading()"
           outlined
           raised
-          (click)="downloadFolder()"
+          (onClick)="downloadFolder()"
           [icon]="'fas fa-download'"
           [label]="'files.actions.downloadAsZip' | translate"
         >
         </p-button>
 
-        @if (!isViewOnly()) {
+        <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="showInfoDialog()"></p-button>
+
+        @if (!isViewOnly() && !hasViewOnly()) {
           <p-button
             [disabled]="fileIsUploading() || isFilesLoading()"
             outlined
@@ -61,7 +67,7 @@
             severity="success"
             [icon]="'fas fa-plus'"
             [label]="'files.actions.createFolder' | translate"
-            (click)="createFolder()"
+            (onClick)="createFolder()"
           >
           </p-button>
 
@@ -72,7 +78,7 @@
             severity="success"
             [icon]="'fas fa-upload'"
             [label]="'files.actions.uploadFile' | translate"
-            (click)="fileInput.click()"
+            (onClick)="fileInput.click()"
           >
           </p-button>
         }

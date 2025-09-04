@@ -34,6 +34,8 @@ export class MyProjectsTableComponent {
   sort = output<SortEvent>();
   itemClick = output<MyResourcesItem>();
 
+  skeletonData: MyResourcesItem[] = Array.from({ length: 10 }, () => ({}) as MyResourcesItem);
+
   protected onPageChange(event: TablePageEvent): void {
     this.pageChange.emit(event);
   }

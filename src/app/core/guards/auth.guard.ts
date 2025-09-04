@@ -6,6 +6,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 import { GetCurrentUser, UserSelectors } from '@osf/core/store/user';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 
 export const authGuard: CanActivateFn = () => {
   const store = inject(Store);
@@ -14,6 +15,10 @@ export const authGuard: CanActivateFn = () => {
   const isAuthenticated = store.selectSnapshot(UserSelectors.isAuthenticated);
 
   if (isAuthenticated) {
+    return true;
+  }
+
+  if (hasViewOnlyParam(router)) {
     return true;
   }
 

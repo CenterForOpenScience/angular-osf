@@ -1,30 +1,15 @@
 import { Selector } from '@ngxs/store';
 
-import { Institution } from '@shared/models';
+import { IdName, Institution } from '@shared/models';
 
-import { AccountEmail, AccountSettings, ExternalIdentity, Region } from '../models';
+import { AccountSettings, ExternalIdentity } from '../models';
 
 import { AccountSettingsStateModel } from './account-settings.model';
 import { AccountSettingsState } from './account-settings.state';
 
 export class AccountSettingsSelectors {
   @Selector([AccountSettingsState])
-  static getEmails(state: AccountSettingsStateModel): AccountEmail[] {
-    return state.emails.data;
-  }
-
-  @Selector([AccountSettingsState])
-  static isEmailsLoading(state: AccountSettingsStateModel): boolean {
-    return state.emails.isLoading;
-  }
-
-  @Selector([AccountSettingsState])
-  static isEmailsSubmitting(state: AccountSettingsStateModel): boolean | undefined {
-    return state.emails.isSubmitting;
-  }
-
-  @Selector([AccountSettingsState])
-  static getRegions(state: AccountSettingsStateModel): Region[] {
+  static getRegions(state: AccountSettingsStateModel): IdName[] {
     return state.regions;
   }
 

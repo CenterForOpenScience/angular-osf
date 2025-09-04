@@ -8,7 +8,7 @@ import { ComponentGetResponseJsonApi, ComponentOverview, JsonApiResponse } from 
 import { JsonApiService } from '@osf/shared/services';
 
 import { ProjectOverviewMapper } from '../mappers';
-import { ProjectOverview, ProjectOverviewResponseJsonApi } from '../models';
+import { ProjectOverviewResponseJsonApi, ProjectOverviewWithMeta } from '../models';
 
 import { environment } from 'src/environments/environment';
 
@@ -18,7 +18,7 @@ import { environment } from 'src/environments/environment';
 export class ProjectOverviewService {
   private readonly jsonApiService = inject(JsonApiService);
 
-  getProjectById(projectId: string): Observable<ProjectOverview> {
+  getProjectById(projectId: string): Observable<ProjectOverviewWithMeta> {
     const params: Record<string, unknown> = {
       'embed[]': [
         'bibliographic_contributors',
@@ -36,7 +36,12 @@ export class ProjectOverviewService {
 
     return this.jsonApiService
       .get<ProjectOverviewResponseJsonApi>(`${environment.apiUrl}/nodes/${projectId}/`, params)
-      .pipe(map((response) => ProjectOverviewMapper.fromGetProjectResponse(response.data)));
+      .pipe(
+        map((response) => ({
+          project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
+          meta: response.meta,
+        }))
+      );
   }
 
   updateProjectPublicStatus(projectId: string, isPublic: boolean): Observable<void> {

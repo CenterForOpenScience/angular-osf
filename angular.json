@@ -27,6 +27,7 @@
             "allowedCommonJsDependencies": [
               "qrcode",
               "cedar-embeddable-editor",
+              "cedar-artifact-viewer",
               "markdown-it-video",
               "ace-builds/src-noconflict/ext-language_tools"
             ],
@@ -43,7 +44,7 @@
               }
             ],
             "styles": [
-              "src/assets/styles/styles.scss",
+              "src/styles/styles.scss",
               "node_modules/primeflex/primeflex.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
               "node_modules/ngx-markdown-editor/assets/highlight.js/agate.min.css"
@@ -78,6 +79,17 @@
               "outputHashing": "none",
               "namedChunks": true
             },
+            "local": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.local.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -100,6 +112,10 @@
             },
             "development": {
               "buildTarget": "osf:build:development",
+              "hmr": false
+            },
+            "local": {
+              "buildTarget": "osf:build:local",
               "hmr": false
             }
           },

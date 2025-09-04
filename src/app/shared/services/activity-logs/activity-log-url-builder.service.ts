@@ -16,7 +16,7 @@ export class ActivityLogUrlBuilderService {
     const user = log.embeds?.user;
     const githubUser = log.params.githubUser;
 
-    if (user?.id) {
+    if (user?.id && !log.params.anonymousLink && !log.isAnonymous) {
       return this.buildAHrefElement(`/${user.id}`, user.fullName);
     } else if (user?.fullName) {
       return user.fullName;
@@ -32,7 +32,11 @@ export class ActivityLogUrlBuilderService {
       return '';
     }
 
-    return this.buildAHrefElement(`project/${log.params.paramsNode.id}`, log.params.paramsNode.title);
+    if (log.params.anonymousLink || log.isAnonymous) {
+      return log.params.paramsNode.title;
+    }
+
+    return this.buildAHrefElement(`/${log.params.paramsNode.id}`, log.params.paramsNode.title);
   }
 
   buildInstitutionUrl(log: ActivityLog): string {

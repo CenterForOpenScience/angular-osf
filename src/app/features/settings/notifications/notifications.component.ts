@@ -10,11 +10,11 @@ import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
-import { GetCurrentUserSettings, UpdateUserSettings, UserSelectors } from '@osf/core/store/user';
-import { SubHeaderComponent } from '@osf/shared/components';
+import { GetCurrentUserSettings, UpdateUserSettings, UserSelectors } from '@core/store/user';
+import { InfoIconComponent, SubHeaderComponent } from '@osf/shared/components';
+import { SubscriptionEvent, SubscriptionFrequency } from '@osf/shared/enums';
 import { UserSettings } from '@osf/shared/models';
 import { LoaderService, ToastService } from '@osf/shared/services';
-import { SubscriptionEvent, SubscriptionFrequency } from '@shared/enums';
 
 import { SUBSCRIPTION_EVENTS } from './constants';
 import { EmailPreferencesForm, EmailPreferencesFormControls } from './models';
@@ -26,7 +26,16 @@ import {
 
 @Component({
   selector: 'osf-notifications',
-  imports: [SubHeaderComponent, Checkbox, Button, TranslatePipe, ReactiveFormsModule, Skeleton, Select],
+  imports: [
+    Checkbox,
+    Button,
+    TranslatePipe,
+    ReactiveFormsModule,
+    Skeleton,
+    Select,
+    InfoIconComponent,
+    SubHeaderComponent,
+  ],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,23 +57,24 @@ export class NotificationsComponent implements OnInit {
   private emailPreferences = select(UserSelectors.getCurrentUserSettings);
   private notificationSubscriptions = select(NotificationSubscriptionSelectors.getAllGlobalNotificationSubscriptions);
 
-  protected isEmailPreferencesLoading = select(UserSelectors.isUserSettingsLoading);
-  protected isSubmittingEmailPreferences = select(UserSelectors.isUserSettingsSubmitting);
+  isEmailPreferencesLoading = select(UserSelectors.isUserSettingsLoading);
+  isSubmittingEmailPreferences = select(UserSelectors.isUserSettingsSubmitting);
 
-  protected isNotificationSubscriptionsLoading = select(NotificationSubscriptionSelectors.isLoading);
+  isNotificationSubscriptionsLoading = select(NotificationSubscriptionSelectors.isLoading);
 
-  protected EmailPreferencesFormControls = EmailPreferencesFormControls;
-  protected emailPreferencesForm: EmailPreferencesForm = new FormGroup({
+  EmailPreferencesFormControls = EmailPreferencesFormControls;
+  emailPreferencesForm: EmailPreferencesForm = new FormGroup({
     [EmailPreferencesFormControls.SubscribeOsfGeneralEmail]: this.fb.control(false, { nonNullable: true }),
     [EmailPreferencesFormControls.SubscribeOsfHelpEmail]: this.fb.control(false, { nonNullable: true }),
   });
 
-  protected readonly SUBSCRIPTION_EVENTS = SUBSCRIPTION_EVENTS;
-  protected subscriptionFrequencyOptions = Object.entries(SubscriptionFrequency).map(([key, value]) => ({
+  readonly SUBSCRIPTION_EVENTS = SUBSCRIPTION_EVENTS;
+  subscriptionFrequencyOptions = Object.entries(SubscriptionFrequency).map(([key, value]) => ({
     label: key,
     value,
   }));
-  protected notificationSubscriptionsForm = this.fb.group(
+
+  notificationSubscriptionsForm = this.fb.group(
     SUBSCRIPTION_EVENTS.reduce(
       (control, { event }) => {
         control[event] = this.fb.control<SubscriptionFrequency>(SubscriptionFrequency.Never, { nonNullable: true });
@@ -118,11 +128,9 @@ export class NotificationsComponent implements OnInit {
     const id = `${user.id}_${event}`;
 
     this.loaderService.show();
-    this.actions.updateNotificationSubscription({ id, frequency }).subscribe({
-      complete: () => {
-        this.loaderService.hide();
-        this.toastService.showSuccess('settings.notifications.notificationPreferences.successUpdate');
-      },
+    this.actions.updateNotificationSubscription({ id, frequency }).subscribe(() => {
+      this.loaderService.hide();
+      this.toastService.showSuccess('settings.notifications.notificationPreferences.successUpdate');
     });
   }
 
@@ -135,9 +143,11 @@ export class NotificationsComponent implements OnInit {
 
   private updateNotificationSubscriptionsForm() {
     const patch: Record<string, SubscriptionFrequency> = {};
+
     for (const sub of this.notificationSubscriptions()) {
       patch[sub.event] = sub.frequency;
     }
+
     this.notificationSubscriptionsForm.patchValue(patch);
   }
 }

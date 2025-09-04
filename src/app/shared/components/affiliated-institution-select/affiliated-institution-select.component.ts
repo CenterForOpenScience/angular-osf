@@ -48,7 +48,6 @@ export class AffiliatedInstitutionSelectComponent implements OnInit {
     });
 
     effect(() => {
-      const userInstitutions = this.userInstitutions();
       if (this.selectAllByDefault()) {
         untracked(() => {
           this.selectAll();

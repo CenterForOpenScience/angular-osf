@@ -28,6 +28,7 @@ import {
   MyResourcesSelectors,
   RemoveResourceFromBookmarks,
 } from '@osf/shared/stores';
+import { hasViewOnlyParam } from '@shared/helpers';
 
 import { SocialsShareActionItem } from '../../models';
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
@@ -58,11 +59,12 @@ export class OverviewToolbarComponent {
   private translateService = inject(TranslateService);
   private toastService = inject(ToastService);
   private socialShareService = inject(SocialShareService);
-  protected destroyRef = inject(DestroyRef);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  protected isPublic = signal(false);
-  protected isBookmarked = signal(false);
+
+  destroyRef = inject(DestroyRef);
+  isPublic = signal(false);
+  isBookmarked = signal(false);
 
   isCollectionsRoute = input<boolean>(false);
   isAdmin = input.required<boolean>();
@@ -71,16 +73,20 @@ export class OverviewToolbarComponent {
   projectDescription = input<string>('');
   showViewOnlyLinks = input<boolean>(true);
 
-  protected isBookmarksLoading = select(MyResourcesSelectors.getBookmarksLoading);
-  protected isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
-  protected bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
-  protected bookmarkedProjects = select(MyResourcesSelectors.getBookmarks);
-  protected socialsActionItems = computed(() => {
+  isBookmarksLoading = select(MyResourcesSelectors.getBookmarksLoading);
+  isBookmarksSubmitting = select(BookmarksSelectors.getBookmarksCollectionIdSubmitting);
+  bookmarksCollectionId = select(BookmarksSelectors.getBookmarksCollectionId);
+  bookmarkedProjects = select(MyResourcesSelectors.getBookmarks);
+  socialsActionItems = computed(() => {
     const shareableContent = this.createShareableContent();
     return shareableContent ? this.buildSocialActionItems(shareableContent) : [];
   });
 
-  protected readonly forkActionItems = [
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
+
+  readonly forkActionItems = [
     {
       label: 'project.overview.actions.forkProject',
       command: () => this.handleForkResource(),
@@ -96,7 +102,7 @@ export class OverviewToolbarComponent {
       },
     },
   ];
-  protected readonly ResourceType = ResourceType;
+  readonly ResourceType = ResourceType;
 
   get isRegistration(): boolean {
     return this.currentResource()?.resourceType === ResourceType.Registration;
@@ -134,7 +140,7 @@ export class OverviewToolbarComponent {
     });
   }
 
-  protected handleToggleProjectPublicity(): void {
+  handleToggleProjectPublicity(): void {
     const resource = this.currentResource();
     if (!resource) return;
 
@@ -162,7 +168,7 @@ export class OverviewToolbarComponent {
     });
   }
 
-  protected toggleBookmark(): void {
+  toggleBookmark(): void {
     const resource = this.currentResource();
     const bookmarksId = this.bookmarksCollectionId();
 

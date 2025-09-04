@@ -1,0 +1,69 @@
+@if (template()) {
+  <div class="cedar-template-form bg-white">
+    @if (readonly()) {
+      <div class="flex justify-content-between p-4">
+        @if (existingRecord()?.attributes?.is_published) {
+          <h3 class="text-lg">{{ 'project.metadata.addMetadata.publishedText' | translate }}</h3>
+        } @else {
+          <h3 class="text-lg text-red-500">{{ 'project.metadata.addMetadata.notPublishedText' | translate }}</h3>
+        }
+        <p-button
+          class="w-10rem flex-shrink-0 btn-full-width"
+          severity="secondary"
+          [label]="'Edit record'"
+          (onClick)="editModeEmit()"
+        >
+        </p-button>
+      </div>
+    }
+
+    <div class="cedar-editor-container">
+      @if (readonly()) {
+        <cedar-artifact-viewer
+          #cedarViewer
+          [config]="cedarViewerConfig"
+          [templateObject]="template().attributes.template"
+          [instanceObject]="formData()"
+        ></cedar-artifact-viewer>
+      } @else {
+        <cedar-embeddable-editor
+          #cedarEditor
+          [config]="cedarConfig"
+          [templateObject]="template().attributes.template"
+          [metadata]="formData()"
+          (change)="onCedarChange($event)"
+          (keyup)="onCedarChange($event)"
+        ></cedar-embeddable-editor>
+      }
+    </div>
+
+    @if (!readonly()) {
+      <div class="flex justify-content-between gap-3 px-4 pt-4 pb-8 sm:justify-content-end">
+        @if (existingRecord()) {
+          <p-button
+            class="w-10rem btn-full-width"
+            severity="secondary"
+            [label]="'common.buttons.cancel' | translate"
+            (onClick)="editModeEmit()"
+          >
+          </p-button>
+        } @else {
+          <p-button
+            class="w-10rem btn-full-width"
+            severity="secondary"
+            [label]="'project.metadata.addMetadata.changeTemplate' | translate"
+            (onClick)="changeTemplate.emit()"
+          >
+          </p-button>
+        }
+
+        <p-button
+          class="w-10rem btn-full-width"
+          [label]="'project.metadata.addMetadata.' + (isValid ? 'publish' : 'saveDraft') | translate"
+          (onClick)="onSubmit()"
+        >
+        </p-button>
+      </div>
+    }
+  </div>
+}

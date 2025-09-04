@@ -36,10 +36,12 @@ export class SettingsMapper {
       description: data.attributes.description,
       isPublic: data.attributes.public,
       region: {
-        id: data.embeds.region.data.id,
-        name: data.embeds.region.data.attributes.name,
+        id: data.embeds?.region.data.id,
+        name: data.embeds?.region.data.attributes.name,
       },
-      affiliatedInstitutions: InstitutionsMapper.fromInstitutionsResponse(data.embeds.affiliated_institutions),
+      affiliatedInstitutions: data.embeds
+        ? InstitutionsMapper.fromInstitutionsResponse(data.embeds.affiliated_institutions)
+        : [],
       lastFetched: Date.now(),
     };
   }

@@ -62,6 +62,7 @@ const DefaultState: WikiStateModel = {
     isLoading: false,
     error: null,
   },
+  isAnonymous: false,
 };
 
 @State<WikiStateModel>({
@@ -161,6 +162,7 @@ export class WikiState {
       wikiVersions: { ...DefaultState.wikiVersions },
       versionContent: { ...DefaultState.versionContent },
       compareVersionContent: { ...DefaultState.compareVersionContent },
+      isAnonymous: DefaultState.isAnonymous,
     });
   }
 
@@ -189,13 +191,14 @@ export class WikiState {
     });
 
     return this.wikiService.getWikiList(action.resourceType, action.resourceId).pipe(
-      tap((list) => {
+      tap((response) => {
         ctx.patchState({
           wikiList: {
-            data: [...list],
+            data: [...response.wikis],
             isLoading: false,
             error: null,
           },
+          isAnonymous: response.meta?.anonymous ?? false,
         });
       }),
       map((wiki) => wiki),

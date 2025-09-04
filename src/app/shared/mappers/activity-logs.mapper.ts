@@ -1,53 +1,67 @@
-import { ActivityLog, ActivityLogJsonApi, LogContributor, PaginatedData, ResponseJsonApi } from '@shared/models';
+import {
+  ActivityLog,
+  ActivityLogJsonApi,
+  JsonApiResponseWithMeta,
+  LogContributor,
+  MetaAnonymousJsonApi,
+  PaginatedData,
+} from '@shared/models';
 import { LogContributorJsonApi } from '@shared/models/activity-logs/activity-logs-json-api.model';
 
 export class ActivityLogsMapper {
-  static fromActivityLogJsonApi(log: ActivityLogJsonApi): ActivityLog {
+  static fromActivityLogJsonApi(log: ActivityLogJsonApi, isAnonymous?: boolean): ActivityLog {
+    const params = log.attributes.params ?? {};
+    const contributors = params.contributors ?? [];
     return {
       id: log.id,
       type: log.type,
       action: log.attributes.action,
       date: log.attributes.date,
       params: {
-        contributors: log.attributes.params.contributors.map((contributor) => this.fromContributorJsonApi(contributor)),
-        license: log.attributes.params.license,
-        tag: log.attributes.params.tag,
-        institution: log.attributes.params.institution,
-        paramsNode: {
-          id: log.attributes.params.params_node.id,
-          title: log.attributes.params.params_node.title,
-        },
-        paramsProject: log.attributes.params.params_project,
-        pointer: log.attributes.params.pointer
+        contributors: contributors.length
+          ? contributors.map((contributor) => this.fromContributorJsonApi(contributor))
+          : [],
+        license: params.license,
+        tag: params.tag,
+        institution: params.institution,
+        paramsNode: params.params_node
           ? {
-              category: log.attributes.params.pointer.category,
-              id: log.attributes.params.pointer.id,
-              title: log.attributes.params.pointer.title,
-              url: log.attributes.params.pointer.url,
+              id: params.params_node.id,
+              title: params.params_node.title,
+            }
+          : { id: '', title: '' },
+        paramsProject: params.params_project,
+        pointer: params.pointer
+          ? {
+              category: params.pointer.category,
+              id: params.pointer.id,
+              title: params.pointer.title,
+              url: params.pointer.url,
             }
           : null,
-        preprintProvider: log.attributes.params.preprint_provider,
-        addon: log.attributes.params.addon,
-        anonymousLink: log.attributes.params.anonymous_link,
-        file: log.attributes.params.file,
-        wiki: log.attributes.params.wiki,
-        destination: log.attributes.params.destination,
-        identifiers: log.attributes.params.identifiers,
-        kind: log.attributes.params.kind,
-        oldPage: log.attributes.params.old_page,
-        page: log.attributes.params.page,
-        pageId: log.attributes.params.page_id,
-        path: log.attributes.params.path,
-        urls: log.attributes.params.urls,
-        preprint: log.attributes.params.preprint,
-        source: log.attributes.params.source,
-        titleNew: log.attributes.params.title_new,
-        titleOriginal: log.attributes.params.title_original,
-        updatedFields: log.attributes.params.updated_fields,
-        value: log.attributes.params.value,
-        version: log.attributes.params.version,
-        githubUser: log.attributes.params.github_user,
+        preprintProvider: params.preprint_provider,
+        addon: params.addon,
+        anonymousLink: params.anonymous_link,
+        file: params.file,
+        wiki: params.wiki,
+        destination: params.destination,
+        identifiers: params.identifiers,
+        kind: params.kind,
+        oldPage: params.old_page,
+        page: params.page,
+        pageId: params.page_id,
+        path: params.path,
+        urls: params.urls,
+        preprint: params.preprint,
+        source: params.source,
+        titleNew: params.title_new,
+        titleOriginal: params.title_original,
+        updatedFields: params.updated_fields,
+        value: params.value,
+        version: params.version,
+        githubUser: params.github_user,
       },
+      isAnonymous,
       embeds: log.embeds
         ? {
             originalNode: log.embeds.original_node?.data
@@ -134,10 +148,14 @@ export class ActivityLogsMapper {
     };
   }
 
-  static fromGetActivityLogsResponse(logs: ResponseJsonApi<ActivityLogJsonApi[]>): PaginatedData<ActivityLog[]> {
+  static fromGetActivityLogsResponse(
+    logs: JsonApiResponseWithMeta<ActivityLogJsonApi[], MetaAnonymousJsonApi, null>
+  ): PaginatedData<ActivityLog[]> {
+    const isAnonymous = logs.meta.anonymous ?? false;
     return {
-      data: logs.data.map((log) => this.fromActivityLogJsonApi(log)),
+      data: logs.data.map((log) => this.fromActivityLogJsonApi(log, isAnonymous)),
       totalCount: logs.meta.total ?? 0,
+      isAnonymous,
     };
   }
 

@@ -1,4 +1,4 @@
-import { NumberOrNull, StringOrNull } from '@osf/shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers';
 
 export interface Meeting {
   id: string;
@@ -19,7 +19,7 @@ export interface MeetingSubmission {
   title: string;
   dateCreated: Date;
   authorName: string;
-  downloadCount: NumberOrNull;
+  downloadCount: number;
   meetingCategory: string;
   downloadLink: StringOrNull;
 }

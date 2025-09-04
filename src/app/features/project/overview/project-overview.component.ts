@@ -7,6 +7,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
+import { filter, map, Observable } from 'rxjs';
+
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -18,7 +20,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -28,14 +30,8 @@ import {
   CollectionsModerationSelectors,
   GetSubmissionsReviewActions,
 } from '@osf/features/moderation/store/collections-moderation';
-import {
-  LoadingSpinnerComponent,
-  MakeDecisionDialogComponent,
-  ResourceMetadataComponent,
-  SubHeaderComponent,
-} from '@osf/shared/components';
 import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
+import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
 import { ToastService } from '@osf/shared/services';
 import {
@@ -48,6 +44,14 @@ import {
   GetLinkedResources,
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
+import {
+  DataciteTrackerComponent,
+  LoadingSpinnerComponent,
+  MakeDecisionDialogComponent,
+  ResourceMetadataComponent,
+  SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
+} from '@shared/components';
 
 import {
   LinkedResourcesComponent,
@@ -84,11 +88,13 @@ import {
     TranslatePipe,
     Message,
     RouterLink,
+    ViewOnlyLinkMessageComponent,
+    ViewOnlyLinkMessageComponent,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectOverviewComponent implements OnInit {
+export class ProjectOverviewComponent extends DataciteTrackerComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -105,7 +111,6 @@ export class ProjectOverviewComponent implements OnInit {
   isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
-
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
@@ -140,7 +145,7 @@ export class ProjectOverviewComponent implements OnInit {
     return this.currentReviewAction()?.toState;
   });
 
-  protected showDecisionButton = computed(() => {
+  showDecisionButton = computed(() => {
     return (
       this.isCollectionsRoute() &&
       this.submissionReviewStatus() !== SubmissionReviewStatus.Removed &&
@@ -148,9 +153,16 @@ export class ProjectOverviewComponent implements OnInit {
     );
   });
 
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
-  protected userPermissions = computed(() => {
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+  private currentProject$ = toObservable(this.currentProject);
+
+  userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
+  });
+
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
   });
 
   get isAdmin(): boolean {
@@ -161,33 +173,43 @@ export class ProjectOverviewComponent implements OnInit {
     return this.userPermissions().includes(UserPermissions.Write);
   }
 
-  protected resourceOverview = computed(() => {
+  resourceOverview = computed(() => {
     const project = this.currentProject();
     if (project) {
-      return MapProjectOverview(project);
+      return MapProjectOverview(project, this.isAnonymous());
     }
     return null;
   });
 
-  protected isLoading = computed(() => {
+  isLoading = computed(() => {
     return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
   });
 
-  protected currentResource = computed(() => {
-    if (this.currentProject()) {
+  currentResource = computed(() => {
+    const project = this.currentProject();
+    if (project) {
       return {
-        id: this.currentProject()!.id,
-        isPublic: this.currentProject()!.isPublic,
-        storage: this.currentProject()!.storage,
-        viewOnlyLinksCount: this.currentProject()!.viewOnlyLinksCount,
-        forksCount: this.currentProject()!.forksCount,
+        id: project.id,
+        isPublic: project.isPublic,
+        storage: project.storage,
+        viewOnlyLinksCount: project.viewOnlyLinksCount,
+        forksCount: project.forksCount,
         resourceType: ResourceType.Project,
+        isAnonymous: this.isAnonymous(),
       };
     }
     return null;
   });
 
+  getDoi(): Observable<string | null> {
+    return this.currentProject$.pipe(
+      filter((project) => project != null),
+      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
+    );
+  }
+
   constructor() {
+    super();
     this.setupCollectionsEffects();
     this.setupCleanup();
   }
@@ -205,10 +227,11 @@ export class ProjectOverviewComponent implements OnInit {
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
+      this.setupDataciteViewTrackerEffect().subscribe();
     }
   }
 
-  protected handleOpenMakeDecisionDialog() {
+  handleOpenMakeDecisionDialog() {
     const dialogWidth = this.isMobile() ? '95vw' : '600px';
 
     this.dialogService
@@ -229,7 +252,7 @@ export class ProjectOverviewComponent implements OnInit {
       });
   }
 
-  protected goBack(): void {
+  goBack(): void {
     const currentStatus = this.route.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus } : {};
 

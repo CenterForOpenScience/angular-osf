@@ -1,4 +1,4 @@
-import { createDispatchMap, Store } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -15,9 +15,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { CopyButtonComponent, IconComponent } from '@osf/shared/components';
-import { IS_XSMALL } from '@osf/shared/helpers';
-import { CustomConfirmationService } from '@osf/shared/services';
+import { CopyButtonComponent, IconComponent, LoadingSpinnerComponent } from '@osf/shared/components';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 import { DeveloperAppAddEditFormComponent } from '../../components';
 import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, ResetClientSecret } from '../../store';
@@ -35,6 +34,7 @@ import { DeleteDeveloperApp, DeveloperAppsSelectors, GetDeveloperAppDetails, Res
     TranslatePipe,
     CopyButtonComponent,
     IconComponent,
+    LoadingSpinnerComponent,
   ],
   templateUrl: './developer-app-details.component.html',
   styleUrl: './developer-app-details.component.scss',
@@ -46,17 +46,17 @@ export class DeveloperAppDetailsComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store);
+  private readonly toastService = inject(ToastService);
   private readonly actions = createDispatchMap({
     getDeveloperAppDetails: GetDeveloperAppDetails,
     deleteDeveloperApp: DeleteDeveloperApp,
     resetClientSecret: ResetClientSecret,
   });
 
-  protected readonly isXSmall = toSignal(inject(IS_XSMALL));
-
-  protected readonly isClientSecretVisible = signal(false);
-  protected readonly clientSecret = computed<string>(() => this.developerApp()?.clientSecret ?? '');
-  protected readonly hiddenClientSecret = computed<string>(() => '*'.repeat(this.clientSecret().length));
+  readonly isClientSecretVisible = signal(false);
+  readonly clientSecret = computed<string>(() => this.developerApp()?.clientSecret ?? '');
+  readonly hiddenClientSecret = computed<string>(() => '*'.repeat(this.clientSecret().length));
+  readonly isLoading = select(DeveloperAppsSelectors.isLoading);
 
   readonly clientId = toSignal(
     this.activatedRoute.params.pipe(
@@ -86,10 +86,9 @@ export class DeveloperAppDetailsComponent {
       headerParams: { name: this.developerApp()?.name },
       messageKey: 'settings.developerApps.confirmation.delete.message',
       onConfirm: () => {
-        this.actions.deleteDeveloperApp(this.clientId()).subscribe({
-          complete: () => {
-            this.router.navigate(['settings/developer-apps']);
-          },
+        this.actions.deleteDeveloperApp(this.clientId()).subscribe(() => {
+          this.router.navigate(['settings/developer-apps']);
+          this.toastService.showSuccess('settings.developerApps.confirmation.delete.success');
         });
       },
     });
@@ -101,7 +100,10 @@ export class DeveloperAppDetailsComponent {
       headerParams: { name: this.developerApp()?.name },
       messageKey: 'settings.developerApps.confirmation.resetSecret.message',
       acceptLabelKey: 'settings.developerApps.details.clientSecret.reset',
-      onConfirm: () => this.actions.resetClientSecret(this.clientId()),
+      onConfirm: () =>
+        this.actions
+          .resetClientSecret(this.clientId())
+          .subscribe(() => this.toastService.showSuccess('settings.developerApps.confirmation.resetSecret.success')),
     });
   }
 }

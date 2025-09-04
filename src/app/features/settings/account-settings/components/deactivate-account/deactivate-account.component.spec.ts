@@ -12,11 +12,11 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
-import { AccountSettingsService } from '@osf/features/settings/account-settings/services';
-import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store';
-import { MOCK_STORE } from '@shared/mocks';
-import { ToastService } from '@shared/services';
+import { MOCK_STORE } from '@osf/shared/mocks';
+import { ToastService } from '@osf/shared/services';
 
+import { AccountSettingsService } from '../../services';
+import { AccountSettingsSelectors } from '../../store';
 import { CancelDeactivationComponent } from '../cancel-deactivation/cancel-deactivation.component';
 import { DeactivationWarningComponent } from '../deactivation-warning/deactivation-warning.component';
 

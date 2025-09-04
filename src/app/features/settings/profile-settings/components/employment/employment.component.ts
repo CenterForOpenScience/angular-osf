@@ -14,7 +14,7 @@ import {
   inject,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { UpdateProfileSettingsEmployment, UserSelectors } from '@osf/core/store/user';
 import { CustomValidators } from '@osf/shared/helpers';
@@ -97,7 +97,7 @@ export class EmploymentComponent {
     this.loaderService.show();
 
     this.actions
-      .updateProfileSettingsEmployment({ employment: formattedEmployment })
+      .updateProfileSettingsEmployment(formattedEmployment)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -137,16 +137,19 @@ export class EmploymentComponent {
   }
 
   private createEmploymentFormGroup(employment?: Partial<EmploymentForm>): FormGroup {
+    const isOngoing = employment?.ongoing ?? false;
+    const endDateValidators = isOngoing ? [] : [Validators.required];
+
     return this.fb.group(
       {
         title: [employment?.title ?? '', CustomValidators.requiredTrimmed()],
-        institution: [employment?.institution ?? ''],
+        institution: [employment?.institution ?? '', CustomValidators.requiredTrimmed()],
         department: [employment?.department ?? ''],
-        startDate: [employment?.startDate ?? null],
-        endDate: [employment?.endDate ?? null],
+        startDate: [employment?.startDate ?? null, Validators.required],
+        endDate: [employment?.endDate ?? null, endDateValidators],
         ongoing: [employment?.ongoing ?? false],
       },
-      { validators: CustomValidators.dateRangeValidator }
+      { validators: CustomValidators.monthYearRangeValidator }
     );
   }
 

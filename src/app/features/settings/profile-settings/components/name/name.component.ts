@@ -72,13 +72,11 @@ export class NameComponent {
     this.loaderService.show();
     this.actions
       .updateProfileSettingsUser({
-        user: {
-          fullName,
-          givenName,
-          middleNames,
-          familyName,
-          suffix,
-        },
+        fullName,
+        givenName,
+        middleNames,
+        familyName,
+        suffix,
       })
       .subscribe(() => {
         this.loaderService.hide();

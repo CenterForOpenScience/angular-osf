@@ -52,9 +52,16 @@
             [dateFormat]="dateFormat"
             [iconDisplay]="'input'"
             [showIcon]="true"
+            view="month"
             [maxDate]="maxDate"
             [minDate]="minDate"
           ></p-datepicker>
+
+          @if (startDateRequiredError) {
+            <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+              {{ 'validation.required' | translate }}
+            </p-message>
+          }
         </div>
 
         @if (!group().controls['ongoing'].value) {
@@ -68,10 +75,17 @@
               formControlName="endDate"
               [dateFormat]="dateFormat"
               [iconDisplay]="'input'"
+              view="month"
               [showIcon]="true"
               [maxDate]="maxDate"
               [minDate]="minDate"
             ></p-datepicker>
+
+            @if (endDateRequiredError) {
+              <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
+                {{ 'validation.required' | translate }}
+              </p-message>
+            }
           </div>
         }
       </div>
@@ -91,7 +105,7 @@
     </div>
 
     @if (isDateError) {
-      <p-message class="simple-variant flex" severity="error" variant="simple" size="small">
+      <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
         {{ 'settings.profileSettings.endDateError' | translate }}
       </p-message>
     }

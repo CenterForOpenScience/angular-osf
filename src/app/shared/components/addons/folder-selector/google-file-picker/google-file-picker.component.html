@@ -1,17 +1,13 @@
-<section class="flex flex-column gap-4">Hello World again</section>
-
-<!-- <div {{did-insert this.registerComponent}} 
-local-class='google-file-picker-container {{if this.isMobile 'mobile'}} {{if this.isFolderPicker 'file-picker'}}'
->
-    {{#if this.isFolderPicker}}
-        <div local-class='action-container'>
-            <button class='btn btn-primary btn-medium' local-class='authorize-button {{if this.visible 'visible'}}' type='button' id='authorize_button' 
-            disabled={{this.isGFPDisabled}}
-                {{on 'click' (action this.createPicker)}}
-            >
-                {{t 'addons.configure.google-file-picker.select-root-folder'}}
-            </button>
-        </div>
-    {{/if}}
-    <script async defer src='https://apis.google.com/js/api.js' onload='window.GoogleFilePickerWidget.gapiLoaded()'></script>
-</div> -->
+<section class="google-file-picker-container" [class.file-picker]="this.isFolderPicker()">
+  @if (this.isFolderPicker()) {
+    <div local-class="action-container">
+      <p-button
+        [label]="'settings.addons.configureAddon.google-file-picker.select-root-folder' | translate"
+        class="authorize-button"
+        [class.visible]="visible()"
+        [disabled]="isGFPDisabled()"
+        (click)="createPicker()"
+      ></p-button>
+    </div>
+  }
+</section>

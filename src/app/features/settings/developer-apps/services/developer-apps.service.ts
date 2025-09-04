@@ -14,8 +14,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class DeveloperApplicationsService {
-  jsonApiService = inject(JsonApiService);
-  baseUrl = `${environment.apiUrl}/applications/`;
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly baseUrl = `${environment.apiUrl}/applications/`;
 
   getApplications(): Observable<DeveloperApp[]> {
     return this.jsonApiService
@@ -25,7 +25,7 @@ export class DeveloperApplicationsService {
 
   getApplicationDetails(clientId: string): Observable<DeveloperApp> {
     return this.jsonApiService
-      .get<JsonApiResponse<DeveloperAppGetResponseJsonApi, null>>(`${this.baseUrl}/${clientId}/`)
+      .get<JsonApiResponse<DeveloperAppGetResponseJsonApi, null>>(`${this.baseUrl}${clientId}/`)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response.data)));
   }
 
@@ -41,7 +41,7 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toUpdateRequest(developerAppUpdate);
 
     return this.jsonApiService
-      .patch<DeveloperAppGetResponseJsonApi>(`${this.baseUrl}/${clientId}/`, request)
+      .patch<DeveloperAppGetResponseJsonApi>(`${this.baseUrl}${clientId}/`, request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response)));
   }
 
@@ -49,11 +49,11 @@ export class DeveloperApplicationsService {
     const request = DeveloperAppMapper.toResetSecretRequest(clientId);
 
     return this.jsonApiService
-      .patch<DeveloperAppGetResponseJsonApi>(`${this.baseUrl}/${clientId}/`, request)
+      .patch<DeveloperAppGetResponseJsonApi>(`${this.baseUrl}${clientId}/`, request)
       .pipe(map((response) => DeveloperAppMapper.fromGetResponse(response)));
   }
 
   deleteApplication(clientId: string): Observable<void> {
-    return this.jsonApiService.delete(`${this.baseUrl}/${clientId}/`);
+    return this.jsonApiService.delete(`${this.baseUrl}${clientId}/`);
   }
 }

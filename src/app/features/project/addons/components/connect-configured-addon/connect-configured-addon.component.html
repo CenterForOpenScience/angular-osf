@@ -114,7 +114,8 @@
           <section class="flex flex-column gap-5">
             <h2 class="pt-2">{{ 'settings.addons.connectAddon.configure' | translate }} {{ addon()?.displayName }}</h2>
             <osf-folder-selector
-              [isGoogleFilePicker]="false"
+              [isGoogleFilePicker]="isGoogleDrive()"
+              [accountId]="chosenAccountId()"
               [accountName]="chosenAccountName()"
               [operationInvocationResult]="operationInvocation()?.operationResult || []"
               [accountNameControl]="accountNameControl"

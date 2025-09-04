@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { JsonApiService } from '@osf/shared/services';
-import { JsonApiResponse } from '@shared/models';
+import { JsonApiResponse, WikisWithMeta } from '@shared/models';
 
 import { ResourceType } from '../enums';
 import { WikiMapper } from '../mappers/wiki';
@@ -15,7 +15,7 @@ import {
   HomeWikiJsonApiResponse,
   Wiki,
   WikiGetResponse,
-  WikiJsonApiResponse,
+  WikiJsonApiResponseWithMeta,
   WikiVersion,
   WikiVersionJsonApiResponse,
 } from '../models';
@@ -90,11 +90,14 @@ export class WikiService {
     );
   }
 
-  getWikiList(resourceType: ResourceType, resourceId: string): Observable<Wiki[]> {
+  getWikiList(resourceType: ResourceType, resourceId: string): Observable<WikisWithMeta> {
     const baseUrl = this.getBaseUrl(resourceType, resourceId);
-    return this.jsonApiService
-      .get<WikiJsonApiResponse>(baseUrl)
-      .pipe(map((response) => response.data.map((wiki) => WikiMapper.fromGetWikiResponse(wiki))));
+    return this.jsonApiService.get<WikiJsonApiResponseWithMeta>(baseUrl).pipe(
+      map((response) => ({
+        wikis: response.data.map((wiki) => WikiMapper.fromGetWikiResponse(wiki)),
+        meta: response.meta,
+      }))
+    );
   }
 
   getComponentsWikiList(resourceType: ResourceType, resourceId: string): Observable<ComponentWiki[]> {

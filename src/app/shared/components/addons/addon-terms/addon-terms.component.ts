@@ -7,7 +7,7 @@ import { Component, computed, input } from '@angular/core';
 
 import { isCitationAddon } from '@osf/shared/helpers';
 import { ADDON_TERMS as addonTerms } from '@shared/constants';
-import { AddonModel, AddonTerm, AuthorizedAddon } from '@shared/models';
+import { AddonModel, AddonTerm, AuthorizedAccountModel } from '@shared/models';
 
 @Component({
   selector: 'osf-addon-terms',
@@ -16,7 +16,7 @@ import { AddonModel, AddonTerm, AuthorizedAddon } from '@shared/models';
   styleUrls: ['./addon-terms.component.scss'],
 })
 export class AddonTermsComponent {
-  addon = input<AddonModel | AuthorizedAddon | null>(null);
+  addon = input<AddonModel | AuthorizedAccountModel | null>(null);
   protected terms = computed(() => {
     const addon = this.addon();
     if (!addon) {
@@ -25,7 +25,7 @@ export class AddonTermsComponent {
     return this.getAddonTerms(addon);
   });
 
-  private getAddonTerms(addon: AddonModel | AuthorizedAddon): AddonTerm[] {
+  private getAddonTerms(addon: AddonModel | AuthorizedAccountModel): AddonTerm[] {
     const supportedFeatures = addon.supportedFeatures;
     const provider = addon.providerName;
     const isCitationService = isCitationAddon(addon);

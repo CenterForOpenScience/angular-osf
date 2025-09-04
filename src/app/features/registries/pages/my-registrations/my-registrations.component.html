@@ -1,4 +1,4 @@
-<section class="flex flex-column flex-1 xl:mt-6">
+<section class="flex flex-column flex-1 h-full xl:mt-6">
   <div class="flex flex-column align-items-start">
     <osf-sub-header
       [title]="'navigation.registriesSubRoutes.myRegistrations' | translate"
@@ -32,7 +32,7 @@
         <p-tabpanel [value]="RegistrationTab.Drafts" class="flex flex-column gap-4 flex-1">
           @if (isDraftRegistrationsLoading()) {
             @for (item of skeletons; track $index) {
-              <p-skeleton width="100%" height="1.5rem" borderRadius="0" />
+              <p-skeleton width="100%" height="21.5rem" borderRadius="0.5rem" />
             }
           } @else {
             @if (draftRegistrationsTotalCount() === 0) {
@@ -58,7 +58,7 @@
         <p-tabpanel [value]="RegistrationTab.Submitted" class="flex flex-column gap-4 flex-1">
           @if (isSubmittedRegistrationsLoading()) {
             @for (item of skeletons; track $index) {
-              <p-skeleton width="100%" height="2rem" />
+              <p-skeleton width="100%" height="21.5rem" borderRadius="0.5rem" />
             }
           } @else {
             @if (submittedRegistrationsTotalCount() === 0) {
@@ -91,8 +91,7 @@
     <p-button
       class="mt-3"
       [label]="'registries.addRegistration' | translate"
-      [routerLink]="[`../${provider}/new`]"
-      routerLinkActive="router-link-active"
+      [routerLink]="['/registries', provider, 'new']"
     >
     </p-button>
   </div>

@@ -18,6 +18,7 @@ import { AuthService } from '@osf/core/services';
 import { UserSelectors } from '@osf/core/store/user';
 import { IconComponent } from '@osf/shared/components';
 import { CurrentResourceType } from '@osf/shared/enums';
+import { getViewOnlyParam } from '@osf/shared/helpers';
 import { WrapFnPipe } from '@osf/shared/pipes';
 import { CurrentResourceSelectors } from '@osf/shared/stores';
 
@@ -54,6 +55,7 @@ export class NavMenuComponent {
       preprintReviewsPageVisible: this.canUserViewReviews(),
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
+      isViewOnly: !!getViewOnlyParam(this.router),
     };
 
     const items = updateMenuItems(filtered, routeContext);

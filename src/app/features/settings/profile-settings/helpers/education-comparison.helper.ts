@@ -9,7 +9,7 @@ export function mapFormToEducation(education: EducationForm): Education {
     department: education.department,
     degree: education.degree,
     startYear: education.startDate?.getFullYear() ?? null,
-    startMonth: education.startDate?.getMonth() ?? null,
+    startMonth: education.startDate?.getMonth() + 1,
     endYear: education.ongoing ? null : (education.endDate?.getFullYear() ?? null),
     endMonth: education.ongoing ? null : education.endDate ? education.endDate.getMonth() + 1 : null,
     ongoing: education.ongoing,

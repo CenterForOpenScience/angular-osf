@@ -12,11 +12,6 @@ export class TokensSelectors {
   }
 
   @Selector([TokensState])
-  static isScopesLoading(state: TokensStateModel) {
-    return state.scopes.isLoading;
-  }
-
-  @Selector([TokensState])
   static getTokens(state: TokensStateModel): TokenModel[] {
     return state.tokens.data;
   }

@@ -76,7 +76,7 @@ export class ConfigureAddonComponent implements OnInit {
    * Signal representing the currently selected `Addon` from the list of available storage addons.
    * This value updates reactively as the selection changes.
    */
-  public storageAddon = signal<AddonModel | undefined>(undefined);
+  public storageAddon = signal<AddonModel | null>(null);
   /**
    * Signal representing the currently selected and configured storage addon model.
    * This may be `null` if no addon has been configured.
@@ -128,9 +128,7 @@ export class ConfigureAddonComponent implements OnInit {
 
     if (addon) {
       this.storageAddon.set(
-        this.store.selectSnapshot((state) =>
-          AddonsSelectors.getStorageAddon(state.addons, addon.externalStorageServiceId || '')
-        )
+        this.store.selectSnapshot(AddonsSelectors.getStorageAddon(addon.externalStorageServiceId || ''))
       );
 
       this.addon.set(addon);

@@ -78,11 +78,11 @@ export class CustomStepComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
 
-  protected readonly pages = select(RegistriesSelectors.getPagesSchema);
-  protected readonly FieldType = FieldType;
-  protected stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  readonly pages = select(RegistriesSelectors.getPagesSchema);
+  readonly FieldType = FieldType;
+  readonly stepsValidation = select(RegistriesSelectors.getStepsValidation);
 
-  protected actions = createDispatchMap({
+  readonly actions = createDispatchMap({
     updateStepValidation: UpdateStepValidation,
     setUpdatedFields: SetUpdatedFields,
   });
@@ -192,7 +192,7 @@ export class CustomStepComponent implements OnDestroy {
         [questionKey]: [
           ...this.attachedFiles[questionKey].map((f) => {
             if (f.file_id) {
-              const { name, ...payload } = f;
+              const { name: _, ...payload } = f;
               return payload;
             }
             return FilesMapper.toFilePayload(f as OsfFile);
@@ -213,7 +213,7 @@ export class CustomStepComponent implements OnDestroy {
         [questionKey]: [
           ...this.attachedFiles[questionKey].map((f) => {
             if (f.file_id) {
-              const { name, ...payload } = f;
+              const { name: _, ...payload } = f;
               return payload;
             }
             return FilesMapper.toFilePayload(f as OsfFile);
