@@ -7,6 +7,9 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/constants/environment.token';
+import { StorageItemModel } from '@osf/shared/models';
+import { GoogleFileDataModel } from '@osf/shared/models/files/google-file.data.model';
+import { GoogleFilePickerModel } from '@osf/shared/models/files/google-file.picker.model';
 import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@osf/shared/stores';
 
 import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
@@ -25,18 +28,11 @@ export class GoogleFilePickerComponent implements OnInit {
   readonly #environment = inject(ENVIRONMENT);
 
   public isFolderPicker = input.required<boolean>();
-  public selectedFolderName = input<string>('');
-  public rootFolderId = input<string>('');
+  public rootFolder = input<StorageItemModel | null>(null);
   public accountId = input<string>('');
+  public handleFolderSelection = input.required<(folder: StorageItemModel) => void>();
 
-  //   selectFolder?: (a: Partial<Item>) => void;
-  //   onRegisterChild?: (a: GoogleFilePickerWidget) => void;
-  //   manager: StorageManager;
-  //     @tracked openGoogleFilePicker = false;
-  private folderName = signal<string>('');
-  selectFolder = undefined;
-  accessToken = signal<string | null>(null);
-
+  public accessToken = signal<string | null>(null);
   public visible = signal(false);
   public isGFPDisabled = signal(true);
   private readonly apiKey = this.#environment.google.GOOGLE_FILE_PICKER_API_KEY;
@@ -47,20 +43,17 @@ export class GoogleFilePickerComponent implements OnInit {
   private title!: string;
 
   ngOnInit(): void {
-    //         window.GoogleFilePickerWidget = this;
-    // this.selectFolder = this.selectFolder();
-    this.parentId = this.isFolderPicker() ? '' : this.rootFolderId();
+    this.parentId = this.isFolderPicker() ? '' : this.rootFolder()?.itemId || '';
     this.title = this.isFolderPicker()
       ? this.#translateService.instant('settings.addons.configureAddon.google-file-picker.root-folder-title')
       : this.#translateService.instant('settings.addons.configureAddon.google-file-picker.file-folder-title');
     this.isMultipleSelect = !this.isFolderPicker();
-    this.folderName.set(this.selectedFolderName());
 
     this.#googlePicker.loadScript().subscribe({
       next: () => {
         this.#googlePicker.loadGapiModules().subscribe({
           next: () => {
-            this.initializePicker();
+            this.#initializePicker();
             this.#loadOauthToken();
           },
           // TODO add this error when the Sentry service is working
@@ -72,13 +65,13 @@ export class GoogleFilePickerComponent implements OnInit {
     });
   }
 
-  public initializePicker() {
+  #initializePicker() {
     if (this.isFolderPicker()) {
       this.visible.set(true);
     }
   }
 
-  createPicker(): void {
+  public createPicker(): void {
     const google = window.google;
 
     const googlePickerView = new google.picker.DocsView(google.picker.ViewId.DOCS);
@@ -118,62 +111,18 @@ export class GoogleFilePickerComponent implements OnInit {
     }
   }
 
-  //     /**
-  //     * Displays the file details of the user's selection.
-  //     * @param {object} data - Containers the user selection from the picker
-  //     */
-  // eslint-disable-next-line
-  async pickerCallback(data: any) {
-    //     async pickerCallback(data: any) {
-    //         if (data.action === window.google.picker.Action.PICKED) {
-    //             this.filePickerCallback(data.docs[0]);
-    //         }
-    //     }
-    console.log('data');
+  #filePickerCallback(data: GoogleFileDataModel) {
+    this.handleFolderSelection()(
+      Object({
+        itemName: data.name,
+        itemId: data.id,
+      })
+    );
+  }
+
+  pickerCallback(data: GoogleFilePickerModel) {
+    if (data.action === window.google.picker.Action.PICKED) {
+      this.#filePickerCallback(data.docs[0]);
+    }
   }
 }
-
-//     /**
-//      * filePickerCallback
-//      *
-//      * @description
-//      * Action triggered when a file is selected via an external picker.
-//      * Logs the file data and notifies the parent system by calling `selectFolder`.
-//      *
-//      * @param file - The file object selected (format determined by external API)
-//      */
-//     @action
-//     filePickerCallback(data: any) {
-//         if (this.selectFolder !== undefined) {
-//             this.folderName = data.name;
-//             this.selectFolder({
-//                 itemName: data.name,
-//                 itemId: data.id,
-//             });
-//         } else {
-//             this.args.manager.reload();
-//         }
-//     }
-
-//     @action
-//     registerComponent() {
-//         if (this.args.onRegisterChild) {
-//             this.args.onRegisterChild(this); // Pass the child's instance to the parent
-//         }
-//     }
-
-//     willDestroy() {
-//         super.willDestroy();
-//         this.pickerInited = false;
-//     }
-
-//     /**
-//     * Displays the file details of the user's selection.
-//     * @param {object} data - Containers the user selection from the picker
-//     */
-//     async pickerCallback(data: any) {
-//         if (data.action === window.google.picker.Action.PICKED) {
-//             this.filePickerCallback(data.docs[0]);
-//         }
-//     }
-// }

@@ -29,7 +29,7 @@ export * from './meta-tags';
 export * from './metadata-field.model';
 export * from './metadata-tabs.model';
 export * from './my-resources';
-export * from './nodes/nodes-json-api.model';
+export * from './nodes';
 export * from './notifications';
 export * from './paginated-data.model';
 export * from './pagination-links.model';

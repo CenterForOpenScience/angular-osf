@@ -38,15 +38,15 @@
           <p-checkbox
             variant="filled"
             binary="true"
-            [class.pl-4]="!isCurrentProject(item)"
+            [class.pl-4]="!item.isCurrentResource"
             [ngModel]="selectedComponents()[item.id]"
             (ngModelChange)="onCheckboxToggle(item.id, $event)"
-            [disabled]="isCurrentProject(item)"
+            [disabled]="item.isCurrentResource"
           >
           </p-checkbox>
           <p>
             {{ item.title }}
-            @if (isCurrentProject(item)) {
+            @if (item.isCurrentResource) {
               <span>
                 {{ 'myProjects.settings.viewOnlyLinkCurrentProject' | translate }}
               </span>
@@ -86,7 +86,7 @@
       class="w-full"
       styleClass="w-full"
       (onClick)="addLink()"
-      [disabled]="!isFormValid"
+      [disabled]="linkName.invalid"
       [label]="'project.contributors.addDialog.next' | translate"
     ></p-button>
   </div>

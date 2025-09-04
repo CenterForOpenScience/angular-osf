@@ -27,7 +27,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { OperationNames } from '@osf/features/project/addons/enums';
-import { OperationInvokeData, StorageItem } from '@shared/models';
+import { OperationInvokeData, StorageItemModel } from '@shared/models';
 import { AddonsSelectors } from '@shared/stores/addons';
 
 import { GoogleFilePickerComponent } from './google-file-picker/google-file-picker.component';
@@ -56,7 +56,8 @@ export class FolderSelectorComponent implements OnInit {
 
   isGoogleFilePicker = input.required<boolean>();
   accountName = input.required<string>();
-  operationInvocationResult = input.required<StorageItem[]>();
+  accountId = input.required<string>();
+  operationInvocationResult = input.required<StorageItemModel[]>();
   accountNameControl = input(new FormControl());
   isCreateMode = input(false);
 
@@ -67,7 +68,7 @@ export class FolderSelectorComponent implements OnInit {
   protected readonly OperationNames = OperationNames;
   protected hasInputChanged = signal(false);
   protected hasFolderChanged = signal(false);
-  protected selectedRootFolder = signal<StorageItem | null>(null);
+  public selectedRootFolder = signal<StorageItemModel | null>(null);
   protected breadcrumbItems = signal<MenuItem[]>([]);
   protected initiallySelectedFolder = select(AddonsSelectors.getSelectedFolder);
   protected isOperationInvocationSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
@@ -126,10 +127,10 @@ export class FolderSelectorComponent implements OnInit {
     this.cancelSelection.emit();
   }
 
-  protected handleFolderSelection(folder: StorageItem): void {
+  public handleFolderSelection = (folder: StorageItemModel): void => {
     this.selectedRootFolder.set(folder);
     this.hasFolderChanged.set(folder?.itemId !== this.initiallySelectedFolder()?.itemId);
-  }
+  };
 
   private updateBreadcrumbs(
     operationName: OperationNames,

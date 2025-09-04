@@ -10,7 +10,7 @@ import { AddonsComponent } from './addons.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('AddonsComponent', () => {
+describe('Component: Addons', () => {
   let component: AddonsComponent;
   let fixture: ComponentFixture<AddonsComponent>;
 
@@ -31,10 +31,6 @@ describe('AddonsComponent', () => {
     fixture = TestBed.createComponent(AddonsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 
   it('should render the connected description paragraph', () => {

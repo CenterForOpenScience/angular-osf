@@ -9,6 +9,7 @@ export * from './files/files.mapper';
 export * from './filters';
 export * from './institutions';
 export * from './licenses.mapper';
+export * from './nodes';
 export * from './notification-subscription.mapper';
 export * from './registry';
 export * from './resource-card';

@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers';
 import { ResourceGuidService } from '@osf/shared/services';
 
-import { GetResource } from './current-resource.actions';
+import { GetResource, GetResourceChildren, GetResourceDetails } from './current-resource.actions';
 import { CURRENT_RESOURCE_DEFAULTS, CurrentResourceStateModel } from './current-resource.model';
 
 @State<CurrentResourceStateModel>({
@@ -16,7 +16,7 @@ import { CURRENT_RESOURCE_DEFAULTS, CurrentResourceStateModel } from './current-
 })
 @Injectable()
 export class CurrentResourceState {
-  private resourceTypeService = inject(ResourceGuidService);
+  private resourceService = inject(ResourceGuidService);
 
   @Action(GetResource)
   getResourceType(ctx: StateContext<CurrentResourceStateModel>, action: GetResource) {
@@ -34,7 +34,7 @@ export class CurrentResourceState {
       },
     });
 
-    return this.resourceTypeService.getResourceById(action.resourceId).pipe(
+    return this.resourceService.getResourceById(action.resourceId).pipe(
       tap((resourceType) => {
         ctx.patchState({
           currentResource: {
@@ -45,6 +45,62 @@ export class CurrentResourceState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'currentResource', error))
+    );
+  }
+
+  @Action(GetResourceDetails)
+  getResourceDetails(ctx: StateContext<CurrentResourceStateModel>, action: GetResourceDetails) {
+    const state = ctx.getState();
+
+    if (state.resourceDetails.data?.id === action.resourceId) {
+      return;
+    }
+
+    ctx.patchState({
+      resourceDetails: {
+        ...state.resourceDetails,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.resourceService.getResourceDetails(action.resourceId, action.resourceType).pipe(
+      tap((details) => {
+        ctx.patchState({
+          resourceDetails: {
+            data: details,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'resourceDetails', error))
+    );
+  }
+
+  @Action(GetResourceChildren)
+  getResourceChildren(ctx: StateContext<CurrentResourceStateModel>, action: GetResourceChildren) {
+    const state = ctx.getState();
+
+    ctx.patchState({
+      resourceChildren: {
+        ...state.resourceChildren,
+        isLoading: true,
+        error: null,
+      },
+    });
+
+    return this.resourceService.getResourceChildren(action.resourceId, action.resourceType).pipe(
+      tap((children) => {
+        ctx.patchState({
+          resourceChildren: {
+            data: children,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'resourceChildren', error))
     );
   }
 }
