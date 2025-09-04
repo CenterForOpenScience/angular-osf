@@ -18,6 +18,8 @@ export class SubjectsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly apiUrl = environment.apiUrl;
 
+  defaultProvider = environment.defaultProvider;
+
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],
@@ -27,18 +29,13 @@ export class SubjectsService {
 
   getSubjects(
     resourceType: ResourceType,
-    resourceId?: string,
-    search?: string,
-    isMetadataRegistry = false
+    providerId = this.defaultProvider,
+    search?: string
   ): Observable<SubjectModel[]> {
-    let baseUrl =
+    const baseUrl =
       resourceType === ResourceType.Project
         ? `${this.apiUrl}/subjects/`
-        : `${this.apiUrl}/providers/${this.urlMap.get(resourceType)}/${resourceId}/subjects/`;
-
-    if (isMetadataRegistry) {
-      baseUrl = baseUrl.replace('/providers', '');
-    }
+        : `${this.apiUrl}/providers/${this.urlMap.get(resourceType)}/${providerId}/subjects/`;
 
     const params: Record<string, string> = {
       'page[size]': '100',

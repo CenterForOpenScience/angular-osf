@@ -126,7 +126,13 @@ describe('Service: Addons', () => {
       expect(request.request.method).toBe('PATCH');
       expect(request.request.body).toEqual(
         Object({
-          serializeOauthToken: true,
+          data: Object({
+            attributes: Object({
+              serialize_oauth_token: 'true',
+            }),
+            id: 'account-id',
+            type: 'authorized-storage-accounts',
+          }),
         })
       );
       request.flush(getAddonsAuthorizedStorageData(0));

@@ -20,14 +20,14 @@ export class FilesHandlers {
 
     return this.filesService.getFolders(action.folderLink).pipe(
       tap({
-        next: (folders) =>
+        next: (response) =>
           ctx.patchState({
             rootFolders: {
-              data: folders,
+              data: response.files,
               isLoading: false,
               error: null,
             },
-            currentFolder: folders.length > 0 ? folders[0] : null,
+            currentFolder: response.files.length > 0 ? response.files[0] : null,
           }),
       }),
       catchError((error) => handleSectionError(ctx, 'rootFolders', error))

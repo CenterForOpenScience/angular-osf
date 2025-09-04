@@ -22,4 +22,5 @@ export interface WikiStateModel {
   wikiVersions: AsyncStateModel<WikiVersion[]>;
   versionContent: AsyncStateModel<string>;
   compareVersionContent: AsyncStateModel<string>;
+  isAnonymous: boolean;
 }

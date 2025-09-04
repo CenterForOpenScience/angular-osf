@@ -7,6 +7,7 @@ export interface ProjectOverviewStateModel {
   project: AsyncStateModel<ProjectOverview | null>;
   components: AsyncStateModel<ComponentOverview[]>;
   componentsTree: AsyncStateModel<Project[]>;
+  isAnonymous: boolean;
 }
 
 export const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
@@ -28,4 +29,5 @@ export const PROJECT_OVERVIEW_DEFAULTS: ProjectOverviewStateModel = {
     isSubmitting: false,
     error: null,
   },
+  isAnonymous: false,
 };

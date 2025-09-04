@@ -7,7 +7,6 @@ import { JsonApiService } from '@shared/services';
 
 import { ResourceType } from '../enums';
 import { ViewOnlyLinksMapper } from '../mappers';
-import { NodeResponseModel } from '../models';
 import {
   PaginatedViewOnlyLinksModel,
   ViewOnlyLinkJsonApi,
@@ -27,14 +26,9 @@ export class ViewOnlyLinksService {
     [ResourceType.Registration, 'registrations'],
   ]);
 
-  getResourceById(resourceId: string, resourceType: ResourceType): Observable<NodeResponseModel> {
-    const resourcePath = this.urlMap.get(resourceType);
-    return this.jsonApiService.get(`${environment.apiUrl}/${resourcePath}/${resourceId}`);
-  }
-
   getViewOnlyLinksData(projectId: string, resourceType: ResourceType): Observable<PaginatedViewOnlyLinksModel> {
     const resourcePath = this.urlMap.get(resourceType);
-    const params: Record<string, unknown> = { embed: 'creator' };
+    const params: Record<string, unknown> = { 'embed[]': ['creator', 'nodes'] };
 
     return this.jsonApiService
       .get<ViewOnlyLinksResponseJsonApi>(`${environment.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, params)
@@ -48,7 +42,7 @@ export class ViewOnlyLinksService {
   ): Observable<PaginatedViewOnlyLinksModel> {
     const resourcePath = this.urlMap.get(resourceType);
     const data = { data: { ...payload } };
-    const params: Record<string, unknown> = { embed: 'creator' };
+    const params: Record<string, unknown> = { 'embed[]': ['creator', 'nodes'] };
 
     return this.jsonApiService
       .post<

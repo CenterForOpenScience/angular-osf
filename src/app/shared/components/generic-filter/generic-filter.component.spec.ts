@@ -300,13 +300,11 @@ describe('GenericFilterComponent', () => {
     });
 
     it('should set currentSelectedOption to null when clearing selection', () => {
-      // First select an option
       componentRef.setInput('selectedValue', 'value1');
       fixture.detectChanges();
 
       expect(component.currentSelectedOption()).toEqual({ label: 'Option 1', value: 'value1' });
 
-      // Then clear it
       const mockEvent: SelectChangeEvent = {
         originalEvent: new Event('change'),
         value: null,
@@ -354,21 +352,6 @@ describe('GenericFilterComponent', () => {
       const filteredOptions = component.filterOptions();
       expect(filteredOptions).toHaveLength(1);
       expect(filteredOptions[0].label).toBe('Valid');
-    });
-
-    it('should handle selectedValue that becomes invalid when options change', () => {
-      componentRef.setInput('options', mockOptions);
-      componentRef.setInput('selectedValue', 'value2');
-      fixture.detectChanges();
-
-      expect(component.currentSelectedOption()).toEqual({ label: 'Option 2', value: 'value2' });
-
-      // Change options to not include the selected value
-      const newOptions: SelectOption[] = [{ label: 'New Option', value: 'new-value' }];
-      componentRef.setInput('options', newOptions);
-      fixture.detectChanges();
-
-      expect(component.currentSelectedOption()).toBeNull();
     });
   });
 

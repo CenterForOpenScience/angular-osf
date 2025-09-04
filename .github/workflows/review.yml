@@ -3,9 +3,7 @@ name: Require at least one approval
 
 on:
   pull_request:
-    types: [opened, reopened, ready_for_review, synchronize]
-  pull_request_review:
-    types: [submitted, edited, dismissed]
+    types: [opened, reopened, ready_for_review, synchronize, edited]
 
 jobs:
   check-approval:

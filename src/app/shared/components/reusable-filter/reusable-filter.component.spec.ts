@@ -51,7 +51,6 @@ describe('ReusableFilterComponent', () => {
       label: 'Access Service',
       type: 'select',
       operator: 'eq',
-      // No options - should not be visible
     },
   ];
 
@@ -146,7 +145,6 @@ describe('ReusableFilterComponent', () => {
 
     it('should display visible filters in accordion panels', () => {
       const panels = fixture.debugElement.queryAll(By.css('p-accordion-panel'));
-      // Should show subject, resourceType, and creator (accessService has no options)
       expect(panels.length).toBe(3);
     });
 
@@ -222,7 +220,6 @@ describe('ReusableFilterComponent', () => {
       componentRef.setInput('filters', mockFilters);
       const visible = component.visibleFilters();
 
-      // Should exclude accessService (no options)
       expect(visible.length).toBe(3);
       expect(visible.map((f) => f.key)).toEqual(['subject', 'resourceType', 'creator']);
     });
@@ -245,7 +242,6 @@ describe('ReusableFilterComponent', () => {
     it('should emit loadFilterOptions when accordion is toggled and filter needs options', () => {
       spyOn(component.loadFilterOptions, 'emit');
 
-      // Mock a filter that has hasOptions but no options loaded
       const filterNeedingOptions: DiscoverableFilter = {
         key: 'creator',
         label: 'Creator',
@@ -288,7 +284,6 @@ describe('ReusableFilterComponent', () => {
 
       component.onAccordionToggle(['subject', 'other']);
 
-      // Should use first element of array
       expect(component['expandedFilters']().has('subject')).toBe(true);
     });
 
@@ -406,7 +401,6 @@ describe('ReusableFilterComponent', () => {
       const genericFilters = fixture.debugElement.queryAll(By.css('osf-generic-filter'));
       expect(genericFilters.length).toBeGreaterThan(0);
 
-      // Check if generic filter receives correct inputs
       const subjectFilter = genericFilters.find((gf) => gf.componentInstance.filterType === 'subject');
 
       if (subjectFilter) {

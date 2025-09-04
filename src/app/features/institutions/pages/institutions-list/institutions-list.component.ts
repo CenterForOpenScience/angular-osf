@@ -26,11 +26,11 @@ import {
   LoadingSpinnerComponent,
   SearchInputComponent,
   SubHeaderComponent,
-} from '@shared/components';
-import { TABLE_PARAMS } from '@shared/constants';
-import { parseQueryFilterParams } from '@shared/helpers';
-import { QueryParams } from '@shared/models';
-import { FetchInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
+} from '@osf/shared/components';
+import { TABLE_PARAMS } from '@osf/shared/constants';
+import { parseQueryFilterParams } from '@osf/shared/helpers';
+import { QueryParams } from '@osf/shared/models';
+import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
 @Component({
   selector: 'osf-institutions-list',

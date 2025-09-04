@@ -26,18 +26,17 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { GetRootFolders } from '@osf/features/files/store';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
 import {
-  LoadingSpinnerComponent,
-  MakeDecisionDialogComponent,
-  ResourceMetadataComponent,
-  SubHeaderComponent,
-} from '@shared/components';
-import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
-import { Mode, ResourceType, UserPermissions } from '@shared/enums';
-import { MapProjectOverview } from '@shared/mappers/resource-overview.mappers';
-import { ToastService } from '@shared/services';
+  ClearCollectionModeration,
+  CollectionsModerationSelectors,
+  GetSubmissionsReviewActions,
+} from '@osf/features/moderation/store/collections-moderation';
+import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
+import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
+import { MapProjectOverview } from '@osf/shared/mappers';
+import { ToastService } from '@osf/shared/services';
 import {
+  ClearCollections,
   ClearWiki,
   CollectionsSelectors,
   GetBookmarksCollectionId,
@@ -45,15 +44,16 @@ import {
   GetConfiguredStorageAddons,
   GetHomeWiki,
   GetLinkedResources,
-} from '@shared/stores';
-import { GetActivityLogs } from '@shared/stores/activity-logs';
-import { ClearCollections } from '@shared/stores/collections';
-
+} from '@osf/shared/stores';
+import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
-  ClearCollectionModeration,
-  CollectionsModerationSelectors,
-  GetSubmissionsReviewActions,
-} from '../../moderation/store/collections-moderation';
+  DataciteTrackerComponent,
+  LoadingSpinnerComponent,
+  MakeDecisionDialogComponent,
+  ResourceMetadataComponent,
+  SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
+} from '@shared/components';
 
 import {
   FilesWidgetComponent,
@@ -93,6 +93,8 @@ import {
     Message,
     RouterLink,
     FilesWidgetComponent,
+    ViewOnlyLinkMessageComponent,
+    ViewOnlyLinkMessageComponent,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -164,8 +166,14 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
 
   currentProject = select(ProjectOverviewSelectors.getProject);
   private currentProject$ = toObservable(this.currentProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+
   userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
+  });
+
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
   });
 
   get isAdmin(): boolean {
@@ -179,7 +187,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   resourceOverview = computed(() => {
     const project = this.currentProject();
     if (project) {
-      return MapProjectOverview(project);
+      return MapProjectOverview(project, this.isAnonymous());
     }
     return null;
   });
@@ -189,14 +197,16 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   });
 
   currentResource = computed(() => {
-    if (this.currentProject()) {
+    const project = this.currentProject();
+    if (project) {
       return {
-        id: this.currentProject()!.id,
-        isPublic: this.currentProject()!.isPublic,
-        storage: this.currentProject()!.storage,
-        viewOnlyLinksCount: this.currentProject()!.viewOnlyLinksCount,
-        forksCount: this.currentProject()!.forksCount,
+        id: project.id,
+        isPublic: project.isPublic,
+        storage: project.storage,
+        viewOnlyLinksCount: project.viewOnlyLinksCount,
+        forksCount: project.forksCount,
         resourceType: ResourceType.Project,
+        isAnonymous: this.isAnonymous(),
       };
     }
     return null;

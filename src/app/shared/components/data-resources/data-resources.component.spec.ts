@@ -39,7 +39,7 @@ describe('DataResourcesComponent', () => {
 
   it('should have default values', () => {
     expect(component.vertical()).toBe(false);
-    expect(component.resourceId()).toBeUndefined();
+    expect(component.absoluteUrl()).toBeUndefined();
     expect(component.hasData()).toBeUndefined();
     expect(component.hasAnalyticCode()).toBeUndefined();
     expect(component.hasMaterials()).toBeUndefined();
@@ -54,12 +54,12 @@ describe('DataResourcesComponent', () => {
     expect(component.vertical()).toBe(true);
   });
 
-  it('should accept resourceId input', () => {
+  it('should accept absoluteUrl input', () => {
     const testId = 'test-id-1';
-    fixture.componentRef.setInput('resourceId', testId);
+    fixture.componentRef.setInput('absoluteUrl', testId);
     fixture.detectChanges();
 
-    expect(component.resourceId()).toBe(testId);
+    expect(component.absoluteUrl()).toBe(testId);
   });
 
   it('should accept hasData input', () => {
@@ -97,57 +97,57 @@ describe('DataResourcesComponent', () => {
     expect(component.hasSupplements()).toBe(true);
   });
 
-  it('should return correct link with resourceId', () => {
+  it('should return correct link with absoluteUrl', () => {
     const testId = 'test-resource-id1';
-    fixture.componentRef.setInput('resourceId', testId);
+    fixture.componentRef.setInput('absoluteUrl', testId);
     fixture.detectChanges();
 
-    const result = component.resourceLink;
+    const result = component.resourceUrl();
 
-    expect(result).toBe('/test-resource-id1/resources');
+    expect(result).toBe('test-resource-id1/resources');
   });
 
-  it('should return correct link with numeric resourceId', () => {
+  it('should return correct link with numeric absoluteUrl', () => {
     const testId = '12345';
-    fixture.componentRef.setInput('resourceId', testId);
+    fixture.componentRef.setInput('absoluteUrl', testId);
     fixture.detectChanges();
 
-    const result = component.resourceLink;
+    const result = component.resourceUrl();
 
-    expect(result).toBe('/12345/resources');
+    expect(result).toBe('12345/resources');
   });
 
-  it('should return correct link with empty resourceId', () => {
-    fixture.componentRef.setInput('resourceId', '');
+  it('should return correct link with empty absoluteUrl', () => {
+    fixture.componentRef.setInput('absoluteUrl', '');
     fixture.detectChanges();
 
-    const result = component.resourceLink;
+    const result = component.resourceUrl();
 
-    expect(result).toBe('//resources');
+    expect(result).toBe('/resources');
   });
 
-  it('should return correct link with undefined resourceId', () => {
-    fixture.componentRef.setInput('resourceId', undefined);
+  it('should return correct link with undefined absoluteUrl', () => {
+    fixture.componentRef.setInput('absoluteUrl', undefined);
     fixture.detectChanges();
 
-    const result = component.resourceLink;
+    const result = component.resourceUrl();
 
-    expect(result).toBe('/undefined/resources');
+    expect(result).toBe('undefined/resources');
   });
 
   it('should handle input updates', () => {
-    fixture.componentRef.setInput('resourceId', 'initial-id');
+    fixture.componentRef.setInput('absoluteUrl', 'initial-id');
     fixture.componentRef.setInput('hasData', false);
     fixture.detectChanges();
 
-    expect(component.resourceId()).toBe('initial-id');
+    expect(component.absoluteUrl()).toBe('initial-id');
     expect(component.hasData()).toBe(false);
 
-    fixture.componentRef.setInput('resourceId', 'updated-id');
+    fixture.componentRef.setInput('absoluteUrl', 'updated-id');
     fixture.componentRef.setInput('hasData', true);
     fixture.detectChanges();
 
-    expect(component.resourceId()).toBe('updated-id');
+    expect(component.absoluteUrl()).toBe('updated-id');
     expect(component.hasData()).toBe(true);
   });
 });

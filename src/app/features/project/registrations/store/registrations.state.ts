@@ -9,18 +9,11 @@ import { handleSectionError } from '@osf/shared/helpers';
 import { RegistrationsService } from '../services';
 
 import { GetRegistrations } from './registrations.actions';
-import { RegistrationsStateModel } from './registrations.model';
+import { REGISTRATIONS_STATE_DEFAULTS, RegistrationsStateModel } from './registrations.model';
 
 @State<RegistrationsStateModel>({
   name: 'registrations',
-  defaults: {
-    registrations: {
-      data: [],
-      isLoading: false,
-      error: null,
-      totalCount: 0,
-    },
-  },
+  defaults: REGISTRATIONS_STATE_DEFAULTS,
 })
 @Injectable()
 export class RegistrationsState {
@@ -36,9 +29,7 @@ export class RegistrationsState {
 
     return this.registrationsService.getRegistrations(action.projectId).pipe(
       tap((registrations) => {
-        const state = ctx.getState();
         ctx.setState({
-          ...state,
           registrations: {
             data: registrations.data,
             isLoading: false,

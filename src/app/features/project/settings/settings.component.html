@@ -17,6 +17,7 @@
       ></osf-settings-storage-location-card>
 
       <osf-settings-view-only-links-card
+        id="view-only-links"
         [tableData]="viewOnlyLinks()"
         [isLoading]="isViewOnlyLinksLoading()"
         (deleteTableItem)="deleteLinkItem($event)"

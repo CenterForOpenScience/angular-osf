@@ -1,3 +1,5 @@
+import { StorageItemModel } from './strorage-item.model';
+
 export interface StorageItemResponseJsonApi {
   item_id?: string;
   item_name?: string;
@@ -55,14 +57,6 @@ export interface OperationInvocationResponseJsonApi {
   };
 }
 
-export interface StorageItem {
-  itemId?: string;
-  itemName?: string;
-  itemType?: string;
-  canBeRoot?: boolean;
-  mayContainRootCandidates?: boolean;
-}
-
 export interface OperationInvocation {
   id: string;
   type: string;
@@ -72,6 +66,6 @@ export interface OperationInvocation {
     itemId?: string;
     itemType?: string;
   };
-  operationResult: StorageItem[];
+  operationResult: StorageItemModel[];
   itemCount: number;
 }

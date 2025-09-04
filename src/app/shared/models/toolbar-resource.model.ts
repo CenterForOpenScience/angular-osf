@@ -12,4 +12,5 @@ export interface ToolbarResource {
   viewOnlyLinksCount: number;
   forksCount: number;
   resourceType: ResourceType;
+  isAnonymous: boolean;
 }

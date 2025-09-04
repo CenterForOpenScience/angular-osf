@@ -13,9 +13,15 @@
   </p-buttongroup>
 </osf-sub-header>
 
+@if (hasViewOnly()) {
+  <div class="bg-white w-full px-5 pt-5 pb-1">
+    <osf-view-only-link-message />
+  </div>
+}
+
 <section class="flex flex-column lg:flex-row bg-white flex-1 h-full p-5 gap-4 w-full overflow-auto wiki-page">
   <osf-wiki-list
-    [viewOnly]="true"
+    [viewOnly]="hasViewOnly()"
     [list]="wikiList()"
     [resourceId]="resourceId"
     [isLoading]="isWikiListLoading()"

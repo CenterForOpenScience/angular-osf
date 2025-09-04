@@ -53,4 +53,9 @@ export class ProjectOverviewSelectors {
   static getUpdatePublicStatusSubmitting(state: ProjectOverviewStateModel) {
     return state.project.isSubmitting;
   }
+
+  @Selector([ProjectOverviewState])
+  static isProjectAnonymous(state: ProjectOverviewStateModel) {
+    return state.isAnonymous;
+  }
 }

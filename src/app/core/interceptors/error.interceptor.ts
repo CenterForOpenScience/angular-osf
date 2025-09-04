@@ -5,6 +5,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { LoaderService, ToastService } from '@osf/shared/services';
 
 import { ERROR_MESSAGES } from '../constants';
@@ -31,7 +32,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (error.status === 401) {
-        authService.logout();
+        if (!hasViewOnlyParam(router)) {
+          authService.logout();
+        }
         return throwError(() => error);
       }
 

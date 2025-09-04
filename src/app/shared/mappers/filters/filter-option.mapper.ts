@@ -1,7 +1,4 @@
-import { ApiData } from '@osf/shared/models';
-import { FilterOptionAttributes, SelectOption } from '@shared/models';
-
-export type FilterOptionItem = ApiData<FilterOptionAttributes, null, null, null>;
+import { FilterOptionItem, SelectOption } from '@shared/models';
 
 export function mapFilterOption(item: FilterOptionItem): SelectOption {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

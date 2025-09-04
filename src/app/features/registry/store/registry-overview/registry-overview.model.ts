@@ -9,6 +9,7 @@ export interface RegistryOverviewStateModel {
   institutions: AsyncStateModel<Institution[] | null>;
   schemaBlocks: AsyncStateModel<PageSchema[] | null>;
   moderationActions: AsyncStateModel<ReviewAction[]>;
+  isAnonymous: boolean;
 }
 
 export const REGISTRY_OVERVIEW_DEFAULTS: RegistryOverviewStateModel = {
@@ -38,4 +39,5 @@ export const REGISTRY_OVERVIEW_DEFAULTS: RegistryOverviewStateModel = {
     isSubmitting: false,
     error: null,
   },
+  isAnonymous: false,
 };

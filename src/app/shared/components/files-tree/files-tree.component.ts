@@ -30,6 +30,7 @@ import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { FileMenuType } from '@osf/shared/enums';
 import { CustomPaginatorComponent, FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
 import { StopPropagationDirective } from '@shared/directives';
+import { hasViewOnlyParam } from '@shared/helpers';
 import { FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
@@ -74,6 +75,9 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   viewOnlyDownloadable = input<boolean>(false);
   provider = input<string>();
   isDragOver = signal(false);
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router) || this.viewOnly();
+  });
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
@@ -105,20 +109,27 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   });
 
   ngAfterViewInit(): void {
-    this.dropZoneContainerRef()!.nativeElement.addEventListener('dragenter', this.dragEnterHandler);
+    if (!this.viewOnly()) {
+      this.dropZoneContainerRef()!.nativeElement.addEventListener('dragenter', this.dragEnterHandler);
+    }
   }
 
   ngOnDestroy(): void {
-    this.dropZoneContainerRef()!.nativeElement.removeEventListener('dragenter', this.dragEnterHandler);
+    if (!this.viewOnly()) {
+      this.dropZoneContainerRef()!.nativeElement.removeEventListener('dragenter', this.dragEnterHandler);
+    }
   }
 
   private dragEnterHandler = (event: DragEvent) => {
-    if (event.dataTransfer?.types?.includes('Files')) {
+    if (event.dataTransfer?.types?.includes('Files') && !this.viewOnly()) {
       this.isDragOver.set(true);
     }
   };
 
   onDragOver(event: DragEvent) {
+    if (this.viewOnly()) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     event.dataTransfer!.dropEffect = 'copy';
@@ -126,6 +137,9 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   onDragLeave(event: Event) {
+    if (this.viewOnly()) {
+      return;
+    }
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver.set(false);
@@ -135,6 +149,11 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver.set(false);
+
+    if (this.viewOnly()) {
+      return;
+    }
+
     const files = event.dataTransfer?.files;
 
     if (files && files.length > 0) {
@@ -209,10 +228,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
         this.confirmRename(file);
         break;
       case FileMenuType.Move:
-        this.moveFile(file, 'move');
+        this.moveFile(file, FileMenuType.Move);
         break;
       case FileMenuType.Copy:
-        this.moveFile(file, 'copy');
+        this.moveFile(file, FileMenuType.Copy);
         break;
     }
   }

@@ -22,7 +22,7 @@ import {
   PreprintProvidersSelectors,
 } from '@osf/features/preprints/store/preprint-providers';
 import { SearchInputComponent } from '@shared/components';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { BrandService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
@@ -89,7 +89,7 @@ export class PreprintsLandingComponent implements OnInit, OnDestroy {
     const searchValue = this.searchControl.value;
 
     this.router.navigate(['/search'], {
-      queryParams: { search: searchValue, resourceTab: ResourceTab.Preprints },
+      queryParams: { search: searchValue, resourceTab: ResourceType.Preprint },
     });
   }
 }

@@ -29,21 +29,15 @@
     </span>
   </p>
 
-  <div class="flex flex-column gap-2">
-    @for (item of config.data.sharedComponents; track item.id) {
-      <div class="flex gap-1">
-        <p-checkbox
-          variant="filled"
-          binary="true"
-          [ngModel]="selectedComponents()[item.id]"
-          (ngModelChange)="onCheckboxToggle(item.id, $event)"
-          [disabled]="isCurrentProject(item)"
-        >
-        </p-checkbox>
-        <p>{{ item.title }}</p>
-      </div>
-    }
-  </div>
+  @if (isLoading()) {
+    <osf-loading-spinner />
+  } @else {
+    <div class="flex flex-column gap-2">
+      @for (item of componentsList(); track item.id) {
+        <osf-component-checkbox-item [item]="item" (checkboxChange)="onCheckboxChange(item)" />
+      }
+    </div>
+  }
 
   <div class="flex gap-2">
     <p-button
@@ -58,6 +52,7 @@
       class="w-full"
       styleClass="w-full"
       (onClick)="addLink()"
+      [disabled]="linkName.invalid"
       [label]="'project.contributors.addDialog.next' | translate"
     ></p-button>
   </div>

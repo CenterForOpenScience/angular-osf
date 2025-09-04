@@ -13,9 +13,4 @@ export class RegistrationsSelectors {
   static isRegistrationsLoading(state: RegistrationsStateModel) {
     return state.registrations.isLoading;
   }
-
-  @Selector([RegistrationsState])
-  static getRegistrationsError(state: RegistrationsStateModel) {
-    return state.registrations.error;
-  }
 }

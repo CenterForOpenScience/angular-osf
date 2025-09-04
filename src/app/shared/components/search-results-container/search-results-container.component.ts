@@ -1,51 +1,76 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { DataView } from 'primeng/dataview';
 import { Select } from 'primeng/select';
+import { Tab, TabList, Tabs } from 'primeng/tabs';
 
-import { ChangeDetectionStrategy, Component, computed, HostBinding, input, output } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  contentChild,
+  input,
+  output,
+  signal,
+  TemplateRef,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { SEARCH_TAB_OPTIONS, searchSortingOptions } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
-import { Primitive } from '@shared/helpers';
-import { Resource } from '@shared/models';
+import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { LoadingSpinnerComponent } from '@shared/components';
+import { searchSortingOptions } from '@shared/constants';
+import { ResourceType } from '@shared/enums';
+import { Resource, TabOption } from '@shared/models';
 
 import { ResourceCardComponent } from '../resource-card/resource-card.component';
 import { SelectComponent } from '../select/select.component';
 
 @Component({
   selector: 'osf-search-results-container',
-  imports: [FormsModule, Button, DataView, Select, ResourceCardComponent, TranslatePipe, SelectComponent],
+  imports: [
+    FormsModule,
+    Button,
+    Select,
+    ResourceCardComponent,
+    TranslatePipe,
+    SelectComponent,
+    NgTemplateOutlet,
+    Tab,
+    TabList,
+    Tabs,
+    LoadingSpinnerComponent,
+  ],
   templateUrl: './search-results-container.component.html',
   styleUrl: './search-results-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchResultsContainerComponent {
-  @HostBinding('class') classes = 'flex flex-column gap-3';
   resources = input<Resource[]>([]);
+  areResourcesLoading = input<boolean>(false);
   searchCount = input<number>(0);
   selectedSort = input<string>('');
-  selectedTab = input<Primitive>(ResourceTab.All);
+  selectedTab = input<number>(ResourceType.Null);
   selectedValues = input<Record<string, string | null>>({});
   first = input<string | null>(null);
   prev = input<string | null>(null);
   next = input<string | null>(null);
-  isFiltersOpen = input<boolean>(false);
-  isSortingOpen = input<boolean>(false);
-  showTabs = input<boolean>(true);
+  tabOptions = input<TabOption[]>([]);
+
+  isFiltersOpen = signal<boolean>(false);
+  isSortingOpen = signal<boolean>(false);
+  provider = input<PreprintProviderDetails | null>(null);
 
   sortChanged = output<string>();
-  tabChanged = output<ResourceTab>();
+  tabChanged = output<ResourceType>();
   pageChanged = output<string>();
-  filtersToggled = output<void>();
-  sortingToggled = output<void>();
+
+  showTabs = computed(() => {
+    return this.tabOptions().length > 0;
+  });
 
   protected readonly searchSortingOptions = searchSortingOptions;
-  protected readonly ResourceTab = ResourceTab;
-
-  protected readonly tabsOptions = SEARCH_TAB_OPTIONS;
+  protected readonly ResourceType = ResourceType;
 
   protected readonly hasSelectedValues = computed(() => {
     const values = this.selectedValues();
@@ -53,15 +78,17 @@ export class SearchResultsContainerComponent {
   });
 
   protected readonly hasFilters = computed(() => {
+    //[RNi] TODO: check if there are any filters
     return true;
   });
+  filtersComponent = contentChild<TemplateRef<unknown>>('filtersComponent');
 
   selectSort(value: string): void {
     this.sortChanged.emit(value);
   }
 
-  selectTab(value?: ResourceTab): void {
-    this.tabChanged.emit((value ? value : this.selectedTab()) as ResourceTab);
+  selectTab(value?: ResourceType): void {
+    this.tabChanged.emit(value !== undefined ? value : this.selectedTab());
   }
 
   switchPage(link: string | null): void {
@@ -71,14 +98,12 @@ export class SearchResultsContainerComponent {
   }
 
   openFilters(): void {
-    this.filtersToggled.emit();
+    this.isFiltersOpen.set(!this.isFiltersOpen());
+    this.isSortingOpen.set(false);
   }
 
   openSorting(): void {
-    this.sortingToggled.emit();
-  }
-
-  isAnyFilterOptions(): boolean {
-    return this.hasFilters();
+    this.isSortingOpen.set(!this.isSortingOpen());
+    this.isFiltersOpen.set(false);
   }
 }

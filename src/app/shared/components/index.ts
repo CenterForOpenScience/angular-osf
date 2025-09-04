@@ -2,9 +2,11 @@ export { AddProjectFormComponent } from './add-project-form/add-project-form.com
 export { AffiliatedInstitutionSelectComponent } from './affiliated-institution-select/affiliated-institution-select.component';
 export { AffiliatedInstitutionsViewComponent } from './affiliated-institutions-view/affiliated-institutions-view.component';
 export { BarChartComponent } from './bar-chart/bar-chart.component';
+export { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 export { CopyButtonComponent } from './copy-button/copy-button.component';
 export { CustomPaginatorComponent } from './custom-paginator/custom-paginator.component';
 export { DataResourcesComponent } from './data-resources/data-resources.component';
+export { DataciteTrackerComponent } from './datacite-tracker/datacite-tracker.component';
 export { EducationHistoryComponent } from './education-history/education-history.component';
 export { EducationHistoryDialogComponent } from './education-history-dialog/education-history-dialog.component';
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';
@@ -24,6 +26,7 @@ export { ListInfoShortenerComponent } from './list-info-shortener/list-info-shor
 export { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
 export { MakeDecisionDialogComponent } from './make-decision-dialog/make-decision-dialog.component';
 export { MarkdownComponent } from './markdown/markdown.component';
+export { MetadataTabsComponent } from './metadata-tabs/metadata-tabs.component';
 export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.component';
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';
@@ -46,4 +49,6 @@ export { TagsInputComponent } from './tags-input/tags-input.component';
 export { TextInputComponent } from './text-input/text-input.component';
 export { ToastComponent } from './toast/toast.component';
 export { TruncatedTextComponent } from './truncated-text/truncated-text.component';
+export { ViewOnlyLinkMessageComponent } from './view-only-link-message/view-only-link-message.component';
 export { ViewOnlyTableComponent } from './view-only-table/view-only-table.component';
+export { GlobalSearchComponent } from '@shared/components/global-search/global-search.component';

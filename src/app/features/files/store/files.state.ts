@@ -4,10 +4,9 @@ import { catchError, finalize, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { MapResourceMetadata } from '@osf/features/files/mappers';
 import { handleSectionError } from '@osf/shared/helpers';
 import { FilesService, ToastService } from '@shared/services';
-
-import { MapResourceMetadata } from '../mappers/resource-metadata.mapper';
 
 import {
   CreateFolder,
@@ -52,13 +51,14 @@ export class FilesState {
 
     return this.filesService.getFiles(action.filesLink, '', '').pipe(
       tap({
-        next: ({ data: files }) => {
+        next: (response) => {
           ctx.patchState({
             moveFileFiles: {
-              data: files,
+              data: response.files,
               isLoading: false,
               error: null,
             },
+            isAnonymous: response.meta?.anonymous ?? false,
           });
         },
       }),
@@ -72,14 +72,15 @@ export class FilesState {
     ctx.patchState({ files: { ...state.files, isLoading: true, error: null, totalCount: 0 } });
     return this.filesService.getFiles(action.filesLink, state.search, state.sort, action.page).pipe(
       tap({
-        next: ({ data, totalCount }) => {
+        next: (response) => {
           ctx.patchState({
             files: {
-              data,
+              data: response.files,
               isLoading: false,
               error: null,
-              totalCount,
+              totalCount: response.meta?.total ?? 0,
             },
+            isAnonymous: response.meta?.anonymous ?? false,
           });
         },
       }),
@@ -281,13 +282,14 @@ export class FilesState {
 
     return this.filesService.getFolders(action.folderLink).pipe(
       tap({
-        next: (folders) =>
+        next: (response) =>
           ctx.patchState({
             rootFolders: {
-              data: folders,
+              data: response.files,
               isLoading: false,
               error: null,
             },
+            isAnonymous: response.meta?.anonymous ?? false,
           }),
       }),
       catchError((error) => handleSectionError(ctx, 'rootFolders', error))

@@ -1,4 +1,5 @@
-import { JsonApiResponse, LicenseRecordJsonApi, MetaJsonApi, PaginationLinksJsonApi } from '@shared/models';
+import { JsonApiResponse, MetaJsonApi, PaginationLinksJsonApi } from '../common';
+import { LicenseRecordJsonApi } from '../licenses-json-api.model';
 
 export interface ProjectJsonApi {
   id: string;

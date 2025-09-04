@@ -1,4 +1,3 @@
-export * from './add-filters-params.helper';
 export * from './addon-type.helper';
 export * from './breakpoints.tokens';
 export * from './browser-tab.helper';
@@ -13,8 +12,9 @@ export * from './header-style.helper';
 export * from './http.helper';
 export * from './password.helper';
 export * from './path-join.helper';
-export * from './pie-chart-palette';
+export * from './remove-nullable.helper';
 export * from './search-pref-to-json-api-query-params.helper';
 export * from './state-error.handler';
 export * from './types.helper';
 export * from './url-param.helper';
+export * from './view-only.helper';

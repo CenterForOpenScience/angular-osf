@@ -6,7 +6,7 @@ export interface InstitutionsStateModel {
   resourceInstitutions: AsyncStateModel<Institution[]>;
 }
 
-export const DefaultState = {
+export const INSTITUTIONS_STATE_DEFAULTS: InstitutionsStateModel = {
   userInstitutions: {
     data: [],
     isLoading: false,

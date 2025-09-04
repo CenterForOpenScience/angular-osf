@@ -1,5 +1,7 @@
 import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
-import { ApiData, LicenseRecordJsonApi, MetaJsonApi, PaginationLinksJsonApi } from '@osf/shared/models';
+
+import { ApiData, MetaJsonApi, PaginationLinksJsonApi } from '../common';
+import { LicenseRecordJsonApi } from '../licenses-json-api.model';
 
 export interface DraftRegistrationResponseJsonApi {
   data: DraftRegistrationDataJsonApi;

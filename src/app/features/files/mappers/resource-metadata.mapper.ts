@@ -1,4 +1,4 @@
-import { ResourceMetadata } from '@osf/shared/models';
+import { ResourceMetadata } from '@shared/models';
 
 import { GetResourceCustomMetadataResponse } from '../models/get-resource-custom-metadata-response.model';
 import { GetResourceShortInfoResponse } from '../models/get-resource-short-info-response.model';

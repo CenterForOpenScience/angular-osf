@@ -24,7 +24,6 @@ import {
   ConfiguredStorageAddonModel,
   ContributorModel,
   ContributorResponse,
-  FileData,
   FileLinks,
   FileRelationshipsResponse,
   FileResponse,
@@ -32,10 +31,11 @@ import {
   GetConfiguredStorageAddonsJsonApi,
   GetFileResponse,
   GetFilesResponse,
+  GetFilesResponseWithMeta,
   JsonApiResponse,
+  MetaAnonymousJsonApi,
   OsfFile,
   OsfFileVersion,
-  ResponseJsonApi,
 } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 import { ToastService } from '@shared/services/toast.service';
@@ -63,7 +63,7 @@ export class FilesService {
     search: string,
     sort: string,
     page = 1
-  ): Observable<{ data: OsfFile[]; totalCount: number }> {
+  ): Observable<{ files: OsfFile[]; meta?: MetaAnonymousJsonApi }> {
     const params: Record<string, string> = {
       sort: sort,
       page: page.toString(),
@@ -71,17 +71,15 @@ export class FilesService {
       'filter[name]': search,
     };
 
-    return this.jsonApiService.get<ResponseJsonApi<FileData[]>>(`${filesLink}`, params).pipe(
-      map((response) => {
-        const data = MapFiles(response.data);
-        const totalCount = response.meta?.total || 0;
-        return { data, totalCount };
-      })
-    );
+    return this.jsonApiService
+      .get<GetFilesResponseWithMeta>(`${filesLink}`, params)
+      .pipe(map((response) => ({ files: MapFiles(response.data), meta: response.meta })));
   }
 
-  getFolders(folderLink: string): Observable<OsfFile[]> {
-    return this.jsonApiService.get<GetFilesResponse>(`${folderLink}`).pipe(map((response) => MapFiles(response.data)));
+  getFolders(folderLink: string): Observable<{ files: OsfFile[]; meta?: MetaAnonymousJsonApi }> {
+    return this.jsonApiService
+      .get<GetFilesResponseWithMeta>(`${folderLink}`)
+      .pipe(map((response) => ({ files: MapFiles(response.data), meta: response.meta })));
   }
 
   getFilesWithoutFiltering(filesLink: string): Observable<OsfFile[]> {

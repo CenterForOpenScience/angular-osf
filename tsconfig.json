@@ -22,7 +22,7 @@
       "@core/*": ["src/app/core/*"],
       "@osf/*": ["src/app/*"],
       "@shared/*": ["src/app/shared/*"],
-      "@styles/*": ["assets/styles/*"],
+      "@styles/*": ["src/styles/*"],
       "@testing/*": ["src/testing/*"]
     }
   },

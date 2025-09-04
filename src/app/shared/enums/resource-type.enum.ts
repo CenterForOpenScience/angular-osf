@@ -3,6 +3,7 @@ export enum ResourceType {
   File,
   Project,
   Registration,
+  RegistrationComponent,
   Preprint,
   ProjectComponent,
   Agent,

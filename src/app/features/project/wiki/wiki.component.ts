@@ -7,7 +7,7 @@ import { ButtonGroupModule } from 'primeng/buttongroup';
 
 import { filter, map, mergeMap, of, tap } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -19,6 +19,7 @@ import {
   WikiListComponent,
 } from '@osf/shared/components/wiki';
 import { ResourceType } from '@osf/shared/enums';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { WikiModes } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import {
@@ -37,6 +38,7 @@ import {
   UpdateWikiPreviewContent,
   WikiSelectors,
 } from '@osf/shared/stores';
+import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 
 @Component({
   selector: 'osf-wiki',
@@ -49,6 +51,7 @@ import {
     ViewSectionComponent,
     EditSectionComponent,
     CompareSectionComponent,
+    ViewOnlyLinkMessageComponent,
   ],
   templateUrl: './wiki.component.html',
   styleUrl: './wiki.component.scss',
@@ -63,20 +66,24 @@ export class WikiComponent {
   homeWikiName = 'Home';
 
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
-  protected wikiModes = select(WikiSelectors.getWikiModes);
-  protected previewContent = select(WikiSelectors.getPreviewContent);
-  protected versionContent = select(WikiSelectors.getWikiVersionContent);
-  protected compareVersionContent = select(WikiSelectors.getCompareVersionContent);
-  protected isWikiListLoading = select(WikiSelectors.getWikiListLoading || WikiSelectors.getComponentsWikiListLoading);
-  protected wikiList = select(WikiSelectors.getWikiList);
-  protected componentsWikiList = select(WikiSelectors.getComponentsWikiList);
-  protected currentWikiId = select(WikiSelectors.getCurrentWikiId);
-  protected wikiVersions = select(WikiSelectors.getWikiVersions);
-  protected isWikiVersionSubmitting = select(WikiSelectors.getWikiVersionSubmitting);
-  protected isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
-  protected isCompareVersionLoading = select(WikiSelectors.getCompareVersionsLoading);
+  wikiModes = select(WikiSelectors.getWikiModes);
+  previewContent = select(WikiSelectors.getPreviewContent);
+  versionContent = select(WikiSelectors.getWikiVersionContent);
+  compareVersionContent = select(WikiSelectors.getCompareVersionContent);
+  isWikiListLoading = select(WikiSelectors.getWikiListLoading || WikiSelectors.getComponentsWikiListLoading);
+  wikiList = select(WikiSelectors.getWikiList);
+  componentsWikiList = select(WikiSelectors.getComponentsWikiList);
+  currentWikiId = select(WikiSelectors.getCurrentWikiId);
+  wikiVersions = select(WikiSelectors.getWikiVersions);
+  isWikiVersionSubmitting = select(WikiSelectors.getWikiVersionSubmitting);
+  isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
+  isCompareVersionLoading = select(WikiSelectors.getCompareVersionsLoading);
+  isAnonymous = select(WikiSelectors.isWikiAnonymous);
+  hasViewOnly = computed(() => {
+    return hasViewOnlyParam(this.router);
+  });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getWikiModes: GetWikiModes,
     toggleMode: ToggleMode,
     getWikiContent: GetWikiContent,
@@ -92,7 +99,7 @@ export class WikiComponent {
     getCompareVersionContent: GetCompareVersionContent,
   });
 
-  protected wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
+  wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
 
   constructor() {
     this.actions

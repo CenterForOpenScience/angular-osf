@@ -7,18 +7,18 @@ import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
-import { filter, finalize } from 'rxjs';
+import { filter, finalize, throttleTime } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
+import { DeleteEmail, MakePrimary, ResendConfirmation, UserEmailsSelectors } from '@core/store/user-emails';
 import { UserSelectors } from '@osf/core/store/user';
 import { ReadonlyInputComponent } from '@osf/shared/components';
 import { IS_SMALL } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
 import { AccountEmail } from '../../models';
-import { AccountSettingsSelectors, DeleteEmail, MakePrimary, ResendConfirmation } from '../../store';
 import { ConfirmationSentDialogComponent } from '../confirmation-sent-dialog/confirmation-sent-dialog.component';
 import { AddEmailComponent } from '../';
 
@@ -40,8 +40,9 @@ export class ConnectedEmailsComponent {
   private readonly toastService = inject(ToastService);
 
   protected readonly currentUser = select(UserSelectors.getCurrentUser);
-  protected readonly emails = select(AccountSettingsSelectors.getEmails);
-  protected readonly isEmailsLoading = select(AccountSettingsSelectors.isEmailsLoading);
+  protected readonly emails = select(UserEmailsSelectors.getEmails);
+  protected readonly isEmailsLoading = select(UserEmailsSelectors.isEmailsLoading);
+  protected readonly isEmailsSubmitting = select(UserEmailsSelectors.isEmailsSubmitting);
 
   private readonly actions = createDispatchMap({
     resendConfirmation: ResendConfirmation,
@@ -96,8 +97,9 @@ export class ConnectedEmailsComponent {
           this.loaderService.show();
 
           this.actions
-            .resendConfirmation(email.id, this.currentUser()!.id)
+            .resendConfirmation(email.id)
             .pipe(
+              throttleTime(2000),
               finalize(() => this.loaderService.hide()),
               takeUntilDestroyed(this.destroyRef)
             )
