@@ -90,7 +90,11 @@ describe('MetadataComponent', () => {
     expect(tagsSection).toBeDefined();
     const titleFieldLabel = titleSection.querySelector('h2');
     expect(titleFieldLabel.textContent).toEqual('common.labels.title');
+    const titleFieldHelpText = titleSection.querySelector('p');
+    expect(titleFieldHelpText.textContent).toEqual('shared.title.description');
     const descriptionFieldLabel = descriptionSection.querySelector('h2');
     expect(descriptionFieldLabel.textContent).toEqual('common.labels.description');
+    const descriptionFieldHelpText = descriptionSection.querySelector('p');
+    expect(descriptionFieldHelpText.textContent).toEqual('shared.description.descriptionMessage');
   });
 });

@@ -120,7 +120,6 @@ module.exports = {
     '<rootDir>/src/app/shared/components/shared-metadata/dialogs/affiliated-institutions-dialog/',
     '<rootDir>/src/app/shared/components/shared-metadata/dialogs/contributors-dialog/',
     '<rootDir>/src/app/shared/components/shared-metadata/shared-metadata',
-    '<rootDir>/src/app/shared/components/subjects/',
     '<rootDir>/src/app/shared/components/wiki/edit-section/',
     '<rootDir>/src/app/shared/components/wiki/wiki-list/',
   ],
