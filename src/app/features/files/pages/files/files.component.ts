@@ -46,7 +46,6 @@ import { GoogleFilePickerComponent } from '@osf/shared/components/addons/folder-
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
-import { AddonsSelectors } from '@osf/shared/stores/addons';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -55,7 +54,7 @@ import {
   SubHeaderComponent,
 } from '@shared/components';
 import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
-import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile } from '@shared/models';
+import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile, StorageItemModel } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -124,6 +123,7 @@ export class FilesComponent {
 
   readonly isGoogleDrive = signal<boolean>(false);
   readonly accountId = signal<string>('');
+  readonly selectedRootFolder = signal<StorageItemModel>({});
   readonly resourceId = signal<string>('');
   readonly rootFolders = select(FilesSelectors.getRootFolders);
   readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
@@ -135,7 +135,6 @@ export class FilesComponent {
   readonly dataLoaded = signal(false);
   readonly searchControl = new FormControl<string>('');
   readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
-  readonly selectedRootFolder = select(AddonsSelectors.getSelectedFolder);
 
   currentRootFolder = model<{ label: string; folder: OsfFile } | null>(null);
 
@@ -220,7 +219,7 @@ export class FilesComponent {
       if (currentRootFolder) {
         this.isGoogleDrive.set(currentRootFolder.folder.provider === 'googledrive');
         if (this.isGoogleDrive()) {
-          this.setGoogleAccountId();
+          this.#setGoogleAccountId();
         }
         this.actions.setCurrentFolder(currentRootFolder.folder);
       }
@@ -392,11 +391,14 @@ export class FilesComponent {
     }
   }
 
-  setGoogleAccountId(): void {
+  #setGoogleAccountId(): void {
     const addons = this.configuredStorageAddons();
     const googleDrive = addons?.find((addon) => addon.externalServiceName === 'googledrive');
     if (googleDrive) {
       this.accountId.set(googleDrive.baseAccountId);
+      this.selectedRootFolder.set({
+        itemId: googleDrive.selectedFolderId,
+      });
     }
   }
 }

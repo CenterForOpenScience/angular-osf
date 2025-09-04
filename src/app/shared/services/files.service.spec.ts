@@ -68,6 +68,7 @@ describe('Service: Files', () => {
         id: '756579dc-3a24-4849-8866-698a60846ac3',
         selectedFolderId: '0AIl0aR4C9JAFUk9PVA',
         type: 'configured-storage-addons',
+        rootFolderId: '0AIl0aR4C9JAFUk9PVA',
       })
     );
 
