@@ -21,6 +21,7 @@ import {
 import {
   AddFileResponse,
   ApiData,
+  ConfiguredAddonGetResponseJsonApi,
   ConfiguredStorageAddonModel,
   ContributorModel,
   ContributorResponse,
@@ -28,7 +29,6 @@ import {
   FileRelationshipsResponse,
   FileResponse,
   FileVersionsResponseJsonApi,
-  GetConfiguredStorageAddonsJsonApi,
   GetFileResponse,
   GetFilesResponse,
   GetFilesResponseWithMeta,
@@ -41,7 +41,7 @@ import { JsonApiService } from '@shared/services';
 import { ToastService } from '@shared/services/toast.service';
 
 import { ResourceType } from '../enums';
-import { ContributorsMapper, MapFile, MapFiles, MapFileVersions } from '../mappers';
+import { AddonMapper, ContributorsMapper, MapFile, MapFiles, MapFileVersions } from '../mappers';
 
 import { environment } from 'src/environments/environment';
 
@@ -307,19 +307,8 @@ export class FilesService {
         if (!referenceUrl) return of([]);
 
         return this.jsonApiService
-          .get<GetConfiguredStorageAddonsJsonApi>(`${referenceUrl}/configured_storage_addons`)
-          .pipe(
-            map(
-              (response) =>
-                response.data.map(
-                  (addon) =>
-                    ({
-                      externalServiceName: addon.attributes.external_service_name,
-                      displayName: addon.attributes.display_name,
-                    }) as ConfiguredStorageAddonModel
-                ) as ConfiguredStorageAddonModel[]
-            )
-          );
+          .get<JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>>(`${referenceUrl}/configured_storage_addons`)
+          .pipe(map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item))));
       })
     );
   }
