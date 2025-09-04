@@ -4,6 +4,7 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ProjectsService } from '@osf/shared/services/projects.service';
 import { ResourceType } from '@shared/enums';
 
 import { ProjectOverviewService } from '../services';
@@ -15,6 +16,7 @@ import {
   DuplicateProject,
   ForkResource,
   GetComponents,
+  GetComponentsTree,
   GetProjectById,
   SetProjectCustomCitation,
   UpdateProjectPublicStatus,
@@ -28,6 +30,7 @@ import { PROJECT_OVERVIEW_DEFAULTS, ProjectOverviewStateModel } from './project-
 @Injectable()
 export class ProjectOverviewState {
   projectOverviewService = inject(ProjectOverviewService);
+  projectsService = inject(ProjectsService);
 
   @Action(GetProjectById)
   getProjectById(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectById) {
@@ -240,6 +243,30 @@ export class ProjectOverviewState {
         });
       }),
       catchError((error) => this.handleError(ctx, 'components', error))
+    );
+  }
+
+  @Action(GetComponentsTree)
+  getComponentsTree(ctx: StateContext<ProjectOverviewStateModel>, action: GetComponentsTree) {
+    const state = ctx.getState();
+    ctx.patchState({
+      componentsTree: {
+        ...state.componentsTree,
+        isLoading: true,
+      },
+    });
+
+    return this.projectsService.getComponentsTree(action.projectId).pipe(
+      tap((components) => {
+        ctx.patchState({
+          componentsTree: {
+            data: components,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => this.handleError(ctx, 'componentsTree', error))
     );
   }
 

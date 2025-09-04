@@ -1,4 +1,4 @@
-import { JsonApiResponse, LicenseRecordJsonApi } from '@shared/models';
+import { JsonApiResponse, LicenseRecordJsonApi, MetaJsonApi, PaginationLinksJsonApi } from '@shared/models';
 
 export interface ProjectJsonApi {
   id: string;
@@ -16,6 +16,8 @@ export interface ProjectJsonApi {
 
 export interface ProjectsResponseJsonApi extends JsonApiResponse<ProjectJsonApi[], null> {
   data: ProjectJsonApi[];
+  meta: MetaJsonApi;
+  links: PaginationLinksJsonApi;
 }
 
 export interface ProjectRelationshipsJsonApi {

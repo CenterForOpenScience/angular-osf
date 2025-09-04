@@ -24,6 +24,7 @@ import {
   ConfiguredStorageAddonModel,
   ContributorModel,
   ContributorResponse,
+  FileData,
   FileLinks,
   FileRelationshipsResponse,
   FileResponse,
@@ -34,6 +35,7 @@ import {
   JsonApiResponse,
   OsfFile,
   OsfFileVersion,
+  ResponseJsonApi,
 } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 import { ToastService } from '@shared/services/toast.service';
@@ -56,16 +58,26 @@ export class FilesService {
     [ResourceType.Registration, 'registrations'],
   ]);
 
-  getFiles(filesLink: string, search: string, sort: string): Observable<OsfFile[]> {
+  getFiles(
+    filesLink: string,
+    search: string,
+    sort: string,
+    page = 1
+  ): Observable<{ data: OsfFile[]; totalCount: number }> {
     const params: Record<string, string> = {
       sort: sort,
+      page: page.toString(),
       'fields[files]': this.filesFields,
       'filter[name]': search,
     };
 
-    return this.jsonApiService
-      .get<GetFilesResponse>(`${filesLink}`, params)
-      .pipe(map((response) => MapFiles(response.data)));
+    return this.jsonApiService.get<ResponseJsonApi<FileData[]>>(`${filesLink}`, params).pipe(
+      map((response) => {
+        const data = MapFiles(response.data);
+        const totalCount = response.meta?.total || 0;
+        return { data, totalCount };
+      })
+    );
   }
 
   getFolders(folderLink: string): Observable<OsfFile[]> {

@@ -2,10 +2,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { PaginatorState } from 'primeng/paginator';
 import { Tree, TreeNodeDropEvent } from 'primeng/tree';
 
-import { EMPTY, finalize, firstValueFrom, Observable, take, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { EMPTY, finalize, firstValueFrom, Observable, take } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -28,7 +28,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MoveFileDialogComponent, RenameFileDialogComponent } from '@osf/features/files/components';
 import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { FileMenuType } from '@osf/shared/enums';
-import { FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
+import { CustomPaginatorComponent, FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
 import { StopPropagationDirective } from '@shared/directives';
 import { FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
@@ -47,6 +47,7 @@ import { environment } from 'src/environments/environment';
     LoadingSpinnerComponent,
     FileMenuComponent,
     StopPropagationDirective,
+    CustomPaginatorComponent,
   ],
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
@@ -64,6 +65,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly translateService = inject(TranslateService);
 
   files = input.required<OsfFile[]>();
+  totalCount = input<number>(0);
   isLoading = input<boolean>();
   currentFolder = input.required<OsfFile | null>();
   resourceId = input.required<string>();
@@ -76,20 +78,29 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
   uploadFileConfirmed = output<File>();
+  filesPageChange = output<number>();
 
-  protected readonly FileMenuType = FileMenuType;
+  itemsPerPage = 10;
+  first = 0;
+  hasParentFolder = false;
+  folderStack: OsfFile[] = [];
 
-  protected readonly nodes = computed(() => {
-    if (this.currentFolder()?.relationships?.parentFolderLink) {
+  readonly FileMenuType = FileMenuType;
+
+  readonly nodes = computed(() => {
+    const currentFolder = this.currentFolder();
+    const files = this.files();
+    const hasParent = this.folderStack.length > 0;
+    if (hasParent) {
       return [
         {
-          ...this.currentFolder(),
-          previousFolder: true,
+          ...currentFolder,
+          previousFolder: hasParent,
         },
-        ...this.files(),
+        ...files,
       ] as OsfFile[];
     } else {
-      return this.files();
+      return [...files];
     }
   });
 
@@ -140,9 +151,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   constructor() {
     effect(() => {
       const currentFolder = this.currentFolder();
-
       if (currentFolder) {
-        this.updateFilesList().subscribe(() => this.folderIsOpening.emit(false));
+        this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
       }
     });
   }
@@ -157,35 +167,22 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
         });
       }
     } else {
+      const current = this.currentFolder();
+      if (current) {
+        this.folderStack.push(current);
+      }
+      this.resetPagination();
       this.actions().setFilesIsLoading?.(true);
       this.folderIsOpening.emit(true);
-
       this.actions().setCurrentFolder(file);
     }
   }
 
   openParentFolder() {
-    const currentFolder = this.currentFolder();
-
-    if (!currentFolder) return;
-
-    this.actions().setFilesIsLoading?.(true);
-    this.folderIsOpening.emit(true);
-
-    this.filesService
-      .getFolder(currentFolder.relationships.parentFolderLink)
-      .pipe(
-        take(1),
-        catchError((error) => {
-          this.toastService.showError(error.error.message);
-          return throwError(() => error);
-        })
-      )
-      .subscribe({
-        next: (folder) => {
-          this.actions().setCurrentFolder(folder);
-        },
-      });
+    const previous = this.folderStack.pop();
+    if (previous) {
+      this.actions().setCurrentFolder(previous);
+    }
   }
 
   onFileMenuAction(action: FileMenuAction, file: OsfFile): void {
@@ -344,10 +341,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       });
   }
 
-  updateFilesList(): Observable<void> {
-    const currentFolder = this.currentFolder();
-
-    if (currentFolder?.relationships.filesLink) {
+  updateFilesList(currentFolder: OsfFile): Observable<void> {
+    if (currentFolder?.relationships?.filesLink) {
       return this.actions().getFiles(currentFolder?.relationships.filesLink);
     }
     return EMPTY;
@@ -431,5 +426,15 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
           }
         }
       });
+  }
+
+  resetPagination() {
+    this.first = 0;
+    this.filesPageChange.emit(1);
+  }
+
+  onFilesPageChange(event: PaginatorState): void {
+    this.filesPageChange.emit(event.page! + 1);
+    this.first = event.first!;
   }
 }

@@ -10,7 +10,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import { debounceTime, EMPTY, filter, finalize, Observable, skip, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, EMPTY, filter, finalize, skip, switchMap, take } from 'rxjs';
 
 import { HttpEventType } from '@angular/common/http';
 import {
@@ -110,6 +110,7 @@ export class FilesComponent {
   isMedium = toSignal(inject(IS_MEDIUM));
 
   readonly files = select(FilesSelectors.getFiles);
+  readonly filesTotalCount = select(FilesSelectors.getFilesTotalCount);
   readonly isFilesLoading = select(FilesSelectors.isFilesLoading);
   readonly currentFolder = select(FilesSelectors.getCurrentFolder);
   readonly provider = select(FilesSelectors.getProvider);
@@ -134,6 +135,7 @@ export class FilesComponent {
   sortOptions = ALL_SORT_OPTIONS;
 
   storageProvider = FileProvider.OsfStorage;
+  pageNumber = signal(1);
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -167,7 +169,7 @@ export class FilesComponent {
   readonly filesTreeActions: FilesTreeActions = {
     setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
     setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
-    getFiles: (filesLink) => this.actions.getFiles(filesLink),
+    getFiles: (filesLink) => this.actions.getFiles(filesLink, this.pageNumber()),
     deleteEntry: (resourceId, link) => this.actions.deleteEntry(resourceId, link),
     renameEntry: (resourceId, link, newName) => this.actions.renameEntry(resourceId, link, newName),
     setMoveFileCurrentFolder: (folder) => this.actions.setMoveFileCurrentFolder(folder),
@@ -218,7 +220,7 @@ export class FilesComponent {
     });
 
     this.searchControl.valueChanges
-      .pipe(skip(1), takeUntilDestroyed(this.destroyRef), debounceTime(500))
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
       .subscribe((searchText) => {
         this.actions.setSearch(searchText ?? '');
         if (!this.isFolderOpening()) {
@@ -263,15 +265,6 @@ export class FilesComponent {
         if (event.type === HttpEventType.UploadProgress && event.total) {
           this.progress.set(Math.round((event.loaded / event.total) * 100));
         }
-        // [NM] Check if need to create guid here
-        // if (event.type === HttpEventType.Response) {
-        //   if (event.body) {
-        //     const fileId = event?.body?.data?.id?.split('/').pop();
-        //     if (fileId) {
-        //       this.filesService.getFileGuid(fileId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-        //     }
-        //   }
-        // }
       });
   }
 
@@ -298,18 +291,18 @@ export class FilesComponent {
         modal: true,
         closable: true,
       })
-      .onClose.pipe(filter((folderName: string) => !!folderName))
-      .subscribe((folderName) => {
-        this.actions
-          .createFolder(newFolderLink, folderName)
-          .pipe(
-            take(1),
-            finalize(() => {
-              this.updateFilesList().subscribe(() => this.fileIsUploading.set(false));
-            })
-          )
-          .subscribe();
-      });
+      .onClose.pipe(
+        filter((folderName: string) => !!folderName),
+        switchMap((folderName: string) => {
+          return this.actions.createFolder(newFolderLink, folderName);
+        }),
+        take(1),
+        finalize(() => {
+          this.updateFilesList();
+          this.fileIsUploading.set(false);
+        })
+      )
+      .subscribe();
   }
 
   downloadFolder(): void {
@@ -343,7 +336,7 @@ export class FilesComponent {
     });
   }
 
-  updateFilesList(): Observable<void> {
+  updateFilesList() {
     const currentFolder = this.currentFolder();
     if (currentFolder?.relationships.filesLink) {
       this.filesTreeActions.setFilesIsLoading?.(true);
@@ -371,5 +364,9 @@ export class FilesComponent {
     } else {
       return addons.find((addon) => addon.externalServiceName === provider)?.displayName ?? '';
     }
+  }
+
+  onFilesPageChange(page: number) {
+    this.pageNumber.set(page);
   }
 }

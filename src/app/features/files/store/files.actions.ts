@@ -11,7 +11,10 @@ export class GetRootFolderFiles {
 export class GetFiles {
   static readonly type = '[Files] Get Files';
 
-  constructor(public filesLink: string) {}
+  constructor(
+    public filesLink: string,
+    public page?: number
+  ) {}
 }
 
 export class SetFilesIsLoading {

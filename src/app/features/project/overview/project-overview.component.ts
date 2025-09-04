@@ -24,6 +24,7 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { GetRootFolders } from '@osf/features/files/store';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { IS_XSMALL } from '@osf/shared/helpers';
 import {
@@ -41,6 +42,7 @@ import {
   CollectionsSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
+  GetConfiguredStorageAddons,
   GetHomeWiki,
   GetLinkedResources,
 } from '@shared/stores';
@@ -54,6 +56,7 @@ import {
 } from '../../moderation/store/collections-moderation';
 
 import {
+  FilesWidgetComponent,
   LinkedResourcesComponent,
   OverviewComponentsComponent,
   OverviewToolbarComponent,
@@ -63,6 +66,7 @@ import {
 import {
   ClearProjectOverview,
   GetComponents,
+  GetComponentsTree,
   GetProjectById,
   ProjectOverviewSelectors,
   SetProjectCustomCitation,
@@ -88,6 +92,7 @@ import {
     TranslatePipe,
     Message,
     RouterLink,
+    FilesWidgetComponent,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -109,6 +114,9 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
+  componentsTree = select(ProjectOverviewSelectors.getComponentsTree);
+  areComponentsTreeLoading = select(ProjectOverviewSelectors.getComponentsTreeLoading);
+
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
@@ -127,6 +135,9 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
     clearCollectionModeration: ClearCollectionModeration,
+    getComponentsTree: GetComponentsTree,
+    getRootFolders: GetRootFolders,
+    getConfiguredStorageAddons: GetConfiguredStorageAddons,
   });
 
   readonly isCollectionsRoute = computed(() => {
@@ -143,7 +154,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return this.currentReviewAction()?.toState;
   });
 
-  protected showDecisionButton = computed(() => {
+  showDecisionButton = computed(() => {
     return (
       this.isCollectionsRoute() &&
       this.submissionReviewStatus() !== SubmissionReviewStatus.Removed &&
@@ -151,9 +162,9 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     );
   });
 
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
+  currentProject = select(ProjectOverviewSelectors.getProject);
   private currentProject$ = toObservable(this.currentProject);
-  protected userPermissions = computed(() => {
+  userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
   });
 
@@ -165,7 +176,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return this.userPermissions().includes(UserPermissions.Write);
   }
 
-  protected resourceOverview = computed(() => {
+  resourceOverview = computed(() => {
     const project = this.currentProject();
     if (project) {
       return MapProjectOverview(project);
@@ -173,11 +184,11 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  protected isLoading = computed(() => {
+  isLoading = computed(() => {
     return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
   });
 
-  protected currentResource = computed(() => {
+  currentResource = computed(() => {
     if (this.currentProject()) {
       return {
         id: this.currentProject()!.id,
@@ -191,12 +202,12 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  protected getDoi(): Observable<string | null> {
-    return this.currentProject$.pipe(
-      filter((project) => project != null),
-      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
-    );
-  }
+  filesRootOption = computed(() => {
+    return {
+      value: this.currentProject()?.id ?? '',
+      label: this.currentProject()?.title ?? '',
+    };
+  });
 
   constructor() {
     super();
@@ -204,7 +215,14 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     this.setupCleanup();
   }
 
-  protected onCustomCitationUpdated(citation: string): void {
+  getDoi(): Observable<string | null> {
+    return this.currentProject$.pipe(
+      filter((project) => project != null),
+      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
+    );
+  }
+
+  onCustomCitationUpdated(citation: string): void {
     this.actions.setProjectCustomCitation(citation);
   }
 
@@ -215,13 +233,14 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getBookmarksId();
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
+      this.actions.getComponentsTree(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
       this.setupDataciteViewTrackerEffect().subscribe();
     }
   }
 
-  protected handleOpenMakeDecisionDialog() {
+  handleOpenMakeDecisionDialog() {
     const dialogWidth = this.isMobile() ? '95vw' : '600px';
 
     this.dialogService
@@ -242,7 +261,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       });
   }
 
-  protected goBack(): void {
+  goBack(): void {
     const currentStatus = this.route.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus } : {};
 

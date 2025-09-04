@@ -1,12 +1,12 @@
 import { ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
 import { ConfiguredStorageAddonModel } from '@shared/models/addons';
-import { AsyncStateModel } from '@shared/models/store';
+import { AsyncStateModel, AsyncStateWithTotalCount } from '@shared/models/store';
 
 import { FileProvider } from '../constants';
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
 
 export interface FilesStateModel {
-  files: AsyncStateModel<OsfFile[]>;
+  files: AsyncStateWithTotalCount<OsfFile[]>;
   moveFileFiles: AsyncStateModel<OsfFile[]>;
   currentFolder: OsfFile | null;
   moveFileCurrentFolder: OsfFile | null;
@@ -28,6 +28,7 @@ export const filesStateDefaults: FilesStateModel = {
     data: [],
     isLoading: false,
     error: null,
+    totalCount: 0,
   },
   moveFileFiles: {
     data: [],

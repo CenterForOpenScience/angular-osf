@@ -20,7 +20,7 @@
             <p class="provider-name">{{ option.label }}</p>
           </ng-template>
         </p-select>
-        <label for="in_label">{{ 'files.storageLocation' | translate }}</label>
+        <label for="in_label">{{ currentRootFolder()?.label }}</label>
       </p-floatlabel>
     </div>
 
@@ -101,6 +101,7 @@
 
     <osf-files-tree
       [files]="files()"
+      [totalCount]="filesTotalCount()"
       [currentFolder]="currentFolder()"
       [isLoading]="isFilesLoading()"
       [actions]="filesTreeActions"
@@ -111,6 +112,7 @@
       (folderIsOpening)="folderIsOpening($event)"
       (entryFileClicked)="navigateToFile($event)"
       (uploadFileConfirmed)="uploadFile($event)"
+      (filesPageChange)="onFilesPageChange($event)"
     >
     </osf-files-tree>
   </div>

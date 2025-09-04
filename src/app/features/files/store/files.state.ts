@@ -52,7 +52,7 @@ export class FilesState {
 
     return this.filesService.getFiles(action.filesLink, '', '').pipe(
       tap({
-        next: (files) => {
+        next: ({ data: files }) => {
           ctx.patchState({
             moveFileFiles: {
               data: files,
@@ -69,15 +69,16 @@ export class FilesState {
   @Action(GetFiles)
   getFiles(ctx: StateContext<FilesStateModel>, action: GetFiles) {
     const state = ctx.getState();
-    ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
-    return this.filesService.getFiles(action.filesLink, state.search, state.sort).pipe(
+    ctx.patchState({ files: { ...state.files, isLoading: true, error: null, totalCount: 0 } });
+    return this.filesService.getFiles(action.filesLink, state.search, state.sort, action.page).pipe(
       tap({
-        next: (files) => {
+        next: ({ data, totalCount }) => {
           ctx.patchState({
             files: {
-              data: files,
+              data,
               isLoading: false,
               error: null,
+              totalCount,
             },
           });
         },
