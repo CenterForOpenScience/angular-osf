@@ -11,9 +11,10 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubHeaderComponent } from '@osf/shared/components';
+import { SubHeaderComponent, ViewOnlyLinkMessageComponent } from '@osf/shared/components';
 import { CompareSectionComponent, ViewSectionComponent, WikiListComponent } from '@osf/shared/components/wiki';
 import { ResourceType } from '@osf/shared/enums';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { WikiModes } from '@osf/shared/models';
 import {
   GetCompareVersionContent,
@@ -25,8 +26,6 @@ import {
   ToggleMode,
   WikiSelectors,
 } from '@osf/shared/stores';
-import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
-import { hasViewOnlyParam } from '@shared/helpers';
 
 @Component({
   selector: 'osf-registry-wiki',
@@ -59,9 +58,7 @@ export class RegistryWikiComponent {
   wikiVersions = select(WikiSelectors.getWikiVersions);
   isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
 
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   readonly resourceId = this.route.parent?.snapshot.params['id'];
 
