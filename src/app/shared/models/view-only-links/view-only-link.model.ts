@@ -20,12 +20,6 @@ export interface ViewOnlyLinkModel {
   anonymous: boolean;
 }
 
-export interface ViewOnlyLinkChildren {
-  id: string;
-  title: string;
-  isCurrentResource: boolean;
-}
-
 export interface PaginatedViewOnlyLinksModel {
   items: ViewOnlyLinkModel[];
   total: number;

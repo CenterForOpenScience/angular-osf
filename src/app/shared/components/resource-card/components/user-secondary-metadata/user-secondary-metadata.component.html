@@ -1,0 +1,20 @@
+<div class="flex flex-column gap-2">
+  @if (isDataLoading()) {
+    <p-skeleton width="8rem" height="19px" />
+    <p-skeleton width="10rem" height="19px" />
+    <p-skeleton width="9rem" height="19px" />
+  } @else {
+    @let userCounts = userRelatedCounts();
+    @if (userCounts?.employment) {
+      <p>{{ 'resourceCard.labels.employment' | translate }} {{ userCounts!.employment }}</p>
+    }
+
+    @if (userCounts?.education) {
+      <p>{{ 'resourceCard.labels.education' | translate }} {{ userCounts!.education }}</p>
+    }
+
+    <p>{{ 'resourceCard.labels.publicProjects' | translate }} {{ userCounts?.projects }}</p>
+    <p>{{ 'resourceCard.labels.publicRegistrations' | translate }} {{ userCounts?.registrations }}</p>
+    <p>{{ 'resourceCard.labels.publicPreprints' | translate }} {{ userCounts?.preprints }}</p>
+  }
+</div>

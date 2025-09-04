@@ -70,6 +70,8 @@
                   ) | translate
                 "
                 severity="secondary"
+                [disabled]="isEmailsSubmitting()"
+                [loading]="isEmailsSubmitting()"
                 (click)="resendConfirmation(email)"
               >
               </p-button>

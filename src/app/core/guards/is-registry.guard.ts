@@ -5,8 +5,9 @@ import { map, switchMap } from 'rxjs/operators';
 import { inject } from '@angular/core';
 import { CanMatchFn, Route, Router, UrlSegment } from '@angular/router';
 
-import { CurrentResourceType } from '../../shared/enums';
-import { CurrentResourceSelectors, GetResource } from '../../shared/stores';
+import { UserSelectors } from '@core/store/user';
+import { CurrentResourceType } from '@shared/enums';
+import { CurrentResourceSelectors, GetResource } from '@shared/stores';
 
 export const isRegistryGuard: CanMatchFn = (route: Route, segments: UrlSegment[]) => {
   const store = inject(Store);
@@ -19,8 +20,9 @@ export const isRegistryGuard: CanMatchFn = (route: Route, segments: UrlSegment[]
   }
 
   const currentResource = store.selectSnapshot(CurrentResourceSelectors.getCurrentResource);
+  const currentUser = store.selectSnapshot(UserSelectors.getCurrentUser);
 
-  if (currentResource && currentResource.id === id) {
+  if (currentResource && !id.startsWith(currentResource.id)) {
     if (currentResource.type === CurrentResourceType.Registrations && currentResource.parentId) {
       router.navigate(['/', currentResource.parentId, 'files', id]);
       return true;
@@ -32,7 +34,11 @@ export const isRegistryGuard: CanMatchFn = (route: Route, segments: UrlSegment[]
     }
 
     if (currentResource.type === CurrentResourceType.Users) {
-      router.navigate(['/user', id]);
+      if (currentUser && currentUser.id === currentResource.id) {
+        router.navigate(['/profile']);
+      } else {
+        router.navigate(['/user', id]);
+      }
       return false;
     }
 
@@ -42,7 +48,7 @@ export const isRegistryGuard: CanMatchFn = (route: Route, segments: UrlSegment[]
   return store.dispatch(new GetResource(id)).pipe(
     switchMap(() => store.select(CurrentResourceSelectors.getCurrentResource)),
     map((resource) => {
-      if (!resource || resource.id !== id) {
+      if (!resource || !id.startsWith(resource.id)) {
         return false;
       }
 
@@ -57,7 +63,11 @@ export const isRegistryGuard: CanMatchFn = (route: Route, segments: UrlSegment[]
       }
 
       if (resource.type === CurrentResourceType.Users) {
-        router.navigate(['/profile', id]);
+        if (currentUser && currentUser.id === resource.id) {
+          router.navigate(['/profile']);
+        } else {
+          router.navigate(['/user', id]);
+        }
         return false;
       }
 

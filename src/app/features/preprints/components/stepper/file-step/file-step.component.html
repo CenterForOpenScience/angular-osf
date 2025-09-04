@@ -128,7 +128,13 @@
     class="w-6 md:w-9rem"
     styleClass="w-full"
     [label]="'common.buttons.next' | translate"
-    (onClick)="nextButtonClicked()"
     [disabled]="!preprint()?.primaryFileId || versionFileMode()"
+    [pTooltip]="
+      !preprint()?.primaryFileId || versionFileMode()
+        ? ('preprints.preprintStepper.common.validation.fillRequiredFields' | translate)
+        : ''
+    "
+    tooltipPosition="top"
+    (onClick)="nextButtonClicked()"
   />
 </section>

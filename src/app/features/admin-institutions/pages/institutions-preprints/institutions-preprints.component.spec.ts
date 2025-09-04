@@ -12,8 +12,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
+import { InstitutionsSearchState } from '@osf/shared/stores/institutions-search';
 import { LoadingSpinnerComponent } from '@shared/components';
-import { InstitutionsSearchState } from '@shared/stores';
 
 import { InstitutionsPreprintsComponent } from './institutions-preprints.component';
 

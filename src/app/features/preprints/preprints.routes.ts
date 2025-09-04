@@ -7,9 +7,6 @@ import { PreprintsComponent } from '@osf/features/preprints/preprints.component'
 import { PreprintState } from '@osf/features/preprints/store/preprint';
 import { PreprintProvidersState } from '@osf/features/preprints/store/preprint-providers';
 import { PreprintStepperState } from '@osf/features/preprints/store/preprint-stepper';
-import { PreprintsDiscoverState } from '@osf/features/preprints/store/preprints-discover';
-import { PreprintsResourcesFiltersState } from '@osf/features/preprints/store/preprints-resources-filters';
-import { PreprintsResourcesFiltersOptionsState } from '@osf/features/preprints/store/preprints-resources-filters-options';
 import { ConfirmLeavingGuard } from '@shared/guards';
 import { CitationsState, ContributorsState, SubjectsState } from '@shared/stores';
 
@@ -22,9 +19,6 @@ export const preprintsRoutes: Routes = [
     providers: [
       provideStates([
         PreprintProvidersState,
-        PreprintsDiscoverState,
-        PreprintsResourcesFiltersState,
-        PreprintsResourcesFiltersOptionsState,
         PreprintStepperState,
         ContributorsState,
         SubjectsState,

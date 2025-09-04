@@ -1,8 +1,8 @@
 import {
   User,
   UserData,
+  UserDataJsonApi,
   UserDataResponseJsonApi,
-  UserGetResponse,
   UserNamesJsonApi,
   UserSettings,
   UserSettingsGetResponse,
@@ -17,7 +17,7 @@ export class UserMapper {
     };
   }
 
-  static fromUserGetResponse(user: UserGetResponse): User {
+  static fromUserGetResponse(user: UserDataJsonApi): User {
     return {
       id: user.id,
       fullName: user.attributes.full_name,

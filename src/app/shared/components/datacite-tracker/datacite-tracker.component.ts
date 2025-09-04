@@ -1,20 +1,21 @@
-import { filter, Observable, switchMap, take } from 'rxjs';
+import { filter, map, Observable, switchMap, take } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { Identifier } from '@shared/models';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 @Injectable()
 export abstract class DataciteTrackerComponent {
   private dataciteService = inject(DataciteService);
-
   /**
-   * Abstract method to retrieve the DOI (Digital Object Identifier) of the resource.
+   * Abstract method to retrieve an observable of resource to be tracked.
+   * This method is generic enough to support all objects that have `identifiers` property.
    * Must be implemented by subclasses.
    *
-   * @returns An Observable that emits a string DOI or null if unavailable.
+   * @returns An Observable that emits an item which may contain DOI identifier or null .
    */
-  protected abstract getDoi(): Observable<string | null>;
+  protected abstract get trackable(): Observable<{ identifiers?: Identifier[] } | null>;
 
   /**
    * Sets up a one-time effect to log a "view" event to Datacite for the resource DOI.
@@ -24,9 +25,11 @@ export abstract class DataciteTrackerComponent {
    * @returns An Observable that completes after logging the view.
    */
   protected setupDataciteViewTrackerEffect(): Observable<void> {
-    return this.getDoi().pipe(
-      take(1),
+    return this.trackable.pipe(
+      filter((item) => item != null),
+      map((item) => item?.identifiers?.find((identifier) => identifier.category == 'doi')?.value ?? null),
       filter((doi): doi is string => !!doi),
+      take(1),
       switchMap((doi) => this.dataciteService.logView(doi))
     );
   }

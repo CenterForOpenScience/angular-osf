@@ -1,5 +1,15 @@
 # Docker
 
+## Index
+
+- [Overview](#overview)
+- [Docker Commands](#docker-commands)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## Overview
+
 The OSF angular project uses a docker image to simplify the developer process.
 
 ### Volumes
@@ -32,6 +42,8 @@ If you don’t see the site, ensure the start script includes:
 ```json
 "start": "ng serve --host 0.0.0.0 --port 4200 --poll 2000"
 ```
+
+---
 
 ## Docker Commands
 
@@ -104,6 +116,8 @@ docker rmi <image_name>:<tag>
 ```bash
 docker rmi -f <IMAGE_ID>
 ```
+
+---
 
 ## Troubleshooting
 

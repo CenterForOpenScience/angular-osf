@@ -16,7 +16,7 @@ export const MOCK_RESOURCE: Resource = {
   provider: { id: 'https://api.osf.io/v2/providers/provider1', name: 'Test Provider' },
   license: { id: 'https://api.osf.io/v2/licenses/license1', name: 'MIT License' },
   registrationTemplate: 'Test Template',
-  doi: '10.1234/test.123',
+  identifier: '10.1234/test.123',
   conflictOfInterestResponse: 'no-conflict-of-interest',
   orcid: 'https://orcid.org/0000-0000-0000-0000',
   hasDataResource: true,

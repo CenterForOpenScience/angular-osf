@@ -28,10 +28,12 @@ import { environment } from 'src/environments/environment';
 export class RegistrationsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+
   readonly projectId = toSignal(this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined));
-  protected registrations = select(RegistrationsSelectors.getRegistrations);
-  protected isRegistrationsLoading = select(RegistrationsSelectors.isRegistrationsLoading);
-  protected actions = createDispatchMap({ getRegistrations: GetRegistrations });
+
+  registrations = select(RegistrationsSelectors.getRegistrations);
+  isRegistrationsLoading = select(RegistrationsSelectors.isRegistrationsLoading);
+  actions = createDispatchMap({ getRegistrations: GetRegistrations });
 
   ngOnInit(): void {
     this.actions.getRegistrations(this.projectId());

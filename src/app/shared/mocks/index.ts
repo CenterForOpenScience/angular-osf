@@ -19,4 +19,6 @@ export { MOCK_PROVIDER } from './provider.mock';
 export { MOCK_REGISTRATION } from './registration.mock';
 export * from './resource.mock';
 export { MOCK_REVIEW } from './review.mock';
+export { MOCK_SCOPES } from './scope.mock';
+export { MOCK_TOKEN } from './token.mock';
 export { TranslateServiceMock } from './translate.service.mock';

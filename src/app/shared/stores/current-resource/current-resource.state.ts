@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 import { handleSectionError } from '@osf/shared/helpers';
 import { ResourceGuidService } from '@osf/shared/services';
 
-import { GetResource, GetResourceChildren, GetResourceDetails } from './current-resource.actions';
+import { GetResource, GetResourceDetails, GetResourceWithChildren } from './current-resource.actions';
 import { CURRENT_RESOURCE_DEFAULTS, CurrentResourceStateModel } from './current-resource.model';
 
 @State<CurrentResourceStateModel>({
@@ -78,8 +78,8 @@ export class CurrentResourceState {
     );
   }
 
-  @Action(GetResourceChildren)
-  getResourceChildren(ctx: StateContext<CurrentResourceStateModel>, action: GetResourceChildren) {
+  @Action(GetResourceWithChildren)
+  getResourceWithChildren(ctx: StateContext<CurrentResourceStateModel>, action: GetResourceWithChildren) {
     const state = ctx.getState();
 
     ctx.patchState({
@@ -90,7 +90,7 @@ export class CurrentResourceState {
       },
     });
 
-    return this.resourceService.getResourceChildren(action.resourceId, action.resourceType).pipe(
+    return this.resourceService.getResourceWithChildren(action.resourceId, action.resourceType).pipe(
       tap((children) => {
         ctx.patchState({
           resourceChildren: {

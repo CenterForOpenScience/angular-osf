@@ -1,9 +1,5 @@
 export { AdvisoryBoardComponent } from './advisory-board/advisory-board.component';
 export { BrowseBySubjectsComponent } from './browse-by-subjects/browse-by-subjects.component';
-export { PreprintsCreatorsFilterComponent } from './filters/preprints-creators-filter/preprints-creators-filter.component';
-export { PreprintsDateCreatedFilterComponent } from './filters/preprints-date-created-filter/preprints-date-created-filter.component';
-export { PreprintsInstitutionFilterComponent } from './filters/preprints-institution-filter/preprints-institution-filter.component';
-export { PreprintsLicenseFilterComponent } from './filters/preprints-license-filter/preprints-license-filter.component';
 export { AdditionalInfoComponent } from './preprint-details/additional-info/additional-info.component';
 export { GeneralInformationComponent } from './preprint-details/general-information/general-information.component';
 export { ModerationStatusBannerComponent } from './preprint-details/moderation-status-banner/moderation-status-banner.component';
@@ -16,10 +12,6 @@ export { PreprintServicesComponent } from './preprint-services/preprint-services
 export { PreprintsHelpDialogComponent } from './preprints-help-dialog/preprints-help-dialog.component';
 export { AuthorAssertionsStepComponent } from './stepper/author-assertion-step/author-assertions-step.component';
 export { SupplementsStepComponent } from './stepper/supplements-step/supplements-step.component';
-export { PreprintsFilterChipsComponent } from '@osf/features/preprints/components/filters/preprints-filter-chips/preprints-filter-chips.component';
-export { PreprintsResourcesComponent } from '@osf/features/preprints/components/filters/preprints-resources/preprints-resources.component';
-export { PreprintsResourcesFiltersComponent } from '@osf/features/preprints/components/filters/preprints-resources-filters/preprints-resources-filters.component';
-export { PreprintsSubjectFilterComponent } from '@osf/features/preprints/components/filters/preprints-subject-filter/preprints-subject-filter.component';
 export { MakeDecisionComponent } from '@osf/features/preprints/components/preprint-details/make-decision/make-decision.component';
 export { PreprintTombstoneComponent } from '@osf/features/preprints/components/preprint-details/preprint-tombstone/preprint-tombstone.component';
 export { WithdrawDialogComponent } from '@osf/features/preprints/components/preprint-details/withdraw-dialog/withdraw-dialog.component';

@@ -1,11 +1,16 @@
 import { select } from '@ngxs/store';
 
+import { Observable } from 'rxjs';
+
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 
 import { pathJoin } from '@osf/shared/helpers';
 import { MetaTagsService } from '@osf/shared/services';
+import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
+import { Identifier } from '@shared/models';
 
 import { RegistryOverviewSelectors } from './store/registry-overview';
 
@@ -19,20 +24,27 @@ import { environment } from 'src/environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
 })
-export class RegistryComponent {
+export class RegistryComponent extends DataciteTrackerComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column';
 
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
 
   readonly registry = select(RegistryOverviewSelectors.getRegistry);
+  readonly registry$ = toObservable(select(RegistryOverviewSelectors.getRegistry));
 
   constructor() {
+    super();
     effect(() => {
       if (this.registry()) {
         this.setMetaTags();
       }
     });
+    this.setupDataciteViewTrackerEffect().subscribe();
+  }
+
+  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
+    return this.registry$;
   }
 
   private setMetaTags(): void {

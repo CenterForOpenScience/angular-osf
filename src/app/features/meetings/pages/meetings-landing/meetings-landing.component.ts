@@ -29,8 +29,7 @@ import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
 import { TABLE_PARAMS } from '@shared/constants';
 import { SortOrder } from '@shared/enums';
 import { parseQueryFilterParams } from '@shared/helpers';
-import { QueryParams, TableParameters } from '@shared/models';
-import { SearchFilters } from '@shared/models/filters';
+import { QueryParams, SearchFilters, TableParameters } from '@shared/models';
 
 import { MeetingsFeatureCardComponent } from '../../components';
 import { MEETINGS_FEATURE_CARDS, PARTNER_ORGANIZATIONS } from '../../constants';

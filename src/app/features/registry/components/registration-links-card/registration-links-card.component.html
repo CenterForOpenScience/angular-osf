@@ -103,7 +103,7 @@
           <h3 class="mb-1">{{ 'shared.resources.title' | translate }}</h3>
           <osf-data-resources
             [vertical]="true"
-            [resourceId]="registrationData().id"
+            [absoluteUrl]="registrationData().id"
             [hasData]="registrationDataTyped()?.hasData || isComponentData()"
             [hasAnalyticCode]="registrationDataTyped()?.hasAnalyticCode || isComponentData()"
             [hasMaterials]="registrationDataTyped()?.hasMaterials || isComponentData()"

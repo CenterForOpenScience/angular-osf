@@ -4,9 +4,9 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ResourceTab } from '@osf/shared/enums';
-import { getResourceTypes, handleSectionError } from '@osf/shared/helpers';
-import { FilesService, SearchService } from '@osf/shared/services';
+import { ResourceType } from '@osf/shared/enums';
+import { getResourceTypeStringFromEnum, handleSectionError } from '@osf/shared/helpers';
+import { GlobalSearchService } from '@osf/shared/services';
 
 import { RegistriesService } from '../services';
 
@@ -47,15 +47,16 @@ import {
 } from './registries.actions';
 import { RegistriesStateModel } from './registries.model';
 
+import { environment } from 'src/environments/environment';
+
 @State<RegistriesStateModel>({
   name: 'registries',
   defaults: { ...DefaultState },
 })
 @Injectable()
 export class RegistriesState {
-  searchService = inject(SearchService);
+  searchService = inject(GlobalSearchService);
   registriesService = inject(RegistriesService);
-  fileService = inject(FilesService);
 
   providersHandler = inject(ProvidersHandlers);
   projectsHandler = inject(ProjectsHandlers);
@@ -72,9 +73,13 @@ export class RegistriesState {
       },
     });
 
-    const resourceType = getResourceTypes(ResourceTab.Registrations);
+    const params: Record<string, string> = {
+      'cardSearchFilter[resourceType]': getResourceTypeStringFromEnum(ResourceType.Registration),
+      'cardSearchFilter[accessService]': `${environment.webUrl}/`,
+      'page[size]': '10',
+    };
 
-    return this.searchService.getResources({}, '', '', resourceType).pipe(
+    return this.searchService.getResources(params).pipe(
       tap((registries) => {
         ctx.patchState({
           registries: {

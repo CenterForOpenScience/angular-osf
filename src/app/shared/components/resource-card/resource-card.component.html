@@ -1,159 +1,115 @@
 <div class="resource">
   <p-accordion (onOpen)="onOpen()">
     <p-accordion-panel value="0">
-      <p-accordion-header class="flex flex-row column-gap-3 align-items-start p-0">
-        <div class="flex flex-column row-gap-3">
-          @if (item().resourceType && item().resourceType === ResourceType.Agent) {
-            <p class="type">{{ 'resourceCard.type.user' | translate }}</p>
-          } @else if (item().resourceType) {
-            <p class="type">{{ ResourceType[item().resourceType!] }}</p>
-          }
+      <p-accordion-header class="flex flex-row align-items-start gap-3 p-0">
+        <div class="flex flex-column gap-2">
+          <p class="type">{{ cardTypeLabel() | translate }}</p>
 
-          <div class="flex align-items-center column-gap-1">
-            @if (item().resourceType === ResourceType.File && item().fileName) {
-              <a class="title">{{ item().fileName }}</a>
-            } @else {
-              <a
-                tabindex="0"
-                class="title"
-                (click)="$event.stopPropagation(); redirectToResource(item())"
-                (keydown.enter)="$event.stopPropagation(); redirectToResource(item())"
-                >{{ item().title }}</a
-              >
+          <div class="flex align-items-center gap-2">
+            <h2>
+              <a [href]="resource().absoluteUrl">{{ displayTitle() }}</a>
+            </h2>
+            @if (isWithdrawn()) {
+              <p-tag severity="secondary">{{ 'resourceCard.labels.withdrawn' | translate }}</p-tag>
             }
-            @if (item().orcid) {
-              <a [href]="item().orcid" class="orcid-icon">
+            @let orcidValues = orcids();
+            @if (orcidValues.length && orcidValues[0]) {
+              <a [href]="orcidValues[0]" class="orcid-icon-link">
                 <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
               </a>
             }
           </div>
 
-          @if (item().creators?.length) {
-            <div>
-              @for (creator of item().creators!.slice(0, 4); track creator.id; let i = $index) {
-                <a [href]="creator.id" target="_blank">{{ creator.name }}</a>
-                @if (i < item().creators!.length - 1 && i < 3) {
-                  <a>, </a>
-                }
+          @let limit = 4;
+          @if (affiliatedEntities().length > 0) {
+            <div class="line-height-3">
+              @for (affiliatedEntity of affiliatedEntities().slice(0, limit); track $index) {
+                <a [href]="affiliatedEntity.absoluteUrl" target="_blank"
+                  >{{ affiliatedEntity.name }}{{ $last ? '' : ', ' }}
+                </a>
               }
-              @if (item().creators!.length > 4) {
+              @if (resource().creators.length > limit) {
                 <p class="inline">
-                  &nbsp;{{ 'resourceCard.more' | translate: { count: item().creators!.length - 4 } }}
+                  &nbsp;{{ 'resourceCard.andCountMore' | translate: { count: resource().creators.length - limit } }}
                 </p>
               }
             </div>
           }
 
-          @if (item().from?.id && item().from?.name) {
-            <div>
-              <p class="inline mr-1">{{ 'resourceCard.labels.from' | translate }}</p>
-              <a class="inline" [href]="item().from?.id">{{ item().from?.name }}</a>
+          @if (resource().isPartOf) {
+            <div class="flex flex-row gap-1 line-height-3">
+              <p>{{ 'resourceCard.labels.from' | translate }}</p>
+              <a [href]="resource().isPartOf!.absoluteUrl">{{ resource().isPartOf!.name }}</a>
             </div>
           }
 
-          @if (item().dateCreated && item().dateModified) {
-            <p class="date">
-              @if (!isSmall()) {
-                {{ 'resourceCard.labels.dateCreated' | translate }} {{ item().dateCreated | date: 'MMMM d, y' }} |
-                {{ 'resourceCard.labels.dateModified' | translate }}
-                {{ item().dateModified | date: 'MMMM d, y' }}
-              } @else {
-                <div class="flex flex-column row-gap-1">
-                  <p>
-                    {{ 'resourceCard.labels.dateCreated' | translate }} {{ item().dateCreated | date: 'MMMM d, y' }}
-                  </p>
-                  <p>
-                    {{ 'resourceCard.labels.dateModified' | translate }}
-                    {{ item().dateModified | date: 'MMMM d, y' }}
-                  </p>
-                </div>
-              }
-            </p>
+          @if (resource().isContainedBy) {
+            <div class="flex flex-row gap-1 line-height-3">
+              <p>{{ 'resourceCard.labels.from' | translate }}</p>
+              <a [href]="resource().isContainedBy!.absoluteUrl">{{ resource().isContainedBy!.name }}</a>
+            </div>
           }
 
-          @if (item().resourceType === ResourceType.Registration) {
+          @if (dateFields().length > 0) {
+            <div class="flex flex-column md:flex-row line-height-3">
+              @for (dateField of dateFields(); track $index) {
+                <p>{{ dateField.label | translate }}: {{ dateField.date | date: 'MMMM d, y' }}</p>
+
+                @if (!$last && !isSmall()) {
+                  <p class="mx-1">
+                    {{ '|' }}
+                  </p>
+                }
+              }
+            </div>
+          }
+
+          @if (
+            resource().resourceType === ResourceType.Registration ||
+            resource().resourceType === ResourceType.RegistrationComponent
+          ) {
             <osf-data-resources
-              [resourceId]="item().id"
-              [hasData]="item().hasDataResource"
-              [hasAnalyticCode]="item().hasAnalyticCodeResource"
-              [hasMaterials]="item().hasMaterialsResource"
-              [hasPapers]="item().hasPapersResource"
-              [hasSupplements]="item().hasSupplementalResource"
-            ></osf-data-resources>
+              class="m-t-4"
+              [absoluteUrl]="resource().absoluteUrl"
+              [hasData]="!!resource().hasDataResource"
+              [hasAnalyticCode]="resource().hasAnalyticCodeResource"
+              [hasMaterials]="resource().hasMaterialsResource"
+              [hasPapers]="resource().hasPapersResource"
+              [hasSupplements]="resource().hasSupplementalResource"
+            />
           }
         </div>
       </p-accordion-header>
       <p-accordion-content>
-        <div class="content">
-          <hr class="w-full break-line" />
+        <div class="flex flex-column pt-1">
+          <hr class="w-full break-line my-2" />
 
-          @if (item().description) {
-            <p class="description">{{ 'resourceCard.labels.description' | translate }} {{ item().description }}</p>
-          }
-
-          @if (item().provider?.id) {
-            <span>
-              <p>{{ 'resourceCard.labels.registrationProvider' | translate }}&nbsp;</p>
-              <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
-            </span>
-          }
-
-          @if (item().license?.id) {
-            <span>
-              <p>{{ 'resourceCard.labels.license' | translate }}&nbsp;</p>
-              <a [href]="item().license?.id">{{ item().license?.name }}</a>
-            </span>
-          }
-
-          @if (item().registrationTemplate) {
-            <p class="description">
-              {{ 'resourceCard.labels.registrationTemplate' | translate }} {{ item().registrationTemplate }}
-            </p>
-          }
-
-          @if (item().provider?.id) {
-            <span>
-              <p>{{ 'resourceCard.labels.provider' | translate }}&nbsp;</p>
-              <a [href]="item().provider?.id">{{ item().provider?.name }}</a>
-            </span>
-          }
-
-          @if (item().conflictOfInterestResponse && item().conflictOfInterestResponse === 'no-conflict-of-interest') {
-            <p class="description">{{ 'resourceCard.labels.conflictOfInterestResponse' | translate }}</p>
-          }
-
-          @if (item().resourceType !== ResourceType.Agent && item().id) {
-            <span>
-              <p>{{ 'resourceCard.labels.url' | translate }}</p>
-              <a [href]="item().id">{{ item().id }}</a>
-            </span>
-          }
-
-          @if (item().doi) {
-            <span>
-              <p>{{ 'resourceCard.labels.doi' | translate }}&nbsp;</p>
-              <a [href]="item().doi">{{ item().doi }}</a>
-            </span>
-          }
-
-          @if (item().resourceType === ResourceType.Agent) {
-            @if (isLoading) {
-              <p-skeleton width="8rem" height="19px" />
-              <p-skeleton width="10rem" height="19px" />
-              <p-skeleton width="9rem" height="19px" />
-            } @else {
-              <p>{{ 'resourceCard.labels.publicProjects' | translate }} {{ item().publicProjects ?? 0 }}</p>
-              <p>{{ 'resourceCard.labels.publicRegistrations' | translate }} {{ item().publicRegistrations ?? 0 }}</p>
-              <p>{{ 'resourceCard.labels.publicPreprints' | translate }} {{ item().publicPreprints ?? 0 }}</p>
+          @switch (resource().resourceType) {
+            @case (ResourceType.Agent) {
+              <osf-user-secondary-metadata
+                [resource]="resource()"
+                [isDataLoading]="isLoading()"
+                [userRelatedCounts]="userRelatedCounts()"
+              />
             }
-          }
-
-          @if (item().employment) {
-            <p>{{ 'resourceCard.labels.employment' | translate }} {{ item().employment }}</p>
-          }
-
-          @if (item().education) {
-            <p>{{ 'resourceCard.labels.education' | translate }} {{ item().education }}</p>
+            @case (ResourceType.Registration) {
+              <osf-registration-secondary-metadata [resource]="resource()" />
+            }
+            @case (ResourceType.RegistrationComponent) {
+              <osf-registration-secondary-metadata [resource]="resource()" />
+            }
+            @case (ResourceType.Project) {
+              <osf-project-secondary-metadata [resource]="resource()" />
+            }
+            @case (ResourceType.ProjectComponent) {
+              <osf-project-secondary-metadata [resource]="resource()" />
+            }
+            @case (ResourceType.Preprint) {
+              <osf-preprint-secondary-metadata [resource]="resource()" />
+            }
+            @case (ResourceType.File) {
+              <osf-file-secondary-metadata [resource]="resource()" />
+            }
           }
         </div>
       </p-accordion-content>

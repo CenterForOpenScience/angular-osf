@@ -5,7 +5,7 @@
 } @else if (hasVisibleFilters()) {
   <div class="border-1 bg-white grey-border-color px-4 flex flex-column gap-2 border-round-xl filters">
     <p-accordion (valueChange)="onAccordionToggle($event)">
-      @for (filter of visibleFilters(); track filter.key) {
+      @for (filter of groupedFilters().individual; track filter.key) {
         <p-accordion-panel [value]="filter.key">
           <p-accordion-header>{{ getFilterLabel(filter) }}</p-accordion-header>
           <p-accordion-content>
@@ -29,15 +29,45 @@
             @if (hasFilterContent(filter)) {
               <osf-generic-filter
                 [options]="getFilterOptions(filter)"
+                [searchResults]="getFilterSearchResults(filter)"
                 [isLoading]="isFilterLoading(filter)"
+                [isPaginationLoading]="isFilterPaginationLoading(filter)"
+                [isSearchLoading]="isFilterSearchLoading(filter)"
                 [selectedValue]="getSelectedValue(filter.key)"
                 [placeholder]="getFilterPlaceholder(filter.key) | translate"
                 [filterType]="filter.key"
                 (valueChanged)="onFilterChanged(filter.key, $event)"
+                (searchTextChanged)="onFilterSearch(filter.key, $event)"
+                (loadMoreOptions)="onLoadMoreOptions(filter.key)"
               />
             } @else {
               <p class="text-sm text-gray-500">{{ 'collections.filters.noOptionsAvailable' | translate }}</p>
             }
+          </p-accordion-content>
+        </p-accordion-panel>
+      }
+
+      @for (group of groupedFilters().grouped; track group.key) {
+        <p-accordion-panel [value]="group.key">
+          <p-accordion-header>{{ group.label }}</p-accordion-header>
+          <p-accordion-content>
+            <div class="flex flex-column gap-2">
+              @for (filter of group.filters; track filter.key) {
+                <div class="flex align-items-center gap-2">
+                  <p-checkbox
+                    [value]="isIsPresentFilterChecked(filter.key)"
+                    (onChange)="onCheckboxChange($event, filter)"
+                    [inputId]="'checkbox-' + filter.key"
+                  />
+                  <label [for]="'checkbox-' + filter.key" class="form-check-label cursor-pointer">
+                    {{ getFilterLabel(filter) }}
+                  </label>
+                  @if (filter.resultCount) {
+                    <span class="text-sm text-gray-500">({{ filter.resultCount }})</span>
+                  }
+                </div>
+              }
+            </div>
           </p-accordion-content>
         </p-accordion-panel>
       }

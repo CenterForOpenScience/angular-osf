@@ -5,7 +5,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
 import { TitleCasePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, OnDestroy, output } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -23,11 +23,12 @@ import { BrandService } from '@shared/services';
   styleUrl: './registry-provider-hero.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistryProviderHeroComponent {
+export class RegistryProviderHeroComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
 
+  private readonly WHITE = '#ffffff';
   searchControl = input<FormControl>(new FormControl());
   provider = input.required<RegistryProviderDetails | null>();
   isProviderLoading = input.required<boolean>();
@@ -44,12 +45,17 @@ export class RegistryProviderHeroComponent {
       if (provider) {
         BrandService.applyBranding(provider.brand);
         HeaderStyleHelper.applyHeaderStyles(
+          this.WHITE,
           provider.brand.primaryColor,
-          undefined,
           provider.brand.heroBackgroundImageUrl
         );
       }
     });
+  }
+
+  ngOnDestroy() {
+    HeaderStyleHelper.resetToDefaults();
+    BrandService.resetBranding();
   }
 
   openHelpDialog() {

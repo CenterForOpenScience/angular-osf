@@ -9,13 +9,13 @@ import {
   ProfileSettingsUpdate,
   User,
   UserData,
+  UserDataJsonApi,
   UserDataResponseJsonApi,
-  UserGetResponse,
+  UserResponseJsonApi,
   UserSettings,
   UserSettingsGetResponse,
 } from '@osf/shared/models';
-
-import { JsonApiService } from '../../shared/services';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 
@@ -24,6 +24,12 @@ import { environment } from 'src/environments/environment';
 })
 export class UserService {
   jsonApiService = inject(JsonApiService);
+
+  getUserById(userId: string): Observable<User> {
+    return this.jsonApiService
+      .get<UserResponseJsonApi>(`${environment.apiUrl}/users/${userId}/`)
+      .pipe(map((response) => UserMapper.fromUserGetResponse(response.data)));
+  }
 
   getCurrentUser(): Observable<UserData> {
     return this.jsonApiService
@@ -49,7 +55,7 @@ export class UserService {
     const patchedData = key === ProfileSettingsKey.User ? data : { [key]: data };
 
     return this.jsonApiService
-      .patch<UserGetResponse>(`${environment.apiUrl}/users/${userId}/`, {
+      .patch<UserDataJsonApi>(`${environment.apiUrl}/users/${userId}/`, {
         data: { type: 'users', id: userId, attributes: patchedData },
       })
       .pipe(map((response) => UserMapper.fromUserGetResponse(response)));
