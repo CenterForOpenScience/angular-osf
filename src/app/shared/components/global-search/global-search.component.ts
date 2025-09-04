@@ -26,17 +26,17 @@ import {
   ClearFilterSearchResults,
   FetchResources,
   FetchResourcesByLink,
+  GlobalSearchSelectors,
   LoadFilterOptions,
   LoadFilterOptionsAndSetValues,
   LoadFilterOptionsWithSearch,
   LoadMoreFilterOptions,
-  OsfSearchSelectors,
   ResetSearchState,
   SetResourceType,
   SetSearchText,
   SetSortBy,
   UpdateFilterValue,
-} from '@shared/stores/osf-search';
+} from '@shared/stores/global-search';
 
 import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
 import { ReusableFilterComponent } from '../reusable-filter/reusable-filter.component';
@@ -80,20 +80,20 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
 
   resourceTabOptions = input<TabOption[]>([]);
 
-  resources = select(OsfSearchSelectors.getResources);
-  areResourcesLoading = select(OsfSearchSelectors.getResourcesLoading);
-  resourcesCount = select(OsfSearchSelectors.getResourcesCount);
+  resources = select(GlobalSearchSelectors.getResources);
+  areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
+  resourcesCount = select(GlobalSearchSelectors.getResourcesCount);
 
-  filters = select(OsfSearchSelectors.getFilters);
-  filterValues = select(OsfSearchSelectors.getFilterValues);
-  filterSearchCache = select(OsfSearchSelectors.getFilterSearchCache);
-  filterOptionsCache = select(OsfSearchSelectors.getFilterOptionsCache);
+  filters = select(GlobalSearchSelectors.getFilters);
+  filterValues = select(GlobalSearchSelectors.getFilterValues);
+  filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
+  filterOptionsCache = select(GlobalSearchSelectors.getFilterOptionsCache);
 
-  sortBy = select(OsfSearchSelectors.getSortBy);
-  first = select(OsfSearchSelectors.getFirst);
-  next = select(OsfSearchSelectors.getNext);
-  previous = select(OsfSearchSelectors.getPrevious);
-  resourceType = select(OsfSearchSelectors.getResourceType);
+  sortBy = select(GlobalSearchSelectors.getSortBy);
+  first = select(GlobalSearchSelectors.getFirst);
+  next = select(GlobalSearchSelectors.getNext);
+  previous = select(GlobalSearchSelectors.getPrevious);
+  resourceType = select(GlobalSearchSelectors.getResourceType);
 
   provider = input<PreprintProviderDetails | null>(null);
   searchControlInput = input<FormControl | null>(null);

@@ -11,7 +11,7 @@ import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { FetchInstitutionById, InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
 import { GlobalSearchComponent } from '@shared/components';
-import { SetDefaultFilterValue } from '@shared/stores/osf-search';
+import { SetDefaultFilterValue } from '@shared/stores/global-search';
 
 @Component({
   selector: 'osf-institutions-search',

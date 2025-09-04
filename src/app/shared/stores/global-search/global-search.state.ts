@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { getResourceTypeStringFromEnum } from '@shared/helpers';
 import { ResourcesData } from '@shared/models';
-import { SearchService } from '@shared/services';
+import { GlobalSearchService } from '@shared/services';
 
 import {
   ClearFilterSearchResults,
@@ -22,21 +22,21 @@ import {
   SetSearchText,
   SetSortBy,
   UpdateFilterValue,
-} from './osf-search.actions';
-import { OSF_SEARCH_STATE_DEFAULTS, OsfSearchStateModel } from './osf-search.model';
+} from './global-search.actions';
+import { GLOBAL_SEARCH_STATE_DEFAULTS, GlobalSearchStateModel } from './global-search.model';
 
 import { environment } from 'src/environments/environment';
 
-@State<OsfSearchStateModel>({
-  name: 'osfSearch',
-  defaults: OSF_SEARCH_STATE_DEFAULTS,
+@State<GlobalSearchStateModel>({
+  name: 'globalSearch',
+  defaults: GLOBAL_SEARCH_STATE_DEFAULTS,
 })
 @Injectable()
-export class OsfSearchState {
-  private searchService = inject(SearchService);
+export class GlobalSearchState {
+  private searchService = inject(GlobalSearchService);
 
   @Action(FetchResources)
-  fetchResources(ctx: StateContext<OsfSearchStateModel>): Observable<ResourcesData> {
+  fetchResources(ctx: StateContext<GlobalSearchStateModel>): Observable<ResourcesData> {
     const state = ctx.getState();
 
     ctx.patchState({ resources: { ...state.resources, isLoading: true } });
@@ -47,7 +47,7 @@ export class OsfSearchState {
   }
 
   @Action(FetchResourcesByLink)
-  fetchResourcesByLink(ctx: StateContext<OsfSearchStateModel>, action: FetchResourcesByLink) {
+  fetchResourcesByLink(ctx: StateContext<GlobalSearchStateModel>, action: FetchResourcesByLink) {
     if (!action.link) return EMPTY;
     return this.searchService
       .getResourcesByLink(action.link)
@@ -55,7 +55,7 @@ export class OsfSearchState {
   }
 
   @Action(LoadFilterOptions)
-  loadFilterOptions(ctx: StateContext<OsfSearchStateModel>, action: LoadFilterOptions) {
+  loadFilterOptions(ctx: StateContext<GlobalSearchStateModel>, action: LoadFilterOptions) {
     const state = ctx.getState();
     const filterKey = action.filterKey;
     const cachedOptions = state.filterOptionsCache[filterKey];
@@ -97,7 +97,7 @@ export class OsfSearchState {
   }
 
   @Action(LoadMoreFilterOptions)
-  loadMoreFilterOptions(ctx: StateContext<OsfSearchStateModel>, action: LoadMoreFilterOptions) {
+  loadMoreFilterOptions(ctx: StateContext<GlobalSearchStateModel>, action: LoadMoreFilterOptions) {
     const state = ctx.getState();
     const filterKey = action.filterKey;
 
@@ -139,7 +139,7 @@ export class OsfSearchState {
   }
 
   @Action(LoadFilterOptionsWithSearch)
-  loadFilterOptionsWithSearch(ctx: StateContext<OsfSearchStateModel>, action: LoadFilterOptionsWithSearch) {
+  loadFilterOptionsWithSearch(ctx: StateContext<GlobalSearchStateModel>, action: LoadFilterOptionsWithSearch) {
     const state = ctx.getState();
     const loadingFilters = state.filters.map((f) => (f.key === filterKey ? { ...f, isSearchLoading: true } : f));
     ctx.patchState({ filters: loadingFilters });
@@ -171,7 +171,7 @@ export class OsfSearchState {
   }
 
   @Action(ClearFilterSearchResults)
-  clearFilterSearchResults(ctx: StateContext<OsfSearchStateModel>, action: ClearFilterSearchResults) {
+  clearFilterSearchResults(ctx: StateContext<GlobalSearchStateModel>, action: ClearFilterSearchResults) {
     const state = ctx.getState();
     const filterKey = action.filterKey;
     const updatedSearchCache = { ...state.filterSearchCache };
@@ -186,7 +186,7 @@ export class OsfSearchState {
   }
 
   @Action(LoadFilterOptionsAndSetValues)
-  loadFilterOptionsAndSetValues(ctx: StateContext<OsfSearchStateModel>, action: LoadFilterOptionsAndSetValues) {
+  loadFilterOptionsAndSetValues(ctx: StateContext<GlobalSearchStateModel>, action: LoadFilterOptionsAndSetValues) {
     const filterValues = action.filterValues;
     const filterKeys = Object.keys(filterValues).filter((key) => filterValues[key]);
     if (!filterKeys.length) return;
@@ -230,40 +230,40 @@ export class OsfSearchState {
   }
 
   @Action(SetDefaultFilterValue)
-  setDefaultFilterValue(ctx: StateContext<OsfSearchStateModel>, action: SetDefaultFilterValue) {
+  setDefaultFilterValue(ctx: StateContext<GlobalSearchStateModel>, action: SetDefaultFilterValue) {
     const updatedFilterValues = { ...ctx.getState().defaultFilterValues, [action.filterKey]: action.value };
     ctx.patchState({ defaultFilterValues: updatedFilterValues });
   }
 
   @Action(UpdateFilterValue)
-  updateFilterValue(ctx: StateContext<OsfSearchStateModel>, action: UpdateFilterValue) {
+  updateFilterValue(ctx: StateContext<GlobalSearchStateModel>, action: UpdateFilterValue) {
     const updatedFilterValues = { ...ctx.getState().filterValues, [action.filterKey]: action.value };
     ctx.patchState({ filterValues: updatedFilterValues });
   }
 
   @Action(SetSortBy)
-  setSortBy(ctx: StateContext<OsfSearchStateModel>, action: SetSortBy) {
+  setSortBy(ctx: StateContext<GlobalSearchStateModel>, action: SetSortBy) {
     ctx.patchState({ sortBy: action.sortBy });
   }
 
   @Action(SetSearchText)
-  setSearchText(ctx: StateContext<OsfSearchStateModel>, action: SetSearchText) {
+  setSearchText(ctx: StateContext<GlobalSearchStateModel>, action: SetSearchText) {
     ctx.patchState({ searchText: action.searchText });
   }
 
   @Action(SetResourceType)
-  setResourceType(ctx: StateContext<OsfSearchStateModel>, action: SetResourceType) {
+  setResourceType(ctx: StateContext<GlobalSearchStateModel>, action: SetResourceType) {
     ctx.patchState({ resourceType: action.type });
   }
 
   @Action(ResetSearchState)
-  resetSearchState(ctx: StateContext<OsfSearchStateModel>) {
+  resetSearchState(ctx: StateContext<GlobalSearchStateModel>) {
     ctx.setState({
-      ...OSF_SEARCH_STATE_DEFAULTS,
+      ...GLOBAL_SEARCH_STATE_DEFAULTS,
     });
   }
 
-  private updateResourcesState(ctx: StateContext<OsfSearchStateModel>, response: ResourcesData) {
+  private updateResourcesState(ctx: StateContext<GlobalSearchStateModel>, response: ResourcesData) {
     const state = ctx.getState();
     const filtersWithCachedOptions = (response.filters || []).map((filter) => {
       const cachedOptions = state.filterOptionsCache[filter.key];
@@ -281,7 +281,7 @@ export class OsfSearchState {
   }
 
   private buildParamsForIndexValueSearch(
-    state: OsfSearchStateModel,
+    state: GlobalSearchStateModel,
     filterKey: string,
     valueSearchText?: string
   ): Record<string, string> {
@@ -293,7 +293,7 @@ export class OsfSearchState {
     };
   }
 
-  private buildParamsForIndexCardSearch(state: OsfSearchStateModel): Record<string, string> {
+  private buildParamsForIndexCardSearch(state: GlobalSearchStateModel): Record<string, string> {
     const filtersParams: Record<string, string> = {};
     Object.entries(state.filterValues).forEach(([key, value]) => {
       if (value) {

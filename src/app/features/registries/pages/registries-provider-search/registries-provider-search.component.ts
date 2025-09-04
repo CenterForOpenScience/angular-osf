@@ -13,7 +13,7 @@ import {
 } from '@osf/features/registries/store/registries-provider-search';
 import { GlobalSearchComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
-import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/osf-search';
+import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/global-search';
 
 @Component({
   selector: 'osf-registries-provider-search',

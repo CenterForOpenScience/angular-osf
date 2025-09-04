@@ -20,7 +20,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root',
 })
-export class SearchService {
+export class GlobalSearchService {
   private readonly jsonApiService = inject(JsonApiService);
 
   getResources(params: Record<string, string>): Observable<ResourcesData> {

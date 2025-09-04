@@ -2,41 +2,41 @@ import { ResourceType } from '@shared/enums';
 import { StringOrNull } from '@shared/helpers';
 
 export class FetchResources {
-  static readonly type = '[OsfSearch] Fetch Resources';
+  static readonly type = '[GlobalSearch] Fetch Resources';
 }
 
 export class FetchResourcesByLink {
-  static readonly type = '[OsfSearch] Fetch Resources By Link';
+  static readonly type = '[GlobalSearch] Fetch Resources By Link';
 
   constructor(public link: string) {}
 }
 
 export class SetResourceType {
-  static readonly type = '[OsfSearch] Set Resource Type';
+  static readonly type = '[GlobalSearch] Set Resource Type';
 
   constructor(public type: ResourceType) {}
 }
 
 export class SetSearchText {
-  static readonly type = '[OsfSearch] Set Search Text';
+  static readonly type = '[GlobalSearch] Set Search Text';
 
   constructor(public searchText: StringOrNull) {}
 }
 
 export class SetSortBy {
-  static readonly type = '[OsfSearch] Set Sort By';
+  static readonly type = '[GlobalSearch] Set Sort By';
 
   constructor(public sortBy: string) {}
 }
 
 export class LoadFilterOptions {
-  static readonly type = '[OsfSearch] Load Filter Options';
+  static readonly type = '[GlobalSearch] Load Filter Options';
 
   constructor(public filterKey: string) {}
 }
 
 export class SetDefaultFilterValue {
-  static readonly type = '[OsfSearch] Set Default Filter Value';
+  static readonly type = '[GlobalSearch] Set Default Filter Value';
 
   constructor(
     public filterKey: string,
@@ -45,7 +45,7 @@ export class SetDefaultFilterValue {
 }
 
 export class UpdateFilterValue {
-  static readonly type = '[OsfSearch] Update Filter Value';
+  static readonly type = '[GlobalSearch] Update Filter Value';
 
   constructor(
     public filterKey: string,
@@ -54,13 +54,13 @@ export class UpdateFilterValue {
 }
 
 export class LoadFilterOptionsAndSetValues {
-  static readonly type = '[OsfSearch] Load Filter Options And Set Values';
+  static readonly type = '[GlobalSearch] Load Filter Options And Set Values';
 
   constructor(public filterValues: Record<string, StringOrNull>) {}
 }
 
 export class LoadFilterOptionsWithSearch {
-  static readonly type = '[OsfSearch] Load Filter Options With Search';
+  static readonly type = '[GlobalSearch] Load Filter Options With Search';
 
   constructor(
     public filterKey: string,
@@ -69,17 +69,17 @@ export class LoadFilterOptionsWithSearch {
 }
 
 export class ClearFilterSearchResults {
-  static readonly type = '[OsfSearch] Clear Filter Search Results';
+  static readonly type = '[GlobalSearch] Clear Filter Search Results';
 
   constructor(public filterKey: string) {}
 }
 
 export class LoadMoreFilterOptions {
-  static readonly type = '[OsfSearch] Load More Filter Options';
+  static readonly type = '[GlobalSearch] Load More Filter Options';
 
   constructor(public filterKey: string) {}
 }
 
 export class ResetSearchState {
-  static readonly type = '[OsfSearch] Reset Search State';
+  static readonly type = '[GlobalSearch] Reset Search State';
 }

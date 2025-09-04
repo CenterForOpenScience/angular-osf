@@ -9,7 +9,7 @@ import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
 import { BrandService } from '@osf/shared/services';
 import { GlobalSearchComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
-import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/osf-search';
+import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/global-search';
 
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
 

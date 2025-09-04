@@ -9,7 +9,7 @@ import { SetUserProfile } from '@osf/features/profile/store';
 import { GlobalSearchComponent } from '@shared/components';
 import { SEARCH_TAB_OPTIONS } from '@shared/constants';
 import { ResourceType } from '@shared/enums';
-import { SetDefaultFilterValue, UpdateFilterValue } from '@shared/stores/osf-search';
+import { SetDefaultFilterValue, UpdateFilterValue } from '@shared/stores/global-search';
 
 @Component({
   selector: 'osf-my-profile',

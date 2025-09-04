@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { ResourceType } from '@osf/shared/enums';
 import { getResourceTypeStringFromEnum, handleSectionError } from '@osf/shared/helpers';
-import { SearchService } from '@osf/shared/services';
+import { GlobalSearchService } from '@osf/shared/services';
 
 import { RegistriesService } from '../services';
 
@@ -55,7 +55,7 @@ import { environment } from 'src/environments/environment';
 })
 @Injectable()
 export class RegistriesState {
-  searchService = inject(SearchService);
+  searchService = inject(GlobalSearchService);
   registriesService = inject(RegistriesService);
 
   providersHandler = inject(ProvidersHandlers);

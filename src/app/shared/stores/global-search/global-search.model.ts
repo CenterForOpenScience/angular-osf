@@ -2,7 +2,7 @@ import { StringOrNull } from '@osf/shared/helpers';
 import { AsyncStateModel, DiscoverableFilter, Resource, SelectOption } from '@osf/shared/models';
 import { ResourceType } from '@shared/enums';
 
-export interface OsfSearchStateModel {
+export interface GlobalSearchStateModel {
   resources: AsyncStateModel<Resource[]>;
   filters: DiscoverableFilter[];
   defaultFilterValues: Record<string, string>;
@@ -19,7 +19,7 @@ export interface OsfSearchStateModel {
   resourceType: ResourceType;
 }
 
-export const OSF_SEARCH_STATE_DEFAULTS = {
+export const GLOBAL_SEARCH_STATE_DEFAULTS = {
   resources: {
     data: [],
     isLoading: false,
