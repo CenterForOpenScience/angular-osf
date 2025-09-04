@@ -3,12 +3,13 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { ChangeDetectionStrategy, Component, HostBinding, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { ProfileInformationComponent } from '@osf/features/profile/components';
-import { FetchUserProfile, ProfileSelectors } from '@osf/features/profile/store';
-import { GlobalSearchComponent, LoadingSpinnerComponent } from '@shared/components';
-import { SEARCH_TAB_OPTIONS } from '@shared/constants';
-import { ResourceType } from '@shared/enums';
-import { SetDefaultFilterValue } from '@shared/stores/global-search';
+import { GlobalSearchComponent, LoadingSpinnerComponent } from '@osf/shared/components';
+import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
+import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
+
+import { ProfileInformationComponent } from '../../components';
+import { FetchUserProfile, ProfileSelectors } from '../../store';
 
 @Component({
   selector: 'osf-user-profile',

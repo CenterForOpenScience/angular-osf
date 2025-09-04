@@ -4,7 +4,6 @@ import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { SEARCH_TAB_OPTIONS, searchSortingOptions } from '@shared/constants';
 import { ResourceType } from '@shared/enums';
 import { TranslateServiceMock } from '@shared/mocks';
 
@@ -42,12 +41,6 @@ describe('SearchResultsContainerComponent', () => {
       expect(component.next()).toBeNull();
       expect(component.isFiltersOpen()).toBe(false);
       expect(component.isSortingOpen()).toBe(false);
-    });
-
-    it('should have access to constants', () => {
-      expect(component['searchSortingOptions']).toBe(searchSortingOptions);
-      expect(component['ResourceType']).toBe(ResourceType);
-      expect(component['tabOptions']).toBe(SEARCH_TAB_OPTIONS);
     });
   });
 

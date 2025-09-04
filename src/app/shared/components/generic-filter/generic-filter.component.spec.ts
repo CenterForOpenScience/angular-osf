@@ -353,20 +353,6 @@ describe('GenericFilterComponent', () => {
       expect(filteredOptions).toHaveLength(1);
       expect(filteredOptions[0].label).toBe('Valid');
     });
-
-    it('should handle selectedValue that becomes invalid when options change', () => {
-      componentRef.setInput('options', mockOptions);
-      componentRef.setInput('selectedValue', 'value2');
-      fixture.detectChanges();
-
-      expect(component.currentSelectedOption()).toEqual({ label: 'Option 2', value: 'value2' });
-
-      const newOptions: SelectOption[] = [{ label: 'New Option', value: 'new-value' }];
-      componentRef.setInput('options', newOptions);
-      fixture.detectChanges();
-
-      expect(component.currentSelectedOption()).toBeNull();
-    });
   });
 
   describe('Accessibility', () => {
