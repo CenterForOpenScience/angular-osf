@@ -22,12 +22,13 @@ import { TranslationServiceMock } from './mocks/translation.service.mock';
     provideHttpClientTesting(),
     TranslationServiceMock,
     EnvironmentTokenMock,
+    ToastServiceMock,
   ],
 })
 export class OSFTestingModule {}
 
 @NgModule({
   imports: [OSFTestingModule],
-  providers: [StoreMock, ToastServiceMock],
+  providers: [StoreMock],
 })
 export class OSFTestingStoreModule {}

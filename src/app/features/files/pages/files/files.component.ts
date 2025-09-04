@@ -42,18 +42,18 @@ import {
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
-import { GoogleFilePickerComponent } from '@osf/shared/components/addons/folder-selector/google-file-picker/google-file-picker.component';
-import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import {
   FilesTreeComponent,
   FormSelectComponent,
   LoadingSpinnerComponent,
   SearchInputComponent,
   SubHeaderComponent,
-} from '@shared/components';
-import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
+  ViewOnlyLinkMessageComponent,
+} from '@osf/shared/components';
+import { GoogleFilePickerComponent } from '@osf/shared/components/addons/folder-selector/google-file-picker/google-file-picker.component';
+import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
+import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile, StorageItemModel } from '@shared/models';
 import { FilesService } from '@shared/services';
 
@@ -204,7 +204,7 @@ export class FilesComponent {
     effect(() => {
       const rootFolders = this.rootFolders();
       if (rootFolders) {
-        const osfRootFolder = rootFolders.find((folder) => folder.provider === 'osfstorage');
+        const osfRootFolder = rootFolders.find((folder: OsfFile) => folder.provider === 'osfstorage');
         if (osfRootFolder) {
           this.currentRootFolder.set({
             label: this.translateService.instant('files.storageLocation'),
