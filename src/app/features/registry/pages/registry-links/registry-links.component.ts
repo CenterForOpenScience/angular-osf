@@ -8,11 +8,11 @@ import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } fr
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
-import { RegistrationLinksCardComponent } from '@osf/features/registry/components';
-import { LinkedNode, LinkedRegistration } from '@osf/features/registry/models';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
-import { LoaderService } from '@shared/services';
+import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
+import { LoaderService } from '@osf/shared/services';
 
+import { RegistrationLinksCardComponent } from '../../components';
+import { LinkedNode, LinkedRegistration } from '../../models';
 import {
   GetBibliographicContributors,
   GetBibliographicContributorsForRegistration,
@@ -35,7 +35,7 @@ export class RegistryLinksComponent implements OnInit {
 
   private registryId = signal('');
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getLinkedNodes: GetLinkedNodes,
     getLinkedRegistrations: GetLinkedRegistrations,
     getBibliographicContributors: GetBibliographicContributors,
@@ -46,23 +46,21 @@ export class RegistryLinksComponent implements OnInit {
   nodes = signal<LinkedNode[]>([]);
   registrations = signal<LinkedRegistration[]>([]);
 
-  protected linkedNodes = select(RegistryLinksSelectors.getLinkedNodes);
-  protected linkedNodesLoading = select(RegistryLinksSelectors.getLinkedNodesLoading);
+  linkedNodes = select(RegistryLinksSelectors.getLinkedNodes);
+  linkedNodesLoading = select(RegistryLinksSelectors.getLinkedNodesLoading);
 
-  protected linkedRegistrations = select(RegistryLinksSelectors.getLinkedRegistrations);
-  protected linkedRegistrationsLoading = select(RegistryLinksSelectors.getLinkedRegistrationsLoading);
+  linkedRegistrations = select(RegistryLinksSelectors.getLinkedRegistrations);
+  linkedRegistrationsLoading = select(RegistryLinksSelectors.getLinkedRegistrationsLoading);
 
-  protected bibliographicContributors = select(RegistryLinksSelectors.getBibliographicContributors);
-  protected bibliographicContributorsNodeId = select(RegistryLinksSelectors.getBibliographicContributorsNodeId);
+  bibliographicContributors = select(RegistryLinksSelectors.getBibliographicContributors);
+  bibliographicContributorsNodeId = select(RegistryLinksSelectors.getBibliographicContributorsNodeId);
 
-  protected bibliographicContributorsForRegistration = select(
-    RegistryLinksSelectors.getBibliographicContributorsForRegistration
-  );
-  protected bibliographicContributorsForRegistrationId = select(
+  bibliographicContributorsForRegistration = select(RegistryLinksSelectors.getBibliographicContributorsForRegistration);
+  bibliographicContributorsForRegistrationId = select(
     RegistryLinksSelectors.getBibliographicContributorsForRegistrationId
   );
 
-  protected schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+  schemaResponse = select(RegistriesSelectors.getSchemaResponse);
 
   constructor() {
     effect(() => {
