@@ -12,7 +12,6 @@ import { ActivatedRoute } from '@angular/router';
 
 import { TextInputComponent } from '@osf/shared/components';
 import { MOCK_STORE } from '@osf/shared/mocks';
-import { MOCK_DRAFT_REGISTRATION } from '@osf/shared/mocks/draft-registration.mock';
 import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 
 import { RegistriesSelectors } from '../../store';
@@ -23,6 +22,7 @@ import { RegistriesSubjectsComponent } from './registries-subjects/registries-su
 import { RegistriesTagsComponent } from './registries-tags/registries-tags.component';
 import { MetadataComponent } from './metadata.component';
 
+import { MOCK_DRAFT_REGISTRATION } from '@testing/mocks/draft-registration.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MetadataComponent', () => {
@@ -95,6 +95,6 @@ describe('MetadataComponent', () => {
     const descriptionFieldLabel = descriptionSection.querySelector('h2');
     expect(descriptionFieldLabel.textContent).toEqual('common.labels.description');
     const descriptionFieldHelpText = descriptionSection.querySelector('p');
-    expect(descriptionFieldHelpText.textContent).toEqual('shared.description.descriptionMessage');
+    expect(descriptionFieldHelpText.textContent).toEqual('shared.description.message');
   });
 });

@@ -85,7 +85,7 @@ module.exports = {
     '<rootDir>/src/app/features/project/wiki',
     '<rootDir>/src/app/features/project/project.component.ts',
     '<rootDir>/src/app/features/registries/pages',
-    '<rootDir>/src/app/features/registries/registreis.component.spec.ts',
+    '<rootDir>/src/app/features/registries/registries.component.spec.ts',
     '<rootDir>/src/app/features/registries/components/metadata/contributors',
     '<rootDir>/src/app/features/registries/components/metadata/registries-license',
     '<rootDir>/src/app/features/registries/components/metadata/registries-subjects',
