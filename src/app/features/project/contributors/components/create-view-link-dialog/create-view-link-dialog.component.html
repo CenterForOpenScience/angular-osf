@@ -33,42 +33,8 @@
     <osf-loading-spinner />
   } @else {
     <div class="flex flex-column gap-2">
-      @for (item of allComponents; track item.id) {
-        <div class="flex gap-1">
-          <p-checkbox
-            variant="filled"
-            binary="true"
-            [class.pl-4]="!item.isCurrentResource"
-            [ngModel]="selectedComponents()[item.id]"
-            (ngModelChange)="onCheckboxToggle(item.id, $event)"
-            [disabled]="item.isCurrentResource"
-          >
-          </p-checkbox>
-          <p>
-            {{ item.title }}
-            @if (item.isCurrentResource) {
-              <span>
-                {{ 'myProjects.settings.viewOnlyLinkCurrentProject' | translate }}
-              </span>
-            }
-          </p>
-        </div>
-      }
-      @if (allComponents.length > 1) {
-        <div class="flex gap-2 justify-content-end">
-          <p-button
-            severity="secondary"
-            size="small"
-            [label]="'myProjects.createProject.affiliation.selectAll' | translate"
-            (click)="selectAllComponents()"
-          />
-          <p-button
-            severity="secondary"
-            size="small"
-            [label]="'myProjects.createProject.affiliation.removeAll' | translate"
-            (click)="deselectAllComponents()"
-          />
-        </div>
+      @for (item of componentsList(); track item.id) {
+        <osf-component-checkbox-item [item]="item" (checkboxChange)="onCheckboxChange(item)" />
       }
     </div>
   }

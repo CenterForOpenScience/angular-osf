@@ -46,5 +46,5 @@ export interface RelationshipWithLinks<T = string> {
     related: RelationshipLink;
     self?: RelationshipLink;
   };
-  data?: RelationshipData<T> | RelationshipData<T>[];
+  data?: RelationshipData<T>;
 }
