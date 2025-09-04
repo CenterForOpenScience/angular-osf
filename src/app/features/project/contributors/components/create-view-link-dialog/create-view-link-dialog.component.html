@@ -34,7 +34,7 @@
   } @else {
     <div class="flex flex-column gap-2">
       @for (item of componentsList(); track item.id) {
-        <osf-component-checkbox-item [item]="item" (checkboxChange)="onCheckboxChange()" />
+        <osf-component-checkbox-item [item]="item" (checkboxChange)="onCheckboxChange(item)" />
       }
     </div>
   }

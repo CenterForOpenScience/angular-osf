@@ -79,13 +79,19 @@ export class CreateViewLinkDialogComponent implements OnInit {
     }
   }
 
-  onCheckboxChange(): void {
-    this.componentsList.update((items) =>
-      items.map((item) => ({
+  onCheckboxChange(changedItem: ViewOnlyLinkComponentItem): void {
+    this.componentsList.update((items) => {
+      let updatedItems = [...items];
+
+      if (!changedItem.checked) {
+        updatedItems = this.uncheckChildren(changedItem.id, updatedItems);
+      }
+
+      return updatedItems.map((item) => ({
         ...item,
-        disabled: item.isCurrentResource ? item.disabled : !this.isParentChecked(item, items),
-      }))
-    );
+        disabled: item.isCurrentResource ? item.disabled : !this.isParentChecked(item, updatedItems),
+      }));
+    });
   }
 
   addLink(): void {
@@ -109,6 +115,23 @@ export class CreateViewLinkDialogComponent implements OnInit {
     const parent = items.find((x) => x.id === item.parentId);
 
     return parent?.checked ?? true;
+  }
+
+  private uncheckChildren(parentId: string, items: ViewOnlyLinkComponentItem[]): ViewOnlyLinkComponentItem[] {
+    let updatedItems = items.map((item) => {
+      if (item.parentId === parentId) {
+        return { ...item, checked: false };
+      }
+      return item;
+    });
+
+    const directChildren = updatedItems.filter((item) => item.parentId === parentId);
+
+    for (const child of directChildren) {
+      updatedItems = this.uncheckChildren(child.id, updatedItems);
+    }
+
+    return updatedItems;
   }
 
   private buildLinkData(
