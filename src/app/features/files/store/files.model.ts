@@ -1,4 +1,4 @@
-import { ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
+import { ContributorModel, Institution, OsfFile, ResourceMetadata } from '@shared/models';
 import { ConfiguredStorageAddonModel } from '@shared/models/addons';
 import { AsyncStateModel } from '@shared/models/store';
 
@@ -17,6 +17,7 @@ export interface FilesStateModel {
   fileMetadata: AsyncStateModel<OsfFileCustomMetadata | null>;
   resourceMetadata: AsyncStateModel<ResourceMetadata | null>;
   contributors: AsyncStateModel<Partial<ContributorModel>[] | null>;
+  institutions: AsyncStateModel<Partial<Institution>[] | null>;
   fileRevisions: AsyncStateModel<OsfFileRevision[] | null>;
   tags: AsyncStateModel<string[]>;
   rootFolders: AsyncStateModel<OsfFile[] | null>;
@@ -56,6 +57,11 @@ export const filesStateDefaults: FilesStateModel = {
     error: null,
   },
   contributors: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  institutions: {
     data: null,
     isLoading: false,
     error: null,

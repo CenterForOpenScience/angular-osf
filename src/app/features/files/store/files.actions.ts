@@ -90,6 +90,15 @@ export class GetFileResourceContributors {
   ) {}
 }
 
+export class GetFileResourceInstitutions {
+  static readonly type = '[Files] Get File Resource Institutions';
+
+  constructor(
+    public resourceId: string,
+    public resourceType: string
+  ) {}
+}
+
 export class SetFileMetadata {
   static readonly type = '[Files] Set File Metadata';
 

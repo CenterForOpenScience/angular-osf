@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { ConfiguredStorageAddonModel, ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
+import { ConfiguredStorageAddonModel, ContributorModel, Institution, OsfFile, ResourceMetadata } from '@shared/models';
 
 import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
 
@@ -86,6 +86,11 @@ export class FilesSelectors {
   @Selector([FilesState])
   static isResourceContributorsLoading(state: FilesStateModel): boolean {
     return state.contributors.isLoading;
+  }
+
+  @Selector([FilesState])
+  static getInstitutions(state: FilesStateModel): Partial<Institution>[] | null {
+    return state.institutions.data;
   }
 
   @Selector([FilesState])

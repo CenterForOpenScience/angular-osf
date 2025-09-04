@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { MapResourceMetadata } from '@osf/features/files/mappers';
 import { handleSectionError } from '@osf/shared/helpers';
-import { FilesService, ToastService } from '@shared/services';
+import { FilesService, InstitutionsService, ToastService } from '@shared/services';
 
 import {
   CreateFolder,
@@ -15,6 +15,7 @@ import {
   GetFile,
   GetFileMetadata,
   GetFileResourceContributors,
+  GetFileResourceInstitutions,
   GetFileResourceMetadata,
   GetFileRevisions,
   GetFiles,
@@ -40,6 +41,7 @@ import { filesStateDefaults, FilesStateModel } from './files.model';
 })
 export class FilesState {
   filesService = inject(FilesService);
+  institutionsService = inject(InstitutionsService);
   toastService = inject(ToastService);
 
   @Action(GetMoveFileFiles)
@@ -241,6 +243,17 @@ export class FilesState {
         },
       }),
       catchError((error) => handleSectionError(ctx, 'contributors', error))
+    );
+  }
+
+  @Action(GetFileResourceInstitutions)
+  getFileResourceInstitutions(ctx: StateContext<FilesStateModel>, action: GetFileResourceInstitutions) {
+    const state = ctx.getState();
+    ctx.patchState({ institutions: { ...state.institutions, isLoading: true, error: null } });
+
+    return this.filesService.getResourceInstitutions(action.resourceId, action.resourceType).pipe(
+      tap((institutions) => ctx.patchState({ institutions: { data: institutions, isLoading: false, error: null } })),
+      catchError((error) => handleSectionError(ctx, 'institutions', error))
     );
   }
 
