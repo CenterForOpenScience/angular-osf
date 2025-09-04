@@ -9,13 +9,13 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, computed, HostBinding, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { WithdrawDialogComponent } from '@osf/features/registry/components';
-import { RegistryOverview } from '@osf/features/registry/models';
-import { MakePublic } from '@osf/features/registry/store/registry-overview';
-import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
-import { RegistryStatus } from '@shared/enums';
-import { hasViewOnlyParam } from '@shared/helpers';
-import { CustomConfirmationService } from '@shared/services';
+import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
+import { CustomConfirmationService } from '@osf/shared/services';
+
+import { RegistryOverview } from '../../models';
+import { MakePublic } from '../../store/registry-overview';
+import { WithdrawDialogComponent } from '../withdraw-dialog/withdraw-dialog.component';
 
 @Component({
   selector: 'osf-registry-statuses',
@@ -27,15 +27,15 @@ import { CustomConfirmationService } from '@shared/services';
 export class RegistryStatusesComponent {
   @HostBinding('class') classes = 'flex-1 flex';
   private readonly router = inject(Router);
-  registry = input.required<RegistryOverview | null>();
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
+
+  registry = input.required<RegistryOverview | null>();
+
   readonly RegistryStatus = RegistryStatus;
   readonly RevisionReviewStates = RevisionReviewStates;
   readonly customConfirmationService = inject(CustomConfirmationService);
-  readonly actions = createDispatchMap({
-    makePublic: MakePublic,
-  });
+  readonly actions = createDispatchMap({ makePublic: MakePublic });
 
   get canWithdraw(): boolean {
     return (

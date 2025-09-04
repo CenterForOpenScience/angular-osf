@@ -2675,9 +2675,9 @@
     "edit": "Edit Resource",
     "delete": "Delete Resource",
     "check": "Check your DOI for accuracy",
-    "deleteText": "Are you sure you want to delete resource",
+    "deleteText": "Are you sure you want to delete resource? This cannot be undone.",
     "selectAResourceType": "Select A Resource Type",
-    "descriptionLabel": "Description(Optional)",
+    "descriptionLabel": "Description (Optional)",
     "typeOptions": {
       "data": "Data",
       "code": "Analytic Code",
