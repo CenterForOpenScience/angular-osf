@@ -13,6 +13,7 @@ interface SelectorMock<T = any> {
 interface ProvideMockStoreOptions {
   selectors?: SelectorMock[];
   signals?: SelectorMock[];
+  actions?: any[];
 }
 
 export function provideMockStore(options: ProvideMockStoreOptions = {}): Provider {
@@ -37,7 +38,7 @@ export function provideMockStore(options: ProvideMockStoreOptions = {}): Provide
     selectSignal: (selector: any) => {
       return signal(signalMap.has(selector) ? signalMap.get(selector) : undefined);
     },
-    dispatch: jest.fn(),
+    dispatch: jest.fn(() => of(true)),
   };
 
   return {

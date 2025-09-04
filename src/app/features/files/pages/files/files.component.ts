@@ -23,6 +23,7 @@ import {
   inject,
   model,
   signal,
+  ViewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -88,6 +89,8 @@ import { environment } from 'src/environments/environment';
   providers: [DialogService, TreeDragDropService],
 })
 export class FilesComponent {
+  @ViewChild(GoogleFilePickerComponent) googleFilePickerComponent!: GoogleFilePickerComponent;
+
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
   private readonly filesService = inject(FilesService);
@@ -361,7 +364,7 @@ export class FilesComponent {
     });
   }
 
-  updateFilesList(): Observable<void> {
+  public updateFilesList = (): Observable<void> => {
     const currentFolder = this.currentFolder();
     if (currentFolder?.relationships.filesLink) {
       this.filesTreeActions.setFilesIsLoading?.(true);
@@ -369,7 +372,7 @@ export class FilesComponent {
     }
 
     return EMPTY;
-  }
+  };
 
   folderIsOpening(value: boolean): void {
     this.isFolderOpening.set(value);
@@ -400,5 +403,10 @@ export class FilesComponent {
         itemId: googleDrive.selectedFolderId,
       });
     }
+  }
+
+  openGoogleFilePicker(): void {
+    this.googleFilePickerComponent.createPicker();
+    this.updateFilesList();
   }
 }
