@@ -1,10 +1,11 @@
 @if (isUserLoading()) {
+  <osf-loading-spinner />
 } @else {
-  <osf-profile-information [currentUser]="currentUser()" />
-
   @if (currentUser()) {
+    <osf-profile-information [currentUser]="currentUser()" />
+
     <div class="m-t-48">
-      <osf-search [resourceTabOptions]="resourceTabOptions" />
+      <osf-global-search [resourceTabOptions]="resourceTabOptions" />
     </div>
   }
 }

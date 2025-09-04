@@ -28,7 +28,6 @@ export { MakeDecisionDialogComponent } from './make-decision-dialog/make-decisio
 export { MarkdownComponent } from './markdown/markdown.component';
 export { MetadataTabsComponent } from './metadata-tabs/metadata-tabs.component';
 export { MyProjectsTableComponent } from './my-projects-table/my-projects-table.component';
-export { OsfSearchComponent } from './osf-search/osf-search.component';
 export { PasswordInputHintComponent } from './password-input-hint/password-input-hint.component';
 export { PieChartComponent } from './pie-chart/pie-chart.component';
 export { ProjectSelectorComponent } from './project-selector/project-selector.component';
@@ -52,3 +51,4 @@ export { ToastComponent } from './toast/toast.component';
 export { TruncatedTextComponent } from './truncated-text/truncated-text.component';
 export { ViewOnlyLinkMessageComponent } from './view-only-link-message/view-only-link-message.component';
 export { ViewOnlyTableComponent } from './view-only-table/view-only-table.component';
+export { GlobalSearchComponent } from '@shared/components/global-search/global-search.component';

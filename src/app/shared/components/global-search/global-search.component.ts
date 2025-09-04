@@ -45,7 +45,7 @@ import { SearchInputComponent } from '../search-input/search-input.component';
 import { SearchResultsContainerComponent } from '../search-results-container/search-results-container.component';
 
 @Component({
-  selector: 'osf-search',
+  selector: 'osf-global-search',
   imports: [
     FilterChipsComponent,
     SearchInputComponent,
@@ -54,11 +54,11 @@ import { SearchResultsContainerComponent } from '../search-results-container/sea
     ReusableFilterComponent,
     SearchHelpTutorialComponent,
   ],
-  templateUrl: './osf-search.component.html',
-  styleUrl: './osf-search.component.scss',
+  templateUrl: './global-search.component.html',
+  styleUrl: './global-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class OsfSearchComponent implements OnInit, OnDestroy {
+export class GlobalSearchComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);

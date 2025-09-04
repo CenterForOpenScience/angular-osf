@@ -10,12 +10,12 @@ import { ActivatedRoute } from '@angular/router';
 import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
 import { FetchInstitutionById, InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
-import { OsfSearchComponent } from '@shared/components';
+import { GlobalSearchComponent } from '@shared/components';
 import { SetDefaultFilterValue } from '@shared/stores/osf-search';
 
 @Component({
   selector: 'osf-institutions-search',
-  imports: [FormsModule, NgOptimizedImage, LoadingSpinnerComponent, SafeHtmlPipe, OsfSearchComponent],
+  imports: [FormsModule, NgOptimizedImage, LoadingSpinnerComponent, SafeHtmlPipe, GlobalSearchComponent],
   templateUrl: './institutions-search.component.html',
   styleUrl: './institutions-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

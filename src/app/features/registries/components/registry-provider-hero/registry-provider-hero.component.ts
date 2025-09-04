@@ -28,6 +28,7 @@ export class RegistryProviderHeroComponent implements OnDestroy {
   private readonly translateService = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
 
+  private readonly WHITE = '#ffffff';
   searchControl = input<FormControl>(new FormControl());
   provider = input.required<RegistryProviderDetails | null>();
   isProviderLoading = input.required<boolean>();
@@ -44,7 +45,7 @@ export class RegistryProviderHeroComponent implements OnDestroy {
       if (provider) {
         BrandService.applyBranding(provider.brand);
         HeaderStyleHelper.applyHeaderStyles(
-          '#ffffff',
+          this.WHITE,
           provider.brand.primaryColor,
           provider.brand.heroBackgroundImageUrl
         );

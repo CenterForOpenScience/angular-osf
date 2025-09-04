@@ -16,10 +16,6 @@
     }
   }
 
-  span {
-    display: inline;
-  }
-
   a {
     font-weight: bold;
     display: inline;
@@ -49,25 +45,6 @@
     display: inline;
     overflow: hidden;
     white-space: wrap;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
-
-  .icon-container {
-    color: var.$dark-blue-1;
-    display: flex;
-    align-items: center;
-    column-gap: 0.3rem;
-
-    &:hover {
-      text-decoration: none;
-      color: var.$pr-blue-1;
-    }
-  }
-
-  .description {
-    line-height: 2rem;
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word;

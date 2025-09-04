@@ -6,14 +6,14 @@ import { Router } from '@angular/router';
 import { UserSelectors } from '@osf/core/store/user';
 import { ProfileInformationComponent } from '@osf/features/profile/components';
 import { SetUserProfile } from '@osf/features/profile/store';
-import { OsfSearchComponent } from '@shared/components';
+import { GlobalSearchComponent } from '@shared/components';
 import { SEARCH_TAB_OPTIONS } from '@shared/constants';
 import { ResourceType } from '@shared/enums';
 import { SetDefaultFilterValue, UpdateFilterValue } from '@shared/stores/osf-search';
 
 @Component({
   selector: 'osf-my-profile',
-  imports: [ProfileInformationComponent, OsfSearchComponent],
+  imports: [ProfileInformationComponent, GlobalSearchComponent],
   templateUrl: './my-profile.component.html',
   styleUrl: './my-profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

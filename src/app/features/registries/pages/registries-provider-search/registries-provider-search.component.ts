@@ -11,13 +11,13 @@ import {
   GetRegistryProviderBrand,
   RegistriesProviderSearchSelectors,
 } from '@osf/features/registries/store/registries-provider-search';
-import { OsfSearchComponent } from '@shared/components';
+import { GlobalSearchComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/osf-search';
 
 @Component({
   selector: 'osf-registries-provider-search',
-  imports: [RegistryProviderHeroComponent, OsfSearchComponent],
+  imports: [RegistryProviderHeroComponent, GlobalSearchComponent],
   templateUrl: './registries-provider-search.component.html',
   styleUrl: './registries-provider-search.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

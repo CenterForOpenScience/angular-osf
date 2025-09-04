@@ -1,23 +1,25 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { ProfileInformationComponent } from '@osf/features/profile/components';
 import { FetchUserProfile, ProfileSelectors } from '@osf/features/profile/store';
-import { OsfSearchComponent } from '@shared/components';
+import { GlobalSearchComponent, LoadingSpinnerComponent } from '@shared/components';
 import { SEARCH_TAB_OPTIONS } from '@shared/constants';
 import { ResourceType } from '@shared/enums';
 import { SetDefaultFilterValue } from '@shared/stores/osf-search';
 
 @Component({
   selector: 'osf-user-profile',
-  imports: [ProfileInformationComponent, OsfSearchComponent],
+  imports: [ProfileInformationComponent, GlobalSearchComponent, LoadingSpinnerComponent],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserProfileComponent implements OnInit {
+  @HostBinding('class') classes = 'flex-1';
+
   private route = inject(ActivatedRoute);
   private actions = createDispatchMap({
     fetchUserProfile: FetchUserProfile,

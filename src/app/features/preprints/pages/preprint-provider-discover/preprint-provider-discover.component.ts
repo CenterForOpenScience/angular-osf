@@ -7,15 +7,15 @@ import { ActivatedRoute } from '@angular/router';
 import { PreprintProviderHeroComponent } from '@osf/features/preprints/components';
 import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
 import { BrandService } from '@osf/shared/services';
-import { OsfSearchComponent } from '@shared/components/osf-search/osf-search.component';
+import { GlobalSearchComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
-import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/osf-search/osf-search.actions';
+import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/osf-search';
 
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
 
 @Component({
   selector: 'osf-preprint-provider-discover',
-  imports: [PreprintProviderHeroComponent, OsfSearchComponent],
+  imports: [PreprintProviderHeroComponent, GlobalSearchComponent],
   templateUrl: './preprint-provider-discover.component.html',
   styleUrl: './preprint-provider-discover.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
