@@ -8,6 +8,15 @@ export class GetActivityLogs {
   ) {}
 }
 
+export class GetRegistrationActivityLogs {
+  static readonly type = '[ActivityLogs] Get Registration Activity Logs';
+  constructor(
+    public registrationId: string,
+    public page = '1',
+    public pageSize: string
+  ) {}
+}
+
 export class ClearActivityLogsStore {
   static readonly type = '[ActivityLogs] Clear Store';
 }
