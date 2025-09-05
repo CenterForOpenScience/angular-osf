@@ -3,16 +3,13 @@
  */
 export const environment = {
   production: false,
-  webUrl: 'https://test.osf.io/',
-  downloadUrl: 'https://test.osf.io/download',
+  webUrl: 'https://test.osf.io',
   apiUrl: 'https://api.test.osf.io/v2',
-  apiUrlV1: 'https://test.osf.io/api/v1',
   apiDomainUrl: 'https://api.test.osf.io',
-  shareDomainUrl: 'https://test-share.osf.io/trove',
+  shareTroveUrl: 'https://test-share.osf.io/trove',
   addonsApiUrl: 'https://addons.test.osf.io/v1',
   fileApiUrl: 'https://files.us.test.osf.io/v1',
   funderApiUrl: 'https://api.crossref.org/',
-  addonsV1Url: 'https://addons.test.osf.io/v1',
   casUrl: 'https://accounts.test.osf.io',
   recaptchaSiteKey: '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
   twitterHandle: 'OSFramework',

@@ -51,7 +51,7 @@ export class AuthService {
   }
 
   register(payload: SignUpModel) {
-    const baseUrl = `${environment.apiUrlV1}/register/`;
+    const baseUrl = `${environment.webUrl}/api/v1/register/`;
     const body = { ...payload, 'g-recaptcha-response': payload.recaptcha, campaign: null };
 
     return this.jsonApiService.post(baseUrl, body);

@@ -297,7 +297,7 @@ export class FilesService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ApiData<null, null, null, { self: string }>[], null>
-      >(`${environment.addonsV1Url}/resource-references`, params)
+      >(`${environment.addonsApiUrl}/resource-references`, params)
       .pipe(map((response) => response.data?.[0]?.links?.self ?? ''));
   }
 
