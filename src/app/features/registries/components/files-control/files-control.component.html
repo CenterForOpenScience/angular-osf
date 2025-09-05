@@ -52,6 +52,8 @@
 
     <osf-files-tree
       [files]="files()"
+      [totalCount]="filesTotalCount()"
+      [storage]="null"
       [currentFolder]="currentFolder()"
       [isLoading]="isFilesLoading()"
       [actions]="filesTreeActions"

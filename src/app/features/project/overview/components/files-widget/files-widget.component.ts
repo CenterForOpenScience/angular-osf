@@ -18,6 +18,7 @@ import {
   signal,
 } from '@angular/core';
 
+import { FileProvider } from '@osf/features/files/constants';
 import {
   FilesSelectors,
   GetConfiguredStorageAddons,
@@ -123,7 +124,7 @@ export class FilesWidgetComponent {
     effect(() => {
       const rootFolders = this.rootFolders();
       if (rootFolders) {
-        const osfRootFolder = rootFolders.find((folder) => folder.provider === 'osfstorage');
+        const osfRootFolder = rootFolders.find((folder) => folder.provider === FileProvider.OsfStorage);
         if (osfRootFolder) {
           this.currentRootFolder.set({
             label: this.osfStorageLabel,
@@ -173,7 +174,7 @@ export class FilesWidgetComponent {
   }
 
   private getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
-    if (provider === 'osfstorage') {
+    if (provider === FileProvider.OsfStorage) {
       return this.osfStorageLabel;
     } else {
       return addons.find((addon) => addon.externalServiceName === provider)?.displayName ?? '';

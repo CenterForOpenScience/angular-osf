@@ -12,7 +12,8 @@ import { RegistriesStateModel } from '../registries.model';
 export class ProjectsHandlers {
   projectsService = inject(ProjectsService);
 
-  getProjects({ patchState }: StateContext<RegistriesStateModel>) {
+  getProjects({ patchState }: StateContext<RegistriesStateModel>, userId: string) {
+    // [NM] TODO: move this parameter to projects.service
     const params: Record<string, unknown> = {
       'filter[current_user_permissions]': 'admin',
     };
@@ -23,8 +24,7 @@ export class ProjectsHandlers {
         isLoading: true,
       },
     });
-    // [NM] TODO: check if need to change 'me' to user id
-    return this.projectsService.fetchProjects('me', params).subscribe({
+    return this.projectsService.fetchProjects(userId, params).subscribe({
       next: (projects: Project[]) => {
         patchState({
           projects: {

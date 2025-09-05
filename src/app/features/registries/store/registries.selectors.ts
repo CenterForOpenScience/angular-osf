@@ -148,6 +148,11 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
+  static getFilesTotalCount(state: RegistriesStateModel): number {
+    return state.files.totalCount;
+  }
+
+  @Selector([RegistriesState])
   static isFilesLoading(state: RegistriesStateModel): boolean {
     return state.files.isLoading;
   }

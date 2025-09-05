@@ -946,7 +946,6 @@
     }
   },
   "files": {
-    "title": "Files",
     "storageLocation": "OSF Storage",
     "searchPlaceholder": "Search your projects",
     "sort": {
