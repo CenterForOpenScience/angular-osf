@@ -31,7 +31,7 @@ import { FileMenuType } from '@osf/shared/enums';
 import { CustomPaginatorComponent, FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
 import { StopPropagationDirective } from '@shared/directives';
 import { hasViewOnlyParam } from '@shared/helpers';
-import { FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
+import { FileLabelModel, FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
 
@@ -69,6 +69,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   totalCount = input<number>(0);
   isLoading = input<boolean>();
   currentFolder = input.required<OsfFile | null>();
+  storage = input.required<FileLabelModel | null>();
   resourceId = input.required<string>();
   actions = input.required<FilesTreeActions>();
   viewOnly = input<boolean>(true);
@@ -84,17 +85,16 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   uploadFileConfirmed = output<File>();
   filesPageChange = output<number>();
 
+  foldersStack: OsfFile[] = [];
   itemsPerPage = 10;
   first = 0;
-  hasParentFolder = false;
-  folderStack: OsfFile[] = [];
 
   readonly FileMenuType = FileMenuType;
 
   readonly nodes = computed(() => {
     const currentFolder = this.currentFolder();
     const files = this.files();
-    const hasParent = this.folderStack.length > 0;
+    const hasParent = this.foldersStack.length > 0;
     if (hasParent) {
       return [
         {
@@ -174,6 +174,13 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
         this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
       }
     });
+
+    effect(() => {
+      const storageChanged = this.storage();
+      if (storageChanged) {
+        this.foldersStack = [];
+      }
+    });
   }
 
   openEntry(file: OsfFile) {
@@ -188,7 +195,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     } else {
       const current = this.currentFolder();
       if (current) {
-        this.folderStack.push(current);
+        this.foldersStack.push(current);
       }
       this.resetPagination();
       this.actions().setFilesIsLoading?.(true);
@@ -198,7 +205,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   }
 
   openParentFolder() {
-    const previous = this.folderStack.pop();
+    const previous = this.foldersStack.pop();
     if (previous) {
       this.actions().setCurrentFolder(previous);
     }
@@ -355,6 +362,8 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
             file: file,
             resourceId: this.resourceId(),
             action: action,
+            storageName: this.storage()?.label,
+            foldersStack: [...this.foldersStack],
           },
         });
       });

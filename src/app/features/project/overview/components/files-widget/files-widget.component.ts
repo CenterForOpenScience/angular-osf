@@ -29,7 +29,7 @@ import {
 } from '@osf/features/files/store';
 import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
 import { Primitive } from '@osf/shared/helpers';
-import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile, SelectOption } from '@osf/shared/models';
+import { ConfiguredStorageAddonModel, FileLabelModel, FilesTreeActions, SelectOption } from '@osf/shared/models';
 import { Project } from '@osf/shared/models/projects';
 
 import { environment } from 'src/environments/environment';
@@ -58,8 +58,10 @@ export class FilesWidgetComponent {
   readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
   readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
 
-  currentRootFolder = model<{ label: string; folder: OsfFile } | null>(null);
+  currentRootFolder = model<FileLabelModel | null>(null);
   pageNumber = signal(1);
+
+  readonly osfStorageLabel = 'Osf Storage';
 
   readonly options = computed(() => {
     const components = this.components();
@@ -70,10 +72,16 @@ export class FilesWidgetComponent {
     const rootFolders = this.rootFolders();
     const addons = this.configuredStorageAddons();
     if (rootFolders && addons) {
-      return rootFolders.map((folder) => ({
-        label: this.getAddonName(addons, folder.provider),
-        folder: folder,
-      }));
+      return rootFolders
+        .map((folder) => ({
+          label: this.getAddonName(addons, folder.provider),
+          folder: folder,
+        }))
+        .sort((a, b) => {
+          if (a.label === this.osfStorageLabel) return -1;
+          if (b.label === this.osfStorageLabel) return 1;
+          return a.label.localeCompare(b.label);
+        });
     }
     return [];
   });
@@ -118,7 +126,7 @@ export class FilesWidgetComponent {
         const osfRootFolder = rootFolders.find((folder) => folder.provider === 'osfstorage');
         if (osfRootFolder) {
           this.currentRootFolder.set({
-            label: 'Osf Storage',
+            label: this.osfStorageLabel,
             folder: osfRootFolder,
           });
         }
@@ -166,7 +174,7 @@ export class FilesWidgetComponent {
 
   private getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
     if (provider === 'osfstorage') {
-      return 'Osf Storage';
+      return this.osfStorageLabel;
     } else {
       return addons.find((addon) => addon.externalServiceName === provider)?.displayName ?? '';
     }

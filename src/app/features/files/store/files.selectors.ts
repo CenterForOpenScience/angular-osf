@@ -34,6 +34,11 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
+  static getMoveFileFilesTotalCount(state: FilesStateModel): number {
+    return state.moveFileFiles.totalCount;
+  }
+
+  @Selector([FilesState])
   static isMoveFileFilesLoading(state: FilesStateModel): boolean {
     return state.moveFileFiles.isLoading;
   }

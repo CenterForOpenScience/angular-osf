@@ -49,7 +49,7 @@ export class FilesState {
       moveFileFiles: { ...state.moveFileFiles, isLoading: true, error: null },
     });
 
-    return this.filesService.getFiles(action.filesLink, '', '').pipe(
+    return this.filesService.getFiles(action.filesLink, '', '', action.page).pipe(
       tap({
         next: (response) => {
           ctx.patchState({
@@ -57,6 +57,7 @@ export class FilesState {
               data: response.files,
               isLoading: false,
               error: null,
+              totalCount: response.meta?.total ?? 0,
             },
             isAnonymous: response.meta?.anonymous ?? false,
           });

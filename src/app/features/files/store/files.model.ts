@@ -7,7 +7,7 @@ import { OsfFileCustomMetadata, OsfFileRevision } from '../models';
 
 export interface FilesStateModel {
   files: AsyncStateWithTotalCount<OsfFile[]>;
-  moveFileFiles: AsyncStateModel<OsfFile[]>;
+  moveFileFiles: AsyncStateWithTotalCount<OsfFile[]>;
   currentFolder: OsfFile | null;
   moveFileCurrentFolder: OsfFile | null;
   search: string;
@@ -35,6 +35,7 @@ export const filesStateDefaults: FilesStateModel = {
     data: [],
     isLoading: false,
     error: null,
+    totalCount: 0,
   },
   currentFolder: null,
   moveFileCurrentFolder: null,

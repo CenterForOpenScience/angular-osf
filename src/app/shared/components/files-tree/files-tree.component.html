@@ -43,7 +43,7 @@
             </div>
           } @else {
             <div class="files-table-row" (click)="openEntry(file)" (keydown.enter)="openEntry(file)" tabindex="0">
-              <div class="flex gap-2 table-cell" [class.pl-6]="folderStack.length">
+              <div class="flex gap-2 table-cell" [class.pl-6]="foldersStack.length">
                 @if (file.kind !== 'folder') {
                   <div class="flex gap-2 min-w-0">
                     <i class="fas fa-file blue-icon"></i>

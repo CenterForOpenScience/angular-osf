@@ -1,4 +1,5 @@
 export * from './file.model';
+export * from './file-label.model';
 export * from './file-menu-action.model';
 export * from './file-payload-json-api.model';
 export * from './file-version.model';

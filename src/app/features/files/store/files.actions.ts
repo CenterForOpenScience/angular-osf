@@ -60,7 +60,10 @@ export class SetMoveFileCurrentFolder {
 export class GetMoveFileFiles {
   static readonly type = '[Files] Get Move File Files';
 
-  constructor(public filesLink: string) {}
+  constructor(
+    public filesLink: string,
+    public page?: number
+  ) {}
 }
 
 export class GetFile {

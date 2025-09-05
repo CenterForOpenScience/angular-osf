@@ -53,7 +53,7 @@ import {
   SubHeaderComponent,
 } from '@shared/components';
 import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
-import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile } from '@shared/models';
+import { ConfiguredStorageAddonModel, FileLabelModel, FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -132,7 +132,7 @@ export class FilesComponent {
   readonly searchControl = new FormControl<string>('');
   readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
 
-  currentRootFolder = model<{ label: string; folder: OsfFile } | null>(null);
+  currentRootFolder = model<FileLabelModel | null>(null);
 
   fileIsUploading = signal(false);
   isFolderOpening = signal(false);
