@@ -49,4 +49,8 @@ export interface ConfiguredStorageAddonModel {
    * Optional: If linked to a parent storage service, provides its ID and name.
    */
   externalStorageServiceId?: string;
+  /**
+   * Optional: The root folder id
+   */
+  rootFolderId?: string;
 }

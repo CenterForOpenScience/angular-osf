@@ -43,11 +43,6 @@
         [notifications]="notifications()"
       />
 
-      <osf-settings-redirect-link
-        (redirectUrlDataChange)="onRedirectUrlDataRequestChange($event)"
-        [redirectUrlDataInput]="redirectUrlData()"
-      />
-
       <osf-settings-project-affiliation
         [affiliations]="projectDetails().affiliatedInstitutions"
         (removed)="removeAffiliation($event)"

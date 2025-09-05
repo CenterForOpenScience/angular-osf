@@ -48,7 +48,7 @@
 
       <div class="flex flex-column align-items-center w-full gap-2 sm:flex-row md:w-max">
         <p-button
-          [disabled]="fileIsUploading() || isFilesLoading()"
+          [disabled]="isButtonDisabled()"
           outlined
           raised
           (onClick)="downloadFolder()"
@@ -61,7 +61,7 @@
 
         @if (!isViewOnly() && !hasViewOnly()) {
           <p-button
-            [disabled]="fileIsUploading() || isFilesLoading()"
+            [disabled]="isButtonDisabled()"
             outlined
             raised
             severity="success"
@@ -72,7 +72,7 @@
           </p-button>
 
           <p-button
-            [disabled]="fileIsUploading() || isFilesLoading()"
+            [disabled]="isButtonDisabled()"
             outlined
             raised
             severity="success"
@@ -81,6 +81,25 @@
             (onClick)="fileInput.click()"
           >
           </p-button>
+
+          @if (isGoogleDrive()) {
+            <p-button
+              [disabled]="isButtonDisabled()"
+              outlined
+              raised
+              severity="success"
+              [icon]="'fa-brands fa-google-plus-g'"
+              [label]="'files.actions.addFromDrive' | translate"
+              (onClick)="googleFilePickerComponent()?.createPicker()"
+            >
+            </p-button>
+            <osf-google-file-picker
+              [rootFolder]="selectedRootFolder()"
+              [accountId]="accountId()"
+              [isFolderPicker]="false"
+              [handleFolderSelection]="updateFilesList"
+            ></osf-google-file-picker>
+          }
         }
         <input #fileInput type="file" class="hidden" (change)="onFileSelected($event)" />
       </div>

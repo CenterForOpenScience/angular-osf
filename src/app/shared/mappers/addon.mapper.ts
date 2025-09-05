@@ -91,6 +91,7 @@ export class AddonMapper {
       baseAccountId: response.relationships.base_account.data.id,
       baseAccountType: response.relationships.base_account.data.type,
       externalStorageServiceId: response.relationships?.external_storage_service?.data?.id,
+      rootFolderId: response.attributes.root_folder,
     };
   }
 

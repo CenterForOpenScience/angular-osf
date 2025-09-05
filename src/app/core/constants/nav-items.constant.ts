@@ -353,15 +353,15 @@ export const MENU_ITEMS: MenuItem[] = [
     visible: false,
     items: [
       {
-        id: 'settings-profile-settings',
-        routerLink: '/settings/profile-settings',
+        id: 'settings-profile',
+        routerLink: '/settings/profile',
         label: 'navigation.profileSettings',
         visible: true,
         routerLinkActiveOptions: { exact: true },
       },
       {
-        id: 'settings-account-settings',
-        routerLink: '/settings/account-settings',
+        id: 'settings-account',
+        routerLink: '/settings/account',
         label: 'navigation.accountSettings',
         visible: true,
         routerLinkActiveOptions: { exact: true },

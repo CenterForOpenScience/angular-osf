@@ -19,13 +19,16 @@ import { RevisionReviewStates } from '@shared/enums';
 })
 export class RegistryRevisionsComponent {
   @HostBinding('class') classes = 'flex-1 flex';
+
   registry = input.required<RegistryOverview | null>();
   selectedRevisionIndex = input.required<number>();
   isSubmitting = input<boolean>(false);
   isModeration = input<boolean>(false);
   openRevision = output<number>();
+
   readonly updateRegistration = output<string>();
   readonly continueUpdate = output<void>();
+  readonly RevisionReviewStates = RevisionReviewStates;
 
   unApprovedRevisionId: string | null = null;
 
@@ -76,7 +79,6 @@ export class RegistryRevisionsComponent {
     this.openRevision.emit(index);
   }
 
-  protected readonly RevisionReviewStates = RevisionReviewStates;
   continueUpdateHandler(): void {
     this.continueUpdate.emit();
   }

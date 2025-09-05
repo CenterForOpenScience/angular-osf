@@ -3,9 +3,6 @@ export interface ProjectSettingsAttributes {
   anyone_can_comment: boolean;
   anyone_can_edit_wiki: boolean;
   wiki_enabled: boolean;
-  redirect_link_enabled: boolean;
-  redirect_link_url: string;
-  redirect_link_label: string;
 }
 
 export interface RelatedLink {
