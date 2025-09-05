@@ -33,6 +33,7 @@ import { hasViewOnlyParam } from '@shared/helpers';
 import { FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { FileMenuComponent } from '../file-menu/file-menu.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
@@ -65,6 +66,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly customConfirmationService = inject(CustomConfirmationService);
   readonly dialogService = inject(DialogService);
   readonly translateService = inject(TranslateService);
+  readonly dataciteService = inject(DataciteService);
 
   files = input.required<OsfFile[]>();
   isLoading = input<boolean>();
@@ -214,11 +216,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
     switch (value) {
       case FileMenuType.Download:
-        if (file.kind === 'file') {
-          this.downloadFile(file.links.download);
-        } else {
-          this.downloadFolder(file.id, false);
-        }
+        this.downloadFileOrFolder(file);
         break;
       case FileMenuType.Delete:
         this.confirmDelete(file);
@@ -238,6 +236,15 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
       case FileMenuType.Copy:
         this.moveFile(file, FileMenuType.Copy);
         break;
+    }
+  }
+
+  private downloadFileOrFolder(file: OsfFile) {
+    this.dataciteService.logFileDownload(file.target.id, file.target.type).subscribe();
+    if (file.kind === 'file') {
+      this.downloadFile(file.links.download);
+    } else {
+      this.downloadFolder(file.id, false);
     }
   }
 

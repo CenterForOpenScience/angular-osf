@@ -7,8 +7,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
-import { Observable } from 'rxjs';
-
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -45,14 +43,13 @@ import {
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
-  DataciteTrackerComponent,
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import { Identifier } from '@shared/models';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {
   LinkedResourcesComponent,
@@ -95,7 +92,7 @@ import {
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectOverviewComponent extends DataciteTrackerComponent implements OnInit {
+export class ProjectOverviewComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -104,6 +101,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   private readonly toastService = inject(ToastService);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
+  private readonly dataciteService = inject(DataciteService);
 
   isMobile = toSignal(inject(IS_XSMALL));
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
@@ -202,12 +200,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
-    return this.currentProject$;
-  }
-
   constructor() {
-    super();
     this.setupCollectionsEffects();
     this.setupCleanup();
   }
@@ -225,7 +218,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
-      this.setupDataciteViewTrackerEffect().subscribe();
+      this.dataciteService.logIdentifiableView(this.currentProject$).subscribe();
     }
   }
 

@@ -6,7 +6,7 @@ import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
-import { filter, map, Observable, of } from 'rxjs';
+import { filter, map, of } from 'rxjs';
 
 import { DatePipe, Location } from '@angular/common';
 import {
@@ -46,10 +46,9 @@ import {
 import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
 import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
-import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
 import { ReviewPermissions, UserPermissions } from '@shared/enums';
-import { Identifier } from '@shared/models';
 import { MetaTagsService } from '@shared/services';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 import { ContributorsSelectors } from '@shared/stores';
 
 import { PreprintWarningBannerComponent } from '../../components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
@@ -77,7 +76,7 @@ import { environment } from 'src/environments/environment';
   providers: [DialogService, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintDetailsComponent extends DataciteTrackerComponent implements OnInit, OnDestroy {
+export class PreprintDetailsComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
   private readonly router = inject(Router);
@@ -89,6 +88,7 @@ export class PreprintDetailsComponent extends DataciteTrackerComponent implement
   private readonly translateService = inject(TranslateService);
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
+  private readonly dataciteService = inject(DataciteService);
   private readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
@@ -284,15 +284,11 @@ export class PreprintDetailsComponent extends DataciteTrackerComponent implement
         this.fetchPreprint(this.preprintId());
       },
     });
-    this.setupDataciteViewTrackerEffect().subscribe();
+    this.dataciteService.logIdentifiableView(this.preprint$).subscribe();
   }
 
   ngOnDestroy() {
     this.actions.resetState();
-  }
-
-  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
-    return this.preprint$;
   }
 
   fetchPreprintVersion(preprintVersionId: string) {

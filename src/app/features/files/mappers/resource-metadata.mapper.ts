@@ -1,4 +1,5 @@
-import { ResourceMetadata } from '@shared/models';
+import { ResourceMetadata } from '@osf/shared/models';
+import { IdentifiersMapper } from '@shared/mappers/identifiers.mapper';
 
 import { GetResourceCustomMetadataResponse } from '../models/get-resource-custom-metadata-response.model';
 import { GetResourceShortInfoResponse } from '../models/get-resource-short-info-response.model';
@@ -20,6 +21,7 @@ export function MapResourceMetadata(
       awardUri: funder.award_uri,
       awardTitle: funder.award_title,
     })),
+    identifiers: IdentifiersMapper.fromJsonApi(shortInfo.data.embeds.identifiers),
     language: customMetadata.data.embeds.custom_metadata.data.attributes.language,
     resourceTypeGeneral: customMetadata.data.embeds.custom_metadata.data.attributes.resource_type_general,
   };
