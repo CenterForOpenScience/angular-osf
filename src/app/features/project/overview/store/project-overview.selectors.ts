@@ -30,6 +30,16 @@ export class ProjectOverviewSelectors {
   }
 
   @Selector([ProjectOverviewState])
+  static getComponentsTree(state: ProjectOverviewStateModel) {
+    return state.componentsTree.data;
+  }
+
+  @Selector([ProjectOverviewState])
+  static getComponentsTreeLoading(state: ProjectOverviewStateModel) {
+    return state.componentsTree.isLoading;
+  }
+
+  @Selector([ProjectOverviewState])
   static getForkProjectSubmitting(state: ProjectOverviewStateModel) {
     return state.project.isSubmitting;
   }

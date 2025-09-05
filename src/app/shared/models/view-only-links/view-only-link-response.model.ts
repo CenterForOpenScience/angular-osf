@@ -1,6 +1,6 @@
 import { MetaJsonApi } from '../common';
-import { UserDataJsonApi } from '../user';
 import { BaseNodeDataJsonApi } from '../nodes';
+import { UserDataJsonApi } from '../user';
 
 export interface ViewOnlyLinksResponseJsonApi {
   data: ViewOnlyLinkJsonApi[];

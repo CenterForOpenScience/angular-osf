@@ -1,4 +1,4 @@
-import { JsonApiResponse } from '../common';
+import { JsonApiResponse, MetaJsonApi, PaginationLinksJsonApi } from '../common';
 import { LicenseRecordJsonApi } from '../licenses-json-api.model';
 
 export interface ProjectJsonApi {
@@ -17,6 +17,8 @@ export interface ProjectJsonApi {
 
 export interface ProjectsResponseJsonApi extends JsonApiResponse<ProjectJsonApi[], null> {
   data: ProjectJsonApi[];
+  meta: MetaJsonApi;
+  links: PaginationLinksJsonApi;
 }
 
 export interface ProjectRelationshipsJsonApi {

@@ -1,12 +1,12 @@
-import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ProjectsMapper } from '@osf/shared/mappers/projects';
+import { ProjectsResponseJsonApi } from '@osf/shared/models/projects';
 import { JsonApiService } from '@osf/shared/services';
 
-import { ProjectsMapper } from '../mappers/projects.mapper';
 import { Project } from '../models';
-import { ProjectsResponseJsonApi } from '../models/projects-json-api.model';
 
 import { environment } from 'src/environments/environment';
 
@@ -23,32 +23,6 @@ export class ProjectsService {
     };
     return this.jsonApiService
       .get<ProjectsResponseJsonApi>(`${this.apiUrl}/users/me/nodes/`, params)
-      .pipe(map((response) => ProjectsMapper.fromProjectsResponse(response)));
-  }
-
-  getProjectChildren(id: string): Observable<Project[]> {
-    return this.jsonApiService
-      .get<ProjectsResponseJsonApi>(`${this.apiUrl}/nodes/${id}/children`)
-      .pipe(map((response) => ProjectsMapper.fromProjectsResponse(response)));
-  }
-
-  getComponentsTree(id: string): Observable<Project[]> {
-    return this.getProjectChildren(id).pipe(
-      switchMap((children) => {
-        if (!children.length) {
-          return of([]);
-        }
-        const childrenWithSubtrees$ = children.map((child) =>
-          this.getComponentsTree(child.id).pipe(
-            map((subChildren) => ({
-              ...child,
-              children: subChildren,
-            }))
-          )
-        );
-
-        return childrenWithSubtrees$.length ? forkJoin(childrenWithSubtrees$) : of([]);
-      })
-    );
+      .pipe(map((response) => ProjectsMapper.fromGetAllProjectsResponse(response)));
   }
 }

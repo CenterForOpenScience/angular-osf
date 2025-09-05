@@ -138,7 +138,6 @@ export class PageSchemaMapper {
           }
           break;
         default:
-          console.warn(`Unexpected block type: ${item.attributes.block_type}`);
           return;
       }
     });

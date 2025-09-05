@@ -85,7 +85,6 @@ export class ContributorsComponent implements OnInit {
 
   onFocusOut() {
     // [NM] TODO: make request to update contributor if changed
-    console.log('Focus out event:', 'Changed:', this.hasChanges);
     if (this.control()) {
       this.control().markAsTouched();
       this.control().markAsDirty();

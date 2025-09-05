@@ -1,6 +1,7 @@
 export { AddComponentDialogComponent } from './add-component-dialog/add-component-dialog.component';
 export { DeleteComponentDialogComponent } from './delete-component-dialog/delete-component-dialog.component';
 export { DuplicateDialogComponent } from './duplicate-dialog/duplicate-dialog.component';
+export { FilesWidgetComponent } from './files-widget/files-widget.component';
 export { ForkDialogComponent } from './fork-dialog/fork-dialog.component';
 export { OverviewComponentsComponent } from './overview-components/overview-components.component';
 export { OverviewToolbarComponent } from './overview-toolbar/overview-toolbar.component';

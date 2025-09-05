@@ -58,13 +58,14 @@ export class FilesControlComponent {
   private readonly translateService = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly files = select(RegistriesSelectors.getFiles);
-  protected readonly isFilesLoading = select(RegistriesSelectors.isFilesLoading);
-  protected readonly currentFolder = select(RegistriesSelectors.getCurrentFolder);
+  readonly files = select(RegistriesSelectors.getFiles);
+  readonly filesTotalCount = select(RegistriesSelectors.getFilesTotalCount);
+  readonly isFilesLoading = select(RegistriesSelectors.isFilesLoading);
+  readonly currentFolder = select(RegistriesSelectors.getCurrentFolder);
 
-  protected readonly progress = signal(0);
-  protected readonly fileName = signal('');
-  protected readonly dataLoaded = signal(false);
+  readonly progress = signal(0);
+  readonly fileName = signal('');
+  readonly dataLoaded = signal(false);
 
   fileIsUploading = signal(false);
   isFolderOpening = signal(false);
@@ -78,7 +79,7 @@ export class FilesControlComponent {
     setMoveFileCurrentFolder: SetMoveFileCurrentFolder,
   });
 
-  protected readonly filesTreeActions: FilesTreeActions = {
+  readonly filesTreeActions: FilesTreeActions = {
     setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
     setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
     getFiles: (filesLink) => this.actions.getFiles(filesLink),

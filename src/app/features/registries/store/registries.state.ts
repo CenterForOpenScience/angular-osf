@@ -94,8 +94,8 @@ export class RegistriesState {
   }
 
   @Action(GetProjects)
-  getProjects(ctx: StateContext<RegistriesStateModel>) {
-    return this.projectsHandler.getProjects(ctx);
+  getProjects(ctx: StateContext<RegistriesStateModel>, { userId }: GetProjects) {
+    return this.projectsHandler.getProjects(ctx, userId);
   }
 
   @Action(FetchProjectChildren)

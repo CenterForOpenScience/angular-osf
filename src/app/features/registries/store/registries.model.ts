@@ -24,7 +24,7 @@ export interface RegistriesStateModel {
   stepsValidation: Record<string, { invalid: boolean }>;
   draftRegistrations: AsyncStateWithTotalCount<RegistrationCard[]>;
   submittedRegistrations: AsyncStateWithTotalCount<RegistrationCard[]>;
-  files: AsyncStateModel<OsfFile[]>;
+  files: AsyncStateWithTotalCount<OsfFile[]>;
   currentFolder: OsfFile | null;
   moveFileCurrentFolder: OsfFile | null;
   rootFolders: AsyncStateModel<OsfFile[] | null>;

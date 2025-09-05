@@ -61,10 +61,12 @@ export class FilesService {
   getFiles(
     filesLink: string,
     search: string,
-    sort: string
+    sort: string,
+    page = 1
   ): Observable<{ files: OsfFile[]; meta?: MetaAnonymousJsonApi }> {
     const params: Record<string, string> = {
       sort: sort,
+      page: page.toString(),
       'fields[files]': this.filesFields,
       'filter[name]': search,
     };

@@ -50,4 +50,18 @@
       display: none;
     }
   }
+
+  .empty-state-container {
+    position: absolute;
+    inset: 0;
+    top: 2.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .drop-text {
+      text-align: center;
+      margin-bottom: 2.75rem;
+    }
+  }
 }

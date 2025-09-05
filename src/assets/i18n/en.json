@@ -561,6 +561,9 @@
         "title": "Wiki",
         "noWikiMessage": "<em>Add important information, links, or images here to describe your project.</em>"
       },
+      "files": {
+        "title": "Files"
+      },
       "components": {
         "title": "Components",
         "addComponentButton": "Add Component",
@@ -943,7 +946,6 @@
     }
   },
   "files": {
-    "title": "Files",
     "storageLocation": "OSF Storage",
     "searchPlaceholder": "Search your projects",
     "sort": {
@@ -1018,7 +1020,7 @@
       "helpGuides": "help guides on project files."
     },
     "dropText": "Drop a file to upload",
-    "emptyState": "This folder is empty",
+    "emptyState": "No files are available at this time.",
     "detail": {
       "backToList": "Back to list of files",
       "tabs": {

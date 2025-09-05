@@ -1,9 +1,17 @@
-.left-section {
-  flex: 3;
-}
+@use "styles/variables" as var;
 
 .right-section {
   width: 23rem;
   border: 1px solid var(--grey-2);
   border-radius: 12px;
+  @media (max-width: var.$breakpoint-lg) {
+    width: 100%;
+  }
+}
+
+.left-section {
+  width: calc(100% - 23rem - 1.5rem);
+  @media (max-width: var.$breakpoint-lg) {
+    width: 100%;
+  }
 }

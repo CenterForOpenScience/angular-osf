@@ -89,6 +89,8 @@
       <osf-files-tree
         [currentFolder]="currentFolder()"
         [files]="projectFiles()"
+        [totalCount]="projectFiles().length"
+        [storage]="null"
         [isLoading]="areProjectFilesLoading()"
         [resourceId]="selectedProjectId()!"
         [actions]="filesTreeActions"
