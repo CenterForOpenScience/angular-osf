@@ -4,7 +4,7 @@
   {{ 'settings.addons.configureAddon.account' | translate }} <span class="font-bold">{{ addon.displayName }}</span>
 </p>
 <p>
-  {{ 'settings.addons.configureAddon.selectedFolder' | translate }}
+  {{ selectedItemLabel() | translate }}
   <span class="font-bold">{{ selectedFolder()?.itemName }}</span>
 </p>
 <div class="flex pt-5 justify-content-between gap-3">

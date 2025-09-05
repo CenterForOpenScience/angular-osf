@@ -71,18 +71,22 @@ export class AddonsComponent {
   protected citationAddons = select(AddonsSelectors.getCitationAddons);
   protected authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
   protected authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
+  protected authorizedLinkAddons = select(AddonsSelectors.getAuthorizedLinkAddons);
 
   protected isCurrentUserLoading = select(UserSelectors.getCurrentUserLoading);
   protected isUserReferenceLoading = select(AddonsSelectors.getAddonsUserReferenceLoading);
   protected isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
   protected isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
+  protected isLinkAddonsLoading = select(AddonsSelectors.getLinkAddonsLoading);
   protected isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
   protected isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
+  protected isAuthorizedLinkAddonsLoading = select(AddonsSelectors.getAuthorizedLinkAddonsLoading);
 
   protected isAddonsLoading = computed(() => {
     return (
       this.isStorageAddonsLoading() ||
       this.isCitationAddonsLoading() ||
+      this.isLinkAddonsLoading() ||
       this.isUserReferenceLoading() ||
       this.isCurrentUserLoading()
     );
@@ -91,6 +95,7 @@ export class AddonsComponent {
     return (
       this.isAuthorizedStorageAddonsLoading() ||
       this.isAuthorizedCitationAddonsLoading() ||
+      this.isAuthorizedLinkAddonsLoading() ||
       this.isUserReferenceLoading() ||
       this.isCurrentUserLoading()
     );
@@ -108,7 +113,11 @@ export class AddonsComponent {
   });
 
   protected readonly allAuthorizedAddons = computed(() => {
-    const authorizedAddons = [...this.authorizedStorageAddons(), ...this.authorizedCitationAddons()];
+    const authorizedAddons = [
+      ...this.authorizedStorageAddons(),
+      ...this.authorizedCitationAddons(),
+      ...this.authorizedLinkAddons(),
+    ];
 
     const searchValue = this.searchValue().toLowerCase();
     return authorizedAddons.filter((card) => card.displayName.includes(searchValue));

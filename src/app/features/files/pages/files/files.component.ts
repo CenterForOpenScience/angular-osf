@@ -53,7 +53,7 @@ import {
   SubHeaderComponent,
 } from '@shared/components';
 import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
-import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile } from '@shared/models';
+import { ConfiguredAddonModel, FilesTreeActions, OsfFile } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -370,7 +370,7 @@ export class FilesComponent {
     this.router.navigate([file.guid], { relativeTo: this.activeRoute });
   }
 
-  getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
+  getAddonName(addons: ConfiguredAddonModel[], provider: string): string {
     if (provider === 'osfstorage') {
       return 'Osf Storage';
     } else {

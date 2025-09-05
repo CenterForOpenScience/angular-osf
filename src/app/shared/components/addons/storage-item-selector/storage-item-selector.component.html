@@ -18,10 +18,8 @@
     </p-breadcrumb>
     <p-card>
       <p>
-        {{ 'settings.addons.configureAddon.selectedFolder' | translate }}
-        <span class="font-bold">{{
-          selectedRootFolder()?.itemName || 'settings.addons.configureAddon.noFolderSelected' | translate
-        }}</span>
+        {{ selectedItemLabel() | translate }}
+        <span class="font-bold">{{ selectedStorageItem()?.itemName || (noSelectionLabel() | translate) }}</span>
       </p>
       <h3 class="mt-4 mb-2">
         {{ 'settings.addons.form.fields.accountName' | translate }}
@@ -48,8 +46,8 @@
           @let itemId = folder.itemId || '/';
           <div class="folders-table-row relative">
             <div class="flex gap-2 flex-1">
-              <div tabindex="0" class="flex gap-2">
-                <i class="fas fa-folder"></i>
+              <div tabindex="0" class="flex align-items-center gap-2">
+                <i class="{{ folder.itemType === 'FOLDER' ? 'fas fa-folder' : 'fas fa-file' }}"></i>
                 <a
                   tabindex="0"
                   class="cursor-pointer folder-link"
@@ -76,7 +74,7 @@
               @if (folder.canBeRoot) {
                 <p-radiobutton
                   class="ml-auto pr-3"
-                  [ngModel]="selectedRootFolder()?.itemId"
+                  [ngModel]="selectedStorageItem()?.itemId"
                   [value]="folder.itemId"
                   [inputId]="folder.itemId"
                   (ngModelChange)="handleFolderSelection(folder)"
@@ -90,6 +88,22 @@
           <p>{{ 'settings.addons.configureAddon.noFolders' | translate }}</p>
         </div>
       }
+    </div>
+  }
+
+  @if (currentAddonType() === AddonType.LINK) {
+    <div class="flex flex-column gap-1">
+      <div class="flex align-items-center">
+        <h3>
+          {{ 'settings.addons.configureAddon.resourceType' | translate }}
+        </h3>
+        <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="openInfoDialog()"></p-button>
+      </div>
+      <osf-select
+        [placeholder]="'settings.addons.configureAddon.chooseResourceType' | translate"
+        [options]="resourceTypeOptions()"
+        [(selectedValue)]="selectedResourceType"
+      ></osf-select>
     </div>
   }
 

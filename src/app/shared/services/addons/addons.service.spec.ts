@@ -78,9 +78,9 @@ describe('Service: Addons', () => {
     expect(httpMock.verify).toBeTruthy();
   }));
 
-  it('should test getAuthorizedStorageAddons', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+  it('should test getAuthorizedAddons', inject([HttpTestingController], (httpMock: HttpTestingController) => {
     let results: any[] = [];
-    service.getAuthorizedStorageAddons('storage', 'reference-id').subscribe((result) => {
+    service.getAuthorizedAddons('storage', 'reference-id').subscribe((result) => {
       results = result;
     });
 

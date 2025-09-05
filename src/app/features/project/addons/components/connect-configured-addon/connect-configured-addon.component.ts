@@ -22,8 +22,9 @@ import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-acc
 import {
   AddonSetupAccountFormComponent,
   AddonTermsComponent,
-  FolderSelectorComponent,
+  StorageItemSelectorComponent,
 } from '@shared/components/addons';
+import { AddonType } from '@shared/enums';
 import { AddonModel, AddonTerm, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {
@@ -32,6 +33,7 @@ import {
   CreateAuthorizedAddon,
   CreateConfiguredAddon,
   GetAuthorizedCitationAddons,
+  GetAuthorizedLinkAddons,
   GetAuthorizedStorageAddons,
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
@@ -53,7 +55,7 @@ import { environment } from 'src/environments/environment';
     ReactiveFormsModule,
     TranslatePipe,
     RadioButtonModule,
-    FolderSelectorComponent,
+    StorageItemSelectorComponent,
     AddonTermsComponent,
     AddonSetupAccountFormComponent,
     DialogModule,
@@ -71,31 +73,43 @@ export class ConnectConfiguredAddonComponent {
   private operationInvocationService = inject(AddonOperationInvocationService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  protected readonly AddonStepperValue = ProjectAddonsStepperValue;
-  protected readonly stepper = viewChild(Stepper);
-  protected accountNameControl = new FormControl('');
-  protected terms = signal<AddonTerm[]>([]);
-  protected addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
-  protected addonAuthUrl = signal<string>('/settings/addons');
-  protected currentAuthorizedAddonAccounts = signal<AuthorizedAccountModel[]>([]);
-  protected chosenAccountId = signal('');
-  protected chosenAccountName = signal('');
-  protected selectedRootFolderId = signal('');
+  readonly AddonStepperValue = ProjectAddonsStepperValue;
+  readonly stepper = viewChild(Stepper);
+  accountNameControl = new FormControl('');
+  terms = signal<AddonTerm[]>([]);
+  addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
+  addonAuthUrl = signal<string>('/settings/addons');
+  currentAuthorizedAddonAccounts = signal<AuthorizedAccountModel[]>([]);
+  chosenAccountId = signal('');
+  chosenAccountName = signal('');
+  selectedStorageItemId = signal('');
+  selectedStorageItemUrl = signal('');
+  selectedResourceType = signal('');
 
-  protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
-  protected createdAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
-  protected createdConfiguredAddon = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddon);
-  protected authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
-  protected authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
-  protected operationInvocation = select(AddonsSelectors.getOperationInvocation);
+  addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
+  createdAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
+  createdConfiguredAddon = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddon);
+  authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
+  authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
+  authorizedLinkAddons = select(AddonsSelectors.getAuthorizedLinkAddons);
+  operationInvocation = select(AddonsSelectors.getOperationInvocation);
 
-  protected isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
-  protected isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
-  protected isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
+  isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+  isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
+  isAuthorizedLinkAddonsLoading = select(AddonsSelectors.getAuthorizedLinkAddonsLoading);
+  isAuthorizedAddonsLoading = computed(() => {
+    return (
+      this.isAuthorizedStorageAddonsLoading() ||
+      this.isAuthorizedCitationAddonsLoading() ||
+      this.isAuthorizedLinkAddonsLoading()
+    );
+  });
+  isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getAuthorizedStorageAddons: GetAuthorizedStorageAddons,
     getAuthorizedCitationAddons: GetAuthorizedCitationAddons,
+    getAuthorizedLinkAddons: GetAuthorizedLinkAddons,
     createAuthorizedAddon: CreateAuthorizedAddon,
     createConfiguredAddon: CreateConfiguredAddon,
     updateConfiguredAddon: UpdateConfiguredAddon,
@@ -103,28 +117,33 @@ export class ConnectConfiguredAddonComponent {
     createAddonOperationInvocation: CreateAddonOperationInvocation,
   });
 
-  protected readonly userReferenceId = computed(() => {
+  readonly userReferenceId = computed(() => {
     return this.addonsUserReference()[0]?.id;
   });
 
-  protected loginOrChooseAccountText = computed(() => {
+  loginOrChooseAccountText = computed(() => {
     return this.translateService.instant('settings.addons.connectAddon.loginToOrSelectAccount', {
       addonName: this.addon()?.displayName,
     });
   });
 
-  protected resourceUri = computed(() => {
+  resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
     return `${environment.webUrl}/${id}`;
   });
 
-  protected addonTypeString = computed(() => {
+  addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());
   });
 
-  protected readonly baseUrl = computed(() => {
+  readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
     return currentUrl.split('/addons')[0];
+  });
+
+  readonly supportedResourceTypes = computed(() => {
+    const addon = this.addon();
+    return addon && 'supportedResourceTypes' in addon ? addon.supportedResourceTypes || [] : [];
   });
 
   constructor() {
@@ -135,7 +154,7 @@ export class ConnectConfiguredAddonComponent {
     this.addon.set(addon);
   }
 
-  protected handleCreateConfiguredAddon() {
+  handleCreateConfiguredAddon() {
     const addon = this.addon();
     const selectedAccount = this.currentAuthorizedAddonAccounts().find(
       (account) => account.id === this.chosenAccountId()
@@ -148,8 +167,10 @@ export class ConnectConfiguredAddonComponent {
       this.userReferenceId(),
       this.resourceUri(),
       this.accountNameControl.value || '',
-      this.selectedRootFolderId(),
-      this.addonTypeString()
+      this.selectedStorageItemId(),
+      this.addonTypeString(),
+      this.selectedResourceType(),
+      this.selectedStorageItemUrl()
     );
 
     this.actions.createConfiguredAddon(payload, this.addonTypeString()).subscribe({
@@ -165,7 +186,7 @@ export class ConnectConfiguredAddonComponent {
     });
   }
 
-  protected handleCreateAuthorizedAddon(payload: AuthorizedAddonRequestJsonApi): void {
+  handleCreateAuthorizedAddon(payload: AuthorizedAddonRequestJsonApi): void {
     if (!this.addon()) return;
 
     this.actions.createAuthorizedAddon(payload, this.addonTypeString()).subscribe({
@@ -180,7 +201,7 @@ export class ConnectConfiguredAddonComponent {
     });
   }
 
-  protected handleConfirmAccountConnection(): void {
+  handleConfirmAccountConnection(): void {
     const selectedAccount = this.currentAuthorizedAddonAccounts().find(
       (account) => account.id === this.chosenAccountId()
     );
@@ -194,11 +215,12 @@ export class ConnectConfiguredAddonComponent {
         this.stepper()?.value.set(ProjectAddonsStepperValue.CONFIGURE_ROOT_FOLDER);
         this.chosenAccountName.set(selectedAccount.displayName);
         this.accountNameControl.setValue(selectedAccount.displayName);
+        this.resetConfigurationForm();
       }
     });
   }
 
-  protected handleAuthorizedAccountsPresenceCheck() {
+  handleAuthorizedAccountsPresenceCheck() {
     const requiredData = this.getDataForAccountCheck();
     if (!requiredData) return;
 
@@ -228,13 +250,17 @@ export class ConnectConfiguredAddonComponent {
 
   private getAddonConfig(addonType: string, referenceId: string) {
     const addonConfigMap: AddonConfigMap = {
-      storage: {
+      [AddonType.STORAGE]: {
         getAddons: () => this.actions.getAuthorizedStorageAddons(referenceId),
         getAuthorizedAddons: () => this.authorizedStorageAddons(),
       },
-      citation: {
+      [AddonType.CITATION]: {
         getAddons: () => this.actions.getAuthorizedCitationAddons(referenceId),
         getAuthorizedAddons: () => this.authorizedCitationAddons(),
+      },
+      [AddonType.LINK]: {
+        getAddons: () => this.actions.getAuthorizedLinkAddons(referenceId),
+        getAuthorizedAddons: () => this.authorizedLinkAddons(),
       },
     };
 
@@ -267,7 +293,7 @@ export class ConnectConfiguredAddonComponent {
     return authorizedAddons.filter((addon) => addon.externalServiceName === currentAddon.externalServiceName);
   }
 
-  protected handleCreateOperationInvocation(operationName: OperationNames, itemId: string): void {
+  handleCreateOperationInvocation(operationName: OperationNames, itemId: string): void {
     const selectedAccount = this.currentAuthorizedAddonAccounts().find(
       (account) => account.id === this.chosenAccountId()
     );
@@ -281,5 +307,16 @@ export class ConnectConfiguredAddonComponent {
     );
 
     this.actions.createAddonOperationInvocation(payload);
+  }
+
+  handleNavigateToAccountSelection(): void {
+    this.resetConfigurationForm();
+    this.stepper()?.value.set(ProjectAddonsStepperValue.CHOOSE_ACCOUNT);
+  }
+
+  private resetConfigurationForm(): void {
+    this.selectedStorageItemId.set('');
+    this.selectedStorageItemUrl.set('');
+    this.selectedResourceType.set('');
   }
 }

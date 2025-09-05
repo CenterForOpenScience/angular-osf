@@ -2,6 +2,7 @@ export interface StorageItemResponseJsonApi {
   item_id?: string;
   item_name?: string;
   item_type?: string;
+  item_link?: string;
   can_be_root?: boolean;
   may_contain_root_candidates?: boolean;
 }
@@ -50,6 +51,20 @@ export interface OperationInvocationResponseJsonApi {
     modified: string;
     operation_name: string;
   };
+  relationships?: {
+    thru_account?: {
+      data: {
+        type: string;
+        id: string;
+      };
+    };
+    thru_addon?: {
+      data: {
+        type: string;
+        id: string;
+      } | null;
+    };
+  };
   links: {
     self: string;
   };
@@ -59,6 +74,7 @@ export interface StorageItem {
   itemId?: string;
   itemName?: string;
   itemType?: string;
+  itemLink?: string;
   canBeRoot?: boolean;
   mayContainRootCandidates?: boolean;
 }
