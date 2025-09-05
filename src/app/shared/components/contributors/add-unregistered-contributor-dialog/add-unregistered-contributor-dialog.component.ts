@@ -20,9 +20,9 @@ import { ContributorAddModel, ContributorDialogAddModel, UnregisteredContributor
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddUnregisteredContributorDialogComponent {
-  protected dialogRef = inject(DynamicDialogRef);
-  protected contributorForm!: FormGroup<UnregisteredContributorForm>;
-  protected inputLimits = InputLimits;
+  dialogRef = inject(DynamicDialogRef);
+  contributorForm!: FormGroup<UnregisteredContributorForm>;
+  inputLimits = InputLimits;
 
   constructor() {
     this.initForm();

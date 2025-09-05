@@ -13,16 +13,10 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit,
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import {
-  Funder,
-  FunderOption,
-  FundingDialogResult,
-  FundingEntryForm,
-  FundingForm,
-  SupplementData,
-} from '@osf/features/metadata/models';
-import { GetFundersList, MetadataSelectors } from '@osf/features/metadata/store';
 import { CustomValidators } from '@osf/shared/helpers';
+
+import { Funder, FunderOption, FundingDialogResult, FundingEntryForm, FundingForm, SupplementData } from '../../models';
+import { GetFundersList, MetadataSelectors } from '../../store';
 
 @Component({
   selector: 'osf-funding-dialog',
@@ -35,21 +29,15 @@ export class FundingDialogComponent implements OnInit {
   config = inject(DynamicDialogConfig);
   destroyRef = inject(DestroyRef);
 
-  actions = createDispatchMap({
-    getFundersList: GetFundersList,
-  });
+  actions = createDispatchMap({ getFundersList: GetFundersList });
 
   fundersList = select(MetadataSelectors.getFundersList);
   fundersLoading = select(MetadataSelectors.getFundersLoading);
   funderOptions = signal<FunderOption[]>([]);
 
-  fundingForm = new FormGroup<FundingForm>({
-    fundingEntries: new FormArray<FormGroup<FundingEntryForm>>([]),
-  });
+  fundingForm = new FormGroup<FundingForm>({ fundingEntries: new FormArray<FormGroup<FundingEntryForm>>([]) });
 
   private searchSubject = new Subject<string>();
-
-  readonly linkValidators = [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()];
 
   constructor() {
     effect(() => {
@@ -79,7 +67,7 @@ export class FundingDialogComponent implements OnInit {
     this.actions.getFundersList();
 
     const configFunders = this.config.data?.funders;
-    if (configFunders && configFunders.length > 0) {
+    if (configFunders?.length > 0) {
       configFunders.forEach((funder: Funder) => {
         this.addFundingEntry({
           funderName: funder.funderName || '',
@@ -96,9 +84,7 @@ export class FundingDialogComponent implements OnInit {
 
     this.searchSubject
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
-      .subscribe((searchQuery) => {
-        this.actions.getFundersList(searchQuery);
-      });
+      .subscribe((searchQuery) => this.actions.getFundersList(searchQuery));
   }
 
   onFunderSearch(searchTerm: string): void {
@@ -107,8 +93,7 @@ export class FundingDialogComponent implements OnInit {
 
   private createFundingEntryGroup(supplement?: SupplementData): FormGroup<FundingEntryForm> {
     return new FormGroup<FundingEntryForm>({
-      funderName: new FormControl(supplement?.funderName ?? '', {
-        nonNullable: true,
+      funderName: new FormControl(supplement?.funderName ?? null, {
         validators: [Validators.required],
       }),
       funderIdentifier: new FormControl(supplement?.funderIdentifier ?? '', {
@@ -123,7 +108,7 @@ export class FundingDialogComponent implements OnInit {
       }),
       awardUri: new FormControl(supplement?.url || supplement?.awardUri || '', {
         nonNullable: true,
-        validators: this.linkValidators,
+        validators: [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()],
       }),
       awardNumber: new FormControl(supplement?.awardNumber || '', {
         nonNullable: true,

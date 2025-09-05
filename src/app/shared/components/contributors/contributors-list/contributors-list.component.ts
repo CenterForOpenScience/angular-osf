@@ -36,16 +36,16 @@ export class ContributorsListComponent {
   dialogService = inject(DialogService);
   translateService = inject(TranslateService);
 
-  protected readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS });
-  protected readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
+  readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS });
+  readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
 
   skeletonData: ContributorModel[] = Array.from({ length: 3 }, () => ({}) as ContributorModel);
 
-  protected removeContributor(contributor: ContributorModel) {
+  removeContributor(contributor: ContributorModel) {
     this.remove.emit(contributor);
   }
 
-  protected openEducationHistory(contributor: ContributorModel) {
+  openEducationHistory(contributor: ContributorModel) {
     this.dialogService.open(EducationHistoryDialogComponent, {
       width: '552px',
       data: contributor.education,
@@ -57,7 +57,7 @@ export class ContributorsListComponent {
     });
   }
 
-  protected openEmploymentHistory(contributor: ContributorModel) {
+  openEmploymentHistory(contributor: ContributorModel) {
     this.dialogService.open(EmploymentHistoryDialogComponent, {
       width: '552px',
       data: contributor.employment,
