@@ -4,9 +4,6 @@ export interface ProjectSettingsModel {
     accessRequestsEnabled: boolean;
     anyoneCanComment: boolean;
     anyoneCanEditWiki: boolean;
-    redirectLinkEnabled: boolean;
-    redirectLinkLabel: string;
-    redirectLinkUrl: string;
     wikiEnabled: boolean;
   };
   lastFetched?: number;
