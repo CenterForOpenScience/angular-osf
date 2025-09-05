@@ -9,15 +9,11 @@ import { handleSectionError } from '@shared/helpers';
 import { RegistryComponentsService } from '../../services/registry-components.service';
 
 import { GetRegistryComponents } from './registry-components.actions';
-import { RegistryComponentsStateModel } from './registry-components.model';
-
-const initialState: RegistryComponentsStateModel = {
-  registryComponents: { data: [], isLoading: false, error: null, totalCount: 0 },
-};
+import { REGISTRY_COMPONENTS_STATE_DEFAULTS, RegistryComponentsStateModel } from './registry-components.model';
 
 @State<RegistryComponentsStateModel>({
   name: 'registryComponents',
-  defaults: initialState,
+  defaults: REGISTRY_COMPONENTS_STATE_DEFAULTS,
 })
 @Injectable()
 export class RegistryComponentsState {

@@ -14,18 +14,11 @@ import {
   GetLinkedNodes,
   GetLinkedRegistrations,
 } from './registry-links.actions';
-import { RegistryLinksStateModel } from './registry-links.model';
-
-const initialState: RegistryLinksStateModel = {
-  linkedNodes: { data: [], isLoading: false, error: null },
-  linkedRegistrations: { data: [], isLoading: false, error: null },
-  bibliographicContributors: { data: [], isLoading: false, error: null },
-  bibliographicContributorsForRegistration: { data: [], isLoading: false, error: null },
-};
+import { REGISTRY_LINKS_STATE_DEFAULTS, RegistryLinksStateModel } from './registry-links.model';
 
 @State<RegistryLinksStateModel>({
   name: 'registryLinks',
-  defaults: initialState,
+  defaults: REGISTRY_LINKS_STATE_DEFAULTS,
 })
 @Injectable()
 export class RegistryLinksState {

@@ -1,4 +1,4 @@
-<osf-sub-header [title]="'navigation.wiki' | translate" [tooltip]="'project.wiki.tooltip' | translate">
+<osf-sub-header [title]="'navigation.wiki' | translate">
   <p-buttongroup class="ml-auto">
     <p-button
       [label]="'project.wiki.view' | translate"
@@ -28,6 +28,7 @@
     [componentsList]="[]"
     [currentWikiId]="currentWikiId()"
   ></osf-wiki-list>
+
   @if (wikiModes().view) {
     <osf-view-section
       [viewOnly]="true"
@@ -38,6 +39,7 @@
       (selectVersion)="onSelectVersion($event)"
     ></osf-view-section>
   }
+
   @if (wikiModes().compare) {
     <osf-compare-section
       [versions]="wikiVersions()"

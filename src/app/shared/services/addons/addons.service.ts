@@ -68,11 +68,7 @@ export class AddonsService {
       .get<
         JsonApiResponse<AddonGetResponseJsonApi[], null>
       >(`${environment.addonsApiUrl}/external-${addonType}-services`)
-      .pipe(
-        map((response) => {
-          return response.data.map((item) => AddonMapper.fromResponse(item));
-        })
-      );
+      .pipe(map((response) => response.data.map((item) => AddonMapper.fromResponse(item))));
   }
 
   getAddonsUserReference(): Observable<UserReferenceJsonApi[]> {
@@ -111,9 +107,7 @@ export class AddonsService {
         JsonApiResponse<AuthorizedAddonGetResponseJsonApi[], IncludedAddonData[]>
       >(`${environment.addonsApiUrl}/user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
       .pipe(
-        map((response) => {
-          return response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included));
-        })
+        map((response) => response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included)))
       );
   }
 

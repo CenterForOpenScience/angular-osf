@@ -13,7 +13,7 @@ import { OsfResourceTypes } from '@shared/constants';
 import { ResourceOverview } from '@shared/models';
 
 import { ResourceCitationsComponent } from '../resource-citations/resource-citations.component';
-import { TruncatedTextComponent } from '../truncated-text/truncated-text.component'; // avoids circular imports
+import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';
 
 @Component({
   selector: 'osf-resource-metadata',

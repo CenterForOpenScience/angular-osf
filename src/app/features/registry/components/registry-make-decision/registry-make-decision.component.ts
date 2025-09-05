@@ -48,21 +48,19 @@ import { RegistryOverviewSelectors, SubmitDecision } from '../../store/registry-
 })
 export class RegistryMakeDecisionComponent {
   private readonly fb = inject(FormBuilder);
-  protected readonly config = inject(DynamicDialogConfig);
-  protected readonly dialogRef = inject(DynamicDialogRef);
+  readonly config = inject(DynamicDialogConfig);
+  readonly dialogRef = inject(DynamicDialogRef);
 
-  protected readonly ReviewActionTrigger = ReviewActionTrigger;
-  protected readonly SchemaResponseActionTrigger = SchemaResponseActionTrigger;
-  protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
-  protected readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
-  protected reviewActions = select(RegistryOverviewSelectors.getReviewActions);
+  readonly ReviewActionTrigger = ReviewActionTrigger;
+  readonly SchemaResponseActionTrigger = SchemaResponseActionTrigger;
+  readonly SubmissionReviewStatus = SubmissionReviewStatus;
+  readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
+  reviewActions = select(RegistryOverviewSelectors.getReviewActions);
 
-  protected isSubmitting = select(RegistryOverviewSelectors.isReviewActionSubmitting);
-  protected requestForm!: FormGroup;
+  isSubmitting = select(RegistryOverviewSelectors.isReviewActionSubmitting);
+  requestForm!: FormGroup;
 
-  protected actions = createDispatchMap({
-    submitDecision: SubmitDecision,
-  });
+  actions = createDispatchMap({ submitDecision: SubmitDecision });
 
   registry = this.config.data.registry as RegistryOverview;
   embargoEndDate = this.registry.embargoEndDate;
@@ -105,7 +103,7 @@ export class RegistryMakeDecisionComponent {
       });
   }
 
-  protected handleSubmission(): void {
+  handleSubmission(): void {
     const revisionId = this.config.data.revisionId;
     this.actions
       .submitDecision(
@@ -120,7 +118,7 @@ export class RegistryMakeDecisionComponent {
       .subscribe();
   }
 
-  protected isCommentRequired(action: string): boolean {
+  isCommentRequired(action: string): boolean {
     return (
       action === ReviewActionTrigger.RejectSubmission ||
       action === SchemaResponseActionTrigger.RejectRevision ||
