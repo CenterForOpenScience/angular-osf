@@ -72,6 +72,7 @@ export function MapFile(
       currentUserPermissions: file?.embeds?.target.data.attributes.current_user_permissions,
       wikiEnabled: file?.embeds?.target.data.attributes.wiki_enabled,
       public: file?.embeds?.target.data.attributes.public,
+      link: file?.embeds?.target.data.links.self,
     },
     currentUserCanComment: file.attributes.current_user_can_comment,
     currentVersion: file.attributes.current_version,

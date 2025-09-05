@@ -17,6 +17,13 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CollectionSubmissionReviewAction } from '@osf/features/moderation/models';
 import { CollectionsModerationSelectors } from '@osf/features/moderation/store/collections-moderation';
+import {
+  LinkedResourcesComponent,
+  OverviewComponentsComponent,
+  OverviewToolbarComponent,
+  OverviewWikiComponent,
+  RecentActivityComponent,
+} from '@osf/features/project/overview/components';
 import { ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import {
   LoadingSpinnerComponent,
@@ -37,13 +44,6 @@ import {
 } from '@shared/stores';
 import { ActivityLogsSelectors } from '@shared/stores/activity-logs';
 
-import {
-  LinkedResourcesComponent,
-  OverviewComponentsComponent,
-  OverviewToolbarComponent,
-  OverviewWikiComponent,
-  RecentActivityComponent,
-} from './components';
 import { ProjectOverviewComponent } from './project-overview.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';

@@ -21,4 +21,5 @@ export interface OsfFileTarget {
   public: boolean;
   type: string;
   isAnonymous?: boolean;
+  link: string;
 }

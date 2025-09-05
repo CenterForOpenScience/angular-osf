@@ -18,7 +18,7 @@ export * from './filter-labels.model';
 export * from './filters';
 export * from './google-drive-folder.model';
 export * from './guid-response-json-api.model';
-export * from './identifier.model';
+export * from './identifiers';
 export * from './institutions';
 export * from './language-code.model';
 export * from './license';
