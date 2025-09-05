@@ -18,18 +18,14 @@
       <p-tablist>
         @for (option of storageAddons(); track option.folder.id) {
           <p-tab class="p-1" [value]="option.folder.id">
-            <p-button
+                        <p-button
               severity="contrast"
               variant="text"
+              [styleClass]="option.folder.id === currentRootFolder()?.folder?.id ? 'text-600' : 'text-500'"
               [disabled]="isFilesLoading()"
+              [label]="option.label"
               [raised]="option.folder.id === currentRootFolder()?.folder?.id"
             >
-              <span
-                class="font-bold"
-                [class]="option.folder.id === currentRootFolder()?.folder?.id ? 'text-600' : 'text-500'"
-              >
-                {{ option.label }}
-              </span>
             </p-button>
           </p-tab>
         }
