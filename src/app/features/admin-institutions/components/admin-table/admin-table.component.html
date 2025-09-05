@@ -74,8 +74,9 @@
   [scrollable]="true"
   [sortMode]="'single'"
   (onSort)="onSort($event)"
-  [sortField]="sortColumn()"
-  [sortOrder]="currentSortOrder()"
+  [lazy]="true"
+  [sortField]="sortField()"
+  [sortOrder]="sortOrder()"
   [customSort]="true"
   [resetPageOnSort]="false"
   class="institution-admin-table"
@@ -83,7 +84,7 @@
   <ng-template #header let-columns>
     <tr>
       @for (col of columns; track col.field) {
-        <th [pSortableColumn]="col.sortable ? col.field : null" (click)="onHeaderClick(col)">
+        <th [pSortableColumn]="col.sortable ? col.field : null">
           <div class="flex align-items-center gap-2">
             <span>{{ col.header | translate }}</span>
             @if (col.sortable) {

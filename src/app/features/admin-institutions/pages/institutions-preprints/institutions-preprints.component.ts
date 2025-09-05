@@ -3,13 +3,11 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, OnInit, signal } from '@angular/core';
 
 import { TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
-import { Institution, QueryParams } from '@osf/shared/models';
-import { InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
+import { SearchFilters } from '@osf/shared/models';
 
 import { AdminTableComponent } from '../../components';
 import { preprintsTableColumns } from '../../constants';
@@ -27,14 +25,9 @@ import { FetchPreprints, InstitutionsAdminSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InstitutionsPreprintsComponent implements OnInit {
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
-
   private readonly actions = createDispatchMap({ fetchPreprints: FetchPreprints });
 
-  private institutionId = '';
-
-  institution = select(InstitutionsSearchSelectors.getInstitution);
+  institution = select(InstitutionsAdminSelectors.getInstitution);
   preprints = select(InstitutionsAdminSelectors.getPreprints);
   totalCount = select(InstitutionsAdminSelectors.getPreprintsTotalCount);
   isLoading = select(InstitutionsAdminSelectors.getPreprintsLoading);
@@ -44,59 +37,34 @@ export class InstitutionsPreprintsComponent implements OnInit {
   tableColumns = signal(preprintsTableColumns);
 
   currentPageSize = signal(TABLE_PARAMS.rows);
-  currentSort = signal('-dateModified');
   sortField = signal<string>('-dateModified');
   sortOrder = signal<number>(1);
-
-  currentCursor = signal('');
-
   tableData = computed(() => this.preprints().map(mapPreprintToTableData) as TableCellData[]);
 
+  sortParam = computed(() => {
+    const sortField = this.sortField();
+    const sortOrder = this.sortOrder();
+    return sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
+  });
+
   ngOnInit(): void {
-    this.getPreprints();
+    this.actions.fetchPreprints(this.sortField(), '');
   }
 
-  onSortChange(params: QueryParams): void {
+  onSortChange(params: SearchFilters): void {
     this.sortField.set(params.sortColumn || '-dateModified');
     this.sortOrder.set(params.sortOrder || 1);
 
-    const sortField = params.sortColumn || '-dateModified';
-    const sortOrder = params.sortOrder || 1;
-    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchPreprints(this.institutionId, institutionIris, this.currentPageSize(), sortParam, '');
+    this.actions.fetchPreprints(this.sortParam(), '');
   }
 
   onLinkPageChange(link: string): void {
-    const url = new URL(link);
-    const cursor = url.searchParams.get('page[cursor]') || '';
+    const cursor = new URL(link).searchParams.get('page[cursor]') || '';
 
-    const sortField = this.sortField();
-    const sortOrder = this.sortOrder();
-    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchPreprints(this.institutionId, institutionIris, this.currentPageSize(), sortParam, cursor);
+    this.actions.fetchPreprints(this.sortParam(), cursor);
   }
 
   download(type: DownloadType) {
     downloadResults(this.preprintsDownloadLink(), type);
-  }
-
-  private getPreprints(): void {
-    const institutionId = this.route.parent?.snapshot.params['institution-id'];
-    if (!institutionId) return;
-
-    this.institutionId = institutionId;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchPreprints(this.institutionId, institutionIris, this.currentPageSize(), this.sortField(), '');
   }
 }

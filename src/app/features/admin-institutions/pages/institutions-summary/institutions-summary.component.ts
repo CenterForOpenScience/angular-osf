@@ -38,7 +38,6 @@ export class InstitutionsSummaryComponent implements OnInit {
   summaryMetricsLoading = select(InstitutionsAdminSelectors.getSummaryMetricsLoading);
 
   hasOsfAddonSearch = select(InstitutionsAdminSelectors.getHasOsfAddonSearch);
-  hasOsfAddonSearchLoading = select(InstitutionsAdminSelectors.getHasOsfAddonSearchLoading);
 
   storageRegionSearch = select(InstitutionsAdminSelectors.getStorageRegionSearch);
   storageRegionSearchLoading = select(InstitutionsAdminSelectors.getStorageRegionSearchLoading);

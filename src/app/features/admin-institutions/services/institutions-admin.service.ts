@@ -3,9 +3,10 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ResourceType } from '@shared/enums';
+import { getResourceTypeStringFromEnum } from '@shared/helpers';
 import { JsonApiService } from '@shared/services';
 
-import { SearchResourceType } from '../enums';
 import {
   mapIndexCardResults,
   mapInstitutionDepartments,
@@ -80,16 +81,16 @@ export class InstitutionsAdminService {
       );
   }
 
-  fetchProjects(iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards(SearchResourceType.Project, iris, pageSize, sort, cursor);
+  fetchProjects(iris: string[], sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards(ResourceType.Project, iris, sort, cursor);
   }
 
-  fetchRegistrations(iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards(SearchResourceType.Registration, iris, pageSize, sort, cursor);
+  fetchRegistrations(iris: string[], sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards(ResourceType.Registration, iris, sort, cursor);
   }
 
-  fetchPreprints(iris: string[], pageSize = 10, sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards(SearchResourceType.Preprint, iris, pageSize, sort, cursor);
+  fetchPreprints(iris: string[], sort = '-dateModified', cursor = '') {
+    return this.fetchIndexCards(ResourceType.Preprint, iris, sort, cursor);
   }
 
   fetchIndexValueSearch(
@@ -125,9 +126,8 @@ export class InstitutionsAdminService {
   }
 
   private fetchIndexCards(
-    resourceType: SearchResourceType,
+    resourceType: ResourceType,
     institutionIris: string[],
-    pageSize = 10,
     sort = '-dateModified',
     cursor = ''
   ): Observable<AdminInstitutionSearchResult> {
@@ -136,10 +136,10 @@ export class InstitutionsAdminService {
 
     const params: Record<string, string> = {
       'cardSearchFilter[affiliation][]': affiliationParam,
-      'cardSearchFilter[resourceType]': resourceType,
+      'cardSearchFilter[resourceType]': getResourceTypeStringFromEnum(resourceType),
       'cardSearchFilter[accessService]': environment.webUrl,
       'page[cursor]': cursor,
-      'page[size]': pageSize.toString(),
+      'page[size]': '10',
       sort,
     };
 
@@ -149,10 +149,10 @@ export class InstitutionsAdminService {
           response: InstitutionRegistrationsJsonApi
         ) => InstitutionProject[] | InstitutionRegistration[] | InstitutionPreprint[];
         switch (resourceType) {
-          case SearchResourceType.Registration:
+          case ResourceType.Registration:
             mapper = mapInstitutionRegistrations;
             break;
-          case SearchResourceType.Project:
+          case ResourceType.Project:
             mapper = mapInstitutionProjects;
             break;
           default:

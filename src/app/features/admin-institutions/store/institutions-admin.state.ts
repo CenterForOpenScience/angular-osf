@@ -167,23 +167,22 @@ export class InstitutionsAdminState {
       projects: { ...state.projects, isLoading: true, error: null },
     });
 
-    return this.institutionsAdminService
-      .fetchProjects(action.institutionIris, action.pageSize, action.sort, action.cursor)
-      .pipe(
-        tap((response) => {
-          ctx.patchState({
-            projects: {
-              data: response.items as InstitutionProject[],
-              totalCount: response.totalCount,
-              isLoading: false,
-              error: null,
-              links: response.links,
-              downloadLink: response.downloadLink,
-            },
-          });
-        }),
-        catchError((error) => handleSectionError(ctx, 'projects', error))
-      );
+    const institutionIris = state.institution.data.iris;
+    return this.institutionsAdminService.fetchProjects(institutionIris, action.sort, action.cursor).pipe(
+      tap((response) => {
+        ctx.patchState({
+          projects: {
+            data: response.items as InstitutionProject[],
+            totalCount: response.totalCount,
+            isLoading: false,
+            error: null,
+            links: response.links,
+            downloadLink: response.downloadLink,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'projects', error))
+    );
   }
 
   @Action(FetchRegistrations)
@@ -193,23 +192,22 @@ export class InstitutionsAdminState {
       registrations: { ...state.registrations, isLoading: true, error: null },
     });
 
-    return this.institutionsAdminService
-      .fetchRegistrations(action.institutionIris, action.pageSize, action.sort, action.cursor)
-      .pipe(
-        tap((response) => {
-          ctx.patchState({
-            registrations: {
-              data: response.items as InstitutionRegistration[],
-              totalCount: response.totalCount,
-              isLoading: false,
-              error: null,
-              links: response.links,
-              downloadLink: response.downloadLink,
-            },
-          });
-        }),
-        catchError((error) => handleSectionError(ctx, 'registrations', error))
-      );
+    const institutionIris = state.institution.data.iris;
+    return this.institutionsAdminService.fetchRegistrations(institutionIris, action.sort, action.cursor).pipe(
+      tap((response) => {
+        ctx.patchState({
+          registrations: {
+            data: response.items as InstitutionRegistration[],
+            totalCount: response.totalCount,
+            isLoading: false,
+            error: null,
+            links: response.links,
+            downloadLink: response.downloadLink,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'registrations', error))
+    );
   }
 
   @Action(FetchPreprints)
@@ -219,23 +217,22 @@ export class InstitutionsAdminState {
       preprints: { ...state.preprints, isLoading: true, error: null },
     });
 
-    return this.institutionsAdminService
-      .fetchPreprints(action.institutionIris, action.pageSize, action.sort, action.cursor)
-      .pipe(
-        tap((response) => {
-          ctx.patchState({
-            preprints: {
-              data: response.items as InstitutionPreprint[],
-              totalCount: response.totalCount,
-              isLoading: false,
-              error: null,
-              links: response.links,
-              downloadLink: response.downloadLink,
-            },
-          });
-        }),
-        catchError((error) => handleSectionError(ctx, 'preprints', error))
-      );
+    const institutionIris = state.institution.data.iris;
+    return this.institutionsAdminService.fetchPreprints(institutionIris, action.sort, action.cursor).pipe(
+      tap((response) => {
+        ctx.patchState({
+          preprints: {
+            data: response.items as InstitutionPreprint[],
+            totalCount: response.totalCount,
+            isLoading: false,
+            error: null,
+            links: response.links,
+            downloadLink: response.downloadLink,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'preprints', error))
+    );
   }
 
   @Action(SendUserMessage)
