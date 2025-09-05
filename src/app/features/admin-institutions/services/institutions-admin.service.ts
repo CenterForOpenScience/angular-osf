@@ -105,7 +105,7 @@ export class InstitutionsAdminService {
     };
 
     return this.jsonApiService
-      .get<InstitutionIndexValueSearchJsonApi>(`${environment.shareDomainUrl}/index-value-search`, params)
+      .get<InstitutionIndexValueSearchJsonApi>(`${environment.shareTroveUrl}/index-value-search`, params)
       .pipe(map((response) => mapIndexCardResults(response?.included)));
   }
 
@@ -131,7 +131,7 @@ export class InstitutionsAdminService {
     sort = '-dateModified',
     cursor = ''
   ): Observable<AdminInstitutionSearchResult> {
-    const url = `${environment.shareDomainUrl}/index-card-search`;
+    const url = `${environment.shareTroveUrl}/index-card-search`;
     const affiliationParam = institutionIris.join(',');
 
     const params: Record<string, string> = {
