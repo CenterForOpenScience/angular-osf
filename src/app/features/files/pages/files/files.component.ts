@@ -23,7 +23,7 @@ import {
   inject,
   model,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -89,7 +89,7 @@ import { environment } from 'src/environments/environment';
   providers: [DialogService, TreeDragDropService],
 })
 export class FilesComponent {
-  @ViewChild(GoogleFilePickerComponent) googleFilePickerComponent!: GoogleFilePickerComponent;
+  googleFilePickerComponent = viewChild(GoogleFilePickerComponent);
 
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
@@ -222,7 +222,7 @@ export class FilesComponent {
       if (currentRootFolder) {
         this.isGoogleDrive.set(currentRootFolder.folder.provider === 'googledrive');
         if (this.isGoogleDrive()) {
-          this.#setGoogleAccountId();
+          this.setGoogleAccountId();
         }
         this.actions.setCurrentFolder(currentRootFolder.folder);
       }
@@ -394,7 +394,7 @@ export class FilesComponent {
     }
   }
 
-  #setGoogleAccountId(): void {
+  private setGoogleAccountId(): void {
     const addons = this.configuredStorageAddons();
     const googleDrive = addons?.find((addon) => addon.externalServiceName === 'googledrive');
     if (googleDrive) {
@@ -406,7 +406,7 @@ export class FilesComponent {
   }
 
   openGoogleFilePicker(): void {
-    this.googleFilePickerComponent.createPicker();
+    this.googleFilePickerComponent()?.createPicker();
     this.updateFilesList();
   }
 }

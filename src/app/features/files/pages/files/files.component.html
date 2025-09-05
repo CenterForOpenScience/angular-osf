@@ -51,13 +51,13 @@
           [disabled]="isButtonDisabled()"
           outlined
           raised
-          (click)="downloadFolder()"
+          (onClick)="downloadFolder()"
           [icon]="'fas fa-download'"
           [label]="'files.actions.downloadAsZip' | translate"
         >
         </p-button>
 
-        <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (click)="showInfoDialog()"></p-button>
+        <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="showInfoDialog()"></p-button>
 
         @if (!isViewOnly() && !hasViewOnly()) {
           <p-button
@@ -67,7 +67,7 @@
             severity="success"
             [icon]="'fas fa-plus'"
             [label]="'files.actions.createFolder' | translate"
-            (click)="createFolder()"
+            (onClick)="createFolder()"
           >
           </p-button>
 
@@ -78,7 +78,7 @@
             severity="success"
             [icon]="'fas fa-upload'"
             [label]="'files.actions.uploadFile' | translate"
-            (click)="fileInput.click()"
+            (onClick)="fileInput.click()"
           >
           </p-button>
 
@@ -90,7 +90,7 @@
               severity="success"
               [icon]="'fa-brands fa-google-plus-g'"
               [label]="'files.actions.addFromDrive' | translate"
-              (click)="googleFilePickerComponent.createPicker()"
+              (onClick)="googleFilePickerComponent()?.createPicker()"
             >
             </p-button>
             <osf-google-file-picker
