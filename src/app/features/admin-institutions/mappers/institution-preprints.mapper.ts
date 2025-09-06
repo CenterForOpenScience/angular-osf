@@ -19,6 +19,8 @@ export function mapInstitutionPreprints(response: InstitutionRegistrationsJsonAp
       if (indexCard && indexCard.attributes) {
         const metadata = indexCard.attributes.resourceMetadata;
 
+        //TODO fix preprint mapping
+        //missing view count and download count
         if (metadata) {
           preprints.push({
             id: metadata['@id'] || indexCard.id,
@@ -29,7 +31,6 @@ export function mapInstitutionPreprints(response: InstitutionRegistrationsJsonAp
             doi: metadata.identifier?.[0]?.['@value'] || '',
             contributorName: metadata.creator?.[0]?.name?.[0]?.['@value'] || '',
             license: metadata.rights?.[0]?.name?.[0]?.['@value'] || '',
-            registrationSchema: metadata.subject?.[0]?.prefLabel?.[0]?.['@value'] || '',
           });
         }
       }

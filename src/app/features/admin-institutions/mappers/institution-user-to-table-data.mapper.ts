@@ -25,16 +25,10 @@ export function mapUserToTableCellData(user: InstitutionUser): TableCellData {
           target: '_blank',
         }
       : '-',
-    monthLastLogin: user.monthLastLogin,
-    monthLastActive: user.monthLastActive,
-    accountCreationDate: user.accountCreationDate,
     publicProjects: user.publicProjects,
     privateProjects: user.privateProjects,
     publicRegistrationCount: user.publicRegistrationCount,
     embargoedRegistrationCount: user.embargoedRegistrationCount,
     publishedPreprintCount: user.publishedPreprintCount,
-    publicFileCount: user.publicFileCount,
-    storageByteCount: user.storageByteCount,
-    contactsCount: user.contactsCount,
   };
 }

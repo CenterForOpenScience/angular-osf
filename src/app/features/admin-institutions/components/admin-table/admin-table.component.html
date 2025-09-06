@@ -84,11 +84,11 @@
   <ng-template #header let-columns>
     <tr>
       @for (col of columns; track col.field) {
-        <th [pSortableColumn]="col.sortable ? col.field : null">
+        <th [pSortableColumn]="col.sortable ? (col.sortField ?? col.field) : null">
           <div class="flex align-items-center gap-2">
             <span>{{ col.header | translate }}</span>
             @if (col.sortable) {
-              <p-sortIcon [field]="col.field"></p-sortIcon>
+              <p-sortIcon [field]="col.sortField ?? col.field"></p-sortIcon>
             }
           </div>
         </th>

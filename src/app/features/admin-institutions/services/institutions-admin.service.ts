@@ -98,6 +98,7 @@ export class InstitutionsAdminService {
     valueSearchPropertyPath: string,
     additionalParams?: Record<string, string>
   ): Observable<InstitutionSearchFilter[]> {
+    //TODO fix iris
     const params: Record<string, string> = {
       'cardSearchFilter[affiliation]': `https://ror.org/05d5mza29,${environment.webUrl}/institutions/${institutionId}/`,
       valueSearchPropertyPath,
@@ -134,13 +135,15 @@ export class InstitutionsAdminService {
     const url = `${environment.shareDomainUrl}/index-card-search`;
     const affiliationParam = institutionIris.join(',');
 
+    const sortParam = sort.includes('date') ? 'sort' : 'sort[integer-value]';
+
     const params: Record<string, string> = {
       'cardSearchFilter[affiliation][]': affiliationParam,
       'cardSearchFilter[resourceType]': getResourceTypeStringFromEnum(resourceType),
       'cardSearchFilter[accessService]': environment.webUrl,
       'page[cursor]': cursor,
       'page[size]': '10',
-      sort,
+      [sortParam]: sort,
     };
 
     return this.jsonApiService.get<InstitutionRegistrationsJsonApi>(url, params).pipe(

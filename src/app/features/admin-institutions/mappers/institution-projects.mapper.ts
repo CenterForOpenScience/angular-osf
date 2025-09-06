@@ -1,11 +1,4 @@
-import {
-  Affiliation,
-  IncludedItem,
-  IndexCard,
-  InstitutionProject,
-  InstitutionRegistrationsJsonApi,
-  SearchResult,
-} from '../models';
+import { IncludedItem, IndexCard, InstitutionProject, InstitutionRegistrationsJsonApi, SearchResult } from '../models';
 
 export function mapInstitutionProjects(response: InstitutionRegistrationsJsonApi): InstitutionProject[] {
   if (!response.included) {
@@ -27,6 +20,7 @@ export function mapInstitutionProjects(response: InstitutionRegistrationsJsonApi
       if (indexCard && indexCard.attributes) {
         const metadata = indexCard.attributes.resourceMetadata;
 
+        //TODO fix mappings
         if (metadata) {
           projects.push({
             id: metadata['@id'] || indexCard.id,
@@ -45,21 +39,13 @@ export function mapInstitutionProjects(response: InstitutionRegistrationsJsonApi
               ? parseInt(metadata.storageByteCount[0]['@value'])
               : undefined,
             storageRegion: metadata.storageRegion?.[0]?.prefLabel?.[0]?.['@value'] || undefined,
-            affiliation:
-              metadata.affiliation
-                ?.map((aff: Affiliation) => aff.name?.[0]?.['@value'])
-                .filter((value): value is string => Boolean(value)) || [],
-            description: metadata.description?.[0]?.['@value'] || undefined,
             rights: metadata.rights?.[0]?.name?.[0]?.['@value'] || undefined,
-            subject: metadata.subject?.[0]?.prefLabel?.[0]?.['@value'] || undefined,
             viewCount: metadata.usage?.[0]?.viewCount?.[0]?.['@value']
               ? parseInt(metadata.usage[0].viewCount[0]['@value'])
               : undefined,
             downloadCount: metadata.usage?.[0]?.downloadCount?.[0]?.['@value']
               ? parseInt(metadata.usage[0].downloadCount[0]['@value'])
               : undefined,
-            hasVersion: metadata.hasVersion ? metadata.hasVersion.length > 0 : false,
-            supplements: metadata.supplements ? metadata.supplements.length > 0 : false,
           });
         }
       }

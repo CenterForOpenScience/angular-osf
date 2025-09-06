@@ -9,5 +9,4 @@ export interface InstitutionPreprint {
   contributorName: string;
   viewsLast30Days?: number;
   downloadsLast30Days?: number;
-  registrationSchema?: string;
 }

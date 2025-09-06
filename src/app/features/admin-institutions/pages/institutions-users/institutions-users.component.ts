@@ -15,10 +15,10 @@ import { FormsModule } from '@angular/forms';
 import { UserSelectors } from '@osf/core/store/user';
 import { SelectComponent } from '@osf/shared/components';
 import { TABLE_PARAMS } from '@osf/shared/constants';
-import { SortOrder } from '@osf/shared/enums';
 import { Primitive } from '@osf/shared/helpers';
-import { QueryParams } from '@osf/shared/models';
+import { SearchFilters } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
+import { SortOrder } from '@shared/enums';
 
 import { AdminTableComponent } from '../../components';
 import { departmentOptions, userTableColumns } from '../../constants';
@@ -56,7 +56,7 @@ export class InstitutionsUsersComponent {
   hasOrcidFilter = signal<boolean>(false);
 
   sortField = signal<string>('user_name');
-  sortOrder = signal<number>(SortOrder.Desc);
+  sortOrder = signal<number>(1);
 
   departmentOptions = departmentOptions;
   tableColumns = userTableColumns;
@@ -98,10 +98,10 @@ export class InstitutionsUsersComponent {
     this.currentPage.set(1);
   }
 
-  onSortChange(sortEvent: QueryParams): void {
+  onSortChange(sortEvent: SearchFilters): void {
     this.currentPage.set(1);
     this.sortField.set(camelToSnakeCase(sortEvent.sortColumn) || 'user_name');
-    this.sortOrder.set(sortEvent.sortOrder);
+    this.sortOrder.set(sortEvent.sortOrder || -1);
   }
 
   onIconClick(event: TableIconClickEvent): void {
@@ -140,20 +140,12 @@ export class InstitutionsUsersComponent {
   }
 
   private createUrl(baseUrl: string, mediaType: string): string {
-    const query = {} as Record<string, string>;
-    if (this.selectedDepartment()) {
-      query['filter[department]'] = this.selectedDepartment() || '';
-    }
-
-    if (this.hasOrcidFilter()) {
-      query['filter[orcid_id][ne]'] = '';
-    }
-
+    const filters = this.buildFilters();
     const userURL = new URL(baseUrl);
     userURL.searchParams.set('format', mediaType);
     userURL.searchParams.set('page[size]', '10000');
 
-    Object.entries(query).forEach(([key, value]) => {
+    Object.entries(filters).forEach(([key, value]) => {
       userURL.searchParams.set(key, value);
     });
 
@@ -169,7 +161,7 @@ export class InstitutionsUsersComponent {
       const filters = this.buildFilters();
       const sortField = this.sortField();
       const sortOrder = this.sortOrder();
-      const sortParam = sortOrder === 0 ? `-${sortField}` : sortField;
+      const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
 
       this.actions.fetchInstitutionUsers(institutionId, this.currentPage(), this.currentPageSize(), sortParam, filters);
     });

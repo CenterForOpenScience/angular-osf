@@ -25,6 +25,8 @@ export function mapInstitutionRegistrations(response: InstitutionRegistrationsJs
       if (indexCard && indexCard.attributes) {
         const metadata = indexCard.attributes.resourceMetadata;
 
+        //TODO fix mapping to use order of search-result not index-card
+        //TODO fix funderName and registrationSchema
         if (metadata) {
           registrations.push({
             id: metadata['@id'] || indexCard.id,

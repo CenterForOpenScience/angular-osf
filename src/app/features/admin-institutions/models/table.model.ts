@@ -2,6 +2,7 @@ export interface TableColumn {
   field: string;
   header: string;
   sortable?: boolean;
+  sortField?: string;
   isLink?: boolean;
   linkTarget?: '_blank' | '_self';
   showIcon?: boolean;

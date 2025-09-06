@@ -21,7 +21,7 @@ import {
 } from '@osf/features/admin-institutions/models';
 import { CustomPaginatorComponent } from '@osf/shared/components';
 import { StopPropagationDirective } from '@shared/directives';
-import { QueryParams } from '@shared/models';
+import { SearchFilters } from '@shared/models';
 
 import { DOWNLOAD_OPTIONS } from '../../constants';
 import { DownloadType } from '../../enums';
@@ -48,8 +48,6 @@ import { DownloadType } from '../../enums';
 })
 export class AdminTableComponent {
   private readonly translateService = inject(TranslateService);
-
-  private userInitiatedSort = false;
 
   tableColumns = input.required<TableColumn[]>();
   tableData = input.required<TableCellData[]>();
@@ -78,7 +76,7 @@ export class AdminTableComponent {
   >();
 
   pageChanged = output<PaginatorState>();
-  sortChanged = output<QueryParams>();
+  sortChanged = output<SearchFilters>();
   iconClicked = output<TableIconClickEvent>();
   linkPageChanged = output<string>();
   downloadClicked = output<DownloadType>();
@@ -98,9 +96,6 @@ export class AdminTableComponent {
 
     return selected;
   });
-
-  sortColumn = computed(() => this.sortField());
-  currentSortOrder = computed(() => this.sortOrder());
 
   firstLink = computed(() => this.paginationLinks()?.first?.href || '');
   prevLink = computed(() => this.paginationLinks()?.prev?.href || '');
@@ -123,21 +118,13 @@ export class AdminTableComponent {
     this.pageChanged.emit(event);
   }
 
-  onHeaderClick(column: TableColumn): void {
-    if (column.sortable) {
-      this.userInitiatedSort = true;
-    }
-  }
-
   onSort(event: SortEvent): void {
-    if (event.field && this.userInitiatedSort) {
+    if (event.field) {
       this.sortChanged.emit({
         sortColumn: event.field,
         sortOrder: event.order,
-      } as QueryParams);
+      } as SearchFilters);
     }
-
-    this.userInitiatedSort = false;
   }
 
   onIconClick(rowData: TableCellData, column: TableColumn): void {
