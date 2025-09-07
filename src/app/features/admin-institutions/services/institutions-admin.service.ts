@@ -11,7 +11,6 @@ import {
   mapIndexCardResults,
   mapInstitutionDepartments,
   mapInstitutionPreprints,
-  mapInstitutionProjects,
   mapInstitutionRegistrations,
   mapInstitutionSummaryMetrics,
   mapInstitutionUsers,
@@ -24,7 +23,6 @@ import {
   InstitutionDepartmentsJsonApi,
   InstitutionIndexValueSearchJsonApi,
   InstitutionPreprint,
-  InstitutionProject,
   InstitutionRegistration,
   InstitutionRegistrationsJsonApi,
   InstitutionSearchFilter,
@@ -79,10 +77,6 @@ export class InstitutionsAdminService {
           totalCount: response.meta.total,
         }))
       );
-  }
-
-  fetchProjects(iris: string[], sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards(ResourceType.Project, iris, sort, cursor);
   }
 
   fetchRegistrations(iris: string[], sort = '-dateModified', cursor = '') {
@@ -148,15 +142,10 @@ export class InstitutionsAdminService {
 
     return this.jsonApiService.get<InstitutionRegistrationsJsonApi>(url, params).pipe(
       map((res) => {
-        let mapper: (
-          response: InstitutionRegistrationsJsonApi
-        ) => InstitutionProject[] | InstitutionRegistration[] | InstitutionPreprint[];
+        let mapper: (response: InstitutionRegistrationsJsonApi) => InstitutionRegistration[] | InstitutionPreprint[];
         switch (resourceType) {
           case ResourceType.Registration:
             mapper = mapInstitutionRegistrations;
-            break;
-          case ResourceType.Project:
-            mapper = mapInstitutionProjects;
             break;
           default:
             mapper = mapInstitutionPreprints;

@@ -23,7 +23,7 @@
     <ng-content select="[slot=otherFilters]"></ng-content>
 
     <div class="flex align-items-center gap-2 justify-content-between w-full md:justify-content-start md:w-fit">
-      <p-multiselect
+      <p-multi-select
         class="w-9 md:w-fit"
         [options]="tableColumns()"
         [(ngModel)]="selectedColumns"
@@ -43,7 +43,7 @@
         <ng-template #item let-item>
           {{ item.header | translate }}
         </ng-template>
-      </p-multiselect>
+      </p-multi-select>
 
       <p-button
         icon="fa fa-download text-primary text-xl"
@@ -155,7 +155,7 @@
 @if (isNextPreviousPagination()) {
   <div class="flex column-gap-2 w-full justify-content-center pt-2">
     @if (firstLink() && prevLink()) {
-      <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(firstLink())"></p-button>
+      <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(firstLink())" />
     }
 
     <p-button
@@ -164,8 +164,7 @@
       text
       [disabled]="!prevLink()"
       (onClick)="switchPage(prevLink())"
-    >
-    </p-button>
+    />
 
     <p-button
       icon="fas fa-angle-right"
@@ -173,8 +172,7 @@
       text
       [disabled]="!nextLink()"
       (onClick)="switchPage(nextLink())"
-    >
-    </p-button>
+    />
   </div>
 } @else {
   @if (enablePagination() && totalCount() > pageSize()) {
@@ -184,7 +182,7 @@
         [totalCount]="totalCount()"
         [rows]="pageSize()"
         (pageChanged)="onPageChange($event)"
-      ></osf-custom-paginator>
+      />
     </div>
   }
 }

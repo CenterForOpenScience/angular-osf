@@ -39,17 +39,22 @@ export class GlobalSearchSelectors {
   }
 
   @Selector([GlobalSearchState])
-  static getFirst(state: GlobalSearchStateModel): string {
+  static getSelf(state: GlobalSearchStateModel): string {
+    return state.self;
+  }
+
+  @Selector([GlobalSearchState])
+  static getFirst(state: GlobalSearchStateModel): StringOrNull {
     return state.first;
   }
 
   @Selector([GlobalSearchState])
-  static getNext(state: GlobalSearchStateModel): string {
+  static getNext(state: GlobalSearchStateModel): StringOrNull {
     return state.next;
   }
 
   @Selector([GlobalSearchState])
-  static getPrevious(state: GlobalSearchStateModel): string {
+  static getPrevious(state: GlobalSearchStateModel): StringOrNull {
     return state.previous;
   }
 

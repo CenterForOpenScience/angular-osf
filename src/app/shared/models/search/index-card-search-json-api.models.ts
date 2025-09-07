@@ -22,9 +22,25 @@ export type IndexCardSearchResponseJsonApi = JsonApiResponse<
         };
       };
     };
+    links: {
+      self: string;
+    };
   },
-  (IndexCardDataJsonApi | ApiData<RelatedPropertyPathAttributes, null, null, null>)[]
+  (IndexCardDataJsonApi | ApiData<RelatedPropertyPathAttributes, null, null, null> | SearchResultJsonApi)[]
 >;
+
+export interface SearchResultJsonApi {
+  id: string;
+  type: 'search-result';
+  relationships: {
+    indexCard: {
+      data: {
+        id: string;
+        type: 'index-card';
+      };
+    };
+  };
+}
 
 export type IndexCardDataJsonApi = ApiData<IndexCardAttributesJsonApi, null, null, null>;
 

@@ -2,64 +2,110 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
+import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
+import { Popover } from 'primeng/popover';
 
 import { filter } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { SortOrder } from '@osf/shared/enums';
-import { SearchFilters } from '@osf/shared/models';
+import { mapProjectResourceToTableCellData } from '@osf/features/admin-institutions/mappers/institution-project-to-table-data.mapper';
+import { ResourceType, SortOrder } from '@osf/shared/enums';
+import { DiscoverableFilter, Resource, SearchFilters } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
-import { TABLE_PARAMS } from '@shared/constants';
-import { InstitutionsSearchSelectors } from '@shared/stores/institutions-search';
+import { FilterChipsComponent, ReusableFilterComponent } from '@shared/components';
+import { StringOrNull } from '@shared/helpers';
+import {
+  ClearFilterSearchResults,
+  FetchResources,
+  FetchResourcesByLink,
+  GlobalSearchSelectors,
+  LoadFilterOptions,
+  LoadFilterOptionsAndSetValues,
+  LoadFilterOptionsWithSearch,
+  LoadMoreFilterOptions,
+  ResetSearchState,
+  SetDefaultFilterValue,
+  SetResourceType,
+  SetSortBy,
+  UpdateFilterValue,
+} from '@shared/stores/global-search';
 
 import { AdminTableComponent } from '../../components';
 import { projectTableColumns } from '../../constants';
 import { ContactDialogComponent } from '../../dialogs';
 import { ContactOption, DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
-import { mapProjectToTableCellData } from '../../mappers';
-import { ContactDialogData, InstitutionProject, TableCellData, TableCellLink, TableIconClickEvent } from '../../models';
-import { FetchProjects, InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } from '../../store';
+import { ContactDialogData, TableCellData, TableCellLink, TableIconClickEvent } from '../../models';
+import { InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } from '../../store';
 
 @Component({
   selector: 'osf-institutions-projects',
-  imports: [AdminTableComponent, TranslatePipe],
+  imports: [AdminTableComponent, TranslatePipe, Popover, Button, ReusableFilterComponent, FilterChipsComponent],
   templateUrl: './institutions-projects.component.html',
   styleUrl: './institutions-projects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class InstitutionsProjectsComponent implements OnInit {
-  private readonly dialogService = inject(DialogService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly toastService = inject(ToastService);
-  private readonly translate = inject(TranslateService);
+export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
+  private dialogService = inject(DialogService);
+  private destroyRef = inject(DestroyRef);
+  private toastService = inject(ToastService);
+  private translate = inject(TranslateService);
 
-  private readonly actions = createDispatchMap({
-    fetchProjects: FetchProjects,
+  private actions = createDispatchMap({
     sendUserMessage: SendUserMessage,
     requestProjectAccess: RequestProjectAccess,
+    loadFilterOptions: LoadFilterOptions,
+    loadFilterOptionsAndSetValues: LoadFilterOptionsAndSetValues,
+    loadFilterOptionsWithSearch: LoadFilterOptionsWithSearch,
+    loadMoreFilterOptions: LoadMoreFilterOptions,
+    updateFilterValue: UpdateFilterValue,
+    clearFilterSearchResults: ClearFilterSearchResults,
+    setDefaultFilterValue: SetDefaultFilterValue,
+    resetSearchState: ResetSearchState,
+    setSortBy: SetSortBy,
+    setResourceType: SetResourceType,
+    fetchResources: FetchResources,
+    fetchResourcesByLink: FetchResourcesByLink,
   });
+
+  tableColumns = projectTableColumns;
 
   sortField = signal<string>('-dateModified');
   sortOrder = signal<number>(1);
 
-  tableColumns = projectTableColumns;
+  resources = select(GlobalSearchSelectors.getResources);
+  areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
+  resourcesCount = select(GlobalSearchSelectors.getResourcesCount);
 
-  projects = select(InstitutionsAdminSelectors.getProjects);
-  totalCount = select(InstitutionsAdminSelectors.getProjectsTotalCount);
-  isLoading = select(InstitutionsAdminSelectors.getProjectsLoading);
-  projectsLinks = select(InstitutionsAdminSelectors.getProjectsLinks);
-  projectsDownloadLink = select(InstitutionsAdminSelectors.getProjectsDownloadLink);
-  institution = select(InstitutionsSearchSelectors.getInstitution);
+  selfLink = select(GlobalSearchSelectors.getFirst);
+  firstLink = select(GlobalSearchSelectors.getFirst);
+  nextLink = select(GlobalSearchSelectors.getNext);
+  previousLink = select(GlobalSearchSelectors.getPrevious);
+
+  institution = select(InstitutionsAdminSelectors.getInstitution);
   currentUser = select(UserSelectors.getCurrentUser);
 
+  filters = select(GlobalSearchSelectors.getFilters);
+  filterValues = select(GlobalSearchSelectors.getFilterValues);
+  filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
+  filterOptionsCache = select(GlobalSearchSelectors.getFilterOptionsCache);
+
   tableData = computed(() =>
-    this.projects().map((project: InstitutionProject): TableCellData => mapProjectToTableCellData(project))
+    this.resources().map((resource: Resource): TableCellData => mapProjectResourceToTableCellData(resource))
   );
 
   sortParam = computed(() => {
@@ -68,49 +114,86 @@ export class InstitutionsProjectsComponent implements OnInit {
     return sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
   });
 
+  paginationLinks = computed(() => {
+    return {
+      next: { href: this.nextLink() },
+      prev: { href: this.previousLink() },
+      first: { href: this.firstLink() },
+    };
+  });
+
   ngOnInit(): void {
-    this.actions.fetchProjects(this.sortField(), '');
+    this.actions.setResourceType(ResourceType.Project);
+    this.actions.setDefaultFilterValue('affiliation', this.institution().iris.join(','));
+    this.actions.fetchResources();
+  }
+
+  ngOnDestroy() {
+    this.actions.resetSearchState();
   }
 
   onSortChange(params: SearchFilters): void {
     this.sortField.set(params.sortColumn || '-dateModified');
     this.sortOrder.set(params.sortOrder || 1);
 
-    this.actions.fetchProjects(this.sortParam());
+    this.actions.setSortBy(this.sortParam());
+    this.actions.fetchResources();
   }
 
-  onLinkPageChange(linkUrl: string): void {
-    if (!linkUrl) return;
-
-    const cursor = new URL(linkUrl).searchParams.get('page[cursor]') || '';
-    this.actions.fetchProjects(this.sortParam(), cursor);
+  onLinkPageChange(link: string): void {
+    this.actions.fetchResourcesByLink(link);
   }
 
   download(type: DownloadType) {
-    downloadResults(this.projectsDownloadLink(), type);
+    downloadResults(this.selfLink(), type);
   }
 
   onIconClick(event: TableIconClickEvent): void {
-    switch (event.action) {
-      case 'sendMessage': {
-        this.dialogService
-          .open(ContactDialogComponent, {
-            width: '448px',
-            focusOnShow: false,
-            header: this.translate.instant('adminInstitutions.institutionUsers.sendEmail'),
-            closeOnEscape: true,
-            modal: true,
-            closable: true,
-            data: this.currentUser()?.fullName,
-          })
-          .onClose.pipe(
-            filter((value) => !!value),
-            takeUntilDestroyed(this.destroyRef)
-          )
-          .subscribe((data: ContactDialogData) => this.sendEmailToUser(event.rowData, data));
-        break;
-      }
+    if (event.action !== 'sendMessage') {
+      return;
     }
+
+    this.dialogService
+      .open(ContactDialogComponent, {
+        width: '448px',
+        focusOnShow: false,
+        header: this.translate.instant('adminInstitutions.institutionUsers.sendEmail'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: this.currentUser()?.fullName,
+      })
+      .onClose.pipe(
+        filter((value) => !!value),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((data: ContactDialogData) => this.sendEmailToUser(event.rowData, data));
+  }
+
+  onLoadFilterOptions(filter: DiscoverableFilter): void {
+    this.actions.loadFilterOptions(filter.key);
+  }
+
+  onLoadMoreFilterOptions(event: { filterType: string; filter: DiscoverableFilter }): void {
+    this.actions.loadMoreFilterOptions(event.filterType);
+  }
+
+  onFilterSearchChanged(event: { filterType: string; searchText: string; filter: DiscoverableFilter }): void {
+    if (event.searchText.trim()) {
+      this.actions.loadFilterOptionsWithSearch(event.filterType, event.searchText);
+    } else {
+      this.actions.clearFilterSearchResults(event.filterType);
+    }
+  }
+
+  onFilterChanged(event: { filterType: string; value: StringOrNull }): void {
+    this.actions.updateFilterValue(event.filterType, event.value);
+    this.actions.fetchResources();
+  }
+
+  onFilterChipRemoved(filterKey: string): void {
+    this.actions.updateFilterValue(filterKey, null);
+    this.actions.fetchResources();
   }
 
   private sendEmailToUser(userRowData: TableCellData, emailData: ContactDialogData): void {
@@ -144,6 +227,4 @@ export class InstitutionsProjectsComponent implements OnInit {
         .subscribe(() => this.toastService.showSuccess('adminInstitutions.institutionUsers.requestSent'));
     }
   }
-
-  protected readonly TABLE_PARAMS = TABLE_PARAMS;
 }

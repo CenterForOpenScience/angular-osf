@@ -1,4 +1,5 @@
 import { ResourceType } from '@shared/enums';
+import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter } from '@shared/models';
 
 export interface Resource {
@@ -58,7 +59,8 @@ export interface ResourcesData {
   resources: Resource[];
   filters: DiscoverableFilter[];
   count: number;
-  first: string;
-  next: string;
-  previous?: string;
+  self: string;
+  first: StringOrNull;
+  next: StringOrNull;
+  previous: StringOrNull;
 }

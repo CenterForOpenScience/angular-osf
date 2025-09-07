@@ -18,7 +18,7 @@ export interface TableCellLink {
   target?: '_blank' | '_self';
 }
 
-export type TableCellData = Record<string, string | number | TableCellLink | undefined>;
+export type TableCellData = Record<string, string | number | TableCellLink | undefined | Date>;
 
 export interface TableIconClickEvent {
   rowData: TableCellData;

@@ -6,7 +6,7 @@
   [paginationLinks]="registrationsLinks()"
   [reportsLink]="institution().linkToExternalReportsArchive"
   (sortChanged)="onSortChange($event)"
-  (linkPageChanged)="onLinkPageChange($event)"
+  (pageSwitched)="onLinkPageChange($event)"
   (downloadClicked)="download($event)"
 >
   <div slot="amount">

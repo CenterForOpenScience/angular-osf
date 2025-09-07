@@ -5,7 +5,6 @@ import { Institution, PaginationLinksModel } from '@shared/models';
 import {
   InstitutionDepartment,
   InstitutionPreprint,
-  InstitutionProject,
   InstitutionRegistration,
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
@@ -79,31 +78,6 @@ export class InstitutionsAdminSelectors {
   @Selector([InstitutionsAdminState])
   static getUsersTotalCount(state: InstitutionsAdminModel): number {
     return state.users.totalCount;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getProjects(state: InstitutionsAdminModel): InstitutionProject[] {
-    return state.projects.data;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getProjectsLoading(state: InstitutionsAdminModel): boolean {
-    return state.projects.isLoading;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getProjectsTotalCount(state: InstitutionsAdminModel): number {
-    return state.projects.totalCount;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getProjectsLinks(state: InstitutionsAdminModel): PaginationLinksModel | undefined {
-    return state.projects.links;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getProjectsDownloadLink(state: InstitutionsAdminModel): string | null {
-    return state.projects.downloadLink;
   }
 
   @Selector([InstitutionsAdminState])

@@ -21,6 +21,7 @@ import {
 } from '@osf/features/admin-institutions/models';
 import { CustomPaginatorComponent } from '@osf/shared/components';
 import { StopPropagationDirective } from '@shared/directives';
+import { StringOrNull } from '@shared/helpers';
 import { SearchFilters } from '@shared/models';
 
 import { DOWNLOAD_OPTIONS } from '../../constants';
@@ -67,10 +68,10 @@ export class AdminTableComponent {
 
   paginationLinks = input<
     | {
-        first?: { href: string };
-        next?: { href: string };
-        prev?: { href: string };
-        last?: { href: string };
+        first?: { href: StringOrNull };
+        next?: { href: StringOrNull };
+        prev?: { href: StringOrNull };
+        last?: { href: StringOrNull };
       }
     | undefined
   >();
@@ -78,7 +79,7 @@ export class AdminTableComponent {
   pageChanged = output<PaginatorState>();
   sortChanged = output<SearchFilters>();
   iconClicked = output<TableIconClickEvent>();
-  linkPageChanged = output<string>();
+  pageSwitched = output<string>();
   downloadClicked = output<DownloadType>();
 
   skeletonData: TableCellData[] = Array.from({ length: 10 }, () => ({}) as TableCellData);
@@ -149,7 +150,7 @@ export class AdminTableComponent {
   }
 
   switchPage(link: string) {
-    this.linkPageChanged.emit(link);
+    this.pageSwitched.emit(link);
   }
 
   getLinkUrl(value: string | number | TableCellLink | undefined): string {
