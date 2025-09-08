@@ -30,7 +30,7 @@ export class GoogleFilePickerComponent implements OnInit {
   public isFolderPicker = input.required<boolean>();
   public rootFolder = input<StorageItemModel | null>(null);
   public accountId = input<string>('');
-  public handleFolderSelection = input.required<(folder: StorageItemModel) => void>();
+  public handleFolderSelection = input<(folder: StorageItemModel) => void>();
 
   public accessToken = signal<string | null>(null);
   public visible = signal(false);
@@ -112,7 +112,7 @@ export class GoogleFilePickerComponent implements OnInit {
   }
 
   #filePickerCallback(data: GoogleFileDataModel) {
-    this.handleFolderSelection()(
+    this.handleFolderSelection()?.(
       Object({
         itemName: data.name,
         itemId: data.id,

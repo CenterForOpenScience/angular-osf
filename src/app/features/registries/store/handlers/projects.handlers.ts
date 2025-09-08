@@ -2,8 +2,9 @@ import { StateContext } from '@ngxs/store';
 
 import { inject, Injectable } from '@angular/core';
 
+import { ProjectsService } from '@osf/shared/services/projects.service';
+
 import { Project } from '../../models';
-import { ProjectsService } from '../../services';
 import { DefaultState } from '../default.state';
 import { RegistriesStateModel } from '../registries.model';
 
@@ -11,14 +12,19 @@ import { RegistriesStateModel } from '../registries.model';
 export class ProjectsHandlers {
   projectsService = inject(ProjectsService);
 
-  getProjects({ patchState }: StateContext<RegistriesStateModel>) {
+  getProjects({ patchState }: StateContext<RegistriesStateModel>, userId: string) {
+    // [NM] TODO: move this parameter to projects.service
+    const params: Record<string, unknown> = {
+      'filter[current_user_permissions]': 'admin',
+    };
+
     patchState({
       projects: {
         ...DefaultState.projects,
         isLoading: true,
       },
     });
-    return this.projectsService.getProjects().subscribe({
+    return this.projectsService.fetchProjects(userId, params).subscribe({
       next: (projects: Project[]) => {
         patchState({
           projects: {

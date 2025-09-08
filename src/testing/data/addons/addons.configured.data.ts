@@ -1,3 +1,5 @@
+import { AddonMapper } from '@osf/shared/mappers';
+
 import structuredClone from 'structured-clone';
 
 const ConfiguredAddons = {
@@ -67,5 +69,17 @@ export function getConfiguredAddonsData(index?: number, asArray?: boolean) {
     }
   } else {
     return structuredClone(ConfiguredAddons);
+  }
+}
+
+export function getConfiguredAddonsMappedData(index?: number, asArray?: boolean) {
+  if (index || index === 0) {
+    if (asArray) {
+      return [structuredClone(AddonMapper.fromConfiguredAddonResponse(ConfiguredAddons.data[index] as any))];
+    } else {
+      return structuredClone(AddonMapper.fromConfiguredAddonResponse(ConfiguredAddons.data[index] as any));
+    }
+  } else {
+    return structuredClone(ConfiguredAddons.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item)));
   }
 }

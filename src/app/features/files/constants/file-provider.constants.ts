@@ -1,6 +1,6 @@
 export const FileProvider = {
   OsfStorage: 'osfstorage',
-  GoogleDrive: 'google-drive',
+  GoogleDrive: 'googledrive',
   Box: 'box',
   DropBox: 'dropbox',
   OneDrive: 'onedrive',

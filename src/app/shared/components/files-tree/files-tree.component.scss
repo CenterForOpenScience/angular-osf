@@ -24,7 +24,6 @@
     grid-template-rows: mix.rem(44px);
     border-bottom: 1px solid var.$grey-2;
     padding: 0 mix.rem(12px);
-    min-width: max-content;
     cursor: pointer;
 
     &:hover {
@@ -43,7 +42,7 @@
     }
 
     > .table-cell:first-child {
-      min-width: 0;
+      min-width: 300px;
       max-width: 95%;
     }
   }
@@ -93,11 +92,5 @@
     backdrop-filter: blur(0.3rem);
     background: rgba(132, 174, 210, 0.5);
     pointer-events: all;
-  }
-
-  .drop-text {
-    text-transform: none;
-    color: var.$white;
-    pointer-events: none;
   }
 }
