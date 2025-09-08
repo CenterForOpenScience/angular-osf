@@ -49,7 +49,7 @@ describe('FundingDialogComponent', () => {
 
     expect(component.fundingEntries.length).toBe(initialLength + 1);
     const entry = component.fundingEntries.at(component.fundingEntries.length - 1);
-    expect(entry.get('funderName')?.value).toBe('');
+    expect(entry.get('funderName')?.value).toBe(null);
     expect(entry.get('awardTitle')?.value).toBe('');
   });
 
@@ -263,7 +263,7 @@ describe('FundingDialogComponent', () => {
     component.addFundingEntry();
 
     const entry = component.fundingEntries.at(initialLength);
-    expect(entry.get('funderName')?.value).toBe('');
+    expect(entry.get('funderName')?.value).toBe(null);
     expect(entry.get('funderIdentifier')?.value).toBe('');
     expect(entry.get('funderIdentifierType')?.value).toBe('DOI');
     expect(entry.get('awardTitle')?.value).toBe('');
