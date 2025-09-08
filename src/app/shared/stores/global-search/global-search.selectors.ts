@@ -1,15 +1,15 @@
 import { Selector } from '@ngxs/store';
 
-import { ResourceType } from '@shared/enums';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter, Resource, SelectOption } from '@shared/models';
+import { ResourceType } from '@osf/shared/enums';
+import { StringOrNull } from '@osf/shared/helpers';
+import { DiscoverableFilter, ResourceModel, SelectOption } from '@osf/shared/models';
 
 import { GlobalSearchStateModel } from './global-search.model';
 import { GlobalSearchState } from './global-search.state';
 
 export class GlobalSearchSelectors {
   @Selector([GlobalSearchState])
-  static getResources(state: GlobalSearchStateModel): Resource[] {
+  static getResources(state: GlobalSearchStateModel): ResourceModel[] {
     return state.resources.data;
   }
 

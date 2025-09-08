@@ -1,4 +1,4 @@
-import { ContributorModel, Identifier, Institution, License } from '@osf/shared/models';
+import { ContributorModel, Identifier, Institution, LicenseModel } from '@osf/shared/models';
 
 export interface Metadata {
   id: string;
@@ -8,7 +8,7 @@ export interface Metadata {
   resourceType?: string;
   resourceLanguage?: string;
   publicationDoi?: string;
-  license: License | null;
+  license: LicenseModel | null;
   category?: string;
   dateCreated: string;
   dateModified: string;

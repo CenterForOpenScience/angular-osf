@@ -1,5 +1,4 @@
-import { CitationStyle, DefaultCitation, StyledCitation } from '@shared/models';
-import { AsyncStateModel } from '@shared/models/store';
+import { AsyncStateModel, CitationStyle, DefaultCitation, StyledCitation } from '@osf/shared/models';
 
 export interface CitationsStateModel {
   defaultCitations: AsyncStateModel<DefaultCitation[]>;
@@ -7,3 +6,30 @@ export interface CitationsStateModel {
   styledCitation: AsyncStateModel<StyledCitation | null>;
   customCitation: AsyncStateModel<string>;
 }
+
+export const CITATIONS_DEFAULTS: CitationsStateModel = {
+  defaultCitations: {
+    data: [],
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  citationStyles: {
+    data: [],
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  styledCitation: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  customCitation: {
+    data: '',
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+};

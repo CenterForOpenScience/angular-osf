@@ -2,7 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { Resource } from '@shared/models';
+import { ResourceModel } from '@shared/models';
 
 @Component({
   selector: 'osf-registration-secondary-metadata',
@@ -12,5 +12,5 @@ import { Resource } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationSecondaryMetadataComponent {
-  resource = input.required<Resource>();
+  resource = input.required<ResourceModel>();
 }

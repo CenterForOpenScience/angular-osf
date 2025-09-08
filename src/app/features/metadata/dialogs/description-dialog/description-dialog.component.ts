@@ -8,7 +8,8 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { ProjectOverview } from '@osf/features/project/overview/models';
-import { CustomValidators } from '@osf/shared/helpers';
+
+import { DescriptionResultModel } from '../../models';
 
 @Component({
   selector: 'osf-description-dialog',
@@ -18,13 +19,10 @@ import { CustomValidators } from '@osf/shared/helpers';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DescriptionDialogComponent implements OnInit {
-  protected dialogRef = inject(DynamicDialogRef);
-  protected config = inject(DynamicDialogConfig);
+  dialogRef = inject(DynamicDialogRef);
+  config = inject(DynamicDialogConfig);
 
-  descriptionControl = new FormControl('', {
-    nonNullable: true,
-    validators: [CustomValidators.requiredTrimmed],
-  });
+  descriptionControl = new FormControl('');
 
   get currentMetadata(): ProjectOverview | null {
     return this.config.data ? this.config.data.currentMetadata || null : null;
@@ -37,9 +35,7 @@ export class DescriptionDialogComponent implements OnInit {
   }
 
   save(): void {
-    if (this.descriptionControl.valid) {
-      this.dialogRef.close(this.descriptionControl.value);
-    }
+    this.dialogRef.close({ value: this.descriptionControl.value } as DescriptionResultModel);
   }
 
   cancel(): void {

@@ -36,15 +36,15 @@ export class MyProjectsTableComponent {
 
   skeletonData: MyResourcesItem[] = Array.from({ length: 10 }, () => ({}) as MyResourcesItem);
 
-  protected onPageChange(event: TablePageEvent): void {
+  onPageChange(event: TablePageEvent): void {
     this.pageChange.emit(event);
   }
 
-  protected onSort(event: SortEvent): void {
+  onSort(event: SortEvent): void {
     this.sort.emit(event);
   }
 
-  protected onItemClick(item: MyResourcesItem): void {
+  onItemClick(item: MyResourcesItem): void {
     this.itemClick.emit(item);
   }
 }

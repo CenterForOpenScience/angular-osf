@@ -2,12 +2,12 @@ import {
   AsyncStateModel,
   AsyncStateWithTotalCount,
   DraftRegistrationModel,
-  License,
+  LicenseModel,
   OsfFile,
   PageSchema,
   RegistrationCard,
   RegistrationModel,
-  Resource,
+  ResourceModel,
   SchemaResponse,
 } from '@shared/models';
 
@@ -18,8 +18,8 @@ export interface RegistriesStateModel {
   projects: AsyncStateModel<Project[]>;
   draftRegistration: AsyncStateModel<DraftRegistrationModel | null>;
   registration: AsyncStateModel<RegistrationModel | null>;
-  registries: AsyncStateModel<Resource[]>;
-  licenses: AsyncStateModel<License[]>;
+  registries: AsyncStateModel<ResourceModel[]>;
+  licenses: AsyncStateModel<LicenseModel[]>;
   pagesSchema: AsyncStateModel<PageSchema[]>;
   stepsValidation: Record<string, { invalid: boolean }>;
   draftRegistrations: AsyncStateWithTotalCount<RegistrationCard[]>;

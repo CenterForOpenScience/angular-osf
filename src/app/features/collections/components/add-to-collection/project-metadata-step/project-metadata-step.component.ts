@@ -36,7 +36,7 @@ import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to
 import { TagsInputComponent, TextInputComponent, TruncatedTextComponent } from '@shared/components';
 import { InputLimits } from '@shared/constants';
 import { ResourceType } from '@shared/enums';
-import { License } from '@shared/models';
+import { LicenseModel } from '@shared/models';
 import { Project } from '@shared/models/projects';
 import { InterpolatePipe } from '@shared/pipes';
 import { ToastService } from '@shared/services';
@@ -74,14 +74,14 @@ export class ProjectMetadataStepComponent {
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly formService = inject(ProjectMetadataFormService);
-  protected readonly currentYear = new Date();
+  readonly currentYear = new Date();
 
-  protected readonly ProjectMetadataFormControls = ProjectMetadataFormControls;
-  protected readonly inputLimits = InputLimits;
+  readonly ProjectMetadataFormControls = ProjectMetadataFormControls;
+  readonly inputLimits = InputLimits;
 
-  protected readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
-  protected readonly collectionLicenses = select(AddToCollectionSelectors.getCollectionLicenses);
-  protected readonly isSelectedProjectUpdateSubmitting = select(ProjectsSelectors.getSelectedProjectUpdateSubmitting);
+  readonly selectedProject = select(ProjectsSelectors.getSelectedProject);
+  readonly collectionLicenses = select(AddToCollectionSelectors.getCollectionLicenses);
+  readonly isSelectedProjectUpdateSubmitting = select(ProjectsSelectors.getSelectedProjectUpdateSubmitting);
 
   stepperActiveValue = input.required<number>();
   targetStepValue = input.required<number>();
@@ -91,21 +91,21 @@ export class ProjectMetadataStepComponent {
   stepChange = output<number>();
   metadataSaved = output<void>();
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     updateCollectionSubmissionMetadata: UpdateProjectMetadata,
     getAllContributors: GetAllContributors,
     getCollectionLicenses: GetCollectionLicenses,
     clearProjects: ClearProjects,
   });
 
-  protected readonly projectMetadataForm: FormGroup<ProjectMetadataForm> = this.formService.createForm();
-  protected readonly projectTags = signal<string[]>([]);
-  protected readonly selectedLicense = signal<License | null>(null);
+  readonly projectMetadataForm: FormGroup<ProjectMetadataForm> = this.formService.createForm();
+  readonly projectTags = signal<string[]>([]);
+  readonly selectedLicense = signal<LicenseModel | null>(null);
 
   private readonly projectMetadataFormValue = toSignal(this.projectMetadataForm.valueChanges);
   private readonly initialProjectMetadataFormValues = signal<string | null>(null);
 
-  protected readonly projectLicense = computed(() => {
+  readonly projectLicense = computed(() => {
     const project = this.selectedProject();
     return project ? (this.collectionLicenses().find((license) => license.id === project.licenseId) ?? null) : null;
   });
@@ -131,7 +131,7 @@ export class ProjectMetadataStepComponent {
   }
 
   handleSelectCollectionLicense(event: SelectChangeEvent): void {
-    const license = event.value as License;
+    const license = event.value as LicenseModel;
     const project = this.selectedProject();
 
     if (!license || !project) return;

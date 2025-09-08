@@ -1,10 +1,11 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, forkJoin, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { CollectionsService } from '@shared/services';
+import { handleSectionError } from '@osf/shared/helpers';
+import { CollectionsService } from '@osf/shared/services';
 
 import {
   ClearCollections,
@@ -97,7 +98,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'currentProjectSubmissions', error))
+      catchError((error) => handleSectionError(ctx, 'currentProjectSubmissions', error))
     );
   }
 
@@ -130,7 +131,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'collectionDetails', error))
+      catchError((error) => handleSectionError(ctx, 'collectionDetails', error))
     );
   }
 
@@ -324,7 +325,7 @@ export class CollectionsState {
             },
           });
         }),
-        catchError((error) => this.handleError(ctx, 'collectionSubmissions', error))
+        catchError((error) => handleSectionError(ctx, 'collectionSubmissions', error))
       );
   }
 
@@ -348,23 +349,7 @@ export class CollectionsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'userCollectionSubmissions', error))
+      catchError((error) => handleSectionError(ctx, 'userCollectionSubmissions', error))
     );
-  }
-
-  private handleError(ctx: StateContext<CollectionsStateModel>, section: keyof CollectionsStateModel, error: Error) {
-    const state = ctx.getState();
-    if (section !== 'sortBy' && section !== 'searchText' && section !== 'page' && section !== 'totalSubmissions') {
-      ctx.patchState({
-        [section]: {
-          ...state[section],
-          isLoading: false,
-          isSubmitting: false,
-          error: error.message,
-        },
-      });
-    }
-
-    return throwError(() => error);
   }
 }

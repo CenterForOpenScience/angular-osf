@@ -1,8 +1,9 @@
-import { ResourceType } from '@shared/enums';
+import { ResourceType } from '@osf/shared/enums';
 import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter } from '@shared/models';
 
-export interface Resource {
+import { DiscoverableFilter } from './discaverable-filter.model';
+
+export interface ResourceModel {
   absoluteUrl: string;
   resourceType: ResourceType;
   name?: string;
@@ -61,7 +62,7 @@ export interface AbsoluteUrlName {
 }
 
 export interface ResourcesData {
-  resources: Resource[];
+  resources: ResourceModel[];
   filters: DiscoverableFilter[];
   count: number;
   self: string;

@@ -5,22 +5,14 @@ import { catchError, tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { LicensesService } from '@shared/services';
+import { LicensesService } from '@osf/shared/services';
 
 import { LoadAllLicenses } from './licenses.actions';
-import { LicensesStateModel } from './licenses.model';
-
-const defaultState: LicensesStateModel = {
-  licenses: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-};
+import { LICENSES_STATE_DEFAULTS, LicensesStateModel } from './licenses.model';
 
 @State<LicensesStateModel>({
   name: 'licenses',
-  defaults: defaultState,
+  defaults: LICENSES_STATE_DEFAULTS,
 })
 @Injectable()
 export class LicensesState {

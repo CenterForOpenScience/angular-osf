@@ -1,7 +1,7 @@
 import { ResourceType } from '@shared/enums';
-import { IndexCardDataJsonApi, Resource } from '@shared/models';
+import { IndexCardDataJsonApi, ResourceModel } from '@shared/models';
 
-export function MapResources(indexCardData: IndexCardDataJsonApi): Resource {
+export function MapResources(indexCardData: IndexCardDataJsonApi): ResourceModel {
   const resourceMetadata = indexCardData.attributes.resourceMetadata;
   const resourceIdentifier = indexCardData.attributes.resourceIdentifier;
   return {

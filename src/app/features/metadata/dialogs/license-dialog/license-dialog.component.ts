@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, signal, viewChild }
 
 import { Metadata } from '@osf/features/metadata/models';
 import { LicenseComponent, LoadingSpinnerComponent } from '@osf/shared/components';
-import { License, LicenseOptions } from '@shared/models';
+import { LicenseModel, LicenseOptions } from '@shared/models';
 import { LicensesSelectors, LoadAllLicenses } from '@shared/stores/licenses';
 
 @Component({
@@ -19,12 +19,10 @@ import { LicensesSelectors, LoadAllLicenses } from '@shared/stores/licenses';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LicenseDialogComponent implements OnInit {
-  protected dialogRef = inject(DynamicDialogRef);
-  protected config = inject(DynamicDialogConfig);
+  dialogRef = inject(DynamicDialogRef);
+  config = inject(DynamicDialogConfig);
 
-  protected actions = createDispatchMap({
-    loadLicenses: LoadAllLicenses,
-  });
+  actions = createDispatchMap({ loadLicenses: LoadAllLicenses });
 
   licenses = select(LicensesSelectors.getLicenses);
   licensesLoading = select(LicensesSelectors.getLoading);
@@ -57,7 +55,7 @@ export class LicenseDialogComponent implements OnInit {
     }
   }
 
-  onSelectLicense(license: License): void {
+  onSelectLicense(license: LicenseModel): void {
     this.selectedLicenseId.set(license.id);
   }
 

@@ -20,10 +20,10 @@
   }
 
   <div class="flex justify-content-end gap-2">
-    <p-button severity="info" [label]="'common.buttons.cancel' | translate" (click)="cancel()" />
+    <p-button severity="info" [label]="'common.buttons.cancel' | translate" (onClick)="cancel()" />
     <p-button
       [label]="'common.buttons.save' | translate"
-      (click)="save()"
+      (onClick)="save()"
       [disabled]="isInvalid"
       [loading]="isSubmitting()"
     />

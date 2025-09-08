@@ -25,11 +25,6 @@ export class MetadataSelectors {
   }
 
   @Selector([MetadataState])
-  static getError(state: MetadataStateModel) {
-    return state.metadata?.error ?? null;
-  }
-
-  @Selector([MetadataState])
   static getFundersList(state: MetadataStateModel) {
     return state.fundersList.data;
   }
