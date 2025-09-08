@@ -10,13 +10,12 @@ import { Tooltip } from 'primeng/tooltip';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import {
-  EducationHistoryDialogComponent,
-  EmploymentHistoryDialogComponent,
-  SelectComponent,
-} from '@osf/shared/components';
 import { MY_PROJECTS_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
+
+import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
+import { EmploymentHistoryDialogComponent } from '../../employment-history-dialog/employment-history-dialog.component';
+import { SelectComponent } from '../../select/select.component';
 
 @Component({
   selector: 'osf-contributors-list',

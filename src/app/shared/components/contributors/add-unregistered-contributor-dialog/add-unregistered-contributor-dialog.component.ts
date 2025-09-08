@@ -6,11 +6,12 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission } from '@osf/shared/enums/contributors';
+import { AddContributorType, ContributorPermission } from '@osf/shared/enums';
 import { CustomValidators } from '@osf/shared/helpers';
 import { ContributorAddModel, ContributorDialogAddModel, UnregisteredContributorForm } from '@osf/shared/models';
+
+import { TextInputComponent } from '../../text-input/text-input.component';
 
 @Component({
   selector: 'osf-add-unregistered-contributor-dialog',

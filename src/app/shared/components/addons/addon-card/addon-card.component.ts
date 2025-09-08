@@ -28,12 +28,8 @@ export class AddonCardComponent {
   readonly cardButtonLabel = input<string>('');
   readonly showDangerButton = input<boolean>(false);
 
-  protected readonly addonTypeString = computed(() => {
-    return getAddonTypeString(this.card());
-  });
-  protected readonly isConfiguredAddon = computed(() => {
-    return isConfiguredAddon(this.card());
-  });
+  readonly addonTypeString = computed(() => getAddonTypeString(this.card()));
+  readonly isConfiguredAddon = computed(() => isConfiguredAddon(this.card()));
 
   onConnectAddon(): void {
     const addon = this.card();

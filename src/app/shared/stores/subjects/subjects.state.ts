@@ -4,8 +4,8 @@ import { catchError, tap, throwError } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { SubjectModel } from '@shared/models';
-import { SubjectsService } from '@shared/services';
+import { SubjectModel } from '@osf/shared/models';
+import { SubjectsService } from '@osf/shared/services';
 
 import {
   FetchChildrenSubjects,
@@ -13,29 +13,11 @@ import {
   FetchSubjects,
   UpdateResourceSubjects,
 } from './subjects.actions';
-import { SubjectsModel } from './subjects.model';
-
-const initialState: SubjectsModel = {
-  subjects: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  searchedSubjects: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  selectedSubjects: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-};
+import { SUBJECT_STATE_DEFAULTS, SubjectsModel } from './subjects.model';
 
 @State<SubjectsModel>({
   name: 'subjects',
-  defaults: initialState,
+  defaults: SUBJECT_STATE_DEFAULTS,
 })
 @Injectable()
 export class SubjectsState {

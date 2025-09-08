@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers';
 import { AuthorizedAccountModel } from '@osf/shared/models';
-import { AddonsService } from '@shared/services';
+import { AddonsService } from '@osf/shared/services';
 
 import {
   ClearConfiguredAddons,
@@ -28,76 +28,7 @@ import {
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
 } from './addons.actions';
-import { AddonsStateModel } from './addons.models';
-
-const ADDONS_DEFAULTS: AddonsStateModel = {
-  storageAddons: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  citationAddons: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  authorizedStorageAddons: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  authorizedCitationAddons: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  configuredStorageAddons: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  configuredCitationAddons: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  addonsUserReference: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  addonsResourceReference: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  createdUpdatedAuthorizedAddon: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  createdUpdatedConfiguredAddon: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  operationInvocation: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  selectedFolderOperationInvocation: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-};
+import { ADDONS_DEFAULTS, AddonsStateModel } from './addons.models';
 
 /**
  * NGXS state class for managing addon-related data and actions.
