@@ -50,13 +50,14 @@ export class InstitutionsAdminState {
   }
 
   @Action(FetchInstitutionDepartments)
-  fetchDepartments(ctx: StateContext<InstitutionsAdminModel>, action: FetchInstitutionDepartments) {
+  fetchDepartments(ctx: StateContext<InstitutionsAdminModel>) {
     const state = ctx.getState();
     ctx.patchState({
       departments: { ...state.departments, isLoading: true, error: null },
     });
 
-    return this.institutionsAdminService.fetchDepartments(action.institutionId).pipe(
+    const institutionId = state.institution.data.id;
+    return this.institutionsAdminService.fetchDepartments(institutionId).pipe(
       tap((response) => {
         ctx.patchState({
           departments: { data: response, isLoading: false, error: null },
@@ -68,13 +69,14 @@ export class InstitutionsAdminState {
   }
 
   @Action(FetchInstitutionSummaryMetrics)
-  fetchSummaryMetrics(ctx: StateContext<InstitutionsAdminModel>, action: FetchInstitutionSummaryMetrics) {
+  fetchSummaryMetrics(ctx: StateContext<InstitutionsAdminModel>) {
     const state = ctx.getState();
     ctx.patchState({
       summaryMetrics: { ...state.summaryMetrics, isLoading: true, error: null },
     });
 
-    return this.institutionsAdminService.fetchSummary(action.institutionId).pipe(
+    const institutionId = state.institution.data.id;
+    return this.institutionsAdminService.fetchSummary(institutionId).pipe(
       tap((response) => {
         ctx.patchState({
           summaryMetrics: { data: response, isLoading: false, error: null },
@@ -91,8 +93,9 @@ export class InstitutionsAdminState {
       searchResults: { ...state.searchResults, isLoading: true, error: null },
     });
 
+    const institutionIris = state.institution.data.iris;
     return this.institutionsAdminService
-      .fetchIndexValueSearch(action.institutionId, action.valueSearchPropertyPath, action.additionalParams)
+      .fetchIndexValueSearch(institutionIris, action.valueSearchPropertyPath, action.additionalParams)
       .pipe(
         tap((response) => {
           ctx.patchState({
@@ -104,13 +107,14 @@ export class InstitutionsAdminState {
   }
 
   @Action(FetchHasOsfAddonSearch)
-  fetchHasOsfAddonSearch(ctx: StateContext<InstitutionsAdminModel>, action: FetchHasOsfAddonSearch) {
+  fetchHasOsfAddonSearch(ctx: StateContext<InstitutionsAdminModel>) {
     const state = ctx.getState();
     ctx.patchState({
       hasOsfAddonSearch: { ...state.hasOsfAddonSearch, isLoading: true, error: null },
     });
 
-    return this.institutionsAdminService.fetchIndexValueSearch(action.institutionId, 'hasOsfAddon').pipe(
+    const institutionIris = state.institution.data.iris;
+    return this.institutionsAdminService.fetchIndexValueSearch(institutionIris, 'hasOsfAddon').pipe(
       tap((response) => {
         ctx.patchState({
           hasOsfAddonSearch: { data: response, isLoading: false, error: null },
@@ -121,13 +125,14 @@ export class InstitutionsAdminState {
   }
 
   @Action(FetchStorageRegionSearch)
-  fetchStorageRegionSearch(ctx: StateContext<InstitutionsAdminModel>, action: FetchStorageRegionSearch) {
+  fetchStorageRegionSearch(ctx: StateContext<InstitutionsAdminModel>) {
     const state = ctx.getState();
     ctx.patchState({
       storageRegionSearch: { ...state.storageRegionSearch, isLoading: true, error: null },
     });
 
-    return this.institutionsAdminService.fetchIndexValueSearch(action.institutionId, 'storageRegion').pipe(
+    const institutionIris = state.institution.data.iris;
+    return this.institutionsAdminService.fetchIndexValueSearch(institutionIris, 'storageRegion').pipe(
       tap((response) => {
         ctx.patchState({
           storageRegionSearch: { data: response, isLoading: false, error: null },
@@ -157,7 +162,7 @@ export class InstitutionsAdminState {
   }
 
   @Action(SendUserMessage)
-  sendUserMessage(ctx: StateContext<InstitutionsAdminModel>, action: SendUserMessage) {
+  sendUserMessage(_: StateContext<InstitutionsAdminModel>, action: SendUserMessage) {
     return this.institutionsAdminService
       .sendMessage({
         userId: action.userId,
@@ -170,7 +175,7 @@ export class InstitutionsAdminState {
   }
 
   @Action(RequestProjectAccess)
-  requestProjectAccess(ctx: StateContext<InstitutionsAdminModel>, action: RequestProjectAccess) {
+  requestProjectAccess(_: StateContext<InstitutionsAdminModel>, action: RequestProjectAccess) {
     return this.institutionsAdminService
       .requestProjectAccess(action.payload)
       .pipe(catchError((error) => throwError(() => error)));

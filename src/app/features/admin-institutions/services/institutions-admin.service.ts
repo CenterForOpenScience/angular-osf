@@ -72,13 +72,12 @@ export class InstitutionsAdminService {
   }
 
   fetchIndexValueSearch(
-    institutionId: string,
+    institutionIris: string[],
     valueSearchPropertyPath: string,
     additionalParams?: Record<string, string>
   ): Observable<InstitutionSearchFilter[]> {
-    //TODO fix iris
     const params: Record<string, string> = {
-      'cardSearchFilter[affiliation]': `https://ror.org/05d5mza29,${environment.webUrl}/institutions/${institutionId}/`,
+      'cardSearchFilter[affiliation]': institutionIris.join(','),
       valueSearchPropertyPath,
       'page[size]': '10',
       ...additionalParams,
