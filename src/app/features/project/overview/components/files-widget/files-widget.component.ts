@@ -154,7 +154,7 @@ export class FilesWidgetComponent {
 
   private getStorageAddons(projectId: string) {
     const resourcePath = 'nodes';
-    const folderLink = `${environment.apiUrl}/${resourcePath}/${projectId}/files/`;
+    const folderLink = `${environment.apiDomainUrl}/v2/${resourcePath}/${projectId}/files/`;
     const iriLink = `${environment.webUrl}/${projectId}`;
     this.actions.getRootFolders(folderLink);
     this.actions.getConfiguredStorageAddons(iriLink);

@@ -17,8 +17,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class PreprintProvidersService {
-  private jsonApiService = inject(JsonApiService);
-  private baseUrl = `${environment.apiUrl}/providers/preprints/`;
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly baseUrl = `${environment.apiDomainUrl}/v2/providers/preprints/`;
 
   getPreprintProviderById(id: string): Observable<PreprintProviderDetails> {
     return this.jsonApiService

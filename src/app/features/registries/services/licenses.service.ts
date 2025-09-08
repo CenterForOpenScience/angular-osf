@@ -21,8 +21,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class LicensesService {
-  private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getLicenses(providerId: string): Observable<LicenseModel[]> {
     return this.jsonApiService
@@ -31,11 +31,7 @@ export class LicensesService {
           'page[size]': 100,
         },
       })
-      .pipe(
-        map((licenses) => {
-          return LicensesMapper.fromLicensesResponse(licenses);
-        })
-      );
+      .pipe(map((licenses) => LicensesMapper.fromLicensesResponse(licenses)));
   }
 
   updateLicense(

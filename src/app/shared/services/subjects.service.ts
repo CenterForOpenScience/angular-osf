@@ -16,7 +16,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SubjectsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   defaultProvider = environment.defaultProvider;
 

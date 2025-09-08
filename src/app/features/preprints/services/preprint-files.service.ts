@@ -21,11 +21,12 @@ import { environment } from 'src/environments/environment';
 export class PreprintFilesService {
   private filesService = inject(FilesService);
   private jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   updateFileRelationship(preprintId: string, fileId: string): Observable<Preprint> {
     return this.jsonApiService
       .patch<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>>(
-        `${environment.apiUrl}/preprints/${preprintId}/`,
+        `${this.apiUrl}/preprints/${preprintId}/`,
         {
           data: {
             type: 'preprints',
@@ -46,7 +47,7 @@ export class PreprintFilesService {
   }
 
   getPreprintFilesLinks(id: string): Observable<PreprintFilesLinks> {
-    return this.jsonApiService.get<GetFilesResponse>(`${environment.apiUrl}/preprints/${id}/files/`).pipe(
+    return this.jsonApiService.get<GetFilesResponse>(`${this.apiUrl}/preprints/${id}/files/`).pipe(
       map((response) => {
         const rel = response.data[0].relationships;
         const links = response.data[0].links;
@@ -60,7 +61,7 @@ export class PreprintFilesService {
   }
 
   getProjectFiles(projectId: string): Observable<OsfFile[]> {
-    return this.jsonApiService.get<GetFilesResponse>(`${environment.apiUrl}/nodes/${projectId}/files/`).pipe(
+    return this.jsonApiService.get<GetFilesResponse>(`${this.apiUrl}/nodes/${projectId}/files/`).pipe(
       switchMap((response: GetFilesResponse) => {
         return this.jsonApiService
           .get<GetFileResponse>(response.data[0].relationships.root_folder.links.related.href)

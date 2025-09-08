@@ -208,7 +208,7 @@ export class FilesComponent {
       const resourceId = this.resourceId();
 
       const resourcePath = this.urlMap.get(this.resourceType()!);
-      const folderLink = `${environment.apiUrl}/${resourcePath}/${resourceId}/files/`;
+      const folderLink = `${environment.apiDomainUrl}/v2/${resourcePath}/${resourceId}/files/`;
       const iriLink = `${environment.webUrl}/${resourceId}`;
       this.actions.getRootFolders(folderLink);
       this.actions.getConfiguredStorageAddons(iriLink);

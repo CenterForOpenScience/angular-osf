@@ -25,6 +25,7 @@ import { environment } from 'src/environments/environment';
 })
 export class CitationsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([[ResourceType.Preprint, 'preprints']]);
 
@@ -40,20 +41,17 @@ export class CitationsService {
   }
 
   fetchCitationStyles(searchQuery?: string): Observable<CitationStyle[]> {
-    const baseUrl = environment.apiUrl;
-
     const params = new HttpParams().set('filter[title,short_title]', searchQuery || '').set('page[size]', '100');
 
     return this.jsonApiService
-      .get<JsonApiResponse<CitationStyleJsonApi[], null>>(`${baseUrl}/citations/styles/`, { params })
+      .get<JsonApiResponse<CitationStyleJsonApi[], null>>(`${this.apiUrl}/citations/styles/`, { params })
       .pipe(map((response) => CitationsMapper.fromGetCitationStylesResponse(response.data)));
   }
 
   updateCustomCitation(payload: CustomCitationPayload): Observable<unknown> {
-    const baseUrl = environment.apiUrl;
     const citationData = CitationsMapper.toUpdateCustomCitationRequest(payload);
 
-    return this.jsonApiService.patch<unknown>(`${baseUrl}/${payload.type}/${payload.id}/`, citationData);
+    return this.jsonApiService.patch<unknown>(`${this.apiUrl}/${payload.type}/${payload.id}/`, citationData);
   }
 
   fetchStyledCitation(
@@ -69,7 +67,6 @@ export class CitationsService {
   }
 
   private getBaseCitationUrl(resourceType: ResourceType | string, resourceId: string): string {
-    const baseUrl = `${environment.apiUrl}`;
     let resourceTypeString;
 
     if (typeof resourceType === 'string') {
@@ -78,6 +75,6 @@ export class CitationsService {
       resourceTypeString = this.urlMap.get(resourceType);
     }
 
-    return `${baseUrl}/${resourceTypeString}/${resourceId}/citation`;
+    return `${this.apiUrl}/${resourceTypeString}/${resourceId}/citation`;
   }
 }

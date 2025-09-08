@@ -20,9 +20,10 @@ import { environment } from 'src/environments/environment';
 })
 export class ActivityLogsService {
   private jsonApiService = inject(JsonApiService);
+  private apiUrl = `${environment.apiDomainUrl}/v2`;
 
   fetchLogs(projectId: string, page = '1', pageSize: string): Observable<PaginatedData<ActivityLog[]>> {
-    const url = `${environment.apiUrl}/nodes/${projectId}/logs/`;
+    const url = `${this.apiUrl}/nodes/${projectId}/logs/`;
     const params: Record<string, unknown> = {
       'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node', 'group'],
       page,

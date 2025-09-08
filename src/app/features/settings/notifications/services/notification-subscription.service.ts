@@ -18,7 +18,7 @@ import { environment } from 'src/environments/environment';
 })
 export class NotificationSubscriptionService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly baseUrl = `${environment.apiUrl}/subscriptions/`;
+  private readonly baseUrl = `${environment.apiDomainUrl}/v2/subscriptions/`;
 
   getAllGlobalNotificationSubscriptions(): Observable<NotificationSubscription[]> {
     const params: Record<string, string> = {

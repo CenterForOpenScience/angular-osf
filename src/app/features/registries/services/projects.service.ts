@@ -14,8 +14,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ProjectsService {
-  private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getProjects(): Observable<Project[]> {
     const params: Record<string, unknown> = {

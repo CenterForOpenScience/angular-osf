@@ -31,8 +31,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class RegistriesService {
-  private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   createDraft(
     registrationSchemaId: string,
