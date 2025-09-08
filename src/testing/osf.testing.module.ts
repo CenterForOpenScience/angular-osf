@@ -13,6 +13,8 @@ import { StoreMock } from './mocks/store.mock';
 import { ToastServiceMock } from './mocks/toast.service.mock';
 import { TranslationServiceMock } from './mocks/translation.service.mock';
 
+import { DynamicDialogRefMock } from '@testing/mocks/dynamic-dialog-ref.mock';
+
 @NgModule({
   imports: [NoopAnimationsModule, BrowserModule, CommonModule, TranslateModule.forRoot()],
   providers: [
@@ -21,6 +23,7 @@ import { TranslationServiceMock } from './mocks/translation.service.mock';
     provideHttpClient(withInterceptorsFromDi()),
     provideHttpClientTesting(),
     TranslationServiceMock,
+    DynamicDialogRefMock,
     EnvironmentTokenMock,
   ],
 })

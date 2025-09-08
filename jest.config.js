@@ -68,7 +68,6 @@ module.exports = {
     '<rootDir>/src/app/features/project/addons/components/disconnect-addon-modal/',
     '<rootDir>/src/app/features/project/addons/components/confirm-account-connection-modal/',
     '<rootDir>/src/app/features/files/',
-    '<rootDir>/src/app/features/my-projects/',
     '<rootDir>/src/app/features/preprints/',
     '<rootDir>/src/app/features/project/contributors/',
     '<rootDir>/src/app/features/project/overview/',
