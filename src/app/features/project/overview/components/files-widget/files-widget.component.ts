@@ -79,16 +79,10 @@ export class FilesWidgetComponent {
     const rootFolders = this.rootFolders();
     const addons = this.configuredStorageAddons();
     if (rootFolders && addons) {
-      return rootFolders
-        .map((folder) => ({
-          label: this.getAddonName(addons, folder.provider),
-          folder: folder,
-        }))
-        .sort((a, b) => {
-          if (a.label === this.osfStorageLabel) return -1;
-          if (b.label === this.osfStorageLabel) return 1;
-          return a.label.localeCompare(b.label);
-        });
+      return rootFolders.map((folder) => ({
+        label: this.getAddonName(addons, folder.provider),
+        folder: folder,
+      }));
     }
     return [];
   });
