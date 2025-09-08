@@ -32,7 +32,7 @@ export class ProjectsService {
 
   getProjectChildren(id: string): Observable<Project[]> {
     return this.jsonApiService
-      .get<ProjectsResponseJsonApi>(`${environment.apiUrl}/nodes/${id}/children/`)
+      .get<ProjectsResponseJsonApi>(`${this.apiUrl}/nodes/${id}/children/`)
       .pipe(map((response) => ProjectsMapper.fromGetAllProjectsResponse(response)));
   }
 
