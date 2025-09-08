@@ -24,6 +24,7 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { GetRootFolders } from '@osf/features/files/store';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
   ClearCollectionModeration,
@@ -38,10 +39,13 @@ import {
   ClearCollections,
   ClearWiki,
   CollectionsSelectors,
+  CurrentResourceSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
+  GetConfiguredStorageAddons,
   GetHomeWiki,
   GetLinkedResources,
+  GetResourceWithChildren,
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
@@ -54,6 +58,7 @@ import {
 } from '@shared/components';
 
 import {
+  FilesWidgetComponent,
   LinkedResourcesComponent,
   OverviewComponentsComponent,
   OverviewToolbarComponent,
@@ -88,6 +93,7 @@ import {
     TranslatePipe,
     Message,
     RouterLink,
+    FilesWidgetComponent,
     ViewOnlyLinkMessageComponent,
     ViewOnlyLinkMessageComponent,
   ],
@@ -111,6 +117,9 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
+  components = select(CurrentResourceSelectors.getResourceWithChildren);
+  areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
+
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
@@ -129,6 +138,9 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
     clearCollectionModeration: ClearCollectionModeration,
+    getComponentsTree: GetResourceWithChildren,
+    getRootFolders: GetRootFolders,
+    getConfiguredStorageAddons: GetConfiguredStorageAddons,
   });
 
   readonly isCollectionsRoute = computed(() => {
@@ -154,8 +166,8 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   });
 
   currentProject = select(ProjectOverviewSelectors.getProject);
-  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
   private currentProject$ = toObservable(this.currentProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
 
   userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
@@ -201,12 +213,12 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  getDoi(): Observable<string | null> {
-    return this.currentProject$.pipe(
-      filter((project) => project != null),
-      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
-    );
-  }
+  filesRootOption = computed(() => {
+    return {
+      value: this.currentProject()?.id ?? '',
+      label: this.currentProject()?.title ?? '',
+    };
+  });
 
   constructor() {
     super();
@@ -214,7 +226,14 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     this.setupCleanup();
   }
 
-  protected onCustomCitationUpdated(citation: string): void {
+  getDoi(): Observable<string | null> {
+    return this.currentProject$.pipe(
+      filter((project) => project != null),
+      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
+    );
+  }
+
+  onCustomCitationUpdated(citation: string): void {
     this.actions.setProjectCustomCitation(citation);
   }
 
@@ -225,6 +244,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getBookmarksId();
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
+      this.actions.getComponentsTree(projectId, ResourceType.Project);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
       this.setupDataciteViewTrackerEffect().subscribe();

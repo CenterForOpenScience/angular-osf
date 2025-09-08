@@ -50,6 +50,7 @@ export class FilesHandlers {
             data: response,
             isLoading: false,
             error: null,
+            totalCount: response.length,
           },
         });
       }),

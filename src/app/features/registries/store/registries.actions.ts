@@ -18,6 +18,7 @@ export class GetProviderSchemas {
 
 export class GetProjects {
   static readonly type = '[Registries] Get Projects';
+  constructor(public userId: string) {}
 }
 
 export class CreateDraft {

@@ -78,6 +78,11 @@
       @if (isAdmin || canWrite) {
         <osf-project-wiki />
       }
+      <osf-files-widget
+        [rootOption]="filesRootOption()"
+        [components]="components()"
+        [areComponentsLoading]="areComponentsLoading()"
+      />
 
       <osf-project-components [isCollectionsRoute]="isCollectionsRoute()" [canWrite]="canWrite" />
       <osf-linked-resources [isCollectionsRoute]="isCollectionsRoute()" [canWrite]="canWrite" />

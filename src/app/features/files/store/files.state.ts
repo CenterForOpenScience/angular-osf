@@ -24,6 +24,7 @@ import {
   RenameEntry,
   ResetState,
   SetCurrentFolder,
+  SetCurrentProvider,
   SetFileMetadata,
   SetFilesIsLoading,
   SetMoveFileCurrentFolder,
@@ -49,7 +50,7 @@ export class FilesState {
       moveFileFiles: { ...state.moveFileFiles, isLoading: true, error: null },
     });
 
-    return this.filesService.getFiles(action.filesLink, '', '').pipe(
+    return this.filesService.getFiles(action.filesLink, '', '', action.page).pipe(
       tap({
         next: (response) => {
           ctx.patchState({
@@ -57,6 +58,7 @@ export class FilesState {
               data: response.files,
               isLoading: false,
               error: null,
+              totalCount: response.meta?.total ?? 0,
             },
             isAnonymous: response.meta?.anonymous ?? false,
           });
@@ -69,8 +71,8 @@ export class FilesState {
   @Action(GetFiles)
   getFiles(ctx: StateContext<FilesStateModel>, action: GetFiles) {
     const state = ctx.getState();
-    ctx.patchState({ files: { ...state.files, isLoading: true, error: null } });
-    return this.filesService.getFiles(action.filesLink, state.search, state.sort).pipe(
+    ctx.patchState({ files: { ...state.files, isLoading: true, error: null, totalCount: 0 } });
+    return this.filesService.getFiles(action.filesLink, state.search, state.sort, action.page).pipe(
       tap({
         next: (response) => {
           ctx.patchState({
@@ -78,6 +80,7 @@ export class FilesState {
               data: response.files,
               isLoading: false,
               error: null,
+              totalCount: response.meta?.total ?? 0,
             },
             isAnonymous: response.meta?.anonymous ?? false,
           });
@@ -156,6 +159,11 @@ export class FilesState {
   @Action(SetSort)
   setSort(ctx: StateContext<FilesStateModel>, action: SetSort) {
     ctx.patchState({ sort: action.sort });
+  }
+
+  @Action(SetCurrentProvider)
+  setCurrentProvider(ctx: StateContext<FilesStateModel>, action: SetCurrentProvider) {
+    ctx.patchState({ provider: action.provider });
   }
 
   @Action(GetFile)
