@@ -40,12 +40,11 @@ import { environment } from 'src/environments/environment';
   ],
 })
 export class FileRevisionsComponent {
-  readonly dataciteService = inject(DataciteService);
+  private readonly dataciteService = inject(DataciteService);
   private readonly route = inject(ActivatedRoute);
 
   readonly fileRevisions = select(FilesSelectors.getFileRevisions);
   readonly isLoading = select(FilesSelectors.isFileRevisionsLoading);
-  readonly file = select(FilesSelectors.getOpenedFile);
   readonly resourceMetadata = toObservable(select(FilesSelectors.getResourceMetadata));
   readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
 
