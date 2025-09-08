@@ -20,7 +20,7 @@
       <p-button
         styleClass="grey-border-color"
         icon="fa fa-filter text-primary text-xl"
-        label="Filters"
+        [label]="'adminInstitutions.common.filters' | translate"
         outlined
         (onClick)="op.toggle($event)"
       />
@@ -29,7 +29,7 @@
         <ng-template #content>
           <div class="flex flex-column w-16rem h-30rem py-2">
             <div class="flex justify-content-between align-items-center px-2">
-              <h2>Filter by</h2>
+              <h2>{{ 'adminInstitutions.common.filterBy' | translate }}</h2>
               <p-button
                 icon="fa fa-close text-xl"
                 [rounded]="true"
