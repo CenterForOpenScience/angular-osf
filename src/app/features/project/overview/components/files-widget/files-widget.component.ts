@@ -17,6 +17,7 @@ import {
   model,
   signal,
 } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { FileProvider } from '@osf/features/files/constants';
 import {
@@ -35,6 +36,7 @@ import {
   FileLabelModel,
   FilesTreeActions,
   NodeShortInfoModel,
+  OsfFile,
   SelectOption,
 } from '@osf/shared/models';
 import { Project } from '@osf/shared/models/projects';
@@ -52,6 +54,8 @@ export class FilesWidgetComponent {
   rootOption = input.required<SelectOption>();
   components = input.required<NodeShortInfoModel[]>();
   areComponentsLoading = input<boolean>(false);
+  router = inject(Router);
+  activeRoute = inject(ActivatedRoute);
 
   private readonly destroyRef = inject(DestroyRef);
 
@@ -211,6 +215,10 @@ export class FilesWidgetComponent {
     if (folder) {
       this.currentRootFolder.set(folder);
     }
+  }
+
+  navigateToFile(file: OsfFile) {
+    this.router.navigate(['files', file.guid], { relativeTo: this.activeRoute.parent });
   }
 
   onFilesPageChange(page: number) {
