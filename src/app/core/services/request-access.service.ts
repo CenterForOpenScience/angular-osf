@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { JsonApiService } from '../../shared/services/json-api.service';
+import { JsonApiService } from '@osf/shared/services';
 
 import { environment } from 'src/environments/environment';
 
@@ -10,7 +10,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class RequestAccessService {
-  jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   requestAccessToProject(projectId: string, comment = ''): Observable<void> {
     const payload = {
@@ -23,6 +24,6 @@ export class RequestAccessService {
       },
     };
 
-    return this.jsonApiService.post<void>(`${environment.apiUrl}/nodes/${projectId}/requests/`, payload);
+    return this.jsonApiService.post<void>(`${this.apiUrl}/nodes/${projectId}/requests/`, payload);
   }
 }

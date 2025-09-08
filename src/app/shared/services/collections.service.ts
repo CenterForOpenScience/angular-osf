@@ -41,12 +41,11 @@ import { environment } from 'src/environments/environment';
 })
 export class CollectionsService {
   private jsonApiService = inject(JsonApiService);
-  private actions = createDispatchMap({
-    setTotalSubmissions: SetTotalSubmissions,
-  });
+  private apiUrl = `${environment.apiDomainUrl}/v2`;
+  private actions = createDispatchMap({ setTotalSubmissions: SetTotalSubmissions });
 
   getCollectionProvider(collectionName: string): Observable<CollectionProvider> {
-    const url = `${environment.apiUrl}/providers/collections/${collectionName}/?embed=brand`;
+    const url = `${this.apiUrl}/providers/collections/${collectionName}/?embed=brand`;
 
     return this.jsonApiService
       .get<JsonApiResponse<CollectionProviderResponseJsonApi, null>>(url)
@@ -54,7 +53,7 @@ export class CollectionsService {
   }
 
   getCollectionDetails(collectionId: string): Observable<CollectionDetails> {
-    const url = `${environment.apiUrl}/collections/${collectionId}/`;
+    const url = `${this.apiUrl}/collections/${collectionId}/`;
 
     return this.jsonApiService
       .get<CollectionDetailsGetResponseJsonApi>(url)
@@ -68,7 +67,7 @@ export class CollectionsService {
     page = '1',
     sortBy: string
   ): Observable<CollectionSubmissionWithGuid[]> {
-    const url = `${environment.apiUrl}/search/collections/`;
+    const url = `${this.apiUrl}/search/collections/`;
     const params: Record<string, string> = {
       page,
     };
@@ -130,15 +129,13 @@ export class CollectionsService {
     return this.jsonApiService
       .get<
         ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>
-      >(`${environment.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
+      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
       .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsResponse(response)));
   }
 
   fetchProjectCollections(projectId: string): Observable<CollectionDetails[]> {
     return this.jsonApiService
-      .get<
-        JsonApiResponse<CollectionDetailsResponseJsonApi[], null>
-      >(`${environment.apiUrl}/nodes/${projectId}/collections/`)
+      .get<JsonApiResponse<CollectionDetailsResponseJsonApi[], null>>(`${this.apiUrl}/nodes/${projectId}/collections/`)
       .pipe(
         map((response) =>
           response.data.map((collection) => CollectionsMapper.fromGetCollectionDetailsResponse(collection))
@@ -155,7 +152,7 @@ export class CollectionsService {
     return this.jsonApiService
       .get<
         JsonApiResponse<CollectionSubmissionJsonApi[], null>
-      >(`${environment.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
+      >(`${this.apiUrl}/collections/${collectionId}/collection_submissions/`, params)
       .pipe(map((response) => CollectionsMapper.fromCurrentSubmissionResponse(response.data[0])));
   }
 
@@ -170,7 +167,7 @@ export class CollectionsService {
     return this.jsonApiService
       .get<
         JsonApiResponse<CollectionSubmissionReviewActionJsonApi[], null>
-      >(`${environment.apiUrl}/collection_submissions/${projectId}-${collectionId}/actions/?sort=-date_modified`, params)
+      >(`${this.apiUrl}/collection_submissions/${projectId}-${collectionId}/actions/?sort=-date_modified`, params)
       .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsActionsResponse(response.data)));
   }
 
@@ -197,7 +194,7 @@ export class CollectionsService {
 
     return this.jsonApiService.post<
       ReviewActionPayloadJsonApi<CollectionSubmissionActionType, CollectionSubmissionTargetType>
-    >(`${environment.apiUrl}/collection_submission_actions/`, params);
+    >(`${this.apiUrl}/collection_submission_actions/`, params);
   }
 
   private getCollectionContributors(contributorsUrl: string): Observable<CollectionContributor[]> {
@@ -227,7 +224,7 @@ export class CollectionsService {
     return this.jsonApiService
       .get<
         ResponseJsonApi<CollectionSubmissionWithGuidJsonApi[]>
-      >(`${environment.apiUrl}/collections/${providerId}/collection_submissions/`, params)
+      >(`${this.apiUrl}/collections/${providerId}/collection_submissions/`, params)
       .pipe(map((response) => CollectionsMapper.fromGetCollectionSubmissionsResponse(response)));
   }
 }

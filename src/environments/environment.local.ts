@@ -1,7 +1,6 @@
 export const environment = {
   production: false,
   webUrl: 'http://localhost:5000',
-  apiUrl: 'http://localhost:8000/v2',
   apiDomainUrl: 'http://localhost:8000',
   shareTroveUrl: 'https://localhost:8003/trove',
   addonsApiUrl: 'http://localhost:8004/v1',

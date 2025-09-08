@@ -15,10 +15,6 @@ export const environment = {
    */
   webUrl: 'https://staging4.osf.io',
   /**
-   * Base URL for the OSF JSON:API v2 endpoints.
-   */
-  apiUrl: 'https://api.staging4.osf.io/v2',
-  /**
    * Domain URL used for JSON:API v2 services.
    */
   apiDomainUrl: 'https://api.staging4.osf.io',

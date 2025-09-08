@@ -4,7 +4,6 @@
 export const environment = {
   production: false,
   webUrl: 'https://test.osf.io',
-  apiUrl: 'https://api.test.osf.io/v2',
   apiDomainUrl: 'https://api.test.osf.io',
   shareTroveUrl: 'https://test-share.osf.io/trove',
   addonsApiUrl: 'https://addons.test.osf.io/v1',

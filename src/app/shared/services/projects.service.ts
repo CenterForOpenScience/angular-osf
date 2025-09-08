@@ -14,10 +14,11 @@ import { environment } from 'src/environments/environment';
 })
 export class ProjectsService {
   private jsonApiService = inject(JsonApiService);
+  private apiUrl = `${environment.apiDomainUrl}/v2`;
 
   fetchProjects(userId: string, params?: Record<string, unknown>): Observable<Project[]> {
     return this.jsonApiService
-      .get<ProjectsResponseJsonApi>(`${environment.apiUrl}/users/${userId}/nodes/`, params)
+      .get<ProjectsResponseJsonApi>(`${this.apiUrl}/users/${userId}/nodes/`, params)
       .pipe(map((response) => ProjectsMapper.fromGetAllProjectsResponse(response)));
   }
 
@@ -25,7 +26,7 @@ export class ProjectsService {
     const payload = ProjectsMapper.toUpdateProjectRequest(metadata);
 
     return this.jsonApiService
-      .patch<ProjectJsonApi>(`${environment.apiUrl}/nodes/${metadata.id}/`, payload)
+      .patch<ProjectJsonApi>(`${this.apiUrl}/nodes/${metadata.id}/`, payload)
       .pipe(map((response) => ProjectsMapper.fromProjectResponse(response)));
   }
 }

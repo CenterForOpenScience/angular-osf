@@ -26,19 +26,13 @@ export class GlobalSearchService {
   getResources(params: Record<string, string>): Observable<ResourcesData> {
     return this.jsonApiService
       .get<IndexCardSearchResponseJsonApi>(`${environment.shareTroveUrl}/index-card-search`, params)
-      .pipe(
-        map((response) => {
-          return this.handleResourcesRawResponse(response);
-        })
-      );
+      .pipe(map((response) => this.handleResourcesRawResponse(response)));
   }
 
   getResourcesByLink(link: string): Observable<ResourcesData> {
-    return this.jsonApiService.get<IndexCardSearchResponseJsonApi>(link).pipe(
-      map((response) => {
-        return this.handleResourcesRawResponse(response);
-      })
-    );
+    return this.jsonApiService
+      .get<IndexCardSearchResponseJsonApi>(link)
+      .pipe(map((response) => this.handleResourcesRawResponse(response)));
   }
 
   getFilterOptions(params: Record<string, string>): Observable<{ options: SelectOption[]; nextUrl?: string }> {

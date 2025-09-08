@@ -27,9 +27,10 @@ import { environment } from 'src/environments/environment';
 })
 export class PreprintModerationService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getPreprintProviders(): Observable<PreprintProviderModerationInfo[]> {
-    const baseUrl = `${environment.apiUrl}/providers/preprints/?filter[permissions]=view_actions,set_up_moderation`;
+    const baseUrl = `${this.apiUrl}/providers/preprints/?filter[permissions]=view_actions,set_up_moderation`;
 
     return this.jsonApiService
       .get<JsonApiResponse<PreprintRelatedCountJsonApi[], null>>(baseUrl)
@@ -37,7 +38,7 @@ export class PreprintModerationService {
   }
 
   getPreprintProvider(id: string): Observable<PreprintProviderModerationInfo> {
-    const baseUrl = `${environment.apiUrl}/providers/preprints/${id}/?related_counts=true`;
+    const baseUrl = `${this.apiUrl}/providers/preprints/${id}/?related_counts=true`;
 
     return this.jsonApiService
       .get<JsonApiResponse<PreprintRelatedCountJsonApi, null>>(baseUrl)
@@ -45,7 +46,7 @@ export class PreprintModerationService {
   }
 
   getPreprintReviews(page = 1): Observable<PaginatedData<PreprintReviewActionModel[]>> {
-    const baseUrl = `${environment.apiUrl}/actions/reviews/?embed=provider&embed=target&page=${page}`;
+    const baseUrl = `${this.apiUrl}/actions/reviews/?embed=provider&embed=target&page=${page}`;
 
     return this.jsonApiService
       .get<ResponseJsonApi<ReviewActionJsonApi[]>>(baseUrl)
@@ -60,7 +61,7 @@ export class PreprintModerationService {
   ): Observable<PreprintSubmissionPaginatedData> {
     const filters = `filter[reviews_state]=${status}`;
 
-    const baseUrl = `${environment.apiUrl}/providers/preprints/${provider}/preprints/?page=${page}&meta[reviews_state_counts]=true&${filters}&sort=${sort}`;
+    const baseUrl = `${this.apiUrl}/providers/preprints/${provider}/preprints/?page=${page}&meta[reviews_state_counts]=true&${filters}&sort=${sort}`;
 
     return this.jsonApiService
       .get<PreprintSubmissionResponseJsonApi>(baseUrl)
@@ -75,7 +76,7 @@ export class PreprintModerationService {
   ): Observable<PreprintWithdrawalPaginatedData> {
     const params = `?embed=target&embed=creator&filter[machine_state]=${status}&meta[requests_state_counts]=true&page=${page}&sort=${sort}`;
 
-    const baseUrl = `${environment.apiUrl}/providers/preprints/${provider}/withdraw_requests/${params}`;
+    const baseUrl = `${this.apiUrl}/providers/preprints/${provider}/withdraw_requests/${params}`;
 
     return this.jsonApiService
       .get<PreprintSubmissionWithdrawalResponseJsonApi>(baseUrl)
@@ -83,7 +84,7 @@ export class PreprintModerationService {
   }
 
   getPreprintSubmissionReviewAction(id: string): Observable<ReviewAction[]> {
-    const baseUrl = `${environment.apiUrl}/preprints/${id}/review_actions/`;
+    const baseUrl = `${this.apiUrl}/preprints/${id}/review_actions/`;
 
     return this.jsonApiService
       .get<ReviewActionsResponseJsonApi>(baseUrl)
@@ -91,7 +92,7 @@ export class PreprintModerationService {
   }
 
   getPreprintWithdrawalSubmissionReviewAction(id: string): Observable<ReviewAction[]> {
-    const baseUrl = `${environment.apiUrl}/requests/${id}/actions/`;
+    const baseUrl = `${this.apiUrl}/requests/${id}/actions/`;
 
     return this.jsonApiService
       .get<ReviewActionsResponseJsonApi>(baseUrl)

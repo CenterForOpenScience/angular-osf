@@ -14,7 +14,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class NodeLinksService {
-  jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   createNodeLink(
     currentProjectId: string,
@@ -30,7 +31,7 @@ export class NodeLinksService {
     };
 
     return this.jsonApiService.post<JsonApiResponse<NodeLinkJsonApi, null>>(
-      `${environment.apiUrl}/nodes/${currentProjectId}/relationships/linked_${resource.type}/`,
+      `${this.apiUrl}/nodes/${currentProjectId}/relationships/linked_${resource.type}/`,
       payload
     );
   }
@@ -46,7 +47,7 @@ export class NodeLinksService {
     };
 
     return this.jsonApiService.delete(
-      `${environment.apiUrl}/nodes/${projectId}/relationships/linked_${resource.type}/`,
+      `${this.apiUrl}/nodes/${projectId}/relationships/linked_${resource.type}/`,
       payload
     );
   }
@@ -60,12 +61,8 @@ export class NodeLinksService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ComponentGetResponseJsonApi[], null>
-      >(`${environment.apiUrl}/nodes/${projectId}/linked_nodes/`, params)
-      .pipe(
-        map((response) => {
-          return response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item));
-        })
-      );
+      >(`${this.apiUrl}/nodes/${projectId}/linked_nodes/`, params)
+      .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
   }
 
   fetchLinkedRegistrations(projectId: string): Observable<ComponentOverview[]> {
@@ -77,11 +74,7 @@ export class NodeLinksService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ComponentGetResponseJsonApi[], null>
-      >(`${environment.apiUrl}/nodes/${projectId}/linked_registrations/`, params)
-      .pipe(
-        map((response) => {
-          return response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item));
-        })
-      );
+      >(`${this.apiUrl}/nodes/${projectId}/linked_registrations/`, params)
+      .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
   }
 }

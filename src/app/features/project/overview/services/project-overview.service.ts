@@ -17,6 +17,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ProjectOverviewService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getProjectById(projectId: string): Observable<ProjectOverviewWithMeta> {
     const params: Record<string, unknown> = {
@@ -34,14 +35,12 @@ export class ProjectOverviewService {
       related_counts: 'forks,view_only_links',
     };
 
-    return this.jsonApiService
-      .get<ProjectOverviewResponseJsonApi>(`${environment.apiUrl}/nodes/${projectId}/`, params)
-      .pipe(
-        map((response) => ({
-          project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
-          meta: response.meta,
-        }))
-      );
+    return this.jsonApiService.get<ProjectOverviewResponseJsonApi>(`${this.apiUrl}/nodes/${projectId}/`, params).pipe(
+      map((response) => ({
+        project: ProjectOverviewMapper.fromGetProjectResponse(response.data),
+        meta: response.meta,
+      }))
+    );
   }
 
   updateProjectPublicStatus(projectId: string, isPublic: boolean): Observable<void> {
@@ -55,7 +54,7 @@ export class ProjectOverviewService {
       },
     };
 
-    return this.jsonApiService.patch<void>(`${environment.apiUrl}/nodes/${projectId}/`, payload);
+    return this.jsonApiService.patch<void>(`${this.apiUrl}/nodes/${projectId}/`, payload);
   }
 
   forkResource(projectId: string, resourceType: string): Observable<void> {
@@ -65,7 +64,7 @@ export class ProjectOverviewService {
       },
     };
 
-    return this.jsonApiService.post<void>(`${environment.apiUrl}/${resourceType}/${projectId}/forks/`, payload);
+    return this.jsonApiService.post<void>(`${this.apiUrl}/${resourceType}/${projectId}/forks/`, payload);
   }
 
   duplicateProject(projectId: string, title: string): Observable<void> {
@@ -80,7 +79,7 @@ export class ProjectOverviewService {
       },
     };
 
-    return this.jsonApiService.post<void>(`${environment.apiUrl}/nodes/`, payload);
+    return this.jsonApiService.post<void>(`${this.apiUrl}/nodes/`, payload);
   }
 
   createComponent(
@@ -116,11 +115,11 @@ export class ProjectOverviewService {
       params['affiliated_institutions'] = affiliatedInstitutions;
     }
 
-    return this.jsonApiService.post<void>(`${environment.apiUrl}/nodes/${projectId}/children/`, payload, params);
+    return this.jsonApiService.post<void>(`${this.apiUrl}/nodes/${projectId}/children/`, payload, params);
   }
 
   deleteComponent(componentId: string): Observable<void> {
-    return this.jsonApiService.delete(`${environment.apiUrl}/nodes/${componentId}/`);
+    return this.jsonApiService.delete(`${this.apiUrl}/nodes/${componentId}/`);
   }
 
   getComponents(projectId: string): Observable<ComponentOverview[]> {
@@ -130,9 +129,7 @@ export class ProjectOverviewService {
     };
 
     return this.jsonApiService
-      .get<
-        JsonApiResponse<ComponentGetResponseJsonApi[], null>
-      >(`${environment.apiUrl}/nodes/${projectId}/children/`, params)
+      .get<JsonApiResponse<ComponentGetResponseJsonApi[], null>>(`${this.apiUrl}/nodes/${projectId}/children/`, params)
       .pipe(map((response) => response.data.map((item) => ComponentsMapper.fromGetComponentResponse(item))));
   }
 }
