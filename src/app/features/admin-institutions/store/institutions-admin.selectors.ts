@@ -1,14 +1,8 @@
 import { Selector } from '@ngxs/store';
 
-import { Institution, PaginationLinksModel } from '@shared/models';
+import { Institution } from '@shared/models';
 
-import {
-  InstitutionDepartment,
-  InstitutionRegistration,
-  InstitutionSearchFilter,
-  InstitutionSummaryMetrics,
-  InstitutionUser,
-} from '../models';
+import { InstitutionDepartment, InstitutionSearchFilter, InstitutionSummaryMetrics, InstitutionUser } from '../models';
 
 import { InstitutionsAdminModel } from './institutions-admin.model';
 import { InstitutionsAdminState } from './institutions-admin.state';
@@ -77,31 +71,6 @@ export class InstitutionsAdminSelectors {
   @Selector([InstitutionsAdminState])
   static getUsersTotalCount(state: InstitutionsAdminModel): number {
     return state.users.totalCount;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getRegistrations(state: InstitutionsAdminModel): InstitutionRegistration[] {
-    return state.registrations.data;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getRegistrationsLoading(state: InstitutionsAdminModel): boolean {
-    return state.registrations.isLoading;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getRegistrationsTotalCount(state: InstitutionsAdminModel): number {
-    return state.registrations.totalCount;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getRegistrationsLinks(state: InstitutionsAdminModel): PaginationLinksModel | undefined {
-    return state.registrations.links;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getRegistrationsDownloadLink(state: InstitutionsAdminModel): string | null {
-    return state.registrations.downloadLink;
   }
 
   @Selector([InstitutionsAdminState])

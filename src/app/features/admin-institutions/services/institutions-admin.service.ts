@@ -3,26 +3,20 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ResourceType } from '@shared/enums';
-import { getResourceTypeStringFromEnum } from '@shared/helpers';
 import { JsonApiService } from '@shared/services';
 
 import {
   mapIndexCardResults,
   mapInstitutionDepartments,
-  mapInstitutionRegistrations,
   mapInstitutionSummaryMetrics,
   mapInstitutionUsers,
   sendMessageRequestMapper,
 } from '../mappers';
 import { requestProjectAccessMapper } from '../mappers/request-access.mapper';
 import {
-  AdminInstitutionSearchResult,
   InstitutionDepartment,
   InstitutionDepartmentsJsonApi,
   InstitutionIndexValueSearchJsonApi,
-  InstitutionRegistration,
-  InstitutionRegistrationsJsonApi,
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
   InstitutionSummaryMetricsJsonApi,
@@ -77,10 +71,6 @@ export class InstitutionsAdminService {
       );
   }
 
-  fetchRegistrations(iris: string[], sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards(ResourceType.Registration, iris, sort, cursor);
-  }
-
   fetchIndexValueSearch(
     institutionId: string,
     valueSearchPropertyPath: string,
@@ -112,44 +102,5 @@ export class InstitutionsAdminService {
     const payload = requestProjectAccessMapper(request);
 
     return this.jsonApiService.post<void>(`${environment.apiUrl}/nodes/${request.projectId}/requests/`, payload);
-  }
-
-  private fetchIndexCards(
-    resourceType: ResourceType,
-    institutionIris: string[],
-    sort = '-dateModified',
-    cursor = ''
-  ): Observable<AdminInstitutionSearchResult> {
-    const url = `${environment.shareDomainUrl}/index-card-search`;
-    const affiliationParam = institutionIris.join(',');
-
-    const sortParam = sort.includes('date') ? 'sort' : 'sort[integer-value]';
-
-    const params: Record<string, string> = {
-      'cardSearchFilter[affiliation][]': affiliationParam,
-      'cardSearchFilter[resourceType]': getResourceTypeStringFromEnum(resourceType),
-      'cardSearchFilter[accessService]': environment.webUrl,
-      'page[cursor]': cursor,
-      'page[size]': '10',
-      [sortParam]: sort,
-    };
-
-    return this.jsonApiService.get<InstitutionRegistrationsJsonApi>(url, params).pipe(
-      map((res) => {
-        let mapper: (response: InstitutionRegistrationsJsonApi) => InstitutionRegistration[];
-        switch (resourceType) {
-          case ResourceType.Registration:
-            mapper = mapInstitutionRegistrations;
-            break;
-        }
-
-        return {
-          items: mapper!(res),
-          totalCount: res.data.attributes.totalResultCount,
-          links: res.data.relationships.searchResultPage.links,
-          downloadLink: res.data.links.self || null,
-        };
-      })
-    );
   }
 }

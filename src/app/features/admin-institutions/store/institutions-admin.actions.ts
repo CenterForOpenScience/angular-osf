@@ -52,15 +52,6 @@ export class FetchInstitutionUsers {
   ) {}
 }
 
-export class FetchRegistrations {
-  static readonly type = '[InstitutionsAdmin] Fetch Registrations';
-
-  constructor(
-    public sort = '-dateModified',
-    public cursor = ''
-  ) {}
-}
-
 export class SendUserMessage {
   static readonly type = '[InstitutionsAdmin] Send User Message';
 

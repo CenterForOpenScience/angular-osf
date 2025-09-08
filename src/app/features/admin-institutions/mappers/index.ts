@@ -1,8 +1,4 @@
 export { mapInstitutionDepartment, mapInstitutionDepartments } from './institution-departments.mapper';
-export { mapPreprintToTableData } from './institution-preprint-to-table-data.mapper';
-export { mapInstitutionPreprints } from './institution-preprints.mapper';
-export { mapRegistrationToTableData } from './institution-registration-to-table-data.mapper';
-export { mapInstitutionRegistrations } from './institution-registrations.mapper';
 export { mapIndexCardResults } from './institution-summary-index.mapper';
 export { mapInstitutionSummaryMetrics } from './institution-summary-metrics.mapper';
 export { mapUserToTableCellData } from './institution-user-to-table-data.mapper';
