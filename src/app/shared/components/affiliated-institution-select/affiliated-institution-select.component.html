@@ -1,4 +1,4 @@
-@if (areUserInstitutionsLoading() || areResourceInstitutionsLoading() || areResourceInstitutionsSubmitting()) {
+@if (isLoading()) {
   <p-skeleton width="100%" height="3rem" />
 } @else {
   <div class="flex flex-column gap-2">
@@ -20,7 +20,7 @@
     </div>
 
     <div class="flex gap-2" role="group" aria-label="Affiliations">
-      @for (institution of userInstitutions(); track institution.id) {
+      @for (institution of institutions(); track institution.id) {
         <div class="flex align-items-center relative gap-2">
           <p-checkbox
             [inputId]="institution.id"
@@ -30,6 +30,7 @@
             (onChange)="selectDeselectInstitution(institution)"
           />
           <img class="fit-contain" [ngSrc]="institution.assets.logo" alt="OSF Logo" height="44" width="44" />
+          <label [for]="institution.id" class="cursor-pointer"> {{ institution.name }}</label>
         </div>
       }
     </div>
