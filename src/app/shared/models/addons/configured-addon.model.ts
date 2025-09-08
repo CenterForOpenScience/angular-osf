@@ -12,4 +12,5 @@ export interface ConfiguredAddonModel {
   baseAccountId: string;
   baseAccountType: string;
   externalStorageServiceId?: string;
+  rootFolderId?: string;
 }
