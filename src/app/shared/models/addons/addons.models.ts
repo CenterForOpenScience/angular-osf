@@ -32,7 +32,7 @@ export interface AuthorizedAddonGetResponseJsonApi {
     authorized_operation_names: string[];
     default_root_folder: string;
     credentials_available: boolean;
-    oauth_token: string;
+    oauth_token?: string;
   };
   relationships: {
     account_owner: {

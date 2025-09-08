@@ -31,7 +31,7 @@ import { OperationNames } from '@osf/features/project/addons/enums';
 import { SelectComponent } from '@shared/components';
 import { ResourceTypeInfoDialogComponent } from '@shared/components/addons/resource-type-info-dialog/resource-type-info-dialog.component';
 import { AddonType } from '@shared/enums';
-import { IS_MEDIUM } from '@shared/helpers';
+import { IS_MEDIUM, IS_XSMALL } from '@shared/helpers';
 import { OperationInvokeData, StorageItem } from '@shared/models';
 import { AddonsSelectors } from '@shared/stores/addons';
 
@@ -62,6 +62,7 @@ export class StorageItemSelectorComponent implements OnInit {
   private dialogService = inject(DialogService);
   readonly AddonType = AddonType;
   isMedium = toSignal(inject(IS_MEDIUM));
+  isMobile = toSignal(inject(IS_XSMALL));
 
   isGoogleFilePicker = input.required<boolean>();
   accountName = input.required<string>();

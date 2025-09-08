@@ -62,7 +62,7 @@ export class AddonMapper {
       authorizedOperationNames: response.attributes.authorized_operation_names,
       defaultRootFolder: response.attributes.default_root_folder,
       credentialsAvailable: response.attributes.credentials_available,
-      oauthToken: response.attributes.oauth_token,
+      oauthToken: response.attributes.oauth_token || '',
       accountOwnerId: response.relationships.account_owner.data.id,
       externalStorageServiceId: externalServiceId || '',
       externalServiceName,

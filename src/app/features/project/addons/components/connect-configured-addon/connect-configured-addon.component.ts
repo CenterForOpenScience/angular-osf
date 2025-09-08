@@ -25,6 +25,7 @@ import {
   StorageItemSelectorComponent,
 } from '@shared/components/addons';
 import { AddonType } from '@shared/enums';
+import { AddonServiceNames } from '@shared/enums/addon-service-names.enum';
 import { AddonModel, AddonTerm, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {
@@ -179,7 +180,7 @@ export class ConnectConfiguredAddonComponent {
         if (createdAddon) {
           this.router.navigate([`${this.baseUrl()}/addons`]);
           this.toastService.showSuccess('settings.addons.toast.createSuccess', {
-            addonName: addon.externalServiceName,
+            addonName: AddonServiceNames[addon.externalServiceName as keyof typeof AddonServiceNames],
           });
         }
       },
@@ -191,11 +192,16 @@ export class ConnectConfiguredAddonComponent {
 
     this.actions.createAuthorizedAddon(payload, this.addonTypeString()).subscribe({
       complete: () => {
-        const createdAddon = this.createdAuthorizedAddon();
-        if (createdAddon) {
-          this.addonAuthUrl.set(createdAddon.attributes.auth_url);
-          window.open(createdAddon.attributes.auth_url, '_blank');
+        const addon = this.createdAuthorizedAddon();
+        if (addon?.authUrl) {
+          this.addonAuthUrl.set(addon.authUrl);
+          window.open(addon.authUrl, '_blank');
           this.stepper()?.value.set(ProjectAddonsStepperValue.AUTH);
+        } else {
+          this.router.navigate([`${this.baseUrl()}/addons`]);
+          this.toastService.showSuccess('settings.addons.toast.createSuccess', {
+            addonName: AddonServiceNames[addon?.externalServiceName as keyof typeof AddonServiceNames],
+          });
         }
       },
     });

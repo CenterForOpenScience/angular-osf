@@ -120,23 +120,24 @@ export class AddonsService {
   createAuthorizedAddon(
     addonRequestPayload: AuthorizedAddonRequestJsonApi,
     addonType: string
-  ): Observable<AuthorizedAddonResponseJsonApi> {
+  ): Observable<AuthorizedAccountModel> {
     return this.jsonApiService
       .post<
-        JsonApiResponse<AuthorizedAddonResponseJsonApi, null>
-      >(`${environment.addonsApiUrl}/authorized-${addonType}-accounts/`, addonRequestPayload)
-      .pipe(map((response) => response.data));
+        JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>
+      >(`${environment.addonsApiUrl}/authorized-${addonType}-accounts/?include=external-${addonType}-service`, addonRequestPayload)
+      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response.data, response.included)));
   }
 
   updateAuthorizedAddon(
     addonRequestPayload: AuthorizedAddonRequestJsonApi,
     addonType: string,
     addonId: string
-  ): Observable<AuthorizedAddonResponseJsonApi> {
-    return this.jsonApiService.patch<AuthorizedAddonResponseJsonApi>(
-      `${environment.addonsApiUrl}/authorized-${addonType}-accounts/${addonId}/`,
-      addonRequestPayload
-    );
+  ): Observable<AuthorizedAccountModel> {
+    return this.jsonApiService.http
+      .patch<
+        JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>
+      >(`${environment.addonsApiUrl}/authorized-${addonType}-accounts/${addonId}/?include=external-${addonType}-service`, addonRequestPayload)
+      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response.data, response.included)));
   }
 
   createConfiguredAddon(

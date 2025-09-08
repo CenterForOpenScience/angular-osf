@@ -2,7 +2,6 @@ import {
   AddonModel,
   AsyncStateModel,
   AuthorizedAccountModel,
-  AuthorizedAddonResponseJsonApi,
   ConfiguredAddonModel,
   ConfiguredAddonResponseJsonApi,
   OperationInvocation,
@@ -22,7 +21,7 @@ export interface AddonsStateModel {
   configuredLinkAddons: AsyncStateModel<ConfiguredAddonModel[]>;
   addonsUserReference: AsyncStateModel<UserReferenceJsonApi[]>;
   addonsResourceReference: AsyncStateModel<ResourceReferenceJsonApi[]>;
-  createdUpdatedAuthorizedAddon: AsyncStateModel<AuthorizedAddonResponseJsonApi | null>;
+  createdUpdatedAuthorizedAddon: AsyncStateModel<AuthorizedAccountModel | null>;
   createdUpdatedConfiguredAddon: AsyncStateModel<ConfiguredAddonResponseJsonApi | null>;
   operationInvocation: AsyncStateModel<OperationInvocation | null>;
   selectedItemOperationInvocation: AsyncStateModel<OperationInvocation | null>;

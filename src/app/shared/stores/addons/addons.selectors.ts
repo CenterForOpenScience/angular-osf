@@ -3,7 +3,6 @@ import { createSelector, Selector } from '@ngxs/store';
 import {
   AddonModel,
   AuthorizedAccountModel,
-  AuthorizedAddonResponseJsonApi,
   ConfiguredAddonModel,
   ConfiguredAddonResponseJsonApi,
   OperationInvocation,
@@ -141,7 +140,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AuthorizedAddonResponseJsonApi | null {
+  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AuthorizedAccountModel | null {
     return state.createdUpdatedAuthorizedAddon.data;
   }
 

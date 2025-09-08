@@ -179,6 +179,7 @@
     "contributors": "Contributors",
     "analytics": "Analytics",
     "addons": "Add-ons",
+    "linkedServices": "Linked Services",
     "resources": "Resources",
     "components": "Components",
     "links": "Links",
@@ -932,6 +933,21 @@
       "title": "Delete institution",
       "message": "Are you sure you want to delete <b>{{name}}</b> from this project?",
       "success": "Institution has been successfully deleted."
+    },
+    "linkedServices": {
+      "title": "Linked Services",
+      "table": {
+        "linkedService": "Linked Service",
+        "displayName": "Display Name",
+        "resourceType": "Resource Type",
+        "link": "Link",
+        "openLink": "Open Link",
+        "noLink": "No link available"
+      },
+              "noLinkedServices": "This project has no configured linked services at the moment.",
+        "redirectMessage": "Visit",
+        "addonsLink": "Add-ons",
+        "redirectMessageSuffix": "to add a linked service."
     }
   },
   "files": {
