@@ -47,6 +47,7 @@
     "@ngxs/logger-plugin": "^19.0.0",
     "@ngxs/store": "^19.0.0",
     "@primeng/themes": "^19.0.9",
+    "@sentry/angular": "^10.10.0",
     "ace-builds": "^1.42.0",
     "cedar-artifact-viewer": "^0.9.5",
     "cedar-embeddable-editor": "^1.5.0",
