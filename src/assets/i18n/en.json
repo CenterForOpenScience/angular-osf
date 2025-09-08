@@ -506,7 +506,7 @@
         "cancel": "Cancel",
         "next": "Next",
         "selectPermissions": "Please select which permissions you want to give to contributor",
-        "bibliographicCOntributor": "Bibliographic Contributor",
+        "bibliographicContributor": "Bibliographic Contributor",
         "addUnregisteredContributor": "Add Unregistered Contributor",
         "addRegisteredContributor": "Add Registered Contributor",
         "unregisteredContributorNotification": "We will notify the user that they have been added to your project"
@@ -561,6 +561,9 @@
         "title": "Wiki",
         "noWikiMessage": "<em>Add important information, links, or images here to describe your project.</em>"
       },
+      "files": {
+        "title": "Files"
+      },
       "components": {
         "title": "Components",
         "addComponentButton": "Add Component",
@@ -611,6 +614,7 @@
         "noSubjects": "No subjects",
         "noTags": "No tags",
         "noSupplements": "No supplements",
+        "noInformation": "No information",
         "noAffiliatedInstitutions": "No affiliated institutions",
         "resourceInformation": "Resource Information",
         "resourceType": "Resource type",
@@ -943,7 +947,6 @@
     }
   },
   "files": {
-    "title": "Files",
     "storageLocation": "OSF Storage",
     "searchPlaceholder": "Search your projects",
     "sort": {
@@ -956,7 +959,8 @@
     "actions": {
       "downloadAsZip": "Download As Zip",
       "createFolder": "Create Folder",
-      "uploadFile": "Upload File"
+      "uploadFile": "Upload File",
+      "addFromDrive": "Add from Drive"
     },
     "dialogs": {
       "uploadFile": {
@@ -1017,7 +1021,7 @@
       "helpGuides": "help guides on project files."
     },
     "dropText": "Drop a file to upload",
-    "emptyState": "This folder is empty",
+    "emptyState": "No files are available at this time.",
     "detail": {
       "backToList": "Back to list of files",
       "tabs": {

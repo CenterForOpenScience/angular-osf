@@ -7,7 +7,7 @@ import {
   CreateRegistrationPayloadJsonApi,
   DraftRegistrationDataJsonApi,
   DraftRegistrationModel,
-  License,
+  LicenseModel,
   LicenseOptions,
   LicensesResponseJsonApi,
 } from '@osf/shared/models';
@@ -24,7 +24,7 @@ export class LicensesService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
-  getLicenses(providerId: string): Observable<License[]> {
+  getLicenses(providerId: string): Observable<LicenseModel[]> {
     return this.jsonApiService
       .get<LicensesResponseJsonApi>(`${this.apiUrl}/providers/registrations/${providerId}/licenses/`, {
         params: {

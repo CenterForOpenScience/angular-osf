@@ -11,7 +11,10 @@ export class GetRootFolderFiles {
 export class GetFiles {
   static readonly type = '[Files] Get Files';
 
-  constructor(public filesLink: string) {}
+  constructor(
+    public filesLink: string,
+    public page?: number
+  ) {}
 }
 
 export class SetFilesIsLoading {
@@ -57,7 +60,16 @@ export class SetMoveFileCurrentFolder {
 export class GetMoveFileFiles {
   static readonly type = '[Files] Get Move File Files';
 
-  constructor(public filesLink: string) {}
+  constructor(
+    public filesLink: string,
+    public page?: number
+  ) {}
+}
+
+export class SetCurrentProvider {
+  static readonly type = '[Files] Set Current Provider';
+
+  constructor(public provider: string) {}
 }
 
 export class GetFile {

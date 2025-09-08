@@ -19,5 +19,5 @@ import { ContributorAddModel } from '@osf/shared/models';
 export class AddContributorItemComponent {
   contributor = input.required<ContributorAddModel>();
 
-  protected readonly permissionsOptions = PERMISSION_OPTIONS;
+  readonly permissionsOptions = PERMISSION_OPTIONS;
 }

@@ -141,6 +141,7 @@ export class MetadataService {
 
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/`;
     const params = this.getMetadataParams(resourceType);
+
     return this.jsonApiService
       .patch<MetadataJsonApi>(baseUrl, payload, params)
       .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response)));
@@ -177,6 +178,7 @@ export class MetadataService {
 
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/`;
     const params = this.getMetadataParams(resourceType);
+
     return this.jsonApiService
       .patch<MetadataJsonApi>(baseUrl, payload, params)
       .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response)));

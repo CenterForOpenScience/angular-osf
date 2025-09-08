@@ -2,7 +2,7 @@ import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { Preprint, PreprintFilesLinks } from '@osf/features/preprints/models';
 import { StringOrNull } from '@shared/helpers';
 import { AsyncStateModel, IdName, OsfFile } from '@shared/models';
-import { License } from '@shared/models/license.model';
+import { LicenseModel } from '@shared/models/license.model';
 
 export interface PreprintStepperStateModel {
   selectedProviderId: StringOrNull;
@@ -12,7 +12,7 @@ export interface PreprintStepperStateModel {
   preprintFiles: AsyncStateModel<OsfFile[]>;
   availableProjects: AsyncStateModel<IdName[]>;
   projectFiles: AsyncStateModel<OsfFile[]>;
-  licenses: AsyncStateModel<License[]>;
+  licenses: AsyncStateModel<LicenseModel[]>;
   currentFolder: OsfFile | null;
   preprintProject: AsyncStateModel<IdName | null>;
   hasBeenSubmitted: boolean;

@@ -10,7 +10,7 @@ import { FloatLabel } from 'primeng/floatlabel';
 import { Select } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 
-import { debounceTime, EMPTY, filter, finalize, Observable, skip, take } from 'rxjs';
+import { debounceTime, distinctUntilChanged, EMPTY, filter, finalize, Observable, skip, switchMap, take } from 'rxjs';
 
 import { HttpEventType } from '@angular/common/http';
 import {
@@ -23,6 +23,7 @@ import {
   inject,
   model,
   signal,
+  viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -37,11 +38,13 @@ import {
   RenameEntry,
   ResetState,
   SetCurrentFolder,
+  SetCurrentProvider,
   SetFilesIsLoading,
   SetMoveFileCurrentFolder,
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
+import { GoogleFilePickerComponent } from '@osf/shared/components/addons/folder-selector/google-file-picker/google-file-picker.component';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
@@ -51,9 +54,15 @@ import {
   LoadingSpinnerComponent,
   SearchInputComponent,
   SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
-import { ConfiguredStorageAddonModel, FilesTreeActions, OsfFile } from '@shared/models';
+import {
+  ConfiguredStorageAddonModel,
+  FileLabelModel,
+  FilesTreeActions,
+  OsfFile,
+  StorageItemModel,
+} from '@shared/models';
 import { FilesService } from '@shared/services';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -65,19 +74,20 @@ import { environment } from 'src/environments/environment';
 @Component({
   selector: 'osf-files',
   imports: [
-    TableModule,
     Button,
+    Dialog,
+    FilesTreeComponent,
     FloatLabel,
-    SubHeaderComponent,
+    FormSelectComponent,
+    FormsModule,
+    GoogleFilePickerComponent,
+    LoadingSpinnerComponent,
+    ReactiveFormsModule,
     SearchInputComponent,
     Select,
-    LoadingSpinnerComponent,
-    Dialog,
-    FormsModule,
-    ReactiveFormsModule,
+    SubHeaderComponent,
+    TableModule,
     TranslatePipe,
-    FilesTreeComponent,
-    FormSelectComponent,
     ViewOnlyLinkMessageComponent,
   ],
   templateUrl: './files.component.html',
@@ -86,6 +96,8 @@ import { environment } from 'src/environments/environment';
   providers: [DialogService, TreeDragDropService],
 })
 export class FilesComponent {
+  googleFilePickerComponent = viewChild(GoogleFilePickerComponent);
+
   @HostBinding('class') classes = 'flex flex-column flex-1 w-full h-full';
 
   private readonly filesService = inject(FilesService);
@@ -106,6 +118,7 @@ export class FilesComponent {
     setSort: SetSort,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
+    setCurrentProvider: SetCurrentProvider,
     resetState: ResetState,
   });
 
@@ -115,10 +128,14 @@ export class FilesComponent {
     return hasViewOnlyParam(this.router);
   });
   readonly files = select(FilesSelectors.getFiles);
+  readonly filesTotalCount = select(FilesSelectors.getFilesTotalCount);
   readonly isFilesLoading = select(FilesSelectors.isFilesLoading);
   readonly currentFolder = select(FilesSelectors.getCurrentFolder);
   readonly provider = select(FilesSelectors.getProvider);
 
+  readonly isGoogleDrive = signal<boolean>(false);
+  readonly accountId = signal<string>('');
+  readonly selectedRootFolder = signal<StorageItemModel>({});
   readonly resourceId = signal<string>('');
   readonly rootFolders = select(FilesSelectors.getRootFolders);
   readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
@@ -131,7 +148,7 @@ export class FilesComponent {
   readonly searchControl = new FormControl<string>('');
   readonly sortControl = new FormControl(ALL_SORT_OPTIONS[0].value);
 
-  currentRootFolder = model<{ label: string; folder: OsfFile } | null>(null);
+  currentRootFolder = model<FileLabelModel | null>(null);
 
   fileIsUploading = signal(false);
   isFolderOpening = signal(false);
@@ -139,6 +156,7 @@ export class FilesComponent {
   sortOptions = ALL_SORT_OPTIONS;
 
   storageProvider = FileProvider.OsfStorage;
+  pageNumber = signal(1);
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -172,7 +190,7 @@ export class FilesComponent {
   readonly filesTreeActions: FilesTreeActions = {
     setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
     setFilesIsLoading: (isLoading) => this.actions.setFilesIsLoading(isLoading),
-    getFiles: (filesLink) => this.actions.getFiles(filesLink),
+    getFiles: (filesLink) => this.actions.getFiles(filesLink, this.pageNumber()),
     deleteEntry: (resourceId, link) => this.actions.deleteEntry(resourceId, link),
     renameEntry: (resourceId, link, newName) => this.actions.renameEntry(resourceId, link, newName),
     setMoveFileCurrentFolder: (folder) => this.actions.setMoveFileCurrentFolder(folder),
@@ -199,10 +217,10 @@ export class FilesComponent {
     effect(() => {
       const rootFolders = this.rootFolders();
       if (rootFolders) {
-        const osfRootFolder = rootFolders.find((folder) => folder.provider === 'osfstorage');
+        const osfRootFolder = rootFolders.find((folder: OsfFile) => folder.provider === 'osfstorage');
         if (osfRootFolder) {
           this.currentRootFolder.set({
-            label: 'Osf Storage',
+            label: this.translateService.instant('files.storageLocation'),
             folder: osfRootFolder,
           });
         }
@@ -212,6 +230,12 @@ export class FilesComponent {
     effect(() => {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
+        const provider = currentRootFolder.folder?.provider;
+        this.isGoogleDrive.set(provider === FileProvider.GoogleDrive);
+        if (this.isGoogleDrive()) {
+          this.setGoogleAccountId();
+        }
+        this.actions.setCurrentProvider(provider ?? FileProvider.OsfStorage);
         this.actions.setCurrentFolder(currentRootFolder.folder);
       }
     });
@@ -223,7 +247,7 @@ export class FilesComponent {
     });
 
     this.searchControl.valueChanges
-      .pipe(skip(1), takeUntilDestroyed(this.destroyRef), debounceTime(500))
+      .pipe(skip(1), takeUntilDestroyed(this.destroyRef), distinctUntilChanged(), debounceTime(500))
       .subscribe((searchText) => {
         this.actions.setSearch(searchText ?? '');
         if (!this.isFolderOpening()) {
@@ -243,6 +267,10 @@ export class FilesComponent {
         this.actions.resetState();
       });
     });
+  }
+
+  isButtonDisabled(): boolean {
+    return this.fileIsUploading() || this.isFilesLoading();
   }
 
   uploadFile(file: File): void {
@@ -268,15 +296,6 @@ export class FilesComponent {
         if (event.type === HttpEventType.UploadProgress && event.total) {
           this.progress.set(Math.round((event.loaded / event.total) * 100));
         }
-        // [NM] Check if need to create guid here
-        // if (event.type === HttpEventType.Response) {
-        //   if (event.body) {
-        //     const fileId = event?.body?.data?.id?.split('/').pop();
-        //     if (fileId) {
-        //       this.filesService.getFileGuid(fileId).pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
-        //     }
-        //   }
-        // }
       });
   }
 
@@ -303,18 +322,18 @@ export class FilesComponent {
         modal: true,
         closable: true,
       })
-      .onClose.pipe(filter((folderName: string) => !!folderName))
-      .subscribe((folderName) => {
-        this.actions
-          .createFolder(newFolderLink, folderName)
-          .pipe(
-            take(1),
-            finalize(() => {
-              this.updateFilesList().subscribe(() => this.fileIsUploading.set(false));
-            })
-          )
-          .subscribe();
-      });
+      .onClose.pipe(
+        filter((folderName: string) => !!folderName),
+        switchMap((folderName: string) => {
+          return this.actions.createFolder(newFolderLink, folderName);
+        }),
+        take(1),
+        finalize(() => {
+          this.updateFilesList();
+          this.fileIsUploading.set(false);
+        })
+      )
+      .subscribe();
   }
 
   downloadFolder(): void {
@@ -348,7 +367,7 @@ export class FilesComponent {
     });
   }
 
-  updateFilesList(): Observable<void> {
+  public updateFilesList = (): Observable<void> => {
     const currentFolder = this.currentFolder();
     if (currentFolder?.relationships.filesLink) {
       this.filesTreeActions.setFilesIsLoading?.(true);
@@ -356,7 +375,7 @@ export class FilesComponent {
     }
 
     return EMPTY;
-  }
+  };
 
   folderIsOpening(value: boolean): void {
     this.isFolderOpening.set(value);
@@ -372,9 +391,29 @@ export class FilesComponent {
 
   getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
     if (provider === 'osfstorage') {
-      return 'Osf Storage';
+      return this.translateService.instant('files.storageLocation');
     } else {
       return addons.find((addon) => addon.externalServiceName === provider)?.displayName ?? '';
     }
+  }
+
+  onFilesPageChange(page: number) {
+    this.pageNumber.set(page);
+  }
+
+  private setGoogleAccountId(): void {
+    const addons = this.configuredStorageAddons();
+    const googleDrive = addons?.find((addon) => addon.externalServiceName === FileProvider.GoogleDrive);
+    if (googleDrive) {
+      this.accountId.set(googleDrive.baseAccountId);
+      this.selectedRootFolder.set({
+        itemId: googleDrive.selectedFolderId,
+      });
+    }
+  }
+
+  openGoogleFilePicker(): void {
+    this.googleFilePickerComponent()?.createPicker();
+    this.updateFilesList();
   }
 }

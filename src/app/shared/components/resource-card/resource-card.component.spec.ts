@@ -9,7 +9,7 @@ import { IS_XSMALL } from '@osf/shared/helpers';
 import { ResourceCardComponent } from '@shared/components';
 import { ResourceType } from '@shared/enums';
 import { MOCK_AGENT_RESOURCE, MOCK_RESOURCE, MOCK_USER_RELATED_COUNTS, TranslateServiceMock } from '@shared/mocks';
-import { Resource } from '@shared/models';
+import { ResourceModel } from '@shared/models';
 import { ResourceCardService } from '@shared/services';
 
 describe.skip('ResourceCardComponent', () => {
@@ -18,8 +18,8 @@ describe.skip('ResourceCardComponent', () => {
 
   const mockUserCounts = MOCK_USER_RELATED_COUNTS;
 
-  const mockResource: Resource = MOCK_RESOURCE;
-  const mockAgentResource: Resource = MOCK_AGENT_RESOURCE;
+  const mockResource: ResourceModel = MOCK_RESOURCE;
+  const mockAgentResource: ResourceModel = MOCK_AGENT_RESOURCE;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

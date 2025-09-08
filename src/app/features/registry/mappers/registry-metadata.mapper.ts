@@ -1,7 +1,7 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
 import { ReviewPermissionsMapper } from '@osf/shared/mappers';
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
-import { License, ProviderDataJsonApi } from '@shared/models';
+import { LicenseModel, ProviderDataJsonApi } from '@shared/models';
 
 import {
   BibliographicContributor,
@@ -37,7 +37,7 @@ export class RegistryMetadataMapper {
       });
     }
 
-    let license: License | undefined;
+    let license: LicenseModel | undefined;
     let licenseUrl: string | undefined;
 
     if (embeds && embeds['license']) {
