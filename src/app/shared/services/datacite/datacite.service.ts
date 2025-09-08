@@ -31,7 +31,7 @@ export class DataciteService {
     return this.logFile(targetId, targetType, DataciteEvent.VIEW);
   }
 
-  watchIdentifiable(
+  private watchIdentifiable(
     trackable: Observable<{ identifiers?: Identifier[] } | null>,
     event: DataciteEvent
   ): Observable<void> {
@@ -44,7 +44,7 @@ export class DataciteService {
     );
   }
 
-  logFile(targetId: string, targetType: string, event: DataciteEvent): Observable<void> {
+  private logFile(targetId: string, targetType: string, event: DataciteEvent): Observable<void> {
     const url = `${this.#environment.webUrl}/${targetType}/${targetId}/identifiers`;
     return this.#http.get<IdentifiersJsonApiResponse>(url).pipe(
       map((item) => ({
@@ -57,31 +57,6 @@ export class DataciteService {
       })),
       switchMap((trackable) => this.watchIdentifiable(of(trackable), event))
     );
-  }
-  /**
-   * Logs a "view" event for a given DOI to the Datacite tracker.
-   * If the DOI is null/empty or the tracker repository ID is not configured,
-   * (in most cases, due to being used in dev environment),
-   * returns an empty observable.
-   *
-   * @param doi - The DOI (Digital Object Identifier) of the resource.
-   * @returns An Observable that completes when the request is sent.
-   */
-  logView(doi: string): Observable<void> {
-    return this.logActivity(DataciteEvent.VIEW, doi);
-  }
-
-  /**
-   * Logs a "download" event for a given DOI to the Datacite tracker.
-   * If the DOI is null/empty or the tracker repository ID is not configured
-   * (in most cases, due to being used in dev environment),
-   * returns an empty observable.
-   *
-   * @param doi - The DOI (Digital Object Identifier) of the resource.
-   * @returns An Observable that completes when the request is sent.
-   */
-  logDownload(doi: string): Observable<void> {
-    return this.logActivity(DataciteEvent.DOWNLOAD, doi);
   }
 
   /**

@@ -65,6 +65,7 @@ const sampleReviewAction: CollectionSubmissionReviewAction = {
 describe('ProjectOverviewComponent', () => {
   let fixture: ComponentFixture<ProjectOverviewComponent>;
   let dataciteService: jest.Mocked<DataciteService>;
+  let component: ProjectOverviewComponent;
   const projectSignal = signal<any>(getProject());
 
   const activatedRouteMock = {
@@ -118,7 +119,7 @@ describe('ProjectOverviewComponent', () => {
     });
 
     dataciteService = {
-      logView: jest.fn().mockReturnValue(of(void 0)),
+      logIdentifiableView: jest.fn().mockReturnValue(of(void 0)),
     } as unknown as jest.Mocked<DataciteService>;
 
     await TestBed.configureTestingModule({
@@ -142,6 +143,7 @@ describe('ProjectOverviewComponent', () => {
         ViewOnlyLinkMessageComponent,
       ],
       providers: [
+        TranslatePipe,
         { provide: ActivatedRoute, useValue: activatedRouteMock },
         { provide: Store, useValue: MOCK_STORE },
         { provide: DataciteService, useValue: dataciteService },
@@ -152,32 +154,14 @@ describe('ProjectOverviewComponent', () => {
         TranslateService,
       ],
     }).compileComponents();
-
     fixture = TestBed.createComponent(ProjectOverviewComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('reacts to sequence of state changes', () => {
     fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenCalledTimes(0);
-
-    projectSignal.set(getProject());
-
-    fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenCalledTimes(0);
-
-    projectSignal.set(getProject([{ category: 'dio', value: '123', id: '', type: 'identifier' }]));
-    fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenCalledTimes(0);
-
-    projectSignal.set(getProject([{ category: 'doi', value: '123', id: '', type: 'identifier' }]));
-
-    fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenCalled();
-
-    projectSignal.set(getProject([{ category: 'doi', value: '456', id: '', type: 'identifier' }]));
-    fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenLastCalledWith('123');
+    expect(dataciteService.logIdentifiableView).toHaveBeenCalledWith(component.currentProject$);
   });
 
   function getProject(identifiers?: Identifier[]) {

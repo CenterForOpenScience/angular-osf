@@ -154,7 +154,7 @@ export class ProjectOverviewComponent implements OnInit {
 
   currentProject = select(ProjectOverviewSelectors.getProject);
   isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
-  private currentProject$ = toObservable(this.currentProject);
+  currentProject$ = toObservable(this.currentProject);
 
   userPermissions = computed(() => {
     return this.currentProject()?.currentUserPermissions || [];
