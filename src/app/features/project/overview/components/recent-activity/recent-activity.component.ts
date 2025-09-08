@@ -26,14 +26,14 @@ export class RecentActivityComponent {
 
   readonly pageSize = input.required<number>();
   currentPage = signal<number>(1);
+
   activityLogs = select(ActivityLogsSelectors.getActivityLogs);
   totalCount = select(ActivityLogsSelectors.getActivityLogsTotalCount);
   isLoading = select(ActivityLogsSelectors.getActivityLogsLoading);
+
   firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize());
 
-  actions = createDispatchMap({
-    getActivityLogs: GetActivityLogs,
-  });
+  actions = createDispatchMap({ getActivityLogs: GetActivityLogs });
 
   formattedActivityLogs = computed(() => {
     const logs = this.activityLogs();
@@ -50,7 +50,7 @@ export class RecentActivityComponent {
 
       const projectId = this.route.snapshot.params['id'] || this.route.parent?.snapshot.params['id'];
       if (projectId) {
-        this.actions.getActivityLogs(projectId, pageNumber.toString(), this.pageSize().toString());
+        this.actions.getActivityLogs(projectId, pageNumber, this.pageSize());
       }
     }
   }

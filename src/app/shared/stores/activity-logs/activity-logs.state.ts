@@ -20,23 +20,13 @@ export class ActivityLogsState {
   @Action(GetActivityLogs)
   getActivityLogs(ctx: StateContext<ActivityLogsStateModel>, action: GetActivityLogs) {
     ctx.patchState({
-      activityLogs: {
-        data: [],
-        isLoading: true,
-        error: null,
-        totalCount: 0,
-      },
+      activityLogs: { data: [], isLoading: true, error: null, totalCount: 0 },
     });
 
     return this.activityLogsService.fetchLogs(action.projectId, action.page, action.pageSize).pipe(
       tap((res) => {
         ctx.patchState({
-          activityLogs: {
-            data: res.data,
-            isLoading: false,
-            error: null,
-            totalCount: res.totalCount,
-          },
+          activityLogs: { data: res.data, isLoading: false, error: null, totalCount: res.totalCount },
         });
       })
     );

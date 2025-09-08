@@ -244,7 +244,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
-      this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
+      this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
       this.setupDataciteViewTrackerEffect().subscribe();
     }
   }

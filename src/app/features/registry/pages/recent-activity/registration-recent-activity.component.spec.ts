@@ -1,4 +1,4 @@
-import { NgxsModule, Store } from '@ngxs/store';
+import { provideStore, Store } from '@ngxs/store';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
@@ -14,36 +14,84 @@ describe('RegistrationRecentActivityComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NgxsModule.forRoot([ActivityLogsState]), RegistrationRecentActivityComponent],
-      providers: [{ provide: ActivatedRoute, useValue: { snapshot: { params: { id: 'reg123' } }, parent: null } }],
+      imports: [RegistrationRecentActivityComponent],
+      providers: [
+        provideStore([ActivityLogsState]),
+        { provide: ActivatedRoute, useValue: { snapshot: { params: { id: 'reg123' } }, parent: null } },
+      ],
     }).compileComponents();
 
     store = TestBed.inject(Store);
-    spyOn(store, 'dispatch').and.callThrough();
+    jest.spyOn(store, 'dispatch');
 
     fixture = TestBed.createComponent(RegistrationRecentActivityComponent);
     fixture.detectChanges();
   });
 
-  it('creates and dispatches initial registration logs fetch', () => {
-    expect(fixture.componentInstance).toBeTruthy();
-    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(GetRegistrationActivityLogs));
-    const action = (store.dispatch as jasmine.Spy).calls.mostRecent().args[0] as GetRegistrationActivityLogs;
+  it('dispatches initial registration logs fetch', () => {
+    const dispatchSpy = store.dispatch as jest.Mock;
+    expect(dispatchSpy).toHaveBeenCalledWith(expect.any(GetRegistrationActivityLogs));
+    const action = dispatchSpy.mock.calls.at(-1)?.[0] as GetRegistrationActivityLogs;
     expect(action.registrationId).toBe('reg123');
-    expect(action.page).toBe('1');
+    expect(action.page).toBe(1);
+  });
+
+  it('renders empty state when no logs and not loading', () => {
+    store.reset({
+      activityLogs: {
+        activityLogs: { data: [], isLoading: false, error: null, totalCount: 0 },
+      },
+    } as any);
+    fixture.detectChanges();
+
+    const empty = fixture.nativeElement.querySelector('[data-test="recent-activity-empty"]');
+    expect(empty).toBeTruthy();
+  });
+
+  it('renders item & paginator when logs exist and totalCount > pageSize', () => {
+    store.reset({
+      activityLogs: {
+        activityLogs: {
+          data: [
+            {
+              id: 'log1',
+              date: '2024-01-01T00:00:00Z',
+              formattedActivity: '<b>formatted</b>',
+            },
+          ],
+          isLoading: false,
+          error: null,
+          totalCount: 25,
+        },
+      },
+    } as any);
+    fixture.detectChanges();
+
+    const item = fixture.nativeElement.querySelector('[data-test="recent-activity-item"]');
+    const content = fixture.nativeElement.querySelector('[data-test="recent-activity-item-content"]');
+    const paginator = fixture.nativeElement.querySelector('[data-test="recent-activity-paginator"]');
+
+    expect(item).toBeTruthy();
+    expect(content?.innerHTML).toContain('formatted');
+    expect(paginator).toBeTruthy();
   });
 
   it('dispatches on page change', () => {
-    (store.dispatch as jasmine.Spy).calls.reset();
+    const dispatchSpy = store.dispatch as jest.Mock;
+    dispatchSpy.mockClear();
+
     fixture.componentInstance.onPageChange({ page: 2 } as any);
-    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(GetRegistrationActivityLogs));
-    const action = (store.dispatch as jasmine.Spy).calls.mostRecent().args[0] as GetRegistrationActivityLogs;
-    expect(action.page).toBe('3');
+    expect(dispatchSpy).toHaveBeenCalledWith(expect.any(GetRegistrationActivityLogs));
+
+    const action = dispatchSpy.mock.calls.at(-1)?.[0] as GetRegistrationActivityLogs;
+    expect(action.page).toBe(3);
   });
 
   it('clears store on destroy', () => {
-    (store.dispatch as jasmine.Spy).calls.reset();
+    const dispatchSpy = store.dispatch as jest.Mock;
+    dispatchSpy.mockClear();
+
     fixture.destroy();
-    expect(store.dispatch).toHaveBeenCalledWith(jasmine.any(ClearActivityLogsStore));
+    expect(dispatchSpy).toHaveBeenCalledWith(expect.any(ClearActivityLogsStore));
   });
 });
