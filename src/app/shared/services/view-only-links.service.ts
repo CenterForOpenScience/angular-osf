@@ -20,6 +20,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ViewOnlyLinksService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -31,7 +32,7 @@ export class ViewOnlyLinksService {
     const params: Record<string, unknown> = { 'embed[]': ['creator', 'nodes'] };
 
     return this.jsonApiService
-      .get<ViewOnlyLinksResponseJsonApi>(`${environment.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, params)
+      .get<ViewOnlyLinksResponseJsonApi>(`${this.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, params)
       .pipe(map((response) => ViewOnlyLinksMapper.fromResponse(response, projectId)));
   }
 
@@ -47,12 +48,13 @@ export class ViewOnlyLinksService {
     return this.jsonApiService
       .post<
         JsonApiResponse<ViewOnlyLinkJsonApi, null>
-      >(`${environment.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, data, params)
+      >(`${this.apiUrl}/${resourcePath}/${projectId}/view_only_links/`, data, params)
       .pipe(map((response) => ViewOnlyLinksMapper.fromSingleResponse(response.data, projectId)));
   }
 
   deleteLink(projectId: string, resourceType: ResourceType, linkId: string): Observable<void> {
     const resourcePath = this.urlMap.get(resourceType);
-    return this.jsonApiService.delete(`${environment.apiUrl}/${resourcePath}/${projectId}/view_only_links/${linkId}`);
+
+    return this.jsonApiService.delete(`${this.apiUrl}/${resourcePath}/${projectId}/view_only_links/${linkId}`);
   }
 }

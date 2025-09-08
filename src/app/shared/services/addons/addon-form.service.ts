@@ -16,7 +16,7 @@ import {
   providedIn: 'root',
 })
 export class AddonFormService {
-  protected formBuilder: FormBuilder = inject(FormBuilder);
+  formBuilder: FormBuilder = inject(FormBuilder);
 
   initializeForm(addon: AddonModel | AuthorizedAccountModel): FormGroup<AddonForm> {
     if (!addon) {

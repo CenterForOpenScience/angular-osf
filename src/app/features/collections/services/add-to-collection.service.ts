@@ -12,8 +12,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AddToCollectionService {
-  private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   fetchCollectionLicenses(providerId: string): Observable<LicenseModel[]> {
     return this.jsonApiService

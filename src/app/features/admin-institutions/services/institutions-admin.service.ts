@@ -34,8 +34,8 @@ import { environment } from 'src/environments/environment';
 })
 export class InstitutionsAdminService {
   private jsonApiService = inject(JsonApiService);
-  private apiUrl = environment.apiUrl;
-  private shareDomainUrl = environment.shareDomainUrl;
+  private apiUrl = `${environment.apiDomainUrl}/v2`;
+  private shareTroveUrl = environment.shareTroveUrl;
 
   fetchDepartments(institutionId: string): Observable<InstitutionDepartment[]> {
     return this.jsonApiService
@@ -86,7 +86,7 @@ export class InstitutionsAdminService {
     };
 
     return this.jsonApiService
-      .get<InstitutionIndexValueSearchJsonApi>(`${this.shareDomainUrl}/index-value-search`, params)
+      .get<InstitutionIndexValueSearchJsonApi>(`${this.shareTroveUrl}/index-value-search`, params)
       .pipe(map((response) => mapIndexCardResults(response?.included)));
   }
 

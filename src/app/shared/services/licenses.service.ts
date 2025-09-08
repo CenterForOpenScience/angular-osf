@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
 })
 export class LicensesService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiUrl;
+  private readonly baseUrl = environment.apiDomainUrl;
 
   getAllLicenses(): Observable<LicenseModel[]> {
     return this.http

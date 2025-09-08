@@ -13,11 +13,12 @@ import { environment } from 'src/environments/environment';
 })
 export class RegistrationsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getRegistrations(projectId: string): Observable<PaginatedData<RegistrationCard[]>> {
     const params: Record<string, unknown> = { embed: 'contributors' };
 
-    const url = `${environment.apiUrl}/nodes/${projectId}/linked_by_registrations/`;
+    const url = `${this.apiUrl}/nodes/${projectId}/linked_by_registrations/`;
 
     return this.jsonApiService.get<ResponseJsonApi<RegistrationDataJsonApi[]>>(url, params).pipe(
       map((response) => {
