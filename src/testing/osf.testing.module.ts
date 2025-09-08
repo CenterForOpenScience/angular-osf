@@ -8,6 +8,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NoopAnimationsModule, provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
+import { DynamicDialogRefMock } from './mocks/dynamic-dialog-ref.mock';
 import { EnvironmentTokenMock } from './mocks/environment.token.mock';
 import { StoreMock } from './mocks/store.mock';
 import { ToastServiceMock } from './mocks/toast.service.mock';

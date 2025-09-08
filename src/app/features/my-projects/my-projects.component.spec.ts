@@ -12,12 +12,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MyProjectsTab } from '@osf/features/my-projects/enums';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
-import { GetMyProjects } from '@osf/shared/stores';
+import { MOCK_STORE } from '@osf/shared/mocks';
+import { BookmarksSelectors, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@shared/components';
 
 import { MyProjectsComponent } from './my-projects.component';
 
-import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('MyProjectsComponent', () => {
   let component: MyProjectsComponent;
@@ -31,14 +32,33 @@ describe('MyProjectsComponent', () => {
     isMediumSubject = new BehaviorSubject<boolean>(false);
     queryParamsSubject = new BehaviorSubject<Record<string, string>>({});
 
+    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
+      if (
+        selector === MyResourcesSelectors.getTotalProjects ||
+        selector === MyResourcesSelectors.getTotalRegistrations ||
+        selector === MyResourcesSelectors.getTotalPreprints ||
+        selector === MyResourcesSelectors.getTotalBookmarks
+      )
+        return () => 0;
+      if (selector === BookmarksSelectors.getBookmarksCollectionId) return () => null;
+      if (
+        selector === MyResourcesSelectors.getProjects ||
+        selector === MyResourcesSelectors.getRegistrations ||
+        selector === MyResourcesSelectors.getPreprints ||
+        selector === MyResourcesSelectors.getBookmarks
+      )
+        return () => [];
+      return () => undefined;
+    });
+
     await TestBed.configureTestingModule({
       imports: [
         MyProjectsComponent,
         OSFTestingModule,
-        OSFTestingStoreModule,
         ...MockComponents(SubHeaderComponent, MyProjectsTableComponent, SelectComponent),
       ],
       providers: [
+        MockProvider(Store, MOCK_STORE),
         MockProvider(DialogService, { open: jest.fn() }),
         MockProvider(ActivatedRoute, { queryParams: queryParamsSubject.asObservable() }),
         MockProvider(Router, { navigate: jest.fn() }),
