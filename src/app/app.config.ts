@@ -12,12 +12,14 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
 import { STATES } from '@core/constants';
+import { SENTRY_PROVIDER } from '@core/factory/sentry.factory';
 import { provideTranslation } from '@core/helpers';
 
-import { GlobalErrorHandler } from './core/handlers';
 import { authInterceptor, errorInterceptor, viewOnlyInterceptor } from './core/interceptors';
 import CustomPreset from './core/theme/custom-preset';
 import { routes } from './app.routes';
+
+import * as Sentry from '@sentry/angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -41,6 +43,10 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
     ConfirmationService,
     MessageService,
-    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    SENTRY_PROVIDER,
+    {
+      provide: ErrorHandler,
+      useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
+    },
   ],
 };
