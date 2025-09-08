@@ -38,6 +38,7 @@ import {
   RenameEntry,
   ResetState,
   SetCurrentFolder,
+  SetCurrentProvider,
   SetFilesIsLoading,
   SetMoveFileCurrentFolder,
   SetSearch,
@@ -117,6 +118,7 @@ export class FilesComponent {
     setSort: SetSort,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
+    setCurrentProvider: SetCurrentProvider,
     resetState: ResetState,
   });
 
@@ -228,10 +230,12 @@ export class FilesComponent {
     effect(() => {
       const currentRootFolder = this.currentRootFolder();
       if (currentRootFolder) {
-        this.isGoogleDrive.set(currentRootFolder.folder.provider === 'googledrive');
+        const provider = currentRootFolder.folder?.provider;
+        this.isGoogleDrive.set(provider === FileProvider.GoogleDrive);
         if (this.isGoogleDrive()) {
           this.setGoogleAccountId();
         }
+        this.actions.setCurrentProvider(provider ?? FileProvider.OsfStorage);
         this.actions.setCurrentFolder(currentRootFolder.folder);
       }
     });
@@ -399,7 +403,7 @@ export class FilesComponent {
 
   private setGoogleAccountId(): void {
     const addons = this.configuredStorageAddons();
-    const googleDrive = addons?.find((addon) => addon.externalServiceName === 'googledrive');
+    const googleDrive = addons?.find((addon) => addon.externalServiceName === FileProvider.GoogleDrive);
     if (googleDrive) {
       this.accountId.set(googleDrive.baseAccountId);
       this.selectedRootFolder.set({

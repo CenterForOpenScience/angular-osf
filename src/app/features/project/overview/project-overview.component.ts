@@ -39,11 +39,13 @@ import {
   ClearCollections,
   ClearWiki,
   CollectionsSelectors,
+  CurrentResourceSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetConfiguredStorageAddons,
   GetHomeWiki,
   GetLinkedResources,
+  GetResourceWithChildren,
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
@@ -66,7 +68,6 @@ import {
 import {
   ClearProjectOverview,
   GetComponents,
-  GetComponentsTree,
   GetProjectById,
   ProjectOverviewSelectors,
   SetProjectCustomCitation,
@@ -116,8 +117,8 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
-  componentsTree = select(ProjectOverviewSelectors.getComponentsTree);
-  areComponentsTreeLoading = select(ProjectOverviewSelectors.getComponentsTreeLoading);
+  components = select(CurrentResourceSelectors.getResourceWithChildren);
+  areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
 
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
@@ -137,7 +138,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
     clearCollectionModeration: ClearCollectionModeration,
-    getComponentsTree: GetComponentsTree,
+    getComponentsTree: GetResourceWithChildren,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
   });
@@ -243,7 +244,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getBookmarksId();
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
-      this.actions.getComponentsTree(projectId);
+      this.actions.getComponentsTree(projectId, ResourceType.Project);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
       this.setupDataciteViewTrackerEffect().subscribe();

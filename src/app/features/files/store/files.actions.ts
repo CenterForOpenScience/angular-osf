@@ -66,6 +66,12 @@ export class GetMoveFileFiles {
   ) {}
 }
 
+export class SetCurrentProvider {
+  static readonly type = '[Files] Set Current Provider';
+
+  constructor(public provider: string) {}
+}
+
 export class GetFile {
   static readonly type = '[Files] Get File';
 

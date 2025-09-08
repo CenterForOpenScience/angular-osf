@@ -17,7 +17,6 @@ import {
   DuplicateProject,
   ForkResource,
   GetComponents,
-  GetComponentsTree,
   GetProjectById,
   SetProjectCustomCitation,
   UpdateProjectPublicStatus,
@@ -245,30 +244,6 @@ export class ProjectOverviewState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'components', error))
-    );
-  }
-
-  @Action(GetComponentsTree)
-  getComponentsTree(ctx: StateContext<ProjectOverviewStateModel>, action: GetComponentsTree) {
-    const state = ctx.getState();
-    ctx.patchState({
-      componentsTree: {
-        ...state.componentsTree,
-        isLoading: true,
-      },
-    });
-
-    return this.projectsService.getComponentsTree(action.projectId).pipe(
-      tap((components) => {
-        ctx.patchState({
-          componentsTree: {
-            data: components,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'componentsTree', error))
     );
   }
 }

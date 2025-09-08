@@ -24,6 +24,7 @@ import {
   RenameEntry,
   ResetState,
   SetCurrentFolder,
+  SetCurrentProvider,
   SetFileMetadata,
   SetFilesIsLoading,
   SetMoveFileCurrentFolder,
@@ -158,6 +159,11 @@ export class FilesState {
   @Action(SetSort)
   setSort(ctx: StateContext<FilesStateModel>, action: SetSort) {
     ctx.patchState({ sort: action.sort });
+  }
+
+  @Action(SetCurrentProvider)
+  setCurrentProvider(ctx: StateContext<FilesStateModel>, action: SetCurrentProvider) {
+    ctx.patchState({ provider: action.provider });
   }
 
   @Action(GetFile)

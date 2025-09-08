@@ -30,7 +30,13 @@ import {
 } from '@osf/features/files/store';
 import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
 import { Primitive } from '@osf/shared/helpers';
-import { ConfiguredStorageAddonModel, FileLabelModel, FilesTreeActions, SelectOption } from '@osf/shared/models';
+import {
+  ConfiguredStorageAddonModel,
+  FileLabelModel,
+  FilesTreeActions,
+  NodeShortInfoModel,
+  SelectOption,
+} from '@osf/shared/models';
 import { Project } from '@osf/shared/models/projects';
 
 import { environment } from 'src/environments/environment';
@@ -44,7 +50,7 @@ import { environment } from 'src/environments/environment';
 })
 export class FilesWidgetComponent {
   rootOption = input.required<SelectOption>();
-  components = input.required<Partial<Project>[]>();
+  components = input.required<NodeShortInfoModel[]>();
   areComponentsLoading = input<boolean>(false);
 
   private readonly destroyRef = inject(DestroyRef);
@@ -65,8 +71,8 @@ export class FilesWidgetComponent {
   readonly osfStorageLabel = 'Osf Storage';
 
   readonly options = computed(() => {
-    const components = this.components();
-    return [this.rootOption(), ...this.flatComponents(components)];
+    const components = this.components().filter((component) => this.rootOption().value !== component.id);
+    return [this.rootOption(), ...this.buildOptions(components).reverse()];
   });
 
   readonly storageAddons = computed(() => {
@@ -171,6 +177,27 @@ export class FilesWidgetComponent {
         ...this.flatComponents(component.children ?? [], currentPath),
       ];
     });
+  }
+
+  private buildOptions(nodes: NodeShortInfoModel[] = [], parentPath = '..'): SelectOption[] {
+    return nodes.reduce<SelectOption[]>((acc, node) => {
+      const pathParts: string[] = [];
+
+      let current: NodeShortInfoModel | undefined = node;
+      while (current) {
+        pathParts.unshift(current.title ?? '');
+        current = nodes.find((n) => n.id === current?.parentId);
+      }
+
+      const fullPath = parentPath ? `${parentPath}/${pathParts.join('/')}` : pathParts.join('/');
+
+      acc.push({
+        value: node.id,
+        label: fullPath,
+      });
+
+      return acc;
+    }, []);
   }
 
   private getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
