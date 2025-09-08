@@ -23,7 +23,7 @@ export function mapProjectResourceToTableCellData(resource: Resource): TableCell
     views: 'will be parsed soon',
     resourceType: resource.resourceNature || '-',
     license: resource.license?.name || '-',
-    addOns: '-',
+    addOns: 'will be parsed soon',
     funderName: resource.funders?.[0]?.name || '-',
   };
 

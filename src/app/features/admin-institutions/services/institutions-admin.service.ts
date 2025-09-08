@@ -10,7 +10,6 @@ import { JsonApiService } from '@shared/services';
 import {
   mapIndexCardResults,
   mapInstitutionDepartments,
-  mapInstitutionPreprints,
   mapInstitutionRegistrations,
   mapInstitutionSummaryMetrics,
   mapInstitutionUsers,
@@ -22,7 +21,6 @@ import {
   InstitutionDepartment,
   InstitutionDepartmentsJsonApi,
   InstitutionIndexValueSearchJsonApi,
-  InstitutionPreprint,
   InstitutionRegistration,
   InstitutionRegistrationsJsonApi,
   InstitutionSearchFilter,
@@ -83,10 +81,6 @@ export class InstitutionsAdminService {
     return this.fetchIndexCards(ResourceType.Registration, iris, sort, cursor);
   }
 
-  fetchPreprints(iris: string[], sort = '-dateModified', cursor = '') {
-    return this.fetchIndexCards(ResourceType.Preprint, iris, sort, cursor);
-  }
-
   fetchIndexValueSearch(
     institutionId: string,
     valueSearchPropertyPath: string,
@@ -142,18 +136,15 @@ export class InstitutionsAdminService {
 
     return this.jsonApiService.get<InstitutionRegistrationsJsonApi>(url, params).pipe(
       map((res) => {
-        let mapper: (response: InstitutionRegistrationsJsonApi) => InstitutionRegistration[] | InstitutionPreprint[];
+        let mapper: (response: InstitutionRegistrationsJsonApi) => InstitutionRegistration[];
         switch (resourceType) {
           case ResourceType.Registration:
             mapper = mapInstitutionRegistrations;
             break;
-          default:
-            mapper = mapInstitutionPreprints;
-            break;
         }
 
         return {
-          items: mapper(res),
+          items: mapper!(res),
           totalCount: res.data.attributes.totalResultCount,
           links: res.data.relationships.searchResultPage.links,
           downloadLink: res.data.links.self || null,

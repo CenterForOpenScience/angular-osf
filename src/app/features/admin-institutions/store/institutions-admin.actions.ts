@@ -61,15 +61,6 @@ export class FetchRegistrations {
   ) {}
 }
 
-export class FetchPreprints {
-  static readonly type = '[InstitutionsAdmin] Fetch Preprints';
-
-  constructor(
-    public sort = '-dateModified',
-    public cursor = ''
-  ) {}
-}
-
 export class SendUserMessage {
   static readonly type = '[InstitutionsAdmin] Send User Message';
 

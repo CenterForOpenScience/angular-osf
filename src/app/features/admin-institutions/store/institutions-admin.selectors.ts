@@ -4,7 +4,6 @@ import { Institution, PaginationLinksModel } from '@shared/models';
 
 import {
   InstitutionDepartment,
-  InstitutionPreprint,
   InstitutionRegistration,
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
@@ -103,31 +102,6 @@ export class InstitutionsAdminSelectors {
   @Selector([InstitutionsAdminState])
   static getRegistrationsDownloadLink(state: InstitutionsAdminModel): string | null {
     return state.registrations.downloadLink;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getPreprints(state: InstitutionsAdminModel): InstitutionPreprint[] {
-    return state.preprints.data;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getPreprintsLoading(state: InstitutionsAdminModel): boolean {
-    return state.preprints.isLoading;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getPreprintsTotalCount(state: InstitutionsAdminModel): number {
-    return state.preprints.totalCount;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getPreprintsLinks(state: InstitutionsAdminModel): PaginationLinksModel | undefined {
-    return state.preprints.links;
-  }
-
-  @Selector([InstitutionsAdminState])
-  static getPreprintsDownloadLink(state: InstitutionsAdminModel): string | null {
-    return state.preprints.downloadLink;
   }
 
   @Selector([InstitutionsAdminState])

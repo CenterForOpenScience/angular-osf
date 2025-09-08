@@ -2,7 +2,6 @@ import { AsyncStateModel, AsyncStateWithTotalCount, Institution, PaginationLinks
 
 import {
   InstitutionDepartment,
-  InstitutionPreprint,
   InstitutionRegistration,
   InstitutionSearchFilter,
   InstitutionSummaryMetrics,
@@ -17,7 +16,6 @@ export interface InstitutionsAdminModel {
   searchResults: AsyncStateModel<InstitutionSearchFilter[]>;
   users: AsyncStateWithTotalCount<InstitutionUser[]>;
   registrations: ResultStateModel<InstitutionRegistration[]>;
-  preprints: ResultStateModel<InstitutionPreprint[]>;
   institution: AsyncStateModel<Institution>;
 }
 
@@ -34,6 +32,5 @@ export const INSTITUTIONS_ADMIN_STATE_DEFAULTS: InstitutionsAdminModel = {
   searchResults: { data: [], isLoading: false, error: null },
   users: { data: [], totalCount: 0, isLoading: false, error: null },
   registrations: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined, downloadLink: null },
-  preprints: { data: [], totalCount: 0, isLoading: false, error: null, links: undefined, downloadLink: null },
   institution: { data: {} as Institution, isLoading: false, error: null },
 };

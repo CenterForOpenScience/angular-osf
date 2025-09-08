@@ -9,7 +9,7 @@ import { handleSectionError } from '@osf/shared/helpers';
 import { Institution } from '@osf/shared/models';
 import { InstitutionsService } from '@osf/shared/services';
 
-import { InstitutionPreprint, InstitutionRegistration } from '../models';
+import { InstitutionRegistration } from '../models';
 import { InstitutionsAdminService } from '../services/institutions-admin.service';
 
 import {
@@ -19,7 +19,6 @@ import {
   FetchInstitutionSearchResults,
   FetchInstitutionSummaryMetrics,
   FetchInstitutionUsers,
-  FetchPreprints,
   FetchRegistrations,
   FetchStorageRegionSearch,
   RequestProjectAccess,
@@ -181,31 +180,6 @@ export class InstitutionsAdminState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'registrations', error))
-    );
-  }
-
-  @Action(FetchPreprints)
-  fetchPreprints(ctx: StateContext<InstitutionsAdminModel>, action: FetchPreprints) {
-    const state = ctx.getState();
-    ctx.patchState({
-      preprints: { ...state.preprints, isLoading: true, error: null },
-    });
-
-    const institutionIris = state.institution.data.iris;
-    return this.institutionsAdminService.fetchPreprints(institutionIris, action.sort, action.cursor).pipe(
-      tap((response) => {
-        ctx.patchState({
-          preprints: {
-            data: response.items as InstitutionPreprint[],
-            totalCount: response.totalCount,
-            isLoading: false,
-            error: null,
-            links: response.links,
-            downloadLink: response.downloadLink,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'preprints', error))
     );
   }
 
