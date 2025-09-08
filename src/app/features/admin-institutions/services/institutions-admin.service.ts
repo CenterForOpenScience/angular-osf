@@ -34,16 +34,18 @@ import { environment } from 'src/environments/environment';
 })
 export class InstitutionsAdminService {
   private jsonApiService = inject(JsonApiService);
+  private apiUrl = environment.apiUrl;
+  private shareDomainUrl = environment.shareDomainUrl;
 
   fetchDepartments(institutionId: string): Observable<InstitutionDepartment[]> {
     return this.jsonApiService
-      .get<InstitutionDepartmentsJsonApi>(`${environment.apiUrl}/institutions/${institutionId}/metrics/departments/`)
+      .get<InstitutionDepartmentsJsonApi>(`${this.apiUrl}/institutions/${institutionId}/metrics/departments/`)
       .pipe(map((res) => mapInstitutionDepartments(res)));
   }
 
   fetchSummary(institutionId: string): Observable<InstitutionSummaryMetrics> {
     return this.jsonApiService
-      .get<InstitutionSummaryMetricsJsonApi>(`${environment.apiUrl}/institutions/${institutionId}/metrics/summary/`)
+      .get<InstitutionSummaryMetricsJsonApi>(`${this.apiUrl}/institutions/${institutionId}/metrics/summary/`)
       .pipe(map((result) => mapInstitutionSummaryMetrics(result.data.attributes)));
   }
 
@@ -62,7 +64,7 @@ export class InstitutionsAdminService {
     };
 
     return this.jsonApiService
-      .get<InstitutionUsersJsonApi>(`${environment.apiUrl}/institutions/${institutionId}/metrics/users/`, params)
+      .get<InstitutionUsersJsonApi>(`${this.apiUrl}/institutions/${institutionId}/metrics/users/`, params)
       .pipe(
         map((response) => ({
           users: mapInstitutionUsers(response as InstitutionUsersJsonApi),
@@ -84,7 +86,7 @@ export class InstitutionsAdminService {
     };
 
     return this.jsonApiService
-      .get<InstitutionIndexValueSearchJsonApi>(`${environment.shareDomainUrl}/index-value-search`, params)
+      .get<InstitutionIndexValueSearchJsonApi>(`${this.shareDomainUrl}/index-value-search`, params)
       .pipe(map((response) => mapIndexCardResults(response?.included)));
   }
 
@@ -92,7 +94,7 @@ export class InstitutionsAdminService {
     const payload = sendMessageRequestMapper(request);
 
     return this.jsonApiService.post<SendMessageResponseJsonApi>(
-      `${environment.apiUrl}/users/${request.userId}/messages/`,
+      `${this.apiUrl}/users/${request.userId}/messages/`,
       payload
     );
   }
@@ -100,6 +102,6 @@ export class InstitutionsAdminService {
   requestProjectAccess(request: RequestProjectAccessData): Observable<void> {
     const payload = requestProjectAccessMapper(request);
 
-    return this.jsonApiService.post<void>(`${environment.apiUrl}/nodes/${request.projectId}/requests/`, payload);
+    return this.jsonApiService.post<void>(`${this.apiUrl}/nodes/${request.projectId}/requests/`, payload);
   }
 }
