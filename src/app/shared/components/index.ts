@@ -51,3 +51,4 @@ export { ToastComponent } from './toast/toast.component';
 export { TruncatedTextComponent } from './truncated-text/truncated-text.component';
 export { ViewOnlyLinkMessageComponent } from './view-only-link-message/view-only-link-message.component';
 export { ViewOnlyTableComponent } from './view-only-table/view-only-table.component';
+export { GlobalSearchComponent } from '@shared/components/global-search/global-search.component';

@@ -14,7 +14,7 @@ import { UserState } from '@core/store/user';
 import { AdminTableComponent } from '@osf/features/admin-institutions/components';
 import { InstitutionsAdminState } from '@osf/features/admin-institutions/store';
 import { ToastService } from '@osf/shared/services';
-import { InstitutionsSearchState } from '@osf/shared/stores';
+import { InstitutionsSearchState } from '@osf/shared/stores/institutions-search';
 import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 import { TranslateServiceMock } from '@shared/mocks';
 

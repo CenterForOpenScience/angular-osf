@@ -15,7 +15,7 @@ import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 import { ConfirmEmailComponent } from '@shared/components';
 
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
-import { MetaTagsService } from './shared/services/meta-tags.service';
+import { MetaTagsService } from './shared/services';
 
 @Component({
   selector: 'osf-root',

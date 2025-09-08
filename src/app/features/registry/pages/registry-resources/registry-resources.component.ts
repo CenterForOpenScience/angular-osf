@@ -34,16 +34,17 @@ import {
 export class RegistryResourcesComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
   private readonly route = inject(ActivatedRoute);
-  private dialogService = inject(DialogService);
-  private translateService = inject(TranslateService);
-  private toastService = inject(ToastService);
-  private customConfirmationService = inject(CustomConfirmationService);
+  private readonly dialogService = inject(DialogService);
+  private readonly translateService = inject(TranslateService);
+  private readonly toastService = inject(ToastService);
+  private readonly customConfirmationService = inject(CustomConfirmationService);
 
-  protected readonly resources = select(RegistryResourcesSelectors.getResources);
-  protected readonly isResourcesLoading = select(RegistryResourcesSelectors.isResourcesLoading);
-  private registryId = '';
-  protected addingResource = signal(false);
-  private readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
+  readonly resources = select(RegistryResourcesSelectors.getResources);
+  readonly isResourcesLoading = select(RegistryResourcesSelectors.isResourcesLoading);
+  readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
+
+  registryId = '';
+  addingResource = signal(false);
 
   private readonly actions = createDispatchMap({
     getResources: GetRegistryResources,
@@ -62,9 +63,7 @@ export class RegistryResourcesComponent {
   }
 
   addResource() {
-    if (!this.registryId) {
-      throw new Error(this.translateService.instant('resources.errors.noRegistryId'));
-    }
+    if (!this.registryId) return;
 
     this.addingResource.set(true);
 
@@ -91,10 +90,10 @@ export class RegistryResourcesComponent {
               this.toastService.showSuccess('resources.toastMessages.addResourceSuccess');
             } else {
               const currentResource = this.currentResource();
-              if (!currentResource) {
-                throw new Error(this.translateService.instant('resources.errors.noCurrentResource'));
+
+              if (currentResource) {
+                this.actions.silentDelete(currentResource.id);
               }
-              this.actions.silentDelete(currentResource.id);
             }
           },
           error: () => this.toastService.showError('resources.toastMessages.addResourceError'),
@@ -103,9 +102,7 @@ export class RegistryResourcesComponent {
   }
 
   updateResource(resource: RegistryResource) {
-    if (!this.registryId) {
-      throw new Error(this.translateService.instant('resources.errors.noRegistryId'));
-    }
+    if (!this.registryId) return;
 
     const dialogRef = this.dialogService.open(EditResourceDialogComponent, {
       header: this.translateService.instant('resources.edit'),
@@ -138,9 +135,7 @@ export class RegistryResourcesComponent {
         this.actions
           .deleteResource(id, this.registryId)
           .pipe(take(1))
-          .subscribe(() => {
-            this.toastService.showSuccess('resources.toastMessages.deletedResourceSuccess');
-          });
+          .subscribe(() => this.toastService.showSuccess('resources.toastMessages.deletedResourceSuccess'));
       },
     });
   }

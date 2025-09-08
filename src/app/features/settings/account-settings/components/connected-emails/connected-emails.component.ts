@@ -7,7 +7,7 @@ import { Card } from 'primeng/card';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Skeleton } from 'primeng/skeleton';
 
-import { filter, finalize } from 'rxjs';
+import { filter, finalize, throttleTime } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -42,6 +42,7 @@ export class ConnectedEmailsComponent {
   protected readonly currentUser = select(UserSelectors.getCurrentUser);
   protected readonly emails = select(UserEmailsSelectors.getEmails);
   protected readonly isEmailsLoading = select(UserEmailsSelectors.isEmailsLoading);
+  protected readonly isEmailsSubmitting = select(UserEmailsSelectors.isEmailsSubmitting);
 
   private readonly actions = createDispatchMap({
     resendConfirmation: ResendConfirmation,
@@ -98,6 +99,7 @@ export class ConnectedEmailsComponent {
           this.actions
             .resendConfirmation(email.id)
             .pipe(
+              throttleTime(2000),
               finalize(() => this.loaderService.hide()),
               takeUntilDestroyed(this.destroyRef)
             )

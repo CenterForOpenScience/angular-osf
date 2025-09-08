@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { UserMapper } from '@osf/shared/mappers';
-import { IdName, JsonApiResponse, User, UserGetResponse } from '@osf/shared/models';
+import { IdName, JsonApiResponse, User, UserDataJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { MapAccountSettings, MapExternalIdentities, MapRegions } from '../mappers';
@@ -47,7 +47,7 @@ export class AccountSettingsService {
     };
 
     return this.jsonApiService
-      .patch<UserGetResponse>(`${environment.apiUrl}/users/${userId}/`, body)
+      .patch<UserDataJsonApi>(`${environment.apiUrl}/users/${userId}/`, body)
       .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 
@@ -64,7 +64,7 @@ export class AccountSettingsService {
     };
 
     return this.jsonApiService
-      .patch<UserGetResponse>(`${environment.apiUrl}/users/${userId}/`, body)
+      .patch<UserDataJsonApi>(`${environment.apiUrl}/users/${userId}/`, body)
       .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 

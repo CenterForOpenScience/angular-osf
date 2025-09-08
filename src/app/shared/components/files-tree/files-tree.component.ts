@@ -28,12 +28,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MoveFileDialogComponent, RenameFileDialogComponent } from '@osf/features/files/components';
 import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { FileMenuType } from '@osf/shared/enums';
-import { FileMenuComponent, LoadingSpinnerComponent } from '@shared/components';
 import { StopPropagationDirective } from '@shared/directives';
 import { hasViewOnlyParam } from '@shared/helpers';
 import { FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
+
+import { FileMenuComponent } from '../file-menu/file-menu.component';
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 import { environment } from 'src/environments/environment';
 

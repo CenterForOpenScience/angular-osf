@@ -3,7 +3,7 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { authGuard } from '@core/guards';
-import { InstitutionsSearchState } from '@osf/shared/stores';
+import { InstitutionsSearchState } from '@shared/stores/institutions-search';
 
 import { InstitutionsComponent } from './institutions.component';
 import { InstitutionsListComponent, InstitutionsSearchComponent } from './pages';

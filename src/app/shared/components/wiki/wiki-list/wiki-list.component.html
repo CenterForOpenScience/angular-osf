@@ -11,15 +11,21 @@
   } @else {
     @if (expanded()) {
       <p-panel showHeader="false">
-        <div class="flex aign-items-center justify-content-between mt-3 mb-2">
-          <p-button
-            [label]="'project.wiki.addNewWiki' | translate"
-            icon="fas fa-plus"
-            severity="success"
-            outlined
-            [disabled]="viewOnly()"
-            (onClick)="openAddWikiDialog()"
-          />
+        <div
+          class="flex aign-items-center mt-3 mb-2"
+          [class]="showAddBtn() ? 'justify-content-between' : 'justify-content-end'"
+        >
+          @if (showAddBtn()) {
+            <p-button
+              [label]="'project.wiki.addNewWiki' | translate"
+              icon="fas fa-plus"
+              severity="success"
+              outlined
+              [disabled]="viewOnly()"
+              (onClick)="openAddWikiDialog()"
+            />
+          }
+
           <p-button
             class="btn-icon-only"
             icon="fas fa-backward"
@@ -27,8 +33,7 @@
             raised
             outlined
             (onClick)="collapseNavigation()"
-          >
-          </p-button>
+          />
         </div>
         @if (!viewOnly()) {
           @if (!isHomeWikiSelected() || !list().length) {
@@ -39,8 +44,7 @@
               outlined
               (onClick)="openDeleteWikiDialog()"
               class="mb-2 flex"
-            >
-            </p-button>
+            />
           }
         }
         <div class="flex flex-column justify-center mt-4 flex-1">
@@ -72,19 +76,22 @@
       </p-panel>
     } @else {
       <div class="mb-2">
-        <p-button class="btn-icon-only" (onClick)="collapseNavigation()" raised outlined severity="contrast">
+        <p-button class="btn-icon-only" raised outlined severity="contrast" (onClick)="collapseNavigation()">
           <i class="fas fa-list-ul"></i>
           <i class="fas fa-forward"></i>
         </p-button>
       </div>
-      <p-button
-        class="btn-icon-only"
-        icon="fas fa-plus"
-        raised
-        outlined
-        severity="success"
-        (onClick)="openAddWikiDialog()"
-      />
+
+      @if (showAddBtn()) {
+        <p-button
+          class="btn-icon-only"
+          icon="fas fa-plus"
+          raised
+          outlined
+          severity="success"
+          (onClick)="openAddWikiDialog()"
+        />
+      }
     }
   }
 </div>

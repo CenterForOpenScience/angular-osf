@@ -24,12 +24,14 @@ import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.compo
   providers: [DialogService],
 })
 export class WikiListComponent {
-  readonly viewOnly = input<boolean>(false);
-  readonly resourceId = input.required<string>();
   readonly list = input.required<Wiki[]>();
-  readonly isLoading = input<boolean>(false);
-  readonly componentsList = input.required<ComponentWiki[]>();
+  readonly resourceId = input.required<string>();
   readonly currentWikiId = input.required<string>();
+  readonly componentsList = input.required<ComponentWiki[]>();
+
+  readonly showAddBtn = input<boolean>(false);
+  readonly isLoading = input<boolean>(false);
+  readonly viewOnly = input<boolean>(false);
 
   readonly deleteWiki = output<void>();
   readonly createWiki = output<void>();

@@ -1,5 +1,5 @@
 import { User } from '@osf/shared/models';
-import { UserRelatedDataCounts } from '@shared/models';
+import { UserRelatedCounts } from '@shared/models';
 
 export const MOCK_USER: User = {
   iri: '',
@@ -56,7 +56,7 @@ export const MOCK_USER: User = {
   canViewReviews: true,
 };
 
-export const MOCK_USER_RELATED_COUNTS: UserRelatedDataCounts = {
+export const MOCK_USER_RELATED_COUNTS: UserRelatedCounts = {
   projects: 5,
   preprints: 3,
   registrations: 2,

@@ -24,15 +24,15 @@ import { ResourceFormComponent } from '../resource-form/resource-form.component'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditResourceDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly isCurrentResourceLoading = select(RegistryResourcesSelectors.isCurrentResourceLoading);
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly isCurrentResourceLoading = select(RegistryResourcesSelectors.isCurrentResourceLoading);
   private translateService = inject(TranslateService);
 
   private dialogConfig = inject(DynamicDialogConfig);
   private registryId: string = this.dialogConfig.data.id;
   private resource: RegistryResource = this.dialogConfig.data.resource as RegistryResource;
 
-  protected form = new FormGroup({
+  form = new FormGroup({
     pid: new FormControl<string | null>('', [CustomValidators.requiredTrimmed(), CustomValidators.doiValidator]),
     resourceType: new FormControl<string | null>('', [Validators.required]),
     description: new FormControl<string | null>(''),

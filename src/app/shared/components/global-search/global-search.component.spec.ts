@@ -1,0 +1,22 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { GlobalSearchComponent } from './global-search.component';
+
+describe.skip('OsfSearchComponent', () => {
+  let component: GlobalSearchComponent;
+  let fixture: ComponentFixture<GlobalSearchComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [GlobalSearchComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(GlobalSearchComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

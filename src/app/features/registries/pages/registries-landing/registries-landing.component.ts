@@ -16,7 +16,7 @@ import {
   SearchInputComponent,
   SubHeaderComponent,
 } from '@shared/components';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 
 import { environment } from 'src/environments/environment';
 
@@ -55,13 +55,13 @@ export class RegistriesLandingComponent implements OnInit {
     const searchValue = this.searchControl.value;
 
     this.router.navigate(['/search'], {
-      queryParams: { search: searchValue, resourceTab: ResourceTab.Registrations },
+      queryParams: { search: searchValue, tab: ResourceType.Registration },
     });
   }
 
   redirectToSearchPageRegistrations(): void {
     this.router.navigate(['/search'], {
-      queryParams: { resourceTab: ResourceTab.Registrations },
+      queryParams: { tab: ResourceType.Registration },
     });
   }
 

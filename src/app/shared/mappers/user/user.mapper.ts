@@ -1,8 +1,8 @@
 import {
   User,
   UserData,
+  UserDataJsonApi,
   UserDataResponseJsonApi,
-  UserGetResponse,
   UserNamesJsonApi,
   UserSettings,
   UserSettingsGetResponse,
@@ -17,7 +17,7 @@ export class UserMapper {
     };
   }
 
-  static fromUserGetResponse(user: UserGetResponse): User {
+  static fromUserGetResponse(user: UserDataJsonApi): User {
     return {
       id: user.id,
       fullName: user.attributes.full_name,
@@ -34,7 +34,7 @@ export class UserMapper {
       social: user.attributes.social,
       defaultRegionId: user.relationships?.default_region?.data?.id,
       allowIndexing: user.attributes?.allow_indexing,
-      canViewReviews: user.attributes.can_view_reviews === true, //do not simplify it
+      canViewReviews: user.attributes.can_view_reviews === true, // [NS] Do not simplify it
     };
   }
 

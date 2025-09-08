@@ -68,6 +68,7 @@ describe('Service: Addons', () => {
         externalStorageServiceId: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
         currentUserIsOwner: true,
         displayName: 'Google Drive',
+        rootFolderId: '0AIl0aR4C9JAFUk9PVA',
         externalServiceName: 'googledrive',
         id: '756579dc-3a24-4849-8866-698a60846ac3',
         selectedFolderId: '0AIl0aR4C9JAFUk9PVA',
