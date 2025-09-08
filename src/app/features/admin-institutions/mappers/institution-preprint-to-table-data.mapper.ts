@@ -1,9 +1,9 @@
 import { extractPathAfterDomain } from '@osf/features/admin-institutions/helpers';
-import { Resource } from '@shared/models';
+import { ResourceModel } from '@shared/models';
 
 import { TableCellData, TableCellLink } from '../models';
 
-export function mapPreprintResourceToTableData(preprint: Resource): TableCellData {
+export function mapPreprintResourceToTableData(preprint: ResourceModel): TableCellData {
   return {
     title: {
       text: preprint.title,
@@ -27,7 +27,7 @@ export function mapPreprintResourceToTableData(preprint: Resource): TableCellDat
     contributorName: preprint.creators[0]
       ? ({
           text: preprint.creators[0].name,
-          url: `https://osf.io/${preprint.creators[0].absoluteUrl}`,
+          url: preprint.creators[0].absoluteUrl,
           target: '_blank',
         } as TableCellLink)
       : '-',

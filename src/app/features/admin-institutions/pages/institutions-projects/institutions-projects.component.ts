@@ -23,7 +23,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserSelectors } from '@osf/core/store/user';
 import { mapProjectResourceToTableCellData } from '@osf/features/admin-institutions/mappers/institution-project-to-table-data.mapper';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
-import { DiscoverableFilter, Resource, SearchFilters } from '@osf/shared/models';
+import { DiscoverableFilter, ResourceModel, SearchFilters } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import { FilterChipsComponent, ReusableFilterComponent } from '@shared/components';
 import { StringOrNull } from '@shared/helpers';
@@ -105,7 +105,7 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
   filterOptionsCache = select(GlobalSearchSelectors.getFilterOptionsCache);
 
   tableData = computed(() =>
-    this.resources().map((resource: Resource): TableCellData => mapProjectResourceToTableCellData(resource))
+    this.resources().map((resource: ResourceModel): TableCellData => mapProjectResourceToTableCellData(resource))
   );
 
   sortParam = computed(() => {

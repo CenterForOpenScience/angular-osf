@@ -1,9 +1,9 @@
 import { extractPathAfterDomain } from '@osf/features/admin-institutions/helpers';
-import { Resource } from '@shared/models';
+import { ResourceModel } from '@shared/models';
 
 import { TableCellData, TableCellLink } from '../models';
 
-export function mapRegistrationResourceToTableData(registration: Resource): TableCellData {
+export function mapRegistrationResourceToTableData(registration: ResourceModel): TableCellData {
   return {
     title: {
       text: registration.title,
@@ -30,7 +30,7 @@ export function mapRegistrationResourceToTableData(registration: Resource): Tabl
     contributorName: registration.creators[0]
       ? ({
           text: registration.creators[0].name,
-          url: `https://osf.io/${registration.creators[0].absoluteUrl}`,
+          url: registration.creators[0].absoluteUrl,
           target: '_blank',
         } as TableCellLink)
       : '-',

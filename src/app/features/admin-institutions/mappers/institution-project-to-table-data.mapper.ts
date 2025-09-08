@@ -1,8 +1,8 @@
 import { extractPathAfterDomain } from '@osf/features/admin-institutions/helpers';
 import { TableCellData, TableCellLink } from '@osf/features/admin-institutions/models';
-import { Resource } from '@shared/models';
+import { ResourceModel } from '@shared/models';
 
-export function mapProjectResourceToTableCellData(project: Resource): TableCellData {
+export function mapProjectResourceToTableCellData(project: ResourceModel): TableCellData {
   return {
     title: {
       url: project.absoluteUrl,
