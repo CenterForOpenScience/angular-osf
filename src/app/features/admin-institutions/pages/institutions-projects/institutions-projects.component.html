@@ -14,54 +14,17 @@
     <h3 class="title">{{ resourcesCount() }} {{ 'adminInstitutions.projects.totalProjects' | translate }}</h3>
   </div>
 
-  <div slot="otherFilters" class="flex gap-3 align-items-center flex-wrap w-full md:w-fit">
-    <div>
-      <p-button
-        styleClass="grey-border-color"
-        icon="fa fa-filter text-primary text-xl"
-        [label]="'adminInstitutions.common.filters' | translate"
-        outlined
-        (onClick)="op.toggle($event)"
-      />
+  <div slot="otherFilters">
+    <p-button
+      styleClass="grey-border-color"
+      icon="fa fa-filter text-primary text-xl"
+      [label]="'adminInstitutions.common.filters' | translate"
+      outlined
+      (onClick)="filtersVisible.set(!filtersVisible())"
+    />
+  </div>
 
-      <p-popover #op appendTo="body">
-        <ng-template #content>
-          <div class="flex flex-column w-16rem h-30rem py-2">
-            <div class="flex justify-content-between align-items-center px-2">
-              <h2>{{ 'adminInstitutions.common.filterBy' | translate }}</h2>
-              <p-button
-                icon="fa fa-close text-xl"
-                [rounded]="true"
-                [text]="true"
-                severity="secondary"
-                (onClick)="op.hide()"
-              />
-            </div>
-
-            <osf-filter-chips
-              [filterValues]="filterValues()"
-              [filters]="filters()"
-              [filterOptionsCache]="filterOptionsCache()"
-              (filterRemoved)="onFilterChipRemoved($event)"
-            />
-
-            <div class="overflow-auto px-2">
-              <osf-reusable-filters
-                [plainStyle]="true"
-                [filters]="filters()"
-                [selectedValues]="filterValues()"
-                [filterSearchResults]="filterSearchCache()"
-                [isLoading]="areResourcesLoading()"
-                [showEmptyState]="true"
-                (loadFilterOptions)="onLoadFilterOptions($event)"
-                (filterValueChanged)="onFilterChanged($event)"
-                (filterSearchChanged)="onFilterSearchChanged($event)"
-                (loadMoreFilterOptions)="onLoadMoreFilterOptions($event)"
-              />
-            </div>
-          </div>
-        </ng-template>
-      </p-popover>
-    </div>
+  <div slot="tableFilters">
+    <osf-institution-resource-table-filters [(filtersVisible)]="filtersVisible" />
   </div>
 </osf-admin-table>

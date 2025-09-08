@@ -19,6 +19,7 @@ import {
   TableColumn,
   TableIconClickEvent,
 } from '@osf/features/admin-institutions/models';
+import { toAddResourceRequestBody } from '@osf/features/registry/mappers';
 import { CustomPaginatorComponent } from '@osf/shared/components';
 import { StopPropagationDirective } from '@shared/directives';
 import { StringOrNull } from '@shared/helpers';
@@ -75,6 +76,8 @@ export class AdminTableComponent {
       }
     | undefined
   >();
+
+  visible = true;
 
   pageChanged = output<PaginatorState>();
   sortChanged = output<SearchFilters>();
@@ -166,4 +169,6 @@ export class AdminTableComponent {
     }
     return column.linkTarget || '_self';
   }
+
+  protected readonly toAddResourceRequestBody = toAddResourceRequestBody;
 }
