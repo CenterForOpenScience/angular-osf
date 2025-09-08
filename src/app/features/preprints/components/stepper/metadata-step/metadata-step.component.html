@@ -22,25 +22,6 @@
   />
 </p-card>
 
-<p-card styleClass="m-t-24" class="card">
-  <div>
-    <h2>{{ 'preprints.preprintStepper.metadata.publicationDoi.title' | translate }}</h2>
-
-    <input id="doi" class="m-t-24" pInputText type="text" [formControl]="metadataForm.controls['doi']" />
-    @let doiControl = metadataForm.controls['doi'];
-    @if (doiControl.errors?.['required'] && (doiControl.touched || doiControl.dirty)) {
-      <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small">
-        {{ INPUT_VALIDATION_MESSAGES.required | translate }}
-      </p-message>
-    }
-    @if (doiControl.errors?.['pattern'] && (doiControl.touched || doiControl.dirty)) {
-      <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small"
-        >{{ 'preprints.preprintStepper.metadata.publicationDoi.patternError' | translate }}
-      </p-message>
-    }
-  </div>
-</p-card>
-
 <div class="m-t-24">
   <osf-preprints-affiliated-institutions [preprintId]="createdPreprint()?.id" [provider]="provider()" />
 </div>
@@ -56,6 +37,20 @@
     <div class="m-t-24">
       <osf-tags-input [tags]="createdPreprint()?.tags || []" (tagsChanged)="updateTags($event)" />
     </div>
+  </div>
+</p-card>
+
+<p-card styleClass="m-t-24" class="card">
+  <div>
+    <h2>{{ 'preprints.preprintStepper.metadata.publicationDoi.title' | translate }}</h2>
+
+    <input id="doi" class="m-t-24" pInputText type="text" [formControl]="metadataForm.controls['doi']" />
+    @let doiControl = metadataForm.controls['doi'];
+    @if (doiControl.errors?.['pattern'] && (doiControl.touched || doiControl.dirty)) {
+      <p-message class="simple-variant flex mt-1" severity="error" variant="simple" size="small"
+        >{{ 'preprints.preprintStepper.metadata.publicationDoi.patternError' | translate }}
+      </p-message>
+    }
   </div>
 </p-card>
 

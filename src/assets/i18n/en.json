@@ -1943,7 +1943,7 @@
       "metadata": {
         "title": "Metadata",
         "publicationDoi": {
-          "title": "Publication DOI",
+          "title": "Publication DOI (optional)",
           "patternError": "Please use a valid DOI format (10.xxxx/xxxxx)"
         },
         "tagsTitle": "Tags (optional)",
