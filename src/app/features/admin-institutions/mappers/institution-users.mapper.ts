@@ -8,7 +8,6 @@ export function mapInstitutionUsers(jsonApiData: InstitutionUsersJsonApi): Insti
   return jsonApiData.data.map((user: InstitutionUserDataJsonApi) => ({
     id: user.id,
     userId: user.relationships.user.data.id,
-    userLink: user.relationships.user.links.related.href,
     userName: user.attributes.user_name,
     department: user.attributes.department,
     orcidId: user.attributes.orcid_id,

@@ -16,15 +16,7 @@ export interface InstitutionUserRelationshipDataJsonApi {
   type: string;
 }
 
-export interface InstitutionUserRelationshipLinksJsonApi {
-  related: {
-    href: string;
-    meta: Record<string, unknown>;
-  };
-}
-
 export interface InstitutionUserRelationshipJsonApi {
-  links: InstitutionUserRelationshipLinksJsonApi;
   data: InstitutionUserRelationshipDataJsonApi;
 }
 
@@ -41,16 +33,7 @@ export interface InstitutionUserDataJsonApi {
   links: Record<string, unknown>;
 }
 
-export interface InstitutionUsersLinksJsonApi {
-  self: string;
-  first: string | null;
-  last: string | null;
-  prev: string | null;
-  next: string | null;
-}
-
 export interface InstitutionUsersJsonApi {
   data: InstitutionUserDataJsonApi[];
   meta: MetaJsonApi;
-  links: InstitutionUsersLinksJsonApi;
 }

@@ -9,5 +9,4 @@ export interface InstitutionUser {
   publicRegistrationCount: number;
   embargoedRegistrationCount: number;
   publishedPreprintCount: number;
-  userLink: string;
 }
