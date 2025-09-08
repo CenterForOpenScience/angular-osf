@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
 import { languageCodes } from '@shared/constants';
-import { Resource } from '@shared/models';
+import { ResourceModel } from '@shared/models';
 
 @Component({
   selector: 'osf-project-secondary-metadata',
@@ -13,7 +13,7 @@ import { Resource } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectSecondaryMetadataComponent {
-  resource = input.required<Resource>();
+  resource = input.required<ResourceModel>();
 
   languageFromCode = computed(() => {
     const resourceLanguage = this.resource().language;

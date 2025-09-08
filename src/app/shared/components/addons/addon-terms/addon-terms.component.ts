@@ -17,7 +17,7 @@ import { AddonModel, AddonTerm, AuthorizedAccountModel } from '@shared/models';
 })
 export class AddonTermsComponent {
   addon = input<AddonModel | AuthorizedAccountModel | null>(null);
-  protected terms = computed(() => {
+  terms = computed(() => {
     const addon = this.addon();
     if (!addon) {
       return [];

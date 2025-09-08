@@ -13,11 +13,13 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnDestroy, OnIn
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
-import { CustomPaginatorComponent, LoadingSpinnerComponent, SearchInputComponent } from '@osf/shared/components';
-import { AddContributorType, AddDialogState } from '@osf/shared/enums/contributors';
+import { AddContributorType, AddDialogState } from '@osf/shared/enums';
 import { ContributorAddModel, ContributorDialogAddModel } from '@osf/shared/models';
 import { ClearUsers, ContributorsSelectors, SearchUsers } from '@osf/shared/stores';
 
+import { CustomPaginatorComponent } from '../../custom-paginator/custom-paginator.component';
+import { LoadingSpinnerComponent } from '../../loading-spinner/loading-spinner.component';
+import { SearchInputComponent } from '../../search-input/search-input.component';
 import { AddContributorItemComponent } from '../add-contributor-item/add-contributor-item.component';
 
 @Component({
@@ -37,24 +39,24 @@ import { AddContributorItemComponent } from '../add-contributor-item/add-contrib
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddContributorDialogComponent implements OnInit, OnDestroy {
-  protected dialogRef = inject(DynamicDialogRef);
+  dialogRef = inject(DynamicDialogRef);
   private readonly destroyRef = inject(DestroyRef);
   readonly config = inject(DynamicDialogConfig);
 
-  protected users = select(ContributorsSelectors.getUsers);
-  protected isLoading = select(ContributorsSelectors.isUsersLoading);
-  protected totalUsersCount = select(ContributorsSelectors.getUsersTotalCount);
-  protected isInitialState = signal(true);
+  users = select(ContributorsSelectors.getUsers);
+  isLoading = select(ContributorsSelectors.isUsersLoading);
+  totalUsersCount = select(ContributorsSelectors.getUsersTotalCount);
+  isInitialState = signal(true);
 
-  protected currentState = signal(AddDialogState.Search);
-  protected currentPage = signal(1);
-  protected first = signal(0);
-  protected pageSize = signal(10);
+  currentState = signal(AddDialogState.Search);
+  currentPage = signal(1);
+  first = signal(0);
+  pageSize = signal(10);
 
-  protected selectedUsers = signal<ContributorAddModel[]>([]);
-  protected searchControl = new FormControl<string>('');
+  selectedUsers = signal<ContributorAddModel[]>([]);
+  searchControl = new FormControl<string>('');
 
-  protected actions = createDispatchMap({ searchUsers: SearchUsers, clearUsers: ClearUsers });
+  actions = createDispatchMap({ searchUsers: SearchUsers, clearUsers: ClearUsers });
 
   get isSearchState() {
     return this.currentState() === AddDialogState.Search;

@@ -81,3 +81,72 @@ export interface AddonsStateModel {
    */
   selectedFolderOperationInvocation: AsyncStateModel<OperationInvocation | null>;
 }
+
+export const ADDONS_DEFAULTS: AddonsStateModel = {
+  storageAddons: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  citationAddons: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  authorizedStorageAddons: {
+    data: [],
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  authorizedCitationAddons: {
+    data: [],
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  configuredStorageAddons: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  configuredCitationAddons: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  addonsUserReference: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  addonsResourceReference: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  createdUpdatedAuthorizedAddon: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  createdUpdatedConfiguredAddon: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  operationInvocation: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+  selectedFolderOperationInvocation: {
+    data: null,
+    isLoading: false,
+    isSubmitting: false,
+    error: null,
+  },
+};

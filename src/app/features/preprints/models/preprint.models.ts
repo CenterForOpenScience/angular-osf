@@ -1,6 +1,6 @@
 import { UserPermissions } from '@osf/shared/enums';
 import { BooleanOrNull, StringOrNull } from '@osf/shared/helpers';
-import { IdName, License, LicenseOptions } from '@osf/shared/models';
+import { IdName, LicenseModel, LicenseOptions } from '@osf/shared/models';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '../enums';
 
@@ -40,7 +40,7 @@ export interface Preprint {
   preregLinks: string[];
   preregLinkInfo: PreregLinkInfo | null;
   metrics?: PreprintMetrics;
-  embeddedLicense?: License;
+  embeddedLicense?: LicenseModel;
   preprintDoiLink?: string;
   articleDoiLink?: string;
 }

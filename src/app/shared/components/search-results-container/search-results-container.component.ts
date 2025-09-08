@@ -18,11 +18,11 @@ import {
 import { FormsModule } from '@angular/forms';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { LoadingSpinnerComponent } from '@shared/components';
-import { searchSortingOptions } from '@shared/constants';
-import { ResourceType } from '@shared/enums';
-import { Resource, TabOption } from '@shared/models';
+import { searchSortingOptions } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
+import { ResourceModel, TabOption } from '@osf/shared/models';
 
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ResourceCardComponent } from '../resource-card/resource-card.component';
 import { SelectComponent } from '../select/select.component';
 
@@ -46,7 +46,7 @@ import { SelectComponent } from '../select/select.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchResultsContainerComponent {
-  resources = input<Resource[]>([]);
+  resources = input<ResourceModel[]>([]);
   areResourcesLoading = input<boolean>(false);
   searchCount = input<number>(0);
   selectedSort = input<string>('');

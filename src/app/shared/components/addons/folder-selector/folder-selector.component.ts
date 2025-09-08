@@ -27,8 +27,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { OperationNames } from '@osf/features/project/addons/enums';
-import { OperationInvokeData, StorageItemModel } from '@shared/models';
-import { AddonsSelectors } from '@shared/stores/addons';
+import { OperationInvokeData, StorageItemModel } from '@osf/shared/models';
+import { AddonsSelectors } from '@osf/shared/stores';
 
 import { GoogleFilePickerComponent } from './google-file-picker/google-file-picker.component';
 
@@ -65,15 +65,15 @@ export class FolderSelectorComponent implements OnInit {
   operationInvoke = output<OperationInvokeData>();
   save = output<void>();
   cancelSelection = output<void>();
-  protected readonly OperationNames = OperationNames;
-  protected hasInputChanged = signal(false);
-  protected hasFolderChanged = signal(false);
+  readonly OperationNames = OperationNames;
+  hasInputChanged = signal(false);
+  hasFolderChanged = signal(false);
   public selectedRootFolder = signal<StorageItemModel | null>(null);
-  protected breadcrumbItems = signal<MenuItem[]>([]);
-  protected initiallySelectedFolder = select(AddonsSelectors.getSelectedFolder);
-  protected isOperationInvocationSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
-  protected isSubmitting = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting);
-  protected readonly homeBreadcrumb: MenuItem = {
+  breadcrumbItems = signal<MenuItem[]>([]);
+  initiallySelectedFolder = select(AddonsSelectors.getSelectedFolder);
+  isOperationInvocationSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
+  isSubmitting = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddonSubmitting);
+  readonly homeBreadcrumb: MenuItem = {
     id: '/',
     label: this.translateService.instant('settings.addons.configureAddon.home'),
     state: {
@@ -98,11 +98,11 @@ export class FolderSelectorComponent implements OnInit {
       });
   }
 
-  protected readonly isFormValid = computed(() => {
+  readonly isFormValid = computed(() => {
     return this.isCreateMode() ? this.hasFolderChanged() : this.hasInputChanged() || this.hasFolderChanged();
   });
 
-  protected handleCreateOperationInvocation(
+  handleCreateOperationInvocation(
     operationName: OperationNames,
     itemId: string,
     itemName?: string,
@@ -118,12 +118,12 @@ export class FolderSelectorComponent implements OnInit {
     this.trimBreadcrumbs(itemId);
   }
 
-  protected handleSave(): void {
+  handleSave(): void {
     this.selectedRootFolderId.set(this.selectedRootFolder()?.itemId || '');
     this.save.emit();
   }
 
-  protected handleCancel(): void {
+  handleCancel(): void {
     this.cancelSelection.emit();
   }
 

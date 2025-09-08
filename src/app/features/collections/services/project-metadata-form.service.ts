@@ -4,7 +4,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProjectMetadataFormControls } from '@osf/features/collections/enums';
 import { ProjectMetadataForm } from '@osf/features/collections/models';
 import { CustomValidators } from '@osf/shared/helpers';
-import { License, ProjectMetadataUpdatePayload } from '@shared/models';
+import { LicenseModel, ProjectMetadataUpdatePayload } from '@shared/models';
 import { Project } from '@shared/models/projects';
 
 @Injectable({
@@ -40,7 +40,7 @@ export class ProjectMetadataFormService {
     });
   }
 
-  updateLicenseValidators(form: FormGroup<ProjectMetadataForm>, license: License): void {
+  updateLicenseValidators(form: FormGroup<ProjectMetadataForm>, license: LicenseModel): void {
     const yearControl = form.get(ProjectMetadataFormControls.LicenseYear);
     const copyrightHoldersControl = form.get(ProjectMetadataFormControls.CopyrightHolders);
 
@@ -56,7 +56,7 @@ export class ProjectMetadataFormService {
   populateFormFromProject(
     form: FormGroup<ProjectMetadataForm>,
     project: Project,
-    license: License | null
+    license: LicenseModel | null
   ): { tags: string[] } {
     const tags = project.tags || [];
 
@@ -73,7 +73,7 @@ export class ProjectMetadataFormService {
     return { tags };
   }
 
-  patchLicenseData(form: FormGroup<ProjectMetadataForm>, license: License, project: Project): void {
+  patchLicenseData(form: FormGroup<ProjectMetadataForm>, license: LicenseModel, project: Project): void {
     form.patchValue({
       [ProjectMetadataFormControls.License]: license,
       [ProjectMetadataFormControls.LicenseYear]:

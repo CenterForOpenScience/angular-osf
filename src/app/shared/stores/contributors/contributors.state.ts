@@ -1,9 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { catchError, of, tap, throwError } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/shared/helpers';
 import { ContributorsService } from '@osf/shared/services';
 
 import {
@@ -18,11 +19,11 @@ import {
   UpdatePermissionFilter,
   UpdateSearchValue,
 } from './contributors.actions';
-import { ContributorsStateModel, DefaultState } from './contributors.model';
+import { CONTRIBUTORS_STATE_DEFAULTS, ContributorsStateModel } from './contributors.model';
 
 @State<ContributorsStateModel>({
   name: 'contributors',
-  defaults: { ...DefaultState },
+  defaults: CONTRIBUTORS_STATE_DEFAULTS,
 })
 @Injectable()
 export class ContributorsState {
@@ -50,7 +51,7 @@ export class ContributorsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'contributorsList', error))
+      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
     );
   }
 
@@ -78,7 +79,7 @@ export class ContributorsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'contributorsList', error))
+      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
     );
   }
 
@@ -108,7 +109,7 @@ export class ContributorsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'contributorsList', error))
+      catchError((error) => handleSectionError(ctx, 'contributorsList', error))
     );
   }
 
@@ -136,7 +137,7 @@ export class ContributorsState {
             },
           });
         }),
-        catchError((error) => this.handleError(ctx, 'contributorsList', error))
+        catchError((error) => handleSectionError(ctx, 'contributorsList', error))
       );
   }
 
@@ -184,7 +185,7 @@ export class ContributorsState {
           },
         });
       }),
-      catchError((error) => this.handleError(ctx, 'users', error))
+      catchError((error) => handleSectionError(ctx, 'users', error))
     );
   }
 
@@ -195,17 +196,6 @@ export class ContributorsState {
 
   @Action(ResetContributorsState)
   resetState(ctx: StateContext<ContributorsStateModel>) {
-    ctx.setState({ ...DefaultState });
-  }
-
-  private handleError(ctx: StateContext<ContributorsStateModel>, section: 'contributorsList' | 'users', error: Error) {
-    ctx.patchState({
-      [section]: {
-        ...ctx.getState()[section],
-        isLoading: false,
-        error: error.message,
-      },
-    });
-    return throwError(() => error);
+    ctx.setState({ ...CONTRIBUTORS_STATE_DEFAULTS });
   }
 }

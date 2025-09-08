@@ -23,20 +23,11 @@ import {
   UpdateResourceDetails,
   UpdateResourceLicense,
 } from './metadata.actions';
-import { MetadataStateModel } from './metadata.model';
-
-const initialState: MetadataStateModel = {
-  metadata: { data: null, isLoading: false, error: null },
-  customMetadata: { data: null, isLoading: false, error: null },
-  fundersList: { data: [], isLoading: false, error: null },
-  cedarTemplates: { data: null, isLoading: false, error: null },
-  cedarRecord: { data: null, isLoading: false, error: null },
-  cedarRecords: { data: [], isLoading: false, error: null },
-};
+import { METADATA_STATE_DEFAULTS, MetadataStateModel } from './metadata.model';
 
 @State<MetadataStateModel>({
   name: 'metadata',
-  defaults: initialState,
+  defaults: METADATA_STATE_DEFAULTS,
 })
 @Injectable()
 export class MetadataState {
@@ -54,16 +45,14 @@ export class MetadataState {
     });
 
     return this.metadataService.getResourceMetadata(action.resourceId, action.resourceType).pipe(
-      tap({
-        next: (resource) => {
-          ctx.patchState({
-            metadata: {
-              data: resource as Metadata,
-              isLoading: false,
-              error: null,
-            },
-          });
-        },
+      tap((resource) => {
+        ctx.patchState({
+          metadata: {
+            data: resource as Metadata,
+            isLoading: false,
+            error: null,
+          },
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'metadata', error))
     );
@@ -78,12 +67,10 @@ export class MetadataState {
     });
 
     return this.metadataService.getCustomItemMetadata(action.guid).pipe(
-      tap({
-        next: (response) => {
-          ctx.patchState({
-            customMetadata: { data: response, isLoading: false, error: null },
-          });
-        },
+      tap((response) => {
+        ctx.patchState({
+          customMetadata: { data: response, isLoading: false, error: null },
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'customMetadata', error))
     );
@@ -98,12 +85,10 @@ export class MetadataState {
     });
 
     return this.metadataService.updateCustomItemMetadata(action.guid, action.metadata).pipe(
-      tap({
-        next: (response) => {
-          ctx.patchState({
-            customMetadata: { data: response, isLoading: false, error: null },
-          });
-        },
+      tap((response) => {
+        ctx.patchState({
+          customMetadata: { data: response, isLoading: false, error: null },
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'customMetadata', error))
     );
@@ -116,13 +101,11 @@ export class MetadataState {
     });
 
     return this.metadataService.createDoi(action.resourceId, action.resourceType).pipe(
-      tap({
-        next: () => {
-          ctx.patchState({
-            metadata: { ...ctx.getState().metadata, isLoading: false, error: null },
-          });
-          ctx.dispatch(new GetResourceMetadata(action.resourceId, action.resourceType));
-        },
+      tap(() => {
+        ctx.patchState({
+          metadata: { ...ctx.getState().metadata, isLoading: false, error: null },
+        });
+        ctx.dispatch(new GetResourceMetadata(action.resourceId, action.resourceType));
       }),
       catchError((error) => handleSectionError(ctx, 'metadata', error))
     );
@@ -135,12 +118,10 @@ export class MetadataState {
     });
 
     return this.metadataService.getFundersList(action.search).pipe(
-      tap({
-        next: (response) => {
-          ctx.patchState({
-            fundersList: { data: response.message.items, isLoading: false, error: null },
-          });
-        },
+      tap((response) => {
+        ctx.patchState({
+          fundersList: { data: response.message.items, isLoading: false, error: null },
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'fundersList', error))
     );
@@ -273,21 +254,19 @@ export class MetadataState {
     });
 
     return this.metadataService.updateResourceDetails(action.resourceId, action.resourceType, action.updates).pipe(
-      tap({
-        next: (updatedResource) => {
-          const currentResource = ctx.getState().metadata.data;
+      tap((updatedResource) => {
+        const currentResource = ctx.getState().metadata.data;
 
-          ctx.patchState({
-            metadata: {
-              data: {
-                ...currentResource,
-                ...updatedResource,
-              },
-              error: null,
-              isLoading: false,
+        ctx.patchState({
+          metadata: {
+            data: {
+              ...currentResource,
+              ...updatedResource,
             },
-          });
-        },
+            error: null,
+            isLoading: false,
+          },
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'metadata', error))
     );
@@ -306,21 +285,19 @@ export class MetadataState {
     return this.metadataService
       .updateResourceLicense(action.resourceId, action.resourceType, action.licenseId, action.licenseOptions)
       .pipe(
-        tap({
-          next: (updatedResource) => {
-            const currentResource = ctx.getState().metadata.data;
+        tap((updatedResource) => {
+          const currentResource = ctx.getState().metadata.data;
 
-            ctx.patchState({
-              metadata: {
-                data: {
-                  ...currentResource,
-                  ...updatedResource,
-                },
-                error: null,
-                isLoading: false,
+          ctx.patchState({
+            metadata: {
+              data: {
+                ...currentResource,
+                ...updatedResource,
               },
-            });
-          },
+              error: null,
+              isLoading: false,
+            },
+          });
         }),
         catchError((error) => handleSectionError(ctx, 'metadata', error))
       );

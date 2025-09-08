@@ -506,7 +506,7 @@
         "cancel": "Cancel",
         "next": "Next",
         "selectPermissions": "Please select which permissions you want to give to contributor",
-        "bibliographicCOntributor": "Bibliographic Contributor",
+        "bibliographicContributor": "Bibliographic Contributor",
         "addUnregisteredContributor": "Add Unregistered Contributor",
         "addRegisteredContributor": "Add Registered Contributor",
         "unregisteredContributorNotification": "We will notify the user that they have been added to your project"
@@ -614,6 +614,7 @@
         "noSubjects": "No subjects",
         "noTags": "No tags",
         "noSupplements": "No supplements",
+        "noInformation": "No information",
         "noAffiliatedInstitutions": "No affiliated institutions",
         "resourceInformation": "Resource Information",
         "resourceType": "Resource type",

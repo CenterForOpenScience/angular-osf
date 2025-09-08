@@ -39,6 +39,6 @@ export class MyProfileComponent implements OnInit {
   }
 
   toProfileSettings() {
-    this.router.navigate(['settings/profile-settings']);
+    this.router.navigate(['settings/profile']);
   }
 }

@@ -5,7 +5,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { Funder } from '@osf/features/metadata/models';
+import { Funder } from '../../models';
 
 @Component({
   selector: 'osf-metadata-funding',

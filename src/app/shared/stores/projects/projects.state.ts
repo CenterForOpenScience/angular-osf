@@ -4,29 +4,15 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { handleSectionError } from '@shared/helpers';
-import { ProjectsService } from '@shared/services/projects.service';
+import { handleSectionError } from '@osf/shared/helpers';
+import { ProjectsService } from '@osf/shared/services/projects.service';
 
 import { ClearProjects, GetProjects, SetSelectedProject, UpdateProjectMetadata } from './projects.actions';
-import { ProjectsStateModel } from './projects.model';
-
-const PROJECTS_DEFAULTS: ProjectsStateModel = {
-  projects: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  selectedProject: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-};
+import { PROJECTS_STATE_DEFAULTS, ProjectsStateModel } from './projects.model';
 
 @State<ProjectsStateModel>({
   name: 'projects',
-  defaults: PROJECTS_DEFAULTS,
+  defaults: PROJECTS_STATE_DEFAULTS,
 })
 @Injectable()
 export class ProjectsState {
@@ -96,6 +82,6 @@ export class ProjectsState {
 
   @Action(ClearProjects)
   clearProjects(ctx: StateContext<ProjectsStateModel>) {
-    ctx.patchState(PROJECTS_DEFAULTS);
+    ctx.patchState(PROJECTS_STATE_DEFAULTS);
   }
 }
