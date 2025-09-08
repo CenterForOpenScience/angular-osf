@@ -21,6 +21,11 @@ export interface Resource {
   license?: AbsoluteUrlName;
   language: string;
   statedConflictOfInterest?: string;
+  storageByteCount?: string;
+  storageRegion?: string;
+  viewsCount?: string;
+  addons: string[];
+  downloadCount?: string;
   resourceNature?: string;
   isPartOfCollection: AbsoluteUrlName;
   funders: AbsoluteUrlName[];

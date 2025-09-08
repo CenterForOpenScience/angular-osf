@@ -31,7 +31,7 @@ export function mapPreprintResourceToTableData(preprint: Resource): TableCellDat
           target: '_blank',
         } as TableCellLink)
       : '-',
-    viewsLast30Days: 'Will be parsed soon',
-    downloadsLast30Days: 'Will be parsed soon',
+    viewsLast30Days: preprint.viewsCount || '-',
+    downloadsLast30Days: preprint.downloadCount || '-',
   };
 }

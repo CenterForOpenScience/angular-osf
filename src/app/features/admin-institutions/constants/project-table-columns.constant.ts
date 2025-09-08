@@ -28,6 +28,8 @@ export const projectTableColumns: TableColumn[] = [
   {
     field: 'doi',
     header: 'adminInstitutions.projects.doi',
+    isLink: true,
+    linkTarget: '_blank',
   },
   {
     field: 'storageLocation',

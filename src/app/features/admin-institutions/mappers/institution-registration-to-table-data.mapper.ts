@@ -23,8 +23,10 @@ export function mapRegistrationResourceToTableData(registration: Resource): Tabl
           url: registration.doi[0],
         } as TableCellLink)
       : '-',
-    storageLocation: 'Will be parsed soon',
-    totalDataStored: 'Will be parsed soon',
+    storageLocation: registration.storageRegion || '-',
+    totalDataStored: registration.storageByteCount
+      ? `${(+registration.storageByteCount / (1024 * 1024)).toFixed(1)} MB`
+      : '0 B',
     contributorName: registration.creators[0]
       ? ({
           text: registration.creators[0].name,
@@ -32,7 +34,7 @@ export function mapRegistrationResourceToTableData(registration: Resource): Tabl
           target: '_blank',
         } as TableCellLink)
       : '-',
-    views: 'Will be parsed soon',
+    views: registration.viewsCount || '-',
     resourceType: registration.resourceNature || '-',
     license: registration.license?.name || '-',
     funderName: registration.funders?.[0]?.name || '-',

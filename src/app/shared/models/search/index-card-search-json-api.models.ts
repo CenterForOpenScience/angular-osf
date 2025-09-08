@@ -70,6 +70,10 @@ interface ResourceMetadataJsonApi {
   statedConflictOfInterest: { '@value': string }[];
   resourceNature: ResourceNature[];
   isPartOfCollection: MetadataField[];
+  storageByteCount: { '@value': string }[];
+  storageRegion: { prefLabel: { '@value': string }[] }[];
+  usage: Usage;
+  hasOsfAddon: { prefLabel: { '@value': string }[] }[];
   funder: MetadataField[];
   affiliation: MetadataField[];
   qualifiedAttribution: QualifiedAttribution[];
@@ -97,6 +101,11 @@ interface QualifiedAttribution {
   agent: { '@id': string }[];
   hadRole: { '@id': string }[];
   'osf:order': { '@value': string }[];
+}
+
+interface Usage {
+  viewCount: { '@value': string }[];
+  downloadCount: { '@value': string }[];
 }
 
 interface IsContainedBy extends MetadataField {
