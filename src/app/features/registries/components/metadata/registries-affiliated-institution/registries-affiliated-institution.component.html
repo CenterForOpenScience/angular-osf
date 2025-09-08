@@ -1,0 +1,18 @@
+<p-card>
+  <div>
+    <h2>{{ 'project.overview.metadata.affiliatedInstitutions' | translate }}</h2>
+    <p class="m-t-12">
+      {{ 'project.overview.metadata.affiliatedInstitutionsDescription' | translate }}
+    </p>
+    @if (userInstitutions().length) {
+      <div class="m-t-24">
+        <osf-affiliated-institution-select
+          [calculateSelectedItemsMode]="true"
+          (selectInstitutions)="institutionsSelected($event)"
+        />
+      </div>
+    } @else {
+      <p class="m-t-24">{{ 'project.overview.metadata.noAffiliatedInstitutions' | translate }}</p>
+    }
+  </div>
+</p-card>

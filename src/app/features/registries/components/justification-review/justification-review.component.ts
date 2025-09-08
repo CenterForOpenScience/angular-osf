@@ -109,7 +109,7 @@ export class JustificationReviewComponent {
           next: () => {
             this.toastService.showSuccess('registries.justification.successDeleteDraft');
             this.actions.clearState();
-            this.router.navigateByUrl(`/registries/${registrationId}/overview`);
+            this.router.navigateByUrl(`/${registrationId}/overview`);
           },
         });
       },
@@ -120,7 +120,7 @@ export class JustificationReviewComponent {
     this.actions.handleSchemaResponse(this.revisionId, SchemaActionTrigger.Approve).subscribe({
       next: () => {
         this.toastService.showSuccess('registries.justification.successAccept');
-        this.router.navigateByUrl(`/registries/${this.schemaResponse()?.registrationId}/overview`);
+        this.router.navigateByUrl(`/${this.schemaResponse()?.registrationId}/overview`);
       },
     });
   }
