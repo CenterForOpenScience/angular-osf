@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { RegistrationMapper } from '@osf/shared/mappers/registration';
-import { RegistrationCard, RegistrationDataJsonApi, ResponseJsonApi } from '@osf/shared/models';
+import { PaginatedData, RegistrationCard, RegistrationDataJsonApi, ResponseJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
 import { environment } from 'src/environments/environment';
@@ -13,12 +13,12 @@ import { environment } from 'src/environments/environment';
 })
 export class RegistrationsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
-  getRegistrations(projectId: string): Observable<{ data: RegistrationCard[]; totalCount: number }> {
-    const params: Record<string, unknown> = {
-      embed: 'contributors',
-    };
-    const url = `${environment.apiUrl}/nodes/${projectId}/linked_by_registrations/`;
+  getRegistrations(projectId: string): Observable<PaginatedData<RegistrationCard[]>> {
+    const params: Record<string, unknown> = { embed: 'contributors' };
+
+    const url = `${this.apiUrl}/nodes/${projectId}/linked_by_registrations/`;
 
     return this.jsonApiService.get<ResponseJsonApi<RegistrationDataJsonApi[]>>(url, params).pipe(
       map((response) => {

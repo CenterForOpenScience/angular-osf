@@ -1,20 +1,35 @@
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
-import { Skeleton } from 'primeng/skeleton';
+import { Tag } from 'primeng/tag';
 
 import { finalize } from 'rxjs';
 
 import { DatePipe, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 
+import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
+import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { CardLabelTranslationKeys } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/helpers';
-import { DataResourcesComponent } from '@shared/components/data-resources/data-resources.component';
-import { ResourceType } from '@shared/enums';
-import { Resource } from '@shared/models';
-import { ResourceCardService } from '@shared/services';
+import {
+  AbsoluteUrlName,
+  IsContainedBy,
+  QualifiedAttribution,
+  ResourceModel,
+  UserRelatedCounts,
+} from '@osf/shared/models';
+import { ResourceCardService } from '@osf/shared/services';
+
+import { DataResourcesComponent } from '../data-resources/data-resources.component';
+
+import { FileSecondaryMetadataComponent } from './components/file-secondary-metadata/file-secondary-metadata.component';
+import { PreprintSecondaryMetadataComponent } from './components/preprint-secondary-metadata/preprint-secondary-metadata.component';
+import { ProjectSecondaryMetadataComponent } from './components/project-secondary-metadata/project-secondary-metadata.component';
+import { RegistrationSecondaryMetadataComponent } from './components/registration-secondary-metadata/registration-secondary-metadata.component';
+import { UserSecondaryMetadataComponent } from './components/user-secondary-metadata/user-secondary-metadata.component';
 
 @Component({
   selector: 'osf-resource-card',
@@ -25,62 +40,145 @@ import { ResourceCardService } from '@shared/services';
     AccordionPanel,
     DatePipe,
     NgOptimizedImage,
-    Skeleton,
     TranslatePipe,
     DataResourcesComponent,
+    Tag,
+    UserSecondaryMetadataComponent,
+    RegistrationSecondaryMetadataComponent,
+    ProjectSecondaryMetadataComponent,
+    PreprintSecondaryMetadataComponent,
+    FileSecondaryMetadataComponent,
   ],
   templateUrl: './resource-card.component.html',
   styleUrl: './resource-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResourceCardComponent {
-  private readonly resourceCardService = inject(ResourceCardService);
+  private resourceCardService = inject(ResourceCardService);
+  private translateService = inject(TranslateService);
   ResourceType = ResourceType;
   isSmall = toSignal(inject(IS_XSMALL));
-  item = model.required<Resource>();
-  private readonly router = inject(Router);
+  resource = input.required<ResourceModel>();
+  provider = input<PreprintProviderDetails | null>();
+  userRelatedCounts = signal<UserRelatedCounts | null>(null);
 
-  isLoading = false;
+  cardTypeLabel = computed(() => {
+    const item = this.resource();
+    if (item.resourceType === ResourceType.Preprint) {
+      if (this.provider()) {
+        return getPreprintDocumentType(this.provider()!, this.translateService).singularCapitalized;
+      }
+    }
+    return CardLabelTranslationKeys[item.resourceType]!;
+  });
+
+  displayTitle = computed(() => {
+    const resource = this.resource();
+    const resourceType = resource.resourceType;
+
+    if (resourceType === ResourceType.Agent) {
+      return resource.name;
+    } else if (resourceType === ResourceType.File) {
+      return resource.fileName;
+    }
+    return resource.title;
+  });
+
+  orcids = computed(() => {
+    const identifiers = this.resource().identifiers;
+
+    return identifiers.filter((value) => value.includes('orcid.org'));
+  });
+
+  affiliatedEntities = computed(() => {
+    const resource = this.resource();
+    const resourceType = resource.resourceType;
+    if (resourceType === ResourceType.Agent) {
+      if (resource.affiliations) {
+        return resource.affiliations;
+      }
+    } else if (resource.creators) {
+      return this.getSortedContributors(resource);
+    } else if (resource.isContainedBy?.creators) {
+      return this.getSortedContributors(resource.isContainedBy);
+    }
+
+    return [];
+  });
+
+  isWithdrawn = computed(() => {
+    return !!this.resource().dateWithdrawn;
+  });
+
+  dateFields = computed(() => {
+    const resource = this.resource();
+    switch (resource.resourceType) {
+      case ResourceType.Agent:
+        return [];
+      case ResourceType.Registration:
+      case ResourceType.RegistrationComponent:
+        return [
+          {
+            label: 'resourceCard.labels.dateRegistered',
+            date: resource.dateCreated,
+          },
+          {
+            label: 'resourceCard.labels.dateModified',
+            date: resource.dateModified,
+          },
+        ];
+      default:
+        return [
+          {
+            label: 'resourceCard.labels.dateCreated',
+            date: resource.dateCreated,
+          },
+          {
+            label: 'resourceCard.labels.dateModified',
+            date: resource.dateModified,
+          },
+        ];
+    }
+  });
+
+  isLoading = signal(false);
   dataIsLoaded = false;
 
   onOpen() {
-    if (!this.item() || this.dataIsLoaded || this.item().resourceType !== ResourceType.Agent) {
+    if (!this.resource() || this.dataIsLoaded || this.resource().resourceType !== ResourceType.Agent) {
       return;
     }
 
-    const userIri = this.item()?.id.split('/').pop();
-    if (userIri) {
-      this.isLoading = true;
-      this.resourceCardService
-        .getUserRelatedCounts(userIri)
-        .pipe(
-          finalize(() => {
-            this.isLoading = false;
-            this.dataIsLoaded = true;
-          })
-        )
-        .subscribe((res) => {
-          this.item.update(
-            (current) =>
-              ({
-                ...current,
-                publicProjects: res.projects,
-                publicPreprints: res.preprints,
-                publicRegistrations: res.registrations,
-                education: res.education,
-                employment: res.employment,
-              }) as Resource
-          );
-        });
+    const userId = this.resource()?.absoluteUrl.split('/').pop();
+
+    if (!userId) {
+      return;
     }
+
+    this.isLoading.set(true);
+    this.resourceCardService
+      .getUserRelatedCounts(userId)
+      .pipe(
+        finalize(() => {
+          this.isLoading.set(false);
+          this.dataIsLoaded = true;
+        })
+      )
+      .subscribe((res) => {
+        this.userRelatedCounts.set(res);
+      });
   }
 
-  redirectToResource(item: Resource) {
-    // [KP] TODO: handle my registrations and foreign separately
-    if (item.resourceType === ResourceType.Registration) {
-      const parts = item.id.split('/');
-      const uri = parts[parts.length - 1];
-      this.router.navigate([uri]);
-    }
+  private getSortedContributors(base: ResourceModel | IsContainedBy) {
+    const objectOrder = Object.fromEntries(
+      base.qualifiedAttribution.map((item: QualifiedAttribution) => [item.agentId, item.order])
+    );
+    return base.creators
+      ?.map((item: AbsoluteUrlName) => ({
+        name: item.name,
+        absoluteUrl: item.absoluteUrl,
+        index: objectOrder[item.absoluteUrl],
+      }))
+      .sort((a: { index: number }, b: { index: number }) => a.index - b.index);
   }
 }

@@ -6,14 +6,16 @@ import { Button } from 'primeng/button';
 import { Checkbox } from 'primeng/checkbox';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { GetComponents, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { LoadingSpinnerComponent, TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
-import { ViewOnlyLinkComponent } from '@shared/models';
+import { CurrentResourceSelectors, GetResourceWithChildren } from '@osf/shared/stores';
+
+import { ResourceInfoModel, ViewOnlyLinkComponentItem } from '../../models';
+import { ComponentCheckboxItemComponent } from '../component-checkbox-item/component-checkbox-item.component';
 
 @Component({
   selector: 'osf-create-view-link-dialog',
@@ -25,143 +27,138 @@ import { ViewOnlyLinkComponent } from '@shared/models';
     Checkbox,
     TextInputComponent,
     LoadingSpinnerComponent,
+    ComponentCheckboxItemComponent,
   ],
   templateUrl: './create-view-link-dialog.component.html',
   styleUrl: './create-view-link-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreateViewLinkDialogComponent implements OnInit {
-  linkName = new FormControl('', { nonNullable: true, validators: [CustomValidators.requiredTrimmed()] });
-
   readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly config = inject(DynamicDialogConfig);
-  inputLimits = InputLimits;
+  readonly config = inject(DynamicDialogConfig);
+  readonly inputLimits = InputLimits;
 
+  linkName = new FormControl('', { nonNullable: true, validators: [CustomValidators.requiredTrimmed()] });
   anonymous = signal(true);
-  protected selectedComponents = signal<Record<string, boolean>>({});
-  protected components = select(ProjectOverviewSelectors.getComponents);
-  protected isLoading = select(ProjectOverviewSelectors.getComponentsLoading);
 
-  protected actions = createDispatchMap({
-    getComponents: GetComponents,
-  });
+  readonly components = select(CurrentResourceSelectors.getResourceWithChildren);
+  readonly isLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
+  readonly actions = createDispatchMap({ getComponents: GetResourceWithChildren });
 
-  get currentProjectId(): string {
-    return this.config.data?.['projectId'] || '';
-  }
-
-  get allComponents(): ViewOnlyLinkComponent[] {
-    const currentProjectData = this.config.data?.['currentProject'];
-    const components = this.components();
-
-    const result: ViewOnlyLinkComponent[] = [];
-
-    if (currentProjectData) {
-      result.push({
-        id: currentProjectData.id,
-        title: currentProjectData.title,
-        isCurrentProject: true,
-      });
-    }
-
-    components.forEach((comp) => {
-      result.push({
-        id: comp.id,
-        title: comp.title,
-        isCurrentProject: false,
-      });
-    });
-
-    return result;
-  }
+  componentsList: WritableSignal<ViewOnlyLinkComponentItem[]> = signal([]);
 
   constructor() {
     effect(() => {
-      const components = this.allComponents;
-      if (components.length) {
-        this.initializeSelection();
-      }
+      const currentResource = this.config.data as ResourceInfoModel;
+      const components = this.components();
+
+      const items: ViewOnlyLinkComponentItem[] = components.map((item) => ({
+        id: item.id,
+        title: item.title,
+        isCurrentResource: currentResource.id === item.id,
+        parentId: item.parentId,
+        checked: currentResource.id === item.id,
+        disabled: currentResource.id === item.id,
+      }));
+
+      const updatedItems = items.map((item) => ({
+        ...item,
+        disabled: item.isCurrentResource ? item.disabled : !this.isParentChecked(item, items),
+      }));
+
+      this.componentsList.set(updatedItems);
     });
   }
 
   ngOnInit(): void {
-    const projectId = this.currentProjectId;
+    const currentResource = this.config.data as ResourceInfoModel;
+    const { id, type } = currentResource;
 
-    if (projectId) {
-      this.actions.getComponents(projectId);
-    } else {
-      this.initializeSelection();
+    if (id) {
+      this.actions.getComponents(id, type);
     }
   }
 
-  private initializeSelection(): void {
-    const initialState: Record<string, boolean> = {};
+  onCheckboxChange(changedItem: ViewOnlyLinkComponentItem): void {
+    this.componentsList.update((items) => {
+      let updatedItems = [...items];
 
-    this.allComponents.forEach((component) => {
-      initialState[component.id] = component.isCurrentProject;
+      if (!changedItem.checked) {
+        updatedItems = this.uncheckChildren(changedItem.id, updatedItems);
+      }
+
+      return updatedItems.map((item) => ({
+        ...item,
+        disabled: item.isCurrentResource ? item.disabled : !this.isParentChecked(item, updatedItems),
+      }));
     });
-
-    this.selectedComponents.set(initialState);
-  }
-
-  isCurrentProject(item: ViewOnlyLinkComponent): boolean {
-    return item.isCurrentProject;
-  }
-
-  get isFormValid(): boolean {
-    return this.linkName.valid && !!this.linkName.value.trim().length;
   }
 
   addLink(): void {
-    if (!this.isFormValid) return;
+    if (this.linkName.invalid) return;
 
-    const selectedIds = Object.entries(this.selectedComponents())
-      .filter(([, checked]) => checked)
-      .map(([id]) => id);
+    const currentResource = this.config.data as ResourceInfoModel;
+    const selectedIds = this.componentsList()
+      .filter((x) => x.checked)
+      .map((x) => x.id);
 
-    const rootProjectId = this.currentProjectId;
+    const data = this.buildLinkData(selectedIds, currentResource.id, this.linkName.value, this.anonymous());
+
+    this.dialogRef.close(data);
+  }
+
+  private isParentChecked(item: ViewOnlyLinkComponentItem, items: ViewOnlyLinkComponentItem[]): boolean {
+    if (!item.parentId) {
+      return true;
+    }
+
+    const parent = items.find((x) => x.id === item.parentId);
+
+    return parent?.checked ?? true;
+  }
+
+  private uncheckChildren(parentId: string, items: ViewOnlyLinkComponentItem[]): ViewOnlyLinkComponentItem[] {
+    let updatedItems = items.map((item) => {
+      if (item.parentId === parentId) {
+        return { ...item, checked: false };
+      }
+      return item;
+    });
+
+    const directChildren = updatedItems.filter((item) => item.parentId === parentId);
+
+    for (const child of directChildren) {
+      updatedItems = this.uncheckChildren(child.id, updatedItems);
+    }
+
+    return updatedItems;
+  }
+
+  private buildLinkData(
+    selectedIds: string[],
+    rootProjectId: string,
+    linkName: string,
+    isAnonymous: boolean
+  ): Record<string, unknown> {
     const rootProject = selectedIds.includes(rootProjectId) ? [{ id: rootProjectId, type: 'nodes' }] : [];
-
     const relationshipComponents = selectedIds
       .filter((id) => id !== rootProjectId)
       .map((id) => ({ id, type: 'nodes' }));
 
     const data: Record<string, unknown> = {
       attributes: {
-        name: this.linkName.value,
-        anonymous: this.anonymous(),
+        name: linkName,
+        anonymous: isAnonymous,
       },
       nodes: rootProject,
     };
 
     if (relationshipComponents.length) {
       data['relationships'] = {
-        nodes: {
-          data: relationshipComponents,
-        },
+        nodes: { data: relationshipComponents },
       };
     }
 
-    this.dialogRef.close(data);
-  }
-
-  onCheckboxToggle(id: string, checked: boolean): void {
-    this.selectedComponents.update((prev) => ({ ...prev, [id]: checked }));
-  }
-
-  selectAllComponents(): void {
-    const allIds: Record<string, boolean> = {};
-    this.allComponents.forEach((component) => {
-      allIds[component.id] = true;
-    });
-    this.selectedComponents.set(allIds);
-  }
-
-  deselectAllComponents(): void {
-    const allIds: Record<string, boolean> = {};
-    this.allComponents.forEach((component) => {
-      allIds[component.id] = component.isCurrentProject;
-    });
-    this.selectedComponents.set(allIds);
+    return data;
   }
 }

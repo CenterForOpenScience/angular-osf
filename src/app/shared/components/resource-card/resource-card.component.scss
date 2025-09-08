@@ -8,20 +8,12 @@
   padding: 1.7rem;
   row-gap: 0.85rem;
 
-  .title {
-    font-weight: 700;
-    font-size: 1.4rem;
-    line-height: 1.7rem;
-    color: var.$dark-blue-1;
-    padding-bottom: 4px;
+  h2 {
+    line-height: 28px;
 
-    &:hover {
-      text-decoration: underline;
+    a {
+      color: var.$dark-blue-1;
     }
-  }
-
-  span {
-    display: inline;
   }
 
   a {
@@ -33,13 +25,9 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word;
-
-    &:hover {
-      text-decoration: underline;
-    }
   }
 
-  .orcid-icon {
+  .orcid-icon-link {
     height: 16px;
   }
 
@@ -60,32 +48,6 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word;
-  }
-
-  .icon-container {
-    color: var.$dark-blue-1;
-    display: flex;
-    align-items: center;
-    column-gap: 0.3rem;
-
-    &:hover {
-      text-decoration: none;
-      color: var.$pr-blue-1;
-    }
-  }
-
-  .description {
-    line-height: 2rem;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-word;
-  }
-
-  .content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.7rem;
-    padding-top: 1.7rem;
   }
 
   .break-line {

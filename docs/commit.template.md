@@ -1,5 +1,7 @@
 ## 📝 Enabling the Shared Commit Template
 
+## Overview
+
 This project includes a Git commit message template stored at:
 
 ```

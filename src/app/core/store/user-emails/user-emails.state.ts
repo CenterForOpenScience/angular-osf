@@ -1,6 +1,6 @@
 import { Action, State, StateContext, Store } from '@ngxs/store';
 
-import { catchError, tap, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
@@ -140,9 +140,25 @@ export class UserEmailsState {
 
   @Action(ResendConfirmation)
   resendConfirmation(ctx: StateContext<UserEmailsStateModel>, action: ResendConfirmation) {
-    return this.userEmailsService
-      .resendConfirmation(action.emailId)
-      .pipe(catchError((error) => throwError(() => error)));
+    ctx.patchState({
+      emails: {
+        ...ctx.getState().emails,
+        isSubmitting: true,
+        error: null,
+      },
+    });
+
+    return this.userEmailsService.resendConfirmation(action.emailId).pipe(
+      tap(() => {
+        ctx.patchState({
+          emails: {
+            ...ctx.getState().emails,
+            isSubmitting: false,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'emails', error))
+    );
   }
 
   @Action(MakePrimary)

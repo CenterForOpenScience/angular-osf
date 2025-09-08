@@ -1,124 +1,139 @@
-<div class="flex justify-content-between align-items-start column-gap-3">
-  <div class="flex flex-1 flex-column row-gap-7">
-    @if (showTabs()) {
-      <osf-select
-        class="text-center inline-flex md:hidden"
-        [options]="tabsOptions"
-        [fullWidth]="true"
-        [selectedValue]="selectedTab()"
-        (changeValue)="selectTab()"
-      />
-    }
-
-    <div class="flex flex-column gap-2">
-      <h3 class="result-count">
-        @if (searchCount() > 10000) {
-          10 000+ {{ 'collections.searchResults.results' | translate }}
-        } @else if (searchCount() > 0) {
-          {{ searchCount() }} {{ 'collections.searchResults.results' | translate }}
-        } @else {
-          0 {{ 'collections.searchResults.results' | translate }}
+<div class="flex flex-column flex-1 w-full" [class.pt-6]="showTabs()">
+  @if (showTabs()) {
+    <p-tabs [value]="selectedTab()" (valueChange)="selectTab(+$event)" class="flex-1 px-3 hidden md:px-5 md:inline">
+      <p-tablist>
+        @for (item of tabOptions(); track $index) {
+          <p-tab [value]="item.value">{{ item.label | translate }}</p-tab>
         }
-      </h3>
-    </div>
-  </div>
+      </p-tablist>
+    </p-tabs>
+  }
+  <div class="flex flex-column gap-3 py-4 px-3 md:px-5 xl:px-4 bg-white">
+    <div class="flex justify-content-between align-items-start column-gap-3">
+      <div class="flex flex-1 flex-column gap-4">
+        @if (showTabs()) {
+          <osf-select
+            class="text-center inline-flex md:hidden"
+            [options]="tabOptions()"
+            [fullWidth]="true"
+            [selectedValue]="selectedTab()"
+            (changeValue)="selectTab(+$event!)"
+          />
+        }
 
-  <div class="flex align-items-center gap-2">
-    <p class="hidden md:block">{{ 'collections.filters.sortBy' | translate }}:</p>
-
-    <p-select
-      class="no-border-dropdown font-bold ml-2 hidden md:inline-flex"
-      [options]="searchSortingOptions"
-      optionLabel="label"
-      optionValue="value"
-      appendTo="body"
-      [ngModel]="selectedSort()"
-      (ngModelChange)="selectSort($event)"
-    ></p-select>
-
-    @if (isAnyFilterOptions()) {
-      <p-button
-        class="block md:hidden"
-        severity="secondary"
-        icon="fas fa-sliders"
-        size="large"
-        (click)="openFilters()"
-      ></p-button>
-    }
-    <p-button
-      class="ml-2 block md:hidden"
-      severity="secondary"
-      icon="fas fa-filter"
-      size="large"
-      (click)="openSorting()"
-    ></p-button>
-  </div>
-</div>
-
-@if (isFiltersOpen()) {
-  <div class="w-full mb-3 md:hidden">
-    <ng-content select="[slot=mobile-filters]"></ng-content>
-  </div>
-} @else if (isSortingOpen()) {
-  <div class="flex flex-column p-5 pt-1 row-gap-3">
-    @for (option of searchSortingOptions; track option.value) {
-      <div
-        class="p-3 grey-border-color bg-white border-round-sm cursor-pointer transition-delay-200 sort-card"
-        tabindex="0"
-        role="button"
-        [class]="{ 'card-selected': selectedSort() === option.value }"
-        (click)="selectSort(option.value)"
-        (keydown.enter)="selectSort(option.value)"
-      >
-        {{ option.label }}
-      </div>
-    }
-  </div>
-}
-
-<div class="flex flex-column gap-3 md:flex-row md:gap-4">
-  <div class="flex flex-column gap-3 w-full md:gap-4 md:w-3">
-    @if (hasSelectedValues()) {
-      <ng-content select="[slot=filter-chips]"></ng-content>
-    }
-    <div class="hidden md:block">
-      <ng-content select="[slot=filters]"></ng-content>
-    </div>
-  </div>
-
-  <p-dataView [value]="resources()" class="flex-1 w-full" [rows]="10">
-    <ng-template #list let-items>
-      <div class="flex flex-column gap-4">
-        @if (items.length > 0) {
-          @for (item of items; track item.id) {
-            <osf-resource-card [item]="item" />
+        <h4 class="result-count">
+          @if (searchCount() > 10000) {
+            10 000+ {{ 'collections.searchResults.results' | translate }}
+          } @else if (searchCount() > 0) {
+            {{ searchCount() }} {{ 'collections.searchResults.results' | translate }}
+          } @else {
+            0 {{ 'collections.searchResults.results' | translate }}
           }
+        </h4>
+      </div>
 
-          <div class="flex column-gap-2 w-full justify-content-center pt-2">
-            @if (first() && prev()) {
-              <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(first())"></p-button>
-            }
+      <div class="flex align-items-center gap-1">
+        <p class="hidden md:block">{{ 'collections.filters.sortBy' | translate }}:</p>
 
-            <p-button
-              icon="fas fa-angle-left"
-              severity="contrast"
-              text
-              [disabled]="!prev()"
-              (click)="switchPage(prev())"
-            >
-            </p-button>
+        <p-select
+          class="no-border-dropdown font-bold hidden md:inline-flex"
+          [options]="searchSortingOptions"
+          optionLabel="label"
+          optionValue="value"
+          appendTo="body"
+          [ngModel]="selectedSort()"
+          (ngModelChange)="selectSort($event)"
+        ></p-select>
 
-            <p-button
-              icon="fas fa-angle-right"
-              severity="contrast"
-              text
-              [disabled]="!next()"
-              (click)="switchPage(!next() ? first() : next())"
-            >
-            </p-button>
+        @if (hasFilters()) {
+          <p-button
+            class="block md:hidden"
+            severity="secondary"
+            icon="fas fa-sliders"
+            size="large"
+            (click)="openFilters()"
+          ></p-button>
+        }
+        <p-button
+          class="block md:hidden"
+          severity="secondary"
+          icon="fas fa-filter"
+          size="large"
+          (click)="openSorting()"
+        ></p-button>
+      </div>
+    </div>
+
+    @if (isFiltersOpen()) {
+      <div class="w-full mb-3 md:hidden">
+        <ng-container *ngTemplateOutlet="filtersComponent() || null"></ng-container>
+      </div>
+    } @else if (isSortingOpen()) {
+      <div class="flex flex-column p-5 pt-1 row-gap-3">
+        @for (option of searchSortingOptions; track option.value) {
+          <div
+            class="sort-card"
+            tabindex="0"
+            role="button"
+            [class]="{ 'card-selected': selectedSort() === option.value }"
+            (click)="selectSort(option.value)"
+            (keydown.enter)="selectSort(option.value)"
+          >
+            {{ option.label }}
           </div>
         }
       </div>
-    </ng-template>
-  </p-dataView>
+    }
+
+    <div class="flex flex-column gap-3 md:flex-row md:gap-4">
+      <div class="flex flex-column gap-3 w-full md:gap-4 md:w-3">
+        @if (hasSelectedValues()) {
+          <ng-content select="[slot=filter-chips]"></ng-content>
+        }
+        <div class="hidden md:block">
+          <ng-container *ngTemplateOutlet="filtersComponent() || null"></ng-container>
+        </div>
+      </div>
+
+      <div class="flex-1">
+        @if (areResourcesLoading()) {
+          <osf-loading-spinner />
+        } @else {
+          <div class="flex flex-column gap-4">
+            @if (resources().length > 0) {
+              @for (item of resources(); track $index) {
+                <osf-resource-card [resource]="item" [provider]="provider()" />
+              }
+
+              <div class="flex column-gap-2 w-full justify-content-center pt-2">
+                @if (first() && prev()) {
+                  <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(first())"></p-button>
+                }
+
+                <p-button
+                  icon="fas fa-angle-left"
+                  severity="contrast"
+                  text
+                  [disabled]="!prev()"
+                  (click)="switchPage(prev())"
+                >
+                </p-button>
+
+                <p-button
+                  icon="fas fa-angle-right"
+                  severity="contrast"
+                  text
+                  [disabled]="!next()"
+                  (click)="switchPage(!next() ? first() : next())"
+                >
+                </p-button>
+              </div>
+            } @else {
+              <p class="m-auto">{{ 'common.search.noResultsFound' | translate }}</p>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
 </div>

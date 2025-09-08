@@ -15,7 +15,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class PreprintsProjectsService {
-  private jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getAvailableProjects(searchTerm: StringOrNull): Observable<IdName[]> {
     const params: Record<string, Primitive> = {};
@@ -24,20 +25,18 @@ export class PreprintsProjectsService {
       params['filter[title]'] = searchTerm;
     }
 
-    return this.jsonApiService
-      .get<JsonApiResponse<NodeData[], null>>(`${environment.apiUrl}/users/me/nodes/`, params)
-      .pipe(
-        map((response) => {
-          return response.data.map((item) => ({
-            id: item.id,
-            name: item.attributes.title,
-          }));
-        })
-      );
+    return this.jsonApiService.get<JsonApiResponse<NodeData[], null>>(`${this.apiUrl}/users/me/nodes/`, params).pipe(
+      map((response) => {
+        return response.data.map((item) => ({
+          id: item.id,
+          name: item.attributes.title,
+        }));
+      })
+    );
   }
 
   getProjectById(projectId: string): Observable<IdName> {
-    return this.jsonApiService.get<JsonApiResponse<NodeData, null>>(`${environment.apiUrl}/nodes/${projectId}/`).pipe(
+    return this.jsonApiService.get<JsonApiResponse<NodeData, null>>(`${this.apiUrl}/nodes/${projectId}/`).pipe(
       map((response) => {
         return {
           id: response.data.id,
@@ -48,7 +47,7 @@ export class PreprintsProjectsService {
   }
 
   removePreprintProjectRelationship(preprintId: string) {
-    return this.jsonApiService.patch(`${environment.apiUrl}/preprints/${preprintId}/relationships/node/`, {
+    return this.jsonApiService.patch(`${this.apiUrl}/preprints/${preprintId}/relationships/node/`, {
       data: [],
     });
   }
@@ -56,7 +55,7 @@ export class PreprintsProjectsService {
   updatePreprintProjectRelationship(preprintId: string, projectId: string): Observable<Preprint> {
     return this.jsonApiService
       .patch<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>>(
-        `${environment.apiUrl}/preprints/${preprintId}/`,
+        `${this.apiUrl}/preprints/${preprintId}/`,
         {
           data: {
             type: 'preprints',
@@ -111,7 +110,7 @@ export class PreprintsProjectsService {
       },
     };
 
-    return this.jsonApiService.post<JsonApiResponse<NodeData, null>>(`${environment.apiUrl}/nodes/`, payload).pipe(
+    return this.jsonApiService.post<JsonApiResponse<NodeData, null>>(`${this.apiUrl}/nodes/`, payload).pipe(
       map((response) => {
         return {
           id: response.data.id,

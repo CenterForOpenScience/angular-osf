@@ -5,15 +5,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { RegistrationLinksCardComponent } from '@osf/features/registry/components';
-import { RegistryComponentModel } from '@osf/features/registry/models';
-import { GetRegistryById, RegistryOverviewSelectors } from '@osf/features/registry/store/registry-overview';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
-import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
-import { hasViewOnlyParam } from '@shared/helpers';
+import { LoadingSpinnerComponent, SubHeaderComponent, ViewOnlyLinkMessageComponent } from '@osf/shared/components';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 
+import { RegistrationLinksCardComponent } from '../../components';
+import { RegistryComponentModel } from '../../models';
 import { GetRegistryComponents, RegistryComponentsSelectors } from '../../store/registry-components';
 import { GetBibliographicContributorsForRegistration, RegistryLinksSelectors } from '../../store/registry-links';
+import { GetRegistryById, RegistryOverviewSelectors } from '../../store/registry-overview';
 
 @Component({
   selector: 'osf-registry-components',

@@ -20,12 +20,11 @@ import {
   SettingsAccessRequestsCardComponent,
   SettingsProjectAffiliationComponent,
   SettingsProjectFormCardComponent,
-  SettingsRedirectLinkComponent,
   SettingsStorageLocationCardComponent,
   SettingsViewOnlyLinksCardComponent,
   SettingsWikiCardComponent,
 } from './components';
-import { ProjectDetailsModel, ProjectSettingsAttributes, ProjectSettingsData, RedirectLinkDataModel } from './models';
+import { ProjectDetailsModel, ProjectSettingsAttributes, ProjectSettingsData } from './models';
 import {
   DeleteInstitution,
   DeleteProject,
@@ -50,7 +49,6 @@ import {
     SettingsViewOnlyLinksCardComponent,
     SettingsAccessRequestsCardComponent,
     SettingsWikiCardComponent,
-    SettingsRedirectLinkComponent,
     SettingsProjectAffiliationComponent,
     ProjectSettingNotificationsComponent,
     LoadingSpinnerComponent,
@@ -89,7 +87,6 @@ export class SettingsComponent implements OnInit {
     deleteInstitution: DeleteInstitution,
   });
 
-  redirectUrlData = signal<RedirectLinkDataModel>({ isEnabled: false, url: '', label: '' });
   accessRequest = signal(false);
   wikiEnabled = signal(false);
   anyoneCanEditWiki = signal(false);
@@ -144,11 +141,6 @@ export class SettingsComponent implements OnInit {
   onAnyoneCanEditWikiRequestChange(newValue: boolean): void {
     this.anyoneCanEditWiki.set(newValue);
     this.syncSettingsChanges('anyone_can_edit_wiki', newValue);
-  }
-
-  onRedirectUrlDataRequestChange(data: RedirectLinkDataModel): void {
-    this.redirectUrlData.set(data);
-    this.syncSettingsChanges('redirectUrl', data);
   }
 
   onNotificationRequestChange(data: { event: SubscriptionEvent; frequency: SubscriptionFrequency }): void {
@@ -208,23 +200,15 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  private syncSettingsChanges(changedField: string, value: boolean | RedirectLinkDataModel): void {
+  private syncSettingsChanges(changedField: string, value: boolean): void {
     const payload: Partial<ProjectSettingsAttributes> = {};
 
     switch (changedField) {
       case 'access_requests_enabled':
       case 'wiki_enabled':
-      case 'redirect_link_enabled':
       case 'anyone_can_edit_wiki':
       case 'anyone_can_comment':
         payload[changedField] = value as boolean;
-        break;
-      case 'redirectUrl':
-        if (typeof value === 'object') {
-          payload['redirect_link_enabled'] = value.isEnabled;
-          payload['redirect_link_url'] = value.isEnabled ? value.url : undefined;
-          payload['redirect_link_label'] = value.isEnabled ? value.label : undefined;
-        }
         break;
     }
 
@@ -251,12 +235,6 @@ export class SettingsComponent implements OnInit {
         this.wikiEnabled.set(settings.attributes.wikiEnabled);
         this.anyoneCanEditWiki.set(settings.attributes.anyoneCanEditWiki);
         this.anyoneCanComment.set(settings.attributes.anyoneCanComment);
-
-        this.redirectUrlData.set({
-          isEnabled: settings.attributes.redirectLinkEnabled,
-          url: settings.attributes.redirectLinkUrl,
-          label: settings.attributes.redirectLinkLabel,
-        });
       }
     });
 

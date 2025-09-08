@@ -17,14 +17,12 @@ import {
   effect,
   inject,
   OnInit,
-  Signal,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { GetComponents, ProjectOverviewSelectors } from '@osf/features/project/overview/store';
 import { SearchInputComponent, ViewOnlyTableComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
@@ -32,7 +30,7 @@ import {
   ContributorsListComponent,
 } from '@osf/shared/components/contributors';
 import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
-import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
+import { AddContributorType, ContributorPermission } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import {
   ContributorDialogAddModel,
@@ -46,6 +44,7 @@ import {
   AddContributor,
   ContributorsSelectors,
   CreateViewOnlyLink,
+  CurrentResourceSelectors,
   DeleteContributor,
   DeleteViewOnlyLink,
   FetchViewOnlyLinks,
@@ -59,6 +58,7 @@ import {
 } from '@osf/shared/stores';
 
 import { CreateViewLinkDialogComponent } from './components';
+import { ResourceInfoModel } from './models';
 
 @Component({
   selector: 'osf-contributors',
@@ -78,7 +78,7 @@ import { CreateViewLinkDialogComponent } from './components';
   providers: [DialogService],
 })
 export class ContributorsComponent implements OnInit {
-  protected searchControl = new FormControl<string>('');
+  searchControl = new FormControl<string>('');
 
   readonly destroyRef = inject(DestroyRef);
   readonly translateService = inject(TranslateService);
@@ -90,30 +90,25 @@ export class ContributorsComponent implements OnInit {
   private readonly resourceId = toSignal(
     this.route.parent?.params.pipe(map((params) => params['id'])) ?? of(undefined)
   );
-  readonly resourceType: Signal<ResourceType | undefined> = toSignal(
-    this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined)
-  );
+  readonly resourceType = toSignal(this.route.data.pipe(map((params) => params['resourceType'])) ?? of(undefined));
 
-  protected viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
-  protected projectDetails = select(ViewOnlyLinkSelectors.getResourceDetails);
-  protected components = select(ProjectOverviewSelectors.getComponents);
+  viewOnlyLinks = select(ViewOnlyLinkSelectors.getViewOnlyLinks);
+  resourceDetails = select(CurrentResourceSelectors.getResourceDetails);
 
-  protected readonly selectedPermission = signal<ContributorPermission | null>(null);
-  protected readonly selectedBibliography = signal<boolean | null>(null);
-  protected readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
-  protected readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
+  readonly selectedPermission = signal<ContributorPermission | null>(null);
+  readonly selectedBibliography = signal<boolean | null>(null);
+  readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
+  readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
 
-  protected initialContributors = select(ContributorsSelectors.getContributors);
-  protected contributors = signal([]);
-  protected readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  protected readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
+  initialContributors = select(ContributorsSelectors.getContributors);
+  contributors = signal([]);
 
-  canCreateViewLink = computed(() => {
-    const details = this.projectDetails();
-    return !!details && !!details.attributes && !!this.resourceId();
-  });
+  readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly isViewOnlyLinksLoading = select(ViewOnlyLinkSelectors.isViewOnlyLinksLoading);
 
-  protected actions = createDispatchMap({
+  canCreateViewLink = computed(() => !!this.resourceDetails() && !!this.resourceId());
+
+  actions = createDispatchMap({
     getViewOnlyLinks: FetchViewOnlyLinks,
     getResourceDetails: GetResourceDetails,
     getContributors: GetAllContributors,
@@ -125,7 +120,6 @@ export class ContributorsComponent implements OnInit {
     addContributor: AddContributor,
     createViewOnlyLink: CreateViewOnlyLink,
     deleteViewOnlyLink: DeleteViewOnlyLink,
-    getComponents: GetComponents,
   });
 
   get hasChanges(): boolean {
@@ -151,7 +145,6 @@ export class ContributorsComponent implements OnInit {
       this.actions.getViewOnlyLinks(id, this.resourceType());
       this.actions.getResourceDetails(id, this.resourceType());
       this.actions.getContributors(id, this.resourceType());
-      this.actions.getComponents(id);
     }
 
     this.setSearchSubscription();
@@ -163,11 +156,11 @@ export class ContributorsComponent implements OnInit {
       .subscribe((res) => this.actions.updateSearchValue(res ?? null));
   }
 
-  protected onPermissionChange(value: ContributorPermission): void {
+  onPermissionChange(value: ContributorPermission): void {
     this.actions.updatePermissionFilter(value);
   }
 
-  protected onBibliographyChange(value: boolean): void {
+  onBibliographyChange(value: boolean): void {
     this.actions.updateBibliographyFilter(value);
   }
 
@@ -267,12 +260,10 @@ export class ContributorsComponent implements OnInit {
   }
 
   createViewLink() {
-    const projectDetails = this.projectDetails();
-    const projectId = this.resourceId();
-
-    const currentProject = {
-      id: projectDetails.id,
-      title: projectDetails.attributes.title,
+    const currentResource: ResourceInfoModel = {
+      id: this.resourceDetails().id,
+      title: this.resourceDetails().title,
+      type: this.resourceType(),
     };
 
     this.dialogService
@@ -280,10 +271,7 @@ export class ContributorsComponent implements OnInit {
         width: '448px',
         focusOnShow: false,
         header: this.translateService.instant('project.contributors.createLinkDialog.dialogTitle'),
-        data: {
-          projectId: projectId,
-          currentProject: currentProject,
-        },
+        data: currentResource,
         closeOnEscape: true,
         modal: true,
         closable: true,

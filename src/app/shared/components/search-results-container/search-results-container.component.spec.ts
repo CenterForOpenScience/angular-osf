@@ -4,8 +4,7 @@ import { ComponentRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 
-import { SEARCH_TAB_OPTIONS, searchSortingOptions } from '@shared/constants';
-import { ResourceTab } from '@shared/enums';
+import { ResourceType } from '@shared/enums';
 import { TranslateServiceMock } from '@shared/mocks';
 
 import { SearchResultsContainerComponent } from './search-results-container.component';
@@ -35,19 +34,13 @@ describe('SearchResultsContainerComponent', () => {
       expect(component.resources()).toEqual([]);
       expect(component.searchCount()).toBe(0);
       expect(component.selectedSort()).toBe('');
-      expect(component.selectedTab()).toBe(ResourceTab.All);
+      expect(component.selectedTab()).toBe(ResourceType.Null);
       expect(component.selectedValues()).toEqual({});
       expect(component.first()).toBeNull();
       expect(component.prev()).toBeNull();
       expect(component.next()).toBeNull();
       expect(component.isFiltersOpen()).toBe(false);
       expect(component.isSortingOpen()).toBe(false);
-    });
-
-    it('should have access to constants', () => {
-      expect(component['searchSortingOptions']).toBe(searchSortingOptions);
-      expect(component['ResourceTab']).toBe(ResourceTab);
-      expect(component['tabsOptions']).toBe(SEARCH_TAB_OPTIONS);
     });
   });
 
@@ -89,9 +82,9 @@ describe('SearchResultsContainerComponent', () => {
     it('should emit tabChanged when selectTab is called', () => {
       jest.spyOn(component.tabChanged, 'emit');
 
-      component.selectTab(ResourceTab.Projects);
+      component.selectTab(ResourceType.Project);
 
-      expect(component.tabChanged.emit).toHaveBeenCalledWith(ResourceTab.Projects);
+      expect(component.tabChanged.emit).toHaveBeenCalledWith(ResourceType.Project);
     });
 
     it('should emit pageChanged when switchPage is called with valid link', () => {
@@ -108,26 +101,6 @@ describe('SearchResultsContainerComponent', () => {
       component.switchPage(null);
 
       expect(component.pageChanged.emit).not.toHaveBeenCalled();
-    });
-
-    it('should emit filtersToggled when openFilters is called', () => {
-      jest.spyOn(component.filtersToggled, 'emit');
-
-      component.openFilters();
-
-      expect(component.filtersToggled.emit).toHaveBeenCalled();
-    });
-
-    it('should emit sortingToggled when openSorting is called', () => {
-      jest.spyOn(component.sortingToggled, 'emit');
-
-      component.openSorting();
-
-      expect(component.sortingToggled.emit).toHaveBeenCalled();
-    });
-
-    it('should return true for isAnyFilterOptions', () => {
-      expect(component.isAnyFilterOptions()).toBe(true);
     });
   });
 });

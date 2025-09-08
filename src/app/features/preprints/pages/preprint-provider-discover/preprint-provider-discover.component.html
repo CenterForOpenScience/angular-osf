@@ -1,6 +1,9 @@
 <osf-preprint-provider-hero
+  [searchControl]="searchControl"
   [preprintProvider]="preprintProvider()"
   [isPreprintProviderLoading]="isPreprintProviderLoading()"
-  [searchControl]="searchControl"
 />
-<osf-preprints-resources />
+
+@if (preprintProvider()) {
+  <osf-global-search [searchControlInput]="searchControl" [provider]="preprintProvider() ?? null" />
+}

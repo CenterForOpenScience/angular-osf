@@ -42,7 +42,7 @@ describe('TokensService', () => {
     jsonApiServiceMock.get.mockReturnValue(of(mockResponse));
 
     service.getScopes().subscribe((result) => {
-      expect(jsonApiServiceMock.get).toHaveBeenCalledWith(`${environment.apiUrl}/scopes/`);
+      expect(jsonApiServiceMock.get).toHaveBeenCalledWith(`${environment.apiDomainUrl}/v2/scopes/`);
       expect(result).toBe(mappedScopes);
       done();
     });
@@ -75,7 +75,7 @@ describe('TokensService', () => {
     jsonApiServiceMock.get.mockReturnValue(of(mockApiResponse));
 
     service.getTokenById(tokenId).subscribe((token) => {
-      expect(jsonApiServiceMock.get).toHaveBeenCalledWith(`${environment.apiUrl}/tokens/${tokenId}/`);
+      expect(jsonApiServiceMock.get).toHaveBeenCalledWith(`${environment.apiDomainUrl}/v2/tokens/${tokenId}/`);
       expect(token).toBe(mappedToken);
       done();
     });
@@ -94,7 +94,7 @@ describe('TokensService', () => {
     jsonApiServiceMock.post.mockReturnValue(of(apiResponse));
 
     service.createToken(name, scopes).subscribe((token) => {
-      expect(jsonApiServiceMock.post).toHaveBeenCalledWith(`${environment.apiUrl}/tokens/`, requestBody);
+      expect(jsonApiServiceMock.post).toHaveBeenCalledWith(`${environment.apiDomainUrl}/v2/tokens/`, requestBody);
       expect(token).toEqual(mapped);
       done();
     });
@@ -114,7 +114,10 @@ describe('TokensService', () => {
     jsonApiServiceMock.patch.mockReturnValue(of(apiResponse));
 
     service.updateToken(tokenId, name, scopes).subscribe((token) => {
-      expect(jsonApiServiceMock.patch).toHaveBeenCalledWith(`${environment.apiUrl}/tokens/${tokenId}/`, requestBody);
+      expect(jsonApiServiceMock.patch).toHaveBeenCalledWith(
+        `${environment.apiDomainUrl}/v2/tokens/${tokenId}/`,
+        requestBody
+      );
       expect(token).toEqual(mapped);
       done();
     });
@@ -125,7 +128,7 @@ describe('TokensService', () => {
     jsonApiServiceMock.delete.mockReturnValue(of(void 0));
 
     service.deleteToken(tokenId).subscribe((result) => {
-      expect(jsonApiServiceMock.delete).toHaveBeenCalledWith(`${environment.apiUrl}/tokens/${tokenId}/`);
+      expect(jsonApiServiceMock.delete).toHaveBeenCalledWith(`${environment.apiDomainUrl}/v2/tokens/${tokenId}/`);
       expect(result).toBeUndefined();
       done();
     });

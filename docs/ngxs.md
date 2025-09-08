@@ -1,4 +1,18 @@
-# NGXS State Management Overview
+# NGXS State Management
+
+## Index
+
+- [Purpose](#purpose)
+- [Core Concepts](#core-concepts)
+- [Directory Structure](#directory-structure)
+- [State Models](#state-models)
+- [Tooling and Extensions](#tooling-and-extensions)
+- [Testing](#testing)
+- [Documentation](#documentation)
+
+---
+
+## Overview
 
 The OSF Angular project uses [NGXS](https://www.ngxs.io/) as the state management library for Angular applications. NGXS provides a simple, powerful, and TypeScript-friendly framework for managing state across components and services.
 
@@ -45,6 +59,33 @@ src/app/shared/services/
 
 ---
 
+## State Models
+
+The OSF Angular project follows a consistent NGXS state model structure to ensure clarity, predictability, and alignment across all features. The recommended shape for each domain-specific state is as follows:
+
+1. Domain state pattern:
+
+```ts
+domain: {
+  data: [],             // Array of typed model data (e.g., Project[], User[])
+  isLoading: false,     // Indicates if data retrieval (GET) is in progress
+  isSubmitting: false,  // Indicates if data submission (POST/PUT/DELETE) is in progress
+  error: null,          // Captures error messages from failed HTTP requests
+}
+```
+
+2. `data` holds the strongly typed collection of entities defined by the feature's interface or model class.
+
+3. `isLoading` is a signal used to inform the component and template layer that a read or fetch operation is currently pending.
+
+4. `isSubmitting` signals that a write operation (form submission, update, delete, etc.) is currently in progress.
+
+5. `error` stores error state information (commonly strings or structured error objects) that result from failed service interactions. This can be displayed in UI or logged for debugging.
+
+Each domain state should be minimal, normalized, and scoped to its specific feature, mirroring the structure and shape of the corresponding OSF backend API response.
+
+---
+
 ## Tooling and Extensions
 
 - [Redux DevTools](https://github.com/zalmoxisus/redux-devtools-extension) is supported. Enable it in development via `NgxsReduxDevtoolsPluginModule`.
@@ -55,7 +96,8 @@ src/app/shared/services/
 
 ## Testing
 
-- Mock `Store` using `jest.fn()` or test-specific modules for unit testing components and services.
+- [Testing Strategy](docs/testing.md)
+- [NGXS State Testing Strategy](docs/testing.md#ngxs-state-testing-strategy)
 
 ---
 

@@ -1,28 +1,3 @@
-<div class="xl:mt-6 xl:pt-6">
-  <div class="mt-5 mx-3 md:mx-4">
-    <osf-search-input
-      [control]="searchControl"
-      [showHelpIcon]="true"
-      [placeholder]="'collections.searchInput.placeholder' | translate"
-      (helpClicked)="showTutorial()"
-    />
-  </div>
-
-  <div class="flex-column flex w-full pt-6">
-    <p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1 px-3 md:px-5 xl:px-4">
-      @if (isSmall()) {
-        <p-tablist>
-          @for (item of resourceTabOptions; track $index) {
-            <p-tab [value]="item.value">{{ item.label | translate }}</p-tab>
-          }
-        </p-tablist>
-      }
-    </p-tabs>
-
-    <div class="resources py-4 px-3 md:px-5 xl:px-4">
-      <osf-resources-wrapper></osf-resources-wrapper>
-
-      <osf-search-help-tutorial [(currentStep)]="currentStep"></osf-search-help-tutorial>
-    </div>
-  </div>
+<div class="m-t-48 p-t-40">
+  <osf-global-search [resourceTabOptions]="searchTabOptions" />
 </div>

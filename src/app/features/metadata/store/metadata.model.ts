@@ -16,3 +16,36 @@ export interface MetadataStateModel {
   cedarRecord: AsyncStateModel<CedarMetadataRecord | null>;
   cedarRecords: AsyncStateModel<CedarMetadataRecordData[]>;
 }
+
+export const METADATA_STATE_DEFAULTS: MetadataStateModel = {
+  metadata: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  customMetadata: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  fundersList: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  cedarTemplates: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  cedarRecord: {
+    data: null,
+    isLoading: false,
+    error: null,
+  },
+  cedarRecords: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+};

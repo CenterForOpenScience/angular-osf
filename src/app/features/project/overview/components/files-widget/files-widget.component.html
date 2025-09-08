@@ -1,0 +1,50 @@
+<section class="flex flex-column p-4 gap-4">
+  <h2>{{ 'navigation.files' | translate }}</h2>
+  <osf-select
+    class="w-full"
+    [options]="options()"
+    [(selectedValue)]="selectedRoot"
+    (changeValue)="onChangeProject($event)"
+    [fullWidth]="true"
+    [disabled]="isStorageLoading"
+  />
+  @if (isStorageLoading) {
+    <div class="flex pl-1 gap-3">
+      <p-skeleton width="6rem" height="2.5rem" />
+      <p-skeleton width="6rem" height="2.5rem" />
+      <p-skeleton width="6rem" height="2.5rem" />
+    </div>
+  } @else {
+    <p-tabs [value]="currentRootFolder()?.folder?.id || ''" (valueChange)="onStorageChange($event)" scrollable>
+      <p-tablist>
+        @for (option of storageAddons(); track option.folder.id) {
+          <p-tab class="p-1" [value]="option.folder.id">
+            <p-button
+              severity="contrast"
+              variant="text"
+              [styleClass]="option.folder.id === currentRootFolder()?.folder?.id ? 'text-600' : 'text-500'"
+              [disabled]="isFilesLoading()"
+              [label]="option.label"
+              [raised]="option.folder.id === currentRootFolder()?.folder?.id"
+            >
+            </p-button>
+          </p-tab>
+        }
+      </p-tablist>
+    </p-tabs>
+  }
+
+  <osf-files-tree
+    [files]="files()"
+    [totalCount]="filesTotalCount()"
+    [currentFolder]="currentFolder()"
+    [storage]="currentRootFolder()"
+    [isLoading]="isFilesLoading() || isStorageLoading"
+    [actions]="filesTreeActions"
+    [resourceId]="this.selectedRoot!"
+    [provider]="provider()"
+    (entryFileClicked)="navigateToFile($event)"
+    (filesPageChange)="onFilesPageChange($event)"
+  >
+  </osf-files-tree>
+</section>

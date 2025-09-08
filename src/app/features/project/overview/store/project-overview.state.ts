@@ -5,6 +5,7 @@ import { catchError, tap } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { handleSectionError } from '@osf/shared/helpers';
+import { ProjectsService } from '@osf/shared/services/projects.service';
 import { ResourceType } from '@shared/enums';
 
 import { ProjectOverviewService } from '../services';
@@ -29,6 +30,7 @@ import { PROJECT_OVERVIEW_DEFAULTS, ProjectOverviewStateModel } from './project-
 @Injectable()
 export class ProjectOverviewState {
   projectOverviewService = inject(ProjectOverviewService);
+  projectsService = inject(ProjectsService);
 
   @Action(GetProjectById)
   getProjectById(ctx: StateContext<ProjectOverviewStateModel>, action: GetProjectById) {

@@ -22,16 +22,12 @@ import { TextInputComponent } from '@shared/components';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WithdrawDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
+  readonly dialogRef = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
-  private readonly actions = createDispatchMap({
-    withdrawRegistration: WithdrawRegistration,
-  });
+  private readonly actions = createDispatchMap({ withdrawRegistration: WithdrawRegistration });
 
-  protected readonly form = new FormGroup({
-    text: new FormControl(''),
-  });
-  protected readonly inputLimits = InputLimits;
+  readonly form = new FormGroup({ text: new FormControl('') });
+  readonly inputLimits = InputLimits;
 
   withdrawRegistration(): void {
     const registryId = this.config.data.registryId;

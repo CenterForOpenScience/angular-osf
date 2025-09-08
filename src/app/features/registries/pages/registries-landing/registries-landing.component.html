@@ -32,8 +32,8 @@
     </div>
 
     @if (!isRegistriesLoading()) {
-      @for (item of registries(); track item.id) {
-        <osf-resource-card [item]="item" />
+      @for (item of registries(); track $index) {
+        <osf-resource-card [resource]="item" />
       }
     } @else {
       <osf-loading-spinner></osf-loading-spinner>

@@ -14,6 +14,11 @@ export class FilesSelectors {
   }
 
   @Selector([FilesState])
+  static getFilesTotalCount(state: FilesStateModel): number {
+    return state.files.totalCount;
+  }
+
+  @Selector([FilesState])
   static isFilesLoading(state: FilesStateModel): boolean {
     return state.files.isLoading;
   }
@@ -26,6 +31,11 @@ export class FilesSelectors {
   @Selector([FilesState])
   static getMoveFileFiles(state: FilesStateModel): OsfFile[] {
     return state.moveFileFiles.data;
+  }
+
+  @Selector([FilesState])
+  static getMoveFileFilesTotalCount(state: FilesStateModel): number {
+    return state.moveFileFiles.totalCount;
   }
 
   @Selector([FilesState])

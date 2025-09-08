@@ -11,7 +11,7 @@ import {
   JsonApiResponse,
   PaginatedData,
   ResponseJsonApi,
-  UserGetResponse,
+  UserDataJsonApi,
 } from '../models';
 
 import { JsonApiService } from './json-api.service';
@@ -23,6 +23,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ContributorsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -32,14 +33,13 @@ export class ContributorsService {
   ]);
 
   private getBaseUrl(resourceType: ResourceType, resourceId: string): string {
-    const baseUrl = `${environment.apiUrl}`;
     const resourcePath = this.urlMap.get(resourceType);
 
     if (!resourcePath) {
       throw new Error(`Unsupported resource type: ${resourceType}`);
     }
 
-    return `${baseUrl}/${resourcePath}/${resourceId}/contributors`;
+    return `${this.apiUrl}/${resourcePath}/${resourceId}/contributors`;
   }
 
   getAllContributors(resourceType: ResourceType, resourceId: string): Observable<ContributorModel[]> {
@@ -51,10 +51,10 @@ export class ContributorsService {
   }
 
   searchUsers(value: string, page = 1): Observable<PaginatedData<ContributorAddModel[]>> {
-    const baseUrl = `${environment.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
+    const baseUrl = `${this.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
 
     return this.jsonApiService
-      .get<ResponseJsonApi<UserGetResponse[]>>(baseUrl)
+      .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)
       .pipe(map((response) => ContributorsMapper.fromUsersWithPaginationGetResponse(response)));
   }
 

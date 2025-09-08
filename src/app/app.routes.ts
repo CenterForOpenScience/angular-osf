@@ -8,16 +8,11 @@ import { BookmarksState, ProjectsState } from '@shared/stores';
 import { authGuard, redirectIfLoggedInGuard } from './core/guards';
 import { isProjectGuard } from './core/guards/is-project.guard';
 import { isRegistryGuard } from './core/guards/is-registry.guard';
-import { MyProfileResourceFiltersOptionsState } from './features/my-profile/components/filters/store';
-import { MyProfileResourceFiltersState } from './features/my-profile/components/my-profile-resource-filters/store';
-import { MyProfileState } from './features/my-profile/store';
 import { PreprintState } from './features/preprints/store/preprint';
+import { ProfileState } from './features/profile/store';
 import { RegistriesState } from './features/registries/store';
 import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from './features/registries/store/handlers';
 import { FilesHandlers } from './features/registries/store/handlers/files.handlers';
-import { ResourceFiltersOptionsState } from './features/search/components/filters/store';
-import { ResourceFiltersState } from './features/search/components/resource-filters/store';
-import { SearchState } from './features/search/store';
 import { LicensesService } from './shared/services';
 
 export const routes: Routes = [
@@ -71,7 +66,6 @@ export const routes: Routes = [
       {
         path: 'search',
         loadComponent: () => import('./features/search/search.component').then((mod) => mod.SearchComponent),
-        providers: [provideStates([ResourceFiltersState, ResourceFiltersOptionsState, SearchState])],
       },
       {
         path: 'my-projects',
@@ -119,11 +113,18 @@ export const routes: Routes = [
       },
       {
         path: 'my-profile',
-        loadComponent: () => import('./features/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
-        providers: [
-          provideStates([MyProfileResourceFiltersState, MyProfileResourceFiltersOptionsState, MyProfileState]),
-        ],
+        loadComponent: () =>
+          import('./features/profile/pages/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
+        providers: [provideStates([ProfileState])],
         canActivate: [authGuard],
+      },
+      {
+        path: 'user/:id',
+        loadComponent: () =>
+          import('./features/profile/pages/user-profile/user-profile.component').then(
+            (mod) => mod.UserProfileComponent
+          ),
+        providers: [provideStates([ProfileState])],
       },
       {
         path: 'institutions',

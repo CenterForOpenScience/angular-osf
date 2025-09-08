@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { MapUserCounts } from '@shared/mappers';
-import { UserCountsResponse, UserRelatedDataCounts } from '@shared/models';
+import { UserRelatedCounts, UserRelatedCountsResponseJsonApi } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
@@ -13,14 +13,15 @@ import { environment } from 'src/environments/environment';
 })
 export class ResourceCardService {
   private jsonApiService = inject(JsonApiService);
+  private apiUrl = `${environment.apiDomainUrl}/v2`;
 
-  getUserRelatedCounts(userIri: string): Observable<UserRelatedDataCounts> {
+  getUserRelatedCounts(userId: string): Observable<UserRelatedCounts> {
     const params: Record<string, string> = {
       related_counts: 'nodes,registrations,preprints',
     };
 
     return this.jsonApiService
-      .get<UserCountsResponse>(`${environment.apiUrl}/users/${userIri}/`, params)
+      .get<UserRelatedCountsResponseJsonApi>(`${this.apiUrl}/users/${userId}/`, params)
       .pipe(map((response) => MapUserCounts(response)));
   }
 }

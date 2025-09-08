@@ -2,13 +2,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'primeng/accordion';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { LoadingSpinnerComponent } from '@shared/components';
 import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
-import { ReusableFilterType } from '@shared/enums';
+import { StringOrNull } from '@shared/helpers';
 import { DiscoverableFilter, SelectOption } from '@shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
@@ -25,6 +26,7 @@ import { GenericFilterComponent } from '../generic-filter/generic-filter.compone
     GenericFilterComponent,
     TranslatePipe,
     LoadingSpinnerComponent,
+    Checkbox,
   ],
   templateUrl: './reusable-filter.component.html',
   styleUrls: ['./reusable-filter.component.scss'],
@@ -32,20 +34,22 @@ import { GenericFilterComponent } from '../generic-filter/generic-filter.compone
 })
 export class ReusableFilterComponent {
   filters = input<DiscoverableFilter[]>([]);
-  selectedValues = input<Record<string, string | null>>({});
+  selectedValues = input<Record<string, StringOrNull>>({});
+  filterSearchResults = input<Record<string, SelectOption[]>>({});
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
 
-  loadFilterOptions = output<{ filterType: string; filter: DiscoverableFilter }>();
-  filterValueChanged = output<{ filterType: string; value: string | null }>();
+  loadFilterOptions = output<DiscoverableFilter>();
+  filterValueChanged = output<{ filterType: string; value: StringOrNull }>();
+  filterSearchChanged = output<{ filterType: string; searchText: string; filter: DiscoverableFilter }>();
+  loadMoreFilterOptions = output<{ filterType: string; filter: DiscoverableFilter }>();
 
   private readonly expandedFilters = signal<Set<string>>(new Set());
 
   readonly FILTER_PLACEHOLDERS = FILTER_PLACEHOLDERS;
 
   readonly hasFilters = computed(() => {
-    const filterList = this.filters();
-    return filterList && filterList.length > 0;
+    return this.filters().length > 0;
   });
 
   readonly visibleFilters = computed(() => {
@@ -54,6 +58,39 @@ export class ReusableFilterComponent {
 
   readonly hasVisibleFilters = computed(() => {
     return this.visibleFilters().length > 0;
+  });
+
+  readonly groupedFilters = computed(() => {
+    const filters = this.visibleFilters();
+    const individualFilters: DiscoverableFilter[] = [];
+    const isPresentFilters: DiscoverableFilter[] = [];
+
+    filters.forEach((filter) => {
+      if (filter.operator === 'is-present') {
+        isPresentFilters.push(filter);
+      } else if (filter.operator === 'any-of' || filter.operator === 'at-date') {
+        individualFilters.push(filter);
+      }
+    });
+
+    return {
+      individual: individualFilters,
+      grouped:
+        isPresentFilters.length > 0
+          ? [
+              {
+                key: 'is-present-group',
+                label: 'Additional Filters',
+                type: 'group' as const,
+                operator: 'is-present',
+                filters: isPresentFilters,
+                options: [],
+                isLoading: false,
+                isLoaded: true,
+              },
+            ]
+          : [],
+    };
   });
 
   shouldShowFilter(filter: DiscoverableFilter): boolean {
@@ -89,10 +126,7 @@ export class ReusableFilterComponent {
       });
 
       if (!selectedFilter.options?.length) {
-        this.loadFilterOptions.emit({
-          filterType: key as ReusableFilterType,
-          filter: selectedFilter,
-        });
+        this.loadFilterOptions.emit(selectedFilter);
       }
     }
   }
@@ -101,12 +135,39 @@ export class ReusableFilterComponent {
     this.filterValueChanged.emit({ filterType, value });
   }
 
+  onFilterSearch(filterType: string, searchText: string): void {
+    const filter = this.filters().find((f) => f.key === filterType);
+    if (filter) {
+      this.filterSearchChanged.emit({ filterType, searchText, filter });
+    }
+  }
+
+  onLoadMoreOptions(filterType: string): void {
+    const filter = this.filters().find((f) => f.key === filterType);
+    if (filter) {
+      this.loadMoreFilterOptions.emit({ filterType, filter });
+    }
+  }
+
   getFilterOptions(filter: DiscoverableFilter): SelectOption[] {
     return filter.options || [];
   }
 
+  getFilterSearchResults(filter: DiscoverableFilter): SelectOption[] {
+    const searchResults = this.filterSearchResults();
+    return searchResults[filter.key] || [];
+  }
+
   isFilterLoading(filter: DiscoverableFilter): boolean {
     return filter.isLoading || false;
+  }
+
+  isFilterPaginationLoading(filter: DiscoverableFilter): boolean {
+    return filter.isPaginationLoading || false;
+  }
+
+  isFilterSearchLoading(filter: DiscoverableFilter): boolean {
+    return filter.isSearchLoading || false;
   }
 
   getSelectedValue(filterKey: string): string | null {
@@ -139,7 +200,23 @@ export class ReusableFilterComponent {
       filter.helpLink ||
       filter.resultCount ||
       filter.options?.length ||
-      filter.hasOptions
+      filter.hasOptions ||
+      filter.type === 'group'
     );
+  }
+
+  onIsPresentFilterToggle(filter: DiscoverableFilter, isChecked: boolean): void {
+    const value = isChecked ? 'true' : null;
+    this.filterValueChanged.emit({ filterType: filter.key, value });
+  }
+
+  onCheckboxChange(event: CheckboxChangeEvent, filter: DiscoverableFilter): void {
+    const isChecked = event?.checked || false;
+    this.onIsPresentFilterToggle(filter, isChecked);
+  }
+
+  isIsPresentFilterChecked(filterKey: string): boolean {
+    const selectedValue = this.selectedValues()[filterKey];
+    return selectedValue === 'true' || Boolean(selectedValue);
   }
 }

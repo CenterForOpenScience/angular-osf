@@ -15,7 +15,7 @@ import { TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { Institution, QueryParams } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
-import { InstitutionsSearchSelectors } from '@osf/shared/stores';
+import { InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
 
 import { AdminTableComponent } from '../../components';
 import { projectTableColumns } from '../../constants';

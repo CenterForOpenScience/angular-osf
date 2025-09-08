@@ -15,7 +15,7 @@
     <div class="inline-flex gap-1 line-height-2 pt-4">
       @for (contributor of contributors(); track contributor.id) {
         <div>
-          <a class="font-bold"> {{ contributor.fullName }}</a>
+          <a class="font-bold" [routerLink]="['/user', contributor.userId]"> {{ contributor.fullName }}</a>
           <span>{{ $last ? '' : ',' }}</span>
         </div>
       }

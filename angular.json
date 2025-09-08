@@ -90,6 +90,17 @@
                 }
               ]
             },
+            "test-osf": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.test-osf.ts"
+                }
+              ]
+            },
             "development": {
               "optimization": false,
               "extractLicenses": false,
@@ -116,6 +127,10 @@
             },
             "local": {
               "buildTarget": "osf:build:local",
+              "hmr": false
+            },
+            "test-osf": {
+              "buildTarget": "osf:build:test-osf",
               "hmr": false
             }
           },

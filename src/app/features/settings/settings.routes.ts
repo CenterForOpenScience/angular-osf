@@ -17,15 +17,15 @@ export const settingsRoutes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'profile-settings',
+        redirectTo: 'profile',
       },
       {
-        path: 'profile-settings',
+        path: 'profile',
         loadComponent: () =>
           import('./profile-settings/profile-settings.component').then((c) => c.ProfileSettingsComponent),
       },
       {
-        path: 'account-settings',
+        path: 'account',
         loadComponent: () =>
           import('./account-settings/account-settings.component').then((c) => c.AccountSettingsComponent),
       },

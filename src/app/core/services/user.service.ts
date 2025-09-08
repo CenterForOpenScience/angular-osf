@@ -9,13 +9,13 @@ import {
   ProfileSettingsUpdate,
   User,
   UserData,
+  UserDataJsonApi,
   UserDataResponseJsonApi,
-  UserGetResponse,
+  UserResponseJsonApi,
   UserSettings,
   UserSettingsGetResponse,
 } from '@osf/shared/models';
-
-import { JsonApiService } from '../../shared/services';
+import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 
@@ -23,17 +23,24 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class UserService {
-  jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+
+  getUserById(userId: string): Observable<User> {
+    return this.jsonApiService
+      .get<UserResponseJsonApi>(`${this.apiUrl}/users/${userId}/`)
+      .pipe(map((response) => UserMapper.fromUserGetResponse(response.data)));
+  }
 
   getCurrentUser(): Observable<UserData> {
     return this.jsonApiService
-      .get<UserDataResponseJsonApi>(`${environment.apiUrl}/`)
+      .get<UserDataResponseJsonApi>(`${this.apiUrl}/`)
       .pipe(map((response) => UserMapper.fromUserDataGetResponse(response)));
   }
 
   getCurrentUserSettings(): Observable<UserSettings> {
     return this.jsonApiService
-      .get<JsonApiResponse<UserSettingsGetResponse, null>>(`${environment.apiUrl}/users/me/settings/`)
+      .get<JsonApiResponse<UserSettingsGetResponse, null>>(`${this.apiUrl}/users/me/settings/`)
       .pipe(map((response) => UserMapper.fromUserSettingsGetResponse(response.data)));
   }
 
@@ -41,7 +48,7 @@ export class UserService {
     const request = UserMapper.toUpdateUserSettingsRequest(userId, userSettings);
 
     return this.jsonApiService
-      .patch<UserSettingsGetResponse>(`${environment.apiUrl}/users/${userId}/settings/`, request)
+      .patch<UserSettingsGetResponse>(`${this.apiUrl}/users/${userId}/settings/`, request)
       .pipe(map((response) => UserMapper.fromUserSettingsGetResponse(response)));
   }
 
@@ -49,7 +56,7 @@ export class UserService {
     const patchedData = key === ProfileSettingsKey.User ? data : { [key]: data };
 
     return this.jsonApiService
-      .patch<UserGetResponse>(`${environment.apiUrl}/users/${userId}/`, {
+      .patch<UserDataJsonApi>(`${this.apiUrl}/users/${userId}/`, {
         data: { type: 'users', id: userId, attributes: patchedData },
       })
       .pipe(map((response) => UserMapper.fromUserGetResponse(response)));

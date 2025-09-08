@@ -30,10 +30,10 @@ export class ResourceFormComponent {
   cancelClicked = output<void>();
   submitClicked = output<void>();
 
-  protected inputLimits = InputLimits;
-  public resourceOptions = signal<SelectOption[]>(resourceTypeOptions);
+  inputLimits = InputLimits;
+  resourceOptions = signal<SelectOption[]>(resourceTypeOptions);
 
-  protected getControl(controlName: keyof RegistryResourceFormModel): FormControl<string | null> {
+  getControl(controlName: keyof RegistryResourceFormModel): FormControl<string | null> {
     return this.formGroup().get(controlName) as FormControl<string | null>;
   }
 

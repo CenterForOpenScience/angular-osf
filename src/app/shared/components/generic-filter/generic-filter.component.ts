@@ -1,6 +1,19 @@
-import { Select, SelectChangeEvent } from 'primeng/select';
+import { Select, SelectChangeEvent, SelectLazyLoadEvent } from 'primeng/select';
 
-import { ChangeDetectionStrategy, Component, computed, effect, input, output, signal } from '@angular/core';
+import { debounceTime, Subject } from 'rxjs';
+
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { LoadingSpinnerComponent } from '@shared/components';
@@ -10,24 +23,60 @@ import { SelectOption } from '@shared/models';
   selector: 'osf-generic-filter',
   imports: [Select, FormsModule, LoadingSpinnerComponent],
   templateUrl: './generic-filter.component.html',
+  styleUrls: ['./generic-filter.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GenericFilterComponent {
+  private destroyRef = inject(DestroyRef);
   options = input<SelectOption[]>([]);
+  searchResults = input<SelectOption[]>([]);
   isLoading = input<boolean>(false);
+  isPaginationLoading = input<boolean>(false);
+  isSearchLoading = input<boolean>(false);
   selectedValue = input<string | null>(null);
   placeholder = input<string>('');
   filterType = input<string>('');
 
   valueChanged = output<string | null>();
+  searchTextChanged = output<string>();
+  loadMoreOptions = output<void>();
 
   currentSelectedOption = signal<SelectOption | null>(null);
+  private searchSubject = new Subject<string>();
+  private currentSearchText = signal<string>('');
+  private searchResultOptions = signal<SelectOption[]>([]);
+  private isActivelySearching = signal<boolean>(false);
+  private stableOptionsArray: SelectOption[] = [];
 
   filterOptions = computed(() => {
+    const searchResults = this.searchResultOptions();
     const parentOptions = this.options();
-    if (parentOptions.length > 0) {
+    const isSearching = this.isActivelySearching();
+
+    if (isSearching && this.stableOptionsArray.length > 0) {
+      return this.stableOptionsArray;
+    }
+
+    const baseOptions = this.formatOptions(parentOptions);
+    let newOptions: SelectOption[];
+
+    if (searchResults.length > 0) {
+      const searchFormatted = this.formatOptions(searchResults);
+      const existingValues = new Set(baseOptions.map((opt) => opt.value));
+      const newSearchOptions = searchFormatted.filter((opt) => !existingValues.has(opt.value));
+      newOptions = [...newSearchOptions, ...baseOptions];
+    } else {
+      newOptions = baseOptions;
+    }
+
+    this.updateStableArray(newOptions);
+    return this.stableOptionsArray;
+  });
+
+  private formatOptions(options: SelectOption[]): SelectOption[] {
+    if (options.length > 0) {
       if (this.filterType() === 'dateCreated') {
-        return parentOptions
+        return options
           .filter((option) => option?.label)
           .sort((a, b) => b.label.localeCompare(a.label))
           .map((option) => ({
@@ -35,7 +84,7 @@ export class GenericFilterComponent {
             value: option.label || '',
           }));
       } else {
-        return parentOptions
+        return options
           .filter((option) => option?.label)
           .sort((a, b) => a.label.localeCompare(b.label))
           .map((option) => ({
@@ -45,7 +94,36 @@ export class GenericFilterComponent {
       }
     }
     return [];
-  });
+  }
+
+  private arraysEqual(a: SelectOption[], b: SelectOption[]): boolean {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i].value !== b[i].value || a[i].label !== b[i].label) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private updateStableArray(newOptions: SelectOption[]): void {
+    if (this.arraysEqual(this.stableOptionsArray, newOptions)) {
+      return;
+    }
+
+    if (newOptions.length > this.stableOptionsArray.length) {
+      const existingValues = new Set(this.stableOptionsArray.map((opt) => opt.value));
+      const newItems = newOptions.filter((opt) => !existingValues.has(opt.value));
+
+      if (this.stableOptionsArray.length + newItems.length === newOptions.length) {
+        this.stableOptionsArray.push(...newItems);
+        return;
+      }
+    }
+
+    this.stableOptionsArray.length = 0;
+    this.stableOptionsArray.push(...newOptions);
+  }
 
   constructor() {
     effect(() => {
@@ -59,6 +137,33 @@ export class GenericFilterComponent {
         this.currentSelectedOption.set(option || null);
       }
     });
+
+    effect(() => {
+      const searchResults = this.searchResults();
+      const current = this.searchResultOptions();
+      if (current.length !== searchResults.length || !this.arraysEqual(current, searchResults)) {
+        this.searchResultOptions.set(searchResults);
+      }
+    });
+
+    this.searchSubject.pipe(debounceTime(500), takeUntilDestroyed(this.destroyRef)).subscribe((searchText) => {
+      this.isActivelySearching.set(false);
+      this.searchTextChanged.emit(searchText);
+    });
+  }
+
+  loadMoreItems(event: SelectLazyLoadEvent): void {
+    const totalOptions = this.filterOptions().length;
+
+    if (event.last >= totalOptions - 5) {
+      setTimeout(() => {
+        this.loadMoreOptions.emit();
+      }, 0);
+    }
+  }
+
+  trackByOption(index: number, option: SelectOption): string {
+    return option.value?.toString() || index.toString();
   }
 
   onValueChange(event: SelectChangeEvent): void {
@@ -67,5 +172,19 @@ export class GenericFilterComponent {
     this.currentSelectedOption.set(selectedOption || null);
 
     this.valueChanged.emit(event.value || null);
+  }
+
+  onFilterChange(event: { filter: string }): void {
+    const searchText = event.filter || '';
+    this.currentSearchText.set(searchText);
+
+    if (searchText) {
+      this.isActivelySearching.set(true);
+    } else {
+      this.searchResultOptions.set([]);
+      this.isActivelySearching.set(false);
+    }
+
+    this.searchSubject.next(searchText);
   }
 }

@@ -25,7 +25,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class RegistryOverviewService {
-  private jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getRegistrationById(id: string): Observable<RegistryOverviewWithMeta> {
     const params = {
@@ -43,7 +44,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .get<GetRegistryOverviewJsonApi>(`${environment.apiUrl}/registrations/${id}/`, params)
+      .get<GetRegistryOverviewJsonApi>(`${this.apiUrl}/registrations/${id}/`, params)
       .pipe(map((response) => ({ registry: MapRegistryOverview(response.data), meta: response.meta })));
   }
 
@@ -54,7 +55,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .get<GetResourceSubjectsJsonApi>(`${environment.apiUrl}/registrations/${registryId}/subjects/`, params)
+      .get<GetResourceSubjectsJsonApi>(`${this.apiUrl}/registrations/${registryId}/subjects/`, params)
       .pipe(map((response) => response.data.map((subject) => ({ id: subject.id, text: subject.attributes.text }))));
   }
 
@@ -64,7 +65,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .get<InstitutionsJsonApiResponse>(`${environment.apiUrl}/registrations/${registryId}/institutions/`, params)
+      .get<InstitutionsJsonApiResponse>(`${this.apiUrl}/registrations/${registryId}/institutions/`, params)
       .pipe(map((response) => InstitutionsMapper.fromInstitutionsResponse(response)));
   }
 
@@ -101,7 +102,7 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .patch<RegistryOverviewJsonApiData>(`${environment.apiUrl}/registrations/${registryId}`, payload)
+      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}`, payload)
       .pipe(map((response) => MapRegistryOverview(response)));
   }
 
@@ -118,12 +119,12 @@ export class RegistryOverviewService {
     };
 
     return this.jsonApiService
-      .patch<RegistryOverviewJsonApiData>(`${environment.apiUrl}/registrations/${registryId}`, payload)
+      .patch<RegistryOverviewJsonApiData>(`${this.apiUrl}/registrations/${registryId}`, payload)
       .pipe(map((response) => MapRegistryOverview(response)));
   }
 
   getRegistryReviewActions(id: string): Observable<ReviewAction[]> {
-    const baseUrl = `${environment.apiUrl}/registrations/${id}/actions/`;
+    const baseUrl = `${this.apiUrl}/registrations/${id}/actions/`;
 
     return this.jsonApiService
       .get<ReviewActionsResponseJsonApi>(baseUrl)
@@ -132,7 +133,7 @@ export class RegistryOverviewService {
 
   submitDecision(payload: ReviewActionPayload, isRevision: boolean): Observable<void> {
     const path = isRevision ? 'schema_responses' : 'registrations';
-    const baseUrl = `${environment.apiUrl}/${path}/${payload.targetId}/actions/`;
+    const baseUrl = `${this.apiUrl}/${path}/${payload.targetId}/actions/`;
 
     const actionType = isRevision ? 'schema_response_actions' : 'review_actions';
     const targetType = isRevision ? 'schema-responses' : 'registrations';

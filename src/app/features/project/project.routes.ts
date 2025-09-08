@@ -15,9 +15,9 @@ import {
 } from '@osf/shared/stores';
 import { ActivityLogsState } from '@osf/shared/stores/activity-logs';
 
+import { AnalyticsState } from '../analytics/store';
 import { CollectionsModerationState } from '../moderation/store/collections-moderation';
 
-import { AnalyticsState } from './analytics/store';
 import { SettingsState } from './settings/store';
 
 export const projectRoutes: Routes = [
@@ -78,7 +78,7 @@ export const projectRoutes: Routes = [
       },
       {
         path: 'analytics',
-        loadComponent: () => import('../project/analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
+        loadComponent: () => import('../analytics/analytics.component').then((mod) => mod.AnalyticsComponent),
         data: { resourceType: ResourceType.Project },
         providers: [provideStates([AnalyticsState])],
       },
@@ -86,7 +86,7 @@ export const projectRoutes: Routes = [
         path: 'analytics/duplicates',
         data: { resourceType: ResourceType.Project },
         loadComponent: () =>
-          import('../project/analytics/components/view-duplicates/view-duplicates.component').then(
+          import('../analytics/components/view-duplicates/view-duplicates.component').then(
             (mod) => mod.ViewDuplicatesComponent
           ),
         providers: [provideStates([DuplicatesState])],

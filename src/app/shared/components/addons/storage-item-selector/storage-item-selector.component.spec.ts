@@ -6,9 +6,9 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { OperationNames } from '@osf/features/project/addons/enums';
 import { StorageItemSelectorComponent } from '@shared/components/addons';
 import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
-import { StorageItem } from '@shared/models';
+import { StorageItemModel } from '@shared/models';
 
-describe('FolderSelectorComponent', () => {
+describe('StorageItemSelectorComponent', () => {
   let component: StorageItemSelectorComponent;
   let fixture: ComponentFixture<StorageItemSelectorComponent>;
 
@@ -65,11 +65,11 @@ describe('FolderSelectorComponent', () => {
   });
 
   it('should set selectedStorageItemId', () => {
-    const mockFolder: StorageItem = {
+    const mockFolder: StorageItemModel = {
       itemId: 'test-folder-id',
       itemName: 'Test Folder',
       itemType: 'folder',
-    } as StorageItem;
+    } as StorageItemModel;
 
     (component as any).selectedRootFolder.set(mockFolder);
     (component as any).handleSave();

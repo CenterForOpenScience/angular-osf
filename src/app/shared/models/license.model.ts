@@ -1,4 +1,4 @@
-export interface License {
+export interface LicenseModel {
   id: string;
   name: string;
   requiredFields: string[];
@@ -12,6 +12,6 @@ export interface LicenseOptions {
 }
 
 export interface LicensesOption {
-  copyrightHolders: string[];
+  copyrightHolders: string[] | null;
   year: string | null;
 }

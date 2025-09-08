@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
 })
 export class UserEmailsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly baseUrl = `${environment.apiUrl}/users`;
+  private readonly baseUrl = `${environment.apiDomainUrl}/v2/users`;
 
   getEmails(): Observable<AccountEmailModel[]> {
     const params: Record<string, string> = {

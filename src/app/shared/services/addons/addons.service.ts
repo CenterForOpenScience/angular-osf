@@ -34,13 +34,12 @@ import { environment } from 'src/environments/environment';
 })
 export class AddonsService {
   private jsonApiService = inject(JsonApiService);
+  private apiUrl = environment.addonsApiUrl;
   private currentUser = select(UserSelectors.getCurrentUser);
 
   getAddons(addonType: string): Observable<AddonModel[]> {
     return this.jsonApiService
-      .get<
-        JsonApiResponse<AddonGetResponseJsonApi[], null>
-      >(`${environment.addonsApiUrl}/external-${addonType}-services`)
+      .get<JsonApiResponse<AddonGetResponseJsonApi[], null>>(`${this.apiUrl}/external-${addonType}-services`)
       .pipe(
         map((response) => {
           return response.data.map((item) => AddonMapper.fromResponse(item));
@@ -53,25 +52,19 @@ export class AddonsService {
     if (!currentUser) throw new Error('Current user not found');
 
     const userUri = `${environment.webUrl}/${currentUser.id}`;
-    const params = {
-      'filter[user_uri]': userUri,
-    };
+    const params = { 'filter[user_uri]': userUri };
 
     return this.jsonApiService
-      .get<JsonApiResponse<UserReferenceJsonApi[], null>>(environment.addonsApiUrl + '/user-references/', params)
+      .get<JsonApiResponse<UserReferenceJsonApi[], null>>(this.apiUrl + '/user-references/', params)
       .pipe(map((response) => response.data));
   }
 
   getAddonsResourceReference(resourceId: string): Observable<ResourceReferenceJsonApi[]> {
     const resourceUri = `${environment.webUrl}/${resourceId}`;
-    const params = {
-      'filter[resource_uri]': resourceUri,
-    };
+    const params = { 'filter[resource_uri]': resourceUri };
 
     return this.jsonApiService
-      .get<
-        JsonApiResponse<ResourceReferenceJsonApi[], null>
-      >(environment.addonsApiUrl + '/resource-references/', params)
+      .get<JsonApiResponse<ResourceReferenceJsonApi[], null>>(this.apiUrl + '/resource-references/', params)
       .pipe(map((response) => response.data));
   }
 
@@ -82,7 +75,7 @@ export class AddonsService {
     return this.jsonApiService
       .get<
         JsonApiResponse<AuthorizedAddonGetResponseJsonApi[], IncludedAddonData[]>
-      >(`${environment.addonsApiUrl}/user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
+      >(`${this.apiUrl}/user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
       .pipe(
         map((response) => {
           return response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included));
@@ -92,12 +85,13 @@ export class AddonsService {
 
   getAuthorizedStorageOauthToken(accountId: string): Observable<AuthorizedAccountModel> {
     return this.jsonApiService
-      .patch<AuthorizedAddonGetResponseJsonApi>(
-        `${environment.addonsApiUrl}/authorized-storage-accounts/${accountId}`,
-        {
-          serializeOauthToken: true,
-        }
-      )
+      .patch<AuthorizedAddonGetResponseJsonApi>(`${this.apiUrl}/authorized-storage-accounts/${accountId}`, {
+        data: {
+          id: accountId,
+          type: 'authorized-storage-accounts',
+          attributes: { serialize_oauth_token: 'true' },
+        },
+      })
       .pipe(
         map((response) => {
           return AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi);
@@ -109,7 +103,7 @@ export class AddonsService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>
-      >(`${environment.addonsApiUrl}/resource-references/${referenceId}/configured_${addonType}_addons/`)
+      >(`${this.apiUrl}/resource-references/${referenceId}/configured_${addonType}_addons/`)
       .pipe(
         map((response) => {
           return response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item));
@@ -124,7 +118,7 @@ export class AddonsService {
     return this.jsonApiService
       .post<
         JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>
-      >(`${environment.addonsApiUrl}/authorized-${addonType}-accounts/?include=external-${addonType}-service`, addonRequestPayload)
+      >(`${this.apiUrl}/authorized-${addonType}-accounts/?include=external-${addonType}-service`, addonRequestPayload)
       .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response.data, response.included)));
   }
 
@@ -136,7 +130,7 @@ export class AddonsService {
     return this.jsonApiService.http
       .patch<
         JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>
-      >(`${environment.addonsApiUrl}/authorized-${addonType}-accounts/${addonId}/?include=external-${addonType}-service`, addonRequestPayload)
+      >(`${this.apiUrl}/authorized-${addonType}-accounts/${addonId}/?include=external-${addonType}-service`, addonRequestPayload)
       .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response.data, response.included)));
   }
 
@@ -147,7 +141,7 @@ export class AddonsService {
     return this.jsonApiService
       .post<
         JsonApiResponse<ConfiguredAddonResponseJsonApi, null>
-      >(`${environment.addonsApiUrl}/configured-${addonType}-addons/`, addonRequestPayload)
+      >(`${this.apiUrl}/configured-${addonType}-addons/`, addonRequestPayload)
       .pipe(map((response) => response.data));
   }
 
@@ -157,7 +151,7 @@ export class AddonsService {
     addonId: string
   ): Observable<ConfiguredAddonResponseJsonApi> {
     return this.jsonApiService.patch<ConfiguredAddonResponseJsonApi>(
-      `${environment.addonsApiUrl}/configured-${addonType}-addons/${addonId}/`,
+      `${this.apiUrl}/configured-${addonType}-addons/${addonId}/`,
       addonRequestPayload
     );
   }
@@ -168,19 +162,15 @@ export class AddonsService {
     return this.jsonApiService
       .post<
         JsonApiResponse<OperationInvocationResponseJsonApi, null>
-      >(`${environment.addonsApiUrl}/addon-operation-invocations/`, invocationRequestPayload)
-      .pipe(
-        map((response) => {
-          return AddonMapper.fromOperationInvocationResponse(response.data);
-        })
-      );
+      >(`${this.apiUrl}/addon-operation-invocations/`, invocationRequestPayload)
+      .pipe(map((response) => AddonMapper.fromOperationInvocationResponse(response.data)));
   }
 
   deleteAuthorizedAddon(id: string, addonType: string): Observable<void> {
-    return this.jsonApiService.delete(`${environment.addonsApiUrl}/authorized-${addonType}-accounts/${id}/`);
+    return this.jsonApiService.delete(`${this.apiUrl}/authorized-${addonType}-accounts/${id}/`);
   }
 
   deleteConfiguredAddon(id: string, addonType: string): Observable<void> {
-    return this.jsonApiService.delete(`${environment.addonsApiUrl}/${addonType}/${id}/`);
+    return this.jsonApiService.delete(`${this.apiUrl}/${addonType}/${id}/`);
   }
 }
