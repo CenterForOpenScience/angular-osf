@@ -19,11 +19,9 @@ import {
   TableColumn,
   TableIconClickEvent,
 } from '@osf/features/admin-institutions/models';
-import { toAddResourceRequestBody } from '@osf/features/registry/mappers';
 import { CustomPaginatorComponent } from '@osf/shared/components';
 import { StopPropagationDirective } from '@shared/directives';
-import { StringOrNull } from '@shared/helpers';
-import { SearchFilters } from '@shared/models';
+import { PaginationLinksModel, SearchFilters } from '@shared/models';
 
 import { DOWNLOAD_OPTIONS } from '../../constants';
 import { DownloadType } from '../../enums';
@@ -67,15 +65,7 @@ export class AdminTableComponent {
 
   isNextPreviousPagination = input<boolean>(false);
 
-  paginationLinks = input<
-    | {
-        first?: { href: StringOrNull };
-        next?: { href: StringOrNull };
-        prev?: { href: StringOrNull };
-        last?: { href: StringOrNull };
-      }
-    | undefined
-  >();
+  paginationLinks = input<PaginationLinksModel>();
 
   visible = true;
 
@@ -169,6 +159,4 @@ export class AdminTableComponent {
     }
     return column.linkTarget || '_self';
   }
-
-  protected readonly toAddResourceRequestBody = toAddResourceRequestBody;
 }
