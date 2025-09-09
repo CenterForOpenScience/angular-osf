@@ -13,6 +13,7 @@ import { provideRouter } from '@angular/router';
 
 import { STATES } from '@core/constants';
 import { APPLICATION_INITIALIZATION_PROVIDER } from '@core/factory/application.initialization.factory';
+import { GOOGLE_TAG_MANAGER_ID_PROVIDER } from '@core/factory/google-tag-manager.factory';
 import { provideTranslation } from '@core/helpers';
 
 import { authInterceptor, errorInterceptor, viewOnlyInterceptor } from './core/interceptors';
@@ -44,6 +45,7 @@ export const appConfig: ApplicationConfig = {
     ConfirmationService,
     MessageService,
     APPLICATION_INITIALIZATION_PROVIDER,
+    GOOGLE_TAG_MANAGER_ID_PROVIDER,
     {
       provide: ErrorHandler,
       useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
