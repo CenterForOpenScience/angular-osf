@@ -97,7 +97,7 @@ export class JustificationStepComponent implements OnDestroy {
             this.isDraftDeleted = true;
             this.actions.clearState();
             this.toastService.showSuccess('registries.justification.successDeleteDraft');
-            this.router.navigateByUrl(`/registries/${registrationId}/overview`);
+            this.router.navigateByUrl(`/${registrationId}/overview`);
           },
         });
       },

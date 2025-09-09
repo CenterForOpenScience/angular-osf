@@ -27,7 +27,8 @@ import { environment } from 'src/environments/environment';
 })
 export class WikiService {
   private readonly jsonApiService = inject(JsonApiService);
-  readonly http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -35,14 +36,13 @@ export class WikiService {
   ]);
 
   private getBaseUrl(resourceType: ResourceType, resourceId: string): string {
-    const baseUrl = `${environment.apiUrl}`;
     const resourcePath = this.urlMap.get(resourceType);
 
     if (!resourcePath) {
       throw new Error(`Unsupported resource type: ${resourceType}`);
     }
 
-    return `${baseUrl}/${resourcePath}/${resourceId}/wikis/`;
+    return `${this.apiUrl}/${resourcePath}/${resourceId}/wikis/`;
   }
 
   createWiki(projectId: string, name: string): Observable<Wiki> {
@@ -55,16 +55,12 @@ export class WikiService {
       },
     };
     return this.jsonApiService
-      .post<JsonApiResponse<WikiGetResponse, null>>(environment.apiUrl + `/nodes/${projectId}/wikis/`, body)
-      .pipe(
-        map((response) => {
-          return WikiMapper.fromCreateWikiResponse(response.data);
-        })
-      );
+      .post<JsonApiResponse<WikiGetResponse, null>>(`${this.apiUrl}/nodes/${projectId}/wikis/`, body)
+      .pipe(map((response) => WikiMapper.fromCreateWikiResponse(response.data)));
   }
 
   deleteWiki(wikiId: string): Observable<void> {
-    return this.jsonApiService.delete(environment.apiUrl + `/wikis/${wikiId}/`);
+    return this.jsonApiService.delete(`${this.apiUrl}/wikis/${wikiId}/`);
   }
 
   getHomeWiki(resourceType: ResourceType, resourceId: string): Observable<string> {
@@ -72,6 +68,7 @@ export class WikiService {
     const params: Record<string, unknown> = {
       'filter[name]': 'home',
     };
+
     return this.jsonApiService.get<HomeWikiJsonApiResponse>(baseUrl, params).pipe(
       map((response) => {
         const homeWiki = response.data.find((wiki) => wiki.attributes.name.toLocaleLowerCase() === 'home');
@@ -92,6 +89,7 @@ export class WikiService {
 
   getWikiList(resourceType: ResourceType, resourceId: string): Observable<WikisWithMeta> {
     const baseUrl = this.getBaseUrl(resourceType, resourceId);
+
     return this.jsonApiService.get<WikiJsonApiResponseWithMeta>(baseUrl).pipe(
       map((response) => ({
         wikis: response.data.map((wiki) => WikiMapper.fromGetWikiResponse(wiki)),
@@ -103,7 +101,7 @@ export class WikiService {
   getComponentsWikiList(resourceType: ResourceType, resourceId: string): Observable<ComponentWiki[]> {
     const resourcePath = this.urlMap.get(resourceType);
     return this.jsonApiService
-      .get<ComponentsWikiJsonApiResponse>(environment.apiUrl + `/${resourcePath}/${resourceId}/children/?embed=wikis`)
+      .get<ComponentsWikiJsonApiResponse>(`${this.apiUrl}/${resourcePath}/${resourceId}/children/?embed=wikis`)
       .pipe(map((response) => response.data.map((component) => WikiMapper.fromGetComponentsWikiResponse(component))));
   }
 
@@ -112,13 +110,10 @@ export class WikiService {
       embed: 'user',
       'fields[users]': 'full_name',
     };
+
     return this.jsonApiService
-      .get<WikiVersionJsonApiResponse>(environment.apiUrl + `/wikis/${wikiId}/versions/`, params)
-      .pipe(
-        map((response) => {
-          return response.data.map((version) => WikiMapper.fromGetWikiVersionResponse(version));
-        })
-      );
+      .get<WikiVersionJsonApiResponse>(`${this.apiUrl}/wikis/${wikiId}/versions/`, params)
+      .pipe(map((response) => response.data.map((version) => WikiMapper.fromGetWikiVersionResponse(version))));
   }
 
   createWikiVersion(wikiId: string, content: string): Observable<unknown> {
@@ -130,18 +125,13 @@ export class WikiService {
         },
       },
     };
+
     return this.jsonApiService
-      .post<JsonApiResponse<WikiGetResponse, null>>(environment.apiUrl + `/wikis/${wikiId}/versions/`, body)
-      .pipe(
-        map((response) => {
-          return WikiMapper.fromCreateWikiResponse(response.data);
-        })
-      );
+      .post<JsonApiResponse<WikiGetResponse, null>>(`${this.apiUrl}/wikis/${wikiId}/versions/`, body)
+      .pipe(map((response) => WikiMapper.fromCreateWikiResponse(response.data)));
   }
 
   getWikiVersionContent(wikiId: string, versionId: string): Observable<string> {
-    return this.http.get(environment.apiUrl + `/wikis/${wikiId}/versions/${versionId}/content/`, {
-      responseType: 'text',
-    });
+    return this.http.get(`${this.apiUrl}/wikis/${wikiId}/versions/${versionId}/content/`, { responseType: 'text' });
   }
 }

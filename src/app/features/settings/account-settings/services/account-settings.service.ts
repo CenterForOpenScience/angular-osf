@@ -22,10 +22,11 @@ import { environment } from 'src/environments/environment';
 })
 export class AccountSettingsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getRegions(): Observable<IdName[]> {
     return this.jsonApiService
-      .get<GetRegionsResponseJsonApi>(`${environment.apiUrl}/regions/`)
+      .get<GetRegionsResponseJsonApi>(`${this.apiUrl}/regions/`)
       .pipe(map((response) => MapRegions(response.data)));
   }
 
@@ -47,7 +48,7 @@ export class AccountSettingsService {
     };
 
     return this.jsonApiService
-      .patch<UserDataJsonApi>(`${environment.apiUrl}/users/${userId}/`, body)
+      .patch<UserDataJsonApi>(`${this.apiUrl}/users/${userId}/`, body)
       .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 
@@ -64,7 +65,7 @@ export class AccountSettingsService {
     };
 
     return this.jsonApiService
-      .patch<UserDataJsonApi>(`${environment.apiUrl}/users/${userId}/`, body)
+      .patch<UserDataJsonApi>(`${this.apiUrl}/users/${userId}/`, body)
       .pipe(map((user) => UserMapper.fromUserGetResponse(user)));
   }
 
@@ -79,7 +80,7 @@ export class AccountSettingsService {
       },
     };
 
-    return this.jsonApiService.post(`${environment.apiUrl}/users/me/settings/password/`, body);
+    return this.jsonApiService.post(`${this.apiUrl}/users/me/settings/password/`, body);
   }
 
   getExternalIdentities(): Observable<ExternalIdentity[]> {
@@ -89,17 +90,17 @@ export class AccountSettingsService {
     };
 
     return this.jsonApiService
-      .get<ListIdentitiesResponseJsonApi>(`${environment.apiUrl}/users/me/settings/identities/`, params)
+      .get<ListIdentitiesResponseJsonApi>(`${this.apiUrl}/users/me/settings/identities/`, params)
       .pipe(map((response) => MapExternalIdentities(response.data)));
   }
 
   deleteExternalIdentity(id: string): Observable<void> {
-    return this.jsonApiService.delete(`${environment.apiUrl}/users/me/settings/identities/${id}/`);
+    return this.jsonApiService.delete(`${this.apiUrl}/users/me/settings/identities/${id}/`);
   }
 
   getSettings(): Observable<AccountSettings> {
     return this.jsonApiService
-      .get<JsonApiResponse<GetAccountSettingsResponseJsonApi, null>>(`${environment.apiUrl}/users/me/settings/`)
+      .get<JsonApiResponse<GetAccountSettingsResponseJsonApi, null>>(`${this.apiUrl}/users/me/settings/`)
       .pipe(map((response) => MapAccountSettings(response.data)));
   }
 
@@ -113,7 +114,7 @@ export class AccountSettingsService {
     };
 
     return this.jsonApiService
-      .patch<GetAccountSettingsResponseJsonApi>(`${environment.apiUrl}/users/${userId}/settings`, body)
+      .patch<GetAccountSettingsResponseJsonApi>(`${this.apiUrl}/users/${userId}/settings`, body)
       .pipe(map((response) => MapAccountSettings(response)));
   }
 }

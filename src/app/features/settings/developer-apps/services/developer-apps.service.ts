@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 })
 export class DeveloperApplicationsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly baseUrl = `${environment.apiUrl}/applications/`;
+  private readonly baseUrl = `${environment.apiDomainUrl}/v2/applications/`;
 
   getApplications(): Observable<DeveloperApp[]> {
     return this.jsonApiService

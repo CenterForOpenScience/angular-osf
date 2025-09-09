@@ -15,7 +15,7 @@ import { environment } from 'src/environments/environment';
 })
 export class RegistryComponentsService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getRegistryComponents(registryId: string, page = 1, pageSize = 10): Observable<RegistryComponentsResponseJsonApi> {
     const params: Record<string, unknown> = {

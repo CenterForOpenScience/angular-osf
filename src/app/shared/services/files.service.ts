@@ -51,6 +51,8 @@ import { environment } from 'src/environments/environment';
 export class FilesService {
   readonly jsonApiService = inject(JsonApiService);
   readonly toastService = inject(ToastService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
+
   filesFields = 'name,guid,kind,extra,size,path,materialized_path,date_modified,parent_folder,files';
 
   private readonly urlMap = new Map<ResourceType, string>([
@@ -172,7 +174,7 @@ export class FilesService {
 
   getFileTarget(fileGuid: string): Observable<OsfFile> {
     return this.jsonApiService
-      .get<GetFileTargetResponse>(`${environment.apiUrl}/files/${fileGuid}/?embed=target`)
+      .get<GetFileTargetResponse>(`${this.apiUrl}/files/${fileGuid}/?embed=target`)
       .pipe(map((response) => MapFile(response.data)));
   }
 
@@ -182,13 +184,13 @@ export class FilesService {
     };
 
     return this.jsonApiService
-      .get<GetFileResponse>(`${environment.apiUrl}/files/${id}/`, params)
+      .get<GetFileResponse>(`${this.apiUrl}/files/${id}/`, params)
       .pipe(map((response) => MapFile(response.data)));
   }
 
   getFileById(fileGuid: string): Observable<OsfFile> {
     return this.jsonApiService
-      .get<GetFileResponse>(`${environment.apiUrl}/files/${fileGuid}/`)
+      .get<GetFileResponse>(`${this.apiUrl}/files/${fileGuid}/`)
       .pipe(map((response) => MapFile(response.data)));
   }
 
@@ -199,13 +201,13 @@ export class FilesService {
     };
 
     return this.jsonApiService
-      .get<FileVersionsResponseJsonApi>(`${environment.apiUrl}/files/${fileGuid}/versions/`, params)
+      .get<FileVersionsResponseJsonApi>(`${this.apiUrl}/files/${fileGuid}/versions/`, params)
       .pipe(map((response) => MapFileVersions(response)));
   }
 
   getFileMetadata(fileGuid: string): Observable<OsfFileCustomMetadata> {
     return this.jsonApiService
-      .get<GetFileMetadataResponse>(`${environment.apiUrl}/custom_file_metadata_records/${fileGuid}/`)
+      .get<GetFileMetadataResponse>(`${this.apiUrl}/custom_file_metadata_records/${fileGuid}/`)
       .pipe(map((response) => MapFileCustomMetadata(response.data)));
   }
 
@@ -213,15 +215,12 @@ export class FilesService {
     const params = {
       'fields[nodes]': 'title,description,date_created,date_modified',
     };
-    return this.jsonApiService.get<GetShortInfoResponse>(
-      `${environment.apiUrl}/${resourceType}/${resourceId}/`,
-      params
-    );
+    return this.jsonApiService.get<GetShortInfoResponse>(`${this.apiUrl}/${resourceType}/${resourceId}/`, params);
   }
 
   getCustomMetadata(resourceId: string): Observable<GetCustomMetadataResponse> {
     return this.jsonApiService.get<GetCustomMetadataResponse>(
-      `${environment.apiUrl}/guids/${resourceId}/?embed=custom_metadata&resolve=false`
+      `${this.apiUrl}/guids/${resourceId}/?embed=custom_metadata&resolve=false`
     );
   }
 
@@ -229,7 +228,7 @@ export class FilesService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ContributorResponse[], null>
-      >(`${environment.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`)
+      >(`${this.apiUrl}/${resourceType}/${resourceId}/bibliographic_contributors/`)
       .pipe(map((response) => ContributorsMapper.fromResponse(response.data)));
   }
 
@@ -245,7 +244,7 @@ export class FilesService {
     return this.jsonApiService
       .patch<
         ApiData<FileCustomMetadata, null, null, null>
-      >(`${environment.apiUrl}/custom_file_metadata_records/${fileGuid}/`, payload)
+      >(`${this.apiUrl}/custom_file_metadata_records/${fileGuid}/`, payload)
       .pipe(map((response) => MapFileCustomMetadata(response)));
   }
 
@@ -272,7 +271,7 @@ export class FilesService {
     return this.jsonApiService
       .patch<
         ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>
-      >(`${environment.apiUrl}/files/${fileGuid}/`, payload)
+      >(`${this.apiUrl}/files/${fileGuid}/`, payload)
       .pipe(map((response) => MapFile(response)));
   }
 
@@ -284,6 +283,7 @@ export class FilesService {
       provider,
       resource: resourceId,
     };
+
     return this.jsonApiService
       .post<
         JsonApiResponse<ApiData<FileResponse, FileTargetResponse, FileRelationshipsResponse, FileLinks>, null>
@@ -299,7 +299,7 @@ export class FilesService {
     return this.jsonApiService
       .get<
         JsonApiResponse<ApiData<null, null, null, { self: string }>[], null>
-      >(`${environment.addonsV1Url}/resource-references`, params)
+      >(`${environment.addonsApiUrl}/resource-references`, params)
       .pipe(map((response) => response.data?.[0]?.links?.self ?? ''));
   }
 

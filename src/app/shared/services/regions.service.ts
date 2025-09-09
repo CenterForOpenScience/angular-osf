@@ -14,11 +14,11 @@ import { environment } from 'src/environments/environment';
 })
 export class RegionsService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiUrl;
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getAllRegions(): Observable<IdName[]> {
     return this.http
-      .get<RegionsResponseJsonApi>(`${this.baseUrl}/regions/`)
+      .get<RegionsResponseJsonApi>(`${this.apiUrl}/regions/`)
       .pipe(map((regions) => RegionsMapper.fromRegionsResponseJsonApi(regions)));
   }
 }
