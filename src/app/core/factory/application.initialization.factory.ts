@@ -14,7 +14,7 @@ import * as Sentry from '@sentry/angular';
  *
  * @returns A Promise that resolves once Sentry is initialized (or skipped if no DSN)
  */
-export function initializeSentry() {
+export function initializeApplication() {
   return async () => {
     const configService = inject(OSFConfigService);
     const environment = inject(ENVIRONMENT);
@@ -49,4 +49,4 @@ export function initializeSentry() {
  * @see https://docs.sentry.io/platforms/javascript/guides/angular/
  * @see Angular's `provideAppInitializer`: https://angular.io/api/core/provideAppInitializer
  */
-export const SENTRY_PROVIDER = provideAppInitializer(initializeSentry());
+export const APPLICATION_INITIALIZATION_PROVIDER = provideAppInitializer(initializeApplication());

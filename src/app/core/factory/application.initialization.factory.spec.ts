@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { OSFConfigService } from '@core/services/osf-config.service';
 
-import { initializeSentry } from './sentry.factory';
+import { initializeApplication } from './application.initialization.factory';
 
 import * as Sentry from '@sentry/angular';
 import { OSFTestingModule } from '@testing/osf.testing.module';
@@ -38,7 +38,7 @@ describe('factory: sentry', () => {
     const service = TestBed.inject(OSFConfigService);
     jest.spyOn(service, 'get').mockResolvedValue('https://dsn.url');
     await runInInjectionContext(TestBed, async () => {
-      await initializeSentry()();
+      await initializeApplication()();
     });
 
     expect(Sentry.init).toHaveBeenCalledWith({
@@ -54,7 +54,7 @@ describe('factory: sentry', () => {
     const service = TestBed.inject(OSFConfigService);
     jest.spyOn(service, 'get').mockResolvedValue(null);
     await runInInjectionContext(TestBed, async () => {
-      await initializeSentry()();
+      await initializeApplication()();
     });
 
     expect(Sentry.init).not.toHaveBeenCalled();

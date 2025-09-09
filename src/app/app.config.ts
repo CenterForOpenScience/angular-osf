@@ -12,7 +12,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
 import { STATES } from '@core/constants';
-import { SENTRY_PROVIDER } from '@core/factory/sentry.factory';
+import { APPLICATION_INITIALIZATION_PROVIDER } from '@core/factory/application.initialization.factory';
 import { provideTranslation } from '@core/helpers';
 
 import { authInterceptor, errorInterceptor, viewOnlyInterceptor } from './core/interceptors';
@@ -43,7 +43,7 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
     ConfirmationService,
     MessageService,
-    SENTRY_PROVIDER,
+    APPLICATION_INITIALIZATION_PROVIDER,
     {
       provide: ErrorHandler,
       useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
