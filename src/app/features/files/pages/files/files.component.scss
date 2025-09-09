@@ -1,4 +1,3 @@
-@use "styles/variables" as var;
 @use "styles/mixins" as mix;
 
 :host {
@@ -8,7 +7,7 @@
 }
 
 .blue-text {
-  color: var.$pr-blue-1;
+  color: var(--pr-blue-1);
 }
 
 .filename {
