@@ -13,9 +13,9 @@ export class TruncatedTextComponent implements AfterViewInit {
   readonly text = input('');
   readonly hasContent = input<boolean>(false);
   readonly maxVisibleLines = input(3);
-  protected readonly contentElement = viewChild<ElementRef>('textContent');
-  protected isTextExpanded = signal(false);
-  protected hasOverflowingText = signal(false);
+  readonly contentElement = viewChild<ElementRef>('textContent');
+  isTextExpanded = signal(false);
+  hasOverflowingText = signal(false);
 
   ngAfterViewInit() {
     this.checkTextOverflow();
@@ -29,7 +29,7 @@ export class TruncatedTextComponent implements AfterViewInit {
     this.hasOverflowingText.set(hasOverflow);
   }
 
-  protected toggleTextExpansion(): void {
+  toggleTextExpansion(): void {
     this.isTextExpanded.update((expanded) => !expanded);
   }
 }

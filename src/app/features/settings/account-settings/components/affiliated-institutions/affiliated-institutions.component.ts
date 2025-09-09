@@ -28,8 +28,8 @@ export class AffiliatedInstitutionsComponent {
   private readonly loaderService = inject(LoaderService);
 
   private readonly actions = createDispatchMap({ deleteUserInstitution: DeleteUserInstitution });
-  protected institutions = select(AccountSettingsSelectors.getUserInstitutions);
-  protected currentUser = select(UserSelectors.getCurrentUser);
+  institutions = select(AccountSettingsSelectors.getUserInstitutions);
+  currentUser = select(UserSelectors.getCurrentUser);
 
   deleteInstitution(institution: Institution) {
     this.customConfirmationService.confirmDelete({

@@ -25,12 +25,12 @@ import { ForkResource, ProjectOverviewSelectors } from '../../store';
 export class ForkDialogComponent {
   private store = inject(Store);
   private toastService = inject(ToastService);
-  protected dialogRef = inject(DynamicDialogRef);
-  protected destroyRef = inject(DestroyRef);
-  protected isSubmitting = select(ProjectOverviewSelectors.getForkProjectSubmitting);
+  dialogRef = inject(DynamicDialogRef);
+  destroyRef = inject(DestroyRef);
+  isSubmitting = select(ProjectOverviewSelectors.getForkProjectSubmitting);
   readonly config = inject(DynamicDialogConfig);
 
-  protected handleForkConfirm(): void {
+  handleForkConfirm(): void {
     const resource = this.config.data.resource as ToolbarResource;
     if (!resource) return;
 

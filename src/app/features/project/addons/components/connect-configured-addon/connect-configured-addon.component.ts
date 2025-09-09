@@ -71,33 +71,33 @@ export class ConnectConfiguredAddonComponent {
   private operationInvocationService = inject(AddonOperationInvocationService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  protected readonly AddonStepperValue = ProjectAddonsStepperValue;
-  protected readonly stepper = viewChild(Stepper);
-  protected accountNameControl = new FormControl('');
-  protected terms = signal<AddonTerm[]>([]);
-  protected addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
-  protected addonAuthUrl = signal<string>('/settings/addons');
-  protected currentAuthorizedAddonAccounts = signal<AuthorizedAccountModel[]>([]);
-  protected chosenAccountId = signal('');
-  protected chosenAccountName = signal('');
-  protected selectedRootFolderId = signal('');
+  readonly AddonStepperValue = ProjectAddonsStepperValue;
+  readonly stepper = viewChild(Stepper);
+  accountNameControl = new FormControl('');
+  terms = signal<AddonTerm[]>([]);
+  addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
+  addonAuthUrl = signal<string>('/settings/addons');
+  currentAuthorizedAddonAccounts = signal<AuthorizedAccountModel[]>([]);
+  chosenAccountId = signal('');
+  chosenAccountName = signal('');
+  selectedRootFolderId = signal('');
   private selectedAccount = signal<AuthorizedAccountModel>({} as AuthorizedAccountModel);
   public readonly isGoogleDrive = computed(() => {
     return this.selectedAccount()?.externalServiceName === 'googledrive';
   });
 
-  protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
-  protected createdAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
-  protected createdConfiguredAddon = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddon);
-  protected authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
-  protected authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
-  protected operationInvocation = select(AddonsSelectors.getOperationInvocation);
+  addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
+  createdAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
+  createdConfiguredAddon = select(AddonsSelectors.getCreatedOrUpdatedConfiguredAddon);
+  authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
+  authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
+  operationInvocation = select(AddonsSelectors.getOperationInvocation);
 
-  protected isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
-  protected isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
-  protected isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
+  isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+  isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
+  isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getAuthorizedStorageAddons: GetAuthorizedStorageAddons,
     getAuthorizedCitationAddons: GetAuthorizedCitationAddons,
     createAuthorizedAddon: CreateAuthorizedAddon,
@@ -107,26 +107,26 @@ export class ConnectConfiguredAddonComponent {
     createAddonOperationInvocation: CreateAddonOperationInvocation,
   });
 
-  protected readonly userReferenceId = computed(() => {
+  readonly userReferenceId = computed(() => {
     return this.addonsUserReference()[0]?.id;
   });
 
-  protected loginOrChooseAccountText = computed(() => {
+  loginOrChooseAccountText = computed(() => {
     return this.translateService.instant('settings.addons.connectAddon.loginToOrSelectAccount', {
       addonName: this.addon()?.displayName,
     });
   });
 
-  protected resourceUri = computed(() => {
+  resourceUri = computed(() => {
     const id = this.route.parent?.parent?.snapshot.params['id'];
     return `${environment.webUrl}/${id}`;
   });
 
-  protected addonTypeString = computed(() => {
+  addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());
   });
 
-  protected readonly baseUrl = computed(() => {
+  readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
     return currentUrl.split('/addons')[0];
   });
@@ -139,7 +139,7 @@ export class ConnectConfiguredAddonComponent {
     this.addon.set(addon);
   }
 
-  protected handleCreateConfiguredAddon() {
+  handleCreateConfiguredAddon() {
     const addon = this.addon();
     this.selectedAccount.set(
       this.currentAuthorizedAddonAccounts().find((account) => account.id === this.chosenAccountId()) ||
@@ -170,7 +170,7 @@ export class ConnectConfiguredAddonComponent {
     });
   }
 
-  protected handleCreateAuthorizedAddon(payload: AuthorizedAddonRequestJsonApi): void {
+  handleCreateAuthorizedAddon(payload: AuthorizedAddonRequestJsonApi): void {
     if (!this.addon()) return;
 
     this.actions.createAuthorizedAddon(payload, this.addonTypeString()).subscribe({
@@ -185,7 +185,7 @@ export class ConnectConfiguredAddonComponent {
     });
   }
 
-  protected handleConfirmAccountConnection(): void {
+  handleConfirmAccountConnection(): void {
     this.selectedAccount.set(
       this.currentAuthorizedAddonAccounts().find((account) => account.id === this.chosenAccountId()) ||
         ({} as AuthorizedAccountModel)
@@ -204,7 +204,7 @@ export class ConnectConfiguredAddonComponent {
     });
   }
 
-  protected handleAuthorizedAccountsPresenceCheck() {
+  handleAuthorizedAccountsPresenceCheck() {
     const requiredData = this.getDataForAccountCheck();
     if (!requiredData) return;
 
@@ -273,7 +273,7 @@ export class ConnectConfiguredAddonComponent {
     return authorizedAddons.filter((addon) => addon.externalServiceName === currentAddon.externalServiceName);
   }
 
-  protected handleCreateOperationInvocation(operationName: OperationNames, itemId: string): void {
+  handleCreateOperationInvocation(operationName: OperationNames, itemId: string): void {
     const selectedAccount = this.currentAuthorizedAddonAccounts().find(
       (account) => account.id === this.chosenAccountId()
     );

@@ -87,12 +87,12 @@ export class ConfigureAddonComponent implements OnInit {
     return this.storageAddon()?.wbKey === 'googledrive';
   });
 
-  protected isEditMode = signal<boolean>(false);
+  isEditMode = signal<boolean>(false);
   public selectedRootFolderId = signal('');
-  protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
+  addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
   public operationInvocation = select(AddonsSelectors.getOperationInvocation);
-  protected selectedFolderOperationInvocation = select(AddonsSelectors.getSelectedFolderOperationInvocation);
-  protected selectedFolder = select(AddonsSelectors.getSelectedFolder);
+  selectedFolderOperationInvocation = select(AddonsSelectors.getSelectedFolderOperationInvocation);
+  selectedFolder = select(AddonsSelectors.getSelectedFolder);
 
   readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
@@ -105,7 +105,7 @@ export class ConfigureAddonComponent implements OnInit {
   readonly addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());
   });
-  protected readonly actions = createDispatchMap({
+  readonly actions = createDispatchMap({
     createAddonOperationInvocation: CreateAddonOperationInvocation,
     updateConfiguredAddon: UpdateConfiguredAddon,
     clearOperationInvocations: ClearOperationInvocations,
@@ -139,7 +139,7 @@ export class ConfigureAddonComponent implements OnInit {
     }
   }
 
-  protected handleCreateOperationInvocation(operationName: OperationNames, folderId: string): void {
+  handleCreateOperationInvocation(operationName: OperationNames, folderId: string): void {
     const addon = this.addon();
     if (!addon) return;
 
@@ -152,7 +152,7 @@ export class ConfigureAddonComponent implements OnInit {
     this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.selectedRootFolderId());
   }
 
-  protected handleDisconnectAccount(): void {
+  handleDisconnectAccount(): void {
     const currentAddon = this.addon();
     if (!currentAddon) return;
 
@@ -172,7 +172,7 @@ export class ConfigureAddonComponent implements OnInit {
     });
   }
 
-  protected toggleEditMode(): void {
+  toggleEditMode(): void {
     const operationResult = this.selectedFolderOperationInvocation()?.operationResult[0];
     const hasRootCandidates = operationResult?.mayContainRootCandidates ?? false;
     const itemId = operationResult?.itemId || '/';
@@ -184,7 +184,7 @@ export class ConfigureAddonComponent implements OnInit {
     this.isEditMode.set(!this.isEditMode());
   }
 
-  protected handleUpdateAddonConfiguration(): void {
+  handleUpdateAddonConfiguration(): void {
     const currentAddon = this.addon();
     if (!currentAddon) return;
 

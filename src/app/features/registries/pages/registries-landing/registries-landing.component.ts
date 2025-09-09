@@ -38,14 +38,14 @@ import { environment } from 'src/environments/environment';
 export class RegistriesLandingComponent implements OnInit {
   private router = inject(Router);
 
-  protected searchControl = new FormControl<string>('');
+  searchControl = new FormControl<string>('');
 
   private readonly actions = createDispatchMap({
     getRegistries: GetRegistries,
   });
 
-  protected registries = select(RegistriesSelectors.getRegistries);
-  protected isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
+  registries = select(RegistriesSelectors.getRegistries);
+  isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
 
   ngOnInit(): void {
     this.actions.getRegistries();

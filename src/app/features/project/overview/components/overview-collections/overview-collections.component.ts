@@ -24,18 +24,18 @@ import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores'
 })
 export class OverviewCollectionsComponent {
   private readonly router = inject(Router);
-  protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
+  readonly SubmissionReviewStatus = SubmissionReviewStatus;
 
   currentProject = input.required<ResourceOverview | null>();
   projectSubmissions = select(CollectionsSelectors.getCurrentProjectSubmissions);
   isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
 
-  protected projectId = computed(() => {
+  projectId = computed(() => {
     const resource = this.currentProject();
     return resource ? resource.id : null;
   });
 
-  protected actions = createDispatchMap({ getProjectSubmissions: GetProjectSubmissions });
+  actions = createDispatchMap({ getProjectSubmissions: GetProjectSubmissions });
 
   constructor() {
     effect(() => {
@@ -47,7 +47,7 @@ export class OverviewCollectionsComponent {
     });
   }
 
-  protected get submissionAttributes() {
+  get submissionAttributes() {
     return (submission: CollectionSubmission) => {
       if (!submission) return [];
 

@@ -39,32 +39,32 @@ import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@
 export class ConnectAddonComponent {
   private readonly router = inject(Router);
 
-  protected readonly stepper = viewChild(Stepper);
-  protected readonly ProjectAddonsStepperValue = ProjectAddonsStepperValue;
+  readonly stepper = viewChild(Stepper);
+  readonly ProjectAddonsStepperValue = ProjectAddonsStepperValue;
 
-  protected terms = signal<AddonTerm[]>([]);
-  protected addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
-  protected addonAuthUrl = signal<string>('/settings/addons');
+  terms = signal<AddonTerm[]>([]);
+  addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
+  addonAuthUrl = signal<string>('/settings/addons');
 
-  protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
-  protected createdAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
-  protected isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
-  protected isAuthorized = computed(() => {
+  addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
+  createdAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
+  isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
+  isAuthorized = computed(() => {
     return isAuthorizedAddon(this.addon());
   });
-  protected addonTypeString = computed(() => {
+  addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     createAuthorizedAddon: CreateAuthorizedAddon,
     updateAuthorizedAddon: UpdateAuthorizedAddon,
   });
 
-  protected readonly userReferenceId = computed(() => {
+  readonly userReferenceId = computed(() => {
     return this.addonsUserReference()[0]?.id;
   });
-  protected readonly baseUrl = computed(() => {
+  readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
     return currentUrl.split('/addons')[0];
   });

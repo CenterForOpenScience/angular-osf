@@ -57,27 +57,27 @@ export class CollectionModerationSubmissionsComponent {
   private route = inject(ActivatedRoute);
   readonly submissionReviewOptions = COLLECTIONS_SUBMISSIONS_REVIEW_OPTIONS;
 
-  protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
-  protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
-  protected isSubmissionsLoading = select(CollectionsModerationSelectors.getCollectionSubmissionsLoading);
-  protected collectionSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
-  protected totalSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissionsTotalCount);
-  protected providerId = signal<string>('');
-  protected primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
-  protected reviewStatus = signal<SubmissionReviewStatus>(SubmissionReviewStatus.Pending);
-  protected currentPage = signal<string>('1');
-  protected pageSize = 10;
+  collectionProvider = select(CollectionsSelectors.getCollectionProvider);
+  isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  isSubmissionsLoading = select(CollectionsModerationSelectors.getCollectionSubmissionsLoading);
+  collectionSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
+  totalSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissionsTotalCount);
+  providerId = signal<string>('');
+  primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
+  reviewStatus = signal<SubmissionReviewStatus>(SubmissionReviewStatus.Pending);
+  currentPage = signal<string>('1');
+  pageSize = 10;
 
-  protected isLoading = computed(() => {
+  isLoading = computed(() => {
     return this.isCollectionProviderLoading() || this.isSubmissionsLoading();
   });
 
   sortOptions = COLLECTION_SUBMISSIONS_SORT_OPTIONS;
   selectedSortOption = signal<string>(this.sortOptions[0].value);
 
-  protected firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * 10);
+  firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * 10);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getCollectionProvider: GetCollectionProvider,
     getCollectionDetails: GetCollectionDetails,
     searchCollectionSubmissions: SearchCollectionSubmissions,

@@ -17,6 +17,6 @@ import { WikiSelectors } from '@osf/shared/stores';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewWikiComponent {
-  protected isWikiLoading = select(WikiSelectors.getHomeWikiLoading);
-  protected wikiContent = select(WikiSelectors.getHomeWikiContent);
+  isWikiLoading = select(WikiSelectors.getHomeWikiLoading);
+  wikiContent = select(WikiSelectors.getHomeWikiContent);
 }

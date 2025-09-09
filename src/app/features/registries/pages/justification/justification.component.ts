@@ -35,10 +35,10 @@ export class JustificationComponent implements OnDestroy {
 
   private readonly loaderService = inject(LoaderService);
   private readonly translateService = inject(TranslateService);
-  protected readonly pages = select(RegistriesSelectors.getPagesSchema);
-  protected readonly stepsValidation = select(RegistriesSelectors.getStepsValidation);
-  protected readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
-  protected readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
+  readonly pages = select(RegistriesSelectors.getPagesSchema);
+  readonly stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+  readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
 
   private readonly actions = createDispatchMap({
     getSchemaBlocks: FetchSchemaBlocks,

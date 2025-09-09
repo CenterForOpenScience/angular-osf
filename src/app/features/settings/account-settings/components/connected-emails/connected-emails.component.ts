@@ -39,10 +39,10 @@ export class ConnectedEmailsComponent {
   private readonly loaderService = inject(LoaderService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly currentUser = select(UserSelectors.getCurrentUser);
-  protected readonly emails = select(UserEmailsSelectors.getEmails);
-  protected readonly isEmailsLoading = select(UserEmailsSelectors.isEmailsLoading);
-  protected readonly isEmailsSubmitting = select(UserEmailsSelectors.isEmailsSubmitting);
+  readonly currentUser = select(UserSelectors.getCurrentUser);
+  readonly emails = select(UserEmailsSelectors.getEmails);
+  readonly isEmailsLoading = select(UserEmailsSelectors.isEmailsLoading);
+  readonly isEmailsSubmitting = select(UserEmailsSelectors.isEmailsSubmitting);
 
   private readonly actions = createDispatchMap({
     resendConfirmation: ResendConfirmation,
@@ -50,13 +50,13 @@ export class ConnectedEmailsComponent {
     makePrimary: MakePrimary,
   });
 
-  protected readonly unconfirmedEmails = computed(() => {
+  readonly unconfirmedEmails = computed(() => {
     return this.emails().filter((email) => !email.confirmed && !email.primary);
   });
-  protected readonly confirmedEmails = computed(() => {
+  readonly confirmedEmails = computed(() => {
     return this.emails().filter((email) => email.confirmed && !email.primary);
   });
-  protected readonly primaryEmail = computed(() => {
+  readonly primaryEmail = computed(() => {
     return this.emails().find((email) => email.primary);
   });
 

@@ -34,10 +34,10 @@ import {
 export class CollectionsFiltersComponent {
   private readonly filterTypes = collectionFilterTypes;
 
-  protected filtersOptions = select(CollectionsSelectors.getAllFiltersOptions);
-  protected selectedFilters = select(CollectionsSelectors.getAllSelectedFilters);
+  filtersOptions = select(CollectionsSelectors.getAllFiltersOptions);
+  selectedFilters = select(CollectionsSelectors.getAllSelectedFilters);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     programArea: SetProgramAreaFilters,
     collectedType: SetCollectedTypeFilters,
     status: SetStatusFilters,
@@ -50,7 +50,7 @@ export class CollectionsFiltersComponent {
     volume: SetVolumeFilters,
   });
 
-  protected availableFilterEntries = computed(() => {
+  availableFilterEntries = computed(() => {
     const options = this.filtersOptions();
     const selectedFilters = this.selectedFilters();
 
@@ -69,7 +69,7 @@ export class CollectionsFiltersComponent {
       .filter((entry) => entry.options.length > 0);
   });
 
-  protected setFilters(filterType: CollectionFilterType, $event: MultiSelectChangeEvent): void {
+  setFilters(filterType: CollectionFilterType, $event: MultiSelectChangeEvent): void {
     const filters = $event.value;
 
     switch (filterType) {
@@ -106,7 +106,7 @@ export class CollectionsFiltersComponent {
     }
   }
 
-  protected clearFilters(filterType: CollectionFilterType): void {
+  clearFilters(filterType: CollectionFilterType): void {
     this.setFilters(filterType, { value: [] } as MultiSelectChangeEvent);
   }
 }

@@ -18,16 +18,16 @@ import { AddonsSelectors, DeleteConfiguredAddon } from '@shared/stores/addons';
 })
 export class DisconnectAddonModalComponent {
   private dialogConfig = inject(DynamicDialogConfig);
-  protected dialogRef = inject(DynamicDialogRef);
-  protected addon = this.dialogConfig.data.addon;
-  protected dialogMessage = this.dialogConfig.data.message || '';
-  protected isSubmitting = select(AddonsSelectors.getDeleteStorageAddonSubmitting);
-  protected selectedFolder = select(AddonsSelectors.getSelectedFolder);
-  protected actions = createDispatchMap({
+  dialogRef = inject(DynamicDialogRef);
+  addon = this.dialogConfig.data.addon;
+  dialogMessage = this.dialogConfig.data.message || '';
+  isSubmitting = select(AddonsSelectors.getDeleteStorageAddonSubmitting);
+  selectedFolder = select(AddonsSelectors.getSelectedFolder);
+  actions = createDispatchMap({
     deleteConfiguredAddon: DeleteConfiguredAddon,
   });
 
-  protected handleDisconnectAddonAccount(): void {
+  handleDisconnectAddonAccount(): void {
     if (!this.addon) return;
 
     this.actions.deleteConfiguredAddon(this.addon.id, this.addon.type).subscribe({

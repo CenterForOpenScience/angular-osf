@@ -23,12 +23,12 @@ import { HandleSchemaResponse } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmContinueEditingDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
+  readonly dialogRef = inject(DynamicDialogRef);
   private readonly fb = inject(FormBuilder);
   readonly config = inject(DynamicDialogConfig);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     handleSchemaResponse: HandleSchemaResponse,
   });
 

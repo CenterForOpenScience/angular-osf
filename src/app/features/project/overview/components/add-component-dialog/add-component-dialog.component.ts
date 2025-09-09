@@ -45,13 +45,13 @@ export class AddComponentDialogComponent implements OnInit {
   private store = inject(Store);
   private readonly toastService = inject(ToastService);
 
-  protected isMobile = toSignal(inject(IS_XSMALL));
-  protected dialogRef = inject(DynamicDialogRef);
-  protected destroyRef = inject(DestroyRef);
-  protected ComponentFormControls = ComponentFormControls;
-  protected storageLocations = STORAGE_LOCATIONS;
-  protected isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
-  protected currentProject = this.store.selectSignal(ProjectOverviewSelectors.getProject);
+  isMobile = toSignal(inject(IS_XSMALL));
+  dialogRef = inject(DynamicDialogRef);
+  destroyRef = inject(DestroyRef);
+  ComponentFormControls = ComponentFormControls;
+  storageLocations = STORAGE_LOCATIONS;
+  isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
+  currentProject = this.store.selectSignal(ProjectOverviewSelectors.getProject);
 
   toggleAddContributors(): void {
     const control = this.componentForm.get(ComponentFormControls.AddContributors);
