@@ -27,10 +27,6 @@ export const environment = {
    */
   addonsApiUrl: 'https://addons.staging4.osf.io/v1',
   /**
-   * URL for file-related operations on the US storage region.
-   */
-  fileApiUrl: 'https://files.us.staging4.osf.io/v1',
-  /**
    * API endpoint for funder metadata resolution via Crossref.
    */
   funderApiUrl: 'https://api.crossref.org/',

@@ -217,7 +217,7 @@ export class FilesComponent {
     effect(() => {
       const rootFolders = this.rootFolders();
       if (rootFolders) {
-        const osfRootFolder = rootFolders.find((folder: OsfFile) => folder.provider === 'osfstorage');
+        const osfRootFolder = rootFolders.find((folder: OsfFile) => folder.provider === FileProvider.OsfStorage);
         if (osfRootFolder) {
           this.currentRootFolder.set({
             label: this.translateService.instant('files.storageLocation'),
@@ -340,14 +340,14 @@ export class FilesComponent {
     const resourceId = this.resourceId();
     const folderId = this.currentFolder()?.id ?? '';
     const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
-    const provider = this.currentRootFolder()?.folder?.provider ?? 'osfstorage';
+    const storageLink = this.currentRootFolder()?.folder?.links?.download ?? '';
 
     if (resourceId && folderId) {
       if (isRootFolder) {
-        const link = this.filesService.getFolderDownloadLink(resourceId, provider, '', true);
+        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
         window.open(link, '_blank')?.focus();
       } else {
-        const link = this.filesService.getFolderDownloadLink(resourceId, provider, folderId, false);
+        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
         window.open(link, '_blank')?.focus();
       }
     }
@@ -390,7 +390,7 @@ export class FilesComponent {
   }
 
   getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
-    if (provider === 'osfstorage') {
+    if (provider === FileProvider.OsfStorage) {
       return this.translateService.instant('files.storageLocation');
     } else {
       return addons.find((addon) => addon.externalServiceName === provider)?.displayName ?? '';

@@ -165,11 +165,11 @@ export class FilesService {
     );
   }
 
-  getFolderDownloadLink(resourceId: string, provider: string, folderId: string, isRootFolder: boolean): string {
+  getFolderDownloadLink(storageLink: string, folderId: string, isRootFolder: boolean): string {
     if (isRootFolder) {
-      return `${environment.fileApiUrl}/resources/${resourceId}/providers/${provider}/?zip=`;
+      return `${storageLink}?zip=`;
     }
-    return `${environment.fileApiUrl}/resources/${resourceId}/providers/${provider}/${folderId}/?zip=`;
+    return `${storageLink}${folderId}/?zip=`;
   }
 
   getFileTarget(fileGuid: string): Observable<OsfFile> {
@@ -248,11 +248,9 @@ export class FilesService {
       .pipe(map((response) => MapFileCustomMetadata(response)));
   }
 
-  getFileRevisions(resourceId: string, provider: string, fileId: string): Observable<OsfFileRevision[]> {
+  getFileRevisions(link: string, fileId: string): Observable<OsfFileRevision[]> {
     return this.jsonApiService
-      .get<GetFileRevisionsResponse>(
-        `${environment.fileApiUrl}/resources/${resourceId}/providers/${provider}/${fileId}?revisions=`
-      )
+      .get<GetFileRevisionsResponse>(`${link}/${fileId}?revisions=`)
       .pipe(map((response) => MapFileRevision(response.data)));
   }
 

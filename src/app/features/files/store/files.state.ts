@@ -257,7 +257,7 @@ export class FilesState {
     const state = ctx.getState();
     ctx.patchState({ fileRevisions: { ...state.fileRevisions, isLoading: true, error: null } });
 
-    return this.filesService.getFileRevisions(action.resourceId, action.fileProvider, action.fileId).pipe(
+    return this.filesService.getFileRevisions(action.link, action.fileId).pipe(
       tap({
         next: (revisions) => {
           ctx.patchState({ fileRevisions: { data: revisions, isLoading: false, error: null } });

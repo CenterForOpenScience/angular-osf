@@ -183,8 +183,8 @@ export class FileDetailComponent {
           this.actions.getFileResourceMetadata(this.resourceId, this.resourceType);
           this.actions.getFileResourceContributors(this.resourceId, this.resourceType);
           if (fileId) {
-            const fileProvider = this.file()?.provider || '';
-            this.actions.getFileRevisions(this.resourceId, fileProvider, fileId);
+            const storageLink = this.file()?.links.download || '';
+            this.actions.getFileRevisions(storageLink, fileId);
             this.actions.getCedarTemplates();
             this.actions.getCedarRecords(fileId, ResourceType.File);
           }
