@@ -28,9 +28,7 @@ export class AffiliatedInstitutionSelectComponent {
     return institutions.length === 0 || institutions.length === selected.length;
   });
 
-  isRemoveAllDisabled = computed(() => {
-    return this.selectedInstitutions().length === 0;
-  });
+  isRemoveAllDisabled = computed(() => this.selectedInstitutions().length === 0);
 
   removeAll() {
     this.selectedInstitutions.set([]);

@@ -70,7 +70,7 @@ export class AddProjectFormComponent implements OnInit {
     effect(() => {
       const affiliations = this.affiliations();
 
-      if (affiliations.length > 0) {
+      if (affiliations?.length > 0) {
         this.selectedAffiliations.set(affiliations);
       }
     });
