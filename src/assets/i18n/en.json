@@ -890,6 +890,7 @@
         "youAlreadyAddedText": "You have already added a record for this template",
         "youAlreadyAdded": "Already Added",
         "loadingCedar": "Loading CEDAR record...",
+        "editRecord": "Edit Record",
         "recordCreatedSuccessfully": "Record created successfully",
         "recordUpdatedSuccessfully": "Record updated successfully"
       },
