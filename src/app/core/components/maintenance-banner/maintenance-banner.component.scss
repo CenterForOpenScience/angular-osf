@@ -1,0 +1,85 @@
+@use "styles/variables" as var;
+@use "styles/mixins" as mix;
+
+.maintenance-banner {
+  width: 100%;
+  @include mix.flex-align-center;
+  border-radius: mix.rem(12px);
+  padding: mix.rem(16px) mix.rem(20px);
+  margin: mix.rem(16px) 0;
+  font-family: var.$openSans;
+
+  &__content {
+    @include mix.flex-align-center;
+    gap: mix.rem(12px);
+    width: 100%;
+  }
+
+  &__icon {
+    @include mix.flex-center;
+    flex: 0 0 mix.rem(24px);
+    width: mix.rem(24px);
+    height: mix.rem(24px);
+    border-radius: 50%;
+    font-weight: 600;
+    color: var.$white;
+    line-height: 1;
+    text-align: center;
+  }
+
+  &__message {
+    word-break: break-word;
+
+    strong {
+      font-weight: 600;
+    }
+  }
+
+  &__dismiss {
+    @include mix.flex-center;
+    flex: 0 0 mix.rem(24px);
+    width: mix.rem(24px);
+    height: mix.rem(24px);
+    margin-left: auto;
+    border: none;
+    background: none;
+    font-size: mix.rem(20px);
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 50%;
+    line-height: 1;
+
+    &:hover,
+    &:focus {
+      background: rgba(0, 0, 0, 0.05);
+      outline: none;
+    }
+  }
+
+  &--info {
+    background: var.$bg-blue-2;
+    color: var.$pr-blue-1;
+
+    .maintenance-banner__icon {
+      background: var.$pr-blue-1;
+    }
+  }
+
+  &--warning {
+    background: var.$yellow-2;
+    color: var.$yellow-1;
+
+    .maintenance-banner__icon {
+      background: var.$yellow-1;
+    }
+  }
+
+  &--danger {
+    background: var.$red-2;
+    color: var.$red-1;
+
+    .maintenance-banner__icon {
+      background: var.$red-1;
+    }
+  }
+}

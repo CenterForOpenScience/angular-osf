@@ -1,0 +1,11 @@
+<div *ngIf="maintenance && !dismissed" class="maintenance-banner maintenance-banner--{{ alertType }}" role="status">
+  <div class="maintenance-banner__content">
+    <span class="maintenance-banner__icon">i</span>
+    <span class="maintenance-banner__message">
+      <strong>{{ alertType | titlecase }}:</strong> {{ maintenance.message }}
+    </span>
+    <button class="maintenance-banner__dismiss" (click)="dismiss()" aria-label="Dismiss maintenance banner">
+      &times;
+    </button>
+  </div>
+</div>
