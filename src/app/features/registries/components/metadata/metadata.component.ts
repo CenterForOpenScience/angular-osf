@@ -23,6 +23,7 @@ import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepValidation } from '../../store';
 
 import { ContributorsComponent } from './contributors/contributors.component';
+import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution/registries-affiliated-institution.component';
 import { RegistriesLicenseComponent } from './registries-license/registries-license.component';
 import { RegistriesSubjectsComponent } from './registries-subjects/registries-subjects.component';
 import { RegistriesTagsComponent } from './registries-tags/registries-tags.component';
@@ -40,6 +41,7 @@ import { RegistriesTagsComponent } from './registries-tags/registries-tags.compo
     RegistriesSubjectsComponent,
     RegistriesTagsComponent,
     RegistriesLicenseComponent,
+    RegistriesAffiliatedInstitutionComponent,
     Message,
   ],
   templateUrl: './metadata.component.html',
