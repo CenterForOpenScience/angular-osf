@@ -2,7 +2,6 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { Button } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 
 import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit } from '@angular/core';
@@ -14,7 +13,7 @@ import { AddonsSelectors, GetAddonsResourceReference, GetConfiguredLinkAddons } 
 
 @Component({
   selector: 'osf-linked-services',
-  imports: [SubHeaderComponent, TranslatePipe, TableModule, Button, LoadingSpinnerComponent, RouterLink],
+  imports: [SubHeaderComponent, TranslatePipe, TableModule, LoadingSpinnerComponent, RouterLink],
   templateUrl: './linked-services.component.html',
   styleUrl: './linked-services.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -33,9 +32,7 @@ export class LinkedServicesComponent implements OnInit {
     return this.isConfiguredLinkAddonsLoading() || this.isResourceReferenceLoading() || this.isCurrentUserLoading();
   });
 
-  resourceReferenceId = computed(() => {
-    return this.addonsResourceReference()[0]?.id;
-  });
+  resourceReferenceId = computed(() => this.addonsResourceReference()[0]?.id);
 
   actions = createDispatchMap({
     getConfiguredLinkAddons: GetConfiguredLinkAddons,
@@ -56,12 +53,6 @@ export class LinkedServicesComponent implements OnInit {
 
     if (projectId && !this.addonsResourceReference().length) {
       this.actions.getAddonsResourceReference(projectId);
-    }
-  }
-
-  openLink(url: string): void {
-    if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer');
     }
   }
 }

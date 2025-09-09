@@ -18,7 +18,7 @@
             {{ 'project.linkedServices.table.resourceType' | translate }}
           </th>
           <th>
-            {{ 'project.linkedServices.table.link' | translate }}
+            <a routerLink="../addons">{{ 'common.buttons.edit' | translate }}</a>
           </th>
         </tr>
       </ng-template>
@@ -29,13 +29,9 @@
           <td>{{ item.displayName }}</td>
           <td>{{ item.resourceType }}</td>
           <td>
-            <p-button
-              class="p-button-link"
-              [label]="'project.linkedServices.table.openLink' | translate"
-              icon="fas fa-external-link-alt"
-              (click)="openLink(item.targetUrl)"
-            >
-            </p-button>
+            <a [href]="item.targetUrl" target="_blank" rel="noopener noreferrer">
+              {{ 'project.linkedServices.table.openLink' | translate }}
+            </a>
           </td>
         </tr>
       </ng-template>
