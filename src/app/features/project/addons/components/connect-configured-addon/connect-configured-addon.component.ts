@@ -16,7 +16,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { OperationNames } from '@osf/features/project/addons/enums';
 import { AddonConfigMap } from '@osf/features/project/addons/utils';
 import { SubHeaderComponent } from '@osf/shared/components';
-import { ProjectAddonsStepperValue } from '@osf/shared/enums';
+import { AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
 import { AuthorizedAccountModel } from '@osf/shared/models/addons/authorized-account.model';
 import {
@@ -24,7 +24,7 @@ import {
   AddonTermsComponent,
   StorageItemSelectorComponent,
 } from '@shared/components/addons';
-import { AddonServiceNames, AddonType } from '@shared/enums';
+import { AddonServiceNames } from '@shared/enums';
 import { AddonModel, AddonTerm, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {
@@ -78,6 +78,7 @@ export class ConnectConfiguredAddonComponent {
     return this.selectedAccount()?.externalServiceName === 'googledrive';
   });
   readonly AddonStepperValue = ProjectAddonsStepperValue;
+  readonly AddonType = AddonType;
   readonly stepper = viewChild(Stepper);
   accountNameControl = new FormControl('');
   terms = signal<AddonTerm[]>([]);

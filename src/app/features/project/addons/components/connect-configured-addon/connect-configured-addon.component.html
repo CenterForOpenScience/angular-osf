@@ -18,9 +18,11 @@
               <p>
                 {{ 'settings.addons.connectAddon.termsDescription' | translate }}
               </p>
-              <p>
-                {{ 'settings.addons.connectAddon.storageDescription' | translate }}
-              </p>
+              @if (addonTypeString() === AddonType.STORAGE) {
+                <p>
+                  {{ 'settings.addons.connectAddon.storageDescription' | translate }}
+                </p>
+              }
             </div>
 
             <div class="flex gap-4 align-self-center md:align-self-end mt-3">
