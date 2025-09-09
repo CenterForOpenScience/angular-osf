@@ -14,6 +14,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { MaintenanceBannerComponent } from '@core/components/maintenance-banner/maintenance-banner.component';
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import {
   IconComponent,
@@ -27,8 +28,6 @@ import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
 import { ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
-
-import { MaintenanceBannerComponent } from 'src/app/core/components/maintenance-banner/maintenance-banner.component';
 
 @Component({
   selector: 'osf-dashboard',
