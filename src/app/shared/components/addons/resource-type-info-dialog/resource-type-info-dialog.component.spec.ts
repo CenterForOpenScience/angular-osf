@@ -1,3 +1,7 @@
+import { TranslateModule } from '@ngx-translate/core';
+
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ResourceTypeInfoDialogComponent } from './resource-type-info-dialog.component';
@@ -8,7 +12,15 @@ describe('ResourceTypeInfoDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ResourceTypeInfoDialogComponent],
+      imports: [ResourceTypeInfoDialogComponent, TranslateModule.forRoot()],
+      providers: [
+        {
+          provide: DynamicDialogRef,
+          useValue: {
+            close: jest.fn(),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ResourceTypeInfoDialogComponent);

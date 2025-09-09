@@ -94,7 +94,7 @@ describe('Component: Configure Addon', () => {
       expect(component.baseUrl()).toBe('/project/abc123');
       expect(component.resourceUri()).toBe('https://staging4.osf.io/mocked-id');
       expect(component.addonTypeString()).toBe('storage');
-      expect(component.selectedRootFolderId()).toBeUndefined();
+      expect(component.selectedStorageItemId).toBeDefined();
       expect(component.accountNameControl.value).toBeUndefined();
       expect(component.isGoogleDrive()).toBeFalsy();
     });

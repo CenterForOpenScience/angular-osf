@@ -66,9 +66,11 @@ describe('Service: Files', () => {
         externalServiceName: 'googledrive',
         externalStorageServiceId: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
         id: '756579dc-3a24-4849-8866-698a60846ac3',
-        selectedFolderId: '0AIl0aR4C9JAFUk9PVA',
-        type: 'configured-storage-addons',
+        resourceType: undefined,
         rootFolderId: '0AIl0aR4C9JAFUk9PVA',
+        selectedStorageItemId: '0AIl0aR4C9JAFUk9PVA',
+        targetUrl: undefined,
+        type: 'configured-storage-addons',
       })
     );
 

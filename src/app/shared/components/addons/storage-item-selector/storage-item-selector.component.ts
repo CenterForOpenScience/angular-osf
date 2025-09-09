@@ -79,6 +79,7 @@ export class StorageItemSelectorComponent implements OnInit {
   save = output<void>();
   cancelSelection = output<void>();
   readonly OperationNames = OperationNames;
+  readonly StorageItemType = StorageItemType;
   hasInputChanged = signal(false);
   hasFolderChanged = signal(false);
   hasResourceTypeChanged = signal(false);
@@ -262,6 +263,4 @@ export class StorageItemSelectorComponent implements OnInit {
       closable: true,
     });
   }
-
-  protected readonly StorageItemType = StorageItemType;
 }

@@ -1,5 +1,7 @@
 import { provideStore } from '@ngxs/store';
 
+import { DialogService } from 'primeng/dynamicdialog';
+
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -22,7 +24,17 @@ describe('StorageItemSelectorComponent', () => {
 
     await TestBed.configureTestingModule({
       imports: [StorageItemSelectorComponent],
-      providers: [TranslateServiceMock, provideStore([]), { provide: 'Store', useValue: MOCK_STORE }],
+      providers: [
+        TranslateServiceMock,
+        provideStore([]),
+        { provide: 'Store', useValue: MOCK_STORE },
+        {
+          provide: DialogService,
+          useValue: {
+            open: jest.fn(),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StorageItemSelectorComponent);
@@ -71,7 +83,7 @@ describe('StorageItemSelectorComponent', () => {
       itemType: 'folder',
     } as StorageItemModel;
 
-    (component as any).selectedRootFolder.set(mockFolder);
+    (component as any).selectedStorageItem.set(mockFolder);
     (component as any).handleSave();
 
     expect(component.selectedStorageItemId()).toBe('test-folder-id');
