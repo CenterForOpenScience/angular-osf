@@ -1,4 +1,4 @@
-import { select } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
@@ -33,7 +33,7 @@ import { ResourceTypeInfoDialogComponent } from '@shared/components/addons/resou
 import { AddonType } from '@shared/enums';
 import { IS_MEDIUM, IS_XSMALL } from '@shared/helpers';
 import { OperationInvokeData, StorageItem } from '@shared/models';
-import { AddonsSelectors } from '@shared/stores/addons';
+import { AddonsSelectors, ClearOperationInvocations } from '@shared/stores/addons';
 
 import { GoogleFilePickerComponent } from './google-file-picker/google-file-picker.component';
 
@@ -116,6 +116,10 @@ export class StorageItemSelectorComponent implements OnInit {
     },
   };
 
+  actions = createDispatchMap({
+    clearOperationInvocations: ClearOperationInvocations,
+  });
+
   constructor() {
     effect(() => {
       const initialFolder = this.initiallySelectedStorageItem();
@@ -131,6 +135,12 @@ export class StorageItemSelectorComponent implements OnInit {
       if (initialType) {
         this.hasResourceTypeChanged.set(currentResourceType !== initialType);
       }
+    });
+
+    effect(() => {
+      this.destroyRef.onDestroy(() => {
+        this.actions.clearOperationInvocations();
+      });
     });
   }
 

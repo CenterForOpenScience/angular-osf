@@ -49,32 +49,37 @@
           @let operationName =
             folder.mayContainRootCandidates ? OperationNames.LIST_CHILD_ITEMS : OperationNames.GET_ITEM_INFO;
           @let itemId = folder.itemId || '/';
+          @let isLinkDisabled = !folder.mayContainRootCandidates || folder.itemType !== 'FOLDER';
           <div class="folders-table-row relative">
             <div class="flex gap-2 flex-1">
               <div tabindex="0" class="flex align-items-center gap-2">
                 <i class="{{ folder.itemType === 'FOLDER' ? 'fas fa-folder' : 'fas fa-file' }}"></i>
-                <a
-                  tabindex="0"
-                  class="cursor-pointer folder-link"
-                  (keydown.enter)="
-                    handleCreateOperationInvocation(
-                      operationName,
-                      itemId,
-                      folder.itemName,
-                      folder.mayContainRootCandidates
-                    )
-                  "
-                  (click)="
-                    handleCreateOperationInvocation(
-                      operationName,
-                      itemId,
-                      folder.itemName,
-                      folder.mayContainRootCandidates
-                    )
-                  "
-                >
-                  {{ folder.itemName }}</a
-                >
+                @if (isLinkDisabled) {
+                  <span class="folder-link-disabled">{{ folder.itemName }}</span>
+                } @else {
+                  <a
+                    tabindex="0"
+                    class="cursor-pointer folder-link"
+                    (keydown.enter)="
+                      handleCreateOperationInvocation(
+                        operationName,
+                        itemId,
+                        folder.itemName,
+                        folder.mayContainRootCandidates
+                      )
+                    "
+                    (click)="
+                      handleCreateOperationInvocation(
+                        operationName,
+                        itemId,
+                        folder.itemName,
+                        folder.mayContainRootCandidates
+                      )
+                    "
+                  >
+                    {{ folder.itemName }}</a
+                  >
+                }
               </div>
               @if (folder.canBeRoot) {
                 <p-radiobutton

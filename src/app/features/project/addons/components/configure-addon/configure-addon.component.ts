@@ -189,6 +189,7 @@ export class ConfigureAddonComponent implements OnInit {
   toggleEditMode(): void {
     if (!this.isEditMode()) {
       this.resetConfigurationForm();
+      this.actions.clearOperationInvocations();
     }
 
     this.handleCreateOperationInvocation(OperationNames.LIST_ROOT_ITEMS, this.selectedStorageItemId());
