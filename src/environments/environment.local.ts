@@ -3,6 +3,7 @@ export const environment = {
   webUrl: 'http://localhost:5000',
   downloadUrl: 'http://localhost:5000/download',
   apiUrl: 'http://localhost:8000/v2',
+  apiUrlPrivate: 'http://localhost:8000/_',
   apiUrlV1: 'http://localhost:5000/api/v1',
   apiDomainUrl: 'http://localhost:8000',
   shareDomainUrl: 'https://localhost:8003/trove',

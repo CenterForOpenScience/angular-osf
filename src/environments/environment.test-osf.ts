@@ -6,6 +6,7 @@ export const environment = {
   webUrl: 'https://test.osf.io/',
   downloadUrl: 'https://test.osf.io/download',
   apiUrl: 'https://api.test.osf.io/v2',
+  apiUrlPrivate: 'http://api.test.osf.io/_',
   apiUrlV1: 'https://test.osf.io/api/v1',
   apiDomainUrl: 'https://api.test.osf.io',
   shareDomainUrl: 'https://test-share.osf.io/trove',
