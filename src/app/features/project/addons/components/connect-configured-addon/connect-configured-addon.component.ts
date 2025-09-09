@@ -24,8 +24,7 @@ import {
   AddonTermsComponent,
   StorageItemSelectorComponent,
 } from '@shared/components/addons';
-import { AddonType } from '@shared/enums';
-import { AddonServiceNames } from '@shared/enums/addon-service-names.enum';
+import { AddonServiceNames, AddonType } from '@shared/enums';
 import { AddonModel, AddonTerm, AuthorizedAddonRequestJsonApi } from '@shared/models';
 import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {

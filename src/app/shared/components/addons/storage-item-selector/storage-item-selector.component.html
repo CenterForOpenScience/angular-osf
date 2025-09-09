@@ -49,11 +49,11 @@
           @let operationName =
             folder.mayContainRootCandidates ? OperationNames.LIST_CHILD_ITEMS : OperationNames.GET_ITEM_INFO;
           @let itemId = folder.itemId || '/';
-          @let isLinkDisabled = !folder.mayContainRootCandidates || folder.itemType !== 'FOLDER';
+          @let isLinkDisabled = !folder.mayContainRootCandidates || folder.itemType !== StorageItemType.Folder;
           <div class="folders-table-row relative">
             <div class="flex gap-2 flex-1">
               <div tabindex="0" class="flex align-items-center gap-2">
-                <i class="{{ folder.itemType === 'FOLDER' ? 'fas fa-folder' : 'fas fa-file' }}"></i>
+                <i class="{{ folder.itemType === StorageItemType.Folder ? 'fas fa-folder' : 'fas fa-file' }}"></i>
                 @if (isLinkDisabled) {
                   <span class="folder-link-disabled">{{ folder.itemName }}</span>
                 } @else {
@@ -109,12 +109,14 @@
         </h3>
         <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="openInfoDialog()"></p-button>
       </div>
-      <osf-select
-        [fullWidth]="!!isMobile()"
-        [placeholder]="'settings.addons.configureAddon.chooseResourceType' | translate"
-        [options]="resourceTypeOptions()"
-        [(selectedValue)]="selectedResourceType"
-      ></osf-select>
+      <div class="resource-selector">
+        <osf-select
+          [fullWidth]="!!isMobile()"
+          [placeholder]="'settings.addons.configureAddon.chooseResourceType' | translate"
+          [options]="resourceTypeOptions()"
+          [(selectedValue)]="selectedResourceType"
+        ></osf-select>
+      </div>
     </div>
   }
 

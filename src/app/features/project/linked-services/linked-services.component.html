@@ -4,8 +4,8 @@
     <div class="flex-1">
       <osf-loading-spinner />
     </div>
-  } @else if (configuredLinkAddons().length) {
-    <p-table [value]="configuredLinkAddons()">
+  } @else if (convertedConfiguredLinkAddons().length) {
+    <p-table [value]="convertedConfiguredLinkAddons()">
       <ng-template #header>
         <tr>
           <th>
@@ -25,12 +25,12 @@
 
       <ng-template #body let-item>
         <tr>
-          <td>{{ item.externalServiceName }}</td>
+          <td>{{ item.serviceName }}</td>
           <td>{{ item.displayName }}</td>
-          <td>{{ item.resourceType }}</td>
+          <td>{{ item.convertedResourceType }}</td>
           <td>
             <a [href]="item.targetUrl" target="_blank" rel="noopener noreferrer">
-              {{ 'project.linkedServices.table.openLink' | translate }}
+              {{ 'project.linkedServices.table.link' | translate }}
             </a>
           </td>
         </tr>

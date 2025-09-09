@@ -85,7 +85,7 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
   {
     id: 'project-linked-services',
     label: 'navigation.linkedServices',
-    routerLink: 'linked-services',
+    routerLink: 'links',
     visible: true,
     routerLinkActiveOptions: { exact: true },
   },

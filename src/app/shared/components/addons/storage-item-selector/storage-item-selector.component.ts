@@ -30,8 +30,8 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OperationNames } from '@osf/features/project/addons/enums';
 import { SelectComponent } from '@shared/components';
 import { ResourceTypeInfoDialogComponent } from '@shared/components/addons/resource-type-info-dialog/resource-type-info-dialog.component';
-import { AddonType } from '@shared/enums';
-import { IS_MEDIUM, IS_XSMALL } from '@shared/helpers';
+import { AddonType, StorageItemType } from '@shared/enums';
+import { convertCamelCaseToNormal, IS_MEDIUM, IS_XSMALL } from '@shared/helpers';
 import { OperationInvokeData, StorageItem } from '@shared/models';
 import { AddonsSelectors, ClearOperationInvocations } from '@shared/stores/addons';
 
@@ -101,7 +101,7 @@ export class StorageItemSelectorComponent implements OnInit {
 
   resourceTypeOptions = computed(() => {
     return this.supportedResourceTypes().map((type) => ({
-      label: this.convertCamelCaseToNormal(type),
+      label: convertCamelCaseToNormal(type),
       value: type,
     }));
   });
@@ -263,10 +263,5 @@ export class StorageItemSelectorComponent implements OnInit {
     });
   }
 
-  private convertCamelCaseToNormal(text: string): string {
-    return text
-      .replace(/([A-Z])/g, ' $1')
-      .replace(/^./, (str) => str.toUpperCase())
-      .trim();
-  }
+  protected readonly StorageItemType = StorageItemType;
 }

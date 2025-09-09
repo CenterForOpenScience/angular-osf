@@ -953,7 +953,6 @@
         "displayName": "Display Name",
         "resourceType": "Resource Type",
         "link": "Link",
-        "openLink": "Open Link",
         "noLink": "No link available"
       },
               "noLinkedServices": "This project has no configured linked services at the moment.",

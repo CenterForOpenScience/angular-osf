@@ -9,6 +9,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
+import { AddonServiceNames } from '@shared/enums';
+import { convertCamelCaseToNormal } from '@shared/helpers';
 import { AddonsSelectors, GetAddonsResourceReference, GetConfiguredLinkAddons } from '@shared/stores';
 
 @Component({
@@ -33,6 +35,15 @@ export class LinkedServicesComponent implements OnInit {
   });
 
   resourceReferenceId = computed(() => this.addonsResourceReference()[0]?.id);
+
+  convertedConfiguredLinkAddons = computed(() => {
+    return this.configuredLinkAddons().map((item) => ({
+      ...item,
+      serviceName:
+        AddonServiceNames[item.externalServiceName as keyof typeof AddonServiceNames] || item.externalServiceName,
+      convertedResourceType: convertCamelCaseToNormal(item.resourceType || ''),
+    }));
+  });
 
   actions = createDispatchMap({
     getConfiguredLinkAddons: GetConfiguredLinkAddons,

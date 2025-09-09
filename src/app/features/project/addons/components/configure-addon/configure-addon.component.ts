@@ -24,9 +24,8 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { OperationNames } from '@osf/features/project/addons/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
 import { SubHeaderComponent } from '@shared/components';
-import { StorageItemSelectorComponent } from '@shared/components/addons/storage-item-selector/storage-item-selector.component';
-import { AddonType } from '@shared/enums';
-import { AddonServiceNames } from '@shared/enums/addon-service-names.enum';
+import { StorageItemSelectorComponent } from '@shared/components/addons';
+import { AddonServiceNames, AddonType } from '@shared/enums';
 import { AddonModel, ConfiguredAddonModel } from '@shared/models';
 import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {
@@ -51,6 +50,7 @@ import { environment } from 'src/environments/environment';
     FormsModule,
     Skeleton,
     BreadcrumbModule,
+    StorageItemSelectorComponent,
     StorageItemSelectorComponent,
   ],
   templateUrl: './configure-addon.component.html',
@@ -189,7 +189,6 @@ export class ConfigureAddonComponent implements OnInit {
   toggleEditMode(): void {
     if (!this.isEditMode()) {
       this.resetConfigurationForm();
-      this.actions.clearOperationInvocations();
     }
 
     this.handleCreateOperationInvocation(OperationNames.LIST_ROOT_ITEMS, this.selectedStorageItemId());

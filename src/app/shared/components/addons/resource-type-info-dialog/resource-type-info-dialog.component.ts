@@ -14,4 +14,5 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 })
 export class ResourceTypeInfoDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
+  readonly REDIRECT_URL = 'https://help.osf.io/article/570-resource-types-in-osf';
 }
