@@ -193,7 +193,7 @@ export class ReviewComponent {
       .onClose.subscribe((res) => {
         if (res) {
           this.toastService.showSuccess('registries.review.confirmation.successMessage');
-          this.router.navigate([`registries/${this.newRegistration()?.id}/overview`]);
+          this.router.navigate([`/${this.newRegistration()?.id}/overview`]);
         } else {
           if (this.components()?.length) {
             this.openSelectComponentsForRegistrationDialog();

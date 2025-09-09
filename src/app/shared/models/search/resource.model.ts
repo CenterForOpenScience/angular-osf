@@ -1,4 +1,5 @@
 import { ResourceType } from '@osf/shared/enums';
+import { StringOrNull } from '@shared/helpers';
 
 import { DiscoverableFilter } from './discaverable-filter.model';
 
@@ -21,6 +22,11 @@ export interface ResourceModel {
   license?: AbsoluteUrlName;
   language: string;
   statedConflictOfInterest?: string;
+  storageByteCount?: string;
+  storageRegion?: string;
+  viewsCount?: string;
+  addons: string[];
+  downloadCount?: string;
   resourceNature?: string;
   isPartOfCollection: AbsoluteUrlName;
   funders: AbsoluteUrlName[];
@@ -59,7 +65,8 @@ export interface ResourcesData {
   resources: ResourceModel[];
   filters: DiscoverableFilter[];
   count: number;
-  first: string;
-  next: string;
-  previous?: string;
+  self: string;
+  first: StringOrNull;
+  next: StringOrNull;
+  previous: StringOrNull;
 }

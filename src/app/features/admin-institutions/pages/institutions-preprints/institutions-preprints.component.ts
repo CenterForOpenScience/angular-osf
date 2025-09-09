@@ -2,101 +2,105 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Button } from 'primeng/button';
 
-import { TABLE_PARAMS } from '@osf/shared/constants';
-import { SortOrder } from '@osf/shared/enums';
-import { Institution, QueryParams } from '@osf/shared/models';
-import { InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
+
+import { FiltersSectionComponent } from '@osf/features/admin-institutions/components/filters-section/filters-section.component';
+import { mapPreprintResourceToTableData } from '@osf/features/admin-institutions/mappers/institution-preprint-to-table-data.mapper';
+import { ResourceType, SortOrder } from '@osf/shared/enums';
+import { SearchFilters } from '@osf/shared/models';
+import {
+  FetchResources,
+  FetchResourcesByLink,
+  GlobalSearchSelectors,
+  ResetSearchState,
+  SetDefaultFilterValue,
+  SetResourceType,
+  SetSortBy,
+} from '@shared/stores/global-search';
 
 import { AdminTableComponent } from '../../components';
 import { preprintsTableColumns } from '../../constants';
 import { DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
-import { mapPreprintToTableData } from '../../mappers';
 import { TableCellData } from '../../models';
-import { FetchPreprints, InstitutionsAdminSelectors } from '../../store';
+import { InstitutionsAdminSelectors } from '../../store';
 
 @Component({
   selector: 'osf-institutions-preprints',
-  imports: [CommonModule, AdminTableComponent, TranslatePipe],
+  imports: [CommonModule, AdminTableComponent, TranslatePipe, Button, FiltersSectionComponent],
   templateUrl: './institutions-preprints.component.html',
   styleUrl: './institutions-preprints.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstitutionsPreprintsComponent implements OnInit {
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
+export class InstitutionsPreprintsComponent implements OnInit, OnDestroy {
+  private actions = createDispatchMap({
+    setDefaultFilterValue: SetDefaultFilterValue,
+    resetSearchState: ResetSearchState,
+    setSortBy: SetSortBy,
+    setResourceType: SetResourceType,
+    fetchResources: FetchResources,
+    fetchResourcesByLink: FetchResourcesByLink,
+  });
 
-  private readonly actions = createDispatchMap({ fetchPreprints: FetchPreprints });
+  tableColumns = preprintsTableColumns;
+  filtersVisible = signal(false);
 
-  private institutionId = '';
-
-  institution = select(InstitutionsSearchSelectors.getInstitution);
-  preprints = select(InstitutionsAdminSelectors.getPreprints);
-  totalCount = select(InstitutionsAdminSelectors.getPreprintsTotalCount);
-  isLoading = select(InstitutionsAdminSelectors.getPreprintsLoading);
-  preprintsLinks = select(InstitutionsAdminSelectors.getPreprintsLinks);
-  preprintsDownloadLink = select(InstitutionsAdminSelectors.getPreprintsDownloadLink);
-
-  tableColumns = signal(preprintsTableColumns);
-
-  currentPageSize = signal(TABLE_PARAMS.rows);
-  currentSort = signal('-dateModified');
   sortField = signal<string>('-dateModified');
   sortOrder = signal<number>(1);
 
-  currentCursor = signal('');
+  institution = select(InstitutionsAdminSelectors.getInstitution);
 
-  tableData = computed(() => this.preprints().map(mapPreprintToTableData) as TableCellData[]);
+  resources = select(GlobalSearchSelectors.getResources);
+  resourcesCount = select(GlobalSearchSelectors.getResourcesCount);
+  areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
+
+  selfLink = select(GlobalSearchSelectors.getFirst);
+  firstLink = select(GlobalSearchSelectors.getFirst);
+  nextLink = select(GlobalSearchSelectors.getNext);
+  previousLink = select(GlobalSearchSelectors.getPrevious);
+
+  tableData = computed(() => this.resources().map(mapPreprintResourceToTableData) as TableCellData[]);
+
+  sortParam = computed(() => {
+    const sortField = this.sortField();
+    const sortOrder = this.sortOrder();
+    return sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
+  });
+
+  paginationLinks = computed(() => {
+    return {
+      next: { href: this.nextLink() },
+      prev: { href: this.previousLink() },
+      first: { href: this.firstLink() },
+    };
+  });
 
   ngOnInit(): void {
-    this.getPreprints();
+    this.actions.setResourceType(ResourceType.Preprint);
+    this.actions.setDefaultFilterValue('affiliation', this.institution().iris.join(','));
+    this.actions.fetchResources();
   }
 
-  onSortChange(params: QueryParams): void {
+  ngOnDestroy() {
+    this.actions.resetSearchState();
+  }
+
+  onSortChange(params: SearchFilters): void {
     this.sortField.set(params.sortColumn || '-dateModified');
     this.sortOrder.set(params.sortOrder || 1);
 
-    const sortField = params.sortColumn || '-dateModified';
-    const sortOrder = params.sortOrder || 1;
-    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchPreprints(this.institutionId, institutionIris, this.currentPageSize(), sortParam, '');
+    this.actions.setSortBy(this.sortParam());
+    this.actions.fetchResources();
   }
 
   onLinkPageChange(link: string): void {
-    const url = new URL(link);
-    const cursor = url.searchParams.get('page[cursor]') || '';
-
-    const sortField = this.sortField();
-    const sortOrder = this.sortOrder();
-    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchPreprints(this.institutionId, institutionIris, this.currentPageSize(), sortParam, cursor);
+    this.actions.fetchResourcesByLink(link);
   }
 
   download(type: DownloadType) {
-    downloadResults(this.preprintsDownloadLink(), type);
-  }
-
-  private getPreprints(): void {
-    const institutionId = this.route.parent?.snapshot.params['institution-id'];
-    if (!institutionId) return;
-
-    this.institutionId = institutionId;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchPreprints(this.institutionId, institutionIris, this.currentPageSize(), this.sortField(), '');
+    downloadResults(this.selfLink(), type);
   }
 }

@@ -27,6 +27,7 @@ export class InstitutionsService {
     [ResourceType.Agent, 'users'],
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],
+    [ResourceType.DraftRegistration, 'draft_registrations'],
   ]);
 
   getInstitutions(pageNumber: number, pageSize: number, searchValue?: string): Observable<InstitutionsWithTotalCount> {

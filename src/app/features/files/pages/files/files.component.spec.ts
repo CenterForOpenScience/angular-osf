@@ -98,6 +98,8 @@ describe('Component: Files', () => {
               'viewOnlyDownloadable',
               'resourceId',
               'provider',
+              'storage',
+              'totalCount',
             ]),
           ],
         },

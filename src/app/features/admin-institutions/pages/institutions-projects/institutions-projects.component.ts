@@ -2,131 +2,154 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
+import { Button } from 'primeng/button';
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { filter } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
-import { TABLE_PARAMS } from '@osf/shared/constants';
-import { SortOrder } from '@osf/shared/enums';
-import { Institution, QueryParams } from '@osf/shared/models';
+import { FiltersSectionComponent } from '@osf/features/admin-institutions/components/filters-section/filters-section.component';
+import { mapProjectResourceToTableCellData } from '@osf/features/admin-institutions/mappers/institution-project-to-table-data.mapper';
+import { ResourceType, SortOrder } from '@osf/shared/enums';
+import { ResourceModel, SearchFilters } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
-import { InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
+import {
+  FetchResources,
+  FetchResourcesByLink,
+  GlobalSearchSelectors,
+  ResetSearchState,
+  SetDefaultFilterValue,
+  SetResourceType,
+  SetSortBy,
+} from '@shared/stores/global-search';
 
 import { AdminTableComponent } from '../../components';
 import { projectTableColumns } from '../../constants';
 import { ContactDialogComponent } from '../../dialogs';
 import { ContactOption, DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
-import { mapProjectToTableCellData } from '../../mappers';
-import { ContactDialogData, InstitutionProject, TableCellData, TableCellLink, TableIconClickEvent } from '../../models';
-import { FetchProjects, InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } from '../../store';
+import { ContactDialogData, TableCellData, TableCellLink, TableIconClickEvent } from '../../models';
+import { InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } from '../../store';
 
 @Component({
   selector: 'osf-institutions-projects',
-  imports: [AdminTableComponent, TranslatePipe],
+  imports: [AdminTableComponent, TranslatePipe, Button, FiltersSectionComponent],
   templateUrl: './institutions-projects.component.html',
   styleUrl: './institutions-projects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class InstitutionsProjectsComponent implements OnInit {
-  private readonly route = inject(ActivatedRoute);
-  private readonly dialogService = inject(DialogService);
-  private readonly destroyRef = inject(DestroyRef);
-  private readonly toastService = inject(ToastService);
-  private readonly translate = inject(TranslateService);
+export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
+  private dialogService = inject(DialogService);
+  private destroyRef = inject(DestroyRef);
+  private toastService = inject(ToastService);
+  private translate = inject(TranslateService);
 
-  private readonly actions = createDispatchMap({
-    fetchProjects: FetchProjects,
+  private actions = createDispatchMap({
     sendUserMessage: SendUserMessage,
     requestProjectAccess: RequestProjectAccess,
+    setDefaultFilterValue: SetDefaultFilterValue,
+    resetSearchState: ResetSearchState,
+    setSortBy: SetSortBy,
+    setResourceType: SetResourceType,
+    fetchResources: FetchResources,
+    fetchResourcesByLink: FetchResourcesByLink,
   });
 
-  institutionId = '';
-
-  currentPageSize = signal(TABLE_PARAMS.rows);
-  first = signal(0);
+  tableColumns = projectTableColumns;
+  filtersVisible = signal(false);
 
   sortField = signal<string>('-dateModified');
   sortOrder = signal<number>(1);
 
-  tableColumns = projectTableColumns;
+  resources = select(GlobalSearchSelectors.getResources);
+  areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
+  resourcesCount = select(GlobalSearchSelectors.getResourcesCount);
 
-  projects = select(InstitutionsAdminSelectors.getProjects);
-  totalCount = select(InstitutionsAdminSelectors.getProjectsTotalCount);
-  isLoading = select(InstitutionsAdminSelectors.getProjectsLoading);
-  projectsLinks = select(InstitutionsAdminSelectors.getProjectsLinks);
-  projectsDownloadLink = select(InstitutionsAdminSelectors.getProjectsDownloadLink);
-  institution = select(InstitutionsSearchSelectors.getInstitution);
+  selfLink = select(GlobalSearchSelectors.getFirst);
+  firstLink = select(GlobalSearchSelectors.getFirst);
+  nextLink = select(GlobalSearchSelectors.getNext);
+  previousLink = select(GlobalSearchSelectors.getPrevious);
+
+  institution = select(InstitutionsAdminSelectors.getInstitution);
   currentUser = select(UserSelectors.getCurrentUser);
 
   tableData = computed(() =>
-    this.projects().map((project: InstitutionProject): TableCellData => mapProjectToTableCellData(project))
+    this.resources().map((resource: ResourceModel): TableCellData => mapProjectResourceToTableCellData(resource))
   );
 
+  sortParam = computed(() => {
+    const sortField = this.sortField();
+    const sortOrder = this.sortOrder();
+    return sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
+  });
+
+  paginationLinks = computed(() => {
+    return {
+      next: { href: this.nextLink() },
+      prev: { href: this.previousLink() },
+      first: { href: this.firstLink() },
+    };
+  });
+
   ngOnInit(): void {
-    this.getProjects();
+    this.actions.setResourceType(ResourceType.Project);
+    this.actions.setDefaultFilterValue('affiliation', this.institution().iris.join(','));
+    this.actions.fetchResources();
   }
 
-  onSortChange(params: QueryParams): void {
+  ngOnDestroy() {
+    this.actions.resetSearchState();
+  }
+
+  onSortChange(params: SearchFilters): void {
     this.sortField.set(params.sortColumn || '-dateModified');
     this.sortOrder.set(params.sortOrder || 1);
 
-    const sortField = params.sortColumn || '-dateModified';
-    const sortOrder = params.sortOrder || 1;
-    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchProjects(this.institutionId, institutionIris, this.currentPageSize(), sortParam, '');
+    this.actions.setSortBy(this.sortParam());
+    this.actions.fetchResources();
   }
 
-  onLinkPageChange(linkUrl: string): void {
-    if (!linkUrl) return;
-
-    const cursor = this.extractCursorFromUrl(linkUrl);
-
-    const sortField = this.sortField();
-    const sortOrder = this.sortOrder();
-    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchProjects(this.institutionId, institutionIris, this.currentPageSize(), sortParam, cursor);
+  onLinkPageChange(link: string): void {
+    this.actions.fetchResourcesByLink(link);
   }
 
   download(type: DownloadType) {
-    downloadResults(this.projectsDownloadLink(), type);
+    downloadResults(this.selfLink(), type);
   }
 
   onIconClick(event: TableIconClickEvent): void {
-    switch (event.action) {
-      case 'sendMessage': {
-        this.dialogService
-          .open(ContactDialogComponent, {
-            width: '448px',
-            focusOnShow: false,
-            header: this.translate.instant('adminInstitutions.institutionUsers.sendEmail'),
-            closeOnEscape: true,
-            modal: true,
-            closable: true,
-            data: this.currentUser()?.fullName,
-          })
-          .onClose.pipe(
-            filter((value) => !!value),
-            takeUntilDestroyed(this.destroyRef)
-          )
-          .subscribe((data: ContactDialogData) => this.sendEmailToUser(event.rowData, data));
-        break;
-      }
+    if (event.action !== 'sendMessage') {
+      return;
     }
+
+    this.dialogService
+      .open(ContactDialogComponent, {
+        width: '448px',
+        focusOnShow: false,
+        header: this.translate.instant('adminInstitutions.institutionUsers.sendEmail'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: this.currentUser()?.fullName,
+      })
+      .onClose.pipe(
+        filter((value) => !!value),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((data: ContactDialogData) => this.sendEmailToUser(event.rowData, data));
   }
 
   private sendEmailToUser(userRowData: TableCellData, emailData: ContactDialogData): void {
@@ -136,7 +159,7 @@ export class InstitutionsProjectsComponent implements OnInit {
       this.actions
         .sendUserMessage(
           userId,
-          this.institutionId,
+          this.institution().id,
           emailData.emailContent,
           emailData.ccSender,
           emailData.allowReplyToSender
@@ -150,7 +173,7 @@ export class InstitutionsProjectsComponent implements OnInit {
         .requestProjectAccess({
           userId,
           projectId,
-          institutionId: this.institutionId,
+          institutionId: this.institution()!.id,
           permission: emailData.permission || '',
           messageText: emailData.emailContent,
           bccSender: emailData.ccSender,
@@ -159,22 +182,5 @@ export class InstitutionsProjectsComponent implements OnInit {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => this.toastService.showSuccess('adminInstitutions.institutionUsers.requestSent'));
     }
-  }
-
-  private getProjects(): void {
-    const institutionId = this.route.parent?.snapshot.params['institution-id'];
-    if (!institutionId) return;
-
-    this.institutionId = institutionId;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchProjects(this.institutionId, institutionIris, this.currentPageSize(), this.sortField(), '');
-  }
-
-  private extractCursorFromUrl(url: string): string {
-    const urlObj = new URL(url);
-    return urlObj.searchParams.get('page[cursor]') || '';
   }
 }

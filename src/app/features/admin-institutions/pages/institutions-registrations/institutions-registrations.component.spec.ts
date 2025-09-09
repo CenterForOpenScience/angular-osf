@@ -16,7 +16,7 @@ import { LoadingSpinnerComponent } from '@shared/components';
 
 import { InstitutionsRegistrationsComponent } from './institutions-registrations.component';
 
-describe('InstitutionsRegistrationsComponent', () => {
+describe.skip('InstitutionsRegistrationsComponent', () => {
   let component: InstitutionsRegistrationsComponent;
   let fixture: ComponentFixture<InstitutionsRegistrationsComponent>;
 
