@@ -341,9 +341,9 @@ export class FilesComponent {
     const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
     const provider = this.currentRootFolder()?.folder?.provider ?? 'osfstorage';
     const resourcePath = this.urlMap.get(this.resourceType()) ?? 'nodes';
-    this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();
 
     if (resourceId && folderId) {
+      this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();
       if (isRootFolder) {
         const link = this.filesService.getFolderDownloadLink(resourceId, provider, '', true);
         window.open(link, '_blank')?.focus();

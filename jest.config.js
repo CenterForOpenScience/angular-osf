@@ -68,7 +68,6 @@ module.exports = {
     '<rootDir>/src/app/features/project/addons/components/confirm-account-connection-modal/',
     '<rootDir>/src/app/features/files/components',
     '<rootDir>/src/app/features/files/pages/community-metadata',
-    '<rootDir>/src/app/features/files/pages/file-detail',
     '<rootDir>/src/app/features/my-projects/',
     '<rootDir>/src/app/features/project/analytics/',
     '<rootDir>/src/app/features/project/contributors/',

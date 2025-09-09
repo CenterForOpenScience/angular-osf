@@ -8,6 +8,8 @@ import { Dialog } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TableModule } from 'primeng/table';
 
+import { of } from 'rxjs';
+
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -24,6 +26,7 @@ import {
 import { GoogleFilePickerComponent } from '@osf/shared/components/addons/folder-selector/google-file-picker/google-file-picker.component';
 import { OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, FilesService } from '@osf/shared/services';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { FilesSelectors } from '../../store';
 
@@ -40,8 +43,15 @@ describe('Component: Files', () => {
   let fixture: ComponentFixture<FilesComponent>;
   const currentFolderSignal = signal(getNodeFilesMappedData(0));
 
+  let dataciteService: jest.Mocked<DataciteService>;
+
   beforeEach(async () => {
     jest.clearAllMocks();
+    window.open = jest.fn();
+    dataciteService = {
+      logFileView: jest.fn().mockReturnValue(of(void 0)),
+      logFileDownload: jest.fn().mockReturnValue(of(void 0)),
+    } as unknown as jest.Mocked<DataciteService>;
     await TestBed.configureTestingModule({
       imports: [
         OSFTestingModule,
@@ -63,7 +73,7 @@ describe('Component: Files', () => {
         FilesService,
         MockProvider(ActivatedRoute),
         MockProvider(CustomConfirmationService),
-
+        { provide: DataciteService, useValue: dataciteService },
         DialogService,
         provideMockStore({
           signals: [
@@ -181,6 +191,14 @@ describe('Component: Files', () => {
 
       expect(component.filesTreeActions.setFilesIsLoading).not.toHaveBeenCalled();
       expect(dispatchSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Download file', () => {
+    it('', () => {
+      component.resourceId.set('123');
+      component.downloadFolder();
+      expect(dataciteService.logFileDownload).toHaveBeenCalledWith('123', 'nodes');
     });
   });
 });

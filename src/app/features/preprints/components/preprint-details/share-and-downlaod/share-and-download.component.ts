@@ -49,7 +49,7 @@ export class ShareAndDownloadComponent {
     return this.socialShareService.createDownloadUrl(preprint.id);
   });
 
-  protected logDownload() {
+  logDownload() {
     this.dataciteService.logIdentifiableDownload(this.preprint$).subscribe();
   }
 
