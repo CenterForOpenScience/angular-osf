@@ -7,12 +7,14 @@
         <p-button
           severity="secondary"
           [label]="'myProjects.createProject.affiliation.selectAll' | translate"
+          [disabled]="isSelectAllDisabled()"
           (onClick)="selectAll()"
           (keydown.enter)="selectAll()"
         />
         <p-button
           severity="secondary"
           [label]="'myProjects.createProject.affiliation.removeAll' | translate"
+          [disabled]="isRemoveAllDisabled()"
           (onClick)="removeAll()"
           (keydown.enter)="removeAll()"
         />
@@ -29,8 +31,7 @@
             [ngModel]="selectedInstitutions()"
             (onChange)="selectDeselectInstitution(institution)"
           />
-          <img class="fit-contain" [ngSrc]="institution.assets.logo" alt="OSF Logo" height="44" width="44" />
-          <label [for]="institution.id" class="cursor-pointer"> {{ institution.name }}</label>
+          <img class="fit-contain" [ngSrc]="institution.assets.logo" [alt]="institution.name" height="44" width="44" />
         </div>
       }
     </div>

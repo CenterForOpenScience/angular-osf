@@ -7,10 +7,8 @@ import { Button } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 
-import { FiltersSectionComponent } from '@osf/features/admin-institutions/components/filters-section/filters-section.component';
-import { mapRegistrationResourceToTableData } from '@osf/features/admin-institutions/mappers/institution-registration-to-table-data.mapper';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
-import { SearchFilters } from '@osf/shared/models';
+import { PaginationLinksModel, SearchFilters } from '@osf/shared/models';
 import {
   ClearFilterSearchResults,
   FetchResources,
@@ -23,9 +21,11 @@ import {
 } from '@shared/stores/global-search';
 
 import { AdminTableComponent } from '../../components';
+import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
 import { registrationTableColumns } from '../../constants';
 import { DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
+import { mapRegistrationResourceToTableData } from '../../mappers/institution-registration-to-table-data.mapper';
 import { TableCellData } from '../../models';
 import { InstitutionsAdminSelectors } from '../../store';
 
@@ -77,7 +77,7 @@ export class InstitutionsRegistrationsComponent implements OnInit, OnDestroy {
       next: { href: this.nextLink() },
       prev: { href: this.previousLink() },
       first: { href: this.firstLink() },
-    };
+    } as PaginationLinksModel;
   });
 
   ngOnInit(): void {

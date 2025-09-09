@@ -7,8 +7,12 @@
     @if (userInstitutions().length) {
       <div class="m-t-24">
         <osf-affiliated-institution-select
-          [calculateSelectedItemsMode]="true"
-          (selectInstitutions)="institutionsSelected($event)"
+          [institutions]="userInstitutions()"
+          [isLoading]="
+            areUserInstitutionsLoading() || areResourceInstitutionsLoading() || areResourceInstitutionsSubmitting()
+          "
+          [selectedInstitutions]="selectedInstitutions()"
+          (selectedInstitutionsChange)="institutionsSelected($event)"
         />
       </div>
     } @else {

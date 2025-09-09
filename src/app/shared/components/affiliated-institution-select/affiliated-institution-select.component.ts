@@ -5,7 +5,7 @@ import { Checkbox } from 'primeng/checkbox';
 import { Skeleton } from 'primeng/skeleton';
 
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { Institution } from '@shared/models';
@@ -21,6 +21,16 @@ export class AffiliatedInstitutionSelectComponent {
   institutions = input<Institution[]>([]);
   isLoading = input<boolean>(false);
   selectedInstitutions = model<Institution[]>([]);
+
+  isSelectAllDisabled = computed(() => {
+    const institutions = this.institutions();
+    const selected = this.selectedInstitutions();
+    return institutions.length === 0 || institutions.length === selected.length;
+  });
+
+  isRemoveAllDisabled = computed(() => {
+    return this.selectedInstitutions().length === 0;
+  });
 
   removeAll() {
     this.selectedInstitutions.set([]);

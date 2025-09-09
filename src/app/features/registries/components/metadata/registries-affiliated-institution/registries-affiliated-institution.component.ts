@@ -4,7 +4,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Card } from 'primeng/card';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components';
@@ -27,14 +27,29 @@ import {
 export class RegistriesAffiliatedInstitutionComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly draftId = this.route.snapshot.params['id'];
-  readonly userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
-  readonly areResourceInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
+
+  selectedInstitutions = signal<Institution[]>([]);
+
+  userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
+  areUserInstitutionsLoading = select(InstitutionsSelectors.areUserInstitutionsLoading);
+  resourceInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
+  areResourceInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
+  areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
 
   private actions = createDispatchMap({
     fetchUserInstitutions: FetchUserInstitutions,
     fetchResourceInstitutions: FetchResourceInstitutions,
     updateResourceInstitutions: UpdateResourceInstitutions,
   });
+
+  constructor() {
+    effect(() => {
+      const resourceInstitutions = this.resourceInstitutions();
+      if (resourceInstitutions.length > 0) {
+        this.selectedInstitutions.set([...resourceInstitutions]);
+      }
+    });
+  }
 
   ngOnInit() {
     this.actions.fetchUserInstitutions();

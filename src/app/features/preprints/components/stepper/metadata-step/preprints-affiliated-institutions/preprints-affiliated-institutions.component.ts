@@ -44,9 +44,9 @@ export class PreprintsAffiliatedInstitutionsComponent implements OnInit {
 
   constructor() {
     effect(() => {
-      const resourceInsts = this.resourceInstitutions();
-      if (resourceInsts.length > 0) {
-        this.selectedInstitutions.set([...resourceInsts]);
+      const resourceInstitutions = this.resourceInstitutions();
+      if (resourceInstitutions.length > 0) {
+        this.selectedInstitutions.set([...resourceInstitutions]);
       }
     });
   }
