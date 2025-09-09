@@ -52,7 +52,7 @@ describe('factory: sentry', () => {
 
   it('should initialize Sentry if DSN is missind', async () => {
     const service = TestBed.inject(OSFConfigService);
-    jest.spyOn(service, 'get').mockResolvedValue(null);
+    jest.spyOn(service, 'get').mockResolvedValue('');
     await runInInjectionContext(TestBed, async () => {
       await initializeApplication()();
     });

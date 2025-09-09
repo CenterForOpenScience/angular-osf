@@ -33,26 +33,20 @@ export class OSFConfigService {
    * Loads the configuration from the JSON file if not already loaded.
    * Ensures that only one request is made.
    */
-  private async load(): Promise<ConfigModel> {
+  async load(): Promise<void> {
     if (!this.config) {
       this.config = await lastValueFrom<ConfigModel>(
         this.http.get<ConfigModel>('/assets/config/config.json').pipe(shareReplay(1))
       );
     }
-
-    return this.config;
   }
 
   /**
    * Retrieves a configuration value by key after ensuring the config is loaded.
    * @param key The key to look up in the config.
-   * @returns A promise that resolves to the value of the configuration key.
+   * @returns The value of the configuration key.
    */
-  async get<T extends keyof ConfigModel>(key: T): Promise<ConfigModel[T] | null> {
-    if (!this.config) {
-      await this.load();
-    }
-
+  get<T extends keyof ConfigModel>(key: T): ConfigModel[T] | null {
     return this.config?.[key] || null;
   }
 }

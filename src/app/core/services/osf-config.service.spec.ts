@@ -30,11 +30,15 @@ describe('Service: Config', () => {
   });
 
   it('should return a value with get()', async () => {
-    const apiUrl = service.get('apiUrl');
-    httpMock.expectOne('/assets/config/config.json').flush(mockConfig);
-    expect(await apiUrl).toBe('https://api.example.com');
-    expect(await service.get('featureToggle')).toBe(true);
-    expect(await service.get('nonexistentKey')).toBeNull();
+    let loadPromise = service.load();
+    const request = httpMock.expectOne('/assets/config/config.json');
+    request.flush(mockConfig);
+    await loadPromise;
+    expect(service.get('apiUrl')).toBe('https://api.example.com');
+    expect(service.get('featureToggle')).toBe(true);
+    loadPromise = service.load();
+    await loadPromise;
+    expect(service.get('nonexistentKey')).toBeNull();
 
     expect(httpMock.verify()).toBeUndefined();
   });

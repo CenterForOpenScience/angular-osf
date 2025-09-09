@@ -4,6 +4,7 @@ import { ENVIRONMENT } from '@core/constants/environment.token';
 import { OSFConfigService } from '@core/services/osf-config.service';
 
 import * as Sentry from '@sentry/angular';
+import { GoogleTagManagerConfiguration } from 'angular-google-tag-manager';
 
 /**
  * Asynchronous initializer function that loads the Sentry DSN from the config service
@@ -17,9 +18,14 @@ import * as Sentry from '@sentry/angular';
 export function initializeApplication() {
   return async () => {
     const configService = inject(OSFConfigService);
+    const googleTagManagerConfiguration = inject(GoogleTagManagerConfiguration);
     const environment = inject(ENVIRONMENT);
 
-    const dsn = await configService.get('sentryDsn');
+    await configService.load();
+
+    googleTagManagerConfiguration.set({ id: configService.get('googleTagManagerId') });
+
+    const dsn = configService.get('sentryDsn');
 
     if (!dsn) {
       return;
