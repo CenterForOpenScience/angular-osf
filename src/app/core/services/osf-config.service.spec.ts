@@ -29,12 +29,13 @@ describe('Service: Config', () => {
     httpMock = TestBed.inject(HttpTestingController);
   });
 
-  it('should return a value with get()', () => {
+  it('should return a value with get()', async () => {
     const apiUrl = service.get('apiUrl');
-    expect(apiUrl()).toBeNull();
     httpMock.expectOne('/assets/config/config.json').flush(mockConfig);
-    expect(apiUrl()).toBe('https://api.example.com');
-    expect(service.get('featureToggle')()).toBe(true);
-    expect(service.get('nonexistentKey')()).toBeNull();
+    expect(await apiUrl).toBe('https://api.example.com');
+    expect(await service.get('featureToggle')).toBe(true);
+    expect(await service.get('nonexistentKey')).toBeNull();
+
+    expect(httpMock.verify()).toBeUndefined();
   });
 });

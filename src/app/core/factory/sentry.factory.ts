@@ -12,22 +12,14 @@ import * as Sentry from '@sentry/angular';
  * This function is meant to be used with `provideAppInitializer`, which blocks Angular
  * bootstrap until the Promise resolves. This avoids race conditions when reading config.
  *
- * @param timeout - Optional timeout in milliseconds to wait for the DSN to be available.
- *
  * @returns A Promise that resolves once Sentry is initialized (or skipped if no DSN)
  */
-export function initializeSentry(timeout = 100) {
+export function initializeSentry() {
   return async () => {
     const configService = inject(OSFConfigService);
     const environment = inject(ENVIRONMENT);
 
-    // Await the signal being populated (polling every 100ms)
-    let dsn: string | null = null;
-    for (let i = 0; i < 20; i++) {
-      dsn = configService.get('sentryDsn')()?.toString() || null;
-      if (dsn) break;
-      await new Promise((r) => setTimeout(r, timeout));
-    }
+    const dsn = await configService.get('sentryDsn');
 
     if (!dsn) {
       return;
