@@ -13,6 +13,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+import { UserSelectors } from '@core/store/user';
 import { ProjectFormControls } from '@osf/shared/enums';
 import { Institution, ProjectForm } from '@osf/shared/models';
 import { Project } from '@osf/shared/models/projects';
@@ -53,6 +54,7 @@ export class AddProjectFormComponent implements OnInit {
   selectedTemplate = signal<Project | null>(null);
   isSubmitting = signal(false);
   selectedAffiliations = signal<Institution[]>([]);
+  currentUser = select(UserSelectors.getCurrentUser);
   storageLocations = select(RegionsSelectors.getRegions);
   areStorageLocationsLoading = select(RegionsSelectors.areRegionsLoading);
   affiliations = select(InstitutionsSelectors.getUserInstitutions);
@@ -81,11 +83,13 @@ export class AddProjectFormComponent implements OnInit {
     this.actions.fetchRegions();
 
     this.projectForm()
+      .get(ProjectFormControls.StorageLocation)
+      ?.setValue(this.currentUser()?.defaultRegionId || '');
+
+    this.projectForm()
       .get(ProjectFormControls.Template)
       ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((value) => {
-        this.hasTemplateSelected.set(!!value);
-      });
+      .subscribe((value) => this.hasTemplateSelected.set(!!value));
   }
 
   onTemplateChange(project: Project | null): void {
