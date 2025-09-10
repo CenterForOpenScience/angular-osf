@@ -30,11 +30,12 @@ export class RegistryComponent {
   private readonly destroyRef = inject(DestroyRef);
 
   readonly registry = select(RegistryOverviewSelectors.getRegistry);
+  readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
   readonly registry$ = toObservable(select(RegistryOverviewSelectors.getRegistry));
 
   constructor() {
     effect(() => {
-      if (this.registry()) {
+      if (!this.isRegistryLoading() && this.registry()) {
         this.setMetaTags();
       }
     });
