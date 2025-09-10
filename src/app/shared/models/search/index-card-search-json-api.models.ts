@@ -40,6 +40,9 @@ export interface SearchResultJsonApi {
       };
     };
   };
+  attributes?: {
+    cardSearchResultCount: number;
+  };
 }
 
 export type IndexCardDataJsonApi = ApiData<IndexCardAttributesJsonApi, null, null, null>;

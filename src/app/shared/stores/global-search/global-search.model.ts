@@ -1,14 +1,14 @@
 import { ResourceType } from '@osf/shared/enums';
 import { StringOrNull } from '@osf/shared/helpers';
-import { AsyncStateModel, DiscoverableFilter, ResourceModel, SelectOption } from '@osf/shared/models';
+import { AsyncStateModel, DiscoverableFilter, FilterOption, ResourceModel } from '@osf/shared/models';
 
 export interface GlobalSearchStateModel {
   resources: AsyncStateModel<ResourceModel[]>;
   filters: DiscoverableFilter[];
   defaultFilterValues: Record<string, string>;
   filterValues: Record<string, StringOrNull>;
-  filterOptionsCache: Record<string, SelectOption[]>;
-  filterSearchCache: Record<string, SelectOption[]>;
+  filterOptionsCache: Record<string, FilterOption[]>;
+  filterSearchCache: Record<string, FilterOption[]>;
   filterPaginationCache: Record<string, string>;
   resourcesCount: number;
   searchText: StringOrNull;

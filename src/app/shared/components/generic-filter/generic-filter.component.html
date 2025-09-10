@@ -9,7 +9,6 @@
         [id]="filterType()"
         [options]="filterOptions()"
         optionLabel="label"
-        optionValue="value"
         [ngModel]="selectedValue()"
         [placeholder]="currentSelectedOption() ? currentSelectedOption()?.label : placeholder()"
         styleClass="w-full"
@@ -27,7 +26,11 @@
         (onChange)="onValueChange($event)"
         (onFilter)="onFilterChange($event)"
         [showClear]="!!selectedValue()"
-      />
+      >
+        <ng-template #item let-item>
+          <p class="text-base">{{ item.label }} ({{ item.cardSearchResultCount }})</p>
+        </ng-template>
+      </p-select>
     </div>
   }
 </div>

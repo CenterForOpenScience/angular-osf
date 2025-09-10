@@ -11,7 +11,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LoadingSpinnerComponent } from '@shared/components';
 import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
 import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter, SelectOption } from '@shared/models';
+import { DiscoverableFilter, FilterOption } from '@shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
 
@@ -37,7 +37,7 @@ import { GenericFilterComponent } from '../generic-filter/generic-filter.compone
 export class ReusableFilterComponent {
   filters = input<DiscoverableFilter[]>([]);
   selectedValues = input<Record<string, StringOrNull>>({});
-  filterSearchResults = input<Record<string, SelectOption[]>>({});
+  filterSearchResults = input<Record<string, FilterOption[]>>({});
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
   plainStyle = input<boolean>(false);
@@ -152,11 +152,11 @@ export class ReusableFilterComponent {
     }
   }
 
-  getFilterOptions(filter: DiscoverableFilter): SelectOption[] {
+  getFilterOptions(filter: DiscoverableFilter): FilterOption[] {
     return filter.options || [];
   }
 
-  getFilterSearchResults(filter: DiscoverableFilter): SelectOption[] {
+  getFilterSearchResults(filter: DiscoverableFilter): FilterOption[] {
     const searchResults = this.filterSearchResults();
     return searchResults[filter.key] || [];
   }
