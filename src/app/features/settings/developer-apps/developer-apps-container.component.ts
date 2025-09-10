@@ -27,10 +27,9 @@ export class DeveloperAppsContainerComponent {
   private readonly isMedium = toSignal(inject(IS_MEDIUM));
   private readonly translateService = inject(TranslateService);
 
-  protected readonly isBaseRoute = toSignal(
-    this.router.events.pipe(map(() => this.router.url === '/settings/developer-apps')),
-    { initialValue: this.router.url === '/settings/developer-apps' }
-  );
+  readonly isBaseRoute = toSignal(this.router.events.pipe(map(() => this.router.url === '/settings/developer-apps')), {
+    initialValue: this.router.url === '/settings/developer-apps',
+  });
 
   createDeveloperApp(): void {
     const dialogWidth = this.isMedium() ? '500px' : '340px';

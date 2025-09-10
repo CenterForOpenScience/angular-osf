@@ -14,9 +14,9 @@ import {
   AuthorizedAddonRequestJsonApi,
   AuthorizedAddonResponseJsonApi,
   ConfiguredAddonGetResponseJsonApi,
+  ConfiguredAddonModel,
   ConfiguredAddonRequestJsonApi,
   ConfiguredAddonResponseJsonApi,
-  ConfiguredStorageAddonModel,
   IncludedAddonData,
   JsonApiResponse,
   OperationInvocation,
@@ -29,45 +29,22 @@ import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
 
-/**
- * Service for managing addon-related operations within the OSF platform.
- *
- * This service provides methods for retrieving, configuring, and interacting
- * with external storage service addons (e.g., Google Drive, Dropbox).
- * It communicates with the OSF Addons API and maps responses into domain models.
- *
- * Used by components and state layers to facilitate addon workflows such as
- * integration configuration, credential management, and supported feature handling.
- *
- */
 @Injectable({
   providedIn: 'root',
 })
 export class AddonsService {
-  /**
-   * Injected instance of the JSON:API service used for making API requests.
-   * This service handles standardized JSON:API request and response formatting.
-   */
   private jsonApiService = inject(JsonApiService);
   private apiUrl = environment.addonsApiUrl;
-
-  /**
-   * Signal holding the current authenticated user from the global NGXS store.
-   * Typically used for access control, display logic, or personalized API calls.
-   */
   private currentUser = select(UserSelectors.getCurrentUser);
 
-  /**
-   * Retrieves a list of external storage service addons by type.
-   *
-   * @param addonType - The addon type to fetch (e.g., 'storage').
-   * @returns Observable emitting an array of mapped Addon objects.
-   *
-   */
   getAddons(addonType: string): Observable<AddonModel[]> {
     return this.jsonApiService
       .get<JsonApiResponse<AddonGetResponseJsonApi[], null>>(`${this.apiUrl}/external-${addonType}-services`)
-      .pipe(map((response) => response.data.map((item) => AddonMapper.fromResponse(item))));
+      .pipe(
+        map((response) => {
+          return response.data.map((item) => AddonMapper.fromResponse(item));
+        })
+      );
   }
 
   getAddonsUserReference(): Observable<UserReferenceJsonApi[]> {
@@ -91,15 +68,18 @@ export class AddonsService {
       .pipe(map((response) => response.data));
   }
 
-  getAuthorizedStorageAddons(addonType: string, referenceId: string): Observable<AuthorizedAccountModel[]> {
-    const params = { [`fields[external-${addonType}-services]`]: 'external_service_name' };
-
+  getAuthorizedAddons(addonType: string, referenceId: string): Observable<AuthorizedAccountModel[]> {
+    const params = {
+      [`fields[external-${addonType}-services]`]: 'external_service_name',
+    };
     return this.jsonApiService
       .get<
         JsonApiResponse<AuthorizedAddonGetResponseJsonApi[], IncludedAddonData[]>
       >(`${this.apiUrl}/user-references/${referenceId}/authorized_${addonType}_accounts/?include=external-${addonType}-service`, params)
       .pipe(
-        map((response) => response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included)))
+        map((response) => {
+          return response.data.map((item) => AddonMapper.fromAuthorizedAddonResponse(item, response.included));
+        })
       );
   }
 
@@ -112,45 +92,46 @@ export class AddonsService {
           attributes: { serialize_oauth_token: 'true' },
         },
       })
-      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi)));
+      .pipe(
+        map((response) => {
+          return AddonMapper.fromAuthorizedAddonResponse(response as AuthorizedAddonGetResponseJsonApi);
+        })
+      );
   }
 
-  /**
-   * Retrieves the list of configured addons for a given resource reference.
-   *
-   * @param addonType - The addon category to retrieve. Valid values: `'citation'` or `'storage'`.
-   * @param referenceId - The unique identifier of the resource (e.g., node, registration) that the addons are configured for.
-   * @returns An observable that emits an array of {@link ConfiguredStorageAddonModel} objects.
-   *
-   */
-  getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredStorageAddonModel[]> {
+  getConfiguredAddons(addonType: string, referenceId: string): Observable<ConfiguredAddonModel[]> {
     return this.jsonApiService
       .get<
         JsonApiResponse<ConfiguredAddonGetResponseJsonApi[], null>
       >(`${this.apiUrl}/resource-references/${referenceId}/configured_${addonType}_addons/`)
-      .pipe(map((response) => response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item))));
+      .pipe(
+        map((response) => {
+          return response.data.map((item) => AddonMapper.fromConfiguredAddonResponse(item));
+        })
+      );
   }
 
   createAuthorizedAddon(
     addonRequestPayload: AuthorizedAddonRequestJsonApi,
     addonType: string
-  ): Observable<AuthorizedAddonResponseJsonApi> {
+  ): Observable<AuthorizedAccountModel> {
     return this.jsonApiService
       .post<
-        JsonApiResponse<AuthorizedAddonResponseJsonApi, null>
-      >(`${this.apiUrl}/authorized-${addonType}-accounts/`, addonRequestPayload)
-      .pipe(map((response) => response.data));
+        JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>
+      >(`${this.apiUrl}/authorized-${addonType}-accounts/?include=external-${addonType}-service`, addonRequestPayload)
+      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response.data, response.included)));
   }
 
   updateAuthorizedAddon(
     addonRequestPayload: AuthorizedAddonRequestJsonApi,
     addonType: string,
     addonId: string
-  ): Observable<AuthorizedAddonResponseJsonApi> {
-    return this.jsonApiService.patch<AuthorizedAddonResponseJsonApi>(
-      `${this.apiUrl}/authorized-${addonType}-accounts/${addonId}/`,
-      addonRequestPayload
-    );
+  ): Observable<AuthorizedAccountModel> {
+    return this.jsonApiService.http
+      .patch<
+        JsonApiResponse<AuthorizedAddonResponseJsonApi, IncludedAddonData[]>
+      >(`${this.apiUrl}/authorized-${addonType}-accounts/${addonId}/?include=external-${addonType}-service`, addonRequestPayload)
+      .pipe(map((response) => AddonMapper.fromAuthorizedAddonResponse(response.data, response.included)));
   }
 
   createConfiguredAddon(

@@ -179,6 +179,7 @@
     "contributors": "Contributors",
     "analytics": "Analytics",
     "addons": "Add-ons",
+    "linkedServices": "Linked Services",
     "resources": "Resources",
     "components": "Components",
     "links": "Links",
@@ -946,6 +947,20 @@
       "title": "Delete institution",
       "message": "Are you sure you want to delete <b>{{name}}</b> from this project?",
       "success": "Institution has been successfully deleted."
+    },
+    "linkedServices": {
+      "title": "Linked Services",
+      "table": {
+        "linkedService": "Linked Service",
+        "displayName": "Display Name",
+        "resourceType": "Resource Type",
+        "link": "Link",
+        "noLink": "No link available"
+      },
+              "noLinkedServices": "This project has no configured linked services at the moment.",
+        "redirectMessage": "Visit",
+        "addonsLink": "Add-ons",
+        "redirectMessageSuffix": "to add a linked service."
     }
   },
   "files": {
@@ -1485,7 +1500,8 @@
       },
       "categories": {
         "additionalService": "Additional Storage",
-        "citationManager": "Citation Manager"
+        "citationManager": "Citation Manager",
+        "linkedServices": "Linked Services"
       },
       "toast": {
         "updateSuccess": "Successfully updated {{addonName}} add-on configuration",
@@ -1502,10 +1518,16 @@
         "title": "Configure Add-on",
         "noFolders": "No folders",
         "noFolderSelected": "No selected folder",
+        "noLinkedItem": "No linked item",
+        "resourceType": "Resource type",
+        "aboutResourceType": "About resource type",
+        "chooseResourceType": "Choose a resource type",
+        "resourceTypeModalMessage": "This helps others understand what kind of material you're sharing. Choosing the right resource type makes it easier for search engines and research tools to find and share your work—both on OSF and in other scholarly indexes.<br><br>For example, selecting <strong>“Dataset”</strong> tells tools and repositories that your files are research data, which helps your work appear in places that specialize in datasets.<br><br>Pick the option that best describes most of the files you're linking.<br><br>OSF uses resource types from <strong>DataCite</strong>, a standard used by many research platforms. <a target='_blank' href={{link}}>(Learn more)</a>",
         "disconnect": "Disconnect {{addonName}}",
         "disconnectMessage": "You are about to disconnect the following addon from the project:",
         "account": "Account:",
         "selectedFolder": "Selected folder:",
+        "linkedItem": "Linked item:",
         "folderName": "Folder name:",
         "selectFolder": "Select",
         "connectedAccount": "Connected to account:",

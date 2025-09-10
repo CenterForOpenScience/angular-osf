@@ -23,7 +23,7 @@ export class RenameFileDialogComponent {
   readonly nameLimit = InputLimits.name.maxLength;
   readonly nameMinLength = InputLimits.name.minLength;
 
-  protected readonly renameForm = new FormGroup({
+  readonly renameForm = new FormGroup({
     name: new FormControl(this.config.data?.currentName ?? '', {
       nonNullable: true,
       validators: [CustomValidators.requiredTrimmed()],

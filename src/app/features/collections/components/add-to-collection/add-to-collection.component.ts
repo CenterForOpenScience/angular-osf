@@ -67,27 +67,27 @@ export class AddToCollectionComponent implements CanDeactivateComponent {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
 
-  protected readonly AddToCollectionSteps = AddToCollectionSteps;
+  readonly AddToCollectionSteps = AddToCollectionSteps;
 
-  protected collectionMetadataForm = new FormGroup({});
-  protected isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
-  protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
-  protected selectedProject = select(ProjectsSelectors.getSelectedProject);
-  protected currentUser = select(UserSelectors.getCurrentUser);
-  protected providerId = signal<string>('');
-  protected allowNavigation = signal<boolean>(false);
-  protected projectMetadataSaved = signal<boolean>(false);
-  protected projectContributorsSaved = signal<boolean>(false);
-  protected collectionMetadataSaved = signal<boolean>(false);
-  protected stepperActiveValue = signal<number>(AddToCollectionSteps.SelectProject);
-  protected primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
-  protected isProjectMetadataDisabled = computed(() => !this.selectedProject());
-  protected isProjectContributorsDisabled = computed(() => !this.selectedProject() || !this.projectMetadataSaved());
-  protected isCollectionMetadataDisabled = computed(
+  collectionMetadataForm = new FormGroup({});
+  isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  collectionProvider = select(CollectionsSelectors.getCollectionProvider);
+  selectedProject = select(ProjectsSelectors.getSelectedProject);
+  currentUser = select(UserSelectors.getCurrentUser);
+  providerId = signal<string>('');
+  allowNavigation = signal<boolean>(false);
+  projectMetadataSaved = signal<boolean>(false);
+  projectContributorsSaved = signal<boolean>(false);
+  collectionMetadataSaved = signal<boolean>(false);
+  stepperActiveValue = signal<number>(AddToCollectionSteps.SelectProject);
+  primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
+  isProjectMetadataDisabled = computed(() => !this.selectedProject());
+  isProjectContributorsDisabled = computed(() => !this.selectedProject() || !this.projectMetadataSaved());
+  isCollectionMetadataDisabled = computed(
     () => !this.selectedProject() || !this.projectMetadataSaved() || !this.projectContributorsSaved()
   );
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getCollectionProvider: GetCollectionProvider,
     clearAddToCollectionState: ClearAddToCollectionState,
     createCollectionSubmission: CreateCollectionSubmission,

@@ -100,6 +100,12 @@ export const projectRoutes: Routes = [
         canActivate: [viewOnlyGuard],
         loadChildren: () => import('../project/addons/addons.routes').then((mod) => mod.addonsRoutes),
       },
+      {
+        path: 'links',
+        canActivate: [viewOnlyGuard],
+        loadComponent: () =>
+          import('../project/linked-services/linked-services.component').then((mod) => mod.LinkedServicesComponent),
+      },
     ],
   },
 ];

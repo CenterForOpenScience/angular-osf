@@ -15,7 +15,7 @@ import { RegistryServiceIcons } from '@shared/constants';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistryServicesComponent {
-  protected registryServices = RegistryServiceIcons;
+  registryServices = RegistryServiceIcons;
 
   openEmail() {
     window.location.href = 'mailto:contact@osf.io';

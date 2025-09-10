@@ -44,7 +44,6 @@ import {
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
-import { GoogleFilePickerComponent } from '@osf/shared/components/addons/folder-selector/google-file-picker/google-file-picker.component';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
@@ -56,13 +55,8 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import {
-  ConfiguredStorageAddonModel,
-  FileLabelModel,
-  FilesTreeActions,
-  OsfFile,
-  StorageItemModel,
-} from '@shared/models';
+import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
+import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItemModel } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -217,7 +211,7 @@ export class FilesComponent {
     effect(() => {
       const rootFolders = this.rootFolders();
       if (rootFolders) {
-        const osfRootFolder = rootFolders.find((folder: OsfFile) => folder.provider === 'osfstorage');
+        const osfRootFolder = rootFolders.find((folder: OsfFile) => folder.provider === FileProvider.OsfStorage);
         if (osfRootFolder) {
           this.currentRootFolder.set({
             label: this.translateService.instant('files.storageLocation'),
@@ -340,14 +334,14 @@ export class FilesComponent {
     const resourceId = this.resourceId();
     const folderId = this.currentFolder()?.id ?? '';
     const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
-    const provider = this.currentRootFolder()?.folder?.provider ?? 'osfstorage';
+    const storageLink = this.currentRootFolder()?.folder?.links?.download ?? '';
 
     if (resourceId && folderId) {
       if (isRootFolder) {
-        const link = this.filesService.getFolderDownloadLink(resourceId, provider, '', true);
+        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
         window.open(link, '_blank')?.focus();
       } else {
-        const link = this.filesService.getFolderDownloadLink(resourceId, provider, folderId, false);
+        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
         window.open(link, '_blank')?.focus();
       }
     }
@@ -389,8 +383,8 @@ export class FilesComponent {
     this.router.navigate([file.guid], { relativeTo: this.activeRoute });
   }
 
-  getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
-    if (provider === 'osfstorage') {
+  getAddonName(addons: ConfiguredAddonModel[], provider: string): string {
+    if (provider === FileProvider.OsfStorage) {
       return this.translateService.instant('files.storageLocation');
     } else {
       return addons.find((addon) => addon.externalServiceName === provider)?.displayName ?? '';
@@ -407,7 +401,7 @@ export class FilesComponent {
     if (googleDrive) {
       this.accountId.set(googleDrive.baseAccountId);
       this.selectedRootFolder.set({
-        itemId: googleDrive.selectedFolderId,
+        itemId: googleDrive.selectedStorageItemId,
       });
     }
   }

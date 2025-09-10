@@ -22,15 +22,15 @@ import { AddonsSelectors, CreateAddonOperationInvocation } from '@shared/stores/
 export class ConfirmAccountConnectionModalComponent {
   private dialogConfig = inject(DynamicDialogConfig);
   private operationInvocationService = inject(AddonOperationInvocationService);
-  protected dialogRef = inject(DynamicDialogRef);
-  protected dialogMessage = this.dialogConfig.data.message || '';
-  protected isSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
+  dialogRef = inject(DynamicDialogRef);
+  dialogMessage = this.dialogConfig.data.message || '';
+  isSubmitting = select(AddonsSelectors.getOperationInvocationSubmitting);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     createAddonOperationInvocation: CreateAddonOperationInvocation,
   });
 
-  protected handleConnectAddonAccount(): void {
+  handleConnectAddonAccount(): void {
     const selectedAccount = this.dialogConfig.data.selectedAccount;
     if (!selectedAccount) return;
 

@@ -1,7 +1,7 @@
 <div>
-  <p class="border-divider p-b-12 m-b-12">{{ contributor().fullName }}</p>
+  <p class="border-divider pb-3 mb-3">{{ contributor().fullName }}</p>
 
-  <div class="flex align-items-center p-b-12">
+  <div class="flex align-items-center pb-3">
     <label class="label mr-2" [for]="`${contributor().id}-permission`">
       {{ 'project.contributors.table.headers.permissions' | translate }}:
     </label>
@@ -24,7 +24,7 @@
     </p-select>
   </div>
 
-  <div class="flex align-items-center p-b-12">
+  <div class="flex align-items-center pb-3">
     <label class="label mr-2" [for]="`${contributor().id}-bibliographic`">
       {{ 'project.contributors.addDialog.bibliographicContributor' | translate }}:
     </label>

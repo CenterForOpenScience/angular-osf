@@ -18,5 +18,5 @@ import { IS_WEB } from '@osf/shared/helpers';
 export class FooterComponent {
   isWeb = toSignal(inject(IS_WEB));
 
-  protected readonly socialIcons = SOCIAL_ICONS;
+  readonly socialIcons = SOCIAL_ICONS;
 }

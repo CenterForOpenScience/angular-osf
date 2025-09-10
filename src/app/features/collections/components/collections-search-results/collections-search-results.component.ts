@@ -21,23 +21,23 @@ import { CollectionsSearchResultCardComponent } from '../collections-search-resu
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionsSearchResultsComponent {
-  protected searchResults = select(CollectionsSelectors.getCollectionSubmissionsSearchResult);
-  protected isCollectionDetailsLoading = select(CollectionsSelectors.getCollectionDetailsLoading);
-  protected isCollectionSubmissionsLoading = select(CollectionsSelectors.getCollectionSubmissionsLoading);
-  protected totalSubmissions = select(CollectionsSelectors.getTotalSubmissions);
-  protected pageNumber = select(CollectionsSelectors.getPageNumber);
+  searchResults = select(CollectionsSelectors.getCollectionSubmissionsSearchResult);
+  isCollectionDetailsLoading = select(CollectionsSelectors.getCollectionDetailsLoading);
+  isCollectionSubmissionsLoading = select(CollectionsSelectors.getCollectionSubmissionsLoading);
+  totalSubmissions = select(CollectionsSelectors.getTotalSubmissions);
+  pageNumber = select(CollectionsSelectors.getPageNumber);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     setPageNumber: SetPageNumber,
   });
 
-  protected isLoading = computed(() => {
+  isLoading = computed(() => {
     return this.isCollectionDetailsLoading() || this.isCollectionSubmissionsLoading();
   });
 
-  protected firstIndex = computed(() => (parseInt(this.pageNumber()) - 1) * 10);
+  firstIndex = computed(() => (parseInt(this.pageNumber()) - 1) * 10);
 
-  protected onPageChange(event: PaginatorState): void {
+  onPageChange(event: PaginatorState): void {
     if (event.page !== undefined) {
       const pageNumber = (event.page + 1).toString();
       this.actions.setPageNumber(pageNumber);

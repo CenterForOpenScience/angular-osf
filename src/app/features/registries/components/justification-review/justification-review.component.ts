@@ -35,17 +35,17 @@ export class JustificationReviewComponent {
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly pages = select(RegistriesSelectors.getPagesSchema);
-  protected readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
-  protected readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
-  protected readonly updatedFields = select(RegistriesSelectors.getUpdatedFields);
-  protected readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
+  readonly pages = select(RegistriesSelectors.getPagesSchema);
+  readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+  readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
+  readonly updatedFields = select(RegistriesSelectors.getUpdatedFields);
+  readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
 
-  protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
-  protected readonly FieldType = FieldType;
-  protected readonly RevisionReviewStates = RevisionReviewStates;
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  readonly FieldType = FieldType;
+  readonly RevisionReviewStates = RevisionReviewStates;
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     deleteSchemaResponse: DeleteSchemaResponse,
     handleSchemaResponse: HandleSchemaResponse,
     clearState: ClearState,

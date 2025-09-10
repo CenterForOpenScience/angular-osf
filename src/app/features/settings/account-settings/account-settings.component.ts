@@ -51,7 +51,7 @@ export class AccountSettingsComponent {
     getRegions: GetRegions,
     getUserInstitutions: GetUserInstitutions,
   });
-  protected readonly currentUser = select(UserSelectors.getCurrentUser);
+  readonly currentUser = select(UserSelectors.getCurrentUser);
 
   constructor() {
     effect(() => {

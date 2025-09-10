@@ -34,11 +34,11 @@ export class RegistriesSubjectsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly draftId = this.route.snapshot.params['id'];
 
-  protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
-  protected isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
-  protected draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
+  draftRegistration = select(RegistriesSelectors.getDraftRegistration);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     fetchSubjects: FetchSubjects,
     fetchSelectedSubjects: FetchSelectedSubjects,
     fetchChildrenSubjects: FetchChildrenSubjects,

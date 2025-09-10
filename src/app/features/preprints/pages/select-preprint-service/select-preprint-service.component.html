@@ -2,7 +2,7 @@
 
 <section class="flex flex-1 flex-column bg-white p-3 md:p-4">
   <h2>{{ 'preprints.selectService.sectionTitle' | translate }}</h2>
-  <p class="m-t-12">
+  <p class="mt-3">
     <span>
       {{ 'preprints.selectService.description' | translate }}
     </span>
@@ -10,14 +10,14 @@
       {{ 'preprints.selectService.learnMore' | translate }}
     </a>
   </p>
-  <section class="m-t-48 grid justify-content-center align-items-start gap-4">
+  <section class="mt-6 grid justify-content-center align-items-start gap-4">
     @if (areProvidersLoading()) {
       @for (_ of skeletonArray; track $index) {
         <p-card>
           <div class="h-10rem w-13rem grid-item flex flex-column align-items-center justify-content-end">
             <p-skeleton width="60px" height="60px" />
-            <p-skeleton class="m-t-12" width="5rem" height="1rem" />
-            <p-skeleton class="m-t-24" width="8rem" height="2rem" />
+            <p-skeleton class="mt-3" width="5rem" height="1rem" />
+            <p-skeleton class="mt-4" width="8rem" height="2rem" />
           </div>
         </p-card>
       }
@@ -39,9 +39,9 @@
               [alt]="'preprints.selectService.providerLogoImageAlt' | translate"
             />
 
-            <h4 class="m-t-12">{{ provider.name }}</h4>
+            <h4 class="mt-3">{{ provider.name }}</h4>
             <p-button
-              class="m-t-24"
+              class="mt-4"
               [label]="
                 selectedProviderId() === provider.id
                   ? ('common.buttons.deselect' | translate)
@@ -57,7 +57,7 @@
       }
     }
   </section>
-  <section class="m-t-48 flex flex-row justify-content-end">
+  <section class="mt-6 flex flex-row justify-content-end">
     <p-button
       [label]="'common.buttons.next' | translate"
       [routerLink]="['/preprints', selectedProviderId(), 'submit']"

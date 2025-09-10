@@ -14,7 +14,7 @@ export abstract class DataciteTrackerComponent {
    *
    * @returns An Observable that emits a string DOI or null if unavailable.
    */
-  protected abstract getDoi(): Observable<string | null>;
+  abstract getDoi(): Observable<string | null>;
 
   /**
    * Sets up a one-time effect to log a "view" event to Datacite for the resource DOI.
@@ -23,7 +23,7 @@ export abstract class DataciteTrackerComponent {
    *
    * @returns An Observable that completes after logging the view.
    */
-  protected setupDataciteViewTrackerEffect(): Observable<void> {
+  setupDataciteViewTrackerEffect(): Observable<void> {
     return this.getDoi().pipe(
       take(1),
       filter((doi): doi is string => !!doi),
