@@ -6,7 +6,6 @@ export const AUTHENTICATED_MENU_ITEMS: string[] = [
   'my-registrations',
   'my-projects',
   'my-preprints',
-  'registries-overview',
   'settings',
 ];
 

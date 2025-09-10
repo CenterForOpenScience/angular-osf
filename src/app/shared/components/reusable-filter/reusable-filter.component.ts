@@ -8,12 +8,12 @@ import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { LoadingSpinnerComponent } from '@shared/components';
-import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter, SelectOption } from '@shared/models';
+import { FILTER_PLACEHOLDERS } from '@osf/shared/constants';
+import { StringOrNull } from '@osf/shared/helpers';
+import { DiscoverableFilter, SelectOption } from '@osf/shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'osf-reusable-filters',
