@@ -7,14 +7,14 @@
 
           <div class="flex align-items-center gap-2">
             <h2>
-              <a [href]="resource().absoluteUrl">{{ displayTitle() }}</a>
+              <a [href]="resource().absoluteUrl" target="_blank" rel="noopener noreferrer">{{ displayTitle() }}</a>
             </h2>
             @if (isWithdrawn()) {
               <p-tag severity="secondary">{{ 'resourceCard.labels.withdrawn' | translate }}</p-tag>
             }
             @let orcidValues = orcids();
             @if (orcidValues.length && orcidValues[0]) {
-              <a [href]="orcidValues[0]" class="orcid-icon-link">
+              <a [href]="orcidValues[0]" class="orcid-icon-link" target="_blank" rel="noopener noreferrer">
                 <img ngSrc="assets/icons/colored/orcid.svg" width="16" height="16" alt="orcid" />
               </a>
             }
@@ -24,7 +24,7 @@
           @if (affiliatedEntities().length > 0) {
             <div class="line-height-3">
               @for (affiliatedEntity of affiliatedEntities().slice(0, limit); track $index) {
-                <a [href]="affiliatedEntity.absoluteUrl" target="_blank"
+                <a [href]="affiliatedEntity.absoluteUrl" target="_blank" rel="noopener noreferrer"
                   >{{ affiliatedEntity.name }}{{ $last ? '' : ', ' }}
                 </a>
               }
@@ -39,14 +39,18 @@
           @if (resource().isPartOf) {
             <div class="flex flex-row gap-1 line-height-3">
               <p>{{ 'resourceCard.labels.from' | translate }}</p>
-              <a [href]="resource().isPartOf!.absoluteUrl">{{ resource().isPartOf!.name }}</a>
+              <a [href]="resource().isPartOf!.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
+                resource().isPartOf!.name
+              }}</a>
             </div>
           }
 
           @if (resource().isContainedBy) {
             <div class="flex flex-row gap-1 line-height-3">
               <p>{{ 'resourceCard.labels.from' | translate }}</p>
-              <a [href]="resource().isContainedBy!.absoluteUrl">{{ resource().isContainedBy!.name }}</a>
+              <a [href]="resource().isContainedBy!.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
+                resource().isContainedBy!.name
+              }}</a>
             </div>
           }
 
