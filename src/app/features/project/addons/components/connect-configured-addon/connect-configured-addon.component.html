@@ -18,9 +18,11 @@
               <p>
                 {{ 'settings.addons.connectAddon.termsDescription' | translate }}
               </p>
-              <p>
-                {{ 'settings.addons.connectAddon.storageDescription' | translate }}
-              </p>
+              @if (addonTypeString() === AddonType.STORAGE) {
+                <p>
+                  {{ 'settings.addons.connectAddon.storageDescription' | translate }}
+                </p>
+              }
             </div>
 
             <div class="flex gap-4 align-self-center md:align-self-end mt-3">
@@ -32,12 +34,12 @@
               ></p-button>
               <p-button
                 [label]="
-                  !(isAuthorizedCitationAddonsLoading() || isAuthorizedStorageAddonsLoading())
+                  !isAuthorizedAddonsLoading()
                     ? ('settings.addons.form.buttons.next' | translate)
                     : ('settings.addons.form.buttons.acceptingTerms' | translate)
                 "
                 class="w-10rem btn-full-width"
-                [loading]="isAuthorizedCitationAddonsLoading() || isAuthorizedStorageAddonsLoading()"
+                [loading]="isAuthorizedAddonsLoading()"
                 (onClick)="handleAuthorizedAccountsPresenceCheck()"
               ></p-button>
             </div>
@@ -113,17 +115,21 @@
         <ng-template #content let-activateCallback="activateCallback">
           <section class="flex flex-column gap-5">
             <h2 class="pt-2">{{ 'settings.addons.connectAddon.configure' | translate }} {{ addon()?.displayName }}</h2>
-            <osf-folder-selector
+            <osf-storage-item-selector
               [isGoogleFilePicker]="isGoogleDrive()"
               [accountId]="chosenAccountId()"
               [accountName]="chosenAccountName()"
               [operationInvocationResult]="operationInvocation()?.operationResult || []"
               [accountNameControl]="accountNameControl"
               [isCreateMode]="true"
-              [(selectedRootFolderId)]="selectedRootFolderId"
+              [currentAddonType]="addonTypeString()"
+              [supportedResourceTypes]="supportedResourceTypes()"
+              [(selectedStorageItemId)]="selectedStorageItemId"
+              [(selectedStorageItemUrl)]="selectedStorageItemUrl"
+              [(selectedResourceType)]="selectedResourceType"
               (operationInvoke)="handleCreateOperationInvocation($event.operationName, $event.itemId)"
               (save)="handleCreateConfiguredAddon()"
-              (cancelSelection)="activateCallback(AddonStepperValue.CHOOSE_ACCOUNT)"
+              (cancelSelection)="handleNavigateToAccountSelection()"
             />
           </section>
         </ng-template>

@@ -132,8 +132,6 @@ describe('LicenseComponent', () => {
   });
 
   it('should reset form when cancel is called', () => {
-    const currentYear = new Date().getFullYear().toString();
-
     component.licenseForm.patchValue({
       year: '2023',
       copyrightHolders: 'Test Holder',
@@ -141,7 +139,7 @@ describe('LicenseComponent', () => {
 
     component.cancel();
 
-    expect(component.licenseForm.get('year')?.value).toBe(currentYear);
+    expect(component.licenseForm.get('year')?.value).toBe('');
     expect(component.licenseForm.get('copyrightHolders')?.value).toBe('');
   });
 

@@ -9,7 +9,8 @@ import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 import { ProjectFormControls } from '@osf/shared/enums';
@@ -40,21 +41,40 @@ import { ProjectSelectorComponent } from '../project-selector/project-selector.c
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddProjectFormComponent implements OnInit {
-  private actions = createDispatchMap({
+  private readonly actions = createDispatchMap({
     fetchUserInstitutions: FetchUserInstitutions,
     fetchRegions: FetchRegions,
   });
+  private readonly destroyRef = inject(DestroyRef);
 
   ProjectFormControls = ProjectFormControls;
 
   hasTemplateSelected = signal(false);
   selectedTemplate = signal<Project | null>(null);
   isSubmitting = signal(false);
+  selectedAffiliations = signal<Institution[]>([]);
   storageLocations = select(RegionsSelectors.getRegions);
   areStorageLocationsLoading = select(RegionsSelectors.areRegionsLoading);
   affiliations = select(InstitutionsSelectors.getUserInstitutions);
+  affiliationLoading = select(InstitutionsSelectors.areUserInstitutionsLoading);
 
   projectForm = input.required<FormGroup<ProjectForm>>();
+
+  constructor() {
+    effect(() => {
+      this.projectForm()
+        .get(ProjectFormControls.Affiliations)
+        ?.setValue(this.selectedAffiliations().map((inst) => inst.id));
+    });
+
+    effect(() => {
+      const affiliations = this.affiliations();
+
+      if (affiliations?.length > 0) {
+        this.selectedAffiliations.set(affiliations);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.actions.fetchUserInstitutions();
@@ -62,15 +82,10 @@ export class AddProjectFormComponent implements OnInit {
 
     this.projectForm()
       .get(ProjectFormControls.Template)
-      ?.valueChanges.subscribe((value) => {
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
         this.hasTemplateSelected.set(!!value);
       });
-  }
-
-  institutionsSelected(institutions: Institution[]) {
-    this.projectForm()
-      .get(ProjectFormControls.Affiliations)
-      ?.setValue(institutions.map((inst) => inst.id));
   }
 
   onTemplateChange(project: Project | null): void {

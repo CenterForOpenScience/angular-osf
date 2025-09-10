@@ -19,11 +19,9 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { UserSelectors } from '@osf/core/store/user';
-import { FiltersSectionComponent } from '@osf/features/admin-institutions/components/filters-section/filters-section.component';
-import { mapProjectResourceToTableCellData } from '@osf/features/admin-institutions/mappers/institution-project-to-table-data.mapper';
+import { UserSelectors } from '@core/store/user';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
-import { ResourceModel, SearchFilters } from '@osf/shared/models';
+import { PaginationLinksModel, ResourceModel, SearchFilters } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import {
   FetchResources,
@@ -36,10 +34,12 @@ import {
 } from '@shared/stores/global-search';
 
 import { AdminTableComponent } from '../../components';
+import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
 import { projectTableColumns } from '../../constants';
 import { ContactDialogComponent } from '../../dialogs';
 import { ContactOption, DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
+import { mapProjectResourceToTableCellData } from '../../mappers/institution-project-to-table-data.mapper';
 import { ContactDialogData, TableCellData, TableCellLink, TableIconClickEvent } from '../../models';
 import { InstitutionsAdminSelectors, RequestProjectAccess, SendUserMessage } from '../../store';
 
@@ -101,7 +101,7 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
       next: { href: this.nextLink() },
       prev: { href: this.previousLink() },
       first: { href: this.firstLink() },
-    };
+    } as PaginationLinksModel;
   });
 
   ngOnInit(): void {

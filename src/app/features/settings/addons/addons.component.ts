@@ -26,8 +26,10 @@ import {
   DeleteAuthorizedAddon,
   GetAddonsUserReference,
   GetAuthorizedCitationAddons,
+  GetAuthorizedLinkAddons,
   GetAuthorizedStorageAddons,
   GetCitationAddons,
+  GetLinkAddons,
   GetStorageAddons,
   UpdateAuthorizedAddon,
 } from '@shared/stores/addons';
@@ -53,101 +55,128 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddonsComponent {
-  protected readonly tabOptions = ADDON_TAB_OPTIONS;
-  protected readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
+  readonly tabOptions = ADDON_TAB_OPTIONS;
+  readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
+  readonly AddonTabValue = AddonTabValue;
+  readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
+  searchControl = new FormControl<string>('');
+  searchValue = signal<string>('');
+  selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
+  selectedTab = signal<number>(this.defaultTabValue);
 
-  protected AddonTabValue = AddonTabValue;
-  protected defaultTabValue = AddonTabValue.ALL_ADDONS;
+  currentUser = select(UserSelectors.getCurrentUser);
+  addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
+  storageAddons = select(AddonsSelectors.getStorageAddons);
+  citationAddons = select(AddonsSelectors.getCitationAddons);
+  linkAddons = select(AddonsSelectors.getLinkAddons);
+  authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
+  authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
+  authorizedLinkAddons = select(AddonsSelectors.getAuthorizedLinkAddons);
 
-  protected searchControl = new FormControl<string>('');
+  isCurrentUserLoading = select(UserSelectors.getCurrentUserLoading);
+  isUserReferenceLoading = select(AddonsSelectors.getAddonsUserReferenceLoading);
+  isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
+  isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
+  isLinkAddonsLoading = select(AddonsSelectors.getLinkAddonsLoading);
+  isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
+  isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
+  isAuthorizedLinkAddonsLoading = select(AddonsSelectors.getAuthorizedLinkAddonsLoading);
 
-  protected searchValue = signal<string>('');
-  protected selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
-  protected selectedTab = signal<number>(this.defaultTabValue);
-
-  protected currentUser = select(UserSelectors.getCurrentUser);
-  protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
-  protected storageAddons = select(AddonsSelectors.getStorageAddons);
-  protected citationAddons = select(AddonsSelectors.getCitationAddons);
-  protected authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
-  protected authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
-
-  protected isCurrentUserLoading = select(UserSelectors.getCurrentUserLoading);
-  protected isUserReferenceLoading = select(AddonsSelectors.getAddonsUserReferenceLoading);
-  protected isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
-  protected isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
-  protected isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
-  protected isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
-
-  protected isAddonsLoading = computed(() => {
+  isAddonsLoading = computed(() => {
     return (
       this.isStorageAddonsLoading() ||
       this.isCitationAddonsLoading() ||
+      this.isLinkAddonsLoading() ||
       this.isUserReferenceLoading() ||
       this.isCurrentUserLoading()
     );
   });
-  protected isAuthorizedAddonsLoading = computed(() => {
+  isAuthorizedAddonsLoading = computed(() => {
     return (
       this.isAuthorizedStorageAddonsLoading() ||
       this.isAuthorizedCitationAddonsLoading() ||
+      this.isAuthorizedLinkAddonsLoading() ||
       this.isUserReferenceLoading() ||
       this.isCurrentUserLoading()
     );
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getStorageAddons: GetStorageAddons,
     getCitationAddons: GetCitationAddons,
+    getLinkAddons: GetLinkAddons,
     getAuthorizedStorageAddons: GetAuthorizedStorageAddons,
     getAuthorizedCitationAddons: GetAuthorizedCitationAddons,
+    getAuthorizedLinkAddons: GetAuthorizedLinkAddons,
     createAuthorizedAddon: CreateAuthorizedAddon,
     updateAuthorizedAddon: UpdateAuthorizedAddon,
     getAddonsUserReference: GetAddonsUserReference,
     deleteAuthorizedAddon: DeleteAuthorizedAddon,
   });
 
-  protected readonly allAuthorizedAddons = computed(() => {
-    const authorizedAddons = [...this.authorizedStorageAddons(), ...this.authorizedCitationAddons()];
+  readonly allAuthorizedAddons = computed(() => {
+    const authorizedAddons = [
+      ...this.authorizedStorageAddons(),
+      ...this.authorizedCitationAddons(),
+      ...this.authorizedLinkAddons(),
+    ];
 
     const searchValue = this.searchValue().toLowerCase();
-    return authorizedAddons.filter((card) => card.displayName.includes(searchValue));
+    return authorizedAddons.filter((card) => card.displayName.toLowerCase().includes(searchValue));
   });
 
-  protected readonly userReferenceId = computed(() => {
+  readonly userReferenceId = computed(() => {
     return this.addonsUserReference()[0]?.id;
   });
 
-  protected readonly currentAction = computed(() =>
-    this.selectedCategory() === AddonCategory.EXTERNAL_STORAGE_SERVICES
-      ? this.actions.getStorageAddons
-      : this.actions.getCitationAddons
-  );
-
-  protected readonly currentAddonsState = computed(() =>
-    this.selectedCategory() === AddonCategory.EXTERNAL_STORAGE_SERVICES ? this.storageAddons() : this.citationAddons()
-  );
-
-  protected readonly filteredAddonCards = computed(() => {
-    const searchValue = this.searchValue().toLowerCase();
-    return this.currentAddonsState().filter((card) => card.externalServiceName.toLowerCase().includes(searchValue));
+  readonly currentAction = computed(() => {
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        return this.actions.getStorageAddons;
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        return this.actions.getCitationAddons;
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        return this.actions.getLinkAddons;
+      default:
+        return this.actions.getStorageAddons;
+    }
   });
 
-  protected onCategoryChange(value: Primitive): void {
+  readonly currentAddonsState = computed(() => {
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        return this.storageAddons();
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        return this.citationAddons();
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        return this.linkAddons();
+      default:
+        return this.storageAddons();
+    }
+  });
+
+  readonly filteredAddonCards = computed(() => {
+    const searchValue = this.searchValue().toLowerCase();
+    return this.currentAddonsState().filter(
+      (card) =>
+        card.externalServiceName.toLowerCase().includes(searchValue) ||
+        card.displayName.toLowerCase().includes(searchValue)
+    );
+  });
+
+  onCategoryChange(value: Primitive): void {
     if (typeof value === 'string') {
       this.selectedCategory.set(value);
     }
   }
 
   constructor() {
-    // TODO There should not be three effects
     effect(() => {
-      if (this.currentUser()) {
+      if (this.currentUser() && !this.userReferenceId()) {
         this.actions.getAddonsUserReference();
       }
     });
 
-    // TODO There should not be three effects
     effect(() => {
       if (this.currentUser() && this.userReferenceId()) {
         const action = this.currentAction();
@@ -156,12 +185,7 @@ export class AddonsComponent {
         if (!addons?.length) {
           action();
         }
-      }
-    });
 
-    // TODO There should not be three effects
-    effect(() => {
-      if (this.currentUser() && this.userReferenceId()) {
         this.fetchAllAuthorizedAddons(this.userReferenceId());
       }
     });
@@ -174,5 +198,6 @@ export class AddonsComponent {
   private fetchAllAuthorizedAddons(userReferenceId: string): void {
     this.actions.getAuthorizedStorageAddons(userReferenceId);
     this.actions.getAuthorizedCitationAddons(userReferenceId);
+    this.actions.getAuthorizedLinkAddons(userReferenceId);
   }
 }

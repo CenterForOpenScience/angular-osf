@@ -44,7 +44,6 @@ import {
   SetSearch,
   SetSort,
 } from '@osf/features/files/store';
-import { GoogleFilePickerComponent } from '@osf/shared/components/addons/folder-selector/google-file-picker/google-file-picker.component';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
@@ -56,13 +55,8 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import {
-  ConfiguredStorageAddonModel,
-  FileLabelModel,
-  FilesTreeActions,
-  OsfFile,
-  StorageItemModel,
-} from '@shared/models';
+import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
+import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItemModel } from '@shared/models';
 import { FilesService } from '@shared/services';
 
 import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
@@ -389,7 +383,7 @@ export class FilesComponent {
     this.router.navigate([file.guid], { relativeTo: this.activeRoute });
   }
 
-  getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
+  getAddonName(addons: ConfiguredAddonModel[], provider: string): string {
     if (provider === 'osfstorage') {
       return this.translateService.instant('files.storageLocation');
     } else {
@@ -407,7 +401,7 @@ export class FilesComponent {
     if (googleDrive) {
       this.accountId.set(googleDrive.baseAccountId);
       this.selectedRootFolder.set({
-        itemId: googleDrive.selectedFolderId,
+        itemId: googleDrive.selectedStorageItemId,
       });
     }
   }

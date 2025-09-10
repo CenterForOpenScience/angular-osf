@@ -32,7 +32,7 @@ import {
 import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
 import { Primitive } from '@osf/shared/helpers';
 import {
-  ConfiguredStorageAddonModel,
+  ConfiguredAddonModel,
   FileLabelModel,
   FilesTreeActions,
   NodeShortInfoModel,
@@ -198,7 +198,7 @@ export class FilesWidgetComponent {
     }, []);
   }
 
-  private getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
+  private getAddonName(addons: ConfiguredAddonModel[], provider: string): string {
     if (provider === FileProvider.OsfStorage) {
       return this.osfStorageLabel;
     } else {

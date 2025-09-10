@@ -18,7 +18,6 @@
 }
 
 .p-select-option {
-  --p-select-option-focus-background: var(--bg-blue-2);
   --p-select-option-focus-background: var(--bg-blue-3);
   --p-select-option-focus-color: var(--dark-blue-1);
   --p-select-option-selected-focus-background: var(--bg-blue-2);
@@ -38,5 +37,11 @@
     .p-select-label {
       white-space: nowrap;
     }
+  }
+}
+
+.resource-selector {
+  .p-select {
+    min-width: 16rem;
   }
 }
