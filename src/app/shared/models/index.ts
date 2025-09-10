@@ -21,7 +21,6 @@ export * from './institutions';
 export * from './language-code.model';
 export * from './license';
 export * from './license.model';
-export * from './license.model';
 export * from './licenses-json-api.model';
 export * from './meta-tags';
 export * from './metadata-tabs.model';

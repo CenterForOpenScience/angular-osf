@@ -1,9 +1,7 @@
-@use "styles/variables" as var;
-
 .resource {
   display: flex;
   flex-direction: column;
-  border: 1px solid var.$grey-2;
+  border: 1px solid var(--grey-2);
   border-radius: 8px;
   padding: 1.7rem;
   row-gap: 0.85rem;
@@ -12,7 +10,7 @@
     line-height: 28px;
 
     a {
-      color: var.$dark-blue-1;
+      color: var(--dark-blue-1);
     }
   }
 
@@ -33,14 +31,14 @@
 
   .type {
     width: fit-content;
-    background: var.$grey-3;
+    background: var(--grey-3);
     font-weight: bold;
-    padding: 4px 12px 4px 12px;
+    padding: 4px 12px;
     border-radius: 4px;
   }
 
   p {
-    color: var.$dark-blue-1;
+    color: var(--dark-blue-1);
     font-weight: 400;
     display: inline;
     overflow: hidden;
@@ -52,6 +50,6 @@
 
   .break-line {
     border: none;
-    border-top: 1px solid var.$grey-2;
+    border-top: 1px solid var(--grey-2);
   }
 }

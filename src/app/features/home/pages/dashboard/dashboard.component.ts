@@ -16,7 +16,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import { IconComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
@@ -44,7 +44,7 @@ export class DashboardComponent implements OnInit {
   readonly activeProject = signal<MyResourcesItem | null>(null);
   readonly sortColumn = signal<string | undefined>(undefined);
   readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
-  readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS });
+  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
 
   readonly projects = select(MyResourcesSelectors.getProjects);
   readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
@@ -73,7 +73,7 @@ export class DashboardComponent implements OnInit {
   setupQueryParamsSubscription(): void {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const page = Number(params['page']) || 1;
-      const rows = Number(params['rows']) || MY_PROJECTS_TABLE_PARAMS.rows;
+      const rows = Number(params['rows']) || DEFAULT_TABLE_PARAMS.rows;
       const sortField = params['sortField'];
       const sortOrder = params['sortOrder'] as SortOrder;
       const search = params['search'] || '';

@@ -12,7 +12,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { UserSelectors, UserState } from '@core/store/user';
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants/my-projects-table.constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants/my-projects-table.constants';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 import { CustomValidators } from '@osf/shared/helpers';
 import { MOCK_STORE, MOCK_USER } from '@osf/shared/mocks';
@@ -107,7 +107,7 @@ describe('AddProjectFormComponent', () => {
 
   it('should load projects on init', () => {
     const dispatchSpy = jest.spyOn(store, 'dispatch');
-    const action = new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {});
+    const action = new GetMyProjects(1, DEFAULT_TABLE_PARAMS.rows, {});
 
     store.dispatch(action);
     expect(dispatchSpy).toHaveBeenCalledWith(action);
