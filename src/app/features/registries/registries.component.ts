@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { HelpScoutService } from '@core/services/help-scout.service';
 
 @Component({
   selector: 'osf-registries',
@@ -8,4 +10,12 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './registries.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistriesComponent {}
+export class RegistriesComponent implements OnDestroy {
+  constructor(private helpScoutService: HelpScoutService) {
+    this.helpScoutService.setResourceType('registration');
+  }
+
+  ngOnDestroy(): void {
+    this.helpScoutService.unsetResourceType();
+  }
+}
