@@ -44,6 +44,7 @@ export class RegistryComponent {
   private setMetaTags(): void {
     this.metaTags.updateMetaTags(
       {
+        osfGuid: this.registry()?.id,
         title: this.registry()?.title,
         description: this.registry()?.description,
         publishedDate: this.datePipe.transform(this.registry()?.dateRegistered, 'yyyy-MM-dd'),

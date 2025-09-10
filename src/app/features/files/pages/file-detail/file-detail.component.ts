@@ -187,6 +187,7 @@ export class FileDetailComponent {
     const file = this.file();
     if (!file) return null;
     return {
+      osfGuid: file.guid,
       title: this.fileCustomMetadata()?.title || file.name,
       description:
         this.fileCustomMetadata()?.description ?? this.translateService.instant('files.metaTagDescriptionPlaceholder'),
