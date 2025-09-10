@@ -5,8 +5,10 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { Button } from 'primeng/button';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 
+import { getAddonTypeString } from '@osf/shared/helpers';
+import { AddonType } from '@shared/enums';
 import { AddonsSelectors, DeleteConfiguredAddon } from '@shared/stores/addons';
 
 @Component({
@@ -22,7 +24,13 @@ export class DisconnectAddonModalComponent {
   addon = this.dialogConfig.data.addon;
   dialogMessage = this.dialogConfig.data.message || '';
   isSubmitting = select(AddonsSelectors.getDeleteStorageAddonSubmitting);
-  selectedFolder = select(AddonsSelectors.getSelectedFolder);
+  selectedFolder = select(AddonsSelectors.getSelectedStorageItem);
+  selectedItemLabel = computed(() => {
+    const addonType = getAddonTypeString(this.addon);
+    return addonType === AddonType.LINK
+      ? 'settings.addons.configureAddon.linkedItem'
+      : 'settings.addons.configureAddon.selectedFolder';
+  });
   actions = createDispatchMap({
     deleteConfiguredAddon: DeleteConfiguredAddon,
   });

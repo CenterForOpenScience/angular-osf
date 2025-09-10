@@ -26,8 +26,10 @@ import {
   DeleteAuthorizedAddon,
   GetAddonsUserReference,
   GetAuthorizedCitationAddons,
+  GetAuthorizedLinkAddons,
   GetAuthorizedStorageAddons,
   GetCitationAddons,
+  GetLinkAddons,
   GetStorageAddons,
   UpdateAuthorizedAddon,
 } from '@shared/stores/addons';
@@ -55,12 +57,9 @@ import {
 export class AddonsComponent {
   readonly tabOptions = ADDON_TAB_OPTIONS;
   readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
-
-  AddonTabValue = AddonTabValue;
-  defaultTabValue = AddonTabValue.ALL_ADDONS;
-
+  readonly AddonTabValue = AddonTabValue;
+  readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
   searchControl = new FormControl<string>('');
-
   searchValue = signal<string>('');
   selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
   selectedTab = signal<number>(this.defaultTabValue);
@@ -69,20 +68,25 @@ export class AddonsComponent {
   addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
   storageAddons = select(AddonsSelectors.getStorageAddons);
   citationAddons = select(AddonsSelectors.getCitationAddons);
+  linkAddons = select(AddonsSelectors.getLinkAddons);
   authorizedStorageAddons = select(AddonsSelectors.getAuthorizedStorageAddons);
   authorizedCitationAddons = select(AddonsSelectors.getAuthorizedCitationAddons);
+  authorizedLinkAddons = select(AddonsSelectors.getAuthorizedLinkAddons);
 
   isCurrentUserLoading = select(UserSelectors.getCurrentUserLoading);
   isUserReferenceLoading = select(AddonsSelectors.getAddonsUserReferenceLoading);
   isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
   isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
+  isLinkAddonsLoading = select(AddonsSelectors.getLinkAddonsLoading);
   isAuthorizedStorageAddonsLoading = select(AddonsSelectors.getAuthorizedStorageAddonsLoading);
   isAuthorizedCitationAddonsLoading = select(AddonsSelectors.getAuthorizedCitationAddonsLoading);
+  isAuthorizedLinkAddonsLoading = select(AddonsSelectors.getAuthorizedLinkAddonsLoading);
 
   isAddonsLoading = computed(() => {
     return (
       this.isStorageAddonsLoading() ||
       this.isCitationAddonsLoading() ||
+      this.isLinkAddonsLoading() ||
       this.isUserReferenceLoading() ||
       this.isCurrentUserLoading()
     );
@@ -91,6 +95,7 @@ export class AddonsComponent {
     return (
       this.isAuthorizedStorageAddonsLoading() ||
       this.isAuthorizedCitationAddonsLoading() ||
+      this.isAuthorizedLinkAddonsLoading() ||
       this.isUserReferenceLoading() ||
       this.isCurrentUserLoading()
     );
@@ -99,8 +104,10 @@ export class AddonsComponent {
   actions = createDispatchMap({
     getStorageAddons: GetStorageAddons,
     getCitationAddons: GetCitationAddons,
+    getLinkAddons: GetLinkAddons,
     getAuthorizedStorageAddons: GetAuthorizedStorageAddons,
     getAuthorizedCitationAddons: GetAuthorizedCitationAddons,
+    getAuthorizedLinkAddons: GetAuthorizedLinkAddons,
     createAuthorizedAddon: CreateAuthorizedAddon,
     updateAuthorizedAddon: UpdateAuthorizedAddon,
     getAddonsUserReference: GetAddonsUserReference,
@@ -108,29 +115,53 @@ export class AddonsComponent {
   });
 
   readonly allAuthorizedAddons = computed(() => {
-    const authorizedAddons = [...this.authorizedStorageAddons(), ...this.authorizedCitationAddons()];
+    const authorizedAddons = [
+      ...this.authorizedStorageAddons(),
+      ...this.authorizedCitationAddons(),
+      ...this.authorizedLinkAddons(),
+    ];
 
     const searchValue = this.searchValue().toLowerCase();
-    return authorizedAddons.filter((card) => card.displayName.includes(searchValue));
+    return authorizedAddons.filter((card) => card.displayName.toLowerCase().includes(searchValue));
   });
 
   readonly userReferenceId = computed(() => {
     return this.addonsUserReference()[0]?.id;
   });
 
-  readonly currentAction = computed(() =>
-    this.selectedCategory() === AddonCategory.EXTERNAL_STORAGE_SERVICES
-      ? this.actions.getStorageAddons
-      : this.actions.getCitationAddons
-  );
+  readonly currentAction = computed(() => {
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        return this.actions.getStorageAddons;
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        return this.actions.getCitationAddons;
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        return this.actions.getLinkAddons;
+      default:
+        return this.actions.getStorageAddons;
+    }
+  });
 
-  readonly currentAddonsState = computed(() =>
-    this.selectedCategory() === AddonCategory.EXTERNAL_STORAGE_SERVICES ? this.storageAddons() : this.citationAddons()
-  );
+  readonly currentAddonsState = computed(() => {
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        return this.storageAddons();
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        return this.citationAddons();
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        return this.linkAddons();
+      default:
+        return this.storageAddons();
+    }
+  });
 
   readonly filteredAddonCards = computed(() => {
     const searchValue = this.searchValue().toLowerCase();
-    return this.currentAddonsState().filter((card) => card.externalServiceName.toLowerCase().includes(searchValue));
+    return this.currentAddonsState().filter(
+      (card) =>
+        card.externalServiceName.toLowerCase().includes(searchValue) ||
+        card.displayName.toLowerCase().includes(searchValue)
+    );
   });
 
   onCategoryChange(value: Primitive): void {
@@ -140,14 +171,12 @@ export class AddonsComponent {
   }
 
   constructor() {
-    // TODO There should not be three effects
     effect(() => {
-      if (this.currentUser()) {
+      if (this.currentUser() && !this.userReferenceId()) {
         this.actions.getAddonsUserReference();
       }
     });
 
-    // TODO There should not be three effects
     effect(() => {
       if (this.currentUser() && this.userReferenceId()) {
         const action = this.currentAction();
@@ -156,12 +185,7 @@ export class AddonsComponent {
         if (!addons?.length) {
           action();
         }
-      }
-    });
 
-    // TODO There should not be three effects
-    effect(() => {
-      if (this.currentUser() && this.userReferenceId()) {
         this.fetchAllAuthorizedAddons(this.userReferenceId());
       }
     });
@@ -174,5 +198,6 @@ export class AddonsComponent {
   private fetchAllAuthorizedAddons(userReferenceId: string): void {
     this.actions.getAuthorizedStorageAddons(userReferenceId);
     this.actions.getAuthorizedCitationAddons(userReferenceId);
+    this.actions.getAuthorizedLinkAddons(userReferenceId);
   }
 }
