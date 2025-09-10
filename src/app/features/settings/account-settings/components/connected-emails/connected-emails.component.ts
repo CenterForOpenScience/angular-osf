@@ -12,7 +12,7 @@ import { filter, finalize, throttleTime } from 'rxjs';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
-import { DeleteEmail, MakePrimary, ResendConfirmation, UserEmailsSelectors } from '@core/store/user-emails';
+import { DeleteEmail, GetEmails, MakePrimary, ResendConfirmation, UserEmailsSelectors } from '@core/store/user-emails';
 import { UserSelectors } from '@osf/core/store/user';
 import { ReadonlyInputComponent } from '@osf/shared/components';
 import { IS_SMALL } from '@osf/shared/helpers';
@@ -45,6 +45,7 @@ export class ConnectedEmailsComponent {
   readonly isEmailsSubmitting = select(UserEmailsSelectors.isEmailsSubmitting);
 
   private readonly actions = createDispatchMap({
+    getEmails: GetEmails,
     resendConfirmation: ResendConfirmation,
     deleteEmail: DeleteEmail,
     makePrimary: MakePrimary,
@@ -103,7 +104,10 @@ export class ConnectedEmailsComponent {
               finalize(() => this.loaderService.hide()),
               takeUntilDestroyed(this.destroyRef)
             )
-            .subscribe(() => this.toastService.showSuccess('settings.accountSettings.connectedEmails.successResend'));
+            .subscribe(() => {
+              this.toastService.showSuccess('settings.accountSettings.connectedEmails.successResend');
+              this.actions.getEmails();
+            });
         }
       },
     });

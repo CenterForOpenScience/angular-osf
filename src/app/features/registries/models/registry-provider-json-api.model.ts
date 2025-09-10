@@ -1,12 +1,9 @@
-import { BrandDataJsonApi } from '@shared/models';
+import { BrandDataJsonApi, RegistrationProviderAttributesJsonApi } from '@shared/models';
 
 export interface RegistryProviderDetailsJsonApi {
   id: string;
   type: 'registration-providers';
-  attributes: {
-    name: string;
-    description: string;
-  };
+  attributes: RegistrationProviderAttributesJsonApi;
   embeds?: {
     brand: {
       data: BrandDataJsonApi;

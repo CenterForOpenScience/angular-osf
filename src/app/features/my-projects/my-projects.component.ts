@@ -7,7 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -38,6 +38,7 @@ import {
   GetMyRegistrations,
   MyResourcesSelectors,
 } from '@osf/shared/stores';
+import { ProjectRedirectDialogService } from '@shared/services';
 
 import { CreateProjectDialogComponent } from './components';
 import { MY_PROJECTS_TABS } from './constants';
@@ -68,6 +69,7 @@ export class MyProjectsComponent implements OnInit {
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   readonly translateService = inject(TranslateService);
+  readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
 
   readonly isLoading = signal(false);
   readonly isTablet = toSignal(inject(IS_MEDIUM));
@@ -326,14 +328,21 @@ export class MyProjectsComponent implements OnInit {
   createProject(): void {
     const dialogWidth = this.isTablet() ? '850px' : '95vw';
 
-    this.dialogService.open(CreateProjectDialogComponent, {
-      width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('myProjects.header.createProject'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
+    this.dialogService
+      .open(CreateProjectDialogComponent, {
+        width: dialogWidth,
+        focusOnShow: false,
+        header: this.translateService.instant('myProjects.header.createProject'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+      })
+      .onClose.pipe(
+        filter((result) => result.project.id),
+        tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 
   navigateToProject(project: MyResourcesItem): void {

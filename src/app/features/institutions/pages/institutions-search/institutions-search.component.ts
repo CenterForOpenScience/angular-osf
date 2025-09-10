@@ -7,11 +7,10 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { LoadingSpinnerComponent } from '@osf/shared/components';
+import { GlobalSearchComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { SEARCH_TAB_OPTIONS } from '@osf/shared/constants';
+import { SetDefaultFilterValue } from '@osf/shared/stores/global-search';
 import { FetchInstitutionById, InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
-import { GlobalSearchComponent } from '@shared/components';
-import { SetDefaultFilterValue } from '@shared/stores/global-search';
 
 @Component({
   selector: 'osf-institutions-search',

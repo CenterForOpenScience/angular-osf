@@ -21,6 +21,7 @@ import {
 } from '@osf/features/settings/account-settings/components';
 import { AccountSettingsSelectors } from '@osf/features/settings/account-settings/store';
 import { SubHeaderComponent } from '@osf/shared/components';
+import { RegionsSelectors } from '@osf/shared/stores';
 import { MOCK_STORE, MOCK_USER, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@shared/mocks';
 import { ToastService } from '@shared/services';
 
@@ -43,7 +44,7 @@ describe('AccountSettingsComponent', () => {
         case AccountSettingsSelectors.getExternalIdentities:
           return () => null;
 
-        case AccountSettingsSelectors.getRegions:
+        case RegionsSelectors.getRegions:
           return () => null;
 
         case AccountSettingsSelectors.getUserInstitutions:

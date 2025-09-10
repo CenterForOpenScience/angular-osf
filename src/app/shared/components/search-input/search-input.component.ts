@@ -4,7 +4,7 @@ import { InputText } from 'primeng/inputtext';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { IconComponent } from '@shared/components';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'osf-search-input',

@@ -437,6 +437,12 @@
       },
       "updateProjectDetailsMessage": "Successfully updated project details.",
       "updateProjectSettingsMessage": "Successfully updated project settings."
+    },
+    "redirectDialog": {
+      "header": "Success",
+      "message": "New project created successfully!",
+      "confirmButton": "Go to project",
+      "rejectButton": "Keep working here"
     }
   },
   "myProfile": {

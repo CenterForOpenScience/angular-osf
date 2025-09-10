@@ -6,14 +6,13 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { RegistryProviderHeroComponent } from '@osf/features/registries/components/registry-provider-hero/registry-provider-hero.component';
-import {
-  GetRegistryProviderBrand,
-  RegistriesProviderSearchSelectors,
-} from '@osf/features/registries/store/registries-provider-search';
-import { GlobalSearchComponent } from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { SetDefaultFilterValue, SetResourceType } from '@shared/stores/global-search';
+import { SetCurrentProvider } from '@core/store/provider';
+import { GlobalSearchComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
+import { SetDefaultFilterValue, SetResourceType } from '@osf/shared/stores/global-search';
+
+import { RegistryProviderHeroComponent } from '../../components/registry-provider-hero/registry-provider-hero.component';
+import { GetRegistryProviderBrand, RegistriesProviderSearchSelectors } from '../../store/registries-provider-search';
 
 @Component({
   selector: 'osf-registries-provider-search',
@@ -30,6 +29,7 @@ export class RegistriesProviderSearchComponent implements OnInit {
     getProvider: GetRegistryProviderBrand,
     setDefaultFilterValue: SetDefaultFilterValue,
     setResourceType: SetResourceType,
+    setCurrentProvider: SetCurrentProvider,
   });
 
   provider = select(RegistriesProviderSearchSelectors.getBrandedProvider);
@@ -44,6 +44,7 @@ export class RegistriesProviderSearchComponent implements OnInit {
         next: () => {
           this.actions.setDefaultFilterValue('publisher', this.provider()!.iri!);
           this.actions.setResourceType(ResourceType.Registration);
+          this.actions.setCurrentProvider(this.provider()!);
         },
       });
     }

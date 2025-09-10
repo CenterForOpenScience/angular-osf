@@ -10,15 +10,16 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '@core/services';
 import { UserSelectors } from '@core/store/user';
-import { RegistryServicesComponent } from '@osf/features/registries/components';
-import { GetRegistries, RegistriesSelectors } from '@osf/features/registries/store';
 import {
   LoadingSpinnerComponent,
   ResourceCardComponent,
   SearchInputComponent,
   SubHeaderComponent,
-} from '@shared/components';
-import { ResourceType } from '@shared/enums';
+} from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
+
+import { RegistryServicesComponent } from '../../components';
+import { GetRegistries, RegistriesSelectors } from '../../store';
 
 import { environment } from 'src/environments/environment';
 
@@ -44,9 +45,7 @@ export class RegistriesLandingComponent implements OnInit {
 
   searchControl = new FormControl<string>('');
 
-  private readonly actions = createDispatchMap({
-    getRegistries: GetRegistries,
-  });
+  private readonly actions = createDispatchMap({ getRegistries: GetRegistries });
 
   registries = select(RegistriesSelectors.getRegistries);
   isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
@@ -58,15 +57,11 @@ export class RegistriesLandingComponent implements OnInit {
   redirectToSearchPageWithValue(): void {
     const searchValue = this.searchControl.value;
 
-    this.router.navigate(['/search'], {
-      queryParams: { search: searchValue, tab: ResourceType.Registration },
-    });
+    this.router.navigate(['/search'], { queryParams: { search: searchValue, tab: ResourceType.Registration } });
   }
 
   redirectToSearchPageRegistrations(): void {
-    this.router.navigate(['/search'], {
-      queryParams: { tab: ResourceType.Registration },
-    });
+    this.router.navigate(['/search'], { queryParams: { tab: ResourceType.Registration } });
   }
 
   goToCreateRegistration(): void {

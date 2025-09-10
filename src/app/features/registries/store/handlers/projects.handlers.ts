@@ -5,8 +5,7 @@ import { inject, Injectable } from '@angular/core';
 import { ProjectsService } from '@osf/shared/services/projects.service';
 
 import { Project } from '../../models';
-import { DefaultState } from '../default.state';
-import { RegistriesStateModel } from '../registries.model';
+import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from '../registries.model';
 
 @Injectable()
 export class ProjectsHandlers {
@@ -40,7 +39,7 @@ export class ProjectsHandlers {
       },
       error: (error) => {
         ctx.patchState({
-          projects: { ...DefaultState.projects, isLoading: false, error },
+          projects: { ...REGISTRIES_STATE_DEFAULTS.projects, isLoading: false, error },
         });
       },
     });

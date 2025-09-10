@@ -10,6 +10,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { GetEmails } from '@core/store/user-emails';
 import { UserSelectors } from '@osf/core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components';
+import { FetchRegions } from '@osf/shared/stores';
 
 import {
   AffiliatedInstitutionsComponent,
@@ -21,7 +22,7 @@ import {
   ShareIndexingComponent,
   TwoFactorAuthComponent,
 } from './components';
-import { GetAccountSettings, GetExternalIdentities, GetRegions, GetUserInstitutions } from './store';
+import { GetAccountSettings, GetExternalIdentities, GetUserInstitutions } from './store';
 
 @Component({
   selector: 'osf-account-settings',
@@ -48,7 +49,7 @@ export class AccountSettingsComponent {
     getAccountSettings: GetAccountSettings,
     getEmails: GetEmails,
     getExternalIdentities: GetExternalIdentities,
-    getRegions: GetRegions,
+    getRegions: FetchRegions,
     getUserInstitutions: GetUserInstitutions,
   });
   readonly currentUser = select(UserSelectors.getCurrentUser);
