@@ -15,10 +15,11 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ResourceType } from '@osf/shared/enums';
+import { IS_MEDIUM } from '@osf/shared/helpers';
 import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
 import { ToastService } from '@shared/services';
 
@@ -46,6 +47,8 @@ export class AddMetadataComponent implements OnInit {
   private readonly toastService = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly activatedRoute = inject(ActivatedRoute);
+
+  readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   private resourceId = '';
   isEditMode = true;

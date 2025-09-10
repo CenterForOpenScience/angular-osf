@@ -23,7 +23,7 @@
     <ng-content select="[slot=otherFilters]"></ng-content>
 
     <div class="flex align-items-center gap-2 justify-content-between w-full md:justify-content-start md:w-fit">
-      <p-multiselect
+      <p-multi-select
         class="w-9 md:w-fit"
         [options]="tableColumns()"
         [(ngModel)]="selectedColumns"
@@ -43,13 +43,12 @@
         <ng-template #item let-item>
           {{ item.header | translate }}
         </ng-template>
-      </p-multiselect>
+      </p-multi-select>
 
       <p-button
         icon="fa fa-download text-primary text-xl"
         outlined
-        class="grey-border-color download-button"
-        severity="info"
+        styleClass="grey-border-color"
         (onClick)="downloadMenu.toggle($event)"
       />
 
@@ -67,94 +66,99 @@
   </div>
 </div>
 
-<p-table
-  [columns]="selectedColumnsComputed()"
-  [value]="isLoading() ? skeletonData : tableData()"
-  [autoLayout]="true"
-  [scrollable]="true"
-  [sortMode]="'single'"
-  (onSort)="onSort($event)"
-  [sortField]="sortColumn()"
-  [sortOrder]="currentSortOrder()"
-  [customSort]="true"
-  [resetPageOnSort]="false"
-  class="institution-admin-table"
->
-  <ng-template #header let-columns>
-    <tr>
-      @for (col of columns; track col.field) {
-        <th [pSortableColumn]="col.sortable ? col.field : null" (click)="onHeaderClick(col)">
-          <div class="flex align-items-center gap-2">
-            <span>{{ col.header | translate }}</span>
-            @if (col.sortable) {
-              <p-sortIcon [field]="col.field"></p-sortIcon>
-            }
-          </div>
-        </th>
-      }
-    </tr>
-  </ng-template>
-
-  <ng-template #body let-rowData let-columns="columns">
-    @if (isLoading()) {
-      <tr class="loading-row">
-        <td colspan="15">
-          <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
-        </td>
-      </tr>
-    } @else {
+<div class="relative">
+  <p-table
+    [columns]="selectedColumnsComputed()"
+    [value]="isLoading() ? skeletonData : tableData()"
+    [autoLayout]="true"
+    [scrollable]="true"
+    [sortMode]="'single'"
+    (onSort)="onSort($event)"
+    [lazy]="true"
+    [sortField]="sortField()"
+    [sortOrder]="sortOrder()"
+    [customSort]="true"
+    [resetPageOnSort]="false"
+    class="institution-admin-table"
+  >
+    <ng-template #header let-columns>
       <tr>
         @for (col of columns; track col.field) {
-          <td class="relative">
-            <div class="flex align-items-center hover-group">
-              @if (col.isLink && isLink(rowData[col.field])) {
-                <a
-                  [href]="getLinkUrl(rowData[col.field])"
-                  [target]="getLinkTarget(rowData[col.field], col)"
-                  class="text-primary no-underline hover:underline"
-                >
+          <th [pSortableColumn]="col.sortable ? (col.sortField ?? col.field) : null">
+            <div class="flex align-items-center gap-2">
+              <span>{{ col.header | translate }}</span>
+              @if (col.sortable) {
+                <p-sortIcon [field]="col.sortField ?? col.field"></p-sortIcon>
+              }
+            </div>
+          </th>
+        }
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-rowData let-columns="columns">
+      @if (isLoading()) {
+        <tr class="loading-row">
+          <td colspan="15">
+            <p-skeleton width="100%" height="3.3rem" borderRadius="0" />
+          </td>
+        </tr>
+      } @else {
+        <tr>
+          @for (col of columns; track col.field) {
+            <td class="relative">
+              <div class="flex align-items-center hover-group">
+                @if (col.isLink && isLink(rowData[col.field])) {
+                  <a
+                    [href]="getLinkUrl(rowData[col.field])"
+                    [target]="getLinkTarget(rowData[col.field], col)"
+                    class="text-primary no-underline hover:underline"
+                  >
+                    @if (col.dateFormat) {
+                      {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
+                    } @else {
+                      {{ getCellValue(rowData[col.field]) }}
+                    }
+                  </a>
+                } @else {
                   @if (col.dateFormat) {
                     {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
                   } @else {
                     {{ getCellValue(rowData[col.field]) }}
                   }
-                </a>
-              } @else {
-                @if (col.dateFormat) {
-                  {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
-                } @else {
-                  {{ getCellValue(rowData[col.field]) }}
                 }
-              }
 
-              @if (col.showIcon) {
-                <p-button
-                  [pTooltip]="col.iconTooltip | translate"
-                  class="icon-button pl-3"
-                  [icon]="col.iconClass"
-                  variant="text"
-                  severity="info"
-                  (onClick)="onIconClick(rowData, col)"
-                />
-              }
-            </div>
-          </td>
-        }
+                @if (col.showIcon) {
+                  <p-button
+                    [pTooltip]="col.iconTooltip | translate"
+                    class="icon-button pl-3"
+                    [icon]="col.iconClass"
+                    variant="text"
+                    severity="info"
+                    (onClick)="onIconClick(rowData, col)"
+                  />
+                }
+              </div>
+            </td>
+          }
+        </tr>
+      }
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="15" class="text-center">{{ 'adminInstitutions.institutionUsers.noData' | translate }}</td>
       </tr>
-    }
-  </ng-template>
+    </ng-template>
+  </p-table>
 
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="15" class="text-center">{{ 'adminInstitutions.institutionUsers.noData' | translate }}</td>
-    </tr>
-  </ng-template>
-</p-table>
+  <ng-content select="[slot=tableFilters]"></ng-content>
+</div>
 
 @if (isNextPreviousPagination()) {
   <div class="flex column-gap-2 w-full justify-content-center pt-2">
     @if (firstLink() && prevLink()) {
-      <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(firstLink())"></p-button>
+      <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(firstLink())" />
     }
 
     <p-button
@@ -163,8 +167,7 @@
       text
       [disabled]="!prevLink()"
       (onClick)="switchPage(prevLink())"
-    >
-    </p-button>
+    />
 
     <p-button
       icon="fas fa-angle-right"
@@ -172,8 +175,7 @@
       text
       [disabled]="!nextLink()"
       (onClick)="switchPage(nextLink())"
-    >
-    </p-button>
+    />
   </div>
 } @else {
   @if (enablePagination() && totalCount() > pageSize()) {
@@ -183,7 +185,7 @@
         [totalCount]="totalCount()"
         [rows]="pageSize()"
         (pageChanged)="onPageChange($event)"
-      ></osf-custom-paginator>
+      />
     </div>
   }
 }

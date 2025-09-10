@@ -1,5 +1,3 @@
-import { createDispatchMap, select } from '@ngxs/store';
-
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
@@ -7,11 +5,10 @@ import { Checkbox } from 'primeng/checkbox';
 import { Skeleton } from 'primeng/skeleton';
 
 import { NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, input, OnInit, output, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { Institution } from '@shared/models';
-import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
 
 @Component({
   selector: 'osf-affiliated-institution-select',
@@ -20,63 +17,36 @@ import { FetchUserInstitutions, InstitutionsSelectors } from '@shared/stores/ins
   styleUrl: './affiliated-institution-select.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AffiliatedInstitutionSelectComponent implements OnInit {
-  calculateSelectedItemsMode = input<boolean>(false);
-  selectAllByDefault = input<boolean>(false);
-  selectInstitutions = output<Institution[]>();
+export class AffiliatedInstitutionSelectComponent {
+  institutions = input<Institution[]>([]);
+  isLoading = input<boolean>(false);
+  selectedInstitutions = model<Institution[]>([]);
 
-  private actions = createDispatchMap({
-    fetchUserInstitutions: FetchUserInstitutions,
+  isSelectAllDisabled = computed(() => {
+    const institutions = this.institutions();
+    const selected = this.selectedInstitutions();
+    return institutions.length === 0 || institutions.length === selected.length;
   });
 
-  userInstitutions = select(InstitutionsSelectors.getUserInstitutions);
-  areUserInstitutionsLoading = select(InstitutionsSelectors.areUserInstitutionsLoading);
-  resourceInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
-  areResourceInstitutionsLoading = select(InstitutionsSelectors.areResourceInstitutionsLoading);
-  areResourceInstitutionsSubmitting = select(InstitutionsSelectors.areResourceInstitutionsSubmitting);
-
-  selectedInstitutions = signal<Institution[]>([]);
-
-  constructor() {
-    effect(() => {
-      const resourceInstitutions = this.resourceInstitutions();
-      if (this.calculateSelectedItemsMode()) {
-        untracked(() => {
-          this.selectedInstitutions.set([...resourceInstitutions]);
-        });
-      }
-    });
-
-    effect(() => {
-      if (this.selectAllByDefault()) {
-        untracked(() => {
-          this.selectAll();
-        });
-      }
-    });
-  }
-
-  ngOnInit(): void {
-    this.actions.fetchUserInstitutions();
-  }
+  isRemoveAllDisabled = computed(() => this.selectedInstitutions().length === 0);
 
   removeAll() {
     this.selectedInstitutions.set([]);
-    this.selectInstitutions.emit(this.selectedInstitutions());
   }
 
   selectAll() {
-    this.selectedInstitutions.set([...this.userInstitutions()]);
-    this.selectInstitutions.emit(this.selectedInstitutions());
+    this.selectedInstitutions.set([...this.institutions()]);
   }
 
   selectDeselectInstitution(institution: Institution) {
-    const idx = this.selectedInstitutions().findIndex((item) => item.id === institution.id);
-    if (idx > -1) {
-      this.selectedInstitutions.set(this.selectedInstitutions().filter((item) => item.id !== institution.id));
-    } else {
-      this.selectedInstitutions.set([...this.selectedInstitutions(), institution]);
-    }
-    this.selectInstitutions.emit(this.selectedInstitutions());
+    this.selectedInstitutions.update((currentSelected) => {
+      const isSelected = currentSelected.some((inst) => inst.id === institution.id);
+
+      if (isSelected) {
+        return currentSelected.filter((inst) => inst.id !== institution.id);
+      } else {
+        return [...currentSelected, institution];
+      }
+    });
   }
 }

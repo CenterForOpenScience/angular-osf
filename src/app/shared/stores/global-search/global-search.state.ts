@@ -274,6 +274,7 @@ export class GlobalSearchState {
       resources: { data: response.resources, isLoading: false, error: null },
       filters: filtersWithCachedOptions,
       resourcesCount: response.count,
+      self: response.self,
       first: response.first,
       next: response.next,
       previous: response.previous,
@@ -312,7 +313,10 @@ export class GlobalSearchState {
     filtersParams['cardSearchFilter[accessService]'] = `${environment.webUrl}/`;
     filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = state.searchText ?? '';
     filtersParams['page[size]'] = '10';
-    filtersParams['sort'] = state.sortBy;
+
+    const sortBy = state.sortBy;
+    const sortParam = sortBy.includes('date') || sortBy.includes('relevance') ? 'sort' : 'sort[integer-value]';
+    filtersParams[sortParam] = sortBy;
 
     Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
       filtersParams[`cardSearchFilter[${key}][]`] = value;

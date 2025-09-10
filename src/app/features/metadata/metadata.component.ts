@@ -428,24 +428,23 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditAffiliatedInstitutionsDialog(): void {
-    const dialogRef = this.dialogService.open(AffiliatedInstitutionsDialogComponent, {
-      header: this.translateService.instant('project.metadata.affiliatedInstitutions.dialog.header'),
-      width: '500px',
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
-    dialogRef.onClose
-      .pipe(
+    this.dialogService
+      .open(AffiliatedInstitutionsDialogComponent, {
+        header: this.translateService.instant('project.metadata.affiliatedInstitutions.dialog.header'),
+        width: '500px',
+        focusOnShow: false,
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: this.affiliatedInstitutions(),
+      })
+      .onClose.pipe(
         filter((result) => !!result),
-        switchMap((institutions) => {
-          return this.actions.updateResourceInstitutions(this.resourceId, this.resourceType(), institutions);
-        })
+        switchMap((institutions) =>
+          this.actions.updateResourceInstitutions(this.resourceId, this.resourceType(), institutions)
+        )
       )
-      .subscribe({
-        next: () => this.toastService.showSuccess('project.metadata.affiliatedInstitutions.updated'),
-      });
+      .subscribe(() => this.toastService.showSuccess('project.metadata.affiliatedInstitutions.updated'));
   }
 
   getSubjectChildren(parentId: string) {

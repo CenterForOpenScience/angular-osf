@@ -7,7 +7,6 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 
 import { PreprintDoiSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-doi-section/preprint-doi-section.component';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
@@ -29,7 +28,6 @@ import { environment } from 'src/environments/environment';
     Skeleton,
     FormsModule,
     PreprintDoiSectionComponent,
-    RouterLink,
     IconComponent,
     AffiliatedInstitutionsViewComponent,
   ],

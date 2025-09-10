@@ -38,7 +38,6 @@ export class InstitutionsSummaryComponent implements OnInit {
   summaryMetricsLoading = select(InstitutionsAdminSelectors.getSummaryMetricsLoading);
 
   hasOsfAddonSearch = select(InstitutionsAdminSelectors.getHasOsfAddonSearch);
-  hasOsfAddonSearchLoading = select(InstitutionsAdminSelectors.getHasOsfAddonSearchLoading);
 
   storageRegionSearch = select(InstitutionsAdminSelectors.getStorageRegionSearch);
   storageRegionSearchLoading = select(InstitutionsAdminSelectors.getStorageRegionSearchLoading);
@@ -86,11 +85,11 @@ export class InstitutionsSummaryComponent implements OnInit {
     const institutionId = this.route.parent?.snapshot.params['institution-id'];
 
     if (institutionId) {
-      this.actions.fetchSearchResults(institutionId, 'rights');
-      this.actions.fetchDepartments(institutionId);
-      this.actions.fetchSummaryMetrics(institutionId);
-      this.actions.fetchHasOsfAddonSearch(institutionId);
-      this.actions.fetchStorageRegionSearch(institutionId);
+      this.actions.fetchSearchResults('rights');
+      this.actions.fetchDepartments();
+      this.actions.fetchSummaryMetrics();
+      this.actions.fetchHasOsfAddonSearch();
+      this.actions.fetchStorageRegionSearch();
     }
   }
 

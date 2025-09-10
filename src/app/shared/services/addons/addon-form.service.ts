@@ -2,14 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { isAuthorizedAddon } from '@osf/shared/helpers';
-import { AddonFormControls, CredentialsFormat } from '@shared/enums';
+import { AddonFormControls, AddonType, CredentialsFormat } from '@shared/enums';
 import {
   AddonForm,
   AddonModel,
   AuthorizedAccountModel,
   AuthorizedAddonRequestJsonApi,
+  ConfiguredAddonModel,
   ConfiguredAddonRequestJsonApi,
-  ConfiguredStorageAddonModel,
 } from '@shared/models';
 
 @Injectable({
@@ -119,8 +119,10 @@ export class AddonFormService {
     userReferenceId: string,
     resourceUri: string,
     displayName: string,
-    rootFolderId: string,
-    addonTypeString: string
+    selectedStorageItemId: string,
+    addonTypeString: string,
+    resourceType?: string,
+    selectedStorageItemUrl?: string
   ): ConfiguredAddonRequestJsonApi {
     return {
       data: {
@@ -128,10 +130,13 @@ export class AddonFormService {
         attributes: {
           authorized_resource_uri: resourceUri,
           display_name: displayName,
-          root_folder: rootFolderId,
+          ...(addonTypeString !== AddonType.LINK && { root_folder: selectedStorageItemId }),
           connected_capabilities: ['UPDATE', 'ACCESS'],
           connected_operation_names: ['list_child_items', 'list_root_items', 'get_item_info'],
           external_service_name: addon.externalServiceName,
+          ...(resourceType && { resource_type: resourceType }),
+          ...(addonTypeString === AddonType.LINK && { target_id: selectedStorageItemId }),
+          ...(addonTypeString === AddonType.LINK && { target_url: selectedStorageItemUrl }),
         },
         relationships: {
           account_owner: {
@@ -158,12 +163,14 @@ export class AddonFormService {
   }
 
   generateConfiguredAddonUpdatePayload(
-    addon: ConfiguredStorageAddonModel,
+    addon: ConfiguredAddonModel,
     userReferenceId: string,
     resourceUri: string,
     displayName: string,
-    rootFolderId: string,
-    addonTypeString: string
+    selectedStorageItemId: string,
+    addonTypeString: string,
+    resourceType?: string,
+    selectedStorageItemUrl?: string
   ): ConfiguredAddonRequestJsonApi {
     return {
       data: {
@@ -172,10 +179,13 @@ export class AddonFormService {
         attributes: {
           authorized_resource_uri: resourceUri,
           display_name: displayName,
-          root_folder: rootFolderId,
           connected_capabilities: ['UPDATE', 'ACCESS'],
           connected_operation_names: ['list_child_items', 'list_root_items', 'get_item_info'],
           external_service_name: addon.externalServiceName,
+          ...(resourceType && { resource_type: resourceType }),
+          ...(addonTypeString !== AddonType.LINK && { root_folder: selectedStorageItemId }),
+          ...(addonTypeString === AddonType.LINK && { target_id: selectedStorageItemId }),
+          target_url: selectedStorageItemUrl || null,
         },
         relationships: {
           account_owner: {

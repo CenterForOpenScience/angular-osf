@@ -112,7 +112,7 @@ export class LicenseComponent {
 
   cancel() {
     this.licenseForm.reset({
-      year: this.currentYear.getFullYear().toString(),
+      year: '',
       copyrightHolders: '',
     });
   }

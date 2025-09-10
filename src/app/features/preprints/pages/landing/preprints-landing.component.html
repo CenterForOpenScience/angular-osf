@@ -40,7 +40,7 @@
   } @else if (osfPreprintProvider()!.examplePreprintId) {
     <a
       class="font-bold"
-      [routerLink]="['preprints', osfPreprintProvider()!.id, osfPreprintProvider()!.examplePreprintId]"
+      [routerLink]="['/preprints', osfPreprintProvider()!.id, osfPreprintProvider()!.examplePreprintId]"
       >{{ 'preprints.showExample' | translate }}
     </a>
   }
@@ -79,6 +79,6 @@
   </div>
 
   <p-button severity="success" class="link-button">
-    <a [href]="'mailto:' + supportEmail">{{ 'preprints.createServer.contactUs' | translate }}</a>
+    <a [href]="'mailto:' + supportEmail">{{ 'preprints.createServer.contactUs' | translate | titlecase }}</a>
   </p-button>
 </section>

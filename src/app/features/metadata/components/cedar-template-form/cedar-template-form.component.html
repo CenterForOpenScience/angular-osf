@@ -1,7 +1,7 @@
 @if (template()) {
   <div class="cedar-template-form bg-white">
     @if (readonly()) {
-      <div class="flex justify-content-between p-4">
+      <div class="flex justify-content-between gap-4 p-4">
         @if (existingRecord()?.attributes?.is_published) {
           <h3 class="text-lg">{{ 'project.metadata.addMetadata.publishedText' | translate }}</h3>
         } @else {
@@ -10,7 +10,7 @@
         <p-button
           class="w-10rem flex-shrink-0 btn-full-width"
           severity="secondary"
-          [label]="'Edit record'"
+          [label]="'project.metadata.addMetadata.editRecord' | translate"
           (onClick)="editModeEmit()"
         >
         </p-button>

@@ -8,28 +8,17 @@ import { PaginatorState } from 'primeng/paginator';
 
 import { filter } from 'rxjs';
 
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { SelectComponent } from '@osf/shared/components';
 import { TABLE_PARAMS } from '@osf/shared/constants';
-import { SortOrder } from '@osf/shared/enums';
 import { Primitive } from '@osf/shared/helpers';
-import { QueryParams } from '@osf/shared/models';
+import { SearchFilters } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
-import { InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
+import { SortOrder } from '@shared/enums';
 
 import { AdminTableComponent } from '../../components';
 import { departmentOptions, userTableColumns } from '../../constants';
@@ -48,8 +37,7 @@ import { FetchInstitutionUsers, InstitutionsAdminSelectors, SendUserMessage } fr
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class InstitutionsUsersComponent implements OnInit {
-  private readonly route = inject(ActivatedRoute);
+export class InstitutionsUsersComponent {
   private readonly translate = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
   private readonly destroyRef = inject(DestroyRef);
@@ -60,8 +48,6 @@ export class InstitutionsUsersComponent implements OnInit {
     sendUserMessage: SendUserMessage,
   });
 
-  institutionId = '';
-
   currentPage = signal(1);
   currentPageSize = signal(TABLE_PARAMS.rows);
   first = signal(0);
@@ -70,13 +56,13 @@ export class InstitutionsUsersComponent implements OnInit {
   hasOrcidFilter = signal<boolean>(false);
 
   sortField = signal<string>('user_name');
-  sortOrder = signal<number>(SortOrder.Desc);
+  sortOrder = signal<number>(1);
 
   departmentOptions = departmentOptions;
   tableColumns = userTableColumns;
 
+  institution = select(InstitutionsAdminSelectors.getInstitution);
   users = select(InstitutionsAdminSelectors.getUsers);
-  institution = select(InstitutionsSearchSelectors.getInstitution);
   totalCount = select(InstitutionsAdminSelectors.getUsersTotalCount);
   isLoading = select(InstitutionsAdminSelectors.getUsersLoading);
 
@@ -93,14 +79,6 @@ export class InstitutionsUsersComponent implements OnInit {
 
   constructor() {
     this.setupDataFetchingEffect();
-  }
-
-  ngOnInit(): void {
-    const institutionId = this.route.parent?.snapshot.params['institution-id'];
-
-    if (institutionId) {
-      this.institutionId = institutionId;
-    }
   }
 
   onPageChange(event: PaginatorState): void {
@@ -120,10 +98,10 @@ export class InstitutionsUsersComponent implements OnInit {
     this.currentPage.set(1);
   }
 
-  onSortChange(sortEvent: QueryParams): void {
+  onSortChange(sortEvent: SearchFilters): void {
     this.currentPage.set(1);
     this.sortField.set(camelToSnakeCase(sortEvent.sortColumn) || 'user_name');
-    this.sortOrder.set(sortEvent.sortOrder);
+    this.sortOrder.set(sortEvent.sortOrder || -1);
   }
 
   onIconClick(event: TableIconClickEvent): void {
@@ -162,20 +140,12 @@ export class InstitutionsUsersComponent implements OnInit {
   }
 
   private createUrl(baseUrl: string, mediaType: string): string {
-    const query = {} as Record<string, string>;
-    if (this.selectedDepartment()) {
-      query['filter[department]'] = this.selectedDepartment() || '';
-    }
-
-    if (this.hasOrcidFilter()) {
-      query['filter[orcid_id][ne]'] = '';
-    }
-
+    const filters = this.buildFilters();
     const userURL = new URL(baseUrl);
     userURL.searchParams.set('format', mediaType);
     userURL.searchParams.set('page[size]', '10000');
 
-    Object.entries(query).forEach(([key, value]) => {
+    Object.entries(filters).forEach(([key, value]) => {
       userURL.searchParams.set(key, value);
     });
 
@@ -184,20 +154,16 @@ export class InstitutionsUsersComponent implements OnInit {
 
   private setupDataFetchingEffect(): void {
     effect(() => {
-      if (!this.institutionId) return;
-
+      const institutionId = this.institution().id;
+      if (!institutionId) {
+        return;
+      }
       const filters = this.buildFilters();
       const sortField = this.sortField();
       const sortOrder = this.sortOrder();
-      const sortParam = sortOrder === 0 ? `-${sortField}` : sortField;
+      const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
 
-      this.actions.fetchInstitutionUsers(
-        this.institutionId,
-        this.currentPage(),
-        this.currentPageSize(),
-        sortParam,
-        filters
-      );
+      this.actions.fetchInstitutionUsers(institutionId, this.currentPage(), this.currentPageSize(), sortParam, filters);
     });
   }
 
@@ -222,7 +188,7 @@ export class InstitutionsUsersComponent implements OnInit {
     this.actions
       .sendUserMessage(
         userId,
-        this.institutionId,
+        this.institution().id,
         emailData.emailContent,
         emailData.ccSender,
         emailData.allowReplyToSender

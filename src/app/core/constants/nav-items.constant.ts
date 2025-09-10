@@ -31,14 +31,14 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.overview',
     routerLink: 'overview',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-metadata',
     label: 'navigation.metadata',
     routerLink: 'metadata',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'project-files',
@@ -83,6 +83,13 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     routerLinkActiveOptions: { exact: true },
   },
   {
+    id: 'project-linked-services',
+    label: 'navigation.linkedServices',
+    routerLink: 'links',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
     id: 'project-settings',
     label: 'navigation.settings',
     routerLink: 'settings',
@@ -107,14 +114,14 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     label: 'navigation.overview',
     routerLink: 'overview',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'registration-metadata',
     label: 'navigation.metadata',
     routerLink: 'metadata',
     visible: true,
-    routerLinkActiveOptions: { exact: true },
+    routerLinkActiveOptions: { exact: false },
   },
   {
     id: 'registration-files',

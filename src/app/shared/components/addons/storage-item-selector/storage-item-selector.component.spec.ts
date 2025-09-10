@@ -1,16 +1,18 @@
 import { provideStore } from '@ngxs/store';
 
+import { DialogService } from 'primeng/dynamicdialog';
+
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { OperationNames } from '@osf/features/project/addons/enums';
-import { FolderSelectorComponent } from '@shared/components/addons';
+import { StorageItemSelectorComponent } from '@shared/components/addons';
 import { MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
 import { StorageItemModel } from '@shared/models';
 
-describe('FolderSelectorComponent', () => {
-  let component: FolderSelectorComponent;
-  let fixture: ComponentFixture<FolderSelectorComponent>;
+describe('StorageItemSelectorComponent', () => {
+  let component: StorageItemSelectorComponent;
+  let fixture: ComponentFixture<StorageItemSelectorComponent>;
 
   beforeEach(async () => {
     MOCK_STORE.selectSignal.mockImplementation((selector) => {
@@ -21,11 +23,21 @@ describe('FolderSelectorComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      imports: [FolderSelectorComponent],
-      providers: [TranslateServiceMock, provideStore([]), { provide: 'Store', useValue: MOCK_STORE }],
+      imports: [StorageItemSelectorComponent],
+      providers: [
+        TranslateServiceMock,
+        provideStore([]),
+        { provide: 'Store', useValue: MOCK_STORE },
+        {
+          provide: DialogService,
+          useValue: {
+            open: jest.fn(),
+          },
+        },
+      ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(FolderSelectorComponent);
+    fixture = TestBed.createComponent(StorageItemSelectorComponent);
     component = fixture.componentInstance;
   });
 
@@ -64,17 +76,17 @@ describe('FolderSelectorComponent', () => {
     expect(saveSpy).toHaveBeenCalled();
   });
 
-  it('should set selectedRootFolderId', () => {
+  it('should set selectedStorageItemId', () => {
     const mockFolder: StorageItemModel = {
       itemId: 'test-folder-id',
       itemName: 'Test Folder',
       itemType: 'folder',
     } as StorageItemModel;
 
-    (component as any).selectedRootFolder.set(mockFolder);
+    (component as any).selectedStorageItem.set(mockFolder);
     (component as any).handleSave();
 
-    expect(component.selectedRootFolderId()).toBe('test-folder-id');
+    expect(component.selectedStorageItemId()).toBe('test-folder-id');
   });
 
   it('should emit cancelSelection event', () => {

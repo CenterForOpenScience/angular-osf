@@ -87,13 +87,15 @@
       </p-accordion>
     </section>
 
-    <section class="flex flex-column gap-2">
-      <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationDoi' | translate }}</h3>
+    @if (preprint()?.articleDoiLink) {
+      <section class="flex flex-column gap-2">
+        <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationDoi' | translate }}</h3>
 
-      <a [href]="preprint()?.articleDoiLink">
-        {{ preprint()?.articleDoiLink }}
-      </a>
-    </section>
+        <a [href]="preprint()?.articleDoiLink">
+          {{ preprint()?.articleDoiLink }}
+        </a>
+      </section>
+    }
 
     <section class="flex flex-column gap-2">
       <h3>{{ 'preprints.preprintStepper.review.sections.metadata.subjects' | translate }}</h3>
