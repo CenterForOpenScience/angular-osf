@@ -8,6 +8,8 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { AuthService } from '@core/services';
+import { UserSelectors } from '@core/store/user';
 import { RegistryServicesComponent } from '@osf/features/registries/components';
 import { GetRegistries, RegistriesSelectors } from '@osf/features/registries/store';
 import {
@@ -37,6 +39,8 @@ import { environment } from 'src/environments/environment';
 })
 export class RegistriesLandingComponent implements OnInit {
   private router = inject(Router);
+  private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
+  private readonly authService = inject(AuthService);
 
   searchControl = new FormControl<string>('');
 
@@ -66,6 +70,10 @@ export class RegistriesLandingComponent implements OnInit {
   }
 
   goToCreateRegistration(): void {
-    this.router.navigate([`/registries/${environment.defaultProvider}/new`]);
+    if (this.isAuthenticated()) {
+      this.router.navigate([`/registries/${environment.defaultProvider}/new`]);
+    } else {
+      this.authService.navigateToSignIn();
+    }
   }
 }
