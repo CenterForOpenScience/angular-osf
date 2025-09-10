@@ -6,7 +6,7 @@ import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { LoadingSpinnerComponent } from '@shared/components';
 import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
@@ -29,6 +29,7 @@ import { GenericFilterComponent } from '../generic-filter/generic-filter.compone
     LoadingSpinnerComponent,
     Checkbox,
     NgClass,
+    FormsModule,
   ],
   templateUrl: './reusable-filter.component.html',
   styleUrls: ['./reusable-filter.component.scss'],
@@ -41,6 +42,8 @@ export class ReusableFilterComponent {
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
   plainStyle = input<boolean>(false);
+
+  readonly Boolean = Boolean;
 
   loadFilterOptions = output<DiscoverableFilter>();
   filterValueChanged = output<{ filterType: string; value: StringOrNull }>();
@@ -196,10 +199,5 @@ export class ReusableFilterComponent {
   onCheckboxChange(event: CheckboxChangeEvent, filter: DiscoverableFilter): void {
     const isChecked = event?.checked || false;
     this.onIsPresentFilterToggle(filter, isChecked);
-  }
-
-  isIsPresentFilterChecked(filterKey: string): boolean {
-    const selectedValue = this.selectedValues()[filterKey];
-    return selectedValue === 'true' || Boolean(selectedValue);
   }
 }

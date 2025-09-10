@@ -58,16 +58,14 @@
               @for (filter of group.filters; track filter.key) {
                 <div class="flex align-items-center gap-2">
                   <p-checkbox
-                    [value]="isIsPresentFilterChecked(filter.key)"
+                    [binary]="true"
+                    [ngModel]="Boolean(selectedValues()[filter.key])"
                     (onChange)="onCheckboxChange($event, filter)"
                     [inputId]="'checkbox-' + filter.key"
                   />
-                  <label [for]="'checkbox-' + filter.key" class="form-check-label cursor-pointer">
-                    {{ getFilterLabel(filter) }}
+                  <label [for]="'checkbox-' + filter.key" class="cursor-pointer m-0">
+                    {{ getFilterLabel(filter) }} ({{ filter.resultCount }} {{ Boolean(selectedValues()[filter.key]) }})
                   </label>
-                  @if (filter.resultCount) {
-                    <span class="text-sm text-gray-500">({{ filter.resultCount }})</span>
-                  }
                 </div>
               }
             </div>
