@@ -1,28 +1,105 @@
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MockComponent, MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponents, MockProvider } from 'ng-mocks';
+
+import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubHeaderComponent } from '@osf/shared/components';
+import { AnalyticsComponent } from '@osf/features/analytics/analytics.component';
+import { AnalyticsKpiComponent } from '@osf/features/analytics/components';
+import { AnalyticsSelectors } from '@osf/features/analytics/store';
+import {
+  BarChartComponent,
+  LineChartComponent,
+  PieChartComponent,
+  SelectComponent,
+  SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
+} from '@shared/components';
+import { IS_WEB } from '@shared/helpers';
+import { MOCK_ANALYTICS_METRICS, MOCK_RELATED_COUNTS, MOCK_RESOURCE_OVERVIEW } from '@shared/mocks';
 
-import { AnalyticsComponent } from './analytics.component';
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
 
-describe.skip('AnalyticsComponent', () => {
+describe('AnalyticsComponent', () => {
   let component: AnalyticsComponent;
   let fixture: ComponentFixture<AnalyticsComponent>;
 
+  const resourceId = MOCK_RESOURCE_OVERVIEW.id;
+  const metrics = { ...MOCK_ANALYTICS_METRICS, id: resourceId };
+  const relatedCounts = { ...MOCK_RELATED_COUNTS, id: resourceId };
+
+  const metricsSelector = AnalyticsSelectors.getMetrics(resourceId);
+  const relatedCountsSelector = AnalyticsSelectors.getRelatedCounts(resourceId);
+
   beforeEach(async () => {
+    jest.clearAllMocks();
     await TestBed.configureTestingModule({
-      imports: [AnalyticsComponent, MockComponent(SubHeaderComponent), MockPipe(TranslatePipe)],
-      providers: [MockProvider(TranslateService)],
+      imports: [
+        AnalyticsComponent,
+        ...MockComponents(
+          SubHeaderComponent,
+          AnalyticsKpiComponent,
+          LineChartComponent,
+          BarChartComponent,
+          PieChartComponent,
+          ViewOnlyLinkMessageComponent,
+          SelectComponent
+        ),
+        OSFTestingModule,
+      ],
+      providers: [
+        provideMockStore({
+          selectors: [
+            { selector: metricsSelector, value: metrics },
+            { selector: relatedCountsSelector, value: relatedCounts },
+            { selector: AnalyticsSelectors.isMetricsLoading, value: false },
+            { selector: AnalyticsSelectors.isRelatedCountsLoading, value: false },
+            { selector: AnalyticsSelectors.isMetricsError, value: false },
+          ],
+          signals: [
+            { selector: metricsSelector, value: metrics },
+            { selector: relatedCountsSelector, value: relatedCounts },
+            { selector: AnalyticsSelectors.isMetricsLoading, value: false },
+            { selector: AnalyticsSelectors.isRelatedCountsLoading, value: false },
+            { selector: AnalyticsSelectors.isMetricsError, value: false },
+          ],
+        }),
+        { provide: IS_WEB, useValue: of(true) },
+        MockProvider(Router, { navigate: jest.fn(), url: '/' }),
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            parent: { params: of({ id: resourceId }) },
+            data: of({ resourceType: undefined }),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AnalyticsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
+  });
+
+  it('should set selectedRange via onRangeChange', () => {
+    fixture.detectChanges();
+    component.onRangeChange('month');
+    expect(component.selectedRange()).toBe('month');
+  });
+
+  it('should navigate to duplicates with correct relative route', () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = jest.spyOn(router, 'navigate');
+
+    fixture.detectChanges();
+    component.navigateToDuplicates();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['duplicates'], { relativeTo: expect.any(Object) });
   });
 });

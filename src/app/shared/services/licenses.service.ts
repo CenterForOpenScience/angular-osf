@@ -13,11 +13,11 @@ import { environment } from 'src/environments/environment';
 })
 export class LicensesService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = environment.apiDomainUrl;
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getAllLicenses(): Observable<LicenseModel[]> {
     return this.http
-      .get<LicensesResponseJsonApi>(`${this.baseUrl}/licenses/?page[size]=20`)
+      .get<LicensesResponseJsonApi>(`${this.apiUrl}/licenses/?page[size]=20`)
       .pipe(map((licenses) => LicensesMapper.fromLicensesResponse(licenses)));
   }
 }

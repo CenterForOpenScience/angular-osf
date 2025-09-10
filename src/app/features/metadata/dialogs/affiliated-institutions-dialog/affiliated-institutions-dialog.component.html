@@ -1,7 +1,8 @@
 <div class="mb-4">
   <osf-affiliated-institution-select
-    [calculateSelectedItemsMode]="true"
-    (selectInstitutions)="onSelectInstitutions($event)"
+    [institutions]="userInstitutions()"
+    [isLoading]="areUserInstitutionsLoading()"
+    [(selectedInstitutions)]="selectedInstitutions"
   />
 </div>
 

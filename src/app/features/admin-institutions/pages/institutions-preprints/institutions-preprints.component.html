@@ -1,15 +1,31 @@
 <osf-admin-table
-  [tableColumns]="tableColumns()"
+  [tableColumns]="tableColumns"
   [tableData]="tableData()"
-  [isLoading]="isLoading()"
+  [isLoading]="areResourcesLoading()"
   [isNextPreviousPagination]="true"
-  [paginationLinks]="preprintsLinks()"
+  [paginationLinks]="paginationLinks()"
   [reportsLink]="institution().linkToExternalReportsArchive"
   (sortChanged)="onSortChange($event)"
-  (linkPageChanged)="onLinkPageChange($event)"
+  (pageSwitched)="onLinkPageChange($event)"
   (downloadClicked)="download($event)"
 >
   <div slot="amount">
-    <h3 class="title">{{ totalCount() }} {{ 'adminInstitutions.preprints.totalPreprints' | translate | lowercase }}</h3>
+    <h3 class="title">
+      {{ resourcesCount() }} {{ 'adminInstitutions.preprints.totalPreprints' | translate | lowercase }}
+    </h3>
+  </div>
+
+  <div slot="otherFilters">
+    <p-button
+      styleClass="grey-border-color"
+      icon="fa fa-filter text-primary text-xl"
+      [label]="'adminInstitutions.common.filters' | translate"
+      outlined
+      (onClick)="filtersVisible.set(!filtersVisible())"
+    />
+  </div>
+
+  <div slot="tableFilters">
+    <osf-institution-resource-table-filters [(filtersVisible)]="filtersVisible" />
   </div>
 </osf-admin-table>

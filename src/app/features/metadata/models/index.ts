@@ -1,3 +1,4 @@
+export * from './cedar-editor-element.model';
 export * from './cedar-metadata-template.model';
 export * from './description-result.model';
 export * from './funding-dialog.model';

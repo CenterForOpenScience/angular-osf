@@ -16,24 +16,22 @@
           @if (tab.id === 'osf') {
             <ng-content></ng-content>
           } @else {
-            <div class="p-3">
-              @if (selectedCedarTemplate() && selectedCedarRecord()) {
-                <osf-cedar-template-form
-                  [template]="selectedCedarTemplate()!"
-                  [existingRecord]="selectedCedarRecord()!"
-                  [readonly]="cedarFormReadonly()"
-                  [showEditButton]="true"
-                  (emitData)="onCedarFormSubmit($event)"
-                  (changeTemplate)="onCedarFormChangeTemplate()"
-                  (editMode)="onCedarFormEdit()"
-                />
-              } @else {
-                <div class="text-center py-8">
-                  <p class="text-lg mb-4">{{ 'project.metadata.addMetadata.loadingCedar' | translate }}</p>
-                  <p class="text-sm text-gray-600">{{ tab.label }}</p>
-                </div>
-              }
-            </div>
+            @if (selectedCedarTemplate() && selectedCedarRecord()) {
+              <osf-cedar-template-form
+                [template]="selectedCedarTemplate()!"
+                [existingRecord]="selectedCedarRecord()!"
+                [readonly]="cedarFormReadonly()"
+                [showEditButton]="true"
+                (emitData)="onCedarFormSubmit($event)"
+                (changeTemplate)="onCedarFormChangeTemplate()"
+                (editMode)="onCedarFormEdit()"
+              />
+            } @else {
+              <div class="text-center py-8">
+                <p class="text-lg mb-4">{{ 'project.metadata.addMetadata.loadingCedar' | translate }}</p>
+                <p class="text-sm text-gray-600">{{ tab.label }}</p>
+              </div>
+            }
           }
         </p-tabpanel>
       }

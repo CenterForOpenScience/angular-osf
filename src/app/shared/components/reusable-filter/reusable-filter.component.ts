@@ -4,6 +4,7 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 
+import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -27,6 +28,7 @@ import { GenericFilterComponent } from '../generic-filter/generic-filter.compone
     TranslatePipe,
     LoadingSpinnerComponent,
     Checkbox,
+    NgClass,
   ],
   templateUrl: './reusable-filter.component.html',
   styleUrls: ['./reusable-filter.component.scss'],
@@ -38,6 +40,7 @@ export class ReusableFilterComponent {
   filterSearchResults = input<Record<string, SelectOption[]>>({});
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
+  plainStyle = input<boolean>(false);
 
   loadFilterOptions = output<DiscoverableFilter>();
   filterValueChanged = output<{ filterType: string; value: StringOrNull }>();

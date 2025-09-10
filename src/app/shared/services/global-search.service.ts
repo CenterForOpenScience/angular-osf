@@ -10,6 +10,7 @@ import {
   IndexCardDataJsonApi,
   IndexCardSearchResponseJsonApi,
   ResourcesData,
+  SearchResultJsonApi,
   SelectOption,
 } from '@shared/models';
 
@@ -73,7 +74,14 @@ export class GlobalSearchService {
   }
 
   private handleResourcesRawResponse(response: IndexCardSearchResponseJsonApi): ResourcesData {
+    const searchResultItems = response
+      .included!.filter((item): item is SearchResultJsonApi => item.type === 'search-result')
+      .sort((a, b) => Number(a.id.at(-1)) - Number(b.id.at(-1)));
+
     const indexCardItems = response.included!.filter((item) => item.type === 'index-card') as IndexCardDataJsonApi[];
+    const indexCardItemsCorrectOrder = searchResultItems.map((searchResult) => {
+      return indexCardItems.find((indexCard) => indexCard.id === searchResult.relationships.indexCard.data.id)!;
+    });
     const relatedPropertyPathItems = response.included!.filter(
       (item): item is RelatedPropertyPathItem => item.type === 'related-property-path'
     );
@@ -81,12 +89,13 @@ export class GlobalSearchService {
     const appliedFilters: AppliedFilter[] = response.data?.attributes?.cardSearchFilter || [];
 
     return {
-      resources: indexCardItems.map((item) => MapResources(item)),
+      resources: indexCardItemsCorrectOrder.map((item) => MapResources(item)),
       filters: CombinedFilterMapper(appliedFilters, relatedPropertyPathItems),
       count: response.data.attributes.totalResultCount,
-      first: response.data?.relationships?.searchResultPage.links?.first?.href,
-      next: response.data?.relationships?.searchResultPage.links?.next?.href,
-      previous: response.data?.relationships?.searchResultPage.links?.prev?.href,
+      self: response.data.links.self,
+      first: response.data?.relationships?.searchResultPage.links?.first?.href ?? null,
+      next: response.data?.relationships?.searchResultPage.links?.next?.href ?? null,
+      previous: response.data?.relationships?.searchResultPage.links?.prev?.href ?? null,
     };
   }
 }

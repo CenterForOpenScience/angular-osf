@@ -38,7 +38,7 @@ export class InstitutionsSearchComponent implements OnInit {
     if (institutionId) {
       this.actions.fetchInstitution(institutionId).subscribe({
         next: () => {
-          this.actions.setDefaultFilterValue('affiliation', this.institution()!.iris[0]);
+          this.actions.setDefaultFilterValue('affiliation', this.institution().iris.join(','));
         },
       });
     }

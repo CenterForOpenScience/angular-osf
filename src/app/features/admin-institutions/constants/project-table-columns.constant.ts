@@ -4,14 +4,12 @@ export const projectTableColumns: TableColumn[] = [
   {
     field: 'title',
     header: 'adminInstitutions.projects.title',
-    sortable: true,
     isLink: true,
     linkTarget: '_blank',
   },
   {
     field: 'link',
     header: 'adminInstitutions.projects.link',
-    sortable: false,
     isLink: true,
     linkTarget: '_blank',
   },
@@ -30,22 +28,22 @@ export const projectTableColumns: TableColumn[] = [
   {
     field: 'doi',
     header: 'adminInstitutions.projects.doi',
-    sortable: false,
+    isLink: true,
+    linkTarget: '_blank',
   },
   {
     field: 'storageLocation',
     header: 'adminInstitutions.projects.storageLocation',
-    sortable: false,
   },
   {
     field: 'totalDataStored',
     header: 'adminInstitutions.projects.totalDataStored',
-    sortable: false,
+    sortable: true,
+    sortField: 'storageByteCount',
   },
   {
     field: 'creator',
     header: 'adminInstitutions.projects.contributorName',
-    sortable: true,
     isLink: true,
     linkTarget: '_blank',
     showIcon: true,
@@ -56,7 +54,8 @@ export const projectTableColumns: TableColumn[] = [
   {
     field: 'views',
     header: 'adminInstitutions.projects.views',
-    sortable: false,
+    sortable: true,
+    sortField: 'usage.viewCount',
   },
   {
     field: 'resourceType',
