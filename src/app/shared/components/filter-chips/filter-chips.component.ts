@@ -29,51 +29,16 @@ export class FilterChipsComponent {
   });
 
   filterOptions = computed(() => {
-    // [RNi]: TODO check this with paging 5 for filter options and remove comment
-
-    // return this.filters()
-    //   .filter((filter) => filter.key && filter.options)
-    //   .map((filter) => ({
-    //     key: filter.key,
-    //     options: filter.options!.map((opt) => ({
-    //       id: String(opt.value || ''),
-    //       value: String(opt.value || ''),
-    //       label: opt.label,
-    //     })),
-    //   }));
-
-    const filtersData = this.filters();
-    const cachedOptions = this.filterOptionsCache();
-    const options: Record<string, { id: string; value: string; label: string }[]> = {};
-
-    filtersData.forEach((filter) => {
-      if (filter.key && filter.options) {
-        options[filter.key] = filter.options.map((opt) => ({
+    return this.filters()
+      .filter((filter) => filter.key && filter.options)
+      .map((filter) => ({
+        key: filter.key,
+        options: filter.options!.map((opt) => ({
           id: String(opt.value || ''),
           value: String(opt.value || ''),
           label: opt.label,
-        }));
-      }
-    });
-
-    Object.entries(cachedOptions).forEach(([filterKey, cachedOpts]) => {
-      if (cachedOpts && cachedOpts.length > 0) {
-        const existingOptions = options[filterKey] || [];
-        const existingValues = new Set(existingOptions.map((opt) => opt.value));
-
-        const newCachedOptions = cachedOpts
-          .filter((opt) => !existingValues.has(String(opt.value || '')))
-          .map((opt) => ({
-            id: String(opt.value || ''),
-            value: String(opt.value || ''),
-            label: opt.label,
-          }));
-
-        options[filterKey] = [...newCachedOptions, ...existingOptions];
-      }
-    });
-
-    return options;
+        })),
+      }));
   });
 
   chips = computed(() => {
@@ -85,8 +50,7 @@ export class FilterChipsComponent {
       .filter(([, value]) => value !== null && value !== '')
       .map(([key, value]) => {
         const filterLabel = labels.find((l) => l.key === key)?.label || key;
-        //const filterOptionsList = options.find((o) => o.key === key)?.options || [];
-        const filterOptionsList = options[key] || [];
+        const filterOptionsList = options.find((o) => o.key === key)?.options || [];
         const option = filterOptionsList.find((opt) => opt.value === value || opt.id === value);
         const displayValue = option?.label || value || '';
 
