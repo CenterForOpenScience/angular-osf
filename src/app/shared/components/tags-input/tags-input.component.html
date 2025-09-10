@@ -21,6 +21,7 @@
       [readOnly]="readonly()"
       (keydown)="onInputKeydown($event)"
       (blur)="onInputBlur($event)"
+      [attr.aria-label]="'common.placeholder.addTag' | translate"
       class="tag-input-field"
     />
   </div>

@@ -47,7 +47,8 @@
       "continueUpdate": "Continue Update",
       "editAndResubmit": "Edit And Resubmit",
       "createNewVersion": "Create New Version",
-      "leaveThisView": "Leave this view"
+      "leaveThisView": "Leave this view",
+      "addOneMore": "Add One More"
     },
     "accessibility": {
       "help": "Help",
