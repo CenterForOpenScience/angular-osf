@@ -72,10 +72,10 @@ export class CreateViewLinkDialogComponent implements OnInit {
 
   ngOnInit(): void {
     const currentResource = this.config.data as ResourceInfoModel;
-    const { id, type } = currentResource;
+    const { id, type, rootParentId } = currentResource;
 
     if (id) {
-      this.actions.getComponents(id, type);
+      this.actions.getComponents(rootParentId ?? '', id, type);
     }
   }
 

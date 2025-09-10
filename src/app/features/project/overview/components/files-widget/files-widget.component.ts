@@ -76,7 +76,7 @@ export class FilesWidgetComponent {
 
   readonly options = computed(() => {
     const components = this.components().filter((component) => this.rootOption().value !== component.id);
-    return [this.rootOption(), ...this.buildOptions(components).reverse()];
+    return [this.rootOption(), ...this.buildOptions(components)];
   });
 
   readonly storageAddons = computed(() => {
