@@ -7,12 +7,15 @@ import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
+import { UserSelectors, UserState } from '@core/store/user';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants/my-projects-table.constants';
 import { ProjectFormControls } from '@osf/shared/enums/create-project-form-controls.enum';
 import { CustomValidators } from '@osf/shared/helpers';
+import { MOCK_STORE, MOCK_USER } from '@osf/shared/mocks';
 import { ProjectForm } from '@osf/shared/models';
 import { Project } from '@osf/shared/models/projects';
 import { GetMyProjects, MyResourcesState } from '@osf/shared/stores';
@@ -66,6 +69,11 @@ describe('AddProjectFormComponent', () => {
   });
 
   beforeEach(async () => {
+    MOCK_STORE.selectSignal.mockImplementation((selector) => {
+      if (selector === UserSelectors.getCurrentUser) return () => signal(MOCK_USER);
+      return () => null;
+    });
+
     await TestBed.configureTestingModule({
       imports: [
         AddProjectFormComponent,
@@ -73,11 +81,12 @@ describe('AddProjectFormComponent', () => {
         MockComponents(ProjectSelectorComponent, AffiliatedInstitutionSelectComponent),
       ],
       providers: [
-        provideStore([MyResourcesState, InstitutionsState, RegionsState]),
+        provideStore([MyResourcesState, InstitutionsState, RegionsState, UserState]),
         provideHttpClient(),
         provideHttpClientTesting(),
         MockProvider(DynamicDialogRef, { close: jest.fn() }),
         MockProvider(TranslateService),
+        MockProvider(Store, MOCK_STORE),
       ],
     }).compileComponents();
 
