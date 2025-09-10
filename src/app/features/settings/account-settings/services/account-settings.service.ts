@@ -3,15 +3,14 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { UserMapper } from '@osf/shared/mappers';
-import { IdName, JsonApiResponse, User, UserDataJsonApi } from '@osf/shared/models';
+import { JsonApiResponse, User, UserDataJsonApi } from '@osf/shared/models';
 import { JsonApiService } from '@osf/shared/services';
 
-import { MapAccountSettings, MapExternalIdentities, MapRegions } from '../mappers';
+import { MapAccountSettings, MapExternalIdentities } from '../mappers';
 import {
   AccountSettings,
   ExternalIdentity,
   GetAccountSettingsResponseJsonApi,
-  GetRegionsResponseJsonApi,
   ListIdentitiesResponseJsonApi,
 } from '../models';
 
@@ -23,12 +22,6 @@ import { environment } from 'src/environments/environment';
 export class AccountSettingsService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
-
-  getRegions(): Observable<IdName[]> {
-    return this.jsonApiService
-      .get<GetRegionsResponseJsonApi>(`${this.apiUrl}/regions/`)
-      .pipe(map((response) => MapRegions(response.data)));
-  }
 
   updateLocation(userId: string, locationId: string): Observable<User> {
     const body = {

@@ -30,7 +30,7 @@ import {
 import { TABLE_PARAMS } from '@osf/shared/constants';
 import { parseQueryFilterParams } from '@osf/shared/helpers';
 import { QueryParams } from '@osf/shared/models';
-import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
+import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-institutions-list',
