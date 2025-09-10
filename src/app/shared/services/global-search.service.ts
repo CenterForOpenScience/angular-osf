@@ -55,13 +55,11 @@ export class GlobalSearchService {
     const options: SelectOption[] = [];
     let nextUrl: string | undefined;
 
-    if (response?.included) {
-      const filterOptionItems = response.included.filter(
-        (item): item is FilterOptionItem => item.type === 'index-card' && !!item.attributes?.resourceMetadata
-      );
+    const filterOptionItems = response.included!.filter(
+      (item): item is FilterOptionItem => item.type === 'index-card' && !!item.attributes?.resourceMetadata
+    );
 
-      options.push(...filterOptionItems.map((item) => mapFilterOption(item)));
-    }
+    options.push(...filterOptionItems.map((item) => mapFilterOption(item)));
 
     const searchResultPage = response?.data?.relationships?.['searchResultPage'] as {
       links?: { next?: { href: string } };

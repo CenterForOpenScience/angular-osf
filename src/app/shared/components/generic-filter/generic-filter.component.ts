@@ -162,10 +162,6 @@ export class GenericFilterComponent {
     }
   }
 
-  trackByOption(index: number, option: SelectOption): string {
-    return option.value?.toString() || index.toString();
-  }
-
   onValueChange(event: SelectChangeEvent): void {
     const options = this.filterOptions();
     const selectedOption = event.value ? options.find((opt) => opt.value === event.value) : null;

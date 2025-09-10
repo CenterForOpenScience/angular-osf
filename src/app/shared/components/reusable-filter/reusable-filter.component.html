@@ -12,19 +12,19 @@
         <p-accordion-panel [value]="filter.key">
           <p-accordion-header>{{ getFilterLabel(filter) }}</p-accordion-header>
           <p-accordion-content>
-            @if (getFilterDescription(filter)) {
-              <p class="text-sm text-gray-600 mb-3">{{ getFilterDescription(filter) }}</p>
+            @if (filter.description) {
+              <p class="text-sm text-gray-600 mb-3">{{ filter.description }}</p>
             }
 
-            @if (getFilterHelpLink(filter) && getFilterHelpLinkText(filter)) {
+            @if (filter.helpLink && filter.helpLinkText) {
               <p class="text-sm mb-3">
                 <a
-                  [href]="getFilterHelpLink(filter)"
+                  [href]="filter.helpLink"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="text-primary hover:underline"
                 >
-                  {{ getFilterHelpLinkText(filter) }}
+                  {{ filter.helpLinkText }}
                 </a>
               </p>
             }
@@ -33,9 +33,9 @@
               <osf-generic-filter
                 [options]="getFilterOptions(filter)"
                 [searchResults]="getFilterSearchResults(filter)"
-                [isLoading]="isFilterLoading(filter)"
-                [isPaginationLoading]="isFilterPaginationLoading(filter)"
-                [isSearchLoading]="isFilterSearchLoading(filter)"
+                [isPaginationLoading]="filter.isPaginationLoading || false"
+                [isLoading]="filter.isLoading || false"
+                [isSearchLoading]="filter.isSearchLoading || false"
                 [selectedValue]="getSelectedValue(filter.key)"
                 [placeholder]="getFilterPlaceholder(filter.key) | translate"
                 [filterType]="filter.key"
