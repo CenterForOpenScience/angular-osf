@@ -21,6 +21,8 @@ import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { PreprintDetailsComponent } from './preprint-details.component';
 
+import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
+
 describe('PreprintDetailsComponent', () => {
   let component: PreprintDetailsComponent;
   let fixture: ComponentFixture<PreprintDetailsComponent>;
@@ -49,9 +51,7 @@ describe('PreprintDetailsComponent', () => {
       }
     });
     (MOCK_STORE.dispatch as jest.Mock).mockImplementation(() => of());
-    dataciteService = {
-      logIdentifiableView: jest.fn().mockReturnValue(of(void 0)),
-    } as unknown as jest.Mocked<DataciteService>;
+    dataciteService = DataciteMockFactory();
 
     await TestBed.configureTestingModule({
       imports: [

@@ -8,8 +8,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
-import { of } from 'rxjs';
-
 import { DestroyRef, signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
@@ -46,6 +44,7 @@ import { ActivityLogsSelectors } from '@shared/stores/activity-logs';
 
 import { ProjectOverviewComponent } from './project-overview.component';
 
+import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
 const sampleReviewAction: CollectionSubmissionReviewAction = {
@@ -118,9 +117,7 @@ describe('ProjectOverviewComponent', () => {
       }
     });
 
-    dataciteService = {
-      logIdentifiableView: jest.fn().mockReturnValue(of(void 0)),
-    } as unknown as jest.Mocked<DataciteService>;
+    dataciteService = DataciteMockFactory();
 
     await TestBed.configureTestingModule({
       imports: [

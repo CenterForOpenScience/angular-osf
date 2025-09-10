@@ -239,7 +239,7 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
     }
   }
 
-  private downloadFileOrFolder(file: OsfFile) {
+  downloadFileOrFolder(file: OsfFile) {
     this.dataciteService.logFileDownload(file.target.id, file.target.type).subscribe();
     if (file.kind === 'file') {
       this.downloadFile(file.links.download);

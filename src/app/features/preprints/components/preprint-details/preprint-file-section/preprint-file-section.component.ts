@@ -51,7 +51,7 @@ export class PreprintFileSectionComponent {
   areFileVersionsLoading = select(PreprintSelectors.arePreprintFileVersionsLoading);
 
   logDownload() {
-    this.dataciteService.logIdentifiableDownload(this.preprint$);
+    this.dataciteService.logIdentifiableDownload(this.preprint$).subscribe();
   }
 
   versionMenuItems = computed(() => {

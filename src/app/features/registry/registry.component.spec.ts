@@ -1,7 +1,5 @@
 import { Store } from '@ngxs/store';
 
-import { of } from 'rxjs';
-
 import { DatePipe } from '@angular/common';
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
@@ -12,6 +10,8 @@ import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { RegistryComponent } from './registry.component';
 
+import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
+
 describe('RegistryComponent', () => {
   let fixture: any;
   let component: RegistryComponent;
@@ -20,9 +20,7 @@ describe('RegistryComponent', () => {
   const registrySignal = signal<any | null>(null);
 
   beforeEach(async () => {
-    dataciteService = {
-      logIdentifiableView: jest.fn().mockReturnValue(of(void 0)),
-    } as unknown as jest.Mocked<DataciteService>;
+    dataciteService = DataciteMockFactory();
 
     const mockStore = {
       selectSignal: jest.fn((selector: any) => {

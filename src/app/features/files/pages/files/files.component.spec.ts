@@ -8,8 +8,6 @@ import { Dialog } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
 import { TableModule } from 'primeng/table';
 
-import { of } from 'rxjs';
-
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,6 +32,7 @@ import { FilesComponent } from './files.component';
 
 import { getConfiguredAddonsMappedData } from '@testing/data/addons/addons.configured.data';
 import { getNodeFilesMappedData } from '@testing/data/files/node.data';
+import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -48,10 +47,7 @@ describe('Component: Files', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     window.open = jest.fn();
-    dataciteService = {
-      logFileView: jest.fn().mockReturnValue(of(void 0)),
-      logFileDownload: jest.fn().mockReturnValue(of(void 0)),
-    } as unknown as jest.Mocked<DataciteService>;
+    dataciteService = DataciteMockFactory();
     await TestBed.configureTestingModule({
       imports: [
         OSFTestingModule,
