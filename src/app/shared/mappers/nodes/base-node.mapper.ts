@@ -5,8 +5,8 @@ export class BaseNodeMapper {
     return data.map((item) => this.getNodeData(item));
   }
 
-  static getNodesWithChildren(data: BaseNodeDataJsonApi[]): NodeShortInfoModel[] {
-    return data.map((item) => ({
+  static getNodesWithChildren(data: BaseNodeDataJsonApi[], parentId: string): NodeShortInfoModel[] {
+    return this.getAllDescendants(data, parentId).map((item) => ({
       id: item.id,
       title: item.attributes.title,
       parentId: item.relationships.parent?.data?.id,
@@ -36,6 +36,18 @@ export class BaseNodeMapper {
       currentUserIsContributor: data.attributes.current_user_is_contributor,
       wikiEnabled: data.attributes.wiki_enabled,
       customCitation: data.attributes.custom_citation || undefined,
+      rootParentId: data.relationships.root?.data?.id,
     };
+  }
+
+  static getAllDescendants(allNodes: BaseNodeDataJsonApi[], parentId: string): BaseNodeDataJsonApi[] {
+    const parent = allNodes.find((n) => n.id === parentId);
+    if (!parent) return [];
+
+    const directChildren = allNodes.filter((node) => node.relationships.parent?.data?.id === parentId);
+
+    const descendants = directChildren.flatMap((child) => this.getAllDescendants(allNodes, child.id));
+
+    return [parent, ...descendants];
   }
 }

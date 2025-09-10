@@ -264,6 +264,7 @@ export class ContributorsComponent implements OnInit {
       id: this.resourceDetails().id,
       title: this.resourceDetails().title,
       type: this.resourceType(),
+      rootParentId: this.resourceDetails().rootParentId,
     };
 
     this.dialogService

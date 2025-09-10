@@ -7,45 +7,16 @@
   </div>
 
   @if (currentProject()?.affiliatedInstitutions?.length) {
-    <div class="flex flex-column gap-2">
-      <div class="relative">
-        <h3 class="font-normal affiliation-label mb-2">
-          {{ 'project.overview.dialog.addComponent.affiliation.title' | translate }}
-        </h3>
-        <div class="flex gap-4 absolute top-0 right-0">
-          <p-button
-            class="secondary-transparent"
-            severity="secondary"
-            [label]="'project.overview.dialog.addComponent.affiliation.selectAll' | translate"
-            (click)="selectAllAffiliations()"
-            (keydown.enter)="selectAllAffiliations()"
-          >
-          </p-button>
-          <p-button
-            class="secondary-transparent"
-            severity="secondary"
-            [label]="'project.overview.dialog.addComponent.affiliation.removeAll' | translate"
-            (click)="removeAllAffiliations()"
-            (keydown.enter)="removeAllAffiliations()"
-          >
-          </p-button>
-        </div>
-      </div>
+    <div>
+      <h3 class="font-normal mb-2">
+        {{ 'myProjects.createProject.affiliation.title' | translate }}
+      </h3>
 
-      <div class="flex gap-2" role="group" aria-label="Affiliations">
-        @for (affiliation of currentProject()?.affiliatedInstitutions; track affiliation.id) {
-          <div class="flex align-items-center relative gap-2">
-            <p-checkbox
-              class="absolute top-0 affiliation-checkbox"
-              [value]="affiliation.id"
-              [formControlName]="ComponentFormControls.Affiliations"
-              [inputId]="affiliation.id"
-              [name]="'affiliations'"
-            />
-            <img class="fit-contain" [ngSrc]="affiliation.assets.logo" alt="Institution Logo" height="44" width="44" />
-          </div>
-        }
-      </div>
+      <osf-affiliated-institution-select
+        [institutions]="currentProject()?.affiliatedInstitutions || []"
+        [selectedInstitutions]="currentProject()?.affiliatedInstitutions || []"
+        (selectedInstitutionsChange)="setSelectedInstitutions($event)"
+      />
     </div>
   }
 
@@ -55,42 +26,35 @@
     </label>
     <p-select
       id="storage-location"
-      [options]="storageLocations"
+      optionLabel="name"
+      optionValue="id"
+      [options]="storageLocations()"
+      [loading]="areRegionsLoading()"
       [formControlName]="ComponentFormControls.StorageLocation"
     ></p-select>
   </div>
 
-  <div
-    class="cursor-pointer flex align-items-start gap-2"
-    (click)="toggleAddContributors()"
-    (keydown.enter)="toggleAddContributors()"
-    tabindex="0"
-    role="checkbox"
-    [attr.aria-checked]="componentForm.get(ComponentFormControls.AddContributors)?.value"
-  >
-    <p-checkbox [formControlName]="ComponentFormControls.AddContributors" [binary]="true"></p-checkbox>
+  <div class="flex align-items-start gap-2">
+    <p-checkbox
+      inputId="add-contributors"
+      [formControlName]="ComponentFormControls.AddContributors"
+      [binary]="true"
+    ></p-checkbox>
     <div>
-      <p>
+      <label for="add-contributors" class="cursor-pointer m-0">
         {{ ('project.overview.dialog.addComponent.addContributors' | translate) + ' ' + currentProject()?.title }}
-      </p>
-      <small>{{
-        currentProject()?.title + ' ' + ('project.overview.dialog.addComponent.contributorsMessage' | translate)
-      }}</small>
+      </label>
+      <small>
+        {{ currentProject()?.title + ' ' + ('project.overview.dialog.addComponent.contributorsMessage' | translate) }}
+      </small>
     </div>
   </div>
 
-  <div
-    class="cursor-pointer flex align-items-start gap-2"
-    (click)="toggleAddTags()"
-    (keydown.enter)="toggleAddTags()"
-    tabindex="0"
-    role="checkbox"
-    [attr.aria-checked]="componentForm.get(ComponentFormControls.AddTags)?.value"
-  >
-    <p-checkbox [formControlName]="ComponentFormControls.AddTags" [binary]="true"></p-checkbox>
-    <p>
+  <div class="flex align-items-center gap-2">
+    <p-checkbox inputId="add-tags" [formControlName]="ComponentFormControls.AddTags" [binary]="true"></p-checkbox>
+    <label for="add-tags" class="cursor-pointer m-0">
       {{ ('project.overview.dialog.addComponent.addTags' | translate) + ' ' + currentProject()?.title }}
-    </p>
+    </label>
   </div>
 
   <div class="flex flex-column">
@@ -117,7 +81,7 @@
       class="w-12rem btn-full-width"
       [label]="'project.overview.dialog.addComponent.cancelButton' | translate"
       severity="info"
-      (click)="dialogRef.close()"
+      (onClick)="dialogRef.close()"
       [disabled]="isSubmitting()"
     />
     <p-button

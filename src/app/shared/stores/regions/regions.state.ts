@@ -20,7 +20,7 @@ export class RegionsState {
   private readonly regionsService = inject(RegionsService);
 
   @Action(FetchRegions)
-  fetchSubjects(ctx: StateContext<RegionsStateModel>) {
+  fetchRegions(ctx: StateContext<RegionsStateModel>) {
     ctx.setState(patch({ regions: patch({ isLoading: true }) }));
 
     return this.regionsService.getAllRegions().pipe(
