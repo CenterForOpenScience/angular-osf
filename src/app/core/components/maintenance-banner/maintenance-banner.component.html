@@ -1,11 +1,11 @@
-<div *ngIf="maintenance && !dismissed" class="maintenance-banner maintenance-banner--{{ alertType }}" role="status">
-  <div class="maintenance-banner__content">
-    <span class="maintenance-banner__icon">i</span>
-    <span class="maintenance-banner__message">
-      <strong>{{ alertType | titlecase }}:</strong> {{ maintenance.message }}
-    </span>
-    <button class="maintenance-banner__dismiss" (click)="dismiss()" aria-label="Dismiss maintenance banner">
-      &times;
-    </button>
-  </div>
-</div>
+@if (maintenance && !dismissed) {
+  <p-message
+    [severity]="maintenance.severity"
+    [text]="maintenance.text"
+    [closable]="true"
+    (onClose)="dismiss()"
+    class="maintenance-banner"
+    icon="pi pi-info-circle"
+  >
+  </p-message>
+}
