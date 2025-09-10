@@ -36,6 +36,8 @@ describe('factory: sentry', () => {
 
   it('should initialize Sentry if DSN is provided', async () => {
     const service = TestBed.inject(OSFConfigService);
+    // eslint-disable-next-line
+    // @ts-ignore
     jest.spyOn(service, 'get').mockResolvedValue('https://dsn.url');
     await runInInjectionContext(TestBed, async () => {
       await initializeApplication()();
@@ -52,6 +54,8 @@ describe('factory: sentry', () => {
 
   it('should initialize Sentry if DSN is missind', async () => {
     const service = TestBed.inject(OSFConfigService);
+    // eslint-disable-next-line
+    // @ts-ignore
     jest.spyOn(service, 'get').mockResolvedValue('');
     await runInInjectionContext(TestBed, async () => {
       await initializeApplication()();
