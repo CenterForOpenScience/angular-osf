@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { HelpScoutService } from '@core/services/help-scout.service';
 
 @Component({
   selector: 'osf-settings-container',
@@ -8,4 +10,12 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './settings-container.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsContainerComponent {}
+export class SettingsContainerComponent implements OnDestroy {
+  constructor(private helpScoutService: HelpScoutService) {
+    this.helpScoutService.setResourceType('user');
+  }
+
+  ngOnDestroy(): void {
+    this.helpScoutService.unsetResourceType();
+  }
+}
