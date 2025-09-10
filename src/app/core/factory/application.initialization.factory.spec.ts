@@ -7,6 +7,7 @@ import { initializeApplication } from './application.initialization.factory';
 
 import * as Sentry from '@sentry/angular';
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { GoogleTagManagerConfiguration } from 'angular-google-tag-manager';
 
 jest.mock('@sentry/angular', () => ({
   init: jest.fn(),
@@ -14,7 +15,10 @@ jest.mock('@sentry/angular', () => ({
 }));
 
 describe('factory: sentry', () => {
+  let osfConfigServiceMock: OSFConfigService;
+  let googleTagManagerConfigurationMock: GoogleTagManagerConfiguration;
   const configServiceMock = {
+    load: jest.fn(),
     get: jest.fn(),
   } as unknown as jest.Mocked<OSFConfigService>;
 
@@ -26,8 +30,17 @@ describe('factory: sentry', () => {
           provide: OSFConfigService,
           useValue: configServiceMock,
         },
+        {
+          provide: GoogleTagManagerConfiguration,
+          useValue: {
+            set: jest.fn(),
+          },
+        },
       ],
     }).compileComponents();
+
+    osfConfigServiceMock = TestBed.inject(OSFConfigService);
+    googleTagManagerConfigurationMock = TestBed.inject(GoogleTagManagerConfiguration);
   });
 
   afterEach(() => {
@@ -35,10 +48,7 @@ describe('factory: sentry', () => {
   });
 
   it('should initialize Sentry if DSN is provided', async () => {
-    const service = TestBed.inject(OSFConfigService);
-    // eslint-disable-next-line
-    // @ts-ignore
-    jest.spyOn(service, 'get').mockResolvedValue('https://dsn.url');
+    jest.spyOn(osfConfigServiceMock, 'get').mockReturnValueOnce('google-id').mockReturnValueOnce('https://dsn.url');
     await runInInjectionContext(TestBed, async () => {
       await initializeApplication()();
     });
@@ -50,17 +60,20 @@ describe('factory: sentry', () => {
       maxBreadcrumbs: 50,
       sampleRate: 1,
     });
+
+    expect(googleTagManagerConfigurationMock.set).toHaveBeenCalledWith({
+      id: 'google-id',
+    });
   });
 
-  it('should initialize Sentry if DSN is missind', async () => {
-    const service = TestBed.inject(OSFConfigService);
-    // eslint-disable-next-line
-    // @ts-ignore
-    jest.spyOn(service, 'get').mockResolvedValue('');
+  it('should initialize Sentry if DSN is missing', async () => {
+    jest.spyOn(osfConfigServiceMock, 'get').mockReturnValueOnce(null).mockReturnValueOnce(null);
     await runInInjectionContext(TestBed, async () => {
       await initializeApplication()();
     });
 
     expect(Sentry.init).not.toHaveBeenCalled();
+
+    expect(googleTagManagerConfigurationMock.set).not.toHaveBeenCalled();
   });
 });

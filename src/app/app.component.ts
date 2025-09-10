@@ -10,6 +10,7 @@ import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit 
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 
+import { OSFConfigService } from '@core/services/osf-config.service';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 import { ConfirmEmailComponent } from '@shared/components';
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly router = inject(Router);
   private readonly translateService = inject(TranslateService);
+  private readonly osfConfigService = inject(OSFConfigService);
 
   private readonly actions = createDispatchMap({ getCurrentUser: GetCurrentUser, getEmails: GetEmails });
 
@@ -49,17 +51,19 @@ export class AppComponent implements OnInit {
     this.actions.getCurrentUser();
     this.actions.getEmails();
 
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe((event: NavigationEnd) => {
-        this.googleTagManagerService.pushTag({
-          event: 'page',
-          pageName: event.urlAfterRedirects,
+    if (this.osfConfigService.has('googleTagManagerId')) {
+      this.router.events
+        .pipe(
+          filter((event) => event instanceof NavigationEnd),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe((event: NavigationEnd) => {
+          this.googleTagManagerService.pushTag({
+            event: 'page',
+            pageName: event.urlAfterRedirects,
+          });
         });
-      });
+    }
   }
 
   private showEmailDialog() {

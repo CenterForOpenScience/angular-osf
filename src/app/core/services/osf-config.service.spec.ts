@@ -42,4 +42,18 @@ describe('Service: Config', () => {
 
     expect(httpMock.verify()).toBeUndefined();
   });
+
+  it('should return a value with ahs()', async () => {
+    let loadPromise = service.load();
+    const request = httpMock.expectOne('/assets/config/config.json');
+    request.flush(mockConfig);
+    await loadPromise;
+    expect(service.has('apiUrl')).toBeTruthy();
+    expect(service.has('featureToggle')).toBeTruthy();
+    loadPromise = service.load();
+    await loadPromise;
+    expect(service.has('nonexistentKey')).toBeFalsy();
+
+    expect(httpMock.verify()).toBeUndefined();
+  });
 });

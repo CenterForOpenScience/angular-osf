@@ -23,23 +23,23 @@ export function initializeApplication() {
 
     await configService.load();
 
-    googleTagManagerConfiguration.set({ id: configService.get('googleTagManagerId') });
-
-    const dsn = configService.get('sentryDsn');
-
-    if (!dsn) {
-      return;
+    const googleTagManagerId = configService.get('googleTagManagerId');
+    if (googleTagManagerId) {
+      googleTagManagerConfiguration.set({ id: googleTagManagerId });
     }
 
-    // More Options
-    // https://docs.sentry.io/platforms/javascript/guides/angular/configuration/options/
-    Sentry.init({
-      dsn,
-      environment: environment.production ? 'production' : 'development',
-      maxBreadcrumbs: 50,
-      sampleRate: 1.0, // error sample rate
-      integrations: [],
-    });
+    const dsn = configService.get('sentryDsn');
+    if (dsn) {
+      // More Options
+      // https://docs.sentry.io/platforms/javascript/guides/angular/configuration/options/
+      Sentry.init({
+        dsn,
+        environment: environment.production ? 'production' : 'development',
+        maxBreadcrumbs: 50,
+        sampleRate: 1.0, // error sample rate
+        integrations: [],
+      });
+    }
   };
 }
 
