@@ -11,7 +11,7 @@ import { PreprintsComponent } from './preprints.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
 
-describe('PreprintsComponent', () => {
+describe('Component: Preprint', () => {
   let component: PreprintsComponent;
   let fixture: ComponentFixture<PreprintsComponent>;
   let isWebSubject: BehaviorSubject<boolean>;
