@@ -38,6 +38,7 @@ import {
   GetMyRegistrations,
   MyResourcesSelectors,
 } from '@osf/shared/stores';
+import { ProjectRedirectDialogService } from '@shared/services';
 
 import { CreateProjectDialogComponent } from './components';
 import { MY_PROJECTS_TABS } from './constants';
@@ -68,6 +69,7 @@ export class MyProjectsComponent implements OnInit {
   readonly router = inject(Router);
   readonly route = inject(ActivatedRoute);
   readonly translateService = inject(TranslateService);
+  readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
 
   readonly isLoading = signal(false);
   readonly isTablet = toSignal(inject(IS_MEDIUM));
@@ -326,14 +328,20 @@ export class MyProjectsComponent implements OnInit {
   createProject(): void {
     const dialogWidth = this.isTablet() ? '850px' : '95vw';
 
-    this.dialogService.open(CreateProjectDialogComponent, {
-      width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('myProjects.header.createProject'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
+    this.dialogService
+      .open(CreateProjectDialogComponent, {
+        width: dialogWidth,
+        focusOnShow: false,
+        header: this.translateService.instant('myProjects.header.createProject'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+      })
+      .onClose.subscribe((result) => {
+        if (result.project && result.project.id) {
+          this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id);
+        }
+      });
   }
 
   navigateToProject(project: MyResourcesItem): void {

@@ -15,6 +15,7 @@ export { LoaderService } from './loader.service';
 export { MetaTagsService } from './meta-tags.service';
 export { MyResourcesService } from './my-resources.service';
 export { NodeLinksService } from './node-links.service';
+export { ProjectRedirectDialogService } from './project-redirect-dialog.service';
 export { RegionsService } from './regions.service';
 export { ResourceGuidService } from './resource.service';
 export { ResourceCardService } from './resource-card.service';

@@ -20,6 +20,7 @@ import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
+import { ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 
 @Component({
@@ -35,6 +36,7 @@ export class DashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly translateService = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
+  private readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
 
   readonly isMedium = toSignal(inject(IS_MEDIUM));
 
@@ -175,13 +177,19 @@ export class DashboardComponent implements OnInit {
   createProject(): void {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';
 
-    this.dialogService.open(CreateProjectDialogComponent, {
-      width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('myProjects.header.createProject'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
+    this.dialogService
+      .open(CreateProjectDialogComponent, {
+        width: dialogWidth,
+        focusOnShow: false,
+        header: this.translateService.instant('myProjects.header.createProject'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+      })
+      .onClose.subscribe((result) => {
+        if (result.project.id) {
+          this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id);
+        }
+      });
   }
 }

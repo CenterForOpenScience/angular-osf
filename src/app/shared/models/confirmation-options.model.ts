@@ -18,6 +18,7 @@ export interface AcceptConfirmationOptions {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   messageParams?: any;
   acceptLabelKey?: string;
+  rejectLabelKey?: string;
   onConfirm: () => void;
   onReject?: () => void;
 }
