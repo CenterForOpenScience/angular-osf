@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { PaginatorState } from 'primeng/paginator';
 
 import { DatePipe } from '@angular/common';
+import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
@@ -15,22 +16,20 @@ import {
   GetRegistrationActivityLogs,
 } from '@shared/stores/activity-logs';
 
-import { environment } from 'src/environments/environment';
+import { ENVIRONMENT } from '@core/constants/environment.token';
+import { ACTIVITY_LOGS_DEFAULT_PAGE_SIZE } from '@shared/constants/activity-logs';
 
 @Component({
   selector: 'osf-registration-recent-activity',
-  imports: [TranslatePipe, DatePipe, CustomPaginatorComponent],
+  imports: [TranslatePipe, DatePipe, CustomPaginatorComponent, Skeleton],
   templateUrl: './registration-recent-activity.component.html',
-  styleUrl: './registration-recent-activity.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistrationRecentActivityComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
+  readonly #environment = inject(ENVIRONMENT);
 
-  private static readonly DEFAULT_PAGE_SIZE = 10;
-  readonly pageSize =
-    (environment as unknown as { activityLogs?: { pageSize?: number } })?.activityLogs?.pageSize ??
-    RegistrationRecentActivityComponent.DEFAULT_PAGE_SIZE;
+  readonly pageSize = this.#environment.activityLogs?.pageSize ?? ACTIVITY_LOGS_DEFAULT_PAGE_SIZE;
 
   private readonly registrationId: string = (this.route.snapshot.params['id'] ??
     this.route.parent?.snapshot.params['id']) as string;

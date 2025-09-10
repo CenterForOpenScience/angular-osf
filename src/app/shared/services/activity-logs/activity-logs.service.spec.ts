@@ -2,12 +2,14 @@ import { HttpTestingController } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
 
 import { ActivityLogDisplayService } from '@shared/services';
-
 import { ActivityLogsService } from './activity-logs.service';
 
-import { getActivityLogsResponse } from '@testing/data/activity-logs/activity-logs.data';
+import {
+  getActivityLogsResponse,
+  buildRegistrationLogsUrl,
+  buildNodeLogsUrl,
+} from '@testing/data/activity-logs/activity-logs.data';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
-import { environment } from 'src/environments/environment';
 
 describe('Service: ActivityLogs', () => {
   let service: ActivityLogsService;
@@ -27,9 +29,7 @@ describe('Service: ActivityLogs', () => {
     let result: any;
     service.fetchRegistrationLogs('reg1', 1, 10).subscribe((res) => (result = res));
 
-    const req = httpMock.expectOne(
-      (r) => r.method === 'GET' && r.url === `${environment.apiUrl}/registrations/reg1/logs/`
-    );
+    const req = httpMock.expectOne(buildRegistrationLogsUrl('reg1', 1, 10));
     expect(req.request.method).toBe('GET');
     expect(req.request.params.get('page')).toBe('1');
     expect(req.request.params.get('page[size]')).toBe('10');
@@ -46,7 +46,7 @@ describe('Service: ActivityLogs', () => {
     let result: any;
     service.fetchLogs('proj1', 2, 5).subscribe((res) => (result = res));
 
-    const req = httpMock.expectOne((r) => r.method === 'GET' && r.url === `${environment.apiUrl}/nodes/proj1/logs/`);
+    const req = httpMock.expectOne(buildNodeLogsUrl('proj1', 2, 5));
     expect(req.request.method).toBe('GET');
     expect(req.request.params.get('page')).toBe('2');
     expect(req.request.params.get('page[size]')).toBe('5');
@@ -56,6 +56,34 @@ describe('Service: ActivityLogs', () => {
     expect(result.data.length).toBe(2);
     expect(result.data[1].formattedActivity).toBe('FMT');
 
+    httpMock.verify();
+  }));
+
+  it('fetchRegistrationLogs propagates error', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    let errorObj: any;
+    service.fetchRegistrationLogs('reg2', 1, 10).subscribe({
+      next: () => {},
+      error: (e) => (errorObj = e),
+    });
+
+    const req = httpMock.expectOne(buildRegistrationLogsUrl('reg2', 1, 10));
+    req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
+
+    expect(errorObj).toBeTruthy();
+    httpMock.verify();
+  }));
+
+  it('fetchLogs propagates error', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+    let errorObj: any;
+    service.fetchLogs('proj500', 1, 10).subscribe({
+      next: () => {},
+      error: (e) => (errorObj = e),
+    });
+
+    const req = httpMock.expectOne(buildNodeLogsUrl('proj500', 1, 10));
+    req.flush({ errors: [{ detail: 'boom' }] }, { status: 500, statusText: 'Server Error' });
+
+    expect(errorObj).toBeTruthy();
     httpMock.verify();
   }));
 });

@@ -1,7 +1,14 @@
-import { ActivityLog, AsyncStateWithTotalCount } from '@shared/models';
+import { ActivityLogWithDisplay } from '@shared/models/activity-logs/activity-log-with-display.model';
+
+export interface ActivityLogsSlice<T> {
+  data: T;
+  isLoading: boolean;
+  error: unknown | null;
+  totalCount: number;
+}
 
 export interface ActivityLogsStateModel {
-  activityLogs: AsyncStateWithTotalCount<ActivityLog[]>;
+  activityLogs: ActivityLogsSlice<ActivityLogWithDisplay[]>;
 }
 
 export const ACTIVITY_LOGS_STATE_DEFAULT: ActivityLogsStateModel = {

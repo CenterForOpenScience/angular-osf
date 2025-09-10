@@ -35,14 +35,24 @@ export class GoogleFilePickerComponent implements OnInit {
   public accessToken = signal<string | null>(null);
   public visible = signal(false);
   public isGFPDisabled = signal(true);
-  private readonly apiKey = this.#environment.google.GOOGLE_FILE_PICKER_API_KEY;
-  private readonly appId = this.#environment.google.GOOGLE_FILE_PICKER_APP_ID;
+  private readonly apiKey = this.#environment.google?.GOOGLE_FILE_PICKER_API_KEY ?? '';
+  private readonly appId = this.#environment.google?.GOOGLE_FILE_PICKER_APP_ID ?? 0;
+
   private readonly store = inject(Store);
   private parentId = '';
   private isMultipleSelect!: boolean;
   private title!: string;
 
+  private get isPickerConfigured() {
+    return !!this.apiKey && !!this.appId;
+  }
+
   ngOnInit(): void {
+    if (!this.isPickerConfigured) {
+      this.isGFPDisabled.set(true);
+      return;
+    }
+
     this.parentId = this.isFolderPicker() ? '' : this.rootFolder()?.itemId || '';
     this.title = this.isFolderPicker()
       ? this.#translateService.instant('settings.addons.configureAddon.google-file-picker.root-folder-title')
@@ -72,7 +82,8 @@ export class GoogleFilePickerComponent implements OnInit {
   }
 
   public createPicker(): void {
-    const google = window.google;
+    if (!this.isPickerConfigured) return;
+    const google = (window as any).google;
 
     const googlePickerView = new google.picker.DocsView(google.picker.ViewId.DOCS);
     googlePickerView.setSelectFolderEnabled(true);
@@ -105,7 +116,7 @@ export class GoogleFilePickerComponent implements OnInit {
           this.accessToken.set(
             this.store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
           );
-          this.isGFPDisabled.set(this.accessToken() ? false : true);
+          this.isGFPDisabled.set(!this.accessToken());
         },
       });
     }
@@ -121,7 +132,7 @@ export class GoogleFilePickerComponent implements OnInit {
   }
 
   pickerCallback(data: GoogleFilePickerModel) {
-    if (data.action === window.google.picker.Action.PICKED) {
+    if (data.action === (window as any).google.picker.Action.PICKED) {
       this.#filePickerCallback(data.docs[0]);
     }
   }

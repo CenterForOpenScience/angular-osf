@@ -7,7 +7,7 @@
     {{ 'project.overview.recentActivity.title' | translate }}
   </h2>
 
-  @defer (when !isLoading()) {
+  @if (!isLoading()) {
     <div role="list" data-test="recent-activity-list">
       @for (activityLog of formattedActivityLogs(); track activityLog.id) {
         <div
@@ -38,5 +38,13 @@
         (pageChanged)="onPageChange($event)"
       />
     }
+  } @else {
+    <div class="flex flex-column gap-2" data-test="recent-activity-skeleton">
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+    </div>
   }
 </div>

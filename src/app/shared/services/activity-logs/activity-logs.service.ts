@@ -1,8 +1,6 @@
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
 import { inject, Injectable } from '@angular/core';
-import { SafeHtml } from '@angular/platform-browser';
 
 import { ActivityLogsMapper } from '@shared/mappers/activity-logs.mapper';
 import {
@@ -12,16 +10,13 @@ import {
   MetaAnonymousJsonApi,
   PaginatedData,
 } from '@shared/models';
+import { ActivityLogWithDisplay } from '@shared/models/activity-logs/activity-log-with-display.model';
 import { ActivityLogDisplayService } from '@shared/services';
 import { JsonApiService } from '@shared/services/json-api.service';
 
 import { environment } from 'src/environments/environment';
 
-type ActivityLogWithDisplay = ActivityLog & { formattedActivity?: SafeHtml };
-
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ActivityLogsService {
   private jsonApiService = inject(JsonApiService);
   private display = inject(ActivityLogDisplayService);
@@ -58,7 +53,7 @@ export class ActivityLogsService {
     page: number = 1,
     pageSize: number
   ): Observable<PaginatedData<ActivityLogWithDisplay[]>> {
-    const url = `${environment.apiUrl}/registrations/${registrationId}/logs/`;
+    const url = `${this.apiUrl}/registrations/${registrationId}/logs/`;
     const params: Record<string, unknown> = {
       'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node', 'group'],
       page,

@@ -1,5 +1,5 @@
 import { Action, State, StateContext } from '@ngxs/store';
-
+import { catchError, EMPTY } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
@@ -28,6 +28,12 @@ export class ActivityLogsState {
         ctx.patchState({
           activityLogs: { data: res.data, isLoading: false, error: null, totalCount: res.totalCount },
         });
+      }),
+      catchError((error) => {
+        ctx.patchState({
+          activityLogs: { data: [], isLoading: false, error, totalCount: 0 },
+        });
+        return EMPTY;
       })
     );
   }
@@ -43,6 +49,12 @@ export class ActivityLogsState {
         ctx.patchState({
           activityLogs: { data: res.data, isLoading: false, error: null, totalCount: res.totalCount },
         });
+      }),
+      catchError((error) => {
+        ctx.patchState({
+          activityLogs: { data: [], isLoading: false, error, totalCount: 0 },
+        });
+        return EMPTY;
       })
     );
   }

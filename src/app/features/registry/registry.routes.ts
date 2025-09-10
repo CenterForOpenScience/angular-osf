@@ -3,7 +3,6 @@ import { provideStates } from '@ngxs/store';
 import { Routes } from '@angular/router';
 
 import { viewOnlyGuard } from '@osf/core/guards';
-import { requireRegistrationIdGuard } from '@osf/core/guards/require-registration-id.guard';
 import { ResourceType } from '@osf/shared/enums';
 import { LicensesService } from '@osf/shared/services';
 import {
@@ -117,7 +116,6 @@ export const registryRoutes: Routes = [
       },
       {
         path: 'recent-activity',
-        canActivate: [requireRegistrationIdGuard],
         loadComponent: () =>
           import('./pages/recent-activity/registration-recent-activity.component').then(
             (c) => c.RegistrationRecentActivityComponent
