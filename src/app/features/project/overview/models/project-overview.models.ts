@@ -63,6 +63,7 @@ export interface ProjectOverview {
     rootFolder: string;
     iri: string;
   };
+  rootParentId?: string;
 }
 
 export interface ProjectOverviewSubject {
@@ -204,6 +205,12 @@ export interface ProjectOverviewGetResponseJsonApi {
         related: {
           href: string;
         };
+      };
+    };
+    root?: {
+      data: {
+        id: string;
+        type: string;
       };
     };
   };

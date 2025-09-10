@@ -20,21 +20,31 @@ import { IS_WEB } from '@shared/helpers';
 import { MOCK_ANALYTICS_METRICS, MOCK_RELATED_COUNTS, MOCK_RESOURCE_OVERVIEW } from '@shared/mocks';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('AnalyticsComponent', () => {
   let component: AnalyticsComponent;
   let fixture: ComponentFixture<AnalyticsComponent>;
+  let routerMock: ReturnType<RouterMockBuilder['build']>;
+  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
 
   const resourceId = MOCK_RESOURCE_OVERVIEW.id;
   const metrics = { ...MOCK_ANALYTICS_METRICS, id: resourceId };
   const relatedCounts = { ...MOCK_RELATED_COUNTS, id: resourceId };
-
   const metricsSelector = AnalyticsSelectors.getMetrics(resourceId);
   const relatedCountsSelector = AnalyticsSelectors.getRelatedCounts(resourceId);
 
   beforeEach(async () => {
+    routerMock = RouterMockBuilder.create().build();
+    activatedRouteMock = ActivatedRouteMockBuilder.create()
+      .withParams({ id: resourceId })
+      .withData({ resourceType: undefined })
+      .build();
+
     jest.clearAllMocks();
+
     await TestBed.configureTestingModule({
       imports: [
         AnalyticsComponent,
@@ -67,14 +77,8 @@ describe('AnalyticsComponent', () => {
           ],
         }),
         { provide: IS_WEB, useValue: of(true) },
-        MockProvider(Router, { navigate: jest.fn(), url: '/' }),
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: { params: of({ id: resourceId }) },
-            data: of({ resourceType: undefined }),
-          },
-        },
+        MockProvider(Router, routerMock),
+        MockProvider(ActivatedRoute, activatedRouteMock),
       ],
     }).compileComponents();
 

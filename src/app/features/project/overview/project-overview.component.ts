@@ -215,6 +215,14 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     super();
     this.setupCollectionsEffects();
     this.setupCleanup();
+
+    effect(() => {
+      const currentProject = this.currentProject();
+      if (currentProject) {
+        const rootParentId = currentProject.rootParentId ?? currentProject.id;
+        this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
+      }
+    });
   }
 
   getDoi(): Observable<string | null> {
@@ -235,7 +243,6 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getBookmarksId();
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
-      this.actions.getComponentsTree(projectId, ResourceType.Project);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
       this.setupDataciteViewTrackerEffect().subscribe();

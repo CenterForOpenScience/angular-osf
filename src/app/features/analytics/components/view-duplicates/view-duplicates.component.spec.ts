@@ -25,14 +25,24 @@ import { MOCK_PROJECT_OVERVIEW } from '@shared/mocks';
 import { ViewDuplicatesComponent } from './view-duplicates.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
+import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
 
 describe('ViewDuplicatesComponent', () => {
   let component: ViewDuplicatesComponent;
   let fixture: ComponentFixture<ViewDuplicatesComponent>;
   let dialogService: DialogService;
+  let routerMock: ReturnType<RouterMockBuilder['build']>;
+  let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
 
   beforeEach(async () => {
+    routerMock = RouterMockBuilder.create().build();
+    activatedRouteMock = ActivatedRouteMockBuilder.create()
+      .withParams({ id: 'rid' })
+      .withData({ resourceType: ResourceType.Project })
+      .build();
+
     await TestBed.configureTestingModule({
       imports: [
         ViewDuplicatesComponent,
@@ -57,15 +67,9 @@ describe('ViewDuplicatesComponent', () => {
             { selector: RegistryOverviewSelectors.isRegistryAnonymous, value: false },
           ],
         }),
-        MockProvider(Router, { navigate: jest.fn() }),
+        MockProvider(Router, routerMock),
+        MockProvider(ActivatedRoute, activatedRouteMock),
         { provide: IS_SMALL, useValue: of(false) },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            parent: { params: of({ id: 'rid' }) },
-            data: of({ resourceType: ResourceType.Project }),
-          },
-        },
       ],
     }).compileComponents();
 
