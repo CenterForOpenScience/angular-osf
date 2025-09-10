@@ -21,6 +21,7 @@ import {
   MyProjectsTableComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
+import {TosConsentBannerComponent} from "@osf/features/home/pages"
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
@@ -37,6 +38,7 @@ import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shar
     IconComponent,
     TranslatePipe,
     LoadingSpinnerComponent,
+    TosConsentBannerComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -203,5 +205,16 @@ export class DashboardComponent implements OnInit {
 
   openInfoLink(): void {
     window.open('https://help.osf.io/', '_blank');
+  }
+
+
+  readonly currentUser = signal<{ acceptedTermsOfService: boolean } | null>({
+    acceptedTermsOfService: false,
+  });
+
+  saveUserConsent(): void {
+    console.log('User consent has been accepted and saved!');
+    // Update the user's state. In a real app, you'd call a service here.
+    this.currentUser.update(user => user ? { ...user, acceptedTermsOfService: true } : null);
   }
 }

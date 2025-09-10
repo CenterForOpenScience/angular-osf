@@ -1,0 +1,24 @@
+<div *ngIf="visible" class="tos-banner alert alert-warning d-flex align-items-center justify-content-between">
+  <div class="jumbotron flex-grow-1">
+    <h4 [innerHTML]="'We\'ve updated our <a href=\'' + termsLink + '\'>Terms of Use</a> and <a href=\'' + privacyLink + '\'>Privacy Policy</a>.'">
+    </h4>
+
+    <div class="form-check mt-2">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        id="tosCheck"
+        [(ngModel)]="acceptedTermsOfService"
+      />
+      <label class="form-check-label" for="tosCheck">
+        I’ve read and agree to the terms and conditions.
+      </label>
+    </div>
+
+    <div *ngIf="errorMessage" class="text-danger small mt-1">
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <button class="btn btn-primary ms-3" (click)="onContinue()">Continue</button>
+</div>

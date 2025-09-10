@@ -1,4 +1,11 @@
 <section class="home-container xl:mt-6" [class.medium]="isMedium()">
+ <app-tos-consent-banner
+  [visible]="!currentUser()?.acceptedTermsOfService"
+  [(acceptedTermsOfService)]="currentUser()!.acceptedTermsOfService"
+  (accepted)="saveUserConsent()"
+  [termsLink]="'/terms-of-use'"
+  [privacyLink]="'/privacy-policy'"
+></app-tos-consent-banner>
   @if (areProjectsLoading()) {
     <osf-loading-spinner />
   } @else {
