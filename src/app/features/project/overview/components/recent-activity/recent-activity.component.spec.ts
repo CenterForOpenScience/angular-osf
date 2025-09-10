@@ -1,17 +1,19 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideStore, Store } from '@ngxs/store';
-import { ActivatedRoute } from '@angular/router';
+
+import { TranslateService } from '@ngx-translate/core';
+
+import { of } from 'rxjs';
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 
-import { TranslateService } from '@ngx-translate/core';
-import { of } from 'rxjs';
-
-import { RecentActivityComponent } from './recent-activity.component';
 import { ActivityLogDisplayService } from '@shared/services';
 import { GetActivityLogs } from '@shared/stores/activity-logs';
 import { ActivityLogsState } from '@shared/stores/activity-logs/activity-logs.state';
+
+import { RecentActivityComponent } from './recent-activity.component';
 
 describe('RecentActivityComponent', () => {
   let fixture: ComponentFixture<RecentActivityComponent>;

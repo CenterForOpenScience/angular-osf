@@ -3,21 +3,20 @@ import { createDispatchMap, select } from '@ngxs/store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { PaginatorState } from 'primeng/paginator';
+import { Skeleton } from 'primeng/skeleton';
 
 import { DatePipe } from '@angular/common';
-import { Skeleton } from 'primeng/skeleton';
 import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
+import { ENVIRONMENT } from '@core/constants/environment.token';
 import { CustomPaginatorComponent } from '@shared/components';
+import { ACTIVITY_LOGS_DEFAULT_PAGE_SIZE } from '@shared/constants/activity-logs';
 import {
   ActivityLogsSelectors,
   ClearActivityLogsStore,
   GetRegistrationActivityLogs,
 } from '@shared/stores/activity-logs';
-
-import { ENVIRONMENT } from '@core/constants/environment.token';
-import { ACTIVITY_LOGS_DEFAULT_PAGE_SIZE } from '@shared/constants/activity-logs';
 
 @Component({
   selector: 'osf-registration-recent-activity',

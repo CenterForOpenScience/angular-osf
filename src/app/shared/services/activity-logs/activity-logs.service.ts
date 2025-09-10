@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+
 import { inject, Injectable } from '@angular/core';
 
 import { ActivityLogsMapper } from '@shared/mappers/activity-logs.mapper';
@@ -32,7 +33,7 @@ export class ActivityLogsService {
     };
   }
 
-  fetchLogs(projectId: string, page: number = 1, pageSize: number): Observable<PaginatedData<ActivityLogWithDisplay[]>> {
+  fetchLogs(projectId: string, page = 1, pageSize: number): Observable<PaginatedData<ActivityLogWithDisplay[]>> {
     const url = `${this.apiUrl}/nodes/${projectId}/logs/`;
     const params: Record<string, unknown> = {
       'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node', 'group'],
@@ -50,7 +51,7 @@ export class ActivityLogsService {
 
   fetchRegistrationLogs(
     registrationId: string,
-    page: number = 1,
+    page = 1,
     pageSize: number
   ): Observable<PaginatedData<ActivityLogWithDisplay[]>> {
     const url = `${this.apiUrl}/registrations/${registrationId}/logs/`;

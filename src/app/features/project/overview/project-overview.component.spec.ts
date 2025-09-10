@@ -1,19 +1,21 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
 import { provideStore, Store } from '@ngxs/store';
-import { ActivatedRoute } from '@angular/router';
+
+import { TranslateService } from '@ngx-translate/core';
+
+import { DialogService } from 'primeng/dynamicdialog';
+
 import { of } from 'rxjs';
 
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
-import { ProjectOverviewComponent } from './project-overview.component';
+import { DataciteService, ToastService } from '@osf/shared/services';
 import { GetActivityLogs } from '@shared/stores/activity-logs';
 
-import { DataciteService } from '@osf/shared/services';
-import { DialogService } from 'primeng/dynamicdialog';
-import { TranslateService } from '@ngx-translate/core';
-import { ToastService } from '@osf/shared/services';
+import { ProjectOverviewComponent } from './project-overview.component';
 
 describe('ProjectOverviewComponent', () => {
   let fixture: ComponentFixture<ProjectOverviewComponent>;

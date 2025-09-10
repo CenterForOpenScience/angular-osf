@@ -1,7 +1,8 @@
 import { provideStore, Store } from '@ngxs/store';
+
+import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { inject, TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
 
 import { ActivityLogDisplayService } from '@shared/services';
 
@@ -9,9 +10,9 @@ import { ClearActivityLogsStore, GetActivityLogs, GetRegistrationActivityLogs } 
 import { ActivityLogsState } from './activity-logs.state';
 
 import {
-  getActivityLogsResponse,
-  buildRegistrationLogsUrl,
   buildNodeLogsUrl,
+  buildRegistrationLogsUrl,
+  getActivityLogsResponse,
 } from '@testing/data/activity-logs/activity-logs.data';
 
 describe('State: ActivityLogs', () => {
