@@ -261,14 +261,14 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLink: '/registries/discover',
         label: 'navigation.discover',
         visible: true,
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
       {
         id: 'registries-moderation',
-        routerLink: '/registries/osf/moderation',
+        routerLink: '/registries',
         label: 'navigation.moderation',
         visible: false,
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
       {
         id: 'registry-details',

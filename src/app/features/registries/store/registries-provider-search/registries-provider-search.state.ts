@@ -5,8 +5,9 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ProvidersService } from '@osf/features/registries/services';
 import { handleSectionError } from '@shared/helpers';
+
+import { ProvidersService } from '../../services';
 
 import { GetRegistryProviderBrand } from './registries-provider-search.actions';
 import {

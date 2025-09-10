@@ -1,10 +1,8 @@
-@use "styles/mixins" as mix;
-
 .registries-hero-container {
   background-image: var(--branding-hero-background-image-url);
   color: var(--white);
 
   .provider-description {
-    line-height: mix.rem(24px);
+    line-height: 1.5rem;
   }
 }
