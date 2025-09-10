@@ -67,7 +67,7 @@
                     (keyup.enter)="inplaceRef.deactivate()"
                     (keyup.space)="inplaceRef.deactivate()"
                   >
-                    <button class="text-primary border-none cursor-pointer bg-transparent text-sm">
+                    <button class="text-primary font-primary border-none cursor-pointer bg-transparent text-sm">
                       {{ 'common.links.hideExample' | translate }}
                     </button>
                   </div>
@@ -207,6 +207,11 @@
       class="mr-2"
       (click)="goBack()"
     ></p-button>
-    <p-button type="button" [label]="'common.buttons.next' | translate" (click)="goNext()"></p-button>
+    <p-button
+      data-test-goto-next-page
+      type="button"
+      [label]="'common.buttons.next' | translate"
+      (click)="goNext()"
+    ></p-button>
   </div>
 </section>

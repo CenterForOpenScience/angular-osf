@@ -248,9 +248,9 @@ export class FilesService {
       .pipe(map((response) => MapFileCustomMetadata(response)));
   }
 
-  getFileRevisions(link: string, fileId: string): Observable<OsfFileRevision[]> {
+  getFileRevisions(link: string): Observable<OsfFileRevision[]> {
     return this.jsonApiService
-      .get<GetFileRevisionsResponse>(`${link}/${fileId}?revisions=`)
+      .get<GetFileRevisionsResponse>(`${link}?revisions=`)
       .pipe(map((response) => MapFileRevision(response.data)));
   }
 

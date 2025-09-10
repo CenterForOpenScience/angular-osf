@@ -13,6 +13,7 @@
         <div class="mt-2">
           <label for="project-description-id">{{ 'common.labels.description' | translate }}</label>
           <textarea
+            data-test-metadata-description
             id="project-description-id"
             formControlName="description"
             class="w-full"
@@ -40,7 +41,7 @@
     <div class="flex justify-content-end">
       <p-button [label]="'registries.deleteDraft' | translate" severity="danger" (click)="deleteDraft()" class="mr-2">
       </p-button>
-      <p-button [label]="'common.buttons.next' | translate" type="submit"></p-button>
+      <p-button data-test-goto-next-page [label]="'common.buttons.next' | translate" type="submit"></p-button>
     </div>
   </form>
 </section>

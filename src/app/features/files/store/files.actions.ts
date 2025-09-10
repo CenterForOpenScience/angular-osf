@@ -114,10 +114,7 @@ export class SetFileMetadata {
 export class GetFileRevisions {
   static readonly type = '[Files] Get Revisions';
 
-  constructor(
-    public link: string,
-    public fileId: string
-  ) {}
+  constructor(public link: string) {}
 }
 
 export class UpdateTags {

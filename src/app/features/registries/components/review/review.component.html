@@ -4,7 +4,7 @@
 
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.title' | translate }}</h4>
-      <p>{{ draftRegistration()?.title }}</p>
+      <p data-test-review-response="title">{{ draftRegistration()?.title }}</p>
       @if (!draftRegistration()?.title) {
         <p>{{ 'common.labels.title' | translate }}</p>
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
@@ -15,7 +15,7 @@
     </div>
     <div class="mb-4">
       <h4 class="mb-2">{{ 'common.labels.description' | translate }}</h4>
-      <p>{{ draftRegistration()?.description }}</p>
+      <p data-test-review-response="description">{{ draftRegistration()?.description }}</p>
       @if (!draftRegistration()?.description) {
         <p class="font-italic">{{ 'common.labels.noData' | translate }}</p>
         <p-message class="mt-1" severity="error" variant="simple" size="small">
@@ -44,7 +44,7 @@
         <p-accordion>
           <p-accordion-panel value="0">
             <p-accordion-header class="p-0 justify-content-start gap-2">
-              <div>{{ license()?.name }}</div>
+              <div data-test-review-response="license">{{ license()?.name }}</div>
             </p-accordion-header>
             <p-accordion-content>
               <div>{{ license()!.text | interpolate: licenseOptionsRecord() }}</div>
@@ -62,7 +62,7 @@
       <h4 class="mb-2">{{ 'shared.subjects.title' | translate }}</h4>
       <div class="flex flex-wrap gap-2">
         @for (subject of subjects(); track subject.id) {
-          <p-tag [value]="subject.name" severity="info" />
+          <p-tag data-test-selected-subject [value]="subject.name" severity="info" />
         }
       </div>
       @if (!subjects().length) {
@@ -75,7 +75,7 @@
 
     <div class="mb-4">
       <h4 class="mb-2">{{ 'shared.tags.title' | translate }}</h4>
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2" data-test-tags-widget-tag-input>
         @for (tag of draftRegistration()?.tags; track tag) {
           <p-tag [value]="tag" severity="info" />
         }
@@ -131,6 +131,7 @@
     </p-button>
     <p-button
       type="button"
+      data-test-goto-register
       [label]="'registries.review.register' | translate"
       [disabled]="isDraftLoading() || isDraftInvalid()"
       (click)="confirmRegistration()"
