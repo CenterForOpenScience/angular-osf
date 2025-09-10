@@ -6,7 +6,7 @@ import { Toast } from 'primeng/toast';
 
 import { AfterViewInit, Component, inject } from '@angular/core';
 
-import { CookieConsentService } from '../../services/cookie-consent.service';
+import { CookieConsentService } from '../../services/cookie-consent/cookie-consent.service';
 
 @Component({
   selector: 'osf-cookie-consent',
@@ -22,9 +22,7 @@ export class CookieConsentComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     if (!this.consentService.hasConsent()) {
-      // Wait for translation stream to emit to avoid race conditions with async loader
       this.translateService.get('toast.cookie-consent.message').subscribe((detail) => {
-        // Defer to next microtask to ensure p-toast view is initialized
         queueMicrotask(() =>
           this.toastService.add({
             detail,
