@@ -35,6 +35,7 @@ export * from './project-metadata-update-payload.model';
 export * from './projects';
 export * from './provider';
 export * from './query-params.model';
+export * from './regions';
 export * from './registration';
 export * from './resource-metadata.model';
 export * from './resource-overview.model';

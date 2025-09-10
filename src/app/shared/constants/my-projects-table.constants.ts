@@ -1,4 +1,4 @@
-import { TableParameters } from '@osf/shared/models/table-parameters.model';
+import { TableParameters } from '../models';
 
 export const MY_PROJECTS_TABLE_PARAMS: TableParameters = {
   rows: 10,
