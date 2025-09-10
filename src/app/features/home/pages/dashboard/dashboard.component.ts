@@ -7,7 +7,7 @@ import { Button } from 'primeng/button';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
 
 import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -186,10 +186,11 @@ export class DashboardComponent implements OnInit {
         modal: true,
         closable: true,
       })
-      .onClose.subscribe((result) => {
-        if (result.project.id) {
-          this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id);
-        }
-      });
+      .onClose.pipe(
+        filter((result) => result.project.id),
+        tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 }

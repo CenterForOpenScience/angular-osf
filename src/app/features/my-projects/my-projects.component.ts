@@ -7,7 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 import { Tab, TabList, TabPanel, TabPanels, Tabs } from 'primeng/tabs';
 
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
 
 import {
   ChangeDetectionStrategy,
@@ -337,11 +337,12 @@ export class MyProjectsComponent implements OnInit {
         modal: true,
         closable: true,
       })
-      .onClose.subscribe((result) => {
-        if (result.project && result.project.id) {
-          this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id);
-        }
-      });
+      .onClose.pipe(
+        filter((result) => result.project.id),
+        tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 
   navigateToProject(project: MyResourcesItem): void {
