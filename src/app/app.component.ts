@@ -10,12 +10,13 @@ import { Router, RouterOutlet } from '@angular/router';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
 import { ConfirmEmailComponent } from '@shared/components';
+import { CookieConsentComponent } from '@shared/components/cookie-consent/cookie-consent.component';
 
 import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
 
 @Component({
   selector: 'osf-root',
-  imports: [RouterOutlet, ToastComponent, FullScreenLoaderComponent],
+  imports: [RouterOutlet, ToastComponent, FullScreenLoaderComponent, CookieConsentComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

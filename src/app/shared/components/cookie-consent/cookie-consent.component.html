@@ -1,0 +1,30 @@
+<!-- toast container for cookie consent -->
+<!--<p-toast key="cookie" position="bottom-center" class="cookie-toast">-->
+<!--  <ng-template let-message pTemplate="message">-->
+<!--    <div class="flex flex-column gap-2">-->
+<!--      <span>{{ message.detail }}</span>-->
+<!--      <div class="flex justify-content-end">-->
+<!--        <p-button-->
+<!--          type="button"-->
+<!--          label="{{ 'toast.cookie-consent.accept' | translate }}"-->
+<!--          (click)="acceptCookies()"-->
+<!--        ></p-button>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </ng-template>-->
+<!--</p-toast>-->
+
+<p-toast key="cookie" position="bottom-center" [style]="{ width: '900px', maxWidth: '90%' }">
+  <ng-template let-message pTemplate="message">
+    <div class="flex flex-column gap-2">
+      <span>{{ message.detail }}</span>
+      <div class="flex justify-content-end">
+        <p-button
+          type="button"
+          label="{{ 'toast.cookie-consent.accept' | translate }}"
+          (click)="acceptCookies()"
+        ></p-button>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>
