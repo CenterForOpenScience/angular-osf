@@ -7,7 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,7 +32,7 @@ import {
 import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
-import { ToastService } from '@osf/shared/services';
+import { MetaTagsService, ToastService } from '@osf/shared/services';
 import {
   ClearCollections,
   ClearWiki,
@@ -95,7 +95,7 @@ import {
     ViewOnlyLinkMessageComponent,
     ViewOnlyLinkMessageComponent,
   ],
-  providers: [DialogService],
+  providers: [DialogService, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectOverviewComponent implements OnInit {
@@ -108,6 +108,8 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   private readonly dataciteService = inject(DataciteService);
+  private readonly metaTags = inject(MetaTagsService);
+  private readonly datePipe = inject(DatePipe);
 
   isMobile = toSignal(inject(IS_XSMALL));
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
@@ -207,6 +209,41 @@ export class ProjectOverviewComponent implements OnInit {
     return {
       value: this.currentProject()?.id ?? '',
       label: this.currentProject()?.title ?? '',
+    };
+  });
+
+  private readonly effectMetaTags = effect(() => {
+    if (!this.isProjectLoading()) {
+      const metaTagsData = this.metaTagsData();
+      if (metaTagsData) {
+        this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
+      }
+    }
+  });
+
+  private readonly metaTagsData = computed(() => {
+    const project = this.currentProject();
+    if (!project) return null;
+    const keywords = [...(project.tags || [])];
+    if (project.category) {
+      keywords.push(project.category);
+    }
+    return {
+      osfGuid: project.id,
+      title: project.title,
+      description: project.description,
+      url: project.links?.iri,
+      doi: project.doi,
+      license: project.license?.name,
+      publishedDate: this.datePipe.transform(project.dateCreated, 'yyyy-MM-dd'),
+      modifiedDate: this.datePipe.transform(project.dateModified, 'yyyy-MM-dd'),
+      keywords,
+      institution: project.affiliatedInstitutions?.map((institution) => institution.name),
+      contributors: project.contributors.map((contributor) => ({
+        fullName: contributor.fullName,
+        givenName: contributor.givenName,
+        familyName: contributor.familyName,
+      })),
     };
   });
 
