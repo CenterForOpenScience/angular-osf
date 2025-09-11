@@ -8,7 +8,7 @@
     (click)="!readonly() && onContainerClick()"
     (keydown)="!readonly() && onContainerKeydown($event)"
   >
-    @for (tag of localTags(); track $index) {
+    @for (tag of localTags(); track tag) {
       <p-chip [label]="tag" [removable]="!readonly()" (onRemove)="removeTag($index)" class="p-chip-inline" />
     }
 
