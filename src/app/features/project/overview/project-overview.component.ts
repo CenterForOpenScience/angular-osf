@@ -7,8 +7,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
-import { filter, map, Observable } from 'rxjs';
-
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -49,13 +47,13 @@ import {
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
-  DataciteTrackerComponent,
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {
   FilesWidgetComponent,
@@ -100,7 +98,7 @@ import {
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectOverviewComponent extends DataciteTrackerComponent implements OnInit {
+export class ProjectOverviewComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -109,6 +107,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   private readonly toastService = inject(ToastService);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
+  private readonly dataciteService = inject(DataciteService);
 
   isMobile = toSignal(inject(IS_XSMALL));
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
@@ -212,7 +211,6 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   });
 
   constructor() {
-    super();
     this.setupCollectionsEffects();
     this.setupCleanup();
 
@@ -223,13 +221,6 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
         this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
       }
     });
-  }
-
-  getDoi(): Observable<string | null> {
-    return this.currentProject$.pipe(
-      filter((project) => project != null),
-      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
-    );
   }
 
   onCustomCitationUpdated(citation: string): void {
@@ -245,7 +236,6 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
       this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
-      this.setupDataciteViewTrackerEffect().subscribe();
     }
   }
 

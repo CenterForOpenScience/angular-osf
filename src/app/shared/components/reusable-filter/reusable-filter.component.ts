@@ -168,6 +168,14 @@ export class ReusableFilterComponent {
     return filter.isLoading || false;
   }
 
+  isFilterPaginationLoading(filter: DiscoverableFilter): boolean {
+    return filter.isPaginationLoading || false;
+  }
+
+  isFilterSearchLoading(filter: DiscoverableFilter): boolean {
+    return filter.isSearchLoading || false;
+  }
+
   getSelectedValue(filterKey: string): string | null {
     return this.selectedValues()[filterKey] || null;
   }

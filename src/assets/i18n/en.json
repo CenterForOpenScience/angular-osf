@@ -206,6 +206,12 @@
     "institutions": "Institutions",
     "recentActivity": "Recent Activity"
   },
+  "toast": {
+    "cookie-consent": {
+      "message": "Notice: This website relies on cookies to help provide a better user experience. By clicking accept or continuing to use the site, you consent to our use of cookies. See our Privacy Policy and Cookie Use for more information.",
+      "accept": "Accept cookies"
+    }
+  },
   "auth": {
     "common": {
       "email": "Email",
@@ -264,7 +270,17 @@
     "loggedIn": {
       "dashboard": {
         "title": "Dashboard",
+        "welcome": "Welcome to OSF!",
         "createProject": "Create New Project",
+        "noCreatedProject": "You haven’t created a project yet. Click the \"Create New Project\" button above to get started.",
+        "watchVideoBelow": "Watch the short video below or visit the OSF Get Started help guides to learn more.",
+        "getStartedHelp": "Visit Get Started Help Guides",
+        "images": {
+          "osfCollectionsImageAltText": "OSF Collections",
+          "osfInstitutionsImageAltText": "OSF Institutions",
+          "osfRegistriesImageAltTest": "OSF Registries",
+          "osfPreprintsImageAltTest": "OSF Preprints"
+        },
         "quickSearch": {
           "goTo": "Go to",
           "myProjects": "My Projects",
@@ -993,6 +1009,7 @@
   "files": {
     "storageLocation": "OSF Storage",
     "searchPlaceholder": "Search your projects",
+    "metaTagDescriptionPlaceholder": "Presented by OSF",
     "sort": {
       "placeholder": "Sort",
       "nameAZ": "Name: A-Z",
@@ -2498,6 +2515,15 @@
     "copyright": "Copyright © 2011-2025"
   },
   "shared": {
+    "title": {
+      "description": "Provide a concise and descriptive title for your registration that accurately reflects the main focus of your research. A clear and specific title will help others quickly understand the essence of your study."
+    },
+    "description": {
+      "message": "Write a detailed description of your research project, including its purpose and any expected outcomes. This should give readers a comprehensive overview of your work."
+    },
+    "affiliatedInstitutions": {
+      "description": "This is a service provided by the OSF and is automatically applied to your registration. If you are not sure if your institution has signed up for this service, you can look for their name in this list."
+    },
     "resources": {
       "title": "Open resources",
       "data": "Data",
@@ -2517,10 +2543,12 @@
       "title": "Subjects",
       "noSelected": "No subjects selected",
       "searchSubjects": "Search subjects",
-      "noSubject": "No subjects found"
+      "noSubject": "No subjects found",
+      "description": "Identify the main subject areas that your research pertains to. This helps categorize your work and makes it easier for others in your field to find and reference it."
     },
     "tags": {
-      "title": "Tags"
+      "title": "Tags",
+      "description": "Enter specific keywords that describe the key elements and concepts of your research. These keywords will improve the discoverability of your registration in search results and databases."
     },
     "files": {
       "limitText": "You may attach up to 5 file(s) to this question. Files cannot total over 5GB in size.",

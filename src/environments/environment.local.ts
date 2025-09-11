@@ -14,10 +14,26 @@ export const environment = {
   defaultProvider: 'osf',
   dataciteTrackerRepoId: null,
   dataciteTrackerAddress: 'https://analytics.datacite.org/api/metric',
-
   google: {
-    GOOGLE_FILE_PICKER_CLIENT_ID: 'local-client-id',
-    GOOGLE_FILE_PICKER_API_KEY: 'local-api-key',
-    GOOGLE_FILE_PICKER_APP_ID: 1234567890,
+    /**
+     * OAuth 2.0 Client ID used to identify the application during Google authentication.
+     * Registered in Google Cloud Console under "OAuth 2.0 Client IDs".
+     * Safe to expose in frontend code.
+     * @see https://console.cloud.google.com/apis/credentials
+     */
+    GOOGLE_FILE_PICKER_CLIENT_ID: '610901277352-m5krehjdtu8skh2teq85fb7mvk411qa6.apps.googleusercontent.com',
+    /**
+     * Public API key used to load Google Picker and other Google APIs that don’t require user auth.
+     * Must be restricted by referrer in Google Cloud Console.
+     * Exposing this key is acceptable if restricted properly.
+     * @see https://developers.google.com/maps/api-key-best-practices
+     */
+    GOOGLE_FILE_PICKER_API_KEY: 'AIzaSyA3EnD0pOv4v7sJt7BGuR1i2Gcj-Gju6C0',
+    /**
+     * Google Cloud Project App ID.
+     * Used for associating API requests with the specific Google project.
+     * Required for Google Picker configuration.
+     */
+    GOOGLE_FILE_PICKER_APP_ID: 610901277352,
   },
 };
