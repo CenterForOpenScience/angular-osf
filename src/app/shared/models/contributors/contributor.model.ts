@@ -5,6 +5,7 @@ export interface ContributorModel {
   userId: string;
   type: string;
   isBibliographic: boolean;
+  isUnregisteredContributor: boolean;
   isCurator: boolean;
   permission: string;
   fullName: string;
