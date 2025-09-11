@@ -1974,7 +1974,7 @@
         "uploadDescription": "Please Upload your {{preprintWord}}",
         "note": "Note: You cannot switch options once a file is attached.",
         "uploadFromComputer": "Upload From Your Computer",
-        "selectFromProject": "Select From existing OSF project",
+        "selectFromProject": "Select From Existing OSF Project",
         "uploadFileButton": "Upload file",
         "projectSelection": {
           "title": "Project Title",

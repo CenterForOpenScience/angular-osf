@@ -25,12 +25,13 @@
     (onClick)="selectFileSource(PreprintFileSource.Computer)"
   />
   <p-button
+    data-test-select-button
     [ngClass]="{
       active: selectedFileSource() === PreprintFileSource.Project,
     }"
     class="file-source-button w-full"
     [styleClass]="isFileSourceSelected() ? 'w-full cursor-not-allowed' : 'w-full'"
-    [label]="'preprints.preprintStepper.file.selectFromProject' | translate | titlecase"
+    [label]="'preprints.preprintStepper.file.selectFromProject' | translate"
     severity="secondary"
     [disabled]="isFileSourceSelected() || versionFileMode()"
     [pTooltip]="'preprints.preprintStepper.file.tooltips.projectDisabled' | translate"
@@ -108,7 +109,7 @@
         <section class="file-row">
           <div class="flex flex-row gap-2">
             <osf-icon [iconClass]="'fas fa-file'" />
-            <p>{{ file.name }}</p>
+            <p data-test-file-name>{{ file.name }}</p>
           </div>
 
           <p-button
