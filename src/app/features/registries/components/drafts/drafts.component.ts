@@ -36,14 +36,14 @@ export class DraftsComponent implements OnDestroy {
   private readonly loaderService = inject(LoaderService);
   private readonly translateService = inject(TranslateService);
 
-  protected readonly pages = select(RegistriesSelectors.getPagesSchema);
-  protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
-  protected stepsValidation = select(RegistriesSelectors.getStepsValidation);
-  protected readonly stepsData = select(RegistriesSelectors.getStepsData);
-  protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
-  protected initialContributors = select(ContributorsSelectors.getContributors);
-  protected readonly contributors = select(ContributorsSelectors.getContributors);
-  protected readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
+  readonly pages = select(RegistriesSelectors.getPagesSchema);
+  readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  readonly stepsData = select(RegistriesSelectors.getStepsData);
+  selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  initialContributors = select(ContributorsSelectors.getContributors);
+  readonly contributors = select(ContributorsSelectors.getContributors);
+  readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
 
   private readonly actions = createDispatchMap({
     getSchemaBlocks: FetchSchemaBlocks,

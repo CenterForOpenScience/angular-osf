@@ -115,12 +115,8 @@ export class CollectionsQuerySyncService {
 
     if (!activeFilters) return;
 
-    try {
-      const parsedFilters: CollectionsFilters = JSON.parse(activeFilters);
-      this.handleParsedFilters(parsedFilters);
-    } catch (error) {
-      console.error('Error parsing activeFilters from URL:', error);
-    }
+    const parsedFilters: CollectionsFilters = JSON.parse(activeFilters);
+    this.handleParsedFilters(parsedFilters);
   }
 
   private handleParsedFilters(filters: CollectionsFilters): void {

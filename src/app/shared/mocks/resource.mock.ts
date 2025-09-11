@@ -1,7 +1,7 @@
 import { ResourceType } from '@shared/enums';
-import { Resource, ResourceOverview } from '@shared/models';
+import { ResourceModel, ResourceOverview } from '@shared/models';
 
-export const MOCK_RESOURCE: Resource = {
+export const MOCK_RESOURCE: ResourceModel = {
   id: 'https://api.osf.io/v2/resources/resource-123',
   resourceType: ResourceType.Registration,
   title: 'Test Resource',
@@ -26,7 +26,7 @@ export const MOCK_RESOURCE: Resource = {
   hasSupplementalResource: true,
 };
 
-export const MOCK_AGENT_RESOURCE: Resource = {
+export const MOCK_AGENT_RESOURCE: ResourceModel = {
   id: 'https://api.osf.io/v2/users/user-123',
   resourceType: ResourceType.Agent,
   title: 'Test User',

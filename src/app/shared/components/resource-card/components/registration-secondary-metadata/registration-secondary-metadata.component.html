@@ -8,7 +8,9 @@
     <p>
       {{ 'resourceCard.labels.funder' | translate }}
       @for (funder of resourceValue.funders.slice(0, limit); track $index) {
-        <a class="font-bold" [href]="funder.absoluteUrl" target="_blank">{{ funder.name }}{{ $last ? '' : ', ' }}</a>
+        <a class="font-bold" [href]="funder.absoluteUrl" target="_blank" rel="noopener noreferrer">
+          {{ funder.name }}{{ $last ? '' : ', ' }}
+        </a>
       }
       @if (resourceValue.funders.length > limit) {
         <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.funders.length - limit } }} </span>
@@ -19,7 +21,13 @@
   @if (resourceValue.provider) {
     <p>
       {{ 'resourceCard.labels.provider' | translate }}
+      <<<<<<< HEAD
       <a class="font-bold" [href]="resourceValue.provider!.absoluteUrl">{{ resourceValue.provider!.name }}</a>
+      =======
+      <a class="font-bold" [href]="resourceValue.provider!.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
+        resourceValue.provider!.name
+      }}</a>
+      >>>>>>> main
     </p>
   }
 
@@ -30,14 +38,30 @@
   @if (resourceValue.license) {
     <p>
       {{ 'resourceCard.labels.license' | translate }}
+      <<<<<<< HEAD
       <a class="font-bold" [attr.href]="resourceValue.license.absoluteUrl || null">{{ resourceValue.license!.name }}</a>
+      =======
+      <a
+        class="font-bold"
+        [attr.href]="resourceValue.license.absoluteUrl || null"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ resourceValue.license!.name }}</a
+      >
+      >>>>>>> main
     </p>
   }
 
   @if (resourceValue.absoluteUrl) {
     <p>
       {{ 'resourceCard.labels.url' | translate }}
+      <<<<<<< HEAD
       <a class="font-bold" [href]="resourceValue.absoluteUrl">{{ resourceValue.absoluteUrl }}</a>
+      =======
+      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
+        resourceValue.absoluteUrl
+      }}</a>
+      >>>>>>> main
     </p>
   }
 
@@ -46,7 +70,11 @@
     <p>
       {{ 'resourceCard.labels.doi' | translate }}
       @for (doi of resourceValue.doi.slice(0, limit); track $index) {
+        <<<<<<< HEAD
         <a class="font-bold" [href]="doi" target="_blank">{{ doi }}{{ $last ? '' : ', ' }}</a>
+        =======
+        <a class="font-bold" [href]="doi" target="_blank" rel="noopener noreferrer">{{ doi }}{{ $last ? '' : ', ' }}</a>
+        >>>>>>> main
       }
       @if (resourceValue.doi.length > limit) {
         <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }} </span>

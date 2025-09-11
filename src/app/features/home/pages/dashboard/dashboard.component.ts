@@ -7,7 +7,7 @@ import { Button } from 'primeng/button';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { TablePageEvent } from 'primeng/table';
 
-import { debounceTime, distinctUntilChanged } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, tap } from 'rxjs';
 
 import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -21,10 +21,11 @@ import {
   MyProjectsTableComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
+import { ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 
 @Component({
@@ -48,13 +49,15 @@ export class DashboardComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly translateService = inject(TranslateService);
   private readonly dialogService = inject(DialogService);
+  private readonly projectRedirectDialogService = inject(ProjectRedirectDialogService);
+
   readonly isMedium = toSignal(inject(IS_MEDIUM));
 
   readonly searchControl = new FormControl<string>('');
   readonly activeProject = signal<MyResourcesItem | null>(null);
   readonly sortColumn = signal<string | undefined>(undefined);
   readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
-  readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS });
+  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
 
   readonly projects = select(MyResourcesSelectors.getProjects);
   readonly totalProjectsCount = select(MyResourcesSelectors.getTotalProjects);
@@ -87,7 +90,7 @@ export class DashboardComponent implements OnInit {
   setupQueryParamsSubscription(): void {
     this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       const page = Number(params['page']) || 1;
-      const rows = Number(params['rows']) || MY_PROJECTS_TABLE_PARAMS.rows;
+      const rows = Number(params['rows']) || DEFAULT_TABLE_PARAMS.rows;
       const sortField = params['sortField'];
       const sortOrder = params['sortOrder'] as SortOrder;
       const search = params['search'] || '';
@@ -191,14 +194,21 @@ export class DashboardComponent implements OnInit {
   createProject(): void {
     const dialogWidth = this.isMedium() ? '850px' : '95vw';
 
-    this.dialogService.open(CreateProjectDialogComponent, {
-      width: dialogWidth,
-      focusOnShow: false,
-      header: this.translateService.instant('myProjects.header.createProject'),
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
+    this.dialogService
+      .open(CreateProjectDialogComponent, {
+        width: dialogWidth,
+        focusOnShow: false,
+        header: this.translateService.instant('myProjects.header.createProject'),
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+      })
+      .onClose.pipe(
+        filter((result) => result.project.id),
+        tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe();
   }
 
   openInfoLink(): void {

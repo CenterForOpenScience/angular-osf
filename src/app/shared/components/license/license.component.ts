@@ -11,7 +11,7 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 
 import { CustomValidators, StringOrNullOrUndefined } from '@osf/shared/helpers';
 import { InputLimits } from '@shared/constants';
-import { License, LicenseForm, LicenseOptions } from '@shared/models';
+import { LicenseForm, LicenseModel, LicenseOptions } from '@shared/models';
 import { InterpolatePipe } from '@shared/pipes';
 
 import { TextInputComponent } from '../text-input/text-input.component';
@@ -38,14 +38,14 @@ import { TruncatedTextComponent } from '../truncated-text/truncated-text.compone
 export class LicenseComponent {
   selectedLicenseId = input<StringOrNullOrUndefined>(null);
   selectedLicenseOptions = input<LicenseOptions | null | undefined>(null);
-  licenses = input.required<License[]>();
+  licenses = input.required<LicenseModel[]>();
   isSubmitting = input<boolean>(false);
   showInternalButtons = input<boolean>(true);
   fullWidthSelect = input<boolean>(false);
-  selectedLicense = model<License | null>(null);
+  selectedLicense = model<LicenseModel | null>(null);
   createLicense = output<{ id: string; licenseOptions: LicenseOptions }>();
-  selectLicense = output<License>();
-  protected inputLimits = InputLimits;
+  selectLicense = output<LicenseModel>();
+  inputLimits = InputLimits;
   saveButtonDisabled = signal(false);
 
   currentYear = new Date();
@@ -93,7 +93,7 @@ export class LicenseComponent {
     });
   }
 
-  onSelectLicense(license: License): void {
+  onSelectLicense(license: LicenseModel): void {
     this.selectLicense.emit(license);
   }
 
@@ -112,7 +112,7 @@ export class LicenseComponent {
 
   cancel() {
     this.licenseForm.reset({
-      year: this.currentYear.getFullYear().toString(),
+      year: '',
       copyrightHolders: '',
     });
   }

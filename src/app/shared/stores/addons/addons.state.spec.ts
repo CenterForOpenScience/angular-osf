@@ -141,8 +141,10 @@ describe('State: Addons', () => {
             displayName: 'Google Drive',
             externalServiceName: 'googledrive',
             id: '756579dc-3a24-4849-8866-698a60846ac3',
+            resourceType: undefined,
             rootFolderId: '0AIl0aR4C9JAFUk9PVA',
-            selectedFolderId: '0AIl0aR4C9JAFUk9PVA',
+            selectedStorageItemId: '0AIl0aR4C9JAFUk9PVA',
+            targetUrl: undefined,
             type: 'configured-storage-addons',
             externalStorageServiceId: '8aeb85e9-3a73-426f-a89b-5624b4b9d418',
           })

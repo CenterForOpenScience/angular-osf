@@ -1,6 +1,6 @@
 <h2>{{ 'preprints.preprintStepper.file.title' | translate }}</h2>
 
-<section class="m-t-12">
+<section class="mt-3">
   <p class="line-height-3">
     {{
       'preprints.preprintStepper.file.uploadDescription'
@@ -10,7 +10,7 @@
   <p class="line-height-3">{{ 'preprints.preprintStepper.file.note' | translate }}</p>
 </section>
 
-<section class="m-t-24 w-full flex flex-column gap-2 md:flex-row">
+<section class="mt-4 w-full flex flex-column gap-2 md:flex-row">
   <p-button
     [ngClass]="{
       active: selectedFileSource() === PreprintFileSource.Computer,
@@ -40,7 +40,7 @@
 </section>
 
 @if (selectedFileSource() === PreprintFileSource.Computer) {
-  <section class="m-t-48">
+  <section class="mt-6">
     @if (!fileUploadLink()) {
       <p-skeleton width="5rem" height="2rem" />
     } @else if ((!preprintFiles().length && !arePreprintFilesLoading()) || versionFileMode()) {
@@ -59,7 +59,7 @@
 }
 
 @if (selectedFileSource() === PreprintFileSource.Project && !preprintFiles().length && !arePreprintFilesLoading()) {
-  <p-card styleClass="m-t-48" class="card">
+  <p-card styleClass="mt-6" class="card">
     <div>
       <p class="line-height-3">{{ 'preprints.preprintStepper.file.projectSelection.description' | translate }}</p>
       <p class="line-height-3">
@@ -75,7 +75,7 @@
         [placeholder]="'preprints.preprintStepper.file.projectSelection.title' | translate"
         class="w-12 md:w-6"
         [editable]="true"
-        styleClass="m-t-24"
+        styleClass="mt-4"
         appendTo="body"
         [loading]="areAvailableProjectsLoading()"
         (onChange)="selectProject($event)"
@@ -84,11 +84,13 @@
     </div>
   </p-card>
 
-  <section class="m-t-24">
+  <section class="mt-4">
     @if (selectedProjectId()) {
       <osf-files-tree
         [currentFolder]="currentFolder()"
         [files]="projectFiles()"
+        [totalCount]="projectFiles().length"
+        [storage]="null"
         [isLoading]="areProjectFilesLoading()"
         [resourceId]="selectedProjectId()!"
         [actions]="filesTreeActions"
@@ -98,7 +100,7 @@
   </section>
 }
 @if (!versionFileMode()) {
-  <section class="m-t-48">
+  <section class="mt-6">
     @if (arePreprintFilesLoading()) {
       <p-skeleton height="2rem" class="w-full" />
     } @else {
@@ -109,14 +111,21 @@
             <p>{{ file.name }}</p>
           </div>
 
-          <p-button class="danger-icon-btn" icon="fas fa-trash" severity="danger" text (onClick)="versionFile()" />
+          <p-button
+            class="danger-icon-btn"
+            icon="fas fa-trash"
+            severity="danger"
+            text
+            [ariaLabel]="'common.buttons.delete' | translate"
+            (onClick)="versionFile()"
+          />
         </section>
       }
     }
   </section>
 }
 
-<section class="m-t-48 flex flex-row justify-content-end align-items-center gap-2">
+<section class="mt-6 flex flex-row justify-content-end align-items-center gap-2">
   <p-button
     class="w-6 md:w-6rem"
     styleClass="w-full"

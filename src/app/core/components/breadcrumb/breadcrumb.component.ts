@@ -17,7 +17,7 @@ export class BreadcrumbComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  protected readonly url = toSignal(
+  readonly url = toSignal(
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       map(() => this.router.url),
@@ -26,7 +26,7 @@ export class BreadcrumbComponent {
     { initialValue: this.router.url }
   );
 
-  protected readonly routeData = toSignal(
+  readonly routeData = toSignal(
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
       map(() => this.getCurrentRouteData()),
@@ -35,9 +35,9 @@ export class BreadcrumbComponent {
     { initialValue: { skipBreadcrumbs: false } as RouteData }
   );
 
-  protected readonly showBreadcrumb = computed(() => this.routeData()?.skipBreadcrumbs !== true);
+  readonly showBreadcrumb = computed(() => this.routeData()?.skipBreadcrumbs !== true);
 
-  protected readonly parsedUrl = computed(() =>
+  readonly parsedUrl = computed(() =>
     this.url()
       .split('?')[0]
       .split('/')

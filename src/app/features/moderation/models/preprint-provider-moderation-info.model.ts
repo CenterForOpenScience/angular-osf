@@ -4,6 +4,6 @@ export interface PreprintProviderModerationInfo {
   submissionCount?: number;
   reviewsCommentsAnonymous: boolean;
   reviewsCommentsPrivate: boolean;
-  reviewsWorkflow: boolean;
-  supportEmail?: string;
+  reviewsWorkflow: string;
+  supportEmail: string | null;
 }

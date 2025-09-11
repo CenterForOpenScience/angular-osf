@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 
 import { getAddonTypeString, isConfiguredAddon } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService } from '@osf/shared/services';
-import { AddonModel, AuthorizedAccountModel, ConfiguredStorageAddonModel } from '@shared/models';
+import { AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@shared/models';
 import { DeleteAuthorizedAddon } from '@shared/stores/addons';
 
 @Component({
@@ -24,16 +24,12 @@ export class AddonCardComponent {
   private readonly loaderService = inject(LoaderService);
   private readonly actions = createDispatchMap({ deleteAuthorizedAddon: DeleteAuthorizedAddon });
 
-  readonly card = input<AddonModel | AuthorizedAccountModel | ConfiguredStorageAddonModel | null>(null);
+  readonly card = input<AddonModel | AuthorizedAccountModel | ConfiguredAddonModel | null>(null);
   readonly cardButtonLabel = input<string>('');
   readonly showDangerButton = input<boolean>(false);
 
-  protected readonly addonTypeString = computed(() => {
-    return getAddonTypeString(this.card());
-  });
-  protected readonly isConfiguredAddon = computed(() => {
-    return isConfiguredAddon(this.card());
-  });
+  readonly addonTypeString = computed(() => getAddonTypeString(this.card()));
+  readonly isConfiguredAddon = computed(() => isConfiguredAddon(this.card()));
 
   onConnectAddon(): void {
     const addon = this.card();

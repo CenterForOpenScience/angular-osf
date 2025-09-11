@@ -50,7 +50,7 @@ import { ModeratorsTableComponent } from '../moderators-table/moderators-table.c
   providers: [DialogService],
 })
 export class ModeratorsListComponent implements OnInit {
-  protected searchControl = new FormControl<string>('');
+  searchControl = new FormControl<string>('');
 
   private readonly route = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -81,7 +81,7 @@ export class ModeratorsListComponent implements OnInit {
     });
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     loadModerators: LoadModerators,
     updateSearchValue: UpdateSearchValue,
     addModerators: AddModerator,

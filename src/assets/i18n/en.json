@@ -47,7 +47,27 @@
       "continueUpdate": "Continue Update",
       "editAndResubmit": "Edit And Resubmit",
       "createNewVersion": "Create New Version",
-      "leaveThisView": "Leave this view"
+      "leaveThisView": "Leave this view",
+      "addOneMore": "Add One More"
+    },
+    "accessibility": {
+      "help": "Help",
+      "openFilters": "Open filters",
+      "openSortingOptions": "Open sorting options",
+      "goToFirstPage": "Go to first page",
+      "goToPreviousPage": "Go to previous page",
+      "goToNextPage": "Go to next page",
+      "mainNavigation": "Main navigation",
+      "searchHelp": "Search help",
+      "confirmationDialog": "Confirmation dialog",
+      "reportsLink": "Reports link",
+      "tooltipBtn": "Tooltip button",
+      "customizeOptions": "Customize options",
+      "toggleProjectVisibility": "Toggle project visibility",
+      "tagInput": "Tag input"
+    },
+    "dialogs": {
+      "confirmation": "Confirmation"
     },
     "search": {
       "title": "Search",
@@ -179,10 +199,12 @@
     "contributors": "Contributors",
     "analytics": "Analytics",
     "addons": "Add-ons",
+    "linkedServices": "Linked Services",
     "resources": "Resources",
     "components": "Components",
     "links": "Links",
-    "institutions": "Institutions"
+    "institutions": "Institutions",
+    "recentActivity": "Recent Activity"
   },
   "toast": {
     "cookie-consent": {
@@ -452,6 +474,12 @@
       },
       "updateProjectDetailsMessage": "Successfully updated project details.",
       "updateProjectSettingsMessage": "Successfully updated project settings."
+    },
+    "redirectDialog": {
+      "header": "Success",
+      "message": "New project created successfully!",
+      "confirmButton": "Go to project",
+      "rejectButton": "Keep working here"
     }
   },
   "myProfile": {
@@ -522,7 +550,7 @@
         "cancel": "Cancel",
         "next": "Next",
         "selectPermissions": "Please select which permissions you want to give to contributor",
-        "bibliographicCOntributor": "Bibliographic Contributor",
+        "bibliographicContributor": "Bibliographic Contributor",
         "addUnregisteredContributor": "Add Unregistered Contributor",
         "addRegisteredContributor": "Add Registered Contributor",
         "unregisteredContributorNotification": "We will notify the user that they have been added to your project"
@@ -577,6 +605,9 @@
         "title": "Wiki",
         "noWikiMessage": "<em>Add important information, links, or images here to describe your project.</em>"
       },
+      "files": {
+        "title": "Files"
+      },
       "components": {
         "title": "Components",
         "addComponentButton": "Add Component",
@@ -621,12 +652,14 @@
         "citeAs": "Cite as:",
         "noCitationStylesFound": "No results found",
         "affiliatedInstitutions": "Affiliated Institutions",
+        "affiliatedInstitutionsDescription": "This is a service provided by the OSF and is automatically applied to your registration. If you are not sure if your institution has signed up for this service, you can look for their name in this list.",
         "noDescription": "No description",
         "noLicense": "No License",
         "noPublicationDoi": "No Publication DOI",
         "noSubjects": "No subjects",
         "noTags": "No tags",
         "noSupplements": "No supplements",
+        "noInformation": "No information",
         "noAffiliatedInstitutions": "No affiliated institutions",
         "resourceInformation": "Resource Information",
         "resourceType": "Resource type",
@@ -901,6 +934,7 @@
         "youAlreadyAddedText": "You have already added a record for this template",
         "youAlreadyAdded": "Already Added",
         "loadingCedar": "Loading CEDAR record...",
+        "editRecord": "Edit Record",
         "recordCreatedSuccessfully": "Record created successfully",
         "recordUpdatedSuccessfully": "Record updated successfully"
       },
@@ -956,10 +990,23 @@
       "title": "Delete institution",
       "message": "Are you sure you want to delete <b>{{name}}</b> from this project?",
       "success": "Institution has been successfully deleted."
+    },
+    "linkedServices": {
+      "title": "Linked Services",
+      "table": {
+        "linkedService": "Linked Service",
+        "displayName": "Display Name",
+        "resourceType": "Resource Type",
+        "link": "Link",
+        "noLink": "No link available"
+      },
+      "noLinkedServices": "This project has no configured linked services at the moment.",
+      "redirectMessage": "Visit",
+      "addonsLink": "Add-ons",
+      "redirectMessageSuffix": "to add a linked service."
     }
   },
   "files": {
-    "title": "Files",
     "storageLocation": "OSF Storage",
     "searchPlaceholder": "Search your projects",
     "metaTagDescriptionPlaceholder": "Presented by OSF",
@@ -1035,7 +1082,7 @@
       "helpGuides": "help guides on project files."
     },
     "dropText": "Drop a file to upload",
-    "emptyState": "This folder is empty",
+    "emptyState": "No files are available at this time.",
     "detail": {
       "backToList": "Back to list of files",
       "tabs": {
@@ -1497,7 +1544,8 @@
       },
       "categories": {
         "additionalService": "Additional Storage",
-        "citationManager": "Citation Manager"
+        "citationManager": "Citation Manager",
+        "linkedServices": "Linked Services"
       },
       "toast": {
         "updateSuccess": "Successfully updated {{addonName}} add-on configuration",
@@ -1514,10 +1562,16 @@
         "title": "Configure Add-on",
         "noFolders": "No folders",
         "noFolderSelected": "No selected folder",
+        "noLinkedItem": "No linked item",
+        "resourceType": "Resource type",
+        "aboutResourceType": "About resource type",
+        "chooseResourceType": "Choose a resource type",
+        "resourceTypeModalMessage": "This helps others understand what kind of material you're sharing. Choosing the right resource type makes it easier for search engines and research tools to find and share your work—both on OSF and in other scholarly indexes.<br><br>For example, selecting <strong>“Dataset”</strong> tells tools and repositories that your files are research data, which helps your work appear in places that specialize in datasets.<br><br>Pick the option that best describes most of the files you're linking.<br><br>OSF uses resource types from <strong>DataCite</strong>, a standard used by many research platforms. <a target='_blank' href={{link}}>(Learn more)</a>",
         "disconnect": "Disconnect {{addonName}}",
         "disconnectMessage": "You are about to disconnect the following addon from the project:",
         "account": "Account:",
         "selectedFolder": "Selected folder:",
+        "linkedItem": "Linked item:",
         "folderName": "Folder name:",
         "selectFolder": "Select",
         "connectedAccount": "Connected to account:",
@@ -1647,7 +1701,6 @@
         "startDate": "Start Date",
         "endDate": "End Date",
         "ongoing": "Ongoing",
-        "addMore": "Add One More",
         "successUpdate": "Education successfully updated."
       },
       "changesDiscarded": "Changes discarded successfully.",
@@ -1958,7 +2011,7 @@
       "metadata": {
         "title": "Metadata",
         "publicationDoi": {
-          "title": "Publication DOI",
+          "title": "Publication DOI (optional)",
           "patternError": "Please use a valid DOI format (10.xxxx/xxxxx)"
         },
         "tagsTitle": "Tags (optional)",
@@ -2613,6 +2666,10 @@
     "learnMore": "Learn more about OSF Institutions."
   },
   "adminInstitutions": {
+    "common": {
+      "filterBy": "Filter by",
+      "filters": "Filters"
+    },
     "summary": {
       "title": "Summary",
       "totalUsersByDepartment": "Total Users by Department",
@@ -2647,7 +2704,7 @@
       "lastLogin": "Last Login",
       "lastActive": "Last Active",
       "accountCreated": "Account Created",
-      "publishedPreprints": "Published Preprints",
+      "preprints": "Preprints",
       "publicFiles": "Public Files",
       "storageBytes": "Storage (Bytes)",
       "contacts": "Contacts",

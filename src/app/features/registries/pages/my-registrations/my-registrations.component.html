@@ -65,11 +65,7 @@
               <ng-container *ngTemplateOutlet="noRegistration"></ng-container>
             }
             @for (registration of submittedRegistrations(); track $index) {
-              <osf-registration-card
-                (updateRegistration)="onUpdateRegistration($event)"
-                (continueUpdate)="onContinueUpdateRegistration($event)"
-                [registrationData]="registration"
-              />
+              <osf-registration-card [registrationData]="registration" />
             }
             @if (submittedRegistrationsTotalCount() > itemsPerPage) {
               <osf-custom-paginator

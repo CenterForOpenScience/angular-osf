@@ -26,7 +26,7 @@ export class TokensListComponent implements OnInit {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly isLoading = select(TokensSelectors.isTokensLoading);
+  readonly isLoading = select(TokensSelectors.isTokensLoading);
 
   tokens = select(TokensSelectors.getTokens);
 

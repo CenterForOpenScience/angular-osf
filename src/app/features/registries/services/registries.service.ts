@@ -9,6 +9,7 @@ import {
   DraftRegistrationRelationshipsJsonApi,
   DraftRegistrationResponseJsonApi,
   PageSchema,
+  PaginatedData,
   RegistrationAttributesJsonApi,
   RegistrationCard,
   RegistrationDataJsonApi,
@@ -31,8 +32,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class RegistriesService {
-  private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   createDraft(
     registrationSchemaId: string,
@@ -90,7 +91,7 @@ export class RegistriesService {
         id,
         attributes,
         relationships,
-        type: 'draft_registrations', // force the correct type
+        type: 'draft_registrations',
       },
     };
     const params = {
@@ -125,7 +126,7 @@ export class RegistriesService {
       .pipe(map((response) => PageSchemaMapper.fromSchemaBlocksResponse(response)));
   }
 
-  getDraftRegistrations(page: number, pageSize: number): Observable<{ data: RegistrationCard[]; totalCount: number }> {
+  getDraftRegistrations(page: number, pageSize: number): Observable<PaginatedData<RegistrationCard[]>> {
     const params = {
       page,
       'page[size]': pageSize,

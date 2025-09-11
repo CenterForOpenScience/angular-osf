@@ -1,43 +1,90 @@
-import { provideStore } from '@ngxs/store';
+import { Store } from '@ngxs/store';
 
-import { TranslatePipe } from '@ngx-translate/core';
-import { MockPipe, MockProvider } from 'ng-mocks';
+import { MockComponent, MockProvider } from 'ng-mocks';
 
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { provideHttpClient } from '@angular/common/http';
-import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { of } from 'rxjs';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TranslateServiceMock } from '@shared/mocks';
-import { MyResourcesState } from '@shared/stores';
-import { InstitutionsState } from '@shared/stores/institutions';
-import { RegionsState } from '@shared/stores/regions';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
+import { ProjectFormControls } from '@osf/shared/enums';
+import { MOCK_STORE } from '@osf/shared/mocks';
+import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
+import { AddProjectFormComponent } from '@shared/components';
 
 import { CreateProjectDialogComponent } from './create-project-dialog.component';
+
+import { OSFTestingModule } from '@testing/osf.testing.module';
 
 describe('CreateProjectDialogComponent', () => {
   let component: CreateProjectDialogComponent;
   let fixture: ComponentFixture<CreateProjectDialogComponent>;
+  let store: Store;
+  let dialogRef: DynamicDialogRef;
+
+  const fillValidForm = (
+    title = 'My Project',
+    description = 'Some description',
+    template = 'tmpl-1',
+    storageLocation = 'osfstorage',
+    affiliations: string[] = ['aff-1', 'aff-2']
+  ) => {
+    component.projectForm.patchValue({
+      [ProjectFormControls.Title]: title,
+      [ProjectFormControls.Description]: description,
+      [ProjectFormControls.Template]: template,
+      [ProjectFormControls.StorageLocation]: storageLocation,
+      [ProjectFormControls.Affiliations]: affiliations,
+    });
+  };
 
   beforeEach(async () => {
+    (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
+      if (selector === MyResourcesSelectors.isProjectSubmitting) return () => false;
+      return () => undefined;
+    });
+
     await TestBed.configureTestingModule({
-      imports: [CreateProjectDialogComponent, MockPipe(TranslatePipe)],
-      providers: [
-        provideStore([MyResourcesState, InstitutionsState, RegionsState]),
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        TranslateServiceMock,
-        MockProvider(DynamicDialogRef),
-      ],
+      imports: [CreateProjectDialogComponent, OSFTestingModule, MockComponent(AddProjectFormComponent)],
+      providers: [MockProvider(Store, MOCK_STORE)],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateProjectDialogComponent);
     component = fixture.componentInstance;
+
+    store = TestBed.inject(Store);
+    dialogRef = TestBed.inject(DynamicDialogRef);
+
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should mark all controls touched and not dispatch when form is invalid', () => {
+    const markAllSpy = jest.spyOn(component.projectForm, 'markAllAsTouched');
+
+    (store.dispatch as unknown as jest.Mock).mockClear();
+
+    component.submitForm();
+
+    expect(markAllSpy).toHaveBeenCalled();
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('should submit, refresh list and close dialog when form is valid', () => {
+    fillValidForm('Title', 'Desc', 'Tpl', 'Storage', ['a1']);
+
+    (MOCK_STORE.dispatch as jest.Mock).mockReturnValue(of(undefined));
+    (MOCK_STORE.selectSnapshot as jest.Mock).mockReturnValue([{ id: 'new-project-id' }]);
+
+    component.submitForm();
+
+    expect(MOCK_STORE.dispatch).toHaveBeenCalledWith(new CreateProject('Title', 'Desc', 'Tpl', 'Storage', ['a1']));
+    expect(MOCK_STORE.dispatch).toHaveBeenCalledWith(new GetMyProjects(1, DEFAULT_TABLE_PARAMS.rows, {}));
+    expect((dialogRef as any).close).toHaveBeenCalledWith({ project: { id: 'new-project-id' } });
   });
 });

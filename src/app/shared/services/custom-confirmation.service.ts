@@ -43,7 +43,7 @@ export class CustomConfirmationService {
         label: this.translateService.instant(options.acceptLabelKey || 'common.buttons.move'),
       },
       rejectButtonProps: {
-        label: this.translateService.instant('common.buttons.cancel'),
+        label: this.translateService.instant(options.rejectLabelKey || 'common.buttons.cancel'),
         severity: 'info',
       },
       accept: () => {

@@ -14,7 +14,6 @@ import { FilesHandlers } from './handlers/files.handlers';
 import { LicensesHandlers } from './handlers/licenses.handlers';
 import { ProjectsHandlers } from './handlers/projects.handlers';
 import { ProvidersHandlers } from './handlers/providers.handlers';
-import { DefaultState } from './default.state';
 import {
   ClearState,
   CreateDraft,
@@ -45,13 +44,13 @@ import {
   UpdateSchemaResponse,
   UpdateStepValidation,
 } from './registries.actions';
-import { RegistriesStateModel } from './registries.model';
+import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from './registries.model';
 
 import { environment } from 'src/environments/environment';
 
 @State<RegistriesStateModel>({
   name: 'registries',
-  defaults: { ...DefaultState },
+  defaults: REGISTRIES_STATE_DEFAULTS,
 })
 @Injectable()
 export class RegistriesState {
@@ -94,8 +93,8 @@ export class RegistriesState {
   }
 
   @Action(GetProjects)
-  getProjects(ctx: StateContext<RegistriesStateModel>) {
-    return this.projectsHandler.getProjects(ctx);
+  getProjects(ctx: StateContext<RegistriesStateModel>, { userId, search }: GetProjects) {
+    return this.projectsHandler.getProjects(ctx, userId, search);
   }
 
   @Action(FetchProjectChildren)
@@ -339,7 +338,7 @@ export class RegistriesState {
 
   @Action(ClearState)
   clearState(ctx: StateContext<RegistriesStateModel>) {
-    ctx.setState({ ...DefaultState });
+    ctx.setState(REGISTRIES_STATE_DEFAULTS);
   }
 
   @Action(GetFiles)

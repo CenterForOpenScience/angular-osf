@@ -24,3 +24,45 @@ export interface WikiStateModel {
   compareVersionContent: AsyncStateModel<string>;
   isAnonymous: boolean;
 }
+
+export const WIKI_STATE_DEFAULTS: WikiStateModel = {
+  homeWikiContent: {
+    data: '',
+    isLoading: false,
+    error: null,
+  },
+  wikiModes: {
+    view: true,
+    edit: false,
+    compare: false,
+  },
+  wikiList: {
+    data: [],
+    isLoading: false,
+    error: null,
+    isSubmitting: false,
+  },
+  componentsWikiList: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  currentWikiId: '',
+  previewContent: '',
+  wikiVersions: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  versionContent: {
+    data: '',
+    isLoading: false,
+    error: null,
+  },
+  compareVersionContent: {
+    data: '',
+    isLoading: false,
+    error: null,
+  },
+  isAnonymous: false,
+};

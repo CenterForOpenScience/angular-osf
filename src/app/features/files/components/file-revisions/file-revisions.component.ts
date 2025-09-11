@@ -51,7 +51,7 @@ export class FileRevisionsComponent {
   downloadRevision(version: string): void {
     this.dataciteService.logIdentifiableDownload(this.resourceMetadata).subscribe();
     if (this.fileGuid()) {
-      window.open(`${environment.downloadUrl}/${this.fileGuid()}/?revision=${version}`)?.focus();
+      window.open(`${environment.webUrl}/download/${this.fileGuid()}/?revision=${version}`)?.focus();
     }
   }
 }

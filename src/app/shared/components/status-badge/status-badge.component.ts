@@ -18,6 +18,7 @@ import { RegistryStatusMap } from './default-statuses';
 })
 export class StatusBadgeComponent {
   status = input.required<RegistryStatus>();
+
   get label(): string {
     return RegistryStatusMap[this.status()]?.label ?? 'Unknown';
   }

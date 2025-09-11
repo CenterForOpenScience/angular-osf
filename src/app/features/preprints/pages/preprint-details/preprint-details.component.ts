@@ -377,7 +377,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
           familyName: contributor.familyName,
         })),
       },
-      this.destroyRef,
+      this.destroyRef
     );
   }
 

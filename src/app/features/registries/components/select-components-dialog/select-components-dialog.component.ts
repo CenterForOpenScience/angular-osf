@@ -17,7 +17,7 @@ import { Project } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectComponentsDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
+  readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
   selectedComponents: TreeNode[] = [];
   parent: Project = this.config.data.parent;

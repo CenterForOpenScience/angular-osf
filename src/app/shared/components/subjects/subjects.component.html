@@ -64,6 +64,7 @@
       (onNodeCollapse)="collapseNode($event.node)"
       (onNodeSelect)="selectSubject($event.node.data)"
       (onNodeUnselect)="removeSubject($event.node.data)"
+      [ariaLabel]="'shared.subjects.subjectTree' | translate"
     >
     </p-tree>
   }

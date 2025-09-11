@@ -16,7 +16,7 @@ import { CollectionSubmissionWithGuid } from '@shared/models';
 export class CollectionsSearchResultCardComponent {
   cardItem = input.required<CollectionSubmissionWithGuid>();
 
-  protected presentSubmissionAttributes = computed(() => {
+  presentSubmissionAttributes = computed(() => {
     const item = this.cardItem();
     if (!item) return [];
 

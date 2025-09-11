@@ -4,16 +4,18 @@ import { Button } from 'primeng/button';
 import { Tag } from 'primeng/tag';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { OverviewCollectionsComponent } from '@osf/features/project/overview/components/overview-collections/overview-collections.component';
+import { CurrentResourceType } from '@osf/shared/enums';
 import { AffiliatedInstitutionsViewComponent } from '@shared/components';
-import { OsfResourceTypes } from '@shared/constants';
 import { ResourceOverview } from '@shared/models';
 
 import { ResourceCitationsComponent } from '../resource-citations/resource-citations.component';
 import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';
+
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-resource-metadata',
@@ -38,7 +40,12 @@ export class ResourceMetadataComponent {
   isCollectionsRoute = input<boolean>(false);
   canWrite = input.required<boolean>();
 
-  protected readonly resourceTypes = OsfResourceTypes;
+  readonly resourceTypes = CurrentResourceType;
+  readonly dateFormat = 'MMM d, y, h:mm a';
+  readonly webUrl = environment.webUrl;
+
+  isProject = computed(() => this.currentResource()?.type === CurrentResourceType.Projects);
+  isRegistration = computed(() => this.currentResource()?.type === CurrentResourceType.Registrations);
 
   onCustomCitationUpdated(citation: string): void {
     this.customCitationUpdated.emit(citation);

@@ -52,17 +52,17 @@ export class ContributorsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
-  protected readonly selectedPermission = signal<ContributorPermission | null>(null);
-  protected readonly selectedBibliography = signal<boolean | null>(null);
-  protected readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
-  protected readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
+  readonly selectedPermission = signal<ContributorPermission | null>(null);
+  readonly selectedBibliography = signal<boolean | null>(null);
+  readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
+  readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
 
-  protected initialContributors = select(ContributorsSelectors.getContributors);
-  protected contributors = signal([]);
+  initialContributors = select(ContributorsSelectors.getContributors);
+  contributors = signal([]);
 
-  protected readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getContributors: GetAllContributors,
     deleteContributor: DeleteContributor,
     updateContributor: UpdateContributor,
@@ -85,7 +85,6 @@ export class ContributorsComponent implements OnInit {
 
   onFocusOut() {
     // [NM] TODO: make request to update contributor if changed
-    console.log('Focus out event:', 'Changed:', this.hasChanges);
     if (this.control()) {
       this.control().markAsTouched();
       this.control().markAsDirty();

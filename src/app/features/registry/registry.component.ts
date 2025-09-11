@@ -61,7 +61,7 @@ export class RegistryComponent {
             familyName: contributor.familyName,
           })) ?? [],
       },
-      this.destroyRef,
+      this.destroyRef
     );
   }
 }

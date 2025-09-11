@@ -17,6 +17,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ModeratorsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Collection, 'providers/collections'],
@@ -25,7 +26,7 @@ export class ModeratorsService {
   ]);
 
   getModerators(resourceId: string, resourceType: ResourceType): Observable<ModeratorModel[]> {
-    const baseUrl = `${environment.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators`;
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators`;
 
     return this.jsonApiService
       .get<ModeratorResponseJsonApi>(baseUrl)
@@ -33,7 +34,7 @@ export class ModeratorsService {
   }
 
   addModerator(resourceId: string, resourceType: ResourceType, data: ModeratorAddModel): Observable<ModeratorModel> {
-    const baseUrl = `${environment.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/`;
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/`;
     const type = data.id ? AddModeratorType.Search : AddModeratorType.Invite;
 
     const moderatorData = { data: ModerationMapper.toModeratorAddRequest(data, type) };
@@ -44,7 +45,7 @@ export class ModeratorsService {
   }
 
   updateModerator(resourceId: string, resourceType: ResourceType, data: ModeratorAddModel): Observable<ModeratorModel> {
-    const baseUrl = `${environment.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/${data.id}`;
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/${data.id}`;
     const moderatorData = { data: ModerationMapper.toModeratorAddRequest(data) };
 
     return this.jsonApiService
@@ -53,13 +54,13 @@ export class ModeratorsService {
   }
 
   deleteModerator(resourceId: string, resourceType: ResourceType, userId: string): Observable<void> {
-    const baseUrl = `${environment.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/${userId}`;
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/${userId}`;
 
     return this.jsonApiService.delete(baseUrl);
   }
 
   searchUsers(value: string, page = 1): Observable<PaginatedData<ModeratorAddModel[]>> {
-    const baseUrl = `${environment.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
+    const baseUrl = `${this.apiUrl}/users/?filter[full_name]=${value}&page=${page}`;
 
     return this.jsonApiService
       .get<ResponseJsonApi<UserDataJsonApi[]>>(baseUrl)

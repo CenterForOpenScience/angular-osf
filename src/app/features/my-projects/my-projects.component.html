@@ -70,21 +70,17 @@
         </p-tabpanel>
 
         <p-tabpanel [value]="tabOption.Bookmarks" class="flex flex-column gap-4 flex-1">
-          @if (!bookmarks().length && !isLoading()) {
-            <p>{{ 'myProjects.bookmarks.emptyState' | translate }}</p>
-          } @else {
-            <osf-my-projects-table
-              [items]="bookmarks()"
-              [tableParams]="tableParams()"
-              [searchControl]="searchControl"
-              [sortColumn]="sortColumn()"
-              [sortOrder]="sortOrder()"
-              [isLoading]="isLoading()"
-              (pageChange)="onPageChange($event)"
-              (sort)="onSort($event)"
-              (itemClick)="navigateToProject($event)"
-            />
-          }
+          <osf-my-projects-table
+            [items]="bookmarks()"
+            [tableParams]="tableParams()"
+            [searchControl]="searchControl"
+            [sortColumn]="sortColumn()"
+            [sortOrder]="sortOrder()"
+            [isLoading]="isLoading()"
+            (pageChange)="onPageChange($event)"
+            (sort)="onSort($event)"
+            (itemClick)="navigateToProject($event)"
+          />
         </p-tabpanel>
       </p-tabpanels>
     </p-tabs>

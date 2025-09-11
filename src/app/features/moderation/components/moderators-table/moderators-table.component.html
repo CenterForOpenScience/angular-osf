@@ -96,7 +96,8 @@
               icon="fas fa-trash"
               severity="danger"
               text
-              (click)="removeModerator(item)"
+              (onClick)="removeModerator(item)"
+              [ariaLabel]="'common.buttons.delete' | translate"
               [disabled]="!isCurrentUserAdminModerator() && currentUserId() !== item.id"
             />
           }

@@ -50,10 +50,10 @@ export class TitleAndAbstractStepComponent {
     updatePreprint: UpdatePreprint,
   });
 
-  protected inputLimits = formInputLimits;
-  protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  inputLimits = formInputLimits;
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
-  protected titleAndAbstractForm = new FormGroup<TitleAndAbstractForm>({
+  titleAndAbstractForm = new FormGroup<TitleAndAbstractForm>({
     title: new FormControl('', {
       nonNullable: true,
       validators: [CustomValidators.requiredTrimmed(), Validators.maxLength(this.inputLimits.title.maxLength)],

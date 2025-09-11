@@ -1,41 +1,39 @@
 import { extractPathAfterDomain } from '@osf/features/admin-institutions/helpers';
+import { ResourceModel } from '@shared/models';
 
-import { InstitutionRegistration, TableCellData, TableCellLink } from '../models';
+import { TableCellData, TableCellLink } from '../models';
 
-export function mapRegistrationToTableData(registration: InstitutionRegistration): TableCellData {
+export function mapRegistrationResourceToTableData(registration: ResourceModel): TableCellData {
   return {
-    id: registration.id,
-    title: {
-      text: registration.title,
-      url: registration.link,
-      target: '_blank',
-    } as TableCellLink,
+    title: registration.title,
     link: {
-      text: registration.link.split('/').pop() || registration.link,
-      url: registration.link,
+      text: registration.absoluteUrl.split('/').pop() || registration.absoluteUrl,
+      url: registration.absoluteUrl,
       target: '_blank',
     } as TableCellLink,
     dateCreated: registration.dateCreated,
     dateModified: registration.dateModified,
-    doi: registration.doi
+    doi: registration.doi[0]
       ? ({
-          text: extractPathAfterDomain(registration.doi),
-          url: registration.doi,
+          text: extractPathAfterDomain(registration.doi[0]),
+          url: registration.doi[0],
         } as TableCellLink)
       : '-',
-    storageLocation: registration.storageLocation || '-',
-    totalDataStored: registration.totalDataStored || '-',
-    contributorName: registration.contributorName
+    storageLocation: registration.storageRegion || '-',
+    totalDataStored: registration.storageByteCount
+      ? `${(+registration.storageByteCount / (1024 * 1024)).toFixed(1)} MB`
+      : '0 B',
+    contributorName: registration.creators[0]
       ? ({
-          text: registration.contributorName,
-          url: `https://osf.io/${registration.contributorName}`,
+          text: registration.creators[0].name,
+          url: registration.creators[0].absoluteUrl,
           target: '_blank',
         } as TableCellLink)
       : '-',
-    views: registration.views || '-',
-    resourceType: registration.resourceType || '-',
-    license: registration.license || '-',
-    funderName: registration.funderName || '-',
-    registrationSchema: registration.registrationSchema || '-',
+    views: registration.viewsCount || '-',
+    resourceType: registration.resourceNature || '-',
+    license: registration.license?.name || '-',
+    funderName: registration.funders?.[0]?.name || '-',
+    registrationSchema: registration.registrationTemplate || '-',
   };
 }

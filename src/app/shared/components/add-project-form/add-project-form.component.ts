@@ -9,9 +9,11 @@ import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
+import { UserSelectors } from '@core/store/user';
 import { ProjectFormControls } from '@osf/shared/enums';
 import { Institution, ProjectForm } from '@osf/shared/models';
 import { Project } from '@osf/shared/models/projects';
@@ -40,37 +42,54 @@ import { ProjectSelectorComponent } from '../project-selector/project-selector.c
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddProjectFormComponent implements OnInit {
-  private actions = createDispatchMap({
+  private readonly actions = createDispatchMap({
     fetchUserInstitutions: FetchUserInstitutions,
     fetchRegions: FetchRegions,
   });
+  private readonly destroyRef = inject(DestroyRef);
 
   ProjectFormControls = ProjectFormControls;
 
   hasTemplateSelected = signal(false);
   selectedTemplate = signal<Project | null>(null);
   isSubmitting = signal(false);
+  selectedAffiliations = signal<Institution[]>([]);
+  currentUser = select(UserSelectors.getCurrentUser);
   storageLocations = select(RegionsSelectors.getRegions);
   areStorageLocationsLoading = select(RegionsSelectors.areRegionsLoading);
   affiliations = select(InstitutionsSelectors.getUserInstitutions);
+  affiliationLoading = select(InstitutionsSelectors.areUserInstitutionsLoading);
 
   projectForm = input.required<FormGroup<ProjectForm>>();
+
+  constructor() {
+    effect(() => {
+      this.projectForm()
+        .get(ProjectFormControls.Affiliations)
+        ?.setValue(this.selectedAffiliations().map((inst) => inst.id));
+    });
+
+    effect(() => {
+      const affiliations = this.affiliations();
+
+      if (affiliations?.length > 0) {
+        this.selectedAffiliations.set(affiliations);
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.actions.fetchUserInstitutions();
     this.actions.fetchRegions();
 
     this.projectForm()
-      .get(ProjectFormControls.Template)
-      ?.valueChanges.subscribe((value) => {
-        this.hasTemplateSelected.set(!!value);
-      });
-  }
+      .get(ProjectFormControls.StorageLocation)
+      ?.setValue(this.currentUser()?.defaultRegionId || '');
 
-  institutionsSelected(institutions: Institution[]) {
     this.projectForm()
-      .get(ProjectFormControls.Affiliations)
-      ?.setValue(institutions.map((inst) => inst.id));
+      .get(ProjectFormControls.Template)
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => this.hasTemplateSelected.set(!!value));
   }
 
   onTemplateChange(project: Project | null): void {

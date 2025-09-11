@@ -28,8 +28,7 @@ export class MetaTagsService {
 
   private readonly metaTagClass = 'osf-dynamic-meta';
 
-  // data from all active routed components that set meta tags
-  private metaTagStack: Array<{ metaTagsData: MetaTagsData; componentDestroyRef: DestroyRef }> = [];
+  private metaTagStack: { metaTagsData: MetaTagsData; componentDestroyRef: DestroyRef }[] = [];
 
   constructor(
     private meta: Meta,
@@ -63,19 +62,17 @@ export class MetaTagsService {
   }
 
   private metaTagStackWithout(destroyRefToRemove: DestroyRef) {
-    // get a copy of `this.metaTagStack` minus any entries with the given destroyRef
     return this.metaTagStack.filter(({ componentDestroyRef }) => componentDestroyRef !== destroyRefToRemove);
   }
 
   private applyNearestMetaTags() {
-    // apply the meta tags for the nearest active route that called `updateMetaTags` (if any)
     const nearest = this.metaTagStack.at(-1);
     if (nearest) {
       this.applyMetaTagsData(nearest.metaTagsData);
     } else {
       this.clearMetaTags();
     }
-  };
+  }
 
   private applyMetaTagsData(metaTagsData: MetaTagsData) {
     const combinedData = { ...this.defaultMetaTags, ...metaTagsData };

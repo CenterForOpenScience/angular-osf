@@ -21,11 +21,13 @@ import { environment } from 'src/environments/environment';
 })
 export class InstitutionsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Preprint, 'preprints'],
     [ResourceType.Agent, 'users'],
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],
+    [ResourceType.DraftRegistration, 'draft_registrations'],
   ]);
 
   getInstitutions(pageNumber: number, pageSize: number, searchValue?: string): Observable<InstitutionsWithTotalCount> {
@@ -44,12 +46,12 @@ export class InstitutionsService {
     }
 
     return this.jsonApiService
-      .get<InstitutionsWithMetaJsonApiResponse>(`${environment.apiUrl}/institutions/`, params)
+      .get<InstitutionsWithMetaJsonApiResponse>(`${this.apiUrl}/institutions/`, params)
       .pipe(map((response) => InstitutionsMapper.fromResponseWithMeta(response)));
   }
 
   getUserInstitutions(): Observable<Institution[]> {
-    const url = `${environment.apiUrl}/users/me/institutions/`;
+    const url = `${this.apiUrl}/users/me/institutions/`;
 
     return this.jsonApiService
       .get<InstitutionsJsonApiResponse>(url)
@@ -58,7 +60,7 @@ export class InstitutionsService {
 
   getInstitutionById(institutionId: string): Observable<Institution> {
     return this.jsonApiService
-      .get<InstitutionJsonApiResponse>(`${environment.apiUrl}/institutions/${institutionId}/`)
+      .get<InstitutionJsonApiResponse>(`${this.apiUrl}/institutions/${institutionId}/`)
       .pipe(map((response) => InstitutionsMapper.fromInstitutionData(response.data)));
   }
 
@@ -66,11 +68,12 @@ export class InstitutionsService {
     const payload = {
       data: [{ id: id, type: 'institutions' }],
     };
-    return this.jsonApiService.delete(`${environment.apiUrl}/users/${userId}/relationships/institutions/`, payload);
+
+    return this.jsonApiService.delete(`${this.apiUrl}/users/${userId}/relationships/institutions/`, payload);
   }
 
   getResourceInstitutions(resourceId: string, resourceType: ResourceType): Observable<Institution[]> {
-    const url = `${environment.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/institutions/`;
+    const url = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/institutions/`;
 
     return this.jsonApiService
       .get<InstitutionsJsonApiResponse>(url)
@@ -82,7 +85,7 @@ export class InstitutionsService {
     resourceType: ResourceType,
     institutions: Institution[]
   ): Observable<void> {
-    const baseUrl = `${environment.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/relationships/institutions/`;
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/relationships/institutions/`;
     const payload = {
       data: institutions.map((item) => ({ id: item.id, type: 'institutions' })),
     };

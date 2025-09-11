@@ -30,7 +30,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class PreprintsService {
-  private jsonApiService = inject(JsonApiService);
+  private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   private domainToApiFieldMap: Record<string, string> = {
     title: 'title',
@@ -58,7 +59,7 @@ export class PreprintsService {
           ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>,
           null
         >
-      >(`${environment.apiUrl}/preprints/`, payload)
+      >(`${this.apiUrl}/preprints/`, payload)
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
   }
 
@@ -69,7 +70,7 @@ export class PreprintsService {
           ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>,
           null
         >
-      >(`${environment.apiUrl}/preprints/${id}/`)
+      >(`${this.apiUrl}/preprints/${id}/`)
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
   }
 
@@ -86,12 +87,12 @@ export class PreprintsService {
           PreprintMetaJsonApi,
           null
         >
-      >(`${environment.apiUrl}/preprints/${id}/`, params)
+      >(`${this.apiUrl}/preprints/${id}/`, params)
       .pipe(map((response) => PreprintsMapper.fromPreprintWithEmbedsJsonApi(response)));
   }
 
   deletePreprint(id: string) {
-    return this.jsonApiService.delete(`${environment.apiUrl}/preprints/${id}/`);
+    return this.jsonApiService.delete(`${this.apiUrl}/preprints/${id}/`);
   }
 
   updatePreprint(id: string, payload: Partial<Preprint>): Observable<Preprint> {
@@ -99,7 +100,7 @@ export class PreprintsService {
 
     return this.jsonApiService
       .patch<ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>>(
-        `${environment.apiUrl}/preprints/${id}/`,
+        `${this.apiUrl}/preprints/${id}/`,
         {
           data: {
             type: 'preprints',
@@ -113,7 +114,7 @@ export class PreprintsService {
 
   submitPreprint(preprintId: string) {
     const payload = PreprintsMapper.toReviewActionPayload(preprintId, 'submit');
-    return this.jsonApiService.post(`${environment.apiUrl}/preprints/${preprintId}/review_actions/`, payload);
+    return this.jsonApiService.post(`${this.apiUrl}/preprints/${preprintId}/review_actions/`, payload);
   }
 
   createNewVersion(prevVersionPreprintId: string) {
@@ -123,7 +124,7 @@ export class PreprintsService {
           ApiData<PreprintAttributesJsonApi, null, PreprintRelationshipsJsonApi, PreprintLinksJsonApi>,
           null
         >
-      >(`${environment.apiUrl}/preprints/${prevVersionPreprintId}/versions/?version=2.20`)
+      >(`${this.apiUrl}/preprints/${prevVersionPreprintId}/versions/?version=2.20`)
       .pipe(map((response) => PreprintsMapper.fromPreprintJsonApi(response.data)));
   }
 
@@ -141,7 +142,7 @@ export class PreprintsService {
     return this.jsonApiService
       .get<
         ResponseJsonApi<ApiData<PreprintAttributesJsonApi, null, null, null>[]>
-      >(`${environment.apiUrl}/preprints/${preprintId}/versions/`)
+      >(`${this.apiUrl}/preprints/${preprintId}/versions/`)
       .pipe(map((response) => response.data.map((data) => data.id)));
   }
 
@@ -157,12 +158,12 @@ export class PreprintsService {
     return this.jsonApiService
       .get<
         ResponseJsonApi<ApiData<PreprintAttributesJsonApi, PreprintEmbedsJsonApi, PreprintRelationshipsJsonApi, null>[]>
-      >(`${environment.apiUrl}/users/me/preprints/`, params)
+      >(`${this.apiUrl}/users/me/preprints/`, params)
       .pipe(map((response) => PreprintsMapper.fromMyPreprintJsonApi(response)));
   }
 
   getPreprintReviewActions(preprintId: string) {
-    const baseUrl = `${environment.apiUrl}/preprints/${preprintId}/review_actions/`;
+    const baseUrl = `${this.apiUrl}/preprints/${preprintId}/review_actions/`;
 
     return this.jsonApiService
       .get<ReviewActionsResponseJsonApi>(baseUrl)
@@ -170,7 +171,7 @@ export class PreprintsService {
   }
 
   getPreprintRequests(preprintId: string): Observable<PreprintRequest[]> {
-    const baseUrl = `${environment.apiUrl}/preprints/${preprintId}/requests/?embed=creator`;
+    const baseUrl = `${this.apiUrl}/preprints/${preprintId}/requests/?embed=creator`;
 
     return this.jsonApiService
       .get<PreprintRequestsJsonApiResponse>(baseUrl)
@@ -178,7 +179,7 @@ export class PreprintsService {
   }
 
   getPreprintRequestActions(requestId: string): Observable<PreprintRequestAction[]> {
-    const baseUrl = `${environment.apiUrl}/requests/${requestId}/actions/`;
+    const baseUrl = `${this.apiUrl}/requests/${requestId}/actions/`;
 
     return this.jsonApiService
       .get<PreprintRequestActionsJsonApiResponse>(baseUrl)
@@ -188,16 +189,16 @@ export class PreprintsService {
   withdrawPreprint(preprintId: string, justification: string) {
     const payload = PreprintRequestMapper.toWithdrawPreprintPayload(preprintId, justification);
 
-    return this.jsonApiService.post(`${environment.apiUrl}/preprints/${preprintId}/requests/`, payload);
+    return this.jsonApiService.post(`${this.apiUrl}/preprints/${preprintId}/requests/`, payload);
   }
 
   submitReviewsDecision(preprintId: string, trigger: string, comment: StringOrNull) {
     const payload = PreprintsMapper.toReviewActionPayload(preprintId, trigger, comment);
-    return this.jsonApiService.post(`${environment.apiUrl}/actions/reviews/`, payload);
+    return this.jsonApiService.post(`${this.apiUrl}/actions/reviews/`, payload);
   }
 
   submitRequestsDecision(requestId: string, trigger: string, comment: StringOrNull) {
     const payload = PreprintRequestActionsMapper.toRequestActionPayload(requestId, trigger, comment);
-    return this.jsonApiService.post(`${environment.apiUrl}/actions/requests/preprints/`, payload);
+    return this.jsonApiService.post(`${this.apiUrl}/actions/requests/preprints/`, payload);
   }
 }

@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ResourceCardService {
   private jsonApiService = inject(JsonApiService);
+  private apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getUserRelatedCounts(userId: string): Observable<UserRelatedCounts> {
     const params: Record<string, string> = {
@@ -20,7 +21,7 @@ export class ResourceCardService {
     };
 
     return this.jsonApiService
-      .get<UserRelatedCountsResponseJsonApi>(`${environment.apiUrl}/users/${userId}/`, params)
+      .get<UserRelatedCountsResponseJsonApi>(`${this.apiUrl}/users/${userId}/`, params)
       .pipe(map((response) => MapUserCounts(response)));
   }
 }

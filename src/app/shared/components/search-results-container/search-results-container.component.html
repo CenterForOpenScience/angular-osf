@@ -51,6 +51,7 @@
             severity="secondary"
             icon="fas fa-sliders"
             size="large"
+            [ariaLabel]="'common.accessibility.openFilters' | translate"
             (click)="openFilters()"
           ></p-button>
         }
@@ -59,6 +60,7 @@
           severity="secondary"
           icon="fas fa-filter"
           size="large"
+          [ariaLabel]="'common.accessibility.openSortingOptions' | translate"
           (click)="openSorting()"
         ></p-button>
       </div>
@@ -107,13 +109,20 @@
 
               <div class="flex column-gap-2 w-full justify-content-center pt-2">
                 @if (first() && prev()) {
-                  <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(first())"></p-button>
+                  <p-button
+                    icon="fas fa-angles-left"
+                    severity="contrast"
+                    text
+                    [ariaLabel]="'common.accessibility.goToFirstPage' | translate"
+                    (click)="switchPage(first())"
+                  ></p-button>
                 }
 
                 <p-button
                   icon="fas fa-angle-left"
                   severity="contrast"
                   text
+                  [ariaLabel]="'common.accessibility.goToPreviousPage' | translate"
                   [disabled]="!prev()"
                   (click)="switchPage(prev())"
                 >
@@ -123,6 +132,7 @@
                   icon="fas fa-angle-right"
                   severity="contrast"
                   text
+                  [ariaLabel]="'common.accessibility.goToNextPage' | translate"
                   [disabled]="!next()"
                   (click)="switchPage(!next() ? first() : next())"
                 >

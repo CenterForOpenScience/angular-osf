@@ -35,24 +35,24 @@ import { CollectionsSearchResultsComponent } from '../collections-search-results
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionsMainContentComponent {
-  protected readonly sortOptions = collectionsSortOptions;
-  protected isWeb = toSignal(inject(IS_WEB));
-  protected selectedSort = select(CollectionsSelectors.getSortBy);
-  protected collectionSubmissions = select(CollectionsSelectors.getCollectionSubmissionsSearchResult);
-  protected isCollectionSubmissionsLoading = select(CollectionsSelectors.getCollectionSubmissionsLoading);
+  readonly sortOptions = collectionsSortOptions;
+  isWeb = toSignal(inject(IS_WEB));
+  selectedSort = select(CollectionsSelectors.getSortBy);
+  collectionSubmissions = select(CollectionsSelectors.getCollectionSubmissionsSearchResult);
+  isCollectionSubmissionsLoading = select(CollectionsSelectors.getCollectionSubmissionsLoading);
 
-  protected isFiltersOpen = signal(false);
-  protected isSortingOpen = signal(false);
+  isFiltersOpen = signal(false);
+  isSortingOpen = signal(false);
 
-  protected selectedFilters = select(CollectionsSelectors.getAllSelectedFilters);
-  protected isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
-  protected isCollectionDetailsLoading = select(CollectionsSelectors.getCollectionDetailsLoading);
+  selectedFilters = select(CollectionsSelectors.getAllSelectedFilters);
+  isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  isCollectionDetailsLoading = select(CollectionsSelectors.getCollectionDetailsLoading);
 
-  protected isCollectionLoading = computed(() => {
+  isCollectionLoading = computed(() => {
     return this.isCollectionProviderLoading() || this.isCollectionDetailsLoading();
   });
 
-  protected hasAnySelectedFilters = computed(() => {
+  hasAnySelectedFilters = computed(() => {
     const currentFilters = this.selectedFilters();
     const hasSelectedFiltersOptions = Object.values(currentFilters).some((value) => {
       return value.length;
@@ -61,21 +61,21 @@ export class CollectionsMainContentComponent {
     return hasSelectedFiltersOptions;
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     setSortBy: SetSortBy,
   });
 
-  protected openFilters(): void {
+  openFilters(): void {
     this.isFiltersOpen.set(!this.isFiltersOpen());
     this.isSortingOpen.set(false);
   }
 
-  protected openSorting(): void {
+  openSorting(): void {
     this.isSortingOpen.set(!this.isSortingOpen());
     this.isFiltersOpen.set(false);
   }
 
-  protected handleSortBy(value: string): void {
+  handleSortBy(value: string): void {
     this.actions.setSortBy(value);
     this.isSortingOpen.set(false);
   }

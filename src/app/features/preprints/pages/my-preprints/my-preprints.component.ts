@@ -24,7 +24,7 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ListInfoShortenerComponent, SearchInputComponent, SubHeaderComponent } from '@osf/shared/components';
-import { TABLE_PARAMS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { parseQueryFilterParams } from '@osf/shared/helpers';
 import { QueryParams, SearchFilters, TableParameters } from '@osf/shared/models';
@@ -61,8 +61,8 @@ export class MyPreprintsComponent {
   sortColumn = signal('');
   sortOrder = signal<SortOrder>(SortOrder.Asc);
   currentPage = signal(1);
-  currentPageSize = signal(TABLE_PARAMS.rows);
-  tableParams = signal<TableParameters>({ ...TABLE_PARAMS, firstRowIndex: 0 });
+  currentPageSize = signal(DEFAULT_TABLE_PARAMS.rows);
+  tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS, firstRowIndex: 0 });
 
   preprints = select(PreprintSelectors.getMyPreprints);
   preprintsTotalCount = select(PreprintSelectors.getMyPreprintsTotalCount);

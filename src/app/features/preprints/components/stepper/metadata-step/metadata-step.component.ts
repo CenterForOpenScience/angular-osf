@@ -21,10 +21,10 @@ import {
   SaveLicense,
   UpdatePreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
+import { findChangedFields } from '@osf/shared/helpers';
 import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@shared/components';
 import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
-import { License, LicenseOptions } from '@shared/models';
+import { LicenseModel, LicenseOptions } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 
 import { ContributorsComponent } from './contributors/contributors.component';
@@ -64,10 +64,10 @@ export class MetadataStepComponent implements OnInit {
     saveLicense: SaveLicense,
   });
 
-  protected metadataForm!: FormGroup<MetadataForm>;
-  protected inputLimits = formInputLimits;
-  protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
-  protected today = new Date();
+  metadataForm!: FormGroup<MetadataForm>;
+  inputLimits = formInputLimits;
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  today = new Date();
 
   licenses = select(PreprintStepperSelectors.getLicenses);
   createdPreprint = select(PreprintStepperSelectors.getPreprint);
@@ -87,7 +87,7 @@ export class MetadataStepComponent implements OnInit {
     this.metadataForm = new FormGroup<MetadataForm>({
       doi: new FormControl(this.createdPreprint()?.doi || null, {
         nonNullable: true,
-        validators: [CustomValidators.requiredTrimmed(), Validators.pattern(this.inputLimits.doi.pattern)],
+        validators: [Validators.pattern(this.inputLimits.doi.pattern)],
       }),
       originalPublicationDate: new FormControl(publicationDate ? new Date(publicationDate) : null, {
         nonNullable: false,
@@ -129,7 +129,7 @@ export class MetadataStepComponent implements OnInit {
     this.actions.saveLicense(licenseDetails.id, licenseDetails.licenseOptions);
   }
 
-  selectLicense(license: License) {
+  selectLicense(license: LicenseModel) {
     if (license.requiredFields.length) {
       return;
     }

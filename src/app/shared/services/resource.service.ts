@@ -26,6 +26,7 @@ import { environment } from 'src/environments/environment';
 export class ResourceGuidService {
   private jsonApiService = inject(JsonApiService);
   private loaderService = inject(LoaderService);
+  private apiUrl = `${environment.apiDomainUrl}/v2`;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -33,7 +34,7 @@ export class ResourceGuidService {
   ]);
 
   getResourceById(id: string): Observable<CurrentResource> {
-    const baseUrl = `${environment.apiUrl}/guids/${id}/`;
+    const baseUrl = `${this.apiUrl}/guids/${id}/`;
 
     this.loaderService.show();
 
@@ -61,15 +62,19 @@ export class ResourceGuidService {
     const resourcePath = this.urlMap.get(resourceType);
 
     return this.jsonApiService
-      .get<ResponseDataJsonApi<BaseNodeDataJsonApi>>(`${environment.apiUrl}/${resourcePath}/${resourceId}/`)
+      .get<ResponseDataJsonApi<BaseNodeDataJsonApi>>(`${this.apiUrl}/${resourcePath}/${resourceId}/`)
       .pipe(map((response) => BaseNodeMapper.getNodeData(response.data)));
   }
 
-  getResourceWithChildren(resourceId: string, resourceType: ResourceType): Observable<NodeShortInfoModel[]> {
+  getResourceWithChildren(
+    rootParentId: string,
+    resourceId: string,
+    resourceType: ResourceType
+  ): Observable<NodeShortInfoModel[]> {
     const resourcePath = this.urlMap.get(resourceType);
 
     return this.jsonApiService
-      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${environment.apiUrl}/${resourcePath}/?filter[root]=${resourceId}`)
-      .pipe(map((response) => BaseNodeMapper.getNodesWithChildren(response.data.reverse())));
+      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${this.apiUrl}/${resourcePath}/?filter[root]=${rootParentId}`)
+      .pipe(map((response) => BaseNodeMapper.getNodesWithChildren(response.data, resourceId)));
   }
 }

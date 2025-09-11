@@ -6,13 +6,13 @@
       <p-button
         severity="secondary"
         [label]="'common.buttons.edit' | translate"
-        (click)="openEditFundingDialog.emit()"
+        (onClick)="openEditFundingDialog.emit()"
       ></p-button>
     }
   </div>
 
   @if (funders()?.length) {
-    <div class="pt-4">
+    <div class="mt-4">
       @for (funder of funders(); track funder.funderIdentifier) {
         <div class="mb-2 pb-3 border-bottom-1 surface-border flex flex-column gap-2">
           <p>{{ 'files.detail.resourceMetadata.fields.funder' | translate }}: {{ funder.funderName }}</p>
@@ -22,23 +22,21 @@
           @if (funder.awardUri) {
             <p>
               {{ 'files.detail.resourceMetadata.fields.awardUri' | translate }}:
-              <a [href]="funder.awardUri" target="_blank" class="text-primary text-sm">{{ funder.awardTitle }}</a>
+              <a class="font-bold" [href]="funder.awardUri" target="_blank">
+                {{ funder.awardUri }}
+              </a>
             </p>
           }
 
           @if (funder.awardNumber) {
-            <p>{{ 'files.detail.resourceMetadata.fields.awardNumber' | translate }} : {{ funder.awardNumber }}</p>
-          }
-
-          @if (funder.awardUri) {
-            <a [href]="funder.awardUri" target="_blank" class="text-primary text-sm">{{ funder.awardUri }}</a>
+            <p>{{ 'files.detail.resourceMetadata.fields.awardNumber' | translate }}: {{ funder.awardNumber }}</p>
           }
         </div>
       }
     </div>
   } @else {
-    <div class="pt-4">
-      <p class="text-color-secondary">{{ 'project.overview.metadata.noSupplements' | translate }}</p>
+    <div class="mt-4">
+      <p>{{ 'project.overview.metadata.noInformation' | translate }}</p>
     </div>
   }
 </p-card>

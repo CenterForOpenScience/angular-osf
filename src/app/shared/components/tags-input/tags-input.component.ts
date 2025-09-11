@@ -32,17 +32,12 @@ export class TagsInputComponent {
   inputElement = viewChild<ElementRef<HTMLInputElement>>('tagInput');
 
   localTags = signal<string[]>([]);
-  private isLocalUpdate = false;
 
   constructor() {
     effect(() => {
       const incoming = this.tags();
 
-      if (!this.isLocalUpdate) {
-        this.localTags.set([...incoming]);
-      }
-
-      this.isLocalUpdate = false;
+      this.localTags.set([...incoming]);
     });
   }
 
@@ -92,8 +87,6 @@ export class TagsInputComponent {
       const updatedTags = [...currentTags, normalizedValue];
 
       this.localTags.set(updatedTags);
-      this.isLocalUpdate = true;
-
       this.tagsChanged.emit(updatedTags);
     }
   }
@@ -105,8 +98,6 @@ export class TagsInputComponent {
     const updatedTags = currentTags.filter((_, i) => i !== index);
 
     this.localTags.set(updatedTags);
-    this.isLocalUpdate = true;
-
     this.tagsChanged.emit(updatedTags);
   }
 }

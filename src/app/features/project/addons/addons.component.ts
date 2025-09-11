@@ -33,7 +33,9 @@ import {
   GetAddonsUserReference,
   GetCitationAddons,
   GetConfiguredCitationAddons,
+  GetConfiguredLinkAddons,
   GetConfiguredStorageAddons,
+  GetLinkAddons,
   GetStorageAddons,
 } from '@shared/stores/addons';
 
@@ -60,84 +62,126 @@ import {
 export class AddonsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
-  protected readonly tabOptions = ADDON_TAB_OPTIONS;
-  protected readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
-  protected readonly AddonTabValue = AddonTabValue;
-  protected readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
-  protected searchControl = new FormControl<string>('');
-  protected searchValue = signal<string>('');
-  protected selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
-  protected selectedTab = signal<number>(this.defaultTabValue);
+  readonly tabOptions = ADDON_TAB_OPTIONS;
+  readonly categoryOptions = ADDON_CATEGORY_OPTIONS;
+  readonly AddonTabValue = AddonTabValue;
+  readonly defaultTabValue = AddonTabValue.ALL_ADDONS;
+  searchControl = new FormControl<string>('');
+  searchValue = signal<string>('');
+  selectedCategory = signal<string>(AddonCategory.EXTERNAL_STORAGE_SERVICES);
+  selectedTab = signal<number>(this.defaultTabValue);
 
-  protected currentUser = select(UserSelectors.getCurrentUser);
-  protected addonsResourceReference = select(AddonsSelectors.getAddonsResourceReference);
-  protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
-  protected storageAddons = select(AddonsSelectors.getStorageAddons);
-  protected citationAddons = select(AddonsSelectors.getCitationAddons);
-  protected configuredStorageAddons = select(AddonsSelectors.getConfiguredStorageAddons);
-  protected configuredCitationAddons = select(AddonsSelectors.getConfiguredCitationAddons);
+  currentUser = select(UserSelectors.getCurrentUser);
+  addonsResourceReference = select(AddonsSelectors.getAddonsResourceReference);
+  addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
+  storageAddons = select(AddonsSelectors.getStorageAddons);
+  citationAddons = select(AddonsSelectors.getCitationAddons);
+  linkAddons = select(AddonsSelectors.getLinkAddons);
+  configuredStorageAddons = select(AddonsSelectors.getConfiguredStorageAddons);
+  configuredCitationAddons = select(AddonsSelectors.getConfiguredCitationAddons);
+  configuredLinkAddons = select(AddonsSelectors.getConfiguredLinkAddons);
 
-  protected isCurrentUserLoading = select(UserSelectors.getCurrentUserLoading);
-  protected isUserReferenceLoading = select(AddonsSelectors.getAddonsUserReferenceLoading);
-  protected isResourceReferenceLoading = select(AddonsSelectors.getAddonsResourceReferenceLoading);
-  protected isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
-  protected isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
-  protected isConfiguredStorageAddonsLoading = select(AddonsSelectors.getConfiguredStorageAddonsLoading);
-  protected isConfiguredCitationAddonsLoading = select(AddonsSelectors.getConfiguredCitationAddonsLoading);
-  protected isAddonsLoading = computed(() => {
+  isCurrentUserLoading = select(UserSelectors.getCurrentUserLoading);
+  isUserReferenceLoading = select(AddonsSelectors.getAddonsUserReferenceLoading);
+  isResourceReferenceLoading = select(AddonsSelectors.getAddonsResourceReferenceLoading);
+  isStorageAddonsLoading = select(AddonsSelectors.getStorageAddonsLoading);
+  isCitationAddonsLoading = select(AddonsSelectors.getCitationAddonsLoading);
+  isConfiguredStorageAddonsLoading = select(AddonsSelectors.getConfiguredStorageAddonsLoading);
+  isConfiguredCitationAddonsLoading = select(AddonsSelectors.getConfiguredCitationAddonsLoading);
+  isConfiguredLinkAddonsLoading = select(AddonsSelectors.getConfiguredLinkAddonsLoading);
+  isAddonsLoading = computed(() => {
     return (
       this.isStorageAddonsLoading() ||
       this.isCitationAddonsLoading() ||
+      this.isLinkAddonsLoading() ||
       this.isUserReferenceLoading() ||
       this.isCurrentUserLoading()
     );
   });
-  protected isConfiguredAddonsLoading = computed(() => {
+  isConfiguredAddonsLoading = computed(() => {
     return (
       this.isConfiguredStorageAddonsLoading() ||
       this.isConfiguredCitationAddonsLoading() ||
+      this.isConfiguredLinkAddonsLoading() ||
       this.isResourceReferenceLoading() ||
       this.isCurrentUserLoading()
     );
   });
 
-  protected actions = createDispatchMap({
+  isLinkAddonsLoading = select(AddonsSelectors.getLinkAddonsLoading);
+
+  currentAddonsLoading = computed(() => {
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        return this.isStorageAddonsLoading();
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        return this.isCitationAddonsLoading();
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        return this.isLinkAddonsLoading();
+      default:
+        return this.isStorageAddonsLoading();
+    }
+  });
+
+  actions = createDispatchMap({
     getStorageAddons: GetStorageAddons,
     getCitationAddons: GetCitationAddons,
+    getLinkAddons: GetLinkAddons,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     getConfiguredCitationAddons: GetConfiguredCitationAddons,
+    getConfiguredLinkAddons: GetConfiguredLinkAddons,
     getAddonsUserReference: GetAddonsUserReference,
     getAddonsResourceReference: GetAddonsResourceReference,
     deleteAuthorizedAddon: DeleteAuthorizedAddon,
     clearConfiguredAddons: ClearConfiguredAddons,
   });
 
-  protected readonly userReferenceId = computed(() => {
+  readonly userReferenceId = computed(() => {
     return this.addonsUserReference()[0]?.id;
   });
 
-  protected allConfiguredAddons = computed(() => {
-    const authorizedAddons = [...this.configuredStorageAddons(), ...this.configuredCitationAddons()];
+  allConfiguredAddons = computed(() => {
+    const authorizedAddons = [
+      ...this.configuredStorageAddons(),
+      ...this.configuredCitationAddons(),
+      ...this.configuredLinkAddons(),
+    ];
 
     const searchValue = this.searchValue().toLowerCase();
     return authorizedAddons.filter((card) => card.displayName.toLowerCase().includes(searchValue));
   });
 
-  protected resourceReferenceId = computed(() => {
+  resourceReferenceId = computed(() => {
     return this.addonsResourceReference()[0]?.id;
   });
 
-  protected currentAction = computed(() =>
-    this.selectedCategory() === AddonCategory.EXTERNAL_STORAGE_SERVICES
-      ? this.actions.getStorageAddons
-      : this.actions.getCitationAddons
-  );
+  currentAction = computed(() => {
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        return this.actions.getStorageAddons;
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        return this.actions.getCitationAddons;
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        return this.actions.getLinkAddons;
+      default:
+        return this.actions.getStorageAddons;
+    }
+  });
 
-  protected currentAddonsState = computed(() =>
-    this.selectedCategory() === AddonCategory.EXTERNAL_STORAGE_SERVICES ? this.storageAddons() : this.citationAddons()
-  );
+  currentAddonsState = computed(() => {
+    switch (this.selectedCategory()) {
+      case AddonCategory.EXTERNAL_STORAGE_SERVICES:
+        return this.storageAddons();
+      case AddonCategory.EXTERNAL_CITATION_SERVICES:
+        return this.citationAddons();
+      case AddonCategory.EXTERNAL_LINK_SERVICES:
+        return this.linkAddons();
+      default:
+        return this.storageAddons();
+    }
+  });
 
-  protected filteredAddonCards = computed(() => {
+  filteredAddonCards = computed(() => {
     const searchValue = this.searchValue().toLowerCase();
     return this.currentAddonsState().filter(
       (card) =>
@@ -146,7 +190,7 @@ export class AddonsComponent implements OnInit {
     );
   });
 
-  protected onCategoryChange(value: Primitive): void {
+  onCategoryChange(value: Primitive): void {
     if (typeof value === 'string') {
       this.selectedCategory.set(value);
     }
@@ -163,8 +207,9 @@ export class AddonsComponent implements OnInit {
       if (this.currentUser()) {
         const action = this.currentAction();
         const addons = this.currentAddonsState();
+        const isLoading = this.currentAddonsLoading();
 
-        if (!addons?.length) {
+        if (!addons?.length && !isLoading) {
           action();
         }
       }
@@ -199,5 +244,6 @@ export class AddonsComponent implements OnInit {
   private fetchAllConfiguredAddons(resourceReferenceId: string): void {
     this.actions.getConfiguredStorageAddons(resourceReferenceId);
     this.actions.getConfiguredCitationAddons(resourceReferenceId);
+    this.actions.getConfiguredLinkAddons(resourceReferenceId);
   }
 }

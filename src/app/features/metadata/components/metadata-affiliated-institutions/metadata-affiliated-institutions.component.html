@@ -6,10 +6,12 @@
       <p-button
         severity="secondary"
         [label]="'common.buttons.edit' | translate"
-        (click)="openEditAffiliatedInstitutionsDialog.emit()"
+        (onClick)="openEditAffiliatedInstitutionsDialog.emit()"
       ></p-button>
     }
   </div>
 
-  <osf-affiliated-institutions-view [institutions]="affiliatedInstitutions()" [showTitle]="false" />
+  <div class="mt-4">
+    <osf-affiliated-institutions-view [institutions]="affiliatedInstitutions()" [showTitle]="false" />
+  </div>
 </p-card>

@@ -1,22 +1,32 @@
 <osf-admin-table
   [tableColumns]="tableColumns"
   [tableData]="tableData()"
-  [isLoading]="isLoading()"
-  [enablePagination]="false"
+  [isLoading]="areResourcesLoading()"
   [isNextPreviousPagination]="true"
-  [paginationLinks]="projectsLinks()"
-  [totalCount]="totalCount()"
-  [pageSize]="currentPageSize()"
-  [first]="first()"
-  [sortField]="sortField()"
-  [sortOrder]="sortOrder()"
   (sortChanged)="onSortChange($event)"
-  (linkPageChanged)="onLinkPageChange($event)"
+  (pageSwitched)="onLinkPageChange($event)"
+  [paginationLinks]="paginationLinks()"
   (downloadClicked)="download($event)"
   (iconClicked)="onIconClick($event)"
-  [reportsLink]="institution().linkToExternalReportsArchive"
+  [reportsLink]="institution()!.linkToExternalReportsArchive"
 >
   <div slot="amount" class="flex items-center">
-    <h3 class="title">{{ totalCount() }} {{ 'adminInstitutions.projects.totalProjects' | translate }}</h3>
+    <p class="text-primary font-bold">
+      {{ resourcesCount() }} {{ 'adminInstitutions.projects.totalProjects' | translate }}
+    </p>
+  </div>
+
+  <div slot="otherFilters">
+    <p-button
+      styleClass="grey-border-color"
+      icon="fas fa-filter text-primary text-xl"
+      [label]="'adminInstitutions.common.filters' | translate"
+      outlined
+      (onClick)="filtersVisible.set(!filtersVisible())"
+    />
+  </div>
+
+  <div slot="tableFilters">
+    <osf-institution-resource-table-filters [(filtersVisible)]="filtersVisible" />
   </div>
 </osf-admin-table>

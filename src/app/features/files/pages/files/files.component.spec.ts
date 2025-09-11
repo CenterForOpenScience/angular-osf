@@ -21,10 +21,9 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
-import { GoogleFilePickerComponent } from '@osf/shared/components/addons/folder-selector/google-file-picker/google-file-picker.component';
+import { GoogleFilePickerComponent } from '@osf/shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
 import { OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, FilesService } from '@osf/shared/services';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { FilesSelectors } from '../../store';
 
@@ -32,7 +31,6 @@ import { FilesComponent } from './files.component';
 
 import { getConfiguredAddonsMappedData } from '@testing/data/addons/addons.configured.data';
 import { getNodeFilesMappedData } from '@testing/data/files/node.data';
-import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
 import { OSFTestingModule } from '@testing/osf.testing.module';
 import { MockComponentWithSignal } from '@testing/providers/component-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -42,12 +40,8 @@ describe('Component: Files', () => {
   let fixture: ComponentFixture<FilesComponent>;
   const currentFolderSignal = signal(getNodeFilesMappedData(0));
 
-  let dataciteService: jest.Mocked<DataciteService>;
-
   beforeEach(async () => {
     jest.clearAllMocks();
-    window.open = jest.fn();
-    dataciteService = DataciteMockFactory();
     await TestBed.configureTestingModule({
       imports: [
         OSFTestingModule,
@@ -69,7 +63,6 @@ describe('Component: Files', () => {
         FilesService,
         MockProvider(ActivatedRoute),
         MockProvider(CustomConfirmationService),
-        { provide: DataciteService, useValue: dataciteService },
         DialogService,
         provideMockStore({
           signals: [
@@ -104,6 +97,8 @@ describe('Component: Files', () => {
               'viewOnlyDownloadable',
               'resourceId',
               'provider',
+              'storage',
+              'totalCount',
             ]),
           ],
         },
@@ -187,14 +182,6 @@ describe('Component: Files', () => {
 
       expect(component.filesTreeActions.setFilesIsLoading).not.toHaveBeenCalled();
       expect(dispatchSpy).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Download file', () => {
-    it('', () => {
-      component.resourceId.set('123');
-      component.downloadFolder();
-      expect(dataciteService.logFileDownload).toHaveBeenCalledWith('123', 'nodes');
     });
   });
 });

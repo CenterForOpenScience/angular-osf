@@ -4,23 +4,16 @@ import {
   OperationInvocationRequestJsonApi,
 } from '@shared/models';
 
-/**
- * NGXS Action to initiate loading of all available storage addon types.
- *
- * This action is handled by the `AddonsState` and triggers an HTTP
- * request to retrieve external storage addon definitions (e.g., Google Drive, Dropbox).
- *
- * @example
- * store.dispatch(new GetStorageAddons());
- *
- * @see AddonsState.getStorageAddons
- */
 export class GetStorageAddons {
   static readonly type = '[Addons] Get Storage Addons';
 }
 
 export class GetCitationAddons {
   static readonly type = '[Addons] Get Citation Addons';
+}
+
+export class GetLinkAddons {
+  static readonly type = '[Addons] Get Link Addons';
 }
 
 export class GetAuthorizedStorageAddons {
@@ -41,18 +34,12 @@ export class GetAuthorizedCitationAddons {
   constructor(public referenceId: string) {}
 }
 
-/**
- * NGXS Action to initiate loading of configured storage addons
- * for a specific resource reference (e.g., node, registration).
- *
- * This action is handled by the `AddonsState` and triggers an HTTP
- * request to fetch addons configured for the given `referenceId`.
- *
- * @example
- * store.dispatch(new GetConfiguredStorageAddons('abc123'));
- *
- * @see AddonsState.getConfiguredStorageAddons
- */
+export class GetAuthorizedLinkAddons {
+  static readonly type = '[Addons] Get Authorized Link Addons';
+
+  constructor(public referenceId: string) {}
+}
+
 export class GetConfiguredStorageAddons {
   static readonly type = '[Addons] Get Configured Storage Addons';
 
@@ -61,6 +48,12 @@ export class GetConfiguredStorageAddons {
 
 export class GetConfiguredCitationAddons {
   static readonly type = '[Addons] Get Configured Citation Addons';
+
+  constructor(public referenceId: string) {}
+}
+
+export class GetConfiguredLinkAddons {
+  static readonly type = '[Addons] Get Configured Link Addons';
 
   constructor(public referenceId: string) {}
 }

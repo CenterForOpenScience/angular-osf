@@ -22,9 +22,28 @@ export type IndexCardSearchResponseJsonApi = JsonApiResponse<
         };
       };
     };
+    links: {
+      self: string;
+    };
   },
-  (IndexCardDataJsonApi | ApiData<RelatedPropertyPathAttributes, null, null, null>)[]
+  (IndexCardDataJsonApi | ApiData<RelatedPropertyPathAttributes, null, null, null> | SearchResultJsonApi)[]
 >;
+
+export interface SearchResultJsonApi {
+  id: string;
+  type: 'search-result';
+  relationships: {
+    indexCard: {
+      data: {
+        id: string;
+        type: 'index-card';
+      };
+    };
+  };
+  attributes?: {
+    cardSearchResultCount: number;
+  };
+}
 
 export type IndexCardDataJsonApi = ApiData<IndexCardAttributesJsonApi, null, null, null>;
 
@@ -54,6 +73,10 @@ interface ResourceMetadataJsonApi {
   statedConflictOfInterest: { '@value': string }[];
   resourceNature: ResourceNature[];
   isPartOfCollection: MetadataField[];
+  storageByteCount: { '@value': string }[];
+  storageRegion: { prefLabel: { '@value': string }[] }[];
+  usage: Usage;
+  hasOsfAddon: { prefLabel: { '@value': string }[] }[];
   funder: MetadataField[];
   affiliation: MetadataField[];
   qualifiedAttribution: QualifiedAttribution[];
@@ -81,6 +104,11 @@ interface QualifiedAttribution {
   agent: { '@id': string }[];
   hadRole: { '@id': string }[];
   'osf:order': { '@value': string }[];
+}
+
+interface Usage {
+  viewCount: { '@value': string }[];
+  downloadCount: { '@value': string }[];
 }
 
 interface IsContainedBy extends MetadataField {

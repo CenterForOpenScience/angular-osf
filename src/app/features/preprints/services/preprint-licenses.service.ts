@@ -10,7 +10,7 @@ import {
   PreprintRelationshipsJsonApi,
 } from '@osf/features/preprints/models';
 import { LicensesMapper } from '@shared/mappers';
-import { ApiData, License, LicenseOptions, LicensesResponseJsonApi } from '@shared/models';
+import { ApiData, LicenseModel, LicenseOptions, LicensesResponseJsonApi } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
@@ -19,10 +19,10 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class PreprintLicensesService {
-  private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
-  getLicenses(providerId: string): Observable<License[]> {
+  getLicenses(providerId: string): Observable<LicenseModel[]> {
     return this.jsonApiService
       .get<LicensesResponseJsonApi>(`${this.apiUrl}/providers/preprints/${providerId}/licenses/`, {
         'page[size]': 100,

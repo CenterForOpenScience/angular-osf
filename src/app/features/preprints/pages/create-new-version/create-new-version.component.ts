@@ -18,7 +18,7 @@ import {
   signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { FileStepComponent, ReviewStepComponent } from '@osf/features/preprints/components';
 import { createNewVersionStepsConst } from '@osf/features/preprints/constants';
@@ -45,7 +45,8 @@ import { BrandService } from '@shared/services';
 export class CreateNewVersionComponent implements OnInit, OnDestroy, CanDeactivateComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full';
 
-  private readonly route = inject(ActivatedRoute);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   private providerId = toSignal(this.route.params.pipe(map((params) => params['providerId'])) ?? of(undefined));
   private preprintId = toSignal(this.route.params.pipe(map((params) => params['preprintId'])) ?? of(undefined));
@@ -114,7 +115,8 @@ export class CreateNewVersionComponent implements OnInit, OnDestroy, CanDeactiva
   }
 
   moveToPreviousStep() {
-    this.currentStep.set(this.newVersionSteps[this.currentStep()?.index - 1]);
+    const id = this.preprintId().split('_')[0];
+    this.router.navigate([id]);
   }
 
   @HostListener('window:beforeunload', ['$event'])

@@ -141,9 +141,9 @@ export class GlobalSearchState {
   @Action(LoadFilterOptionsWithSearch)
   loadFilterOptionsWithSearch(ctx: StateContext<GlobalSearchStateModel>, action: LoadFilterOptionsWithSearch) {
     const state = ctx.getState();
+    const filterKey = action.filterKey;
     const loadingFilters = state.filters.map((f) => (f.key === filterKey ? { ...f, isSearchLoading: true } : f));
     ctx.patchState({ filters: loadingFilters });
-    const filterKey = action.filterKey;
     return this.searchService
       .getFilterOptions(this.buildParamsForIndexValueSearch(state, filterKey, action.searchText))
       .pipe(
@@ -287,7 +287,7 @@ export class GlobalSearchState {
   ): Record<string, string> {
     return {
       ...this.buildParamsForIndexCardSearch(state),
-      'page[size]': '50',
+      'page[size]': '200',
       valueSearchPropertyPath: filterKey,
       valueSearchText: valueSearchText ?? '',
     };
@@ -312,7 +312,10 @@ export class GlobalSearchState {
     filtersParams['cardSearchFilter[accessService]'] = `${environment.webUrl}/`;
     filtersParams['cardSearchText[*,creator.name,isContainedBy.creator.name]'] = state.searchText ?? '';
     filtersParams['page[size]'] = '10';
-    filtersParams['sort'] = state.sortBy;
+
+    const sortBy = state.sortBy;
+    const sortParam = sortBy.includes('date') || sortBy.includes('relevance') ? 'sort' : 'sort[integer-value]';
+    filtersParams[sortParam] = sortBy;
 
     Object.entries(state.defaultFilterValues).forEach(([key, value]) => {
       filtersParams[`cardSearchFilter[${key}][]`] = value;

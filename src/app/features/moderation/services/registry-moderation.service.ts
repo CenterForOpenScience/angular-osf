@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 })
 export class RegistryModerationService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getRegistrySubmissions(
     provider: string,
@@ -28,7 +29,7 @@ export class RegistryModerationService {
         ? `filter[reviews_state]=embargo,accepted&filter[revision_state]=pending_moderation`
         : `filter[reviews_state]=${status}`;
 
-    const baseUrl = `${environment.apiUrl}/providers/registrations/${provider}/registrations/?page=${page}&page[size]=10&${filters}&sort=${sort}`;
+    const baseUrl = `${this.apiUrl}/providers/registrations/${provider}/registrations/?page=${page}&page[size]=10&${filters}&sort=${sort}`;
     const params = {
       'embed[]': ['schema_responses'],
     };
@@ -38,7 +39,7 @@ export class RegistryModerationService {
   }
 
   getRegistrySubmissionHistory(id: string): Observable<ReviewAction[]> {
-    const baseUrl = `${environment.apiUrl}/registrations/${id}/actions/`;
+    const baseUrl = `${this.apiUrl}/registrations/${id}/actions/`;
 
     return this.jsonApiService
       .get<ReviewActionsResponseJsonApi>(baseUrl)

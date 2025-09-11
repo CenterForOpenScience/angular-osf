@@ -8,7 +8,7 @@
       @if (isLoading()) {
         <p-skeleton width="12rem" height="37px"></p-skeleton>
       } @else {
-        <h1 class="flex align-items-center">
+        <h1 data-test-page-heading class="flex align-items-center">
           {{ title() }}
           @if (tooltip()) {
             <i

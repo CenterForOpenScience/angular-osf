@@ -2,99 +2,107 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Button } from 'primeng/button';
 
-import { TABLE_PARAMS } from '@osf/shared/constants';
-import { SortOrder } from '@osf/shared/enums';
-import { Institution, QueryParams } from '@osf/shared/models';
-import { InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
+
+import { ResourceType, SortOrder } from '@osf/shared/enums';
+import { PaginationLinksModel, SearchFilters } from '@osf/shared/models';
+import {
+  ClearFilterSearchResults,
+  FetchResources,
+  FetchResourcesByLink,
+  GlobalSearchSelectors,
+  ResetSearchState,
+  SetDefaultFilterValue,
+  SetResourceType,
+  SetSortBy,
+} from '@shared/stores/global-search';
 
 import { AdminTableComponent } from '../../components';
+import { FiltersSectionComponent } from '../../components/filters-section/filters-section.component';
 import { registrationTableColumns } from '../../constants';
 import { DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
-import { mapRegistrationToTableData } from '../../mappers';
+import { mapRegistrationResourceToTableData } from '../../mappers/institution-registration-to-table-data.mapper';
 import { TableCellData } from '../../models';
-import { FetchRegistrations, InstitutionsAdminSelectors } from '../../store';
+import { InstitutionsAdminSelectors } from '../../store';
 
 @Component({
   selector: 'osf-institutions-registrations',
-  imports: [CommonModule, AdminTableComponent, TranslatePipe],
+  imports: [CommonModule, AdminTableComponent, TranslatePipe, Button, FiltersSectionComponent],
   templateUrl: './institutions-registrations.component.html',
   styleUrl: './institutions-registrations.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InstitutionsRegistrationsComponent implements OnInit {
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
+export class InstitutionsRegistrationsComponent implements OnInit, OnDestroy {
+  private readonly actions = createDispatchMap({
+    clearFilterSearchResults: ClearFilterSearchResults,
+    setDefaultFilterValue: SetDefaultFilterValue,
+    resetSearchState: ResetSearchState,
+    setSortBy: SetSortBy,
+    setResourceType: SetResourceType,
+    fetchResources: FetchResources,
+    fetchResourcesByLink: FetchResourcesByLink,
+  });
 
-  private readonly actions = createDispatchMap({ fetchRegistrations: FetchRegistrations });
+  tableColumns = registrationTableColumns;
+  filtersVisible = signal(false);
 
-  private institutionId = '';
-
-  institution = select(InstitutionsSearchSelectors.getInstitution);
-  registrations = select(InstitutionsAdminSelectors.getRegistrations);
-  totalCount = select(InstitutionsAdminSelectors.getRegistrationsTotalCount);
-  isLoading = select(InstitutionsAdminSelectors.getRegistrationsLoading);
-  registrationsLinks = select(InstitutionsAdminSelectors.getRegistrationsLinks);
-  registrationsDownloadLink = select(InstitutionsAdminSelectors.getRegistrationsDownloadLink);
-
-  tableColumns = signal(registrationTableColumns);
-
-  currentPageSize = signal(TABLE_PARAMS.rows);
-  currentSort = signal('-dateModified');
   sortField = signal<string>('-dateModified');
   sortOrder = signal<number>(1);
 
-  tableData = computed(() => this.registrations().map(mapRegistrationToTableData) as TableCellData[]);
+  institution = select(InstitutionsAdminSelectors.getInstitution);
+
+  resources = select(GlobalSearchSelectors.getResources);
+  areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
+  resourcesCount = select(GlobalSearchSelectors.getResourcesCount);
+
+  selfLink = select(GlobalSearchSelectors.getFirst);
+  firstLink = select(GlobalSearchSelectors.getFirst);
+  nextLink = select(GlobalSearchSelectors.getNext);
+  previousLink = select(GlobalSearchSelectors.getPrevious);
+
+  tableData = computed(() => this.resources().map(mapRegistrationResourceToTableData) as TableCellData[]);
+
+  sortParam = computed(() => {
+    const sortField = this.sortField();
+    const sortOrder = this.sortOrder();
+    return sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
+  });
+
+  paginationLinks = computed(() => {
+    return {
+      next: { href: this.nextLink() },
+      prev: { href: this.previousLink() },
+      first: { href: this.firstLink() },
+    } as PaginationLinksModel;
+  });
 
   ngOnInit(): void {
-    this.getRegistrations();
+    this.actions.setResourceType(ResourceType.Registration);
+    this.actions.setDefaultFilterValue('affiliation', this.institution().iris.join(','));
+    this.actions.fetchResources();
   }
 
-  onSortChange(params: QueryParams): void {
+  ngOnDestroy() {
+    this.actions.resetSearchState();
+  }
+
+  onSortChange(params: SearchFilters): void {
     this.sortField.set(params.sortColumn || '-dateModified');
     this.sortOrder.set(params.sortOrder || 1);
 
-    const sortField = params.sortColumn || '-dateModified';
-    const sortOrder = params.sortOrder || 1;
-    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchRegistrations(this.institutionId, institutionIris, this.currentPageSize(), sortParam, '');
+    this.actions.setSortBy(this.sortParam());
+    this.actions.fetchResources();
   }
 
   onLinkPageChange(link: string): void {
-    const url = new URL(link);
-    const cursor = url.searchParams.get('page[cursor]') || '';
-
-    const sortField = this.sortField();
-    const sortOrder = this.sortOrder();
-    const sortParam = sortOrder === SortOrder.Desc ? `-${sortField}` : sortField;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchRegistrations(this.institutionId, institutionIris, this.currentPageSize(), sortParam, cursor);
+    this.actions.fetchResourcesByLink(link);
   }
 
   download(type: DownloadType) {
-    downloadResults(this.registrationsDownloadLink(), type);
-  }
-
-  private getRegistrations(): void {
-    const institutionId = this.route.parent?.snapshot.params['institution-id'];
-    if (!institutionId) return;
-
-    this.institutionId = institutionId;
-
-    const institution = this.institution() as Institution;
-    const institutionIris = institution.iris || [];
-
-    this.actions.fetchRegistrations(this.institutionId, institutionIris, this.currentPageSize(), this.sortField(), '');
+    downloadResults(this.selfLink(), type);
   }
 }

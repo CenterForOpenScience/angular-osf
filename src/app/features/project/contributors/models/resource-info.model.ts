@@ -4,4 +4,5 @@ export interface ResourceInfoModel {
   id: string;
   title: string;
   type: ResourceType;
+  rootParentId?: string;
 }

@@ -2,10 +2,10 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { PrimeTemplate } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
+import { PaginatorState } from 'primeng/paginator';
 import { Tree, TreeNodeDropEvent } from 'primeng/tree';
 
-import { EMPTY, finalize, firstValueFrom, Observable, take, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { EMPTY, finalize, firstValueFrom, Observable, take } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
 import {
@@ -30,11 +30,12 @@ import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
 import { FileMenuType } from '@osf/shared/enums';
 import { StopPropagationDirective } from '@shared/directives';
 import { hasViewOnlyParam } from '@shared/helpers';
-import { FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
+import { FileLabelModel, FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
 import { FileSizePipe } from '@shared/pipes';
 import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
+import { CustomPaginatorComponent } from '../custom-paginator/custom-paginator.component';
 import { FileMenuComponent } from '../file-menu/file-menu.component';
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
@@ -51,6 +52,7 @@ import { environment } from 'src/environments/environment';
     LoadingSpinnerComponent,
     FileMenuComponent,
     StopPropagationDirective,
+    CustomPaginatorComponent,
   ],
   templateUrl: './files-tree.component.html',
   styleUrl: './files-tree.component.scss',
@@ -69,8 +71,10 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   readonly dataciteService = inject(DataciteService);
 
   files = input.required<OsfFile[]>();
+  totalCount = input<number>(0);
   isLoading = input<boolean>();
   currentFolder = input.required<OsfFile | null>();
+  storage = input.required<FileLabelModel | null>();
   resourceId = input.required<string>();
   actions = input.required<FilesTreeActions>();
   viewOnly = input<boolean>(true);
@@ -78,26 +82,34 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   provider = input<string>();
   isDragOver = signal(false);
   hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
+    return hasViewOnlyParam(this.router) || this.viewOnly();
   });
 
   entryFileClicked = output<OsfFile>();
   folderIsOpening = output<boolean>();
   uploadFileConfirmed = output<File>();
+  filesPageChange = output<number>();
+
+  foldersStack: OsfFile[] = [];
+  itemsPerPage = 10;
+  first = 0;
 
   readonly FileMenuType = FileMenuType;
 
   readonly nodes = computed(() => {
-    if (this.currentFolder()?.relationships?.parentFolderLink) {
+    const currentFolder = this.currentFolder();
+    const files = this.files();
+    const hasParent = this.foldersStack.length > 0;
+    if (hasParent) {
       return [
         {
-          ...this.currentFolder(),
-          previousFolder: true,
+          ...currentFolder,
+          previousFolder: hasParent,
         },
-        ...this.files(),
+        ...files,
       ] as OsfFile[];
     } else {
-      return this.files();
+      return [...files];
     }
   });
 
@@ -163,9 +175,15 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
   constructor() {
     effect(() => {
       const currentFolder = this.currentFolder();
-
       if (currentFolder) {
-        this.updateFilesList().subscribe(() => this.folderIsOpening.emit(false));
+        this.updateFilesList(currentFolder).subscribe(() => this.folderIsOpening.emit(false));
+      }
+    });
+
+    effect(() => {
+      const storageChanged = this.storage();
+      if (storageChanged) {
+        this.foldersStack = [];
       }
     });
   }
@@ -180,35 +198,22 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
         });
       }
     } else {
+      const current = this.currentFolder();
+      if (current) {
+        this.foldersStack.push(current);
+      }
+      this.resetPagination();
       this.actions().setFilesIsLoading?.(true);
       this.folderIsOpening.emit(true);
-
       this.actions().setCurrentFolder(file);
     }
   }
 
   openParentFolder() {
-    const currentFolder = this.currentFolder();
-
-    if (!currentFolder) return;
-
-    this.actions().setFilesIsLoading?.(true);
-    this.folderIsOpening.emit(true);
-
-    this.filesService
-      .getFolder(currentFolder.relationships.parentFolderLink)
-      .pipe(
-        take(1),
-        catchError((error) => {
-          this.toastService.showError(error.error.message);
-          return throwError(() => error);
-        })
-      )
-      .subscribe({
-        next: (folder) => {
-          this.actions().setCurrentFolder(folder);
-        },
-      });
+    const previous = this.foldersStack.pop();
+    if (previous) {
+      this.actions().setCurrentFolder(previous);
+    }
   }
 
   onFileMenuAction(action: FileMenuAction, file: OsfFile): void {
@@ -335,12 +340,13 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   downloadFolder(folderId: string, rootFolder: boolean): void {
     const resourceId = this.resourceId();
+    const storageLink = this.currentFolder()?.links?.download ?? '';
     if (resourceId && folderId) {
       if (rootFolder) {
-        const link = this.filesService.getFolderDownloadLink(resourceId, this.provider()!, '', true);
+        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
         window.open(link, '_blank')?.focus();
       } else {
-        const link = this.filesService.getFolderDownloadLink(resourceId, this.provider()!, folderId, false);
+        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
         window.open(link, '_blank')?.focus();
       }
     }
@@ -367,15 +373,15 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
             file: file,
             resourceId: this.resourceId(),
             action: action,
+            storageName: this.storage()?.label,
+            foldersStack: [...this.foldersStack],
           },
         });
       });
   }
 
-  updateFilesList(): Observable<void> {
-    const currentFolder = this.currentFolder();
-
-    if (currentFolder?.relationships.filesLink) {
+  updateFilesList(currentFolder: OsfFile): Observable<void> {
+    if (currentFolder?.relationships?.filesLink) {
       return this.actions().getFiles(currentFolder?.relationships.filesLink);
     }
     return EMPTY;
@@ -459,5 +465,15 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
           }
         }
       });
+  }
+
+  resetPagination() {
+    this.first = 0;
+    this.filesPageChange.emit(1);
+  }
+
+  onFilesPageChange(event: PaginatorState): void {
+    this.filesPageChange.emit(event.page! + 1);
+    this.first = event.first!;
   }
 }

@@ -3,7 +3,7 @@ import { map, Observable } from 'rxjs';
 import { inject, Injectable } from '@angular/core';
 
 import { CollectionsMapper, LicensesMapper } from '@shared/mappers';
-import { CollectionSubmissionPayload, License, LicensesResponseJsonApi } from '@shared/models';
+import { CollectionSubmissionPayload, LicenseModel, LicensesResponseJsonApi } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
 import { environment } from 'src/environments/environment';
@@ -12,10 +12,10 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class AddToCollectionService {
-  private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
-  fetchCollectionLicenses(providerId: string): Observable<License[]> {
+  fetchCollectionLicenses(providerId: string): Observable<LicenseModel[]> {
     return this.jsonApiService
       .get<LicensesResponseJsonApi>(`${this.apiUrl}/providers/collections/${providerId}/licenses/`, {
         'page[size]': 100,

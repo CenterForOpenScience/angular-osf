@@ -5,7 +5,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { License } from '@shared/models';
+import { LicenseModel } from '@shared/models';
 
 @Component({
   selector: 'osf-metadata-license',
@@ -16,5 +16,5 @@ import { License } from '@shared/models';
 export class MetadataLicenseComponent {
   openEditLicenseDialog = output<void>();
   hideEditLicense = input<boolean>(false);
-  license = input<License | null>(null);
+  license = input<LicenseModel | null>(null);
 }

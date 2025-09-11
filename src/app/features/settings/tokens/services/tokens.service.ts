@@ -16,22 +16,23 @@ import { environment } from 'src/environments/environment';
 })
 export class TokensService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getScopes(): Observable<ScopeModel[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<ScopeJsonApi[], null>>(`${environment.apiUrl}/scopes/`)
+      .get<JsonApiResponse<ScopeJsonApi[], null>>(`${this.apiUrl}/scopes/`)
       .pipe(map((responses) => ScopeMapper.fromResponse(responses.data)));
   }
 
   getTokens(): Observable<TokenModel[]> {
     return this.jsonApiService
-      .get<JsonApiResponse<TokenGetResponseJsonApi[], null>>(`${environment.apiUrl}/tokens/`)
+      .get<JsonApiResponse<TokenGetResponseJsonApi[], null>>(`${this.apiUrl}/tokens/`)
       .pipe(map((responses) => responses.data.map((response) => TokenMapper.fromGetResponse(response))));
   }
 
   getTokenById(tokenId: string): Observable<TokenModel> {
     return this.jsonApiService
-      .get<JsonApiResponse<TokenGetResponseJsonApi, null>>(`${environment.apiUrl}/tokens/${tokenId}/`)
+      .get<JsonApiResponse<TokenGetResponseJsonApi, null>>(`${this.apiUrl}/tokens/${tokenId}/`)
       .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 
@@ -39,7 +40,7 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.jsonApiService
-      .post<JsonApiResponse<TokenGetResponseJsonApi, null>>(environment.apiUrl + '/tokens/', request)
+      .post<JsonApiResponse<TokenGetResponseJsonApi, null>>(`${this.apiUrl}/tokens/`, request)
       .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 
@@ -47,11 +48,11 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.jsonApiService
-      .patch<TokenGetResponseJsonApi>(`${environment.apiUrl}/tokens/${tokenId}/`, request)
+      .patch<TokenGetResponseJsonApi>(`${this.apiUrl}/tokens/${tokenId}/`, request)
       .pipe(map((response) => TokenMapper.fromGetResponse(response)));
   }
 
   deleteToken(tokenId: string): Observable<void> {
-    return this.jsonApiService.delete(`${environment.apiUrl}/tokens/${tokenId}/`);
+    return this.jsonApiService.delete(`${this.apiUrl}/tokens/${tokenId}/`);
   }
 }

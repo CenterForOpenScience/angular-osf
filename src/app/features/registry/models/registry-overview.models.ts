@@ -2,7 +2,7 @@ import { ProjectOverviewContributor } from '@osf/features/project/overview/model
 import { RegistrationQuestions, RegistrySubject } from '@osf/features/registry/models';
 import {
   IdTypeModel,
-  License,
+  LicenseModel,
   LicensesOption,
   MetaAnonymousJsonApi,
   ProviderModel,
@@ -30,7 +30,7 @@ export interface RegistryOverview {
   isFork: boolean;
   accessRequestsEnabled: boolean;
   nodeLicense?: LicensesOption;
-  license?: License;
+  license?: LicenseModel;
   licenseUrl?: string;
   identifiers?: {
     id: string;

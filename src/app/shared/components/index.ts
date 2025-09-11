@@ -17,6 +17,7 @@ export { FilterChipsComponent } from './filter-chips/filter-chips.component';
 export { FormSelectComponent } from './form-select/form-select.component';
 export { FullScreenLoaderComponent } from './full-screen-loader/full-screen-loader.component';
 export { GenericFilterComponent } from './generic-filter/generic-filter.component';
+export { GlobalSearchComponent } from './global-search/global-search.component';
 export { IconComponent } from './icon/icon.component';
 export { InfoIconComponent } from './info-icon/info-icon.component';
 export { LicenseComponent } from './license/license.component';

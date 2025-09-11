@@ -4,15 +4,16 @@ import { Accordion, AccordionContent, AccordionHeader, AccordionPanel } from 'pr
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { Checkbox, CheckboxChangeEvent } from 'primeng/checkbox';
 
+import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { LoadingSpinnerComponent } from '@shared/components';
-import { FILTER_PLACEHOLDERS } from '@shared/constants/filter-placeholders';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter, SelectOption } from '@shared/models';
+import { FILTER_PLACEHOLDERS } from '@osf/shared/constants';
+import { StringOrNull } from '@osf/shared/helpers';
+import { DiscoverableFilter, FilterOption } from '@osf/shared/models';
 
 import { GenericFilterComponent } from '../generic-filter/generic-filter.component';
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'osf-reusable-filters',
@@ -27,6 +28,8 @@ import { GenericFilterComponent } from '../generic-filter/generic-filter.compone
     TranslatePipe,
     LoadingSpinnerComponent,
     Checkbox,
+    NgClass,
+    FormsModule,
   ],
   templateUrl: './reusable-filter.component.html',
   styleUrls: ['./reusable-filter.component.scss'],
@@ -35,9 +38,12 @@ import { GenericFilterComponent } from '../generic-filter/generic-filter.compone
 export class ReusableFilterComponent {
   filters = input<DiscoverableFilter[]>([]);
   selectedValues = input<Record<string, StringOrNull>>({});
-  filterSearchResults = input<Record<string, SelectOption[]>>({});
+  filterSearchResults = input<Record<string, FilterOption[]>>({});
   isLoading = input<boolean>(false);
   showEmptyState = input<boolean>(true);
+  plainStyle = input<boolean>(false);
+
+  readonly Boolean = Boolean;
 
   loadFilterOptions = output<DiscoverableFilter>();
   filterValueChanged = output<{ filterType: string; value: StringOrNull }>();
@@ -149,11 +155,11 @@ export class ReusableFilterComponent {
     }
   }
 
-  getFilterOptions(filter: DiscoverableFilter): SelectOption[] {
+  getFilterOptions(filter: DiscoverableFilter): FilterOption[] {
     return filter.options || [];
   }
 
-  getFilterSearchResults(filter: DiscoverableFilter): SelectOption[] {
+  getFilterSearchResults(filter: DiscoverableFilter): FilterOption[] {
     const searchResults = this.filterSearchResults();
     return searchResults[filter.key] || [];
   }
@@ -176,18 +182,6 @@ export class ReusableFilterComponent {
 
   getFilterPlaceholder(filterKey: string): string {
     return this.FILTER_PLACEHOLDERS[filterKey] || '';
-  }
-
-  getFilterDescription(filter: DiscoverableFilter): string | null {
-    return filter.description || null;
-  }
-
-  getFilterHelpLink(filter: DiscoverableFilter): string | null {
-    return filter.helpLink || null;
-  }
-
-  getFilterHelpLinkText(filter: DiscoverableFilter): string | null {
-    return filter.helpLinkText || '';
   }
 
   getFilterLabel(filter: DiscoverableFilter): string {
@@ -213,10 +207,5 @@ export class ReusableFilterComponent {
   onCheckboxChange(event: CheckboxChangeEvent, filter: DiscoverableFilter): void {
     const isChecked = event?.checked || false;
     this.onIsPresentFilterToggle(filter, isChecked);
-  }
-
-  isIsPresentFilterChecked(filterKey: string): boolean {
-    const selectedValue = this.selectedValues()[filterKey];
-    return selectedValue === 'true' || Boolean(selectedValue);
   }
 }

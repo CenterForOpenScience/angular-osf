@@ -2,7 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { BooleanOrNullOrUndefined } from '@osf/shared/helpers/types.helper';
+import { BooleanOrNullOrUndefined } from '@osf/shared/helpers';
 
 @Component({
   selector: 'osf-password-input-hint',

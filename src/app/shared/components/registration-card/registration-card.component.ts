@@ -1,12 +1,17 @@
+import { createDispatchMap, select } from '@ngxs/store';
+
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 
-import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { tap } from 'rxjs';
 
+import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+
+import { CreateSchemaResponse, FetchAllSchemaResponses, RegistriesSelectors } from '@osf/features/registries/store';
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@osf/shared/enums';
 import { RegistrationCard } from '@osf/shared/models';
 
@@ -37,8 +42,14 @@ export class RegistrationCardComponent {
   readonly isDraft = input<boolean>(false);
   readonly registrationData = input.required<RegistrationCard>();
   readonly deleteDraft = output<string>();
-  readonly updateRegistration = output<string>();
-  readonly continueUpdate = output<{ id: string; unapproved: boolean }>();
+
+  private router = inject(Router);
+  schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+
+  actions = createDispatchMap({
+    getSchemaResponse: FetchAllSchemaResponses,
+    createSchemaResponse: CreateSchemaResponse,
+  });
 
   get isAccepted(): boolean {
     return this.registrationData().reviewsState === RegistrationReviewStates.Accepted;
@@ -60,10 +71,36 @@ export class RegistrationCardComponent {
     return this.registrationData().revisionState === RevisionReviewStates.RevisionInProgress;
   }
 
-  continueUpdateHandler(): void {
-    this.continueUpdate.emit({
-      id: this.registrationData().id,
-      unapproved: this.registrationData().revisionState === RevisionReviewStates.Unapproved,
-    });
+  updateRegistration(id: string): void {
+    this.actions
+      .createSchemaResponse(id)
+      .pipe(tap(() => this.navigateToJustificationPage()))
+      .subscribe();
+  }
+
+  continueUpdateRegistration(id: string): void {
+    const unapproved = this.registrationData().revisionState === RevisionReviewStates.Unapproved;
+    this.actions
+      .getSchemaResponse(id)
+      .pipe(
+        tap(() => {
+          if (unapproved) {
+            this.navigateToJustificationReview();
+          } else {
+            this.navigateToJustificationPage();
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  private navigateToJustificationPage(): void {
+    const revisionId = this.schemaResponse()?.id;
+    this.router.navigate([`/registries/revisions/${revisionId}/justification`]);
+  }
+
+  private navigateToJustificationReview(): void {
+    const revisionId = this.schemaResponse()?.id;
+    this.router.navigate([`/registries/revisions/${revisionId}/review`]);
   }
 }
