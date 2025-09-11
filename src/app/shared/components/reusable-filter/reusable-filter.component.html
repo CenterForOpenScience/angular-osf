@@ -33,9 +33,9 @@
               <osf-generic-filter
                 [options]="getFilterOptions(filter)"
                 [searchResults]="getFilterSearchResults(filter)"
-                [isPaginationLoading]="filter.isPaginationLoading || false"
-                [isLoading]="filter.isLoading || false"
-                [isSearchLoading]="filter.isSearchLoading || false"
+                [isPaginationLoading]="!!filter.isPaginationLoading"
+                [isLoading]="!!filter.isLoading"
+                [isSearchLoading]="!!filter.isSearchLoading"
                 [selectedValue]="getSelectedValue(filter.key)"
                 [placeholder]="getFilterPlaceholder(filter.key) | translate"
                 [filterType]="filter.key"
@@ -64,7 +64,7 @@
                     [inputId]="'checkbox-' + filter.key"
                   />
                   <label [for]="'checkbox-' + filter.key" class="cursor-pointer m-0">
-                    {{ getFilterLabel(filter) }} ({{ filter.resultCount }} {{ Boolean(selectedValues()[filter.key]) }})
+                    {{ getFilterLabel(filter) }} ({{ filter.resultCount }})
                   </label>
                 </div>
               }
