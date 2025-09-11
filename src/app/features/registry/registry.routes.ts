@@ -117,7 +117,7 @@ export const registryRoutes: Routes = [
       {
         path: 'recent-activity',
         loadComponent: () =>
-          import('./pages/recent-activity/registration-recent-activity.component').then(
+          import('./pages/registration-recent-activity/registration-recent-activity.component').then(
             (c) => c.RegistrationRecentActivityComponent
           ),
       },

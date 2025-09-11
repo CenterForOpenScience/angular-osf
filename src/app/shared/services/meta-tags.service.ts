@@ -1,5 +1,5 @@
 import { DOCUMENT } from '@angular/common';
-import { Inject, Injectable } from '@angular/core';
+import { DestroyRef, Inject, Injectable } from '@angular/core';
 import { Meta, MetaDefinition, Title } from '@angular/platform-browser';
 
 import { Content, DataContent, HeadTagDef, MetaTagAuthor, MetaTagsData } from '../models/meta-tags';
@@ -14,7 +14,7 @@ export class MetaTagsService {
     type: 'article',
     description: 'Hosted on the OSF',
     language: 'en-US',
-    image: `${environment.webUrl}/static/img/preprints_assets/osf/sharing.png`,
+    image: `${environment.webUrl}/assets/images/osf-sharing.png`,
     imageType: 'image/png',
     imageWidth: 1200,
     imageHeight: 630,
@@ -27,7 +27,9 @@ export class MetaTagsService {
   };
 
   private readonly metaTagClass = 'osf-dynamic-meta';
-  private currentRouteGroup: string | null = null;
+
+  // data from all active routed components that set meta tags
+  private metaTagStack: { metaTagsData: MetaTagsData; componentDestroyRef: DestroyRef }[] = [];
 
   constructor(
     private meta: Meta,
@@ -35,17 +37,13 @@ export class MetaTagsService {
     @Inject(DOCUMENT) private document: Document
   ) {}
 
-  updateMetaTags(metaTagsData: MetaTagsData): void {
-    const combinedData = { ...this.defaultMetaTags, ...metaTagsData };
-    const headTags = this.getHeadTags(combinedData);
-
-    this.applyHeadTags(headTags);
-    this.dispatchZoteroEvent();
-  }
-
-  updateMetaTagsForRoute(metaTagsData: MetaTagsData, routeGroup: string): void {
-    this.currentRouteGroup = routeGroup;
-    this.updateMetaTags(metaTagsData);
+  updateMetaTags(metaTagsData: MetaTagsData, componentDestroyRef: DestroyRef): void {
+    this.metaTagStack = [...this.metaTagStackWithout(componentDestroyRef), { metaTagsData, componentDestroyRef }];
+    componentDestroyRef.onDestroy(() => {
+      this.metaTagStack = this.metaTagStackWithout(componentDestroyRef);
+      this.applyNearestMetaTags();
+    });
+    this.applyNearestMetaTags();
   }
 
   clearMetaTags(): void {
@@ -62,27 +60,28 @@ export class MetaTagsService {
     });
 
     this.title.setTitle(String(this.defaultMetaTags.siteName));
-    this.currentRouteGroup = null;
   }
 
-  shouldClearMetaTags(newUrl: string): boolean {
-    if (!this.currentRouteGroup) return true;
-    return !newUrl.startsWith(`/${this.currentRouteGroup}`);
+  private metaTagStackWithout(destroyRefToRemove: DestroyRef) {
+    // get a copy of `this.metaTagStack` minus any entries with the given destroyRef
+    return this.metaTagStack.filter(({ componentDestroyRef }) => componentDestroyRef !== destroyRefToRemove);
   }
 
-  clearMetaTagsIfNeeded(newUrl: string): void {
-    if (this.shouldClearMetaTags(newUrl)) {
+  private applyNearestMetaTags() {
+    // apply the meta tags for the nearest active route that called `updateMetaTags` (if any)
+    const nearest = this.metaTagStack.at(-1);
+    if (nearest) {
+      this.applyMetaTagsData(nearest.metaTagsData);
+    } else {
       this.clearMetaTags();
     }
   }
 
-  resetToDefaults(): void {
-    this.updateMetaTags({});
-  }
-
-  getHeadTagsPublic(metaTagsData: MetaTagsData): HeadTagDef[] {
+  private applyMetaTagsData(metaTagsData: MetaTagsData) {
     const combinedData = { ...this.defaultMetaTags, ...metaTagsData };
-    return this.getHeadTags(combinedData);
+    const headTags = this.getHeadTags(combinedData);
+    this.applyHeadTags(headTags);
+    this.dispatchZoteroEvent();
   }
 
   private getHeadTags(metaTagsData: MetaTagsData): HeadTagDef[] {
@@ -173,6 +172,7 @@ export class MetaTagsService {
       .filter((person): person is MetaTagAuthor => typeof person === 'object' && person !== null)
       .map((person) => ({
         '@type': 'schema:Person',
+        name: person.fullName,
         givenName: person.givenName,
         familyName: person.familyName,
       }));

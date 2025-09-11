@@ -33,15 +33,15 @@ export class RegistrationRecentActivityComponent implements OnDestroy {
   private readonly registrationId: string = (this.route.snapshot.params['id'] ??
     this.route.parent?.snapshot.params['id']) as string;
 
-  protected currentPage = signal<number>(1);
+  currentPage = signal<number>(1);
 
-  protected formattedActivityLogs = select(ActivityLogsSelectors.getFormattedActivityLogs);
-  protected totalCount = select(ActivityLogsSelectors.getActivityLogsTotalCount);
-  protected isLoading = select(ActivityLogsSelectors.getActivityLogsLoading);
+  formattedActivityLogs = select(ActivityLogsSelectors.getFormattedActivityLogs);
+  totalCount = select(ActivityLogsSelectors.getActivityLogsTotalCount);
+  isLoading = select(ActivityLogsSelectors.getActivityLogsLoading);
 
-  protected firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize);
+  firstIndex = computed(() => (this.currentPage() - 1) * this.pageSize);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getRegistrationActivityLogs: GetRegistrationActivityLogs,
     clearActivityLogsStore: ClearActivityLogsStore,
   });

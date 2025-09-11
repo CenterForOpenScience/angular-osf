@@ -7,9 +7,9 @@
   @if (resourceValue.provider) {
     <p>
       {{ 'resourceCard.labels.provider' | translate }}
-      <a class="font-bold" [href]="resourceValue.provider!.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
-        resourceValue.provider!.name
-      }}</a>
+      <a class="font-bold" [href]="resourceValue.provider!.absoluteUrl" target="_blank" rel="noopener noreferrer">
+        {{ resourceValue.provider!.name }}
+      </a>
     </p>
   }
 
@@ -65,17 +65,18 @@
         [attr.href]="resourceValue.license!.absoluteUrl || null"
         target="_blank"
         rel="noopener noreferrer"
-        >{{ resourceValue.license!.name }}</a
       >
+        {{ resourceValue.license!.name }}
+      </a>
     </p>
   }
 
   @if (resourceValue.absoluteUrl) {
     <p>
       {{ 'resourceCard.labels.url' | translate }}
-      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
-        resourceValue.absoluteUrl
-      }}</a>
+      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">
+        {{ resourceValue.absoluteUrl }}
+      </a>
     </p>
   }
 

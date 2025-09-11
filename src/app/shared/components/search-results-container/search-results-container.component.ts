@@ -66,9 +66,7 @@ export class SearchResultsContainerComponent {
   tabChanged = output<ResourceType>();
   pageChanged = output<string>();
 
-  showTabs = computed(() => {
-    return this.tabOptions().length > 0;
-  });
+  showTabs = computed(() => this.tabOptions().length > 0);
 
   readonly searchSortingOptions = searchSortingOptions;
   readonly ResourceType = ResourceType;
@@ -78,10 +76,7 @@ export class SearchResultsContainerComponent {
     return Object.values(values).some((value) => value !== null && value !== '');
   });
 
-  readonly hasFilters = computed(() => {
-    return this.filters().length > 0;
-  });
-
+  readonly hasFilters = computed(() => this.filters().length > 0);
   filtersComponent = contentChild<TemplateRef<unknown>>('filtersComponent');
 
   selectSort(value: string): void {

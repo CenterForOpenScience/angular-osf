@@ -8,4 +8,7 @@ import 'cedar-embeddable-editor';
 
 bootstrapApplication(AppComponent, {
   providers: [...appConfig.providers],
-}).catch((err) => console.error(err));
+}).catch((err) =>
+  // eslint-disable-next-line no-console
+  console.error(err)
+);

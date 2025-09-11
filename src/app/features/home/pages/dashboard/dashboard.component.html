@@ -1,61 +1,141 @@
-<section class="home-container xl:mt-6">
-  <osf-sub-header
-    [showButton]="true"
-    [title]="'home.loggedIn.dashboard.title' | translate"
-    [icon]="'fas fa-home'"
-    [buttonLabel]="'home.loggedIn.dashboard.createProject' | translate"
-    (buttonClick)="createProject()"
-  />
+<section class="home-container xl:mt-6" [class.medium]="isMedium()">
+  @if (areProjectsLoading()) {
+    <osf-loading-spinner />
+  } @else {
+    @if (existsProjects()) {
+      <osf-sub-header
+        [showButton]="true"
+        [title]="'home.loggedIn.dashboard.title' | translate"
+        [icon]="'fas fa-home'"
+        [buttonLabel]="'home.loggedIn.dashboard.createProject' | translate"
+        (buttonClick)="createProject()"
+      />
+      <div>
+        <div class="quick-search-container py-4 px-3 md:px-4">
+          <p class="text-center mb-4 xl:mb-6">
+            {{ 'home.loggedIn.dashboard.quickSearch.goTo' | translate }}
+            <a class="font-bold" routerLink="/my-projects">
+              {{ 'home.loggedIn.dashboard.quickSearch.myProjects' | translate }}
+            </a>
+            {{ 'home.loggedIn.dashboard.quickSearch.toOrganize' | translate }}
+            <a class="font-bold" routerLink="/search">
+              {{ 'home.loggedIn.dashboard.quickSearch.search' | translate }}
+            </a>
+            {{ 'home.loggedIn.dashboard.quickSearch.osf' | translate }}
+          </p>
 
-  <div class="quick-search-container py-4 px-3 md:px-4">
-    <p class="text-center mb-4 xl:mb-6">
-      {{ 'home.loggedIn.dashboard.quickSearch.goTo' | translate }}
-      <a class="font-bold" routerLink="/my-projects">
-        {{ 'home.loggedIn.dashboard.quickSearch.myProjects' | translate }}
+          <osf-my-projects-table
+            [items]="filteredProjects()"
+            [tableParams]="tableParams()"
+            [searchControl]="searchControl"
+            [sortColumn]="sortColumn()"
+            [sortOrder]="sortOrder()"
+            [isLoading]="areProjectsLoading()"
+            [searchPlaceholder]="'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate"
+            (pageChange)="onPageChange($event)"
+            (sort)="onSort($event)"
+            (itemClick)="navigateToProject($event)"
+          />
+        </div>
+
+        <div class="public-projects-container flex align-items-center flex-row pt-6 pb-4 px-3 md:px-4 xl:py-6">
+          <osf-icon class="mr-2" iconClass="fas fa-2xl fa-magnifying-glass"></osf-icon>
+          <h1>{{ 'home.loggedIn.publicProjects.title' | translate }}</h1>
+        </div>
+
+        <div
+          class="latest-research-container flex flex-column gap-4 py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between"
+        >
+          <div>
+            <h1>{{ 'home.loggedIn.latestResearch.title' | translate }}</h1>
+            <p class="m-t-12">{{ 'home.loggedIn.latestResearch.subtitle' | translate }}</p>
+          </div>
+
+          <p-button
+            routerLink="/preprints"
+            [label]="'home.loggedIn.latestResearch.button' | translate"
+            severity="success"
+          />
+        </div>
+
+        <div class="hosting-container flex flex-column gap-4 py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between">
+          <div class="text-container">
+            <h1>{{ 'home.loggedIn.hosting.title' | translate }}</h1>
+            <p class="m-t-12">{{ 'home.loggedIn.hosting.subtitle' | translate }}</p>
+          </div>
+
+          <p-button routerLink="/meetings" [label]="'home.loggedIn.hosting.button' | translate" severity="success" />
+        </div>
+      </div>
+    } @else {
+      <osf-sub-header
+        [showButton]="true"
+        [title]="'home.loggedIn.dashboard.welcome' | translate"
+        [icon]="'home'"
+        [buttonLabel]="'home.loggedIn.dashboard.createProject' | translate"
+        (buttonClick)="createProject()"
+      />
+      <div class="flex items-center justify-center min-h-screen bg-white pt-4">
+        <div class="text-center max-w-2xl px-6 w-full">
+          <p class="mb-4">{{ 'home.loggedIn.dashboard.noCreatedProject' | translate }}</p>
+
+          <p class="mb-6">{{ 'home.loggedIn.dashboard.watchVideoBelow' | translate }}</p>
+
+          <div class="mb-6 flex flex-column align-items-center w-full">
+            <iframe
+              width="560"
+              height="315"
+              src="https://www.youtube.com/embed/X07mBq2tnMg"
+              title="Introduction to OSF"
+              frameborder="0"
+              allowfullscreen
+              class="rounded-xl shadow-md"
+            ></iframe>
+          </div>
+
+          <div class="flex justify-content-center mt-4 mb-4">
+            <p-button
+              [label]="'home.loggedIn.dashboard.getStartedHelp' | translate"
+              severity="secondary"
+              (onClick)="openInfoLink()"
+            />
+          </div>
+        </div>
+      </div>
+    }
+    <div class="flex flex-column align-items-left p-4">
+      <a
+        href="https://www.cos.io/products/osf-collections"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-test-products-collections
+      >
+        <img
+          src="assets/images/dashboard/products/osf-collections.png"
+          [alt]="'home.loggedIn.dashboard.images.osfCollectionsImageAltText' | translate"
+        />
       </a>
-      {{ 'home.loggedIn.dashboard.quickSearch.toOrganize' | translate }}
-      <a class="font-bold" routerLink="/search">
-        {{ 'home.loggedIn.dashboard.quickSearch.search' | translate }}
+
+      <a routerLink="/institutions">
+        <img
+          src="assets/images/dashboard/products/osf-institutions.png"
+          [alt]="'home.loggedIn.dashboard.images.osfInstitutionsImageAltText' | translate"
+        />
       </a>
-      {{ 'home.loggedIn.dashboard.quickSearch.osf' | translate }}
-    </p>
 
-    <osf-my-projects-table
-      [items]="filteredProjects()"
-      [tableParams]="tableParams()"
-      [searchControl]="searchControl"
-      [sortColumn]="sortColumn()"
-      [sortOrder]="sortOrder()"
-      [isLoading]="areProjectsLoading()"
-      [searchPlaceholder]="'home.loggedIn.dashboard.quickSearch.searchPlaceholder' | translate"
-      (pageChange)="onPageChange($event)"
-      (sort)="onSort($event)"
-      (itemClick)="navigateToProject($event)"
-    />
-  </div>
+      <a routerLink="/registries">
+        <img
+          src="assets/images/dashboard/products/osf-registries.png"
+          [alt]="'home.loggedIn.dashboard.images.osfRegistriesImageAltTest' | translate"
+        />
+      </a>
 
-  <div class="public-projects-container flex align-items-center flex-row pt-6 pb-4 px-3 md:px-4 xl:py-6">
-    <osf-icon class="mr-2" iconClass="fas fa-2xl fa-magnifying-glass"></osf-icon>
-    <h1>{{ 'home.loggedIn.publicProjects.title' | translate }}</h1>
-  </div>
-
-  <div
-    class="latest-research-container flex flex-column gap-4 py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between"
-  >
-    <div>
-      <h1>{{ 'home.loggedIn.latestResearch.title' | translate }}</h1>
-      <p class="mt-3">{{ 'home.loggedIn.latestResearch.subtitle' | translate }}</p>
+      <a routerLink="/preprints">
+        <img
+          src="assets/images/dashboard/products/osf-preprints.png"
+          [alt]="'home.loggedIn.dashboard.images.osfPreprintsImageAltTest' | translate"
+        />
+      </a>
     </div>
-
-    <p-button routerLink="/preprints" [label]="'home.loggedIn.latestResearch.button' | translate" severity="success" />
-  </div>
-
-  <div class="hosting-container flex flex-column gap-4 py-6 px-3 md:px-4 xl:flex-row xl:justify-content-between">
-    <div class="text-container">
-      <h1>{{ 'home.loggedIn.hosting.title' | translate }}</h1>
-      <p class="mt-3">{{ 'home.loggedIn.hosting.subtitle' | translate }}</p>
-    </div>
-
-    <p-button routerLink="/meetings" [label]="'home.loggedIn.hosting.button' | translate" severity="success" />
-  </div>
+  }
 </section>
