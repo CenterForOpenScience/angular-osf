@@ -8,7 +8,7 @@ import { inject, Injectable } from '@angular/core';
 import { ProfileSettingsKey } from '@osf/shared/enums';
 import { removeNullable } from '@osf/shared/helpers';
 import { UserMapper } from '@osf/shared/mappers';
-import { Social } from '@osf/shared/models';
+import { Social, User } from '@osf/shared/models';
 
 import { UserService } from '../../services';
 
@@ -254,9 +254,8 @@ export class UserState {
     });
   }
 
-
   @Action(AcceptTermsOfServiceByUser)
-  acceptTermsOfServiceByUser(ctx: StateContext<UserStateModel>, ) {
+  acceptTermsOfServiceByUser(ctx: StateContext<UserStateModel>) {
     const state = ctx.getState();
     const currentUser = state.currentUser.data;
 
@@ -264,15 +263,24 @@ export class UserState {
       return;
     }
 
-    ctx.patchState({
-      currentUser: {
-        ...state.currentUser,
-        data: {
-          ...currentUser,
-          acceptedTermsOfService: false,
-        },
-      },
-    });
+    this.userService
+      .updateUserProfile(currentUser.id, ProfileSettingsKey.User, { acceptedTermsOfService: true })
+      .pipe(
+        tap((response: User): void => {
+          if (response.acceptedTermsOfService) {
+            ctx.patchState({
+              currentUser: {
+                ...state.currentUser,
+                data: {
+                  ...currentUser,
+                  acceptedTermsOfService: true,
+                },
+              },
+            });
+          }
+        })
+      )
+      .subscribe();
   }
 
   @Action(ClearCurrentUser)

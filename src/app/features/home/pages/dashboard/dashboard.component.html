@@ -10,13 +10,7 @@
         [buttonLabel]="'home.loggedIn.dashboard.createProject' | translate"
         (buttonClick)="createProject()"
       />
-       <cos-tos-consent-banner
-  [visible]="!currentUser()?.acceptedTermsOfService"
-  [(acceptedTermsOfService)]="currentUser()!.acceptedTermsOfService"
-  (accepted)="saveUserConsent()"
-  [termsLink]="'/terms-of-use'"
-  [privacyLink]="'/privacy-policy'"
-      ></cos-tos-consent-banner>
+      <osf-tos-consent-banner [termsLink]="'/terms-of-use'" [privacyLink]="'/privacy-policy'"></osf-tos-consent-banner>
       <div>
         <div class="quick-search-container py-4 px-3 md:px-4">
           <p class="text-center mb-4 xl:mb-6">
@@ -82,13 +76,7 @@
         [buttonLabel]="'home.loggedIn.dashboard.createProject' | translate"
         (buttonClick)="createProject()"
       />
-       <cos-tos-consent-banner
-  [visible]="!currentUser()?.acceptedTermsOfService"
-  [(acceptedTermsOfService)]="currentUser()!.acceptedTermsOfService"
-  (accepted)="saveUserConsent()"
-  [termsLink]="'/terms-of-use'"
-  [privacyLink]="'/privacy-policy'"
-></cos-tos-consent-banner>
+      <osf-tos-consent-banner [termsLink]="'/terms-of-use'" [privacyLink]="'/privacy-policy'"></osf-tos-consent-banner>
       <div class="flex items-center justify-center min-h-screen bg-white pt-4">
         <div class="text-center max-w-2xl px-6 w-full">
           <p class="mb-4">{{ 'home.loggedIn.dashboard.noCreatedProject' | translate }}</p>
