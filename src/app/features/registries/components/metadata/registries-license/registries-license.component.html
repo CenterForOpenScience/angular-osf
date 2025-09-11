@@ -9,6 +9,7 @@
   </p>
   <osf-license
     [licenses]="licenses()"
+    [fullWidthSelect]="true"
     [selectedLicenseId]="selectedLicense()?.id"
     [selectedLicenseOptions]="selectedLicense()?.options"
     (createLicense)="createLicense($event)"

@@ -1,5 +1,6 @@
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { ConfirmationService } from 'primeng/api';
 import { TablePageEvent } from 'primeng/table';
 
 import { of } from 'rxjs';
@@ -41,6 +42,7 @@ describe('DashboardComponent', () => {
             { selector: MyResourcesSelectors.getProjectsLoading, value: false },
           ],
         }),
+        MockProvider(ConfirmationService, { confirm: jest.fn() }),
         MockProvider(Router, routerMock),
         MockProvider(IS_MEDIUM, of(false)),
         MockProvider(ActivatedRoute, ActivatedRouteMock.withQueryParams({}).build()),

@@ -4,6 +4,7 @@ import { Routes } from '@angular/router';
 
 import { viewOnlyGuard } from '@osf/core/guards';
 import { ResourceType } from '@osf/shared/enums';
+import { LicensesService } from '@osf/shared/services';
 import {
   CitationsState,
   CollectionsState,
@@ -17,6 +18,9 @@ import { ActivityLogsState } from '@osf/shared/stores/activity-logs';
 
 import { AnalyticsState } from '../analytics/store';
 import { CollectionsModerationState } from '../moderation/store/collections-moderation';
+import { RegistriesState } from '../registries/store';
+import { LicensesHandlers, ProjectsHandlers, ProvidersHandlers } from '../registries/store/handlers';
+import { FilesHandlers } from '../registries/store/handlers/files.handlers';
 
 import { SettingsState } from './settings/store';
 
@@ -59,6 +63,14 @@ export const projectRoutes: Routes = [
       {
         path: 'registrations',
         canActivate: [viewOnlyGuard],
+        providers: [
+          provideStates([RegistriesState]),
+          ProvidersHandlers,
+          ProjectsHandlers,
+          LicensesService,
+          LicensesHandlers,
+          FilesHandlers,
+        ],
         loadComponent: () =>
           import('../project/registrations/registrations.component').then((mod) => mod.RegistrationsComponent),
       },
