@@ -1,24 +1,45 @@
-<div *ngIf="visible" class="tos-banner alert alert-warning d-flex align-items-center justify-content-between">
-  <div class="jumbotron flex-grow-1">
-    <h4 [innerHTML]="'We\'ve updated our <a href=\'' + termsLink + '\'>Terms of Use</a> and <a href=\'' + privacyLink + '\'>Privacy Policy</a>.'">
-    </h4>
+<div
+  *ngIf="visible"
+  class="tw-w-full p-message-warn tw-rounded-md tw-space-y-3"
+  style="padding: 1.5rem 1.5rem 0.5rem 1.5rem; margin: 1rem; border-radius: 10px;"
+>
+  <div class="tw-flex tw-items-center tw-gap-2">
+    <i class="pi pi-exclamation-triangle tw-text-yellow-600"></i>
+    <span class="tw-font-medium">
+      Notice: We've updated our terms of use and privacy policy.
+    </span>
+  </div>
 
-    <div class="form-check mt-2">
-      <input
-        type="checkbox"
-        class="form-check-input"
-        id="tosCheck"
+  <div
+    style="display: flex; justify-content: space-between; margin: 0.5rem 0 0 0.5rem;"
+    class="tw-flex tw-items-center tw-justify-between"
+  >
+    <div
+      style="display: flex;"
+      class="tw-flex tw-items-center tw-gap-2"
+    >
+      <p-checkbox
         [(ngModel)]="acceptedTermsOfService"
-      />
-      <label class="form-check-label" for="tosCheck">
-        I’ve read and agree to the terms and conditions.
+        binary="true"
+        inputId="terms"
+        name="terms"
+        [style]="{ 'margin-right': '0.5rem' }"
+      >
+      </p-checkbox>
+      <label for="terms" style="color: #000;">
+        I've read and agree to the terms and conditions
       </label>
     </div>
 
-    <div *ngIf="errorMessage" class="text-danger small mt-1">
-      {{ errorMessage }}
-    </div>
+    <p-button
+      link
+      label="Continue"
+      [style]="{ 'color': '#000' }"
+      [disabled]="!acceptedTermsOfService"
+      (click)="onContinue()">
+    </p-button>
   </div>
-
-  <button class="btn btn-primary ms-3" (click)="onContinue()">Continue</button>
 </div>
+
+
+
