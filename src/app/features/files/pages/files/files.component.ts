@@ -337,6 +337,7 @@ export class FilesComponent {
     const folderId = this.currentFolder()?.id ?? '';
     const isRootFolder = !this.currentFolder()?.relationships?.parentFolderLink;
     const storageLink = this.currentRootFolder()?.folder?.links?.download ?? '';
+    const resourcePath = this.urlMap.get(this.resourceType()) ?? 'nodes';
 
     if (resourceId && folderId) {
       this.dataciteService.logFileDownload(resourceId, resourcePath).subscribe();
