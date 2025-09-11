@@ -1,10 +1,11 @@
 @if (maintenance && !dismissed) {
   <p-message
+    styleClass="w-full"
     [severity]="maintenance.severity"
-    [text]="maintenance.text"
+    [text]="maintenance.message"
     [closable]="true"
     (onClose)="dismiss()"
-    class="maintenance-banner"
+    class="block py-3"
     icon="pi pi-info-circle"
   >
   </p-message>
