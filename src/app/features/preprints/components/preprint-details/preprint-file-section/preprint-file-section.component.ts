@@ -54,7 +54,7 @@ export class PreprintFileSectionComponent {
     return fileVersions.map((version, index) => ({
       label: this.translateService.instant('preprints.details.file.downloadVersion', {
         version: ++index,
-        date: this.datePipe.transform(version.dateCreated, 'mm/dd/yyyy hh:mm:ss'),
+        date: this.datePipe.transform(version.dateCreated, 'MM/dd/yyyy hh:mm:ss'),
       }),
       url: version.downloadLink,
     }));
