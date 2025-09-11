@@ -4,7 +4,6 @@ import { MessageModule } from 'primeng/message';
 
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 
 import { Maintenance } from '../../models/maintenance.model';
 import { MaintenanceService } from '../../services/maintenance.service';
@@ -19,7 +18,6 @@ import { MaintenanceService } from '../../services/maintenance.service';
 export class MaintenanceBannerComponent implements OnInit {
   private readonly maintenanceService = inject(MaintenanceService);
   private readonly cookies = inject(CookieService);
-  private readonly router = inject(Router);
   private readonly cdr = inject(ChangeDetectorRef);
 
   dismissed = false;

@@ -3,6 +3,7 @@
     <osf-sidenav></osf-sidenav>
 
     <div class="content-wrapper">
+      <osf-maintenance-banner></osf-maintenance-banner>
       <osf-header></osf-header>
 
       <router-outlet />
@@ -13,6 +14,7 @@
 } @else {
   <div class="layout-tablet">
     <div class="content-wrapper">
+      <osf-maintenance-banner></osf-maintenance-banner>
       <osf-topnav></osf-topnav>
 
       @if (isMedium()) {
