@@ -4,7 +4,7 @@ export const formInputLimits = {
     maxLength: 3000,
   },
   title: {
-    maxLength: 100,
+    maxLength: 512,
   },
   doi: {
     pattern: /^10\.\d{4}\/[\s\S]{2,500}$/,
