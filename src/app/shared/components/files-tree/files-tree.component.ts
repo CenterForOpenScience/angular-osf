@@ -333,12 +333,13 @@ export class FilesTreeComponent implements OnDestroy, AfterViewInit {
 
   downloadFolder(folderId: string, rootFolder: boolean): void {
     const resourceId = this.resourceId();
+    const storageLink = this.currentFolder()?.links?.download ?? '';
     if (resourceId && folderId) {
       if (rootFolder) {
-        const link = this.filesService.getFolderDownloadLink(resourceId, this.provider()!, '', true);
+        const link = this.filesService.getFolderDownloadLink(storageLink, '', true);
         window.open(link, '_blank')?.focus();
       } else {
-        const link = this.filesService.getFolderDownloadLink(resourceId, this.provider()!, folderId, false);
+        const link = this.filesService.getFolderDownloadLink(storageLink, folderId, false);
         window.open(link, '_blank')?.focus();
       }
     }

@@ -52,19 +52,19 @@ export class CollectionsDiscoverComponent {
   private querySyncService = inject(CollectionsQuerySyncService);
   private destroyRef = inject(DestroyRef);
 
-  protected searchControl = new FormControl('');
-  protected providerId = signal<string>('');
+  searchControl = new FormControl('');
+  providerId = signal<string>('');
 
-  protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
-  protected collectionDetails = select(CollectionsSelectors.getCollectionDetails);
-  protected selectedFilters = select(CollectionsSelectors.getAllSelectedFilters);
-  protected sortBy = select(CollectionsSelectors.getSortBy);
-  protected searchText = select(CollectionsSelectors.getSearchText);
-  protected pageNumber = select(CollectionsSelectors.getPageNumber);
-  protected isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
-  protected primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
+  collectionProvider = select(CollectionsSelectors.getCollectionProvider);
+  collectionDetails = select(CollectionsSelectors.getCollectionDetails);
+  selectedFilters = select(CollectionsSelectors.getAllSelectedFilters);
+  sortBy = select(CollectionsSelectors.getSortBy);
+  searchText = select(CollectionsSelectors.getSearchText);
+  pageNumber = select(CollectionsSelectors.getPageNumber);
+  isProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
+  primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getCollectionProvider: GetCollectionProvider,
     getCollectionDetails: GetCollectionDetails,
     setSearchValue: SetSearchValue,
@@ -80,7 +80,7 @@ export class CollectionsDiscoverComponent {
     this.setupSearchBinding();
   }
 
-  protected openHelpDialog(): void {
+  openHelpDialog(): void {
     this.dialogService.open(CollectionsHelpDialogComponent, {
       focusOnShow: false,
       header: this.translateService.instant('collections.helpDialog.header'),
@@ -90,7 +90,7 @@ export class CollectionsDiscoverComponent {
     });
   }
 
-  protected onSearchTriggered(searchValue: string): void {
+  onSearchTriggered(searchValue: string): void {
     this.actions.setSearchValue(searchValue);
     this.actions.setPageNumber('1');
   }

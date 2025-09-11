@@ -33,7 +33,7 @@ export function MapFile(
       move: file.links?.move,
       upload: file.links?.upload,
       delete: file.links?.delete,
-      download: file.links?.download,
+      download: file.attributes.kind === 'folder' ? file.links.upload : file.links?.download,
       self: file.links?.self,
       html: file.links?.html,
       render: file.links?.render,

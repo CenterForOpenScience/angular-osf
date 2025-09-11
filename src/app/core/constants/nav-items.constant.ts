@@ -6,7 +6,6 @@ export const AUTHENTICATED_MENU_ITEMS: string[] = [
   'my-registrations',
   'my-projects',
   'my-preprints',
-  'registries-overview',
   'settings',
 ];
 
@@ -79,6 +78,13 @@ export const PROJECT_MENU_ITEMS: MenuItem[] = [
     id: 'project-addons',
     label: 'navigation.addons',
     routerLink: 'addons',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
+  {
+    id: 'project-linked-services',
+    label: 'navigation.linkedServices',
+    routerLink: 'links',
     visible: true,
     routerLinkActiveOptions: { exact: true },
   },
@@ -254,14 +260,14 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLink: '/registries/discover',
         label: 'navigation.discover',
         visible: true,
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
       {
         id: 'registries-moderation',
-        routerLink: '/registries/osf/moderation',
+        routerLink: '/registries',
         label: 'navigation.moderation',
         visible: false,
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
       {
         id: 'registry-details',

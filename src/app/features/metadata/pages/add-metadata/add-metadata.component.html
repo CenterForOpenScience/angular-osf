@@ -13,16 +13,11 @@
           <div [innerHTML]="'project.metadata.addMetadata.cedarInfo' | translate"></div>
         </section>
 
-        <div class="flex gap-2 flex-wrap sm:gap-4">
+        <div class="flex gap-2 flex-wrap mt-4 sm:gap-4">
           @for (meta of cedarTemplates()?.data; track meta.id) {
             <div
-              class="flex flex-column gap-4 metadata border-1 grey-border-color border-round-xl p-4 align-items-center"
-              [class.cursor-pointer]="!hasExistingRecord(meta.id)"
-              [class.cursor-not-allowed]="hasExistingRecord(meta.id)"
-              (click)="onSelect(meta)"
-              (keydown.enter)="onSelect(meta)"
-              [tabindex]="hasExistingRecord(meta.id) ? -1 : 0"
-              role="button"
+              class="flex flex-column align-items-center gap-4 border-1 grey-border-color border-round-xl p-4"
+              [class.metadata-item]="isMedium()"
             >
               <div class="flex flex-row gap-4">
                 <h2>{{ meta.attributes.template.title }}</h2>
@@ -56,7 +51,7 @@
             class="w-10rem"
             [label]="'common.buttons.cancel' | translate"
             severity="info"
-            (click)="onCancel()"
+            (onClick)="onCancel()"
           ></p-button>
           @if (hasMultiplePages()) {
             <p-button
@@ -64,7 +59,7 @@
               class="w-10rem"
               [label]="'common.buttons.next' | translate"
               [disabled]="!hasNextPage()"
-              (click)="onNext()"
+              (onClick)="onNext()"
             ></p-button>
           }
         </div>

@@ -16,8 +16,9 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { LoadingSpinnerComponent } from '@shared/components';
-import { FilterOption, SelectOption } from '@shared/models';
+import { FilterOption } from '@shared/models';
+
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'osf-generic-filter',

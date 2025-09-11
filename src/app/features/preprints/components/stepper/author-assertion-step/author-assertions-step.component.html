@@ -1,14 +1,14 @@
 <h2>{{ 'preprints.preprintStepper.authorAssertions.title' | translate }}</h2>
 
-<p-card styleClass="m-t-24" class="card">
+<p-card styleClass="mt-4" class="card">
   <div>
     <h2>{{ 'preprints.preprintStepper.authorAssertions.conflictOfInterest.title' | translate }}</h2>
 
-    <p class="m-t-12">
+    <p class="mt-3">
       {{ 'preprints.preprintStepper.authorAssertions.conflictOfInterest.description' | translate }}
     </p>
 
-    <div class="m-t-24 flex flex-row gap-4">
+    <div class="mt-4 flex flex-row gap-4">
       <div class="flex flex-row gap-2">
         <p-radio-button
           inputId="coi-yes"
@@ -31,7 +31,7 @@
     </div>
 
     <textarea
-      class="m-t-24 w-full"
+      class="mt-4 w-full"
       [ngClass]="{ 'cursor-not-allowed': !authorAssertionsForm.value.hasCoi }"
       pTextarea
       id="coi-reason"
@@ -52,15 +52,15 @@
   </div>
 </p-card>
 
-<p-card styleClass="m-t-24" class="card">
+<p-card styleClass="mt-4" class="card">
   <div>
     <h2>{{ 'preprints.preprintStepper.authorAssertions.publicData.title' | translate }}</h2>
 
-    <p class="m-t-12">
+    <p class="mt-3">
       {{ 'preprints.preprintStepper.authorAssertions.publicData.description' | translate }}
     </p>
 
-    <div class="m-t-24 flex flex-row gap-4">
+    <div class="mt-4 flex flex-row gap-4">
       <div class="flex flex-row gap-2">
         <p-radio-button
           inputId="publicDataAvailable"
@@ -95,7 +95,7 @@
     @let hasDataLinks = authorAssertionsForm.value.hasDataLinks!;
     @if (hasDataLinks === ApplicabilityStatus.Unavailable || hasDataLinks === ApplicabilityStatus.NotApplicable) {
       <textarea
-        class="m-t-24 w-full"
+        class="mt-4 w-full"
         [ngClass]="{
           'cursor-not-allowed': hasDataLinks === ApplicabilityStatus.NotApplicable,
         }"
@@ -116,7 +116,7 @@
         </p-message>
       }
     } @else {
-      <div class="m-t-24">
+      <div class="mt-4">
         <osf-array-input
           [formArray]="authorAssertionsForm.controls['dataLinks']"
           [inputPlaceholder]="'preprints.preprintStepper.common.placeholders.linkToData' | translate"
@@ -127,16 +127,16 @@
   </div>
 </p-card>
 
-<p-card styleClass="m-t-24" class="card">
+<p-card styleClass="mt-4" class="card">
   <div>
     <h2>{{ 'preprints.preprintStepper.authorAssertions.publicPreregistration.title' | translate }}</h2>
 
-    <p class="m-t-12">
+    <p class="mt-3">
       {{ 'preprints.preprintStepper.authorAssertions.publicPreregistration.description' | translate }}
     </p>
   </div>
 
-  <div class="m-t-24 flex flex-row gap-4">
+  <div class="mt-4 flex flex-row gap-4">
     <div class="flex flex-row gap-2">
       <p-radio-button
         inputId="preregistrationAvailable"
@@ -170,7 +170,7 @@
   @let hasPreregLinks = authorAssertionsForm.value.hasPreregLinks!;
   @if (hasPreregLinks === ApplicabilityStatus.Unavailable || hasPreregLinks === ApplicabilityStatus.NotApplicable) {
     <textarea
-      class="m-t-24 w-full"
+      class="mt-4 w-full"
       [ngClass]="{
         'cursor-not-allowed': hasPreregLinks === ApplicabilityStatus.NotApplicable,
       }"
@@ -191,7 +191,7 @@
       </p-message>
     }
   } @else {
-    <div class="m-t-24 w-12 md:w-6">
+    <div class="mt-4 w-12 md:w-6">
       <osf-form-select
         [control]="authorAssertionsForm.controls['preregLinkInfo']"
         [options]="preregLinkOptions"
@@ -200,7 +200,7 @@
       />
     </div>
 
-    <div class="m-t-24">
+    <div class="mt-4">
       <osf-array-input
         [formArray]="authorAssertionsForm.controls['preregLinks']"
         [inputPlaceholder]="'preprints.preprintStepper.common.placeholders.linkToData' | translate"
@@ -210,7 +210,7 @@
   }
 </p-card>
 
-<section class="m-t-48 flex flex-row justify-content-end align-items-center gap-2">
+<section class="mt-6 flex flex-row justify-content-end align-items-center gap-2">
   <p-button
     class="w-6 md:w-6rem"
     styleClass="w-full"

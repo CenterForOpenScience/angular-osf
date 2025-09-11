@@ -48,12 +48,12 @@ export class ContributorsComponent implements OnInit {
   readonly toastService = inject(ToastService);
   readonly customConfirmationService = inject(CustomConfirmationService);
 
-  protected initialContributors = select(ContributorsSelectors.getContributors);
-  protected contributors = signal([]);
+  initialContributors = select(ContributorsSelectors.getContributors);
+  contributors = signal([]);
 
-  protected readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getContributors: GetAllContributors,
     deleteContributor: DeleteContributor,
     updateContributor: UpdateContributor,

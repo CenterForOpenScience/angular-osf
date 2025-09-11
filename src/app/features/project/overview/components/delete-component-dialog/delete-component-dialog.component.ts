@@ -27,15 +27,15 @@ import { DeleteComponent, GetComponents, ProjectOverviewSelectors } from '../../
 export class DeleteComponentDialogComponent {
   private dialogConfig = inject(DynamicDialogConfig);
   private toastService = inject(ToastService);
-  protected dialogRef = inject(DynamicDialogRef);
-  protected destroyRef = inject(DestroyRef);
+  dialogRef = inject(DynamicDialogRef);
+  destroyRef = inject(DestroyRef);
   private componentId = signal(this.dialogConfig.data.componentId);
-  protected scientistNames = ScientistsNames;
-  protected project = select(ProjectOverviewSelectors.getProject);
-  protected registration = select(RegistryOverviewSelectors.getRegistry);
-  protected isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
-  protected userInput = signal('');
-  protected selectedScientist = computed(() => {
+  scientistNames = ScientistsNames;
+  project = select(ProjectOverviewSelectors.getProject);
+  registration = select(RegistryOverviewSelectors.getRegistry);
+  isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
+  userInput = signal('');
+  selectedScientist = computed(() => {
     const names = Object.values(this.scientistNames);
     return names[Math.floor(Math.random() * names.length)];
   });
@@ -52,20 +52,20 @@ export class DeleteComponentDialogComponent {
     return null;
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getComponents: GetComponents,
     deleteComponent: DeleteComponent,
   });
 
-  protected isInputValid(): boolean {
+  isInputValid(): boolean {
     return this.userInput() === this.selectedScientist();
   }
 
-  protected onInputChange(value: string): void {
+  onInputChange(value: string): void {
     this.userInput.set(value);
   }
 
-  protected handleDeleteComponent(): void {
+  handleDeleteComponent(): void {
     const resource = this.currentResource();
     const componentId = this.componentId();
 

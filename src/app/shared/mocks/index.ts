@@ -9,6 +9,7 @@ export { MOCK_EMPLOYMENT } from './employment.mock';
 export * from './employment.mock';
 export * from './filters.mock';
 export { MOCK_FUNDERS } from './funder.mock';
+export { MOCK_INSTITUTION } from './institution.mock';
 export * from './license.mock';
 export { MOCK_LICENSE } from './license.mock';
 export { LoaderServiceMock } from './loader-service.mock';

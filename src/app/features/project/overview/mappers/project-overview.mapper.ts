@@ -78,6 +78,7 @@ export class ProjectOverviewMapper {
         rootFolder: response.relationships?.files?.links?.related?.href,
         iri: response.links?.iri,
       },
+      rootParentId: response.relationships?.root?.data?.id,
     } as ProjectOverview;
   }
 }

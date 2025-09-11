@@ -42,8 +42,8 @@ export class WithdrawDialogComponent implements OnInit {
     withdrawPreprint: WithdrawPreprint,
   });
 
-  protected inputLimits = formInputLimits;
-  protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  inputLimits = formInputLimits;
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   withdrawalJustificationFormControl = new FormControl('', {
     nonNullable: true,

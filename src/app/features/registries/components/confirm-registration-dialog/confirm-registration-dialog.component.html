@@ -58,6 +58,7 @@
       [disabled]="isRegistrationSubmitting()"
     />
     <p-button
+      data-test-submit-registration-button
       class="w-12rem btn-full-width"
       [label]="'common.buttons.submit' | translate"
       [disabled]="form.invalid || isRegistrationSubmitting()"

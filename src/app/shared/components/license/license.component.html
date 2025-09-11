@@ -1,9 +1,8 @@
 <p-select
+  data-test-select-license
   [options]="licenses()"
   [(ngModel)]="selectedLicense"
   optionLabel="name"
-  styleClass=""
-  appendTo="body"
   [class.md:w-full]="fullWidthSelect()"
   [placeholder]="'shared.license.selectLicense' | translate"
   (onChange)="onSelectLicense($event.value)"
@@ -38,7 +37,7 @@
   </p>
 
   @if (selectedLicense()!.requiredFields.length && showInternalButtons()) {
-    <section class="m-t-48 flex flex-row justify-content-end align-items-center gap-2">
+    <section class="mt-6 flex flex-row justify-content-end align-items-center gap-2">
       <p-button
         class="w-6 md:w-6rem"
         styleClass="w-full"

@@ -6,7 +6,10 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Select } from 'primeng/select';
 
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -28,6 +31,8 @@ export class NewRegistrationComponent {
   private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
+
   readonly projects = select(RegistriesSelectors.getProjects);
   readonly providerSchemas = select(RegistriesSelectors.getProviderSchemas);
   readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
@@ -51,10 +56,12 @@ export class NewRegistrationComponent {
     project: [this.projectId || ''],
   });
 
+  private filter$ = new Subject<string>();
+
   constructor() {
     const userId = this.user()?.id;
     if (userId) {
-      this.actions.getProjects(userId);
+      this.actions.getProjects(userId, '');
     }
     this.actions.getProviderSchemas(this.providerId);
     effect(() => {
@@ -63,12 +70,24 @@ export class NewRegistrationComponent {
         this.draftForm.get('providerSchema')?.setValue(this.providerSchemas()[0]?.id);
       }
     });
+
+    this.filter$
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: string) => {
+        if (userId) {
+          this.actions.getProjects(userId, value);
+        }
+      });
   }
 
   onSelectProject(projectId: string) {
     this.draftForm.patchValue({
       project: projectId,
     });
+  }
+
+  onProjectFilter(value: string) {
+    this.filter$.next(value);
   }
 
   onSelectProviderSchema(providerSchemaId: string) {

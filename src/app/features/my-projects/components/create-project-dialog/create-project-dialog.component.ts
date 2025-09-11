@@ -1,4 +1,4 @@
-import { createDispatchMap, select } from '@ngxs/store';
+import { createDispatchMap, select, Store } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -24,6 +24,7 @@ import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@osf/shared/
 })
 export class CreateProjectDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
+  private readonly store = inject(Store);
 
   private actions = createDispatchMap({
     getMyProjects: GetMyProjects,
@@ -70,8 +71,10 @@ export class CreateProjectDialogComponent {
       )
       .subscribe({
         next: () => {
+          const projects = this.store.selectSnapshot(MyResourcesSelectors.getProjects);
+          const newProject = projects[0];
           this.actions.getMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {});
-          this.dialogRef.close();
+          this.dialogRef.close({ project: newProject });
         },
       });
   }

@@ -40,7 +40,7 @@ export class MakeDecisionComponent {
     submitRequestsDecision: SubmitRequestsDecision,
   });
 
-  protected readonly ReviewsState = ReviewsState;
+  readonly ReviewsState = ReviewsState;
 
   preprint = select(PreprintSelectors.getPreprint);
   provider = input.required<PreprintProviderDetails>();

@@ -60,7 +60,7 @@ export class ProjectContributorsStepComponent {
   stepChange = output<number>();
   contributorsSaved = output<void>();
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     addContributor: AddContributor,
     updateContributor: UpdateContributor,
     deleteContributor: DeleteContributor,

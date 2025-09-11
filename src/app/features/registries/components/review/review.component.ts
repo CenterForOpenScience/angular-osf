@@ -62,21 +62,21 @@ export class ReviewComponent {
   private readonly translateService = inject(TranslateService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly pages = select(RegistriesSelectors.getPagesSchema);
-  protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
-  protected readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
-  protected readonly isDraftLoading = select(RegistriesSelectors.isDraftLoading);
-  protected readonly stepsData = select(RegistriesSelectors.getStepsData);
-  protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
-  protected readonly contributors = select(ContributorsSelectors.getContributors);
-  protected readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
-  protected readonly components = select(RegistriesSelectors.getRegistrationComponents);
-  protected readonly license = select(RegistriesSelectors.getRegistrationLicense);
-  protected readonly newRegistration = select(RegistriesSelectors.getRegistration);
+  readonly pages = select(RegistriesSelectors.getPagesSchema);
+  readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
+  readonly isDraftLoading = select(RegistriesSelectors.isDraftLoading);
+  readonly stepsData = select(RegistriesSelectors.getStepsData);
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  readonly contributors = select(ContributorsSelectors.getContributors);
+  readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
+  readonly components = select(RegistriesSelectors.getRegistrationComponents);
+  readonly license = select(RegistriesSelectors.getRegistrationLicense);
+  readonly newRegistration = select(RegistriesSelectors.getRegistration);
 
-  protected readonly FieldType = FieldType;
+  readonly FieldType = FieldType;
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getContributors: GetAllContributors,
     getSubjects: FetchSelectedSubjects,
     deleteDraft: DeleteDraft,
@@ -87,7 +87,7 @@ export class ReviewComponent {
 
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
-  protected stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  stepsValidation = select(RegistriesSelectors.getStepsValidation);
 
   isDraftInvalid = computed(() => {
     return Object.values(this.stepsValidation()).some((step) => step.invalid);

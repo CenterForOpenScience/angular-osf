@@ -5,12 +5,14 @@ import { map, switchMap, take } from 'rxjs';
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
+import { AuthService } from '@core/services';
 import { GetCurrentUser, UserSelectors } from '@osf/core/store/user';
 import { hasViewOnlyParam } from '@osf/shared/helpers';
 
 export const authGuard: CanActivateFn = () => {
   const store = inject(Store);
   const router = inject(Router);
+  const authService = inject(AuthService);
 
   const isAuthenticated = store.selectSnapshot(UserSelectors.isAuthenticated);
 
@@ -28,7 +30,7 @@ export const authGuard: CanActivateFn = () => {
         take(1),
         map((isAuthenticated) => {
           if (!isAuthenticated) {
-            router.navigate(['/']);
+            authService.navigateToSignIn();
             return false;
           }
 

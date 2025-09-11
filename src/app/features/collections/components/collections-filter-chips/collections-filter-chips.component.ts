@@ -28,11 +28,11 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CollectionsFilterChipsComponent {
-  protected activeFilters = select(CollectionsSelectors.getAllSelectedFilters);
+  activeFilters = select(CollectionsSelectors.getAllSelectedFilters);
 
   private readonly filterTypes = collectionFilterTypes;
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     programArea: SetProgramAreaFilters,
     collectedType: SetCollectedTypeFilters,
     status: SetStatusFilters,
@@ -45,7 +45,7 @@ export class CollectionsFilterChipsComponent {
     volume: SetVolumeFilters,
   });
 
-  protected activeFilterEntries = computed(() => {
+  activeFilterEntries = computed(() => {
     const filters = this.activeFilters();
     return this.filterTypes
       .map((key) => ({
@@ -55,7 +55,7 @@ export class CollectionsFilterChipsComponent {
       .filter((entry) => entry.filters.length);
   });
 
-  protected onRemoveFilter(filterType: CollectionFilterType, removedFilter: string): void {
+  onRemoveFilter(filterType: CollectionFilterType, removedFilter: string): void {
     const currentFilters = this.activeFilters()[filterType].filter((filter: string) => filter !== removedFilter);
 
     switch (filterType) {

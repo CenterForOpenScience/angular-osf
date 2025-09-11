@@ -1,5 +1,7 @@
 export * from './addon-form-controls.enum';
+export * from './addon-service-names.enum';
 export * from './addon-tab.enum';
+export * from './addon-type.enum';
 export * from './addons-category.enum';
 export * from './addons-credentials-format.enum';
 export * from './block-type.enum';
@@ -29,6 +31,7 @@ export * from './revision-review-states.enum';
 export * from './share-indexing.enum';
 export * from './sort-order.enum';
 export * from './sort-type.enum';
+export * from './storage-item-type.enum';
 export * from './subscriptions';
 export * from './trigger-action.enum';
 export * from './user-permissions.enum';

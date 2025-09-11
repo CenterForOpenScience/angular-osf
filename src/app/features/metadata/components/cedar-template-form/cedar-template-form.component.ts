@@ -20,20 +20,13 @@ import {
 import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
 import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
 import {
+  CedarEditorElement,
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
   CedarRecordDataBinding,
 } from '@osf/features/metadata/models';
 
 import 'cedar-artifact-viewer';
-
-interface CedarEditorElement extends HTMLElement {
-  currentMetadata?: unknown;
-  instanceObject?: unknown;
-  dataQualityReport?: {
-    isValid: boolean;
-  };
-}
 
 @Component({
   selector: 'osf-cedar-template-form',

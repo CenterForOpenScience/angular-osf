@@ -5,21 +5,19 @@ import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ProvidersService } from '@osf/features/registries/services';
-import { RegistriesProviderSearchStateModel } from '@osf/features/registries/store/registries-provider-search/registries-provider-search.model';
 import { handleSectionError } from '@shared/helpers';
 
+import { ProvidersService } from '../../services';
+
 import { GetRegistryProviderBrand } from './registries-provider-search.actions';
+import {
+  REGISTRIES_PROVIDER_SEARCH_STATE_DEFAULTS,
+  RegistriesProviderSearchStateModel,
+} from './registries-provider-search.model';
 
 @State<RegistriesProviderSearchStateModel>({
   name: 'registryProviderSearch',
-  defaults: {
-    currentBrandedProvider: {
-      data: null,
-      isLoading: false,
-      error: null,
-    },
-  },
+  defaults: REGISTRIES_PROVIDER_SEARCH_STATE_DEFAULTS,
 })
 @Injectable()
 export class RegistriesProviderSearchState {

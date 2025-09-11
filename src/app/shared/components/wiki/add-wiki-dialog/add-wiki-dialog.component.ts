@@ -23,13 +23,13 @@ import { CreateWiki, WikiSelectors } from '@osf/shared/stores';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddWikiDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
+  readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     createWiki: CreateWiki,
   });
-  protected isSubmitting = select(WikiSelectors.getWikiSubmitting);
-  protected inputLimits = InputLimits;
+  isSubmitting = select(WikiSelectors.getWikiSubmitting);
+  inputLimits = InputLimits;
   private toastService = inject(ToastService);
 
   addWikiForm = new FormGroup({

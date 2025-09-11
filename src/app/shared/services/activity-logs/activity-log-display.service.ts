@@ -28,7 +28,7 @@ export class ActivityLogDisplayService {
 
   private buildTranslationParams(log: ActivityLog): Record<string, unknown> {
     return {
-      addon: log.params.addon,
+      addon: log.params.addon || '',
       anonymousLink: this.formatter.buildAnonymous(log),
       commentLocation: this.formatter.buildCommentLocation(log),
       contributors: this.formatter.buildContributorsList(log),

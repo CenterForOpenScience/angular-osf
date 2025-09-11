@@ -22,8 +22,8 @@ import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectProjectStepComponent {
-  protected selectedProject = select(ProjectsSelectors.getSelectedProject);
-  protected currentUserSubmissions = select(CollectionsSelectors.getUserCollectionSubmissions);
+  selectedProject = select(ProjectsSelectors.getSelectedProject);
+  currentUserSubmissions = select(CollectionsSelectors.getUserCollectionSubmissions);
 
   stepperActiveValue = input.required<number>();
   targetStepValue = input.required<number>();
@@ -34,12 +34,12 @@ export class SelectProjectStepComponent {
 
   currentSelectedProject = signal<Project | null>(null);
 
-  protected excludedProjectIds = computed(() => {
+  excludedProjectIds = computed(() => {
     const submissions = this.currentUserSubmissions();
     return submissions.map((submission) => submission.nodeId);
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     setSelectedProject: SetSelectedProject,
     getUserCollectionSubmissions: GetUserCollectionSubmissions,
   });

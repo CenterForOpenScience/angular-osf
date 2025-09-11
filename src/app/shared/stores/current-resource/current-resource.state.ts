@@ -90,17 +90,19 @@ export class CurrentResourceState {
       },
     });
 
-    return this.resourceService.getResourceWithChildren(action.resourceId, action.resourceType).pipe(
-      tap((children) => {
-        ctx.patchState({
-          resourceChildren: {
-            data: children,
-            isLoading: false,
-            error: null,
-          },
-        });
-      }),
-      catchError((error) => handleSectionError(ctx, 'resourceChildren', error))
-    );
+    return this.resourceService
+      .getResourceWithChildren(action.rootParentId, action.resourceId, action.resourceType)
+      .pipe(
+        tap((children) => {
+          ctx.patchState({
+            resourceChildren: {
+              data: children,
+              isLoading: false,
+              error: null,
+            },
+          });
+        }),
+        catchError((error) => handleSectionError(ctx, 'resourceChildren', error))
+      );
   }
 }

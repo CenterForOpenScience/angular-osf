@@ -19,4 +19,5 @@ export interface BaseNodeModel {
   currentUserPermissions: string[];
   currentUserIsContributor: boolean;
   wikiEnabled: boolean;
+  rootParentId?: string;
 }

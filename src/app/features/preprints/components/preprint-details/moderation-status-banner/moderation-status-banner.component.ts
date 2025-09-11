@@ -32,7 +32,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ModerationStatusBannerComponent {
   private readonly translateService = inject(TranslateService);
-  protected readonly environment = environment;
+  readonly environment = environment;
 
   preprint = select(PreprintSelectors.getPreprint);
   provider = input.required<PreprintProviderDetails>();

@@ -45,26 +45,26 @@ export class InstitutionsSummaryComponent implements OnInit {
   rightsSearch = select(InstitutionsAdminSelectors.getSearchResults);
   rightsLoading = select(InstitutionsAdminSelectors.getSearchResultsLoading);
 
-  protected departmentLabels: string[] = [];
-  protected departmentDataset: DatasetInput[] = [];
+  departmentLabels: string[] = [];
+  departmentDataset: DatasetInput[] = [];
 
-  protected projectsLabels: string[] = [];
-  protected projectDataset: DatasetInput[] = [];
+  projectsLabels: string[] = [];
+  projectDataset: DatasetInput[] = [];
 
-  protected registrationsLabels: string[] = [];
-  protected registrationsDataset: DatasetInput[] = [];
+  registrationsLabels: string[] = [];
+  registrationsDataset: DatasetInput[] = [];
 
-  protected osfProjectsLabels: string[] = [];
-  protected osfProjectsDataset: DatasetInput[] = [];
+  osfProjectsLabels: string[] = [];
+  osfProjectsDataset: DatasetInput[] = [];
 
-  protected storageLabels: string[] = [];
-  protected storageDataset: DatasetInput[] = [];
+  storageLabels: string[] = [];
+  storageDataset: DatasetInput[] = [];
 
-  protected licenceLabels: string[] = [];
-  protected licenceDataset: DatasetInput[] = [];
+  licenceLabels: string[] = [];
+  licenceDataset: DatasetInput[] = [];
 
-  protected addonLabels: string[] = [];
-  protected addonDataset: DatasetInput[] = [];
+  addonLabels: string[] = [];
+  addonDataset: DatasetInput[] = [];
 
   private readonly actions = createDispatchMap({
     fetchDepartments: FetchInstitutionDepartments,

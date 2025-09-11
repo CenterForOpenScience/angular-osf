@@ -21,12 +21,12 @@ import { RegisterDraft, RegistriesSelectors } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConfirmRegistrationDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
+  readonly dialogRef = inject(DynamicDialogRef);
   private readonly fb = inject(FormBuilder);
   readonly config = inject(DynamicDialogConfig);
 
-  protected readonly isRegistrationSubmitting = select(RegistriesSelectors.isRegistrationSubmitting);
-  protected actions = createDispatchMap({
+  readonly isRegistrationSubmitting = select(RegistriesSelectors.isRegistrationSubmitting);
+  actions = createDispatchMap({
     registerDraft: RegisterDraft,
   });
   SubmitType = SubmitType;

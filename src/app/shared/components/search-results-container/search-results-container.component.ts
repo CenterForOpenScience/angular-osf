@@ -70,15 +70,15 @@ export class SearchResultsContainerComponent {
     return this.tabOptions().length > 0;
   });
 
-  protected readonly searchSortingOptions = searchSortingOptions;
-  protected readonly ResourceType = ResourceType;
+  readonly searchSortingOptions = searchSortingOptions;
+  readonly ResourceType = ResourceType;
 
-  protected readonly hasSelectedValues = computed(() => {
+  readonly hasSelectedValues = computed(() => {
     const values = this.selectedValues();
     return Object.values(values).some((value) => value !== null && value !== '');
   });
 
-  protected readonly hasFilters = computed(() => {
+  readonly hasFilters = computed(() => {
     return this.filters().length > 0;
   });
 

@@ -35,23 +35,23 @@ import { ClearUsers, ModeratorsSelectors, SearchUsers } from '../../store/modera
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddModeratorDialogComponent implements OnInit, OnDestroy {
-  protected dialogRef = inject(DynamicDialogRef);
+  dialogRef = inject(DynamicDialogRef);
   private readonly destroyRef = inject(DestroyRef);
   readonly config = inject(DynamicDialogConfig);
 
-  protected users = select(ModeratorsSelectors.getUsers);
-  protected isLoading = select(ModeratorsSelectors.isUsersLoading);
-  protected totalUsersCount = select(ModeratorsSelectors.getUsersTotalCount);
-  protected isInitialState = signal(true);
+  users = select(ModeratorsSelectors.getUsers);
+  isLoading = select(ModeratorsSelectors.isUsersLoading);
+  totalUsersCount = select(ModeratorsSelectors.getUsersTotalCount);
+  isInitialState = signal(true);
 
-  protected currentPage = signal(1);
-  protected first = signal(0);
-  protected rows = signal(10);
+  currentPage = signal(1);
+  first = signal(0);
+  rows = signal(10);
 
-  protected selectedUsers = signal<ModeratorAddModel[]>([]);
-  protected searchControl = new FormControl<string>('');
+  selectedUsers = signal<ModeratorAddModel[]>([]);
+  searchControl = new FormControl<string>('');
 
-  protected actions = createDispatchMap({ searchUsers: SearchUsers, clearUsers: ClearUsers });
+  actions = createDispatchMap({ searchUsers: SearchUsers, clearUsers: ClearUsers });
 
   ngOnInit(): void {
     this.setSearchSubscription();

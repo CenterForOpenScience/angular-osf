@@ -32,12 +32,12 @@ export class PreprintsSubjectsComponent implements OnInit {
   preprintId = input<string>();
 
   private readonly selectedProviderId = select(PreprintStepperSelectors.getSelectedProviderId);
-  protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
-  protected isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
+  selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  isSubjectsUpdating = select(SubjectsSelectors.areSelectedSubjectsLoading);
   control = input.required<FormControl>();
 
-  protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
-  protected actions = createDispatchMap({
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  actions = createDispatchMap({
     fetchSubjects: FetchSubjects,
     fetchSelectedSubjects: FetchSelectedSubjects,
     fetchChildrenSubjects: FetchChildrenSubjects,

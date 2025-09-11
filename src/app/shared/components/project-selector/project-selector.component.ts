@@ -39,9 +39,9 @@ export class ProjectSelectorComponent {
   private readonly translateService = inject(TranslateService);
   private readonly filterSubject = new Subject<string>();
 
-  protected projects = select(ProjectsSelectors.getProjects);
-  protected isProjectsLoading = select(ProjectsSelectors.getProjectsLoading);
-  protected currentUser = select(UserSelectors.getCurrentUser);
+  projects = select(ProjectsSelectors.getProjects);
+  isProjectsLoading = select(ProjectsSelectors.getProjectsLoading);
+  currentUser = select(UserSelectors.getCurrentUser);
 
   placeholder = input<string>('common.buttons.select');
   showClear = input<boolean>(true);
@@ -51,16 +51,16 @@ export class ProjectSelectorComponent {
   projectChange = output<Project | null>();
   projectsLoaded = output<Project[]>();
 
-  protected projectsOptions = signal<CustomOption<Project>[]>([]);
+  projectsOptions = signal<CustomOption<Project>[]>([]);
 
-  protected filterMessage = computed(() => {
+  filterMessage = computed(() => {
     const isLoading = this.isProjectsLoading();
     return isLoading
       ? this.translateService.instant('collections.addToCollection.form.loadingPlaceholder')
       : this.translateService.instant('collections.addToCollection.form.noProjectsFound');
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getProjects: GetProjects,
   });
 

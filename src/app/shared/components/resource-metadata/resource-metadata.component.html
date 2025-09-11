@@ -21,7 +21,7 @@
         @if (!resource.isAnonymous) {
           @for (contributor of resource.contributors; track contributor.id) {
             <div>
-              <a class="font-bold"> {{ contributor.fullName }}</a>
+              <a class="font-bold" [routerLink]="['/user', contributor.id]"> {{ contributor.fullName }}</a>
               <span>{{ $last ? '' : ',' }}</span>
             </div>
           }
@@ -40,7 +40,7 @@
       />
     </div>
 
-    @if (resource.type === resourceTypes.Projects) {
+    @if (isProject()) {
       <div class="flex flex-column gap-2">
         <h3>{{ 'project.overview.metadata.supplements' | translate }}</h3>
 
@@ -48,9 +48,9 @@
           @for (supplement of resource.supplements; track supplement.id) {
             <p>
               {{ 'project.overview.metadata.supplementsText1' | translate }}
-              <a class="font-bold" target="_blank" href="{{ supplement.url }}">{{
-                supplement.title + ', ' + (supplement.dateCreated | date: 'MMMM d, y')
-              }}</a>
+              <a class="font-bold" target="_blank" href="{{ supplement.url }}">
+                {{ supplement.title + ', ' + (supplement.dateCreated | date: 'MMMM d, y') }}
+              </a>
               {{ 'project.overview.metadata.supplementsText2' | translate }}
             </p>
           }
@@ -60,7 +60,7 @@
       </div>
     }
 
-    @if (resource.type === resourceTypes.Registrations) {
+    @if (isRegistration()) {
       <div class="flex flex-column gap-2">
         <h3>{{ 'registry.overview.metadata.type' | translate }}</h3>
         <p>{{ resource.registrationType }}</p>
@@ -70,9 +70,9 @@
         <div class="flex flex-column gap-2">
           <h3>{{ 'registry.overview.metadata.associatedProject' | translate }}</h3>
           <!--          [KP] TODO: proper link to project-->
-          <a [href]="'https://osf.io/' + resource.associatedProjectId">{{
-            'osf.io/' + resource.associatedProjectId
-          }}</a>
+          <a [href]="'https://osf.io/' + resource.associatedProjectId">
+            {{ 'osf.io/' + resource.associatedProjectId }}
+          </a>
         </div>
       }
     }
@@ -80,18 +80,18 @@
     <div class="flex gap-5 lg:gap-2 lg:justify-content-between">
       <div class="flex flex-column gap-2">
         <h3>{{ 'project.overview.metadata.dateCreated' | translate }}</h3>
-        <p>{{ resource.dateCreated | date: 'MMM d, y, h:mm a' }}</p>
+        <p>{{ resource.dateCreated | date: dateFormat }}</p>
       </div>
 
-      @if (resource.type !== resourceTypes.Registrations) {
+      @if (isProject()) {
         <div class="flex flex-column gap-2">
           <h3>{{ 'project.overview.metadata.dateUpdated' | translate }}</h3>
-          <p>{{ resource.dateModified | date: 'MMM d, y, h:mm a' }}</p>
+          <p>{{ resource.dateModified | date: dateFormat }}</p>
         </div>
       } @else {
         <div class="flex flex-column gap-2">
           <h3>{{ 'registry.overview.metadata.registeredDate' | translate }}</h3>
-          <p>{{ resource.dateRegistered | date: 'MMM d, y, h:mm a' }}</p>
+          <p>{{ resource.dateRegistered | date: dateFormat }}</p>
         </div>
       }
     </div>
@@ -104,24 +104,16 @@
 
     @if (!resource.isAnonymous) {
       <div class="flex flex-column gap-2">
-        @if (resource.type !== resourceTypes.Registrations) {
-          <h3>{{ 'project.overview.metadata.publication' | translate }}</h3>
-        } @else {
-          <h3>{{ 'registry.overview.metadata.doi' | translate }}</h3>
-        }
+        <h3>
+          {{ (isProject() ? 'project.overview.metadata.publication' : 'registry.overview.metadata.doi') | translate }}
+        </h3>
 
         @if (resource.identifiers?.length) {
           @for (identifier of resource.identifiers; track identifier.id) {
             @if (identifier.category === 'doi') {
-              @if (resource.type !== resourceTypes.Registrations) {
-                <a [href]="'https://doi.org/' + identifier.value">
-                  {{ identifier.value }}
-                </a>
-              } @else {
-                <a [href]="'https://doi.org/' + identifier.value">
-                  {{ 'https://doi.org/' + identifier.value }}
-                </a>
-              }
+              <a class="font-bold" [href]="'https://doi.org/' + identifier.value">
+                {{ identifier.value }}
+              </a>
             }
           }
         } @else {
@@ -134,7 +126,7 @@
       <osf-affiliated-institutions-view [institutions]="resource.affiliatedInstitutions || []" />
     }
 
-    @if (resource.type === resourceTypes.Projects) {
+    @if (isProject()) {
       <osf-overview-collections [currentProject]="currentResource()"></osf-overview-collections>
     }
 
@@ -165,6 +157,7 @@
         <p>{{ 'project.overview.metadata.noTags' | translate }}</p>
       }
     </div>
+
     @if (!resource.isAnonymous) {
       <osf-resource-citations
         [currentResource]="currentResource()"

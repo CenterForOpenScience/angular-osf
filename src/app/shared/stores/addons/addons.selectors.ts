@@ -3,9 +3,8 @@ import { createSelector, Selector } from '@ngxs/store';
 import {
   AddonModel,
   AuthorizedAccountModel,
-  AuthorizedAddonResponseJsonApi,
+  ConfiguredAddonModel,
   ConfiguredAddonResponseJsonApi,
-  ConfiguredStorageAddonModel,
   OperationInvocation,
   ResourceReferenceJsonApi,
   StorageItemModel,
@@ -15,49 +14,18 @@ import {
 import { AddonsStateModel } from './addons.models';
 import { AddonsState } from './addons.state';
 
-/**
- * A static utility class containing NGXS selectors for accessing various slices
- * of the `AddonsStateModel` in the NGXS store.
- *
- * This class provides typed, reusable selectors to extract addon-related state such as
- * storage, citation, authorized, and configured addon collections. It supports structured
- * access to application state and encourages consistency across components.
- *
- * All selectors in this class operate on the `AddonsStateModel`.
- */
 export class AddonsSelectors {
-  /**
-   * Selector to retrieve the list of available external storage addons from the NGXS state.
-   *
-   * These are public addon services (e.g., Google Drive, Dropbox) available for configuration.
-   * The data is retrieved from the `storageAddons` portion of the `AddonsStateModel`.
-   *
-   * @param state - The current `AddonsStateModel` from the NGXS store.
-   * @returns An array of available `Addon` objects representing storage providers.
-   */
   @Selector([AddonsState])
   static getStorageAddons(state: AddonsStateModel): AddonModel[] {
     return state.storageAddons.data;
   }
 
-  /**
-   * Selector to retrieve a specific storage addon by its ID from the NGXS state.
-   *
-   * @param state The current state of the Addons NGXS store.
-   * @param id The unique identifier of the storage addon to retrieve.
-   * @returns The matched Addon object if found, otherwise undefined.
-   */
   static getStorageAddon(id: string): (state: AddonsStateModel) => AddonModel | null {
     return createSelector([AddonsState], (state: AddonsStateModel): AddonModel | null => {
       return state.storageAddons.data.find((addon: AddonModel) => addon.id === id) || null;
     });
   }
-  /**
-   * Selector to retrieve the loading status of storage addons from the AddonsState.
-   *
-   * @param state The current state of the Addons feature.
-   * @returns A boolean indicating whether storage addons are currently being loaded.
-   */
+
   @Selector([AddonsState])
   static getStorageAddonsLoading(state: AddonsStateModel): boolean {
     return state.storageAddons.isLoading;
@@ -71,6 +39,16 @@ export class AddonsSelectors {
   @Selector([AddonsState])
   static getCitationAddonsLoading(state: AddonsStateModel): boolean {
     return state.citationAddons.isLoading;
+  }
+
+  @Selector([AddonsState])
+  static getLinkAddons(state: AddonsStateModel): AddonModel[] {
+    return state.linkAddons.data;
+  }
+
+  @Selector([AddonsState])
+  static getLinkAddonsLoading(state: AddonsStateModel): boolean {
+    return state.linkAddons.isLoading;
   }
 
   @Selector([AddonsState])
@@ -101,42 +79,44 @@ export class AddonsSelectors {
     return state.authorizedCitationAddons.isLoading;
   }
 
-  /**
-   * Selector to retrieve the list of configured storage addons from the NGXS state.
-   *
-   * @param state - The current state of the AddonsStateModel.
-   * @returns An array of configured storage addons.
-   *
-   * @example
-   * const addons = this.store.selectSnapshot(AddonsSelectors.getConfiguredStorageAddons);
-   */
   @Selector([AddonsState])
-  static getConfiguredStorageAddons(state: AddonsStateModel): ConfiguredStorageAddonModel[] {
+  static getAuthorizedLinkAddons(state: AddonsStateModel): AuthorizedAccountModel[] {
+    return state.authorizedLinkAddons.data;
+  }
+
+  @Selector([AddonsState])
+  static getAuthorizedLinkAddonsLoading(state: AddonsStateModel): boolean {
+    return state.authorizedLinkAddons.isLoading;
+  }
+
+  @Selector([AddonsState])
+  static getConfiguredStorageAddons(state: AddonsStateModel): ConfiguredAddonModel[] {
     return state.configuredStorageAddons.data;
   }
 
-  /**
-   * Selector to determine whether the configured storage addons are currently being loaded.
-   *
-   * @param state - The current state of the AddonsStateModel.
-   * @returns A boolean indicating if the addons are loading.
-   *
-   * @example
-   * const isLoading = this.store.selectSnapshot(AddonsSelectors.getConfiguredStorageAddonsLoading);
-   */
   @Selector([AddonsState])
   static getConfiguredStorageAddonsLoading(state: AddonsStateModel): boolean {
     return state.configuredStorageAddons.isLoading;
   }
 
   @Selector([AddonsState])
-  static getConfiguredCitationAddons(state: AddonsStateModel): ConfiguredStorageAddonModel[] {
+  static getConfiguredCitationAddons(state: AddonsStateModel): ConfiguredAddonModel[] {
     return state.configuredCitationAddons.data;
   }
 
   @Selector([AddonsState])
   static getConfiguredCitationAddonsLoading(state: AddonsStateModel): boolean {
     return state.configuredCitationAddons.isLoading;
+  }
+
+  @Selector([AddonsState])
+  static getConfiguredLinkAddons(state: AddonsStateModel): ConfiguredAddonModel[] {
+    return state.configuredLinkAddons.data;
+  }
+
+  @Selector([AddonsState])
+  static getConfiguredLinkAddonsLoading(state: AddonsStateModel): boolean {
+    return state.configuredLinkAddons.isLoading;
   }
 
   @Selector([AddonsState])
@@ -160,7 +140,7 @@ export class AddonsSelectors {
   }
 
   @Selector([AddonsState])
-  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AuthorizedAddonResponseJsonApi | null {
+  static getCreatedOrUpdatedAuthorizedAddon(state: AddonsStateModel): AuthorizedAccountModel | null {
     return state.createdUpdatedAuthorizedAddon.data;
   }
 
@@ -191,12 +171,12 @@ export class AddonsSelectors {
 
   @Selector([AddonsState])
   static getSelectedFolderOperationInvocation(state: AddonsStateModel): OperationInvocation | null {
-    return state.selectedFolderOperationInvocation.data;
+    return state.selectedItemOperationInvocation.data;
   }
 
   @Selector([AddonsState])
-  static getSelectedFolder(state: AddonsStateModel): StorageItemModel | null {
-    return state.selectedFolderOperationInvocation.data?.operationResult[0] || null;
+  static getSelectedStorageItem(state: AddonsStateModel): StorageItemModel | null {
+    return state.selectedItemOperationInvocation.data?.operationResult[0] || null;
   }
 
   @Selector([AddonsState])

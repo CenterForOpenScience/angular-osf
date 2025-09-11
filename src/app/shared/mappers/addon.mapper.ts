@@ -1,10 +1,11 @@
+import { AddonCategory, AuthorizedAccountType, ConfiguredAddonType } from '../enums';
 import {
   AddonGetResponseJsonApi,
   AddonModel,
   AuthorizedAccountModel,
   AuthorizedAddonGetResponseJsonApi,
   ConfiguredAddonGetResponseJsonApi,
-  ConfiguredStorageAddonModel,
+  ConfiguredAddonModel,
   IncludedAddonData,
   OperationInvocation,
   OperationInvocationResponseJsonApi,
@@ -21,6 +22,7 @@ export class AddonMapper {
       displayName: response.attributes.display_name,
       externalServiceName: response.attributes.external_service_name,
       supportedFeatures: response.attributes.supported_features,
+      supportedResourceTypes: response.attributes.supported_resource_types,
       credentialsFormat: response.attributes.credentials_format,
       providerName: response.attributes.display_name,
     };
@@ -31,13 +33,17 @@ export class AddonMapper {
     included?: IncludedAddonData[]
   ): AuthorizedAccountModel {
     const externalServiceData =
-      response.relationships?.external_storage_service?.data || response.relationships?.external_citation_service?.data;
+      response.relationships?.external_storage_service?.data ||
+      response.relationships?.external_citation_service?.data ||
+      response.relationships?.external_link_service?.data;
 
     const externalServiceId = externalServiceData?.id;
 
     const matchingService = included?.find(
       (item) =>
-        (item.type === 'external-storage-services' || item.type === 'external-citation-services') &&
+        (item.type === AddonCategory.EXTERNAL_STORAGE_SERVICES ||
+          item.type === AddonCategory.EXTERNAL_CITATION_SERVICES ||
+          item.type === AddonCategory.EXTERNAL_LINK_SERVICES) &&
         item.id === externalServiceId
     )?.attributes;
 
@@ -56,7 +62,7 @@ export class AddonMapper {
       authorizedOperationNames: response.attributes.authorized_operation_names,
       defaultRootFolder: response.attributes.default_root_folder,
       credentialsAvailable: response.attributes.credentials_available,
-      oauthToken: response.attributes.oauth_token,
+      oauthToken: response.attributes.oauth_token || '',
       accountOwnerId: response.relationships.account_owner.data.id,
       externalStorageServiceId: externalServiceId || '',
       externalServiceName,
@@ -66,25 +72,16 @@ export class AddonMapper {
     };
   }
 
-  /**
-   * Maps a JSON:API-formatted response object into a `ConfiguredAddon` domain model.
-   *
-   * @param response - The raw API response object representing a configured addon.
-   * This must conform to the `ConfiguredAddonGetResponseJsonApi` structure.
-   *
-   * @returns A `ConfiguredAddon` object with normalized and flattened properties
-   * for application use.
-   *
-   * @example
-   * const addon = AddonMapper.fromConfiguredAddonResponse(apiResponse);
-   */
-  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredStorageAddonModel {
+  static fromConfiguredAddonResponse(response: ConfiguredAddonGetResponseJsonApi): ConfiguredAddonModel {
+    const isLinkAddon = response.type === ConfiguredAddonType.LINK;
     return {
       type: response.type,
       id: response.id,
       displayName: response.attributes.display_name,
       externalServiceName: response.attributes.external_service_name,
-      selectedFolderId: response.attributes.root_folder,
+      selectedStorageItemId: isLinkAddon ? response.attributes.target_id || '' : response.attributes.root_folder || '',
+      resourceType: response.attributes.resource_type,
+      targetUrl: response.attributes.target_url,
       connectedCapabilities: response.attributes.connected_capabilities,
       connectedOperationNames: response.attributes.connected_operation_names,
       currentUserIsOwner: response.attributes.current_user_is_owner,
@@ -101,21 +98,25 @@ export class AddonMapper {
     // const isOperationResult = 'items' in operationResult && 'total_count' in operationResult;
     const isOperationResult = 'items' in operationResult;
 
+    const isLinkAddon = response.relationships?.thru_account?.data?.type === AuthorizedAccountType.LINK;
+
     const mappedOperationResult = isOperationResult
       ? operationResult.items.map((item: StorageItemResponseJsonApi) => ({
           itemId: item.item_id,
           itemName: item.item_name,
           itemType: item.item_type,
-          canBeRoot: item.can_be_root,
-          mayContainRootCandidates: item.may_contain_root_candidates,
+          itemLink: item.item_link,
+          canBeRoot: item.can_be_root ?? true,
+          mayContainRootCandidates: item.may_contain_root_candidates ?? isLinkAddon,
         }))
       : [
           {
             itemId: operationResult.item_id,
             itemName: operationResult.item_name,
             itemType: operationResult.item_type,
-            canBeRoot: operationResult.can_be_root,
-            mayContainRootCandidates: operationResult.may_contain_root_candidates,
+            itemLink: operationResult.item_link,
+            canBeRoot: operationResult.can_be_root ?? true,
+            mayContainRootCandidates: operationResult.may_contain_root_candidates ?? isLinkAddon,
           },
         ];
     return {

@@ -24,14 +24,14 @@ export class TogglePublicityDialogComponent {
   private dialogConfig = inject(DynamicDialogConfig);
   private toastService = inject(ToastService);
 
-  protected dialogRef = inject(DynamicDialogRef);
-  protected destroyRef = inject(DestroyRef);
-  protected isSubmitting = select(ProjectOverviewSelectors.getUpdatePublicStatusSubmitting);
+  dialogRef = inject(DynamicDialogRef);
+  destroyRef = inject(DestroyRef);
+  isSubmitting = select(ProjectOverviewSelectors.getUpdatePublicStatusSubmitting);
 
   private newPublicStatus = signal(this.dialogConfig.data.newPublicStatus);
   private projectId = signal(this.dialogConfig.data.projectId);
-  protected isCurrentlyPublic = signal(this.dialogConfig.data.isCurrentlyPublic);
-  protected messageKey = computed(() => {
+  isCurrentlyPublic = signal(this.dialogConfig.data.isCurrentlyPublic);
+  messageKey = computed(() => {
     return this.isCurrentlyPublic()
       ? 'project.overview.dialog.makePrivate.message'
       : 'project.overview.dialog.makePublic.message';

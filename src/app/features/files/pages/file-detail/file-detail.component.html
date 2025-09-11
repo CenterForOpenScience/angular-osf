@@ -27,15 +27,11 @@
       }
 
       @if (file()?.links?.download) {
-        <p-button severity="secondary" (click)="downloadFile(file()?.links?.download!)">
-          <i class="fas fa-download p-1"></i>
-        </p-button>
+        <p-button severity="secondary" icon="fas fa-download" (click)="downloadFile(file()?.links?.download!)" />
       }
       @if (file()?.links?.render) {
         <div class="relative">
-          <p-button severity="secondary" (click)="embedMenu.toggle($event)">
-            <i class="fas fa-file-import p-1"></i>
-          </p-button>
+          <p-button severity="secondary" icon="fas fa-file-import" (click)="embedMenu.toggle($event)" />
 
           <p-menu appendTo="body" [model]="embedItems" popup #embedMenu>
             <ng-template #item let-item>
@@ -46,9 +42,7 @@
       }
       @if (file()?.links?.html) {
         <div class="relative">
-          <p-button severity="secondary" (click)="shareMenu.toggle($event)">
-            <i class="fas fa-share-nodes p-1"></i>
-          </p-button>
+          <p-button severity="secondary" icon="fas fa-share-nodes" (click)="shareMenu.toggle($event)" />
 
           <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
             <ng-template #item let-item>
@@ -58,9 +52,7 @@
         </div>
       }
       @if (file() && !isAnonymous()) {
-        <p-button severity="danger" (click)="confirmDelete(file()!)">
-          <i class="fas fa-trash p-1"></i>
-        </p-button>
+        <p-button severity="danger" icon="fas fa-trash" (click)="confirmDelete(file()!)" />
       }
     </div>
   </div>
