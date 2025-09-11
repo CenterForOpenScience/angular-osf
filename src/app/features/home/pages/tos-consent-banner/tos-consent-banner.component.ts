@@ -14,7 +14,7 @@ import {
 
 @Component({
   selector: 'cos-tos-consent-banner',
-  imports: [NgIf, FormsModule, CheckboxModule, ButtonModule ],
+  imports: [NgIf, FormsModule, CheckboxModule, ButtonModule, MessageModule ],
   templateUrl: './tos-consent-banner.component.html',
   styleUrls: ['./tos-consent-banner.component.scss'],
 })
