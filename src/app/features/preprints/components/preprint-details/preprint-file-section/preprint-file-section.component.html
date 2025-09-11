@@ -41,15 +41,15 @@
     }
 
     @if (file()) {
-      @let fileValue = file()!;
+      @let preprintValue = preprint()!;
 
       <div class="flex flex-column gap-1 justify-content-start md:flex-row">
-        <span>{{ dateLabel() | translate }}: {{ fileValue.dateCreated | date: 'longDate' }}</span>
+        <span>{{ dateLabel() | translate }}: {{ preprintValue.dateCreated | date: 'longDate' }}</span>
         @if (isMedium() || isLarge()) {
           <span>|</span>
         }
         <span>
-          {{ 'preprints.details.file.lastEdited' | translate }} : {{ fileValue.dateModified | date: 'longDate' }}
+          {{ 'preprints.details.file.lastEdited' | translate }} : {{ preprintValue.dateModified | date: 'longDate' }}
         </span>
       </div>
     }

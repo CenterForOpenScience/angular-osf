@@ -34,6 +34,7 @@ export class PreprintFileSectionComponent {
   isMedium = toSignal(inject(IS_MEDIUM));
   isLarge = toSignal(inject(IS_LARGE));
 
+  preprint = select(PreprintSelectors.getPreprint);
   file = select(PreprintSelectors.getPreprintFile);
   isFileLoading = select(PreprintSelectors.isPreprintFileLoading);
   safeLink = computed(() => {
