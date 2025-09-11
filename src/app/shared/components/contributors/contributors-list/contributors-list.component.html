@@ -100,19 +100,38 @@
           </p>
         </td>
         <td>
-          <div>
-            <osf-select
-              [options]="permissionsOptions"
-              [placeholder]="'project.contributors.permissionFilter'"
-              [appendTo]="'body'"
-              [noBorder]="true"
-              [(selectedValue)]="contributor.permission"
-            ></osf-select>
-          </div>
+          @if (isCurrentUserAdminContributor()) {
+            <div>
+              <osf-select
+                [options]="permissionsOptions"
+                [placeholder]="'project.contributors.permissionFilter'"
+                [appendTo]="'body'"
+                [noBorder]="true"
+                [(selectedValue)]="contributor.permission"
+              />
+            </div>
+          } @else {
+            @switch (contributor.permission) {
+              @case (ContributorPermission.Admin) {
+                <span>{{ 'project.contributors.permissions.administrator' | translate }}</span>
+              }
+              @case (ContributorPermission.Write) {
+                <span>{{ 'project.contributors.permissions.readAndWrite' | translate }}</span>
+              }
+              @case (ContributorPermission.Read) {
+                <span>{{ 'project.contributors.permissions.read' | translate }}</span>
+              }
+            }
+          }
         </td>
         <td>
           <div class="flex align-items-center justify-content-center">
-            <p-checkbox variant="filled" binary="true" [(ngModel)]="contributor.isBibliographic"></p-checkbox>
+            <p-checkbox
+              variant="filled"
+              binary="true"
+              [(ngModel)]="contributor.isBibliographic"
+              [readonly]="!isCurrentUserAdminContributor()"
+            />
           </div>
         </td>
         @if (showCuratorColumn()) {
@@ -158,14 +177,16 @@
           </div>
         </td>
         <td>
-          <p-button
-            class="danger-icon-btn"
-            icon="fas fa-trash"
-            severity="danger"
-            text
-            [ariaLabel]="'common.buttons.delete' | translate"
-            (onClick)="removeContributor(contributor)"
-          />
+          @if (isCurrentUserAdminContributor() || currentUserId() === contributor.userId) {
+            <p-button
+              class="danger-icon-btn"
+              icon="fas fa-trash"
+              severity="danger"
+              text
+              [ariaLabel]="'common.buttons.delete' | translate"
+              (onClick)="removeContributor(contributor)"
+            />
+          }
         </td>
       </tr>
     } @else {

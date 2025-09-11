@@ -10,8 +10,10 @@ import { Tooltip } from 'primeng/tooltip';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { ModeratorPermission } from '@osf/features/moderation/enums';
 import { DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
+import { ContributorPermission } from '@shared/enums';
 
 import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
 import { EmploymentHistoryDialogComponent } from '../../employment-history-dialog/employment-history-dialog.component';
@@ -29,6 +31,9 @@ export class ContributorsListComponent {
   contributors = input<ContributorModel[]>([]);
   isLoading = input(false);
   showCuratorColumn = input(false);
+
+  currentUserId = input<string | undefined>(undefined);
+  isCurrentUserAdminContributor = input<boolean>(true);
 
   remove = output<ContributorModel>();
 
@@ -67,4 +72,7 @@ export class ContributorsListComponent {
       closable: true,
     });
   }
+
+  protected readonly ModeratorPermission = ModeratorPermission;
+  protected readonly ContributorPermission = ContributorPermission;
 }
