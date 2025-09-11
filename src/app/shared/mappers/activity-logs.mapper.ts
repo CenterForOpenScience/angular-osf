@@ -3,15 +3,16 @@ import {
   ActivityLogJsonApi,
   JsonApiResponseWithMeta,
   LogContributor,
+  LogContributorJsonApi,
   MetaAnonymousJsonApi,
   PaginatedData,
-} from '@shared/models';
-import { LogContributorJsonApi } from '@shared/models/activity-logs/activity-logs-json-api.model';
+} from '../models';
 
 export class ActivityLogsMapper {
   static fromActivityLogJsonApi(log: ActivityLogJsonApi, isAnonymous?: boolean): ActivityLog {
     const params = log.attributes.params ?? {};
     const contributors = params.contributors ?? [];
+
     return {
       id: log.id,
       type: log.type,

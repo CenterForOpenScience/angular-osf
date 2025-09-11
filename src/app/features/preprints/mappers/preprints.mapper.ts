@@ -136,6 +136,12 @@ export class PreprintsMapper {
         views: meta.metrics.views,
       },
       embeddedLicense: LicensesMapper.fromLicenseDataJsonApi(data.embeds.license.data),
+      identifiers: data.embeds.identifiers?.data.map((identifier) => ({
+        id: identifier.id,
+        type: identifier.type,
+        value: identifier.attributes.value,
+        category: identifier.attributes.category,
+      })),
       preprintDoiLink: links.preprint_doi,
       articleDoiLink: links.doi,
     };

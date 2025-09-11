@@ -2,7 +2,7 @@ import { Selector } from '@ngxs/store';
 
 import { ResourceType } from '@osf/shared/enums';
 import { StringOrNull } from '@osf/shared/helpers';
-import { DiscoverableFilter, ResourceModel, SelectOption } from '@osf/shared/models';
+import { DiscoverableFilter, FilterOption, ResourceModel } from '@osf/shared/models';
 
 import { GlobalSearchStateModel } from './global-search.model';
 import { GlobalSearchState } from './global-search.state';
@@ -69,12 +69,12 @@ export class GlobalSearchSelectors {
   }
 
   @Selector([GlobalSearchState])
-  static getFilterOptionsCache(state: GlobalSearchStateModel): Record<string, SelectOption[]> {
+  static getFilterOptionsCache(state: GlobalSearchStateModel): Record<string, FilterOption[]> {
     return state.filterOptionsCache;
   }
 
   @Selector([GlobalSearchState])
-  static getFilterSearchCache(state: GlobalSearchStateModel): Record<string, SelectOption[]> {
+  static getFilterSearchCache(state: GlobalSearchStateModel): Record<string, FilterOption[]> {
     return state.filterSearchCache;
   }
 

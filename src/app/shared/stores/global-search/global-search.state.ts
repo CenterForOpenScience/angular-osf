@@ -141,9 +141,9 @@ export class GlobalSearchState {
   @Action(LoadFilterOptionsWithSearch)
   loadFilterOptionsWithSearch(ctx: StateContext<GlobalSearchStateModel>, action: LoadFilterOptionsWithSearch) {
     const state = ctx.getState();
+    const filterKey = action.filterKey;
     const loadingFilters = state.filters.map((f) => (f.key === filterKey ? { ...f, isSearchLoading: true } : f));
     ctx.patchState({ filters: loadingFilters });
-    const filterKey = action.filterKey;
     return this.searchService
       .getFilterOptions(this.buildParamsForIndexValueSearch(state, filterKey, action.searchText))
       .pipe(
@@ -288,7 +288,7 @@ export class GlobalSearchState {
   ): Record<string, string> {
     return {
       ...this.buildParamsForIndexCardSearch(state),
-      'page[size]': '50',
+      'page[size]': '200',
       valueSearchPropertyPath: filterKey,
       valueSearchText: valueSearchText ?? '',
     };

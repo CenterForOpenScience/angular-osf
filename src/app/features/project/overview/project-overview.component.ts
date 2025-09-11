@@ -7,9 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
-import { filter, map, Observable } from 'rxjs';
-
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -34,7 +32,7 @@ import {
 import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
-import { ToastService } from '@osf/shared/services';
+import { MetaTagsService, ToastService } from '@osf/shared/services';
 import {
   ClearCollections,
   ClearWiki,
@@ -51,13 +49,13 @@ import {
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
-  DataciteTrackerComponent,
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {
   FilesWidgetComponent,
@@ -99,10 +97,10 @@ import {
     ViewOnlyLinkMessageComponent,
     ViewOnlyLinkMessageComponent,
   ],
-  providers: [DialogService],
+  providers: [DialogService, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectOverviewComponent extends DataciteTrackerComponent implements OnInit {
+export class ProjectOverviewComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -111,6 +109,9 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   private readonly toastService = inject(ToastService);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
+  private readonly dataciteService = inject(DataciteService);
+  private readonly metaTags = inject(MetaTagsService);
+  private readonly datePipe = inject(DatePipe);
 
   isMobile = toSignal(inject(IS_XSMALL));
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
@@ -221,8 +222,42 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     };
   });
 
+  private readonly effectMetaTags = effect(() => {
+    if (!this.isProjectLoading()) {
+      const metaTagsData = this.metaTagsData();
+      if (metaTagsData) {
+        this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
+      }
+    }
+  });
+
+  private readonly metaTagsData = computed(() => {
+    const project = this.currentProject();
+    if (!project) return null;
+    const keywords = [...(project.tags || [])];
+    if (project.category) {
+      keywords.push(project.category);
+    }
+    return {
+      osfGuid: project.id,
+      title: project.title,
+      description: project.description,
+      url: project.links?.iri,
+      doi: project.doi,
+      license: project.license?.name,
+      publishedDate: this.datePipe.transform(project.dateCreated, 'yyyy-MM-dd'),
+      modifiedDate: this.datePipe.transform(project.dateModified, 'yyyy-MM-dd'),
+      keywords,
+      institution: project.affiliatedInstitutions?.map((institution) => institution.name),
+      contributors: project.contributors.map((contributor) => ({
+        fullName: contributor.fullName,
+        givenName: contributor.givenName,
+        familyName: contributor.familyName,
+      })),
+    };
+  });
+
   constructor() {
-    super();
     this.setupCollectionsEffects();
     this.setupCleanup();
 
@@ -234,13 +269,6 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
         this.actions.getSubjects(currentProject.id, ResourceType.Project);
       }
     });
-  }
-
-  getDoi(): Observable<string | null> {
-    return this.currentProject$.pipe(
-      filter((project) => project != null),
-      map((project) => project?.identifiers?.find((item) => item.category == 'doi')?.value ?? null)
-    );
   }
 
   onCustomCitationUpdated(citation: string): void {
@@ -255,8 +283,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
-      this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
-      this.setupDataciteViewTrackerEffect().subscribe();
+      this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
     }
   }
 

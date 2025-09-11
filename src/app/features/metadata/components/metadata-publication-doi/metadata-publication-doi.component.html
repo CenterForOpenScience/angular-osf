@@ -10,30 +10,31 @@
       ></p-button>
     }
   </div>
+
   @if (resourceType() === ResourceType.Project) {
     @if (identifiers() && identifiers().length) {
-      <div class="pt-4">
+      <div class="mt-4">
         @for (identifier of identifiers()!; track identifier.id) {
           @if (identifier.category === 'doi') {
-            <a class="font-bold" href="{{ doiHost + identifier.value }}" target="_blank">
+            <a class="font-bold" [href]="doiHost + identifier.value" target="_blank">
               {{ doiHost + identifier.value }}
             </a>
           }
         }
       </div>
     } @else {
-      <div class="pt-4">
-        <p class="text-color-secondary">{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
+      <div class="mt-4">
+        <p>{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
       </div>
     }
   } @else {
-    <div class="pt-4">
+    <div class="mt-4">
       @if (publicationDoi()) {
-        <a class="font-bold" href="{{ doiHost + publicationDoi() }}" target="_blank">
+        <a class="font-bold" [href]="doiHost + publicationDoi()" target="_blank">
           {{ doiHost + publicationDoi() }}
         </a>
       } @else {
-        <p class="text-color-secondary">{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
+        <p>{{ 'project.overview.metadata.noPublicationDoi' | translate }}</p>
       }
     </div>
   }

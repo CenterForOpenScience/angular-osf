@@ -1,5 +1,5 @@
 <h2 class="mb-2">{{ 'shared.subjects.title' | translate }}</h2>
-
+<p class="mb-1">{{ 'shared.subjects.description' | translate }}</p>
 <p-card class="block text-base mb-3">
   @if (!selected().length) {
     <p class="text-500">{{ 'shared.subjects.noSelected' | translate }}</p>
@@ -66,6 +66,7 @@
       (onNodeCollapse)="collapseNode($event.node)"
       (onNodeSelect)="selectSubject($event.node.data)"
       (onNodeUnselect)="removeSubject($event.node.data)"
+      [ariaLabel]="'shared.subjects.subjectTree' | translate"
     >
     </p-tree>
   }

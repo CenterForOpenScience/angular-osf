@@ -1,3 +1,5 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { ConfirmDialog } from 'primeng/confirmdialog';
 
 import { CommonModule } from '@angular/common';
@@ -23,6 +25,7 @@ import { IS_MEDIUM, IS_WEB } from '@osf/shared/helpers';
     BreadcrumbComponent,
     RouterOutlet,
     SidenavComponent,
+    TranslatePipe,
   ],
   templateUrl: './root.component.html',
   styleUrls: ['./root.component.scss'],

@@ -9,14 +9,20 @@ export class ToastService {
   private messageService = inject(MessageService);
 
   showSuccess(summary: string, params?: unknown) {
-    this.messageService.add({ severity: 'success', summary, data: { translationParams: params } });
+    this.messageService.add({ severity: 'success', summary, data: { translationParams: params }, key: 'osf' });
   }
 
   showWarn(summary: string, params?: unknown) {
-    this.messageService.add({ severity: 'warn', summary, data: { translationParams: params } });
+    this.messageService.add({ severity: 'warn', summary, data: { translationParams: params }, key: 'osf' });
   }
 
   showError(summary: string, params?: unknown) {
-    this.messageService.add({ severity: 'error', summary, life: 5000, data: { translationParams: params } });
+    this.messageService.add({
+      severity: 'error',
+      summary,
+      life: 5000,
+      data: { translationParams: params },
+      key: 'osf',
+    });
   }
 }

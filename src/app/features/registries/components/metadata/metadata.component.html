@@ -1,17 +1,30 @@
 <section class="flex flex-column bg-white flex-1 h-full p-5 gap-4 w-full">
+  <div>
+    <h2 class="mb-2">{{ 'registries.metadata.title' | translate }}</h2>
+    <p class="mb-4">{{ 'registries.metadata.description' | translate }}</p>
+  </div>
   <form [formGroup]="metadataForm" (ngSubmit)="submitMetadata()" class="flex flex-column gap-4">
-    <section>
-      <h2 class="mb-2">{{ 'registries.metadata.title' | translate }}</h2>
-      <p class="mb-4">{{ 'registries.metadata.description' | translate }}</p>
+    <section data-test-registration-title-section>
       <p-card class="w-full">
+        <label for="registration-title-id">
+          <h2 class="mb-2">{{ 'common.labels.title' | translate }}</h2>
+        </label>
+        <p class="mb-1">{{ 'shared.title.description' | translate }}</p>
         <osf-text-input
-          label="common.labels.title"
+          id="registration-title-id"
           [control]="metadataForm.controls['title']"
           [maxLength]="inputLimits.fullName.maxLength"
         >
         </osf-text-input>
+      </p-card>
+    </section>
+    <section data-test-registration-description-section>
+      <p-card>
         <div class="mt-2">
-          <label for="project-description-id">{{ 'common.labels.description' | translate }}</label>
+          <label for="registration-description-id" class="mb-2">
+            <h2>{{ 'common.labels.description' | translate }}</h2>
+          </label>
+          <p class="mb-1">{{ 'shared.description.message' | translate }}</p>
           <textarea
             data-test-metadata-description
             id="project-description-id"

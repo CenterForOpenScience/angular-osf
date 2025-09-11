@@ -1,3 +1,4 @@
+import { IdName } from '../common';
 import { LicensesOption } from '../license.model';
 
 export interface ActivityLog {
@@ -9,64 +10,28 @@ export interface ActivityLog {
     contributors: LogContributor[];
     license?: string;
     tag?: string;
-    institution?: {
-      id: string;
-      name: string;
-    };
-    paramsNode: {
-      id: string;
-      title: string;
-    };
+    institution?: IdName;
+    paramsNode: { id: string; title: string };
     paramsProject: null;
     pointer: Pointer | null;
-    preprintProvider?:
-      | string
-      | {
-          url: string;
-          name: string;
-        }
-      | null;
+    preprintProvider?: string | { url: string; name: string } | null;
     addon?: string;
     anonymousLink?: boolean;
-    file?: {
-      name: string;
-      url: string;
-    };
-    wiki?: {
-      name: string;
-      url: string;
-    };
-    destination?: {
-      materialized: string;
-      addon: string;
-      url: string;
-    };
-    identifiers?: {
-      doi?: string;
-      ark?: string;
-    };
+    file?: { name: string; url: string };
+    wiki?: { name: string; url: string };
+    destination?: { materialized: string; addon: string; url: string };
+    identifiers?: { doi?: string; ark?: string };
     kind?: string;
     oldPage?: string;
     page?: string;
     pageId?: string;
     path?: string;
-    urls?: {
-      view: string;
-    };
+    urls?: { view: string };
     preprint?: string;
-    source?: {
-      materialized: string;
-      addon: string;
-    };
+    source?: { materialized: string; addon: string };
     titleNew?: string;
     titleOriginal?: string;
-    updatedFields?: Record<
-      string,
-      {
-        new: string;
-        old: string;
-      }
-    >;
+    updatedFields?: Record<string, { new: string; old: string }>;
     value?: string;
     version?: string;
     githubUser?: string;
