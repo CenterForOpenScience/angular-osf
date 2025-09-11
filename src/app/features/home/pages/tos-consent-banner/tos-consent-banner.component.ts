@@ -1,15 +1,13 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { NgIf, CommonModule } from '@angular/common'; // <-- Import NgIf
+import {Component, Input, Output, EventEmitter, inject} from '@angular/core';
+import { NgIf } from '@angular/common'; // <-- Import NgIf
 import { FormsModule } from '@angular/forms'; // <-- 1. Import this
-import { Button, ButtonModule } from 'primeng/button';
+import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageModule } from 'primeng/message';
-import {createDispatchMap} from '@ngxs/store';
-import {GetCurrentUserSettings, UpdateUserSettings, GetCurrentUser} from '@core/store/user';
-import {
-  GetAllGlobalNotificationSubscriptions,
-  UpdateNotificationSubscription
-} from '@osf/features/settings/notifications/store';
+import {Store} from '@ngxs/store';
+import {GetCurrentUserSettings, UpdateUserSettings, GetCurrentUser, UserSelectors} from '@core/store/user';
+
+import {  OnInit } from '@angular/core';
 
 
 @Component({
@@ -18,8 +16,7 @@ import {
   templateUrl: './tos-consent-banner.component.html',
   styleUrls: ['./tos-consent-banner.component.scss'],
 })
-export class TosConsentBannerComponent {
-  @Input() visible = false;
+export class TosConsentBannerComponent implements OnInit {
   @Input() termsLink = '/terms';
   @Input() privacyLink = '/privacy';
 
@@ -30,17 +27,16 @@ export class TosConsentBannerComponent {
 
   errorMessage: string | null = null;
 
-  // private readonly actions = createDispatchMap({
-  //   getCurrentUserSettings: GetCurrentUserSettings,
-  //   getCurrentUser: GetCurrentUser,
-  //   getAllGlobalNotificationSubscriptions: GetAllGlobalNotificationSubscriptions,
-  //   updateUserSettings: UpdateUserSettings,
-  //   updateNotificationSubscription: UpdateNotificationSubscription,
-  // });
+  private readonly store = inject(Store);
+
+
+  ngOnInit() {
+     const currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+     this.acceptedTermsOfServiceChange.emit(currentUser!.acceptedTermsOfService);
+     this.accepted.emit();
+  }
 
   onContinue() {
-    // alert(JSON.stringify(this.actions.GetCurrentUser()));
-
     if (!this.acceptedTermsOfService) {
       this.errorMessage = 'You must agree before continuing.';
       return;
