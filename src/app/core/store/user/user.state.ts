@@ -13,6 +13,7 @@ import { Social } from '@osf/shared/models';
 import { UserService } from '../../services';
 
 import {
+  AcceptTermsOfServiceByUser,
   ClearCurrentUser,
   GetCurrentUser,
   GetCurrentUserSettings,
@@ -248,6 +249,27 @@ export class UserState {
         data: {
           ...currentUser,
           isModerator: true,
+        },
+      },
+    });
+  }
+
+
+  @Action(AcceptTermsOfServiceByUser)
+  acceptTermsOfServiceByUser(ctx: StateContext<UserStateModel>, ) {
+    const state = ctx.getState();
+    const currentUser = state.currentUser.data;
+
+    if (!currentUser) {
+      return;
+    }
+
+    ctx.patchState({
+      currentUser: {
+        ...state.currentUser,
+        data: {
+          ...currentUser,
+          acceptedTermsOfService: false,
         },
       },
     });

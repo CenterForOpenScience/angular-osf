@@ -1,13 +1,16 @@
 import {Component, Input, Output, EventEmitter, inject} from '@angular/core';
-import { NgIf } from '@angular/common'; // <-- Import NgIf
-import { FormsModule } from '@angular/forms'; // <-- 1. Import this
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageModule } from 'primeng/message';
-import {Store} from '@ngxs/store';
-import {GetCurrentUserSettings, UpdateUserSettings, GetCurrentUser, UserSelectors} from '@core/store/user';
+import {createDispatchMap, Store} from '@ngxs/store';
+import {
+  UserSelectors,
+} from '@core/store/user';
 
 import {  OnInit } from '@angular/core';
+import { AcceptTermsOfServiceByUser } from '@osf/core/store/user';
 
 
 @Component({
@@ -17,6 +20,7 @@ import {  OnInit } from '@angular/core';
   styleUrls: ['./tos-consent-banner.component.scss'],
 })
 export class TosConsentBannerComponent implements OnInit {
+  @Input() visible = false;
   @Input() termsLink = '/terms';
   @Input() privacyLink = '/privacy';
 
@@ -28,6 +32,7 @@ export class TosConsentBannerComponent implements OnInit {
   errorMessage: string | null = null;
 
   private readonly store = inject(Store);
+  readonly actions = createDispatchMap({ acceptTermsOfServiceByUser: AcceptTermsOfServiceByUser });
 
 
   ngOnInit() {
@@ -37,14 +42,17 @@ export class TosConsentBannerComponent implements OnInit {
   }
 
   onContinue() {
+    let currentUser = this.store.selectSnapshot(UserSelectors.getCurrentUser);
+    alert(JSON.stringify(currentUser))
     if (!this.acceptedTermsOfService) {
       this.errorMessage = 'You must agree before continuing.';
       return;
     }
 
     this.errorMessage = null;
+    this.actions.acceptTermsOfServiceByUser()
 
-    this.acceptedTermsOfServiceChange.emit(this.acceptedTermsOfService);
+    this.acceptedTermsOfServiceChange.emit(true);
     this.accepted.emit();
   }
 }
