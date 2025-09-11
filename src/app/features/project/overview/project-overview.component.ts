@@ -40,12 +40,14 @@ import {
   ClearWiki,
   CollectionsSelectors,
   CurrentResourceSelectors,
+  FetchSelectedSubjects,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetConfiguredStorageAddons,
   GetHomeWiki,
   GetLinkedResources,
   GetResourceWithChildren,
+  SubjectsSelectors,
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
@@ -119,6 +121,8 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
   components = select(CurrentResourceSelectors.getResourceWithChildren);
   areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
+  subjects = select(SubjectsSelectors.getSelectedSubjects);
+  areSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
 
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
@@ -141,6 +145,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     getComponentsTree: GetResourceWithChildren,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
+    getSubjects: FetchSelectedSubjects,
   });
 
   currentProject = select(ProjectOverviewSelectors.getProject);
@@ -178,14 +183,19 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
 
   resourceOverview = computed(() => {
     const project = this.currentProject();
+    const subjects = this.subjects();
     if (project) {
-      return MapProjectOverview(project, this.isAnonymous());
+      return MapProjectOverview(project, subjects, this.isAnonymous());
     }
     return null;
   });
 
   isLoading = computed(
-    () => this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading()
+    () =>
+      this.isProjectLoading() ||
+      this.isCollectionProviderLoading() ||
+      this.isReviewActionsLoading() ||
+      this.areSubjectsLoading()
   );
 
   currentResource = computed(() => {
@@ -221,6 +231,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       if (currentProject) {
         const rootParentId = currentProject.rootParentId ?? currentProject.id;
         this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
+        this.actions.getSubjects(currentProject.id, ResourceType.Project);
       }
     });
   }

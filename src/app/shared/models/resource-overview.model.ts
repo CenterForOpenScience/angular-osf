@@ -1,9 +1,9 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
-import { RegistrySubject } from '@osf/features/registry/models';
 
 import { IdTypeModel } from './common';
 import { Institution } from './institutions';
 import { LicensesOption } from './license.model';
+import { SubjectModel } from './subject';
 
 export interface ResourceOverview {
   id: string;
@@ -53,7 +53,7 @@ export interface ResourceOverview {
   currentUserIsContributor: boolean;
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;
-  subjects: RegistrySubject[];
+  subjects: SubjectModel[];
   contributors: ProjectOverviewContributor[];
   customCitation: string | null;
   region?: IdTypeModel;

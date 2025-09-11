@@ -45,6 +45,7 @@ export const projectRoutes: Routes = [
             CollectionsState,
             CollectionsModerationState,
             ActivityLogsState,
+            SubjectsState,
           ]),
         ],
       },
