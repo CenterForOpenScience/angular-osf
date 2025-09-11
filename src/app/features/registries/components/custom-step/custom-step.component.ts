@@ -152,7 +152,6 @@ export class CustomStepComponent implements OnDestroy {
           break;
 
         default:
-          console.warn(`Unsupported field type: ${q.fieldType}`);
           return;
       }
 

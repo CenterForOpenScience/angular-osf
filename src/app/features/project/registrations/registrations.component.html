@@ -15,6 +15,13 @@
         @for (registration of registrations(); track registration.id) {
           <osf-registration-card [registrationData]="registration" />
         }
+        @if (registrationsTotalCount() > itemsPerPage) {
+          <osf-custom-paginator
+            [first]="first"
+            [totalCount]="registrationsTotalCount()"
+            (pageChanged)="onPageChange($event)"
+          />
+        }
       </div>
     }
   </section>

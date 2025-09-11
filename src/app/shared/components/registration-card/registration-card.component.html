@@ -68,7 +68,7 @@
                   severity="danger"
                   [label]="'common.buttons.delete' | translate"
                   class="md:ml-auto"
-                  (click)="deleteDraft.emit(registrationData().id)"
+                  (onClick)="deleteDraft.emit(registrationData().id)"
                 ></p-button>
               } @else {
                 <p-button
@@ -81,14 +81,14 @@
                   @if (isApproved) {
                     <p-button
                       severity="secondary"
-                      (click)="updateRegistration.emit(registrationData().id)"
+                      (onClick)="updateRegistration(registrationData().id)"
                       [label]="'common.buttons.update' | translate"
                     ></p-button>
                   }
                   @if (isInProgress || isUnapproved) {
                     <p-button
                       severity="secondary"
-                      (click)="continueUpdateHandler()"
+                      (onClick)="continueUpdateRegistration(registrationData().id)"
                       [label]="'common.buttons.continueUpdate' | translate"
                     ></p-button>
                   }

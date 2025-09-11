@@ -60,17 +60,9 @@
                   <span class="text-primary font-medium">{{ 'common.links.showExample' | translate }} </span>
                 </ng-template>
                 <ng-template #content>
-                  <div
-                    class="p-inplace-display"
-                    tabindex="0"
-                    (click)="inplaceRef.deactivate()"
-                    (keyup.enter)="inplaceRef.deactivate()"
-                    (keyup.space)="inplaceRef.deactivate()"
-                  >
-                    <button class="text-primary font-primary border-none cursor-pointer bg-transparent text-sm">
-                      {{ 'common.links.hideExample' | translate }}
-                    </button>
-                  </div>
+                  <p-button size="small" (onClick)="inplaceRef.deactivate()" variant="text" styleClass="font-medium">
+                    {{ 'common.links.hideExample' | translate }}
+                  </p-button>
                   <p class="m-0">{{ q.exampleText }}</p>
                 </ng-template>
               </p-inplace>
