@@ -79,11 +79,12 @@ describe('CreateProjectDialogComponent', () => {
     fillValidForm('Title', 'Desc', 'Tpl', 'Storage', ['a1']);
 
     (MOCK_STORE.dispatch as jest.Mock).mockReturnValue(of(undefined));
+    (MOCK_STORE.selectSnapshot as jest.Mock).mockReturnValue([{ id: 'new-project-id' }]);
 
     component.submitForm();
 
     expect(MOCK_STORE.dispatch).toHaveBeenCalledWith(new CreateProject('Title', 'Desc', 'Tpl', 'Storage', ['a1']));
     expect(MOCK_STORE.dispatch).toHaveBeenCalledWith(new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}));
-    expect((dialogRef as any).close).toHaveBeenCalled();
+    expect((dialogRef as any).close).toHaveBeenCalledWith({ project: { id: 'new-project-id' } });
   });
 });
