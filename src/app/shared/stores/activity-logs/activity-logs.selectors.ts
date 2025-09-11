@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { ActivityLog, ActivityLogWithDisplay } from '@shared/models/activity-logs';
+import { ActivityLog, ActivityLogWithDisplay } from '@osf/shared/models';
 
 import { ActivityLogsStateModel } from './activity-logs.model';
 import { ActivityLogsState } from './activity-logs.state';

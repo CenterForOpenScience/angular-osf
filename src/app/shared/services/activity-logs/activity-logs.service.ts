@@ -3,17 +3,19 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ActivityLogsMapper } from '@shared/mappers/activity-logs.mapper';
+import { ActivityLogsMapper } from '@osf/shared/mappers';
 import {
   ActivityLog,
   ActivityLogJsonApi,
+  ActivityLogWithDisplay,
   JsonApiResponseWithMeta,
   MetaAnonymousJsonApi,
   PaginatedData,
-} from '@shared/models';
-import { ActivityLogWithDisplay } from '@shared/models/activity-logs/activity-log-with-display.model';
-import { ActivityLogDisplayService } from '@shared/services';
-import { JsonApiService } from '@shared/services/json-api.service';
+} from '@osf/shared/models';
+
+import { JsonApiService } from '../json-api.service';
+
+import { ActivityLogDisplayService } from './activity-log-display.service';
 
 import { environment } from 'src/environments/environment';
 

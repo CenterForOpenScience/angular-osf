@@ -1,3 +1,4 @@
+import { IdName } from '../common';
 import { LicensesOption } from '../license.model';
 
 export interface ActivityLog {
@@ -5,12 +6,11 @@ export interface ActivityLog {
   type: string;
   action: string;
   date: string;
-
   params: {
     contributors: LogContributor[];
     license?: string;
     tag?: string;
-    institution?: { id: string; name: string };
+    institution?: IdName;
     paramsNode: { id: string; title: string };
     paramsProject: null;
     pointer: Pointer | null;

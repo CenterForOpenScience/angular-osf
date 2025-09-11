@@ -203,7 +203,8 @@
     "resources": "Resources",
     "components": "Components",
     "links": "Links",
-    "institutions": "Institutions"
+    "institutions": "Institutions",
+    "recentActivity": "Recent Activity"
   },
   "auth": {
     "common": {

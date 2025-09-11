@@ -1,3 +1,4 @@
+export * from './activity-logs.mapper';
 export * from './addon.mapper';
 export * from './citations.mapper';
 export * from './collections';
