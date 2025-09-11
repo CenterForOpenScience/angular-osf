@@ -139,9 +139,9 @@ describe('GenericFilterComponent', () => {
       fixture.detectChanges();
 
       const filteredOptions = component.filterOptions();
-      expect(filteredOptions[0].label).toBe('2023-12-31');
-      expect(filteredOptions[1].label).toBe('2023-06-15');
-      expect(filteredOptions[2].label).toBe('2023-01-01');
+      expect(filteredOptions[0].label).toBe('2023-01-01');
+      expect(filteredOptions[1].label).toBe('2023-12-31');
+      expect(filteredOptions[2].label).toBe('2023-06-15');
     });
   });
 

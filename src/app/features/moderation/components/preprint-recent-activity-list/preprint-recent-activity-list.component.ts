@@ -25,7 +25,7 @@ export class PreprintRecentActivityListComponent {
 
   pageChanged = output<number>();
 
-  protected first = signal(0);
+  first = signal(0);
   readonly reviewStatusIcon = ReviewStatusIcon;
   readonly preprintReviewStatus = PreprintReviewStatus;
 

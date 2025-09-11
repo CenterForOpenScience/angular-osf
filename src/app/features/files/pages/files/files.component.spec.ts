@@ -21,7 +21,7 @@ import {
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
-import { GoogleFilePickerComponent } from '@osf/shared/components/addons/folder-selector/google-file-picker/google-file-picker.component';
+import { GoogleFilePickerComponent } from '@osf/shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
 import { OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, FilesService } from '@osf/shared/services';
 
@@ -63,7 +63,6 @@ describe('Component: Files', () => {
         FilesService,
         MockProvider(ActivatedRoute),
         MockProvider(CustomConfirmationService),
-
         DialogService,
         provideMockStore({
           signals: [
@@ -98,6 +97,8 @@ describe('Component: Files', () => {
               'viewOnlyDownloadable',
               'resourceId',
               'provider',
+              'storage',
+              'totalCount',
             ]),
           ],
         },

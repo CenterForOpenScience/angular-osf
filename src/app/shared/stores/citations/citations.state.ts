@@ -4,9 +4,9 @@ import { catchError, forkJoin, Observable, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { CitationTypes } from '@shared/enums';
-import { handleSectionError } from '@shared/helpers';
-import { CitationsService } from '@shared/services/citations.service';
+import { CitationTypes } from '@osf/shared/enums';
+import { handleSectionError } from '@osf/shared/helpers';
+import { CitationsService } from '@osf/shared/services/citations.service';
 
 import {
   ClearStyledCitation,
@@ -15,34 +15,7 @@ import {
   GetStyledCitation,
   UpdateCustomCitation,
 } from './citations.actions';
-import { CitationsStateModel } from './citations.model';
-
-const CITATIONS_DEFAULTS: CitationsStateModel = {
-  defaultCitations: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  citationStyles: {
-    data: [],
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  styledCitation: {
-    data: null,
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-  customCitation: {
-    data: '',
-    isLoading: false,
-    isSubmitting: false,
-    error: null,
-  },
-};
+import { CITATIONS_DEFAULTS, CitationsStateModel } from './citations.model';
 
 @State<CitationsStateModel>({
   name: 'citations',

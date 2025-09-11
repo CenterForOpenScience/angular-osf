@@ -5,8 +5,8 @@ export interface DiscoverableFilter {
   label: string;
   type: 'select' | 'date' | 'checkbox' | 'group';
   operator: string;
-  options?: SelectOption[];
-  selectedValues?: SelectOption[];
+  options?: FilterOption[];
+  selectedValues?: FilterOption[];
   description?: string;
   helpLink?: string;
   helpLinkText?: string;
@@ -18,4 +18,8 @@ export interface DiscoverableFilter {
   hasOptions?: boolean;
   loadOptionsOnExpand?: boolean;
   filters?: DiscoverableFilter[];
+}
+
+export interface FilterOption extends SelectOption {
+  cardSearchResultCount: number;
 }

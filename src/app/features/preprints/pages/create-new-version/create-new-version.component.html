@@ -18,10 +18,10 @@
 
   @if (isWeb()) {
     @if (isPreprintProviderLoading()) {
-      <p-skeleton class="m-t-48" width="50rem" height="5rem" />
+      <p-skeleton class="mt-6" width="50rem" height="5rem" />
     } @else {
       <osf-stepper
-        class="m-t-48"
+        class="mt-6"
         [steps]="newVersionSteps"
         [currentStep]="currentStep()"
         (currentStepChange)="stepChange($event)"

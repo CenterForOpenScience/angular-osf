@@ -15,7 +15,7 @@ import { MeetingsState } from '@osf/features/meetings/store';
 import { parseQueryFilterParams } from '@osf/shared/helpers';
 import { MOCK_MEETING } from '@osf/shared/mocks';
 import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
-import { TABLE_PARAMS } from '@shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@shared/constants';
 import { SortOrder } from '@shared/enums';
 
 import { MeetingsFeatureCardComponent } from '../../components';
@@ -73,10 +73,10 @@ describe('MeetingsLandingComponent', () => {
     expect(component.partnerOrganizations).toEqual(PARTNER_ORGANIZATIONS);
     expect(component.meetingsFeatureCards).toEqual(MEETINGS_FEATURE_CARDS);
     expect(component.skeletonData).toHaveLength(10);
-    expect(component.tableParams().rows).toBe(TABLE_PARAMS.rows);
+    expect(component.tableParams().rows).toBe(DEFAULT_TABLE_PARAMS.rows);
     expect(component.tableParams().firstRowIndex).toBe(0);
     expect(component.currentPage()).toBe(1);
-    expect(component.currentPageSize()).toBe(TABLE_PARAMS.rows);
+    expect(component.currentPageSize()).toBe(DEFAULT_TABLE_PARAMS.rows);
     expect(component.sortColumn()).toBe('');
     expect(component.sortOrder()).toBe(SortOrder.Asc);
   });

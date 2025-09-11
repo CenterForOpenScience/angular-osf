@@ -15,41 +15,21 @@ export const environment = {
    */
   webUrl: 'https://staging4.osf.io',
   /**
-   * URL used for file downloads from OSF.
-   */
-  downloadUrl: 'https://staging4.osf.io/download',
-  /**
-   * Base URL for the OSF JSON:API v2 endpoints.
-   */
-  apiUrl: 'https://api.staging4.osf.io/v2',
-  /**
-   * Legacy v1 API endpoint used by some older services.
-   */
-  apiUrlV1: 'https://staging4.osf.io/api/v1',
-  /**
    * Domain URL used for JSON:API v2 services.
    */
   apiDomainUrl: 'https://api.staging4.osf.io',
   /**
    * Base URL for SHARE discovery search (Trove).
    */
-  shareDomainUrl: 'https://staging-share.osf.io/trove',
+  shareTroveUrl: 'https://staging-share.osf.io/trove',
   /**
    * URL for the OSF Addons API (v1).
    */
   addonsApiUrl: 'https://addons.staging4.osf.io/v1',
   /**
-   * URL for file-related operations on the US storage region.
-   */
-  fileApiUrl: 'https://files.us.staging4.osf.io/v1',
-  /**
    * API endpoint for funder metadata resolution via Crossref.
    */
   funderApiUrl: 'https://api.crossref.org/',
-  /**
-   * Duplicate of `addonsApiUrl`, retained for backwards compatibility.
-   */
-  addonsV1Url: 'https://addons.staging4.osf.io/v1',
   /**
    * URL for OSF Central Authentication Service (CAS).
    */

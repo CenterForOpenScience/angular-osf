@@ -28,7 +28,8 @@ import { environment } from 'src/environments/environment';
 })
 export class MetadataService {
   private readonly jsonApiService = inject(JsonApiService);
-  private readonly apiUrl = environment.apiUrl;
+  private readonly apiDomainUrl = environment.apiDomainUrl;
+  private readonly apiUrl = `${this.apiDomainUrl}/v2`;
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
     [ResourceType.Registration, 'registrations'],
@@ -77,7 +78,7 @@ export class MetadataService {
 
   getMetadataCedarTemplates(url?: string): Observable<CedarMetadataTemplateJsonApi> {
     return this.jsonApiService.get<CedarMetadataTemplateJsonApi>(
-      url || `${environment.apiDomainUrl}/_/cedar_metadata_templates/`
+      url || `${this.apiDomainUrl}/_/cedar_metadata_templates/`
     );
   }
 
@@ -99,10 +100,7 @@ export class MetadataService {
     resourceType: ResourceType
   ): Observable<CedarMetadataRecord> {
     const payload = CedarRecordsMapper.toCedarRecordsPayload(data, resourceId, this.urlMap.get(resourceType) as string);
-    return this.jsonApiService.post<CedarMetadataRecord>(
-      `${environment.apiDomainUrl}/_/cedar_metadata_records/`,
-      payload
-    );
+    return this.jsonApiService.post<CedarMetadataRecord>(`${this.apiDomainUrl}/_/cedar_metadata_records/`, payload);
   }
 
   updateMetadataCedarRecord(
@@ -114,7 +112,7 @@ export class MetadataService {
     const payload = CedarRecordsMapper.toCedarRecordsPayload(data, resourceId, this.urlMap.get(resourceType) as string);
 
     return this.jsonApiService.patch<CedarMetadataRecord>(
-      `${environment.apiDomainUrl}/_/cedar_metadata_records/${recordId}/`,
+      `${this.apiDomainUrl}/_/cedar_metadata_records/${recordId}/`,
       payload
     );
   }
@@ -143,6 +141,7 @@ export class MetadataService {
 
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/`;
     const params = this.getMetadataParams(resourceType);
+
     return this.jsonApiService
       .patch<MetadataJsonApi>(baseUrl, payload, params)
       .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response)));
@@ -179,6 +178,7 @@ export class MetadataService {
 
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/`;
     const params = this.getMetadataParams(resourceType);
+
     return this.jsonApiService
       .patch<MetadataJsonApi>(baseUrl, payload, params)
       .pipe(map((response) => MetadataMapper.fromMetadataApiResponse(response)));

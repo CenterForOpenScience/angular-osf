@@ -5,8 +5,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
-import { EmploymentHistoryComponent } from '@osf/shared/components';
 import { Employment } from '@osf/shared/models';
+
+import { EmploymentHistoryComponent } from '../employment-history/employment-history.component';
 
 @Component({
   selector: 'osf-employment-history-dialog',
@@ -17,8 +18,8 @@ import { Employment } from '@osf/shared/models';
 })
 export class EmploymentHistoryDialogComponent {
   private readonly config = inject(DynamicDialogConfig);
-  protected dialogRef = inject(DynamicDialogRef);
-  protected readonly employmentHistory = signal<Employment[]>([]);
+  readonly employmentHistory = signal<Employment[]>([]);
+  dialogRef = inject(DynamicDialogRef);
 
   constructor() {
     this.employmentHistory.set(this.config.data);

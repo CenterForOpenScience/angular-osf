@@ -2,6 +2,7 @@ export interface TableColumn {
   field: string;
   header: string;
   sortable?: boolean;
+  sortField?: string;
   isLink?: boolean;
   linkTarget?: '_blank' | '_self';
   showIcon?: boolean;
@@ -17,7 +18,7 @@ export interface TableCellLink {
   target?: '_blank' | '_self';
 }
 
-export type TableCellData = Record<string, string | number | TableCellLink | undefined>;
+export type TableCellData = Record<string, string | number | TableCellLink | undefined | Date>;
 
 export interface TableIconClickEvent {
   rowData: TableCellData;

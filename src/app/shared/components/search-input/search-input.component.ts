@@ -1,14 +1,16 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 import { InputText } from 'primeng/inputtext';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
-import { IconComponent } from '@shared/components';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'osf-search-input',
-  imports: [InputText, Button, ReactiveFormsModule, IconComponent],
+  imports: [InputText, Button, ReactiveFormsModule, IconComponent, TranslatePipe],
   templateUrl: './search-input.component.html',
   styleUrl: './search-input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

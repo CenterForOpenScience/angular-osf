@@ -22,12 +22,12 @@ import { ProjectOverviewSelectors } from '../../store';
 export class DeleteNodeLinkDialogComponent {
   private toastService = inject(ToastService);
   private dialogConfig = inject(DynamicDialogConfig);
-  protected dialogRef = inject(DynamicDialogRef);
-  protected destroyRef = inject(DestroyRef);
-  protected currentProject = select(ProjectOverviewSelectors.getProject);
-  protected isSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
+  dialogRef = inject(DynamicDialogRef);
+  destroyRef = inject(DestroyRef);
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  isSubmitting = select(NodeLinksSelectors.getNodeLinksSubmitting);
 
-  protected actions = createDispatchMap({ deleteNodeLink: DeleteNodeLink, getLinkedResources: GetLinkedResources });
+  actions = createDispatchMap({ deleteNodeLink: DeleteNodeLink, getLinkedResources: GetLinkedResources });
 
   handleDeleteNodeLink(): void {
     const project = this.currentProject();

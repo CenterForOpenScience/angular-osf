@@ -23,6 +23,7 @@ import { ContributorsSelectors, SubjectsSelectors } from '@osf/shared/stores';
 import { ClearState, DeleteDraft, RegistriesSelectors, UpdateDraft, UpdateStepValidation } from '../../store';
 
 import { ContributorsComponent } from './contributors/contributors.component';
+import { RegistriesAffiliatedInstitutionComponent } from './registries-affiliated-institution/registries-affiliated-institution.component';
 import { RegistriesLicenseComponent } from './registries-license/registries-license.component';
 import { RegistriesSubjectsComponent } from './registries-subjects/registries-subjects.component';
 import { RegistriesTagsComponent } from './registries-tags/registries-tags.component';
@@ -40,6 +41,7 @@ import { RegistriesTagsComponent } from './registries-tags/registries-tags.compo
     RegistriesSubjectsComponent,
     RegistriesTagsComponent,
     RegistriesLicenseComponent,
+    RegistriesAffiliatedInstitutionComponent,
     Message,
   ],
   templateUrl: './metadata.component.html',
@@ -53,18 +55,18 @@ export class MetadataComponent implements OnDestroy {
   private readonly customConfirmationService = inject(CustomConfirmationService);
 
   private readonly draftId = this.route.snapshot.params['id'];
-  protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
-  protected selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
-  protected initialContributors = select(ContributorsSelectors.getContributors);
-  protected stepsValidation = select(RegistriesSelectors.getStepsValidation);
+  readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  selectedSubjects = select(SubjectsSelectors.getSelectedSubjects);
+  initialContributors = select(ContributorsSelectors.getContributors);
+  stepsValidation = select(RegistriesSelectors.getStepsValidation);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     deleteDraft: DeleteDraft,
     updateDraft: UpdateDraft,
     updateStepValidation: UpdateStepValidation,
     clearState: ClearState,
   });
-  protected inputLimits = InputLimits;
+  inputLimits = InputLimits;
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
   metadataForm = this.fb.group({

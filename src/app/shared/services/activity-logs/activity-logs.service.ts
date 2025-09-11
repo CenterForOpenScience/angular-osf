@@ -3,26 +3,40 @@ import { map } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ActivityLogsMapper } from '@shared/mappers/activity-logs.mapper';
+import { ActivityLogsMapper } from '@osf/shared/mappers';
 import {
   ActivityLog,
   ActivityLogJsonApi,
+  ActivityLogWithDisplay,
   JsonApiResponseWithMeta,
   MetaAnonymousJsonApi,
   PaginatedData,
-} from '@shared/models';
-import { JsonApiService } from '@shared/services/json-api.service';
+} from '@osf/shared/models';
+
+import { JsonApiService } from '../json-api.service';
+
+import { ActivityLogDisplayService } from './activity-log-display.service';
 
 import { environment } from 'src/environments/environment';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class ActivityLogsService {
   private jsonApiService = inject(JsonApiService);
+  private display = inject(ActivityLogDisplayService);
+  private apiUrl = `${environment.apiDomainUrl}/v2`;
 
-  fetchLogs(projectId: string, page = '1', pageSize: string): Observable<PaginatedData<ActivityLog[]>> {
-    const url = `${environment.apiUrl}/nodes/${projectId}/logs/`;
+  private formatActivities(result: PaginatedData<ActivityLog[]>): PaginatedData<ActivityLogWithDisplay[]> {
+    return {
+      ...result,
+      data: result.data.map((log) => ({
+        ...log,
+        formattedActivity: this.display.getActivityDisplay(log),
+      })),
+    };
+  }
+
+  fetchLogs(projectId: string, page = 1, pageSize: number): Observable<PaginatedData<ActivityLogWithDisplay[]>> {
+    const url = `${this.apiUrl}/nodes/${projectId}/logs/`;
     const params: Record<string, unknown> = {
       'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node', 'group'],
       page,
@@ -31,6 +45,29 @@ export class ActivityLogsService {
 
     return this.jsonApiService
       .get<JsonApiResponseWithMeta<ActivityLogJsonApi[], MetaAnonymousJsonApi, null>>(url, params)
-      .pipe(map((res) => ActivityLogsMapper.fromGetActivityLogsResponse(res)));
+      .pipe(
+        map((res) => ActivityLogsMapper.fromGetActivityLogsResponse(res)),
+        map((mapped) => this.formatActivities(mapped))
+      );
+  }
+
+  fetchRegistrationLogs(
+    registrationId: string,
+    page = 1,
+    pageSize: number
+  ): Observable<PaginatedData<ActivityLogWithDisplay[]>> {
+    const url = `${this.apiUrl}/registrations/${registrationId}/logs/`;
+    const params: Record<string, unknown> = {
+      'embed[]': ['original_node', 'user', 'linked_node', 'linked_registration', 'template_node', 'group'],
+      page,
+      'page[size]': pageSize,
+    };
+
+    return this.jsonApiService
+      .get<JsonApiResponseWithMeta<ActivityLogJsonApi[], MetaAnonymousJsonApi, null>>(url, params)
+      .pipe(
+        map((res) => ActivityLogsMapper.fromGetActivityLogsResponse(res)),
+        map((mapped) => this.formatActivities(mapped))
+      );
   }
 }

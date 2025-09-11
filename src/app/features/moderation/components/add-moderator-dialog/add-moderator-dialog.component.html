@@ -9,7 +9,7 @@
       <osf-loading-spinner class="mt-3"></osf-loading-spinner>
     } @else {
       @for (item of users(); track $index) {
-        <div class="border-divider flex p-b-12">
+        <div class="border-divider flex pb-3">
           <p-checkbox variant="filled" [value]="item" [inputId]="item.id" [(ngModel)]="selectedUsers"></p-checkbox>
           <label class="label ml-2" [for]="item.id">{{ item.fullName }}</label>
         </div>

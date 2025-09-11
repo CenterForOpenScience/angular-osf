@@ -1,12 +1,11 @@
-@use "styles/variables" as var;
 @use "styles/mixins" as mix;
 
 .stepper {
   position: absolute;
   display: flex;
   flex-direction: column;
-  background: var.$white;
-  border: 1px solid var.$grey-2;
+  background: var(--white);
+  border: 1px solid var(--grey-2);
   border-radius: 12px;
   row-gap: mix.rem(24px);
   padding: mix.rem(24px);

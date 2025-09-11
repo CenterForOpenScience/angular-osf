@@ -31,9 +31,9 @@ export class CollectionSubmissionItemComponent {
   submission = input.required<CollectionSubmissionWithGuid>();
   collectionProvider = select(CollectionsSelectors.getCollectionProvider);
 
-  protected readonly reviewStatusIcon = ReviewStatusIcon;
+  readonly reviewStatusIcon = ReviewStatusIcon;
 
-  protected currentReviewAction = computed(() => {
+  currentReviewAction = computed(() => {
     const actions = this.submission().actions;
 
     if (!actions || !actions.length) return null;
@@ -41,7 +41,7 @@ export class CollectionSubmissionItemComponent {
     return actions[0];
   });
 
-  protected currentSubmissionAttributes = computed(() => {
+  currentSubmissionAttributes = computed(() => {
     const item = this.submission();
     if (!item) return null;
 
@@ -53,7 +53,7 @@ export class CollectionSubmissionItemComponent {
       .filter((attribute) => attribute.value);
   });
 
-  protected handleNavigation() {
+  handleNavigation() {
     const currentStatus = this.activatedRoute.snapshot.queryParams['status'];
     const queryParams = currentStatus ? { status: currentStatus, mode: 'moderation' } : {};
 
@@ -63,5 +63,5 @@ export class CollectionSubmissionItemComponent {
     });
   }
 
-  protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
+  readonly SubmissionReviewStatus = SubmissionReviewStatus;
 }

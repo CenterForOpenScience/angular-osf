@@ -38,11 +38,11 @@ export class JustificationStepComponent implements OnDestroy {
   private readonly customConfirmationService = inject(CustomConfirmationService);
   private readonly toastService = inject(ToastService);
 
-  protected readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+  readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
 
   readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     updateStepValidation: UpdateStepValidation,
     updateRevision: UpdateSchemaResponse,
     deleteSchemaResponse: DeleteSchemaResponse,
@@ -97,7 +97,7 @@ export class JustificationStepComponent implements OnDestroy {
             this.isDraftDeleted = true;
             this.actions.clearState();
             this.toastService.showSuccess('registries.justification.successDeleteDraft');
-            this.router.navigateByUrl(`/registries/${registrationId}/overview`);
+            this.router.navigateByUrl(`/${registrationId}/overview`);
           },
         });
       },

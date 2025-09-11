@@ -4,7 +4,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { Resource, UserRelatedCounts } from '@shared/models';
+import { ResourceModel, UserRelatedCounts } from '@shared/models';
 
 @Component({
   selector: 'osf-user-secondary-metadata',
@@ -14,7 +14,7 @@ import { Resource, UserRelatedCounts } from '@shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserSecondaryMetadataComponent {
-  resource = input.required<Resource>();
+  resource = input.required<ResourceModel>();
   isDataLoading = input<boolean>(true);
   userRelatedCounts = input<UserRelatedCounts | null>(null);
 }

@@ -45,7 +45,7 @@ export class SubjectsComponent {
   );
   expanded: Record<string, boolean> = {};
 
-  protected searchControl = new FormControl<string>('');
+  searchControl = new FormControl<string>('');
 
   constructor() {
     this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged()).subscribe((value) => {

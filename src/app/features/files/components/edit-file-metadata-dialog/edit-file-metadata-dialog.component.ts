@@ -20,8 +20,8 @@ import { PatchFileMetadata } from '../../models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EditFileMetadataDialogComponent {
-  protected readonly resourceTypes = resourceTypes;
-  protected readonly languages = languageCodes;
+  readonly resourceTypes = resourceTypes;
+  readonly languages = languageCodes;
 
   private readonly dialogRef = inject(DynamicDialogRef);
 

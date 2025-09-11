@@ -3,13 +3,11 @@
     <h2>{{ 'files.detail.fileMetadata.title' | translate }}</h2>
 
     <div class="flex gap-2">
-      <p-button severity="secondary" (click)="downloadFileMetadata()">
-        <i class="fas fa-download p-1"></i>
-      </p-button>
+      <p-button severity="secondary" icon="fas fa-download" (click)="downloadFileMetadata()" />
 
       <p-button
         severity="secondary"
-        (click)="openEditFileMetadataDialog()"
+        (onClick)="openEditFileMetadataDialog()"
         [label]="'files.detail.fileMetadata.edit' | translate"
       ></p-button>
     </div>

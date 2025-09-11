@@ -1,0 +1,139 @@
+<section class="flex flex-column gap-4">
+  <div>
+    <p-breadcrumb
+      class="max-w-full folders-breadcrumbs"
+      [model]="breadcrumbItems()"
+      [home]="homeBreadcrumb"
+      (onItemClick)="handleCreateOperationInvocation($event.item.state?.['operationName']!, $event.item.id!)"
+    >
+      <ng-template #item let-item>
+        <a
+          class="cursor-pointer"
+          tabindex="0"
+          (click)="handleCreateOperationInvocation(item.state.operationName, item.id)"
+          (keydown.enter)="handleCreateOperationInvocation(item.state.operationName, item.id)"
+          >{{ item.label }}</a
+        >
+      </ng-template>
+    </p-breadcrumb>
+    <p-card>
+      <p>
+        {{ selectedItemLabel() | translate }}
+        <span class="font-bold">{{ selectedStorageItem()?.itemName || (noSelectionLabel() | translate) }}</span>
+      </p>
+      <h3 class="mt-4 mb-2">
+        {{ 'settings.addons.form.fields.accountName' | translate }}
+      </h3>
+
+      <input [formControl]="accountNameControl()" name="accountName" pInputText />
+    </p-card>
+  </div>
+
+  @if (isOperationInvocationSubmitting()) {
+    <p-skeleton width="100%" height="7.5rem" borderRadius="16" />
+  } @else if (isGoogleFilePicker()) {
+    <osf-google-file-picker
+      [isFolderPicker]="true"
+      [accountId]="accountId()"
+      [handleFolderSelection]="handleFolderSelection"
+      [rootFolder]="selectedStorageItem()"
+    ></osf-google-file-picker>
+  } @else {
+    <div class="folders-table flex flex-column">
+      <div class="folders-table-heading flex justify-content-between">
+        <h3>{{ 'settings.addons.configureAddon.folderName' | translate }}</h3>
+        <h3>{{ 'settings.addons.configureAddon.selectFolder' | translate }}</h3>
+      </div>
+      @if (operationInvocationResult().length) {
+        @for (folder of operationInvocationResult(); track folder.itemId) {
+          @let operationName =
+            folder.mayContainRootCandidates ? OperationNames.LIST_CHILD_ITEMS : OperationNames.GET_ITEM_INFO;
+          @let itemId = folder.itemId || '/';
+          @let isLinkDisabled = !folder.mayContainRootCandidates || folder.itemType !== StorageItemType.Folder;
+          <div class="folders-table-row relative">
+            <div class="flex gap-2 flex-1">
+              <div tabindex="0" class="flex align-items-center gap-2">
+                <i class="{{ folder.itemType === StorageItemType.Folder ? 'fas fa-folder' : 'fas fa-file' }}"></i>
+                @if (isLinkDisabled) {
+                  <span class="folder-link-disabled">{{ folder.itemName }}</span>
+                } @else {
+                  <a
+                    tabindex="0"
+                    class="cursor-pointer folder-link"
+                    (keydown.enter)="
+                      handleCreateOperationInvocation(
+                        operationName,
+                        itemId,
+                        folder.itemName,
+                        folder.mayContainRootCandidates
+                      )
+                    "
+                    (click)="
+                      handleCreateOperationInvocation(
+                        operationName,
+                        itemId,
+                        folder.itemName,
+                        folder.mayContainRootCandidates
+                      )
+                    "
+                  >
+                    {{ folder.itemName }}</a
+                  >
+                }
+              </div>
+              @if (folder.canBeRoot) {
+                <p-radiobutton
+                  class="ml-auto pr-3"
+                  [ngModel]="selectedStorageItem()?.itemId"
+                  [value]="folder.itemId"
+                  [inputId]="folder.itemId"
+                  (ngModelChange)="handleFolderSelection(folder)"
+                ></p-radiobutton>
+              }
+            </div>
+          </div>
+        }
+      } @else {
+        <div class="flex justify-content-center py-4">
+          <p>{{ 'settings.addons.configureAddon.noFolders' | translate }}</p>
+        </div>
+      }
+    </div>
+  }
+
+  @if (currentAddonType() === AddonType.LINK) {
+    <div class="flex flex-column gap-1">
+      <div class="flex align-items-center">
+        <h3>
+          {{ 'settings.addons.configureAddon.resourceType' | translate }}
+        </h3>
+        <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="openInfoDialog()"></p-button>
+      </div>
+      <div class="resource-selector">
+        <osf-select
+          [fullWidth]="!!isMobile()"
+          [placeholder]="'settings.addons.configureAddon.chooseResourceType' | translate"
+          [options]="resourceTypeOptions()"
+          [(selectedValue)]="selectedResourceType"
+        ></osf-select>
+      </div>
+    </div>
+  }
+
+  <div class="flex gap-4 justify-content-between sm:align-self-end">
+    <p-button
+      class="btn-full-width sm:w-10rem"
+      [label]="'settings.addons.form.buttons.cancel' | translate"
+      severity="info"
+      [disabled]="isSubmitting()"
+      (click)="handleCancel()"
+    ></p-button>
+    <p-button
+      class="btn-full-width sm:w-10rem"
+      [disabled]="!isFormValid()"
+      [loading]="isSubmitting()"
+      [label]="'common.buttons.save' | translate"
+      (click)="handleSave()"
+    ></p-button>
+  </div>
+</section>

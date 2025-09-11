@@ -5,13 +5,20 @@
       <div class="flex flex-row gap-2 align-items-center">
         <osf-text-input class="w-full" [control]="control" [placeholder]="inputPlaceholder()" [maxLength]="255" />
         @if (formArrayControls.length > 1) {
-          <p-button class="danger-icon-btn" icon="fas fa-trash" severity="danger" text (click)="remove($index)" />
+          <p-button
+            class="danger-icon-btn"
+            icon="fas fa-trash"
+            severity="danger"
+            text
+            [ariaLabel]="'common.buttons.delete' | translate"
+            (onClick)="remove($index)"
+          />
         }
       </div>
     }
   </div>
 
-  <section class="m-t-24 flex flex-row justify-content-end">
-    <p-button label="Add One More" severity="secondary" (click)="add()" />
+  <section class="mt-4 flex flex-row justify-content-end">
+    <p-button [label]="'common.buttons.addOneMore' | translate" severity="secondary" (click)="add()" />
   </section>
 </section>

@@ -1,21 +1,22 @@
+import { ResourceType } from '@osf/shared/enums';
 import { StringOrNull } from '@osf/shared/helpers';
-import { AsyncStateModel, DiscoverableFilter, Resource, SelectOption } from '@osf/shared/models';
-import { ResourceType } from '@shared/enums';
+import { AsyncStateModel, DiscoverableFilter, FilterOption, ResourceModel } from '@osf/shared/models';
 
 export interface GlobalSearchStateModel {
-  resources: AsyncStateModel<Resource[]>;
+  resources: AsyncStateModel<ResourceModel[]>;
   filters: DiscoverableFilter[];
   defaultFilterValues: Record<string, string>;
   filterValues: Record<string, StringOrNull>;
-  filterOptionsCache: Record<string, SelectOption[]>;
-  filterSearchCache: Record<string, SelectOption[]>;
+  filterOptionsCache: Record<string, FilterOption[]>;
+  filterSearchCache: Record<string, FilterOption[]>;
   filterPaginationCache: Record<string, string>;
   resourcesCount: number;
   searchText: StringOrNull;
   sortBy: string;
-  first: string;
-  next: string;
-  previous: string;
+  self: string;
+  first: StringOrNull;
+  next: StringOrNull;
+  previous: StringOrNull;
   resourceType: ResourceType;
 }
 
@@ -35,7 +36,8 @@ export const GLOBAL_SEARCH_STATE_DEFAULTS = {
   searchText: '',
   sortBy: '-relevance',
   resourceType: ResourceType.Null,
-  first: '',
-  next: '',
-  previous: '',
+  self: '',
+  first: null,
+  next: null,
+  previous: null,
 };

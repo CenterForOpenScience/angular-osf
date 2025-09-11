@@ -12,30 +12,41 @@ import { Router } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
+import { StopPropagationDirective } from '@osf/shared/directives';
 import { CollectionSubmission, ResourceOverview } from '@osf/shared/models';
 import { CollectionsSelectors, GetProjectSubmissions } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-overview-collections',
-  imports: [Accordion, AccordionPanel, AccordionHeader, AccordionContent, TranslatePipe, Skeleton, Tag, Button],
+  imports: [
+    Accordion,
+    AccordionPanel,
+    AccordionHeader,
+    AccordionContent,
+    TranslatePipe,
+    Skeleton,
+    Tag,
+    Button,
+    StopPropagationDirective,
+  ],
   templateUrl: './overview-collections.component.html',
   styleUrl: './overview-collections.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewCollectionsComponent {
   private readonly router = inject(Router);
-  protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
+  readonly SubmissionReviewStatus = SubmissionReviewStatus;
 
   currentProject = input.required<ResourceOverview | null>();
   projectSubmissions = select(CollectionsSelectors.getCurrentProjectSubmissions);
   isProjectSubmissionsLoading = select(CollectionsSelectors.getCurrentProjectSubmissionsLoading);
 
-  protected projectId = computed(() => {
+  projectId = computed(() => {
     const resource = this.currentProject();
     return resource ? resource.id : null;
   });
 
-  protected actions = createDispatchMap({ getProjectSubmissions: GetProjectSubmissions });
+  actions = createDispatchMap({ getProjectSubmissions: GetProjectSubmissions });
 
   constructor() {
     effect(() => {
@@ -47,7 +58,7 @@ export class OverviewCollectionsComponent {
     });
   }
 
-  protected get submissionAttributes() {
+  get submissionAttributes() {
     return (submission: CollectionSubmission) => {
       if (!submission) return [];
 
@@ -60,8 +71,7 @@ export class OverviewCollectionsComponent {
     };
   }
 
-  navigateToCollection($event: Event, submission: CollectionSubmission) {
-    $event.stopPropagation();
+  navigateToCollection(submission: CollectionSubmission) {
     this.router.navigate([`collections/${submission.collectionId}/`]);
   }
 }

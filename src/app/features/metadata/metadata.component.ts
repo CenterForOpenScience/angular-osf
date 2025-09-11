@@ -48,7 +48,12 @@ import {
   ResourceInformationDialogComponent,
   ResourceInfoTooltipComponent,
 } from './dialogs';
-import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData, CedarRecordDataBinding } from './models';
+import {
+  CedarMetadataDataTemplateJsonApi,
+  CedarMetadataRecordData,
+  CedarRecordDataBinding,
+  DescriptionResultModel,
+} from './models';
 import {
   CreateCedarMetadataRecord,
   CreateDoi,
@@ -147,8 +152,8 @@ export class MetadataComponent implements OnInit {
 
   hideEditDoi = computed(() => {
     return (
-      !!(this.metadata()?.identifiers?.length && this.resourceType() === ResourceType.Project) ||
-      !this.metadata()?.public
+      this.resourceType() === ResourceType.Project &&
+      (!!this.metadata()?.identifiers?.length || !this.metadata()?.public)
     );
   });
 
@@ -309,19 +314,15 @@ export class MetadataComponent implements OnInit {
     });
     dialogRef.onClose
       .pipe(
-        filter((result) => !!result),
+        filter((result: DescriptionResultModel) => !!result),
         switchMap((result) => {
           if (this.resourceId) {
-            return this.actions.updateMetadata(this.resourceId, this.resourceType(), { description: result });
+            return this.actions.updateMetadata(this.resourceId, this.resourceType(), { description: result.value });
           }
           return EMPTY;
         })
       )
-      .subscribe({
-        next: () => {
-          this.toastService.showSuccess('project.metadata.description.updated');
-        },
-      });
+      .subscribe(() => this.toastService.showSuccess('project.metadata.description.updated'));
   }
 
   openEditResourceInformationDialog(): void {
@@ -427,24 +428,23 @@ export class MetadataComponent implements OnInit {
   }
 
   openEditAffiliatedInstitutionsDialog(): void {
-    const dialogRef = this.dialogService.open(AffiliatedInstitutionsDialogComponent, {
-      header: this.translateService.instant('project.metadata.affiliatedInstitutions.dialog.header'),
-      width: '500px',
-      focusOnShow: false,
-      closeOnEscape: true,
-      modal: true,
-      closable: true,
-    });
-    dialogRef.onClose
-      .pipe(
+    this.dialogService
+      .open(AffiliatedInstitutionsDialogComponent, {
+        header: this.translateService.instant('project.metadata.affiliatedInstitutions.dialog.header'),
+        width: '500px',
+        focusOnShow: false,
+        closeOnEscape: true,
+        modal: true,
+        closable: true,
+        data: this.affiliatedInstitutions(),
+      })
+      .onClose.pipe(
         filter((result) => !!result),
-        switchMap((institutions) => {
-          return this.actions.updateResourceInstitutions(this.resourceId, this.resourceType(), institutions);
-        })
+        switchMap((institutions) =>
+          this.actions.updateResourceInstitutions(this.resourceId, this.resourceType(), institutions)
+        )
       )
-      .subscribe({
-        next: () => this.toastService.showSuccess('project.metadata.affiliatedInstitutions.updated'),
-      });
+      .subscribe(() => this.toastService.showSuccess('project.metadata.affiliatedInstitutions.updated'));
   }
 
   getSubjectChildren(parentId: string) {

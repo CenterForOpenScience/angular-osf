@@ -8,8 +8,8 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
+import { FetchInstitutionById, InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store';
 import { Primitive } from '@osf/shared/helpers';
-import { FetchInstitutionById, InstitutionsSearchSelectors } from '@osf/shared/stores/institutions-search';
 import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 
 import { resourceTabOptions } from './constants';
@@ -26,8 +26,8 @@ export class AdminInstitutionsComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  institution = select(InstitutionsSearchSelectors.getInstitution);
-  isInstitutionLoading = select(InstitutionsSearchSelectors.getInstitutionLoading);
+  institution = select(InstitutionsAdminSelectors.getInstitution);
+  isInstitutionLoading = select(InstitutionsAdminSelectors.getInstitutionLoading);
 
   private readonly actions = createDispatchMap({
     fetchInstitution: FetchInstitutionById,
@@ -49,9 +49,7 @@ export class AdminInstitutionsComponent implements OnInit {
   }
 
   onTabChange(selectedValue: Primitive) {
-    const value = selectedValue as AdminInstitutionResourceTab;
-    this.selectedTab = value;
-
+    this.selectedTab = selectedValue as AdminInstitutionResourceTab;
     if (this.selectedTab) {
       this.router.navigate([this.selectedTab], { relativeTo: this.route });
     }

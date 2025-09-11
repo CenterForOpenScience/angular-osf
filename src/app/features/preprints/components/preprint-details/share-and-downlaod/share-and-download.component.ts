@@ -7,12 +7,14 @@ import { Card } from 'primeng/card';
 import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IconComponent } from '@shared/components';
 import { ShareableContent } from '@shared/models';
 import { SocialShareService } from '@shared/services';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 @Component({
   selector: 'osf-preprint-share-and-download',
@@ -25,8 +27,10 @@ export class ShareAndDownloadComponent {
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
 
   private readonly socialShareService = inject(SocialShareService);
+  private readonly dataciteService = inject(DataciteService);
 
   preprint = select(PreprintSelectors.getPreprint);
+  preprint$ = toObservable(this.preprint);
   isPreprintLoading = select(PreprintSelectors.isPreprintLoading);
 
   metrics = computed(() => {
@@ -44,6 +48,10 @@ export class ShareAndDownloadComponent {
 
     return this.socialShareService.createDownloadUrl(preprint.id);
   });
+
+  logDownload() {
+    this.dataciteService.logIdentifiableDownload(this.preprint$).subscribe();
+  }
 
   private shareableContent = computed((): ShareableContent | null => {
     const preprint = this.preprint();

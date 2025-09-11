@@ -5,12 +5,11 @@
 } @else {
   <div class="flex flex-column gap-2">
     <div class="flex gap-2">
-      <img [ngSrc]="'assets/icons/colored/cos-shield.svg'" width="24" height="24" alt="cost-shield" />
-      <h2 class="font-normal">{{ 'files.dialogs.moveFile.storage' | translate }}</h2>
+      <h2 class="font-normal">{{ storageName }}</h2>
     </div>
 
     <div class="files-table flex flex-column">
-      @if (currentFolder()?.relationships?.parentFolderLink) {
+      @if (previousFolder) {
         <div class="files-table-row py-2 px-3">
           <div
             tabindex="0"
@@ -26,10 +25,7 @@
       }
 
       @for (file of files(); track $index) {
-        <div
-          class="files-table-row flex align-items-center py-2"
-          [class]="currentFolder()?.relationships?.parentFolderLink ? 'pl-6' : 'px-3'"
-        >
+        <div class="files-table-row flex align-items-center py-2" [class]="foldersStack.length ? 'pl-6' : 'px-3'">
           <div class="flex align-items-center gap-2">
             @if (file.kind !== 'folder') {
               <osf-icon class="disabled-icon" iconClass="fas fa-file disabled-icon"></osf-icon>
@@ -41,19 +37,25 @@
                 {{ file?.name ?? '' }}
               </div>
             } @else {
-              <osf-icon iconClass="fas fa-folder"></osf-icon>
-
-              <div
-                class="filename-link overflow-ellipsis"
-                tabindex="0"
+              <p-button
+                class="filename-link link-btn-no-padding overflow-ellipsis font-normal"
+                icon="fas fa-folder"
+                severity="secondary"
+                [link]="true"
+                [label]="file?.name ?? ''"
                 (click)="openFolder(file)"
-                (keydown.enter)="openFolder(file)"
-              >
-                {{ file?.name ?? '' }}
-              </div>
+              />
             }
           </div>
         </div>
+      }
+      @if (filesTotalCount() > itemsPerPage) {
+        <osf-custom-paginator
+          class="mt-1 border-top-1 border-200"
+          [first]="first"
+          [totalCount]="filesTotalCount()"
+          (pageChanged)="onFilesPageChange($event)"
+        />
       }
       @if (!files().length) {
         <div class="flex justify-content-center p-4">
@@ -65,11 +67,11 @@
 }
 
 <div class="flex justify-content-end gap-2 mt-4">
-  <p-button (click)="dialogRef.close()" severity="info" [label]="'common.buttons.cancel' | translate"></p-button>
+  <p-button severity="info" [label]="'common.buttons.cancel' | translate" (onClick)="dialogRef.close()"></p-button>
 
   <p-button
     [disabled]="isFolderSame() || isLoading() || isFilesUpdating()"
     [label]="(config.data.action === 'move' ? 'common.buttons.move' : 'common.buttons.copy') | translate"
-    (click)="moveFile()"
+    (onClick)="moveFile()"
   ></p-button>
 </div>

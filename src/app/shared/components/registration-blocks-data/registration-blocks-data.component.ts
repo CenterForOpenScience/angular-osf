@@ -32,6 +32,6 @@ export class RegistrationBlocksDataComponent {
     }, {});
   });
 
-  protected readonly FieldType = FieldType;
-  protected readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
+  readonly FieldType = FieldType;
+  readonly INPUT_VALIDATION_MESSAGES = INPUT_VALIDATION_MESSAGES;
 }

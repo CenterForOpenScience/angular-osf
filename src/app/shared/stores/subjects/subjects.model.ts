@@ -5,3 +5,21 @@ export interface SubjectsModel {
   searchedSubjects: AsyncStateModel<SubjectModel[]>;
   selectedSubjects: AsyncStateModel<SubjectModel[]>;
 }
+
+export const SUBJECT_STATE_DEFAULTS: SubjectsModel = {
+  subjects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  searchedSubjects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+  selectedSubjects: {
+    data: [],
+    isLoading: false,
+    error: null,
+  },
+};

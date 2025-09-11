@@ -1,37 +1,33 @@
-import { extractPathAfterDomain } from '@osf/features/admin-institutions/helpers';
+import { ResourceModel } from '@shared/models';
 
-import { InstitutionPreprint, TableCellData, TableCellLink } from '../models';
+import { extractPathAfterDomain } from '../helpers';
+import { TableCellData, TableCellLink } from '../models';
 
-export function mapPreprintToTableData(preprint: InstitutionPreprint): TableCellData {
+export function mapPreprintResourceToTableData(preprint: ResourceModel): TableCellData {
   return {
-    id: preprint.id,
-    title: {
-      text: preprint.title,
-      url: preprint.link,
-      target: '_blank',
-    } as TableCellLink,
+    title: preprint.title,
     link: {
-      text: preprint.link.split('/').pop() || preprint.link,
-      url: preprint.link,
+      text: preprint.absoluteUrl.split('/').pop() || preprint.absoluteUrl,
+      url: preprint.absoluteUrl,
       target: '_blank',
     } as TableCellLink,
     dateCreated: preprint.dateCreated,
     dateModified: preprint.dateModified,
-    doi: preprint.doi
+    doi: preprint.doi[0]
       ? ({
-          text: extractPathAfterDomain(preprint.doi),
-          url: preprint.doi,
+          text: extractPathAfterDomain(preprint.doi[0]),
+          url: preprint.doi[0],
         } as TableCellLink)
       : '-',
-    license: preprint.license || '-',
-    contributorName: preprint.contributorName
+    license: preprint.license?.name || '-',
+    contributorName: preprint.creators[0]
       ? ({
-          text: preprint.contributorName,
-          url: `https://osf.io/${preprint.contributorName}`,
+          text: preprint.creators[0].name,
+          url: preprint.creators[0].absoluteUrl,
           target: '_blank',
         } as TableCellLink)
       : '-',
-    viewsLast30Days: preprint.viewsLast30Days || '-',
-    downloadsLast30Days: preprint.downloadsLast30Days || '-',
+    viewsLast30Days: preprint.viewsCount || '-',
+    downloadsLast30Days: preprint.downloadCount || '-',
   };
 }

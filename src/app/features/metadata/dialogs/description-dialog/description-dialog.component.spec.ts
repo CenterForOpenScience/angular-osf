@@ -39,9 +39,9 @@ describe('DescriptionDialogComponent', () => {
   it('should handle save with valid form', () => {
     const dialogRef = TestBed.inject(DynamicDialogRef);
     jest.spyOn(dialogRef, 'close');
-    const validDescription = 'Valid description';
+    const validDescription = { value: 'Valid description' };
 
-    component.descriptionControl.setValue(validDescription);
+    component.descriptionControl.setValue(validDescription.value);
     component.save();
 
     expect(dialogRef.close).toHaveBeenCalledWith(validDescription);

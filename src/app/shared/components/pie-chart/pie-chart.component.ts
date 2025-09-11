@@ -35,8 +35,8 @@ export class PieChartComponent implements OnInit {
   datasets = input<DatasetInput[]>([]);
   showLegend = input<boolean>(false);
 
-  protected options = signal<ChartOptions>({});
-  protected data = signal<ChartData>({} as ChartData);
+  options = signal<ChartOptions>({});
+  data = signal<ChartData>({} as ChartData);
 
   platformId = inject(PLATFORM_ID);
   cd = inject(ChangeDetectorRef);

@@ -1,5 +1,5 @@
 import { ContributorAddModel, ContributorModel } from '@osf/shared/models';
-import { AsyncStateModel } from '@osf/shared/models/store';
+import { AsyncStateModel, AsyncStateWithTotalCount } from '@osf/shared/models/store';
 
 export interface ContributorsStateModel {
   contributorsList: AsyncStateModel<ContributorModel[]> & {
@@ -7,12 +7,10 @@ export interface ContributorsStateModel {
     permissionFilter: string | null;
     bibliographyFilter: boolean | null;
   };
-  users: AsyncStateModel<ContributorAddModel[]> & {
-    totalCount: number;
-  };
+  users: AsyncStateWithTotalCount<ContributorAddModel[]>;
 }
 
-export const DefaultState = {
+export const CONTRIBUTORS_STATE_DEFAULTS: ContributorsStateModel = {
   contributorsList: {
     data: [],
     isLoading: false,

@@ -11,10 +11,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
-import { ProjectAddonsStepperValue } from '@osf/shared/enums';
+import { AddonServiceNames, AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { getAddonTypeString, isAuthorizedAddon } from '@osf/shared/helpers';
 import { AddonSetupAccountFormComponent, AddonTermsComponent } from '@shared/components/addons';
 import { AddonModel, AddonTerm, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@shared/models';
+import { ToastService } from '@shared/services';
 import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
 
 @Component({
@@ -38,33 +39,35 @@ import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@
 })
 export class ConnectAddonComponent {
   private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
-  protected readonly stepper = viewChild(Stepper);
-  protected readonly ProjectAddonsStepperValue = ProjectAddonsStepperValue;
+  readonly stepper = viewChild(Stepper);
+  readonly AddonType = AddonType;
+  readonly ProjectAddonsStepperValue = ProjectAddonsStepperValue;
 
-  protected terms = signal<AddonTerm[]>([]);
-  protected addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
-  protected addonAuthUrl = signal<string>('/settings/addons');
+  terms = signal<AddonTerm[]>([]);
+  addon = signal<AddonModel | AuthorizedAccountModel | null>(null);
+  addonAuthUrl = signal<string>('/settings/addons');
 
-  protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
-  protected createdAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
-  protected isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
-  protected isAuthorized = computed(() => {
+  addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
+  createdAddon = select(AddonsSelectors.getCreatedOrUpdatedAuthorizedAddon);
+  isCreatingAuthorizedAddon = select(AddonsSelectors.getCreatedOrUpdatedStorageAddonSubmitting);
+  isAuthorized = computed(() => {
     return isAuthorizedAddon(this.addon());
   });
-  protected addonTypeString = computed(() => {
+  addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());
   });
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     createAuthorizedAddon: CreateAuthorizedAddon,
     updateAuthorizedAddon: UpdateAuthorizedAddon,
   });
 
-  protected readonly userReferenceId = computed(() => {
+  readonly userReferenceId = computed(() => {
     return this.addonsUserReference()[0]?.id;
   });
-  protected readonly baseUrl = computed(() => {
+  readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
     return currentUrl.split('/addons')[0];
   });
@@ -92,10 +95,15 @@ export class ConnectAddonComponent {
     ).subscribe({
       complete: () => {
         const createdAddon = this.createdAddon();
-        if (createdAddon) {
-          this.addonAuthUrl.set(createdAddon.attributes.auth_url);
-          window.open(createdAddon.attributes.auth_url, '_blank');
+        if (createdAddon?.authUrl) {
+          this.addonAuthUrl.set(createdAddon.authUrl);
+          window.open(createdAddon.authUrl, '_blank');
           this.stepper()?.value.set(ProjectAddonsStepperValue.AUTH);
+        } else {
+          this.router.navigate([`${this.baseUrl()}/addons`]);
+          this.toastService.showSuccess('settings.addons.toast.createSuccess', {
+            addonName: AddonServiceNames[createdAddon?.externalServiceName as keyof typeof AddonServiceNames],
+          });
         }
       },
     });

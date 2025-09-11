@@ -29,7 +29,7 @@ export class AddEmailComponent {
 
   isSubmitting = select(UserEmailsSelectors.isEmailsSubmitting);
 
-  protected readonly emailControl = new FormControl('', {
+  readonly emailControl = new FormControl('', {
     nonNullable: true,
     validators: [Validators.email, CustomValidators.requiredTrimmed()],
   });

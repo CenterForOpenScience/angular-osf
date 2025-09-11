@@ -17,8 +17,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class ProvidersService {
-  private apiUrl = environment.apiUrl;
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   getProviderSchemas(providerId: string): Observable<ProviderSchema[]> {
     return this.jsonApiService

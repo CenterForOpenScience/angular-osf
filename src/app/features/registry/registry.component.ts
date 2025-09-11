@@ -1,7 +1,5 @@
 import { select } from '@ngxs/store';
 
-import { Observable } from 'rxjs';
-
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, HostBinding, inject } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -9,8 +7,7 @@ import { RouterOutlet } from '@angular/router';
 
 import { pathJoin } from '@osf/shared/helpers';
 import { MetaTagsService } from '@osf/shared/services';
-import { DataciteTrackerComponent } from '@shared/components/datacite-tracker/datacite-tracker.component';
-import { Identifier } from '@shared/models';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { RegistryOverviewSelectors } from './store/registry-overview';
 
@@ -24,33 +21,31 @@ import { environment } from 'src/environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
 })
-export class RegistryComponent extends DataciteTrackerComponent {
+export class RegistryComponent {
   @HostBinding('class') classes = 'flex-1 flex flex-column';
 
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
+  private readonly dataciteService = inject(DataciteService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly registry = select(RegistryOverviewSelectors.getRegistry);
+  readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
   readonly registry$ = toObservable(select(RegistryOverviewSelectors.getRegistry));
 
   constructor() {
-    super();
     effect(() => {
-      if (this.registry()) {
+      if (!this.isRegistryLoading() && this.registry()) {
         this.setMetaTags();
       }
     });
-    this.setupDataciteViewTrackerEffect().subscribe();
-  }
-
-  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
-    return this.registry$;
+    this.dataciteService.logIdentifiableView(this.registry$).subscribe();
   }
 
   private setMetaTags(): void {
     this.metaTags.updateMetaTags(
       {
+        osfGuid: this.registry()?.id,
         title: this.registry()?.title,
         description: this.registry()?.description,
         publishedDate: this.datePipe.transform(this.registry()?.dateRegistered, 'yyyy-MM-dd'),
@@ -68,7 +63,7 @@ export class RegistryComponent extends DataciteTrackerComponent {
             familyName: contributor.familyName,
           })) ?? [],
       },
-      this.destroyRef,
+      this.destroyRef
     );
   }
 }

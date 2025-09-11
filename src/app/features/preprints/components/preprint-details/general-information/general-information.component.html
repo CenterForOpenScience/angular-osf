@@ -14,7 +14,7 @@
       @if (preprintValue.nodeId) {
         <section class="flex flex-column gap-2">
           <h3>{{ 'preprints.details.supplementalMaterials' | translate }}</h3>
-          <a [routerLink]="nodeLink()" class="flex gap-1">
+          <a [href]="nodeLink()" class="flex gap-1">
             {{ nodeLink() }}
             <osf-icon iconClass="fa fa-external-link-alt" />
           </a>

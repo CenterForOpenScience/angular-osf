@@ -6,7 +6,7 @@
       </div>
     </div>
 
-    <div class="footer-socials flex justify-content-center align-items-center" [class]="isWeb() ? 'm-y-12' : 'm-y-24'">
+    <div class="footer-socials flex justify-content-center align-items-center" [class]="isWeb() ? 'my-3' : 'my-4'">
       @for (icon of socialIcons; track icon.name) {
         <a
           class="social-link flex align-items-center justify-content-center"
@@ -21,9 +21,9 @@
 
   <div
     class="footer-secondary-nav flex flex-column justify-content-center align-items-center md:flex-row md:justify-content-between"
-    [class.m-t-24]="!isWeb()"
+    [class.mt-4]="!isWeb()"
   >
-    <div class="footer-links flex flex-wrap justify-content-center m-t-4">
+    <div class="footer-links flex flex-wrap justify-content-center mt-1">
       <a routerLink="/terms-of-use">{{ 'footer.links.termsOfUse' | translate }}</a>
 
       <span class="separator">|</span>
@@ -43,6 +43,6 @@
       <a href="https://www.cos.io/initiatives/top-guidelines">{{ 'footer.links.topGuidelines' | translate }}</a>
     </div>
 
-    <div class="flex justify-content-center m-y-12">{{ 'footer.copyright' | translate }}</div>
+    <div class="flex justify-content-center my-3">{{ 'footer.copyright' | translate }}</div>
   </div>
 </footer>

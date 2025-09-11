@@ -19,18 +19,20 @@ export class AuthService {
   private readonly jsonApiService = inject(JsonApiService);
   private readonly cookieService = inject(CookieService);
   private readonly loaderService = inject(LoaderService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2/users/`;
+  private readonly webUrl = environment.webUrl;
   private readonly actions = createDispatchMap({ clearCurrentUser: ClearCurrentUser });
 
   navigateToSignIn(): void {
     this.loaderService.show();
-    const loginUrl = `${environment.casUrl}/login?${urlParam({ service: `${environment.webUrl}/login` })}`;
+    const loginUrl = `${environment.casUrl}/login?${urlParam({ service: `${this.webUrl}/login` })}`;
     window.location.href = loginUrl;
   }
 
   navigateToOrcidSingIn(): void {
     const loginUrl = `${environment.casUrl}/login?${urlParam({
       redirectOrcid: 'true',
-      service: `${environment.webUrl}/login/?next=${encodeURIComponent(environment.webUrl)}`,
+      service: `${this.webUrl}/login/?next=${encodeURIComponent(this.webUrl)}`,
     })}`;
     window.location.href = loginUrl;
   }
@@ -38,7 +40,7 @@ export class AuthService {
   navigateToInstitutionSignIn(): void {
     const loginUrl = `${environment.casUrl}/login?${urlParam({
       campaign: 'institution',
-      service: `${environment.webUrl}/login/?next=${encodeURIComponent(environment.webUrl)}`,
+      service: `${this.webUrl}/login/?next=${encodeURIComponent(this.webUrl)}`,
     })}`;
     window.location.href = loginUrl;
   }
@@ -47,25 +49,25 @@ export class AuthService {
     this.loaderService.show();
     this.cookieService.deleteAll();
     this.actions.clearCurrentUser();
-    window.location.href = `${environment.webUrl}/logout/?next=${encodeURIComponent('/')}`;
+    window.location.href = `${this.webUrl}/logout/?next=${encodeURIComponent('/')}`;
   }
 
   register(payload: SignUpModel) {
-    const baseUrl = `${environment.apiUrlV1}/register/`;
+    const baseUrl = `${this.webUrl}/api/v1/register/`;
     const body = { ...payload, 'g-recaptcha-response': payload.recaptcha, campaign: null };
 
     return this.jsonApiService.post(baseUrl, body);
   }
 
   forgotPassword(email: string) {
-    const baseUrl = `${environment.apiUrl}/users/reset_password/`;
+    const baseUrl = `${this.apiUrl}/reset_password/`;
     const params: Record<string, string> = { email };
 
     return this.jsonApiService.get(baseUrl, params);
   }
 
   resetPassword(userId: string, token: string, newPassword: string) {
-    const baseUrl = `${environment.apiUrl}/users/reset_password/`;
+    const baseUrl = `${this.apiUrl}/reset_password/`;
     const body = {
       data: {
         attributes: {

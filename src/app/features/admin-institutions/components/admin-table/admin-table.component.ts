@@ -21,7 +21,7 @@ import {
 } from '@osf/features/admin-institutions/models';
 import { CustomPaginatorComponent } from '@osf/shared/components';
 import { StopPropagationDirective } from '@shared/directives';
-import { QueryParams } from '@shared/models';
+import { PaginationLinksModel, SearchFilters } from '@shared/models';
 
 import { DOWNLOAD_OPTIONS } from '../../constants';
 import { DownloadType } from '../../enums';
@@ -49,8 +49,6 @@ import { DownloadType } from '../../enums';
 export class AdminTableComponent {
   private readonly translateService = inject(TranslateService);
 
-  private userInitiatedSort = false;
-
   tableColumns = input.required<TableColumn[]>();
   tableData = input.required<TableCellData[]>();
 
@@ -67,20 +65,14 @@ export class AdminTableComponent {
 
   isNextPreviousPagination = input<boolean>(false);
 
-  paginationLinks = input<
-    | {
-        first?: { href: string };
-        next?: { href: string };
-        prev?: { href: string };
-        last?: { href: string };
-      }
-    | undefined
-  >();
+  paginationLinks = input<PaginationLinksModel>();
+
+  visible = true;
 
   pageChanged = output<PaginatorState>();
-  sortChanged = output<QueryParams>();
+  sortChanged = output<SearchFilters>();
   iconClicked = output<TableIconClickEvent>();
-  linkPageChanged = output<string>();
+  pageSwitched = output<string>();
   downloadClicked = output<DownloadType>();
 
   skeletonData: TableCellData[] = Array.from({ length: 10 }, () => ({}) as TableCellData);
@@ -98,9 +90,6 @@ export class AdminTableComponent {
 
     return selected;
   });
-
-  sortColumn = computed(() => this.sortField());
-  currentSortOrder = computed(() => this.sortOrder());
 
   firstLink = computed(() => this.paginationLinks()?.first?.href || '');
   prevLink = computed(() => this.paginationLinks()?.prev?.href || '');
@@ -123,21 +112,13 @@ export class AdminTableComponent {
     this.pageChanged.emit(event);
   }
 
-  onHeaderClick(column: TableColumn): void {
-    if (column.sortable) {
-      this.userInitiatedSort = true;
-    }
-  }
-
   onSort(event: SortEvent): void {
-    if (event.field && this.userInitiatedSort) {
+    if (event.field) {
       this.sortChanged.emit({
         sortColumn: event.field,
         sortOrder: event.order,
-      } as QueryParams);
+      } as SearchFilters);
     }
-
-    this.userInitiatedSort = false;
   }
 
   onIconClick(rowData: TableCellData, column: TableColumn): void {
@@ -162,7 +143,7 @@ export class AdminTableComponent {
   }
 
   switchPage(link: string) {
-    this.linkPageChanged.emit(link);
+    this.pageSwitched.emit(link);
   }
 
   getLinkUrl(value: string | number | TableCellLink | undefined): string {

@@ -23,16 +23,16 @@ import { ToastService } from '@shared/services';
 })
 export class AddToCollectionConfirmationDialogComponent {
   private toastService = inject(ToastService);
-  protected dialogRef = inject(DynamicDialogRef);
-  protected config = inject(DynamicDialogConfig);
-  protected destroyRef = inject(DestroyRef);
-  protected isSubmitting = signal<boolean>(false);
-  protected actions = createDispatchMap({
+  dialogRef = inject(DynamicDialogRef);
+  config = inject(DynamicDialogConfig);
+  destroyRef = inject(DestroyRef);
+  isSubmitting = signal<boolean>(false);
+  actions = createDispatchMap({
     createCollectionSubmission: CreateCollectionSubmission,
     updateProjectPublicStatus: UpdateProjectPublicStatus,
   });
 
-  protected handleAddToCollectionConfirm(): void {
+  handleAddToCollectionConfirm(): void {
     const payload = this.config.data.payload;
     const project = this.config.data.project;
 

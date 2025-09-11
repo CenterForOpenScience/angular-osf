@@ -20,7 +20,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -41,6 +41,7 @@ import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
 import { pathJoin } from '@osf/shared/helpers';
 import { MetadataTabsModel, OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, MetaTagsService, ToastService } from '@osf/shared/services';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {
   FileKeywordsComponent,
@@ -99,6 +100,7 @@ export class FileDetailComponent {
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
   private readonly translateService = inject(TranslateService);
+  readonly dataciteService = inject(DataciteService);
 
   private readonly actions = createDispatchMap({
     getFile: GetFile,
@@ -115,13 +117,16 @@ export class FileDetailComponent {
   });
 
   file = select(FilesSelectors.getOpenedFile);
+  fileMetadata$ = toObservable(select(FilesSelectors.getResourceMetadata));
   isFileLoading = select(FilesSelectors.isOpenedFileLoading);
   cedarRecords = select(MetadataSelectors.getCedarRecords);
   cedarTemplates = select(MetadataSelectors.getCedarTemplates);
   isAnonymous = select(FilesSelectors.isFilesAnonymous);
   fileCustomMetadata = select(FilesSelectors.getFileCustomMetadata);
+  isFileCustomMetadataLoading = select(FilesSelectors.isFileMetadataLoading);
   resourceMetadata = select(FilesSelectors.getResourceMetadata);
   resourceContributors = select(FilesSelectors.getContributors);
+  isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
 
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
@@ -181,13 +186,17 @@ export class FileDetailComponent {
   });
 
   private readonly metaTagsData = computed(() => {
+    if (this.isFileLoading() || this.isFileCustomMetadataLoading() || this.isResourceContributorsLoading()) {
+      return null;
+    }
     const file = this.file();
     if (!file) return null;
     return {
+      osfGuid: file.guid,
       title: this.fileCustomMetadata()?.title || file.name,
+      type: this.fileCustomMetadata()?.resourceTypeGeneral,
       description:
-        this.fileCustomMetadata()?.description ??
-        this.translateService.instant('files.metaTagDescriptionPlaceholder'),
+        this.fileCustomMetadata()?.description ?? this.translateService.instant('files.metaTagDescriptionPlaceholder'),
       url: pathJoin(environment.webUrl, this.fileGuid),
       publishedDate: this.datePipe.transform(file.dateCreated, 'yyyy-MM-dd'),
       modifiedDate: this.datePipe.transform(file.dateModified, 'yyyy-MM-dd'),
@@ -221,8 +230,8 @@ export class FileDetailComponent {
           this.actions.getFileResourceMetadata(this.resourceId, this.resourceType);
           this.actions.getFileResourceContributors(this.resourceId, this.resourceType);
           if (fileId) {
-            const fileProvider = this.file()?.provider || '';
-            this.actions.getFileRevisions(this.resourceId, fileProvider, fileId);
+            const storageLink = this.file()?.links.upload || '';
+            this.actions.getFileRevisions(storageLink);
             this.actions.getCedarTemplates();
             this.actions.getCedarRecords(fileId, ResourceType.File);
           }
@@ -247,9 +256,11 @@ export class FileDetailComponent {
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
       this.actions.getFileMetadata(params['fileGuid']);
     });
+    this.dataciteService.logIdentifiableView(this.fileMetadata$).subscribe();
   }
 
   downloadFile(link: string): void {
+    this.dataciteService.logIdentifiableDownload(this.fileMetadata$).subscribe();
     window.open(link)?.focus();
   }
 

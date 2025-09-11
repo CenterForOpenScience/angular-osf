@@ -47,7 +47,7 @@ import { environment } from 'src/environments/environment';
 export class PreprintsLandingComponent implements OnInit, OnDestroy {
   @HostBinding('class') classes = 'flex-1 flex flex-column w-full h-full';
 
-  protected searchControl = new FormControl<string>('');
+  searchControl = new FormControl<string>('');
 
   readonly supportEmail = environment.supportEmail;
   private readonly OSF_PROVIDER_ID = environment.defaultProvider;

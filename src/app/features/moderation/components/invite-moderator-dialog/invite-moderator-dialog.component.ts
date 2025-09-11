@@ -22,10 +22,10 @@ import { InviteModeratorForm, ModeratorAddModel, ModeratorDialogAddModel } from 
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InviteModeratorDialogComponent {
-  protected dialogRef = inject(DynamicDialogRef);
-  protected moderatorForm!: FormGroup<InviteModeratorForm>;
-  protected inputLimits = InputLimits;
-  protected readonly permissionsOptions = MODERATION_PERMISSIONS;
+  dialogRef = inject(DynamicDialogRef);
+  moderatorForm!: FormGroup<InviteModeratorForm>;
+  inputLimits = InputLimits;
+  readonly permissionsOptions = MODERATION_PERMISSIONS;
 
   constructor() {
     this.initForm();
