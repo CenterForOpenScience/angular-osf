@@ -12,7 +12,7 @@ import { OSFConfigService } from '@core/services/osf-config.service';
 import { GetCurrentUser, UserState } from '@core/store/user';
 import { UserEmailsState } from '@core/store/user-emails';
 
-import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
+import { CookieConsentComponent, FullScreenLoaderComponent, ToastComponent } from './shared/components';
 import { TranslateServiceMock } from './shared/mocks';
 import { AppComponent } from './app.component';
 
@@ -33,7 +33,11 @@ describe('Component: App', () => {
     } as any;
 
     await TestBed.configureTestingModule({
-      imports: [OSFTestingModule, AppComponent, ...MockComponents(ToastComponent, FullScreenLoaderComponent)],
+      imports: [
+        OSFTestingModule,
+        AppComponent,
+        ...MockComponents(ToastComponent, FullScreenLoaderComponent, CookieConsentComponent),
+      ],
       providers: [
         provideStore([UserState, UserEmailsState]),
         TranslateServiceMock,

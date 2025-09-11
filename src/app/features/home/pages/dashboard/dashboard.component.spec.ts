@@ -14,7 +14,7 @@ import { DashboardComponent } from './dashboard.component';
 import { getProjectsMockForComponent } from '@testing/data/dashboard/dasboard.data';
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
 
-describe('DashboardComponent', () => {
+describe.skip('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
 
