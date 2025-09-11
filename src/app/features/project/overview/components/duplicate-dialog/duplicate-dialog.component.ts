@@ -22,11 +22,11 @@ import { DuplicateProject, ProjectOverviewSelectors } from '../../store';
 export class DuplicateDialogComponent {
   private store = inject(Store);
   private toastService = inject(ToastService);
-  protected dialogRef = inject(DynamicDialogRef);
-  protected destroyRef = inject(DestroyRef);
-  protected isSubmitting = select(ProjectOverviewSelectors.getDuplicateProjectSubmitting);
+  dialogRef = inject(DynamicDialogRef);
+  destroyRef = inject(DestroyRef);
+  isSubmitting = select(ProjectOverviewSelectors.getDuplicateProjectSubmitting);
 
-  protected handleDuplicateConfirm(): void {
+  handleDuplicateConfirm(): void {
     const project = this.store.selectSnapshot(ProjectOverviewSelectors.getProject);
     if (!project) return;
 

@@ -66,11 +66,15 @@ export class ResourceGuidService {
       .pipe(map((response) => BaseNodeMapper.getNodeData(response.data)));
   }
 
-  getResourceWithChildren(resourceId: string, resourceType: ResourceType): Observable<NodeShortInfoModel[]> {
+  getResourceWithChildren(
+    rootParentId: string,
+    resourceId: string,
+    resourceType: ResourceType
+  ): Observable<NodeShortInfoModel[]> {
     const resourcePath = this.urlMap.get(resourceType);
 
     return this.jsonApiService
-      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${this.apiUrl}/${resourcePath}/?filter[root]=${resourceId}`)
-      .pipe(map((response) => BaseNodeMapper.getNodesWithChildren(response.data.reverse())));
+      .get<ResponseJsonApi<BaseNodeDataJsonApi[]>>(`${this.apiUrl}/${resourcePath}/?filter[root]=${rootParentId}`)
+      .pipe(map((response) => BaseNodeMapper.getNodesWithChildren(response.data, resourceId)));
   }
 }

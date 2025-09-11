@@ -1,0 +1,53 @@
+<osf-sub-header [title]="'project.linkedServices.title' | translate" />
+<section class="flex-column flex flex-1 bg-white p-3 sm:p-5">
+  @if (isLoading()) {
+    <div class="flex-1">
+      <osf-loading-spinner />
+    </div>
+  } @else if (convertedConfiguredLinkAddons().length) {
+    <p-table [value]="convertedConfiguredLinkAddons()">
+      <ng-template #header>
+        <tr>
+          <th>
+            {{ 'project.linkedServices.table.linkedService' | translate }}
+          </th>
+          <th>
+            {{ 'project.linkedServices.table.displayName' | translate }}
+          </th>
+          <th>
+            {{ 'project.linkedServices.table.resourceType' | translate }}
+          </th>
+          <th>
+            <a routerLink="../addons">{{ 'common.buttons.edit' | translate }}</a>
+          </th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-item>
+        <tr>
+          <td>{{ item.serviceName }}</td>
+          <td>{{ item.displayName }}</td>
+          <td>{{ item.convertedResourceType }}</td>
+          <td>
+            <a [href]="item.targetUrl" target="_blank" rel="noopener noreferrer">
+              {{ 'project.linkedServices.table.link' | translate }}
+            </a>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  } @else {
+    <div class="flex align-items-center justify-content-center flex-column flex-1 text-center gap-3">
+      <p>
+        {{ 'project.linkedServices.noLinkedServices' | translate }}
+      </p>
+      <p>
+        {{ 'project.linkedServices.redirectMessage' | translate }}
+        <a routerLink="../addons">
+          {{ 'project.linkedServices.addonsLink' | translate }}
+        </a>
+        {{ 'project.linkedServices.redirectMessageSuffix' | translate }}
+      </p>
+    </div>
+  }
+</section>

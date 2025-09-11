@@ -65,7 +65,7 @@
         }
       </section>
 
-      <section class="m-t-48 w-full flex gap-2 justify-content-end">
+      <section class="mt-6 w-full flex gap-2 justify-content-end">
         <p-button
           class="w-12rem btn-full-width"
           [label]="labelSubmitButton() | translate | titlecase"
@@ -88,7 +88,7 @@
           </ul>
         </section>
 
-        <section class="w-full m-t-24 flex flex-column gap-2">
+        <section class="w-full mt-4 flex flex-column gap-2">
           <div class="flex flex-row align-items-start gap-2">
             <p-radio-button inputId="accept" class="pt-1" [value]="ReviewsState.Accepted" [(ngModel)]="decision" />
 
@@ -108,7 +108,7 @@
           </div>
         </section>
 
-        <section class="w-full m-t-24">
+        <section class="w-full mt-4">
           <textarea
             pTextarea
             id="comment"
@@ -124,7 +124,7 @@
           }
         </section>
 
-        <section class="m-t-48 w-full flex gap-2 justify-content-end">
+        <section class="mt-6 w-full flex gap-2 justify-content-end">
           @if (preprint()?.reviewsState !== ReviewsState.Pending) {
             <p-button
               class="w-12rem btn-full-width"

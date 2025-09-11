@@ -24,13 +24,15 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { OperationNames } from '@osf/features/project/addons/enums';
 import { getAddonTypeString } from '@osf/shared/helpers';
 import { SubHeaderComponent } from '@shared/components';
-import { FolderSelectorComponent } from '@shared/components/addons/folder-selector/folder-selector.component';
-import { AddonModel, ConfiguredStorageAddonModel } from '@shared/models';
+import { StorageItemSelectorComponent } from '@shared/components/addons';
+import { AddonServiceNames, AddonType } from '@shared/enums';
+import { AddonModel, ConfiguredAddonModel } from '@shared/models';
 import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
 import {
   AddonsSelectors,
   ClearOperationInvocations,
   CreateAddonOperationInvocation,
+  GetLinkAddons,
   UpdateConfiguredAddon,
 } from '@shared/stores/addons';
 
@@ -48,7 +50,8 @@ import { environment } from 'src/environments/environment';
     FormsModule,
     Skeleton,
     BreadcrumbModule,
-    FolderSelectorComponent,
+    StorageItemSelectorComponent,
+    StorageItemSelectorComponent,
   ],
   templateUrl: './configure-addon.component.html',
   styleUrl: './configure-addon.component.scss',
@@ -63,36 +66,25 @@ export class ConfigureAddonComponent implements OnInit {
   private addonDialogService = inject(AddonDialogService);
   private addonFormService = inject(AddonFormService);
   private operationInvocationService = inject(AddonOperationInvocationService);
-  /**
-   * Injected NGXS store used to access and dispatch state actions and selectors.
-   */
   private store = inject(Store);
-
-  /**
-   * Form control for capturing or displaying the user’s selected account name.
-   */
-  public accountNameControl = new FormControl('');
-  /**
-   * Signal representing the currently selected `Addon` from the list of available storage addons.
-   * This value updates reactively as the selection changes.
-   */
-  public storageAddon = signal<AddonModel | null>(null);
-  /**
-   * Signal representing the currently selected and configured storage addon model.
-   * This may be `null` if no addon has been configured.
-   */
-  public addon = signal<ConfiguredStorageAddonModel | null>(null);
-
-  public readonly isGoogleDrive = computed(() => {
+  accountNameControl = new FormControl('');
+  storageAddon = signal<AddonModel | null>(null);
+  addon = signal<ConfiguredAddonModel | null>(null);
+  readonly isGoogleDrive = computed(() => {
     return this.storageAddon()?.wbKey === 'googledrive';
   });
+  isEditMode = signal<boolean>(false);
+  selectedStorageItemId = signal('');
+  selectedStorageItemUrl = signal('');
+  selectedResourceType = signal('');
+  addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
+  operationInvocation = select(AddonsSelectors.getOperationInvocation);
+  linkAddons = select(AddonsSelectors.getLinkAddons);
+  selectedStorageItem = select(AddonsSelectors.getSelectedStorageItem);
 
-  protected isEditMode = signal<boolean>(false);
-  public selectedRootFolderId = signal('');
-  protected addonsUserReference = select(AddonsSelectors.getAddonsUserReference);
-  public operationInvocation = select(AddonsSelectors.getOperationInvocation);
-  protected selectedFolderOperationInvocation = select(AddonsSelectors.getSelectedFolderOperationInvocation);
-  protected selectedFolder = select(AddonsSelectors.getSelectedFolder);
+  addonServiceName = computed(() => {
+    return AddonServiceNames[this.addon()?.externalServiceName as keyof typeof AddonServiceNames];
+  });
 
   readonly baseUrl = computed(() => {
     const currentUrl = this.router.url;
@@ -105,10 +97,24 @@ export class ConfigureAddonComponent implements OnInit {
   readonly addonTypeString = computed(() => {
     return getAddonTypeString(this.addon());
   });
-  protected readonly actions = createDispatchMap({
+  readonly selectedItemLabel = computed(() => {
+    const addonType = this.addonTypeString();
+    return addonType === AddonType.LINK
+      ? 'settings.addons.configureAddon.linkedItem'
+      : 'settings.addons.configureAddon.selectedFolder';
+  });
+  readonly supportedResourceTypes = computed(() => {
+    if (this.linkAddons().length && this.addonTypeString() === AddonType.LINK) {
+      const addon = this.linkAddons().find((a) => this.addon()?.externalServiceName === a.externalServiceName);
+      return addon?.supportedResourceTypes || [];
+    }
+    return [];
+  });
+  readonly actions = createDispatchMap({
     createAddonOperationInvocation: CreateAddonOperationInvocation,
     updateConfiguredAddon: UpdateConfiguredAddon,
     clearOperationInvocations: ClearOperationInvocations,
+    getLinkAddons: GetLinkAddons,
   });
 
   constructor() {
@@ -119,12 +125,18 @@ export class ConfigureAddonComponent implements OnInit {
         this.actions.clearOperationInvocations();
       });
     });
+
+    effect(() => {
+      if (this.addonTypeString() === AddonType.LINK) {
+        this.actions.getLinkAddons();
+      }
+    });
   }
 
   private initializeAddon(): void {
     // TODO this should be reviewed to have the addon be retrieved from the store
     // I have limited my testing because it will create a false/positive test based on the required data
-    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as ConfiguredStorageAddonModel;
+    const addon = this.router.getCurrentNavigation()?.extras.state?.['addon'] as ConfiguredAddonModel;
 
     if (addon) {
       this.storageAddon.set(
@@ -132,14 +144,16 @@ export class ConfigureAddonComponent implements OnInit {
       );
 
       this.addon.set(addon);
-      this.selectedRootFolderId.set(addon.selectedFolderId);
+      this.selectedStorageItemId.set(addon.selectedStorageItemId);
+      this.selectedStorageItemUrl.set(addon.targetUrl || '');
+      this.selectedResourceType.set(addon.resourceType || '');
       this.accountNameControl.setValue(addon.displayName);
     } else {
       this.router.navigate([`${this.baseUrl()}/addons`]);
     }
   }
 
-  protected handleCreateOperationInvocation(operationName: OperationNames, folderId: string): void {
+  handleCreateOperationInvocation(operationName: OperationNames, folderId: string): void {
     const addon = this.addon();
     if (!addon) return;
 
@@ -149,17 +163,17 @@ export class ConfigureAddonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.selectedRootFolderId());
+    this.handleCreateOperationInvocation(OperationNames.GET_ITEM_INFO, this.selectedStorageItemId());
   }
 
-  protected handleDisconnectAccount(): void {
+  handleDisconnectAccount(): void {
     const currentAddon = this.addon();
     if (!currentAddon) return;
 
     this.openDisconnectDialog(currentAddon);
   }
 
-  private openDisconnectDialog(addon: ConfiguredStorageAddonModel): void {
+  private openDisconnectDialog(addon: ConfiguredAddonModel): void {
     const dialogRef = this.addonDialogService.openDisconnectDialog(addon);
 
     dialogRef.subscribe((result) => {
@@ -172,19 +186,16 @@ export class ConfigureAddonComponent implements OnInit {
     });
   }
 
-  protected toggleEditMode(): void {
-    const operationResult = this.selectedFolderOperationInvocation()?.operationResult[0];
-    const hasRootCandidates = operationResult?.mayContainRootCandidates ?? false;
-    const itemId = operationResult?.itemId || '/';
+  toggleEditMode(): void {
+    if (!this.isEditMode()) {
+      this.resetConfigurationForm();
+    }
 
-    this.handleCreateOperationInvocation(
-      hasRootCandidates ? OperationNames.LIST_CHILD_ITEMS : OperationNames.GET_ITEM_INFO,
-      itemId
-    );
+    this.handleCreateOperationInvocation(OperationNames.LIST_ROOT_ITEMS, this.selectedStorageItemId());
     this.isEditMode.set(!this.isEditMode());
   }
 
-  protected handleUpdateAddonConfiguration(): void {
+  handleUpdateAddonConfiguration(): void {
     const currentAddon = this.addon();
     if (!currentAddon) return;
 
@@ -193,17 +204,29 @@ export class ConfigureAddonComponent implements OnInit {
       this.addonsUserReference()[0].id || '',
       this.resourceUri(),
       this.accountNameControl.value || '',
-      this.selectedRootFolderId() || '',
-      this.addonTypeString()
+      this.selectedStorageItemId() || '',
+      this.addonTypeString(),
+      this.selectedResourceType(),
+      this.selectedStorageItemUrl()
     );
 
     this.actions.updateConfiguredAddon(payload, this.addonTypeString(), currentAddon.id).subscribe({
       complete: () => {
         this.router.navigate([`${this.baseUrl()}/addons`]);
         this.toastService.showSuccess('settings.addons.toast.updateSuccess', {
-          addonName: currentAddon.externalServiceName,
+          addonName: this.addonServiceName(),
         });
       },
     });
+  }
+
+  private resetConfigurationForm(): void {
+    this.selectedStorageItemId.set('');
+    this.selectedStorageItemUrl.set('');
+    const currentAddon = this.addon();
+    if (currentAddon) {
+      this.selectedResourceType.set(currentAddon.resourceType || '');
+      this.accountNameControl.setValue(currentAddon.displayName);
+    }
   }
 }

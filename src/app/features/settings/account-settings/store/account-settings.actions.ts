@@ -1,7 +1,3 @@
-export class GetRegions {
-  static readonly type = '[AccountSettings] Get Regions';
-}
-
 export class UpdateRegion {
   static readonly type = '[AccountSettings] Update Region';
 

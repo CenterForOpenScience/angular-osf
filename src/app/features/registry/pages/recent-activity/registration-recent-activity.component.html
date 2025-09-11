@@ -1,0 +1,50 @@
+<div
+  class="p-3 flex flex-column gap-3 border-1 surface-border border-round-xl text-color"
+  role="region"
+  aria-labelledby="recent-activity-title"
+>
+  <h2 id="recent-activity-title" class="mb-2" data-test="recent-activity-title">
+    {{ 'project.overview.recentActivity.title' | translate }}
+  </h2>
+
+  @if (!isLoading()) {
+    <div role="list" data-test="recent-activity-list">
+      @for (activityLog of formattedActivityLogs(); track activityLog.id) {
+        <div
+          class="flex justify-content-between gap-3 pb-2 align-items-center border-bottom-1 surface-border"
+          role="listitem"
+          data-test="recent-activity-item"
+        >
+          <div [innerHTML]="activityLog.formattedActivity" data-test="recent-activity-item-content"></div>
+
+          <p class="hidden sm:block text-right white-space-nowrap flex-shrink-0" data-test="recent-activity-item-date">
+            {{ activityLog.date | date: 'MMM d, y hh:mm a' }}
+          </p>
+        </div>
+      } @empty {
+        <div class="text-center text-muted-color" role="status" aria-live="polite" data-test="recent-activity-empty">
+          {{ 'project.overview.recentActivity.noActivity' | translate }}
+        </div>
+      }
+    </div>
+
+    @if (totalCount() > pageSize) {
+      <osf-custom-paginator
+        data-test="recent-activity-paginator"
+        [showFirstLastIcon]="true"
+        [totalCount]="totalCount()"
+        [rows]="pageSize"
+        [first]="firstIndex()"
+        (pageChanged)="onPageChange($event)"
+      />
+    }
+  } @else {
+    <div class="flex flex-column gap-2" data-test="recent-activity-skeleton">
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+      <p-skeleton width="100%" height="2rem" />
+    </div>
+  }
+</div>

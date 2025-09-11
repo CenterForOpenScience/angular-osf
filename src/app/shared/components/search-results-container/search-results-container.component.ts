@@ -20,7 +20,7 @@ import { FormsModule } from '@angular/forms';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { searchSortingOptions } from '@osf/shared/constants';
 import { ResourceType } from '@osf/shared/enums';
-import { ResourceModel, TabOption } from '@osf/shared/models';
+import { DiscoverableFilter, ResourceModel, TabOption } from '@osf/shared/models';
 
 import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 import { ResourceCardComponent } from '../resource-card/resource-card.component';
@@ -48,6 +48,7 @@ import { SelectComponent } from '../select/select.component';
 export class SearchResultsContainerComponent {
   resources = input<ResourceModel[]>([]);
   areResourcesLoading = input<boolean>(false);
+  filters = input<DiscoverableFilter[]>([]);
   searchCount = input<number>(0);
   selectedSort = input<string>('');
   selectedTab = input<number>(ResourceType.Null);
@@ -69,18 +70,18 @@ export class SearchResultsContainerComponent {
     return this.tabOptions().length > 0;
   });
 
-  protected readonly searchSortingOptions = searchSortingOptions;
-  protected readonly ResourceType = ResourceType;
+  readonly searchSortingOptions = searchSortingOptions;
+  readonly ResourceType = ResourceType;
 
-  protected readonly hasSelectedValues = computed(() => {
+  readonly hasSelectedValues = computed(() => {
     const values = this.selectedValues();
     return Object.values(values).some((value) => value !== null && value !== '');
   });
 
-  protected readonly hasFilters = computed(() => {
-    //[RNi] TODO: check if there are any filters
-    return true;
+  readonly hasFilters = computed(() => {
+    return this.filters().length > 0;
   });
+
   filtersComponent = contentChild<TemplateRef<unknown>>('filtersComponent');
 
   selectSort(value: string): void {

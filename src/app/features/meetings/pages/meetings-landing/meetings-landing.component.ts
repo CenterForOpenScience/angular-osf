@@ -26,7 +26,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Meeting } from '@osf/features/meetings/models';
 import { GetAllMeetings, MeetingsSelectors } from '@osf/features/meetings/store';
 import { SearchInputComponent, SubHeaderComponent } from '@shared/components';
-import { TABLE_PARAMS } from '@shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@shared/constants';
 import { SortOrder } from '@shared/enums';
 import { parseQueryFilterParams } from '@shared/helpers';
 import { QueryParams, SearchFilters, TableParameters } from '@shared/models';
@@ -62,9 +62,9 @@ export class MeetingsLandingComponent {
   sortColumn = signal('');
   sortOrder = signal<SortOrder>(SortOrder.Asc);
   currentPage = signal(1);
-  currentPageSize = signal(TABLE_PARAMS.rows);
+  currentPageSize = signal(DEFAULT_TABLE_PARAMS.rows);
   tableParams = signal<TableParameters>({
-    ...TABLE_PARAMS,
+    ...DEFAULT_TABLE_PARAMS,
     firstRowIndex: 0,
   });
 

@@ -7,14 +7,16 @@
   @if (resourceValue.provider) {
     <p>
       {{ 'resourceCard.labels.provider' | translate }}
-      <a class="font-bold" [href]="resourceValue.provider!.absoluteUrl">{{ resourceValue.provider!.name }}</a>
+      <a class="font-bold" [href]="resourceValue.provider!.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
+        resourceValue.provider!.name
+      }}</a>
     </p>
   }
 
   @if (resourceValue.hasDataResource) {
     <p>
       {{ 'resourceCard.labels.associatedData' | translate }}
-      <a class="font-bold" [href]="resourceValue.hasDataResource">
+      <a class="font-bold" [href]="resourceValue.hasDataResource" target="_blank" rel="noopener noreferrer">
         {{ resourceValue.hasDataResource }}
       </a>
     </p>
@@ -23,7 +25,12 @@
   @if (resourceValue.hasPreregisteredAnalysisPlan) {
     <p>
       {{ 'resourceCard.labels.associatedAnalysisPlan' | translate }}
-      <a class="font-bold" [href]="resourceValue.hasPreregisteredAnalysisPlan">
+      <a
+        class="font-bold"
+        [href]="resourceValue.hasPreregisteredAnalysisPlan"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {{ resourceValue.hasPreregisteredAnalysisPlan }}
       </a>
     </p>
@@ -32,7 +39,7 @@
   @if (resourceValue.hasPreregisteredStudyDesign) {
     <p>
       {{ 'resourceCard.labels.associatedStudyDesign' | translate }}
-      <a class="font-bold" [href]="resourceValue.hasPreregisteredStudyDesign">
+      <a class="font-bold" [href]="resourceValue.hasPreregisteredStudyDesign" target="_blank" rel="noopener noreferrer">
         {{ resourceValue.hasPreregisteredStudyDesign }}
       </a>
     </p>
@@ -53,16 +60,22 @@
   @if (resourceValue.license?.absoluteUrl) {
     <p>
       {{ 'resourceCard.labels.license' | translate }}
-      <a class="font-bold" [attr.href]="resourceValue.license!.absoluteUrl || null">{{
-        resourceValue.license!.name
-      }}</a>
+      <a
+        class="font-bold"
+        [attr.href]="resourceValue.license!.absoluteUrl || null"
+        target="_blank"
+        rel="noopener noreferrer"
+        >{{ resourceValue.license!.name }}</a
+      >
     </p>
   }
 
   @if (resourceValue.absoluteUrl) {
     <p>
       {{ 'resourceCard.labels.url' | translate }}
-      <a class="font-bold" [href]="resourceValue.absoluteUrl">{{ resourceValue.absoluteUrl }}</a>
+      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
+        resourceValue.absoluteUrl
+      }}</a>
     </p>
   }
 
@@ -71,7 +84,7 @@
     <p>
       {{ 'resourceCard.labels.doi' | translate }}
       @for (doi of resourceValue.doi.slice(0, limit); track $index) {
-        <a class="font-bold" [href]="doi" target="_blank">{{ doi }}{{ $last ? '' : ', ' }}</a>
+        <a class="font-bold" [href]="doi" target="_blank" rel="noopener noreferrer">{{ doi }}{{ $last ? '' : ', ' }}</a>
       }
       @if (resourceValue.doi.length > limit) {
         <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }} </span>

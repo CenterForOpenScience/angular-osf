@@ -16,7 +16,7 @@ import {
   EmploymentHistoryDialogComponent,
   SelectComponent,
 } from '@osf/shared/components';
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { TableParameters } from '@osf/shared/models';
 
 @Component({
@@ -39,21 +39,21 @@ export class ModeratorsTableComponent {
   dialogService = inject(DialogService);
   translateService = inject(TranslateService);
 
-  protected readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS });
-  protected readonly permissionsOptions = MODERATION_PERMISSIONS;
-  protected readonly ModeratorPermission = ModeratorPermission;
+  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
+  readonly permissionsOptions = MODERATION_PERMISSIONS;
+  readonly ModeratorPermission = ModeratorPermission;
 
   skeletonData: ModeratorModel[] = Array.from({ length: 3 }, () => ({}) as ModeratorModel);
 
-  protected updatePermission(item: ModeratorModel) {
+  updatePermission(item: ModeratorModel) {
     this.update.emit(item);
   }
 
-  protected removeModerator(item: ModeratorModel) {
+  removeModerator(item: ModeratorModel) {
     this.remove.emit(item);
   }
 
-  protected openEducationHistory(contributor: ModeratorModel) {
+  openEducationHistory(contributor: ModeratorModel) {
     this.dialogService.open(EducationHistoryDialogComponent, {
       width: '552px',
       data: contributor.education,
@@ -65,7 +65,7 @@ export class ModeratorsTableComponent {
     });
   }
 
-  protected openEmploymentHistory(contributor: ModeratorModel) {
+  openEmploymentHistory(contributor: ModeratorModel) {
     this.dialogService.open(EmploymentHistoryDialogComponent, {
       width: '552px',
       data: contributor.employment,

@@ -21,7 +21,7 @@ import { INTEGRATION_ICONS, SLIDES } from './constants';
 export class HomeComponent {
   private readonly router = inject(Router);
 
-  protected searchControl = new FormControl<string>('');
+  searchControl = new FormControl<string>('');
 
   readonly icons = INTEGRATION_ICONS;
   readonly slides = SLIDES;

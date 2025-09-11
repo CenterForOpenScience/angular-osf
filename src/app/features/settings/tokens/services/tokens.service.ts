@@ -40,7 +40,7 @@ export class TokensService {
     const request = TokenMapper.toRequest(name, scopes);
 
     return this.jsonApiService
-      .post<JsonApiResponse<TokenGetResponseJsonApi, null>>(environment.apiDomainUrl + '/tokens/', request)
+      .post<JsonApiResponse<TokenGetResponseJsonApi, null>>(`${this.apiUrl}/tokens/`, request)
       .pipe(map((response) => TokenMapper.fromGetResponse(response.data)));
   }
 

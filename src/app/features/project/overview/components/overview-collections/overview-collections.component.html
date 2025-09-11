@@ -17,8 +17,9 @@
                     <p-button
                       link
                       class="link-btn-no-padding"
+                      osfStopPropagation
                       styleClass="text-left"
-                      (click)="navigateToCollection($event, submission)"
+                      (onClick)="navigateToCollection(submission)"
                       [label]="submission.collectionTitle"
                     ></p-button>
 

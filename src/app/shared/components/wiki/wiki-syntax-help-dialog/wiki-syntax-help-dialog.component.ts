@@ -13,5 +13,5 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WikiSyntaxHelpDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
+  readonly dialogRef = inject(DynamicDialogRef);
 }

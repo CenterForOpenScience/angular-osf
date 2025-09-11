@@ -7,8 +7,6 @@ import { PaginatorState } from 'primeng/paginator';
 import { Skeleton } from 'primeng/skeleton';
 import { TabsModule } from 'primeng/tabs';
 
-import { tap } from 'rxjs';
-
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -27,14 +25,7 @@ import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 import { REGISTRATIONS_TABS } from '../../constants';
 import { RegistrationTab } from '../../enums';
-import {
-  CreateSchemaResponse,
-  DeleteDraft,
-  FetchAllSchemaResponses,
-  FetchDraftRegistrations,
-  FetchSubmittedRegistrations,
-  RegistriesSelectors,
-} from '../../store';
+import { DeleteDraft, FetchDraftRegistrations, FetchSubmittedRegistrations, RegistriesSelectors } from '../../store';
 
 import { environment } from 'src/environments/environment';
 
@@ -74,14 +65,11 @@ export class MyRegistrationsComponent {
   submittedRegistrations = select(RegistriesSelectors.getSubmittedRegistrations);
   submittedRegistrationsTotalCount = select(RegistriesSelectors.getSubmittedRegistrationsTotalCount);
   isSubmittedRegistrationsLoading = select(RegistriesSelectors.isSubmittedRegistrationsLoading);
-  schemaResponse = select(RegistriesSelectors.getSchemaResponse);
 
   actions = createDispatchMap({
     getDraftRegistrations: FetchDraftRegistrations,
     getSubmittedRegistrations: FetchSubmittedRegistrations,
     deleteDraft: DeleteDraft,
-    getSchemaResponse: FetchAllSchemaResponses,
-    createSchemaResponse: CreateSchemaResponse,
   });
 
   readonly RegistrationTab = RegistrationTab;
@@ -148,37 +136,5 @@ export class MyRegistrationsComponent {
   onSubmittedPageChange(event: PaginatorState): void {
     this.actions.getSubmittedRegistrations(this.currentUser()?.id, event.page! + 1);
     this.submittedFirst = event.first!;
-  }
-
-  onUpdateRegistration(id: string): void {
-    this.actions
-      .createSchemaResponse(id)
-      .pipe(tap(() => this.navigateToJustificationPage()))
-      .subscribe();
-  }
-
-  onContinueUpdateRegistration({ id, unapproved }: { id: string; unapproved: boolean }): void {
-    this.actions
-      .getSchemaResponse(id)
-      .pipe(
-        tap(() => {
-          if (unapproved) {
-            this.navigateToJustificationReview();
-          } else {
-            this.navigateToJustificationPage();
-          }
-        })
-      )
-      .subscribe();
-  }
-
-  private navigateToJustificationPage(): void {
-    const revisionId = this.schemaResponse()?.id;
-    this.router.navigate([`/registries/revisions/${revisionId}/justification`]);
-  }
-
-  private navigateToJustificationReview(): void {
-    const revisionId = this.schemaResponse()?.id;
-    this.router.navigate([`/registries/revisions/${revisionId}/review`]);
   }
 }

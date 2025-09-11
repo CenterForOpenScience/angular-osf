@@ -3,8 +3,7 @@ import { StateContext } from '@ngxs/store';
 import { inject, Injectable } from '@angular/core';
 
 import { ProvidersService } from '../../services';
-import { DefaultState } from '../default.state';
-import { RegistriesStateModel } from '../registries.model';
+import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from '../registries.model';
 
 @Injectable()
 export class ProvidersHandlers {
@@ -13,7 +12,7 @@ export class ProvidersHandlers {
   getProviderSchemas({ patchState }: StateContext<RegistriesStateModel>, providerId: string) {
     patchState({
       providerSchemas: {
-        ...DefaultState.providerSchemas,
+        ...REGISTRIES_STATE_DEFAULTS.providerSchemas,
         isLoading: true,
       },
     });
@@ -30,7 +29,7 @@ export class ProvidersHandlers {
       error: (error) => {
         patchState({
           providerSchemas: {
-            ...DefaultState.providerSchemas,
+            ...REGISTRIES_STATE_DEFAULTS.providerSchemas,
             isLoading: false,
             error,
           },

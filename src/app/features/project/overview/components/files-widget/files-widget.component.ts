@@ -32,7 +32,7 @@ import {
 import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
 import { Primitive } from '@osf/shared/helpers';
 import {
-  ConfiguredStorageAddonModel,
+  ConfiguredAddonModel,
   FileLabelModel,
   FilesTreeActions,
   NodeShortInfoModel,
@@ -76,7 +76,7 @@ export class FilesWidgetComponent {
 
   readonly options = computed(() => {
     const components = this.components().filter((component) => this.rootOption().value !== component.id);
-    return [this.rootOption(), ...this.buildOptions(components).reverse()];
+    return [this.rootOption(), ...this.buildOptions(components)];
   });
 
   readonly storageAddons = computed(() => {
@@ -198,7 +198,7 @@ export class FilesWidgetComponent {
     }, []);
   }
 
-  private getAddonName(addons: ConfiguredStorageAddonModel[], provider: string): string {
+  private getAddonName(addons: ConfiguredAddonModel[], provider: string): string {
     if (provider === FileProvider.OsfStorage) {
       return this.osfStorageLabel;
     } else {

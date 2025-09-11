@@ -71,7 +71,9 @@ describe('Service: Addons', () => {
         rootFolderId: '0AIl0aR4C9JAFUk9PVA',
         externalServiceName: 'googledrive',
         id: '756579dc-3a24-4849-8866-698a60846ac3',
-        selectedFolderId: '0AIl0aR4C9JAFUk9PVA',
+        resourceType: undefined,
+        selectedStorageItemId: '0AIl0aR4C9JAFUk9PVA',
+        targetUrl: undefined,
         type: 'configured-storage-addons',
       })
     );
@@ -79,9 +81,9 @@ describe('Service: Addons', () => {
     expect(httpMock.verify).toBeTruthy();
   }));
 
-  it('should test getAuthorizedStorageAddons', inject([HttpTestingController], (httpMock: HttpTestingController) => {
+  it('should test getAuthorizedAddons', inject([HttpTestingController], (httpMock: HttpTestingController) => {
     let results: any[] = [];
-    service.getAuthorizedStorageAddons('storage', 'reference-id').subscribe((result) => {
+    service.getAuthorizedAddons('storage', 'reference-id').subscribe((result) => {
       results = result;
     });
 

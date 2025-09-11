@@ -12,6 +12,6 @@ import { IS_WEB } from '@osf/shared/helpers';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintsComponent {
-  protected readonly isDesktop = toSignal(inject(IS_WEB));
+  readonly isDesktop = toSignal(inject(IS_WEB));
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full';
 }

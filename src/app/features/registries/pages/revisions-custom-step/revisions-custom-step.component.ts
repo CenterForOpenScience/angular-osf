@@ -14,12 +14,12 @@ import { RegistriesSelectors, UpdateSchemaResponse } from '../../store';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RevisionsCustomStepComponent {
-  protected readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
-  protected readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
+  readonly schemaResponse = select(RegistriesSelectors.getSchemaResponse);
+  readonly schemaResponseRevisionData = select(RegistriesSelectors.getSchemaResponseRevisionData);
 
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     updateRevision: UpdateSchemaResponse,
   });
 
@@ -35,7 +35,7 @@ export class RevisionsCustomStepComponent {
     return this.schemaResponse()?.registrationId || '';
   });
 
-  protected stepsData = computed(() => {
+  stepsData = computed(() => {
     const schemaResponse = this.schemaResponse();
     return schemaResponse?.revisionResponses || {};
   });

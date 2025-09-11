@@ -1,8 +1,8 @@
 import { Store } from '@ngxs/store';
 
-import { MockProvider } from 'ng-mocks';
+import { MockProvider, MockProviders } from 'ng-mocks';
 
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
@@ -23,7 +23,11 @@ describe('AffiliatedInstitutionsDialogComponent', () => {
     });
     await TestBed.configureTestingModule({
       imports: [AffiliatedInstitutionsDialogComponent],
-      providers: [TranslateServiceMock, MockProvider(DynamicDialogRef), MockProvider(Store, MOCK_STORE)],
+      providers: [
+        TranslateServiceMock,
+        MockProviders(DynamicDialogRef, DynamicDialogConfig),
+        MockProvider(Store, MOCK_STORE),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AffiliatedInstitutionsDialogComponent);

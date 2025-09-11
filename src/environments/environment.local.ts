@@ -14,4 +14,10 @@ export const environment = {
   defaultProvider: 'osf',
   dataciteTrackerRepoId: null,
   dataciteTrackerAddress: 'https://analytics.datacite.org/api/metric',
+
+  google: {
+    GOOGLE_FILE_PICKER_CLIENT_ID: 'local-client-id',
+    GOOGLE_FILE_PICKER_API_KEY: 'local-api-key',
+    GOOGLE_FILE_PICKER_APP_ID: 1234567890,
+  },
 };

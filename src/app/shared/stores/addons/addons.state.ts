@@ -4,6 +4,7 @@ import { catchError, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { AddonType } from '@osf/shared/enums';
 import { handleSectionError } from '@osf/shared/helpers';
 import { AuthorizedAccountModel } from '@osf/shared/models';
 import { AddonsService } from '@osf/shared/services';
@@ -19,66 +20,28 @@ import {
   GetAddonsResourceReference,
   GetAddonsUserReference,
   GetAuthorizedCitationAddons,
+  GetAuthorizedLinkAddons,
   GetAuthorizedStorageAddons,
   GetAuthorizedStorageOauthToken,
   GetCitationAddons,
   GetConfiguredCitationAddons,
+  GetConfiguredLinkAddons,
   GetConfiguredStorageAddons,
+  GetLinkAddons,
   GetStorageAddons,
   UpdateAuthorizedAddon,
   UpdateConfiguredAddon,
 } from './addons.actions';
 import { ADDONS_DEFAULTS, AddonsStateModel } from './addons.models';
 
-/**
- * NGXS state class for managing addon-related data and actions.
- *
- * Handles loading and storing both storage and citation addons as well as their configurations.
- * This state includes logic for retrieving addons, patching loading states, handling errors,
- * and providing selectors for access within the application.
- *
- * @see AddonsStateModel
- * @see ADDONS_DEFAULTS
- * @see addons.actions.ts
- * @see addons.selectors.ts
- */
 @State<AddonsStateModel>({
   name: 'addons',
   defaults: ADDONS_DEFAULTS,
 })
 @Injectable()
 export class AddonsState {
-  /**
-   * Injected instance of {@link AddonsService}, used to interact with the addons API.
-   *
-   * Provides methods for retrieving and mapping addon configurations, including
-   * storage and citation addon types.
-   *
-   * @see AddonsService
-   */
   addonsService = inject(AddonsService);
 
-  /**
-   * NGXS action handler for retrieving the list of storage addons.
-   *
-   * Dispatching this action sets the `storageAddons` slice of state into a loading state,
-   * then asynchronously fetches storage addon configurations from the `AddonsService`.
-   *
-   * On success:
-   * - The retrieved addon list is stored in `storageAddons.data`.
-   * - `isLoading` is set to `false` and `error` is cleared.
-   *
-   * On failure:
-   * - Invokes `handleError` to populate the `error` state and stop the loading flag.
-   *
-   * @param ctx - NGXS `StateContext` instance for `AddonsStateModel`.
-   * Used to read and mutate the application state.
-   *
-   * @returns An observable that completes once the addon data has been loaded or the error is handled.
-   *
-   * @example
-   * this.store.dispatch(new GetStorageAddons());
-   */
   @Action(GetStorageAddons)
   getStorageAddons(ctx: StateContext<AddonsStateModel>) {
     const state = ctx.getState();
@@ -89,7 +52,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.getAddons('storage').pipe(
+    return this.addonsService.getAddons(AddonType.STORAGE).pipe(
       tap((addons) => {
         ctx.patchState({
           storageAddons: {
@@ -113,7 +76,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.getAddons('citation').pipe(
+    return this.addonsService.getAddons(AddonType.CITATION).pipe(
       tap((addons) => {
         ctx.patchState({
           citationAddons: {
@@ -127,6 +90,30 @@ export class AddonsState {
     );
   }
 
+  @Action(GetLinkAddons)
+  getLinkedAddons(ctx: StateContext<AddonsStateModel>) {
+    const state = ctx.getState();
+    ctx.patchState({
+      linkAddons: {
+        ...state.linkAddons,
+        isLoading: true,
+      },
+    });
+
+    return this.addonsService.getAddons(AddonType.LINK).pipe(
+      tap((addons) => {
+        ctx.patchState({
+          linkAddons: {
+            data: addons,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'linkAddons', error))
+    );
+  }
+
   @Action(GetAuthorizedStorageAddons)
   getAuthorizedStorageAddons(ctx: StateContext<AddonsStateModel>, action: GetAuthorizedStorageAddons) {
     const state = ctx.getState();
@@ -137,7 +124,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.getAuthorizedStorageAddons('storage', action.referenceId).pipe(
+    return this.addonsService.getAuthorizedAddons(AddonType.STORAGE, action.referenceId).pipe(
       tap((addons) => {
         ctx.patchState({
           authorizedStorageAddons: {
@@ -198,7 +185,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.getAuthorizedStorageAddons('citation', action.referenceId).pipe(
+    return this.addonsService.getAuthorizedAddons(AddonType.CITATION, action.referenceId).pipe(
       tap((addons) => {
         ctx.patchState({
           authorizedCitationAddons: {
@@ -212,22 +199,30 @@ export class AddonsState {
     );
   }
 
-  /**
-   * Handles the NGXS action `GetConfiguredStorageAddons`.
-   *
-   * This method is responsible for retrieving a list of configured storage addons
-   * associated with a specific `referenceId` (e.g., a node or registration).
-   *
-   * It sets the loading state before initiating the request and patches the store
-   * with the resulting data or error upon completion.
-   *
-   * @param ctx - The NGXS `StateContext` used to read and mutate the `AddonsStateModel`.
-   * @param action - The dispatched `GetConfiguredStorageAddons` action, which contains the `referenceId` used to fetch data.
-   * @returns An `Observable` that emits when the addons are successfully fetched or an error is handled.
-   *
-   * @example
-   * store.dispatch(new GetConfiguredStorageAddons('abc123'));
-   */
+  @Action(GetAuthorizedLinkAddons)
+  getAuthorizedLinkAddons(ctx: StateContext<AddonsStateModel>, action: GetAuthorizedLinkAddons) {
+    const state = ctx.getState();
+    ctx.patchState({
+      authorizedLinkAddons: {
+        ...state.authorizedLinkAddons,
+        isLoading: true,
+      },
+    });
+
+    return this.addonsService.getAuthorizedAddons(AddonType.LINK, action.referenceId).pipe(
+      tap((addons) => {
+        ctx.patchState({
+          authorizedLinkAddons: {
+            data: addons,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'authorizedLinkAddons', error))
+    );
+  }
+
   @Action(GetConfiguredStorageAddons)
   getConfiguredStorageAddons(ctx: StateContext<AddonsStateModel>, action: GetConfiguredStorageAddons) {
     const state = ctx.getState();
@@ -238,7 +233,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.getConfiguredAddons('storage', action.referenceId).pipe(
+    return this.addonsService.getConfiguredAddons(AddonType.STORAGE, action.referenceId).pipe(
       tap((addons) => {
         ctx.patchState({
           configuredStorageAddons: {
@@ -262,7 +257,7 @@ export class AddonsState {
       },
     });
 
-    return this.addonsService.getConfiguredAddons('citation', action.referenceId).pipe(
+    return this.addonsService.getConfiguredAddons(AddonType.CITATION, action.referenceId).pipe(
       tap((addons) => {
         ctx.patchState({
           configuredCitationAddons: {
@@ -273,6 +268,30 @@ export class AddonsState {
         });
       }),
       catchError((error) => handleSectionError(ctx, 'configuredCitationAddons', error))
+    );
+  }
+
+  @Action(GetConfiguredLinkAddons)
+  getConfiguredLinkAddons(ctx: StateContext<AddonsStateModel>, action: GetConfiguredLinkAddons) {
+    const state = ctx.getState();
+    ctx.patchState({
+      configuredLinkAddons: {
+        ...state.configuredLinkAddons,
+        isLoading: true,
+      },
+    });
+
+    return this.addonsService.getConfiguredAddons(AddonType.LINK, action.referenceId).pipe(
+      tap((addons) => {
+        ctx.patchState({
+          configuredLinkAddons: {
+            data: addons,
+            isLoading: false,
+            error: null,
+          },
+        });
+      }),
+      catchError((error) => handleSectionError(ctx, 'configuredLinkAddons', error))
     );
   }
 
@@ -298,11 +317,13 @@ export class AddonsState {
         });
         const referenceId = state.addonsUserReference.data[0]?.id;
         if (referenceId) {
-          ctx.dispatch(
-            action.addonType === 'storage'
-              ? new GetAuthorizedStorageAddons(referenceId)
-              : new GetAuthorizedCitationAddons(referenceId)
-          );
+          if (action.addonType === AddonType.STORAGE) {
+            ctx.dispatch(new GetAuthorizedStorageAddons(referenceId));
+          } else if (action.addonType === AddonType.CITATION) {
+            ctx.dispatch(new GetAuthorizedCitationAddons(referenceId));
+          } else if (action.addonType === AddonType.LINK) {
+            ctx.dispatch(new GetAuthorizedLinkAddons(referenceId));
+          }
         }
       }),
       catchError((error) => handleSectionError(ctx, 'createdUpdatedAuthorizedAddon', error))
@@ -331,11 +352,13 @@ export class AddonsState {
         });
         const referenceId = state.addonsUserReference.data[0]?.id;
         if (referenceId) {
-          ctx.dispatch(
-            action.addonType === 'storage'
-              ? new GetAuthorizedStorageAddons(referenceId)
-              : new GetAuthorizedCitationAddons(referenceId)
-          );
+          if (action.addonType === AddonType.STORAGE) {
+            ctx.dispatch(new GetAuthorizedStorageAddons(referenceId));
+          } else if (action.addonType === AddonType.CITATION) {
+            ctx.dispatch(new GetAuthorizedCitationAddons(referenceId));
+          } else if (action.addonType === AddonType.LINK) {
+            ctx.dispatch(new GetAuthorizedLinkAddons(referenceId));
+          }
         }
       }),
       catchError((error) => handleSectionError(ctx, 'createdUpdatedAuthorizedAddon', error))
@@ -410,7 +433,7 @@ export class AddonsState {
             isSubmitting: false,
             error: null,
           },
-          selectedFolderOperationInvocation: {
+          selectedItemOperationInvocation: {
             data: null,
             isLoading: false,
             isSubmitting: false,
@@ -420,7 +443,7 @@ export class AddonsState {
         const referenceId = state.addonsResourceReference.data[0]?.id;
         if (referenceId) {
           ctx.dispatch(
-            action.addonType === 'storage'
+            action.addonType === AddonType.STORAGE
               ? new GetConfiguredStorageAddons(referenceId)
               : new GetConfiguredCitationAddons(referenceId)
           );
@@ -457,7 +480,12 @@ export class AddonsState {
   @Action(DeleteAuthorizedAddon)
   deleteAuthorizedAddon(ctx: StateContext<AddonsStateModel>, action: DeleteAuthorizedAddon) {
     const state = ctx.getState();
-    const stateKey = action.addonType === 'storage' ? 'authorizedStorageAddons' : 'authorizedCitationAddons';
+    const stateKey =
+      action.addonType === AddonType.STORAGE
+        ? 'authorizedStorageAddons'
+        : action.addonType === AddonType.CITATION
+          ? 'authorizedCitationAddons'
+          : 'authorizedLinkAddons';
     ctx.patchState({
       [stateKey]: {
         ...state[stateKey],
@@ -469,9 +497,13 @@ export class AddonsState {
       switchMap(() => {
         const referenceId = state.addonsUserReference.data[0]?.id;
         if (referenceId) {
-          return action.addonType === 'storage'
-            ? ctx.dispatch(new GetAuthorizedStorageAddons(referenceId))
-            : ctx.dispatch(new GetAuthorizedCitationAddons(referenceId));
+          if (action.addonType === AddonType.STORAGE) {
+            return ctx.dispatch(new GetAuthorizedStorageAddons(referenceId));
+          } else if (action.addonType === AddonType.CITATION) {
+            return ctx.dispatch(new GetAuthorizedCitationAddons(referenceId));
+          } else if (action.addonType === AddonType.LINK) {
+            return ctx.dispatch(new GetAuthorizedLinkAddons(referenceId));
+          }
         }
         return [];
       }),
@@ -500,9 +532,13 @@ export class AddonsState {
         });
         const referenceId = state.addonsResourceReference.data[0]?.id;
         if (referenceId) {
-          return action.addonType === 'configured-storage-addons'
-            ? ctx.dispatch(new GetConfiguredStorageAddons(referenceId))
-            : ctx.dispatch(new GetConfiguredCitationAddons(referenceId));
+          if (action.addonType === AddonType.STORAGE) {
+            ctx.dispatch(new GetConfiguredStorageAddons(referenceId));
+          } else if (action.addonType === AddonType.CITATION) {
+            ctx.dispatch(new GetConfiguredCitationAddons(referenceId));
+          } else if (action.addonType === AddonType.LINK) {
+            ctx.dispatch(new GetConfiguredLinkAddons(referenceId));
+          }
         }
         return [];
       }),
@@ -533,7 +569,7 @@ export class AddonsState {
 
         if (response.operationName === 'get_item_info' && response.operationResult[0]?.itemName) {
           ctx.patchState({
-            selectedFolderOperationInvocation: {
+            selectedItemOperationInvocation: {
               data: response,
               isLoading: false,
               isSubmitting: false,
@@ -575,7 +611,7 @@ export class AddonsState {
         isLoading: false,
         error: null,
       },
-      selectedFolderOperationInvocation: {
+      selectedItemOperationInvocation: {
         data: null,
         isLoading: false,
         error: null,

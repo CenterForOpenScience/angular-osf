@@ -31,38 +31,38 @@ export class AddonSetupAccountFormComponent {
   readonly formSubmit = output<AuthorizedAddonRequestJsonApi>();
   readonly backClick = output<void>();
 
-  protected readonly formControls = AddonFormControls;
+  readonly formControls = AddonFormControls;
 
   get isFormValid() {
     return this.addonForm().valid;
   }
 
-  protected readonly addonForm = computed<FormGroup<AddonForm>>(() => {
+  readonly addonForm = computed<FormGroup<AddonForm>>(() => {
     return this.addonFormService.initializeForm(this.addon());
   });
 
-  protected readonly isAccessSecretKeysFormat = computed(() => {
+  readonly isAccessSecretKeysFormat = computed(() => {
     return this.addon().credentialsFormat === CredentialsFormat.ACCESS_SECRET_KEYS;
   });
 
-  protected readonly isDataverseApiTokenFormat = computed(() => {
+  readonly isDataverseApiTokenFormat = computed(() => {
     return this.addon().credentialsFormat === CredentialsFormat.DATAVERSE_API_TOKEN;
   });
 
-  protected readonly isUsernamePasswordFormat = computed(() => {
+  readonly isUsernamePasswordFormat = computed(() => {
     return this.addon().credentialsFormat === CredentialsFormat.USERNAME_PASSWORD;
   });
 
-  protected readonly isRepoTokenFormat = computed(() => {
+  readonly isRepoTokenFormat = computed(() => {
     return this.addon().credentialsFormat === CredentialsFormat.REPO_TOKEN;
   });
 
-  protected readonly isOAuthFormat = computed(() => {
+  readonly isOAuthFormat = computed(() => {
     const format = this.addon().credentialsFormat;
     return format === CredentialsFormat.OAUTH2 || format === CredentialsFormat.OAUTH;
   });
 
-  protected handleSubmit(): void {
+  handleSubmit(): void {
     if (!this.isFormValid) return;
 
     const formValue = this.addonForm().value;
@@ -76,7 +76,7 @@ export class AddonSetupAccountFormComponent {
     this.formSubmit.emit(payload);
   }
 
-  protected handleBack(): void {
+  handleBack(): void {
     this.backClick.emit();
   }
 }

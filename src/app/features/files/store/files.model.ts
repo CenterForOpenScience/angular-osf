@@ -1,5 +1,5 @@
 import { ContributorModel, OsfFile, ResourceMetadata } from '@shared/models';
-import { ConfiguredStorageAddonModel } from '@shared/models/addons';
+import { ConfiguredAddonModel } from '@shared/models/addons';
 import { AsyncStateModel, AsyncStateWithTotalCount } from '@shared/models/store';
 
 import { FileProvider } from '../constants';
@@ -20,7 +20,7 @@ export interface FilesStateModel {
   fileRevisions: AsyncStateModel<OsfFileRevision[] | null>;
   tags: AsyncStateModel<string[]>;
   rootFolders: AsyncStateModel<OsfFile[] | null>;
-  configuredStorageAddons: AsyncStateModel<ConfiguredStorageAddonModel[] | null>;
+  configuredStorageAddons: AsyncStateModel<ConfiguredAddonModel[] | null>;
   isAnonymous: boolean;
 }
 

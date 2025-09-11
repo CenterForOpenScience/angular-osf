@@ -10,6 +10,11 @@ export class RegistrationsSelectors {
   }
 
   @Selector([RegistrationsState])
+  static getRegistrationsTotalCount(state: RegistrationsStateModel): number {
+    return state.registrations.totalCount;
+  }
+
+  @Selector([RegistrationsState])
   static isRegistrationsLoading(state: RegistrationsStateModel) {
     return state.registrations.isLoading;
   }

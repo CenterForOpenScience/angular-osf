@@ -38,7 +38,7 @@ export class NavMenuComponent {
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
   private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
 
-  protected readonly mainMenuItems = computed(() => {
+  readonly mainMenuItems = computed(() => {
     const isAuthenticated = this.isAuthenticated();
     const filtered = filterMenuItems(MENU_ITEMS, isAuthenticated);
 
@@ -63,7 +63,7 @@ export class NavMenuComponent {
     return items;
   });
 
-  protected readonly currentRoute = toSignal(
+  readonly currentRoute = toSignal(
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       map(() => this.getRouteInfo())
@@ -73,11 +73,11 @@ export class NavMenuComponent {
     }
   );
 
-  protected readonly currentResourceId = computed(() => this.currentRoute().resourceId);
-  protected readonly currentProviderId = computed(() => this.currentRoute().providerId);
-  protected readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
-  protected readonly isPreprintRoute = computed(() => this.currentRoute().isPreprintRoute);
-  protected readonly canUserViewReviews = select(UserSelectors.getCanViewReviews);
+  readonly currentResourceId = computed(() => this.currentRoute().resourceId);
+  readonly currentProviderId = computed(() => this.currentRoute().providerId);
+  readonly isCollectionsRoute = computed(() => this.currentRoute().isCollectionsWithId);
+  readonly isPreprintRoute = computed(() => this.currentRoute().isPreprintRoute);
+  readonly canUserViewReviews = select(UserSelectors.getCanViewReviews);
 
   private getRouteInfo() {
     const urlSegments = this.router.url.split('/').filter((segment) => segment);
@@ -115,6 +115,6 @@ export class NavMenuComponent {
     }
   }
 
-  protected readonly hasVisibleChildren = (item: MenuItem): boolean =>
+  readonly hasVisibleChildren = (item: MenuItem): boolean =>
     Array.isArray(item.items) && item.items.some((child) => !!child.visible);
 }

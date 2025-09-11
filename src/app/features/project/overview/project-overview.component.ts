@@ -143,9 +143,11 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
   });
 
-  readonly isCollectionsRoute = computed(() => {
-    return this.router.url.includes('/collections');
-  });
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+  private currentProject$ = toObservable(this.currentProject);
+
+  readonly isCollectionsRoute = computed(() => this.router.url.includes('/collections'));
 
   readonly isModerationMode = computed(() => {
     const mode = this.route.snapshot.queryParams['mode'];
@@ -153,9 +155,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return mode === Mode.Moderation;
   });
 
-  submissionReviewStatus = computed(() => {
-    return this.currentReviewAction()?.toState;
-  });
+  submissionReviewStatus = computed(() => this.currentReviewAction()?.toState);
 
   showDecisionButton = computed(() => {
     return (
@@ -165,17 +165,8 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     );
   });
 
-  currentProject = select(ProjectOverviewSelectors.getProject);
-  private currentProject$ = toObservable(this.currentProject);
-  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
-
-  userPermissions = computed(() => {
-    return this.currentProject()?.currentUserPermissions || [];
-  });
-
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
+  userPermissions = computed(() => this.currentProject()?.currentUserPermissions || []);
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   get isAdmin(): boolean {
     return this.userPermissions().includes(UserPermissions.Admin);
@@ -193,9 +184,9 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  isLoading = computed(() => {
-    return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
-  });
+  isLoading = computed(
+    () => this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading()
+  );
 
   currentResource = computed(() => {
     const project = this.currentProject();
@@ -224,6 +215,14 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     super();
     this.setupCollectionsEffects();
     this.setupCleanup();
+
+    effect(() => {
+      const currentProject = this.currentProject();
+      if (currentProject) {
+        const rootParentId = currentProject.rootParentId ?? currentProject.id;
+        this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
+      }
+    });
   }
 
   getDoi(): Observable<string | null> {
@@ -244,9 +243,8 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getBookmarksId();
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
-      this.actions.getComponentsTree(projectId, ResourceType.Project);
       this.actions.getLinkedProjects(projectId);
-      this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
+      this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
       this.setupDataciteViewTrackerEffect().subscribe();
     }
   }

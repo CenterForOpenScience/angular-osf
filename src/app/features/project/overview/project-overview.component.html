@@ -28,9 +28,8 @@
         link
         [label]="'moderation.makeDecision.goBackLink' | translate"
         class="link-btn-no-padding font-bold"
-        (click)="goBack()"
-      >
-      </p-button>
+        (onClick)="goBack()"
+      />
 
       @if (status && isCollectionsRoute() && collectionProvider()) {
         @switch (status) {

@@ -27,7 +27,7 @@ export class RegistrationsState {
       registrations: { ...state.registrations, isLoading: true, error: null },
     });
 
-    return this.registrationsService.getRegistrations(action.projectId).pipe(
+    return this.registrationsService.getRegistrations(action.projectId, action.page, action.pageSize).pipe(
       tap((registrations) => {
         ctx.setState({
           registrations: {
