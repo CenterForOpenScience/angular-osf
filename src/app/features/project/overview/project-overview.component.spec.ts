@@ -10,9 +10,8 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 
-import { DataciteService, ToastService } from '@osf/shared/services';
+import { ToastService } from '@osf/shared/services';
 import { GetActivityLogs } from '@shared/stores/activity-logs';
 
 import { ProjectOverviewComponent } from './project-overview.component';
@@ -26,7 +25,7 @@ describe('ProjectOverviewComponent', () => {
     TestBed.overrideComponent(ProjectOverviewComponent, { set: { template: '' } });
 
     await TestBed.configureTestingModule({
-      imports: [ProjectOverviewComponent, RouterTestingModule],
+      imports: [ProjectOverviewComponent],
       providers: [
         provideStore([]),
 
@@ -35,7 +34,6 @@ describe('ProjectOverviewComponent', () => {
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
 
-        { provide: DataciteService, useValue: {} },
         { provide: DialogService, useValue: { open: () => ({ onClose: of(null) }) } },
         { provide: TranslateService, useValue: { instant: (k: string) => k } },
         { provide: ToastService, useValue: { showSuccess: jest.fn() } },

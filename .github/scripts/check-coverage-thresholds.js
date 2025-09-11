@@ -1,5 +1,4 @@
 const fs = require('fs');
-const { execSync } = require('child_process');
 const coverage = require('../../coverage/coverage-summary.json');
 const jestConfig = require('../../jest.config.js');
 
@@ -41,7 +40,6 @@ for (const key of ['branches', 'functions', 'lines', 'statements']) {
 
 if (failed) {
   const stars = '*'.repeat(warnMessage.length + 8);
-  execSync('clear', { stdio: 'inherit' });
   console.log('\n\nCongratulations! You have successfully run the coverage check and added tests.');
   console.log('\n\nThe jest.config.js file is not insync with your new test additions.');
   console.log('Please update the coverage thresholds in jest.config.js.');

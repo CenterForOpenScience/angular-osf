@@ -1,11 +1,13 @@
 import { select } from '@ngxs/store';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, HostBinding, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, HostBinding, inject } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 
 import { pathJoin } from '@osf/shared/helpers';
 import { MetaTagsService } from '@osf/shared/services';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { RegistryOverviewSelectors } from './store/registry-overview';
 
@@ -24,8 +26,11 @@ export class RegistryComponent {
 
   private readonly metaTags = inject(MetaTagsService);
   private readonly datePipe = inject(DatePipe);
+  private readonly dataciteService = inject(DataciteService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly registry = select(RegistryOverviewSelectors.getRegistry);
+  readonly registry$ = toObservable(select(RegistryOverviewSelectors.getRegistry));
 
   constructor() {
     effect(() => {
@@ -33,19 +38,17 @@ export class RegistryComponent {
         this.setMetaTags();
       }
     });
+    this.dataciteService.logIdentifiableView(this.registry$).subscribe();
   }
 
   private setMetaTags(): void {
-    const image = 'engines-dist/registries/assets/img/osf-sharing.png';
-
-    this.metaTags.updateMetaTagsForRoute(
+    this.metaTags.updateMetaTags(
       {
         title: this.registry()?.title,
         description: this.registry()?.description,
         publishedDate: this.datePipe.transform(this.registry()?.dateRegistered, 'yyyy-MM-dd'),
         modifiedDate: this.datePipe.transform(this.registry()?.dateModified, 'yyyy-MM-dd'),
         url: pathJoin(environment.webUrl, this.registry()?.id ?? ''),
-        image,
         identifier: this.registry()?.id,
         doi: this.registry()?.doi,
         keywords: this.registry()?.tags,
@@ -53,11 +56,12 @@ export class RegistryComponent {
         license: this.registry()?.license?.name,
         contributors:
           this.registry()?.contributors?.map((contributor) => ({
+            fullName: contributor.fullName,
             givenName: contributor.givenName,
             familyName: contributor.familyName,
           })) ?? [],
       },
-      'registries'
+      this.destroyRef
     );
   }
 }

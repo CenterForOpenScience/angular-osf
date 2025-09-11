@@ -63,7 +63,6 @@ describe('Component: Files', () => {
         FilesService,
         MockProvider(ActivatedRoute),
         MockProvider(CustomConfirmationService),
-
         DialogService,
         provideMockStore({
           signals: [

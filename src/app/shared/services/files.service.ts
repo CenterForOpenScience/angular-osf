@@ -213,7 +213,8 @@ export class FilesService {
 
   getResourceShortInfo(resourceId: string, resourceType: string): Observable<GetShortInfoResponse> {
     const params = {
-      'fields[nodes]': 'title,description,date_created,date_modified',
+      'fields[nodes]': 'title,description,date_created,date_modified,identifiers',
+      embed: 'identifiers',
     };
     return this.jsonApiService.get<GetShortInfoResponse>(`${this.apiUrl}/${resourceType}/${resourceId}/`, params);
   }

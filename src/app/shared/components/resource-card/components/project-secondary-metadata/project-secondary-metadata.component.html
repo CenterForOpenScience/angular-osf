@@ -8,9 +8,9 @@
     <p>
       {{ 'resourceCard.labels.funder' | translate }}
       @for (funder of resourceValue.funders.slice(0, limit); track $index) {
-        <a class="font-bold" [href]="funder.absoluteUrl" target="_blank" rel="noopener noreferrer"
-          >{{ funder.name }}{{ $last ? '' : ', ' }}</a
-        >
+        <a class="font-bold" [href]="funder.absoluteUrl" target="_blank" rel="noopener noreferrer">
+          {{ funder.name }}{{ $last ? '' : ', ' }}
+        </a>
       }
       @if (resourceValue.funders.length > limit) {
         <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.funders.length - limit } }} </span>
@@ -56,9 +56,9 @@
   @if (resourceValue.absoluteUrl) {
     <p>
       {{ 'resourceCard.labels.url' | translate }}
-      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
-        resourceValue.absoluteUrl
-      }}</a>
+      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">
+        {{ resourceValue.absoluteUrl }}
+      </a>
     </p>
   }
 
