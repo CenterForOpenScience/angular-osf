@@ -39,6 +39,7 @@ import {
 } from '@osf/features/preprints/store/preprint-stepper';
 import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@osf/shared/helpers';
 import { StepperComponent } from '@shared/components';
+import { UserPermissions } from '@shared/enums';
 import { CanDeactivateComponent, StepOption } from '@shared/models';
 import { BrandService } from '@shared/services';
 
@@ -73,16 +74,30 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
     fetchPreprint: FetchPreprintById,
   });
 
+  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
+  preprint = select(PreprintStepperSelectors.getPreprint);
+  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
+  hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
+
+  currentUserIsAdmin = computed(() => {
+    return this.preprint()?.currentUserPermissions.includes(UserPermissions.Admin) || false;
+  });
+
   readonly updateSteps = computed(() => {
     const provider = this.preprintProvider();
+    const preprint = this.preprint();
 
-    if (!provider) {
+    if (!provider || !preprint) {
       return [];
     }
 
     return updatePreprintSteps
       .map((step) => {
-        if (!provider.assertionsEnabled && step.value === PreprintSteps.AuthorAssertions) {
+        if (step.value !== PreprintSteps.AuthorAssertions) {
+          return step;
+        }
+
+        if (!provider.assertionsEnabled || !this.currentUserIsAdmin()) {
           return null;
         }
 
@@ -95,9 +110,6 @@ export class UpdatePreprintStepperComponent implements OnInit, OnDestroy, CanDea
       }));
   });
 
-  preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
-  isPreprintProviderLoading = select(PreprintProvidersSelectors.isPreprintProviderDetailsLoading);
-  hasBeenSubmitted = select(PreprintStepperSelectors.hasBeenSubmitted);
   currentStep = signal<StepOption>(updatePreprintSteps[0]);
   isWeb = toSignal(inject(IS_WEB));
 
