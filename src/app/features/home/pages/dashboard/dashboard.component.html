@@ -6,7 +6,7 @@
       <osf-sub-header
         [showButton]="true"
         [title]="'home.loggedIn.dashboard.title' | translate"
-        [icon]="'home'"
+        [icon]="'fas fa-home'"
         [buttonLabel]="'home.loggedIn.dashboard.createProject' | translate"
         (buttonClick)="createProject()"
       />
@@ -14,11 +14,11 @@
         <div class="quick-search-container py-4 px-3 md:px-4">
           <p class="text-center mb-4 xl:mb-6">
             {{ 'home.loggedIn.dashboard.quickSearch.goTo' | translate }}
-            <a routerLink="/my-projects">
+            <a class="font-bold" routerLink="/my-projects">
               {{ 'home.loggedIn.dashboard.quickSearch.myProjects' | translate }}
             </a>
             {{ 'home.loggedIn.dashboard.quickSearch.toOrganize' | translate }}
-            <a routerLink="/search">
+            <a class="font-bold" routerLink="/search">
               {{ 'home.loggedIn.dashboard.quickSearch.search' | translate }}
             </a>
             {{ 'home.loggedIn.dashboard.quickSearch.osf' | translate }}
@@ -103,7 +103,7 @@
         </div>
       </div>
     }
-    <div class="flex flex-column align-items-left w-full mt-4 ml-4 mb-4">
+    <div class="flex flex-column align-items-left p-4">
       <a
         href="https://www.cos.io/products/osf-collections"
         target="_blank"
