@@ -59,7 +59,12 @@
       "goToNextPage": "Go to next page",
       "mainNavigation": "Main navigation",
       "searchHelp": "Search help",
-      "confirmationDialog": "Confirmation dialog"
+      "confirmationDialog": "Confirmation dialog",
+      "reportsLink": "Reports link",
+      "tooltipBtn": "Tooltip button",
+      "customizeOptions": "Customize options",
+      "toggleProjectVisibility": "Toggle project visibility",
+      "tagInput": "Tag input"
     },
     "dialogs": {
       "confirmation": "Confirmation"
@@ -1678,7 +1683,6 @@
         "startDate": "Start Date",
         "endDate": "End Date",
         "ongoing": "Ongoing",
-        "addMore": "Add One More",
         "successUpdate": "Education successfully updated."
       },
       "changesDiscarded": "Changes discarded successfully.",

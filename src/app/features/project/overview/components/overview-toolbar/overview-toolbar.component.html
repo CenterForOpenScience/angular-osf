@@ -11,7 +11,7 @@
 
         <p-toggleswitch
           class="visibility-switch"
-          ariaLabel="Toggle project visibility"
+          [ariaLabel]="'common.accessibility.toggleProjectVisibility' | translate"
           [(ngModel)]="isPublic"
           (onChange)="handleToggleProjectPublicity()"
         />
