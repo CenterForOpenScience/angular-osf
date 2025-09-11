@@ -15,6 +15,8 @@ import { ResourceOverview } from '@shared/models';
 import { ResourceCitationsComponent } from '../resource-citations/resource-citations.component';
 import { TruncatedTextComponent } from '../truncated-text/truncated-text.component';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-resource-metadata',
   imports: [
@@ -40,6 +42,7 @@ export class ResourceMetadataComponent {
 
   readonly resourceTypes = CurrentResourceType;
   readonly dateFormat = 'MMM d, y, h:mm a';
+  readonly webUrl = environment.webUrl;
 
   isProject = computed(() => this.currentResource()?.type === CurrentResourceType.Projects);
   isRegistration = computed(() => this.currentResource()?.type === CurrentResourceType.Registrations);

@@ -69,9 +69,8 @@
       @if (resource.associatedProjectId) {
         <div class="flex flex-column gap-2">
           <h3>{{ 'registry.overview.metadata.associatedProject' | translate }}</h3>
-          <!--          [KP] TODO: proper link to project-->
-          <a [href]="'https://osf.io/' + resource.associatedProjectId">
-            {{ 'osf.io/' + resource.associatedProjectId }}
+          <a class="font-bold" [routerLink]="['/', resource.associatedProjectId]">
+            {{ webUrl + '/' + resource.associatedProjectId }}
           </a>
         </div>
       }
