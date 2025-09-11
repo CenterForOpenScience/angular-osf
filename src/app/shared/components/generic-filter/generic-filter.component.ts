@@ -98,7 +98,7 @@ export class GenericFilterComponent {
     return [];
   }
 
-  private arraysEqual(a: SelectOption[], b: SelectOption[]): boolean {
+  private arraysEqual(a: FilterOption[], b: FilterOption[]): boolean {
     if (a.length !== b.length) return false;
     for (let i = 0; i < a.length; i++) {
       if (a[i].value !== b[i].value || a[i].label !== b[i].label) {
