@@ -184,6 +184,18 @@
     "links": "Links",
     "institutions": "Institutions"
   },
+  "toast": {
+    "tos-consent": {
+      "paragraphPath1": "Notice: We've updated our ",
+      "paragraphPath2": " terms of use ",
+      "paragraphPath3": " and ",
+      "paragraphPath4": " privacy policy.",
+      "haveReadAndAgree": "I've read and agree to the terms and conditions",
+      "continue": "Continue",
+      "termsOfUseUrl": "https://osf.io/terms_of_use/",
+      "privacyPolicyUrl": "https://osf.io/privacy_policy/"
+    }
+  },
   "auth": {
     "common": {
       "email": "Email",
