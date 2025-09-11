@@ -1,4 +1,4 @@
-import { lastValueFrom, shareReplay } from 'rxjs';
+import { catchError, lastValueFrom, of, shareReplay } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
@@ -36,7 +36,10 @@ export class OSFConfigService {
   async load(): Promise<void> {
     if (!this.config) {
       this.config = await lastValueFrom<ConfigModel>(
-        this.http.get<ConfigModel>('/assets/config/config.json').pipe(shareReplay(1))
+        this.http.get<ConfigModel>('/assets/config/config.json').pipe(
+          shareReplay(1),
+          catchError(() => of({} as ConfigModel))
+        )
       );
     }
   }
