@@ -211,10 +211,4 @@ export class DashboardComponent implements OnInit {
   readonly currentUser = signal<{ acceptedTermsOfService: boolean } | null>({
     acceptedTermsOfService: false,
   });
-
-  saveUserConsent(): void {
-    console.log('User consent has been accepted and saved!');
-    // Update the user's state. In a real app, you'd call a service here.
-    this.currentUser.update(user => user ? { ...user, acceptedTermsOfService: true } : null);
-  }
 }
