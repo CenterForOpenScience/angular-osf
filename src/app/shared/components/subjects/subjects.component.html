@@ -39,7 +39,9 @@
             <p-checkbox
               [inputId]="'subjects-' + $index"
               [value]="subjects"
+              [ngModel]="isChecked(subjects)"
               (onChange)="selectSearched($event, subjects)"
+              [binary]="true"
             />
             <label for="subjects-{{ $index }}" class="flex flex-wrap ml-2">
               @for (item of subjects; track item.id) {
