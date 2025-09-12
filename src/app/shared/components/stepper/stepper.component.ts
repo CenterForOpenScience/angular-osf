@@ -2,8 +2,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 
-import { IconComponent } from '@shared/components';
 import { StepOption } from '@shared/models';
+
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'osf-stepper',

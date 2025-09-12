@@ -52,7 +52,6 @@ export interface ProjectOverview {
   currentUserIsContributor: boolean;
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;
-  subjects: ProjectOverviewSubject[];
   contributors: ProjectOverviewContributor[];
   customCitation: string | null;
   region?: IdTypeModel;
@@ -64,11 +63,6 @@ export interface ProjectOverview {
     iri: string;
   };
   rootParentId?: string;
-}
-
-export interface ProjectOverviewSubject {
-  id: string;
-  text: string;
 }
 
 export interface ProjectOverviewWithMeta {
@@ -104,7 +98,6 @@ export interface ProjectOverviewGetResponseJsonApi {
     current_user_is_contributor: boolean;
     current_user_is_contributor_or_group_member: boolean;
     wiki_enabled: boolean;
-    subjects: ProjectOverviewSubject[][];
     custom_citation: string | null;
   };
   embeds: {

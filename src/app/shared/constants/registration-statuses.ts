@@ -1,5 +1,5 @@
-import { RegistryStatus } from '@osf/shared/enums';
-import { StatusInfo } from '@osf/shared/models';
+import { RegistryStatus } from '../enums';
+import { StatusInfo } from '../models';
 
 export const RegistryStatusMap: Record<RegistryStatus, StatusInfo> = {
   [RegistryStatus.None]: { label: '', severity: null },

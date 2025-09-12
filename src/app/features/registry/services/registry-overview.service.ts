@@ -7,11 +7,9 @@ import { ReviewAction, ReviewActionsResponseJsonApi } from '@osf/features/modera
 import { MapRegistryOverview } from '@osf/features/registry/mappers';
 import {
   GetRegistryOverviewJsonApi,
-  GetResourceSubjectsJsonApi,
   RegistryOverview,
   RegistryOverviewJsonApiData,
   RegistryOverviewWithMeta,
-  RegistrySubject,
 } from '@osf/features/registry/models';
 import { InstitutionsMapper, ReviewActionsMapper } from '@osf/shared/mappers';
 import { PageSchemaMapper } from '@osf/shared/mappers/registration';
@@ -46,17 +44,6 @@ export class RegistryOverviewService {
     return this.jsonApiService
       .get<GetRegistryOverviewJsonApi>(`${this.apiUrl}/registrations/${id}/`, params)
       .pipe(map((response) => ({ registry: MapRegistryOverview(response.data), meta: response.meta })));
-  }
-
-  getSubjects(registryId: string): Observable<RegistrySubject[]> {
-    const params = {
-      'page[size]': 100,
-      page: 1,
-    };
-
-    return this.jsonApiService
-      .get<GetResourceSubjectsJsonApi>(`${this.apiUrl}/registrations/${registryId}/subjects/`, params)
-      .pipe(map((response) => response.data.map((subject) => ({ id: subject.id, text: subject.attributes.text }))));
   }
 
   getInstitutions(registryId: string): Observable<Institution[]> {
