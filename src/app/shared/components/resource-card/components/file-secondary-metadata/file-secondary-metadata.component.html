@@ -47,11 +47,7 @@
     <p>
       {{ 'resourceCard.labels.doi' | translate }}
       @for (doi of resourceValue.doi.slice(0, limit); track $index) {
-        <<<<<<< HEAD
         <a class="font-bold" [href]="doi" target="_blank" rel="noopener noreferrer">{{ doi }}{{ $last ? '' : ', ' }}</a>
-        =======
-        <a class="font-bold" [href]="doi" target="_blank">{{ doi }}{{ $last ? '' : ', ' }}</a>
-        >>>>>>> origin/develop
       }
       @if (resourceValue.doi.length > limit) {
         <span>{{ 'resourceCard.andCountMore' | translate: { count: resourceValue.doi.length - limit } }} </span>
