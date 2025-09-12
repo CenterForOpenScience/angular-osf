@@ -50,8 +50,8 @@ describe('ContributorsListComponent', () => {
     expect(component.isLoading()).toBe(true);
   });
 
-  it('should accept showCuratorColumn input', () => {
-    fixture.componentRef.setInput('showCuratorColumn', true);
+  it('should accept showCurator input', () => {
+    fixture.componentRef.setInput('showCurator', true);
     fixture.detectChanges();
 
     expect(component.showCurator()).toBe(true);
@@ -94,7 +94,7 @@ describe('ContributorsListComponent', () => {
   });
 
   it('should handle curator column visibility', () => {
-    fixture.componentRef.setInput('showCuratorColumn', true);
+    fixture.componentRef.setInput('showCurator', true);
     fixture.detectChanges();
 
     expect(component.showCurator()).toBe(true);
@@ -105,7 +105,7 @@ describe('ContributorsListComponent', () => {
 
     fixture.componentRef.setInput('contributors', contributors);
     fixture.componentRef.setInput('isLoading', false);
-    fixture.componentRef.setInput('showCuratorColumn', true);
+    fixture.componentRef.setInput('showCurator', true);
     fixture.detectChanges();
 
     expect(component.contributors()).toEqual(contributors);
