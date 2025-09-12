@@ -108,17 +108,13 @@ export const routes: Routes = [
       },
       {
         path: 'my-profile',
-        loadComponent: () =>
-          import('./features/profile/pages/my-profile/my-profile.component').then((mod) => mod.MyProfileComponent),
+        loadComponent: () => import('./features/profile/profile.component').then((mod) => mod.ProfileComponent),
         providers: [provideStates([ProfileState])],
         canActivate: [authGuard],
       },
       {
         path: 'user/:id',
-        loadComponent: () =>
-          import('./features/profile/pages/user-profile/user-profile.component').then(
-            (mod) => mod.UserProfileComponent
-          ),
+        loadComponent: () => import('./features/profile/profile.component').then((mod) => mod.ProfileComponent),
         providers: [provideStates([ProfileState])],
       },
       {

@@ -1,0 +1,11 @@
+@if (isUserLoading() && !isMyProfile()) {
+  <osf-loading-spinner />
+} @else {
+  @if (user()) {
+    <osf-profile-information [currentUser]="user()" [showEdit]="isMyProfile()" (editProfile)="toProfileSettings()" />
+
+    <div class="mt-6">
+      <osf-global-search [resourceTabOptions]="resourceTabOptions" />
+    </div>
+  }
+}
