@@ -6,19 +6,20 @@ import { ChangeDetectionStrategy, Component, effect, inject, OnDestroy, OnInit }
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
+import { BrandService } from '@osf/shared/services';
+
 import {
   AdvisoryBoardComponent,
   BrowseBySubjectsComponent,
   PreprintProviderFooterComponent,
   PreprintProviderHeroComponent,
-} from '@osf/features/preprints/components';
+} from '../../components';
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   PreprintProvidersSelectors,
-} from '@osf/features/preprints/store/preprint-providers';
-import { BrowserTabHelper, HeaderStyleHelper } from '@osf/shared/helpers';
-import { BrandService } from '@shared/services';
+} from '../../store/preprint-providers';
 
 @Component({
   selector: 'osf-provider-overview',

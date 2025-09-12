@@ -12,15 +12,15 @@ import { filter, finalize, throttleTime } from 'rxjs';
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
+import { UserSelectors } from '@core/store/user';
 import { DeleteEmail, GetEmails, MakePrimary, ResendConfirmation, UserEmailsSelectors } from '@core/store/user-emails';
-import { UserSelectors } from '@osf/core/store/user';
 import { ReadonlyInputComponent } from '@osf/shared/components';
 import { IS_SMALL } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 
 import { AccountEmail } from '../../models';
+import { AddEmailComponent } from '../add-email/add-email.component';
 import { ConfirmationSentDialogComponent } from '../confirmation-sent-dialog/confirmation-sent-dialog.component';
-import { AddEmailComponent } from '../';
 
 @Component({
   selector: 'osf-connected-emails',

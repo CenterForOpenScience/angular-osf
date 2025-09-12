@@ -13,12 +13,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PENDING_SUBMISSION_REVIEW_OPTIONS, REGISTRY_SORT_OPTIONS } from '@osf/features/moderation/constants';
-import { RegistrySort, SubmissionReviewStatus } from '@osf/features/moderation/enums';
-import {
-  GetRegistrySubmissions,
-  RegistryModerationSelectors,
-} from '@osf/features/moderation/store/registry-moderation';
 import {
   CustomPaginatorComponent,
   IconComponent,
@@ -27,7 +21,10 @@ import {
 } from '@osf/shared/components';
 import { Primitive } from '@osf/shared/helpers';
 
-import { RegistrySubmissionItemComponent } from '..';
+import { PENDING_SUBMISSION_REVIEW_OPTIONS, REGISTRY_SORT_OPTIONS } from '../../constants';
+import { RegistrySort, SubmissionReviewStatus } from '../../enums';
+import { GetRegistrySubmissions, RegistryModerationSelectors } from '../../store/registry-moderation';
+import { RegistrySubmissionItemComponent } from '../registry-submission-item/registry-submission-item.component';
 
 @Component({
   selector: 'osf-registry-pending-submissions',

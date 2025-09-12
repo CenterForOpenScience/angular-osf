@@ -8,8 +8,8 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { FileMenuType } from '@osf/shared/enums';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { FileMenuAction, FileMenuData } from '@osf/shared/models';
-import { hasViewOnlyParam } from '@shared/helpers';
 
 @Component({
   selector: 'osf-file-menu',

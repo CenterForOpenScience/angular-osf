@@ -23,16 +23,16 @@ import {
   Validators,
 } from '@angular/forms';
 
-import { ArrayInputComponent } from '@osf/features/preprints/components/stepper/author-assertion-step/array-input/array-input.component';
 import { formInputLimits, preregLinksOptions } from '@osf/features/preprints/constants';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { Preprint } from '@osf/features/preprints/models';
 import { PreprintStepperSelectors, UpdatePreprint } from '@osf/features/preprints/store/preprint-stepper';
-import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
-import { FormSelectComponent } from '@shared/components';
-import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
-import { StringOrNull } from '@shared/helpers';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { FormSelectComponent } from '@osf/shared/components';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
+import { CustomValidators, findChangedFields, StringOrNull } from '@osf/shared/helpers';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+
+import { ArrayInputComponent } from './array-input/array-input.component';
 
 @Component({
   selector: 'osf-author-assertions-step',

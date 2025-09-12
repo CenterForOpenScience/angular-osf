@@ -5,8 +5,8 @@ import { MessageModule } from 'primeng/message';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 
-import { Maintenance } from '../../models/maintenance.model';
-import { MaintenanceService } from '../../services/maintenance.service';
+import { Maintenance } from '@core/models/maintenance.model';
+import { MaintenanceService } from '@core/services/maintenance.service';
 
 @Component({
   selector: 'osf-maintenance-banner',

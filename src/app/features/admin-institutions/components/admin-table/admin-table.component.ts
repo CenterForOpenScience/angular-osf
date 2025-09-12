@@ -13,18 +13,13 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import {
-  TableCellData,
-  TableCellLink,
-  TableColumn,
-  TableIconClickEvent,
-} from '@osf/features/admin-institutions/models';
 import { CustomPaginatorComponent } from '@osf/shared/components';
-import { StopPropagationDirective } from '@shared/directives';
-import { PaginationLinksModel, SearchFilters } from '@shared/models';
+import { StopPropagationDirective } from '@osf/shared/directives';
+import { PaginationLinksModel, SearchFilters } from '@osf/shared/models';
 
 import { DOWNLOAD_OPTIONS } from '../../constants';
 import { DownloadType } from '../../enums';
+import { TableCellData, TableCellLink, TableColumn, TableIconClickEvent } from '../../models';
 
 @Component({
   selector: 'osf-admin-table',

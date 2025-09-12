@@ -20,6 +20,7 @@ import {
   RegistrationBlocksDataComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
 import { RegistrationReviewStates, ResourceType, RevisionReviewStates, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, toCamelCase } from '@osf/shared/helpers';
@@ -27,7 +28,6 @@ import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
 import { FetchSelectedSubjects, GetBookmarksCollectionId, SubjectsSelectors } from '@osf/shared/stores';
-import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
 import { RegistryMakeDecisionComponent } from '../../components/registry-make-decision/registry-make-decision.component';

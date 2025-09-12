@@ -5,8 +5,8 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, effect, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { BarChartComponent, LoadingSpinnerComponent, StatisticCardComponent } from '@shared/components';
-import { DoughnutChartComponent } from '@shared/components/doughnut-chart/doughnut-chart.component';
+import { BarChartComponent, LoadingSpinnerComponent, StatisticCardComponent } from '@osf/shared/components';
+import { DoughnutChartComponent } from '@osf/shared/components/doughnut-chart/doughnut-chart.component';
 import { DatasetInput, SelectOption } from '@shared/models';
 
 import {

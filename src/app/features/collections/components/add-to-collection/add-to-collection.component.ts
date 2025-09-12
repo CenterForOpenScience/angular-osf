@@ -27,7 +27,7 @@ import {
   ClearAddToCollectionState,
   CreateCollectionSubmission,
 } from '@osf/features/collections/store/add-to-collection';
-import { LoadingSpinnerComponent } from '@shared/components';
+import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { HeaderStyleHelper } from '@shared/helpers';
 import { CanDeactivateComponent } from '@shared/models';
 import { BrandService } from '@shared/services';

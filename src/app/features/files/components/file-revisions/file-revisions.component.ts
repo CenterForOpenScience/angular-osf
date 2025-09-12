@@ -13,9 +13,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
-import { CopyButtonComponent } from '@osf/shared/components';
-import { InfoIconComponent } from '@osf/shared/components/info-icon/info-icon.component';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { CopyButtonComponent, InfoIconComponent } from '@osf/shared/components';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 import { FilesSelectors } from '../../store';
 

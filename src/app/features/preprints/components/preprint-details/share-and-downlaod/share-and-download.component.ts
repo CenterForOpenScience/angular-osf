@@ -11,10 +11,10 @@ import { toObservable } from '@angular/core/rxjs-interop';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { IconComponent } from '@shared/components';
-import { ShareableContent } from '@shared/models';
-import { SocialShareService } from '@shared/services';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { IconComponent } from '@osf/shared/components';
+import { ShareableContent } from '@osf/shared/models';
+import { SocialShareService } from '@osf/shared/services';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 @Component({
   selector: 'osf-preprint-share-and-download',

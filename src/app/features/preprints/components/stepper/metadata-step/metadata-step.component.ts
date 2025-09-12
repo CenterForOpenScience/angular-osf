@@ -21,11 +21,11 @@ import {
   SaveLicense,
   UpdatePreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
+import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@osf/shared/components';
+import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { findChangedFields } from '@osf/shared/helpers';
-import { IconComponent, LicenseComponent, TagsInputComponent, TextInputComponent } from '@shared/components';
-import { INPUT_VALIDATION_MESSAGES } from '@shared/constants';
-import { LicenseModel, LicenseOptions } from '@shared/models';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { LicenseModel, LicenseOptions } from '@osf/shared/models';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 import { ContributorsComponent } from './contributors/contributors.component';
 import { PreprintsAffiliatedInstitutionsComponent } from './preprints-affiliated-institutions/preprints-affiliated-institutions.component';

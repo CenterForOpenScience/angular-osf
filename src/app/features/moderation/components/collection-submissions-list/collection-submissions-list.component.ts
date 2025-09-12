@@ -4,8 +4,8 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
-import { CollectionSubmissionItemComponent } from '@osf/features/moderation/components/collection-submission-item/collection-submission-item.component';
-import { CollectionsModerationSelectors } from '@osf/features/moderation/store/collections-moderation';
+import { CollectionsModerationSelectors } from '../../store/collections-moderation';
+import { CollectionSubmissionItemComponent } from '../collection-submission-item/collection-submission-item.component';
 
 @Component({
   selector: 'osf-submissions-list',

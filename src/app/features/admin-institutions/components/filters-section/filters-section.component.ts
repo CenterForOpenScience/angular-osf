@@ -7,9 +7,9 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 
-import { FilterChipsComponent, ReusableFilterComponent } from '@shared/components';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter } from '@shared/models';
+import { FilterChipsComponent, ReusableFilterComponent } from '@osf/shared/components';
+import { StringOrNull } from '@osf/shared/helpers';
+import { DiscoverableFilter } from '@osf/shared/models';
 import {
   ClearFilterSearchResults,
   FetchResources,
@@ -20,7 +20,7 @@ import {
   LoadMoreFilterOptions,
   SetDefaultFilterValue,
   UpdateFilterValue,
-} from '@shared/stores/global-search';
+} from '@osf/shared/stores/global-search';
 
 @Component({
   selector: 'osf-institution-resource-table-filters',

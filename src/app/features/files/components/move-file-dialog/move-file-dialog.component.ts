@@ -7,11 +7,14 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PaginatorState } from 'primeng/paginator';
 import { Tooltip } from 'primeng/tooltip';
 
-import { finalize, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize, throwError } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+import { CustomPaginatorComponent, IconComponent, LoadingSpinnerComponent } from '@osf/shared/components';
+import { OsfFile } from '@osf/shared/models';
+import { FilesService, ToastService } from '@osf/shared/services';
 
 import {
   FilesSelectors,
@@ -20,10 +23,7 @@ import {
   GetRootFolderFiles,
   SetCurrentFolder,
   SetMoveFileCurrentFolder,
-} from '@osf/features/files/store';
-import { CustomPaginatorComponent, IconComponent, LoadingSpinnerComponent } from '@shared/components';
-import { OsfFile } from '@shared/models';
-import { FilesService, ToastService } from '@shared/services';
+} from '../../store';
 
 @Component({
   selector: 'osf-move-file-dialog',

@@ -23,20 +23,20 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { AddModeratorType, ModeratorPermission } from '@osf/features/moderation/enums';
-import { ModeratorDialogAddModel, ModeratorModel } from '@osf/features/moderation/models';
+import { SearchInputComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
+import { UpdateSearchValue } from '@osf/shared/stores';
+
+import { AddModeratorType, ModeratorPermission } from '../../enums';
+import { ModeratorDialogAddModel, ModeratorModel } from '../../models';
 import {
   AddModerator,
   DeleteModerator,
   LoadModerators,
   ModeratorsSelectors,
   UpdateModerator,
-  UpdateSearchValue,
-} from '@osf/features/moderation/store/moderators';
-import { SearchInputComponent } from '@osf/shared/components';
-import { ResourceType } from '@osf/shared/enums';
-import { CustomConfirmationService, ToastService } from '@osf/shared/services';
-
+} from '../../store/moderators';
 import { AddModeratorDialogComponent } from '../add-moderator-dialog/add-moderator-dialog.component';
 import { InviteModeratorDialogComponent } from '../invite-moderator-dialog/invite-moderator-dialog.component';
 import { ModeratorsTableComponent } from '../moderators-table/moderators-table.component';

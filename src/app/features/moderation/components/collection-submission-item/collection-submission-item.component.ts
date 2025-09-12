@@ -9,13 +9,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, input } from '@an
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
-import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import { IconComponent } from '@osf/shared/components';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models';
 import { DateAgoPipe } from '@osf/shared/pipes';
-import { CollectionSubmissionWithGuid } from '@shared/models';
-import { CollectionsSelectors } from '@shared/stores';
+import { CollectionsSelectors } from '@osf/shared/stores';
 
 import { ReviewStatusIcon } from '../../constants';
+import { SubmissionReviewStatus } from '../../enums';
 
 @Component({
   selector: 'osf-submission-item',

@@ -24,7 +24,7 @@ import { Primitive } from '@osf/shared/helpers';
 import { REGISTRY_SORT_OPTIONS, SUBMITTED_SUBMISSION_REVIEW_OPTIONS } from '../../constants';
 import { RegistrySort, SubmissionReviewStatus } from '../../enums';
 import { GetRegistrySubmissions, RegistryModerationSelectors } from '../../store/registry-moderation';
-import { RegistrySubmissionItemComponent } from '..';
+import { RegistrySubmissionItemComponent } from '../registry-submission-item/registry-submission-item.component';
 
 @Component({
   selector: 'osf-registry-submissions',

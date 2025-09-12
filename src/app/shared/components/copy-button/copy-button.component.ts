@@ -6,8 +6,8 @@ import { Tooltip } from 'primeng/tooltip';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 
+import { SeverityType } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
-import { SeverityType } from '@shared/models';
 
 @Component({
   selector: 'osf-copy-button',

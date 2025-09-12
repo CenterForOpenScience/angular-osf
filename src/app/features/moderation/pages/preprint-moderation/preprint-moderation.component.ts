@@ -7,11 +7,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
-import { PREPRINT_MODERATION_TABS } from '@osf/features/moderation/constants';
-import { PreprintModerationTab } from '@osf/features/moderation/enums';
 import { SelectComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { IS_MEDIUM, Primitive } from '@osf/shared/helpers';
+
+import { PREPRINT_MODERATION_TABS } from '../../constants';
+import { PreprintModerationTab } from '../../enums';
 
 @Component({
   selector: 'osf-preprint-moderation',

@@ -10,11 +10,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
-  CollectionsModerationSelectors,
-  GetCollectionSubmissions,
-  GetSubmissionsReviewActions,
-} from '@osf/features/moderation/store/collections-moderation';
-import {
   CustomPaginatorComponent,
   IconComponent,
   LoadingSpinnerComponent,
@@ -30,10 +25,15 @@ import {
   GetCollectionProvider,
   SearchCollectionSubmissions,
   SetPageNumber,
-} from '@shared/stores';
+} from '@osf/shared/stores';
 
 import { COLLECTIONS_SUBMISSIONS_REVIEW_OPTIONS } from '../../constants';
 import { SubmissionReviewStatus } from '../../enums';
+import {
+  CollectionsModerationSelectors,
+  GetCollectionSubmissions,
+  GetSubmissionsReviewActions,
+} from '../../store/collections-moderation';
 import { CollectionSubmissionsListComponent } from '../collection-submissions-list/collection-submissions-list.component';
 
 @Component({

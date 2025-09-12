@@ -10,9 +10,10 @@ import { finalize, take } from 'rxjs';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 
-import { WithdrawRegistration } from '@osf/features/registry/store/registry-overview';
+import { TextInputComponent } from '@osf/shared/components';
 import { InputLimits } from '@osf/shared/constants';
-import { TextInputComponent } from '@shared/components';
+
+import { WithdrawRegistration } from '../../store/registry-overview';
 
 @Component({
   selector: 'osf-withdraw-dialog',

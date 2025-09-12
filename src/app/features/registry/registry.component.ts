@@ -7,7 +7,7 @@ import { RouterOutlet } from '@angular/router';
 
 import { pathJoin } from '@osf/shared/helpers';
 import { MetaTagsService } from '@osf/shared/services';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 import { RegistryOverviewSelectors } from './store/registry-overview';
 

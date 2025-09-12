@@ -4,7 +4,7 @@ import { Tooltip } from 'primeng/tooltip';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
-import { IdName } from '@shared/models';
+import { IdName } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-list-info-shortener',

@@ -7,10 +7,11 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal, viewChild } from '@angular/core';
 
-import { Metadata } from '@osf/features/metadata/models';
 import { LicenseComponent, LoadingSpinnerComponent } from '@osf/shared/components';
-import { LicenseModel, LicenseOptions } from '@shared/models';
-import { LicensesSelectors, LoadAllLicenses } from '@shared/stores/licenses';
+import { LicenseModel, LicenseOptions } from '@osf/shared/models';
+import { LicensesSelectors, LoadAllLicenses } from '@osf/shared/stores';
+
+import { Metadata } from '../../models';
 
 @Component({
   selector: 'osf-license-dialog',

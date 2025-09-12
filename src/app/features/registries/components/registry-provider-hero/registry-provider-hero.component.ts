@@ -10,11 +10,12 @@ import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { PreprintsHelpDialogComponent } from '@osf/features/preprints/components';
-import { RegistryProviderDetails } from '@osf/features/registries/models/registry-provider.model';
+import { SearchInputComponent } from '@osf/shared/components';
 import { HeaderStyleHelper } from '@osf/shared/helpers';
-import { SearchInputComponent } from '@shared/components';
-import { DecodeHtmlPipe } from '@shared/pipes';
-import { BrandService } from '@shared/services';
+import { DecodeHtmlPipe } from '@osf/shared/pipes';
+import { BrandService } from '@osf/shared/services';
+
+import { RegistryProviderDetails } from '../../models';
 
 @Component({
   selector: 'osf-registry-provider-hero',

@@ -4,9 +4,10 @@ import { catchError, finalize, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { MapResourceMetadata } from '@osf/features/files/mappers';
 import { handleSectionError } from '@osf/shared/helpers';
-import { FilesService, ToastService } from '@shared/services';
+import { FilesService, ToastService } from '@osf/shared/services';
+
+import { MapResourceMetadata } from '../mappers';
 
 import {
   CreateFolder,

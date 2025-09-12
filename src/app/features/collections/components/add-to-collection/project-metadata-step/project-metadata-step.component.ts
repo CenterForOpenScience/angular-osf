@@ -30,18 +30,15 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AddToCollectionSteps, ProjectMetadataFormControls } from '@osf/features/collections/enums';
 import { ProjectMetadataForm } from '@osf/features/collections/models';
-import { ProjectMetadataFormService } from '@osf/features/collections/services/project-metadata-form.service';
-import { GetCollectionLicenses } from '@osf/features/collections/store/add-to-collection/add-to-collection.actions';
-import { AddToCollectionSelectors } from '@osf/features/collections/store/add-to-collection/add-to-collection.selectors';
-import { TagsInputComponent, TextInputComponent, TruncatedTextComponent } from '@shared/components';
-import { InputLimits } from '@shared/constants';
-import { ResourceType } from '@shared/enums';
-import { LicenseModel } from '@shared/models';
-import { Project } from '@shared/models/projects';
-import { InterpolatePipe } from '@shared/pipes';
-import { ToastService } from '@shared/services';
-import { ClearProjects, GetAllContributors, UpdateProjectMetadata } from '@shared/stores';
-import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
+import { ProjectMetadataFormService } from '@osf/features/collections/services';
+import { AddToCollectionSelectors, GetCollectionLicenses } from '@osf/features/collections/store/add-to-collection';
+import { TagsInputComponent, TextInputComponent, TruncatedTextComponent } from '@osf/shared/components';
+import { InputLimits } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
+import { LicenseModel, Project } from '@osf/shared/models';
+import { InterpolatePipe } from '@osf/shared/pipes';
+import { ToastService } from '@osf/shared/services';
+import { ClearProjects, GetAllContributors, ProjectsSelectors, UpdateProjectMetadata } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-project-metadata-step',

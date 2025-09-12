@@ -7,8 +7,8 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ChangeDetectionStrategy, Component, effect } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { UserSelectors } from '@core/store/user';
 import { GetEmails } from '@core/store/user-emails';
-import { UserSelectors } from '@osf/core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { FetchRegions } from '@osf/shared/stores';
 

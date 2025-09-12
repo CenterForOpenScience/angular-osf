@@ -30,8 +30,27 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
+  FilesTreeComponent,
+  FormSelectComponent,
+  LoadingSpinnerComponent,
+  SearchInputComponent,
+  SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
+} from '@osf/shared/components';
+import { GoogleFilePickerComponent } from '@osf/shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
+import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
+import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
+import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItemModel } from '@osf/shared/models';
+import { FilesService } from '@osf/shared/services';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+
+import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
+import { FileProvider } from '../../constants';
+import {
   CreateFolder,
   DeleteEntry,
+  FilesSelectors,
   GetConfiguredStorageAddons,
   GetFiles,
   GetRootFolders,
@@ -43,26 +62,7 @@ import {
   SetMoveFileCurrentFolder,
   SetSearch,
   SetSort,
-} from '@osf/features/files/store';
-import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
-import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
-import {
-  FilesTreeComponent,
-  FormSelectComponent,
-  LoadingSpinnerComponent,
-  SearchInputComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@shared/components';
-import { GoogleFilePickerComponent } from '@shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
-import { ConfiguredAddonModel, FileLabelModel, FilesTreeActions, OsfFile, StorageItemModel } from '@shared/models';
-import { FilesService } from '@shared/services';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
-
-import { CreateFolderDialogComponent, FileBrowserInfoComponent } from '../../components';
-import { FileProvider } from '../../constants';
-import { FilesSelectors } from '../../store';
+} from '../../store';
 
 import { environment } from 'src/environments/environment';
 

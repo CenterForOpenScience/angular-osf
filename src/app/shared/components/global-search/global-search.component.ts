@@ -19,9 +19,10 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { ResourceType } from '@shared/enums';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter, TabOption } from '@shared/models';
+import { ResourceType } from '@osf/shared/enums';
+import { StringOrNull } from '@osf/shared/helpers';
+import { DiscoverableFilter, TabOption } from '@osf/shared/models';
+import { SetSortBy } from '@osf/shared/stores';
 import {
   ClearFilterSearchResults,
   FetchResources,
@@ -34,9 +35,8 @@ import {
   ResetSearchState,
   SetResourceType,
   SetSearchText,
-  SetSortBy,
   UpdateFilterValue,
-} from '@shared/stores/global-search';
+} from '@osf/shared/stores/global-search';
 
 import { FilterChipsComponent } from '../filter-chips/filter-chips.component';
 import { ReusableFilterComponent } from '../reusable-filter/reusable-filter.component';

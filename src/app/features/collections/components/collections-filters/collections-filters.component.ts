@@ -8,8 +8,6 @@ import { MultiSelect, MultiSelectChangeEvent } from 'primeng/multiselect';
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { collectionFilterTypes } from '@osf/features/collections/constants/filter-types.const';
-import { CollectionFilterType } from '@osf/features/collections/enums';
 import {
   CollectionsSelectors,
   SetCollectedTypeFilters,
@@ -22,7 +20,10 @@ import {
   SetStatusFilters,
   SetStudyDesignFilters,
   SetVolumeFilters,
-} from '@shared/stores/collections';
+} from '@osf/shared/stores';
+
+import { collectionFilterTypes } from '../../constants/filter-types.const';
+import { CollectionFilterType } from '../../enums';
 
 @Component({
   selector: 'osf-collections-filters',

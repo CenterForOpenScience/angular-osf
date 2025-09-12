@@ -37,9 +37,9 @@ import {
   FilesTreeActions,
   NodeShortInfoModel,
   OsfFile,
+  Project,
   SelectOption,
 } from '@osf/shared/models';
-import { Project } from '@osf/shared/models/projects';
 
 import { environment } from 'src/environments/environment';
 

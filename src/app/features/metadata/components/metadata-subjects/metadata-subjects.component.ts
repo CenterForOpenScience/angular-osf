@@ -2,7 +2,7 @@ import { Card } from 'primeng/card';
 
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { SubjectsComponent } from '@osf/shared/components/subjects/subjects.component';
+import { SubjectsComponent } from '@osf/shared/components';
 import { SubjectModel } from '@osf/shared/models';
 
 @Component({

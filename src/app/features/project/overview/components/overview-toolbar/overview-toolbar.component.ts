@@ -18,6 +18,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { IconComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { ShareableContent, ToolbarResource } from '@osf/shared/models';
 import { FileSizePipe } from '@osf/shared/pipes';
 import { SocialShareService, ToastService } from '@osf/shared/services';
@@ -28,7 +29,6 @@ import {
   MyResourcesSelectors,
   RemoveResourceFromBookmarks,
 } from '@osf/shared/stores';
-import { hasViewOnlyParam } from '@shared/helpers';
 
 import { SocialsShareActionItem } from '../../models';
 import { DuplicateDialogComponent } from '../duplicate-dialog/duplicate-dialog.component';
