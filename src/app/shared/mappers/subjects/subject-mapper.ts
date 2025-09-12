@@ -2,7 +2,7 @@ import { SubjectDataJsonApi, SubjectModel, SubjectsResponseJsonApi } from '@shar
 
 export class SubjectMapper {
   static fromSubjectsResponseJsonApi(response: SubjectsResponseJsonApi): SubjectModel[] {
-    return response.data.map((data) => {
+    return response?.data.map((data) => {
       const subject: SubjectModel = {
         id: data.id,
         name: data.attributes.text,

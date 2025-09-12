@@ -1,9 +1,13 @@
 import { ProjectOverview } from '@osf/features/project/overview/models';
-import { RegistryOverview, RegistrySubject } from '@osf/features/registry/models';
+import { RegistryOverview } from '@osf/features/registry/models';
 
-import { Institution, ResourceOverview } from '../models';
+import { Institution, ResourceOverview, SubjectModel } from '../models';
 
-export function MapProjectOverview(project: ProjectOverview, isAnonymous = false): ResourceOverview {
+export function MapProjectOverview(
+  project: ProjectOverview,
+  subjects: SubjectModel[],
+  isAnonymous = false
+): ResourceOverview {
   return {
     id: project.id,
     type: project.type,
@@ -30,7 +34,7 @@ export function MapProjectOverview(project: ProjectOverview, isAnonymous = false
     currentUserIsContributor: project.currentUserIsContributor,
     currentUserIsContributorOrGroupMember: project.currentUserIsContributorOrGroupMember,
     wikiEnabled: project.wikiEnabled,
-    subjects: project.subjects?.filter(Boolean) || [],
+    subjects: subjects,
     contributors: project.contributors?.filter(Boolean) || [],
     customCitation: project.customCitation || null,
     region: project.region || undefined,
@@ -43,7 +47,7 @@ export function MapProjectOverview(project: ProjectOverview, isAnonymous = false
 
 export function MapRegistryOverview(
   registry: RegistryOverview,
-  subjects: RegistrySubject[],
+  subjects: SubjectModel[],
   institutions: Institution[],
   isAnonymous = false
 ): ResourceOverview {

@@ -10,7 +10,7 @@ import { Tooltip } from 'primeng/tooltip';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { MY_PROJECTS_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { ContributorModel, SelectOption, TableParameters } from '@osf/shared/models';
 
 import { EducationHistoryDialogComponent } from '../../education-history-dialog/education-history-dialog.component';
@@ -35,7 +35,7 @@ export class ContributorsListComponent {
   dialogService = inject(DialogService);
   translateService = inject(TranslateService);
 
-  readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS });
+  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
   readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
 
   skeletonData: ContributorModel[] = Array.from({ length: 3 }, () => ({}) as ContributorModel);

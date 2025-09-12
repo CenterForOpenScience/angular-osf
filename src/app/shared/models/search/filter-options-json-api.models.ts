@@ -1,8 +1,10 @@
+import { SearchResultJsonApi } from '@shared/models';
+
 import { ApiData } from '../common';
 
 export interface FilterOptionsResponseJsonApi {
   data: FilterOptionsResponseData;
-  included?: FilterOptionItem[];
+  included?: (FilterOptionItem | SearchResultJsonApi)[];
   links?: {
     first?: string;
     next?: string;

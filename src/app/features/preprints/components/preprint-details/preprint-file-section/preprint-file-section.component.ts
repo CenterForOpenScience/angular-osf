@@ -8,13 +8,14 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer } from '@angular/platform-browser';
 
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers';
 import { LoadingSpinnerComponent } from '@shared/components';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 @Component({
   selector: 'osf-preprint-file-section',
@@ -28,6 +29,7 @@ export class PreprintFileSectionComponent {
   private readonly sanitizer = inject(DomSanitizer);
   private readonly datePipe = inject(DatePipe);
   private readonly translateService = inject(TranslateService);
+  private readonly dataciteService = inject(DataciteService);
 
   providerReviewsWorkflow = input.required<ProviderReviewsWorkflow | null>();
 
@@ -35,6 +37,7 @@ export class PreprintFileSectionComponent {
   isLarge = toSignal(inject(IS_LARGE));
 
   file = select(PreprintSelectors.getPreprintFile);
+  preprint$ = toObservable(select(PreprintSelectors.getPreprint));
   isFileLoading = select(PreprintSelectors.isPreprintFileLoading);
   safeLink = computed(() => {
     const link = this.file()?.links.render;
@@ -47,6 +50,10 @@ export class PreprintFileSectionComponent {
   fileVersions = select(PreprintSelectors.getPreprintFileVersions);
   areFileVersionsLoading = select(PreprintSelectors.arePreprintFileVersionsLoading);
 
+  logDownload() {
+    this.dataciteService.logIdentifiableDownload(this.preprint$).subscribe();
+  }
+
   versionMenuItems = computed(() => {
     const fileVersions = this.fileVersions();
     if (!fileVersions.length) return [];
@@ -57,6 +64,7 @@ export class PreprintFileSectionComponent {
         date: this.datePipe.transform(version.dateCreated, 'mm/dd/yyyy hh:mm:ss'),
       }),
       url: version.downloadLink,
+      command: () => this.logDownload(),
     }));
   });
 

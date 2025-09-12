@@ -1,8 +1,6 @@
-import { RegistryProviderDetails } from '@osf/features/registries/models/registry-provider.model';
-import { RegistryProviderDetailsJsonApi } from '@osf/features/registries/models/registry-provider-json-api.model';
 import { ProvidersResponseJsonApi } from '@osf/shared/models';
 
-import { ProviderSchema } from '../models';
+import { ProviderSchema, RegistryProviderDetails, RegistryProviderDetailsJsonApi } from '../models';
 
 export class ProvidersMapper {
   static fromProvidersResponse(response: ProvidersResponseJsonApi): ProviderSchema[] {
@@ -18,6 +16,7 @@ export class ProvidersMapper {
       id: response.id,
       name: response.attributes.name,
       descriptionHtml: response.attributes.description,
+      permissions: response.attributes.permissions,
       brand: {
         id: brandRaw.id,
         name: brandRaw.attributes.name,

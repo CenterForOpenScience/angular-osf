@@ -123,7 +123,11 @@ export class AddMetadataComponent implements OnInit {
     if (templates?.links?.first && templates?.links?.last && templates.links.first !== templates.links.last) {
       this.actions.getCedarTemplates();
     } else {
-      this.router.navigate(['..'], { relativeTo: this.activatedRoute });
+      if (this.resourceType() === ResourceType.File) {
+        this.router.navigate([this.resourceId]);
+      } else {
+        this.router.navigate(['..'], { relativeTo: this.activatedRoute });
+      }
     }
   }
 

@@ -1,7 +1,13 @@
 <p-card>
   <div class="flex flex-column gap-3">
-    <h2>{{ 'project.overview.metadata.tags' | translate }} ({{ 'common.labels.optional' | translate }})</h2>
-
-    <osf-tags-input (tagsChanged)="onTagsChanged($event)" [tags]="selectedTags()"></osf-tags-input>
+    <label for="registration-tag-id">
+      <h2>{{ 'project.overview.metadata.tags' | translate }} ({{ 'common.labels.optional' | translate }})</h2>
+    </label>
+    <p class="mb-1">{{ 'shared.tags.description' | translate }}</p>
+    <osf-tags-input
+      id="registration-tag-id"
+      (tagsChanged)="onTagsChanged($event)"
+      [tags]="selectedTags()"
+    ></osf-tags-input>
   </div>
 </p-card>

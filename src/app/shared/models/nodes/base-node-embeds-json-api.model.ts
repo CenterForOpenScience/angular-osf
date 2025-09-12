@@ -1,3 +1,5 @@
+import { IdentifierAttributes } from '@shared/models';
+
 export interface BaseNodeEmbeds {
   bibliographic_contributors?: {
     data: ContributorResource[];
@@ -54,11 +56,6 @@ export interface LicenseAttributes {
 }
 
 export type LicenseResource = JsonApiResource<'licenses', LicenseAttributes>;
-
-export interface IdentifierAttributes {
-  category: string;
-  value: string;
-}
 
 export type IdentifierResource = JsonApiResource<'identifiers', IdentifierAttributes>;
 

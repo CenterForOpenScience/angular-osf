@@ -1,29 +1,39 @@
-import { FilterOptionItem, SelectOption } from '@shared/models';
+import { FilterOption, FilterOptionItem, SearchResultJsonApi } from '@shared/models';
 
-export function mapFilterOption(item: FilterOptionItem): SelectOption {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const metadata: any = item.attributes.resourceMetadata;
-  const id = metadata['@id'];
+export function mapFilterOptions(
+  searchResultItems: SearchResultJsonApi[],
+  filterOptionItems: FilterOptionItem[]
+): FilterOption[] {
+  return searchResultItems.map((searchResult) => {
+    const cardSearchResultCount = searchResult.attributes!.cardSearchResultCount;
+    const filterOption = filterOptionItems.find((option) => option.id === searchResult.relationships.indexCard.data.id);
+    const filterOptionMetadata = filterOption?.attributes.resourceMetadata;
+    const id = filterOptionMetadata['@id'];
 
-  if ('title' in metadata) {
-    return {
-      label: metadata?.title?.[0]?.['@value'],
-      value: id,
-    };
-  } else if ('displayLabel' in metadata) {
-    return {
-      label: metadata.displayLabel?.[0]?.['@value'],
-      value: id,
-    };
-  } else if ('name' in metadata) {
-    return {
-      label: metadata.name?.[0]?.['@value'],
-      value: id,
-    };
-  } else {
-    return {
-      label: '',
-      value: id,
-    };
-  }
+    if ('title' in filterOptionMetadata) {
+      return {
+        label: filterOptionMetadata?.title?.[0]?.['@value'],
+        value: id,
+        cardSearchResultCount,
+      };
+    } else if ('displayLabel' in filterOptionMetadata) {
+      return {
+        label: filterOptionMetadata.displayLabel?.[0]?.['@value'],
+        value: id,
+        cardSearchResultCount,
+      };
+    } else if ('name' in filterOptionMetadata) {
+      return {
+        label: filterOptionMetadata.name?.[0]?.['@value'],
+        value: id,
+        cardSearchResultCount,
+      };
+    } else {
+      return {
+        label: '',
+        value: id,
+        cardSearchResultCount,
+      };
+    }
+  });
 }

@@ -69,7 +69,14 @@
       <section class="selected-project">
         <p>{{ preprintProject()?.name }}</p>
 
-        <p-button class="danger-icon-btn" icon="fas fa-trash" severity="danger" text (click)="disconnectProject()" />
+        <p-button
+          class="danger-icon-btn"
+          icon="fas fa-trash"
+          severity="danger"
+          text
+          [ariaLabel]="'common.buttons.delete' | translate"
+          (onClick)="disconnectProject()"
+        />
       </section>
     }
   </section>

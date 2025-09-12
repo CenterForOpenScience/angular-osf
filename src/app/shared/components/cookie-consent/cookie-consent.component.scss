@@ -1,0 +1,15 @@
+:host ::ng-deep .cookie-toast {
+  width: 900px;
+  max-width: min(92vw, 960px);
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+}
+
+:host ::ng-deep .cookie-toast .p-toast-message {
+  width: 100%;
+}
+
+:host ::ng-deep .cookie-toast .p-toast-message .p-toast-message-content {
+  color: #fcf8e3;
+  width: 100%;
+}

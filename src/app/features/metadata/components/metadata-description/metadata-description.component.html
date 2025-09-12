@@ -11,9 +11,5 @@
     }
   </div>
 
-  @if (description()) {
-    <p>{{ description() }}</p>
-  } @else {
-    <p class="text-color-secondary">{{ 'project.overview.metadata.noDescription' | translate }}</p>
-  }
+  <p class="mt-4">{{ description() || ('project.overview.metadata.noDescription' | translate) }}</p>
 </p-card>

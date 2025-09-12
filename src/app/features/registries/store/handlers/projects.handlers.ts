@@ -5,28 +5,31 @@ import { inject, Injectable } from '@angular/core';
 import { ProjectsService } from '@osf/shared/services/projects.service';
 
 import { Project } from '../../models';
-import { DefaultState } from '../default.state';
-import { RegistriesStateModel } from '../registries.model';
+import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from '../registries.model';
 
 @Injectable()
 export class ProjectsHandlers {
   projectsService = inject(ProjectsService);
 
-  getProjects({ patchState }: StateContext<RegistriesStateModel>, userId: string) {
-    // [NM] TODO: move this parameter to projects.service
+  getProjects(ctx: StateContext<RegistriesStateModel>, userId: string, search: string) {
     const params: Record<string, unknown> = {
       'filter[current_user_permissions]': 'admin',
     };
 
-    patchState({
+    if (search) {
+      params['filter[title]'] = search;
+    }
+    const state = ctx.getState();
+    ctx.patchState({
       projects: {
-        ...DefaultState.projects,
+        data: state.projects.data,
+        error: null,
         isLoading: true,
       },
     });
     return this.projectsService.fetchProjects(userId, params).subscribe({
       next: (projects: Project[]) => {
-        patchState({
+        ctx.patchState({
           projects: {
             data: projects,
             isLoading: false,
@@ -35,8 +38,8 @@ export class ProjectsHandlers {
         });
       },
       error: (error) => {
-        patchState({
-          projects: { ...DefaultState.projects, isLoading: false, error },
+        ctx.patchState({
+          projects: { ...REGISTRIES_STATE_DEFAULTS.projects, isLoading: false, error },
         });
       },
     });

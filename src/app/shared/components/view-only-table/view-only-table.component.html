@@ -64,9 +64,9 @@
               icon="fas fa-trash"
               severity="danger"
               text
-              (click)="deleteLink.emit(item)"
-            >
-            </p-button>
+              [ariaLabel]="'common.buttons.delete' | translate"
+              (onClick)="deleteLink.emit(item)"
+            />
           </td>
         </tr>
       } @else {

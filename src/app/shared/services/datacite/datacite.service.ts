@@ -1,10 +1,12 @@
-import { EMPTY, map, Observable } from 'rxjs';
+import { EMPTY, filter, map, Observable, of, switchMap, take } from 'rxjs';
 
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/constants/environment.token';
+import { Identifier } from '@shared/models';
 import { DataciteEvent } from '@shared/models/datacite/datacite-event.enum';
+import { IdentifiersJsonApiResponse } from '@shared/models/identifiers/identifier-json-api.model';
 
 @Injectable({
   providedIn: 'root',
@@ -13,30 +15,48 @@ export class DataciteService {
   #http: HttpClient = inject(HttpClient);
   #environment = inject(ENVIRONMENT);
 
-  /**
-   * Logs a "view" event for a given DOI to the Datacite tracker.
-   * If the DOI is null/empty or the tracker repository ID is not configured,
-   * (in most cases, due to being used in dev environment),
-   * returns an empty observable.
-   *
-   * @param doi - The DOI (Digital Object Identifier) of the resource.
-   * @returns An Observable that completes when the request is sent.
-   */
-  logView(doi: string): Observable<void> {
-    return this.logActivity(DataciteEvent.VIEW, doi);
+  logIdentifiableView(trackable: Observable<{ identifiers?: Identifier[] } | null>) {
+    return this.watchIdentifiable(trackable, DataciteEvent.VIEW);
   }
 
-  /**
-   * Logs a "download" event for a given DOI to the Datacite tracker.
-   * If the DOI is null/empty or the tracker repository ID is not configured
-   * (in most cases, due to being used in dev environment),
-   * returns an empty observable.
-   *
-   * @param doi - The DOI (Digital Object Identifier) of the resource.
-   * @returns An Observable that completes when the request is sent.
-   */
-  logDownload(doi: string): Observable<void> {
-    return this.logActivity(DataciteEvent.DOWNLOAD, doi);
+  logIdentifiableDownload(trackable: Observable<{ identifiers?: Identifier[] } | null>) {
+    return this.watchIdentifiable(trackable, DataciteEvent.DOWNLOAD);
+  }
+
+  logFileDownload(targetId: string, targetType: string) {
+    return this.logFile(targetId, targetType, DataciteEvent.DOWNLOAD);
+  }
+
+  logFileView(targetId: string, targetType: string) {
+    return this.logFile(targetId, targetType, DataciteEvent.VIEW);
+  }
+
+  private watchIdentifiable(
+    trackable: Observable<{ identifiers?: Identifier[] } | null>,
+    event: DataciteEvent
+  ): Observable<void> {
+    return trackable.pipe(
+      filter((item) => item != null),
+      map((item) => item?.identifiers?.find((identifier) => identifier.category == 'doi')?.value ?? null),
+      filter((doi): doi is string => !!doi),
+      take(1),
+      switchMap((doi) => this.logActivity(event, doi))
+    );
+  }
+
+  private logFile(targetId: string, targetType: string, event: DataciteEvent): Observable<void> {
+    const url = `${this.#environment.webUrl}/${targetType}/${targetId}/identifiers`;
+    return this.#http.get<IdentifiersJsonApiResponse>(url).pipe(
+      map((item) => ({
+        identifiers: item.data.map<Identifier>((identifierData) => ({
+          id: identifierData.id,
+          type: identifierData.type,
+          category: identifierData.attributes.category,
+          value: identifierData.attributes.value,
+        })),
+      })),
+      switchMap((trackable) => this.watchIdentifiable(of(trackable), event))
+    );
   }
 
   /**

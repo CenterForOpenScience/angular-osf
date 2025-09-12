@@ -26,7 +26,7 @@ import { hasViewOnlyParam, toCamelCase } from '@osf/shared/helpers';
 import { MapRegistryOverview } from '@osf/shared/mappers';
 import { SchemaResponse, ToolbarResource } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
-import { GetBookmarksCollectionId } from '@osf/shared/stores';
+import { FetchSelectedSubjects, GetBookmarksCollectionId, SubjectsSelectors } from '@osf/shared/stores';
 import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 
 import { ArchivingMessageComponent, RegistryRevisionsComponent, RegistryStatusesComponent } from '../../components';
@@ -36,7 +36,6 @@ import {
   GetRegistryById,
   GetRegistryInstitutions,
   GetRegistryReviewActions,
-  GetRegistrySubjects,
   RegistryOverviewSelectors,
   SetRegistryCustomCitation,
 } from '../../store/registry-overview';
@@ -76,8 +75,8 @@ export class RegistryOverviewComponent {
   readonly registry = select(RegistryOverviewSelectors.getRegistry);
   readonly isRegistryLoading = select(RegistryOverviewSelectors.isRegistryLoading);
   readonly isAnonymous = select(RegistryOverviewSelectors.isRegistryAnonymous);
-  readonly subjects = select(RegistryOverviewSelectors.getSubjects);
-  readonly isSubjectsLoading = select(RegistryOverviewSelectors.isSubjectsLoading);
+  readonly subjects = select(SubjectsSelectors.getSelectedSubjects);
+  readonly areSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
   readonly institutions = select(RegistryOverviewSelectors.getInstitutions);
   readonly isInstitutionsLoading = select(RegistryOverviewSelectors.isInstitutionsLoading);
   readonly schemaBlocks = select(RegistryOverviewSelectors.getSchemaBlocks);
@@ -86,6 +85,15 @@ export class RegistryOverviewComponent {
   readonly currentRevision = select(RegistriesSelectors.getSchemaResponse);
   readonly isSchemaResponseLoading = select(RegistriesSelectors.getSchemaResponseLoading);
   revisionInProgress: SchemaResponse | undefined;
+
+  isLoading = computed(
+    () =>
+      this.isRegistryLoading() ||
+      this.isInstitutionsLoading() ||
+      this.isSchemaBlocksLoading() ||
+      this.isSchemaResponseLoading() ||
+      this.areSubjectsLoading()
+  );
 
   readonly schemaResponse = computed(() => {
     const registry = this.registry();
@@ -141,7 +149,7 @@ export class RegistryOverviewComponent {
   private readonly actions = createDispatchMap({
     getRegistryById: GetRegistryById,
     getBookmarksId: GetBookmarksCollectionId,
-    getSubjects: GetRegistrySubjects,
+    getSubjects: FetchSelectedSubjects,
     getInstitutions: GetRegistryInstitutions,
     setCustomCitation: SetRegistryCustomCitation,
     getRegistryReviewActions: GetRegistryReviewActions,
@@ -179,7 +187,7 @@ export class RegistryOverviewComponent {
               return !this.registry()?.withdrawn;
             }),
             tap(() => {
-              this.actions.getSubjects(id);
+              this.actions.getSubjects(id, ResourceType.Registration);
               this.actions.getInstitutions(id);
             })
           )
@@ -201,7 +209,6 @@ export class RegistryOverviewComponent {
   }
 
   navigateToFile(fileId: string): void {
-    // [NM] TODO: add logic to handle fileId
     this.router.navigate(['/files', fileId]);
   }
 

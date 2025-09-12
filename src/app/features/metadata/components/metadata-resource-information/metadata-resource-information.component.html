@@ -19,19 +19,21 @@
     }
   </div>
 
-  @if (customItemMetadata()?.resourceTypeGeneral) {
-    <div class="flex-column flex gap-2">
-      <p class="inline-block font-bold">
-        <span> {{ 'project.overview.metadata.resourceType' | translate }}: </span>
-        <span>{{ getResourceTypeName(customItemMetadata()?.resourceTypeGeneral!) }}</span>
-      </p>
+  <div class="mt-4">
+    @if (customItemMetadata()?.resourceTypeGeneral) {
+      <div class="flex-column flex gap-2">
+        <p class="inline-block font-bold">
+          <span> {{ 'project.overview.metadata.resourceType' | translate }}: </span>
+          <span>{{ getResourceTypeName(customItemMetadata()?.resourceTypeGeneral!) }}</span>
+        </p>
 
-      <p class="inline-block font-bold">
-        <span> {{ 'project.overview.metadata.resourceLanguage' | translate }}: </span>
-        <span>{{ getLanguageName(customItemMetadata()?.language || '') }}</span>
-      </p>
-    </div>
-  } @else {
-    <p class="text-color-secondary">{{ 'project.overview.metadata.noResourceInformation' | translate }}</p>
-  }
+        <p class="inline-block font-bold">
+          <span> {{ 'project.overview.metadata.resourceLanguage' | translate }}: </span>
+          <span>{{ getLanguageName(customItemMetadata()?.language || '') }}</span>
+        </p>
+      </div>
+    } @else {
+      <p>{{ 'project.overview.metadata.noResourceInformation' | translate }}</p>
+    }
+  </div>
 </p-card>

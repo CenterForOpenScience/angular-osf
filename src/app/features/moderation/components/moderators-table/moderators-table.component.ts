@@ -16,7 +16,7 @@ import {
   EmploymentHistoryDialogComponent,
   SelectComponent,
 } from '@osf/shared/components';
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { TableParameters } from '@osf/shared/models';
 
 @Component({
@@ -39,7 +39,7 @@ export class ModeratorsTableComponent {
   dialogService = inject(DialogService);
   translateService = inject(TranslateService);
 
-  readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS });
+  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
   readonly permissionsOptions = MODERATION_PERMISSIONS;
   readonly ModeratorPermission = ModeratorPermission;
 
