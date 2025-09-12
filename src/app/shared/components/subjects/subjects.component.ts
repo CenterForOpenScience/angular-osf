@@ -15,7 +15,7 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 import { FormControl, FormsModule } from '@angular/forms';
 
 import { SubjectModel } from '@osf/shared/models';
-import { SubjectsSelectors } from '@shared/stores';
+import { SubjectsSelectors } from '@osf/shared/stores';
 
 import { SearchInputComponent } from '../search-input/search-input.component';
 

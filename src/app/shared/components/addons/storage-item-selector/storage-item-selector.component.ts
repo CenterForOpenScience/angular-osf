@@ -28,12 +28,13 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { OperationNames } from '@osf/features/project/addons/enums';
-import { SelectComponent } from '@shared/components';
-import { ResourceTypeInfoDialogComponent } from '@shared/components/addons/resource-type-info-dialog/resource-type-info-dialog.component';
-import { AddonType, StorageItemType } from '@shared/enums';
-import { convertCamelCaseToNormal, IS_MEDIUM, IS_XSMALL } from '@shared/helpers';
-import { OperationInvokeData, StorageItem } from '@shared/models';
-import { AddonsSelectors, ClearOperationInvocations } from '@shared/stores/addons';
+import { AddonType, StorageItemType } from '@osf/shared/enums';
+import { convertCamelCaseToNormal, IS_MEDIUM, IS_XSMALL } from '@osf/shared/helpers';
+import { OperationInvokeData, StorageItem } from '@osf/shared/models';
+import { AddonsSelectors, ClearOperationInvocations } from '@osf/shared/stores';
+
+import { SelectComponent } from '../../select/select.component';
+import { ResourceTypeInfoDialogComponent } from '../resource-type-info-dialog/resource-type-info-dialog.component';
 
 import { GoogleFilePickerComponent } from './google-file-picker/google-file-picker.component';
 
