@@ -31,6 +31,7 @@
                 severity="info"
                 class="w-10rem btn-full-width"
                 [routerLink]="[baseUrl() + '/addons']"
+                data-test-addon-cancel-button
               ></p-button>
               <p-button
                 [label]="
@@ -41,6 +42,7 @@
                 class="w-10rem btn-full-width"
                 [loading]="isAuthorizedAddonsLoading()"
                 (onClick)="handleAuthorizedAccountsPresenceCheck()"
+                data-test-addon-terms-confirm-button
               ></p-button>
             </div>
           </section>
@@ -57,6 +59,7 @@
                 severity="info"
                 class="w-7rem btn-full-width"
                 (click)="activateCallback(AddonStepperValue.TERMS)"
+                data-test-addon-back-button
               ></p-button>
             </div>
 
@@ -64,12 +67,14 @@
               <p-button
                 [label]="'settings.addons.form.buttons.existingAccount' | translate"
                 (click)="activateCallback(AddonStepperValue.CHOOSE_ACCOUNT)"
+                data-test-addon-existing-account-button
               ></p-button>
 
               <p-button
                 [label]="'settings.addons.form.buttons.newAccount' | translate"
                 severity="secondary"
                 (click)="activateCallback(AddonStepperValue.SETUP_NEW_ACCOUNT)"
+                data-test-addon-new-account-button
               ></p-button>
             </div>
           </div>
@@ -99,12 +104,14 @@
                 [label]="'settings.addons.form.buttons.back' | translate"
                 severity="info"
                 (onClick)="activateCallback(AddonStepperValue.CHOOSE_CONNECTION)"
+                data-test-addon-back-button
               ></p-button>
               <p-button
                 class="w-10rem btn-full-width"
                 [disabled]="!chosenAccountId()"
                 [label]="'settings.addons.form.buttons.next' | translate"
                 (onClick)="handleConfirmAccountConnection()"
+                data-test-addon-authenticate-button
               ></p-button>
             </div>
           </section>
@@ -166,6 +173,7 @@
                 severity="info"
                 class="w-7rem btn-full-width"
                 [routerLink]="[baseUrl() + '/addons']"
+                data-test-addon-back-button
               ></p-button>
             </div>
 

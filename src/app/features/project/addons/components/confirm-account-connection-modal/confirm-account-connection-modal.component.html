@@ -7,11 +7,13 @@
     severity="info"
     (click)="dialogRef.close()"
     [disabled]="isSubmitting()"
+    data-test-addon-cancel-button
   />
   <p-button
     class="btn-full-width"
     [label]="'common.buttons.confirm' | translate"
     (onClick)="handleConnectAddonAccount()"
     [loading]="isSubmitting()"
+    data-test-addon-connect-account-button
   />
 </div>
