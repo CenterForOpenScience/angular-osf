@@ -16,8 +16,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
 import { FilesTreeComponent, LoadingSpinnerComponent } from '@osf/shared/components';
+import { FILE_SIZE_LIMIT } from '@osf/shared/constants';
 import { FilesTreeActions, OsfFile } from '@osf/shared/models';
-import { FilesService } from '@osf/shared/services';
+import { FilesService, ToastService } from '@osf/shared/services';
 
 import {
   CreateFolder,
@@ -57,6 +58,7 @@ export class FilesControlComponent {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
+  private toastService = inject(ToastService);
 
   readonly files = select(RegistriesSelectors.getFiles);
   readonly filesTotalCount = select(RegistriesSelectors.getFilesTotalCount);
@@ -103,6 +105,10 @@ export class FilesControlComponent {
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
+    if (file && file.size > FILE_SIZE_LIMIT) {
+      this.toastService.showWarn('shared.files.limitText');
+      return;
+    }
     if (!file) return;
 
     this.uploadFile(file);

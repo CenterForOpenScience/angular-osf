@@ -29,10 +29,11 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { InfoIconComponent } from '@osf/shared/components';
-import { INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
+import { FILE_COUNT_ATTACHMENTS_LIMIT, INPUT_VALIDATION_MESSAGES } from '@osf/shared/constants';
 import { FieldType } from '@osf/shared/enums';
 import { CustomValidators, findChangedFields } from '@osf/shared/helpers';
 import { FilePayloadJsonApi, OsfFile, PageSchema } from '@osf/shared/models';
+import { ToastService } from '@osf/shared/services';
 
 import { FilesMapper } from '../../mappers/files.mapper';
 import { RegistriesSelectors, SetUpdatedFields, UpdateStepValidation } from '../../store';
@@ -77,6 +78,7 @@ export class CustomStepComponent implements OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly fb = inject(FormBuilder);
+  private toastService = inject(ToastService);
 
   readonly pages = select(RegistriesSelectors.getPagesSchema);
   readonly FieldType = FieldType;
@@ -180,7 +182,12 @@ export class CustomStepComponent implements OnDestroy {
 
   onAttachFile(file: OsfFile, questionKey: string): void {
     this.attachedFiles[questionKey] = this.attachedFiles[questionKey] || [];
+
     if (!this.attachedFiles[questionKey].some((f) => f.file_id === file.id)) {
+      if (this.attachedFiles[questionKey].length >= FILE_COUNT_ATTACHMENTS_LIMIT) {
+        this.toastService.showWarn('shared.files.limitText');
+        return;
+      }
       this.attachedFiles[questionKey].push(file);
       this.stepForm.patchValue({
         [questionKey]: [...(this.attachedFiles[questionKey] || []), file],

@@ -13,7 +13,7 @@ export class ToastService {
   }
 
   showWarn(summary: string, params?: unknown) {
-    this.messageService.add({ severity: 'warn', summary, data: { translationParams: params }, key: 'osf' });
+    this.messageService.add({ severity: 'warn', summary, life: 5000, data: { translationParams: params }, key: 'osf' });
   }
 
   showError(summary: string, params?: unknown) {

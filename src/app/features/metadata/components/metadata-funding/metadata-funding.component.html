@@ -7,6 +7,7 @@
         severity="secondary"
         [label]="'common.buttons.edit' | translate"
         (onClick)="openEditFundingDialog.emit()"
+        data-test-edit-funding-button
       ></p-button>
     }
   </div>
@@ -14,22 +15,30 @@
   @if (funders()?.length) {
     <div class="mt-4">
       @for (funder of funders(); track funder.funderIdentifier) {
-        <div class="mb-2 pb-3 border-bottom-1 surface-border flex flex-column gap-2">
-          <p>{{ 'files.detail.resourceMetadata.fields.funder' | translate }}: {{ funder.funderName }}</p>
+        <div class="surface-border flex flex-column gap-2" [ngClass]="{ 'mb-3 pb-3 border-bottom-1': !$last }">
+          <p data-test-display-funder-name>
+            {{ 'files.detail.resourceMetadata.fields.funder' | translate }}: {{ funder.funderName }}
+          </p>
 
-          <p>{{ 'files.detail.resourceMetadata.fields.awardTitle' | translate }}: {{ funder.awardTitle }}</p>
+          @if (funder.awardTitle) {
+            <p data-test-display-funder-award-title>
+              {{ 'files.detail.resourceMetadata.fields.awardTitle' | translate }}: {{ funder.awardTitle }}
+            </p>
+          }
 
           @if (funder.awardUri) {
             <p>
               {{ 'files.detail.resourceMetadata.fields.awardUri' | translate }}:
-              <a class="font-bold" [href]="funder.awardUri" target="_blank">
+              <a class="font-bold" [href]="funder.awardUri" target="_blank" data-test-display-funder-award-uri>
                 {{ funder.awardUri }}
               </a>
             </p>
           }
 
           @if (funder.awardNumber) {
-            <p>{{ 'files.detail.resourceMetadata.fields.awardNumber' | translate }}: {{ funder.awardNumber }}</p>
+            <p data-test-display-funder-award-number>
+              {{ 'files.detail.resourceMetadata.fields.awardNumber' | translate }}: {{ funder.awardNumber }}
+            </p>
           }
         </div>
       }

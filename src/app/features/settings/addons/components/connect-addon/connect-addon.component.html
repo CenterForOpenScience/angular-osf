@@ -31,11 +31,13 @@
                 severity="info"
                 class="w-10rem btn-full-width"
                 routerLink="/settings/addons"
+                data-test-addon-cancel-button
               ></p-button>
               <p-button
                 [label]="'settings.addons.form.buttons.next' | translate"
                 class="w-10rem btn-full-width"
                 (onClick)="activateCallback(ProjectAddonsStepperValue.SETUP_NEW_ACCOUNT)"
+                data-test-addon-terms-confirm-button
               ></p-button>
             </div>
           </section>

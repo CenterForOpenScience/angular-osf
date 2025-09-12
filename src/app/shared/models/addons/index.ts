@@ -3,6 +3,7 @@ export * from './addon-terms.model';
 export * from './addons.models';
 export * from './authorized-account.model';
 export * from './configured-addon.model';
+export * from './oauth-callbacks.model';
 export * from './operation-invocation.models';
 export * from './operation-invoke-data.model';
 export * from './strorage-item.model';

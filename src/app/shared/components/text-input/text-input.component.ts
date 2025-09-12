@@ -25,7 +25,7 @@ export class TextInputComponent {
   minLength = input<number>();
   maxLength = input<number>();
 
-  inputId = `input-${Math.random().toString(36).substring(2, 15)}`;
+  inputId = input<string>(`input-${Math.random().toString(36).substring(2, 15)}`);
   helpId = `help-${Math.random().toString(36).substring(2, 15)}`;
 
   getErrorMessage(): ValidationParams {

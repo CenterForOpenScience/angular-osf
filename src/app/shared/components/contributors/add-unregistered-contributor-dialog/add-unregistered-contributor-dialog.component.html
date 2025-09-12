@@ -28,7 +28,8 @@
       class="btn-full-width md:w-auto"
       severity="secondary"
       [label]="'project.contributors.addDialog.addRegisteredContributor' | translate"
-      (click)="addRegistered()"
+      (onClick)="addRegistered()"
+      data-test-add-registered-contributor-button
     >
     </p-button>
   </div>
@@ -37,18 +38,20 @@
     <p-button
       class="w-full"
       styleClass="w-full"
-      (click)="dialogRef.close()"
+      (onClick)="dialogRef.close()"
       severity="info"
       [label]="'common.buttons.cancel' | translate"
+      data-test-cancel-add-unregistered-contributor-button
     >
     </p-button>
 
     <p-button
       class="w-full"
       styleClass="w-full"
-      (click)="submit()"
+      (onClick)="submit()"
       [label]="'common.buttons.add' | translate"
       [disabled]="contributorForm.invalid"
+      data-test-add-unregistered-contributor-button
     >
     </p-button>
   </div>

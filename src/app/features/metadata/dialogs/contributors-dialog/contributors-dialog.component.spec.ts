@@ -8,7 +8,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MOCK_STORE, TranslateServiceMock } from '@osf/shared/mocks';
+import { MOCK_STORE, MockCustomConfirmationServiceProvider, TranslateServiceMock } from '@osf/shared/mocks';
 import { ContributorsSelectors } from '@osf/shared/stores';
 
 import { ContributorsDialogComponent } from './contributors-dialog.component';
@@ -26,6 +26,7 @@ describe('ContributorsDialogComponent', () => {
       imports: [ContributorsDialogComponent, MockPipe(TranslatePipe)],
       providers: [
         TranslateServiceMock,
+        MockCustomConfirmationServiceProvider,
         MockProviders(MessageService, DynamicDialogRef, DynamicDialogConfig),
         MockProvider(Store, MOCK_STORE),
       ],

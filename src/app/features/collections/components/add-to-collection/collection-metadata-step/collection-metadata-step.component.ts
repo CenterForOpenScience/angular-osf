@@ -48,6 +48,7 @@ export class CollectionMetadataStepComponent {
 
   collectionMetadataForm = signal<FormGroup>(new FormGroup({}));
   collectionMetadataSaved = signal<boolean>(false);
+  originalFormValues = signal<Record<string, unknown>>({});
 
   actions = createDispatchMap({
     getCollectionDetails: GetCollectionDetails,
@@ -62,13 +63,23 @@ export class CollectionMetadataStepComponent {
   }
 
   handleDiscardChanges() {
-    this.collectionMetadataForm().reset();
+    const form = this.collectionMetadataForm();
+    const originalValues = this.originalFormValues();
+
+    if (this.hasFormChanges(form, originalValues)) {
+      this.restoreFormValues(form, originalValues);
+    }
+
     this.collectionMetadataSaved.set(false);
   }
 
   handleSaveMetadata() {
+    const form = this.collectionMetadataForm();
+
+    this.updateOriginalValues(form);
+
     this.collectionMetadataSaved.set(true);
-    this.metadataSaved.emit(this.collectionMetadataForm());
+    this.metadataSaved.emit(form);
     this.stepChange.emit(AddToCollectionSteps.Complete);
   }
 
@@ -82,6 +93,7 @@ export class CollectionMetadataStepComponent {
 
     const newForm = new FormGroup(formControls);
     this.collectionMetadataForm.set(newForm);
+    this.updateOriginalValues(newForm);
   }
 
   private setupEffects(): void {
@@ -104,5 +116,27 @@ export class CollectionMetadataStepComponent {
         this.collectionMetadataForm().reset();
       }
     });
+  }
+
+  private hasFormChanges(form: FormGroup, originalValues: Record<string, unknown>): boolean {
+    return Object.keys(originalValues).some((key) => {
+      const currentValue = form.get(key)?.value;
+      const originalValue = originalValues[key];
+      return currentValue !== originalValue;
+    });
+  }
+
+  private restoreFormValues(form: FormGroup, originalValues: Record<string, unknown>): void {
+    Object.keys(originalValues).forEach((key) => {
+      form.get(key)?.setValue(originalValues[key]);
+    });
+  }
+
+  private updateOriginalValues(form: FormGroup): void {
+    const currentValues: Record<string, unknown> = {};
+    Object.keys(form.controls).forEach((key) => {
+      currentValues[key] = form.get(key)?.value;
+    });
+    this.originalFormValues.set(currentValues);
   }
 }

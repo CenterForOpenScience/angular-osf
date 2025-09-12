@@ -2,11 +2,11 @@
 <section class="flex-column flex flex-1">
   <p-tabs [value]="selectedTab()" class="flex-1">
     <p-tablist class="pr-5 pl-5 hidden md:flex md:flex-column">
-      <p-tab [value]="AddonTabValue.ALL_ADDONS">
+      <p-tab [value]="AddonTabValue.ALL_ADDONS" data-test-addons-tab-all-addons>
         {{ 'settings.addons.tabs.allAddons' | translate }}
       </p-tab>
 
-      <p-tab [value]="AddonTabValue.CONNECTED_ADDONS">
+      <p-tab [value]="AddonTabValue.CONNECTED_ADDONS" data-test-addons-tab-connected-accounts>
         {{ 'settings.addons.tabs.connectedAddons' | translate }}
       </p-tab>
     </p-tablist>

@@ -30,7 +30,9 @@ import { SelectComponent } from '../../select/select.component';
 export class ContributorsListComponent {
   contributors = input<ContributorModel[]>([]);
   isLoading = input(false);
-  showCuratorColumn = input(false);
+  showCurator = input(false);
+  showEducation = input(true);
+  showEmployment = input(true);
 
   currentUserId = input<string | undefined>(undefined);
   isCurrentUserAdminContributor = input<boolean>(true);

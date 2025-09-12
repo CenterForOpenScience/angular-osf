@@ -3,7 +3,7 @@
     <h2>{{ 'files.detail.fileMetadata.title' | translate }}</h2>
 
     <div class="flex gap-2">
-      <p-button severity="secondary" icon="fas fa-download" (click)="downloadFileMetadata()" />
+      <p-button severity="secondary" class="btn-icon-only" icon="fas fa-download" (click)="downloadFileMetadata()" />
 
       <p-button
         severity="secondary"
@@ -23,7 +23,9 @@
       @if (fileMetadata()?.[field.key]) {
         <div class="flex flex-column gap-2">
           <h4>{{ field.label | translate }}</h4>
-          <p>{{ fileMetadata()?.[field.key] }}</p>
+          <p>
+            {{ field.key === 'language' ? getLanguageName(fileMetadata()?.[field.key]!) : fileMetadata()?.[field.key] }}
+          </p>
         </div>
       }
     }

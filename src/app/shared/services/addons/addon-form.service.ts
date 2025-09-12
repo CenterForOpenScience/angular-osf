@@ -86,7 +86,7 @@ export class AddonFormService {
           credentials,
           initiate_oauth: initiateOAuth,
           auth_url: null,
-          credentials_available: false,
+          credentials_available: ('credentialsAvailable' in addon && addon.credentialsAvailable) || false,
         },
         relationships: {
           account_owner: {

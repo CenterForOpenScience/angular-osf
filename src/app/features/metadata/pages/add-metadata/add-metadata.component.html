@@ -38,7 +38,8 @@
                 <p-button
                   severity="secondary"
                   [label]="'project.metadata.addMetadata.select' | translate"
-                  (click)="onSelect(meta)"
+                  (onClick)="onSelect(meta)"
+                  data-test-select-button
                 ></p-button>
               }
             </div>
