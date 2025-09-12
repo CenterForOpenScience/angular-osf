@@ -4,10 +4,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResourceType } from '@osf/shared/enums';
 import { CurrentResourceSelectors } from '@osf/shared/stores';
-
-import { ResourceInfoModel } from '../../models';
+import { MOCK_RESOURCE_INFO, MOCK_RESOURCE_WITH_CHILDREN } from '@shared/mocks';
 
 import { CreateViewLinkDialogComponent } from './create-view-link-dialog.component';
 
@@ -20,27 +18,13 @@ describe('CreateViewLinkDialogComponent', () => {
   let dialogRef: jest.Mocked<DynamicDialogRef>;
   let dialogConfig: DynamicDialogConfig;
 
-  const mockResourceInfo: ResourceInfoModel = {
-    id: 'project-123',
-    title: 'Test Project',
-    type: ResourceType.Project,
-    rootParentId: 'root-123',
-  };
-
-  const mockComponents = [
-    { id: 'project-123', title: 'Test Project', parentId: null },
-    { id: 'component-1', title: 'Component 1', parentId: 'project-123' },
-    { id: 'component-2', title: 'Component 2', parentId: 'project-123' },
-    { id: 'component-3', title: 'Component 3', parentId: 'component-1' },
-  ];
-
   beforeEach(async () => {
     dialogRef = {
       close: jest.fn(),
     } as any;
 
     dialogConfig = {
-      data: mockResourceInfo,
+      data: MOCK_RESOURCE_INFO,
     } as DynamicDialogConfig;
 
     await TestBed.configureTestingModule({
@@ -50,7 +34,7 @@ describe('CreateViewLinkDialogComponent', () => {
           signals: [
             {
               selector: CurrentResourceSelectors.getResourceWithChildren,
-              value: mockComponents,
+              value: MOCK_RESOURCE_WITH_CHILDREN,
             },
             {
               selector: CurrentResourceSelectors.isResourceWithChildrenLoading,

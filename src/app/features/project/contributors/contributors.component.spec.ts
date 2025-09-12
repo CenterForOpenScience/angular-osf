@@ -9,7 +9,12 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ContributorPermission } from '@shared/enums';
-import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY, MOCK_PAGINATED_VIEW_ONLY_LINKS } from '@shared/mocks';
+import {
+  MOCK_CONTRIBUTOR,
+  MOCK_CONTRIBUTOR_WITHOUT_HISTORY,
+  MOCK_PAGINATED_VIEW_ONLY_LINKS,
+  MOCK_RESOURCE_INFO,
+} from '@shared/mocks';
 import { ContributorModel } from '@shared/models';
 import { CustomConfirmationService, ToastService } from '@shared/services';
 import { ContributorsSelectors, CurrentResourceSelectors, ViewOnlyLinkSelectors } from '@shared/stores';
@@ -28,12 +33,6 @@ describe('ContributorsComponent', () => {
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
 
   const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
-
-  const mockResourceDetails = {
-    id: 'test-id',
-    title: 'Test Project',
-    rootParentId: 'root-id',
-  };
 
   beforeEach(async () => {
     jest.useFakeTimers();
@@ -67,7 +66,7 @@ describe('ContributorsComponent', () => {
             { selector: ContributorsSelectors.isContributorsLoading, value: false },
             { selector: ViewOnlyLinkSelectors.getViewOnlyLinks, value: MOCK_PAGINATED_VIEW_ONLY_LINKS },
             { selector: ViewOnlyLinkSelectors.isViewOnlyLinksLoading, value: false },
-            { selector: CurrentResourceSelectors.getResourceDetails, value: mockResourceDetails },
+            { selector: CurrentResourceSelectors.getResourceDetails, value: MOCK_RESOURCE_INFO },
           ],
         }),
       ],

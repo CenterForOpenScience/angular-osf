@@ -1,3 +1,4 @@
+import { ResourceInfoModel } from '@osf/features/project/contributors/models';
 import { ResourceType } from '@shared/enums';
 import { ResourceModel, ResourceOverview } from '@shared/models';
 
@@ -67,3 +68,17 @@ export const MOCK_RESOURCE_OVERVIEW: ResourceOverview = {
   customCitation: 'Custom citation text',
   forksCount: 0,
 };
+
+export const MOCK_RESOURCE_INFO: ResourceInfoModel = {
+  id: 'project-123',
+  title: 'Test Project',
+  type: ResourceType.Project,
+  rootParentId: 'root-123',
+};
+
+export const MOCK_RESOURCE_WITH_CHILDREN = [
+  { id: 'project-123', title: 'Test Project', parentId: null },
+  { id: 'component-1', title: 'Component 1', parentId: 'project-123' },
+  { id: 'component-2', title: 'Component 2', parentId: 'project-123' },
+  { id: 'component-3', title: 'Component 3', parentId: 'component-1' },
+];
