@@ -13,9 +13,10 @@
       <h2 class="mb-2">
         {{ 'settings.addons.form.fields.secretKey' | translate }}
       </h2>
-      <input
-        class="mb-5"
-        pInputText
+      <p-password
+        styleClass="mb-5 w-full"
+        [feedback]="false"
+        [toggleMask]="true"
         [placeholder]="'settings.addons.form.fields.secretKey' | translate"
         [formControlName]="formControls.SecretKey"
       />
@@ -32,9 +33,10 @@
       <h2 class="mb-2">
         {{ 'settings.addons.form.fields.apiToken' | translate }}
       </h2>
-      <input
-        class="mb-4"
-        pInputText
+      <p-password
+        styleClass="mb-4 w-full"
+        [feedback]="false"
+        [toggleMask]="true"
         [placeholder]="'settings.addons.form.fields.apiToken' | translate"
         [formControlName]="formControls.ApiToken"
       />
@@ -79,9 +81,10 @@
       <h2 class="mb-2">
         {{ 'settings.addons.form.fields.personalAccessToken' | translate }}
       </h2>
-      <input
-        class="mb-4"
-        pInputText
+      <p-password
+        styleClass="mb-4 w-full"
+        [feedback]="false"
+        [toggleMask]="true"
         [placeholder]="'settings.addons.form.fields.personalAccessToken' | translate"
         [formControlName]="formControls.PersonalAccessToken"
       />
