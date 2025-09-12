@@ -23,7 +23,7 @@ import {
   SubmitRequestsDecision,
   SubmitReviewsDecision,
 } from '@osf/features/preprints/store/preprint';
-import { StringOrNull } from '@shared/helpers';
+import { StringOrNull } from '@osf/shared/helpers';
 
 @Component({
   selector: 'osf-make-decision',

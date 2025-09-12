@@ -23,6 +23,13 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
+import { ResetState } from '@osf/features/files/store';
+import { ReviewPermissions, UserPermissions } from '@osf/shared/enums';
+import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
+import { MetaTagsService } from '@osf/shared/services';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
+import { ContributorsSelectors } from '@osf/shared/stores';
+
 import {
   AdditionalInfoComponent,
   GeneralInformationComponent,
@@ -33,25 +40,18 @@ import {
   ShareAndDownloadComponent,
   StatusBannerComponent,
   WithdrawDialogComponent,
-} from '@osf/features/preprints/components';
-import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '@osf/features/preprints/enums';
+} from '../../components';
+import { PreprintWarningBannerComponent } from '../../components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
+import { PreprintRequestMachineState, ProviderReviewsWorkflow, ReviewsState } from '../../enums';
 import {
   FetchPreprintById,
   FetchPreprintRequestActions,
   FetchPreprintRequests,
   FetchPreprintReviewActions,
   PreprintSelectors,
-  ResetState,
-} from '@osf/features/preprints/store/preprint';
-import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import { CreateNewVersion, PreprintStepperSelectors } from '@osf/features/preprints/store/preprint-stepper';
-import { IS_MEDIUM, pathJoin } from '@osf/shared/helpers';
-import { ReviewPermissions, UserPermissions } from '@shared/enums';
-import { MetaTagsService } from '@shared/services';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
-import { ContributorsSelectors } from '@shared/stores';
-
-import { PreprintWarningBannerComponent } from '../../components/preprint-details/preprint-warning-banner/preprint-warning-banner.component';
+} from '../../store/preprint';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { CreateNewVersion, PreprintStepperSelectors } from '../../store/preprint-stepper';
 
 import { environment } from 'src/environments/environment';
 

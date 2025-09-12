@@ -18,10 +18,10 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services';
 
 import { CedarTemplateFormComponent } from '../../components';
 import { CedarMetadataDataTemplateJsonApi, CedarMetadataRecordData, CedarRecordDataBinding } from '../../models';

@@ -11,7 +11,7 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubHeaderComponent } from '@osf/shared/components';
+import { SubHeaderComponent, ViewOnlyLinkMessageComponent } from '@osf/shared/components';
 import {
   CompareSectionComponent,
   EditSectionComponent,
@@ -38,7 +38,6 @@ import {
   UpdateWikiPreviewContent,
   WikiSelectors,
 } from '@osf/shared/stores';
-import { ViewOnlyLinkMessageComponent } from '@shared/components/view-only-link-message/view-only-link-message.component';
 
 @Component({
   selector: 'osf-wiki',

@@ -17,16 +17,16 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 
-import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '@osf/features/metadata/constants';
-import { CedarMetadataHelper } from '@osf/features/metadata/helpers';
+import 'cedar-artifact-viewer';
+
+import { CEDAR_CONFIG, CEDAR_VIEWER_CONFIG } from '../../constants';
+import { CedarMetadataHelper } from '../../helpers';
 import {
   CedarEditorElement,
   CedarMetadataDataTemplateJsonApi,
   CedarMetadataRecordData,
   CedarRecordDataBinding,
-} from '@osf/features/metadata/models';
-
-import 'cedar-artifact-viewer';
+} from '../../models';
 
 @Component({
   selector: 'osf-cedar-template-form',

@@ -19,12 +19,18 @@ import {
   PreprintStepperSelectors,
   SubmitPreprint,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { AffiliatedInstitutionsViewComponent, TruncatedTextComponent } from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { InterpolatePipe } from '@shared/pipes';
-import { ToastService } from '@shared/services';
-import { ContributorsSelectors, FetchSelectedSubjects, GetAllContributors, SubjectsSelectors } from '@shared/stores';
-import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
+import { AffiliatedInstitutionsViewComponent, TruncatedTextComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
+import { InterpolatePipe } from '@osf/shared/pipes';
+import { ToastService } from '@osf/shared/services';
+import {
+  ContributorsSelectors,
+  FetchResourceInstitutions,
+  FetchSelectedSubjects,
+  GetAllContributors,
+  InstitutionsSelectors,
+  SubjectsSelectors,
+} from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-review-step',

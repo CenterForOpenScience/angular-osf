@@ -3,8 +3,8 @@ import { Chip } from 'primeng/chip';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter, SelectOption } from '@shared/models';
+import { StringOrNull } from '@osf/shared/helpers';
+import { DiscoverableFilter, SelectOption } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-filter-chips',

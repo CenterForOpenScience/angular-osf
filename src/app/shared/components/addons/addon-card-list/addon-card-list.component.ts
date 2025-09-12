@@ -2,7 +2,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Component, input } from '@angular/core';
 
-import { AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@shared/models';
+import { AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@osf/shared/models';
 
 import { AddonCardComponent } from '../addon-card/addon-card.component';
 

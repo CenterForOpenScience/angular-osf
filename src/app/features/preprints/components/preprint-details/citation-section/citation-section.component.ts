@@ -22,15 +22,15 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { ResourceType } from '@shared/enums';
-import { CitationStyle, CustomOption } from '@shared/models';
+import { ResourceType } from '@osf/shared/enums';
+import { CitationStyle, CustomOption } from '@osf/shared/models';
 import {
   CitationsSelectors,
   GetCitationStyles,
   GetDefaultCitations,
   GetStyledCitation,
   UpdateCustomCitation,
-} from '@shared/stores';
+} from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-preprint-citation-section',

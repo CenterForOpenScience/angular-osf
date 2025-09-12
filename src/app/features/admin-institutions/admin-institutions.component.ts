@@ -9,8 +9,8 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 
 import { FetchInstitutionById, InstitutionsAdminSelectors } from '@osf/features/admin-institutions/store';
+import { LoadingSpinnerComponent, SelectComponent } from '@osf/shared/components';
 import { Primitive } from '@osf/shared/helpers';
-import { LoadingSpinnerComponent, SelectComponent } from '@shared/components';
 
 import { resourceTabOptions } from './constants';
 import { AdminInstitutionResourceTab } from './enums';

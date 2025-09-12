@@ -28,6 +28,7 @@ import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM, parseQueryFilterParams } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, QueryParams, TableParameters } from '@osf/shared/models';
+import { ProjectRedirectDialogService } from '@osf/shared/services';
 import {
   BookmarksSelectors,
   ClearMyResources,
@@ -38,7 +39,6 @@ import {
   GetMyRegistrations,
   MyResourcesSelectors,
 } from '@osf/shared/stores';
-import { ProjectRedirectDialogService } from '@shared/services';
 
 import { CreateProjectDialogComponent } from './components';
 import { MY_PROJECTS_TABS } from './constants';

@@ -9,8 +9,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '@osf/core/services';
+import { PasswordInputHintComponent } from '@osf/shared/components';
 import { CustomValidators, PASSWORD_REGEX } from '@osf/shared/helpers';
-import { PasswordInputHintComponent } from '@shared/components';
 
 import { ResetPasswordFormGroupType } from '../../models';
 

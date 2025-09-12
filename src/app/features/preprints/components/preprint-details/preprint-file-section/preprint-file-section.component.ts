@@ -13,9 +13,9 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { ProviderReviewsWorkflow } from '@osf/features/preprints/enums';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
+import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { IS_LARGE, IS_MEDIUM } from '@osf/shared/helpers';
-import { LoadingSpinnerComponent } from '@shared/components';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 @Component({
   selector: 'osf-preprint-file-section',

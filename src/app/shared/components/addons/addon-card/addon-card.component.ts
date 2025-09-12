@@ -8,9 +8,9 @@ import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { getAddonTypeString, isConfiguredAddon } from '@osf/shared/helpers';
+import { AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@osf/shared/models';
 import { CustomConfirmationService, LoaderService } from '@osf/shared/services';
-import { AddonModel, AuthorizedAccountModel, ConfiguredAddonModel } from '@shared/models';
-import { DeleteAuthorizedAddon } from '@shared/stores/addons';
+import { DeleteAuthorizedAddon } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-addon-card',

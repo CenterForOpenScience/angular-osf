@@ -8,10 +8,10 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit } 
 import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { UserSelectors } from '@core/store/user';
-import { LoadingSpinnerComponent, SubHeaderComponent } from '@shared/components';
-import { AddonServiceNames } from '@shared/enums';
-import { convertCamelCaseToNormal } from '@shared/helpers';
-import { AddonsSelectors, GetAddonsResourceReference, GetConfiguredLinkAddons } from '@shared/stores';
+import { LoadingSpinnerComponent, SubHeaderComponent } from '@osf/shared/components';
+import { AddonServiceNames } from '@osf/shared/enums';
+import { convertCamelCaseToNormal } from '@osf/shared/helpers';
+import { AddonsSelectors, GetAddonsResourceReference, GetConfiguredLinkAddons } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-linked-services',

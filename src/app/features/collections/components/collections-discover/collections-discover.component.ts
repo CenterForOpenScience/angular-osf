@@ -12,12 +12,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { CollectionsHelpDialogComponent, CollectionsMainContentComponent } from '@osf/features/collections/components';
-import { CollectionsQuerySyncService } from '@osf/features/collections/services';
-import { LoadingSpinnerComponent, SearchInputComponent } from '@shared/components';
-import { HeaderStyleHelper } from '@shared/helpers';
-import { CollectionsFilters } from '@shared/models';
-import { BrandService } from '@shared/services';
+import { LoadingSpinnerComponent, SearchInputComponent } from '@osf/shared/components';
+import { HeaderStyleHelper } from '@osf/shared/helpers';
+import { CollectionsFilters } from '@osf/shared/models';
+import { BrandService } from '@osf/shared/services';
 import {
   ClearCollections,
   ClearCollectionSubmissions,
@@ -27,7 +25,11 @@ import {
   SearchCollectionSubmissions,
   SetPageNumber,
   SetSearchValue,
-} from '@shared/stores/collections';
+} from '@osf/shared/stores';
+
+import { CollectionsQuerySyncService } from '../../services';
+import { CollectionsHelpDialogComponent } from '../collections-help-dialog/collections-help-dialog.component';
+import { CollectionsMainContentComponent } from '../collections-main-content';
 
 @Component({
   selector: 'osf-collections-discover',

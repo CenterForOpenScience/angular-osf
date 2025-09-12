@@ -7,8 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Step, StepItem, StepPanel } from 'primeng/stepper';
 import { Tooltip } from 'primeng/tooltip';
 
-import { forkJoin } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { filter, forkJoin } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';

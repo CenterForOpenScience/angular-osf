@@ -83,6 +83,7 @@ export class GoogleFilePickerComponent implements OnInit {
 
   public createPicker(): void {
     if (!this.isPickerConfigured) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const google = (window as any).google;
 
     const googlePickerView = new google.picker.DocsView(google.picker.ViewId.DOCS);
@@ -132,6 +133,7 @@ export class GoogleFilePickerComponent implements OnInit {
   }
 
   pickerCallback(data: GoogleFilePickerModel) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (data.action === (window as any).google.picker.Action.PICKED) {
       this.#filePickerCallback(data.docs[0]);
     }

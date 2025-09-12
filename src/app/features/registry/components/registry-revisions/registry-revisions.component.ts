@@ -6,9 +6,9 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, computed, HostBinding, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { RegistryOverview } from '@osf/features/registry/models';
-import { RegistrationReviewStates } from '@osf/shared/enums';
-import { RevisionReviewStates } from '@shared/enums';
+import { RegistrationReviewStates, RevisionReviewStates } from '@osf/shared/enums';
+
+import { RegistryOverview } from '../../models';
 
 @Component({
   selector: 'osf-registry-revisions',

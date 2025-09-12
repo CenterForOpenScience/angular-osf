@@ -26,6 +26,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
+import { SetCurrentFolder } from '@osf/features/files/store';
 import { PreprintFileSource } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import {
@@ -36,14 +37,13 @@ import {
   FetchProjectFilesByLink,
   PreprintStepperSelectors,
   ReuploadFile,
-  SetCurrentFolder,
   SetSelectedPreprintFileSource,
   UploadFile,
 } from '@osf/features/preprints/store/preprint-stepper';
-import { FilesTreeComponent, IconComponent } from '@shared/components';
-import { StringOrNull } from '@shared/helpers';
-import { FilesTreeActions, OsfFile } from '@shared/models';
-import { CustomConfirmationService, ToastService } from '@shared/services';
+import { FilesTreeComponent, IconComponent } from '@osf/shared/components';
+import { StringOrNull } from '@osf/shared/helpers';
+import { FilesTreeActions, OsfFile } from '@osf/shared/models';
+import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 
 @Component({
   selector: 'osf-file-step',

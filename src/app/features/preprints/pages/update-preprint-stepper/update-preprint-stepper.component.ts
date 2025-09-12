@@ -21,26 +21,24 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { ResetState } from '@osf/features/files/store';
+import { StepperComponent } from '@osf/shared/components';
+import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@osf/shared/helpers';
+import { CanDeactivateComponent, StepOption } from '@osf/shared/models';
+import { BrandService } from '@osf/shared/services';
+
 import {
   AuthorAssertionsStepComponent,
   MetadataStepComponent,
   ReviewStepComponent,
   SupplementsStepComponent,
   TitleAndAbstractStepComponent,
-} from '@osf/features/preprints/components';
-import { updatePreprintSteps } from '@osf/features/preprints/constants';
-import { PreprintSteps } from '@osf/features/preprints/enums';
-import { GetPreprintProviderById, PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
-import {
-  FetchPreprintById,
-  PreprintStepperSelectors,
-  ResetState,
-  SetSelectedPreprintProviderId,
-} from '@osf/features/preprints/store/preprint-stepper';
-import { BrowserTabHelper, HeaderStyleHelper, IS_WEB } from '@osf/shared/helpers';
-import { StepperComponent } from '@shared/components';
-import { CanDeactivateComponent, StepOption } from '@shared/models';
-import { BrandService } from '@shared/services';
+} from '../../components';
+import { updatePreprintSteps } from '../../constants';
+import { PreprintSteps } from '../../enums';
+import { FetchPreprintById } from '../../store/preprint';
+import { GetPreprintProviderById, PreprintProvidersSelectors } from '../../store/preprint-providers';
+import { PreprintStepperSelectors, SetSelectedPreprintProviderId } from '../../store/preprint-stepper';
 
 @Component({
   selector: 'osf-update-preprint-stepper',

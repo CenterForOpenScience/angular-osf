@@ -10,9 +10,9 @@ import { forkJoin, of } from 'rxjs';
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
-import { CreateCollectionSubmission } from '@osf/features/collections/store/add-to-collection/add-to-collection.actions';
+import { CreateCollectionSubmission } from '@osf/features/collections/store/add-to-collection';
 import { UpdateProjectPublicStatus } from '@osf/features/project/overview/store';
-import { ToastService } from '@shared/services';
+import { ToastService } from '@osf/shared/services';
 
 @Component({
   selector: 'osf-add-to-collection-confirmation-dialog',

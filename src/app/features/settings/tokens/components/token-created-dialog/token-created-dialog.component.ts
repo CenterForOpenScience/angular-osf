@@ -16,7 +16,7 @@ import {
   viewChild,
 } from '@angular/core';
 
-import { CopyButtonComponent } from '@shared/components';
+import { CopyButtonComponent } from '@osf/shared/components';
 
 @Component({
   selector: 'osf-token-created-dialog',

@@ -10,13 +10,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal
 import { ActivatedRoute } from '@angular/router';
 
 import { ENVIRONMENT } from '@core/constants/environment.token';
-import { CustomPaginatorComponent } from '@shared/components';
-import { ACTIVITY_LOGS_DEFAULT_PAGE_SIZE } from '@shared/constants/activity-logs';
+import { CustomPaginatorComponent } from '@osf/shared/components';
+import { ACTIVITY_LOGS_DEFAULT_PAGE_SIZE } from '@osf/shared/constants/activity-logs';
 import {
   ActivityLogsSelectors,
   ClearActivityLogsStore,
   GetRegistrationActivityLogs,
-} from '@shared/stores/activity-logs';
+} from '@osf/shared/stores/activity-logs';
 
 @Component({
   selector: 'osf-registration-recent-activity',

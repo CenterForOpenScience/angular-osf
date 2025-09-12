@@ -11,12 +11,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { SubHeaderComponent } from '@osf/shared/components';
+import { AddonSetupAccountFormComponent, AddonTermsComponent } from '@osf/shared/components/addons';
 import { AddonServiceNames, AddonType, ProjectAddonsStepperValue } from '@osf/shared/enums';
 import { getAddonTypeString, isAuthorizedAddon } from '@osf/shared/helpers';
-import { AddonSetupAccountFormComponent, AddonTermsComponent } from '@shared/components/addons';
-import { AddonModel, AddonTerm, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@shared/models';
-import { AddonOAuthService, ToastService } from '@shared/services';
-import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@shared/stores/addons';
+import { AddonModel, AddonTerm, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@osf/shared/models';
+import { AddonOAuthService, ToastService } from '@osf/shared/services';
+import { AddonsSelectors, CreateAuthorizedAddon, UpdateAuthorizedAddon } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-connect-addon',

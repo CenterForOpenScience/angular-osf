@@ -10,20 +10,17 @@ import { ChangeDetectionStrategy, Component, effect, HostBinding, inject, OnDest
 import { FormControl } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
-import {
-  AdvisoryBoardComponent,
-  BrowseBySubjectsComponent,
-  PreprintServicesComponent,
-} from '@osf/features/preprints/components';
+import { SearchInputComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
+import { BrandService } from '@osf/shared/services';
+
+import { AdvisoryBoardComponent, BrowseBySubjectsComponent, PreprintServicesComponent } from '../../components';
 import {
   GetHighlightedSubjectsByProviderId,
   GetPreprintProviderById,
   GetPreprintProvidersToAdvertise,
   PreprintProvidersSelectors,
-} from '@osf/features/preprints/store/preprint-providers';
-import { SearchInputComponent } from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { BrandService } from '@shared/services';
+} from '../../store/preprint-providers';
 
 import { environment } from 'src/environments/environment';
 

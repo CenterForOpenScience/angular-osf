@@ -13,9 +13,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { PreprintSubmissionItemComponent } from '@osf/features/moderation/components';
-import { PREPRINT_SORT_OPTIONS, SUBMISSION_REVIEW_OPTIONS } from '@osf/features/moderation/constants';
-import { PreprintSubmissionsSort, SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
   CustomPaginatorComponent,
   IconComponent,
@@ -24,8 +21,11 @@ import {
 } from '@osf/shared/components';
 import { Primitive } from '@osf/shared/helpers';
 
+import { PREPRINT_SORT_OPTIONS, SUBMISSION_REVIEW_OPTIONS } from '../../constants';
+import { PreprintSubmissionsSort, SubmissionReviewStatus } from '../../enums';
 import { PreprintSubmission } from '../../models';
 import { GetPreprintSubmissions, PreprintModerationSelectors } from '../../store/preprint-moderation';
+import { PreprintSubmissionItemComponent } from '../preprint-submission-item/preprint-submission-item.component';
 
 @Component({
   selector: 'osf-preprint-submissions',

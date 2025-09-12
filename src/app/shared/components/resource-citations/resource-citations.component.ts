@@ -26,9 +26,9 @@ import {
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { hasViewOnlyParam } from '@shared/helpers';
-import { CitationStyle, CustomOption, ResourceOverview } from '@shared/models';
-import { ToastService } from '@shared/services';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
+import { CitationStyle, CustomOption, ResourceOverview } from '@osf/shared/models';
+import { ToastService } from '@osf/shared/services';
 import {
   CitationsSelectors,
   ClearStyledCitation,
@@ -36,7 +36,7 @@ import {
   GetDefaultCitations,
   GetStyledCitation,
   UpdateCustomCitation,
-} from '@shared/stores';
+} from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-resource-citations',

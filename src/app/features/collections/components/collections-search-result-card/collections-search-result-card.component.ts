@@ -3,8 +3,9 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { collectionFilterNames } from '@osf/features/collections/constants';
-import { CollectionSubmissionWithGuid } from '@shared/models';
+import { CollectionSubmissionWithGuid } from '@osf/shared/models';
+
+import { collectionFilterNames } from '../../constants';
 
 @Component({
   selector: 'osf-collections-search-result-card',

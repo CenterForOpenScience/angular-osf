@@ -16,7 +16,7 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { UpdateProfileSettingsEducation, UserSelectors } from '@osf/core/store/user';
+import { UpdateProfileSettingsEducation, UserSelectors } from '@core/store/user';
 import { CustomValidators } from '@osf/shared/helpers';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 

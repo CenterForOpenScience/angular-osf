@@ -29,10 +29,18 @@ import {
   CollectionsModerationSelectors,
   GetSubmissionsReviewActions,
 } from '@osf/features/moderation/store/collections-moderation';
+import {
+  LoadingSpinnerComponent,
+  MakeDecisionDialogComponent,
+  ResourceMetadataComponent,
+  SubHeaderComponent,
+  ViewOnlyLinkMessageComponent,
+} from '@osf/shared/components';
 import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
 import { MetaTagsService, ToastService } from '@osf/shared/services';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 import {
   ClearCollections,
   ClearWiki,
@@ -48,14 +56,6 @@ import {
   SubjectsSelectors,
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
-import {
-  LoadingSpinnerComponent,
-  MakeDecisionDialogComponent,
-  ResourceMetadataComponent,
-  SubHeaderComponent,
-  ViewOnlyLinkMessageComponent,
-} from '@shared/components';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {
   FilesWidgetComponent,

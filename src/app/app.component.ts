@@ -13,10 +13,13 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { OSFConfigService } from '@core/services/osf-config.service';
 import { GetCurrentUser } from '@core/store/user';
 import { GetEmails, UserEmailsSelectors } from '@core/store/user-emails';
-import { ConfirmEmailComponent } from '@shared/components';
-import { CookieConsentComponent } from '@shared/components/cookie-consent/cookie-consent.component';
 
-import { FullScreenLoaderComponent, ToastComponent } from './shared/components';
+import {
+  ConfirmEmailComponent,
+  CookieConsentComponent,
+  FullScreenLoaderComponent,
+  ToastComponent,
+} from './shared/components';
 
 import { GoogleTagManagerService } from 'angular-google-tag-manager';
 

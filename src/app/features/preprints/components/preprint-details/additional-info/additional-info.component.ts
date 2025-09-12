@@ -10,11 +10,12 @@ import { Tag } from 'primeng/tag';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect } from '@angular/core';
 
-import { CitationSectionComponent } from '@osf/features/preprints/components/preprint-details/citation-section/citation-section.component';
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { ResourceType } from '@shared/enums';
-import { InterpolatePipe } from '@shared/pipes';
-import { FetchSelectedSubjects, SubjectsSelectors } from '@shared/stores';
+import { ResourceType } from '@osf/shared/enums';
+import { InterpolatePipe } from '@osf/shared/pipes';
+import { FetchSelectedSubjects, SubjectsSelectors } from '@osf/shared/stores';
+
+import { CitationSectionComponent } from '../citation-section/citation-section.component';
 
 @Component({
   selector: 'osf-preprint-additional-info',

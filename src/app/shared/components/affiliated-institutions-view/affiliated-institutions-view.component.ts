@@ -3,7 +3,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { Institution } from '@shared/models';
+import { Institution } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-affiliated-institutions-view',

@@ -10,7 +10,7 @@ import { InputMask } from 'primeng/inputmask';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { UserSelectors } from '@osf/core/store/user';
+import { UserSelectors } from '@core/store/user';
 import { InputLimits } from '@osf/shared/constants';
 import { CustomConfirmationService, LoaderService, ToastService } from '@osf/shared/services';
 

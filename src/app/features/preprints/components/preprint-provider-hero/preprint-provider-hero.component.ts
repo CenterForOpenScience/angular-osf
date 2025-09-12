@@ -9,10 +9,10 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from '@angu
 import { FormControl } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { PreprintProviderDetails } from '@osf/features/preprints/models';
-import { SearchInputComponent } from '@shared/components';
-import { DecodeHtmlPipe } from '@shared/pipes';
+import { SearchInputComponent } from '@osf/shared/components';
+import { DecodeHtmlPipe } from '@osf/shared/pipes';
 
+import { PreprintProviderDetails } from '../../models';
 import { PreprintsHelpDialogComponent } from '../preprints-help-dialog/preprints-help-dialog.component';
 
 @Component({

@@ -11,10 +11,10 @@ import { finalize } from 'rxjs';
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { UserSelectors } from '@osf/core/store/user';
+import { UserSelectors } from '@core/store/user';
 import { IdName } from '@osf/shared/models';
 import { LoaderService, ToastService } from '@osf/shared/services';
-import { RegionsSelectors } from '@osf/shared/stores/regions';
+import { RegionsSelectors } from '@osf/shared/stores';
 
 import { UpdateRegion } from '../../store';
 

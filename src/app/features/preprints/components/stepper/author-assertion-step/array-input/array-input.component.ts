@@ -5,7 +5,7 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormArray, FormControl, ReactiveFormsModule, ValidatorFn } from '@angular/forms';
 
-import { TextInputComponent } from '@shared/components';
+import { TextInputComponent } from '@osf/shared/components';
 
 @Component({
   selector: 'osf-array-input',

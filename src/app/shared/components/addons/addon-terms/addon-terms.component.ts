@@ -5,9 +5,9 @@ import { TableModule } from 'primeng/table';
 import { NgClass } from '@angular/common';
 import { Component, computed, input } from '@angular/core';
 
+import { ADDON_TERMS as addonTerms } from '@osf/shared/constants';
 import { isCitationAddon } from '@osf/shared/helpers';
-import { ADDON_TERMS as addonTerms } from '@shared/constants';
-import { AddonModel, AddonTerm, AuthorizedAccountModel } from '@shared/models';
+import { AddonModel, AddonTerm, AuthorizedAccountModel } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-addon-terms',

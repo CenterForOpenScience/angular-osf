@@ -9,9 +9,9 @@ import { Component, computed, inject, input, output } from '@angular/core';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { AddonFormControls, CredentialsFormat } from '@shared/enums';
-import { AddonForm, AddonModel, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@shared/models';
-import { AddonFormService } from '@shared/services/addons/addon-form.service';
+import { AddonFormControls, CredentialsFormat } from '@osf/shared/enums';
+import { AddonForm, AddonModel, AuthorizedAccountModel, AuthorizedAddonRequestJsonApi } from '@osf/shared/models';
+import { AddonFormService } from '@osf/shared/services';
 
 @Component({
   selector: 'osf-addon-setup-account-form',
