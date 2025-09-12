@@ -1,15 +1,11 @@
-import { extractPathAfterDomain } from '@osf/features/admin-institutions/helpers';
 import { ResourceModel } from '@shared/models';
 
+import { extractPathAfterDomain } from '../helpers';
 import { TableCellData, TableCellLink } from '../models';
 
 export function mapPreprintResourceToTableData(preprint: ResourceModel): TableCellData {
   return {
-    title: {
-      text: preprint.title,
-      url: preprint.absoluteUrl,
-      target: '_blank',
-    } as TableCellLink,
+    title: preprint.title,
     link: {
       text: preprint.absoluteUrl.split('/').pop() || preprint.absoluteUrl,
       url: preprint.absoluteUrl,

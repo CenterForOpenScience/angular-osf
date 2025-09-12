@@ -213,7 +213,8 @@ export class FilesService {
 
   getResourceShortInfo(resourceId: string, resourceType: string): Observable<GetShortInfoResponse> {
     const params = {
-      'fields[nodes]': 'title,description,date_created,date_modified',
+      'fields[nodes]': 'title,description,date_created,date_modified,identifiers',
+      embed: 'identifiers',
     };
     return this.jsonApiService.get<GetShortInfoResponse>(`${this.apiUrl}/${resourceType}/${resourceId}/`, params);
   }
@@ -248,9 +249,9 @@ export class FilesService {
       .pipe(map((response) => MapFileCustomMetadata(response)));
   }
 
-  getFileRevisions(link: string, fileId: string): Observable<OsfFileRevision[]> {
+  getFileRevisions(link: string): Observable<OsfFileRevision[]> {
     return this.jsonApiService
-      .get<GetFileRevisionsResponse>(`${link}/${fileId}?revisions=`)
+      .get<GetFileRevisionsResponse>(`${link}?revisions=`)
       .pipe(map((response) => MapFileRevision(response.data)));
   }
 

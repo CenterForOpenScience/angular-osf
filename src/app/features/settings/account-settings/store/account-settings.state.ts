@@ -18,7 +18,6 @@ import {
   EnableTwoFactorAuth,
   GetAccountSettings,
   GetExternalIdentities,
-  GetRegions,
   GetUserInstitutions,
   UpdateAccountSettings,
   UpdateIndexing,
@@ -37,14 +36,6 @@ export class AccountSettingsState {
   private readonly accountSettingsService = inject(AccountSettingsService);
   private readonly institutionsService = inject(InstitutionsService);
   private readonly store = inject(Store);
-
-  @Action(GetRegions)
-  getRegions(ctx: StateContext<AccountSettingsStateModel>) {
-    return this.accountSettingsService.getRegions().pipe(
-      tap((regions) => ctx.patchState({ regions: regions })),
-      catchError((error) => throwError(() => error))
-    );
-  }
 
   @Action(UpdateRegion)
   updateRegion(ctx: StateContext<AccountSettingsStateModel>, action: UpdateRegion) {

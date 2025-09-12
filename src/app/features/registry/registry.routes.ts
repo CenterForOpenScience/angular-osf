@@ -12,6 +12,7 @@ import {
   SubjectsState,
   ViewOnlyLinkState,
 } from '@osf/shared/stores';
+import { ActivityLogsState } from '@shared/stores/activity-logs';
 
 import { AnalyticsState } from '../analytics/store';
 import { RegistriesState } from '../registries/store';
@@ -28,7 +29,7 @@ export const registryRoutes: Routes = [
   {
     path: '',
     component: RegistryComponent,
-    providers: [provideStates([RegistryOverviewState])],
+    providers: [provideStates([RegistryOverviewState, ActivityLogsState])],
     children: [
       {
         path: '',
@@ -40,7 +41,7 @@ export const registryRoutes: Routes = [
         loadComponent: () =>
           import('./pages/registry-overview/registry-overview.component').then((c) => c.RegistryOverviewComponent),
         providers: [
-          provideStates([RegistriesState, CitationsState]),
+          provideStates([RegistriesState, SubjectsState, CitationsState]),
           ProvidersHandlers,
           ProjectsHandlers,
           LicensesHandlers,
@@ -112,6 +113,13 @@ export const registryRoutes: Routes = [
         path: 'wiki',
         loadComponent: () =>
           import('./pages/registry-wiki/registry-wiki.component').then((c) => c.RegistryWikiComponent),
+      },
+      {
+        path: 'recent-activity',
+        loadComponent: () =>
+          import('./pages/registration-recent-activity/registration-recent-activity.component').then(
+            (c) => c.RegistrationRecentActivityComponent
+          ),
       },
     ],
   },

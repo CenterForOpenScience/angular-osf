@@ -5,6 +5,7 @@ export type Content = string | number | null | undefined | MetaTagAuthor;
 export type DataContent = Content | Content[];
 
 export interface MetaTagsData {
+  osfGuid?: string;
   title?: DataContent;
   type?: DataContent;
   description?: DataContent;

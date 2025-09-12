@@ -5,11 +5,7 @@ import { TableCellData, TableCellLink } from '../models';
 
 export function mapRegistrationResourceToTableData(registration: ResourceModel): TableCellData {
   return {
-    title: {
-      text: registration.title,
-      url: registration.absoluteUrl,
-      target: '_blank',
-    } as TableCellLink,
+    title: registration.title,
     link: {
       text: registration.absoluteUrl.split('/').pop() || registration.absoluteUrl,
       url: registration.absoluteUrl,

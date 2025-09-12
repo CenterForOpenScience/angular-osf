@@ -2,6 +2,7 @@ import { Store } from '@ngxs/store';
 
 import { MockComponents, MockProvider } from 'ng-mocks';
 
+import { ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 
 import { BehaviorSubject, of } from 'rxjs';
@@ -15,6 +16,7 @@ import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MOCK_STORE } from '@osf/shared/mocks';
 import { BookmarksSelectors, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@shared/components';
+import { ProjectRedirectDialogService } from '@shared/services';
 
 import { MyProjectsComponent } from './my-projects.component';
 
@@ -31,6 +33,8 @@ describe('MyProjectsComponent', () => {
   beforeEach(async () => {
     isMediumSubject = new BehaviorSubject<boolean>(false);
     queryParamsSubject = new BehaviorSubject<Record<string, string>>({});
+
+    queryParamsSubject.next({});
 
     (MOCK_STORE.selectSignal as jest.Mock).mockImplementation((selector) => {
       if (
@@ -60,9 +64,11 @@ describe('MyProjectsComponent', () => {
       providers: [
         MockProvider(Store, MOCK_STORE),
         MockProvider(DialogService, { open: jest.fn() }),
+        MockProvider(ConfirmationService, { confirm: jest.fn() }),
         MockProvider(ActivatedRoute, { queryParams: queryParamsSubject.asObservable() }),
         MockProvider(Router, { navigate: jest.fn() }),
         MockProvider(IS_MEDIUM, isMediumSubject),
+        MockProvider(ProjectRedirectDialogService, { showProjectRedirectDialog: jest.fn() }),
       ],
     }).compileComponents();
 
@@ -72,6 +78,8 @@ describe('MyProjectsComponent', () => {
     router = TestBed.inject(Router) as jest.Mocked<Router>;
 
     store.dispatch.mockReturnValue(of(undefined));
+
+    (component as any).queryParams = () => ({});
 
     fixture.detectChanges();
   });
@@ -131,8 +139,8 @@ describe('MyProjectsComponent', () => {
     component.handleSearch('query');
 
     expect(router.navigate).toHaveBeenCalledWith([], {
-      relativeTo: expect.anything(),
-      queryParams: { page: '1', size: '25', search: 'query', sortColumn: 'name', sortOrder: 'desc' },
+      relativeTo: TestBed.inject(ActivatedRoute),
+      queryParams: { page: '1', search: 'query' },
     });
   });
 
@@ -143,8 +151,8 @@ describe('MyProjectsComponent', () => {
     component.onPageChange({ first: 30, rows: 15 } as any);
 
     expect(router.navigate).toHaveBeenCalledWith([], {
-      relativeTo: expect.anything(),
-      queryParams: { page: '3', size: '15', sortColumn: 'title', sortOrder: 'asc' },
+      relativeTo: TestBed.inject(ActivatedRoute),
+      queryParams: { page: '3', size: '15' },
     });
   });
 
@@ -154,7 +162,7 @@ describe('MyProjectsComponent', () => {
     component.onSort({ field: 'updated', order: SortOrder.Desc } as any);
 
     expect(router.navigate).toHaveBeenCalledWith([], {
-      relativeTo: expect.anything(),
+      relativeTo: TestBed.inject(ActivatedRoute),
       queryParams: { sortColumn: 'updated', sortOrder: 'desc' },
     });
   });
@@ -166,24 +174,11 @@ describe('MyProjectsComponent', () => {
     component.onTabChange(1);
 
     expect(router.navigate).toHaveBeenCalledWith([], {
-      relativeTo: expect.anything(),
-      queryParams: { page: '1', size: '50' },
+      relativeTo: TestBed.inject(ActivatedRoute),
+      queryParams: { page: '1', size: undefined },
     });
 
     expect(store.dispatch).toHaveBeenCalled();
-  });
-
-  it('should open create project dialog with responsive width', () => {
-    const openSpy = jest.spyOn(component.dialogService, 'open');
-
-    isMediumSubject.next(false);
-    component.createProject();
-    expect(openSpy).toHaveBeenCalledWith(expect.any(Function), expect.objectContaining({ width: '95vw' }));
-
-    openSpy.mockClear();
-    isMediumSubject.next(true);
-    component.createProject();
-    expect(openSpy).toHaveBeenCalledWith(expect.any(Function), expect.objectContaining({ width: '850px' }));
   });
 
   it('should navigate to project and set active project', () => {

@@ -1,7 +1,7 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, input, signal, viewChild } from '@angular/core';
+import { AfterViewInit, Component, effect, ElementRef, input, signal, viewChild } from '@angular/core';
 
 @Component({
   selector: 'osf-truncated-text',
@@ -16,6 +16,14 @@ export class TruncatedTextComponent implements AfterViewInit {
   readonly contentElement = viewChild<ElementRef>('textContent');
   isTextExpanded = signal(false);
   hasOverflowingText = signal(false);
+
+  constructor() {
+    effect(() => {
+      if (this.text()) {
+        this.isTextExpanded.set(false);
+      }
+    });
+  }
 
   ngAfterViewInit() {
     this.checkTextOverflow();

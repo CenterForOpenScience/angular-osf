@@ -1,9 +1,8 @@
 <p-select
+  data-test-select-license
   [options]="licenses()"
   [(ngModel)]="selectedLicense"
   optionLabel="name"
-  styleClass=""
-  appendTo="body"
   [class.md:w-full]="fullWidthSelect()"
   [placeholder]="'shared.license.selectLicense' | translate"
   (onChange)="onSelectLicense($event.value)"

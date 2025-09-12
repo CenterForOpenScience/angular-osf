@@ -6,7 +6,6 @@ export const AUTHENTICATED_MENU_ITEMS: string[] = [
   'my-registrations',
   'my-projects',
   'my-preprints',
-  'registries-overview',
   'settings',
 ];
 
@@ -172,6 +171,13 @@ export const REGISTRATION_MENU_ITEMS: MenuItem[] = [
     visible: true,
     routerLinkActiveOptions: { exact: false },
   },
+  {
+    id: 'registration-recent-activity',
+    label: 'navigation.recentActivity',
+    routerLink: 'recent-activity',
+    visible: true,
+    routerLinkActiveOptions: { exact: true },
+  },
 ];
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -261,14 +267,14 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLink: '/registries/discover',
         label: 'navigation.discover',
         visible: true,
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
       {
         id: 'registries-moderation',
-        routerLink: '/registries/osf/moderation',
+        routerLink: '/registries',
         label: 'navigation.moderation',
         visible: false,
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
       {
         id: 'registry-details',

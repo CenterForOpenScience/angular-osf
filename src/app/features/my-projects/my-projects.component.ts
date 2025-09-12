@@ -24,7 +24,7 @@ import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { MyProjectsTableComponent, SelectComponent, SubHeaderComponent } from '@osf/shared/components';
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM, parseQueryFilterParams } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, QueryParams, TableParameters } from '@osf/shared/models';
@@ -80,12 +80,12 @@ export class MyProjectsComponent implements OnInit {
 
   readonly queryParams = toSignal(this.route.queryParams);
   readonly currentPage = signal(1);
-  readonly currentPageSize = signal(MY_PROJECTS_TABLE_PARAMS.rows);
+  readonly currentPageSize = signal(DEFAULT_TABLE_PARAMS.rows);
   readonly selectedTab = signal(MyProjectsTab.Projects);
   readonly activeProject = signal<MyResourcesItem | null>(null);
   readonly sortColumn = signal<string | undefined>(undefined);
   readonly sortOrder = signal<SortOrder>(SortOrder.Asc);
-  readonly tableParams = signal<TableParameters>({ ...MY_PROJECTS_TABLE_PARAMS, firstRowIndex: 0 });
+  readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS, firstRowIndex: 0 });
 
   readonly projects = select(MyResourcesSelectors.getProjects);
   readonly registrations = select(MyResourcesSelectors.getRegistrations);
@@ -174,7 +174,7 @@ export class MyProjectsComponent implements OnInit {
 
   updateComponentState(params: QueryParams): void {
     untracked(() => {
-      const size = params.size || MY_PROJECTS_TABLE_PARAMS.rows;
+      const size = params.size || DEFAULT_TABLE_PARAMS.rows;
 
       this.currentPage.set(params.page ?? 1);
       this.currentPageSize.set(size);
@@ -200,7 +200,7 @@ export class MyProjectsComponent implements OnInit {
     this.isLoading.set(true);
     const filters = this.createFilters(params);
     const pageNumber = params.page ?? 1;
-    const pageSize = params.size ?? MY_PROJECTS_TABLE_PARAMS.rows;
+    const pageSize = params.size ?? DEFAULT_TABLE_PARAMS.rows;
 
     let action$;
     switch (this.selectedTab()) {

@@ -1,5 +1,5 @@
 import { ProjectOverviewContributor } from '@osf/features/project/overview/models';
-import { RegistrationQuestions, RegistrySubject } from '@osf/features/registry/models';
+import { RegistrationQuestions } from '@osf/features/registry/models';
 import {
   IdTypeModel,
   LicenseModel,
@@ -7,6 +7,7 @@ import {
   MetaAnonymousJsonApi,
   ProviderModel,
   SchemaResponse,
+  SubjectModel,
 } from '@osf/shared/models';
 import { RegistrationReviewStates, RegistryStatus, RevisionReviewStates } from '@shared/enums';
 
@@ -45,7 +46,7 @@ export interface RegistryOverview {
   currentUserIsContributorOrGroupMember: boolean;
   wikiEnabled: boolean;
   region?: IdTypeModel;
-  subjects?: RegistrySubject[];
+  subjects?: SubjectModel[];
   customCitation: string;
   hasData: boolean;
   hasAnalyticCode: boolean;

@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { IdName, Institution } from '@shared/models';
+import { Institution } from '@shared/models';
 
 import { AccountSettings, ExternalIdentity } from '../models';
 
@@ -8,11 +8,6 @@ import { AccountSettingsStateModel } from './account-settings.model';
 import { AccountSettingsState } from './account-settings.state';
 
 export class AccountSettingsSelectors {
-  @Selector([AccountSettingsState])
-  static getRegions(state: AccountSettingsStateModel): IdName[] {
-    return state.regions;
-  }
-
   @Selector([AccountSettingsState])
   static getExternalIdentities(state: AccountSettingsStateModel): ExternalIdentity[] {
     return state.externalIdentities;

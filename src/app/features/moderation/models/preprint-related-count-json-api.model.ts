@@ -1,12 +1,8 @@
+import { PreprintProviderAttributesJsonApi } from '@osf/shared/models';
+
 export interface PreprintRelatedCountJsonApi {
   id: string;
-  attributes: {
-    name: string;
-    reviews_comments_anonymous: boolean;
-    reviews_comments_private: boolean;
-    reviews_workflow: boolean;
-    email_support?: string;
-  };
+  attributes: PreprintProviderAttributesJsonApi;
   relationships: {
     preprints: {
       links: {

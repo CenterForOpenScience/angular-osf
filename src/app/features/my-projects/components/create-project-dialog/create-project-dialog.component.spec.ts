@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { ProjectFormControls } from '@osf/shared/enums';
 import { MOCK_STORE } from '@osf/shared/mocks';
 import { CreateProject, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
@@ -79,11 +79,12 @@ describe('CreateProjectDialogComponent', () => {
     fillValidForm('Title', 'Desc', 'Tpl', 'Storage', ['a1']);
 
     (MOCK_STORE.dispatch as jest.Mock).mockReturnValue(of(undefined));
+    (MOCK_STORE.selectSnapshot as jest.Mock).mockReturnValue([{ id: 'new-project-id' }]);
 
     component.submitForm();
 
     expect(MOCK_STORE.dispatch).toHaveBeenCalledWith(new CreateProject('Title', 'Desc', 'Tpl', 'Storage', ['a1']));
-    expect(MOCK_STORE.dispatch).toHaveBeenCalledWith(new GetMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {}));
-    expect((dialogRef as any).close).toHaveBeenCalled();
+    expect(MOCK_STORE.dispatch).toHaveBeenCalledWith(new GetMyProjects(1, DEFAULT_TABLE_PARAMS.rows, {}));
+    expect((dialogRef as any).close).toHaveBeenCalledWith({ project: { id: 'new-project-id' } });
   });
 });

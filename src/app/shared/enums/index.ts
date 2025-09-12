@@ -14,6 +14,7 @@ export * from './field-type.enum';
 export * from './file-menu-type.enum';
 export * from './filter-type.enum';
 export * from './get-resources-request-type.enum';
+export * from './metadata-record-format.enum';
 export * from './metadata-resource.enum';
 export * from './mode.enum';
 export * from './moderation-decision-form-controls.enum';

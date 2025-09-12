@@ -18,6 +18,7 @@ take up to 60 seconds once the docker build finishes.
 
 - Install git commit template: [Commit Template](docs/commit.template.md).
 - [Volta](#volta)
+- 3rd-party tokens [Configuration](#configuration)
 
 ### Recommended
 
@@ -59,3 +60,9 @@ npm run test:check-coverage-thresholds
 
 OSF uses volta to manage node and npm versions inside of the repository
 Install Volta from [volta](https://volta.sh/) and it will automatically pin Node/npm per the repo toolchain.
+
+## Configuration
+
+OSF uses an `assets/config/config.json` file for any 3rd-party tokens. This file is not committed to the repo.
+
+There is a `assets/config/template.json` file that can be copied to `assets/config/config.json` to store any 3rd-party tokens locally.
