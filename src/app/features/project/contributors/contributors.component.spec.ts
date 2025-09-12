@@ -25,12 +25,14 @@ import { OSFTestingModule } from '@testing/osf.testing.module';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
+import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 describe('ContributorsComponent', () => {
   let component: ContributorsComponent;
   let fixture: ComponentFixture<ContributorsComponent>;
   let routerMock: ReturnType<RouterMockBuilder['build']>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
+  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
 
   const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
 
@@ -42,20 +44,17 @@ describe('ContributorsComponent', () => {
       .withId('test-id')
       .withData({ resourceType: 'project' })
       .build();
+    toastServiceMock = ToastServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
       imports: [ContributorsComponent, OSFTestingModule],
       providers: [
         MockProvider(Router, routerMock),
         MockProvider(ActivatedRoute, activatedRouteMock),
-
         MockProvider(DialogService, {
           open: jest.fn().mockReturnValue({ onClose: of({}) }),
         }),
-        MockProvider(ToastService, {
-          showSuccess: jest.fn(),
-          showError: jest.fn(),
-        }),
+        MockProvider(ToastService, toastServiceMock),
         MockProvider(CustomConfirmationService, {
           confirmDelete: jest.fn(),
         }),

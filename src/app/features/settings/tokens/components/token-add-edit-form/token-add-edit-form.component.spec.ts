@@ -22,6 +22,7 @@ import { CreateToken, TokensSelectors } from '../../store';
 import { TokenAddEditFormComponent } from './token-add-edit-form.component';
 
 import { OSFTestingStoreModule } from '@testing/osf.testing.module';
+import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
 
 describe('TokenAddEditFormComponent', () => {
   let component: TokenAddEditFormComponent;
@@ -32,6 +33,7 @@ describe('TokenAddEditFormComponent', () => {
   let router: Partial<Router>;
   let toastService: jest.Mocked<ToastService>;
   let translateService: jest.Mocked<TranslateService>;
+  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
 
   const mockTokens: TokenModel[] = [MOCK_TOKEN];
 
@@ -69,6 +71,8 @@ describe('TokenAddEditFormComponent', () => {
       navigate: jest.fn(),
     };
 
+    toastServiceMock = ToastServiceMockBuilder.create().build();
+
     await TestBed.configureTestingModule({
       imports: [TokenAddEditFormComponent, ReactiveFormsModule, OSFTestingStoreModule],
       providers: [
@@ -78,11 +82,7 @@ describe('TokenAddEditFormComponent', () => {
         MockProvider(DynamicDialogRef, dialogRef),
         MockProvider(ActivatedRoute, activatedRoute),
         MockProvider(Router, router),
-        MockProvider(ToastService, {
-          showSuccess: jest.fn(),
-          showWarn: jest.fn(),
-          showError: jest.fn(),
-        }),
+        MockProvider(ToastService, toastServiceMock),
       ],
     }).compileComponents();
 

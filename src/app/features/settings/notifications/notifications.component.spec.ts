@@ -20,10 +20,13 @@ import { UserSettings } from '@shared/models';
 import { NotificationsComponent } from './notifications.component';
 import { NotificationSubscriptionSelectors } from './store';
 
+import { ToastServiceMockBuilder } from '@testing/providers/toast-provider.mock';
+
 describe('NotificationsComponent', () => {
   let component: NotificationsComponent;
   let fixture: ComponentFixture<NotificationsComponent>;
   let loaderService: LoaderService;
+  let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
 
   const mockUserSettings: UserSettings = {
     subscribeOsfGeneralEmail: true,
@@ -40,10 +43,7 @@ describe('NotificationsComponent', () => {
   ];
 
   beforeEach(async () => {
-    const mockToastService = {
-      showSuccess: jest.fn(),
-      showError: jest.fn(),
-    };
+    toastServiceMock = ToastServiceMockBuilder.create().build();
 
     const mockLoaderService = {
       show: jest.fn(),
@@ -82,7 +82,7 @@ describe('NotificationsComponent', () => {
         TranslateServiceMock,
         MockProvider(Store, MOCK_STORE),
         MockProvider(LoaderService, mockLoaderService),
-        MockProvider(ToastService, mockToastService),
+        MockProvider(ToastService, toastServiceMock),
         FormBuilder,
       ],
     }).compileComponents();
