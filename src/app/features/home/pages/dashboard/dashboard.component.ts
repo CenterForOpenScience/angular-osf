@@ -27,6 +27,8 @@ import { IS_MEDIUM } from '@osf/shared/helpers';
 import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf/shared/models';
 import { ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
+import {TosConsentBannerComponent} from '../tos-consent-banner/tos-consent-banner.component';
+
 
 @Component({
   selector: 'osf-dashboard',
@@ -38,6 +40,7 @@ import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shar
     IconComponent,
     TranslatePipe,
     LoadingSpinnerComponent,
+    TosConsentBannerComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
