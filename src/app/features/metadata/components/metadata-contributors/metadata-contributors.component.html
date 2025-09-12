@@ -12,7 +12,7 @@
   </div>
 
   @if (contributors()) {
-    <div class="inline-flex gap-1 line-height-2 mt-4">
+    <div class="inline-flex flex-wrap gap-1 line-height-2 mt-4">
       @for (contributor of contributors(); track contributor.id) {
         <div>
           <a class="font-bold" [routerLink]="['/user', contributor.userId]"> {{ contributor.fullName }}</a>
