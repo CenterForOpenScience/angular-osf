@@ -31,9 +31,21 @@
         </ng-template>
       </p-select>
     } @else {
-      <p-button severity="secondary" icon="fas fa-sliders" class="btn-icon-only" (click)="openFilters()"></p-button>
+      <p-button
+        severity="secondary"
+        icon="fas fa-sliders"
+        class="btn-icon-only"
+        (click)="openFilters()"
+        [ariaLabel]="'common.buttons.filter' | translate"
+      ></p-button>
 
-      <p-button severity="secondary" icon="fas fa-filter" class="btn-icon-only" (click)="openSorting()"></p-button>
+      <p-button
+        severity="secondary"
+        icon="fas fa-filter"
+        class="btn-icon-only"
+        (click)="openSorting()"
+        [ariaLabel]="'common.buttons.sort' | translate"
+      ></p-button>
     }
   </div>
 </div>

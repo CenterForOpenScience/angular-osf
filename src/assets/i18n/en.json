@@ -48,7 +48,9 @@
       "editAndResubmit": "Edit And Resubmit",
       "createNewVersion": "Create New Version",
       "leaveThisView": "Leave this view",
-      "addOneMore": "Add One More"
+      "addOneMore": "Add One More",
+      "filter": "Filter",
+      "sort": "Sort"
     },
     "accessibility": {
       "help": "Help",
