@@ -7,11 +7,7 @@
 
           <div class="flex align-items-center gap-2">
             <h2>
-              <<<<<<< HEAD
               <a [href]="resource().absoluteUrl" target="_blank" rel="noopener noreferrer">{{ displayTitle() }}</a>
-              =======
-              <a [href]="resource().absoluteUrl">{{ displayTitle() }}</a>
-              >>>>>>> origin/develop
             </h2>
             @if (isWithdrawn()) {
               <p-tag severity="secondary">{{ 'resourceCard.labels.withdrawn' | translate }}</p-tag>

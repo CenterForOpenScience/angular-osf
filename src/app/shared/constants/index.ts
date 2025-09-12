@@ -9,6 +9,7 @@ export * from './input-limits.const';
 export * from './input-validation-messages.const';
 export * from './language.const';
 export * from './pie-chart-palette';
+export * from './registration-statuses';
 export * from './registry-services-icons.const';
 export * from './resource-card-labels.const';
 export * from './resource-types.const';

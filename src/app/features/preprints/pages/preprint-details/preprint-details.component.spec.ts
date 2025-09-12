@@ -17,6 +17,7 @@ import { ShareAndDownloadComponent } from '@osf/features/preprints/components/pr
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { MOCK_PROVIDER, MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
+import { MetaTagsService } from '@shared/services';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { PreprintDetailsComponent } from './preprint-details.component';
@@ -71,6 +72,7 @@ describe('PreprintDetailsComponent', () => {
         MockProvider(Router),
         MockProvider(ActivatedRoute, mockRoute),
         TranslateServiceMock,
+        MockProvider(MetaTagsService),
       ],
     }).compileComponents();
 

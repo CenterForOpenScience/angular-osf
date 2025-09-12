@@ -28,26 +28,18 @@
   @if (nodeLicense) {
     <p>
       {{ 'resourceCard.labels.license' | translate }}
-      <<<<<<< HEAD
-      <a class="font-bold" [attr.href]="nodeLicense!.absoluteUrl || null" target="_blank" rel="noopener noreferrer">{{
-        nodeLicense!.name
-      }}</a>
-      =======
-      <a class="font-bold" [attr.href]="nodeLicense!.absoluteUrl || null">{{ nodeLicense!.name }}</a>
-      >>>>>>> origin/develop
+      <a class="font-bold" [attr.href]="nodeLicense!.absoluteUrl || null" target="_blank" rel="noopener noreferrer">
+        {{ nodeLicense!.name }}
+      </a>
     </p>
   }
 
   @if (resourceValue.absoluteUrl) {
     <p>
       {{ 'resourceCard.labels.url' | translate }}
-      <<<<<<< HEAD
-      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">{{
-        resourceValue.absoluteUrl
-      }}</a>
-      =======
-      <a class="font-bold" [href]="resourceValue.absoluteUrl">{{ resourceValue.absoluteUrl }}</a>
-      >>>>>>> origin/develop
+      <a class="font-bold" [href]="resourceValue.absoluteUrl" target="_blank" rel="noopener noreferrer">
+        {{ resourceValue.absoluteUrl }}
+      </a>
     </p>
   }
 

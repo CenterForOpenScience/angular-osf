@@ -10,12 +10,6 @@ export class GetRegistryById {
   ) {}
 }
 
-export class GetRegistrySubjects {
-  static readonly type = '[Registry Overview] Get Registry Subjects';
-
-  constructor(public registryId: string) {}
-}
-
 export class GetRegistryInstitutions {
   static readonly type = '[Registry Overview] Get Registry Institutions';
 
