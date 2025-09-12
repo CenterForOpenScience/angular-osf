@@ -16,6 +16,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { CreateProjectDialogComponent } from '@osf/features/my-projects/components';
 import { IconComponent, MyProjectsTableComponent, SubHeaderComponent } from '@osf/shared/components';
+import { ScheduledBannerComponent } from '@osf/shared/components/scheduled-banner/scheduled-banner.component';
 import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
 import { SortOrder } from '@osf/shared/enums';
 import { IS_MEDIUM } from '@osf/shared/helpers';
@@ -24,7 +25,15 @@ import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shar
 
 @Component({
   selector: 'osf-dashboard',
-  imports: [RouterLink, Button, SubHeaderComponent, MyProjectsTableComponent, IconComponent, TranslatePipe],
+  imports: [
+    RouterLink,
+    Button,
+    SubHeaderComponent,
+    MyProjectsTableComponent,
+    IconComponent,
+    TranslatePipe,
+    ScheduledBannerComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   providers: [DialogService],

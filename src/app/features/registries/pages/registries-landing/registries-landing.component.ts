@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 
 import { RegistryServicesComponent } from '@osf/features/registries/components';
 import { GetRegistries, RegistriesSelectors } from '@osf/features/registries/store';
+import { ScheduledBannerComponent } from '@osf/shared/components/scheduled-banner/scheduled-banner.component';
 import {
   LoadingSpinnerComponent,
   ResourceCardComponent,
@@ -30,6 +31,7 @@ import { environment } from 'src/environments/environment';
     ResourceCardComponent,
     LoadingSpinnerComponent,
     SubHeaderComponent,
+    ScheduledBannerComponent,
   ],
   templateUrl: './registries-landing.component.html',
   styleUrl: './registries-landing.component.scss',

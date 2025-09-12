@@ -24,10 +24,9 @@ export class BannersService {
   private jsonApiService = inject(JsonApiService);
 
   /**
-   * Retrieves a list of external storage service addons by type.
+   * Retrieves the current banner
    *
-   * @param addonType - The addon type to fetch (e.g., 'storage').
-   * @returns Observable emitting an array of mapped Addon objects.
+   * @returns Observable emitting a Banner object.
    *
    */
   fetchCurrentBanner(): Observable<Banner> {

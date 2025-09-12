@@ -6,7 +6,7 @@ import { inject, Injectable } from '@angular/core';
 
 import { BannersService } from '@osf/shared/services/banners.service';
 
-import { FetchCurrentScheduledBanners } from './banners.actions';
+import { FetchCurrentScheduledBanner } from './banners.actions';
 import { BannersStateModel } from './banners.model';
 
 @State<BannersStateModel>({
@@ -14,9 +14,9 @@ import { BannersStateModel } from './banners.model';
 })
 @Injectable()
 export class BannersState {
-  bannerService = inject(BannersService);
+  bannersService = inject(BannersService);
 
-  @Action(FetchCurrentScheduledBanners)
+  @Action(FetchCurrentScheduledBanner)
   fetchCurrentScheduledBanner(ctx: StateContext<BannersStateModel>) {
     const state = ctx.getState();
     ctx.patchState({
@@ -25,7 +25,7 @@ export class BannersState {
         isLoading: true,
       },
     });
-    return this.bannerService.fetchCurrentBanner().pipe(
+    return this.bannersService.fetchCurrentBanner().pipe(
       tap((newValue) => {
         ctx.patchState({
           currentBanner: {

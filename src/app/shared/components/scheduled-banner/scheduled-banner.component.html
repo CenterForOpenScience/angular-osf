@@ -1,0 +1,19 @@
+@if (this.shouldShowBanner()) {
+  <div [style.background-color]="this.currentBanner().data.color" class="scheduled-banner-container">
+    <a href="{{ this.currentBanner().data.link }}" target="_blank" rel="noopener noreferrer">
+      @if (this.isMobile()) {
+        <img
+          class="img-responsive"
+          src="{{ this.currentBanner().data.mobilePhoto }}"
+          alt="{{ this.currentBanner().data.mobileAltText }}"
+        />
+      } @else {
+        <img
+          class="img-responsive"
+          src="{{ this.currentBanner().data.defaultPhoto }}"
+          alt="{{ this.currentBanner().data.defaultAltText }}"
+        />
+      }
+    </a>
+  </div>
+}

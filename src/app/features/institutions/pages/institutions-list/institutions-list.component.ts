@@ -27,6 +27,7 @@ import {
   SearchInputComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
+import { ScheduledBannerComponent } from '@osf/shared/components/scheduled-banner/scheduled-banner.component';
 import { TABLE_PARAMS } from '@osf/shared/constants';
 import { parseQueryFilterParams } from '@osf/shared/helpers';
 import { QueryParams } from '@osf/shared/models';
@@ -42,6 +43,7 @@ import { FetchInstitutions, InstitutionsSelectors } from '@osf/shared/stores/ins
     CustomPaginatorComponent,
     LoadingSpinnerComponent,
     RouterLink,
+    ScheduledBannerComponent,
   ],
   templateUrl: './institutions-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
