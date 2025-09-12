@@ -22,6 +22,7 @@ import { ContributorsSelectors, CurrentResourceSelectors, ViewOnlyLinkSelectors 
 import { ContributorsComponent } from './contributors.component';
 
 import { OSFTestingModule } from '@testing/osf.testing.module';
+import { CustomConfirmationServiceMockBuilder } from '@testing/providers/custom-confirmation-provider.mock';
 import { ActivatedRouteMockBuilder } from '@testing/providers/route-provider.mock';
 import { RouterMockBuilder } from '@testing/providers/router-provider.mock';
 import { provideMockStore } from '@testing/providers/store-provider.mock';
@@ -33,6 +34,7 @@ describe('ContributorsComponent', () => {
   let routerMock: ReturnType<RouterMockBuilder['build']>;
   let activatedRouteMock: ReturnType<ActivatedRouteMockBuilder['build']>;
   let toastServiceMock: ReturnType<ToastServiceMockBuilder['build']>;
+  let customConfirmationServiceMock: ReturnType<CustomConfirmationServiceMockBuilder['build']>;
 
   const mockContributors: ContributorModel[] = [MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY];
 
@@ -45,6 +47,7 @@ describe('ContributorsComponent', () => {
       .withData({ resourceType: 'project' })
       .build();
     toastServiceMock = ToastServiceMockBuilder.create().build();
+    customConfirmationServiceMock = CustomConfirmationServiceMockBuilder.create().build();
 
     await TestBed.configureTestingModule({
       imports: [ContributorsComponent, OSFTestingModule],
@@ -55,9 +58,7 @@ describe('ContributorsComponent', () => {
           open: jest.fn().mockReturnValue({ onClose: of({}) }),
         }),
         MockProvider(ToastService, toastServiceMock),
-        MockProvider(CustomConfirmationService, {
-          confirmDelete: jest.fn(),
-        }),
+        MockProvider(CustomConfirmationService, customConfirmationServiceMock),
         MockProvider(ConfirmationService, {}),
         provideMockStore({
           signals: [
