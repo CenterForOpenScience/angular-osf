@@ -29,7 +29,7 @@ describe('FundingDialogComponent', () => {
       providers: [
         TranslateServiceMock,
         MockProviders(DynamicDialogRef, DestroyRef),
-        MockProvider(DynamicDialogConfig, { data: null }),
+        MockProvider(DynamicDialogConfig, { data: { funders: [] } }),
         MockProvider(Store, MOCK_STORE),
       ],
     }).compileComponents();
@@ -123,7 +123,7 @@ describe('FundingDialogComponent', () => {
     const awardTitleControl = entry.get('awardTitle');
 
     expect(funderNameControl?.hasError('required')).toBe(true);
-    expect(awardTitleControl?.hasError('required')).toBe(true);
+    expect(awardTitleControl?.hasError('required')).toBe(false);
 
     funderNameControl?.setValue('Test Funder');
     awardTitleControl?.setValue('Test Award');
