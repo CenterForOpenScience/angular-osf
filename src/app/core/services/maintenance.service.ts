@@ -11,9 +11,10 @@ import { environment } from 'src/environments/environment';
 @Injectable({ providedIn: 'root' })
 export class MaintenanceService {
   private readonly http = inject(HttpClient);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   fetchMaintenanceStatus(): Observable<Maintenance | null> {
-    return this.http.get<{ maintenance?: Maintenance }>(`${environment.apiUrl}/status/`).pipe(
+    return this.http.get<{ maintenance?: Maintenance }>(`${this.apiUrl}/status/`).pipe(
       map((data) => {
         const maintenance = data.maintenance;
         if (maintenance && this.isWithinMaintenanceWindow(maintenance)) {

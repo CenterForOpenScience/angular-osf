@@ -3,7 +3,7 @@ export interface Maintenance {
   message: string;
   start: string;
   end: string;
-  severity?: 'info' | 'warn' | 'error';
+  severity?: MaintenanceSeverity;
 }
 
 export type MaintenanceSeverity = 'info' | 'warn' | 'error';
