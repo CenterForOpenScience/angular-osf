@@ -2,22 +2,21 @@ import { catchError, Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 
-import { Maintenance } from '../models/maintenance.model';
+import { Maintenance, MaintenanceSeverity } from '../models/maintenance.model';
 
 import { environment } from 'src/environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class MaintenanceService {
-  constructor(private http: HttpClient) {}
+  private readonly http = inject(HttpClient);
 
   fetchMaintenanceStatus(): Observable<Maintenance | null> {
     return this.http.get<{ maintenance?: Maintenance }>(`${environment.apiUrl}/status/`).pipe(
       map((data) => {
         const maintenance = data.maintenance;
         if (maintenance && this.isWithinMaintenanceWindow(maintenance)) {
-          // enrich model with severity
           return { ...maintenance, severity: this.getSeverity(maintenance.level) };
         }
         return null;
@@ -26,8 +25,8 @@ export class MaintenanceService {
     );
   }
 
-  getSeverity(level: number): 'info' | 'warn' | 'error' {
-    const map: Record<number, 'info' | 'warn' | 'error'> = { 1: 'info', 2: 'warn', 3: 'error' };
+  getSeverity(level: number): MaintenanceSeverity {
+    const map: Record<number, MaintenanceSeverity> = { 1: 'info', 2: 'warn', 3: 'error' };
     return map[level] ?? 'info';
   }
 

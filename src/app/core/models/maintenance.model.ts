@@ -5,3 +5,5 @@ export interface Maintenance {
   end: string;
   severity?: 'info' | 'warn' | 'error';
 }
+
+export type MaintenanceSeverity = 'info' | 'warn' | 'error';
