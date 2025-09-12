@@ -24,13 +24,15 @@ export class AddonOAuthService {
     deleteAuthorizedAddon: DeleteAuthorizedAddon,
   });
 
+  private boundOnVisibilityChange = this.onVisibilityChange.bind(this);
+
   startOAuthTracking(createdAddon: AuthorizedAccountModel, addonTypeString: string, callbacks: OAuthCallbacks): void {
     this.pendingOauth.set(true);
     this.createdAddon.set(createdAddon);
     this.addonTypeString.set(addonTypeString);
     this.callbacks.set(callbacks);
 
-    document.addEventListener('visibilitychange', this.onVisibilityChange.bind(this));
+    document.addEventListener('visibilitychange', this.boundOnVisibilityChange);
   }
 
   stopOAuthTracking(): void {
@@ -68,7 +70,7 @@ export class AddonOAuthService {
 
   private completeOauthFlow(updatedAddon?: AuthorizedAccountModel): void {
     this.pendingOauth.set(false);
-    document.removeEventListener('visibilitychange', this.onVisibilityChange.bind(this));
+    document.removeEventListener('visibilitychange', this.boundOnVisibilityChange);
 
     if (updatedAddon && this.callbacks()?.onSuccess) {
       const originalAddon = this.createdAddon();
@@ -84,7 +86,7 @@ export class AddonOAuthService {
 
   private cleanupService(): void {
     this.cleanupIncompleteOAuthAddon();
-    document.removeEventListener('visibilitychange', this.onVisibilityChange.bind(this));
+    document.removeEventListener('visibilitychange', this.boundOnVisibilityChange);
     this.resetServiceData();
   }
 
