@@ -279,7 +279,7 @@ export class UserState {
             });
           }
         })
-      )
+      );
   }
 
   @Action(ClearCurrentUser)
