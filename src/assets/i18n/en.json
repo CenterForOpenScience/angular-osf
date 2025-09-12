@@ -48,7 +48,9 @@
       "editAndResubmit": "Edit And Resubmit",
       "createNewVersion": "Create New Version",
       "leaveThisView": "Leave this view",
-      "addOneMore": "Add One More"
+      "addOneMore": "Add One More",
+      "filter": "Filter",
+      "sort": "Sort"
     },
     "accessibility": {
       "help": "Help",
@@ -64,7 +66,9 @@
       "tooltipBtn": "Tooltip button",
       "customizeOptions": "Customize options",
       "toggleProjectVisibility": "Toggle project visibility",
-      "tagInput": "Tag input"
+      "tagInput": "Tag input",
+      "toggleTreeNode": "Toggle tree node",
+      "copyButtonInfo": "Copy to clipboard button"
     },
     "dialogs": {
       "confirmation": "Confirmation"

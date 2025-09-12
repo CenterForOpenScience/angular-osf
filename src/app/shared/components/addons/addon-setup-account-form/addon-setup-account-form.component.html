@@ -13,9 +13,10 @@
       <h2 class="mb-2">
         {{ 'settings.addons.form.fields.secretKey' | translate }}
       </h2>
-      <input
-        class="mb-5"
-        pInputText
+      <p-password
+        styleClass="mb-5 w-full"
+        [feedback]="false"
+        [toggleMask]="true"
         [placeholder]="'settings.addons.form.fields.secretKey' | translate"
         [formControlName]="formControls.SecretKey"
       />
@@ -32,9 +33,10 @@
       <h2 class="mb-2">
         {{ 'settings.addons.form.fields.apiToken' | translate }}
       </h2>
-      <input
-        class="mb-4"
-        pInputText
+      <p-password
+        styleClass="mb-4 w-full"
+        [feedback]="false"
+        [toggleMask]="true"
         [placeholder]="'settings.addons.form.fields.apiToken' | translate"
         [formControlName]="formControls.ApiToken"
       />
@@ -79,9 +81,10 @@
       <h2 class="mb-2">
         {{ 'settings.addons.form.fields.personalAccessToken' | translate }}
       </h2>
-      <input
-        class="mb-4"
-        pInputText
+      <p-password
+        styleClass="mb-4 w-full"
+        [feedback]="false"
+        [toggleMask]="true"
         [placeholder]="'settings.addons.form.fields.personalAccessToken' | translate"
         [formControlName]="formControls.PersonalAccessToken"
       />
@@ -104,6 +107,7 @@
         class="w-10rem btn-full-width"
         (onClick)="handleBack()"
         [disabled]="isSubmitting()"
+        data-test-addon-back-button
       ></p-button>
 
       <p-button
@@ -112,6 +116,7 @@
         type="submit"
         [disabled]="!isFormValid || isSubmitting()"
         [loading]="isSubmitting()"
+        data-test-addon-authorize-button
       ></p-button>
     } @else {
       <p-button
@@ -120,6 +125,7 @@
         class="w-10rem btn-full-width"
         routerLink="/settings/addons"
         [disabled]="isSubmitting()"
+        data-test-addon-cancel-button
       ></p-button>
 
       <p-button
@@ -127,6 +133,7 @@
         [label]="'settings.addons.form.buttons.reconnect' | translate"
         type="submit"
         [disabled]="!isFormValid || isSubmitting()"
+        data-test-addon-reconnect-button
       ></p-button>
     }
   </div>

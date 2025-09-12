@@ -21,6 +21,7 @@ export class CopyButtonComponent {
   tooltip = input<string>('common.buttons.copy');
   label = input<string>('');
   severity = input<SeverityType>('contrast');
+  ariaLabel = input<string>('common.accessibility.copyButtonInfo');
 
   private readonly clipboard = inject(Clipboard);
   private readonly toastService = inject(ToastService);

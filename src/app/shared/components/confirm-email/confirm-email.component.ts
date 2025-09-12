@@ -10,9 +10,10 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { DeleteEmail, UserEmailsSelectors, VerifyEmail } from '@core/store/user-emails';
-import { LoadingSpinnerComponent } from '@osf/shared/components';
 import { AccountEmailModel } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
+
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'osf-confirm-email',

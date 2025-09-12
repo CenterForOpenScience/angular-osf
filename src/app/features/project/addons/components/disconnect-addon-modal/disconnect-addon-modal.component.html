@@ -14,6 +14,7 @@
     severity="info"
     (click)="dialogRef.close()"
     [disabled]="isSubmitting()"
+    data-test-addon-cancel-button
   />
   <p-button
     class="btn-full-width"
@@ -22,5 +23,6 @@
     (onClick)="handleDisconnectAddonAccount()"
     [loading]="isSubmitting()"
     [disabled]="isSubmitting()"
+    data-test-addon-disconnect-button
   />
 </div>

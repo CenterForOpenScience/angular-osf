@@ -41,7 +41,7 @@
     [storage]="currentRootFolder()"
     [isLoading]="isFilesLoading() || isStorageLoading"
     [actions]="filesTreeActions"
-    [resourceId]="this.selectedRoot!"
+    [resourceId]="selectedRoot!"
     [provider]="provider()"
     (entryFileClicked)="navigateToFile($event)"
     (filesPageChange)="onFilesPageChange($event)"

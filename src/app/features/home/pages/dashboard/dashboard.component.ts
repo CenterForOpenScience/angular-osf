@@ -73,7 +73,7 @@ export class DashboardComponent implements OnInit {
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
 
-  protected readonly existsProjects = computed(() => {
+  readonly existsProjects = computed(() => {
     return this.projects().length || !!this.searchControl.value?.length;
   });
 
@@ -207,7 +207,7 @@ export class DashboardComponent implements OnInit {
         closable: true,
       })
       .onClose.pipe(
-        filter((result) => result.project.id),
+        filter((result) => result?.project.id),
         tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),
         takeUntilDestroyed(this.destroyRef)
       )
