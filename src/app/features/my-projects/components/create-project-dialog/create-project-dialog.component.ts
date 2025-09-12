@@ -9,7 +9,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { AddProjectFormComponent } from '@osf/shared/components';
-import { MY_PROJECTS_TABLE_PARAMS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { ProjectFormControls } from '@osf/shared/enums';
 import { CustomValidators } from '@osf/shared/helpers';
 import { ProjectForm } from '@osf/shared/models';
@@ -73,7 +73,7 @@ export class CreateProjectDialogComponent {
         next: () => {
           const projects = this.store.selectSnapshot(MyResourcesSelectors.getProjects);
           const newProject = projects[0];
-          this.actions.getMyProjects(1, MY_PROJECTS_TABLE_PARAMS.rows, {});
+          this.actions.getMyProjects(1, DEFAULT_TABLE_PARAMS.rows, {});
           this.dialogRef.close({ project: newProject });
         },
       });

@@ -1,3 +1,5 @@
+import { TranslatePipe } from '@ngx-translate/core';
+
 import { Button } from 'primeng/button';
 
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
@@ -7,7 +9,7 @@ import { TextInputComponent } from '@shared/components';
 
 @Component({
   selector: 'osf-array-input',
-  imports: [ReactiveFormsModule, Button, TextInputComponent],
+  imports: [ReactiveFormsModule, Button, TextInputComponent, TranslatePipe],
   templateUrl: './array-input.component.html',
   styleUrl: './array-input.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

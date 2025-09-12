@@ -1,13 +1,11 @@
-import { extractPathAfterDomain } from '@osf/features/admin-institutions/helpers';
-import { TableCellData, TableCellLink } from '@osf/features/admin-institutions/models';
 import { ResourceModel } from '@shared/models';
+
+import { extractPathAfterDomain } from '../helpers';
+import { TableCellData, TableCellLink } from '../models';
 
 export function mapProjectResourceToTableCellData(project: ResourceModel): TableCellData {
   return {
-    title: {
-      url: project.absoluteUrl,
-      text: project.title,
-    } as TableCellLink,
+    title: project.title,
     link: {
       url: project.absoluteUrl,
       text: project.absoluteUrl.split('/').pop() || project.absoluteUrl,

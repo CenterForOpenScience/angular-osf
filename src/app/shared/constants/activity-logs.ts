@@ -1,0 +1,1 @@
+export const ACTIVITY_LOGS_DEFAULT_PAGE_SIZE = 10;

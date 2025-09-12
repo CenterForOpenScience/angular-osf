@@ -1,4 +1,5 @@
 export interface MetaTagAuthor {
-  givenName: string;
-  familyName: string;
+  fullName?: string;
+  givenName?: string;
+  familyName?: string;
 }

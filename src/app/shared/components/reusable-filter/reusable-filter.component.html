@@ -12,19 +12,19 @@
         <p-accordion-panel [value]="filter.key">
           <p-accordion-header>{{ getFilterLabel(filter) }}</p-accordion-header>
           <p-accordion-content>
-            @if (getFilterDescription(filter)) {
-              <p class="text-sm text-gray-600 mb-3">{{ getFilterDescription(filter) }}</p>
+            @if (filter.description) {
+              <p class="text-sm text-gray-600 mb-3">{{ filter.description }}</p>
             }
 
-            @if (getFilterHelpLink(filter) && getFilterHelpLinkText(filter)) {
+            @if (filter.helpLink && filter.helpLinkText) {
               <p class="text-sm mb-3">
                 <a
-                  [href]="getFilterHelpLink(filter)"
+                  [href]="filter.helpLink"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="text-primary hover:underline"
                 >
-                  {{ getFilterHelpLinkText(filter) }}
+                  {{ filter.helpLinkText }}
                 </a>
               </p>
             }
@@ -33,9 +33,9 @@
               <osf-generic-filter
                 [options]="getFilterOptions(filter)"
                 [searchResults]="getFilterSearchResults(filter)"
-                [isLoading]="isFilterLoading(filter)"
-                [isPaginationLoading]="isFilterPaginationLoading(filter)"
-                [isSearchLoading]="isFilterSearchLoading(filter)"
+                [isPaginationLoading]="!!filter.isPaginationLoading"
+                [isLoading]="!!filter.isLoading"
+                [isSearchLoading]="!!filter.isSearchLoading"
                 [selectedValue]="getSelectedValue(filter.key)"
                 [placeholder]="getFilterPlaceholder(filter.key) | translate"
                 [filterType]="filter.key"
@@ -58,16 +58,14 @@
               @for (filter of group.filters; track filter.key) {
                 <div class="flex align-items-center gap-2">
                   <p-checkbox
-                    [value]="isIsPresentFilterChecked(filter.key)"
+                    [binary]="true"
+                    [ngModel]="Boolean(selectedValues()[filter.key])"
                     (onChange)="onCheckboxChange($event, filter)"
                     [inputId]="'checkbox-' + filter.key"
                   />
-                  <label [for]="'checkbox-' + filter.key" class="form-check-label cursor-pointer">
-                    {{ getFilterLabel(filter) }}
+                  <label [for]="'checkbox-' + filter.key" class="cursor-pointer m-0">
+                    {{ getFilterLabel(filter) }} ({{ filter.resultCount }})
                   </label>
-                  @if (filter.resultCount) {
-                    <span class="text-sm text-gray-500">({{ filter.resultCount }})</span>
-                  }
                 </div>
               }
             </div>

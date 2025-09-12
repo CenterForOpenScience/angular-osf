@@ -1,17 +1,11 @@
-import { InstitutionUser, TableCellData } from '@osf/features/admin-institutions/models';
+import { InstitutionUser, TableCellData } from '../models';
 
 import { environment } from 'src/environments/environment';
 
 export function mapUserToTableCellData(user: InstitutionUser): TableCellData {
   return {
     id: user.id,
-    userName: user.userName
-      ? {
-          text: user.userName,
-          url: `${environment.webUrl}/${user.userId}`,
-          target: '_blank',
-        }
-      : '-',
+    userName: user.userName || '-',
     department: user.department || '-',
     userLink: {
       text: user.userId,

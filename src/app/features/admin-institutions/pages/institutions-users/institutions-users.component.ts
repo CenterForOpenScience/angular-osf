@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@osf/core/store/user';
 import { SelectComponent } from '@osf/shared/components';
-import { TABLE_PARAMS } from '@osf/shared/constants';
+import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
 import { Primitive } from '@osf/shared/helpers';
 import { SearchFilters } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
@@ -49,7 +49,7 @@ export class InstitutionsUsersComponent {
   });
 
   currentPage = signal(1);
-  currentPageSize = signal(TABLE_PARAMS.rows);
+  currentPageSize = signal(DEFAULT_TABLE_PARAMS.rows);
   first = signal(0);
 
   selectedDepartment = signal<string | null>(null);

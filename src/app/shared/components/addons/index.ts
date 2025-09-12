@@ -1,5 +1,5 @@
-export { AddonCardComponent } from '@shared/components/addons/addon-card/addon-card.component';
-export { AddonCardListComponent } from '@shared/components/addons/addon-card-list/addon-card-list.component';
-export { AddonSetupAccountFormComponent } from '@shared/components/addons/addon-setup-account-form/addon-setup-account-form.component';
-export { AddonTermsComponent } from '@shared/components/addons/addon-terms/addon-terms.component';
-export { StorageItemSelectorComponent } from '@shared/components/addons/storage-item-selector/storage-item-selector.component';
+export { AddonCardComponent } from './addon-card/addon-card.component';
+export { AddonCardListComponent } from './addon-card-list/addon-card-list.component';
+export { AddonSetupAccountFormComponent } from './addon-setup-account-form/addon-setup-account-form.component';
+export { AddonTermsComponent } from './addon-terms/addon-terms.component';
+export { StorageItemSelectorComponent } from './storage-item-selector/storage-item-selector.component';

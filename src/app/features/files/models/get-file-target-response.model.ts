@@ -31,7 +31,11 @@ export interface FileTargetResponse {
       },
       null,
       null,
-      null
+      {
+        html: string;
+        self: string;
+        iri: string;
+      }
     >,
     null
   >;

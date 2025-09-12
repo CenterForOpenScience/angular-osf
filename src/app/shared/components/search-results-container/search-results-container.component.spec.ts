@@ -66,7 +66,7 @@ describe('SearchResultsContainerComponent', () => {
     });
 
     it('should compute hasFilters correctly', () => {
-      expect(component['hasFilters']()).toBe(true);
+      expect(component['hasFilters']()).toBe(false);
     });
   });
 

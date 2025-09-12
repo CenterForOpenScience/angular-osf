@@ -1,7 +1,7 @@
-import { ActivityLog, AsyncStateWithTotalCount } from '@shared/models';
+import { ActivityLogWithDisplay, AsyncStateWithTotalCount } from '@osf/shared/models';
 
 export interface ActivityLogsStateModel {
-  activityLogs: AsyncStateWithTotalCount<ActivityLog[]>;
+  activityLogs: AsyncStateWithTotalCount<ActivityLogWithDisplay[]>;
 }
 
 export const ACTIVITY_LOGS_STATE_DEFAULT: ActivityLogsStateModel = {

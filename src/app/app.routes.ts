@@ -36,11 +36,6 @@ export const routes: Routes = [
         providers: [provideStates([ProjectsState])],
       },
       {
-        path: 'confirm/:userId/:token',
-        loadComponent: () => import('./features/home/home.component').then((mod) => mod.HomeComponent),
-        data: { skipBreadcrumbs: true },
-      },
-      {
         path: 'register',
         canActivate: [redirectIfLoggedInGuard],
         loadComponent: () =>

@@ -69,6 +69,16 @@ export interface PreprintEmbedsJsonApi {
     data: ContributorResponse[];
   };
   license: LicenseResponseJsonApi;
+  identifiers: {
+    data: {
+      id: string;
+      type: string;
+      attributes: {
+        category: string;
+        value: string;
+      };
+    }[];
+  };
 }
 
 export interface PreprintMetaJsonApi {

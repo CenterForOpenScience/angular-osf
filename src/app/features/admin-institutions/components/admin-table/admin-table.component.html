@@ -32,11 +32,12 @@
         [showToggleAll]="false"
         [showClear]="false"
         [dropdownIcon]="'hidden'"
+        [ariaLabel]="'common.accessibility.customizeOptions' | translate"
       >
         <ng-template let-values pTemplate="selectedItems">
           <div class="flex align-items-center gap-2">
-            <i class="fa fa-table-columns text-primary font-bold"></i>
-            <span>{{ 'adminInstitutions.institutionUsers.customize' | translate }}</span>
+            <i class="fas fa-table-columns text-primary text-xl"></i>
+            <span class="text-primary">{{ 'adminInstitutions.institutionUsers.customize' | translate }}</span>
           </div>
         </ng-template>
 
@@ -49,6 +50,7 @@
         icon="fa fa-download text-primary text-xl"
         outlined
         styleClass="grey-border-color"
+        [ariaLabel]="'common.buttons.download' | translate"
         (onClick)="downloadMenu.toggle($event)"
       />
 
@@ -56,11 +58,11 @@
         <a
           pButton
           [href]="reportsLink()"
-          class="p-button p-button-outlined p-button-sm p-06 font-bold grey-border-color child-button-0-padding no-underline"
+          icon="fas fa-chart-pie text-xl"
+          class="p-button p-button-outlined font-bold grey-border-color no-underline"
           target="_blank"
-        >
-          <i class="fa fa-chart-pie text-xl"></i>
-        </a>
+          [attr.aria-label]="'common.buttons.reportsLink' | translate"
+        ></a>
       }
     </div>
   </div>
@@ -112,7 +114,7 @@
                   <a
                     [href]="getLinkUrl(rowData[col.field])"
                     [target]="getLinkTarget(rowData[col.field], col)"
-                    class="text-primary no-underline hover:underline"
+                    class="font-bold no-underline hover:underline"
                   >
                     @if (col.dateFormat) {
                       {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
@@ -135,6 +137,7 @@
                     [icon]="col.iconClass"
                     variant="text"
                     severity="info"
+                    [ariaLabel]="'common.accessibility.tooltipBtn' | translate"
                     (onClick)="onIconClick(rowData, col)"
                   />
                 }
@@ -158,7 +161,13 @@
 @if (isNextPreviousPagination()) {
   <div class="flex column-gap-2 w-full justify-content-center pt-2">
     @if (firstLink() && prevLink()) {
-      <p-button icon="fas fa-angles-left" severity="contrast" text (click)="switchPage(firstLink())" />
+      <p-button
+        icon="fas fa-angles-left"
+        severity="contrast"
+        text
+        [ariaLabel]="'common.accessibility.goToFirstPage' | translate"
+        (onClick)="switchPage(firstLink())"
+      />
     }
 
     <p-button
@@ -166,6 +175,7 @@
       severity="contrast"
       text
       [disabled]="!prevLink()"
+      [ariaLabel]="'common.accessibility.goToPreviousPage' | translate"
       (onClick)="switchPage(prevLink())"
     />
 
@@ -174,6 +184,7 @@
       severity="contrast"
       text
       [disabled]="!nextLink()"
+      [ariaLabel]="'common.accessibility.goToNextPage' | translate"
       (onClick)="switchPage(nextLink())"
     />
   </div>

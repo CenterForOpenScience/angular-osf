@@ -1,6 +1,6 @@
 import { TableParameters } from '@shared/models';
 
-export const TABLE_PARAMS: TableParameters = {
+export const DEFAULT_TABLE_PARAMS: TableParameters = {
   rows: 10,
   paginator: true,
   scrollable: false,

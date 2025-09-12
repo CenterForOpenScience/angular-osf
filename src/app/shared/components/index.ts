@@ -3,10 +3,10 @@ export { AffiliatedInstitutionSelectComponent } from './affiliated-institution-s
 export { AffiliatedInstitutionsViewComponent } from './affiliated-institutions-view/affiliated-institutions-view.component';
 export { BarChartComponent } from './bar-chart/bar-chart.component';
 export { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
+export { CookieConsentComponent } from './cookie-consent/cookie-consent.component';
 export { CopyButtonComponent } from './copy-button/copy-button.component';
 export { CustomPaginatorComponent } from './custom-paginator/custom-paginator.component';
 export { DataResourcesComponent } from './data-resources/data-resources.component';
-export { DataciteTrackerComponent } from './datacite-tracker/datacite-tracker.component';
 export { EducationHistoryComponent } from './education-history/education-history.component';
 export { EducationHistoryDialogComponent } from './education-history-dialog/education-history-dialog.component';
 export { EmploymentHistoryComponent } from './employment-history/employment-history.component';

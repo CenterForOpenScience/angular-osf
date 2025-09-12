@@ -8,6 +8,7 @@ import { inject, Injectable } from '@angular/core';
 import { SetCurrentProvider } from '@osf/core/store/provider/provider.actions';
 import { SetUserAsModerator } from '@osf/core/store/user';
 import { handleSectionError } from '@osf/shared/helpers';
+import { SubjectsService } from '@osf/shared/services';
 
 import { RegistryOverviewService } from '../../services';
 
@@ -16,7 +17,6 @@ import {
   GetRegistryById,
   GetRegistryInstitutions,
   GetRegistryReviewActions,
-  GetRegistrySubjects,
   GetSchemaBlocks,
   MakePublic,
   SetRegistryCustomCitation,
@@ -32,6 +32,7 @@ import { REGISTRY_OVERVIEW_DEFAULTS, RegistryOverviewStateModel } from './regist
 })
 export class RegistryOverviewState {
   private readonly registryOverviewService = inject(RegistryOverviewService);
+  private readonly subjectsService = inject(SubjectsService);
 
   @Action(GetRegistryById)
   getRegistryById(ctx: StateContext<RegistryOverviewStateModel>, action: GetRegistryById) {
@@ -67,32 +68,6 @@ export class RegistryOverviewState {
         },
       }),
       catchError((error) => handleSectionError(ctx, 'registry', error))
-    );
-  }
-
-  @Action(GetRegistrySubjects)
-  getRegistrySubjects(ctx: StateContext<RegistryOverviewStateModel>, action: GetRegistrySubjects) {
-    const state = ctx.getState();
-    ctx.patchState({
-      subjects: {
-        ...state.subjects,
-        isLoading: true,
-      },
-    });
-
-    return this.registryOverviewService.getSubjects(action.registryId).pipe(
-      tap({
-        next: (subjects) => {
-          ctx.patchState({
-            subjects: {
-              data: subjects,
-              isLoading: false,
-              error: null,
-            },
-          });
-        },
-      }),
-      catchError((error) => handleSectionError(ctx, 'subjects', error))
     );
   }
 
