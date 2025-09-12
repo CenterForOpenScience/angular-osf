@@ -32,7 +32,7 @@ describe('ContributorsListComponent', () => {
   it('should have default values', () => {
     expect(component.contributors()).toEqual([]);
     expect(component.isLoading()).toBe(false);
-    expect(component.showCuratorColumn()).toBe(false);
+    expect(component.showCurator()).toBe(false);
   });
 
   it('should accept contributors input', () => {
@@ -54,7 +54,7 @@ describe('ContributorsListComponent', () => {
     fixture.componentRef.setInput('showCuratorColumn', true);
     fixture.detectChanges();
 
-    expect(component.showCuratorColumn()).toBe(true);
+    expect(component.showCurator()).toBe(true);
   });
 
   it('should have permissionsOptions defined', () => {
@@ -97,7 +97,7 @@ describe('ContributorsListComponent', () => {
     fixture.componentRef.setInput('showCuratorColumn', true);
     fixture.detectChanges();
 
-    expect(component.showCuratorColumn()).toBe(true);
+    expect(component.showCurator()).toBe(true);
   });
 
   it('should handle all inputs together', () => {
@@ -110,7 +110,7 @@ describe('ContributorsListComponent', () => {
 
     expect(component.contributors()).toEqual(contributors);
     expect(component.isLoading()).toBe(false);
-    expect(component.showCuratorColumn()).toBe(true);
+    expect(component.showCurator()).toBe(true);
   });
 
   it('should handle empty contributors list', () => {

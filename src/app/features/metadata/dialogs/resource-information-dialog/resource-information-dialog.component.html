@@ -40,7 +40,17 @@
   </div>
 
   <div class="flex justify-content-end gap-2 mt-4">
-    <p-button severity="info" [label]="'common.buttons.cancel' | translate" (onClick)="cancel()" />
-    <p-button type="submit" [label]="'common.buttons.save' | translate" [disabled]="resourceForm.invalid" />
+    <p-button
+      severity="info"
+      [label]="'common.buttons.cancel' | translate"
+      (onClick)="cancel()"
+      data-test-cancel-editing-resource-metadata-button
+    />
+    <p-button
+      type="submit"
+      [label]="'common.buttons.save' | translate"
+      [disabled]="resourceForm.invalid"
+      data-test-save-resource-metadata-button
+    />
   </div>
 </form>

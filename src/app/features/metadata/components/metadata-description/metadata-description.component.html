@@ -7,9 +7,12 @@
         severity="secondary"
         [label]="'common.buttons.edit' | translate"
         (onClick)="openEditDescriptionDialog.emit()"
+        data-test-edit-description-button
       ></p-button>
     }
   </div>
 
-  <p class="mt-4">{{ description() || ('project.overview.metadata.noDescription' | translate) }}</p>
+  <p class="mt-4" data-test-display-description>
+    {{ description() || ('project.overview.metadata.noDescription' | translate) }}
+  </p>
 </p-card>
