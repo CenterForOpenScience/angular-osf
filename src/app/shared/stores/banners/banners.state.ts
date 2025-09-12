@@ -1,9 +1,10 @@
 import { Action, State, StateContext } from '@ngxs/store';
 
-import { tap } from 'rxjs';
+import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/shared/helpers';
 import { BannersService } from '@osf/shared/services/banners.service';
 
 import { FetchCurrentScheduledBanner } from './banners.actions';
@@ -34,6 +35,7 @@ export class BannersState {
             error: null,
           },
         });
+        catchError((error) => handleSectionError(ctx, 'currentBanner', error));
       })
     );
   }

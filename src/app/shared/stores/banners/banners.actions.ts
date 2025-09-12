@@ -1,3 +1,3 @@
 export class FetchCurrentScheduledBanner {
-  static readonly type = '[Banners] Get Current Scheduled Banner';
+  static readonly type = '[Banners] Fetch Current Scheduled Banner';
 }

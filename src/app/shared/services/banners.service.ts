@@ -6,7 +6,8 @@ import { JsonApiResponse } from '@shared/models';
 import { JsonApiService } from '@shared/services';
 
 import { BannerMapper } from '../mappers/banner.mapper';
-import { Banner, BannerJsonApi } from '../models/banners.model';
+import { BannerJsonApi } from '../models/banner.json-api.model';
+import { BannerModel } from '../models/banner.model';
 
 import { environment } from 'src/environments/environment';
 
@@ -29,7 +30,7 @@ export class BannersService {
    * @returns Observable emitting a Banner object.
    *
    */
-  fetchCurrentBanner(): Observable<Banner> {
+  fetchCurrentBanner(): Observable<BannerModel> {
     return this.jsonApiService
       .get<JsonApiResponse<BannerJsonApi, null>>(`${environment.apiDomainUrl}/_/banners/current`)
       .pipe(map((response) => BannerMapper.fromResponse(response.data)));

@@ -1,7 +1,8 @@
-import { Banner, BannerJsonApi } from '../models/banners.model';
+import { BannerJsonApi } from '../models/banner.json-api.model';
+import { BannerModel } from '../models/banner.model';
 
 export class BannerMapper {
-  static fromResponse(response: BannerJsonApi): Banner {
+  static fromResponse(response: BannerJsonApi): BannerModel {
     return {
       id: response.id,
       startDate: new Date(response.attributes.start_date),
