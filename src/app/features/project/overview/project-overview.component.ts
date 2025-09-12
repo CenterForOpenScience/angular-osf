@@ -7,7 +7,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -32,18 +32,20 @@ import {
 import { Mode, ResourceType, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_XSMALL } from '@osf/shared/helpers';
 import { MapProjectOverview } from '@osf/shared/mappers';
-import { ToastService } from '@osf/shared/services';
+import { MetaTagsService, ToastService } from '@osf/shared/services';
 import {
   ClearCollections,
   ClearWiki,
   CollectionsSelectors,
   CurrentResourceSelectors,
+  FetchSelectedSubjects,
   GetBookmarksCollectionId,
   GetCollectionProvider,
   GetConfiguredStorageAddons,
   GetHomeWiki,
   GetLinkedResources,
   GetResourceWithChildren,
+  SubjectsSelectors,
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
@@ -95,7 +97,7 @@ import {
     ViewOnlyLinkMessageComponent,
     ViewOnlyLinkMessageComponent,
   ],
-  providers: [DialogService],
+  providers: [DialogService, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectOverviewComponent implements OnInit {
@@ -108,6 +110,8 @@ export class ProjectOverviewComponent implements OnInit {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   private readonly dataciteService = inject(DataciteService);
+  private readonly metaTags = inject(MetaTagsService);
+  private readonly datePipe = inject(DatePipe);
 
   isMobile = toSignal(inject(IS_XSMALL));
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
@@ -118,6 +122,8 @@ export class ProjectOverviewComponent implements OnInit {
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
   components = select(CurrentResourceSelectors.getResourceWithChildren);
   areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
+  subjects = select(SubjectsSelectors.getSelectedSubjects);
+  areSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
 
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
@@ -140,6 +146,7 @@ export class ProjectOverviewComponent implements OnInit {
     getComponentsTree: GetResourceWithChildren,
     getRootFolders: GetRootFolders,
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
+    getSubjects: FetchSelectedSubjects,
   });
 
   currentProject = select(ProjectOverviewSelectors.getProject);
@@ -177,14 +184,19 @@ export class ProjectOverviewComponent implements OnInit {
 
   resourceOverview = computed(() => {
     const project = this.currentProject();
+    const subjects = this.subjects();
     if (project) {
-      return MapProjectOverview(project, this.isAnonymous());
+      return MapProjectOverview(project, subjects, this.isAnonymous());
     }
     return null;
   });
 
   isLoading = computed(
-    () => this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading()
+    () =>
+      this.isProjectLoading() ||
+      this.isCollectionProviderLoading() ||
+      this.isReviewActionsLoading() ||
+      this.areSubjectsLoading()
   );
 
   currentResource = computed(() => {
@@ -210,6 +222,41 @@ export class ProjectOverviewComponent implements OnInit {
     };
   });
 
+  private readonly effectMetaTags = effect(() => {
+    if (!this.isProjectLoading()) {
+      const metaTagsData = this.metaTagsData();
+      if (metaTagsData) {
+        this.metaTags.updateMetaTags(metaTagsData, this.destroyRef);
+      }
+    }
+  });
+
+  private readonly metaTagsData = computed(() => {
+    const project = this.currentProject();
+    if (!project) return null;
+    const keywords = [...(project.tags || [])];
+    if (project.category) {
+      keywords.push(project.category);
+    }
+    return {
+      osfGuid: project.id,
+      title: project.title,
+      description: project.description,
+      url: project.links?.iri,
+      doi: project.doi,
+      license: project.license?.name,
+      publishedDate: this.datePipe.transform(project.dateCreated, 'yyyy-MM-dd'),
+      modifiedDate: this.datePipe.transform(project.dateModified, 'yyyy-MM-dd'),
+      keywords,
+      institution: project.affiliatedInstitutions?.map((institution) => institution.name),
+      contributors: project.contributors.map((contributor) => ({
+        fullName: contributor.fullName,
+        givenName: contributor.givenName,
+        familyName: contributor.familyName,
+      })),
+    };
+  });
+
   constructor() {
     this.setupCollectionsEffects();
     this.setupCleanup();
@@ -219,6 +266,7 @@ export class ProjectOverviewComponent implements OnInit {
       if (currentProject) {
         const rootParentId = currentProject.rootParentId ?? currentProject.id;
         this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
+        this.actions.getSubjects(currentProject.id, ResourceType.Project);
       }
     });
   }

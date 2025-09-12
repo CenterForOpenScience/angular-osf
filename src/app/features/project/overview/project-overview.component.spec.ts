@@ -11,7 +11,7 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 
-import { ToastService } from '@osf/shared/services';
+import { MetaTagsService, ToastService } from '@osf/shared/services';
 import { GetActivityLogs } from '@shared/stores/activity-logs';
 
 import { ProjectOverviewComponent } from './project-overview.component';
@@ -37,6 +37,7 @@ describe('ProjectOverviewComponent', () => {
         { provide: DialogService, useValue: { open: () => ({ onClose: of(null) }) } },
         { provide: TranslateService, useValue: { instant: (k: string) => k } },
         { provide: ToastService, useValue: { showSuccess: jest.fn() } },
+        { provide: MetaTagsService, useValue: { updateMetaTags: jest.fn() } },
       ],
     }).compileComponents();
 

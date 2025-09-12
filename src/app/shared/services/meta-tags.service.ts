@@ -1,6 +1,11 @@
+import { catchError, map, Observable, of, switchMap, tap } from 'rxjs';
+
 import { DOCUMENT } from '@angular/common';
-import { DestroyRef, Inject, Injectable } from '@angular/core';
+import { DestroyRef, Inject, inject, Injectable } from '@angular/core';
 import { Meta, MetaDefinition, Title } from '@angular/platform-browser';
+
+import { MetadataRecordFormat } from '@osf/shared/enums';
+import { MetadataRecordsService } from '@osf/shared/services';
 
 import { Content, DataContent, HeadTagDef, MetaTagAuthor, MetaTagsData } from '../models/meta-tags';
 
@@ -10,6 +15,8 @@ import { environment } from 'src/environments/environment';
   providedIn: 'root',
 })
 export class MetaTagsService {
+  metadataRecords: MetadataRecordsService = inject(MetadataRecordsService);
+
   private readonly defaultMetaTags: MetaTagsData = {
     type: 'article',
     description: 'Hosted on the OSF',
@@ -80,13 +87,42 @@ export class MetaTagsService {
   private applyMetaTagsData(metaTagsData: MetaTagsData) {
     const combinedData = { ...this.defaultMetaTags, ...metaTagsData };
     const headTags = this.getHeadTags(combinedData);
-    this.applyHeadTags(headTags);
-    this.dispatchZoteroEvent();
+    of(metaTagsData.osfGuid)
+      .pipe(
+        switchMap(
+          (osfid) =>
+            osfid // with an osf id, try getting schema.org json-ld from backend
+              ? this.getSchemaDotOrgJsonLdHeadTag(osfid).pipe(
+                  tap((jsonLdHeadTag) => {
+                    if (jsonLdHeadTag) {
+                      headTags.push(jsonLdHeadTag);
+                    }
+                  }),
+                  catchError(() => of(null)) // if it doesn't work, ignore and continue with given head tags
+                )
+              : of(null) // without osfid, continue with only given head tags
+        ),
+        tap(() => this.applyHeadTags(headTags)),
+        tap(() => this.dispatchZoteroEvent())
+      )
+      .subscribe();
+  }
+
+  private getSchemaDotOrgJsonLdHeadTag(osfid: string): Observable<HeadTagDef | null> {
+    return this.metadataRecords.getMetadataRecord(osfid, MetadataRecordFormat.SchemaDotOrgDataset).pipe(
+      map((jsonLd) =>
+        jsonLd
+          ? {
+              type: 'script' as const,
+              attrs: { type: 'application/ld+json' },
+              content: jsonLd,
+            }
+          : null
+      )
+    );
   }
 
   private getHeadTags(metaTagsData: MetaTagsData): HeadTagDef[] {
-    const headTags: HeadTagDef[] = [];
-
     const identifiers = this.toArray(metaTagsData.url)
       .concat(this.toArray(metaTagsData.doi))
       .concat(this.toArray(metaTagsData.identifier));
@@ -112,7 +148,7 @@ export class MetaTagsService {
       'dct.created': metaTagsData.publishedDate,
       'dc.publisher': metaTagsData.siteName,
       'dc.language': metaTagsData.language,
-      'dc.contributor': metaTagsData.contributors,
+      'dc.creator': metaTagsData.contributors,
       'dc.subject': metaTagsData.keywords,
 
       // Open Graph/Facebook
@@ -140,7 +176,7 @@ export class MetaTagsService {
       'twitter:image:alt': metaTagsData.imageAlt,
     };
 
-    const metaTagsHeadTags = Object.entries(metaTagsDefs)
+    return Object.entries(metaTagsDefs)
       .reduce((acc: HeadTagDef[], [name, content]) => {
         if (content) {
           const contentArray = this.toArray(content);
@@ -156,45 +192,10 @@ export class MetaTagsService {
         return acc;
       }, [])
       .filter((tag) => tag.attrs.content);
-
-    headTags.push(...metaTagsHeadTags);
-
-    if (metaTagsData.contributors) {
-      headTags.push(this.buildPersonScriptTag(metaTagsData.contributors));
-    }
-
-    return headTags;
-  }
-
-  private buildPersonScriptTag(contributors: DataContent): HeadTagDef {
-    const contributorArray = this.toArray(contributors);
-    const contributor = contributorArray
-      .filter((person): person is MetaTagAuthor => typeof person === 'object' && person !== null)
-      .map((person) => ({
-        '@type': 'schema:Person',
-        name: person.fullName,
-        givenName: person.givenName,
-        familyName: person.familyName,
-      }));
-
-    return {
-      type: 'script',
-      content: JSON.stringify({
-        '@context': {
-          dc: 'http://purl.org/dc/elements/1.1/',
-          schema: 'http://schema.org',
-        },
-        '@type': 'schema:CreativeWork',
-        contributor,
-      }),
-      attrs: {
-        type: 'application/ld+json',
-      },
-    };
   }
 
   private buildMetaTagContent(name: string, content: Content): Content {
-    if (['citation_author', 'dc.contributor'].includes(name) && typeof content === 'object') {
+    if (['citation_author', 'dc.creator'].includes(name) && typeof content === 'object') {
       const author = content as MetaTagAuthor;
       return `${author.familyName}, ${author.givenName}`;
     }
