@@ -26,18 +26,14 @@ export class TosConsentBannerComponent {
   readonly actions = createDispatchMap({ acceptTermsOfServiceByUser: AcceptTermsOfServiceByUser });
   readonly currentUser = select(UserSelectors.getCurrentUser);
   acceptedTermsOfServiceChange = computed(() => {
-    return false
     return this.currentUser()?.acceptedTermsOfService;
   });
 
   private readonly toastService = inject(ToastService);
 
-  constructor(
-    private translateService: TranslateService,
-  ) {}
+  private translateService = inject(TranslateService);
 
   onContinue() {
-    this.toastService.showError('requestAccess.alreadyRequestedMessage');
 
     if (!this.acceptedTermsOfService()) {
       this.errorMessage = this.translateService.instant('toast.tos-consent.error-message');

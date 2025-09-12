@@ -1,11 +1,10 @@
 @if (!acceptedTermsOfServiceChange()) {
   <div class="bg-white pb-4 pt-4">
     <div
-      class="tw-w-full p-message-warn tw-rounded-md tw-space-y-3"
-      style="padding: 1.5rem 1.5rem 0.5rem 1.5rem; margin: 1rem; border-radius: 10px"
+      class="tw-w-full p-message-warn tw-rounded-md tw-space-y-3 m-4 pt-6 px-6 pb-2 border-round-lg"
     >
       <div class="tw-flex tw-items-center tw-gap-2">
-        <i class="pi pi-exclamation-triangle tw-text-yellow-600"></i>
+        <i class="fas fa-triangle-exclamation"></i>
         <span class="tw-font-medium">
           {{ 'toast.tos-consent.paragraphPath1' | translate }}
           <a href="{{ 'toast.tos-consent.termsOfUseUrl' | translate }}" target="_blank">{{ 'toast.tos-consent.paragraphPath2' | translate }}</a>
