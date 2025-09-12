@@ -263,7 +263,7 @@ export class UserState {
       return;
     }
 
-    this.userService
+    return this.userService
       .updateUserProfile(currentUser.id, ProfileSettingsKey.User, { acceptedTermsOfService: true })
       .pipe(
         tap((response: User): void => {
@@ -280,7 +280,6 @@ export class UserState {
           }
         })
       )
-      .subscribe();
   }
 
   @Action(ClearCurrentUser)
