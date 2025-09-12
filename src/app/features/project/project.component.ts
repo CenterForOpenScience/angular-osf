@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
@@ -12,9 +12,10 @@ import { HelpScoutService } from '@core/services/help-scout.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProjectComponent implements OnDestroy {
+  private readonly helpScoutService = inject(HelpScoutService);
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full';
 
-  constructor(private helpScoutService: HelpScoutService) {
+  constructor() {
     this.helpScoutService.setResourceType('project');
   }
 

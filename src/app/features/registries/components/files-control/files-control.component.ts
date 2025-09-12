@@ -68,6 +68,7 @@ export class FilesControlComponent implements OnDestroy {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly helpScoutService = inject(HelpScoutService);
 
   readonly files = select(RegistriesSelectors.getFiles);
   readonly filesTotalCount = select(RegistriesSelectors.getFilesTotalCount);
@@ -97,8 +98,8 @@ export class FilesControlComponent implements OnDestroy {
     setMoveFileCurrentFolder: (folder) => this.actions.setMoveFileCurrentFolder(folder),
   };
 
-  constructor(private helpScoutService: HelpScoutService) {
-    this.helpScoutService.setResourceType('preprint');
+  constructor() {
+    this.helpScoutService.setResourceType('files');
     effect(() => {
       const filesLink = this.filesLink();
       if (filesLink) {

@@ -46,6 +46,6 @@ describe('Component: File Control', () => {
   });
 
   it('should called the helpScoutService', () => {
-    expect(helpScountService.setResourceType).toHaveBeenCalledWith('project');
+    expect(helpScountService.setResourceType).toHaveBeenCalledWith('files');
   });
 });

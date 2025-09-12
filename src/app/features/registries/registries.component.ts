@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 import { HelpScoutService } from '@core/services/help-scout.service';
@@ -11,7 +11,8 @@ import { HelpScoutService } from '@core/services/help-scout.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegistriesComponent implements OnDestroy {
-  constructor(private helpScoutService: HelpScoutService) {
+  private readonly helpScoutService = inject(HelpScoutService);
+  constructor() {
     this.helpScoutService.setResourceType('registration');
   }
 

@@ -13,10 +13,11 @@ import { IS_WEB } from '@osf/shared/helpers';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintsComponent implements OnDestroy {
+  private readonly helpScoutService = inject(HelpScoutService);
   readonly isDesktop = toSignal(inject(IS_WEB));
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full';
 
-  constructor(private helpScoutService: HelpScoutService) {
+  constructor() {
     this.helpScoutService.setResourceType('preprint');
   }
 
