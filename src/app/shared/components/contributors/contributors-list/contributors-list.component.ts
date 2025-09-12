@@ -38,12 +38,13 @@ export class ContributorsListComponent {
   isCurrentUserAdminContributor = input<boolean>(true);
 
   remove = output<ContributorModel>();
-
   dialogService = inject(DialogService);
   translateService = inject(TranslateService);
 
   readonly tableParams = signal<TableParameters>({ ...DEFAULT_TABLE_PARAMS });
   readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
+  readonly ModeratorPermission = ModeratorPermission;
+  readonly ContributorPermission = ContributorPermission;
 
   skeletonData: ContributorModel[] = Array.from({ length: 3 }, () => ({}) as ContributorModel);
 
@@ -74,7 +75,4 @@ export class ContributorsListComponent {
       closable: true,
     });
   }
-
-  protected readonly ModeratorPermission = ModeratorPermission;
-  protected readonly ContributorPermission = ContributorPermission;
 }
