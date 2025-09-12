@@ -4,12 +4,13 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { MessageModule } from 'primeng/message';
 
-import { Component, computed, Input } from '@angular/core';
+import {Component, computed, inject, signal} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
 import { AcceptTermsOfServiceByUser } from '@osf/core/store/user';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ToastService } from '@osf/shared/services'
 
 
 @Component({
@@ -19,20 +20,28 @@ import { TranslateModule } from '@ngx-translate/core';
   styleUrls: ['./tos-consent-banner.component.scss'],
 })
 export class TosConsentBannerComponent {
-
-  @Input() acceptedTermsOfService = false;
-
+  acceptedTermsOfService = signal(false);
   errorMessage: string | null = null;
 
   readonly actions = createDispatchMap({ acceptTermsOfServiceByUser: AcceptTermsOfServiceByUser });
   readonly currentUser = select(UserSelectors.getCurrentUser);
   acceptedTermsOfServiceChange = computed(() => {
+    return false
     return this.currentUser()?.acceptedTermsOfService;
   });
 
+  private readonly toastService = inject(ToastService);
+
+  constructor(
+    private translateService: TranslateService,
+  ) {}
+
   onContinue() {
-    if (!this.acceptedTermsOfService) {
-      this.errorMessage = 'We were unable to save your consent.';
+    this.toastService.showError('requestAccess.alreadyRequestedMessage');
+
+    if (!this.acceptedTermsOfService()) {
+      this.errorMessage = this.translateService.instant('toast.tos-consent.error-message');
+      this.toastService.showError(this.errorMessage as string);
       return;
     }
 

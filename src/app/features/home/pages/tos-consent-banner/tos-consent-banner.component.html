@@ -12,31 +12,32 @@
           {{ 'toast.tos-consent.paragraphPath3' | translate }}<a href="{{ 'toast.tos-consent.privacyPolicyUrl' | translate }}" target="_blank">
           {{ 'toast.tos-consent.paragraphPath4' | translate }}</a> </span>
       </div>
-      <div
-        style="display: flex; justify-content: space-between; margin: 0.5rem 0 0 0.5rem"
-        class="tw-flex tw-items-center tw-justify-between"
-      >
-        <div style="display: flex" class="tw-flex tw-items-center tw-gap-2">
-          <p-checkbox
-            [(ngModel)]="acceptedTermsOfService"
-            binary="true"
-            inputId="terms"
-            id="terms"
-            name="terms"
-            [style]="{ 'margin-right': '0.5rem' }"
-          >
-          </p-checkbox>
-          <label for="terms" style="color: #000"> {{ 'toast.tos-consent.haveReadAndAgree' | translate }} </label>
-        </div>
+      <div>
+        <div class="flex flex-column gap-3 border-round-md">
+          <div class="flex align-items-center justify-content-between mt-2">
+            <div class="flex align-items-center gap-2">
+              <p-checkbox
+                [ngModel]="acceptedTermsOfService()"
+                (ngModelChange)="acceptedTermsOfService.set($event)"
+                binary="true"
+                id="terms"
+                inputId="terms"
+                name="terms">
+              </p-checkbox>
+              <label for="terms" class="text-color">
+                {{ 'toast.tos-consent.haveReadAndAgree' | translate }}
+              </label>
+            </div>
 
-        <p-button
-          link
-          label="{{ 'toast.tos-consent.continue' | translate }}"
-          [style]="{ color: '#000' }"
-          [disabled]="!acceptedTermsOfService"
-          (click)="onContinue()"
-        >
-        </p-button>
+            <p-button
+              link
+              label="{{ 'toast.tos-consent.continue' | translate }}"
+              class="text-color"
+              [disabled]="!acceptedTermsOfService()"
+              (click)="onContinue()">
+            </p-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
