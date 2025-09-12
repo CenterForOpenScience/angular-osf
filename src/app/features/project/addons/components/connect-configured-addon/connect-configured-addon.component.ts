@@ -9,7 +9,7 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { StepPanel, StepPanels, Stepper } from 'primeng/stepper';
 import { TableModule } from 'primeng/table';
 
-import { Component, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, DestroyRef, inject, signal, viewChild } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -26,7 +26,13 @@ import {
 } from '@shared/components/addons';
 import { AddonServiceNames } from '@shared/enums';
 import { AddonModel, AddonTerm, AuthorizedAddonRequestJsonApi } from '@shared/models';
-import { AddonDialogService, AddonFormService, AddonOperationInvocationService, ToastService } from '@shared/services';
+import {
+  AddonDialogService,
+  AddonFormService,
+  AddonOAuthService,
+  AddonOperationInvocationService,
+  ToastService,
+} from '@shared/services';
 import {
   AddonsSelectors,
   CreateAddonOperationInvocation,
@@ -71,6 +77,8 @@ export class ConnectConfiguredAddonComponent {
   private addonDialogService = inject(AddonDialogService);
   private addonFormService = inject(AddonFormService);
   private operationInvocationService = inject(AddonOperationInvocationService);
+  private oauthService = inject(AddonOAuthService);
+  private destroyRef = inject(DestroyRef);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private selectedAccount = signal<AuthorizedAccountModel>({} as AuthorizedAccountModel);
@@ -157,6 +165,10 @@ export class ConnectConfiguredAddonComponent {
       this.router.navigate([`${this.baseUrl()}/addons`]);
     }
     this.addon.set(addon);
+
+    this.destroyRef.onDestroy(() => {
+      this.oauthService.stopOAuthTracking();
+    });
   }
 
   handleCreateConfiguredAddon() {
@@ -197,16 +209,11 @@ export class ConnectConfiguredAddonComponent {
 
     this.actions.createAuthorizedAddon(payload, this.addonTypeString()).subscribe({
       complete: () => {
-        const addon = this.createdAuthorizedAddon();
-        if (addon?.authUrl) {
-          this.addonAuthUrl.set(addon.authUrl);
-          window.open(addon.authUrl, '_blank');
-          this.stepper()?.value.set(ProjectAddonsStepperValue.AUTH);
+        const createdAddon = this.createdAuthorizedAddon();
+        if (createdAddon?.authUrl) {
+          this.startOauthFlow(createdAddon);
         } else {
-          this.router.navigate([`${this.baseUrl()}/addons`]);
-          this.toastService.showSuccess('settings.addons.toast.createSuccess', {
-            addonName: AddonServiceNames[addon?.externalServiceName as keyof typeof AddonServiceNames],
-          });
+          this.refreshAccountsForOAuth();
         }
       },
     });
@@ -330,5 +337,37 @@ export class ConnectConfiguredAddonComponent {
     this.selectedStorageItemId.set('');
     this.selectedStorageItemUrl.set('');
     this.selectedResourceType.set('');
+  }
+
+  private startOauthFlow(createdAddon: AuthorizedAccountModel): void {
+    this.addonAuthUrl.set(createdAddon.authUrl!);
+    window.open(createdAddon.authUrl!, '_blank');
+    this.stepper()?.value.set(ProjectAddonsStepperValue.AUTH);
+
+    this.oauthService.startOAuthTracking(createdAddon, this.addonTypeString(), {
+      onSuccess: () => {
+        this.refreshAccountsForOAuth();
+      },
+    });
+  }
+
+  private refreshAccountsForOAuth(): void {
+    const requiredData = this.getDataForAccountCheck();
+    if (!requiredData) return;
+
+    const { addonType, referenceId, currentAddon } = requiredData;
+    const addonConfig = this.getAddonConfig(addonType, referenceId);
+
+    if (!addonConfig) return;
+
+    addonConfig.getAddons().subscribe({
+      complete: () => {
+        const authorizedAddons = addonConfig.getAuthorizedAddons();
+        const matchingAddons = this.findMatchingAddons(authorizedAddons, currentAddon);
+        this.currentAuthorizedAddonAccounts.set(matchingAddons);
+
+        this.stepper()?.value.set(ProjectAddonsStepperValue.CHOOSE_ACCOUNT);
+      },
+    });
   }
 }

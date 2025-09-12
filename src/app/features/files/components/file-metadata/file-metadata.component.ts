@@ -12,6 +12,9 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 
+import { languageCodes } from '@osf/shared/constants';
+import { LanguageCodeModel } from '@osf/shared/models';
+
 import { FileMetadataFields } from '../../constants';
 import { PatchFileMetadata } from '../../models';
 import { FilesSelectors, SetFileMetadata } from '../../store';
@@ -36,6 +39,8 @@ export class FileMetadataComponent {
   fileMetadata = select(FilesSelectors.getFileCustomMetadata);
   isLoading = select(FilesSelectors.isFileMetadataLoading);
 
+  readonly languageCodes = languageCodes;
+
   readonly fileGuid = toSignal(this.route.params.pipe(map((params) => params['fileGuid'])) ?? of(undefined));
 
   metadataFields = FileMetadataFields;
@@ -54,6 +59,11 @@ export class FileMetadataComponent {
     }
   }
 
+  getLanguageName(languageCode: string): string {
+    const language = this.languageCodes.find((lang: LanguageCodeModel) => lang.code === languageCode);
+    return language ? language.name : languageCode;
+  }
+
   openEditFileMetadataDialog() {
     this.dialogService
       .open(EditFileMetadataDialogComponent, {
@@ -63,6 +73,7 @@ export class FileMetadataComponent {
         closeOnEscape: true,
         modal: true,
         closable: true,
+        data: this.fileMetadata(),
       })
       .onClose.pipe(filter((res: PatchFileMetadata) => !!res))
       .subscribe((res) => this.setFileMetadata(res));

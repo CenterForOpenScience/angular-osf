@@ -39,6 +39,8 @@ export class FundingDialogComponent implements OnInit {
 
   private searchSubject = new Subject<string>();
 
+  configFunders = this.config.data?.funders;
+
   constructor() {
     effect(() => {
       const funders = this.fundersList() || [];
@@ -66,9 +68,8 @@ export class FundingDialogComponent implements OnInit {
   ngOnInit(): void {
     this.actions.getFundersList();
 
-    const configFunders = this.config.data?.funders;
-    if (configFunders?.length > 0) {
-      configFunders.forEach((funder: Funder) => {
+    if (this.configFunders?.length > 0) {
+      this.configFunders.forEach((funder: Funder) => {
         this.addFundingEntry({
           funderName: funder.funderName || '',
           funderIdentifier: funder.funderIdentifier || '',
@@ -104,11 +105,10 @@ export class FundingDialogComponent implements OnInit {
       }),
       awardTitle: new FormControl(supplement?.title || supplement?.awardTitle || '', {
         nonNullable: true,
-        validators: [Validators.required],
       }),
       awardUri: new FormControl(supplement?.url || supplement?.awardUri || '', {
         nonNullable: true,
-        validators: [CustomValidators.linkValidator(), CustomValidators.requiredTrimmed()],
+        validators: [CustomValidators.linkValidator()],
       }),
       awardNumber: new FormControl(supplement?.awardNumber || '', {
         nonNullable: true,
@@ -124,6 +124,11 @@ export class FundingDialogComponent implements OnInit {
   removeFundingEntry(index: number): void {
     if (this.fundingEntries.length > 1) {
       this.fundingEntries.removeAt(index);
+    } else {
+      const result: FundingDialogResult = {
+        fundingEntries: [],
+      };
+      this.dialogRef.close(result);
     }
   }
 

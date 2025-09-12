@@ -338,7 +338,7 @@ export class MyProjectsComponent implements OnInit {
         closable: true,
       })
       .onClose.pipe(
-        filter((result) => result.project.id),
+        filter((result) => result?.project.id),
         tap((result) => this.projectRedirectDialogService.showProjectRedirectDialog(result.project.id)),
         takeUntilDestroyed(this.destroyRef)
       )
