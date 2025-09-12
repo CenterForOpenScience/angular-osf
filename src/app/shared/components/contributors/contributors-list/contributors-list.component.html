@@ -70,7 +70,7 @@
         </div>
       </th>
 
-      @if (showCuratorColumn()) {
+      @if (showCurator()) {
         <th>
           <div class="flex align-items-center justify-content-center">
             <span>{{ 'project.contributors.table.headers.curator' | translate }}</span>
@@ -85,8 +85,12 @@
           </div>
         </th>
       }
-      <th>{{ 'project.contributors.table.headers.employment' | translate }}</th>
-      <th>{{ 'project.contributors.table.headers.education' | translate }}</th>
+      @if (showEmployment()) {
+        <th>{{ 'project.contributors.table.headers.employment' | translate }}</th>
+      }
+      @if (showEducation()) {
+        <th>{{ 'project.contributors.table.headers.education' | translate }}</th>
+      }
       <th></th>
     </tr>
   </ng-template>
@@ -112,10 +116,15 @@
         </td>
         <td>
           <div class="flex align-items-center justify-content-center">
-            <p-checkbox variant="filled" binary="true" [(ngModel)]="contributor.isBibliographic"></p-checkbox>
+            <p-checkbox
+              variant="filled"
+              binary="true"
+              [(ngModel)]="contributor.isBibliographic"
+              [ariaLabel]="'project.contributors.table.headers.contributor' | translate"
+            ></p-checkbox>
           </div>
         </td>
-        @if (showCuratorColumn()) {
+        @if (showCurator()) {
           <td>
             <div class="flex align-items-center justify-content-center">
               <p-checkbox
@@ -123,40 +132,45 @@
                 binary="true"
                 [ngModel]="contributor.isCurator"
                 [disabled]="true"
+                [ariaLabel]="'project.contributors.curatorInfo.heading' | translate"
               ></p-checkbox>
             </div>
           </td>
         }
-        <td>
-          @if (contributor.employment?.length) {
-            <a
-              class="font-bold cursor-pointer"
-              tabindex="0"
-              (click)="openEmploymentHistory(contributor)"
-              (keydown.enter)="openEmploymentHistory(contributor)"
-            >
-              {{ 'project.contributors.employment.show' | translate }}
-            </a>
-          } @else {
-            <span>{{ 'project.contributors.employment.none' | translate }}</span>
-          }
-        </td>
-        <td>
-          <div class="flex column-gap-2">
-            @if (contributor.education?.length) {
+        @if (showEmployment()) {
+          <td>
+            @if (contributor.employment?.length) {
               <a
                 class="font-bold cursor-pointer"
                 tabindex="0"
-                (click)="openEducationHistory(contributor)"
-                (keydown.enter)="openEducationHistory(contributor)"
+                (click)="openEmploymentHistory(contributor)"
+                (keydown.enter)="openEmploymentHistory(contributor)"
               >
-                {{ 'project.contributors.education.show' | translate }}
+                {{ 'project.contributors.employment.show' | translate }}
               </a>
             } @else {
-              <span>{{ 'project.contributors.education.none' | translate }}</span>
+              <span>{{ 'project.contributors.employment.none' | translate }}</span>
             }
-          </div>
-        </td>
+          </td>
+        }
+        @if (showEducation()) {
+          <td>
+            <div class="flex column-gap-2">
+              @if (contributor.education?.length) {
+                <a
+                  class="font-bold cursor-pointer"
+                  tabindex="0"
+                  (click)="openEducationHistory(contributor)"
+                  (keydown.enter)="openEducationHistory(contributor)"
+                >
+                  {{ 'project.contributors.education.show' | translate }}
+                </a>
+              } @else {
+                <span>{{ 'project.contributors.education.none' | translate }}</span>
+              }
+            </div>
+          </td>
+        }
         <td>
           <p-button
             class="danger-icon-btn"
@@ -165,6 +179,7 @@
             text
             [ariaLabel]="'common.buttons.delete' | translate"
             (onClick)="removeContributor(contributor)"
+            data-test-remove-contributor-button
           />
         </td>
       </tr>

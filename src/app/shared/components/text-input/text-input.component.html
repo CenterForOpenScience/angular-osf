@@ -1,8 +1,8 @@
 @if (label()) {
-  <label [for]="inputId">{{ label() | translate }}</label>
+  <label [for]="inputId()">{{ label() | translate }}</label>
 }
 <input
-  [id]="inputId"
+  [id]="inputId()"
   pInputText
   [type]="type()"
   [formControl]="control()"

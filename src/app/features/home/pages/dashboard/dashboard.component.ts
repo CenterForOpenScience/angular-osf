@@ -70,7 +70,7 @@ export class DashboardComponent implements OnInit {
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
 
-  protected readonly existsProjects = computed(() => {
+  readonly existsProjects = computed(() => {
     return this.projects().length || !!this.searchControl.value?.length;
   });
 

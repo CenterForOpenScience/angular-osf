@@ -1,0 +1,2 @@
+export const FILE_SIZE_LIMIT = 5 * 1024 * 1024 * 1024;
+export const FILE_COUNT_ATTACHMENTS_LIMIT = 1;

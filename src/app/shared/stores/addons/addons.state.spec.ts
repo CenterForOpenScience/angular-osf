@@ -206,7 +206,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const request = httpMock.expectOne(
-          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name'
+          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
         );
         expect(request.request.method).toBe('GET');
         request.flush(getAddonsAuthorizedStorageData());
@@ -255,7 +255,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         const request = httpMock.expectOne(
-          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name'
+          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
         );
         expect(request.request.method).toBe('GET');
 
@@ -264,7 +264,7 @@ describe('State: Addons', () => {
         expect(result).toEqual({
           data: [],
           error:
-            'Http failure response for https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name: 500 Server Error',
+            'Http failure response for https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format: 500 Server Error',
           isLoading: false,
           isSubmitting: false,
         });
@@ -335,7 +335,7 @@ describe('State: Addons', () => {
         expect(loading()).toBeTruthy();
 
         let request = httpMock.expectOne(
-          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name'
+          'https://addons.staging4.osf.io/v1/user-references/reference-id/authorized_storage_accounts/?include=external-storage-service&fields%5Bexternal-storage-services%5D=external_service_name,credentials_format'
         );
         expect(request.request.method).toBe('GET');
         request.flush(getAddonsAuthorizedStorageData());
