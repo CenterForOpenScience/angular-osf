@@ -28,7 +28,9 @@ export class MaintenanceBannerComponent implements OnInit {
 
   ngOnInit(): void {
     this.dismissed = this.cookies.check(this.cookieName);
-    this.fetchMaintenanceStatus();
+    if (!this.dismissed) {
+      this.fetchMaintenanceStatus();
+    }
   }
 
   private fetchMaintenanceStatus(): void {
