@@ -31,6 +31,7 @@
           severity="secondary"
           class="btn-icon-only"
           icon="fas fa-download"
+          [ariaLabel]="'common.buttons.download' | translate"
           (click)="downloadFile(file()?.links?.download!)"
         />
       }
@@ -40,6 +41,7 @@
             severity="secondary"
             class="btn-icon-only"
             icon="fas fa-file-import"
+            [ariaLabel]="'common.buttons.embed' | translate"
             (click)="embedMenu.toggle($event)"
           />
 
@@ -56,6 +58,7 @@
             severity="secondary"
             class="btn-icon-only"
             icon="fas fa-share-nodes"
+            [ariaLabel]="'common.buttons.share' | translate"
             (click)="shareMenu.toggle($event)"
           />
 
@@ -67,7 +70,13 @@
         </div>
       }
       @if (file() && !isAnonymous()) {
-        <p-button severity="danger" class="btn-icon-only" icon="fas fa-trash" (click)="confirmDelete(file()!)" />
+        <p-button
+          severity="danger"
+          [ariaLabel]="'common.buttons.delete' | translate"
+          class="btn-icon-only"
+          icon="fas fa-trash"
+          (click)="confirmDelete(file()!)"
+        />
       }
     </div>
   </div>
