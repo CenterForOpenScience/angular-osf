@@ -4,6 +4,7 @@ export * from './addons-tab-options.const';
 export * from './contributors.constants';
 export * from './default-citation-titles.const';
 export * from './default-table-params.constants';
+export * from './files-limits.const';
 export * from './filter-placeholders';
 export * from './input-limits.const';
 export * from './input-validation-messages.const';
