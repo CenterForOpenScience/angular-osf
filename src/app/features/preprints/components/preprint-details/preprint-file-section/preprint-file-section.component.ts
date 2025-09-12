@@ -59,9 +59,9 @@ export class PreprintFileSectionComponent {
     const fileVersions = this.fileVersions();
     if (!fileVersions.length) return [];
 
-    return fileVersions.map((version, index) => ({
+    return fileVersions.map((version) => ({
       label: this.translateService.instant('preprints.details.file.downloadVersion', {
-        version: ++index,
+        version: version.id,
         date: this.datePipe.transform(version.dateCreated, 'MM/dd/yyyy hh:mm:ss'),
       }),
       url: version.downloadLink,
