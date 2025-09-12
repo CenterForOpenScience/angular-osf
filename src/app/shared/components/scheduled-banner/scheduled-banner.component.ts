@@ -1,4 +1,4 @@
-import { Store } from '@ngxs/store';
+import { select, Store } from '@ngxs/store';
 
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -14,7 +14,7 @@ import { BannersSelector, FetchCurrentScheduledBanner } from '@osf/shared/stores
 })
 export class ScheduledBannerComponent implements OnInit {
   private readonly store = inject(Store);
-  currentBanner = this.store.selectSignal(BannersSelector.getCurrentBanner);
+  currentBanner = select(BannersSelector.getCurrentBanner);
   isMobile = toSignal(inject(IS_XSMALL));
 
   ngOnInit() {
@@ -22,9 +22,13 @@ export class ScheduledBannerComponent implements OnInit {
   }
 
   shouldShowBanner = computed(() => {
-    const bannerStartTime = this.currentBanner().startDate;
-    const bannderEndTime = this.currentBanner().endDate;
-    const currentTime = new Date();
-    return bannerStartTime < currentTime && bannderEndTime > currentTime;
+    const banner = this.currentBanner();
+    if (banner) {
+      const bannerStartTime = banner.startDate;
+      const bannderEndTime = banner.endDate;
+      const currentTime = new Date();
+      return bannerStartTime < currentTime && bannderEndTime > currentTime;
+    }
+    return false;
   });
 }

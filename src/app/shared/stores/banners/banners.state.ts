@@ -8,10 +8,11 @@ import { handleSectionError } from '@osf/shared/helpers';
 import { BannersService } from '@osf/shared/services/banners.service';
 
 import { FetchCurrentScheduledBanner } from './banners.actions';
-import { BannersStateModel } from './banners.model';
+import { BANNERS_DEFAULTS, BannersStateModel } from './banners.model';
 
 @State<BannersStateModel>({
   name: 'banners',
+  defaults: BANNERS_DEFAULTS,
 })
 @Injectable()
 export class BannersState {
