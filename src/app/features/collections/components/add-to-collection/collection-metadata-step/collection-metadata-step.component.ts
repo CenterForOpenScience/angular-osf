@@ -24,8 +24,8 @@ import { CollectionsSelectors, GetCollectionDetails } from '@shared/stores';
 })
 export class CollectionMetadataStepComponent {
   private readonly filterTypes = collectionFilterTypes;
-  protected readonly collectionFilterOptions = select(CollectionsSelectors.getAllFiltersOptions);
-  protected readonly availableFilterEntries = computed(() => {
+  readonly collectionFilterOptions = select(CollectionsSelectors.getAllFiltersOptions);
+  readonly availableFilterEntries = computed(() => {
     const options = this.collectionFilterOptions();
 
     return this.filterTypes
@@ -46,10 +46,10 @@ export class CollectionMetadataStepComponent {
   stepChange = output<number>();
   metadataSaved = output<FormGroup>();
 
-  protected collectionMetadataForm = signal<FormGroup>(new FormGroup({}));
-  protected collectionMetadataSaved = signal<boolean>(false);
+  collectionMetadataForm = signal<FormGroup>(new FormGroup({}));
+  collectionMetadataSaved = signal<boolean>(false);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     getCollectionDetails: GetCollectionDetails,
   });
 

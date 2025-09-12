@@ -20,7 +20,7 @@ export class CreateFolderDialogComponent {
   readonly nameLimit = InputLimits.name.maxLength;
   readonly nameMinLength = InputLimits.name.minLength;
 
-  protected readonly folderForm = new FormGroup({
+  readonly folderForm = new FormGroup({
     name: new FormControl('', {
       nonNullable: true,
       validators: [CustomValidators.requiredTrimmed()],

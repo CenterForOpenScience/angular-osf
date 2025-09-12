@@ -26,7 +26,8 @@
           </label>
           <p class="mb-1">{{ 'shared.description.message' | translate }}</p>
           <textarea
-            id="registration-description-id"
+            data-test-metadata-description
+            id="project-description-id"
             formControlName="description"
             class="w-full"
             rows="5"
@@ -45,23 +46,15 @@
         <div class="flex justify-content-end"></div>
       </p-card>
     </section>
-    <osf-contributors
-      data-test-registration-contributors-section
-      [control]="metadataForm.controls['contributors']"
-    ></osf-contributors>
-    <osf-registries-license
-      data-test-registration-license-section
-      [control]="metadataForm.controls['license']"
-    ></osf-registries-license>
-    <osf-registries-subjects
-      data-test-registration-subjects-section
-      [control]="metadataForm.controls['subjects']"
-    ></osf-registries-subjects>
-    <osf-registries-tags data-test-registration-tags-section></osf-registries-tags>
+    <osf-contributors [control]="metadataForm.controls['contributors']"></osf-contributors>
+    <osf-registries-affiliated-institution></osf-registries-affiliated-institution>
+    <osf-registries-license [control]="metadataForm.controls['license']"></osf-registries-license>
+    <osf-registries-subjects [control]="metadataForm.controls['subjects']"></osf-registries-subjects>
+    <osf-registries-tags></osf-registries-tags>
     <div class="flex justify-content-end">
       <p-button [label]="'registries.deleteDraft' | translate" severity="danger" (click)="deleteDraft()" class="mr-2">
       </p-button>
-      <p-button [label]="'common.buttons.next' | translate" type="submit"></p-button>
+      <p-button data-test-goto-next-page [label]="'common.buttons.next' | translate" type="submit"></p-button>
     </div>
   </form>
 </section>

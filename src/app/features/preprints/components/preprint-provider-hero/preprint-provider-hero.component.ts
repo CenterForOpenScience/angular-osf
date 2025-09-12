@@ -24,8 +24,8 @@ import { PreprintsHelpDialogComponent } from '../preprints-help-dialog/preprints
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PreprintProviderHeroComponent {
-  protected translateService = inject(TranslateService);
-  protected dialogService = inject(DialogService);
+  translateService = inject(TranslateService);
+  dialogService = inject(DialogService);
 
   searchControl = input<FormControl>(new FormControl());
   preprintProvider = input.required<PreprintProviderDetails | undefined>();

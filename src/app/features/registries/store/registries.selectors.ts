@@ -2,12 +2,12 @@ import { Selector } from '@ngxs/store';
 
 import {
   DraftRegistrationModel,
-  License,
+  LicenseModel,
   OsfFile,
   PageSchema,
   RegistrationCard,
   RegistrationModel,
-  Resource,
+  ResourceModel,
   SchemaResponse,
 } from '@shared/models';
 
@@ -58,7 +58,7 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getRegistries(state: RegistriesStateModel): Resource[] {
+  static getRegistries(state: RegistriesStateModel): ResourceModel[] {
     return state.registries.data;
   }
 
@@ -68,7 +68,7 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getLicenses(state: RegistriesStateModel): License[] {
+  static getLicenses(state: RegistriesStateModel): LicenseModel[] {
     return state.licenses.data;
   }
 
@@ -78,7 +78,7 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getRegistrationLicense(state: RegistriesStateModel): License | null {
+  static getRegistrationLicense(state: RegistriesStateModel): LicenseModel | null {
     return state.licenses.data.find((l) => l.id === state.draftRegistration.data?.license.id) || null;
   }
 
@@ -145,6 +145,11 @@ export class RegistriesSelectors {
   @Selector([RegistriesState])
   static getFiles(state: RegistriesStateModel): OsfFile[] {
     return state.files.data;
+  }
+
+  @Selector([RegistriesState])
+  static getFilesTotalCount(state: RegistriesStateModel): number {
+    return state.files.totalCount;
   }
 
   @Selector([RegistriesState])

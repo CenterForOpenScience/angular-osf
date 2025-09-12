@@ -1,5 +1,5 @@
 import { InstitutionsMapper } from '@shared/mappers';
-import { License } from '@shared/models';
+import { LicenseModel } from '@shared/models';
 
 import { ProjectOverview, ProjectOverviewGetResponseJsonApi } from '../models';
 
@@ -26,7 +26,7 @@ export class ProjectOverviewMapper {
             year: response.attributes.node_license.year,
           }
         : undefined,
-      license: response.embeds.license?.data?.attributes as License,
+      license: response.embeds.license?.data?.attributes as LicenseModel,
       doi: response.attributes.doi,
       publicationDoi: response.attributes.publication_doi,
       analyticsKey: response.attributes.analytics_key,
@@ -78,6 +78,7 @@ export class ProjectOverviewMapper {
         rootFolder: response.relationships?.files?.links?.related?.href,
         iri: response.links?.iri,
       },
+      rootParentId: response.relationships?.root?.data?.id,
     } as ProjectOverview;
   }
 }

@@ -20,7 +20,14 @@
 
   <div>
     <label [for]="'coi-reason'">{{ 'resources.descriptionLabel' | translate }}</label>
-    <textarea class="w-full" pTextarea id="coi-reason" [rows]="3" [formControl]="getControl('description')"></textarea>
+    <textarea
+      class="w-full"
+      pTextarea
+      id="coi-reason"
+      [rows]="3"
+      [formControl]="getControl('description')"
+      [maxlength]="inputLimits.description.maxLength"
+    ></textarea>
   </div>
 
   <div class="flex justify-content-between w-full gap-1">
@@ -29,7 +36,7 @@
         class="btn-full-width"
         [label]="cancelButtonLabel() | translate"
         severity="info"
-        (click)="handleCancel()"
+        (onClick)="handleCancel()"
       />
     }
     <p-button

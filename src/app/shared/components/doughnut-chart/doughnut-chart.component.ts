@@ -48,8 +48,8 @@ export class DoughnutChartComponent implements OnInit {
   showLegend = input<boolean>(false);
   showExpandedSection = input<boolean>(false);
 
-  protected options = signal<ChartOptions>({});
-  protected data = signal<ChartData>({} as ChartData);
+  options = signal<ChartOptions>({});
+  data = signal<ChartData>({} as ChartData);
 
   ngOnInit() {
     this.initChart();

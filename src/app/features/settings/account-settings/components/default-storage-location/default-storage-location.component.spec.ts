@@ -9,10 +9,11 @@ import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserSelectors, UserState } from '@osf/core/store/user';
+import { RegionsSelectors, RegionsState } from '@osf/shared/stores';
 import { MOCK_STORE } from '@shared/mocks';
 import { LoaderService, ToastService } from '@shared/services';
 
-import { AccountSettingsSelectors, AccountSettingsState } from '../../store';
+import { AccountSettingsState } from '../../store';
 
 import { DefaultStorageLocationComponent } from './default-storage-location.component';
 
@@ -37,7 +38,7 @@ describe('DefaultStorageLocationComponent', () => {
       if (selector === UserSelectors.getCurrentUser) {
         return () => signal(mockUser);
       }
-      if (selector === AccountSettingsSelectors.getRegions) {
+      if (selector === RegionsSelectors.getRegions) {
         return () => signal(mockRegions);
       }
       return () => signal(null);
@@ -48,7 +49,7 @@ describe('DefaultStorageLocationComponent', () => {
       providers: [
         MockProvider(ToastService),
         MockProvider(LoaderService, mockLoaderService),
-        provideStore([AccountSettingsState, UserState]),
+        provideStore([AccountSettingsState, UserState, RegionsState]),
         provideHttpClient(),
         provideHttpClientTesting(),
       ],

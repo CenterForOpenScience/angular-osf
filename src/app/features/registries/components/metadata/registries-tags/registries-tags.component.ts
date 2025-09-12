@@ -20,9 +20,9 @@ import { TagsInputComponent } from '@osf/shared/components';
 export class RegistriesTagsComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly draftId = this.route.snapshot.params['id'];
-  protected selectedTags = select(RegistriesSelectors.getSelectedTags);
+  selectedTags = select(RegistriesSelectors.getSelectedTags);
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     updateDraft: UpdateDraft,
   });
 

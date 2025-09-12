@@ -34,18 +34,18 @@ import { ResourceFormComponent } from '../resource-form/resource-form.component'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddResourceDialogComponent {
-  protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
-  protected readonly isCurrentResourceLoading = select(RegistryResourcesSelectors.isCurrentResourceLoading);
-  private translateService = inject(TranslateService);
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly currentResource = select(RegistryResourcesSelectors.getCurrentResource);
+  readonly isCurrentResourceLoading = select(RegistryResourcesSelectors.isCurrentResourceLoading);
+  private readonly translateService = inject(TranslateService);
 
   private dialogConfig = inject(DynamicDialogConfig);
   private registryId: string = this.dialogConfig.data.id;
 
-  protected inputLimits = InputLimits;
-  protected isResourceConfirming = signal(false);
+  inputLimits = InputLimits;
+  isResourceConfirming = signal(false);
 
-  protected form = new FormGroup<RegistryResourceFormModel>({
+  form = new FormGroup<RegistryResourceFormModel>({
     pid: new FormControl<string | null>('', [CustomValidators.requiredTrimmed(), CustomValidators.doiValidator]),
     resourceType: new FormControl<string | null>('', [Validators.required]),
     description: new FormControl<string | null>(''),
@@ -60,7 +60,7 @@ export class AddResourceDialogComponent {
   public resourceOptions = signal<SelectOption[]>(resourceTypeOptions);
   public isPreviewMode = signal<boolean>(false);
 
-  protected readonly RegistryResourceType = RegistryResourceType;
+  readonly RegistryResourceType = RegistryResourceType;
 
   previewResource(): void {
     if (this.form.invalid) {
@@ -78,9 +78,7 @@ export class AddResourceDialogComponent {
       throw new Error(this.translateService.instant('resources.errors.noCurrentResource'));
     }
 
-    this.actions.previewResource(currentResource.id, addResource).subscribe(() => {
-      this.isPreviewMode.set(true);
-    });
+    this.actions.previewResource(currentResource.id, addResource).subscribe(() => this.isPreviewMode.set(true));
   }
 
   backToEdit() {
@@ -88,9 +86,7 @@ export class AddResourceDialogComponent {
   }
 
   onAddResource() {
-    const addResource: ConfirmAddResource = {
-      finalized: true,
-    };
+    const addResource: ConfirmAddResource = { finalized: true };
     const currentResource = this.currentResource();
 
     if (!currentResource) {

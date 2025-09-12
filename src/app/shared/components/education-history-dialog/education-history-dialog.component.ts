@@ -5,8 +5,9 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 
-import { EducationHistoryComponent } from '@osf/shared/components';
 import { Education } from '@osf/shared/models';
+
+import { EducationHistoryComponent } from '../education-history/education-history.component';
 
 @Component({
   selector: 'osf-education-history-dialog',
@@ -16,9 +17,9 @@ import { Education } from '@osf/shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EducationHistoryDialogComponent {
-  protected dialogRef = inject(DynamicDialogRef);
+  dialogRef = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
-  protected readonly educationHistory = signal<Education[]>([]);
+  readonly educationHistory = signal<Education[]>([]);
 
   constructor() {
     this.educationHistory.set(this.config.data);

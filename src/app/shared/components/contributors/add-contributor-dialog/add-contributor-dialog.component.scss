@@ -1,8 +1,7 @@
-@use "styles/variables" as var;
 @use "styles/mixins" as mix;
 
 .label {
-  color: var.$dark-blue-1;
+  color: var(--dark-blue-1);
   margin: 0;
   cursor: pointer;
 }
@@ -13,5 +12,5 @@
 }
 
 .border-divider {
-  border-bottom: 1px solid var.$grey-2;
+  border-bottom: 1px solid var(--grey-2);
 }

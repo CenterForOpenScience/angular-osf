@@ -10,7 +10,6 @@ export const preprintsTableColumns: TableColumn[] = [
   {
     field: 'link',
     header: 'adminInstitutions.projects.link',
-    sortable: false,
     isLink: true,
     linkTarget: '_blank',
   },
@@ -31,28 +30,27 @@ export const preprintsTableColumns: TableColumn[] = [
     header: 'adminInstitutions.projects.doi',
     isLink: true,
     linkTarget: '_blank',
-    sortable: false,
   },
   {
     field: 'license',
     header: 'adminInstitutions.projects.license',
-    sortable: false,
   },
   {
     field: 'contributorName',
     header: 'adminInstitutions.projects.contributorName',
-    sortable: true,
     isLink: true,
     linkTarget: '_blank',
   },
   {
     field: 'viewsLast30Days',
     header: 'adminInstitutions.projects.views',
-    sortable: false,
+    sortable: true,
+    sortField: 'usage.viewCount',
   },
   {
     field: 'downloadsLast30Days',
     header: 'adminInstitutions.preprints.downloadsLastDays',
-    sortable: false,
+    sortable: true,
+    sortField: 'usage.downloadCount',
   },
 ];

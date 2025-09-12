@@ -19,8 +19,8 @@ import { CustomValidators } from '@osf/shared/helpers';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PublicationDoiDialogComponent {
-  protected dialogRef = inject(DynamicDialogRef);
-  protected config = inject(DynamicDialogConfig);
+  dialogRef = inject(DynamicDialogRef);
+  config = inject(DynamicDialogConfig);
 
   publicationDoiControl = new FormControl(this.config.data.publicationDoi || '', {
     nonNullable: true,

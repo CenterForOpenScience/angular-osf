@@ -1,15 +1,15 @@
 import { Selector } from '@ngxs/store';
 
-import { ResourceType } from '@shared/enums';
-import { StringOrNull } from '@shared/helpers';
-import { DiscoverableFilter, Resource, SelectOption } from '@shared/models';
+import { ResourceType } from '@osf/shared/enums';
+import { StringOrNull } from '@osf/shared/helpers';
+import { DiscoverableFilter, FilterOption, ResourceModel } from '@osf/shared/models';
 
 import { GlobalSearchStateModel } from './global-search.model';
 import { GlobalSearchState } from './global-search.state';
 
 export class GlobalSearchSelectors {
   @Selector([GlobalSearchState])
-  static getResources(state: GlobalSearchStateModel): Resource[] {
+  static getResources(state: GlobalSearchStateModel): ResourceModel[] {
     return state.resources.data;
   }
 
@@ -39,17 +39,22 @@ export class GlobalSearchSelectors {
   }
 
   @Selector([GlobalSearchState])
-  static getFirst(state: GlobalSearchStateModel): string {
+  static getSelf(state: GlobalSearchStateModel): string {
+    return state.self;
+  }
+
+  @Selector([GlobalSearchState])
+  static getFirst(state: GlobalSearchStateModel): StringOrNull {
     return state.first;
   }
 
   @Selector([GlobalSearchState])
-  static getNext(state: GlobalSearchStateModel): string {
+  static getNext(state: GlobalSearchStateModel): StringOrNull {
     return state.next;
   }
 
   @Selector([GlobalSearchState])
-  static getPrevious(state: GlobalSearchStateModel): string {
+  static getPrevious(state: GlobalSearchStateModel): StringOrNull {
     return state.previous;
   }
 
@@ -64,12 +69,12 @@ export class GlobalSearchSelectors {
   }
 
   @Selector([GlobalSearchState])
-  static getFilterOptionsCache(state: GlobalSearchStateModel): Record<string, SelectOption[]> {
+  static getFilterOptionsCache(state: GlobalSearchStateModel): Record<string, FilterOption[]> {
     return state.filterOptionsCache;
   }
 
   @Selector([GlobalSearchState])
-  static getFilterSearchCache(state: GlobalSearchStateModel): Record<string, SelectOption[]> {
+  static getFilterSearchCache(state: GlobalSearchStateModel): Record<string, FilterOption[]> {
     return state.filterSearchCache;
   }
 

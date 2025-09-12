@@ -6,10 +6,14 @@ import { Button } from 'primeng/button';
 import { Card } from 'primeng/card';
 import { Select } from 'primeng/select';
 
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { UserSelectors } from '@core/store/user';
 import { SubHeaderComponent } from '@osf/shared/components';
 import { ToastService } from '@osf/shared/services';
 
@@ -27,20 +31,23 @@ export class NewRegistrationComponent {
   private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  protected readonly projects = select(RegistriesSelectors.getProjects);
-  protected readonly providerSchemas = select(RegistriesSelectors.getProviderSchemas);
-  protected readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
-  protected readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
-  protected readonly isProvidersLoading = select(RegistriesSelectors.isProvidersLoading);
-  protected readonly isProjectsLoading = select(RegistriesSelectors.isProjectsLoading);
-  protected actions = createDispatchMap({
+  private destroyRef = inject(DestroyRef);
+
+  readonly projects = select(RegistriesSelectors.getProjects);
+  readonly providerSchemas = select(RegistriesSelectors.getProviderSchemas);
+  readonly isDraftSubmitting = select(RegistriesSelectors.isDraftSubmitting);
+  readonly draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  readonly isProvidersLoading = select(RegistriesSelectors.isProvidersLoading);
+  readonly isProjectsLoading = select(RegistriesSelectors.isProjectsLoading);
+  readonly user = select(UserSelectors.getCurrentUser);
+  actions = createDispatchMap({
     getProjects: GetProjects,
     getProviderSchemas: GetProviderSchemas,
     createDraft: CreateDraft,
   });
 
-  protected readonly providerId = this.route.snapshot.params['providerId'];
-  protected readonly projectId = this.route.snapshot.queryParams['projectId'];
+  readonly providerId = this.route.snapshot.params['providerId'];
+  readonly projectId = this.route.snapshot.queryParams['projectId'];
 
   fromProject = this.projectId !== undefined;
 
@@ -49,8 +56,13 @@ export class NewRegistrationComponent {
     project: [this.projectId || ''],
   });
 
+  private filter$ = new Subject<string>();
+
   constructor() {
-    this.actions.getProjects();
+    const userId = this.user()?.id;
+    if (userId) {
+      this.actions.getProjects(userId, '');
+    }
     this.actions.getProviderSchemas(this.providerId);
     effect(() => {
       const providerSchema = this.draftForm.get('providerSchema')?.value;
@@ -58,12 +70,24 @@ export class NewRegistrationComponent {
         this.draftForm.get('providerSchema')?.setValue(this.providerSchemas()[0]?.id);
       }
     });
+
+    this.filter$
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((value: string) => {
+        if (userId) {
+          this.actions.getProjects(userId, value);
+        }
+      });
   }
 
   onSelectProject(projectId: string) {
     this.draftForm.patchValue({
       project: projectId,
     });
+  }
+
+  onProjectFilter(value: string) {
+    this.filter$.next(value);
   }
 
   onSelectProviderSchema(providerSchemaId: string) {

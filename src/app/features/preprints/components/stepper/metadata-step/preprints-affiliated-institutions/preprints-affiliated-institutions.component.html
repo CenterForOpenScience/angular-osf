@@ -1,17 +1,21 @@
 <p-card>
   <div>
     <h2>{{ 'preprints.preprintStepper.metadata.affiliatedInstitutionsTitle' | translate }}</h2>
-    <p class="m-t-12">
+    <p class="mt-3">
       {{
         'preprints.preprintStepper.metadata.affiliatedInstitutionsDescription'
           | translate: { preprintWord: provider()?.preprintWord }
       }}
     </p>
 
-    <div class="m-t-24">
+    <div class="mt-4">
       <osf-affiliated-institution-select
-        [calculateSelectedItemsMode]="true"
-        (selectInstitutions)="institutionsSelected($event)"
+        [institutions]="userInstitutions()"
+        [isLoading]="
+          areUserInstitutionsLoading() || areResourceInstitutionsLoading() || areResourceInstitutionsSubmitting()
+        "
+        [selectedInstitutions]="selectedInstitutions()"
+        (selectedInstitutionsChange)="onInstitutionsChange($event)"
       />
     </div>
   </div>

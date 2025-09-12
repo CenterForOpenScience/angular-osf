@@ -15,9 +15,9 @@ import {
   CollectionsModerationSelectors,
   CreateCollectionSubmissionAction,
 } from '@osf/features/moderation/store/collections-moderation';
+import { ModerationDecisionFormControls, ModerationSubmitType } from '@osf/shared/enums';
 import { DateAgoPipe } from '@osf/shared/pipes';
-import { ModerationDecisionFormControls, ModerationSubmitType } from '@shared/enums';
-import { CollectionsSelectors } from '@shared/stores';
+import { CollectionsSelectors } from '@osf/shared/stores';
 
 @Component({
   selector: 'osf-make-decision-dialog',
@@ -28,37 +28,37 @@ import { CollectionsSelectors } from '@shared/stores';
 })
 export class MakeDecisionDialogComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  protected readonly config = inject(DynamicDialogConfig);
-  protected readonly dialogRef = inject(DynamicDialogRef);
-  protected readonly ModerationSubmitType = ModerationSubmitType;
-  protected readonly SubmissionReviewStatus = SubmissionReviewStatus;
-  protected readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
-  protected collectionProvider = select(CollectionsSelectors.getCollectionProvider);
-  protected currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
+  readonly config = inject(DynamicDialogConfig);
+  readonly dialogRef = inject(DynamicDialogRef);
+  readonly ModerationSubmitType = ModerationSubmitType;
+  readonly SubmissionReviewStatus = SubmissionReviewStatus;
+  readonly ModerationDecisionFormControls = ModerationDecisionFormControls;
+  collectionProvider = select(CollectionsSelectors.getCollectionProvider);
+  currentReviewAction = select(CollectionsModerationSelectors.getCurrentReviewAction);
 
-  protected isSubmitting = select(CollectionsModerationSelectors.getCollectionSubmissionSubmitting);
-  protected requestForm!: FormGroup;
+  isSubmitting = select(CollectionsModerationSelectors.getCollectionSubmissionSubmitting);
+  requestForm!: FormGroup;
 
-  protected actions = createDispatchMap({
+  actions = createDispatchMap({
     createSubmissionAction: CreateCollectionSubmissionAction,
   });
 
-  protected isHybridModeration = computed(() => {
+  isHybridModeration = computed(() => {
     const provider = this.collectionProvider();
     return provider?.reviewsWorkflow === ModerationType.Hybrid || !provider?.reviewsWorkflow;
   });
 
-  protected isPreModeration = computed(() => {
+  isPreModeration = computed(() => {
     const provider = this.collectionProvider();
     return provider?.reviewsWorkflow === ModerationType.Pre;
   });
 
-  protected isPostModeration = computed(() => {
+  isPostModeration = computed(() => {
     const provider = this.collectionProvider();
     return provider?.reviewsWorkflow === ModerationType.Post;
   });
 
-  protected isPendingStatus = computed(() => {
+  isPendingStatus = computed(() => {
     return this.currentReviewAction()?.toState === SubmissionReviewStatus.Pending;
   });
 
@@ -66,7 +66,7 @@ export class MakeDecisionDialogComponent implements OnInit {
     this.initForm();
   }
 
-  protected handleSubmission(): void {
+  handleSubmission(): void {
     const targetId = this.currentReviewAction()?.targetId;
     if (this.requestForm.valid && targetId) {
       const formData = this.requestForm.value;

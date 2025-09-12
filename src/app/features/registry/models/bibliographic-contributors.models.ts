@@ -1,4 +1,3 @@
-import { InstitutionUsersLinksJsonApi } from '@osf/features/admin-institutions/models';
 import { MetaJsonApi } from '@osf/shared/models';
 
 export interface BibliographicContributorJsonApi {
@@ -74,7 +73,6 @@ export interface BibliographicContributorJsonApi {
 export interface BibliographicContributorsResponse {
   data: BibliographicContributorJsonApi[];
   meta: MetaJsonApi;
-  links: InstitutionUsersLinksJsonApi;
 }
 
 export interface NodeBibliographicContributor {

@@ -5,7 +5,7 @@ import {
   Institution,
   InstitutionsJsonApiResponse,
   JsonApiResponseWithMeta,
-  License,
+  LicenseModel,
   LicensesOption,
   MetaAnonymousJsonApi,
 } from '@osf/shared/models';
@@ -35,7 +35,7 @@ export interface ProjectOverview {
   tags: string[];
   accessRequestsEnabled: boolean;
   nodeLicense?: LicensesOption;
-  license?: License;
+  license?: LicenseModel;
   doi?: string;
   publicationDoi?: string;
   storage?: {
@@ -63,6 +63,7 @@ export interface ProjectOverview {
     rootFolder: string;
     iri: string;
   };
+  rootParentId?: string;
 }
 
 export interface ProjectOverviewSubject {
@@ -204,6 +205,12 @@ export interface ProjectOverviewGetResponseJsonApi {
         related: {
           href: string;
         };
+      };
+    };
+    root?: {
+      data: {
+        id: string;
+        type: string;
       };
     };
   };

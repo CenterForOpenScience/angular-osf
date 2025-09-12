@@ -1,4 +1,5 @@
 export { MOCK_ADDON } from './addon.mock';
+export * from './analytics.mock';
 export { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from './cedar-metadata-data-template-json-api.mock';
 export * from './contributors.mock';
 export * from './custom-сonfirmation.service.mock';
@@ -8,6 +9,7 @@ export { MOCK_EMPLOYMENT } from './employment.mock';
 export * from './employment.mock';
 export * from './filters.mock';
 export { MOCK_FUNDERS } from './funder.mock';
+export { MOCK_INSTITUTION } from './institution.mock';
 export * from './license.mock';
 export { MOCK_LICENSE } from './license.mock';
 export { LoaderServiceMock } from './loader-service.mock';

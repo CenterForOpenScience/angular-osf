@@ -25,8 +25,8 @@ export class ProjectSettingNotificationsComponent {
 
   allAccordionData: RightControl[] | undefined = [];
 
-  protected readonly subscriptionEvent = SubscriptionEvent;
-  protected subscriptionFrequencyOptions = Object.entries(SubscriptionFrequency).map(([key, value]) => ({
+  readonly subscriptionEvent = SubscriptionEvent;
+  subscriptionFrequencyOptions = Object.entries(SubscriptionFrequency).map(([key, value]) => ({
     label: key,
     value,
   }));

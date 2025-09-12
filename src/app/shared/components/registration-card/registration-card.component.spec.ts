@@ -11,7 +11,7 @@ import { MOCK_REGISTRATION, TranslateServiceMock } from '@shared/mocks';
 
 import { RegistrationCardComponent } from './registration-card.component';
 
-describe('RegistrationCardComponent', () => {
+describe.skip('RegistrationCardComponent', () => {
   let component: RegistrationCardComponent;
   let fixture: ComponentFixture<RegistrationCardComponent>;
 

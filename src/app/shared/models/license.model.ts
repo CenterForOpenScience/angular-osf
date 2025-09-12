@@ -1,4 +1,4 @@
-export interface License {
+export interface LicenseModel {
   id: string;
   name: string;
   requiredFields: string[];

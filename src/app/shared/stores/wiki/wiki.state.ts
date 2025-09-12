@@ -21,53 +21,11 @@ import {
   ToggleMode,
   UpdateWikiPreviewContent,
 } from './wiki.actions';
-import { WikiStateModel } from './wiki.model';
-
-const DefaultState: WikiStateModel = {
-  homeWikiContent: {
-    data: '',
-    isLoading: false,
-    error: null,
-  },
-  wikiModes: {
-    view: true,
-    edit: false,
-    compare: false,
-  },
-  wikiList: {
-    data: [],
-    isLoading: false,
-    error: null,
-    isSubmitting: false,
-  },
-  componentsWikiList: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  currentWikiId: '',
-  previewContent: '',
-  wikiVersions: {
-    data: [],
-    isLoading: false,
-    error: null,
-  },
-  versionContent: {
-    data: '',
-    isLoading: false,
-    error: null,
-  },
-  compareVersionContent: {
-    data: '',
-    isLoading: false,
-    error: null,
-  },
-  isAnonymous: false,
-};
+import { WIKI_STATE_DEFAULTS, WikiStateModel } from './wiki.model';
 
 @State<WikiStateModel>({
   name: 'wiki',
-  defaults: { ...DefaultState },
+  defaults: WIKI_STATE_DEFAULTS,
 })
 @Injectable()
 export class WikiState {
@@ -152,18 +110,7 @@ export class WikiState {
 
   @Action(ClearWiki)
   clearWiki(ctx: StateContext<WikiStateModel>) {
-    ctx.patchState({
-      homeWikiContent: { ...DefaultState.homeWikiContent },
-      wikiModes: { ...DefaultState.wikiModes },
-      wikiList: { ...DefaultState.wikiList },
-      componentsWikiList: { ...DefaultState.componentsWikiList },
-      currentWikiId: DefaultState.currentWikiId,
-      previewContent: DefaultState.previewContent,
-      wikiVersions: { ...DefaultState.wikiVersions },
-      versionContent: { ...DefaultState.versionContent },
-      compareVersionContent: { ...DefaultState.compareVersionContent },
-      isAnonymous: DefaultState.isAnonymous,
-    });
+    ctx.setState(WIKI_STATE_DEFAULTS);
   }
 
   @Action(ToggleMode)

@@ -30,6 +30,7 @@ export class MyResourcesService {
   };
 
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiUrl = `${environment.apiDomainUrl}/v2`;
 
   private buildCommonParams(
     filters?: MyResourcesSearchFilters,
@@ -88,11 +89,9 @@ export class MyResourcesService {
 
     let url;
     if (searchMode === ResourceSearchMode.All) {
-      url = environment.apiUrl + '/' + endpoint + '/';
+      url = `${this.apiUrl}/${endpoint}/`;
     } else {
-      url = endpoint.startsWith('collections/')
-        ? environment.apiUrl + '/' + endpoint
-        : environment.apiUrl + '/users/me/' + endpoint;
+      url = endpoint.startsWith('collections/') ? `${this.apiUrl}/${endpoint}` : `${this.apiUrl}/users/me/${endpoint}`;
     }
 
     return this.jsonApiService.get<MyResourcesResponseJsonApi>(url, params).pipe(
@@ -204,7 +203,7 @@ export class MyResourcesService {
     };
 
     return this.jsonApiService
-      .post<JsonApiResponse<MyResourcesItemGetResponseJsonApi, null>>(`${environment.apiUrl}/nodes/`, payload, params)
+      .post<JsonApiResponse<MyResourcesItemGetResponseJsonApi, null>>(`${this.apiUrl}/nodes/`, payload, params)
       .pipe(map((response) => MyResourcesMapper.fromResponse(response.data)));
   }
 }

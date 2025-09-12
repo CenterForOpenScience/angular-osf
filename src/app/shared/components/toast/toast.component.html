@@ -1,4 +1,4 @@
-<p-toast class="toast-container" position="top-right" [preventOpenDuplicates]="true">
+<p-toast class="toast-container" position="top-right" [preventOpenDuplicates]="true" key="osf">
   <ng-template let-message pTemplate="message">
     <div class="font-medium w-full">{{ message.summary | translate: message.data?.translationParams }}</div>
   </ng-template>

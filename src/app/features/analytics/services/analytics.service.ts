@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AnalyticsService {
   private readonly jsonApiService = inject(JsonApiService);
+  private readonly apiDomainUrl = environment.apiDomainUrl;
 
   private readonly urlMap = new Map<ResourceType, string>([
     [ResourceType.Project, 'nodes'],
@@ -23,7 +24,7 @@ export class AnalyticsService {
   ]);
 
   getMetrics(resourceId: string, dateRange: string): Observable<AnalyticsMetricsModel> {
-    const baseUrl = `${environment.apiDomainUrl}/_/metrics/query/node_analytics`;
+    const baseUrl = `${this.apiDomainUrl}/_/metrics/query/node_analytics`;
 
     return this.jsonApiService
       .get<JsonApiResponse<AnalyticsMetricsGetResponse, null>>(`${baseUrl}/${resourceId}/${dateRange}/`)
@@ -32,7 +33,7 @@ export class AnalyticsService {
 
   getRelatedCounts(resourceId: string, resourceType: ResourceType) {
     const resourcePath = this.urlMap.get(resourceType);
-    const url = `${environment.apiUrl}/${resourcePath}/${resourceId}/?related_counts=true`;
+    const url = `${this.apiDomainUrl}/v2/${resourcePath}/${resourceId}/?related_counts=true`;
 
     return this.jsonApiService
       .get<RelatedCountsGetResponse>(url)

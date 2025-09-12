@@ -15,6 +15,7 @@ import { environment } from 'src/environments/environment';
 })
 export class DuplicatesService {
   private jsonApiService = inject(JsonApiService);
+  private apiUrl = `${environment.apiDomainUrl}/v2`;
 
   fetchAllDuplicates(
     resourceId: string,
@@ -36,7 +37,7 @@ export class DuplicatesService {
     }
 
     return this.jsonApiService
-      .get<ResponseJsonApi<DuplicateJsonApi[]>>(`${environment.apiUrl}/${resourceType}/${resourceId}/forks/`, params)
+      .get<ResponseJsonApi<DuplicateJsonApi[]>>(`${this.apiUrl}/${resourceType}/${resourceId}/forks/`, params)
       .pipe(map((res) => DuplicatesMapper.fromDuplicatesJsonApiResponse(res)));
   }
 }

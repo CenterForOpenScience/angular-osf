@@ -23,6 +23,8 @@
 
     <p-select
       id="resourceLanguage"
+      [filter]="true"
+      filterBy="label"
       [formControl]="resourceForm.controls.resourceLanguage"
       [options]="languageOptions"
       optionLabel="label"
@@ -30,11 +32,15 @@
       [placeholder]="'common.buttons.select' | translate"
       appendTo="body"
       class="w-full"
-    />
+    >
+      <ng-template #item let-option>
+        <span class="w-25rem">{{ option.label }}</span>
+      </ng-template>
+    </p-select>
   </div>
 
-  <div class="flex justify-content-end gap-2">
-    <p-button severity="info" [label]="'common.buttons.cancel' | translate" (click)="cancel()" />
+  <div class="flex justify-content-end gap-2 mt-4">
+    <p-button severity="info" [label]="'common.buttons.cancel' | translate" (onClick)="cancel()" />
     <p-button type="submit" [label]="'common.buttons.save' | translate" [disabled]="resourceForm.invalid" />
   </div>
 </form>

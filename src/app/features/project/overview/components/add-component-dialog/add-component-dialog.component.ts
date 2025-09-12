@@ -1,78 +1,69 @@
-import { select, Store } from '@ngxs/store';
+import { createDispatchMap, select } from '@ngxs/store';
 
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { ButtonModule } from 'primeng/button';
-import { CheckboxModule } from 'primeng/checkbox';
-import { DropdownModule } from 'primeng/dropdown';
+import { Button } from 'primeng/button';
+import { Checkbox } from 'primeng/checkbox';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputTextModule } from 'primeng/inputtext';
+import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { Textarea } from 'primeng/textarea';
 
-import { CommonModule, NgOptimizedImage } from '@angular/common';
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { STORAGE_LOCATIONS } from '@core/constants';
+import { UserSelectors } from '@core/store/user';
+import { AffiliatedInstitutionSelectComponent } from '@osf/shared/components';
 import { ComponentFormControls } from '@osf/shared/enums';
-import { IS_XSMALL } from '@osf/shared/helpers';
-import { ComponentForm } from '@osf/shared/models';
+import { CustomValidators } from '@osf/shared/helpers';
+import { ComponentForm, Institution } from '@osf/shared/models';
 import { ToastService } from '@osf/shared/services';
+import { FetchRegions, RegionsSelectors } from '@osf/shared/stores';
 
 import { CreateComponent, GetComponents, ProjectOverviewSelectors } from '../../store';
 
 @Component({
   selector: 'osf-add-component-dialog',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
-    ButtonModule,
-    InputTextModule,
-    DropdownModule,
-    CheckboxModule,
+    Button,
+    InputText,
+    Checkbox,
     Select,
     Textarea,
-    NgOptimizedImage,
     TranslatePipe,
+    AffiliatedInstitutionSelectComponent,
   ],
   templateUrl: './add-component-dialog.component.html',
   styleUrl: './add-component-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AddComponentDialogComponent implements OnInit {
-  private store = inject(Store);
   private readonly toastService = inject(ToastService);
 
-  protected isMobile = toSignal(inject(IS_XSMALL));
-  protected dialogRef = inject(DynamicDialogRef);
-  protected destroyRef = inject(DestroyRef);
-  protected ComponentFormControls = ComponentFormControls;
-  protected storageLocations = STORAGE_LOCATIONS;
-  protected isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
-  protected currentProject = this.store.selectSignal(ProjectOverviewSelectors.getProject);
+  dialogRef = inject(DynamicDialogRef);
+  destroyRef = inject(DestroyRef);
+  ComponentFormControls = ComponentFormControls;
 
-  toggleAddContributors(): void {
-    const control = this.componentForm.get(ComponentFormControls.AddContributors);
-    if (control) {
-      control.setValue(!control.value);
-    }
-  }
+  storageLocations = select(RegionsSelectors.getRegions);
+  currentUser = select(UserSelectors.getCurrentUser);
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  areRegionsLoading = select(RegionsSelectors.areRegionsLoading);
+  isSubmitting = select(ProjectOverviewSelectors.getComponentsSubmitting);
 
-  toggleAddTags(): void {
-    const control = this.componentForm.get(ComponentFormControls.AddTags);
-    if (control) {
-      control.setValue(!control.value);
-    }
-  }
+  actions = createDispatchMap({
+    createComponent: CreateComponent,
+    getComponents: GetComponents,
+    getRegions: FetchRegions,
+  });
 
   componentForm = new FormGroup<ComponentForm>({
     [ComponentFormControls.Title]: new FormControl('', {
       nonNullable: true,
-      validators: [Validators.required],
+      validators: [CustomValidators.requiredTrimmed()],
     }),
-    [ComponentFormControls.StorageLocation]: new FormControl('us', {
+    [ComponentFormControls.StorageLocation]: new FormControl('', {
       nonNullable: true,
       validators: [Validators.required],
     }),
@@ -90,21 +81,27 @@ export class AddComponentDialogComponent implements OnInit {
     }),
   });
 
+  constructor() {
+    effect(() => {
+      const storageLocations = this.storageLocations();
+      if (!storageLocations) return;
+
+      const defaultRegion = this.currentUser()?.defaultRegionId || storageLocations[0].id;
+      this.componentForm.controls[ComponentFormControls.StorageLocation].setValue(defaultRegion);
+    });
+  }
+
   ngOnInit(): void {
-    this.selectAllAffiliations();
+    this.actions.getRegions();
   }
 
-  selectAllAffiliations(): void {
-    const allAffiliationValues = this.currentProject()?.affiliatedInstitutions?.map((aff) => aff.id) || [];
-    this.componentForm.get(ComponentFormControls.Affiliations)?.setValue(allAffiliationValues);
-  }
-
-  removeAllAffiliations(): void {
-    this.componentForm.get(ComponentFormControls.Affiliations)?.setValue([]);
+  setSelectedInstitutions(institutions: Institution[]) {
+    const selectedValues = institutions.map((inst) => inst.id);
+    this.componentForm.get(ComponentFormControls.Affiliations)?.setValue(selectedValues);
   }
 
   submitForm(): void {
-    if (!this.componentForm.valid) {
+    if (this.componentForm.invalid) {
       this.componentForm.markAllAsTouched();
       return;
     }
@@ -118,23 +115,21 @@ export class AddComponentDialogComponent implements OnInit {
 
     const tags = formValue.addTags ? project.tags : [];
 
-    this.store
-      .dispatch(
-        new CreateComponent(
-          project.id,
-          formValue.title,
-          formValue.description,
-          tags,
-          formValue.storageLocation,
-          formValue.affiliations,
-          formValue.addContributors
-        )
+    this.actions
+      .createComponent(
+        project.id,
+        formValue.title,
+        formValue.description,
+        tags,
+        formValue.storageLocation,
+        formValue.affiliations,
+        formValue.addContributors
       )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.dialogRef.close();
-          this.store.dispatch(new GetComponents(project.id));
+          this.actions.getComponents(project.id);
           this.toastService.showSuccess('project.overview.dialog.toast.addComponent.success');
         },
       });

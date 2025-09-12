@@ -14,8 +14,9 @@ import { FormsModule } from '@angular/forms';
 import { UserSelectors } from '@osf/core/store/user';
 import { IdName } from '@osf/shared/models';
 import { LoaderService, ToastService } from '@osf/shared/services';
+import { RegionsSelectors } from '@osf/shared/stores/regions';
 
-import { AccountSettingsSelectors, UpdateRegion } from '../../store';
+import { UpdateRegion } from '../../store';
 
 @Component({
   selector: 'osf-default-storage-location',
@@ -30,7 +31,7 @@ export class DefaultStorageLocationComponent {
   private readonly toastService = inject(ToastService);
 
   readonly currentUser = select(UserSelectors.getCurrentUser);
-  readonly regions = select(AccountSettingsSelectors.getRegions);
+  readonly regions = select(RegionsSelectors.getRegions);
   selectedRegion = signal<IdName | undefined>(undefined);
 
   constructor() {

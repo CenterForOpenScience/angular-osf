@@ -31,7 +31,7 @@ export class BannersService {
    */
   fetchCurrentBanner(): Observable<Banner> {
     return this.jsonApiService
-      .get<JsonApiResponse<BannerJsonApi, null>>(`${environment.apiUrlPrivate}/banners/current`)
+      .get<JsonApiResponse<BannerJsonApi, null>>(`${environment.apiDomainUrl}/_/banners/current`)
       .pipe(map((response) => BannerMapper.fromResponse(response.data)));
   }
 }

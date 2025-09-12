@@ -17,10 +17,11 @@ import { ShareAndDownloadComponent } from '@osf/features/preprints/components/pr
 import { PreprintSelectors } from '@osf/features/preprints/store/preprint';
 import { PreprintProvidersSelectors } from '@osf/features/preprints/store/preprint-providers';
 import { MOCK_PROVIDER, MOCK_STORE, TranslateServiceMock } from '@shared/mocks';
-import { Identifier } from '@shared/models';
 import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import { PreprintDetailsComponent } from './preprint-details.component';
+
+import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
 
 describe('PreprintDetailsComponent', () => {
   let component: PreprintDetailsComponent;
@@ -50,9 +51,7 @@ describe('PreprintDetailsComponent', () => {
       }
     });
     (MOCK_STORE.dispatch as jest.Mock).mockImplementation(() => of());
-    dataciteService = {
-      logView: jest.fn().mockReturnValue(of(void 0)),
-    } as unknown as jest.Mocked<DataciteService>;
+    dataciteService = DataciteMockFactory();
 
     await TestBed.configureTestingModule({
       imports: [
@@ -86,30 +85,6 @@ describe('PreprintDetailsComponent', () => {
 
   it('reacts to sequence of state changes', () => {
     fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenCalledTimes(0);
-
-    preprintSignal.set(getPreprint([]));
-
-    fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenCalledTimes(0);
-
-    preprintSignal.set(getPreprint([{ category: 'dio', value: '123', id: '', type: 'identifier' }]));
-    fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenCalledTimes(0);
-
-    preprintSignal.set(getPreprint([{ category: 'doi', value: '123', id: '', type: 'identifier' }]));
-
-    fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenCalled();
-
-    preprintSignal.set(getPreprint([{ category: 'doi', value: '456', id: '', type: 'identifier' }]));
-    fixture.detectChanges();
-    expect(dataciteService.logView).toHaveBeenLastCalledWith('123');
+    expect(dataciteService.logIdentifiableView).toHaveBeenCalledWith(component.preprint$);
   });
 });
-
-function getPreprint(identifiers: Identifier[]) {
-  return {
-    identifiers: identifiers,
-  };
-}

@@ -52,14 +52,14 @@ export class CitationSectionComponent implements OnInit {
     updateCustomCitation: UpdateCustomCitation,
   });
 
-  protected defaultCitations = select(CitationsSelectors.getDefaultCitations);
-  protected areCitationsLoading = select(CitationsSelectors.getDefaultCitationsLoading);
-  protected citationStyles = select(CitationsSelectors.getCitationStyles);
-  protected areCitationStylesLoading = select(CitationsSelectors.getCitationStylesLoading);
-  protected styledCitation = select(CitationsSelectors.getStyledCitation);
-  protected citationStylesOptions = signal<CustomOption<CitationStyle>[]>([]);
+  defaultCitations = select(CitationsSelectors.getDefaultCitations);
+  areCitationsLoading = select(CitationsSelectors.getDefaultCitationsLoading);
+  citationStyles = select(CitationsSelectors.getCitationStyles);
+  areCitationStylesLoading = select(CitationsSelectors.getCitationStylesLoading);
+  styledCitation = select(CitationsSelectors.getStyledCitation);
+  citationStylesOptions = signal<CustomOption<CitationStyle>[]>([]);
 
-  protected filterMessage = computed(() => {
+  filterMessage = computed(() => {
     const isLoading = this.areCitationStylesLoading();
     return isLoading
       ? this.translateService.instant('project.overview.metadata.citationLoadingPlaceholder')
@@ -75,12 +75,12 @@ export class CitationSectionComponent implements OnInit {
     this.actions.getDefaultCitations(ResourceType.Preprint, this.preprintId());
   }
 
-  protected handleCitationStyleFilterSearch(event: SelectFilterEvent) {
+  handleCitationStyleFilterSearch(event: SelectFilterEvent) {
     event.originalEvent.preventDefault();
     this.filterSubject.next(event.filter);
   }
 
-  protected handleGetStyledCitation(event: SelectChangeEvent) {
+  handleGetStyledCitation(event: SelectChangeEvent) {
     this.actions.getStyledCitation(ResourceType.Preprint, this.preprintId(), event.value.id);
   }
 

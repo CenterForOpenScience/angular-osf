@@ -3,7 +3,7 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import { Funder } from './metadata.model';
 
 export interface FundingEntryForm {
-  funderName: FormControl<string>;
+  funderName: FormControl<string | null>;
   funderIdentifier: FormControl<string>;
   funderIdentifierType: FormControl<string>;
   awardTitle: FormControl<string>;

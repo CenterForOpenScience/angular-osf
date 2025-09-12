@@ -4,14 +4,12 @@ export const registrationTableColumns: TableColumn[] = [
   {
     field: 'title',
     header: 'adminInstitutions.projects.title',
-    sortable: false,
     isLink: true,
     linkTarget: '_blank',
   },
   {
     field: 'link',
     header: 'adminInstitutions.projects.link',
-    sortable: false,
     isLink: true,
     linkTarget: '_blank',
   },
@@ -30,50 +28,45 @@ export const registrationTableColumns: TableColumn[] = [
   {
     field: 'doi',
     header: 'adminInstitutions.projects.doi',
-    sortable: false,
     isLink: true,
     linkTarget: '_blank',
   },
   {
     field: 'storageLocation',
     header: 'adminInstitutions.projects.storageLocation',
-    sortable: false,
   },
   {
     field: 'totalDataStored',
     header: 'adminInstitutions.projects.totalDataStored',
-    sortable: false,
+    sortable: true,
+    sortField: 'storageByteCount',
   },
   {
     field: 'contributorName',
     header: 'adminInstitutions.projects.contributorName',
-    sortable: true,
     isLink: true,
     linkTarget: '_blank',
   },
   {
     field: 'views',
     header: 'adminInstitutions.projects.views',
-    sortable: false,
+    sortable: true,
+    sortField: 'usage.viewCount',
   },
   {
     field: 'resourceType',
     header: 'adminInstitutions.projects.resourceType',
-    sortable: false,
   },
   {
     field: 'license',
     header: 'adminInstitutions.projects.license',
-    sortable: false,
   },
   {
     field: 'funderName',
     header: 'adminInstitutions.registrations.funderName',
-    sortable: false,
   },
   {
     field: 'registrationSchema',
     header: 'adminInstitutions.registrations.registrationSchema',
-    sortable: false,
   },
 ];

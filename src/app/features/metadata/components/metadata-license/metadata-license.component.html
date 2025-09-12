@@ -6,18 +6,12 @@
       <p-button
         severity="secondary"
         [label]="'common.buttons.edit' | translate"
-        (click)="openEditLicenseDialog.emit()"
+        (onClick)="openEditLicenseDialog.emit()"
       />
     }
   </div>
 
-  @if (license()) {
-    <div class="pt-4">
-      <p class="m-0">{{ license()?.name }}</p>
-    </div>
-  } @else {
-    <div class="pt-4">
-      <p class="text-color-secondary m-0">{{ 'project.overview.metadata.noLicense' | translate }}</p>
-    </div>
-  }
+  <div class="mt-4">
+    <p>{{ license()?.name || ('project.overview.metadata.noLicense' | translate) }}</p>
+  </div>
 </p-card>

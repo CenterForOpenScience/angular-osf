@@ -11,28 +11,25 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
 import { getPreprintDocumentType } from '@osf/features/preprints/helpers';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
+import { CardLabelTranslationKeys } from '@osf/shared/constants';
+import { ResourceType } from '@osf/shared/enums';
 import { IS_XSMALL } from '@osf/shared/helpers';
-import { DataResourcesComponent } from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { AbsoluteUrlName, IsContainedBy, QualifiedAttribution, Resource, UserRelatedCounts } from '@shared/models';
-import { ResourceCardService } from '@shared/services';
+import {
+  AbsoluteUrlName,
+  IsContainedBy,
+  QualifiedAttribution,
+  ResourceModel,
+  UserRelatedCounts,
+} from '@osf/shared/models';
+import { ResourceCardService } from '@osf/shared/services';
+
+import { DataResourcesComponent } from '../data-resources/data-resources.component';
 
 import { FileSecondaryMetadataComponent } from './components/file-secondary-metadata/file-secondary-metadata.component';
 import { PreprintSecondaryMetadataComponent } from './components/preprint-secondary-metadata/preprint-secondary-metadata.component';
 import { ProjectSecondaryMetadataComponent } from './components/project-secondary-metadata/project-secondary-metadata.component';
 import { RegistrationSecondaryMetadataComponent } from './components/registration-secondary-metadata/registration-secondary-metadata.component';
 import { UserSecondaryMetadataComponent } from './components/user-secondary-metadata/user-secondary-metadata.component';
-
-export const CardLabelTranslationKeys: Partial<Record<ResourceType, string>> = {
-  [ResourceType.Project]: 'resourceCard.type.project',
-  [ResourceType.ProjectComponent]: 'resourceCard.type.projectComponent',
-  [ResourceType.Registration]: 'resourceCard.type.registration',
-  [ResourceType.RegistrationComponent]: 'resourceCard.type.registrationComponent',
-  [ResourceType.Preprint]: 'resourceCard.type.preprint',
-  [ResourceType.File]: 'resourceCard.type.file',
-  [ResourceType.Agent]: 'resourceCard.type.user',
-  [ResourceType.Null]: 'resourceCard.type.null',
-};
 
 @Component({
   selector: 'osf-resource-card',
@@ -61,7 +58,7 @@ export class ResourceCardComponent {
   private translateService = inject(TranslateService);
   ResourceType = ResourceType;
   isSmall = toSignal(inject(IS_XSMALL));
-  resource = input.required<Resource>();
+  resource = input.required<ResourceModel>();
   provider = input<PreprintProviderDetails | null>();
   userRelatedCounts = signal<UserRelatedCounts | null>(null);
 
@@ -172,7 +169,7 @@ export class ResourceCardComponent {
       });
   }
 
-  private getSortedContributors(base: Resource | IsContainedBy) {
+  private getSortedContributors(base: ResourceModel | IsContainedBy) {
     const objectOrder = Object.fromEntries(
       base.qualifiedAttribution.map((item: QualifiedAttribution) => [item.agentId, item.order])
     );

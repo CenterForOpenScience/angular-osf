@@ -16,3 +16,10 @@ export interface RegistryLinksStateModel {
     registrationId?: string;
   };
 }
+
+export const REGISTRY_LINKS_STATE_DEFAULTS: RegistryLinksStateModel = {
+  linkedNodes: { data: [], isLoading: false, error: null },
+  linkedRegistrations: { data: [], isLoading: false, error: null },
+  bibliographicContributors: { data: [], isLoading: false, error: null },
+  bibliographicContributorsForRegistration: { data: [], isLoading: false, error: null },
+};

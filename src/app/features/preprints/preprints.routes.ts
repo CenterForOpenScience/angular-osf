@@ -8,7 +8,7 @@ import { PreprintState } from '@osf/features/preprints/store/preprint';
 import { PreprintProvidersState } from '@osf/features/preprints/store/preprint-providers';
 import { PreprintStepperState } from '@osf/features/preprints/store/preprint-stepper';
 import { ConfirmLeavingGuard } from '@shared/guards';
-import { CitationsState, ContributorsState, SubjectsState } from '@shared/stores';
+import { CitationsState, ContributorsState, ProjectsState, SubjectsState } from '@shared/stores';
 
 import { PreprintModerationState } from '../moderation/store/preprint-moderation';
 
@@ -62,6 +62,7 @@ export const preprintsRoutes: Routes = [
             (c) => c.SubmitPreprintStepperComponent
           ),
         canDeactivate: [ConfirmLeavingGuard],
+        providers: [provideStates([ProjectsState])],
       },
       {
         path: ':providerId/edit/:preprintId',
@@ -71,6 +72,7 @@ export const preprintsRoutes: Routes = [
             (c) => c.UpdatePreprintStepperComponent
           ),
         canDeactivate: [ConfirmLeavingGuard],
+        providers: [provideStates([ProjectsState])],
       },
       {
         path: ':providerId/moderation',

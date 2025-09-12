@@ -3,7 +3,6 @@ export { ProjectSettingNotificationsComponent } from './project-setting-notifica
 export { SettingsAccessRequestsCardComponent } from './settings-access-requests-card/settings-access-requests-card.component';
 export { SettingsProjectAffiliationComponent } from './settings-project-affiliation/settings-project-affiliation.component';
 export { SettingsProjectFormCardComponent } from './settings-project-form-card/settings-project-form-card.component';
-export { SettingsRedirectLinkComponent } from './settings-redirect-link/settings-redirect-link.component';
 export { SettingsStorageLocationCardComponent } from './settings-storage-location-card/settings-storage-location-card.component';
 export { SettingsViewOnlyLinksCardComponent } from './settings-view-only-links-card/settings-view-only-links-card.component';
 export { SettingsWikiCardComponent } from './settings-wiki-card/settings-wiki-card.component';

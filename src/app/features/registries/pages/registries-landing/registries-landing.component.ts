@@ -8,16 +8,17 @@ import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/cor
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { RegistryServicesComponent } from '@osf/features/registries/components';
-import { GetRegistries, RegistriesSelectors } from '@osf/features/registries/store';
-import { ScheduledBannerComponent } from '@osf/shared/components/scheduled-banner/scheduled-banner.component';
 import {
   LoadingSpinnerComponent,
   ResourceCardComponent,
   SearchInputComponent,
   SubHeaderComponent,
-} from '@shared/components';
-import { ResourceType } from '@shared/enums';
+} from '@osf/shared/components';
+import { ScheduledBannerComponent } from '@osf/shared/components/scheduled-banner/scheduled-banner.component';
+import { ResourceType } from '@osf/shared/enums';
+
+import { RegistryServicesComponent } from '../../components';
+import { GetRegistries, RegistriesSelectors } from '../../store';
 
 import { environment } from 'src/environments/environment';
 
@@ -40,14 +41,12 @@ import { environment } from 'src/environments/environment';
 export class RegistriesLandingComponent implements OnInit {
   private router = inject(Router);
 
-  protected searchControl = new FormControl<string>('');
+  searchControl = new FormControl<string>('');
 
-  private readonly actions = createDispatchMap({
-    getRegistries: GetRegistries,
-  });
+  private readonly actions = createDispatchMap({ getRegistries: GetRegistries });
 
-  protected registries = select(RegistriesSelectors.getRegistries);
-  protected isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
+  registries = select(RegistriesSelectors.getRegistries);
+  isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
 
   ngOnInit(): void {
     this.actions.getRegistries();
@@ -56,15 +55,11 @@ export class RegistriesLandingComponent implements OnInit {
   redirectToSearchPageWithValue(): void {
     const searchValue = this.searchControl.value;
 
-    this.router.navigate(['/search'], {
-      queryParams: { search: searchValue, tab: ResourceType.Registration },
-    });
+    this.router.navigate(['/search'], { queryParams: { search: searchValue, tab: ResourceType.Registration } });
   }
 
   redirectToSearchPageRegistrations(): void {
-    this.router.navigate(['/search'], {
-      queryParams: { tab: ResourceType.Registration },
-    });
+    this.router.navigate(['/search'], { queryParams: { tab: ResourceType.Registration } });
   }
 
   goToCreateRegistration(): void {

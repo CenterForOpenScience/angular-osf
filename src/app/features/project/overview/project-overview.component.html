@@ -28,9 +28,8 @@
         link
         [label]="'moderation.makeDecision.goBackLink' | translate"
         class="link-btn-no-padding font-bold"
-        (click)="goBack()"
-      >
-      </p-button>
+        (onClick)="goBack()"
+      />
 
       @if (status && isCollectionsRoute() && collectionProvider()) {
         @switch (status) {
@@ -78,6 +77,11 @@
       @if (isAdmin || canWrite) {
         <osf-project-wiki />
       }
+      <osf-files-widget
+        [rootOption]="filesRootOption()"
+        [components]="components()"
+        [areComponentsLoading]="areComponentsLoading()"
+      />
 
       <osf-project-components [isCollectionsRoute]="isCollectionsRoute()" [canWrite]="canWrite" />
       <osf-linked-resources [isCollectionsRoute]="isCollectionsRoute()" [canWrite]="canWrite" />

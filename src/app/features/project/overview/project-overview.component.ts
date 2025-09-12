@@ -7,8 +7,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 import { TagModule } from 'primeng/tag';
 
-import { Observable } from 'rxjs';
-
 import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -24,6 +22,7 @@ import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-i
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
+import { GetRootFolders } from '@osf/features/files/store';
 import { SubmissionReviewStatus } from '@osf/features/moderation/enums';
 import {
   ClearCollectionModeration,
@@ -38,23 +37,26 @@ import {
   ClearCollections,
   ClearWiki,
   CollectionsSelectors,
+  CurrentResourceSelectors,
   GetBookmarksCollectionId,
   GetCollectionProvider,
+  GetConfiguredStorageAddons,
   GetHomeWiki,
   GetLinkedResources,
+  GetResourceWithChildren,
 } from '@osf/shared/stores';
 import { GetActivityLogs } from '@osf/shared/stores/activity-logs';
 import {
-  DataciteTrackerComponent,
   LoadingSpinnerComponent,
   MakeDecisionDialogComponent,
   ResourceMetadataComponent,
   SubHeaderComponent,
   ViewOnlyLinkMessageComponent,
 } from '@shared/components';
-import { Identifier } from '@shared/models';
+import { DataciteService } from '@shared/services/datacite/datacite.service';
 
 import {
+  FilesWidgetComponent,
   LinkedResourcesComponent,
   OverviewComponentsComponent,
   OverviewToolbarComponent,
@@ -89,13 +91,14 @@ import {
     TranslatePipe,
     Message,
     RouterLink,
+    FilesWidgetComponent,
     ViewOnlyLinkMessageComponent,
     ViewOnlyLinkMessageComponent,
   ],
   providers: [DialogService],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectOverviewComponent extends DataciteTrackerComponent implements OnInit {
+export class ProjectOverviewComponent implements OnInit {
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full h-full';
 
   private readonly route = inject(ActivatedRoute);
@@ -104,6 +107,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   private readonly toastService = inject(ToastService);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
+  private readonly dataciteService = inject(DataciteService);
 
   isMobile = toSignal(inject(IS_XSMALL));
   submissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
@@ -112,6 +116,9 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
   isProjectLoading = select(ProjectOverviewSelectors.getProjectLoading);
   isCollectionProviderLoading = select(CollectionsSelectors.getCollectionProviderLoading);
   isReviewActionsLoading = select(CollectionsModerationSelectors.getCurrentReviewActionLoading);
+  components = select(CurrentResourceSelectors.getResourceWithChildren);
+  areComponentsLoading = select(CurrentResourceSelectors.isResourceWithChildrenLoading);
+
   readonly activityPageSize = 5;
   readonly activityDefaultPage = 1;
   readonly SubmissionReviewStatus = SubmissionReviewStatus;
@@ -130,11 +137,16 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     clearWiki: ClearWiki,
     clearCollections: ClearCollections,
     clearCollectionModeration: ClearCollectionModeration,
+    getComponentsTree: GetResourceWithChildren,
+    getRootFolders: GetRootFolders,
+    getConfiguredStorageAddons: GetConfiguredStorageAddons,
   });
 
-  readonly isCollectionsRoute = computed(() => {
-    return this.router.url.includes('/collections');
-  });
+  currentProject = select(ProjectOverviewSelectors.getProject);
+  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
+  private currentProject$ = toObservable(this.currentProject);
+
+  readonly isCollectionsRoute = computed(() => this.router.url.includes('/collections'));
 
   readonly isModerationMode = computed(() => {
     const mode = this.route.snapshot.queryParams['mode'];
@@ -142,9 +154,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return mode === Mode.Moderation;
   });
 
-  submissionReviewStatus = computed(() => {
-    return this.currentReviewAction()?.toState;
-  });
+  submissionReviewStatus = computed(() => this.currentReviewAction()?.toState);
 
   showDecisionButton = computed(() => {
     return (
@@ -154,17 +164,8 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     );
   });
 
-  currentProject = select(ProjectOverviewSelectors.getProject);
-  isAnonymous = select(ProjectOverviewSelectors.isProjectAnonymous);
-  private currentProject$ = toObservable(this.currentProject);
-
-  userPermissions = computed(() => {
-    return this.currentProject()?.currentUserPermissions || [];
-  });
-
-  hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
+  userPermissions = computed(() => this.currentProject()?.currentUserPermissions || []);
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   get isAdmin(): boolean {
     return this.userPermissions().includes(UserPermissions.Admin);
@@ -182,9 +183,9 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  isLoading = computed(() => {
-    return this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading();
-  });
+  isLoading = computed(
+    () => this.isProjectLoading() || this.isCollectionProviderLoading() || this.isReviewActionsLoading()
+  );
 
   currentResource = computed(() => {
     const project = this.currentProject();
@@ -202,17 +203,27 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
     return null;
   });
 
-  protected override get trackable(): Observable<{ identifiers?: Identifier[] } | null> {
-    return this.currentProject$;
-  }
+  filesRootOption = computed(() => {
+    return {
+      value: this.currentProject()?.id ?? '',
+      label: this.currentProject()?.title ?? '',
+    };
+  });
 
   constructor() {
-    super();
     this.setupCollectionsEffects();
     this.setupCleanup();
+
+    effect(() => {
+      const currentProject = this.currentProject();
+      if (currentProject) {
+        const rootParentId = currentProject.rootParentId ?? currentProject.id;
+        this.actions.getComponentsTree(rootParentId, currentProject.id, ResourceType.Project);
+      }
+    });
   }
 
-  protected onCustomCitationUpdated(citation: string): void {
+  onCustomCitationUpdated(citation: string): void {
     this.actions.setProjectCustomCitation(citation);
   }
 
@@ -224,8 +235,7 @@ export class ProjectOverviewComponent extends DataciteTrackerComponent implement
       this.actions.getHomeWiki(ResourceType.Project, projectId);
       this.actions.getComponents(projectId);
       this.actions.getLinkedProjects(projectId);
-      this.actions.getActivityLogs(projectId, this.activityDefaultPage.toString(), this.activityPageSize.toString());
-      this.setupDataciteViewTrackerEffect().subscribe();
+      this.actions.getActivityLogs(projectId, this.activityDefaultPage, this.activityPageSize);
     }
   }
 

@@ -7,17 +7,26 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  ErrorHandler,
+  importProvidersFrom,
+  PLATFORM_ID,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
 import { STATES } from '@core/constants';
+import { APPLICATION_INITIALIZATION_PROVIDER } from '@core/factory/application.initialization.factory';
+import { WINDOW, windowFactory } from '@core/factory/window.factory';
 import { provideTranslation } from '@core/helpers';
 
-import { GlobalErrorHandler } from './core/handlers';
 import { authInterceptor, errorInterceptor, viewOnlyInterceptor } from './core/interceptors';
 import CustomPreset from './core/theme/custom-preset';
 import { routes } from './app.routes';
+
+import * as Sentry from '@sentry/angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -41,6 +50,16 @@ export const appConfig: ApplicationConfig = {
     importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
     ConfirmationService,
     MessageService,
-    { provide: ErrorHandler, useClass: GlobalErrorHandler },
+
+    APPLICATION_INITIALIZATION_PROVIDER,
+    {
+      provide: ErrorHandler,
+      useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
+    },
+    {
+      provide: WINDOW,
+      useFactory: windowFactory,
+      deps: [PLATFORM_ID],
+    },
   ],
 };

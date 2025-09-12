@@ -1,13 +1,13 @@
 import { Selector } from '@ngxs/store';
 
-import { License } from '@osf/shared/models';
+import { LicenseModel } from '@osf/shared/models';
 
 import { LicensesStateModel } from './licenses.model';
 import { LicensesState } from './licenses.state';
 
 export class LicensesSelectors {
   @Selector([LicensesState])
-  static getLicenses(state: LicensesStateModel): License[] {
+  static getLicenses(state: LicensesStateModel): LicenseModel[] {
     return state.licenses.data;
   }
 

@@ -9,24 +9,18 @@ import { handleSectionError } from '@osf/shared/helpers';
 import { RegionsService } from '@osf/shared/services';
 
 import { FetchRegions } from './regions.actions';
-import { RegionsStateModel } from './regions.model';
+import { REGIONS_STATE_DEFAULTS, RegionsStateModel } from './regions.model';
 
 @State<RegionsStateModel>({
   name: 'regions',
-  defaults: {
-    regions: {
-      data: [],
-      isLoading: false,
-      error: null,
-    },
-  },
+  defaults: REGIONS_STATE_DEFAULTS,
 })
 @Injectable()
 export class RegionsState {
   private readonly regionsService = inject(RegionsService);
 
   @Action(FetchRegions)
-  fetchSubjects(ctx: StateContext<RegionsStateModel>) {
+  fetchRegions(ctx: StateContext<RegionsStateModel>) {
     ctx.setState(patch({ regions: patch({ isLoading: true }) }));
 
     return this.regionsService.getAllRegions().pipe(

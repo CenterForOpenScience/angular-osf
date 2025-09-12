@@ -13,7 +13,7 @@ import { FetchLicenses, RegistriesSelectors, SaveLicense } from '@osf/features/r
 import { LicenseComponent } from '@osf/shared/components';
 import { INPUT_VALIDATION_MESSAGES, InputLimits } from '@osf/shared/constants';
 import { CustomValidators } from '@osf/shared/helpers';
-import { License, LicenseOptions } from '@osf/shared/models';
+import { LicenseModel, LicenseOptions } from '@osf/shared/models';
 
 import { environment } from 'src/environments/environment';
 
@@ -31,12 +31,12 @@ export class RegistriesLicenseComponent {
   private readonly draftId = this.route.snapshot.params['id'];
   private readonly fb = inject(FormBuilder);
 
-  protected actions = createDispatchMap({ fetchLicenses: FetchLicenses, saveLicense: SaveLicense });
-  protected licenses = select(RegistriesSelectors.getLicenses);
-  protected inputLimits = InputLimits;
+  actions = createDispatchMap({ fetchLicenses: FetchLicenses, saveLicense: SaveLicense });
+  licenses = select(RegistriesSelectors.getLicenses);
+  inputLimits = InputLimits;
 
-  protected selectedLicense = select(RegistriesSelectors.getSelectedLicense);
-  protected draftRegistration = select(RegistriesSelectors.getDraftRegistration);
+  selectedLicense = select(RegistriesSelectors.getSelectedLicense);
+  draftRegistration = select(RegistriesSelectors.getDraftRegistration);
 
   currentYear = new Date();
   licenseYear = this.currentYear;
@@ -72,7 +72,7 @@ export class RegistriesLicenseComponent {
     this.actions.saveLicense(this.draftId, licenseDetails.id, licenseDetails.licenseOptions);
   }
 
-  selectLicense(license: License) {
+  selectLicense(license: LicenseModel) {
     if (license.requiredFields.length) {
       return;
     }

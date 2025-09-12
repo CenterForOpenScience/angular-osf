@@ -4,14 +4,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LicenseComponent, TextInputComponent, TruncatedTextComponent } from '@shared/components';
 import { MOCK_LICENSE, TranslateServiceMock } from '@shared/mocks';
-import { License, LicenseOptions } from '@shared/models';
+import { LicenseModel, LicenseOptions } from '@shared/models';
 import { InterpolatePipe } from '@shared/pipes';
 
 describe('LicenseComponent', () => {
   let component: LicenseComponent;
   let fixture: ComponentFixture<LicenseComponent>;
 
-  const mockLicenses: License[] = [
+  const mockLicenses: LicenseModel[] = [
     {
       ...MOCK_LICENSE,
       id: 'license-1',
@@ -132,8 +132,6 @@ describe('LicenseComponent', () => {
   });
 
   it('should reset form when cancel is called', () => {
-    const currentYear = new Date().getFullYear().toString();
-
     component.licenseForm.patchValue({
       year: '2023',
       copyrightHolders: 'Test Holder',
@@ -141,7 +139,7 @@ describe('LicenseComponent', () => {
 
     component.cancel();
 
-    expect(component.licenseForm.get('year')?.value).toBe(currentYear);
+    expect(component.licenseForm.get('year')?.value).toBe('');
     expect(component.licenseForm.get('copyrightHolders')?.value).toBe('');
   });
 

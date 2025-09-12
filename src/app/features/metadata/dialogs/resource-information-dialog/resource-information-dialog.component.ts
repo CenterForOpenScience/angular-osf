@@ -7,15 +7,11 @@ import { Select } from 'primeng/select';
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { RESOURCE_TYPE_OPTIONS } from '@osf/features/metadata/constants';
-import { CustomItemMetadataRecord } from '@osf/features/metadata/models';
-import { languageCodes } from '@shared/constants';
-import { LanguageCodeModel } from '@shared/models';
+import { languageCodes } from '@osf/shared/constants';
+import { LanguageCodeModel } from '@osf/shared/models';
 
-interface ResourceInformationForm {
-  resourceType: FormControl<string>;
-  resourceLanguage: FormControl<string>;
-}
+import { RESOURCE_TYPE_OPTIONS } from '../../constants';
+import { CustomItemMetadataRecord, ResourceInformationForm } from '../../models';
 
 @Component({
   selector: 'osf-resource-information-dialog',
@@ -24,8 +20,8 @@ interface ResourceInformationForm {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ResourceInformationDialogComponent implements OnInit {
-  protected dialogRef = inject(DynamicDialogRef);
-  protected config = inject(DynamicDialogConfig);
+  dialogRef = inject(DynamicDialogRef);
+  config = inject(DynamicDialogConfig);
 
   resourceForm = new FormGroup<ResourceInformationForm>({
     resourceType: new FormControl('', {

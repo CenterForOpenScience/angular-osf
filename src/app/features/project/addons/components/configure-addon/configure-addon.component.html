@@ -5,7 +5,7 @@
     <div class="flex flex-column gap-4">
       <div class="flex justify-content-between">
         <h2 class="align-self-center inline-block">
-          {{ 'settings.addons.connectAddon.configure' | translate }} {{ addon()?.externalServiceName }}
+          {{ 'settings.addons.connectAddon.configure' | translate }} {{ addonServiceName() }}
         </h2>
         <p-button
           [label]="'settings.addons.form.buttons.back' | translate"
@@ -14,7 +14,7 @@
         ></p-button>
       </div>
 
-      @if (selectedFolder()) {
+      @if (selectedStorageItem()) {
         <div class="flex flex-column flex-1">
           <p-card>
             <div class="flex justify-content-between">
@@ -41,8 +41,8 @@
             </div>
 
             <p class="font-normal mt-2">
-              {{ 'settings.addons.configureAddon.selectedFolder' | translate }}
-              <span class="font-bold">{{ selectedFolder()?.itemName }}</span>
+              {{ selectedItemLabel() | translate }}
+              <span class="font-bold">{{ selectedStorageItem()?.itemName }}</span>
             </p>
           </p-card>
         </div>
@@ -54,7 +54,7 @@
     <section class="flex flex-column gap-5">
       <div class="flex justify-content-between">
         <h2 class="align-self-center">
-          {{ 'settings.addons.connectAddon.configure' | translate }} {{ addon()?.externalServiceName }}
+          {{ 'settings.addons.connectAddon.configure' | translate }} {{ addonServiceName() }}
         </h2>
         <p-button
           [label]="'settings.addons.form.buttons.back' | translate"
@@ -63,14 +63,18 @@
           (keydown.enter)="toggleEditMode()"
         ></p-button>
       </div>
-      <osf-folder-selector
+      <osf-storage-item-selector
         [isGoogleFilePicker]="isGoogleDrive()"
         [accountId]="addon()?.baseAccountId || ''"
         [accountName]="addon()?.displayName || ''"
         [operationInvocationResult]="operationInvocation()?.operationResult || []"
         [accountNameControl]="accountNameControl"
+        [currentAddonType]="addonTypeString()"
+        [supportedResourceTypes]="supportedResourceTypes()"
         (operationInvoke)="handleCreateOperationInvocation($event.operationName, $event.itemId)"
-        [(selectedRootFolderId)]="selectedRootFolderId"
+        [(selectedStorageItemId)]="selectedStorageItemId"
+        [(selectedStorageItemUrl)]="selectedStorageItemUrl"
+        [(selectedResourceType)]="selectedResourceType"
         (save)="handleUpdateAddonConfiguration()"
         (cancelSelection)="toggleEditMode()"
       />

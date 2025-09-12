@@ -16,8 +16,9 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { LoadingSpinnerComponent } from '@shared/components';
-import { SelectOption } from '@shared/models';
+import { FilterOption } from '@shared/models';
+
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'osf-generic-filter',
@@ -28,8 +29,8 @@ import { SelectOption } from '@shared/models';
 })
 export class GenericFilterComponent {
   private destroyRef = inject(DestroyRef);
-  options = input<SelectOption[]>([]);
-  searchResults = input<SelectOption[]>([]);
+  options = input<FilterOption[]>([]);
+  searchResults = input<FilterOption[]>([]);
   isLoading = input<boolean>(false);
   isPaginationLoading = input<boolean>(false);
   isSearchLoading = input<boolean>(false);
@@ -41,12 +42,12 @@ export class GenericFilterComponent {
   searchTextChanged = output<string>();
   loadMoreOptions = output<void>();
 
-  currentSelectedOption = signal<SelectOption | null>(null);
+  currentSelectedOption = signal<FilterOption | null>(null);
   private searchSubject = new Subject<string>();
   private currentSearchText = signal<string>('');
-  private searchResultOptions = signal<SelectOption[]>([]);
+  private searchResultOptions = signal<FilterOption[]>([]);
   private isActivelySearching = signal<boolean>(false);
-  private stableOptionsArray: SelectOption[] = [];
+  private stableOptionsArray: FilterOption[] = [];
 
   filterOptions = computed(() => {
     const searchResults = this.searchResultOptions();
@@ -58,7 +59,7 @@ export class GenericFilterComponent {
     }
 
     const baseOptions = this.formatOptions(parentOptions);
-    let newOptions: SelectOption[];
+    let newOptions: FilterOption[];
 
     if (searchResults.length > 0) {
       const searchFormatted = this.formatOptions(searchResults);
@@ -73,13 +74,13 @@ export class GenericFilterComponent {
     return this.stableOptionsArray;
   });
 
-  private formatOptions(options: SelectOption[]): SelectOption[] {
+  private formatOptions(options: FilterOption[]): FilterOption[] {
     if (options.length > 0) {
       if (this.filterType() === 'dateCreated') {
         return options
           .filter((option) => option?.label)
-          .sort((a, b) => b.label.localeCompare(a.label))
           .map((option) => ({
+            ...option,
             label: option.label || '',
             value: option.label || '',
           }));
@@ -88,6 +89,7 @@ export class GenericFilterComponent {
           .filter((option) => option?.label)
           .sort((a, b) => a.label.localeCompare(b.label))
           .map((option) => ({
+            ...option,
             label: option.label || '',
             value: option.value || '',
           }));
@@ -96,7 +98,7 @@ export class GenericFilterComponent {
     return [];
   }
 
-  private arraysEqual(a: SelectOption[], b: SelectOption[]): boolean {
+  private arraysEqual(a: FilterOption[], b: FilterOption[]): boolean {
     if (a.length !== b.length) return false;
     for (let i = 0; i < a.length; i++) {
       if (a[i].value !== b[i].value || a[i].label !== b[i].label) {
@@ -106,7 +108,7 @@ export class GenericFilterComponent {
     return true;
   }
 
-  private updateStableArray(newOptions: SelectOption[]): void {
+  private updateStableArray(newOptions: FilterOption[]): void {
     if (this.arraysEqual(this.stableOptionsArray, newOptions)) {
       return;
     }
@@ -160,10 +162,6 @@ export class GenericFilterComponent {
         this.loadMoreOptions.emit();
       }, 0);
     }
-  }
-
-  trackByOption(index: number, option: SelectOption): string {
-    return option.value?.toString() || index.toString();
   }
 
   onValueChange(event: SelectChangeEvent): void {

@@ -16,7 +16,8 @@ import { environment } from 'src/environments/environment';
 })
 export class ShortRegistrationInfoComponent {
   registration = input.required<RegistryOverview>();
-  protected readonly environment = environment;
+
+  readonly environment = environment;
 
   get associatedProjectUrl(): string {
     return `${this.environment.webUrl}/${this.registration().associatedProjectId}`;

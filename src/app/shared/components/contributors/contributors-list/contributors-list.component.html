@@ -163,9 +163,9 @@
             icon="fas fa-trash"
             severity="danger"
             text
-            (click)="removeContributor(contributor)"
-          >
-          </p-button>
+            [ariaLabel]="'common.buttons.delete' | translate"
+            (onClick)="removeContributor(contributor)"
+          />
         </td>
       </tr>
     } @else {
