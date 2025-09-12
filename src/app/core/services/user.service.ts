@@ -7,7 +7,7 @@ import { UserMapper } from '@osf/shared/mappers';
 import {
   JsonApiResponse,
   ProfileSettingsUpdate,
-  User,
+  User, UserAcceptedTermsOfServiceJsonApi,
   UserData,
   UserDataJsonApi,
   UserDataResponseJsonApi,
@@ -59,6 +59,14 @@ export class UserService {
     return this.jsonApiService
       .patch<UserDataJsonApi>(`${this.apiUrl}/users/${userId}/`, {
         data: { type: 'users', id: userId, attributes: patchedData },
+      })
+      .pipe(map((response) => UserMapper.fromUserGetResponse(response)));
+  }
+
+  updateUserAcceptedTermsOfService(userId: string, data: UserAcceptedTermsOfServiceJsonApi): Observable<User>  {
+    return this.jsonApiService
+      .patch<UserDataJsonApi>(`${this.apiUrl}/users/${userId}/`, {
+        data: { type: 'users', id: userId, attributes: data },
       })
       .pipe(map((response) => UserMapper.fromUserGetResponse(response)));
   }

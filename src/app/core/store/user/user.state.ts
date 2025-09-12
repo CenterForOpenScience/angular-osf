@@ -263,16 +263,13 @@ export class UserState {
       return;
     }
 
-    // Todo: try find a way how to convert acceptedTermsOfService to accepted_terms_of_service in updateUserProfile
-    // more generic with mappers
-    // const updatePayload: Partial<User> = {
-    //   acceptedTermsOfService: true,
-    // };
-    // const apiRequest = UserMapper.toAcceptedTermsOfServiceRequest(updatePayload);
-    // .updateUserProfile(currentUser.id, ProfileSettingsKey.User, apiRequest)
+    const updatePayload: Partial<User> = {
+      acceptedTermsOfService: true,
+    };
+    const apiRequest = UserMapper.toAcceptedTermsOfServiceRequest(updatePayload);
 
     return this.userService
-      .updateUserProfile(currentUser.id, ProfileSettingsKey.User, { acceptedTermsOfService: true })
+      .updateUserAcceptedTermsOfService(currentUser.id, apiRequest)
       .pipe(
         tap((response: User): void => {
           if (response.acceptedTermsOfService) {
