@@ -32,6 +32,7 @@ import {
   CopyFileFromProject,
   FetchAvailableProjects,
   FetchPreprintFilesLinks,
+  FetchPreprintPrimaryFile,
   FetchProjectFiles,
   FetchProjectFilesByLink,
   PreprintStepperSelectors,
@@ -73,6 +74,7 @@ export class FileStepComponent implements OnInit {
     getPreprintFilesLinks: FetchPreprintFilesLinks,
     uploadFile: UploadFile,
     reuploadFile: ReuploadFile,
+    fetchPreprintFile: FetchPreprintPrimaryFile,
     getAvailableProjects: FetchAvailableProjects,
     getFilesForSelectedProject: FetchProjectFiles,
     getProjectFilesByLink: FetchProjectFilesByLink,
@@ -88,16 +90,30 @@ export class FileStepComponent implements OnInit {
   providerId = select(PreprintStepperSelectors.getSelectedProviderId);
   selectedFileSource = select(PreprintStepperSelectors.getSelectedFileSource);
   fileUploadLink = select(PreprintStepperSelectors.getUploadLink);
-  preprintFiles = select(PreprintStepperSelectors.getPreprintFiles);
-  arePreprintFilesLoading = select(PreprintStepperSelectors.arePreprintFilesLoading);
+
+  preprintFile = select(PreprintStepperSelectors.getPreprintFile);
+  isPreprintFileLoading = select(PreprintStepperSelectors.isPreprintFilesLoading);
+
   availableProjects = select(PreprintStepperSelectors.getAvailableProjects);
   areAvailableProjectsLoading = select(PreprintStepperSelectors.areAvailableProjectsLoading);
+
   projectFiles = select(PreprintStepperSelectors.getProjectFiles);
   areProjectFilesLoading = select(PreprintStepperSelectors.areProjectFilesLoading);
+
   currentFolder = select(PreprintStepperSelectors.getCurrentFolder);
   selectedProjectId = signal<StringOrNull>(null);
 
   versionFileMode = signal<boolean>(false);
+
+  preprintHasPrimaryFile = computed(() => {
+    return !!this.preprint()?.primaryFileId;
+  });
+
+  cancelSourceOptionButtonVisible = computed(() => {
+    return (
+      !this.preprintFile() && this.selectedFileSource() !== PreprintFileSource.None && !this.isPreprintFileLoading()
+    );
+  });
 
   projectNameControl = new FormControl<StringOrNull>(null);
 
@@ -119,7 +135,9 @@ export class FileStepComponent implements OnInit {
 
   ngOnInit() {
     this.actions.getPreprintFilesLinks();
-
+    if (this.preprintHasPrimaryFile() && !this.preprintFile()) {
+      this.actions.fetchPreprintFile();
+    }
     this.projectNameControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
       .subscribe((projectNameOrId) => {
@@ -159,9 +177,17 @@ export class FileStepComponent implements OnInit {
 
     if (this.versionFileMode()) {
       this.versionFileMode.set(false);
-      this.actions.reuploadFile(file);
+      this.actions.reuploadFile(file).subscribe({
+        next: () => {
+          this.actions.fetchPreprintFile();
+        },
+      });
     } else {
-      this.actions.uploadFile(file);
+      this.actions.uploadFile(file).subscribe({
+        next: () => {
+          this.actions.fetchPreprintFile();
+        },
+      });
     }
   }
 
@@ -175,7 +201,11 @@ export class FileStepComponent implements OnInit {
   }
 
   selectProjectFile(file: OsfFile) {
-    this.actions.copyFileFromProject(file);
+    this.actions.copyFileFromProject(file).subscribe({
+      next: () => {
+        this.actions.fetchPreprintFile();
+      },
+    });
   }
 
   versionFile() {
@@ -188,5 +218,13 @@ export class FileStepComponent implements OnInit {
       },
       onReject: () => null,
     });
+  }
+
+  cancelButtonClicked() {
+    if (this.preprintFile()) {
+      return;
+    }
+
+    this.actions.setSelectedFileSource(PreprintFileSource.None);
   }
 }
