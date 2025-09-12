@@ -14,10 +14,11 @@
   @if (funders()?.length) {
     <div class="mt-4">
       @for (funder of funders(); track funder.funderIdentifier) {
-        <div class="mb-2 pb-3 border-bottom-1 surface-border flex flex-column gap-2">
+        <div class="surface-border flex flex-column gap-2" [ngClass]="{ 'mb-3 pb-3 border-bottom-1': !$last }">
           <p>{{ 'files.detail.resourceMetadata.fields.funder' | translate }}: {{ funder.funderName }}</p>
-
-          <p>{{ 'files.detail.resourceMetadata.fields.awardTitle' | translate }}: {{ funder.awardTitle }}</p>
+          @if (funder.awardTitle) {
+            <p>{{ 'files.detail.resourceMetadata.fields.awardTitle' | translate }}: {{ funder.awardTitle }}</p>
+          }
 
           @if (funder.awardUri) {
             <p>

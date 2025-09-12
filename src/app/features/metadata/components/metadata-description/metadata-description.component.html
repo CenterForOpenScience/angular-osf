@@ -11,5 +11,7 @@
     }
   </div>
 
-  <p class="mt-4">{{ description() || ('project.overview.metadata.noDescription' | translate) }}</p>
+  <p data-test-display-node-description class="mt-4">
+    {{ description() || ('project.overview.metadata.noDescription' | translate) }}
+  </p>
 </p-card>
