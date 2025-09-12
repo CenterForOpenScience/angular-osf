@@ -12,16 +12,16 @@ import { Tree, TreeModule } from 'primeng/tree';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule } from '@angular/forms';
 
 import { SubjectModel } from '@osf/shared/models';
-import { SubjectsSelectors } from '@shared/stores';
+import { SubjectsSelectors } from '@osf/shared/stores';
 
 import { SearchInputComponent } from '../search-input/search-input.component';
 
 @Component({
   selector: 'osf-subjects',
-  imports: [Card, TranslatePipe, Chip, SearchInputComponent, Tree, TreeModule, Checkbox, Skeleton],
+  imports: [Card, TranslatePipe, Chip, SearchInputComponent, Tree, TreeModule, Checkbox, Skeleton, FormsModule],
   templateUrl: './subjects.component.html',
   styleUrl: './subjects.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,6 +43,9 @@ export class SubjectsComponent {
   searchedList = computed(() =>
     this.searchedSubjects().map((subject: SubjectModel) => this.mapParentsSubject(subject))
   );
+
+  childrenIdsMap = computed(() => this.buildChildrenIdsMap(this.searchedSubjects()));
+
   expanded: Record<string, boolean> = {};
 
   searchControl = new FormControl<string>('');
@@ -91,11 +94,22 @@ export class SubjectsComponent {
     if (this.readonly()) return;
 
     if (event.checked) {
-      this.updateSelection.emit([...this.selected(), ...subjects]);
+      const map = new Map<string, SubjectModel>();
+      [...this.selected(), ...subjects].forEach((subject) => map.set(subject.id, subject));
+      this.updateSelection.emit([...map.values()]);
     } else {
-      const updatedSelection = this.selected().filter((s) => !subjects.some((sub) => sub.id === s.id));
+      const currentSubject = subjects[subjects.length - 1];
+      const childrenIds = this.childrenIdsMap()[currentSubject.id] ?? [];
+      const updatedSelection = this.selected().filter((s) => s.id !== currentSubject.id && !childrenIds.includes(s.id));
       this.updateSelection.emit(updatedSelection);
     }
+  }
+
+  isChecked(subjects: SubjectModel[]): boolean {
+    if (!subjects?.length) return false;
+
+    const selectedIds = new Set(this.selected().map((s) => s.id));
+    return subjects.every((s) => selectedIds.has(s.id));
   }
 
   private getChildrenIds(subjects: SubjectModel[]): string[] {
@@ -126,5 +140,32 @@ export class SubjectsComponent {
 
     acc.push(subject);
     return this.mapParentsSubject(subject.parent, acc);
+  }
+
+  private buildChildrenIdsMap(subjects: SubjectModel[]): Record<string, string[]> {
+    const groupedByParent = new Map<string, SubjectModel[]>();
+    subjects.forEach((s) => {
+      if (s.parent?.id) {
+        const arr = groupedByParent.get(s.parent.id) ?? [];
+        arr.push(s);
+        groupedByParent.set(s.parent.id, arr);
+      }
+    });
+
+    const collectChildrenIds = (id: string): string[] => {
+      const children = groupedByParent.get(id) ?? [];
+      const ids = children.map((c) => c.id);
+      for (const child of children) {
+        ids.push(...collectChildrenIds(child.id));
+      }
+      return ids;
+    };
+
+    const result: Record<string, string[]> = {};
+    subjects.forEach((s) => {
+      result[s.id] = collectChildrenIds(s.id);
+    });
+
+    return result;
   }
 }

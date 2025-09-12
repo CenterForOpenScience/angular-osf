@@ -13,6 +13,7 @@ export { JsonApiService } from './json-api.service';
 export { LicensesService } from './licenses.service';
 export { LoaderService } from './loader.service';
 export { MetaTagsService } from './meta-tags.service';
+export { MetadataRecordsService } from './metadata-records.service';
 export { MyResourcesService } from './my-resources.service';
 export { NodeLinksService } from './node-links.service';
 export { ProjectRedirectDialogService } from './project-redirect-dialog.service';

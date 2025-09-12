@@ -135,7 +135,7 @@
       <div class="flex flex-wrap gap-2">
         @if (resource.subjects.length) {
           @for (subject of resource.subjects; track subject.id) {
-            <p-tag [value]="subject.text" severity="info" />
+            <p-tag [value]="subject.name" severity="info" />
           }
         } @else {
           <p>{{ 'project.overview.metadata.noSubjects' | translate }}</p>

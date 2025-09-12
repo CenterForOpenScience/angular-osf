@@ -123,8 +123,10 @@ export class FileDetailComponent {
   cedarTemplates = select(MetadataSelectors.getCedarTemplates);
   isAnonymous = select(FilesSelectors.isFilesAnonymous);
   fileCustomMetadata = select(FilesSelectors.getFileCustomMetadata);
+  isFileCustomMetadataLoading = select(FilesSelectors.isFileMetadataLoading);
   resourceMetadata = select(FilesSelectors.getResourceMetadata);
   resourceContributors = select(FilesSelectors.getContributors);
+  isResourceContributorsLoading = select(FilesSelectors.isResourceContributorsLoading);
 
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
@@ -184,10 +186,15 @@ export class FileDetailComponent {
   });
 
   private readonly metaTagsData = computed(() => {
+    if (this.isFileLoading() || this.isFileCustomMetadataLoading() || this.isResourceContributorsLoading()) {
+      return null;
+    }
     const file = this.file();
     if (!file) return null;
     return {
+      osfGuid: file.guid,
       title: this.fileCustomMetadata()?.title || file.name,
+      type: this.fileCustomMetadata()?.resourceTypeGeneral,
       description:
         this.fileCustomMetadata()?.description ?? this.translateService.instant('files.metaTagDescriptionPlaceholder'),
       url: pathJoin(environment.webUrl, this.fileGuid),
