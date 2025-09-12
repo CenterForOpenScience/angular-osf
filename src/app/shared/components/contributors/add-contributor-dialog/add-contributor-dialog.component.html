@@ -37,6 +37,7 @@
           severity="secondary"
           [label]="'project.contributors.addDialog.addUnregisteredContributor' | translate"
           (click)="addUnregistered()"
+          data-test-add-unregistered-contributor-button
         />
       </div>
     }
@@ -59,6 +60,7 @@
       (click)="dialogRef.close()"
       severity="info"
       [label]="'common.buttons.cancel' | translate"
+      data-test-cancel-add-contributor-button
     >
     </p-button>
 
@@ -68,6 +70,7 @@
       (click)="addContributor()"
       [label]="'common.buttons.next' | translate"
       [disabled]="!selectedUsers().length"
+      data-test-add-contributor-button
     >
     </p-button>
   </div>

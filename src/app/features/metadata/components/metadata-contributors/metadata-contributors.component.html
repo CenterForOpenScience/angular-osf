@@ -7,6 +7,7 @@
         (onClick)="openEditContributorDialog.emit()"
         severity="secondary"
         [label]="'common.buttons.edit' | translate"
+        data-test-edit-contributors-button
       ></p-button>
     }
   </div>
@@ -15,7 +16,9 @@
     <div class="inline-flex gap-1 line-height-2 mt-4">
       @for (contributor of contributors(); track contributor.id) {
         <div>
-          <a class="font-bold" [routerLink]="['/user', contributor.userId]"> {{ contributor.fullName }}</a>
+          <a class="font-bold" [routerLink]="['/user', contributor.userId]" data-test-contributor-name>
+            {{ contributor.fullName }}
+          </a>
           <span>{{ $last ? '' : ',' }}</span>
         </div>
       }

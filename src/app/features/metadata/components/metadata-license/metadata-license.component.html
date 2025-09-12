@@ -7,11 +7,12 @@
         severity="secondary"
         [label]="'common.buttons.edit' | translate"
         (onClick)="openEditLicenseDialog.emit()"
+        data-test-edit-license-button
       />
     }
   </div>
 
   <div class="mt-4">
-    <p>{{ license()?.name || ('project.overview.metadata.noLicense' | translate) }}</p>
+    <p data-test-target-license-name>{{ license()?.name || ('project.overview.metadata.noLicense' | translate) }}</p>
   </div>
 </p-card>
