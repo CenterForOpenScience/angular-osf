@@ -6,6 +6,7 @@
   text
   [pTooltip]="(copyItem() ? tooltip() : 'common.labels.noData') | translate"
   [disabled]="!copyItem()"
-  (click)="copy()"
+  (onClick)="copy()"
+  [ariaLabel]="ariaLabel() | translate"
 >
 </p-button>

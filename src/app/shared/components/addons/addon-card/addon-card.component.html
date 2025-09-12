@@ -5,12 +5,13 @@
         class="addon-image"
         alt="Addon card image"
         [src]="'assets/icons/addons/' + card()!.externalServiceName + '.svg'"
+        data-test-addon-card-logo
       />
     }
   </div>
 
   <div class="flex flex-column gap-3">
-    <h3 class="text-center">{{ card()?.displayName }}</h3>
+    <h3 class="text-center" data-test-addon-card-title>{{ card()?.displayName }}</h3>
 
     <div class="flex justify-content-center align-items-center md:gap-5 md:mt-3 btn-container">
       @if (showDangerButton()) {
@@ -18,6 +19,7 @@
           [label]="'settings.addons.form.buttons.disable' | translate"
           severity="danger"
           (onClick)="showDisableDialog()"
+          data-test-addon-card-disconnect
         ></p-button>
       }
 
