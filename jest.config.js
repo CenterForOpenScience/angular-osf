@@ -71,7 +71,6 @@ module.exports = {
     '<rootDir>/src/app/features/files/pages/community-metadata',
     '<rootDir>/src/app/features/files/pages/file-detail',
     '<rootDir>/src/app/features/preprints/',
-    '<rootDir>/src/app/features/project/contributors/',
     '<rootDir>/src/app/features/project/overview/',
     '<rootDir>/src/app/features/project/registrations',
     '<rootDir>/src/app/features/project/settings',
