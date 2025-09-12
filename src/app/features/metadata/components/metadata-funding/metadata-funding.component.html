@@ -27,7 +27,7 @@
           @if (funder.awardUri) {
             <p>
               {{ 'files.detail.resourceMetadata.fields.awardUri' | translate }}:
-              <a class="font-bold" [href]="funder.awardUri" target="_blank">
+              <a class="font-bold" [href]="funder.awardUri" target="_blank" data-test-display-funder-award-uri>
                 {{ funder.awardUri }}
               </a>
             </p>

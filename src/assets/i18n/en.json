@@ -64,7 +64,8 @@
       "tooltipBtn": "Tooltip button",
       "customizeOptions": "Customize options",
       "toggleProjectVisibility": "Toggle project visibility",
-      "tagInput": "Tag input"
+      "tagInput": "Tag input",
+      "copyButtonInfo": "Copy to clipboard button"
     },
     "dialogs": {
       "confirmation": "Confirmation"

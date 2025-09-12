@@ -116,7 +116,12 @@
         </td>
         <td>
           <div class="flex align-items-center justify-content-center">
-            <p-checkbox variant="filled" binary="true" [(ngModel)]="contributor.isBibliographic"></p-checkbox>
+            <p-checkbox
+              variant="filled"
+              binary="true"
+              [(ngModel)]="contributor.isBibliographic"
+              [ariaLabel]="'project.contributors.table.headers.contributor' | translate"
+            ></p-checkbox>
           </div>
         </td>
         @if (showCurator()) {
@@ -127,6 +132,7 @@
                 binary="true"
                 [ngModel]="contributor.isCurator"
                 [disabled]="true"
+                [ariaLabel]="'project.contributors.curatorInfo.heading' | translate"
               ></p-checkbox>
             </div>
           </td>

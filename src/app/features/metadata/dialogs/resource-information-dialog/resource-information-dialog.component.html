@@ -13,6 +13,7 @@
       [placeholder]="'common.buttons.select' | translate"
       appendTo="body"
       class="w-full"
+      data-test-select-resource-type
     />
   </div>
 
@@ -32,6 +33,7 @@
       [placeholder]="'common.buttons.select' | translate"
       appendTo="body"
       class="w-full"
+      data-test-select-resource-language
     >
       <ng-template #item let-option>
         <span class="w-25rem">{{ option.label }}</span>
