@@ -47,7 +47,6 @@ export interface Preprint {
 }
 
 export interface PreprintFilesLinks {
-  filesLink: string;
   uploadFileLink: string;
 }
 

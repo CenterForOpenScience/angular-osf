@@ -4,6 +4,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { ContributorPermission } from '@shared/enums';
 import { MOCK_CONTRIBUTOR, MOCK_CONTRIBUTOR_WITHOUT_HISTORY, TranslateServiceMock } from '@shared/mocks';
 import { ContributorModel } from '@shared/models';
 
@@ -127,10 +128,11 @@ describe('ContributorsListComponent', () => {
       type: 'user',
       isBibliographic: true,
       isCurator: true,
+      isUnregisteredContributor: false,
       fullName: 'Minimal User',
       givenName: 'Minimal User',
       familyName: 'Minimal User',
-      permission: 'read',
+      permission: ContributorPermission.Read,
       education: [],
       employment: [],
     };

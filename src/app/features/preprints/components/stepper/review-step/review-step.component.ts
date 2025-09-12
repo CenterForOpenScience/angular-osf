@@ -32,6 +32,8 @@ import {
   SubjectsSelectors,
 } from '@osf/shared/stores';
 
+import { environment } from 'src/environments/environment';
+
 @Component({
   selector: 'osf-review-step',
   imports: [
@@ -80,6 +82,7 @@ export class ReviewStepComponent implements OnInit {
     return (this.preprint()?.licenseOptions ?? {}) as Record<string, string>;
   });
 
+  readonly environment = environment;
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly PreregLinkInfo = PreregLinkInfo;
 

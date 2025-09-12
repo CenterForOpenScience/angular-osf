@@ -1,11 +1,12 @@
 import { ApiData, Education, Employment } from '@osf/shared/models';
+import { ContributorPermission } from '@shared/enums';
 
 export type ContributorResponse = ApiData<ContributorAttributes, ContributorEmbeds, ContributorRelationships, null>;
 
 export interface ContributorAttributes {
   index: number;
   bibliographic: boolean;
-  permission: string;
+  permission: ContributorPermission;
   unregistered_contributor: string | null;
   is_curator: boolean;
 }

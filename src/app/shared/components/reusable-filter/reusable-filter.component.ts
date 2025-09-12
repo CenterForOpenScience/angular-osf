@@ -74,7 +74,7 @@ export class ReusableFilterComponent {
     filters.forEach((filter) => {
       if (filter.operator === 'is-present') {
         isPresentFilters.push(filter);
-      } else if (filter.operator === 'any-of' || filter.operator === 'at-date') {
+      } else if (filter.operator.includes('any-of') || filter.operator.includes('at-date')) {
         individualFilters.push(filter);
       }
     });
@@ -166,14 +166,6 @@ export class ReusableFilterComponent {
 
   isFilterLoading(filter: DiscoverableFilter): boolean {
     return filter.isLoading || false;
-  }
-
-  isFilterPaginationLoading(filter: DiscoverableFilter): boolean {
-    return filter.isPaginationLoading || false;
-  }
-
-  isFilterSearchLoading(filter: DiscoverableFilter): boolean {
-    return filter.isSearchLoading || false;
   }
 
   getSelectedValue(filterKey: string): string | null {

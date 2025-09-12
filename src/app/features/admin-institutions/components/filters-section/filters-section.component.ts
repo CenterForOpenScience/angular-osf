@@ -45,7 +45,6 @@ export class FiltersSectionComponent {
   filters = select(GlobalSearchSelectors.getFilters);
   filterValues = select(GlobalSearchSelectors.getFilterValues);
   filterSearchCache = select(GlobalSearchSelectors.getFilterSearchCache);
-  filterOptionsCache = select(GlobalSearchSelectors.getFilterOptionsCache);
   areResourcesLoading = select(GlobalSearchSelectors.getResourcesLoading);
 
   onFilterChanged(event: { filterType: string; value: StringOrNull }): void {

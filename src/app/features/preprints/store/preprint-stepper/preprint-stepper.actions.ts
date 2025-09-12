@@ -62,8 +62,8 @@ export class CopyFileFromProject {
   constructor(public file: OsfFile) {}
 }
 
-export class FetchPreprintFiles {
-  static readonly type = '[Preprint Stepper] Get Preprint Files';
+export class FetchPreprintPrimaryFile {
+  static readonly type = '[Preprint Stepper] Fetch Preprint Primary File';
 }
 
 export class FetchAvailableProjects {

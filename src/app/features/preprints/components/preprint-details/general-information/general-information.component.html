@@ -27,7 +27,18 @@
         <div class="flex flex-column gap-1 line-height-2 md:flex-row">
           @for (contributor of bibliographicContributors(); track contributor.id) {
             <div>
-              <a class="font-bold"> {{ contributor.fullName }}</a>
+              @if (contributor.isUnregisteredContributor) {
+                <span>{{ contributor.fullName }}</span>
+              } @else {
+                <a
+                  class="font-bold"
+                  [href]="`${webUrl}/${contributor.userId}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ contributor.fullName }}
+                </a>
+              }
               <span>{{ $last ? '' : ',' }}</span>
             </div>
           }
@@ -38,7 +49,6 @@
         </div>
       </section>
 
-      <!-- [RNi] TODO: Extract to separate component -->
       @if (preprintProvider()?.assertionsEnabled) {
         <section class="flex flex-column gap-2">
           <h3>{{ 'preprints.preprintStepper.review.sections.authorAssertions.conflictOfInterest' | translate }}</h3>

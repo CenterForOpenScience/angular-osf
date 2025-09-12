@@ -36,6 +36,7 @@ export class PreprintFileSectionComponent {
   isMedium = toSignal(inject(IS_MEDIUM));
   isLarge = toSignal(inject(IS_LARGE));
 
+  preprint = select(PreprintSelectors.getPreprint);
   file = select(PreprintSelectors.getPreprintFile);
   preprint$ = toObservable(select(PreprintSelectors.getPreprint));
   isFileLoading = select(PreprintSelectors.isPreprintFileLoading);
@@ -58,10 +59,10 @@ export class PreprintFileSectionComponent {
     const fileVersions = this.fileVersions();
     if (!fileVersions.length) return [];
 
-    return fileVersions.map((version, index) => ({
+    return fileVersions.map((version) => ({
       label: this.translateService.instant('preprints.details.file.downloadVersion', {
-        version: ++index,
-        date: this.datePipe.transform(version.dateCreated, 'mm/dd/yyyy hh:mm:ss'),
+        version: version.id,
+        date: this.datePipe.transform(version.dateCreated, 'MM/dd/yyyy hh:mm:ss'),
       }),
       url: version.downloadLink,
       command: () => this.logDownload(),

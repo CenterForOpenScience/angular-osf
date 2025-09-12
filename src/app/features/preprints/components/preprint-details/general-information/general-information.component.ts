@@ -51,7 +51,7 @@ export class GeneralInformationComponent implements OnDestroy {
     fetchPreprintById: FetchPreprintById,
     fetchResourceInstitutions: FetchResourceInstitutions,
   });
-  readonly environment = environment;
+  readonly webUrl = environment.webUrl;
 
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
   preprintVersionSelected = output<string>();

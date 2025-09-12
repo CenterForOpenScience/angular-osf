@@ -13,6 +13,7 @@
     <div class="flex flex-column">
       <label for="abstract">{{ 'preprints.preprintStepper.titleAndAbstract.abstractLabel' | translate }}</label>
       <textarea
+        data-test-abstract-input
         pTextarea
         id="abstract"
         [rows]="4"
@@ -53,6 +54,7 @@
     [routerLink]="['/preprints', providerId(), 'discover']"
   />
   <p-button
+    data-test-next-button
     class="w-6 md:w-9rem"
     styleClass="w-full"
     [label]="'common.buttons.next' | translate"

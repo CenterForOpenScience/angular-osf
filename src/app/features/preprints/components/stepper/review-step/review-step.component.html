@@ -10,9 +10,13 @@
 </p>
 <p>
   {{ 'preprints.preprintStepper.review.learnMore' | translate }}
-  <a href="https://help.osf.io/article/592-preprint-moderation">{{
-    'preprints.preprintStepper.review.moderationPolicies' | translate
-  }}</a>
+  <a
+    class="font-bold"
+    href="https://help.osf.io/article/592-preprint-moderation"
+    target="_blank"
+    rel="noopener noreferrer"
+    >{{ 'preprints.preprintStepper.review.moderationPolicies' | translate }}</a
+  >
   {{ 'preprints.preprintStepper.review.supportCenter' | translate }}
 </p>
 
@@ -61,7 +65,18 @@
       <div class="flex gap-1 line-height-2">
         @for (contributor of bibliographicContributors(); track contributor.id) {
           <div>
-            <a class="font-bold"> {{ contributor.fullName }}</a>
+            @if (contributor.isUnregisteredContributor) {
+              <span>{{ contributor.fullName }}</span>
+            } @else {
+              <a
+                class="font-bold"
+                [href]="`${environment.webUrl}/${contributor.userId}`"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {{ contributor.fullName }}
+              </a>
+            }
             <span>{{ $last ? '' : ',' }}</span>
           </div>
         }
@@ -69,7 +84,7 @@
     </section>
 
     @if (affiliatedInstitutions().length) {
-      <osf-affiliated-institutions-view [institutions]="affiliatedInstitutions()" />
+      <osf-affiliated-institutions-view data-test-preprint-institution-list [institutions]="affiliatedInstitutions()" />
     }
 
     <section class="license flex flex-column gap-2">
@@ -91,7 +106,7 @@
       <section class="flex flex-column gap-2">
         <h3>{{ 'preprints.preprintStepper.review.sections.metadata.publicationDoi' | translate }}</h3>
 
-        <a [href]="preprint()?.articleDoiLink">
+        <a [href]="preprint()?.articleDoiLink" target="_blank" rel="noopener noreferrer">
           {{ preprint()?.articleDoiLink }}
         </a>
       </section>
@@ -237,6 +252,7 @@
     [disabled]="isPreprintSubmitting()"
   />
   <p-button
+    data-test-submit-button
     class="w-6 md:w-9rem"
     styleClass="w-full"
     [label]="'common.buttons.submit' | translate"

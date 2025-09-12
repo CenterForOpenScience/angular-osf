@@ -10,16 +10,27 @@ import { TableModule } from 'primeng/table';
 
 import { filter, forkJoin } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
+import { UserSelectors } from '@core/store/user';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsListComponent,
 } from '@osf/shared/components/contributors';
-import { AddContributorType, ResourceType } from '@osf/shared/enums';
+import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
@@ -50,8 +61,18 @@ export class ContributorsComponent implements OnInit {
 
   initialContributors = select(ContributorsSelectors.getContributors);
   contributors = signal([]);
+  isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  currentUser = select(UserSelectors.getCurrentUser);
 
-  readonly isContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
+  isCurrentUserAdminContributor = computed(() => {
+    const currentUserId = this.currentUser()?.id;
+    const initialContributors = this.initialContributors();
+    if (!currentUserId) return false;
+
+    return initialContributors.some((contributor: ContributorModel) => {
+      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
+    });
+  });
 
   actions = createDispatchMap({
     getContributors: GetAllContributors,

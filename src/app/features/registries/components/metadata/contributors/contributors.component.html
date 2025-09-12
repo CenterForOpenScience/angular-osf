@@ -5,6 +5,8 @@
     class="w-full"
     [contributors]="contributors()"
     [isLoading]="isContributorsLoading()"
+    [currentUserId]="currentUser()?.id"
+    [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
     (remove)="removeContributor($event)"
   />
 

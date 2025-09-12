@@ -9,20 +9,30 @@ import { TableModule } from 'primeng/table';
 
 import { filter, forkJoin, map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { UserSelectors } from '@core/store/user';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsListComponent,
 } from '@osf/shared/components/contributors';
-import { BIBLIOGRAPHY_OPTIONS, PERMISSION_OPTIONS } from '@osf/shared/constants';
 import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
-import { ContributorDialogAddModel, ContributorModel, SelectOption } from '@osf/shared/models';
+import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
 import {
   AddContributor,
@@ -52,10 +62,17 @@ export class ContributorsComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly draftId = toSignal(this.route.params.pipe(map((params) => params['id'])) ?? of(undefined));
 
-  readonly selectedPermission = signal<ContributorPermission | null>(null);
-  readonly selectedBibliography = signal<boolean | null>(null);
-  readonly permissionsOptions: SelectOption[] = PERMISSION_OPTIONS;
-  readonly bibliographyOptions: SelectOption[] = BIBLIOGRAPHY_OPTIONS;
+  currentUser = select(UserSelectors.getCurrentUser);
+
+  isCurrentUserAdminContributor = computed(() => {
+    const currentUserId = this.currentUser()?.id;
+    const initialContributors = this.initialContributors();
+    if (!currentUserId) return false;
+
+    return initialContributors.some((contributor: ContributorModel) => {
+      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
+    });
+  });
 
   initialContributors = select(ContributorsSelectors.getContributors);
   contributors = signal([]);

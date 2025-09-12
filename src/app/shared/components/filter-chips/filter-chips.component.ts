@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 
 import { StringOrNull } from '@osf/shared/helpers';
-import { DiscoverableFilter, SelectOption } from '@osf/shared/models';
+import { DiscoverableFilter } from '@osf/shared/models';
 
 @Component({
   selector: 'osf-filter-chips',
@@ -14,7 +14,6 @@ import { DiscoverableFilter, SelectOption } from '@osf/shared/models';
 })
 export class FilterChipsComponent {
   filterValues = input<Record<string, StringOrNull>>({});
-  filterOptionsCache = input<Record<string, SelectOption[]>>({});
   filters = input.required<DiscoverableFilter[]>();
 
   filterRemoved = output<string>();

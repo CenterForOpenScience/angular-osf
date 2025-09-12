@@ -1996,7 +1996,7 @@
         "uploadDescription": "Please Upload your {{preprintWord}}",
         "note": "Note: You cannot switch options once a file is attached.",
         "uploadFromComputer": "Upload From Your Computer",
-        "selectFromProject": "Select From existing OSF project",
+        "selectFromProject": "Select From Existing OSF Project",
         "uploadFileButton": "Upload file",
         "projectSelection": {
           "title": "Project Title",
@@ -2022,7 +2022,7 @@
         "publicationDateTitle": "Publication Date (optional)",
         "publicationCitationTitle": "Publication Citation (optional)",
         "affiliatedInstitutionsTitle": "Affiliated Institutions",
-        "affiliatedInstitutionsDescription": "You can affiliate your {{preprintWord}} with your institution if it is an OSF institutional member and has worked with the Center for Open Science to create a dedicated institutional OSF landing page."
+        "affiliatedInstitutionsDescription": "You can affiliate your {{preprintWord}} with your institution if it is an OSF institutional member and has worked with the <a class='font-bold' href='https://www.cos.io/products/osf-institutions' target='_blank'>Center for Open Science</a> to create a dedicated <a class='font-bold' href='https://help.osf.io/article/191-view-institutional-landing-pages' target='_blank'>institutional OSF landing page</a>."
       },
       "authorAssertions": {
         "title": "Author Assertions",
