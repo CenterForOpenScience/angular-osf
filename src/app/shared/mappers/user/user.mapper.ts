@@ -1,5 +1,5 @@
 import {
-  User,
+  User, UserAcceptedTermsOfServiceJsonApi,
   UserData,
   UserDataJsonApi,
   UserDataResponseJsonApi,
@@ -68,4 +68,11 @@ export class UserMapper {
       suffix: name.suffix ?? '',
     };
   }
+
+  static toAcceptedTermsOfServiceRequest(name: Partial<User>): UserAcceptedTermsOfServiceJsonApi {
+    return {
+      accepted_terms_of_service: name.acceptedTermsOfService ?? false,
+    };
+  }
+
 }

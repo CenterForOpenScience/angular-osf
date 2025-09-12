@@ -53,7 +53,8 @@ export class UserService {
   }
 
   updateUserProfile(userId: string, key: string, data: ProfileSettingsUpdate): Observable<User> {
-    const patchedData = key === ProfileSettingsKey.User ? data : { [key]: data };
+    let data_formatted = ProfileSettingsKey.User && data.hasOwnProperty('acceptedTermsOfService') ? {accepted_terms_of_service: true}  : data;
+    const patchedData = key === ProfileSettingsKey.User ? data_formatted : { [key]: data_formatted };
 
     return this.jsonApiService
       .patch<UserDataJsonApi>(`${this.apiUrl}/users/${userId}/`, {

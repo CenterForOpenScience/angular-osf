@@ -105,3 +105,7 @@ export interface UserData {
   activeFlags: string[];
   currentUser: User | null;
 }
+
+export interface UserAcceptedTermsOfServiceJsonApi {
+  accepted_terms_of_service: boolean;
+}
