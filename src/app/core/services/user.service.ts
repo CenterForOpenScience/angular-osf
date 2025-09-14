@@ -7,7 +7,8 @@ import { UserMapper } from '@osf/shared/mappers';
 import {
   JsonApiResponse,
   ProfileSettingsUpdate,
-  User, UserAcceptedTermsOfServiceJsonApi,
+  User,
+  UserAcceptedTermsOfServiceJsonApi,
   UserData,
   UserDataJsonApi,
   UserDataResponseJsonApi,
@@ -53,7 +54,11 @@ export class UserService {
   }
 
   updateUserProfile(userId: string, key: string, data: ProfileSettingsUpdate): Observable<User> {
-    let data_formatted = ProfileSettingsKey.User && data.hasOwnProperty('acceptedTermsOfService') ? {accepted_terms_of_service: true}  : data;
+    const data_formatted =
+      // eslint-disable-next-line no-prototype-builtins
+      ProfileSettingsKey.User && data.hasOwnProperty('acceptedTermsOfService')
+        ? { accepted_terms_of_service: true }
+        : data;
     const patchedData = key === ProfileSettingsKey.User ? data_formatted : { [key]: data_formatted };
 
     return this.jsonApiService
@@ -63,7 +68,7 @@ export class UserService {
       .pipe(map((response) => UserMapper.fromUserGetResponse(response)));
   }
 
-  updateUserAcceptedTermsOfService(userId: string, data: UserAcceptedTermsOfServiceJsonApi): Observable<User>  {
+  updateUserAcceptedTermsOfService(userId: string, data: UserAcceptedTermsOfServiceJsonApi): Observable<User> {
     return this.jsonApiService
       .patch<UserDataJsonApi>(`${this.apiUrl}/users/${userId}/`, {
         data: { type: 'users', id: userId, attributes: data },

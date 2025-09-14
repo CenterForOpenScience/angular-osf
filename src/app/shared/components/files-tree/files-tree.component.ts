@@ -25,15 +25,16 @@ import {
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { MoveFileDialogComponent, RenameFileDialogComponent } from '@osf/features/files/components';
+import { MoveFileDialogComponent } from '@osf/features/files/components/move-file-dialog/move-file-dialog.component';
+import { RenameFileDialogComponent } from '@osf/features/files/components/rename-file-dialog/rename-file-dialog.component';
 import { embedDynamicJs, embedStaticHtml } from '@osf/features/files/constants';
+import { StopPropagationDirective } from '@osf/shared/directives';
 import { FileMenuType } from '@osf/shared/enums';
-import { StopPropagationDirective } from '@shared/directives';
-import { hasViewOnlyParam } from '@shared/helpers';
-import { FileLabelModel, FileMenuAction, FilesTreeActions, OsfFile } from '@shared/models';
-import { FileSizePipe } from '@shared/pipes';
-import { CustomConfirmationService, FilesService, ToastService } from '@shared/services';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
+import { FileLabelModel, FileMenuAction, FilesTreeActions, OsfFile } from '@osf/shared/models';
+import { FileSizePipe } from '@osf/shared/pipes';
+import { CustomConfirmationService, FilesService, ToastService } from '@osf/shared/services';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 import { CustomPaginatorComponent } from '../custom-paginator/custom-paginator.component';
 import { FileMenuComponent } from '../file-menu/file-menu.component';

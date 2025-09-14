@@ -1,5 +1,5 @@
-import { IdentifiersMapper } from '@shared/mappers/identifiers.mapper';
 import { ResourceMetadata } from '@osf/shared/models';
+import { IdentifiersMapper } from '@shared/mappers/identifiers.mapper';
 
 import { GetResourceCustomMetadataResponse } from '../models/get-resource-custom-metadata-response.model';
 import { GetResourceShortInfoResponse } from '../models/get-resource-short-info-response.model';
