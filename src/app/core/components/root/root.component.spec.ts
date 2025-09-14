@@ -17,6 +17,8 @@ import { SidenavComponent } from '../sidenav/sidenav.component';
 
 import { RootComponent } from './root.component';
 
+import { OSFTestingModule } from '@testing/osf.testing.module';
+
 describe('RootComponent', () => {
   let component: RootComponent;
   let fixture: ComponentFixture<RootComponent>;
@@ -30,6 +32,7 @@ describe('RootComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         RootComponent,
+        OSFTestingModule,
         ...MockComponents(
           HeaderComponent,
           FooterComponent,

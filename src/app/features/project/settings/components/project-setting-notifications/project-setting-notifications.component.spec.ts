@@ -54,7 +54,7 @@ describe('ProjectSettingNotificationsComponent', () => {
     fixture.detectChanges();
 
     expect(component.allAccordionData).toBeDefined();
-    expect(component.allAccordionData?.length).toBe(2);
+    expect(component.allAccordionData?.length).toBe(4);
 
     if (component.allAccordionData) {
       expect(component.allAccordionData[0]).toEqual({
