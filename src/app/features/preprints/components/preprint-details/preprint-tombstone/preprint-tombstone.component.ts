@@ -9,21 +9,23 @@ import { Tag } from 'primeng/tag';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
-import { PreprintDoiSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-doi-section/preprint-doi-section.component';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
 import { FetchPreprintById, PreprintSelectors } from '@osf/features/preprints/store/preprint';
-import { TruncatedTextComponent } from '@shared/components';
-import { ResourceType } from '@shared/enums';
-import { InterpolatePipe } from '@shared/pipes';
+import { TruncatedTextComponent } from '@osf/shared/components';
+import { ResourceType } from '@osf/shared/enums';
+import { InterpolatePipe } from '@osf/shared/pipes';
 import {
   ContributorsSelectors,
   FetchSelectedSubjects,
   GetAllContributors,
   ResetContributorsState,
   SubjectsSelectors,
-} from '@shared/stores';
+} from '@osf/shared/stores';
+
+import { PreprintDoiSectionComponent } from '../preprint-doi-section/preprint-doi-section.component';
 
 @Component({
   selector: 'osf-preprint-tombstone',
@@ -40,6 +42,7 @@ import {
     AccordionHeader,
     InterpolatePipe,
     DatePipe,
+    RouterLink,
   ],
   templateUrl: './preprint-tombstone.component.html',
   styleUrl: './preprint-tombstone.component.scss',
@@ -64,9 +67,7 @@ export class PreprintTombstoneComponent implements OnDestroy {
 
   contributors = select(ContributorsSelectors.getContributors);
   areContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  bibliographicContributors = computed(() => {
-    return this.contributors().filter((contributor) => contributor.isBibliographic);
-  });
+  bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
   subjects = select(SubjectsSelectors.getSelectedSubjects);
   areSelectedSubjectsLoading = select(SubjectsSelectors.areSelectedSubjectsLoading);
 
@@ -75,9 +76,8 @@ export class PreprintTombstoneComponent implements OnDestroy {
     if (!preprint) return null;
     return preprint.embeddedLicense;
   });
-  licenseOptionsRecord = computed(() => {
-    return (this.preprint()?.licenseOptions ?? {}) as Record<string, string>;
-  });
+
+  licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
 
   skeletonData = Array.from({ length: 6 }, () => null);
 

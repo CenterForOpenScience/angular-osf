@@ -9,7 +9,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { IconComponent, TruncatedTextComponent } from '@osf/shared/components';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
@@ -21,7 +21,7 @@ import { DeleteComponentDialogComponent } from '../delete-component-dialog/delet
 
 @Component({
   selector: 'osf-project-components',
-  imports: [Button, Menu, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent],
+  imports: [Button, Menu, Skeleton, TranslatePipe, TruncatedTextComponent, IconComponent, RouterLink],
   templateUrl: './overview-components.component.html',
   styleUrl: './overview-components.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

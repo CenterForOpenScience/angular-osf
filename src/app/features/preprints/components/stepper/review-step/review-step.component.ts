@@ -9,7 +9,7 @@ import { Tag } from 'primeng/tag';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
@@ -44,6 +44,7 @@ import { environment } from 'src/environments/environment';
     AccordionPanel,
     InterpolatePipe,
     AffiliatedInstitutionsViewComponent,
+    RouterLink,
   ],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',

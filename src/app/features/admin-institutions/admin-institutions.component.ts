@@ -1,6 +1,6 @@
 import { createDispatchMap, select } from '@ngxs/store';
 
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 import { TabsModule } from 'primeng/tabs';
 
@@ -17,7 +17,7 @@ import { AdminInstitutionResourceTab } from './enums';
 
 @Component({
   selector: 'osf-admin-institutions',
-  imports: [TabsModule, TranslateModule, RouterOutlet, NgOptimizedImage, LoadingSpinnerComponent, SelectComponent],
+  imports: [TabsModule, TranslatePipe, RouterOutlet, NgOptimizedImage, LoadingSpinnerComponent, SelectComponent],
   templateUrl: './admin-institutions.component.html',
   styleUrl: './admin-institutions.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

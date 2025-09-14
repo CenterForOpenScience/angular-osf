@@ -30,12 +30,7 @@
               @if (contributor.isUnregisteredContributor) {
                 <span>{{ contributor.fullName }}</span>
               } @else {
-                <a
-                  class="font-bold"
-                  [href]="`${webUrl}/${contributor.userId}`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a class="font-bold" [routerLink]="['/user', contributor.userId]">
                   {{ contributor.fullName }}
                 </a>
               }
