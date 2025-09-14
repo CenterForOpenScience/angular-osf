@@ -45,8 +45,9 @@ import {
   SetSort,
 } from '@osf/features/files/store';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
-import { ResourceType } from '@osf/shared/enums';
+import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
+import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -101,6 +102,8 @@ export class FilesComponent {
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
   private readonly router = inject(Router);
+  private readonly dataciteService = inject(DataciteService);
+
   private readonly actions = createDispatchMap({
     createFolder: CreateFolder,
     deleteEntry: DeleteEntry,
@@ -115,28 +118,26 @@ export class FilesComponent {
     getConfiguredStorageAddons: GetConfiguredStorageAddons,
     setCurrentProvider: SetCurrentProvider,
     resetState: ResetState,
+    getResourceDetails: GetResourceDetails,
   });
 
-  isMedium = toSignal(inject(IS_MEDIUM));
-
-  readonly hasViewOnly = computed(() => {
-    return hasViewOnlyParam(this.router);
-  });
   readonly files = select(FilesSelectors.getFiles);
   readonly filesTotalCount = select(FilesSelectors.getFilesTotalCount);
   readonly isFilesLoading = select(FilesSelectors.isFilesLoading);
   readonly currentFolder = select(FilesSelectors.getCurrentFolder);
   readonly provider = select(FilesSelectors.getProvider);
+  readonly resourceDetails = select(CurrentResourceSelectors.getResourceDetails);
+  readonly rootFolders = select(FilesSelectors.getRootFolders);
+  readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
+  readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
+  readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
+
+  isMedium = toSignal(inject(IS_MEDIUM));
 
   readonly isGoogleDrive = signal<boolean>(false);
   readonly accountId = signal<string>('');
   readonly selectedRootFolder = signal<StorageItemModel>({});
   readonly resourceId = signal<string>('');
-  readonly rootFolders = select(FilesSelectors.getRootFolders);
-  readonly isRootFoldersLoading = select(FilesSelectors.isRootFoldersLoading);
-  readonly configuredStorageAddons = select(FilesSelectors.getConfiguredStorageAddons);
-  readonly isConfiguredStorageAddonsLoading = select(FilesSelectors.isConfiguredStorageAddonsLoading);
-  readonly dataciteService = inject(DataciteService);
 
   readonly progress = signal(0);
   readonly fileName = signal('');
@@ -175,13 +176,16 @@ export class FilesComponent {
     this.activeRoute.parent?.parent?.snapshot.data['resourceType'] || ResourceType.Project
   );
 
-  readonly isViewOnly = computed(() => {
-    return this.resourceType() === ResourceType.Registration;
-  });
+  readonly hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
-  readonly isViewOnlyDownloadable = computed(() => {
-    return this.resourceType() === ResourceType.Registration;
-  });
+  readonly isReadonly = computed(
+    () =>
+      this.resourceDetails().isRegistration ||
+      this.resourceDetails().currentUserPermissions.includes(UserPermissions.Read)
+  );
+  readonly isViewOnlyDownloadable = computed(() => this.resourceType() === ResourceType.Registration);
+
+  isButtonDisabled = computed(() => this.fileIsUploading() || this.isFilesLoading());
 
   readonly filesTreeActions: FilesTreeActions = {
     setCurrentFolder: (folder) => this.actions.setCurrentFolder(folder),
@@ -206,6 +210,8 @@ export class FilesComponent {
       const resourcePath = this.urlMap.get(this.resourceType()!);
       const folderLink = `${environment.apiDomainUrl}/v2/${resourcePath}/${resourceId}/files/`;
       const iriLink = `${environment.webUrl}/${resourceId}`;
+
+      this.actions.getResourceDetails(resourceId, this.resourceType()!);
       this.actions.getRootFolders(folderLink);
       this.actions.getConfiguredStorageAddons(iriLink);
     });
@@ -263,10 +269,6 @@ export class FilesComponent {
         this.actions.resetState();
       });
     });
-  }
-
-  isButtonDisabled(): boolean {
-    return this.fileIsUploading() || this.isFilesLoading();
   }
 
   uploadFile(file: File): void {
