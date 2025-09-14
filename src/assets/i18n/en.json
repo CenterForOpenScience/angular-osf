@@ -211,6 +211,14 @@
     "recentActivity": "Recent Activity"
   },
   "toast": {
+    "tos-consent": {
+      "message": "Notice: We've updated our",
+      "termsOfUse": " terms of use ",
+      "and": " and ",
+      "privacyPolicy": " privacy policy.",
+      "haveReadAndAgree": "I've read and agree to the terms and conditions",
+      "continue": "Continue"
+    },
     "cookie-consent": {
       "message": "Notice: This website relies on cookies to help provide a better user experience. By clicking accept or continuing to use the site, you consent to our use of cookies. See our Privacy Policy and Cookie Use for more information.",
       "accept": "Accept cookies"
