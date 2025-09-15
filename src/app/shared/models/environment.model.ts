@@ -15,12 +15,6 @@ export interface AppEnvironment {
   dataciteTrackerRepoId: string | null;
   dataciteTrackerAddress: string;
 
-  google?: {
-    GOOGLE_FILE_PICKER_CLIENT_ID: string;
-    GOOGLE_FILE_PICKER_API_KEY: string;
-    GOOGLE_FILE_PICKER_APP_ID: number;
-  };
-
   activityLogs?: {
     pageSize?: number;
   };

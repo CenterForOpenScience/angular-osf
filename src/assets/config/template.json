@@ -1,4 +1,6 @@
 {
   "sentryDsn": "",
-  "googleTagManagerId": ""
+  "googleTagManagerId": "",
+  "googleFilePickerApiKey": "",
+  "googleFilePickerAppId": 0
 }

@@ -25,6 +25,22 @@ export interface ConfigModel {
   googleTagManagerId: string;
 
   /**
+   * API Key used to load the Google Picker API.
+   * This key should be restricted in the Google Cloud Console to limit usage.
+   *
+   * @example "AIzaSyA...your_api_key"
+   */
+  googleFilePickerApiKey: string;
+
+  /**
+   * Google Cloud Project App ID used by the Google Picker SDK.
+   * This numeric ID identifies your Google project and is required for some configurations.
+   *
+   * @example 123456789012
+   */
+  googleFilePickerAppId: number;
+
+  /**
    * A catch-all for additional configuration keys not explicitly defined.
    * Each dynamic property maps to a `ConfigModelType` value.
    *
