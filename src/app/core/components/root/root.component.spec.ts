@@ -13,6 +13,7 @@ import { HeaderComponent } from '@core/components/header/header.component';
 import { TopnavComponent } from '@core/components/topnav/topnav.component';
 import { IS_WEB, IS_XSMALL } from '@osf/shared/helpers';
 
+import { MaintenanceBannerComponent } from '../maintenance-banner/maintenance-banner.component';
 import { SidenavComponent } from '../sidenav/sidenav.component';
 
 import { RootComponent } from './root.component';
@@ -36,7 +37,8 @@ describe('RootComponent', () => {
           TopnavComponent,
           ConfirmDialog,
           BreadcrumbComponent,
-          SidenavComponent
+          SidenavComponent,
+          MaintenanceBannerComponent
         ),
       ],
       providers: [
