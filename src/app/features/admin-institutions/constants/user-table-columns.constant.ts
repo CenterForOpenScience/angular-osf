@@ -1,4 +1,4 @@
-import { TableColumn } from '@osf/features/admin-institutions/models';
+import { TableColumn } from '../models';
 
 export const userTableColumns: TableColumn[] = [
   {
@@ -20,4 +20,24 @@ export const userTableColumns: TableColumn[] = [
   { field: 'publicRegistrationCount', header: 'adminInstitutions.summary.publicRegistrations', sortable: true },
   { field: 'embargoedRegistrationCount', header: 'adminInstitutions.summary.embargoedRegistrations', sortable: true },
   { field: 'publishedPreprintCount', header: 'adminInstitutions.institutionUsers.preprints', sortable: true },
+  { field: 'publicFileCount', header: 'adminInstitutions.institutionUsers.filesOnOsf', sortable: true },
+  { field: 'totalDataStored', header: 'adminInstitutions.institutionUsers.totalDataStored', sortable: true },
+  {
+    field: 'accountCreationDate',
+    header: 'adminInstitutions.institutionUsers.accountCreated',
+    sortable: true,
+    dateFormat: 'dd/MM/yyyy',
+  },
+  {
+    field: 'monthLasLogin',
+    header: 'adminInstitutions.institutionUsers.lastLogin',
+    sortable: true,
+    dateFormat: 'dd/MM/yyyy',
+  },
+  {
+    field: 'monthLastActive',
+    header: 'adminInstitutions.institutionUsers.lastActive',
+    sortable: true,
+    dateFormat: 'dd/MM/yyyy',
+  },
 ];

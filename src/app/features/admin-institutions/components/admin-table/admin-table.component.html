@@ -123,10 +123,12 @@
                     }
                   </a>
                 } @else {
-                  @if (col.dateFormat) {
+                  @if (col.dateFormat && rowData[col.field]) {
                     {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
-                  } @else {
+                  } @else if (!col.dateFormat && rowData[col.field]) {
                     {{ getCellValue(rowData[col.field]) }}
+                  } @else {
+                    {{ rowData[col.field] ?? '-' }}
                   }
                 }
 

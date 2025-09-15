@@ -20,9 +20,14 @@
             <p-accordion-content>
               <div class="content">
                 @for (label of labels(); let i = $index; track i) {
-                  <li class="flex align-items-center mb-2 gap-2">
-                    <div class="w-1rem h-1rem" [style.background-color]="getColor(i)"></div>
-                    <span>{{ label }}</span>
+                  <li class="flex align-items-center justify-content-between gap-3 mb-2">
+                    <div class="flex align-items-center gap-2">
+                      <div class="w-1rem h-1rem" [style.background-color]="getColor(i)"></div>
+                      <span>{{ label }}</span>
+                    </div>
+                    @if (datasets().length) {
+                      <span>{{ datasets()[0].data[i] }}</span>
+                    }
                   </li>
                 }
               </div>
