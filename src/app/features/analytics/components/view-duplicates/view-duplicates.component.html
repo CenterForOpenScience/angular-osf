@@ -70,7 +70,11 @@
                 </div>
               </div>
             </div>
-            <p-button [label]="'common.buttons.view' | translate" severity="secondary" [routerLink]="duplicate.id" />
+            <p-button
+              [label]="'common.buttons.view' | translate"
+              severity="secondary"
+              [routerLink]="['/', duplicate.id]"
+            />
           </div>
         }
       }
