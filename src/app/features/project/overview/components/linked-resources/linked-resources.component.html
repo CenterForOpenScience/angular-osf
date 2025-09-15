@@ -39,7 +39,7 @@
               <p>{{ 'common.labels.contributors' | translate }}:</p>
               @for (contributor of linkedResource.contributors; track contributor.id) {
                 <div>
-                  <a class="font-bold"> {{ contributor.fullName }}</a>
+                  <a class="font-bold" [routerLink]="['/user', contributor.id]"> {{ contributor.fullName }}</a>
                   <span>{{ $last ? '' : ',' }}</span>
                 </div>
               }

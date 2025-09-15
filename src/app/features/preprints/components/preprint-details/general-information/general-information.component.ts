@@ -7,6 +7,7 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, effect, input, OnDestroy, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { PreprintDoiSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-doi-section/preprint-doi-section.component';
 import { ApplicabilityStatus, PreregLinkInfo } from '@osf/features/preprints/enums';
@@ -30,6 +31,7 @@ import { environment } from 'src/environments/environment';
     PreprintDoiSectionComponent,
     IconComponent,
     AffiliatedInstitutionsViewComponent,
+    RouterLink,
   ],
   templateUrl: './general-information.component.html',
   styleUrl: './general-information.component.scss',
@@ -45,7 +47,6 @@ export class GeneralInformationComponent implements OnDestroy {
     fetchPreprintById: FetchPreprintById,
     fetchResourceInstitutions: FetchResourceInstitutions,
   });
-  readonly webUrl = environment.webUrl;
 
   preprintProvider = input.required<PreprintProviderDetails | undefined>();
   preprintVersionSelected = output<string>();
@@ -57,15 +58,11 @@ export class GeneralInformationComponent implements OnDestroy {
 
   contributors = select(ContributorsSelectors.getContributors);
   areContributorsLoading = select(ContributorsSelectors.isContributorsLoading);
-  bibliographicContributors = computed(() => {
-    return this.contributors().filter((contributor) => contributor.isBibliographic);
-  });
+  bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
 
   skeletonData = Array.from({ length: 5 }, () => null);
 
-  nodeLink = computed(() => {
-    return `${environment.webUrl}/${this.preprint()?.nodeId}`;
-  });
+  nodeLink = computed(() => `${environment.webUrl}/${this.preprint()?.nodeId}`);
 
   constructor() {
     effect(() => {

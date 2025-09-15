@@ -1,4 +1,4 @@
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { MessageService, PrimeTemplate } from 'primeng/api';
 import { Button } from 'primeng/button';
@@ -10,10 +10,9 @@ import { CookieConsentService } from '../../services/cookie-consent/cookie-conse
 
 @Component({
   selector: 'osf-cookie-consent',
-  standalone: true,
   templateUrl: './cookie-consent.component.html',
   styleUrls: ['./cookie-consent.component.scss'],
-  imports: [Toast, Button, PrimeTemplate, TranslateModule],
+  imports: [Toast, Button, PrimeTemplate, TranslatePipe],
 })
 export class CookieConsentComponent implements AfterViewInit {
   private readonly toastService = inject(MessageService);

@@ -9,7 +9,7 @@ import { Tag } from 'primeng/tag';
 
 import { DatePipe, TitleCasePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { ApplicabilityStatus, PreregLinkInfo, ReviewsState } from '@osf/features/preprints/enums';
 import { PreprintProviderDetails } from '@osf/features/preprints/models';
@@ -25,8 +25,6 @@ import { InterpolatePipe } from '@shared/pipes';
 import { ToastService } from '@shared/services';
 import { ContributorsSelectors, FetchSelectedSubjects, GetAllContributors, SubjectsSelectors } from '@shared/stores';
 import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
-
-import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'osf-review-step',
@@ -44,6 +42,7 @@ import { environment } from 'src/environments/environment';
     AccordionPanel,
     InterpolatePipe,
     AffiliatedInstitutionsViewComponent,
+    RouterLink,
   ],
   templateUrl: './review-step.component.html',
   styleUrl: './review-step.component.scss',
@@ -65,18 +64,13 @@ export class ReviewStepComponent implements OnInit {
   isPreprintSubmitting = select(PreprintStepperSelectors.isPreprintSubmitting);
 
   contributors = select(ContributorsSelectors.getContributors);
-  bibliographicContributors = computed(() => {
-    return this.contributors().filter((contributor) => contributor.isBibliographic);
-  });
+  bibliographicContributors = computed(() => this.contributors().filter((contributor) => contributor.isBibliographic));
   subjects = select(SubjectsSelectors.getSelectedSubjects);
   affiliatedInstitutions = select(InstitutionsSelectors.getResourceInstitutions);
   license = select(PreprintStepperSelectors.getPreprintLicense);
   preprintProject = select(PreprintStepperSelectors.getPreprintProject);
-  licenseOptionsRecord = computed(() => {
-    return (this.preprint()?.licenseOptions ?? {}) as Record<string, string>;
-  });
+  licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
 
-  readonly environment = environment;
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly PreregLinkInfo = PreregLinkInfo;
 

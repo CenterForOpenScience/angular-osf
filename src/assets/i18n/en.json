@@ -831,6 +831,10 @@
       "view": "View",
       "edit": "Edit",
       "compare": "Compare",
+      "autocomplete": "Autocomplete",
+      "horizontalRule": "Horizontal rule",
+      "redo": "Redo",
+      "undo": "Undo",
       "version": {
         "title": "Version",
         "preview": "Preview",

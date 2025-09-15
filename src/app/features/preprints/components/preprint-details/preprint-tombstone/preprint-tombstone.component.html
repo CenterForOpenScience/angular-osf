@@ -15,7 +15,7 @@
         <div class="flex flex-column gap-1 line-height-2 md:flex-row">
           @for (contributor of bibliographicContributors(); track contributor.id) {
             <div>
-              <a class="font-bold"> {{ contributor.fullName }}</a>
+              <a [routerLink]="['/user', contributor.userId]" class="font-bold"> {{ contributor.fullName }}</a>
               <span>{{ $last ? '' : ',' }}</span>
             </div>
           }
