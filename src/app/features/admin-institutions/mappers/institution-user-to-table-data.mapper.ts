@@ -24,5 +24,10 @@ export function mapUserToTableCellData(user: InstitutionUser): TableCellData {
     publicRegistrationCount: user.publicRegistrationCount,
     embargoedRegistrationCount: user.embargoedRegistrationCount,
     publishedPreprintCount: user.publishedPreprintCount,
+    publicFileCount: user.publicFileCount,
+    totalDataStored: user.storageByteCount ? `${(user.storageByteCount / (1024 * 1024)).toFixed(1)} MB` : '0 B',
+    monthLasLogin: user.monthLasLogin,
+    monthLastActive: user.monthLastActive,
+    accountCreationDate: user.accountCreationDate,
   };
 }

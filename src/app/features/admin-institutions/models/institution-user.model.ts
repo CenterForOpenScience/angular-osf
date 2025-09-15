@@ -9,4 +9,10 @@ export interface InstitutionUser {
   publicRegistrationCount: number;
   embargoedRegistrationCount: number;
   publishedPreprintCount: number;
+  monthLasLogin: string;
+  monthLastActive: string;
+  accountCreationDate: string;
+  storageByteCount: number;
+  publicFileCount: number;
+  reportYearMonth: string;
 }
