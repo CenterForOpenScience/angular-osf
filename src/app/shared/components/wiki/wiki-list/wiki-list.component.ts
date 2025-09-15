@@ -1,14 +1,13 @@
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
-import { ButtonGroupModule } from 'primeng/buttongroup';
 import { DialogService } from 'primeng/dynamicdialog';
-import { PanelModule } from 'primeng/panel';
-import { PanelMenuModule } from 'primeng/panelmenu';
+import { Panel } from 'primeng/panel';
+import { PanelMenu } from 'primeng/panelmenu';
 import { Skeleton } from 'primeng/skeleton';
 
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 
 import { ComponentWiki, Wiki, WikiItemType, WikiMenuItem } from '@osf/shared/models';
 import { CustomConfirmationService } from '@osf/shared/services';
@@ -17,7 +16,7 @@ import { AddWikiDialogComponent } from '../add-wiki-dialog/add-wiki-dialog.compo
 
 @Component({
   selector: 'osf-wiki-list',
-  imports: [PanelModule, Button, PanelMenuModule, ButtonGroupModule, Skeleton, RouterModule, TranslatePipe],
+  imports: [Button, Panel, PanelMenu, Skeleton, TranslatePipe],
   templateUrl: './wiki-list.component.html',
   styleUrl: './wiki-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

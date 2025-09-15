@@ -10,8 +10,9 @@
   <p class="mb-1">{{ 'shared.license.description' | translate }}</p>
   <p>
     {{ 'shared.license.helpText' | translate }}
-    <a href="https://help.osf.io/article/148-licensing" target="_blank">{{ 'common.links.helpGuide' | translate }}</a
-    >.
+    <a class="font-bold" href="https://help.osf.io/article/148-licensing" target="_blank" rel="noopener noreferrer">
+      {{ 'common.links.helpGuide' | translate }}.
+    </a>
   </p>
   <osf-license
     [licenses]="licenses()"

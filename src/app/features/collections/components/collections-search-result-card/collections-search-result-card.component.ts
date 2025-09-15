@@ -2,13 +2,14 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { collectionFilterNames } from '@osf/features/collections/constants';
 import { CollectionSubmissionWithGuid } from '@shared/models';
 
 @Component({
   selector: 'osf-collections-search-result-card',
-  imports: [DatePipe, TranslatePipe],
+  imports: [DatePipe, TranslatePipe, RouterLink],
   templateUrl: './collections-search-result-card.component.html',
   styleUrl: './collections-search-result-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

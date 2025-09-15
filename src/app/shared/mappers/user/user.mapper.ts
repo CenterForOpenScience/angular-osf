@@ -1,5 +1,5 @@
 import {
-  User,
+  User, UserAcceptedTermsOfServiceJsonApi,
   UserData,
   UserDataJsonApi,
   UserDataResponseJsonApi,
@@ -35,6 +35,7 @@ export class UserMapper {
       defaultRegionId: user.relationships?.default_region?.data?.id,
       allowIndexing: user.attributes?.allow_indexing,
       canViewReviews: user.attributes.can_view_reviews === true, // [NS] Do not simplify it
+      acceptedTermsOfService: user.attributes.accepted_terms_of_service,
     };
   }
 
@@ -67,4 +68,11 @@ export class UserMapper {
       suffix: name.suffix ?? '',
     };
   }
+
+  static toAcceptedTermsOfServiceRequest(name: Partial<User>): UserAcceptedTermsOfServiceJsonApi {
+    return {
+      accepted_terms_of_service: name.acceptedTermsOfService ?? false,
+    };
+  }
+
 }

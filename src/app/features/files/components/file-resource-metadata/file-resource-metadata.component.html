@@ -104,7 +104,7 @@
 
         <div class="flex flex-wrap">
           @for (contributor of contributors(); track $index) {
-            <a [href]="contributor.id" class="font-bold">{{ contributor.fullName }}</a>
+            <a [routerLink]="['/user', contributor.userId]" class="font-bold">{{ contributor.fullName }}</a>
             @if (!$last) {
               <span>,&nbsp;</span>
             }

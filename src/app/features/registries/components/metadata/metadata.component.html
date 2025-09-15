@@ -11,7 +11,7 @@
         </label>
         <p class="mb-1">{{ 'shared.title.description' | translate }}</p>
         <osf-text-input
-          id="registration-title-id"
+          [inputId]="'registration-title-id'"
           [control]="metadataForm.controls['title']"
           [maxLength]="inputLimits.fullName.maxLength"
         >
@@ -33,6 +33,7 @@
             rows="5"
             cols="30"
             pTextarea
+            [ariaLabel]="'common.labels.description' | translate"
           ></textarea>
           @if (
             metadataForm.controls['description'].errors?.['required'] &&

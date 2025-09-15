@@ -5,11 +5,11 @@ import { Card } from 'primeng/card';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
-import { CustomItemMetadataRecord, Metadata } from '@osf/features/metadata/models';
 import { TagsInputComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { Institution, SubjectModel } from '@osf/shared/models';
 
+import { CustomItemMetadataRecord, Metadata } from '../../models';
 import { MetadataAffiliatedInstitutionsComponent } from '../metadata-affiliated-institutions/metadata-affiliated-institutions.component';
 import { MetadataContributorsComponent } from '../metadata-contributors/metadata-contributors.component';
 import { MetadataDescriptionComponent } from '../metadata-description/metadata-description.component';

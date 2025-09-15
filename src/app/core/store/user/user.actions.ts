@@ -49,6 +49,10 @@ export class SetUserAsModerator {
   static readonly type = '[User] Set User As Moderator';
 }
 
+export class AcceptTermsOfServiceByUser {
+  static readonly type = '[User] Accept Terms Of Service';
+}
+
 export class ClearCurrentUser {
   static readonly type = '[User] Clear Current User';
 }

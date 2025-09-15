@@ -1,6 +1,6 @@
 import { TranslatePipe } from '@ngx-translate/core';
 
-import { PanelModule } from 'primeng/panel';
+import { Panel } from 'primeng/panel';
 import { Select } from 'primeng/select';
 import { Skeleton } from 'primeng/skeleton';
 
@@ -13,7 +13,7 @@ import * as Diff from 'diff';
 
 @Component({
   selector: 'osf-compare-section',
-  imports: [PanelModule, Select, FormsModule, TranslatePipe, Skeleton],
+  imports: [Panel, Select, FormsModule, TranslatePipe, Skeleton],
   templateUrl: './compare-section.component.html',
   styleUrl: './compare-section.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

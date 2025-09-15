@@ -9,6 +9,7 @@
           [class.invalid]="step.invalid"
           [class.current]="i === currentStep().index"
           (click)="onStepClick(step)"
+          [attr.aria-label]="step.label | translate"
         >
           @if (step.invalid && i !== currentStep().index) {
             <osf-icon iconClass="fas fa-exclamation" />

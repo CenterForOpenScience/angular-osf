@@ -27,11 +27,23 @@
       }
 
       @if (file()?.links?.download) {
-        <p-button severity="secondary" icon="fas fa-download" (click)="downloadFile(file()?.links?.download!)" />
+        <p-button
+          severity="secondary"
+          class="btn-icon-only"
+          icon="fas fa-download"
+          [ariaLabel]="'common.buttons.download' | translate"
+          (click)="downloadFile(file()?.links?.download!)"
+        />
       }
       @if (file()?.links?.render) {
         <div class="relative">
-          <p-button severity="secondary" icon="fas fa-file-import" (click)="embedMenu.toggle($event)" />
+          <p-button
+            severity="secondary"
+            class="btn-icon-only"
+            icon="fas fa-file-import"
+            [ariaLabel]="'common.buttons.embed' | translate"
+            (click)="embedMenu.toggle($event)"
+          />
 
           <p-menu appendTo="body" [model]="embedItems" popup #embedMenu>
             <ng-template #item let-item>
@@ -42,7 +54,13 @@
       }
       @if (file()?.links?.html) {
         <div class="relative">
-          <p-button severity="secondary" icon="fas fa-share-nodes" (click)="shareMenu.toggle($event)" />
+          <p-button
+            severity="secondary"
+            class="btn-icon-only"
+            icon="fas fa-share-nodes"
+            [ariaLabel]="'common.buttons.share' | translate"
+            (click)="shareMenu.toggle($event)"
+          />
 
           <p-menu appendTo="body" [model]="shareItems" popup #shareMenu>
             <ng-template #item let-item>
@@ -52,7 +70,13 @@
         </div>
       }
       @if (file() && !isAnonymous()) {
-        <p-button severity="danger" icon="fas fa-trash" (click)="confirmDelete(file()!)" />
+        <p-button
+          severity="danger"
+          [ariaLabel]="'common.buttons.delete' | translate"
+          class="btn-icon-only"
+          icon="fas fa-trash"
+          (click)="confirmDelete(file()!)"
+        />
       }
     </div>
   </div>

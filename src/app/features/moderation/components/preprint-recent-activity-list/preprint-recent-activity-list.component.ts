@@ -7,9 +7,10 @@ import { TableModule } from 'primeng/table';
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 
-import { PreprintReviewStatus, ReviewStatusIcon } from '@osf/features/moderation/constants';
-import { PreprintReviewActionModel } from '@osf/features/moderation/models';
 import { CustomPaginatorComponent, IconComponent } from '@osf/shared/components';
+
+import { PreprintReviewStatus, ReviewStatusIcon } from '../../constants';
+import { PreprintReviewActionModel } from '../../models';
 
 @Component({
   selector: 'osf-preprint-recent-activity-list',

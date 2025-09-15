@@ -3,8 +3,8 @@ import { MockComponent } from 'ng-mocks';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CopyButtonComponent } from '@shared/components';
-import { MOCK_USER, TranslateServiceMock } from '@shared/mocks';
-import { PaginatedViewOnlyLinksModel, ViewOnlyLinkModel } from '@shared/models';
+import { MOCK_PAGINATED_VIEW_ONLY_LINKS, MOCK_VIEW_ONLY_LINK, TranslateServiceMock } from '@shared/mocks';
+import { PaginatedViewOnlyLinksModel } from '@shared/models';
 
 import { ViewOnlyTableComponent } from './view-only-table.component';
 
@@ -12,34 +12,8 @@ describe('ViewOnlyTableComponent', () => {
   let component: ViewOnlyTableComponent;
   let fixture: ComponentFixture<ViewOnlyTableComponent>;
 
-  const mockViewOnlyLink: ViewOnlyLinkModel = {
-    id: 'link-1',
-    dateCreated: '2023-01-01T10:00:00Z',
-    key: 'key-1',
-    name: 'Test Link',
-    link: 'https://test.com/view-only-link',
-    creator: {
-      id: MOCK_USER.id,
-      fullName: MOCK_USER.fullName,
-    },
-    nodes: [
-      {
-        title: 'Test Node',
-        url: 'https://test.com/node',
-        scale: '1.0',
-        category: 'test',
-      },
-    ],
-    anonymous: false,
-  };
-
-  const mockPaginatedData: PaginatedViewOnlyLinksModel = {
-    items: [mockViewOnlyLink],
-    total: 1,
-    perPage: 10,
-    next: null,
-    prev: null,
-  };
+  const mockViewOnlyLink = MOCK_VIEW_ONLY_LINK;
+  const mockPaginatedData = MOCK_PAGINATED_VIEW_ONLY_LINKS;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

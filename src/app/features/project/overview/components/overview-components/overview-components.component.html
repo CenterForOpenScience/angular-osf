@@ -48,7 +48,7 @@
             <div class="component-name flex flex-column gap-2">
               @for (contributor of component.contributors; track contributor.id) {
                 <div>
-                  <a class="font-bold"> {{ contributor.fullName }}</a>
+                  <a class="font-bold" [routerLink]="['/user', contributor.id]"> {{ contributor.fullName }}</a>
                   <span>{{ $last ? '' : ',' }}</span>
                 </div>
               }

@@ -26,12 +26,11 @@ import { TextInputComponent } from '../../text-input/text-input.component';
 export class AddWikiDialogComponent {
   readonly dialogRef = inject(DynamicDialogRef);
   readonly config = inject(DynamicDialogConfig);
-  actions = createDispatchMap({
-    createWiki: CreateWiki,
-  });
+  private toastService = inject(ToastService);
+
+  actions = createDispatchMap({ createWiki: CreateWiki });
   isSubmitting = select(WikiSelectors.getWikiSubmitting);
   inputLimits = InputLimits;
-  private toastService = inject(ToastService);
 
   addWikiForm = new FormGroup({
     name: new FormControl('', {

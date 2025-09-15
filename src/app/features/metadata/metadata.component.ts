@@ -289,10 +289,9 @@ export class MetadataComponent implements OnInit {
       data: {
         resourceId: this.resourceId,
         resourceType: this.resourceType(),
-        isLoading: this.isContributorsLoading(),
       },
     });
-    dialogRef.onClose.pipe(filter((result) => !!result && (result.refresh || result.saved))).subscribe({
+    dialogRef.onClose.pipe(filter((result) => !!result)).subscribe({
       next: () => {
         this.actions.getResourceMetadata(this.resourceId, this.resourceType());
         this.toastService.showSuccess('project.metadata.contributors.updateSucceed');

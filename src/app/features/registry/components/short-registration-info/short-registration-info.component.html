@@ -1,9 +1,9 @@
 <div class="mb-3">
   <h4>{{ 'navigation.contributors' | translate }}</h4>
   <p>
-    @for (c of registration().contributors; track c.id) {
-      <span
-        >{{ c.fullName }}
+    @for (contributor of registration().contributors; track contributor.id) {
+      <span>
+        {{ contributor.fullName }}
         <span>{{ !$last ? ', ' : '' }}</span>
       </span>
     }
@@ -30,6 +30,6 @@
   </div>
   <div class="mb-3 w-6">
     <h4>{{ 'registry.overview.metadata.associatedProject' | translate }}</h4>
-    <a [href]="associatedProjectUrl">{{ associatedProjectUrl }}</a>
+    <a [routerLink]="['/', this.registration().associatedProjectId]">{{ associatedProjectUrl }}</a>
   </div>
 </div>

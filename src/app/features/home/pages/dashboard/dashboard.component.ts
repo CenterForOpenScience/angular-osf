@@ -28,6 +28,8 @@ import { MyResourcesItem, MyResourcesSearchFilters, TableParameters } from '@osf
 import { ProjectRedirectDialogService } from '@osf/shared/services';
 import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shared/stores';
 
+import { TosConsentBannerComponent } from '../../components';
+
 @Component({
   selector: 'osf-dashboard',
   imports: [
@@ -38,6 +40,7 @@ import { ClearMyResources, GetMyProjects, MyResourcesSelectors } from '@osf/shar
     IconComponent,
     TranslatePipe,
     LoadingSpinnerComponent,
+    TosConsentBannerComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -70,7 +73,7 @@ export class DashboardComponent implements OnInit {
     return this.projects().filter((project) => project.title.toLowerCase().includes(search));
   });
 
-  protected readonly existsProjects = computed(() => {
+  readonly existsProjects = computed(() => {
     return this.projects().length || !!this.searchControl.value?.length;
   });
 

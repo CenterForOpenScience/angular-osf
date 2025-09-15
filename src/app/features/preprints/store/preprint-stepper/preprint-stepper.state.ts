@@ -30,8 +30,8 @@ import {
   FetchAvailableProjects,
   FetchLicenses,
   FetchPreprintById,
-  FetchPreprintFiles,
   FetchPreprintFilesLinks,
+  FetchPreprintPrimaryFile,
   FetchPreprintProject,
   FetchProjectFiles,
   FetchProjectFilesByLink,
@@ -61,8 +61,8 @@ const DefaultState: PreprintStepperStateModel = {
     isLoading: false,
     error: null,
   },
-  preprintFiles: {
-    data: [],
+  preprintFile: {
+    data: null,
     isLoading: false,
     error: null,
   },
@@ -167,14 +167,13 @@ export class PreprintStepperState {
       return EMPTY;
     }
 
-    ctx.setState(patch({ preprintFiles: patch({ isLoading: true }) }));
+    ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
 
     return this.fileService.uploadFile(action.file, state.preprintFilesLinks.data.uploadFileLink).pipe(
       filter((event) => event.type === HttpEventType.Response),
       switchMap((event) => {
         const file = event.body!.data;
         const createdFileId = file.id.split('/')[1];
-        ctx.dispatch(new FetchPreprintFiles());
 
         return this.preprintFilesService.updateFileRelationship(state.preprint.data!.id, createdFileId).pipe(
           tap((preprint: Preprint) => {
@@ -197,39 +196,36 @@ export class PreprintStepperState {
   @Action(ReuploadFile)
   reuploadFile(ctx: StateContext<PreprintStepperStateModel>, action: ReuploadFile) {
     const state = ctx.getState();
-    const uploadedFile = state.preprintFiles.data[0];
+    const uploadedFile = state.preprintFile.data;
     if (!uploadedFile) return EMPTY;
 
-    ctx.setState(patch({ preprintFiles: patch({ isLoading: true }) }));
+    ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
 
-    return this.fileService.updateFileContent(action.file, uploadedFile.links.upload).pipe(
-      switchMap(() => this.fileService.renameEntry(uploadedFile.links.upload, action.file.name, 'replace')),
-      tap(() => {
-        ctx.dispatch(FetchPreprintFiles);
-      })
-    );
+    return this.fileService
+      .updateFileContent(action.file, uploadedFile.links.upload)
+      .pipe(switchMap(() => this.fileService.renameEntry(uploadedFile.links.upload, action.file.name, 'replace')));
   }
 
-  @Action(FetchPreprintFiles)
-  getPreprintFiles(ctx: StateContext<PreprintStepperStateModel>) {
+  @Action(FetchPreprintPrimaryFile)
+  fetchPreprintPrimaryFile(ctx: StateContext<PreprintStepperStateModel>) {
     const state = ctx.getState();
-    if (!state.preprintFilesLinks.data?.filesLink) {
-      return EMPTY;
-    }
-    ctx.setState(patch({ preprintFiles: patch({ isLoading: true }) }));
+    const primaryFileId = state.preprint.data?.primaryFileId;
+    if (!primaryFileId) return EMPTY;
 
-    return this.fileService.getFilesWithoutFiltering(state.preprintFilesLinks.data.filesLink).pipe(
-      tap((files: OsfFile[]) => {
+    ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
+
+    return this.fileService.getFileById(primaryFileId).pipe(
+      tap((file: OsfFile) => {
         ctx.setState(
           patch({
-            preprintFiles: patch({
-              data: files,
+            preprintFile: patch({
+              data: file,
               isLoading: false,
             }),
           })
         );
       }),
-      catchError((error) => handleSectionError(ctx, 'preprintFiles', error))
+      catchError((error) => handleSectionError(ctx, 'preprintFile', error))
     );
   }
 
@@ -270,7 +266,7 @@ export class PreprintStepperState {
       catchError((error) => {
         ctx.setState(
           patch({
-            preprintFiles: patch({
+            projectFiles: patch({
               data: [],
             }),
           })
@@ -313,13 +309,11 @@ export class PreprintStepperState {
       return;
     }
 
-    ctx.setState(patch({ preprintFiles: patch({ isLoading: true }) }));
+    ctx.setState(patch({ preprintFile: patch({ isLoading: true }) }));
     return this.fileService
       .copyFileToAnotherLocation(action.file.links.move, action.file.provider, createdPreprintId)
       .pipe(
         switchMap((file: OsfFile) => {
-          ctx.dispatch(new FetchPreprintFiles());
-
           const fileIdAfterCopy = file.id.split('/')[1];
 
           return this.preprintFilesService.updateFileRelationship(createdPreprintId, fileIdAfterCopy).pipe(
@@ -337,7 +331,7 @@ export class PreprintStepperState {
             catchError((error) => handleSectionError(ctx, 'preprint', error))
           );
         }),
-        catchError((error) => handleSectionError(ctx, 'preprintFiles', error))
+        catchError((error) => handleSectionError(ctx, 'preprintFile', error))
       );
   }
 

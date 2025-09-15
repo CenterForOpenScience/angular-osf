@@ -83,7 +83,7 @@ export class GoogleFilePickerComponent implements OnInit {
 
   public createPicker(): void {
     if (!this.isPickerConfigured) return;
-    const google = (window as any).google;
+    const google = window.google;
 
     const googlePickerView = new google.picker.DocsView(google.picker.ViewId.DOCS);
     googlePickerView.setSelectFolderEnabled(true);
@@ -132,7 +132,7 @@ export class GoogleFilePickerComponent implements OnInit {
   }
 
   pickerCallback(data: GoogleFilePickerModel) {
-    if (data.action === (window as any).google.picker.Action.PICKED) {
+    if (data.action === window.google.picker.Action.PICKED) {
       this.#filePickerCallback(data.docs[0]);
     }
   }
