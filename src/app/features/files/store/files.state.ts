@@ -129,6 +129,11 @@ export class FilesState {
             ctx.dispatch(new GetRootFolderFiles(action.resourceId));
           }
         },
+      }),
+      catchError((error) => {
+        const state = ctx.getState();
+        ctx.patchState({ files: { ...state.files, isLoading: false, error: null } });
+        return handleSectionError(ctx, 'files', error);
       })
     );
   }
@@ -148,6 +153,10 @@ export class FilesState {
             ctx.dispatch(new GetRootFolderFiles(action.resourceId));
           }
         },
+      }),
+      catchError((error) => {
+        ctx.patchState({ files: { ...state.files, isLoading: false, error: null } });
+        return handleSectionError(ctx, 'files', error);
       })
     );
   }
