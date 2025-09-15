@@ -152,9 +152,7 @@ export class FilesState {
           }
         },
       }),
-      catchError((error) => {
-        return handleSectionError(ctx, 'files', error);
-      })
+      catchError((error) => handleSectionError(ctx, 'files', error))
     );
   }
 
