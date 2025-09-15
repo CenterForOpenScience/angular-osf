@@ -24,7 +24,7 @@ import * as Sentry from '@sentry/angular';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' })),
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
     provideStore(STATES, withNgxsReduxDevtoolsPlugin({ disabled: false })),
     providePrimeNG({
       theme: {

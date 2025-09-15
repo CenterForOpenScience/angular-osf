@@ -10,4 +10,5 @@ export const MOCK_ADDON: AddonModel = {
   supportedFeatures: ['ACCESS', 'UPDATE'],
   credentialsFormat: CredentialsFormat.ACCESS_SECRET_KEYS,
   providerName: 'Test Provider',
+  wbKey: 'github',
 };

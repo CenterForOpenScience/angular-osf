@@ -24,7 +24,7 @@ export interface FilesStateModel {
   isAnonymous: boolean;
 }
 
-export const filesStateDefaults: FilesStateModel = {
+export const FILES_STATE_DEFAULTS: FilesStateModel = {
   files: {
     data: [],
     isLoading: false,
