@@ -7,6 +7,7 @@ import { Button } from 'primeng/button';
 import { ChangeDetectionStrategy, Component, inject, input, OnInit, signal } from '@angular/core';
 
 import { ENVIRONMENT } from '@core/constants/environment.token';
+import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
 import { StorageItemModel } from '@osf/shared/models';
 import { GoogleFileDataModel } from '@osf/shared/models/files/google-file.data.model';
 import { GoogleFilePickerModel } from '@osf/shared/models/files/google-file.picker.model';
@@ -24,6 +25,7 @@ import { GoogleFilePickerDownloadService } from './service/google-file-picker.do
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GoogleFilePickerComponent implements OnInit {
+  private readonly Sentry = inject(SENTRY_TOKEN);
   readonly #translateService = inject(TranslateService);
   readonly #googlePicker = inject(GoogleFilePickerDownloadService);
   readonly #environment = inject(ENVIRONMENT);
@@ -68,12 +70,10 @@ export class GoogleFilePickerComponent implements OnInit {
             this.#initializePicker();
             this.#loadOauthToken();
           },
-          // TODO add this error when the Sentry service is working
-          //error: (err) => console.error('GAPI modules failed:', err),
+          error: (err) => this.Sentry.captureException(err, { tags: { feature: 'google-picker auth' } }),
         });
       },
-      // TODO add this error when the Sentry service is working
-      // error: (err) => console.error('Script load failed:', err),
+      error: (err) => this.Sentry.captureException(err, { tags: { feature: 'google-picker load' } }),
     });
   }
 

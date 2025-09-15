@@ -1,8 +1,10 @@
 import { Store } from '@ngxs/store';
 
-import { of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
 
 import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
 import { GoogleFilePickerComponent } from './google-file-picker.component';
@@ -12,10 +14,20 @@ import { OSFTestingModule, OSFTestingStoreModule } from '@testing/osf.testing.mo
 describe('Component: Google File Picker', () => {
   let component: GoogleFilePickerComponent;
   let fixture: ComponentFixture<GoogleFilePickerComponent>;
+
   const googlePickerServiceSpy = {
-    loadScript: jest.fn().mockReturnValue(of(void 0)),
-    loadGapiModules: jest.fn().mockReturnValue(of(void 0)),
+    loadScript: jest.fn((): Observable<void> => {
+      return throwLoadScriptError ? throwError(() => new Error('loadScript failed')) : of(void 0);
+    }),
+    loadGapiModules: jest.fn((): Observable<void> => {
+      return throwLoadGapiError ? throwError(() => new Error('loadGapiModules failed')) : of(void 0);
+    }),
   };
+
+  let sentrySpy: any;
+
+  let throwLoadScriptError = false;
+  let throwLoadGapiError = false;
 
   const handleFolderSelection = jest.fn();
   const setDeveloperKey = jest.fn().mockReturnThis();
@@ -40,7 +52,16 @@ describe('Component: Google File Picker', () => {
     selectSnapshot: jest.fn().mockReturnValue('mock-token'),
   };
 
+  beforeEach(() => {
+    throwLoadScriptError = false;
+    throwLoadGapiError = false;
+    jest.clearAllMocks();
+  });
+
   beforeAll(() => {
+    throwLoadScriptError = false;
+    throwLoadGapiError = false;
+
     window.google = {
       picker: {
         Action: null,
@@ -54,8 +75,6 @@ describe('Component: Google File Picker', () => {
 
   describe('isFolderPicker - true', () => {
     beforeEach(async () => {
-      jest.clearAllMocks();
-
       (window as any).google = {
         picker: {
           ViewId: {
@@ -86,6 +105,7 @@ describe('Component: Google File Picker', () => {
       await TestBed.configureTestingModule({
         imports: [OSFTestingModule, GoogleFilePickerComponent],
         providers: [
+          { provide: SENTRY_TOKEN, useValue: { captureException: jest.fn() } },
           { provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy },
           {
             provide: Store,
@@ -93,6 +113,9 @@ describe('Component: Google File Picker', () => {
           },
         ],
       }).compileComponents();
+
+      sentrySpy = TestBed.inject(SENTRY_TOKEN);
+      jest.spyOn(sentrySpy, 'captureException');
 
       fixture = TestBed.createComponent(GoogleFilePickerComponent);
       component = fixture.componentInstance;
@@ -108,6 +131,7 @@ describe('Component: Google File Picker', () => {
     it('should load script and then GAPI modules and initialize picker', () => {
       expect(googlePickerServiceSpy.loadScript).toHaveBeenCalled();
       expect(googlePickerServiceSpy.loadGapiModules).toHaveBeenCalled();
+      expect(sentrySpy.captureException).not.toHaveBeenCalled();
 
       expect(component.visible()).toBeTruthy();
       expect(component.isGFPDisabled()).toBeFalsy();
@@ -172,7 +196,6 @@ describe('Component: Google File Picker', () => {
 
   describe('isFolderPicker - false', () => {
     beforeEach(async () => {
-      jest.clearAllMocks();
       (window as any).google = {
         picker: {
           ViewId: {
@@ -203,6 +226,7 @@ describe('Component: Google File Picker', () => {
       await TestBed.configureTestingModule({
         imports: [OSFTestingStoreModule, GoogleFilePickerComponent],
         providers: [
+          { provide: SENTRY_TOKEN, useValue: { captureException: jest.fn() } },
           { provide: GoogleFilePickerDownloadService, useValue: googlePickerServiceSpy },
           {
             provide: Store,
@@ -211,6 +235,9 @@ describe('Component: Google File Picker', () => {
         ],
       }).compileComponents();
 
+      sentrySpy = TestBed.inject(SENTRY_TOKEN);
+      jest.spyOn(sentrySpy, 'captureException');
+
       fixture = TestBed.createComponent(GoogleFilePickerComponent);
       component = fixture.componentInstance;
       fixture.componentRef.setInput('isFolderPicker', false);
@@ -218,18 +245,38 @@ describe('Component: Google File Picker', () => {
         itemId: 'root-folder-id',
       });
       fixture.componentRef.setInput('handleFolderSelection', jest.fn());
-      fixture.detectChanges();
     });
 
-    it('should load script and then GAPI modules and initialize picker', () => {
+    it('should fail to load script', () => {
+      throwLoadScriptError = true;
+      fixture.detectChanges();
       expect(googlePickerServiceSpy.loadScript).toHaveBeenCalled();
-      expect(googlePickerServiceSpy.loadGapiModules).toHaveBeenCalled();
+      expect(sentrySpy.captureException).toHaveBeenCalledWith(Error('loadScript failed'), {
+        tags: {
+          feature: 'google-picker load',
+        },
+      });
 
       expect(component.visible()).toBeFalsy();
       expect(component.isGFPDisabled()).toBeTruthy();
     });
 
+    it('should load script and then failr GAPI modules', () => {
+      throwLoadGapiError = true;
+      fixture.detectChanges();
+      expect(googlePickerServiceSpy.loadScript).toHaveBeenCalled();
+      expect(googlePickerServiceSpy.loadGapiModules).toHaveBeenCalled();
+      expect(sentrySpy.captureException).toHaveBeenCalledWith(Error('loadGapiModules failed'), {
+        tags: {
+          feature: 'google-picker auth',
+        },
+      });
+      expect(component.visible()).toBeFalsy();
+      expect(component.isGFPDisabled()).toBeTruthy();
+    });
+
     it('should build the picker with correct configuration', () => {
+      fixture.detectChanges();
       component.createPicker();
 
       expect(window.google.picker.DocsView).toHaveBeenCalledWith('docs');
