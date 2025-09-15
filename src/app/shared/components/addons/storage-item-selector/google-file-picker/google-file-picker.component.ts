@@ -70,11 +70,10 @@ export class GoogleFilePickerComponent implements OnInit {
             this.#initializePicker();
             this.#loadOauthToken();
           },
-          error: (err) =>
-            this.Sentry.captureException(err, { level: 'error', tags: { feature: 'google-picker auth' } }),
+          error: (err) => this.Sentry.captureException(err, { tags: { feature: 'google-picker auth' } }),
         });
       },
-      error: (err) => this.Sentry.captureException(err, { level: 'error', tags: { feature: 'google-picker load' } }),
+      error: (err) => this.Sentry.captureException(err, { tags: { feature: 'google-picker load' } }),
     });
   }
 
