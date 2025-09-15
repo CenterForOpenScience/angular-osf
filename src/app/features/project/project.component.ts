@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, HostBinding } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { HelpScoutService } from '@core/services/help-scout.service';
 
 @Component({
   selector: 'osf-project',
@@ -9,6 +11,15 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './project.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectComponent {
+export class ProjectComponent implements OnDestroy {
+  private readonly helpScoutService = inject(HelpScoutService);
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full';
+
+  constructor() {
+    this.helpScoutService.setResourceType('project');
+  }
+
+  ngOnDestroy(): void {
+    this.helpScoutService.unsetResourceType();
+  }
 }

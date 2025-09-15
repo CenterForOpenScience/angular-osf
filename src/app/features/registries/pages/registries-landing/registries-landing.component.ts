@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import {
   LoadingSpinnerComponent,
   ResourceCardComponent,
+  ScheduledBannerComponent,
   SearchInputComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
@@ -31,6 +32,7 @@ import { environment } from 'src/environments/environment';
     ResourceCardComponent,
     LoadingSpinnerComponent,
     SubHeaderComponent,
+    ScheduledBannerComponent,
   ],
   templateUrl: './registries-landing.component.html',
   styleUrl: './registries-landing.component.scss',

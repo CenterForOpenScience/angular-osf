@@ -7,12 +7,19 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  ErrorHandler,
+  importProvidersFrom,
+  PLATFORM_ID,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { STATES } from '@core/constants';
 import { APPLICATION_INITIALIZATION_PROVIDER } from '@core/factory/application.initialization.factory';
+import { WINDOW, windowFactory } from '@core/factory/window.factory';
 import { SENTRY_PROVIDER } from '@core/factory/sentry.factory';
 import { provideTranslation } from '@core/helpers';
 
@@ -46,6 +53,20 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     provideHttpClient(withInterceptors([authInterceptor, viewOnlyInterceptor, errorInterceptor])),
+    importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
+    ConfirmationService,
+    MessageService,
+
+    APPLICATION_INITIALIZATION_PROVIDER,
+    {
+      provide: ErrorHandler,
+      useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
+    },
+    {
+      provide: WINDOW,
+      useFactory: windowFactory,
+      deps: [PLATFORM_ID],
+    },
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
     provideStore(STATES, withNgxsReduxDevtoolsPlugin({ disabled: false })),
     provideZoneChangeDetection({ eventCoalescing: true }),
