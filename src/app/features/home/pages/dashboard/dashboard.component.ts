@@ -19,6 +19,7 @@ import {
   IconComponent,
   LoadingSpinnerComponent,
   MyProjectsTableComponent,
+  ScheduledBannerComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { DEFAULT_TABLE_PARAMS } from '@osf/shared/constants';
@@ -41,6 +42,8 @@ import { TosConsentBannerComponent } from '../../components';
     TranslatePipe,
     LoadingSpinnerComponent,
     TosConsentBannerComponent,
+    ScheduledBannerComponent,
+    LoadingSpinnerComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',

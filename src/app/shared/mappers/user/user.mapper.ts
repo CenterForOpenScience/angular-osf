@@ -1,5 +1,6 @@
 import {
-  User, UserAcceptedTermsOfServiceJsonApi,
+  User,
+  UserAcceptedTermsOfServiceJsonApi,
   UserData,
   UserDataJsonApi,
   UserDataResponseJsonApi,
@@ -74,5 +75,4 @@ export class UserMapper {
       accepted_terms_of_service: name.acceptedTermsOfService ?? false,
     };
   }
-
 }
