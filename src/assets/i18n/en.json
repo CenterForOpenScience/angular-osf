@@ -2708,8 +2708,8 @@
       "totalStorageInGb": "Total Storage in GB",
       "embargoedRegistrations": "Embargoed registrations",
       "privateProjects": "Private projects",
-      "publicProjects": "Public Projects",
-      "publicRegistrations": "Public Registrations"
+      "publicProjects": "Public projects",
+      "publicRegistrations": "Public registrations"
     },
     "contact": {
       "requestAccess": "Request Access",

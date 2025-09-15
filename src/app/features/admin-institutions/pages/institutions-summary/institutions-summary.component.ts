@@ -158,9 +158,9 @@ export class InstitutionsSummaryComponent implements OnInit {
     ];
 
     this.osfProjectsLabels = [
-      'resourceCard.labels.publicRegistrations',
+      'adminInstitutions.summary.publicRegistrations',
       'adminInstitutions.summary.embargoedRegistrations',
-      'resourceCard.labels.publicProjects',
+      'adminInstitutions.summary.publicProjects',
       'adminInstitutions.summary.privateProjects',
       'common.search.tabs.preprints',
     ].map((el) => this.translateService.instant(el));
