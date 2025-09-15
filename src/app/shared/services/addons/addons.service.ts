@@ -79,12 +79,12 @@ export class AddonsService {
       );
   }
 
-  getAuthorizedStorageOauthToken(accountId: string): Observable<AuthorizedAccountModel> {
+  getAuthorizedStorageOauthToken(accountId: string, addonType: string): Observable<AuthorizedAccountModel> {
     return this.jsonApiService
-      .patch<AuthorizedAddonGetResponseJsonApi>(`${this.apiUrl}/authorized-storage-accounts/${accountId}`, {
+      .patch<AuthorizedAddonGetResponseJsonApi>(`${this.apiUrl}/authorized-${addonType}-accounts/${accountId}`, {
         data: {
           id: accountId,
-          type: 'authorized-storage-accounts',
+          type: `authorized-${addonType}-accounts`,
           attributes: { serialize_oauth_token: 'true' },
         },
       })

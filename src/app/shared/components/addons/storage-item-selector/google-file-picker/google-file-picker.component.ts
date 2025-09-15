@@ -11,6 +11,7 @@ import { StorageItemModel } from '@osf/shared/models';
 import { GoogleFileDataModel } from '@osf/shared/models/files/google-file.data.model';
 import { GoogleFilePickerModel } from '@osf/shared/models/files/google-file.picker.model';
 import { AddonsSelectors, GetAuthorizedStorageOauthToken } from '@osf/shared/stores';
+import { AddonType } from '@shared/enums';
 
 import { GoogleFilePickerDownloadService } from './service/google-file-picker.download.service';
 
@@ -31,6 +32,7 @@ export class GoogleFilePickerComponent implements OnInit {
   public rootFolder = input<StorageItemModel | null>(null);
   public accountId = input<string>('');
   public handleFolderSelection = input<(folder: StorageItemModel) => void>();
+  currentAddonType = input<string>(AddonType.STORAGE);
 
   public accessToken = signal<string | null>(null);
   public visible = signal(false);
@@ -111,7 +113,7 @@ export class GoogleFilePickerComponent implements OnInit {
 
   #loadOauthToken(): void {
     if (this.accountId()) {
-      this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId())).subscribe({
+      this.store.dispatch(new GetAuthorizedStorageOauthToken(this.accountId(), this.currentAddonType())).subscribe({
         next: () => {
           this.accessToken.set(
             this.store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddonOauthToken(this.accountId()))
