@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 
-import { ScrollTopOnRouteChangeDirective } from '@osf/shared/directives/scroll-top.directive';
+import { ScrollTopOnRouteChangeDirective } from '@osf/shared/directives';
 import { IS_MEDIUM, IS_WEB } from '@osf/shared/helpers';
 
 import { BreadcrumbComponent } from '../breadcrumb/breadcrumb.component';
