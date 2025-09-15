@@ -268,23 +268,21 @@ export class UserState {
     };
     const apiRequest = UserMapper.toAcceptedTermsOfServiceRequest(updatePayload);
 
-    return this.userService
-      .updateUserAcceptedTermsOfService(currentUser.id, apiRequest)
-      .pipe(
-        tap((response: User): void => {
-          if (response.acceptedTermsOfService) {
-            ctx.patchState({
-              currentUser: {
-                ...state.currentUser,
-                data: {
-                  ...currentUser,
-                  acceptedTermsOfService: true,
-                },
+    return this.userService.updateUserAcceptedTermsOfService(currentUser.id, apiRequest).pipe(
+      tap((response: User): void => {
+        if (response.acceptedTermsOfService) {
+          ctx.patchState({
+            currentUser: {
+              ...state.currentUser,
+              data: {
+                ...currentUser,
+                acceptedTermsOfService: true,
               },
-            });
-          }
-        })
-      );
+            },
+          });
+        }
+      })
+    );
   }
 
   @Action(ClearCurrentUser)
