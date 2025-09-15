@@ -129,7 +129,8 @@ export class FilesState {
             ctx.dispatch(new GetRootFolderFiles(action.resourceId));
           }
         },
-      })
+      }),
+      catchError((error) => handleSectionError(ctx, 'files', error))
     );
   }
 
@@ -148,7 +149,8 @@ export class FilesState {
             ctx.dispatch(new GetRootFolderFiles(action.resourceId));
           }
         },
-      })
+      }),
+      catchError((error) => handleSectionError(ctx, 'files', error))
     );
   }
 
