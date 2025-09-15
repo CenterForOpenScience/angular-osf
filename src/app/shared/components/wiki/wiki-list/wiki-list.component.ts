@@ -28,7 +28,6 @@ export class WikiListComponent {
   readonly currentWikiId = input.required<string>();
   readonly componentsList = input.required<ComponentWiki[]>();
 
-  readonly showAddBtn = input<boolean>(false);
   readonly isLoading = input<boolean>(false);
   readonly viewOnly = input<boolean>(false);
 

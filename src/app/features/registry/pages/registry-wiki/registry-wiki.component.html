@@ -21,11 +21,11 @@
 
 <section class="flex flex-column lg:flex-row bg-white flex-1 h-full p-5 gap-4 w-full overflow-auto wiki-page">
   <osf-wiki-list
-    [viewOnly]="hasViewOnly()"
+    [viewOnly]="true"
     [list]="wikiList()"
     [resourceId]="resourceId"
     [isLoading]="isWikiListLoading()"
-    [componentsList]="[]"
+    [componentsList]="componentsWikiList()"
     [currentWikiId]="currentWikiId()"
   ></osf-wiki-list>
 

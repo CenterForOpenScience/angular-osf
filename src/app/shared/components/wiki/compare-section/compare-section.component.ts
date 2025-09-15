@@ -53,8 +53,10 @@ export class CompareSectionComponent {
 
   constructor() {
     effect(() => {
-      this.selectedVersion = this.versions()[0].id;
-      this.selectVersion.emit(this.selectedVersion);
+      this.selectedVersion = this.versions()[0]?.id;
+      if (this.selectedVersion) {
+        this.selectVersion.emit(this.selectedVersion);
+      }
     });
   }
   onVersionChange(versionId: string): void {
