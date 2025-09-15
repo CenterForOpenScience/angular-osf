@@ -13,66 +13,68 @@
       <p>{{ 'project.overview.dialog.fork.forksMessage' | translate }}</p>
 
       @for (duplicate of duplicates(); track duplicate.id) {
-        @if (duplicate.currentUserPermissions.includes(UserPermissions.Read)) {
-          <div class="duplicate-wrapper flex flex-column gap-3 p-3 sm:p-4">
-            <div class="flex justify-content-between align-items-center">
-              <h2 class="flex align-items-center gap-2">
-                <osf-icon [iconClass]="duplicate.public ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
-                {{ duplicate.title }}
-              </h2>
+        <div class="duplicate-wrapper flex flex-column gap-3 p-3 sm:p-4">
+          <div class="flex justify-content-between align-items-center">
+            <h2 class="flex align-items-center gap-2">
+              <osf-icon [iconClass]="duplicate.public ? 'fas fa-lock-open' : 'fas fa-lock'"></osf-icon>
+              {{ duplicate.title }}
+            </h2>
 
-              <div>
-                @if (duplicate.currentUserPermissions.includes(UserPermissions.Write)) {
-                  <p-button
-                    severity="contrast"
-                    icon="fas fa-ellipsis-vertical"
-                    raised
-                    variant="outlined"
-                    [ariaLabel]="'common.buttons.more' | translate"
-                    (onClick)="componentActionMenu.toggle($event)"
-                  >
-                  </p-button>
-                }
+            <div>
+              @if (showMoreOptions(duplicate)) {
+                <p-button
+                  severity="contrast"
+                  icon="fas fa-ellipsis-vertical"
+                  raised
+                  variant="outlined"
+                  [ariaLabel]="'common.buttons.more' | translate"
+                  (onClick)="componentActionMenu.toggle($event)"
+                >
+                </p-button>
+              }
 
-                <p-menu appendTo="body" #componentActionMenu [model]="forkActionItems(duplicate.id)" popup>
-                  <ng-template #item let-item>
-                    <a class="p-menu-item-link">{{ item.label | translate }}</a>
-                  </ng-template>
-                </p-menu>
-              </div>
+              <p-menu appendTo="body" #componentActionMenu [model]="forkActionItems(duplicate.id)" popup>
+                <ng-template #item let-item>
+                  <a class="p-menu-item-link">{{ item.label | translate }}</a>
+                </ng-template>
+              </p-menu>
             </div>
-
-            <div class="component-name flex flex-column gap-2">
-              <div class="flex flex-wrap align-items-center gap-1">
-                <span class="font-bold">{{ 'common.labels.forked' | translate }}:</span>
-                <p>{{ duplicate.dateCreated | date: 'MMM d, y, h:mm a' }}</p>
-              </div>
-
-              <div class="flex flex-wrap align-items-center gap-1">
-                <span class="font-bold">{{ 'common.labels.lastUpdated' | translate }}:</span>
-                <p>{{ duplicate.dateModified | date: 'MMM d, y, h:mm a' }}</p>
-              </div>
-
-              <div class="flex flex-wrap align-items-center gap-1">
-                <span class="font-bold">{{ 'common.labels.contributors' | translate }}:</span>
-                @for (contributor of duplicate.contributors; track contributor.id) {
-                  <div>
-                    <a [routerLink]="['/user', contributor.id]" class="font-bold"> {{ contributor.fullName }}</a>
-                    <span>{{ $last ? '' : ',' }}</span>
-                  </div>
-                }
-              </div>
-
-              <div class="component-description">
-                <div class="flex flex-wrap align-items-baseline gap-1">
-                  <span class="font-bold">{{ 'common.labels.description' | translate }}:</span>
-                  <osf-truncated-text [text]="duplicate.description" />
-                </div>
-              </div>
-            </div>
-            <p-button [label]="'common.buttons.view' | translate" severity="secondary" [routerLink]="duplicate.id" />
           </div>
-        }
+
+          <div class="component-name flex flex-column gap-2">
+            <div class="flex flex-wrap align-items-center gap-1">
+              <span class="font-bold">{{ 'common.labels.forked' | translate }}:</span>
+              <p>{{ duplicate.dateCreated | date: 'MMM d, y, h:mm a' }}</p>
+            </div>
+
+            <div class="flex flex-wrap align-items-center gap-1">
+              <span class="font-bold">{{ 'common.labels.lastUpdated' | translate }}:</span>
+              <p>{{ duplicate.dateModified | date: 'MMM d, y, h:mm a' }}</p>
+            </div>
+
+            <div class="flex flex-wrap align-items-center gap-1">
+              <span class="font-bold">{{ 'common.labels.contributors' | translate }}:</span>
+              @for (contributor of duplicate.contributors; track contributor.id) {
+                <div>
+                  <a [routerLink]="['/user', contributor.id]" class="font-bold"> {{ contributor.fullName }}</a>
+                  <span>{{ $last ? '' : ',' }}</span>
+                </div>
+              }
+            </div>
+
+            <div class="component-description">
+              <div class="flex flex-wrap align-items-baseline gap-1">
+                <span class="font-bold">{{ 'common.labels.description' | translate }}:</span>
+                <osf-truncated-text [text]="duplicate.description" />
+              </div>
+            </div>
+          </div>
+          <p-button
+            [label]="'common.buttons.view' | translate"
+            severity="secondary"
+            [routerLink]="['/', duplicate.id]"
+          />
+        </div>
       }
 
       @if (totalDuplicates() > pageSize) {

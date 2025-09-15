@@ -33,12 +33,12 @@ import {
   SetSort,
   UpdateTags,
 } from './files.actions';
-import { filesStateDefaults, FilesStateModel } from './files.model';
+import { FILES_STATE_DEFAULTS, FilesStateModel } from './files.model';
 
 @Injectable()
 @State<FilesStateModel>({
-  name: 'filesState',
-  defaults: filesStateDefaults,
+  name: 'files',
+  defaults: FILES_STATE_DEFAULTS,
 })
 export class FilesState {
   filesService = inject(FilesService);
@@ -328,6 +328,6 @@ export class FilesState {
 
   @Action(ResetState)
   resetState(ctx: StateContext<FilesStateModel>) {
-    ctx.patchState(filesStateDefaults);
+    ctx.patchState(FILES_STATE_DEFAULTS);
   }
 }

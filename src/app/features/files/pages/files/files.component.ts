@@ -178,11 +178,15 @@ export class FilesComponent {
 
   readonly hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
-  readonly isReadonly = computed(
-    () =>
-      this.resourceDetails().isRegistration ||
-      this.resourceDetails().currentUserPermissions.includes(UserPermissions.Read)
-  );
+  readonly canEdit = computed(() => {
+    const details = this.resourceDetails();
+    const hasAdminOrWrite = details.currentUserPermissions.some(
+      (permission) => permission === UserPermissions.Admin || permission === UserPermissions.Write
+    );
+
+    return !details.isRegistration && hasAdminOrWrite;
+  });
+
   readonly isViewOnlyDownloadable = computed(() => this.resourceType() === ResourceType.Registration);
 
   isButtonDisabled = computed(() => this.fileIsUploading() || this.isFilesLoading());

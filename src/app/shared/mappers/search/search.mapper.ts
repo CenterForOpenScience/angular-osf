@@ -4,6 +4,7 @@ import { IndexCardDataJsonApi, ResourceModel } from '@shared/models';
 export function MapResources(indexCardData: IndexCardDataJsonApi): ResourceModel {
   const resourceMetadata = indexCardData.attributes.resourceMetadata;
   const resourceIdentifier = indexCardData.attributes.resourceIdentifier;
+
   return {
     absoluteUrl: resourceMetadata['@id'],
     resourceType: ResourceType[resourceMetadata.resourceType[0]['@id'] as keyof typeof ResourceType],

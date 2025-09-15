@@ -54,7 +54,6 @@ export const MOCK_PROJECT_OVERVIEW: ProjectOverview = {
   currentUserIsContributor: true,
   currentUserIsContributorOrGroupMember: true,
   wikiEnabled: false,
-  subjects: [],
   contributors: [],
   customCitation: null,
   forksCount: 0,
