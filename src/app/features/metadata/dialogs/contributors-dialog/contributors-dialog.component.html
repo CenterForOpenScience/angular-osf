@@ -2,12 +2,14 @@
   <div class="flex justify-content-between align-items-center">
     <h3>{{ 'project.contributors.addContributor' | translate }}</h3>
 
-    <p-button
-      [label]="'project.contributors.addContributor' | translate"
-      [disabled]="isLoading()"
-      (onClick)="openAddContributorDialog()"
-      data-test-add-button
-    ></p-button>
+    @if (isCurrentUserAdminContributor()) {
+      <p-button
+        [label]="'project.contributors.addContributor' | translate"
+        [disabled]="isLoading()"
+        (onClick)="openAddContributorDialog()"
+        data-test-add-button
+      />
+    }
   </div>
 
   <div class="filters-container flex flex-column gap-3">
@@ -20,6 +22,8 @@
     [showEducation]="false"
     [showEmployment]="false"
     [isLoading]="isLoading()"
+    [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
+    [currentUserId]="currentUser()?.id"
     (remove)="removeContributor($event)"
   ></osf-contributors-list>
 
