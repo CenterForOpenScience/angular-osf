@@ -68,9 +68,7 @@ export class InstitutionsUsersComponent {
 
   currentUser = select(UserSelectors.getCurrentUser);
 
-  tableData = computed(() => {
-    return this.users().map((user: InstitutionUser): TableCellData => mapUserToTableCellData(user));
-  });
+  tableData = computed(() => this.users().map((user: InstitutionUser): TableCellData => mapUserToTableCellData(user)));
 
   amountText = computed(() => {
     const count = this.totalCount();

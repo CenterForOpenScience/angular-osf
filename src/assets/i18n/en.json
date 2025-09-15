@@ -2708,8 +2708,8 @@
       "totalStorageInGb": "Total Storage in GB",
       "embargoedRegistrations": "Embargoed registrations",
       "privateProjects": "Private projects",
-      "publicProjects": "Public Projects",
-      "publicRegistrations": "Public Registrations"
+      "publicProjects": "Public projects",
+      "publicRegistrations": "Public registrations"
     },
     "contact": {
       "requestAccess": "Request Access",
@@ -2724,8 +2724,8 @@
       "lastActive": "Last Active",
       "accountCreated": "Account Created",
       "preprints": "Preprints",
-      "publicFiles": "Public Files",
-      "storageBytes": "Storage (Bytes)",
+      "filesOnOsf": "Files on OSF",
+      "totalDataStored": "Total data stored on OSF",
       "contacts": "Contacts",
       "customize": "Customize",
       "sendEmail": "Send Email",
