@@ -59,7 +59,7 @@
 
         <p-button icon="fas fa-info-circle blue-icon" severity="secondary" text (onClick)="showInfoDialog()"></p-button>
 
-        @if (!isReadonly() && !hasViewOnly()) {
+        @if (canEdit() && !hasViewOnly()) {
           <p-button
             [disabled]="isButtonDisabled()"
             outlined
@@ -129,7 +129,7 @@
       [storage]="currentRootFolder()"
       [isLoading]="isFilesLoading()"
       [actions]="filesTreeActions"
-      [viewOnly]="isReadonly()"
+      [viewOnly]="!canEdit()"
       [viewOnlyDownloadable]="isViewOnlyDownloadable()"
       [resourceId]="resourceId()"
       [provider]="provider()"
