@@ -6,7 +6,12 @@ import * as Sentry from '@sentry/angular';
 
 export function handleSectionError<T>(ctx: StateContext<T>, section: keyof T, error: Error) {
   // Report error to Sentry
-  Sentry.captureException(error);
+  Sentry.captureException(error, {
+    tags: {
+      'state.section': section.toString(),
+      feature: `state error section: ${section.toString()}`,
+    },
+  });
 
   // Patch the state to update loading/submitting flags and set the error message
   ctx.patchState({

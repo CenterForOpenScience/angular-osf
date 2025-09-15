@@ -13,6 +13,7 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { STATES } from '@core/constants';
 import { APPLICATION_INITIALIZATION_PROVIDER } from '@core/factory/application.initialization.factory';
+import { SENTRY_PROVIDER } from '@core/factory/sentry.factory';
 import { provideTranslation } from '@core/helpers';
 
 import { authInterceptor, errorInterceptor, viewOnlyInterceptor } from './core/interceptors';
@@ -23,9 +24,15 @@ import * as Sentry from '@sentry/angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
-    provideStore(STATES, withNgxsReduxDevtoolsPlugin({ disabled: false })),
+    APPLICATION_INITIALIZATION_PROVIDER,
+    ConfirmationService,
+    {
+      provide: ErrorHandler,
+      useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
+    },
+    importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
+    MessageService,
+    provideAnimations(),
     providePrimeNG({
       theme: {
         preset: CustomPreset,
@@ -38,16 +45,10 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
-    provideAnimations(),
     provideHttpClient(withInterceptors([authInterceptor, viewOnlyInterceptor, errorInterceptor])),
-    importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
-    ConfirmationService,
-    MessageService,
-
-    APPLICATION_INITIALIZATION_PROVIDER,
-    {
-      provide: ErrorHandler,
-      useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
-    },
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
+    provideStore(STATES, withNgxsReduxDevtoolsPlugin({ disabled: false })),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    SENTRY_PROVIDER,
   ],
 };
