@@ -26,7 +26,7 @@
   </div>
 }
 
-<section class="flex flex-column lg:flex-row bg-white flex-1 h-full p-5 gap-4 w-full overflow-auto wiki-page">
+<section class="flex flex-column lg:flex-row lg:flex-wrap bg-white flex-1 h-full p-5 gap-4 w-full wiki-page">
   <osf-wiki-list
     [list]="wikiList()"
     [resourceId]="projectId()"
@@ -34,7 +34,6 @@
     [componentsList]="componentsWikiList()"
     [currentWikiId]="currentWikiId()"
     [viewOnly]="hasViewOnly()"
-    [showAddBtn]="true"
     (createWiki)="onCreateWiki()"
     (deleteWiki)="onDeleteWiki()"
   ></osf-wiki-list>

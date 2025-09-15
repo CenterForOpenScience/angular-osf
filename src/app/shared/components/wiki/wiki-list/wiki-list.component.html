@@ -11,20 +11,15 @@
   } @else {
     @if (expanded()) {
       <p-panel showHeader="false">
-        <div
-          class="flex aign-items-center mt-3 mb-2"
-          [class]="showAddBtn() ? 'justify-content-between' : 'justify-content-end'"
-        >
-          @if (showAddBtn()) {
-            <p-button
-              [label]="'project.wiki.addNewWiki' | translate"
-              icon="fas fa-plus"
-              severity="success"
-              outlined
-              [disabled]="viewOnly()"
-              (onClick)="openAddWikiDialog()"
-            />
-          }
+        <div class="flex align-items-center justify-content-between mt-3 mb-2">
+          <p-button
+            [label]="'project.wiki.addNewWiki' | translate"
+            icon="fas fa-plus"
+            severity="success"
+            outlined
+            [disabled]="viewOnly()"
+            (onClick)="openAddWikiDialog()"
+          />
 
           <p-button
             class="btn-icon-only"
@@ -35,8 +30,8 @@
             (onClick)="collapseNavigation()"
           />
         </div>
-        @if (!viewOnly()) {
-          @if (!isHomeWikiSelected() || !list().length) {
+        @if (!viewOnly() && list().length) {
+          @if (!isHomeWikiSelected()) {
             <p-button
               icon="fas fa-trash"
               [label]="'common.buttons.delete' | translate"
@@ -82,7 +77,7 @@
         </p-button>
       </div>
 
-      @if (showAddBtn()) {
+      @if (!viewOnly()) {
         <p-button
           class="btn-icon-only"
           icon="fas fa-plus"
