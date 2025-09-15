@@ -1,5 +1,6 @@
 export { MOCK_ADDON } from './addon.mock';
 export * from './analytics.mock';
+export * from './base-node.mock';
 export { CEDAR_METADATA_DATA_TEMPLATE_JSON_API_MOCK } from './cedar-metadata-data-template-json-api.mock';
 export * from './contributors.mock';
 export * from './custom-сonfirmation.service.mock';

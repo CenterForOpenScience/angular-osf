@@ -62,52 +62,52 @@
 
       <div class="flex flex-wrap align-items-center gap-3">
         @if (currentUser()?.social?.github) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.github">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.github">
             <img ngSrc="assets/icons/socials/github.svg" width="24" height="24" alt="github" />
           </a>
         }
         @if (currentUser()?.social?.scholar) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.scholar">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.scholar">
             <img ngSrc="assets/icons/socials/scholar.svg" width="24" height="24" alt="scholar" />
           </a>
         }
         @if (currentUser()?.social?.twitter) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.twitter">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.twitter">
             <img ngSrc="assets/icons/socials/x.svg" width="24" height="24" alt="x(twitter)" />
           </a>
         }
         @if (currentUser()?.social?.linkedIn) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.linkedIn">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.linkedIn">
             <img ngSrc="assets/icons/socials/linkedin.svg" width="24" height="24" alt="linkedin" />
           </a>
         }
         @if (currentUser()?.social?.impactStory) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.impactStory">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.impactStory">
             <img ngSrc="assets/icons/socials/impactstory.png" width="24" height="24" alt="impactstory" />
           </a>
         }
         @if (currentUser()?.social?.baiduScholar) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.baiduScholar">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.baiduScholar">
             <img ngSrc="assets/icons/socials/baidu.png" width="24" height="24" alt="baidu" />
           </a>
         }
         @if (currentUser()?.social?.researchGate) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.researchGate">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.researchGate">
             <img ngSrc="assets/icons/socials/researchGate.svg" width="24" height="24" alt="researchGate" />
           </a>
         }
         @if (currentUser()?.social?.researcherId) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.researcherId">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.researcherId">
             <img ngSrc="assets/icons/socials/researcherID.png" width="24" height="24" alt="researchId" />
           </a>
         }
         @if (currentUser()?.social?.ssrn) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.researcherId">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.researcherId">
             <img ngSrc="assets/icons/socials/ssrn.svg" width="24" height="24" alt="ssrn" />
           </a>
         }
         @if (currentUser()?.social?.academiaProfileID) {
-          <a class="cursor-pointer" [href]="currentUser()?.social?.academiaProfileID">
+          <a class="cursor-pointer custom-light-hover" [href]="currentUser()?.social?.academiaProfileID">
             <img ngSrc="assets/icons/socials/academia.svg" width="24" height="24" alt="academia" />
           </a>
         }
@@ -118,7 +118,7 @@
           <p-button
             class="ml-auto"
             [label]="'myProfile.editProfile' | translate"
-            (click)="toProfileSettings()"
+            (onClick)="toProfileSettings()"
           ></p-button>
         </div>
       }
