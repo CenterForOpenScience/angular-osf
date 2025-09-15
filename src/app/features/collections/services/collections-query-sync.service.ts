@@ -4,6 +4,7 @@ import { effect, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
 import { collectionsSortOptions } from '@osf/features/collections/constants';
 import { queryParamsKeys } from '@osf/features/collections/constants/query-params-keys.const';
 import { CollectionQueryParams } from '@osf/features/collections/models';
@@ -13,6 +14,7 @@ import { SetPageNumber } from '@shared/stores/collections/collections.actions';
 
 @Injectable()
 export class CollectionsQuerySyncService {
+  private readonly Sentry = inject(SENTRY_TOKEN);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -119,7 +121,7 @@ export class CollectionsQuerySyncService {
       const parsedFilters: CollectionsFilters = JSON.parse(activeFilters);
       this.handleParsedFilters(parsedFilters);
     } catch (error) {
-      console.error('Error parsing activeFilters from URL:', error);
+      this.Sentry.captureException(error);
     }
   }
 
