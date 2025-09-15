@@ -18,6 +18,7 @@ import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { WikiModes } from '@osf/shared/models';
 import {
   GetCompareVersionContent,
+  GetComponentsWikiList,
   GetWikiContent,
   GetWikiList,
   GetWikiVersionContent,
@@ -57,6 +58,7 @@ export class RegistryWikiComponent {
   currentWikiId = select(WikiSelectors.getCurrentWikiId);
   wikiVersions = select(WikiSelectors.getWikiVersions);
   isWikiVersionLoading = select(WikiSelectors.getWikiVersionsLoading);
+  componentsWikiList = select(WikiSelectors.getComponentsWikiList);
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
@@ -70,6 +72,7 @@ export class RegistryWikiComponent {
     getWikiVersions: GetWikiVersions,
     getWikiVersionContent: GetWikiVersionContent,
     getCompareVersionContent: GetCompareVersionContent,
+    getComponentsWikiList: GetComponentsWikiList,
   });
 
   wikiIdFromQueryParams = this.route.snapshot.queryParams['wiki'];
@@ -86,6 +89,8 @@ export class RegistryWikiComponent {
         })
       )
       .subscribe();
+
+    this.actions.getComponentsWikiList(ResourceType.Registration, this.resourceId);
 
     this.route.queryParams
       .pipe(
