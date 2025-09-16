@@ -1,7 +1,7 @@
 import { Observable, of, switchMap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { HttpEvent } from '@angular/common/http';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { MapFileCustomMetadata, MapFileRevision } from '@osf/features/files/mappers';
@@ -95,6 +95,16 @@ export class FilesService {
     };
 
     return this.jsonApiService.putFile<AddFileResponse>(uploadLink, file, params).pipe(
+      switchMap((event) => {
+        if (event.type === HttpEventType.Response && event.body?.data?.id) {
+          const fileId = event.body.data.id.split('/').pop();
+          if (fileId) {
+            return this.getFileGuid(fileId).pipe(map(() => event));
+          }
+        }
+
+        return of(event);
+      }),
       catchError((error) => {
         this.toastService.showError(error.error.message);
         return throwError(() => error);

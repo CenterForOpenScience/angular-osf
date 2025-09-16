@@ -30,7 +30,7 @@ import {
   SetFilesIsLoading,
 } from '@osf/features/files/store';
 import { FilesTreeComponent, SelectComponent } from '@osf/shared/components';
-import { getViewOnlyParamFromUrl, Primitive } from '@osf/shared/helpers';
+import { Primitive } from '@osf/shared/helpers';
 import {
   ConfiguredAddonModel,
   FileLabelModel,
@@ -218,12 +218,9 @@ export class FilesWidgetComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    const viewOnlyParam = getViewOnlyParamFromUrl(this.router.url);
-    const queryParams = viewOnlyParam ? { view_only: viewOnlyParam } : null;
-
     this.router.navigate(['files', file.guid], {
       relativeTo: this.activeRoute.parent,
-      queryParams,
+      queryParamsHandling: 'merge',
     });
   }
 

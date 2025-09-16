@@ -130,11 +130,6 @@ export class FileDetailComponent {
 
   hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
-  get backNavigationQueryParams(): Record<string, string> | null {
-    const viewOnlyParam = getViewOnlyParam(this.router);
-    return viewOnlyParam ? { view_only: viewOnlyParam } : null;
-  }
-
   safeLink: SafeResourceUrl | null = null;
   resourceId = '';
   resourceType = '';
