@@ -10,7 +10,7 @@ export class GetAllContributors {
   ) {}
 }
 
-export class UpdateSearchValue {
+export class UpdateContributorsSearchValue {
   static readonly type = '[Contributors] Update Search Value';
 
   constructor(public searchValue: string | null) {}

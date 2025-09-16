@@ -53,8 +53,8 @@ import {
   GetResourceDetails,
   UpdateBibliographyFilter,
   UpdateContributor,
+  UpdateContributorsSearchValue,
   UpdatePermissionFilter,
-  UpdateSearchValue,
   ViewOnlyLinkSelectors,
 } from '@osf/shared/stores';
 
@@ -124,7 +124,7 @@ export class ContributorsComponent implements OnInit {
     getViewOnlyLinks: FetchViewOnlyLinks,
     getResourceDetails: GetResourceDetails,
     getContributors: GetAllContributors,
-    updateSearchValue: UpdateSearchValue,
+    updateSearchValue: UpdateContributorsSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
     updateBibliographyFilter: UpdateBibliographyFilter,
     deleteContributor: DeleteContributor,
