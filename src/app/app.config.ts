@@ -19,8 +19,8 @@ import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { STATES } from '@core/constants';
 import { APPLICATION_INITIALIZATION_PROVIDER } from '@core/factory/application.initialization.factory';
-import { WINDOW, windowFactory } from '@core/factory/window.factory';
 import { SENTRY_PROVIDER } from '@core/factory/sentry.factory';
+import { WINDOW, windowFactory } from '@core/factory/window.factory';
 import { provideTranslation } from '@core/helpers';
 
 import { authInterceptor, errorInterceptor, viewOnlyInterceptor } from './core/interceptors';

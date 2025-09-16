@@ -3,6 +3,7 @@ import { catchError, lastValueFrom, of, shareReplay } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
+import { ENVIRONMENT } from '@core/factory/environment.factory';
 import { ConfigModel } from '@core/models/config.model';
 
 /**
@@ -23,6 +24,8 @@ export class OSFConfigService {
    */
   private http: HttpClient = inject(HttpClient);
 
+  private environment = inject(ENVIRONMENT);
+
   /**
    * Stores the loaded configuration object after it is fetched from the server.
    * Remains `null` until `load()` is successfully called.
@@ -41,35 +44,13 @@ export class OSFConfigService {
           catchError(() => of({} as ConfigModel))
         )
       );
+
+      // Apply every key from config to environment
+      for (const [key, value] of Object.entries(this.config)) {
+        // eslint-disable-next-line
+        // @ts-ignore
+        this.environment[key] = value;
+      }
     }
-  }
-
-  /**
-   * Retrieves a configuration value by key after ensuring the config is loaded.
-   * @param key The key to look up in the config.
-   * @returns The value of the configuration key.
-   */
-  get<T extends keyof ConfigModel>(key: T): ConfigModel[T] | null {
-    return this.config?.[key] || null;
-  }
-
-  /**
-   * Checks whether a specific configuration key exists and has a truthy value.
-   *
-   * This method inspects the currently loaded configuration object and determines
-   * if the given key is present and evaluates to a truthy value (e.g., non-null, non-undefined, not false/0/empty string).
-   *
-   * @template T - A key of the `ConfigModel` interface.
-   * @param {T} key - The key to check within the configuration object.
-   * @returns {boolean} - Returns `true` if the key exists and its value is truthy; otherwise, returns `false`.
-   *
-   * @example
-   * if (configService.has('sentryDsn')) {
-   *   const dsn = configService.get('sentryDsn');
-   *   Sentry.init({ dsn });
-   * }
-   */
-  has<T extends keyof ConfigModel>(key: T): boolean {
-    return this.config?.[key] ? true : false;
   }
 }

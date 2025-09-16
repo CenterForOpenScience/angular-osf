@@ -1,4 +1,4 @@
-import { ENVIRONMENT } from '@core/constants/environment.token';
+import { ENVIRONMENT_DO_NO_USE } from '@core/constants/environment.token';
 
 /**
  * Mock provider for Angular's `ENVIRONMENT_INITIALIZER` token used in unit tests.
@@ -21,8 +21,9 @@ import { ENVIRONMENT } from '@core/constants/environment.token';
  * ```
  */
 export const EnvironmentTokenMock = {
-  provide: ENVIRONMENT,
+  provide: ENVIRONMENT_DO_NO_USE,
   useValue: {
     production: false,
+    apiDomainUrl: 'http://localhost:8000',
   },
 };

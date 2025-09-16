@@ -1,7 +1,8 @@
 import { inject, provideAppInitializer } from '@angular/core';
 
-import { ENVIRONMENT } from '@core/constants/environment.token';
 import { OSFConfigService } from '@core/services/osf-config.service';
+
+import { ENVIRONMENT } from './environment.factory';
 
 import * as Sentry from '@sentry/angular';
 import { GoogleTagManagerConfiguration } from 'angular-google-tag-manager';
@@ -23,12 +24,12 @@ export function initializeApplication() {
 
     await configService.load();
 
-    const googleTagManagerId = configService.get('googleTagManagerId');
+    const googleTagManagerId = environment.googleTagManagerId;
     if (googleTagManagerId) {
       googleTagManagerConfiguration.set({ id: googleTagManagerId });
     }
 
-    const dsn = configService.get('sentryDsn');
+    const dsn = environment.sentryDsn;
     if (dsn) {
       // More Options
       // https://docs.sentry.io/platforms/javascript/guides/angular/configuration/options/

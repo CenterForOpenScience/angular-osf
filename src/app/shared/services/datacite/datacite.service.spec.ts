@@ -4,7 +4,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 
-import { ENVIRONMENT } from '@core/constants/environment.token';
+import { ENVIRONMENT } from '@core/factory/environment.factory';
 import { Identifier } from '@shared/models';
 import { DataciteEvent } from '@shared/models/datacite/datacite-event.enum';
 
