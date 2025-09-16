@@ -13,6 +13,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
+import { SENTRY_TOKEN } from '@core/factory/sentry.factory';
 import {
   FilesTreeComponent,
   FormSelectComponent,
@@ -66,6 +67,14 @@ describe('Component: Files', () => {
         MockProvider(ActivatedRoute),
         MockProvider(CustomConfirmationService),
         DialogService,
+        {
+          provide: SENTRY_TOKEN,
+          useValue: {
+            captureException: jest.fn(),
+            captureMessage: jest.fn(),
+            setUser: jest.fn(),
+          },
+        },
         provideMockStore({
           signals: [
             {
