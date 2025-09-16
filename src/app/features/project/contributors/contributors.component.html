@@ -1,11 +1,13 @@
 <h1 class="py-5 px-3 md:px-5 xl:px-4">{{ 'navigation.contributors' | translate }}</h1>
 
 <section class="contributors flex flex-column align-items-baseline w-full p-3 pt-4 md:px-5 xl:px-4">
-  <p-button
-    [label]="'project.contributors.addContributor' | translate"
-    [disabled]="isContributorsLoading()"
-    (onClick)="openAddContributorDialog()"
-  ></p-button>
+  @if (isCurrentUserAdminContributor()) {
+    <p-button
+      [label]="'project.contributors.addContributor' | translate"
+      [disabled]="isContributorsLoading()"
+      (onClick)="openAddContributorDialog()"
+    ></p-button>
+  }
 
   <div class="filters-container flex flex-column xl:flex-row">
     <div class="xl:w-7">
@@ -64,6 +66,8 @@
     class="w-full"
     [contributors]="contributors()"
     [isLoading]="isContributorsLoading()"
+    [isCurrentUserAdminContributor]="isCurrentUserAdminContributor()"
+    [currentUserId]="currentUser()?.id"
     [showCurator]="true"
     (remove)="removeContributor($event)"
   ></osf-contributors-list>

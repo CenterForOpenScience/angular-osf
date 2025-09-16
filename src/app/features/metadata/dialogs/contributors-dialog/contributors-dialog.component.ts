@@ -7,17 +7,27 @@ import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dy
 
 import { filter, forkJoin } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, FormsModule } from '@angular/forms';
 
+import { UserSelectors } from '@core/store/user';
 import { SearchInputComponent } from '@osf/shared/components';
 import {
   AddContributorDialogComponent,
   AddUnregisteredContributorDialogComponent,
   ContributorsListComponent,
 } from '@osf/shared/components/contributors';
-import { AddContributorType, ResourceType } from '@osf/shared/enums';
+import { AddContributorType, ContributorPermission, ResourceType } from '@osf/shared/enums';
 import { findChangedItems } from '@osf/shared/helpers';
 import { ContributorDialogAddModel, ContributorModel } from '@osf/shared/models';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
@@ -52,6 +62,19 @@ export class ContributorsDialogComponent implements OnInit {
   isLoading = select(ContributorsSelectors.isContributorsLoading);
   initialContributors = select(ContributorsSelectors.getContributors);
   contributors = signal([]);
+
+  currentUser = select(UserSelectors.getCurrentUser);
+
+  isCurrentUserAdminContributor = computed(() => {
+    const currentUserId = this.currentUser()?.id;
+    const initialContributors = this.initialContributors();
+    if (!currentUserId) return false;
+
+    return initialContributors.some((contributor: ContributorModel) => {
+      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
+    });
+  });
+
   actions = createDispatchMap({
     updateSearchValue: UpdateSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
