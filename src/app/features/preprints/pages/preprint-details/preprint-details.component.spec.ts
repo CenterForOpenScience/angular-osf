@@ -10,6 +10,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { HelpScoutService } from '@core/services/help-scout.service';
 import { AdditionalInfoComponent } from '@osf/features/preprints/components/preprint-details/additional-info/additional-info.component';
 import { GeneralInformationComponent } from '@osf/features/preprints/components/preprint-details/general-information/general-information.component';
 import { PreprintFileSectionComponent } from '@osf/features/preprints/components/preprint-details/preprint-file-section/preprint-file-section.component';
@@ -24,9 +25,10 @@ import { PreprintDetailsComponent } from './preprint-details.component';
 
 import { DataciteMockFactory } from '@testing/mocks/datacite.service.mock';
 
-describe('PreprintDetailsComponent', () => {
+describe('Component: Preprint Details', () => {
   let component: PreprintDetailsComponent;
   let fixture: ComponentFixture<PreprintDetailsComponent>;
+  let helpScountService: HelpScoutService;
 
   let dataciteService: jest.Mocked<DataciteService>;
 
@@ -73,12 +75,28 @@ describe('PreprintDetailsComponent', () => {
         MockProvider(ActivatedRoute, mockRoute),
         TranslateServiceMock,
         MockProvider(MetaTagsService),
+        {
+          provide: HelpScoutService,
+          useValue: {
+            setResourceType: jest.fn(),
+            unsetResourceType: jest.fn(),
+          },
+        },
       ],
     }).compileComponents();
 
+    helpScountService = TestBed.inject(HelpScoutService);
     fixture = TestBed.createComponent(PreprintDetailsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('should have a default value', () => {
+    expect(component.classes).toBe('');
+  });
+
+  it('should called the helpScoutService', () => {
+    expect(helpScountService.setResourceType).toHaveBeenCalledWith('preprint');
   });
 
   it('isOsfPreprint should be true if providerId === osf', () => {
