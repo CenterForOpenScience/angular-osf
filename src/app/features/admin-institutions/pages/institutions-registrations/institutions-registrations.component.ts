@@ -26,7 +26,6 @@ import { registrationTableColumns } from '../../constants';
 import { DownloadType } from '../../enums';
 import { downloadResults } from '../../helpers';
 import { mapRegistrationResourceToTableData } from '../../mappers/institution-registration-to-table-data.mapper';
-import { TableCellData } from '../../models';
 import { InstitutionsAdminSelectors } from '../../store';
 
 @Component({
@@ -64,7 +63,7 @@ export class InstitutionsRegistrationsComponent implements OnInit, OnDestroy {
   nextLink = select(GlobalSearchSelectors.getNext);
   previousLink = select(GlobalSearchSelectors.getPrevious);
 
-  tableData = computed(() => this.resources().map(mapRegistrationResourceToTableData) as TableCellData[]);
+  tableData = computed(() => this.resources().map(mapRegistrationResourceToTableData));
 
   sortParam = computed(() => {
     const sortField = this.sortField();

@@ -46,6 +46,7 @@ export const projectTableColumns: TableColumn[] = [
     header: 'adminInstitutions.projects.contributorName',
     isLink: true,
     linkTarget: '_blank',
+    isArray: true,
     showIcon: true,
     iconClass: 'fa-solid fa-comment text-primary',
     iconTooltip: 'adminInstitutions.institutionUsers.sendMessage',

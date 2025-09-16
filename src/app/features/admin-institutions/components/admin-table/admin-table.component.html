@@ -110,37 +110,57 @@
           @for (col of columns; track col.field) {
             <td class="relative">
               <div class="flex align-items-center hover-group">
-                @if (col.isLink && isLink(rowData[col.field])) {
+                @let currentColumnField = rowData[col.field];
+                @if (col.isLink && isLink(currentColumnField)) {
                   <a
-                    [href]="getLinkUrl(rowData[col.field])"
-                    [target]="getLinkTarget(rowData[col.field], col)"
+                    [href]="currentColumnField.url"
+                    [target]="col.linkTarget ?? '_self'"
                     class="font-bold no-underline hover:underline"
                   >
                     @if (col.dateFormat) {
-                      {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
+                      {{ getCellValue(currentColumnField) | date: col.dateFormat }}
                     } @else {
-                      {{ getCellValue(rowData[col.field]) }}
+                      {{ getCellValue(currentColumnField) }}
                     }
                   </a>
+                } @else if (col.isLink && col.isArray && isLinkArray(currentColumnField)) {
+                  <div class="flex gap-1 align-items-center">
+                    @for (link of currentColumnField; track $index) {
+                      <a [href]="link.url" [target]="col.linkTarget ?? '_self'" class="font-bold">
+                        {{ link.text }}<span>{{ $last ? '' : ',' }}</span>
+                      </a>
+                      @if (col.showIcon) {
+                        <p-button
+                          [pTooltip]="col.iconTooltip | translate"
+                          class="icon-button"
+                          [icon]="col.iconClass"
+                          variant="text"
+                          severity="info"
+                          [ariaLabel]="'common.accessibility.tooltipBtn' | translate"
+                          (onClick)="onIconClick(rowData, col, $index)"
+                        />
+                      }
+                    }
+                  </div>
                 } @else {
-                  @if (col.dateFormat && rowData[col.field]) {
-                    {{ getCellValue(rowData[col.field]) | date: col.dateFormat }}
-                  } @else if (!col.dateFormat && rowData[col.field]) {
-                    {{ getCellValue(rowData[col.field]) }}
+                  @if (col.dateFormat && currentColumnField) {
+                    {{ getCellValue(currentColumnField) | date: col.dateFormat }}
+                  } @else if (!col.dateFormat && currentColumnField) {
+                    {{ getCellValue(currentColumnField) }}
                   } @else {
-                    {{ rowData[col.field] ?? '-' }}
+                    {{ currentColumnField ?? '-' }}
                   }
                 }
 
-                @if (col.showIcon) {
+                @if (col.showIcon && !col.isArray) {
                   <p-button
                     [pTooltip]="col.iconTooltip | translate"
-                    class="icon-button pl-3"
+                    class="icon-button"
                     [icon]="col.iconClass"
                     variant="text"
                     severity="info"
                     [ariaLabel]="'common.accessibility.tooltipBtn' | translate"
-                    (onClick)="onIconClick(rowData, col)"
+                    (onClick)="onIconClick(rowData, col, $index)"
                   />
                 }
               </div>

@@ -45,6 +45,7 @@ export const registrationTableColumns: TableColumn[] = [
     field: 'contributorName',
     header: 'adminInstitutions.projects.contributorName',
     isLink: true,
+    isArray: true,
     linkTarget: '_blank',
   },
   {

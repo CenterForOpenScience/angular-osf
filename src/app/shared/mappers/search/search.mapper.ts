@@ -27,6 +27,7 @@ export function MapResources(indexCardData: IndexCardDataJsonApi): ResourceModel
     creators: (resourceMetadata.creator ?? []).map((creator) => ({
       absoluteUrl: creator?.['@id'],
       name: creator?.name?.[0]?.['@value'],
+      affiliationAbsoluteUrl: creator.affiliation?.[0]?.['@id'] ?? null,
     })),
     affiliations: (resourceMetadata.affiliation ?? []).map((affiliation) => ({
       absoluteUrl: affiliation?.['@id'],
@@ -36,6 +37,7 @@ export function MapResources(indexCardData: IndexCardDataJsonApi): ResourceModel
     qualifiedAttribution: (resourceMetadata.qualifiedAttribution ?? []).map((qualifiedAttribution) => ({
       agentId: qualifiedAttribution?.agent?.[0]?.['@id'],
       order: +qualifiedAttribution?.['osf:order']?.[0]?.['@value'],
+      hadRole: qualifiedAttribution.hadRole?.[0]?.['@id'],
     })),
     identifiers: (resourceMetadata.identifier ?? []).map((obj) => obj['@value']),
     provider: (resourceMetadata.publisher ?? null)?.map((publisher) => ({
@@ -77,10 +79,12 @@ export function MapResources(indexCardData: IndexCardDataJsonApi): ResourceModel
       creators: (isContainedBy?.creator ?? []).map((creator) => ({
         absoluteUrl: creator?.['@id'],
         name: creator?.name?.[0]?.['@value'],
+        affiliationAbsoluteUrl: creator.affiliation?.[0]?.['@id'] ?? null,
       })),
       qualifiedAttribution: (isContainedBy?.qualifiedAttribution ?? []).map((qualifiedAttribution) => ({
         agentId: qualifiedAttribution?.agent?.[0]?.['@id'],
         order: +qualifiedAttribution?.['osf:order']?.[0]?.['@value'],
+        hadRole: qualifiedAttribution.hadRole?.[0]?.['@id'],
       })),
     }))[0],
     statedConflictOfInterest: resourceMetadata.statedConflictOfInterest?.[0]?.['@value'],
