@@ -52,7 +52,7 @@ export class RegistriesModerationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.selectedTab = this.route.snapshot.firstChild?.data['tab'];
-    const id = this.route.snapshot.paramMap.get('providerId');
+    const id = this.route.snapshot.params['providerId'];
 
     if (!id) {
       this.router.navigate(['/not-found']);
