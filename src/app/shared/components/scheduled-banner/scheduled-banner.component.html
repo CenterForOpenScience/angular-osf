@@ -1,22 +1,14 @@
-@if (this.shouldShowBanner()) {
+@if (shouldShowBanner()) {
   <div
-    [style.background-color]="this.currentBanner()?.color"
+    [style.background-color]="currentBanner()?.color"
     class="flex w-full justify-content-center align-items flex-row"
   >
-    <a [href]="this.currentBanner()?.link" target="_blank" rel="noopener noreferrer">
-      @if (this.isMobile()) {
-        <img
-          class="block w-full"
-          [src]="this.currentBanner()?.mobilePhoto"
-          [alt]="this.currentBanner()?.mobileAltText"
-        />
-      } @else {
-        <img
-          class="block w-full"
-          [src]="this.currentBanner()?.defaultPhoto"
-          [alt]="this.currentBanner()?.defaultAltText"
-        />
-      }
+    <a [href]="currentBanner()?.link" target="_blank" rel="noopener noreferrer">
+      <img
+        class="block w-full"
+        [src]="isMobile() ? currentBanner()?.mobilePhoto : currentBanner()?.defaultPhoto"
+        [alt]="isMobile() ? currentBanner()?.mobileAltText : currentBanner()?.defaultAltText"
+      />
     </a>
   </div>
 }

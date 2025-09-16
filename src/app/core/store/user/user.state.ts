@@ -18,7 +18,6 @@ import {
   GetCurrentUser,
   GetCurrentUserSettings,
   SetCurrentUser,
-  SetUserAsModerator,
   UpdateProfileSettingsEducation,
   UpdateProfileSettingsEmployment,
   UpdateProfileSettingsSocialLinks,
@@ -232,26 +231,6 @@ export class UserState {
         localStorage.setItem('currentUser', JSON.stringify(user));
       })
     );
-  }
-
-  @Action(SetUserAsModerator)
-  setUserAsModerator(ctx: StateContext<UserStateModel>) {
-    const state = ctx.getState();
-    const currentUser = state.currentUser.data;
-
-    if (!currentUser) {
-      return;
-    }
-
-    ctx.patchState({
-      currentUser: {
-        ...state.currentUser,
-        data: {
-          ...currentUser,
-          isModerator: true,
-        },
-      },
-    });
   }
 
   @Action(AcceptTermsOfServiceByUser)

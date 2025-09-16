@@ -37,7 +37,7 @@ import { TagsInputComponent, TextInputComponent, TruncatedTextComponent } from '
 import { InputLimits } from '@shared/constants';
 import { ResourceType } from '@shared/enums';
 import { LicenseModel } from '@shared/models';
-import { Project } from '@shared/models/projects';
+import { ProjectModel } from '@shared/models/projects';
 import { InterpolatePipe } from '@shared/pipes';
 import { ToastService } from '@shared/services';
 import { ClearProjects, GetAllContributors, UpdateProjectMetadata } from '@shared/stores';
@@ -189,7 +189,7 @@ export class ProjectMetadataStepComponent {
     this.metadataSaved.emit();
   }
 
-  private updateProjectMetadata(selectedProject: Project): void {
+  private updateProjectMetadata(selectedProject: ProjectModel): void {
     const metadata = this.formService.buildMetadataPayload(this.projectMetadataForm, selectedProject);
 
     this.actions

@@ -2,17 +2,17 @@ import { createDispatchMap, select } from '@ngxs/store';
 
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { SetCurrentProvider } from '@core/store/provider';
+import { ClearCurrentProvider } from '@core/store/provider';
 import { GlobalSearchComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { SetDefaultFilterValue, SetResourceType } from '@osf/shared/stores/global-search';
+import { GetRegistryProviderBrand, RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
 import { RegistryProviderHeroComponent } from '../../components/registry-provider-hero/registry-provider-hero.component';
-import { GetRegistryProviderBrand, RegistriesProviderSearchSelectors } from '../../store/registries-provider-search';
 
 @Component({
   selector: 'osf-registries-provider-search',
@@ -22,18 +22,18 @@ import { GetRegistryProviderBrand, RegistriesProviderSearchSelectors } from '../
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService],
 })
-export class RegistriesProviderSearchComponent implements OnInit {
+export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
 
   private actions = createDispatchMap({
     getProvider: GetRegistryProviderBrand,
     setDefaultFilterValue: SetDefaultFilterValue,
     setResourceType: SetResourceType,
-    setCurrentProvider: SetCurrentProvider,
+    clearCurrentProvider: ClearCurrentProvider,
   });
 
-  provider = select(RegistriesProviderSearchSelectors.getBrandedProvider);
-  isProviderLoading = select(RegistriesProviderSearchSelectors.isBrandedProviderLoading);
+  provider = select(RegistrationProviderSelectors.getBrandedProvider);
+  isProviderLoading = select(RegistrationProviderSelectors.isBrandedProviderLoading);
 
   searchControl = new FormControl('');
 
@@ -44,9 +44,12 @@ export class RegistriesProviderSearchComponent implements OnInit {
         next: () => {
           this.actions.setDefaultFilterValue('publisher', this.provider()!.iri!);
           this.actions.setResourceType(ResourceType.Registration);
-          this.actions.setCurrentProvider(this.provider()!);
         },
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.actions.clearCurrentProvider();
   }
 }

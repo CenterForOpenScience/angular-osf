@@ -28,7 +28,7 @@ export class RegistryOverviewService {
 
   getRegistrationById(id: string): Observable<RegistryOverviewWithMeta> {
     const params = {
-      related_counts: 'forks,comments,linked_nodes,linked_registrations,children,wikis',
+      related_counts: 'forks,linked_nodes,linked_registrations,children,wikis',
       'embed[]': [
         'bibliographic_contributors',
         'provider',

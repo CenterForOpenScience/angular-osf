@@ -1,31 +1,9 @@
-import { BrandDataJsonApi, JsonApiResponse } from '@shared/models';
+import { BrandDataJsonApi, CollectionsProviderAttributesJsonApi, JsonApiResponse } from '@shared/models';
 
 export interface CollectionProviderResponseJsonApi {
   id: string;
   type: string;
-  attributes: {
-    name: string;
-    description: string;
-    advisory_board: string;
-    example: string | null;
-    domain: string;
-    domain_redirect_enabled: boolean;
-    footer_links: string;
-    email_support: boolean | null;
-    facebook_app_id: string | null;
-    allow_submissions: boolean;
-    allow_commenting: boolean;
-    assets: {
-      style?: string;
-      square_color_transparent?: string;
-      square_color_no_transparent?: string;
-      favicon?: string;
-    };
-    share_source: string;
-    share_publish_type: string;
-    permissions: string[];
-    reviews_workflow: string;
-  };
+  attributes: CollectionsProviderAttributesJsonApi;
   embeds: {
     brand: {
       data?: BrandDataJsonApi;
@@ -37,12 +15,6 @@ export interface CollectionProviderResponseJsonApi {
         id: string;
         type: string;
       };
-    };
-    brand: {
-      data: {
-        id: string;
-        type: string;
-      } | null;
     };
   };
 }

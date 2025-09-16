@@ -10,8 +10,8 @@ import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { PreprintsHelpDialogComponent } from '@osf/features/preprints/components';
-import { RegistryProviderDetails } from '@osf/features/registries/models/registry-provider.model';
 import { HeaderStyleHelper } from '@osf/shared/helpers';
+import { RegistryProviderDetails } from '@osf/shared/models';
 import { SearchInputComponent } from '@shared/components';
 import { DecodeHtmlPipe } from '@shared/pipes';
 import { BrandService } from '@shared/services';
@@ -42,7 +42,7 @@ export class RegistryProviderHeroComponent implements OnDestroy {
     effect(() => {
       const provider = this.provider();
 
-      if (provider) {
+      if (provider?.brand) {
         BrandService.applyBranding(provider.brand);
         HeaderStyleHelper.applyHeaderStyles(
           this.WHITE,

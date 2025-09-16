@@ -16,7 +16,7 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UserSelectors } from '@core/store/user';
 import { ProjectFormControls } from '@osf/shared/enums';
 import { Institution, ProjectForm } from '@osf/shared/models';
-import { Project } from '@osf/shared/models/projects';
+import { ProjectModel } from '@osf/shared/models/projects';
 import { FetchRegions, RegionsSelectors } from '@osf/shared/stores';
 import { FetchUserInstitutions, InstitutionsSelectors } from '@osf/shared/stores/institutions';
 
@@ -51,7 +51,7 @@ export class AddProjectFormComponent implements OnInit {
   ProjectFormControls = ProjectFormControls;
 
   hasTemplateSelected = signal(false);
-  selectedTemplate = signal<Project | null>(null);
+  selectedTemplate = signal<ProjectModel | null>(null);
   isSubmitting = signal(false);
   selectedAffiliations = signal<Institution[]>([]);
   currentUser = select(UserSelectors.getCurrentUser);
@@ -92,7 +92,7 @@ export class AddProjectFormComponent implements OnInit {
       .subscribe((value) => this.hasTemplateSelected.set(!!value));
   }
 
-  onTemplateChange(project: Project | null): void {
+  onTemplateChange(project: ProjectModel | null): void {
     if (!project) return;
     this.selectedTemplate.set(project);
     this.projectForm().get(ProjectFormControls.Template)?.setValue(project.id);

@@ -37,8 +37,8 @@ import {
   DeleteContributor,
   UpdateBibliographyFilter,
   UpdateContributor,
+  UpdateContributorsSearchValue,
   UpdatePermissionFilter,
-  UpdateSearchValue,
 } from '@osf/shared/stores';
 
 @Component({
@@ -70,13 +70,14 @@ export class ContributorsDialogComponent implements OnInit {
     const initialContributors = this.initialContributors();
     if (!currentUserId) return false;
 
-    return initialContributors.some((contributor: ContributorModel) => {
-      return contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin;
-    });
+    return initialContributors.some(
+      (contributor: ContributorModel) =>
+        contributor.userId === currentUserId && contributor.permission === ContributorPermission.Admin
+    );
   });
 
   actions = createDispatchMap({
-    updateSearchValue: UpdateSearchValue,
+    updateSearchValue: UpdateContributorsSearchValue,
     updatePermissionFilter: UpdatePermissionFilter,
     updateBibliographyFilter: UpdateBibliographyFilter,
     deleteContributor: DeleteContributor,

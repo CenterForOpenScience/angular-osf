@@ -13,6 +13,7 @@ export * from './institutions';
 export * from './licenses.mapper';
 export * from './nodes';
 export * from './notification-subscription.mapper';
+export * from './registration-provider.mapper';
 export * from './registry';
 export * from './resource-overview.mappers';
 export * from './review-actions.mapper';

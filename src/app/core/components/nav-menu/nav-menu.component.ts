@@ -12,12 +12,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 import { MENU_ITEMS } from '@core/constants';
+import { ProviderSelectors } from '@core/store/provider';
 import { filterMenuItems, updateMenuItems } from '@osf/core/helpers';
 import { RouteContext } from '@osf/core/models';
 import { AuthService } from '@osf/core/services';
 import { UserSelectors } from '@osf/core/store/user';
 import { IconComponent } from '@osf/shared/components';
-import { CurrentResourceType } from '@osf/shared/enums';
+import { CurrentResourceType, ReviewPermissions } from '@osf/shared/enums';
 import { getViewOnlyParam } from '@osf/shared/helpers';
 import { WrapFnPipe } from '@osf/shared/pipes';
 import { CurrentResourceSelectors } from '@osf/shared/stores';
@@ -37,6 +38,7 @@ export class NavMenuComponent {
 
   private readonly isAuthenticated = select(UserSelectors.isAuthenticated);
   private readonly currentResource = select(CurrentResourceSelectors.getCurrentResource);
+  private readonly provider = select(ProviderSelectors.getCurrentProvider);
 
   readonly mainMenuItems = computed(() => {
     const isAuthenticated = this.isAuthenticated();
@@ -44,7 +46,7 @@ export class NavMenuComponent {
 
     const routeContext: RouteContext = {
       resourceId: this.currentResourceId(),
-      providerId: this.currentProviderId(),
+      providerId: this.provider()?.id,
       isProject:
         this.currentResource()?.type === CurrentResourceType.Projects &&
         this.currentResourceId() === this.currentResource()?.id,
@@ -53,6 +55,12 @@ export class NavMenuComponent {
         this.currentResourceId() === this.currentResource()?.id,
       isPreprint: this.isPreprintRoute(),
       preprintReviewsPageVisible: this.canUserViewReviews(),
+      registrationModerationPageVisible:
+        this.provider()?.type === CurrentResourceType.Registrations &&
+        this.provider()?.permissions?.includes(ReviewPermissions.ViewSubmissions),
+      collectionModerationPageVisible:
+        this.provider()?.type === CurrentResourceType.Collections &&
+        this.provider()?.permissions?.includes(ReviewPermissions.ViewSubmissions),
       isCollections: this.isCollectionsRoute() || false,
       currentUrl: this.router.url,
       isViewOnly: !!getViewOnlyParam(this.router),

@@ -2,9 +2,10 @@ import { StateContext } from '@ngxs/store';
 
 import { inject, Injectable } from '@angular/core';
 
+import { handleSectionError } from '@osf/shared/helpers';
 import { ProjectsService } from '@osf/shared/services/projects.service';
 
-import { Project } from '../../models';
+import { ProjectShortInfoModel } from '../../models';
 import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from '../registries.model';
 
 @Injectable()
@@ -28,7 +29,7 @@ export class ProjectsHandlers {
       },
     });
     return this.projectsService.fetchProjects(userId, params).subscribe({
-      next: (projects: Project[]) => {
+      next: (projects: ProjectShortInfoModel[]) => {
         ctx.patchState({
           projects: {
             data: projects,
@@ -56,7 +57,7 @@ export class ProjectsHandlers {
     });
 
     return this.projectsService.getComponentsTree(projectId).subscribe({
-      next: (children: Project[]) => {
+      next: (children: ProjectShortInfoModel[]) => {
         ctx.patchState({
           draftRegistration: {
             data: {
@@ -68,11 +69,7 @@ export class ProjectsHandlers {
           },
         });
       },
-      error: (error) => {
-        ctx.patchState({
-          projects: { ...state.projects, isLoading: false, error },
-        });
-      },
+      error: (error) => handleSectionError(ctx, 'draftRegistration', error),
     });
   }
 }
