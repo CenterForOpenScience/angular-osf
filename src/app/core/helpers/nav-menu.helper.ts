@@ -193,5 +193,5 @@ function updateCollectionMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
     return subItem;
   });
 
-  return { ...item, expanded: ctx.isCollections, items };
+  return { ...item, items, visible: ctx.isCollections };
 }
