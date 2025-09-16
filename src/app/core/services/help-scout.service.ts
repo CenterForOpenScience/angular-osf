@@ -51,10 +51,15 @@ export class HelpScoutService {
    * - `resourceType`: undefined
    */
   constructor() {
-    this.window.dataLayer = {
-      loggedIn: false,
-      resourceType: undefined,
-    };
+    if (this.window.dataLayer) {
+      this.window.dataLayer.loggedIn = false;
+      this.window.dataLayer.resourceType = undefined;
+    } else {
+      this.window.dataLayer = {
+        loggedIn: false,
+        resourceType: undefined,
+      };
+    }
 
     effect(() => {
       this.window.dataLayer.loggedIn = this.isAuthenticated();
