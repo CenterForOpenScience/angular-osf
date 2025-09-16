@@ -7,7 +7,7 @@ import { Skeleton } from 'primeng/skeleton';
 import { TableModule } from 'primeng/table';
 import { Tooltip } from 'primeng/tooltip';
 
-import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { ModeratorPermission } from '@osf/features/moderation/enums';
@@ -36,6 +36,24 @@ export class ContributorsListComponent {
 
   currentUserId = input<string | undefined>(undefined);
   isCurrentUserAdminContributor = input<boolean>(true);
+
+  canRemoveContributor = computed(() => {
+    const contributors = this.contributors();
+    const currentUserId = this.currentUserId();
+    const isAdmin = this.isCurrentUserAdminContributor();
+    const adminCount = contributors.filter((c) => c.permission === ContributorPermission.Admin).length;
+
+    const result = new Map<string, boolean>();
+
+    for (const c of contributors) {
+      const canRemove =
+        (isAdmin || currentUserId === c.userId) && !(c.permission === ContributorPermission.Admin && adminCount <= 1);
+
+      result.set(c.userId, canRemove);
+    }
+
+    return result;
+  });
 
   remove = output<ContributorModel>();
   dialogService = inject(DialogService);

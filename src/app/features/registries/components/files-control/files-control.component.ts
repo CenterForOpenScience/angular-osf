@@ -10,10 +10,21 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { EMPTY, filter, finalize, Observable, shareReplay, take } from 'rxjs';
 
 import { HttpEventType } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  OnDestroy,
+  output,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { HelpScoutService } from '@core/services/help-scout.service';
 import { CreateFolderDialogComponent } from '@osf/features/files/components';
 import { FilesTreeComponent, LoadingSpinnerComponent } from '@osf/shared/components';
 import { FILE_SIZE_LIMIT } from '@osf/shared/constants';
@@ -46,7 +57,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DialogService, TreeDragDropService],
 })
-export class FilesControlComponent {
+export class FilesControlComponent implements OnDestroy {
   attachedFiles = input.required<Partial<OsfFile>[]>();
   attachFile = output<OsfFile>();
   filesLink = input.required<string>();
@@ -59,6 +70,7 @@ export class FilesControlComponent {
   private readonly translateService = inject(TranslateService);
   private readonly destroyRef = inject(DestroyRef);
   private toastService = inject(ToastService);
+  private readonly helpScoutService = inject(HelpScoutService);
 
   readonly files = select(RegistriesSelectors.getFiles);
   readonly filesTotalCount = select(RegistriesSelectors.getFilesTotalCount);
@@ -89,6 +101,7 @@ export class FilesControlComponent {
   };
 
   constructor() {
+    this.helpScoutService.setResourceType('files');
     effect(() => {
       const filesLink = this.filesLink();
       if (filesLink) {
@@ -199,5 +212,9 @@ export class FilesControlComponent {
 
   folderIsOpening(value: boolean): void {
     this.isFolderOpening.set(value);
+  }
+
+  ngOnDestroy(): void {
+    this.helpScoutService.unsetResourceType();
   }
 }

@@ -6,7 +6,6 @@ export * from './linked-registrations-json-api.model';
 export * from './linked-response.models';
 export * from './registry-components.models';
 export * from './registry-components-json-api.model';
-export * from './registry-contributor-json-api.model';
 export * from './registry-metadata.models';
 export * from './registry-overview.models';
 export * from './resources';

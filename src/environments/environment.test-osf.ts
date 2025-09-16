@@ -16,9 +16,4 @@ export const environment = {
   defaultProvider: 'osf',
   dataciteTrackerRepoId: null,
   dataciteTrackerAddress: 'https://analytics.datacite.org/api/metric',
-  google: {
-    GOOGLE_FILE_PICKER_CLIENT_ID: '610901277352-m5krehjdtu8skh2teq85fb7mvk411qa6.apps.googleusercontent.com',
-    GOOGLE_FILE_PICKER_API_KEY: 'AIzaSyA3EnD0pOv4v7sJt7BGuR1i2Gcj-Gju6C0',
-    GOOGLE_FILE_PICKER_APP_ID: 610901277352,
-  },
 };

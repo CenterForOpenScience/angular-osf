@@ -8,7 +8,7 @@
     <ng-template #header>
       <h2 class="mr-2">{{ 'project.wiki.compare' | translate }}</h2>
     </ng-template>
-    <div class="flex align-items-center mb-2">
+    <div class="flex flex-wrap align-items-center mb-2 lg:flex-nowrap">
       <span class="mr-2">Live preview to</span>
       <p-select
         [options]="mappedVersions()"

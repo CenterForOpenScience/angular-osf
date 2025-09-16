@@ -22,6 +22,7 @@ services:
       - ./angular.json:/app/angular.json
       - ./tsconfig.json:/app/tsconfig.json
       - ./tsconfig.app.json:/app/tsconfig.app.json
+      - ./docker/scripts:/app/docker
     # (CMD comes from Dockerfile, but you could override here if you wanted)
     command: ['npm', 'run', 'start:docker']
 

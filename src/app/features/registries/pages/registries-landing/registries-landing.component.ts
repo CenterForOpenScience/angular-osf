@@ -12,6 +12,7 @@ import { ClearCurrentProvider } from '@core/store/provider';
 import {
   LoadingSpinnerComponent,
   ResourceCardComponent,
+  ScheduledBannerComponent,
   SearchInputComponent,
   SubHeaderComponent,
 } from '@osf/shared/components';
@@ -33,6 +34,7 @@ import { environment } from 'src/environments/environment';
     ResourceCardComponent,
     LoadingSpinnerComponent,
     SubHeaderComponent,
+    ScheduledBannerComponent,
   ],
   templateUrl: './registries-landing.component.html',
   styleUrl: './registries-landing.component.scss',

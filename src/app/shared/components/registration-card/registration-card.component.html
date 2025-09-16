@@ -39,7 +39,7 @@
               <strong>{{ 'project.overview.metadata.contributors' | translate }}:</strong>
               <span class="contributors">
                 @for (contributor of registrationData().contributors; track contributor) {
-                  <a class="font-bold" [routerLink]="['/user', contributor.userId]">{{ contributor.fullName }}</a>
+                  <a class="font-bold" [routerLink]="['/user', contributor.id]">{{ contributor.fullName }}</a>
                   @if (!$last) {
                     <span>, </span>
                   }
