@@ -1,8 +1,7 @@
-@use "styles/variables" as var;
 @use "styles/mixins" as mix;
 
 .filters {
-  border: 1px solid var.$grey-2;
+  border: 1px solid var(--grey-2);
   border-radius: mix.rem(12px);
   padding: 0 mix.rem(20px);
   display: flex;
