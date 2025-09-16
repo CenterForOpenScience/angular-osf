@@ -23,7 +23,7 @@ import { FormsModule } from '@angular/forms';
 
 import { UserSelectors } from '@core/store/user';
 import { CustomOption } from '@shared/models';
-import { Project } from '@shared/models/projects';
+import { ProjectModel } from '@shared/models/projects';
 import { GetProjects } from '@shared/stores';
 import { ProjectsSelectors } from '@shared/stores/projects/projects.selectors';
 
@@ -46,12 +46,12 @@ export class ProjectSelectorComponent {
   placeholder = input<string>('common.buttons.select');
   showClear = input<boolean>(true);
   excludeProjectIds = input<string[]>([]);
-  selectedProject = model<Project | null>(null);
+  selectedProject = model<ProjectModel | null>(null);
 
-  projectChange = output<Project | null>();
-  projectsLoaded = output<Project[]>();
+  projectChange = output<ProjectModel | null>();
+  projectsLoaded = output<ProjectModel[]>();
 
-  projectsOptions = signal<CustomOption<Project>[]>([]);
+  projectsOptions = signal<CustomOption<ProjectModel>[]>([]);
 
   filterMessage = computed(() => {
     const isLoading = this.isProjectsLoading();

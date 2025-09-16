@@ -1,19 +1,19 @@
 import { ReviewPermissions } from '@osf/shared/enums';
 
 export interface BaseProviderAttributesJsonApi {
-  name: string;
-  description: string;
   advisory_board: string;
-  example: string | null;
+  allow_commenting: boolean;
+  allow_submissions: boolean;
+  description: string;
   domain: string;
   domain_redirect_enabled: boolean;
-  footer_links: string;
   email_support: string | null;
+  example: string | null;
   facebook_app_id: string | null;
-  allow_submissions: boolean;
-  allow_commenting: boolean;
-  share_source: string;
-  share_publish_type: string;
+  footer_links: string;
+  name: string;
   permissions: ReviewPermissions[];
   reviews_workflow: string;
+  share_publish_type: string;
+  share_source: string;
 }

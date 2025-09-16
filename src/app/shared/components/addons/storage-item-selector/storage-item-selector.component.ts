@@ -211,10 +211,10 @@ export class StorageItemSelectorComponent implements OnInit {
     this.cancelSelection.emit();
   }
 
-  handleFolderSelection(folder: StorageItem): void {
+  handleFolderSelection = (folder: StorageItem): void => {
     this.selectedStorageItem.set(folder);
     this.hasFolderChanged.set(folder?.itemId !== this.initiallySelectedStorageItem()?.itemId);
-  }
+  };
 
   private updateBreadcrumbs(
     operationName: OperationNames,

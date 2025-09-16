@@ -26,7 +26,7 @@ export class ModeratorsService {
   ]);
 
   getModerators(resourceId: string, resourceType: ResourceType): Observable<ModeratorModel[]> {
-    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators`;
+    const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/`;
 
     return this.jsonApiService
       .get<ModeratorResponseJsonApi>(baseUrl)

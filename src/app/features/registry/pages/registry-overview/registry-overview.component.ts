@@ -5,10 +5,19 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
 
-import { filter, map, switchMap, tap } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs';
 
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, HostBinding, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  HostBinding,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -177,21 +186,12 @@ export class RegistryOverviewComponent {
   }
 
   constructor() {
-    this.route.parent?.params.subscribe((params) => {
-      const id = params['id'];
-      if (id) {
-        this.actions
-          .getRegistryById(id)
-          .pipe(
-            filter(() => {
-              return !this.registry()?.withdrawn;
-            }),
-            tap(() => {
-              this.actions.getSubjects(id, ResourceType.Registration);
-              this.actions.getInstitutions(id);
-            })
-          )
-          .subscribe();
+    effect(() => {
+      const registry = this.registry();
+
+      if (registry && !registry?.withdrawn) {
+        this.actions.getSubjects(registry?.id, ResourceType.Registration);
+        this.actions.getInstitutions(registry?.id);
       }
     });
 
@@ -293,6 +293,7 @@ export class RegistryOverviewComponent {
           this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
             this.router.navigateByUrl(currentUrl);
           });
+
           this.actions.getRegistryById(this.registry()?.id || '');
         }
       });

@@ -24,9 +24,9 @@ export class ScheduledBannerComponent implements OnInit {
     const banner = this.currentBanner();
     if (banner) {
       const bannerStartTime = banner.startDate;
-      const bannderEndTime = banner.endDate;
+      const bannerEndTime = banner.endDate;
       const currentTime = new Date();
-      return bannerStartTime < currentTime && bannderEndTime > currentTime;
+      return bannerStartTime < currentTime && bannerEndTime > currentTime;
     }
     return false;
   });

@@ -17,4 +17,5 @@ export enum CurrentResourceType {
   Projects = 'nodes',
   Registrations = 'registrations',
   Preprints = 'preprints',
+  Collections = 'collections',
 }

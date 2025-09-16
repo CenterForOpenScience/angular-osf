@@ -10,6 +10,9 @@ import { TranslateServiceMock } from '@shared/mocks';
 
 import { RegistriesModerationComponent } from './registries-moderation.component';
 
+import { OSFTestingModule } from '@testing/osf.testing.module';
+import { provideMockStore } from '@testing/providers/store-provider.mock';
+
 describe('RegistriesModerationComponent', () => {
   let component: RegistriesModerationComponent;
   let fixture: ComponentFixture<RegistriesModerationComponent>;
@@ -22,6 +25,7 @@ describe('RegistriesModerationComponent', () => {
           tab: null,
         },
       },
+      params: { providerId: 'osf' },
     },
   };
 
@@ -33,11 +37,12 @@ describe('RegistriesModerationComponent', () => {
     isMediumSubject = new BehaviorSubject<boolean>(true);
 
     await TestBed.configureTestingModule({
-      imports: [RegistriesModerationComponent],
+      imports: [RegistriesModerationComponent, OSFTestingModule],
       providers: [
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         MockProvider(Router, mockRouter),
         MockProvider(IS_MEDIUM, isMediumSubject),
+        provideMockStore(),
         TranslateServiceMock,
       ],
     }).compileComponents();

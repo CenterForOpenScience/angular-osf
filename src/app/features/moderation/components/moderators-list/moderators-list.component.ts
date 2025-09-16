@@ -26,7 +26,6 @@ import { UserSelectors } from '@core/store/user';
 import { SearchInputComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { CustomConfirmationService, ToastService } from '@osf/shared/services';
-import { UpdateSearchValue } from '@osf/shared/stores';
 
 import { AddModeratorType, ModeratorPermission } from '../../enums';
 import { ModeratorDialogAddModel, ModeratorModel } from '../../models';
@@ -36,6 +35,7 @@ import {
   LoadModerators,
   ModeratorsSelectors,
   UpdateModerator,
+  UpdateModeratorsSearchValue,
 } from '../../store/moderators';
 import { AddModeratorDialogComponent } from '../add-moderator-dialog/add-moderator-dialog.component';
 import { InviteModeratorDialogComponent } from '../invite-moderator-dialog/invite-moderator-dialog.component';
@@ -83,7 +83,7 @@ export class ModeratorsListComponent implements OnInit {
 
   actions = createDispatchMap({
     loadModerators: LoadModerators,
-    updateSearchValue: UpdateSearchValue,
+    updateSearchValue: UpdateModeratorsSearchValue,
     addModerators: AddModerator,
     updateModerator: UpdateModerator,
     deleteModerator: DeleteModerator,

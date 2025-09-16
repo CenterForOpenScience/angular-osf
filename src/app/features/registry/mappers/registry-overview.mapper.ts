@@ -1,7 +1,6 @@
 import { RegistryOverview, RegistryOverviewJsonApiData } from '@osf/features/registry/models';
-import { ReviewPermissionsMapper } from '@osf/shared/mappers';
+import { MapRegistryStatus, ReviewPermissionsMapper } from '@osf/shared/mappers';
 import { RegistrationMapper } from '@osf/shared/mappers/registration';
-import { MapRegistryStatus } from '@shared/mappers/registry/map-registry-status.mapper';
 
 export function MapRegistryOverview(data: RegistryOverviewJsonApiData): RegistryOverview | null {
   return {

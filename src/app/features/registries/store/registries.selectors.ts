@@ -5,13 +5,14 @@ import {
   LicenseModel,
   OsfFile,
   PageSchema,
+  ProviderSchema,
   RegistrationCard,
   RegistrationModel,
   ResourceModel,
   SchemaResponse,
 } from '@shared/models';
 
-import { Project, ProviderSchema } from '../models';
+import { ProjectShortInfoModel } from '../models';
 
 import { RegistriesStateModel } from './registries.model';
 import { RegistriesState } from './registries.state';
@@ -28,7 +29,7 @@ export class RegistriesSelectors {
   }
 
   @Selector([RegistriesState])
-  static getProjects(state: RegistriesStateModel): Project[] {
+  static getProjects(state: RegistriesStateModel): ProjectShortInfoModel[] {
     return state.projects.data;
   }
 

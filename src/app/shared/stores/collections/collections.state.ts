@@ -4,6 +4,8 @@ import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { SetCurrentProvider } from '@core/store/provider';
+import { CurrentResourceType } from '@osf/shared/enums';
 import { handleSectionError } from '@osf/shared/helpers';
 import { CollectionsService } from '@osf/shared/services';
 
@@ -51,6 +53,21 @@ export class CollectionsState {
       },
     });
 
+    const provider = state.collectionProvider.data;
+
+    if (provider?.name === action.collectionName) {
+      ctx.dispatch(
+        new SetCurrentProvider({
+          id: provider.id,
+          name: provider.name,
+          type: CurrentResourceType.Collections,
+          permissions: provider.permissions,
+        })
+      );
+
+      return of(provider);
+    }
+
     return this.collectionsService.getCollectionProvider(action.collectionName).pipe(
       tap((res) => {
         ctx.patchState({
@@ -60,6 +77,15 @@ export class CollectionsState {
             error: null,
           },
         });
+
+        ctx.dispatch(
+          new SetCurrentProvider({
+            id: res.id,
+            name: res.name,
+            type: CurrentResourceType.Collections,
+            permissions: res.permissions,
+          })
+        );
       })
     );
   }

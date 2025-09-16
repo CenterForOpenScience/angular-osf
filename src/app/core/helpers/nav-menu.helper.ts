@@ -61,7 +61,7 @@ export function updateMenuItems(menuItems: MenuItem[], ctx: RouteContext): MenuI
     }
 
     if (item.id === 'collections') {
-      return { ...item, visible: ctx.isCollections };
+      return updateCollectionMenuItem(item, ctx);
     }
 
     return item;
@@ -137,6 +137,15 @@ function updateRegistryMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
       }
       return { ...subItem, visible: false, expanded: false };
     }
+
+    if (subItem.id === 'registries-moderation') {
+      return {
+        ...subItem,
+        visible: ctx.registrationModerationPageVisible,
+        routerLink: ['/registries', ctx.providerId, 'moderation'],
+      };
+    }
+
     return subItem;
   });
 
@@ -168,4 +177,21 @@ function updatePreprintMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
   });
 
   return { ...item, expanded: ctx.isPreprint, items };
+}
+
+function updateCollectionMenuItem(item: MenuItem, ctx: RouteContext): MenuItem {
+  const isCollections = ctx.isCollections;
+
+  const items = (item.items || []).map((subItem) => {
+    if (subItem.id === 'collections-moderation') {
+      return {
+        ...subItem,
+        visible: isCollections && ctx.collectionModerationPageVisible,
+        routerLink: ['/collections', ctx.providerId, 'moderation'],
+      };
+    }
+    return subItem;
+  });
+
+  return { ...item, items, visible: ctx.isCollections };
 }

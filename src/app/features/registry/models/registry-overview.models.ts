@@ -5,7 +5,7 @@ import {
   LicenseModel,
   LicensesOption,
   MetaAnonymousJsonApi,
-  ProviderModel,
+  ProviderShortInfoModel,
   SchemaResponse,
   SubjectModel,
 } from '@osf/shared/models';
@@ -24,7 +24,7 @@ export interface RegistryOverview {
   registrationType: string;
   doi: string;
   tags: string[];
-  provider?: ProviderModel;
+  provider?: ProviderShortInfoModel;
   contributors: ProjectOverviewContributor[];
   citation: string;
   category: string;

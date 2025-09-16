@@ -6,7 +6,9 @@ import { catchError } from 'rxjs/operators';
 
 import { inject, Injectable } from '@angular/core';
 
+import { SetCurrentProvider } from '@core/store/provider';
 import { PreprintProvidersService } from '@osf/features/preprints/services';
+import { CurrentResourceType } from '@osf/shared/enums';
 import { handleSectionError } from '@osf/shared/helpers';
 
 import {
@@ -33,6 +35,14 @@ export class PreprintProvidersState {
     const shouldRefresh = this.shouldRefresh(cachedData?.lastFetched);
 
     if (cachedData && !shouldRefresh) {
+      ctx.dispatch(
+        new SetCurrentProvider({
+          id: cachedData.id,
+          name: cachedData.name,
+          type: CurrentResourceType.Preprints,
+          permissions: cachedData.permissions,
+        })
+      );
       return of(cachedData);
     }
 
@@ -51,6 +61,15 @@ export class PreprintProvidersState {
                 : insertItem(preprintProvider),
               isLoading: false,
             }),
+          })
+        );
+
+        ctx.dispatch(
+          new SetCurrentProvider({
+            id: preprintProvider.id,
+            name: preprintProvider.name,
+            type: CurrentResourceType.Preprints,
+            permissions: preprintProvider.permissions,
           })
         );
       }),

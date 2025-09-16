@@ -121,7 +121,7 @@ describe('Service: Addons', () => {
     [HttpTestingController],
     (httpMock: HttpTestingController) => {
       let results;
-      service.getAuthorizedStorageOauthToken('account-id').subscribe((result) => {
+      service.getAuthorizedStorageOauthToken('account-id', 'storage').subscribe((result) => {
         results = result;
       });
 
