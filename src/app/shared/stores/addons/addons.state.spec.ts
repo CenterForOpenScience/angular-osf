@@ -280,7 +280,7 @@ describe('State: Addons', () => {
       [HttpTestingController],
       (httpMock: HttpTestingController) => {
         let result: any[] = [];
-        store.dispatch(new GetAuthorizedStorageOauthToken('account-id')).subscribe(() => {
+        store.dispatch(new GetAuthorizedStorageOauthToken('account-id', 'storage')).subscribe(() => {
           result = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddons);
         });
 
@@ -327,7 +327,7 @@ describe('State: Addons', () => {
         let result: any[] = [];
         store.dispatch(new GetAuthorizedStorageAddons('reference-id')).subscribe();
 
-        store.dispatch(new GetAuthorizedStorageOauthToken('account-id')).subscribe(() => {
+        store.dispatch(new GetAuthorizedStorageOauthToken('account-id', 'storage')).subscribe(() => {
           result = store.selectSnapshot(AddonsSelectors.getAuthorizedStorageAddons);
         });
 
@@ -383,7 +383,7 @@ describe('State: Addons', () => {
       (httpMock: HttpTestingController) => {
         let result: any = null;
 
-        store.dispatch(new GetAuthorizedStorageOauthToken('account-id')).subscribe({
+        store.dispatch(new GetAuthorizedStorageOauthToken('account-id', 'storage')).subscribe({
           next: () => {
             result = 'Expected error, but got success';
           },

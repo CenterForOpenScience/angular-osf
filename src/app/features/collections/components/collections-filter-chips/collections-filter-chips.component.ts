@@ -4,8 +4,6 @@ import { Chip } from 'primeng/chip';
 
 import { ChangeDetectionStrategy, Component, computed } from '@angular/core';
 
-import { collectionFilterTypes } from '@osf/features/collections/constants/filter-types.const';
-import { CollectionFilterType } from '@osf/features/collections/enums';
 import {
   CollectionsSelectors,
   SetCollectedTypeFilters,
@@ -19,6 +17,9 @@ import {
   SetStudyDesignFilters,
   SetVolumeFilters,
 } from '@shared/stores/collections';
+
+import { collectionFilterTypes } from '../../constants';
+import { CollectionFilterType } from '../../enums';
 
 @Component({
   selector: 'osf-collections-filter-chips',

@@ -150,7 +150,7 @@ describe('ContributorsComponent', () => {
     expect(component.hasChanges).toBe(false);
 
     const modifiedContributors = [...mockContributors];
-    modifiedContributors[0].permission = 'write';
+    modifiedContributors[0].permission = ContributorPermission.Write;
     (component.contributors as any).set(modifiedContributors);
 
     expect((component.contributors as any)()).toEqual(modifiedContributors);
@@ -158,7 +158,7 @@ describe('ContributorsComponent', () => {
 
   it('should cancel changes', () => {
     const modifiedContributors = [...mockContributors];
-    modifiedContributors[0].permission = 'write';
+    modifiedContributors[0].permission = ContributorPermission.Write;
     (component.contributors as any).set(modifiedContributors);
 
     component.cancel();
@@ -170,7 +170,7 @@ describe('ContributorsComponent', () => {
     jest.spyOn(component.toastService, 'showSuccess');
 
     const modifiedContributors = [...mockContributors];
-    modifiedContributors[0].permission = 'write';
+    modifiedContributors[0].permission = ContributorPermission.Write;
     (component.contributors as any).set(modifiedContributors);
 
     expect(() => component.save()).not.toThrow();
@@ -180,7 +180,7 @@ describe('ContributorsComponent', () => {
     jest.spyOn(component.toastService, 'showError');
 
     const modifiedContributors = [...mockContributors];
-    modifiedContributors[0].permission = 'write';
+    modifiedContributors[0].permission = ContributorPermission.Write;
     (component.contributors as any).set(modifiedContributors);
 
     expect(() => component.save()).not.toThrow();

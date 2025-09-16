@@ -7,12 +7,20 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { ApplicationConfig, ErrorHandler, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  ErrorHandler,
+  importProvidersFrom,
+  PLATFORM_ID,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 
 import { STATES } from '@core/constants';
 import { APPLICATION_INITIALIZATION_PROVIDER } from '@core/factory/application.initialization.factory';
+import { SENTRY_PROVIDER } from '@core/factory/sentry.factory';
+import { WINDOW, windowFactory } from '@core/factory/window.factory';
 import { provideTranslation } from '@core/helpers';
 
 import { authInterceptor, errorInterceptor, viewOnlyInterceptor } from './core/interceptors';
@@ -23,9 +31,15 @@ import * as Sentry from '@sentry/angular';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' })),
-    provideStore(STATES, withNgxsReduxDevtoolsPlugin({ disabled: false })),
+    APPLICATION_INITIALIZATION_PROVIDER,
+    ConfirmationService,
+    {
+      provide: ErrorHandler,
+      useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
+    },
+    importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
+    MessageService,
+    provideAnimations(),
     providePrimeNG({
       theme: {
         preset: CustomPreset,
@@ -38,7 +52,6 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
-    provideAnimations(),
     provideHttpClient(withInterceptors([authInterceptor, viewOnlyInterceptor, errorInterceptor])),
     importProvidersFrom(TranslateModule.forRoot(provideTranslation())),
     ConfirmationService,
@@ -49,5 +62,14 @@ export const appConfig: ApplicationConfig = {
       provide: ErrorHandler,
       useFactory: () => Sentry.createErrorHandler({ showDialog: false }),
     },
+    {
+      provide: WINDOW,
+      useFactory: windowFactory,
+      deps: [PLATFORM_ID],
+    },
+    provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'top', anchorScrolling: 'enabled' })),
+    provideStore(STATES, withNgxsReduxDevtoolsPlugin({ disabled: false })),
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    SENTRY_PROVIDER,
   ],
 };

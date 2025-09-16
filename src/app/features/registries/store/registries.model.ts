@@ -5,17 +5,18 @@ import {
   LicenseModel,
   OsfFile,
   PageSchema,
+  ProviderSchema,
   RegistrationCard,
   RegistrationModel,
   ResourceModel,
   SchemaResponse,
 } from '@shared/models';
 
-import { Project, ProviderSchema } from '../models';
+import { ProjectShortInfoModel } from '../models';
 
 export interface RegistriesStateModel {
   providerSchemas: AsyncStateModel<ProviderSchema[]>;
-  projects: AsyncStateModel<Project[]>;
+  projects: AsyncStateModel<ProjectShortInfoModel[]>;
   draftRegistration: AsyncStateModel<DraftRegistrationModel | null>;
   registration: AsyncStateModel<RegistrationModel | null>;
   registries: AsyncStateModel<ResourceModel[]>;

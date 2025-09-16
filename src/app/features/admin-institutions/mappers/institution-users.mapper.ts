@@ -1,8 +1,4 @@
-import {
-  InstitutionUser,
-  InstitutionUserDataJsonApi,
-  InstitutionUsersJsonApi,
-} from '@osf/features/admin-institutions/models';
+import { InstitutionUser, InstitutionUserDataJsonApi, InstitutionUsersJsonApi } from '../models';
 
 export function mapInstitutionUsers(jsonApiData: InstitutionUsersJsonApi): InstitutionUser[] {
   return jsonApiData.data.map((user: InstitutionUserDataJsonApi) => ({
@@ -16,5 +12,11 @@ export function mapInstitutionUsers(jsonApiData: InstitutionUsersJsonApi): Insti
     publicRegistrationCount: user.attributes.public_registration_count,
     embargoedRegistrationCount: user.attributes.embargoed_registration_count,
     publishedPreprintCount: user.attributes.published_preprint_count,
+    monthLasLogin: user.attributes.month_last_login,
+    monthLastActive: user.attributes.month_last_active,
+    accountCreationDate: user.attributes.account_creation_date,
+    storageByteCount: user.attributes.storage_byte_count,
+    reportYearMonth: user.attributes.report_yearmonth,
+    publicFileCount: user.attributes.public_file_count,
   }));
 }

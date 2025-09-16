@@ -25,7 +25,10 @@ export class GetAuthorizedStorageAddons {
 export class GetAuthorizedStorageOauthToken {
   static readonly type = '[Addons] Get Authorized Storage Oauth Token';
 
-  constructor(public accountId: string) {}
+  constructor(
+    public accountId: string,
+    public addonType: string
+  ) {}
 }
 
 export class GetAuthorizedCitationAddons {

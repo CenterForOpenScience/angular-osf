@@ -39,7 +39,7 @@ import {
   OsfFile,
   SelectOption,
 } from '@osf/shared/models';
-import { Project } from '@osf/shared/models/projects';
+import { ProjectModel } from '@osf/shared/models/projects';
 
 import { environment } from 'src/environments/environment';
 
@@ -161,7 +161,7 @@ export class FilesWidgetComponent {
   }
 
   private flatComponents(
-    components: (Partial<Project> & { children?: Project[] })[] = [],
+    components: (Partial<ProjectModel> & { children?: ProjectModel[] })[] = [],
     parentPath = '..'
   ): SelectOption[] {
     return components.flatMap((component) => {

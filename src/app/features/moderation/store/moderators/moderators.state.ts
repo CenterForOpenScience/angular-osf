@@ -16,7 +16,7 @@ import {
   LoadModerators,
   SearchUsers,
   UpdateModerator,
-  UpdateSearchValue,
+  UpdateModeratorsSearchValue,
 } from './moderators.actions';
 import { MODERATORS_STATE_DEFAULTS, ModeratorsStateModel } from './moderators.model';
 
@@ -54,8 +54,8 @@ export class ModeratorsState {
     );
   }
 
-  @Action(UpdateSearchValue)
-  updateSearchValue(ctx: StateContext<ModeratorsStateModel>, action: UpdateSearchValue) {
+  @Action(UpdateModeratorsSearchValue)
+  updateModeratorsSearchValue(ctx: StateContext<ModeratorsStateModel>, action: UpdateModeratorsSearchValue) {
     ctx.patchState({
       moderators: { ...ctx.getState().moderators, searchValue: action.searchValue },
     });

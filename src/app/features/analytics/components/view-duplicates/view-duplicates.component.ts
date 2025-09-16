@@ -40,6 +40,7 @@ import {
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
 import { IS_SMALL } from '@osf/shared/helpers';
 import { ToolbarResource } from '@osf/shared/models';
+import { Duplicate } from '@osf/shared/models/duplicates';
 import { ClearDuplicates, DuplicatesSelectors, GetAllDuplicates } from '@osf/shared/stores';
 
 @Component({
@@ -164,6 +165,13 @@ export class ViewDuplicatesComponent {
     }
     return null;
   });
+
+  showMoreOptions(duplicate: Duplicate) {
+    return (
+      duplicate.currentUserPermissions.includes(UserPermissions.Admin) ||
+      duplicate.currentUserPermissions.includes(UserPermissions.Write)
+    );
+  }
 
   handleForkResource(): void {
     const toolbarResource = this.toolbarResource();

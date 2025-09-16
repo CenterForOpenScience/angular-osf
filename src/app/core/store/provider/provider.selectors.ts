@@ -1,13 +1,13 @@
 import { Selector } from '@ngxs/store';
 
-import { ProviderModel } from '@osf/shared/models';
+import { ProviderShortInfoModel } from '@osf/shared/models';
 
 import { ProviderStateModel } from './provider.model';
 import { ProviderState } from './provider.state';
 
 export class ProviderSelectors {
   @Selector([ProviderState])
-  static getCurrentProvider(state: ProviderStateModel): ProviderModel | null {
+  static getCurrentProvider(state: ProviderStateModel): ProviderShortInfoModel | null {
     return state.currentProvider;
   }
 }

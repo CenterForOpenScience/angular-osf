@@ -4,9 +4,10 @@ import { catchError, finalize, forkJoin, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
-import { MapResourceMetadata } from '@osf/features/files/mappers';
 import { handleSectionError } from '@osf/shared/helpers';
-import { FilesService, ToastService } from '@shared/services';
+import { FilesService, ToastService } from '@osf/shared/services';
+
+import { MapResourceMetadata } from '../mappers';
 
 import {
   CreateFolder,
@@ -32,12 +33,12 @@ import {
   SetSort,
   UpdateTags,
 } from './files.actions';
-import { filesStateDefaults, FilesStateModel } from './files.model';
+import { FILES_STATE_DEFAULTS, FilesStateModel } from './files.model';
 
 @Injectable()
 @State<FilesStateModel>({
-  name: 'filesState',
-  defaults: filesStateDefaults,
+  name: 'files',
+  defaults: FILES_STATE_DEFAULTS,
 })
 export class FilesState {
   filesService = inject(FilesService);
@@ -128,7 +129,8 @@ export class FilesState {
             ctx.dispatch(new GetRootFolderFiles(action.resourceId));
           }
         },
-      })
+      }),
+      catchError((error) => handleSectionError(ctx, 'files', error))
     );
   }
 
@@ -147,7 +149,8 @@ export class FilesState {
             ctx.dispatch(new GetRootFolderFiles(action.resourceId));
           }
         },
-      })
+      }),
+      catchError((error) => handleSectionError(ctx, 'files', error))
     );
   }
 
@@ -325,6 +328,6 @@ export class FilesState {
 
   @Action(ResetState)
   resetState(ctx: StateContext<FilesStateModel>) {
-    ctx.patchState(filesStateDefaults);
+    ctx.patchState(FILES_STATE_DEFAULTS);
   }
 }

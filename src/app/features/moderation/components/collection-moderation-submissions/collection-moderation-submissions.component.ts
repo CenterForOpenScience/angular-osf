@@ -10,11 +10,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import {
-  CollectionsModerationSelectors,
-  GetCollectionSubmissions,
-  GetSubmissionsReviewActions,
-} from '@osf/features/moderation/store/collections-moderation';
-import {
   CustomPaginatorComponent,
   IconComponent,
   LoadingSpinnerComponent,
@@ -27,13 +22,17 @@ import {
   ClearCollectionSubmissions,
   CollectionsSelectors,
   GetCollectionDetails,
-  GetCollectionProvider,
   SearchCollectionSubmissions,
   SetPageNumber,
-} from '@shared/stores';
+} from '@osf/shared/stores';
 
 import { COLLECTIONS_SUBMISSIONS_REVIEW_OPTIONS } from '../../constants';
 import { SubmissionReviewStatus } from '../../enums';
+import {
+  CollectionsModerationSelectors,
+  GetCollectionSubmissions,
+  GetSubmissionsReviewActions,
+} from '../../store/collections-moderation';
 import { CollectionSubmissionsListComponent } from '../collection-submissions-list/collection-submissions-list.component';
 
 @Component({
@@ -62,15 +61,12 @@ export class CollectionModerationSubmissionsComponent {
   isSubmissionsLoading = select(CollectionsModerationSelectors.getCollectionSubmissionsLoading);
   collectionSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissions);
   totalSubmissions = select(CollectionsModerationSelectors.getCollectionSubmissionsTotalCount);
-  providerId = signal<string>('');
   primaryCollectionId = computed(() => this.collectionProvider()?.primaryCollection?.id);
   reviewStatus = signal<SubmissionReviewStatus>(SubmissionReviewStatus.Pending);
   currentPage = signal<string>('1');
   pageSize = 10;
 
-  isLoading = computed(() => {
-    return this.isCollectionProviderLoading() || this.isSubmissionsLoading();
-  });
+  isLoading = computed(() => this.isCollectionProviderLoading() || this.isSubmissionsLoading());
 
   sortOptions = COLLECTION_SUBMISSIONS_SORT_OPTIONS;
   selectedSortOption = signal<string>(this.sortOptions[0].value);
@@ -78,7 +74,6 @@ export class CollectionModerationSubmissionsComponent {
   firstIndex = computed(() => (parseInt(this.currentPage()) - 1) * 10);
 
   actions = createDispatchMap({
-    getCollectionProvider: GetCollectionProvider,
     getCollectionDetails: GetCollectionDetails,
     searchCollectionSubmissions: SearchCollectionSubmissions,
     getCollectionSubmissions: GetCollectionSubmissions,
@@ -129,7 +124,6 @@ export class CollectionModerationSubmissionsComponent {
 
   constructor() {
     this.initializeFromQueryParams();
-    this.initializeCollectionProvider();
     this.setupEffects();
   }
 
@@ -192,17 +186,5 @@ export class CollectionModerationSubmissionsComponent {
       queryParams,
       queryParamsHandling: 'merge',
     });
-  }
-
-  private initializeCollectionProvider(): void {
-    const id = this.route.parent?.snapshot.paramMap.get('providerId');
-
-    if (!id) {
-      this.router.navigate(['/not-found']);
-      return;
-    }
-
-    this.providerId.set(id);
-    this.actions.getCollectionProvider(id);
   }
 }

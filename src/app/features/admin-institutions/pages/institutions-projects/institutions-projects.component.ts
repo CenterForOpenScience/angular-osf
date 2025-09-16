@@ -167,7 +167,7 @@ export class InstitutionsProjectsComponent implements OnInit, OnDestroy {
         .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe(() => this.toastService.showSuccess('adminInstitutions.institutionUsers.messageSent'));
     } else {
-      const projectId = (userRowData['title'] as TableCellLink).url.split('/').pop() || '';
+      const projectId = (userRowData['link'] as TableCellLink).url.split('/').pop() || '';
 
       this.actions
         .requestProjectAccess({

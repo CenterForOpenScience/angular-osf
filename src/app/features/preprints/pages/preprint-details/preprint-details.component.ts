@@ -22,6 +22,7 @@ import {
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ClearCurrentProvider } from '@core/store/provider';
 import { UserSelectors } from '@core/store/user';
 import {
   AdditionalInfoComponent,
@@ -102,6 +103,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
     fetchPreprintRequests: FetchPreprintRequests,
     fetchPreprintReviewActions: FetchPreprintReviewActions,
     fetchPreprintRequestActions: FetchPreprintRequestActions,
+    clearCurrentProvider: ClearCurrentProvider,
   });
   currentUser = select(UserSelectors.getCurrentUser);
   preprintProvider = select(PreprintProvidersSelectors.getPreprintProviderDetails(this.providerId()));
@@ -289,6 +291,7 @@ export class PreprintDetailsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.actions.resetState();
+    this.actions.clearCurrentProvider();
   }
 
   fetchPreprintVersion(preprintVersionId: string) {

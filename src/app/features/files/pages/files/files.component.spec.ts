@@ -22,8 +22,10 @@ import {
   ViewOnlyLinkMessageComponent,
 } from '@osf/shared/components';
 import { GoogleFilePickerComponent } from '@osf/shared/components/addons/storage-item-selector/google-file-picker/google-file-picker.component';
+import { testNode } from '@osf/shared/mocks';
 import { OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, FilesService } from '@osf/shared/services';
+import { CurrentResourceSelectors } from '@osf/shared/stores';
 
 import { FilesSelectors } from '../../store';
 
@@ -66,6 +68,10 @@ describe('Component: Files', () => {
         DialogService,
         provideMockStore({
           signals: [
+            {
+              selector: CurrentResourceSelectors.getResourceDetails,
+              value: testNode,
+            },
             {
               selector: FilesSelectors.getRootFolders,
               value: getNodeFilesMappedData(),

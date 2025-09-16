@@ -46,7 +46,9 @@ describe('Helper: State Error Handler', () => {
       },
     });
 
-    expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    expect(Sentry.captureException).toHaveBeenCalledWith(error, {
+      tags: { feature: 'state error section: mySection', 'state.section': 'mySection' },
+    });
     await expect(firstValueFrom(result$)).rejects.toThrow('Something went wrong');
   });
 });

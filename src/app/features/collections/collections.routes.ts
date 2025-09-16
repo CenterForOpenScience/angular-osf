@@ -6,7 +6,14 @@ import { authGuard } from '@osf/core/guards';
 import { AddToCollectionState } from '@osf/features/collections/store/add-to-collection';
 import { CollectionsModerationState } from '@osf/features/moderation/store/collections-moderation';
 import { ConfirmLeavingGuard } from '@shared/guards';
-import { BookmarksState, CitationsState, ContributorsState, NodeLinksState, ProjectsState } from '@shared/stores';
+import {
+  BookmarksState,
+  CitationsState,
+  ContributorsState,
+  NodeLinksState,
+  ProjectsState,
+  SubjectsState,
+} from '@shared/stores';
 import { CollectionsState } from '@shared/stores/collections';
 
 export const collectionsRoutes: Routes = [
@@ -58,7 +65,14 @@ export const collectionsRoutes: Routes = [
             '@osf/features/moderation/components/collection-submission-overview/collection-submission-overview.component'
           ).then((mod) => mod.CollectionSubmissionOverviewComponent),
         providers: [
-          provideStates([NodeLinksState, CitationsState, CollectionsModerationState, CollectionsState, BookmarksState]),
+          provideStates([
+            NodeLinksState,
+            CitationsState,
+            CollectionsModerationState,
+            CollectionsState,
+            BookmarksState,
+            SubjectsState,
+          ]),
         ],
       },
     ],

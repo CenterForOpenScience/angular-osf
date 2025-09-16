@@ -43,7 +43,7 @@ export class DeleteModerator {
   ) {}
 }
 
-export class UpdateSearchValue {
+export class UpdateModeratorsSearchValue {
   static readonly type = `${ACTION_SCOPE} Update Search Value`;
 
   constructor(public searchValue: string | null) {}

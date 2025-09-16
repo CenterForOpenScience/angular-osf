@@ -68,7 +68,6 @@ module.exports = {
     '<rootDir>/src/app/features/project/addons/',
     '<rootDir>/src/app/features/project/overview/',
     '<rootDir>/src/app/features/project/registrations',
-    '<rootDir>/src/app/features/project/settings',
     '<rootDir>/src/app/features/project/wiki',
     '<rootDir>/src/app/features/registries/',
     '<rootDir>/src/app/features/registry/',

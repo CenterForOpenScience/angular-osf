@@ -50,7 +50,7 @@ export class AddonOAuthService {
     if (!addon?.id) return;
 
     this.actions
-      .getAuthorizedStorageOauthToken(addon.id)
+      .getAuthorizedStorageOauthToken(addon.id, this.addonTypeString())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         complete: () => {

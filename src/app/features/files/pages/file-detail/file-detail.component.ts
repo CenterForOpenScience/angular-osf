@@ -41,7 +41,7 @@ import { MetadataResourceEnum, ResourceType } from '@osf/shared/enums';
 import { pathJoin } from '@osf/shared/helpers';
 import { MetadataTabsModel, OsfFile } from '@osf/shared/models';
 import { CustomConfirmationService, MetaTagsService, ToastService } from '@osf/shared/services';
-import { DataciteService } from '@shared/services/datacite/datacite.service';
+import { DataciteService } from '@osf/shared/services/datacite/datacite.service';
 
 import {
   FileKeywordsComponent,

@@ -24,6 +24,7 @@ export interface User {
   allowIndexing: boolean | undefined;
   isModerator?: boolean;
   canViewReviews: boolean;
+  acceptedTermsOfService: boolean;
 }
 
 export interface UserSettings {
@@ -47,6 +48,7 @@ export interface UserDataJsonApi {
     date_registered: string;
     allow_indexing?: boolean;
     can_view_reviews: boolean;
+    accepted_terms_of_service: boolean;
   };
   relationships: {
     default_region: {
@@ -102,4 +104,8 @@ export interface UserDataResponseJsonApi {
 export interface UserData {
   activeFlags: string[];
   currentUser: User | null;
+}
+
+export interface UserAcceptedTermsOfServiceJsonApi {
+  accepted_terms_of_service: boolean;
 }
