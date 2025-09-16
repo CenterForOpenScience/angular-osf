@@ -18,7 +18,6 @@ import {
   GetCurrentUser,
   GetCurrentUserSettings,
   SetCurrentUser,
-  SetUserAsModerator,
   UpdateProfileSettingsEducation,
   UpdateProfileSettingsEmployment,
   UpdateProfileSettingsSocialLinks,
@@ -234,26 +233,6 @@ export class UserState {
     );
   }
 
-  @Action(SetUserAsModerator)
-  setUserAsModerator(ctx: StateContext<UserStateModel>) {
-    const state = ctx.getState();
-    const currentUser = state.currentUser.data;
-
-    if (!currentUser) {
-      return;
-    }
-
-    ctx.patchState({
-      currentUser: {
-        ...state.currentUser,
-        data: {
-          ...currentUser,
-          isModerator: true,
-        },
-      },
-    });
-  }
-
   @Action(AcceptTermsOfServiceByUser)
   acceptTermsOfServiceByUser(ctx: StateContext<UserStateModel>) {
     const state = ctx.getState();
@@ -268,23 +247,21 @@ export class UserState {
     };
     const apiRequest = UserMapper.toAcceptedTermsOfServiceRequest(updatePayload);
 
-    return this.userService
-      .updateUserAcceptedTermsOfService(currentUser.id, apiRequest)
-      .pipe(
-        tap((response: User): void => {
-          if (response.acceptedTermsOfService) {
-            ctx.patchState({
-              currentUser: {
-                ...state.currentUser,
-                data: {
-                  ...currentUser,
-                  acceptedTermsOfService: true,
-                },
+    return this.userService.updateUserAcceptedTermsOfService(currentUser.id, apiRequest).pipe(
+      tap((response: User): void => {
+        if (response.acceptedTermsOfService) {
+          ctx.patchState({
+            currentUser: {
+              ...state.currentUser,
+              data: {
+                ...currentUser,
+                acceptedTermsOfService: true,
               },
-            });
-          }
-        })
-      );
+            },
+          });
+        }
+      })
+    );
   }
 
   @Action(ClearCurrentUser)
