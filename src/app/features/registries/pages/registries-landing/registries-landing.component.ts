@@ -16,10 +16,10 @@ import {
   SubHeaderComponent,
 } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
+import { GetRegistryProviderBrand, RegistrationProviderSelectors } from '@osf/shared/stores/registration-provider';
 
 import { RegistryServicesComponent } from '../../components';
 import { GetRegistries, RegistriesSelectors } from '../../store';
-import { GetRegistryProviderBrand, RegistriesProviderSearchSelectors } from '../../store/registries-provider-search';
 
 import { environment } from 'src/environments/environment';
 
@@ -47,8 +47,8 @@ export class RegistriesLandingComponent implements OnInit, OnDestroy {
     clearCurrentProvider: ClearCurrentProvider,
   });
 
-  provider = select(RegistriesProviderSearchSelectors.getBrandedProvider);
-  isProviderLoading = select(RegistriesProviderSearchSelectors.isBrandedProviderLoading);
+  provider = select(RegistrationProviderSelectors.getBrandedProvider);
+  isProviderLoading = select(RegistrationProviderSelectors.isBrandedProviderLoading);
   registries = select(RegistriesSelectors.getRegistries);
   isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
 

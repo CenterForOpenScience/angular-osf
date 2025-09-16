@@ -1,8 +1,8 @@
-import { AsyncStateModel, Project } from '@osf/shared/models';
+import { AsyncStateModel, ProjectModel } from '@osf/shared/models';
 
 export interface ProjectsStateModel {
-  projects: AsyncStateModel<Project[]>;
-  selectedProject: AsyncStateModel<Project | null>;
+  projects: AsyncStateModel<ProjectModel[]>;
+  selectedProject: AsyncStateModel<ProjectModel | null>;
 }
 
 export const PROJECTS_STATE_DEFAULTS: ProjectsStateModel = {

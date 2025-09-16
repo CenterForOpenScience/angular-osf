@@ -2,12 +2,12 @@ import { StateContext } from '@ngxs/store';
 
 import { inject, Injectable } from '@angular/core';
 
-import { ProvidersService } from '../../services';
+import { RegistrationProviderService } from '../../services';
 import { REGISTRIES_STATE_DEFAULTS, RegistriesStateModel } from '../registries.model';
 
 @Injectable()
 export class ProvidersHandlers {
-  providersService = inject(ProvidersService);
+  providersService = inject(RegistrationProviderService);
 
   getProviderSchemas({ patchState }: StateContext<RegistriesStateModel>, providerId: string) {
     patchState({

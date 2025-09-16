@@ -1,8 +1,11 @@
-import { ProvidersResponseJsonApi } from '@osf/shared/models';
+import {
+  ProviderSchema,
+  ProvidersResponseJsonApi,
+  RegistryProviderDetails,
+  RegistryProviderDetailsJsonApi,
+} from '@osf/shared/models';
 
-import { ProviderSchema, RegistryProviderDetails, RegistryProviderDetailsJsonApi } from '../models';
-
-export class ProvidersMapper {
+export class RegistrationProviderMapper {
   static fromProvidersResponse(response: ProvidersResponseJsonApi): ProviderSchema[] {
     return response.data.map((item) => ({
       id: item.id,

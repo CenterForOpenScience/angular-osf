@@ -8,25 +8,25 @@ import { inject, Injectable } from '@angular/core';
 import { SetCurrentProvider } from '@core/store/provider';
 import { handleSectionError } from '@shared/helpers';
 
-import { ProvidersService } from '../../services';
+import { RegistrationProviderService } from '../../services';
 
-import { GetRegistryProviderBrand } from './registries-provider-search.actions';
+import { GetRegistryProviderBrand } from './registration-provider.actions';
 import {
+  RegistrationProviderStateModel as RegistrationProviderStateModel,
   REGISTRIES_PROVIDER_SEARCH_STATE_DEFAULTS,
-  RegistriesProviderSearchStateModel,
-} from './registries-provider-search.model';
+} from './registration-provider.model';
 
-@State<RegistriesProviderSearchStateModel>({
+@State<RegistrationProviderStateModel>({
   name: 'registryProviderSearch',
   defaults: REGISTRIES_PROVIDER_SEARCH_STATE_DEFAULTS,
 })
 @Injectable()
-export class RegistriesProviderSearchState {
-  private providersService = inject(ProvidersService);
+export class RegistrationProviderState {
+  private registrationProvidersService = inject(RegistrationProviderService);
   private store = inject(Store);
 
   @Action(GetRegistryProviderBrand)
-  getProviderBrand(ctx: StateContext<RegistriesProviderSearchStateModel>, action: GetRegistryProviderBrand) {
+  getProviderBrand(ctx: StateContext<RegistrationProviderStateModel>, action: GetRegistryProviderBrand) {
     const state = ctx.getState();
     ctx.patchState({
       currentBrandedProvider: {
@@ -35,7 +35,7 @@ export class RegistriesProviderSearchState {
       },
     });
 
-    return this.providersService.getProviderBrand(action.providerName).pipe(
+    return this.registrationProvidersService.getProviderBrand(action.providerName).pipe(
       tap((provider) => {
         ctx.setState(
           patch({

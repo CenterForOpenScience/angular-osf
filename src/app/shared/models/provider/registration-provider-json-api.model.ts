@@ -1,3 +1,5 @@
+import { BrandDataJsonApi } from '../brand.json-api.model';
+
 import { BaseProviderAttributesJsonApi } from './base-provider-json-api.model';
 
 export interface RegistrationProviderAttributesJsonApi extends BaseProviderAttributesJsonApi {
@@ -13,4 +15,18 @@ export interface RegistrationAssetsJsonApi {
   square_color_no_transparent: string;
   square_color_transparent: string;
   wide_color: string;
+}
+
+export interface RegistryProviderDetailsJsonApi {
+  id: string;
+  type: 'registration-providers';
+  attributes: RegistrationProviderAttributesJsonApi;
+  embeds?: {
+    brand: {
+      data: BrandDataJsonApi;
+    };
+  };
+  links: {
+    iri: string;
+  };
 }

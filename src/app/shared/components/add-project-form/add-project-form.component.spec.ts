@@ -17,7 +17,7 @@ import { ProjectFormControls } from '@osf/shared/enums';
 import { CustomValidators } from '@osf/shared/helpers';
 import { MOCK_STORE, MOCK_USER } from '@osf/shared/mocks';
 import { ProjectForm } from '@osf/shared/models';
-import { Project } from '@osf/shared/models/projects';
+import { ProjectModel } from '@osf/shared/models/projects';
 import { GetMyProjects, MyResourcesState } from '@osf/shared/stores';
 import { AffiliatedInstitutionSelectComponent, ProjectSelectorComponent } from '@shared/components';
 import { InstitutionsState } from '@shared/stores/institutions';
@@ -114,7 +114,7 @@ describe('AddProjectFormComponent', () => {
   });
 
   it('should update template when onTemplateChange is called with a project', () => {
-    const mockProject: Project = { id: 'template1', title: 'Template Project' } as Project;
+    const mockProject: ProjectModel = { id: 'template1', title: 'Template Project' } as ProjectModel;
     const templateControl = component.projectForm().get(ProjectFormControls.Template);
 
     expect(templateControl?.value).toBe('');
