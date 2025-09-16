@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, HostBinding, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostBinding, inject, OnDestroy } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterOutlet } from '@angular/router';
 
+import { HelpScoutService } from '@core/services/help-scout.service';
 import { IS_WEB } from '@osf/shared/helpers';
 
 @Component({
@@ -11,7 +12,16 @@ import { IS_WEB } from '@osf/shared/helpers';
   styleUrl: './preprints.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PreprintsComponent {
+export class PreprintsComponent implements OnDestroy {
+  private readonly helpScoutService = inject(HelpScoutService);
   readonly isDesktop = toSignal(inject(IS_WEB));
   @HostBinding('class') classes = 'flex flex-1 flex-column w-full';
+
+  constructor() {
+    this.helpScoutService.setResourceType('preprint');
+  }
+
+  ngOnDestroy(): void {
+    this.helpScoutService.unsetResourceType();
+  }
 }

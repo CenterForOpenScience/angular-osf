@@ -5,7 +5,7 @@ export const environment = {
   production: false,
   webUrl: 'https://test.osf.io',
   apiDomainUrl: 'https://api.test.osf.io',
-  shareTroveUrl: 'https://test-share.osf.io/trove',
+  shareTroveUrl: 'https://staging-share.osf.io/trove',
   addonsApiUrl: 'https://addons.test.osf.io/v1',
   funderApiUrl: 'https://api.crossref.org/',
   casUrl: 'https://accounts.test.osf.io',
