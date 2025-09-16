@@ -33,9 +33,10 @@ export class ModeratorsService {
   ): Observable<ModeratorModel[]> {
     const baseUrl = `${this.apiUrl}/${this.urlMap.get(resourceType)}/${resourceId}/moderators/`;
 
-    const params = {
-      searchValue,
-    };
+    const params: Record<string, string> = {};
+    if (searchValue) {
+      params['filter[full_name]'] = searchValue;
+    }
     return this.jsonApiService
       .get<ModeratorResponseJsonApi>(baseUrl, params)
       .pipe(map((response) => response.data.map((moderator) => ModerationMapper.fromModeratorResponse(moderator))));
