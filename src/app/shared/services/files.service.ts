@@ -166,10 +166,12 @@ export class FilesService {
   }
 
   getFolderDownloadLink(storageLink: string, folderId: string, isRootFolder: boolean): string {
+    const separator = storageLink.includes('?') ? '&' : '?';
+
     if (isRootFolder) {
-      return `${storageLink}?zip=`;
+      return `${storageLink}${separator}zip=`;
     }
-    return `${storageLink}${folderId}/?zip=`;
+    return `${storageLink}${folderId}/${separator}zip=`;
   }
 
   getFileTarget(fileGuid: string): Observable<OsfFile> {
@@ -250,8 +252,11 @@ export class FilesService {
   }
 
   getFileRevisions(link: string): Observable<OsfFileRevision[]> {
+    const separator = link.includes('?') ? '&' : '?';
+    const urlWithRevisions = `${link}${separator}revisions=`;
+
     return this.jsonApiService
-      .get<GetFileRevisionsResponse>(`${link}?revisions=`)
+      .get<GetFileRevisionsResponse>(urlWithRevisions)
       .pipe(map((response) => MapFileRevision(response.data)));
   }
 

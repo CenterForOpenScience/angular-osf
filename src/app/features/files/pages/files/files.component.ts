@@ -46,7 +46,7 @@ import {
 } from '@osf/features/files/store';
 import { ALL_SORT_OPTIONS } from '@osf/shared/constants';
 import { ResourceType, UserPermissions } from '@osf/shared/enums';
-import { hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
+import { getViewOnlyParamFromUrl, hasViewOnlyParam, IS_MEDIUM } from '@osf/shared/helpers';
 import { CurrentResourceSelectors, GetResourceDetails } from '@osf/shared/stores';
 import {
   FilesTreeComponent,
@@ -390,7 +390,13 @@ export class FilesComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    this.router.navigate([file.guid], { relativeTo: this.activeRoute });
+    const viewOnlyParam = getViewOnlyParamFromUrl(this.router.url);
+    const queryParams = viewOnlyParam ? { view_only: viewOnlyParam } : null;
+
+    this.router.navigate([file.guid], {
+      relativeTo: this.activeRoute,
+      queryParams,
+    });
   }
 
   getAddonName(addons: ConfiguredAddonModel[], provider: string): string {
