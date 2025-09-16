@@ -6,6 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentProvider } from '@osf/core/store/provider/provider.actions';
+import { CurrentResourceType } from '@osf/shared/enums';
 import { handleSectionError } from '@osf/shared/helpers';
 
 import { RegistryOverviewService } from '../../services';
@@ -46,7 +47,14 @@ export class RegistryOverviewState {
         const registryOverview = response.registry;
 
         if (registryOverview?.provider) {
-          ctx.dispatch(new SetCurrentProvider(registryOverview.provider));
+          ctx.dispatch(
+            new SetCurrentProvider({
+              id: registryOverview.provider.id,
+              name: registryOverview.provider.name,
+              type: CurrentResourceType.Registrations,
+              permissions: registryOverview.provider.permissions,
+            })
+          );
         }
 
         ctx.patchState({

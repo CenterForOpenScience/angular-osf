@@ -329,7 +329,7 @@ export const MENU_ITEMS: MenuItem[] = [
         routerLink: 'moderation',
         label: 'navigation.moderation',
         visible: false,
-        routerLinkActiveOptions: { exact: true },
+        routerLinkActiveOptions: { exact: false },
       },
     ],
   },

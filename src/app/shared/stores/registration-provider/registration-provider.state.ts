@@ -1,11 +1,12 @@
-import { Action, State, StateContext, Store } from '@ngxs/store';
+import { Action, State, StateContext } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
-import { catchError, tap } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentProvider } from '@core/store/provider';
+import { CurrentResourceType } from '@osf/shared/enums';
 import { handleSectionError } from '@shared/helpers';
 
 import { RegistrationProviderService } from '../../services';
@@ -23,11 +24,26 @@ import {
 @Injectable()
 export class RegistrationProviderState {
   private registrationProvidersService = inject(RegistrationProviderService);
-  private store = inject(Store);
 
   @Action(GetRegistryProviderBrand)
   getProviderBrand(ctx: StateContext<RegistrationProviderStateModel>, action: GetRegistryProviderBrand) {
     const state = ctx.getState();
+
+    const currentProvider = state.currentBrandedProvider.data;
+
+    if (currentProvider?.name === action.providerName) {
+      ctx.dispatch(
+        new SetCurrentProvider({
+          id: currentProvider.id,
+          name: currentProvider.name,
+          type: CurrentResourceType.Registrations,
+          permissions: currentProvider.permissions,
+        })
+      );
+
+      return of(currentProvider);
+    }
+
     ctx.patchState({
       currentBrandedProvider: {
         ...state.currentBrandedProvider,
@@ -47,7 +63,14 @@ export class RegistrationProviderState {
           })
         );
 
-        this.store.dispatch(new SetCurrentProvider(provider));
+        ctx.dispatch(
+          new SetCurrentProvider({
+            id: provider.id,
+            name: provider.name,
+            type: CurrentResourceType.Registrations,
+            permissions: provider.permissions,
+          })
+        );
       }),
       catchError((error) => handleSectionError(ctx, 'currentBrandedProvider', error))
     );

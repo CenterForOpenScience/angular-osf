@@ -6,7 +6,7 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { ClearCurrentProvider, SetCurrentProvider } from '@core/store/provider';
+import { ClearCurrentProvider } from '@core/store/provider';
 import { GlobalSearchComponent } from '@osf/shared/components';
 import { ResourceType } from '@osf/shared/enums';
 import { SetDefaultFilterValue, SetResourceType } from '@osf/shared/stores/global-search';
@@ -29,7 +29,6 @@ export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
     getProvider: GetRegistryProviderBrand,
     setDefaultFilterValue: SetDefaultFilterValue,
     setResourceType: SetResourceType,
-    setCurrentProvider: SetCurrentProvider,
     clearCurrentProvider: ClearCurrentProvider,
   });
 
@@ -45,7 +44,6 @@ export class RegistriesProviderSearchComponent implements OnInit, OnDestroy {
         next: () => {
           this.actions.setDefaultFilterValue('publisher', this.provider()!.iri!);
           this.actions.setResourceType(ResourceType.Registration);
-          this.actions.setCurrentProvider(this.provider()!);
         },
       });
     }
