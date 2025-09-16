@@ -6,6 +6,6 @@ export interface RegistryProviderDetails {
   name: string;
   descriptionHtml: string;
   permissions: ReviewPermissions[];
-  brand: Brand;
+  brand: Brand | null;
   iri: string;
 }

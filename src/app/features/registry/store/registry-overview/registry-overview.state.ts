@@ -6,9 +6,7 @@ import { catchError } from 'rxjs/operators';
 import { inject, Injectable } from '@angular/core';
 
 import { SetCurrentProvider } from '@osf/core/store/provider/provider.actions';
-import { SetUserAsModerator } from '@osf/core/store/user';
 import { handleSectionError } from '@osf/shared/helpers';
-import { SubjectsService } from '@osf/shared/services';
 
 import { RegistryOverviewService } from '../../services';
 
@@ -32,7 +30,6 @@ import { REGISTRY_OVERVIEW_DEFAULTS, RegistryOverviewStateModel } from './regist
 })
 export class RegistryOverviewState {
   private readonly registryOverviewService = inject(RegistryOverviewService);
-  private readonly subjectsService = inject(SubjectsService);
 
   @Action(GetRegistryById)
   getRegistryById(ctx: StateContext<RegistryOverviewStateModel>, action: GetRegistryById) {
@@ -45,27 +42,24 @@ export class RegistryOverviewState {
     });
 
     return this.registryOverviewService.getRegistrationById(action.id).pipe(
-      tap({
-        next: (response) => {
-          const registryOverview = response.registry;
-          if (registryOverview?.currentUserIsModerator) {
-            ctx.dispatch(new SetUserAsModerator());
-          }
-          if (registryOverview?.provider) {
-            ctx.dispatch(new SetCurrentProvider(registryOverview.provider));
-          }
-          ctx.patchState({
-            registry: {
-              data: registryOverview,
-              isLoading: false,
-              error: null,
-            },
-            isAnonymous: response.meta?.anonymous ?? false,
-          });
-          if (registryOverview?.registrationSchemaLink && registryOverview?.questions && !action.isComponentPage) {
-            ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
-          }
-        },
+      tap((response) => {
+        const registryOverview = response.registry;
+
+        if (registryOverview?.provider) {
+          ctx.dispatch(new SetCurrentProvider(registryOverview.provider));
+        }
+
+        ctx.patchState({
+          registry: {
+            data: registryOverview,
+            isLoading: false,
+            error: null,
+          },
+          isAnonymous: response.meta?.anonymous ?? false,
+        });
+        if (registryOverview?.registrationSchemaLink && registryOverview?.questions && !action.isComponentPage) {
+          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+        }
       }),
       catchError((error) => handleSectionError(ctx, 'registry', error))
     );
@@ -82,16 +76,14 @@ export class RegistryOverviewState {
     });
 
     return this.registryOverviewService.getInstitutions(action.registryId).pipe(
-      tap({
-        next: (institutions) => {
-          ctx.patchState({
-            institutions: {
-              data: institutions,
-              isLoading: false,
-              error: null,
-            },
-          });
-        },
+      tap((institutions) => {
+        ctx.patchState({
+          institutions: {
+            data: institutions,
+            isLoading: false,
+            error: null,
+          },
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'institutions', error))
     );
@@ -108,16 +100,14 @@ export class RegistryOverviewState {
     });
 
     return this.registryOverviewService.getSchemaBlocks(action.schemaLink).pipe(
-      tap({
-        next: (schemaBlocks) => {
-          ctx.patchState({
-            schemaBlocks: {
-              data: schemaBlocks,
-              isLoading: false,
-              error: null,
-            },
-          });
-        },
+      tap((schemaBlocks) => {
+        ctx.patchState({
+          schemaBlocks: {
+            data: schemaBlocks,
+            isLoading: false,
+            error: null,
+          },
+        });
       }),
       catchError((error) => handleSectionError(ctx, 'schemaBlocks', error))
     );
@@ -134,19 +124,18 @@ export class RegistryOverviewState {
     });
 
     return this.registryOverviewService.withdrawRegistration(action.registryId, action.justification).pipe(
-      tap({
-        next: (registryOverview) => {
-          ctx.patchState({
-            registry: {
-              data: registryOverview,
-              isLoading: false,
-              error: null,
-            },
-          });
-          if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
-            ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
-          }
-        },
+      tap((registryOverview) => {
+        ctx.patchState({
+          registry: {
+            data: registryOverview,
+            isLoading: false,
+            error: null,
+          },
+        });
+
+        if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
+          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+        }
       }),
       catchError((error) => handleSectionError(ctx, 'registry', error))
     );
@@ -163,19 +152,17 @@ export class RegistryOverviewState {
     });
 
     return this.registryOverviewService.makePublic(action.registryId).pipe(
-      tap({
-        next: (registryOverview) => {
-          ctx.patchState({
-            registry: {
-              data: registryOverview,
-              isLoading: false,
-              error: null,
-            },
-          });
-          if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
-            ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
-          }
-        },
+      tap((registryOverview) => {
+        ctx.patchState({
+          registry: {
+            data: registryOverview,
+            isLoading: false,
+            error: null,
+          },
+        });
+        if (registryOverview?.registrationSchemaLink && registryOverview?.questions) {
+          ctx.dispatch(new GetSchemaBlocks(registryOverview.registrationSchemaLink, registryOverview.questions));
+        }
       }),
       catchError((error) => handleSectionError(ctx, 'registry', error))
     );

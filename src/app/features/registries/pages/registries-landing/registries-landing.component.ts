@@ -4,10 +4,11 @@ import { TranslatePipe } from '@ngx-translate/core';
 
 import { Button } from 'primeng/button';
 
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { ClearCurrentProvider } from '@core/store/provider';
 import {
   LoadingSpinnerComponent,
   ResourceCardComponent,
@@ -18,6 +19,7 @@ import { ResourceType } from '@osf/shared/enums';
 
 import { RegistryServicesComponent } from '../../components';
 import { GetRegistries, RegistriesSelectors } from '../../store';
+import { GetRegistryProviderBrand, RegistriesProviderSearchSelectors } from '../../store/registries-provider-search';
 
 import { environment } from 'src/environments/environment';
 
@@ -36,18 +38,30 @@ import { environment } from 'src/environments/environment';
   styleUrl: './registries-landing.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class RegistriesLandingComponent implements OnInit {
+export class RegistriesLandingComponent implements OnInit, OnDestroy {
   private router = inject(Router);
 
-  searchControl = new FormControl<string>('');
+  private actions = createDispatchMap({
+    getRegistries: GetRegistries,
+    getProvider: GetRegistryProviderBrand,
+    clearCurrentProvider: ClearCurrentProvider,
+  });
 
-  private readonly actions = createDispatchMap({ getRegistries: GetRegistries });
-
+  provider = select(RegistriesProviderSearchSelectors.getBrandedProvider);
+  isProviderLoading = select(RegistriesProviderSearchSelectors.isBrandedProviderLoading);
   registries = select(RegistriesSelectors.getRegistries);
   isRegistriesLoading = select(RegistriesSelectors.isRegistriesLoading);
 
+  searchControl = new FormControl<string>('');
+  defaultProvider = environment.defaultProvider;
+
   ngOnInit(): void {
     this.actions.getRegistries();
+    this.actions.getProvider(this.defaultProvider);
+  }
+
+  ngOnDestroy(): void {
+    this.actions.clearCurrentProvider();
   }
 
   redirectToSearchPageWithValue(): void {

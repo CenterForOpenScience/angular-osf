@@ -1,10 +1,11 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext, Store } from '@ngxs/store';
 import { patch } from '@ngxs/store/operators';
 
 import { catchError, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { SetCurrentProvider } from '@core/store/provider';
 import { handleSectionError } from '@shared/helpers';
 
 import { ProvidersService } from '../../services';
@@ -22,6 +23,7 @@ import {
 @Injectable()
 export class RegistriesProviderSearchState {
   private providersService = inject(ProvidersService);
+  private store = inject(Store);
 
   @Action(GetRegistryProviderBrand)
   getProviderBrand(ctx: StateContext<RegistriesProviderSearchStateModel>, action: GetRegistryProviderBrand) {
@@ -34,16 +36,18 @@ export class RegistriesProviderSearchState {
     });
 
     return this.providersService.getProviderBrand(action.providerName).pipe(
-      tap((brand) => {
+      tap((provider) => {
         ctx.setState(
           patch({
             currentBrandedProvider: patch({
-              data: brand,
+              data: provider,
               isLoading: false,
               error: null,
             }),
           })
         );
+
+        this.store.dispatch(new SetCurrentProvider(provider));
       }),
       catchError((error) => handleSectionError(ctx, 'currentBrandedProvider', error))
     );

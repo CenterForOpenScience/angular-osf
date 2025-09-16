@@ -1,30 +1,15 @@
 import { CollectionSubmissionReviewAction } from '@osf/features/moderation/models';
-import { Brand } from '@shared/models';
 
-export interface CollectionProvider {
-  id: string;
-  type: string;
-  name: string;
-  description: string;
-  advisoryBoard: string;
-  example: string | null;
-  domain: string;
-  domainRedirectEnabled: boolean;
-  footerLinks: string;
-  emailSupport: boolean | null;
-  facebookAppId: string | null;
-  allowSubmissions: boolean;
-  allowCommenting: boolean;
+import { Brand } from '../brand.model';
+import { BaseProviderModel } from '../provider';
+
+export interface CollectionProvider extends BaseProviderModel {
   assets: {
     style?: string;
     squareColorTransparent?: string;
     squareColorNoTransparent?: string;
     favicon?: string;
   };
-  shareSource: string;
-  sharePublishType: string;
-  permissions: string[];
-  reviewsWorkflow: string;
   primaryCollection: {
     id: string;
     type: string;

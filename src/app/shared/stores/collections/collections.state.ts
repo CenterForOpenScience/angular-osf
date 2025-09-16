@@ -1,9 +1,10 @@
-import { Action, State, StateContext } from '@ngxs/store';
+import { Action, State, StateContext, Store } from '@ngxs/store';
 
 import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
 
 import { inject, Injectable } from '@angular/core';
 
+import { SetCurrentProvider } from '@core/store/provider';
 import { handleSectionError } from '@osf/shared/helpers';
 import { CollectionsService } from '@osf/shared/services';
 
@@ -40,6 +41,7 @@ import { COLLECTIONS_DEFAULTS, CollectionsStateModel } from './collections.model
 @Injectable()
 export class CollectionsState {
   collectionsService = inject(CollectionsService);
+  store = inject(Store);
 
   @Action(GetCollectionProvider)
   getCollectionProvider(ctx: StateContext<CollectionsStateModel>, action: GetCollectionProvider) {
@@ -60,6 +62,8 @@ export class CollectionsState {
             error: null,
           },
         });
+
+        this.store.dispatch(new SetCurrentProvider(res));
       })
     );
   }

@@ -27,13 +27,9 @@ export class CollectionsSearchResultsComponent {
   totalSubmissions = select(CollectionsSelectors.getTotalSubmissions);
   pageNumber = select(CollectionsSelectors.getPageNumber);
 
-  actions = createDispatchMap({
-    setPageNumber: SetPageNumber,
-  });
+  actions = createDispatchMap({ setPageNumber: SetPageNumber });
 
-  isLoading = computed(() => {
-    return this.isCollectionDetailsLoading() || this.isCollectionSubmissionsLoading();
-  });
+  isLoading = computed(() => this.isCollectionDetailsLoading() || this.isCollectionSubmissionsLoading());
 
   firstIndex = computed(() => (parseInt(this.pageNumber()) - 1) * 10);
 

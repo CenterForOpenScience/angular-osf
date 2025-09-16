@@ -42,7 +42,7 @@ export class RegistryProviderHeroComponent implements OnDestroy {
     effect(() => {
       const provider = this.provider();
 
-      if (provider) {
+      if (provider?.brand) {
         BrandService.applyBranding(provider.brand);
         HeaderStyleHelper.applyHeaderStyles(
           this.WHITE,
