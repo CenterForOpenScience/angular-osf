@@ -1,10 +1,11 @@
-import { getSortedContributorsByPermissions } from '@shared/helpers';
 import { ResourceModel } from '@shared/models';
 
 import { extractPathAfterDomain } from '../helpers';
 import { TableCellData } from '../models';
 
-export function mapPreprintResourceToTableData(preprint: ResourceModel): TableCellData {
+import { mapCreators } from './creators.mapper';
+
+export function mapPreprintResourceToTableData(preprint: ResourceModel, currentInstitutionId: string): TableCellData {
   return {
     title: preprint.title,
     link: {
@@ -20,10 +21,7 @@ export function mapPreprintResourceToTableData(preprint: ResourceModel): TableCe
         }
       : '-',
     license: preprint.license?.name || '-',
-    contributorName: getSortedContributorsByPermissions(preprint)?.map((creator) => ({
-      text: creator.name.trim(),
-      url: creator.absoluteUrl,
-    })),
+    creator: mapCreators(preprint, currentInstitutionId),
     viewsLast30Days: preprint.viewsCount || '-',
     downloadsLast30Days: preprint.downloadCount || '-',
   };

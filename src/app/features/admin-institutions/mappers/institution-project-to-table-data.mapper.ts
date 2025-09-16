@@ -1,8 +1,9 @@
-import { getSortedContributorsByPermissions } from '@shared/helpers';
 import { ResourceModel } from '@shared/models';
 
 import { extractPathAfterDomain } from '../helpers';
 import { TableCellData } from '../models';
+
+import { mapCreators } from './creators.mapper';
 
 export function mapProjectResourceToTableCellData(project: ResourceModel, currentInstitutionId: string): TableCellData {
   return {
@@ -28,32 +29,4 @@ export function mapProjectResourceToTableCellData(project: ResourceModel, curren
     addOns: project.addons?.join(',') || '-',
     funderName: project.funders?.[0]?.name || '-',
   };
-}
-
-function mapCreators(project: ResourceModel, currentInstitutionId: string) {
-  const creatorsRoles = project.qualifiedAttribution.map((qa) => {
-    let role;
-    if (qa.hadRole.includes('admin')) {
-      role = 'Administrator';
-    } else if (qa.hadRole.includes('write')) {
-      role = 'Read + Write';
-    } else {
-      role = 'Read';
-    }
-    return {
-      id: qa.agentId,
-      role,
-    };
-  });
-
-  return getSortedContributorsByPermissions(project)
-    ?.filter((creator) => creator.affiliationAbsoluteUrl === currentInstitutionId)
-    ?.map((creator) => {
-      const name = creator.name.trim();
-      const role = creatorsRoles.find((cr) => cr.id === creator.absoluteUrl)!.role;
-      return {
-        text: `${name} (${role})`,
-        url: creator.absoluteUrl,
-      };
-    });
 }

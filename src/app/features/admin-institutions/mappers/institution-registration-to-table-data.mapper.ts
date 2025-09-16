@@ -1,10 +1,14 @@
 import { extractPathAfterDomain } from '@osf/features/admin-institutions/helpers';
-import { getSortedContributorsByPermissions } from '@shared/helpers';
 import { ResourceModel } from '@shared/models';
 
 import { TableCellData } from '../models';
 
-export function mapRegistrationResourceToTableData(registration: ResourceModel): TableCellData {
+import { mapCreators } from './creators.mapper';
+
+export function mapRegistrationResourceToTableData(
+  registration: ResourceModel,
+  currentInstitutionId: string
+): TableCellData {
   return {
     title: registration.title,
     link: {
@@ -23,10 +27,7 @@ export function mapRegistrationResourceToTableData(registration: ResourceModel):
     totalDataStored: registration.storageByteCount
       ? `${(+registration.storageByteCount / (1024 * 1024)).toFixed(1)} MB`
       : '0 B',
-    contributorName: getSortedContributorsByPermissions(registration)?.map((creator) => ({
-      text: creator.name.trim(),
-      url: creator.absoluteUrl,
-    })),
+    creator: mapCreators(registration, currentInstitutionId),
     views: registration.viewsCount || '-',
     resourceType: registration.resourceNature || '-',
     license: registration.license?.name || '-',

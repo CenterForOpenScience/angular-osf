@@ -7,8 +7,9 @@ import { Button } from 'primeng/button';
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 
+import { TableCellData } from '@osf/features/admin-institutions/models';
 import { ResourceType, SortOrder } from '@osf/shared/enums';
-import { PaginationLinksModel, SearchFilters } from '@osf/shared/models';
+import { PaginationLinksModel, ResourceModel, SearchFilters } from '@osf/shared/models';
 import {
   ClearFilterSearchResults,
   FetchResources,
@@ -63,8 +64,11 @@ export class InstitutionsRegistrationsComponent implements OnInit, OnDestroy {
   nextLink = select(GlobalSearchSelectors.getNext);
   previousLink = select(GlobalSearchSelectors.getPrevious);
 
-  tableData = computed(() => this.resources().map(mapRegistrationResourceToTableData));
-
+  tableData = computed(() =>
+    this.resources().map(
+      (resource: ResourceModel): TableCellData => mapRegistrationResourceToTableData(resource, this.institution().iri)
+    )
+  );
   sortParam = computed(() => {
     const sortField = this.sortField();
     const sortOrder = this.sortOrder();
