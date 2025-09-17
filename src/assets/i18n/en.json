@@ -2062,8 +2062,8 @@
         "title": "Supplements (optional)",
         "description": "Connect an OSF project to share data, code, protocols, or other supplemental materials.",
         "options": {
-          "connectExisting": "Connect an existing OSF project",
-          "createNew": "Create a new OSF project"
+          "connectExisting": "Connect An Existing OSF Project",
+          "createNew": "Create A New OSF Project"
         },
         "projectSelection": {
           "title": "Select Project",
