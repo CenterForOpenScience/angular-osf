@@ -26,8 +26,6 @@ import { ToastService } from '@shared/services';
 import { ContributorsSelectors, FetchSelectedSubjects, GetAllContributors, SubjectsSelectors } from '@shared/stores';
 import { FetchResourceInstitutions, InstitutionsSelectors } from '@shared/stores/institutions';
 
-import { environment } from 'src/environments/environment';
-
 @Component({
   selector: 'osf-review-step',
   imports: [
@@ -73,7 +71,6 @@ export class ReviewStepComponent implements OnInit {
   preprintProject = select(PreprintStepperSelectors.getPreprintProject);
   licenseOptionsRecord = computed(() => (this.preprint()?.licenseOptions ?? {}) as Record<string, string>);
 
-  readonly environment = environment;
   readonly ApplicabilityStatus = ApplicabilityStatus;
   readonly PreregLinkInfo = PreregLinkInfo;
 
