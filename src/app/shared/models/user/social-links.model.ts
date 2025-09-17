@@ -1,6 +1,6 @@
-import { Social } from '@osf/shared/models';
+import { SocialModel } from '@osf/shared/models';
 
-export type SocialLinksKeys = keyof Social;
+export type SocialLinksKeys = keyof SocialModel;
 
 export const SOCIAL_KEYS: SocialLinksKeys[] = ['github', 'twitter', 'linkedIn', 'profileWebsites'];
 
@@ -10,10 +10,12 @@ export interface SocialLinksModel {
   address: string;
   placeholder: string;
   key: SocialLinksKeys;
+  icon: string;
   linkedField?: {
     key: SocialLinksKeys;
     label: string;
     placeholder: string;
+    address: string;
   };
 }
 

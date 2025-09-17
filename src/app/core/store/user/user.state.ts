@@ -8,7 +8,7 @@ import { inject, Injectable } from '@angular/core';
 import { ProfileSettingsKey } from '@osf/shared/enums';
 import { removeNullable } from '@osf/shared/helpers';
 import { UserMapper } from '@osf/shared/mappers';
-import { Social, User } from '@osf/shared/models';
+import { SocialModel, User } from '@osf/shared/models';
 
 import { UserService } from '../../services';
 
@@ -210,7 +210,7 @@ export class UserState {
       return;
     }
 
-    let social = {} as Partial<Social>;
+    let social = {} as Partial<SocialModel>;
 
     payload.forEach((item) => {
       social = {

@@ -107,7 +107,7 @@ export const routes: Routes = [
         loadChildren: () => import('./features/registries/registries.routes').then((mod) => mod.registriesRoutes),
       },
       {
-        path: 'my-profile',
+        path: 'profile',
         loadComponent: () => import('./features/profile/profile.component').then((mod) => mod.ProfileComponent),
         providers: [provideStates([ProfileState])],
         canActivate: [authGuard],

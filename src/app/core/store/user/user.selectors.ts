@@ -1,6 +1,6 @@
 import { Selector } from '@ngxs/store';
 
-import { Education, Employment, Social, User, UserSettings } from '@osf/shared/models';
+import { Education, Employment, SocialModel, User, UserSettings } from '@osf/shared/models';
 
 import { UserStateModel } from './user.model';
 import { UserState } from './user.state';
@@ -54,7 +54,7 @@ export class UserSelectors {
   }
 
   @Selector([UserState])
-  static getSocialLinks(state: UserStateModel): Social | undefined {
+  static getSocialLinks(state: UserStateModel): SocialModel | undefined {
     return state.currentUser.data?.social;
   }
 
