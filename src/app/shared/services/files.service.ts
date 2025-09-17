@@ -1,7 +1,7 @@
 import { Observable, of, switchMap, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { HttpEvent } from '@angular/common/http';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { MapFileCustomMetadata, MapFileRevision } from '@osf/features/files/mappers';
@@ -95,6 +95,16 @@ export class FilesService {
     };
 
     return this.jsonApiService.putFile<AddFileResponse>(uploadLink, file, params).pipe(
+      switchMap((event) => {
+        if (event.type === HttpEventType.Response && event.body?.data?.id) {
+          const fileId = event.body.data.id.split('/').pop();
+          if (fileId) {
+            return this.getFileGuid(fileId).pipe(map(() => event));
+          }
+        }
+
+        return of(event);
+      }),
       catchError((error) => {
         this.toastService.showError(error.error.message);
         return throwError(() => error);
@@ -166,10 +176,12 @@ export class FilesService {
   }
 
   getFolderDownloadLink(storageLink: string, folderId: string, isRootFolder: boolean): string {
+    const separator = storageLink.includes('?') ? '&' : '?';
+
     if (isRootFolder) {
-      return `${storageLink}?zip=`;
+      return `${storageLink}${separator}zip=`;
     }
-    return `${storageLink}${folderId}/?zip=`;
+    return `${storageLink}${folderId}/${separator}zip=`;
   }
 
   getFileTarget(fileGuid: string): Observable<OsfFile> {
@@ -250,8 +262,11 @@ export class FilesService {
   }
 
   getFileRevisions(link: string): Observable<OsfFileRevision[]> {
+    const separator = link.includes('?') ? '&' : '?';
+    const urlWithRevisions = `${link}${separator}revisions=`;
+
     return this.jsonApiService
-      .get<GetFileRevisionsResponse>(`${link}?revisions=`)
+      .get<GetFileRevisionsResponse>(urlWithRevisions)
       .pipe(map((response) => MapFileRevision(response.data)));
   }
 

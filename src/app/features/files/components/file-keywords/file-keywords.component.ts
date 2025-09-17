@@ -7,11 +7,12 @@ import { Chip } from 'primeng/chip';
 import { InputText } from 'primeng/inputtext';
 import { Skeleton } from 'primeng/skeleton';
 
-import { ChangeDetectionStrategy, Component, DestroyRef, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
-import { CustomValidators } from '@osf/shared/helpers';
+import { CustomValidators, hasViewOnlyParam } from '@osf/shared/helpers';
 import { InputLimits } from '@shared/constants';
 
 import { FilesSelectors, UpdateTags } from '../../store';
@@ -26,10 +27,12 @@ import { FilesSelectors, UpdateTags } from '../../store';
 export class FileKeywordsComponent {
   private readonly actions = createDispatchMap({ updateTags: UpdateTags });
   private readonly destroyRef = inject(DestroyRef);
+  private readonly router = inject(Router);
 
   readonly tags = select(FilesSelectors.getFileTags);
   readonly isTagsLoading = select(FilesSelectors.isFileTagsLoading);
   readonly file = select(FilesSelectors.getOpenedFile);
+  readonly hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   keywordControl = new FormControl('', {
     nonNullable: true,

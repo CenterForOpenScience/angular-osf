@@ -1,6 +1,6 @@
 <osf-sub-header [isLoading]="isFileLoading()" title="{{ file()?.name }}" />
 
-<p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="flex-1 ml-auto mr-4">
+<p-tabs [value]="selectedTab" (valueChange)="onTabChange(+$event)" class="ml-auto mr-4">
   <p-tablist>
     <p-tab [value]="FileDetailTab.Details">{{ 'files.detail.tabs.details' | translate }}</p-tab>
     <p-tab [value]="FileDetailTab.Revisions">{{ 'files.detail.tabs.revisions' | translate }}</p-tab>
@@ -12,13 +12,13 @@
   <div class="flex">
     <div class="flex align-items-center gap-2 back-navigation font-semibold">
       <i class="pi pi-angle-left text-base"></i>
-      <a [routerLink]="['../']" class="font-semibold">
+      <a [routerLink]="['../']" queryParamsHandling="merge" class="font-semibold">
         {{ 'files.detail.backToList' | translate }}
       </a>
     </div>
 
     <div class="flex gap-3 ml-auto sm-round-padding-btn">
-      @if (!isAnonymous()) {
+      @if (!isAnonymous() && !hasViewOnly()) {
         <p-button
           severity="secondary"
           [label]="'files.detail.actions.addCommunityMetadata' | translate"
@@ -69,7 +69,7 @@
           </p-menu>
         </div>
       }
-      @if (file() && !isAnonymous()) {
+      @if (file() && !isAnonymous() && !hasViewOnly()) {
         <p-button
           severity="danger"
           [ariaLabel]="'common.buttons.delete' | translate"
@@ -108,7 +108,7 @@
       } @else if (selectedTab === FileDetailTab.Keywords) {
         <osf-file-keywords class="metadata"></osf-file-keywords>
       } @else {
-        <div class="file-metadata-tabs">
+        <div class="file-metadata-tabs flex flex-column flex-1">
           <osf-metadata-tabs
             [loading]="isLoading()"
             [tabs]="tabs()"

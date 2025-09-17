@@ -218,7 +218,10 @@ export class FilesWidgetComponent {
   }
 
   navigateToFile(file: OsfFile) {
-    this.router.navigate(['files', file.guid], { relativeTo: this.activeRoute.parent });
+    this.router.navigate(['files', file.guid], {
+      relativeTo: this.activeRoute.parent,
+      queryParamsHandling: 'merge',
+    });
   }
 
   onFilesPageChange(page: number) {

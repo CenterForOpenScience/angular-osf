@@ -8,11 +8,12 @@ import { Skeleton } from 'primeng/skeleton';
 
 import { filter, map, of } from 'rxjs';
 
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { languageCodes } from '@osf/shared/constants';
+import { hasViewOnlyParam } from '@osf/shared/helpers';
 import { LanguageCodeModel } from '@osf/shared/models';
 
 import { FileMetadataFields } from '../../constants';
@@ -33,11 +34,13 @@ import { environment } from 'src/environments/environment';
 export class FileMetadataComponent {
   private readonly actions = createDispatchMap({ setFileMetadata: SetFileMetadata });
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly dialogService = inject(DialogService);
   private readonly translateService = inject(TranslateService);
 
   fileMetadata = select(FilesSelectors.getFileCustomMetadata);
   isLoading = select(FilesSelectors.isFileMetadataLoading);
+  hasViewOnly = computed(() => hasViewOnlyParam(this.router));
 
   readonly languageCodes = languageCodes;
 
